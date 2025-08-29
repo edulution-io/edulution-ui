@@ -79,6 +79,7 @@ import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
+import NotificationsService from '../notifications/notifications.service';
 
 describe('SurveyAnswerService', () => {
   let service: SurveyAnswerService;
@@ -86,6 +87,10 @@ describe('SurveyAnswerService', () => {
   let surveyModel: Model<SurveyDocument>;
 
   beforeEach(async () => {
+    const notificationMock = {
+      notifyUsernames: jest.fn().mockResolvedValue(undefined),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       imports: [],
       providers: [
@@ -103,6 +108,7 @@ describe('SurveyAnswerService', () => {
           useValue: jest.fn(),
         },
         { provide: FilesystemService, useValue: mockFilesystemService },
+        { provide: NotificationsService, useValue: notificationMock },
       ],
     }).compile();
 

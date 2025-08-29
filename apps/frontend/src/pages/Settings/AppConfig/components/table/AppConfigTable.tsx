@@ -27,6 +27,7 @@ import useMedia from '@/hooks/useMedia';
 import { OnChangeFn, RowSelectionState, VisibilityState } from '@tanstack/react-table';
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
+import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 
 interface AppConfigTableProps {
   applicationName: string;
@@ -92,6 +93,11 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
         if (row && 'filename' in row && row.filename && deleteTableEntry) {
           return deleteTableEntry(applicationName, row.filename);
         }
+
+        if (row && 'webdavShareId' in row && row.webdavShareId && deleteTableEntry) {
+          return deleteTableEntry(applicationName, row.webdavShareId);
+        }
+
         return Promise.resolve();
       });
 
@@ -116,8 +122,9 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
     }, [isMobileView, isTabletView, hideColumnsInMobileView, hideColumnsInTabletView]);
 
     const getScrollableTable = () => {
-      const tableActions: TableAction<BulletinCategoryResponseDto | ContainerInfo | FileInfoDto | VeyonProxyItem>[] =
-        [];
+      const tableActions: TableAction<
+        BulletinCategoryResponseDto | ContainerInfo | FileInfoDto | VeyonProxyItem | WebdavShareDto
+      >[] = [];
       if (showAddButton) {
         tableActions.push({
           icon: IoAdd,
@@ -189,6 +196,31 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
               enableRowSelection={false}
               initialColumnVisibility={initialColumnVisibility}
               actions={tableActions as TableAction<VeyonProxyItem>[]}
+            />
+          );
+        }
+        case ExtendedOptionKeys.WEBDAV_SHARE_TABLE: {
+          const actions = [...tableActions];
+
+          if (tableContentData.length >= 1 && actions.length > 0) {
+            actions[0] = {
+              ...actions[0],
+              disabled: true,
+            };
+          }
+
+          return (
+            <ScrollableTable
+              columns={columns}
+              data={tableContentData as WebdavShareDto[]}
+              filterKey={filterKey}
+              filterPlaceHolderText={filterPlaceHolderText}
+              applicationName={applicationName}
+              enableRowSelection
+              initialColumnVisibility={initialColumnVisibility}
+              selectedRows={selectedRows}
+              onRowSelectionChange={handleRowSelectionChange}
+              actions={actions as TableAction<WebdavShareDto>[]}
             />
           );
         }

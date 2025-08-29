@@ -11,12 +11,12 @@
  */
 
 import axios from 'axios';
-import { Interval, SchedulerRegistry } from '@nestjs/schedule';
-import { HttpStatus, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Interval, SchedulerRegistry, Timeout } from '@nestjs/schedule';
+import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import { Group } from '@libs/groups/types/group';
 import GroupsErrorMessage from '@libs/groups/types/groupsErrorMessage';
-import { GROUPS_CACHE_TTL_MS, KEYCLOACK_SYNC_MS } from '@libs/common/constants/cacheTtl';
+import { GROUPS_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import GroupMemberDto from '@libs/groups/types/groupMember.dto';
@@ -42,6 +42,7 @@ import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import ALL_GROUPS_PREFIX from '@libs/lmnApi/constants/prefixes/allGroupsPrefix';
 import LINBO_DEVICE_GROUPS_PREFIX from '@libs/lmnApi/constants/prefixes/dPrefix';
 import ROLES_PREFIX from '@libs/lmnApi/constants/prefixes/rolesPrefix';
+import { KEYCLOAK_STARTUP_TIMEOUT_MS, KEYCLOAK_SYNC_MS } from '@libs/ldapKeycloakSync/constants/keycloakSyncValues';
 import CustomHttpException from '../common/CustomHttpException';
 import Attendee from '../conferences/attendee.schema';
 
@@ -51,7 +52,7 @@ const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API, KEYCLOAK_EDU_API_CLIENT_ID, KEYCLOA
   };
 
 @Injectable()
-class GroupsService implements OnModuleInit {
+class GroupsService {
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private jwtService: JwtService,
@@ -62,12 +63,12 @@ class GroupsService implements OnModuleInit {
 
   private accessTokenRefreshInterval: number = 5000;
 
-  onModuleInit() {
-    this.scheduleTokenRefresh();
-    void this.initializeService();
-  }
+  private isUpdatingGroupsAndMembersInCache = false;
 
-  private async initializeService() {
+  @Timeout(KEYCLOAK_STARTUP_TIMEOUT_MS)
+  async initializeService() {
+    this.scheduleTokenRefresh();
+
     await this.obtainAccessToken();
 
     await this.updateGroupsAndMembersInCache();
@@ -170,7 +171,7 @@ class GroupsService implements OnModuleInit {
       return response.data;
     } catch (error) {
       throw new CustomHttpException(
-        GroupsErrorMessage.CouldNotGetUsers,
+        GroupsErrorMessage.CouldNotGetCurrentUser,
         HttpStatus.BAD_GATEWAY,
         undefined,
         GroupsService.name,
@@ -178,13 +179,13 @@ class GroupsService implements OnModuleInit {
     }
   }
 
-  private static sanitizeGroup(group: Group) {
+  private static sanitizeGroup(group: Group | GroupWithMembers) {
     return { id: group.id, name: group.name, path: group.path };
   }
 
-  private static sanitizeGroupMembers(members: LDAPUser[]): GroupMemberDto[] {
+  private static sanitizeGroupMembers(members: (LDAPUser | GroupMemberDto)[]): GroupMemberDto[] {
     return Array.isArray(members)
-      ? members.map((member: LDAPUser) => ({
+      ? members.map((member) => ({
           id: member.id,
           username: member.username,
           firstName: member.firstName,
@@ -249,8 +250,8 @@ class GroupsService implements OnModuleInit {
     await Promise.all(setGroupsPromises);
   }
 
-  private async updateGroupsInCache(groups: Group[]): Promise<void> {
-    const failedGroups = await this.tryUpdateGroupsInCache(groups, 1);
+  private async updateGroupsWithMembersInCache(groups: Group[]): Promise<void> {
+    const failedGroups = await this.tryUpdateGroupsWithMembersInCache(groups, 1);
 
     if (failedGroups.length > 0) {
       Logger.error(
@@ -264,8 +265,8 @@ class GroupsService implements OnModuleInit {
     }
   }
 
-  private async tryUpdateGroupsInCache(groups: Group[], attempt: number): Promise<Group[]> {
-    const results = await Promise.allSettled(groups.map((group) => this.updateGroupInCache(this.cacheManager, group)));
+  private async tryUpdateGroupsWithMembersInCache(groups: Group[], attempt: number): Promise<Group[]> {
+    const results = await Promise.allSettled(groups.map((group) => this.updateGroupWithMembersInCache(group)));
 
     const failedGroups: Group[] = [];
     results.forEach((result, index) => {
@@ -275,22 +276,25 @@ class GroupsService implements OnModuleInit {
     });
 
     if (failedGroups.length > 0 && attempt < this.maximumRetries) {
-      return this.tryUpdateGroupsInCache(failedGroups, attempt + 1);
+      return this.tryUpdateGroupsWithMembersInCache(failedGroups, attempt + 1);
     }
 
     return failedGroups;
   }
 
-  private async updateGroupInCache(cacheManager: Cache, group: Group): Promise<void> {
-    const members = await this.fetchGroupMembers(group.id);
-    if (!members?.length) {
-      return;
+  async updateGroupWithMembersInCache(
+    group: Group | GroupWithMembers,
+    updatedMembers?: GroupMemberDto[],
+  ): Promise<void> {
+    let newMembers = updatedMembers;
+    if (!newMembers?.length) {
+      newMembers = await this.fetchGroupMembers(group.id);
     }
 
-    const sanitizedMembers = GroupsService.sanitizeGroupMembers(members);
+    const sanitizedMembers = newMembers?.length ? GroupsService.sanitizeGroupMembers(newMembers) : [];
     const sanitizedGroup = GroupsService.sanitizeGroup(group);
 
-    await cacheManager.set(
+    await this.cacheManager.set(
       `${GROUP_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
       {
         ...sanitizedGroup,
@@ -302,8 +306,11 @@ class GroupsService implements OnModuleInit {
 
   private maximumRetries = 3;
 
-  @Interval(KEYCLOACK_SYNC_MS)
+  @Interval(KEYCLOAK_SYNC_MS)
   async updateGroupsAndMembersInCache(): Promise<void> {
+    if (this.isUpdatingGroupsAndMembersInCache) return;
+    this.isUpdatingGroupsAndMembersInCache = true;
+
     try {
       const allGroups = await this.fetchAndCacheAllGroups();
 
@@ -311,9 +318,11 @@ class GroupsService implements OnModuleInit {
 
       await this.cacheGroupsBySchoolName(schoolGroupNames, allGroups);
 
-      await this.updateGroupsInCache(allGroups);
+      await this.updateGroupsWithMembersInCache(allGroups);
     } catch (error) {
       Logger.error(`updateGroupsAndMembersInCache failed.`, GroupsService.name);
+    } finally {
+      this.isUpdatingGroupsAndMembersInCache = false;
     }
   }
 
@@ -359,7 +368,7 @@ class GroupsService implements OnModuleInit {
       return GroupsService.flattenGroups(groups);
     } catch (error) {
       throw new CustomHttpException(
-        GroupsErrorMessage.CouldNotGetUsers,
+        GroupsErrorMessage.CouldNotGetAllGroups,
         HttpStatus.BAD_GATEWAY,
         undefined,
         GroupsService.name,

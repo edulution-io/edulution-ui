@@ -18,6 +18,7 @@ interface TableAction<TData> {
   translationId: string;
   onClick: (row?: Row<TData>) => void | Promise<void>;
   className?: string;
+  disabled?: boolean;
 }
 
 export default TableAction;

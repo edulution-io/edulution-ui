@@ -15,22 +15,28 @@ import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import buildSharePath from '@libs/filesharing/utils/buildSharePath';
+import WebdavShareDto from '../types/webdavShareDto';
+import WEBDAV_SHARE_TYPE from '../constants/webdavShareType';
 
 const buildShareDTO = (
   userName: string | undefined,
   students: LmnUserInfo[] | null,
   fileName: DirectoryFileDTO,
+  webdavShares: WebdavShareDto[],
 ): DuplicateFileRequestDto | undefined => {
   if (!students) return undefined;
 
+  const originFilePath = getPathWithoutWebdav(fileName.filePath);
+  const isEduFileProxy = webdavShares[0].type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY;
+
   const destinationFilePaths = students
-    .map((student) => buildSharePath(userName || '', fileName.filePath, student))
+    .map((student) => {
+      const path = buildSharePath(userName || '', fileName.filePath, student);
+      return isEduFileProxy ? `${student.school}/${path}` : path;
+    })
     .filter(Boolean);
 
-  return {
-    originFilePath: getPathWithoutWebdav(fileName.filePath),
-    destinationFilePaths,
-  };
+  return { originFilePath, destinationFilePaths };
 };
 
 export default buildShareDTO;

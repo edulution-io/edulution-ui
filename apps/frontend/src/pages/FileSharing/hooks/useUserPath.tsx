@@ -10,36 +10,44 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import getStringFromArray from '@libs/common/utils/getStringFromArray';
+import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
+import useLdapGroups from '@/hooks/useLdapGroups';
+import type WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import useFileSharingStore from '../useFileSharingStore';
 
 const useUserPath = () => {
-  const { mountPoints } = useFileSharingStore();
+  const { webdavShares, fetchWebdavShares } = useFileSharingStore();
   const { globalSettings } = useGlobalSettingsApiStore();
-  const { pathname } = useLocation();
   const { user: lmnUser } = useLmnApiStore();
+  const { isSuperAdmin } = useLdapGroups();
 
-  let homePath: string;
-  const fallbackPath = `${pathname.split('/').at(-1)}/`;
-  if (globalSettings.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER) {
-    const getFallbackPath = () => {
-      const filtered = mountPoints.filter((mp) => mp.filename === fallbackPath.split('/').at(-1));
-      if (filtered.length !== 0) {
-        return getPathWithoutWebdav(filtered[0]?.filePath);
+  const [homePath, setHomePath] = useState<string>('');
+
+  useEffect(() => {
+    const isEduFileProxy = (shares: WebdavShareDto[]) => shares[0]?.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY;
+
+    const resolveHomePath = async (): Promise<string> => {
+      if (isSuperAdmin) return '//';
+
+      if (globalSettings.general.deploymentTarget !== DEPLOYMENT_TARGET.LINUXMUSTER) {
+        return getStringFromArray(lmnUser?.sophomorixIntrinsic2);
+      }
+
+      const shares = webdavShares.length > 0 ? webdavShares : await fetchWebdavShares();
+      if (isEduFileProxy(shares)) {
+        return `${lmnUser?.school ?? ''}/${getStringFromArray(lmnUser?.sophomorixIntrinsic2)}`;
       }
 
       return getStringFromArray(lmnUser?.sophomorixIntrinsic2);
     };
 
-    homePath = getFallbackPath();
-  } else {
-    homePath = fallbackPath;
-  }
+    void resolveHomePath().then(setHomePath);
+  }, [isSuperAdmin, globalSettings.general.deploymentTarget, lmnUser, webdavShares.length]);
 
   return { homePath };
 };

@@ -126,7 +126,7 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
         </div>
       )}
       <DialogFooterButtons
-        handleClose={() => setDialogOpen('')}
+        handleClose={closeDialog}
         handleSubmit={() => {}}
         disableSubmit={!formState.isValid}
         submitButtonText="common.save"

@@ -19,14 +19,16 @@ import MoveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConf
 import DownloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/downloadButton';
 import ContentType from '@libs/filesharing/types/contentType';
 import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
-import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import CopyButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/copyButton';
 import useStartWebdavFileDownload from '@/pages/FileSharing/hooks/useStartWebdavFileDownload';
+import getFileUploadLimit from '@libs/ui/utils/getFileUploadLimit';
+import useFileSharingStore from '../useFileSharingStore';
 
 const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItems }) => {
   const startDownload = useStartWebdavFileDownload();
+  const { webdavShares } = useFileSharingStore();
   let selectedFiles: DirectoryFileDTO[] = [];
 
   if (selectedItems) {
@@ -35,7 +37,9 @@ const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog, selected
 
   const canDownload =
     selectedFiles.length > 0 &&
-    selectedFiles.every((f) => f.type === ContentType.FILE && bytesToMegabytes(f.size ?? 0) < MAX_FILE_UPLOAD_SIZE);
+    selectedFiles.every(
+      (f) => f.type === ContentType.FILE && bytesToMegabytes(f.size ?? 0) < getFileUploadLimit(webdavShares),
+    );
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
