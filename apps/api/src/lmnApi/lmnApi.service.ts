@@ -43,9 +43,12 @@ import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
 import CreateWorkingDirectoryDto from '@libs/classManagement/types/createWorkingDirectoryDto';
 import convertWindowsToUnixPath from '@libs/filesharing/utils/convertWindowsToUnixPath';
 import { decodeBase64Api } from '@libs/common/utils/getBase64StringApi';
+import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
+import GroupFormDto from '@libs/groups/types/groupForm.dto';
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
 import WebdavService from '../webdav/webdav.service';
+import LdapKeycloakSyncService from '../ldap-keycloak-sync/ldap-keycloak-sync.service';
 
 @Injectable()
 class LmnApiService {
@@ -58,6 +61,7 @@ class LmnApiService {
   constructor(
     private readonly userService: UsersService,
     private readonly webdavService: WebdavService,
+    private readonly ldapKeycloakSyncService: LdapKeycloakSyncService,
   ) {
     const httpsAgent = new HttpsAgent({
       rejectUnauthorized: false,
@@ -157,6 +161,9 @@ class LmnApiService {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
+
+      void this.ldapKeycloakSyncService.updateGroupMembershipByNames(group, [], users);
+
       return response.data;
     } catch (error) {
       throw new CustomHttpException(
@@ -179,6 +186,9 @@ class LmnApiService {
           },
         ),
       );
+
+      void this.ldapKeycloakSyncService.updateGroupMembershipByNames(group, users, []);
+
       return response.data;
     } catch (error) {
       throw new CustomHttpException(
@@ -232,7 +242,8 @@ class LmnApiService {
   public async toggleSchoolClassJoined(
     lmnApiToken: string,
     schoolClass: string,
-    action: string,
+    action: GroupJoinState,
+    username?: string,
   ): Promise<LmnApiSchoolClass> {
     const requestUrl = `${SCHOOL_CLASSES_LMN_API_ENDPOINT}/${schoolClass}/${action}`;
 
@@ -244,6 +255,13 @@ class LmnApiService {
       const response = await this.enqueue<LmnApiSchoolClass>(() =>
         this.lmnApi.post<LmnApiSchoolClass>(requestUrl, undefined, config),
       );
+
+      if (username) {
+        const add = action === GroupJoinState.Join ? [username] : [];
+        const remove = action !== GroupJoinState.Join ? [username] : [];
+        void this.ldapKeycloakSyncService.updateGroupMembershipByNames(schoolClass, add, remove);
+      }
+
       return response.data;
     } catch (error) {
       throw new CustomHttpException(
@@ -452,14 +470,14 @@ class LmnApiService {
     }
   }
 
-  private static getProjectFromForm = (formValues: GroupForm, username: string) => ({
+  private static getProjectFromForm = (formValues: GroupFormDto, username: string) => ({
     admins: formValues.admins,
     displayName: formValues.displayName,
     admingroups: formValues.admingroups,
     description: formValues.description,
     join: formValues.join,
     hide: formValues.hide,
-    members: formValues.members.filter((m) => m.value !== username),
+    members: formValues.members.filter((m) => m !== username),
     membergroups: formValues.membergroups,
     school: formValues.school || DEFAULT_SCHOOL,
     mailalias: formValues.mailalias,
@@ -487,6 +505,15 @@ class LmnApiService {
     }
   }
 
+  private reconcileProjectMembers(username: string, formValues: GroupFormDto) {
+    const addUsers = [username, ...formValues.members, ...formValues.admins].filter(Boolean);
+    const addGroups = [...formValues.membergroups, ...formValues.admingroups].filter(Boolean);
+
+    const projectName = `p_${  formValues.school === DEFAULT_SCHOOL ? '' : `${formValues.school  }-`  }${formValues.name}`;
+
+    void this.ldapKeycloakSyncService.reconcileNamedGroupMembers(projectName, addUsers, addGroups);
+  }
+
   public async getProject(lmnApiToken: string, projectName: string): Promise<LmnApiProjectWithMembers> {
     try {
       const response = await this.enqueue<LmnApiProjectWithMembers>(() =>
@@ -506,7 +533,7 @@ class LmnApiService {
     }
   }
 
-  public async createProject(lmnApiToken: string, formValues: GroupForm, username: string): Promise<LmnApiProject> {
+  public async createProject(lmnApiToken: string, formValues: GroupFormDto, username: string): Promise<LmnApiProject> {
     try {
       const data = LmnApiService.getProjectFromForm(formValues, username);
       const response = await this.enqueue<LmnApiProject>(() =>
@@ -514,6 +541,9 @@ class LmnApiService {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
+
+      this.reconcileProjectMembers(username, formValues);
+
       return response.data;
     } catch (error) {
       throw new CustomHttpException(
@@ -525,14 +555,18 @@ class LmnApiService {
     }
   }
 
-  public async updateProject(lmnApiToken: string, formValues: GroupForm, username: string): Promise<LmnApiProject> {
+  public async updateProject(lmnApiToken: string, formValues: GroupFormDto, username: string): Promise<LmnApiProject> {
     try {
       const data = LmnApiService.getProjectFromForm(formValues, username);
+
       const response = await this.enqueue<LmnApiProject>(() =>
         this.lmnApi.patch<LmnApiProject>(`${PROJECTS_LMN_API_ENDPOINT}/${formValues.name}`, data, {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
+
+      this.reconcileProjectMembers(username, formValues);
+
       return response.data;
     } catch (error) {
       throw new CustomHttpException(
@@ -551,6 +585,9 @@ class LmnApiService {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
+
+      void this.ldapKeycloakSyncService.reconcileNamedGroupMembers(projectName, [], []);
+
       return response.data;
     } catch (error) {
       throw new CustomHttpException(
@@ -562,7 +599,12 @@ class LmnApiService {
     }
   }
 
-  public async toggleProjectJoined(lmnApiToken: string, project: string, action: string): Promise<LmnApiProject> {
+  public async toggleProjectJoined(
+    lmnApiToken: string,
+    project: string,
+    action: GroupJoinState,
+    username?: string,
+  ): Promise<LmnApiProject> {
     const requestUrl = `${PROJECTS_LMN_API_ENDPOINT}/${project}/${action}`;
     const config = {
       headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
@@ -572,6 +614,13 @@ class LmnApiService {
       const response = await this.enqueue<LmnApiProject>(() =>
         this.lmnApi.post<LmnApiProject>(requestUrl, undefined, config),
       );
+
+      if (username) {
+        const add = action === GroupJoinState.Join ? [username] : [];
+        const remove = action !== GroupJoinState.Join ? [username] : [];
+        void this.ldapKeycloakSyncService.updateGroupMembershipByNames(project, add, remove);
+      }
+
       return response.data;
     } catch (error) {
       throw new CustomHttpException(
@@ -583,7 +632,12 @@ class LmnApiService {
     }
   }
 
-  public async togglePrinterJoined(lmnApiToken: string, printer: string, action: string): Promise<LmnApiPrinter> {
+  public async togglePrinterJoined(
+    lmnApiToken: string,
+    printer: string,
+    action: GroupJoinState,
+    username?: string,
+  ): Promise<LmnApiPrinter> {
     const requestUrl = `${PRINTERS_LMN_API_ENDPOINT}/${printer}/${action}`;
     const config = {
       headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
@@ -593,6 +647,13 @@ class LmnApiService {
       const response = await this.enqueue<LmnApiPrinter>(() =>
         this.lmnApi.post<LmnApiPrinter>(requestUrl, undefined, config),
       );
+
+      if (username) {
+        const add = action === GroupJoinState.Join ? [username] : [];
+        const remove = action !== GroupJoinState.Join ? [username] : [];
+        void this.ldapKeycloakSyncService.updateGroupMembershipByNames(printer, add, remove);
+      }
+
       return response.data;
     } catch (error) {
       throw new CustomHttpException(

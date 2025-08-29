@@ -24,10 +24,13 @@ import GroupForm from '@libs/groups/types/groupForm';
 import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import { encodeBase64Api } from '@libs/common/utils/getBase64StringApi';
+import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
+import GroupFormDto from '@libs/groups/types/groupForm.dto';
 import CustomHttpException from '../common/CustomHttpException';
 import LmnApiService from './lmnApi.service';
 import UsersService from '../users/users.service';
 import WebDavService from '../webdav/webdav.service';
+import LdapKeycloakSyncService from '../ldap-keycloak-sync/ldap-keycloak-sync.service';
 
 jest.mock('axios');
 const mockedAxios = {
@@ -55,7 +58,7 @@ const formValuesMock = {
   members: ['netzint1', 'netzint2', 'netzint3'],
   membergroups: [],
   school: 'default-school',
-} as unknown as GroupForm;
+} as unknown as GroupFormDto;
 
 describe('LmnApiService', () => {
   let service: LmnApiService;
@@ -76,6 +79,13 @@ describe('LmnApiService', () => {
           useValue: {
             uploadFile: jest.fn(),
             createFile: jest.fn(),
+          },
+        },
+        {
+          provide: LdapKeycloakSyncService,
+          useValue: {
+            updateGroupMembershipByNames: jest.fn(),
+            reconcileNamedGroupMembers: jest.fn(),
           },
         },
       ],
@@ -258,14 +268,14 @@ describe('LmnApiService', () => {
       const mockResponse = { data: { className: 'SchoolClass' } };
       mockedAxios.post.mockResolvedValue(mockResponse);
 
-      const result = await service.toggleSchoolClassJoined(mockToken, 'schoolClass', 'join');
+      const result = await service.toggleSchoolClassJoined(mockToken, 'schoolClass', GroupJoinState.Join);
       expect(result).toEqual(mockResponse.data);
     });
 
     it('should throw CustomHttpException on failure', async () => {
       mockedAxios.post.mockRejectedValue(new Error('API Error'));
 
-      await expect(service.toggleSchoolClassJoined(mockToken, 'schoolClass', 'join')).rejects.toThrow(
+      await expect(service.toggleSchoolClassJoined(mockToken, 'schoolClass', GroupJoinState.Join)).rejects.toThrow(
         CustomHttpException,
       );
     });
@@ -276,14 +286,16 @@ describe('LmnApiService', () => {
       const mockResponse = { data: { projectName: 'Sample Project' } };
       mockedAxios.post.mockResolvedValue(mockResponse);
 
-      const result = await service.toggleProjectJoined(mockToken, 'project', 'join');
+      const result = await service.toggleProjectJoined(mockToken, 'project', GroupJoinState.Join);
       expect(result).toEqual(mockResponse.data);
     });
 
     it('should throw CustomHttpException on failure', async () => {
       mockedAxios.post.mockRejectedValue(new Error('API Error'));
 
-      await expect(service.toggleProjectJoined(mockToken, 'project', 'join')).rejects.toThrow(CustomHttpException);
+      await expect(service.toggleProjectJoined(mockToken, 'project', GroupJoinState.Join)).rejects.toThrow(
+        CustomHttpException,
+      );
     });
   });
 
@@ -292,14 +304,16 @@ describe('LmnApiService', () => {
       const mockResponse = { data: { printerName: 'Printer1' } };
       mockedAxios.post.mockResolvedValue(mockResponse);
 
-      const result = await service.togglePrinterJoined(mockToken, 'printer', 'join');
+      const result = await service.togglePrinterJoined(mockToken, 'printer', GroupJoinState.Join);
       expect(result).toEqual(mockResponse.data);
     });
 
     it('should throw CustomHttpException on failure', async () => {
       mockedAxios.post.mockRejectedValue(new Error('API Error'));
 
-      await expect(service.togglePrinterJoined(mockToken, 'printer', 'join')).rejects.toThrow(CustomHttpException);
+      await expect(service.togglePrinterJoined(mockToken, 'printer', GroupJoinState.Join)).rejects.toThrow(
+        CustomHttpException,
+      );
     });
   });
 
