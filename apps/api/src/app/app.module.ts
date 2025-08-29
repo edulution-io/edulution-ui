@@ -22,6 +22,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import { BullModule } from '@nestjs/bullmq';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import LoggingInterceptor from '../logging/logging.interceptor';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
@@ -55,6 +56,11 @@ import NotificationsModule from '../notifications/notifications.module';
     ServeStaticModule.forRoot({
       rootPath: PUBLIC_DOWNLOADS_PATH,
       serveRoot: `/${EDU_API_ROOT}/downloads`,
+    }),
+
+    PrometheusModule.register({
+      path: '/metrics',
+      defaultMetrics: { enabled: true, config: { prefix: 'app_' } },
     }),
 
     BullModule.forRoot({
