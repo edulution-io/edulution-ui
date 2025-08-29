@@ -1525,6 +1525,8 @@
     "errors": {
       "CouldNotGetGroupByPath": "Gruppe konnte anhand des Pfades nicht gefunden werden",
       "CouldNotGetUsers": "Benutzer konnten nicht gefunden werden",
+      "CouldNotGetCurrentUser": "Aktueller Benutzer konnte nicht gefunden werden",
+      "CouldNotGetAllGroups": "Fehler beim Finden aller Gruppen",
       "CouldNotFetchGroupMembers": "Die Gruppenmitglieder konnten nicht gefunden werden",
       "CouldNotFetchUserById": "Benutzer konnte anhand der ID nicht gefunden werden",
       "CouldNotSearchGroups": "Die Suche nach Gruppen war nicht möglich"
