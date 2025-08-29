@@ -55,6 +55,9 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [isCardLoading, setIsCardLoading] = useState<boolean>(false);
 
+  const isProject = (g: LmnApiProject | LmnApiSchoolClass): g is LmnApiProject =>
+    'sophomorixMemberGroups' in g || 'sophomorixAdminGroups' in g;
+
   if (!user) {
     return null;
   }
@@ -107,13 +110,17 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
       <div>{t('details')}</div>
     ) : (
       <>
-        {type === UserGroups.Projects ? (
+        {type === UserGroups.Projects && isProject(group) ? (
           <div>
-            {sophomorixAdmins.length} {t(sophomorixAdmins.length === 1 ? 'common.adminShort' : 'common.adminsShort')}
+            {sophomorixAdmins.length} ({group.sophomorixAdminGroups?.length}){' '}
+            {t(sophomorixAdmins.length === 1 ? 'common.adminShort' : 'common.adminsShort')}
           </div>
         ) : null}
         <div>
-          {sophomorixMembers.length} {t(sophomorixMembers.length === 1 ? 'user' : 'common.users')}
+          {isProject(group)
+            ? `${sophomorixMembers.length} (${group.sophomorixMemberGroups?.length})`
+            : sophomorixMembers.length}{' '}
+          {t(sophomorixMembers.length === 1 ? 'user' : 'common.users')}
         </div>
       </>
     );
