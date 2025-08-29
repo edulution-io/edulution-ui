@@ -33,7 +33,7 @@ import useMedia from '@/hooks/useMedia';
 
 interface AdaptiveDialogProps {
   isOpen: boolean;
-  handleOpenChange: () => void;
+  handleOpenChange?: () => void;
   title: string;
   trigger?: React.ReactNode;
   body: React.ReactNode;
@@ -41,6 +41,7 @@ interface AdaptiveDialogProps {
   variant?: 'primary' | 'secondary' | 'tertiary';
   mobileContentClassName?: string;
   desktopContentClassName?: string;
+  titleIcon?: React.ReactNode;
 }
 
 const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
@@ -53,8 +54,17 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
   variant = 'primary',
   mobileContentClassName,
   desktopContentClassName,
+  titleIcon,
 }) => {
   const { isMobileView } = useMedia();
+  const closable = !handleOpenChange;
+
+  const dialogTitle = (
+    <div className={`flex flex-row items-center gap-2 font-bold ${isMobileView && 'pb-4'}`}>
+      {React.isValidElement(titleIcon) ? titleIcon : null}
+      <p className="max-w-[80vw] truncate sm:max-w-none">{title}</p>
+    </div>
+  );
 
   return isMobileView ? (
     <Sheet
@@ -66,9 +76,10 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
         side="bottom"
         variant={variant}
         className={mobileContentClassName}
+        showCloseButton={closable}
       >
         <SheetHeader variant={variant}>
-          <SheetTitle>{title}</SheetTitle>
+          <SheetTitle>{dialogTitle}</SheetTitle>
         </SheetHeader>
         {body}
         {footer ? <SheetFooter>{footer}</SheetFooter> : null}
@@ -84,8 +95,9 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
       <DialogContent
         variant={variant}
         className={desktopContentClassName}
+        showCloseButton={closable}
       >
-        <DialogTitle>{title}</DialogTitle>
+        <DialogTitle>{dialogTitle}</DialogTitle>
         {body}
         {footer ? <DialogFooter>{footer}</DialogFooter> : null}
         <DialogDescription aria-disabled />
