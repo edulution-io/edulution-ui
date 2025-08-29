@@ -14,14 +14,14 @@ import { Logger, OnModuleInit } from '@nestjs/common';
 import { Timeout } from '@nestjs/schedule';
 import { Scripts } from './script.type';
 import keycloakConfigScripts from './keycloak/keycloakConfigScripts';
-import KEYCLOAK_STARTUP_TIMEOUT from '@libs/ldapKeycloakSync/constants/keycloakStartupTimeout';
+import { KEYCLOAK_STARTUP_TIMEOUT_MS } from '@libs/ldapKeycloakSync/constants/keycloakSyncValues';
 
 class ScriptsService implements OnModuleInit {
   async onModuleInit() {
     Logger.log('ScriptService initialized. Wait 60s for Keycloak to be ready', ScriptsService.name);
   }
 
-  @Timeout(KEYCLOAK_STARTUP_TIMEOUT)
+  @Timeout(KEYCLOAK_STARTUP_TIMEOUT_MS)
   handleTimeout() {
     void this.runScripts(keycloakConfigScripts);
   }

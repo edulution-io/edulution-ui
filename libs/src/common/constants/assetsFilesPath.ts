@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const KEYCLOAK_STARTUP_TIMEOUT = 60_000;
+const ASSETS_FILES_PATH = './dist/apps';
 
-export default KEYCLOAK_STARTUP_TIMEOUT;
+export default ASSETS_FILES_PATH;
