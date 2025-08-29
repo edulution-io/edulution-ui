@@ -124,7 +124,7 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
     return (
       <AdaptiveDialog
         isOpen={isAuthenticated ? isPublicShareInfoDialogOpen : true}
-        titleIcon={LiaFileDownloadSolid}
+        titleIcon={<LiaFileDownloadSolid />}
         handleOpenChange={isAuthenticated ? closePublicShareDialog : () => {}}
         title={t('filesharing.publicFileSharing.downloadPublicFile')}
         body={restrictedBody}
@@ -137,7 +137,7 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
     return (
       <AdaptiveDialog
         isOpen={isAuthenticated ? isPublicShareInfoDialogOpen : true}
-        titleIcon={LiaFileDownloadSolid}
+        titleIcon={<LiaFileDownloadSolid />}
         handleOpenChange={isAuthenticated ? closePublicShareDialog : () => {}}
         title={t('filesharing.publicFileSharing.downloadPublicFile')}
         body={<h3 className="text-xl font-semibold">{t('filesharing.publicFileSharing.errors.PublicFileNotFound')}</h3>}
@@ -193,7 +193,7 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
 
       <AdaptiveDialog
         isOpen={isAuthenticated ? isPublicShareInfoDialogOpen : true}
-        titleIcon={LiaFileDownloadSolid}
+        titleIcon={<LiaFileDownloadSolid />}
         handleOpenChange={isAuthenticated ? closePublicShareDialog : () => {}}
         title={t('filesharing.publicFileSharing.downloadPublicFile')}
         body={accessBody}

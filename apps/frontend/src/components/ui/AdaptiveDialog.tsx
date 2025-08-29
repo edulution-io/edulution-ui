@@ -11,7 +11,7 @@
  */
 
 /* eslint-disable react/require-default-props */
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import {
   Sheet,
   SheetContent,
@@ -30,7 +30,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/Dialog';
 import useMedia from '@/hooks/useMedia';
-import { IconBaseProps, IconContext } from 'react-icons';
 
 interface AdaptiveDialogProps {
   isOpen: boolean;
@@ -42,7 +41,7 @@ interface AdaptiveDialogProps {
   variant?: 'primary' | 'secondary' | 'tertiary';
   mobileContentClassName?: string;
   desktopContentClassName?: string;
-  titleIcon?: React.ComponentType<IconBaseProps>;
+  titleIcon?: React.ReactNode;
 }
 
 const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
@@ -55,22 +54,31 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
   variant = 'primary',
   mobileContentClassName,
   desktopContentClassName,
-  titleIcon: TitleIcon,
+  titleIcon,
 }) => {
   const { isMobileView } = useMedia();
-
-  const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
-
   const closable = !handleOpenChange;
 
+  const renderTitleIcon = () => {
+    if (!titleIcon || !React.isValidElement(titleIcon)) return null;
+    const rawClass =
+      typeof (titleIcon.props as { className?: unknown }).className === 'string'
+        ? (titleIcon.props as { className?: unknown }).className
+        : undefined;
+
+    const hasSizeProp = Object.prototype.hasOwnProperty.call(titleIcon.props, 'size');
+    const mergedClass = ['h-8 w-8 shrink-0', rawClass].filter(Boolean).join(' ');
+
+    const nextProps: Record<string, unknown> = { className: mergedClass };
+    if (hasSizeProp) nextProps.size = 32;
+
+    return React.cloneElement(titleIcon, nextProps);
+  };
+
   const dialogTitle = (
-    <div className={`flex items-center gap-1 font-bold ${isMobileView ? 'flex-col' : 'flex-row'}`}>
-      {TitleIcon && (
-        <IconContext.Provider value={iconContextValue}>
-          <TitleIcon />
-        </IconContext.Provider>
-      )}
-      <p>{title}</p>
+    <div className={`flex flex-row items-center gap-2 font-bold ${isMobileView && 'pb-4'}`}>
+      {renderTitleIcon()}
+      <p className="max-w-[80vw] truncate sm:max-w-none">{title}</p>
     </div>
   );
 
