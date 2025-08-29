@@ -54,6 +54,7 @@ import SurveysTemplateService from './surveys-template.service';
 import SurveyAnswerService from './survey-answer.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
+import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
 import { checkAttachmentFile, createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 
@@ -118,19 +119,13 @@ class SurveysController {
   @UseGuards(AppConfigGuard)
   @Post(TEMPLATES)
   async createTemplate(@Body() surveyTemplateDto: SurveyTemplateDto) {
-    return this.surveysTemplateService.createTemplateDocument(surveyTemplateDto);
+    return this.surveysTemplateService.updateOrCreateTemplateDocument(surveyTemplateDto);
   }
 
   @Get(TEMPLATES)
-  getTemplateNames() {
-    return this.surveysTemplateService.serveTemplateNames();
-  }
-
-  @Get(`${TEMPLATES}/:filename`)
-  getTemplate(@Param() params: { filename: string }, @Res() res: Response) {
-    const { filename } = params;
+  getTemplate(@Res() res: Response, @GetCurrentUserGroups() ldapGroups: string[]) {
     res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_JSON);
-    return this.surveysTemplateService.serveTemplate(filename, res);
+    return this.surveysTemplateService.serveTemplates(ldapGroups, res);
   }
 
   @Get(`${ANSWER}/:surveyId`)
@@ -179,6 +174,12 @@ class SurveysController {
   serveTempFile(@Param() params: { filename: string }, @Res() res: Response, @GetCurrentUsername() username: string) {
     const { filename } = params;
     return this.surveysAttachmentService.serveTempFiles(username, filename, res);
+  }
+
+  @Patch(`${TEMPLATES}/:filename`)
+  async toggleIsTemplateActive(@Param() params: { filename: string }) {
+    const { filename } = params;
+    return this.surveysTemplateService.toggleIsTemplateActive(filename);
   }
 }
 

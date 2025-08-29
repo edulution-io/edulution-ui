@@ -21,6 +21,7 @@ import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTime
 import SURVEYS_TEMPLATE_EXCHANGE_PATH from '@libs/survey/constants/surveysTemplateExchangePath';
 import SURVEYS_TEMPLATE_DEFAULT_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplateDefaultTemplatePath';
 import { SurveyTemplateDto, TemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
+import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import { SurveysTemplate, SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
 import CustomHttpException from '../common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
@@ -37,26 +38,12 @@ class SurveysTemplateService implements OnModuleInit {
     await this.getNewTemplatesFromExchangeFolder();
   }
 
-  async createTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
-    const { template, fileName = `${getCurrentDateTimeString()}_-_${uuidv4()}.SurveyTemplate.json` } = surveyTemplate;
-    try {
-      return await this.surveyTemplateModel.create({ template, fileName });
-    } catch (error) {
-      throw new CustomHttpException(
-        CommonErrorMessages.DB_ACCESS_FAILED,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
-        SurveysTemplateService.name,
-      );
-    }
-  }
-
   async updateOrCreateTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
-    const { fileName, template } = surveyTemplate;
+    const { template, isActive = true, fileName = `${getCurrentDateTimeString()}_-_${uuidv4()}.json` } = surveyTemplate;
     try {
       return await this.surveyTemplateModel.findOneAndUpdate(
         { fileName },
-        { template, fileName },
+        { template, isActive, fileName },
         { new: true, upsert: true },
       );
     } catch (error) {
@@ -69,16 +56,9 @@ class SurveysTemplateService implements OnModuleInit {
     }
   }
 
-  async serveTemplateNames(): Promise<string[]> {
-    let templates = await this.surveyTemplateModel.find({});
-    templates = templates.filter((template) => !!template.fileName && template.isActive);
-    const fileNames = templates.map((template) => template.fileName);
-    return fileNames;
-  }
-
-  async serveTemplate(fileName: string, res: Response): Promise<Response> {
-    const document = await this.surveyTemplateModel.findOne({ fileName, isActive: true });
-    if (!document) {
+  async serveTemplates(ldapGroups: string[], res: Response): Promise<Response> {
+    const documents = await this.surveyTemplateModel.find(getIsAdmin(ldapGroups) ? {} : { isActive: true });
+    if (!documents || documents.length === 0) {
       throw new CustomHttpException(
         CommonErrorMessages.FILE_NOT_FOUND,
         HttpStatus.NOT_FOUND,
@@ -86,7 +66,7 @@ class SurveysTemplateService implements OnModuleInit {
         SurveysTemplateService.name,
       );
     }
-    return res.status(HttpStatus.OK).json(document.template);
+    return res.status(HttpStatus.OK).json(documents);
   }
 
   async migrateTemplatesFromFolderToDb(path: string): Promise<void> {
@@ -109,7 +89,7 @@ class SurveysTemplateService implements OnModuleInit {
       }
       const newDocument: SurveysTemplateDocument | null = await this.updateOrCreateTemplateDocument({
         fileName,
-        template: { ...content },
+        template: content,
       });
       if (newDocument !== null) {
         filesToDelete.push(fileName);
@@ -123,6 +103,23 @@ class SurveysTemplateService implements OnModuleInit {
   async getNewTemplatesFromExchangeFolder(): Promise<void> {
     await this.migrateTemplatesFromFolderToDb(SURVEYS_TEMPLATE_DEFAULT_TEMPLATE_PATH);
     await this.migrateTemplatesFromFolderToDb(SURVEYS_TEMPLATE_EXCHANGE_PATH);
+  }
+
+  async toggleIsTemplateActive(fileName: string): Promise<SurveysTemplateDocument | null> {
+    let document: SurveysTemplateDocument | null = null;
+    document = await this.surveyTemplateModel.findOneAndUpdate(
+      { fileName, isActive: false },
+      { isActive: true },
+      { new: true, upsert: false },
+    );
+    if (document === null) {
+      document = await this.surveyTemplateModel.findOneAndUpdate(
+        { fileName, isActive: true },
+        { isActive: false },
+        { new: true, upsert: false },
+      );
+    }
+    return document;
   }
 }
 

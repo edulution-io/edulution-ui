@@ -81,10 +81,8 @@ const getSurveyTemplateFormSchema = () =>
         canUpdateFormerAnswer: z.boolean().optional(),
       })
       .optional(),
-    icon: z.string().optional(),
-    isActive: z.boolean(),
-    createdAt: z.date().optional(),
-    updatedAt: z.date().optional(),
+    fileName: z.string().optional(),
+    isActive: z.boolean().optional(),
   });
 
 export default getSurveyTemplateFormSchema;
