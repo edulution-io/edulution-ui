@@ -5,6 +5,7 @@
   "closeEditingWindow": "Close editing window",
   "framebufferImage": "Framebuffer image",
   "previewImage": "Image preview",
+  "not-set": "Not set",
   "bulletinboard": {
     "settings": "Settings",
     "noBulletinsToShow": "There are currently no messages to display, so check back later!",
@@ -899,7 +900,13 @@
         "updateError": "Settings could not be updated.",
         "notFoundError": "Settings could not be loaded."
       },
-      "deploymentTarget": "Target platform"
+      "deploymentTarget": "Target platform",
+      "ldap": {
+        "title": "LDAP",
+        "edulution-binduser-description": "Here you can configure the LDAP access data required for group synchronization.",
+        "edulution-binduser-dn": "Distinguished Name (DN)",
+        "edulution-binduser-password": "Password"
+      }
     },
     "userAdministration": {
       "title": "User Administration",
@@ -948,6 +955,11 @@
           "filterPlaceHolderText": "Search for proxy",
           "invalidCidrFormat": "Invalid CIDR notation",
           "invalidUrlFormat": "Invalid URL"
+        },
+        "webdavShare": {
+          "title": "WebDAV-Share",
+          "description": "Here you can set up your own WebDAV shares.",
+          "filterPlaceHolderText": "Search for share"
         },
         "files": {
           "title": "Files",
@@ -1508,6 +1520,8 @@
     "errors": {
       "CouldNotGetGroupByPath": "Group could not be found by path",
       "CouldNotGetUsers": "Users could not be found",
+      "CouldNotGetCurrentUser": "Current user could not be found",
+      "CouldNotGetAllGroups": "Failed to find all groups",
       "CouldNotFetchGroupMembers": "Group members could not be found",
       "CouldNotFetchUserById": "User could not be found by ID",
       "CouldNotSearchGroups": "Could not search for groups"
@@ -1641,5 +1655,19 @@
     "description": "Here you can select the platform to which {{ appName }} will be connected.",
     "linuxmuster": "Linuxmuster",
     "generic": "Generic"
+  },
+  "webdavShare": {
+    "displayName": "Display name",
+    "accessGroups": {
+      "title": "User groups",
+      "description": "Select the user groups that should have access to the WebDAV share."
+    },
+    "type": {
+      "title": "WebDAV Server Schema",
+      "description": "Here you can select the type of WebDAV server schema.",
+      "linuxmuster": "Linuxmuster",
+      "edu-file-proxy": "edulution File Proxy",
+      "generic": "Generic"
+    }
   }
 }

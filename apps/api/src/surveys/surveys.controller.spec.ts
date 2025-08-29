@@ -59,6 +59,7 @@ import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveysTemplateService from './surveys-template.service';
+import NotificationsService from '../notifications/notifications.service';
 
 describe(SurveysController.name, () => {
   let controller: SurveysController;
@@ -66,10 +67,9 @@ describe(SurveysController.name, () => {
   let surveyAnswerService: SurveyAnswerService;
   let surveyModel: Model<SurveyDocument>;
   let surveyAnswerModel: Model<SurveyAnswerDocument>;
-
+  const pushMock = { notify: jest.fn() };
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [],
       controllers: [SurveysController],
       providers: [
         SurveysService,
@@ -91,6 +91,7 @@ describe(SurveysController.name, () => {
           },
         },
         { provide: FilesystemService, useValue: mockFilesystemService },
+        { provide: NotificationsService, useValue: pushMock },
       ],
     }).compile();
 

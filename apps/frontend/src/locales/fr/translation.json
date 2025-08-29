@@ -828,6 +828,11 @@
           "invalidCidrFormat": "Notation CIDR non valide",
           "invalidUrlFormat": "URL non valide"
         },
+        "webdavShare": {
+          "title": "WebDAV-Share",
+          "description": "Vous pouvez configurer ici vos propres partages WebDAV.",
+          "filterPlaceHolderText": "Rechercher le nom de partages"
+        },
         "files": {
           "title": "Fichiers",
           "description": "Ici, les fichiers affichés dans l'application peuvent être gérés.",
@@ -1348,6 +1353,8 @@
     "errors": {
       "CouldNotGetGroupByPath": "Le groupe n'a pas pu être trouvé à partir du chemin",
       "CouldNotGetUsers": "Les utilisateurs n'ont pas pu être trouvés",
+      "CouldNotGetCurrentUser": "Impossible de trouver l'utilisateur actuel",
+      "CouldNotGetAllGroups": "Échec de la recherche de tous les groupes",
       "CouldNotFetchGroupMembers": "Les membres du groupe n'ont pas pu être trouvés",
       "CouldNotFetchUserById": "Les utilisateurs n'ont pas pu être trouvés sur la base de l'ID",
       "CouldNotSearchGroups": "La recherche de groupes n'était pas possible"

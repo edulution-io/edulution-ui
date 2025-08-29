@@ -33,6 +33,7 @@ import buildCollectDTO from '@libs/filesharing/utils/buildCollectDTO';
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 import VEYON_FEATURE_ACTIONS from '@libs/veyon/constants/veyonFeatureActions';
 import getStringFromArray from '@libs/common/utils/getStringFromArray';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useVeyonFeatures from './UserArea/useVeyonFeatures';
 import useVeyonApiStore from '../useVeyonApiStore';
 
@@ -68,6 +69,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
   const { moveOrCopyItemToPath } = useFileSharingDialogStore();
   const { userConnectionUids } = useVeyonApiStore();
   const { handleSetVeyonFeature } = useVeyonFeatures();
+  const { webdavShares } = useFileSharingStore();
 
   const updateStudents = async () => {
     const updatedStudents = await Promise.all(students.map((m) => fetchUser(m.cn)));
@@ -96,7 +98,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
       icon: FaArrowRightFromBracket,
       text: CLASSMGMT_OPTIONS.SHARE,
       enableAction: async () => {
-        const shareDTO = buildShareDTO(user?.cn, students, moveOrCopyItemToPath);
+        const shareDTO = buildShareDTO(user?.cn, students, moveOrCopyItemToPath, webdavShares);
         if (!shareDTO) return;
         await shareFiles(shareDTO);
       },
@@ -111,6 +113,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
           user,
           groupNameFromStore || '',
           getStringFromArray(user?.sophomorixIntrinsic2),
+          webdavShares,
         );
         if (!collectDTO) return;
         await collectFiles(collectDTO, user?.sophomorixRole || '', activeCollectionOperation);
