@@ -14,11 +14,9 @@ import { create } from 'zustand';
 import { toast } from 'sonner';
 import { t } from 'i18next';
 import eduApi from '@/api/eduApi';
-import { SURVEY_TEMPLATES_ENDPOINT, TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
+import { SURVEY_TEMPLATES_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import handleApiError from '@/utils/handleApiError';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
-import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
-import APPS from '@libs/appconfig/constants/apps';
 
 interface TemplateMenuStore {
   reset: () => void;
@@ -96,7 +94,7 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
 
     set({ isSubmitting: true });
     try {
-      await eduApi.delete(`${EDU_API_CONFIG_ENDPOINTS.FILES}/${APPS.SURVEYS}/${TEMPLATES}/${templateFileName}`);
+      await eduApi.delete(`${SURVEY_TEMPLATES_ENDPOINT}/${templateFileName}`);
       toast.success(t('survey.editor.templateMenu.deletion.success'));
     } catch (error) {
       handleApiError(error, set);

@@ -117,6 +117,19 @@ class SurveysTemplateService implements OnModuleInit {
     }
     return document;
   }
+
+  async deleteTemplate(fileName: string): Promise<void> {
+    try {
+      await this.surveyTemplateModel.deleteOne({ fileName });
+    } catch {
+      throw new CustomHttpException(
+        CommonErrorMessages.FILE_DELETION_FAILED,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveysTemplateService.name,
+      );
+    }
+  }
 }
 
 export default SurveysTemplateService;
