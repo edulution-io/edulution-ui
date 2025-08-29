@@ -19,7 +19,7 @@ import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
 import SURVEYS_TEMPLATE_EXCHANGE_PATH from '@libs/survey/constants/surveysTemplateExchangePath';
-import SURVEYS_TEMPLATE_DEFAULT_PATH from '@libs/survey/constants/surveysTemplateDefaultPath';
+import SURVEYS_TEMPLATE_DEFAULT_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplateDefaultTemplatePath';
 import { SurveyTemplateDto, TemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import { SurveysTemplate, SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
 import CustomHttpException from '../common/CustomHttpException';
@@ -121,7 +121,7 @@ class SurveysTemplateService implements OnModuleInit {
   }
 
   async getNewTemplatesFromExchangeFolder(): Promise<void> {
-    await this.migrateTemplatesFromFolderToDb(SURVEYS_TEMPLATE_DEFAULT_PATH);
+    await this.migrateTemplatesFromFolderToDb(SURVEYS_TEMPLATE_DEFAULT_TEMPLATE_PATH);
     await this.migrateTemplatesFromFolderToDb(SURVEYS_TEMPLATE_EXCHANGE_PATH);
   }
 }
