@@ -68,6 +68,7 @@ const renderFileIcon = (item: DirectoryFileDTO, isCurrentlyDisabled: boolean) =>
 const getFileSharingTableColumns = (
   visibleColumns?: string[],
   onFilenameClick?: (item: Row<DirectoryFileDTO>) => void,
+  isDocumentServerConfigured?: boolean,
 ): ColumnDef<DirectoryFileDTO>[] => {
   const allColumns: ColumnDef<DirectoryFileDTO>[] = [
     {
@@ -106,8 +107,8 @@ const getFileSharingTableColumns = (
             const newParams = new URLSearchParams(searchParams);
             newParams.set(URL_SEARCH_PARAMS.PATH, getPathWithoutWebdav(row.original.filePath));
             setSearchParams(newParams);
-          } else if (isValidFileToPreview(row.original) && !isMobileView) {
-            void setFileIsCurrentlyDisabled(row.original.filename, true);
+          } else if (isValidFileToPreview(row.original) && !isMobileView && isDocumentServerConfigured) {
+            void setFileIsCurrentlyDisabled(row.original.filename, true, 5000);
             setIsFilePreviewVisible(true);
             void resetCurrentlyEditingFile(row.original);
           }
