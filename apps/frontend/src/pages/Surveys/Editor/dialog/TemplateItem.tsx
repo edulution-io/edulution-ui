@@ -31,17 +31,16 @@ interface TemplateItemProps {
 
 const TemplateItem = (props: TemplateItemProps) => {
   const { form, creator, template } = props;
-  const { fileName, template: survey } = template;
   const {
     formula,
-    backendLimiters,
+    /* backendLimiters, */
     invitedAttendees,
     invitedGroups,
     isAnonymous,
     isPublic,
     canSubmitMultipleAnswers,
     canUpdateFormerAnswer,
-  } = survey;
+  } = template.template;
   const { setTemplate, setIsOpenTemplateMenu, setIsOpenTemplateConfirmDeletion } = useTemplateMenuStore();
 
   const { isSuperAdmin } = useLdapGroups();
@@ -49,7 +48,7 @@ const TemplateItem = (props: TemplateItemProps) => {
   const { t } = useTranslation();
 
   const handleLoadTemplate = () => {
-    form.setValue('backendLimiters', backendLimiters);
+    // form.setValue('backendLimiters', backendLimiters);
     form.setValue('invitedAttendees', invitedAttendees || []);
     form.setValue('invitedGroups', invitedGroups || []);
     form.setValue('isAnonymous', isAnonymous);
@@ -73,15 +72,15 @@ const TemplateItem = (props: TemplateItemProps) => {
 
   return (
     <AccordionItem
-      key={fileName}
-      value={fileName || ''}
+      key={template.fileName}
+      value={template.fileName || ''}
     >
       <AccordionTrigger className="px-4 pt-2 text-h4">
         <p className="font-bold ">{`${formula?.title}`}</p>
       </AccordionTrigger>
       <AccordionContent className="my-0 px-4 py-0">
         <Textarea
-          value={JSON.stringify(survey, null, 2)}
+          value={JSON.stringify(template.template, null, 2)}
           onChange={() => {}}
           className={cn(
             'overflow-y-auto bg-accent text-secondary transition-[max-height,opacity] duration-300 ease-in-out scrollbar-thin placeholder:text-p focus:outline-none',
