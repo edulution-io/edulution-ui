@@ -110,7 +110,8 @@ const TemplateItem = (props: TemplateItemProps) => {
               </Button>
               <Button
                 onClick={async () => {
-                  await toggleIsTemplateActive(template.fileName || '');
+                  if (!template.fileName) return;
+                  await toggleIsTemplateActive(template.fileName);
                   await fetchTemplates();
                 }}
                 variant="btn-collaboration"

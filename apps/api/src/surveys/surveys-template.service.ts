@@ -102,20 +102,11 @@ class SurveysTemplateService implements OnModuleInit {
   }
 
   async toggleIsTemplateActive(fileName: string): Promise<SurveysTemplateDocument | null> {
-    let document: SurveysTemplateDocument | null = null;
-    document = await this.surveyTemplateModel.findOneAndUpdate(
-      { fileName, isActive: false },
-      { isActive: true },
+    return this.surveyTemplateModel.findOneAndUpdate(
+      { fileName, isActive: true },
+      [{ $set: { isActive: { $not: '$isActive' } } }],
       { new: true, upsert: false },
     );
-    if (document === null) {
-      document = await this.surveyTemplateModel.findOneAndUpdate(
-        { fileName, isActive: true },
-        { isActive: false },
-        { new: true, upsert: false },
-      );
-    }
-    return document;
   }
 
   async deleteTemplate(fileName: string): Promise<void> {
