@@ -9,14 +9,14 @@
           {
             "type": "text",
             "name": "Frage1",
-            "title": "Ihr Name",
+            "title": "Dein Name",
             "description": "Gegebenfalls auch ein Alias",
             "isRequired": "true"
           },
           {
             "type": "radiogroup",
             "name": "Frage2",
-            "title": "Bitte wählen sie einen der entsprechenden Timeslots aus, der Ihnen am besten passt",
+            "title": "Bitte wähle den entsprechenden Timeslot aus, der dir am besten passt",
             "description": "Die Teilnehmerzahl ist auf 20 beschränkt, sollte der Kurs bereits voll sein wird der Termin nicht mehr eingeblendet",
             "choicesByUrl": {
               "url": "http://localhost:3001/edu-api/public-surveys/choices/temporalSurveyId/Frage2",
@@ -29,12 +29,12 @@
           {
             "type": "text",
             "name": "Frage3",
-            "title": "Ihre E-Mail Adresse",
-            "description": "Diese ist nur von Nöten, falls Sie benachrichtigt werden wollen wenn ein Platz frei geworden ist, oder falls Sie in der Zukunft auf ähnliche Events hingewiesen werden wollen"
+            "title": "Deine E-Mail Adresse",
+            "description": "Diese ist nur notwendig, falls du benachrichtigt werden willst, wenn ein Platz frei geworden ist, oder falls du in der Zukunft auf ähnliche Events hingewiesen werden willst."
           }
         ],
-        "title": "Wir klären Ihre security Fragen",
-        "description": "Wie schützen Sie am besten Ihr Unternehmen?  Wie Sie sich bei einem Angriff verhalten sollen? Was sind eigentlich die Europäischen Richtlinien?"
+        "title": "Hier den Titel des Vortrages",
+        "description": "Wovon handelt der Vortrag?"
       }
     ]
   },

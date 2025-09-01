@@ -31,9 +31,9 @@
       "options": {
         "assets": [
           {
-            "glob": "../../libs/src/survey/assets/",
+            "glob": "../../libs/src/survey/assets/default-files/",
             "input": "**/*",
-            "output": "./surveys/"
+            "output": "./surveys/default-files/"
           }
         ]
       }
