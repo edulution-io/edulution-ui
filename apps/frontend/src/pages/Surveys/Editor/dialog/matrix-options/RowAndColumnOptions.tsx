@@ -31,7 +31,6 @@ const RowAndColumnOptions = () => {
       ? {
           value: uuidv4(),
           text: t('survey.editor.questionSettings.newRow'),
-          choices: [],
         }
       : {
           value: uuidv4(),
@@ -44,6 +43,7 @@ const RowAndColumnOptions = () => {
       : {
           value: uuidv4(),
           text: t('survey.editor.questionSettings.newColumn'),
+          cellType: 'text',
         };
 
   const addRow = () => {
@@ -140,7 +140,7 @@ const RowAndColumnOptions = () => {
           size="sm"
           title={t('survey.editor.questionSettings.addColumn')}
         >
-          <MdAdd className="h-6 min-h-6 w-6 min-w-6" />
+          <MdAdd className="h-4 w-4" />
         </Button>
         <Button
           onClick={() => removeColumn()}
