@@ -374,7 +374,8 @@
       "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden",
       "downloadInfo": "Datei {{filename}} wird heruntergeladen",
       "fileStructureIsCreating": "Dateistruktur wird erstellt",
-      "zipFilesAreUploading": "Dateien werden in Ordnerstruktur hochgeladen"
+      "zipFilesAreUploading": "Dateien werden in Ordnerstruktur hochgeladen",
+      "fileIsUploading": "Datei wird hochgeladen"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",

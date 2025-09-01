@@ -375,7 +375,8 @@
       "downloadInfo": "Downloading {{filename}}",
       "errorInfo": "{{failed}} files could not be handed out",
       "fileStructureIsCreating": "File structure is creating",
-      "zipFilesAreUploading": "Files are uploading"
+      "zipFilesAreUploading": "Files are uploading",
+      "fileIsUploading": "File is uploading"
     },
 
     "publicShareFilesPage": {

@@ -25,8 +25,8 @@ import WebdavService from '../../webdav/webdav.service';
 @Injectable()
 class UploadFileWithProgressConsumer extends WorkerHost {
   constructor(
-    private readonly webDavService: WebdavService,
-    private readonly sse: SseService,
+    private readonly webdavService: WebdavService,
+    private readonly sseService: SseService,
   ) {
     super();
   }
@@ -35,49 +35,49 @@ class UploadFileWithProgressConsumer extends WorkerHost {
     const { username, fullPath, tempPath, mimeType, expectedBytes, title, description, currentFilePath } =
       job.data as UploadFileWithProgressJobData;
 
-    const source = createReadStream(tempPath);
-    const statSize = (() => {
+    const readStream = createReadStream(tempPath);
+    const fileSizeOnDisk = (() => {
       try {
         return statSync(tempPath).size;
       } catch {
         return undefined;
       }
     })();
-    const totalSize = (expectedBytes && expectedBytes > 0 ? expectedBytes : statSize) ?? 0;
+    const totalBytes = (expectedBytes && expectedBytes > 0 ? expectedBytes : fileSizeOnDisk) ?? 0;
 
-    let lastPct = -1;
+    let lastPercent = -1;
 
-    const send = (transferred: number, total?: number, final = false) => {
-      const totalRef = total && total > 0 ? total : totalSize;
-      let pct = totalRef > 0 ? Math.floor((transferred / totalRef) * 100) : 0;
-      if (!final && pct >= 100) pct = 99;
-      if (!final && pct <= lastPct) return;
-      lastPct = pct;
+    const emitProgress = (transferredBytes: number, totalFromTransport?: number, isFinal = false) => {
+      const referenceTotal = totalFromTransport && totalFromTransport > 0 ? totalFromTransport : totalBytes;
+      let percent = referenceTotal > 0 ? Math.floor((transferredBytes / referenceTotal) * 100) : 0;
+      if (!isFinal && percent >= 100) percent = 99;
+      if (!isFinal && percent <= lastPercent) return;
+      lastPercent = percent;
 
       const dto: FilesharingProgressDto = {
         processID: Number(job.id),
         title,
         description,
-        processed: transferred,
-        total: totalRef || undefined,
-        percent: totalRef > 0 ? pct : undefined,
+        processed: transferredBytes,
+        total: referenceTotal || undefined,
+        percent: referenceTotal > 0 ? percent : undefined,
         currentFilePath,
       };
-      this.sse.sendEventToUser(username, dto, SSE_MESSAGE_TYPE.FILESHARING_FILE_UPLOAD_PROGRESS);
+      this.sseService.sendEventToUser(username, dto, SSE_MESSAGE_TYPE.FILESHARING_FILE_UPLOAD_PROGRESS);
     };
 
-    const finish = (state: 'ok' | 'failed' | 'aborted', info?: { message?: string }) => {
+    const finalizeProgress = (state: 'ok' | 'failed' | 'aborted', info?: { message?: string }) => {
       if (state === 'ok') {
         const dto: FilesharingProgressDto = {
           processID: Number(job.id),
           title,
           description,
-          processed: totalSize || undefined,
-          total: totalSize || undefined,
-          percent: totalSize ? 100 : undefined,
+          processed: totalBytes || undefined,
+          total: expectedBytes || undefined,
+          percent: totalBytes ? 100 : undefined,
           currentFilePath,
         };
-        this.sse.sendEventToUser(username, dto, SSE_MESSAGE_TYPE.FILESHARING_FILE_UPLOAD_PROGRESS);
+        this.sseService.sendEventToUser(username, dto, SSE_MESSAGE_TYPE.FILESHARING_FILE_UPLOAD_PROGRESS);
         return;
       }
       const dto: FilesharingProgressDto = {
@@ -85,28 +85,28 @@ class UploadFileWithProgressConsumer extends WorkerHost {
         title: 'filesharing.progressBox.uploadFailed',
         description: info?.message ?? description,
         processed: undefined,
-        total: totalSize || undefined,
+        total: totalBytes || undefined,
         percent: undefined,
         currentFilePath,
       };
-      this.sse.sendEventToUser(username, dto, SSE_MESSAGE_TYPE.FILESHARING_FILE_UPLOAD_PROGRESS);
+      this.sseService.sendEventToUser(username, dto, SSE_MESSAGE_TYPE.FILESHARING_FILE_UPLOAD_PROGRESS);
     };
 
-    send(0, totalSize);
+    emitProgress(0, totalBytes);
 
     try {
-      await this.webDavService.uploadFileWithNetworkProgress(
+      await this.webdavService.uploadFileWithNetworkProgress(
         username,
         fullPath,
-        source,
+        readStream,
         mimeType,
-        (tx, tot) => send(tx, tot),
-        totalSize,
+        (transferred, reportedTotal) => emitProgress(transferred, reportedTotal),
+        totalBytes,
       );
-      finish('ok');
-    } catch (e) {
-      finish('failed', { message: (e as Error).message });
-      throw e;
+      finalizeProgress('ok');
+    } catch (error) {
+      finalizeProgress('failed', { message: (error as Error).message });
+      throw error;
     } finally {
       await unlink(tempPath).catch(() => undefined);
     }
