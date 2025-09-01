@@ -13,8 +13,7 @@
 import { join } from 'path';
 import APPS from '@libs/appconfig/constants/apps';
 import ASSETS_FILES_PATH from '@libs/common/constants/assetsFilesPath';
-import { DEFAULT_FILES } from '@libs/survey/constants/surveys-endpoint';
 
-const SURVEYS_DEFAULT_FILES_PATH = join(ASSETS_FILES_PATH, 'api', APPS.SURVEYS, DEFAULT_FILES);
+const SURVEYS_DEFAULT_FILES_PATH = join(ASSETS_FILES_PATH, 'api', APPS.SURVEYS, 'default-files');
 
 export default SURVEYS_DEFAULT_FILES_PATH;
