@@ -27,6 +27,7 @@ import CopyFileConsumer from './consumers/copyFile.consumer';
 import CreateFolderConsumer from './consumers/createFolder.consumer';
 import UploadFileConsumer from './consumers/uploadFile.consumer';
 import { PublicFileShareSchema, PublicShare } from './publicFileShare.schema';
+import UploadFileWithProgressConsumer from './consumers/uploadFileWithProgress.consumer';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { PublicFileShareSchema, PublicShare } from './publicFileShare.schema';
     CopyFileConsumer,
     CreateFolderConsumer,
     UploadFileConsumer,
+    UploadFileWithProgressConsumer,
   ],
   exports: [FilesharingService],
 })

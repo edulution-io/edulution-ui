@@ -22,12 +22,29 @@ const handleFileOrCreateFile = async (
   endpoint: string,
   httpMethod: HttpMethods,
   type: ContentType,
-  formData: FormData,
+  originalFormData: FormData,
 ) => {
-  if (action === FileActionType.UPLOAD_FILE || action === FileActionType.CREATE_FILE) {
+  if (action !== FileActionType.UPLOAD_FILE && action !== FileActionType.CREATE_FILE) return;
+
+  if (action === FileActionType.UPLOAD_FILE) {
+    const file = originalFormData.get('file') as File;
+    const path = originalFormData.get('path') as string;
+    const uploadFileDto = originalFormData.get('uploadFileDto');
+
+    const formData = new FormData();
+    if (uploadFileDto) formData.append('uploadFileDto', uploadFileDto as string);
+    formData.append('path', path);
+    formData.append('size', String(file.size));
+    formData.append('file', file, file.name);
+
+    await eduApi[httpMethod](buildApiFileTypePathUrl(endpoint, type, path), formData, {
+      params: { showUploadProgress: true },
+      headers: { 'x-file-size': String(file.size) },
+    });
+  } else {
     await eduApi[httpMethod](
-      buildApiFileTypePathUrl(endpoint, type, getPathWithoutWebdav(formData.get('path') as string)),
-      formData,
+      buildApiFileTypePathUrl(endpoint, type, getPathWithoutWebdav(originalFormData.get('path') as string)),
+      originalFormData,
     );
   }
 };

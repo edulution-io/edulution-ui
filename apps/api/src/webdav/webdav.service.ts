@@ -33,6 +33,7 @@ import DEFAULT_PROPFIND_XML from '@libs/filesharing/constants/defaultPropfindXml
 import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import { Readable } from 'stream';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
+import got, { Progress } from 'got';
 import CustomHttpException from '../common/CustomHttpException';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
@@ -219,6 +220,56 @@ class WebdavService {
         status: resp.status,
       }),
     );
+  }
+
+  async uploadFileWithNetworkProgress(
+    username: string,
+    fullPath: string,
+    fileStream: Readable,
+    contentType: string,
+    onProgress?: (transferred: number, total?: number) => void,
+    totalSize?: number,
+  ): Promise<WebdavStatusResponse> {
+    const password = await this.usersService.getPassword(username);
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+    const url = new URL(fullPath.replace(/^\/+/, ''), baseUrl).href;
+
+    const headers: Record<string, string> = { 'Content-Type': contentType };
+    if (typeof totalSize === 'number' && Number.isFinite(totalSize) && totalSize > 0) {
+      headers['Content-Length'] = String(totalSize);
+    }
+
+    try {
+      const request = got.put(url, {
+        body: fileStream,
+        headers,
+        username,
+        password,
+        http2: false,
+        retry: { limit: 0 },
+        throwHttpErrors: false,
+        decompress: false,
+      });
+
+      void request.on('uploadProgress', (progress: Progress) => {
+        void onProgress?.(progress.transferred, progress.total);
+      });
+
+      const response = await request;
+      const status = response.statusCode;
+
+      if (status >= 200 && status < 300) {
+        return { success: true, status, filename: fullPath.split('/').pop() || '' };
+      }
+      return { success: false, status, filename: fullPath.split('/').pop() || '' };
+    } catch (err) {
+      throw new CustomHttpException(
+        FileSharingErrorMessage.UploadFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        (err as Error).message,
+        WebdavService.name,
+      );
+    }
   }
 
   async uploadFile(

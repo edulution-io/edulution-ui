@@ -24,6 +24,7 @@ import CopyFileConsumer from '../filesharing/consumers/copyFile.consumer';
 import CreateFolderConsumer from '../filesharing/consumers/createFolder.consumer';
 import UploadFileConsumer from '../filesharing/consumers/uploadFile.consumer';
 import redisConnection from '../common/redis.connection';
+import UploadFileWithProgressConsumer from '../filesharing/consumers/uploadFileWithProgress.consumer';
 
 @Injectable()
 class QueueService implements OnModuleInit {
@@ -39,6 +40,7 @@ class QueueService implements OnModuleInit {
     private readonly copyFileConsumer: CopyFileConsumer,
     private readonly createFolderConsumer: CreateFolderConsumer,
     private readonly uploadFileConsumer: UploadFileConsumer,
+    private readonly uploadFileConsumerWithProgress: UploadFileWithProgressConsumer,
   ) {}
 
   async onModuleInit() {
@@ -125,6 +127,9 @@ class QueueService implements OnModuleInit {
         break;
       case JOB_NAMES.FILE_UPLOAD_JOB:
         await this.uploadFileConsumer.process(job);
+        break;
+      case JOB_NAMES.FILE_UPLOAD_WITH_PROGRESS_JOB:
+        await this.uploadFileConsumerWithProgress.process(job);
         break;
       default:
     }

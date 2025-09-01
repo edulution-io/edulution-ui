@@ -10,16 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const JOB_NAMES = {
-  DUPLICATE_FILE_JOB: 'duplicate-file',
-  COLLECT_FILE_JOB: 'collect-file',
-  DELETE_FILE_JOB: 'delete-file',
-  MOVE_OR_RENAME_JOB: 'move-or-rename-file',
-  COPY_FILE_JOB: 'copy-file',
-  CREATE_FOLDER_JOB: 'create-folder',
-  FILE_UPLOAD_JOB: 'file-upload',
-  FILE_UPLOAD_WITH_PROGRESS_JOB: 'file-upload-with-progress',
-  REFRESH_USERS_IN_CACHE: 'REFRESH_USERS_IN_CACHE',
-} as const;
+type UploadFileWithProgressJobData = {
+  username: string;
+  fullPath: string;
+  tempPath: string;
+  mimeType: string;
+  processId: number;
+  expectedBytes?: number;
+  title: string;
+  description?: string;
+  currentFilePath?: string;
+};
 
-export default JOB_NAMES;
+export default UploadFileWithProgressJobData;

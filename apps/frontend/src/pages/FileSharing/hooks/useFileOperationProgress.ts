@@ -55,6 +55,7 @@ const useFileOperationProgress = () => {
       SSE_MESSAGE_TYPE.FILESHARING_COLLECT_FILES,
       SSE_MESSAGE_TYPE.FILESHARING_CREATE_FOLDER,
       SSE_MESSAGE_TYPE.FILESHARING_FILE_UPLOAD,
+      SSE_MESSAGE_TYPE.FILESHARING_FILE_UPLOAD_PROGRESS,
     ].forEach((type) => eventSource.addEventListener(type, handler, { signal }));
 
     return () => controller.abort();

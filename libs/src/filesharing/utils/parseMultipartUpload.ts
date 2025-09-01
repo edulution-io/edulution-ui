@@ -24,6 +24,7 @@ const parseMultipartUpload = (req: Request) =>
     let originalFolderName: string | undefined;
     let isZippedFolder = false;
     let explicitName: string | undefined;
+    let fileSize: number;
 
     const busboy = Busboy({ headers: req.headers });
     busboy.on('field', (field, val) => {
@@ -38,16 +39,19 @@ const parseMultipartUpload = (req: Request) =>
             originalFolderName = dto.originalFolderName;
             isZippedFolder = Boolean(dto.isZippedFolder);
             explicitName = dto.name;
-          } catch (err) {
-            console.warn('Invalid uploadFileDto JSON, skipping:', val);
+          } catch (error) {
+            console.error(error);
           }
+          break;
+        case 'size':
+          fileSize = Number(val) || 0;
           break;
         default:
           break;
       }
     });
 
-    busboy.on('file', (_field: string, stream: Readable, filename: string, _fileEncoding: string, mimetype: string) => {
+    busboy.on('file', (_field: string, stream: Readable, filename: string, _enc: string, mimetype: string) => {
       const mimeType = mimetype || lookup(filename) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
       const finalName = explicitName ?? filename;
 
@@ -58,13 +62,12 @@ const parseMultipartUpload = (req: Request) =>
         name: finalName,
         stream,
         mimeType,
+        fileSize,
       });
     });
-    req.pipe(busboy);
 
-    busboy.on('error', (error) => {
-      reject(error);
-    });
+    busboy.on('error', reject);
+    req.pipe(busboy);
   });
 
 export default parseMultipartUpload;

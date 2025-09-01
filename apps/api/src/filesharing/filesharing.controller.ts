@@ -13,10 +13,12 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpStatus,
   Param,
+  ParseBoolPipe,
   Patch,
   Post,
   Query,
@@ -87,12 +89,27 @@ class FilesharingController {
   }
 
   @Post(FileSharingApiEndpoints.UPLOAD)
-  async uploadFile(@Req() req: Request, @GetCurrentUsername() username: string) {
+  async uploadFile(
+    @Req() req: Request,
+    @GetCurrentUsername() username: string,
+    @Query('showUploadProgress', new DefaultValuePipe(false), ParseBoolPipe) showUploadProgress: boolean,
+  ) {
     try {
-      const { basePath, isZippedFolder, originalFolderName, name, stream, mimeType } = await parseMultipartUpload(req);
+      const { basePath, isZippedFolder, originalFolderName, name, stream, mimeType, fileSize } =
+        await parseMultipartUpload(req);
 
       if (isZippedFolder && originalFolderName) {
         return await this.filesharingService.uploadZippedFolderStream(username, basePath, originalFolderName, stream);
+      }
+      if (showUploadProgress) {
+        return await this.filesharingService.uploadFileStreamWithProgress(
+          username,
+          basePath,
+          name,
+          stream,
+          fileSize,
+          mimeType,
+        );
       }
       const fullPath = `${basePath}/${name}`;
       return await this.webdavService.uploadFile(username, fullPath, stream, mimeType);

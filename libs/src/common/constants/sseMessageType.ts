@@ -32,6 +32,7 @@ const SSE_MESSAGE_TYPE = {
   FILESHARING_COPY_FILES: 'filesharing_copy_files',
   FILESHARING_CREATE_FOLDER: 'filesharing_create_folder',
   FILESHARING_FILE_UPLOAD: 'filesharing_file_upload',
+  FILESHARING_FILE_UPLOAD_PROGRESS: 'filesharing_file_upload_progress',
 } as const;
 
 export default SSE_MESSAGE_TYPE;

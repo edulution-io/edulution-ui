@@ -131,6 +131,36 @@ class FilesharingService {
     return { success: true, status: HttpStatus.CREATED, filename: folderName };
   }
 
+  async uploadFileStreamWithProgress(
+    username: string,
+    basePath: string,
+    name: string,
+    stream: Readable,
+    declaredSize: number | undefined,
+    mimeType: string,
+  ) {
+    const fullWebDavFilePath = `${basePath.replace(/\/+$/, '')}/${name.replace(/^\/+/, '')}`;
+    const tmpPath = join(tmpdir(), `${username}-${Date.now()}-${name}`);
+
+    await pipeline(stream, createWriteStream(tmpPath));
+
+    const expectedBytes =
+      typeof declaredSize === 'number' && Number.isFinite(declaredSize) && declaredSize > 0 ? declaredSize : undefined;
+
+    return this.dynamicQueueService.addJobForUser(username, JOB_NAMES.FILE_UPLOAD_WITH_PROGRESS_JOB, {
+      username,
+      fullPath: fullWebDavFilePath,
+      tempPath: tmpPath,
+      mimeType,
+      expectedBytes,
+      title: name,
+      description: '',
+      currentFilePath: fullWebDavFilePath,
+      processed: 0,
+      total: expectedBytes ?? 0,
+    });
+  }
+
   async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {
     let i = 0;
     return Promise.all(
