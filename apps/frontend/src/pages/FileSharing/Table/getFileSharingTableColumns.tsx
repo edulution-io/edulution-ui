@@ -87,7 +87,8 @@ const getFileSharingTableColumns = (
       accessorFn: (row) => row.type + row.filePath,
       cell: ({ row }) => {
         const [searchParams, setSearchParams] = useSearchParams();
-        const { currentlyDisabledFiles, setFileIsCurrentlyDisabled } = useFileSharingStore();
+        const { currentlyDisabledFiles, setFileIsCurrentlyDisabled, setSelectedRows, selectedRows } =
+          useFileSharingStore();
         const { resetCurrentlyEditingFile, setIsFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
         const { setPublicDownloadLink } = useFileSharingDownloadStore();
         const isCurrentlyDisabled = currentlyDisabledFiles[row.original.filename];
@@ -97,28 +98,35 @@ const getFileSharingTableColumns = (
             onFilenameClick(row);
             return;
           }
-
-          if (isCurrentlyDisabled) {
-            return;
-          }
-
+          if (isCurrentlyDisabled) return;
           setPublicDownloadLink('');
-
           if (row.original.type === ContentType.DIRECTORY) {
             if (isFilePreviewDocked) setIsFilePreviewVisible(false);
             const newParams = new URLSearchParams(searchParams);
             newParams.set(URL_SEARCH_PARAMS.PATH, getPathWithoutWebdav(row.original.filePath));
             setSearchParams(newParams);
-          } else if (isValidFileToPreview(row.original) && !isMobileView) {
-            const isOnlyOfficeDoc = isOnlyOfficeDocument(row.original.filename);
-            if (isOnlyOfficeDoc) {
-              if (!isDocumentServerConfigured) return;
-              void setFileIsCurrentlyDisabled(row.original.filename, true, 5000);
-            }
-
-            setIsFilePreviewVisible(true);
-            void resetCurrentlyEditingFile(row.original);
+            return;
           }
+          const rowId = row.original.filePath;
+          const toggleSelect = () => {
+            setSelectedRows({ ...selectedRows, [rowId]: !selectedRows[rowId] });
+          };
+
+          if (!isValidFileToPreview(row.original) || isMobileView) {
+            toggleSelect();
+            return;
+          }
+          const isOnlyOfficeDoc = isOnlyOfficeDocument(row.original.filename);
+          if (isOnlyOfficeDoc && !isDocumentServerConfigured) {
+            toggleSelect();
+            return;
+          }
+          if (isOnlyOfficeDoc) {
+            void setFileIsCurrentlyDisabled(row.original.filename, true, 5000);
+          }
+
+          setIsFilePreviewVisible(true);
+          void resetCurrentlyEditingFile(row.original);
         };
 
         const isSaving = currentlyDisabledFiles[row.original.filename];
