@@ -63,9 +63,9 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
   if (!currentlyEditingFile) return null;
 
   const fileExtension = getFileExtension(currentlyEditingFile.filePath);
-  const isOnlyOffice = isOnlyOfficeDocument(currentlyEditingFile.filePath);
+  const isOnlyOfficeDoc = isOnlyOfficeDocument(currentlyEditingFile.filePath);
 
-  if (isOnlyOffice) {
+  if (isOnlyOfficeDoc) {
     const isDocReady = !!publicDownloadLink && !!currentlyEditingFile;
     if (isEditorLoading || isCreatingBlobUrl || isFetchingPublicUrl || error || !isDocReady) {
       return (

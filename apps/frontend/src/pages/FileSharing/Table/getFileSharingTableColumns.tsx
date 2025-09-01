@@ -110,8 +110,8 @@ const getFileSharingTableColumns = (
             newParams.set(URL_SEARCH_PARAMS.PATH, getPathWithoutWebdav(row.original.filePath));
             setSearchParams(newParams);
           } else if (isValidFileToPreview(row.original) && !isMobileView) {
-            const isOnlyOffice = isOnlyOfficeDocument(row.original.filename);
-            if (isOnlyOffice) {
+            const isOnlyOfficeDoc = isOnlyOfficeDocument(row.original.filename);
+            if (isOnlyOfficeDoc) {
               if (!isDocumentServerConfigured) return;
               void setFileIsCurrentlyDisabled(row.original.filename, true, 5000);
             }

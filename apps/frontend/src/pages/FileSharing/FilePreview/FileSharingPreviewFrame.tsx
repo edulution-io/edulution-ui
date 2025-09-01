@@ -129,12 +129,12 @@ const FileSharingPreviewFrame = () => {
     APPS.FILE_SHARING,
     ExtendedOptionKeys.ONLY_OFFICE_URL,
   );
-  const isOnlyOffice =
+  const isOnlyOfficeDoc =
     !!currentlyEditingFile && isOnlyOfficeDocument(currentlyEditingFile.filename ?? currentlyEditingFile.filePath);
 
   const isValidFile = currentlyEditingFile?.type === ContentType.FILE && isValidFileToPreview(currentlyEditingFile);
 
-  const isFileReady = isValidFile && !isMobileView && (isOnlyOffice ? isDocumentServerConfigured : true);
+  const isFileReady = isValidFile && !isMobileView && (isOnlyOfficeDoc ? isDocumentServerConfigured : true);
 
   const pathSegments = location.pathname.split('/').filter(Boolean);
   const hidePreviewOnOtherPages = pathSegments[0] !== APPS.FILE_SHARING && isFilePreviewDocked;
