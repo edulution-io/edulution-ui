@@ -10,14 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ChoiceTypes from '@libs/survey/constants/choice-types';
-import ImageTypes from '@libs/survey/constants/image-types';
-import OtherTypes from '@libs/survey/constants/other-types';
+import SurveyQuestionMatrixTypes from '@libs/survey/constants/surveyQuestionMatrixTypes';
 
-const QuestionsType = {
-  ...ChoiceTypes,
-  ...ImageTypes,
-  ...OtherTypes,
-};
+const isQuestionTypeMatrixType = (questionType: string): boolean =>
+  Object.values(SurveyQuestionMatrixTypes).includes(questionType as SurveyQuestionMatrixTypes);
 
-export default QuestionsType;
+export default isQuestionTypeMatrixType;

@@ -15,11 +15,11 @@ import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { SurveyCreatorModel } from 'survey-creator-core';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import QuestionContextMenuBody from '@/pages/Surveys/Editor/dialog/QuestionsContextMenuBody';
+import QuestionsContextMenuBody from '@/pages/Surveys/Editor/dialog/QuestionsContextMenuBody';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 
-interface QuestionContextMenuProps {
+interface QuestionsContextMenuProps {
   form: UseFormReturn<SurveyDto>;
   creator: SurveyCreatorModel;
   isOpenQuestionContextMenu: boolean;
@@ -28,13 +28,13 @@ interface QuestionContextMenuProps {
   trigger?: React.ReactNode;
 }
 
-const QuestionContextMenu = (props: QuestionContextMenuProps) => {
+const QuestionsContextMenu = (props: QuestionsContextMenuProps) => {
   const { form, trigger, isOpenQuestionContextMenu, setIsOpenQuestionContextMenu, creator, isLoading } = props;
 
   const { t } = useTranslation();
 
   const getDialogBody = () => (
-    <QuestionContextMenuBody
+    <QuestionsContextMenuBody
       form={form}
       creator={creator}
     />
@@ -62,4 +62,4 @@ const QuestionContextMenu = (props: QuestionContextMenuProps) => {
   );
 };
 
-export default QuestionContextMenu;
+export default QuestionsContextMenu;
