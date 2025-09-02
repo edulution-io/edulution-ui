@@ -620,6 +620,12 @@
     "noFormula": "Das Formular ist nicht lesbar.",
     "noAnswer": "Es sind noch keine Antworten verfügbar.",
     "canSubmitMultiple": "Erlaube Mehrfachantworten.",
+    "export": {
+      "exportToPDF": "Als PDF exportieren",
+      "saveInPDF": "Als PDF speichern",
+      "success": "Export erfolgreich",
+      "error": "Fehler beim Exportieren"
+    },
     "editor": {
       "inputFieldTitle": "Eingabefeld",
       "new": "Neu (Leer)",

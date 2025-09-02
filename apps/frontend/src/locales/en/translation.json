@@ -617,6 +617,12 @@
     "notFound": "Survey could not be found.",
     "noFormula": "The formula of the survey is not readable.",
     "canSubmitMultiple": "Allow multiple submission",
+    "export": {
+      "exportToPDF": "Als PDF exportieren",
+      "saveInPDF": "Als PDF speichern",
+      "success": "Export erfolgreich",
+      "error": "Fehler beim Exportieren"
+    },
     "editor": {
       "inputFieldTitle": "Input field",
       "new": "New (blank)",
