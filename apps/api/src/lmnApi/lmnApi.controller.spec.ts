@@ -27,6 +27,8 @@ const cacheManagerMock = {
   del: jest.fn(),
 };
 
+jest.mock('got');
+
 const globalSettingsServiceMock = { updateCache: jest.fn() };
 
 describe('LmnApiController', () => {
