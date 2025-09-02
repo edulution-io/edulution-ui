@@ -10,11 +10,17 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
+/* 
+  eslint-disable
+    @typescript-eslint/no-explicit-any,
+    @typescript-eslint/no-unsafe-assignment,
+    @typescript-eslint/no-unsafe-call,
+    @typescript-eslint/no-unsafe-member-access,
+    @typescript-eslint/no-unsafe-return
+*/
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useTranslation } from 'react-i18next';
-import { MatrixDropdownColumn } from 'survey-core';
 import { MdAdd, MdRemove } from 'react-icons/md';
 import isQuestionTypeMatrixType from '@libs/survey/utils/isQuestionTypeMatrixType';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
@@ -26,73 +32,76 @@ const RowAndColumnOptions = () => {
 
   const { selectedQuestion: question, questionType: type } = useQuestionsContextMenuStore();
 
-  const newRow =
-    type === 'matrixdropdown'
-      ? {
-          value: uuidv4(),
-          text: t('survey.editor.questionSettings.newRow'),
-        }
-      : {
-          value: uuidv4(),
-          text: t('survey.editor.questionSettings.newRow'),
-        };
+  if (!question) return null;
+  if (!isQuestionTypeMatrixType(type)) return null;
 
-  const newColumn =
-    type === 'matrixdropdown'
-      ? new MatrixDropdownColumn(uuidv4(), t('survey.editor.questionSettings.newColumn'))
-      : {
-          value: uuidv4(),
-          text: t('survey.editor.questionSettings.newColumn'),
-          cellType: 'text',
-        };
+  const getNewRow = () => {
+    const newRow = question.rows[question.rows.length - 1].clone();
+    if (newRow.value) {
+      newRow.value = uuidv4();
+      newRow.text = t('survey.editor.questionSettings.newRow');
+    } else if (newRow.name) {
+      newRow.name = uuidv4();
+      newRow.title = t('survey.editor.questionSettings.newRow');
+    }
+    return newRow;
+  };
+
+  const getNewColumn = () => {
+    const newColumn = question.columns[question.columns.length - 1].clone();
+    if (newColumn.name) {
+      newColumn.name = uuidv4();
+      newColumn.title = t('survey.editor.questionSettings.newColumn');
+    } else if (newColumn.value) {
+      newColumn.value = uuidv4();
+      newColumn.text = t('survey.editor.questionSettings.newColumn');
+    }
+    return newColumn;
+  };
 
   const addRow = () => {
-    if (!question) return;
-    const newRows = [...question.rows, newRow];
+    const newRows = [...question.rows, getNewRow()];
     question.rows = newRows;
   };
+
   const removeRow = () => {
-    if (!question) return;
     const newRows = question.rows;
     newRows.pop();
     question.rows = newRows;
   };
+
   const handleRowCountChange = (count: number) => {
-    if (!question) return;
     const currentCount = question.rows.length;
     if (currentCount > count) {
       const newRows = question.rows.slice(0, count);
       question.rows = newRows;
     } else if (currentCount < count) {
-      const newRows = Array.from({ length: count - currentCount }, () => newRow);
+      const newRows = Array.from({ length: count - currentCount }, () => getNewRow());
       question.rows = [...question.rows, ...newRows];
     }
   };
 
   const addColumn = () => {
-    if (!question) return;
-    const newColumns = [...question.columns, newColumn];
+    const newColumns = [...question.columns, getNewColumn()];
     question.columns = newColumns;
   };
+
   const removeColumn = () => {
-    if (!question) return;
     const newColumns = question.columns;
     newColumns.pop();
     question.columns = newColumns;
   };
+
   const handleColumnCountChange = (count: number) => {
-    if (!question) return;
     const currentCount = question.columns.length;
     if (currentCount > count) {
       const newColumns = question.columns.slice(0, count);
       question.columns = newColumns;
     } else if (currentCount < count) {
-      const newColumns = Array.from({ length: count - currentCount }, () => newColumn);
+      const newColumns = Array.from({ length: count - currentCount }, () => getNewColumn());
       question.columns = [...question.columns, ...newColumns];
     }
   };
-
-  if (!isQuestionTypeMatrixType(type)) return null;
 
   return (
     <>
@@ -121,7 +130,7 @@ const RowAndColumnOptions = () => {
           size="sm"
           title={t('survey.editor.questionSettings.removeRow')}
         >
-          <MdRemove className="h-6 min-h-6 w-6 min-w-6" />
+          <MdRemove className="h-4 w-4" />
         </Button>
       </div>
       <p className="text-sm text-muted-foreground">{t('survey.editor.questionSettings.columns')}</p>
@@ -148,7 +157,7 @@ const RowAndColumnOptions = () => {
           size="sm"
           title={t('survey.editor.questionSettings.removeColumn')}
         >
-          <MdRemove className="h-6 min-h-6 w-6 min-w-6" />
+          <MdRemove className="h-4 w-4" />
         </Button>
       </div>
     </>
