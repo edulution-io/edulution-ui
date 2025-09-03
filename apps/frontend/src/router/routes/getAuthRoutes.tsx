@@ -14,7 +14,7 @@ import React from 'react';
 import { Navigate, Route } from 'react-router-dom';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
-import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
+import ROOT_ROUTE from '@libs/common/constants/rootRoute';
 
 const getAuthRoutes = (isAuthenticated: boolean) => [
   <Route
@@ -29,7 +29,7 @@ const getAuthRoutes = (isAuthenticated: boolean) => [
       isAuthenticated ? (
         <Navigate
           replace
-          to={DASHBOARD_ROUTE}
+          to={ROOT_ROUTE}
         />
       ) : (
         <Navigate
