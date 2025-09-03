@@ -18,6 +18,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import PUBLIC_SHARED_FILES_TABLE_COLUMN from '@libs/filesharing/constants/publicSharedFilesTableColumn';
 import useMedia from '@/hooks/useMedia';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
+import DeletePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DeletePublicShareDialog';
 
 const PublicShareTable = () => {
   const { shares, isLoading, fetchShares, setSelectedRows, selectedRows } = usePublicShareStore();
@@ -49,18 +50,21 @@ const PublicShareTable = () => {
   );
 
   return (
-    <ScrollableTable
-      columns={getPublicShareTableColumns(false)}
-      data={shares}
-      filterKey={PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME}
-      filterPlaceHolderText="filesharing.publicFileSharing.searchSharedFiles"
-      onRowSelectionChange={handleRowSelectionChange}
-      isLoading={isLoading}
-      selectedRows={selectedRows}
-      getRowId={({ publicShareId }) => publicShareId}
-      applicationName={APPS.FILE_SHARING}
-      initialColumnVisibility={initialColumnVisibility}
-    />
+    <>
+      <ScrollableTable
+        columns={getPublicShareTableColumns(false)}
+        data={shares}
+        filterKey={PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME}
+        filterPlaceHolderText="filesharing.publicFileSharing.searchSharedFiles"
+        onRowSelectionChange={handleRowSelectionChange}
+        isLoading={isLoading}
+        selectedRows={selectedRows}
+        getRowId={({ publicShareId }) => publicShareId}
+        applicationName={APPS.FILE_SHARING}
+        initialColumnVisibility={initialColumnVisibility}
+      />
+      <DeletePublicShareDialog />
+    </>
   );
 };
 
