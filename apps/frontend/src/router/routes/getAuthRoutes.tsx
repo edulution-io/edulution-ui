@@ -14,7 +14,7 @@ import React from 'react';
 import { Navigate, Route } from 'react-router-dom';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
-import ROOT_ROUTE from '@libs/common/constants/rootRoute';
+import DefaultLandingPageAfterLogin from '@/components/structure/DefaultLandingPageAfterLogin';
 
 const getAuthRoutes = (isAuthenticated: boolean) => [
   <Route
@@ -27,10 +27,7 @@ const getAuthRoutes = (isAuthenticated: boolean) => [
     path="*"
     element={
       isAuthenticated ? (
-        <Navigate
-          replace
-          to={ROOT_ROUTE}
-        />
+        <DefaultLandingPageAfterLogin />
       ) : (
         <Navigate
           replace
