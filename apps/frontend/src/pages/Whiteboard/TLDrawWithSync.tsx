@@ -25,6 +25,7 @@ import useLanguage from '@/hooks/useLanguage';
 import { useTranslation } from 'react-i18next';
 import EDU_API_WEBSOCKET_URL from '@libs/common/constants/eduApiWebsocketUrl';
 import ROOM_ID_PARAM from '@libs/tldraw-sync/constants/roomIdParam';
+import tlDrawComponents from '@/pages/Whiteboard/components/tlDrawComponents';
 
 const TldrawWithSync = () => {
   const { user, eduApiToken } = useUserStore();
@@ -136,6 +137,7 @@ const TldrawWithSync = () => {
         registerDeleteHandler(editor);
       }}
       store={store}
+      components={tlDrawComponents}
     />
   );
 };

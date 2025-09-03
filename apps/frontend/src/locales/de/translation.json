@@ -1375,7 +1375,8 @@
   },
   "whiteboard": {
     "title": "WHITEBOARD",
-    "sidebar": "Whiteboard"
+    "sidebar": "Whiteboard",
+    "saveAsTlFile": "Whiteboard als .tldraw Datei speichern"
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",

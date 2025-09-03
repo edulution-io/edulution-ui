@@ -15,6 +15,7 @@ import COLOR_SCHEME from '@libs/ui/constants/colorScheme';
 import { Editor } from 'tldraw';
 import useLanguage from '@/hooks/useLanguage';
 import TLDRAW_PERSISTENCE_KEY from '@libs/whiteboard/constants/tldrawPersistenceKey';
+import tlDrawComponents from '@/pages/Whiteboard/components/tlDrawComponents';
 
 const TLDraw = lazy(() =>
   Promise.all([import('tldraw'), import('tldraw/tldraw.css')]).then(([module]) => ({
@@ -33,6 +34,7 @@ const TlDrawOffline = () => {
     <TLDraw
       onMount={handleMount}
       persistenceKey={TLDRAW_PERSISTENCE_KEY}
+      components={tlDrawComponents}
     />
   );
 };
