@@ -24,14 +24,17 @@ import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFi
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
+import PdfViewer from '@/components/shared/PDFViewer/PdfViewer';
+import useUserStore from '@/store/UserStore/useUserStore';
 
 interface FileRendererProps {
   editMode: boolean;
   isOpenedInNewTab?: boolean;
   closingRef?: MutableRefObject<boolean>;
+  isOnlyOfficeConfigured?: boolean;
 }
 
-const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closingRef }) => {
+const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closingRef, isOnlyOfficeConfigured }) => {
   const { isMobileView } = useMedia();
   const {
     temporaryDownloadUrl: fileUrl,
@@ -43,6 +46,9 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
   } = useFileSharingDownloadStore();
 
   const { currentlyEditingFile } = useFileEditorStore();
+
+  const { user } = useUserStore();
+
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
 
   useEffect(() => {
@@ -64,8 +70,7 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
 
   const fileExtension = getFileExtension(currentlyEditingFile.filePath);
   const isOnlyOfficeDoc = isOnlyOfficeDocument(currentlyEditingFile.filePath);
-
-  if (isOnlyOfficeDoc) {
+  if (isOnlyOfficeDoc && isOnlyOfficeConfigured) {
     const isDocReady = !!publicDownloadLink && !!currentlyEditingFile;
     if (isEditorLoading || isCreatingBlobUrl || isFetchingPublicUrl || error || !isDocReady) {
       return (
@@ -110,6 +115,24 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
       <MediaComponent
         key={fileUrl}
         url={fileUrl}
+      />
+    );
+  }
+
+  if (currentlyEditingFile.filename.endsWith('.pdf')) {
+    const username = user?.username;
+    const password = user?.password;
+    const token = btoa(`${username}:${password}`);
+
+    return (
+      <PdfViewer
+        fetchUrl={fileUrl}
+        fetchOptions={{
+          credentials: 'include',
+          headers: {
+            Authorization: `Basic ${token}`,
+          },
+        }}
       />
     );
   }
