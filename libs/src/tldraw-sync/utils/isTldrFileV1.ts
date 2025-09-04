@@ -10,24 +10,24 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { DefaultMainMenu, DefaultMainMenuContent, TldrawUiMenuGroup, TldrawUiMenuSubmenu } from 'tldraw';
-import SaveAsTldrItem from '@/pages/Whiteboard/components/SaveAsTldrItem';
-import OpenTldrItem from '@/pages/Whiteboard/components/OpenTldrItem';
+import { TLRecord } from 'tldraw';
 
-const CustomMainTLDrawMenu = () => (
-  <DefaultMainMenu>
-    <TldrawUiMenuGroup id="file-custom">
-      <TldrawUiMenuSubmenu
-        id="file-submenu"
-        label="File"
-      >
-        <SaveAsTldrItem />
-        <OpenTldrItem />
-      </TldrawUiMenuSubmenu>
-    </TldrawUiMenuGroup>
-    <DefaultMainMenuContent />
-  </DefaultMainMenu>
-);
+export type TldrFileV1 = {
+  tldrawFileFormatVersion: 1;
+  schema: { schemaVersion: 2; sequences: Record<string, number> };
+  records: TLRecord[];
+};
 
-export default CustomMainTLDrawMenu;
+const isTldrFileV1 = (value: unknown): value is TldrFileV1 => {
+  if (typeof value !== 'object' || value === null) return false;
+  const v = value as Record<string, unknown>;
+  const schema = v['schema'] as TldrFileV1['schema'] | undefined;
+  return (
+    v['tldrawFileFormatVersion'] === 1 &&
+    typeof schema === 'object' &&
+    schema?.schemaVersion === 2 &&
+    Array.isArray(v?.['records'])
+  );
+};
+
+export default isTldrFileV1;

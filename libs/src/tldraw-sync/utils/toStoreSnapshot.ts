@@ -10,24 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { DefaultMainMenu, DefaultMainMenuContent, TldrawUiMenuGroup, TldrawUiMenuSubmenu } from 'tldraw';
-import SaveAsTldrItem from '@/pages/Whiteboard/components/SaveAsTldrItem';
-import OpenTldrItem from '@/pages/Whiteboard/components/OpenTldrItem';
+import { SerializedSchema, StoreSnapshot, TLRecord } from 'tldraw';
+import type { TldrFileV1 } from './isTldrFileV1';
 
-const CustomMainTLDrawMenu = () => (
-  <DefaultMainMenu>
-    <TldrawUiMenuGroup id="file-custom">
-      <TldrawUiMenuSubmenu
-        id="file-submenu"
-        label="File"
-      >
-        <SaveAsTldrItem />
-        <OpenTldrItem />
-      </TldrawUiMenuSubmenu>
-    </TldrawUiMenuGroup>
-    <DefaultMainMenuContent />
-  </DefaultMainMenu>
-);
+const toStoreSnapshot = (file: TldrFileV1): StoreSnapshot<TLRecord> => {
+  const store = file.records.reduce<Record<string, TLRecord>>((acc, record) => {
+    acc[record.id] = record;
+    return acc;
+  }, {});
+  const schema: SerializedSchema = { schemaVersion: 2, sequences: file.schema.sequences };
+  return { schema, store };
+};
 
-export default CustomMainTLDrawMenu;
+export default toStoreSnapshot;

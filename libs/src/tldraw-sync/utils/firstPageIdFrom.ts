@@ -10,24 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { DefaultMainMenu, DefaultMainMenuContent, TldrawUiMenuGroup, TldrawUiMenuSubmenu } from 'tldraw';
-import SaveAsTldrItem from '@/pages/Whiteboard/components/SaveAsTldrItem';
-import OpenTldrItem from '@/pages/Whiteboard/components/OpenTldrItem';
+import { StoreSnapshot, TLPageId, TLRecord } from 'tldraw';
 
-const CustomMainTLDrawMenu = () => (
-  <DefaultMainMenu>
-    <TldrawUiMenuGroup id="file-custom">
-      <TldrawUiMenuSubmenu
-        id="file-submenu"
-        label="File"
-      >
-        <SaveAsTldrItem />
-        <OpenTldrItem />
-      </TldrawUiMenuSubmenu>
-    </TldrawUiMenuGroup>
-    <DefaultMainMenuContent />
-  </DefaultMainMenu>
-);
+const firstPageIdFrom = (snapshot: StoreSnapshot<TLRecord>): TLPageId | null => {
+  const pages = Object.values(snapshot.store).filter(
+    (record): record is TLRecord & { typeName: 'page' } => record.typeName === 'page',
+  );
+  return pages[0]?.id ?? null;
+};
 
-export default CustomMainTLDrawMenu;
+export default firstPageIdFrom;

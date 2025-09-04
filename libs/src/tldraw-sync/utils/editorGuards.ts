@@ -10,24 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { DefaultMainMenu, DefaultMainMenuContent, TldrawUiMenuGroup, TldrawUiMenuSubmenu } from 'tldraw';
-import SaveAsTldrItem from '@/pages/Whiteboard/components/SaveAsTldrItem';
-import OpenTldrItem from '@/pages/Whiteboard/components/OpenTldrItem';
+import { Editor, TLPageId } from 'tldraw';
 
-const CustomMainTLDrawMenu = () => (
-  <DefaultMainMenu>
-    <TldrawUiMenuGroup id="file-custom">
-      <TldrawUiMenuSubmenu
-        id="file-submenu"
-        label="File"
-      >
-        <SaveAsTldrItem />
-        <OpenTldrItem />
-      </TldrawUiMenuSubmenu>
-    </TldrawUiMenuGroup>
-    <DefaultMainMenuContent />
-  </DefaultMainMenu>
-);
+export const hasSetCurrentPageId = (editor: Editor): editor is Editor & { setCurrentPageId: (id: TLPageId) => void } =>
+  typeof (editor as unknown as { setCurrentPageId?: (id: TLPageId) => void }).setCurrentPageId === 'function';
 
-export default CustomMainTLDrawMenu;
+export const hasSetCurrentPage = (editor: Editor): editor is Editor & { setCurrentPage: (id: TLPageId) => void } =>
+  typeof (editor as unknown as { setCurrentPage?: (id: TLPageId) => void }).setCurrentPage === 'function';
