@@ -101,7 +101,7 @@ class PublicSurveysController {
           );
         }
         return join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
-      }),
+      }, false),
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
