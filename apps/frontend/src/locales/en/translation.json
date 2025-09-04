@@ -1437,6 +1437,14 @@
     "unknownErrorOccurred": "An unknown error occurred"
   },
   "currentDirectory": "Current directory",
+
+  "saveExternalFileDialogBody": {
+    "saveExternalFile": "Save external file",
+    "destinationFolder": "Destination folder",
+    "filename": "Filename",
+    "filenamePlaceholder": "Enter filename here"
+  },
+
   "moveItemDialog": {
     "changeDirectory": "Change directory",
     "currentDirectory": "Current directory",

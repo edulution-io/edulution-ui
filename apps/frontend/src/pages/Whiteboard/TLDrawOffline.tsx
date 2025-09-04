@@ -16,6 +16,7 @@ import { Editor } from 'tldraw';
 import useLanguage from '@/hooks/useLanguage';
 import TLDRAW_PERSISTENCE_KEY from '@libs/whiteboard/constants/tldrawPersistenceKey';
 import tlDrawComponents from '@/pages/Whiteboard/components/tlDrawComponents';
+import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
 
 const TLDraw = lazy(() =>
   Promise.all([import('tldraw'), import('tldraw/tldraw.css')]).then(([module]) => ({
@@ -25,9 +26,10 @@ const TLDraw = lazy(() =>
 
 const TlDrawOffline = () => {
   const { language } = useLanguage();
-
+  const { setEditor } = useWhiteboardEditorStore();
   const handleMount = (editor: Editor) => {
     editor.user.updateUserPreferences({ colorScheme: COLOR_SCHEME, locale: language });
+    setEditor(editor);
   };
 
   return (

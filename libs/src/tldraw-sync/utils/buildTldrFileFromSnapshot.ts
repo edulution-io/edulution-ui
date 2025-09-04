@@ -10,16 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum FileActionType {
-  MOVE_FILE_OR_FOLDER = 'moveFileOrFolder',
-  CREATE_FOLDER = 'createFolder',
-  CREATE_FILE = 'createFile',
-  DELETE_FILE_OR_FOLDER = 'deleteFileOrFolder',
-  UPLOAD_FILE = 'uploadFile',
-  RENAME_FILE_OR_FOLDER = 'renameFileOrFolder',
-  COPY_FILE_OR_FOLDER = 'copyFileOrFolder',
-  SHARE_FILE_OR_FOLDER = 'shareFileOrFolder',
-  SAVE_EXTERNAL_FILE = 'saveExternalFile',
-}
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
 
-export default FileActionType;
+const buildTldrFileFromSnapshot = (snapshot: unknown, filename: string): File => {
+  const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: RequestResponseContentType.APPLICATION_JSON });
+  return new File([blob], `${filename}.tldr`, { type: RequestResponseContentType.APPLICATION_JSON });
+};
+
+export default buildTldrFileFromSnapshot;

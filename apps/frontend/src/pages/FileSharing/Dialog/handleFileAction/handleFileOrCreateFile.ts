@@ -24,7 +24,11 @@ const handleFileOrCreateFile = async (
   type: ContentType,
   formData: FormData,
 ) => {
-  if (action === FileActionType.UPLOAD_FILE || action === FileActionType.CREATE_FILE) {
+  if (
+    action === FileActionType.UPLOAD_FILE ||
+    action === FileActionType.CREATE_FILE ||
+    action === FileActionType.SAVE_EXTERNAL_FILE
+  ) {
     await eduApi[httpMethod](
       buildApiFileTypePathUrl(endpoint, type, getPathWithoutWebdav(formData.get('path') as string)),
       formData,

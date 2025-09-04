@@ -26,6 +26,7 @@ import { useTranslation } from 'react-i18next';
 import EDU_API_WEBSOCKET_URL from '@libs/common/constants/eduApiWebsocketUrl';
 import ROOM_ID_PARAM from '@libs/tldraw-sync/constants/roomIdParam';
 import tlDrawComponents from '@/pages/Whiteboard/components/tlDrawComponents';
+import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
 
 const TldrawWithSync = () => {
   const { user, eduApiToken } = useUserStore();
@@ -129,9 +130,12 @@ const TldrawWithSync = () => {
 
   const store = useSync({ uri, assets: assetStore });
 
+  const { setEditor } = useWhiteboardEditorStore();
+
   return (
     <Tldraw
       onMount={(editor) => {
+        setEditor(editor);
         applyUserPreferences(editor);
         registerAssetHandler(editor);
         registerDeleteHandler(editor);

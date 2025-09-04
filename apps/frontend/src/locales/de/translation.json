@@ -1441,6 +1441,13 @@
     "copy": "Kopieren"
   },
 
+  "saveExternalFileDialogBody": {
+    "saveExternalFile": "Externe Datei speichern",
+    "destinationFolder": "Zielordner",
+    "filename": "Dateiname",
+    "filenamePlaceholder": "Dateiname hier eingeben"
+  },
+
   "moveItemDialog": {
     "changeDirectory": "Verzeichnis wechseln",
     "currentDirectory": "Aktuelles Verzeichnis",
