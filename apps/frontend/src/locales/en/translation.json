@@ -656,8 +656,8 @@
         "upperBackendLimiters": "Choices with an upper limit",
         "addChoice": "Add",
         "filterPlaceHolderText": "Search for option",
-        "imageWidth": "Width of the image [px]",
-        "addImageWidth": "0 means that the width is not limited."
+        "imageWidth": "Width of the image in Pixel [px]",
+        "imageWidthPlaceholder": "0 means that the width is only limited by the available space."
       }
     },
     "participate": {

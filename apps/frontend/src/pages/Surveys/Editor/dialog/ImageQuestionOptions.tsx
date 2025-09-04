@@ -28,11 +28,13 @@ const ImageQuestionOptions = () => {
         <p className="font-bold">{t('survey.editor.questionSettings.imageWidth')}</p>
       </Label>
       <Input
-        placeholder={t('survey.editor.questionSettings.addImageWidth')}
-        type="number"
+        placeholder={t('survey.editor.questionSettings.imageWidthPlaceholder')}
         variant="dialog"
-        value={imageWidth}
-        onChange={(e) => setImageWidth(Number(e.target.value))}
+        value={imageWidth === 0 ? '' : imageWidth}
+        onChange={(e) => {
+          const inputWidth = e.target.value.replace(/\D/g, '');
+          setImageWidth(Number(inputWidth));
+        }}
         className={cn({ 'text-muted-foreground': !imageWidth }, { 'text-primary-foreground': imageWidth })}
       />
     </div>

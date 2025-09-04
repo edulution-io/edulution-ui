@@ -60,8 +60,8 @@ interface QuestionsContextMenuStore {
   setChoiceTitle: (choiceName: string, newTitle: string) => void;
   setChoiceLimit: (choiceName: string, newLimit: number) => void;
 
-  setImageWidth: (newWidth: number) => void;
-  imageWidth: number;
+  setImageWidth: (newWidth: number | undefined) => void;
+  imageWidth: number | undefined;
 }
 
 const QuestionsContextMenuStoreInitialState = {
@@ -253,13 +253,12 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     }
   },
 
-  setImageWidth: (newWidth: number) => {
+  setImageWidth: (newWidth: number | undefined) => {
     const { selectedQuestion } = get();
     if (!selectedQuestion) return;
 
-    const width = Math.max(newWidth, 0);
-    set({ imageWidth: width });
-    selectedQuestion.imageWidth = width;
+    set({ imageWidth: newWidth || 0 });
+    selectedQuestion.imageWidth = newWidth ? Math.max(100, newWidth) : 0;
   },
 }));
 
