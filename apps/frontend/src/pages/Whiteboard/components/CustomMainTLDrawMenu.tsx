@@ -11,17 +11,21 @@
  */
 
 import React from 'react';
-import { DefaultMainMenu, DefaultMainMenuContent, TldrawUiMenuGroup } from 'tldraw';
+import { DefaultMainMenu, DefaultMainMenuContent, TldrawUiMenuGroup, TldrawUiMenuSubmenu } from 'tldraw';
 import SaveAsTldrItem from '@/pages/Whiteboard/components/SaveAsTldrItem';
 
 const CustomMainTLDrawMenu = () => (
-    <DefaultMainMenu>
-      <TldrawUiMenuGroup id="file">
+  <DefaultMainMenu>
+    <TldrawUiMenuGroup id="file-custom">
+      <TldrawUiMenuSubmenu
+        id="file-submenu"
+        label="File"
+      >
         <SaveAsTldrItem />
-      </TldrawUiMenuGroup>
-
-      <DefaultMainMenuContent />
-    </DefaultMainMenu>
-  );
+      </TldrawUiMenuSubmenu>
+    </TldrawUiMenuGroup>
+    <DefaultMainMenuContent />
+  </DefaultMainMenu>
+);
 
 export default CustomMainTLDrawMenu;

@@ -18,21 +18,26 @@ import { useTranslation } from 'react-i18next';
 const SaveAsTldrItem = () => {
   const editor = useEditor();
   const { t } = useTranslation();
+
+  const handleSave = () => {
+    const snapshot = editor.store.getSnapshot();
+    const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `whiteboard-${new Date().toISOString().slice(0, 10)}.tldr`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <TldrawUiMenuItem
       id="saveAsTldr"
-      label={t('whiteboard.saveAsTlFile')}
+      label={t('common.save')}
       readonlyOk
-      onSelect={() => {
-        const snapshot = editor.store.getSnapshot();
-        const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `whiteboard-${new Date().toISOString().slice(0, 10)}.tldr`;
-        a.click();
-        URL.revokeObjectURL(url);
-      }}
+      onSelect={handleSave}
     />
   );
 };

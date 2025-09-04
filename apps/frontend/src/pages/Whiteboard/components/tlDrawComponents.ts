@@ -11,7 +11,7 @@
  */
 
 import { TLComponents } from 'tldraw';
-import CustomMainTLDrawMenu from '@/pages/Whiteboard/components/SaveAsTldrItem';
+import CustomMainTLDrawMenu from './CustomMainTLDrawMenu';
 
 const tlDrawComponents: TLComponents = {
   MainMenu: CustomMainTLDrawMenu,
