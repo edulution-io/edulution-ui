@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const SURVEY_ANSWERS_MAXIMUM_FILE_SIZE = 50; // * 1024 * 1024;
+const SURVEY_ANSWERS_MAXIMUM_FILE_SIZE = 50 * 1024 * 1024;
 
 export default SURVEY_ANSWERS_MAXIMUM_FILE_SIZE;
