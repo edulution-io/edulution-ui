@@ -10,10 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export interface DownloadSurveyFileValue {
+export interface FileDownloadDto {
   name: string;
   originalName?: string;
   type?: string;
   url?: string;
-  content: Buffer<ArrayBuffer>;
+  content: Buffer<ArrayBufferLike>;
 }

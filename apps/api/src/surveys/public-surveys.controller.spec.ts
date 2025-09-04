@@ -10,11 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/unbound-method */
 import { Model, Types } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -111,7 +106,7 @@ describe(PublicSurveysController.name, () => {
         await controller.find({ surveyId: id });
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toEqual(CommonErrorMessages.DB_ACCESS_FAILED);
+        expect(e instanceof Error && e.message).toBe(CommonErrorMessages.DB_ACCESS_FAILED);
       }
 
       expect(surveysService.findPublicSurvey).toHaveBeenCalledWith(id);

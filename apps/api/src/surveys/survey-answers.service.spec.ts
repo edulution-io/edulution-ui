@@ -10,11 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/unbound-method */
 import { Model, Types } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -178,7 +173,7 @@ describe('SurveyAnswersService', () => {
         await service.getSelectableChoices(idOfPublicSurvey01.toString(), publicSurvey02QuestionNameWithLimiters);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe(SurveyErrorMessages.NoBackendLimiters);
+        expect(e instanceof Error && e.message).toBe(SurveyErrorMessages.NoBackendLimiters);
       }
 
       expect(service.getSelectableChoices).toHaveBeenCalledWith(
@@ -343,7 +338,7 @@ describe('SurveyAnswersService', () => {
         await service.addAnswer(id, {} as JSON, firstParticipant);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe(SurveyErrorMessages.NotFoundError);
+        expect(e instanceof Error && e.message).toBe(SurveyErrorMessages.NotFoundError);
       }
 
       expect(service.addAnswer).toHaveBeenCalledWith(id, {} as JSON, firstParticipant);
@@ -370,7 +365,7 @@ describe('SurveyAnswersService', () => {
         );
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe(SurveyErrorMessages.ParticipationErrorSurveyExpired);
+        expect(e instanceof Error && e.message).toBe(SurveyErrorMessages.ParticipationErrorSurveyExpired);
       }
 
       expect(service.addAnswer).toHaveBeenCalledWith(
@@ -425,7 +420,7 @@ describe('SurveyAnswersService', () => {
           await service.addAnswer(idOfAnsweredSurvey02.toString(), mockedAnswerForAnsweredSurveys02, secondParticipant);
         } catch (e) {
           expect(e).toBeInstanceOf(Error);
-          expect(e.message).toBe(SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError);
+          expect(e instanceof Error && e.message).toBe(SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError);
         }
 
         expect(service.addAnswer).toHaveBeenCalledWith(

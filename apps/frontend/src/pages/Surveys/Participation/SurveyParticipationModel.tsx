@@ -15,7 +15,7 @@ import { toast } from 'sonner';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
 import { ClearFilesEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
-import { DownloadSurveyFileValue } from '@libs/survey/types/api/download-survey-attachment-event';
+import { FileDownloadDto } from '@libs/survey/types/api/file-download.dto';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import SURVEY_ANSWERS_MAXIMUM_FILE_SIZE from '@libs/survey/constants/survey-answers-maximum-file-size';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
@@ -91,18 +91,19 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
     newModel.onUploadFiles.add(async (_: SurveyModel, options: UploadFilesEvent): Promise<void> => {
       const { files, callback } = options;
-      if (
-        !selectedSurvey.id ||
-        !files?.length ||
-        files.some((file) => !file.name?.length) ||
-        files.some((file) => file.size > SURVEY_ANSWERS_MAXIMUM_FILE_SIZE)
-      ) {
+      if (!selectedSurvey.id || !files?.length || files.some((file) => !file.name?.length)) {
+        return callback([]);
+      }
+      if (files.some((file) => file.size > SURVEY_ANSWERS_MAXIMUM_FILE_SIZE)) {
+        toast.error(
+          t('survey.participate.fileSizeExceeded', { size: SURVEY_ANSWERS_MAXIMUM_FILE_SIZE / (1024 * 1024) }),
+        );
         return callback([]);
       }
 
       const uploadPromises = files.map(async (file) => {
         const data = await uploadTempFile(selectedSurvey.id!, file);
-        const newFile: DownloadSurveyFileValue = {
+        const newFile: FileDownloadDto = {
           ...file,
           type: file.type || 'image/png',
           originalName: file.name || data.name,

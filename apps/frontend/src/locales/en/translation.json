@@ -668,6 +668,7 @@
       "idText": "Pls copy this for later",
       "idParagraph": "To view your former answer or to edit it, if configured, you can use the participation-ID here.",
       "usernameRequired": "User name is required",
+      "fileSizeExceeded": "A file exceeds the maximum allowed size of {{size}} MB.",
       "completeMessage": "Thank you very much for participating in this survey"
     },
     "errors": {
