@@ -59,6 +59,9 @@ interface QuestionsContextMenuStore {
   setChoiceName: (choiceName: string, newName: string) => void;
   setChoiceTitle: (choiceName: string, newTitle: string) => void;
   setChoiceLimit: (choiceName: string, newLimit: number) => void;
+
+  setImageWidth: (newWidth: number) => void;
+  imageWidth: number;
 }
 
 const QuestionsContextMenuStoreInitialState = {
@@ -74,6 +77,7 @@ const QuestionsContextMenuStoreInitialState = {
   currentBackendLimiters: [],
   formerChoices: [],
   currentChoices: [],
+  imageWidth: 0,
 };
 
 const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get) => ({
@@ -99,6 +103,7 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
       formerChoices: (question?.choices as string[]) || [],
       currentChoices: [],
       showOtherItem: !!question?.showOtherItem,
+      imageWidth: question?.imageWidth || 0,
     });
   },
 
@@ -246,6 +251,15 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
       set({ showOtherItem: false });
       removeChoice(SHOW_OTHER_ITEM);
     }
+  },
+
+  setImageWidth: (newWidth: number) => {
+    const { selectedQuestion } = get();
+    if (!selectedQuestion) return;
+
+    const width = Math.max(newWidth, 0);
+    set({ imageWidth: width });
+    selectedQuestion.imageWidth = width;
   },
 }));
 
