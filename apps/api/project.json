@@ -26,17 +26,6 @@
           "buildTarget": "api:build:production"
         }
       }
-    },
-    "build": {
-      "options": {
-        "assets": [
-          {
-            "glob": "../../libs/src/survey/assets/default-files/",
-            "input": "**/*",
-            "output": "./surveys/default-files/"
-          }
-        ]
-      }
     }
   }
 }
