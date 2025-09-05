@@ -14,6 +14,7 @@ import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import EdulutionAppUserDto from '@libs/edulutionApp/types/edulutionAppUser.dto';
 import UserDto from '@libs/user/types/user.dto';
 import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
+import parseLdapGeneralizedTime from '@libs/edulutionApp/utils/parseLdapGeneralizedTime';
 
 const toEdulutionAppUser = ({
   usernameFallback,
@@ -30,7 +31,9 @@ const toEdulutionAppUser = ({
   role: user?.ldapGroups.roles[0] || '',
   email: user?.email || '',
   birthDate: lmn?.sophomorixBirthdate || '',
-  expirationDate: lmn?.sophomorixDeactivationDate || lmn?.sophomorixTolerationDate || '',
+  expirationDate:
+    parseLdapGeneralizedTime(lmn?.sophomorixDeactivationDate) ||
+    parseLdapGeneralizedTime(lmn?.sophomorixTolerationDate),
   school: user?.ldapGroups.schools[0] || '',
   classes: Array.isArray(lmn?.schoolclasses)
     ? lmn.schoolclasses.map((userClass) => userClass.match(/([^-]+)$/)?.at(1) || '')
