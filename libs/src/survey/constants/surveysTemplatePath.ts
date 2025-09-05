@@ -10,11 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { join } from 'path';
 import APPS from '@libs/appconfig/constants/apps';
-import ASSETS_FILES_PATH from '@libs/common/constants/assetsFilesPath';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import { TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
 
-const SURVEYS_TEMPLATE_PATH = join(ASSETS_FILES_PATH, 'api', APPS.SURVEYS, TEMPLATES);
+const SURVEYS_TEMPLATE_PATH = `${APPS_FILES_PATH}/${APPS.SURVEYS}/${TEMPLATES}`;
 
 export default SURVEYS_TEMPLATE_PATH;
