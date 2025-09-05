@@ -13,15 +13,18 @@
 import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import EdulutionAppUserDto from '@libs/edulutionApp/types/edulutionAppUser.dto';
 import UserDto from '@libs/user/types/user.dto';
+import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 
 const toEdulutionAppUser = ({
   usernameFallback,
+  globalSettings,
   user = null,
   lmn = null,
 }: {
   usernameFallback: string;
   user?: UserDto | null;
   lmn?: LmnUserInfo | null;
+  globalSettings?: GlobalSettingsDto | null;
 }): EdulutionAppUserDto => ({
   username: user?.username || usernameFallback,
   role: user?.ldapGroups.roles[0] || '',
@@ -38,6 +41,7 @@ const toEdulutionAppUser = ({
   city: '',
   userProfilePicture: lmn?.thumbnailPhoto || '',
   institutionLogo: '',
+  deploymentTarget: globalSettings?.general.deploymentTarget || '',
 });
 
 export default toEdulutionAppUser;

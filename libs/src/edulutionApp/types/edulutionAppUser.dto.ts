@@ -38,6 +38,8 @@ class EdulutionAppUserDto {
   @ApiProperty() userProfilePicture: string;
 
   @ApiProperty() institutionLogo: string;
+
+  @ApiProperty() deploymentTarget: string;
 }
 
 export default EdulutionAppUserDto;

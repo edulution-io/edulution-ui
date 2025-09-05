@@ -15,13 +15,16 @@ import getDeploymentTarget from '@libs/common/utils/getDeploymentTarget';
 import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import UserDto from '@libs/user/types/user.dto';
 import toEdulutionAppUser from '@libs/edulutionApp/utils/toEdulutionAppUser';
+import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import LmnApiService from '../lmnApi/lmnApi.service';
 import UsersService from '../users/users.service';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 @Injectable()
 class EdulutionAppService {
   constructor(
     private readonly userService: UsersService,
+    private readonly globalSettingsService: GlobalSettingsService,
     private readonly lmnApiService: LmnApiService,
   ) {}
 
@@ -41,9 +44,13 @@ class EdulutionAppService {
 
     const user: UserDto | null = await this.userService.findOne(username);
 
+    const globalSettingsDto: GlobalSettingsDto =
+      (await this.globalSettingsService.getGlobalSettings()) as GlobalSettingsDto;
+
     return toEdulutionAppUser({
       usernameFallback: username,
       user,
+      globalSettings: globalSettingsDto,
       lmn: lmnInfo,
     });
   }
