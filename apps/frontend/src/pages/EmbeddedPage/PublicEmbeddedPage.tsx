@@ -31,7 +31,7 @@ const PublicEmbeddedPage: React.FC = () => {
   const { pathname } = useLocation();
   const { language } = useLanguage();
   const navigate = useNavigate();
-  const { getPublicAppConfig } = useAppConfigsStore();
+  const { getPublicAppConfigByName } = useAppConfigsStore();
   const { getPublicFilesInfo } = useFileTableStore();
   const { isAuthenticated } = useUserStore();
   const [currentAppConfig, setCurrentAppConfig] = useState<AppConfigDto>({} as AppConfigDto);
@@ -41,7 +41,7 @@ const PublicEmbeddedPage: React.FC = () => {
 
   useEffect(() => {
     const fetchCurrentAppConfig = async () => {
-      const appConfig = await getPublicAppConfig(rootPathName);
+      const appConfig = await getPublicAppConfigByName(rootPathName);
       const publicFileInfo = await getPublicFilesInfo(rootPathName);
       setCurrentAppConfig(appConfig);
       setFileInfo(publicFileInfo);

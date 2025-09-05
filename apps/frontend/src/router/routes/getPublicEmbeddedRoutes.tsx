@@ -13,16 +13,24 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 import PublicEmbeddedPage from '@/pages/EmbeddedPage/PublicEmbeddedPage';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 
-// ToDo: Make this dynamic via app config
 const publicEmbeddedRoutes = ['imprint', 'impressum', 'legal', 'mensa', 'about', 'terms', 'privacy'];
 
-const getPublicEmbeddedRoutes = () =>
-  publicEmbeddedRoutes.map((item) => (
+const getPublicEmbeddedRoutes = () => {
+  const { publicAppConfigs } = useAppConfigsStore();
+
+  const publicAppConfigNames = publicAppConfigs.map((cfg) => cfg.name);
+
+  const mergedRoutes = Array.from(new Set([...publicEmbeddedRoutes, ...publicAppConfigNames]));
+
+  return mergedRoutes.map((route) => (
     <Route
-      key={item}
-      path={item}
+      key={route}
+      path={route}
       element={<PublicEmbeddedPage />}
     />
   ));
+};
+
 export default getPublicEmbeddedRoutes;

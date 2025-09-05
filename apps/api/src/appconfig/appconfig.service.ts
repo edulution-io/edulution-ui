@@ -214,6 +214,16 @@ class AppConfigService implements OnModuleInit {
     return appConfig;
   }
 
+  async getPublicAppConfigs(): Promise<AppConfigDto[] | undefined> {
+    const appConfig = await this.appConfigModel
+      .find({ [`extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_IS_PUBLIC}`]: true })
+      .lean();
+    if (!appConfig) {
+      return undefined;
+    }
+    return appConfig;
+  }
+
   async deleteConfig(configName: string, ldapGroups: string[]): Promise<AppConfigDto[]> {
     try {
       const appConfigToDelete = await this.appConfigModel.findOne({ name: configName }).lean();

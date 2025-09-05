@@ -58,8 +58,14 @@ class AppConfigController {
   }
 
   @Public()
+  @Get('public')
+  getPublicAppConfigs() {
+    return this.appConfigService.getPublicAppConfigs();
+  }
+
+  @Public()
   @Get('public/:name')
-  getPublicAppConfigs(@Param('name') name: string) {
+  getPublicAppConfigByName(@Param('name') name: string) {
     return this.appConfigService.getPublicAppConfigByName(name);
   }
 

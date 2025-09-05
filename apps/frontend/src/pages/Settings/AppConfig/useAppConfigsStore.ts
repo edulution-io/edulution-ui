@@ -25,6 +25,7 @@ import { decodeBase64 } from '@libs/common/utils/getBase64String';
 
 type UseAppConfigsStore = {
   appConfigs: AppConfigDto[];
+  publicAppConfigs: AppConfigDto[];
   isLoading: boolean;
   isConfigFileLoading: boolean;
   error: Error | null;
@@ -35,7 +36,8 @@ type UseAppConfigsStore = {
   reset: () => void;
   createAppConfig: (appConfig: AppConfigDto) => Promise<void>;
   getAppConfigs: () => Promise<void>;
-  getPublicAppConfig: (name: string) => Promise<AppConfigDto>;
+  getPublicAppConfigs: () => Promise<void>;
+  getPublicAppConfigByName: (name: string) => Promise<AppConfigDto>;
   isGetAppConfigsLoading: boolean;
   updateAppConfig: (appConfigs: AppConfigDto) => Promise<void>;
   patchSingleFieldInConfig: (name: string, patchConfigDto: PatchConfigDto) => Promise<void>;
@@ -63,6 +65,7 @@ const initialState = {
       position: 0,
     },
   ],
+  publicAppConfigs: [],
   isLoading: false,
   isGetAppConfigsLoading: false,
   isConfigFileLoading: false,
@@ -109,7 +112,19 @@ const useAppConfigsStore = create<UseAppConfigsStore>(
         }
       },
 
-      getPublicAppConfig: async (name: string) => {
+      getPublicAppConfigs: async () => {
+        set({ isGetAppConfigsLoading: true, error: null });
+        try {
+          const { data } = await eduApi.get<AppConfigDto[]>(`${EDU_API_CONFIG_ENDPOINTS.ROOT}/public`);
+          set({ publicAppConfigs: data });
+        } catch (e) {
+          console.error('API not responding', e);
+        } finally {
+          set({ isGetAppConfigsLoading: false });
+        }
+      },
+
+      getPublicAppConfigByName: async (name: string) => {
         set({ isGetAppConfigsLoading: true, error: null });
         try {
           const { data } = await eduApi.get<AppConfigDto>(`${EDU_API_CONFIG_ENDPOINTS.ROOT}/public/${name}`);
