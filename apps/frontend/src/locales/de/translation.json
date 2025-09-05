@@ -1444,7 +1444,8 @@
   },
 
   "fileSelectorDialogBody": {
-    "title": "Wählen Sie eine Datei zum Öffnen aus"
+    "title": "Wählen Sie eine Datei zum Öffnen aus",
+    "selectFile": "Ausgewählte Datei"
   },
 
   "saveExternalFileDialogBody": {

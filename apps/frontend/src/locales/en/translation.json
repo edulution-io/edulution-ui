@@ -1448,7 +1448,8 @@
   },
 
   "fileSelectorDialogBody": {
-    "title": "Select a file to open"
+    "title": "Select a file to open",
+    "selectFile": "Selected file"
   },
 
   "moveItemDialog": {

@@ -127,11 +127,11 @@ const FileSelectorDialogBody: React.FC<FileSelectorDialogProps> = ({
     if (moveOrCopyItemToPath?.filename) {
       footerContent = (
         <p className="bg-secondary">
-          {t('filesharing.selectedFile')}: {decodeURIComponent(moveOrCopyItemToPath.filename)}
+          {t('fileSelectorDialogBody.selectedFile')}: {decodeURIComponent(moveOrCopyItemToPath.filename)}
         </p>
       );
     } else {
-      footerContent = <p className="bg-secondary">{t('filesharing.selectFile')}</p>;
+      footerContent = <p className="bg-secondary">{t('fileSelectorDialogBody.selectFile')}</p>;
     }
   }
 
