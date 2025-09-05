@@ -28,6 +28,8 @@ const toEdulutionAppUser = ({
   globalSettings?: GlobalSettingsDto | null;
 }): EdulutionAppUserDto => ({
   username: user?.username || usernameFallback,
+  firstName: user?.firstName || '',
+  lastName: user?.lastName || '',
   role: user?.ldapGroups.roles[0] || '',
   email: user?.email || '',
   birthDate: lmn?.sophomorixBirthdate || '',

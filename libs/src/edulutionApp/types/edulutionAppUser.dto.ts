@@ -15,6 +15,10 @@ import { ApiProperty } from '@nestjs/swagger';
 class EdulutionAppUserDto {
   @ApiProperty() username: string;
 
+  @ApiProperty() firstName: string;
+
+  @ApiProperty() lastName: string;
+
   @ApiProperty() role: string;
 
   @ApiProperty() email: string;
