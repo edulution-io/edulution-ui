@@ -28,7 +28,7 @@ class EdulutionAppService {
     private readonly lmnApiService: LmnApiService,
   ) {}
 
-  async getAppUserInfomation(username: string) {
+  async getAppUserData(username: string) {
     const deploymentTarget = getDeploymentTarget();
     let lmnApiToken = '';
     let lmnInfo: LmnUserInfo = {} as LmnUserInfo;

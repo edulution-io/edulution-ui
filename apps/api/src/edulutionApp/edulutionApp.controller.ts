@@ -21,9 +21,9 @@ import EdulutionAppService from './edulutionApp.service';
 class EdulutionAppController {
   constructor(private readonly edulutionAppService: EdulutionAppService) {}
 
-  @Get()
-  async getRelevantUserData(@GetCurrentUsername() username: string) {
-    return this.edulutionAppService.getAppUserInfomation(username);
+  @Get('user-data')
+  async getAppUserData(@GetCurrentUsername() username: string) {
+    return this.edulutionAppService.getAppUserData(username);
   }
 }
 
