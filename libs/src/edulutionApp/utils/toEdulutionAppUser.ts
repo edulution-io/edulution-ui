@@ -34,7 +34,7 @@ const toEdulutionAppUser = ({
   expirationDate:
     parseLdapGeneralizedTime(lmn?.sophomorixDeactivationDate) ||
     parseLdapGeneralizedTime(lmn?.sophomorixTolerationDate),
-  school: user?.ldapGroups.schools[0] || '',
+  school: lmn?.sophomorixSchoolname || '',
   classes: Array.isArray(lmn?.schoolclasses)
     ? lmn.schoolclasses.map((userClass) => userClass.match(/([^-]+)$/)?.at(1) || '')
     : [],
