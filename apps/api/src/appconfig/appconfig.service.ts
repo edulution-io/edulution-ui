@@ -22,6 +22,7 @@ import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import CustomHttpException from '../common/CustomHttpException';
 import { AppConfig } from './appconfig.schema';
 import initializeCollection from './initializeCollection';
@@ -198,6 +199,16 @@ class AppConfigService implements OnModuleInit {
     const appConfig = await this.appConfigModel.findOne({ name }).lean();
     if (!appConfig) {
       Logger.debug(`AppConfig with name ${name} not found`, AppConfigService.name);
+      return undefined;
+    }
+    return appConfig;
+  }
+
+  async getPublicAppConfigByName(name: string): Promise<AppConfigDto | undefined> {
+    const appConfig = await this.appConfigModel
+      .findOne({ name, [`extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_IS_PUBLIC}`]: true })
+      .lean();
+    if (!appConfig) {
       return undefined;
     }
     return appConfig;

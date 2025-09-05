@@ -18,6 +18,7 @@ import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoi
 import AppConfigService from './appconfig.service';
 import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
 import AppConfigGuard from './appconfig.guard';
+import { Public } from '../common/decorators/public.decorator';
 
 @ApiTags(EDU_API_CONFIG_ENDPOINTS.ROOT)
 @ApiBearerAuth()
@@ -54,6 +55,12 @@ class AppConfigController {
   @Get()
   getAppConfigs(@GetCurrentUserGroups() ldapGroups: string[]) {
     return this.appConfigService.getAppConfigs(ldapGroups);
+  }
+
+  @Public()
+  @Get('public/:name')
+  getPublicAppConfigs(@Param('name') name: string) {
+    return this.appConfigService.getPublicAppConfigByName(name);
   }
 
   @Delete(':name')

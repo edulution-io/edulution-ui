@@ -13,13 +13,17 @@
 import useMedia from '@/hooks/useMedia';
 import React from 'react';
 import APPLICATION_NAME from '@libs/common/constants/applicationName';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   const { isMobileView } = useMedia();
+  const { t } = useTranslation();
 
   return (
-    <footer className="bg-background-centered-shadow flex h-[22px] w-full justify-center overflow-hidden whitespace-nowrap text-muted">
+    <footer className="bg-background-centered-shadow flex h-[22px] w-full justify-center gap-2 overflow-hidden whitespace-nowrap text-muted">
       &copy; {new Date().getFullYear()} {APPLICATION_NAME}. {!isMobileView && 'All rights reserved.'} V{APP_VERSION}
+      <Link to={`${window.location.origin}/imprint`}>{t('imprint')}</Link>
     </footer>
   );
 };

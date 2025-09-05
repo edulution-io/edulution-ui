@@ -10,17 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ExtendedOptionKeys from '../constants/extendedOptionKeys';
-import AppConfigDto from './appConfigDto';
+import React from 'react';
+import { Route } from 'react-router-dom';
+import PublicEmbeddedPage from '@/pages/EmbeddedPage/PublicEmbeddedPage';
 
-type EmbeddedPageEditorForm = {
-  [settingLocation: string]: AppConfigDto & {
-    extendedOptions: {
-      [ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT]: string;
-      [ExtendedOptionKeys.EMBEDDED_PAGE_HTML_MODE]: boolean;
-      [ExtendedOptionKeys.EMBEDDED_PAGE_IS_PUBLIC]: boolean;
-    };
-  };
-};
+// ToDo: Make this dynamic via app config
+const publicEmbeddedRoutes = ['imprint', 'impressum', 'legal', 'mensa', 'about', 'terms', 'privacy'];
 
-export default EmbeddedPageEditorForm;
+const getPublicEmbeddedRoutes = () =>
+  publicEmbeddedRoutes.map((item) => (
+    <Route
+      key={item}
+      path={item}
+      element={<PublicEmbeddedPage />}
+    />
+  ));
+export default getPublicEmbeddedRoutes;

@@ -35,6 +35,7 @@ type UseAppConfigsStore = {
   reset: () => void;
   createAppConfig: (appConfig: AppConfigDto) => Promise<void>;
   getAppConfigs: () => Promise<void>;
+  getPublicAppConfig: (name: string) => Promise<AppConfigDto>;
   isGetAppConfigsLoading: boolean;
   updateAppConfig: (appConfigs: AppConfigDto) => Promise<void>;
   patchSingleFieldInConfig: (name: string, patchConfigDto: PatchConfigDto) => Promise<void>;
@@ -103,6 +104,19 @@ const useAppConfigsStore = create<UseAppConfigsStore>(
           set({ appConfigs: response.data });
         } catch (e) {
           handleApiError(e, set);
+        } finally {
+          set({ isGetAppConfigsLoading: false });
+        }
+      },
+
+      getPublicAppConfig: async (name: string) => {
+        set({ isGetAppConfigsLoading: true, error: null });
+        try {
+          const { data } = await eduApi.get<AppConfigDto>(`${EDU_API_CONFIG_ENDPOINTS.ROOT}/public/${name}`);
+          return data;
+        } catch (e) {
+          handleApiError(e, set);
+          return {} as AppConfigDto;
         } finally {
           set({ isGetAppConfigsLoading: false });
         }

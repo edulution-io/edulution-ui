@@ -45,6 +45,21 @@ const useFileTableStore = create<FileTableStore>((set) => ({
     }
   },
 
+  getPublicFilesInfo: async (applicationName) => {
+    set({ isLoading: true });
+    try {
+      const { data } = await eduApi.get<FileInfoDto[]>(
+        `${EDU_API_CONFIG_ENDPOINTS.FILES}/public/info/${applicationName}`,
+      );
+      return data;
+    } catch (error) {
+      handleApiError(error, set);
+      return [] as FileInfoDto[];
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
   deleteTableEntry: async (applicationName, fileName) => {
     set({ isLoading: true, error: null });
     try {
