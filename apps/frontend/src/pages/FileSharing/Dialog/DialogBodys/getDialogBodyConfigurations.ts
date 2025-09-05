@@ -38,6 +38,9 @@ import { t } from 'i18next';
 import SaveExternalFileDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/SaveExternalFileDialogBody';
 import buildTldrFileFromEditor from '@libs/tldraw-sync/utils/buildTldrFileFromEditor';
 import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
+import FileSelectorDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/FileSelectorDialogBody';
+import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
+import FileSelectorDialogProps from '@libs/filesharing/types/fileSelectorDialogProps';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FileSharingFormValues>;
@@ -81,13 +84,18 @@ interface SaveExternalFileDialogBodyConfiguration extends DialogBodyConfiguratio
   Component: React.ComponentType<FilesharingDialogProps>;
 }
 
+interface FileSelectorDialogBodyConfiguration extends DialogBodyConfigurationBase {
+  Component: React.ComponentType<FileSelectorDialogProps>;
+}
+
 type DialogBodyConfiguration =
   | CreateFolderDialogBodyConfiguration
   | CreateFileDialogBodyConfiguration
   | RenameDialogBodyConfiguration
   | MoveDialogBodyConfiguration
   | PlainDialogBodyConfiguration
-  | SaveExternalFileDialogBodyConfiguration;
+  | SaveExternalFileDialogBodyConfiguration
+  | FileSelectorDialogBodyConfiguration;
 
 const initialFormValues = {
   filename: '',
@@ -294,7 +302,7 @@ const saveExternalFileConfig: SaveExternalFileDialogBodyConfiguration = {
     const targetDir = moveOrCopyItemToPath?.filePath || currentPath || '';
     const cleanedTarget = getPathWithoutWebdav(targetDir);
 
-    const {editor} = useWhiteboardEditorStore.getState();
+    const { editor } = useWhiteboardEditorStore.getState();
     if (!editor) return [];
 
     const file = buildTldrFileFromEditor(editor, filename);
@@ -308,6 +316,28 @@ const saveExternalFileConfig: SaveExternalFileDialogBodyConfiguration = {
     ]);
   },
 };
+
+const fileSelectorConfig: FileSelectorDialogBodyConfiguration = {
+  Component: FileSelectorDialogBody,
+  titleKey: 'fileSelectorDialogBody.title',
+  submitKey: 'common.select',
+  endpoint: '',
+  httpMethod: HttpMethods.POST,
+  type: ContentType.FILE,
+  getData: async (_form, _currentPath, { moveOrCopyItemToPath }) => {
+    if (!moveOrCopyItemToPath) return [];
+
+    const cleanedPath = getPathWithoutWebdav(moveOrCopyItemToPath.filePath);
+    const { createDownloadBlobUrl } = useFileSharingDownloadStore.getState();
+    const { openTldrFromBlobUrl } = useWhiteboardEditorStore.getState();
+    const blobUrl = await createDownloadBlobUrl(cleanedPath);
+    if (blobUrl) {
+      await openTldrFromBlobUrl(blobUrl, moveOrCopyItemToPath.filename);
+    }
+    return [];
+  },
+};
+
 const dialogBodyConfigurations: Record<FileActionType, DialogBodyConfiguration> = {
   createFolder: createFolderConfig,
   createFile: createFileConfig,
@@ -318,6 +348,7 @@ const dialogBodyConfigurations: Record<FileActionType, DialogBodyConfiguration> 
   moveFileOrFolder: moveFileFolderConfig,
   shareFileOrFolder: shareFileOrFolderConfig,
   saveExternalFile: saveExternalFileConfig,
+  fileSelector: fileSelectorConfig,
 };
 
 function getDialogBodyConfigurations(action: FileActionType) {

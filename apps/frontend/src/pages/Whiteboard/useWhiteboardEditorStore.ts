@@ -12,11 +12,13 @@
 
 import { create } from 'zustand';
 import type { Editor, StoreSnapshot, TLRecord } from 'tldraw';
+import loadTldrFileIntoEditor from '@libs/tldraw-sync/utils/loadTldrFileIntoEditor';
 
 interface WhiteboardEditorState {
   editor: Editor | null;
   setEditor: (editor: Editor | null) => void;
   getSnapshot: () => StoreSnapshot<TLRecord> | null;
+  openTldrFromBlobUrl: (blobUrl: string, filename: string) => Promise<void>;
   reset: () => void;
 }
 
@@ -30,6 +32,16 @@ const useWhiteboardEditorStore = create<WhiteboardEditorState>((set, get) => ({
   getSnapshot: () => {
     const e = get().editor;
     return e ? e.store.getSnapshot() : null;
+  },
+
+  openTldrFromBlobUrl: async (blobUrl, filename) => {
+    const {editor} = get();
+    if (!editor) return;
+    const response = await fetch(blobUrl);
+    const blob = await response.blob();
+    URL.revokeObjectURL(blobUrl);
+    const file = new File([blob], filename, { type: 'application/json' });
+    await loadTldrFileIntoEditor(editor, file);
   },
 
   reset: () => set(initialValues),

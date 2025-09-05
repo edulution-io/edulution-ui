@@ -11,41 +11,24 @@
  */
 
 import React from 'react';
-import { TldrawUiMenuItem, useEditor } from 'tldraw';
+import { TldrawUiMenuItem } from 'tldraw';
 import { useTranslation } from 'react-i18next';
-import loadTldrFileIntoEditor from '@libs/tldraw-sync/utils/loadTldrFileIntoEditor';
+import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
+import FileActionType from '@libs/filesharing/types/fileActionType';
 
 const OpenTldrItem: React.FC = () => {
-  const editor = useEditor();
   const { t } = useTranslation();
+  const { openDialog, setAllowedExtensions } = useFileSharingDialogStore();
 
   const handleSelect = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.tldr,application/json';
-    input.style.position = 'fixed';
-    input.style.left = '-9999px';
-    input.style.top = '0';
-    input.onchange = async () => {
-      const file = input.files?.[0];
-      if (file && editor) {
-        try {
-          await loadTldrFileIntoEditor(editor, file);
-        } finally {
-          document.body.removeChild(input);
-        }
-      } else {
-        document.body.removeChild(input);
-      }
-    };
-    document.body.appendChild(input);
-    input.click();
+    setAllowedExtensions(['.tldr']);
+    openDialog(FileActionType.FILE_SELECTOR);
   };
 
   return (
     <TldrawUiMenuItem
       id="openTldr"
-      label={t('whiteboard.openTlFile', 'Open .tldr file')}
+      label={t('whiteboard.openTlFile')}
       readonlyOk
       onSelect={handleSelect}
     />

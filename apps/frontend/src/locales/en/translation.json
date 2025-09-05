@@ -1372,7 +1372,9 @@
   "whiteboard": {
     "title": "WHITEBOARD",
     "sidebar": "Whiteboard",
-    "saveAsTlFile": "Save Whiteboard as.tldraw file"
+    "saveAsTlFile": "Save Whiteboard as.tldraw file",
+    "openTlFile": "Open",
+    "file": "File"
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
@@ -1443,6 +1445,10 @@
     "destinationFolder": "Destination folder",
     "filename": "Filename",
     "filenamePlaceholder": "Enter filename here"
+  },
+
+  "fileSelectorDialogBody": {
+    "title": "Select a file to open"
   },
 
   "moveItemDialog": {

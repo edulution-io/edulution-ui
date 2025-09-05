@@ -52,6 +52,8 @@ interface DataTableProps<TData, TValue> {
   isDialog?: boolean;
   actions?: TableAction<TData>[];
   showSearchBarAndColumnSelect?: boolean;
+  getRowDisabled?: (row: Row<TData>) => boolean;
+  disabledRowClassName?: string;
 }
 
 const ScrollableTable = <TData, TValue>({
@@ -73,6 +75,8 @@ const ScrollableTable = <TData, TValue>({
   initialColumnVisibility = {},
   actions,
   showSearchBarAndColumnSelect = true,
+  getRowDisabled,
+  disabledRowClassName = 'opacity-50 pointer-events-none cursor-not-allowed saturate-0',
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(initialColumnVisibility);
@@ -178,11 +182,14 @@ const ScrollableTable = <TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() ? 'selected' : undefined}
+                  data-disabled={getRowDisabled?.(row) ? 'true' : undefined}
+                  aria-disabled={getRowDisabled?.(row) ? true : undefined}
+                  className={getRowDisabled?.(row) ? disabledRowClassName : undefined}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={`${row.id}-${cell.column.id}`}
-                      className={textColorClassname}
+                      className={`${textColorClassname} ${getRowDisabled?.(row) ? 'opacity-70' : ''}`}
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
