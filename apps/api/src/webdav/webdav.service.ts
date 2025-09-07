@@ -11,7 +11,7 @@
  */
 
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { AxiosInstance, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { OnEvent } from '@nestjs/event-emitter';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
@@ -33,10 +33,13 @@ import DEFAULT_PROPFIND_XML from '@libs/filesharing/constants/defaultPropfindXml
 import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import { Readable } from 'stream';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
+import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
+import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import CustomHttpException from '../common/CustomHttpException';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
 import WebdavSharesService from './shares/webdav-shares.service';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 @Injectable()
 class WebdavService {
@@ -45,6 +48,7 @@ class WebdavService {
   constructor(
     private readonly usersService: UsersService,
     private readonly webdavSharesService: WebdavSharesService,
+    private readonly globalSettingsService: GlobalSettingsService,
   ) {}
 
   @OnEvent(EVENT_EMITTER_EVENTS.WEBDAV_BASEURL_CHANGED)
@@ -388,6 +392,28 @@ class WebdavService {
     const files = await this.getFilesAtPath(username, fullPath);
     const matchedFile = files.find((file) => file.filePath === filepath);
     return matchedFile?.type === ContentType.FILE ? ContentType.FILE : ContentType.DIRECTORY;
+  }
+
+  async getFileTree(username: string): Promise<DirectoryFileDTO[]> {
+    const globalSettings = (await this.globalSettingsService.getGlobalSettings()) as GlobalSettingsDto;
+    const list: DirectoryFileDTO[] = [];
+    const {deploymentTarget} = globalSettings.general;
+
+    if (deploymentTarget === 'linuxmuster') {
+      const password = await this.usersService.getPassword(username);
+      const token = Buffer.from(`${username}:${password}`, 'utf8').toString('base64');
+      const url = getPathWithoutWebdav(process.env.EDUI_WEBDAV_URL as string);
+
+      const res = await axios.get<DirectoryFileDTO[]>(`${url}/api/webdav/list`, {
+        headers: { Authorization: `Basic ${token}` },
+      });
+
+      if (res.status >= 200 && res.status < 300) {
+        return res.data;
+      }
+    }
+
+    return list;
   }
 }
 

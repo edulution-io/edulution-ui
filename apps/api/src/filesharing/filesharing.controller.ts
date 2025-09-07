@@ -225,6 +225,11 @@ class FilesharingController {
     return this.filesharingService.editPublicShare(username, publicFileShareDto);
   }
 
+  @Get(FileSharingApiEndpoints.FILE_TREE)
+  async getFileTree(@GetCurrentUsername() username: string) {
+    return this.webdavService.getFileTree(username);
+  }
+
   @Public()
   @Get(`${FileSharingApiEndpoints.PUBLIC_SHARE}/:publicShareId`)
   async getPublicShareInfo(
