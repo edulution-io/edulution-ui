@@ -26,35 +26,33 @@ const AddSchoolInfo: React.FC<AddSchoolInfoProps> = ({ form }) => {
 
   return (
     <AccordionContent className="space-y-2 px-1">
-      <p>{t('settings.globalSettings.schoolInfo.description')}</p>
+      <p>{t('settings.globalSettings.organisationInfo.description')}</p>
       <FormField
-        name="schoolInfo.name"
+        name="organisationInfo.name"
         form={form}
-        value={form.watch('schoolInfo.name') || ''}
-        labelTranslationId={t('settings.globalSettings.schoolInfo.name')}
-        placeholder={t('settings.globalSettings.schoolInfo.namePlaceholder')}
+        value={form.watch('organisationInfo.name') || ''}
+        labelTranslationId={t('settings.globalSettings.organisationInfo.name')}
+        placeholder={t('settings.globalSettings.organisationInfo.namePlaceholder')}
       />
       <FormField
-        name="schoolInfo.street"
+        name="organisationInfo.street"
         form={form}
-        value={form.watch('schoolInfo.street') || ''}
-        labelTranslationId={t('settings.globalSettings.schoolInfo.street')}
+        value={form.watch('organisationInfo.street') || ''}
+        labelTranslationId={t('settings.globalSettings.organisationInfo.street')}
         placeholder={t('settings.globalSettings.schoolInfo.streetPlaceholder')}
       />
       <FormField
-        name="schoolInfo.postalCode"
+        name="organisationInfo.postalCode"
         form={form}
-        value={form.watch('schoolInfo.postalCode') || ''}
-        labelTranslationId={t('settings.globalSettings.schoolInfo.postalCode')}
+        value={form.watch('organisationInfo.postalCode') || ''}
+        labelTranslationId={t('settings.globalSettings.organisationInfo.postalCode')}
         placeholder={t('settings.globalSettings.schoolInfo.postalCodePlaceholder')}
       />
       <FormField
-        name="schoolInfo.website"
+        name="organisationInfo.website"
         form={form}
-        value={form.watch('schoolInfo.website') || ''}
-        labelTranslationId={t('settings.globalSettings.schoolInfo.website')}
+        labelTranslationId={t('settings.globalSettings.organisationInfo.website')}
         placeholder="https://example.edu"
-        type="url"
       />
     </AccordionContent>
   );

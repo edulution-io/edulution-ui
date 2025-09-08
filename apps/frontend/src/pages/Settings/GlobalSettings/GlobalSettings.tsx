@@ -35,7 +35,7 @@ import DeploymentTargetDropdownSelectFormField from '../components/DeploymentTar
 const GlobalSettings: React.FC = () => {
   const { t } = useTranslation();
   const { searchGroups } = useGroupStore();
-  const { appConfigs = [] } = useAppConfigsStore(); // <- fallback auf []
+  const { appConfigs = [] } = useAppConfigsStore();
   const { globalSettings, getGlobalAdminSettings, setGlobalSettings } = useGlobalSettingsApiStore();
 
   const form = useForm<GlobalSettingsFormValues>({
@@ -91,7 +91,6 @@ const GlobalSettings: React.FC = () => {
         setValue('general.defaultLandingPage.appName', appConfigs[0]?.name ?? '');
       }
     } else if (isCustomLandingPageEnabled === false) {
-      // Schalter aus → gesamten Block auf Defaults zurücksetzen (falls vorhanden)
       const fallback = defaultValues?.general?.defaultLandingPage ?? {
         isCustomLandingPageEnabled: false,
         appName: '',
@@ -208,9 +207,9 @@ const GlobalSettings: React.FC = () => {
               <AddBrandingLogo form={form} />
             </AccordionItem>
 
-            <AccordionItem value="schoolInfo">
+            <AccordionItem value="organisationInfo">
               <AccordionTrigger className="flex">
-                <h4>{t('settings.globalSettings.schoolInfo.title')}</h4>
+                <h4>{t('settings.globalSettings.organisationInfo.title')}</h4>
               </AccordionTrigger>
               <AddSchoolInfo form={form} />
             </AccordionItem>

@@ -919,16 +919,16 @@
         "uploadDarkLogo": "Dunkels Logo hochladen",
         "deleteSuccessful": "Logo wurde erfolgreich gelöscht"
       },
-      "schoolInfo": {
-        "title": "Schulinformationen",
-        "description": "Geben Sie die offiziellen Angaben Ihrer Schule an. Diese Informationen können im Studentenausweis angezeigt werden. Bitte Name, Straße, Postleitzahl und optional die Schulwebsite eintragen.",
-        "name": "Schulname",
+      "organisationInfo": {
+        "title": "Organisationinformationen",
+        "description": "Geben Sie die offiziellen Angaben Ihrer Organisation an. Diese Informationen können in der edu-app angezeigt werden. Bitte Name, Straße, Postleitzahl und optional die Schulwebsite eintragen.",
+        "name": "Organisation",
         "namePlaceholder": "z. B. Gemeinschaftsschule Musterstadt",
         "street": "Straße",
         "streetPlaceholder": "z. B. Schulweg 1",
         "postalCode": "Postleitzahl",
         "postalCodePlaceholder": "z. B. 12345",
-        "website": "Schulwebsite"
+        "website": "Organisationwebsite"
       }
     },
     "userAdministration": {

@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 class OrganisationInfoDto {
   @IsString() @IsOptional() name?: string;
@@ -19,7 +19,7 @@ class OrganisationInfoDto {
 
   @IsString() @IsOptional() postalCode?: string;
 
-  @IsUrl({ require_tld: false }, { message: 'Invalid URL' }) @IsOptional() website?: string;
+  @IsString() @IsOptional() website?: string;
 }
 
 export default OrganisationInfoDto;
