@@ -29,7 +29,7 @@ import { promisify } from 'util';
 import { createHash } from 'crypto';
 import { firstValueFrom, from } from 'rxjs';
 import { pipeline, Readable } from 'stream';
-import { basename, extname, join, parse, resolve } from 'path';
+import { basename, extname, join, resolve } from 'path';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
@@ -47,9 +47,7 @@ import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
 import THIRTY_DAYS from '@libs/common/constants/thirtyDays';
-import mimeTypeToExtension from '@libs/filesystem/constants/mimeTypeToExtension';
 import PUBLIC_ASSERT_PATH from '@libs/common/constants/publicAssertPath';
-import PublicAssetSaveResult from '@libs/filesystem/types/publicAssetSaveResult';
 import { promises as fs } from 'fs';
 import sharp from 'sharp';
 import CustomHttpException from '../common/CustomHttpException';
@@ -107,45 +105,6 @@ class FilesystemService {
         FilesystemService.name,
       );
     }
-  }
-
-  async savePublicAsset(
-    relativeDirectory: string,
-    baseName: string,
-    fileBuffer: Buffer,
-    mimeType: string,
-    options?: { cleanBasename?: boolean; addTimestampSuffix?: boolean; publicPrefix?: string },
-  ): Promise<PublicAssetSaveResult> {
-    const fileExtension = mimeTypeToExtension[mimeType] ?? 'bin';
-
-    const normalizedRelativeDirectory = relativeDirectory.replace(/^[\\/]+|[\\/]+$/g, '');
-    const outputDirectoryAbsolutePath = join(PUBLIC_ASSERT_PATH, ...normalizedRelativeDirectory.split('/'));
-
-    await ensureDir(outputDirectoryAbsolutePath);
-
-    if (options?.cleanBasename) {
-      const existingFilenames: string[] = await readdir(outputDirectoryAbsolutePath).catch(() => []);
-
-      const deletions = existingFilenames
-        .filter((name) => name.startsWith(`${baseName}.`) || name.startsWith(`${baseName}-`))
-        .map((name) => unlink(join(outputDirectoryAbsolutePath, name)).catch(() => undefined));
-
-      await Promise.all(deletions);
-    }
-
-    const suffix = options?.addTimestampSuffix ? `-${Date.now()}` : '';
-    const filename = `${baseName}${suffix}.${fileExtension}`;
-    const absolutePath = join(outputDirectoryAbsolutePath, filename);
-
-    await outputFile(absolutePath, fileBuffer);
-
-    const publicPrefix = options?.publicPrefix ?? '/public';
-    const publicPath = `/${[publicPrefix, normalizedRelativeDirectory, filename]
-      .join('/')
-      .replace(/\/+/g, '/')
-      .replace(/^\/+/, '')}`;
-
-    return { publicPath, absolutePath, mime: mimeType, filename };
   }
 
   static async moveFile(oldFilePath: string, newFilePath: string): Promise<void> {
@@ -210,36 +169,16 @@ class FilesystemService {
     }
   }
 
-  static async deleteFile(
-    directoryPath: string,
-    fileName: string,
-    options?: { ignoreExtension?: boolean },
-  ): Promise<void> {
+  static async deleteFile(path: string, fileName: string): Promise<void> {
+    const filePath = join(path, fileName);
     try {
-      if (!options?.ignoreExtension) {
-        const absoluteFilePath = join(directoryPath, fileName);
-        await unlink(absoluteFilePath);
-        Logger.log(`File deleted at ${absoluteFilePath}`);
-        return;
-      }
-
-      const baseNameToMatch = parse(fileName).name;
-      const directoryEntries = await readdir(directoryPath);
-
-      const matches = directoryEntries.filter((entry) => parse(entry).name === baseNameToMatch);
-
-      await Promise.all(
-        matches.map(async (matchedFile) => {
-          const absoluteFilePath = join(directoryPath, matchedFile);
-          await unlink(absoluteFilePath);
-          Logger.log(`File deleted at ${absoluteFilePath}`);
-        }),
-      );
+      await unlink(filePath);
+      Logger.log(`File deleted at ${filePath}`);
     } catch (error) {
       throw new CustomHttpException(
         FileSharingErrorMessage.DeleteFromServerFailed,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        join(directoryPath, fileName),
+        filePath,
       );
     }
   }

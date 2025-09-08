@@ -18,12 +18,12 @@ import { useTranslation } from 'react-i18next';
 import { Theme, ThemeType } from '@libs/common/types/theme';
 import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
 import { GLOBAL_SETTINGS_BRANDING_LOGO } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
-import BrandingLogoField from '@/pages/Settings/components/BrandingLogoField';
+import OrganisationLogoField from '@/pages/Settings/components/OrganisationLogoField';
 import getMainLogoUrl from '@libs/assets/getMainLogoUrl';
 
 type Props = { form: UseFormReturn<GlobalSettingsFormValues> };
 
-const AddBrandingLogo: React.FC<Props> = ({ form }) => {
+const AddOrganisationLogo: React.FC<Props> = ({ form }) => {
   const { t } = useTranslation();
   const { uploadGlobalAsset } = useFilesystemStore();
 
@@ -78,7 +78,7 @@ const AddBrandingLogo: React.FC<Props> = ({ form }) => {
       <p>{t('settings.globalSettings.brandingLogo.description')}</p>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-1">
-        <BrandingLogoField
+        <OrganisationLogoField
           variant={Theme.dark}
           lightPreviewSrc={lightPreviewSrc}
           darkPreviewSrc={darkPreviewSrc}
@@ -96,4 +96,4 @@ const AddBrandingLogo: React.FC<Props> = ({ form }) => {
   );
 };
 
-export default AddBrandingLogo;
+export default AddOrganisationLogo;

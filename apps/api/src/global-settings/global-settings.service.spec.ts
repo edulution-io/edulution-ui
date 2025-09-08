@@ -20,7 +20,6 @@ import CustomHttpException from '../common/CustomHttpException';
 import GlobalSettingsService from './global-settings.service';
 import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';
-import FilesystemService from '../filesystem/filesystem.service';
 
 class MockGlobalSettings {
   constructor(public data: any) {}
@@ -36,18 +35,6 @@ class MockGlobalSettings {
   static create = jest.fn();
 }
 
-const chain = <T>(data: T) => ({
-  select: jest.fn().mockReturnThis(),
-  lean: jest.fn().mockResolvedValue(data),
-});
-
-const mockFs = {
-  savePublicAsset: jest.fn(),
-  deletePublicByBasename: jest.fn(),
-  servePublicAssert: jest.fn(),
-  resolvePublicAssetAbsolutePath: jest.fn(),
-};
-
 describe('GlobalSettingsService', () => {
   let service: GlobalSettingsService;
   let model: Partial<Record<keyof Model<GlobalSettingsDocument>, jest.Mock>> & {
@@ -61,14 +48,14 @@ describe('GlobalSettingsService', () => {
   const mockGlobalAdminSettingsDto: GlobalSettingsDto = defaultValues;
 
   beforeEach(async () => {
-    jest.clearAllMocks();
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GlobalSettingsService,
         { provide: getModelToken(GlobalSettings.name), useValue: MockGlobalSettings },
-        { provide: CACHE_MANAGER, useValue: cacheManagerMock },
-        { provide: FilesystemService, useValue: mockFs },
+        {
+          provide: CACHE_MANAGER,
+          useValue: cacheManagerMock,
+        },
       ],
     }).compile();
 
@@ -86,39 +73,39 @@ describe('GlobalSettingsService', () => {
     });
   });
 
-  it('should return settings', async () => {
-    const {
-      general: { ldap: ignoredLdap, ...generalWithoutLdap },
-      ...rest
-    } = mockGlobalAdminSettingsDto;
-    void ignoredLdap;
-    const cleaned = { ...rest, general: generalWithoutLdap };
-    const chained = chain(cleaned);
-    model.findOne?.mockReturnValue(chained);
+  describe('getGlobalSettings', () => {
+    it('should return settings', async () => {
+      const {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        general: { ldap: _, ...generalWithoutLdap },
+        ...rest
+      } = mockGlobalAdminSettingsDto;
+      const cleanedGlobalSettings = {
+        ...rest,
+        general: generalWithoutLdap,
+      };
+      model.findOne?.mockReturnValue({ lean: () => Promise.resolve(cleanedGlobalSettings) });
 
-    const result = await service.getGlobalSettings();
-
-    expect(model.findOne).toHaveBeenCalledWith({});
-    expect(chained.select).toHaveBeenCalledWith({ 'general.ldap': 0 });
-    expect(result).toEqual(cleaned);
-  });
-
-  it('should return admin settings', async () => {
-    const chained = chain(mockGlobalAdminSettingsDto);
-    model.findOne?.mockReturnValue(chained);
-
-    const result = await service.getGlobalAdminSettings();
-
-    expect(model.findOne).toHaveBeenCalledWith({});
-    expect(result).toEqual(mockGlobalAdminSettingsDto);
-  });
-
-  it('should throw CustomHttpException if error occurs', async () => {
-    model.findOne?.mockImplementation(() => {
-      throw new Error('Mongo error');
+      const result = await service.getGlobalSettings();
+      expect(model.findOne).toHaveBeenCalledWith({}, { 'general.ldap': 0 });
+      expect(result).toEqual(cleanedGlobalSettings);
     });
 
-    await expect(service.getGlobalSettings()).rejects.toThrow(CustomHttpException);
+    it('should return admin settings', async () => {
+      model.findOne?.mockReturnValue({ lean: () => Promise.resolve(mockGlobalAdminSettingsDto) });
+
+      const result = await service.getGlobalAdminSettings();
+      expect(model.findOne).toHaveBeenCalledWith({}, { 'general.ldap': 0 });
+      expect(result).toEqual(mockGlobalAdminSettingsDto);
+    });
+
+    it('should return null if error occurs', async () => {
+      model.findOne?.mockImplementation(() => {
+        throw new Error('Mongo error');
+      });
+
+      await expect(service.getGlobalSettings()).rejects.toThrow(CustomHttpException);
+    });
   });
 
   describe('setGlobalSettings', () => {
@@ -133,7 +120,6 @@ describe('GlobalSettingsService', () => {
       model.updateOne?.mockResolvedValue(mockResult);
 
       const result = await service.setGlobalSettings(mockGlobalAdminSettingsDto);
-
       expect(model.updateOne).toHaveBeenCalledWith({ singleton: true }, { $set: mockGlobalAdminSettingsDto });
       expect(result).toBe(mockResult);
     });

@@ -30,7 +30,7 @@ interface BrandingLogoFieldProps {
   onFileChange: (variant: ThemeType) => (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const BrandingLogoField: React.FC<BrandingLogoFieldProps> = ({
+const OrganisationLogoField: React.FC<BrandingLogoFieldProps> = ({
   variant,
   lightPreviewSrc,
   darkPreviewSrc,
@@ -93,4 +93,4 @@ const BrandingLogoField: React.FC<BrandingLogoFieldProps> = ({
   );
 };
 
-export default BrandingLogoField;
+export default OrganisationLogoField;

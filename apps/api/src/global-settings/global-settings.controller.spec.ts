@@ -20,16 +20,8 @@ import GlobalSettingsController from './global-settings.controller';
 import GlobalSettingsService from './global-settings.service';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';
-import FilesystemService from '../filesystem/filesystem.service';
 
 const mockedGlobalSettingsDto: GlobalSettingsDto = defaultValues;
-
-const mockFs = {
-  savePublicAsset: jest.fn(),
-  deletePublicByBasename: jest.fn(),
-  servePublicAssert: jest.fn(),
-  resolvePublicAssetAbsolutePath: jest.fn(),
-};
 
 const mockedGlobalSettingsDbResponse = {
   _id: '123',
@@ -62,7 +54,6 @@ describe('GlobalSettingsController', () => {
             setGlobalSettings: jest.fn(),
           },
         },
-        { provide: FilesystemService, useValue: mockFs },
         {
           provide: CACHE_MANAGER,
           useValue: cacheManagerMock,
@@ -87,17 +78,15 @@ describe('GlobalSettingsController', () => {
     it('should return global settings', async () => {
       jest.spyOn(service, 'getGlobalSettings').mockResolvedValue(mockedGlobalSettingsDbResponse);
 
-      await expect(controller.getGlobalSettings(undefined)).resolves.toBe(mockedGlobalSettingsDbResponse);
-
-      expect(service.getGlobalSettings).toHaveBeenCalledWith(undefined);
+      expect(await controller.getGlobalSettings()).toBe(mockedGlobalSettingsDbResponse);
+      expect(service.getGlobalSettings).toHaveBeenCalledWith();
     });
 
     it('should return projected global settings', async () => {
       jest.spyOn(service, 'getGlobalSettings').mockResolvedValue(mockedGlobalSettingsDbResponse);
 
-      await expect(controller.getGlobalSettings('schoolInfo')).resolves.toBe(mockedGlobalSettingsDbResponse);
-
-      expect(service.getGlobalSettings).toHaveBeenCalledWith('schoolInfo');
+      expect(await controller.getGlobalSettings()).toBe(mockedGlobalSettingsDbResponse);
+      expect(service.getGlobalSettings).toHaveBeenCalledWith();
     });
   });
 
