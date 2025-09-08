@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "1.5.2",
+  "version": "1.5.11",
   "scripts": {
     "test": "nx run-many --target=test --projects=api",
     "test:api": "nx run api:test --detectOpenHandles",
@@ -93,7 +93,7 @@
     "autoprefixer": "^10.4.17",
     "axios": "^1.7.4",
     "bull": "^4.16.5",
-    "bullmq": "^5.43.0",
+    "bullmq": "^5.58.2",
     "busboy": "^1.6.0",
     "cache-manager": "^6.4.2",
     "class-transformer": "^0.5.1",
