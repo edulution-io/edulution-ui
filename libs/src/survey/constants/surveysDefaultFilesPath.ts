@@ -12,8 +12,7 @@
 
 import { join } from 'path';
 import APPS from '@libs/appconfig/constants/apps';
-import { TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
 
-const SURVEY_TEMPLATES_DEFAULT_TEMPLATE_PATH = join('./dist/apps', 'api', APPS.SURVEYS, TEMPLATES);
+const SURVEYS_DEFAULT_FILES_PATH = join('./dist/apps', 'api', 'assets', APPS.SURVEYS);
 
-export default SURVEY_TEMPLATES_DEFAULT_TEMPLATE_PATH;
+export default SURVEYS_DEFAULT_FILES_PATH;

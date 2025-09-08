@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const ASSETS_FILES_PATH = './dist/apps';
+const SURVEYS_DEFAULT_LOGO = 'surveys-default-logo.webp';
 
-export default ASSETS_FILES_PATH;
+export default SURVEYS_DEFAULT_LOGO;

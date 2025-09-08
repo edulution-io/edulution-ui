@@ -34,7 +34,7 @@ const TemplateItem = (props: TemplateItemProps) => {
   const { form, creator, template } = props;
   const {
     formula,
-    /* backendLimiter, */
+    /* backendLimiter , */
     invitedAttendees,
     invitedGroups,
     isAnonymous,
