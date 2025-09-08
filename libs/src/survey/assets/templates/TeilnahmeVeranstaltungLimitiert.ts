@@ -19,7 +19,7 @@ const TeilnahmeVeranstaltungLimitiert = {
   template: {
     formula: {
       title: 'Anmeldung zur Veranstaltung',
-      description: 'Möchtest du an der Veranstaltung teilnehmen??',
+      description: 'Möchtest du an der Veranstaltung teilnehmen?',
       pages: [
         {
           name: 'Seite1',
@@ -29,7 +29,7 @@ const TeilnahmeVeranstaltungLimitiert = {
               name: 'Frage1',
               title: 'Dein Name',
               description: 'Gerne auch ein Spitzname oder Alias, falls gewünscht.',
-              isRequired: 'true',
+              isRequired: true,
             },
             {
               type: 'radiogroup',
@@ -41,7 +41,7 @@ const TeilnahmeVeranstaltungLimitiert = {
                 url: `http://${host}:${port}/edu-api/public-surveys/choices/temporalSurveyId/Frage2`,
                 valueName: 'name',
                 titleName: 'title',
-                allowEmptyResponse: 'true',
+                allowEmptyResponse: true,
               },
               choicesOrder: 'asc',
             },
