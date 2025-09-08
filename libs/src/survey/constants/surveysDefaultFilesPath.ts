@@ -14,6 +14,6 @@ import { join } from 'path';
 import APPS from '@libs/appconfig/constants/apps';
 import ASSETS_FILES_PATH from '@libs/common/constants/assetsFilesPath';
 
-const SURVEYS_DEFAULT_FILES_PATH = join(ASSETS_FILES_PATH, 'api', 'public', 'assets', APPS.SURVEYS);
+const SURVEYS_DEFAULT_FILES_PATH = join(ASSETS_FILES_PATH, APPS.SURVEYS);
 
 export default SURVEYS_DEFAULT_FILES_PATH;

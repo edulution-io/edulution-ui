@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const ASSETS_FILES_PATH = './dist/apps/';
+const ASSETS_FILES_PATH = './data/public/assets';
 
 export default ASSETS_FILES_PATH;
