@@ -11,8 +11,6 @@
  */
 
 import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
-import { Button } from '@/components/shared/Button';
-import { Trash2 } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Theme, ThemeType } from '@libs/common/types/theme';
@@ -24,14 +22,11 @@ interface BrandingLogoFieldProps {
   darkPreviewSrc: string;
   lightCacheKey: number;
   darkCacheKey: number;
-  lightServerSrc: string | null;
-  darkServerSrc: string | null;
   lightLocalSrc: string | null;
   darkLocalSrc: string | null;
-  deletingVariant: ThemeType | null;
+  uploadingVariant: ThemeType | null;
   lightInputRef: React.RefObject<HTMLInputElement>;
   darkInputRef: React.RefObject<HTMLInputElement>;
-  onDeleteVariant: (variant: ThemeType) => void;
   onFileChange: (variant: ThemeType) => (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -41,12 +36,9 @@ const BrandingLogoField: React.FC<BrandingLogoFieldProps> = ({
   darkPreviewSrc,
   lightCacheKey,
   darkCacheKey,
-  lightServerSrc,
-  darkServerSrc,
   lightLocalSrc,
   darkLocalSrc,
-  deletingVariant,
-  onDeleteVariant,
+  uploadingVariant,
   onFileChange,
   lightInputRef,
   darkInputRef,
@@ -56,14 +48,18 @@ const BrandingLogoField: React.FC<BrandingLogoFieldProps> = ({
   const cacheKey = isLightVariant ? lightCacheKey : darkCacheKey;
   const fileInputRef = isLightVariant ? lightInputRef : darkInputRef;
 
-  const hasServerAsset = Boolean(isLightVariant ? lightServerSrc : darkServerSrc);
   const hasLocalSelection = Boolean(isLightVariant ? lightLocalSrc : darkLocalSrc);
+  const isUploading = uploadingVariant === variant;
 
   const { t } = useTranslation();
 
   return (
     <div
-      className={`flex flex-col items-center rounded-2xl border border-dashed border-gray-300 p-6 text-center shadow-sm hover:border-gray-400 ${isLightVariant ? 'bg-white' : 'bg-neutral-900'}`}
+      className={`relative flex flex-col items-center rounded-2xl border border-dashed border-gray-300 p-6 text-center shadow-sm hover:border-gray-400 ${
+        isLightVariant ? 'bg-neutral-900' : 'bg-white'
+      } ${isUploading ? 'opacity-60' : ''}`}
+      aria-busy={isUploading}
+      aria-live="polite"
     >
       <img
         key={cacheKey}
@@ -74,7 +70,8 @@ const BrandingLogoField: React.FC<BrandingLogoFieldProps> = ({
           (e.currentTarget as HTMLImageElement).src = DesktopLogo;
         }}
       />
-      <div className="mt-3 grid w-full grid-cols-1 gap-2">
+
+      <div className={`mt-3 grid w-full grid-cols-1 gap-2 ${isUploading ? 'pointer-events-none' : ''}`}>
         <FileSelectButton
           ref={fileInputRef}
           accept="image/*"
@@ -83,21 +80,15 @@ const BrandingLogoField: React.FC<BrandingLogoFieldProps> = ({
           chooseText={t('common.chooseFile') ?? 'Datei auswählen'}
           changeText={t('common.changeFile') ?? 'Datei ändern'}
           labelClassName="w-full"
+          disabled={isUploading}
         />
-
-        {!hasLocalSelection && hasServerAsset && (
-          <Button
-            type="button"
-            variant="btn-small"
-            className="w-full bg-red-500"
-            onClick={() => onDeleteVariant(variant)}
-            disabled={deletingVariant === variant}
-          >
-            <Trash2 className="h-4 w-4" />
-            {t('common.delete')}
-          </Button>
-        )}
       </div>
+
+      {isUploading && (
+        <div className="pointer-events-none absolute inset-0 grid place-items-center">
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-current border-t-transparent" />
+        </div>
+      )}
     </div>
   );
 };

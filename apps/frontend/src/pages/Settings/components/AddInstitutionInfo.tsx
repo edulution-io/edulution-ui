@@ -21,7 +21,7 @@ type AddSchoolInfoProps = {
   form: UseFormReturn<GlobalSettingsFormValues>;
 };
 
-const AddSchoolInfo: React.FC<AddSchoolInfoProps> = ({ form }) => {
+const AddInstitutionInfo: React.FC<AddSchoolInfoProps> = ({ form }) => {
   const { t } = useTranslation();
 
   return (
@@ -59,4 +59,4 @@ const AddSchoolInfo: React.FC<AddSchoolInfoProps> = ({ form }) => {
   );
 };
 
-export default AddSchoolInfo;
+export default AddInstitutionInfo;

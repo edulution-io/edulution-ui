@@ -29,7 +29,7 @@ import { promisify } from 'util';
 import { createHash } from 'crypto';
 import { firstValueFrom, from } from 'rxjs';
 import { pipeline, Readable } from 'stream';
-import { extname, isAbsolute, join, parse, relative, resolve } from 'path';
+import { basename, extname, join, parse, resolve } from 'path';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
@@ -50,6 +50,8 @@ import THIRTY_DAYS from '@libs/common/constants/thirtyDays';
 import mimeTypeToExtension from '@libs/filesystem/constants/mimeTypeToExtension';
 import PUBLIC_ASSERT_PATH from '@libs/common/constants/publicAssertPath';
 import PublicAssetSaveResult from '@libs/filesystem/types/publicAssetSaveResult';
+import { promises as fs } from 'fs';
+import sharp from 'sharp';
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
 import WebdavSharesService from '../webdav/shares/webdav-shares.service';
@@ -70,79 +72,6 @@ class FilesystemService {
   async handleCron() {
     Logger.debug('CronJob: ClearTempFiles (running once every morning at 04:00 UTC)');
     await this.removeOldTempFiles(TEMP_FILES_PATH);
-  }
-
-  private async resolvePublicAssetAbsolutePath(
-    relativeDirectoryPath: string,
-    baseName: string,
-  ): Promise<string | null> {
-    const directoryPathWithoutEdgeSlashes = relativeDirectoryPath.replace(/^\/+|\/+$/g, '');
-    const directoryPathWithoutPublicPrefix = directoryPathWithoutEdgeSlashes.replace(/^public\//i, '');
-
-    const baseDirectoryAbsolutePath = resolve(PUBLIC_ASSERT_PATH);
-    const absoluteDirectoryPath = resolve(baseDirectoryAbsolutePath, ...directoryPathWithoutPublicPrefix.split('/'));
-
-    const relativeFromBaseToDirectory = relative(baseDirectoryAbsolutePath, absoluteDirectoryPath);
-    if (relativeFromBaseToDirectory.startsWith('..') || isAbsolute(relativeFromBaseToDirectory)) {
-      throw new CustomHttpException(
-        FileSharingErrorMessage.PublicFileResolvePublicFileFailed,
-        HttpStatus.FORBIDDEN,
-        absoluteDirectoryPath,
-        FilesystemService.name,
-      );
-    }
-
-    try {
-      const directoryStatistics = await fsStat(absoluteDirectoryPath);
-
-      if (directoryStatistics.isFile()) {
-        return absoluteDirectoryPath;
-      }
-      if (!directoryStatistics.isDirectory()) {
-        return null;
-      }
-
-      const candidateWithoutExtension = resolve(absoluteDirectoryPath, baseName);
-      let candidateWithoutExtensionIsFile = false;
-      try {
-        const candidateWithoutExtensionStatistics = await fsStat(candidateWithoutExtension);
-        candidateWithoutExtensionIsFile = candidateWithoutExtensionStatistics.isFile();
-      } catch {
-        candidateWithoutExtensionIsFile = false;
-      }
-      if (candidateWithoutExtensionIsFile) {
-        return candidateWithoutExtension;
-      }
-
-      const directoryEntryNames = await readdir(absoluteDirectoryPath);
-      const matchingEntryNames = directoryEntryNames.filter((entryName) => parse(entryName).name === baseName);
-
-      if (matchingEntryNames.length === 0) {
-        return null;
-      }
-
-      const absoluteCandidatePaths = matchingEntryNames.map((entryName) => resolve(absoluteDirectoryPath, entryName));
-
-      const candidatePathChecks = await Promise.all(
-        absoluteCandidatePaths.map(async (absolutePathValue) => {
-          try {
-            const statistics = await fsStat(absolutePathValue);
-            return statistics.isFile() ? absolutePathValue : null;
-          } catch {
-            return null;
-          }
-        }),
-      );
-
-      const firstExistingFilePath = candidatePathChecks.find((pathValue): pathValue is string => pathValue !== null);
-      if (firstExistingFilePath) {
-        return firstExistingFilePath;
-      }
-
-      return null;
-    } catch {
-      return null;
-    }
   }
 
   static async fetchFileStream(
@@ -522,19 +451,54 @@ class FilesystemService {
     }
   }
 
-  async servePublicAssert(relativePath: string, filename: string, response: Response): Promise<Response> {
-    const absolutePath = await this.resolvePublicAssetAbsolutePath(relativePath, filename);
-    if (!absolutePath) {
-      response.status(HttpStatus.NO_CONTENT).end();
-      return response;
+  removeExistingWithBase = async (directory: string, baseName: string) => {
+    const entries = await fs.readdir(directory);
+    const lower = baseName.toLowerCase();
+    const toDelete = entries.filter((entry) => basename(entry, extname(entry)).toLowerCase() === lower);
+    await Promise.all(toDelete.map((entry) => fs.unlink(join(directory, entry)).catch(() => {})));
+  };
+
+  async upload(
+    file: Express.Multer.File,
+    options: { destination: string; filename?: string },
+  ): Promise<{ filename: string; path: string; absolutePath: string }> {
+    if (!file || !file.buffer) return { filename: '', path: '', absolutePath: '' };
+
+    const destination = options.destination?.trim();
+    if (!destination) return { filename: '', path: '', absolutePath: '' };
+
+    const destinationAbsolute = resolve(PUBLIC_ASSERT_PATH, destination);
+    const rootAbsolute = resolve(PUBLIC_ASSERT_PATH);
+    if (!destinationAbsolute.startsWith(rootAbsolute)) {
+      return { filename: '', path: '', absolutePath: '' };
     }
 
-    const contentType = lookup(absolutePath) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
-    response.setHeader(HTTP_HEADERS.ContentType, contentType);
+    await fs.mkdir(destinationAbsolute, { recursive: true });
 
-    const readStream = await this.createReadStream(absolutePath);
-    readStream.pipe(response);
-    return response;
+    const original = file.originalname ?? 'upload.bin';
+    const uploadExtension = extname(original);
+
+    const rawBaseName = options.filename
+      ? basename(options.filename, extname(options.filename))
+      : basename(original, uploadExtension);
+
+    const safeBaseName = rawBaseName.replace(/[^a-z0-9._-]/gi, '') || `file-${Date.now()}`;
+
+    await this.removeExistingWithBase(destinationAbsolute, safeBaseName);
+
+    const fileName = `${safeBaseName}.webp`;
+    const absolutePath = join(destinationAbsolute, fileName);
+
+    try {
+      await sharp(file.buffer, { animated: true })
+        .png({ compressionLevel: 9, adaptiveFiltering: true })
+        .toFile(absolutePath);
+    } catch (err) {
+      await fs.writeFile(absolutePath, file.buffer);
+    }
+
+    const relativePath = join(destination, fileName);
+    return { filename: fileName, path: relativePath, absolutePath };
   }
 }
 

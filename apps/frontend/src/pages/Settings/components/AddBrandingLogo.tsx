@@ -15,19 +15,18 @@ import { AccordionContent } from '@/components/ui/AccordionSH';
 import type { UseFormReturn } from 'react-hook-form';
 import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
 import type { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSettings.form';
-import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 import { useTranslation } from 'react-i18next';
 import { Theme, ThemeType } from '@libs/common/types/theme';
 import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
 import { GLOBAL_SETTINGS_BRANDING_LOGO } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import BrandingLogoField from '@/pages/Settings/components/BrandingLogoField';
+import getMainLogoUrl from '@libs/assets/getMainLogoUrl';
 
 type Props = { form: UseFormReturn<GlobalSettingsFormValues> };
 
 const AddBrandingLogo: React.FC<Props> = ({ form }) => {
   const { t } = useTranslation();
-  const { getGlobalAsset } = useFilesystemStore();
-  const { deleteGlobalBrandingLogo } = useGlobalSettingsApiStore();
+  const { uploadGlobalAsset } = useFilesystemStore();
 
   const lightInputRef = useRef<HTMLInputElement>(null);
   const darkInputRef = useRef<HTMLInputElement>(null);
@@ -41,7 +40,7 @@ const AddBrandingLogo: React.FC<Props> = ({ form }) => {
   const [lightCacheKey, setLightCacheKey] = useState(0);
   const [darkCacheKey, setDarkCacheKey] = useState(0);
 
-  const [deletingVariant, setDeletingVariant] = useState<ThemeType | null>(null);
+  const [uploadingVariant, setUploadingVariant] = useState<ThemeType | null>(null);
 
   const revokeObjectUrl = (url: string | null, setter: (v: string | null) => void) => {
     if (url) URL.revokeObjectURL(url);
@@ -54,36 +53,43 @@ const AddBrandingLogo: React.FC<Props> = ({ form }) => {
     form.setValue(path, file, { shouldDirty: true });
   };
 
+  const loadVariant = (variant: ThemeType) => {
+    const objectUrl = getMainLogoUrl(variant);
+    if (variant === Theme.light) {
+      revokeObjectUrl(lightServerSrc, setLightServerSrc);
+      setLightServerSrc(objectUrl);
+      setLightCacheKey((v) => v + 1);
+    } else {
+      revokeObjectUrl(darkServerSrc, setDarkServerSrc);
+      setDarkServerSrc(objectUrl);
+      setDarkCacheKey((v) => v + 1);
+    }
+  };
+
   useEffect(() => {
-    let alive = true;
+    loadVariant(Theme.light);
+    loadVariant(Theme.dark);
+    revokeObjectUrl(lightLocalSrc, setLightLocalSrc);
+    revokeObjectUrl(darkLocalSrc, setDarkLocalSrc);
+    revokeObjectUrl(lightServerSrc, setLightServerSrc);
+    revokeObjectUrl(darkServerSrc, setDarkServerSrc);
+  }, []);
 
-    const loadVariant = async (variant: ThemeType) => {
-      try {
-        const base = `logo-${variant}`;
-        const asset = await getGlobalAsset(GLOBAL_SETTINGS_BRANDING_LOGO, base);
-        if (!alive) return;
-        if (variant === Theme.light) {
-          setLightServerSrc(asset.url);
-          setLightCacheKey((v) => v + 1);
-        } else {
-          setDarkServerSrc(asset.url);
-          setDarkCacheKey((v) => v + 1);
-        }
-      } catch {
-        if (!alive) return;
-        if (variant === Theme.light) setLightServerSrc(null);
-        else setDarkServerSrc(null);
-      }
-    };
-
-    void Promise.all([loadVariant(Theme.light), loadVariant(Theme.dark)]);
-
-    return () => {
-      alive = false;
-      revokeObjectUrl(lightLocalSrc, setLightLocalSrc);
-      revokeObjectUrl(darkLocalSrc, setDarkLocalSrc);
-    };
-  }, [getGlobalAsset]);
+  const uploadVariant = async (variant: ThemeType, file: File) => {
+    try {
+      setUploadingVariant(variant);
+      await uploadGlobalAsset({
+        destination: GLOBAL_SETTINGS_BRANDING_LOGO,
+        file,
+        filename: `main-logo-${variant}`,
+      });
+      loadVariant(variant);
+      if (variant === Theme.light) revokeObjectUrl(lightLocalSrc, setLightLocalSrc);
+      else revokeObjectUrl(darkLocalSrc, setDarkLocalSrc);
+    } finally {
+      setUploadingVariant(null);
+    }
+  };
 
   const onFileChange =
     (variant: ThemeType): React.ChangeEventHandler<HTMLInputElement> =>
@@ -105,36 +111,9 @@ const AddBrandingLogo: React.FC<Props> = ({ form }) => {
         const url = URL.createObjectURL(file);
         if (variant === Theme.light) setLightLocalSrc(url);
         else setDarkLocalSrc(url);
+        void uploadVariant(variant, file);
       }
     };
-
-  const clearLocalFileSelection = (variant: ThemeType) => {
-    setFormFileForVariant(variant, null);
-    if (variant === Theme.light) {
-      revokeObjectUrl(lightLocalSrc, setLightLocalSrc);
-      if (lightInputRef.current) lightInputRef.current.value = '';
-    } else {
-      revokeObjectUrl(darkLocalSrc, setDarkLocalSrc);
-      if (darkInputRef.current) darkInputRef.current.value = '';
-    }
-  };
-
-  const onDeleteVariant = async (variant: ThemeType) => {
-    try {
-      setDeletingVariant(variant);
-      clearLocalFileSelection(variant);
-      await deleteGlobalBrandingLogo(variant);
-      if (variant === Theme.light) {
-        setLightServerSrc(null);
-        setLightCacheKey((v) => v + 1);
-      } else {
-        setDarkServerSrc(null);
-        setDarkCacheKey((v) => v + 1);
-      }
-    } finally {
-      setDeletingVariant(null);
-    }
-  };
 
   const lightPreviewSrc = lightLocalSrc ?? lightServerSrc ?? DesktopLogo;
   const darkPreviewSrc = darkLocalSrc ?? darkServerSrc ?? DesktopLogo;
@@ -145,17 +124,14 @@ const AddBrandingLogo: React.FC<Props> = ({ form }) => {
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-1">
         <BrandingLogoField
-          variant={Theme.light}
+          variant={Theme.dark}
           lightPreviewSrc={lightPreviewSrc}
           darkPreviewSrc={darkPreviewSrc}
           lightCacheKey={lightCacheKey}
           darkCacheKey={darkCacheKey}
-          lightServerSrc={lightServerSrc}
-          darkServerSrc={darkServerSrc}
           lightLocalSrc={lightLocalSrc}
           darkLocalSrc={darkLocalSrc}
-          deletingVariant={deletingVariant}
-          onDeleteVariant={onDeleteVariant}
+          uploadingVariant={uploadingVariant}
           onFileChange={onFileChange}
           lightInputRef={lightInputRef}
           darkInputRef={darkInputRef}

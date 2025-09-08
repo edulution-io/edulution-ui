@@ -22,6 +22,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import { BullModule } from '@nestjs/bullmq';
+import { join } from 'path';
 import LoggingInterceptor from '../logging/logging.interceptor';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
@@ -53,10 +54,17 @@ import MobileAppModuleModule from '../mobileAppModule/mobileAppModule.module';
 
 @Module({
   imports: [
-    ServeStaticModule.forRoot({
-      rootPath: PUBLIC_DOWNLOADS_PATH,
-      serveRoot: `/${EDU_API_ROOT}/downloads`,
-    }),
+    ServeStaticModule.forRoot(
+      {
+        rootPath: PUBLIC_DOWNLOADS_PATH,
+        serveRoot: `/${EDU_API_ROOT}/downloads`,
+      },
+
+      {
+        rootPath: join(process.cwd(), 'data/public'),
+        serveRoot: `/${EDU_API_ROOT}/public`,
+      },
+    ),
 
     BullModule.forRoot({
       connection: redisConnection,

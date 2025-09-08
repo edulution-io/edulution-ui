@@ -30,10 +30,10 @@ import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
+import { memoryStorage } from 'multer';
 import { createAttachmentUploadOptions } from './multer.utilities';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 import FilesystemService from './filesystem.service';
-import { Public } from '../common/decorators/public.decorator';
 
 @ApiTags(EDU_API_CONFIG_ENDPOINTS.FILES)
 @ApiBearerAuth()
@@ -78,11 +78,16 @@ class FileSystemController {
     return FilesystemService.deleteFile(appsPath, FilesystemService.buildPathString(filename));
   }
 
-  @Public()
-  @Get('public/*path')
-  getPublicAsset(@Param('path') path: string | string[], @Query('filename') filename: string, @Res() res: Response) {
-    const joinedPath = Array.isArray(path) ? path.join('/') : (path ?? '');
-    return this.filesystemService.servePublicAssert(joinedPath, filename, res);
+  @Post()
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('file', { storage: memoryStorage() }))
+  async upload(
+    @UploadedFile() file: Express.Multer.File,
+    @Query('destination') destination: string,
+    @Query('filename') filename: string,
+  ) {
+    const { path } = await this.filesystemService.upload(file, { destination, filename });
+    return { path };
   }
 }
 

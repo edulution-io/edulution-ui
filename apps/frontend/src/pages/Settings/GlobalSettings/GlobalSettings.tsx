@@ -27,7 +27,7 @@ import LdapSettings from '@/pages/Settings/components/LdapSettings';
 import AddBrandingLogo from '@/pages/Settings/components/AddBrandingLogo';
 import { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSettings.form';
 import globalSettingsFormDefaultValues from '@libs/global-settings/constants/globalSettingsFormDefaultValues';
-import AddSchoolInfo from '@/pages/Settings/components/AddSchoolInfo';
+import AddInstitutionInfo from '@/pages/Settings/components/AddInstitutionInfo';
 import useGlobalSettingsApiStore from './useGlobalSettingsApiStore';
 import GlobalSettingsFloatingButtons from './GlobalSettingsFloatingButtons';
 import DeploymentTargetDropdownSelectFormField from '../components/DeploymentTargetDropdownSelectFormField';
@@ -211,7 +211,7 @@ const GlobalSettings: React.FC = () => {
               <AccordionTrigger className="flex">
                 <h4>{t('settings.globalSettings.organisationInfo.title')}</h4>
               </AccordionTrigger>
-              <AddSchoolInfo form={form} />
+              <AddInstitutionInfo form={form} />
             </AccordionItem>
           </form>
         </Form>

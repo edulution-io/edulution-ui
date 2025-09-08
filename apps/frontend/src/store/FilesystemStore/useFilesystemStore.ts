@@ -10,14 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type LogoAsset from '@libs/common/types/logoAsset';
 import { create } from 'zustand';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import eduApi from '@/api/eduApi';
-import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import mimeTypeToExtension from '@libs/filesystem/constants/mimeTypeToExtension';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
+
+function getExtensionFromMimeType(mimeType?: string): string {
+  return mimeType && mimeTypeToExtension[mimeType] ? `.${mimeTypeToExtension[mimeType]}` : '';
+}
 
 interface FilesystemStore {
-  getGlobalAsset: (path: string, filename: string) => Promise<LogoAsset>;
+  uploadGlobalAsset: (options: { destination: string; file: File | Blob; filename?: string }) => Promise<void>;
   reset: () => void;
 }
 
@@ -26,30 +30,37 @@ const initialState = {};
 const useFilesystemStore = create<FilesystemStore>((set) => ({
   ...initialState,
 
-  getGlobalAsset: async (path, filename) => {
-    const route = `${EDU_API_CONFIG_ENDPOINTS.FILES}/public/${encodeURI(path)}`;
+  async uploadGlobalAsset({ destination, file, filename }) {
+    const filesEndpointUrl = `${EDU_API_CONFIG_ENDPOINTS.FILES}`;
+    const formData = new FormData();
 
-    const resp = await eduApi.get<Blob>(route, {
-      params: { filename },
-      responseType: 'blob',
+    if (file instanceof File) {
+      formData.append('file', file);
+    } else {
+      const extension = getExtensionFromMimeType(file.type) || '.bin';
+      const wrappedFileName = `${filename ?? 'upload'}${extension}`;
+      const wrappedFile = new File([file], wrappedFileName, {
+        type: file.type || RequestResponseContentType.APPLICATION_OCTET_STREAM,
+      });
+      formData.append('file', wrappedFile);
+    }
+    if (filename) {
+      formData.append('filename', filename);
+    }
+
+    const response = await eduApi.post<void>(filesEndpointUrl, formData, {
+      params: { destination },
       validateStatus: (status) => status < 500,
     });
 
-    if (resp.status === 204) {
-      throw new Error('Asset not found');
+    if (response.status >= 400) {
+      throw new Error('Upload failed');
     }
-
-    const blob = resp.data;
-    const headerCT = resp.headers?.[HTTP_HEADERS.ContentType];
-    const ctFromHeader = typeof headerCT === 'string' ? headerCT : undefined;
-    const mimeType = ctFromHeader || blob.type || RequestResponseContentType.APPLICATION_OCTET_STREAM;
-
-    const url = URL.createObjectURL(blob);
-    const asset: LogoAsset = { url, mimeType };
-    return asset;
   },
 
-  reset: () => set(initialState),
+  reset() {
+    set(initialState);
+  },
 }));
 
 export default useFilesystemStore;
