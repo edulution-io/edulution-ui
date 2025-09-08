@@ -19,17 +19,19 @@ const Vortragsthema = {
       elements: [
         {
           type: 'paneldynamic',
-          name: 'Frage2',
+          name: 'Frage1',
+          title: 'Prioritätenliste möglicher Vortragsthemen',
           description:
             'Bitte gib eine Prioritätenliste mit Themen an, die für dich als Vortragsthema in Frage kommen. Beginne mit deiner höchsten Priorität.',
           templateElements: [
             {
               type: 'text',
-              name: 'Frage3',
+              name: 'Frage2',
+              title: 'Thema',
+              isRequired: true,
             },
           ],
-          templateTitle: 'Thema',
-          minPanelCount: 3,
+          minPanelCount: 1,
           maxPanelCount: 10,
           panelAddText: 'Weiteres Thema hinzufügen',
         },

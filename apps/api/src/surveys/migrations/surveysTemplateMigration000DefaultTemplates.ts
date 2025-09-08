@@ -12,15 +12,16 @@
 
 import { Logger } from '@nestjs/common';
 import {
-  TeilnahmeVeranstaltungLimitiert,
   Praktikumsplatz,
   ElternAbend,
   Elternbrief,
+  TeilnahmeVeranstaltungLimitiert,
+  Vortragsthema,
 } from '@libs/survey/assets/templates';
 import { SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
 import { Migration } from '../../migration/migration.type';
 
-const list = [TeilnahmeVeranstaltungLimitiert, Praktikumsplatz, ElternAbend, Elternbrief];
+const list = [Praktikumsplatz, ElternAbend, Elternbrief, TeilnahmeVeranstaltungLimitiert, Vortragsthema];
 
 const name = '000-load-the-default-survey-templates';
 

@@ -11,6 +11,7 @@
  */
 
 export { default as Praktikumsplatz } from './Praktikumsplatz';
-export { default as TeilnahmeVeranstaltungLimitiert } from './TeilnahmeVeranstaltungLimitiert';
 export { default as ElternAbend } from './ElternAbend';
 export { default as Elternbrief } from './Elternbrief';
+export { default as TeilnahmeVeranstaltungLimitiert } from './TeilnahmeVeranstaltungLimitiert';
+export { default as Vortragsthema } from './Vortragsthema';

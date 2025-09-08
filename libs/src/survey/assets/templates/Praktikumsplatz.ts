@@ -20,15 +20,17 @@ const Praktikumsplatz = {
         {
           type: 'paneldynamic',
           name: 'Frage1',
+          title: 'Prioritätenliste möglicher Praktikumsplätze',
           description:
             'Bitte gib eine Prioritätenliste mit Unternehmen an, die für dich als Praktikumsplatz in Frage kommen. Beginne mit deiner höchsten Priorität.',
           templateElements: [
             {
               type: 'text',
               name: 'Frage2',
+              title: 'Name des Unternehmens',
+              isRequired: true,
             },
           ],
-          templateTitle: 'Unternehmen',
           minPanelCount: 3,
           maxPanelCount: 10,
           panelAddText: 'Weiteres Unternehmen hinzufügen',
