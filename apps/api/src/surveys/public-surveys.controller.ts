@@ -15,6 +15,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Get, Post, Param, Res } from '@nestjs/common';
 import { PUBLIC_USER, FILES, PUBLIC_SURVEYS, CHOICES, SURVEYS_LOGO } from '@libs/survey/constants/surveys-endpoint';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
+import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answer.service';
@@ -72,7 +73,8 @@ class PublicSurveysController {
     if (surveyId === TEMPORAL_SURVEY_ID_STRING) {
       return [];
     }
-    return this.surveyAnswerService.getSelectableChoices(surveyId, questionName);
+    const choices = await this.surveyAnswerService.getSelectableChoices(surveyId, questionName);
+    return choices.filter((choice) => choice.name !== SHOW_OTHER_ITEM);
   }
 }
 

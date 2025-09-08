@@ -10,10 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { join } from 'path';
-import APPS from '@libs/appconfig/constants/apps';
-import ASSETS_FILES_PATH from '@libs/common/constants/assetsFilesPath';
+const ASSETS_FILES_PATH = './dist/apps/';
 
-const SURVEYS_DEFAULT_FILES_PATH = join(ASSETS_FILES_PATH, 'api', 'public', 'assets', APPS.SURVEYS);
-
-export default SURVEYS_DEFAULT_FILES_PATH;
+export default ASSETS_FILES_PATH;

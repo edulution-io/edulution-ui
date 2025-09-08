@@ -23,7 +23,7 @@ module.exports = {
       outputHashing: 'none',
       outputFileName: 'main.js',
       generatePackageJson: true,
-      assets: [{ input: '../../libs/src/survey/assets', glob: '**/*', output: './assets/surveys/' }],
+      assets: [{ input: '../../data/public/assets', glob: '**/*', output: './public/assets/' }],
     }),
   ],
 };
