@@ -14,7 +14,7 @@ import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import MobileAppUserDto from '@libs/mobileApp/types/mobileAppUserDto';
 import UserDto from '@libs/user/types/user.dto';
 import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
-import parseLdapGeneralizedTime from '@libs/mobileApp/utils/parseLdapGeneralizedTime';
+import parseLmnGeneralizedTimeAttribute from '@libs/mobileApp/utils/parseLmnGeneralizedTimeAttribute';
 
 const getMobileAppUserDto = ({
   usernameFallback,
@@ -34,8 +34,8 @@ const getMobileAppUserDto = ({
   email: user?.email || '',
   birthDate: lmn?.sophomorixBirthdate || '',
   expirationDate:
-    parseLdapGeneralizedTime(lmn?.sophomorixDeactivationDate) ||
-    parseLdapGeneralizedTime(lmn?.sophomorixTolerationDate),
+    parseLmnGeneralizedTimeAttribute(lmn?.sophomorixDeactivationDate) ||
+    parseLmnGeneralizedTimeAttribute(lmn?.sophomorixTolerationDate),
   school: lmn?.sophomorixSchoolname || '',
   classes: Array.isArray(lmn?.schoolclasses)
     ? lmn.schoolclasses.map((userClass) => userClass.match(/([^-]+)$/)?.at(1) || '')

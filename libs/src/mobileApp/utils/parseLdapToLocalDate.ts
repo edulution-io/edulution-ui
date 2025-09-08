@@ -10,10 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import parseLdapGeneralizedTime from '@libs/mobileApp/utils/parseLdapGeneralizedTime';
+import parseLmnGeneralizedTimeAttribute from '@libs/mobileApp/utils/parseLmnGeneralizedTimeAttribute';
 
 const parseLdapToLocalDate = (ldapDateString?: string | null, locale = 'de-DE', timeZone = 'Europe/Berlin'): string => {
-  const iso = parseLdapGeneralizedTime(ldapDateString, true);
+  const iso = parseLmnGeneralizedTimeAttribute(ldapDateString, true);
   if (!iso) return '';
   const date = new Date(iso);
   return date.toLocaleDateString(locale, { timeZone });

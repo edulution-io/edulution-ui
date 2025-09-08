@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const parseLdapGeneralizedTime = (ldapTimeString?: string | null, treatEpochAsEmpty = true): string => {
+const parseLmnGeneralizedTimeAttribute = (ldapTimeString?: string | null, treatEpochAsEmpty = true): string => {
   if (!ldapTimeString) return '';
 
   const m = ldapTimeString.match(/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})(?:\.\d+)?Z$/);
@@ -25,4 +25,4 @@ const parseLdapGeneralizedTime = (ldapTimeString?: string | null, treatEpochAsEm
   return date.toISOString();
 };
 
-export default parseLdapGeneralizedTime;
+export default parseLmnGeneralizedTimeAttribute;
