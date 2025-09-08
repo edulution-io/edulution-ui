@@ -10,17 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Body, Controller, Delete, Get, Put, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import {
   GLOBAL_SETTINGS_ADMIN_ENDPOINT,
-  GLOBAL_SETTINGS_BRANDING_LOGO,
   GLOBAL_SETTINGS_ROOT_ENDPOINT,
 } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { memoryStorage } from 'multer';
-import { ThemeType } from '@libs/common/types/theme';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 import GlobalSettingsService from './global-settings.service';
 
@@ -45,23 +41,6 @@ class GlobalSettingsController {
   @UseGuards(AppConfigGuard)
   async setGlobalSettings(@Body() globalSettingsDto: GlobalSettingsDto) {
     return this.globalSettingsService.setGlobalSettings(globalSettingsDto);
-  }
-
-  @Put(GLOBAL_SETTINGS_BRANDING_LOGO)
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: memoryStorage(),
-      limits: { fileSize: 10 * 1024 * 1024 },
-    }),
-  )
-  @UseGuards(AppConfigGuard)
-  async setBrandingLogo(@UploadedFile() file: Express.Multer.File, @Query('variant') variant: ThemeType) {
-    return this.globalSettingsService.setBrandingLogo(file, variant);
-  }
-
-  @Delete(GLOBAL_SETTINGS_BRANDING_LOGO)
-  async removeBrandingLogo(@Query('variant') variant: ThemeType) {
-    return this.globalSettingsService.removeBrandingLogo(variant);
   }
 }
 

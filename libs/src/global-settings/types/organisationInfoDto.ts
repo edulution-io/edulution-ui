@@ -12,7 +12,7 @@
 
 import { IsOptional, IsString, IsUrl } from 'class-validator';
 
-class SchoolInfoDto {
+class OrganisationInfoDto {
   @IsString() @IsOptional() name?: string;
 
   @IsString() @IsOptional() street?: string;
@@ -22,4 +22,4 @@ class SchoolInfoDto {
   @IsUrl({ require_tld: false }, { message: 'Invalid URL' }) @IsOptional() website?: string;
 }
 
-export default SchoolInfoDto;
+export default OrganisationInfoDto;

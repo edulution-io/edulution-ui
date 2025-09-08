@@ -35,7 +35,7 @@ import DeploymentTargetDropdownSelectFormField from '../components/DeploymentTar
 const GlobalSettings: React.FC = () => {
   const { t } = useTranslation();
   const { searchGroups } = useGroupStore();
-  const { appConfigs } = useAppConfigsStore();
+  const { appConfigs = [] } = useAppConfigsStore(); // <- fallback auf []
   const { globalSettings, getGlobalAdminSettings, setGlobalSettings } = useGlobalSettingsApiStore();
 
   const form = useForm<GlobalSettingsFormValues>({
@@ -66,11 +66,11 @@ const GlobalSettings: React.FC = () => {
         ...globalSettings,
         general: {
           ...defaultValues.general,
-          ...(globalSettings.general ?? defaultValues.general),
+          ...(globalSettings.general ?? {}),
         },
-        schoolInfo: {
-          ...defaultValues.schoolInfo,
-          ...(globalSettings.schoolInfo ?? defaultValues.schoolInfo),
+        organisationInfo: {
+          ...defaultValues.organisationInfo,
+          ...(globalSettings.organisationInfo ?? {}),
         },
         auth: {
           mfaEnforcedGroups: globalSettings.auth?.mfaEnforcedGroups ?? [],
@@ -84,14 +84,21 @@ const GlobalSettings: React.FC = () => {
   const isCustomLandingPageEnabled = watch('general.defaultLandingPage.isCustomLandingPageEnabled');
 
   useEffect(() => {
-    if (!isDirty || !appConfigs.length) return;
+    if (!isDirty) return;
 
-    if (isCustomLandingPageEnabled && !defaultLandingPageAppName) {
-      setValue('general.defaultLandingPage.appName', appConfigs[0].name);
-    } else if (!isCustomLandingPageEnabled) {
-      setValue('general.defaultLandingPage', defaultValues.general.defaultLandingPage);
+    if (isCustomLandingPageEnabled) {
+      if (!defaultLandingPageAppName && appConfigs.length > 0) {
+        setValue('general.defaultLandingPage.appName', appConfigs[0]?.name ?? '');
+      }
+    } else if (isCustomLandingPageEnabled === false) {
+      // Schalter aus → gesamten Block auf Defaults zurücksetzen (falls vorhanden)
+      const fallback = defaultValues?.general?.defaultLandingPage ?? {
+        isCustomLandingPageEnabled: false,
+        appName: '',
+      };
+      setValue('general.defaultLandingPage', fallback);
     }
-  }, [defaultLandingPageAppName, isCustomLandingPageEnabled, appConfigs, setValue]);
+  }, [isDirty, defaultLandingPageAppName, isCustomLandingPageEnabled, appConfigs, setValue]);
 
   const handleGroupsChange = (newGroups: MultipleSelectorGroup[]) => {
     const uniqueGroups = newGroups.reduce<MultipleSelectorGroup[]>((acc, g) => {
@@ -102,7 +109,22 @@ const GlobalSettings: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<GlobalSettingsFormValues> = async (values) => {
-    await setGlobalSettings(values);
+    const safeValues: GlobalSettingsFormValues = {
+      ...values,
+      general: {
+        ...values.general,
+        defaultLandingPage: {
+          isCustomLandingPageEnabled: values.general?.defaultLandingPage?.isCustomLandingPageEnabled ?? false,
+          appName: values.general?.defaultLandingPage?.appName ?? '',
+        },
+      },
+      auth: {
+        ...values.auth,
+        mfaEnforcedGroups: values.auth?.mfaEnforcedGroups ?? [],
+      },
+    };
+
+    await setGlobalSettings(safeValues);
     await getGlobalAdminSettings();
   };
 
@@ -134,7 +156,7 @@ const GlobalSettings: React.FC = () => {
                     description: t('settings.globalSettings.defaultLandingPageSwitchDescription'),
                   }}
                 />
-                {isCustomLandingPageEnabled && (
+                {Boolean(isCustomLandingPageEnabled) && appConfigs.length > 0 && (
                   <AppDropdownSelectFormField
                     appNamePath="general.defaultLandingPage.appName"
                     form={form}
@@ -158,7 +180,7 @@ const GlobalSettings: React.FC = () => {
                       <p className="font-bold">{t('permission.groups')}</p>
                       <FormControl>
                         <AsyncMultiSelect<MultipleSelectorGroup>
-                          value={getValues(`auth.${GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS}`)}
+                          value={getValues(`auth.${GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS}`) ?? []}
                           onSearch={searchGroups}
                           onChange={handleGroupsChange}
                           placeholder={t('search.type-to-search')}
@@ -178,12 +200,14 @@ const GlobalSettings: React.FC = () => {
               </AccordionTrigger>
               <LdapSettings form={form} />
             </AccordionItem>
+
             <AccordionItem value="institutionLogo">
               <AccordionTrigger className="flex">
                 <h4>{t('settings.globalSettings.brandingLogo.title')}</h4>
               </AccordionTrigger>
               <AddBrandingLogo form={form} />
             </AccordionItem>
+
             <AccordionItem value="schoolInfo">
               <AccordionTrigger className="flex">
                 <h4>{t('settings.globalSettings.schoolInfo.title')}</h4>

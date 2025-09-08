@@ -127,22 +127,8 @@ const useGlobalSettingsApiStore = create<GlobalSettingsStore>((set, get) => ({
         }));
       }
 
-      const logos: BrandingDto['logos'] = {
-        light: results.light
-          ? { url: results.light.publicPath, mimeType: results.light.mime }
-          : (dto.branding?.logos?.light ?? EMPTY_LOGO),
-
-        dark: results.dark
-          ? { url: results.dark.publicPath, mimeType: results.dark.mime }
-          : (dto.branding?.logos?.dark ?? EMPTY_LOGO),
-      };
-
       const payload: Partial<GlobalSettingsDto> = {
         ...dto,
-        branding: {
-          ...(dto.branding ?? {}),
-          logos,
-        },
       };
 
       await eduApi.put<GlobalSettingsDto>(GLOBAL_SETTINGS_ROOT_ENDPOINT, payload);

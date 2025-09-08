@@ -13,7 +13,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({ _id: false })
-export class SchoolInfo {
+export class OrganisationInfo {
   @Prop({ type: String, trim: true, default: '' })
   name: string;
 
@@ -27,4 +27,4 @@ export class SchoolInfo {
   website: string;
 }
 
-export const SchoolInfoSchema = SchemaFactory.createForClass(SchoolInfo);
+export const OrganisationInfoSchema = SchemaFactory.createForClass(OrganisationInfo);

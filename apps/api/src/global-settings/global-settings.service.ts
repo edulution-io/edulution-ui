@@ -21,19 +21,15 @@ import { GLOBAL_SETTINGS_ROOT_ENDPOINT } from '@libs/global-settings/constants/g
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { DEPLOYMENT_TARGET_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
-import PUBLIC_ASSERT_PATH from '@libs/common/constants/publicAssertPath';
-import { Theme, ThemeType } from '@libs/common/types/theme';
 import CustomHttpException from '../common/CustomHttpException';
 import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
 import MigrationService from '../migration/migration.service';
 import globalSettingsMigrationsList from './migrations/globalSettingsMigrationsList';
-import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
 class GlobalSettingsService implements OnModuleInit {
   constructor(
     @InjectModel(GlobalSettings.name) private globalSettingsModel: Model<GlobalSettingsDocument>,
-    private readonly filesystemService: FilesystemService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
@@ -92,10 +88,7 @@ class GlobalSettingsService implements OnModuleInit {
         'general.ldap': 0,
       } as const;
 
-      return await this.globalSettingsModel
-        .findOne({})
-        .select(projection ?? PUBLIC_PROJECTION)
-        .lean();
+      return await this.globalSettingsModel.findOne({}, projection || PUBLIC_PROJECTION).lean();
     } catch (error) {
       throw new CustomHttpException(
         GlobalSettingsErrorMessages.NotFoundError,
@@ -143,18 +136,6 @@ class GlobalSettingsService implements OnModuleInit {
         GlobalSettings.name,
       );
     }
-  }
-
-  setBrandingLogo(file: Express.Multer.File, variant: ThemeType) {
-    const basename = variant === 'dark' ? `logo-${Theme.dark}` : `logo-${Theme.light}`;
-    return this.filesystemService.savePublicAsset('branding/logo', basename, file.buffer, file.mimetype, {
-      cleanBasename: true,
-    });
-  }
-
-  removeBrandingLogo(variant: ThemeType) {
-    const basename = variant === 'dark' ? `logo-${Theme.dark}` : `logo-${Theme.light}`;
-    return FilesystemService.deleteFile(`${PUBLIC_ASSERT_PATH}branding/logo`, basename, { ignoreExtension: true });
   }
 }
 

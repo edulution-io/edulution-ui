@@ -30,8 +30,7 @@ const defaultValues: GlobalSettingsDto = {
       },
     },
   },
-  branding: { logos: { light: { url: '', mimeType: '' }, dark: { url: '', mimeType: '' } } },
-  schoolInfo: {
+  organisationInfo: {
     name: '',
     street: '',
     postalCode: '',

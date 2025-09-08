@@ -13,8 +13,7 @@
 import { ValidateNested } from 'class-validator';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import type DeploymentTarget from '@libs/common/types/deployment-target';
-import BrandingDto from '@libs/global-settings/types/branding.dto';
-import SchoolInfoDto from '@libs/global-settings/types/schoolInfo.dto';
+import OrganisationInfoDto from '@libs/global-settings/types/organisationInfoDto';
 
 type GlobalSettingsAuth = {
   mfaEnforcedGroups: MultipleSelectorGroup[];
@@ -40,10 +39,7 @@ class GlobalSettingsDto {
   };
 
   @ValidateNested()
-  branding: BrandingDto;
-
-  @ValidateNested()
-  schoolInfo?: SchoolInfoDto;
+  organisationInfo?: OrganisationInfoDto;
 }
 
 export default GlobalSettingsDto;
