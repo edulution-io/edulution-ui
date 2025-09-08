@@ -10,14 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import SurveyDto from './survey.dto';
-
-export type TemplateDto = Partial<SurveyDto> & { formula: SurveyFormula };
-
-export interface SurveyTemplateDto {
-  template: TemplateDto;
-  fileName?: string;
-  isActive?: boolean;
-  schemaVersion?: number;
-}
+export { default as Praktikumsplatz } from './Praktikumsplatz';
+export { default as ElternAbend } from './ElternAbend';
+export { default as Elternbrief } from './Elternbrief';
+export { default as TeilnahmeVeranstaltungLimitiert } from './TeilnahmeVeranstaltungLimitiert';
+export { default as Vortragsthema } from './Vortragsthema';

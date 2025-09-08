@@ -19,12 +19,13 @@ import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
 import SURVEY_TEMPLATES_EXCHANGE_PATH from '@libs/survey/constants/surveyTemplatesExchangePath';
-import SURVEY_TEMPLATES_DEFAULT_TEMPLATE_PATH from '@libs/survey/constants/surveyTemplatesDefaultTemplatePath';
 import { SurveyTemplateDto, TemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import { SurveysTemplate, SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
 import CustomHttpException from '../common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
+import MigrationService from '../migration/migration.service';
+import surveysTemplateMigrationsList from './migrations/surveysTemplateMigrationsList';
 
 @Injectable()
 class SurveysTemplateService implements OnModuleInit {
@@ -35,8 +36,11 @@ class SurveysTemplateService implements OnModuleInit {
 
   async onModuleInit() {
     await this.fileSystemService.ensureDirectoryExists(SURVEY_TEMPLATES_EXCHANGE_PATH);
+    await MigrationService.runMigrations<SurveysTemplateDocument>(
+      this.surveyTemplateModel,
+      surveysTemplateMigrationsList,
+    );
     await this.migrateTemplatesFromFolderToDb(SURVEY_TEMPLATES_EXCHANGE_PATH);
-    await this.migrateTemplatesFromFolderToDb(SURVEY_TEMPLATES_DEFAULT_TEMPLATE_PATH);
   }
 
   async updateOrCreateTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
