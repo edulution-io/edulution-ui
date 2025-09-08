@@ -10,21 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ApiTags } from '@nestjs/swagger';
-import { Controller, Get, Injectable } from '@nestjs/common';
-import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
-import EdulutionAppService from './edulutionApp.service';
+import parseLdapGeneralizedTime from '@libs/mobileApp/utils/parseLdapGeneralizedTime';
 
-@ApiTags('edulutionApp')
-@Controller('edulutionApp')
-@Injectable()
-class EdulutionAppController {
-  constructor(private readonly edulutionAppService: EdulutionAppService) {}
+const parseLdapToLocalDate = (ldapDateString?: string | null, locale = 'de-DE', timeZone = 'Europe/Berlin'): string => {
+  const iso = parseLdapGeneralizedTime(ldapDateString, true);
+  if (!iso) return '';
+  const date = new Date(iso);
+  return date.toLocaleDateString(locale, { timeZone });
+};
 
-  @Get('user-data')
-  async getAppUserData(@GetCurrentUsername() username: string) {
-    return this.edulutionAppService.getAppUserData(username);
-  }
-}
-
-export default EdulutionAppController;
+export default parseLdapToLocalDate;

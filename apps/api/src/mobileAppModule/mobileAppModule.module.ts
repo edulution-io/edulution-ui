@@ -10,13 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import parseLdapGeneralizedTime from '@libs/edulutionApp/utils/parseLdapGeneralizedTime';
+import { Module } from '@nestjs/common';
+import MobileAppModuleService from './mobileAppModule.service';
+import MobileAppModuleController from './mobileAppModule.controller';
+import LmnApiModule from '../lmnApi/lmnApi.module';
 
-const parseLdapToLocalDate = (ldapDateString?: string | null, locale = 'de-DE', timeZone = 'Europe/Berlin'): string => {
-  const iso = parseLdapGeneralizedTime(ldapDateString, true);
-  if (!iso) return '';
-  const date = new Date(iso);
-  return date.toLocaleDateString(locale, { timeZone });
-};
-
-export default parseLdapToLocalDate;
+@Module({
+  imports: [LmnApiModule],
+  controllers: [MobileAppModuleController],
+  providers: [MobileAppModuleService],
+})
+export default class MobileAppModuleModule {}

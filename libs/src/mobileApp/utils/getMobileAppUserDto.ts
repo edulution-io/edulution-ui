@@ -11,12 +11,12 @@
  */
 
 import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
-import EdulutionAppUserDto from '@libs/edulutionApp/types/edulutionAppUser.dto';
+import MobileAppUserDto from '@libs/mobileApp/types/mobileAppUserDto';
 import UserDto from '@libs/user/types/user.dto';
 import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
-import parseLdapGeneralizedTime from '@libs/edulutionApp/utils/parseLdapGeneralizedTime';
+import parseLdapGeneralizedTime from '@libs/mobileApp/utils/parseLdapGeneralizedTime';
 
-const toEdulutionAppUser = ({
+const getMobileAppUserDto = ({
   usernameFallback,
   globalSettings,
   user = null,
@@ -26,7 +26,7 @@ const toEdulutionAppUser = ({
   user?: UserDto | null;
   lmn?: LmnUserInfo | null;
   globalSettings?: GlobalSettingsDto | null;
-}): EdulutionAppUserDto => ({
+}): MobileAppUserDto => ({
   username: user?.username || usernameFallback,
   firstName: user?.firstName || '',
   lastName: user?.lastName || '',
@@ -49,4 +49,4 @@ const toEdulutionAppUser = ({
   deploymentTarget: globalSettings?.general.deploymentTarget || '',
 });
 
-export default toEdulutionAppUser;
+export default getMobileAppUserDto;

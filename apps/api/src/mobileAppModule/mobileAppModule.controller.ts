@@ -10,14 +10,21 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Module } from '@nestjs/common';
-import EdulutionAppService from './edulutionApp.service';
-import EdulutionAppController from './edulutionApp.controller';
-import LmnApiModule from '../lmnApi/lmnApi.module';
+import { ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Injectable } from '@nestjs/common';
+import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
+import MobileAppModuleService from './mobileAppModule.service';
 
-@Module({
-  imports: [LmnApiModule],
-  controllers: [EdulutionAppController],
-  providers: [EdulutionAppService],
-})
-export default class EdulutionAppModule {}
+@ApiTags('mobile-app')
+@Controller('mobile-app')
+@Injectable()
+class MobileAppModuleController {
+  constructor(private readonly edulutionAppService: MobileAppModuleService) {}
+
+  @Get('user-data')
+  async getAppUserData(@GetCurrentUsername() username: string) {
+    return this.edulutionAppService.getAppUserData(username);
+  }
+}
+
+export default MobileAppModuleController;

@@ -49,7 +49,7 @@ import WebdavSharesModule from '../webdav/shares/webdav-shares.module';
 import LdapKeycloakSyncModule from '../ldap-keycloak-sync/ldap-keycloak-sync.module';
 import redisConnection from '../common/redis.connection';
 import NotificationsModule from '../notifications/notifications.module';
-import EdulutionAppModule from '../edulutionApp/edulutionApp.module';
+import MobileAppModuleModule from '../mobileAppModule/mobileAppModule.module';
 
 @Module({
   imports: [
@@ -88,7 +88,7 @@ import EdulutionAppModule from '../edulutionApp/edulutionApp.module';
     TldrawSyncModule,
     LdapKeycloakSyncModule,
     NotificationsModule,
-    EdulutionAppModule,
+    MobileAppModuleModule,
     JwtModule.register({
       global: true,
     }),

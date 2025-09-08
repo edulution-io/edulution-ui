@@ -101,13 +101,11 @@ class LmnApiService {
   }
 
   public async getLmnApiToken(username: string, password: string): Promise<string> {
-    const resp = await this.enqueue(() =>
-      this.lmnApi.get('/auth/', {
-        auth: { username, password },
-        timeout: 10_000,
-        validateStatus: () => true,
-      }),
-    );
+    const resp = await this.lmnApi.get('/auth/', {
+      auth: { username, password },
+      timeout: 10_000,
+      validateStatus: () => true,
+    });
 
     return (resp.data as string) || ' ';
   }

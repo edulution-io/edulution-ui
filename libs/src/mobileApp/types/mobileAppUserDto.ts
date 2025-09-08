@@ -12,7 +12,7 @@
 
 import { ApiProperty } from '@nestjs/swagger';
 
-class EdulutionAppUserDto {
+class MobileAppUserDto {
   @ApiProperty() username: string;
 
   @ApiProperty() firstName: string;
@@ -46,4 +46,4 @@ class EdulutionAppUserDto {
   @ApiProperty() deploymentTarget: string;
 }
 
-export default EdulutionAppUserDto;
+export default MobileAppUserDto;

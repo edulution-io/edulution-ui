@@ -11,17 +11,16 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import getDeploymentTarget from '@libs/common/utils/getDeploymentTarget';
 import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import UserDto from '@libs/user/types/user.dto';
-import toEdulutionAppUser from '@libs/edulutionApp/utils/toEdulutionAppUser';
+import getMobileAppUserDto from '@libs/mobileApp/utils/getMobileAppUserDto';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import LmnApiService from '../lmnApi/lmnApi.service';
 import UsersService from '../users/users.service';
 import GlobalSettingsService from '../global-settings/global-settings.service';
 
 @Injectable()
-class EdulutionAppService {
+class MobileAppModuleService {
   constructor(
     private readonly userService: UsersService,
     private readonly globalSettingsService: GlobalSettingsService,
@@ -29,10 +28,12 @@ class EdulutionAppService {
   ) {}
 
   async getAppUserData(username: string) {
-    const deploymentTarget = getDeploymentTarget();
+    const globalSettingsDto: GlobalSettingsDto =
+      (await this.globalSettingsService.getGlobalSettings()) as GlobalSettingsDto;
+
     let lmnApiToken = '';
     let lmnInfo: LmnUserInfo = {} as LmnUserInfo;
-    if (deploymentTarget === 'linuxmuster') {
+    if (globalSettingsDto.general.deploymentTarget === 'linuxmuster') {
       try {
         const password = await this.userService.getPassword(username);
         lmnApiToken = await this.lmnApiService.getLmnApiToken(username, password);
@@ -44,10 +45,7 @@ class EdulutionAppService {
 
     const user: UserDto | null = await this.userService.findOne(username);
 
-    const globalSettingsDto: GlobalSettingsDto =
-      (await this.globalSettingsService.getGlobalSettings()) as GlobalSettingsDto;
-
-    return toEdulutionAppUser({
+    return getMobileAppUserDto({
       usernameFallback: username,
       user,
       globalSettings: globalSettingsDto,
@@ -56,4 +54,4 @@ class EdulutionAppService {
   }
 }
 
-export default EdulutionAppService;
+export default MobileAppModuleService;
