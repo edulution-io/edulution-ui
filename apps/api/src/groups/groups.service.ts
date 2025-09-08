@@ -16,7 +16,7 @@ import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import { Group } from '@libs/groups/types/group';
 import GroupsErrorMessage from '@libs/groups/types/groupsErrorMessage';
-import { GROUPS_CACHE_TTL_MS, KEYCLOAK_INITIAL_SYNC_MS, KEYCLOAK_SYNC_MS } from '@libs/common/constants/cacheTtl';
+import { GROUPS_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import GroupMemberDto from '@libs/groups/types/groupMember.dto';
@@ -42,6 +42,7 @@ import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import ALL_GROUPS_PREFIX from '@libs/lmnApi/constants/prefixes/allGroupsPrefix';
 import LINBO_DEVICE_GROUPS_PREFIX from '@libs/lmnApi/constants/prefixes/dPrefix';
 import ROLES_PREFIX from '@libs/lmnApi/constants/prefixes/rolesPrefix';
+import { KEYCLOAK_STARTUP_TIMEOUT_MS, KEYCLOAK_SYNC_MS } from '@libs/ldapKeycloakSync/constants/keycloakSyncValues';
 import CustomHttpException from '../common/CustomHttpException';
 import Attendee from '../conferences/attendee.schema';
 
@@ -64,7 +65,7 @@ class GroupsService {
 
   private isUpdatingGroupsAndMembersInCache = false;
 
-  @Timeout(KEYCLOAK_INITIAL_SYNC_MS)
+  @Timeout(KEYCLOAK_STARTUP_TIMEOUT_MS)
   async initializeService() {
     this.scheduleTokenRefresh();
 

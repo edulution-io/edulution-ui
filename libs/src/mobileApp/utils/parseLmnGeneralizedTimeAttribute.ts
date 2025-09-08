@@ -10,6 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const KEYCLOAK_STARTUP_TIMEOUT = 60_000;
+const parseLmnGeneralizedTimeAttribute = (ldapTimeString?: string | null, treatEpochAsEmpty = true): string => {
+  if (!ldapTimeString) return '';
 
-export default KEYCLOAK_STARTUP_TIMEOUT;
+  const m = ldapTimeString.match(/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})(?:\.\d+)?Z$/);
+  if (!m) return '';
+
+  const [, y, mo, d, h, mi, se] = m;
+  const date = new Date(Date.UTC(+y, +mo - 1, +d, +h, +mi, +se));
+
+  if (treatEpochAsEmpty && date.getTime() === 0) {
+    return '';
+  }
+  return date.toISOString();
+};
+
+export default parseLmnGeneralizedTimeAttribute;
