@@ -19,6 +19,8 @@ class OrganisationInfoDto {
 
   @IsString() @IsOptional() postalCode?: string;
 
+  @IsString() @IsOptional() city?: string;
+
   @IsString() @IsOptional() website?: string;
 }
 

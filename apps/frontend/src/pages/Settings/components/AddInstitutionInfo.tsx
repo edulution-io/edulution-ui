@@ -39,15 +39,24 @@ const AddInstitutionInfo: React.FC<AddSchoolInfoProps> = ({ form }) => {
         form={form}
         value={form.watch('organisationInfo.street') || ''}
         labelTranslationId={t('settings.globalSettings.organisationInfo.street')}
-        placeholder={t('settings.globalSettings.schoolInfo.streetPlaceholder')}
+        placeholder={t('settings.globalSettings.organisationInfo.streetPlaceholder')}
       />
       <FormField
         name="organisationInfo.postalCode"
         form={form}
         value={form.watch('organisationInfo.postalCode') || ''}
         labelTranslationId={t('settings.globalSettings.organisationInfo.postalCode')}
-        placeholder={t('settings.globalSettings.schoolInfo.postalCodePlaceholder')}
+        placeholder={t('settings.globalSettings.organisationInfo.postalCodePlaceholder')}
       />
+
+      <FormField
+        name="organisationInfo.city"
+        form={form}
+        value={form.watch('organisationInfo.city')}
+        labelTranslationId={t('settings.globalSettings.organisationInfo.city')}
+        placeholder={t('settings.globalSettings.organisationInfo.postalCityPlaceholder')}
+      />
+
       <FormField
         name="organisationInfo.website"
         form={form}

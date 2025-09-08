@@ -31,7 +31,7 @@ class MobileAppUserDto {
 
   @ApiProperty() street: string;
 
-  @ApiProperty() schoolName: string;
+  @ApiProperty() organisationName: string;
 
   @ApiProperty() postalCode: string;
 

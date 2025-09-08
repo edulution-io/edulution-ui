@@ -925,7 +925,9 @@
         "streetPlaceholder": "e.g. 1 Organisation Street",
         "postalCode": "Postal code",
         "postalCodePlaceholder": "e.g. 12345",
-        "website": "Organisation website"
+        "postalCityPlaceholder": "Berlin",
+        "website": "Organisation website",
+        "city": "City"
       }
     },
     "userAdministration": {

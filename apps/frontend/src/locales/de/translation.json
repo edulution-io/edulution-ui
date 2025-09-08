@@ -929,7 +929,9 @@
         "streetPlaceholder": "z. B. Schulweg 1",
         "postalCode": "Postleitzahl",
         "postalCodePlaceholder": "z. B. 12345",
-        "website": "Organisationwebsite"
+        "website": "Organisationwebsite",
+        "city": "Stadt",
+        "postalCityPlaceholder": "Berlin"
       }
     },
     "userAdministration": {

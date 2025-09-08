@@ -25,6 +25,9 @@ export class OrganisationInfo {
 
   @Prop({ type: String, trim: true, default: '' })
   website: string;
+
+  @Prop({ type: String, trim: true, default: '' })
+  city: string;
 }
 
 export const OrganisationInfoSchema = SchemaFactory.createForClass(OrganisationInfo);
