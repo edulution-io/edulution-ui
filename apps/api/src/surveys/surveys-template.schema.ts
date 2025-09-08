@@ -27,6 +27,9 @@ export class SurveysTemplate {
 
   @Prop({ default: true, required: true })
   isActive: boolean;
+
+  @Prop({ required: true, unique: false })
+  schemaVersion: number;
 }
 
 const SurveysTemplateSchema = SchemaFactory.createForClass(SurveysTemplate);

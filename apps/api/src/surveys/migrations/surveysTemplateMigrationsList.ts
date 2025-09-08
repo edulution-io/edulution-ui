@@ -10,14 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import SurveyDto from './survey.dto';
+import migration000 from './surveysTemplateMigration000DefaultTemplates';
 
-export type TemplateDto = Partial<SurveyDto> & { formula: SurveyFormula };
+const surveysTemplateMigrationsList = [migration000];
 
-export interface SurveyTemplateDto {
-  template: TemplateDto;
-  fileName?: string;
-  isActive?: boolean;
-  schemaVersion?: number;
-}
+export default surveysTemplateMigrationsList;
