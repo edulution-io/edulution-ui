@@ -51,6 +51,7 @@ const AddSchoolInfo: React.FC<AddSchoolInfoProps> = ({ form }) => {
       <FormField
         name="organisationInfo.website"
         form={form}
+        value={form.watch('organisationInfo.website')}
         labelTranslationId={t('settings.globalSettings.organisationInfo.website')}
         placeholder="https://example.edu"
       />
