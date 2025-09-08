@@ -10,6 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { t } from 'i18next';
 import { surveyLocalization } from 'survey-core';
 import { editorLocalization, SurveyCreator } from 'survey-creator-react';
 import 'survey-core/i18n/english';
@@ -67,6 +68,8 @@ const createSurveyCreatorObject = (language = 'en') => {
   creator.showToolbox = false;
   creator.showSidebar = false;
   creator.startEditTitleOnQuestionAdded = true;
+
+  creator.toolbox.getItemByName('text').title = t('survey.editor.inputFieldTitle');
 
   const settingsActionHeader = creator.toolbar.actions.findIndex((action) => action.id === 'svd-settings');
   if (settingsActionHeader >= 0) creator.toolbar.actions.splice(settingsActionHeader, 1);
