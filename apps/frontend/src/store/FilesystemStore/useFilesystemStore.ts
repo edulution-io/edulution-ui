@@ -16,10 +16,6 @@ import eduApi from '@/api/eduApi';
 import mimeTypeToExtension from '@libs/filesystem/constants/mimeTypeToExtension';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 
-function getExtensionFromMimeType(mimeType?: string): string {
-  return mimeType && mimeTypeToExtension[mimeType] ? `.${mimeTypeToExtension[mimeType]}` : '';
-}
-
 interface FilesystemStore {
   uploadGlobalAsset: (options: { destination: string; file: File | Blob; filename?: string }) => Promise<void>;
   reset: () => void;
@@ -30,37 +26,31 @@ const initialState = {};
 const useFilesystemStore = create<FilesystemStore>((set) => ({
   ...initialState,
 
-  async uploadGlobalAsset({ destination, file, filename }) {
-    const filesEndpointUrl = `${EDU_API_CONFIG_ENDPOINTS.FILES}`;
-    const formData = new FormData();
+  uploadGlobalAsset: async ({ destination, file, filename }) => {
+    const route = `${EDU_API_CONFIG_ENDPOINTS.FILES}`;
+    const form = new FormData();
+    const extensionFromMimetype = (mime?: string) =>
+      mime && mimeTypeToExtension[mime] ? `.${mimeTypeToExtension[mime]}` : '';
 
     if (file instanceof File) {
-      formData.append('file', file);
+      form.append('file', file);
     } else {
-      const extension = getExtensionFromMimeType(file.type) || '.bin';
-      const wrappedFileName = `${filename ?? 'upload'}${extension}`;
-      const wrappedFile = new File([file], wrappedFileName, {
+      const ext = extensionFromMimetype(file.type);
+      const name = `${filename ?? 'upload'}${ext}`;
+      const wrapped = new File([file], name, {
         type: file.type || RequestResponseContentType.APPLICATION_OCTET_STREAM,
       });
-      formData.append('file', wrappedFile);
-    }
-    if (filename) {
-      formData.append('filename', filename);
+      form.append('file', wrapped);
     }
 
-    const response = await eduApi.post<void>(filesEndpointUrl, formData, {
-      params: { destination },
-      validateStatus: (status) => status < 500,
+    const resp = await eduApi.post<void>(route, form, {
+      params: { destination, filename },
+      validateStatus: (s) => s < 500,
     });
-
-    if (response.status >= 400) {
-      throw new Error('Upload failed');
-    }
+    if (resp.status >= 400) throw new Error('Upload failed');
   },
 
-  reset() {
-    set(initialState);
-  },
+  reset: () => set(initialState),
 }));
 
 export default useFilesystemStore;

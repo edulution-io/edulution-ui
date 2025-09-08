@@ -29,7 +29,7 @@ import { promisify } from 'util';
 import { createHash } from 'crypto';
 import { firstValueFrom, from } from 'rxjs';
 import { pipeline, Readable } from 'stream';
-import { basename, extname, join, resolve } from 'path';
+import { basename, extname, join, parse, resolve } from 'path';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
@@ -169,16 +169,36 @@ class FilesystemService {
     }
   }
 
-  static async deleteFile(path: string, fileName: string): Promise<void> {
-    const filePath = join(path, fileName);
+  static async deleteFile(
+    directoryPath: string,
+    fileName: string,
+    options?: { ignoreExtension?: boolean },
+  ): Promise<void> {
     try {
-      await unlink(filePath);
-      Logger.log(`File deleted at ${filePath}`);
+      if (!options?.ignoreExtension) {
+        const absoluteFilePath = join(directoryPath, fileName);
+        await unlink(absoluteFilePath);
+        Logger.log(`File deleted at ${absoluteFilePath}`);
+        return;
+      }
+
+      const baseNameToMatch = parse(fileName).name;
+      const directoryEntries = await readdir(directoryPath);
+
+      const matches = directoryEntries.filter((entry) => parse(entry).name === baseNameToMatch);
+
+      await Promise.all(
+        matches.map(async (matchedFile) => {
+          const absoluteFilePath = join(directoryPath, matchedFile);
+          await unlink(absoluteFilePath);
+          Logger.log(`File deleted at ${absoluteFilePath}`);
+        }),
+      );
     } catch (error) {
       throw new CustomHttpException(
         FileSharingErrorMessage.DeleteFromServerFailed,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        filePath,
+        join(directoryPath, fileName),
       );
     }
   }
@@ -414,30 +434,45 @@ class FilesystemService {
 
     await fs.mkdir(destinationAbsolute, { recursive: true });
 
-    const original = file.originalname ?? 'upload.bin';
-    const uploadExtension = extname(original);
+    const originalName = file.originalname ?? 'upload.bin';
+    const originalExtension = extname(originalName);
 
     const rawBaseName = options.filename
       ? basename(options.filename, extname(options.filename))
-      : basename(original, uploadExtension);
+      : basename(originalName, originalExtension);
 
     const safeBaseName = rawBaseName.replace(/[^a-z0-9._-]/gi, '') || `file-${Date.now()}`;
 
     await this.removeExistingWithBase(destinationAbsolute, safeBaseName);
 
-    const fileName = `${safeBaseName}.webp`;
-    const absolutePath = join(destinationAbsolute, fileName);
+    const isImage = (file.mimetype || '').startsWith('image/');
+    const webpFileName = `${safeBaseName}.webp`;
+    const webpAbsolutePath = join(destinationAbsolute, webpFileName);
 
-    try {
-      await sharp(file.buffer, { animated: true })
-        .png({ compressionLevel: 9, adaptiveFiltering: true })
-        .toFile(absolutePath);
-    } catch (err) {
-      await fs.writeFile(absolutePath, file.buffer);
+    if (isImage) {
+      try {
+        await sharp(file.buffer, { animated: true })
+          .webp({
+            quality: 82,
+            alphaQuality: 80,
+            smartSubsample: true,
+            effort: 5,
+          })
+          .toFile(webpAbsolutePath);
+
+        const webpRelativePath = join(destination, webpFileName);
+        return { filename: webpFileName, path: webpRelativePath, absolutePath: webpAbsolutePath };
+      } catch (error) {
+        return { filename: '', path: '', absolutePath: '' };
+      }
     }
 
-    const relativePath = join(destination, fileName);
-    return { filename: fileName, path: relativePath, absolutePath };
+    const fallbackFileName = `${safeBaseName}${originalExtension || ''}`;
+    const fallbackAbsolutePath = join(destinationAbsolute, fallbackFileName);
+    await fs.writeFile(fallbackAbsolutePath, file.buffer);
+    const fallbackRelativePath = join(destination, fallbackFileName);
+
+    return { filename: fallbackFileName, path: fallbackRelativePath, absolutePath: fallbackAbsolutePath };
   }
 }
 
