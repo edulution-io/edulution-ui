@@ -15,6 +15,8 @@ import MobileAppUserDto from '@libs/mobileApp/types/mobileAppUserDto';
 import UserDto from '@libs/user/types/user.dto';
 import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import parseLmnGeneralizedTimeAttribute from '@libs/mobileApp/utils/parseLmnGeneralizedTimeAttribute';
+import getMainLogoUrl from '@libs/assets/getMainLogoUrl';
+import { Theme } from '@libs/common/types/theme';
 
 const getMobileAppUserDto = ({
   usernameFallback,
@@ -45,7 +47,7 @@ const getMobileAppUserDto = ({
   postalCode: globalSettings?.organisationInfo?.postalCode || '',
   city: globalSettings?.organisationInfo?.city || '',
   userProfilePicture: lmn?.thumbnailPhoto || '',
-  institutionLogo: '',
+  institutionLogo: getMainLogoUrl(Theme.dark) || '',
   deploymentTarget: globalSettings?.general.deploymentTarget || '',
 });
 
