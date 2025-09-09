@@ -10,5 +10,21 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const MAX_FILE_UPLOAD_SIZE = 50; // MB
-export default MAX_FILE_UPLOAD_SIZE;
+import { ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Injectable } from '@nestjs/common';
+import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
+import MobileAppModuleService from './mobileAppModule.service';
+
+@ApiTags('mobile-app')
+@Controller('mobile-app')
+@Injectable()
+class MobileAppModuleController {
+  constructor(private readonly edulutionAppService: MobileAppModuleService) {}
+
+  @Get('user-data')
+  async getAppUserData(@GetCurrentUsername() username: string) {
+    return this.edulutionAppService.getAppUserData(username);
+  }
+}
+
+export default MobileAppModuleController;
