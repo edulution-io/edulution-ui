@@ -10,9 +10,5 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import THIRTY_DAYS from '@libs/common/constants/thirtyDays';
-
-export const DEFAULT_CACHE_TTL_MS = 3600000;
-export const USERS_CACHE_TTL_MS = THIRTY_DAYS;
-export const GROUPS_CACHE_TTL_MS = THIRTY_DAYS;
-export const AUTH_CACHE_TTL_MS = 3600000;
+export const KEYCLOAK_STARTUP_TIMEOUT_MS = Number(process.env['KEYCLOAK_STARTUP_TIMEOUT_MS']) || 60_000;
+export const KEYCLOAK_SYNC_MS = Number(process.env['KEYCLOAK_SYNC_MS']) || 61_000;
