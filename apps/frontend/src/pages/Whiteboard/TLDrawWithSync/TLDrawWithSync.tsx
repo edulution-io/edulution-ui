@@ -135,13 +135,8 @@ const TLDrawWithSync = ({ uri }: { uri: string }) => {
       lmnApiUser?.projects?.map((p) => ({ id: p, name: removeSchoolPrefix(p, `p_${lmnApiUser.school}`) })) || [];
     const schoolClasses =
       lmnApiUser?.schoolclasses?.map((c) => ({ id: c, name: removeSchoolPrefix(c, lmnApiUser.school) })) || [];
-    const sessions =
-      lmnApiUser?.lmnsessions?.map((s) => ({
-        id: s.sid,
-        name: removeSchoolPrefix(s.name, `p_${lmnApiUser.school}`),
-      })) || [];
-    return [...projects, ...schoolClasses, ...sessions];
-  }, [lmnApiUser?.projects, lmnApiUser?.schoolclasses, lmnApiUser?.lmnsessions, lmnApiUser?.school]);
+    return [...projects, ...schoolClasses];
+  }, [lmnApiUser?.projects, lmnApiUser?.schoolclasses, lmnApiUser?.school]);
 
   if (!user) return null;
 
