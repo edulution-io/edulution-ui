@@ -60,6 +60,7 @@ import mockFilesystemService from '../filesystem/filesystem.service.mock';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveysTemplateService from './surveys-template.service';
 import NotificationsService from '../notifications/notifications.service';
+import { SurveysTemplate } from './surveys-template.schema';
 
 describe(SurveysController.name, () => {
   let controller: SurveysController;
@@ -88,6 +89,17 @@ describe(SurveysController.name, () => {
             find: jest.fn().mockReturnThis(),
             sort: jest.fn().mockReturnThis(),
             limit: jest.fn().mockResolvedValueOnce([firstUsersSurveyAnswerAnsweredSurvey01]),
+          },
+        },
+        {
+          provide: getModelToken(SurveysTemplate.name),
+          useValue: {
+            find: jest.fn().mockReturnThis(),
+            findOne: jest.fn().mockReturnThis(),
+            findOneAndUpdate: jest.fn().mockReturnThis(),
+            findById: jest.fn().mockReturnThis(),
+            findByIdAndUpdate: jest.fn().mockReturnThis(),
+            create: jest.fn().mockReturnThis(),
           },
         },
         { provide: FilesystemService, useValue: mockFilesystemService },
