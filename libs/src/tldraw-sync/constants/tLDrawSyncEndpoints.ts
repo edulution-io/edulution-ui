@@ -10,11 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Group } from '@libs/groups/types/group';
-import GroupMemberDto from './groupMember.dto';
+const TLDRAW_SYNC_ENDPOINTS = {
+  BASE: 'tldraw-sync',
+  ROOMS: 'rooms',
+  ASSETS: 'assets',
+  PERSIST: 'persist',
+  HISTORY: 'history',
+} as const;
 
-type GroupWithMembers = Group & {
-  members: GroupMemberDto[];
-};
-
-export default GroupWithMembers;
+export default TLDRAW_SYNC_ENDPOINTS;

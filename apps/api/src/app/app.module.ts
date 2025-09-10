@@ -40,7 +40,7 @@ import DockerModule from '../docker/docker.module';
 import VeyonModule from '../veyon/veyon.module';
 import GlobalSettingsModule from '../global-settings/global-settings.module';
 import SseModule from '../sse/sse.module';
-import TldrawSyncModule from '../tldraw-sync/tldraw-sync.module';
+import TLDrawSyncModule from '../tldraw-sync/tldraw-sync.module';
 import FileSystemModule from '../filesystem/filesystem.module';
 import WebDavModule from '../webdav/webdav.module';
 import HealthModule from '../health/health.module';
@@ -84,7 +84,7 @@ import NotificationsModule from '../notifications/notifications.module';
     GlobalSettingsModule,
     WebDavModule,
     SseModule,
-    TldrawSyncModule,
+    TLDrawSyncModule,
     LdapKeycloakSyncModule,
     NotificationsModule,
     JwtModule.register({
