@@ -80,11 +80,16 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     >;
 
     const fileNamesToMove: string[] = [];
+    const persistentFiles: string[] = [];
+    const permanentFiles = await this.fileSystemService.getAllFilenamesInDirectory(directory);
     Object.keys(surveyAnswer).forEach((questionName) => {
       const questionAnswer = surveyAnswer[questionName];
       if (Array.isArray(questionAnswer)) {
         questionAnswer.forEach((item) => {
           const fileName = item.content?.split('/').pop();
+          if (fileName && permanentFiles.includes(fileName)) {
+            persistentFiles.push(fileName);
+          }
           if (fileName && tempFileNames.includes(fileName)) {
             fileNamesToMove.push(fileName);
           }
@@ -96,11 +101,17 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
         }
       }
     });
-
     const movingPromises = fileNamesToMove.map(async (fileName) =>
       FilesystemService.moveFile(join(tempDirectory, fileName), join(directory, fileName)),
     );
     await Promise.all(movingPromises);
+
+    const deletionPromises = permanentFiles.map(
+      (fileName): Promise<void> =>
+        persistentFiles.includes(fileName) ? Promise.resolve() : FilesystemService.deleteFile(directory, fileName),
+    );
+    await Promise.all(deletionPromises);
+
     return JSON.parse(JSON.stringify(surveyAnswer)) as JSON;
   }
 
