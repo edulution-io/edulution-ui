@@ -30,6 +30,7 @@ import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ANSWER, PUBLIC_USER, FILES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
+import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import SURVEY_ANSWERS_MAXIMUM_FILE_SIZE from '@libs/survey/constants/survey-answers-maximum-file-size';
@@ -174,7 +175,8 @@ class PublicSurveysController {
     if (surveyId === TEMPORAL_SURVEY_ID_STRING) {
       return [];
     }
-    return this.surveyAnswerService.getSelectableChoices(surveyId, questionName);
+    const choices = await this.surveyAnswerService.getSelectableChoices(surveyId, questionName);
+    return choices.filter((choice) => choice.name !== SHOW_OTHER_ITEM);
   }
 }
 

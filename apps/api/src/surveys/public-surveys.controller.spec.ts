@@ -39,6 +39,7 @@ import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
+import NotificationsService from '../notifications/notifications.service';
 
 describe(PublicSurveysController.name, () => {
   let controller: PublicSurveysController;
@@ -67,6 +68,7 @@ describe(PublicSurveysController.name, () => {
           useValue: jest.fn(),
         },
         { provide: FilesystemService, useValue: mockFilesystemService },
+        { provide: NotificationsService, useValue: jest.fn() },
       ],
     }).compile();
 

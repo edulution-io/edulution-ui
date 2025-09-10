@@ -5,6 +5,7 @@
   "closeEditingWindow": "Close editing window",
   "framebufferImage": "Framebuffer image",
   "previewImage": "Image preview",
+  "not-set": "Not set",
   "bulletinboard": {
     "settings": "Settings",
     "noBulletinsToShow": "There are currently no messages to display, so check back later!",
@@ -617,6 +618,7 @@
     "noFormula": "The formula of the survey is not readable.",
     "canSubmitMultiple": "Allow multiple submission",
     "editor": {
+      "inputFieldTitle": "Input field",
       "new": "New (blank)",
       "fileUploadSuccess": "Saved the file successfully.",
       "fileUploadError": "Error on file upload, please retry later.",
@@ -901,7 +903,13 @@
         "updateError": "Settings could not be updated.",
         "notFoundError": "Settings could not be loaded."
       },
-      "deploymentTarget": "Target platform"
+      "deploymentTarget": "Target platform",
+      "ldap": {
+        "title": "LDAP",
+        "edulution-binduser-description": "Here you can configure the LDAP access data required for group synchronization.",
+        "edulution-binduser-dn": "Distinguished Name (DN)",
+        "edulution-binduser-password": "Password"
+      }
     },
     "userAdministration": {
       "title": "User Administration",
@@ -950,6 +958,11 @@
           "filterPlaceHolderText": "Search for proxy",
           "invalidCidrFormat": "Invalid CIDR notation",
           "invalidUrlFormat": "Invalid URL"
+        },
+        "webdavShare": {
+          "title": "WebDAV-Share",
+          "description": "Here you can set up your own WebDAV shares.",
+          "filterPlaceHolderText": "Search for share"
         },
         "files": {
           "title": "Files",
@@ -1127,6 +1140,8 @@
   "teacher": "Teacher",
   "student": "Student",
   "students": "Students",
+  "parent": "Parent",
+  "staff": "Staff",
   "user": "User",
   "login": {
     "pageTitle": "Login",
@@ -1330,7 +1345,7 @@
   "filesharingUpload": {
     "title": "Upload Files",
     "upload": "Upload",
-    "dataLimitExceeded": "Data limit from 400 MB exceeded",
+    "dataLimitExceeded": "Data limit from 50 MB exceeded",
     "fileSize": "File size",
     "selectFile": "Select up to 5 files at a time",
     "uploadItems": "Upload: {{count}} items",
@@ -1345,7 +1360,7 @@
     "oversizedFileDetected": "Oversized file detected!",
     "folderTooLargeTitle": "Too many files in the folder",
     "folderTooLargeDescription": "The folder contains more then 100 files. Please select another folder or reduce the number of files.",
-    "cannotUploadOversized": "Files larger than 400 MB cannot be uploaded.",
+    "cannotUploadOversized": "Files larger than 50 MB cannot be uploaded.",
     "addFiles": "Add files",
     "addFolder": "Add folder",
     "preparingFolder": "Preparing folder"
@@ -1509,6 +1524,8 @@
     "errors": {
       "CouldNotGetGroupByPath": "Group could not be found by path",
       "CouldNotGetUsers": "Users could not be found",
+      "CouldNotGetCurrentUser": "Current user could not be found",
+      "CouldNotGetAllGroups": "Failed to find all groups",
       "CouldNotFetchGroupMembers": "Group members could not be found",
       "CouldNotFetchUserById": "User could not be found by ID",
       "CouldNotSearchGroups": "Could not search for groups"
@@ -1642,5 +1659,19 @@
     "description": "Here you can select the platform to which {{ appName }} will be connected.",
     "linuxmuster": "Linuxmuster",
     "generic": "Generic"
+  },
+  "webdavShare": {
+    "displayName": "Display name",
+    "accessGroups": {
+      "title": "User groups",
+      "description": "Select the user groups that should have access to the WebDAV share."
+    },
+    "type": {
+      "title": "WebDAV Server Schema",
+      "description": "Here you can select the type of WebDAV server schema.",
+      "linuxmuster": "Linuxmuster",
+      "edu-file-proxy": "edulution File Proxy",
+      "generic": "Generic"
+    }
   }
 }

@@ -10,6 +10,5 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const extractCnValue = (dn: string): string => dn.split(',')[0].split('=')[1].replace('role-', '');
-
-export default extractCnValue;
+export const NOTIFICATIONS_EDU_API_ENDPOINT = 'notifications';
+export const NOTIFICATION_DEVICES_EDU_API_ENDPOINT = `devices`;

@@ -50,14 +50,16 @@ import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
 import THIRTY_DAYS from '@libs/common/constants/thirtyDays';
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
+import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 
 const pipelineAsync = promisify(pipeline);
 
 @Injectable()
 class FilesystemService {
-  private readonly baseurl = process.env.EDUI_WEBDAV_URL as string;
-
-  constructor(private readonly userService: UsersService) {}
+  constructor(
+    private readonly userService: UsersService,
+    private readonly webdavSharesService: WebdavSharesService,
+  ) {}
 
   @Cron('0 0 4 * * *', {
     name: 'ClearTempFiles',
@@ -275,7 +277,8 @@ class FilesystemService {
     filename: string,
     client: AxiosInstance,
   ): Promise<WebdavStatusResponse> {
-    const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+    const url = `${baseUrl}${getPathWithoutWebdav(filePath)}`;
     await this.ensureDirectoryExists(PUBLIC_DOWNLOADS_PATH);
 
     try {

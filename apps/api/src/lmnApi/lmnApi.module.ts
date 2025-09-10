@@ -13,11 +13,9 @@
 import { Module } from '@nestjs/common';
 import LmnApiService from './lmnApi.service';
 import { LmnApiController } from './lmnApi.controller';
-import WebDavModule from '../webdav/webdav.module';
 
 @Module({
   providers: [LmnApiService],
-  imports: [WebDavModule],
   controllers: [LmnApiController],
   exports: [LmnApiService],
 })

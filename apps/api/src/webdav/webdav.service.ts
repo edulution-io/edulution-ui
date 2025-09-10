@@ -12,6 +12,7 @@
 
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
+import { OnEvent } from '@nestjs/event-emitter';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
@@ -29,18 +30,27 @@ import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileReques
 import mapToDirectories from '@libs/filesharing/utils/mapToDirectories';
 import mapToDirectoryFiles from '@libs/filesharing/utils/mapToDirectoryFiles';
 import DEFAULT_PROPFIND_XML from '@libs/filesharing/constants/defaultPropfindXml';
+import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import { Readable } from 'stream';
+import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import CustomHttpException from '../common/CustomHttpException';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
+import WebdavSharesService from './shares/webdav-shares.service';
 
 @Injectable()
 class WebdavService {
-  private readonly baseUrl = process.env.EDUI_WEBDAV_URL as string;
-
   private webdavClientCache = new Map<string, { client: AxiosInstance; timeout: NodeJS.Timeout }>();
 
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly webdavSharesService: WebdavSharesService,
+  ) {}
+
+  @OnEvent(EVENT_EMITTER_EVENTS.WEBDAV_BASEURL_CHANGED)
+  invalidateClientCache() {
+    this.webdavClientCache.clear();
+  }
 
   static async executeWebdavRequest<Raw = unknown, Result = Raw>(
     client: AxiosInstance,
@@ -92,7 +102,8 @@ class WebdavService {
 
   async initializeClient(username: string): Promise<void> {
     const password = await this.usersService.getPassword(username);
-    const client = WebdavClientFactory.createWebdavClient(this.baseUrl, username, password);
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+    const client = WebdavClientFactory.createWebdavClient(baseUrl, username, password);
     const timeout = this.scheduleClientTimeout(username);
     this.webdavClientCache.set(username, { client, timeout });
   }
@@ -136,7 +147,8 @@ class WebdavService {
 
   async getFilesAtPath(username: string, path: string): Promise<DirectoryFileDTO[]> {
     const client = await this.getClient(username);
-    const url = new URL(path.replace(/^\/+/, ''), this.baseUrl).href;
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+    const url = new URL(path.replace(/^\/+/, ''), baseUrl).href;
     return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
       client,
       {
@@ -154,7 +166,8 @@ class WebdavService {
 
   async getDirectoryAtPath(username: string, path: string): Promise<DirectoryFileDTO[]> {
     const client = await this.getClient(username);
-    const url = new URL(path.replace(/^\/+/, ''), this.baseUrl).href;
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+    const url = new URL(path.replace(/^\/+/, ''), baseUrl).href;
 
     return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
       client,
@@ -173,7 +186,8 @@ class WebdavService {
 
   async createFolder(username: string, path: string, folderName: string): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
-    const fullPath = `${this.baseUrl}${path}/${folderName}`;
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+    const fullPath = `${baseUrl}${path}/${folderName}`;
 
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
@@ -260,13 +274,19 @@ class WebdavService {
     destFullPath: string,
   ): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+    const webdavShareType = await this.webdavSharesService.getWebdavShareType();
+    let destinationUrl = destFullPath;
+    if (webdavShareType === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
+      destinationUrl = `${baseUrl.replace(/\/+$/, '')}/${destFullPath.replace(/^\/+/, '')}`;
+    }
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethodsWebDav.MOVE,
         url: decodeURI(originFullPath),
         headers: {
-          Destination: decodeURI(destFullPath),
+          Destination: decodeURI(destinationUrl),
           [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
         },
       },
@@ -284,12 +304,21 @@ class WebdavService {
     destFullPath: string,
   ): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+    const webdavShareType = await this.webdavSharesService.getWebdavShareType();
+    let destinationUrl = destFullPath;
+    if (webdavShareType === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
+      destinationUrl = `${baseUrl.replace(/\/+$/, '')}/${destFullPath.replace(/^\/+/, '')}`;
+    }
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethodsWebDav.COPY,
-        url: originFullPath,
-        headers: { Destination: destFullPath },
+        url: decodeURI(originFullPath),
+        headers: {
+          Destination: decodeURI(destinationUrl),
+          [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
+        },
       },
       FileSharingErrorMessage.DuplicateFailed,
       (resp: WebdavStatusResponse) => ({

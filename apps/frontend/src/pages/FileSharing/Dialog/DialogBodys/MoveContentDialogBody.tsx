@@ -21,11 +21,9 @@ import { ColumnDef, OnChangeFn, Row, RowSelectionState } from '@tanstack/react-t
 import FILESHARING_TABLE_COLUM_NAMES from '@libs/filesharing/constants/filesharingTableColumNames';
 import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
 import ContentType from '@libs/filesharing/types/contentType';
-import useLmnApiStore from '@/store/useLmnApiStore';
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/getFileSharingTableColumns';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
-import { getFileNameFromPath } from '@/pages/FileSharing/utilities/filesharingUtilities';
 
 const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   showAllFiles = false,
@@ -37,8 +35,6 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
 }) => {
   const { t } = useTranslation();
   const [currentPath, setCurrentPath] = useState(pathToFetch || '');
-
-  const { user } = useLmnApiStore();
 
   const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
 
@@ -62,8 +58,6 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
 
   const files = fileType === ContentType.DIRECTORY ? dialogShownDirs : dialogShownFiles;
 
-  const pathPrefixRegex = new RegExp(`(?:/webdav/|server/${user?.school}/)`, 'g');
-
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const selectionValue = typeof updaterOrValue === 'function' ? updaterOrValue({}) : updaterOrValue;
 
@@ -79,15 +73,12 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
 
   const onFilenameClick = (item: Row<DirectoryFileDTO>) => {
     if (item.original.type === ContentType.DIRECTORY) {
-      let newPath = currentPath;
+      let newPath = item.original.filePath;
+
       if (!newPath.endsWith('/')) {
         newPath += '/';
       }
-      if (newPath === '/') {
-        newPath += item.original.filePath.replace(pathPrefixRegex, '');
-      } else {
-        newPath += getFileNameFromPath(item.original.filePath);
-      }
+
       setCurrentPath(newPath);
     } else {
       item.toggleSelected();

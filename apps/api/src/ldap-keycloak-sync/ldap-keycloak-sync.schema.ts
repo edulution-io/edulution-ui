@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 /*
  * LICENSE
  *
@@ -10,6 +11,21 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const decodeBase64Api = (str: string) => Buffer.from(str, 'base64').toString('utf-8');
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
-export default decodeBase64Api;
+export type LdapKeycloakSyncDocument = LdapKeycloakSync & Document;
+
+@Schema({ timestamps: true, strict: true, minimize: false })
+export class LdapKeycloakSync {
+  @Prop({ unique: true, required: true, default: true })
+  singleton: boolean;
+
+  @Prop({ type: Date, required: true })
+  lastSync: Date;
+
+  @Prop({ default: 0 })
+  schemaVersion: number;
+}
+
+export const LdapKeycloakSyncSchema = SchemaFactory.createForClass(LdapKeycloakSync);
