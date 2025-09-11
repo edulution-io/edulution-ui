@@ -375,7 +375,7 @@
       "downloadInfo": "Datei {{filename}} wird heruntergeladen",
       "fileStructureIsCreating": "Dateistruktur wird erstellt",
       "zipFilesAreUploading": "Dateien werden in Ordnerstruktur hochgeladen",
-      "fileIsUploading": "Datei wird hochgeladen"
+      "fileIsUploading": "{{filename}} wird hochgeladen"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
@@ -1167,6 +1167,7 @@
     "guest": "Gast",
     "ok": "OK",
     "next": "Weiter",
+    "of": "von",
     "back": "Zurück",
     "confirm": "Bestätigen",
     "creator": "Ersteller",

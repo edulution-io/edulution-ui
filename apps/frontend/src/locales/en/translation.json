@@ -376,7 +376,7 @@
       "errorInfo": "{{failed}} files could not be handed out",
       "fileStructureIsCreating": "File structure is creating",
       "zipFilesAreUploading": "Files are uploading",
-      "fileIsUploading": "File is uploading"
+      "fileIsUploading": "{{filename}} is uploading"
     },
 
     "publicShareFilesPage": {
@@ -1165,6 +1165,7 @@
     "ok": "OK",
     "next": "Next",
     "back": "Back",
+    "of": "of",
     "confirm": "Confirm",
     "creator": "Creator",
     "share": "Share",

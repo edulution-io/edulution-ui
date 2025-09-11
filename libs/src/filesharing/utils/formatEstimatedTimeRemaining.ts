@@ -10,14 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum FileActionType {
-  MOVE_FILE_OR_FOLDER = 'moveFileOrFolder',
-  CREATE_FOLDER = 'createFolder',
-  CREATE_FILE = 'createFile',
-  DELETE_FILE_OR_FOLDER = 'deleteFileOrFolder',
-  RENAME_FILE_OR_FOLDER = 'renameFileOrFolder',
-  COPY_FILE_OR_FOLDER = 'copyFileOrFolder',
-  SHARE_FILE_OR_FOLDER = 'shareFileOrFolder',
-}
+const formatEstimatedTimeRemaining = (seconds?: number) => {
+  if (seconds == null || !Number.isFinite(seconds) || seconds < 0) return '–';
 
-export default FileActionType;
+  const roundedSeconds = Math.max(0, Math.round(seconds));
+  const hours = Math.floor(roundedSeconds / 3600);
+  const minutes = Math.floor((roundedSeconds % 3600) / 60);
+  const remainingSeconds = roundedSeconds % 60;
+
+  return `${String(hours).padStart(2, '0')}h::${String(minutes).padStart(2, '0')}min:${String(remainingSeconds).padStart(2, '0')}sec`;
+};
+
+export default formatEstimatedTimeRemaining;

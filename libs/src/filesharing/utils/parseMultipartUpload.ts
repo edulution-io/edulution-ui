@@ -39,12 +39,10 @@ const parseMultipartUpload = (req: Request) =>
             originalFolderName = dto.originalFolderName;
             isZippedFolder = Boolean(dto.isZippedFolder);
             explicitName = dto.name;
+            fileSize = Number(dto.declaredSize) || 0;
           } catch (error) {
-            console.error(error);
+            console.error('Error parsing uploadFileDto:', error);
           }
-          break;
-        case 'size':
-          fileSize = Number(val) || 0;
           break;
         default:
           break;

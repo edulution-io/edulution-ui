@@ -18,7 +18,6 @@ const JOB_NAMES = {
   COPY_FILE_JOB: 'copy-file',
   CREATE_FOLDER_JOB: 'create-folder',
   FILE_UPLOAD_JOB: 'file-upload',
-  FILE_UPLOAD_WITH_PROGRESS_JOB: 'file-upload-with-progress',
   REFRESH_USERS_IN_CACHE: 'REFRESH_USERS_IN_CACHE',
 } as const;
 

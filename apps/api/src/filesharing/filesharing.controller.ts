@@ -95,21 +95,14 @@ class FilesharingController {
     @Query('showUploadProgress', new DefaultValuePipe(false), ParseBoolPipe) showUploadProgress: boolean,
   ) {
     try {
-      const { basePath, isZippedFolder, originalFolderName, name, stream, mimeType, fileSize } =
-        await parseMultipartUpload(req);
+      const { basePath, isZippedFolder, originalFolderName, name, stream, mimeType } = await parseMultipartUpload(req);
 
       if (isZippedFolder && originalFolderName) {
         return await this.filesharingService.uploadZippedFolderStream(username, basePath, originalFolderName, stream);
       }
+
       if (showUploadProgress) {
-        return await this.filesharingService.uploadFileStreamWithProgress(
-          username,
-          basePath,
-          name,
-          stream,
-          fileSize,
-          mimeType,
-        );
+        return await this.filesharingService.uploadFileStreamWithProgress(username, basePath, name, stream, mimeType);
       }
       const fullPath = `${basePath}/${name}`;
       return await this.webdavService.uploadFile(username, fullPath, stream, mimeType);

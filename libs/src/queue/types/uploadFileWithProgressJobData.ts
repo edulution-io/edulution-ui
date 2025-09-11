@@ -13,13 +13,14 @@
 type UploadFileWithProgressJobData = {
   username: string;
   fullPath: string;
-  tempPath: string;
+  streamId: string;
   mimeType: string;
-  processId: number;
   expectedBytes?: number;
   title: string;
-  description?: string;
-  currentFilePath?: string;
+  description: string;
+  currentFilePath: string;
+  processed: number;
+  total: number;
 };
 
 export default UploadFileWithProgressJobData;

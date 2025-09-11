@@ -16,6 +16,8 @@ class UploadFileDto {
   isZippedFolder?: boolean;
 
   originalFolderName?: string;
+
+  declaredSize?: string;
 }
 
 export default UploadFileDto;

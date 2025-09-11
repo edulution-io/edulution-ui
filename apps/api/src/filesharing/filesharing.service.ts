@@ -136,29 +136,10 @@ class FilesharingService {
     basePath: string,
     name: string,
     stream: Readable,
-    declaredSize: number | undefined,
     mimeType: string,
   ) {
     const fullWebDavFilePath = `${basePath.replace(/\/+$/, '')}/${name.replace(/^\/+/, '')}`;
-    const tmpPath = join(tmpdir(), `${username}-${Date.now()}-${name}`);
-
-    await pipeline(stream, createWriteStream(tmpPath));
-
-    const expectedBytes =
-      typeof declaredSize === 'number' && Number.isFinite(declaredSize) && declaredSize > 0 ? declaredSize : undefined;
-
-    return this.dynamicQueueService.addJobForUser(username, JOB_NAMES.FILE_UPLOAD_WITH_PROGRESS_JOB, {
-      username,
-      fullPath: fullWebDavFilePath,
-      tempPath: tmpPath,
-      mimeType,
-      expectedBytes,
-      title: 'filesharing.progressBox.fileIsUploading',
-      description: name,
-      currentFilePath: fullWebDavFilePath,
-      processed: 0,
-      total: expectedBytes ?? 0,
-    });
+    await this.webDavService.uploadFileWithNetworkProgress(username, fullWebDavFilePath, stream, mimeType);
   }
 
   async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {
