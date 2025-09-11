@@ -1363,7 +1363,7 @@
     "folderTooLargeTitle": "Zu viele Dateien im Ordner",
     "folderTooLargeDescription": "Der Ordner enthält mehr als 100 Dateien. Bitte wähle einen anderen Ordner oder reduziere die Anzahl der Dateien.",
     "oversizedFileDetected": "Zu große Datei entdeckt!",
-    "cannotUploadOversized": "Dateien, die größer als 400 MB sind, können nicht hochgeladen werden.",
+    "cannotUploadOversized": "Dateien, die größer als 50 MB sind, können nicht hochgeladen werden.",
     "addFiles": "Dateien hinzufügen",
     "addFolder": "Ordner hinzufügen",
     "preparingFolder": "Ordner wird vorbereitet"
