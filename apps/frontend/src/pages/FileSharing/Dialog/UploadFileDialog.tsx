@@ -16,11 +16,14 @@ import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHande
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import { useTranslation } from 'react-i18next';
 
 const UploadFileDialog = () => {
   const { currentPath } = useFileSharingStore();
   const { isUploadDialogOpen, closeUploadDialog, uploadFiles, isUploading, setFilesToUpload } =
     useHandelUploadFileStore();
+
+  const { t } = useTranslation();
 
   const [remountKey, setRemountKey] = React.useState(0);
 
@@ -31,16 +34,17 @@ const UploadFileDialog = () => {
   };
 
   const handleSubmit = async () => {
-    const results = await uploadFiles(currentPath);
-    const hasError = results.some((r) => !r.ok);
-    if (!hasError) handleClose();
+    closeUploadDialog();
+    await uploadFiles(currentPath);
+    setFilesToUpload([]);
+    setRemountKey((k) => k + 1);
   };
 
   return (
     <AdaptiveDialog
       isOpen={isUploadDialogOpen}
       handleOpenChange={handleClose}
-      title="filesharingUpload.title"
+      title={t('filesharingUpload.title')}
       body={<UploadContentBody key={remountKey} />}
       footer={
         <DialogFooterButtons

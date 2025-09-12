@@ -11,6 +11,6 @@
  */
 
 export const SHOW_TOASTER_DURATION = 4_000;
-export const DONE_TOAST_DURATION_MS = 2_000;
+export const DONE_TOAST_DURATION_MS = 1_000;
 export const ERROR_TOAST_DURATION_MS = 10_000;
 export const LIVE_TOAST_DURATION_MS = Infinity;
