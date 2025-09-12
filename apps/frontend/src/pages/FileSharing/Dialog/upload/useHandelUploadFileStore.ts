@@ -48,7 +48,7 @@ const initialState = {
   uploadingByName: new Map<string, boolean>(),
 };
 
-export const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
+const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
   ...initialState,
 
   setIsUploadDialogOpen: (isOpen) => set({ isUploadDialogOpen: isOpen }),
