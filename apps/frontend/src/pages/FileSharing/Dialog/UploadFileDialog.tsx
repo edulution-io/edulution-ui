@@ -17,14 +17,15 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import { useTranslation } from 'react-i18next';
+import useUserStore from '@/store/UserStore/useUserStore';
 
 const UploadFileDialog = () => {
   const { currentPath } = useFileSharingStore();
   const { isUploadDialogOpen, closeUploadDialog, uploadFiles, isUploading, setFilesToUpload } =
     useHandelUploadFileStore();
 
+  const { eduApiToken } = useUserStore();
   const { t } = useTranslation();
-
   const [remountKey, setRemountKey] = useState(0);
 
   const handleClose = () => {
@@ -35,7 +36,7 @@ const UploadFileDialog = () => {
 
   const handleSubmit = async () => {
     closeUploadDialog();
-    await uploadFiles(currentPath);
+    await uploadFiles(currentPath, eduApiToken);
     setFilesToUpload([]);
     setRemountKey((k) => k + 1);
   };
