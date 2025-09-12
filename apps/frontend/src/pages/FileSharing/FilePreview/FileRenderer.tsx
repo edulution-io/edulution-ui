@@ -25,7 +25,6 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 import PdfViewer from '@/components/shared/PDFViewer/PdfViewer';
-import useUserStore from '@/store/UserStore/useUserStore';
 
 interface FileRendererProps {
   editMode: boolean;
@@ -46,8 +45,6 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
   } = useFileSharingDownloadStore();
 
   const { currentlyEditingFile } = useFileEditorStore();
-
-  const { user } = useUserStore();
 
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
 
@@ -120,21 +117,7 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
   }
 
   if (currentlyEditingFile.filename.endsWith('.pdf')) {
-    const username = user?.username;
-    const password = user?.password;
-    const token = btoa(`${username}:${password}`);
-
-    return (
-      <PdfViewer
-        fetchUrl={fileUrl}
-        fetchOptions={{
-          credentials: 'include',
-          headers: {
-            Authorization: `Basic ${token}`,
-          },
-        }}
-      />
-    );
+    return <PdfViewer fetchUrl={fileUrl} />;
   }
 
   return <p>{t('loadingIndicator.unsupportedFile')}</p>;

@@ -48,7 +48,7 @@ const PdfViewer = ({
     let isCanceled = false;
     const controller = new AbortController();
 
-    async function loadPdf() {
+    const loadPdf = async () => {
       if (!fetchUrl) return;
       setIsLoading(true);
       setErrorMessage(null);
@@ -79,7 +79,7 @@ const PdfViewer = ({
       } finally {
         if (!isCanceled) setIsLoading(false);
       }
-    }
+    };
 
     void loadPdf();
 
