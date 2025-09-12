@@ -34,6 +34,7 @@ import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDi
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import UploadFileDialog from '@/pages/FileSharing/Dialog/UploadFileDialog';
 import useUploadProgressToast from '@/hooks/useUploadProgressToast';
+import DeletePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DeletePublicShareDialog';
 
 const FileSharingPage = () => {
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
@@ -112,6 +113,7 @@ const FileSharingPage = () => {
         descriptionTranslationId=""
       />
       <CreateOrEditPublicShareDialog />
+      <DeletePublicShareDialog />
       <UploadFileDialog />
       <FileSharingFloatingButtonsBar />
     </PageLayout>

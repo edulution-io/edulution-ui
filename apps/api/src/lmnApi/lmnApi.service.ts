@@ -343,12 +343,19 @@ class LmnApiService {
     }
   }
 
-  public async getUserSessions(lmnApiToken: string, username: string): Promise<LmnApiSession[]> {
+  public async getUserSessions(
+    lmnApiToken: string,
+    username: string,
+    withMemberDetails: boolean,
+  ): Promise<LmnApiSession[]> {
     try {
       const response = await this.enqueue<LmnApiSession[]>(() =>
-        this.lmnApi.get<LmnApiSession[]>(`${SESSIONS_LMN_API_ENDPOINT}/${username}`, {
-          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
-        }),
+        this.lmnApi.get<LmnApiSession[]>(
+          `${SESSIONS_LMN_API_ENDPOINT}/${username}?members_details=${withMemberDetails}`,
+          {
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+          },
+        ),
       );
       return response.data;
     } catch (error) {
