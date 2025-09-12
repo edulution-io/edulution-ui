@@ -234,7 +234,7 @@ class WebdavService {
     const baseUrl = await this.webdavSharesService.getWebdavSharePath();
     const url = new URL(fullPath.replace(/^\/+/, ''), baseUrl).href;
 
-    const headers: Record<string, string> = { 'Content-Type': contentType };
+    const headers: Record<string, string> = { [HTTP_HEADERS.ContentType]: contentType };
     if (totalSize && Number.isFinite(totalSize) && totalSize > 0) {
       headers[HTTP_HEADERS.ContentLength] = String(totalSize);
     }
