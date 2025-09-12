@@ -19,6 +19,7 @@ import {
   HttpStatus,
   Param,
   ParseBoolPipe,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -41,15 +42,12 @@ import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreatePro
 import CreateOrEditPublicShareDto from '@libs/filesharing/types/createOrEditPublicShareDto';
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
-import parseMultipartUpload from '@libs/filesharing/utils/parseMultipartUpload';
-import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
 import FilesharingService from './filesharing.service';
 import WebdavService from '../webdav/webdav.service';
 import { Public } from '../common/decorators/public.decorator';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
-import CustomHttpException from '../common/CustomHttpException';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
@@ -89,31 +87,15 @@ class FilesharingController {
   }
 
   @Post(FileSharingApiEndpoints.UPLOAD)
-  async uploadFile(
+  async uploadRaw(
     @Req() req: Request,
     @GetCurrentUsername() username: string,
-    @Query('showUploadProgress', new DefaultValuePipe(false), ParseBoolPipe) showUploadProgress: boolean,
+    @Query('path') path: string,
+    @Query('name') name: string,
+    @Query('isZippedFolder', new DefaultValuePipe(false), ParseBoolPipe) isZippedFolder: boolean,
+    @Query('declaredSize', new DefaultValuePipe(0), ParseIntPipe) declaredSize: number,
   ) {
-    try {
-      const { basePath, isZippedFolder, originalFolderName, name, stream, mimeType } = await parseMultipartUpload(req);
-
-      if (isZippedFolder && originalFolderName) {
-        return await this.filesharingService.uploadZippedFolderStream(username, basePath, originalFolderName, stream);
-      }
-
-      if (showUploadProgress) {
-        return await this.filesharingService.uploadFileStreamWithProgress(username, basePath, name, stream, mimeType);
-      }
-      const fullPath = `${basePath}/${name}`;
-      return await this.webdavService.uploadFile(username, fullPath, stream, mimeType);
-    } catch (error) {
-      throw new CustomHttpException(
-        FileSharingErrorMessage.UploadFailed,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        'FileSharingError UploadFailed',
-        FilesharingController.name,
-      );
-    }
+    return this.filesharingService.uploadFileThroughWebDav(username, path, name, req, isZippedFolder, declaredSize);
   }
 
   @Delete()

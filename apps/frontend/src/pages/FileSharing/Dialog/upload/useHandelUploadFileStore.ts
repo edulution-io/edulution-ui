@@ -11,15 +11,17 @@
  */
 
 import { create } from 'zustand';
-import type { AxiosProgressEvent } from 'axios';
+import type { AxiosInstance, AxiosProgressEvent } from 'axios';
+
 import { UploadFile } from '@libs/filesharing/types/uploadFile';
-import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
-import eduApi from '@/api/eduApi';
-import UploadStatus from '@libs/filesharing/types/uploadStatus';
 import FileProgress from '@libs/filesharing/types/fileProgress';
 import UploadResult from '@libs/filesharing/types/uploadResult';
 import UploadFileParams from '@libs/filesharing/types/uploadFileParams';
+import buildOctetStreamUrl from '@libs/filesharing/utils/buildOctetStreamUrl';
+import createProgressHandler from '@libs/filesharing/utils/createProgressHandler';
+import uploadOctetStream from '@libs/filesharing/utils/uploadOctetStream';
+import eduApi from '@/api/eduApi';
 
 interface HandelUploadFileStore {
   isUploadDialogOpen: boolean;
@@ -39,162 +41,83 @@ interface HandelUploadFileStore {
 
 const initialState = {
   isUploadDialogOpen: false,
-  filesToUpload: [] as UploadFile[],
+  filesToUpload: [],
   isUploading: false,
-  lastError: undefined as string | undefined,
-  progressByName: {} as Record<string, FileProgress>,
+  lastError: undefined,
+  progressByName: {},
 };
 
-const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
+export const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
   ...initialState,
 
-  uploadFiles: async ({ endpoint, type, destinationPath, parallel = true }) => {
-    const filesSelectedForUpload = get().filesToUpload;
-    if (!filesSelectedForUpload || filesSelectedForUpload.length === 0) return [];
+  uploadFiles: async ({ endpoint, destinationPath, parallel = true }) => {
+    const files = get().filesToUpload;
+    if (!files || files.length === 0) return [];
 
     set({ isUploading: true, lastError: undefined });
 
     const sanitizedDestinationPath = getPathWithoutWebdav(destinationPath);
-    const uploadEndpointPath = buildApiFileTypePathUrl(endpoint, type, sanitizedDestinationPath);
 
     const setProgressForFile = (fileName: string, next: FileProgress) =>
       set((state) => ({
-        progressByName: {
-          ...state.progressByName,
-          [fileName]: next,
-        },
+        progressByName: { ...state.progressByName, [fileName]: next },
       }));
 
-    const uploadSingleFile = async (fileItem: UploadFile): Promise<UploadResult> => {
-      const fileName = fileItem.name;
-      const startTimestamp = Date.now();
+    const uploadOne =
+      (api: AxiosInstance) =>
+      async (fileItem: UploadFile): Promise<UploadResult> => {
+        const fileName = fileItem.name;
+        const url = buildOctetStreamUrl(endpoint, sanitizedDestinationPath, fileItem);
 
-      let lastLoadedByteCount = 0;
-      let lastTimestamp = startTimestamp;
-      let smoothedBytesPerSecond = 0;
-
-      setProgressForFile(fileName, {
-        status: UploadStatus.uploading,
-        loadedByteCount: 0,
-        totalByteCount: fileItem.size,
-        percentageComplete: 0,
-        bytesPerSecond: 0,
-        estimatedSecondsRemaining: undefined,
-        startedAtTimestampMs: startTimestamp,
-        lastUpdateTimestampMs: startTimestamp,
-      });
-
-      const formData = new FormData();
-      formData.append(
-        'uploadFileDto',
-        JSON.stringify({
-          name: fileItem.name,
-          isZippedFolder: fileItem.isZippedFolder === true,
-          ...(fileItem.originalFolderName && { originalFolderName: fileItem.originalFolderName }),
-        }),
-      );
-      formData.append('currentPath', destinationPath);
-      formData.append('path', destinationPath);
-      formData.append('file', fileItem);
-
-      try {
-        await eduApi.post(uploadEndpointPath, formData, {
-          params: { showUploadProgress: true, declaredSize: fileItem.size },
-          withCredentials: true,
-          onUploadProgress: (event: AxiosProgressEvent) => {
-            const now = Date.now();
-
-            const totalByteCount = event.total ?? fileItem.size;
-            const loadedByteCount = event.loaded ?? 0;
-
-            const elapsedSeconds = Math.max(1e-3, (now - lastTimestamp) / 1000);
-            const transferredBytesSinceLast = Math.max(0, loadedByteCount - lastLoadedByteCount);
-
-            const instantaneousBytesPerSecond =
-              transferredBytesSinceLast > 0 ? transferredBytesSinceLast / elapsedSeconds : 0;
-
-            smoothedBytesPerSecond =
-              smoothedBytesPerSecond === 0
-                ? instantaneousBytesPerSecond
-                : 0.3 * instantaneousBytesPerSecond + 0.7 * smoothedBytesPerSecond;
-
-            const remainingBytes = Math.max(0, totalByteCount - loadedByteCount);
-            const estimatedSecondsRemaining =
-              smoothedBytesPerSecond > 0 ? remainingBytes / smoothedBytesPerSecond : undefined;
-
-            const percentageComplete =
-              totalByteCount > 0 ? Math.min(99, Math.floor((loadedByteCount / totalByteCount) * 100)) : 0;
-
-            setProgressForFile(fileName, {
-              status: UploadStatus.uploading,
-              loadedByteCount,
-              totalByteCount,
-              percentageComplete,
-              bytesPerSecond: smoothedBytesPerSecond,
-              estimatedSecondsRemaining,
-              startedAtTimestampMs: startTimestamp,
-              lastUpdateTimestampMs: now,
-            });
-
-            lastLoadedByteCount = loadedByteCount;
-            lastTimestamp = now;
-          },
+        const progress = createProgressHandler({
+          fileName,
+          fileSize: fileItem.size,
+          setProgress: (fp) => setProgressForFile(fileName, fp),
         });
 
-        setProgressForFile(fileName, {
-          status: UploadStatus.done,
-          loadedByteCount: fileItem.size,
-          totalByteCount: fileItem.size,
-          percentageComplete: 100,
-          bytesPerSecond: 0,
-          estimatedSecondsRemaining: 0,
-          startedAtTimestampMs: startTimestamp,
-          lastUpdateTimestampMs: Date.now(),
-        });
-
-        return { name: fileName, ok: true };
-      } catch (error) {
-        setProgressForFile(fileName, {
-          status: UploadStatus.error,
-          loadedByteCount: lastLoadedByteCount,
-          totalByteCount: fileItem.size,
-          percentageComplete: fileItem.size > 0 ? Math.floor((lastLoadedByteCount / fileItem.size) * 100) : 0,
-          bytesPerSecond: 0,
-          estimatedSecondsRemaining: undefined,
-          startedAtTimestampMs: startTimestamp,
-          lastUpdateTimestampMs: Date.now(),
-        });
-        return {
-          name: fileName,
-          ok: false,
-          error: error instanceof Error ? error.message : 'upload_failed',
-        };
-      }
-    };
+        try {
+          progress.markStart();
+          await uploadOctetStream(api, url, fileItem, (e: AxiosProgressEvent) => progress.onUploadProgress(e));
+          progress.markDone();
+          return { name: fileName, ok: true };
+        } catch (error) {
+          progress.markError();
+          return { name: fileName, ok: false, error: error instanceof Error ? error.message : 'upload_failed' };
+        }
+      };
 
     try {
+      const runUpload = uploadOne(eduApi);
+
       let outcomes: UploadResult[];
+
       if (parallel) {
-        const settled = await Promise.allSettled(filesSelectedForUpload.map(uploadSingleFile));
-        outcomes = settled.map((r, i) =>
-          r.status === 'fulfilled'
-            ? r.value
-            : { name: filesSelectedForUpload[i].name, ok: false, error: String(r.reason) },
-        );
+        const uploadPromises = files.map((fileItem) => runUpload(fileItem));
+        const settledUploadResults = await Promise.allSettled(uploadPromises);
+
+        outcomes = settledUploadResults.map((settledResult, fileIndex) => {
+          if (settledResult.status === 'fulfilled') {
+            return settledResult.value;
+          }
+          return {
+            name: files[fileIndex].name,
+            ok: false,
+            error: String(settledResult.reason),
+          } as UploadResult;
+        });
       } else {
-        outcomes = await filesSelectedForUpload.reduce<Promise<UploadResult[]>>(
-          async (previousResultsPromise, fileItem) => {
-            const results = await previousResultsPromise;
-            const uploadOutcome = await uploadSingleFile(fileItem);
-            return [...results, uploadOutcome];
+        outcomes = await files.reduce<Promise<UploadResult[]>>(
+          async (promiseForOutcomes, fileItem) => {
+            const outcomesSoFar = await promiseForOutcomes;
+            const outcomeForCurrentFile = await runUpload(fileItem);
+            return [...outcomesSoFar, outcomeForCurrentFile];
           },
           Promise.resolve([] as UploadResult[]),
         );
       }
 
-      const firstFailureMessage = outcomes.find((result) => !result.ok)?.error;
+      const firstFailureMessage = outcomes.find((r) => !r.ok)?.error;
       if (firstFailureMessage) set({ lastError: firstFailureMessage });
-
       return outcomes;
     } finally {
       set({ isUploading: false });

@@ -131,15 +131,37 @@ class FilesharingService {
     return { success: true, status: HttpStatus.CREATED, filename: folderName };
   }
 
-  async uploadFileStreamWithProgress(
+  async uploadFileThroughWebDav(
     username: string,
-    basePath: string,
+    path: string,
     name: string,
-    stream: Readable,
-    mimeType: string,
+    req: Request,
+    isZippedFolder = false,
+    fileSize = 0,
   ) {
-    const fullWebDavFilePath = `${basePath.replace(/\/+$/, '')}/${name.replace(/^\/+/, '')}`;
-    await this.webDavService.uploadFileWithNetworkProgress(username, fullWebDavFilePath, stream, mimeType);
+    const basePath = getPathWithoutWebdav(path);
+    const fullPath = `${basePath.replace(/\/+$/, '')}/${name.replace(/^\/+/, '')}`;
+    const mimeType =
+      (req.headers[HTTP_HEADERS.ContentType] as string) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
+
+    const incomingLen = Number(req.headers[HTTP_HEADERS.ContentLength] || 0);
+    let totalSize: number | undefined;
+    if (Number.isFinite(incomingLen) && incomingLen > 0) {
+      totalSize = incomingLen;
+    } else if (Number.isFinite(fileSize) && fileSize > 0) {
+      totalSize = fileSize;
+    } else {
+      totalSize = undefined;
+    }
+    req.on('aborted', () => console?.warn?.('client aborted upload'));
+    req.on('close', () => console?.warn?.('client closed connection'));
+    req.on('error', (e) => console?.error?.('req stream error', e));
+
+    if (isZippedFolder) {
+      return this.uploadZippedFolderStream(username, basePath, name, req);
+    }
+
+    return this.webDavService.uploadFileWithNetworkProgress(username, fullPath, req, mimeType, () => {}, totalSize);
   }
 
   async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {

@@ -16,16 +16,32 @@ import eduApi from '@/api/eduApi';
 import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 
+function withQuery(url: string, params: Record<string, string | number | boolean | undefined>) {
+  const u = new URL(url, window.location.origin);
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== null) u.searchParams.set(k, String(v));
+  });
+  return u.toString();
+}
+
 const handleFileOrCreateFile = async (
   endpoint: string,
   httpMethod: HttpMethods,
   type: ContentType,
   originalFormData: FormData,
 ) => {
-  await eduApi[httpMethod](
-    buildApiFileTypePathUrl(endpoint, type, getPathWithoutWebdav(originalFormData.get('path') as string)),
-    originalFormData,
-  );
+  const rawPath = String(originalFormData.get('path') ?? '');
+  const sanitizedPath = getPathWithoutWebdav(rawPath);
+  const baseUrl = buildApiFileTypePathUrl(`/edu-api/${  endpoint}`, type, sanitizedPath);
+
+  const filename = (originalFormData.get('file') as File | null)?.name ?? '';
+
+  const url = withQuery(baseUrl, {
+    name: filename,
+    declaredSize: (originalFormData.get('file') as File | null)?.size,
+  });
+
+  await eduApi[httpMethod](url, originalFormData);
 };
 
 export default handleFileOrCreateFile;

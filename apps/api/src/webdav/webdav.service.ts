@@ -33,7 +33,7 @@ import DEFAULT_PROPFIND_XML from '@libs/filesharing/constants/defaultPropfindXml
 import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import { Readable } from 'stream';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
-import got, { Progress } from 'got';
+import got from 'got';
 import CustomHttpException from '../common/CustomHttpException';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
@@ -235,41 +235,29 @@ class WebdavService {
     const url = new URL(fullPath.replace(/^\/+/, ''), baseUrl).href;
 
     const headers: Record<string, string> = { 'Content-Type': contentType };
-    if (typeof totalSize === 'number' && Number.isFinite(totalSize) && totalSize > 0) {
+    if (totalSize && Number.isFinite(totalSize) && totalSize > 0) {
       headers['Content-Length'] = String(totalSize);
     }
 
-    try {
-      const request = got.put(url, {
-        body: fileStream,
-        headers,
-        username,
-        password,
-        http2: false,
-        retry: { limit: 0 },
-        throwHttpErrors: false,
-        decompress: false,
-      });
+    const request = got.put(url, {
+      body: fileStream,
+      headers,
+      username,
+      password,
+      http2: false,
+      retry: { limit: 0 },
+      throwHttpErrors: false,
+      decompress: false,
+    });
 
-      void request.on('uploadProgress', (progress: Progress) => {
-        void onProgress?.(progress.transferred, progress.total);
-      });
+    fileStream.on('aborted', () => request.cancel());
+    fileStream.on('error', () => request.cancel());
 
-      const response = await request;
-      const status = response.statusCode;
+    void request.on('uploadProgress', (p) => onProgress?.(p.transferred, p.total));
 
-      if (status >= 200 && status < 300) {
-        return { success: true, status, filename: fullPath.split('/').pop() || '' };
-      }
-      return { success: false, status, filename: fullPath.split('/').pop() || '' };
-    } catch (err) {
-      throw new CustomHttpException(
-        FileSharingErrorMessage.UploadFailed,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        (err as Error).message,
-        WebdavService.name,
-      );
-    }
+    const response = await request;
+    const ok = response.statusCode >= 200 && response.statusCode < 300;
+    return { success: ok, status: response.statusCode, filename: fullPath.split('/').pop() || '' };
   }
 
   async uploadFile(
