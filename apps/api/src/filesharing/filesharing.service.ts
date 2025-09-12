@@ -153,9 +153,6 @@ class FilesharingService {
     } else {
       totalSize = undefined;
     }
-    req.on('aborted', () => console?.warn?.('client aborted upload'));
-    req.on('close', () => console?.warn?.('client closed connection'));
-    req.on('error', (e) => console?.error?.('req stream error', e));
 
     if (isZippedFolder) {
       return this.uploadZippedFolderStream(username, basePath, name, req);

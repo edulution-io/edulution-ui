@@ -33,7 +33,6 @@ const handleFileOrCreateFile = async (
   await eduApi[httpMethod](baseUrl, originalFormData, {
     params: {
       name: filenameFromForm,
-      contentLength: file?.size,
     },
     withCredentials: true,
   });
