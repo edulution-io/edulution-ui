@@ -155,6 +155,7 @@ const TLDrawWithSync = ({ uri }: { uri: string }) => {
         options={[{ id: '', name: 'whiteboard-collaboration.privateRoom' }].concat(roomIdOptions)}
         selectedVal={selectedRoomId}
         handleChange={setSelectedRoomId}
+        searchEnabled
         variant="default"
         classname="z-[400]"
       />

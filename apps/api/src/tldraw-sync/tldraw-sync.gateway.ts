@@ -30,7 +30,7 @@ import TLDrawSyncService from './tldraw-sync.service';
   path: `${EDU_API_ROOT}/${TLDRAW_SYNC_ENDPOINTS.BASE}`,
   cors: { origin: '*' },
 })
-export default class TLDrawSyncGateway implements OnGatewayConnection, OnModuleInit {
+class TLDrawSyncGateway implements OnGatewayConnection, OnModuleInit {
   @WebSocketServer() server: Server;
 
   private readonly pubKey = readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
@@ -49,7 +49,7 @@ export default class TLDrawSyncGateway implements OnGatewayConnection, OnModuleI
     const { attendee, roomId, sessionId, isMultiUserRoom, permittedUsers } = await this.authenticate(request, client);
     if (!attendee || !roomId || !sessionId) return;
 
-    Logger.log(
+    Logger.verbose(
       `Authenticated user ${attendee.username} connected: roomId=${roomId}, sessionId=${sessionId}`,
       TLDrawSyncGateway.name,
     );
@@ -199,3 +199,5 @@ export default class TLDrawSyncGateway implements OnGatewayConnection, OnModuleI
     }
   }
 }
+
+export default TLDrawSyncGateway;

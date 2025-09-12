@@ -38,19 +38,16 @@ const Whiteboard = () => {
   const [fixedToken, setFixedToken] = useState<string | null>(liveToken ?? null);
 
   useEffect(() => {
+    const fromUrl = searchParams.get(ROOM_ID_PARAM) ?? '';
+    if (fromUrl && fromUrl !== selectedRoomId) {
+      setSelectedRoomId(fromUrl);
+    }
     void getIsEduApiHealthy();
   }, []);
 
   useEffect(() => {
     if (!fixedToken && liveToken) setFixedToken(liveToken);
   }, [fixedToken, liveToken]);
-
-  useEffect(() => {
-    const fromUrl = searchParams.get(ROOM_ID_PARAM) ?? '';
-    if (fromUrl && fromUrl !== selectedRoomId) {
-      setSelectedRoomId(fromUrl);
-    }
-  }, []);
 
   useEffect(() => {
     const currentParams = new URLSearchParams(window.location.search);
