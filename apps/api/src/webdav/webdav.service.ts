@@ -248,6 +248,7 @@ class WebdavService {
       retry: { limit: 0 },
       throwHttpErrors: false,
       decompress: false,
+      rejectUnauthorized: true,
     });
 
     fileStream.on('aborted', () => request.cancel());
