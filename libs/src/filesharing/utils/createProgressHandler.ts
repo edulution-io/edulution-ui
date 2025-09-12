@@ -14,17 +14,23 @@ import type { AxiosProgressEvent } from 'axios';
 import UploadStatus from '@libs/filesharing/types/uploadStatus';
 import type FileProgress from '@libs/filesharing/types/fileProgress';
 
-interface CreateProgressHandlerProps {
-  fileName: string;
+type CreateProgressHandlerProps = {
   fileSize: number;
-  setProgress: (fp: FileProgress) => void;
-}
+  setProgress: (next: FileProgress) => void;
+  smoothingFactor?: number;
+  clampToNinetyNine?: boolean;
+};
 
-const createProgressHandler = ({ fileSize, setProgress }: CreateProgressHandlerProps) => {
-  const startTs = Date.now();
-  let lastLoaded = 0;
-  let lastTs = startTs;
-  let smoothedBps = 0;
+const createProgressHandler = ({
+  fileSize,
+  setProgress,
+  smoothingFactor = 0.7,
+  clampToNinetyNine = true,
+}: CreateProgressHandlerProps) => {
+  const startTimestampMilliseconds = Date.now();
+  let lastLoadedByteCount = 0;
+  let lastUpdateTimestampMilliseconds = startTimestampMilliseconds;
+  let smoothedBytesPerSecond = 0;
 
   const markStart = () =>
     setProgress({
@@ -34,37 +40,48 @@ const createProgressHandler = ({ fileSize, setProgress }: CreateProgressHandlerP
       percentageComplete: 0,
       bytesPerSecond: 0,
       estimatedSecondsRemaining: undefined,
-      startedAtTimestampMs: startTs,
-      lastUpdateTimestampMs: startTs,
+      startedAtTimestampMs: startTimestampMilliseconds,
+      lastUpdateTimestampMs: startTimestampMilliseconds,
     });
 
   const onUploadProgress = (event: AxiosProgressEvent) => {
-    const now = Date.now();
-    const total = event.total ?? fileSize;
-    const loaded = event.loaded ?? 0;
+    const currentTimestampMilliseconds = Date.now();
 
-    const elapsedSec = Math.max(1e-3, (now - lastTs) / 1000);
-    const delta = Math.max(0, loaded - lastLoaded);
-    const instBps = delta > 0 ? delta / elapsedSec : 0;
-    smoothedBps = smoothedBps === 0 ? instBps : 0.3 * instBps + 0.7 * smoothedBps;
+    const totalByteCount = event.total ?? fileSize;
+    const loadedByteCount = event.loaded ?? 0;
 
-    const remaining = Math.max(0, total - loaded);
-    const eta = smoothedBps > 0 ? remaining / smoothedBps : undefined;
-    const pct = total > 0 ? Math.min(99, Math.floor((loaded / total) * 100)) : 0;
+    const elapsedSeconds = Math.max(0.001, (currentTimestampMilliseconds - lastUpdateTimestampMilliseconds) / 1000);
+
+    const transferredBytesSinceLastUpdate = Math.max(0, loadedByteCount - lastLoadedByteCount);
+
+    const instantaneousBytesPerSecond =
+      transferredBytesSinceLastUpdate > 0 ? transferredBytesSinceLastUpdate / elapsedSeconds : 0;
+
+    smoothedBytesPerSecond =
+      smoothedBytesPerSecond === 0
+        ? instantaneousBytesPerSecond
+        : (1 - smoothingFactor) * instantaneousBytesPerSecond + smoothingFactor * smoothedBytesPerSecond;
+
+    const remainingBytes = Math.max(0, totalByteCount - loadedByteCount);
+    const estimatedSecondsRemaining = smoothedBytesPerSecond > 0 ? remainingBytes / smoothedBytesPerSecond : undefined;
+
+    const rawPercentage = totalByteCount > 0 ? Math.floor((loadedByteCount / totalByteCount) * 100) : 0;
+
+    const percentageComplete = clampToNinetyNine ? Math.min(99, rawPercentage) : rawPercentage;
 
     setProgress({
       status: UploadStatus.uploading,
-      loadedByteCount: loaded,
-      totalByteCount: total,
-      percentageComplete: pct,
-      bytesPerSecond: smoothedBps,
-      estimatedSecondsRemaining: eta,
-      startedAtTimestampMs: startTs,
-      lastUpdateTimestampMs: now,
+      loadedByteCount,
+      totalByteCount,
+      percentageComplete,
+      bytesPerSecond: smoothedBytesPerSecond,
+      estimatedSecondsRemaining,
+      startedAtTimestampMs: startTimestampMilliseconds,
+      lastUpdateTimestampMs: currentTimestampMilliseconds,
     });
 
-    lastLoaded = loaded;
-    lastTs = now;
+    lastLoadedByteCount = loadedByteCount;
+    lastUpdateTimestampMilliseconds = currentTimestampMilliseconds;
   };
 
   const markDone = () =>
@@ -75,19 +92,19 @@ const createProgressHandler = ({ fileSize, setProgress }: CreateProgressHandlerP
       percentageComplete: 100,
       bytesPerSecond: 0,
       estimatedSecondsRemaining: 0,
-      startedAtTimestampMs: startTs,
+      startedAtTimestampMs: startTimestampMilliseconds,
       lastUpdateTimestampMs: Date.now(),
     });
 
   const markError = () =>
     setProgress({
       status: UploadStatus.error,
-      loadedByteCount: lastLoaded,
+      loadedByteCount: lastLoadedByteCount,
       totalByteCount: fileSize,
-      percentageComplete: fileSize > 0 ? Math.floor((lastLoaded / fileSize) * 100) : 0,
+      percentageComplete: fileSize > 0 ? Math.floor((lastLoadedByteCount / fileSize) * 100) : 0,
       bytesPerSecond: 0,
       estimatedSecondsRemaining: undefined,
-      startedAtTimestampMs: startTs,
+      startedAtTimestampMs: startTimestampMilliseconds,
       lastUpdateTimestampMs: Date.now(),
     });
 

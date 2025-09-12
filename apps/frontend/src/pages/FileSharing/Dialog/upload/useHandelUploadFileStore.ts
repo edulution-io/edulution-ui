@@ -11,17 +11,13 @@
  */
 
 import { create } from 'zustand';
-import type { AxiosInstance, AxiosProgressEvent } from 'axios';
 
 import { UploadFile } from '@libs/filesharing/types/uploadFile';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import FileProgress from '@libs/filesharing/types/fileProgress';
 import UploadResult from '@libs/filesharing/types/uploadResult';
-import buildOctetStreamUrl from '@libs/filesharing/utils/buildOctetStreamUrl';
-import createProgressHandler from '@libs/filesharing/utils/createProgressHandler';
-import uploadOctetStream from '@libs/filesharing/utils/uploadOctetStream';
 import eduApi from '@/api/eduApi';
-import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
+import createFileUploader from '@libs/filesharing/utils/createFileUploader';
+import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 
 interface HandelUploadFileStore {
   isUploadDialogOpen: boolean;
@@ -77,48 +73,19 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
     const sanitizedDestinationPath = getPathWithoutWebdav(currentPath);
 
     const setProgressForFile = (fileName: string, next: FileProgress) =>
-      set((state) => ({
-        progressByName: { ...state.progressByName, [fileName]: next },
-      }));
+      set((state) => ({ progressByName: { ...state.progressByName, [fileName]: next } }));
 
-    const makeUploader =
-      (api: AxiosInstance) =>
-      async (fileItem: UploadFile): Promise<UploadResult> => {
-        const fileName = fileItem.name;
-        const url = buildOctetStreamUrl(
-          `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.UPLOAD}`,
-          sanitizedDestinationPath,
-          fileItem,
-        );
+    const uploader = createFileUploader({
+      httpClient: eduApi,
+      destinationPath: sanitizedDestinationPath,
+      onProgressUpdate: setProgressForFile,
+      onUploadingChange: (fileName, uploading) => get().markUploading(fileName, uploading),
+    });
 
-        const progress = createProgressHandler({
-          fileName,
-          fileSize: fileItem.size,
-          setProgress: (fp) => setProgressForFile(fileName, fp),
-        });
-
-        get().markUploading(fileName, true);
-        try {
-          progress.markStart();
-          await uploadOctetStream(api, url, fileItem, (e: AxiosProgressEvent) => progress.onUploadProgress(e));
-          progress.markDone();
-          return { name: fileName, ok: true };
-        } catch (error) {
-          progress.markError();
-          return {
-            name: fileName,
-            ok: false,
-          };
-        } finally {
-          get().markUploading(fileName, false);
-        }
-      };
-
-    const runUpload = makeUploader(eduApi);
     let outcomes: UploadResult[];
 
     if (parallel) {
-      const uploadPromises = files.map((fileItem) => runUpload(fileItem));
+      const uploadPromises = files.map((fileItem) => uploader(fileItem));
       const settledUploadResults = await Promise.allSettled(uploadPromises);
 
       outcomes = settledUploadResults.map((settledResult, fileIndex) => {
@@ -135,7 +102,7 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
       outcomes = await files.reduce<Promise<UploadResult[]>>(
         async (promiseForOutcomes, fileItem) => {
           const outcomesSoFar = await promiseForOutcomes;
-          const outcomeForCurrentFile = await runUpload(fileItem);
+          const outcomeForCurrentFile = await uploader(fileItem);
           return [...outcomesSoFar, outcomeForCurrentFile];
         },
         Promise.resolve([] as UploadResult[]),
