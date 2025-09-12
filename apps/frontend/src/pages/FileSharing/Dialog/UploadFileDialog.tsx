@@ -21,7 +21,16 @@ import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 const UploadFileDialog = () => {
   const { currentPath } = useFileSharingStore();
-  const { isUploadDialogOpen, closeUploadDialog, uploadFiles, isUploading } = useHandelUploadFileStore();
+  const { isUploadDialogOpen, closeUploadDialog, uploadFiles, isUploading, setFilesToUpload } =
+    useHandelUploadFileStore();
+
+  const [remountKey, setRemountKey] = React.useState(0);
+
+  const handleClose = () => {
+    setFilesToUpload([]);
+    setRemountKey((k) => k + 1);
+    closeUploadDialog();
+  };
 
   const handleSubmit = async () => {
     const results = await uploadFiles({
@@ -31,18 +40,18 @@ const UploadFileDialog = () => {
       parallel: true,
     });
     const hasError = results.some((r) => !r.ok);
-    if (!hasError) closeUploadDialog();
+    if (!hasError) handleClose();
   };
 
   return (
     <AdaptiveDialog
       isOpen={isUploadDialogOpen}
-      handleOpenChange={closeUploadDialog}
+      handleOpenChange={handleClose}
       title="filesharingUpload.title"
-      body={<UploadContentBody />}
+      body={<UploadContentBody key={remountKey} />}
       footer={
         <DialogFooterButtons
-          handleClose={closeUploadDialog}
+          handleClose={handleClose}
           handleSubmit={handleSubmit}
           submitButtonType="submit"
           submitButtonText="filesharingUpload.upload"
