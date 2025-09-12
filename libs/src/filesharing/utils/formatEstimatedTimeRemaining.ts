@@ -12,7 +12,7 @@
 
 import { t } from 'i18next';
 
-export const formatEstimatedTimeRemaining = (seconds?: number): string => {
+const formatEstimatedTimeRemaining = (seconds?: number): string => {
   if (seconds == null || !Number.isFinite(seconds) || seconds < 0) {
     return '–';
   }
