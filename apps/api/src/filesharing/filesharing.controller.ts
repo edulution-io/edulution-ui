@@ -87,7 +87,7 @@ class FilesharingController {
   }
 
   @Post(FileSharingApiEndpoints.UPLOAD)
-  async uploadFileThroughWebDav(
+  async uploadFileViaWebDav(
     @Req() req: Request,
     @GetCurrentUsername() username: string,
     @Query('path') path: string,
@@ -95,7 +95,7 @@ class FilesharingController {
     @Query('isZippedFolder', new DefaultValuePipe(false), ParseBoolPipe) isZippedFolder: boolean,
     @Query('contentLength', new DefaultValuePipe(0), ParseIntPipe) contentLength: number,
   ) {
-    return this.filesharingService.uploadFileThroughWebDav(username, path, name, req, isZippedFolder, contentLength);
+    return this.filesharingService.uploadFileViaWebDav(username, path, name, req, isZippedFolder, contentLength);
   }
 
   @Delete()

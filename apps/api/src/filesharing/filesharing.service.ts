@@ -131,7 +131,7 @@ class FilesharingService {
     return { success: true, status: HttpStatus.CREATED, filename: folderName };
   }
 
-  async uploadFileThroughWebDav(
+  async uploadFileViaWebDav(
     username: string,
     path: string,
     name: string,

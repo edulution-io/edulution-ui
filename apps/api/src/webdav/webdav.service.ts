@@ -236,7 +236,7 @@ class WebdavService {
 
     const headers: Record<string, string> = { 'Content-Type': contentType };
     if (totalSize && Number.isFinite(totalSize) && totalSize > 0) {
-      headers['Content-Length'] = String(totalSize);
+      headers[HTTP_HEADERS.ContentLength] = String(totalSize);
     }
 
     const request = got.put(url, {
