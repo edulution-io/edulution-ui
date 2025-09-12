@@ -438,6 +438,22 @@
       "selectedItemPrefix": "Ausgewählter Inhalt, welcher geteilt wird:",
       "noInviteesWarning": "⚠️  WARNUNG: Jeder, der den Link besitzt, kann diesen Inhalt herunterladen.",
       "inviteesWarning": "⚠️ WARNUNG: Jeder, der zu den ausgewählten Gruppen oder Benutzern gehört, kann diesen Inhalt herunterladen."
+    },
+
+    "eta": {
+      "fewSeconds": "ein paar Sekunden verbleibend",
+      "lessThanMinute": "weniger als eine Minute verbleibend",
+      "aboutOneMinute": "etwa eine Minute verbleibend",
+      "aboutMinutes_one": "etwa {{count}} Minute verbleibend",
+      "aboutMinutes_other": "etwa {{count}} Minuten verbleibend",
+      "aboutHours_one": "etwa {{count}} Stunde verbleibend",
+      "aboutHours_other": "etwa {{count}} Stunden verbleibend",
+      "moreThanHours_one": "mehr als {{count}} Stunde verbleibend",
+      "moreThanHours_other": "mehr als {{count}} Stunden verbleibend",
+      "aboutDays_one": "etwa {{count}} Tag verbleibend",
+      "aboutDays_other": "etwa {{count}} Tage verbleibend",
+      "moreThanDays_one": "mehr als {{count}} Tag verbleibend",
+      "moreThanDays_other": "mehr als {{count}} Tage verbleibend"
     }
   },
   "forums": {

@@ -13,7 +13,6 @@
 interface UploadResult {
   name: string;
   ok: boolean;
-  error?: string;
 }
 
 export default UploadResult;

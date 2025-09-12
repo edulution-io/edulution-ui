@@ -10,15 +10,47 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const formatEstimatedTimeRemaining = (seconds?: number) => {
-  if (seconds == null || !Number.isFinite(seconds) || seconds < 0) return '–';
+import { t } from 'i18next';
 
-  const roundedSeconds = Math.max(0, Math.round(seconds));
-  const hours = Math.floor(roundedSeconds / 3600);
-  const minutes = Math.floor((roundedSeconds % 3600) / 60);
-  const remainingSeconds = roundedSeconds % 60;
+export const formatEstimatedTimeRemaining = (seconds?: number): string => {
+  if (seconds == null || !Number.isFinite(seconds) || seconds < 0) {
+    return '–';
+  }
 
-  return `${String(hours).padStart(2, '0')}h::${String(minutes).padStart(2, '0')}min:${String(remainingSeconds).padStart(2, '0')}sec`;
+  const totalSeconds = Math.round(seconds);
+
+  if (totalSeconds < 5) {
+    return t('filesharing.eta.fewSeconds');
+  }
+  if (totalSeconds < 60) {
+    return t('filesharing.eta.lessThanMinute');
+  }
+  if (totalSeconds < 90) {
+    return t('filesharing.eta.aboutOneMinute');
+  }
+
+  const totalMinutes = Math.round(totalSeconds / 60);
+  if (totalSeconds < 3600) {
+    return t('filesharing.eta.aboutMinutes', { count: totalMinutes });
+  }
+
+  const wholeHours = Math.floor(totalSeconds / 3600);
+  const minutesRemainder = Math.floor((totalSeconds % 3600) / 60);
+
+  if (wholeHours < 24) {
+    if (minutesRemainder <= 5) {
+      return t('filesharing.eta.aboutHours', { count: wholeHours });
+    }
+    return t('filesharing.eta.moreThanHours', { count: wholeHours });
+  }
+
+  const wholeDays = Math.floor(totalSeconds / 86400);
+  const hoursRemainder = Math.floor((totalSeconds % 86400) / 3600);
+
+  if (hoursRemainder <= 6) {
+    return t('filesharing.eta.aboutDays', { count: wholeDays });
+  }
+  return t('filesharing.eta.moreThanDays', { count: wholeDays });
 };
 
 export default formatEstimatedTimeRemaining;

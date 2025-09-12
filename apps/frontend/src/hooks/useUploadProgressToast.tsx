@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import ProgressBox from '@/components/ui/ProgressBox';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
@@ -19,21 +19,12 @@ import formatTransferSpeed from '@libs/filesharing/utils/formatTransferSpeed';
 import formatEstimatedTimeRemaining from '@libs/filesharing/utils/formatEstimatedTimeRemaining';
 import { useTranslation } from 'react-i18next';
 import UploadStatus from '@libs/filesharing/types/uploadStatus';
-import ERROR_TOAST_DURATION_MS from '@libs/common/types/errorToastDurationMs';
-import DONE_TOAST_DURATION_MS from '@libs/common/types/doneToastDurationMs';
-import LIVE_TOAST_DURATION_MS from '@libs/common/types/liveToastDurationMs';
 import { formatBytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
-
-const getLastUpdateTs = (p: { lastUpdateTimestampMs?: number; lastTsMs?: number }) =>
-  p.lastUpdateTimestampMs ?? p.lastTsMs ?? 0;
-
-const getPercent = (item: { percent?: number; percentageComplete?: number }) =>
-  item.percent ?? item.percentageComplete ?? 0;
-
-const getLoadedBytes = (item: { loaded?: number; loadedByteCount?: number }) =>
-  item.loaded ?? item.loadedByteCount ?? 0;
-
-const getTotalBytes = (item: { total?: number; totalByteCount?: number }) => item.total ?? item.totalByteCount;
+import {
+  DONE_TOAST_DURATION_MS,
+  ERROR_TOAST_DURATION_MS,
+  LIVE_TOAST_DURATION_MS,
+} from '@libs/ui/constants/showToasterDuration';
 
 const useUploadProgressToast = () => {
   const { progressByName } = useHandelUploadFileStore();
@@ -43,6 +34,26 @@ const useUploadProgressToast = () => {
   const lastShownPercentageByFileName = useRef<Record<string, number>>({});
   const hasRefreshedForFile = useRef<Set<string>>(new Set());
   const mountedAtMs = useRef<number>(Date.now());
+
+  const getLastUpdateTs = useCallback(
+    (item: { lastUpdateTimestampMs?: number; lastTsMs?: number }) => item.lastUpdateTimestampMs ?? item.lastTsMs ?? 0,
+    [],
+  );
+
+  const getPercent = useCallback(
+    (item: { percent?: number; percentageComplete?: number }) => item.percent ?? item.percentageComplete ?? 0,
+    [],
+  );
+
+  const getLoadedBytes = useCallback(
+    (item: { loaded?: number; loadedByteCount?: number }) => item.loaded ?? item.loadedByteCount ?? 0,
+    [],
+  );
+
+  const getTotalBytes = useCallback(
+    (item: { total?: number; totalByteCount?: number }) => item.total ?? item.totalByteCount,
+    [],
+  );
 
   useEffect(() => {
     Object.entries(progressByName).forEach(([fileName, progress]) => {

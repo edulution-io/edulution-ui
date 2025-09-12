@@ -17,7 +17,7 @@ class UploadFileDto {
 
   originalFolderName?: string;
 
-  declaredSize?: string;
+  contentLength?: string;
 }
 
 export default UploadFileDto;

@@ -13,8 +13,6 @@
 import React from 'react';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
-import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
-import ContentType from '@libs/filesharing/types/contentType';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
@@ -33,12 +31,7 @@ const UploadFileDialog = () => {
   };
 
   const handleSubmit = async () => {
-    const results = await uploadFiles({
-      endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.UPLOAD}`,
-      type: ContentType.FILE,
-      destinationPath: currentPath,
-      parallel: true,
-    });
+    const results = await uploadFiles(currentPath);
     const hasError = results.some((r) => !r.ok);
     if (!hasError) handleClose();
   };

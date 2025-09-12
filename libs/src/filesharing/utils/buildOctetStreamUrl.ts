@@ -17,7 +17,7 @@ const buildOctetStreamUrl = (baseUploadUrl: string, destinationPath: string, fil
   query.set('path', destinationPath);
   query.set('name', fileItem.name);
   query.set('isZippedFolder', String(!!fileItem.isZippedFolder));
-  query.set('declaredSize', String(fileItem.size));
+  query.set('contentLength', String(fileItem.size));
   return `${baseUploadUrl}?${query.toString()}`;
 };
 
