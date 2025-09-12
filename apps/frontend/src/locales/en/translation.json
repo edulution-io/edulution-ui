@@ -618,6 +618,7 @@
     "noFormula": "The formula of the survey is not readable.",
     "canSubmitMultiple": "Allow multiple submission",
     "editor": {
+      "inputFieldTitle": "Input field",
       "new": "New (blank)",
       "fileUploadSuccess": "Saved the image successfully.",
       "fileUploadError": "Error on Image Upload, please retry later.",
@@ -1341,7 +1342,7 @@
   "filesharingUpload": {
     "title": "Upload Files",
     "upload": "Upload",
-    "dataLimitExceeded": "Data limit from 400 MB exceeded",
+    "dataLimitExceeded": "Data limit from 50 MB exceeded",
     "fileSize": "File size",
     "selectFile": "Select up to 5 files at a time",
     "uploadItems": "Upload: {{count}} items",
@@ -1356,7 +1357,7 @@
     "oversizedFileDetected": "Oversized file detected!",
     "folderTooLargeTitle": "Too many files in the folder",
     "folderTooLargeDescription": "The folder contains more then 100 files. Please select another folder or reduce the number of files.",
-    "cannotUploadOversized": "Files larger than 400 MB cannot be uploaded.",
+    "cannotUploadOversized": "Files larger than 50 MB cannot be uploaded.",
     "addFiles": "Add files",
     "addFolder": "Add folder",
     "preparingFolder": "Preparing folder"
@@ -1520,6 +1521,8 @@
     "errors": {
       "CouldNotGetGroupByPath": "Group could not be found by path",
       "CouldNotGetUsers": "Users could not be found",
+      "CouldNotGetCurrentUser": "Current user could not be found",
+      "CouldNotGetAllGroups": "Failed to find all groups",
       "CouldNotFetchGroupMembers": "Group members could not be found",
       "CouldNotFetchUserById": "User could not be found by ID",
       "CouldNotSearchGroups": "Could not search for groups"

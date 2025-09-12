@@ -10,9 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import THIRTY_DAYS from '@libs/common/constants/thirtyDays';
+import { Module } from '@nestjs/common';
+import MobileAppModuleService from './mobileAppModule.service';
+import MobileAppModuleController from './mobileAppModule.controller';
+import LmnApiModule from '../lmnApi/lmnApi.module';
 
-export const DEFAULT_CACHE_TTL_MS = 3600000;
-export const USERS_CACHE_TTL_MS = THIRTY_DAYS;
-export const GROUPS_CACHE_TTL_MS = THIRTY_DAYS;
-export const AUTH_CACHE_TTL_MS = 3600000;
+@Module({
+  imports: [LmnApiModule],
+  controllers: [MobileAppModuleController],
+  providers: [MobileAppModuleService],
+})
+export default class MobileAppModuleModule {}

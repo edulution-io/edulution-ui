@@ -621,6 +621,7 @@
     "noAnswer": "Es sind noch keine Antworten verfügbar.",
     "canSubmitMultiple": "Erlaube Mehrfachantworten.",
     "editor": {
+      "inputFieldTitle": "Eingabefeld",
       "new": "Neu (Leer)",
       "fileUploadSuccess": "Die Datei wurde erfolgreich hochgeladen.",
       "fileUploadError": "Die Datei konnte nicht hochgeladen werden, bitte versuche es später erneut.",
@@ -1360,7 +1361,7 @@
     "folderTooLargeTitle": "Zu viele Dateien im Ordner",
     "folderTooLargeDescription": "Der Ordner enthält mehr als 100 Dateien. Bitte wähle einen anderen Ordner oder reduziere die Anzahl der Dateien.",
     "oversizedFileDetected": "Zu große Datei entdeckt!",
-    "cannotUploadOversized": "Dateien, die größer als 400 MB sind, können nicht hochgeladen werden.",
+    "cannotUploadOversized": "Dateien, die größer als 50 MB sind, können nicht hochgeladen werden.",
     "addFiles": "Dateien hinzufügen",
     "addFolder": "Ordner hinzufügen",
     "preparingFolder": "Ordner wird vorbereitet"
@@ -1524,6 +1525,8 @@
     "errors": {
       "CouldNotGetGroupByPath": "Gruppe konnte anhand des Pfades nicht gefunden werden",
       "CouldNotGetUsers": "Benutzer konnten nicht gefunden werden",
+      "CouldNotGetCurrentUser": "Aktueller Benutzer konnte nicht gefunden werden",
+      "CouldNotGetAllGroups": "Fehler beim Finden aller Gruppen",
       "CouldNotFetchGroupMembers": "Die Gruppenmitglieder konnten nicht gefunden werden",
       "CouldNotFetchUserById": "Benutzer konnte anhand der ID nicht gefunden werden",
       "CouldNotSearchGroups": "Die Suche nach Gruppen war nicht möglich"
