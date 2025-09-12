@@ -39,11 +39,7 @@ const createFileUploader = (dependencies: CreateFileUploaderDependencies) => {
   return async function uploadSingleFile(fileItem: UploadFile): Promise<UploadResult> {
     const fileName = fileItem.name;
 
-    const url = buildOctetStreamUrl(
-      uploadEndpointPath,
-      destinationPath,
-      fileItem, // hängt name + declaredSize sauber als Query an
-    );
+    const url = buildOctetStreamUrl(uploadEndpointPath, destinationPath, fileItem);
 
     const progress = createProgressHandler({
       fileSize: fileItem.size,
