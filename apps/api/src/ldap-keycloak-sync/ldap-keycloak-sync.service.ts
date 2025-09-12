@@ -169,26 +169,23 @@ class LdapKeycloakSyncService implements OnModuleInit {
     desiredGroupNames: string[] = [],
   ): Promise<void> {
     const groupPath = targetGroupName.startsWith('/') ? targetGroupName : `/${targetGroupName}`;
+
     const targetGroup = await this.ensureKeycloakGroup(groupPath);
 
-    const expandedGroupUsers = (
-      await Promise.all(
-        desiredGroupNames.map(async (name) => this.expandGroupNameToUsers(name)),
-      )
-    )
+    const expandedGroupUsers = (await Promise.all(desiredGroupNames.map((name) => this.expandGroupNameToUsers(name))))
       .flat()
       .map((u) => u.username);
 
-    const allDesiredUsernames = Array.from(new Set([...desiredUsernames, ...expandedGroupUsers]));
+    const allDesiredUsernames = new Set([...desiredUsernames, ...expandedGroupUsers]);
 
     const desiredUsers = await Promise.all(
-      allDesiredUsernames.map(async (name) => {
+      Array.from(allDesiredUsernames).map(async (name) => {
         const type = await this.resolveLdapMember(name);
         return type === LDAP_MEMBER_TYPES.USER ? this.userCache.get(name) : undefined;
       }),
     );
 
-    const desiredIds = new Set(desiredUsers.filter((u): u is GroupMemberDto => !!u).map((u) => u.id));
+    const desiredIds = new Set(desiredUsers.filter((u): u is GroupMemberDto => Boolean(u)).map((u) => u.id));
 
     const currentMembers = await this.fetchAllKeycloakGroupUsers(targetGroup.id);
     const currentIds = new Set(currentMembers.map((u) => u.id));

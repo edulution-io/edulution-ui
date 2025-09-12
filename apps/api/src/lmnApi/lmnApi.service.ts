@@ -506,10 +506,11 @@ class LmnApiService {
   }
 
   private reconcileProjectMembers(username: string, formValues: GroupFormDto) {
-    const addUsers = [username, ...formValues.members, ...formValues.admins].filter(Boolean);
-    const addGroups = [...formValues.membergroups, ...formValues.admingroups].filter(Boolean);
+    const { members, admins, name, school, membergroups, admingroups } = formValues;
+    const addUsers = [username, ...members, ...admins].filter(Boolean);
+    const addGroups = [...membergroups, ...admingroups].filter(Boolean);
 
-    const projectName = `p_${  formValues.school === DEFAULT_SCHOOL ? '' : `${formValues.school  }-`  }${formValues.name}`;
+    const projectName = name.startsWith('p_') ? name : `p_${school === DEFAULT_SCHOOL ? '' : `${school}-`}${name}`;
 
     void this.ldapKeycloakSyncService.reconcileNamedGroupMembers(projectName, addUsers, addGroups);
   }
