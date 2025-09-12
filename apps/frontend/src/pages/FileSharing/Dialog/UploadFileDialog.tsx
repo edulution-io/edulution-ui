@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
@@ -25,7 +25,7 @@ const UploadFileDialog = () => {
 
   const { t } = useTranslation();
 
-  const [remountKey, setRemountKey] = React.useState(0);
+  const [remountKey, setRemountKey] = useState(0);
 
   const handleClose = () => {
     setFilesToUpload([]);
