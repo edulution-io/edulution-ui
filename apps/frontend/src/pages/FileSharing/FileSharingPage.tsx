@@ -32,6 +32,7 @@ import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
 import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
+import DeletePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DeletePublicShareDialog';
 
 const FileSharingPage = () => {
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
@@ -108,6 +109,7 @@ const FileSharingPage = () => {
         descriptionTranslationId=""
       />
       <CreateOrEditPublicShareDialog />
+      <DeletePublicShareDialog />
       <FileSharingFloatingButtonsBar />
     </PageLayout>
   );

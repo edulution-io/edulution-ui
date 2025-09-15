@@ -50,17 +50,17 @@ const PublicShareTable = () => {
 
   return (
     <ScrollableTable
-      columns={getPublicShareTableColumns(false)}
-      data={shares}
-      filterKey={PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME}
-      filterPlaceHolderText="filesharing.publicFileSharing.searchSharedFiles"
-      onRowSelectionChange={handleRowSelectionChange}
-      isLoading={isLoading}
-      selectedRows={selectedRows}
-      getRowId={({ publicShareId }) => publicShareId}
-      applicationName={APPS.FILE_SHARING}
-      initialColumnVisibility={initialColumnVisibility}
-    />
+        columns={getPublicShareTableColumns(false)}
+        data={shares}
+        filterKey={PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_NAME}
+        filterPlaceHolderText="filesharing.publicFileSharing.searchSharedFiles"
+        onRowSelectionChange={handleRowSelectionChange}
+        isLoading={isLoading}
+        selectedRows={selectedRows}
+        getRowId={({ publicShareId }) => publicShareId}
+        applicationName={APPS.FILE_SHARING}
+        initialColumnVisibility={initialColumnVisibility}
+      />
   );
 };
 
