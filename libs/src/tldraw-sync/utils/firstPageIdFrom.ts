@@ -10,16 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum FileActionType {
-  MOVE_FILE_OR_FOLDER = 'moveFileOrFolder',
-  CREATE_FOLDER = 'createFolder',
-  CREATE_FILE = 'createFile',
-  DELETE_FILE_OR_FOLDER = 'deleteFileOrFolder',
-  UPLOAD_FILE = 'uploadFile',
-  RENAME_FILE_OR_FOLDER = 'renameFileOrFolder',
-  COPY_FILE_OR_FOLDER = 'copyFileOrFolder',
-  SHARE_FILE_OR_FOLDER = 'shareFileOrFolder',
-  SAVE_EXTERNAL_FILE = 'saveExternalFile',
-}
+import { StoreSnapshot, TLPageId, TLRecord } from 'tldraw';
 
-export default FileActionType;
+const firstPageIdFrom = (snapshot: StoreSnapshot<TLRecord>): TLPageId | null => {
+  const pages = Object.values(snapshot.store).filter(
+    (record): record is TLRecord & { typeName: 'page' } => record.typeName === 'page',
+  );
+  return pages[0]?.id ?? null;
+};
+
+export default firstPageIdFrom;

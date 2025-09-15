@@ -10,16 +10,24 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum FileActionType {
-  MOVE_FILE_OR_FOLDER = 'moveFileOrFolder',
-  CREATE_FOLDER = 'createFolder',
-  CREATE_FILE = 'createFile',
-  DELETE_FILE_OR_FOLDER = 'deleteFileOrFolder',
-  UPLOAD_FILE = 'uploadFile',
-  RENAME_FILE_OR_FOLDER = 'renameFileOrFolder',
-  COPY_FILE_OR_FOLDER = 'copyFileOrFolder',
-  SHARE_FILE_OR_FOLDER = 'shareFileOrFolder',
-  SAVE_EXTERNAL_FILE = 'saveExternalFile',
-}
+import { TLRecord } from 'tldraw';
 
-export default FileActionType;
+export type TldrFileV1 = {
+  tldrawFileFormatVersion: 1;
+  schema: { schemaVersion: 2; sequences: Record<string, number> };
+  records: TLRecord[];
+};
+
+const isTldrFileV1 = (value: unknown): value is TldrFileV1 => {
+  if (typeof value !== 'object' || value === null) return false;
+  const v = value as Record<string, unknown>;
+  const schema = v['schema'] as TldrFileV1['schema'] | undefined;
+  return (
+    v['tldrawFileFormatVersion'] === 1 &&
+    typeof schema === 'object' &&
+    schema?.schemaVersion === 2 &&
+    Array.isArray(v?.['records'])
+  );
+};
+
+export default isTldrFileV1;

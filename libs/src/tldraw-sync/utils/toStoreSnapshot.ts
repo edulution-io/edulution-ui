@@ -10,16 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum FileActionType {
-  MOVE_FILE_OR_FOLDER = 'moveFileOrFolder',
-  CREATE_FOLDER = 'createFolder',
-  CREATE_FILE = 'createFile',
-  DELETE_FILE_OR_FOLDER = 'deleteFileOrFolder',
-  UPLOAD_FILE = 'uploadFile',
-  RENAME_FILE_OR_FOLDER = 'renameFileOrFolder',
-  COPY_FILE_OR_FOLDER = 'copyFileOrFolder',
-  SHARE_FILE_OR_FOLDER = 'shareFileOrFolder',
-  SAVE_EXTERNAL_FILE = 'saveExternalFile',
-}
+import { SerializedSchema, StoreSnapshot, TLRecord } from 'tldraw';
+import type { TldrFileV1 } from './isTldrFileV1';
 
-export default FileActionType;
+const toStoreSnapshot = (file: TldrFileV1): StoreSnapshot<TLRecord> => {
+  const store = file.records.reduce<Record<string, TLRecord>>((acc, record) => {
+    acc[record.id] = record;
+    return acc;
+  }, {});
+  const schema: SerializedSchema = { schemaVersion: 2, sequences: file.schema.sequences };
+  return { schema, store };
+};
+
+export default toStoreSnapshot;

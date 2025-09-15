@@ -10,16 +10,29 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum FileActionType {
-  MOVE_FILE_OR_FOLDER = 'moveFileOrFolder',
-  CREATE_FOLDER = 'createFolder',
-  CREATE_FILE = 'createFile',
-  DELETE_FILE_OR_FOLDER = 'deleteFileOrFolder',
-  UPLOAD_FILE = 'uploadFile',
-  RENAME_FILE_OR_FOLDER = 'renameFileOrFolder',
-  COPY_FILE_OR_FOLDER = 'copyFileOrFolder',
-  SHARE_FILE_OR_FOLDER = 'shareFileOrFolder',
-  SAVE_EXTERNAL_FILE = 'saveExternalFile',
+import { create } from 'zustand';
+import type { Editor, StoreSnapshot, TLRecord } from 'tldraw';
+
+interface WhiteboardEditorState {
+  editor: Editor | null;
+  setEditor: (editor: Editor | null) => void;
+  getSnapshot: () => StoreSnapshot<TLRecord> | null;
+  reset: () => void;
 }
 
-export default FileActionType;
+const initialValues = {
+  editor: null,
+};
+
+const useWhiteboardEditorStore = create<WhiteboardEditorState>((set, get) => ({
+  editor: null,
+  setEditor: (editor) => set({ editor }),
+  getSnapshot: () => {
+    const e = get().editor;
+    return e ? e.store.getSnapshot() : null;
+  },
+
+  reset: () => set(initialValues),
+}));
+
+export default useWhiteboardEditorStore;

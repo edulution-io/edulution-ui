@@ -1375,7 +1375,8 @@
   },
   "whiteboard": {
     "title": "WHITEBOARD",
-    "sidebar": "Whiteboard"
+    "sidebar": "Whiteboard",
+    "saveAsTlFile": "Whiteboard als .tldraw Datei speichern"
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
@@ -1438,6 +1439,13 @@
   "copyItemDialog": {
     "copyFilesOrDirectoriesToDirectory": "Dateien oder Verzeichnisse in ein Verzeichnis kopieren",
     "copy": "Kopieren"
+  },
+
+  "saveExternalFileDialogBody": {
+    "saveExternalFile": "Externe Datei speichern",
+    "destinationFolder": "Zielordner",
+    "filename": "Dateiname",
+    "filenamePlaceholder": "Dateiname hier eingeben"
   },
 
   "moveItemDialog": {

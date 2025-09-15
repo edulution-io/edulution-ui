@@ -35,6 +35,9 @@ import fileSharingFromSchema from '@libs/filesharing/types/fileSharingFromSchema
 import DialogInputValues from '@libs/filesharing/types/dialogInputValues';
 import FILESHARING_SHARED_FILES_API_ENDPOINT from '@libs/filesharing/constants/filesharingSharedFilesApiEndpoint';
 import { t } from 'i18next';
+import SaveExternalFileDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/SaveExternalFileDialogBody';
+import buildTldrFileFromEditor from '@libs/tldraw-sync/utils/buildTldrFileFromEditor';
+import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FileSharingFormValues>;
@@ -74,12 +77,17 @@ interface MoveDialogBodyConfiguration extends DialogBodyConfigurationBase {
   Component: React.ComponentType<MoveContentDialogBodyProps>;
 }
 
+interface SaveExternalFileDialogBodyConfiguration extends DialogBodyConfigurationBase {
+  Component: React.ComponentType<FilesharingDialogProps>;
+}
+
 type DialogBodyConfiguration =
   | CreateFolderDialogBodyConfiguration
   | CreateFileDialogBodyConfiguration
   | RenameDialogBodyConfiguration
   | MoveDialogBodyConfiguration
-  | PlainDialogBodyConfiguration;
+  | PlainDialogBodyConfiguration
+  | SaveExternalFileDialogBodyConfiguration;
 
 const initialFormValues = {
   filename: '',
@@ -273,6 +281,33 @@ const shareFileOrFolderConfig: PlainDialogBodyConfiguration = {
   requiresForm: false,
 };
 
+const saveExternalFileConfig: SaveExternalFileDialogBodyConfiguration = {
+  Component: SaveExternalFileDialogBody,
+  titleKey: 'saveExternalFileDialogBody.saveExternalFile',
+  submitKey: 'common.save',
+  endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.UPLOAD}`,
+  httpMethod: HttpMethods.POST,
+  type: ContentType.FILE,
+  requiresForm: true,
+  getData: async (form, currentPath, { moveOrCopyItemToPath }) => {
+    const filename = form.getValues('filename');
+    const targetDir = moveOrCopyItemToPath?.filePath || currentPath || '';
+    const cleanedTarget = getPathWithoutWebdav(targetDir);
+
+    const {editor} = useWhiteboardEditorStore.getState();
+    if (!editor) return [];
+
+    const file = buildTldrFileFromEditor(editor, filename);
+
+    return Promise.resolve([
+      {
+        path: cleanedTarget,
+        name: file.name,
+        file,
+      },
+    ]);
+  },
+};
 const dialogBodyConfigurations: Record<FileActionType, DialogBodyConfiguration> = {
   createFolder: createFolderConfig,
   createFile: createFileConfig,
@@ -282,6 +317,7 @@ const dialogBodyConfigurations: Record<FileActionType, DialogBodyConfiguration> 
   copyFileOrFolder: copyFileOrFolderConfig,
   moveFileOrFolder: moveFileFolderConfig,
   shareFileOrFolder: shareFileOrFolderConfig,
+  saveExternalFile: saveExternalFileConfig,
 };
 
 function getDialogBodyConfigurations(action: FileActionType) {

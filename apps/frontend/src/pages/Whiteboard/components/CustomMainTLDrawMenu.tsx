@@ -10,16 +10,24 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum FileActionType {
-  MOVE_FILE_OR_FOLDER = 'moveFileOrFolder',
-  CREATE_FOLDER = 'createFolder',
-  CREATE_FILE = 'createFile',
-  DELETE_FILE_OR_FOLDER = 'deleteFileOrFolder',
-  UPLOAD_FILE = 'uploadFile',
-  RENAME_FILE_OR_FOLDER = 'renameFileOrFolder',
-  COPY_FILE_OR_FOLDER = 'copyFileOrFolder',
-  SHARE_FILE_OR_FOLDER = 'shareFileOrFolder',
-  SAVE_EXTERNAL_FILE = 'saveExternalFile',
-}
+import React from 'react';
+import { DefaultMainMenu, DefaultMainMenuContent, TldrawUiMenuGroup, TldrawUiMenuSubmenu } from 'tldraw';
+import SaveAsTldrItem from '@/pages/Whiteboard/components/SaveAsTldrItem';
+import OpenTldrItem from '@/pages/Whiteboard/components/OpenTldrItem';
 
-export default FileActionType;
+const CustomMainTLDrawMenu = () => (
+  <DefaultMainMenu>
+    <TldrawUiMenuGroup id="file-custom">
+      <TldrawUiMenuSubmenu
+        id="file-submenu"
+        label="File"
+      >
+        <SaveAsTldrItem />
+        <OpenTldrItem />
+      </TldrawUiMenuSubmenu>
+    </TldrawUiMenuGroup>
+    <DefaultMainMenuContent />
+  </DefaultMainMenu>
+);
+
+export default CustomMainTLDrawMenu;
