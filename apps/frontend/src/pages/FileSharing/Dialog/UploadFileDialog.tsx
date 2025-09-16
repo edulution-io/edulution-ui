@@ -37,7 +37,6 @@ const UploadFileDialog = () => {
   const handleSubmit = async () => {
     closeUploadDialog();
     await uploadFiles(currentPath, eduApiToken);
-    setFilesToUpload([]);
     setRemountKey((k) => k + 1);
   };
 

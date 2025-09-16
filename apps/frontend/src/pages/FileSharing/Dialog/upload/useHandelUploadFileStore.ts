@@ -89,6 +89,7 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
 
     if (parallel) {
       const uploadPromises = files.map((fileItem) => uploader(fileItem));
+      set({ filesToUpload: [] });
       const settledUploadResults = await Promise.allSettled(uploadPromises);
 
       outcomes = settledUploadResults.map((settledResult, fileIndex) => {
