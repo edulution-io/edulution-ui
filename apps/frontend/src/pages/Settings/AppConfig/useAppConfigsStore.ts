@@ -67,7 +67,7 @@ const initialState = {
   ],
   publicAppConfigs: [],
   isLoading: false,
-  isGetAppConfigsLoading: false,
+  isGetAppConfigsLoading: true,
   isConfigFileLoading: false,
   error: null,
 };

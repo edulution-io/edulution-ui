@@ -24,6 +24,7 @@ import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/Floating
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import BackButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/backButton';
 import useUserStore from '@/store/UserStore/useUserStore';
+import PageTitle from '@/components/PageTitle';
 import useFileTableStore from '../Settings/AppConfig/components/useFileTableStore';
 
 const PublicEmbeddedPage: React.FC = () => {
@@ -65,6 +66,10 @@ const PublicEmbeddedPage: React.FC = () => {
 
   return (
     <PageLayout>
+      <PageTitle
+        title={pageTitle}
+        translationId="public"
+      />
       {isSandboxMode ? (
         <iframe
           src={htmlContentUrl}
