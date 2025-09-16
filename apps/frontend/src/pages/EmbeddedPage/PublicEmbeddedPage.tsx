@@ -20,7 +20,6 @@ import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import PageLayout from '@/components/structure/layout/PageLayout';
-import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import BackButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/backButton';
@@ -31,33 +30,32 @@ const PublicEmbeddedPage: React.FC = () => {
   const { pathname } = useLocation();
   const { language } = useLanguage();
   const navigate = useNavigate();
-  const { getPublicAppConfigByName } = useAppConfigsStore();
-  const { getPublicFilesInfo } = useFileTableStore();
-  const { isAuthenticated } = useUserStore();
+  const getPublicAppConfigByName = useAppConfigsStore((s) => s.getPublicAppConfigByName);
+  const getPublicFilesInfo = useFileTableStore((s) => s.getPublicFilesInfo);
+  const publicFilesInfo = useFileTableStore((s) => s.publicFilesInfo);
+  const isAuthenticated = useUserStore((s) => s.isAuthenticated);
   const [currentAppConfig, setCurrentAppConfig] = useState<AppConfigDto>({} as AppConfigDto);
-  const [fileInfo, setFileInfo] = useState<FileInfoDto[]>([]);
 
   const rootPathName = getFromPathName(pathname, 1);
 
   useEffect(() => {
     const fetchCurrentAppConfig = async () => {
       const appConfig = await getPublicAppConfigByName(rootPathName);
-      const publicFileInfo = await getPublicFilesInfo(rootPathName);
+      await getPublicFilesInfo(rootPathName);
       setCurrentAppConfig(appConfig);
-      setFileInfo(publicFileInfo);
     };
     void fetchCurrentAppConfig();
   }, [rootPathName]);
 
   useEffect(() => {
-    if (fileInfo.length > 0 && currentAppConfig.extendedOptions?.EMBEDDED_PAGE_IS_PUBLIC === false) {
+    if (currentAppConfig.extendedOptions?.EMBEDDED_PAGE_IS_PUBLIC === false) {
       navigate('/');
     }
-  }, [fileInfo, currentAppConfig]);
+  }, [currentAppConfig]);
 
   const pageTitle = getDisplayName(currentAppConfig, language);
   const isSandboxMode = currentAppConfig.extendedOptions?.EMBEDDED_PAGE_HTML_MODE;
-  const htmlContentUrl = `${EDU_API_URL}/${EDU_API_CONFIG_ENDPOINTS.FILES}/public/file/${rootPathName}/${fileInfo.find((item) => item.type === 'html')?.filename}`;
+  const htmlContentUrl = `${EDU_API_URL}/${EDU_API_CONFIG_ENDPOINTS.FILES}/public/file/${rootPathName}/${publicFilesInfo.find((item) => item.type === 'html')?.filename}`;
   const htmlContent = (currentAppConfig.extendedOptions?.EMBEDDED_PAGE_HTML_CONTENT as string) || '';
 
   const config: FloatingButtonsBarConfig = {

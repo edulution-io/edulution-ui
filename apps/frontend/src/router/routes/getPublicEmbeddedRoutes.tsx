@@ -14,14 +14,12 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 import PublicEmbeddedPage from '@/pages/EmbeddedPage/PublicEmbeddedPage';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
-
-const publicEmbeddedRoutes = ['imprint', 'impressum', 'legal', 'mensa', 'about', 'terms', 'privacy'];
+import publicEmbeddedRoutes from '@libs/common/constants/publicEmbeddedRoutes';
 
 const getPublicEmbeddedRoutes = () => {
   const { publicAppConfigs } = useAppConfigsStore();
 
   const publicAppConfigNames = publicAppConfigs.map((cfg) => cfg.name);
-
   const mergedRoutes = Array.from(new Set([...publicEmbeddedRoutes, ...publicAppConfigNames]));
 
   return mergedRoutes.map((route) => (

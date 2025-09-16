@@ -10,14 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type AppConfigTable from '@libs/bulletinBoard/types/appConfigTable';
-import type FileInfoDto from './fileInfo.dto';
+const publicEmbeddedRoutes = ['imprint', 'impressum', 'legal', 'mensa', 'about', 'terms', 'privacy'];
 
-export interface FileTableStore extends AppConfigTable<FileInfoDto> {
-  files: Record<string, string>;
-  isLoading: boolean;
-  error: string | null;
-  publicFilesInfo: FileInfoDto[];
-  getPublicFilesInfo: (applicationName: string) => Promise<void>;
-  reset: () => void;
-}
+export default publicEmbeddedRoutes;

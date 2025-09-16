@@ -18,6 +18,7 @@ import handleApiError from '@/utils/handleApiError';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 
 const initialValues = {
+  publicFilesInfo: [],
   tableContentData: [],
   isLoading: true,
   error: null,
@@ -51,10 +52,9 @@ const useFileTableStore = create<FileTableStore>((set) => ({
       const { data } = await eduApi.get<FileInfoDto[]>(
         `${EDU_API_CONFIG_ENDPOINTS.FILES}/public/info/${applicationName}`,
       );
-      return data;
+      set({ publicFilesInfo: data });
     } catch (error) {
       handleApiError(error, set);
-      return [] as FileInfoDto[];
     } finally {
       set({ isLoading: false });
     }

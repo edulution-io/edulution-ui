@@ -12,18 +12,7 @@
 
 /* eslint-disable @typescript-eslint/class-methods-use-this */
 import { join } from 'path';
-import {
-  Controller,
-  Delete,
-  Get,
-  Logger,
-  Param,
-  Post,
-  Res,
-  UploadedFile,
-  UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { type Response } from 'express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -74,7 +63,6 @@ class FileSystemController {
   @UseGuards(IsPublicAppGuard)
   @Get('public/info/:appName')
   getPublicFilesInfo(@Param('appName') appName: string) {
-    Logger.log(`Getting public files info for app: ${appName}, path: ${FilesystemService.buildPathString(appName)}`);
     return this.filesystemService.getFilesInfo(FilesystemService.buildPathString(appName));
   }
 
