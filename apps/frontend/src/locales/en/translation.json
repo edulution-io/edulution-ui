@@ -353,7 +353,8 @@
       "folderNameRequired": "Folder name is required",
       "FileNameRequired": "File name is required",
       "NewFileNameRequired": "New file name is required",
-      "NameRequired": "Name is required"
+      "NameRequired": "Name is required",
+      "NameExceedsCharacterLimit": "Name exceeds character limit"
     },
     "progressBox": {
       "info": "Info",
@@ -1375,7 +1376,11 @@
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
-    "sidebar": "Collaborative Whiteboard"
+    "sidebar": "Collaborative Whiteboard",
+    "privateRoom": "Private room",
+    "dropdownPlaceholder": "Choose your current room",
+    "historyTitle": "History",
+    "historyNoMore": "No more entries"
   },
   "table": {
     "noDataAvailable": "No data available"

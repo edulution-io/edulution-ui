@@ -10,15 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { z } from 'zod';
-import { t } from 'i18next';
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { UserPreferences, UserPreferencesSchema } from './user-preferences.schema';
+import UserPreferencesService from './user-preferences.service';
+import UserPreferencesController from './user-preferences.controller';
 
-const fileSharingFromSchema = z.object({
-  filename: z
-    .string()
-    .min(1, t('filesharing.tooltips.NameRequired'))
-    .max(30, t('filesharing.tooltips.NameExceedsCharacterLimit')),
-  extension: z.string(),
-});
-
-export default fileSharingFromSchema;
+@Module({
+  imports: [MongooseModule.forFeature([{ name: UserPreferences.name, schema: UserPreferencesSchema }])],
+  providers: [UserPreferencesService],
+  controllers: [UserPreferencesController],
+  exports: [UserPreferencesService],
+})
+export default class UserPreferencesModule {}

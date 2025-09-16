@@ -10,15 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { z } from 'zod';
-import { t } from 'i18next';
+import UserDto from '@libs/user/types/user.dto';
 
-const fileSharingFromSchema = z.object({
-  filename: z
-    .string()
-    .min(1, t('filesharing.tooltips.NameRequired'))
-    .max(30, t('filesharing.tooltips.NameExceedsCharacterLimit')),
-  extension: z.string(),
-});
+class HistoryEntryDto {
+  id: string;
 
-export default fileSharingFromSchema;
+  roomId: string;
+
+  attendee: Pick<UserDto, 'firstName' | 'lastName' | 'username'>;
+
+  message: Record<string, unknown>;
+
+  createdAt: Date;
+}
+
+export default HistoryEntryDto;

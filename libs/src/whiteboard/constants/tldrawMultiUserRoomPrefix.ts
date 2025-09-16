@@ -10,15 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { z } from 'zod';
-import { t } from 'i18next';
+const TLDRAW_MULTI_USER_ROOM_PREFIX = 'multi-';
 
-const fileSharingFromSchema = z.object({
-  filename: z
-    .string()
-    .min(1, t('filesharing.tooltips.NameRequired'))
-    .max(30, t('filesharing.tooltips.NameExceedsCharacterLimit')),
-  extension: z.string(),
-});
-
-export default fileSharingFromSchema;
+export default TLDRAW_MULTI_USER_ROOM_PREFIX;
