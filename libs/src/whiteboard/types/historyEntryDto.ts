@@ -10,11 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Group } from '@libs/groups/types/group';
-import GroupMemberDto from './groupMember.dto';
+import UserDto from '@libs/user/types/user.dto';
 
-type GroupWithMembers = Group & {
-  members: GroupMemberDto[];
-};
+class HistoryEntryDto {
+  id: string;
 
-export default GroupWithMembers;
+  roomId: string;
+
+  attendee: Pick<UserDto, 'firstName' | 'lastName' | 'username'>;
+
+  message: Record<string, unknown>;
+
+  createdAt: Date;
+}
+
+export default HistoryEntryDto;

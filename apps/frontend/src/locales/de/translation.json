@@ -1380,7 +1380,11 @@
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
-    "sidebar": "Kollaboratives Whiteboard"
+    "sidebar": "Kollaboratives Whiteboard",
+    "privateRoom": "Privater Raum",
+    "dropdownPlaceholder": "Wähle hier deinen aktuelle Raum",
+    "historyTitle": "Verlauf",
+    "historyNoMore": "Keine weiteren Einträge"
   },
   "table": {
     "noDataAvailable": "Keine Daten verfügbar"
