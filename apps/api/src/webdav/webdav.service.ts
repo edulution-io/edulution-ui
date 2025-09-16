@@ -187,13 +187,13 @@ class WebdavService {
   async createFolder(username: string, path: string, folderName: string): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
     const baseUrl = await this.webdavSharesService.getWebdavSharePath();
-    const join = (...parts: string[]) =>
+    const joinUrl = (...parts: string[]) =>
       parts
         .filter(Boolean)
         .map((filePath, index) => (index === 0 ? filePath.replace(/\/+$/, '') : filePath.replace(/^\/+|\/+$/g, '')))
         .join('/');
 
-    const encodedPath = encodeURI(join(baseUrl, path));
+    const encodedPath = encodeURI(joinUrl(baseUrl, path));
     const encodedFolder = encodeURIComponent(folderName);
 
     const fullUrl = `${encodedPath}/${encodedFolder}`;
