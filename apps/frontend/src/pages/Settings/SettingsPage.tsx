@@ -14,7 +14,7 @@ import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
+import ROOT_ROUTE from '@libs/common/constants/rootRoute';
 import AppConfigPage from './AppConfig/AppConfigPage';
 import SettingsOverviewPage from './components/SettingsOverviewPage';
 
@@ -26,7 +26,7 @@ const SettingsPage: React.FC = () => {
 
   useEffect(() => {
     if (!isSuperAdmin) {
-      navigate(DASHBOARD_ROUTE);
+      navigate(ROOT_ROUTE);
     }
   }, [isSuperAdmin]);
 

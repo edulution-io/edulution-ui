@@ -18,7 +18,7 @@ import useUserStore from '@/store/UserStore/useUserStore';
 import cleanAllStores from '@/store/utils/cleanAllStores';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import { toast } from 'sonner';
-import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
+import ROOT_ROUTE from '@libs/common/constants/rootRoute';
 import COOKIE_DESCRIPTORS from '@libs/common/constants/cookieDescriptors';
 import useSilentLoginWithPassword from '@/pages/LoginPage/useSilentLoginWithPassword';
 
@@ -34,7 +34,7 @@ const useLogout = () => {
     await auth.removeUser();
     await cleanAllStores();
     removeCookie(COOKIE_DESCRIPTORS.AUTH_TOKEN, {
-      path: DASHBOARD_ROUTE,
+      path: ROOT_ROUTE,
     });
     await silentLogout();
     window.history.pushState(null, '', LOGIN_ROUTE);

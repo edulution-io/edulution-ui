@@ -10,15 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import ROOT_ROUTE from '@libs/common/constants/rootRoute';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 
 const NotFoundPage = () => (
   <div className="mt-3 text-center">
     <h1 className="mb-1 text-lg">404 - Page Not Found</h1>
     <p className="text-md mb-1">Oops! The page you are looking for does not exist.</p>
-    <Link to={DASHBOARD_ROUTE}>Go back to home</Link>
+    <Link to={ROOT_ROUTE}>Go back to home</Link>
   </div>
 );
 

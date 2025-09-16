@@ -17,3 +17,4 @@ export { default as ClassManagementIcon } from './classmgmt.svg';
 export { default as BulletinBoardIcon } from './kanban.svg';
 export { default as GlobeIcon } from './globe.svg';
 export { default as UserIcon } from './users.svg';
+export { default as DashboardIcon } from './dashboard.svg';

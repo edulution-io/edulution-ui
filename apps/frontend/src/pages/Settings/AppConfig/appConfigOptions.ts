@@ -14,6 +14,7 @@ import {
   BulletinBoardIcon,
   ClassManagementIcon,
   ConferencesIcon,
+  Dashboard,
   DesktopDeploymentIcon,
   EmbeddedIcon,
   FileSharingIcon,
@@ -39,9 +40,13 @@ import WEBDAV_SHARE_TABLE_EXTENDED_OPTIONS from '@libs/appconfig/constants/exten
 
 const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
+    id: APPS.DASHBOARD,
+    icon: Dashboard,
+    isNativeApp: true,
+  },
+  {
     id: APPS.BULLETIN_BOARD,
     icon: BulletinBoardIcon,
-    color: 'bg-ciDarkBlue',
     isNativeApp: true,
     extendedOptions: {
       [AppConfigSectionsKeys.bulletinBoard]: BULLETIN_BOARD_EXTENDED_OPTIONS,

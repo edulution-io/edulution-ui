@@ -25,6 +25,7 @@ import { AppConfig } from './appconfig.schema';
 import { mockAppConfig, mockAppConfigModel, mockLdapGroup } from './appconfig.mock';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 jest.mock('fs');
 
@@ -36,6 +37,8 @@ const mockConnection = {
     createCollection: jest.fn().mockResolvedValue({}),
   },
 };
+
+const globalSettingsServiceMock = { setGlobalSettings: jest.fn(), getGlobalSettings: jest.fn() };
 
 describe('AppConfigService', () => {
   let service: AppConfigService;
@@ -54,6 +57,7 @@ describe('AppConfigService', () => {
         },
         { provide: EventEmitter2, useValue: { emit: jest.fn() } },
         { provide: FilesystemService, useValue: mockFilesystemService },
+        { provide: GlobalSettingsService, useValue: globalSettingsServiceMock },
       ],
     }).compile();
 

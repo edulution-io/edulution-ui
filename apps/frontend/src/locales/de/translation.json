@@ -106,6 +106,7 @@
   },
   "dashboard": {
     "pageTitle": "Dashboard",
+    "sidebar": "Dashboard",
     "description": "Hier ist ihr persönliches {{ applicationName }} Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Unterricht gesammelt sind.",
     "mobileAccess": {
       "title": "Mobiler Zugriff",
