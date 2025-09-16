@@ -14,7 +14,10 @@ import { z } from 'zod';
 import { t } from 'i18next';
 
 const fileSharingFromSchema = z.object({
-  filename: z.string().min(1, t('filesharing.tooltips.NameRequired')),
+  filename: z
+    .string()
+    .min(1, t('filesharing.tooltips.NameRequired'))
+    .max(30, t('filesharing.tooltips.NameExceedsCharacterLimit')),
   extension: z.string(),
 });
 
