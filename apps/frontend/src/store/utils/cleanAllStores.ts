@@ -43,10 +43,11 @@ import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuest
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
 import TLDRAW_PERSISTENCE_KEY from '@libs/whiteboard/constants/tldrawPersistenceKey';
-import clearTLDrawPersistence from '@/pages/Whiteboard/clearTLDrawPersitence';
+import clearTLDrawPersistence from '@/pages/Whiteboard/TLDrawOffline/clearTLDrawPersistence';
 import usePublicSharePageStore from '@/pages/FileSharing/publicShare/publicPage/usePublicSharePageStore';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
+import useTLDRawHistoryStore from '@/pages/Whiteboard/TLDrawWithSync/useTLDRawHistoryStore';
 import useSseStore from '../useSseStore';
 
 const cleanAllStores = async () => {
@@ -90,6 +91,7 @@ const cleanAllStores = async () => {
   useSseStore.getState().reset();
   usePublicSharePageStore.getState().reset();
   usePublicShareStore.getState().reset();
+  useTLDRawHistoryStore.getState().reset();
   localStorage.removeItem('i18nextLng');
   await clearTLDrawPersistence(TLDRAW_PERSISTENCE_KEY);
 };

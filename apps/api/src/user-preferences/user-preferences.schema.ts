@@ -10,15 +10,22 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { z } from 'zod';
-import { t } from 'i18next';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
-const fileSharingFromSchema = z.object({
-  filename: z
-    .string()
-    .min(1, t('filesharing.tooltips.NameRequired'))
-    .max(30, t('filesharing.tooltips.NameExceedsCharacterLimit')),
-  extension: z.string(),
-});
+export type UserPreferencesDocument = UserPreferences & Document;
 
-export default fileSharingFromSchema;
+@Schema({ timestamps: true })
+export class UserPreferences extends Document {
+  @Prop({ type: String, required: true, unique: true, index: true })
+  username: string;
+
+  @Prop({
+    type: Map,
+    of: Boolean,
+    default: {},
+  })
+  collapsedBulletins: Record<string, boolean>;
+}
+
+export const UserPreferencesSchema = SchemaFactory.createForClass(UserPreferences);
