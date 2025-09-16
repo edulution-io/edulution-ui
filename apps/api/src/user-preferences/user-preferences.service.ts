@@ -20,12 +20,14 @@ import { UserPreferences, UserPreferencesDocument } from './user-preferences.sch
 
 @Injectable()
 class UserPreferencesService {
-  constructor(@InjectModel(UserPreferences.name) private readonly model: Model<UserPreferencesDocument>) {}
+  constructor(
+    @InjectModel(UserPreferences.name) private readonly userPreferencesModel: Model<UserPreferencesDocument>,
+  ) {}
 
   async getForUser(username: string, fields: string) {
     const projection = fieldsToProjection(fields);
 
-    const doc = await this.model
+    const doc = await this.userPreferencesModel
       .findOne({ username })
       .select({ ...projection, _id: 0 })
       .lean();
@@ -36,7 +38,7 @@ class UserPreferencesService {
   }
 
   async updateBulletinCollapsedState(username: string, updateDto: UpdateBulletinCollapsedDto) {
-    return this.model
+    return this.userPreferencesModel
       .findOneAndUpdate(
         { username },
         { $set: { [`${USER_PREFERENCES_FIELDS.collapsedBulletins}.${updateDto.bulletinId}`]: updateDto.collapsed } },
@@ -56,7 +58,7 @@ class UserPreferencesService {
       $or: bulletinIds.map((id) => ({ [`${USER_PREFERENCES_FIELDS.collapsedBulletins}.${id}`]: { $exists: true } })),
     };
 
-    await this.model.updateMany(filter, { $unset: unsetObj }).exec();
+    await this.userPreferencesModel.updateMany(filter, { $unset: unsetObj }).exec();
   }
 }
 

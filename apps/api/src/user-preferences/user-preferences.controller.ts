@@ -20,19 +20,19 @@ import UserPreferencesService from './user-preferences.service';
 @Controller(USER_PREFERENCES_ENDPOINT)
 @ApiBearerAuth()
 class UserPreferencesController {
-  constructor(private readonly service: UserPreferencesService) {}
+  constructor(private readonly userPreferencesService: UserPreferencesService) {}
 
   @Get()
   async getPreferences(@GetCurrentUsername() currentUsername: string, @Query('fields') fields: string) {
-    return this.service.getForUser(currentUsername, fields);
+    return this.userPreferencesService.getForUser(currentUsername, fields);
   }
 
   @Patch('bulletin-collapsed')
   async updateBulletinCollapsed(
     @GetCurrentUsername() currentUsername: string,
-    @Body() dto: UpdateBulletinCollapsedDto,
+    @Body() updateBulletinCollapsedDto: UpdateBulletinCollapsedDto,
   ) {
-    return this.service.updateBulletinCollapsedState(currentUsername, dto);
+    return this.userPreferencesService.updateBulletinCollapsedState(currentUsername, updateBulletinCollapsedDto);
   }
 }
 
