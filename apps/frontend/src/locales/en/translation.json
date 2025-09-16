@@ -353,7 +353,8 @@
       "folderNameRequired": "Folder name is required",
       "FileNameRequired": "File name is required",
       "NewFileNameRequired": "New file name is required",
-      "NameRequired": "Name is required"
+      "NameRequired": "Name is required",
+      "NameExceedsCharacterLimit": "Name exceeds character limit"
     },
     "progressBox": {
       "info": "Info",
