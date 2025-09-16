@@ -34,8 +34,8 @@ import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import { Readable } from 'stream';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import got from 'got';
-import * as http from 'node:http';
-import * as https from 'node:https';
+import { Agent as HttpsAgent } from 'https';
+import { Agent as HttpAgent } from 'http';
 import CustomHttpException from '../common/CustomHttpException';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
@@ -243,8 +243,8 @@ class WebdavService {
 
     const request = got.put(url, {
       agent: {
-        http: new http.Agent({ keepAlive: true }),
-        https: new https.Agent({ keepAlive: true }),
+        http: new HttpAgent({ keepAlive: true }),
+        https: new HttpsAgent({ keepAlive: true }),
       },
       body: fileStream,
       headers,

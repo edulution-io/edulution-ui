@@ -17,7 +17,8 @@ import FileProgress from '@libs/filesharing/types/fileProgress';
 import UploadResult from '@libs/filesharing/types/uploadResult';
 import createFileUploader from '@libs/filesharing/utils/createFileUploader';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
-import createFrozenUploadClient from '@libs/filesharing/utils/createFrozenUploadClient';
+import createUploadClient from '@libs/filesharing/utils/createUploadClient';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 
 interface HandelUploadFileStore {
   isUploadDialogOpen: boolean;
@@ -75,7 +76,7 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
     const setProgressForFile = (fileName: string, next: FileProgress) =>
       set((state) => ({ progressByName: { ...state.progressByName, [fileName]: next } }));
 
-    const uploadHttp = createFrozenUploadClient('/edu-api', accessToken);
+    const uploadHttp = createUploadClient(`/${EDU_API_ROOT}`, accessToken);
 
     const uploader = createFileUploader({
       httpClient: uploadHttp,

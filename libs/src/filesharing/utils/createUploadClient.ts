@@ -12,7 +12,7 @@
 
 import axios, { AxiosInstance } from 'axios';
 
-const createFrozenUploadClient = (baseURL: string, token?: string): AxiosInstance => {
+const createUploadClient = (baseURL: string, token?: string): AxiosInstance => {
   const instance = axios.create({
     baseURL,
     withCredentials: true,
@@ -26,4 +26,4 @@ const createFrozenUploadClient = (baseURL: string, token?: string): AxiosInstanc
   return instance;
 };
 
-export default createFrozenUploadClient;
+export default createUploadClient;
