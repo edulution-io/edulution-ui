@@ -13,10 +13,12 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   Headers,
   Param,
+  ParseBoolPipe,
   Patch,
   Post,
   Put,
@@ -123,8 +125,12 @@ export class LmnApiController {
   }
 
   @Get('sessions')
-  async getUserSessions(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @GetCurrentUsername() username: string) {
-    return this.lmnApiService.getUserSessions(lmnApiToken, username);
+  async getUserSessions(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @GetCurrentUsername() username: string,
+    @Query('withMemberDetails', new DefaultValuePipe(false), ParseBoolPipe) withMemberDetails: boolean,
+  ) {
+    return this.lmnApiService.getUserSessions(lmnApiToken, username, withMemberDetails);
   }
 
   @Post('sessions')

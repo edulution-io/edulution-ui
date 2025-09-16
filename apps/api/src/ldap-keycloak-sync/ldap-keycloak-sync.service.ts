@@ -39,8 +39,6 @@ import GlobalSettingsService from '../global-settings/global-settings.service';
 import KeycloakRequestQueue from './queue/keycloak-request.queue';
 import GroupsService from '../groups/groups.service';
 
-const { KEYCLOAK_ADMIN, KEYCLOAK_ADMIN_PASSWORD } = process.env as Record<string, string>;
-
 const PAGINATION = {
   PAGE_SIZE: 100,
 };
@@ -67,10 +65,6 @@ class LdapKeycloakSyncService implements OnModuleInit {
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   onModuleInit() {
-    if (!KEYCLOAK_ADMIN || !KEYCLOAK_ADMIN_PASSWORD) {
-      Logger.error('Missing Keycloak admin credentials', LdapKeycloakSyncService.name);
-      return;
-    }
     Logger.log('Initialized, waiting for Keycloak startup', LdapKeycloakSyncService.name);
   }
 
@@ -83,7 +77,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
   @Interval(LDAP_SYNC_INTERVAL_MS)
   async sync() {
     if (!this.ldapConfig) {
-      Logger.error('No LDAP config', LdapKeycloakSyncService.name);
+      Logger.error('No LDAP config, sync canceled', LdapKeycloakSyncService.name);
       return;
     }
 
@@ -94,9 +88,9 @@ class LdapKeycloakSyncService implements OnModuleInit {
 
     this.isSyncRunning = true;
     try {
-      Logger.debug(`Delta sync since ${this.lastSync.toISOString()}`, LdapKeycloakSyncService.name);
-
       const client = await this.setupClient();
+
+      Logger.debug(`Delta sync since ${this.lastSync.toISOString()}`, LdapKeycloakSyncService.name);
 
       const syncSince = new Date();
 
@@ -238,15 +232,17 @@ class LdapKeycloakSyncService implements OnModuleInit {
     const ldapConfig = await this.globalSettingsService.getGlobalSettings('general.ldap');
 
     const bindDN = ldapConfig?.general?.ldap?.binduser?.dn;
-    const bindCredentials = ldapConfig?.general?.ldap?.binduser?.password;
+    const bindPassword = ldapConfig?.general?.ldap?.binduser?.password;
 
-    if (!bindDN || !bindCredentials) throw new Error('Missing LDAP bind credentials');
+    if (!bindDN || !bindPassword) {
+      throw new Error('Missing LDAP bind credentials');
+    }
 
-    return { bindDN, bindCredentials };
+    return { bindDN, bindPassword };
   }
 
   private async setupClient(): Promise<Client> {
-    const { bindDN, bindCredentials } = await this.getBindCredentials();
+    const { bindDN, bindPassword } = await this.getBindCredentials();
 
     const url = process.env.LDAP_TUNNEL_URL || this.ldapConfig!.config.connectionUrl[0];
 
@@ -260,7 +256,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
       await ldapClient.startTLS({ rejectUnauthorized: false });
     }
 
-    await ldapClient.bind(bindDN, bindCredentials);
+    await ldapClient.bind(bindDN, bindPassword);
 
     return ldapClient;
   }

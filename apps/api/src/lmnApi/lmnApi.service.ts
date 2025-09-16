@@ -104,6 +104,16 @@ class LmnApiService {
     }
   }
 
+  public async getLmnApiToken(username: string, password: string): Promise<string> {
+    const resp = await this.lmnApi.get('/auth/', {
+      auth: { username, password },
+      timeout: 10_000,
+      validateStatus: () => true,
+    });
+
+    return (resp.data as string) || ' ';
+  }
+
   public async startExamMode(lmnApiToken: string, users: string[]): Promise<unknown> {
     try {
       const response = await this.enqueue(() =>
@@ -351,12 +361,19 @@ class LmnApiService {
     }
   }
 
-  public async getUserSessions(lmnApiToken: string, username: string): Promise<LmnApiSession[]> {
+  public async getUserSessions(
+    lmnApiToken: string,
+    username: string,
+    withMemberDetails: boolean,
+  ): Promise<LmnApiSession[]> {
     try {
       const response = await this.enqueue<LmnApiSession[]>(() =>
-        this.lmnApi.get<LmnApiSession[]>(`${SESSIONS_LMN_API_ENDPOINT}/${username}`, {
-          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
-        }),
+        this.lmnApi.get<LmnApiSession[]>(
+          `${SESSIONS_LMN_API_ENDPOINT}/${username}?members_details=${withMemberDetails}`,
+          {
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+          },
+        ),
       );
       return response.data;
     } catch (error) {

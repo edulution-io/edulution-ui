@@ -10,5 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const MAX_FILE_UPLOAD_SIZE = 50; // MB
-export default MAX_FILE_UPLOAD_SIZE;
+import { Module } from '@nestjs/common';
+import MobileAppModuleService from './mobileAppModule.service';
+import MobileAppModuleController from './mobileAppModule.controller';
+import LmnApiModule from '../lmnApi/lmnApi.module';
+
+@Module({
+  imports: [LmnApiModule],
+  controllers: [MobileAppModuleController],
+  providers: [MobileAppModuleService],
+})
+export default class MobileAppModuleModule {}
