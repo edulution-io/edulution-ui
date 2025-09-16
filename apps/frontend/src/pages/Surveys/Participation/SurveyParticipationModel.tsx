@@ -38,6 +38,7 @@ Serializer.getProperty('rating', 'displayMode').defaultValue = 'buttons';
 Serializer.getProperty('file', 'storeDataAsText').defaultValue = false;
 Serializer.getProperty('file', 'waitForUpload').defaultValue = true;
 Serializer.getProperty('file', 'showPreview').defaultValue = true;
+Serializer.getProperty('file', 'allowMultiple').defaultValue = false;
 Serializer.getProperty('text', 'textUpdateMode').defaultValue = 'onTyping';
 Serializer.getProperty('signaturepad', 'penColor').defaultValue = 'rgba(255, 255, 255, 1)';
 Serializer.getProperty('signaturepad', 'signatureWidth').defaultValue = '800';
@@ -103,6 +104,9 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
       const uploadPromises = files.map(async (file) => {
         const data = await uploadTempFile(selectedSurvey.id!, file);
+        if (data === null) {
+          return null;
+        }
         const newFile: FileDownloadDto = {
           ...file,
           type: file.type || 'image/png',
@@ -114,8 +118,9 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         return newFile;
       });
       const results = await Promise.all(uploadPromises);
+      const filteredResults = results.filter((result) => result !== null);
       return callback(
-        results.map((result) => ({
+        filteredResults.map((result) => ({
           file: result,
           content: result.url,
         })),

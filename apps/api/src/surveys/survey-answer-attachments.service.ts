@@ -29,17 +29,17 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
   }
 
   async serveFileFromAnswer(userName: string, surveyId: string, fileName: string, res: Response): Promise<Response> {
-    const filePath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, fileName);
-    const alternativePath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName, fileName);
-    const exists = await FilesystemService.checkIfFileExist(filePath);
-    if (exists) {
-      const fileStream = await this.fileSystemService.createReadStream(filePath);
+    const tempPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, fileName);
+    const permanentPath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName, fileName);
+    const tempFileExists = await FilesystemService.checkIfFileExist(tempPath);
+    if (tempFileExists) {
+      const fileStream = await this.fileSystemService.createReadStream(tempPath);
       fileStream.pipe(res);
       return res;
     }
-    const alternativeExists = await FilesystemService.checkIfFileExist(alternativePath);
-    if (alternativeExists) {
-      const fileStream = await this.fileSystemService.createReadStream(alternativePath);
+    const permanentFileExists = await FilesystemService.checkIfFileExist(permanentPath);
+    if (permanentFileExists) {
+      const fileStream = await this.fileSystemService.createReadStream(permanentPath);
       fileStream.pipe(res);
       return res;
     }
