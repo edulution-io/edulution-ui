@@ -76,8 +76,11 @@ const useAppConfigsStore = create<UseAppConfigsStore>(
   (persist as PersistedAppConfigsStore)(
     (set, get) => ({
       ...initialState,
-      reset: () => set(initialState),
-
+      reset: () =>
+        set((state) => ({
+          ...initialState,
+          publicAppConfigs: state.publicAppConfigs,
+        })),
       setIsAddAppConfigDialogOpen: (isAddAppConfigDialogOpen) => {
         set({ isAddAppConfigDialogOpen });
       },
@@ -215,7 +218,7 @@ const useAppConfigsStore = create<UseAppConfigsStore>(
     {
       name: 'appConfig-storage',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ appConfigs: state.appConfigs }),
+      partialize: (state) => ({ appConfigs: state.appConfigs, publicAppConfigs: state.publicAppConfigs }),
     },
   ),
 );
