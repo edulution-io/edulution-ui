@@ -50,6 +50,7 @@ import LdapKeycloakSyncModule from '../ldap-keycloak-sync/ldap-keycloak-sync.mod
 import redisConnection from '../common/redis.connection';
 import NotificationsModule from '../notifications/notifications.module';
 import MobileAppModuleModule from '../mobileAppModule/mobileAppModule.module';
+import UserPreferencesModule from '../user-preferences/user-preferences.module';
 
 @Module({
   imports: [
@@ -89,6 +90,7 @@ import MobileAppModuleModule from '../mobileAppModule/mobileAppModule.module';
     LdapKeycloakSyncModule,
     NotificationsModule,
     MobileAppModuleModule,
+    UserPreferencesModule,
     JwtModule.register({
       global: true,
     }),

@@ -60,7 +60,7 @@ const BulletinBoardColumnItem = ({
       const shouldBeCollapsed =
         (initialBulletinVisibility ?? BULLETIN_VISIBILITY_STATES.FULLY_VISIBLE) !==
         BULLETIN_VISIBILITY_STATES.FULLY_VISIBLE;
-      setCollapsed(bulletin.id, shouldBeCollapsed);
+      void setCollapsed(bulletin.id, shouldBeCollapsed);
     }
   }, [bulletin.id, collapsedMap, initialBulletinVisibility, setCollapsed]);
 
