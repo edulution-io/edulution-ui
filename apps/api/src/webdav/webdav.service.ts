@@ -52,7 +52,7 @@ class WebdavService {
     this.webdavClientCache.clear();
   }
 
-  private static stripTrailingWs(value: string) {
+  private static stripTrailingWhitespaces(value: string) {
     return value.trimEnd();
   }
 
@@ -247,8 +247,8 @@ class WebdavService {
   async createFolder(username: string, path: string, folderName: string): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
     const baseUrl = await this.webdavSharesService.getWebdavSharePath();
-    const cleanPath = WebdavService.stripTrailingWs(WebdavService.joinPath(baseUrl, path));
-    const cleanFolderName = WebdavService.stripTrailingWs(folderName);
+    const cleanPath = WebdavService.stripTrailingWhitespaces(WebdavService.joinPath(baseUrl, path));
+    const cleanFolderName = WebdavService.stripTrailingWhitespaces(folderName);
 
     const fullUrl = `${cleanPath}/${cleanFolderName}`;
 
