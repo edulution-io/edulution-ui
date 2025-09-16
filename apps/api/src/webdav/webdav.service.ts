@@ -52,6 +52,66 @@ class WebdavService {
     this.webdavClientCache.clear();
   }
 
+  private static stripTrailingWs(value: string) {
+    return value.trimEnd();
+  }
+
+  private static isAbsoluteUrl(value: string) {
+    return /^https?:\/\//i.test(value);
+  }
+
+  private static safeDecodeURIComponent(value: string) {
+    try {
+      return decodeURIComponent(value);
+    } catch {
+      return value;
+    }
+  }
+
+  private static encodePathPreserveSlashes(path: string) {
+    const hasLeadingSlash = path.startsWith('/');
+    const hasTrailingSlash = path.endsWith('/') && path.length > 1;
+    const segments = path.split('/').filter((segment) => segment.length > 0);
+    const encoded = segments
+      .map((segment) => encodeURIComponent(WebdavService.safeDecodeURIComponent(segment)))
+      .join('/');
+    return (hasLeadingSlash ? '/' : '') + encoded + (hasTrailingSlash ? '/' : '');
+  }
+
+  private static joinPath(left: string, right: string) {
+    const leftPart = left.replace(/\/+$/, '');
+    const rightPart = right.replace(/^\/+/, '');
+    return leftPart && rightPart ? `${leftPart}/${rightPart}` : leftPart || rightPart;
+  }
+
+  private static toAbsoluteEncodedUrl(pathOrUrl: string, baseUrl: string) {
+    if (WebdavService.isAbsoluteUrl(pathOrUrl)) {
+      const absoluteUrl = new URL(pathOrUrl);
+      absoluteUrl.pathname = WebdavService.encodePathPreserveSlashes(absoluteUrl.pathname);
+      return absoluteUrl.toString();
+    }
+    const base = new URL(baseUrl);
+    const combinedPath = WebdavService.joinPath(base.pathname, pathOrUrl);
+    base.pathname = WebdavService.encodePathPreserveSlashes(combinedPath);
+    return base.toString();
+  }
+
+  private static ensureEncodedUrl(urlOrPath: string, baseUrl?: string) {
+    const input = urlOrPath;
+    if (WebdavService.isAbsoluteUrl(input)) {
+      const absoluteUrl = new URL(input);
+      absoluteUrl.pathname = WebdavService.encodePathPreserveSlashes(absoluteUrl.pathname);
+      return absoluteUrl.toString();
+    }
+    if (baseUrl) {
+      const base = new URL(baseUrl);
+      const combinedPath = WebdavService.joinPath(base.pathname, input);
+      base.pathname = WebdavService.encodePathPreserveSlashes(combinedPath);
+      return base.toString();
+    }
+    return WebdavService.encodePathPreserveSlashes(input);
+  }
+
   static async executeWebdavRequest<Raw = unknown, Result = Raw>(
     client: AxiosInstance,
     config: {
@@ -187,16 +247,10 @@ class WebdavService {
   async createFolder(username: string, path: string, folderName: string): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
     const baseUrl = await this.webdavSharesService.getWebdavSharePath();
-    const joinUrl = (...parts: string[]) =>
-      parts
-        .filter(Boolean)
-        .map((filePath, index) => (index === 0 ? filePath.replace(/\/+$/, '') : filePath.replace(/^\/+|\/+$/g, '')))
-        .join('/');
+    const cleanPath = WebdavService.stripTrailingWs(WebdavService.joinPath(baseUrl, path));
+    const cleanFolderName = WebdavService.stripTrailingWs(folderName);
 
-    const encodedPath = encodeURI(joinUrl(baseUrl, path));
-    const encodedFolder = encodeURIComponent(folderName);
-
-    const fullUrl = `${encodedPath}/${encodedFolder}`;
+    const fullUrl = `${cleanPath}/${cleanFolderName}`;
 
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
@@ -214,19 +268,18 @@ class WebdavService {
 
   async createFile(username: string, fullPath: string, content = ''): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
+    const url = WebdavService.ensureEncodedUrl(fullPath);
+
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethods.PUT,
-        url: fullPath,
+        url,
         headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.TEXT_PLAIN },
         data: content,
       },
       FileSharingErrorMessage.CreationFailed,
-      (resp: WebdavStatusResponse) => ({
-        success: resp.status >= 200 && resp.status < 300,
-        status: resp.status,
-      }),
+      (resp) => ({ success: resp.status >= 200 && resp.status < 300, status: resp.status }),
     );
   }
 
@@ -237,15 +290,14 @@ class WebdavService {
     contentType: string,
   ): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
+    const url = WebdavService.ensureEncodedUrl(fullPath);
 
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethods.PUT,
-        url: fullPath,
-        headers: {
-          [HTTP_HEADERS.ContentType]: contentType,
-        },
+        url,
+        headers: { [HTTP_HEADERS.ContentType]: contentType },
         data: fileStream,
         maxContentLength: Infinity,
         maxBodyLength: Infinity,
@@ -254,7 +306,7 @@ class WebdavService {
       FileSharingErrorMessage.UploadFailed,
       (response) => ({
         success: response.status === 201 || response.status === 200,
-        filename: fullPath.split('/').pop() || '',
+        filename: url.split('/').pop() || '',
         status: response.status,
       }),
     );
@@ -262,18 +314,20 @@ class WebdavService {
 
   async deletePath(username: string, fullPath: string): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username);
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+    const url = WebdavService.toAbsoluteEncodedUrl(fullPath, baseUrl);
+
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethods.DELETE,
-        url: fullPath,
-        headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
+        url,
+        headers: {
+          [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
+        },
       },
       FileSharingErrorMessage.DeletionFailed,
-      (resp: WebdavStatusResponse) => ({
-        success: resp.status >= 200 && resp.status < 300,
-        status: resp.status,
-      }),
+      (resp) => ({ success: resp.status >= 200 && resp.status < 300, status: resp.status }),
     );
   }
 
@@ -285,25 +339,25 @@ class WebdavService {
     const client = await this.getClient(username);
     const baseUrl = await this.webdavSharesService.getWebdavSharePath();
     const webdavShareType = await this.webdavSharesService.getWebdavShareType();
-    let destinationUrl = destFullPath;
-    if (webdavShareType === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
-      destinationUrl = `${baseUrl.replace(/\/+$/, '')}/${destFullPath.replace(/^\/+/, '')}`;
-    }
+
+    const originUrl = WebdavService.ensureEncodedUrl(originFullPath);
+    const destinationUrl =
+      webdavShareType === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY
+        ? WebdavService.ensureEncodedUrl(destFullPath, baseUrl)
+        : WebdavService.ensureEncodedUrl(destFullPath);
+
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethodsWebDav.MOVE,
-        url: decodeURI(originFullPath),
+        url: originUrl,
         headers: {
-          Destination: decodeURI(destinationUrl),
+          Destination: destinationUrl,
           [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
         },
       },
       FileSharingErrorMessage.RenameFailed,
-      (resp: WebdavStatusResponse) => ({
-        success: resp.status >= 200 && resp.status < 300,
-        status: resp.status,
-      }),
+      (resp) => ({ success: resp.status >= 200 && resp.status < 300, status: resp.status }),
     );
   }
 
@@ -315,25 +369,25 @@ class WebdavService {
     const client = await this.getClient(username);
     const baseUrl = await this.webdavSharesService.getWebdavSharePath();
     const webdavShareType = await this.webdavSharesService.getWebdavShareType();
-    let destinationUrl = destFullPath;
-    if (webdavShareType === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
-      destinationUrl = `${baseUrl.replace(/\/+$/, '')}/${destFullPath.replace(/^\/+/, '')}`;
-    }
+
+    const originUrl = WebdavService.ensureEncodedUrl(originFullPath);
+    const destinationUrl =
+      webdavShareType === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY
+        ? WebdavService.ensureEncodedUrl(destFullPath, baseUrl)
+        : WebdavService.ensureEncodedUrl(destFullPath);
+
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethodsWebDav.COPY,
-        url: decodeURI(originFullPath),
+        url: originUrl,
         headers: {
-          Destination: decodeURI(destinationUrl),
+          Destination: destinationUrl,
           [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
         },
       },
       FileSharingErrorMessage.DuplicateFailed,
-      (resp: WebdavStatusResponse) => ({
-        success: resp.status >= 200 && resp.status < 300,
-        status: resp.status,
-      }),
+      (resp) => ({ success: resp.status >= 200 && resp.status < 300, status: resp.status }),
     );
   }
 
