@@ -76,7 +76,7 @@ const TLDrawHistoryInfiniteList: React.FC = () => {
           {items.map((entry: HistoryEntryDto) => (
             <li
               key={entry.id}
-              className="flex flex-row items-center justify-between px-2 py-1 hover:bg-muted "
+              className="flex cursor-default flex-row items-center justify-between px-2 py-1 hover:bg-muted"
             >
               <div className="flex flex-1 space-x-2">
                 <span className="font-medium">
