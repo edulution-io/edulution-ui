@@ -10,11 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import GroupMemberDto from '@libs/groups/types/groupMember.dto';
+const USER_PREFERENCES_ENDPOINT = 'user-preferences';
 
-export default interface GroupDto {
-  id: string;
-  name: string;
-  path: string;
-  members: GroupMemberDto[];
-}
+export default USER_PREFERENCES_ENDPOINT;

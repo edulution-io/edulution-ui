@@ -10,15 +10,24 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { z } from 'zod';
-import { t } from 'i18next';
+export type Projection = Record<string, 0 | 1>;
 
-const fileSharingFromSchema = z.object({
-  filename: z
-    .string()
-    .min(1, t('filesharing.tooltips.NameRequired'))
-    .max(30, t('filesharing.tooltips.NameExceedsCharacterLimit')),
-  extension: z.string(),
-});
+const fieldsToProjection = (fields: string): Projection => {
+  const fieldsArray = (fields ?? '')
+    .split(',')
+    .map((f) => f.trim())
+    .filter(Boolean);
 
-export default fileSharingFromSchema;
+  return fieldsArray
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .reduce<Projection>(
+      (acc, key) => {
+        acc[key] = 1;
+        return acc;
+      },
+      { _id: 0 },
+    );
+};
+
+export default fieldsToProjection;

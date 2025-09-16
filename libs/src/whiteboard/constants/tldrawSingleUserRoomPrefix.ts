@@ -10,11 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const TLDRAW_SYNC_ENDPOINTS = {
-  BASE: 'tldraw-sync',
-  ROOMS: 'rooms',
-  ASSETS: 'assets',
-  PERSIST: 'persist',
-} as const;
+const TLDRAW_SINGLE_USER_ROOM_PREFIX = 'single-';
 
-export default TLDRAW_SYNC_ENDPOINTS;
+export default TLDRAW_SINGLE_USER_ROOM_PREFIX;

@@ -222,12 +222,6 @@ describe('GroupsService', () => {
   });
 
   describe('sanitizeGroup and sanitizeGroupMembers', () => {
-    it('should sanitize a group object', () => {
-      const group = { id: '1', name: 'Group 1', path: 'path1', subGroups: [] };
-      const sanitized = GroupsService['sanitizeGroup'](group);
-      expect(sanitized).toEqual({ id: '1', name: 'Group 1', path: 'path1' });
-    });
-
     it('should sanitize group members', () => {
       const members: LDAPUser[] = [
         { id: '1', username: 'user1', firstName: 'First', lastName: 'Last', email: 'email' } as LDAPUser,
@@ -246,8 +240,26 @@ describe('GroupsService', () => {
           id: '1',
           name: 'Group 1',
           path: 'path1',
-          subGroups: [{ id: '2', name: 'Group 2', path: 'path2', subGroups: [] }],
-        },
+          subGroups: [
+            {
+              id: '2',
+              name: 'Group 2',
+              path: 'path2',
+              subGroups: [],
+              subGroupCount: 0,
+              attributes: { displayName: [] },
+              realmRoles: [],
+              clientRoles: {},
+              access: {
+                view: true,
+                viewMembers: true,
+                manageMembers: true,
+                manage: true,
+                manageMembership: true,
+              },
+            } as Group,
+          ],
+        } as Group,
       ];
       const flatGroups = GroupsService['flattenGroups'](groups);
       expect(flatGroups).toHaveLength(2);

@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "1.5.18",
+  "version": "1.5.23",
   "scripts": {
     "test": "nx run-many --target=test --projects=api",
     "test:api": "nx run api:test --detectOpenHandles",
@@ -81,8 +81,8 @@
     "@react-pdf/renderer": "^3.3.8",
     "@tanstack/react-table": "^8.11.8",
     "@testing-library/jest-dom": "^6.4.6",
-    "@tldraw/sync": "^3.11.1",
-    "@tldraw/sync-core": "^3.11.1",
+    "@tldraw/sync": "^3.15.4",
+    "@tldraw/sync-core": "^3.15.4",
     "@types/archiver": "^6.0.3",
     "@types/express": "^4.17.21",
     "@types/guacamole-common-js": "^1.5.2",
@@ -169,7 +169,7 @@
     "tailwind-merge": "^2.2.1",
     "tailwindcss": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
-    "tldraw": "^3.11.1",
+    "tldraw": "^3.15.4",
     "tslib": "^2.6.2",
     "tsx": "^4.7.2",
     "typeorm": "^0.3.20",
