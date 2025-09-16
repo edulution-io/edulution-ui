@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Response } from 'express';
 import { Model, Types } from 'mongoose';
@@ -33,6 +33,7 @@ import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import NotificationsService from '../notifications/notifications.service';
+import UserPreferencesService from '../user-preferences/user-preferences.service';
 
 @Injectable()
 class BulletinBoardService implements OnModuleInit {
@@ -44,6 +45,7 @@ class BulletinBoardService implements OnModuleInit {
     private readonly groupsService: GroupsService,
     private readonly sseService: SseService,
     private readonly notificationService: NotificationsService,
+    private readonly userPreferencesService: UserPreferencesService,
   ) {}
 
   private readonly attachmentsPath = BULLETIN_ATTACHMENTS_PATH;
@@ -291,6 +293,12 @@ class BulletinBoardService implements OnModuleInit {
       );
 
       await this.bulletinModel.deleteMany({ _id: { $in: ids } }).exec();
+
+      try {
+        await this.userPreferencesService.unsetCollapsedForBulletins(ids);
+      } catch (error) {
+        Logger.error((error as Error).message, BulletinBoardService.name);
+      }
     } catch (error) {
       throw new CustomHttpException(
         BulletinBoardErrorMessage.ATTACHMENT_DELETION_FAILED,
