@@ -76,6 +76,10 @@ const LessonPage = () => {
 
   const [isFileSharingProgressInfoDialogOpen, setIsFileSharingProgressInfoDialogOpen] = useState(false);
 
+  useEffect(() => () => {
+      setMember([]);
+    }, [setMember]);
+
   useEffect(() => {
     if (lmnApiToken) {
       void getOwnUser();
