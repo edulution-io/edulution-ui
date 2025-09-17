@@ -75,7 +75,7 @@ const PdfViewer = ({
         setBlobUrl(objectUrl);
         revokeObjectUrlCallback.current = () => URL.revokeObjectURL(objectUrl);
       } catch (error) {
-        if ((error as Error)?.name === 'AbortError') return;
+        return;
       } finally {
         if (!isCanceled) setIsLoading(false);
       }
