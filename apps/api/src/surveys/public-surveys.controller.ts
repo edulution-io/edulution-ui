@@ -33,6 +33,7 @@ import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import { addUuidToFileName } from '@libs/common/utils/uuidAndFileNames';
 import SURVEY_ANSWERS_MAXIMUM_FILE_SIZE from '@libs/survey/constants/survey-answers-maximum-file-size';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import FilesystemService from 'apps/api/src/filesystem/filesystem.service';
@@ -90,19 +91,25 @@ class PublicSurveysController {
   @UseInterceptors(
     FileInterceptor(
       'file',
-      createAttachmentUploadOptions((req) => {
-        const userName = req.params?.userName;
-        const surveyId = req.params?.surveyId;
-        if (!userName || !surveyId) {
-          throw new CustomHttpException(
-            CommonErrorMessages.INVALID_REQUEST_DATA,
-            HttpStatus.UNPROCESSABLE_ENTITY,
-            undefined,
-            PublicSurveysController.name,
-          );
-        }
-        return join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
-      }, false),
+      createAttachmentUploadOptions(
+        (req) => {
+          const userName = req.params?.userName;
+          const surveyId = req.params?.surveyId;
+
+          if (!userName || !surveyId) {
+            throw new CustomHttpException(
+              CommonErrorMessages.INVALID_REQUEST_DATA,
+              HttpStatus.UNPROCESSABLE_ENTITY,
+              undefined,
+              PublicSurveysController.name,
+            );
+          }
+
+          return join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
+        },
+        false,
+        (_req, file) => addUuidToFileName(file.originalname),
+      ),
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
