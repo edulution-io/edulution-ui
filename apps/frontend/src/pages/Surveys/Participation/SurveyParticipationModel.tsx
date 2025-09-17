@@ -14,7 +14,7 @@ import React, { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
-import { ClearFilesEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
+import { ClearFilesEvent, DownloadFileEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
 import { FileDownloadDto } from '@libs/survey/types/api/file-download.dto';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import SURVEY_ANSWERS_MAXIMUM_FILE_SIZE from '@libs/survey/constants/survey-answers-maximum-file-size';
@@ -109,7 +109,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         }
         const newFile: FileDownloadDto = {
           ...file,
-          type: file.type || 'image/png',
+          type: file.type || '*/*',
           originalName: file.name || data.name,
           name: data.name,
           url: `${EDU_API_URL}/${data.url}`,
@@ -125,6 +125,27 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
           content: result.url,
         })),
       );
+    });
+
+    newModel.onDownloadFile.add((_: SurveyModel, options: DownloadFileEvent) => {
+      fetch(options.content as string)
+        .then((response) => response.blob())
+        .then((blob) => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+          const file = new File([blob], options.fileValue.name, {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
+            type: options.fileValue.type,
+          });
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            options.callback('success', e.target?.result);
+          };
+          reader.readAsDataURL(file);
+        })
+        .catch((error) => {
+          console.error('Error: ', error);
+          options.callback('error');
+        });
     });
 
     newModel.onClearFiles.add(async (_surveyModel: SurveyModel, options: ClearFilesEvent): Promise<void> => {
