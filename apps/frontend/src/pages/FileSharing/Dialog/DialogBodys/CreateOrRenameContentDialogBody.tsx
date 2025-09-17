@@ -50,7 +50,8 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
   }, [isRenaming, selectedItems, form]);
 
   useEffect(() => {
-    const trimmed = filename.trim();
+    if (!filename) return;
+    const trimmed = filename?.trim();
     if (trimmed !== filename) {
       form.setValue('filename', trimmed, { shouldDirty: true, shouldValidate: true });
     }
