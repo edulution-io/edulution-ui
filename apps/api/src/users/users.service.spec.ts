@@ -103,6 +103,7 @@ const userModelMock = {
     }),
   }),
   findOne: jest.fn().mockReturnValue({
+    select: jest.fn().mockReturnThis(),
     lean: jest.fn().mockReturnThis(),
     exec: jest.fn().mockResolvedValue(mockUser),
   }),
@@ -189,13 +190,14 @@ describe(UsersService.name, () => {
     it('should return a single user', async () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       jest.spyOn(model, 'findOne').mockReturnValueOnce({
-        lean: jest.fn().mockResolvedValue([mockUser]),
+        select: jest.fn().mockReturnThis(),
+        lean: jest.fn().mockResolvedValue(mockUser),
       } as unknown as any);
 
       const user = await service.findOne('testuser');
 
-      expect(user).toEqual([mockUser]);
-      expect(model.findOne).toHaveBeenCalledWith({ username: 'testuser' }, USER_DB_PROJECTION);
+      expect(user).toEqual(mockUser);
+      expect(model.findOne).toHaveBeenCalledWith({ username: 'testuser' });
     });
   });
 

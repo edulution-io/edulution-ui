@@ -19,6 +19,7 @@ interface ParsedUpload {
   name: string;
   stream: Readable;
   mimeType: string;
+  fileSize?: number;
 }
 
 export default ParsedUpload;

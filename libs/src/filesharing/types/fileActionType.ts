@@ -15,7 +15,6 @@ enum FileActionType {
   CREATE_FOLDER = 'createFolder',
   CREATE_FILE = 'createFile',
   DELETE_FILE_OR_FOLDER = 'deleteFileOrFolder',
-  UPLOAD_FILE = 'uploadFile',
   RENAME_FILE_OR_FOLDER = 'renameFileOrFolder',
   COPY_FILE_OR_FOLDER = 'copyFileOrFolder',
   SHARE_FILE_OR_FOLDER = 'shareFileOrFolder',

@@ -87,8 +87,7 @@ const getFileSharingTableColumns = (
       accessorFn: (row) => row.type + row.filePath,
       cell: ({ row }) => {
         const [searchParams, setSearchParams] = useSearchParams();
-        const { currentlyDisabledFiles, setFileIsCurrentlyDisabled, setSelectedRows, selectedRows } =
-          useFileSharingStore();
+        const { currentlyDisabledFiles, setFileIsCurrentlyDisabled } = useFileSharingStore();
         const { resetCurrentlyEditingFile, setIsFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
         const { setPublicDownloadLink } = useFileSharingDownloadStore();
         const isCurrentlyDisabled = currentlyDisabledFiles[row.original.filename];
@@ -109,18 +108,14 @@ const getFileSharingTableColumns = (
             setSearchParams(newParams);
             return;
           }
-          const rowId = row.original.filePath;
-          const toggleSelect = () => {
-            setSelectedRows({ ...selectedRows, [rowId]: !selectedRows[rowId] });
-          };
 
           if (!isValidFileToPreview(row.original) || isMobileView) {
-            toggleSelect();
+            row.toggleSelected();
             return;
           }
           const isOnlyOfficeDoc = isOnlyOfficeDocument(row.original.filename);
           if (isOnlyOfficeDoc && !isDocumentServerConfigured && !isPdf) {
-            toggleSelect();
+            row.toggleSelected();
             return;
           }
           if (isOnlyOfficeDoc || isPdf) {

@@ -16,7 +16,7 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import CustomAxiosError from '@libs/error/CustomAxiosError';
-import SHOW_TOASTER_DURATION from '@libs/ui/constants/showToasterDuration';
+import { SHOW_TOASTER_DURATION } from '@libs/ui/constants/showToasterDuration';
 
 /*
  * Use this function to handle errors in your store functions that do requests to the API.
