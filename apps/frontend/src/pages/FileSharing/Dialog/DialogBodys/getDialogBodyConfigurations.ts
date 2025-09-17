@@ -147,7 +147,8 @@ const deleteFileFolderConfig: PlainDialogBodyConfiguration = {
     if (!selectedItems || selectedItems.length === 0) {
       return Promise.resolve([]);
     }
-    const cleanedPath = getPathWithoutWebdav(currentPath);
+    const currentPathWithoutTrailingSlash = currentPath.endsWith('/') ? currentPath.slice(0, -1) : currentPath;
+    const cleanedPath = getPathWithoutWebdav(currentPathWithoutTrailingSlash);
     return Promise.resolve(
       selectedItems.map((item) => ({
         path: `${cleanedPath}/${item.filename}`,
@@ -179,7 +180,8 @@ const renameFileFolderConfig: RenameDialogBodyConfiguration = {
       form.getValues('extension') !== undefined
         ? `${String(form.getValues('filename')) + String(form.getValues('extension'))}`
         : form.getValues('filename');
-    const cleanedPath = getPathWithoutWebdav(currentPath);
+    const currentPathWithoutTrailingSlash = currentPath.endsWith('/') ? currentPath.slice(0, -1) : currentPath;
+    const cleanedPath = getPathWithoutWebdav(currentPathWithoutTrailingSlash);
     return Promise.resolve([
       {
         path: `${cleanedPath}/${selectedItems[0]?.filename}`,
@@ -224,13 +226,14 @@ const moveFileFolderConfig: MoveDialogBodyConfiguration = {
     if (!moveOrCopyItemToPath || !selectedItems) {
       return Promise.resolve([]);
     }
+    const currentPathWithoutTrailingSlash = currentPath.endsWith('/') ? currentPath.slice(0, -1) : currentPath;
     const newCleanedPath = getPathWithoutWebdav(moveOrCopyItemToPath.filePath);
-    const cleanedPath = getPathWithoutWebdav(currentPath);
+    const cleanedPath = getPathWithoutWebdav(currentPathWithoutTrailingSlash);
 
     return Promise.resolve(
       selectedItems.map((item) => ({
-        path: encodeURI(`${cleanedPath}/${item.filename}`),
-        newPath: encodeURI(`${newCleanedPath}/${item.filename}`),
+        path: `${cleanedPath}/${item.filename}`,
+        newPath: `${newCleanedPath}/${item.filename}`,
       })),
     );
   },

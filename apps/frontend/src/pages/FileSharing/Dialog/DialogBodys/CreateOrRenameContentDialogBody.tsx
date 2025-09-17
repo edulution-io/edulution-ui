@@ -35,13 +35,12 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
     if (isRenaming && selectedItems.length === 1) {
       if (selectedItems[0].type === ContentType.FILE) {
         const dotIndex = selectedItems[0].filename.lastIndexOf('.');
-        form.setValue(
-          'filename',
-          dotIndex > 0 ? selectedItems[0].filename.substring(0, dotIndex) : selectedItems[0].filename,
-        );
-        form.setValue('extension', dotIndex > 0 ? selectedItems[0].filename.substring(dotIndex) : '');
+        const base = dotIndex > 0 ? selectedItems[0].filename.substring(0, dotIndex) : selectedItems[0].filename;
+        const extensiop = dotIndex > 0 ? selectedItems[0].filename.substring(dotIndex) : '';
+        form.setValue('filename', base.trim());
+        form.setValue('extension', extensiop.trim());
       } else {
-        form.setValue('filename', selectedItems[0].filename);
+        form.setValue('filename', selectedItems[0].filename.trim());
         form.setValue('extension', '');
       }
     } else {
@@ -50,6 +49,13 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
     }
   }, [isRenaming, selectedItems, form]);
 
+  useEffect(() => {
+    const trimmed = filename.trim();
+    if (trimmed !== filename) {
+      form.setValue('filename', trimmed, { shouldDirty: true, shouldValidate: true });
+    }
+  }, [filename, form]);
+
   const showExtensionInput =
     isRenaming && extension && selectedItems.length === 1 && selectedItems[0].type === ContentType.FILE;
 
@@ -57,21 +63,22 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
 
   useEffect(() => {
     const checkIfFilenameAlreadyExists = async () => {
+      const baseName = (filename ?? '').trim();
       let alreadyExists: boolean;
 
       if (selectedFileType) {
-        const generatedFilename = await generateFile(selectedFileType, filename, documentVendor, true);
-        alreadyExists = files.some((file) => file.filename === `${filename}.${generatedFilename.extension}`);
+        const generatedFilename = await generateFile(selectedFileType, baseName, documentVendor, true);
+        alreadyExists = files.some((file) => file.filename === `${baseName}.${generatedFilename.extension}`);
       } else {
-        alreadyExists = files.some((file) => file.filename === filename + (extension || ''));
+        alreadyExists = files.some((file) => file.filename === baseName + (extension || ''));
       }
 
       setFilenameAlreadyExists(alreadyExists);
-      setSubmitButtonIsDisabled(alreadyExists);
+      setSubmitButtonIsDisabled(alreadyExists || baseName.length === 0);
     };
 
     void checkIfFilenameAlreadyExists();
-  }, [files, selectedFileType, filename, documentVendor, extension]);
+  }, [files, selectedFileType, filename, documentVendor, extension, setSubmitButtonIsDisabled]);
 
   return (
     <Form {...form}>

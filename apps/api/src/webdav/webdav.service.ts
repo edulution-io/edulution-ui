@@ -36,7 +36,6 @@ import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import got from 'got';
 import { Agent as HttpsAgent } from 'https';
 import { Agent as HttpAgent } from 'http';
-import collapseUrlPathSlashes from '@libs/filesharing/utils/collapseUrlPathSlashes';
 import CustomHttpException from '../common/CustomHttpException';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
@@ -313,7 +312,7 @@ class WebdavService {
       client,
       {
         method: HttpMethods.DELETE,
-        url: collapseUrlPathSlashes(fullPath),
+        url: fullPath,
         headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
       },
       FileSharingErrorMessage.DeletionFailed,
@@ -336,17 +335,13 @@ class WebdavService {
     if (webdavShareType === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
       destinationUrl = `${baseUrl.replace(/\/+$/, '')}/${destFullPath.replace(/^\/+/, '')}`;
     }
-    const decodedDestinationUrl = decodeURI(destinationUrl);
-    const decodedOriginFullPath = decodeURI(originFullPath);
-    const encodedDestinationUrl = encodeURI(decodedDestinationUrl);
-    const encodedOriginFullPath = encodeURI(decodedOriginFullPath);
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethodsWebDav.MOVE,
-        url: encodedOriginFullPath,
+        url: encodeURI(originFullPath),
         headers: {
-          Destination: encodedDestinationUrl,
+          Destination: encodeURI(destinationUrl),
           [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
         },
       },
