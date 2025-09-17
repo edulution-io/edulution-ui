@@ -14,14 +14,16 @@ import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
+import useUserStore from '@/store/UserStore/useUserStore';
 
 const PublicLoadingPage = () => {
-  const { publicAppConfigs, isGetAppConfigsLoading } = useAppConfigsStore();
+  const { publicAppConfigs, isGetPublicAppConfigsLoading } = useAppConfigsStore();
+  const isAuthenticated = useUserStore((s) => s.isAuthenticated);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    if (isGetAppConfigsLoading) return;
+    if (isAuthenticated || isGetPublicAppConfigsLoading) return;
 
     if (publicAppConfigs.length > 0) {
       const currentPath = location.pathname.replace(/^\//, '');
@@ -36,7 +38,7 @@ const PublicLoadingPage = () => {
       replace: true,
       state: { from: location.pathname },
     });
-  }, [isGetAppConfigsLoading, publicAppConfigs, location.pathname]);
+  }, [isGetPublicAppConfigsLoading, publicAppConfigs, location.pathname]);
 
   return <div />;
 };
