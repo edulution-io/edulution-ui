@@ -95,7 +95,6 @@ class PublicSurveysController {
         (req) => {
           const userName = req.params?.userName;
           const surveyId = req.params?.surveyId;
-
           if (!userName || !surveyId) {
             throw new CustomHttpException(
               CommonErrorMessages.INVALID_REQUEST_DATA,
@@ -104,7 +103,6 @@ class PublicSurveysController {
               PublicSurveysController.name,
             );
           }
-
           return join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
         },
         false,
