@@ -47,6 +47,7 @@ import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getUsernameFromRequest from 'apps/api/src/common/utils/getUsernameFromRequest';
 import SurveysService from './surveys.service';
 import SurveysAttachmentService from './surveys-attachment.service';
@@ -56,6 +57,8 @@ import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorato
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import { checkAttachmentFile, createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import AppConfigGuard from '../appconfig/appconfig.guard';
+import CustomHttpException from '../common/CustomHttpException';
+import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
@@ -66,6 +69,7 @@ class SurveysController {
     private readonly surveysAttachmentService: SurveysAttachmentService,
     private readonly surveysTemplateService: SurveysTemplateService,
     private readonly surveyAnswerService: SurveyAnswerService,
+    private readonly surveyAnswerAttachmentsService: SurveyAnswerAttachmentsService,
   ) {}
 
   @Get(`${FIND_ONE}/:surveyId`)
@@ -149,6 +153,33 @@ class SurveysController {
   ) {
     const { surveyId, username } = params;
     return this.surveyAnswerService.getAnswer(surveyId, username || currentUsername);
+  }
+
+  @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:filename`)
+  async servePermanentFileFromAnswer(
+    @Param() params: { userName: string; surveyId: string; filename: string },
+    @Res() res: Response,
+    @GetCurrentUser() user: JWTUser,
+  ) {
+    const { userName, surveyId, filename } = params;
+    if (!userName || !surveyId || !filename) {
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+        undefined,
+        SurveysController.name,
+      );
+    }
+    const survey = await this.surveyService.findSurveyWithCreatorDependency(surveyId, user);
+    if (survey === null) {
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveysController.name,
+      );
+    }
+    return this.surveyAnswerAttachmentsService.servePermanentFileFromAnswer(userName, surveyId, filename, res);
   }
 
   @Post()
