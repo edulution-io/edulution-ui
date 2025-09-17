@@ -214,13 +214,11 @@ class AppConfigService implements OnModuleInit {
     return appConfig;
   }
 
-  async getPublicAppConfigs(): Promise<AppConfigDto[] | undefined> {
+  async getPublicAppConfigs(): Promise<AppConfigDto[]> {
     const appConfig = await this.appConfigModel
       .find({ [`extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_IS_PUBLIC}`]: true })
       .lean();
-    if (!appConfig) {
-      return undefined;
-    }
+
     return appConfig;
   }
 

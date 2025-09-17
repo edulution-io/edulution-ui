@@ -121,7 +121,7 @@ const useAppConfigsStore = create<UseAppConfigsStore>(
           const { data } = await eduApi.get<AppConfigDto[]>(`${EDU_API_CONFIG_ENDPOINTS.ROOT}/public`);
           set({ publicAppConfigs: data });
         } catch (e) {
-          console.error('API not responding', e);
+          handleApiError(e, set);
         } finally {
           set({ isGetAppConfigsLoading: false });
         }

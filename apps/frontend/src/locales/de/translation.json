@@ -983,7 +983,7 @@
           "nativeMode": "Integriertes Layout",
           "sandboxModeDescription": "Im Modus „Sparates Layout“ wird der Inhalt als eigenständige Seite angezeigt, ähnlich wie ein Fenster innerhalb der Anwendung. Dabei können neben dem eigentlichen Inhalt auch zusätzliche Designelemente oder Funktionen aus anderen Quellen geladen werden. Dadurch ist die Gestaltung unabhängig von der Anwendung, könnte also anders aussehen oder sich anders verhalten. Hier muss der Inhalt als HTML-Datei hochgeladen werden.",
           "nativeModeDescription": "Im Modus „Integriertes Layout“ dagegen wird der Inhalt direkt in die Oberfläche der Anwendung eingefügt. Dadurch sieht der Inhalt genauso aus wie die Anwendung selbst und fügt sich optisch nahtlos ein. Allerdings können hier keine zusätzlichen externen Designelemente oder Funktionen dynamisch hinzugefügt werden. Es können jedoch statische Elemente wie Bilder hochgeladen und hier eingesetzt werden.",
-          "visibilityDescription": "Hier können Sie festlegen, ob die App öffentlich zugänglich sein soll. Aktiv bedeutet öffentlich, inaktiv bedeutet, dass nur registrierte Benutzer Zugriff haben."
+          "visibilityDescription": "Hier können Sie festlegen, ob die App öffentlich zugänglich sein soll. Aktiv bedeutet öffentlich, inaktiv bedeutet, dass nur konfigurierte Nutzergruppen Zugriff haben."
         }
       },
       "update": {
