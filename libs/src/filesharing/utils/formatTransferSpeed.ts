@@ -10,15 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Module } from '@nestjs/common';
-import LmnApiService from './lmnApi.service';
-import { LmnApiController } from './lmnApi.controller';
-import LdapKeycloakSyncModule from '../ldap-keycloak-sync/ldap-keycloak-sync.module';
+const formatTransferSpeed = (bytesPerSecond?: number) => {
+  if (bytesPerSecond == null || !Number.isFinite(bytesPerSecond) || bytesPerSecond <= 0) return '–';
 
-@Module({
-  providers: [LmnApiService],
-  imports: [LdapKeycloakSyncModule],
-  controllers: [LmnApiController],
-  exports: [LmnApiService],
-})
-export default class LmnApiModule {}
+  const unitLabels = ['B/s', 'KB/s', 'MB/s', 'GB/s', 'TB/s'];
+  let unitIndex = 0;
+  let value = bytesPerSecond;
+
+  while (value >= 1024 && unitIndex < unitLabels.length - 1) {
+    value /= 1024;
+    unitIndex += 1;
+  }
+
+  return `${value.toFixed(1)} ${unitLabels[unitIndex]}`;
+};
+
+export default formatTransferSpeed;

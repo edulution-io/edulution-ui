@@ -65,10 +65,8 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     action,
     handleItemAction,
     selectedFileType,
-    filesToUpload,
     setSelectedFileType,
     setMoveOrCopyItemToPath,
-    setFilesToUpload,
     isSubmitButtonDisabled,
     setSubmitButtonIsDisabled,
   } = useFileSharingDialogStore();
@@ -101,7 +99,6 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     setSubmitButtonIsDisabled(false);
     setMoveOrCopyItemToPath({} as DirectoryFileDTO);
     setSelectedFileType('');
-    setFilesToUpload([]);
     setSelectedItems([]);
     setSelectedRows({});
     closeDialog();
@@ -153,7 +150,6 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
       selectedItems,
       moveOrCopyItemToPath,
       selectedFileType,
-      filesToUpload,
       documentVendor,
     });
 

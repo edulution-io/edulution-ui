@@ -10,15 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Module } from '@nestjs/common';
-import LmnApiService from './lmnApi.service';
-import { LmnApiController } from './lmnApi.controller';
-import LdapKeycloakSyncModule from '../ldap-keycloak-sync/ldap-keycloak-sync.module';
+import { UploadFile } from '@libs/filesharing/types/uploadFile';
 
-@Module({
-  providers: [LmnApiService],
-  imports: [LdapKeycloakSyncModule],
-  controllers: [LmnApiController],
-  exports: [LmnApiService],
-})
-export default class LmnApiModule {}
+const buildOctetStreamUrl = (baseUploadUrl: string, destinationPath: string, fileItem: UploadFile): string => {
+  const query = new URLSearchParams();
+  query.set('path', destinationPath);
+  query.set('name', fileItem.name);
+  query.set('isZippedFolder', String(!!fileItem.isZippedFolder));
+  query.set('contentLength', String(fileItem.size));
+  return `${baseUploadUrl}?${query.toString()}`;
+};
+
+export default buildOctetStreamUrl;

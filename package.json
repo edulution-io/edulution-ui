@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "1.5.23",
+  "version": "1.5.26",
   "scripts": {
     "test": "nx run-many --target=test --projects=api",
     "test:api": "nx run api:test --detectOpenHandles",
@@ -113,6 +113,7 @@
     "fflate": "^0.8.2",
     "framer-motion": "^11.0.3",
     "fs-extra": "^11.2.0",
+    "got": "^11.8.6",
     "guacamole-common-js": "^1.5.0",
     "he": "^1.2.0",
     "helmet": "^7.1.0",

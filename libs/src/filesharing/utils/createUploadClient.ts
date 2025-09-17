@@ -10,15 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Module } from '@nestjs/common';
-import LmnApiService from './lmnApi.service';
-import { LmnApiController } from './lmnApi.controller';
-import LdapKeycloakSyncModule from '../ldap-keycloak-sync/ldap-keycloak-sync.module';
+import axios, { AxiosInstance } from 'axios';
 
-@Module({
-  providers: [LmnApiService],
-  imports: [LdapKeycloakSyncModule],
-  controllers: [LmnApiController],
-  exports: [LmnApiService],
-})
-export default class LmnApiModule {}
+const createUploadClient = (baseURL: string, token?: string): AxiosInstance => {
+  const instance = axios.create({
+    baseURL,
+    withCredentials: true,
+    timeout: 0,
+  });
+
+  if (token) {
+    instance.defaults.headers.common.Authorization = `Bearer ${token}`;
+  }
+
+  return instance;
+};
+
+export default createUploadClient;

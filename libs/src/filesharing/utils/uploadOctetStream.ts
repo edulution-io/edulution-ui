@@ -10,15 +10,24 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Module } from '@nestjs/common';
-import LmnApiService from './lmnApi.service';
-import { LmnApiController } from './lmnApi.controller';
-import LdapKeycloakSyncModule from '../ldap-keycloak-sync/ldap-keycloak-sync.module';
+import type { AxiosInstance, AxiosProgressEvent } from 'axios';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 
-@Module({
-  providers: [LmnApiService],
-  imports: [LdapKeycloakSyncModule],
-  controllers: [LmnApiController],
-  exports: [LmnApiService],
-})
-export default class LmnApiModule {}
+const uploadOctetStream = async (
+  api: AxiosInstance,
+  url: string,
+  fileBody: Blob,
+  onUploadProgress?: (e: AxiosProgressEvent) => void,
+): Promise<void> => {
+  await api.post(url, fileBody, {
+    withCredentials: true,
+    headers: {
+      [HTTP_HEADERS.ContentType]: fileBody.type || RequestResponseContentType.APPLICATION_OCTET_STREAM,
+    },
+    onUploadProgress,
+    timeout: Infinity,
+    maxBodyLength: Infinity,
+  });
+};
+
+export default uploadOctetStream;

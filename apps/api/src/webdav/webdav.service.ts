@@ -33,6 +33,9 @@ import DEFAULT_PROPFIND_XML from '@libs/filesharing/constants/defaultPropfindXml
 import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import { Readable } from 'stream';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
+import got from 'got';
+import { Agent as HttpsAgent } from 'https';
+import { Agent as HttpAgent } from 'http';
 import CustomHttpException from '../common/CustomHttpException';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
@@ -281,6 +284,49 @@ class WebdavService {
       FileSharingErrorMessage.CreationFailed,
       (resp) => ({ success: resp.status >= 200 && resp.status < 300, status: resp.status }),
     );
+  }
+
+  async uploadFileWithNetworkProgress(
+    username: string,
+    fullPath: string,
+    fileStream: Readable,
+    contentType: string,
+    onProgress?: (transferred: number, total?: number) => void,
+    totalSize?: number,
+  ): Promise<WebdavStatusResponse> {
+    const password = await this.usersService.getPassword(username);
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+    const url = new URL(fullPath.replace(/^\/+/, ''), baseUrl).href;
+
+    const headers: Record<string, string> = { [HTTP_HEADERS.ContentType]: contentType };
+    if (totalSize && Number.isFinite(totalSize) && totalSize > 0) {
+      headers[HTTP_HEADERS.ContentLength] = String(totalSize);
+    }
+
+    const request = got.put(url, {
+      agent: {
+        http: new HttpAgent({ keepAlive: true }),
+        https: new HttpsAgent({ keepAlive: true }),
+      },
+      body: fileStream,
+      headers,
+      username,
+      password,
+      http2: false,
+      retry: { limit: 0 },
+      throwHttpErrors: false,
+      decompress: false,
+      rejectUnauthorized: false,
+    });
+
+    fileStream.on('aborted', () => request.cancel());
+    fileStream.on('error', () => request.cancel());
+
+    void request.on('uploadProgress', (p) => onProgress?.(p.transferred, p.total));
+
+    const response = await request;
+    const ok = response.statusCode >= 200 && response.statusCode < 300;
+    return { success: ok, status: response.statusCode, filename: fullPath.split('/').pop() || '' };
   }
 
   async uploadFile(
