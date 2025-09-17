@@ -59,6 +59,11 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
     try {
       const res = await this.axiosClient[method](endpoint, payload, config);
 
+      Logger.verbose(
+        `Request succeeded: ${method.toUpperCase()} ${endpoint} (status ${res.status})`,
+        KeycloakRequestQueue.name,
+      );
+
       return res.data as unknown;
     } catch (err) {
       const e = err as AxiosError;
@@ -72,6 +77,12 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
         await this.initKeycloakClient();
 
         const retry = await this.axiosClient[method](endpoint, payload, config);
+
+        Logger.verbose(
+          `Request succeeded on retry: ${method.toUpperCase()} ${endpoint} (status ${retry.status})`,
+          KeycloakRequestQueue.name,
+        );
+
         return retry.data as unknown;
       }
       throw err;
@@ -116,7 +127,7 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
       {
         removeOnComplete: true,
         removeOnFail: true,
-        attempts: 10,
+        attempts: 3,
         backoff: { type: 'exponential', delay: this.jobRetryDelay },
       },
     );

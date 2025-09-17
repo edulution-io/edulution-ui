@@ -21,6 +21,8 @@ import BulletinBoardPageColumn from '@/pages/BulletinBoard/components/BulletinBo
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialStore';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import CreateOrUpdateBulletinDialog from '@/pages/BulletinBoard/BulletinBoardEditorial/CreateOrUpdateBulletinDialog';
+import useUserPreferencesStore from '@/store/useUserPreferencesStore';
+import USER_PREFERENCES_FIELDS from '@libs/user-preferences/constants/user-preferences-fields';
 
 const BulletinBoardPage = () => {
   const { t } = useTranslation();
@@ -30,19 +32,37 @@ const BulletinBoardPage = () => {
     getBulletinsByCategories,
     isLoading,
     isEditorialModeEnabled,
+    hydrateCollapsed,
   } = useBulletinBoardStore();
+
+  const { getUserPreferences } = useUserPreferencesStore();
   const { getCategoriesWithEditPermission } = useBulletinBoardEditorialStore();
   const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
+      const userPreferences = await getUserPreferences([USER_PREFERENCES_FIELDS.collapsedBulletins]);
+
+      if (userPreferences?.collapsedBulletins) {
+        hydrateCollapsed(userPreferences.collapsedBulletins);
+      } else {
+        hydrateCollapsed({});
+      }
+
       void getCategoriesWithEditPermission();
       await getBulletinsByCategories(false);
       setIsInitialLoading(false);
     };
 
     void fetchData();
-  }, [isEditorialModeEnabled, bulletinBoardNotifications]);
+  }, [
+    isEditorialModeEnabled,
+    bulletinBoardNotifications,
+    getUserPreferences,
+    hydrateCollapsed,
+    getBulletinsByCategories,
+    getCategoriesWithEditPermission,
+  ]);
 
   const getPageContent = () => {
     if (isEditorialModeEnabled) {
