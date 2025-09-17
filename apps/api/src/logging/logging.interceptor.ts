@@ -29,6 +29,11 @@ class LoggingInterceptor implements NestInterceptor {
 
     const req = context.switchToHttp().getRequest<Request>();
     const res = context.switchToHttp().getResponse<Response>();
+
+    if (req.path.includes('/sse') || req.headers.accept?.includes('text/event-stream')) {
+      return next.handle();
+    }
+
     const { method, url, params, query, path } = req;
     const ip = req.headers[HTTP_HEADERS.XForwaredFor] || req.socket.remoteAddress;
     const userAgent = req.headers[HTTP_HEADERS.UserAgent];

@@ -10,11 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import GroupMemberDto from '@libs/groups/types/groupMember.dto';
+import GroupForm from '@libs/groups/types/groupForm';
 
-export default interface GroupDto {
-  id: string;
-  name: string;
-  path: string;
-  members: GroupMemberDto[];
-}
+type GroupFormDto = Omit<GroupForm, 'admins' | 'admingroups' | 'members' | 'membergroups'> & {
+  admins: string[];
+  admingroups: string[];
+  members: string[];
+  membergroups: string[];
+};
+
+export default GroupFormDto;

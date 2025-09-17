@@ -353,7 +353,8 @@
       "folderNameRequired": "Folder name is required",
       "FileNameRequired": "File name is required",
       "NewFileNameRequired": "New file name is required",
-      "NameRequired": "Name is required"
+      "NameRequired": "Name is required",
+      "NameExceedsCharacterLimit": "Name exceeds character limit"
     },
     "progressBox": {
       "info": "Info",
@@ -375,7 +376,8 @@
       "downloadInfo": "Downloading {{filename}}",
       "errorInfo": "{{failed}} files could not be handed out",
       "fileStructureIsCreating": "File structure is creating",
-      "zipFilesAreUploading": "Files are uploading"
+      "zipFilesAreUploading": "Files are uploading",
+      "fileIsUploading": "{{filename}} is uploading"
     },
 
     "publicShareFilesPage": {
@@ -437,6 +439,22 @@
       "selectedItemPrefix": "Selected content that is shared:",
       "noInviteesWarning": "⚠️  WARNING: Anyone with the share link will be able to download this content.",
       "inviteesWarning": "⚠️  WARNING: Anyone within the selected groups or users will be able to download this content."
+    },
+
+    "eta": {
+      "fewSeconds": "a few seconds remaining",
+      "lessThanMinute": "less than a minute remaining",
+      "aboutOneMinute": "about one minute remaining",
+      "aboutMinutes_one": "about {{count}} minute remaining",
+      "aboutMinutes_other": "about {{count}} minutes remaining",
+      "aboutHours_one": "about {{count}} hour remaining",
+      "aboutHours_other": "about {{count}} hours remaining",
+      "moreThanHours_one": "more than {{count}} hour remaining",
+      "moreThanHours_other": "more than {{count}} hours remaining",
+      "aboutDays_one": "about {{count}} day remaining",
+      "aboutDays_other": "about {{count}} days remaining",
+      "moreThanDays_one": "more than {{count}} day remaining",
+      "moreThanDays_other": "more than {{count}} days remaining"
     }
   },
   "forums": {
@@ -618,6 +636,7 @@
     "noFormula": "The formula of the survey is not readable.",
     "canSubmitMultiple": "Allow multiple submission",
     "editor": {
+      "inputFieldTitle": "Input field",
       "new": "New (blank)",
       "fileUploadSuccess": "Saved the image successfully.",
       "fileUploadError": "Error on Image Upload, please retry later.",
@@ -1163,6 +1182,7 @@
     "ok": "OK",
     "next": "Next",
     "back": "Back",
+    "of": "of",
     "confirm": "Confirm",
     "creator": "Creator",
     "share": "Share",
@@ -1341,7 +1361,7 @@
   "filesharingUpload": {
     "title": "Upload Files",
     "upload": "Upload",
-    "dataLimitExceeded": "Data limit from 400 MB exceeded",
+    "dataLimitExceeded": "Data limit from 50 MB exceeded",
     "fileSize": "File size",
     "selectFile": "Select up to 5 files at a time",
     "uploadItems": "Upload: {{count}} items",
@@ -1356,7 +1376,7 @@
     "oversizedFileDetected": "Oversized file detected!",
     "folderTooLargeTitle": "Too many files in the folder",
     "folderTooLargeDescription": "The folder contains more then 100 files. Please select another folder or reduce the number of files.",
-    "cannotUploadOversized": "Files larger than 400 MB cannot be uploaded.",
+    "cannotUploadOversized": "Files larger than 50 MB cannot be uploaded.",
     "addFiles": "Add files",
     "addFolder": "Add folder",
     "preparingFolder": "Preparing folder"
@@ -1374,7 +1394,11 @@
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
-    "sidebar": "Collaborative Whiteboard"
+    "sidebar": "Collaborative Whiteboard",
+    "privateRoom": "Private room",
+    "dropdownPlaceholder": "Choose your current room",
+    "historyTitle": "History",
+    "historyNoMore": "No more entries"
   },
   "table": {
     "noDataAvailable": "No data available"
