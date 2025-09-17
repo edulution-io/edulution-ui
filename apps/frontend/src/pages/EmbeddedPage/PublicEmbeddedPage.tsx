@@ -26,6 +26,7 @@ import BackButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConf
 import useUserStore from '@/store/UserStore/useUserStore';
 import PageTitle from '@/components/PageTitle';
 import useFileTableStore from '../Settings/AppConfig/components/useFileTableStore';
+import EmbeddedPageContent from './EmbeddedPageContent';
 
 const PublicEmbeddedPage: React.FC = () => {
   const { pathname } = useLocation();
@@ -70,20 +71,12 @@ const PublicEmbeddedPage: React.FC = () => {
         title={pageTitle}
         translationId="public"
       />
-      {isSandboxMode ? (
-        <iframe
-          src={htmlContentUrl}
-          title={pageTitle}
-          className="h-full w-full border-0"
-          sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
-        />
-      ) : (
-        <div
-          className="h-full w-full"
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: htmlContent }}
-        />
-      )}
+      <EmbeddedPageContent
+        pageTitle={pageTitle}
+        isSandboxMode={isSandboxMode}
+        htmlContentUrl={htmlContentUrl}
+        htmlContent={htmlContent}
+      />
       {!isAuthenticated && <FloatingButtonsBar config={config} />}
     </PageLayout>
   );
