@@ -10,14 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum FileActionType {
-  MOVE_FILE_OR_FOLDER = 'moveFileOrFolder',
-  CREATE_FOLDER = 'createFolder',
-  CREATE_FILE = 'createFile',
-  DELETE_FILE_OR_FOLDER = 'deleteFileOrFolder',
-  RENAME_FILE_OR_FOLDER = 'renameFileOrFolder',
-  COPY_FILE_OR_FOLDER = 'copyFileOrFolder',
-  SHARE_FILE_OR_FOLDER = 'shareFileOrFolder',
-}
+import axios, { AxiosInstance } from 'axios';
 
-export default FileActionType;
+const createUploadClient = (baseURL: string, token?: string): AxiosInstance => {
+  const instance = axios.create({
+    baseURL,
+    withCredentials: true,
+    timeout: 0,
+  });
+
+  if (token) {
+    instance.defaults.headers.common.Authorization = `Bearer ${token}`;
+  }
+
+  return instance;
+};
+
+export default createUploadClient;

@@ -10,14 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum FileActionType {
-  MOVE_FILE_OR_FOLDER = 'moveFileOrFolder',
-  CREATE_FOLDER = 'createFolder',
-  CREATE_FILE = 'createFile',
-  DELETE_FILE_OR_FOLDER = 'deleteFileOrFolder',
-  RENAME_FILE_OR_FOLDER = 'renameFileOrFolder',
-  COPY_FILE_OR_FOLDER = 'copyFileOrFolder',
-  SHARE_FILE_OR_FOLDER = 'shareFileOrFolder',
-}
+const formatTransferSpeed = (bytesPerSecond?: number) => {
+  if (bytesPerSecond == null || !Number.isFinite(bytesPerSecond) || bytesPerSecond <= 0) return '–';
 
-export default FileActionType;
+  const unitLabels = ['B/s', 'KB/s', 'MB/s', 'GB/s', 'TB/s'];
+  let unitIndex = 0;
+  let value = bytesPerSecond;
+
+  while (value >= 1024 && unitIndex < unitLabels.length - 1) {
+    value /= 1024;
+    unitIndex += 1;
+  }
+
+  return `${value.toFixed(1)} ${unitLabels[unitIndex]}`;
+};
+
+export default formatTransferSpeed;

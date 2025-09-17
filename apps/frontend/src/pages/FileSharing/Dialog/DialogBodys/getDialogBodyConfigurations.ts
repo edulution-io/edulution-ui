@@ -26,7 +26,6 @@ import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
 import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
 import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
-import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
 import MoveDirectoryDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveDirectoryDialogBody';
 import CopyContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/CopyContentDialogBody';
@@ -190,30 +189,6 @@ const renameFileFolderConfig: RenameDialogBodyConfiguration = {
   },
 };
 
-const uploadFileConfig: PlainDialogBodyConfiguration = {
-  Component: UploadContentBody,
-  titleKey: 'filesharingUpload.title',
-  submitKey: 'filesharingUpload.upload',
-  endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.UPLOAD}`,
-  httpMethod: HttpMethods.POST,
-  type: ContentType.FILE || ContentType.DIRECTORY,
-  requiresForm: false,
-  getData: (_form, currentPath, inputValues) => {
-    const { filesToUpload } = inputValues;
-    const cleanedPath = getPathWithoutWebdav(currentPath);
-    if (!filesToUpload || filesToUpload.length === 0) {
-      return Promise.resolve([]);
-    }
-    return Promise.resolve(
-      filesToUpload.map((file: File) => ({
-        path: cleanedPath,
-        name: file.name,
-        file,
-      })),
-    );
-  },
-};
-
 const copyFileOrFolderConfig: PlainDialogBodyConfiguration = {
   Component: CopyContentDialogBody,
   titleKey: 'copyItemDialog.copyFilesOrDirectoriesToDirectory',
@@ -278,7 +253,6 @@ const dialogBodyConfigurations: Record<FileActionType, DialogBodyConfiguration> 
   createFile: createFileConfig,
   deleteFileOrFolder: deleteFileFolderConfig,
   renameFileOrFolder: renameFileFolderConfig,
-  uploadFile: uploadFileConfig,
   copyFileOrFolder: copyFileOrFolderConfig,
   moveFileOrFolder: moveFileFolderConfig,
   shareFileOrFolder: shareFileOrFolderConfig,
