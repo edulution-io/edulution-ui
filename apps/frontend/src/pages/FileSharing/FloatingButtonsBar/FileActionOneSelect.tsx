@@ -23,9 +23,22 @@ import DownloadButton from '@/components/shared/FloatingsButtonsBar/CommonButton
 import useStartWebdavFileDownload from '@/pages/FileSharing/hooks/useStartWebdavFileDownload';
 import CopyButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/copyButton';
 import ShareButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/shareButton';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import ContentType from '@libs/filesharing/types/contentType';
+import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 
 const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItems }) => {
   const startDownload = useStartWebdavFileDownload();
+  const { webdavShares } = useFileSharingStore();
+
+  const selected = Array.isArray(selectedItems) ? selectedItems : [selectedItems];
+  const items = selected.filter(Boolean);
+  const hasFolderSelected = items.some((item) => item?.type === ContentType.DIRECTORY);
+
+  const isEduFileProxy = webdavShares?.some((share) => share?.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) ?? false;
+
+  const disableDownload = hasFolderSelected && isEduFileProxy;
+
   const config: FloatingButtonsBarConfig = {
     buttons: [
       DeleteButton(() => openDialog(FileActionType.DELETE_FILE_OR_FOLDER)),
@@ -35,11 +48,15 @@ const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedIt
         text: t('tooltip.rename'),
         onClick: () => openDialog(FileActionType.RENAME_FILE_OR_FOLDER),
       },
-      DownloadButton(async () => {
-        if (!selectedItems) return;
-        const files = Array.isArray(selectedItems) ? selectedItems : [selectedItems];
-        await startDownload(files);
-      }, true),
+      ...(disableDownload
+        ? []
+        : [
+            DownloadButton(async () => {
+              if (!selectedItems) return;
+              const files = Array.isArray(selectedItems) ? selectedItems : [selectedItems];
+              await startDownload(files);
+            }),
+          ]),
       CopyButton(() => openDialog(FileActionType.COPY_FILE_OR_FOLDER)),
       ShareButton(() => openDialog(FileActionType.SHARE_FILE_OR_FOLDER)),
     ],
