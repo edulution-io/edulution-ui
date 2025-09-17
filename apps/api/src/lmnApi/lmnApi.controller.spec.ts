@@ -16,6 +16,8 @@ import { Response } from 'express';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
 import GroupForm from '@libs/groups/types/groupForm';
 import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
+import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
+import GroupFormDto from '@libs/groups/types/groupForm.dto';
 import { LmnApiController } from './lmnApi.controller';
 import LmnApiService from './lmnApi.service';
 import mockLmnApiService from './lmnApi.service.mock';
@@ -110,8 +112,12 @@ describe('LmnApiController', () => {
 
   describe('toggleProjectJoined', () => {
     it('should call toggleProjectJoined', async () => {
-      await controller.toggleProjectJoined({ project: 'project1', action: 'join' }, 'mockToken');
-      expect(service.toggleProjectJoined).toHaveBeenCalledWith('mockToken', 'project1', 'join');
+      await controller.toggleProjectJoined(
+        { project: 'project1', action: GroupJoinState.Join },
+        'mockToken',
+        'username',
+      );
+      expect(service.toggleProjectJoined).toHaveBeenCalledWith('mockToken', 'project1', 'join', 'username');
     });
   });
 
@@ -137,8 +143,12 @@ describe('LmnApiController', () => {
 
   describe('toggleSchoolClassJoined', () => {
     it('should call toggleSchoolClassJoined', async () => {
-      await controller.toggleSchoolClassJoined({ schoolClass: 'class1', action: 'join' }, 'mockToken');
-      expect(service.toggleSchoolClassJoined).toHaveBeenCalledWith('mockToken', 'class1', 'join');
+      await controller.toggleSchoolClassJoined(
+        { schoolClass: 'class1', action: GroupJoinState.Join },
+        'mockToken',
+        'username',
+      );
+      expect(service.toggleSchoolClassJoined).toHaveBeenCalledWith('mockToken', 'class1', 'join', 'username');
     });
   });
 
@@ -235,21 +245,25 @@ describe('LmnApiController', () => {
 
   describe('togglePrinterJoined', () => {
     it('should call togglePrinterJoined', async () => {
-      await controller.togglePrinterJoined({ project: 'project1', action: 'join' }, 'mockToken');
-      expect(service.togglePrinterJoined).toHaveBeenCalledWith('mockToken', 'project1', 'join');
+      await controller.togglePrinterJoined(
+        { project: 'project1', action: GroupJoinState.Join },
+        'mockToken',
+        'username',
+      );
+      expect(service.togglePrinterJoined).toHaveBeenCalledWith('mockToken', 'project1', 'join', 'username');
     });
   });
 
   describe('createProject', () => {
     it('should call createProject', async () => {
-      await controller.createProject('mockToken', { formValues: {} as GroupForm }, 'username');
+      await controller.createProject('mockToken', { formValues: {} as GroupFormDto }, 'username');
       expect(service.createProject).toHaveBeenCalledWith('mockToken', {}, 'username');
     });
   });
 
   describe('updateProject', () => {
     it('should call updateProject', async () => {
-      await controller.updateProject('mockToken', { formValues: {} as GroupForm }, 'username');
+      await controller.updateProject('mockToken', { formValues: {} as GroupFormDto }, 'username');
       expect(service.updateProject).toHaveBeenCalledWith('mockToken', {}, 'username');
     });
   });

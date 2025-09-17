@@ -10,15 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Module } from '@nestjs/common';
-import LmnApiService from './lmnApi.service';
-import { LmnApiController } from './lmnApi.controller';
-import LdapKeycloakSyncModule from '../ldap-keycloak-sync/ldap-keycloak-sync.module';
+import GroupForm from '@libs/groups/types/groupForm';
 
-@Module({
-  providers: [LmnApiService],
-  imports: [LdapKeycloakSyncModule],
-  controllers: [LmnApiController],
-  exports: [LmnApiService],
-})
-export default class LmnApiModule {}
+type GroupFormDto = Omit<GroupForm, 'admins' | 'admingroups' | 'members' | 'membergroups'> & {
+  admins: string[];
+  admingroups: string[];
+  members: string[];
+  membergroups: string[];
+};
+
+export default GroupFormDto;
