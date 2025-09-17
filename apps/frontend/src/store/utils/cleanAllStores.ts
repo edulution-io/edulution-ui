@@ -48,6 +48,12 @@ import usePublicSharePageStore from '@/pages/FileSharing/publicShare/publicPage/
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
 import useTLDRawHistoryStore from '@/pages/Whiteboard/TLDrawWithSync/useTLDRawHistoryStore';
+import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
+import useVeyonApiStore from '@/pages/ClassManagement/useVeyonApiStore';
+import useVeyonConfigTableStore from '@/pages/Settings/AppConfig/classmanagement/useVeyonConfigTableStore';
+import useWebdavShareConfigTableStore from '@/pages/Settings/AppConfig/filesharing/useWebdavShareConfigTableStore';
+import useFileTableStore from '@/pages/Settings/AppConfig/components/useFileTableStore';
+import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
 import useSseStore from '../useSseStore';
 
 const cleanAllStores = async () => {
@@ -92,6 +98,12 @@ const cleanAllStores = async () => {
   usePublicSharePageStore.getState().reset();
   usePublicShareStore.getState().reset();
   useTLDRawHistoryStore.getState().reset();
+  useGlobalSettingsApiStore.getState().reset();
+  useVeyonApiStore.getState().reset();
+  useVeyonConfigTableStore.getState().reset();
+  useWebdavShareConfigTableStore.getState().reset();
+  useFileTableStore.getState().reset();
+  useAppConfigTableDialogStore.getState().reset();
   localStorage.removeItem('i18nextLng');
   await clearTLDrawPersistence(TLDRAW_PERSISTENCE_KEY);
 };
