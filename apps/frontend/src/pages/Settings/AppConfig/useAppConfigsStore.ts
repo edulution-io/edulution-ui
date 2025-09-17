@@ -25,6 +25,7 @@ import { decodeBase64 } from '@libs/common/utils/getBase64String';
 
 type UseAppConfigsStore = {
   appConfigs: AppConfigDto[];
+  publicAppConfigs: AppConfigDto[];
   isLoading: boolean;
   isConfigFileLoading: boolean;
   error: Error | null;
@@ -35,6 +36,8 @@ type UseAppConfigsStore = {
   reset: () => void;
   createAppConfig: (appConfig: AppConfigDto) => Promise<void>;
   getAppConfigs: () => Promise<void>;
+  getPublicAppConfigs: () => Promise<void>;
+  getPublicAppConfigByName: (name: string) => Promise<AppConfigDto>;
   isGetAppConfigsLoading: boolean;
   updateAppConfig: (appConfigs: AppConfigDto) => Promise<void>;
   patchSingleFieldInConfig: (name: string, patchConfigDto: PatchConfigDto) => Promise<void>;
@@ -62,8 +65,9 @@ const initialState = {
       position: 0,
     },
   ],
+  publicAppConfigs: [],
   isLoading: false,
-  isGetAppConfigsLoading: false,
+  isGetAppConfigsLoading: true,
   isConfigFileLoading: false,
   error: null,
 };
@@ -72,8 +76,11 @@ const useAppConfigsStore = create<UseAppConfigsStore>(
   (persist as PersistedAppConfigsStore)(
     (set, get) => ({
       ...initialState,
-      reset: () => set(initialState),
-
+      reset: () =>
+        set((state) => ({
+          ...initialState,
+          publicAppConfigs: state.publicAppConfigs,
+        })),
       setIsAddAppConfigDialogOpen: (isAddAppConfigDialogOpen) => {
         set({ isAddAppConfigDialogOpen });
       },
@@ -103,6 +110,31 @@ const useAppConfigsStore = create<UseAppConfigsStore>(
           set({ appConfigs: response.data });
         } catch (e) {
           handleApiError(e, set);
+        } finally {
+          set({ isGetAppConfigsLoading: false });
+        }
+      },
+
+      getPublicAppConfigs: async () => {
+        set({ isGetAppConfigsLoading: true, error: null });
+        try {
+          const { data } = await eduApi.get<AppConfigDto[]>(`${EDU_API_CONFIG_ENDPOINTS.ROOT}/public`);
+          set({ publicAppConfigs: data });
+        } catch (e) {
+          handleApiError(e, set);
+        } finally {
+          set({ isGetAppConfigsLoading: false });
+        }
+      },
+
+      getPublicAppConfigByName: async (name: string) => {
+        set({ isGetAppConfigsLoading: true, error: null });
+        try {
+          const { data } = await eduApi.get<AppConfigDto>(`${EDU_API_CONFIG_ENDPOINTS.ROOT}/public/${name}`);
+          return data;
+        } catch (e) {
+          handleApiError(e, set);
+          return {} as AppConfigDto;
         } finally {
           set({ isGetAppConfigsLoading: false });
         }
@@ -186,7 +218,7 @@ const useAppConfigsStore = create<UseAppConfigsStore>(
     {
       name: 'appConfig-storage',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ appConfigs: state.appConfigs }),
+      partialize: (state) => ({ appConfigs: state.appConfigs, publicAppConfigs: state.publicAppConfigs }),
     },
   ),
 );

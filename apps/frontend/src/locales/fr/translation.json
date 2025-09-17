@@ -6,6 +6,8 @@
   "closeEditingWindow": "Voulez-vous vraiment fermer la fenêtre de modification ?",
   "framebufferImage": "Image tampon",
   "previewImage": "Aperçu de l'image",
+  "imprint": "Mentions légales",
+  "public": "Publique",
   "bulletinboard": {
     "settings": "Paramètres",
     "noBulletinsToShow": "Il n'y a actuellement aucun message à afficher, il est préférable de passer à nouveau plus tard!",
@@ -847,7 +849,8 @@
           "sandboxMode": "Disposition séparée",
           "nativeMode": "Disposition intégrée",
           "sandboxModeDescription": "Dans le mode \"disposition séparée\", le contenu s'affiche comme une page indépendante, similaire à une fenêtre dans l'application. En plus du contenu réel, des éléments de conception ou des fonctions supplémentaires provenant d'autres sources peuvent également être chargés. En conséquence, la conception est indépendante de l'application, il pourrait donc être différent ou se comporter différemment. Ici, le contenu doit être téléchargé en fichier HTML.",
-          "nativeModeDescription": "Dans le mode \"Disposition intégrée\", en revanche, le contenu est inséré directement dans la surface de l'application. En conséquence, le contenu semble autant que l'application elle-même et s'adapte de manière optiquement. Cependant, aucun éléments ou fonctions de conception externes supplémentaires ne peut être ajouté dynamiquement ici. Cependant, des éléments statiques tels que des images peuvent être téléchargés et utilisés ici."
+          "nativeModeDescription": "Dans le mode \"Disposition intégrée\", en revanche, le contenu est inséré directement dans la surface de l'application. En conséquence, le contenu semble autant que l'application elle-même et s'adapte de manière optiquement. Cependant, aucun éléments ou fonctions de conception externes supplémentaires ne peut être ajouté dynamiquement ici. Cependant, des éléments statiques tels que des images peuvent être téléchargés et utilisés ici.",
+          "visibilityDescription": "Vous pouvez ici déterminer si l'application doit être accessible au public. Actif signifie public, inactif signifie que seuls les groupes d'utilisateurs configurés y ont accès."
         }
       },
       "update": {
@@ -1317,7 +1320,8 @@
     "rename": "Renommer",
     "move": "Déplacer",
     "delete": "Supprimer",
-    "download": "Télécharger"
+    "download": "Télécharger",
+    "back": "Retour"
   },
   "response": {
     "successfully": "L'action a réussi",

@@ -10,14 +10,25 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type AppConfigTable from '@libs/bulletinBoard/types/appConfigTable';
-import type FileInfoDto from './fileInfo.dto';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { Request } from 'express';
+import AppConfigService from '../../appconfig/appconfig.service';
 
-export interface FileTableStore extends AppConfigTable<FileInfoDto> {
-  files: Record<string, string>;
-  isLoading: boolean;
-  error: string | null;
-  publicFilesInfo: FileInfoDto[];
-  getPublicFilesInfo: (applicationName: string) => Promise<void>;
-  reset: () => void;
+@Injectable()
+class IsPublicAppGuard implements CanActivate {
+  constructor(private readonly appConfigService: AppConfigService) {}
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest<Request>();
+    const { appName } = request.params;
+
+    const appConfig = await this.appConfigService.getPublicAppConfigByName(appName);
+    if (!appConfig) {
+      return false;
+    }
+
+    return true;
+  }
 }
+
+export default IsPublicAppGuard;
