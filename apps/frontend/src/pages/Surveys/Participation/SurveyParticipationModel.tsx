@@ -21,6 +21,7 @@ import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPag
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import surveySavePDF from './surveySavePDF';
 import '../theme/custom.participation.css';
 import 'survey-core/i18n/french';
 import 'survey-core/i18n/german';
@@ -58,6 +59,12 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       newModel.showProgressBar = 'top';
     }
     newModel.completedHtml = `${t('survey.participate.completeMessage')}`;
+
+    newModel.addNavigationItem({
+      id: 'pdf-export',
+      title: t('survey.export.saveInPDF'),
+      action: () => surveySavePDF(selectedSurvey.formula, newModel.data as JSON),
+    });
 
     newModel.onCompleting.add(async (surveyModel, completingEvent) => {
       if (!selectedSurvey.id) {

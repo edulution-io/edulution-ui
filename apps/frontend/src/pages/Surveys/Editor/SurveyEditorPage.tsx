@@ -18,7 +18,7 @@ import { VscNewFile } from 'react-icons/vsc';
 import { RiResetLeftLine } from 'react-icons/ri';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { TbTemplate } from 'react-icons/tb';
+import { TbFileTypePdf, TbTemplate } from 'react-icons/tb';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -43,6 +43,7 @@ import PageLayout from '@/components/structure/layout/PageLayout';
 import QuestionContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import surveySavePDF from '@/pages/Surveys/Participation/surveySavePDF';
 
 const SurveyEditorPage = () => {
   const { fetchSelectedSurvey, isFetching, selectedSurvey, selectSurvey, updateUsersSurveys } =
@@ -218,6 +219,11 @@ const SurveyEditorPage = () => {
             creator.JSON = form.getValues('formula');
           }
         },
+      },
+      {
+        icon: TbFileTypePdf,
+        text: t('survey.export.exportToPDF'),
+        onClick: () => surveySavePDF(creator.JSON as JSON),
       },
     ],
     keyPrefix: 'surveys-page-floating-button_',
