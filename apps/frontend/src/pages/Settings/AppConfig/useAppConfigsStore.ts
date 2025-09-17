@@ -39,6 +39,8 @@ type UseAppConfigsStore = {
   getPublicAppConfigs: () => Promise<void>;
   getPublicAppConfigByName: (name: string) => Promise<AppConfigDto>;
   isGetAppConfigsLoading: boolean;
+  isGetPublicAppConfigsLoading: boolean;
+  isGetPublicAppConfigByNameLoading: boolean;
   updateAppConfig: (appConfigs: AppConfigDto) => Promise<void>;
   patchSingleFieldInConfig: (name: string, patchConfigDto: PatchConfigDto) => Promise<void>;
   deleteAppConfigEntry: (name: string) => Promise<void>;
@@ -67,7 +69,9 @@ const initialState = {
   ],
   publicAppConfigs: [],
   isLoading: false,
-  isGetAppConfigsLoading: true,
+  isGetAppConfigsLoading: false,
+  isGetPublicAppConfigsLoading: false,
+  isGetPublicAppConfigByNameLoading: false,
   isConfigFileLoading: false,
   error: null,
 };
@@ -116,19 +120,19 @@ const useAppConfigsStore = create<UseAppConfigsStore>(
       },
 
       getPublicAppConfigs: async () => {
-        set({ isGetAppConfigsLoading: true, error: null });
+        set({ isGetPublicAppConfigsLoading: true, error: null });
         try {
           const { data } = await eduApi.get<AppConfigDto[]>(`${EDU_API_CONFIG_ENDPOINTS.ROOT}/public`);
           set({ publicAppConfigs: data });
         } catch (e) {
           handleApiError(e, set);
         } finally {
-          set({ isGetAppConfigsLoading: false });
+          set({ isGetPublicAppConfigsLoading: false });
         }
       },
 
       getPublicAppConfigByName: async (name: string) => {
-        set({ isGetAppConfigsLoading: true, error: null });
+        set({ isGetPublicAppConfigByNameLoading: true, error: null });
         try {
           const { data } = await eduApi.get<AppConfigDto>(`${EDU_API_CONFIG_ENDPOINTS.ROOT}/public/${name}`);
           return data;
@@ -136,7 +140,7 @@ const useAppConfigsStore = create<UseAppConfigsStore>(
           handleApiError(e, set);
           return {} as AppConfigDto;
         } finally {
-          set({ isGetAppConfigsLoading: false });
+          set({ isGetPublicAppConfigByNameLoading: false });
         }
       },
 
