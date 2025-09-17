@@ -26,9 +26,9 @@ import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
 import surveysMigrationsList from './migrations/surveysMigrationsList';
 import MigrationService from '../migration/migration.service';
+import NotificationsService from '../notifications/notifications.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import SurveysAttachmentService from './surveys-attachment.service';
-import NotificationsService from '../notifications/notifications.service';
 
 @Injectable()
 class SurveysService implements OnModuleInit {
@@ -42,6 +42,23 @@ class SurveysService implements OnModuleInit {
 
   async onModuleInit() {
     await MigrationService.runMigrations<SurveyDocument>(this.surveyModel, surveysMigrationsList);
+  }
+
+  async findSurveyWithCreatorDependency(surveyId: string, creator: JwtUser): Promise<Survey | null> {
+    const survey = await this.surveyModel
+      .findOne({
+        $and: [{ 'creator.username': creator.preferred_username }, { _id: new Types.ObjectId(surveyId) }],
+      })
+      .exec();
+    if (!survey) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.NotFoundError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveysService.name,
+      );
+    }
+    return survey;
   }
 
   async findSurvey(surveyId: string, user: JwtUser): Promise<Survey | null> {
@@ -60,7 +77,6 @@ class SurveysService implements OnModuleInit {
         ],
       })
       .exec();
-
     if (!survey) {
       throw new CustomHttpException(
         SurveyErrorMessages.NotFoundError,
@@ -69,7 +85,6 @@ class SurveysService implements OnModuleInit {
         SurveysService.name,
       );
     }
-
     return survey;
   }
 

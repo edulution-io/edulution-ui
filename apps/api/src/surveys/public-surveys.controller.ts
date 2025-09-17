@@ -155,7 +155,10 @@ class PublicSurveysController {
 
   @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:filename`)
   @Public()
-  serveFileFromAnswer(@Param() params: { userName: string; surveyId: string; filename: string }, @Res() res: Response) {
+  serveTempFileFromAnswer(
+    @Param() params: { userName: string; surveyId: string; filename: string },
+    @Res() res: Response,
+  ) {
     const { userName, surveyId, filename } = params;
     if (!userName || !surveyId || !filename) {
       throw new CustomHttpException(
@@ -165,7 +168,7 @@ class PublicSurveysController {
         PublicSurveysController.name,
       );
     }
-    return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, filename, res);
+    return this.surveyAnswerAttachmentsService.serveTempFileFromAnswer(userName, surveyId, filename, res);
   }
 
   @Get(`${CHOICES}/:surveyId/:questionName`)
