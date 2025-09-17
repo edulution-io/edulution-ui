@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { HTTP_HEADERS, HttpMethods, RequestResponseContentType } from '@libs/common/types/http-methods';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
@@ -27,7 +27,28 @@ interface PdfViewerProps {
   style?: React.CSSProperties;
 }
 
-const PdfViewer = ({
+const createPdfObjectUrl = async (response: Response): Promise<string> => {
+  if (!response.ok) {
+    throw new Error(`Failed to fetch PDF: ${response.status} ${response.statusText}`);
+  }
+  const contentType = (response.headers.get(HTTP_HEADERS.ContentType) || '').toLowerCase();
+
+  if (contentType.includes('pdf')) {
+    const blob = await response.blob();
+    return URL.createObjectURL(blob);
+  }
+
+  const buffer = await response.arrayBuffer();
+  const pdfBlob = new Blob([buffer], { type: RequestResponseContentType.APPLICATION_PDF });
+  return URL.createObjectURL(pdfBlob);
+};
+
+const revokePrevUrl = (prev: string | null): null => {
+  if (prev) URL.revokeObjectURL(prev);
+  return null;
+};
+
+const PdfViewer: React.FC<PdfViewerProps> = ({
   url,
   fetchUrl,
   fetchOptions,
@@ -38,68 +59,56 @@ const PdfViewer = ({
   loader = <CircleLoader />,
   onError,
   style,
-}: PdfViewerProps) => {
+}) => {
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(!!fetchUrl);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const revokeObjectUrlCallback = useRef<null | (() => void)>(null);
 
   useEffect(() => {
-    let isCanceled = false;
     const controller = new AbortController();
+    let didCancel = false;
 
-    const loadPdf = async () => {
-      if (!fetchUrl) return;
+    if (fetchUrl) {
       setIsLoading(true);
       setErrorMessage(null);
+      setBlobUrl((prev) => revokePrevUrl(prev));
 
-      try {
-        const response = await fetch(fetchUrl, { method: HttpMethods.GET, signal: controller.signal, ...fetchOptions });
-        const contentType = response.headers.get(HTTP_HEADERS.ContentType) || '';
-        let objectUrl: string;
+      void (async () => {
+        try {
+          const response = await fetch(fetchUrl, {
+            method: HttpMethods.GET,
+            signal: controller.signal,
+            ...fetchOptions,
+          });
 
-        if (contentType.toLowerCase().includes('pdf')) {
-          const blob = await response.blob();
-          objectUrl = URL.createObjectURL(blob);
-        } else {
-          const buffer = await response.arrayBuffer();
-          const pdfBlob = new Blob([buffer], { type: RequestResponseContentType.APPLICATION_PDF });
-          objectUrl = URL.createObjectURL(pdfBlob);
+          const objectUrl = await createPdfObjectUrl(response);
+          if (didCancel) return;
+          setBlobUrl(objectUrl);
+        } catch (err) {
+          if (didCancel) return;
+          const error = err instanceof Error ? err : new Error(String(err));
+          setErrorMessage(error.message || 'Failed to load PDF');
+          onError?.(error);
+        } finally {
+          if (!didCancel) setIsLoading(false);
         }
-
-        if (isCanceled) {
-          URL.revokeObjectURL(objectUrl);
-          return;
-        }
-
-        setBlobUrl(objectUrl);
-        revokeObjectUrlCallback.current = () => URL.revokeObjectURL(objectUrl);
-      } catch (error) {
-        return;
-      } finally {
-        if (!isCanceled) setIsLoading(false);
-      }
-    };
-
-    void loadPdf();
+      })();
+    } else {
+      setBlobUrl((prev) => revokePrevUrl(prev));
+      setIsLoading(false);
+      setErrorMessage(null);
+    }
 
     return () => {
-      isCanceled = true;
+      didCancel = true;
       controller.abort();
-      if (revokeObjectUrlCallback.current) {
-        revokeObjectUrlCallback.current();
-        revokeObjectUrlCallback.current = null;
-      }
+      setBlobUrl((prev) => revokePrevUrl(prev));
     };
   }, [fetchUrl, fetchOptions, onError]);
 
-  const iframeSource = useMemo(() => {
-    if (fetchUrl) return blobUrl || '';
-    if (!url) return '';
-    return url;
-  }, [blobUrl, fetchUrl, url]);
+  const iframeSource = useMemo(() => fetchUrl ? (blobUrl ?? '') : (url ?? ''), [blobUrl, fetchUrl, url]);
 
-  const canRender = !!iframeSource && !errorMessage;
+  const canRender = Boolean(iframeSource) && !errorMessage;
 
   return (
     <div
@@ -119,7 +128,9 @@ const PdfViewer = ({
         />
       )}
 
-      {!isLoading && !canRender && <div className="p-3 text-sm text-red-700">{errorMessage}</div>}
+      {!isLoading && !canRender && (
+        <div className="p-3 text-sm text-red-700">{errorMessage ?? 'Unable to display PDF'}</div>
+      )}
     </div>
   );
 };
