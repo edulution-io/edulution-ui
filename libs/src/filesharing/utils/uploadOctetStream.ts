@@ -10,14 +10,24 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum FileActionType {
-  MOVE_FILE_OR_FOLDER = 'moveFileOrFolder',
-  CREATE_FOLDER = 'createFolder',
-  CREATE_FILE = 'createFile',
-  DELETE_FILE_OR_FOLDER = 'deleteFileOrFolder',
-  RENAME_FILE_OR_FOLDER = 'renameFileOrFolder',
-  COPY_FILE_OR_FOLDER = 'copyFileOrFolder',
-  SHARE_FILE_OR_FOLDER = 'shareFileOrFolder',
-}
+import type { AxiosInstance, AxiosProgressEvent } from 'axios';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 
-export default FileActionType;
+const uploadOctetStream = async (
+  api: AxiosInstance,
+  url: string,
+  fileBody: Blob,
+  onUploadProgress?: (e: AxiosProgressEvent) => void,
+): Promise<void> => {
+  await api.post(url, fileBody, {
+    withCredentials: true,
+    headers: {
+      [HTTP_HEADERS.ContentType]: fileBody.type || RequestResponseContentType.APPLICATION_OCTET_STREAM,
+    },
+    onUploadProgress,
+    timeout: Infinity,
+    maxBodyLength: Infinity,
+  });
+};
+
+export default uploadOctetStream;

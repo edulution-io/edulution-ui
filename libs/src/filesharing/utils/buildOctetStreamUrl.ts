@@ -10,14 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum FileActionType {
-  MOVE_FILE_OR_FOLDER = 'moveFileOrFolder',
-  CREATE_FOLDER = 'createFolder',
-  CREATE_FILE = 'createFile',
-  DELETE_FILE_OR_FOLDER = 'deleteFileOrFolder',
-  RENAME_FILE_OR_FOLDER = 'renameFileOrFolder',
-  COPY_FILE_OR_FOLDER = 'copyFileOrFolder',
-  SHARE_FILE_OR_FOLDER = 'shareFileOrFolder',
-}
+import { UploadFile } from '@libs/filesharing/types/uploadFile';
 
-export default FileActionType;
+const buildOctetStreamUrl = (baseUploadUrl: string, destinationPath: string, fileItem: UploadFile): string => {
+  const query = new URLSearchParams();
+  query.set('path', destinationPath);
+  query.set('name', fileItem.name);
+  query.set('isZippedFolder', String(!!fileItem.isZippedFolder));
+  query.set('contentLength', String(fileItem.size));
+  return `${baseUploadUrl}?${query.toString()}`;
+};
+
+export default buildOctetStreamUrl;
