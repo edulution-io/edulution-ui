@@ -6,6 +6,8 @@
   "framebufferImage": "Framebuffer image",
   "previewImage": "Image preview",
   "not-set": "Not set",
+  "imprint": "Imprint",
+  "public": "Public",
   "bulletinboard": {
     "settings": "Settings",
     "noBulletinsToShow": "There are currently no messages to display, so check back later!",
@@ -994,7 +996,8 @@
           "sandboxMode": "Separate Layout",
           "nativeMode": "Integrated Layout",
           "sandboxModeDescription": "In “Sparate layout” mode, the content is displayed as a separate page, similar to a window within the application. In addition to the actual content, additional design elements or functions can also be loaded from other sources. This means that the design is independent of the application and could therefore look or behave differently. Here, the content must be uploaded as an HTML file.",
-          "nativeModeDescription": "In “Integrated layout” mode, on the other hand, the content is inserted directly into the user interface of the application. This means that the content looks exactly like the application itself and fits in seamlessly. However, no additional external design elements or functions can be added dynamically here. However, static elements such as images can be uploaded and used here."
+          "nativeModeDescription": "In “Integrated layout” mode, on the other hand, the content is inserted directly into the user interface of the application. This means that the content looks exactly like the application itself and fits in seamlessly. However, no additional external design elements or functions can be added dynamically here. However, static elements such as images can be uploaded and used here.",
+          "visibilityDescription": "Here you can specify whether the app should be publicly accessible. Active means public, inactive means that only configured user groups have access. Making the app publicly accessible creates a link in the footer. To make the app visible to registered users in the sidebar, their access must be configured via the user groups."
         }
       },
       "update": {
@@ -1508,7 +1511,8 @@
     "delete": "Delete",
     "download": "Download",
     "copy": "Copy",
-    "share": "Share"
+    "share": "Share",
+    "back": "Back"
   },
   "response": {
     "successfully": "Action was successful",

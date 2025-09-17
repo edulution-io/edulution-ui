@@ -10,17 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ExtendedOptionKeys from '../constants/extendedOptionKeys';
-import AppConfigDto from './appConfigDto';
+import { t } from 'i18next';
+import { MdArrowBack } from 'react-icons/md';
 
-type EmbeddedPageEditorForm = {
-  [settingLocation: string]: AppConfigDto & {
-    extendedOptions: {
-      [ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT]: string;
-      [ExtendedOptionKeys.EMBEDDED_PAGE_HTML_MODE]: boolean;
-      [ExtendedOptionKeys.EMBEDDED_PAGE_IS_PUBLIC]: boolean;
-    };
-  };
-};
+const BackButton = (onClick: () => void) => ({
+  icon: MdArrowBack,
+  text: t('tooltip.back'),
+  onClick,
+});
 
-export default EmbeddedPageEditorForm;
+export default BackButton;

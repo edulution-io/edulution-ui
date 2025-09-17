@@ -23,6 +23,8 @@ import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
 import { createAttachmentUploadOptions } from './multer.utilities';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 import FilesystemService from './filesystem.service';
+import { Public } from '../common/decorators/public.decorator';
+import IsPublicAppGuard from '../common/guards/isPublicApp.guard';
 
 @ApiTags(EDU_API_CONFIG_ENDPOINTS.FILES)
 @ApiBearerAuth()
@@ -52,7 +54,22 @@ class FileSystemController {
     return this.filesystemService.getFilesInfo(FilesystemService.buildPathString(path));
   }
 
-  @Get(`${FILE_ENDPOINTS.FILE}/:appName/*filename`) serveFiles(
+  @Get(`${FILE_ENDPOINTS.FILE}/:appName/*filename`)
+  serveFiles(@Param('appName') appName: string, @Param('filename') filename: string | string[], @Res() res: Response) {
+    return this.filesystemService.serveFiles(appName, FilesystemService.buildPathString(filename), res);
+  }
+
+  @Public()
+  @UseGuards(IsPublicAppGuard)
+  @Get('public/info/:appName')
+  getPublicFilesInfo(@Param('appName') appName: string) {
+    return this.filesystemService.getFilesInfo(FilesystemService.buildPathString(appName));
+  }
+
+  @Public()
+  @UseGuards(IsPublicAppGuard)
+  @Get(`public/${FILE_ENDPOINTS.FILE}/:appName/*filename`)
+  servePublicFiles(
     @Param('appName') appName: string,
     @Param('filename') filename: string | string[],
     @Res() res: Response,
