@@ -24,14 +24,16 @@ import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFi
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
+import PdfViewer from '@/components/shared/PDFViewer/PdfViewer';
 
 interface FileRendererProps {
   editMode: boolean;
   isOpenedInNewTab?: boolean;
   closingRef?: MutableRefObject<boolean>;
+  isOnlyOfficeConfigured?: boolean;
 }
 
-const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closingRef }) => {
+const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closingRef, isOnlyOfficeConfigured }) => {
   const { isMobileView } = useMedia();
   const {
     temporaryDownloadUrl: fileUrl,
@@ -43,6 +45,7 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
   } = useFileSharingDownloadStore();
 
   const { currentlyEditingFile } = useFileEditorStore();
+
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
 
   useEffect(() => {
@@ -64,8 +67,7 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
 
   const fileExtension = getFileExtension(currentlyEditingFile.filePath);
   const isOnlyOfficeDoc = isOnlyOfficeDocument(currentlyEditingFile.filePath);
-
-  if (isOnlyOfficeDoc) {
+  if (isOnlyOfficeDoc && isOnlyOfficeConfigured) {
     const isDocReady = !!publicDownloadLink && !!currentlyEditingFile;
     if (isEditorLoading || isCreatingBlobUrl || isFetchingPublicUrl || error || !isDocReady) {
       return (
@@ -112,6 +114,10 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
         url={fileUrl}
       />
     );
+  }
+
+  if (currentlyEditingFile.filename.endsWith('.pdf')) {
+    return <PdfViewer fetchUrl={fileUrl} />;
   }
 
   return <p>{t('loadingIndicator.unsupportedFile')}</p>;

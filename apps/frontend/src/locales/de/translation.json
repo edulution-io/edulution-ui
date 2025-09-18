@@ -384,7 +384,8 @@
       "FileNameRequired": "Dateiname ist erforderlich",
       "NewFileNameRequired": "Neuer Dateiname ist erforderlich",
       "NameRequired": "Name erforderlich",
-      "NameExceedsCharacterLimit": "Der Dateiname darf maximal 30 Zeichen haben."
+      "NameExceedsCharacterLimit": "Der Dateiname darf maximal 30 Zeichen haben.",
+      "NameMustNotEndWithDot": "Der Name darf nicht mit einem Punkt enden."
     },
 
     "publicFileSharing": {

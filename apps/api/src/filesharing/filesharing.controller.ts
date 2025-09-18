@@ -80,10 +80,11 @@ class FilesharingController {
     },
     @GetCurrentUsername() username: string,
   ) {
+    const trimmedPath = body.newPath.trim();
     if (type.toUpperCase() === ContentType.DIRECTORY.toString()) {
-      return this.webdavService.createFolder(username, path, body.newPath);
+      return this.webdavService.createFolder(username, path, trimmedPath);
     }
-    return this.webdavService.createFile(username, path, body.newPath);
+    return this.webdavService.createFile(username, path, trimmedPath);
   }
 
   @Post(FileSharingApiEndpoints.UPLOAD)
