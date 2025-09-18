@@ -797,16 +797,19 @@
         "uploadDarkLogo": "Téléverser le logo sombre",
         "deleteSuccessful": "Logo supprimé avec succès."
       },
-      "schoolInfo": {
-        "title": "Informations sur l'école",
-        "name": "Nom de l'école",
-        "description": "Saisissez les informations officielles de votre établissement. Ces informations peuvent apparaître sur la carte d’étudiant. Veuillez indiquer le nom, la rue, le code postal et, éventuellement, le site web de l’établissement.",
-        "namePlaceholder": "p. ex. Établissement scolaire d'Exempleville",
+      "organisationInfo": {
+        "title": "Informations sur l’organisation",
+        "descriptionSchool": "Saisissez les informations officielles de votre organisation. Ces informations peuvent être affichées dans l’application Edulution. Veuillez indiquer le nom, la rue, le code postal et, éventuellement, le site web de l’école.",
+        "descriptionGeneric": "Saisissez les informations officielles de votre organisation.",
+        "name": "Nom de l’organisation",
+        "namePlaceholder": "p. ex. Organisation de Sampletown",
         "street": "Rue",
-        "streetPlaceholder": "p. ex. 1, rue de l'École",
+        "streetPlaceholder": "p. ex. 1, rue de l’Organisation",
         "postalCode": "Code postal",
         "postalCodePlaceholder": "p. ex. 12345",
-        "website": "Site web de l'école"
+        "postalCityPlaceholder": "Berlin",
+        "website": "Site web de l’organisation",
+        "city": "Ville"
       },
       "deploymentTarget": "Plate-forme cible de déploiement"
     },

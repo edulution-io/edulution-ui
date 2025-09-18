@@ -39,9 +39,9 @@ import PageLayout from '@/components/structure/layout/PageLayout';
 import APPS from '@libs/appconfig/constants/apps';
 import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
 import { decodeBase64, encodeBase64 } from '@libs/common/utils/getBase64String';
-import useTheme from '@/hooks/useTheme';
 import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
 import getMainLogoUrl from '@libs/assets/getMainLogoUrl';
+import COLOR_SCHEME from '@libs/ui/constants/colorScheme';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 import useAppConfigsStore from '../Settings/AppConfig/useAppConfigsStore';
@@ -62,7 +62,7 @@ const LoginPage: React.FC = () => {
     useUserStore();
   const { appConfigs } = useAppConfigsStore();
   const { silentLogin } = useSilentLoginWithPassword();
-  const theme = useTheme();
+  const theme = COLOR_SCHEME;
 
   const logoSrc = getMainLogoUrl(theme);
 

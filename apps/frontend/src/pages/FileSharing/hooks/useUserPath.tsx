@@ -21,43 +21,33 @@ import type WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import useFileSharingStore from '../useFileSharingStore';
 
 const useUserPath = () => {
-  const { webdavShares = [], fetchWebdavShares } = useFileSharingStore();
+  const { webdavShares, fetchWebdavShares } = useFileSharingStore();
   const { globalSettings } = useGlobalSettingsApiStore();
   const { user: lmnUser } = useLmnApiStore();
-  const { isSuperAdmin = false } = useLdapGroups();
+  const { isSuperAdmin } = useLdapGroups();
 
   const [homePath, setHomePath] = useState<string>('');
 
-  const deploymentTarget = globalSettings?.general?.deploymentTarget;
-  const intrinsic2 = Array.isArray(lmnUser?.sophomorixIntrinsic2) ? lmnUser.sophomorixIntrinsic2 : [];
-  const school = lmnUser?.school ?? '';
-
   useEffect(() => {
-    const isEduFileProxy = (shares?: WebdavShareDto[]) =>
-      Array.isArray(shares) && shares[0]?.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY;
+    const isEduFileProxy = (shares: WebdavShareDto[]) => shares[0]?.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY;
 
     const resolveHomePath = async (): Promise<string> => {
-      if (!lmnUser) return '';
-
       if (isSuperAdmin) return '//';
 
-      if (deploymentTarget !== DEPLOYMENT_TARGET.LINUXMUSTER) {
-        return getStringFromArray(intrinsic2) ?? '';
+      if (globalSettings.general.deploymentTarget !== DEPLOYMENT_TARGET.LINUXMUSTER) {
+        return getStringFromArray(lmnUser?.sophomorixIntrinsic2);
       }
 
-      const shares: WebdavShareDto[] =
-        webdavShares && webdavShares.length > 0 ? webdavShares : ((await fetchWebdavShares?.()) ?? []);
-
+      const shares = webdavShares.length > 0 ? webdavShares : await fetchWebdavShares();
       if (isEduFileProxy(shares)) {
-        const base = getStringFromArray(intrinsic2) ?? '';
-        return `${school}/${base}`;
+        return `${lmnUser?.school ?? ''}/${getStringFromArray(lmnUser?.sophomorixIntrinsic2)}`;
       }
 
-      return getStringFromArray(intrinsic2) ?? '';
+      return getStringFromArray(lmnUser?.sophomorixIntrinsic2);
     };
 
     void resolveHomePath().then(setHomePath);
-  }, [isSuperAdmin, deploymentTarget, school, JSON.stringify(intrinsic2), webdavShares, fetchWebdavShares, lmnUser]);
+  }, [isSuperAdmin, globalSettings.general.deploymentTarget, lmnUser, webdavShares.length]);
 
   return { homePath };
 };

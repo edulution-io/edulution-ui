@@ -18,8 +18,11 @@ import { useTranslation } from 'react-i18next';
 import { Theme, ThemeType } from '@libs/common/types/theme';
 import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
 import { GLOBAL_SETTINGS_BRANDING_LOGO } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
-import OrganisationLogoField from '@/pages/Settings/components/OrganisationLogoField';
 import getMainLogoUrl from '@libs/assets/getMainLogoUrl';
+import LogoUploadField from '@/pages/Settings/components/LogoUploadField';
+import convertImageFileToWebp from '@libs/common/utils/convertImageFileToWebp';
+import getDeploymentTarget from '@libs/common/utils/getDeploymentTarget';
+import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 
 type Props = { form: UseFormReturn<GlobalSettingsFormValues> };
 
@@ -30,7 +33,6 @@ const AddOrganisationLogo: React.FC<Props> = ({ form }) => {
   const lightInputRef = useRef<HTMLInputElement>(null);
   const darkInputRef = useRef<HTMLInputElement>(null);
 
-  const [lightVersion, setLightVersion] = useState(0);
   const [darkVersion, setDarkVersion] = useState(0);
   const [uploadingVariant, setUploadingVariant] = useState<ThemeType | null>(null);
 
@@ -43,13 +45,13 @@ const AddOrganisationLogo: React.FC<Props> = ({ form }) => {
   const uploadVariant = async (variant: ThemeType, file: File) => {
     try {
       setUploadingVariant(variant);
+      const webpFile = await convertImageFileToWebp(file);
       await uploadGlobalAsset({
         destination: GLOBAL_SETTINGS_BRANDING_LOGO,
-        file,
-        filename: `main-logo-${variant}`,
+        file: webpFile,
+        filename: `main-logo-${variant}.webp`,
       });
-      if (variant === Theme.light) setLightVersion((v) => v + 1);
-      else setDarkVersion((v) => v + 1);
+      setDarkVersion((version) => version + 1);
     } finally {
       setUploadingVariant(null);
     }
@@ -57,39 +59,42 @@ const AddOrganisationLogo: React.FC<Props> = ({ form }) => {
 
   const onFileChange =
     (variant: ThemeType): React.ChangeEventHandler<HTMLInputElement> =>
-    (event) => {
+    async (event) => {
       const file = event.target.files?.[0] ?? null;
-
       if (file && !file.type.startsWith('image/')) {
-        const ref = variant === Theme.light ? lightInputRef : darkInputRef;
-        if (ref.current) ref.current.value = '';
+        const input = variant === Theme.light ? lightInputRef : darkInputRef;
+        if (input.current) input.current.value = '';
         return;
       }
-
       setFormFileForVariant(variant, file);
-      if (file) void uploadVariant(variant, file);
+      if (file) await uploadVariant(variant, file);
     };
 
-  const lightPreviewSrc = `${getMainLogoUrl(Theme.light)}?v=${lightVersion}`;
   const darkPreviewSrc = `${getMainLogoUrl(Theme.dark)}?v=${darkVersion}`;
+  const hasDarkSelection = !!form.watch('brandingUploads.logo.dark');
+
+  const isGeneric = getDeploymentTarget() === DEPLOYMENT_TARGET.GENERIC;
 
   return (
     <AccordionContent className="space-y-4 px-1">
-      <p>{t('settings.globalSettings.brandingLogo.description')}</p>
-
+      <p>
+        {t(
+          isGeneric
+            ? 'settings.globalSettings.brandingLogo.descriptionGeneric'
+            : 'settings.globalSettings.brandingLogo.descriptionSchool',
+        )}
+      </p>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-1">
-        <OrganisationLogoField
+        <LogoUploadField
           variant={Theme.dark}
-          lightPreviewSrc={lightPreviewSrc}
-          darkPreviewSrc={darkPreviewSrc}
-          lightCacheKey={lightVersion}
-          darkCacheKey={darkVersion}
-          lightLocalSrc={null}
-          darkLocalSrc={null}
-          uploadingVariant={uploadingVariant}
-          onFileChange={onFileChange}
-          lightInputRef={lightInputRef}
-          darkInputRef={darkInputRef}
+          previewSrc={darkPreviewSrc}
+          cacheKey={darkVersion}
+          hasLocalSelection={hasDarkSelection}
+          uploading={uploadingVariant === Theme.dark}
+          inputRef={darkInputRef}
+          onFileChange={onFileChange(Theme.dark)}
+          chooseText={t('common.chooseFile')}
+          changeText={t('common.changeFile')}
         />
       </div>
     </AccordionContent>

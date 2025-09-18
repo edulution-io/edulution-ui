@@ -909,16 +909,23 @@
         "edulution-binduser-dn": "Distinguished Name (DN)",
         "edulution-binduser-password": "Password"
       },
+
+      "branding": {
+        "title": "Branding"
+      },
+
       "brandingLogo": {
-        "title": "Institutionlogo",
-        "description": "Upload your institution’s logo. It will be shown on the login screen and on the Edulution app ID card.",
+        "title": "Logo",
+        "descriptionSchool": "Upload your Logo. It will be shown on the login screen and on the Edulution app ID card.",
+        "descriptionGeneric": "Upload your Logo. It will be shown on the login screen.",
         "uploadLightLogo": "Upload Light Logo",
         "uploadDarkLogo": "Upload Dark Logo",
         "deleteSuccessful": "Logo deleted successfully."
       },
       "organisationInfo": {
-        "title": "Organisationinfo Information",
-        "description": "Enter your organisation's official details. This information may appear on the student ID. Please provide the name, street, postal code, and optionally the organisation website.",
+        "title": "Organisationinformation",
+        "descriptionSchool": "Enter your organization’s official details. This information may be displayed in the Edulution app. Please provide the name, street, postal code, and optionally the school website.",
+        "descriptionGeneric": "Enter your organization’s official details.",
         "name": "Organisation name",
         "namePlaceholder": "e.g. Sampletown Organisation",
         "street": "Street",

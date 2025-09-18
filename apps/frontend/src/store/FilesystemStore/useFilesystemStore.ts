@@ -11,13 +11,15 @@
  */
 
 import { create } from 'zustand';
-import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import eduApi from '@/api/eduApi';
-import mimeTypeToExtension from '@libs/filesystem/constants/mimeTypeToExtension';
+import handleApiError from '@/utils/handleApiError';
+import { extension as mimeExtension } from 'mime-types';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import UploadGlobalAsset from '@libs/filesharing/types/uploadGlobalAsset';
+import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 
 interface FilesystemStore {
-  uploadGlobalAsset: (options: { destination: string; file: File | Blob; filename?: string }) => Promise<void>;
+  uploadGlobalAsset: (options: UploadGlobalAsset) => Promise<void>;
   reset: () => void;
 }
 
@@ -26,28 +28,34 @@ const initialState = {};
 const useFilesystemStore = create<FilesystemStore>((set) => ({
   ...initialState,
 
-  uploadGlobalAsset: async ({ destination, file, filename }) => {
-    const route = `${EDU_API_CONFIG_ENDPOINTS.FILES}`;
-    const form = new FormData();
-    const extensionFromMimetype = (mime?: string) =>
-      mime && mimeTypeToExtension[mime] ? `.${mimeTypeToExtension[mime]}` : '';
+  uploadGlobalAsset: async ({ destination, file, filename }: UploadGlobalAsset) => {
+    try {
+      const dest = destination?.trim();
+      const name = filename?.trim();
 
-    if (file instanceof File) {
-      form.append('file', file);
-    } else {
-      const ext = extensionFromMimetype(file.type);
-      const name = `${filename ?? 'upload'}${ext}`;
-      const wrapped = new File([file], name, {
-        type: file.type || RequestResponseContentType.APPLICATION_OCTET_STREAM,
+      if (!dest) throw new Error('Destination is required');
+      if (!name) throw new Error('Filename is required');
+
+      const form = new FormData();
+
+      if (file instanceof File) {
+        form.append('file', file, name);
+      } else {
+        const ext = mimeExtension(file.type || '') || '';
+        const fullName = ext && !name.toLowerCase().endsWith(`.${ext.toLowerCase()}`) ? `${name}.${ext}` : name;
+
+        const wrapped = new File([file], fullName, {
+          type: file.type || RequestResponseContentType.APPLICATION_OCTET_STREAM,
+        });
+        form.append('file', wrapped, fullName);
+      }
+
+      await eduApi.post<void>(`${EDU_API_CONFIG_ENDPOINTS.FILES}`, form, {
+        params: { destination: dest, filename: name },
       });
-      form.append('file', wrapped);
+    } catch (error) {
+      handleApiError(error, set);
     }
-
-    const resp = await eduApi.post<void>(route, form, {
-      params: { destination, filename },
-      validateStatus: (s) => s < 500,
-    });
-    if (resp.status >= 400) throw new Error('Upload failed');
   },
 
   reset: () => set(initialState),

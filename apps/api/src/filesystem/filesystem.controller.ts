@@ -79,7 +79,7 @@ class FileSystemController {
   }
 
   @Post()
-  @ApiConsumes('multipart/form-data')
+  @UseGuards(AppConfigGuard)
   @UseInterceptors(FileInterceptor('file', { storage: memoryStorage() }))
   async upload(
     @UploadedFile() file: Express.Multer.File,

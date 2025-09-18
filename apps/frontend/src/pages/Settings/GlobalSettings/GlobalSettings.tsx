@@ -25,9 +25,9 @@ import defaultValues from '@libs/global-settings/constants/defaultValues';
 import { GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import LdapSettings from '@/pages/Settings/components/LdapSettings';
 import AddOrganisationLogo from '@/pages/Settings/components/AddOrganisationLogo';
+import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSettings.form';
-import globalSettingsFormDefaultValues from '@libs/global-settings/constants/globalSettingsFormDefaultValues';
-import AddInstitutionInfo from '@/pages/Settings/components/AddInstitutionInfo';
+import AddOrganisationInfo from '@/pages/Settings/components/AddOrganisationInfo';
 import useGlobalSettingsApiStore from './useGlobalSettingsApiStore';
 import GlobalSettingsFloatingButtons from './GlobalSettingsFloatingButtons';
 import DeploymentTargetDropdownSelectFormField from '../components/DeploymentTargetDropdownSelectFormField';
@@ -37,11 +37,7 @@ const GlobalSettings: React.FC = () => {
   const { searchGroups } = useGroupStore();
   const { appConfigs = [] } = useAppConfigsStore();
   const { globalSettings, getGlobalAdminSettings, setGlobalSettings } = useGlobalSettingsApiStore();
-
-  const form = useForm<GlobalSettingsFormValues>({
-    defaultValues: globalSettingsFormDefaultValues,
-    shouldUnregister: true,
-  });
+  const form = useForm<GlobalSettingsFormValues>({ defaultValues });
 
   const {
     watch,
@@ -84,20 +80,14 @@ const GlobalSettings: React.FC = () => {
   const isCustomLandingPageEnabled = watch('general.defaultLandingPage.isCustomLandingPageEnabled');
 
   useEffect(() => {
-    if (!isDirty) return;
+    if (!isDirty || !appConfigs.length) return;
 
-    if (isCustomLandingPageEnabled) {
-      if (!defaultLandingPageAppName && appConfigs.length > 0) {
-        setValue('general.defaultLandingPage.appName', appConfigs[0]?.name ?? '');
-      }
-    } else if (isCustomLandingPageEnabled === false) {
-      const fallback = defaultValues?.general?.defaultLandingPage ?? {
-        isCustomLandingPageEnabled: false,
-        appName: '',
-      };
-      setValue('general.defaultLandingPage', fallback);
+    if (isCustomLandingPageEnabled && !defaultLandingPageAppName) {
+      setValue('general.defaultLandingPage.appName', appConfigs[0].name);
+    } else if (!isCustomLandingPageEnabled) {
+      setValue('general.defaultLandingPage', defaultValues.general.defaultLandingPage);
     }
-  }, [isDirty, defaultLandingPageAppName, isCustomLandingPageEnabled, appConfigs, setValue]);
+  }, [defaultLandingPageAppName, isCustomLandingPageEnabled, appConfigs, setValue]);
 
   const handleGroupsChange = (newGroups: MultipleSelectorGroup[]) => {
     const uniqueGroups = newGroups.reduce<MultipleSelectorGroup[]>((acc, g) => {
@@ -107,31 +97,15 @@ const GlobalSettings: React.FC = () => {
     setValue(`auth.${GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS}`, uniqueGroups, { shouldValidate: true });
   };
 
-  const onSubmit: SubmitHandler<GlobalSettingsFormValues> = async (values) => {
-    const safeValues: GlobalSettingsFormValues = {
-      ...values,
-      general: {
-        ...values.general,
-        defaultLandingPage: {
-          isCustomLandingPageEnabled: values.general?.defaultLandingPage?.isCustomLandingPageEnabled ?? false,
-          appName: values.general?.defaultLandingPage?.appName ?? '',
-        },
-      },
-      auth: {
-        ...values.auth,
-        mfaEnforcedGroups: values.auth?.mfaEnforcedGroups ?? [],
-      },
-    };
-
-    await setGlobalSettings(safeValues);
-    await getGlobalAdminSettings();
+  const onSubmit: SubmitHandler<GlobalSettingsDto> = (newGlobalSettings) => {
+    void setGlobalSettings(newGlobalSettings);
   };
 
   return (
     <>
       <AccordionSH
         type="multiple"
-        defaultValue={['general', 'security', 'ldap', 'institutionLogo', 'schoolInfo']}
+        defaultValue={['general', 'security', 'ldap', 'branding', 'organisationInfo']}
       >
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -200,18 +174,31 @@ const GlobalSettings: React.FC = () => {
               <LdapSettings form={form} />
             </AccordionItem>
 
-            <AccordionItem value="institutionLogo">
+            <AccordionItem value="branding">
               <AccordionTrigger className="flex">
-                <h4>{t('settings.globalSettings.brandingLogo.title')}</h4>
+                <h4>{t('settings.globalSettings.branding.title')}</h4>
               </AccordionTrigger>
-              <AddOrganisationLogo form={form} />
+
+              <AccordionContent className="space-y-2 px-1">
+                <AccordionSH
+                  type="multiple"
+                  defaultValue={['organisationLogo']}
+                >
+                  <AccordionItem value="organisationLogo">
+                    <AccordionTrigger className="flex">
+                      <h5>{t('settings.globalSettings.brandingLogo.title')}</h5>
+                    </AccordionTrigger>
+                    <AddOrganisationLogo form={form} />
+                  </AccordionItem>
+                </AccordionSH>
+              </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="organisationInfo">
               <AccordionTrigger className="flex">
                 <h4>{t('settings.globalSettings.organisationInfo.title')}</h4>
               </AccordionTrigger>
-              <AddInstitutionInfo form={form} />
+              <AddOrganisationInfo form={form} />
             </AccordionItem>
           </form>
         </Form>

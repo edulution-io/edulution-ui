@@ -47,6 +47,7 @@ import clearTLDrawPersistence from '@/pages/Whiteboard/clearTLDrawPersitence';
 import usePublicSharePageStore from '@/pages/FileSharing/publicShare/publicPage/usePublicSharePageStore';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
+import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
 import useSseStore from '../useSseStore';
 
 const cleanAllStores = async () => {
@@ -90,6 +91,7 @@ const cleanAllStores = async () => {
   useSseStore.getState().reset();
   usePublicSharePageStore.getState().reset();
   usePublicShareStore.getState().reset();
+  useFilesystemStore.getState().reset();
   localStorage.removeItem('i18nextLng');
   await clearTLDrawPersistence(TLDRAW_PERSISTENCE_KEY);
 };
