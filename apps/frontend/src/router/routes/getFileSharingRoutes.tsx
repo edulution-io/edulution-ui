@@ -28,7 +28,7 @@ const getFileSharingRoutes = () => [
     />
 
     <Route
-      path=":mointPoint/*"
+      path=":webdavShare/*"
       element={<FileSharingPage />}
     />
     <Route

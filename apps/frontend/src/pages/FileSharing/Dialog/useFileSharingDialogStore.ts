@@ -53,6 +53,7 @@ interface FileSharingDialogStore {
     httpMethod: HttpMethods,
     type: ContentType,
     data: PathChangeOrCreateDto | PathChangeOrCreateDto[] | FileUploadProps[] | DeleteFileProps[] | FormData,
+    webdavShare: string | undefined,
   ) => Promise<void>;
   action: FileActionType;
   setAction: (action: FileActionType) => void;
@@ -101,11 +102,12 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
     httpMethod: HttpMethods,
     type: ContentType,
     bulkDtos: PathChangeOrCreateDto | PathChangeOrCreateDto[] | FileUploadProps[] | DeleteFileProps[] | FormData,
+    webdavShare,
   ) => {
     set({ isLoading: true });
     try {
       if (bulkDtos instanceof FormData) {
-        await handleFileOrCreateFile(endpoint, httpMethod, type, bulkDtos);
+        await handleFileOrCreateFile(endpoint, httpMethod, type, bulkDtos, webdavShare);
         get().setFileOperationResult(true, t('fileCreateNewContent.fileOperationSuccessful'), 200);
       } else if (Array.isArray(bulkDtos)) {
         const decodedFilenameDtos = (bulkDtos as PathChangeOrCreateDto[]).map((dto) => ({
@@ -123,7 +125,7 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
           get().handleDeleteItems,
         );
       } else {
-        await handleSingleData(action, endpoint, httpMethod, type, bulkDtos);
+        await handleSingleData(action, endpoint, httpMethod, type, bulkDtos, webdavShare);
         get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
       }
     } catch (error) {

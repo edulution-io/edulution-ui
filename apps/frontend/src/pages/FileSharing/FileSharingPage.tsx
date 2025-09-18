@@ -11,6 +11,7 @@
  */
 
 import React, { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import DirectoryBreadcrumb from '@/pages/FileSharing/Table/DirectoryBreadcrumb';
 import ActionContentDialog from '@/pages/FileSharing/Dialog/ActionContentDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
@@ -37,6 +38,7 @@ import useUploadProgressToast from '@/hooks/useUploadProgressToast';
 import DeletePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DeletePublicShareDialog';
 
 const FileSharingPage = () => {
+  const { webdavShare } = useParams();
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const { fileOperationProgress, fetchFiles } = useFileSharingStore();
@@ -49,7 +51,7 @@ const FileSharingPage = () => {
       if (!fileOperationProgress) return;
       const percent = fileOperationProgress.percent ?? 0;
       if (percent >= 100) {
-        await fetchFiles(currentPath);
+        await fetchFiles(webdavShare, currentPath);
         await fetchShares();
       }
     };

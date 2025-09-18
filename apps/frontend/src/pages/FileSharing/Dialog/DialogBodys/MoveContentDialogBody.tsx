@@ -10,9 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import DirectoryBreadcrumb from '@/pages/FileSharing/Table/DirectoryBreadcrumb';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
@@ -33,6 +34,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   fileType,
   isCurrentPathDefaultDestination = false,
 }) => {
+  const { webdavShare } = useParams();
   const { t } = useTranslation();
   const [currentPath, setCurrentPath] = useState(pathToFetch || '');
 
@@ -87,9 +89,9 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
 
   useEffect(() => {
     if (!showAllFiles || !pathToFetch || currentPath.includes(pathToFetch)) {
-      void fetchMechanism(currentPath);
+      void fetchMechanism(webdavShare, currentPath);
     } else {
-      void fetchMechanism(pathToFetch);
+      void fetchMechanism(webdavShare, pathToFetch);
     }
   }, [currentPath, showAllFiles, pathToFetch]);
 
