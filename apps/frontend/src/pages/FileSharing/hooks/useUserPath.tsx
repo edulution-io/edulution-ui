@@ -11,6 +11,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import useLmnApiStore from '@/store/useLmnApiStore';
@@ -25,11 +26,13 @@ const useUserPath = () => {
   const { globalSettings } = useGlobalSettingsApiStore();
   const { user: lmnUser } = useLmnApiStore();
   const { isSuperAdmin } = useLdapGroups();
+  const { webdavShare } = useParams();
 
   const [homePath, setHomePath] = useState<string>('');
 
   useEffect(() => {
-    const isEduFileProxy = (shares: WebdavShareDto[]) => shares[0]?.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY;
+    const isEduFileProxy = (shares: WebdavShareDto[]) =>
+      shares.find((share) => share.displayName === webdavShare)?.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY;
 
     const resolveHomePath = async (): Promise<string> => {
       if (isSuperAdmin) return '//';
