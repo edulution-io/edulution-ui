@@ -10,24 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { create } from 'zustand';
-
-interface AppConfigTableDialogStore {
-  isDialogOpen: string;
-  setDialogOpen: (open: string) => void;
-  reset: () => void;
-}
-
-const initialState = {
-  isDialogOpen: '',
+const stripTrailingSlash = (path: string): string => {
+  if (path === '/') return '/';
+  return path.replace(/\/+$/u, '');
 };
 
-const useAppConfigTableDialogStore = create<AppConfigTableDialogStore>((set) => ({
-  ...initialState,
-
-  reset: () => set(initialState),
-
-  setDialogOpen: (open) => set({ isDialogOpen: open }),
-}));
-
-export default useAppConfigTableDialogStore;
+export default stripTrailingSlash;
