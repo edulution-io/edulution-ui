@@ -10,31 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import { IsArray, IsDate, IsMongoId, IsString } from 'class-validator';
-import WebdavShareType from './webdavShareType';
+import WebdavShareDto from './webdavShareDto';
 
-class WebdavShareDto {
-  @IsMongoId()
-  webdavShareId?: string;
+type WebdavShareHealthUpdate = Pick<WebdavShareDto, 'webdavShareId' | 'status' | 'lastChecked'>;
 
-  @IsString()
-  displayName: string;
-
-  @IsString()
-  url: string;
-
-  @IsArray()
-  accessGroups: MultipleSelectorGroup[] = [];
-
-  @IsString()
-  type: WebdavShareType;
-
-  @IsString()
-  status: 'up' | 'down';
-
-  @IsDate()
-  lastChecked: Date | null = null;
-}
-
-export default WebdavShareDto;
+export default WebdavShareHealthUpdate;

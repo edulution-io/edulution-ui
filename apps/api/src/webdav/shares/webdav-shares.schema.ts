@@ -31,6 +31,16 @@ export class WebdavShares {
 
   @Prop({ type: String, required: true, enum: WEBDAV_SHARE_TYPE, default: WEBDAV_SHARE_TYPE.LINUXMUSTER })
   type: WebdavShareType;
+
+  @Prop({ type: String, enum: ['up', 'down'], default: 'down' })
+  status: 'up' | 'down';
+
+  @Prop({ type: Date, default: null })
+  lastChecked: Date | null;
 }
 
 export const WebdavSharesSchema = SchemaFactory.createForClass(WebdavShares);
+
+WebdavSharesSchema.set('toJSON', {
+  virtuals: true,
+});

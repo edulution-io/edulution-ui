@@ -1488,5 +1488,21 @@
     "description": "Ici, on peut choisir la plateforme à laquelle {{appName }} doit être connecté.",
     "linuxmuster": "Linuxmuster",
     "generic": "Générique"
+  },
+
+  "webdavShare": {
+    "displayName": "Nom d'affichage",
+    "accessGroups": {
+      "title": "Groupes d'utilisateurs",
+      "description": "Sélectionnez les groupes d'utilisateurs qui doivent avoir accès au partage WebDAV."
+    },
+    "type": {
+      "title": "Schéma du serveur WebDAV",
+      "description": "Ici, vous pouvez sélectionner le type de schéma du serveur WebDAV.",
+      "linuxmuster": "Linuxmuster",
+      "edu-file-proxy": "Proxy de fichiers edulution",
+      "generic": "Générique"
+    },
+    "status": "Statut"
   }
 }

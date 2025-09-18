@@ -21,6 +21,7 @@ import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import APPS from '@libs/appconfig/constants/apps';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
+import type WebdavShareHealthUpdate from '@libs/filesharing/types/webdavShareHealthUpdate';
 import { WebdavShares, WebdavSharesDocument } from './webdav-shares.schema';
 import CustomHttpException from '../../common/CustomHttpException';
 import { AppConfig } from '../../appconfig/appconfig.schema';
@@ -92,6 +93,8 @@ class WebdavSharesService implements OnModuleInit {
             url: 1,
             accessGroups: 1,
             type: 1,
+            status: 1,
+            lastChecked: 1,
           },
         },
       ];
@@ -104,7 +107,7 @@ class WebdavSharesService implements OnModuleInit {
         });
       }
 
-      return this.webdavSharesModel.aggregate(basePipeline);
+      return this.webdavSharesModel.aggregate<WebdavShareDto>(basePipeline);
     } catch (error) {
       throw new CustomHttpException(
         CommonErrorMessages.DB_ACCESS_FAILED,
@@ -132,7 +135,7 @@ class WebdavSharesService implements OnModuleInit {
     }
   }
 
-  async updateWebdavShare(webdavShareId: string, webdavShareDto: WebdavShareDto) {
+  async updateWebdavShare(webdavShareId: string, webdavShareDto: WebdavShareDto | WebdavShareHealthUpdate) {
     try {
       const webdavShare = await this.webdavSharesModel.updateOne({ _id: webdavShareId }, webdavShareDto).exec();
 
