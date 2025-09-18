@@ -58,10 +58,6 @@ const FileSharingPage = () => {
   }, [fileOperationProgress]);
   const { percentageUsed } = useQuotaInfo();
 
-  useEffect(() => {
-    void fetchShares();
-  }, [currentPath, fetchFiles, fetchShares]);
-
   const { share, setShare, closeDialog, dialog } = usePublicShareStore();
   const { origin } = window.location;
   const url = `${origin}/${FileSharingApiEndpoints.PUBLIC_SHARE}/${share?.publicShareId}`;
