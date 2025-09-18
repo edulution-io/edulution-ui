@@ -134,7 +134,9 @@ const FileSharingPreviewFrame = () => {
 
   const isValidFile = currentlyEditingFile?.type === ContentType.FILE && isValidFileToPreview(currentlyEditingFile);
 
-  const isFileReady = isValidFile && !isMobileView && (isOnlyOfficeDoc ? isDocumentServerConfigured : true);
+  const isFileReady =
+    (isValidFile && !isMobileView && (isOnlyOfficeDoc ? isDocumentServerConfigured : true)) ||
+    currentlyEditingFile?.filename.endsWith('pdf');
 
   const pathSegments = location.pathname.split('/').filter(Boolean);
   const hidePreviewOnOtherPages = pathSegments[0] !== APPS.FILE_SHARING && isFilePreviewDocked;
@@ -143,7 +145,7 @@ const FileSharingPreviewFrame = () => {
 
   const windowTitle = currentlyEditingFile?.filename || t(`filesharing.filePreview`);
 
-  const isEditButtonVisible = !isEditMode && isOnlyOfficeDocument(currentlyEditingFile.filename);
+  const isEditButtonVisible = !isEditMode && isOnlyOfficeDocument(currentlyEditingFile?.filename || '');
   const additionalButtons = [
     <OpenInNewTabButton
       onClick={openInNewTab}
@@ -182,6 +184,7 @@ const FileSharingPreviewFrame = () => {
       <FileRenderer
         editMode={isEditMode}
         closingRef={closingRef}
+        isOnlyOfficeConfigured={isDocumentServerConfigured}
       />
     </ResizableWindow>
   );
