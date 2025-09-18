@@ -11,6 +11,8 @@
  */
 
 interface UploadResult {
+  name: string;
+  ok: boolean;
   filename: string;
   path: string;
   absolutePath: string;

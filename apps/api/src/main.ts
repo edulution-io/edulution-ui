@@ -72,6 +72,15 @@ async function bootstrap() {
     SwaggerModule.setup('/docs', app, swaggerDocument);
   }
 
+  await app.init();
+
+  const server = app.getHttpServer();
+
+  server.setTimeout?.(0);
+  server.requestTimeout = 0;
+  server.headersTimeout = 0;
+  server.keepAliveTimeout = 0;
+
   await app.listen(port);
   if (logLevels) {
     Logger.log(`🚀 Application Version ${rootPackage.version} is running on: http://localhost:${port}/${globalPrefix}`);

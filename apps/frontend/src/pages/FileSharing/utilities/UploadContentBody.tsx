@@ -35,6 +35,7 @@ import ZIP_PROCESS_TIMEOUT from '@libs/filesharing/constants/zipProcessTimeout';
 import { FcFolder } from 'react-icons/fc';
 import MAX_FOLDER_UPLOAD_CONTENT_SIZE from '@libs/ui/constants/maxFolderUploadContentSize';
 import getFileUploadLimit from '@libs/ui/utils/getFileUploadLimit';
+import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
 
 const UploadContentBody = () => {
   const { t } = useTranslation();
@@ -50,7 +51,7 @@ const UploadContentBody = () => {
 
   const [filesThatWillBeOverwritten, setFilesThatWillBeOverwritten] = useState<string[]>([]);
 
-  const { filesToUpload, setFilesToUpload, updateFilesToUpload } = useFileSharingDialogStore();
+  const { filesToUpload, setFilesToUpload, updateFilesToUpload } = useHandelUploadFileStore();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
