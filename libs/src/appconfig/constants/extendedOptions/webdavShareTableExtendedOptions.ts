@@ -14,7 +14,7 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import TAppFieldWidth from '@libs/appconfig/types/tAppFieldWidth';
 
-const WEBDAV_SHARE_TABLE = [
+const WEBDAV_SHARE_TABLE_EXTENDED_OPTIONS = [
   {
     name: ExtendedOptionKeys.WEBDAV_SHARE_TABLE,
     description: 'appExtendedOptions.veyonProxys',
@@ -25,4 +25,4 @@ const WEBDAV_SHARE_TABLE = [
   },
 ];
 
-export default WEBDAV_SHARE_TABLE;
+export default WEBDAV_SHARE_TABLE_EXTENDED_OPTIONS;
