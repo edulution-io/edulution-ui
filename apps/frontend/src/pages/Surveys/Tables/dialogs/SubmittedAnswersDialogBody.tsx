@@ -41,7 +41,7 @@ const SubmittedAnswersDialogBody = (props: SurveySubmissionProps) => {
   surveyModel.applyTheme(SurveyThemes.FlatDark);
 
   return (
-    <div className="max-h-[75vh] overflow-y-scroll rounded bg-gray-600 p-4">
+    <div className="participated-survey max-h-[75vh] overflow-y-scroll rounded bg-gray-600 p-4">
       <Survey model={surveyModel} />
     </div>
   );

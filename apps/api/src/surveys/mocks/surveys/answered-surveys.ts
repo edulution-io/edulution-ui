@@ -12,7 +12,7 @@
 
 import { Types } from 'mongoose';
 import { Survey, SurveyDocument } from '../../survey.schema';
-import { SurveyAnswer, SurveyAnswerDocument } from '../../survey-answer.schema';
+import { SurveyAnswer, SurveyAnswerDocument } from '../../survey-answers.schema';
 import { firstMockUser, secondMockUser } from '../user';
 
 // -------------------------

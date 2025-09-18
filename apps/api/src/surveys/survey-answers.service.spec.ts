@@ -10,20 +10,17 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/unbound-method */
 import { Model, Types } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveysAttachmentService from 'apps/api/src/surveys/surveys-attachment.service';
+import SurveyAnswerAttachmentsService from 'apps/api/src/surveys/survey-answer-attachments.service';
+import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import { Survey, SurveyDocument } from './survey.schema';
-import SurveyAnswerService from './survey-answer.service';
-import { SurveyAnswer, SurveyAnswerDocument } from './survey-answer.schema';
+import SurveyAnswersService from './survey-answers.service';
+import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
 import {
   answeredSurvey01,
   answeredSurvey02,
@@ -58,11 +55,6 @@ import {
   publicSurvey02,
   publicSurvey02AfterAddingValidAnswer,
   publicSurvey02QuestionNameWithLimiters,
-  saveNoAnsweredSurvey01,
-  saveNoAnsweredSurvey02,
-  saveNoAnsweredSurvey03,
-  saveNoAnsweredSurvey04,
-  saveNoAnsweredSurvey05,
   secondMockUser,
   secondParticipant,
   surveyAnswerAnsweredSurvey02,
@@ -81,8 +73,8 @@ import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
 import NotificationsService from '../notifications/notifications.service';
 
-describe('SurveyAnswerService', () => {
-  let service: SurveyAnswerService;
+describe('SurveyAnswersService', () => {
+  let service: SurveyAnswersService;
   let model: Model<SurveyAnswerDocument>;
   let surveyModel: Model<SurveyDocument>;
 
@@ -100,8 +92,9 @@ describe('SurveyAnswerService', () => {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
         },
-        SurveyAnswerService,
+        SurveyAnswersService,
         SurveysAttachmentService,
+        SurveyAnswerAttachmentsService,
         { provide: GroupsService, useValue: mockGroupsService },
         {
           provide: getModelToken(SurveyAnswer.name),
@@ -112,7 +105,7 @@ describe('SurveyAnswerService', () => {
       ],
     }).compile();
 
-    service = module.get<SurveyAnswerService>(SurveyAnswerService);
+    service = module.get<SurveyAnswersService>(SurveyAnswersService);
     model = module.get<Model<SurveyAnswerDocument>>(getModelToken(SurveyAnswer.name));
     surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
   });
@@ -186,7 +179,7 @@ describe('SurveyAnswerService', () => {
         await service.getSelectableChoices(idOfPublicSurvey01.toString(), publicSurvey02QuestionNameWithLimiters);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe(SurveyErrorMessages.NoBackendLimiters);
+        expect(e instanceof Error && e.message).toBe(SurveyErrorMessages.NoBackendLimiters);
       }
 
       expect(service.getSelectableChoices).toHaveBeenCalledWith(
@@ -341,24 +334,31 @@ describe('SurveyAnswerService', () => {
     it('should return an error if the survey was not found', async () => {
       jest.spyOn(service, 'addAnswer');
 
-      surveyModel.findById = jest.fn().mockReturnValue(null);
+      surveyModel.findById = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(null),
+      });
+
       const id = new Types.ObjectId().toString();
 
       try {
-        await service.addAnswer(id, 1, {} as JSON, firstParticipant);
+        await service.addAnswer(id, {} as JSON, firstParticipant);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe(SurveyErrorMessages.NotFoundError);
+        expect(e instanceof Error && e.message).toBe(SurveyErrorMessages.NotFoundError);
       }
 
-      expect(service.addAnswer).toHaveBeenCalledWith(id, 1, {} as JSON, firstParticipant);
+      expect(service.addAnswer).toHaveBeenCalledWith(id, {} as JSON, firstParticipant);
     });
 
     it('should return an error if the survey has already expired', async () => {
       jest.spyOn(service, 'addAnswer');
 
-      surveyModel.findById = jest.fn().mockReturnValue(answeredSurvey01);
-      model.findOne = jest.fn().mockReturnValue(null);
+      surveyModel.findById = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(answeredSurvey01),
+      });
+      model.findOne = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(null),
+      });
       model.create = jest.fn().mockReturnValue(firstUsersSurveyAnswerAnsweredSurvey01);
       model.findByIdAndUpdate = jest.fn().mockReturnValue(firstUsersSurveyAnswerAnsweredSurvey01);
       surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue(answeredSurvey01);
@@ -366,18 +366,16 @@ describe('SurveyAnswerService', () => {
       try {
         await service.addAnswer(
           idOfAnsweredSurvey01.toString(),
-          saveNoAnsweredSurvey01,
           firstUsersMockedAnswerForAnsweredSurveys01,
           firstParticipant,
         );
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
-        expect(e.message).toBe(SurveyErrorMessages.ParticipationErrorSurveyExpired);
+        expect(e instanceof Error && e.message).toBe(SurveyErrorMessages.ParticipationErrorSurveyExpired);
       }
 
       expect(service.addAnswer).toHaveBeenCalledWith(
         idOfAnsweredSurvey01.toString(),
-        saveNoAnsweredSurvey01,
         firstUsersMockedAnswerForAnsweredSurveys01,
         firstParticipant,
       );
@@ -417,23 +415,22 @@ describe('SurveyAnswerService', () => {
       async () => {
         jest.spyOn(service, 'addAnswer');
 
-        surveyModel.findById = jest.fn().mockReturnValue(answeredSurvey02);
+        surveyModel.findById = jest.fn().mockReturnValue({
+          exec: jest.fn().mockResolvedValue(answeredSurvey02),
+        });
+        model.findOne = jest.fn().mockReturnValue({
+          exec: jest.fn().mockResolvedValue(answeredSurvey02),
+        });
 
         try {
-          await service.addAnswer(
-            idOfAnsweredSurvey02.toString(),
-            saveNoAnsweredSurvey02,
-            mockedAnswerForAnsweredSurveys02,
-            secondParticipant,
-          );
+          await service.addAnswer(idOfAnsweredSurvey02.toString(), mockedAnswerForAnsweredSurveys02, secondParticipant);
         } catch (e) {
           expect(e).toBeInstanceOf(Error);
-          expect(e.message).toBe(SurveyErrorMessages.ParticipationErrorAlreadyParticipated);
+          expect(e instanceof Error && e.message).toBe(SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError);
         }
 
         expect(service.addAnswer).toHaveBeenCalledWith(
           idOfAnsweredSurvey02.toString(),
-          saveNoAnsweredSurvey02,
           mockedAnswerForAnsweredSurveys02,
           secondParticipant,
         );
@@ -443,13 +440,17 @@ describe('SurveyAnswerService', () => {
     it('should update the former answer of the user', async () => {
       jest.spyOn(service, 'addAnswer');
 
-      surveyModel.findById = jest.fn().mockReturnValue(answeredSurvey03);
-      model.findOne = jest.fn().mockReturnValue(surveyAnswerAnsweredSurvey03);
+      surveyModel.findById = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(answeredSurvey03),
+      });
+
+      model.findOne = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(surveyAnswerAnsweredSurvey03),
+      });
       model.findByIdAndUpdate = jest.fn().mockReturnValue(updatedSurveyAnswerAnsweredSurvey03);
 
       const result = await service.addAnswer(
         idOfAnsweredSurvey03.toString(),
-        saveNoAnsweredSurvey03,
         updatedMockedAnswerForAnsweredSurveys03,
         firstParticipant,
       );
@@ -457,7 +458,6 @@ describe('SurveyAnswerService', () => {
 
       expect(service.addAnswer).toHaveBeenCalledWith(
         idOfAnsweredSurvey03.toString(),
-        saveNoAnsweredSurvey03,
         updatedMockedAnswerForAnsweredSurveys03,
         firstParticipant,
       );
@@ -466,8 +466,12 @@ describe('SurveyAnswerService', () => {
     it('should create an answer object if there is none for the survey submitted by the given user', async () => {
       jest.spyOn(service, 'addAnswer');
 
-      surveyModel.findById = jest.fn().mockReturnValue(answeredSurvey04);
-      model.findOne = jest.fn().mockReturnValue(null);
+      surveyModel.findById = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(answeredSurvey04),
+      });
+      model.findOne = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(null),
+      });
       model.create = jest.fn().mockReturnValue(surveyAnswerAnsweredSurvey04);
       surveyModel.findByIdAndUpdate = jest.fn().mockResolvedValue({
         ...answeredSurvey04,
@@ -477,7 +481,6 @@ describe('SurveyAnswerService', () => {
 
       const result = await service.addAnswer(
         idOfAnsweredSurvey04.toString(),
-        saveNoAnsweredSurvey04,
         mockedAnswerForAnsweredSurveys04,
         firstParticipant,
       );
@@ -485,7 +488,6 @@ describe('SurveyAnswerService', () => {
 
       expect(service.addAnswer).toHaveBeenCalledWith(
         idOfAnsweredSurvey04.toString(),
-        saveNoAnsweredSurvey04,
         mockedAnswerForAnsweredSurveys04,
         firstParticipant,
       );
@@ -494,8 +496,12 @@ describe('SurveyAnswerService', () => {
     it('should also create an answer object if the users can submit multiple answers', async () => {
       jest.spyOn(service, 'addAnswer');
 
-      surveyModel.findById = jest.fn().mockReturnValue(answeredSurvey05);
-      model.findOne = jest.fn().mockReturnValue(surveyAnswerAnsweredSurvey05);
+      surveyModel.findById = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(answeredSurvey05),
+      });
+      model.findOne = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(surveyAnswerAnsweredSurvey05),
+      });
       model.create = jest.fn().mockReturnValue(newSurveyAnswerAnsweredSurvey05);
       surveyModel.findByIdAndUpdate = jest.fn().mockResolvedValue({
         ...answeredSurvey05,
@@ -505,7 +511,6 @@ describe('SurveyAnswerService', () => {
 
       const result = await service.addAnswer(
         idOfAnsweredSurvey05.toString(),
-        saveNoAnsweredSurvey05,
         newMockedAnswerForAnsweredSurveys05,
         firstParticipant,
       );
@@ -513,7 +518,6 @@ describe('SurveyAnswerService', () => {
 
       expect(service.addAnswer).toHaveBeenCalledWith(
         idOfAnsweredSurvey05.toString(),
-        saveNoAnsweredSurvey05,
         newMockedAnswerForAnsweredSurveys05,
         firstParticipant,
       );
