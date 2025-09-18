@@ -10,12 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const mimeTypeToExtension: Record<string, string> = {
-  'image/png': 'png',
-  'image/jpeg': 'jpg',
-  'image/webp': 'webp',
-  'image/gif': 'gif',
-  'image/svg+xml': 'svg',
-};
+const PUBLIC_DATA_PATH = './data/public';
 
-export default mimeTypeToExtension;
+export default PUBLIC_DATA_PATH;

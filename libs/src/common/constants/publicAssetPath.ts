@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const PUBLIC_ASSERT_PATH = './data/public/';
+const PUBLIC_ASSET_PATH = './data/public/assets';
 
-export default PUBLIC_ASSERT_PATH;
+export default PUBLIC_ASSET_PATH;
