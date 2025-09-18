@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /*
  * LICENSE
  *
@@ -28,7 +29,7 @@ import { AppConfig } from '../../appconfig/appconfig.schema';
 
 @Injectable()
 class WebdavSharesService implements OnModuleInit {
-  private webdavShareCache: { url: string; type: string } | null = null;
+  private webdavShareCache: Record<string, { url: string; type: string }> = {};
 
   constructor(
     @InjectModel(WebdavShares.name) private webdavSharesModel: Model<WebdavSharesDocument>,
@@ -54,32 +55,31 @@ class WebdavSharesService implements OnModuleInit {
         type: WEBDAV_SHARE_TYPE.LINUXMUSTER,
       });
     }
+
+    await this.loadCache();
   }
 
   private async loadCache(): Promise<void> {
-    const webdavShare = await this.webdavSharesModel.findOne().lean();
-    if (webdavShare) {
-      this.webdavShareCache = {
-        url: webdavShare.url,
-        type: webdavShare.type,
-      };
-    } else {
-      this.webdavShareCache = null;
-    }
+    const webdavShares = await this.webdavSharesModel.find({}).lean();
+
+    this.webdavShareCache = webdavShares.reduce<Record<string, { url: string; type: string }>>((acc, share) => {
+      acc[share.displayName] = { url: share.url, type: share.type };
+      return acc;
+    }, {});
   }
 
-  async getWebdavSharePath(): Promise<string> {
-    if (!this.webdavShareCache) {
+  async getWebdavSharePath(share: string): Promise<string> {
+    if (!this.webdavShareCache[share]) {
       await this.loadCache();
     }
-    return this.webdavShareCache?.url || '';
+    return this.webdavShareCache[share]?.url;
   }
 
-  async getWebdavShareType(): Promise<string> {
-    if (!this.webdavShareCache) {
+  async getWebdavShareType(share: string): Promise<string> {
+    if (!this.webdavShareCache[share]) {
       await this.loadCache();
     }
-    return this.webdavShareCache?.type || '';
+    return this.webdavShareCache[share]?.type;
   }
 
   findAllWebdavShares(currentUserGroups: string[]) {

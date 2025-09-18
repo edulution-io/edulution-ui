@@ -70,9 +70,10 @@ class FilesharingService {
     parentPath: string,
     folderName: string,
     zipStream: Readable,
+    share: string,
   ): Promise<WebdavStatusResponse> {
     const destinationFolderPath = `${parentPath}/${folderName}`;
-    await this.webDavService.ensureFolderExists(username, parentPath, folderName);
+    await this.webDavService.ensureFolderExists(username, parentPath, folderName, share);
 
     const zipEntryStream = zipStream.pipe(unzipper.Parse());
     const directoryPaths = new Set<string>();
@@ -108,6 +109,7 @@ class FilesharingService {
                 mimeType: detectedMimeType,
                 total: 0,
                 processed: 0,
+                share,
               }),
             ),
           );
@@ -124,6 +126,7 @@ class FilesharingService {
           folderPath,
           total: sortedDirs.length,
           processed: idx + 1,
+          share,
         }),
       ),
     );
@@ -136,6 +139,7 @@ class FilesharingService {
     path: string,
     name: string,
     req: Request,
+    share: string,
     isZippedFolder = false,
     fileSize = 0,
   ) {
@@ -155,13 +159,21 @@ class FilesharingService {
     }
 
     if (isZippedFolder) {
-      return this.uploadZippedFolderStream(username, basePath, name, req);
+      return this.uploadZippedFolderStream(username, basePath, name, req, share);
     }
 
-    return this.webDavService.uploadFileWithNetworkProgress(username, fullPath, req, mimeType, () => {}, totalSize);
+    return this.webDavService.uploadFileWithNetworkProgress(
+      username,
+      fullPath,
+      req,
+      mimeType,
+      share,
+      () => {},
+      totalSize,
+    );
   }
 
-  async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {
+  async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto, share: string) {
     let i = 0;
     return Promise.all(
       duplicateFile.destinationFilePaths.map(async (destinationPath) => {
@@ -171,12 +183,13 @@ class FilesharingService {
           destinationFilePath: destinationPath,
           total: duplicateFile.destinationFilePaths.length,
           processed: (i += 1),
+          share,
         });
       }),
     );
   }
 
-  async copyFileOrFolder(username: string, copyFileRequestDTOs: PathChangeOrCreateProps[]) {
+  async copyFileOrFolder(username: string, copyFileRequestDTOs: PathChangeOrCreateProps[], share: string) {
     let processedItems = 0;
     return Promise.all(
       copyFileRequestDTOs.map(async (copyFileRequest) => {
@@ -187,6 +200,7 @@ class FilesharingService {
           destinationFilePath: newPath,
           total: copyFileRequestDTOs.length,
           processed: (processedItems += 1),
+          share,
         });
       }),
     );
@@ -197,6 +211,7 @@ class FilesharingService {
     collectFileRequestDTOs: CollectFileRequestDTO[],
     userRole: string,
     type: LmnApiCollectOperationsType,
+    share: string,
   ) {
     let processedItems = 0;
     return Promise.all(
@@ -208,12 +223,13 @@ class FilesharingService {
           operationType: type,
           total: collectFileRequestDTOs.length,
           processed: (processedItems += 1),
+          share,
         });
       }),
     );
   }
 
-  async moveOrRenameResources(username: string, pathChangeOrCreateDtos: PathChangeOrCreateProps[]) {
+  async moveOrRenameResources(username: string, pathChangeOrCreateDtos: PathChangeOrCreateProps[], share: string) {
     let processedItems = 0;
     return Promise.all(
       pathChangeOrCreateDtos.map(async (pathChange) => {
@@ -225,13 +241,14 @@ class FilesharingService {
           newPath: trimmedNewPath,
           total: pathChangeOrCreateDtos.length,
           processed: (processedItems += 1),
+          share,
         });
       }),
     );
   }
 
-  async deleteFileAtPath(username: string, paths: string[]) {
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+  async deleteFileAtPath(username: string, paths: string[], share: string) {
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
 
     let processedItems = 0;
     return Promise.all(
@@ -243,18 +260,19 @@ class FilesharingService {
           webdavFilePath: path,
           total: paths.length,
           processed: (processedItems += 1),
+          share,
         });
       }),
     );
   }
 
-  async getWebDavFileStream(username: string, filePath: string): Promise<Readable> {
+  async getWebDavFileStream(username: string, filePath: string, share: string): Promise<Readable> {
     try {
-      const client = await this.webDavService.getClient(username);
+      const client = await this.webDavService.getClient(username, share);
       const decoded = decodeURIComponent(filePath).replace(/%(?![0-9A-F]{2})/gi, (s) => decodeURIComponent(s));
       const pathWithoutWebdav = getPathWithoutWebdav(decoded).replace(/^\/+/, '');
       const encodedPath = encodeURI(pathWithoutWebdav);
-      const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+      const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
 
       const base = baseUrl.replace(/\/+$/, '');
       const finalUrl = `${base}/${encodedPath}`;
@@ -270,17 +288,22 @@ class FilesharingService {
     }
   }
 
-  async fileLocation(username: string, filePath: string, filename: string): Promise<WebdavStatusResponse> {
-    const client = await this.webDavService.getClient(username);
-    return this.fileSystemService.fileLocation(username, filePath, filename, client);
+  async fileLocation(
+    username: string,
+    filePath: string,
+    filename: string,
+    share: string,
+  ): Promise<WebdavStatusResponse> {
+    const client = await this.webDavService.getClient(username, share);
+    return this.fileSystemService.fileLocation(username, filePath, filename, client, share);
   }
 
   async getOnlyOfficeToken(payload: string) {
     return this.onlyofficeService.generateOnlyOfficeToken(payload);
   }
 
-  async handleCallback(req: Request, res: Response, path: string, filename: string, username: string) {
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+  async handleCallback(req: Request, res: Response, path: string, filename: string, username: string, share: string) {
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
 
     return OnlyofficeService.handleCallback(
       req,
@@ -290,12 +313,18 @@ class FilesharingService {
       username,
       async (user: string, uploadPath: string, file: CustomFile, name: string): Promise<WebdavStatusResponse> => {
         const readableStream = Readable.from(file.buffer);
-        return this.webDavService.uploadFile(user, `${baseUrl}${uploadPath}/${name}`, readableStream, file.mimetype);
+        return this.webDavService.uploadFile(
+          user,
+          `${baseUrl}${uploadPath}/${name}`,
+          readableStream,
+          file.mimetype,
+          share,
+        );
       },
     );
   }
 
-  async streamFilesAsZipBuffered(username: string, paths: string[], res: Response) {
+  async streamFilesAsZipBuffered(username: string, paths: string[], res: Response, share: string) {
     const { path: tmpPath, cleanup } = await createTempFile('.zip');
 
     const output = createWriteStream(tmpPath);
@@ -306,7 +335,7 @@ class FilesharingService {
     const entries = await Promise.all(
       paths.map(async (p) => ({
         name: p.split('/').pop()!,
-        stream: await this.getWebDavFileStream(username, p),
+        stream: await this.getWebDavFileStream(username, p, share),
       })),
     );
 
@@ -397,18 +426,23 @@ class FilesharingService {
     };
   }
 
-  async getPublicShare(publicShareId: string, jwtUser: JwtUser | undefined, password?: string | undefined) {
-    const share = await this.shareModel.findOne({ publicShareId }).lean().exec();
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+  async getPublicShare(
+    publicShareId: string,
+    jwtUser: JwtUser | undefined,
+    share: string,
+    password?: string | undefined,
+  ) {
+    const publicShare = await this.shareModel.findOne({ publicShareId }).lean().exec();
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
 
-    if (!share) {
+    if (!publicShare) {
       throw new CustomHttpException(
         FileSharingErrorMessage.DownloadFailed,
         HttpStatus.NOT_FOUND,
         `${publicShareId} not found`,
       );
     }
-    if (share.password && share.password !== password) {
+    if (publicShare.password && publicShare.password !== password) {
       throw new CustomHttpException(
         FileSharingErrorMessage.PublicFileWrongPassword,
         HttpStatus.FORBIDDEN,
@@ -416,7 +450,7 @@ class FilesharingService {
       );
     }
 
-    const { invitedAttendees, invitedGroups } = share;
+    const { invitedAttendees, invitedGroups } = publicShare;
 
     const access = checkFileAccessRights(invitedAttendees, invitedGroups, jwtUser);
 
@@ -428,18 +462,19 @@ class FilesharingService {
       );
     }
 
-    const webDavUrl = `${baseUrl}${getPathWithoutWebdav(share.filePath)}`;
-    const client = await this.webDavService.getClient(share.creator.username);
+    const webDavUrl = `${baseUrl}${getPathWithoutWebdav(publicShare.filePath)}`;
+    const client = await this.webDavService.getClient(publicShare.creator.username, share);
 
     const stream = (await FilesystemService.fetchFileStream(webDavUrl, client, false)) as Readable;
 
     const fileType = await this.webDavService.getFileTypeFromWebdavPath(
-      share.creator.username,
+      publicShare.creator.username,
       webDavUrl,
-      share.filePath,
+      publicShare.filePath,
+      share,
     );
 
-    const filename = fileType === ContentType.FILE ? share.filename : `${share.filename}.zip`;
+    const filename = fileType === ContentType.FILE ? publicShare.filename : `${publicShare.filename}.zip`;
 
     return { stream, filename, fileType };
   }
