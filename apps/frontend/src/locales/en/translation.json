@@ -356,7 +356,8 @@
       "FileNameRequired": "File name is required",
       "NewFileNameRequired": "New file name is required",
       "NameRequired": "Name is required",
-      "NameExceedsCharacterLimit": "Name exceeds character limit"
+      "NameExceedsCharacterLimit": "Name exceeds character limit",
+      "NameMustNotEndWithDot": "The name must not end with a dot."
     },
     "progressBox": {
       "info": "Info",

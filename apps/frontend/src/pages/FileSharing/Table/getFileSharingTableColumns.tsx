@@ -93,6 +93,8 @@ const getFileSharingTableColumns = (
         const isCurrentlyDisabled = currentlyDisabledFiles[row.original.filename];
         const { isMobileView } = useMedia();
         const handleFilenameClick = () => {
+          const isPdf = row.original.filename.toLowerCase().endsWith('.pdf');
+
           if (onFilenameClick) {
             onFilenameClick(row);
             return;
@@ -112,11 +114,11 @@ const getFileSharingTableColumns = (
             return;
           }
           const isOnlyOfficeDoc = isOnlyOfficeDocument(row.original.filename);
-          if (isOnlyOfficeDoc && !isDocumentServerConfigured) {
+          if (isOnlyOfficeDoc && !isDocumentServerConfigured && !isPdf) {
             row.toggleSelected();
             return;
           }
-          if (isOnlyOfficeDoc) {
+          if (isOnlyOfficeDoc || isPdf) {
             void setFileIsCurrentlyDisabled(row.original.filename, true, 5000);
           }
 
