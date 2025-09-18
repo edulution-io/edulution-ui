@@ -10,13 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface MenuItem {
-  id: string;
-  label: string;
-  icon: string;
-  action: () => void;
-  path?: string;
-  disableTranslation?: boolean;
-}
+import WEBDAV_SHARE_STATUS from '../constants/webdavShareStatus';
 
-export default MenuItem;
+type WebdavShareStatusType = (typeof WEBDAV_SHARE_STATUS)[keyof typeof WEBDAV_SHARE_STATUS];
+
+export default WebdavShareStatusType;

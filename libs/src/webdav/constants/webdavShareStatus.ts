@@ -10,13 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface MenuItem {
-  id: string;
-  label: string;
-  icon: string;
-  action: () => void;
-  path?: string;
-  disableTranslation?: boolean;
-}
+const WEBDAV_SHARE_STATUS = {
+  UP: 'up',
+  DOWN: 'down',
+} as const;
 
-export default MenuItem;
+export default WEBDAV_SHARE_STATUS;

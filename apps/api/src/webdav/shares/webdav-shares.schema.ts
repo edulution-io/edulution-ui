@@ -15,6 +15,8 @@ import { Document } from 'mongoose';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import type WebdavShareType from '@libs/filesharing/types/webdavShareType';
 import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
+import WEBDAV_SHARE_STATUS from '@libs/webdav/constants/webdavShareStatus';
+import type WebdavShareStatusType from '@libs/webdav/types/webdavShareStatusType';
 
 export type WebdavSharesDocument = WebdavShares & Document;
 
@@ -32,8 +34,8 @@ export class WebdavShares {
   @Prop({ type: String, required: true, enum: WEBDAV_SHARE_TYPE, default: WEBDAV_SHARE_TYPE.LINUXMUSTER })
   type: WebdavShareType;
 
-  @Prop({ type: String, enum: ['up', 'down'], default: 'down' })
-  status: 'up' | 'down';
+  @Prop({ type: String, enum: WEBDAV_SHARE_STATUS, default: WEBDAV_SHARE_STATUS.DOWN })
+  status: WebdavShareStatusType;
 
   @Prop({ type: Date, default: null })
   lastChecked: Date | null;
