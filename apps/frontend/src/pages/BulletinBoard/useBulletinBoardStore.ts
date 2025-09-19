@@ -33,7 +33,7 @@ export interface BulletinBoardTableStore {
   setIsEditorialModeEnabled: (isEditorialModeEnabled: boolean) => void;
   bulletinBoardNotifications: BulletinResponseDto[];
   addBulletinBoardNotification: (bulletin: BulletinResponseDto) => void;
-  resetBulletinBoardNotifications: () => void;
+  markBulletinAsRead: (bulletinId: string) => void;
 }
 
 const initialValues = {
@@ -77,7 +77,11 @@ const useBulletinBoardStore = create<BulletinBoardTableStore>((set, get) => ({
     set({
       bulletinBoardNotifications: [...get().bulletinBoardNotifications.filter((b) => b.id !== bulletin.id), bulletin],
     }),
-  resetBulletinBoardNotifications: () => set({ bulletinBoardNotifications: [] }),
+
+  markBulletinAsRead: (bulletinId) =>
+    set({
+      bulletinBoardNotifications: get().bulletinBoardNotifications.filter((b) => b.id !== bulletinId),
+    }),
 
   getBulletinsByCategories: async (isLoading = true) => {
     if (get().isLoading) return;

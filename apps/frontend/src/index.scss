@@ -1,9 +1,5 @@
 @tailwind base;
 @layer base {
-  .loader:empty {
-    background-image: var(--background-image);
-  }
-
   html {
     @apply text-white;
     font-family: 'Lato', sans-serif;
