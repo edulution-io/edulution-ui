@@ -32,7 +32,12 @@ interface HandelUploadFileStore {
   setFilesToUpload: (files: UploadFile[]) => void;
   updateFilesToUpload: (updater: (files: UploadFile[]) => UploadFile[]) => void;
   markUploading: (fileName: string, uploading: boolean) => void;
-  uploadFiles: (currentPath: string, accessToken: string, parallel?: boolean) => Promise<UploadResult[]>;
+  uploadFiles: (
+    currentPath: string,
+    accessToken: string,
+    share: string | undefined,
+    parallel?: boolean,
+  ) => Promise<UploadResult[]>;
   reset: () => void;
 }
 
@@ -65,7 +70,12 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
     });
   },
 
-  uploadFiles: async (currentPath: string, accessToken: string, parallel: boolean = true): Promise<UploadResult[]> => {
+  uploadFiles: async (
+    currentPath: string,
+    accessToken: string,
+    share: string | undefined,
+    parallel: boolean = true,
+  ): Promise<UploadResult[]> => {
     const files = get().filesToUpload;
     if (!files || files.length === 0) return [];
 
@@ -76,10 +86,10 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
     const setProgressForFile = (fileName: string, next: FileProgress) =>
       set((state) => ({ progressByName: { ...state.progressByName, [fileName]: next } }));
 
-    const uploadHttp = createUploadClient(`/${EDU_API_ROOT}`, accessToken);
+    const uploadHttpClient = createUploadClient(`/${EDU_API_ROOT}`, { share }, accessToken);
 
     const uploader = createFileUploader({
-      httpClient: uploadHttp,
+      httpClient: uploadHttpClient,
       destinationPath: sanitizedDestinationPath,
       onProgressUpdate: setProgressForFile,
       onUploadingChange: (fileName, uploading) => get().markUploading(fileName, uploading),

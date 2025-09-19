@@ -359,7 +359,7 @@ class FilesharingService {
     currentUser: JwtUser,
     createPublicShareDto: CreateOrEditPublicShareDto,
   ): Promise<PublicShareResponseDto> {
-    const { etag, filename, filePath, invitedAttendees, invitedGroups, password, expires, scope } =
+    const { etag, share, filename, filePath, invitedAttendees, invitedGroups, password, expires, scope } =
       createPublicShareDto;
 
     try {
@@ -372,6 +372,7 @@ class FilesharingService {
       const newShare = await this.shareModel.create({
         publicShareId,
         etag,
+        share,
         filename,
         filePath,
         creator: {
