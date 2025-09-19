@@ -10,12 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import FileActionType from '@libs/filesharing/types/fileActionType';
+const triggerBrowserDownload = (blobUrl: string, filename: string) => {
+  const a = document.createElement('a');
+  a.href = blobUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+};
 
-interface FileActionButtonProps {
-  openDialog: (action: FileActionType) => void;
-  selectedItems?: DirectoryFileDTO[];
-}
-
-export default FileActionButtonProps;
+export default triggerBrowserDownload;

@@ -121,20 +121,14 @@ class FilesharingController {
 
   @Get(FileSharingApiEndpoints.FILE_STREAM)
   async webDavFileStream(
-    @Query('filePath') filePath: string | string[],
+    @Query('filePath') filePath: string,
     @Res() res: Response,
     @GetCurrentUsername() username: string,
   ) {
-    const files = Array.isArray(filePath) ? filePath : [filePath];
-    if (files.length === 1) {
-      res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_OCTET_STREAM);
-      const stream = await this.filesharingService.getWebDavFileStream(username, files[0]);
-      res.setHeader(HTTP_HEADERS.ContentDisposition, `attachment; filename="${files[0].split('/').pop()}"`);
-      return stream.pipe(res);
-    }
-
-    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_ZIP);
-    return this.filesharingService.streamFilesAsZipBuffered(username, files, res);
+    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_OCTET_STREAM);
+    const stream = await this.filesharingService.getWebDavFileStream(username, filePath);
+    res.setHeader(HTTP_HEADERS.ContentDisposition, `attachment; filename="${filePath.split('/').pop()}"`);
+    return stream.pipe(res);
   }
 
   @Get(FileSharingApiEndpoints.FILE_LOCATION)
