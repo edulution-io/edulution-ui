@@ -21,9 +21,10 @@ interface EnrolGroupListProps {
   row: GroupColumn;
   selectedClasses: LmnApiSchoolClass[];
   setSelectedClasses: React.Dispatch<React.SetStateAction<LmnApiSchoolClass[]>>;
+  activeSchool: string | null;
 }
 
-const ClassList = ({ row, selectedClasses, setSelectedClasses }: EnrolGroupListProps) => {
+const ClassList = ({ row, selectedClasses, setSelectedClasses, activeSchool }: EnrolGroupListProps) => {
   const { t } = useTranslation();
 
   return (
@@ -35,6 +36,7 @@ const ClassList = ({ row, selectedClasses, setSelectedClasses }: EnrolGroupListP
             group={group as LmnApiSchoolClass}
             selectedClasses={selectedClasses}
             setSelectedClasses={setSelectedClasses}
+            disabled={!!activeSchool && (group as LmnApiSchoolClass).sophomorixSchoolname !== activeSchool}
           />
         ))
       ) : (
