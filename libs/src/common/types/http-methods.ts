@@ -41,6 +41,7 @@ export enum RequestResponseContentType {
   APPLICATION_PDF = 'application/pdf',
   APPLICATION_X_WWW_FORM_URLENCODED = 'application/x-www-form-urlencoded',
   TEXT_PLAIN = 'text/plain',
+  TEXT_CSV = 'text/csv',
   MULTIPART_FORM_DATA = 'multipart/form-data',
   APPLICATION_OCTET_STREAM = 'application/octet-stream',
   APPLICATION_GITHUB_RAW = 'application/vnd.github.v3.raw',
