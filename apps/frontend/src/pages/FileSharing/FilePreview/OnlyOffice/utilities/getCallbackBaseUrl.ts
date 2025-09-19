@@ -18,9 +18,10 @@ interface CallbackBaseUrlProps {
   fileName: string;
   filePath: string;
   token: string;
+  share: string | undefined;
 }
 
-const callbackBaseUrl = ({ fileName, filePath, token }: CallbackBaseUrlProps): string =>
-  `${getFrontEndUrl()}/${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/callback?path=${filePath}&filename=${fileName}&token=${token}`;
+const getCallbackBaseUrl = ({ fileName, filePath, token, share }: CallbackBaseUrlProps): string =>
+  `${getFrontEndUrl()}/${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/callback?path=${filePath}&filename=${fileName}&share=${share}&token=${token}`;
 
-export default callbackBaseUrl;
+export default getCallbackBaseUrl;
