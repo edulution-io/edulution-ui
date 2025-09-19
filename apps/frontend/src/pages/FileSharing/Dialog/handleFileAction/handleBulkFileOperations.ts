@@ -22,19 +22,20 @@ const handleBulkFileOperations = async (
   endpoint: string,
   httpMethod: HttpMethods,
   items: PathChangeOrCreateDto[],
+  share: string | undefined,
   setResult: (success: boolean | undefined, message: string, statusCode: number) => void,
-  handleDeleteItems: (items: PathChangeOrCreateDto[], endpoint: string) => Promise<void>,
+  handleDeleteItems: (items: PathChangeOrCreateDto[], endpoint: string, share: string | undefined) => Promise<void>,
 ) => {
   try {
     switch (action) {
       case FileActionType.DELETE_FILE_OR_FOLDER:
-        await handleDeleteItems(items, endpoint);
+        await handleDeleteItems(items, endpoint, share);
         break;
 
       case FileActionType.MOVE_FILE_OR_FOLDER:
       case FileActionType.RENAME_FILE_OR_FOLDER:
       case FileActionType.COPY_FILE_OR_FOLDER:
-        await eduApi[httpMethod](endpoint, items);
+        await eduApi[httpMethod](endpoint, items, { params: { share } });
         break;
       default:
     }

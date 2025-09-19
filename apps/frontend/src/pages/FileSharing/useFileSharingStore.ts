@@ -18,8 +18,6 @@ import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import handleApiError from '@/utils/handleApiError';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import ContentType from '@libs/filesharing/types/contentType';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
-import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
 import delay from '@libs/common/utils/delay';
 import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
@@ -41,9 +39,8 @@ type UseFileSharingStore = {
   setPathToRestoreSession: (path: string) => void;
   setFiles: (files: DirectoryFileDTO[]) => void;
   setSelectedItems: (items: DirectoryFileDTO[]) => void;
-  fetchFiles: (path?: string) => Promise<void>;
-  fetchMountPoints: () => Promise<DirectoryFileDTO[]>;
-  fetchDirs: (path: string) => Promise<void>;
+  fetchFiles: (shareName: string | undefined, path?: string) => Promise<void>;
+  fetchMountPoints: (shareName: string | undefined) => Promise<DirectoryFileDTO[]>;
   reset: () => void;
   mountPoints: DirectoryFileDTO[];
   isLoading: boolean;
@@ -135,12 +132,12 @@ const useFileSharingStore = create<UseFileSharingStore>(
         set({ isLoading });
       },
 
-      fetchFiles: async (path: string = '/') => {
+      fetchFiles: async (shareName, path: string = '/') => {
         try {
           set({ isLoading: true });
-          const { data } = await eduApi.get<DirectoryFileDTO[]>(
-            `${buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, path)}`,
-          );
+          const { data } = await eduApi.get<DirectoryFileDTO[]>(FileSharingApiEndpoints.BASE, {
+            params: { type: ContentType.FILE, path, share: shareName },
+          });
 
           const webdavShareType = get().webdavShares[0]?.type;
           const files = processWebdavResponse(data, webdavShareType);
@@ -174,13 +171,13 @@ const useFileSharingStore = create<UseFileSharingStore>(
         }
       },
 
-      fetchMountPoints: async () => {
+      fetchMountPoints: async (shareName) => {
         try {
           set({ isLoading: true });
 
-          const { data } = await eduApi.get<DirectoryFileDTO[]>(
-            buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.DIRECTORY, '/'),
-          );
+          const { data } = await eduApi.get<DirectoryFileDTO[]>(FileSharingApiEndpoints.BASE, {
+            params: { type: ContentType.DIRECTORY, path: '/', share: shareName },
+          });
 
           const webdavShareType = get().webdavShares[0]?.type;
           const mountPoints = processWebdavResponse(data, webdavShareType);
@@ -192,21 +189,6 @@ const useFileSharingStore = create<UseFileSharingStore>(
           return get().mountPoints;
         } finally {
           set({ isLoading: false });
-        }
-      },
-
-      fetchDirs: async (path: string) => {
-        try {
-          const { data } = await eduApi.get<DirectoryFileDTO[]>(
-            `${buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.DIRECTORY, getPathWithoutWebdav(path))}`,
-          );
-
-          const webdavShareType = get().webdavShares[0]?.type;
-          const directories = processWebdavResponse(data, webdavShareType);
-
-          set({ directories });
-        } catch (error) {
-          handleApiError(error, set);
         }
       },
 

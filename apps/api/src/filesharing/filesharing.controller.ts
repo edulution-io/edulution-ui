@@ -62,18 +62,20 @@ class FilesharingController {
   async getFilesAtPath(
     @Query('type') type: string,
     @Query('path') path: string,
+    @Query('share') share: string,
     @GetCurrentUsername() username: string,
   ) {
     if (type.toUpperCase() === ContentType.FILE.valueOf()) {
-      return this.webdavService.getFilesAtPath(username, path);
+      return this.webdavService.getFilesAtPath(username, path, share);
     }
-    return this.webdavService.getDirectoryAtPath(username, path);
+    return this.webdavService.getDirectoryAtPath(username, path, share);
   }
 
   @Post()
   async createFileOrFolder(
     @Query('path') path: string,
     @Query('type') type: string,
+    @Query('share') share: string,
     @Body()
     body: {
       newPath: string;
@@ -82,9 +84,9 @@ class FilesharingController {
   ) {
     const trimmedPath = body.newPath.trim();
     if (type.toUpperCase() === ContentType.DIRECTORY.toString()) {
-      return this.webdavService.createFolder(username, path, trimmedPath);
+      return this.webdavService.createFolder(username, path, trimmedPath, share);
     }
-    return this.webdavService.createFile(username, path, trimmedPath);
+    return this.webdavService.createFile(username, path, trimmedPath, share);
   }
 
   @Post(FileSharingApiEndpoints.UPLOAD)
@@ -95,18 +97,20 @@ class FilesharingController {
     @Query('name') name: string,
     @Query('isZippedFolder', new DefaultValuePipe(false), ParseBoolPipe) isZippedFolder: boolean,
     @Query('contentLength', new DefaultValuePipe(0), ParseIntPipe) contentLength: number,
+    @Query('share') share: string,
   ) {
-    return this.filesharingService.uploadFileViaWebDav(username, path, name, req, isZippedFolder, contentLength);
+    return this.filesharingService.uploadFileViaWebDav(username, path, name, req, share, isZippedFolder, contentLength);
   }
 
   @Delete()
   async deleteFile(
     @Body('paths') paths: string[],
     @Query('target') target: DeleteTargetType,
+    @Query('share') share: string,
     @GetCurrentUsername() username: string,
   ) {
     if (target === DeleteTargetType.FILE_SERVER) {
-      return this.filesharingService.deleteFileAtPath(username, paths);
+      return this.filesharingService.deleteFileAtPath(username, paths, share);
     }
     return FilesystemService.deleteFiles(PUBLIC_DOWNLOADS_PATH, paths);
   }
@@ -114,36 +118,39 @@ class FilesharingController {
   @Patch()
   async moveOrRenameResource(
     @Body() pathChangeOrCreateDtos: PathChangeOrCreateDto[],
+    @Query('share') share: string,
     @GetCurrentUsername() username: string,
   ) {
-    return this.filesharingService.moveOrRenameResources(username, pathChangeOrCreateDtos);
+    return this.filesharingService.moveOrRenameResources(username, pathChangeOrCreateDtos, share);
   }
 
   @Get(FileSharingApiEndpoints.FILE_STREAM)
   async webDavFileStream(
     @Query('filePath') filePath: string | string[],
+    @Query('share') share: string,
     @Res() res: Response,
     @GetCurrentUsername() username: string,
   ) {
     const files = Array.isArray(filePath) ? filePath : [filePath];
     if (files.length === 1) {
       res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_OCTET_STREAM);
-      const stream = await this.filesharingService.getWebDavFileStream(username, files[0]);
+      const stream = await this.filesharingService.getWebDavFileStream(username, files[0], share);
       res.setHeader(HTTP_HEADERS.ContentDisposition, `attachment; filename="${files[0].split('/').pop()}"`);
       return stream.pipe(res);
     }
 
     res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_ZIP);
-    return this.filesharingService.streamFilesAsZipBuffered(username, files, res);
+    return this.filesharingService.streamFilesAsZipBuffered(username, files, res, share);
   }
 
   @Get(FileSharingApiEndpoints.FILE_LOCATION)
   async getDownloadLink(
     @Query('filePath') filePath: string,
     @Query('fileName') fileName: string,
+    @Query('share') share: string,
     @GetCurrentUsername() username: string,
   ) {
-    return this.filesharingService.fileLocation(username, filePath, fileName);
+    return this.filesharingService.fileLocation(username, filePath, fileName, share);
   }
 
   @Post(FileSharingApiEndpoints.ONLY_OFFICE_TOKEN)
@@ -154,14 +161,19 @@ class FilesharingController {
   @Post(FileSharingApiEndpoints.DUPLICATE)
   async duplicateFile(
     @Body() duplicateFileRequestDto: DuplicateFileRequestDto,
+    @Query('share') share: string,
     @GetCurrentUsername() username: string,
   ) {
-    return this.filesharingService.duplicateFile(username, duplicateFileRequestDto);
+    return this.filesharingService.duplicateFile(username, duplicateFileRequestDto, share);
   }
 
   @Post(FileSharingApiEndpoints.COPY)
-  async copyFile(@Body() pathChangeOrCreateDto: PathChangeOrCreateDto[], @GetCurrentUsername() username: string) {
-    return this.filesharingService.copyFileOrFolder(username, pathChangeOrCreateDto);
+  async copyFile(
+    @Body() pathChangeOrCreateDto: PathChangeOrCreateDto[],
+    @Query('share') share: string,
+    @GetCurrentUsername() username: string,
+  ) {
+    return this.filesharingService.copyFileOrFolder(username, pathChangeOrCreateDto, share);
   }
 
   @Post(FileSharingApiEndpoints.COLLECT)
@@ -169,10 +181,11 @@ class FilesharingController {
     @Body() body: { collectFileRequestDTO: CollectFileRequestDTO[] },
     @Query('type') type: LmnApiCollectOperationsType,
     @Query('userRole') userRole: string,
+    @Query('share') share: string,
     @GetCurrentUsername() username: string,
   ) {
     const { collectFileRequestDTO } = body;
-    return this.filesharingService.collectFiles(username, collectFileRequestDTO, userRole, type);
+    return this.filesharingService.collectFiles(username, collectFileRequestDTO, userRole, type, share);
   }
 
   @Post(FileSharingApiEndpoints.PUBLIC_SHARE)
@@ -194,6 +207,7 @@ class FilesharingController {
     @Res() res: Response,
     @Query('path') path: string,
     @Query('filename') filename: string,
+    @Query('share') share: string,
     @GetCurrentUsername() username: string,
   ) {
     try {
@@ -202,7 +216,7 @@ class FilesharingController {
         return res.status(HttpStatus.OK).json({ error: 0 });
       }
 
-      return await this.filesharingService.handleCallback(req, res, path, filename, username);
+      return await this.filesharingService.handleCallback(req, res, path, filename, username, share);
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 1 });
     }
@@ -231,6 +245,7 @@ class FilesharingController {
   @Post(`${FileSharingApiEndpoints.PUBLIC_SHARE_DOWNLOAD}/:publicShareId`)
   async downloadSharedContent(
     @Param('publicShareId') publicShareId: string,
+    @Query('share') share: string,
     @Body('password') password: string | undefined,
     @Res({ passthrough: true }) res: Response,
     @GetCurrentUser({ required: false }) currentUser?: JWTUser,
@@ -238,6 +253,7 @@ class FilesharingController {
     const { stream, filename, fileType } = await this.filesharingService.getPublicShare(
       publicShareId,
       currentUser,
+      share,
       password,
     );
 

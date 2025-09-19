@@ -1697,6 +1697,7 @@
       "linuxmuster": "Linuxmuster",
       "edu-file-proxy": "edulution File Proxy",
       "generic": "Generic"
-    }
+    },
+    "status": "Status"
   }
 }

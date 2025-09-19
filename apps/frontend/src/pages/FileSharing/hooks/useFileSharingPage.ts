@@ -11,7 +11,7 @@
  */
 
 import { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
@@ -28,21 +28,20 @@ const useFileSharingPage = () => {
     setPathToRestoreSession,
     pathToRestoreSession,
     isLoading: isFileProcessing,
-    fetchWebdavShares,
   } = useFileSharingStore();
   const { isLoading, fileOperationResult } = useFileSharingDialogStore();
   const { fetchShares } = usePublicShareStore();
   const { user } = userStore();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { webdavShare } = useParams();
   const { homePath } = useUserPath();
   const path = searchParams.get(URL_SEARCH_PARAMS.PATH) || homePath;
 
   useEffect(() => {
     if (user) {
-      void fetchMountPoints();
-      void fetchWebdavShares();
+      void fetchMountPoints(webdavShare);
     }
-  }, [user]);
+  }, [user, webdavShare]);
 
   useEffect(() => {
     if (!isFileProcessing) {
@@ -52,10 +51,10 @@ const useFileSharingPage = () => {
           newSearchParams.set(URL_SEARCH_PARAMS.PATH, pathToRestoreSession);
           setSearchParams(newSearchParams);
         } else {
-          void fetchFiles(homePath);
+          void fetchFiles(webdavShare, homePath);
         }
       } else {
-        void fetchFiles(path);
+        void fetchFiles(webdavShare, path);
         void fetchShares();
         setPathToRestoreSession(path);
       }
@@ -66,7 +65,7 @@ const useFileSharingPage = () => {
     const updateFilesAfterSuccess = async () => {
       if (fileOperationResult && !isLoading) {
         if (fileOperationResult.success) {
-          await fetchFiles(currentPath);
+          await fetchFiles(webdavShare, currentPath);
           await fetchShares();
           toast.success(fileOperationResult.message);
         } else {

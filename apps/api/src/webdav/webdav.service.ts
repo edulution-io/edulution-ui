@@ -103,17 +103,17 @@ class WebdavService {
     );
   }
 
-  async initializeClient(username: string): Promise<void> {
+  async initializeClient(username: string, share: string): Promise<void> {
     const password = await this.usersService.getPassword(username);
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
     const client = WebdavClientFactory.createWebdavClient(baseUrl, username, password);
     const timeout = this.scheduleClientTimeout(username);
     this.webdavClientCache.set(username, { client, timeout });
   }
 
-  public async getClient(username: string): Promise<AxiosInstance> {
+  public async getClient(username: string, share: string): Promise<AxiosInstance> {
     if (!this.webdavClientCache.has(username)) {
-      await this.initializeClient(username);
+      await this.initializeClient(username, share);
     } else {
       clearTimeout(this.webdavClientCache.get(username)!.timeout);
       this.webdavClientCache.get(username)!.timeout = this.scheduleClientTimeout(username);
@@ -141,16 +141,16 @@ class WebdavService {
     return partialSegments.join('/');
   }
 
-  async ensureFolderExists(username: string, basePath: string, folderName: string) {
-    const exists = await this.checkIfFolderExists(username, basePath, folderName);
+  async ensureFolderExists(username: string, basePath: string, folderName: string, share: string) {
+    const exists = await this.checkIfFolderExists(username, basePath, folderName, share);
     if (!exists) {
-      await this.createFolder(username, basePath, folderName);
+      await this.createFolder(username, basePath, folderName, share);
     }
   }
 
-  async getFilesAtPath(username: string, path: string): Promise<DirectoryFileDTO[]> {
-    const client = await this.getClient(username);
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+  async getFilesAtPath(username: string, path: string, share: string): Promise<DirectoryFileDTO[]> {
+    const client = await this.getClient(username, share);
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
     const url = new URL(path.replace(/^\/+/, ''), baseUrl).href;
     return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
       client,
@@ -167,9 +167,9 @@ class WebdavService {
     )) as DirectoryFileDTO[];
   }
 
-  async getDirectoryAtPath(username: string, path: string): Promise<DirectoryFileDTO[]> {
-    const client = await this.getClient(username);
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+  async getDirectoryAtPath(username: string, path: string, share: string): Promise<DirectoryFileDTO[]> {
+    const client = await this.getClient(username, share);
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
     const url = new URL(path.replace(/^\/+/, ''), baseUrl).href;
 
     return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
@@ -187,9 +187,9 @@ class WebdavService {
     )) as DirectoryFileDTO[];
   }
 
-  async createFolder(username: string, path: string, folderName: string): Promise<WebdavStatusResponse> {
-    const client = await this.getClient(username);
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+  async createFolder(username: string, path: string, folderName: string, share: string): Promise<WebdavStatusResponse> {
+    const client = await this.getClient(username, share);
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
     const joinUrl = (...parts: string[]) =>
       parts
         .filter(Boolean)
@@ -215,15 +215,15 @@ class WebdavService {
     );
   }
 
-  async createFile(username: string, fullPath: string, content = ''): Promise<WebdavStatusResponse> {
-    const client = await this.getClient(username);
+  async createFile(username: string, fullPath: string, content: string, share: string): Promise<WebdavStatusResponse> {
+    const client = await this.getClient(username, share);
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
         method: HttpMethods.PUT,
         url: fullPath,
         headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.TEXT_PLAIN },
-        data: content,
+        data: content || '',
       },
       FileSharingErrorMessage.CreationFailed,
       (resp: WebdavStatusResponse) => ({
@@ -238,11 +238,12 @@ class WebdavService {
     fullPath: string,
     fileStream: Readable,
     contentType: string,
+    share: string,
     onProgress?: (transferred: number, total?: number) => void,
     totalSize?: number,
   ): Promise<WebdavStatusResponse> {
     const password = await this.usersService.getPassword(username);
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
     const url = new URL(fullPath.replace(/^\/+/, ''), baseUrl).href;
 
     const headers: Record<string, string> = { [HTTP_HEADERS.ContentType]: contentType };
@@ -281,8 +282,9 @@ class WebdavService {
     fullPath: string,
     fileStream: Readable,
     contentType: string,
+    share: string,
   ): Promise<WebdavStatusResponse> {
-    const client = await this.getClient(username);
+    const client = await this.getClient(username, share);
 
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
@@ -306,8 +308,8 @@ class WebdavService {
     );
   }
 
-  async deletePath(username: string, fullPath: string): Promise<WebdavStatusResponse> {
-    const client = await this.getClient(username);
+  async deletePath(username: string, fullPath: string, share: string): Promise<WebdavStatusResponse> {
+    const client = await this.getClient(username, share);
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
       {
@@ -327,10 +329,11 @@ class WebdavService {
     username: string,
     originFullPath: string,
     destFullPath: string,
+    share: string,
   ): Promise<WebdavStatusResponse> {
-    const client = await this.getClient(username);
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
-    const webdavShareType = await this.webdavSharesService.getWebdavShareType();
+    const client = await this.getClient(username, share);
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
+    const webdavShareType = await this.webdavSharesService.getWebdavShareType(share);
     let destinationUrl = destFullPath;
     if (webdavShareType === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
       destinationUrl = `${baseUrl.replace(/\/+$/, '')}/${destFullPath.replace(/^\/+/, '')}`;
@@ -357,10 +360,11 @@ class WebdavService {
     username: string,
     originFullPath: string,
     destFullPath: string,
+    share: string,
   ): Promise<WebdavStatusResponse> {
-    const client = await this.getClient(username);
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
-    const webdavShareType = await this.webdavSharesService.getWebdavShareType();
+    const client = await this.getClient(username, share);
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
+    const webdavShareType = await this.webdavSharesService.getWebdavShareType(share);
     let destinationUrl = destFullPath;
     if (webdavShareType === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
       destinationUrl = `${baseUrl.replace(/\/+$/, '')}/${destFullPath.replace(/^\/+/, '')}`;
@@ -383,12 +387,12 @@ class WebdavService {
     );
   }
 
-  async checkIfFolderExists(username: string, parentPath: string, name: string): Promise<boolean> {
-    const directories = await this.getDirectoryAtPath(username, `${parentPath}/`);
+  async checkIfFolderExists(username: string, parentPath: string, name: string, share: string): Promise<boolean> {
+    const directories = await this.getDirectoryAtPath(username, `${parentPath}/`, share);
     return directories.some((item) => item.type === ContentType.DIRECTORY && item.filename === name);
   }
 
-  async createCollectFolderIfNotExists(username: string, destinationPath: string) {
+  async createCollectFolderIfNotExists(username: string, destinationPath: string, share: string) {
     const sanitizedDestinationPath = destinationPath.replace(`${FILE_PATHS.COLLECT}/`, '');
     const pathWithoutFilename = sanitizedDestinationPath.slice(0, sanitizedDestinationPath.lastIndexOf('/'));
 
@@ -396,12 +400,13 @@ class WebdavService {
       username,
       `${pathWithoutFilename}/`,
       FILE_PATHS.COLLECT,
+      share,
     );
 
     if (folderAlreadyExistis) return;
 
     try {
-      await this.createFolder(username, pathWithoutFilename, FILE_PATHS.COLLECT);
+      await this.createFolder(username, pathWithoutFilename, FILE_PATHS.COLLECT, share);
     } catch (error) {
       throw new CustomHttpException(
         FileSharingErrorMessage.CreationFailed,
@@ -416,15 +421,20 @@ class WebdavService {
     username: string,
     originFullPath: string,
     newFullPath: string,
+    share: string,
   ): Promise<WebdavStatusResponse> {
-    await this.createCollectFolderIfNotExists(username, originFullPath);
-    await this.moveOrRenameResource(username, originFullPath, newFullPath);
-    return this.createFolder(username, originFullPath.replace(FILE_PATHS.COLLECT, ''), FILE_PATHS.COLLECT);
+    await this.createCollectFolderIfNotExists(username, originFullPath, share);
+    await this.moveOrRenameResource(username, originFullPath, newFullPath, share);
+    return this.createFolder(username, originFullPath.replace(FILE_PATHS.COLLECT, ''), FILE_PATHS.COLLECT, share);
   }
 
-  async copyCollectedItems(username: string, duplicateFile: DuplicateFileRequestDto): Promise<WebdavStatusResponse> {
+  async copyCollectedItems(
+    username: string,
+    duplicateFile: DuplicateFileRequestDto,
+    share: string,
+  ): Promise<WebdavStatusResponse> {
     const duplicationPromises = duplicateFile.destinationFilePaths.map(async (destinationPath) => {
-      await this.copyFileViaWebDAV(username, duplicateFile.originFilePath, destinationPath);
+      await this.copyFileViaWebDAV(username, duplicateFile.originFilePath, destinationPath, share);
     });
 
     try {
@@ -439,8 +449,9 @@ class WebdavService {
     username: string,
     fullPath: string,
     filepath: string,
+    share: string,
   ): Promise<ContentType | undefined> {
-    const files = await this.getFilesAtPath(username, fullPath);
+    const files = await this.getFilesAtPath(username, fullPath, share);
     const matchedFile = files.find((file) => file.filePath === filepath);
     return matchedFile?.type === ContentType.FILE ? ContentType.FILE : ContentType.DIRECTORY;
   }

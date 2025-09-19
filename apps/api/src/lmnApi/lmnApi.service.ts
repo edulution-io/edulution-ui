@@ -40,14 +40,11 @@ import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
-import CreateWorkingDirectoryDto from '@libs/classManagement/types/createWorkingDirectoryDto';
-import convertWindowsToUnixPath from '@libs/filesharing/utils/convertWindowsToUnixPath';
 import { decodeBase64Api } from '@libs/common/utils/getBase64StringApi';
 import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
 import GroupFormDto from '@libs/groups/types/groupForm.dto';
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
-import WebdavService from '../webdav/webdav.service';
 import LdapKeycloakSyncService from '../ldap-keycloak-sync/ldap-keycloak-sync.service';
 
 @Injectable()
@@ -60,7 +57,6 @@ class LmnApiService {
 
   constructor(
     private readonly userService: UsersService,
-    private readonly webdavService: WebdavService,
     private readonly ldapKeycloakSyncService: LdapKeycloakSyncService,
   ) {
     const httpsAgent = new HttpsAgent({
@@ -772,18 +768,6 @@ class LmnApiService {
         LmnApiService.name,
       );
     }
-  }
-
-  async handleCreateWorkingDirectory(createWorkingDirectoryDto: CreateWorkingDirectoryDto): Promise<void> {
-    const { teacher } = createWorkingDirectoryDto;
-    const { members } = createWorkingDirectoryDto.schoolClass;
-
-    await Promise.all(
-      members.map(async (member) => {
-        const unixPath = convertWindowsToUnixPath(member.homeDirectory);
-        return this.webdavService.createFolder(member.name, unixPath, teacher);
-      }),
-    );
   }
 }
 

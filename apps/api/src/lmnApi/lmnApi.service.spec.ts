@@ -263,7 +263,6 @@ describe('LmnApiService', () => {
   describe('toggleSchoolClassJoined', () => {
     it('should call toggleSchoolClassJoined endpoint and return data', async () => {
       jest.spyOn(service, 'getSchoolClass').mockResolvedValue({} as LmnApiSchoolClass);
-      jest.spyOn(service, 'handleCreateWorkingDirectory').mockResolvedValue();
 
       const mockResponse = { data: { className: 'SchoolClass' } };
       mockedAxios.post.mockResolvedValue(mockResponse);
@@ -423,14 +422,14 @@ describe('LmnApiService', () => {
       const mockResponse = { data: [{ sessionId: 'session1' }] };
       mockedAxios.get.mockResolvedValue(mockResponse);
 
-      const result = await service.getUserSessions(mockToken, 'username');
+      const result = await service.getUserSessions(mockToken, 'username', true);
       expect(result).toEqual(mockResponse.data);
     });
 
     it('should throw CustomHttpException on failure', async () => {
       mockedAxios.get.mockRejectedValue(new Error('API Error'));
 
-      await expect(service.getUserSessions(mockToken, 'username')).rejects.toThrow(CustomHttpException);
+      await expect(service.getUserSessions(mockToken, 'username', true)).rejects.toThrow(CustomHttpException);
     });
   });
 

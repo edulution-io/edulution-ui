@@ -51,6 +51,7 @@ interface PublicShareStoreState {
     url: string,
     filename: string,
     password: string | undefined,
+    share: string | undefined,
     onWrongPassword?: () => void,
     authToken?: string,
   ) => Promise<void>;
@@ -118,7 +119,7 @@ const usePublicShareStore = create<PublicShareStoreState>((set, get) => ({
   async createShare(dto) {
     set({ isLoading: true, error: null });
     try {
-      await eduApi.post(FILESHARING_SHARED_FILES_API_ENDPOINT, dto);
+      await eduApi.post(FILESHARING_SHARED_FILES_API_ENDPOINT, dto, { params: { share: dto.share } });
       toast.success(t('filesharing.publicFileSharing.success.PublicFileLinkCreated'));
       await get().fetchShares();
     } catch (err) {
@@ -132,7 +133,7 @@ const usePublicShareStore = create<PublicShareStoreState>((set, get) => ({
   async updateShare(dto) {
     set({ isLoading: true, error: null });
     try {
-      await eduApi.patch(FILESHARING_SHARED_FILES_API_ENDPOINT, dto);
+      await eduApi.patch(FILESHARING_SHARED_FILES_API_ENDPOINT, dto, { params: { share: dto.share } });
       toast.success(t('filesharing.publicFileSharing.success.PublicFileLinkUpdated'));
       await get().fetchShares();
     } catch (err) {
@@ -158,7 +159,7 @@ const usePublicShareStore = create<PublicShareStoreState>((set, get) => ({
     }
   },
 
-  async downloadFileWithPassword(url, filename, password, onWrongPassword, authToken) {
+  async downloadFileWithPassword(url, filename, password, share, onWrongPassword, authToken) {
     set({ isPreparingFileDownload: true });
     try {
       const res = await axios.post(
@@ -168,6 +169,7 @@ const usePublicShareStore = create<PublicShareStoreState>((set, get) => ({
           responseType: 'blob',
           validateStatus: (s) => s < 300 || s === 401 || s === 403,
           headers: authToken ? { Authorization: `Bearer ${authToken}` } : undefined,
+          params: { share },
         },
       );
 

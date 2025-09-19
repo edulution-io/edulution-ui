@@ -10,9 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import DirectoryBreadcrumb from '@/pages/FileSharing/Table/DirectoryBreadcrumb';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
@@ -24,6 +25,7 @@ import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/getFileSharingTableColumns';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
+import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 
 const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   showAllFiles = false,
@@ -33,15 +35,13 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   fileType,
   isCurrentPathDefaultDestination = false,
 }) => {
+  const { webdavShare } = useParams();
   const { t } = useTranslation();
   const [currentPath, setCurrentPath] = useState(pathToFetch || '');
-
   const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
 
-  const { fetchDialogDirs, fetchDialogFiles, dialogShownDirs, dialogShownFiles, isLoading } =
+  const { fetchDialogFiles, fetchDialogDirs, dialogShownDirs, dialogShownFiles, isLoading } =
     useFileSharingMoveDialogStore();
-
-  const fetchMechanism = fileType === ContentType.DIRECTORY ? fetchDialogDirs : fetchDialogFiles;
 
   const currentDirItem: DirectoryFileDTO = {
     filePath: currentPath,
@@ -72,30 +72,21 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   };
 
   const onFilenameClick = (item: Row<DirectoryFileDTO>) => {
-    if (item.original.type === ContentType.DIRECTORY) {
-      let newPath = item.original.filePath;
-
-      if (!newPath.endsWith('/')) {
-        newPath += '/';
-      }
-
-      setCurrentPath(newPath);
-    } else {
-      item.toggleSelected();
+    const newPath = getPathWithoutWebdav(item.original.filePath);
+    setCurrentPath(newPath);
+    void fetchDialogDirs(webdavShare, newPath);
+    if (showAllFiles) {
+      void fetchDialogFiles(webdavShare, newPath);
     }
   };
 
-  useEffect(() => {
-    if (!showAllFiles || !pathToFetch || currentPath.includes(pathToFetch)) {
-      void fetchMechanism(currentPath);
-    } else {
-      void fetchMechanism(pathToFetch);
-    }
-  }, [currentPath, showAllFiles, pathToFetch]);
-
   const handleBreadcrumbNavigate = (path: string) => {
-    const newPath = path.replace('webdav/', '');
+    const newPath = getPathWithoutWebdav(path);
     setCurrentPath(newPath);
+    void fetchDialogDirs(webdavShare, newPath);
+    if (showAllFiles) {
+      void fetchDialogFiles(webdavShare, newPath);
+    }
   };
 
   const getHiddenSegments = (): string[] => {

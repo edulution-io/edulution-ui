@@ -262,8 +262,9 @@ class FilesystemService {
     filePath: string,
     filename: string,
     client: AxiosInstance,
+    share: string,
   ): Promise<WebdavStatusResponse> {
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
+    const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
     const url = `${baseUrl}${getPathWithoutWebdav(filePath)}`;
     await this.ensureDirectoryExists(PUBLIC_DOWNLOADS_PATH);
 

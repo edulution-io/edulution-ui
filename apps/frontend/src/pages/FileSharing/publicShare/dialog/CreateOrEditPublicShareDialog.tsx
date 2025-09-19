@@ -12,6 +12,7 @@
 
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
@@ -31,6 +32,7 @@ interface Props {
 }
 
 const CreateOrEditPublicShareDialog: React.FC<Props> = ({ trigger }) => {
+  const { webdavShare } = useParams();
   const { t } = useTranslation();
 
   const { selectedItems } = useFileSharingStore();
@@ -66,6 +68,7 @@ const CreateOrEditPublicShareDialog: React.FC<Props> = ({ trigger }) => {
   const onSubmit = async (values: CreateOrEditPublicShareDto) => {
     const dto: CreateOrEditPublicShareDto = {
       ...values,
+      share: dialog.edit ? values.share : (webdavShare as string),
       filePath: currentFile.filePath,
       filename: currentFile.filename,
       etag: currentFile.etag,

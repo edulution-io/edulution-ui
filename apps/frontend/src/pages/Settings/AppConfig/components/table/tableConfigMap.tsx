@@ -157,7 +157,7 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
       dialogBody: <AddWebdavShareDialog tableId={ExtendedOptionKeys.WEBDAV_SHARE_TABLE} />,
       showAddButton: true,
       showRemoveButton: true,
-      filterKey: WEBDAV_SHARE_TABLE_COLUMNS.URL,
+      filterKey: WEBDAV_SHARE_TABLE_COLUMNS.DISPLAY_NAME,
       filterPlaceHolderText: 'settings.appconfig.sections.webdavShare.filterPlaceHolderText',
       type: ExtendedOptionKeys.WEBDAV_SHARE_TABLE,
       hideColumnsInMobileView: [

@@ -12,11 +12,14 @@
 
 import axios, { AxiosInstance } from 'axios';
 
-const createUploadClient = (baseURL: string, token?: string): AxiosInstance => {
+type QueryParams = Record<string, string | number | boolean | undefined>;
+
+const createUploadClient = (baseURL: string, params: QueryParams, token?: string): AxiosInstance => {
   const instance = axios.create({
     baseURL,
     withCredentials: true,
     timeout: 0,
+    params,
   });
 
   if (token) {

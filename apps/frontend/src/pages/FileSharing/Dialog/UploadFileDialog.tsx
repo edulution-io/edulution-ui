@@ -11,6 +11,7 @@
  */
 
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
@@ -20,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 import useUserStore from '@/store/UserStore/useUserStore';
 
 const UploadFileDialog = () => {
+  const { webdavShare } = useParams();
   const { currentPath } = useFileSharingStore();
   const { isUploadDialogOpen, closeUploadDialog, uploadFiles, isUploading, setFilesToUpload } =
     useHandelUploadFileStore();
@@ -36,7 +38,7 @@ const UploadFileDialog = () => {
 
   const handleSubmit = async () => {
     closeUploadDialog();
-    await uploadFiles(currentPath, eduApiToken);
+    await uploadFiles(currentPath, eduApiToken, webdavShare);
     setRemountKey((k) => k + 1);
   };
 

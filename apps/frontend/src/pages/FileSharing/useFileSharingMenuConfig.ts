@@ -13,90 +13,55 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import {
-  CloudIcon,
-  FileSharingIcon,
-  IsoIcon,
-  ProgrammIcon,
-  ProjectIcon,
-  ShareIcon,
-  StudentsIcon,
-  TeacherIcon,
-} from '@/assets/icons';
+import { CloudIcon, FileSharingIcon } from '@/assets/icons';
 import userStore from '@/store/UserStore/useUserStore';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
-import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import MenuItem from '@libs/menubar/menuItem';
 import APPS from '@libs/appconfig/constants/apps';
 import { t } from 'i18next';
 import SHARED from '@libs/filesharing/constants/shared';
-import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
-
-const iconMap = {
-  teachers: TeacherIcon,
-  projects: ProjectIcon,
-  iso: IsoIcon,
-  programs: ProgrammIcon,
-  share: ShareIcon,
-  students: StudentsIcon,
-};
-
-const findCorrespondingMountPointIcon = (filename: string) => {
-  const key = Object.keys(iconMap).find((k) => filename.includes(k));
-  return key ? iconMap[key as keyof typeof iconMap] : FileSharingIcon;
-};
+import WEBDAV_SHARE_STATUS from '@libs/webdav/constants/webdavShareStatus';
 
 const useFileSharingMenuConfig = () => {
-  const { mountPoints } = useFileSharingStore();
+  const { webdavShares } = useFileSharingStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = userStore();
 
   const handlePathChange = useCallback(
-    (newPath: string, basePath: string) => {
-      navigate(`${APPS.FILE_SHARING}/${basePath}`);
-      const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.set(URL_SEARCH_PARAMS.PATH, newPath);
-      setSearchParams(newSearchParams);
+    (basePath: string) => {
+      navigate(
+        {
+          pathname: `${APPS.FILE_SHARING}/${basePath}`,
+          search: '',
+        },
+        { replace: true },
+      );
     },
-    [searchParams, setSearchParams],
+    [navigate],
   );
 
   useEffect(() => {
-    const menuBarItems: MenuItem[] = mountPoints.map((mountPoint: DirectoryFileDTO) => {
-      const isHome =
-        mountPoint.filePath.includes(`${user?.ldapGroups?.roles?.at(0)}s`) &&
-        mountPoint.filePath.includes(`${user?.username}`);
-      let translationKey = `mountpoints.${mountPoint.filename?.toLowerCase()}`;
-
-      if (isHome) {
-        translationKey = 'mountpoints.home';
-      }
-      const baseName = mountPoint.filename ?? '';
-
-      const defaultLabel = baseName ? baseName.charAt(0).toUpperCase() + baseName.slice(1) : '';
-
-      const label = t(translationKey, { defaultValue: defaultLabel });
-
-      return {
-        id: mountPoint.filename,
-        label,
-        icon: findCorrespondingMountPointIcon(mountPoint.filePath),
+    const menuBarItems: MenuItem[] = webdavShares
+      .filter((share) => !!share.webdavShareId)
+      .map((share) => ({
+        id: share.webdavShareId!,
+        label: share.displayName,
+        icon: FileSharingIcon,
         color: 'hover:bg-ciGreenToBlue',
-        action: () => handlePathChange(getPathWithoutWebdav(mountPoint.filePath), mountPoint.filename),
-      };
-    });
+        action: () => (share.status === WEBDAV_SHARE_STATUS.UP ? handlePathChange(share.displayName) : {}),
+        disableTranslation: true,
+      }));
 
     const sharedItem: MenuItem = {
       id: 'shared',
       label: t('mountpoints.shared', { defaultValue: 'Geteilte Dateien' }),
       icon: CloudIcon,
-      action: () => handlePathChange(`/${SHARED}`, SHARED),
+      action: () => handlePathChange(SHARED),
     };
 
     setMenuItems([...menuBarItems, sharedItem]);
-  }, [mountPoints, user?.ldapGroups?.roles, user?.ldapGroups?.schools, searchParams, setSearchParams, t]);
+  }, [user?.ldapGroups?.roles, user?.ldapGroups?.schools, searchParams, setSearchParams, t]);
 
   return {
     title: 'filesharing.title',

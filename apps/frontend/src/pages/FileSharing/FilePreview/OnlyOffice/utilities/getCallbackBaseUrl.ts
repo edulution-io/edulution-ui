@@ -10,13 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface FileJobData {
-  username: string;
-  originFilePath: string;
-  destinationFilePath: string;
-  total: number;
-  processed: number;
-  share: string;
+import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
+import getFrontEndUrl from '@libs/common/utils/URL/getFrontEndUrl';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+
+interface CallbackBaseUrlProps {
+  fileName: string;
+  filePath: string;
+  token: string;
+  share: string | undefined;
 }
 
-export default FileJobData;
+const getCallbackBaseUrl = ({ fileName, filePath, token, share }: CallbackBaseUrlProps): string =>
+  `${getFrontEndUrl()}/${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/callback?path=${filePath}&filename=${fileName}&share=${share}&token=${token}`;
+
+export default getCallbackBaseUrl;

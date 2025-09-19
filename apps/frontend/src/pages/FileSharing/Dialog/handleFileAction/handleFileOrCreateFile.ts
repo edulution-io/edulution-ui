@@ -13,7 +13,6 @@
 import { HttpMethods } from '@libs/common/types/http-methods';
 import ContentType from '@libs/filesharing/types/contentType';
 import eduApi from '@/api/eduApi';
-import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 
 const handleFileOrCreateFile = async (
@@ -21,17 +20,20 @@ const handleFileOrCreateFile = async (
   httpMethod: HttpMethods,
   type: ContentType,
   originalFormData: FormData,
+  webdavShare: string | undefined,
 ) => {
   const rawPath = String(originalFormData.get('path') ?? '');
   const sanitizedPath = getPathWithoutWebdav(rawPath);
-  const baseUrl = buildApiFileTypePathUrl(`${endpoint}`, type, sanitizedPath);
 
   const file = originalFormData.get('file') as File | null;
   const filenameFromForm =
     (originalFormData.get('name') as string) || (originalFormData.get('filename') as string) || file?.name || '';
 
-  await eduApi[httpMethod](baseUrl, originalFormData, {
+  await eduApi[httpMethod](endpoint, originalFormData, {
     params: {
+      share: webdavShare,
+      type,
+      path: sanitizedPath,
       name: filenameFromForm,
     },
     withCredentials: true,

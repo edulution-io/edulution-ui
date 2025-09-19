@@ -37,14 +37,14 @@ class MoveOrRenameConsumer extends WorkerHost {
   }
 
   async process(job: Job<FileOperationQueueJobData>): Promise<void> {
-    const { username, path, newPath, processed, total } = job.data as MoveOrRenameJobData;
+    const { username, path, newPath, processed, total, share } = job.data as MoveOrRenameJobData;
     const failedPaths: string[] = [];
 
     const oldNormalizedPath = buildNormalizedWebdavPath(path);
     const newNormalizedPath = buildNormalizedWebdavPath(newPath);
 
     try {
-      await this.webDavService.moveOrRenameResource(username, path, newPath);
+      await this.webDavService.moveOrRenameResource(username, path, newPath, share);
       const sanitizedPathRegex = toSanitizedPathRegex(oldNormalizedPath, 'g');
 
       await this.shareModel.updateMany(

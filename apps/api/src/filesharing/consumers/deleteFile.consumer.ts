@@ -37,13 +37,13 @@ class DeleteFileConsumer extends WorkerHost {
   }
 
   async process(job: Job<FileOperationQueueJobData>): Promise<void> {
-    const { username, originFilePath, processed, total, webdavFilePath } = job.data as DeleteFileJobData;
+    const { username, originFilePath, processed, total, webdavFilePath, share } = job.data as DeleteFileJobData;
     const targetPath = buildNormalizedWebdavPath(webdavFilePath);
     const sanitizedPathRegex = toSanitizedPathRegex(targetPath, 'g');
 
     const failedPaths: string[] = [];
     try {
-      await this.webDavService.deletePath(username, originFilePath);
+      await this.webDavService.deletePath(username, originFilePath, share);
       await this.shareModel.deleteMany({ filePath: sanitizedPathRegex });
     } catch (error) {
       failedPaths.push(originFilePath);
