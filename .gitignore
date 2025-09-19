@@ -220,6 +220,7 @@ sketch
 # Ignore all local history of files
 .history
 .ionide
+./prometheus
 
 ### WebStorm ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
@@ -373,3 +374,4 @@ $RECYCLE.BIN/
 
 # data folder
 data
+/prometheus/prom_client_secret
