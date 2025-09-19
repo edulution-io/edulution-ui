@@ -10,24 +10,25 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { create } from 'zustand';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { Request } from 'express';
+import AppConfigService from '../../appconfig/appconfig.service';
 
-interface AppConfigTableDialogStore {
-  isDialogOpen: string;
-  setDialogOpen: (open: string) => void;
-  reset: () => void;
+@Injectable()
+class IsPublicAppGuard implements CanActivate {
+  constructor(private readonly appConfigService: AppConfigService) {}
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest<Request>();
+    const { appName } = request.params;
+
+    const appConfig = await this.appConfigService.getPublicAppConfigByName(appName);
+    if (!appConfig) {
+      return false;
+    }
+
+    return true;
+  }
 }
 
-const initialState = {
-  isDialogOpen: '',
-};
-
-const useAppConfigTableDialogStore = create<AppConfigTableDialogStore>((set) => ({
-  ...initialState,
-
-  reset: () => set(initialState),
-
-  setDialogOpen: (open) => set({ isDialogOpen: open }),
-}));
-
-export default useAppConfigTableDialogStore;
+export default IsPublicAppGuard;

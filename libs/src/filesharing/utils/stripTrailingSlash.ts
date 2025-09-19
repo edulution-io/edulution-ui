@@ -10,17 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ExtendedOptionKeys from '../constants/extendedOptionKeys';
-import AppConfigDto from './appConfigDto';
-
-type EmbeddedPageEditorForm = {
-  [settingLocation: string]: AppConfigDto & {
-    extendedOptions: {
-      [ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT]: string;
-      [ExtendedOptionKeys.EMBEDDED_PAGE_HTML_MODE]: boolean;
-      [ExtendedOptionKeys.EMBEDDED_PAGE_IS_PUBLIC]: boolean;
-    };
-  };
+const stripTrailingSlash = (path: string): string => {
+  if (path === '/') return '/';
+  return path.replace(/\/+$/u, '');
 };
 
-export default EmbeddedPageEditorForm;
+export default stripTrailingSlash;

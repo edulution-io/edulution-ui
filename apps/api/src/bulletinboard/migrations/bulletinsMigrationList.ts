@@ -10,17 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ExtendedOptionKeys from '../constants/extendedOptionKeys';
-import AppConfigDto from './appConfigDto';
+// Add new migrations here
+import migration000 from './migration000';
 
-type EmbeddedPageEditorForm = {
-  [settingLocation: string]: AppConfigDto & {
-    extendedOptions: {
-      [ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT]: string;
-      [ExtendedOptionKeys.EMBEDDED_PAGE_HTML_MODE]: boolean;
-      [ExtendedOptionKeys.EMBEDDED_PAGE_IS_PUBLIC]: boolean;
-    };
-  };
-};
+const bulletinsMigrationList = [migration000];
 
-export default EmbeddedPageEditorForm;
+export default bulletinsMigrationList;

@@ -23,6 +23,7 @@ import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoi
 import PageLayout from '@/components/structure/layout/PageLayout';
 import useUserAccounts from '@/hooks/useUserAccounts';
 import useFileTableStore from '../Settings/AppConfig/components/useFileTableStore';
+import EmbeddedPageContent from './EmbeddedPageContent';
 
 const EmbeddedPage: React.FC = () => {
   const { pathname } = useLocation();
@@ -49,20 +50,12 @@ const EmbeddedPage: React.FC = () => {
 
   return (
     <PageLayout isFullScreen>
-      {isSandboxMode ? (
-        <iframe
-          src={htmlContentUrl}
-          title={pageTitle}
-          className="h-full w-full border-0"
-          sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
-        />
-      ) : (
-        <div
-          className="h-full w-full"
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: htmlContent }}
-        />
-      )}
+      <EmbeddedPageContent
+        pageTitle={pageTitle}
+        isSandboxMode={isSandboxMode}
+        htmlContentUrl={htmlContentUrl}
+        htmlContent={htmlContent}
+      />
     </PageLayout>
   );
 };
