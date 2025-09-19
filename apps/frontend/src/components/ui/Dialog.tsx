@@ -48,32 +48,46 @@ const DialogContent = React.forwardRef<
     showCloseButton?: boolean;
     variant?: 'primary' | 'secondary' | 'tertiary' | 'loadingSpinner';
   }
->(({ className, children, showCloseButton = true, variant, ...props }, ref) => (
-  <DialogPortal>
-    <DialogOverlay className={cn({ 'bg-black/50': variant === 'primary' })} />{' '}
-    <DialogPrimitive.Content
-      ref={ref}
-      className={cn(
-        'fixed left-[50%] top-[50%] z-50 grid max-h-[90vh] w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 overflow-auto rounded-xl p-6 shadow-lg duration-200 scrollbar-thin',
-        { 'bg-overlay text-background': variant === 'primary' },
-        { 'color-white text-background': variant === 'secondary' || variant === 'tertiary' },
-        { 'bg-ciGray': variant === 'secondary' },
-        { 'bg-foreground': variant === 'tertiary' },
-        { 'w-40 bg-foreground': variant === 'loadingSpinner' },
-        className,
-      )}
-      {...props}
-    >
-      {children}
-      {showCloseButton && (
-        <DialogPrimitive.Close className="absolute right-5 top-5">
-          <Cross2Icon className="h-4 w-4 text-background" />
-          <span className="sr-only">${i18n.t('dialog.close')}</span>
-        </DialogPrimitive.Close>
-      )}
-    </DialogPrimitive.Content>
-  </DialogPortal>
-));
+>(({ className, children, showCloseButton = true, variant, ...props }, ref) => {
+  React.useEffect(() => {
+    const resetPointerEvents = () => {
+      document.body.style.pointerEvents = '';
+    };
+
+    document.addEventListener('animationend', resetPointerEvents);
+    return () => {
+      resetPointerEvents();
+      document.removeEventListener('animationend', resetPointerEvents);
+    };
+  }, []);
+
+  return (
+    <DialogPortal>
+      <DialogOverlay className={cn({ 'bg-black/50': variant === 'primary' })} />{' '}
+      <DialogPrimitive.Content
+        ref={ref}
+        className={cn(
+          'fixed left-[50%] top-[50%] z-50 grid max-h-[90vh] w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 overflow-auto rounded-xl p-6 shadow-lg duration-200 scrollbar-thin',
+          { 'bg-overlay text-background': variant === 'primary' },
+          { 'color-white text-background': variant === 'secondary' || variant === 'tertiary' },
+          { 'bg-ciGray': variant === 'secondary' },
+          { 'bg-foreground': variant === 'tertiary' },
+          { 'w-40 bg-foreground': variant === 'loadingSpinner' },
+          className,
+        )}
+        {...props}
+      >
+        {children}
+        {showCloseButton && (
+          <DialogPrimitive.Close className="absolute right-5 top-5">
+            <Cross2Icon className="h-4 w-4 text-background" />
+            <span className="sr-only">${i18n.t('dialog.close')}</span>
+          </DialogPrimitive.Close>
+        )}
+      </DialogPrimitive.Content>
+    </DialogPortal>
+  );
+});
 
 DialogContent.defaultProps = {
   showCloseButton: true,
