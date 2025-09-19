@@ -22,6 +22,7 @@ import { ResponseType } from '@libs/common/types/http-methods';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
 import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
 import { AxiosProgressEvent } from 'axios';
+import ContentType from '@libs/filesharing/types/contentType';
 
 type FileSharingDownloadStore = {
   isCreatingBlobUrl: boolean;
@@ -35,7 +36,7 @@ type FileSharingDownloadStore = {
   createDownloadBlobUrl: (filePath: string, signal?: AbortSignal) => Promise<string | undefined>;
   getPublicDownloadUrl: (filePath: string, filename: string, signal?: AbortSignal) => Promise<string | undefined>;
   loadDownloadUrl: (file: DirectoryFileDTO | null, signal?: AbortSignal) => Promise<void>;
-  loadDownloadUrlMultipleFiles: (file: DirectoryFileDTO[], signal?: AbortSignal) => Promise<string | undefined>;
+  downloadFile: (file: DirectoryFileDTO, signal?: AbortSignal) => Promise<string | undefined>;
   setPublicDownloadLink: (publicDownloadLink: string) => void;
   reset: () => void;
 };
@@ -122,27 +123,26 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
     }
   },
 
-  loadDownloadUrlMultipleFiles: async (files: DirectoryFileDTO[], signal?: AbortSignal) => {
+  downloadFile: async (file: DirectoryFileDTO, signal?: AbortSignal) => {
     try {
-      set({ isFetchingPublicUrl: true });
-      const params = new URLSearchParams();
-      files.forEach((f) => params.append('filePath', f.filename));
+      set({ isFetchingPublicUrl: true, error: null });
 
-      const totalBytes = files.reduce((size, file) => size + (file.size ?? 0), 0);
+      const totalBytes = file.size ?? 0;
 
       const { data } = await eduApi.get<Blob>(
         `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_STREAM}`,
         {
           responseType: ResponseType.BLOB,
           signal,
-          params: { filePath: files.map((file) => file.filePath) },
+          params: { filePath: file.filePath },
           onDownloadProgress: (e: AxiosProgressEvent) => {
             const total = e.total ?? totalBytes;
             if (!total) return;
             let percent = Math.round((e.loaded / total) * 100);
             if (percent > 100) percent = 100;
+
             get().setDownloadProgress({
-              fileName: files.length > 1 ? 'download.zip' : files[0].filename,
+              fileName: file.type === ContentType.DIRECTORY ? `${file.filename}.zip` : file.filename,
               percent,
               processId: Math.floor(Math.random() * 1_000_000),
             });

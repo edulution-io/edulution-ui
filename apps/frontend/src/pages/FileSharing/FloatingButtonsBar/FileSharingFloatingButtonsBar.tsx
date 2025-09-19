@@ -31,7 +31,7 @@ const FileSharingFloatingButtonsBar = () => {
       {selectedItems.length === 1 && (
         <FileActionOneSelect
           openDialog={openDialog}
-          selectedItems={selectedItems.at(0)}
+          selectedItems={selectedItems}
         />
       )}
       {selectedItems.length > 1 && (
