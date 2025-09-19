@@ -10,19 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { z } from 'zod';
-import { t } from 'i18next';
+const stripTrailingSlash = (path: string): string => {
+  if (path === '/') return '/';
+  return path.replace(/\/+$/u, '');
+};
 
-const fileSharingFromSchema = z.object({
-  filename: z
-    .string()
-    .trim()
-    .min(1, t('filesharing.tooltips.NameRequired'))
-    .max(30, t('filesharing.tooltips.NameExceedsCharacterLimit'))
-    .refine((v) => !v.endsWith('.'), {
-      message: t('filesharing.tooltips.NameMustNotEndWithDot'),
-    }),
-  extension: z.string(),
-});
-
-export default fileSharingFromSchema;
+export default stripTrailingSlash;

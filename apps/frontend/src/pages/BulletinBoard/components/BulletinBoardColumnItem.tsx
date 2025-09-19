@@ -52,8 +52,14 @@ const BulletinBoardColumnItem = ({
     setSelectedBulletinToEdit,
     getBulletins,
   } = useBulletinBoardEditorialStore();
-  const { collapsedMap, setCollapsed, toggleCollapsed, resetBulletinBoardNotifications, setIsEditorialModeEnabled } =
-    useBulletinBoardStore();
+  const {
+    collapsedMap,
+    setCollapsed,
+    toggleCollapsed,
+    setIsEditorialModeEnabled,
+    bulletinBoardNotifications,
+    markBulletinAsRead,
+  } = useBulletinBoardStore();
 
   useEffect(() => {
     if (collapsedMap[bulletin.id] === undefined) {
@@ -71,34 +77,50 @@ const BulletinBoardColumnItem = ({
 
     const element = document.getElementById(bulletinId);
 
-    if (element) {
-      element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-        inline: 'center',
-      });
+    if (!element) return undefined;
 
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            element.classList.add('blinking');
-            resetBulletinBoardNotifications();
-          } else {
-            element.classList.remove('blinking');
-          }
-        },
-        { threshold: 0.5 },
-      );
+    void setCollapsed(bulletin.id, false);
 
-      observer.observe(element);
+    element.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'center',
+    });
 
-      return () => {
-        observer.disconnect();
-      };
-    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          element.classList.add('blinking');
+          markBulletinAsRead(bulletin.id);
+        } else {
+          element.classList.remove('blinking');
+        }
+      },
+      { threshold: 0.5 },
+    );
 
-    return undefined;
+    observer.observe(element);
+
+    return () => observer.disconnect();
   }, [bulletinId]);
+
+  useEffect(() => {
+    const hasNotification = bulletinBoardNotifications.some((b) => b.id === bulletin.id);
+    if (!hasNotification) return undefined;
+
+    const element = document.getElementById(bulletin.id);
+    if (!element) return undefined;
+
+    void setCollapsed(bulletin.id, false);
+
+    element.classList.add('blinking');
+
+    const timer = setTimeout(() => {
+      element.classList.remove('blinking');
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [bulletinBoardNotifications, bulletin.id, setCollapsed]);
 
   const handleDeleteBulletin = async () => {
     await getBulletins();
@@ -159,15 +181,27 @@ const BulletinBoardColumnItem = ({
     return items;
   };
 
+  const isNew = bulletinBoardNotifications.some((b) => b.id === bulletin.id);
+  const markAsRead = () => {
+    if (isNew) markBulletinAsRead(bulletin.id);
+  };
+
   return (
     <div
       id={bulletin.id}
+      role="button"
+      tabIndex={0}
       className={cn(
         'relative mx-1 flex items-start justify-between break-all rounded-lg bg-ciDarkGreyDisabled p-4 pb-2',
         {
-          ring: bulletinId === bulletin.id,
+          ring: isNew,
+          'cursor-pointer': isNew,
         },
       )}
+      onClick={markAsRead}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === '') markAsRead();
+      }}
     >
       <div className="flex-1">
         <h4 className="mb-2 w-[calc(100%-20px)] break-normal">
