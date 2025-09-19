@@ -20,8 +20,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import { BullModule } from '@nestjs/bullmq';
+import PUBLIC_DATA_PATH from '@libs/common/constants/publicDataPath';
 import LoggingInterceptor from '../logging/logging.interceptor';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
@@ -55,8 +55,8 @@ import UserPreferencesModule from '../user-preferences/user-preferences.module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: PUBLIC_DOWNLOADS_PATH,
-      serveRoot: `/${EDU_API_ROOT}/downloads`,
+      rootPath: PUBLIC_DATA_PATH,
+      serveRoot: `/${EDU_API_ROOT}/public`,
     }),
 
     BullModule.forRoot({

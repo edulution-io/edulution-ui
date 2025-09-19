@@ -30,6 +30,12 @@ const defaultValues: GlobalSettingsDto = {
       },
     },
   },
+  organisationInfo: {
+    name: '',
+    street: '',
+    postalCode: '',
+    website: '',
+  },
 };
 
 export default defaultValues;

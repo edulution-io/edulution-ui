@@ -10,8 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const GLOBAL_SETTINGS_ROOT_ENDPOINT = 'global-settings';
-export const GLOBAL_SETTINGS_ADMIN_ENDPOINT = 'admin';
-export const GLOBAL_SETTINGS_BRANDING_ENDPOINT = 'branding';
-export const GLOBAL_SETTINGS_BRANDING_LOGO = `${GLOBAL_SETTINGS_BRANDING_ENDPOINT}/logo`;
-export const GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS = 'mfaEnforcedGroups';
+import ThemedFile from '@libs/common/types/themedFile';
+import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
+
+export type GlobalSettingsFormValues = Omit<GlobalSettingsDto, 'brandingUploadFile'> & {
+  brandingUploads: {
+    logo: ThemedFile;
+  };
+};

@@ -9,10 +9,20 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
 /* eslint-disable @typescript-eslint/class-methods-use-this */
 import { join } from 'path';
-import { Controller, Delete, Get, Param, Post, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  Res,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { type Response } from 'express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -20,6 +30,7 @@ import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
+import { memoryStorage } from 'multer';
 import { createAttachmentUploadOptions } from './multer.utilities';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 import FilesystemService from './filesystem.service';
@@ -82,6 +93,18 @@ class FileSystemController {
   deleteFile(@Param('appName') appName: string, @Param('filename') filename: string) {
     const appsPath = join(APPS_FILES_PATH, appName);
     return FilesystemService.deleteFile(appsPath, FilesystemService.buildPathString(filename));
+  }
+
+  @Post()
+  @UseGuards(AppConfigGuard)
+  @UseInterceptors(FileInterceptor('file', { storage: memoryStorage() }))
+  async upload(
+    @UploadedFile() file: Express.Multer.File,
+    @Query('destination') destination: string,
+    @Query('filename') filename: string,
+  ) {
+    const { path } = await this.filesystemService.upload(file, { destination, filename });
+    return { path };
   }
 }
 

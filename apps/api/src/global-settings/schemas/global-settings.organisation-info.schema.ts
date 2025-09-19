@@ -10,8 +10,24 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const GLOBAL_SETTINGS_ROOT_ENDPOINT = 'global-settings';
-export const GLOBAL_SETTINGS_ADMIN_ENDPOINT = 'admin';
-export const GLOBAL_SETTINGS_BRANDING_ENDPOINT = 'branding';
-export const GLOBAL_SETTINGS_BRANDING_LOGO = `${GLOBAL_SETTINGS_BRANDING_ENDPOINT}/logo`;
-export const GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS = 'mfaEnforcedGroups';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+
+@Schema({ _id: false })
+export class OrganisationInfo {
+  @Prop({ type: String, trim: true, default: '' })
+  name: string;
+
+  @Prop({ type: String, trim: true, default: '' })
+  street: string;
+
+  @Prop({ type: String, trim: true, default: '' })
+  postalCode: string;
+
+  @Prop({ type: String, trim: true, default: '' })
+  website: string;
+
+  @Prop({ type: String, trim: true, default: '' })
+  city: string;
+}
+
+export const OrganisationInfoSchema = SchemaFactory.createForClass(OrganisationInfo);
