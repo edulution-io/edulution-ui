@@ -42,6 +42,7 @@ import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreatePro
 import CreateOrEditPublicShareDto from '@libs/filesharing/types/createOrEditPublicShareDto';
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
+import { pipeline } from 'stream/promises';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
 import FilesharingService from './filesharing.service';
@@ -125,10 +126,23 @@ class FilesharingController {
     @Res() res: Response,
     @GetCurrentUsername() username: string,
   ) {
-    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_OCTET_STREAM);
     const stream = await this.filesharingService.getWebDavFileStream(username, filePath);
+
+    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_OCTET_STREAM);
     res.setHeader(HTTP_HEADERS.ContentDisposition, `attachment; filename="${filePath.split('/').pop()}"`);
-    return stream.pipe(res);
+
+    try {
+      await pipeline(stream, res);
+    } catch (error) {
+      if (!res.headersSent) {
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          message: 'Error while streaming file',
+          details: (error as Error).message,
+        });
+      } else {
+        res.end();
+      }
+    }
   }
 
   @Get(FileSharingApiEndpoints.FILE_LOCATION)
