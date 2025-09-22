@@ -43,15 +43,10 @@ const migration003: Migration<GlobalSettingsDocument> = {
       { _id: globalSettings._id },
       {
         $set: {
-          ...globalSettings,
-          general: {
-            ...globalSettings.general,
-            defaultLandingPage: {
-              isCustomLandingPageEnabled: true,
-              appName: APPS.DASHBOARD,
-            },
+          'general.defaultLandingPage': {
+            isCustomLandingPageEnabled: true,
+            appName: APPS.DASHBOARD,
           },
-
           schemaVersion: newSchemaVersion,
         },
       },

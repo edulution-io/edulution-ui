@@ -42,12 +42,12 @@ const migration005: Migration<AppConfig> = {
     if (globalSettings?.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER) {
       const dashboardConfig = await model.exists({ name: APPS.DASHBOARD }).exec();
       Logger.debug(`Dashboard app exists: ${!!dashboardConfig}`, migration005.name);
+
       if (!dashboardConfig) {
         const filesharingConfig = await model.findOne({ name: APPS.FILE_SHARING }).exec();
         const filesharingAccessGroups = filesharingConfig?.accessGroups || [];
-        const now = new Date();
 
-        const dashboardDoc = {
+        const dashboardDoc = await model.create({
           name: APPS.DASHBOARD,
           translations: {},
           icon: getImageUrl(DashboardIcon),
@@ -57,31 +57,22 @@ const migration005: Migration<AppConfig> = {
           accessGroups: filesharingAccessGroups,
           position: 1,
           schemaVersion: newSchemaVersion,
-          createdAt: now,
-          updatedAt: now,
-          __v: 0,
-        };
+        });
 
-        const { collection } = model;
-        const insertResult = await collection.insertOne(dashboardDoc);
-        const dashboardId = insertResult.insertedId;
-        const positionUpdateResults = await model.updateMany({ _id: { $ne: dashboardId } }, { $inc: { position: 1 } });
+        const positionUpdateResults = await model.updateMany(
+          { _id: { $ne: dashboardDoc._id } },
+          { $inc: { position: 1 } },
+        );
+
         Logger.debug(`Update app position: ${positionUpdateResults.modifiedCount} documents updated`);
       }
     }
 
-    const bulkSchemaVersionUpdate = unprocessedDocuments.map((document) => ({
-      updateOne: {
-        filter: { _id: document._id },
-        update: {
-          $set: {
-            schemaVersion: newSchemaVersion,
-          },
-        },
-      },
-    }));
+    const schemaUpdateResults = await model.updateMany(
+      { schemaVersion: previousSchemaVersion },
+      { $set: { schemaVersion: newSchemaVersion } },
+    );
 
-    const schemaUpdateResults = await model.bulkWrite(bulkSchemaVersionUpdate);
     Logger.log(`Migration completed: ${schemaUpdateResults.modifiedCount} documents updated`);
   },
 };
