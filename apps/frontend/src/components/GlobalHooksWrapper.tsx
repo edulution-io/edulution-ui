@@ -31,7 +31,7 @@ import useTokenEventListeners from '../hooks/useTokenEventListeners';
 
 const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const auth = useAuth();
-  const { getAppConfigs } = useAppConfigsStore();
+  const { getAppConfigs, getPublicAppConfigs } = useAppConfigsStore();
   const { getGlobalSettings } = useGlobalSettingsApiStore();
   const { getIsEduApiHealthy } = useEduApiStore();
   const { isAuthenticated, eduApiToken, setEduApiToken, user, getWebdavKey } = useUserStore();
@@ -41,6 +41,10 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   const { fetchWebdavShares } = useFileSharingStore();
 
   const handleLogout = useLogout();
+
+  useEffect(() => {
+    void getPublicAppConfigs();
+  }, []);
 
   useEffect(() => {
     if (auth.user?.access_token) {

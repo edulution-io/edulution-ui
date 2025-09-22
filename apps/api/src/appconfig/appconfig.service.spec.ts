@@ -19,6 +19,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
 import { HttpStatus } from '@nestjs/common';
+import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../common/CustomHttpException';
 import AppConfigService from './appconfig.service';
 import { AppConfig } from './appconfig.schema';
@@ -28,6 +29,11 @@ import mockFilesystemService from '../filesystem/filesystem.service.mock';
 import GlobalSettingsService from '../global-settings/global-settings.service';
 
 jest.mock('fs');
+
+jest.mock('@libs/user/utils/getIsAdmin', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
 
 const mockConnection = {
   db: {
@@ -141,8 +147,12 @@ describe('AppConfigService', () => {
   });
 
   describe('getAppConfigs', () => {
-    it('should return app configs', async () => {
-      const ldapGroups = ['group1', 'group2'];
+    it('should return app configs (non-admin strips OnlyOffice secret)', async () => {
+      const ldapGroups = ['group1', 'group2']; // Non-Admin
+
+      const { [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: omit, ...safeExtendedOptions } =
+        (mockAppConfig.extendedOptions ?? {}) as Record<string, unknown>;
+      void omit;
       const expected = [
         {
           name: mockAppConfig.name,
@@ -150,13 +160,39 @@ describe('AppConfigService', () => {
           appType: mockAppConfig.appType,
           options: { url: mockAppConfig.options.url },
           accessGroups: [],
-          extendedOptions: mockAppConfig.extendedOptions,
+          extendedOptions: safeExtendedOptions,
           position: mockAppConfig.position,
         },
       ];
 
       const configs = await service.getAppConfigs(ldapGroups);
       expect(configs).toEqual(expected);
+      expect(configs[0].extendedOptions).not.toHaveProperty(ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET);
+    });
+    it('should include OnlyOffice secret for admin', async () => {
+      (getIsAdmin as jest.Mock).mockReturnValue(true);
+
+      const configs = await service.getAppConfigs(['irrelevant']);
+
+      expect(configs).toHaveLength(1);
+      expect(configs[0]).toMatchObject({
+        name: mockAppConfig.name,
+        icon: mockAppConfig.icon,
+        appType: mockAppConfig.appType,
+        options: mockAppConfig.options,
+        accessGroups: mockAppConfig.accessGroups,
+        position: mockAppConfig.position,
+      });
+      if (mockAppConfig.extendedOptions) {
+        expect(configs[0].extendedOptions).toHaveProperty(
+          ExtendedOptionKeys.ONLY_OFFICE_URL,
+          mockAppConfig.extendedOptions[ExtendedOptionKeys.ONLY_OFFICE_URL],
+        );
+        expect(configs[0].extendedOptions).toHaveProperty(
+          ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET,
+          mockAppConfig.extendedOptions[ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET],
+        );
+      }
     });
   });
 

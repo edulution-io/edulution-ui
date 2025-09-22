@@ -6,6 +6,8 @@
   "framebufferImage": "Framebuffer image",
   "previewImage": "Image preview",
   "not-set": "Not set",
+  "imprint": "Imprint",
+  "public": "Public",
   "bulletinboard": {
     "settings": "Settings",
     "noBulletinsToShow": "There are currently no messages to display, so check back later!",
@@ -354,7 +356,9 @@
       "folderNameRequired": "Folder name is required",
       "FileNameRequired": "File name is required",
       "NewFileNameRequired": "New file name is required",
-      "NameRequired": "Name is required"
+      "NameRequired": "Name is required",
+      "NameExceedsCharacterLimit": "Name exceeds character limit",
+      "NameMustNotEndWithDot": "The name must not end with a dot."
     },
     "progressBox": {
       "info": "Info",
@@ -376,7 +380,8 @@
       "downloadInfo": "Downloading {{filename}}",
       "errorInfo": "{{failed}} files could not be handed out",
       "fileStructureIsCreating": "File structure is creating",
-      "zipFilesAreUploading": "Files are uploading"
+      "zipFilesAreUploading": "Files are uploading",
+      "fileIsUploading": "{{filename}} is uploading"
     },
 
     "publicShareFilesPage": {
@@ -438,6 +443,22 @@
       "selectedItemPrefix": "Selected content that is shared:",
       "noInviteesWarning": "⚠️  WARNING: Anyone with the share link will be able to download this content.",
       "inviteesWarning": "⚠️  WARNING: Anyone within the selected groups or users will be able to download this content."
+    },
+
+    "eta": {
+      "fewSeconds": "a few seconds remaining",
+      "lessThanMinute": "less than a minute remaining",
+      "aboutOneMinute": "about one minute remaining",
+      "aboutMinutes_one": "about {{count}} minute remaining",
+      "aboutMinutes_other": "about {{count}} minutes remaining",
+      "aboutHours_one": "about {{count}} hour remaining",
+      "aboutHours_other": "about {{count}} hours remaining",
+      "moreThanHours_one": "more than {{count}} hour remaining",
+      "moreThanHours_other": "more than {{count}} hours remaining",
+      "aboutDays_one": "about {{count}} day remaining",
+      "aboutDays_other": "about {{count}} days remaining",
+      "moreThanDays_one": "more than {{count}} day remaining",
+      "moreThanDays_other": "more than {{count}} days remaining"
     }
   },
   "forums": {
@@ -977,7 +998,8 @@
           "sandboxMode": "Separate Layout",
           "nativeMode": "Integrated Layout",
           "sandboxModeDescription": "In “Sparate layout” mode, the content is displayed as a separate page, similar to a window within the application. In addition to the actual content, additional design elements or functions can also be loaded from other sources. This means that the design is independent of the application and could therefore look or behave differently. Here, the content must be uploaded as an HTML file.",
-          "nativeModeDescription": "In “Integrated layout” mode, on the other hand, the content is inserted directly into the user interface of the application. This means that the content looks exactly like the application itself and fits in seamlessly. However, no additional external design elements or functions can be added dynamically here. However, static elements such as images can be uploaded and used here."
+          "nativeModeDescription": "In “Integrated layout” mode, on the other hand, the content is inserted directly into the user interface of the application. This means that the content looks exactly like the application itself and fits in seamlessly. However, no additional external design elements or functions can be added dynamically here. However, static elements such as images can be uploaded and used here.",
+          "visibilityDescription": "Here you can specify whether the app should be publicly accessible. Active means public, inactive means that only configured user groups have access. Making the app publicly accessible creates a link in the footer. To make the app visible to registered users in the sidebar, their access must be configured via the user groups."
         }
       },
       "update": {
@@ -1165,6 +1187,7 @@
     "ok": "OK",
     "next": "Next",
     "back": "Back",
+    "of": "of",
     "confirm": "Confirm",
     "creator": "Creator",
     "share": "Share",
@@ -1376,7 +1399,11 @@
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
-    "sidebar": "Collaborative Whiteboard"
+    "sidebar": "Collaborative Whiteboard",
+    "privateRoom": "Private room",
+    "dropdownPlaceholder": "Choose your current room",
+    "historyTitle": "History",
+    "historyNoMore": "No more entries"
   },
   "table": {
     "noDataAvailable": "No data available"
@@ -1486,7 +1513,8 @@
     "delete": "Delete",
     "download": "Download",
     "copy": "Copy",
-    "share": "Share"
+    "share": "Share",
+    "back": "Back"
   },
   "response": {
     "successfully": "Action was successful",

@@ -131,6 +131,36 @@ class FilesharingService {
     return { success: true, status: HttpStatus.CREATED, filename: folderName };
   }
 
+  async uploadFileViaWebDav(
+    username: string,
+    path: string,
+    name: string,
+    req: Request,
+    isZippedFolder = false,
+    fileSize = 0,
+  ) {
+    const basePath = getPathWithoutWebdav(path);
+    const fullPath = `${basePath.replace(/\/+$/, '')}/${name.replace(/^\/+/, '')}`;
+    const mimeType =
+      (req.headers[HTTP_HEADERS.ContentType] as string) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
+
+    const incomingLen = Number(req.headers[HTTP_HEADERS.ContentLength] || 0);
+    let totalSize: number | undefined;
+    if (Number.isFinite(incomingLen) && incomingLen > 0) {
+      totalSize = incomingLen;
+    } else if (Number.isFinite(fileSize) && fileSize > 0) {
+      totalSize = fileSize;
+    } else {
+      totalSize = undefined;
+    }
+
+    if (isZippedFolder) {
+      return this.uploadZippedFolderStream(username, basePath, name, req);
+    }
+
+    return this.webDavService.uploadFileWithNetworkProgress(username, fullPath, req, mimeType, () => {}, totalSize);
+  }
+
   async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {
     let i = 0;
     return Promise.all(
@@ -188,10 +218,11 @@ class FilesharingService {
     return Promise.all(
       pathChangeOrCreateDtos.map(async (pathChange) => {
         const { path, newPath } = pathChange;
+        const trimmedNewPath = newPath.trim();
         await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.MOVE_OR_RENAME_JOB, {
           username,
           path,
-          newPath,
+          newPath: trimmedNewPath,
           total: pathChangeOrCreateDtos.length,
           processed: (processedItems += 1),
         });

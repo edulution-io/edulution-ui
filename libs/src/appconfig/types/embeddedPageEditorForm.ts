@@ -18,6 +18,7 @@ type EmbeddedPageEditorForm = {
     extendedOptions: {
       [ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT]: string;
       [ExtendedOptionKeys.EMBEDDED_PAGE_HTML_MODE]: boolean;
+      [ExtendedOptionKeys.EMBEDDED_PAGE_IS_PUBLIC]: boolean;
     };
   };
 };

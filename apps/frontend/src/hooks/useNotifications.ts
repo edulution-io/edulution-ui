@@ -28,6 +28,8 @@ import useSseStore from '@/store/useSseStore';
 import useFileOperationProgress from '@/pages/FileSharing/hooks/useFileOperationProgress';
 import useFileDownloadProgressToast from '@/pages/FileSharing/hooks/useFileDownloadProgressToast';
 import useFileOperationToast from '@/pages/FileSharing/hooks/useFileOperationToast';
+import useTLDRawHistoryStore from '@/pages/Whiteboard/TLDrawWithSync/useTLDRawHistoryStore';
+import HistoryEntryDto from '@libs/whiteboard/types/historyEntryDto';
 
 const useNotifications = () => {
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
@@ -40,6 +42,8 @@ const useNotifications = () => {
   const { updateOpenSurveys } = useSurveyTablesPageStore();
   const isBulletinBoardActive = useIsAppActive(APPS.BULLETIN_BOARD);
   const { addBulletinBoardNotification } = UseBulletinBoardStore();
+  const isWhiteboardActive = useIsAppActive(APPS.WHITEBOARD);
+  const { addRoomHistoryEntry } = useTLDRawHistoryStore();
   const { eventSource } = useSseStore();
 
   useFileOperationProgress();
@@ -160,6 +164,26 @@ const useNotifications = () => {
       controller.abort();
     };
   }, [isBulletinBoardActive]);
+
+  useEffect(() => {
+    if (!isWhiteboardActive || !eventSource) {
+      return undefined;
+    }
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    const handleNewHistoryLog = (e: MessageEvent<string>) => {
+      const entry = JSON.parse(e.data) as HistoryEntryDto;
+
+      addRoomHistoryEntry(entry);
+    };
+
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.TLDRAW_SYNC_ROOM_LOG_MESSAGE, handleNewHistoryLog, { signal });
+
+    return () => {
+      controller.abort();
+    };
+  }, [isWhiteboardActive, eventSource]);
 };
 
 export default useNotifications;

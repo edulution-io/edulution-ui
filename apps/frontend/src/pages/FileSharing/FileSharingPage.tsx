@@ -32,6 +32,8 @@ import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
 import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
+import UploadFileDialog from '@/pages/FileSharing/Dialog/UploadFileDialog';
+import useUploadProgressToast from '@/hooks/useUploadProgressToast';
 import DeletePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DeletePublicShareDialog';
 
 const FileSharingPage = () => {
@@ -39,6 +41,8 @@ const FileSharingPage = () => {
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const { fileOperationProgress, fetchFiles } = useFileSharingStore();
   const { fetchShares } = usePublicShareStore();
+
+  useUploadProgressToast();
 
   useEffect(() => {
     const handleFileOperationProgress = async () => {
@@ -110,6 +114,7 @@ const FileSharingPage = () => {
       />
       <CreateOrEditPublicShareDialog />
       <DeletePublicShareDialog />
+      <UploadFileDialog />
       <FileSharingFloatingButtonsBar />
     </PageLayout>
   );

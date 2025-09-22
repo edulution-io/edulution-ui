@@ -20,6 +20,6 @@ import GroupsModule from '../groups/groups.module';
 @Module({
   imports: [GroupsModule, MongooseModule.forFeature([{ name: LdapKeycloakSync.name, schema: LdapKeycloakSyncSchema }])],
   providers: [LdapKeycloakSyncService, KeycloakRequestQueue],
-  exports: [LdapKeycloakSyncService],
+  exports: [LdapKeycloakSyncService, KeycloakRequestQueue],
 })
 export default class LdapKeycloakSyncModule {}

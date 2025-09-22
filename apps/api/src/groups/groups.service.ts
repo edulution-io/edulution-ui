@@ -138,15 +138,33 @@ class GroupsService {
     return response.data;
   }
 
+  private async fetchAllPaginated<T>(
+    urlPath: string,
+    baseQuery = '',
+    pageSize = 100,
+    first = 0,
+    acc: T[] = [],
+  ): Promise<T[]> {
+    const queryParam = baseQuery ? `${baseQuery}&first=${first}&max=${pageSize}` : `first=${first}&max=${pageSize}`;
+
+    const batch = await this.makeAuthorizedRequest<T[]>(HttpMethods.GET, urlPath, queryParam);
+
+    if (!batch || batch.length === 0) {
+      return acc;
+    }
+
+    const nextAcc = [...acc, ...batch];
+
+    if (batch.length < pageSize) {
+      return nextAcc;
+    }
+
+    return this.fetchAllPaginated<T>(urlPath, baseQuery, pageSize, first + pageSize, nextAcc);
+  }
+
   async fetchAllUsers(): Promise<LDAPUser[]> {
     try {
-      const usersCount = await this.makeAuthorizedRequest<number>(HttpMethods.GET, 'users/count');
-
-      if (!usersCount) {
-        Logger.warn('No users found.', GroupsService.name);
-      }
-
-      return await this.makeAuthorizedRequest<LDAPUser[]>(HttpMethods.GET, 'users', `max=${usersCount}`);
+      return await this.fetchAllPaginated<LDAPUser>('users', '');
     } catch (error) {
       throw new CustomHttpException(
         GroupsErrorMessage.CouldNotGetUsers,
@@ -179,11 +197,7 @@ class GroupsService {
     }
   }
 
-  private static sanitizeGroup(group: Group | GroupWithMembers) {
-    return { id: group.id, name: group.name, path: group.path };
-  }
-
-  private static sanitizeGroupMembers(members: (LDAPUser | GroupMemberDto)[]): GroupMemberDto[] {
+  private static sanitizeGroupMembers(members: LDAPUser[] | GroupMemberDto[]): GroupMemberDto[] {
     return Array.isArray(members)
       ? members.map((member) => ({
           id: member.id,
@@ -292,12 +306,11 @@ class GroupsService {
     }
 
     const sanitizedMembers = newMembers?.length ? GroupsService.sanitizeGroupMembers(newMembers) : [];
-    const sanitizedGroup = GroupsService.sanitizeGroup(group);
 
     await this.cacheManager.set(
       `${GROUP_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
       {
-        ...sanitizedGroup,
+        ...group,
         members: sanitizedMembers,
       },
       GROUPS_CACHE_TTL_MS,
@@ -312,6 +325,7 @@ class GroupsService {
     this.isUpdatingGroupsAndMembersInCache = true;
 
     try {
+      Logger.debug(`Starting to update all groups in cache...`, GroupsService.name);
       const allGroups = await this.fetchAndCacheAllGroups();
 
       const schoolGroupNames = await this.cacheSchoolGroups(allGroups);
@@ -364,7 +378,7 @@ class GroupsService {
 
   async fetchAllGroups(): Promise<Group[]> {
     try {
-      const groups = await this.makeAuthorizedRequest<Group[]>(HttpMethods.GET, 'groups', 'search');
+      const groups = await this.fetchAllPaginated<Group>('groups', 'briefRepresentation=false&search');
       return GroupsService.flattenGroups(groups);
     } catch (error) {
       throw new CustomHttpException(
@@ -377,11 +391,7 @@ class GroupsService {
   }
 
   async fetchGroupMembers(groupId: string): Promise<LDAPUser[] | undefined> {
-    return this.makeAuthorizedRequest<LDAPUser[]>(
-      HttpMethods.GET,
-      `groups/${groupId}/members`,
-      'briefRepresentation=true',
-    );
+    return this.fetchAllPaginated<LDAPUser>(`groups/${groupId}/members`, 'briefRepresentation=true');
   }
 
   public async searchGroups(school: string, searchKeyWord?: string): Promise<Group[]> {
