@@ -11,7 +11,7 @@
  */
 
 import { SerializedSchema, StoreSnapshot, TLRecord } from 'tldraw';
-import type { TldrFileV1 } from './isTldrFileV1';
+import { TldrFileV1 } from '@libs/tldraw-sync/types/tldrFileV1';
 
 const toStoreSnapshot = (file: TldrFileV1): StoreSnapshot<TLRecord> => {
   const store = file.records.reduce<Record<string, TLRecord>>((acc, record) => {

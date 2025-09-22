@@ -22,20 +22,18 @@ interface WhiteboardEditorState {
   reset: () => void;
 }
 
-const initialValues = {
-  editor: null,
-};
+const initialValues = { editor: null as Editor | null };
 
 const useWhiteboardEditorStore = create<WhiteboardEditorState>((set, get) => ({
   editor: null,
   setEditor: (editor) => set({ editor }),
   getSnapshot: () => {
-    const e = get().editor;
-    return e ? e.store.getSnapshot() : null;
+    const { editor } = get();
+    return editor ? editor.store.getStoreSnapshot() : null;
   },
 
   openTldrFromBlobUrl: async (blobUrl, filename) => {
-    const {editor} = get();
+    const { editor } = get();
     if (!editor) return;
     const response = await fetch(blobUrl);
     const blob = await response.blob();

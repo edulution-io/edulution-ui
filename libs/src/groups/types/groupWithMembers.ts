@@ -10,12 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { Group } from '@libs/groups/types/group';
 import GroupMemberDto from './groupMember.dto';
 
-type GroupWithMembers = {
-  id: string;
-  name: string;
-  path: string;
+type GroupWithMembers = Group & {
   members: GroupMemberDto[];
 };
 

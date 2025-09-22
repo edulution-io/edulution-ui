@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -18,17 +18,28 @@ import { RoomSnapshot, TLSocketRoom } from '@tldraw/sync-core';
 import TLDRAW_PERSISTENCE_INTERVAL from '@libs/tldraw-sync/constants/persistenceInterval';
 import RoomState from '@libs/tldraw-sync/types/tdlraw-sync-rooms';
 import { UnknownRecord } from 'tldraw';
+import TLDRAW_MULTI_USER_ROOM_PREFIX from '@libs/whiteboard/constants/tldrawMultiUserRoomPrefix';
+import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
+import { GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import GroupMemberDto from '@libs/groups/types/groupMember.dto';
+import SseService from '../sse/sse.service';
+import { TLDrawSyncLog, TLDrawSyncLogDocument } from './tldraw-sync-log.schema';
 import { TldrawSyncRoom, TldrawSyncRoomDocument } from './tldraw-sync-room.schema';
 
 @Injectable()
-export default class TldrawSyncService {
+export default class TLDrawSyncService {
   private readonly roomsMap = new Map<string, RoomState>();
 
   private readonly roomLocks = new Map<string, Promise<void>>();
 
   constructor(
-    @InjectModel(TldrawSyncRoom.name)
-    private readonly roomModel: Model<TldrawSyncRoomDocument>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @InjectModel(TldrawSyncRoom.name) private readonly roomModel: Model<TldrawSyncRoomDocument>,
+    @InjectModel(TLDrawSyncLog.name) private readonly logModel: Model<TLDrawSyncLogDocument>,
+    private readonly sseService: SseService,
   ) {}
 
   @Interval(TLDRAW_PERSISTENCE_INTERVAL)
@@ -114,5 +125,43 @@ export default class TldrawSyncService {
 
   removeRoom(roomId: string) {
     this.roomsMap.delete(roomId);
+  }
+
+  async logRoomMessage(tldRawLog: TLDrawSyncLog, permittedUsers: GroupMemberDto[]) {
+    const entry = await this.logModel.create(tldRawLog);
+
+    this.sseService.sendEventToUsers(
+      permittedUsers.map((user) => user.username),
+      entry,
+      SSE_MESSAGE_TYPE.TLDRAW_SYNC_ROOM_LOG_MESSAGE,
+    );
+  }
+
+  async getPermittedUsers(roomIdWithPrefix: string): Promise<GroupMemberDto[]> {
+    const roomId = roomIdWithPrefix.replace(TLDRAW_MULTI_USER_ROOM_PREFIX, '');
+
+    const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(
+      `${GROUP_WITH_MEMBERS_CACHE_KEY}-/${roomId}`,
+    );
+
+    if (!groupWithMembers) return [];
+
+    const { members } = groupWithMembers;
+
+    return members;
+  }
+
+  async getHistory(roomIdWithPrefix: string, page: number, limit: number, username: string) {
+    const permittedUsers = await this.getPermittedUsers(roomIdWithPrefix);
+    if (!permittedUsers.some((user) => user.username === username)) return undefined;
+
+    const skip = (page - 1) * limit;
+
+    const [items, total] = await Promise.all([
+      this.logModel.find({ roomId: roomIdWithPrefix }).sort({ createdAt: -1 }).skip(skip).limit(limit).exec(),
+      this.logModel.countDocuments({ roomId: roomIdWithPrefix }).exec(),
+    ]);
+
+    return { roomIdWithPrefix, page, limit, total, items };
   }
 }

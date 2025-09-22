@@ -40,7 +40,7 @@ import DockerModule from '../docker/docker.module';
 import VeyonModule from '../veyon/veyon.module';
 import GlobalSettingsModule from '../global-settings/global-settings.module';
 import SseModule from '../sse/sse.module';
-import TldrawSyncModule from '../tldraw-sync/tldraw-sync.module';
+import TLDrawSyncModule from '../tldraw-sync/tldraw-sync.module';
 import FileSystemModule from '../filesystem/filesystem.module';
 import WebDavModule from '../webdav/webdav.module';
 import HealthModule from '../health/health.module';
@@ -49,6 +49,8 @@ import WebdavSharesModule from '../webdav/shares/webdav-shares.module';
 import LdapKeycloakSyncModule from '../ldap-keycloak-sync/ldap-keycloak-sync.module';
 import redisConnection from '../common/redis.connection';
 import NotificationsModule from '../notifications/notifications.module';
+import MobileAppModuleModule from '../mobileAppModule/mobileAppModule.module';
+import UserPreferencesModule from '../user-preferences/user-preferences.module';
 
 @Module({
   imports: [
@@ -84,9 +86,11 @@ import NotificationsModule from '../notifications/notifications.module';
     GlobalSettingsModule,
     WebDavModule,
     SseModule,
-    TldrawSyncModule,
+    TLDrawSyncModule,
     LdapKeycloakSyncModule,
     NotificationsModule,
+    MobileAppModuleModule,
+    UserPreferencesModule,
     JwtModule.register({
       global: true,
     }),

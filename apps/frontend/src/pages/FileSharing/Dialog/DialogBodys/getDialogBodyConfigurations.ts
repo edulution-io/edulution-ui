@@ -26,7 +26,6 @@ import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
 import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
 import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
-import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
 import MoveDirectoryDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveDirectoryDialogBody';
 import CopyContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/CopyContentDialogBody';
@@ -38,6 +37,7 @@ import { t } from 'i18next';
 import SaveExternalFileDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/SaveExternalFileDialogBody';
 import buildTldrFileFromEditor from '@libs/tldraw-sync/utils/buildTldrFileFromEditor';
 import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
+import stripTrailingSlash from '@libs/filesharing/utils/stripTrailingSlash';
 import FileSelectorDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/FileSelectorDialogBody';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 import FileSelectorDialogProps from '@libs/filesharing/types/fileSelectorDialogProps';
@@ -164,7 +164,7 @@ const deleteFileFolderConfig: PlainDialogBodyConfiguration = {
     if (!selectedItems || selectedItems.length === 0) {
       return Promise.resolve([]);
     }
-    const cleanedPath = getPathWithoutWebdav(currentPath);
+    const cleanedPath = getPathWithoutWebdav(stripTrailingSlash(currentPath));
     return Promise.resolve(
       selectedItems.map((item) => ({
         path: `${cleanedPath}/${item.filename}`,
@@ -196,37 +196,13 @@ const renameFileFolderConfig: RenameDialogBodyConfiguration = {
       form.getValues('extension') !== undefined
         ? `${String(form.getValues('filename')) + String(form.getValues('extension'))}`
         : form.getValues('filename');
-    const cleanedPath = getPathWithoutWebdav(currentPath);
+    const cleanedPath = getPathWithoutWebdav(stripTrailingSlash(currentPath));
     return Promise.resolve([
       {
         path: `${cleanedPath}/${selectedItems[0]?.filename}`,
         newPath: `${cleanedPath}/${filename}`,
       },
     ]);
-  },
-};
-
-const uploadFileConfig: PlainDialogBodyConfiguration = {
-  Component: UploadContentBody,
-  titleKey: 'filesharingUpload.title',
-  submitKey: 'filesharingUpload.upload',
-  endpoint: `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.UPLOAD}`,
-  httpMethod: HttpMethods.POST,
-  type: ContentType.FILE || ContentType.DIRECTORY,
-  requiresForm: false,
-  getData: (_form, currentPath, inputValues) => {
-    const { filesToUpload } = inputValues;
-    const cleanedPath = getPathWithoutWebdav(currentPath);
-    if (!filesToUpload || filesToUpload.length === 0) {
-      return Promise.resolve([]);
-    }
-    return Promise.resolve(
-      filesToUpload.map((file: File) => ({
-        path: cleanedPath,
-        name: file.name,
-        file,
-      })),
-    );
   },
 };
 
@@ -240,7 +216,7 @@ const copyFileOrFolderConfig: PlainDialogBodyConfiguration = {
   requiresForm: false,
   getData: (_f, currentPath, { moveOrCopyItemToPath, selectedItems }: DialogInputValues) => {
     if (!moveOrCopyItemToPath || !selectedItems) return Promise.resolve([]);
-    const sourceBase = getPathWithoutWebdav(currentPath);
+    const sourceBase = getPathWithoutWebdav(stripTrailingSlash(currentPath));
     const targetBase = getPathWithoutWebdav(moveOrCopyItemToPath.filePath);
     return Promise.resolve(
       selectedItems.map((i) => {
@@ -266,12 +242,12 @@ const moveFileFolderConfig: MoveDialogBodyConfiguration = {
       return Promise.resolve([]);
     }
     const newCleanedPath = getPathWithoutWebdav(moveOrCopyItemToPath.filePath);
-    const cleanedPath = getPathWithoutWebdav(currentPath);
+    const cleanedPath = getPathWithoutWebdav(stripTrailingSlash(currentPath));
 
     return Promise.resolve(
       selectedItems.map((item) => ({
-        path: encodeURI(`${cleanedPath}/${item.filename}`),
-        newPath: encodeURI(`${newCleanedPath}/${item.filename}`),
+        path: `${cleanedPath}/${item.filename}`,
+        newPath: `${newCleanedPath}/${item.filename}`,
       })),
     );
   },
@@ -343,11 +319,10 @@ const dialogBodyConfigurations: Record<FileActionType, DialogBodyConfiguration> 
   createFile: createFileConfig,
   deleteFileOrFolder: deleteFileFolderConfig,
   renameFileOrFolder: renameFileFolderConfig,
-  uploadFile: uploadFileConfig,
   copyFileOrFolder: copyFileOrFolderConfig,
   moveFileOrFolder: moveFileFolderConfig,
   shareFileOrFolder: shareFileOrFolderConfig,
-  saveExternalFile: saveExternalFileConfig,
+  saveFile: saveExternalFileConfig,
   fileSelector: fileSelectorConfig,
 };
 

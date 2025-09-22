@@ -10,11 +10,25 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import GroupMemberDto from '@libs/groups/types/groupMember.dto';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { Request } from 'express';
+import AppConfigService from '../../appconfig/appconfig.service';
 
-export default interface GroupDto {
-  id: string;
-  name: string;
-  path: string;
-  members: GroupMemberDto[];
+@Injectable()
+class IsPublicAppGuard implements CanActivate {
+  constructor(private readonly appConfigService: AppConfigService) {}
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest<Request>();
+    const { appName } = request.params;
+
+    const appConfig = await this.appConfigService.getPublicAppConfigByName(appName);
+    if (!appConfig) {
+      return false;
+    }
+
+    return true;
+  }
 }
+
+export default IsPublicAppGuard;

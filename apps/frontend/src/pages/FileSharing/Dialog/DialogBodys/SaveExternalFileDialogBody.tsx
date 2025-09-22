@@ -61,6 +61,12 @@ const SaveExternalFileDialogBody: React.FC<FilesharingDialogProps> = ({ form }) 
   }, [currentDirItem, setMoveOrCopyItemToPath]);
 
   useEffect(() => {
+    form.register('filename', {
+      required: { value: true, message: t('saveExternalFileDialogBody.filenameRequired') },
+    });
+  }, []);
+
+  useEffect(() => {
     const hasName = filename.trim().length > 0;
     setSubmitButtonIsDisabled(!hasName);
   }, [filename, setSubmitButtonIsDisabled]);
