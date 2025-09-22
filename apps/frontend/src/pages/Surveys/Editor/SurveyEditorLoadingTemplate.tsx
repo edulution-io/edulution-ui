@@ -35,6 +35,7 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
   const {
     setTemplate,
     setIsOpenTemplateConfirmDeletion,
+    setIsOpenTemplatePreview,
     // TODO: activate toggleIsTemplateActive after #1178 was merged
     // toggleIsTemplateActive,
     fetchTemplates,
@@ -55,12 +56,19 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
         assignTemplateToSelectedSurvey(creator, surveyTemplate);
       }}
     >
-      <MdOutlineOpenInNew className="h-10 w-10 md:h-14 md:w-14" />
-
-      <p>{title}</p>
-
+      <Button
+        variant="btn-outline"
+        onClick={(e) => {
+          e.stopPropagation();
+          setTemplate(surveyTemplate);
+          setIsOpenTemplatePreview(true);
+        }}
+        className="h-14 w-14 p-2"
+      >
+        <MdOutlineOpenInNew className="h-10 w-10" />
+      </Button>
+      <h4 aria-label={`Template title: ${title}`}>{title}</h4>
       <p>{description}</p>
-
       {isSuperAdmin && (
         <>
           <Button
