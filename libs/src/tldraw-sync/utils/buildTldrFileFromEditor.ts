@@ -15,7 +15,8 @@ import buildTldrFileFromSnapshot from './buildTldrFileFromSnapshot';
 
 const buildTldrFileFromEditor = (editor: Editor, filename: string): File => {
   const storeSnapshot: StoreSnapshot<TLRecord> = editor.getSnapshot().document;
-  return buildTldrFileFromSnapshot(storeSnapshot, filename);
+  const jsonFile = buildTldrFileFromSnapshot(storeSnapshot, filename);
+  return new File([jsonFile], jsonFile.name, { type: 'application/octet-stream' });
 };
 
 export default buildTldrFileFromEditor;

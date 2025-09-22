@@ -26,11 +26,11 @@ const loadTldrFileIntoEditor = async (editor: Editor, file: File): Promise<void>
     : (parsed as StoreSnapshot<TLRecord>);
 
   try {
-    editor.store.loadSnapshot(snapshot);
+    editor.loadSnapshot(snapshot);
   } catch {
-    const currentSchema = editor.store.schema.serialize();
+    const currentSchema = editor.getSnapshot().document.schema;
     const adjusted: StoreSnapshot<TLRecord> = { schema: currentSchema, store: snapshot.store };
-    editor.store.loadSnapshot(adjusted);
+    editor.loadSnapshot(adjusted);
     snapshot = adjusted;
   }
 

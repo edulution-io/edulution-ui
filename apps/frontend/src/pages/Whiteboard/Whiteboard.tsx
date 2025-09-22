@@ -20,7 +20,7 @@ import useTLDRawHistoryStore from '@/pages/Whiteboard/TLDrawWithSync/useTLDRawHi
 import EDU_API_WEBSOCKET_URL from '@libs/common/constants/eduApiWebsocketUrl';
 import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/tLDrawSyncEndpoints';
 import ROOM_ID_PARAM from '@libs/tldraw-sync/constants/roomIdParam';
-import ActionContentDialog from '@/pages/FileSharing/Dialog/ActionContentDialog';
+import SaveExternalFileDialog from '@/pages/FileSharing/Dialog/SaveExternalFileDialog';
 
 const WS_BASE_URL = `${EDU_API_WEBSOCKET_URL}/${TLDRAW_SYNC_ENDPOINTS.BASE}`;
 
@@ -82,7 +82,7 @@ const Whiteboard = () => {
       <Suspense fallback={loader}>
         <div className="z-0 h-full w-full">{getPageContent()}</div>
       </Suspense>
-      <ActionContentDialog />
+      <SaveExternalFileDialog />
     </PageLayout>
   );
 };

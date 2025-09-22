@@ -26,21 +26,20 @@ import FILESHARING_TABLE_COLUM_NAMES from '@libs/filesharing/constants/fileshari
 import APPS from '@libs/appconfig/constants/apps';
 import ContentType from '@libs/filesharing/types/contentType';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
-import { FilesharingDialogProps } from '@libs/filesharing/types/filesharingDialogProps';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import { UseFormReturn } from 'react-hook-form';
+import { SaveExternalFileFormValues } from '@libs/filesharing/types/saveExternalFileFormSchema';
 
-const SaveExternalFileDialogBody: React.FC<FilesharingDialogProps> = ({ form }) => {
+interface SaveExternalFileDialogBodyProps {
+  form: UseFormReturn<SaveExternalFileFormValues>;
+}
+
+const SaveExternalFileDialogBody: React.FC<SaveExternalFileDialogBodyProps> = ({ form }) => {
   const { t } = useTranslation();
 
-  const { setMoveOrCopyItemToPath, moveOrCopyItemToPath, setSubmitButtonIsDisabled } = useFileSharingDialogStore();
+  const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
   const { fetchDialogDirs, dialogShownDirs, isLoading } = useFileSharingMoveDialogStore();
   const { currentPath, setCurrentPath } = useFileSharingStore();
-
-  const filename = form.watch('filename') ?? '';
-
-  useEffect(() => {
-    form.register('filename', { required: true });
-  }, [form]);
 
   const currentDirItem: DirectoryFileDTO = useMemo(
     () => ({
@@ -59,21 +58,6 @@ const SaveExternalFileDialogBody: React.FC<FilesharingDialogProps> = ({ form }) 
   useEffect(() => {
     setMoveOrCopyItemToPath(currentDirItem);
   }, [currentDirItem, setMoveOrCopyItemToPath]);
-
-  useEffect(() => {
-    form.register('filename', {
-      required: { value: true, message: t('saveExternalFileDialogBody.filenameRequired') },
-    });
-  }, []);
-
-  useEffect(() => {
-    const hasName = filename.trim().length > 0;
-    setSubmitButtonIsDisabled(!hasName);
-  }, [filename, setSubmitButtonIsDisabled]);
-
-  useEffect(() => {
-    void form.trigger('filename');
-  }, [filename, form]);
 
   const visibleColumns = [FILESHARING_TABLE_COLUM_NAMES.SELECT_FILENAME];
 
@@ -165,16 +149,13 @@ const SaveExternalFileDialogBody: React.FC<FilesharingDialogProps> = ({ form }) 
 
       <div className="mt-4">
         <Form {...form}>
-          <form onSubmit={(e) => e.preventDefault()}>
-            <FormField
-              defaultValue={filename}
-              name="filename"
-              form={form}
-              labelTranslationId="saveExternalFileDialogBody.filename"
-              variant="dialog"
-              placeholder={t('saveExternalFileDialogBody.filenamePlaceholder')}
-            />
-          </form>
+          <FormField
+            name="filename"
+            form={form}
+            labelTranslationId="saveExternalFileDialogBody.filename"
+            variant="dialog"
+            placeholder={t('saveExternalFileDialogBody.filenamePlaceholder')}
+          />
         </Form>
       </div>
 

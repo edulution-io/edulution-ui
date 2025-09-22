@@ -18,7 +18,6 @@ enum FileActionType {
   RENAME_FILE_OR_FOLDER = 'renameFileOrFolder',
   COPY_FILE_OR_FOLDER = 'copyFileOrFolder',
   SHARE_FILE_OR_FOLDER = 'shareFileOrFolder',
-  SAVE_FILE = 'saveFile',
 }
 
 export default FileActionType;
