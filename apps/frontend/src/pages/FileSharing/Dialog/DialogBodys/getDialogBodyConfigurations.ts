@@ -309,7 +309,10 @@ const fileSelectorConfig: FileSelectorDialogBodyConfiguration = {
     const blobUrl = await createDownloadBlobUrl(cleanedPath);
     if (blobUrl) {
       await openTldrFromBlobUrl(blobUrl, moveOrCopyItemToPath.filename);
+    } else {
+      return [];
     }
+
     return [];
   },
 };

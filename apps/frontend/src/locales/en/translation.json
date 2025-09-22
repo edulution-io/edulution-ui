@@ -1397,7 +1397,9 @@
     "sidebar": "Whiteboard",
     "saveAsTlFile": "Save Whiteboard as .tldr file",
     "openTlFile": "Open",
-    "file": "File"
+    "file": "File",
+    "openTLFileFailed": "Could not open file",
+    "openTLFIleSuccess": "File loaded successfully"
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",

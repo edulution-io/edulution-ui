@@ -1400,6 +1400,8 @@
     "title": "WHITEBOARD",
     "sidebar": "Whiteboard",
     "saveAsTlFile": "Whiteboard als .tldr Datei speichern",
+    "openTLFileFailed": "Datei kann nicht geöffnet werden",
+    "openTLFIleSuccess": "Datei wurde erfolgreich geladen",
     "openTlFile": "Öffnen",
     "file": "Datei"
   },

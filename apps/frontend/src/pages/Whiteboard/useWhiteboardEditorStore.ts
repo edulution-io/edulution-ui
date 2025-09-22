@@ -13,6 +13,10 @@
 import { create } from 'zustand';
 import type { Editor, StoreSnapshot, TLRecord } from 'tldraw';
 import loadTldrFileIntoEditor from '@libs/tldraw-sync/utils/loadTldrFileIntoEditor';
+import { toast } from 'sonner';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import { t } from 'i18next';
+import extractTldrJsonFromMultipart from '@libs/tldraw-sync/utils/extractTldrJsonFromMultipart';
 
 interface WhiteboardEditorState {
   editor: Editor | null;
@@ -35,11 +39,31 @@ const useWhiteboardEditorStore = create<WhiteboardEditorState>((set, get) => ({
   openTldrFromBlobUrl: async (blobUrl, filename) => {
     const { editor } = get();
     if (!editor) return;
-    const response = await fetch(blobUrl);
-    const blob = await response.blob();
-    URL.revokeObjectURL(blobUrl);
-    const file = new File([blob], filename, { type: 'application/json' });
-    await loadTldrFileIntoEditor(editor, file);
+
+    const res = await fetch(blobUrl, { cache: 'no-store' });
+    if (!res.ok) {
+      await res.text().catch(() => '');
+      URL.revokeObjectURL(blobUrl);
+    }
+
+    const blob = await res.blob();
+    const rawText = await blob.text();
+
+    const jsonText = rawText.trimStart().startsWith('--') ? (extractTldrJsonFromMultipart(rawText) ?? '') : rawText;
+
+    if (!jsonText || !(jsonText.trimStart().startsWith('{') || jsonText.trimStart().startsWith('['))) {
+      URL.revokeObjectURL(blobUrl);
+      toast.error(t('whiteboard.openTLFileFailed'));
+    }
+
+    const file = new File([jsonText], filename, { type: RequestResponseContentType.APPLICATION_JSON });
+
+    try {
+      await loadTldrFileIntoEditor(editor, file);
+      toast.success(t('whiteboard.openTLFIleSuccess'));
+    } finally {
+      URL.revokeObjectURL(blobUrl);
+    }
   },
 
   reset: () => set(initialValues),
