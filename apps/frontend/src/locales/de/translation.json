@@ -6,6 +6,8 @@
   "framebufferImage": "Framebuffer-Bild",
   "previewImage": "Bildvorschau",
   "not-set": "Nicht gesetzt",
+  "imprint": "Impressum",
+  "public": "Öffentlich",
   "bulletinboard": {
     "settings": "Einstellungen",
     "noBulletinsToShow": "Aktuell gibt es keine Mitteilungen anzuzeigen, schaue am besten später noch mal vorbei!",
@@ -374,13 +376,16 @@
       "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden",
       "downloadInfo": "Datei {{filename}} wird heruntergeladen",
       "fileStructureIsCreating": "Dateistruktur wird erstellt",
-      "zipFilesAreUploading": "Dateien werden in Ordnerstruktur hochgeladen"
+      "zipFilesAreUploading": "Dateien werden in Ordnerstruktur hochgeladen",
+      "fileIsUploading": "{{filename}} wird hochgeladen"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
       "FileNameRequired": "Dateiname ist erforderlich",
       "NewFileNameRequired": "Neuer Dateiname ist erforderlich",
-      "NameRequired": "Name erforderlich"
+      "NameRequired": "Name erforderlich",
+      "NameExceedsCharacterLimit": "Der Dateiname darf maximal 30 Zeichen haben.",
+      "NameMustNotEndWithDot": "Der Name darf nicht mit einem Punkt enden."
     },
 
     "publicFileSharing": {
@@ -437,6 +442,22 @@
       "selectedItemPrefix": "Ausgewählter Inhalt, welcher geteilt wird:",
       "noInviteesWarning": "⚠️  WARNUNG: Jeder, der den Link besitzt, kann diesen Inhalt herunterladen.",
       "inviteesWarning": "⚠️ WARNUNG: Jeder, der zu den ausgewählten Gruppen oder Benutzern gehört, kann diesen Inhalt herunterladen."
+    },
+
+    "eta": {
+      "fewSeconds": "ein paar Sekunden verbleibend",
+      "lessThanMinute": "weniger als eine Minute verbleibend",
+      "aboutOneMinute": "etwa eine Minute verbleibend",
+      "aboutMinutes_one": "etwa {{count}} Minute verbleibend",
+      "aboutMinutes_other": "etwa {{count}} Minuten verbleibend",
+      "aboutHours_one": "etwa {{count}} Stunde verbleibend",
+      "aboutHours_other": "etwa {{count}} Stunden verbleibend",
+      "moreThanHours_one": "mehr als {{count}} Stunde verbleibend",
+      "moreThanHours_other": "mehr als {{count}} Stunden verbleibend",
+      "aboutDays_one": "etwa {{count}} Tag verbleibend",
+      "aboutDays_other": "etwa {{count}} Tage verbleibend",
+      "moreThanDays_one": "mehr als {{count}} Tag verbleibend",
+      "moreThanDays_other": "mehr als {{count}} Tage verbleibend"
     }
   },
   "forums": {
@@ -980,7 +1001,8 @@
           "sandboxMode": "Sparates Layout",
           "nativeMode": "Integriertes Layout",
           "sandboxModeDescription": "Im Modus „Sparates Layout“ wird der Inhalt als eigenständige Seite angezeigt, ähnlich wie ein Fenster innerhalb der Anwendung. Dabei können neben dem eigentlichen Inhalt auch zusätzliche Designelemente oder Funktionen aus anderen Quellen geladen werden. Dadurch ist die Gestaltung unabhängig von der Anwendung, könnte also anders aussehen oder sich anders verhalten. Hier muss der Inhalt als HTML-Datei hochgeladen werden.",
-          "nativeModeDescription": "Im Modus „Integriertes Layout“ dagegen wird der Inhalt direkt in die Oberfläche der Anwendung eingefügt. Dadurch sieht der Inhalt genauso aus wie die Anwendung selbst und fügt sich optisch nahtlos ein. Allerdings können hier keine zusätzlichen externen Designelemente oder Funktionen dynamisch hinzugefügt werden. Es können jedoch statische Elemente wie Bilder hochgeladen und hier eingesetzt werden."
+          "nativeModeDescription": "Im Modus „Integriertes Layout“ dagegen wird der Inhalt direkt in die Oberfläche der Anwendung eingefügt. Dadurch sieht der Inhalt genauso aus wie die Anwendung selbst und fügt sich optisch nahtlos ein. Allerdings können hier keine zusätzlichen externen Designelemente oder Funktionen dynamisch hinzugefügt werden. Es können jedoch statische Elemente wie Bilder hochgeladen und hier eingesetzt werden.",
+          "visibilityDescription": "Hier können Sie festlegen, ob die App öffentlich zugänglich sein soll. Aktiv bedeutet öffentlich, inaktiv bedeutet, dass nur konfigurierte Nutzergruppen Zugriff haben. Die App öffentlich zugänglich zu machen erzeugt einen Link im Footer. Um die App in der Sidebar für registrierte Nutzer sichtbar zu machen, muss deren Zugriff über die Nutzergruppen konfiguriert werden"
         }
       },
       "update": {
@@ -1166,6 +1188,7 @@
     "guest": "Gast",
     "ok": "OK",
     "next": "Weiter",
+    "of": "von",
     "back": "Zurück",
     "confirm": "Bestätigen",
     "creator": "Ersteller",
@@ -1380,7 +1403,11 @@
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
-    "sidebar": "Kollaboratives Whiteboard"
+    "sidebar": "Kollaboratives Whiteboard",
+    "privateRoom": "Privater Raum",
+    "dropdownPlaceholder": "Wähle hier deinen aktuelle Raum",
+    "historyTitle": "Verlauf",
+    "historyNoMore": "Keine weiteren Einträge"
   },
   "table": {
     "noDataAvailable": "Keine Daten verfügbar"
@@ -1497,7 +1524,8 @@
     "delete": "Löschen",
     "download": "Herunterladen",
     "copy": "Kopieren",
-    "share": "Teilen"
+    "share": "Teilen",
+    "back": "Zurück"
   },
   "response": {
     "successfully": "Aktion war erfolgreich",

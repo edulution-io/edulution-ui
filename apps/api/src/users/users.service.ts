@@ -66,7 +66,7 @@ class UsersService {
   }
 
   async findOne(username: string): Promise<User | null> {
-    return this.userModel.findOne({ username }, USER_DB_PROJECTION).lean();
+    return this.userModel.findOne({ username }).select(USER_DB_PROJECTION).lean();
   }
 
   async update(username: string, updateUserDto: UpdateUserDto): Promise<User | null> {

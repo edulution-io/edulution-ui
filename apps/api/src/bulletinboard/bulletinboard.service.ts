@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Response } from 'express';
 import { Model, Types } from 'mongoose';
@@ -33,6 +33,9 @@ import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import NotificationsService from '../notifications/notifications.service';
+import UserPreferencesService from '../user-preferences/user-preferences.service';
+import MigrationService from '../migration/migration.service';
+import bulletinsMigrationList from './migrations/bulletinsMigrationList';
 
 @Injectable()
 class BulletinBoardService implements OnModuleInit {
@@ -44,12 +47,15 @@ class BulletinBoardService implements OnModuleInit {
     private readonly groupsService: GroupsService,
     private readonly sseService: SseService,
     private readonly notificationService: NotificationsService,
+    private readonly userPreferencesService: UserPreferencesService,
   ) {}
 
   private readonly attachmentsPath = BULLETIN_ATTACHMENTS_PATH;
 
-  onModuleInit() {
+  async onModuleInit() {
     void this.fileSystemService.ensureDirectoryExists(this.attachmentsPath);
+
+    await MigrationService.runMigrations<BulletinDocument>(this.bulletinModel, bulletinsMigrationList);
   }
 
   async serveBulletinAttachment(filename: string, res: Response) {
@@ -176,7 +182,7 @@ class BulletinBoardService implements OnModuleInit {
       isVisibleEndDate: dto.isVisibleEndDate,
     });
 
-    await this.notifyUsers(dto, createdBulletin);
+    await this.notifyUsers(dto, createdBulletin, currentUser);
 
     return createdBulletin;
   }
@@ -228,16 +234,20 @@ class BulletinBoardService implements OnModuleInit {
 
     const updatedBulletin = await bulletin.save();
 
-    await this.notifyUsers(dto, updatedBulletin);
+    await this.notifyUsers(dto, updatedBulletin, currentUser);
 
     return updatedBulletin;
   }
 
-  async notifyUsers(dto: CreateBulletinDto, resultingBulletin: BulletinDocument) {
-    const invitedMembersList = await this.groupsService.getInvitedMembers(
+  async notifyUsers(dto: CreateBulletinDto, resultingBulletin: BulletinDocument, currentUser?: JwtUser) {
+    let invitedMembersList = await this.groupsService.getInvitedMembers(
       [...dto.category.visibleForGroups, ...dto.category.editableByGroups],
       [...dto.category.visibleForUsers, ...dto.category.editableByUsers],
     );
+
+    if (currentUser) {
+      invitedMembersList = invitedMembersList.filter((username) => username !== currentUser.preferred_username);
+    }
 
     const now = new Date();
     const isWithinVisibilityPeriod =
@@ -254,7 +264,7 @@ class BulletinBoardService implements OnModuleInit {
         title,
         data: {
           bulletinId: resultingBulletin.id,
-          type: 'bulletin_updated',
+          type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
         },
       });
     }
@@ -291,6 +301,12 @@ class BulletinBoardService implements OnModuleInit {
       );
 
       await this.bulletinModel.deleteMany({ _id: { $in: ids } }).exec();
+
+      try {
+        await this.userPreferencesService.unsetCollapsedForBulletins(ids);
+      } catch (error) {
+        Logger.error((error as Error).message, BulletinBoardService.name);
+      }
     } catch (error) {
       throw new CustomHttpException(
         BulletinBoardErrorMessage.ATTACHMENT_DELETION_FAILED,

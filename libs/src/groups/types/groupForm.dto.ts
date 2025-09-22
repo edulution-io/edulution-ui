@@ -10,11 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const TLDRAW_SYNC_ENDPOINTS = {
-  BASE: 'tldraw-sync',
-  ROOMS: 'rooms',
-  ASSETS: 'assets',
-  PERSIST: 'persist',
-} as const;
+import GroupForm from '@libs/groups/types/groupForm';
 
-export default TLDRAW_SYNC_ENDPOINTS;
+type GroupFormDto = Omit<GroupForm, 'admins' | 'admingroups' | 'members' | 'membergroups'> & {
+  admins: string[];
+  admingroups: string[];
+  members: string[];
+  membergroups: string[];
+};
+
+export default GroupFormDto;

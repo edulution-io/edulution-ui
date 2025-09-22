@@ -11,22 +11,42 @@
  */
 
 /* eslint-disable @typescript-eslint/class-methods-use-this */
-import { Controller, Delete, Get, Param, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  Res,
+  UploadedFile,
+  UseInterceptors,
+  HttpStatus,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { type Response } from 'express';
-import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
-import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/apiEndpoints';
+import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/tLDrawSyncEndpoints';
 import APPS from '@libs/appconfig/constants/apps';
+import HistoryPageDto from '@libs/whiteboard/types/historyPageDto';
+import TLDRAW_MULTI_USER_ROOM_PREFIX from '@libs/whiteboard/constants/tldrawMultiUserRoomPrefix';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import FilesystemService from '../filesystem/filesystem.service';
+import TLDrawSyncService from './tldraw-sync.service';
+import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
+import CustomHttpException from '../common/CustomHttpException';
 
 @ApiTags(TLDRAW_SYNC_ENDPOINTS.BASE)
 @ApiBearerAuth()
 @Controller(TLDRAW_SYNC_ENDPOINTS.BASE)
-class TldrawSyncController {
-  constructor(private readonly filesystemService: FilesystemService) {}
+class TLDrawSyncController {
+  constructor(
+    private readonly filesystemService: FilesystemService,
+    private readonly tldrawSyncService: TLDrawSyncService,
+  ) {}
 
   @Post(`${TLDRAW_SYNC_ENDPOINTS.ASSETS}/:name`)
   @ApiConsumes(RequestResponseContentType.MULTIPART_FORM_DATA)
@@ -41,6 +61,9 @@ class TldrawSyncController {
     ),
   )
   uploadFileToApp(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
+    if (!file) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
+    }
     return res.status(200).json(file.filename);
   }
 
@@ -58,6 +81,21 @@ class TldrawSyncController {
       FilesystemService.buildPathString(filename),
     );
   }
+
+  @Get(`${TLDRAW_SYNC_ENDPOINTS.HISTORY}/:roomId`)
+  @ApiOkResponse({ type: HistoryPageDto })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 20 })
+  async getHistory(
+    @Param('roomId') roomId: string,
+    @GetCurrentUsername() username: string,
+    @Query('page') page = '1',
+    @Query('limit') limit = '20',
+  ) {
+    const p = Math.max(1, parseInt(page, 10));
+    const l = Math.min(50, Math.max(1, parseInt(limit, 10)));
+    return this.tldrawSyncService.getHistory(TLDRAW_MULTI_USER_ROOM_PREFIX + roomId, p, l, username);
+  }
 }
 
-export default TldrawSyncController;
+export default TLDrawSyncController;

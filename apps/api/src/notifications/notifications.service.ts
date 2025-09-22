@@ -17,7 +17,7 @@ import SendPushNotificationDto from '@libs/notification/types/send-pushNotificat
 import UsersService from '../users/users.service';
 
 @Injectable()
-export class NotificationsService {
+class NotificationsService {
   private readonly expo = new Expo();
 
   constructor(private userService: UsersService) {}
