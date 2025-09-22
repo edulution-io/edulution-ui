@@ -10,11 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { useParams } from 'react-router-dom';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 
 const useStartWebdavFileDownload = () => {
+  const { webdavShare } = useParams();
   const { loadDownloadUrlMultipleFiles } = useFileSharingDownloadStore();
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
 
@@ -23,7 +25,7 @@ const useStartWebdavFileDownload = () => {
 
     await Promise.all(files.map((file) => setFileIsCurrentlyDisabled(file.filename, true)));
 
-    const url = await loadDownloadUrlMultipleFiles(files);
+    const url = await loadDownloadUrlMultipleFiles(files, webdavShare);
     if (!url) {
       await Promise.all(files.map((file) => setFileIsCurrentlyDisabled(file.filename, false)));
       return;
