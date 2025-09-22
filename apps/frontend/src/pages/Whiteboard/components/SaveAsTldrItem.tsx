@@ -22,7 +22,7 @@ const SaveAsTldrItem = () => {
   const { openDialog } = useFileSharingDialogStore();
 
   const handleSave = () => {
-    openDialog(FileActionType.SAVE_EXTERNAL_FILE);
+    openDialog(FileActionType.SAVE_FILE);
   };
 
   return (

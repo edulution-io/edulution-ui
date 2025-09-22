@@ -1399,7 +1399,7 @@
   "whiteboard": {
     "title": "WHITEBOARD",
     "sidebar": "Whiteboard",
-    "saveAsTlFile": "Whiteboard als .tldraw Datei speichern"
+    "saveAsTlFile": "Whiteboard als .tldr Datei speichern"
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
@@ -1472,7 +1472,8 @@
     "saveExternalFile": "Externe Datei speichern",
     "destinationFolder": "Zielordner",
     "filename": "Dateiname",
-    "filenamePlaceholder": "Dateiname hier eingeben"
+    "filenamePlaceholder": "Dateiname hier eingeben",
+    "filenameRequired": "Dateiname darf nicht leer sein"
   },
 
   "moveItemDialog": {

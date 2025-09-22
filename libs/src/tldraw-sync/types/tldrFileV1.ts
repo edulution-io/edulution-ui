@@ -10,9 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const requestAnimationFrame = (): Promise<void> =>
-  new Promise((resolve) => {
-    window.requestAnimationFrame(() => resolve());
-  });
+import { TLRecord } from 'tldraw';
 
-export default requestAnimationFrame;
+export type TldrFileV1 = {
+  tldrawFileFormatVersion: 1;
+  schema: { schemaVersion: 2; sequences: Record<string, number> };
+  records: TLRecord[];
+};

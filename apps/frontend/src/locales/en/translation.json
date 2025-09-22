@@ -1395,7 +1395,7 @@
   "whiteboard": {
     "title": "WHITEBOARD",
     "sidebar": "Whiteboard",
-    "saveAsTlFile": "Save Whiteboard as.tldraw file"
+    "saveAsTlFile": "Save Whiteboard as .tldr file"
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
@@ -1469,7 +1469,8 @@
     "saveExternalFile": "Save external file",
     "destinationFolder": "Destination folder",
     "filename": "Filename",
-    "filenamePlaceholder": "Enter filename here"
+    "filenamePlaceholder": "Enter filename here",
+    "filenameRequired": "Filename cannot be empty"
   },
 
   "moveItemDialog": {

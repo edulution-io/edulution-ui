@@ -10,16 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { SerializedSchema, StoreSnapshot, TLRecord } from 'tldraw';
-import { TldrFileV1 } from '@libs/tldraw-sync/types/tldrFileV1';
+const nextAnimationFrame = (): Promise<void> =>
+  new Promise((resolve) => {
+    if (typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function') {
+      window.requestAnimationFrame(() => resolve());
+    } else {
+      setTimeout(() => resolve(), 16);
+    }
+  });
 
-const toStoreSnapshot = (file: TldrFileV1): StoreSnapshot<TLRecord> => {
-  const store = file.records.reduce<Record<string, TLRecord>>((acc, record) => {
-    acc[record.id] = record;
-    return acc;
-  }, {});
-  const schema: SerializedSchema = { schemaVersion: 2, sequences: file.schema.sequences };
-  return { schema, store };
-};
-
-export default toStoreSnapshot;
+export default nextAnimationFrame;

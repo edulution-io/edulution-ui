@@ -10,12 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type { Editor } from 'tldraw';
+import type { Editor, StoreSnapshot, TLRecord } from 'tldraw';
 import buildTldrFileFromSnapshot from './buildTldrFileFromSnapshot';
 
 const buildTldrFileFromEditor = (editor: Editor, filename: string): File => {
-  const snapshot = editor?.store.getSnapshot();
-  return buildTldrFileFromSnapshot(snapshot, filename);
+  const storeSnapshot: StoreSnapshot<TLRecord> = editor.getSnapshot().document;
+  return buildTldrFileFromSnapshot(storeSnapshot, filename);
 };
 
 export default buildTldrFileFromEditor;

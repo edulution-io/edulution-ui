@@ -292,7 +292,7 @@ const dialogBodyConfigurations: Record<FileActionType, DialogBodyConfiguration> 
   copyFileOrFolder: copyFileOrFolderConfig,
   moveFileOrFolder: moveFileFolderConfig,
   shareFileOrFolder: shareFileOrFolderConfig,
-  saveExternalFile: saveExternalFileConfig,
+  saveFile: saveExternalFileConfig,
 };
 
 function getDialogBodyConfigurations(action: FileActionType) {

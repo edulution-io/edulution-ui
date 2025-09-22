@@ -22,10 +22,8 @@ const OpenTldrItem: React.FC = () => {
   const handleSelect = () => {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.tldr,application/json';
-    input.style.position = 'fixed';
-    input.style.left = '-9999px';
-    input.style.top = '0';
+    input.accept = '.tldr';
+
     input.onchange = async () => {
       const file = input.files?.[0];
       if (file && editor) {

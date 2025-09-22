@@ -15,7 +15,7 @@ import toStoreSnapshot from '@libs/tldraw-sync/utils/toStoreSnapshot';
 import isTldrFileV1 from '@libs/tldraw-sync/utils/isTldrFileV1';
 import firstPageIdFrom from '@libs/tldraw-sync/utils/firstPageIdFrom';
 import { hasSetCurrentPage, hasSetCurrentPageId } from '@libs/tldraw-sync/utils/editorGuards';
-import requestAnimationFrame from '@libs/tldraw-sync/utils/requestAnimationFrame';
+import nextAnimationFrame from '@libs/tldraw-sync/utils/nextAnimationFrame';
 
 const loadTldrFileIntoEditor = async (editor: Editor, file: File): Promise<void> => {
   const text = await file.text();
@@ -46,8 +46,7 @@ const loadTldrFileIntoEditor = async (editor: Editor, file: File): Promise<void>
     }
   }
 
-  await requestAnimationFrame();
-  await requestAnimationFrame();
+  await nextAnimationFrame();
   editor.zoomToFit();
   editor.selectNone();
 };

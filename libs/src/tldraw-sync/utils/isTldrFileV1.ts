@@ -10,13 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { TLRecord } from 'tldraw';
-
-export type TldrFileV1 = {
-  tldrawFileFormatVersion: 1;
-  schema: { schemaVersion: 2; sequences: Record<string, number> };
-  records: TLRecord[];
-};
+import { TldrFileV1 } from '@libs/tldraw-sync/types/tldrFileV1';
 
 const isTldrFileV1 = (value: unknown): value is TldrFileV1 => {
   if (typeof value !== 'object' || value === null) return false;

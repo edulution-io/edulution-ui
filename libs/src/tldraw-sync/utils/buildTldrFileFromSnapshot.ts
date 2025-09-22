@@ -11,8 +11,9 @@
  */
 
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import { StoreSnapshot, TLRecord } from 'tldraw';
 
-const buildTldrFileFromSnapshot = (snapshot: unknown, filename: string): File => {
+const buildTldrFileFromSnapshot = (snapshot: StoreSnapshot<TLRecord>, filename: string): File => {
   const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: RequestResponseContentType.APPLICATION_JSON });
   return new File([blob], `${filename}.tldr`, { type: RequestResponseContentType.APPLICATION_JSON });
 };

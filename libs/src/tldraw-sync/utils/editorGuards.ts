@@ -13,7 +13,7 @@
 import { Editor, TLPageId } from 'tldraw';
 
 export const hasSetCurrentPageId = (editor: Editor): editor is Editor & { setCurrentPageId: (id: TLPageId) => void } =>
-  typeof (editor as unknown as { setCurrentPageId?: (id: TLPageId) => void }).setCurrentPageId === 'function';
+  typeof (editor as { setCurrentPageId?: (id: TLPageId) => void }).setCurrentPageId === 'function';
 
 export const hasSetCurrentPage = (editor: Editor): editor is Editor & { setCurrentPage: (id: TLPageId) => void } =>
-  typeof (editor as unknown as { setCurrentPage?: (id: TLPageId) => void }).setCurrentPage === 'function';
+  typeof (editor as { setCurrentPage?: (id: TLPageId) => void }).setCurrentPage === 'function';
