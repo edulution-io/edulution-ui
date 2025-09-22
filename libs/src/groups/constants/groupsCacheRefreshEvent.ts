@@ -10,15 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Module } from '@nestjs/common';
-import GroupsService from './groups.service';
-import { GroupsController } from './groups.controller';
-import LdapKeycloakSyncModule from '../ldap-keycloak-sync/ldap-keycloak-sync.module';
+const GROUPS_CACHE_REFRESH_EVENT = 'groups.cache.refresh';
 
-@Module({
-  imports: [LdapKeycloakSyncModule],
-  providers: [GroupsService],
-  controllers: [GroupsController],
-  exports: [GroupsService],
-})
-export default class GroupsModule {}
+export default GROUPS_CACHE_REFRESH_EVENT;
