@@ -939,7 +939,7 @@
         "title": "Branding"
       },
 
-      "brandingLogo": {
+      "logo": {
         "title": "Logo",
         "descriptionSchool": "Laden Sie das Logo hoch. Es wird auf der Login-Seite und auf dem Ausweis in der Edulution-App angezeigt.",
         "descriptionGeneric": "Laden Sie das Logo hoch. Es wird auf der Login-Seite angezeigt.",
@@ -949,8 +949,8 @@
       },
       "organisationInfo": {
         "title": "Organisationinformationen",
-        "descriptionSchool": "Geben Sie die offiziellen Angaben Ihrer Organisation an. Diese Informationen können in der Edulution-App angezeigt werden. Bitte Name, Straße, Postleitzahl und optional die Schulwebsite eintragen.",
-        "descriptionGeneric": "Geben Sie die offiziellen Angaben Ihrer Organisation an.",
+        "descriptionSchool": "Gebe die offiziellen Angaben Ihrer Organisation an. Diese Informationen können in der Edulution-App angezeigt werden. Bitte Name, Straße, Postleitzahl und optional die Schulwebsite eintragen.",
+        "descriptionGeneric": "Gebe die offiziellen Angaben Ihrer Organisation an.",
         "name": "Organisation",
         "namePlaceholder": "z. B. Gemeinschaftsschule Musterstadt",
         "street": "Straße",

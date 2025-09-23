@@ -343,6 +343,12 @@
       "SharingFailed": "La distribution des fichiers a échoué",
       "CopyFailed": "La copie a échoué"
     },
+    "publicFileSharing": {
+      "errors": {
+        "PublicFileDownloadFailed": "Le téléchargement du fichier a échoué. Veuillez réessayer plus tard.",
+        "ResolvePublicFileFailed": "Le fichier public n’a pas pu être résolu."
+      }
+    },
     "progressBox": {
       "info": "Informations",
       "titleSharing": "Les fichiers seront distribués",
@@ -792,9 +798,15 @@
         "updateError": "Les paramètres n'ont pas pu être mis à jour.",
         "notFoundError": "Les paramètres n'ont pas pu être chargés."
       },
-      "brandingLogo": {
-        "title": "Logo de l’institution",
-        "description": "Ici, vous pouvez télécharger un logo pour votre institution. Le logo sera affiché dans l’en-tête de l’application.",
+
+      "branding": {
+        "title": "Identité visuelle"
+      },
+
+      "logo": {
+        "title": "Logo",
+        "descriptionSchool": "Téléversez le logo. Il sera affiché sur l’écran de connexion et sur la carte d’identification de l’application Edulution.",
+        "descriptionGeneric": "Téléversez le logo. Il sera affiché sur l’écran de connexion.",
         "uploadLightLogo": "Téléverser le logo clair",
         "uploadDarkLogo": "Téléverser le logo sombre",
         "deleteSuccessful": "Logo supprimé avec succès."
@@ -809,7 +821,7 @@
         "streetPlaceholder": "p. ex. 1, rue de l’Organisation",
         "postalCode": "Code postal",
         "postalCodePlaceholder": "p. ex. 12345",
-        "postalCityPlaceholder": "Berlin",
+        "postalCityPlaceholder": "p. ex. Berlin",
         "website": "Site web de l’organisation",
         "city": "Ville"
       },
@@ -1173,7 +1185,9 @@
     "preview": "prévisualisation",
     "format": "Format",
     "upload": "Téléverser",
-    "mode": "mode"
+    "mode": "mode",
+    "chooseFile": "Choisir un fichier",
+    "changeFile": "Changer de fichier"
   },
   "form": {
     "path": "Lien",

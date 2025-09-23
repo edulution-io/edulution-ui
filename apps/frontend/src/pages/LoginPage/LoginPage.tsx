@@ -333,7 +333,7 @@ const LoginPage: React.FC = () => {
       >
         <img
           src={logoSrc}
-          alt="institution logo"
+          alt={t('settings.settings.logo.title')}
           className="mx-auto w-64"
           onError={(e) => {
             (e.currentTarget as HTMLImageElement).src = DesktopLogo;

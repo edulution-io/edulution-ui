@@ -935,7 +935,7 @@
         "title": "Branding"
       },
 
-      "brandingLogo": {
+      "logo": {
         "title": "Logo",
         "descriptionSchool": "Upload your Logo. It will be shown on the login screen and on the Edulution app ID card.",
         "descriptionGeneric": "Upload your Logo. It will be shown on the login screen.",
@@ -953,7 +953,7 @@
         "streetPlaceholder": "e.g. 1 Organisation Street",
         "postalCode": "Postal code",
         "postalCodePlaceholder": "e.g. 12345",
-        "postalCityPlaceholder": "Berlin",
+        "postalCityPlaceholder": "e.g. Berlin",
         "website": "Organisation website",
         "city": "City"
       }

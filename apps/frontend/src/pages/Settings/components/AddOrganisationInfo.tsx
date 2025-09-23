@@ -19,7 +19,7 @@ import { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSett
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import getDeploymentTarget from '@libs/common/utils/getDeploymentTarget';
 
-type AddInstitutionInfoProps = {
+type AddOrganisationInfoProps = {
   form: UseFormReturn<GlobalSettingsFormValues>;
 };
 
@@ -29,7 +29,7 @@ type FieldDef = {
   placeholder?: string;
 };
 
-const AddOrganisationInfo: React.FC<AddInstitutionInfoProps> = ({ form }) => {
+const AddOrganisationInfo: React.FC<AddOrganisationInfoProps> = ({ form }) => {
   const { t } = useTranslation();
 
   const isGeneric = getDeploymentTarget() === DEPLOYMENT_TARGET.GENERIC;

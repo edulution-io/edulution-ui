@@ -10,12 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface UploadResult {
-  name?: string;
-  success?: boolean;
-  filename?: string;
-  path?: string;
-  absolutePath?: string;
-}
+const BRANDING_UPLOADS_LOGO = {
+  light: 'brandingUploads.logo.light',
+  dark: 'brandingUploads.logo.dark',
+} as const;
 
-export default UploadResult;
+export default BRANDING_UPLOADS_LOGO;

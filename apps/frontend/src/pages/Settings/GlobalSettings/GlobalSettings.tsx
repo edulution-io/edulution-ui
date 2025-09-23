@@ -186,7 +186,7 @@ const GlobalSettings: React.FC = () => {
                 >
                   <AccordionItem value="organisationLogo">
                     <AccordionTrigger className="flex">
-                      <h5>{t('settings.globalSettings.brandingLogo.title')}</h5>
+                      <h5>{t('settings.globalSettings.logo.title')}</h5>
                     </AccordionTrigger>
                     <AddOrganisationLogo form={form} />
                   </AccordionItem>

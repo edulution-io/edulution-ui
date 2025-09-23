@@ -23,6 +23,7 @@ import LogoUploadField from '@/pages/Settings/components/LogoUploadField';
 import convertImageFileToWebp from '@libs/common/utils/convertImageFileToWebp';
 import getDeploymentTarget from '@libs/common/utils/getDeploymentTarget';
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
+import BRANDING_UPLOADS_LOGO from '@libs/global-settings/constants/brandingUploadsLogo';
 
 type Props = { form: UseFormReturn<GlobalSettingsFormValues> };
 
@@ -71,7 +72,7 @@ const AddOrganisationLogo: React.FC<Props> = ({ form }) => {
     };
 
   const darkPreviewSrc = `${getMainLogoUrl(Theme.dark)}?v=${darkVersion}`;
-  const hasDarkSelection = !!form.watch('brandingUploads.logo.dark');
+  const hasDarkSelection = !!form.watch(BRANDING_UPLOADS_LOGO.dark);
 
   const isGeneric = getDeploymentTarget() === DEPLOYMENT_TARGET.GENERIC;
 
@@ -80,8 +81,8 @@ const AddOrganisationLogo: React.FC<Props> = ({ form }) => {
       <p>
         {t(
           isGeneric
-            ? 'settings.globalSettings.brandingLogo.descriptionGeneric'
-            : 'settings.globalSettings.brandingLogo.descriptionSchool',
+            ? 'settings.globalSettings.logo.descriptionGeneric'
+            : 'settings.globalSettings.logo.descriptionSchool',
         )}
       </p>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-1">
