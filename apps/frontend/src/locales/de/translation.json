@@ -349,9 +349,9 @@
       "CollectingFailed": "Einasmmeln der Dateien fehlgeschlagen",
       "MissingCallbackURL": "Fehlende Callback-URL",
       "SharingFailed": "Austeilen der Dateien fehlgeschlagen",
-      "CopyFailed": "Kopieren fehlgeschlagen"
+      "CopyFailed": "Kopieren fehlgeschlagen",
+      "FileFormatNotSupported": "Dateiformat nicht unterstützt"
     },
-
     "publicShareFilesPage": {
       "title": "Geteilte Dateien",
       "description": "Hier findest du alle Dateien, die du geteilt hast. Beachte: Jeder, der den Freigabe-Link und ggf. das dazugehörige Passwort hat, kann diese Dateien herunterladen."
