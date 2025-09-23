@@ -11,18 +11,7 @@
  */
 /* eslint-disable @typescript-eslint/class-methods-use-this */
 import { join } from 'path';
-import {
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Query,
-  Res,
-  UploadedFile,
-  UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { type Response } from 'express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -30,8 +19,9 @@ import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
-import { memoryStorage } from 'multer';
-import { createAttachmentUploadOptions } from './multer.utilities';
+import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
+import { UploadGlobalAssert } from '@libs/filesystem/types/uploadGlobalAssert';
+import { createAttachmentUploadOptions, createDiskStorage } from './multer.utilities';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 import FilesystemService from './filesystem.service';
 import { Public } from '../common/decorators/public.decorator';
@@ -96,15 +86,23 @@ class FileSystemController {
   }
 
   @Post()
-  @UseGuards(AppConfigGuard)
-  @UseInterceptors(FileInterceptor('file', { storage: memoryStorage() }))
-  async upload(
-    @UploadedFile() file: Express.Multer.File,
-    @Query('destination') destination: string,
-    @Query('filename') filename: string,
-  ) {
-    const { path } = await this.filesystemService.upload(file, { destination, filename });
-    return { path };
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: createDiskStorage(
+        (request) => {
+          const { body } = request as { body?: UploadGlobalAssert };
+          return join(PUBLIC_ASSET_PATH, body?.destination || '');
+        },
+        (request) => {
+          const { body } = request as { body?: UploadGlobalAssert };
+          return body?.filename || '';
+        },
+      ),
+      limits: { files: 1, fileSize: 50 * 1024 * 1024 },
+    }),
+  )
+  upload(@UploadedFile() file: Express.Multer.File) {
+    return { path: `${file.destination.replace('.', '')  }/${  file.filename}` };
   }
 }
 

@@ -29,7 +29,7 @@ import { promisify } from 'util';
 import { createHash } from 'crypto';
 import { firstValueFrom, from } from 'rxjs';
 import { pipeline, Readable } from 'stream';
-import { extname, join, resolve } from 'path';
+import { extname, join } from 'path';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
@@ -47,10 +47,6 @@ import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
 import THIRTY_DAYS from '@libs/common/constants/thirtyDays';
-import { promises as fs } from 'fs';
-import UploadResult from '@libs/filesharing/types/uploadResult';
-import UploadOptions from '@libs/filesharing/types/uploadOptions';
-import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
 import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 import UsersService from '../users/users.service';
 import CustomHttpException from '../common/CustomHttpException';
@@ -389,30 +385,6 @@ class FilesystemService {
     } catch (error) {
       Logger.error(`Error removing old temp files: ${error}`);
     }
-  }
-
-  async upload(file: Express.Multer.File, options: UploadOptions): Promise<UploadResult> {
-    const { buffer } = file || {};
-    const { destination, filename } = options || ({} as UploadOptions);
-
-    const root = resolve(PUBLIC_ASSET_PATH);
-    const destAbs = resolve(root, destination.trim());
-    if (!destAbs.startsWith(root)) {
-      throw new CustomHttpException(FileSharingErrorMessage.MissingCallbackURL, HttpStatus.BAD_REQUEST);
-    }
-
-    await fs.mkdir(destAbs, { recursive: true });
-    const fileAbs = join(destAbs, filename?.trim() || '');
-
-    try {
-      await fs.writeFile(fileAbs, buffer);
-    } catch (err) {
-      throw new CustomHttpException(FileSharingErrorMessage.MissingCallbackURL, HttpStatus.BAD_REQUEST);
-    }
-
-    const urlPath = join('/', destination.trim(), filename?.trim() || '');
-
-    return { filename: filename?.trim() || '', path: urlPath, absolutePath: fileAbs };
   }
 }
 

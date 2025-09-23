@@ -38,6 +38,9 @@ const useFilesystemStore = create<FilesystemStore>((set) => ({
 
       const form = new FormData();
 
+      form.append('destination', dest);
+      form.append('filename', name);
+
       if (file instanceof File) {
         form.append('file', file, name);
       } else {
@@ -50,9 +53,7 @@ const useFilesystemStore = create<FilesystemStore>((set) => ({
         form.append('file', wrapped, fullName);
       }
 
-      await eduApi.post<void>(`${EDU_API_CONFIG_ENDPOINTS.FILES}`, form, {
-        params: { destination: dest, filename: name },
-      });
+      await eduApi.post<void>(`${EDU_API_CONFIG_ENDPOINTS.FILES}`, form);
     } catch (error) {
       handleApiError(error, set);
     }
