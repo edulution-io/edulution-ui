@@ -9,44 +9,35 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
 import { v4 as uuidv4 } from 'uuid';
 
-export const STR_DISTINGUISHER = '_--_';
+const STR_DISTINGUISHER = '_--_';
 
 export const addUuidToFileName = (originalFileName: string): string => {
-  if (!originalFileName.includes('.')) {
+  const dotIndex = originalFileName.lastIndexOf('.');
+  if (dotIndex === -1) {
     return originalFileName;
   }
-  const fileNameParts = originalFileName.split('.');
-  if (fileNameParts.length <= 1) {
-    return originalFileName;
-  }
-  const fileExtension = fileNameParts.pop();
-  if (!fileExtension) {
-    return originalFileName;
-  }
-  const fileName = fileNameParts.join('.');
-  return `${fileName}${STR_DISTINGUISHER}${uuidv4()}.${fileExtension}`;
+
+  const name = originalFileName.slice(0, dotIndex);
+  const ext = originalFileName.slice(dotIndex + 1);
+
+  return `${name}${STR_DISTINGUISHER}${uuidv4()}.${ext}`;
 };
 
 export const removeUuidFromFileName = (fileName: string): string => {
-  if (!fileName.includes(STR_DISTINGUISHER)) {
+  const dotIndex = fileName.lastIndexOf('.');
+  if (dotIndex === -1) {
     return fileName;
   }
 
-  const fileNameParts = fileName.split('.');
-  const fileExtension = fileNameParts.pop();
-  if (!fileExtension) {
+  const name = fileName.slice(0, dotIndex);
+  const ext = fileName.slice(dotIndex + 1);
+
+  const distinguisherIndex = name.lastIndexOf(STR_DISTINGUISHER);
+  if (distinguisherIndex === -1) {
     return fileName;
   }
 
-  const fileNameDistinguishedParts = fileName.split(STR_DISTINGUISHER);
-  if (fileNameDistinguishedParts.length <= 1) {
-    return fileName;
-  }
-  fileNameDistinguishedParts.pop();
-
-  const originalFileName = fileNameDistinguishedParts.join(STR_DISTINGUISHER);
-  return `${originalFileName}.${fileExtension}`;
+  return `${name.slice(0, distinguisherIndex)}.${ext}`;
 };
