@@ -358,19 +358,63 @@ class LdapKeycloakSyncService implements OnModuleInit {
     const { bindDN, bindCredentials } = await this.getBindCredentials();
     const url = process.env.LDAP_TUNNEL_URL || this.ldapConfig!.config.connectionUrl[0];
 
-    const ldapClientOptions: { url: string; tlsOptions?: tls.ConnectionOptions } = { url };
+    const useLdaps = url.startsWith(LDAPS_PREFIX);
+    const configuredStartTls = this.ldapConfig!.config.startTls?.[0] === 'true';
+    const useStartTls = !useLdaps && configuredStartTls;
 
-    if (url.startsWith(LDAPS_PREFIX)) ldapClientOptions.tlsOptions = { rejectUnauthorized: false };
+    const hostForTls = (() => {
+      try {
+        return new URL(url.replace('ldaps://', 'https://').replace('ldap://', 'http://')).hostname;
+      } catch {
+        return undefined;
+      }
+    })();
 
-    const ldapClient = new Client(ldapClientOptions);
+    const tlsOptions: tls.ConnectionOptions = {
+      rejectUnauthorized: false,
+      minVersion: 'TLSv1.2',
+      servername: hostForTls,
+    };
 
-    if (this.ldapConfig!.config.startTls?.[0] === 'true') {
-      await ldapClient.startTLS({ rejectUnauthorized: false });
+    const ldapClient = new Client({
+      url,
+      timeout: 15_000,
+      connectTimeout: 10_000,
+      tlsOptions: useLdaps ? tlsOptions : undefined,
+    });
+
+    try {
+      if (useStartTls) {
+        await ldapClient.startTLS(tlsOptions);
+      } else if (useLdaps && configuredStartTls) {
+        Logger.warn('LDAP uses ldaps://; STARTTLS setting will be ignored.', LdapKeycloakSyncService.name);
+      }
+
+      const tryBind = async (attempt = 0): Promise<void> => {
+        try {
+          await ldapClient.bind(bindDN, bindCredentials);
+          return undefined;
+        } catch (bindError) {
+          const msg = (bindError as Error)?.message || '';
+          const retriable = /ECONNRESET|ETIMEDOUT|socket hang up|closed before message/i.test(msg);
+          if (!retriable || attempt >= 2) {
+            throw bindError;
+          }
+          await sleep(400 + attempt * 400);
+          return tryBind(attempt + 1);
+        }
+      };
+
+      await tryBind();
+      return ldapClient;
+    } catch (error) {
+      try {
+        await ldapClient.unbind();
+      } catch (unbindError) {
+        Logger.debug(`LDAP unbind failed: ${(unbindError as Error).message}`, LdapKeycloakSyncService.name);
+      }
+      throw error;
     }
-
-    await ldapClient.bind(bindDN, bindCredentials);
-
-    return ldapClient;
   }
 
   private async searchAllGroups(ldapClient: Client) {
