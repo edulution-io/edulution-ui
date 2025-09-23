@@ -350,7 +350,8 @@
       "CollectingFailed": "Collecting files failed",
       "MissingCallbackURL": "Missing callback URL",
       "SharingFailed": "Sharing files failed",
-      "CopyFailed": "Copy failed"
+      "CopyFailed": "Copy failed",
+      "FileFormatNotSupported": "File format is not supported"
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",

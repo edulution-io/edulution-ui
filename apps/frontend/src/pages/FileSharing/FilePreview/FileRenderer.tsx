@@ -120,7 +120,7 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
     return <PdfViewer fetchUrl={fileUrl} />;
   }
 
-  return <p>{t('loadingIndicator.unsupportedFile')}</p>;
+  return <p>{t('filesharing.errors.FileFormatNotSupported')}</p>;
 };
 
 export default FileRenderer;
