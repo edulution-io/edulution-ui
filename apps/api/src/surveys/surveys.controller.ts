@@ -30,6 +30,7 @@ import {
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
+import APPS from '@libs/appconfig/constants/apps';
 import {
   ANSWER,
   CAN_PARTICIPATE,
@@ -40,6 +41,8 @@ import {
   SURVEYS,
   TEMPLATES,
 } from '@libs/survey/constants/surveys-endpoint';
+import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
+import SURVEYS_ANSWER_FOLDER from '@libs/survey/constants/surveyAnswersFolder';
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -53,12 +56,12 @@ import SurveysService from './surveys.service';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveysTemplateService from './surveys-template.service';
 import SurveyAnswerService from './survey-answers.service';
+import FilesystemService from '../filesystem/filesystem.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import { checkAttachmentFile, createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 import CustomHttpException from '../common/CustomHttpException';
-import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
@@ -66,10 +69,9 @@ import SurveyAnswerAttachmentsService from './survey-answer-attachments.service'
 class SurveysController {
   constructor(
     private readonly surveyService: SurveysService,
-    private readonly surveysAttachmentService: SurveysAttachmentService,
     private readonly surveysTemplateService: SurveysTemplateService,
     private readonly surveyAnswerService: SurveyAnswerService,
-    private readonly surveyAnswerAttachmentsService: SurveyAnswerAttachmentsService,
+    private readonly filesystemService: FilesystemService,
   ) {}
 
   @Get(`${FIND_ONE}/:surveyId`)
@@ -179,7 +181,8 @@ class SurveysController {
         SurveysController.name,
       );
     }
-    return this.surveyAnswerAttachmentsService.servePermanentFileFromAnswer(userName, surveyId, filename, res);
+    const filePath = join(SURVEYS_ANSWER_FOLDER, ATTACHMENT_FOLDER, surveyId, userName);
+    return this.filesystemService.serveFiles(filePath, filename, res);
   }
 
   @Post()
@@ -209,7 +212,8 @@ class SurveysController {
   @Get(`${FILES}/:filename`)
   serveTempFile(@Param() params: { filename: string }, @Res() res: Response, @GetCurrentUsername() username: string) {
     const { filename } = params;
-    return this.surveysAttachmentService.serveTempFiles(username, filename, res);
+    const filePath = join(APPS.SURVEYS, username);
+    return this.filesystemService.serveTempFiles(filePath, filename, res);
   }
 }
 

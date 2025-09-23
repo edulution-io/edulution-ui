@@ -27,7 +27,10 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import APPS from '@libs/appconfig/constants/apps';
 import { ANSWER, PUBLIC_USER, FILES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
+import SURVEYS_ANSWER_FOLDER from '@libs/survey/constants/surveyAnswersFolder';
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
@@ -39,7 +42,6 @@ import FilesystemService from 'apps/api/src/filesystem/filesystem.service';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answers.service';
-import SurveysAttachmentService from './surveys-attachment.service';
 import { Public } from '../common/decorators/public.decorator';
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
@@ -50,8 +52,7 @@ class PublicSurveysController {
   constructor(
     private readonly surveyService: SurveysService,
     private readonly surveyAnswerService: SurveyAnswerService,
-    private readonly surveysAttachmentService: SurveysAttachmentService,
-    private readonly surveyAnswerAttachmentsService: SurveyAnswerAttachmentsService,
+    private readonly filesystemService: FilesystemService,
   ) {}
 
   @Get(`/:surveyId`)
@@ -81,7 +82,8 @@ class PublicSurveysController {
   @Public()
   serveFile(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
     const { surveyId, questionId, filename } = params;
-    return this.surveysAttachmentService.serveFiles(surveyId, questionId, filename, res);
+    const filePath = join(APPS.SURVEYS, ATTACHMENT_FOLDER, surveyId, questionId);
+    return this.filesystemService.serveFiles(filePath, filename, res);
   }
 
   @Post(`${ANSWER}/${FILES}/:userName/:surveyId`)
@@ -168,7 +170,8 @@ class PublicSurveysController {
         PublicSurveysController.name,
       );
     }
-    return this.surveyAnswerAttachmentsService.serveTempFileFromAnswer(userName, surveyId, filename, res);
+    const filePath = join(SURVEYS_ANSWER_FOLDER, userName, surveyId);
+    return this.filesystemService.serveTempFiles(filePath, filename, res);
   }
 
   @Get(`${CHOICES}/:surveyId/:questionName`)

@@ -11,14 +11,12 @@
  */
 
 import { join } from 'path';
-import { Response } from 'express';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import SURVEY_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersAttachmentPath';
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
 import { PUBLIC_SURVEYS, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
@@ -27,38 +25,6 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
 
   onModuleInit() {
     void this.fileSystemService.ensureDirectoryExists(SURVEY_ANSWERS_ATTACHMENT_PATH);
-  }
-
-  async serveTempFileFromAnswer(
-    userName: string,
-    surveyId: string,
-    fileName: string,
-    res: Response,
-  ): Promise<Response> {
-    const path = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, fileName);
-    const fileExists = await FilesystemService.checkIfFileExist(path);
-    if (fileExists) {
-      const fileStream = await this.fileSystemService.createReadStream(path);
-      fileStream.pipe(res);
-      return res;
-    }
-    throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
-  }
-
-  async servePermanentFileFromAnswer(
-    userName: string,
-    surveyId: string,
-    fileName: string,
-    res: Response,
-  ): Promise<Response> {
-    const path = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName, fileName);
-    const fileExists = await FilesystemService.checkIfFileExist(path);
-    if (fileExists) {
-      const fileStream = await this.fileSystemService.createReadStream(path);
-      fileStream.pipe(res);
-      return res;
-    }
-    throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   static async deleteTempFileFromAnswer(userName: string, surveyId: string, fileName: string): Promise<void> {

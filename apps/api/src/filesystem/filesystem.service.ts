@@ -361,9 +361,17 @@ class FilesystemService {
     }
   }
 
+  async serveTempFiles(name: string, filename: string, res: Response) {
+    const filePath = join(TEMP_FILES_PATH, name, filename);
+    return this.serve(filePath, res);
+  }
+
   async serveFiles(name: string, filename: string, res: Response) {
     const filePath = join(APPS_FILES_PATH, name, filename);
+    return this.serve(filePath, res);
+  }
 
+  async serve(filePath: string, res: Response) {
     await FilesystemService.throwErrorIfFileNotExists(filePath);
 
     const contentType = lookup(filePath) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
