@@ -28,6 +28,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import ContentType from '@libs/filesharing/types/contentType';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import FileSelectorDialogProps from '@libs/filesharing/types/fileSelectorDialogProps';
+import useOpenFileDialogStore from '@/pages/FileSharing/useOpenFileDialogStore';
 
 const FileSelectorDialogBody: React.FC<FileSelectorDialogProps> = ({
   initialPath = '',
@@ -36,7 +37,9 @@ const FileSelectorDialogBody: React.FC<FileSelectorDialogProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { allowedExtensions, moveOrCopyItemToPath, setMoveOrCopyItemToPath } = useFileSharingDialogStore();
+  const { moveOrCopyItemToPath, setMoveOrCopyItemToPath } = useFileSharingDialogStore();
+
+  const { allowedExtensions } = useOpenFileDialogStore();
 
   const { fetchDialogDirs, fetchDialogFiles, dialogShownDirs, dialogShownFiles, isLoading } =
     useFileSharingMoveDialogStore();
@@ -127,7 +130,7 @@ const FileSelectorDialogBody: React.FC<FileSelectorDialogProps> = ({
     if (moveOrCopyItemToPath?.filename) {
       footerContent = (
         <p className="bg-secondary">
-          {t('fileSelectorDialogBody.selectedFile')}: {decodeURIComponent(moveOrCopyItemToPath.filename)}
+          {t('fileSelectorDialogBody.selectFile')}: {decodeURIComponent(moveOrCopyItemToPath.filename)}
         </p>
       );
     } else {

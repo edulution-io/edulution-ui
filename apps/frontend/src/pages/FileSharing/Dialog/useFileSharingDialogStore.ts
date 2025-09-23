@@ -60,15 +60,12 @@ interface FileSharingDialogStore {
   setFileOperationResult: (fileOperationSuccessful: boolean | undefined, message: string, status: number) => void;
   setSubmitButtonIsDisabled: (isSubmitButtonActive: boolean) => void;
   handleDeleteItems: (itemsToDelete: PathChangeOrCreateDto[], endpoint: string) => Promise<void>;
-  allowedExtensions: string[];
-  setAllowedExtensions: (extension: string[]) => void;
 }
 
 const initialState: Partial<FileSharingDialogStore> = {
   isDialogOpen: false,
   isLoading: false,
   error: null,
-  allowedExtensions: [],
   userInput: '',
   moveOrCopyItemToPath: {} as DirectoryFileDTO,
   selectedFileType: '',
@@ -85,10 +82,8 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
   closeDialog: () =>
     set({
       isDialogOpen: false,
-      allowedExtensions: [],
     }),
   setIsLoading: (isLoading) => set({ isLoading }),
-  setAllowedExtensions: (exts) => set({ allowedExtensions: exts }),
   setError: (error: AxiosError) => set({ error }),
   reset: () => set(initialState),
   setMoveOrCopyItemToPath: (path) => set({ moveOrCopyItemToPath: path }),

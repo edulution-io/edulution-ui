@@ -10,28 +10,27 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { TldrawUiMenuItem } from 'tldraw';
-import { useTranslation } from 'react-i18next';
-import useOpenFileDialogStore from '@/pages/FileSharing/useOpenFileDialogStore';
+import { create } from 'zustand';
 
-const OpenTldrItem: React.FC = () => {
-  const { t } = useTranslation();
-  const { setOpenFileDialog, setAllowedExtensions } = useOpenFileDialogStore();
+interface UseOpenFileDialogStore {
+  setOpenFileDialog: (open: boolean) => void;
+  isFileDialogOpen: boolean;
+  allowedExtensions: string[];
+  setAllowedExtensions: (extension: string[]) => void;
+  reset: () => void;
+}
 
-  const handleSelect = () => {
-    setAllowedExtensions(['.tldr']);
-    setOpenFileDialog(true);
-  };
-
-  return (
-    <TldrawUiMenuItem
-      id="openTldr"
-      label={t('whiteboard.openTlFile')}
-      readonlyOk
-      onSelect={handleSelect}
-    />
-  );
+const initialState = {
+  allowedExtensions: [],
+  openFileDialogOpen: false,
+  isFileDialogOpen: false,
 };
 
-export default OpenTldrItem;
+const useOpenFileDialogStore = create<UseOpenFileDialogStore>((set) => ({
+  ...initialState,
+  setOpenFileDialog: (open) => set({ isFileDialogOpen: open }),
+  setAllowedExtensions: (exts) => set({ allowedExtensions: exts }),
+  reset: () => set({ ...initialState }),
+}));
+
+export default useOpenFileDialogStore;
