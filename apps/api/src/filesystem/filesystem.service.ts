@@ -25,10 +25,10 @@ import {
   stat as fsStat,
   unlink,
 } from 'fs-extra';
-import { promisify } from 'util';
 import { createHash } from 'crypto';
 import { firstValueFrom, from } from 'rxjs';
-import { pipeline, Readable } from 'stream';
+import { Readable } from 'stream';
+import { pipeline } from 'stream/promises';
 import { extname, join } from 'path';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
@@ -50,8 +50,6 @@ import THIRTY_DAYS from '@libs/common/constants/thirtyDays';
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
 import WebdavSharesService from '../webdav/shares/webdav-shares.service';
-
-const pipelineAsync = promisify(pipeline);
 
 @Injectable()
 class FilesystemService {
@@ -126,7 +124,7 @@ class FilesystemService {
   static async saveFileStream(stream: AxiosResponse<Readable> | Readable, outputPath: string): Promise<void> {
     const writeStream = createWriteStream(outputPath);
     const actualStream = (stream as AxiosResponse<Readable>).data ? (stream as AxiosResponse<Readable>).data : stream;
-    await pipelineAsync(actualStream as Readable, writeStream);
+    await pipeline(actualStream as Readable, writeStream);
   }
 
   static getOutputFilePath(directory: string, hashedFilename: string): string {
