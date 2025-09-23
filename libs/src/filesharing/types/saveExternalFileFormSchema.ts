@@ -10,28 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { TldrawUiMenuItem } from 'tldraw';
-import 'tldraw/tldraw.css';
-import { useTranslation } from 'react-i18next';
-import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
+import { z } from 'zod';
+import { t } from 'i18next';
 
-const SaveAsTldrItem = () => {
-  const { t } = useTranslation();
-  const { setUploadTldrDialogOpen } = useHandelUploadFileStore();
+const saveExternalFileFormSchema = z.object({
+  filename: z
+    .string()
+    .trim()
+    .min(1, t('filesharing.tooltips.NameRequired'))
+    .max(30, t('filesharing.tooltips.NameExceedsCharacterLimit'))
+    .refine((v) => !v.endsWith('.'), {
+      message: t('filesharing.tooltips.NameMustNotEndWithDot'),
+    }),
+});
 
-  const handleSave = () => {
-    setUploadTldrDialogOpen(true);
-  };
+export type SaveExternalFileFormValues = z.infer<typeof saveExternalFileFormSchema>;
 
-  return (
-    <TldrawUiMenuItem
-      id="saveAsTldr"
-      label={t('common.save')}
-      readonlyOk
-      onSelect={handleSave}
-    />
-  );
-};
-
-export default SaveAsTldrItem;
+export default saveExternalFileFormSchema;

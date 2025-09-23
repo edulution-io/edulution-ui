@@ -28,6 +28,8 @@ interface HandelUploadFileStore {
   progressByName: Record<string, FileProgress>;
   uploadingByName: Map<string, boolean>;
   setIsUploadDialogOpen: (isOpen: boolean) => void;
+  setUploadTldrDialogOpen: (isOpen: boolean) => void;
+  isTldrDialogOpen: boolean;
   closeUploadDialog: () => void;
   setFilesToUpload: (files: UploadFile[]) => void;
   updateFilesToUpload: (updater: (files: UploadFile[]) => UploadFile[]) => void;
@@ -41,13 +43,14 @@ const initialState = {
   filesToUpload: [],
   isUploading: false,
   lastError: undefined,
+  isTldrDialogOpen: false,
   progressByName: {},
   uploadingByName: new Map<string, boolean>(),
 };
 
 const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
   ...initialState,
-
+  setUploadTldrDialogOpen: (isOpen) => set({ isTldrDialogOpen: isOpen }),
   setIsUploadDialogOpen: (isOpen) => set({ isUploadDialogOpen: isOpen }),
   closeUploadDialog: () => set({ isUploadDialogOpen: false }),
   setFilesToUpload: (files) => set({ filesToUpload: files }),
