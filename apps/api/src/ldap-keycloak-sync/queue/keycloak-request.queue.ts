@@ -135,6 +135,25 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
     return (await job.waitUntilFinished(this.queueEvents)) as T;
   }
 
+  public async fetchAllPaginated<T>(
+    path: string,
+    baseQuery = '',
+    pageSize = 100,
+    first = 0,
+    acc: T[] = [],
+  ): Promise<T[]> {
+    const qp = baseQuery ? `${baseQuery}&first=${first}&max=${pageSize}` : `first=${first}&max=${pageSize}`;
+    const endpoint = `${path.startsWith('/') ? path : `/${path}`}${qp ? `?${qp}` : ''}`;
+    const batch = await this.enqueue<T[]>(HttpMethods.GET, endpoint);
+
+    if (!batch || batch.length === 0) return acc;
+
+    const nextAcc = [...acc, ...batch];
+    if (batch.length < pageSize) return nextAcc;
+
+    return this.fetchAllPaginated<T>(path, baseQuery, pageSize, first + pageSize, nextAcc);
+  }
+
   async onModuleDestroy() {
     await this.worker.close();
     await this.queue.close();

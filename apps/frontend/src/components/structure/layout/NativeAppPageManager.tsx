@@ -18,8 +18,10 @@ import { ConferencePage } from '@/pages/ConferencePage';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
 import Whiteboard from '@/pages/Whiteboard/Whiteboard';
+import { DashboardPage } from '@/pages/Dashboard';
 
 const nativeAppPages: Partial<Record<TApps, JSX.Element>> = {
+  [APPS.DASHBOARD]: <DashboardPage />,
   [APPS.CONFERENCES]: <ConferencePage />,
   [APPS.WHITEBOARD]: <Whiteboard />,
   [APPS.DESKTOP_DEPLOYMENT]: <DesktopDeploymentPage />,
