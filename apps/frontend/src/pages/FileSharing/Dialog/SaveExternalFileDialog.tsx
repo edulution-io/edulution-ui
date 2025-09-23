@@ -24,6 +24,7 @@ import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import { UploadFile } from '@libs/filesharing/types/uploadFile';
 import { zodResolver } from '@hookform/resolvers/zod';
 import saveExternalFileFormSchema from '@libs/filesharing/types/saveExternalFileFormSchema';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
 
 const SaveExternalFileDialog = () => {
   const { isTldrDialogOpen, setUploadTldrDialogOpen, setFilesToUpload, uploadFiles } = useHandelUploadFileStore();
@@ -38,7 +39,7 @@ const SaveExternalFileDialog = () => {
     defaultValues: { filename: '' },
   });
 
-  const {isValid} = form.formState;
+  const { isValid } = form.formState;
 
   const handleClose = () => {
     setUploadTldrDialogOpen(false);
@@ -55,7 +56,9 @@ const SaveExternalFileDialog = () => {
 
     const targetDir = getPathWithoutWebdav(moveOrCopyItemToPath?.filePath || '');
     const file = buildTldrFileFromEditor(editor, name);
-    const octet = new File([await file.text()], file.name, { type: 'application/octet-stream' });
+    const octet = new File([await file.text()], file.name, {
+      type: RequestResponseContentType.APPLICATION_OCTET_STREAM,
+    });
     setFilesToUpload([octet as UploadFile]);
     await uploadFiles(targetDir, eduApiToken);
     setUploadTldrDialogOpen(false);

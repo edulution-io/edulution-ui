@@ -11,12 +11,13 @@
  */
 
 import type { Editor, StoreSnapshot, TLRecord } from 'tldraw';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import buildTldrFileFromSnapshot from './buildTldrFileFromSnapshot';
 
 const buildTldrFileFromEditor = (editor: Editor, filename: string): File => {
   const storeSnapshot: StoreSnapshot<TLRecord> = editor.getSnapshot().document;
   const jsonFile = buildTldrFileFromSnapshot(storeSnapshot, filename);
-  return new File([jsonFile], jsonFile.name, { type: 'application/octet-stream' });
+  return new File([jsonFile], jsonFile.name, { type: RequestResponseContentType.APPLICATION_OCTET_STREAM });
 };
 
 export default buildTldrFileFromEditor;
