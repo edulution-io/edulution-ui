@@ -25,6 +25,7 @@ import { UploadFile } from '@libs/filesharing/types/uploadFile';
 import { zodResolver } from '@hookform/resolvers/zod';
 import saveExternalFileFormSchema from '@libs/filesharing/types/saveExternalFileFormSchema';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import { useTranslation } from 'react-i18next';
 
 const SaveExternalFileDialog = () => {
   const { isTldrDialogOpen, setUploadTldrDialogOpen, setFilesToUpload, uploadFiles } = useHandelUploadFileStore();
@@ -32,6 +33,8 @@ const SaveExternalFileDialog = () => {
   const { moveOrCopyItemToPath } = useFileSharingDialogStore();
 
   const { eduApiToken } = useUserStore();
+
+  const { t } = useTranslation();
 
   const form = useForm({
     mode: 'onChange',
@@ -77,7 +80,7 @@ const SaveExternalFileDialog = () => {
   return (
     <AdaptiveDialog
       isOpen={isTldrDialogOpen}
-      title=""
+      title={t('saveExternalFileDialogBody.saveExternalFile')}
       body={<SaveExternalFileDialogBody form={form} />}
       footer={getFooter()}
       handleOpenChange={() => setUploadTldrDialogOpen(!isTldrDialogOpen)}
