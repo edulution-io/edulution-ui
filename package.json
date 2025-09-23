@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "1.5.32",
+  "version": "1.5.45",
   "scripts": {
     "test": "nx run-many --target=test --projects=api",
     "test:api": "nx run api:test --detectOpenHandles",
@@ -132,7 +132,7 @@
     "lucide-react": "^0.323.0",
     "mime-types": "^3.0.1",
     "mongoose": "^8.9.5",
-    "multer": "^1.4.5-lts.1",
+    "multer": "^2.0.2",
     "next-themes": "^0.2.1",
     "oidc-client-ts": "^3.1.0",
     "otpauth": "^9.3.3",

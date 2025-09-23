@@ -10,16 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { pipeline, Readable } from 'stream';
-import { AxiosResponse } from 'axios';
-import { promisify } from 'util';
-import { createWriteStream } from 'fs';
+// Add new migrations here
+import migration000 from './migration000';
 
-const saveFileStream = async (fileStream: Readable | AxiosResponse<Readable>, outputPath: string): Promise<void> => {
-  const pipelineAsync = promisify(pipeline);
-  const readableStream = (fileStream as AxiosResponse<Readable>).data
-    ? (fileStream as AxiosResponse<Readable>).data
-    : (fileStream as Readable);
-  await pipelineAsync(readableStream, createWriteStream(outputPath));
-};
-export default saveFileStream;
+const bulletinsMigrationList = [migration000];
+
+export default bulletinsMigrationList;

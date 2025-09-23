@@ -10,6 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const DASHBOARD_ROUTE = '/';
+const triggerBrowserDownload = (blobUrl: string, filename: string) => {
+  const a = document.createElement('a');
+  a.href = blobUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+};
 
-export default DASHBOARD_ROUTE;
+export default triggerBrowserDownload;

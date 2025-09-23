@@ -11,7 +11,18 @@
  */
 /* eslint-disable @typescript-eslint/class-methods-use-this */
 import { join } from 'path';
-import { Controller, Delete, Get, Param, Post, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Res,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+  HttpStatus,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { type Response } from 'express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -19,8 +30,10 @@ import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
 import { UploadGlobalAssert } from '@libs/filesystem/types/uploadGlobalAssert';
+import CustomHttpException from '../common/CustomHttpException';
 import { createAttachmentUploadOptions, createDiskStorage } from './multer.utilities';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 import FilesystemService from './filesystem.service';
@@ -47,6 +60,9 @@ class FileSystemController {
     ),
   )
   uploadFileToApp(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
+    if (!file) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
+    }
     return res.status(200).json(file.filename);
   }
 
@@ -102,7 +118,7 @@ class FileSystemController {
     }),
   )
   upload(@UploadedFile() file: Express.Multer.File) {
-    return { path: `${file.destination.replace('.', '')  }/${  file.filename}` };
+    return { path: `${file.destination.replace('.', '')}/${file.filename}` };
   }
 }
 

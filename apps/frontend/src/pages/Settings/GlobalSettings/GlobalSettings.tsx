@@ -18,6 +18,7 @@ import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import useGroupStore from '@/store/GroupStore';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
+import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import AppConfigSwitch from '@/pages/Settings/AppConfig/components/booleanField/AppConfigSwitch';
 import AppDropdownSelectFormField from '@/components/ui/DropdownSelect/AppDropdownSelectFormField';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
@@ -25,7 +26,6 @@ import defaultValues from '@libs/global-settings/constants/defaultValues';
 import { GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import LdapSettings from '@/pages/Settings/components/LdapSettings';
 import AddOrganisationLogo from '@/pages/Settings/components/AddOrganisationLogo';
-import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSettings.form';
 import AddOrganisationInfo from '@/pages/Settings/components/AddOrganisationInfo';
 import useGlobalSettingsApiStore from './useGlobalSettingsApiStore';
@@ -136,6 +136,12 @@ const GlobalSettings: React.FC = () => {
                     variant="default"
                   />
                 )}
+                <p> {t('settings.globalSettings.defaultLandingPageDescription')}</p>
+                <AppDropdownSelectFormField
+                  appNamePath="general.defaultLandingPage.appName"
+                  form={form}
+                  variant="default"
+                />
               </AccordionContent>
             </AccordionItem>
 

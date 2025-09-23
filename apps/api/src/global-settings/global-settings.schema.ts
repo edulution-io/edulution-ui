@@ -32,7 +32,7 @@ export class GlobalSettings {
 
   @Prop({ type: OrganisationInfoSchema, default: {} }) organisationInfo?: OrganisationInfo;
 
-  @Prop({ default: 4 })
+  @Prop({ default: 5 })
   schemaVersion: number;
 }
 

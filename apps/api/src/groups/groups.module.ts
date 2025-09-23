@@ -13,8 +13,10 @@
 import { Module } from '@nestjs/common';
 import GroupsService from './groups.service';
 import { GroupsController } from './groups.controller';
+import LdapKeycloakSyncModule from '../ldap-keycloak-sync/ldap-keycloak-sync.module';
 
 @Module({
+  imports: [LdapKeycloakSyncModule],
   providers: [GroupsService],
   controllers: [GroupsController],
   exports: [GroupsService],

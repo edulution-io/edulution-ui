@@ -11,7 +11,18 @@
  */
 
 /* eslint-disable @typescript-eslint/class-methods-use-this */
-import { Controller, Delete, Get, Param, Post, Query, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  Res,
+  UploadedFile,
+  UseInterceptors,
+  HttpStatus,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { type Response } from 'express';
 import { ApiBearerAuth, ApiConsumes, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
@@ -21,10 +32,12 @@ import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/tLDrawSyncEndpoin
 import APPS from '@libs/appconfig/constants/apps';
 import HistoryPageDto from '@libs/whiteboard/types/historyPageDto';
 import TLDRAW_MULTI_USER_ROOM_PREFIX from '@libs/whiteboard/constants/tldrawMultiUserRoomPrefix';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import FilesystemService from '../filesystem/filesystem.service';
 import TLDrawSyncService from './tldraw-sync.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
+import CustomHttpException from '../common/CustomHttpException';
 
 @ApiTags(TLDRAW_SYNC_ENDPOINTS.BASE)
 @ApiBearerAuth()
@@ -48,6 +61,9 @@ class TLDrawSyncController {
     ),
   )
   uploadFileToApp(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
+    if (!file) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
+    }
     return res.status(200).json(file.filename);
   }
 

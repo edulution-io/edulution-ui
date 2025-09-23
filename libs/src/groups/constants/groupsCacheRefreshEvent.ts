@@ -10,12 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import FileActionType from '@libs/filesharing/types/fileActionType';
+const GROUPS_CACHE_REFRESH_EVENT = 'groups.cache.refresh';
 
-interface FileActionButtonProps {
-  openDialog: (action: FileActionType) => void;
-  selectedItems?: DirectoryFileDTO[];
-}
-
-export default FileActionButtonProps;
+export default GROUPS_CACHE_REFRESH_EVENT;
