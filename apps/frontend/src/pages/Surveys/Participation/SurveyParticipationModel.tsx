@@ -29,6 +29,12 @@ import 'survey-core/i18n/french';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
 
+interface SurveyFileValue {
+  name: string;
+  type: string;
+  [key: string]: unknown;
+}
+
 interface SurveyParticipationModelProps {
   isPublic: boolean;
 }
@@ -128,13 +134,13 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
     });
 
     newModel.onDownloadFile.add((_: SurveyModel, options: DownloadFileEvent) => {
+      const fileValue = options.fileValue as SurveyFileValue;
+
       fetch(options.content as string)
         .then((response) => response.blob())
         .then((blob) => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-          const file = new File([blob], options.fileValue.name, {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
-            type: options.fileValue.type,
+          const file = new File([blob], fileValue.name, {
+            type: fileValue.type,
           });
           const reader = new FileReader();
           reader.onload = (e) => {
