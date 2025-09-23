@@ -116,8 +116,9 @@
     "sidebar": "Embedded"
   },
   "dashboard": {
-    "description": "Here is your personal {{ applicationName }} dashboard. The place where all your applications for digital teaching are collected.",
     "pageTitle": "Dashboard",
+    "sidebar": "Dashboard",
+    "description": "Here is your personal {{ applicationName }} dashboard. The place where all your applications for digital teaching are collected.",
     "mobileAccess": {
       "title": "Mobile Access",
       "manual": "Setup",

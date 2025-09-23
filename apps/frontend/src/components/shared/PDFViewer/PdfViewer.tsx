@@ -106,7 +106,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
     };
   }, [fetchUrl, fetchOptions, onError]);
 
-  const iframeSource = useMemo(() => fetchUrl ? (blobUrl ?? '') : (url ?? ''), [blobUrl, fetchUrl, url]);
+  const iframeSource = useMemo(() => (fetchUrl ? (blobUrl ?? '') : (url ?? '')), [blobUrl, fetchUrl, url]);
 
   const canRender = Boolean(iframeSource) && !errorMessage;
 
