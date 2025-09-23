@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const DASHBOARD_ROUTE = '/';
+const ROOT_ROUTE = '/';
 
-export default DASHBOARD_ROUTE;
+export default ROOT_ROUTE;

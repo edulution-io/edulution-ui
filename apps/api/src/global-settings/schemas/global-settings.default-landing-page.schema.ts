@@ -12,15 +12,16 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import APPS from '@libs/appconfig/constants/apps';
 
 export type DefaultLandingPageDocument = DefaultLandingPage & Document;
 
 @Schema({ _id: false })
 export class DefaultLandingPage {
-  @Prop({ default: false })
+  @Prop({ default: true })
   isCustomLandingPageEnabled: boolean;
 
-  @Prop({ default: '' })
+  @Prop({ default: APPS.DASHBOARD })
   appName: string;
 }
 
