@@ -45,20 +45,21 @@ class SurveysService implements OnModuleInit {
   }
 
   async findSurveyWithCreatorDependency(surveyId: string, creator: JwtUser): Promise<Survey | null> {
-    const survey = await this.surveyModel
-      .findOne({
-        $and: [{ 'creator.username': creator.preferred_username }, { _id: new Types.ObjectId(surveyId) }],
-      })
-      .exec();
-    if (!survey) {
+    try {
+      const survey = await this.surveyModel
+        .findOne({
+          $and: [{ 'creator.username': creator.preferred_username }, { _id: new Types.ObjectId(surveyId) }],
+        })
+        .exec();
+      return survey;
+    } catch (error) {
       throw new CustomHttpException(
-        SurveyErrorMessages.NotFoundError,
-        HttpStatus.NOT_FOUND,
-        undefined,
+        CommonErrorMessages.DB_ACCESS_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error instanceof Error ? error.message : undefined,
         SurveysService.name,
       );
     }
-    return survey;
   }
 
   async findSurvey(surveyId: string, user: JwtUser): Promise<Survey | null> {
