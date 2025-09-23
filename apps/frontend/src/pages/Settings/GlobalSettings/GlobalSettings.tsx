@@ -19,7 +19,6 @@ import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/compone
 import useGroupStore from '@/store/GroupStore';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
-import AppConfigSwitch from '@/pages/Settings/AppConfig/components/booleanField/AppConfigSwitch';
 import AppDropdownSelectFormField from '@/components/ui/DropdownSelect/AppDropdownSelectFormField';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
@@ -121,21 +120,6 @@ const GlobalSettings: React.FC = () => {
 
               <AccordionContent className="space-y-2 px-1 text-p">
                 <p className="text-xl font-bold">{t('settings.globalSettings.defaultLandingPageTitle')}</p>
-                <AppConfigSwitch
-                  fieldPath="general.defaultLandingPage.isCustomLandingPageEnabled"
-                  control={control}
-                  option={{
-                    title: t('settings.globalSettings.defaultLandingPageDescription'),
-                    description: t('settings.globalSettings.defaultLandingPageSwitchDescription'),
-                  }}
-                />
-                {Boolean(isCustomLandingPageEnabled) && appConfigs.length > 0 && (
-                  <AppDropdownSelectFormField
-                    appNamePath="general.defaultLandingPage.appName"
-                    form={form}
-                    variant="default"
-                  />
-                )}
                 <p> {t('settings.globalSettings.defaultLandingPageDescription')}</p>
                 <AppDropdownSelectFormField
                   appNamePath="general.defaultLandingPage.appName"
