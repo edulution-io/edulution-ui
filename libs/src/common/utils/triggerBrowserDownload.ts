@@ -10,16 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { pipeline, Readable } from 'stream';
-import { AxiosResponse } from 'axios';
-import { promisify } from 'util';
-import { createWriteStream } from 'fs';
-
-const saveFileStream = async (fileStream: Readable | AxiosResponse<Readable>, outputPath: string): Promise<void> => {
-  const pipelineAsync = promisify(pipeline);
-  const readableStream = (fileStream as AxiosResponse<Readable>).data
-    ? (fileStream as AxiosResponse<Readable>).data
-    : (fileStream as Readable);
-  await pipelineAsync(readableStream, createWriteStream(outputPath));
+const triggerBrowserDownload = (blobUrl: string, filename: string) => {
+  const a = document.createElement('a');
+  a.href = blobUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
 };
-export default saveFileStream;
+
+export default triggerBrowserDownload;
