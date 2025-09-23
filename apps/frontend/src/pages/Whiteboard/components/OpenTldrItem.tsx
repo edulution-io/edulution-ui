@@ -14,15 +14,13 @@ import React from 'react';
 import { TldrawUiMenuItem } from 'tldraw';
 import { useTranslation } from 'react-i18next';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
-import FileActionType from '@libs/filesharing/types/fileActionType';
 
 const OpenTldrItem: React.FC = () => {
   const { t } = useTranslation();
-  const { openDialog, setAllowedExtensions } = useFileSharingDialogStore();
+  const { setAllowedExtensions } = useFileSharingDialogStore();
 
   const handleSelect = () => {
     setAllowedExtensions(['.tldr']);
-    openDialog(FileActionType.FILE_SELECTOR);
   };
 
   return (
