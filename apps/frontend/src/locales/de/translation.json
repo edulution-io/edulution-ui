@@ -313,7 +313,7 @@
     "students-home": "Schüler-Home"
   },
   "filesharing": {
-    "filterPlaceHolderText": "Suche nach Dateiname",
+    "filterPlaceHolderText": "Tippen, um zu suchen",
     "title": "DATEIEN",
     "selectFile": "Datei auswählen",
     "sidebar": "Dateien",
@@ -1317,7 +1317,8 @@
     "upload": "Hochladen",
     "mode": "Modus",
     "orContinueWithoutAccount": "Oder fahre ohne Account fort",
-    "reset": "Zurücksetzen"
+    "reset": "Zurücksetzen",
+    "file": "Datei"
   },
   "form": {
     "path": "Link",
@@ -1399,7 +1400,8 @@
   "whiteboard": {
     "title": "WHITEBOARD",
     "sidebar": "Whiteboard",
-    "saveAsTlFile": "Whiteboard als .tldr Datei speichern"
+    "saveAsTlFile": "Whiteboard als .tldr Datei speichern",
+    "openTlFile": ".tldr Datei öffnen"
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
@@ -1473,7 +1475,9 @@
     "destinationFolder": "Zielordner",
     "filename": "Dateiname",
     "filenamePlaceholder": "Dateiname hier eingeben",
-    "filenameRequired": "Dateiname darf nicht leer sein"
+    "filenameRequired": "Dateiname darf nicht leer sein",
+    "fileSavedSuccessful": "Datei erfolgreich gespeichert",
+    "fileSaveFailed": "Datei konnte nicht gespeichert werden"
   },
 
   "moveItemDialog": {
