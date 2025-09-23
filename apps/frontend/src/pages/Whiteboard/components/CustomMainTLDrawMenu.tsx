@@ -24,7 +24,7 @@ const CustomMainTLDrawMenu = () => {
       <TldrawUiMenuGroup id="file-custom">
         <TldrawUiMenuSubmenu
           id="file-submenu"
-          label={t('whiteboard.file')}
+          label={t('common.file')}
         >
           <SaveAsTldrItem />
           <OpenTldrItem />

@@ -314,7 +314,7 @@
     "nobulletinboard": "No new bulletins"
   },
   "filesharing": {
-    "filterPlaceHolderText": "Search for filename",
+    "filterPlaceHolderText": "Type to search",
     "title": "FILES",
     "sidebar": "Files",
     "previewTitle": "File Preview",
@@ -1314,7 +1314,8 @@
     "mode": "Mode",
     "orContinueWithoutAccount": "Or continue without account",
     "application": "Application",
-    "reset": "Reset"
+    "reset": "Reset",
+    "file": "File"
   },
   "form": {
     "path": "Path",
@@ -1474,7 +1475,9 @@
     "destinationFolder": "Destination folder",
     "filename": "Filename",
     "filenamePlaceholder": "Enter filename here",
-    "filenameRequired": "Filename cannot be empty"
+    "filenameRequired": "Filename cannot be empty",
+    "fileSavedSuccessful": "File saved successfully",
+    "fileSaveFailed": "File could not be saved"
   },
 
   "fileSelectorDialogBody": {
