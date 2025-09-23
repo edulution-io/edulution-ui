@@ -10,19 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-import APPS from '@libs/appconfig/constants/apps';
+const GROUPS_CACHE_REFRESH_EVENT = 'groups.cache.refresh';
 
-export type DefaultLandingPageDocument = DefaultLandingPage & Document;
-
-@Schema({ _id: false })
-export class DefaultLandingPage {
-  @Prop({ default: true })
-  isCustomLandingPageEnabled: boolean;
-
-  @Prop({ default: APPS.DASHBOARD })
-  appName: string;
-}
-
-export const DefaultLandingPageSchema = SchemaFactory.createForClass(DefaultLandingPage);
+export default GROUPS_CACHE_REFRESH_EVENT;

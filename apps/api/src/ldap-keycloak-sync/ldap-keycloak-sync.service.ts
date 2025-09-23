@@ -38,14 +38,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import { Model } from 'mongoose';
 import { MinimalUser } from '@libs/ldapKeycloakSync/types/minimal.user';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import GROUPS_CACHE_REFRESH_EVENT from '@libs/groups/constants/groupsCacheRefreshEvent';
+import sleep from '@libs/common/utils/sleep';
 import { LdapKeycloakSync, LdapKeycloakSyncDocument } from './ldap-keycloak-sync.schema';
 import GlobalSettingsService from '../global-settings/global-settings.service';
 import KeycloakRequestQueue from './queue/keycloak-request.queue';
-import GroupsService from '../groups/groups.service';
-
-const PAGINATION = {
-  PAGE_SIZE: 100,
-};
 
 @Injectable()
 class LdapKeycloakSyncService implements OnModuleInit {
@@ -60,9 +58,9 @@ class LdapKeycloakSyncService implements OnModuleInit {
   constructor(
     @Inject(CACHE_MANAGER) private cache: Cache,
     private readonly globalSettingsService: GlobalSettingsService,
-    private readonly groupsService: GroupsService,
     @InjectModel(LdapKeycloakSync.name) private ldapKeycloakSyncModel: Model<LdapKeycloakSyncDocument>,
     private readonly keycloakQueue: KeycloakRequestQueue,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
@@ -96,10 +94,9 @@ class LdapKeycloakSyncService implements OnModuleInit {
       const ldapEntries = await this.searchAllGroups(client);
       const ldapDns = new Set(ldapEntries.map((e) => LdapKeycloakSyncService.extractDn(e.distinguishedName)));
 
-      let cachedGroupsFlat = (await this.cache.get<Group[]>(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL)) || [];
+      const cachedGroupsFlat = (await this.cache.get<Group[]>(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL)) || [];
       if (!cachedGroupsFlat.length) {
-        await this.groupsService.updateGroupsAndMembersInCache();
-        cachedGroupsFlat = (await this.cache.get<Group[]>(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL)) || [];
+        return;
       }
 
       const groupsByName = new Map<string, Group>();
@@ -161,9 +158,18 @@ class LdapKeycloakSyncService implements OnModuleInit {
       Logger.verbose(`Built ${updates.length} raw updates`, LdapKeycloakSyncService.name);
 
       if (pendingAdds.size) {
-        const resolved = await this.fetchAllKeycloakUsersMap();
+        const resolvedUsers = await this.keycloakQueue.fetchAllPaginated<MinimalUser>('/users', '');
+
+        const usersMap = new Map<string, MinimalUser>();
+
+        resolvedUsers.forEach((u) => {
+          if (u.username && u.id && !usersMap.has(u.username)) {
+            usersMap.set(u.username, { id: u.id, username: u.username });
+          }
+        });
+
         pendingAdds.forEach((groupIds, username) => {
-          const user = resolved.get(username);
+          const user = usersMap.get(username);
           if (user) {
             updates.push({ userId: user.id, add: Array.from(groupIds), remove: [] });
           } else {
@@ -189,7 +195,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
         );
       }
 
-      await this.groupsService.updateGroupsAndMembersInCache();
+      this.eventEmitter.emit(GROUPS_CACHE_REFRESH_EVENT);
 
       await this.persistLastSync();
 
@@ -243,7 +249,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
     await Promise.all(Array.from(addSet).map((userId) => this.updateUserGroups(userId, [targetGroup.id], [])));
     await Promise.all(Array.from(removeSet).map((userId) => this.updateUserGroups(userId, [], [targetGroup.id])));
 
-    await this.groupsService.updateGroupsAndMembersInCache();
+    this.eventEmitter.emit(GROUPS_CACHE_REFRESH_EVENT);
   }
 
   public async reconcileNamedGroupMembers(
@@ -281,7 +287,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
     await Promise.all(toAdd.map((id) => this.updateUserGroups(id, [targetGroup.id], [])));
     await Promise.all(toRemove.map((id) => this.updateUserGroups(id, [], [targetGroup.id])));
 
-    await this.groupsService.updateGroupsAndMembersInCache();
+    this.eventEmitter.emit(GROUPS_CACHE_REFRESH_EVENT);
   }
 
   private async expandGroupNameToUsers(name: string): Promise<GroupMemberDto[]> {
@@ -442,15 +448,31 @@ class LdapKeycloakSyncService implements OnModuleInit {
 
       await this.keycloakQueue.enqueue(HttpMethods.POST, '/groups', { name });
 
-      await this.groupsService.updateGroupsAndMembersInCache();
+      this.eventEmitter.emit(GROUPS_CACHE_REFRESH_EVENT);
 
-      const allGroups = (await this.cache.get<Group[]>(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL)) || [];
-      group = allGroups.find((g) => g.path === groupPath)!;
+      const search = encodeURIComponent(name);
 
-      if (groupsByPath) groupsByPath.set(groupPath, group);
+      const fetchOnce = async () => {
+        const found = await this.keycloakQueue.enqueue<Group[]>(HttpMethods.GET, `/groups?search=${search}`);
+        return (found || []).find((g) => g.path === groupPath);
+      };
 
-      this.groupCache.set(group.name, group);
+      group = await fetchOnce();
+      if (!group) {
+        await sleep(200);
+        group = await fetchOnce();
+      }
+
+      if (group) {
+        groupsByPath?.set(groupPath, group);
+        this.groupCache.set(group.name, group);
+      }
+
+      if (!group) {
+        throw new Error(`Group ${groupPath} could not be found after creation.`);
+      }
     }
+
     return { ...group, members: [] };
   }
 
@@ -491,35 +513,6 @@ class LdapKeycloakSyncService implements OnModuleInit {
     );
 
     return names.flat().filter((n): n is string => !!n);
-  }
-
-  private async fetchAllKeycloakUsersMap(): Promise<Map<string, MinimalUser>> {
-    const map = new Map<string, MinimalUser>();
-
-    const fetchBatch = async (first: number): Promise<void> => {
-      const batch = await this.keycloakQueue.enqueue<MinimalUser[]>(
-        HttpMethods.GET,
-        `/users?first=${first}&max=${PAGINATION.PAGE_SIZE}`,
-      );
-
-      if (!batch.length) {
-        return;
-      }
-
-      batch.forEach((u) => {
-        if (u.username && u.id && !map.has(u.username)) {
-          map.set(u.username, { id: u.id, username: u.username });
-        }
-      });
-
-      if (batch.length === PAGINATION.PAGE_SIZE) {
-        await fetchBatch(first + batch.length);
-      }
-    };
-
-    await fetchBatch(0);
-
-    return map;
   }
 
   private async resolveLdapMember(name: string): Promise<LdapMemberType> {

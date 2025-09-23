@@ -103,6 +103,7 @@
   },
   "dashboard": {
     "pageTitle": "Tableau de bord",
+    "sidebar": "Dashboard",
     "mobileAccess": {
       "title": "Accès mobile",
       "manual": "Instructions",
