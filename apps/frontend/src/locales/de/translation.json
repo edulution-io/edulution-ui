@@ -350,7 +350,7 @@
       "MissingCallbackURL": "Fehlende Callback-URL",
       "SharingFailed": "Austeilen der Dateien fehlgeschlagen",
       "CopyFailed": "Kopieren fehlgeschlagen",
-      "FileFormatNotSupported": "Dateiformat nicht unterstützt"
+      "FileFormatNotSupported": "Dateiformat wird nicht unterstützt"
     },
     "publicShareFilesPage": {
       "title": "Geteilte Dateien",
