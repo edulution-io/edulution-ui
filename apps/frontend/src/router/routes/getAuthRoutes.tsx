@@ -11,11 +11,11 @@
  */
 
 import React from 'react';
-import { Navigate, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import LoginPage from '@/pages/LoginPage/LoginPage';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
-import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
 import PublicLoadingPage from '@/pages/EmbeddedPage/PublicLoadingPage';
+import DefaultLandingPageAfterLogin from '@/components/structure/DefaultLandingPageAfterLogin';
 
 const getAuthRoutes = (isAuthenticated: boolean) => [
   <Route
@@ -26,16 +26,7 @@ const getAuthRoutes = (isAuthenticated: boolean) => [
   <Route
     key="wildcard"
     path="*"
-    element={
-      isAuthenticated ? (
-        <Navigate
-          replace
-          to={DASHBOARD_ROUTE}
-        />
-      ) : (
-        <PublicLoadingPage />
-      )
-    }
+    element={isAuthenticated ? <DefaultLandingPageAfterLogin /> : <PublicLoadingPage />}
   />,
 ];
 
