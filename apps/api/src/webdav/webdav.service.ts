@@ -153,7 +153,7 @@ class WebdavService {
     const client = await this.getClient(username, share);
     const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
     const pathWithoutWebdav = getPathWithoutWebdav(path, webdavShare.pathname);
-    const url = new URL(pathWithoutWebdav, webdavShare.url).href;
+    const url = new URL(pathWithoutWebdav.replace(/\/+$/, ''), webdavShare.url).href;
 
     return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
       client,
@@ -174,7 +174,7 @@ class WebdavService {
     const client = await this.getClient(username, share);
     const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
     const pathWithoutWebdav = getPathWithoutWebdav(path, webdavShare.pathname);
-    const url = new URL(pathWithoutWebdav, webdavShare.url).href;
+    const url = new URL(pathWithoutWebdav.replace(/\/+$/, ''), webdavShare.url).href;
 
     return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
       client,

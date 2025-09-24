@@ -59,7 +59,7 @@ const useFileSharingPage = () => {
         setPathToRestoreSession(path);
       }
     }
-  }, [path, pathToRestoreSession, homePath, setPathToRestoreSession, fetchFiles]);
+  }, [path, pathToRestoreSession, homePath, setPathToRestoreSession, fetchFiles, webdavShare]);
 
   useEffect(() => {
     const updateFilesAfterSuccess = async () => {
