@@ -623,8 +623,10 @@
     "export": {
       "exportToPDF": "Als PDF exportieren",
       "saveInPDF": "Als PDF speichern",
+      "processing": "Export wird verarbeitet ...",
       "success": "Export erfolgreich",
-      "error": "Fehler beim Exportieren"
+      "error": "Fehler beim Exportieren",
+      "warning": "Einige Fragen können im PDF-Export möglicherweise nicht korrekt angezeigt werden. Zum Beispiel: der Datei-Upload, die Bildauswahl, und das Passwortfeld welches lesbar wird."
     },
     "editor": {
       "inputFieldTitle": "Eingabefeld",

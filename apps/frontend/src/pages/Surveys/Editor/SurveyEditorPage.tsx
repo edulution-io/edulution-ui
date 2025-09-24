@@ -42,8 +42,9 @@ import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConf
 import PageLayout from '@/components/structure/layout/PageLayout';
 import QuestionContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
+import useExportToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportToPdfStore';
+import ExportToPdfWarning from '@/pages/Surveys/Participation/exportToPdf/ExportToPdfWarning';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import surveySavePDF from '@/pages/Surveys/Participation/surveySavePDF';
 
 const SurveyEditorPage = () => {
   const { fetchSelectedSurvey, isFetching, selectedSurvey, selectSurvey, updateUsersSurveys } =
@@ -67,6 +68,7 @@ const SurveyEditorPage = () => {
     setSelectedQuestion,
     isUpdatingBackendLimiters,
   } = useQuestionsContextMenuStore();
+  const { setIsOpen: setOpenExportPDFDialog } = useExportToPdfStore();
 
   const { t } = useTranslation();
   const { user } = useUserStore();
@@ -223,7 +225,7 @@ const SurveyEditorPage = () => {
       {
         icon: TbFileTypePdf,
         text: t('survey.export.exportToPDF'),
-        onClick: () => surveySavePDF(creator.JSON as JSON),
+        onClick: () => setOpenExportPDFDialog(true),
       },
     ],
     keyPrefix: 'surveys-page-floating-button_',
@@ -262,6 +264,7 @@ const SurveyEditorPage = () => {
         setIsOpenQuestionContextMenu={setIsOpenQuestionContextMenu}
         isLoading={isUpdatingBackendLimiters}
       />
+      <ExportToPdfWarning formula={creator.JSON as SurveyFormula} />
     </PageLayout>
   );
 };

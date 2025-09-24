@@ -618,10 +618,12 @@
     "noFormula": "The formula of the survey is not readable.",
     "canSubmitMultiple": "Allow multiple submission",
     "export": {
-      "exportToPDF": "Als PDF exportieren",
-      "saveInPDF": "Als PDF speichern",
-      "success": "Export erfolgreich",
-      "error": "Fehler beim Exportieren"
+      "exportToPDF": "Export as PDF",
+      "saveInPDF": "Save as PDF",
+      "processing": "Processing export ...",
+      "success": "Successfully exported as PDF",
+      "error": "Error exporting",
+      "warning": "Some questions can not be displayed correctly in the PDF export. For example: the file upload, the image selection, and, the password field gets readable."
     },
     "editor": {
       "inputFieldTitle": "Input field",
