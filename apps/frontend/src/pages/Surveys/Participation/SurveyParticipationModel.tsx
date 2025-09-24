@@ -19,8 +19,8 @@ import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import useLanguage from '@/hooks/useLanguage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
-import useExportToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportToPdfStore';
-import ExportToPdfWarning from '@/pages/Surveys/Participation/exportToPdf/ExportToPdfWarning';
+import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
+import ExportToPdfWarningDialog from '@/pages/Surveys/Participation/exportToPdf/ExportToPdfWarningDialog';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import '../theme/custom.participation.css';
@@ -45,7 +45,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
   const { fetchAnswer, isFetching, answerSurvey, previousAnswer } = useParticipateSurveyStore();
 
-  const { setIsOpen: setOpenExportPDFDialog } = useExportToPdfStore();
+  const { setIsOpen: setOpenExportPDFDialog } = useExportSurveyToPdfStore();
 
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -129,7 +129,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         <Survey model={surveyParticipationModel} />
       </div>
       {selectedSurvey ? (
-        <ExportToPdfWarning
+        <ExportToPdfWarningDialog
           formula={selectedSurvey.formula}
           answer={surveyParticipationModel ? (surveyParticipationModel.data as JSON) : undefined}
         />

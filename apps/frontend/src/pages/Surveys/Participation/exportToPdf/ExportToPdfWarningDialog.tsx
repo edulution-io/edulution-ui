@@ -14,7 +14,7 @@ import React from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import useExportToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportToPdfStore';
+import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
@@ -24,8 +24,8 @@ interface ExportToPdfWarningProps {
   trigger?: React.ReactNode;
 }
 
-const ExportToPdfWarning = ({ formula, answer, trigger }: ExportToPdfWarningProps) => {
-  const { isOpen, setIsOpen, isProcessing, surveySavePDF } = useExportToPdfStore();
+const ExportToPdfWarningDialog = ({ formula, answer, trigger }: ExportToPdfWarningProps) => {
+  const { isOpen, setIsOpen, isProcessing, saveSurveyAsPdf } = useExportSurveyToPdfStore();
 
   const { t } = useTranslation();
 
@@ -35,7 +35,7 @@ const ExportToPdfWarning = ({ formula, answer, trigger }: ExportToPdfWarningProp
   };
 
   const onSubmit = async () => {
-    await surveySavePDF(formula, answer);
+    await saveSurveyAsPdf(formula, answer);
     setIsOpen(false);
   };
 
@@ -63,4 +63,4 @@ const ExportToPdfWarning = ({ formula, answer, trigger }: ExportToPdfWarningProp
   );
 };
 
-export default ExportToPdfWarning;
+export default ExportToPdfWarningDialog;

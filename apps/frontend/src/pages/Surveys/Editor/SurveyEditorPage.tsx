@@ -42,8 +42,8 @@ import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConf
 import PageLayout from '@/components/structure/layout/PageLayout';
 import QuestionContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
-import useExportToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportToPdfStore';
-import ExportToPdfWarning from '@/pages/Surveys/Participation/exportToPdf/ExportToPdfWarning';
+import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
+import ExportToPdfWarningDialog from '@/pages/Surveys/Participation/exportToPdf/ExportToPdfWarningDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 
 const SurveyEditorPage = () => {
@@ -68,7 +68,7 @@ const SurveyEditorPage = () => {
     setSelectedQuestion,
     isUpdatingBackendLimiters,
   } = useQuestionsContextMenuStore();
-  const { setIsOpen: setOpenExportPDFDialog } = useExportToPdfStore();
+  const { setIsOpen: setOpenExportPDFDialog } = useExportSurveyToPdfStore();
 
   const { t } = useTranslation();
   const { user } = useUserStore();
@@ -264,7 +264,7 @@ const SurveyEditorPage = () => {
         setIsOpenQuestionContextMenu={setIsOpenQuestionContextMenu}
         isLoading={isUpdatingBackendLimiters}
       />
-      <ExportToPdfWarning formula={creator.JSON as SurveyFormula} />
+      <ExportToPdfWarningDialog formula={creator.JSON as SurveyFormula} />
     </PageLayout>
   );
 };

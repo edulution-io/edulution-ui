@@ -623,7 +623,7 @@
       "processing": "Processing export ...",
       "success": "Successfully exported as PDF",
       "error": "Error exporting",
-      "warning": "Some questions can not be displayed correctly in the PDF export. For example: the file upload, the image selection, and, the password field gets readable."
+      "warning": "Some questions can not be displayed correctly in the PDF export. This includes file upload, image selection, and the password field, among other things."
     },
     "editor": {
       "inputFieldTitle": "Input field",

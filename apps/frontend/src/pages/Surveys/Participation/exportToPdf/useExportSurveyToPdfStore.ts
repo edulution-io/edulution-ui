@@ -13,53 +13,51 @@
 import { t } from 'i18next';
 import { toast } from 'sonner';
 import { create } from 'zustand';
-import { v4 as uuidv4 } from 'uuid';
 import { IDocOptions, SurveyPDF } from 'survey-pdf';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
+import sanitizeFilename from '@libs/common/utils/sanitizeFilename';
 
 const defaultDocOptions: IDocOptions = {
   compress: false,
 };
 
-interface ExportToPdfStore {
-  surveySavePDF: (
-    surveyFormula: SurveyFormula | JSON,
-    surveyResults?: JSON,
-    pdfDocOptions?: IDocOptions,
-  ) => Promise<void>;
+interface ExportSurveyToPdfStore {
+  saveSurveyAsPdf: (surveyFormula: SurveyFormula, surveyResults?: JSON, pdfDocOptions?: IDocOptions) => Promise<void>;
   setIsOpen: (isOpen: boolean) => void;
   isOpen: boolean;
   isProcessing?: boolean;
   reset: () => void;
 }
 
-const ExportToPdfStoreInitialState: Partial<ExportToPdfStore> = {
+const initialState: Partial<ExportSurveyToPdfStore> = {
   isOpen: false,
   isProcessing: false,
 };
 
-const useExportToPdfStore = create<ExportToPdfStore>((set) => ({
-  ...(ExportToPdfStoreInitialState as ExportToPdfStore),
-  reset: () => set(ExportToPdfStoreInitialState),
+const useExportSurveyToPdfStore = create<ExportSurveyToPdfStore>((set) => ({
+  ...(initialState as ExportSurveyToPdfStore),
+  reset: () => set(initialState),
 
   setIsOpen: (isOpen: boolean) => set({ isOpen }),
 
-  setIsProcessing: (isProcessing: boolean) => set({ isProcessing }),
-
-  surveySavePDF: async (
-    surveyFormula: SurveyFormula | JSON,
+  saveSurveyAsPdf: async (
+    surveyFormula: SurveyFormula,
     surveyResults?: JSON,
     pdfDocOptions?: IDocOptions,
   ): Promise<void> => {
     set({ isProcessing: true });
+
     toast.info(t('survey.export.processing'));
+
     const surveyPdf = new SurveyPDF(surveyFormula, pdfDocOptions || defaultDocOptions);
+
     if (surveyResults) {
       surveyPdf.data = surveyResults;
     }
+
     try {
-      await surveyPdf.save(`survey_-_${getCurrentDateTimeString()}_-_${uuidv4()}`);
+      await surveyPdf.save(`survey-${sanitizeFilename(surveyFormula.title)}-${getCurrentDateTimeString()}`);
       toast.success(t('survey.export.success'));
     } catch (error) {
       toast.error(t('survey.export.error'));
@@ -70,4 +68,4 @@ const useExportToPdfStore = create<ExportToPdfStore>((set) => ({
   },
 }));
 
-export default useExportToPdfStore;
+export default useExportSurveyToPdfStore;
