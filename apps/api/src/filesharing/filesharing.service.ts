@@ -21,11 +21,8 @@ import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOpe
 import JOB_NAMES from '@libs/queue/constants/jobNames';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
-import archiver from 'archiver';
-import { once } from 'events';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
-import { createReadStream, createWriteStream, statSync } from 'fs';
-import createTempFile from '@libs/filesystem/utils/createTempFile';
+import { createWriteStream } from 'fs';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import ContentType from '@libs/filesharing/types/contentType';
@@ -320,37 +317,6 @@ class FilesharingService {
         );
       },
     );
-  }
-
-  async streamFilesAsZipBuffered(username: string, paths: string[], res: Response, share: string) {
-    const { path: tmpPath, cleanup } = await createTempFile('.zip');
-
-    const output = createWriteStream(tmpPath);
-    const zip = archiver('zip', { zlib: { level: 9 } });
-
-    zip.pipe(output);
-
-    const entries = await Promise.all(
-      paths.map(async (p) => ({
-        name: p.split('/').pop()!,
-        stream: await this.getWebDavFileStream(username, p, share),
-      })),
-    );
-
-    entries.forEach(({ stream, name }) => zip.append(stream, { name }));
-
-    await zip.finalize();
-    await once(output, 'close');
-
-    const { size } = statSync(tmpPath);
-    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_ZIP);
-    res.setHeader(HTTP_HEADERS.ContentLength, size);
-
-    createReadStream(tmpPath)
-      .pipe(res)
-      .on('finish', () => {
-        void cleanup();
-      });
   }
 
   async createPublicShare(

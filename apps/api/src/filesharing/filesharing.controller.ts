@@ -42,6 +42,7 @@ import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreatePro
 import CreateOrEditPublicShareDto from '@libs/filesharing/types/createOrEditPublicShareDto';
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
+import { pipeline } from 'stream/promises';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
 import FilesharingService from './filesharing.service';
@@ -121,21 +122,28 @@ class FilesharingController {
 
   @Get(FileSharingApiEndpoints.FILE_STREAM)
   async webDavFileStream(
-    @Query('filePath') filePath: string | string[],
+    @Query('filePath') filePath: string,
     @Query('share') share: string,
     @Res() res: Response,
     @GetCurrentUsername() username: string,
   ) {
-    const files = Array.isArray(filePath) ? filePath : [filePath];
-    if (files.length === 1) {
-      res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_OCTET_STREAM);
-      const stream = await this.filesharingService.getWebDavFileStream(username, files[0], share);
-      res.setHeader(HTTP_HEADERS.ContentDisposition, `attachment; filename="${files[0].split('/').pop()}"`);
-      return stream.pipe(res);
-    }
+    const stream = await this.filesharingService.getWebDavFileStream(username, filePath, share);
 
-    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_ZIP);
-    return this.filesharingService.streamFilesAsZipBuffered(username, files, res, share);
+    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_OCTET_STREAM);
+    res.setHeader(HTTP_HEADERS.ContentDisposition, `attachment; filename="${filePath.split('/').pop()}"`);
+
+    try {
+      await pipeline(stream, res);
+    } catch (error) {
+      if (!res.headersSent) {
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          message: 'Error while streaming file',
+          details: (error as Error).message,
+        });
+      } else {
+        res.end();
+      }
+    }
   }
 
   @Get(FileSharingApiEndpoints.FILE_LOCATION)
