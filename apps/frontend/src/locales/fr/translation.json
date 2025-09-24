@@ -103,6 +103,7 @@
   },
   "dashboard": {
     "pageTitle": "Tableau de bord",
+    "sidebar": "Dashboard",
     "mobileAccess": {
       "title": "Accès mobile",
       "manual": "Instructions",
@@ -306,7 +307,7 @@
     "students-home": "Dossiers élèves"
   },
   "filesharing": {
-    "filterPlaceHolderText": "Saisissez pour rechercher",
+    "filterPlaceHolderText": "Tapez pour filtrer",
     "title": "Partage de fichiers",
     "selectFile": "Sélectionner le fichier",
     "sidebar": "Partage de fichiers",
@@ -341,7 +342,8 @@
       "CollectingFailed": "Echec de la collecte des fichiers",
       "MissingCallbackURL": "Callback-URL manquante",
       "SharingFailed": "La distribution des fichiers a échoué",
-      "CopyFailed": "La copie a échoué"
+      "CopyFailed": "La copie a échoué",
+      "FileFormatNotSupported": "Le format de fichier n'est pas pris en charge."
     },
     "progressBox": {
       "info": "Informations",

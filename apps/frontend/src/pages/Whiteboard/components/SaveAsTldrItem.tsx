@@ -14,14 +14,14 @@ import React from 'react';
 import { TldrawUiMenuItem } from 'tldraw';
 import 'tldraw/tldraw.css';
 import { useTranslation } from 'react-i18next';
-import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
+import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
 
 const SaveAsTldrItem = () => {
   const { t } = useTranslation();
-  const { setUploadTldrDialogOpen } = useHandelUploadFileStore();
+  const { setIsDialogOpen } = useWhiteboardEditorStore();
 
   const handleSave = () => {
-    setUploadTldrDialogOpen(true);
+    setIsDialogOpen(true);
   };
 
   return (

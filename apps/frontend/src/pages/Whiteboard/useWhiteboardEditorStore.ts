@@ -20,17 +20,26 @@ import extractTldrJsonFromMultipart from '@libs/tldraw-sync/utils/extractTldrJso
 
 interface WhiteboardEditorState {
   editor: Editor | null;
+  isDialogOpen: boolean;
+  setIsDialogOpen: (isOpen: boolean) => void;
   setEditor: (editor: Editor | null) => void;
   getSnapshot: () => StoreSnapshot<TLRecord> | null;
   openTldrFromBlobUrl: (blobUrl: string, filename: string) => Promise<void>;
   reset: () => void;
 }
 
-const initialValues = { editor: null as Editor | null };
+const initialValues: Pick<WhiteboardEditorState, 'editor' | 'isDialogOpen'> = {
+  editor: null,
+  isDialogOpen: false,
+};
 
 const useWhiteboardEditorStore = create<WhiteboardEditorState>((set, get) => ({
-  editor: null,
+  ...initialValues,
+
+  setIsDialogOpen: (isOpen) => set({ isDialogOpen: isOpen }),
+
   setEditor: (editor) => set({ editor }),
+
   getSnapshot: () => {
     const { editor } = get();
     return editor ? editor.store.getStoreSnapshot() : null;
