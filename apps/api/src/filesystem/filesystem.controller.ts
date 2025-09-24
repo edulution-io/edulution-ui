@@ -15,13 +15,13 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   Post,
   Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
-  HttpStatus,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { type Response } from 'express';
@@ -102,22 +102,31 @@ class FileSystemController {
   }
 
   @Post()
+  @UseGuards(AppConfigGuard)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: createDiskStorage(
         (request) => {
           const { body } = request as { body?: UploadGlobalAssert };
-          return join(PUBLIC_ASSET_PATH, body?.destination || '');
+          if (!body?.destination) {
+            throw new CustomHttpException(CommonErrorMessages.FILE_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
+          }
+          return join(PUBLIC_ASSET_PATH, body.destination);
         },
         (request) => {
           const { body } = request as { body?: UploadGlobalAssert };
-          return body?.filename || '';
+          if (!body?.filename) {
+            throw new CustomHttpException(CommonErrorMessages.FILE_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
+          }
+          return body.filename;
         },
       ),
-      limits: { files: 1, fileSize: 50 * 1024 * 1024 },
     }),
   )
   upload(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
+    }
     return { path: `${file.destination.replace('.', '')}/${file.filename}` };
   }
 }

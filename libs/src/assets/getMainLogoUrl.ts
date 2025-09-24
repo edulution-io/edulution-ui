@@ -16,7 +16,7 @@ import { GLOBAL_SETTINGS_BRANDING_LOGO } from '@libs/global-settings/constants/g
 
 const getMainLogoUrl = (theme: ThemeType) => {
   const base = `main-logo-${theme}.webp`;
-  return `${window.location.origin}/${EDU_API_ROOT}/public/assets/${GLOBAL_SETTINGS_BRANDING_LOGO}/${base}`;
+  return `/${EDU_API_ROOT}/public/assets/${GLOBAL_SETTINGS_BRANDING_LOGO}/${base}`;
 };
 
 export default getMainLogoUrl;
