@@ -10,10 +10,21 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { join } from 'path';
-import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
-import SURVEYS_FILES_PATH from '@libs/survey/constants/surveysFilesPath';
+import i18next from 'i18next';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
+import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import { SURVEYS_LOGO, PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 
-const SURVEYS_ATTACHMENT_PATH = join(SURVEYS_FILES_PATH, ATTACHMENT_FOLDER);
+const surveysDefaultValues: Partial<SurveyDto> & { formula: SurveyFormula } = {
+  formula: {
+    title: i18next.t('survey.newTitle').toString(),
+    logo: `${EDU_API_URL}/${PUBLIC_SURVEYS}/${SURVEYS_LOGO}`,
+  },
+  isAnonymous: false,
+  canSubmitMultipleAnswers: false,
+  isPublic: false,
+  canUpdateFormerAnswer: false,
+};
 
-export default SURVEYS_ATTACHMENT_PATH;
+export default surveysDefaultValues;

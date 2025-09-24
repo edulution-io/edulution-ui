@@ -17,12 +17,15 @@ import {
   SURVEY_FILE_ATTACHMENT_ENDPOINT,
   SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT,
 } from '@libs/survey/constants/surveys-endpoint';
+import SURVEYS_DEFAULT_FILES_PATH from '@libs/survey/constants/surveysDefaultFilesPath';
 import SURVEYS_ATTACHMENT_PATH from '@libs/survey/constants/surveysAttachmentPath';
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SURVEYS_HEADER_IMAGE from '@libs/survey/constants/surveys-header-image';
 import TSurveyElement from '@libs/survey/types/TSurveyElement';
 import QuestionsType from '@libs/survey/constants/questions-type';
+import SURVEYS_CUSTOM_LOGO from '@libs/survey/constants/surveys-custom-logo';
+import SURVEYS_DEFAULT_LOGO from '@libs/survey/constants/surveys-default-logo';
 import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import FilesystemService from '../filesystem/filesystem.service';
@@ -251,17 +254,24 @@ class SurveysAttachmentService implements OnModuleInit {
   }
 
   async serveFiles(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
-    const filePath = join(SURVEYS_ATTACHMENT_PATH, surveyId, questionId, fileName);
-    const fileStream = await this.fileSystemService.createReadStream(filePath);
-    fileStream.pipe(res);
-    return res;
+    return this.fileSystemService.getResponseWithFileStream(
+      res,
+      join(SURVEYS_ATTACHMENT_PATH, surveyId, questionId, fileName),
+    );
   }
 
   async serveTempFiles(userId: string, fileName: string, res: Response): Promise<Response> {
-    const filePath = `${SURVEYS_TEMP_FILES_PATH}/${userId}/${fileName}`;
-    const fileStream = await this.fileSystemService.createReadStream(filePath);
-    fileStream.pipe(res);
-    return res;
+    return this.fileSystemService.getResponseWithFileStream(res, join(SURVEYS_TEMP_FILES_PATH, userId, fileName));
+  }
+
+  async serveDefaultIcon(res: Response): Promise<Response> {
+    const customLogoPath = join(SURVEYS_DEFAULT_FILES_PATH, SURVEYS_CUSTOM_LOGO);
+    const customLogoExists = await FilesystemService.checkIfFileExist(customLogoPath);
+    if (customLogoExists) {
+      return this.fileSystemService.getResponseWithFileStream(res, customLogoPath);
+    }
+    const defaultLogoPath = join(SURVEYS_DEFAULT_FILES_PATH, SURVEYS_DEFAULT_LOGO);
+    return this.fileSystemService.getResponseWithFileStream(res, defaultLogoPath);
   }
 }
 
