@@ -24,7 +24,7 @@ interface SaveDialogBodyProps<TValues extends { filename: string }> {
   form: UseFormReturn<TValues>;
 }
 
-interface SaveExternalFileDialogGenericProps<TSchema extends z.ZodType<{ filename: string }>> {
+interface SaveExternalFileDialogProps<TSchema extends z.ZodType<{ filename: string }>> {
   isOpen: boolean;
   title: string;
   Body: React.ComponentType<SaveDialogBodyProps<z.infer<TSchema>>>;
@@ -39,8 +39,8 @@ interface SaveExternalFileDialogGenericProps<TSchema extends z.ZodType<{ filenam
   submitLabel?: string;
 }
 
-const SaveExternalFileDialogGeneric = <TSchema extends z.ZodType<{ filename: string }>>(
-  props: SaveExternalFileDialogGenericProps<TSchema>,
+const SaveExternalFileDialog = <TSchema extends z.ZodType<{ filename: string }>>(
+  props: SaveExternalFileDialogProps<TSchema>,
 ) => {
   type TValues = z.infer<TSchema>;
 
@@ -84,7 +84,7 @@ const SaveExternalFileDialogGeneric = <TSchema extends z.ZodType<{ filename: str
         blob instanceof File
           ? blob
           : new File([blob], name, {
-              type: (blob).type || RequestResponseContentType.APPLICATION_OCTET_STREAM,
+              type: blob.type || RequestResponseContentType.APPLICATION_OCTET_STREAM,
             });
 
       await onSave(file, name);
@@ -115,4 +115,4 @@ const SaveExternalFileDialogGeneric = <TSchema extends z.ZodType<{ filename: str
   );
 };
 
-export default SaveExternalFileDialogGeneric;
+export default SaveExternalFileDialog;

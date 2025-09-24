@@ -307,7 +307,7 @@
     "students-home": "Dossiers élèves"
   },
   "filesharing": {
-    "filterPlaceHolderText": "Saisissez pour rechercher",
+    "filterPlaceHolderText": "Tapez pour filtrer",
     "title": "Partage de fichiers",
     "selectFile": "Sélectionner le fichier",
     "sidebar": "Partage de fichiers",

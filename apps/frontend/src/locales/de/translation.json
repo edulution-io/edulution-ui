@@ -314,7 +314,7 @@
     "students-home": "Schüler-Home"
   },
   "filesharing": {
-    "filterPlaceHolderText": "Tippen, um zu suchen",
+    "filterPlaceHolderText": "Tippen, um zu filtern",
     "title": "DATEIEN",
     "selectFile": "Datei auswählen",
     "sidebar": "Dateien",

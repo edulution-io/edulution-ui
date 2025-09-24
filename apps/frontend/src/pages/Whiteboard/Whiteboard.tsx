@@ -20,16 +20,7 @@ import useTLDRawHistoryStore from '@/pages/Whiteboard/TLDrawWithSync/useTLDRawHi
 import EDU_API_WEBSOCKET_URL from '@libs/common/constants/eduApiWebsocketUrl';
 import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/tLDrawSyncEndpoints';
 import ROOM_ID_PARAM from '@libs/tldraw-sync/constants/roomIdParam';
-import SaveExternalFileDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/SaveExternalFileDialogBody';
-import saveExternalFileFormSchema from '@libs/filesharing/types/saveExternalFileFormSchema';
-import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
-import buildTldrFileFromEditor from '@libs/tldraw-sync/utils/buildTldrFileFromEditor';
-import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
-import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
-import { RequestResponseContentType } from '@libs/common/types/http-methods';
-import SaveExternalFileDialogGeneric from '@/pages/FileSharing/Dialog/SaveExternalFileDialogGeneric';
-import { useTranslation } from 'react-i18next';
+import SaveTldrDialog from '@/pages/Whiteboard/SaveTldrDialog';
 
 const WS_BASE_URL = `${EDU_API_WEBSOCKET_URL}/${TLDRAW_SYNC_ENDPOINTS.BASE}`;
 
@@ -40,36 +31,13 @@ const Whiteboard = () => {
   const getIsEduApiHealthy = useEduApiStore((s) => s.getIsEduApiHealthy);
   const isEduApiHealthy = useEduApiStore((s) => s.isEduApiHealthy);
 
-  const { t } = useTranslation();
-
   const liveToken = useUserStore((s) => s.eduApiToken);
-  const { eduApiToken } = useUserStore();
 
   const selectedRoomId = useTLDRawHistoryStore((s) => s.selectedRoomId);
   const setSelectedRoomId = useTLDRawHistoryStore((s) => s.setSelectedRoomId);
 
-  const { editor } = useWhiteboardEditorStore();
-  const { isTldrDialogOpen, setUploadTldrDialogOpen, setFilesToUpload, uploadFiles } = useHandelUploadFileStore();
-  const { moveOrCopyItemToPath } = useFileSharingDialogStore();
-
   const [searchParams, setSearchParams] = useSearchParams();
   const [fixedToken, setFixedToken] = useState<string | null>(liveToken ?? null);
-
-  const closeTldrDialog = () => setUploadTldrDialogOpen(false);
-
-  const buildTldrBlob = async (name: string): Promise<File> => {
-    if (!editor) throw new Error('Editor not ready');
-    const f = buildTldrFileFromEditor(editor, name);
-    const text = await f.text();
-    return new File([text], name, { type: RequestResponseContentType.APPLICATION_OCTET_STREAM });
-  };
-
-  const saveTldrFile = async (file: File | Blob) => {
-    const targetDir = getPathWithoutWebdav(moveOrCopyItemToPath?.filePath || '');
-    setFilesToUpload([file as unknown as File]);
-    await uploadFiles(targetDir, eduApiToken);
-    setUploadTldrDialogOpen(false);
-  };
 
   useEffect(() => {
     const fromUrl = searchParams.get(ROOM_ID_PARAM) ?? '';
@@ -112,17 +80,7 @@ const Whiteboard = () => {
         <div className="z-0 h-full w-full">{getPageContent()}</div>
       </Suspense>
 
-      <SaveExternalFileDialogGeneric
-        isOpen={isTldrDialogOpen}
-        title={t('saveExternalFileDialogBody.saveExternalFile')}
-        Body={SaveExternalFileDialogBody}
-        schema={saveExternalFileFormSchema}
-        defaultValues={{ filename: '' }}
-        onClose={closeTldrDialog}
-        normalizeFilename={(raw: string) => (/\.tldr$/i.test(raw) ? raw : `${raw}.tldr`)}
-        buildFile={buildTldrBlob}
-        onSave={saveTldrFile}
-      />
+      <SaveTldrDialog />
     </PageLayout>
   );
 };

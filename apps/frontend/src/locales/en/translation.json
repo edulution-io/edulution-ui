@@ -315,7 +315,7 @@
     "nobulletinboard": "No new bulletins"
   },
   "filesharing": {
-    "filterPlaceHolderText": "Type to search",
+    "filterPlaceHolderText": "Type to filter",
     "title": "FILES",
     "sidebar": "Files",
     "previewTitle": "File Preview",
