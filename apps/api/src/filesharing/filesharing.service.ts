@@ -180,14 +180,18 @@ class FilesharingService {
   }
 
   async copyFileOrFolder(username: string, copyFileRequestDTOs: PathChangeOrCreateProps[], share: string) {
+    const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
+
     let processedItems = 0;
     return Promise.all(
       copyFileRequestDTOs.map(async (copyFileRequest) => {
         const { path, newPath } = copyFileRequest;
+        const trimmedNewPath = getPathWithoutWebdav(newPath.trim(), webdavShare.pathname);
+
         await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.COPY_FILE_JOB, {
           username,
-          originFilePath: path,
-          destinationFilePath: newPath,
+          originFilePath: getPathWithoutWebdav(path, webdavShare.pathname),
+          destinationFilePath: trimmedNewPath,
           total: copyFileRequestDTOs.length,
           processed: (processedItems += 1),
           share,
@@ -226,8 +230,8 @@ class FilesharingService {
     return Promise.all(
       pathChangeOrCreateDtos.map(async (pathChange) => {
         const { path, newPath } = pathChange;
-
         const trimmedNewPath = getPathWithoutWebdav(newPath.trim(), webdavShare.pathname);
+
         await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.MOVE_OR_RENAME_JOB, {
           username,
           path: getPathWithoutWebdav(path, webdavShare.pathname),

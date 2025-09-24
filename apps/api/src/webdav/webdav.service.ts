@@ -330,9 +330,9 @@ class WebdavService {
       client,
       {
         method: HttpMethodsWebDav.COPY,
-        url: decodeURI(originFullPath),
+        url: encodeURI(originFullPath),
         headers: {
-          Destination: decodeURI(destinationUrl),
+          Destination: encodeURI(destinationUrl),
           [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
         },
       },

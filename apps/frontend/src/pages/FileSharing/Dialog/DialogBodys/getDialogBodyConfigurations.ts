@@ -195,15 +195,12 @@ const copyFileOrFolderConfig: PlainDialogBodyConfiguration = {
   httpMethod: HttpMethods.POST,
   type: ContentType.FILE || ContentType.DIRECTORY,
   requiresForm: false,
-  getData: (_f, currentPath, { moveOrCopyItemToPath, selectedItems }: DialogInputValues) => {
+  getData: (_form, currentPath, { moveOrCopyItemToPath, selectedItems }: DialogInputValues) => {
     if (!moveOrCopyItemToPath || !selectedItems) return Promise.resolve([]);
     const sourceBase = stripTrailingSlash(currentPath);
-    const targetBase = moveOrCopyItemToPath.filePath;
+    const targetBase = stripTrailingSlash(moveOrCopyItemToPath.filePath);
     return Promise.resolve(
-      selectedItems.map((i) => {
-        const name = encodeURIComponent(i.filename);
-        return { path: `${sourceBase}/${name}`, newPath: `${targetBase}/${name}` };
-      }),
+      selectedItems.map((i) => ({ path: `${sourceBase}/${i.filename}`, newPath: `${targetBase}/${i.filename}` })),
     );
   },
 };
@@ -216,20 +213,13 @@ const moveFileFolderConfig: MoveDialogBodyConfiguration = {
   httpMethod: HttpMethods.PATCH,
   type: ContentType.FILE || ContentType.DIRECTORY,
   requiresForm: false,
-
-  getData: (_form, currentPath, inputValues) => {
-    const { moveOrCopyItemToPath, selectedItems } = inputValues;
-    if (!moveOrCopyItemToPath || !selectedItems) {
-      return Promise.resolve([]);
-    }
-    const newCleanedPath = moveOrCopyItemToPath.filePath;
-    const cleanedPath = stripTrailingSlash(currentPath);
+  getData: (_form, currentPath, { moveOrCopyItemToPath, selectedItems }) => {
+    if (!moveOrCopyItemToPath || !selectedItems) return Promise.resolve([]);
+    const sourceBase = stripTrailingSlash(currentPath);
+    const targetBase = stripTrailingSlash(moveOrCopyItemToPath.filePath);
 
     return Promise.resolve(
-      selectedItems.map((item) => ({
-        path: `${cleanedPath}/${item.filename}`,
-        newPath: `${newCleanedPath}/${item.filename}`,
-      })),
+      selectedItems.map((i) => ({ path: `${sourceBase}/${i.filename}`, newPath: `${targetBase}/${i.filename}` })),
     );
   },
 };
