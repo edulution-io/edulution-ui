@@ -28,7 +28,7 @@ interface WhiteboardEditorState {
   reset: () => void;
 }
 
-const initialValues: Pick<WhiteboardEditorState, 'editor' | 'isDialogOpen'> = {
+const initialValues = {
   editor: null,
   isDialogOpen: false,
 };
