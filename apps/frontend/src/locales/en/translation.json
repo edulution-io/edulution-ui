@@ -116,8 +116,9 @@
     "sidebar": "Embedded"
   },
   "dashboard": {
-    "description": "Here is your personal {{ applicationName }} dashboard. The place where all your applications for digital teaching are collected.",
     "pageTitle": "Dashboard",
+    "sidebar": "Dashboard",
+    "description": "Here is your personal {{ applicationName }} dashboard. The place where all your applications for digital teaching are collected.",
     "mobileAccess": {
       "title": "Mobile Access",
       "manual": "Setup",
@@ -349,7 +350,8 @@
       "CollectingFailed": "Collecting files failed",
       "MissingCallbackURL": "Missing callback URL",
       "SharingFailed": "Sharing files failed",
-      "CopyFailed": "Copy failed"
+      "CopyFailed": "Copy failed",
+      "FileFormatNotSupported": "File format is not supported"
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",

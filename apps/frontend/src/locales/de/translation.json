@@ -108,6 +108,7 @@
   },
   "dashboard": {
     "pageTitle": "Dashboard",
+    "sidebar": "Dashboard",
     "description": "Hier ist ihr persönliches {{ applicationName }} Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Unterricht gesammelt sind.",
     "mobileAccess": {
       "title": "Mobiler Zugriff",
@@ -348,9 +349,9 @@
       "CollectingFailed": "Einasmmeln der Dateien fehlgeschlagen",
       "MissingCallbackURL": "Fehlende Callback-URL",
       "SharingFailed": "Austeilen der Dateien fehlgeschlagen",
-      "CopyFailed": "Kopieren fehlgeschlagen"
+      "CopyFailed": "Kopieren fehlgeschlagen",
+      "FileFormatNotSupported": "Dateiformat wird nicht unterstützt"
     },
-
     "publicShareFilesPage": {
       "title": "Geteilte Dateien",
       "description": "Hier findest du alle Dateien, die du geteilt hast. Beachte: Jeder, der den Freigabe-Link und ggf. das dazugehörige Passwort hat, kann diese Dateien herunterladen."
