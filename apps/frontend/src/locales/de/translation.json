@@ -1497,7 +1497,7 @@
     "deleteFiles": "Dateien löschen"
   },
   "timeAgo": {
-    "justNow": "gerade Eben",
+    "justNow": "gerade eben",
     "minuteAgo": "vor {{count}} Minuten",
     "hourAgo": "vor {{count}} Stunden",
     "dayAgo": "vor {{count}} Tagen",
