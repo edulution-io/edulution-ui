@@ -50,10 +50,17 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   };
 
   useEffect(() => {
+    void fetchDialogDirs(webdavShare, currentPath);
+    if (showAllFiles) {
+      void fetchDialogFiles(webdavShare, currentPath);
+    }
+  }, [webdavShare, currentPath, showAllFiles]);
+
+  useEffect(() => {
     if (isCurrentPathDefaultDestination) {
       setMoveOrCopyItemToPath(currentDirItem);
     }
-  }, [isCurrentPathDefaultDestination, currentPath]);
+  }, [isCurrentPathDefaultDestination, currentPath, pathToFetch]);
 
   const files = fileType === ContentType.DIRECTORY ? dialogShownDirs : dialogShownFiles;
 
@@ -73,18 +80,11 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   const onFilenameClick = (item: Row<DirectoryFileDTO>) => {
     const newPath = item.original.filePath;
     setCurrentPath(newPath);
-    void fetchDialogDirs(webdavShare, newPath);
-    if (showAllFiles) {
-      void fetchDialogFiles(webdavShare, newPath);
-    }
   };
 
   const handleBreadcrumbNavigate = (path: string) => {
-    setCurrentPath(path);
-    void fetchDialogDirs(webdavShare, path);
-    if (showAllFiles) {
-      void fetchDialogFiles(webdavShare, path);
-    }
+    const newPath = `/${path}`;
+    setCurrentPath(newPath);
   };
 
   const getHiddenSegments = (): string[] => {

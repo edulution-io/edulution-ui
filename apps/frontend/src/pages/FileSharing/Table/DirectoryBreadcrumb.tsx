@@ -22,7 +22,6 @@ import { useTranslation } from 'react-i18next';
 import { HiChevronDown } from 'react-icons/hi';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import useMedia from '@/hooks/useMedia';
-import useUserPath from '../hooks/useUserPath';
 
 interface DirectoryBreadcrumbProps {
   path: string;
@@ -44,7 +43,6 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
   const { isMobileView } = useMedia();
   const displaySegments = isMobileView ? 1 : 4;
   const { t } = useTranslation();
-  const { homePath } = useUserPath();
 
   const segments = path
     .split('/')
@@ -78,7 +76,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
           <BreadcrumbItem key="home">
             <BreadcrumbLink
               href="#"
-              onClick={() => onNavigate(homePath)}
+              onClick={() => onNavigate('')}
             >
               {t('home')}
             </BreadcrumbLink>
