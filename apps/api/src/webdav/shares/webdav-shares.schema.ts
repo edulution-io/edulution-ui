@@ -28,6 +28,9 @@ export class WebdavShares {
   @Prop({ default: '' })
   url: string;
 
+  @Prop({ default: '/webdav/' })
+  pathname: string;
+
   @Prop({ type: Array, default: [] })
   accessGroups: MultipleSelectorGroup[];
 

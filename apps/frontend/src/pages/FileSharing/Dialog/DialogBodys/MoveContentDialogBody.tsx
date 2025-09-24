@@ -25,7 +25,6 @@ import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/getFileSharingTableColumns';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 
 const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   showAllFiles = false,
@@ -72,7 +71,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   };
 
   const onFilenameClick = (item: Row<DirectoryFileDTO>) => {
-    const newPath = getPathWithoutWebdav(item.original.filePath);
+    const newPath = item.original.filePath;
     setCurrentPath(newPath);
     void fetchDialogDirs(webdavShare, newPath);
     if (showAllFiles) {
@@ -81,11 +80,10 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   };
 
   const handleBreadcrumbNavigate = (path: string) => {
-    const newPath = getPathWithoutWebdav(path);
-    setCurrentPath(newPath);
-    void fetchDialogDirs(webdavShare, newPath);
+    setCurrentPath(path);
+    void fetchDialogDirs(webdavShare, path);
     if (showAllFiles) {
-      void fetchDialogFiles(webdavShare, newPath);
+      void fetchDialogFiles(webdavShare, path);
     }
   };
 

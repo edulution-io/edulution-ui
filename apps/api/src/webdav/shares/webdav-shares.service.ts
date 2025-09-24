@@ -27,9 +27,11 @@ import { WebdavShares, WebdavSharesDocument } from './webdav-shares.schema';
 import CustomHttpException from '../../common/CustomHttpException';
 import { AppConfig } from '../../appconfig/appconfig.schema';
 
+type WebdavShareCache = Record<string, { url: string; type: string; pathname: string }>;
+
 @Injectable()
 class WebdavSharesService implements OnModuleInit {
-  private webdavShareCache: Record<string, { url: string; type: string }> = {};
+  private webdavShareCache: WebdavShareCache = {};
 
   constructor(
     @InjectModel(WebdavShares.name) private webdavSharesModel: Model<WebdavSharesDocument>,
@@ -62,10 +64,17 @@ class WebdavSharesService implements OnModuleInit {
   private async loadCache(): Promise<void> {
     const webdavShares = await this.webdavSharesModel.find({}).lean();
 
-    this.webdavShareCache = webdavShares.reduce<Record<string, { url: string; type: string }>>((acc, share) => {
-      acc[share.displayName] = { url: share.url, type: share.type };
+    this.webdavShareCache = webdavShares.reduce<WebdavShareCache>((acc, share) => {
+      acc[share.displayName] = { url: share.url, type: share.type, pathname: share.pathname };
       return acc;
     }, {});
+  }
+
+  async getWebdavShareFromCache(share: string) {
+    if (!this.webdavShareCache[share]) {
+      await this.loadCache();
+    }
+    return this.webdavShareCache[share];
   }
 
   async getWebdavSharePath(share: string): Promise<string> {
@@ -91,6 +100,7 @@ class WebdavSharesService implements OnModuleInit {
             _id: 0,
             displayName: 1,
             url: 1,
+            pathname: 1,
             accessGroups: 1,
             type: 1,
             status: 1,

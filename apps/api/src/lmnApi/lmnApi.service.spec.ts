@@ -29,7 +29,6 @@ import GroupFormDto from '@libs/groups/types/groupForm.dto';
 import CustomHttpException from '../common/CustomHttpException';
 import LmnApiService from './lmnApi.service';
 import UsersService from '../users/users.service';
-import WebDavService from '../webdav/webdav.service';
 import LdapKeycloakSyncService from '../ldap-keycloak-sync/ldap-keycloak-sync.service';
 
 jest.mock('axios');
@@ -72,13 +71,6 @@ describe('LmnApiService', () => {
           provide: UsersService,
           useValue: {
             getPassword: jest.fn(),
-          },
-        },
-        {
-          provide: WebDavService,
-          useValue: {
-            uploadFile: jest.fn(),
-            createFile: jest.fn(),
           },
         },
         {

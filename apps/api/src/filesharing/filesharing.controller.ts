@@ -74,7 +74,6 @@ class FilesharingController {
   @Post()
   async createFileOrFolder(
     @Query('path') path: string,
-    @Query('type') type: string,
     @Query('share') share: string,
     @Body()
     body: {
@@ -82,11 +81,7 @@ class FilesharingController {
     },
     @GetCurrentUsername() username: string,
   ) {
-    const trimmedPath = body.newPath.trim();
-    if (type.toUpperCase() === ContentType.DIRECTORY.toString()) {
-      return this.webdavService.createFolder(username, path, trimmedPath, share);
-    }
-    return this.webdavService.createFile(username, path, trimmedPath, share);
+    return this.webdavService.createFolder(username, path, body.newPath, share);
   }
 
   @Post(FileSharingApiEndpoints.UPLOAD)

@@ -134,6 +134,13 @@ class FilesharingService {
     return { success: true, status: HttpStatus.CREATED, filename: folderName };
   }
 
+  private static resolveFileSize(req: Request, fileSize: number): number | undefined {
+    const incomingLen = Number(req.headers[HTTP_HEADERS.ContentLength] || 0);
+    if (Number.isFinite(incomingLen) && incomingLen > 0) return incomingLen;
+    if (Number.isFinite(fileSize) && fileSize > 0) return fileSize;
+    return undefined;
+  }
+
   async uploadFileViaWebDav(
     username: string,
     path: string,
@@ -143,34 +150,20 @@ class FilesharingService {
     isZippedFolder = false,
     fileSize = 0,
   ) {
-    const basePath = getPathWithoutWebdav(path);
+    const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
+    const basePath = getPathWithoutWebdav(path, webdavShare.pathname);
     const fullPath = `${basePath.replace(/\/+$/, '')}/${name.replace(/^\/+/, '')}`;
-    const mimeType =
-      (req.headers[HTTP_HEADERS.ContentType] as string) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
-
-    const incomingLen = Number(req.headers[HTTP_HEADERS.ContentLength] || 0);
-    let totalSize: number | undefined;
-    if (Number.isFinite(incomingLen) && incomingLen > 0) {
-      totalSize = incomingLen;
-    } else if (Number.isFinite(fileSize) && fileSize > 0) {
-      totalSize = fileSize;
-    } else {
-      totalSize = undefined;
-    }
 
     if (isZippedFolder) {
       return this.uploadZippedFolderStream(username, basePath, name, req, share);
     }
 
-    return this.webDavService.uploadFileWithNetworkProgress(
-      username,
-      fullPath,
-      req,
-      mimeType,
-      share,
-      () => {},
-      totalSize,
-    );
+    const contentType =
+      (req.headers[HTTP_HEADERS.ContentType] as string) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
+
+    const totalSize = FilesharingService.resolveFileSize(req, fileSize);
+
+    return this.webDavService.uploadFile(username, fullPath, req, share, contentType, totalSize);
   }
 
   async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto, share: string) {
@@ -269,13 +262,18 @@ class FilesharingService {
   async getWebDavFileStream(username: string, filePath: string, share: string): Promise<Readable> {
     try {
       const client = await this.webDavService.getClient(username, share);
-      const decoded = decodeURIComponent(filePath).replace(/%(?![0-9A-F]{2})/gi, (s) => decodeURIComponent(s));
-      const pathWithoutWebdav = getPathWithoutWebdav(decoded).replace(/^\/+/, '');
-      const encodedPath = encodeURI(pathWithoutWebdav);
-      const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
 
-      const base = baseUrl.replace(/\/+$/, '');
-      const finalUrl = `${base}/${encodedPath}`;
+      const decodedPath = (() => {
+        try {
+          return decodeURIComponent(filePath);
+        } catch {
+          return filePath;
+        }
+      })();
+
+      const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
+      const pathWithoutWebdav = getPathWithoutWebdav(decodedPath, webdavShare.pathname);
+      const finalUrl = new URL(encodeURI(pathWithoutWebdav), webdavShare.url).href;
 
       const resp = await FilesystemService.fetchFileStream(finalUrl, client);
       return resp instanceof Readable ? resp : resp.data;
@@ -434,7 +432,7 @@ class FilesharingService {
     password?: string | undefined,
   ) {
     const publicShare = await this.shareModel.findOne({ publicShareId }).lean().exec();
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
+    const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
 
     if (!publicShare) {
       throw new CustomHttpException(
@@ -463,7 +461,7 @@ class FilesharingService {
       );
     }
 
-    const webDavUrl = `${baseUrl}${getPathWithoutWebdav(publicShare.filePath)}`;
+    const webDavUrl = `${webdavShare.url}${getPathWithoutWebdav(publicShare.filePath, webdavShare.pathname)}`;
     const client = await this.webDavService.getClient(publicShare.creator.username, share);
 
     const stream = (await FilesystemService.fetchFileStream(webDavUrl, client, false)) as Readable;

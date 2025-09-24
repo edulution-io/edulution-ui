@@ -13,7 +13,6 @@
 import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import buildSharePath from '@libs/filesharing/utils/buildSharePath';
 import WebdavShareDto from '../types/webdavShareDto';
 import WEBDAV_SHARE_TYPE from '../constants/webdavShareType';
@@ -26,7 +25,7 @@ const buildShareDTO = (
 ): DuplicateFileRequestDto | undefined => {
   if (!students) return undefined;
 
-  const originFilePath = getPathWithoutWebdav(fileName.filePath);
+  const originFilePath = fileName.filePath;
   const isEduFileProxy = webdavShares[0].type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY;
 
   const destinationFilePaths = students

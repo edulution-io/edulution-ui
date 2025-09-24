@@ -22,7 +22,6 @@ import { HttpMethods } from '@libs/common/types/http-methods';
 import { FilesharingDialogProps, FileSharingFormValues } from '@libs/filesharing/types/filesharingDialogProps';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import ContentType from '@libs/filesharing/types/contentType';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
 import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
 import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
@@ -98,10 +97,9 @@ const createFolderConfig: CreateFolderDialogBodyConfiguration = {
   requiresForm: true,
   getData: (form, currentPath, _inputValues) => {
     const filename = form.getValues('filename');
-    const cleanedPath = getPathWithoutWebdav(currentPath);
 
     return Promise.resolve({
-      path: cleanedPath,
+      path: currentPath,
       newPath: filename,
     });
   },
@@ -127,7 +125,7 @@ const createFileConfig: CreateFileDialogBodyConfiguration = {
 
     return [
       {
-        path: getPathWithoutWebdav(currentPath),
+        path: currentPath,
         name: `${filename}.${extension}`,
         file,
       },
@@ -148,10 +146,9 @@ const deleteFileFolderConfig: PlainDialogBodyConfiguration = {
     if (!selectedItems || selectedItems.length === 0) {
       return Promise.resolve([]);
     }
-    const cleanedPath = getPathWithoutWebdav(stripTrailingSlash(currentPath));
     return Promise.resolve(
       selectedItems.map((item) => ({
-        path: `${cleanedPath}/${item.filename}`,
+        path: `${stripTrailingSlash(currentPath)}/${item.filename}`,
       })),
     );
   },
@@ -180,7 +177,7 @@ const renameFileFolderConfig: RenameDialogBodyConfiguration = {
       form.getValues('extension') !== undefined
         ? `${String(form.getValues('filename')) + String(form.getValues('extension'))}`
         : form.getValues('filename');
-    const cleanedPath = getPathWithoutWebdav(stripTrailingSlash(currentPath));
+    const cleanedPath = stripTrailingSlash(currentPath);
     return Promise.resolve([
       {
         path: `${cleanedPath}/${selectedItems[0]?.filename}`,
@@ -200,8 +197,8 @@ const copyFileOrFolderConfig: PlainDialogBodyConfiguration = {
   requiresForm: false,
   getData: (_f, currentPath, { moveOrCopyItemToPath, selectedItems }: DialogInputValues) => {
     if (!moveOrCopyItemToPath || !selectedItems) return Promise.resolve([]);
-    const sourceBase = getPathWithoutWebdav(stripTrailingSlash(currentPath));
-    const targetBase = getPathWithoutWebdav(moveOrCopyItemToPath.filePath);
+    const sourceBase = stripTrailingSlash(currentPath);
+    const targetBase = moveOrCopyItemToPath.filePath;
     return Promise.resolve(
       selectedItems.map((i) => {
         const name = encodeURIComponent(i.filename);
@@ -225,8 +222,8 @@ const moveFileFolderConfig: MoveDialogBodyConfiguration = {
     if (!moveOrCopyItemToPath || !selectedItems) {
       return Promise.resolve([]);
     }
-    const newCleanedPath = getPathWithoutWebdav(moveOrCopyItemToPath.filePath);
-    const cleanedPath = getPathWithoutWebdav(stripTrailingSlash(currentPath));
+    const newCleanedPath = moveOrCopyItemToPath.filePath;
+    const cleanedPath = stripTrailingSlash(currentPath);
 
     return Promise.resolve(
       selectedItems.map((item) => ({

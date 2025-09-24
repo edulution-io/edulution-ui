@@ -27,7 +27,6 @@ import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreatePro
 import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
 import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
 import eduApi from '@/api/eduApi';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 
@@ -146,7 +145,7 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
     endpoint: string,
     share: string | undefined,
   ): Promise<void> {
-    const cleanPaths = itemsToDelete.map((item) => getPathWithoutWebdav(item.path));
+    const cleanPaths = itemsToDelete.map((item) => item.path);
     const url = buildApiDeletePathUrl(endpoint, DeleteTargetType.FILE_SERVER);
     await eduApi.delete(url, { data: { paths: cleanPaths }, params: { share } });
   },

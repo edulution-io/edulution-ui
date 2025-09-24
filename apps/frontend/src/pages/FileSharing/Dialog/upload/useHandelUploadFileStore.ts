@@ -16,7 +16,6 @@ import { UploadFile } from '@libs/filesharing/types/uploadFile';
 import FileProgress from '@libs/filesharing/types/fileProgress';
 import UploadResult from '@libs/filesharing/types/uploadResult';
 import createFileUploader from '@libs/filesharing/utils/createFileUploader';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import createUploadClient from '@libs/filesharing/utils/createUploadClient';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 
@@ -81,8 +80,6 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
 
     set({ lastError: undefined });
 
-    const sanitizedDestinationPath = getPathWithoutWebdav(currentPath);
-
     const setProgressForFile = (fileName: string, next: FileProgress) =>
       set((state) => ({ progressByName: { ...state.progressByName, [fileName]: next } }));
 
@@ -90,7 +87,7 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
 
     const uploader = createFileUploader({
       httpClient: uploadHttpClient,
-      destinationPath: sanitizedDestinationPath,
+      destinationPath: currentPath,
       onProgressUpdate: setProgressForFile,
       onUploadingChange: (fileName, uploading) => get().markUploading(fileName, uploading),
     });

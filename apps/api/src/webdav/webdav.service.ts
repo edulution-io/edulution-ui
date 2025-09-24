@@ -36,6 +36,7 @@ import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import got from 'got';
 import { Agent as HttpsAgent } from 'https';
 import { Agent as HttpAgent } from 'http';
+import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import CustomHttpException from '../common/CustomHttpException';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
@@ -150,8 +151,10 @@ class WebdavService {
 
   async getFilesAtPath(username: string, path: string, share: string): Promise<DirectoryFileDTO[]> {
     const client = await this.getClient(username, share);
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
-    const url = new URL(path.replace(/^\/+/, ''), baseUrl).href;
+    const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
+    const pathWithoutWebdav = getPathWithoutWebdav(path, webdavShare.pathname);
+    const url = new URL(pathWithoutWebdav, webdavShare.url).href;
+
     return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
       client,
       {
@@ -169,8 +172,9 @@ class WebdavService {
 
   async getDirectoryAtPath(username: string, path: string, share: string): Promise<DirectoryFileDTO[]> {
     const client = await this.getClient(username, share);
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
-    const url = new URL(path.replace(/^\/+/, ''), baseUrl).href;
+    const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
+    const pathWithoutWebdav = getPathWithoutWebdav(path, webdavShare.pathname);
+    const url = new URL(pathWithoutWebdav, webdavShare.url).href;
 
     return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
       client,
@@ -189,15 +193,15 @@ class WebdavService {
 
   async createFolder(username: string, path: string, folderName: string, share: string): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username, share);
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
+    const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
     const joinUrl = (...parts: string[]) =>
       parts
         .filter(Boolean)
         .map((filePath, index) => (index === 0 ? filePath.replace(/\/+$/, '') : filePath.replace(/^\/+|\/+$/g, '')))
         .join('/');
 
-    const encodedPath = encodeURI(joinUrl(baseUrl, path));
-    const encodedFolder = encodeURIComponent(folderName);
+    const encodedPath = encodeURI(joinUrl(webdavShare.url, getPathWithoutWebdav(path, webdavShare.pathname)));
+    const encodedFolder = encodeURIComponent(folderName.trim());
 
     const fullUrl = `${encodedPath}/${encodedFolder}`;
 
@@ -215,32 +219,14 @@ class WebdavService {
     );
   }
 
-  async createFile(username: string, fullPath: string, content: string, share: string): Promise<WebdavStatusResponse> {
-    const client = await this.getClient(username, share);
-    return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
-      client,
-      {
-        method: HttpMethods.PUT,
-        url: fullPath,
-        headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.TEXT_PLAIN },
-        data: content || '',
-      },
-      FileSharingErrorMessage.CreationFailed,
-      (resp: WebdavStatusResponse) => ({
-        success: resp.status >= 200 && resp.status < 300,
-        status: resp.status,
-      }),
-    );
-  }
-
-  async uploadFileWithNetworkProgress(
+  async uploadFile(
     username: string,
     fullPath: string,
     fileStream: Readable,
-    contentType: string,
     share: string,
-    onProgress?: (transferred: number, total?: number) => void,
+    contentType: string,
     totalSize?: number,
+    onProgress?: (transferred: number, total?: number) => void,
   ): Promise<WebdavStatusResponse> {
     const password = await this.usersService.getPassword(username);
     const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
@@ -254,7 +240,7 @@ class WebdavService {
     const request = got.put(url, {
       agent: {
         http: new HttpAgent({ keepAlive: true }),
-        https: new HttpsAgent({ keepAlive: true }),
+        https: new HttpsAgent({ keepAlive: true, rejectUnauthorized: false }),
       },
       body: fileStream,
       headers,
@@ -264,7 +250,6 @@ class WebdavService {
       retry: { limit: 0 },
       throwHttpErrors: false,
       decompress: false,
-      rejectUnauthorized: false,
     });
 
     fileStream.on('aborted', () => request.cancel());
@@ -274,38 +259,12 @@ class WebdavService {
 
     const response = await request;
     const ok = response.statusCode >= 200 && response.statusCode < 300;
-    return { success: ok, status: response.statusCode, filename: fullPath.split('/').pop() || '' };
-  }
 
-  async uploadFile(
-    username: string,
-    fullPath: string,
-    fileStream: Readable,
-    contentType: string,
-    share: string,
-  ): Promise<WebdavStatusResponse> {
-    const client = await this.getClient(username, share);
-
-    return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
-      client,
-      {
-        method: HttpMethods.PUT,
-        url: fullPath,
-        headers: {
-          [HTTP_HEADERS.ContentType]: contentType,
-        },
-        data: fileStream,
-        maxContentLength: Infinity,
-        maxBodyLength: Infinity,
-        timeout: 0,
-      },
-      FileSharingErrorMessage.UploadFailed,
-      (response) => ({
-        success: response.status === 201 || response.status === 200,
-        filename: fullPath.split('/').pop() || '',
-        status: response.status,
-      }),
-    );
+    return {
+      success: ok,
+      status: response.statusCode,
+      filename: fullPath.split('/').pop() || '',
+    };
   }
 
   async deletePath(username: string, fullPath: string, share: string): Promise<WebdavStatusResponse> {
