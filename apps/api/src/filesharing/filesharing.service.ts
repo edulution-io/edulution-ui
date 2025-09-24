@@ -220,14 +220,17 @@ class FilesharingService {
   }
 
   async moveOrRenameResources(username: string, pathChangeOrCreateDtos: PathChangeOrCreateProps[], share: string) {
+    const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
+
     let processedItems = 0;
     return Promise.all(
       pathChangeOrCreateDtos.map(async (pathChange) => {
         const { path, newPath } = pathChange;
-        const trimmedNewPath = newPath.trim();
+
+        const trimmedNewPath = getPathWithoutWebdav(newPath.trim(), webdavShare.pathname);
         await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.MOVE_OR_RENAME_JOB, {
           username,
-          path,
+          path: getPathWithoutWebdav(path, webdavShare.pathname),
           newPath: trimmedNewPath,
           total: pathChangeOrCreateDtos.length,
           processed: (processedItems += 1),
@@ -238,16 +241,17 @@ class FilesharingService {
   }
 
   async deleteFileAtPath(username: string, paths: string[], share: string) {
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
-
+    const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
     let processedItems = 0;
     return Promise.all(
       paths.map(async (path) => {
-        const fullPath = `${baseUrl}${path}`;
+        const pathWithoutWebdav = getPathWithoutWebdav(path, webdavShare.pathname);
+
+        const fullPath = `${webdavShare.url.replace(/\/+$/, '')}/${pathWithoutWebdav.replace(/^\/+/, '')}`;
         await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.DELETE_FILE_JOB, {
           username,
           originFilePath: fullPath,
-          webdavFilePath: path,
+          webdavFilePath: pathWithoutWebdav,
           total: paths.length,
           processed: (processedItems += 1),
           share,

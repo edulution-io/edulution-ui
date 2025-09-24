@@ -273,7 +273,7 @@ class WebdavService {
       client,
       {
         method: HttpMethods.DELETE,
-        url: fullPath,
+        url: encodeURI(fullPath),
         headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
       },
       FileSharingErrorMessage.DeletionFailed,
@@ -291,11 +291,10 @@ class WebdavService {
     share: string,
   ): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username, share);
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
-    const webdavShareType = await this.webdavSharesService.getWebdavShareType(share);
+    const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
     let destinationUrl = destFullPath;
-    if (webdavShareType === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
-      destinationUrl = `${baseUrl.replace(/\/+$/, '')}/${destFullPath.replace(/^\/+/, '')}`;
+    if (webdavShare.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
+      destinationUrl = `${webdavShare.url.replace(/\/+$/, '')}/${destFullPath.replace(/^\/+/, '')}`;
     }
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
@@ -322,11 +321,10 @@ class WebdavService {
     share: string,
   ): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username, share);
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
-    const webdavShareType = await this.webdavSharesService.getWebdavShareType(share);
+    const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
     let destinationUrl = destFullPath;
-    if (webdavShareType === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
-      destinationUrl = `${baseUrl.replace(/\/+$/, '')}/${destFullPath.replace(/^\/+/, '')}`;
+    if (webdavShare.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
+      destinationUrl = `${webdavShare.url.replace(/\/+$/, '')}/${destFullPath.replace(/^\/+/, '')}`;
     }
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
