@@ -306,19 +306,19 @@ class FilesharingService {
   }
 
   async handleCallback(req: Request, res: Response, path: string, filename: string, username: string, share: string) {
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
+    const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
 
     return OnlyofficeService.handleCallback(
       req,
       res,
-      path,
+      getPathWithoutWebdav(path, webdavShare.pathname),
       filename,
       username,
       async (user: string, uploadPath: string, file: CustomFile, name: string): Promise<WebdavStatusResponse> => {
         const readableStream = Readable.from(file.buffer);
         return this.webDavService.uploadFile(
           user,
-          `${baseUrl}${uploadPath}/${name}`,
+          `${webdavShare.url}${uploadPath}/${name}`,
           readableStream,
           file.mimetype,
           share,
