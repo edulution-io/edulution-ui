@@ -10,10 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { join } from 'path';
-import APPS from '@libs/appconfig/constants/apps';
-import ASSETS_FILES_PATH from '@libs/common/constants/assetsFilesPath';
+export const Theme = {
+  light: 'light',
+  dark: 'dark',
+} as const;
 
-const SURVEYS_DEFAULT_FILES_PATH = join(ASSETS_FILES_PATH, APPS.SURVEYS);
-
-export default SURVEYS_DEFAULT_FILES_PATH;
+export type ThemeType = (typeof Theme)[keyof typeof Theme];
