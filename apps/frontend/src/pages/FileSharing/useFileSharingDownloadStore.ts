@@ -23,6 +23,8 @@ import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResul
 import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
 import { AxiosProgressEvent } from 'axios';
 import ContentType from '@libs/filesharing/types/contentType';
+import formatTransferSpeed from '@libs/filesharing/utils/formatTransferSpeed';
+import formatEstimatedTimeRemaining from '@libs/filesharing/utils/formatEstimatedTimeRemaining';
 
 type FileSharingDownloadStore = {
   isCreatingBlobUrl: boolean;
@@ -123,11 +125,31 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
     }
   },
 
-  downloadFile: async (file: DirectoryFileDTO, signal?: AbortSignal) => {
+  downloadFile: async (file, signal) => {
     try {
       set({ isFetchingPublicUrl: true, error: null });
 
       const totalBytes = file.size ?? 0;
+      const processId = Math.floor(Math.random() * 1_000_000);
+      const startedAt = Date.now();
+
+      let lastTimestampMilliseconds = startedAt;
+      let lastLoadedBytes = 0;
+      let smoothedBytesPerSecond: number | undefined;
+
+      get().setDownloadProgress({
+        fileName: file.type === ContentType.DIRECTORY ? `${file.filename}.zip` : file.filename,
+        percent: 0,
+        processId,
+        totalBytes,
+        loadedBytes: 0,
+        speedBps: 0,
+        etaSeconds: undefined,
+        lastUpdateAt: startedAt,
+        startedAt,
+        speedFormatted: formatTransferSpeed(0),
+        etaFormatted: formatEstimatedTimeRemaining(undefined),
+      });
 
       const { data } = await eduApi.get<Blob>(
         `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_STREAM}`,
@@ -135,17 +157,48 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
           responseType: ResponseType.BLOB,
           signal,
           params: { filePath: file.filePath },
-          onDownloadProgress: (e: AxiosProgressEvent) => {
-            const total = e.total ?? totalBytes;
-            if (!total) return;
-            let percent = Math.round((e.loaded / total) * 100);
+          onDownloadProgress: (progressEvent: AxiosProgressEvent) => {
+            const totalBytesResolved = progressEvent.total ?? totalBytes;
+            if (!totalBytesResolved) return;
+
+            const loadedBytesResolved = progressEvent.loaded ?? 0;
+            let percent = Math.round((loadedBytesResolved / totalBytesResolved) * 100);
             if (percent > 100) percent = 100;
+
+            const currentTimestampMilliseconds = Date.now();
+            const deltaMilliseconds = Math.max(1, currentTimestampMilliseconds - lastTimestampMilliseconds);
+            const deltaBytes = Math.max(0, loadedBytesResolved - lastLoadedBytes);
+
+            const instantaneousBytesPerSecond = (deltaBytes * 1000) / deltaMilliseconds;
+
+            const smoothingFactor = 0.2;
+            smoothedBytesPerSecond = smoothedBytesPerSecond
+              ? smoothingFactor * instantaneousBytesPerSecond + (1 - smoothingFactor) * smoothedBytesPerSecond
+              : instantaneousBytesPerSecond;
+
+            const remainingBytes = Math.max(0, totalBytesResolved - loadedBytesResolved);
+            const estimatedSecondsRemaining =
+              smoothedBytesPerSecond > 0 ? remainingBytes / smoothedBytesPerSecond : undefined;
+
+            const speedFormatted = formatTransferSpeed(smoothedBytesPerSecond);
+            const etaFormatted = formatEstimatedTimeRemaining(estimatedSecondsRemaining);
 
             get().setDownloadProgress({
               fileName: file.type === ContentType.DIRECTORY ? `${file.filename}.zip` : file.filename,
               percent,
-              processId: Math.floor(Math.random() * 1_000_000),
+              processId,
+              totalBytes: totalBytesResolved,
+              loadedBytes: loadedBytesResolved,
+              speedBps: smoothedBytesPerSecond,
+              etaSeconds: estimatedSecondsRemaining,
+              lastUpdateAt: currentTimestampMilliseconds,
+              startedAt,
+              speedFormatted,
+              etaFormatted,
             });
+
+            lastTimestampMilliseconds = currentTimestampMilliseconds;
+            lastLoadedBytes = loadedBytesResolved;
           },
         },
       );
