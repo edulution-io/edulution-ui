@@ -48,7 +48,7 @@ describe('FilesharingService', () => {
     const username = 'testTeacher';
     const path = ['/test-path'];
     const result = await service.deleteFileAtPath(username, path, 'share');
-    expect(service.deleteFileAtPath).toHaveBeenCalledWith(username, path);
+    expect(service.deleteFileAtPath).toHaveBeenCalledWith(username, path, 'share');
     expect(result).toEqual({ success: true });
   });
 });
