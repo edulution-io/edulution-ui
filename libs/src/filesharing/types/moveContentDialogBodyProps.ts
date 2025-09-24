@@ -11,6 +11,8 @@
  */
 
 import ContentType from '@libs/filesharing/types/contentType';
+import { Row } from '@tanstack/react-table';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 
 interface MoveContentDialogBodyProps {
   showAllFiles?: boolean;
@@ -19,6 +21,8 @@ interface MoveContentDialogBodyProps {
   showHome?: boolean;
   fileType?: ContentType;
   isCurrentPathDefaultDestination?: boolean;
+  enableRowSelection?: (row: Row<DirectoryFileDTO>) => boolean;
+  getRowDisabled?: (row: Row<DirectoryFileDTO>) => boolean;
 }
 
 export default MoveContentDialogBodyProps;
