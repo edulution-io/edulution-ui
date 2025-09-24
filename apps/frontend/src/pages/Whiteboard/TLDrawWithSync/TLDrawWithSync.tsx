@@ -156,7 +156,7 @@ const TLDrawWithSync = ({ uri }: { uri: string }) => {
         selectedVal={selectedRoomId}
         handleChange={setSelectedRoomId}
         variant="default"
-        classname="z-[400]"
+        classname="z-[400] w-[calc(100%-4rem)] sm:w-auto"
       />
 
       {selectedRoomId && <TLDrawHistory />}
