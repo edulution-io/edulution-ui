@@ -27,9 +27,7 @@ const useUserPath = () => {
   useEffect(() => {
     if (isSuperAdmin || globalSettings.general.deploymentTarget !== DEPLOYMENT_TARGET.LINUXMUSTER) {
       setHomePath('/');
-    }
-
-    setHomePath(getStringFromArray(lmnUser?.sophomorixIntrinsic2));
+    } else setHomePath(getStringFromArray(lmnUser?.sophomorixIntrinsic2));
   }, [isSuperAdmin, globalSettings.general.deploymentTarget, lmnUser]);
 
   return { homePath };

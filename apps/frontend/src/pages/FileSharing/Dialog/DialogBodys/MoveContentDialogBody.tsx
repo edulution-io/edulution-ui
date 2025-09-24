@@ -25,6 +25,8 @@ import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/getFileSharingTableColumns';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
+import WebdavShareSelectDropdown from './WebdavShareSelectDropdown';
+import useFileSharingStore from '../../useFileSharingStore';
 
 const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   showAllFiles = false,
@@ -37,6 +39,9 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   const { webdavShare } = useParams();
   const { t } = useTranslation();
   const [currentPath, setCurrentPath] = useState(pathToFetch || '');
+  const webdavShares = useFileSharingStore((s) => s.webdavShares);
+  const [selectedShare, setSelectedShare] = useState(webdavShares[0]?.displayName || '');
+
   const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
 
   const { fetchDialogFiles, fetchDialogDirs, dialogShownDirs, dialogShownFiles, isLoading } =
@@ -50,11 +55,11 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   };
 
   useEffect(() => {
-    void fetchDialogDirs(webdavShare, currentPath);
+    void fetchDialogDirs(webdavShare || selectedShare, currentPath);
     if (showAllFiles) {
-      void fetchDialogFiles(webdavShare, currentPath);
+      void fetchDialogFiles(webdavShare || selectedShare, currentPath);
     }
-  }, [webdavShare, currentPath, showAllFiles]);
+  }, [webdavShare, selectedShare, currentPath, showAllFiles]);
 
   useEffect(() => {
     if (isCurrentPathDefaultDestination) {
@@ -113,6 +118,11 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
 
   return (
     <>
+      <WebdavShareSelectDropdown
+        selectedShare={selectedShare}
+        setSelectedShare={setSelectedShare}
+        webdavShares={webdavShares}
+      />
       <div className="h-[60vh] flex-col overflow-auto text-background scrollbar-thin">
         <div className="pb-2">
           <DirectoryBreadcrumb
