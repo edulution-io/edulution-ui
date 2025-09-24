@@ -19,6 +19,8 @@ import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import useLanguage from '@/hooks/useLanguage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
+import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
+import ExportToPdfWarningDialog from '@/pages/Surveys/Participation/exportToPdf/ExportToPdfWarningDialog';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import '../theme/custom.participation.css';
@@ -43,6 +45,8 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
   const { fetchAnswer, isFetching, answerSurvey, previousAnswer } = useParticipateSurveyStore();
 
+  const { setIsOpen: setOpenExportPDFDialog } = useExportSurveyToPdfStore();
+
   const { t } = useTranslation();
   const { language } = useLanguage();
 
@@ -58,6 +62,12 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       newModel.showProgressBar = 'top';
     }
     newModel.completedHtml = `${t('survey.participate.completeMessage')}`;
+
+    newModel.addNavigationItem({
+      id: 'pdf-export',
+      title: t('survey.export.saveInPDF'),
+      action: () => setOpenExportPDFDialog(true),
+    });
 
     newModel.onCompleting.add(async (surveyModel, completingEvent) => {
       if (!selectedSurvey.id) {
@@ -114,9 +124,17 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
   }
 
   return (
-    <div className="survey-participation">
-      <Survey model={surveyParticipationModel} />
-    </div>
+    <>
+      <div className="survey-participation">
+        <Survey model={surveyParticipationModel} />
+      </div>
+      {selectedSurvey ? (
+        <ExportToPdfWarningDialog
+          formula={selectedSurvey.formula}
+          answer={surveyParticipationModel ? (surveyParticipationModel.data as JSON) : undefined}
+        />
+      ) : null}
+    </>
   );
 };
 
