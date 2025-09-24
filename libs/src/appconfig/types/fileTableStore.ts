@@ -17,5 +17,7 @@ export interface FileTableStore extends AppConfigTable<FileInfoDto> {
   files: Record<string, string>;
   isLoading: boolean;
   error: string | null;
+  publicFilesInfo: FileInfoDto[];
+  getPublicFilesInfo: (applicationName: string) => Promise<void>;
   reset: () => void;
 }

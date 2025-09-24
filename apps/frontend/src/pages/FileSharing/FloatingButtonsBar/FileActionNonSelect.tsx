@@ -24,9 +24,11 @@ import type FileActionButtonProps from '@libs/filesharing/types/fileActionButton
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/constants/availableFileTypes';
 import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
+import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
 
 const FileActionNonSelect: FC<FileActionButtonProps> = ({ openDialog }) => {
   const { setSelectedFileType } = useFileSharingDialogStore();
+  const { setIsUploadDialogOpen } = useHandelUploadFileStore();
 
   const handleSelectCreateFile = (fileType: TAvailableFileTypes) => {
     setSelectedFileType(fileType);
@@ -79,7 +81,7 @@ const FileActionNonSelect: FC<FileActionButtonProps> = ({ openDialog }) => {
         text: t('tooltip.create.folder'),
         onClick: () => openDialog(FileActionType.CREATE_FOLDER),
       },
-      UploadButton(() => openDialog(FileActionType.UPLOAD_FILE)),
+      UploadButton(() => setIsUploadDialogOpen(true)),
     ],
     keyPrefix: 'file-sharing-page-floating-button_',
   };

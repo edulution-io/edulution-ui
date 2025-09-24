@@ -82,7 +82,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
       },
 
       getOwnUser: async () => {
-        if (get().isGetOwnUserLoading) return;
+        if (!get().lmnApiToken || get().isGetOwnUserLoading) return;
         set({ isGetOwnUserLoading: true, error: null });
         try {
           const response = await eduApi.get<LmnUserInfo>(USER, {

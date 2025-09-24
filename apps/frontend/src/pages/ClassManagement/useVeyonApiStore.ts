@@ -41,14 +41,20 @@ type VeyonApiStore = {
     args?: Record<string, unknown>,
   ) => Promise<void>;
   getFeatures: (connectionUid: string) => Promise<void>;
+  reset: () => void;
 };
 
-const useVeyonApiStore = create<VeyonApiStore>((set, get) => ({
+const initialValues = {
   error: null,
   isLoading: false,
   loadingFeatureUids: new Set<string>(),
   userConnectionUids: [],
   userConnectionsFeatureStates: {},
+};
+
+const useVeyonApiStore = create<VeyonApiStore>((set, get) => ({
+  ...initialValues,
+  reset: () => set(initialValues),
 
   updateConnectionUids: (ip: string, userConnectionUid: SuccessfullVeyonAuthResponse | Record<string, never>) => {
     set((state) => {

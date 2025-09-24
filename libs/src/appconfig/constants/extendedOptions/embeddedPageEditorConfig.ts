@@ -39,6 +39,14 @@ const EMBEDDED_PAGE_EDITOR_CONFIG: AppConfigExtendedOption[] = [
     value: '',
     width: 'full',
   },
+  {
+    name: ExtendedOptionKeys.EMBEDDED_PAGE_IS_PUBLIC,
+    description: 'settings.appconfig.sections.editor.visibilityDescription',
+    title: 'common.visibility',
+    type: ExtendedOptionField.switch,
+    value: '',
+    width: 'full',
+  },
 ];
 
 export default EMBEDDED_PAGE_EDITOR_CONFIG;

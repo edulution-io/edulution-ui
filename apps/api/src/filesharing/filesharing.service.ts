@@ -21,11 +21,8 @@ import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOpe
 import JOB_NAMES from '@libs/queue/constants/jobNames';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
-import archiver from 'archiver';
-import { once } from 'events';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
-import { createReadStream, createWriteStream, statSync } from 'fs';
-import createTempFile from '@libs/filesystem/utils/createTempFile';
+import { createWriteStream } from 'fs';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import ContentType from '@libs/filesharing/types/contentType';
@@ -131,6 +128,36 @@ class FilesharingService {
     return { success: true, status: HttpStatus.CREATED, filename: folderName };
   }
 
+  async uploadFileViaWebDav(
+    username: string,
+    path: string,
+    name: string,
+    req: Request,
+    isZippedFolder = false,
+    fileSize = 0,
+  ) {
+    const basePath = getPathWithoutWebdav(path);
+    const fullPath = `${basePath.replace(/\/+$/, '')}/${name.replace(/^\/+/, '')}`;
+    const mimeType =
+      (req.headers[HTTP_HEADERS.ContentType] as string) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
+
+    const incomingLen = Number(req.headers[HTTP_HEADERS.ContentLength] || 0);
+    let totalSize: number | undefined;
+    if (Number.isFinite(incomingLen) && incomingLen > 0) {
+      totalSize = incomingLen;
+    } else if (Number.isFinite(fileSize) && fileSize > 0) {
+      totalSize = fileSize;
+    } else {
+      totalSize = undefined;
+    }
+
+    if (isZippedFolder) {
+      return this.uploadZippedFolderStream(username, basePath, name, req);
+    }
+
+    return this.webDavService.uploadFileWithNetworkProgress(username, fullPath, req, mimeType, () => {}, totalSize);
+  }
+
   async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto) {
     let i = 0;
     return Promise.all(
@@ -188,10 +215,11 @@ class FilesharingService {
     return Promise.all(
       pathChangeOrCreateDtos.map(async (pathChange) => {
         const { path, newPath } = pathChange;
+        const trimmedNewPath = newPath.trim();
         await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.MOVE_OR_RENAME_JOB, {
           username,
           path,
-          newPath,
+          newPath: trimmedNewPath,
           total: pathChangeOrCreateDtos.length,
           processed: (processedItems += 1),
         });
@@ -262,37 +290,6 @@ class FilesharingService {
         return this.webDavService.uploadFile(user, `${baseUrl}${uploadPath}/${name}`, readableStream, file.mimetype);
       },
     );
-  }
-
-  async streamFilesAsZipBuffered(username: string, paths: string[], res: Response) {
-    const { path: tmpPath, cleanup } = await createTempFile('.zip');
-
-    const output = createWriteStream(tmpPath);
-    const zip = archiver('zip', { zlib: { level: 9 } });
-
-    zip.pipe(output);
-
-    const entries = await Promise.all(
-      paths.map(async (p) => ({
-        name: p.split('/').pop()!,
-        stream: await this.getWebDavFileStream(username, p),
-      })),
-    );
-
-    entries.forEach(({ stream, name }) => zip.append(stream, { name }));
-
-    await zip.finalize();
-    await once(output, 'close');
-
-    const { size } = statSync(tmpPath);
-    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_ZIP);
-    res.setHeader(HTTP_HEADERS.ContentLength, size);
-
-    createReadStream(tmpPath)
-      .pipe(res)
-      .on('finish', () => {
-        void cleanup();
-      });
   }
 
   async createPublicShare(

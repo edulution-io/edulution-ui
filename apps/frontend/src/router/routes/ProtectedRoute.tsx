@@ -14,9 +14,9 @@ import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
+import ROOT_ROUTE from '@libs/common/constants/rootRoute';
 
-const ProtectedRoute = ({ redirectTo = DASHBOARD_ROUTE }) => {
+const ProtectedRoute = ({ redirectTo = ROOT_ROUTE }) => {
   const { isSuperAdmin } = useLdapGroups();
 
   if (isSuperAdmin === undefined) {
