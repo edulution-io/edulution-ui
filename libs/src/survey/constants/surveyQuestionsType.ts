@@ -10,14 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum OtherTypes {
-  TEXT = 'text',
-  BOOLEAN = 'boolean',
-  DATE = 'date',
-  DATETIME = 'datetime',
-  DROPDOWN = 'dropdown',
-  MATRIX = 'matrix',
-  RANKING = 'ranking',
-}
+import SurveyQuestionChoiceTypes from '@libs/survey/constants/surveyQuestionChoiceTypes';
+import SurveyQuestionMatrixTypes from '@libs/survey/constants/surveyQuestionMatrixTypes';
+import SurveyQuestionImageTypes from '@libs/survey/constants/surveyQuestionImageTypes';
+import SurveyQuestionOtherTypes from '@libs/survey/constants/surveyQuestionOtherTypes';
 
-export default OtherTypes;
+const SurveyQuestionsType = {
+  ...SurveyQuestionChoiceTypes,
+  ...SurveyQuestionMatrixTypes,
+  ...SurveyQuestionImageTypes,
+  ...SurveyQuestionOtherTypes,
+};
+
+export default SurveyQuestionsType;
