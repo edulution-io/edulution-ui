@@ -10,10 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ParticipantDto from '@libs/survey/types/api/participant.dto';
-
-interface PostSurveyAnswerDto extends ParticipantDto {
-  answer: JSON;
+export interface FileDownloadDto {
+  name: string;
+  originalName?: string;
+  type?: string;
+  url?: string;
+  content: Buffer<ArrayBufferLike>;
 }
-
-export default PostSurveyAnswerDto;
