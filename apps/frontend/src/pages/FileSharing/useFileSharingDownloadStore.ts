@@ -129,19 +129,21 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
     try {
       set({ isFetchingPublicUrl: true, error: null });
 
-      const totalBytes = file.size ?? 0;
+      const totalBytesFallback = file.size ?? 0;
       const processId = Math.floor(Math.random() * 1_000_000);
       const startedAt = Date.now();
 
-      let lastTimestampMilliseconds = startedAt;
-      let lastLoadedBytes = 0;
-      let smoothedBytesPerSecond: number | undefined;
+      let lastTs = startedAt;
+      let lastLoaded = 0;
+      let smoothedBps: number | undefined;
+
+      const formatFileName = () => (file.type === ContentType.DIRECTORY ? `${file.filename}.zip` : file.filename);
 
       get().setDownloadProgress({
-        fileName: file.type === ContentType.DIRECTORY ? `${file.filename}.zip` : file.filename,
+        fileName: formatFileName(),
         percent: 0,
         processId,
-        totalBytes,
+        totalBytes: totalBytesFallback,
         loadedBytes: 0,
         speedBps: 0,
         etaSeconds: undefined,
@@ -151,55 +153,52 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
         etaFormatted: formatEstimatedTimeRemaining(undefined),
       });
 
+      const onProgress = (pe: AxiosProgressEvent) => {
+        const total = pe.total ?? totalBytesFallback;
+        if (!total) return;
+
+        const loaded = pe.loaded ?? 0;
+        const currentTs = Date.now();
+
+        let percent = Math.round((loaded / total) * 100);
+        if (percent > 100) percent = 100;
+
+        const dtMs = Math.max(1, currentTs - lastTs);
+        const dBytes = Math.max(0, loaded - lastLoaded);
+        const instBps = (dBytes * 1000) / dtMs;
+
+        const alpha = 0.2;
+        smoothedBps = smoothedBps ? alpha * instBps + (1 - alpha) * smoothedBps : instBps;
+
+        // ETA
+        const remaining = Math.max(0, total - loaded);
+        const etaSec = smoothedBps > 0 ? remaining / smoothedBps : undefined;
+
+        get().setDownloadProgress({
+          fileName: formatFileName(),
+          percent,
+          processId,
+          totalBytes: total,
+          loadedBytes: loaded,
+          speedBps: smoothedBps,
+          etaSeconds: etaSec,
+          lastUpdateAt: currentTs,
+          startedAt,
+          speedFormatted: formatTransferSpeed(smoothedBps),
+          etaFormatted: formatEstimatedTimeRemaining(etaSec),
+        });
+
+        lastTs = currentTs;
+        lastLoaded = loaded;
+      };
+
       const { data } = await eduApi.get<Blob>(
         `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_STREAM}`,
         {
           responseType: ResponseType.BLOB,
           signal,
           params: { filePath: file.filePath },
-          onDownloadProgress: (progressEvent: AxiosProgressEvent) => {
-            const totalBytesResolved = progressEvent.total ?? totalBytes;
-            if (!totalBytesResolved) return;
-
-            const loadedBytesResolved = progressEvent.loaded ?? 0;
-            let percent = Math.round((loadedBytesResolved / totalBytesResolved) * 100);
-            if (percent > 100) percent = 100;
-
-            const currentTimestampMilliseconds = Date.now();
-            const deltaMilliseconds = Math.max(1, currentTimestampMilliseconds - lastTimestampMilliseconds);
-            const deltaBytes = Math.max(0, loadedBytesResolved - lastLoadedBytes);
-
-            const instantaneousBytesPerSecond = (deltaBytes * 1000) / deltaMilliseconds;
-
-            const smoothingFactor = 0.2;
-            smoothedBytesPerSecond = smoothedBytesPerSecond
-              ? smoothingFactor * instantaneousBytesPerSecond + (1 - smoothingFactor) * smoothedBytesPerSecond
-              : instantaneousBytesPerSecond;
-
-            const remainingBytes = Math.max(0, totalBytesResolved - loadedBytesResolved);
-            const estimatedSecondsRemaining =
-              smoothedBytesPerSecond > 0 ? remainingBytes / smoothedBytesPerSecond : undefined;
-
-            const speedFormatted = formatTransferSpeed(smoothedBytesPerSecond);
-            const etaFormatted = formatEstimatedTimeRemaining(estimatedSecondsRemaining);
-
-            get().setDownloadProgress({
-              fileName: file.type === ContentType.DIRECTORY ? `${file.filename}.zip` : file.filename,
-              percent,
-              processId,
-              totalBytes: totalBytesResolved,
-              loadedBytes: loadedBytesResolved,
-              speedBps: smoothedBytesPerSecond,
-              etaSeconds: estimatedSecondsRemaining,
-              lastUpdateAt: currentTimestampMilliseconds,
-              startedAt,
-              speedFormatted,
-              etaFormatted,
-            });
-
-            lastTimestampMilliseconds = currentTimestampMilliseconds;
-            lastLoadedBytes = loadedBytesResolved;
-          },
+          onDownloadProgress: onProgress,
         },
       );
 
