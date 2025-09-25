@@ -10,6 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const DASHBOARD_ROUTE = '/';
+import { UploadFile } from '@libs/filesharing/types/uploadFile';
 
-export default DASHBOARD_ROUTE;
+const buildOctetStreamUrl = (baseUploadUrl: string, destinationPath: string, fileItem: UploadFile): string => {
+  const query = new URLSearchParams();
+  query.set('path', destinationPath);
+  query.set('name', fileItem.name);
+  query.set('isZippedFolder', String(!!fileItem.isZippedFolder));
+  query.set('contentLength', String(fileItem.size));
+  return `${baseUploadUrl}?${query.toString()}`;
+};
+
+export default buildOctetStreamUrl;

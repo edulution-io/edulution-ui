@@ -10,16 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { pipeline, Readable } from 'stream';
-import { AxiosResponse } from 'axios';
-import { promisify } from 'util';
-import { createWriteStream } from 'fs';
+const USER_PREFERENCES_ENDPOINT = 'user-preferences';
 
-const saveFileStream = async (fileStream: Readable | AxiosResponse<Readable>, outputPath: string): Promise<void> => {
-  const pipelineAsync = promisify(pipeline);
-  const readableStream = (fileStream as AxiosResponse<Readable>).data
-    ? (fileStream as AxiosResponse<Readable>).data
-    : (fileStream as Readable);
-  await pipelineAsync(readableStream, createWriteStream(outputPath));
-};
-export default saveFileStream;
+export default USER_PREFERENCES_ENDPOINT;
