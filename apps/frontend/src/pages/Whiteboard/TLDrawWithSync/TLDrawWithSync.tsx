@@ -167,7 +167,7 @@ const TLDrawWithSync = ({ uri }: { uri: string }) => {
 
       {uri && store && (
         <Tldraw
-          className="z-10"
+          className="z-100"
           onMount={(editor) => {
             setEditor(editor);
             applyUserPreferences(editor);

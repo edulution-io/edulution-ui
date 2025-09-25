@@ -193,7 +193,6 @@ button:hover .ql-fill,
 }
 
 @layer components {
-  [data-radix-popper-content-wrapper] input,
   [data-radix-popper-content-wrapper] [data-testid='people-menu.change-name'] {
     @apply hidden;
   }
