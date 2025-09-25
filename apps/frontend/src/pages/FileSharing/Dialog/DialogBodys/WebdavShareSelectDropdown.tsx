@@ -16,7 +16,7 @@ import { DropdownSelect } from '@/components';
 import { type DropdownOptions } from '@/components/ui/DropdownSelect/DropdownSelect';
 import useFileSharingStore from '../../useFileSharingStore';
 
-const WebdavShareSelectDropdown: React.FC = () => {
+const WebdavShareSelectDropdown: React.FC<{ webdavShare: string | undefined }> = ({ webdavShare }) => {
   const { t } = useTranslation();
   const { webdavShares, selectedWebdavShare, setSelectedWebdavShare } = useFileSharingStore();
 
@@ -27,9 +27,11 @@ const WebdavShareSelectDropdown: React.FC = () => {
 
   useEffect(() => {
     if (webdavShares.length > 0) {
-      setSelectedWebdavShare(webdavShares[0].displayName);
+      setSelectedWebdavShare(
+        webdavShares.find((share) => share.displayName === webdavShare)?.displayName || webdavShares[0].displayName,
+      );
     }
-  }, []);
+  }, [webdavShare, webdavShares]);
 
   return (
     <DropdownSelect
