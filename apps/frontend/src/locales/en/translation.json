@@ -315,7 +315,7 @@
     "nobulletinboard": "No new bulletins"
   },
   "filesharing": {
-    "filterPlaceHolderText": "Search for filename",
+    "filterPlaceHolderText": "Type to filter",
     "title": "FILES",
     "sidebar": "Files",
     "previewTitle": "File Preview",
@@ -1319,7 +1319,8 @@
     "mode": "Mode",
     "orContinueWithoutAccount": "Or continue without account",
     "application": "Application",
-    "reset": "Reset"
+    "reset": "Reset",
+    "file": "File"
   },
   "form": {
     "path": "Path",
@@ -1399,7 +1400,9 @@
   },
   "whiteboard": {
     "title": "WHITEBOARD",
-    "sidebar": "Whiteboard"
+    "sidebar": "Whiteboard",
+    "saveAsTlFile": "Save Whiteboard as .tldr file",
+    "openTlFile": "Open .tldr file"
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
@@ -1468,6 +1471,17 @@
     "unknownErrorOccurred": "An unknown error occurred"
   },
   "currentDirectory": "Current directory",
+
+  "saveExternalFileDialogBody": {
+    "saveExternalFile": "Save external file",
+    "destinationFolder": "Destination folder",
+    "filename": "Filename",
+    "filenamePlaceholder": "Enter filename here",
+    "filenameRequired": "Filename cannot be empty",
+    "fileSavedSuccessful": "File saved successfully",
+    "fileSaveFailed": "File could not be saved"
+  },
+
   "moveItemDialog": {
     "changeDirectory": "Change directory",
     "currentDirectory": "Current directory",
