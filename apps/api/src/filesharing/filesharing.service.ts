@@ -164,12 +164,14 @@ class FilesharingService {
   }
 
   async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto, share: string) {
+    const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
+
     let i = 0;
     return Promise.all(
       duplicateFile.destinationFilePaths.map(async (destinationPath) => {
         await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.DUPLICATE_FILE_JOB, {
           username,
-          originFilePath: duplicateFile.originFilePath,
+          originFilePath: getPathWithoutWebdav(duplicateFile.originFilePath, webdavShare.pathname),
           destinationFilePath: destinationPath,
           total: duplicateFile.destinationFilePaths.length,
           processed: (i += 1),

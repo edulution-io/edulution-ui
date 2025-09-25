@@ -57,7 +57,10 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
 
   const clearSegments = segments.filter((segment) => hiddenSegments?.includes(segment) !== true);
 
-  const getSegmentKey = (index: number) => segments.slice(0, index + 1).join('/');
+  const getSegmentKey = (index: number) => {
+    const key = segments.slice(0, index + 1).join('/');
+    return key.startsWith('/') ? key : `/${key}`;
+  };
 
   const handleSegmentClick = (index: number) => {
     const newPath = getSegmentKey(index);
@@ -65,7 +68,6 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
       onNavigate(newPath);
     }
   };
-
   const shouldShowDropdown = clearSegments.length > displaySegments;
 
   return (

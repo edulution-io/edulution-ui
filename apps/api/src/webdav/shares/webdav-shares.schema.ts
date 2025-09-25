@@ -22,7 +22,7 @@ export type WebdavSharesDocument = WebdavShares & Document;
 
 @Schema()
 export class WebdavShares {
-  @Prop({ default: '' })
+  @Prop({ unique: true, required: true })
   displayName: string;
 
   @Prop({ default: '' })

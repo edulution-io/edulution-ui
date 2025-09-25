@@ -55,6 +55,8 @@ type UseFileSharingStore = {
   removeDownloadProgress: (fileName: string) => void;
   webdavShares: WebdavShareDto[];
   fetchWebdavShares: () => Promise<WebdavShareDto[]>;
+  selectedWebdavShare: string;
+  setSelectedWebdavShare: (webdavShare: string) => void;
 };
 
 const initialState = {
@@ -71,6 +73,7 @@ const initialState = {
   downloadProgressList: [],
   fileOperationProgress: null,
   webdavShares: [],
+  selectedWebdavShare: '',
 };
 
 type PersistedFileManagerStore = (
@@ -210,6 +213,10 @@ const useFileSharingStore = create<UseFileSharingStore>(
         } finally {
           set({ isLoading: false });
         }
+      },
+
+      setSelectedWebdavShare: (webdavShare) => {
+        set({ selectedWebdavShare: webdavShare });
       },
 
       reset: () => set(initialState),

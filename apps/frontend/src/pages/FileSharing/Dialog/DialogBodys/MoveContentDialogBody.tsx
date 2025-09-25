@@ -39,8 +39,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   const { webdavShare } = useParams();
   const { t } = useTranslation();
   const [currentPath, setCurrentPath] = useState(pathToFetch || '');
-  const webdavShares = useFileSharingStore((s) => s.webdavShares);
-  const [selectedShare, setSelectedShare] = useState(webdavShares[0]?.displayName || '');
+  const selectedWebdavShare = useFileSharingStore((s) => s.selectedWebdavShare);
 
   const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
 
@@ -55,11 +54,11 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   };
 
   useEffect(() => {
-    void fetchDialogDirs(webdavShare || selectedShare, currentPath);
+    void fetchDialogDirs(webdavShare || selectedWebdavShare, currentPath);
     if (showAllFiles) {
-      void fetchDialogFiles(webdavShare || selectedShare, currentPath);
+      void fetchDialogFiles(webdavShare || selectedWebdavShare, currentPath);
     }
-  }, [webdavShare, selectedShare, currentPath, showAllFiles]);
+  }, [webdavShare, selectedWebdavShare, currentPath, showAllFiles]);
 
   useEffect(() => {
     if (isCurrentPathDefaultDestination) {
@@ -88,7 +87,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   };
 
   const handleBreadcrumbNavigate = (path: string) => {
-    const newPath = `/${path}`;
+    const newPath = path;
     setCurrentPath(newPath);
   };
 
@@ -118,11 +117,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
 
   return (
     <>
-      <WebdavShareSelectDropdown
-        selectedShare={selectedShare}
-        setSelectedShare={setSelectedShare}
-        webdavShares={webdavShares}
-      />
+      <WebdavShareSelectDropdown />
       <div className="h-[60vh] flex-col overflow-auto text-background scrollbar-thin">
         <div className="pb-2">
           <DirectoryBreadcrumb
