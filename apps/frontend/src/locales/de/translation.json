@@ -647,6 +647,7 @@
       "new": "Neu (Leer)",
       "fileUploadSuccess": "Die Datei wurde erfolgreich hochgeladen.",
       "fileUploadError": "Die Datei konnte nicht hochgeladen werden, bitte versuche es später erneut.",
+      "fileDeletionSuccess": "Die Datei wurde erfolgreich gelöscht.",
       "saveSurveySuccess": "Die Umfrage wurde gespeichert.",
       "reset": "Verwerfen",
       "addDescription": "Beschreibung hinzufügen",
@@ -694,6 +695,7 @@
       "idText": "Bitte notiere dir:",
       "idParagraph": "Um deine Antwort einzusehen oder, falls konfiguriert, nochmals zu bearbeiten, kannst du die Teilnahme-ID hier benutzen.",
       "usernameRequired": "Der Benutzername ist erforderlich",
+      "fileSizeExceeded": "Eine Datei überschreitet die maximal erlaubte Größe von {{size}} MB.",
       "completeMessage": "Vielen Dank, dass du an der Umfrage Teilgenommen hast"
     },
     "errors": {
@@ -1207,6 +1209,7 @@
       "fileNotProvided": "Datei wurde nicht bereitgestellt",
       "invalidFileType": "Ungültiger Dateityp",
       "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",
+      "invalidRequestData": "Ungültige Anfragedaten",
       "wrongServerConfig": "Fehlerhafte Serverkonfiguration"
     },
     "cut": "Ausschneiden",
