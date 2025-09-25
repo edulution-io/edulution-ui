@@ -21,7 +21,6 @@ import { useNavigate } from 'react-router-dom';
 import { CLASS_MANAGEMENT_LESSON_PATH } from '@libs/classManagement/constants/classManagementPaths';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
-import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import STUDENTS_REGEX from '@libs/lmnApi/constants/studentsRegex';
 import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
 import useLmnApiStore from '@/store/useLmnApiStore';
@@ -29,7 +28,7 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 interface GroupCardProps {
   icon?: ReactElement;
   type: UserGroups;
-  group: LmnApiSession | LmnApiProject | LmnApiSchoolClass;
+  group: LmnApiProject | LmnApiSchoolClass;
 }
 
 const GroupCard = ({ icon, type, group }: GroupCardProps) => {
@@ -42,9 +41,9 @@ const GroupCard = ({ icon, type, group }: GroupCardProps) => {
     return null;
   }
 
-  const member =
-    (group as LmnApiSession).members?.map((m) => m.dn) || (group as LmnApiSchoolClass | LmnApiProject).member;
-  const memberCount = member.filter((m) => STUDENTS_REGEX.test(m))?.length || 0;
+  const {member} = group;
+  const studentsCount = member.filter((m) => STUDENTS_REGEX.test(m))?.length || 0;
+  const otherMembersCount = member.filter((m) => m !== user?.distinguishedName)?.length || 0;
 
   const onCardClick = () => {
     navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}/${type}/${group.name}`);
@@ -82,7 +81,8 @@ const GroupCard = ({ icon, type, group }: GroupCardProps) => {
                   <>{t('classmanagement.startSession')}</>
                 ) : (
                   <>
-                    {memberCount} {t(memberCount === 1 ? 'student' : 'students')}
+                    {studentsCount}
+                    {otherMembersCount > studentsCount && '+'} {t(studentsCount === 1 ? 'student' : 'students')}
                   </>
                 )}
               </p>

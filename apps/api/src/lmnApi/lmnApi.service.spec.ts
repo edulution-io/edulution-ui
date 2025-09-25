@@ -488,7 +488,7 @@ describe('LmnApiService', () => {
         data: {
           projectName: 'Project1',
           members: [{ cn: 'member1' }, { cn: 'member2' }],
-          sophomorixMembers: ['member1'],
+          all_members: ['member1'],
         },
       };
 

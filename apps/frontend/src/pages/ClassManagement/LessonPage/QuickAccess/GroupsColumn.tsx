@@ -16,7 +16,6 @@ import GroupCard from '@/pages/ClassManagement/LessonPage/QuickAccess/GroupCard'
 import GroupColumn from '@libs/groups/types/groupColumn';
 import useUserStore from '@/store/UserStore/useUserStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 
@@ -37,7 +36,7 @@ const GroupsColumn = ({ column }: GroupsColumnProps) => {
     <GroupCard
       type={name}
       key={user!.username + group.name}
-      group={group as LmnApiSession | LmnApiProject | LmnApiSchoolClass}
+      group={group as LmnApiProject | LmnApiSchoolClass}
       icon={icon}
     />
   ));
