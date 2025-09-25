@@ -41,7 +41,7 @@ const FileSharingPage = () => {
   const { webdavShare } = useParams();
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
-  const { fileOperationProgress, fetchFiles } = useFileSharingStore();
+  const { fileOperationProgress, fetchFiles, webdavShares } = useFileSharingStore();
   const { fetchShares } = usePublicShareStore();
 
   useUploadProgressToast();
@@ -69,6 +69,8 @@ const FileSharingPage = () => {
     closeDialog(PUBLIC_SHARE_DIALOG_NAMES.QR_CODE);
   };
 
+  const getHiddenSegments = () => webdavShares.find((s) => s.displayName === webdavShare)?.pathname.split('/');
+
   return (
     <PageLayout>
       <LoadingIndicatorDialog isOpen={isLoading} />
@@ -82,6 +84,7 @@ const FileSharingPage = () => {
             setSearchParams(newParams);
           }}
           style={{ color: 'white' }}
+          hiddenSegments={getHiddenSegments()}
         />
         <QuotaLimitInfo percentageUsed={percentageUsed} />
       </div>

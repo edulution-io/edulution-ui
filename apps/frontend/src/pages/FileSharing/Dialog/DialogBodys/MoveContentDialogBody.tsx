@@ -40,6 +40,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   const { t } = useTranslation();
   const [currentPath, setCurrentPath] = useState(pathToFetch || '');
   const selectedWebdavShare = useFileSharingStore((s) => s.selectedWebdavShare);
+  const webdavShares = useFileSharingStore((s) => s.webdavShares);
 
   const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
 
@@ -82,21 +83,19 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   };
 
   const onFilenameClick = (item: Row<DirectoryFileDTO>) => {
-    const newPath = item.original.filePath;
-    setCurrentPath(newPath);
+    if (item.original.type === ContentType.DIRECTORY) {
+      const newPath = item.original.filePath;
+      setCurrentPath(newPath);
+    } else {
+      item.toggleSelected();
+    }
   };
 
   const handleBreadcrumbNavigate = (path: string) => {
-    const newPath = path;
-    setCurrentPath(newPath);
+    setCurrentPath(path);
   };
 
-  const getHiddenSegments = (): string[] => {
-    if (!pathToFetch) return [];
-    const segments = pathToFetch.split('/');
-    const index = segments.findIndex((segment) => segment === segments.at(segments.length - 1));
-    return index > -1 ? segments.slice(0, index) : [];
-  };
+  const getHiddenSegments = () => webdavShares.find((s) => s.displayName === webdavShare)?.pathname.split('/');
 
   const footer = (
     <div className="bottom-0 justify-end bg-secondary p-4 text-sm text-foreground">
