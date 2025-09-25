@@ -10,16 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { pipeline, Readable } from 'stream';
-import { AxiosResponse } from 'axios';
-import { promisify } from 'util';
-import { createWriteStream } from 'fs';
+import { SerializedSchema, StoreSnapshot, TLRecord } from 'tldraw';
+import { TldrFileV1 } from '@libs/tldraw-sync/types/tldrFileV1';
 
-const saveFileStream = async (fileStream: Readable | AxiosResponse<Readable>, outputPath: string): Promise<void> => {
-  const pipelineAsync = promisify(pipeline);
-  const readableStream = (fileStream as AxiosResponse<Readable>).data
-    ? (fileStream as AxiosResponse<Readable>).data
-    : (fileStream as Readable);
-  await pipelineAsync(readableStream, createWriteStream(outputPath));
+const toStoreSnapshot = (file: TldrFileV1): StoreSnapshot<TLRecord> => {
+  const store = file.records.reduce<Record<string, TLRecord>>((acc, record) => {
+    acc[record.id] = record;
+    return acc;
+  }, {});
+  const schema: SerializedSchema = { schemaVersion: 2, sequences: file.schema.sequences };
+  return { schema, store };
 };
-export default saveFileStream;
+
+export default toStoreSnapshot;

@@ -74,12 +74,17 @@ interface MoveDialogBodyConfiguration extends DialogBodyConfigurationBase {
   Component: React.ComponentType<MoveContentDialogBodyProps>;
 }
 
+interface SaveExternalFileDialogBodyConfiguration extends DialogBodyConfigurationBase {
+  Component: React.ComponentType<FilesharingDialogProps>;
+}
+
 type DialogBodyConfiguration =
   | CreateFolderDialogBodyConfiguration
   | CreateFileDialogBodyConfiguration
   | RenameDialogBodyConfiguration
   | MoveDialogBodyConfiguration
-  | PlainDialogBodyConfiguration;
+  | PlainDialogBodyConfiguration
+  | SaveExternalFileDialogBodyConfiguration;
 
 const initialFormValues = {
   filename: '',

@@ -28,6 +28,8 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
 import { useTranslation } from 'react-i18next';
 import TLDrawHistory from '@/pages/Whiteboard/TLDrawWithSync/TLDrawHistory';
+import tlDrawComponents from '@/pages/Whiteboard/components/tlDrawComponents';
+import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
 
 const TLDrawWithSync = ({ uri }: { uri: string }) => {
   const { t } = useTranslation();
@@ -148,6 +150,8 @@ const TLDrawWithSync = ({ uri }: { uri: string }) => {
     });
   };
 
+  const { setEditor } = useWhiteboardEditorStore();
+
   return (
     <div className="flex h-full flex-col">
       <DropdownSelect
@@ -156,7 +160,7 @@ const TLDrawWithSync = ({ uri }: { uri: string }) => {
         selectedVal={selectedRoomId}
         handleChange={setSelectedRoomId}
         variant="default"
-        classname="z-[400]"
+        classname="z-[400] w-[calc(100%-4rem)] sm:w-auto"
       />
 
       {selectedRoomId && <TLDrawHistory />}
@@ -165,11 +169,13 @@ const TLDrawWithSync = ({ uri }: { uri: string }) => {
         <Tldraw
           className="z-10"
           onMount={(editor) => {
+            setEditor(editor);
             applyUserPreferences(editor);
             registerAssetHandler(editor);
             registerDeleteHandler(editor);
           }}
           store={store}
+          components={tlDrawComponents}
         />
       )}
     </div>

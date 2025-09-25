@@ -253,7 +253,7 @@ class WebdavService {
     const request = got.put(url, {
       agent: {
         http: new HttpAgent({ keepAlive: true }),
-        https: new HttpsAgent({ keepAlive: true }),
+        https: new HttpsAgent({ keepAlive: true, rejectUnauthorized: false }),
       },
       body: fileStream,
       headers,
@@ -263,7 +263,6 @@ class WebdavService {
       retry: { limit: 0 },
       throwHttpErrors: false,
       decompress: false,
-      rejectUnauthorized: false,
     });
 
     fileStream.on('aborted', () => request.cancel());

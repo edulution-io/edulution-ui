@@ -41,13 +41,13 @@ const initialState = {
   filesToUpload: [],
   isUploading: false,
   lastError: undefined,
+  isTldrDialogOpen: false,
   progressByName: {},
   uploadingByName: new Map<string, boolean>(),
 };
 
 const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
   ...initialState,
-
   setIsUploadDialogOpen: (isOpen) => set({ isUploadDialogOpen: isOpen }),
   closeUploadDialog: () => set({ isUploadDialogOpen: false }),
   setFilesToUpload: (files) => set({ filesToUpload: files }),

@@ -10,6 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const DASHBOARD_ROUTE = '/';
+import { Editor, TLPageId } from 'tldraw';
 
-export default DASHBOARD_ROUTE;
+export const hasSetCurrentPageId = (editor: Editor): editor is Editor & { setCurrentPageId: (id: TLPageId) => void } =>
+  typeof (editor as { setCurrentPageId?: (id: TLPageId) => void }).setCurrentPageId === 'function';
+
+export const hasSetCurrentPage = (editor: Editor): editor is Editor & { setCurrentPage: (id: TLPageId) => void } =>
+  typeof (editor as { setCurrentPage?: (id: TLPageId) => void }).setCurrentPage === 'function';
