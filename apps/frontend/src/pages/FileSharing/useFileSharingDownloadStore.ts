@@ -23,6 +23,8 @@ import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResul
 import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
 import { AxiosProgressEvent } from 'axios';
 import ContentType from '@libs/filesharing/types/contentType';
+import formatTransferSpeed from '@libs/filesharing/utils/formatTransferSpeed';
+import formatEstimatedTimeRemaining from '@libs/filesharing/utils/formatEstimatedTimeRemaining';
 
 type FileSharingDownloadStore = {
   isCreatingBlobUrl: boolean;
@@ -123,11 +125,71 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
     }
   },
 
-  downloadFile: async (file: DirectoryFileDTO, signal?: AbortSignal) => {
+  downloadFile: async (file, signal) => {
     try {
       set({ isFetchingPublicUrl: true, error: null });
 
-      const totalBytes = file.size ?? 0;
+      const totalBytesFallback = file.size ?? 0;
+      const processId = Math.floor(Math.random() * 1_000_000);
+      const startedAt = Date.now();
+
+      let lastTs = startedAt;
+      let lastLoaded = 0;
+      let smoothedBps: number | undefined;
+
+      const formatFileName = () => (file.type === ContentType.DIRECTORY ? `${file.filename}.zip` : file.filename);
+
+      get().setDownloadProgress({
+        fileName: formatFileName(),
+        percent: 0,
+        processId,
+        totalBytes: totalBytesFallback,
+        loadedBytes: 0,
+        speedBps: 0,
+        etaSeconds: undefined,
+        lastUpdateAt: startedAt,
+        startedAt,
+        speedFormatted: formatTransferSpeed(0),
+        etaFormatted: formatEstimatedTimeRemaining(undefined),
+      });
+
+      const onProgress = (pe: AxiosProgressEvent) => {
+        const total = pe.total ?? totalBytesFallback;
+        if (!total) return;
+
+        const loaded = pe.loaded ?? 0;
+        const currentTs = Date.now();
+
+        let percent = Math.round((loaded / total) * 100);
+        if (percent > 100) percent = 100;
+
+        const dtMs = Math.max(1, currentTs - lastTs);
+        const dBytes = Math.max(0, loaded - lastLoaded);
+        const instBps = (dBytes * 1000) / dtMs;
+
+        const alpha = 0.2;
+        smoothedBps = smoothedBps ? alpha * instBps + (1 - alpha) * smoothedBps : instBps;
+
+        const remaining = Math.max(0, total - loaded);
+        const etaSec = smoothedBps > 0 ? remaining / smoothedBps : undefined;
+
+        get().setDownloadProgress({
+          fileName: formatFileName(),
+          percent,
+          processId,
+          totalBytes: total,
+          loadedBytes: loaded,
+          speedBps: smoothedBps,
+          etaSeconds: etaSec,
+          lastUpdateAt: currentTs,
+          startedAt,
+          speedFormatted: formatTransferSpeed(smoothedBps),
+          etaFormatted: formatEstimatedTimeRemaining(etaSec),
+        });
+
+        lastTs = currentTs;
+        lastLoaded = loaded;
+      };
 
       const { data } = await eduApi.get<Blob>(
         `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_STREAM}`,
@@ -135,18 +197,7 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
           responseType: ResponseType.BLOB,
           signal,
           params: { filePath: file.filePath },
-          onDownloadProgress: (e: AxiosProgressEvent) => {
-            const total = e.total ?? totalBytes;
-            if (!total) return;
-            let percent = Math.round((e.loaded / total) * 100);
-            if (percent > 100) percent = 100;
-
-            get().setDownloadProgress({
-              fileName: file.type === ContentType.DIRECTORY ? `${file.filename}.zip` : file.filename,
-              percent,
-              processId: Math.floor(Math.random() * 1_000_000),
-            });
-          },
+          onDownloadProgress: onProgress,
         },
       );
 
