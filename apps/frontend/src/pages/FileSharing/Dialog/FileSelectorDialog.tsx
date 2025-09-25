@@ -48,14 +48,14 @@ const FileSelectorDialog = () => {
   };
 
   const getFooter = () => (
-      <DialogFooterButtons
-        handleClose={handleClose}
-        handleSubmit={handelSubmit}
-        submitButtonText="common.open"
-        submitButtonType="submit"
-        disableSubmit={!moveOrCopyItemToPath.filePath}
-      />
-    );
+    <DialogFooterButtons
+      handleClose={handleClose}
+      handleSubmit={handelSubmit}
+      submitButtonText="common.open"
+      submitButtonType="submit"
+      disableSubmit={!moveOrCopyItemToPath?.filePath}
+    />
+  );
 
   return (
     <AdaptiveDialog

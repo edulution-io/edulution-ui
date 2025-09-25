@@ -53,7 +53,6 @@ interface DataTableProps<TData, TValue> {
   actions?: TableAction<TData>[];
   showSearchBarAndColumnSelect?: boolean;
   getRowDisabled?: (row: Row<TData>) => boolean;
-  disabledRowClassName?: string;
 }
 
 const ScrollableTable = <TData, TValue>({
@@ -76,7 +75,6 @@ const ScrollableTable = <TData, TValue>({
   actions,
   showSearchBarAndColumnSelect = true,
   getRowDisabled,
-  disabledRowClassName = 'opacity-50 pointer-events-none cursor-not-allowed saturate-0',
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(initialColumnVisibility);
@@ -184,7 +182,9 @@ const ScrollableTable = <TData, TValue>({
                   data-state={row.getIsSelected() ? 'selected' : undefined}
                   data-disabled={getRowDisabled?.(row) ? 'true' : undefined}
                   aria-disabled={getRowDisabled?.(row) ? true : undefined}
-                  className={getRowDisabled?.(row) ? disabledRowClassName : undefined}
+                  className={
+                    getRowDisabled?.(row) ? 'pointer-events-none cursor-not-allowed opacity-50 saturate-0' : undefined
+                  }
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
