@@ -15,6 +15,7 @@ import { ChoicesRestful, Question } from 'survey-core';
 interface TSurveyQuestion extends Question {
   choicesByUrl: { url: string } | ChoicesRestful | null;
   choices: string[] | null;
+  imageWidth: number;
 }
 
 export default TSurveyQuestion;

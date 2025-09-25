@@ -682,7 +682,9 @@
         "upperLimit": "Grenzwert",
         "upperBackendLimiters": "Auswahlmöglichkeiten mit Obergrenze",
         "addChoice": "Hinzufügen",
-        "filterPlaceHolderText": "Option suchen"
+        "filterPlaceHolderText": "Option suchen",
+        "imageWidth": "Breite des Bildes [px]",
+        "imageWidthPlaceholder": "0 bedeutet, dass die Breite nicht begrenzt ist."
       }
     },
     "participate": {
