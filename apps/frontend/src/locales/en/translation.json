@@ -981,7 +981,7 @@
           "invalidUrlFormat": "Invalid URL"
         },
         "webdavShare": {
-          "title": "WebDAV-Share",
+          "title": "WebDAV-Server",
           "description": "Here you can set up your own WebDAV shares.",
           "filterPlaceHolderText": "Search for share"
         },
@@ -1026,7 +1026,8 @@
       "fieldRequired": "This field is required",
       "maxChars": "Maximum {{count}} characters",
       "nameAlreadyExists": "App with this name already exists",
-      "nameIsNotAllowed": "This app name is not allowed"
+      "nameIsNotAllowed": "This app name is not allowed",
+      "webdavShareNameAlreadyExists": "WebDAV-Share with this name already exists"
     },
     "yamleditor": {
       "invalidYaml": "Wrong YAML syntax",

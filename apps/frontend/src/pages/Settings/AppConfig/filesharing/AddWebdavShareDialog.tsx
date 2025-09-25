@@ -55,9 +55,23 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
   };
 
   const form = useForm<WebdavShareDto>({
-    mode: 'onSubmit',
+    mode: 'onChange',
     resolver: zodResolver(
       z.object({
+        [WEBDAV_SHARE_TABLE_COLUMNS.DISPLAY_NAME]: z
+          .string()
+          .min(1, { message: t('common.required') })
+          .refine(
+            (val) => {
+              if (!selectedConfig) {
+                return !tableContentData.some((s) => s.displayName.toLowerCase() === val.toLowerCase());
+              }
+              return true;
+            },
+            {
+              message: t('settings.errors.webdavShareNameAlreadyExists'),
+            },
+          ),
         [WEBDAV_SHARE_TABLE_COLUMNS.URL]: z
           .string()
           .url({ message: t('settings.appconfig.sections.veyon.invalidUrlFormat') }),

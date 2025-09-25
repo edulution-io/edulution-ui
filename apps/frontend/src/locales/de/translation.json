@@ -984,9 +984,9 @@
           "invalidUrlFormat": "Ungültige URL"
         },
         "webdavShare": {
-          "title": "WebDAV-Share",
-          "description": "Hier können eigene WebDAV-Shares eingerichtet werden.",
-          "filterPlaceHolderText": "Suche nach WebDAV-Share"
+          "title": "WebDAV-Server",
+          "description": "Hier können WebDAV-Server für den Dateimanager eingerichtet werden.",
+          "filterPlaceHolderText": "Suche nach WebDAV-Server"
         },
         "files": {
           "title": "Dateien",
@@ -1029,7 +1029,8 @@
       "fieldRequired": "Dieses Feld ist erforderlich",
       "maxChars": "Maximal {{count}} Zeichen",
       "nameAlreadyExists": "App mit diesem Namen existiert bereits",
-      "nameIsNotAllowed": "Dieser Appname ist nicht erlaubt"
+      "nameIsNotAllowed": "Dieser Appname ist nicht erlaubt",
+      "webdavShareNameAlreadyExists": "Dieser Name exisitiert bereits"
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",

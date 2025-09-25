@@ -833,7 +833,7 @@
           "invalidUrlFormat": "URL non valide"
         },
         "webdavShare": {
-          "title": "WebDAV-Share",
+          "title": "WebDAV-Server",
           "description": "Vous pouvez configurer ici vos propres partages WebDAV.",
           "filterPlaceHolderText": "Rechercher le nom de partages"
         },
@@ -877,7 +877,8 @@
       "forbiddenProxyPath": "Ce chemin proxy n'est pas autorisé.",
       "fieldRequired": "Ce champ est obligatoire",
       "maxChars": "Maximum {{count}} caractères",
-      "nameAlreadyExists": "Une application avec ce nom existe déjà"
+      "nameAlreadyExists": "Une application avec ce nom existe déjà",
+      "webdavShareNameAlreadyExists": "Un partage WebDAV avec ce nom existe déjà"
     },
     "yamleditor": {
       "invalidYaml": "Syntaxe YAML non valide",
