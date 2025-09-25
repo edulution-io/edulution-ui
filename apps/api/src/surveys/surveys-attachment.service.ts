@@ -11,7 +11,6 @@
  */
 
 import { join } from 'path';
-import { Response } from 'express';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import {
   SURVEY_FILE_ATTACHMENT_ENDPOINT,
@@ -248,20 +247,6 @@ class SurveysAttachmentService implements OnModuleInit {
   static async onSurveyRemoval(surveyIds: string[]): Promise<void> {
     const filePath = surveyIds.map((surveyId) => join(SURVEYS_ATTACHMENT_PATH, surveyId));
     return FilesystemService.deleteDirectories(filePath);
-  }
-
-  async serveFiles(surveyId: string, questionId: string, fileName: string, res: Response): Promise<Response> {
-    const filePath = join(SURVEYS_ATTACHMENT_PATH, surveyId, questionId, fileName);
-    const fileStream = await this.fileSystemService.createReadStream(filePath);
-    fileStream.pipe(res);
-    return res;
-  }
-
-  async serveTempFiles(userId: string, fileName: string, res: Response): Promise<Response> {
-    const filePath = `${SURVEYS_TEMP_FILES_PATH}/${userId}/${fileName}`;
-    const fileStream = await this.fileSystemService.createReadStream(filePath);
-    fileStream.pipe(res);
-    return res;
   }
 }
 
