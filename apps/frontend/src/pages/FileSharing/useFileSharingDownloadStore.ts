@@ -170,7 +170,6 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
         const alpha = 0.2;
         smoothedBps = smoothedBps ? alpha * instBps + (1 - alpha) * smoothedBps : instBps;
 
-        // ETA
         const remaining = Math.max(0, total - loaded);
         const etaSec = smoothedBps > 0 ? remaining / smoothedBps : undefined;
 
