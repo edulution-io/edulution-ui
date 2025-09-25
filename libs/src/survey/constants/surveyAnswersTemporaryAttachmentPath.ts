@@ -10,10 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ParticipantDto from '@libs/survey/types/api/participant.dto';
+import { join } from 'path';
+import SURVEYS_ANSWER_FOLDER from '@libs/survey/constants/surveyAnswersFolder';
+import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
 
-interface PostSurveyAnswerDto extends ParticipantDto {
-  answer: JSON;
-}
+const SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH = join(TEMP_FILES_PATH, SURVEYS_ANSWER_FOLDER);
 
-export default PostSurveyAnswerDto;
+export default SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH;
