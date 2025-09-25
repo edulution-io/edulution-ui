@@ -26,6 +26,8 @@ import type WebdavShareHealthUpdate from '@libs/filesharing/types/webdavShareHea
 import { WebdavShares, WebdavSharesDocument } from './webdav-shares.schema';
 import CustomHttpException from '../../common/CustomHttpException';
 import { AppConfig } from '../../appconfig/appconfig.schema';
+import MigrationService from '../../migration/migration.service';
+import webdavSharesMigrationList from './migrations/webdavSharesMigrationList';
 
 type WebdavShareCache = Record<string, { url: string; type: string; pathname: string }>;
 
@@ -50,13 +52,30 @@ class WebdavSharesService implements OnModuleInit {
         accessGroups = appConfig.accessGroups;
       }
 
+      let pathname = '';
+      const rawUrl = process.env.EDUI_WEBDAV_URL;
+
+      if (rawUrl) {
+        try {
+          pathname = new URL(rawUrl).pathname;
+        } catch (e) {
+          Logger.warn('EDUI_WEBDAV_URL not valid', WebdavSharesService.name);
+        }
+      } else {
+        Logger.warn('EDUI_WEBDAV_URL not set', WebdavSharesService.name);
+      }
+
       await this.webdavSharesModel.create({
         displayName: WEBDAV_SHARE_TYPE.LINUXMUSTER,
         url: process.env.EDUI_WEBDAV_URL as string,
+        pathname,
         accessGroups,
         type: WEBDAV_SHARE_TYPE.LINUXMUSTER,
+        schemaVersion: 1,
       });
     }
+
+    await MigrationService.runMigrations<WebdavSharesDocument>(this.webdavSharesModel, webdavSharesMigrationList);
 
     await this.loadCache();
   }

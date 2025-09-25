@@ -42,6 +42,9 @@ export class WebdavShares {
 
   @Prop({ type: Date, default: null })
   lastChecked: Date | null;
+
+  @Prop({ default: 1 })
+  schemaVersion: number;
 }
 
 export const WebdavSharesSchema = SchemaFactory.createForClass(WebdavShares);
