@@ -83,3 +83,17 @@
     }
   }
 }
+
+.participated-survey,
+.survey-participation {
+  .sd-page {
+    .sd-file__preview-item,
+    .sd-file__image-wrapper {
+      width: 100%;
+      height: 100%;
+    }
+    .sd-file__sign {
+      width: 100%;
+    }
+  }
+}
