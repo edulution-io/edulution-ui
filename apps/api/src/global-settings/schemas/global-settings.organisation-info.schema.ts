@@ -10,12 +10,24 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface UploadResult {
-  name?: string;
-  success?: boolean;
-  filename?: string;
-  path?: string;
-  absolutePath?: string;
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+
+@Schema({ _id: false })
+export class OrganisationInfo {
+  @Prop({ type: String, trim: true, default: '' })
+  name: string;
+
+  @Prop({ type: String, trim: true, default: '' })
+  street: string;
+
+  @Prop({ type: String, trim: true, default: '' })
+  postalCode: string;
+
+  @Prop({ type: String, trim: true, default: '' })
+  website: string;
+
+  @Prop({ type: String, trim: true, default: '' })
+  city: string;
 }
 
-export default UploadResult;
+export const OrganisationInfoSchema = SchemaFactory.createForClass(OrganisationInfo);

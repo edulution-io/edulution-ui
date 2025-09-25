@@ -19,9 +19,10 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { BullModule } from '@nestjs/bullmq';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
-import { BullModule } from '@nestjs/bullmq';
+import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
 import LoggingInterceptor from '../logging/logging.interceptor';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
@@ -57,6 +58,11 @@ import UserPreferencesModule from '../user-preferences/user-preferences.module';
     ServeStaticModule.forRoot({
       rootPath: PUBLIC_DOWNLOADS_PATH,
       serveRoot: `/${EDU_API_ROOT}/downloads`,
+    }),
+
+    ServeStaticModule.forRoot({
+      rootPath: PUBLIC_ASSET_PATH,
+      serveRoot: `/${EDU_API_ROOT}/public/assets`,
     }),
 
     BullModule.forRoot({

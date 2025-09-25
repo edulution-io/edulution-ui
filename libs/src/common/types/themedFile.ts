@@ -10,12 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface UploadResult {
-  name?: string;
-  success?: boolean;
-  filename?: string;
-  path?: string;
-  absolutePath?: string;
-}
+type ThemedFile = {
+  light: File | null;
+  dark: File | null;
+};
 
-export default UploadResult;
+export default ThemedFile;

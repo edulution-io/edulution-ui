@@ -98,7 +98,7 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
         }
         return {
           name: files[fileIndex].name,
-          ok: false,
+          success: false,
           error: String(settledResult.reason),
         } as UploadResult;
       });

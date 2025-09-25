@@ -18,7 +18,10 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 const DefaultLandingPageAfterLogin = () => {
   const { globalSettings } = useGlobalSettingsApiStore();
   const navigate = useNavigate();
-  const { isCustomLandingPageEnabled, appName } = globalSettings.general.defaultLandingPage;
+
+  const defaultLandingPage = globalSettings?.general?.defaultLandingPage;
+  const isCustomLandingPageEnabled = defaultLandingPage?.isCustomLandingPageEnabled;
+  const appName = defaultLandingPage?.appName;
 
   useEffect(() => {
     if (isCustomLandingPageEnabled === undefined) return;
@@ -28,10 +31,7 @@ const DefaultLandingPageAfterLogin = () => {
     } else {
       navigate('/', { replace: true });
     }
-  }, [
-    globalSettings.general.defaultLandingPage.isCustomLandingPageEnabled,
-    globalSettings.general.defaultLandingPage.appName,
-  ]);
+  }, [isCustomLandingPageEnabled, appName, navigate]);
 
   if (isCustomLandingPageEnabled === undefined) {
     return <CircleLoader className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />;

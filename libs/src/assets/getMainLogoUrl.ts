@@ -10,12 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface UploadResult {
-  name?: string;
-  success?: boolean;
-  filename?: string;
-  path?: string;
-  absolutePath?: string;
-}
+import { ThemeType } from '@libs/common/types/theme';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import { GLOBAL_SETTINGS_BRANDING_LOGO } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 
-export default UploadResult;
+const getMainLogoUrl = (theme: ThemeType) => {
+  const base = `main-logo-${theme}.webp`;
+  return `/${EDU_API_ROOT}/public/assets/${GLOBAL_SETTINGS_BRANDING_LOGO}/${base}`;
+};
+
+export default getMainLogoUrl;
