@@ -1180,6 +1180,7 @@
     "embeddedPageEditor": "Editeur",
     "embeddedPageEditorModeDescription": "Ici, vous pouvez choisir entre Sandbox et Native. Sandbox est la variante la plus sûre, native du rendu d'origine. Notez qu'aucune précaution de sécurité ne peut être prise dans le rendu natif. En mode sandbox, le fichier HTML est lu à partir de la mémoire. Pour ce faire, téléchargez le fichier.",
     "sandboxed": "Bac à sable",
+    "pathname": "Chemin d’accès",
     "input": {
       "dateTimePicker": {
         "timeSlot": "Heure",

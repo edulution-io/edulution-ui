@@ -1344,6 +1344,7 @@
     "embeddedPageEditor": "Editor",
     "embeddedPageEditorModeDescription": "Hier kann zwischen Sandbox und nativ gerendert ausgewählt werden. Sandbox ist die sicherste Variante, native das Original-Rendering. Beachte, dass bei nativen Rendering keine Sicherheitsvorkehrungen getroffen werden können. Im Sandbox-Modus wird die HTML-Datei aus dem Speicher gelesen. Lade dazu die Datei hoch.",
     "sandboxed": "Sandbox",
+    "pathname": "Share-Pfad",
     "input": {
       "dateTimePicker": {
         "timeSlot": "Uhr",
