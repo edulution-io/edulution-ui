@@ -16,6 +16,7 @@ import FileSharingPage from '@/pages/FileSharing/FileSharingPage';
 import APPS from '@libs/appconfig/constants/apps';
 import PublicShareLinksPage from '@/pages/FileSharing/publicShare/PublicShareLinksPage';
 import FileSharingRedirect from '@/pages/FileSharing/FileSharingRedirect';
+import SHARED from '@libs/filesharing/constants/shared';
 
 const getFileSharingRoutes = () => [
   <Route
@@ -28,12 +29,13 @@ const getFileSharingRoutes = () => [
     />
 
     <Route
-      path=":webdavShare/*"
-      element={<FileSharingPage />}
-    />
-    <Route
-      path="shared"
+      path={SHARED}
       element={<PublicShareLinksPage />}
+    />
+
+    <Route
+      path=":webdavShare"
+      element={<FileSharingPage />}
     />
   </Route>,
 ];

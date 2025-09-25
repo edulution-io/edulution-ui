@@ -20,25 +20,22 @@ import APPS from '@libs/appconfig/constants/apps';
 import { t } from 'i18next';
 import SHARED from '@libs/filesharing/constants/shared';
 import WEBDAV_SHARE_STATUS from '@libs/webdav/constants/webdavShareStatus';
+import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 
 const useFileSharingMenuConfig = () => {
+  const [, setSearchParams] = useSearchParams();
   const { webdavShares } = useFileSharingStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = userStore();
 
   const handlePathChange = useCallback(
-    (basePath: string) => {
-      navigate(
-        {
-          pathname: `${APPS.FILE_SHARING}/${basePath}`,
-          search: '',
-        },
-        { replace: true },
-      );
+    (shareDisplayName: string, sharePathname: string) => {
+      navigate(`${APPS.FILE_SHARING}/${shareDisplayName}`, { replace: true });
+
+      setSearchParams({ [URL_SEARCH_PARAMS.PATH]: sharePathname });
     },
-    [navigate],
+    [navigate, setSearchParams],
   );
 
   useEffect(() => {
@@ -49,19 +46,23 @@ const useFileSharingMenuConfig = () => {
         label: share.displayName,
         icon: FileSharingIcon,
         color: 'hover:bg-ciGreenToBlue',
-        action: () => (share.status === WEBDAV_SHARE_STATUS.UP ? handlePathChange(share.displayName) : {}),
+        action: () => {
+          if (share.status === WEBDAV_SHARE_STATUS.UP) {
+            handlePathChange(share.displayName, share.pathname);
+          }
+        },
         disableTranslation: true,
       }));
 
     const sharedItem: MenuItem = {
-      id: 'shared',
+      id: SHARED,
       label: t('mountpoints.shared', { defaultValue: 'Geteilte Dateien' }),
       icon: CloudIcon,
-      action: () => handlePathChange(SHARED),
+      action: () => navigate(`${APPS.FILE_SHARING}/${SHARED}`, { replace: true }),
     };
 
     setMenuItems([...menuBarItems, sharedItem]);
-  }, [user?.ldapGroups?.roles, user?.ldapGroups?.schools, searchParams, setSearchParams, t]);
+  }, [user?.ldapGroups?.roles, user?.ldapGroups?.schools, webdavShares]);
 
   return {
     title: 'filesharing.title',
