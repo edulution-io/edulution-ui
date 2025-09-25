@@ -11,7 +11,7 @@
  */
 
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import DirectoryBreadcrumb from '@/pages/FileSharing/Table/DirectoryBreadcrumb';
 import ActionContentDialog from '@/pages/FileSharing/Dialog/ActionContentDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
@@ -36,6 +36,7 @@ import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import UploadFileDialog from '@/pages/FileSharing/Dialog/UploadFileDialog';
 import useUploadProgressToast from '@/hooks/useUploadProgressToast';
 import DeletePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DeletePublicShareDialog';
+import APPS from '@libs/appconfig/constants/apps';
 
 const FileSharingPage = () => {
   const { webdavShare } = useParams();
@@ -43,6 +44,7 @@ const FileSharingPage = () => {
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const { fileOperationProgress, fetchFiles, webdavShares } = useFileSharingStore();
   const { fetchShares } = usePublicShareStore();
+  const navigate = useNavigate();
 
   useUploadProgressToast();
 
@@ -71,6 +73,24 @@ const FileSharingPage = () => {
 
   const getHiddenSegments = () => webdavShares.find((s) => s.displayName === webdavShare)?.pathname.split('/');
 
+  const handleBreadcrumbNavigate = (filenamePath: string) => {
+    if (filenamePath === '/') {
+      const currentShare = webdavShares.find((s) => s.displayName === webdavShare) ?? webdavShares[0];
+
+      navigate(
+        {
+          pathname: `/${APPS.FILE_SHARING}/${currentShare.displayName}`,
+          search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(currentShare.pathname)}`,
+        },
+        { replace: true },
+      );
+    } else {
+      const newParams = new URLSearchParams(searchParams);
+      newParams.set(URL_SEARCH_PARAMS.PATH, filenamePath);
+      setSearchParams(newParams);
+    }
+  };
+
   return (
     <PageLayout>
       <LoadingIndicatorDialog isOpen={isLoading} />
@@ -78,11 +98,7 @@ const FileSharingPage = () => {
       <div className="flex w-full flex-row justify-between space-x-2 pb-2 pt-2">
         <DirectoryBreadcrumb
           path={currentPath}
-          onNavigate={(filenamePath) => {
-            const newParams = new URLSearchParams(searchParams);
-            newParams.set(URL_SEARCH_PARAMS.PATH, filenamePath);
-            setSearchParams(newParams);
-          }}
+          onNavigate={handleBreadcrumbNavigate}
           style={{ color: 'white' }}
           hiddenSegments={getHiddenSegments()}
         />

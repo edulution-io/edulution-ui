@@ -14,6 +14,7 @@ const WEBDAV_SHARE_TABLE_COLUMNS = {
   DISPLAY_NAME: 'displayName',
   WEBDAV_SHARE_ID: 'webdavShareId',
   URL: 'url',
+  PATHNAME: 'pathname',
   ACCESSGROUPS: 'accessGroups',
   TYPE: 'type',
   STATUS: 'status',

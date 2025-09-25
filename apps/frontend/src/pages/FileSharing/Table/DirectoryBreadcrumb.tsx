@@ -76,12 +76,7 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
       <BreadcrumbList>
         {showHome && (
           <BreadcrumbItem key="home">
-            <BreadcrumbLink
-              href="#"
-              onClick={() => onNavigate('')}
-            >
-              {t('home')}
-            </BreadcrumbLink>
+            <BreadcrumbLink onClick={() => onNavigate('/')}>{t('home')}</BreadcrumbLink>
           </BreadcrumbItem>
         )}
 
