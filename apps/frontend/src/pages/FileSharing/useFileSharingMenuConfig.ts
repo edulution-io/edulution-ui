@@ -11,7 +11,7 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { CloudIcon, FileSharingIcon } from '@/assets/icons';
 import userStore from '@/store/UserStore/useUserStore';
@@ -23,7 +23,6 @@ import WEBDAV_SHARE_STATUS from '@libs/webdav/constants/webdavShareStatus';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 
 const useFileSharingMenuConfig = () => {
-  const [, setSearchParams] = useSearchParams();
   const { webdavShares } = useFileSharingStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const navigate = useNavigate();
@@ -31,14 +30,20 @@ const useFileSharingMenuConfig = () => {
 
   const handlePathChange = useCallback(
     (shareDisplayName: string, sharePathname: string) => {
-      navigate(`${APPS.FILE_SHARING}/${shareDisplayName}`, { replace: true });
-
-      setSearchParams({ [URL_SEARCH_PARAMS.PATH]: sharePathname });
+      navigate(
+        {
+          pathname: `/${APPS.FILE_SHARING}/${shareDisplayName}`,
+          search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(sharePathname)}`,
+        },
+        { replace: true },
+      );
     },
-    [navigate, setSearchParams],
+    [navigate],
   );
 
   useEffect(() => {
+    if (!webdavShares.length) return;
+
     const menuBarItems: MenuItem[] = webdavShares
       .filter((share) => !!share.webdavShareId)
       .map((share) => ({
@@ -58,11 +63,11 @@ const useFileSharingMenuConfig = () => {
       id: SHARED,
       label: t('mountpoints.shared', { defaultValue: 'Geteilte Dateien' }),
       icon: CloudIcon,
-      action: () => navigate(`${APPS.FILE_SHARING}/${SHARED}`, { replace: true }),
+      action: () => navigate(`/${APPS.FILE_SHARING}/${SHARED}`, { replace: true }),
     };
 
     setMenuItems([...menuBarItems, sharedItem]);
-  }, [user?.ldapGroups?.roles, user?.ldapGroups?.schools, webdavShares]);
+  }, [user?.ldapGroups?.roles, user?.ldapGroups?.schools, webdavShares, navigate, handlePathChange]);
 
   return {
     title: 'filesharing.title',
