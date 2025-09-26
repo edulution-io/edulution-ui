@@ -19,13 +19,17 @@ class CustomHttpException extends HttpException {
     CustomHttpException.logError(errorMessage, status, data, domain);
   }
 
-  private static logError(message: ErrorMessage, status: HttpStatus, data?: unknown, domain?: string) {
-    const domainFallback = message.slice(0, message.indexOf('.'));
-    const error = message.slice(message.lastIndexOf('.') + 1, message.length);
-    Logger.warn(
-      `HttpStatus: ${status}, Error: ${error}${data ? `, Data: ${JSON.stringify(data)}` : ''}`,
-      domain ?? domainFallback,
-    );
+  private static logError(errorMessage: ErrorMessage, status: HttpStatus, data?: unknown, domain?: string) {
+    const domainFallback = errorMessage.slice(0, errorMessage.indexOf('.'));
+    const error = errorMessage.slice(errorMessage.lastIndexOf('.') + 1, errorMessage.length);
+    const message = `HttpStatus: ${status}, Error: ${error}${data ? `, Data: ${JSON.stringify(data)}` : ''}`;
+    const context = domain ?? domainFallback;
+
+    if (status < HttpStatus.INTERNAL_SERVER_ERROR && process.env.NODE_ENV === 'production') {
+      Logger.debug(message, context);
+    } else {
+      Logger.warn(message, context);
+    }
   }
 }
 
