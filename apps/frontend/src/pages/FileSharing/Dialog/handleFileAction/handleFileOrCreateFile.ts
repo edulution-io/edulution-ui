@@ -10,7 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpMethods } from '@libs/common/types/http-methods';
+/*
+ * LICENSE
+ * ...
+ */
+
+import { HTTP_HEADERS, HttpMethods, RequestResponseContentType } from '@libs/common/types/http-methods';
 import ContentType from '@libs/filesharing/types/contentType';
 import eduApi from '@/api/eduApi';
 import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
@@ -22,19 +27,34 @@ const handleFileOrCreateFile = async (
   type: ContentType,
   originalFormData: FormData,
 ) => {
-  const rawPath = String(originalFormData.get('path') ?? '');
-  const sanitizedPath = getPathWithoutWebdav(rawPath);
-  const baseUrl = buildApiFileTypePathUrl(`${endpoint}`, type, sanitizedPath);
+  const rawPath = String(originalFormData.get('path') ?? originalFormData.get('currentPath') ?? '');
+  const sanitizedPath = getPathWithoutWebdav(rawPath).replace(/^\/+/, ''); // "/a/b" -> "a/b"
+  const encodedPath = encodeURIComponent(sanitizedPath);
 
   const file = originalFormData.get('file') as File | null;
-  const filenameFromForm =
-    (originalFormData.get('name') as string) || (originalFormData.get('filename') as string) || file?.name || '';
+  if (!file) throw new Error('No file provided for upload');
 
-  await eduApi[httpMethod](baseUrl, originalFormData, {
-    params: {
-      name: filenameFromForm,
-    },
+  const explicitName =
+    (originalFormData.get('name') as string) ||
+    (originalFormData.get('filename') as string) ||
+    file.name ||
+    'upload.bin';
+
+  const originalFolderName = (originalFormData.get('originalFolderName') as string | null) || undefined;
+
+  const baseUrl = buildApiFileTypePathUrl(`${endpoint}`, type, encodedPath);
+
+  await eduApi[httpMethod](baseUrl, file, {
     withCredentials: true,
+    params: {
+      name: explicitName,
+      isZippedFolder: false,
+      ...(originalFolderName ? { originalFolderName } : {}),
+      contentLength: file.size,
+    },
+    headers: {
+      [HTTP_HEADERS.ContentType]: file.type || RequestResponseContentType.APPLICATION_OCTET_STREAM,
+    },
   });
 };
 
