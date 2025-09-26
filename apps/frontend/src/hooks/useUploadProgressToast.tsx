@@ -10,11 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-/*
- * LICENSE
- * ...
- */
-
 import React, { useCallback, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import ProgressBox from '@/components/ui/ProgressBox';
@@ -62,7 +57,7 @@ const useUploadProgressToast = () => {
 
   useEffect(() => {
     Object.entries(progressByName).forEach(([fileName, progress]) => {
-      const {status} = progress;
+      const { status } = progress;
       const rawPercent = getPercent(progress);
 
       const isUploading = status === UploadStatus.uploading;
@@ -126,7 +121,6 @@ const useUploadProgressToast = () => {
 
       toast(
         <div className="whitespace-pre-wrap normal-case tabular-nums">
-          <ProgressBox data={toastData} />
           <ProgressBox data={toastData} />
         </div>,
         { id: toastData.id, duration: toastDuration },
