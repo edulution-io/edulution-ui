@@ -21,12 +21,14 @@ import { t } from 'i18next';
 import SHARED from '@libs/filesharing/constants/shared';
 import WEBDAV_SHARE_STATUS from '@libs/webdav/constants/webdavShareStatus';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
+import useVariableSharePathname from './hooks/useVariableSharePathname';
 
 const useFileSharingMenuConfig = () => {
   const { webdavShares } = useFileSharingStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const navigate = useNavigate();
   const { user } = userStore();
+  const { createVariableSharePathname } = useVariableSharePathname();
 
   const handlePathChange = useCallback(
     (shareDisplayName: string, sharePathname: string) => {
@@ -53,7 +55,7 @@ const useFileSharingMenuConfig = () => {
         color: 'hover:bg-ciGreenToBlue',
         action: () => {
           if (share.status === WEBDAV_SHARE_STATUS.UP) {
-            handlePathChange(share.displayName, share.pathname);
+            handlePathChange(share.displayName, createVariableSharePathname(share.pathname, share.variable));
           }
         },
         disableTranslation: true,

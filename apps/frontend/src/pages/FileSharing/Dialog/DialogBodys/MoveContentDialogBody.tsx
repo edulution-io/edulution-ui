@@ -27,6 +27,7 @@ import getFileSharingTableColumns from '@/pages/FileSharing/Table/getFileSharing
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import WebdavShareSelectDropdown from './WebdavShareSelectDropdown';
 import useFileSharingStore from '../../useFileSharingStore';
+import useVariableSharePathname from '../../hooks/useVariableSharePathname';
 
 const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   showAllFiles = false,
@@ -40,6 +41,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   const { t } = useTranslation();
   const [currentPath, setCurrentPath] = useState(pathToFetch || '');
   const { selectedWebdavShare, webdavShares } = useFileSharingStore();
+  const { createVariableSharePathname } = useVariableSharePathname();
 
   const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
 
@@ -69,7 +71,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
     if (isCurrentPathDefaultDestination) {
       setMoveOrCopyItemToPath(currentDirItem);
     }
-  }, [isCurrentPathDefaultDestination, currentPath, pathToFetch]);
+  }, [isCurrentPathDefaultDestination, currentPath, pathToFetch, selectedWebdavShare]);
 
   const files = fileType === ContentType.DIRECTORY ? dialogShownDirs : dialogShownFiles;
 
@@ -96,7 +98,18 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   };
 
   const handleBreadcrumbNavigate = (path: string) => {
-    setCurrentPath(path);
+    if (path === '/') {
+      const currentShare = webdavShares.find((s) => s.displayName === selectedWebdavShare) ?? webdavShares[0];
+
+      let currentSharePath = currentShare.pathname;
+      if (currentShare.variable) {
+        currentSharePath = createVariableSharePathname(currentSharePath, currentShare.variable);
+      }
+
+      setCurrentPath(currentSharePath);
+    } else {
+      setCurrentPath(path);
+    }
   };
 
   const getHiddenSegments = () => webdavShares.find((s) => s.displayName === webdavShare)?.pathname.split('/');

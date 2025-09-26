@@ -37,6 +37,7 @@ import UploadFileDialog from '@/pages/FileSharing/Dialog/UploadFileDialog';
 import useUploadProgressToast from '@/hooks/useUploadProgressToast';
 import DeletePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DeletePublicShareDialog';
 import APPS from '@libs/appconfig/constants/apps';
+import useVariableSharePathname from './hooks/useVariableSharePathname';
 
 const FileSharingPage = () => {
   const { webdavShare } = useParams();
@@ -45,6 +46,7 @@ const FileSharingPage = () => {
   const { fileOperationProgress, fetchFiles, webdavShares } = useFileSharingStore();
   const { fetchShares } = usePublicShareStore();
   const navigate = useNavigate();
+  const { createVariableSharePathname } = useVariableSharePathname();
 
   useUploadProgressToast();
 
@@ -77,10 +79,15 @@ const FileSharingPage = () => {
     if (filenamePath === '/') {
       const currentShare = webdavShares.find((s) => s.displayName === webdavShare) ?? webdavShares[0];
 
+      let currentSharePath = currentShare.pathname;
+      if (currentShare.variable) {
+        currentSharePath = createVariableSharePathname(currentSharePath, currentShare.variable);
+      }
+
       navigate(
         {
           pathname: `/${APPS.FILE_SHARING}/${currentShare.displayName}`,
-          search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(currentShare.pathname)}`,
+          search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(currentSharePath)}`,
         },
         { replace: true },
       );

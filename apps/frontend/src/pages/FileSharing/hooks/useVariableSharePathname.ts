@@ -10,26 +10,23 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useEffect, useState } from 'react';
-import useLmnApiStore from '@/store/useLmnApiStore';
-import getStringFromArray from '@libs/common/utils/getStringFromArray';
-import useLdapGroups from '@/hooks/useLdapGroups';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import useLdapGroups from '@/hooks/useLdapGroups';
+import useLmnApiStore from '@/store/useLmnApiStore';
+import getUserAttributValue from '@libs/lmnApi/utils/getUserAttributValue';
 
-const useUserPath = () => {
-  const { user: lmnUser } = useLmnApiStore();
+const useVariableSharePathname = () => {
   const { isSuperAdmin } = useLdapGroups();
-  const { isGeneric } = useDeploymentTarget();
+  const { isLmn } = useDeploymentTarget();
+  const lmnUser = useLmnApiStore((state) => state.user);
+  const createVariableSharePathname = (pathname: string, variable?: string) => {
+    if (!isSuperAdmin && isLmn) {
+      return `${pathname}${getUserAttributValue(lmnUser, variable)}`;
+    }
+    return pathname;
+  };
 
-  const [homePath, setHomePath] = useState<string>('');
-
-  useEffect(() => {
-    if (isSuperAdmin || isGeneric) {
-      setHomePath('/');
-    } else setHomePath(getStringFromArray(lmnUser?.sophomorixIntrinsic2));
-  }, [isSuperAdmin, isGeneric, lmnUser]);
-
-  return { homePath };
+  return { createVariableSharePathname };
 };
 
-export default useUserPath;
+export default useVariableSharePathname;

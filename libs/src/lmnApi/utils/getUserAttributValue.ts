@@ -10,15 +10,22 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const WEBDAV_SHARE_TABLE_COLUMNS = {
-  DISPLAY_NAME: 'displayName',
-  WEBDAV_SHARE_ID: 'webdavShareId',
-  URL: 'url',
-  PATHNAME: 'pathname',
-  VARIABLE: 'variable',
-  ACCESSGROUPS: 'accessGroups',
-  TYPE: 'type',
-  STATUS: 'status',
-} as const;
+import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 
-export default WEBDAV_SHARE_TABLE_COLUMNS;
+const getUserAttributValue = (user: LmnUserInfo | null, key?: string): string => {
+  if (!user || !key || !(key in user)) return '';
+
+  const value = user[key as keyof LmnUserInfo];
+
+  if (Array.isArray(value)) {
+    return value.join(',');
+  }
+
+  if (typeof value === 'object' && value !== null) {
+    return JSON.stringify(value);
+  }
+
+  return String(value ?? '');
+};
+
+export default getUserAttributValue;
