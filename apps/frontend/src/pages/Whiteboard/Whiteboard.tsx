@@ -21,6 +21,7 @@ import EDU_API_WEBSOCKET_URL from '@libs/common/constants/eduApiWebsocketUrl';
 import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/tLDrawSyncEndpoints';
 import ROOM_ID_PARAM from '@libs/tldraw-sync/constants/roomIdParam';
 import SaveTldrDialog from '@/pages/Whiteboard/SaveTldrDialog';
+import FileSelectorDialog from '@/pages/FileSharing/Dialog/FileSelectorDialog';
 
 const WS_BASE_URL = `${EDU_API_WEBSOCKET_URL}/${TLDRAW_SYNC_ENDPOINTS.BASE}`;
 
@@ -81,6 +82,7 @@ const Whiteboard = () => {
       </Suspense>
 
       <SaveTldrDialog />
+      <FileSelectorDialog />
     </PageLayout>
   );
 };

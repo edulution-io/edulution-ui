@@ -79,7 +79,10 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
       isDialogOpen: true,
       action,
     })),
-  closeDialog: () => set({ isDialogOpen: false }),
+  closeDialog: () =>
+    set({
+      isDialogOpen: false,
+    }),
   setIsLoading: (isLoading) => set({ isLoading }),
   setError: (error: AxiosError) => set({ error }),
   reset: () => set(initialState),

@@ -10,28 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { TldrawUiMenuItem } from 'tldraw';
-import { useTranslation } from 'react-i18next';
-import useOpenFileDialogStore from '@/pages/FileSharing/useOpenFileDialogStore';
+import ContentType from '@libs/filesharing/types/contentType';
+import { Row } from '@tanstack/react-table';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 
-const OpenTldrItem: React.FC = () => {
-  const { t } = useTranslation();
-  const { setOpenFileDialog, setAllowedExtensions } = useOpenFileDialogStore();
+interface MoveContentDialogBodyProps {
+  showAllFiles?: boolean;
+  pathToFetch?: string;
+  showSelectedFile?: boolean;
+  showHome?: boolean;
+  fileType?: ContentType;
+  isCurrentPathDefaultDestination?: boolean;
+  enableRowSelection?: (row: Row<DirectoryFileDTO>) => boolean;
+  getRowDisabled?: (row: Row<DirectoryFileDTO>) => boolean;
+}
 
-  const handleSelect = () => {
-    setAllowedExtensions(['.tldr']);
-    setOpenFileDialog(true);
-  };
-
-  return (
-    <TldrawUiMenuItem
-      id="openTldr"
-      label={t('whiteboard.openTlFile')}
-      readonlyOk
-      onSelect={handleSelect}
-    />
-  );
-};
-
-export default OpenTldrItem;
+export default MoveContentDialogBodyProps;
