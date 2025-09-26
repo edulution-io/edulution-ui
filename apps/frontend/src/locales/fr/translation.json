@@ -1041,6 +1041,7 @@
       "attachmentUploadFailed": "La pièce jointe n'a pas pu être téléversée",
       "dbAccessFailed": "L'accès à la base de données a échoué",
       "directoryNotCreated": "La création du répertoire a échoué",
+      "fileNotCreated": "Échec de la création du fichier",
       "fileDeletionFailed": "Echec de suppression du fichier",
       "fileWritingFailed": "Echec d'écriture du fichier",
       "fileNotFound": "Fichier introuvable",

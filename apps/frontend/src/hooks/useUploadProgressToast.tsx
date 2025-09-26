@@ -91,10 +91,23 @@ const useUploadProgressToast = () => {
 
       const description = `${speedEtaLine}\n${formatBytes(loadedBytes)} / ${formatBytes(totalBytes || 0)}`;
 
+      const toastId = `upload:${fileName}`;
+
+      if (isError) {
+        toast.dismiss(toastId);
+        const errorToastId = `upload:${fileName}:error`;
+        toast.error(t('filesharing.errors.UploadFailed', { filename: fileName }), {
+          id: errorToastId,
+          description: `${description}`,
+          duration: ERROR_TOAST_DURATION_MS,
+        });
+        return;
+      }
+
       const toastData = {
         percent: percentage,
         title: t('filesharing.progressBox.fileIsUploading', { filename: fileName }),
-        id: `upload:${fileName}`,
+        id: toastId,
         description,
         failed: 0,
         processed: loadedBytes,
@@ -102,9 +115,7 @@ const useUploadProgressToast = () => {
       };
 
       let toastDuration: number;
-      if (isError) {
-        toastDuration = ERROR_TOAST_DURATION_MS;
-      } else if (isDone) {
+      if (isDone) {
         toastDuration = DONE_TOAST_DURATION_MS;
       } else {
         toastDuration = LIVE_TOAST_DURATION_MS;
