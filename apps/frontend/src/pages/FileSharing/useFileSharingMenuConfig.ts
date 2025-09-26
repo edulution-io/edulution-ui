@@ -21,6 +21,7 @@ import { t } from 'i18next';
 import SHARED from '@libs/filesharing/constants/shared';
 import WEBDAV_SHARE_STATUS from '@libs/webdav/constants/webdavShareStatus';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
+import { toast } from 'sonner';
 
 const useFileSharingMenuConfig = () => {
   const { webdavShares } = useFileSharingStore();
@@ -44,20 +45,23 @@ const useFileSharingMenuConfig = () => {
   useEffect(() => {
     if (!webdavShares.length) return;
 
-    const menuBarItems: MenuItem[] = webdavShares
-      .filter((share) => !!share.webdavShareId)
-      .map((share) => ({
-        id: share.webdavShareId!,
-        label: share.displayName,
-        icon: FileSharingIcon,
-        color: 'hover:bg-ciGreenToBlue',
-        action: () => {
-          if (share.status === WEBDAV_SHARE_STATUS.UP) {
-            handlePathChange(share.displayName, share.pathname);
-          }
-        },
-        disableTranslation: true,
-      }));
+    const menuBarItems: MenuItem[] = webdavShares.map((share) => ({
+      id: share.displayName,
+      label: share.displayName,
+      icon: FileSharingIcon,
+      color: 'hover:bg-ciGreenToBlue',
+      action: () => {
+        if (share.status === WEBDAV_SHARE_STATUS.UP) {
+          handlePathChange(share.displayName, share.pathname);
+        } else {
+          toast.info(t('webdavShare.offline'), {
+            position: 'top-right',
+            duration: 1000,
+          });
+        }
+      },
+      disableTranslation: true,
+    }));
 
     const sharedItem: MenuItem = {
       id: SHARED,

@@ -75,7 +75,10 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
       {showTitle && <p className="mr-2 text-background">{t('currentDirectory')}</p>}
       <BreadcrumbList>
         {showHome && (
-          <BreadcrumbItem key="home">
+          <BreadcrumbItem
+            key="home"
+            className="cursor-pointer"
+          >
             <BreadcrumbLink onClick={() => onNavigate('/')}>{t('home')}</BreadcrumbLink>
           </BreadcrumbItem>
         )}
