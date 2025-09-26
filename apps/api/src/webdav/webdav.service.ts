@@ -36,6 +36,7 @@ import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import got from 'got';
 import { Agent as HttpsAgent } from 'https';
 import { Agent as HttpAgent } from 'http';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import CustomHttpException from '../common/CustomHttpException';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
@@ -250,29 +251,32 @@ class WebdavService {
       headers[HTTP_HEADERS.ContentLength] = String(totalSize);
     }
 
-    const request = got.put(url, {
-      agent: {
-        http: new HttpAgent({ keepAlive: true }),
-        https: new HttpsAgent({ keepAlive: true, rejectUnauthorized: false }),
-      },
-      body: fileStream,
-      headers,
-      username,
-      password,
-      http2: false,
-      retry: { limit: 0 },
-      throwHttpErrors: false,
-      decompress: false,
-    });
+    try {
+      const request = got.put(url, {
+        agent: {
+          http: new HttpAgent({ keepAlive: true }),
+          https: new HttpsAgent({ keepAlive: true, rejectUnauthorized: false }),
+        },
+        body: fileStream,
+        headers,
+        username,
+        password,
+        http2: false,
+        retry: { limit: 0 },
+        throwHttpErrors: true,
+        decompress: false,
+      });
+      fileStream.on('aborted', () => request.cancel());
+      fileStream.on('error', () => request.cancel());
 
-    fileStream.on('aborted', () => request.cancel());
-    fileStream.on('error', () => request.cancel());
+      void request.on('uploadProgress', (p) => onProgress?.(p.transferred, p.total));
 
-    void request.on('uploadProgress', (p) => onProgress?.(p.transferred, p.total));
-
-    const response = await request;
-    const ok = response.statusCode >= 200 && response.statusCode < 300;
-    return { success: ok, status: response.statusCode, filename: fullPath.split('/').pop() || '' };
+      const response = await request;
+      const ok = response.statusCode >= 200 && response.statusCode < 300;
+      return { success: ok, status: response.statusCode, filename: fullPath.split('/').pop() || '' };
+    } catch (error) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_CREATION_FAILED, HttpStatus.FORBIDDEN);
+    }
   }
 
   async uploadFile(
