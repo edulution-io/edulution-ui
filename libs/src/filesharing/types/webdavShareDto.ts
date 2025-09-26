@@ -28,6 +28,9 @@ class WebdavShareDto {
   @IsString()
   pathname: string;
 
+  @IsString()
+  variable: string;
+
   @IsArray()
   accessGroups: MultipleSelectorGroup[] = [];
 

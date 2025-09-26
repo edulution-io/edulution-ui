@@ -17,7 +17,15 @@ import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import { Form, FormControl, FormDescription, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormFieldSH,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/Form';
 import { Button } from '@/components/shared/Button';
 import FormField from '@/components/shared/FormField';
 import { type ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
@@ -30,6 +38,10 @@ import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { RowSelectionState } from '@tanstack/react-table';
 import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import { DropdownSelect } from '@/components';
+import useLmnApiStore from '@/store/useLmnApiStore';
+import { DropdownOptions } from '@/components/ui/DropdownSelect/DropdownSelect';
+import Input from '@/components/shared/Input';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useWebdavShareConfigTableStore from './useWebdavShareConfigTableStore';
 
 interface AddWebdavShareDialogProps {
@@ -42,6 +54,8 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
   const { selectedRows, tableContentData, setSelectedRows, updateWebdavShare, createWebdavShare, deleteTableEntry } =
     useWebdavShareConfigTableStore();
+  const lmnUser = useLmnApiStore((s) => s.user);
+  const { isLmn } = useDeploymentTarget();
   const isOpen = isDialogOpen === tableId;
   const keys = Object.keys(selectedRows as RowSelectionState);
   const isOneRowSelected = keys.length === 1;
@@ -51,6 +65,7 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
     [WEBDAV_SHARE_TABLE_COLUMNS.DISPLAY_NAME]: '',
     [WEBDAV_SHARE_TABLE_COLUMNS.URL]: '',
     [WEBDAV_SHARE_TABLE_COLUMNS.PATHNAME]: '',
+    [WEBDAV_SHARE_TABLE_COLUMNS.VARIABLE]: '',
     [WEBDAV_SHARE_TABLE_COLUMNS.ACCESSGROUPS]: [],
     [WEBDAV_SHARE_TABLE_COLUMNS.TYPE]: WEBDAV_SHARE_TYPE.LINUXMUSTER,
   };
@@ -159,6 +174,31 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
     </form>
   );
 
+  const getPathVariableList = (): (DropdownOptions & { value: string })[] => {
+    if (isLmn && lmnUser) {
+      return Object.entries(lmnUser).map(([key, value]) => ({
+        id: key,
+        name: key,
+        value: String(value),
+      }));
+    }
+    return [];
+  };
+
+  const findVarValue = (variable: string) => {
+    if (isLmn && lmnUser) return getPathVariableList().find((item) => item.id === variable)?.value ?? '';
+    return '';
+  };
+
+  const getInputValue = (): string => {
+    try {
+      const baseUrl = new URL(form.watch(WEBDAV_SHARE_TABLE_COLUMNS.URL)).pathname;
+      const variableValue = findVarValue(form.watch(WEBDAV_SHARE_TABLE_COLUMNS.VARIABLE));
+      return `${baseUrl}${variableValue}`;
+    } catch {
+      return '';
+    }
+  };
   const renderFormFields = () => (
     <>
       <FormField
@@ -175,14 +215,38 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
         labelTranslationId={t(`form.${WEBDAV_SHARE_TABLE_COLUMNS.URL}`)}
         variant="dialog"
       />
-      <FormField
-        name={WEBDAV_SHARE_TABLE_COLUMNS.PATHNAME}
-        defaultValue={initialFormValues[WEBDAV_SHARE_TABLE_COLUMNS.PATHNAME]}
-        form={form}
-        labelTranslationId={t(`form.${WEBDAV_SHARE_TABLE_COLUMNS.PATHNAME}`)}
-        variant="dialog"
-        disabled
-      />
+      {isLmn && (
+        <FormFieldSH
+          control={form.control}
+          name={WEBDAV_SHARE_TABLE_COLUMNS.VARIABLE}
+          defaultValue={initialFormValues[WEBDAV_SHARE_TABLE_COLUMNS.VARIABLE]}
+          render={({ field }) => (
+            <FormItem>
+              <p className="font-bold">{t('webdavShare.variable.title')}</p>
+              <FormControl>
+                <DropdownSelect
+                  options={getPathVariableList()}
+                  selectedVal={field.value}
+                  handleChange={field.onChange}
+                  variant="dialog"
+                />
+              </FormControl>
+              <FormDescription>{t('webdavShare.variable.description')}</FormDescription>
+              <FormMessage className="text-p" />
+            </FormItem>
+          )}
+        />
+      )}
+      <>
+        <FormLabel>
+          <p className="mt-4 font-bold text-background">{t(`form.${WEBDAV_SHARE_TABLE_COLUMNS.PATHNAME}`)}</p>
+        </FormLabel>
+        <Input
+          value={getInputValue()}
+          variant="dialog"
+          disabled
+        />
+      </>
       <FormFieldSH
         control={control}
         name={WEBDAV_SHARE_TABLE_COLUMNS.ACCESSGROUPS}

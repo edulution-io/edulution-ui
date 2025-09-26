@@ -120,6 +120,7 @@ class WebdavSharesService implements OnModuleInit {
             displayName: 1,
             url: 1,
             pathname: 1,
+            variable: 1,
             accessGroups: 1,
             type: 1,
             status: 1,

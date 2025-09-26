@@ -24,6 +24,7 @@ import PageTitle from '@/components/PageTitle';
 import { useTranslation } from 'react-i18next';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableSharePathname';
 
 const MenuBar: React.FC = () => {
   const { t } = useTranslation();
@@ -33,6 +34,7 @@ const MenuBar: React.FC = () => {
   const menuBarEntries = useMenuBarConfig();
   const { setCurrentPath, setPathToRestoreSession } = useFileSharingStore();
   const webdavShares = useFileSharingStore((state) => state.webdavShares);
+  const { createVariableSharePathname } = useVariableSharePathname();
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
   const { isMobileView } = useMedia();
@@ -60,13 +62,18 @@ const MenuBar: React.FC = () => {
       case APPS.FILE_SHARING: {
         const currentShare = webdavShares.find((s) => s.displayName === pathParts[1]) ?? webdavShares[0];
 
-        setCurrentPath(currentShare.pathname);
-        setPathToRestoreSession(currentShare.pathname);
+        let currentSharePath = currentShare.pathname;
+        if (currentShare.variable) {
+          currentSharePath = createVariableSharePathname(currentSharePath, currentShare.variable);
+        }
+
+        setCurrentPath(currentSharePath);
+        setPathToRestoreSession(currentSharePath);
 
         navigate(
           {
             pathname: `/${APPS.FILE_SHARING}/${currentShare.displayName}`,
-            search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(currentShare.pathname)}`,
+            search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(currentSharePath)}`,
           },
           { replace: true },
         );
