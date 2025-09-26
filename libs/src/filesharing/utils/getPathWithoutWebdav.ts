@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const getPathWithoutWebdav = (path: string): string => path.replace('/webdav/', '');
+const getPathWithoutWebdav = (path: string, sharePath?: string): string => path.replace(sharePath || '/webdav/', '');
 
 export default getPathWithoutWebdav;

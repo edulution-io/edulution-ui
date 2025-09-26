@@ -983,9 +983,9 @@
           "invalidUrlFormat": "Invalid URL"
         },
         "webdavShare": {
-          "title": "WebDAV-Share",
-          "description": "Here you can set up your own WebDAV shares.",
-          "filterPlaceHolderText": "Search for share"
+          "title": "WebDAV-Server",
+          "description": "WebDAV servers can be set up for the file manager here.",
+          "filterPlaceHolderText": "Search for WebDAV servers"
         },
         "files": {
           "title": "Files",
@@ -1028,7 +1028,8 @@
       "fieldRequired": "This field is required",
       "maxChars": "Maximum {{count}} characters",
       "nameAlreadyExists": "App with this name already exists",
-      "nameIsNotAllowed": "This app name is not allowed"
+      "nameIsNotAllowed": "This app name is not allowed",
+      "webdavShareNameAlreadyExists": "WebDAV-Share with this name already exists"
     },
     "yamleditor": {
       "invalidYaml": "Wrong YAML syntax",
@@ -1345,6 +1346,7 @@
     "embeddedPageEditor": "Editor",
     "embeddedPageEditorModeDescription": "Here you can choose between sandbox and native rendering. Sandbox is the safest variant, native the original rendering. Please note that no security precautions can be taken with native rendering. In sandbox mode, the HTML file is read from memory. To do this, upload the file.",
     "sandboxed": "Sandbox",
+    "pathname": "Share-Path",
     "input": {
       "dateTimePicker": {
         "timeSlot": "o'clock",
@@ -1716,6 +1718,8 @@
       "linuxmuster": "Linuxmuster",
       "edu-file-proxy": "edulution File Proxy",
       "generic": "Generic"
-    }
+    },
+    "status": "Status",
+    "offline": "Server is currently unavailable"
   }
 }

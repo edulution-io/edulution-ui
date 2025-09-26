@@ -13,7 +13,6 @@
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import { Request, Response } from 'express';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
@@ -77,7 +76,6 @@ class OnlyofficeService implements OnModuleInit {
     uploadFile: (username: string, path: string, file: CustomFile, name: string) => Promise<WebdavStatusResponse>,
   ) {
     const callbackData = req.body as OnlyOfficeCallbackData;
-    const cleanedPath = getPathWithoutWebdav(path);
     const uniqueFileName = `${uuidv4()}-${filename}`;
 
     if (callbackData.status !== 2 && callbackData.status !== 4) {
@@ -90,7 +88,7 @@ class OnlyofficeService implements OnModuleInit {
       return res.status(HttpStatus.NOT_FOUND).json({ error: 1 });
     }
 
-    await uploadFile(username, cleanedPath, file, '');
+    await uploadFile(username, path, file, '');
     await FilesystemService.deleteFile(PUBLIC_DOWNLOADS_PATH, uniqueFileName);
 
     return res.status(HttpStatus.OK).json({ error: 0 });

@@ -18,6 +18,7 @@ import { PublicShareLinkScopeType } from '@libs/filesharing/types/publicShareLin
 interface PublicShareDto {
   publicShareId: string;
   expires: Date;
+  share: string;
   filename: string;
   filePath: string;
   createdAt: Date;

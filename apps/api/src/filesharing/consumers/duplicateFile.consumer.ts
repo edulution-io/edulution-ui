@@ -34,17 +34,17 @@ class DuplicateFileConsumer extends WorkerHost {
   }
 
   async process(job: Job<FileOperationQueueJobData>): Promise<void> {
-    const { username, originFilePath, destinationFilePath, total, processed } = job.data as FileJobData;
+    const { username, originFilePath, destinationFilePath, total, processed, share } = job.data as FileJobData;
     const failedPaths: string[] = [];
 
     const pathUpToTransferFolder = this.webDavService.getPathUntilFolder(destinationFilePath, FILE_PATHS.TRANSFER);
     const pathUpToTeacherFolder = this.webDavService.getPathUntilFolder(destinationFilePath, username);
 
-    await this.webDavService.ensureFolderExists(username, pathUpToTransferFolder, username);
-    await this.webDavService.ensureFolderExists(username, pathUpToTeacherFolder, FILE_PATHS.COLLECT);
+    await this.webDavService.ensureFolderExists(username, pathUpToTransferFolder, username, share);
+    await this.webDavService.ensureFolderExists(username, pathUpToTeacherFolder, FILE_PATHS.COLLECT, share);
 
     try {
-      await this.webDavService.copyFileViaWebDAV(username, originFilePath, destinationFilePath);
+      await this.webDavService.copyFileViaWebDAV(username, originFilePath, destinationFilePath, share);
     } catch {
       failedPaths.push(destinationFilePath);
     }

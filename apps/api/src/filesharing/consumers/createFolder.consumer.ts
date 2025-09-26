@@ -30,8 +30,8 @@ class CreateFolderConsumer extends WorkerHost {
   }
 
   async process(job: Job<FileOperationQueueJobData>): Promise<void> {
-    const { username, basePath, folderPath, total, processed } = job.data as CreateFolderJobData;
-    await this.webDavService.ensureFolderExists(username, basePath, folderPath);
+    const { username, basePath, folderPath, total, processed, share } = job.data as CreateFolderJobData;
+    await this.webDavService.ensureFolderExists(username, basePath, folderPath, share);
 
     const percent = Math.round((processed / total) * 100);
 

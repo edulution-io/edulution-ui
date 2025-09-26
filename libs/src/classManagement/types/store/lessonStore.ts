@@ -31,11 +31,12 @@ interface LessonState {
 
 interface LessonActions {
   reset: () => void;
-  shareFiles: (duplicateFileRequestDto: DuplicateFileRequestDto) => Promise<void>;
+  shareFiles: (duplicateFileRequestDto: DuplicateFileRequestDto, share: string | undefined) => Promise<void>;
   collectFiles: (
     collectFileRequestDTO: CollectFileRequestDTO[],
     userRole: string,
     type: LmnApiCollectOperationsType,
+    share: string | undefined,
   ) => Promise<void>;
   addManagementGroup: (group: string, users: string[]) => Promise<void>;
   removeManagementGroup: (group: string, users: string[]) => Promise<void>;

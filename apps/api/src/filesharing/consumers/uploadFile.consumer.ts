@@ -31,9 +31,9 @@ class UploadFileConsumer extends WorkerHost {
   }
 
   async process(job: Job<FileOperationQueueJobData>): Promise<void> {
-    const { username, fullPath, tempPath, mimeType, processed, total } = job.data as UploadFileJobData;
+    const { username, fullPath, tempPath, mimeType, processed, total, share } = job.data as UploadFileJobData;
     const fileStream = createReadStream(tempPath);
-    await this.webDavService.uploadFile(username, fullPath, fileStream, mimeType);
+    await this.webDavService.uploadFile(username, fullPath, fileStream, mimeType, share);
     await unlink(tempPath);
     const percent = Math.round((processed / total) * 100);
     this.sseService.sendEventToUser(

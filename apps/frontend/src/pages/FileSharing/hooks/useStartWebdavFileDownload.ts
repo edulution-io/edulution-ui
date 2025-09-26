@@ -10,6 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { useParams } from 'react-router-dom';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
@@ -17,6 +18,7 @@ import triggerBrowserDownload from '@libs/common/utils/triggerBrowserDownload';
 import ContentType from '@libs/filesharing/types/contentType';
 
 const useStartWebdavFileDownload = () => {
+  const { webdavShare } = useParams();
   const { downloadFile } = useFileSharingDownloadStore();
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
 
@@ -27,7 +29,7 @@ const useStartWebdavFileDownload = () => {
       files.map(async (file) => {
         await setFileIsCurrentlyDisabled(file.filename, true);
         try {
-          const blobUrl = await downloadFile(file);
+          const blobUrl = await downloadFile(file, webdavShare);
           if (blobUrl) {
             const name = file.type === ContentType.DIRECTORY ? `${file.filename}.zip` : file.filename;
             triggerBrowserDownload(blobUrl, name);

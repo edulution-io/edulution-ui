@@ -20,6 +20,7 @@ interface CollectFileJobData {
   operationType: LmnApiCollectOperationsType;
   total: number;
   processed: number;
+  share: string;
 }
 
 export default CollectFileJobData;

@@ -18,6 +18,7 @@ interface UploadFileJobData {
   base64?: string;
   total: number;
   processed: number;
+  share: string;
 }
 
 export default UploadFileJobData;

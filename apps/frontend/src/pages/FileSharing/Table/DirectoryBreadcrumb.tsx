@@ -22,7 +22,6 @@ import { useTranslation } from 'react-i18next';
 import { HiChevronDown } from 'react-icons/hi';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import useMedia from '@/hooks/useMedia';
-import useUserPath from '../hooks/useUserPath';
 
 interface DirectoryBreadcrumbProps {
   path: string;
@@ -44,7 +43,6 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
   const { isMobileView } = useMedia();
   const displaySegments = isMobileView ? 1 : 4;
   const { t } = useTranslation();
-  const { homePath } = useUserPath();
 
   const segments = path
     .split('/')
@@ -59,7 +57,10 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
 
   const clearSegments = segments.filter((segment) => hiddenSegments?.includes(segment) !== true);
 
-  const getSegmentKey = (index: number) => segments.slice(0, index + 1).join('/');
+  const getSegmentKey = (index: number) => {
+    const key = segments.slice(0, index + 1).join('/');
+    return key.startsWith('/') ? key : `/${key}`;
+  };
 
   const handleSegmentClick = (index: number) => {
     const newPath = getSegmentKey(index);
@@ -67,7 +68,6 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
       onNavigate(newPath);
     }
   };
-
   const shouldShowDropdown = clearSegments.length > displaySegments;
 
   return (
@@ -75,13 +75,11 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
       {showTitle && <p className="mr-2 text-background">{t('currentDirectory')}</p>}
       <BreadcrumbList>
         {showHome && (
-          <BreadcrumbItem key="home">
-            <BreadcrumbLink
-              href="#"
-              onClick={() => onNavigate(homePath)}
-            >
-              {t('home')}
-            </BreadcrumbLink>
+          <BreadcrumbItem
+            key="home"
+            className="cursor-pointer"
+          >
+            <BreadcrumbLink onClick={() => onNavigate('/')}>{t('home')}</BreadcrumbLink>
           </BreadcrumbItem>
         )}
 

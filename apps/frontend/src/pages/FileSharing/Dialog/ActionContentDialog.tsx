@@ -11,6 +11,7 @@
  */
 
 import React from 'react';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useForm } from 'react-hook-form';
@@ -50,10 +51,12 @@ interface BatchUploadOptions {
     httpMethod: HttpMethods,
     type: ContentType,
     formData: FormData,
+    webdavShare: string | undefined,
   ) => Promise<void>;
 }
 
 const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) => {
+  const { webdavShare } = useParams();
   const { t } = useTranslation();
   const {
     isDialogOpen,
@@ -136,7 +139,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
           formData.append('file', uploadItem.file);
           formData.append('path', uploadItem.path);
 
-          return handleFileUploadAction(actionType, endpointUrl, method, requestContentType, formData);
+          return handleFileUploadAction(actionType, endpointUrl, method, requestContentType, formData, webdavShare);
         });
 
       await Promise.all(uploadPromises);
@@ -169,7 +172,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
       });
     } else {
       setSubmitButtonIsDisabled(false);
-      await handleItemAction(action, endpoint, httpMethod, type, uploadPayload as PathChangeOrCreateProps);
+      await handleItemAction(action, endpoint, httpMethod, type, uploadPayload as PathChangeOrCreateProps, webdavShare);
     }
 
     clearAllSelectedItems();

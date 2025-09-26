@@ -10,11 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
+const WEBDAV_SHARE_STATUS = {
+  UP: 'up',
+  DOWN: 'down',
+} as const;
 
-type CreateWorkingDirectoryDto = {
-  teacher: string;
-  schoolClass: LmnApiSchoolClass;
-};
-
-export default CreateWorkingDirectoryDto;
+export default WEBDAV_SHARE_STATUS;
