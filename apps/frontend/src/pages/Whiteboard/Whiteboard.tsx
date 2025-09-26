@@ -20,6 +20,7 @@ import useTLDRawHistoryStore from '@/pages/Whiteboard/TLDrawWithSync/useTLDRawHi
 import EDU_API_WEBSOCKET_URL from '@libs/common/constants/eduApiWebsocketUrl';
 import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/tLDrawSyncEndpoints';
 import ROOM_ID_PARAM from '@libs/tldraw-sync/constants/roomIdParam';
+import SaveTldrDialog from '@/pages/Whiteboard/SaveTldrDialog';
 
 const WS_BASE_URL = `${EDU_API_WEBSOCKET_URL}/${TLDRAW_SYNC_ENDPOINTS.BASE}`;
 
@@ -31,17 +32,16 @@ const Whiteboard = () => {
   const isEduApiHealthy = useEduApiStore((s) => s.isEduApiHealthy);
 
   const liveToken = useUserStore((s) => s.eduApiToken);
+
   const selectedRoomId = useTLDRawHistoryStore((s) => s.selectedRoomId);
   const setSelectedRoomId = useTLDRawHistoryStore((s) => s.setSelectedRoomId);
-  const [searchParams, setSearchParams] = useSearchParams();
 
+  const [searchParams, setSearchParams] = useSearchParams();
   const [fixedToken, setFixedToken] = useState<string | null>(liveToken ?? null);
 
   useEffect(() => {
     const fromUrl = searchParams.get(ROOM_ID_PARAM) ?? '';
-    if (fromUrl && fromUrl !== selectedRoomId) {
-      setSelectedRoomId(fromUrl);
-    }
+    if (fromUrl && fromUrl !== selectedRoomId) setSelectedRoomId(fromUrl);
     void getIsEduApiHealthy();
   }, []);
 
@@ -53,10 +53,8 @@ const Whiteboard = () => {
     const currentParams = new URLSearchParams(window.location.search);
     const current = currentParams.get(ROOM_ID_PARAM) ?? '';
     if ((selectedRoomId ?? '') === current) return;
-
     if (selectedRoomId) currentParams.set(ROOM_ID_PARAM, selectedRoomId);
     else currentParams.delete(ROOM_ID_PARAM);
-
     setSearchParams(currentParams, { replace: current !== '' });
   }, [selectedRoomId, setSearchParams]);
 
@@ -81,6 +79,8 @@ const Whiteboard = () => {
       <Suspense fallback={loader}>
         <div className="z-0 h-full w-full">{getPageContent()}</div>
       </Suspense>
+
+      <SaveTldrDialog />
     </PageLayout>
   );
 };

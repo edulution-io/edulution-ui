@@ -10,10 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ParticipantDto from '@libs/survey/types/api/participant.dto';
+import { StoreSnapshot, TLPageId, TLRecord } from 'tldraw';
 
-interface PostSurveyAnswerDto extends ParticipantDto {
-  answer: JSON;
-}
+const firstPageIdFrom = (snapshot: StoreSnapshot<TLRecord>): TLPageId | null => {
+  const pages = Object.values(snapshot.store).filter(
+    (record): record is TLRecord & { typeName: 'page' } => record.typeName === 'page',
+  );
+  return pages[0]?.id ?? null;
+};
 
-export default PostSurveyAnswerDto;
+export default firstPageIdFrom;

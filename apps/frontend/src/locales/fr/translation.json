@@ -307,7 +307,7 @@
     "students-home": "Dossiers élèves"
   },
   "filesharing": {
-    "filterPlaceHolderText": "Rechercher un fichier",
+    "filterPlaceHolderText": "Tapez pour filtrer",
     "title": "Partage de fichiers",
     "selectFile": "Sélectionner le fichier",
     "sidebar": "Partage de fichiers",
@@ -1155,8 +1155,20 @@
     "preview": "prévisualisation",
     "format": "Format",
     "upload": "Téléverser",
-    "mode": "mode"
+    "mode": "mode",
+    "file": "Fichier"
   },
+
+  "saveExternalFileDialogBody": {
+    "saveExternalFile": "Enregistrer un fichier externe",
+    "destinationFolder": "Dossier de destination",
+    "filename": "Nom du fichier",
+    "filenamePlaceholder": "Saisissez le nom du fichier ici",
+    "filenameRequired": "Le nom du fichier ne peut pas être vide",
+    "fileSavedSuccessful": "Fichier enregistré avec succès",
+    "fileSaveFailed": "Le fichier n'a pas pu être enregistré"
+  },
+
   "form": {
     "path": "Lien",
     "pathDescription": "Veuillez saisir une URL.",
@@ -1223,7 +1235,9 @@
   },
   "whiteboard": {
     "title": "Whiteboard",
-    "sidebar": "Whiteboard"
+    "sidebar": "Whiteboard",
+    "saveAsTlFile": "Enregistrer le tableau blanc au format .tldr",
+    "openTlFile": "Ouvrir un fichier .tldr"
   },
   "whiteboard-collaboration": {
     "title": "Whiteboard",

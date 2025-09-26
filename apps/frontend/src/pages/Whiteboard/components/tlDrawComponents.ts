@@ -10,10 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ParticipantDto from '@libs/survey/types/api/participant.dto';
+import { TLComponents } from 'tldraw';
+import CustomMainTLDrawMenu from './CustomMainTLDrawMenu';
 
-interface PostSurveyAnswerDto extends ParticipantDto {
-  answer: JSON;
-}
+const tlDrawComponents: TLComponents = {
+  MainMenu: CustomMainTLDrawMenu,
+};
 
-export default PostSurveyAnswerDto;
+export default tlDrawComponents;

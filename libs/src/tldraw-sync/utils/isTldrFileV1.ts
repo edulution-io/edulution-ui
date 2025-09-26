@@ -10,10 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ParticipantDto from '@libs/survey/types/api/participant.dto';
+import { TldrFileV1 } from '@libs/tldraw-sync/types/tldrFileV1';
 
-interface PostSurveyAnswerDto extends ParticipantDto {
-  answer: JSON;
-}
+const isTldrFileV1 = (value: unknown): value is TldrFileV1 => {
+  if (typeof value !== 'object' || value === null) return false;
+  const v = value as Record<string, unknown>;
+  const schema = v['schema'] as TldrFileV1['schema'] | undefined;
+  return (
+    v['tldrawFileFormatVersion'] === 1 &&
+    typeof schema === 'object' &&
+    schema?.schemaVersion === 2 &&
+    Array.isArray(v?.['records'])
+  );
+};
 
-export default PostSurveyAnswerDto;
+export default isTldrFileV1;

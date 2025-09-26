@@ -10,10 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ParticipantDto from '@libs/survey/types/api/participant.dto';
+import { z } from 'zod';
+import { t } from 'i18next';
 
-interface PostSurveyAnswerDto extends ParticipantDto {
-  answer: JSON;
-}
+const saveExternalFileFormSchema = z.object({
+  filename: z
+    .string()
+    .trim()
+    .min(1, t('filesharing.tooltips.NameRequired'))
+    .max(30, t('filesharing.tooltips.NameExceedsCharacterLimit'))
+    .refine((v) => !v.endsWith('.'), {
+      message: t('filesharing.tooltips.NameMustNotEndWithDot'),
+    }),
+});
 
-export default PostSurveyAnswerDto;
+export type SaveExternalFileFormValues = z.infer<typeof saveExternalFileFormSchema>;
+
+export default saveExternalFileFormSchema;

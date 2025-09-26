@@ -314,7 +314,7 @@
     "students-home": "Schüler-Home"
   },
   "filesharing": {
-    "filterPlaceHolderText": "Suche nach Dateiname",
+    "filterPlaceHolderText": "Tippen, um zu filtern",
     "title": "DATEIEN",
     "selectFile": "Datei auswählen",
     "sidebar": "Dateien",
@@ -647,6 +647,7 @@
       "new": "Neu (Leer)",
       "fileUploadSuccess": "Die Datei wurde erfolgreich hochgeladen.",
       "fileUploadError": "Die Datei konnte nicht hochgeladen werden, bitte versuche es später erneut.",
+      "fileDeletionSuccess": "Die Datei wurde erfolgreich gelöscht.",
       "saveSurveySuccess": "Die Umfrage wurde gespeichert.",
       "reset": "Verwerfen",
       "addDescription": "Beschreibung hinzufügen",
@@ -694,6 +695,7 @@
       "idText": "Bitte notiere dir:",
       "idParagraph": "Um deine Antwort einzusehen oder, falls konfiguriert, nochmals zu bearbeiten, kannst du die Teilnahme-ID hier benutzen.",
       "usernameRequired": "Der Benutzername ist erforderlich",
+      "fileSizeExceeded": "Eine Datei überschreitet die maximal erlaubte Größe von {{size}} MB.",
       "completeMessage": "Vielen Dank, dass du an der Umfrage Teilgenommen hast"
     },
     "errors": {
@@ -1208,6 +1210,7 @@
       "fileNotProvided": "Datei wurde nicht bereitgestellt",
       "invalidFileType": "Ungültiger Dateityp",
       "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",
+      "invalidRequestData": "Ungültige Anfragedaten",
       "wrongServerConfig": "Fehlerhafte Serverkonfiguration"
     },
     "cut": "Ausschneiden",
@@ -1319,7 +1322,8 @@
     "upload": "Hochladen",
     "mode": "Modus",
     "orContinueWithoutAccount": "Oder fahre ohne Account fort",
-    "reset": "Zurücksetzen"
+    "reset": "Zurücksetzen",
+    "file": "Datei"
   },
   "form": {
     "path": "Link",
@@ -1401,7 +1405,9 @@
   },
   "whiteboard": {
     "title": "WHITEBOARD",
-    "sidebar": "Whiteboard"
+    "sidebar": "Whiteboard",
+    "saveAsTlFile": "Whiteboard als .tldr Datei speichern",
+    "openTlFile": ".tldr Datei öffnen"
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
@@ -1468,6 +1474,16 @@
   "copyItemDialog": {
     "copyFilesOrDirectoriesToDirectory": "Dateien oder Verzeichnisse in ein Verzeichnis kopieren",
     "copy": "Kopieren"
+  },
+
+  "saveExternalFileDialogBody": {
+    "saveExternalFile": "Externe Datei speichern",
+    "destinationFolder": "Zielordner",
+    "filename": "Dateiname",
+    "filenamePlaceholder": "Dateiname hier eingeben",
+    "filenameRequired": "Dateiname darf nicht leer sein",
+    "fileSavedSuccessful": "Datei erfolgreich gespeichert",
+    "fileSaveFailed": "Datei konnte nicht gespeichert werden"
   },
 
   "moveItemDialog": {

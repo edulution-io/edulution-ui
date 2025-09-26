@@ -10,10 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ParticipantDto from '@libs/survey/types/api/participant.dto';
+import { SerializedSchema, StoreSnapshot, TLRecord } from 'tldraw';
+import { TldrFileV1 } from '@libs/tldraw-sync/types/tldrFileV1';
 
-interface PostSurveyAnswerDto extends ParticipantDto {
-  answer: JSON;
-}
+const toStoreSnapshot = (file: TldrFileV1): StoreSnapshot<TLRecord> => {
+  const store = file.records.reduce<Record<string, TLRecord>>((acc, record) => {
+    acc[record.id] = record;
+    return acc;
+  }, {});
+  const schema: SerializedSchema = { schemaVersion: 2, sequences: file.schema.sequences };
+  return { schema, store };
+};
 
-export default PostSurveyAnswerDto;
+export default toStoreSnapshot;
