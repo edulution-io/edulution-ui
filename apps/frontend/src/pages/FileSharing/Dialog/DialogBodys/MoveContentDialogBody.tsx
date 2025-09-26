@@ -58,6 +58,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   }, [selectedWebdavShare]);
 
   useEffect(() => {
+    if (!selectedWebdavShare && !webdavShare) return;
     void fetchDialogDirs(selectedWebdavShare || webdavShare, currentPath);
     if (showAllFiles) {
       void fetchDialogFiles(selectedWebdavShare || webdavShare, currentPath);
