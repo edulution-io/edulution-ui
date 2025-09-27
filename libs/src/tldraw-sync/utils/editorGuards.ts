@@ -10,10 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ParticipantDto from '@libs/survey/types/api/participant.dto';
+import { Editor, TLPageId } from 'tldraw';
 
-interface PostSurveyAnswerDto extends ParticipantDto {
-  answer: JSON;
-}
+export const hasSetCurrentPageId = (editor: Editor): editor is Editor & { setCurrentPageId: (id: TLPageId) => void } =>
+  typeof (editor as { setCurrentPageId?: (id: TLPageId) => void }).setCurrentPageId === 'function';
 
-export default PostSurveyAnswerDto;
+export const hasSetCurrentPage = (editor: Editor): editor is Editor & { setCurrentPage: (id: TLPageId) => void } =>
+  typeof (editor as { setCurrentPage?: (id: TLPageId) => void }).setCurrentPage === 'function';

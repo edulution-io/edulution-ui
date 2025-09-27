@@ -10,10 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ParticipantDto from '@libs/survey/types/api/participant.dto';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import { StoreSnapshot, TLRecord } from 'tldraw';
 
-interface PostSurveyAnswerDto extends ParticipantDto {
-  answer: JSON;
-}
+const buildTldrFileFromSnapshot = (snapshot: StoreSnapshot<TLRecord>, filename: string): File => {
+  const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: RequestResponseContentType.APPLICATION_JSON });
+  return new File([blob], `${filename}.tldr`, { type: RequestResponseContentType.APPLICATION_JSON });
+};
 
-export default PostSurveyAnswerDto;
+export default buildTldrFileFromSnapshot;

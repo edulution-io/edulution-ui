@@ -10,10 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ParticipantDto from '@libs/survey/types/api/participant.dto';
+const nextAnimationFrame = (): Promise<void> =>
+  new Promise((resolve) => {
+    if (typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function') {
+      window.requestAnimationFrame(() => resolve());
+    } else {
+      setTimeout(() => resolve(), 16);
+    }
+  });
 
-interface PostSurveyAnswerDto extends ParticipantDto {
-  answer: JSON;
-}
-
-export default PostSurveyAnswerDto;
+export default nextAnimationFrame;

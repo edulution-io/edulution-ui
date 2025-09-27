@@ -10,10 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ParticipantDto from '@libs/survey/types/api/participant.dto';
+import { TLRecord } from 'tldraw';
 
-interface PostSurveyAnswerDto extends ParticipantDto {
-  answer: JSON;
-}
-
-export default PostSurveyAnswerDto;
+export type TldrFileV1 = {
+  tldrawFileFormatVersion: 1;
+  schema: { schemaVersion: 2; sequences: Record<string, number> };
+  records: TLRecord[];
+};

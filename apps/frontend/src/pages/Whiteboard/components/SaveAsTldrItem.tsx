@@ -10,10 +10,28 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ParticipantDto from '@libs/survey/types/api/participant.dto';
+import React from 'react';
+import { TldrawUiMenuItem } from 'tldraw';
+import 'tldraw/tldraw.css';
+import { useTranslation } from 'react-i18next';
+import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
 
-interface PostSurveyAnswerDto extends ParticipantDto {
-  answer: JSON;
-}
+const SaveAsTldrItem = () => {
+  const { t } = useTranslation();
+  const { setIsDialogOpen } = useWhiteboardEditorStore();
 
-export default PostSurveyAnswerDto;
+  const handleSave = () => {
+    setIsDialogOpen(true);
+  };
+
+  return (
+    <TldrawUiMenuItem
+      id="saveAsTldr"
+      label={t('common.save')}
+      readonlyOk
+      onSelect={handleSave}
+    />
+  );
+};
+
+export default SaveAsTldrItem;
