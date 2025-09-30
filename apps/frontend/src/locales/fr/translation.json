@@ -1522,6 +1522,10 @@
       "generic": "Générique"
     },
     "status": "Statut",
-    "offline": "Le serveur est actuellement indisponible."
+    "offline": "Le serveur est actuellement indisponible.",
+    "variable": {
+      "title": "Variable de chemin ",
+      "description": "Une variable de chemin dynamique peut être sélectionnée ici à partir des attributs utilisateur. "
+    }
   }
 }

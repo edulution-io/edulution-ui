@@ -31,6 +31,7 @@ interface DropdownProps {
   variant?: DropdownVariant;
   searchEnabled?: boolean;
   placeholder?: string;
+  translate?: boolean;
 }
 
 const DropdownSelect: React.FC<DropdownProps> = ({
@@ -42,6 +43,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
   variant = 'default',
   searchEnabled = false,
   placeholder = '',
+  translate = true,
 }) => {
   const { t } = useTranslation();
   const [query, setQuery] = useState<string>('');
@@ -70,7 +72,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
 
   const getSearchValue = (opts: DropdownOptions[]): DropdownOptions[] =>
     opts.filter((option) => {
-      const optionName = t(option.name);
+      const optionName = translate ? t(option.name) : option.name;
       return optionName.toLowerCase().indexOf(query.toLowerCase()) > -1;
     });
 
@@ -120,7 +122,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
               'bg-muted hover:bg-secondary': variant === 'dialog',
             })}
           >
-            {t(option.name)}
+            {translate ? t(option.name) : option.name}
           </div>
         ))}
       </div>

@@ -234,6 +234,7 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
                   selectedVal={field.value}
                   handleChange={field.onChange}
                   variant="dialog"
+                  translate={false}
                 />
               </FormControl>
               <FormDescription>{t('webdavShare.variable.description')}</FormDescription>

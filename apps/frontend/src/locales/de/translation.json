@@ -1722,6 +1722,10 @@
       "generic": "Generisch"
     },
     "status": "Status",
-    "offline": "Server ist aktuell nicht erreichbar"
+    "offline": "Server ist aktuell nicht erreichbar",
+    "variable": {
+      "title": "Pfad-Variable",
+      "description": "Hier kann aus den Nutzerattributen eine dynamische Pfadvariable ausgewählt werden."
+    }
   }
 }
