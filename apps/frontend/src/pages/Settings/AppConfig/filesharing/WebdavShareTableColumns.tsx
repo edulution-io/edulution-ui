@@ -211,7 +211,9 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
               icon: MdEdit,
               translationId: 'common.edit',
               onClick: () => {
-                row.toggleSelected();
+                if (!row.getIsSelected()) {
+                  row.toggleSelected();
+                }
                 setDialogOpen(ExtendedOptionKeys.WEBDAV_SHARE_TABLE);
               },
             },
