@@ -41,7 +41,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
   openToTop = false,
   classname,
   variant = 'default',
-  searchEnabled = false,
+  searchEnabled = true,
   placeholder = '',
   translate = true,
 }) => {
@@ -51,30 +51,29 @@ const DropdownSelect: React.FC<DropdownProps> = ({
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const handleClickOutside = () => {
+  const translateLabel = (label: string) => (translate ? t(label) : label);
+
+  const selectedOption = options.find((o) => o.id === selectedVal) || null;
+  const selectedLabel = selectedOption ? translateLabel(selectedOption.name) : '';
+
+  const openMenu = () => {
+    setIsOpen(true);
+    if (searchEnabled) setQuery('');
+  };
+
+  useOnClickOutside(dropdownRef, () => setIsOpen(false));
+
+  const selectOption = (option: DropdownOptions) => {
+    setQuery('');
+    handleChange(option.id);
     setIsOpen(false);
   };
 
-  useOnClickOutside(dropdownRef, handleClickOutside);
-
-  const selectOption = (option: DropdownOptions) => {
-    setQuery(() => '');
-    handleChange(option.id);
-    setIsOpen((prevVal) => !prevVal);
+  const filteredOptions = (allOptions: DropdownOptions[]): DropdownOptions[] => {
+    if (!query) return allOptions;
+    const q = query.toLowerCase();
+    return allOptions.filter((option) => translateLabel(option.name).toLowerCase().includes(q));
   };
-
-  const getDisplayValue = (): string => {
-    if (query) return query;
-    if (selectedVal) return options.find((option) => option.id === selectedVal)?.name || '';
-    if (placeholder) return t(placeholder);
-    return '';
-  };
-
-  const getSearchValue = (opts: DropdownOptions[]): DropdownOptions[] =>
-    opts.filter((option) => {
-      const optionName = translate ? t(option.name) : option.name;
-      return optionName.toLowerCase().indexOf(query.toLowerCase()) > -1;
-    });
 
   return (
     <div
@@ -83,27 +82,48 @@ const DropdownSelect: React.FC<DropdownProps> = ({
         [styles.dialog]: variant === 'dialog',
       })}
       ref={dropdownRef}
+      role="combobox"
+      aria-expanded={isOpen}
+      aria-haspopup="listbox"
+      aria-controls="dropdown-listbox"
     >
       <div className={styles['selected-value']}>
-        <input
-          type={searchEnabled ? 'text' : 'button'}
-          value={getDisplayValue()}
-          name="searchTerm"
-          onChange={(e) => {
-            if (searchEnabled) {
+        {searchEnabled ? (
+          <input
+            type="text"
+            name="searchTerm"
+            value={query}
+            placeholder={selectedLabel || t(placeholder)}
+            onChange={(e) => {
               setQuery(e.target.value);
-              handleChange('');
-            }
-          }}
-          onClickCapture={() => setIsOpen((prevVal) => !prevVal)}
-          disabled={options.length === 0}
-          className={cn('text-start', {
-            'bg-background text-foreground': variant === 'default',
-            'bg-muted text-secondary': variant === 'dialog',
-          })}
-        />
+            }}
+            onClick={openMenu}
+            onFocus={openMenu}
+            disabled={options.length === 0}
+            className={cn('text-start', {
+              'bg-background text-foreground': variant === 'default',
+              'bg-muted text-secondary': variant === 'dialog',
+            })}
+            aria-autocomplete="list"
+            aria-controls="dropdown-listbox"
+          />
+        ) : (
+          <input
+            type="button"
+            value={selectedLabel || t(placeholder)}
+            onClick={openMenu}
+            readOnly
+            disabled={options.length === 0}
+            className={cn('text-start', {
+              'bg-background text-foreground': variant === 'default',
+              'bg-muted text-secondary': variant === 'dialog',
+            })}
+          />
+        )}
       </div>
+
       <div className={cn(styles.arrow, { [styles.open]: isOpen, [styles.up]: openToTop })} />
+
       <div
         className={cn('shadow-xl scrollbar-thin', styles.options, {
           [styles.open]: isOpen,
@@ -111,20 +131,44 @@ const DropdownSelect: React.FC<DropdownProps> = ({
           'bg-background text-foreground': variant === 'default',
           'bg-muted text-secondary': variant === 'dialog',
         })}
+        role="listbox"
+        id="dropdown-listbox"
       >
-        {getSearchValue(options).map((option) => (
+        {filteredOptions(options).map((option) => {
+          const label = translateLabel(option.name);
+          const selected = option.id === selectedVal;
+          return (
+            <div
+              key={option.id}
+              role="option"
+              aria-selected={selected}
+              tabIndex={0}
+              onClick={() => selectOption(option)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  selectOption(option);
+                }
+              }}
+              className={cn(styles.option, {
+                [styles.selected]: selected,
+                'hover:bg-accent-light': variant === 'default',
+                'bg-muted hover:bg-secondary': variant === 'dialog',
+              })}
+              title={label}
+            >
+              {label}
+            </div>
+          );
+        })}
+        {filteredOptions(options).length === 0 && (
           <div
-            key={option.id}
-            onClickCapture={() => selectOption(option)}
-            className={cn(styles.option, {
-              [styles.selected]: option.id === selectedVal,
-              'hover:bg-accent-light': variant === 'default',
-              'bg-muted hover:bg-secondary': variant === 'dialog',
-            })}
+            className={styles.option}
+            aria-disabled="true"
           >
-            {translate ? t(option.name) : option.name}
+            {t('search.no-results')}
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
