@@ -75,7 +75,9 @@ const FileSharingPage = () => {
 
   const handleBreadcrumbNavigate = (filenamePath: string) => {
     if (filenamePath === '/') {
-      const currentShare = webdavShares.find((s) => s.displayName === webdavShare) ?? webdavShares[0];
+      const currentShare = webdavShares.find((s) => s.displayName === webdavShare);
+
+      if (!currentShare) return;
 
       navigate(
         {

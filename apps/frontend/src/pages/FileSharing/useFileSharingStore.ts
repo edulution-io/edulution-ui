@@ -142,7 +142,8 @@ const useFileSharingStore = create<UseFileSharingStore>(
             params: { type: ContentType.FILE, path, share: shareName },
           });
 
-          const webdavShareType = get().webdavShares[0]?.type;
+          const webdavShareType = get().webdavShares.find((s) => s.displayName === shareName)?.type;
+          if (!webdavShareType) return;
           const files = processWebdavResponse(data, webdavShareType);
 
           set({
@@ -182,7 +183,8 @@ const useFileSharingStore = create<UseFileSharingStore>(
             params: { type: ContentType.DIRECTORY, path: '/', share: shareName },
           });
 
-          const webdavShareType = get().webdavShares[0]?.type;
+          const webdavShareType = get().webdavShares.find((s) => s.displayName === shareName)?.type;
+          if (!webdavShareType) return get().mountPoints;
           const mountPoints = processWebdavResponse(data, webdavShareType);
 
           set({ mountPoints });
