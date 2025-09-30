@@ -60,7 +60,10 @@ const useFileSharingMoveDialogStore = create<UseFileSharingMoveDialogStore>((set
       const { data } = await eduApi.get<DirectoryFileDTO[]>(FileSharingApiEndpoints.BASE, {
         params: { type: ContentType.FILE, path, share: shareName },
       });
-      const webdavShareType = useFileSharingStore.getState().webdavShares[0]?.type;
+      const webdavShareType = useFileSharingStore
+        .getState()
+        .webdavShares.find((s) => s.displayName === shareName)?.type;
+      if (!webdavShareType) return;
       const dialogShownFiles = processWebdavResponse(data, webdavShareType);
 
       set({
@@ -82,7 +85,10 @@ const useFileSharingMoveDialogStore = create<UseFileSharingMoveDialogStore>((set
         params: { type: ContentType.DIRECTORY, path, share: shareName },
       });
 
-      const webdavShareType = useFileSharingStore.getState().webdavShares[0]?.type;
+      const webdavShareType = useFileSharingStore
+        .getState()
+        .webdavShares.find((s) => s.displayName === shareName)?.type;
+      if (!webdavShareType) return;
       const dialogShownDirs = processWebdavResponse(data, webdavShareType);
 
       set({ dialogShownDirs });

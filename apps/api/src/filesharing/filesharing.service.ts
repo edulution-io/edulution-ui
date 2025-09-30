@@ -269,20 +269,11 @@ class FilesharingService {
   async getWebDavFileStream(username: string, filePath: string, share: string): Promise<Readable> {
     try {
       const client = await this.webDavService.getClient(username, share);
-
-      const decodedPath = (() => {
-        try {
-          return decodeURIComponent(filePath);
-        } catch {
-          return filePath;
-        }
-      })();
-
       const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
-      const pathWithoutWebdav = getPathWithoutWebdav(decodedPath, webdavShare.pathname);
-      const finalUrl = new URL(encodeURI(pathWithoutWebdav), webdavShare.url).href;
+      const pathWithoutWebdav = getPathWithoutWebdav(filePath, webdavShare.pathname);
+      const url = WebdavService.safeJoinUrl(webdavShare.url, pathWithoutWebdav);
 
-      const resp = await FilesystemService.fetchFileStream(finalUrl, client);
+      const resp = await FilesystemService.fetchFileStream(url, client);
       return resp instanceof Readable ? resp : resp.data;
     } catch (error) {
       throw new CustomHttpException(

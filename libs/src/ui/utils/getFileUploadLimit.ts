@@ -14,11 +14,10 @@ import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import MAX_FILE_UPLOAD_SIZE from '../constants/maxFileUploadSize';
 
-const getFileUploadLimit = (webdavShares: WebdavShareDto[]) => {
-  if (webdavShares[0]?.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
-    return 10000;
-  }
-  return MAX_FILE_UPLOAD_SIZE;
+const getFileUploadLimit = (webdavShares: WebdavShareDto[], webdavShare?: string): number => {
+  const share = webdavShare ? webdavShares.find((s) => s.displayName === webdavShare) : undefined;
+
+  return share?.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY ? Infinity : MAX_FILE_UPLOAD_SIZE;
 };
 
 export default getFileUploadLimit;

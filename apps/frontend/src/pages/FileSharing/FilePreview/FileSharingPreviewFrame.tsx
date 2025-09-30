@@ -80,7 +80,7 @@ const FileSharingPreviewFrame = () => {
   };
 
   const pathSegments = location.pathname.split('/').filter(Boolean);
-  const webdavShare = pathSegments[1];
+  const webdavShare = decodeURIComponent(pathSegments[1]);
 
   const openInNewTab = () => {
     if (currentlyEditingFile) {
