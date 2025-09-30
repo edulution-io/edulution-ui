@@ -78,7 +78,7 @@ class HealthService {
           const result = await this.httpIndicator.pingCheck(share.displayName, origin, {
             httpClient: this.httpService,
           });
-          Logger.debug(`WebDAV Share is ${JSON.stringify(result)}`, HealthService.name);
+          Logger.verbose(`WebDAV Share is ${JSON.stringify(result)}`, HealthService.name);
 
           await this.webdavSharesService.updateWebdavShare(share.webdavShareId, {
             lastChecked: new Date(),
@@ -87,7 +87,7 @@ class HealthService {
 
           return result;
         } catch (e) {
-          Logger.debug(`WebDAV Share ${share.displayName} is down`, HealthService.name);
+          Logger.warn(`WebDAV Share ${share.displayName} is down`, HealthService.name);
 
           await this.webdavSharesService.updateWebdavShare(share.webdavShareId, {
             lastChecked: new Date(),

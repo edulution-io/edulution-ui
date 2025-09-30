@@ -77,7 +77,6 @@ const MenuBar: React.FC = () => {
           },
           { replace: true },
         );
-
         break;
       }
       case APPS.SETTINGS: {

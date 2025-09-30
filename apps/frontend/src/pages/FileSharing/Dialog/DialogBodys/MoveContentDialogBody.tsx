@@ -112,7 +112,8 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
     }
   };
 
-  const getHiddenSegments = () => webdavShares.find((s) => s.displayName === webdavShare)?.pathname.split('/');
+  const getHiddenSegments = () =>
+    webdavShares.find((s) => s.displayName === (selectedWebdavShare || webdavShare))?.pathname;
 
   const footer = (
     <div className="bottom-0 justify-end bg-secondary p-4 text-sm text-foreground">

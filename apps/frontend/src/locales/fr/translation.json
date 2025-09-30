@@ -1521,6 +1521,7 @@
       "edu-file-proxy": "Proxy de fichiers edulution",
       "generic": "Générique"
     },
-    "status": "Statut"
+    "status": "Statut",
+    "offline": "Le serveur est actuellement indisponible."
   }
 }

@@ -28,7 +28,7 @@ interface DirectoryBreadcrumbProps {
   onNavigate: (path: string) => void;
   style?: React.CSSProperties;
   showHome?: boolean;
-  hiddenSegments?: string[];
+  hiddenSegments?: string;
   showTitle?: boolean;
 }
 
@@ -55,19 +55,15 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
     })
     .filter(Boolean);
 
-  const clearSegments = segments.filter((segment) => hiddenSegments?.includes(segment) !== true);
+  const hiddenParts = (hiddenSegments ?? '').split('/').filter(Boolean);
+  const clearSegments = segments.slice(hiddenParts.length);
 
-  const getSegmentKey = (index: number) => {
-    const key = segments.slice(0, index + 1).join('/');
-    return key.startsWith('/') ? key : `/${key}`;
-  };
-
+  const getSegmentKey = (index: number) => `/${segments.slice(0, index + 1).join('/')}`;
   const handleSegmentClick = (index: number) => {
     const newPath = getSegmentKey(index);
-    if (newPath !== path) {
-      onNavigate(newPath);
-    }
+    if (newPath !== path) onNavigate(newPath);
   };
+
   const shouldShowDropdown = clearSegments.length > displaySegments;
 
   return (
@@ -75,7 +71,10 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
       {showTitle && <p className="mr-2 text-background">{t('currentDirectory')}</p>}
       <BreadcrumbList>
         {showHome && (
-          <BreadcrumbItem key="home">
+          <BreadcrumbItem
+            key="home"
+            className="cursor-pointer"
+          >
             <BreadcrumbLink onClick={() => onNavigate('/')}>{t('home')}</BreadcrumbLink>
           </BreadcrumbItem>
         )}
@@ -91,41 +90,39 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
                     <HiChevronDown />
                   </span>
                 }
-                items={segments
-                  .slice(0, -1)
-                  .filter((segment) => clearSegments.includes(segment))
-                  .map((segment, index) => ({
+                items={clearSegments.slice(0, -1).map((segment, index) => {
+                  const segIndex = index + hiddenParts.length;
+                  return {
+                    key: getSegmentKey(segIndex),
                     label: segment,
-                    onClick: () => handleSegmentClick(index),
-                  }))}
+                    onClick: () => handleSegmentClick(segIndex),
+                  };
+                })}
               />
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <span className="text-background">{segments[segments.length - 1]}</span>
+              <span className="text-background">{clearSegments[clearSegments.length - 1]}</span>
             </BreadcrumbItem>
           </>
         ) : (
-          segments.map(
-            (segment, index) =>
-              clearSegments.includes(segment) && (
-                <React.Fragment key={getSegmentKey(index)}>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    {index === segments.length - 1 ? (
-                      <span className="text-background">{segment}</span>
-                    ) : (
-                      <BreadcrumbLink
-                        href="#"
-                        onClick={() => handleSegmentClick(index)}
-                      >
-                        {segment}
-                      </BreadcrumbLink>
-                    )}
-                  </BreadcrumbItem>
-                </React.Fragment>
-              ),
-          )
+          clearSegments.map((segment, index) => {
+            const isLast = index === clearSegments.length - 1;
+            return (
+              <React.Fragment key={getSegmentKey(index + hiddenParts.length)}>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem className="cursor-pointer">
+                  {isLast ? (
+                    <span className="text-background">{segment}</span>
+                  ) : (
+                    <BreadcrumbLink onClick={() => handleSegmentClick(index + hiddenParts.length)}>
+                      {segment}
+                    </BreadcrumbLink>
+                  )}
+                </BreadcrumbItem>
+              </React.Fragment>
+            );
+          })
         )}
       </BreadcrumbList>
     </Breadcrumb>

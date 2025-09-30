@@ -73,7 +73,7 @@ const FileSharingPage = () => {
     closeDialog(PUBLIC_SHARE_DIALOG_NAMES.QR_CODE);
   };
 
-  const getHiddenSegments = () => webdavShares.find((s) => s.displayName === webdavShare)?.pathname.split('/');
+  const getHiddenSegments = () => webdavShares.find((s) => s.displayName === webdavShare)?.pathname;
 
   const handleBreadcrumbNavigate = (filenamePath: string) => {
     if (filenamePath === '/') {

@@ -984,8 +984,8 @@
         },
         "webdavShare": {
           "title": "WebDAV-Server",
-          "description": "Here you can set up your own WebDAV shares.",
-          "filterPlaceHolderText": "Search for share"
+          "description": "WebDAV servers can be set up for the file manager here.",
+          "filterPlaceHolderText": "Search for WebDAV servers"
         },
         "files": {
           "title": "Files",
@@ -1719,6 +1719,7 @@
       "edu-file-proxy": "edulution File Proxy",
       "generic": "Generic"
     },
-    "status": "Status"
+    "status": "Status",
+    "offline": "Server is currently unavailable"
   }
 }
