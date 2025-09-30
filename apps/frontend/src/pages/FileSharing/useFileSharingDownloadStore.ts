@@ -25,6 +25,7 @@ import { AxiosProgressEvent } from 'axios';
 import ContentType from '@libs/filesharing/types/contentType';
 import formatTransferSpeed from '@libs/filesharing/utils/formatTransferSpeed';
 import formatEstimatedTimeRemaining from '@libs/filesharing/utils/formatEstimatedTimeRemaining';
+import SMOOTHING_ALPHA from '@libs/filesharing/constants/smoothingAlpha';
 
 type FileSharingDownloadStore = {
   isCreatingBlobUrl: boolean;
@@ -153,22 +154,19 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
         etaFormatted: formatEstimatedTimeRemaining(undefined),
       });
 
-      const onProgress = (pe: AxiosProgressEvent) => {
-        const total = pe.total ?? totalBytesFallback;
+      const onProgress = (progressEvent: AxiosProgressEvent) => {
+        const { loaded = 0, total = totalBytesFallback } = progressEvent;
         if (!total) return;
 
-        const loaded = pe.loaded ?? 0;
         const currentTs = Date.now();
 
-        let percent = Math.round((loaded / total) * 100);
-        if (percent > 100) percent = 100;
+        const percent = Math.min(100, Math.round((loaded / total) * 100));
 
         const dtMs = Math.max(1, currentTs - lastTs);
         const dBytes = Math.max(0, loaded - lastLoaded);
         const instBps = (dBytes * 1000) / dtMs;
 
-        const alpha = 0.2;
-        smoothedBps = smoothedBps ? alpha * instBps + (1 - alpha) * smoothedBps : instBps;
+        smoothedBps = smoothedBps ? SMOOTHING_ALPHA * instBps + (1 - SMOOTHING_ALPHA) * smoothedBps : instBps;
 
         const remaining = Math.max(0, total - loaded);
         const etaSec = smoothedBps > 0 ? remaining / smoothedBps : undefined;
