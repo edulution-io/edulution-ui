@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { OnEvent } from '@nestjs/event-emitter';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
@@ -149,11 +149,24 @@ class WebdavService {
     }
   }
 
+  static safeJoinUrl(base: string, path: string) {
+    try {
+      const cleanedPath = (path || '').replace(/^\/+/, '').replace(/\/+$/, '');
+
+      const finalPath = cleanedPath ? `${cleanedPath}/` : '';
+
+      return new URL(finalPath, base).href;
+    } catch (err) {
+      Logger.error(`Invalid URL input (base="${base}", path="${path}")`, WebdavService.name);
+      return base;
+    }
+  }
+
   async getFilesAtPath(username: string, path: string, share: string): Promise<DirectoryFileDTO[]> {
     const client = await this.getClient(username, share);
     const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
     const pathWithoutWebdav = getPathWithoutWebdav(path, webdavShare.pathname);
-    const url = new URL(pathWithoutWebdav.replace(/\/+$/, ''), webdavShare.url).href;
+    const url = WebdavService.safeJoinUrl(webdavShare.url, pathWithoutWebdav);
 
     return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
       client,
@@ -174,7 +187,7 @@ class WebdavService {
     const client = await this.getClient(username, share);
     const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
     const pathWithoutWebdav = getPathWithoutWebdav(path, webdavShare.pathname);
-    const url = new URL(pathWithoutWebdav.replace(/\/+$/, ''), webdavShare.url).href;
+    const url = WebdavService.safeJoinUrl(webdavShare.url, pathWithoutWebdav);
 
     return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
       client,
@@ -194,16 +207,11 @@ class WebdavService {
   async createFolder(username: string, path: string, folderName: string, share: string): Promise<WebdavStatusResponse> {
     const client = await this.getClient(username, share);
     const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
-    const joinUrl = (...parts: string[]) =>
-      parts
-        .filter(Boolean)
-        .map((filePath, index) => (index === 0 ? filePath.replace(/\/+$/, '') : filePath.replace(/^\/+|\/+$/g, '')))
-        .join('/');
-
-    const encodedPath = encodeURI(joinUrl(webdavShare.url, getPathWithoutWebdav(path, webdavShare.pathname)));
+    const basePath = getPathWithoutWebdav(path, webdavShare.pathname);
+    const encodedPath = WebdavService.safeJoinUrl(webdavShare.url, basePath);
     const encodedFolder = encodeURIComponent(folderName.trim());
 
-    const fullUrl = `${encodedPath}/${encodedFolder}`;
+    const fullUrl = `${encodedPath}${encodedFolder}`;
 
     return WebdavService.executeWebdavRequest<WebdavStatusResponse>(
       client,
@@ -230,7 +238,7 @@ class WebdavService {
   ): Promise<WebdavStatusResponse> {
     const password = await this.usersService.getPassword(username);
     const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
-    const url = new URL(fullPath.replace(/^\/+/, ''), baseUrl).href;
+    const url = WebdavService.safeJoinUrl(baseUrl, fullPath);
 
     const headers: Record<string, string> = { [HTTP_HEADERS.ContentType]: contentType };
     if (totalSize && Number.isFinite(totalSize) && totalSize > 0) {
