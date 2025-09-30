@@ -176,26 +176,30 @@ const ScrollableTable = <TData, TValue>({
           )}
           <TableBody className="container">
             {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() ? 'selected' : undefined}
-                  data-disabled={getRowDisabled?.(row) ? 'true' : undefined}
-                  aria-disabled={getRowDisabled?.(row) ? true : undefined}
-                  className={
-                    getRowDisabled?.(row) ? 'pointer-events-none cursor-not-allowed opacity-50 saturate-0' : undefined
-                  }
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={`${row.id}-${cell.column.id}`}
-                      className={`${textColorClassname} ${getRowDisabled?.(row) ? 'opacity-70' : ''}`}
-                    >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+              table.getRowModel().rows.map((row) => {
+                const isRowDisabled = getRowDisabled?.(row);
+
+                return (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() ? 'selected' : undefined}
+                    data-disabled={isRowDisabled ? 'true' : undefined}
+                    aria-disabled={isRowDisabled || undefined}
+                    className={
+                      isRowDisabled ? 'pointer-events-none cursor-not-allowed opacity-50 saturate-0' : undefined
+                    }
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={`${row.id}-${cell.column.id}`}
+                        className={`${textColorClassname} ${isRowDisabled ? 'opacity-70' : ''}`}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              })
             ) : (
               <TableRow>
                 <TableCell
