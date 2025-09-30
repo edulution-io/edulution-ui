@@ -12,26 +12,38 @@
 
 import React from 'react';
 import { TldrawUiMenuItem } from 'tldraw';
-import 'tldraw/tldraw.css';
 import { useTranslation } from 'react-i18next';
 import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
+import buildTldrFileFromEditor from '@libs/tldraw-sync/utils/buildTldrFileFromEditor';
 
-const SaveAsTldrItem = () => {
+const SaveLocalTldrItem: React.FC = () => {
   const { t } = useTranslation();
-  const { setIsDialogOpen } = useWhiteboardEditorStore();
+  const { editor } = useWhiteboardEditorStore();
 
   const handleSave = () => {
-    setIsDialogOpen(true);
+    if (!editor) {
+      throw new Error('Editor not ready');
+    }
+
+    const file = buildTldrFileFromEditor(editor, 'whiteboard');
+    const blobUrl = URL.createObjectURL(file);
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.download = file.name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(blobUrl);
   };
 
   return (
     <TldrawUiMenuItem
-      id="saveAsTldrItem"
-      label={t('common.save')}
+      id="saveLocalTldrItem"
+      label={t('common.saveLocal')}
       readonlyOk
       onSelect={handleSave}
     />
   );
 };
 
-export default SaveAsTldrItem;
+export default SaveLocalTldrItem;

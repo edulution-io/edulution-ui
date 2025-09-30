@@ -1320,7 +1320,11 @@
     "orContinueWithoutAccount": "Or continue without account",
     "application": "Application",
     "reset": "Reset",
-    "file": "File"
+    "file": "File",
+    "saveLocal": "Save to device",
+    "openLocal": "Open from device",
+    "openFileFromEdu": "Open file",
+    "saveFileToEdu": "Save to files"
   },
   "form": {
     "path": "Path",

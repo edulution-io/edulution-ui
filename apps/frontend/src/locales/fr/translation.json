@@ -1155,7 +1155,11 @@
     "format": "Format",
     "upload": "Téléverser",
     "mode": "mode",
-    "file": "Fichier"
+    "file": "Fichier",
+    "saveLocal": "Enregistrer sur l’appareil",
+    "openLocal": "Ouvrir depuis l’appareil",
+    "openFileFromEdu": "Ouvrir le fichier",
+    "saveFileToEdu": "Enregistrer dans les fichiers"
   },
 
   "saveExternalFileDialogBody": {

@@ -1322,7 +1322,11 @@
     "mode": "Modus",
     "orContinueWithoutAccount": "Oder fahre ohne Account fort",
     "reset": "Zurücksetzen",
-    "file": "Datei"
+    "file": "Datei",
+    "saveLocal": "Auf dem Gerät speichern",
+    "openLocal": "Von dem Gerät öffnen",
+    "openFileFromEdu": "Datei öffnen",
+    "saveFileToEdu": "In Dateien speichern"
   },
   "form": {
     "path": "Link",

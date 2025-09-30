@@ -26,8 +26,8 @@ const OpenTldrItem: React.FC = () => {
 
   return (
     <TldrawUiMenuItem
-      id="openTldr"
-      label={t('whiteboard.openTlFile')}
+      id="openTldrItem"
+      label={t('common.openFileFromEdu')}
       readonlyOk
       onSelect={handleSelect}
     />

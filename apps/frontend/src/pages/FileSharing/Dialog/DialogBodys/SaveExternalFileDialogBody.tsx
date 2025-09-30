@@ -31,7 +31,6 @@ const SaveExternalFileDialogBody: React.FC<Props> = ({ form }) => {
         showSelectedFile
         showHome
         fileType={ContentType.DIRECTORY}
-        enableRowSelection={(row) => row.original.type !== ContentType.DIRECTORY}
       />
 
       <div className="mt-4">
