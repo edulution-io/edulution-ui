@@ -22,17 +22,18 @@ const handleFileOrCreateFile = async (
   originalFormData: FormData,
 ) => {
   const rawPath = String(originalFormData.get('path') ?? originalFormData.get('currentPath') ?? '');
-  const sanitizedPath = getPathWithoutWebdav(rawPath).replace(/^\/+/, ''); // "/a/b" -> "a/b"
+  const sanitizedPath = getPathWithoutWebdav(rawPath).replace(/^\/+/, '');
   const encodedPath = encodeURIComponent(sanitizedPath);
 
   const file = originalFormData.get('file') as File | null;
   if (!file) throw new Error('No file provided for upload');
 
   const explicitName =
-    (originalFormData.get('name') as string) ||
-    (originalFormData.get('filename') as string) ||
-    file.name ||
-    'upload.bin';
+    (originalFormData.get('name') as string) || (originalFormData.get('filename') as string) || file.name;
+
+  if (!explicitName) {
+    throw new Error('Missing file name');
+  }
 
   const originalFolderName = (originalFormData.get('originalFolderName') as string | null) || undefined;
 
