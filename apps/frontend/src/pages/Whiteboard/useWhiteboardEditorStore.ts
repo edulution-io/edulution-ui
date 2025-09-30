@@ -16,7 +16,6 @@ import loadTldrFileIntoEditor from '@libs/tldraw-sync/utils/loadTldrFileIntoEdit
 import { toast } from 'sonner';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import { t } from 'i18next';
-import extractTldrJsonFromMultipart from '@libs/tldraw-sync/utils/extractTldrJsonFromMultipart';
 
 interface WhiteboardEditorState {
   editor: Editor | null;
@@ -58,7 +57,7 @@ const useWhiteboardEditorStore = create<WhiteboardEditorState>((set, get) => ({
     const blob = await res.blob();
     const rawText = await blob.text();
 
-    const jsonText = rawText.trimStart().startsWith('--') ? (extractTldrJsonFromMultipart(rawText) ?? '') : rawText;
+    const jsonText = rawText.trimStart().startsWith('--') ? (rawText ?? '') : rawText;
 
     if (!jsonText || !(jsonText.trimStart().startsWith('{') || jsonText.trimStart().startsWith('['))) {
       URL.revokeObjectURL(blobUrl);
