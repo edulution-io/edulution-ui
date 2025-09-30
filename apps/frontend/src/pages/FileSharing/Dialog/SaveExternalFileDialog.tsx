@@ -19,6 +19,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 
 interface SaveDialogBodyProps<TValues extends { filename: string }> {
   form: UseFormReturn<TValues>;
@@ -43,6 +44,8 @@ const SaveExternalFileDialog = <TSchema extends z.ZodType<{ filename: string }>>
   props: SaveExternalFileDialogProps<TSchema>,
 ) => {
   type TValues = z.infer<TSchema>;
+
+  const { moveOrCopyItemToPath } = useFileSharingDialogStore();
 
   const {
     isOpen,
@@ -96,6 +99,8 @@ const SaveExternalFileDialog = <TSchema extends z.ZodType<{ filename: string }>>
     }
   };
 
+  const isSaveDestinationSet = !!moveOrCopyItemToPath?.filename && moveOrCopyItemToPath.filename.length > 0;
+
   return (
     <AdaptiveDialog
       isOpen={isOpen}
@@ -107,7 +112,7 @@ const SaveExternalFileDialog = <TSchema extends z.ZodType<{ filename: string }>>
           handleSubmit={handleSubmit}
           submitButtonText={submitLabel}
           submitButtonType="submit"
-          disableSubmit={!isValid}
+          disableSubmit={!isValid || !isSaveDestinationSet}
         />
       }
       handleOpenChange={handleClose}
