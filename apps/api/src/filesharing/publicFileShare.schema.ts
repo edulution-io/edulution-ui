@@ -29,6 +29,9 @@ export class PublicShare {
   etag: string;
 
   @Prop({ required: true })
+  share: string;
+
+  @Prop({ required: true })
   filename: string;
 
   @Prop({ required: true })

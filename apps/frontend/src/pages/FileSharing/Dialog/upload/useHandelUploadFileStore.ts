@@ -16,7 +16,6 @@ import { UploadFile } from '@libs/filesharing/types/uploadFile';
 import FileProgress from '@libs/filesharing/types/fileProgress';
 import UploadResult from '@libs/filesharing/types/uploadResult';
 import createFileUploader from '@libs/filesharing/utils/createFileUploader';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import createUploadClient from '@libs/filesharing/utils/createUploadClient';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 
@@ -32,7 +31,12 @@ interface HandelUploadFileStore {
   setFilesToUpload: (files: UploadFile[]) => void;
   updateFilesToUpload: (updater: (files: UploadFile[]) => UploadFile[]) => void;
   markUploading: (fileName: string, uploading: boolean) => void;
-  uploadFiles: (currentPath: string, accessToken: string, parallel?: boolean) => Promise<UploadResult[]>;
+  uploadFiles: (
+    currentPath: string,
+    accessToken: string,
+    share: string | undefined,
+    parallel?: boolean,
+  ) => Promise<UploadResult[]>;
   reset: () => void;
 }
 
@@ -65,22 +69,25 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
     });
   },
 
-  uploadFiles: async (currentPath: string, accessToken: string, parallel: boolean = true): Promise<UploadResult[]> => {
+  uploadFiles: async (
+    currentPath: string,
+    accessToken: string,
+    share: string | undefined,
+    parallel: boolean = true,
+  ): Promise<UploadResult[]> => {
     const files = get().filesToUpload;
     if (!files || files.length === 0) return [];
 
     set({ lastError: undefined });
 
-    const sanitizedDestinationPath = getPathWithoutWebdav(currentPath);
-
     const setProgressForFile = (fileName: string, next: FileProgress) =>
       set((state) => ({ progressByName: { ...state.progressByName, [fileName]: next } }));
 
-    const uploadHttp = createUploadClient(`/${EDU_API_ROOT}`, accessToken);
+    const uploadHttpClient = createUploadClient(`/${EDU_API_ROOT}`, { share }, accessToken);
 
     const uploader = createFileUploader({
-      httpClient: uploadHttp,
-      destinationPath: sanitizedDestinationPath,
+      httpClient: uploadHttpClient,
+      destinationPath: currentPath,
       onProgressUpdate: setProgressForFile,
       onUploadingChange: (fileName, uploading) => get().markUploading(fileName, uploading),
     });
