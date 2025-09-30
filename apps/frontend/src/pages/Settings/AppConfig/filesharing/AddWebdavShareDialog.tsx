@@ -55,6 +55,7 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
   const { selectedRows, tableContentData, setSelectedRows, updateWebdavShare, createWebdavShare, deleteTableEntry } =
     useWebdavShareConfigTableStore();
   const lmnUser = useLmnApiStore((s) => s.user);
+  const getOwnUser = useLmnApiStore((s) => s.getOwnUser);
   const { isLmn } = useDeploymentTarget();
   const isOpen = isDialogOpen === tableId;
   const keys = Object.keys(selectedRows as RowSelectionState);
@@ -101,6 +102,10 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
   useEffect(() => {
     reset(initialFormValues);
   }, [selectedConfig, reset]);
+
+  useEffect(() => {
+    void getOwnUser();
+  }, []);
 
   const closeDialog = () => {
     setDialogOpen('');
