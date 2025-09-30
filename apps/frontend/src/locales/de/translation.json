@@ -1726,6 +1726,11 @@
     "variable": {
       "title": "Pfad-Variable",
       "description": "Hier kann aus den Nutzerattributen eine dynamische Pfadvariable ausgewählt werden."
+    },
+    "isRootPath": {
+      "title": "Root-Pfad",
+      "description": "Für die Linuxmuster-Schulfunktionen muss mindestens ein WebDAV-Share als Root-Pfad konfiguriert werden.",
+      "short": "Root"
     }
   }
 }

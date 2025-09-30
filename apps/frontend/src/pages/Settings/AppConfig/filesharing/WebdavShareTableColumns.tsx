@@ -23,6 +23,7 @@ import ID_ACTION_TABLE_COLUMN from '@libs/common/constants/idActionTableColumn';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import cn from '@libs/common/utils/className';
 import WEBDAV_SHARE_STATUS from '@libs/webdav/constants/webdavShareStatus';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 import useWebdavShareConfigTableStore from './useWebdavShareConfigTableStore';
 
@@ -62,6 +63,31 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
     },
   },
   {
+    id: WEBDAV_SHARE_TABLE_COLUMNS.IS_ROOT_PATH,
+    header: ({ column }) => {
+      const { isLmn } = useDeploymentTarget();
+      if (!isLmn) return null;
+
+      return <SortableHeader<WebdavShareDto, unknown> column={column} />;
+    },
+
+    meta: {
+      translationId: 'webdavShare.isRootPath.short',
+    },
+    accessorFn: (row) => row.isRootPath,
+    cell: ({ row }) => {
+      const { isLmn } = useDeploymentTarget();
+      if (!isLmn) return null;
+
+      return (
+        <SelectableTextCell
+          text={row.original.isRootPath ? '✔' : ''}
+          onClick={() => row.toggleSelected()}
+        />
+      );
+    },
+  },
+  {
     id: WEBDAV_SHARE_TABLE_COLUMNS.DISPLAY_NAME,
     header: ({ column }) => <SortableHeader<WebdavShareDto, unknown> column={column} />,
 
@@ -92,6 +118,46 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
     ),
   },
   {
+    id: WEBDAV_SHARE_TABLE_COLUMNS.PATHNAME,
+    header: ({ column }) => <SortableHeader<WebdavShareDto, unknown> column={column} />,
+
+    meta: {
+      translationId: 'form.pathname',
+    },
+    accessorFn: (row) => row.pathname,
+    cell: ({ row }) => (
+      <SelectableTextCell
+        text={row.original.pathname}
+        onClick={() => row.toggleSelected()}
+      />
+    ),
+  },
+
+  {
+    id: WEBDAV_SHARE_TABLE_COLUMNS.VARIABLE,
+    header: ({ column }) => {
+      const { isLmn } = useDeploymentTarget();
+      if (!isLmn) return null;
+      return <SortableHeader<WebdavShareDto, unknown> column={column} />;
+    },
+
+    meta: {
+      translationId: 'webdavShare.variable.title',
+    },
+    accessorFn: (row) => row.variable,
+    cell: ({ row }) => {
+      const { isLmn } = useDeploymentTarget();
+      if (!isLmn) return null;
+
+      return (
+        <SelectableTextCell
+          text={row.original.variable}
+          onClick={() => row.toggleSelected()}
+        />
+      );
+    },
+  },
+  {
     id: WEBDAV_SHARE_TABLE_COLUMNS.ACCESSGROUPS,
     header: ({ column }) => <SortableHeader<WebdavShareDto, unknown> column={column} />,
 
@@ -105,7 +171,7 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
           row.original.accessGroups.length > 0 ? row.original.accessGroups.map((group) => group.name).join(', ') : '-'
         }
         onClick={() => row.toggleSelected()}
-        className="max-w-80 overflow-hidden text-ellipsis whitespace-nowrap"
+        className="max-w-60 overflow-hidden text-ellipsis whitespace-nowrap"
       />
     ),
   },

@@ -20,7 +20,7 @@ import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import APPS from '@libs/appconfig/constants/apps';
 import { ColumnDef, OnChangeFn, Row, RowSelectionState } from '@tanstack/react-table';
 import FILESHARING_TABLE_COLUM_NAMES from '@libs/filesharing/constants/filesharingTableColumNames';
-import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
+import type MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogBodyProps';
 import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/getFileSharingTableColumns';
@@ -36,6 +36,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   showHome = true,
   fileType,
   isCurrentPathDefaultDestination = false,
+  showRootOnly = false,
 }) => {
   const { webdavShare } = useParams();
   const { t } = useTranslation();
@@ -134,7 +135,10 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
 
   return (
     <>
-      <WebdavShareSelectDropdown webdavShare={webdavShare} />
+      <WebdavShareSelectDropdown
+        webdavShare={webdavShare}
+        showRootOnly={showRootOnly}
+      />
       <div className="h-[60vh] flex-col overflow-auto text-background scrollbar-thin">
         <div className="pb-2">
           <DirectoryBreadcrumb

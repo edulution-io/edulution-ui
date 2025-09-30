@@ -31,6 +31,9 @@ export class WebdavShares {
   @Prop({ default: '/webdav/' })
   pathname: string;
 
+  @Prop({ default: false })
+  isRootPath: boolean;
+
   @Prop({ default: '' })
   variable: string;
 

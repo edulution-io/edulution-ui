@@ -27,6 +27,7 @@ const ShareFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, on
     <MoveContentDialogBody
       showAllFiles
       pathToFetch={homePath}
+      showRootOnly
     />
   );
 

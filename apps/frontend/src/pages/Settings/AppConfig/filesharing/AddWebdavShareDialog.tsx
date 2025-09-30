@@ -41,6 +41,7 @@ import { DropdownSelect } from '@/components';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import { DropdownOptions } from '@/components/ui/DropdownSelect/DropdownSelect';
 import Input from '@/components/shared/Input';
+import Switch from '@/components/ui/Switch';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useWebdavShareConfigTableStore from './useWebdavShareConfigTableStore';
 
@@ -67,6 +68,7 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
     [WEBDAV_SHARE_TABLE_COLUMNS.URL]: '',
     [WEBDAV_SHARE_TABLE_COLUMNS.PATHNAME]: '',
     [WEBDAV_SHARE_TABLE_COLUMNS.VARIABLE]: '',
+    [WEBDAV_SHARE_TABLE_COLUMNS.IS_ROOT_PATH]: false,
     [WEBDAV_SHARE_TABLE_COLUMNS.ACCESSGROUPS]: [],
     [WEBDAV_SHARE_TABLE_COLUMNS.TYPE]: WEBDAV_SHARE_TYPE.LINUXMUSTER,
   };
@@ -180,14 +182,23 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
   );
 
   const getPathVariableList = (): (DropdownOptions & { value: string })[] => {
-    if (isLmn && lmnUser) {
-      return Object.entries(lmnUser).map(([key, value]) => ({
-        id: key,
-        name: key,
-        value: String(value),
-      }));
-    }
-    return [];
+    const items =
+      isLmn && lmnUser
+        ? Object.entries(lmnUser).map(([key, value]) => ({
+            id: key,
+            name: key,
+            value: String(value),
+          }))
+        : [];
+
+    return [
+      {
+        id: '',
+        name: '-',
+        value: '',
+      },
+      ...items,
+    ];
   };
 
   const findVarValue = (variable: string) => {
@@ -221,27 +232,48 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
         variant="dialog"
       />
       {isLmn && (
-        <FormFieldSH
-          control={form.control}
-          name={WEBDAV_SHARE_TABLE_COLUMNS.VARIABLE}
-          defaultValue={initialFormValues[WEBDAV_SHARE_TABLE_COLUMNS.VARIABLE]}
-          render={({ field }) => (
-            <FormItem>
-              <p className="font-bold">{t('webdavShare.variable.title')}</p>
-              <FormControl>
-                <DropdownSelect
-                  options={getPathVariableList()}
-                  selectedVal={field.value}
-                  handleChange={field.onChange}
-                  variant="dialog"
-                  translate={false}
-                />
-              </FormControl>
-              <FormDescription>{t('webdavShare.variable.description')}</FormDescription>
-              <FormMessage className="text-p" />
-            </FormItem>
-          )}
-        />
+        <>
+          <FormFieldSH
+            control={form.control}
+            name={WEBDAV_SHARE_TABLE_COLUMNS.VARIABLE}
+            defaultValue={initialFormValues[WEBDAV_SHARE_TABLE_COLUMNS.VARIABLE]}
+            render={({ field }) => (
+              <FormItem>
+                <p className="font-bold">{t('webdavShare.variable.title')}</p>
+                <FormControl>
+                  <DropdownSelect
+                    options={getPathVariableList()}
+                    selectedVal={field.value}
+                    handleChange={field.onChange}
+                    variant="dialog"
+                    translate={false}
+                  />
+                </FormControl>
+                <FormDescription>{t('webdavShare.variable.description')}</FormDescription>
+                <FormMessage className="text-p" />
+              </FormItem>
+            )}
+          />
+          <FormFieldSH
+            control={form.control}
+            name={WEBDAV_SHARE_TABLE_COLUMNS.IS_ROOT_PATH}
+            render={({ field }) => (
+              <FormItem>
+                <p className="font-bold">{t('webdavShare.isRootPath.title')}</p>
+                <FormControl>
+                  <div className="flex h-9 items-center">
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={() => field.onChange(!field.value)}
+                    />
+                  </div>
+                </FormControl>
+                <FormDescription>{t('webdavShare.isRootPath.description')}</FormDescription>
+                <FormMessage className="text-p" />
+              </FormItem>
+            )}
+          />
+        </>
       )}
       <>
         <FormLabel>

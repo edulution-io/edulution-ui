@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IsArray, IsDate, IsMongoId, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsDate, IsMongoId, IsString } from 'class-validator';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import type WebdavShareStatusType from '@libs/webdav/types/webdavShareStatusType';
 import type WebdavShareType from './webdavShareType';
@@ -27,6 +27,9 @@ class WebdavShareDto {
 
   @IsString()
   pathname: string;
+
+  @IsBoolean()
+  isRootPath: boolean;
 
   @IsString()
   variable: string;

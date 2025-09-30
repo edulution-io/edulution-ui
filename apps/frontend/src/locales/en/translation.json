@@ -1724,6 +1724,11 @@
     "variable": {
       "title": "Path variable",
       "description": "A dynamic path variable can be selected here from the user attributes."
+    },
+    "isRootPath": {
+      "title": "Root path",
+      "description": "For the Linuxmuster school functions, at least one WebDAV share must be configured as the root path.",
+      "short": "Root"
     }
   }
 }

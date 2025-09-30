@@ -14,7 +14,7 @@ import React from 'react';
 import useUserPath from '@/pages/FileSharing/hooks/useUserPath';
 import MoveContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveContentDialogBody';
 import ContentType from '@libs/filesharing/types/contentType';
-import MoveContentDialogProps from '@libs/filesharing/types/moveContentDialogProps';
+import type MoveContentDialogProps from '@libs/filesharing/types/moveContentDialogBodyProps';
 
 const CopyContentDialogBody: React.FC<Omit<MoveContentDialogProps, 'pathToFetch'>> = (props) => {
   const { homePath } = useUserPath();
