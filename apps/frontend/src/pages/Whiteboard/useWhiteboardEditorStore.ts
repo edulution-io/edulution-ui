@@ -69,7 +69,7 @@ const useWhiteboardEditorStore = create<WhiteboardEditorState>((set, get) => ({
 
     try {
       await loadTldrFileIntoEditor(editor, file);
-      toast.success(t('whiteboard.openTLFIleSuccess'));
+      toast.success(t('whiteboard.openTLFileSuccess'));
     } finally {
       URL.revokeObjectURL(blobUrl);
     }

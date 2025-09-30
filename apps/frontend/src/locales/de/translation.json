@@ -1406,8 +1406,9 @@
     "sidebar": "Whiteboard",
     "saveAsTlFile": "Whiteboard als .tldr Datei speichern",
     "openTLFileFailed": "Datei kann nicht geöffnet werden",
-    "openTLFIleSuccess": "Datei wurde erfolgreich geladen",
+    "openTLFileSuccess": "Datei wurde erfolgreich geladen",
     "openTlFile": "Öffnen",
+    "openLocalTlFile": "Lokale .tldr Datei öffnen",
     "file": "Datei"
   },
   "whiteboard-collaboration": {
