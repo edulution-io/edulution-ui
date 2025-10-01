@@ -17,6 +17,7 @@ interface MoveOrRenameJobData {
   total: number;
   processed: number;
   failedPaths?: string[];
+  share: string;
 }
 
 export default MoveOrRenameJobData;

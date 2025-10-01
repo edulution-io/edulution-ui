@@ -18,10 +18,10 @@ import saveExternalFileFormSchema from '@libs/filesharing/types/saveExternalFile
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
 import buildTldrFileFromEditor from '@libs/tldraw-sync/utils/buildTldrFileFromEditor';
 import useUserStore from '@/store/UserStore/useUserStore';
+import useFileSharingStore from '../FileSharing/useFileSharingStore';
 
 const SaveTldrDialog: React.FC = () => {
   const { t } = useTranslation();
@@ -30,6 +30,7 @@ const SaveTldrDialog: React.FC = () => {
   const { eduApiToken } = useUserStore();
   const { editor, isDialogOpen, setIsDialogOpen } = useWhiteboardEditorStore();
   const { moveOrCopyItemToPath } = useFileSharingDialogStore();
+  const selectedWebdavShare = useFileSharingStore((s) => s.selectedWebdavShare);
 
   const close = () => setIsDialogOpen(false);
 
@@ -41,9 +42,9 @@ const SaveTldrDialog: React.FC = () => {
   };
 
   const save = async (file: File | Blob) => {
-    const targetDir = getPathWithoutWebdav(moveOrCopyItemToPath?.filePath || '');
+    const targetDir = moveOrCopyItemToPath?.filePath || '';
     setFilesToUpload([file as File]);
-    await uploadFiles(targetDir, eduApiToken);
+    await uploadFiles(targetDir, eduApiToken, selectedWebdavShare);
     setIsDialogOpen(false);
   };
 

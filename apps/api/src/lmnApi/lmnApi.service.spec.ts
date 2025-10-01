@@ -29,7 +29,6 @@ import GroupFormDto from '@libs/groups/types/groupForm.dto';
 import CustomHttpException from '../common/CustomHttpException';
 import LmnApiService from './lmnApi.service';
 import UsersService from '../users/users.service';
-import WebDavService from '../webdav/webdav.service';
 import LdapKeycloakSyncService from '../ldap-keycloak-sync/ldap-keycloak-sync.service';
 
 jest.mock('axios');
@@ -72,13 +71,6 @@ describe('LmnApiService', () => {
           provide: UsersService,
           useValue: {
             getPassword: jest.fn(),
-          },
-        },
-        {
-          provide: WebDavService,
-          useValue: {
-            uploadFile: jest.fn(),
-            createFile: jest.fn(),
           },
         },
         {
@@ -263,7 +255,6 @@ describe('LmnApiService', () => {
   describe('toggleSchoolClassJoined', () => {
     it('should call toggleSchoolClassJoined endpoint and return data', async () => {
       jest.spyOn(service, 'getSchoolClass').mockResolvedValue({} as LmnApiSchoolClass);
-      jest.spyOn(service, 'handleCreateWorkingDirectory').mockResolvedValue();
 
       const mockResponse = { data: { className: 'SchoolClass' } };
       mockedAxios.post.mockResolvedValue(mockResponse);
@@ -488,7 +479,7 @@ describe('LmnApiService', () => {
         data: {
           projectName: 'Project1',
           members: [{ cn: 'member1' }, { cn: 'member2' }],
-          sophomorixMembers: ['member1'],
+          all_members: ['member1'],
         },
       };
 
