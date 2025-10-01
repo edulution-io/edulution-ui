@@ -34,7 +34,6 @@ import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
 import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import UploadFileDialog from '@/pages/FileSharing/Dialog/UploadFileDialog';
-import useUploadProgressToast from '@/hooks/useUploadProgressToast';
 import DeletePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DeletePublicShareDialog';
 import APPS from '@libs/appconfig/constants/apps';
 import useVariableSharePathname from './hooks/useVariableSharePathname';
@@ -47,8 +46,6 @@ const FileSharingPage = () => {
   const { fetchShares } = usePublicShareStore();
   const navigate = useNavigate();
   const { createVariableSharePathname } = useVariableSharePathname();
-
-  useUploadProgressToast();
 
   useEffect(() => {
     const handleFileOperationProgress = async () => {
