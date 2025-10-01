@@ -10,27 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-class DownloadFileDto {
-  processId: number;
+const SMOOTHING_ALPHA = 0.2;
 
-  fileName: string;
-
-  percent: number;
-
-  totalBytes?: number;
-
-  loadedBytes?: number;
-
-  speedBps?: number;
-
-  etaSeconds?: number;
-
-  lastUpdateAt?: number;
-
-  startedAt?: number;
-
-  speedFormatted?: string;
-
-  etaFormatted?: string;
-}
-export default DownloadFileDto;
+export default SMOOTHING_ALPHA;

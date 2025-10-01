@@ -51,6 +51,7 @@ import redisConnection from '../common/redis.connection';
 import NotificationsModule from '../notifications/notifications.module';
 import MobileAppModuleModule from '../mobileAppModule/mobileAppModule.module';
 import UserPreferencesModule from '../user-preferences/user-preferences.module';
+import DevCacheFlushService from '../common/cache/dev-cache-flush.service';
 
 @Module({
   imports: [
@@ -117,6 +118,7 @@ import UserPreferencesModule from '../user-preferences/user-preferences.module';
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
     },
+    ...(process.env.NODE_ENV === 'development' ? [DevCacheFlushService] : []),
   ],
 })
 export default class AppModule {}

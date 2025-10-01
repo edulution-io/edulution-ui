@@ -10,27 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-class DownloadFileDto {
-  processId: number;
+import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
+import IORedis from 'ioredis';
+import redisConnection from '../redis.connection';
 
-  fileName: string;
+@Injectable()
+export default class DevCacheFlushService implements OnApplicationBootstrap {
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  async onApplicationBootstrap() {
+    if (process.env.NODE_ENV !== 'development') return;
 
-  percent: number;
-
-  totalBytes?: number;
-
-  loadedBytes?: number;
-
-  speedBps?: number;
-
-  etaSeconds?: number;
-
-  lastUpdateAt?: number;
-
-  startedAt?: number;
-
-  speedFormatted?: string;
-
-  etaFormatted?: string;
+    const client = new IORedis(redisConnection);
+    await client.flushdb();
+    await client.quit();
+  }
 }
-export default DownloadFileDto;

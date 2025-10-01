@@ -19,10 +19,17 @@ const uploadOctetStream = async (
   fileBody: Blob,
   onUploadProgress?: (e: AxiosProgressEvent) => void,
 ): Promise<void> => {
+  const contentType =
+    fileBody.type &&
+    fileBody.type.length > 0 &&
+    fileBody.type !== RequestResponseContentType.APPLICATION_JSON.toString()
+      ? fileBody.type
+      : RequestResponseContentType.APPLICATION_OCTET_STREAM;
+
   await api.post(url, fileBody, {
     withCredentials: true,
     headers: {
-      [HTTP_HEADERS.ContentType]: fileBody.type || RequestResponseContentType.APPLICATION_OCTET_STREAM,
+      [HTTP_HEADERS.ContentType]: contentType,
     },
     onUploadProgress,
     timeout: Infinity,
