@@ -33,7 +33,7 @@ import DEFAULT_PROPFIND_XML from '@libs/filesharing/constants/defaultPropfindXml
 import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import { Readable } from 'stream';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
-import got, { RequestError } from 'got';
+import got from 'got';
 import { Agent as HttpsAgent } from 'https';
 import { Agent as HttpAgent } from 'http';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
@@ -272,9 +272,7 @@ class WebdavService {
     } catch (error) {
       let message;
 
-      if (error instanceof RequestError) {
-        message = error.message;
-      } else if (error instanceof Error) {
+      if (error instanceof Error) {
         message = error.message;
       } else {
         message = String(error);
