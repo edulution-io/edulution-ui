@@ -270,7 +270,7 @@ class WebdavService {
       const ok = response.statusCode >= 200 && response.statusCode < 300;
       return { success: ok, status: response.statusCode, filename: fullPath.split('/').pop() || '' };
     } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_CREATION_FAILED, HttpStatus.FORBIDDEN);
+      throw new CustomHttpException(CommonErrorMessages.FILE_CREATION_FAILED, HttpStatus.FORBIDDEN, WebdavService.name);
     }
   }
 
