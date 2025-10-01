@@ -535,7 +535,7 @@ class LmnApiService {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
         }),
       );
-      const members = response.data.members.filter((member) => response.data.sophomorixMembers.includes(member.cn));
+      const members = response.data.members.filter((member) => response.data.all_members.includes(member.cn));
       return { ...response.data, members };
     } catch (error) {
       throw new CustomHttpException(
