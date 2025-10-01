@@ -10,9 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ContentType from '@libs/filesharing/types/contentType';
+import WebdavShareDto from './webdavShareDto';
 
-const buildApiFileTypePathUrl = (base: string, type: ContentType, path: string): string =>
-  `${base}?type=${type}&path=${path ? `/${path}` : ''}`;
+type WebdavShareHealthUpdate = Pick<WebdavShareDto, 'webdavShareId' | 'status' | 'lastChecked'>;
 
-export default buildApiFileTypePathUrl;
+export default WebdavShareHealthUpdate;
