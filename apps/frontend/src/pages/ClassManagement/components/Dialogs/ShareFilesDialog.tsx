@@ -18,18 +18,25 @@ import ShareCollectDialogProps from '@libs/classManagement/types/shareCollectDia
 import useUserPath from '@/pages/FileSharing/hooks/useUserPath';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 
 const ShareFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose, action }) => {
   const { homePath } = useUserPath();
   const { moveOrCopyItemToPath } = useFileSharingDialogStore();
+  const { webdavShares } = useFileSharingStore();
 
-  const getDialogBody = () => (
-    <MoveContentDialogBody
-      showAllFiles
-      pathToFetch={homePath}
-      showRootOnly
-    />
-  );
+  const rootShares = webdavShares.filter((share) => share.isRootPath);
+
+  const getDialogBody = () =>
+    rootShares.length === 0 ? (
+      <p>{t('webdavShare.isRootPath.notConfigured')}</p>
+    ) : (
+      <MoveContentDialogBody
+        showAllFiles
+        pathToFetch={homePath}
+        showRootOnly
+      />
+    );
 
   const getFooter = () => (
     <DialogFooterButtons

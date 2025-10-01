@@ -1531,7 +1531,9 @@
     "isRootPath": {
       "title": "Chemin racine",
       "description": "Pour les fonctions scolaires Linuxmuster, au moins un partage WebDAV doit être configuré comme chemin racine.",
-      "short": "Root"
-    }
+      "short": "Root",
+      "notConfigured": "Aucun chemin racine n'est configuré. Veuillez contacter l'administrateur système."
+    },
+    "selectPlaceholder": "Sélectionner..."
   }
 }

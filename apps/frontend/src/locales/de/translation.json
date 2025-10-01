@@ -1730,8 +1730,10 @@
     },
     "isRootPath": {
       "title": "Root-Pfad",
-      "description": "Für die Linuxmuster-Schulfunktionen muss mindestens ein WebDAV-Share als Root-Pfad konfiguriert werden.",
-      "short": "Root"
-    }
+      "description": "Für Linuxmuster-Schulfunktionen muss ein WebDAV-Share als Root-Pfad konfiguriert sein, der den gemeinsamen Root-Ordner von Schülern und Lehrern repräsentiert.",
+      "short": "Root",
+      "notConfigured": "Kein Root-Pfad konfiguriert. Bitte kontaktiere den Systemadministrator."
+    },
+    "selectPlaceholder": "Wähle..."
   }
 }
