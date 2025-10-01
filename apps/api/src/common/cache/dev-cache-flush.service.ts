@@ -12,6 +12,7 @@
 
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import IORedis from 'ioredis';
+import redisConnection from '../redis.connection';
 
 @Injectable()
 export default class DevCacheFlushService implements OnApplicationBootstrap {
@@ -19,11 +20,7 @@ export default class DevCacheFlushService implements OnApplicationBootstrap {
   async onApplicationBootstrap() {
     if (process.env.NODE_ENV !== 'development') return;
 
-    const client = new IORedis({
-      host: process.env.REDIS_HOST,
-      port: Number(process.env.REDIS_PORT),
-      db: 0,
-    });
+    const client = new IORedis(redisConnection);
     await client.flushdb();
     await client.quit();
   }
