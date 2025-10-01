@@ -33,7 +33,7 @@ import DEFAULT_PROPFIND_XML from '@libs/filesharing/constants/defaultPropfindXml
 import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import { Readable } from 'stream';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
-import got from 'got';
+import got, { RequestError } from 'got';
 import { Agent as HttpsAgent } from 'https';
 import { Agent as HttpAgent } from 'http';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
@@ -270,7 +270,22 @@ class WebdavService {
       const ok = response.statusCode >= 200 && response.statusCode < 300;
       return { success: ok, status: response.statusCode, filename: fullPath.split('/').pop() || '' };
     } catch (error) {
-      throw new CustomHttpException(CommonErrorMessages.FILE_CREATION_FAILED, HttpStatus.FORBIDDEN, WebdavService.name);
+      let message;
+
+      if (error instanceof RequestError) {
+        message = error.message;
+      } else if (error instanceof Error) {
+        message = error.message;
+      } else {
+        message = String(error);
+      }
+
+      throw new CustomHttpException(
+        CommonErrorMessages.FILE_CREATION_FAILED,
+        HttpStatus.FORBIDDEN,
+        message,
+        WebdavService.name,
+      );
     }
   }
 
