@@ -21,7 +21,6 @@ describe('FilesharingService', () => {
     getFilesAtPath: jest.fn().mockResolvedValue([{ name: 'file1.txt', size: 1234 }]),
     getDirAtPath: jest.fn().mockResolvedValue([{ name: 'folder1', size: 0 }]),
     createFolder: jest.fn().mockResolvedValue({ success: true }),
-    createFile: jest.fn().mockResolvedValue({ success: true }),
     uploadFile: jest.fn().mockResolvedValue({ success: true }),
     deleteFileAtPath: jest.fn().mockResolvedValue({ success: true }),
     moveOrRenameResource: jest.fn().mockResolvedValue({ success: true }),
@@ -48,8 +47,8 @@ describe('FilesharingService', () => {
   it('should call deleteFile on FileSharingService', async () => {
     const username = 'testTeacher';
     const path = ['/test-path'];
-    const result = await service.deleteFileAtPath(username, path);
-    expect(service.deleteFileAtPath).toHaveBeenCalledWith(username, path);
+    const result = await service.deleteFileAtPath(username, path, 'share');
+    expect(service.deleteFileAtPath).toHaveBeenCalledWith(username, path, 'share');
     expect(result).toEqual({ success: true });
   });
 });

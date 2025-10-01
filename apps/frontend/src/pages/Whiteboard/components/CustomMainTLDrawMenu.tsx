@@ -10,26 +10,29 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import React from 'react';
+import { DefaultMainMenu, DefaultMainMenuContent, TldrawUiMenuGroup, TldrawUiMenuSubmenu } from 'tldraw';
+import SaveAsTldrItem from '@/pages/Whiteboard/components/SaveAsTldrItem';
+import OpenTldrItem from '@/pages/Whiteboard/components/OpenTldrItem';
 import { useTranslation } from 'react-i18next';
-import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
-import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
-import useFileOperationProgressToast from '@/hooks/useFileOperationProgressToast';
 
-const useFileDownloadProgressToast = () => {
+const CustomMainTLDrawMenu = () => {
   const { t } = useTranslation();
-  const { downloadProgress } = useFileSharingDownloadStore();
 
-  const progress: FilesharingProgressDto | null = downloadProgress
-    ? {
-        title: t('filesharing.progressBox.downloadInfo', {
-          filename: downloadProgress.fileName,
-        }),
-        percent: downloadProgress.percent,
-        processID: downloadProgress.processId,
-      }
-    : null;
-
-  useFileOperationProgressToast(progress);
+  return (
+    <DefaultMainMenu>
+      <TldrawUiMenuGroup id="file-custom">
+        <TldrawUiMenuSubmenu
+          id="file-submenu"
+          label={t('common.file')}
+        >
+          <SaveAsTldrItem />
+          <OpenTldrItem />
+        </TldrawUiMenuSubmenu>
+      </TldrawUiMenuGroup>
+      <DefaultMainMenuContent />
+    </DefaultMainMenu>
+  );
 };
 
-export default useFileDownloadProgressToast;
+export default CustomMainTLDrawMenu;

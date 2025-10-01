@@ -22,6 +22,7 @@ import {
   readdir,
   readFile,
   rm,
+  remove,
   stat as fsStat,
   unlink,
 } from 'fs-extra';
@@ -97,6 +98,19 @@ class FilesystemService {
         FileSharingErrorMessage.DownloadFailed,
         HttpStatus.INTERNAL_SERVER_ERROR,
         url,
+        FilesystemService.name,
+      );
+    }
+  }
+
+  static async readFile(filePath: string): Promise<Buffer> {
+    try {
+      return await readFile(filePath);
+    } catch (error) {
+      throw new CustomHttpException(
+        FileSharingErrorMessage.DownloadFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        filePath,
         FilesystemService.name,
       );
     }
@@ -260,9 +274,10 @@ class FilesystemService {
     filePath: string,
     filename: string,
     client: AxiosInstance,
+    share: string,
   ): Promise<WebdavStatusResponse> {
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
-    const url = `${baseUrl}${getPathWithoutWebdav(filePath)}`;
+    const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
+    const url = `${webdavShare.url}${getPathWithoutWebdav(filePath, webdavShare.pathname)}`;
     await this.ensureDirectoryExists(PUBLIC_DOWNLOADS_PATH);
 
     try {
@@ -293,9 +308,20 @@ class FilesystemService {
     return readdir(directory);
   }
 
+  async deleteEmptyFolder(directory: string): Promise<void> {
+    const exists = await pathExists(directory);
+    if (!exists) {
+      return;
+    }
+    const filesNames = await readdir(directory);
+    if (filesNames.length === 0) {
+      await remove(directory);
+    }
+  }
+
   async createReadStream(filePath: string): Promise<Readable> {
     try {
-      await access(filePath);
+      await FilesystemService.throwErrorIfFileNotExists(filePath);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -344,7 +370,6 @@ class FilesystemService {
 
     const fileStream = await this.createReadStream(filePath);
     fileStream.pipe(res);
-
     return res;
   }
 

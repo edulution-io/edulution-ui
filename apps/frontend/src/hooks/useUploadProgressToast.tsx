@@ -25,8 +25,10 @@ import {
   ERROR_TOAST_DURATION_MS,
   LIVE_TOAST_DURATION_MS,
 } from '@libs/ui/constants/showToasterDuration';
+import { useParams } from 'react-router-dom';
 
 const useUploadProgressToast = () => {
+  const { webdavShare } = useParams();
   const { progressByName } = useHandelUploadFileStore();
   const { currentPath, fetchFiles } = useFileSharingStore();
   const { t } = useTranslation();
@@ -119,7 +121,7 @@ const useUploadProgressToast = () => {
 
       if (isDone && !hasRefreshedForFile.current.has(fileName)) {
         hasRefreshedForFile.current.add(fileName);
-        void fetchFiles(currentPath);
+        void fetchFiles(webdavShare, currentPath);
       }
     });
   }, [progressByName, currentPath, fetchFiles, t]);

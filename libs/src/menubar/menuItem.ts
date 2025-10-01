@@ -16,6 +16,7 @@ interface MenuItem {
   icon: string;
   action: () => void;
   path?: string;
+  disableTranslation?: boolean;
 }
 
 export default MenuItem;

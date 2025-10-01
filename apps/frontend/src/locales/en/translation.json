@@ -315,7 +315,7 @@
     "nobulletinboard": "No new bulletins"
   },
   "filesharing": {
-    "filterPlaceHolderText": "Search for filename",
+    "filterPlaceHolderText": "Type to filter",
     "title": "FILES",
     "sidebar": "Files",
     "previewTitle": "File Preview",
@@ -644,8 +644,9 @@
     "editor": {
       "inputFieldTitle": "Input field",
       "new": "New (blank)",
-      "fileUploadSuccess": "Saved the image successfully.",
-      "fileUploadError": "Error on Image Upload, please retry later.",
+      "fileUploadSuccess": "Saved the file successfully.",
+      "fileUploadError": "Error on file upload, please retry later.",
+      "fileDeletionSuccess": "Deleted the file successfully.",
       "saveSurveySuccess": "Saved the survey.",
       "reset": "Reset",
       "addDescription": "Add a description",
@@ -693,6 +694,7 @@
       "idText": "Pls copy this for later",
       "idParagraph": "To view your former answer or to edit it, if configured, you can use the participation-ID here.",
       "usernameRequired": "User name is required",
+      "fileSizeExceeded": "A file exceeds the maximum allowed size of {{size}} MB.",
       "completeMessage": "Thank you very much for participating in this survey"
     },
     "errors": {
@@ -1009,9 +1011,9 @@
           "invalidUrlFormat": "Invalid URL"
         },
         "webdavShare": {
-          "title": "WebDAV-Share",
-          "description": "Here you can set up your own WebDAV shares.",
-          "filterPlaceHolderText": "Search for share"
+          "title": "WebDAV-Server",
+          "description": "WebDAV servers can be set up for the file manager here.",
+          "filterPlaceHolderText": "Search for WebDAV servers"
         },
         "files": {
           "title": "Files",
@@ -1054,7 +1056,8 @@
       "fieldRequired": "This field is required",
       "maxChars": "Maximum {{count}} characters",
       "nameAlreadyExists": "App with this name already exists",
-      "nameIsNotAllowed": "This app name is not allowed"
+      "nameIsNotAllowed": "This app name is not allowed",
+      "webdavShareNameAlreadyExists": "WebDAV-Share with this name already exists"
     },
     "yamleditor": {
       "invalidYaml": "Wrong YAML syntax",
@@ -1235,6 +1238,7 @@
       "fileNotProvided": "File not provided",
       "invalidFileType": "Invalid file type",
       "startDateBeforeEndDate": "The start date must be before the end date",
+      "invalidRequestData": "Invalid request data",
       "wrongServerConfig": "Incorrect server configuration"
     },
     "cut": "Cut",
@@ -1346,7 +1350,8 @@
     "mode": "Mode",
     "orContinueWithoutAccount": "Or continue without account",
     "application": "Application",
-    "reset": "Reset"
+    "reset": "Reset",
+    "file": "File"
   },
   "form": {
     "path": "Path",
@@ -1371,6 +1376,7 @@
     "embeddedPageEditor": "Editor",
     "embeddedPageEditorModeDescription": "Here you can choose between sandbox and native rendering. Sandbox is the safest variant, native the original rendering. Please note that no security precautions can be taken with native rendering. In sandbox mode, the HTML file is read from memory. To do this, upload the file.",
     "sandboxed": "Sandbox",
+    "pathname": "Share-Path",
     "input": {
       "dateTimePicker": {
         "timeSlot": "o'clock",
@@ -1426,7 +1432,9 @@
   },
   "whiteboard": {
     "title": "WHITEBOARD",
-    "sidebar": "Whiteboard"
+    "sidebar": "Whiteboard",
+    "saveAsTlFile": "Save Whiteboard as .tldr file",
+    "openTlFile": "Open .tldr file"
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
@@ -1495,6 +1503,17 @@
     "unknownErrorOccurred": "An unknown error occurred"
   },
   "currentDirectory": "Current directory",
+
+  "saveExternalFileDialogBody": {
+    "saveExternalFile": "Save external file",
+    "destinationFolder": "Destination folder",
+    "filename": "Filename",
+    "filenamePlaceholder": "Enter filename here",
+    "filenameRequired": "Filename cannot be empty",
+    "fileSavedSuccessful": "File saved successfully",
+    "fileSaveFailed": "File could not be saved"
+  },
+
   "moveItemDialog": {
     "changeDirectory": "Change directory",
     "currentDirectory": "Current directory",
@@ -1729,6 +1748,8 @@
       "linuxmuster": "Linuxmuster",
       "edu-file-proxy": "edulution File Proxy",
       "generic": "Generic"
-    }
+    },
+    "status": "Status",
+    "offline": "Server is currently unavailable"
   }
 }

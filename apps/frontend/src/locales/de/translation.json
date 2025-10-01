@@ -314,7 +314,7 @@
     "students-home": "Schüler-Home"
   },
   "filesharing": {
-    "filterPlaceHolderText": "Suche nach Dateiname",
+    "filterPlaceHolderText": "Tippen, um zu filtern",
     "title": "DATEIEN",
     "selectFile": "Datei auswählen",
     "sidebar": "Dateien",
@@ -648,6 +648,7 @@
       "new": "Neu (Leer)",
       "fileUploadSuccess": "Die Datei wurde erfolgreich hochgeladen.",
       "fileUploadError": "Die Datei konnte nicht hochgeladen werden, bitte versuche es später erneut.",
+      "fileDeletionSuccess": "Die Datei wurde erfolgreich gelöscht.",
       "saveSurveySuccess": "Die Umfrage wurde gespeichert.",
       "reset": "Verwerfen",
       "addDescription": "Beschreibung hinzufügen",
@@ -695,6 +696,7 @@
       "idText": "Bitte notiere dir:",
       "idParagraph": "Um deine Antwort einzusehen oder, falls konfiguriert, nochmals zu bearbeiten, kannst du die Teilnahme-ID hier benutzen.",
       "usernameRequired": "Der Benutzername ist erforderlich",
+      "fileSizeExceeded": "Eine Datei überschreitet die maximal erlaubte Größe von {{size}} MB.",
       "completeMessage": "Vielen Dank, dass du an der Umfrage Teilgenommen hast"
     },
     "errors": {
@@ -1012,9 +1014,9 @@
           "invalidUrlFormat": "Ungültige URL"
         },
         "webdavShare": {
-          "title": "WebDAV-Share",
-          "description": "Hier können eigene WebDAV-Shares eingerichtet werden.",
-          "filterPlaceHolderText": "Suche nach WebDAV-Share"
+          "title": "WebDAV-Server",
+          "description": "Hier können WebDAV-Server für den Dateimanager eingerichtet werden.",
+          "filterPlaceHolderText": "Suche nach WebDAV-Server"
         },
         "files": {
           "title": "Dateien",
@@ -1057,7 +1059,8 @@
       "fieldRequired": "Dieses Feld ist erforderlich",
       "maxChars": "Maximal {{count}} Zeichen",
       "nameAlreadyExists": "App mit diesem Namen existiert bereits",
-      "nameIsNotAllowed": "Dieser Appname ist nicht erlaubt"
+      "nameIsNotAllowed": "Dieser Appname ist nicht erlaubt",
+      "webdavShareNameAlreadyExists": "Dieser Name exisitiert bereits"
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",
@@ -1237,6 +1240,7 @@
       "fileNotProvided": "Datei wurde nicht bereitgestellt",
       "invalidFileType": "Ungültiger Dateityp",
       "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",
+      "invalidRequestData": "Ungültige Anfragedaten",
       "wrongServerConfig": "Fehlerhafte Serverkonfiguration"
     },
     "cut": "Ausschneiden",
@@ -1348,7 +1352,8 @@
     "upload": "Hochladen",
     "mode": "Modus",
     "orContinueWithoutAccount": "Oder fahre ohne Account fort",
-    "reset": "Zurücksetzen"
+    "reset": "Zurücksetzen",
+    "file": "Datei"
   },
   "form": {
     "path": "Link",
@@ -1373,6 +1378,7 @@
     "embeddedPageEditor": "Editor",
     "embeddedPageEditorModeDescription": "Hier kann zwischen Sandbox und nativ gerendert ausgewählt werden. Sandbox ist die sicherste Variante, native das Original-Rendering. Beachte, dass bei nativen Rendering keine Sicherheitsvorkehrungen getroffen werden können. Im Sandbox-Modus wird die HTML-Datei aus dem Speicher gelesen. Lade dazu die Datei hoch.",
     "sandboxed": "Sandbox",
+    "pathname": "Share-Pfad",
     "input": {
       "dateTimePicker": {
         "timeSlot": "Uhr",
@@ -1429,7 +1435,9 @@
   },
   "whiteboard": {
     "title": "WHITEBOARD",
-    "sidebar": "Whiteboard"
+    "sidebar": "Whiteboard",
+    "saveAsTlFile": "Whiteboard als .tldr Datei speichern",
+    "openTlFile": ".tldr Datei öffnen"
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
@@ -1498,6 +1506,16 @@
     "copy": "Kopieren"
   },
 
+  "saveExternalFileDialogBody": {
+    "saveExternalFile": "Externe Datei speichern",
+    "destinationFolder": "Zielordner",
+    "filename": "Dateiname",
+    "filenamePlaceholder": "Dateiname hier eingeben",
+    "filenameRequired": "Dateiname darf nicht leer sein",
+    "fileSavedSuccessful": "Datei erfolgreich gespeichert",
+    "fileSaveFailed": "Datei konnte nicht gespeichert werden"
+  },
+
   "moveItemDialog": {
     "changeDirectory": "Verzeichnis wechseln",
     "currentDirectory": "Aktuelles Verzeichnis",
@@ -1527,7 +1545,7 @@
     "deleteFiles": "Dateien löschen"
   },
   "timeAgo": {
-    "justNow": "gerade Eben",
+    "justNow": "gerade eben",
     "minuteAgo": "vor {{count}} Minuten",
     "hourAgo": "vor {{count}} Stunden",
     "dayAgo": "vor {{count}} Tagen",
@@ -1732,6 +1750,8 @@
       "linuxmuster": "Linuxmuster",
       "edu-file-proxy": "edulution File Proxy",
       "generic": "Generisch"
-    }
+    },
+    "status": "Status",
+    "offline": "Server ist aktuell nicht erreichbar"
   }
 }
