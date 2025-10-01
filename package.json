@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "1.5.52",
+  "version": "1.5.54",
   "scripts": {
     "test": "nx run-many --target=test --projects=api",
     "test:api": "nx run api:test --detectOpenHandles",
