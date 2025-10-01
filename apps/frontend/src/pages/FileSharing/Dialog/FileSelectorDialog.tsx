@@ -15,11 +15,11 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import FileSelectorDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/FileSelectorDialogBody';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import { useTranslation } from 'react-i18next';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 
 const FileSelectorDialog = () => {
   const { isFileDialogOpen, setAllowedExtensions, setOpenFileDialog } = useOpenFileDialogStore();
@@ -27,6 +27,7 @@ const FileSelectorDialog = () => {
   const { createDownloadBlobUrl } = useFileSharingDownloadStore();
   const { openTldrFromBlobUrl } = useWhiteboardEditorStore();
   const { t } = useTranslation();
+  const { selectedWebdavShare } = useFileSharingStore();
 
   const handleClose = () => {
     setAllowedExtensions([]);
@@ -35,8 +36,7 @@ const FileSelectorDialog = () => {
   };
 
   const handelSubmit = async () => {
-    const cleanedPath = getPathWithoutWebdav(moveOrCopyItemToPath.filePath);
-    const blobUrl = await createDownloadBlobUrl(cleanedPath);
+    const blobUrl = await createDownloadBlobUrl(moveOrCopyItemToPath.filePath, selectedWebdavShare);
     if (blobUrl) {
       await openTldrFromBlobUrl(blobUrl, moveOrCopyItemToPath.filename);
     }
@@ -46,12 +46,12 @@ const FileSelectorDialog = () => {
 
   const getFooter = () => (
     <DialogFooterButtons
-        handleClose={handleClose}
-        handleSubmit={handelSubmit}
-        submitButtonText="common.open"
-        submitButtonType="submit"
-        disableSubmit={!moveOrCopyItemToPath?.filePath}
-      />
+      handleClose={handleClose}
+      handleSubmit={handelSubmit}
+      submitButtonText="common.open"
+      submitButtonType="submit"
+      disableSubmit={!moveOrCopyItemToPath?.filePath}
+    />
   );
 
   return (
