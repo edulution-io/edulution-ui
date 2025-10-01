@@ -833,7 +833,7 @@
           "invalidUrlFormat": "URL non valide"
         },
         "webdavShare": {
-          "title": "WebDAV-Share",
+          "title": "WebDAV-Server",
           "description": "Vous pouvez configurer ici vos propres partages WebDAV.",
           "filterPlaceHolderText": "Rechercher le nom de partages"
         },
@@ -877,7 +877,8 @@
       "forbiddenProxyPath": "Ce chemin proxy n'est pas autorisé.",
       "fieldRequired": "Ce champ est obligatoire",
       "maxChars": "Maximum {{count}} caractères",
-      "nameAlreadyExists": "Une application avec ce nom existe déjà"
+      "nameAlreadyExists": "Une application avec ce nom existe déjà",
+      "webdavShareNameAlreadyExists": "Un partage WebDAV avec ce nom existe déjà"
     },
     "yamleditor": {
       "invalidYaml": "Syntaxe YAML non valide",
@@ -1192,6 +1193,7 @@
     "embeddedPageEditor": "Editeur",
     "embeddedPageEditorModeDescription": "Ici, vous pouvez choisir entre Sandbox et Native. Sandbox est la variante la plus sûre, native du rendu d'origine. Notez qu'aucune précaution de sécurité ne peut être prise dans le rendu natif. En mode sandbox, le fichier HTML est lu à partir de la mémoire. Pour ce faire, téléchargez le fichier.",
     "sandboxed": "Bac à sable",
+    "pathname": "Chemin d’accès",
     "input": {
       "dateTimePicker": {
         "timeSlot": "Heure",
@@ -1505,5 +1507,22 @@
     "description": "Ici, on peut choisir la plateforme à laquelle {{appName }} doit être connecté.",
     "linuxmuster": "Linuxmuster",
     "generic": "Générique"
+  },
+
+  "webdavShare": {
+    "displayName": "Nom d'affichage",
+    "accessGroups": {
+      "title": "Groupes d'utilisateurs",
+      "description": "Sélectionnez les groupes d'utilisateurs qui doivent avoir accès au partage WebDAV."
+    },
+    "type": {
+      "title": "Schéma du serveur WebDAV",
+      "description": "Ici, vous pouvez sélectionner le type de schéma du serveur WebDAV.",
+      "linuxmuster": "Linuxmuster",
+      "edu-file-proxy": "Proxy de fichiers edulution",
+      "generic": "Générique"
+    },
+    "status": "Statut",
+    "offline": "Le serveur est actuellement indisponible."
   }
 }

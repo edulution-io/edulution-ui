@@ -60,7 +60,7 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
 
   const { isAccessRestricted, requiresPassword, publicShare } = fetchedShareByIdResult;
 
-  const share = publicShare && Array.isArray(publicShare) ? publicShare[0] : publicShare;
+  const publicShareDto = publicShare && Array.isArray(publicShare) ? publicShare[0] : publicShare;
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { password: '' },
@@ -74,11 +74,11 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
   const titleIcon = <LiaFileDownloadSolid size={BUTTONS_ICON_WIDTH} />;
 
   const onDownload = form.handleSubmit(async ({ password }) => {
-    if (!share) return;
+    if (!publicShareDto) return;
 
     try {
       setIsDownloading(true);
-      const { filename } = share;
+      const { filename } = publicShareDto;
       const absoluteUrl = buildAbsolutePublicDownloadUrl(
         `${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.PUBLIC_SHARE_DOWNLOAD}/${publicShareId}`,
       );
@@ -86,6 +86,7 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
         absoluteUrl,
         filename,
         password,
+        publicShareDto.share,
         () =>
           form.setError('password', {
             type: 'server',
@@ -136,7 +137,7 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
     );
   }
 
-  if (!share) {
+  if (!publicShareDto) {
     return (
       <AdaptiveDialog
         isOpen={isAuthenticated ? isPublicShareInfoDialogOpen : true}
@@ -148,7 +149,7 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
     );
   }
 
-  const { filename, creator, expires } = share;
+  const { filename, creator, expires } = publicShareDto;
 
   const accessBody = (
     <div className="space-y-4">

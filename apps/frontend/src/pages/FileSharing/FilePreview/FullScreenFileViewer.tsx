@@ -28,6 +28,7 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 const FullScreenFileViewer = () => {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
+  const webdavShare = searchParams.get('share') || undefined;
   const { loadDownloadUrl, temporaryDownloadUrl, isEditorLoading, isCreatingBlobUrl, isFetchingPublicUrl } =
     useFileSharingDownloadStore();
 
@@ -46,7 +47,7 @@ const FullScreenFileViewer = () => {
   const initializeFile = async () => {
     const fileToOpen = filesToOpenInNewTab.find((f) => f.etag === fileETag);
     if (fileToOpen) {
-      await loadDownloadUrl(fileToOpen);
+      await loadDownloadUrl(fileToOpen, webdavShare);
       setCurrentlyEditingFile(fileToOpen);
       setIsLoading(false);
     }
