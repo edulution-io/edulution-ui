@@ -6,6 +6,8 @@
   "framebufferImage": "Framebuffer-Bild",
   "previewImage": "Bildvorschau",
   "not-set": "Nicht gesetzt",
+  "imprint": "Impressum",
+  "public": "Öffentlich",
   "bulletinboard": {
     "settings": "Einstellungen",
     "noBulletinsToShow": "Aktuell gibt es keine Mitteilungen anzuzeigen, schaue am besten später noch mal vorbei!",
@@ -106,6 +108,7 @@
   },
   "dashboard": {
     "pageTitle": "Dashboard",
+    "sidebar": "Dashboard",
     "description": "Hier ist ihr persönliches {{ applicationName }} Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Unterricht gesammelt sind.",
     "mobileAccess": {
       "title": "Mobiler Zugriff",
@@ -311,7 +314,7 @@
     "students-home": "Schüler-Home"
   },
   "filesharing": {
-    "filterPlaceHolderText": "Suche nach Dateiname",
+    "filterPlaceHolderText": "Tippen, um zu filtern",
     "title": "DATEIEN",
     "selectFile": "Datei auswählen",
     "sidebar": "Dateien",
@@ -346,9 +349,9 @@
       "CollectingFailed": "Einasmmeln der Dateien fehlgeschlagen",
       "MissingCallbackURL": "Fehlende Callback-URL",
       "SharingFailed": "Austeilen der Dateien fehlgeschlagen",
-      "CopyFailed": "Kopieren fehlgeschlagen"
+      "CopyFailed": "Kopieren fehlgeschlagen",
+      "FileFormatNotSupported": "Dateiformat wird nicht unterstützt"
     },
-
     "publicShareFilesPage": {
       "title": "Geteilte Dateien",
       "description": "Hier findest du alle Dateien, die du geteilt hast. Beachte: Jeder, der den Freigabe-Link und ggf. das dazugehörige Passwort hat, kann diese Dateien herunterladen."
@@ -374,13 +377,16 @@
       "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden",
       "downloadInfo": "Datei {{filename}} wird heruntergeladen",
       "fileStructureIsCreating": "Dateistruktur wird erstellt",
-      "zipFilesAreUploading": "Dateien werden in Ordnerstruktur hochgeladen"
+      "zipFilesAreUploading": "Dateien werden in Ordnerstruktur hochgeladen",
+      "fileIsUploading": "{{filename}} wird hochgeladen"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
       "FileNameRequired": "Dateiname ist erforderlich",
       "NewFileNameRequired": "Neuer Dateiname ist erforderlich",
-      "NameRequired": "Name erforderlich"
+      "NameRequired": "Name erforderlich",
+      "NameExceedsCharacterLimit": "Der Dateiname darf maximal 30 Zeichen haben.",
+      "NameMustNotEndWithDot": "Der Name darf nicht mit einem Punkt enden."
     },
 
     "publicFileSharing": {
@@ -437,6 +443,22 @@
       "selectedItemPrefix": "Ausgewählter Inhalt, welcher geteilt wird:",
       "noInviteesWarning": "⚠️  WARNUNG: Jeder, der den Link besitzt, kann diesen Inhalt herunterladen.",
       "inviteesWarning": "⚠️ WARNUNG: Jeder, der zu den ausgewählten Gruppen oder Benutzern gehört, kann diesen Inhalt herunterladen."
+    },
+
+    "eta": {
+      "fewSeconds": "ein paar Sekunden verbleibend",
+      "lessThanMinute": "weniger als eine Minute verbleibend",
+      "aboutOneMinute": "etwa eine Minute verbleibend",
+      "aboutMinutes_one": "etwa {{count}} Minute verbleibend",
+      "aboutMinutes_other": "etwa {{count}} Minuten verbleibend",
+      "aboutHours_one": "etwa {{count}} Stunde verbleibend",
+      "aboutHours_other": "etwa {{count}} Stunden verbleibend",
+      "moreThanHours_one": "mehr als {{count}} Stunde verbleibend",
+      "moreThanHours_other": "mehr als {{count}} Stunden verbleibend",
+      "aboutDays_one": "etwa {{count}} Tag verbleibend",
+      "aboutDays_other": "etwa {{count}} Tage verbleibend",
+      "moreThanDays_one": "mehr als {{count}} Tag verbleibend",
+      "moreThanDays_other": "mehr als {{count}} Tage verbleibend"
     }
   },
   "forums": {
@@ -633,6 +655,7 @@
       "new": "Neu (Leer)",
       "fileUploadSuccess": "Die Datei wurde erfolgreich hochgeladen.",
       "fileUploadError": "Die Datei konnte nicht hochgeladen werden, bitte versuche es später erneut.",
+      "fileDeletionSuccess": "Die Datei wurde erfolgreich gelöscht.",
       "saveSurveySuccess": "Die Umfrage wurde gespeichert.",
       "reset": "Verwerfen",
       "addDescription": "Beschreibung hinzufügen",
@@ -680,6 +703,7 @@
       "idText": "Bitte notiere dir:",
       "idParagraph": "Um deine Antwort einzusehen oder, falls konfiguriert, nochmals zu bearbeiten, kannst du die Teilnahme-ID hier benutzen.",
       "usernameRequired": "Der Benutzername ist erforderlich",
+      "fileSizeExceeded": "Eine Datei überschreitet die maximal erlaubte Größe von {{size}} MB.",
       "completeMessage": "Vielen Dank, dass du an der Umfrage Teilgenommen hast"
     },
     "errors": {
@@ -970,9 +994,9 @@
           "invalidUrlFormat": "Ungültige URL"
         },
         "webdavShare": {
-          "title": "WebDAV-Share",
-          "description": "Hier können eigene WebDAV-Shares eingerichtet werden.",
-          "filterPlaceHolderText": "Suche nach WebDAV-Share"
+          "title": "WebDAV-Server",
+          "description": "Hier können WebDAV-Server für den Dateimanager eingerichtet werden.",
+          "filterPlaceHolderText": "Suche nach WebDAV-Server"
         },
         "files": {
           "title": "Dateien",
@@ -988,7 +1012,8 @@
           "sandboxMode": "Sparates Layout",
           "nativeMode": "Integriertes Layout",
           "sandboxModeDescription": "Im Modus „Sparates Layout“ wird der Inhalt als eigenständige Seite angezeigt, ähnlich wie ein Fenster innerhalb der Anwendung. Dabei können neben dem eigentlichen Inhalt auch zusätzliche Designelemente oder Funktionen aus anderen Quellen geladen werden. Dadurch ist die Gestaltung unabhängig von der Anwendung, könnte also anders aussehen oder sich anders verhalten. Hier muss der Inhalt als HTML-Datei hochgeladen werden.",
-          "nativeModeDescription": "Im Modus „Integriertes Layout“ dagegen wird der Inhalt direkt in die Oberfläche der Anwendung eingefügt. Dadurch sieht der Inhalt genauso aus wie die Anwendung selbst und fügt sich optisch nahtlos ein. Allerdings können hier keine zusätzlichen externen Designelemente oder Funktionen dynamisch hinzugefügt werden. Es können jedoch statische Elemente wie Bilder hochgeladen und hier eingesetzt werden."
+          "nativeModeDescription": "Im Modus „Integriertes Layout“ dagegen wird der Inhalt direkt in die Oberfläche der Anwendung eingefügt. Dadurch sieht der Inhalt genauso aus wie die Anwendung selbst und fügt sich optisch nahtlos ein. Allerdings können hier keine zusätzlichen externen Designelemente oder Funktionen dynamisch hinzugefügt werden. Es können jedoch statische Elemente wie Bilder hochgeladen und hier eingesetzt werden.",
+          "visibilityDescription": "Hier können Sie festlegen, ob die App öffentlich zugänglich sein soll. Aktiv bedeutet öffentlich, inaktiv bedeutet, dass nur konfigurierte Nutzergruppen Zugriff haben. Die App öffentlich zugänglich zu machen erzeugt einen Link im Footer. Um die App in der Sidebar für registrierte Nutzer sichtbar zu machen, muss deren Zugriff über die Nutzergruppen konfiguriert werden"
         }
       },
       "update": {
@@ -1014,7 +1039,8 @@
       "fieldRequired": "Dieses Feld ist erforderlich",
       "maxChars": "Maximal {{count}} Zeichen",
       "nameAlreadyExists": "App mit diesem Namen existiert bereits",
-      "nameIsNotAllowed": "Dieser Appname ist nicht erlaubt"
+      "nameIsNotAllowed": "Dieser Appname ist nicht erlaubt",
+      "webdavShareNameAlreadyExists": "Dieser Name exisitiert bereits"
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",
@@ -1174,6 +1200,7 @@
     "guest": "Gast",
     "ok": "OK",
     "next": "Weiter",
+    "of": "von",
     "back": "Zurück",
     "confirm": "Bestätigen",
     "creator": "Ersteller",
@@ -1191,6 +1218,7 @@
       "fileNotProvided": "Datei wurde nicht bereitgestellt",
       "invalidFileType": "Ungültiger Dateityp",
       "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",
+      "invalidRequestData": "Ungültige Anfragedaten",
       "wrongServerConfig": "Fehlerhafte Serverkonfiguration"
     },
     "cut": "Ausschneiden",
@@ -1302,7 +1330,8 @@
     "upload": "Hochladen",
     "mode": "Modus",
     "orContinueWithoutAccount": "Oder fahre ohne Account fort",
-    "reset": "Zurücksetzen"
+    "reset": "Zurücksetzen",
+    "file": "Datei"
   },
   "form": {
     "path": "Link",
@@ -1327,6 +1356,7 @@
     "embeddedPageEditor": "Editor",
     "embeddedPageEditorModeDescription": "Hier kann zwischen Sandbox und nativ gerendert ausgewählt werden. Sandbox ist die sicherste Variante, native das Original-Rendering. Beachte, dass bei nativen Rendering keine Sicherheitsvorkehrungen getroffen werden können. Im Sandbox-Modus wird die HTML-Datei aus dem Speicher gelesen. Lade dazu die Datei hoch.",
     "sandboxed": "Sandbox",
+    "pathname": "Share-Pfad",
     "input": {
       "dateTimePicker": {
         "timeSlot": "Uhr",
@@ -1369,7 +1399,7 @@
     "folderTooLargeTitle": "Zu viele Dateien im Ordner",
     "folderTooLargeDescription": "Der Ordner enthält mehr als 100 Dateien. Bitte wähle einen anderen Ordner oder reduziere die Anzahl der Dateien.",
     "oversizedFileDetected": "Zu große Datei entdeckt!",
-    "cannotUploadOversized": "Dateien, die größer als 400 MB sind, können nicht hochgeladen werden.",
+    "cannotUploadOversized": "Dateien, die größer als 50 MB sind, können nicht hochgeladen werden.",
     "addFiles": "Dateien hinzufügen",
     "addFolder": "Ordner hinzufügen",
     "preparingFolder": "Ordner wird vorbereitet"
@@ -1383,11 +1413,17 @@
   },
   "whiteboard": {
     "title": "WHITEBOARD",
-    "sidebar": "Whiteboard"
+    "sidebar": "Whiteboard",
+    "saveAsTlFile": "Whiteboard als .tldr Datei speichern",
+    "openTlFile": ".tldr Datei öffnen"
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
-    "sidebar": "Kollaboratives Whiteboard"
+    "sidebar": "Kollaboratives Whiteboard",
+    "privateRoom": "Privater Raum",
+    "dropdownPlaceholder": "Wähle hier deinen aktuelle Raum",
+    "historyTitle": "Verlauf",
+    "historyNoMore": "Keine weiteren Einträge"
   },
   "table": {
     "noDataAvailable": "Keine Daten verfügbar"
@@ -1448,6 +1484,16 @@
     "copy": "Kopieren"
   },
 
+  "saveExternalFileDialogBody": {
+    "saveExternalFile": "Externe Datei speichern",
+    "destinationFolder": "Zielordner",
+    "filename": "Dateiname",
+    "filenamePlaceholder": "Dateiname hier eingeben",
+    "filenameRequired": "Dateiname darf nicht leer sein",
+    "fileSavedSuccessful": "Datei erfolgreich gespeichert",
+    "fileSaveFailed": "Datei konnte nicht gespeichert werden"
+  },
+
   "moveItemDialog": {
     "changeDirectory": "Verzeichnis wechseln",
     "currentDirectory": "Aktuelles Verzeichnis",
@@ -1477,7 +1523,7 @@
     "deleteFiles": "Dateien löschen"
   },
   "timeAgo": {
-    "justNow": "gerade Eben",
+    "justNow": "gerade eben",
     "minuteAgo": "vor {{count}} Minuten",
     "hourAgo": "vor {{count}} Stunden",
     "dayAgo": "vor {{count}} Tagen",
@@ -1497,7 +1543,8 @@
     "delete": "Löschen",
     "download": "Herunterladen",
     "copy": "Kopieren",
-    "share": "Teilen"
+    "share": "Teilen",
+    "back": "Zurück"
   },
   "response": {
     "successfully": "Aktion war erfolgreich",
@@ -1681,6 +1728,8 @@
       "linuxmuster": "Linuxmuster",
       "edu-file-proxy": "edulution File Proxy",
       "generic": "Generisch"
-    }
+    },
+    "status": "Status",
+    "offline": "Server ist aktuell nicht erreichbar"
   }
 }

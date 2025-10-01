@@ -15,7 +15,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
 import { SidebarMenuItemProps } from '@libs/ui/types/sidebar';
 import { getRootPathName } from '@libs/common/utils';
-import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
+import ROOT_ROUTE from '@libs/common/constants/rootRoute';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import useSidebarStore from '../useSidebarStore';
 
@@ -24,7 +24,7 @@ const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem }) => {
   const { toggleMobileSidebar } = useSidebarStore();
 
   const rootPathName = getRootPathName(pathname);
-  const menuItemColor = rootPathName === menuItem.link && pathname !== DASHBOARD_ROUTE ? menuItem.color : '';
+  const menuItemColor = rootPathName === menuItem.link && pathname !== ROOT_ROUTE ? menuItem.color : '';
 
   return (
     <div

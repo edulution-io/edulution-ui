@@ -231,7 +231,7 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
     },
     size: 100,
     cell: ({ row }) => {
-      const { setShare, openDialog, deleteShares } = usePublicShareStore();
+      const { setShare, openDialog, setSelectedRows } = usePublicShareStore();
       const { original } = row;
 
       return (
@@ -248,8 +248,9 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
             {
               icon: MdDelete,
               translationId: 'common.delete',
-              onClick: async () => {
-                await deleteShares([original]);
+              onClick: () => {
+                setSelectedRows({ [original.publicShareId]: true });
+                openDialog(PUBLIC_SHARE_DIALOG_NAMES.DELETE);
               },
             },
           ]}

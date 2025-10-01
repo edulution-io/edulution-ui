@@ -25,6 +25,7 @@ import Toaster from '@/components/ui/Toaster';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import AUTH_PATHS from '@libs/auth/constants/auth-paths';
+import { TooltipProvider } from '@/components/ui/Tooltip';
 import GlobalHooksWrapper from './components/GlobalHooksWrapper';
 
 const App = () => {
@@ -60,7 +61,9 @@ const App = () => {
       <CookiesProvider>
         <GlobalHooksWrapper>
           <HelmetProvider>
-            <AppRouter />
+            <TooltipProvider>
+              <AppRouter />
+            </TooltipProvider>
           </HelmetProvider>
           <Toaster />
         </GlobalHooksWrapper>

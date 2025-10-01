@@ -129,6 +129,7 @@ class BulletinCategoryService implements OnModuleInit {
   async create(currentUser: JWTUser, dto: CreateBulletinCategoryDto) {
     const category = (await this.bulletinCategoryModel.create({
       name: dto.name,
+      bulletinVisibility: dto.bulletinVisibility,
       isActive: dto.isActive ?? true,
       visibleForUsers: dto.visibleForUsers ?? [],
       visibleForGroups: dto.visibleForGroups ?? [],

@@ -12,9 +12,12 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
-import { Model, Serializer } from 'survey-core';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
+import { ClearFilesEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
+import { FileDownloadDto } from '@libs/survey/types/api/file-download.dto';
+import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import SURVEY_ANSWERS_MAXIMUM_FILE_SIZE from '@libs/survey/constants/survey-answers-maximum-file-size';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import useLanguage from '@/hooks/useLanguage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
@@ -32,9 +35,13 @@ interface SurveyParticipationModelProps {
   isPublic: boolean;
 }
 
-Serializer.getProperty('rating', 'displayMode').defaultValue = 'buttons';
 Serializer.getProperty('text', 'textUpdateMode').defaultValue = 'onTyping';
-
+Serializer.getProperty('rating', 'displayMode').defaultValue = 'buttons';
+Serializer.getProperty('file', 'storeDataAsText').defaultValue = false;
+Serializer.getProperty('file', 'waitForUpload').defaultValue = true;
+Serializer.getProperty('file', 'showPreview').defaultValue = true;
+Serializer.getProperty('file', 'allowMultiple').defaultValue = false;
+Serializer.getProperty('text', 'textUpdateMode').defaultValue = 'onTyping';
 Serializer.getProperty('signaturepad', 'penColor').defaultValue = 'rgba(255, 255, 255, 1)';
 Serializer.getProperty('signaturepad', 'signatureWidth').defaultValue = '800';
 
@@ -43,7 +50,8 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
   const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
 
-  const { fetchAnswer, isFetching, answerSurvey, previousAnswer } = useParticipateSurveyStore();
+  const { fetchAnswer, isFetching, answerSurvey, previousAnswer, uploadTempFile, deleteTempFile } =
+    useParticipateSurveyStore();
 
   const { setIsOpen: setOpenExportPDFDialog } = useExportSurveyToPdfStore();
 
@@ -76,7 +84,6 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       const success = await answerSurvey(
         {
           surveyId: selectedSurvey.id,
-          saveNo: selectedSurvey.saveNo,
           answer: surveyModel.getData() as JSON,
           isPublic,
         },
@@ -90,6 +97,84 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
           if (updateAnsweredSurveys) void updateAnsweredSurveys();
         }
         toast.success(t('survey.participate.saveAnswerSuccess'));
+      }
+    });
+
+    newModel.onUploadFiles.add(async (_: SurveyModel, options: UploadFilesEvent): Promise<void> => {
+      const { files, callback } = options;
+      if (!selectedSurvey.id || !files?.length || files.some((file) => !file.name?.length)) {
+        return callback([]);
+      }
+      if (files.some((file) => file.size > SURVEY_ANSWERS_MAXIMUM_FILE_SIZE)) {
+        toast.error(
+          t('survey.participate.fileSizeExceeded', { size: SURVEY_ANSWERS_MAXIMUM_FILE_SIZE / (1024 * 1024) }),
+        );
+        return callback([]);
+      }
+
+      const uploadPromises = files.map(async (file) => {
+        const data = await uploadTempFile(selectedSurvey.id!, file);
+        if (data === null) {
+          return null;
+        }
+        const newFile: FileDownloadDto = {
+          ...file,
+          type: file.type || 'image/png',
+          originalName: file.name || data.name,
+          name: data.name,
+          url: `${EDU_API_URL}/${data.url}`,
+          content: data.content,
+        };
+        return newFile;
+      });
+      const results = await Promise.all(uploadPromises);
+      const filteredResults = results.filter((result) => result !== null);
+      return callback(
+        filteredResults.map((result) => ({
+          file: result,
+          content: result.url,
+        })),
+      );
+    });
+
+    newModel.onClearFiles.add(async (_surveyModel: SurveyModel, options: ClearFilesEvent): Promise<void> => {
+      let filesToDelete: File[] = [];
+      if (Array.isArray(options.value)) {
+        if (options.value.length === 0) {
+          options.callback('success');
+          return;
+        }
+        const files = options.value as File[];
+        filesToDelete = files.filter((item: File) =>
+          options.fileName === null ? true : item.name === options.fileName,
+        );
+      } else {
+        if (!options.value) {
+          options.callback('success');
+          return;
+        }
+        const file = options.value as File;
+        filesToDelete = [file];
+      }
+      if (filesToDelete.length === 0) {
+        toast.error(t('common.errors.fileDeletionFailed'));
+        options.callback('error');
+        return;
+      }
+
+      const result = await Promise.all(
+        filesToDelete.map((file: File) => {
+          if (!selectedSurvey || !selectedSurvey.id) {
+            options.callback('error');
+            return Promise.resolve('error');
+          }
+          return deleteTempFile(selectedSurvey.id, file, options.callback);
+        }),
+      );
+      if (result.every((res: string | undefined) => res === 'success')) {
+        options.callback('success');
+      } else {
+        options.callback('error');
       }
     });
 
@@ -122,7 +207,6 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       </div>
     );
   }
-
   return (
     <>
       <div className="survey-participation">

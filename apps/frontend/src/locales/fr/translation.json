@@ -6,6 +6,8 @@
   "closeEditingWindow": "Voulez-vous vraiment fermer la fenêtre de modification ?",
   "framebufferImage": "Image tampon",
   "previewImage": "Aperçu de l'image",
+  "imprint": "Mentions légales",
+  "public": "Publique",
   "bulletinboard": {
     "settings": "Paramètres",
     "noBulletinsToShow": "Il n'y a actuellement aucun message à afficher, il est préférable de passer à nouveau plus tard!",
@@ -101,6 +103,7 @@
   },
   "dashboard": {
     "pageTitle": "Tableau de bord",
+    "sidebar": "Dashboard",
     "mobileAccess": {
       "title": "Accès mobile",
       "manual": "Instructions",
@@ -304,7 +307,7 @@
     "students-home": "Dossiers élèves"
   },
   "filesharing": {
-    "filterPlaceHolderText": "Rechercher un fichier",
+    "filterPlaceHolderText": "Tapez pour filtrer",
     "title": "Partage de fichiers",
     "selectFile": "Sélectionner le fichier",
     "sidebar": "Partage de fichiers",
@@ -339,7 +342,8 @@
       "CollectingFailed": "Echec de la collecte des fichiers",
       "MissingCallbackURL": "Callback-URL manquante",
       "SharingFailed": "La distribution des fichiers a échoué",
-      "CopyFailed": "La copie a échoué"
+      "CopyFailed": "La copie a échoué",
+      "FileFormatNotSupported": "Le format de fichier n'est pas pris en charge."
     },
     "progressBox": {
       "info": "Informations",
@@ -829,7 +833,7 @@
           "invalidUrlFormat": "URL non valide"
         },
         "webdavShare": {
-          "title": "WebDAV-Share",
+          "title": "WebDAV-Server",
           "description": "Vous pouvez configurer ici vos propres partages WebDAV.",
           "filterPlaceHolderText": "Rechercher le nom de partages"
         },
@@ -847,7 +851,8 @@
           "sandboxMode": "Disposition séparée",
           "nativeMode": "Disposition intégrée",
           "sandboxModeDescription": "Dans le mode \"disposition séparée\", le contenu s'affiche comme une page indépendante, similaire à une fenêtre dans l'application. En plus du contenu réel, des éléments de conception ou des fonctions supplémentaires provenant d'autres sources peuvent également être chargés. En conséquence, la conception est indépendante de l'application, il pourrait donc être différent ou se comporter différemment. Ici, le contenu doit être téléchargé en fichier HTML.",
-          "nativeModeDescription": "Dans le mode \"Disposition intégrée\", en revanche, le contenu est inséré directement dans la surface de l'application. En conséquence, le contenu semble autant que l'application elle-même et s'adapte de manière optiquement. Cependant, aucun éléments ou fonctions de conception externes supplémentaires ne peut être ajouté dynamiquement ici. Cependant, des éléments statiques tels que des images peuvent être téléchargés et utilisés ici."
+          "nativeModeDescription": "Dans le mode \"Disposition intégrée\", en revanche, le contenu est inséré directement dans la surface de l'application. En conséquence, le contenu semble autant que l'application elle-même et s'adapte de manière optiquement. Cependant, aucun éléments ou fonctions de conception externes supplémentaires ne peut être ajouté dynamiquement ici. Cependant, des éléments statiques tels que des images peuvent être téléchargés et utilisés ici.",
+          "visibilityDescription": "Vous pouvez ici déterminer si l'application doit être accessible au public. Actif signifie public, inactif signifie que seuls les groupes d'utilisateurs configurés y ont accès. Rendre l'application accessible au public crée un lien dans le pied de page. Pour rendre l'application visible dans la barre latérale pour les utilisateurs enregistrés, leur accès doit être configuré via les groupes d'utilisateurs."
         }
       },
       "update": {
@@ -872,7 +877,8 @@
       "forbiddenProxyPath": "Ce chemin proxy n'est pas autorisé.",
       "fieldRequired": "Ce champ est obligatoire",
       "maxChars": "Maximum {{count}} caractères",
-      "nameAlreadyExists": "Une application avec ce nom existe déjà"
+      "nameAlreadyExists": "Une application avec ce nom existe déjà",
+      "webdavShareNameAlreadyExists": "Un partage WebDAV avec ce nom existe déjà"
     },
     "yamleditor": {
       "invalidYaml": "Syntaxe YAML non valide",
@@ -1149,8 +1155,20 @@
     "preview": "prévisualisation",
     "format": "Format",
     "upload": "Téléverser",
-    "mode": "mode"
+    "mode": "mode",
+    "file": "Fichier"
   },
+
+  "saveExternalFileDialogBody": {
+    "saveExternalFile": "Enregistrer un fichier externe",
+    "destinationFolder": "Dossier de destination",
+    "filename": "Nom du fichier",
+    "filenamePlaceholder": "Saisissez le nom du fichier ici",
+    "filenameRequired": "Le nom du fichier ne peut pas être vide",
+    "fileSavedSuccessful": "Fichier enregistré avec succès",
+    "fileSaveFailed": "Le fichier n'a pas pu être enregistré"
+  },
+
   "form": {
     "path": "Lien",
     "pathDescription": "Veuillez saisir une URL.",
@@ -1174,6 +1192,7 @@
     "embeddedPageEditor": "Editeur",
     "embeddedPageEditorModeDescription": "Ici, vous pouvez choisir entre Sandbox et Native. Sandbox est la variante la plus sûre, native du rendu d'origine. Notez qu'aucune précaution de sécurité ne peut être prise dans le rendu natif. En mode sandbox, le fichier HTML est lu à partir de la mémoire. Pour ce faire, téléchargez le fichier.",
     "sandboxed": "Bac à sable",
+    "pathname": "Chemin d’accès",
     "input": {
       "dateTimePicker": {
         "timeSlot": "Heure",
@@ -1216,7 +1235,9 @@
   },
   "whiteboard": {
     "title": "Whiteboard",
-    "sidebar": "Whiteboard"
+    "sidebar": "Whiteboard",
+    "saveAsTlFile": "Enregistrer le tableau blanc au format .tldr",
+    "openTlFile": "Ouvrir un fichier .tldr"
   },
   "whiteboard-collaboration": {
     "title": "Whiteboard",
@@ -1317,7 +1338,8 @@
     "rename": "Renommer",
     "move": "Déplacer",
     "delete": "Supprimer",
-    "download": "Télécharger"
+    "download": "Télécharger",
+    "back": "Retour"
   },
   "response": {
     "successfully": "L'action a réussi",
@@ -1484,5 +1506,22 @@
     "description": "Ici, on peut choisir la plateforme à laquelle {{appName }} doit être connecté.",
     "linuxmuster": "Linuxmuster",
     "generic": "Générique"
+  },
+
+  "webdavShare": {
+    "displayName": "Nom d'affichage",
+    "accessGroups": {
+      "title": "Groupes d'utilisateurs",
+      "description": "Sélectionnez les groupes d'utilisateurs qui doivent avoir accès au partage WebDAV."
+    },
+    "type": {
+      "title": "Schéma du serveur WebDAV",
+      "description": "Ici, vous pouvez sélectionner le type de schéma du serveur WebDAV.",
+      "linuxmuster": "Linuxmuster",
+      "edu-file-proxy": "Proxy de fichiers edulution",
+      "generic": "Générique"
+    },
+    "status": "Statut",
+    "offline": "Le serveur est actuellement indisponible."
   }
 }
