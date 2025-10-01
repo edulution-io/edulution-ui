@@ -16,6 +16,7 @@ interface FileJobData {
   destinationFilePath: string;
   total: number;
   processed: number;
+  share: string;
 }
 
 export default FileJobData;

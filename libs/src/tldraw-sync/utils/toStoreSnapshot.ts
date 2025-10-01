@@ -10,19 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
-import TAppFieldWidth from '@libs/appconfig/types/tAppFieldWidth';
+import { SerializedSchema, StoreSnapshot, TLRecord } from 'tldraw';
+import { TldrFileV1 } from '@libs/tldraw-sync/types/tldrFileV1';
 
-const WEBDAV_SHARE_TABLE = [
-  {
-    name: ExtendedOptionKeys.WEBDAV_SHARE_TABLE,
-    description: 'appExtendedOptions.veyonProxys',
-    title: 'appExtendedOptions.veyonProxysTitle',
-    type: ExtendedOptionField.table,
-    value: '',
-    width: 'full' as TAppFieldWidth,
-  },
-];
+const toStoreSnapshot = (file: TldrFileV1): StoreSnapshot<TLRecord> => {
+  const store = file.records.reduce<Record<string, TLRecord>>((acc, record) => {
+    acc[record.id] = record;
+    return acc;
+  }, {});
+  const schema: SerializedSchema = { schemaVersion: 2, sequences: file.schema.sequences };
+  return { schema, store };
+};
 
-export default WEBDAV_SHARE_TABLE;
+export default toStoreSnapshot;

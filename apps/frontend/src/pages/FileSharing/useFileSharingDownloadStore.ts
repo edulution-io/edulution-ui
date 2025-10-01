@@ -36,10 +36,23 @@ type FileSharingDownloadStore = {
   error: Error | null;
   downloadProgress: DownloadFileDto;
   setDownloadProgress: (progress: DownloadFileDto) => void;
-  createDownloadBlobUrl: (filePath: string, signal?: AbortSignal) => Promise<string | undefined>;
-  getPublicDownloadUrl: (filePath: string, filename: string, signal?: AbortSignal) => Promise<string | undefined>;
-  loadDownloadUrl: (file: DirectoryFileDTO | null, signal?: AbortSignal) => Promise<void>;
-  downloadFile: (file: DirectoryFileDTO, signal?: AbortSignal) => Promise<string | undefined>;
+  createDownloadBlobUrl: (
+    filePath: string,
+    share: string | undefined,
+    signal?: AbortSignal,
+  ) => Promise<string | undefined>;
+  getPublicDownloadUrl: (
+    filePath: string,
+    filename: string,
+    share: string | undefined,
+    signal?: AbortSignal,
+  ) => Promise<string | undefined>;
+  loadDownloadUrl: (file: DirectoryFileDTO | null, share: string | undefined, signal?: AbortSignal) => Promise<void>;
+  downloadFile: (
+    file: DirectoryFileDTO,
+    share: string | undefined,
+    signal?: AbortSignal,
+  ) => Promise<string | undefined>;
   setPublicDownloadLink: (publicDownloadLink: string) => void;
   reset: () => void;
 };
@@ -64,17 +77,17 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
     set({ downloadProgress: progress });
   },
 
-  loadDownloadUrl: async (file, signal) => {
+  loadDownloadUrl: async (file, share, signal) => {
     try {
       set({ isCreatingBlobUrl: true, error: null, temporaryDownloadUrl: '', publicDownloadLink: null });
 
       if (!file) return;
 
-      const blobUrl = await get().createDownloadBlobUrl(file.filePath, signal);
+      const blobUrl = await get().createDownloadBlobUrl(file.filePath, share, signal);
       set({ temporaryDownloadUrl: blobUrl });
 
       if (isOnlyOfficeDocument(file.filename)) {
-        const publicUrl = await get().getPublicDownloadUrl(file.filePath, file.filePath, signal);
+        const publicUrl = await get().getPublicDownloadUrl(file.filePath, file.filePath, share, signal);
         if (publicUrl) {
           set({ publicDownloadLink: `${getFrontEndUrl()}/${EDU_API_ROOT}/downloads/${publicUrl}` });
         }
@@ -86,13 +99,13 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
     }
   },
 
-  createDownloadBlobUrl: async (filePath, signal) => {
+  createDownloadBlobUrl: async (filePath, share, signal) => {
     try {
       set({ isCreatingBlobUrl: true });
       const response = await eduApi.get<Blob>(
         `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_STREAM}`,
         {
-          params: { filePath },
+          params: { filePath, share },
           responseType: ResponseType.BLOB,
           signal,
         },
@@ -106,13 +119,13 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
     }
   },
 
-  getPublicDownloadUrl: async (filePath, filename, signal) => {
+  getPublicDownloadUrl: async (filePath, filename, share, signal) => {
     try {
       set({ isFetchingPublicUrl: true });
       const response = await eduApi.get<WebdavStatusResponse>(
         `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_LOCATION}`,
         {
-          params: { filePath, fileName: filename },
+          params: { filePath, fileName: filename, share },
           signal,
         },
       );
@@ -126,7 +139,7 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
     }
   },
 
-  downloadFile: async (file, signal) => {
+  downloadFile: async (file, share, signal) => {
     try {
       set({ isFetchingPublicUrl: true, error: null });
 
@@ -194,7 +207,7 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
         {
           responseType: ResponseType.BLOB,
           signal,
-          params: { filePath: file.filePath },
+          params: { filePath: file.filePath, share },
           onDownloadProgress: onProgress,
         },
       );

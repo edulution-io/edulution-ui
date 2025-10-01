@@ -10,17 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
-import getFrontEndUrl from '@libs/common/utils/URL/getFrontEndUrl';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import { Editor, TLPageId } from 'tldraw';
 
-interface CallbackBaseUrlProps {
-  fileName: string;
-  filePath: string;
-  token: string;
-}
+export const hasSetCurrentPageId = (editor: Editor): editor is Editor & { setCurrentPageId: (id: TLPageId) => void } =>
+  typeof (editor as { setCurrentPageId?: (id: TLPageId) => void }).setCurrentPageId === 'function';
 
-const callbackBaseUrl = ({ fileName, filePath, token }: CallbackBaseUrlProps): string =>
-  `${getFrontEndUrl()}/${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/callback?path=${filePath}&filename=${fileName}&token=${token}`;
-
-export default callbackBaseUrl;
+export const hasSetCurrentPage = (editor: Editor): editor is Editor & { setCurrentPage: (id: TLPageId) => void } =>
+  typeof (editor as { setCurrentPage?: (id: TLPageId) => void }).setCurrentPage === 'function';

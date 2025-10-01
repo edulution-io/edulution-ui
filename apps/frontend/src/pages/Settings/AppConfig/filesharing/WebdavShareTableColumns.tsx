@@ -21,6 +21,8 @@ import TableActionCell from '@/components/ui/Table/TableActionCell';
 import { MdDelete, MdEdit } from 'react-icons/md';
 import ID_ACTION_TABLE_COLUMN from '@libs/common/constants/idActionTableColumn';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import cn from '@libs/common/utils/className';
+import WEBDAV_SHARE_STATUS from '@libs/webdav/constants/webdavShareStatus';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 import useWebdavShareConfigTableStore from './useWebdavShareConfigTableStore';
 
@@ -37,6 +39,27 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
         className="max-w-0"
       />
     ),
+  },
+  {
+    id: WEBDAV_SHARE_TABLE_COLUMNS.STATUS,
+    size: 60,
+    header: () => null,
+
+    meta: {
+      translationId: 'webdavShare.status',
+    },
+
+    accessorFn: (row) => row.status,
+    cell: ({ row }) => {
+      const badgeClass = row.original.status === WEBDAV_SHARE_STATUS.UP ? 'bg-green-500' : 'bg-red-500';
+
+      return (
+        <SelectableTextCell
+          onClick={() => row.toggleSelected()}
+          icon={<div className={cn('h-2 w-2 rounded-full', badgeClass)} />}
+        />
+      );
+    },
   },
   {
     id: WEBDAV_SHARE_TABLE_COLUMNS.DISPLAY_NAME,

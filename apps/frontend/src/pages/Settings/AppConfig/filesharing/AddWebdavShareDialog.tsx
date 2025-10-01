@@ -50,14 +50,29 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
   const initialFormValues = selectedConfig || {
     [WEBDAV_SHARE_TABLE_COLUMNS.DISPLAY_NAME]: '',
     [WEBDAV_SHARE_TABLE_COLUMNS.URL]: '',
+    [WEBDAV_SHARE_TABLE_COLUMNS.PATHNAME]: '',
     [WEBDAV_SHARE_TABLE_COLUMNS.ACCESSGROUPS]: [],
     [WEBDAV_SHARE_TABLE_COLUMNS.TYPE]: WEBDAV_SHARE_TYPE.LINUXMUSTER,
   };
 
   const form = useForm<WebdavShareDto>({
-    mode: 'onSubmit',
+    mode: 'onChange',
     resolver: zodResolver(
       z.object({
+        [WEBDAV_SHARE_TABLE_COLUMNS.DISPLAY_NAME]: z
+          .string()
+          .min(1, { message: t('common.required') })
+          .refine(
+            (val) => {
+              if (!selectedConfig) {
+                return !tableContentData.some((s) => s.displayName.toLowerCase() === val.toLowerCase());
+              }
+              return true;
+            },
+            {
+              message: t('settings.errors.webdavShareNameAlreadyExists'),
+            },
+          ),
         [WEBDAV_SHARE_TABLE_COLUMNS.URL]: z
           .string()
           .url({ message: t('settings.appconfig.sections.veyon.invalidUrlFormat') }),
@@ -84,7 +99,8 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
     e.preventDefault();
     e.stopPropagation();
 
-    const webdavShareDto = getValues();
+    const webdavShareValues = getValues();
+    const webdavShareDto: WebdavShareDto = { ...webdavShareValues, pathname: new URL(webdavShareValues.url).pathname };
     if (selectedConfig) {
       void updateWebdavShare(selectedConfig?.webdavShareId || '', webdavShareDto);
     } else {
@@ -158,6 +174,14 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
         form={form}
         labelTranslationId={t(`form.${WEBDAV_SHARE_TABLE_COLUMNS.URL}`)}
         variant="dialog"
+      />
+      <FormField
+        name={WEBDAV_SHARE_TABLE_COLUMNS.PATHNAME}
+        defaultValue={initialFormValues[WEBDAV_SHARE_TABLE_COLUMNS.PATHNAME]}
+        form={form}
+        labelTranslationId={t(`form.${WEBDAV_SHARE_TABLE_COLUMNS.PATHNAME}`)}
+        variant="dialog"
+        disabled
       />
       <FormFieldSH
         control={control}

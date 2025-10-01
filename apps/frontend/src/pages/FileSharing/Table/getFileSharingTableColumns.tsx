@@ -28,7 +28,6 @@ import { BUTTONS_ICON_WIDTH, TABLE_ICON_SIZE } from '@libs/ui/constants';
 import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import { useTranslation } from 'react-i18next';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
@@ -104,7 +103,7 @@ const getFileSharingTableColumns = (
           if (row.original.type === ContentType.DIRECTORY) {
             if (isFilePreviewDocked) setIsFilePreviewVisible(false);
             const newParams = new URLSearchParams(searchParams);
-            newParams.set(URL_SEARCH_PARAMS.PATH, getPathWithoutWebdav(row.original.filePath));
+            newParams.set(URL_SEARCH_PARAMS.PATH, row.original.filePath);
             setSearchParams(newParams);
             return;
           }
