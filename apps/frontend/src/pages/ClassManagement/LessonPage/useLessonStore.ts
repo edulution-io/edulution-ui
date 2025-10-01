@@ -23,7 +23,6 @@ import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
-import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
@@ -76,15 +75,17 @@ const useLessonStore = create<LessonStore>(
         }
       },
 
-      shareFiles: async (duplicateFileRequestDto: DuplicateFileRequestDto) => {
+      shareFiles: async (duplicateFileRequestDto, share) => {
         set({ error: null, isLoading: true });
         try {
-          await eduApi.post(`${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.DUPLICATE}`, {
-            originFilePath: decodeURIComponent(duplicateFileRequestDto.originFilePath),
-            destinationFilePaths: duplicateFileRequestDto.destinationFilePaths.map((destinationFilePath) =>
-              decodeURIComponent(destinationFilePath),
-            ),
-          });
+          await eduApi.post(
+            `${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.DUPLICATE}`,
+            {
+              originFilePath: duplicateFileRequestDto.originFilePath,
+              destinationFilePaths: duplicateFileRequestDto.destinationFilePaths,
+            },
+            { params: { share } },
+          );
           toast.info(t('classmanagement.filesSharingStarted'));
         } catch (error) {
           handleApiError(error, set);
@@ -97,13 +98,18 @@ const useLessonStore = create<LessonStore>(
         collectFileRequestDTO: CollectFileRequestDTO[],
         userRole: string,
         type: LmnApiCollectOperationsType,
+        share,
       ) => {
         set({ error: null, isLoading: true });
         const queryParamString = `?type=${type}&userRole=${userRole}`;
         try {
-          await eduApi.post(`${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.COLLECT}/${queryParamString}`, {
-            collectFileRequestDTO,
-          });
+          await eduApi.post(
+            `${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.COLLECT}/${queryParamString}`,
+            {
+              collectFileRequestDTO,
+            },
+            { params: { share } },
+          );
           toast.info(t('classmanagement.filesCollectingStarted'));
         } catch (error) {
           handleApiError(error, set);

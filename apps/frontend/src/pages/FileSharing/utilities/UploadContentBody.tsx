@@ -14,6 +14,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { DropEvent, useDropzone } from 'react-dropzone';
 import { MdOutlineCloudUpload } from 'react-icons/md';
+import { useParams } from 'react-router-dom';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
 import { HiExclamationTriangle, HiTrash } from 'react-icons/hi2';
@@ -38,6 +39,7 @@ import getFileUploadLimit from '@libs/ui/utils/getFileUploadLimit';
 import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
 
 const UploadContentBody = () => {
+  const { webdavShare } = useParams();
   const { t } = useTranslation();
   const { files, webdavShares } = useFileSharingStore();
   const [oversizedFiles, setOversizedFiles] = useState<File[]>([]);
@@ -89,7 +91,10 @@ const UploadContentBody = () => {
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const { oversize, normal } = splitFilesByMaxFileSize(acceptedFiles, getFileUploadLimit(webdavShares));
+      const { oversize, normal } = splitFilesByMaxFileSize(
+        acceptedFiles,
+        getFileUploadLimit(webdavShares, webdavShare),
+      );
 
       const duplicates = findDuplicateFiles(normal, files);
 
@@ -382,7 +387,7 @@ const UploadContentBody = () => {
 
               let baseBorderClass = 'border-accent';
 
-              if (isFolderTooLarge || bytesToMegabytes(file.size) > getFileUploadLimit(webdavShares)) {
+              if (isFolderTooLarge || bytesToMegabytes(file.size) > getFileUploadLimit(webdavShares, webdavShare)) {
                 baseBorderClass = 'border-ciRed opacity-50';
               }
 

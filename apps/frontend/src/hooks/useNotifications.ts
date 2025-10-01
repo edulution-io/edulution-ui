@@ -26,10 +26,10 @@ import UseBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import useSseStore from '@/store/useSseStore';
 import useFileOperationProgress from '@/pages/FileSharing/hooks/useFileOperationProgress';
-import useFileDownloadProgressToast from '@/pages/FileSharing/hooks/useFileDownloadProgressToast';
 import useFileOperationToast from '@/pages/FileSharing/hooks/useFileOperationToast';
 import useTLDRawHistoryStore from '@/pages/Whiteboard/TLDrawWithSync/useTLDRawHistoryStore';
 import HistoryEntryDto from '@libs/whiteboard/types/historyEntryDto';
+import useFileDownloadProgressToast from '@/hooks/useDownloadProgressToast';
 
 const useNotifications = () => {
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
