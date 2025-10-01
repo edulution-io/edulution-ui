@@ -79,10 +79,13 @@ const FileSharingPreviewFrame = () => {
     setCurrentlyEditingFile(null);
   };
 
+  const pathSegments = location.pathname.split('/').filter(Boolean);
+  const webdavShare = decodeURIComponent(pathSegments[1]);
+
   const openInNewTab = () => {
     if (currentlyEditingFile) {
       addFileToOpenInNewTab(currentlyEditingFile);
-      window.open(`/${FILE_PREVIEW_ROUTE}?file=${currentlyEditingFile.etag}`, '_blank');
+      window.open(`/${FILE_PREVIEW_ROUTE}?share=${webdavShare}&file=${currentlyEditingFile.etag}`, '_blank');
       resetPreview();
     }
   };
@@ -94,7 +97,7 @@ const FileSharingPreviewFrame = () => {
     abortControllerRef.current = controller;
 
     if (currentlyEditingFile) {
-      void loadDownloadUrl(currentlyEditingFile, controller.signal);
+      void loadDownloadUrl(currentlyEditingFile, webdavShare, controller.signal);
     }
 
     return () => controller.abort();
@@ -138,7 +141,6 @@ const FileSharingPreviewFrame = () => {
     (isValidFile && !isMobileView && (isOnlyOfficeDoc ? isDocumentServerConfigured : true)) ||
     currentlyEditingFile?.filename.endsWith('pdf');
 
-  const pathSegments = location.pathname.split('/').filter(Boolean);
   const hidePreviewOnOtherPages = pathSegments[0] !== APPS.FILE_SHARING && isFilePreviewDocked;
 
   if (!isFilePreviewVisible || !isFileReady || !filePreviewRect || hidePreviewOnOtherPages) return null;

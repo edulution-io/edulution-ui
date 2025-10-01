@@ -27,7 +27,6 @@ import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreatePro
 import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
 import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
 import eduApi from '@/api/eduApi';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 
@@ -53,13 +52,18 @@ interface FileSharingDialogStore {
     httpMethod: HttpMethods,
     type: ContentType,
     data: PathChangeOrCreateDto | PathChangeOrCreateDto[] | FileUploadProps[] | DeleteFileProps[] | FormData,
+    webdavShare: string | undefined,
   ) => Promise<void>;
   action: FileActionType;
   setAction: (action: FileActionType) => void;
   fileOperationResult: WebDavActionResult | undefined;
   setFileOperationResult: (fileOperationSuccessful: boolean | undefined, message: string, status: number) => void;
   setSubmitButtonIsDisabled: (isSubmitButtonActive: boolean) => void;
-  handleDeleteItems: (itemsToDelete: PathChangeOrCreateDto[], endpoint: string) => Promise<void>;
+  handleDeleteItems: (
+    itemsToDelete: PathChangeOrCreateDto[],
+    endpoint: string,
+    share: string | undefined,
+  ) => Promise<void>;
 }
 
 const initialState: Partial<FileSharingDialogStore> = {
@@ -104,11 +108,12 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
     httpMethod: HttpMethods,
     type: ContentType,
     bulkDtos: PathChangeOrCreateDto | PathChangeOrCreateDto[] | FileUploadProps[] | DeleteFileProps[] | FormData,
+    webdavShare,
   ) => {
     set({ isLoading: true });
     try {
       if (bulkDtos instanceof FormData) {
-        await handleFileOrCreateFile(endpoint, httpMethod, type, bulkDtos);
+        await handleFileOrCreateFile(endpoint, httpMethod, type, bulkDtos, webdavShare);
         get().setFileOperationResult(true, t('fileCreateNewContent.fileOperationSuccessful'), 200);
       } else if (Array.isArray(bulkDtos)) {
         const decodedFilenameDtos = (bulkDtos as PathChangeOrCreateDto[]).map((dto) => ({
@@ -122,11 +127,12 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
           endpoint,
           httpMethod,
           decodedFilenameDtos,
+          webdavShare,
           get().setFileOperationResult,
           get().handleDeleteItems,
         );
       } else {
-        await handleSingleData(action, endpoint, httpMethod, type, bulkDtos);
+        await handleSingleData(action, endpoint, httpMethod, type, bulkDtos, webdavShare);
         get().setFileOperationResult(true, t('fileOperationSuccessful'), 200);
       }
     } catch (error) {
@@ -137,10 +143,14 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
     }
   },
 
-  async handleDeleteItems(itemsToDelete: PathChangeOrCreateDto[], endpoint: string): Promise<void> {
-    const cleanPaths = itemsToDelete.map((item) => getPathWithoutWebdav(item.path));
+  async handleDeleteItems(
+    itemsToDelete: PathChangeOrCreateDto[],
+    endpoint: string,
+    share: string | undefined,
+  ): Promise<void> {
+    const cleanPaths = itemsToDelete.map((item) => item.path);
     const url = buildApiDeletePathUrl(endpoint, DeleteTargetType.FILE_SERVER);
-    await eduApi.delete(url, { data: { paths: cleanPaths } });
+    await eduApi.delete(url, { data: { paths: cleanPaths }, params: { share } });
   },
 }));
 
