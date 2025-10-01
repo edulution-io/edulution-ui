@@ -34,7 +34,7 @@ class CopyFileConsumer extends WorkerHost {
   }
 
   async process(job: Job<FileOperationQueueJobData>): Promise<void> {
-    const { username, originFilePath, destinationFilePath, total, processed } = job.data as FileJobData;
+    const { username, originFilePath, destinationFilePath, total, processed, share } = job.data as FileJobData;
     const failedPaths: string[] = [];
 
     const parsed = parse(destinationFilePath);
@@ -42,12 +42,17 @@ class CopyFileConsumer extends WorkerHost {
     const originalName = parsed.name;
     const extension = parsed.ext;
 
-    const items = await this.webDavService.getFilesAtPath(username, targetFolderPath);
+    const items = await this.webDavService.getFilesAtPath(username, targetFolderPath, share);
 
     const uniqueFilename = getNextAvailableFilename(originalName, extension, items);
 
     try {
-      await this.webDavService.copyFileViaWebDAV(username, originFilePath, join(targetFolderPath, '/', uniqueFilename));
+      await this.webDavService.copyFileViaWebDAV(
+        username,
+        originFilePath,
+        join(targetFolderPath, '/', uniqueFilename),
+        share,
+      );
     } catch {
       failedPaths.push(destinationFilePath);
     }

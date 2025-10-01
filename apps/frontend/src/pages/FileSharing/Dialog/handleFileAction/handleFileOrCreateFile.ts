@@ -9,40 +9,39 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+
 import { HTTP_HEADERS, HttpMethods, RequestResponseContentType } from '@libs/common/types/http-methods';
 import ContentType from '@libs/filesharing/types/contentType';
 import eduApi from '@/api/eduApi';
-import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 
 const handleFileOrCreateFile = async (
   endpoint: string,
   httpMethod: HttpMethods,
   type: ContentType,
   originalFormData: FormData,
+  webdavShare: string | undefined,
 ) => {
-  const rawPath = String(originalFormData.get('path') ?? originalFormData.get('currentPath') ?? '');
-  const sanitizedPath = getPathWithoutWebdav(rawPath).replace(/^\/+/, '');
-  const encodedPath = encodeURIComponent(sanitizedPath);
+  const path = String(originalFormData.get('path') ?? '');
 
   const file = originalFormData.get('file') as File | null;
   if (!file) throw new Error('No file provided for upload');
 
-  const explicitName =
-    (originalFormData.get('name') as string) || (originalFormData.get('filename') as string) || file.name;
+  const filenameFromForm =
+    (originalFormData.get('name') as string) || (originalFormData.get('filename') as string) || file?.name || '';
 
-  if (!explicitName) {
+  if (!filenameFromForm) {
     throw new Error('Missing file name');
   }
 
   const originalFolderName = (originalFormData.get('originalFolderName') as string | null) || undefined;
 
-  const baseUrl = buildApiFileTypePathUrl(`${endpoint}`, type, encodedPath);
-
-  await eduApi[httpMethod](baseUrl, file, {
+  await eduApi[httpMethod](endpoint, file, {
     withCredentials: true,
     params: {
-      name: explicitName,
+      share: webdavShare,
+      type,
+      path,
+      name: filenameFromForm,
       isZippedFolder: false,
       ...(originalFolderName ? { originalFolderName } : {}),
       contentLength: file.size,
