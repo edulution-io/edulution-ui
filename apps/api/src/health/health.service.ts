@@ -62,7 +62,7 @@ class HealthService {
     return this.httpIndicator.pingCheck('authServer', url);
   }
 
-  @Interval(5_000)
+  @Interval(30_000)
   private async checkWebDavServer(): Promise<HealthIndicatorResult> {
     const webdavShares = await this.webdavSharesService.findAllWebdavShares([GroupRoles.SUPER_ADMIN]);
 
@@ -73,12 +73,11 @@ class HealthService {
         }
 
         try {
-          const { href } = new URL(share.url);
-          const result = await this.httpIndicator.pingCheck(share.displayName, href, {
+          const result = await this.httpIndicator.pingCheck(share.displayName, share.url, {
             httpClient: this.httpService,
             validateStatus: (status) => [200, 401, 403].includes(status),
           });
-          Logger.debug(`WebDAV Share is ${JSON.stringify(result)}`, HealthService.name);
+          Logger.verbose(`WebDAV Share is ${JSON.stringify(result)}`, HealthService.name);
 
           await this.webdavSharesService.updateWebdavShare(share.webdavShareId, {
             lastChecked: new Date(),
