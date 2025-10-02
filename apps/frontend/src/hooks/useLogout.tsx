@@ -41,6 +41,7 @@ const useLogout = () => {
 
     removeCookie(COOKIE_DESCRIPTORS.AUTH_TOKEN, {
       path: ROOT_ROUTE,
+      domain: window.location.hostname,
     });
 
     await silentLogout();
