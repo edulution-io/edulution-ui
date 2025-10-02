@@ -10,10 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface WorkerOutputMessage {
-  blob: Blob;
-  root: string;
-  fileCount: number;
-}
+import { UploadFile } from '@libs/filesharing/types/uploadFile';
+import UploadFolder from '@libs/filesharing/types/uploadFolder';
 
-export default WorkerOutputMessage;
+export type UploadItem = UploadFile | UploadFolder;

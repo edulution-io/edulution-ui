@@ -26,30 +26,25 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import WarningBox from '@/components/shared/WarningBox';
 import { TiDocumentAdd, TiFolderAdd } from 'react-icons/ti';
 import { UploadFile } from '@libs/filesharing/types/uploadFile';
-import Progress from '@/components/ui/Progress';
-import { WorkerMessage } from '@/worker/workerMessage';
-import WorkerProgressMessage from '@/worker/workerProgressMessage';
-import WorkerOutputMessage from '@/worker/workerOutputMessage';
-import zipDirectoryEntry from '@libs/filesharing/utils/zipDirectoryEntry';
-import { RequestResponseContentType, ResponseType } from '@libs/common/types/http-methods';
-import ZIP_PROCESS_TIMEOUT from '@libs/filesharing/constants/zipProcessTimeout';
 import { FcFolder } from 'react-icons/fc';
-import MAX_FOLDER_UPLOAD_CONTENT_SIZE from '@libs/ui/constants/maxFolderUploadContentSize';
 import getFileUploadLimit from '@libs/ui/utils/getFileUploadLimit';
 import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
+import UploadFolder from '@libs/filesharing/types/uploadFolder';
+import UploadFolderFile from '@libs/filesharing/types/uploadFolderFile';
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
+import traverseFileTree from '@libs/filesharing/utils/traverseFileTree';
+import createUploadFolderTree from '@libs/filesharing/utils/createUploadFolderTree';
+import DataTransferItemWithEntry from '@libs/filesharing/types/dataTransferItemWithEntry';
 
 const UploadContentBody = () => {
   const { webdavShare } = useParams();
   const { t } = useTranslation();
   const { files, webdavShares } = useFileSharingStore();
   const [oversizedFiles, setOversizedFiles] = useState<File[]>([]);
-  const [zipProgress, setZipProgress] = useState(0);
   const [tooLargeFolders, setTooLargeFolders] = useState<string[]>([]);
   const { setSubmitButtonIsDisabled } = useFileSharingDialogStore();
 
   const supportsWebkitDirectory = 'webkitdirectory' in document.createElement('input');
-
-  const zipWorker = useRef<Worker>();
 
   const [filesThatWillBeOverwritten, setFilesThatWillBeOverwritten] = useState<string[]>([]);
 
@@ -61,6 +56,24 @@ const UploadContentBody = () => {
   const hasMultipleDuplicates = filesThatWillBeOverwritten.length > 1;
   const hasMultipleOversizedFiles = oversizedFiles.length > 1;
   const isAnyFileOversized = oversizedFiles.length > 0;
+
+  const getPath = (uploadFile: UploadFile | { webkitRelativePath?: string; relativePath?: string }): string => {
+    if (
+      'webkitRelativePath' in uploadFile &&
+      typeof uploadFile.webkitRelativePath === 'string' &&
+      uploadFile.webkitRelativePath.length > 0
+    ) {
+      return uploadFile.webkitRelativePath;
+    }
+    if (
+      'relativePath' in uploadFile &&
+      typeof uploadFile.relativePath === 'string' &&
+      uploadFile.relativePath.length > 0
+    ) {
+      return uploadFile.relativePath;
+    }
+    return '';
+  };
 
   const displayName = (file: UploadFile | { name: string }): string => {
     if (!('isZippedFolder' in file)) return file.name;
@@ -89,8 +102,33 @@ const UploadContentBody = () => {
       ? f.originalFolderName
       : f.name.replace(/\.zip$/i, '');
 
+  const mapFolderTreeToFolderAsFile = (folder: UploadFolder): UploadFolderFile =>
+    Object.assign(new File([], folder.name, { type: 'folder/virtual' }), {
+      isZippedFolder: true,
+      originalFolderName: folder.name,
+      fileCount: folder.files.length + folder.subfolders.length,
+      containedFiles: folder.files,
+      containedSubfolders: folder.subfolders.map(mapFolderTreeToFolderAsFile),
+    });
+
   const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
+    (acceptedFiles: UploadFile[]) => {
+      if (!acceptedFiles.length) return;
+      const isFolderDrop = acceptedFiles.some((file) => {
+        const path = getPath(file);
+        return path && path.includes('/');
+      });
+
+      if (isFolderDrop) {
+        const folderTree = createUploadFolderTree(acceptedFiles, getPath);
+        useHandelUploadFileStore.getState().addFolder(folderTree);
+
+        const folderAsFile = mapFolderTreeToFolderAsFile(folderTree);
+        updateFilesToUpload((prev) => [...prev, folderAsFile]);
+
+        return;
+      }
+
       const { oversize, normal } = splitFilesByMaxFileSize(
         acceptedFiles,
         getFileUploadLimit(webdavShares, webdavShare),
@@ -109,102 +147,26 @@ const UploadContentBody = () => {
         return [...prev, ...fresh];
       });
 
-      const uploadFolder = acceptedFiles.filter(
-        (file): file is UploadFile => typeof (file as UploadFile).fileCount === 'number',
-      );
-
-      const newTooLarge = uploadFolder
-        .filter((file) => (file.fileCount ?? 0) > MAX_FOLDER_UPLOAD_CONTENT_SIZE)
-        .map((file) => file.originalFolderName ?? file.name)
-        .filter((filename) => !tooLargeFolders.includes(filename));
-
-      if (newTooLarge.length) {
-        setTooLargeFolders((prev) => [...prev, ...newTooLarge]);
-      }
-
       updateFilesToUpload((prevFiles) => {
-        const allNewFiles = acceptedFiles.filter((file) => !prevFiles.some((f) => f.name === file.name));
+        const allNewFiles: UploadItem[] = acceptedFiles.filter((file) => !prevFiles.some((f) => f.name === file.name));
         return [...prevFiles, ...allNewFiles];
       });
     },
-    [files, setOversizedFiles, setFilesThatWillBeOverwritten, setFilesToUpload, setTooLargeFolders],
+    [
+      files,
+      updateFilesToUpload,
+      setOversizedFiles,
+      setFilesThatWillBeOverwritten,
+      setFilesToUpload,
+      setTooLargeFolders,
+      webdavShare,
+      webdavShares,
+    ],
   );
-
-  const isZipProgress = (m: WorkerMessage): m is WorkerProgressMessage => 'progress' in m;
-  const isBlob = (m: WorkerMessage): m is WorkerOutputMessage => ResponseType.BLOB in m;
-
-  useEffect(() => {
-    zipWorker.current = new Worker(new URL('../../../worker/zipWorker.ts', import.meta.url), { type: 'module' });
-
-    zipWorker.current.onmessage = (ev: MessageEvent<WorkerMessage>) => {
-      const { data } = ev;
-
-      if (isZipProgress(data)) {
-        setZipProgress(data.progress);
-        return;
-      }
-
-      if (isBlob(data)) {
-        const { blob, root, fileCount } = data;
-
-        const zipFile: UploadFile = Object.assign(
-          new File([blob], `${root}.zip`, { type: RequestResponseContentType.APPLICATION_ZIP }),
-          {
-            isZippedFolder: true,
-            originalFolderName: root,
-            fileCount,
-          },
-        );
-
-        onDrop([zipFile]);
-      }
-    };
-
-    return () => zipWorker.current?.terminate();
-  }, [onDrop]);
-
-  useEffect(() => {
-    if (zipProgress === 100 || isAnyFileOversized) {
-      setTimeout(() => {
-        setZipProgress(0);
-      }, ZIP_PROCESS_TIMEOUT);
-    }
-  }, [zipProgress]);
-
-  const extractFilesFromEvent = async (event: DropEvent): Promise<File[]> => {
-    if ('dataTransfer' in event && event.dataTransfer) {
-      const items = Array.from(event.dataTransfer.items ?? []);
-      const resolved = await Promise.all(
-        items.map(async (item) => {
-          const entry = item.webkitGetAsEntry?.();
-          if (entry && entry.isDirectory) {
-            const root = entry.name;
-            const blob = await zipDirectoryEntry(entry as FileSystemDirectoryEntry);
-            return Object.assign(
-              new File([blob], `${root}.zip`, { type: RequestResponseContentType.APPLICATION_ZIP }),
-              {
-                isZippedFolder: true,
-                originalFolderName: root,
-              } as Partial<UploadFile>,
-            ) as UploadFile;
-          }
-          return item.getAsFile();
-        }),
-      );
-
-      return resolved.filter((f): f is File => Boolean(f));
-    }
-
-    if ('target' in event && (event.target as HTMLInputElement).files) {
-      return Array.from((event.target as HTMLInputElement).files!);
-    }
-
-    return [];
-  };
 
   const handleFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = Array.from(e.target.files ?? []);
-    onDrop(selected);
+    onDrop(selected as UploadFile[]);
     e.target.value = '';
   };
 
@@ -212,8 +174,10 @@ const UploadContentBody = () => {
     const selected = Array.from(event.target.files ?? []) as UploadFile[];
     if (!selected.length) return;
 
-    const root = selected[0].webkitRelativePath.split('/')[0];
-    zipWorker.current!.postMessage({ files: selected, root });
+    const folderTree = createUploadFolderTree(selected, getPath);
+    useHandelUploadFileStore.getState().addFolder(folderTree);
+    const folderAsFile = mapFolderTreeToFolderAsFile(folderTree);
+    useHandelUploadFileStore.getState().updateFilesToUpload((prev) => [...prev, folderAsFile]);
   };
 
   const removeFile = (name: string) => {
@@ -226,10 +190,26 @@ const UploadContentBody = () => {
 
   useEffect(() => {
     setSubmitButtonIsDisabled(oversizedFiles.length !== 0 || tooLargeFolders.length !== 0);
-  }, [oversizedFiles]);
+  }, [oversizedFiles, tooLargeFolders, setSubmitButtonIsDisabled]);
+
+  const getFilesFromEvent = async (event: DropEvent): Promise<UploadFile[]> => {
+    const items: DataTransferItemWithEntry[] =
+      'dataTransfer' in event && event.dataTransfer?.items
+        ? (Array.from(event.dataTransfer.items) as DataTransferItemWithEntry[])
+        : [];
+
+    const nested: UploadFile[][] = await Promise.all(
+      items.map((item) => {
+        const entry = item.webkitGetAsEntry?.();
+        return entry ? traverseFileTree(entry) : Promise.resolve<UploadFile[]>([]);
+      }),
+    );
+
+    return nested.flat();
+  };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    getFilesFromEvent: (event) => extractFilesFromEvent(event),
+    getFilesFromEvent,
     onDrop,
   });
 
@@ -271,7 +251,7 @@ const UploadContentBody = () => {
     <form className="overflow-auto">
       <div {...getRootProps({ className: dropzoneStyle })}>
         <input {...getInputProps()} />
-
+        <p>refoihfiperp</p>
         <div className="flex min-h-48 flex-col items-center justify-center space-y-2">
           <p className="text-center font-semibold text-secondary">
             {isDragActive ? t('filesharingUpload.dropHere') : t('filesharingUpload.dragDropClick')}
@@ -279,13 +259,6 @@ const UploadContentBody = () => {
           <MdOutlineCloudUpload className="h-12 w-12 text-muted" />
         </div>
       </div>
-
-      {zipProgress > 0 && (
-        <div className="flex flex-col items-center p-8">
-          <p className="text-center font-semibold text-secondary">{t('filesharingUpload.preparingFolder')}</p>
-          <Progress value={zipProgress} />
-        </div>
-      )}
 
       <input
         type="file"
@@ -381,9 +354,9 @@ const UploadContentBody = () => {
       {filesToUpload.length > 0 && (
         <ScrollArea className="mt-2 max-h-[50vh] overflow-y-auto overflow-x-hidden rounded-xl border border-gray-600 px-2 scrollbar-thin">
           <ul className="my-3 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {filesToUpload.map((file) => {
+            {(filesToUpload as UploadFile[]).map((file) => {
               const isFolderTooLarge =
-                file.isZippedFolder && tooLargeFolders.includes(file.originalFolderName ?? file.name);
+                file?.isZippedFolder && tooLargeFolders.includes(file.originalFolderName ?? file.name);
 
               let baseBorderClass = 'border-accent';
 

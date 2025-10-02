@@ -25,7 +25,6 @@ import DeleteFileConsumer from './consumers/deleteFile.consumer';
 import MoveOrRenameConsumer from './consumers/moveOrRename.consumer';
 import CopyFileConsumer from './consumers/copyFile.consumer';
 import CreateFolderConsumer from './consumers/createFolder.consumer';
-import UploadFileConsumer from './consumers/uploadFile.consumer';
 import { PublicFileShareSchema, PublicShare } from './publicFileShare.schema';
 
 @Module({
@@ -47,7 +46,6 @@ import { PublicFileShareSchema, PublicShare } from './publicFileShare.schema';
     MoveOrRenameConsumer,
     CopyFileConsumer,
     CreateFolderConsumer,
-    UploadFileConsumer,
   ],
   exports: [FilesharingService],
 })

@@ -18,10 +18,18 @@ import UploadResult from '@libs/filesharing/types/uploadResult';
 import createFileUploader from '@libs/filesharing/utils/createFileUploader';
 import createUploadClient from '@libs/filesharing/utils/createUploadClient';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import UploadFolder from '@libs/filesharing/types/uploadFolder';
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
+import UploadStatus from '@libs/filesharing/types/uploadStatus';
+import isFileItem from '@libs/filesharing/utils/isFileItem';
+import uniqueFileKey from '@libs/filesharing/utils/uniqueFileKey';
+import countFilesInFolder from '@libs/filesharing/utils/countFilesInFolder';
+import eduApi from '@/api/eduApi';
+import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 
 interface HandelUploadFileStore {
   isUploadDialogOpen: boolean;
-  filesToUpload: UploadFile[];
+  filesToUpload: UploadItem[];
   isUploading: boolean;
   lastError?: string;
   progressByName: Record<string, FileProgress>;
@@ -29,15 +37,28 @@ interface HandelUploadFileStore {
   setIsUploadDialogOpen: (isOpen: boolean) => void;
   closeUploadDialog: () => void;
   setFilesToUpload: (files: UploadFile[]) => void;
-  updateFilesToUpload: (updater: (files: UploadFile[]) => UploadFile[]) => void;
-  markUploading: (fileName: string, uploading: boolean) => void;
+  updateFilesToUpload: (updater: (files: UploadItem[]) => UploadItem[]) => void;
+  markUploading: (fileKey: string, uploading: boolean) => void;
+  folders: UploadFolder[];
+  setFolders: (folders: UploadFolder[]) => void;
+  addFolder: (folder: UploadFolder) => void;
   uploadFiles: (
     currentPath: string,
     accessToken: string,
     share: string | undefined,
     parallel?: boolean,
   ) => Promise<UploadResult[]>;
+  uploadFolders: (
+    currentPath: string,
+    accessToken: string,
+    share: string | undefined,
+    parallel?: boolean,
+  ) => Promise<UploadResult[]>;
   reset: () => void;
+  totalPlanned: number;
+  completedByName: Set<string>;
+  getUploadingCount: () => number;
+  getCompletedCount: () => number;
 }
 
 const initialState = {
@@ -46,86 +67,233 @@ const initialState = {
   isUploading: false,
   lastError: undefined,
   isTldrDialogOpen: false,
-  progressByName: {},
+  progressByName: {} as Record<string, FileProgress>,
   uploadingByName: new Map<string, boolean>(),
+  folders: [] as UploadFolder[],
+  totalPlanned: 0,
+  completedByName: new Set<string>(),
 };
 
-const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
-  ...initialState,
-  setIsUploadDialogOpen: (isOpen) => set({ isUploadDialogOpen: isOpen }),
-  closeUploadDialog: () => set({ isUploadDialogOpen: false }),
-  setFilesToUpload: (files) => set({ filesToUpload: files }),
-  updateFilesToUpload: (updater) => set((state) => ({ filesToUpload: updater(state.filesToUpload) })),
+const createFolder = async (folderName: string, basePath: string, share: string) => {
+  const query = new URLSearchParams({ share: share ?? '', type: 'COLLECTION', path: basePath });
+  const url = `${FileSharingApiEndpoints.FILESHARING_ACTIONS}?${query.toString()}`;
+  const payload = { path: basePath, newPath: folderName };
+  await eduApi.post(url, payload);
+};
 
-  markUploading: (fileName: string, uploading: boolean): void => {
+const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => {
+  const setProgress = (
+    key: string,
+    patch: Partial<FileProgress> & {
+      loaded?: number;
+      total?: number;
+      percent?: number;
+      bytesPerSecond?: number;
+      estimatedSecondsRemaining?: number;
+    },
+  ) =>
+    set((state) => ({
+      progressByName: {
+        ...state.progressByName,
+        [key]: {
+          ...(state.progressByName[key] ?? {}),
+          ...patch,
+          lastUpdateTimestampMs: Date.now(),
+        } as FileProgress,
+      },
+    }));
+
+  const markUploading = (fileKey: string, uploading: boolean) => {
     set((state) => {
-      const next = new Map(state.uploadingByName);
-      if (uploading) next.set(fileName, true);
-      else next.delete(fileName);
+      const nextUploadingMap = new Map(state.uploadingByName);
+      const nextCompletedSet = new Set(state.completedByName);
+      if (uploading) nextUploadingMap.set(fileKey, true);
+      else {
+        nextUploadingMap.delete(fileKey);
+        nextCompletedSet.add(fileKey);
+      }
       return {
-        uploadingByName: next,
-        isUploading: next.size > 0,
+        uploadingByName: nextUploadingMap,
+        completedByName: nextCompletedSet,
+        isUploading: nextUploadingMap.size > 0,
       };
     });
-  },
+  };
 
-  uploadFiles: async (
-    currentPath: string,
-    accessToken: string,
-    share: string | undefined,
-    parallel: boolean = true,
-  ): Promise<UploadResult[]> => {
-    const files = get().filesToUpload;
-    if (!files || files.length === 0) return [];
+  const makePerFileUploader = (key: string, destinationPath: string, accessToken: string, share: string | undefined) =>
+    createFileUploader({
+      httpClient: createUploadClient(`/${EDU_API_ROOT}`, { share }, accessToken),
+      destinationPath,
+      onProgressUpdate: (_name: string, progress: FileProgress) => {
+        const total =
+          progress.total ?? progress.totalByteCount ?? progress.totalByteCount ?? get().progressByName[key]?.total ?? 0;
 
-    set({ lastError: undefined });
+        const loaded = progress.loaded ?? progress.loadedByteCount ?? progress.loadedByteCount ?? 0;
 
-    const setProgressForFile = (fileName: string, next: FileProgress) =>
-      set((state) => ({ progressByName: { ...state.progressByName, [fileName]: next } }));
+        let percent: number;
+        if (typeof progress.percent === 'number') {
+          percent = progress.percent;
+        } else if (total > 0) {
+          percent = Math.min(100, Math.round((loaded / total) * 100));
+        } else {
+          percent = get().progressByName[key]?.percent ?? 0;
+        }
 
-    const uploadHttpClient = createUploadClient(`/${EDU_API_ROOT}`, { share }, accessToken);
+        const bytesPerSecondLocal = progress.bytesPerSecond ?? progress.speedBps;
 
-    const uploader = createFileUploader({
-      httpClient: uploadHttpClient,
-      destinationPath: currentPath,
-      onProgressUpdate: setProgressForFile,
-      onUploadingChange: (fileName, uploading) => get().markUploading(fileName, uploading),
+        const estimatedSecondsRemainingLocal = progress.estimatedSecondsRemaining ?? progress.etaSeconds;
+
+        setProgress(key, {
+          status: UploadStatus.uploading,
+          loaded,
+          total,
+          percent,
+          bytesPerSecond: typeof bytesPerSecondLocal === 'number' ? bytesPerSecondLocal : undefined,
+          estimatedSecondsRemaining:
+            typeof estimatedSecondsRemainingLocal === 'number' ? estimatedSecondsRemainingLocal : undefined,
+        });
+      },
+      onUploadingChange: () => {},
     });
 
-    let outcomes: UploadResult[];
+  return {
+    ...initialState,
 
-    if (parallel) {
-      const uploadPromises = files.map((fileItem) => uploader(fileItem));
-      set({ filesToUpload: [] });
-      const settledUploadResults = await Promise.allSettled(uploadPromises);
+    setIsUploadDialogOpen: (isOpen) => set({ isUploadDialogOpen: isOpen }),
+    closeUploadDialog: () => set({ isUploadDialogOpen: false }),
+    setFilesToUpload: (files) => set({ filesToUpload: files }),
+    updateFilesToUpload: (updater) => set((state) => ({ filesToUpload: updater(state.filesToUpload) })),
+    setFolders: (folders) => set({ folders }),
+    addFolder: (folder) => set((state) => ({ folders: [...state.folders, folder] })),
 
-      outcomes = settledUploadResults.map((settledResult, fileIndex) => {
-        if (settledResult.status === 'fulfilled') {
-          return settledResult.value;
-        }
-        return {
-          name: files[fileIndex].name,
-          ok: false,
-          error: String(settledResult.reason),
-        } as UploadResult;
+    getUploadingCount: () => get().uploadingByName.size,
+    getCompletedCount: () => get().completedByName.size,
+
+    markUploading,
+
+    uploadFiles: async (currentPath, accessToken, share, parallel = true) => {
+      const items = get().filesToUpload;
+      if (!items || items.length === 0) return [];
+      const files = items.filter(isFileItem);
+
+      const normalizedPath = currentPath.replace(/\/?$/, '/');
+
+      set({
+        lastError: undefined,
+        totalPlanned: files.length,
+        completedByName: new Set(),
+        uploadingByName: new Map(),
       });
-    } else {
-      outcomes = await files.reduce<Promise<UploadResult[]>>(
-        async (promiseForOutcomes, fileItem) => {
-          const outcomesSoFar = await promiseForOutcomes;
-          const outcomeForCurrentFile = await uploader(fileItem);
-          return [...outcomesSoFar, outcomeForCurrentFile];
-        },
-        Promise.resolve([] as UploadResult[]),
-      );
-    }
-    return outcomes;
-  },
 
-  reset: () =>
-    set({
-      ...initialState,
-    }),
-}));
+      const runUpload = async (file: UploadFile, index: number) => {
+        const key = uniqueFileKey(`${normalizedPath}${file.name}`, index);
+        setProgress(key, {
+          status: UploadStatus.uploading,
+          loaded: 0,
+          total: file.size ?? 0,
+          percent: 0,
+        });
+        markUploading(key, true);
+        try {
+          const uploader = makePerFileUploader(key, currentPath, accessToken, share);
+          const result = await uploader(file);
+          setProgress(key, {
+            status: UploadStatus.done,
+            loaded: file.size ?? get().progressByName[key]?.total ?? 0,
+            total: get().progressByName[key]?.total ?? file.size ?? 0,
+            percent: 100,
+            bytesPerSecond: 0,
+            estimatedSecondsRemaining: 0,
+          });
+          return result;
+        } finally {
+          markUploading(key, false);
+        }
+      };
+
+      let outcomes: UploadResult[];
+
+      if (parallel) {
+        const tasks = files.map((file, index) => runUpload(file, index));
+        set({ filesToUpload: [] });
+        const settled = await Promise.allSettled(tasks);
+        outcomes = settled.map((settledResult, index) =>
+          settledResult.status === 'fulfilled'
+            ? settledResult.value
+            : ({ name: files[index].name, ok: false, error: String(settledResult.reason) } as UploadResult),
+        );
+      } else {
+        outcomes = [] as UploadResult[];
+        await files.reduce<Promise<void>>(async (prev, file, idx) => {
+          await prev;
+          const result = await runUpload(file, idx);
+          outcomes[outcomes.length] = result;
+        }, Promise.resolve());
+      }
+
+      return outcomes;
+    },
+
+    uploadFolders: async (currentPath, accessToken, share, _parallel = true) => {
+      const { folders } = get();
+      const normalizedPath = currentPath.endsWith('/') ? currentPath : `${currentPath}/`;
+
+      set({
+        totalPlanned: (folders ?? []).reduce((accumulator, folder) => accumulator + countFilesInFolder(folder), 0),
+        completedByName: new Set(),
+        uploadingByName: new Map(),
+      });
+
+      const uploaderFactory = (destinationPath: string) => async (file: UploadFile) => {
+        const key = `${destinationPath}${file.name}`;
+        setProgress(key, {
+          status: UploadStatus.uploading,
+          loaded: 0,
+          total: file.size ?? 0,
+          percent: 0,
+        });
+        markUploading(key, true);
+        try {
+          const uploader = makePerFileUploader(key, destinationPath, accessToken, share);
+          const result = await uploader(file);
+          setProgress(key, {
+            status: UploadStatus.done,
+            loaded: file.size ?? get().progressByName[key]?.total ?? 0,
+            total: get().progressByName[key]?.total ?? file.size ?? 0,
+            percent: 100,
+            bytesPerSecond: 0,
+            estimatedSecondsRemaining: 0,
+          });
+          return result;
+        } finally {
+          markUploading(key, false);
+        }
+      };
+
+      const processFolderRecursiveLocal = async (
+        folder: UploadFolder,
+        basePath: string,
+        shareParam?: string,
+      ): Promise<UploadResult[]> => {
+        const folderPath = `${basePath}${folder.name}/`;
+        await createFolder(folder.name, basePath, shareParam || '');
+        const uploader = uploaderFactory(folderPath);
+        const fileResults = await Promise.all(folder.files.map((file) => uploader(file)));
+        const subfolderResultsNested = await Promise.all(
+          folder.subfolders.map((subfolder) => processFolderRecursiveLocal(subfolder, folderPath, shareParam)),
+        );
+        return [...fileResults, ...subfolderResultsNested.flat()];
+      };
+
+      const resultsNested = await Promise.all(
+        (folders ?? []).map((folder) => processFolderRecursiveLocal(folder, normalizedPath, share)),
+      );
+
+      return resultsNested.flat();
+    },
+
+    reset: () => set({ ...initialState }),
+  };
+});
 
 export default useHandelUploadFileStore;

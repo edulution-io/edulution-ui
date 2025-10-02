@@ -19,12 +19,24 @@ import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import { useTranslation } from 'react-i18next';
 import useUserStore from '@/store/UserStore/useUserStore';
+import UploadFolderFile from '@libs/filesharing/types/uploadFolderFile';
+import UploadFolder from '@libs/filesharing/types/uploadFolder';
+import { UploadFile } from '@libs/filesharing/types/uploadFile';
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
 
 const UploadFileDialog = () => {
   const { webdavShare } = useParams();
   const { currentPath } = useFileSharingStore();
-  const { isUploadDialogOpen, closeUploadDialog, uploadFiles, isUploading, setFilesToUpload } =
-    useHandelUploadFileStore();
+  const {
+    isUploadDialogOpen,
+    closeUploadDialog,
+    uploadFiles,
+    isUploading,
+    setFilesToUpload,
+    filesToUpload,
+    uploadFolders,
+    setFolders,
+  } = useHandelUploadFileStore();
 
   const { eduApiToken } = useUserStore();
   const { t } = useTranslation();
@@ -36,9 +48,37 @@ const UploadFileDialog = () => {
     closeUploadDialog();
   };
 
+  const mapUploadFolderFileToFolder = (uploadFolderFile: UploadFolderFile): UploadFolder => ({
+    id: uploadFolderFile.name,
+    name: uploadFolderFile.originalFolderName ?? uploadFolderFile.name,
+    path: uploadFolderFile.name,
+    files: uploadFolderFile.containedFiles ?? [],
+    subfolders:
+      (uploadFolderFile.containedSubfolders as UploadFolderFile[] | undefined)?.map(mapUploadFolderFileToFolder) ?? [],
+  });
+
+  const isFolderItem = (x: UploadItem): x is UploadFolderFile => (x as UploadFolderFile).isZippedFolder === true;
+
+  const isFileItem = (x: UploadItem): x is UploadFile => !(x as UploadFolderFile).isZippedFolder;
+
   const handleSubmit = async () => {
     closeUploadDialog();
-    await uploadFiles(currentPath, eduApiToken, webdavShare);
+
+    const filesOnly = filesToUpload.filter(isFileItem);
+    const foldersOnly = filesToUpload.filter(isFolderItem);
+
+    if (foldersOnly.length > 0) {
+      const folderTrees = foldersOnly.map((f) => mapUploadFolderFileToFolder(f));
+      setFolders(folderTrees);
+
+      await uploadFolders(currentPath, eduApiToken, webdavShare);
+    }
+
+    if (filesOnly.length > 0) {
+      setFilesToUpload(filesOnly);
+      await uploadFiles(currentPath, eduApiToken, webdavShare);
+    }
+
     setRemountKey((k) => k + 1);
   };
 

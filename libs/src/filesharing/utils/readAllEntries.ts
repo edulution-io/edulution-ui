@@ -10,9 +10,25 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface WorkerInputMessage {
-  files: File[];
-  root: string;
-}
+const readAllEntries = (directoryReader: FileSystemDirectoryReader): Promise<FileSystemEntry[]> =>
+  new Promise((resolve, reject) => {
+    const all: FileSystemEntry[] = [];
 
-export default WorkerInputMessage;
+    const readBatch = () => {
+      directoryReader.readEntries(
+        (batch) => {
+          if (batch.length === 0) {
+            resolve(all);
+            return;
+          }
+          all.push(...batch);
+          readBatch();
+        },
+        (err) => reject(err),
+      );
+    };
+
+    readBatch();
+  });
+
+export default readAllEntries;
