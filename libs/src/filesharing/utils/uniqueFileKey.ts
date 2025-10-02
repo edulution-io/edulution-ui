@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import type { Zippable } from 'fflate';
+const uniqueFileKey = (base: string, index?: number) => (index !== undefined ? `${base}__#${index}` : base);
 
-export type ZipEntries = Zippable;
+export default uniqueFileKey;

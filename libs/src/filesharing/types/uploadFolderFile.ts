@@ -10,10 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { zipSync } from 'fflate';
-import { collectEntries } from '@libs/filesharing/utils/collectEntries';
+import { UploadFile } from '@libs/filesharing/types/uploadFile';
 
-const addEntryToZipFile = async (rootEntry: FileSystemEntry): Promise<Uint8Array> =>
-  zipSync(await collectEntries(rootEntry), { level: 9 });
+interface UploadFolderFile extends UploadFile {
+  containedFiles?: UploadFile[];
+  containedSubfolders?: UploadFile[];
+}
 
-export default addEntryToZipFile;
+export default UploadFolderFile;

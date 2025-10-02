@@ -10,8 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface WorkerProgressMessage {
-  progress: number;
-}
+import UploadFolder from '@libs/filesharing/types/uploadFolder';
 
-export default WorkerProgressMessage;
+const countFilesInFolder = (folder: UploadFolder): number =>
+  (folder.files?.length ?? 0) +
+  (folder.subfolders?.reduce((sum, subfolder) => sum + countFilesInFolder(subfolder), 0) ?? 0);
+
+export default countFilesInFolder;

@@ -19,6 +19,7 @@ import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 import { Button } from '@/components/shared/Button';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
+import { UploadFile } from '@libs/filesharing/types/uploadFile';
 import useAppConfigTableDialogStore from './table/useAppConfigTableDialogStore';
 import useAppConfigsStore from '../useAppConfigsStore';
 
@@ -46,7 +47,7 @@ const UploadFileDialog: React.FC<UploadFileDialogProps> = ({ settingLocation, ta
     try {
       await Promise.all(
         filesToUpload.map(async (file) => {
-          const response = await uploadFile(settingLocation, file);
+          const response = await uploadFile(settingLocation, file as UploadFile);
 
           if (!response) {
             throw new Error('File upload failed');

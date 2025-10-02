@@ -10,6 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const ZIP_PROCESS_TIMEOUT = 5000;
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
+import { UploadFile } from '@libs/filesharing/types/uploadFile';
 
-export default ZIP_PROCESS_TIMEOUT;
+const isFileItem = (item: UploadItem): item is UploadFile => !(item as UploadFile).isZippedFolder;
+
+export default isFileItem;

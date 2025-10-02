@@ -10,7 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import WorkerProgressMessage from '@/worker/workerProgressMessage';
-import WorkerOutputMessage from '@/worker/workerOutputMessage';
+import { UploadFile } from '@libs/filesharing/types/uploadFile';
 
-export type WorkerMessage = WorkerProgressMessage | WorkerOutputMessage;
+interface UploadFolder {
+  id: string;
+  name: string;
+  path: string;
+  subfolders: UploadFolder[];
+  files: UploadFile[];
+}
+
+export default UploadFolder;
