@@ -95,31 +95,61 @@ const useSilentLoginWithPassword = (): UseSilentLoginWithPasswordReturn => {
       new Promise<void>((resolve) => {
         const logoutUrl = `${url}/realms/${AUTH_CONFIG.KEYCLOAK_REALM}/protocol/openid-connect/logout`;
         const iframe = document.createElement('iframe');
-        let hasClicked = false;
-
         iframe.style.display = 'none';
-        iframe.src = logoutUrl;
 
-        iframe.onload = () => {
-          if (!hasClicked) {
-            hasClicked = true;
-            try {
-              const doc = iframe.contentDocument;
-              const btn = doc?.getElementById('kc-logout') as HTMLElement | null;
-              btn?.click();
-            } catch {
-              console.warn('Logout button not found, proceeding with logout');
-            }
-          } else {
-            keycloak.clearToken();
+        let done = false;
+        const cleanup = () => {
+          if (done) return;
+          done = true;
+          try {
             document.body.removeChild(iframe);
-            resolve();
+          } catch (e) {
+            console.error(e);
+          }
+          keycloak.clearToken?.();
+          resolve();
+        };
+
+        iframe.onload = async () => {
+          try {
+            const doc = iframe.contentDocument;
+            const form = doc?.querySelector<HTMLFormElement>('form.form-actions');
+            if (!form) {
+              console.warn('Logout form not found, cleaning up');
+              cleanup();
+              return;
+            }
+
+            const action = form.getAttribute('action')!;
+            const sessionCode = form.querySelector<HTMLInputElement>('input[name="session_code"]')?.value ?? '';
+
+            await fetch(action, {
+              method: 'POST',
+              credentials: 'include',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: new URLSearchParams({
+                session_code: sessionCode,
+                confirmLogout: 'Logout',
+              }),
+            });
+
+            cleanup();
+          } catch (e) {
+            console.error('Silent logout failed:', e);
+            cleanup();
           }
         };
 
+        iframe.onerror = cleanup;
+        iframe.src = logoutUrl;
         document.body.appendChild(iframe);
+
+        // Sicherheit: Timeout, damit Promise nicht ewig hängt
+        setTimeout(cleanup, 5000);
       }),
-    [keycloak],
+    [keycloak, url],
   );
 
   return { silentLogin, silentLogout };

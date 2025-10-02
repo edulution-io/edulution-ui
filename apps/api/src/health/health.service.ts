@@ -62,7 +62,7 @@ class HealthService {
     return this.httpIndicator.pingCheck('authServer', url);
   }
 
-  @Interval(30_000)
+  @Interval(5_000)
   private async checkWebDavServer(): Promise<HealthIndicatorResult> {
     const webdavShares = await this.webdavSharesService.findAllWebdavShares([GroupRoles.SUPER_ADMIN]);
 
@@ -72,11 +72,10 @@ class HealthService {
           return { [share.displayName]: { status: 'down' as const, message: 'Missing ID' } };
         }
 
-        const { origin } = new URL(share.url);
-
         try {
-          const result = await this.httpIndicator.pingCheck(share.displayName, origin, {
+          const result = await this.httpIndicator.pingCheck(share.displayName, share.url, {
             httpClient: this.httpService,
+            validateStatus: (status) => [200, 401, 403].includes(status),
           });
           Logger.verbose(`WebDAV Share is ${JSON.stringify(result)}`, HealthService.name);
 
