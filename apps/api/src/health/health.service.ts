@@ -62,7 +62,7 @@ class HealthService {
     return this.httpIndicator.pingCheck('authServer', url);
   }
 
-  @Interval(5_000)
+  @Interval(30_000)
   private async checkWebDavServer(): Promise<HealthIndicatorResult> {
     const webdavShares = await this.webdavSharesService.findAllWebdavShares([GroupRoles.SUPER_ADMIN]);
 
