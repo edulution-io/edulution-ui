@@ -13,8 +13,10 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import { useCallback, useRef } from 'react';
 import Keycloak from 'keycloak-js';
+import axios from 'axios';
 import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
 import AUTH_CONFIG from '@libs/auth/constants/auth-config';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
 
 interface UseSilentLoginWithPasswordReturn {
   silentLogin: (username: string, password: string) => Promise<void>;
@@ -90,37 +92,43 @@ const useSilentLoginWithPassword = (): UseSilentLoginWithPasswordReturn => {
     [keycloak],
   );
 
-  const silentLogout = useCallback(
-    () =>
-      new Promise<void>((resolve) => {
-        const logoutUrl = `${url}/realms/${AUTH_CONFIG.KEYCLOAK_REALM}/protocol/openid-connect/logout`;
-        const iframe = document.createElement('iframe');
-        let hasClicked = false;
+  const silentLogout = async () => {
+    try {
+      const { data } = await axios.get<string>(
+        `${url}/realms/${AUTH_CONFIG.KEYCLOAK_REALM}/protocol/openid-connect/logout`,
+        { withCredentials: true },
+      );
 
-        iframe.style.display = 'none';
-        iframe.src = logoutUrl;
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(data, RequestResponseContentType.TEXT_HTML);
 
-        iframe.onload = () => {
-          if (!hasClicked) {
-            hasClicked = true;
-            try {
-              const doc = iframe.contentDocument;
-              const btn = doc?.getElementById('kc-logout') as HTMLElement | null;
-              btn?.click();
-            } catch {
-              console.warn('Logout button not found, proceeding with logout');
-            }
-          } else {
-            keycloak.clearToken();
-            document.body.removeChild(iframe);
-            resolve();
-          }
-        };
+      const form = doc.querySelector<HTMLFormElement>('form.form-actions');
+      if (!form) throw new Error('Logout form not found');
 
-        document.body.appendChild(iframe);
-      }),
-    [keycloak],
-  );
+      const action = new URL(form.action, url).toString();
+      const sessionCode = form.querySelector<HTMLInputElement>('input[name="session_code"]')?.value;
+
+      const response = await axios.post(
+        action,
+        new URLSearchParams({
+          session_code: sessionCode ?? '',
+          confirmLogout: 'Logout',
+        }),
+        { withCredentials: true },
+      );
+
+      if (response.status >= 200 && response.status < 300) {
+        console.info('✅ Keycloak session successfully cleared on server');
+      } else {
+        console.warn('⚠️ Logout POST did not return success status:', response.status);
+      }
+    } catch (e) {
+      console.error('❌ Silent logout failed', e);
+    } finally {
+      keycloak.clearToken();
+      console.info('🧹 Cleared local tokens');
+    }
+  };
 
   return { silentLogin, silentLogout };
 };
