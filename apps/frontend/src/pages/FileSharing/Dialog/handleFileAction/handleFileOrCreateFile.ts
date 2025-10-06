@@ -24,13 +24,13 @@ const handleFileOrCreateFile = async (
   const path = String(originalFormData.get('path') ?? '');
 
   const file = originalFormData.get('file') as File | null;
-  if (!file) throw new Error('No file provided for upload');
+  if (!file) return;
 
   const filenameFromForm =
     (originalFormData.get('name') as string) || (originalFormData.get('filename') as string) || file?.name || '';
 
   if (!filenameFromForm) {
-    throw new Error('Missing file name');
+    return;
   }
 
   const originalFolderName = (originalFormData.get('originalFolderName') as string | null) || undefined;
