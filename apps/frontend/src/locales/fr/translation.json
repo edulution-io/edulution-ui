@@ -1428,7 +1428,14 @@
     "mailImapSecureTitle": "Connexion chiffrée",
     "mailImapSecureDescription": "La connexion via «tls» ou «starttls» doit être établie.",
     "mailImapRejectUnauthorizedTitle": "Rejeter les connexions non certifiées",
-    "mailImapRejectUnauthorizedDescription": "Une vérification de certificat doit-il être effectué pour cette connexion?"
+    "mailImapRejectUnauthorizedDescription": "Une vérification de certificat doit-il être effectué pour cette connexion?",
+    "mailSogoThemeTitle": "Thème SOGo",
+    "mailSogoThemeDescription": "Sélectionnez le thème SOGo pour l'application Mail. La modification du thème redémarre les conteneurs associés.",
+    "mailSogoTheme": {
+      "light": "Clair",
+      "dark": "Sombre"
+    },
+    "mailSogoThemeDisabled": "Désactivé car le conteneur SOGo n'est pas en cours d'exécution."
   },
   "preview": {
     "image": "Aperçu de l'image",

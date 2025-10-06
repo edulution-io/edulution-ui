@@ -1604,7 +1604,14 @@
     "mailImapSecureTitle": "Secure Connection",
     "mailImapSecureDescription": "Should the connection be established via TLS or STARTTLS",
     "mailImapRejectUnauthorizedTitle": "Reject Unauthorized",
-    "mailImapRejectUnauthorizedDescription": "Should a certificate check be carried out for this connection?"
+    "mailImapRejectUnauthorizedDescription": "Should a certificate check be carried out for this connection?",
+    "mailSogoThemeTitle": "SOGo Theme",
+    "mailSogoThemeDescription": "Select the SOGo theme for the Mail app. Changing the theme restarts related containers.",
+    "mailSogoTheme": {
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "mailSogoThemeDisabled": "Disabled because SOGo container is not running."
   },
   "mails": {
     "errors": {

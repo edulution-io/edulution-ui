@@ -21,6 +21,7 @@ import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { type AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import type AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
 import EmbeddedPageEditorForm from '@libs/appconfig/types/embeddedPageEditorForm';
+import AppConfigDropdownSelect from '@/pages/Settings/AppConfig/components/AppConfigDropdownSelect';
 import AppConfigSwitch from './booleanField/AppConfigSwitch';
 import EmbeddedPageEditor from './EmbeddedPageEditor';
 
@@ -97,6 +98,15 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
           <EmbeddedPageEditor
             name={settingLocation}
             form={form as unknown as UseFormReturn<EmbeddedPageEditorForm>}
+          />
+        );
+      case ExtendedOptionField.dropdown:
+        return (
+          <AppConfigDropdownSelect
+            key={fieldPath}
+            control={control as unknown as Control<FieldValues>}
+            fieldPath={fieldPath as string}
+            option={option}
           />
         );
       default:

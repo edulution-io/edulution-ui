@@ -10,14 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const ExtendedOptionField = {
-  input: 'input',
-  password: 'password',
-  table: 'table',
-  number: 'number',
-  switch: 'switch',
-  textarea: 'textarea',
-  dropdown: 'dropdown',
+const SOGO_THEME = {
+  LIGHT_CSS_URL:
+    'https://raw.githubusercontent.com/edulution-io/edulution-mail/refs/heads/main/build/templates/sogo/light-theme.css',
+  DARK_CSS_URL:
+    'https://raw.githubusercontent.com/edulution-io/edulution-mail/refs/heads/main/build/templates/sogo/custom-theme.css',
+  TARGET_DIR: '/srv/docker/edulution-mail/mailcow/data/conf/sogo',
+  TARGET_FILE_NAME: 'custom-theme.css',
 } as const;
 
-export default ExtendedOptionField;
+export default SOGO_THEME;
