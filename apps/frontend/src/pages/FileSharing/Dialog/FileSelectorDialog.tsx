@@ -12,7 +12,6 @@
 import React from 'react';
 import useOpenFileDialogStore from '@/pages/FileSharing/useOpenFileDialogStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import FileSelectorDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/FileSelectorDialogBody';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import { useTranslation } from 'react-i18next';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
@@ -20,6 +19,8 @@ import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownl
 import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import MoveContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveContentDialogBody';
+import ContentType from '@libs/filesharing/types/contentType';
 
 const FileSelectorDialog = () => {
   const { isFileDialogOpen, setAllowedExtensions, setOpenFileDialog } = useOpenFileDialogStore();
@@ -28,6 +29,10 @@ const FileSelectorDialog = () => {
   const { openTldrFromBlobUrl } = useWhiteboardEditorStore();
   const { t } = useTranslation();
   const { selectedWebdavShare } = useFileSharingStore();
+  const { allowedExtensions } = useOpenFileDialogStore();
+
+  const fileHasAllowedExtension = (name: string) =>
+    !allowedExtensions.length || allowedExtensions.some((ext) => name.toLowerCase().endsWith(ext.toLowerCase()));
 
   const handleClose = () => {
     setAllowedExtensions([]);
@@ -44,6 +49,21 @@ const FileSelectorDialog = () => {
     return [];
   };
 
+  const getDialog = () => (
+      <MoveContentDialogBody
+        showAllFiles
+        pathToFetch=""
+        showSelectedFile
+        fileType={ContentType.FILE}
+        enableRowSelection={(row) =>
+          row.original.type === ContentType.FILE && fileHasAllowedExtension(row.original.filename)
+        }
+        getRowDisabled={(row) =>
+          row.original.type === ContentType.FILE && !fileHasAllowedExtension(row.original.filename)
+        }
+      />
+    );
+
   const getFooter = () => (
     <DialogFooterButtons
       handleClose={handleClose}
@@ -58,7 +78,7 @@ const FileSelectorDialog = () => {
     <AdaptiveDialog
       isOpen={isFileDialogOpen}
       title={t('fileSelectorDialogBody.title')}
-      body={<FileSelectorDialogBody />}
+      body={getDialog()}
       footer={getFooter()}
       handleOpenChange={handleClose}
     />
