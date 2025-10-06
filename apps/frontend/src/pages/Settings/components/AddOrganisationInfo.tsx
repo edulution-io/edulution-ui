@@ -31,8 +31,8 @@ type FieldDef = {
 
 const AddOrganisationInfo: React.FC<AddOrganisationInfoProps> = ({ form }) => {
   const { t } = useTranslation();
-
-  const isGeneric = getDeploymentTarget() === DEPLOYMENT_TARGET.GENERIC;
+  const deploymentTarget = getDeploymentTarget();
+  const isGeneric = deploymentTarget === DEPLOYMENT_TARGET.GENERIC;
 
   const fields: FieldDef[] = [
     {

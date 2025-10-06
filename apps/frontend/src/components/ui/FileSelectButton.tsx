@@ -12,7 +12,7 @@
 
 import React, { forwardRef, useId } from 'react';
 
-export type FileSelectButtonProps = {
+type FileSelectButtonProps = {
   onChange: React.ChangeEventHandler<HTMLInputElement>;
   accept?: string;
   multiple?: boolean;

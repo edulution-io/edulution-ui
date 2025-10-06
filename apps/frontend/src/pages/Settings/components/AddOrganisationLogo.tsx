@@ -10,54 +10,33 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { AccordionContent } from '@/components/ui/AccordionSH';
 import type { UseFormReturn } from 'react-hook-form';
 import type { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSettings.form';
 import { useTranslation } from 'react-i18next';
-import { Theme, ThemeType } from '@libs/common/types/theme';
+import { Theme, ThemeType } from '@libs/common/constants/theme';
 import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
-import { GLOBAL_SETTINGS_BRANDING_LOGO } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import getMainLogoUrl from '@libs/assets/getMainLogoUrl';
 import LogoUploadField from '@/pages/Settings/components/LogoUploadField';
-import convertImageFileToWebp from '@libs/common/utils/convertImageFileToWebp';
 import getDeploymentTarget from '@libs/common/utils/getDeploymentTarget';
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import BRANDING_UPLOADS_LOGO from '@libs/global-settings/constants/brandingUploadsLogo';
 
-type Props = { form: UseFormReturn<GlobalSettingsFormValues> };
+type AddOrganisationLogoProps = { form: UseFormReturn<GlobalSettingsFormValues> };
 
-const AddOrganisationLogo: React.FC<Props> = ({ form }) => {
+const AddOrganisationLogo: React.FC<AddOrganisationLogoProps> = ({ form }) => {
   const { t } = useTranslation();
-  const { uploadGlobalAsset } = useFilesystemStore();
+  const { uploadVariant, darkVersion, uploadingVariant } = useFilesystemStore();
 
   const lightInputRef = useRef<HTMLInputElement>(null);
   const darkInputRef = useRef<HTMLInputElement>(null);
-
-  const [darkVersion, setDarkVersion] = useState(0);
-  const [uploadingVariant, setUploadingVariant] = useState<ThemeType | null>(null);
 
   const setFormFileForVariant = (variant: ThemeType, file: File | null) => {
     const path: 'brandingUploads.logo.light' | 'brandingUploads.logo.dark' =
       variant === Theme.light ? 'brandingUploads.logo.light' : 'brandingUploads.logo.dark';
     form.setValue(path, file, { shouldDirty: true });
   };
-
-  const uploadVariant = async (variant: ThemeType, file: File) => {
-    try {
-      setUploadingVariant(variant);
-      const webpFile = await convertImageFileToWebp(file);
-      await uploadGlobalAsset({
-        destination: GLOBAL_SETTINGS_BRANDING_LOGO,
-        file: webpFile,
-        filename: `main-logo-${variant}.webp`,
-      });
-      setDarkVersion((version) => version + 1);
-    } finally {
-      setUploadingVariant(null);
-    }
-  };
-
   const onFileChange =
     (variant: ThemeType): React.ChangeEventHandler<HTMLInputElement> =>
     async (event) => {
@@ -73,8 +52,8 @@ const AddOrganisationLogo: React.FC<Props> = ({ form }) => {
 
   const darkPreviewSrc = `${getMainLogoUrl(Theme.dark)}?v=${darkVersion}`;
   const hasDarkSelection = !!form.watch(BRANDING_UPLOADS_LOGO.dark);
-
-  const isGeneric = getDeploymentTarget() === DEPLOYMENT_TARGET.GENERIC;
+  const deploymentTarget = getDeploymentTarget();
+  const isGeneric = deploymentTarget === DEPLOYMENT_TARGET.GENERIC;
 
   return (
     <AccordionContent className="space-y-4 px-1">

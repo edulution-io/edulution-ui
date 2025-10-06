@@ -423,8 +423,7 @@
         "PublicIsRestrictedByInvalidToken": "Auf den Freigabelink kann nicht zugegriffen werden, da der Token ungültig ist.",
         "PublicFileWrongPassword": "Das eingegebene Passwort ist falsch.",
         "FileCouldNotBeFound": "Der angefordert Freigabe-Link konnte nicht gefunden werden. Bitte überprüfe den Link oder wende dich an den Ersteller.",
-        "PublicFileDownloadFailed": "Herunterladen der Datei fehlgeschlagen. Bitte versuche es später noch einmal.",
-        "ResolvePublicFileFailed": "Öffentliche Datei konnte nicht gefunden werden."
+        "PublicFileDownloadFailed": "Herunterladen der Datei fehlgeschlagen. Bitte versuche es später noch einmal."
       },
       "success": {
         "PublicFileLinkCreated": "Freigabe-Link erfolgreich erstellt.",
@@ -944,25 +943,25 @@
 
       "logo": {
         "title": "Logo",
-        "descriptionSchool": "Laden Sie das Logo hoch. Es wird auf der Login-Seite und auf dem Ausweis in der Edulution-App angezeigt.",
+        "descriptionSchool": "Lade das Logo hoch. Es wird auf der Login-Seite und auf dem Ausweis in der edulution App angezeigt.",
         "descriptionGeneric": "Laden Sie das Logo hoch. Es wird auf der Login-Seite angezeigt.",
         "uploadLightLogo": "Helles Logo hochladen",
-        "uploadDarkLogo": "Dunkels Logo hochladen",
+        "uploadDarkLogo": "Dunkles Logo hochladen",
         "deleteSuccessful": "Logo wurde erfolgreich gelöscht"
       },
       "organisationInfo": {
-        "title": "Organisationinformationen",
-        "descriptionSchool": "Gebe die offiziellen Angaben Ihrer Organisation an. Diese Informationen können in der Edulution-App angezeigt werden. Bitte Name, Straße, Postleitzahl und optional die Schulwebsite eintragen.",
-        "descriptionGeneric": "Gebe die offiziellen Angaben Ihrer Organisation an.",
+        "title": "Organisationsinformationen",
+        "descriptionSchool": "Trage die offiziellen Angaben deiner Organisation ein. Diese Informationen werden in der edulution App angezeigt. Bitte gib den Namen, die Straße, die Postleitzahl und optional die Website der Schule an.",
+        "descriptionGeneric": "Trage die offiziellen Angaben deiner Organisation ein.",
         "name": "Organisation",
-        "namePlaceholder": "z. B. Gemeinschaftsschule Musterstadt",
+        "namePlaceholder": "Gemeinschaftsschule Musterstadt",
         "street": "Straße",
-        "streetPlaceholder": "z. B. Hauptstraße 1",
+        "streetPlaceholder": "Hauptstraße 1",
         "postalCode": "Postleitzahl",
-        "postalCodePlaceholder": "z. B. 12345",
-        "website": "Organisationwebsite",
+        "postalCodePlaceholder": "12345",
+        "website": "Website der Organisation",
         "city": "Stadt",
-        "postalCityPlaceholder": "z.B Berlin"
+        "postalCityPlaceholder": "Berlin"
       }
     },
     "userAdministration": {

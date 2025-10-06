@@ -11,13 +11,6 @@
  */
 
 import { ThemeType } from '@libs/common/constants/theme';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import { GLOBAL_SETTINGS_BRANDING_LOGO } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
-import getMainLogoFilename from '@libs/filesharing/utils/getMainLogoFilename';
 
-const getMainLogoUrl = (theme: ThemeType) => {
-  const base = getMainLogoFilename(theme);
-  return `/${EDU_API_ROOT}/public/assets/${GLOBAL_SETTINGS_BRANDING_LOGO}/${base}`;
-};
-
-export default getMainLogoUrl;
+export const getMainLogoFilename = (theme: ThemeType) => `main-logo-${theme}.webp`;
+export default getMainLogoFilename;

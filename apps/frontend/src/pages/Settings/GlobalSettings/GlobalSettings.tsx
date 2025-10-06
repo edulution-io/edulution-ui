@@ -34,7 +34,7 @@ import DeploymentTargetDropdownSelectFormField from '../components/DeploymentTar
 const GlobalSettings: React.FC = () => {
   const { t } = useTranslation();
   const { searchGroups } = useGroupStore();
-  const { appConfigs = [] } = useAppConfigsStore();
+  const { appConfigs } = useAppConfigsStore();
   const { globalSettings, getGlobalAdminSettings, setGlobalSettings } = useGlobalSettingsApiStore();
   const form = useForm<GlobalSettingsFormValues>({ defaultValues });
 

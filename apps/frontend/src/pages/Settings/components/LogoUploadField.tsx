@@ -11,12 +11,12 @@
  */
 
 import React from 'react';
-import { Theme, ThemeType } from '@libs/common/types/theme';
+import { Theme, ThemeType } from '@libs/common/constants/theme';
 import FileSelectButton from '@/components/ui/FileSelectButton';
 import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
 import clsx from 'clsx';
 
-export type LogoUploadFieldProps = {
+type LogoUploadFieldProps = {
   variant: ThemeType;
   previewSrc?: string | null;
   cacheKey?: number;

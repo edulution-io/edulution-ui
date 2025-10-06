@@ -32,7 +32,7 @@ import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoi
 import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
-import { UploadGlobalAssert } from '@libs/filesystem/types/uploadGlobalAssert';
+import { UploadGlobalAssetDto } from '@libs/filesystem/types/uploadGlobalAssetDto';
 import CustomHttpException from '../common/CustomHttpException';
 import { createAttachmentUploadOptions, createDiskStorage } from './multer.utilities';
 import AppConfigGuard from '../appconfig/appconfig.guard';
@@ -107,14 +107,14 @@ class FileSystemController {
     FileInterceptor('file', {
       storage: createDiskStorage(
         (request) => {
-          const { body } = request as { body?: UploadGlobalAssert };
+          const { body } = request as { body?: UploadGlobalAssetDto };
           if (!body?.destination) {
             throw new CustomHttpException(CommonErrorMessages.FILE_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
           }
           return join(PUBLIC_ASSET_PATH, body.destination);
         },
         (request) => {
-          const { body } = request as { body?: UploadGlobalAssert };
+          const { body } = request as { body?: UploadGlobalAssetDto };
           if (!body?.filename) {
             throw new CustomHttpException(CommonErrorMessages.FILE_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
           }
