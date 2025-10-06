@@ -31,15 +31,23 @@ const useLogout = () => {
 
   const handleLogout = useCallback(async () => {
     await logout();
+
     await auth.removeUser();
-    await cleanAllStores();
-    removeCookie(COOKIE_DESCRIPTORS.AUTH_TOKEN, {
-      path: ROOT_ROUTE,
-    });
-    await silentLogout();
+
     window.history.pushState(null, '', LOGIN_ROUTE);
     window.dispatchEvent(new PopStateEvent('popstate'));
+
+    await cleanAllStores();
+
+    removeCookie(COOKIE_DESCRIPTORS.AUTH_TOKEN, {
+      path: ROOT_ROUTE,
+      domain: window.location.hostname,
+    });
+
+    await silentLogout();
+
     toast.dismiss();
+
     if (auth.user?.expired) {
       toast.error(t('auth.errors.TokenExpired'));
     } else {
