@@ -10,10 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface UploadGlobalAsset {
-  destination: string;
-  file: File | Blob;
-  filename: string;
-}
+import { ThemeType } from '@libs/common/constants/theme';
 
-export default UploadGlobalAsset;
+export type UploadGlobalAssetDto = { destination?: string; filename?: string; variant: ThemeType; file: File | Blob };
