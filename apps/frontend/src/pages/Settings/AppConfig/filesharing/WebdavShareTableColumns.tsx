@@ -23,6 +23,7 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 import useWebdavShareConfigTableStore from './useWebdavShareConfigTableStore';
+import useWebdavServerConfigTableStore from './useWebdavServerConfigTableStore';
 
 const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
   {
@@ -54,19 +55,26 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
     ),
   },
   {
-    id: WEBDAV_SHARE_TABLE_COLUMNS.URL,
+    id: WEBDAV_SHARE_TABLE_COLUMNS.ROOT_SERVER,
     header: ({ column }) => <SortableHeader<WebdavShareDto, unknown> column={column} />,
 
     meta: {
-      translationId: 'form.url',
+      translationId: 'server',
     },
-    accessorFn: (row) => row.url,
-    cell: ({ row }) => (
-      <SelectableTextCell
-        text={row.original.url}
-        onClick={() => row.toggleSelected()}
-      />
-    ),
+    accessorFn: (row) => row.rootServer,
+    cell: ({ row }) => {
+      const { tableContentData } = useWebdavServerConfigTableStore();
+
+      return (
+        <SelectableTextCell
+          text={
+            tableContentData.find((server) => server.webdavShareId === row.original.rootServer)?.displayName ||
+            row.original.rootServer
+          }
+          onClick={() => row.toggleSelected()}
+        />
+      );
+    },
   },
   {
     id: WEBDAV_SHARE_TABLE_COLUMNS.PATHNAME,

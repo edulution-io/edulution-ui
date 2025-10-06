@@ -1745,6 +1745,7 @@
       "title": "WebDAV Server Selection",
       "description": "Select the WebDAV server that should serve as the root path."
     },
-    "sharePath": "Path"
+    "sharePath": "Path",
+    "pathPreview": "Path preview"
   }
 }

@@ -1547,6 +1547,7 @@
       "title": "Sélection du serveur WebDAV",
       "description": "Sélectionnez le serveur WebDAV qui doit servir de chemin racine."
     },
-    "sharePath": "Chemin de partage"
+    "sharePath": "Chemin de partage",
+    "pathPreview": "Aperçu du chemin"
   }
 }

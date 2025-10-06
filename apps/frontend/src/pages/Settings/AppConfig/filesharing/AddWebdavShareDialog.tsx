@@ -10,22 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormFieldSH,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/Form';
+import { Form, FormControl, FormDescription, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { Button } from '@/components/shared/Button';
 import FormField from '@/components/shared/FormField';
 import { type ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
@@ -38,14 +30,13 @@ import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { RowSelectionState } from '@tanstack/react-table';
 import { DropdownSelect } from '@/components';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import { DropdownOptions } from '@/components/ui/DropdownSelect/DropdownSelect';
-import Input from '@/components/shared/Input';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import appendSlashToUrl from '@libs/common/utils/URL/appendSlashToUrl';
 import WEBDAV_SHARE_AUTHENTICATION_METHODS from '@libs/webdav/constants/webdavShareAuthenticationMethods';
 import useWebdavShareConfigTableStore from './useWebdavShareConfigTableStore';
 import useWebdavServerConfigTableStore from './useWebdavServerConfigTableStore';
+import WebdavSharePathPreviewField from './WebdavSharePathPreviewField';
 
 interface AddWebdavShareDialogProps {
   tableId: ExtendedOptionKeysType;
@@ -53,7 +44,6 @@ interface AddWebdavShareDialogProps {
 
 const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) => {
   const { t } = useTranslation();
-  const [sharePathValue, setSharePathValue] = useState('');
   const { searchGroups } = useGroupStore();
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
   const { selectedRows, tableContentData, setSelectedRows, updateWebdavShare, createWebdavShare, deleteTableEntry } =
@@ -62,6 +52,8 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
   const lmnUser = useLmnApiStore((s) => s.user);
   const getOwnUser = useLmnApiStore((s) => s.getOwnUser);
   const { isLmn } = useDeploymentTarget();
+
+  const ldapFieldsEnabled = isLmn && !!lmnUser;
 
   const isOpen = isDialogOpen === tableId;
   const keys = Object.keys(selectedRows as RowSelectionState);
@@ -127,11 +119,11 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
     const selectedRootServer =
       rootServers.find((server) => server.displayName === webdavShareValues[WEBDAV_SHARE_TABLE_COLUMNS.ROOT_SERVER]) ||
       rootServers[0];
-    const newUrl = new URL(webdavShareValues[WEBDAV_SHARE_TABLE_COLUMNS.SHARE_PATH], selectedRootServer.url);
+    const newUrl = new URL(webdavShareValues[WEBDAV_SHARE_TABLE_COLUMNS.SHARE_PATH] || '', selectedRootServer.url);
 
     const webdavShareDto: WebdavShareDto = {
       ...webdavShareValues,
-      url: newUrl.href,
+      url: appendSlashToUrl(newUrl.href),
       rootServer: selectedRootServer.webdavShareId || '',
       pathname: appendSlashToUrl(newUrl.pathname),
       type: selectedRootServer?.type || WEBDAV_SHARE_TYPE.LINUXMUSTER,
@@ -191,61 +183,21 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
     </form>
   );
 
-  const getRootServerList = () =>
-    rootServers.map((server) => ({ id: server.webdavShareId!, name: server.displayName }));
+  const rootServerOptions = useMemo(
+    () => rootServers.map((s) => ({ id: s.webdavShareId!, name: s.displayName })),
+    [rootServers],
+  );
+  const pathVariableOptions = useMemo(() => {
+    const items = ldapFieldsEnabled
+      ? Object.entries(lmnUser).map(([key, value]) => ({
+          id: key,
+          name: key,
+          value: String(value),
+        }))
+      : [];
 
-  const getPathVariableList = (): (DropdownOptions & { value: string })[] => {
-    const items =
-      isLmn && lmnUser
-        ? Object.entries(lmnUser).map(([key, value]) => ({
-            id: key,
-            name: key,
-            value: String(value),
-          }))
-        : [];
-
-    return [
-      {
-        id: '',
-        name: '-',
-        value: '',
-      },
-      ...items,
-    ];
-  };
-
-  const findVarValue = (variable: string) => {
-    if (isLmn && lmnUser) return getPathVariableList().find((item) => item.id === variable)?.value ?? '';
-    return '';
-  };
-
-  const rootServer = useWatch({
-    control: form.control,
-    name: WEBDAV_SHARE_TABLE_COLUMNS.ROOT_SERVER,
-  });
-
-  const sharePath = useWatch({
-    control: form.control,
-    name: WEBDAV_SHARE_TABLE_COLUMNS.SHARE_PATH,
-  });
-
-  const variable = useWatch({
-    control: form.control,
-    name: WEBDAV_SHARE_TABLE_COLUMNS.VARIABLE,
-  });
-
-  const getInputValue = useCallback((): string => {
-    const selectedRootServer = rootServers.find((server) => server.webdavShareId === rootServer)?.url;
-
-    if (!selectedRootServer) return '';
-
-    const variableResolved = findVarValue(variable);
-    return `${selectedRootServer}${sharePath}/${variableResolved}`;
-  }, [rootServers, rootServer, sharePath, variable]);
-
-  useEffect(() => {
-    setSharePathValue(getInputValue());
-  }, [getInputValue]);
+    return [{ id: '', name: '-', value: '' }, ...items];
+  }, [ldapFieldsEnabled, lmnUser]);
 
   const renderFormFields = () => (
     <>
@@ -265,7 +217,7 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
             <p className="font-bold">{t('webdavShare.selectRootServer.title')}</p>
             <FormControl>
               <DropdownSelect
-                options={getRootServerList()}
+                options={rootServerOptions}
                 selectedVal={field.value}
                 handleChange={field.onChange}
                 variant="dialog"
@@ -284,7 +236,7 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
         labelTranslationId={t(`webdavShare.${WEBDAV_SHARE_TABLE_COLUMNS.SHARE_PATH}`)}
         variant="dialog"
       />
-      {isLmn && (
+      {ldapFieldsEnabled && (
         <FormFieldSH
           control={form.control}
           name={WEBDAV_SHARE_TABLE_COLUMNS.VARIABLE}
@@ -294,7 +246,7 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
               <p className="font-bold">{t('webdavShare.variable.title')}</p>
               <FormControl>
                 <DropdownSelect
-                  options={getPathVariableList()}
+                  options={pathVariableOptions}
                   selectedVal={field.value}
                   handleChange={field.onChange}
                   variant="dialog"
@@ -307,15 +259,11 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
           )}
         />
       )}
-      <>
-        <FormLabel>
-          <p className="mt-4 font-bold text-background">{t(`form.${WEBDAV_SHARE_TABLE_COLUMNS.PATHNAME}`)}</p>
-        </FormLabel>
-        <Input
-          value={sharePathValue}
-          variant="dialog"
-        />
-      </>
+      <WebdavSharePathPreviewField
+        form={form}
+        variableList={pathVariableOptions}
+        ldapFieldsEnabled={ldapFieldsEnabled}
+      />
       <FormFieldSH
         control={control}
         name={WEBDAV_SHARE_TABLE_COLUMNS.ACCESSGROUPS}

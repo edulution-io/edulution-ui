@@ -13,6 +13,7 @@
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useLmnApiStore from '@/store/useLmnApiStore';
+import appendSlashToUrl from '@libs/common/utils/URL/appendSlashToUrl';
 import getUserAttributValue from '@libs/lmnApi/utils/getUserAttributValue';
 import { useEffect } from 'react';
 
@@ -28,7 +29,7 @@ const useVariableSharePathname = () => {
 
   const createVariableSharePathname = (pathname: string, variable?: string) => {
     if (!isSuperAdmin && isLmn) {
-      return `${pathname}${getUserAttributValue(lmnUser, variable)}`;
+      return appendSlashToUrl(`${pathname}${getUserAttributValue(lmnUser, variable)}`);
     }
     return pathname;
   };

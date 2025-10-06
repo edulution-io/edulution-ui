@@ -1747,6 +1747,7 @@
       "title": "WebDAV Server-Auswahl",
       "description": "Wähle den WebDAV-Server, der als Root-Pfad fungieren soll."
     },
-    "sharePath": "Pfad"
+    "sharePath": "Pfad",
+    "pathPreview": "Pfad-Vorschau"
   }
 }
