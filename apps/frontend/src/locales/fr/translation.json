@@ -1429,8 +1429,8 @@
     "mailImapSecureDescription": "La connexion via «tls» ou «starttls» doit être établie.",
     "mailImapRejectUnauthorizedTitle": "Rejeter les connexions non certifiées",
     "mailImapRejectUnauthorizedDescription": "Une vérification de certificat doit-il être effectué pour cette connexion?",
-    "mailSogoThemeTitle": "Thème SOGo",
-    "mailSogoThemeDescription": "Sélectionnez le thème SOGo pour l'application Mail. La modification du thème redémarre les conteneurs associés.",
+    "mailSogoThemeTitle": "Thème",
+    "mailSogoThemeDescription": "Sélectionnez le thème pour l'application Mail. La modification du thème redémarre les conteneurs associés.",
     "mailSogoTheme": {
       "light": "Clair",
       "dark": "Sombre"
