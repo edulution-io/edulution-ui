@@ -200,10 +200,12 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
   const pathVariableOptions: MultipleSelectorOptionSH[] = useMemo(() => {
     if (!ldapFieldsEnabled) return [];
 
-    return Object.keys(lmnUser).map((key) => ({
-      label: key,
-      value: key,
-    }));
+    return Object.entries(lmnUser)
+      .filter(([, value]) => typeof value === 'string')
+      .map(([key]) => ({
+        label: key,
+        value: key,
+      }));
   }, [ldapFieldsEnabled, lmnUser]);
 
   const onVariableSearch = (query: string) => {
