@@ -45,6 +45,7 @@ export enum RequestResponseContentType {
   MULTIPART_FORM_DATA = 'multipart/form-data',
   APPLICATION_OCTET_STREAM = 'application/octet-stream',
   APPLICATION_GITHUB_RAW = 'application/vnd.github.v3.raw',
+  TEXT_HTML = 'text/html',
 }
 
 export const HTTP_HEADERS = {
