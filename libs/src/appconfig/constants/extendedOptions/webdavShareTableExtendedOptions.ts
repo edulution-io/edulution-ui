@@ -16,9 +16,17 @@ import TAppFieldWidth from '@libs/appconfig/types/tAppFieldWidth';
 
 const WEBDAV_SHARE_TABLE_EXTENDED_OPTIONS = [
   {
+    name: ExtendedOptionKeys.WEBDAV_SERVER_TABLE,
+    description: 'appExtendedOptions.webdavServers',
+    title: 'appExtendedOptions.webdavServersTitle',
+    type: ExtendedOptionField.table,
+    value: '',
+    width: 'full' as TAppFieldWidth,
+  },
+  {
     name: ExtendedOptionKeys.WEBDAV_SHARE_TABLE,
-    description: 'appExtendedOptions.veyonProxys',
-    title: 'appExtendedOptions.veyonProxysTitle',
+    description: 'appExtendedOptions.webdavShares',
+    title: 'appExtendedOptions.webdavSharesTitle',
     type: ExtendedOptionField.table,
     value: '',
     width: 'full' as TAppFieldWidth,

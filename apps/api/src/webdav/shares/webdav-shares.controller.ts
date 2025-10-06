@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Body, Controller, Get, Param, Put, Post, UseGuards, Delete } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put, Post, UseGuards, Delete, Query, ParseBoolPipe } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import AppConfigGuard from '../../appconfig/appconfig.guard';
@@ -24,8 +24,11 @@ class WebdavSharesController {
   constructor(private readonly webdavSharesService: WebdavSharesService) {}
 
   @Get()
-  findAllShares(@GetCurrentUserGroups() currentUserGroups: string[]) {
-    return this.webdavSharesService.findAllWebdavShares(currentUserGroups);
+  findAllShares(
+    @Query('isRootPath', new ParseBoolPipe({ optional: true })) isRootPath: boolean,
+    @GetCurrentUserGroups() currentUserGroups: string[],
+  ) {
+    return this.webdavSharesService.findAllWebdavShares(currentUserGroups, isRootPath);
   }
 
   @Post()

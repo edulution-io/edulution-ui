@@ -103,33 +103,39 @@ class WebdavSharesService implements OnModuleInit {
     return this.webdavShareCache[share]?.url;
   }
 
-  findAllWebdavShares(currentUserGroups: string[]) {
+  findAllWebdavShares(currentUserGroups: string[], isRootPath?: boolean) {
     try {
-      const basePipeline: PipelineStage[] = [
-        {
-          $project: {
-            webdavShareId: '$_id',
-            _id: 0,
-            displayName: 1,
-            url: 1,
-            pathname: 1,
-            isRootPath: 1,
-            variable: 1,
-            accessGroups: 1,
-            type: 1,
-            status: 1,
-            lastChecked: 1,
-          },
-        },
-      ];
+      const basePipeline: PipelineStage[] = [];
 
       if (!getIsAdmin(currentUserGroups)) {
-        basePipeline.unshift({
+        basePipeline.push({
           $match: {
             'accessGroups.path': { $in: currentUserGroups },
           },
         });
       }
+
+      if (typeof isRootPath === 'boolean') {
+        basePipeline.push({
+          $match: { isRootPath },
+        });
+      }
+
+      basePipeline.push({
+        $project: {
+          webdavShareId: '$_id',
+          _id: 0,
+          displayName: 1,
+          url: 1,
+          pathname: 1,
+          isRootPath: 1,
+          variable: 1,
+          accessGroups: 1,
+          type: 1,
+          status: 1,
+          lastChecked: 1,
+        },
+      });
 
       return this.webdavSharesModel.aggregate<WebdavShareDto>(basePipeline);
     } catch (error) {

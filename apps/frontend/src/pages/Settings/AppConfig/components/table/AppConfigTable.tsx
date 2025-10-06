@@ -199,6 +199,22 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
             />
           );
         }
+        case ExtendedOptionKeys.WEBDAV_SERVER_TABLE: {
+          return (
+            <ScrollableTable
+              columns={columns}
+              data={tableContentData as WebdavShareDto[]}
+              filterKey={filterKey}
+              filterPlaceHolderText={filterPlaceHolderText}
+              applicationName={applicationName}
+              enableRowSelection
+              initialColumnVisibility={initialColumnVisibility}
+              selectedRows={selectedRows}
+              onRowSelectionChange={handleRowSelectionChange}
+              actions={tableActions as TableAction<WebdavShareDto>[]}
+            />
+          );
+        }
         case ExtendedOptionKeys.WEBDAV_SHARE_TABLE: {
           return (
             <ScrollableTable
