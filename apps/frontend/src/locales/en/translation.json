@@ -1735,6 +1735,16 @@
       "short": "Root",
       "notConfigured": "No root path configured. Please contact the system administrator."
     },
-    "selectPlaceholder": "Select..."
+    "selectPlaceholder": "Select...",
+    "authentication": {
+      "title": "Authentication",
+      "description": "The authentication method for the WebDAV server can be selected here.",
+      "basic": "Basic (username, password)"
+    },
+    "selectRootServer": {
+      "title": "WebDAV Server Selection",
+      "description": "Select the WebDAV server that should serve as the root path."
+    },
+    "sharePath": "Path"
   }
 }

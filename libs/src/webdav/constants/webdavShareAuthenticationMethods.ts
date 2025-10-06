@@ -10,19 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const WEBDAV_SHARE_TABLE_COLUMNS = {
-  DISPLAY_NAME: 'displayName',
-  WEBDAV_SHARE_ID: 'webdavShareId',
-  URL: 'url',
-  SHARE_PATH: 'sharePath',
-  PATHNAME: 'pathname',
-  IS_ROOT_PATH: 'isRootPath',
-  VARIABLE: 'variable',
-  ACCESSGROUPS: 'accessGroups',
-  TYPE: 'type',
-  STATUS: 'status',
-  ROOT_SERVER: 'rootServer',
-  AUTHENTICATION: 'authentication',
+const WEBDAV_SHARE_AUTHENTICATION_METHODS = {
+  BASIC: 'basic',
 } as const;
 
-export default WEBDAV_SHARE_TABLE_COLUMNS;
+export default WEBDAV_SHARE_AUTHENTICATION_METHODS;

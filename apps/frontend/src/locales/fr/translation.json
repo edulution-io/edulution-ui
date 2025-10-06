@@ -1537,6 +1537,16 @@
       "short": "Root",
       "notConfigured": "Aucun chemin racine n'est configuré. Veuillez contacter l'administrateur système."
     },
-    "selectPlaceholder": "Sélectionner..."
+    "selectPlaceholder": "Sélectionner...",
+    "authentication": {
+      "title": "Authentification",
+      "description": "Vous pouvez sélectionner ici la méthode d'authentification pour le serveur WebDAV.",
+      "basic": " Basic (nom d'utilisateur, mot de passe)"
+    },
+    "selectRootServer": {
+      "title": "Sélection du serveur WebDAV",
+      "description": "Sélectionnez le serveur WebDAV qui doit servir de chemin racine."
+    },
+    "sharePath": "Chemin de partage"
   }
 }

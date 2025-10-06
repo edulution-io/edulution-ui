@@ -13,6 +13,7 @@
 import { IsArray, IsBoolean, IsDate, IsMongoId, IsString } from 'class-validator';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import type WebdavShareStatusType from '@libs/webdav/types/webdavShareStatusType';
+import type WebdavShareAuthenticationMethodsType from '@libs/webdav/types/webdavShareAuthenticationMethodsType';
 import type WebdavShareType from './webdavShareType';
 
 class WebdavShareDto {
@@ -24,6 +25,9 @@ class WebdavShareDto {
 
   @IsString()
   url: string;
+
+  @IsString()
+  sharePath: string;
 
   @IsString()
   pathname: string;
@@ -48,6 +52,9 @@ class WebdavShareDto {
 
   @IsDate()
   lastChecked: Date | null = null;
+
+  @IsString()
+  authentication: WebdavShareAuthenticationMethodsType;
 }
 
 export default WebdavShareDto;

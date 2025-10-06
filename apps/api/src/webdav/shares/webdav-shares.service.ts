@@ -96,13 +96,6 @@ class WebdavSharesService implements OnModuleInit {
     return this.webdavShareCache[share];
   }
 
-  async getWebdavSharePath(share: string): Promise<string> {
-    if (!this.webdavShareCache[share]) {
-      await this.loadCache();
-    }
-    return this.webdavShareCache[share]?.url;
-  }
-
   findAllWebdavShares(currentUserGroups: string[], isRootPath?: boolean) {
     try {
       const basePipeline: PipelineStage[] = [];
@@ -127,6 +120,7 @@ class WebdavSharesService implements OnModuleInit {
           _id: 0,
           displayName: 1,
           url: 1,
+          sharePath: 1,
           pathname: 1,
           isRootPath: 1,
           rootServer: 1,
@@ -135,6 +129,7 @@ class WebdavSharesService implements OnModuleInit {
           type: 1,
           status: 1,
           lastChecked: 1,
+          authentication: 1,
         },
       });
 

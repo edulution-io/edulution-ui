@@ -47,23 +47,25 @@ const useFileSharingMenuConfig = () => {
   useEffect(() => {
     if (!webdavShares.length) return;
 
-    const menuBarItems: MenuItem[] = webdavShares.map((share) => ({
-      id: share.displayName,
-      label: share.displayName,
-      icon: FileSharingIcon,
-      color: 'hover:bg-ciGreenToBlue',
-      action: () => {
-        if (share.status === WEBDAV_SHARE_STATUS.UP) {
-          handlePathChange(share.displayName, createVariableSharePathname(share.pathname, share.variable));
-        } else {
-          toast.info(t('webdavShare.offline'), {
-            position: 'top-right',
-            duration: 1000,
-          });
-        }
-      },
-      disableTranslation: true,
-    }));
+    const menuBarItems: MenuItem[] = webdavShares
+      .filter((share) => !share.isRootPath)
+      .map((share) => ({
+        id: share.displayName,
+        label: share.displayName,
+        icon: FileSharingIcon,
+        color: 'hover:bg-ciGreenToBlue',
+        action: () => {
+          if (share.status === WEBDAV_SHARE_STATUS.UP) {
+            handlePathChange(share.displayName, createVariableSharePathname(share.pathname, share.variable));
+          } else {
+            toast.info(t('webdavShare.offline'), {
+              position: 'top-right',
+              duration: 1000,
+            });
+          }
+        },
+        disableTranslation: true,
+      }));
 
     const sharedItem: MenuItem = {
       id: SHARED,

@@ -30,6 +30,7 @@ import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { RowSelectionState } from '@tanstack/react-table';
 import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import { DropdownSelect } from '@/components';
+import WEBDAV_SHARE_AUTHENTICATION_METHODS from '@libs/webdav/constants/webdavShareAuthenticationMethods';
 import useWebdavShareConfigTableStore from './useWebdavShareConfigTableStore';
 import useWebdavServerConfigTableStore from './useWebdavServerConfigTableStore';
 
@@ -55,6 +56,7 @@ const AddWebdavServerDialog: React.FC<AddWebdavServerDialogProps> = ({ tableId }
     [WEBDAV_SHARE_TABLE_COLUMNS.IS_ROOT_PATH]: true,
     [WEBDAV_SHARE_TABLE_COLUMNS.ACCESSGROUPS]: [],
     [WEBDAV_SHARE_TABLE_COLUMNS.TYPE]: WEBDAV_SHARE_TYPE.LINUXMUSTER,
+    [WEBDAV_SHARE_TABLE_COLUMNS.AUTHENTICATION]: WEBDAV_SHARE_AUTHENTICATION_METHODS.BASIC,
   };
 
   const form = useForm<WebdavShareDto>({
@@ -135,6 +137,11 @@ const AddWebdavServerDialog: React.FC<AddWebdavServerDialogProps> = ({ tableId }
     name: t(`webdavShare.type.${id}`),
   }));
 
+  const webdavShareAuthenticationOptions = Object.values(WEBDAV_SHARE_AUTHENTICATION_METHODS).map((id) => ({
+    id,
+    name: t(`webdavShare.authentication.${id}`),
+  }));
+
   const getFooter = () => (
     <form
       onSubmit={handleFormSubmit}
@@ -212,6 +219,24 @@ const AddWebdavServerDialog: React.FC<AddWebdavServerDialogProps> = ({ tableId }
               />
             </FormControl>
             <FormDescription>{t('webdavShare.type.description')}</FormDescription>
+          </FormItem>
+        )}
+      />
+      <FormFieldSH
+        control={form.control}
+        name={WEBDAV_SHARE_TABLE_COLUMNS.AUTHENTICATION}
+        render={({ field }) => (
+          <FormItem>
+            <p className="font-bold">{t('webdavShare.authentication.title')}</p>
+            <FormControl>
+              <DropdownSelect
+                options={webdavShareAuthenticationOptions}
+                selectedVal={field.value}
+                handleChange={field.onChange}
+                variant="dialog"
+              />
+            </FormControl>
+            <FormDescription>{t('webdavShare.authentication.description')}</FormDescription>
           </FormItem>
         )}
       />
