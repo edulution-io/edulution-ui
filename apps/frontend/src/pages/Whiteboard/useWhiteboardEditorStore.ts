@@ -69,6 +69,9 @@ const useWhiteboardEditorStore = create<WhiteboardEditorState>((set, get) => ({
     try {
       await loadTldrFileIntoEditor(editor, file);
       toast.success(t('whiteboard.openTLFileSuccess'));
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      toast.error(t(message));
     } finally {
       URL.revokeObjectURL(blobUrl);
     }

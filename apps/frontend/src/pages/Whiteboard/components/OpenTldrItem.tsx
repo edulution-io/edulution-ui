@@ -14,13 +14,14 @@ import React from 'react';
 import { TldrawUiMenuItem } from 'tldraw';
 import { useTranslation } from 'react-i18next';
 import useOpenFileDialogStore from '@/pages/FileSharing/useOpenFileDialogStore';
+import FileExtensionTypes from '@libs/filesharing/constants/fileExtensionTypes';
 
 const OpenTldrItem: React.FC = () => {
   const { t } = useTranslation();
   const { setOpenFileDialog, setAllowedExtensions } = useOpenFileDialogStore();
 
   const handleSelect = () => {
-    setAllowedExtensions(['.tldr']);
+    setAllowedExtensions([FileExtensionTypes.TLDR]);
     setOpenFileDialog(true);
   };
 

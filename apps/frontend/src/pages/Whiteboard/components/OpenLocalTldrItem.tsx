@@ -14,6 +14,7 @@ import React, { useEffect, useRef } from 'react';
 import { TldrawUiMenuItem } from 'tldraw';
 import { useTranslation } from 'react-i18next';
 import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
+import FileExtensionTypes from '@libs/filesharing/constants/fileExtensionTypes';
 
 const OpenLocalTldrItem: React.FC = () => {
   const { t } = useTranslation();
@@ -23,7 +24,7 @@ const OpenLocalTldrItem: React.FC = () => {
   useEffect(() => {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.tldr';
+    input.accept = FileExtensionTypes.TLDR;
     input.style.display = 'none';
     input.onchange = async (event: Event) => {
       const target = event.target as HTMLInputElement;

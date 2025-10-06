@@ -15,6 +15,7 @@ import { TldrawUiMenuItem } from 'tldraw';
 import { useTranslation } from 'react-i18next';
 import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
 import buildTldrFileFromEditor from '@libs/tldraw-sync/utils/buildTldrFileFromEditor';
+import APPS from '@libs/appconfig/constants/apps';
 
 const SaveLocalTldrItem: React.FC = () => {
   const { t } = useTranslation();
@@ -22,10 +23,10 @@ const SaveLocalTldrItem: React.FC = () => {
 
   const handleSave = () => {
     if (!editor) {
-      throw new Error('Editor not ready');
+      return;
     }
 
-    const file = buildTldrFileFromEditor(editor, 'whiteboard');
+    const file = buildTldrFileFromEditor(editor, APPS.WHITEBOARD);
     const blobUrl = URL.createObjectURL(file);
     const link = document.createElement('a');
     link.href = blobUrl;

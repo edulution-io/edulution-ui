@@ -20,7 +20,7 @@ import nextAnimationFrame from '@libs/tldraw-sync/utils/nextAnimationFrame';
 const loadTldrFileIntoEditor = async (editor: Editor, file: File): Promise<void> => {
   const text = (await file.text()).trimStart();
   if (!(text.startsWith('{') || text.startsWith('['))) {
-    throw new Error('Erwarte TLDR-JSON (kein multipart/form-data).');
+    throw new Error('whiteboard.openTLFileFailed');
   }
 
   const parsed = JSON.parse(text) as unknown;
