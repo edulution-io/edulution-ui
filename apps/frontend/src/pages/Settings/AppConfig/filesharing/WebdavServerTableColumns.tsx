@@ -24,7 +24,7 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import cn from '@libs/common/utils/className';
 import WEBDAV_SHARE_STATUS from '@libs/webdav/constants/webdavShareStatus';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
-import useWebdavShareConfigTableStore from './useWebdavShareConfigTableStore';
+import useWebdavServerConfigTableStore from './useWebdavServerConfigTableStore';
 
 const WebdavServerTableColumns: ColumnDef<WebdavShareDto>[] = [
   {
@@ -118,7 +118,7 @@ const WebdavServerTableColumns: ColumnDef<WebdavShareDto>[] = [
     },
     cell: ({ row }) => {
       const { setDialogOpen } = useAppConfigTableDialogStore();
-      const { deleteTableEntry, fetchTableContent } = useWebdavShareConfigTableStore();
+      const { fetchTableContent, deleteTableEntry } = useWebdavServerConfigTableStore();
 
       return (
         <TableActionCell
@@ -130,7 +130,7 @@ const WebdavServerTableColumns: ColumnDef<WebdavShareDto>[] = [
                 if (!row.getIsSelected()) {
                   row.toggleSelected();
                 }
-                setDialogOpen(ExtendedOptionKeys.WEBDAV_SHARE_TABLE);
+                setDialogOpen(ExtendedOptionKeys.WEBDAV_SERVER_TABLE);
               },
             },
             {

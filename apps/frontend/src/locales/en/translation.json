@@ -985,6 +985,9 @@
         "webdavShare": {
           "title": "WebDAV-Server",
           "description": "WebDAV servers can be set up for the file manager here.",
+          "filterPlaceHolderText": "Search for WebDAV shares"
+        },
+        "webdavServer": {
           "filterPlaceHolderText": "Search for WebDAV servers"
         },
         "files": {

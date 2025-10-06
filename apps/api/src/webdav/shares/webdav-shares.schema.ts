@@ -35,6 +35,9 @@ export class WebdavShares {
   isRootPath: boolean;
 
   @Prop({ default: '' })
+  rootServer: string;
+
+  @Prop({ default: '' })
   variable: string;
 
   @Prop({ type: Array, default: [] })

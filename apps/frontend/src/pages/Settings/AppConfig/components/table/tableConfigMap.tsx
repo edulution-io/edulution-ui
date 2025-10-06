@@ -41,6 +41,7 @@ import useWebdavShareConfigTableStore from '../../filesharing/useWebdavShareConf
 import AddWebdavShareDialog from '../../filesharing/AddWebdavShareDialog';
 import WebdavServerTableColumns from '../../filesharing/WebdavServerTableColumns';
 import useWebdavServerConfigTableStore from '../../filesharing/useWebdavServerConfigTableStore';
+import AddWebdavServerDialog from '../../filesharing/AddWebdavServerDialog';
 
 const DOCKER_CONTAINER_TABLE_COLUMS = {
   hideColumnsInMobileView: [
@@ -156,11 +157,11 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
     createAppConfigTableEntry<WebdavShareDto, WebdavServerTableStore>({
       columns: WebdavServerTableColumns,
       useStore: useWebdavServerConfigTableStore,
-      dialogBody: <AddWebdavShareDialog tableId={ExtendedOptionKeys.WEBDAV_SERVER_TABLE} />,
+      dialogBody: <AddWebdavServerDialog tableId={ExtendedOptionKeys.WEBDAV_SERVER_TABLE} />,
       showAddButton: true,
       showRemoveButton: true,
       filterKey: WEBDAV_SHARE_TABLE_COLUMNS.DISPLAY_NAME,
-      filterPlaceHolderText: 'settings.appconfig.sections.webdavShare.filterPlaceHolderText',
+      filterPlaceHolderText: 'settings.appconfig.sections.webdavServer.filterPlaceHolderText',
       type: ExtendedOptionKeys.WEBDAV_SERVER_TABLE,
       hideColumnsInMobileView: [WEBDAV_SHARE_TABLE_COLUMNS.TYPE],
       hideColumnsInTabletView: [],

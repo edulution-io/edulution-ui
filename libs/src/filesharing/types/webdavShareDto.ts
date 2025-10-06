@@ -28,6 +28,9 @@ class WebdavShareDto {
   @IsString()
   pathname: string;
 
+  @IsString()
+  rootServer: string;
+
   @IsBoolean()
   isRootPath: boolean;
 

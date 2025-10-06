@@ -988,6 +988,9 @@
         "webdavShare": {
           "title": "WebDAV-Server",
           "description": "Hier können WebDAV-Server für den Dateimanager eingerichtet werden.",
+          "filterPlaceHolderText": "Suche nach WebDAV-Share"
+        },
+        "webdavServer": {
           "filterPlaceHolderText": "Suche nach WebDAV-Server"
         },
         "files": {

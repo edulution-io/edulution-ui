@@ -42,6 +42,18 @@ const useWebdavServerConfigTableStore: UseBoundStore<StoreApi<WebdavServerTableS
       }
     },
 
+    deleteTableEntry: async (_applicationName, webdavShareId) => {
+      set({ isLoading: true });
+      try {
+        await eduApi.delete(`/webdav-shares/${webdavShareId}`, { params: { isRootPath: true } });
+        set({ isLoading: false });
+      } catch (error) {
+        handleApiError(error, set);
+      } finally {
+        set({ isLoading: false });
+      }
+    },
+
     reset: () => set(initialValues),
   }),
 );
