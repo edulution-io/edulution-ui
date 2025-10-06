@@ -14,31 +14,26 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { UseFormReturn, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import Input from '@/components/shared/Input';
-import { DropdownOptions } from '@/components/ui/DropdownSelect/DropdownSelect';
 import { FormLabel } from '@/components/ui/Form';
 import appendSlashToUrl from '@libs/common/utils/URL/appendSlashToUrl';
 import WEBDAV_SHARE_TABLE_COLUMNS from '@libs/filesharing/constants/webdavShareTableColumns';
-import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
+import type WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
+import type MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import useWebdavServerConfigTableStore from './useWebdavServerConfigTableStore';
 
 type WebdavSharePathPreviewFieldProps = {
-  ldapFieldsEnabled: boolean;
-  variableList: (DropdownOptions & { value: string })[];
   form: UseFormReturn<WebdavShareDto>;
 };
 
-const WebdavSharePathPreviewField: React.FC<WebdavSharePathPreviewFieldProps> = ({
-  form,
-  variableList,
-  ldapFieldsEnabled,
-}) => {
+const WebdavSharePathPreviewField: React.FC<WebdavSharePathPreviewFieldProps> = ({ form }) => {
   const { t } = useTranslation();
   const [sharePathValue, setSharePathValue] = useState('');
   const tableContentData = useWebdavServerConfigTableStore((s) => s.tableContentData);
 
-  const findVarValue = (variable: string) => {
-    if (ldapFieldsEnabled) return variableList.find((item) => item.id === variable)?.value ?? '';
-    return '';
+  const getVariablesPath = (pathVariables: MultipleSelectorOptionSH[]): string => {
+    const pathVariablesList = pathVariables.map((pathVariable) => `{{${pathVariable.label}}}`);
+
+    return pathVariablesList.join('/');
   };
 
   const rootServer = useWatch({
@@ -51,9 +46,9 @@ const WebdavSharePathPreviewField: React.FC<WebdavSharePathPreviewFieldProps> = 
     name: WEBDAV_SHARE_TABLE_COLUMNS.SHARE_PATH,
   });
 
-  const variable = useWatch({
+  const pathVariables = useWatch({
     control: form.control,
-    name: WEBDAV_SHARE_TABLE_COLUMNS.VARIABLE,
+    name: WEBDAV_SHARE_TABLE_COLUMNS.PATH_VARIABLES,
   });
 
   const getInputValue = useCallback((): string => {
@@ -61,9 +56,9 @@ const WebdavSharePathPreviewField: React.FC<WebdavSharePathPreviewFieldProps> = 
 
     if (!selectedRootServer) return '';
 
-    const variableResolved = findVarValue(variable);
-    return `${selectedRootServer}${appendSlashToUrl(sharePath)}${variableResolved}`;
-  }, [tableContentData, rootServer, sharePath, variable]);
+    const variablesResolved = getVariablesPath(pathVariables);
+    return `${selectedRootServer}${appendSlashToUrl(sharePath)}${variablesResolved}`;
+  }, [tableContentData, rootServer, sharePath, pathVariables]);
 
   useEffect(() => {
     setSharePathValue(getInputValue());

@@ -34,6 +34,8 @@ import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import appendSlashToUrl from '@libs/common/utils/URL/appendSlashToUrl';
 import WEBDAV_SHARE_AUTHENTICATION_METHODS from '@libs/webdav/constants/webdavShareAuthenticationMethods';
+import type MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
+import MultipleSelectorSH from '@/components/ui/MultipleSelectorSH';
 import useWebdavShareConfigTableStore from './useWebdavShareConfigTableStore';
 import useWebdavServerConfigTableStore from './useWebdavServerConfigTableStore';
 import WebdavSharePathPreviewField from './WebdavSharePathPreviewField';
@@ -64,7 +66,7 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
     [WEBDAV_SHARE_TABLE_COLUMNS.ROOT_SERVER]: rootServers[0]?.displayName,
     [WEBDAV_SHARE_TABLE_COLUMNS.DISPLAY_NAME]: '',
     [WEBDAV_SHARE_TABLE_COLUMNS.URL]: '',
-    [WEBDAV_SHARE_TABLE_COLUMNS.VARIABLE]: '',
+    [WEBDAV_SHARE_TABLE_COLUMNS.PATH_VARIABLES]: [],
     [WEBDAV_SHARE_TABLE_COLUMNS.IS_ROOT_PATH]: false,
     [WEBDAV_SHARE_TABLE_COLUMNS.ACCESSGROUPS]: [],
     [WEBDAV_SHARE_TABLE_COLUMNS.TYPE]: WEBDAV_SHARE_TYPE.LINUXMUSTER,
@@ -157,6 +159,14 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
     setValue(WEBDAV_SHARE_TABLE_COLUMNS.ACCESSGROUPS, uniqueGroups, { shouldValidate: true });
   };
 
+  const handleVariableChange = (options: MultipleSelectorOptionSH[]) => {
+    const uniqueGroups = options.reduce<MultipleSelectorOptionSH[]>((acc, g) => {
+      if (!acc.some((x) => x.value === g.value)) acc.push(g);
+      return acc;
+    }, []);
+    setValue(WEBDAV_SHARE_TABLE_COLUMNS.PATH_VARIABLES, uniqueGroups, { shouldValidate: true });
+  };
+
   const getFooter = () => (
     <form
       onSubmit={handleFormSubmit}
@@ -187,17 +197,19 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
     () => rootServers.map((s) => ({ id: s.webdavShareId!, name: s.displayName })),
     [rootServers],
   );
-  const pathVariableOptions = useMemo(() => {
-    const items = ldapFieldsEnabled
-      ? Object.entries(lmnUser).map(([key, value]) => ({
-          id: key,
-          name: key,
-          value: String(value),
-        }))
-      : [];
+  const pathVariableOptions: MultipleSelectorOptionSH[] = useMemo(() => {
+    if (!ldapFieldsEnabled) return [];
 
-    return [{ id: '', name: '-', value: '' }, ...items];
+    return Object.keys(lmnUser).map((key) => ({
+      label: key,
+      value: key,
+    }));
   }, [ldapFieldsEnabled, lmnUser]);
+
+  const onVariableSearch = (query: string) => {
+    if (query.trim() === '') return pathVariableOptions;
+    return pathVariableOptions.filter((option) => option.label.toLowerCase().includes(query.toLowerCase()));
+  };
 
   const renderFormFields = () => (
     <>
@@ -239,31 +251,27 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
       {ldapFieldsEnabled && (
         <FormFieldSH
           control={form.control}
-          name={WEBDAV_SHARE_TABLE_COLUMNS.VARIABLE}
-          defaultValue={initialFormValues[WEBDAV_SHARE_TABLE_COLUMNS.VARIABLE]}
-          render={({ field }) => (
+          name={WEBDAV_SHARE_TABLE_COLUMNS.PATH_VARIABLES}
+          defaultValue={initialFormValues[WEBDAV_SHARE_TABLE_COLUMNS.PATH_VARIABLES]}
+          render={() => (
             <FormItem>
-              <p className="font-bold">{t('webdavShare.variable.title')}</p>
+              <p className="font-bold">{t('webdavShare.pathVariables.title')}</p>
               <FormControl>
-                <DropdownSelect
-                  options={pathVariableOptions}
-                  selectedVal={field.value}
-                  handleChange={field.onChange}
+                <MultipleSelectorSH
+                  value={getValues(WEBDAV_SHARE_TABLE_COLUMNS.PATH_VARIABLES)}
+                  onSearch={onVariableSearch}
+                  onChange={handleVariableChange}
+                  placeholder={t('search.type-to-search')}
                   variant="dialog"
-                  translate={false}
                 />
               </FormControl>
-              <FormDescription>{t('webdavShare.variable.description')}</FormDescription>
+              <FormDescription>{t('webdavShare.pathVariables.description')}</FormDescription>
               <FormMessage className="text-p" />
             </FormItem>
           )}
         />
       )}
-      <WebdavSharePathPreviewField
-        form={form}
-        variableList={pathVariableOptions}
-        ldapFieldsEnabled={ldapFieldsEnabled}
-      />
+      <WebdavSharePathPreviewField form={form} />
       <FormFieldSH
         control={control}
         name={WEBDAV_SHARE_TABLE_COLUMNS.ACCESSGROUPS}

@@ -14,6 +14,7 @@ import { IsArray, IsBoolean, IsDate, IsMongoId, IsString } from 'class-validator
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import type WebdavShareStatusType from '@libs/webdav/types/webdavShareStatusType';
 import type WebdavShareAuthenticationMethodsType from '@libs/webdav/types/webdavShareAuthenticationMethodsType';
+import type MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import type WebdavShareType from './webdavShareType';
 
 class WebdavShareDto {
@@ -39,7 +40,7 @@ class WebdavShareDto {
   isRootPath: boolean;
 
   @IsString()
-  variable: string;
+  pathVariables: MultipleSelectorOptionSH[] = [];
 
   @IsArray()
   accessGroups: MultipleSelectorGroup[] = [];

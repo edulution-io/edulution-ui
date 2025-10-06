@@ -79,8 +79,8 @@ const FileSharingPage = () => {
       if (!currentShare) return;
 
       let currentSharePath = currentShare.pathname;
-      if (currentShare.variable) {
-        currentSharePath = createVariableSharePathname(currentSharePath, currentShare.variable);
+      if (currentShare.pathVariables) {
+        currentSharePath = createVariableSharePathname(currentSharePath, currentShare.pathVariables);
       }
 
       navigate(

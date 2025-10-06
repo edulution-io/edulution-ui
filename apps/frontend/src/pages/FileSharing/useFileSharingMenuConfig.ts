@@ -56,7 +56,7 @@ const useFileSharingMenuConfig = () => {
         color: 'hover:bg-ciGreenToBlue',
         action: () => {
           if (share.status === WEBDAV_SHARE_STATUS.UP) {
-            handlePathChange(share.displayName, createVariableSharePathname(share.pathname, share.variable));
+            handlePathChange(share.displayName, createVariableSharePathname(share.pathname, share.pathVariables));
           } else {
             toast.info(t('webdavShare.offline'), {
               position: 'top-right',

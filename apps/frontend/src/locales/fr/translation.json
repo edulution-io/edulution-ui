@@ -1527,7 +1527,7 @@
     },
     "status": "Statut",
     "offline": "Le serveur est actuellement indisponible.",
-    "variable": {
+    "pathVariables": {
       "title": "Variable de chemin ",
       "description": "Une variable de chemin dynamique peut être sélectionnée ici à partir des attributs utilisateur. "
     },

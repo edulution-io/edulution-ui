@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
@@ -43,11 +43,13 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   const [currentPath, setCurrentPath] = useState(pathToFetch || '/');
   const { selectedWebdavShare, webdavShares } = useFileSharingStore();
   const { createVariableSharePathname } = useVariableSharePathname();
-
   const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
 
   const { fetchDialogFiles, fetchDialogDirs, dialogShownDirs, dialogShownFiles, isLoading } =
     useFileSharingMoveDialogStore();
+
+  const firstRender = useRef(true);
+  const lastPathRef = useRef<string | null>(null);
 
   const currentDirItem: DirectoryFileDTO = {
     filePath: currentPath,
@@ -57,10 +59,19 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   };
 
   useEffect(() => {
-    setCurrentPath('/');
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    const share = webdavShares.find((s) => s.displayName === selectedWebdavShare) || webdavShares[0];
+    const newCurrentPath = createVariableSharePathname(share.pathname, share.pathVariables);
+    setCurrentPath(newCurrentPath);
   }, [selectedWebdavShare]);
 
   useEffect(() => {
+    if (lastPathRef.current === currentPath) return;
+    lastPathRef.current = currentPath;
+
     if (!selectedWebdavShare && !webdavShare) return;
     void fetchDialogDirs(selectedWebdavShare || webdavShare, currentPath);
     if (showAllFiles) {
@@ -103,8 +114,8 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
       const currentShare = webdavShares.find((s) => s.displayName === selectedWebdavShare) ?? webdavShares[0];
 
       let currentSharePath = currentShare.pathname;
-      if (currentShare.variable) {
-        currentSharePath = createVariableSharePathname(currentSharePath, currentShare.variable);
+      if (currentShare.pathVariables) {
+        currentSharePath = createVariableSharePathname(currentSharePath, currentShare.pathVariables);
       }
 
       setCurrentPath(currentSharePath);

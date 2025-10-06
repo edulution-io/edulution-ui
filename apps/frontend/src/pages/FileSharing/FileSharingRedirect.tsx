@@ -13,22 +13,32 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import APPS from '@libs/appconfig/constants/apps';
+import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import useFileSharingStore from './useFileSharingStore';
+import useVariableSharePathname from './hooks/useVariableSharePathname';
 
 const FileSharingRedirect = () => {
   const navigate = useNavigate();
   const { webdavShares, fetchWebdavShares } = useFileSharingStore();
+  const { createVariableSharePathname } = useVariableSharePathname();
 
   useEffect(() => {
     const ensureShares = async () => {
-      let shares = webdavShares;
+      let shares = webdavShares.filter((share) => !share.isRootPath);
 
       if (shares.length === 0) {
         shares = await fetchWebdavShares();
       }
 
       if (shares.length > 0) {
-        navigate(`/${APPS.FILE_SHARING}/${shares[0].displayName}`, { replace: true });
+        const navigationPath = createVariableSharePathname(shares[0].pathname, shares[0].pathVariables);
+        navigate(
+          {
+            pathname: `/${APPS.FILE_SHARING}/${shares[0].displayName}`,
+            search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(navigationPath)}`,
+          },
+          { replace: true },
+        );
       } else {
         navigate('/', { replace: true });
       }

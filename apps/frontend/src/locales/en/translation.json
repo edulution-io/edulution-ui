@@ -1725,7 +1725,7 @@
     },
     "status": "Status",
     "offline": "Server is currently unavailable",
-    "variable": {
+    "pathVariables": {
       "title": "Path variable",
       "description": "A dynamic path variable can be selected here from the user attributes."
     },

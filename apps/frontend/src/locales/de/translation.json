@@ -1727,7 +1727,7 @@
     },
     "status": "Status",
     "offline": "Server ist aktuell nicht erreichbar",
-    "variable": {
+    "pathVariables": {
       "title": "Pfad-Variable",
       "description": "Hier kann aus den Nutzerattributen eine dynamische Pfadvariable ausgewählt werden."
     },

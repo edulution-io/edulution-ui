@@ -10,29 +10,39 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { useCallback, useEffect } from 'react';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import appendSlashToUrl from '@libs/common/utils/URL/appendSlashToUrl';
 import getUserAttributValue from '@libs/lmnApi/utils/getUserAttributValue';
-import { useEffect } from 'react';
+import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 
 const useVariableSharePathname = () => {
   const { isSuperAdmin } = useLdapGroups();
   const { isLmn } = useDeploymentTarget();
-  const lmnUser = useLmnApiStore((state) => state.user);
+  const lmnUser = useLmnApiStore((s) => s.user);
   const getOwnUser = useLmnApiStore((s) => s.getOwnUser);
 
   useEffect(() => {
     void getOwnUser();
-  }, []);
+  }, [getOwnUser]);
 
-  const createVariableSharePathname = (pathname: string, variable?: string) => {
-    if (!isSuperAdmin && isLmn) {
-      return appendSlashToUrl(`${pathname}${getUserAttributValue(lmnUser, variable)}`);
-    }
-    return pathname;
-  };
+  const createVariableSharePathname = useCallback(
+    (pathname: string, pathVariables?: MultipleSelectorOptionSH[]) => {
+      if (!isSuperAdmin && isLmn && Array.isArray(pathVariables) && pathVariables.length > 0) {
+        const variablePath = pathVariables
+          .map((variable) => getUserAttributValue(lmnUser, variable.label))
+          .filter(Boolean)
+          .join('/');
+
+        return appendSlashToUrl(`${pathname}${variablePath}`);
+      }
+
+      return pathname;
+    },
+    [isSuperAdmin, isLmn, lmnUser],
+  );
 
   return { createVariableSharePathname };
 };

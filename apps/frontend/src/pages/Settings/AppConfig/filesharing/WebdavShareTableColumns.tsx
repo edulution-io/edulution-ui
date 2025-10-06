@@ -93,7 +93,7 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
   },
 
   {
-    id: WEBDAV_SHARE_TABLE_COLUMNS.VARIABLE,
+    id: WEBDAV_SHARE_TABLE_COLUMNS.PATH_VARIABLES,
     header: ({ column }) => {
       const { isLmn } = useDeploymentTarget();
       if (!isLmn) return null;
@@ -101,16 +101,20 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
     },
 
     meta: {
-      translationId: 'webdavShare.variable.title',
+      translationId: 'webdavShare.pathVariables.title',
     },
-    accessorFn: (row) => row.variable,
+    accessorFn: (row) => row.pathVariables,
     cell: ({ row }) => {
       const { isLmn } = useDeploymentTarget();
       if (!isLmn) return null;
 
       return (
         <SelectableTextCell
-          text={row.original.variable}
+          text={
+            row.original.pathVariables.length > 0
+              ? row.original.pathVariables.map((variable) => variable.value).join(', ')
+              : '-'
+          }
           onClick={() => row.toggleSelected()}
         />
       );

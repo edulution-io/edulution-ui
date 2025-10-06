@@ -27,7 +27,7 @@ const ShareFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, on
 
   const rootShares = webdavShares.filter((share) => share.isRootPath);
   const pathToFetch =
-    rootShares.length > 0 ? createVariableSharePathname(rootShares[0].pathname, rootShares[0].variable) : '/';
+    rootShares.length > 0 ? createVariableSharePathname(rootShares[0].pathname, rootShares[0].pathVariables) : '/';
 
   const getDialogBody = () =>
     rootShares.length === 0 ? (

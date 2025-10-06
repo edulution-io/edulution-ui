@@ -25,7 +25,6 @@ const MoveDirectoryDialogBody: React.FC<Omit<MoveContentDialogProps, 'pathToFetc
   return (
     <MoveContentDialogBody
       {...props}
-      showAllFiles
       pathToFetch={pathToFetch || homePath}
       fileType={ContentType.DIRECTORY}
     />

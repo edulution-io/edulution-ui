@@ -63,8 +63,8 @@ const MenuBar: React.FC = () => {
         const currentShare = webdavShares.find((s) => s.displayName === pathParts[1]) ?? webdavShares[0];
 
         let currentSharePath = currentShare.pathname;
-        if (currentShare.variable) {
-          currentSharePath = createVariableSharePathname(currentSharePath, currentShare.variable);
+        if (currentShare.pathVariables) {
+          currentSharePath = createVariableSharePathname(currentSharePath, currentShare.pathVariables);
         }
 
         setCurrentPath(currentSharePath);
