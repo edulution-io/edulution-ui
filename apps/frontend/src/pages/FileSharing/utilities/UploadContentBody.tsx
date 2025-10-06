@@ -37,6 +37,7 @@ import { FcFolder } from 'react-icons/fc';
 import MAX_FOLDER_UPLOAD_CONTENT_SIZE from '@libs/ui/constants/maxFolderUploadContentSize';
 import getFileUploadLimit from '@libs/ui/utils/getFileUploadLimit';
 import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
+import { v4 as uuidv4 } from 'uuid';
 
 const UploadContentBody = () => {
   const { webdavShare } = useParams();
@@ -80,8 +81,8 @@ const UploadContentBody = () => {
     const existingFilenameSet = new Set(existing.map((existingFile) => normalize(existingFile.filename)));
 
     return incoming
-      .filter((filename) => existingFilenameSet.has(normalize(displayName(filename))))
-      .map((filename) => ({ name: displayName(filename) }));
+      .filter((file) => existingFilenameSet.has(normalize(displayName(file))))
+      .map((file) => ({ name: displayName(file) }));
   };
 
   const duplicateKey = (f: UploadFile | { name: string; isZippedFolder?: boolean; originalFolderName?: string }) =>
@@ -95,8 +96,10 @@ const UploadContentBody = () => {
         acceptedFiles,
         getFileUploadLimit(webdavShares, webdavShare),
       );
-
-      const duplicates = findDuplicateFiles(normal, files);
+      const duplicates = findDuplicateFiles(
+        normal.map((file) => Object.assign(file, { id: uuidv4() })),
+        files,
+      );
 
       setOversizedFiles((prev) => [
         ...prev,
@@ -123,8 +126,21 @@ const UploadContentBody = () => {
       }
 
       updateFilesToUpload((prevFiles) => {
-        const allNewFiles = acceptedFiles.filter((file) => !prevFiles.some((f) => f.name === file.name));
-        return [...prevFiles, ...allNewFiles];
+        const existingNames = new Set(prevFiles.map((f) => f.name));
+
+        const newFiles = acceptedFiles
+          .filter((file) => !existingNames.has(file.name))
+          .map((file) => {
+            const uploadFile: UploadFile = Object.assign(new File([file], file.name, { type: file.type }), {
+              id: uuidv4(),
+              isZippedFolder: false,
+              originalFolderName: undefined,
+              fileCount: undefined,
+            });
+            return uploadFile;
+          });
+
+        return [...prevFiles, ...newFiles];
       });
     },
     [files, setOversizedFiles, setFilesThatWillBeOverwritten, setFilesToUpload, setTooLargeFolders],
@@ -153,6 +169,7 @@ const UploadContentBody = () => {
             isZippedFolder: true,
             originalFolderName: root,
             fileCount,
+            id: uuidv4(),
           },
         );
 
