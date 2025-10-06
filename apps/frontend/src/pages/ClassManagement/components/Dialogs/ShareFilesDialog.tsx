@@ -15,17 +15,19 @@ import { t } from 'i18next';
 import React from 'react';
 import MoveContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveContentDialogBody';
 import ShareCollectDialogProps from '@libs/classManagement/types/shareCollectDialogProps';
-import useUserPath from '@/pages/FileSharing/hooks/useUserPath';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableSharePathname';
 
 const ShareFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose, action }) => {
-  const { homePath } = useUserPath();
   const { moveOrCopyItemToPath } = useFileSharingDialogStore();
   const { webdavShares } = useFileSharingStore();
+  const { createVariableSharePathname } = useVariableSharePathname();
 
   const rootShares = webdavShares.filter((share) => share.isRootPath);
+  const pathToFetch =
+    rootShares.length > 0 ? createVariableSharePathname(rootShares[0].pathname, rootShares[0].variable) : '/';
 
   const getDialogBody = () =>
     rootShares.length === 0 ? (
@@ -33,7 +35,7 @@ const ShareFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, on
     ) : (
       <MoveContentDialogBody
         showAllFiles
-        pathToFetch={homePath}
+        pathToFetch={pathToFetch}
         showRootOnly
       />
     );

@@ -40,7 +40,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
 }) => {
   const { webdavShare } = useParams();
   const { t } = useTranslation();
-  const [currentPath, setCurrentPath] = useState(pathToFetch || '');
+  const [currentPath, setCurrentPath] = useState(pathToFetch || '/');
   const { selectedWebdavShare, webdavShares } = useFileSharingStore();
   const { createVariableSharePathname } = useVariableSharePathname();
 
