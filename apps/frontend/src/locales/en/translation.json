@@ -1322,7 +1322,11 @@
     "orContinueWithoutAccount": "Or continue without account",
     "application": "Application",
     "reset": "Reset",
-    "file": "File"
+    "file": "File",
+    "saveLocal": "Save to device",
+    "openLocal": "Open from device",
+    "openFileFromEdu": "Open file",
+    "saveFileToEdu": "Save to files"
   },
   "form": {
     "path": "Path",
@@ -1405,7 +1409,11 @@
     "title": "WHITEBOARD",
     "sidebar": "Whiteboard",
     "saveAsTlFile": "Save Whiteboard as .tldr file",
-    "openTlFile": "Open .tldr file"
+    "openTlFile": "Open",
+    "openLocalTlFile": "Open local .tldr file",
+    "file": "File",
+    "openTLFileFailed": "Could not open file",
+    "openTLFileSuccess": "File loaded successfully"
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
@@ -1483,6 +1491,11 @@
     "filenameRequired": "Filename cannot be empty",
     "fileSavedSuccessful": "File saved successfully",
     "fileSaveFailed": "File could not be saved"
+  },
+
+  "fileSelectorDialogBody": {
+    "title": "Select a file to open",
+    "selectFile": "Selected file"
   },
 
   "moveItemDialog": {

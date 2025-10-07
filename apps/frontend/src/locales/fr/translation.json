@@ -1157,7 +1157,11 @@
     "format": "Format",
     "upload": "Téléverser",
     "mode": "mode",
-    "file": "Fichier"
+    "file": "Fichier",
+    "saveLocal": "Enregistrer sur l’appareil",
+    "openLocal": "Ouvrir depuis l’appareil",
+    "openFileFromEdu": "Ouvrir le fichier",
+    "saveFileToEdu": "Enregistrer dans les fichiers"
   },
 
   "saveExternalFileDialogBody": {
@@ -1235,10 +1239,14 @@
     "sidebar": "Linuxmuster"
   },
   "whiteboard": {
-    "title": "Whiteboard",
-    "sidebar": "Whiteboard",
-    "saveAsTlFile": "Enregistrer le tableau blanc au format .tldr",
-    "openTlFile": "Ouvrir un fichier .tldr"
+    "title": "TABLEAU BLANC",
+    "sidebar": "Tableau blanc",
+    "saveAsTlFile": "Enregistrer le tableau blanc sous forme de fichier .tldr",
+    "openTLFileFailed": "Impossible d’ouvrir le fichier",
+    "openTLFileSuccess": "Le fichier a été chargé avec succès",
+    "openTlFile": "Ouvrir",
+    "openLocalTlFile": "Ouvrir un fichier .tldr local",
+    "file": "Fichier"
   },
   "whiteboard-collaboration": {
     "title": "Whiteboard",

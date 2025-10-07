@@ -10,28 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { TldrawUiMenuItem } from 'tldraw';
-import 'tldraw/tldraw.css';
-import { useTranslation } from 'react-i18next';
-import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
+interface FileSelectorDialogProps {
+  initialPath?: string;
+  showHome?: boolean;
+  showFooterSelection?: boolean;
+  allowedExtensions?: string[];
+}
 
-const SaveAsTldrItem = () => {
-  const { t } = useTranslation();
-  const { setIsDialogOpen } = useWhiteboardEditorStore();
-
-  const handleSave = () => {
-    setIsDialogOpen(true);
-  };
-
-  return (
-    <TldrawUiMenuItem
-      id="saveAsTldrItem"
-      label={t('common.save')}
-      readonlyOk
-      onSelect={handleSave}
-    />
-  );
-};
-
-export default SaveAsTldrItem;
+export default FileSelectorDialogProps;
