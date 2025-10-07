@@ -10,19 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
-import UserRoles from '@libs/user/constants/userRoles';
-import FILE_PATHS from '../constants/file-paths';
-import normalizeLdapHomeDirectory from './normalizeLdapHomeDirectory';
-
-const buildSharePath = (userName: string, fileName: string, student: LmnUserInfo): string => {
-  const file = fileName.split('/').pop();
-
-  const studentPath = student.examMode
-    ? `/${UserRoles.EXAM_USER}/${student.cn}-exam`
-    : normalizeLdapHomeDirectory(student?.homeDirectory);
-
-  return `/${studentPath}/${FILE_PATHS.TRANSFER}/${userName}/${file}`;
+const normalizeLdapHomeDirectory = (path: string): string => {
+  const withoutServer = path.replace(/^\\\\[^\\]+\\/, '');
+  return `/${withoutServer.replace(/\\/g, '/')}`;
 };
 
-export default buildSharePath;
+export default normalizeLdapHomeDirectory;

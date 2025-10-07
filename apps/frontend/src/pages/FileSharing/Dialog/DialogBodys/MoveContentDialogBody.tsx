@@ -73,9 +73,10 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
     lastPathRef.current = currentPath;
 
     if (!selectedWebdavShare && !webdavShare) return;
-    void fetchDialogDirs(selectedWebdavShare || webdavShare, currentPath);
     if (showAllFiles) {
       void fetchDialogFiles(selectedWebdavShare || webdavShare, currentPath);
+    } else {
+      void fetchDialogDirs(selectedWebdavShare || webdavShare, currentPath);
     }
   }, [webdavShare, selectedWebdavShare, currentPath, showAllFiles]);
 
@@ -83,7 +84,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
     if (isCurrentPathDefaultDestination) {
       setMoveOrCopyItemToPath(currentDirItem);
     }
-  }, [isCurrentPathDefaultDestination, currentPath, pathToFetch, selectedWebdavShare]);
+  }, [isCurrentPathDefaultDestination, currentPath, selectedWebdavShare]);
 
   const files = fileType === ContentType.DIRECTORY ? dialogShownDirs : dialogShownFiles;
 

@@ -12,9 +12,9 @@
 
 import { useEffect, useState } from 'react';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import getStringFromArray from '@libs/common/utils/getStringFromArray';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import normalizeLdapHomeDirectory from '@libs/filesharing/utils/normalizeLdapHomeDirectory';
 
 const useUserPath = () => {
   const { user: lmnUser } = useLmnApiStore();
@@ -26,7 +26,7 @@ const useUserPath = () => {
   useEffect(() => {
     if (isSuperAdmin || isGeneric) {
       setHomePath('/');
-    } else setHomePath(getStringFromArray(lmnUser?.sophomorixIntrinsic2));
+    } else setHomePath(normalizeLdapHomeDirectory(lmnUser?.homeDirectory || ''));
   }, [isSuperAdmin, isGeneric, lmnUser]);
 
   return { homePath };
