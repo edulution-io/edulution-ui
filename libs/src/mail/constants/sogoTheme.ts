@@ -15,7 +15,7 @@ const SOGO_THEME = {
     'https://raw.githubusercontent.com/edulution-io/edulution-mail/refs/heads/main/build/templates/sogo/light-theme.css',
   DARK_CSS_URL:
     'https://raw.githubusercontent.com/edulution-io/edulution-mail/refs/heads/main/build/templates/sogo/custom-theme.css',
-  TARGET_DIR: '/srv/docker/edulution-mail/mailcow/data/conf/sogo',
+  TARGET_DIR: '/data/apps/mail/sogo/overrides',
   TARGET_FILE_NAME: 'custom-theme.css',
 } as const;
 

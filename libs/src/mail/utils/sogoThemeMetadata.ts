@@ -10,9 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const DOCKER_CONTAINER_NAMES = {
-  MAILCOWDOCKERIZED_SOGO_MAILCOW_1: 'mailcowdockerized-sogo-mailcow-1',
-  MAILCOWDOCKERIZED_MEMCACHED_MAILCOW_1: 'mailcowdockerized-memcached-mailcow-1',
-} as const;
+export const extractVersion = (content: string): string | undefined => content.match(/@version\s+([^\s*]+)/i)?.[1];
 
-export default DOCKER_CONTAINER_NAMES;
+export const extractTheme = (content: string): string | undefined => content.match(/@theme\s+([^\s*]+)/i)?.[1];

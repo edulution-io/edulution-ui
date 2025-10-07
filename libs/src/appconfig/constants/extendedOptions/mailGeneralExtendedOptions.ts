@@ -28,7 +28,7 @@ const MAIL_GENERAL_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
       { id: MailTheme.DARK, name: 'appExtendedOptions.mailSogoTheme.dark' },
       { id: MailTheme.LIGHT, name: 'appExtendedOptions.mailSogoTheme.light' },
     ],
-    requiredContainers: [DOCKER_CONTAINER_NAMES.MAILCOW_SOGO],
+    requiredContainers: [DOCKER_CONTAINER_NAMES.MAILCOWDOCKERIZED_SOGO_MAILCOW_1],
     disabledWarningText: 'appExtendedOptions.mailSogoThemeDisabled',
   },
 ];

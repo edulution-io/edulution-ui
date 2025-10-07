@@ -27,6 +27,7 @@ import DOCKER_COMMANDS from '@libs/docker/constants/dockerCommands';
 import DOCKER_CONTAINER_NAMES from '@libs/docker/constants/dockerContainerNames';
 import MailTheme from '@libs/mail/constants/mailTheme';
 import SOGO_THEME from '@libs/mail/constants/sogoTheme';
+import { extractTheme, extractVersion } from '@libs/mail/utils/sogoThemeMetadata';
 import DOCKER_STATES from '@libs/docker/constants/dockerStates';
 import CustomHttpException from '../common/CustomHttpException';
 import DockerService from '../docker/docker.service';
@@ -111,7 +112,7 @@ class MailsService implements OnModuleInit {
       const theme = themeRaw.toLowerCase();
       const isLight = theme === MailTheme.LIGHT;
 
-      const requiredContainer = DOCKER_CONTAINER_NAMES.MAILCOW_SOGO;
+      const requiredContainer = DOCKER_CONTAINER_NAMES.MAILCOWDOCKERIZED_SOGO_MAILCOW_1;
       const containers = await this.dockerService.getContainers([requiredContainer]);
       const isRunning = Array.isArray(containers) && containers.some((c) => c.State === DOCKER_STATES.RUNNING);
       if (!isRunning) {
@@ -137,7 +138,10 @@ class MailsService implements OnModuleInit {
       await FilesystemService.writeFile(targetPath, newCss);
       Logger.debug(`SOGo theme updated to '${theme}' at ${targetPath}`, MailsService.name);
 
-      const containersToRestart = [DOCKER_CONTAINER_NAMES.MAILCOW_MEMCACHED, DOCKER_CONTAINER_NAMES.MAILCOW_SOGO];
+      const containersToRestart = [
+        DOCKER_CONTAINER_NAMES.MAILCOWDOCKERIZED_MEMCACHED_MAILCOW_1,
+        DOCKER_CONTAINER_NAMES.MAILCOWDOCKERIZED_SOGO_MAILCOW_1,
+      ];
       await Promise.all(
         containersToRestart.map((id) =>
           this.dockerService.executeContainerCommand({ id, operation: DOCKER_COMMANDS.RESTART }),
@@ -152,14 +156,6 @@ class MailsService implements OnModuleInit {
     }
   }
 
-  private extractVersion(content: string): string | undefined {
-    return content.match(/@version\s+([^\s*]+)/i)?.[1];
-  }
-
-  private extractTheme(content: string): string | undefined {
-    return content.match(/@theme\s+([^\s*]+)/i)?.[1];
-  }
-
   private async shouldWriteNewCss(targetPath: string, newCss: string): Promise<boolean> {
     const exists = await FilesystemService.checkIfFileExist(targetPath);
     if (!exists) return true;
@@ -169,10 +165,10 @@ class MailsService implements OnModuleInit {
 
       if (currentCss.trim() === newCss.trim()) return false;
 
-      const currentVersion = this.extractVersion(currentCss);
-      const newVersion = this.extractVersion(newCss);
-      const currentTheme = this.extractTheme(currentCss);
-      const newTheme = this.extractTheme(newCss);
+      const currentVersion = extractVersion(currentCss);
+      const newVersion = extractVersion(newCss);
+      const currentTheme = extractTheme(currentCss);
+      const newTheme = extractTheme(newCss);
 
       const bothHeadersEqual =
         !!currentVersion &&
