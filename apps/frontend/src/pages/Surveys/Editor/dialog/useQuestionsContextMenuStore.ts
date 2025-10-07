@@ -94,7 +94,6 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
 
   setSelectedQuestion: (question: TSurveyQuestion | undefined) => {
     const type = question?.getType();
-    const showOtherItem = question?.showOtherItem;
     set({
       selectedQuestion: question,
       questionType: type || '',
@@ -103,7 +102,7 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
       useBackendLimits: !!(question?.choicesByUrl as ChoicesRestful)?.url,
       formerChoices: (question?.choices as string[]) || [],
       currentChoices: [],
-      showOtherItem: showOtherItem || false,
+      showOtherItem: !!question?.showOtherItem,
       imageWidth: question?.imageWidth || 0,
     });
   },
