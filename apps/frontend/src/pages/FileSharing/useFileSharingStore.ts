@@ -31,13 +31,11 @@ type UseFileSharingStore = {
   downloadProgressList: DownloadFileDto[];
   pathToRestoreSession: string;
   fileOperationProgress: null | FilesharingProgressDto;
-  setDirectories: (files: DirectoryFileDTO[]) => void;
   directories: DirectoryFileDTO[];
   selectedRows: RowSelectionState;
   setSelectedRows: (rows: RowSelectionState) => void;
   setCurrentPath: (path: string) => void;
   setPathToRestoreSession: (path: string) => void;
-  setFiles: (files: DirectoryFileDTO[]) => void;
   setSelectedItems: (items: DirectoryFileDTO[]) => void;
   fetchFiles: (shareName: string | undefined, path?: string) => Promise<void>;
   reset: () => void;
@@ -47,7 +45,6 @@ type UseFileSharingStore = {
   currentlyDisabledFiles: Record<string, boolean>;
   setFileIsCurrentlyDisabled: (filename: string, isLocked: boolean, durationMs?: number) => Promise<void>;
   setIsLoading: (isLoading: boolean) => void;
-  setMountPoints: (mountPoints: DirectoryFileDTO[]) => void;
   setFileOperationProgress: (progress: FilesharingProgressDto | null) => void;
   setDownloadProgressList: (progressList: DownloadFileDto[]) => void;
   updateDownloadProgress: (progress: DownloadFileDto) => void;
@@ -117,17 +114,6 @@ const useFileSharingStore = create<UseFileSharingStore>(
 
       setPathToRestoreSession: (path: string) => {
         set({ pathToRestoreSession: path });
-      },
-      setFiles: (files: DirectoryFileDTO[]) => {
-        set({ files });
-      },
-
-      setMountPoints: (mountPoints: DirectoryFileDTO[]) => {
-        set({ mountPoints });
-      },
-
-      setDirectories: (directories: DirectoryFileDTO[]) => {
-        set({ directories });
       },
 
       setIsLoading: (isLoading: boolean) => {
