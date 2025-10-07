@@ -22,7 +22,7 @@ const buildSharePath = (userName: string, fileName: string, student: LmnUserInfo
     ? `/${UserRoles.EXAM_USER}/${student.cn}-exam`
     : normalizeLdapHomeDirectory(student?.homeDirectory);
 
-  return `/${studentPath}/${FILE_PATHS.TRANSFER}/${userName}/${file}`;
+  return `${studentPath}/${FILE_PATHS.TRANSFER}/${userName}/${file}`;
 };
 
 export default buildSharePath;
