@@ -10,9 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import React from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { t } from 'i18next';
-import React from 'react';
 import MoveContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveContentDialogBody';
 import ShareCollectDialogProps from '@libs/classManagement/types/shareCollectDialogProps';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
