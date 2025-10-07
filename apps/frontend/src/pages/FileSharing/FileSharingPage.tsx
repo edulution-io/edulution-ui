@@ -11,6 +11,7 @@
  */
 
 import React, { useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import DirectoryBreadcrumb from '@/pages/FileSharing/Table/DirectoryBreadcrumb';
 import ActionContentDialog from '@/pages/FileSharing/Dialog/ActionContentDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
@@ -32,20 +33,23 @@ import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
 import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
+import UploadFileDialog from '@/pages/FileSharing/Dialog/UploadFileDialog';
 import DeletePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DeletePublicShareDialog';
+import APPS from '@libs/appconfig/constants/apps';
 
 const FileSharingPage = () => {
+  const { webdavShare } = useParams();
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
-  const { fileOperationProgress, fetchFiles } = useFileSharingStore();
+  const { fileOperationProgress, fetchFiles, webdavShares } = useFileSharingStore();
   const { fetchShares } = usePublicShareStore();
-
+  const navigate = useNavigate();
   useEffect(() => {
     const handleFileOperationProgress = async () => {
       if (!fileOperationProgress) return;
       const percent = fileOperationProgress.percent ?? 0;
       if (percent >= 100) {
-        await fetchFiles(currentPath);
+        await fetchFiles(webdavShare, currentPath);
         await fetchShares();
       }
     };
@@ -53,10 +57,6 @@ const FileSharingPage = () => {
     void handleFileOperationProgress();
   }, [fileOperationProgress]);
   const { percentageUsed } = useQuotaInfo();
-
-  useEffect(() => {
-    void fetchShares();
-  }, [currentPath, fetchFiles, fetchShares]);
 
   const { share, setShare, closeDialog, dialog } = usePublicShareStore();
   const { origin } = window.location;
@@ -67,6 +67,28 @@ const FileSharingPage = () => {
     closeDialog(PUBLIC_SHARE_DIALOG_NAMES.QR_CODE);
   };
 
+  const getHiddenSegments = () => webdavShares.find((s) => s.displayName === webdavShare)?.pathname;
+
+  const handleBreadcrumbNavigate = (filenamePath: string) => {
+    if (filenamePath === '/') {
+      const currentShare = webdavShares.find((s) => s.displayName === webdavShare);
+
+      if (!currentShare) return;
+
+      navigate(
+        {
+          pathname: `/${APPS.FILE_SHARING}/${currentShare.displayName}`,
+          search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(currentShare.pathname)}`,
+        },
+        { replace: true },
+      );
+    } else {
+      const newParams = new URLSearchParams(searchParams);
+      newParams.set(URL_SEARCH_PARAMS.PATH, filenamePath);
+      setSearchParams(newParams);
+    }
+  };
+
   return (
     <PageLayout>
       <LoadingIndicatorDialog isOpen={isLoading} />
@@ -74,12 +96,9 @@ const FileSharingPage = () => {
       <div className="flex w-full flex-row justify-between space-x-2 pb-2 pt-2">
         <DirectoryBreadcrumb
           path={currentPath}
-          onNavigate={(filenamePath) => {
-            const newParams = new URLSearchParams(searchParams);
-            newParams.set(URL_SEARCH_PARAMS.PATH, filenamePath);
-            setSearchParams(newParams);
-          }}
+          onNavigate={handleBreadcrumbNavigate}
           style={{ color: 'white' }}
+          hiddenSegments={getHiddenSegments()}
         />
         <QuotaLimitInfo percentageUsed={percentageUsed} />
       </div>
@@ -110,6 +129,7 @@ const FileSharingPage = () => {
       />
       <CreateOrEditPublicShareDialog />
       <DeletePublicShareDialog />
+      <UploadFileDialog />
       <FileSharingFloatingButtonsBar />
     </PageLayout>
   );

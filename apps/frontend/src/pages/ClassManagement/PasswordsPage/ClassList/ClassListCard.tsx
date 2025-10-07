@@ -27,9 +27,10 @@ interface ClassListCardProps {
   group: LmnApiSchoolClass;
   selectedClasses: LmnApiSchoolClass[];
   setSelectedClasses: React.Dispatch<React.SetStateAction<LmnApiSchoolClass[]>>;
+  disabled?: boolean;
 }
 
-const ClassListCard = ({ selectedClasses, setSelectedClasses, group }: ClassListCardProps) => {
+const ClassListCard = ({ selectedClasses, setSelectedClasses, group, disabled }: ClassListCardProps) => {
   const { user } = useLmnApiStore();
   const { displayName, cn: commonName, sophomorixSchoolname } = group;
   const [isHovered, setIsHovered] = useState<boolean>(false);
@@ -43,6 +44,8 @@ const ClassListCard = ({ selectedClasses, setSelectedClasses, group }: ClassList
   const isSelected = !!selectedClasses.find((s) => s.dn === group.dn);
 
   const toggleIsSelected = () => {
+    if (disabled) return;
+
     if (isSelected) {
       setSelectedClasses((prev) => prev.filter((p) => p.dn !== group.dn));
     } else {
@@ -70,7 +73,7 @@ const ClassListCard = ({ selectedClasses, setSelectedClasses, group }: ClassList
         className={cn(
           'h-13 my-2 ml-1 mr-8 flex w-64 min-w-64 overflow-hidden ',
           isActive && 'scale-105',
-          'cursor-pointer',
+          disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
         )}
         onClick={onSelect}
         onMouseOver={() => setIsHovered(true)}

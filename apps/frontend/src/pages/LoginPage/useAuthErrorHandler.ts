@@ -36,7 +36,7 @@ const useAuthErrorHandler = <TFormValues extends Record<'password', unknown>>(
       return;
     }
 
-    if (authError.source?.includes('renewSilent')) {
+    if (authError.source?.includes('renewSilent') || authError.message.includes('No silent_redirect_uri configured')) {
       form.setError('password' as Path<TFormValues>, { message: t('auth.errors.TokenExpired') });
       return;
     }

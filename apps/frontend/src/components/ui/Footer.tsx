@@ -10,16 +10,37 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import useMedia from '@/hooks/useMedia';
 import React from 'react';
 import APPLICATION_NAME from '@libs/common/constants/applicationName';
+import { Link } from 'react-router-dom';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
+import getDisplayName from '@/utils/getDisplayName';
+import useLanguage from '@/hooks/useLanguage';
 
 const Footer = () => {
-  const { isMobileView } = useMedia();
+  const { language } = useLanguage();
+
+  const publicAppConfigs = useAppConfigsStore((s) => s.publicAppConfigs);
 
   return (
-    <footer className="bg-background-centered-shadow flex h-[22px] w-full justify-center overflow-hidden whitespace-nowrap text-muted">
-      &copy; {new Date().getFullYear()} {APPLICATION_NAME}. {!isMobileView && 'All rights reserved.'} V{APP_VERSION}
+    <footer className="bg-background-centered-shadow w-full p-2 text-sm text-muted">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-center md:gap-4">
+        <span className="text-center md:text-left">
+          &copy; {new Date().getFullYear()} {APPLICATION_NAME}.
+          <span className="hidden md:inline"> All rights reserved.</span> V{APP_VERSION}
+        </span>
+
+        <div className="mt-1 flex flex-wrap justify-center gap-2 scrollbar-thin md:mt-0 md:flex-nowrap md:overflow-x-auto md:whitespace-nowrap">
+          {publicAppConfigs.map((config) => (
+            <Link
+              key={config.name}
+              to={`/${config.name}`}
+            >
+              {getDisplayName(config, language)}
+            </Link>
+          ))}
+        </div>
+      </div>
     </footer>
   );
 };

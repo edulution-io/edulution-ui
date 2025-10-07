@@ -14,6 +14,7 @@ import {
   BulletinBoardIcon,
   ClassManagementIcon,
   ConferencesIcon,
+  Dashboard,
   DesktopDeploymentIcon,
   EmbeddedIcon,
   FileSharingIcon,
@@ -35,13 +36,17 @@ import DOCKER_CONTAINER_EXTENDED_OPTIONS from '@libs/appconfig/constants/extende
 import CLASS_MANAGEMENT_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/classMgmt';
 import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
 import EMBEDDED_PAGE_EDITOR_CONFIG from '@libs/appconfig/constants/extendedOptions/embeddedPageEditorConfig';
-import WEBDAV_SHARE_TABLE_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/webdavShareTable';
+import WEBDAV_SHARE_TABLE_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/webdavShareTableExtendedOptions';
 
 const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
+    id: APPS.DASHBOARD,
+    icon: Dashboard,
+    isNativeApp: true,
+  },
+  {
     id: APPS.BULLETIN_BOARD,
     icon: BulletinBoardIcon,
-    color: 'bg-ciDarkBlue',
     isNativeApp: true,
     extendedOptions: {
       [AppConfigSectionsKeys.bulletinBoard]: BULLETIN_BOARD_EXTENDED_OPTIONS,

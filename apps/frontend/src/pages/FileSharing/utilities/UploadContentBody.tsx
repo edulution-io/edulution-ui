@@ -14,6 +14,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { DropEvent, useDropzone } from 'react-dropzone';
 import { MdOutlineCloudUpload } from 'react-icons/md';
+import { useParams } from 'react-router-dom';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
 import { HiExclamationTriangle, HiTrash } from 'react-icons/hi2';
@@ -35,8 +36,10 @@ import ZIP_PROCESS_TIMEOUT from '@libs/filesharing/constants/zipProcessTimeout';
 import { FcFolder } from 'react-icons/fc';
 import MAX_FOLDER_UPLOAD_CONTENT_SIZE from '@libs/ui/constants/maxFolderUploadContentSize';
 import getFileUploadLimit from '@libs/ui/utils/getFileUploadLimit';
+import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
 
 const UploadContentBody = () => {
+  const { webdavShare } = useParams();
   const { t } = useTranslation();
   const { files, webdavShares } = useFileSharingStore();
   const [oversizedFiles, setOversizedFiles] = useState<File[]>([]);
@@ -50,7 +53,7 @@ const UploadContentBody = () => {
 
   const [filesThatWillBeOverwritten, setFilesThatWillBeOverwritten] = useState<string[]>([]);
 
-  const { filesToUpload, setFilesToUpload, updateFilesToUpload } = useFileSharingDialogStore();
+  const { filesToUpload, setFilesToUpload, updateFilesToUpload } = useHandelUploadFileStore();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
@@ -88,7 +91,10 @@ const UploadContentBody = () => {
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const { oversize, normal } = splitFilesByMaxFileSize(acceptedFiles, getFileUploadLimit(webdavShares));
+      const { oversize, normal } = splitFilesByMaxFileSize(
+        acceptedFiles,
+        getFileUploadLimit(webdavShares, webdavShare),
+      );
 
       const duplicates = findDuplicateFiles(normal, files);
 
@@ -381,7 +387,7 @@ const UploadContentBody = () => {
 
               let baseBorderClass = 'border-accent';
 
-              if (isFolderTooLarge || bytesToMegabytes(file.size) > getFileUploadLimit(webdavShares)) {
+              if (isFolderTooLarge || bytesToMegabytes(file.size) > getFileUploadLimit(webdavShares, webdavShare)) {
                 baseBorderClass = 'border-ciRed opacity-50';
               }
 

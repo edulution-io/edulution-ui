@@ -10,26 +10,32 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import FileActionType from '@libs/filesharing/types/fileActionType';
 import { HttpMethods } from '@libs/common/types/http-methods';
 import ContentType from '@libs/filesharing/types/contentType';
 import eduApi from '@/api/eduApi';
-import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 
 const handleFileOrCreateFile = async (
-  action: FileActionType,
   endpoint: string,
   httpMethod: HttpMethods,
   type: ContentType,
-  formData: FormData,
+  originalFormData: FormData,
+  webdavShare: string | undefined,
 ) => {
-  if (action === FileActionType.UPLOAD_FILE || action === FileActionType.CREATE_FILE) {
-    await eduApi[httpMethod](
-      buildApiFileTypePathUrl(endpoint, type, getPathWithoutWebdav(formData.get('path') as string)),
-      formData,
-    );
-  }
+  const path = String(originalFormData.get('path') ?? '');
+
+  const file = originalFormData.get('file') as File | null;
+  const filenameFromForm =
+    (originalFormData.get('name') as string) || (originalFormData.get('filename') as string) || file?.name || '';
+
+  await eduApi[httpMethod](endpoint, originalFormData, {
+    params: {
+      share: webdavShare,
+      type,
+      path,
+      name: filenameFromForm,
+    },
+    withCredentials: true,
+  });
 };
 
 export default handleFileOrCreateFile;
