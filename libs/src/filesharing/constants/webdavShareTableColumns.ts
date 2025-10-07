@@ -16,7 +16,7 @@ const WEBDAV_SHARE_TABLE_COLUMNS = {
   URL: 'url',
   SHARE_PATH: 'sharePath',
   PATHNAME: 'pathname',
-  IS_ROOT_PATH: 'isRootPath',
+  IS_ROOT_SERVER: 'isRootServer',
   PATH_VARIABLES: 'pathVariables',
   ACCESSGROUPS: 'accessGroups',
   TYPE: 'type',

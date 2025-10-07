@@ -37,7 +37,7 @@ class WebdavShareDto {
   rootServer: string;
 
   @IsBoolean()
-  isRootPath: boolean;
+  isRootServer: boolean;
 
   @IsString()
   pathVariables: MultipleSelectorOptionSH[] = [];

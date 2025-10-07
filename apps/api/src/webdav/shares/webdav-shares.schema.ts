@@ -38,7 +38,7 @@ export class WebdavShares {
   pathname: string;
 
   @Prop({ default: false })
-  isRootPath: boolean;
+  isRootServer: boolean;
 
   @Prop({ default: '' })
   rootServer: string;

@@ -46,7 +46,7 @@ const migration000: Migration<WebdavSharesDocument> = {
           bulk.find({ _id: doc._id }).updateOne({
             $set: {
               pathname,
-              isRootPath: true,
+              isRootServer: true,
               schemaVersion: newSchemaVersion,
             },
           });

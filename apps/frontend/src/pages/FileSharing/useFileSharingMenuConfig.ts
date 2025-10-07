@@ -48,7 +48,7 @@ const useFileSharingMenuConfig = () => {
     if (!webdavShares.length) return;
 
     const menuBarItems: MenuItem[] = webdavShares
-      .filter((share) => !share.isRootPath)
+      .filter((share) => !share.isRootServer)
       .map((share) => ({
         id: share.displayName,
         label: share.displayName,

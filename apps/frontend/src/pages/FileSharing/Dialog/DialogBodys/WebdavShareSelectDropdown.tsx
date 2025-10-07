@@ -22,7 +22,7 @@ const WebdavShareSelectDropdown: React.FC<WebdavShareSelectDropdownProps> = ({ w
   const { t } = useTranslation();
   const { webdavShares, selectedWebdavShare, setSelectedWebdavShare } = useFileSharingStore();
 
-  const filteredShares = showRootOnly ? webdavShares.filter((share) => share.isRootPath) : webdavShares;
+  const filteredShares = showRootOnly ? webdavShares.filter((share) => share.isRootServer) : webdavShares;
 
   const webdavShareOptions: DropdownOptions[] = filteredShares.map((item) => ({
     id: item.displayName,

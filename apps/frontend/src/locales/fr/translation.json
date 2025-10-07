@@ -1531,7 +1531,7 @@
       "title": "Variable de chemin ",
       "description": "Une variable de chemin dynamique peut être sélectionnée ici à partir des attributs utilisateur. "
     },
-    "isRootPath": {
+    "isRootServer": {
       "title": "Chemin racine",
       "description": "Pour les fonctions scolaires Linuxmuster, au moins un partage WebDAV doit être configuré comme chemin racine.",
       "short": "Root",

@@ -24,7 +24,7 @@ const FileSharingRedirect = () => {
 
   useEffect(() => {
     const ensureShares = async () => {
-      let shares = webdavShares.filter((share) => !share.isRootPath);
+      let shares = webdavShares.filter((share) => !share.isRootServer);
 
       if (shares.length === 0) {
         shares = await fetchWebdavShares();

@@ -33,7 +33,7 @@ const useWebdavServerConfigTableStore: UseBoundStore<StoreApi<WebdavServerTableS
 
     fetchTableContent: async () => {
       try {
-        const { data } = await eduApi.get<WebdavShareDto[]>('/webdav-shares', { params: { isRootPath: true } });
+        const { data } = await eduApi.get<WebdavShareDto[]>('/webdav-shares', { params: { isRootServer: true } });
         set({
           tableContentData: data,
         });
@@ -45,7 +45,7 @@ const useWebdavServerConfigTableStore: UseBoundStore<StoreApi<WebdavServerTableS
     deleteTableEntry: async (_applicationName, webdavShareId) => {
       set({ isLoading: true });
       try {
-        await eduApi.delete(`/webdav-shares/${webdavShareId}`, { params: { isRootPath: true } });
+        await eduApi.delete(`/webdav-shares/${webdavShareId}`, { params: { isRootServer: true } });
         set({ isLoading: false });
       } catch (error) {
         handleApiError(error, set);
