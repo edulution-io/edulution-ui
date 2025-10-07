@@ -39,35 +39,96 @@ type GenericDropdownProps = {
 
 type AppConfigDropdownSelectProps = PositionDropdownProps | GenericDropdownProps;
 
-const AppConfigDropdownSelect = (props: AppConfigDropdownSelectProps) => {
+type FieldWrapperProps = {
+  control: Control<FieldValues>;
+  name: string;
+  title?: string;
+  description?: string;
+  selectedVal?: string;
+  onChange?: (value: string) => unknown;
+  options: Array<{ id: string; name: string }>;
+  placeholder?: string;
+  disabled?: boolean;
+  warningTranslationId?: string;
+  titleClassName?: string;
+};
+
+const FieldWrapper: React.FC<FieldWrapperProps> = ({
+  control,
+  name,
+  title,
+  description,
+  selectedVal,
+  onChange,
+  options,
+  placeholder,
+  disabled = false,
+  warningTranslationId,
+  titleClassName,
+}) => {
   const { t } = useTranslation();
+
+  return (
+    <FormFieldSH
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          {title && <h4 className={titleClassName}>{t(title)}</h4>}
+          <FormControl>
+            <div className={disabled ? 'pointer-events-none opacity-60' : ''}>
+              <DropdownSelect
+                options={options}
+                selectedVal={
+                  selectedVal ?? (field.value !== undefined && field.value !== null ? String(field.value) : '')
+                }
+                handleChange={(value) => {
+                  const mappedValue = onChange?.(value) ?? value;
+                  field.onChange(mappedValue);
+                }}
+                placeholder={placeholder}
+              />
+            </div>
+          </FormControl>
+
+          {description && <FormDescription>{t(description)}</FormDescription>}
+
+          {disabled && warningTranslationId && <div className="text-sm text-red-400">{t(warningTranslationId)}</div>}
+
+          <FormMessage className="text-p" />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+const AppConfigDropdownSelect: React.FC<AppConfigDropdownSelectProps> = (props) => {
   const { language } = useLanguage();
   const { appConfigs } = useAppConfigsStore();
 
   if ('appConfig' in props) {
     const { form, appConfig } = props;
-    const { setValue, control, getValues } = form;
+    const { control, getValues } = form;
+
+    const positionOptions = Array.from({ length: appConfigs.length }).map((_, index) => ({
+      id: `${index + 1}`,
+      name: `${index + 1}. (${getDisplayName(appConfigs[index], language)})`,
+    }));
+
+    const fieldName = `${appConfig.name}.position`;
+    const rawSelected = getValues(fieldName);
+    const selected =
+      typeof rawSelected === 'number' || typeof rawSelected === 'string' ? String(rawSelected) : undefined;
+
     return (
-      <FormFieldSH
-        control={control}
-        name={`${appConfig.name}.position`}
-        render={() => (
-          <FormItem>
-            <h4>{t('settings.appconfig.position.title')}</h4>
-            <FormControl>
-              <DropdownSelect
-                options={Array.from({ length: appConfigs.length }).map((_, index) => ({
-                  id: `${index + 1}`,
-                  name: `${index + 1}. (${getDisplayName(appConfigs[index], language)})`,
-                }))}
-                selectedVal={getValues(`${appConfig.name}.position`)?.toString()}
-                handleChange={(value: string) => setValue(`${appConfig.name}.position`, Number(value))}
-              />
-            </FormControl>
-            <p>{t('settings.appconfig.position.description')}</p>
-            <FormMessage className="text-p" />
-          </FormItem>
-        )}
+      <FieldWrapper
+        control={control as unknown as Control<FieldValues>}
+        name={fieldName}
+        title="settings.appconfig.position.title"
+        description="settings.appconfig.position.description"
+        selectedVal={selected}
+        onChange={(val) => Number(val)}
+        options={positionOptions}
       />
     );
   }
@@ -81,7 +142,6 @@ const AppConfigDropdownSelect = (props: AppConfigDropdownSelectProps) => {
     const fetchContainers = async () => {
       setAllContainers(await getContainers());
     };
-
     if (option.requiredContainers && option.requiredContainers.length > 0) {
       void fetchContainers();
     }
@@ -89,15 +149,11 @@ const AppConfigDropdownSelect = (props: AppConfigDropdownSelectProps) => {
 
   const areRequiredContainersRunning = useMemo(() => {
     if (!option.requiredContainers || option.requiredContainers.length === 0) return true;
-
     const list = Array.isArray(allContainers) ? allContainers : [];
-
     return option.requiredContainers.every((name) =>
       list.some((containerInfo: ContainerInfo) => {
         const names = (containerInfo as unknown as { Names?: string[] }).Names || [];
-
         const matchesName = Array.isArray(names) ? names.some((n) => n === `/${name}` || n === name) : false;
-
         return matchesName && containerInfo.State === DOCKER_STATES.RUNNING;
       }),
     );
@@ -106,33 +162,20 @@ const AppConfigDropdownSelect = (props: AppConfigDropdownSelectProps) => {
   const computedDisabled =
     (option.requiredContainers && option.requiredContainers.length > 0 ? !areRequiredContainersRunning : false) ||
     false;
+
   const computedWarning = !isLoading && computedDisabled ? option.disabledWarningText : undefined;
 
   return (
-    <FormFieldSH
+    <FieldWrapper
       control={control}
       name={fieldPath}
-      render={({ field }) => (
-        <FormItem>
-          <h4 className="text-background">{t(option.title)}</h4>
-          <FormControl>
-            <div className={computedDisabled ? 'pointer-events-none opacity-60' : ''}>
-              <DropdownSelect
-                options={option.options || []}
-                selectedVal={(field.value as string) || ''}
-                handleChange={field.onChange}
-                placeholder="common.select"
-              />
-            </div>
-          </FormControl>
-
-          {option.description && <FormDescription>{t(option.description)}</FormDescription>}
-
-          {computedDisabled && computedWarning && <div className="text-sm text-red-400">{t(computedWarning)}</div>}
-
-          <FormMessage className="text-p" />
-        </FormItem>
-      )}
+      title={option.title}
+      description={option.description}
+      options={option.options || []}
+      placeholder="common.select"
+      disabled={computedDisabled}
+      warningTranslationId={computedWarning}
+      titleClassName="text-background"
     />
   );
 };
