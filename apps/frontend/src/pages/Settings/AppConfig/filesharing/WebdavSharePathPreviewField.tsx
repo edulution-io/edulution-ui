@@ -19,6 +19,8 @@ import appendSlashToUrl from '@libs/common/utils/URL/appendSlashToUrl';
 import WEBDAV_SHARE_TABLE_COLUMNS from '@libs/filesharing/constants/webdavShareTableColumns';
 import type WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import type MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
+import useLmnApiStore from '@/store/useLmnApiStore';
+import getUserAttributValue from '@libs/lmnApi/utils/getUserAttributValue';
 import useWebdavServerConfigTableStore from './useWebdavServerConfigTableStore';
 
 type WebdavSharePathPreviewFieldProps = {
@@ -27,11 +29,12 @@ type WebdavSharePathPreviewFieldProps = {
 
 const WebdavSharePathPreviewField: React.FC<WebdavSharePathPreviewFieldProps> = ({ form }) => {
   const { t } = useTranslation();
+  const lmnUser = useLmnApiStore((s) => s.user);
   const [sharePathValue, setSharePathValue] = useState('');
   const tableContentData = useWebdavServerConfigTableStore((s) => s.tableContentData);
 
   const getVariablesPath = (pathVariables: MultipleSelectorOptionSH[]): string => {
-    const pathVariablesList = pathVariables.map((pathVariable) => `{{${pathVariable.label}}}`);
+    const pathVariablesList = pathVariables.map((pathVariable) => getUserAttributValue(lmnUser, pathVariable.label));
 
     return pathVariablesList.join('/');
   };
@@ -72,6 +75,7 @@ const WebdavSharePathPreviewField: React.FC<WebdavSharePathPreviewFieldProps> = 
       <Input
         value={sharePathValue}
         variant="dialog"
+        disabled
       />
     </>
   );
