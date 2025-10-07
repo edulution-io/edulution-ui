@@ -36,6 +36,7 @@ import appendSlashToUrl from '@libs/common/utils/URL/appendSlashToUrl';
 import WEBDAV_SHARE_AUTHENTICATION_METHODS from '@libs/webdav/constants/webdavShareAuthenticationMethods';
 import type MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import MultipleSelectorSH from '@/components/ui/MultipleSelectorSH';
+import WEBDAV_SHARE_STATUS from '@libs/webdav/constants/webdavShareStatus';
 import useWebdavShareConfigTableStore from './useWebdavShareConfigTableStore';
 import useWebdavServerConfigTableStore from './useWebdavServerConfigTableStore';
 import WebdavSharePathPreviewField from './WebdavSharePathPreviewField';
@@ -130,6 +131,7 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
       pathname: appendSlashToUrl(newUrl.pathname),
       type: selectedRootServer?.type || WEBDAV_SHARE_TYPE.LINUXMUSTER,
       authentication: selectedRootServer?.authentication || WEBDAV_SHARE_AUTHENTICATION_METHODS.BASIC,
+      status: selectedRootServer?.status || WEBDAV_SHARE_STATUS.DOWN,
     };
 
     if (selectedConfig) {
