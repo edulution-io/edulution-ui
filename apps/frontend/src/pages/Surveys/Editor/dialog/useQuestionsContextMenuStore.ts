@@ -101,7 +101,7 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
       questionDescription: question?.description || '',
       useBackendLimits: !!(question?.choicesByUrl as ChoicesRestful)?.url,
       formerChoices: (question?.choices as string[]) || [],
-      currentChoices: [],
+      currentChoices: [] as ChoiceDto[],
       showOtherItem: !!question?.showOtherItem,
       imageWidth: question?.imageWidth || 0,
     });
