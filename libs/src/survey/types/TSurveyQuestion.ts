@@ -16,6 +16,7 @@ interface TSurveyQuestion extends Question {
   choicesByUrl: { url: string } | ChoicesRestful | null;
   choices: string[] | null;
   imageWidth: number;
+  showOtherItem: boolean;
 }
 
 export default TSurveyQuestion;

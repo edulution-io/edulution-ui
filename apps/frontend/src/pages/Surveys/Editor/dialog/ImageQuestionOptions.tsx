@@ -28,6 +28,7 @@ const ImageQuestionOptions = () => {
         <p className="font-bold">{t('survey.editor.questionSettings.imageWidth')}</p>
       </Label>
       <Input
+        type="number"
         placeholder={t('survey.editor.questionSettings.imageWidthPlaceholder')}
         variant="dialog"
         value={imageWidth === 0 ? '' : imageWidth}
