@@ -40,7 +40,6 @@ type UseFileSharingStore = {
   setFiles: (files: DirectoryFileDTO[]) => void;
   setSelectedItems: (items: DirectoryFileDTO[]) => void;
   fetchFiles: (shareName: string | undefined, path?: string) => Promise<void>;
-  fetchMountPoints: (shareName: string | undefined) => Promise<DirectoryFileDTO[]>;
   reset: () => void;
   mountPoints: DirectoryFileDTO[];
   isLoading: boolean;
@@ -172,28 +171,6 @@ const useFileSharingStore = create<UseFileSharingStore>(
             ...get().currentlyDisabledFiles,
             currentlyDisabledFiles: { [filename]: !isLocked },
           });
-        }
-      },
-
-      fetchMountPoints: async (shareName) => {
-        try {
-          set({ isLoading: true });
-
-          const { data } = await eduApi.get<DirectoryFileDTO[]>(FileSharingApiEndpoints.BASE, {
-            params: { type: ContentType.DIRECTORY, path: '/', share: shareName },
-          });
-
-          const webdavShareType = get().webdavShares.find((s) => s.displayName === shareName)?.type;
-          if (!webdavShareType) return get().mountPoints;
-          const mountPoints = processWebdavResponse(data, webdavShareType);
-
-          set({ mountPoints });
-          return mountPoints;
-        } catch (error) {
-          handleApiError(error, set);
-          return get().mountPoints;
-        } finally {
-          set({ isLoading: false });
         }
       },
 
