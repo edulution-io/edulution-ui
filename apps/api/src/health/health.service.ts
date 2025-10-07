@@ -72,11 +72,10 @@ class HealthService {
           return { [share.displayName]: { status: 'down' as const, message: 'Missing ID' } };
         }
 
-        const { origin } = new URL(share.url);
-
         try {
-          const result = await this.httpIndicator.pingCheck(share.displayName, origin, {
+          const result = await this.httpIndicator.pingCheck(share.displayName, share.url, {
             httpClient: this.httpService,
+            validateStatus: (status) => [200, 401, 403].includes(status),
           });
           Logger.verbose(`WebDAV Share is ${JSON.stringify(result)}`, HealthService.name);
 

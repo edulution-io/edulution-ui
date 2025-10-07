@@ -23,6 +23,7 @@ import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobal
 import COOKIE_DESCRIPTORS from '@libs/common/constants/cookieDescriptors';
 import useVersionChecker from '@/hooks/useVersionChecker';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useUploadProgressToast from '@/hooks/useUploadProgressToast';
 import useAppConfigsStore from '../pages/Settings/AppConfig/useAppConfigsStore';
 import useUserStore from '../store/UserStore/useUserStore';
 import useLogout from '../hooks/useLogout';
@@ -41,6 +42,8 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   const { fetchWebdavShares } = useFileSharingStore();
 
   const handleLogout = useLogout();
+
+  useUploadProgressToast();
 
   useEffect(() => {
     void getPublicAppConfigs();
