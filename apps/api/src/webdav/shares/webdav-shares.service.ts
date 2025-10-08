@@ -133,9 +133,9 @@ class WebdavSharesService implements OnModuleInit {
 
       const webdavShares = await this.webdavSharesModel.aggregate<WebdavShareDto>(basePipeline);
 
-      const rootServerMap = new Map(
-        webdavShares.filter((s) => s.isRootServer).map((s) => [String(s.webdavShareId), s]),
-      );
+      const rootServers = await this.findAllWebdavServers();
+
+      const rootServerMap = new Map(rootServers.map((s) => [String(s.webdavShareId), s]));
 
       const resolvedShares = webdavShares.map((share) => {
         if (share.rootServer && share.rootServer !== '') {
