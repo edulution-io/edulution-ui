@@ -62,7 +62,7 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
         ...state.filesToUpload,
         ...files.map((file) => ({
           ...file,
-          id: (file).id ?? uuid(),
+          id: file.id ?? uuid(),
         })),
       ],
     })),
@@ -128,7 +128,7 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
           : {
               id: files[index].id,
               name: files[index].name,
-              ok: false,
+              success: false,
               error: String(result.reason),
             },
       );

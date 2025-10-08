@@ -54,12 +54,12 @@ const createFileUploader = (dependencies: CreateFileUploaderDependencies) => {
         progress.onUploadProgress(event);
       });
       progress.markDone();
-      return { name: fileName, ok: true };
+      return { name: fileName, success: true };
     } catch (error) {
       progress.markError();
       return {
         name: fileName,
-        ok: false,
+        success: false,
       };
     } finally {
       onUploadingChange?.(fileItem, false);

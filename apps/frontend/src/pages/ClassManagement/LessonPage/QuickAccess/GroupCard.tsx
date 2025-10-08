@@ -41,7 +41,7 @@ const GroupCard = ({ icon, type, group }: GroupCardProps) => {
     return null;
   }
 
-  const {member} = group;
+  const { member } = group;
   const studentsCount = member.filter((m) => STUDENTS_REGEX.test(m))?.length || 0;
   const otherMembersCount = member.filter((m) => m !== user?.distinguishedName)?.length || 0;
 
