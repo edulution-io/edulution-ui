@@ -16,8 +16,7 @@ import { Path, UseFormReturn } from 'react-hook-form';
 import { AccordionContent } from '@/components/ui/AccordionSH';
 import FormField from '@/components/shared/FormField';
 import { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSettings.form';
-import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
-import getDeploymentTarget from '@libs/common/utils/getDeploymentTarget';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 
 type AddOrganisationInfoProps = {
   form: UseFormReturn<GlobalSettingsFormValues>;
@@ -31,8 +30,7 @@ type FieldDef = {
 
 const AddOrganisationInfo: React.FC<AddOrganisationInfoProps> = ({ form }) => {
   const { t } = useTranslation();
-  const deploymentTarget = getDeploymentTarget();
-  const isGeneric = deploymentTarget === DEPLOYMENT_TARGET.GENERIC;
+  const { isGeneric } = useDeploymentTarget();
 
   const fields: FieldDef[] = [
     {

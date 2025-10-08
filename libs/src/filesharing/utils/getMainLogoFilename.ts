@@ -12,5 +12,5 @@
 
 import { ThemeType } from '@libs/common/constants/theme';
 
-export const getMainLogoFilename = (theme: ThemeType) => `main-logo-${theme}.webp`;
+const getMainLogoFilename = (theme: ThemeType) => `main-logo-${theme}.webp`;
 export default getMainLogoFilename;
