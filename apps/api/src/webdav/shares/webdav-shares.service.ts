@@ -96,7 +96,7 @@ class WebdavSharesService implements OnModuleInit {
     return this.webdavShareCache[share];
   }
 
-  findAllWebdavShares(currentUserGroups: string[], isRootServer?: boolean) {
+  async findAllWebdavShares(currentUserGroups: string[]) {
     try {
       const basePipeline: PipelineStage[] = [];
 
@@ -108,11 +108,68 @@ class WebdavSharesService implements OnModuleInit {
         });
       }
 
-      if (typeof isRootServer === 'boolean') {
-        basePipeline.push({
-          $match: { isRootServer },
-        });
-      }
+      basePipeline.push({
+        $match: { isRootServer: false },
+      });
+
+      basePipeline.push({
+        $project: {
+          webdavShareId: '$_id',
+          _id: 0,
+          displayName: 1,
+          url: 1,
+          sharePath: 1,
+          pathname: 1,
+          isRootServer: 1,
+          rootServer: 1,
+          pathVariables: 1,
+          accessGroups: 1,
+          type: 1,
+          status: 1,
+          lastChecked: 1,
+          authentication: 1,
+        },
+      });
+
+      const webdavShares = await this.webdavSharesModel.aggregate<WebdavShareDto>(basePipeline);
+
+      const rootServerMap = new Map(
+        webdavShares.filter((s) => s.isRootServer).map((s) => [String(s.webdavShareId), s]),
+      );
+
+      const resolvedShares = webdavShares.map((share) => {
+        if (share.rootServer && share.rootServer !== '') {
+          const root = rootServerMap.get(String(share.rootServer));
+          if (root) {
+            return {
+              ...share,
+              url: root.url,
+              type: root.type,
+              authentication: root.authentication,
+            };
+          }
+        }
+        return this.webdavSharesModel.aggregate<WebdavShareDto>(basePipeline);
+      });
+
+      return resolvedShares;
+    } catch (error) {
+      throw new CustomHttpException(
+        CommonErrorMessages.DB_ACCESS_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error,
+        WebdavSharesService.name,
+      );
+    }
+  }
+
+  findAllWebdavServers() {
+    try {
+      const basePipeline: PipelineStage[] = [];
+
+      basePipeline.push({
+        $match: { isRootServer: true },
+      });
 
       basePipeline.push({
         $project: {

@@ -25,10 +25,13 @@ class WebdavSharesController {
 
   @Get()
   findAllShares(
-    @Query('isRootServer', new ParseBoolPipe({ optional: true })) isRootServer: boolean,
+    @Query('isRootServer', new ParseBoolPipe({ optional: true })) isRootServer: boolean | undefined,
     @GetCurrentUserGroups() currentUserGroups: string[],
   ) {
-    return this.webdavSharesService.findAllWebdavShares(currentUserGroups, isRootServer);
+    if (isRootServer) {
+      return this.webdavSharesService.findAllWebdavServers();
+    }
+    return this.webdavSharesService.findAllWebdavShares(currentUserGroups);
   }
 
   @Post()

@@ -1013,7 +1013,7 @@
           "invalidUrlFormat": "Ungültige URL"
         },
         "webdavShare": {
-          "title": "WebDAV-Server",
+          "title": "WebDAV",
           "description": "Hier können WebDAV-Server für den Dateimanager eingerichtet werden.",
           "filterPlaceHolderText": "Suche nach WebDAV-Share"
         },

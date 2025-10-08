@@ -22,4 +22,5 @@ export interface AppConfigExtendedOption {
   type: ExtendedOptionFieldType;
   value?: TAppFieldType;
   width?: TAppFieldWidth;
+  showTitle?: boolean;
 }

@@ -18,18 +18,20 @@ const WEBDAV_SHARE_TABLE_EXTENDED_OPTIONS = [
   {
     name: ExtendedOptionKeys.WEBDAV_SERVER_TABLE,
     description: 'appExtendedOptions.webdavServers',
-    title: 'appExtendedOptions.webdavServersTitle',
+    title: 'webdavShares.title',
     type: ExtendedOptionField.table,
     value: '',
     width: 'full' as TAppFieldWidth,
+    showTitle: true,
   },
   {
     name: ExtendedOptionKeys.WEBDAV_SHARE_TABLE,
-    description: 'appExtendedOptions.webdavShares',
-    title: 'appExtendedOptions.webdavSharesTitle',
+    description: 'webdavShares.title',
+    title: 'webdavShares.title',
     type: ExtendedOptionField.table,
     value: '',
     width: 'full' as TAppFieldWidth,
+    showTitle: true,
   },
 ];
 

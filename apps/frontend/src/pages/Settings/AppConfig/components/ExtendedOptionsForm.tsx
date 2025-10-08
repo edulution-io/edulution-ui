@@ -122,17 +122,20 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
                   {t(`settings.appconfig.sections.${section}.description`)}
                 </div>
                 {options?.map((option: AppConfigExtendedOption) => (
-                  <div
-                    key={`key_${section}_${option.name}`}
-                    className={cn(
-                      { 'w-full': option.width === 'full' },
-                      { 'w-[calc(50%-0.75rem)]': option.width === 'half' },
-                      { 'w-[calc(33%-1.5rem)]': option.width === 'third' },
-                      { 'w-[calc(25%-2.25rem)]': option.width === 'quarter' },
-                    )}
-                  >
-                    {renderComponent(option)}
-                  </div>
+                  <>
+                    {option.showTitle && <p>{option.title}</p>}
+                    <div
+                      key={`key_${section}_${option.name}`}
+                      className={cn(
+                        { 'w-full': option.width === 'full' },
+                        { 'w-[calc(50%-0.75rem)]': option.width === 'half' },
+                        { 'w-[calc(33%-1.5rem)]': option.width === 'third' },
+                        { 'w-[calc(25%-2.25rem)]': option.width === 'quarter' },
+                      )}
+                    >
+                      {renderComponent(option)}
+                    </div>
+                  </>
                 ))}
               </AccordionContent>
             </AccordionItem>
