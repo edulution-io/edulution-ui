@@ -51,7 +51,7 @@ const useDownloadProgressToast = () => {
     if (lastShownPercentRef.current === percent && !isDone) return;
     lastShownPercentRef.current = percent;
 
-    const speedEtaLine = `${speedFormatted ?? '–'  } • ${  etaFormatted ?? '–'}`;
+    const speedEtaLine = `${speedFormatted ?? '–'} • ${etaFormatted ?? '–'}`;
 
     const description = `${speedEtaLine}\n${formatBytes(loadedBytes)} / ${formatBytes(totalBytes ?? 0)}`;
 

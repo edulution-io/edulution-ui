@@ -50,19 +50,19 @@ const FileSelectorDialog = () => {
   };
 
   const getDialog = () => (
-      <MoveContentDialogBody
-        showAllFiles
-        pathToFetch=""
-        showSelectedFile
-        fileType={ContentType.FILE}
-        enableRowSelection={(row) =>
-          row.original.type === ContentType.FILE && fileHasAllowedExtension(row.original.filename)
-        }
-        getRowDisabled={(row) =>
-          row.original.type === ContentType.FILE && !fileHasAllowedExtension(row.original.filename)
-        }
-      />
-    );
+    <MoveContentDialogBody
+      showAllFiles
+      pathToFetch=""
+      showSelectedFile
+      fileType={ContentType.FILE}
+      enableRowSelection={(row) =>
+        row.original.type === ContentType.FILE && fileHasAllowedExtension(row.original.filename)
+      }
+      getRowDisabled={(row) =>
+        row.original.type === ContentType.FILE && !fileHasAllowedExtension(row.original.filename)
+      }
+    />
+  );
 
   const getFooter = () => (
     <DialogFooterButtons

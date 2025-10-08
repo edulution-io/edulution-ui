@@ -345,6 +345,11 @@
       "CopyFailed": "La copie a échoué",
       "FileFormatNotSupported": "Le format de fichier n'est pas pris en charge."
     },
+    "publicFileSharing": {
+      "errors": {
+        "PublicFileDownloadFailed": "Le téléchargement du fichier a échoué. Veuillez réessayer plus tard."
+      }
+    },
     "progressBox": {
       "info": "Informations",
       "titleSharing": "Les fichiers seront distribués",
@@ -794,6 +799,33 @@
         "updateError": "Les paramètres n'ont pas pu être mis à jour.",
         "notFoundError": "Les paramètres n'ont pas pu être chargés."
       },
+
+      "branding": {
+        "title": "Identité visuelle"
+      },
+
+      "logo": {
+        "title": "Logo",
+        "descriptionSchool": "Téléversez le logo. Il sera affiché sur l’écran de connexion et sur la carte d’identification de l’application Edulution.",
+        "descriptionGeneric": "Téléversez le logo. Il sera affiché sur l’écran de connexion.",
+        "uploadLightLogo": "Téléverser le logo clair",
+        "uploadDarkLogo": "Téléverser le logo sombre",
+        "deleteSuccessful": "Logo supprimé avec succès."
+      },
+      "organisationInfo": {
+        "title": "Informations sur l’organisation",
+        "descriptionSchool": "Saisissez les informations officielles de votre organisation. Ces informations peuvent être affichées dans l’application Edulution. Veuillez indiquer le nom, la rue, le code postal et, éventuellement, le site web de l’école.",
+        "descriptionGeneric": "Saisissez les informations officielles de votre organisation.",
+        "name": "Nom de l’organisation",
+        "namePlaceholder": "p. ex. Organisation de Sampletown",
+        "street": "Rue",
+        "streetPlaceholder": "p. ex. 1, rue de l’Organisation",
+        "postalCode": "Code postal",
+        "postalCodePlaceholder": "p. ex. 12345",
+        "postalCityPlaceholder": "p. ex. Berlin",
+        "website": "Site web de l’organisation",
+        "city": "Ville"
+      },
       "deploymentTarget": "Plate-forme cible de déploiement"
     },
     "info": {
@@ -1158,6 +1190,8 @@
     "upload": "Téléverser",
     "mode": "mode",
     "file": "Fichier",
+    "chooseFile": "Choisir un fichier",
+    "changeFile": "Changer de fichier",
     "saveLocal": "Enregistrer sur l’appareil",
     "openLocal": "Ouvrir depuis l’appareil",
     "openFileFromEdu": "Ouvrir le fichier",

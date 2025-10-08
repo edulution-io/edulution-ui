@@ -935,6 +935,33 @@
         "edulution-binduser-description": "Hier können Zugangsdaten zum LDAP konfiguriert werden, die für den Gruppen-Sync notwendig sind.",
         "edulution-binduser-dn": "Distinguished Name (DN)",
         "edulution-binduser-password": "Passwort"
+      },
+
+      "branding": {
+        "title": "Branding"
+      },
+
+      "logo": {
+        "title": "Logo",
+        "descriptionSchool": "Lade hier das Logo hoch. Es wird auf der Login-Seite und auf dem Ausweis in der edulution App angezeigt.",
+        "descriptionGeneric": "Laden Sie hier Ihr Logo hoch. Es wird auf der Login-Seite angezeigt.",
+        "uploadLightLogo": "Helles Logo hochladen",
+        "uploadDarkLogo": "Dunkles Logo hochladen",
+        "deleteSuccessful": "Logo wurde erfolgreich gelöscht"
+      },
+      "organisationInfo": {
+        "title": "Organisationsinformationen",
+        "descriptionSchool": "Trage die offiziellen Angaben deiner Organisation ein. Diese Informationen werden in der edulution App angezeigt. Bitte gib den Namen, die Straße, die Postleitzahl und optional die Website der Schule an.",
+        "descriptionGeneric": "Trage die offiziellen Angaben deiner Organisation ein.",
+        "name": "Organisation",
+        "namePlaceholder": "Gemeinschaftsschule Musterstadt",
+        "street": "Straße",
+        "streetPlaceholder": "Hauptstraße 1",
+        "postalCode": "Postleitzahl",
+        "postalCodePlaceholder": "12345",
+        "website": "Website der Organisation",
+        "city": "Stadt",
+        "postalCityPlaceholder": "Berlin"
       }
     },
     "userAdministration": {
@@ -1195,6 +1222,8 @@
     "of": "von",
     "back": "Zurück",
     "confirm": "Bestätigen",
+    "chooseFile": "Datei auswählen",
+    "changeFile": "Datei ändern",
     "creator": "Ersteller",
     "share": "Teilen",
     "answers": "Antworten",
