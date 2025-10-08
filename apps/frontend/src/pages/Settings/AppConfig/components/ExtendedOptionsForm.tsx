@@ -79,7 +79,7 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
           <AppConfigTable
             key={fieldPath}
             applicationName={settingLocation || ''}
-            tableId={option.name}
+            option={option}
           />
         );
       case ExtendedOptionField.switch:
@@ -122,9 +122,7 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
                   {t(`settings.appconfig.sections.${section}.description`)}
                 </div>
                 {options?.map((option: AppConfigExtendedOption) => (
-                  <>
-                    {option.showTitle && <p>{option.title}</p>}
-                    <div
+                  <div
                       key={`key_${section}_${option.name}`}
                       className={cn(
                         { 'w-full': option.width === 'full' },
@@ -135,7 +133,6 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
                     >
                       {renderComponent(option)}
                     </div>
-                  </>
                 ))}
               </AccordionContent>
             </AccordionItem>

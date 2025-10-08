@@ -26,18 +26,19 @@ import type TApps from '@libs/appconfig/types/appsType';
 import useMedia from '@/hooks/useMedia';
 import { OnChangeFn, RowSelectionState, VisibilityState } from '@tanstack/react-table';
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
-import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
+import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 
 interface AppConfigTableProps {
   applicationName: string;
-  tableId: ExtendedOptionKeysType;
+  option: AppConfigExtendedOption;
 }
 
-const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableId }) => {
+const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option }) => {
   const { isMobileView, isTabletView } = useMedia();
   const { t } = useTranslation();
 
+  const { name: tableId, title } = option;
   const appConfigTableConfig = getAppConfigTableConfig(applicationName, tableId) as AppConfigTableConfig;
 
   if (!appConfigTableConfig) {
@@ -238,6 +239,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
 
     return (
       <div className="mb-8">
+        {title && <div>{t(title)}</div>}
         {getScrollableTable()}
         {dialogBody}
       </div>
