@@ -41,6 +41,7 @@ type UseFileSharingStore = {
   reset: () => void;
   mountPoints: DirectoryFileDTO[];
   isLoading: boolean;
+  isWebdavSharesLoading: boolean;
   isError: boolean;
   currentlyDisabledFiles: Record<string, boolean>;
   setFileIsCurrentlyDisabled: (filename: string, isLocked: boolean, durationMs?: number) => Promise<void>;
@@ -64,6 +65,7 @@ const initialState = {
   mountPoints: [],
   directories: [],
   isLoading: false,
+  isWebdavSharesLoading: false,
   isError: false,
   currentlyDisabledFiles: {},
   downloadProgressList: [],
@@ -164,8 +166,9 @@ const useFileSharingStore = create<UseFileSharingStore>(
       setSelectedItems: (items: DirectoryFileDTO[]) => set({ selectedItems: items }),
 
       fetchWebdavShares: async () => {
+        if (get().isWebdavSharesLoading) return get().webdavShares;
         try {
-          set({ isLoading: true });
+          set({ isWebdavSharesLoading: true });
 
           const { data } = await eduApi.get<WebdavShareDto[]>('/webdav-shares');
           set({
@@ -176,7 +179,7 @@ const useFileSharingStore = create<UseFileSharingStore>(
           handleApiError(error, set);
           return get().webdavShares;
         } finally {
-          set({ isLoading: false });
+          set({ isWebdavSharesLoading: false });
         }
       },
 

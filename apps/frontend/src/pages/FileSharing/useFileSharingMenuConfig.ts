@@ -10,8 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { CloudIcon, FileSharingIcon } from '@/assets/icons';
 import userStore from '@/store/UserStore/useUserStore';
@@ -25,7 +25,8 @@ import { toast } from 'sonner';
 import useVariableSharePathname from './hooks/useVariableSharePathname';
 
 const useFileSharingMenuConfig = () => {
-  const { webdavShares } = useFileSharingStore();
+  const { pathname } = useLocation();
+  const { webdavShares, fetchWebdavShares } = useFileSharingStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const navigate = useNavigate();
   const { user } = userStore();
@@ -43,6 +44,20 @@ const useFileSharingMenuConfig = () => {
     },
     [navigate],
   );
+
+  const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
+  const firstPathPart = pathParts[0] || '';
+  const previousFirstPathPart = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (firstPathPart !== previousFirstPathPart.current) {
+      previousFirstPathPart.current = firstPathPart;
+
+      if (firstPathPart === APPS.FILE_SHARING) {
+        void fetchWebdavShares();
+      }
+    }
+  }, [firstPathPart]);
 
   useEffect(() => {
     if (!webdavShares.length) return;
