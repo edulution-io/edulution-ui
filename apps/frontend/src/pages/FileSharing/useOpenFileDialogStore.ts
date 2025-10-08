@@ -10,15 +10,27 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ContentType from '@libs/filesharing/types/contentType';
+import { create } from 'zustand';
 
-interface MoveContentDialogBodyProps {
-  showAllFiles?: boolean;
-  pathToFetch?: string;
-  showSelectedFile?: boolean;
-  showHome?: boolean;
-  fileType?: ContentType;
-  isCurrentPathDefaultDestination?: boolean;
+interface UseOpenFileDialogStore {
+  setOpenFileDialog: (open: boolean) => void;
+  isFileDialogOpen: boolean;
+  allowedExtensions: string[];
+  setAllowedExtensions: (extension: string[]) => void;
+  reset: () => void;
 }
 
-export default MoveContentDialogBodyProps;
+const initialState = {
+  allowedExtensions: [],
+  openFileDialogOpen: false,
+  isFileDialogOpen: false,
+};
+
+const useOpenFileDialogStore = create<UseOpenFileDialogStore>((set) => ({
+  ...initialState,
+  setOpenFileDialog: (open) => set({ isFileDialogOpen: open }),
+  setAllowedExtensions: (exts) => set({ allowedExtensions: exts }),
+  reset: () => set({ ...initialState }),
+}));
+
+export default useOpenFileDialogStore;

@@ -943,8 +943,8 @@
 
       "logo": {
         "title": "Logo",
-        "descriptionSchool": "Lade das Logo hoch. Es wird auf der Login-Seite und auf dem Ausweis in der edulution App angezeigt.",
-        "descriptionGeneric": "Laden Sie das Logo hoch. Es wird auf der Login-Seite angezeigt.",
+        "descriptionSchool": "Lade hier das Logo hoch. Es wird auf der Login-Seite und auf dem Ausweis in der edulution App angezeigt.",
+        "descriptionGeneric": "Laden Sie hier Ihr Logo hoch. Es wird auf der Login-Seite angezeigt.",
         "uploadLightLogo": "Helles Logo hochladen",
         "uploadDarkLogo": "Dunkles Logo hochladen",
         "deleteSuccessful": "Logo wurde erfolgreich gelöscht"
@@ -1358,7 +1358,11 @@
     "mode": "Modus",
     "orContinueWithoutAccount": "Oder fahre ohne Account fort",
     "reset": "Zurücksetzen",
-    "file": "Datei"
+    "file": "Datei",
+    "saveLocal": "Auf dem Gerät speichern",
+    "openLocal": "Von dem Gerät öffnen",
+    "openFileFromEdu": "Datei öffnen",
+    "saveFileToEdu": "In Dateien speichern"
   },
   "form": {
     "path": "Link",
@@ -1442,7 +1446,11 @@
     "title": "WHITEBOARD",
     "sidebar": "Whiteboard",
     "saveAsTlFile": "Whiteboard als .tldr Datei speichern",
-    "openTlFile": ".tldr Datei öffnen"
+    "openTLFileFailed": "Datei kann nicht geöffnet werden",
+    "openTLFileSuccess": "Datei wurde erfolgreich geladen",
+    "openTlFile": "Öffnen",
+    "openLocalTlFile": "Lokale .tldr Datei öffnen",
+    "file": "Datei"
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
@@ -1509,6 +1517,11 @@
   "copyItemDialog": {
     "copyFilesOrDirectoriesToDirectory": "Dateien oder Verzeichnisse in ein Verzeichnis kopieren",
     "copy": "Kopieren"
+  },
+
+  "fileSelectorDialogBody": {
+    "title": "Wähle eine Datei zum Öffnen aus",
+    "selectFile": "Ausgewählte Datei"
   },
 
   "saveExternalFileDialogBody": {

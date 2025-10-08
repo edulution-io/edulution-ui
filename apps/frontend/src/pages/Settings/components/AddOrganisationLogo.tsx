@@ -19,9 +19,8 @@ import { Theme, ThemeType } from '@libs/common/constants/theme';
 import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
 import getMainLogoUrl from '@libs/assets/getMainLogoUrl';
 import LogoUploadField from '@/pages/Settings/components/LogoUploadField';
-import getDeploymentTarget from '@libs/common/utils/getDeploymentTarget';
-import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import BRANDING_UPLOADS_LOGO from '@libs/global-settings/constants/brandingUploadsLogo';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 
 type AddOrganisationLogoProps = { form: UseFormReturn<GlobalSettingsFormValues> };
 
@@ -52,8 +51,7 @@ const AddOrganisationLogo: React.FC<AddOrganisationLogoProps> = ({ form }) => {
 
   const darkPreviewSrc = `${getMainLogoUrl(Theme.dark)}?v=${darkVersion}`;
   const hasDarkSelection = !!form.watch(BRANDING_UPLOADS_LOGO.dark);
-  const deploymentTarget = getDeploymentTarget();
-  const isGeneric = deploymentTarget === DEPLOYMENT_TARGET.GENERIC;
+  const { isGeneric } = useDeploymentTarget();
 
   return (
     <AccordionContent className="space-y-4 px-1">

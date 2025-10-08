@@ -10,28 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { Helmet } from 'react-helmet-async';
-import { useTranslation } from 'react-i18next';
-import APPLICATION_NAME from '@libs/common/constants/applicationName';
+import ContentType from '@libs/filesharing/types/contentType';
+import { Row } from '@tanstack/react-table';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 
-interface PageTitleProps {
-  title?: string;
-  translationId: string;
-  disableTranslation?: boolean;
+interface MoveContentDialogBodyProps {
+  showAllFiles?: boolean;
+  pathToFetch?: string;
+  showSelectedFile?: boolean;
+  showHome?: boolean;
+  fileType?: ContentType;
+  isCurrentPathDefaultDestination?: boolean;
+  enableRowSelection?: (row: Row<DirectoryFileDTO>) => boolean;
+  getRowDisabled?: (row: Row<DirectoryFileDTO>) => boolean;
 }
 
-const PageTitle = ({ title, translationId, disableTranslation }: PageTitleProps) => {
-  const { t } = useTranslation();
-
-  return (
-    <Helmet>
-      <title>
-        {title ? `${title} - ` : ''}
-        {disableTranslation ? translationId : t(translationId)} - {APPLICATION_NAME}
-      </title>
-    </Helmet>
-  );
-};
-
-export default PageTitle;
+export default MoveContentDialogBodyProps;
