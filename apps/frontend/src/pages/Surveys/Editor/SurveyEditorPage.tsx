@@ -40,7 +40,7 @@ import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuS
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import PageLayout from '@/components/structure/layout/PageLayout';
-import QuestionContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
+import QuestionsContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 
@@ -249,7 +249,7 @@ const SurveyEditorPage = () => {
         submitSurvey={handleSaveSurvey}
         isSubmitting={isLoading}
       />
-      <QuestionContextMenu
+      <QuestionsContextMenu
         form={form}
         creator={creator}
         isOpenQuestionContextMenu={isOpenQuestionContextMenu}

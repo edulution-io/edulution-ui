@@ -10,10 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum ChoiceTypes {
-  RADIO_GROUP = 'radiogroup',
-  CHECKBOX = 'checkbox',
-  DROPDOWN = 'dropdown',
+enum SurveyQuestionImageTypes {
+  IMAGE = 'image',
+  IMAGE_PICKER = 'imagepicker',
 }
 
-export default ChoiceTypes;
+export default SurveyQuestionImageTypes;

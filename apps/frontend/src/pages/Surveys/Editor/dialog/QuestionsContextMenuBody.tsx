@@ -19,13 +19,14 @@ import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuest
 import ChoicesByUrl from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesByUrl';
 import Label from '@/components/ui/Label';
 import Input from '@/components/shared/Input';
+import RowAndColumnOptions from '@/pages/Surveys/Editor/dialog/matrix-options/RowAndColumnOptions';
 
-interface QuestionContextMenuBodyProps {
+interface QuestionsContextMenuBodyProps {
   form: UseFormReturn<SurveyDto>;
   creator: SurveyCreatorModel;
 }
 
-const QuestionContextMenuBody = (props: QuestionContextMenuBodyProps) => {
+const QuestionsContextMenuBody = (props: QuestionsContextMenuBodyProps) => {
   const { form, creator } = props;
 
   const { selectedQuestion, questionTitle, setQuestionTitle, questionDescription, setQuestionDescription } =
@@ -67,6 +68,7 @@ const QuestionContextMenuBody = (props: QuestionContextMenuBodyProps) => {
           { 'text-primary-foreground': questionDescription },
         )}
       />
+      <RowAndColumnOptions />
       <ChoicesByUrl
         form={form}
         creator={creator}
@@ -75,4 +77,4 @@ const QuestionContextMenuBody = (props: QuestionContextMenuBodyProps) => {
   );
 };
 
-export default QuestionContextMenuBody;
+export default QuestionsContextMenuBody;
