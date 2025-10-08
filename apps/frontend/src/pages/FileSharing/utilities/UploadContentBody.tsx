@@ -24,7 +24,7 @@ import { ScrollArea } from '@/components/ui/ScrollArea';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import WarningBox from '@/components/shared/WarningBox';
-import { TiDocumentAdd, TiFolderAdd } from 'react-icons/ti';
+import { TiDocumentAdd } from 'react-icons/ti';
 import { UploadFile } from '@libs/filesharing/types/uploadFile';
 import Progress from '@/components/ui/Progress';
 import { WorkerMessage } from '@/worker/workerMessage';
@@ -48,8 +48,6 @@ const UploadContentBody = () => {
   const [tooLargeFolders, setTooLargeFolders] = useState<string[]>([]);
   const { setSubmitButtonIsDisabled } = useFileSharingDialogStore();
 
-  const supportsWebkitDirectory = 'webkitdirectory' in document.createElement('input');
-
   const zipWorker = useRef<Worker>();
 
   const [filesThatWillBeOverwritten, setFilesThatWillBeOverwritten] = useState<string[]>([]);
@@ -57,7 +55,6 @@ const UploadContentBody = () => {
   const { filesToUpload, setFilesToUpload, updateFilesToUpload } = useHandelUploadFileStore();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const folderInputRef = useRef<HTMLInputElement>(null);
 
   const hasMultipleDuplicates = filesThatWillBeOverwritten.length > 1;
   const hasMultipleOversizedFiles = oversizedFiles.length > 1;
@@ -223,14 +220,6 @@ const UploadContentBody = () => {
     e.target.value = '';
   };
 
-  const handleFolderSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = Array.from(event.target.files ?? []) as UploadFile[];
-    if (!selected.length) return;
-
-    const root = selected[0].webkitRelativePath.split('/')[0];
-    zipWorker.current!.postMessage({ files: selected, root });
-  };
-
   const removeFile = (name: string) => {
     updateFilesToUpload((prev) => prev.filter((file) => file.name !== name));
     setOversizedFiles((prev) => prev.filter((f) => f.name !== name));
@@ -309,13 +298,6 @@ const UploadContentBody = () => {
         ref={fileInputRef}
         onChange={handleFilesSelected}
       />
-      <input
-        type="file"
-        hidden
-        ref={folderInputRef}
-        webkitdirectory=""
-        onChange={handleFolderSelected}
-      />
 
       <div className="flex w-full gap-2 pb-8">
         <Button
@@ -329,20 +311,6 @@ const UploadContentBody = () => {
             {t('filesharingUpload.addFiles')}
           </div>
         </Button>
-
-        {supportsWebkitDirectory && (
-          <Button
-            variant="btn-collaboration"
-            className="flex-1"
-            type="button"
-            onClick={() => folderInputRef.current?.click()}
-          >
-            <div className="flex flex-col items-center">
-              <TiFolderAdd size={24} />
-              {t('filesharingUpload.addFolder')}
-            </div>
-          </Button>
-        )}
       </div>
 
       {filesThatWillBeOverwritten.length > 0 && (
