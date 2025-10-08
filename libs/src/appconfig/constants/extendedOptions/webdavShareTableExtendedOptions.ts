@@ -19,7 +19,7 @@ const WEBDAV_SHARE_TABLE_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
   {
     name: ExtendedOptionKeys.WEBDAV_SERVER_TABLE,
     description: 'appExtendedOptions.webdavServers',
-    title: 'webdavShares.title',
+    title: 'settings.appconfig.sections.webdavServer.title',
     type: ExtendedOptionField.table,
     value: '',
     width: 'full' as TAppFieldWidth,
@@ -27,7 +27,7 @@ const WEBDAV_SHARE_TABLE_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
   {
     name: ExtendedOptionKeys.WEBDAV_SHARE_TABLE,
     description: 'webdavShares.title',
-    title: 'webdavShares.title',
+    title: 'settings.appconfig.sections.webdavShare.sectionTitle',
     type: ExtendedOptionField.table,
     value: '',
     width: 'full' as TAppFieldWidth,

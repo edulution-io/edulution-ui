@@ -239,7 +239,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
 
     return (
       <div className="mb-8">
-        {title && <div>{t(title)}</div>}
+        {title && <p className="bold">{t(title)}</p>}
         {getScrollableTable()}
         {dialogBody}
       </div>

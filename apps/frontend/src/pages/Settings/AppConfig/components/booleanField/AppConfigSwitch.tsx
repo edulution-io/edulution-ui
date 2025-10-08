@@ -34,7 +34,7 @@ const AppConfigSwitch = <T extends FieldValues>({ fieldPath, control, option }: 
       name={fieldPath}
       render={({ field }) => (
         <FormItem>
-          {option.title && <div>{t(option.title)}</div>}
+          {option.title && <p className="bold">{t(option.title)}</p>}
           <FormControl>
             <div className="flex h-9 items-center">
               <Switch

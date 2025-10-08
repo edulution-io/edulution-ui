@@ -865,11 +865,13 @@
           "invalidUrlFormat": "URL non valide"
         },
         "webdavShare": {
-          "title": "WebDAV serveurs",
+          "title": "WebDAV",
+          "sectionTitle": "WebDAV-Partage",
           "description": "Vous pouvez configurer ici vos propres serveur WebDAV.",
           "filterPlaceHolderText": "Rechercher le nom de partages"
         },
         "webdavServer": {
+          "title": "WebDAV serveurs",
           "filterPlaceHolderText": "Rechercher un serveur"
         },
         "files": {

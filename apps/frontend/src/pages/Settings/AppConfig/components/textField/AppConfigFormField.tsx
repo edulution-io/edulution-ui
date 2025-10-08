@@ -39,7 +39,7 @@ const AppConfigFormField = <T extends FieldValues>({
       defaultValue={'' as PathValue<T, Path<T>>}
       render={({ field }) => (
         <FormItem>
-          {option.title && <div>{t(option.title)}</div>}
+          {option.title && <p className="bold">{t(option.title)}</p>}
           <FormControl>
             <Input
               autoComplete="new-password"
