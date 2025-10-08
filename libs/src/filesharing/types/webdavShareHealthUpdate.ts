@@ -10,17 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
-import getFrontEndUrl from '@libs/common/utils/URL/getFrontEndUrl';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import WebdavShareDto from './webdavShareDto';
 
-interface CallbackBaseUrlProps {
-  fileName: string;
-  filePath: string;
-  token: string;
-}
+type WebdavShareHealthUpdate = Pick<WebdavShareDto, 'webdavShareId' | 'status' | 'lastChecked'>;
 
-const callbackBaseUrl = ({ fileName, filePath, token }: CallbackBaseUrlProps): string =>
-  `${getFrontEndUrl()}/${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/callback?path=${filePath}&filename=${fileName}&token=${token}`;
-
-export default callbackBaseUrl;
+export default WebdavShareHealthUpdate;

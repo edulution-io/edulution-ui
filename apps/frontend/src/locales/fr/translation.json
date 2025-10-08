@@ -345,6 +345,11 @@
       "CopyFailed": "La copie a échoué",
       "FileFormatNotSupported": "Le format de fichier n'est pas pris en charge."
     },
+    "publicFileSharing": {
+      "errors": {
+        "PublicFileDownloadFailed": "Le téléchargement du fichier a échoué. Veuillez réessayer plus tard."
+      }
+    },
     "progressBox": {
       "info": "Informations",
       "titleSharing": "Les fichiers seront distribués",
@@ -794,6 +799,33 @@
         "updateError": "Les paramètres n'ont pas pu être mis à jour.",
         "notFoundError": "Les paramètres n'ont pas pu être chargés."
       },
+
+      "branding": {
+        "title": "Identité visuelle"
+      },
+
+      "logo": {
+        "title": "Logo",
+        "descriptionSchool": "Téléversez le logo. Il sera affiché sur l’écran de connexion et sur la carte d’identification de l’application Edulution.",
+        "descriptionGeneric": "Téléversez le logo. Il sera affiché sur l’écran de connexion.",
+        "uploadLightLogo": "Téléverser le logo clair",
+        "uploadDarkLogo": "Téléverser le logo sombre",
+        "deleteSuccessful": "Logo supprimé avec succès."
+      },
+      "organisationInfo": {
+        "title": "Informations sur l’organisation",
+        "descriptionSchool": "Saisissez les informations officielles de votre organisation. Ces informations peuvent être affichées dans l’application Edulution. Veuillez indiquer le nom, la rue, le code postal et, éventuellement, le site web de l’école.",
+        "descriptionGeneric": "Saisissez les informations officielles de votre organisation.",
+        "name": "Nom de l’organisation",
+        "namePlaceholder": "p. ex. Organisation de Sampletown",
+        "street": "Rue",
+        "streetPlaceholder": "p. ex. 1, rue de l’Organisation",
+        "postalCode": "Code postal",
+        "postalCodePlaceholder": "p. ex. 12345",
+        "postalCityPlaceholder": "p. ex. Berlin",
+        "website": "Site web de l’organisation",
+        "city": "Ville"
+      },
       "deploymentTarget": "Plate-forme cible de déploiement"
     },
     "info": {
@@ -833,9 +865,14 @@
           "invalidUrlFormat": "URL non valide"
         },
         "webdavShare": {
-          "title": "WebDAV-Share",
-          "description": "Vous pouvez configurer ici vos propres partages WebDAV.",
+          "title": "WebDAV",
+          "sectionTitle": "WebDAV-Partage",
+          "description": "Vous pouvez configurer ici vos propres serveur WebDAV.",
           "filterPlaceHolderText": "Rechercher le nom de partages"
+        },
+        "webdavServer": {
+          "title": "WebDAV serveurs",
+          "filterPlaceHolderText": "Rechercher un serveur"
         },
         "files": {
           "title": "Fichiers",
@@ -877,7 +914,8 @@
       "forbiddenProxyPath": "Ce chemin proxy n'est pas autorisé.",
       "fieldRequired": "Ce champ est obligatoire",
       "maxChars": "Maximum {{count}} caractères",
-      "nameAlreadyExists": "Une application avec ce nom existe déjà"
+      "nameAlreadyExists": "Une application avec ce nom existe déjà",
+      "webdavShareNameAlreadyExists": "Un partage WebDAV avec ce nom existe déjà"
     },
     "yamleditor": {
       "invalidYaml": "Syntaxe YAML non valide",
@@ -1041,6 +1079,7 @@
       "attachmentUploadFailed": "La pièce jointe n'a pas pu être téléversée",
       "dbAccessFailed": "L'accès à la base de données a échoué",
       "directoryNotCreated": "La création du répertoire a échoué",
+      "fileNotCreated": "Échec de la création du fichier",
       "fileDeletionFailed": "Echec de suppression du fichier",
       "fileWritingFailed": "Echec d'écriture du fichier",
       "fileNotFound": "Fichier introuvable",
@@ -1155,7 +1194,13 @@
     "format": "Format",
     "upload": "Téléverser",
     "mode": "mode",
-    "file": "Fichier"
+    "file": "Fichier",
+    "chooseFile": "Choisir un fichier",
+    "changeFile": "Changer de fichier",
+    "saveLocal": "Enregistrer sur l’appareil",
+    "openLocal": "Ouvrir depuis l’appareil",
+    "openFileFromEdu": "Ouvrir le fichier",
+    "saveFileToEdu": "Enregistrer dans les fichiers"
   },
 
   "saveExternalFileDialogBody": {
@@ -1191,6 +1236,7 @@
     "embeddedPageEditor": "Editeur",
     "embeddedPageEditorModeDescription": "Ici, vous pouvez choisir entre Sandbox et Native. Sandbox est la variante la plus sûre, native du rendu d'origine. Notez qu'aucune précaution de sécurité ne peut être prise dans le rendu natif. En mode sandbox, le fichier HTML est lu à partir de la mémoire. Pour ce faire, téléchargez le fichier.",
     "sandboxed": "Bac à sable",
+    "pathname": "Chemin d’accès",
     "input": {
       "dateTimePicker": {
         "timeSlot": "Heure",
@@ -1232,10 +1278,14 @@
     "sidebar": "Linuxmuster"
   },
   "whiteboard": {
-    "title": "Whiteboard",
-    "sidebar": "Whiteboard",
-    "saveAsTlFile": "Enregistrer le tableau blanc au format .tldr",
-    "openTlFile": "Ouvrir un fichier .tldr"
+    "title": "TABLEAU BLANC",
+    "sidebar": "Tableau blanc",
+    "saveAsTlFile": "Enregistrer le tableau blanc sous forme de fichier .tldr",
+    "openTLFileFailed": "Impossible d’ouvrir le fichier",
+    "openTLFileSuccess": "Le fichier a été chargé avec succès",
+    "openTlFile": "Ouvrir",
+    "openLocalTlFile": "Ouvrir un fichier .tldr local",
+    "file": "Fichier"
   },
   "whiteboard-collaboration": {
     "title": "Whiteboard",
@@ -1504,5 +1554,44 @@
     "description": "Ici, on peut choisir la plateforme à laquelle {{appName }} doit être connecté.",
     "linuxmuster": "Linuxmuster",
     "generic": "Générique"
+  },
+
+  "webdavShare": {
+    "displayName": "Nom d'affichage",
+    "accessGroups": {
+      "title": "Groupes d'utilisateurs",
+      "description": "Sélectionnez les groupes d'utilisateurs qui doivent avoir accès au partage WebDAV."
+    },
+    "type": {
+      "title": "Schéma du serveur WebDAV",
+      "description": "Ici, vous pouvez sélectionner le type de schéma du serveur WebDAV.",
+      "linuxmuster": "Linuxmuster",
+      "edu-file-proxy": "Proxy de fichiers edulution",
+      "generic": "Générique"
+    },
+    "status": "Statut",
+    "offline": "Le serveur est actuellement indisponible.",
+    "pathVariables": {
+      "title": "Variable de chemin ",
+      "description": "Une variable de chemin dynamique peut être sélectionnée ici à partir des attributs utilisateur. "
+    },
+    "isRootServer": {
+      "title": "Chemin racine",
+      "description": "Pour les fonctions scolaires Linuxmuster, au moins un partage WebDAV doit être configuré comme chemin racine.",
+      "short": "Root",
+      "notConfigured": "Aucun chemin racine n'est configuré. Veuillez contacter l'administrateur système."
+    },
+    "selectPlaceholder": "Sélectionner...",
+    "authentication": {
+      "title": "Authentification",
+      "description": "Vous pouvez sélectionner ici la méthode d'authentification pour le serveur WebDAV.",
+      "basic": " Basic (nom d'utilisateur, mot de passe)"
+    },
+    "selectRootServer": {
+      "title": "Sélection du serveur WebDAV",
+      "description": "Sélectionnez le serveur WebDAV qui doit servir de chemin racine."
+    },
+    "sharePath": "Chemin de partage",
+    "pathPreview": "Aperçu du chemin"
   }
 }

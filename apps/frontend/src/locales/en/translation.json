@@ -932,6 +932,33 @@
         "edulution-binduser-description": "Here you can configure the LDAP access data required for group synchronization.",
         "edulution-binduser-dn": "Distinguished Name (DN)",
         "edulution-binduser-password": "Password"
+      },
+
+      "branding": {
+        "title": "Branding"
+      },
+
+      "logo": {
+        "title": "Logo",
+        "descriptionSchool": "Upload your Logo. It will be shown on the login screen and on the edulution app ID card.",
+        "descriptionGeneric": "Upload your Logo. It will be shown on the login screen.",
+        "uploadLightLogo": "Upload Light Logo",
+        "uploadDarkLogo": "Upload Dark Logo",
+        "deleteSuccessful": "Logo deleted successfully."
+      },
+      "organisationInfo": {
+        "title": "Organisational information",
+        "descriptionSchool": "Enter your organization’s official details. This information may be displayed in the edulution app. Please provide the name, street, postal code, and optionally the school website.",
+        "descriptionGeneric": "Enter your organization's official details.",
+        "name": "Organization name",
+        "namePlaceholder": "Sampletown Organization",
+        "street": "Street",
+        "streetPlaceholder": "1 Organization Street",
+        "postalCode": "Postal code",
+        "postalCodePlaceholder": "12345",
+        "postalCityPlaceholder": "Berlin",
+        "website": "Organization website",
+        "city": "City"
       }
     },
     "userAdministration": {
@@ -983,9 +1010,14 @@
           "invalidUrlFormat": "Invalid URL"
         },
         "webdavShare": {
-          "title": "WebDAV-Share",
-          "description": "Here you can set up your own WebDAV shares.",
-          "filterPlaceHolderText": "Search for share"
+          "title": "WebDAV",
+          "sectionTitle": "WebDAV-Shares",
+          "description": "WebDAV servers can be set up for the file manager here.",
+          "filterPlaceHolderText": "Search for WebDAV shares"
+        },
+        "webdavServer": {
+          "title": "WebDAV-Server",
+          "filterPlaceHolderText": "Search for WebDAV servers"
         },
         "files": {
           "title": "Files",
@@ -1028,7 +1060,8 @@
       "fieldRequired": "This field is required",
       "maxChars": "Maximum {{count}} characters",
       "nameAlreadyExists": "App with this name already exists",
-      "nameIsNotAllowed": "This app name is not allowed"
+      "nameIsNotAllowed": "This app name is not allowed",
+      "webdavShareNameAlreadyExists": "WebDAV-Share with this name already exists"
     },
     "yamleditor": {
       "invalidYaml": "Wrong YAML syntax",
@@ -1193,12 +1226,15 @@
     "of": "of",
     "confirm": "Confirm",
     "creator": "Creator",
+    "chooseFile": "Choose file",
+    "changeFile": "Change file",
     "share": "Share",
     "answers": "Answers",
     "error": "Error",
     "errors": {
       "dbAccessFailed": "Database access failed",
       "directoryNotCreated": "Failed to create directory",
+      "fileNotCreated": "Failed to create file",
       "fileUploadFailed": "Failed to upload the file",
       "fileDeletionFailed": "Failed to delete the file",
       "fileWritingFailed": "Failed to write the file",
@@ -1320,7 +1356,11 @@
     "orContinueWithoutAccount": "Or continue without account",
     "application": "Application",
     "reset": "Reset",
-    "file": "File"
+    "file": "File",
+    "saveLocal": "Save to device",
+    "openLocal": "Open from device",
+    "openFileFromEdu": "Open file",
+    "saveFileToEdu": "Save to files"
   },
   "form": {
     "path": "Path",
@@ -1345,6 +1385,7 @@
     "embeddedPageEditor": "Editor",
     "embeddedPageEditorModeDescription": "Here you can choose between sandbox and native rendering. Sandbox is the safest variant, native the original rendering. Please note that no security precautions can be taken with native rendering. In sandbox mode, the HTML file is read from memory. To do this, upload the file.",
     "sandboxed": "Sandbox",
+    "pathname": "Share-Path",
     "input": {
       "dateTimePicker": {
         "timeSlot": "o'clock",
@@ -1402,7 +1443,11 @@
     "title": "WHITEBOARD",
     "sidebar": "Whiteboard",
     "saveAsTlFile": "Save Whiteboard as .tldr file",
-    "openTlFile": "Open .tldr file"
+    "openTlFile": "Open",
+    "openLocalTlFile": "Open local .tldr file",
+    "file": "File",
+    "openTLFileFailed": "Could not open file",
+    "openTLFileSuccess": "File loaded successfully"
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
@@ -1480,6 +1525,11 @@
     "filenameRequired": "Filename cannot be empty",
     "fileSavedSuccessful": "File saved successfully",
     "fileSaveFailed": "File could not be saved"
+  },
+
+  "fileSelectorDialogBody": {
+    "title": "Select a file to open",
+    "selectFile": "Selected file"
   },
 
   "moveItemDialog": {
@@ -1716,6 +1766,30 @@
       "linuxmuster": "Linuxmuster",
       "edu-file-proxy": "edulution File Proxy",
       "generic": "Generic"
-    }
+    },
+    "status": "Status",
+    "offline": "Server is currently unavailable",
+    "pathVariables": {
+      "title": "Path variable",
+      "description": "A dynamic path variable can be selected here from the user attributes."
+    },
+    "isRootServer": {
+      "title": "Root path",
+      "description": "For the Linuxmuster school functions, at least one WebDAV share must be configured as the root path.",
+      "short": "Root",
+      "notConfigured": "No root path configured. Please contact the system administrator."
+    },
+    "selectPlaceholder": "Select...",
+    "authentication": {
+      "title": "Authentication",
+      "description": "The authentication method for the WebDAV server can be selected here.",
+      "basic": "Basic (username, password)"
+    },
+    "selectRootServer": {
+      "title": "WebDAV Server Selection",
+      "description": "Select the WebDAV server that should serve as the root path."
+    },
+    "sharePath": "Path",
+    "pathPreview": "Path preview"
   }
 }

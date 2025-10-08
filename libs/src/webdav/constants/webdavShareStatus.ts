@@ -10,19 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
-import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+const WEBDAV_SHARE_STATUS = {
+  UP: 'up',
+  DOWN: 'down',
+} as const;
 
-const BULLETIN_BOARD_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
-  {
-    name: ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE,
-    description: 'appExtendedOptions.bulletinBoardUrl',
-    title: 'appExtendedOptions.bulletinBoardUrlTitle',
-    type: ExtendedOptionField.table,
-    value: '',
-    width: 'full',
-  },
-];
-
-export default BULLETIN_BOARD_EXTENDED_OPTIONS;
+export default WEBDAV_SHARE_STATUS;

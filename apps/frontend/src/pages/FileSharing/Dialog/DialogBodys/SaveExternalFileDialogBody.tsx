@@ -27,10 +27,10 @@ const SaveExternalFileDialogBody: React.FC<Props> = ({ form }) => {
   return (
     <>
       <MoveContentDialogBody
-        showAllFiles={false}
         showSelectedFile
         showHome
         fileType={ContentType.DIRECTORY}
+        isCurrentPathDefaultDestination
       />
 
       <div className="mt-4">

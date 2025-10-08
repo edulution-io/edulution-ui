@@ -26,18 +26,19 @@ import type TApps from '@libs/appconfig/types/appsType';
 import useMedia from '@/hooks/useMedia';
 import { OnChangeFn, RowSelectionState, VisibilityState } from '@tanstack/react-table';
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
-import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
+import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 
 interface AppConfigTableProps {
   applicationName: string;
-  tableId: ExtendedOptionKeysType;
+  option: AppConfigExtendedOption;
 }
 
-const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableId }) => {
+const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option }) => {
   const { isMobileView, isTabletView } = useMedia();
   const { t } = useTranslation();
 
+  const { name: tableId, title } = option;
   const appConfigTableConfig = getAppConfigTableConfig(applicationName, tableId) as AppConfigTableConfig;
 
   if (!appConfigTableConfig) {
@@ -199,16 +200,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
             />
           );
         }
-        case ExtendedOptionKeys.WEBDAV_SHARE_TABLE: {
-          const actions = [...tableActions];
-
-          if (tableContentData.length >= 1 && actions.length > 0) {
-            actions[0] = {
-              ...actions[0],
-              disabled: true,
-            };
-          }
-
+        case ExtendedOptionKeys.WEBDAV_SERVER_TABLE: {
           return (
             <ScrollableTable
               columns={columns}
@@ -220,7 +212,23 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
               initialColumnVisibility={initialColumnVisibility}
               selectedRows={selectedRows}
               onRowSelectionChange={handleRowSelectionChange}
-              actions={actions as TableAction<WebdavShareDto>[]}
+              actions={tableActions as TableAction<WebdavShareDto>[]}
+            />
+          );
+        }
+        case ExtendedOptionKeys.WEBDAV_SHARE_TABLE: {
+          return (
+            <ScrollableTable
+              columns={columns}
+              data={tableContentData as WebdavShareDto[]}
+              filterKey={filterKey}
+              filterPlaceHolderText={filterPlaceHolderText}
+              applicationName={applicationName}
+              enableRowSelection
+              initialColumnVisibility={initialColumnVisibility}
+              selectedRows={selectedRows}
+              onRowSelectionChange={handleRowSelectionChange}
+              actions={tableActions as TableAction<WebdavShareDto>[]}
             />
           );
         }
@@ -231,6 +239,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
 
     return (
       <div className="mb-8">
+        {title && <p className="bold">{t(title)}</p>}
         {getScrollableTable()}
         {dialogBody}
       </div>

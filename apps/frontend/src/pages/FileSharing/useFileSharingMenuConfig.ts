@@ -10,93 +10,87 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import {
-  CloudIcon,
-  FileSharingIcon,
-  IsoIcon,
-  ProgrammIcon,
-  ProjectIcon,
-  ShareIcon,
-  StudentsIcon,
-  TeacherIcon,
-} from '@/assets/icons';
+import { CloudIcon, FileSharingIcon } from '@/assets/icons';
 import userStore from '@/store/UserStore/useUserStore';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
-import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import MenuItem from '@libs/menubar/menuItem';
 import APPS from '@libs/appconfig/constants/apps';
 import { t } from 'i18next';
 import SHARED from '@libs/filesharing/constants/shared';
+import WEBDAV_SHARE_STATUS from '@libs/webdav/constants/webdavShareStatus';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
-
-const iconMap = {
-  teachers: TeacherIcon,
-  projects: ProjectIcon,
-  iso: IsoIcon,
-  programs: ProgrammIcon,
-  share: ShareIcon,
-  students: StudentsIcon,
-};
-
-const findCorrespondingMountPointIcon = (filename: string) => {
-  const key = Object.keys(iconMap).find((k) => filename.includes(k));
-  return key ? iconMap[key as keyof typeof iconMap] : FileSharingIcon;
-};
+import { toast } from 'sonner';
+import useVariableSharePathname from './hooks/useVariableSharePathname';
 
 const useFileSharingMenuConfig = () => {
-  const { mountPoints } = useFileSharingStore();
+  const { pathname } = useLocation();
+  const { webdavShares, fetchWebdavShares } = useFileSharingStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = userStore();
+  const { createVariableSharePathname } = useVariableSharePathname();
 
   const handlePathChange = useCallback(
-    (newPath: string, basePath: string) => {
-      navigate(`${APPS.FILE_SHARING}/${basePath}`);
-      const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.set(URL_SEARCH_PARAMS.PATH, newPath);
-      setSearchParams(newSearchParams);
+    (shareDisplayName: string, sharePathname: string) => {
+      navigate(
+        {
+          pathname: `/${APPS.FILE_SHARING}/${shareDisplayName}`,
+          search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(sharePathname)}`,
+        },
+        { replace: true },
+      );
     },
-    [searchParams, setSearchParams],
+    [navigate],
   );
 
+  const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
+  const firstPathPart = pathParts[0] || '';
+  const previousFirstPathPart = useRef<string | null>(null);
+
   useEffect(() => {
-    const menuBarItems: MenuItem[] = mountPoints.map((mountPoint: DirectoryFileDTO) => {
-      const isHome =
-        mountPoint.filePath.includes(`${user?.ldapGroups?.roles?.at(0)}s`) &&
-        mountPoint.filePath.includes(`${user?.username}`);
-      let translationKey = `mountpoints.${mountPoint.filename?.toLowerCase()}`;
+    if (firstPathPart !== previousFirstPathPart.current) {
+      previousFirstPathPart.current = firstPathPart;
 
-      if (isHome) {
-        translationKey = 'mountpoints.home';
+      if (firstPathPart === APPS.FILE_SHARING) {
+        void fetchWebdavShares();
       }
-      const baseName = mountPoint.filename ?? '';
+    }
+  }, [firstPathPart]);
 
-      const defaultLabel = baseName ? baseName.charAt(0).toUpperCase() + baseName.slice(1) : '';
+  useEffect(() => {
+    if (!webdavShares.length) return;
 
-      const label = t(translationKey, { defaultValue: defaultLabel });
-
-      return {
-        id: mountPoint.filename,
-        label,
-        icon: findCorrespondingMountPointIcon(mountPoint.filePath),
+    const menuBarItems: MenuItem[] = webdavShares
+      .filter((share) => !share.isRootServer)
+      .map((share) => ({
+        id: share.displayName,
+        label: share.displayName,
+        icon: FileSharingIcon,
         color: 'hover:bg-ciGreenToBlue',
-        action: () => handlePathChange(getPathWithoutWebdav(mountPoint.filePath), mountPoint.filename),
-      };
-    });
+        action: () => {
+          if (share.status === WEBDAV_SHARE_STATUS.UP) {
+            handlePathChange(share.displayName, createVariableSharePathname(share.pathname, share.pathVariables));
+          } else {
+            toast.info(t('webdavShare.offline'), {
+              position: 'top-right',
+              duration: 1000,
+            });
+          }
+        },
+        disableTranslation: true,
+      }));
 
     const sharedItem: MenuItem = {
-      id: 'shared',
+      id: SHARED,
       label: t('mountpoints.shared', { defaultValue: 'Geteilte Dateien' }),
       icon: CloudIcon,
-      action: () => handlePathChange(`/${SHARED}`, SHARED),
+      action: () => navigate(`/${APPS.FILE_SHARING}/${SHARED}`, { replace: true }),
     };
 
     setMenuItems([...menuBarItems, sharedItem]);
-  }, [mountPoints, user?.ldapGroups?.roles, user?.ldapGroups?.schools, searchParams, setSearchParams, t]);
+  }, [user?.ldapGroups?.roles, user?.ldapGroups?.schools, webdavShares, navigate, handlePathChange]);
 
   return {
     title: 'filesharing.title',

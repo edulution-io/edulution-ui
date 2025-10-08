@@ -22,11 +22,10 @@ import { HttpMethods } from '@libs/common/types/http-methods';
 import { FilesharingDialogProps, FileSharingFormValues } from '@libs/filesharing/types/filesharingDialogProps';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import ContentType from '@libs/filesharing/types/contentType';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
 import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
 import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
-import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
+import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogBodyProps';
 import MoveDirectoryDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveDirectoryDialogBody';
 import CopyContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/CopyContentDialogBody';
 import PublicShareContentsDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/PublicShareContentsDialogBody';
@@ -35,6 +34,7 @@ import DialogInputValues from '@libs/filesharing/types/dialogInputValues';
 import FILESHARING_SHARED_FILES_API_ENDPOINT from '@libs/filesharing/constants/filesharingSharedFilesApiEndpoint';
 import { t } from 'i18next';
 import stripTrailingSlash from '@libs/filesharing/utils/stripTrailingSlash';
+import FileSelectorDialogProps from '@libs/filesharing/types/fileSelectorDialogProps';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FileSharingFormValues>;
@@ -78,13 +78,18 @@ interface SaveExternalFileDialogBodyConfiguration extends DialogBodyConfiguratio
   Component: React.ComponentType<FilesharingDialogProps>;
 }
 
+interface FileSelectorDialogBodyConfiguration extends DialogBodyConfigurationBase {
+  Component: React.ComponentType<FileSelectorDialogProps>;
+}
+
 type DialogBodyConfiguration =
   | CreateFolderDialogBodyConfiguration
   | CreateFileDialogBodyConfiguration
   | RenameDialogBodyConfiguration
   | MoveDialogBodyConfiguration
   | PlainDialogBodyConfiguration
-  | SaveExternalFileDialogBodyConfiguration;
+  | SaveExternalFileDialogBodyConfiguration
+  | FileSelectorDialogBodyConfiguration;
 
 const initialFormValues = {
   filename: '',
@@ -103,10 +108,9 @@ const createFolderConfig: CreateFolderDialogBodyConfiguration = {
   requiresForm: true,
   getData: (form, currentPath, _inputValues) => {
     const filename = form.getValues('filename');
-    const cleanedPath = getPathWithoutWebdav(currentPath);
 
     return Promise.resolve({
-      path: cleanedPath,
+      path: currentPath,
       newPath: filename,
     });
   },
@@ -132,7 +136,7 @@ const createFileConfig: CreateFileDialogBodyConfiguration = {
 
     return [
       {
-        path: getPathWithoutWebdav(currentPath),
+        path: currentPath,
         name: `${filename}.${extension}`,
         file,
       },
@@ -153,10 +157,9 @@ const deleteFileFolderConfig: PlainDialogBodyConfiguration = {
     if (!selectedItems || selectedItems.length === 0) {
       return Promise.resolve([]);
     }
-    const cleanedPath = getPathWithoutWebdav(stripTrailingSlash(currentPath));
     return Promise.resolve(
       selectedItems.map((item) => ({
-        path: `${cleanedPath}/${item.filename}`,
+        path: `${stripTrailingSlash(currentPath)}/${item.filename}`,
       })),
     );
   },
@@ -185,7 +188,7 @@ const renameFileFolderConfig: RenameDialogBodyConfiguration = {
       form.getValues('extension') !== undefined
         ? `${String(form.getValues('filename')) + String(form.getValues('extension'))}`
         : form.getValues('filename');
-    const cleanedPath = getPathWithoutWebdav(stripTrailingSlash(currentPath));
+    const cleanedPath = stripTrailingSlash(currentPath);
     return Promise.resolve([
       {
         path: `${cleanedPath}/${selectedItems[0]?.filename}`,
@@ -203,15 +206,12 @@ const copyFileOrFolderConfig: PlainDialogBodyConfiguration = {
   httpMethod: HttpMethods.POST,
   type: ContentType.FILE || ContentType.DIRECTORY,
   requiresForm: false,
-  getData: (_f, currentPath, { moveOrCopyItemToPath, selectedItems }: DialogInputValues) => {
+  getData: (_form, currentPath, { moveOrCopyItemToPath, selectedItems }: DialogInputValues) => {
     if (!moveOrCopyItemToPath || !selectedItems) return Promise.resolve([]);
-    const sourceBase = getPathWithoutWebdav(stripTrailingSlash(currentPath));
-    const targetBase = getPathWithoutWebdav(moveOrCopyItemToPath.filePath);
+    const sourceBase = stripTrailingSlash(currentPath);
+    const targetBase = stripTrailingSlash(moveOrCopyItemToPath.filePath);
     return Promise.resolve(
-      selectedItems.map((i) => {
-        const name = encodeURIComponent(i.filename);
-        return { path: `${sourceBase}/${name}`, newPath: `${targetBase}/${name}` };
-      }),
+      selectedItems.map((i) => ({ path: `${sourceBase}/${i.filename}`, newPath: `${targetBase}/${i.filename}` })),
     );
   },
 };
@@ -224,20 +224,13 @@ const moveFileFolderConfig: MoveDialogBodyConfiguration = {
   httpMethod: HttpMethods.PATCH,
   type: ContentType.FILE || ContentType.DIRECTORY,
   requiresForm: false,
-
-  getData: (_form, currentPath, inputValues) => {
-    const { moveOrCopyItemToPath, selectedItems } = inputValues;
-    if (!moveOrCopyItemToPath || !selectedItems) {
-      return Promise.resolve([]);
-    }
-    const newCleanedPath = getPathWithoutWebdav(moveOrCopyItemToPath.filePath);
-    const cleanedPath = getPathWithoutWebdav(stripTrailingSlash(currentPath));
+  getData: (_form, currentPath, { moveOrCopyItemToPath, selectedItems }) => {
+    if (!moveOrCopyItemToPath || !selectedItems) return Promise.resolve([]);
+    const sourceBase = stripTrailingSlash(currentPath);
+    const targetBase = stripTrailingSlash(moveOrCopyItemToPath.filePath);
 
     return Promise.resolve(
-      selectedItems.map((item) => ({
-        path: `${cleanedPath}/${item.filename}`,
-        newPath: `${newCleanedPath}/${item.filename}`,
-      })),
+      selectedItems.map((i) => ({ path: `${sourceBase}/${i.filename}`, newPath: `${targetBase}/${i.filename}` })),
     );
   },
 };

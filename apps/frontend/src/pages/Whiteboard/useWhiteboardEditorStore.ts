@@ -12,6 +12,10 @@
 
 import { create } from 'zustand';
 import type { Editor, StoreSnapshot, TLRecord } from 'tldraw';
+import loadTldrFileIntoEditor from '@libs/tldraw-sync/utils/loadTldrFileIntoEditor';
+import { toast } from 'sonner';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import { t } from 'i18next';
 
 interface WhiteboardEditorState {
   editor: Editor | null;
@@ -19,6 +23,7 @@ interface WhiteboardEditorState {
   setIsDialogOpen: (isOpen: boolean) => void;
   setEditor: (editor: Editor | null) => void;
   getSnapshot: () => StoreSnapshot<TLRecord> | null;
+  openTldrFromBlobUrl: (blobUrl: string, filename: string) => Promise<void>;
   reset: () => void;
 }
 
@@ -37,6 +42,39 @@ const useWhiteboardEditorStore = create<WhiteboardEditorState>((set, get) => ({
   getSnapshot: () => {
     const { editor } = get();
     return editor ? editor.store.getStoreSnapshot() : null;
+  },
+
+  openTldrFromBlobUrl: async (blobUrl, filename) => {
+    const { editor } = get();
+    if (!editor) return;
+
+    const res = await fetch(blobUrl, { cache: 'no-store' });
+    if (!res.ok) {
+      await res.text().catch(() => '');
+      URL.revokeObjectURL(blobUrl);
+    }
+
+    const blob = await res.blob();
+    const rawText = await blob.text();
+
+    const jsonText = rawText.trimStart().startsWith('--') ? (rawText ?? '') : rawText;
+
+    if (!jsonText || !(jsonText.trimStart().startsWith('{') || jsonText.trimStart().startsWith('['))) {
+      URL.revokeObjectURL(blobUrl);
+      toast.error(t('whiteboard.openTLFileFailed'));
+    }
+
+    const file = new File([jsonText], filename, { type: RequestResponseContentType.APPLICATION_JSON });
+
+    try {
+      await loadTldrFileIntoEditor(editor, file);
+      toast.success(t('whiteboard.openTLFileSuccess'));
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      toast.error(t(message));
+    } finally {
+      URL.revokeObjectURL(blobUrl);
+    }
   },
 
   reset: () => set(initialValues),

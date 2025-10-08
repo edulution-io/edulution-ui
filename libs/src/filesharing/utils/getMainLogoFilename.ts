@@ -10,9 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ContentType from '@libs/filesharing/types/contentType';
+import { ThemeType } from '@libs/common/constants/theme';
 
-const buildApiFileTypePathUrl = (base: string, type: ContentType, path: string): string =>
-  `${base}?type=${type}&path=${path ? `/${path}` : ''}`;
-
-export default buildApiFileTypePathUrl;
+const getMainLogoFilename = (theme: ThemeType) => `main-logo-${theme}.webp`;
+export default getMainLogoFilename;

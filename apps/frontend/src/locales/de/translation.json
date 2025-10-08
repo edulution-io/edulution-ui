@@ -935,6 +935,33 @@
         "edulution-binduser-description": "Hier können Zugangsdaten zum LDAP konfiguriert werden, die für den Gruppen-Sync notwendig sind.",
         "edulution-binduser-dn": "Distinguished Name (DN)",
         "edulution-binduser-password": "Passwort"
+      },
+
+      "branding": {
+        "title": "Branding"
+      },
+
+      "logo": {
+        "title": "Logo",
+        "descriptionSchool": "Lade hier das Logo hoch. Es wird auf der Login-Seite und auf dem Ausweis in der edulution App angezeigt.",
+        "descriptionGeneric": "Laden Sie hier Ihr Logo hoch. Es wird auf der Login-Seite angezeigt.",
+        "uploadLightLogo": "Helles Logo hochladen",
+        "uploadDarkLogo": "Dunkles Logo hochladen",
+        "deleteSuccessful": "Logo wurde erfolgreich gelöscht"
+      },
+      "organisationInfo": {
+        "title": "Organisationsinformationen",
+        "descriptionSchool": "Trage die offiziellen Angaben deiner Organisation ein. Diese Informationen werden in der edulution App angezeigt. Bitte gib den Namen, die Straße, die Postleitzahl und optional die Website der Schule an.",
+        "descriptionGeneric": "Trage die offiziellen Angaben deiner Organisation ein.",
+        "name": "Organisation",
+        "namePlaceholder": "Gemeinschaftsschule Musterstadt",
+        "street": "Straße",
+        "streetPlaceholder": "Hauptstraße 1",
+        "postalCode": "Postleitzahl",
+        "postalCodePlaceholder": "12345",
+        "website": "Website der Organisation",
+        "city": "Stadt",
+        "postalCityPlaceholder": "Berlin"
       }
     },
     "userAdministration": {
@@ -986,9 +1013,14 @@
           "invalidUrlFormat": "Ungültige URL"
         },
         "webdavShare": {
-          "title": "WebDAV-Share",
-          "description": "Hier können eigene WebDAV-Shares eingerichtet werden.",
+          "title": "WebDAV",
+          "sectionTitle": "WebDAV-Shares",
+          "description": "Hier können WebDAV-Server für den Dateimanager eingerichtet werden.",
           "filterPlaceHolderText": "Suche nach WebDAV-Share"
+        },
+        "webdavServer": {
+          "title": "WebDAV-Server",
+          "filterPlaceHolderText": "Suche nach WebDAV-Server"
         },
         "files": {
           "title": "Dateien",
@@ -1031,7 +1063,8 @@
       "fieldRequired": "Dieses Feld ist erforderlich",
       "maxChars": "Maximal {{count}} Zeichen",
       "nameAlreadyExists": "App mit diesem Namen existiert bereits",
-      "nameIsNotAllowed": "Dieser Appname ist nicht erlaubt"
+      "nameIsNotAllowed": "Dieser Appname ist nicht erlaubt",
+      "webdavShareNameAlreadyExists": "Dieser Name exisitiert bereits"
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",
@@ -1194,6 +1227,8 @@
     "of": "von",
     "back": "Zurück",
     "confirm": "Bestätigen",
+    "chooseFile": "Datei auswählen",
+    "changeFile": "Datei ändern",
     "creator": "Ersteller",
     "share": "Teilen",
     "answers": "Antworten",
@@ -1201,6 +1236,7 @@
     "errors": {
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "directoryNotCreated": "Erstellen des Verzeichnisses fehlgeschlagen",
+      "fileNotCreated": "Erstellen der Datei fehlgeschlagen",
       "fileUploadFailed": "Die Datei konnte nicht hochgeladen werden",
       "fileDeletionFailed": "Löschen der Datei fehlgeschlagen",
       "fileWritingFailed": "Schreiben der Datei fehlgeschlagen",
@@ -1322,7 +1358,11 @@
     "mode": "Modus",
     "orContinueWithoutAccount": "Oder fahre ohne Account fort",
     "reset": "Zurücksetzen",
-    "file": "Datei"
+    "file": "Datei",
+    "saveLocal": "Auf dem Gerät speichern",
+    "openLocal": "Von dem Gerät öffnen",
+    "openFileFromEdu": "Datei öffnen",
+    "saveFileToEdu": "In Dateien speichern"
   },
   "form": {
     "path": "Link",
@@ -1347,6 +1387,7 @@
     "embeddedPageEditor": "Editor",
     "embeddedPageEditorModeDescription": "Hier kann zwischen Sandbox und nativ gerendert ausgewählt werden. Sandbox ist die sicherste Variante, native das Original-Rendering. Beachte, dass bei nativen Rendering keine Sicherheitsvorkehrungen getroffen werden können. Im Sandbox-Modus wird die HTML-Datei aus dem Speicher gelesen. Lade dazu die Datei hoch.",
     "sandboxed": "Sandbox",
+    "pathname": "Share-Pfad",
     "input": {
       "dateTimePicker": {
         "timeSlot": "Uhr",
@@ -1405,7 +1446,11 @@
     "title": "WHITEBOARD",
     "sidebar": "Whiteboard",
     "saveAsTlFile": "Whiteboard als .tldr Datei speichern",
-    "openTlFile": ".tldr Datei öffnen"
+    "openTLFileFailed": "Datei kann nicht geöffnet werden",
+    "openTLFileSuccess": "Datei wurde erfolgreich geladen",
+    "openTlFile": "Öffnen",
+    "openLocalTlFile": "Lokale .tldr Datei öffnen",
+    "file": "Datei"
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
@@ -1474,6 +1519,11 @@
     "copy": "Kopieren"
   },
 
+  "fileSelectorDialogBody": {
+    "title": "Wähle eine Datei zum Öffnen aus",
+    "selectFile": "Ausgewählte Datei"
+  },
+
   "saveExternalFileDialogBody": {
     "saveExternalFile": "Externe Datei speichern",
     "destinationFolder": "Zielordner",
@@ -1513,7 +1563,7 @@
     "deleteFiles": "Dateien löschen"
   },
   "timeAgo": {
-    "justNow": "gerade Eben",
+    "justNow": "gerade eben",
     "minuteAgo": "vor {{count}} Minuten",
     "hourAgo": "vor {{count}} Stunden",
     "dayAgo": "vor {{count}} Tagen",
@@ -1718,6 +1768,30 @@
       "linuxmuster": "Linuxmuster",
       "edu-file-proxy": "edulution File Proxy",
       "generic": "Generisch"
-    }
+    },
+    "status": "Status",
+    "offline": "Server ist aktuell nicht erreichbar",
+    "pathVariables": {
+      "title": "Pfad-Variable",
+      "description": "Hier kann aus den Nutzerattributen eine dynamische Pfadvariable ausgewählt werden."
+    },
+    "isRootServer": {
+      "title": "Root-Pfad",
+      "description": "Für Linuxmuster-Schulfunktionen muss ein WebDAV-Share als Root-Pfad konfiguriert sein, der den gemeinsamen Root-Ordner von Schülern und Lehrern repräsentiert.",
+      "short": "Root",
+      "notConfigured": "Kein Root-Pfad konfiguriert. Bitte kontaktiere den Systemadministrator."
+    },
+    "selectPlaceholder": "Wähle...",
+    "authentication": {
+      "title": "Authentifizierung",
+      "description": "Hier kann die Authentifizierungsmethode für den WebDAV-Server ausgewählt werden.",
+      "basic": "Basic (Benutzername, Passwort)"
+    },
+    "selectRootServer": {
+      "title": "WebDAV Server-Auswahl",
+      "description": "Wähle den WebDAV-Server, der als Root-Pfad fungieren soll."
+    },
+    "sharePath": "Pfad",
+    "pathPreview": "Pfad-Vorschau"
   }
 }

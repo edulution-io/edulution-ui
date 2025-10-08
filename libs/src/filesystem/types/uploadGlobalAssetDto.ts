@@ -10,11 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
+import { ThemeType } from '@libs/common/constants/theme';
 
-type CreateWorkingDirectoryDto = {
-  teacher: string;
-  schoolClass: LmnApiSchoolClass;
-};
-
-export default CreateWorkingDirectoryDto;
+export type UploadGlobalAssetDto = { destination?: string; filename?: string; variant: ThemeType; file: File | Blob };

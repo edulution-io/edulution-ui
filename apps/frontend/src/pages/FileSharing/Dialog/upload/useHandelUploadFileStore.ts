@@ -11,12 +11,12 @@
  */
 
 import { create } from 'zustand';
+import { v4 as uuid } from 'uuid';
 
 import { UploadFile } from '@libs/filesharing/types/uploadFile';
 import FileProgress from '@libs/filesharing/types/fileProgress';
 import UploadResult from '@libs/filesharing/types/uploadResult';
 import createFileUploader from '@libs/filesharing/utils/createFileUploader';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import createUploadClient from '@libs/filesharing/utils/createUploadClient';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 
@@ -25,14 +25,19 @@ interface HandelUploadFileStore {
   filesToUpload: UploadFile[];
   isUploading: boolean;
   lastError?: string;
-  progressByName: Record<string, FileProgress>;
-  uploadingByName: Map<string, boolean>;
+  progressById: Record<string, { share: string | undefined; fileName: string; progress: FileProgress }>;
+  uploadingById: Map<string, boolean>;
   setIsUploadDialogOpen: (isOpen: boolean) => void;
   closeUploadDialog: () => void;
   setFilesToUpload: (files: UploadFile[]) => void;
   updateFilesToUpload: (updater: (files: UploadFile[]) => UploadFile[]) => void;
-  markUploading: (fileName: string, uploading: boolean) => void;
-  uploadFiles: (currentPath: string, accessToken: string, parallel?: boolean) => Promise<UploadResult[]>;
+  markUploading: (fileId: string, uploading: boolean) => void;
+  uploadFiles: (
+    currentPath: string,
+    accessToken: string,
+    share: string | undefined,
+    parallel?: boolean,
+  ) => Promise<UploadResult[]>;
   reset: () => void;
 }
 
@@ -41,48 +46,67 @@ const initialState = {
   filesToUpload: [],
   isUploading: false,
   lastError: undefined,
-  isTldrDialogOpen: false,
-  progressByName: {},
-  uploadingByName: new Map<string, boolean>(),
+  progressById: {},
+  uploadingById: new Map<string, boolean>(),
 };
 
 const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
   ...initialState,
+
   setIsUploadDialogOpen: (isOpen) => set({ isUploadDialogOpen: isOpen }),
   closeUploadDialog: () => set({ isUploadDialogOpen: false }),
-  setFilesToUpload: (files) => set({ filesToUpload: files }),
+
+  setFilesToUpload: (files) =>
+    set((state) => ({
+      filesToUpload: [
+        ...state.filesToUpload,
+        ...files.map((file) => ({
+          ...file,
+          id: file.id ?? uuid(),
+        })),
+      ],
+    })),
+
   updateFilesToUpload: (updater) => set((state) => ({ filesToUpload: updater(state.filesToUpload) })),
 
-  markUploading: (fileName: string, uploading: boolean): void => {
+  markUploading: (fileId: string, uploading: boolean): void => {
     set((state) => {
-      const next = new Map(state.uploadingByName);
-      if (uploading) next.set(fileName, true);
-      else next.delete(fileName);
+      const next = new Map(state.uploadingById);
+      if (uploading) next.set(fileId, true);
+      else next.delete(fileId);
       return {
-        uploadingByName: next,
+        uploadingById: next,
         isUploading: next.size > 0,
       };
     });
   },
 
-  uploadFiles: async (currentPath: string, accessToken: string, parallel: boolean = true): Promise<UploadResult[]> => {
+  uploadFiles: async (
+    currentPath: string,
+    accessToken: string,
+    webdavShare: string | undefined,
+    parallel: boolean = true,
+  ): Promise<UploadResult[]> => {
     const files = get().filesToUpload;
     if (!files || files.length === 0) return [];
 
     set({ lastError: undefined });
 
-    const sanitizedDestinationPath = getPathWithoutWebdav(currentPath);
+    const setProgressForFile = (fileId: string, fileName: string, share: string | undefined, next: FileProgress) =>
+      set((state) => ({
+        progressById: {
+          ...state.progressById,
+          [fileId]: { share, fileName, progress: next },
+        },
+      }));
 
-    const setProgressForFile = (fileName: string, next: FileProgress) =>
-      set((state) => ({ progressByName: { ...state.progressByName, [fileName]: next } }));
-
-    const uploadHttp = createUploadClient(`/${EDU_API_ROOT}`, accessToken);
+    const uploadHttpClient = createUploadClient(`/${EDU_API_ROOT}`, { share: webdavShare }, accessToken);
 
     const uploader = createFileUploader({
-      httpClient: uploadHttp,
-      destinationPath: sanitizedDestinationPath,
-      onProgressUpdate: setProgressForFile,
-      onUploadingChange: (fileName, uploading) => get().markUploading(fileName, uploading),
+      httpClient: uploadHttpClient,
+      destinationPath: currentPath,
+      onProgressUpdate: (fileItem, next) => setProgressForFile(fileItem.id, fileItem.name, webdavShare, next),
+      onUploadingChange: (fileItem, uploading) => get().markUploading(fileItem.id, uploading),
     });
 
     let outcomes: UploadResult[];
@@ -92,33 +116,34 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
       set({ filesToUpload: [] });
       const settledUploadResults = await Promise.allSettled(uploadPromises);
 
-      outcomes = settledUploadResults.map((settledResult, fileIndex) => {
-        if (settledResult.status === 'fulfilled') {
-          return settledResult.value;
-        }
-        return {
-          name: files[fileIndex].name,
-          ok: false,
-          error: String(settledResult.reason),
-        } as UploadResult;
-      });
-    } else {
-      outcomes = await files.reduce<Promise<UploadResult[]>>(
-        async (promiseForOutcomes, fileItem) => {
-          const outcomesSoFar = await promiseForOutcomes;
-          const outcomeForCurrentFile = await uploader(fileItem);
-          return [...outcomesSoFar, outcomeForCurrentFile];
-        },
-        Promise.resolve([] as UploadResult[]),
+      const successfulIds = settledUploadResults.filter((r) => r.status === 'fulfilled').map((_r, i) => files[i].id);
+
+      set((state) => ({
+        filesToUpload: state.filesToUpload.filter((f) => !successfulIds.includes(f.id)),
+      }));
+
+      outcomes = settledUploadResults.map((result, index) =>
+        result.status === 'fulfilled'
+          ? result.value
+          : {
+              id: files[index].id,
+              name: files[index].name,
+              success: false,
+              error: String(result.reason),
+            },
       );
+    } else {
+      outcomes = await files.reduce<Promise<UploadResult[]>>(async (accPromise, fileItem) => {
+        const acc = await accPromise;
+        const outcome = await uploader(fileItem);
+        return [...acc, outcome];
+      }, Promise.resolve([]));
     }
+
     return outcomes;
   },
 
-  reset: () =>
-    set({
-      ...initialState,
-    }),
+  reset: () => set({ ...initialState }),
 }));
 
 export default useHandelUploadFileStore;

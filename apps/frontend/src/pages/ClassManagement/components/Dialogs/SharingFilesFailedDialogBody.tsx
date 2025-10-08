@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import ItemDialogList from '@/components/shared/ItemDialogList';
 import { Button } from '@/components/shared/Button';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 
 interface SharingFilesFailedDialogBodyProps {
   failedFilePath: string;
@@ -28,6 +29,7 @@ const SharingFilesFailedDialogBody: React.FC<SharingFilesFailedDialogBodyProps> 
   failedPaths,
 }) => {
   const { t } = useTranslation();
+  const selectedWebdavShare = useFileSharingStore((s) => s.selectedWebdavShare);
 
   const date = new Date();
   const day = date.getDate();
@@ -66,15 +68,18 @@ const SharingFilesFailedDialogBody: React.FC<SharingFilesFailedDialogBodyProps> 
           variant="btn-small"
           className="bg-primary"
           onClick={async () => {
-            await shareFiles({
-              originFilePath: failedFilePath,
-              destinationFilePaths: failedPaths.map((path) => {
-                const parts = path.split('/');
-                parts.pop();
-                const pathWithoutLast = parts.join('/');
-                return `${pathWithoutLast}/${possibleNewFileName}`;
-              }),
-            });
+            await shareFiles(
+              {
+                originFilePath: failedFilePath,
+                destinationFilePaths: failedPaths.map((path) => {
+                  const parts = path.split('/');
+                  parts.pop();
+                  const pathWithoutLast = parts.join('/');
+                  return `${pathWithoutLast}/${possibleNewFileName}`;
+                }),
+              },
+              selectedWebdavShare,
+            );
           }}
         >
           {t('classmanagement.failDialog.retryButton')}

@@ -10,15 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ContentType from '@libs/filesharing/types/contentType';
+import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
+import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 
-interface MoveContentDialogBodyProps {
-  showAllFiles?: boolean;
-  pathToFetch?: string;
-  showSelectedFile?: boolean;
-  showHome?: boolean;
-  fileType?: ContentType;
-  isCurrentPathDefaultDestination?: boolean;
-}
+const useDeploymentTarget = () => {
+  const globalSettings = useGlobalSettingsApiStore((s) => s.globalSettings);
 
-export default MoveContentDialogBodyProps;
+  const isLmn = globalSettings.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER;
+  const isGeneric = globalSettings.general.deploymentTarget === DEPLOYMENT_TARGET.GENERIC;
+
+  return { isLmn, isGeneric };
+};
+
+export default useDeploymentTarget;

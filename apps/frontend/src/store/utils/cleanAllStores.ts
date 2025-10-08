@@ -54,6 +54,8 @@ import useVeyonConfigTableStore from '@/pages/Settings/AppConfig/classmanagement
 import useWebdavShareConfigTableStore from '@/pages/Settings/AppConfig/filesharing/useWebdavShareConfigTableStore';
 import useFileTableStore from '@/pages/Settings/AppConfig/components/useFileTableStore';
 import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
+import useOpenFileDialogStore from '@/pages/FileSharing/useOpenFileDialogStore';
+import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
 import useSseStore from '../useSseStore';
 
 const cleanAllStores = async () => {
@@ -104,6 +106,8 @@ const cleanAllStores = async () => {
   useVeyonApiStore.getState().reset();
   useVeyonConfigTableStore.getState().reset();
   useWebdavShareConfigTableStore.getState().reset();
+  useOpenFileDialogStore.getState().reset();
+  useFilesystemStore.getState().reset();
   localStorage.removeItem('i18nextLng');
   await clearTLDrawPersistence(TLDRAW_PERSISTENCE_KEY);
 };

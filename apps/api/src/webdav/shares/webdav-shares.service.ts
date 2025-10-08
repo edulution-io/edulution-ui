@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /*
  * LICENSE
  *
@@ -21,13 +22,18 @@ import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import APPS from '@libs/appconfig/constants/apps';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
+import type WebdavShareHealthUpdate from '@libs/filesharing/types/webdavShareHealthUpdate';
 import { WebdavShares, WebdavSharesDocument } from './webdav-shares.schema';
 import CustomHttpException from '../../common/CustomHttpException';
 import { AppConfig } from '../../appconfig/appconfig.schema';
+import MigrationService from '../../migration/migration.service';
+import webdavSharesMigrationList from './migrations/webdavSharesMigrationList';
+
+type WebdavShareCache = Record<string, { url: string; type: string; pathname: string }>;
 
 @Injectable()
 class WebdavSharesService implements OnModuleInit {
-  private webdavShareCache: { url: string; type: string } | null = null;
+  private webdavShareCache: WebdavShareCache = {};
 
   constructor(
     @InjectModel(WebdavShares.name) private webdavSharesModel: Model<WebdavSharesDocument>,
@@ -46,65 +52,148 @@ class WebdavSharesService implements OnModuleInit {
         accessGroups = appConfig.accessGroups;
       }
 
+      let pathname = '';
+      const rawUrl = process.env.EDUI_WEBDAV_URL;
+
+      if (rawUrl) {
+        try {
+          pathname = new URL(rawUrl).pathname;
+        } catch (e) {
+          Logger.warn('EDUI_WEBDAV_URL not valid', WebdavSharesService.name);
+        }
+      } else {
+        Logger.warn('EDUI_WEBDAV_URL not set', WebdavSharesService.name);
+      }
+
       await this.webdavSharesModel.create({
         displayName: WEBDAV_SHARE_TYPE.LINUXMUSTER,
         url: process.env.EDUI_WEBDAV_URL as string,
+        isRootServer: true,
+        pathname,
         accessGroups,
         type: WEBDAV_SHARE_TYPE.LINUXMUSTER,
+        schemaVersion: 1,
       });
     }
+
+    await MigrationService.runMigrations<WebdavSharesDocument>(this.webdavSharesModel, webdavSharesMigrationList);
+
+    await this.loadCache();
   }
 
   private async loadCache(): Promise<void> {
-    const webdavShare = await this.webdavSharesModel.findOne().lean();
-    if (webdavShare) {
-      this.webdavShareCache = {
-        url: webdavShare.url,
-        type: webdavShare.type,
-      };
-    } else {
-      this.webdavShareCache = null;
-    }
+    const webdavShares = await this.webdavSharesModel.find({}).lean();
+
+    this.webdavShareCache = webdavShares.reduce<WebdavShareCache>((acc, share) => {
+      acc[share.displayName] = { url: share.url, type: share.type, pathname: share.pathname };
+      return acc;
+    }, {});
   }
 
-  async getWebdavSharePath(): Promise<string> {
-    if (!this.webdavShareCache) {
+  async getWebdavShareFromCache(share: string) {
+    if (!this.webdavShareCache[share]) {
       await this.loadCache();
     }
-    return this.webdavShareCache?.url || '';
+    return this.webdavShareCache[share];
   }
 
-  async getWebdavShareType(): Promise<string> {
-    if (!this.webdavShareCache) {
-      await this.loadCache();
-    }
-    return this.webdavShareCache?.type || '';
-  }
-
-  findAllWebdavShares(currentUserGroups: string[]) {
+  async findAllWebdavShares(currentUserGroups: string[]) {
     try {
-      const basePipeline: PipelineStage[] = [
-        {
-          $project: {
-            webdavShareId: '$_id',
-            _id: 0,
-            displayName: 1,
-            url: 1,
-            accessGroups: 1,
-            type: 1,
-          },
-        },
-      ];
+      const basePipeline: PipelineStage[] = [];
 
       if (!getIsAdmin(currentUserGroups)) {
-        basePipeline.unshift({
+        basePipeline.push({
           $match: {
             'accessGroups.path': { $in: currentUserGroups },
           },
         });
       }
 
-      return this.webdavSharesModel.aggregate(basePipeline);
+      basePipeline.push({
+        $match: { isRootServer: false },
+      });
+
+      basePipeline.push({
+        $project: {
+          webdavShareId: '$_id',
+          _id: 0,
+          displayName: 1,
+          url: 1,
+          sharePath: 1,
+          pathname: 1,
+          isRootServer: 1,
+          rootServer: 1,
+          pathVariables: 1,
+          accessGroups: 1,
+          type: 1,
+          status: 1,
+          lastChecked: 1,
+          authentication: 1,
+        },
+      });
+
+      const webdavShares = await this.webdavSharesModel.aggregate<WebdavShareDto>(basePipeline);
+
+      const rootServers = await this.findAllWebdavServers();
+
+      const rootServerMap = new Map(rootServers.map((s) => [String(s.webdavShareId), s]));
+
+      const resolvedShares = webdavShares.map((share) => {
+        if (share.rootServer && share.rootServer !== '') {
+          const root = rootServerMap.get(String(share.rootServer));
+          if (root) {
+            return {
+              ...share,
+              url: root.url,
+              type: root.type,
+              status: root.status,
+              lastChecked: root.lastChecked,
+              authentication: root.authentication,
+            };
+          }
+        }
+        return this.webdavSharesModel.aggregate<WebdavShareDto>(basePipeline);
+      });
+
+      return resolvedShares;
+    } catch (error) {
+      throw new CustomHttpException(
+        CommonErrorMessages.DB_ACCESS_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error,
+        WebdavSharesService.name,
+      );
+    }
+  }
+
+  findAllWebdavServers() {
+    try {
+      const basePipeline: PipelineStage[] = [];
+
+      basePipeline.push({
+        $match: { isRootServer: true },
+      });
+
+      basePipeline.push({
+        $project: {
+          webdavShareId: '$_id',
+          _id: 0,
+          displayName: 1,
+          url: 1,
+          sharePath: 1,
+          pathname: 1,
+          isRootServer: 1,
+          rootServer: 1,
+          pathVariables: 1,
+          accessGroups: 1,
+          type: 1,
+          status: 1,
+          lastChecked: 1,
+          authentication: 1,
+        },
+      });
+
+      return this.webdavSharesModel.aggregate<WebdavShareDto>(basePipeline);
     } catch (error) {
       throw new CustomHttpException(
         CommonErrorMessages.DB_ACCESS_FAILED,
@@ -132,7 +221,7 @@ class WebdavSharesService implements OnModuleInit {
     }
   }
 
-  async updateWebdavShare(webdavShareId: string, webdavShareDto: WebdavShareDto) {
+  async updateWebdavShare(webdavShareId: string, webdavShareDto: WebdavShareDto | WebdavShareHealthUpdate) {
     try {
       const webdavShare = await this.webdavSharesModel.updateOne({ _id: webdavShareId }, webdavShareDto).exec();
 

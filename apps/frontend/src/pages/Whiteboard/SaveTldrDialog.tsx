@@ -18,18 +18,21 @@ import saveExternalFileFormSchema from '@libs/filesharing/types/saveExternalFile
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
 import buildTldrFileFromEditor from '@libs/tldraw-sync/utils/buildTldrFileFromEditor';
 import useUserStore from '@/store/UserStore/useUserStore';
+import { UploadFile } from '@libs/filesharing/types/uploadFile';
+import { v4 as uuidv4 } from 'uuid';
+import useFileSharingStore from '../FileSharing/useFileSharingStore';
 
 const SaveTldrDialog: React.FC = () => {
   const { t } = useTranslation();
 
-  const { setFilesToUpload, uploadFiles } = useHandelUploadFileStore();
+  const { updateFilesToUpload, uploadFiles } = useHandelUploadFileStore();
   const { eduApiToken } = useUserStore();
   const { editor, isDialogOpen, setIsDialogOpen } = useWhiteboardEditorStore();
   const { moveOrCopyItemToPath } = useFileSharingDialogStore();
+  const selectedWebdavShare = useFileSharingStore((s) => s.selectedWebdavShare);
 
   const close = () => setIsDialogOpen(false);
 
@@ -41,9 +44,14 @@ const SaveTldrDialog: React.FC = () => {
   };
 
   const save = async (file: File | Blob) => {
-    const targetDir = getPathWithoutWebdav(moveOrCopyItemToPath?.filePath || '');
-    setFilesToUpload([file as File]);
-    await uploadFiles(targetDir, eduApiToken);
+    const targetDir = moveOrCopyItemToPath?.filePath || '';
+    const name = (file as File)?.name && (file as File)?.name.trim() !== '' ? (file as File).name : 'untitled.tldr';
+    const uploadFile: UploadFile = Object.assign(new File([file], name, { type: file.type }), {
+      id: uuidv4(),
+      isZippedFolder: false,
+    });
+    updateFilesToUpload(() => [uploadFile]);
+    await uploadFiles(targetDir, eduApiToken, selectedWebdavShare);
     setIsDialogOpen(false);
   };
 
