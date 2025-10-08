@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   DiskHealthIndicator,
   HealthCheckService,
@@ -19,6 +19,8 @@ import {
   HealthIndicatorResult,
 } from '@nestjs/terminus';
 import { HttpService } from '@nestjs/axios';
+import GroupRoles from '@libs/groups/types/group-roles.enum';
+import { Interval } from '@nestjs/schedule';
 import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 
 const { KEYCLOAK_API, EDUI_DISK_SPACE_THRESHOLD } = process.env;
@@ -60,12 +62,48 @@ class HealthService {
     return this.httpIndicator.pingCheck('authServer', url);
   }
 
+  @Interval(30_000)
   private async checkWebDavServer(): Promise<HealthIndicatorResult> {
-    const webdavServerUrl = await this.webdavSharesService.getWebdavSharePath();
-    const { origin } = new URL(webdavServerUrl || '');
-    return this.httpIndicator.pingCheck('lmnServer', origin, {
-      httpClient: this.httpService,
-    });
+    const webdavShares = await this.webdavSharesService.findAllWebdavShares([GroupRoles.SUPER_ADMIN]);
+
+    const results = await Promise.all(
+      webdavShares.map(async (share) => {
+        if (!share.webdavShareId) {
+          return { [share.displayName]: { status: 'down' as const, message: 'Missing ID' } };
+        }
+
+        try {
+          const result = await this.httpIndicator.pingCheck(share.displayName, share.url, {
+            httpClient: this.httpService,
+            validateStatus: (status) => [200, 401, 403].includes(status),
+          });
+          Logger.verbose(`WebDAV Share is ${JSON.stringify(result)}`, HealthService.name);
+
+          await this.webdavSharesService.updateWebdavShare(share.webdavShareId, {
+            lastChecked: new Date(),
+            status: result[share.displayName].status,
+          });
+
+          return result;
+        } catch (e) {
+          Logger.warn(`WebDAV Share ${share.displayName} is down`, HealthService.name);
+
+          await this.webdavSharesService.updateWebdavShare(share.webdavShareId, {
+            lastChecked: new Date(),
+            status: 'down',
+          });
+
+          return {
+            [share.displayName]: {
+              status: 'down' as const,
+              message: (e as Error).message,
+            },
+          };
+        }
+      }),
+    );
+
+    return results.reduce<HealthIndicatorResult>((acc, curr) => ({ ...acc, ...curr }), {});
   }
 
   private checkDiskStorage(): Promise<HealthIndicatorResult> {

@@ -10,32 +10,34 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
+import APPS from '@libs/appconfig/constants/apps';
 import useFileSharingStore from './useFileSharingStore';
 
 const FileSharingRedirect = () => {
   const navigate = useNavigate();
-  const { mountPoints, fetchMountPoints } = useFileSharingStore();
-
-  const getValidPath = (mp: DirectoryFileDTO[]) => (mp[0].filename === '/' ? mp[1].filename : mp[0].filename);
+  const { webdavShares, fetchWebdavShares } = useFileSharingStore();
 
   useEffect(() => {
-    if (mountPoints.length === 0) {
-      const getMountPoints = async () => {
-        const newMountPoints = await fetchMountPoints();
-        if (newMountPoints.length !== 0) {
-          navigate(getValidPath(newMountPoints), { replace: true });
-        }
-      };
-      void getMountPoints();
-    } else {
-      navigate(getValidPath(mountPoints), { replace: true });
-    }
-  }, []);
+    const ensureShares = async () => {
+      let shares = webdavShares;
 
-  return null;
+      if (shares.length === 0) {
+        shares = await fetchWebdavShares();
+      }
+
+      if (shares.length > 0) {
+        navigate(`/${APPS.FILE_SHARING}/${shares[0].displayName}`, { replace: true });
+      } else {
+        navigate('/', { replace: true });
+      }
+    };
+
+    void ensureShares();
+  }, [navigate, webdavShares, fetchWebdavShares]);
+
+  return <div />;
 };
 
 export default FileSharingRedirect;

@@ -6,6 +6,8 @@
   "framebufferImage": "Framebuffer image",
   "previewImage": "Image preview",
   "not-set": "Not set",
+  "imprint": "Imprint",
+  "public": "Public",
   "bulletinboard": {
     "settings": "Settings",
     "noBulletinsToShow": "There are currently no messages to display, so check back later!",
@@ -114,8 +116,9 @@
     "sidebar": "Embedded"
   },
   "dashboard": {
-    "description": "Here is your personal {{ applicationName }} dashboard. The place where all your applications for digital teaching are collected.",
     "pageTitle": "Dashboard",
+    "sidebar": "Dashboard",
+    "description": "Here is your personal {{ applicationName }} dashboard. The place where all your applications for digital teaching are collected.",
     "mobileAccess": {
       "title": "Mobile Access",
       "manual": "Setup",
@@ -312,7 +315,7 @@
     "nobulletinboard": "No new bulletins"
   },
   "filesharing": {
-    "filterPlaceHolderText": "Search for filename",
+    "filterPlaceHolderText": "Type to filter",
     "title": "FILES",
     "sidebar": "Files",
     "previewTitle": "File Preview",
@@ -347,13 +350,16 @@
       "CollectingFailed": "Collecting files failed",
       "MissingCallbackURL": "Missing callback URL",
       "SharingFailed": "Sharing files failed",
-      "CopyFailed": "Copy failed"
+      "CopyFailed": "Copy failed",
+      "FileFormatNotSupported": "File format is not supported"
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
       "FileNameRequired": "File name is required",
       "NewFileNameRequired": "New file name is required",
-      "NameRequired": "Name is required"
+      "NameRequired": "Name is required",
+      "NameExceedsCharacterLimit": "Name exceeds character limit",
+      "NameMustNotEndWithDot": "The name must not end with a dot."
     },
     "progressBox": {
       "info": "Info",
@@ -375,7 +381,8 @@
       "downloadInfo": "Downloading {{filename}}",
       "errorInfo": "{{failed}} files could not be handed out",
       "fileStructureIsCreating": "File structure is creating",
-      "zipFilesAreUploading": "Files are uploading"
+      "zipFilesAreUploading": "Files are uploading",
+      "fileIsUploading": "{{filename}} is uploading"
     },
 
     "publicShareFilesPage": {
@@ -437,6 +444,22 @@
       "selectedItemPrefix": "Selected content that is shared:",
       "noInviteesWarning": "⚠️  WARNING: Anyone with the share link will be able to download this content.",
       "inviteesWarning": "⚠️  WARNING: Anyone within the selected groups or users will be able to download this content."
+    },
+
+    "eta": {
+      "fewSeconds": "a few seconds remaining",
+      "lessThanMinute": "less than a minute remaining",
+      "aboutOneMinute": "about one minute remaining",
+      "aboutMinutes_one": "about {{count}} minute remaining",
+      "aboutMinutes_other": "about {{count}} minutes remaining",
+      "aboutHours_one": "about {{count}} hour remaining",
+      "aboutHours_other": "about {{count}} hours remaining",
+      "moreThanHours_one": "more than {{count}} hour remaining",
+      "moreThanHours_other": "more than {{count}} hours remaining",
+      "aboutDays_one": "about {{count}} day remaining",
+      "aboutDays_other": "about {{count}} days remaining",
+      "moreThanDays_one": "more than {{count}} day remaining",
+      "moreThanDays_other": "more than {{count}} days remaining"
     }
   },
   "forums": {
@@ -620,8 +643,9 @@
     "editor": {
       "inputFieldTitle": "Input field",
       "new": "New (blank)",
-      "fileUploadSuccess": "Saved the image successfully.",
-      "fileUploadError": "Error on Image Upload, please retry later.",
+      "fileUploadSuccess": "Saved the file successfully.",
+      "fileUploadError": "Error on file upload, please retry later.",
+      "fileDeletionSuccess": "Deleted the file successfully.",
       "saveSurveySuccess": "Saved the survey.",
       "reset": "Reset",
       "addDescription": "Add a description",
@@ -669,6 +693,7 @@
       "idText": "Pls copy this for later",
       "idParagraph": "To view your former answer or to edit it, if configured, you can use the participation-ID here.",
       "usernameRequired": "User name is required",
+      "fileSizeExceeded": "A file exceeds the maximum allowed size of {{size}} MB.",
       "completeMessage": "Thank you very much for participating in this survey"
     },
     "errors": {
@@ -907,6 +932,33 @@
         "edulution-binduser-description": "Here you can configure the LDAP access data required for group synchronization.",
         "edulution-binduser-dn": "Distinguished Name (DN)",
         "edulution-binduser-password": "Password"
+      },
+
+      "branding": {
+        "title": "Branding"
+      },
+
+      "logo": {
+        "title": "Logo",
+        "descriptionSchool": "Upload your Logo. It will be shown on the login screen and on the edulution app ID card.",
+        "descriptionGeneric": "Upload your Logo. It will be shown on the login screen.",
+        "uploadLightLogo": "Upload Light Logo",
+        "uploadDarkLogo": "Upload Dark Logo",
+        "deleteSuccessful": "Logo deleted successfully."
+      },
+      "organisationInfo": {
+        "title": "Organisational information",
+        "descriptionSchool": "Enter your organization’s official details. This information may be displayed in the edulution app. Please provide the name, street, postal code, and optionally the school website.",
+        "descriptionGeneric": "Enter your organization's official details.",
+        "name": "Organization name",
+        "namePlaceholder": "Sampletown Organization",
+        "street": "Street",
+        "streetPlaceholder": "1 Organization Street",
+        "postalCode": "Postal code",
+        "postalCodePlaceholder": "12345",
+        "postalCityPlaceholder": "Berlin",
+        "website": "Organization website",
+        "city": "City"
       }
     },
     "userAdministration": {
@@ -958,9 +1010,9 @@
           "invalidUrlFormat": "Invalid URL"
         },
         "webdavShare": {
-          "title": "WebDAV-Share",
-          "description": "Here you can set up your own WebDAV shares.",
-          "filterPlaceHolderText": "Search for share"
+          "title": "WebDAV-Server",
+          "description": "WebDAV servers can be set up for the file manager here.",
+          "filterPlaceHolderText": "Search for WebDAV servers"
         },
         "files": {
           "title": "Files",
@@ -976,7 +1028,8 @@
           "sandboxMode": "Separate Layout",
           "nativeMode": "Integrated Layout",
           "sandboxModeDescription": "In “Sparate layout” mode, the content is displayed as a separate page, similar to a window within the application. In addition to the actual content, additional design elements or functions can also be loaded from other sources. This means that the design is independent of the application and could therefore look or behave differently. Here, the content must be uploaded as an HTML file.",
-          "nativeModeDescription": "In “Integrated layout” mode, on the other hand, the content is inserted directly into the user interface of the application. This means that the content looks exactly like the application itself and fits in seamlessly. However, no additional external design elements or functions can be added dynamically here. However, static elements such as images can be uploaded and used here."
+          "nativeModeDescription": "In “Integrated layout” mode, on the other hand, the content is inserted directly into the user interface of the application. This means that the content looks exactly like the application itself and fits in seamlessly. However, no additional external design elements or functions can be added dynamically here. However, static elements such as images can be uploaded and used here.",
+          "visibilityDescription": "Here you can specify whether the app should be publicly accessible. Active means public, inactive means that only configured user groups have access. Making the app publicly accessible creates a link in the footer. To make the app visible to registered users in the sidebar, their access must be configured via the user groups."
         }
       },
       "update": {
@@ -1002,7 +1055,8 @@
       "fieldRequired": "This field is required",
       "maxChars": "Maximum {{count}} characters",
       "nameAlreadyExists": "App with this name already exists",
-      "nameIsNotAllowed": "This app name is not allowed"
+      "nameIsNotAllowed": "This app name is not allowed",
+      "webdavShareNameAlreadyExists": "WebDAV-Share with this name already exists"
     },
     "yamleditor": {
       "invalidYaml": "Wrong YAML syntax",
@@ -1164,14 +1218,18 @@
     "ok": "OK",
     "next": "Next",
     "back": "Back",
+    "of": "of",
     "confirm": "Confirm",
     "creator": "Creator",
+    "chooseFile": "Choose file",
+    "changeFile": "Change file",
     "share": "Share",
     "answers": "Answers",
     "error": "Error",
     "errors": {
       "dbAccessFailed": "Database access failed",
       "directoryNotCreated": "Failed to create directory",
+      "fileNotCreated": "Failed to create file",
       "fileUploadFailed": "Failed to upload the file",
       "fileDeletionFailed": "Failed to delete the file",
       "fileWritingFailed": "Failed to write the file",
@@ -1181,6 +1239,7 @@
       "fileNotProvided": "File not provided",
       "invalidFileType": "Invalid file type",
       "startDateBeforeEndDate": "The start date must be before the end date",
+      "invalidRequestData": "Invalid request data",
       "wrongServerConfig": "Incorrect server configuration"
     },
     "cut": "Cut",
@@ -1292,7 +1351,12 @@
     "mode": "Mode",
     "orContinueWithoutAccount": "Or continue without account",
     "application": "Application",
-    "reset": "Reset"
+    "reset": "Reset",
+    "file": "File",
+    "saveLocal": "Save to device",
+    "openLocal": "Open from device",
+    "openFileFromEdu": "Open file",
+    "saveFileToEdu": "Save to files"
   },
   "form": {
     "path": "Path",
@@ -1317,6 +1381,7 @@
     "embeddedPageEditor": "Editor",
     "embeddedPageEditorModeDescription": "Here you can choose between sandbox and native rendering. Sandbox is the safest variant, native the original rendering. Please note that no security precautions can be taken with native rendering. In sandbox mode, the HTML file is read from memory. To do this, upload the file.",
     "sandboxed": "Sandbox",
+    "pathname": "Share-Path",
     "input": {
       "dateTimePicker": {
         "timeSlot": "o'clock",
@@ -1372,11 +1437,21 @@
   },
   "whiteboard": {
     "title": "WHITEBOARD",
-    "sidebar": "Whiteboard"
+    "sidebar": "Whiteboard",
+    "saveAsTlFile": "Save Whiteboard as .tldr file",
+    "openTlFile": "Open",
+    "openLocalTlFile": "Open local .tldr file",
+    "file": "File",
+    "openTLFileFailed": "Could not open file",
+    "openTLFileSuccess": "File loaded successfully"
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
-    "sidebar": "Collaborative Whiteboard"
+    "sidebar": "Collaborative Whiteboard",
+    "privateRoom": "Private room",
+    "dropdownPlaceholder": "Choose your current room",
+    "historyTitle": "History",
+    "historyNoMore": "No more entries"
   },
   "table": {
     "noDataAvailable": "No data available"
@@ -1437,6 +1512,22 @@
     "unknownErrorOccurred": "An unknown error occurred"
   },
   "currentDirectory": "Current directory",
+
+  "saveExternalFileDialogBody": {
+    "saveExternalFile": "Save external file",
+    "destinationFolder": "Destination folder",
+    "filename": "Filename",
+    "filenamePlaceholder": "Enter filename here",
+    "filenameRequired": "Filename cannot be empty",
+    "fileSavedSuccessful": "File saved successfully",
+    "fileSaveFailed": "File could not be saved"
+  },
+
+  "fileSelectorDialogBody": {
+    "title": "Select a file to open",
+    "selectFile": "Selected file"
+  },
+
   "moveItemDialog": {
     "changeDirectory": "Change directory",
     "currentDirectory": "Current directory",
@@ -1486,7 +1577,8 @@
     "delete": "Delete",
     "download": "Download",
     "copy": "Copy",
-    "share": "Share"
+    "share": "Share",
+    "back": "Back"
   },
   "response": {
     "successfully": "Action was successful",
@@ -1670,6 +1762,8 @@
       "linuxmuster": "Linuxmuster",
       "edu-file-proxy": "edulution File Proxy",
       "generic": "Generic"
-    }
+    },
+    "status": "Status",
+    "offline": "Server is currently unavailable"
   }
 }

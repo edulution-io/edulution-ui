@@ -18,16 +18,17 @@ import APPLICATION_NAME from '@libs/common/constants/applicationName';
 interface PageTitleProps {
   title?: string;
   translationId: string;
+  disableTranslation?: boolean;
 }
 
-const PageTitle = ({ title, translationId }: PageTitleProps) => {
+const PageTitle = ({ title, translationId, disableTranslation }: PageTitleProps) => {
   const { t } = useTranslation();
 
   return (
     <Helmet>
       <title>
         {title ? `${title} - ` : ''}
-        {t(translationId)} - {APPLICATION_NAME}
+        {disableTranslation ? translationId : t(translationId)} - {APPLICATION_NAME}
       </title>
     </Helmet>
   );

@@ -47,7 +47,7 @@ const QuickAccess = () => {
   useEffect(() => {
     if (lmnApiToken) {
       void fetchRoom();
-      void fetchUserSessions();
+      void fetchUserSessions(false);
       void fetchUserProjects();
       void fetchUserSchoolClasses();
     }
