@@ -146,6 +146,8 @@ class WebdavSharesService implements OnModuleInit {
               ...share,
               url: root.url,
               type: root.type,
+              status: root.status,
+              lastChecked: root.lastChecked,
               authentication: root.authentication,
             };
           }
