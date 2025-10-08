@@ -28,6 +28,7 @@ interface FilesystemStore {
   uploadingVariant: ThemeType | null;
   setUploadingVariant: (variant: ThemeType | null) => void;
   uploadGlobalAsset: (options: UploadGlobalAssetDto) => Promise<void>;
+  uploadOrganizationLogo: (options: UploadGlobalAssetDto) => Promise<void>;
   uploadVariant: (variant: ThemeType, file: File) => Promise<void>;
   reset: () => void;
 }
@@ -47,19 +48,31 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
 
   setUploadingVariant: (variant) => set({ uploadingVariant: variant }),
 
-  uploadGlobalAsset: async ({ variant, file }: { variant: ThemeType; file: File | Blob }) => {
+  uploadGlobalAsset: async ({
+    filename,
+    destination,
+    file,
+  }: {
+    filename?: string | undefined;
+    destination?: string | undefined;
+    file: File | Blob;
+  }) => {
+    if (!filename || !destination) {
+      return;
+    }
+
     try {
-      const name = getMainLogoFilename(variant);
       const form = new FormData();
-      form.append('destination', GLOBAL_SETTINGS_BRANDING_LOGO as string);
-      form.append('filename', name);
+      form.append('destination', destination);
+      form.append('filename', filename);
 
       if (file instanceof File) {
-        form.append('file', file, name);
+        form.append('file', file, filename);
       } else if (file instanceof Blob) {
         const type = file.type || RequestResponseContentType.APPLICATION_OCTET_STREAM;
         const ext = mimeExtension(type);
-        const fullName = ext && !name.toLowerCase().endsWith(`.${ext.toLowerCase()}`) ? `${name}.${ext}` : name;
+        const fullName =
+          ext && !filename.toLowerCase().endsWith(`.${ext.toLowerCase()}`) ? `${filename}.${ext}` : filename;
 
         const wrapped = new File([file], fullName, { type });
         form.append('file', wrapped, fullName);
@@ -77,11 +90,17 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
     }
   },
 
+  uploadOrganizationLogo: async ({ variant, file }: { variant: ThemeType; file: File | Blob }) => {
+    const filename = getMainLogoFilename(variant);
+    const destination = GLOBAL_SETTINGS_BRANDING_LOGO as string;
+    await get().uploadGlobalAsset({ filename, destination, variant, file });
+  },
+
   uploadVariant: async (variant: ThemeType, file: File) => {
     try {
       get().setUploadingVariant(variant);
       const webpFile = await convertImageFileToWebp(file);
-      await get().uploadGlobalAsset({
+      await get().uploadOrganizationLogo({
         file: webpFile,
         variant,
       });

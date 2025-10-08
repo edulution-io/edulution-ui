@@ -10,8 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import PUBLIC_DATA_PATH from '@libs/common/constants/publicDataPath';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
+import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 
-const PUBLIC_ASSET_PATH: string = `${PUBLIC_DATA_PATH}/assets`;
+const PAGE_WITH_PUBLIC_ASSETS_CONFIG: AppConfigExtendedOption[] = [
+  {
+    name: ExtendedOptionKeys.PAGE_HAS_PUBLIC_ASSETS,
+    description: 'settings.appconfig.sections.hasPublicAssets.publicAssetAvailability',
+    title: 'public',
+    type: ExtendedOptionField.switch,
+    value: '',
+    width: 'full',
+  },
+];
 
-export default PUBLIC_ASSET_PATH;
+export default PAGE_WITH_PUBLIC_ASSETS_CONFIG;
