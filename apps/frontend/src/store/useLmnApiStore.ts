@@ -124,7 +124,9 @@ const useLmnApiStore = create<UseLmnApiStore>(
           });
           set({ usersQuota: data });
         } catch (error) {
-          handleApiError(error, set);
+          // TODO: Readd error handling when LMN API 7.3 supports this endpoint, https://github.com/edulution-io/edulution-ui/issues/1331
+          // handleApiError(error, set);
+          set({ usersQuota: null });
         } finally {
           set({ isFetchUserLoading: false });
         }
