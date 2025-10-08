@@ -30,15 +30,14 @@ import { UploadStatusType } from '@libs/filesharing/types/uploadStatusType';
 
 const useUploadProgressToast = () => {
   const { webdavShare } = useParams();
-  const { progressByName } = useHandelUploadFileStore();
+  const { progressById } = useHandelUploadFileStore();
   const { currentPath, fetchFiles } = useFileSharingStore();
   const { t } = useTranslation();
 
-  const lastShownPercentageByFileName = useRef<Record<string, number>>({});
+  const lastShownPercentageByFileId = useRef<Record<string, number>>({});
   const hasRefreshedForFile = useRef<Set<string>>(new Set());
   const mountedAtMs = useRef<number>(Date.now());
-
-  const prevStatusByName = useRef<Record<string, UploadStatusType | undefined>>({});
+  const prevStatusById = useRef<Record<string, UploadStatusType | undefined>>({});
 
   const getLastUpdateTs = useCallback(
     (item: { lastUpdateTimestampMs?: number; lastTsMs?: number }) => item.lastUpdateTimestampMs ?? item.lastTsMs ?? 0,
@@ -58,7 +57,7 @@ const useUploadProgressToast = () => {
   );
 
   useEffect(() => {
-    Object.entries(progressByName).forEach(([fileName, progress]) => {
+    Object.entries(progressById).forEach(([fileId, { share, fileName, progress }]) => {
       const { status } = progress;
       const rawPercent = getPercent(progress);
 
@@ -68,12 +67,12 @@ const useUploadProgressToast = () => {
 
       if (!isUploading && !isDone && !isError) return;
 
-      const progressToastId = `upload:${fileName}`;
-      const errorToastId = `upload:${fileName}:error`;
-      const prev = prevStatusByName.current[fileName];
+      const progressToastId = `upload:${share ?? 'default'}:${fileId}`;
+      const errorToastId = `${progressToastId}:error`;
+      const prev = prevStatusById.current[fileId];
 
       if (isUploading && prev !== UploadStatus.uploading) {
-        delete lastShownPercentageByFileName.current[fileName];
+        delete lastShownPercentageByFileId.current[fileId];
       }
 
       if (isError && prev !== UploadStatus.error) {
@@ -83,35 +82,36 @@ const useUploadProgressToast = () => {
           description: undefined,
           duration: ERROR_TOAST_DURATION_MS,
         });
-        prevStatusByName.current[fileName] = status;
+        prevStatusById.current[fileId] = status;
         return;
       }
 
-      const lastTs = getLastUpdateTs(progress as { lastUpdateTimestampMs?: number; lastTsMs?: number });
+      const lastTs = getLastUpdateTs(progress);
       if (!lastTs || lastTs < mountedAtMs.current) {
-        prevStatusByName.current[fileName] = status;
+        prevStatusById.current[fileId] = status;
         return;
       }
 
       const percentage = isDone ? 100 : rawPercent;
-      const last = lastShownPercentageByFileName.current[fileName] ?? -1;
+      const last = lastShownPercentageByFileId.current[fileId] ?? -1;
       if (percentage === last) {
-        prevStatusByName.current[fileName] = status;
+        prevStatusById.current[fileId] = status;
         return;
       }
-      lastShownPercentageByFileName.current[fileName] = percentage;
+      lastShownPercentageByFileId.current[fileId] = percentage;
 
       const loadedBytes = getLoadedBytes(progress);
       const totalBytes = getTotalBytes(progress);
       const bytesPerSecond = progress.bytesPerSecond ?? progress.speedBps ?? 0;
       const etaSeconds = progress.estimatedSecondsRemaining ?? progress.etaSeconds;
-
       const speedEtaLine = `${formatTransferSpeed(bytesPerSecond)} • ${formatEstimatedTimeRemaining(etaSeconds)}`;
       const description = `${speedEtaLine}\n${formatBytes(loadedBytes)} / ${formatBytes(totalBytes || 0)}`;
 
       const toastData = {
         percent: percentage,
-        title: t('filesharing.progressBox.fileIsUploading', { filename: fileName }),
+        title: t('filesharing.progressBox.fileIsUploading', {
+          filename: fileName ?? `File ${fileId}`,
+        }),
         id: progressToastId,
         description,
         failed: 0,
@@ -128,14 +128,14 @@ const useUploadProgressToast = () => {
         { id: toastData.id, duration: toastDuration },
       );
 
-      if (isDone && !hasRefreshedForFile.current.has(fileName)) {
-        hasRefreshedForFile.current.add(fileName);
-        void fetchFiles(webdavShare, currentPath);
+      if (isDone && !hasRefreshedForFile.current.has(fileId)) {
+        hasRefreshedForFile.current.add(fileId);
+        void fetchFiles(share ?? webdavShare, currentPath);
       }
 
-      prevStatusByName.current[fileName] = status;
+      prevStatusById.current[fileId] = status;
     });
-  }, [progressByName, currentPath, fetchFiles, t]);
+  }, [progressById, currentPath, fetchFiles, t]);
 };
 
 export default useUploadProgressToast;

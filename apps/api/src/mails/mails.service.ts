@@ -118,12 +118,9 @@ class MailsService implements OnModuleInit {
       this.imapClient.close();
     });
 
-    await this.imapClient.connect().catch((err) => {
-      throw new CustomHttpException(
-        MailsErrorMessages.NotAbleToConnectClientError,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        err,
-      );
+    await this.imapClient.connect().catch((e) => {
+      Logger.error(`IMAP-Connection-Error: ${e instanceof Error && e.message}`, MailsService.name);
+      return [];
     });
 
     let mailboxLock: MailboxLockObject | undefined;
@@ -142,12 +139,9 @@ class MailsService implements OnModuleInit {
         };
         mails.push(mailDto);
       }
-    } catch (error) {
-      throw new CustomHttpException(
-        MailsErrorMessages.NotAbleToFetchMailsError,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        emailAddress,
-      );
+    } catch (e) {
+      Logger.error(`Get mails error: ${e instanceof Error && e.message}`, MailsService.name);
+      return [];
     } finally {
       if (mailboxLock) {
         mailboxLock.release();
@@ -156,7 +150,7 @@ class MailsService implements OnModuleInit {
     await this.imapClient.logout();
     this.imapClient.close();
 
-    Logger.log(`Feed: ${mails.length} new mails were fetched (imap)`, MailsService.name);
+    Logger.verbose(`Feed: ${mails.length} new mails were fetched (imap)`, MailsService.name);
     return mails;
   }
 
