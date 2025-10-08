@@ -17,10 +17,9 @@ import { ExtendedOptionKeysType } from './extendedOptionKeysType';
 
 export interface AppConfigExtendedOption {
   name: ExtendedOptionKeysType;
-  title: string;
+  title?: string;
   description: string;
   type: ExtendedOptionFieldType;
   value?: TAppFieldType;
   width?: TAppFieldWidth;
-  showTitle?: boolean;
 }

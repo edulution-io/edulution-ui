@@ -1014,10 +1014,12 @@
         },
         "webdavShare": {
           "title": "WebDAV",
+          "sectionTitle": "WebDAV-Shares",
           "description": "Hier können WebDAV-Server für den Dateimanager eingerichtet werden.",
           "filterPlaceHolderText": "Suche nach WebDAV-Share"
         },
         "webdavServer": {
+          "title": "WebDAV-Server",
           "filterPlaceHolderText": "Suche nach WebDAV-Server"
         },
         "files": {

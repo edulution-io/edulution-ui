@@ -14,15 +14,14 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 
-const DOCKER_CONTAINER_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
+const BULLETIN_BOARD_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
   {
-    name: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
-    description: 'containerApplication.description',
-    title: 'containerApplication.title',
+    name: ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE,
+    description: 'appExtendedOptions.bulletinBoardUrl',
     type: ExtendedOptionField.table,
     value: '',
     width: 'full',
   },
 ];
 
-export default DOCKER_CONTAINER_EXTENDED_OPTIONS;
+export default BULLETIN_BOARD_EXTENDED_OPTIONS;
