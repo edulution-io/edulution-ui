@@ -932,6 +932,33 @@
         "edulution-binduser-description": "Here you can configure the LDAP access data required for group synchronization.",
         "edulution-binduser-dn": "Distinguished Name (DN)",
         "edulution-binduser-password": "Password"
+      },
+
+      "branding": {
+        "title": "Branding"
+      },
+
+      "logo": {
+        "title": "Logo",
+        "descriptionSchool": "Upload your Logo. It will be shown on the login screen and on the edulution app ID card.",
+        "descriptionGeneric": "Upload your Logo. It will be shown on the login screen.",
+        "uploadLightLogo": "Upload Light Logo",
+        "uploadDarkLogo": "Upload Dark Logo",
+        "deleteSuccessful": "Logo deleted successfully."
+      },
+      "organisationInfo": {
+        "title": "Organisational information",
+        "descriptionSchool": "Enter your organization’s official details. This information may be displayed in the edulution app. Please provide the name, street, postal code, and optionally the school website.",
+        "descriptionGeneric": "Enter your organization's official details.",
+        "name": "Organization name",
+        "namePlaceholder": "Sampletown Organization",
+        "street": "Street",
+        "streetPlaceholder": "1 Organization Street",
+        "postalCode": "Postal code",
+        "postalCodePlaceholder": "12345",
+        "postalCityPlaceholder": "Berlin",
+        "website": "Organization website",
+        "city": "City"
       }
     },
     "userAdministration": {
@@ -1194,6 +1221,8 @@
     "of": "of",
     "confirm": "Confirm",
     "creator": "Creator",
+    "chooseFile": "Choose file",
+    "changeFile": "Change file",
     "share": "Share",
     "answers": "Answers",
     "error": "Error",
@@ -1322,7 +1351,11 @@
     "orContinueWithoutAccount": "Or continue without account",
     "application": "Application",
     "reset": "Reset",
-    "file": "File"
+    "file": "File",
+    "saveLocal": "Save to device",
+    "openLocal": "Open from device",
+    "openFileFromEdu": "Open file",
+    "saveFileToEdu": "Save to files"
   },
   "form": {
     "path": "Path",
@@ -1405,7 +1438,11 @@
     "title": "WHITEBOARD",
     "sidebar": "Whiteboard",
     "saveAsTlFile": "Save Whiteboard as .tldr file",
-    "openTlFile": "Open .tldr file"
+    "openTlFile": "Open",
+    "openLocalTlFile": "Open local .tldr file",
+    "file": "File",
+    "openTLFileFailed": "Could not open file",
+    "openTLFileSuccess": "File loaded successfully"
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
@@ -1483,6 +1520,11 @@
     "filenameRequired": "Filename cannot be empty",
     "fileSavedSuccessful": "File saved successfully",
     "fileSaveFailed": "File could not be saved"
+  },
+
+  "fileSelectorDialogBody": {
+    "title": "Select a file to open",
+    "selectFile": "Selected file"
   },
 
   "moveItemDialog": {

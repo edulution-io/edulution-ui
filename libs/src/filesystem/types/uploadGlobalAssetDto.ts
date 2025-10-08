@@ -10,15 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ContentType from '@libs/filesharing/types/contentType';
+import { ThemeType } from '@libs/common/constants/theme';
 
-interface MoveContentDialogBodyProps {
-  showAllFiles?: boolean;
-  pathToFetch?: string;
-  showSelectedFile?: boolean;
-  showHome?: boolean;
-  fileType?: ContentType;
-  isCurrentPathDefaultDestination?: boolean;
-}
-
-export default MoveContentDialogBodyProps;
+export type UploadGlobalAssetDto = { destination?: string; filename?: string; variant: ThemeType; file: File | Blob };
