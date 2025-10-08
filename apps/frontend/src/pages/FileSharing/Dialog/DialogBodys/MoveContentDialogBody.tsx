@@ -20,7 +20,7 @@ import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import APPS from '@libs/appconfig/constants/apps';
 import { ColumnDef, OnChangeFn, Row, RowSelectionState } from '@tanstack/react-table';
 import FILESHARING_TABLE_COLUM_NAMES from '@libs/filesharing/constants/filesharingTableColumNames';
-import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
+import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogBodyProps';
 import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/getFileSharingTableColumns';
@@ -35,6 +35,8 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   showHome = true,
   fileType,
   isCurrentPathDefaultDestination = false,
+  enableRowSelection,
+  getRowDisabled,
 }) => {
   const { webdavShare } = useParams();
   const { t } = useTranslation();
@@ -146,6 +148,8 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
             showSelectedCount={false}
             filterKey="select-filename"
             filterPlaceHolderText="filesharing.filterPlaceHolderText"
+            enableRowSelection={enableRowSelection}
+            getRowDisabled={getRowDisabled}
             isDialog
           />
         )}

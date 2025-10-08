@@ -11,8 +11,11 @@
  */
 
 interface UploadResult {
-  name: string;
-  ok: boolean;
+  name?: string;
+  success?: boolean;
+  filename?: string;
+  path?: string;
+  absolutePath?: string;
 }
 
 export default UploadResult;

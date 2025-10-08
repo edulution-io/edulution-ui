@@ -9,20 +9,19 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
 /* eslint-disable @typescript-eslint/class-methods-use-this */
 import { join } from 'path';
 import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   Post,
   Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
-  HttpStatus,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { type Response } from 'express';
@@ -32,8 +31,10 @@ import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
-import { createAttachmentUploadOptions } from './multer.utilities';
+import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
+import { UploadGlobalAssetDto } from '@libs/filesystem/types/uploadGlobalAssetDto';
 import CustomHttpException from '../common/CustomHttpException';
+import { createAttachmentUploadOptions, createDiskStorage } from './multer.utilities';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 import FilesystemService from './filesystem.service';
 import { Public } from '../common/decorators/public.decorator';
@@ -98,6 +99,35 @@ class FileSystemController {
   deleteFile(@Param('appName') appName: string, @Param('filename') filename: string) {
     const appsPath = join(APPS_FILES_PATH, appName);
     return FilesystemService.deleteFile(appsPath, FilesystemService.buildPathString(filename));
+  }
+
+  @Post()
+  @UseGuards(AppConfigGuard)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: createDiskStorage(
+        (request) => {
+          const { body } = request as { body?: UploadGlobalAssetDto };
+          if (!body?.destination) {
+            throw new CustomHttpException(CommonErrorMessages.FILE_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
+          }
+          return join(PUBLIC_ASSET_PATH, body.destination);
+        },
+        (request) => {
+          const { body } = request as { body?: UploadGlobalAssetDto };
+          if (!body?.filename) {
+            throw new CustomHttpException(CommonErrorMessages.FILE_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
+          }
+          return body.filename;
+        },
+      ),
+    }),
+  )
+  upload(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
+    }
+    return { path: `${file.destination.replace('.', '')}/${file.filename}` };
   }
 }
 
