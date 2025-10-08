@@ -313,8 +313,8 @@ class FilesharingService {
           user,
           `${webdavShare.url}${uploadPath}/${name}`,
           readableStream,
-          file.mimetype,
           share,
+          file.mimetype,
         );
       },
     );
