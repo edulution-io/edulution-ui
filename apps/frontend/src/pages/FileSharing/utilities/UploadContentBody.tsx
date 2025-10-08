@@ -134,8 +134,6 @@ const UploadContentBody = () => {
             const uploadFile: UploadFile = Object.assign(new File([file], file.name, { type: file.type }), {
               id: uuidv4(),
               isZippedFolder: false,
-              originalFolderName: undefined,
-              fileCount: undefined,
             });
             return uploadFile;
           });

@@ -49,8 +49,6 @@ const SaveTldrDialog: React.FC = () => {
     const uploadFile: UploadFile = Object.assign(new File([file], name, { type: file.type }), {
       id: uuidv4(),
       isZippedFolder: false,
-      originalFolderName: undefined,
-      fileCount: undefined,
     });
     updateFilesToUpload(() => [uploadFile]);
     await uploadFiles(targetDir, eduApiToken, selectedWebdavShare);
