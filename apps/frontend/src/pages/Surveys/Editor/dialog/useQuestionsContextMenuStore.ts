@@ -94,6 +94,7 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
 
   setSelectedQuestion: (question: TSurveyQuestion | undefined) => {
     const type = question?.getType();
+    const width = Number(question?.imageWidth);
     set({
       selectedQuestion: question,
       questionType: type || '',
@@ -103,7 +104,7 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
       formerChoices: (question?.choices as string[]) || [],
       currentChoices: [],
       showOtherItem: !!question?.showOtherItem,
-      imageWidth: question?.imageWidth || 0,
+      imageWidth: Number.isNaN(width) ? 0 : width,
     });
   },
 
