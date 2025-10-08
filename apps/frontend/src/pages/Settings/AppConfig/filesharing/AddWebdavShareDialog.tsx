@@ -83,7 +83,7 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
           .refine(
             (val) => {
               if (!selectedConfig) {
-                return !tableContentData.some((s) => s.displayName.toLowerCase() === val.toLowerCase());
+                return !tableContentData.some((s) => s.displayName?.toLowerCase() === val.toLowerCase());
               }
               return true;
             },
@@ -120,14 +120,15 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
 
     const webdavShareValues = getValues();
     const selectedRootServer =
-      rootServers.find((server) => server.displayName === webdavShareValues[WEBDAV_SHARE_TABLE_COLUMNS.ROOT_SERVER]) ||
-      rootServers[0];
+      rootServers.find(
+        (server) => server.webdavShareId === webdavShareValues[WEBDAV_SHARE_TABLE_COLUMNS.ROOT_SERVER],
+      ) || rootServers[0];
     const newUrl = new URL(webdavShareValues[WEBDAV_SHARE_TABLE_COLUMNS.SHARE_PATH] || '', selectedRootServer.url);
 
     const webdavShareDto: WebdavShareDto = {
       ...webdavShareValues,
       url: appendSlashToUrl(newUrl.href),
-      rootServer: selectedRootServer.webdavShareId || '',
+      rootServer: selectedRootServer?.webdavShareId || '',
       pathname: appendSlashToUrl(newUrl.pathname),
       type: selectedRootServer?.type || WEBDAV_SHARE_TYPE.LINUXMUSTER,
       authentication: selectedRootServer?.authentication || WEBDAV_SHARE_AUTHENTICATION_METHODS.BASIC,
@@ -196,7 +197,7 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
   );
 
   const rootServerOptions = useMemo(
-    () => rootServers.map((s) => ({ id: s.webdavShareId!, name: s.displayName })),
+    () => rootServers?.map((s) => ({ id: s.webdavShareId!, name: s.displayName })) || {},
     [rootServers],
   );
   const pathVariableOptions: MultipleSelectorOptionSH[] = useMemo(() => {

@@ -68,6 +68,7 @@ class WebdavSharesService implements OnModuleInit {
       await this.webdavSharesModel.create({
         displayName: WEBDAV_SHARE_TYPE.LINUXMUSTER,
         url: process.env.EDUI_WEBDAV_URL as string,
+        isRootServer: true,
         pathname,
         accessGroups,
         type: WEBDAV_SHARE_TYPE.LINUXMUSTER,

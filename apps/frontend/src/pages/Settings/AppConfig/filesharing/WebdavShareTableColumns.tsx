@@ -111,7 +111,7 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
       return (
         <SelectableTextCell
           text={
-            row.original.pathVariables.length > 0
+            row.original.pathVariables?.length > 0
               ? row.original.pathVariables.map((variable) => variable.value).join(', ')
               : '-'
           }
@@ -131,7 +131,7 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
     cell: ({ row }) => (
       <SelectableTextCell
         text={
-          row.original.accessGroups.length > 0 ? row.original.accessGroups.map((group) => group.name).join(', ') : '-'
+          row.original.accessGroups?.length > 0 ? row.original.accessGroups.map((group) => group.name).join(', ') : '-'
         }
         onClick={() => row.toggleSelected()}
         className="max-w-60 overflow-hidden text-ellipsis whitespace-nowrap"
