@@ -13,7 +13,6 @@
 import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
 import { TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
 
-// TODO: The default-files folder will be introduced in issue #1086 -> replace magic string with constant
-const SURVEYS_FILE_FOLDERS = [TEMPLATES, ATTACHMENT_FOLDER, 'default-files'];
+const SURVEYS_FILE_FOLDERS = [TEMPLATES, ATTACHMENT_FOLDER];
 
 export default SURVEYS_FILE_FOLDERS;
