@@ -10,8 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { CloudIcon, FileSharingIcon } from '@/assets/icons';
 import userStore from '@/store/UserStore/useUserStore';
@@ -22,12 +22,15 @@ import SHARED from '@libs/filesharing/constants/shared';
 import WEBDAV_SHARE_STATUS from '@libs/webdav/constants/webdavShareStatus';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import { toast } from 'sonner';
+import useVariableSharePathname from './hooks/useVariableSharePathname';
 
 const useFileSharingMenuConfig = () => {
-  const { webdavShares } = useFileSharingStore();
+  const { pathname } = useLocation();
+  const { webdavShares, fetchWebdavShares } = useFileSharingStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const navigate = useNavigate();
   const { user } = userStore();
+  const { createVariableSharePathname } = useVariableSharePathname();
 
   const handlePathChange = useCallback(
     (shareDisplayName: string, sharePathname: string) => {
@@ -42,26 +45,42 @@ const useFileSharingMenuConfig = () => {
     [navigate],
   );
 
+  const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
+  const firstPathPart = pathParts[0] || '';
+  const previousFirstPathPart = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (firstPathPart !== previousFirstPathPart.current) {
+      previousFirstPathPart.current = firstPathPart;
+
+      if (firstPathPart === APPS.FILE_SHARING) {
+        void fetchWebdavShares();
+      }
+    }
+  }, [firstPathPart]);
+
   useEffect(() => {
     if (!webdavShares.length) return;
 
-    const menuBarItems: MenuItem[] = webdavShares.map((share) => ({
-      id: share.displayName,
-      label: share.displayName,
-      icon: FileSharingIcon,
-      color: 'hover:bg-ciGreenToBlue',
-      action: () => {
-        if (share.status === WEBDAV_SHARE_STATUS.UP) {
-          handlePathChange(share.displayName, share.pathname);
-        } else {
-          toast.info(t('webdavShare.offline'), {
-            position: 'top-right',
-            duration: 1000,
-          });
-        }
-      },
-      disableTranslation: true,
-    }));
+    const menuBarItems: MenuItem[] = webdavShares
+      .filter((share) => !share.isRootServer)
+      .map((share) => ({
+        id: share.displayName,
+        label: share.displayName,
+        icon: FileSharingIcon,
+        color: 'hover:bg-ciGreenToBlue',
+        action: () => {
+          if (share.status === WEBDAV_SHARE_STATUS.UP) {
+            handlePathChange(share.displayName, createVariableSharePathname(share.pathname, share.pathVariables));
+          } else {
+            toast.info(t('webdavShare.offline'), {
+              position: 'top-right',
+              duration: 1000,
+            });
+          }
+        },
+        disableTranslation: true,
+      }));
 
     const sharedItem: MenuItem = {
       id: SHARED,

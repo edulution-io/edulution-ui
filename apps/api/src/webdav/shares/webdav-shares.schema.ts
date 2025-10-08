@@ -17,6 +17,9 @@ import type WebdavShareType from '@libs/filesharing/types/webdavShareType';
 import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import WEBDAV_SHARE_STATUS from '@libs/webdav/constants/webdavShareStatus';
 import type WebdavShareStatusType from '@libs/webdav/types/webdavShareStatusType';
+import WebdavShareAuthenticationMethodsType from '@libs/webdav/types/webdavShareAuthenticationMethodsType';
+import WEBDAV_SHARE_AUTHENTICATION_METHODS from '@libs/webdav/constants/webdavShareAuthenticationMethods';
+import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 
 export type WebdavSharesDocument = WebdavShares & Document;
 
@@ -28,8 +31,20 @@ export class WebdavShares {
   @Prop({ default: '' })
   url: string;
 
+  @Prop({ default: '' })
+  sharePath: string;
+
   @Prop({ default: '/webdav/' })
   pathname: string;
+
+  @Prop({ default: false })
+  isRootServer: boolean;
+
+  @Prop({ default: '' })
+  rootServer: string;
+
+  @Prop({ type: Array, default: [] })
+  pathVariables: MultipleSelectorOptionSH[];
 
   @Prop({ type: Array, default: [] })
   accessGroups: MultipleSelectorGroup[];
@@ -42,6 +57,9 @@ export class WebdavShares {
 
   @Prop({ type: Date, default: null })
   lastChecked: Date | null;
+
+  @Prop({ type: String, required: true, default: WEBDAV_SHARE_AUTHENTICATION_METHODS.BASIC })
+  authentication: WebdavShareAuthenticationMethodsType;
 
   @Prop({ default: 1 })
   schemaVersion: number;

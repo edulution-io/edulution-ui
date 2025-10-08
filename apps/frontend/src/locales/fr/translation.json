@@ -865,9 +865,14 @@
           "invalidUrlFormat": "URL non valide"
         },
         "webdavShare": {
-          "title": "WebDAV-Server",
-          "description": "Vous pouvez configurer ici vos propres partages WebDAV.",
+          "title": "WebDAV",
+          "sectionTitle": "WebDAV-Partage",
+          "description": "Vous pouvez configurer ici vos propres serveur WebDAV.",
           "filterPlaceHolderText": "Rechercher le nom de partages"
+        },
+        "webdavServer": {
+          "title": "WebDAV serveurs",
+          "filterPlaceHolderText": "Rechercher un serveur"
         },
         "files": {
           "title": "Fichiers",
@@ -1565,6 +1570,28 @@
       "generic": "Générique"
     },
     "status": "Statut",
-    "offline": "Le serveur est actuellement indisponible."
+    "offline": "Le serveur est actuellement indisponible.",
+    "pathVariables": {
+      "title": "Variable de chemin ",
+      "description": "Une variable de chemin dynamique peut être sélectionnée ici à partir des attributs utilisateur. "
+    },
+    "isRootServer": {
+      "title": "Chemin racine",
+      "description": "Pour les fonctions scolaires Linuxmuster, au moins un partage WebDAV doit être configuré comme chemin racine.",
+      "short": "Root",
+      "notConfigured": "Aucun chemin racine n'est configuré. Veuillez contacter l'administrateur système."
+    },
+    "selectPlaceholder": "Sélectionner...",
+    "authentication": {
+      "title": "Authentification",
+      "description": "Vous pouvez sélectionner ici la méthode d'authentification pour le serveur WebDAV.",
+      "basic": " Basic (nom d'utilisateur, mot de passe)"
+    },
+    "selectRootServer": {
+      "title": "Sélection du serveur WebDAV",
+      "description": "Sélectionnez le serveur WebDAV qui doit servir de chemin racine."
+    },
+    "sharePath": "Chemin de partage",
+    "pathPreview": "Aperçu du chemin"
   }
 }

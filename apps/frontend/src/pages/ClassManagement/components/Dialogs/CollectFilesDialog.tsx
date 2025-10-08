@@ -20,6 +20,7 @@ import { RadioGroupItemSH, RadioGroupSH } from '@/components/ui/RadioGroupSH';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import WebdavShareSelectDropdown from '@/pages/FileSharing/Dialog/DialogBodys/WebdavShareSelectDropdown';
 
 const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose, action }) => {
   const { activeCollectionOperation, setActiveCollectionOperation } = useFileSharingMoveDialogStore();
@@ -37,6 +38,7 @@ const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, 
 
   const getDialogBody = () => (
     <>
+      <WebdavShareSelectDropdown showRootOnly />
       <div className="w-full items-center pb-6 ">{t('classmanagement.copyOrCut')}</div>
       <div className="flex flex-col items-center justify-start pb-8">
         <RadioGroupSH

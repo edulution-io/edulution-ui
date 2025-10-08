@@ -10,16 +10,22 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ExtendedOptionFieldType } from '@libs/appconfig/types/extendedOptionFieldType';
-import TAppFieldType from '@libs/appconfig/types/tAppFieldType';
-import TAppFieldWidth from '@libs/appconfig/types/tAppFieldWidth';
-import { ExtendedOptionKeysType } from './extendedOptionKeysType';
+import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 
-export interface AppConfigExtendedOption {
-  name: ExtendedOptionKeysType;
-  title?: string;
-  description: string;
-  type: ExtendedOptionFieldType;
-  value?: TAppFieldType;
-  width?: TAppFieldWidth;
-}
+const getUserAttributValue = (user: LmnUserInfo | null, key?: string): string => {
+  if (!user || !key || !(key in user)) return '';
+
+  const value = user[key as keyof LmnUserInfo];
+
+  if (Array.isArray(value)) {
+    return value.join(',');
+  }
+
+  if (typeof value === 'object' && value !== null) {
+    return JSON.stringify(value);
+  }
+
+  return String(value ?? '');
+};
+
+export default getUserAttributValue;

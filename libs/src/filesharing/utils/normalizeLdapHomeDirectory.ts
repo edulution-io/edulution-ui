@@ -10,16 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ExtendedOptionFieldType } from '@libs/appconfig/types/extendedOptionFieldType';
-import TAppFieldType from '@libs/appconfig/types/tAppFieldType';
-import TAppFieldWidth from '@libs/appconfig/types/tAppFieldWidth';
-import { ExtendedOptionKeysType } from './extendedOptionKeysType';
+const normalizeLdapHomeDirectory = (path: string): string => {
+  const withoutServer = path.replace(/^\\\\[^\\]+\\/, '');
+  return `/${withoutServer.replace(/\\/g, '/')}`;
+};
 
-export interface AppConfigExtendedOption {
-  name: ExtendedOptionKeysType;
-  title?: string;
-  description: string;
-  type: ExtendedOptionFieldType;
-  value?: TAppFieldType;
-  width?: TAppFieldWidth;
-}
+export default normalizeLdapHomeDirectory;

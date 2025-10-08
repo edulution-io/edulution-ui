@@ -15,14 +15,12 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
-import userStore from '@/store/UserStore/useUserStore';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import useUserPath from './useUserPath';
 
 const useFileSharingPage = () => {
   const {
-    fetchMountPoints,
     fetchFiles,
     currentPath,
     setPathToRestoreSession,
@@ -31,17 +29,10 @@ const useFileSharingPage = () => {
   } = useFileSharingStore();
   const { isLoading, fileOperationResult } = useFileSharingDialogStore();
   const { fetchShares } = usePublicShareStore();
-  const { user } = userStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const { webdavShare } = useParams();
   const { homePath } = useUserPath();
   const path = searchParams.get(URL_SEARCH_PARAMS.PATH) || homePath;
-
-  useEffect(() => {
-    if (user) {
-      void fetchMountPoints(webdavShare);
-    }
-  }, [user, webdavShare]);
 
   useEffect(() => {
     if (!isFileProcessing) {
