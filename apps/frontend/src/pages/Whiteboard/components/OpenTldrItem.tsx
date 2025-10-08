@@ -11,39 +11,24 @@
  */
 
 import React from 'react';
-import { TldrawUiMenuItem, useEditor } from 'tldraw';
+import { TldrawUiMenuItem } from 'tldraw';
 import { useTranslation } from 'react-i18next';
-import loadTldrFileIntoEditor from '@libs/tldraw-sync/utils/loadTldrFileIntoEditor';
+import useOpenFileDialogStore from '@/pages/FileSharing/useOpenFileDialogStore';
+import FileExtensionTypes from '@libs/filesharing/constants/fileExtensionTypes';
 
 const OpenTldrItem: React.FC = () => {
-  const editor = useEditor();
   const { t } = useTranslation();
+  const { setOpenFileDialog, setAllowedExtensions } = useOpenFileDialogStore();
 
   const handleSelect = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.tldr';
-
-    input.onchange = async () => {
-      const file = input.files?.[0];
-      if (file && editor) {
-        try {
-          await loadTldrFileIntoEditor(editor, file);
-        } finally {
-          document.body.removeChild(input);
-        }
-      } else {
-        document.body.removeChild(input);
-      }
-    };
-    document.body.appendChild(input);
-    input.click();
+    setAllowedExtensions([FileExtensionTypes.TLDR]);
+    setOpenFileDialog(true);
   };
 
   return (
     <TldrawUiMenuItem
-      id="openTldr"
-      label={t('whiteboard.openTlFile')}
+      id="openTldrItem"
+      label={t('common.openFileFromEdu')}
       readonlyOk
       onSelect={handleSelect}
     />

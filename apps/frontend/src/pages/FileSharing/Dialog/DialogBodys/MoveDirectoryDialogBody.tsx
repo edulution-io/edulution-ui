@@ -12,7 +12,7 @@
 
 import React from 'react';
 import useUserPath from '@/pages/FileSharing/hooks/useUserPath';
-import MoveContentDialogProps from '@libs/filesharing/types/moveContentDialogProps';
+import MoveContentDialogProps from '@libs/filesharing/types/moveContentDialogBodyProps';
 import ContentType from '@libs/filesharing/types/contentType';
 import MoveContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveContentDialogBody';
 import { useSearchParams } from 'react-router-dom';

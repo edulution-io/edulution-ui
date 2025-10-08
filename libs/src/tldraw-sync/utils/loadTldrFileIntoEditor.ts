@@ -11,17 +11,21 @@
  */
 
 import { Editor, StoreSnapshot, TLRecord } from 'tldraw';
-import toStoreSnapshot from '@libs/tldraw-sync/utils/toStoreSnapshot';
 import isTldrFileV1 from '@libs/tldraw-sync/utils/isTldrFileV1';
+import toStoreSnapshot from '@libs/tldraw-sync/utils/toStoreSnapshot';
 import firstPageIdFrom from '@libs/tldraw-sync/utils/firstPageIdFrom';
 import { hasSetCurrentPage, hasSetCurrentPageId } from '@libs/tldraw-sync/utils/editorGuards';
 import nextAnimationFrame from '@libs/tldraw-sync/utils/nextAnimationFrame';
 
 const loadTldrFileIntoEditor = async (editor: Editor, file: File): Promise<void> => {
-  const text = await file.text();
+  const text = (await file.text()).trimStart();
+  if (!(text.startsWith('{') || text.startsWith('['))) {
+    throw new Error('whiteboard.openTLFileFailed');
+  }
+
   const parsed = JSON.parse(text) as unknown;
 
-  let snapshot: StoreSnapshot<TLRecord> = isTldrFileV1(parsed)
+  const snapshot: StoreSnapshot<TLRecord> = isTldrFileV1(parsed)
     ? toStoreSnapshot(parsed)
     : (parsed as StoreSnapshot<TLRecord>);
 
@@ -31,18 +35,14 @@ const loadTldrFileIntoEditor = async (editor: Editor, file: File): Promise<void>
     const currentSchema = editor.getSnapshot().document.schema;
     const adjusted: StoreSnapshot<TLRecord> = { schema: currentSchema, store: snapshot.store };
     editor.loadSnapshot(adjusted);
-    snapshot = adjusted;
   }
 
   const firstPageId = firstPageIdFrom(snapshot);
   if (firstPageId) {
     const current = editor.getCurrentPageId();
     if (current !== firstPageId) {
-      if (hasSetCurrentPageId(editor)) {
-        editor.setCurrentPageId(firstPageId);
-      } else if (hasSetCurrentPage(editor)) {
-        editor.setCurrentPage(firstPageId);
-      }
+      if (hasSetCurrentPageId(editor)) editor.setCurrentPageId(firstPageId);
+      else if (hasSetCurrentPage(editor)) editor.setCurrentPage(firstPageId);
     }
   }
 

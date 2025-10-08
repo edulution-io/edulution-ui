@@ -10,28 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-import { TldrawUiMenuItem } from 'tldraw';
-import 'tldraw/tldraw.css';
-import { useTranslation } from 'react-i18next';
-import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
+import ContentType from '@libs/filesharing/types/contentType';
+import { Row } from '@tanstack/react-table';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 
-const SaveAsTldrItem = () => {
-  const { t } = useTranslation();
-  const { setIsDialogOpen } = useWhiteboardEditorStore();
+interface MoveContentDialogBodyProps {
+  showAllFiles?: boolean;
+  pathToFetch?: string;
+  showSelectedFile?: boolean;
+  showHome?: boolean;
+  fileType?: ContentType;
+  isCurrentPathDefaultDestination?: boolean;
+  enableRowSelection?: (row: Row<DirectoryFileDTO>) => boolean;
+  getRowDisabled?: (row: Row<DirectoryFileDTO>) => boolean;
+}
 
-  const handleSave = () => {
-    setIsDialogOpen(true);
-  };
-
-  return (
-    <TldrawUiMenuItem
-      id="saveAsTldrItem"
-      label={t('common.save')}
-      readonlyOk
-      onSelect={handleSave}
-    />
-  );
-};
-
-export default SaveAsTldrItem;
+export default MoveContentDialogBodyProps;
