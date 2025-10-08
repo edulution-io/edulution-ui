@@ -120,6 +120,7 @@ class MailsService implements OnModuleInit {
 
     await this.imapClient.connect().catch((e) => {
       Logger.error(`IMAP-Connection-Error: ${e instanceof Error && e.message}`, MailsService.name);
+      return [];
     });
 
     let mailboxLock: MailboxLockObject | undefined;
@@ -140,6 +141,7 @@ class MailsService implements OnModuleInit {
       }
     } catch (e) {
       Logger.error(`Get mails error: ${e instanceof Error && e.message}`, MailsService.name);
+      return [];
     } finally {
       if (mailboxLock) {
         mailboxLock.release();
