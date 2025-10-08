@@ -24,9 +24,10 @@ import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import getInitialSurveyFormValues from '@libs/survey/constants/initial-survey-form';
+import getInitialSurveyFormValues from '@libs/survey/utils/getInitialSurveyFormValues';
 import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
-import getSurveyEditorFormSchema from '@libs/survey/types/editor/getSurveyEditorForm.schema';
+import getSurveyEditorFormSchema from '@libs/survey/types/editor/surveyEditorForm.schema';
+import surveysDefaultValues from '@libs/survey/constants/surveys-default-values';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
@@ -203,7 +204,7 @@ const SurveyEditorPage = () => {
           form.reset(initialFormValues);
           if (creator) {
             creator.saveNo = 0;
-            creator.JSON = { title: t('survey.newTitle').toString() };
+            creator.JSON = surveysDefaultValues.formula;
           }
         },
       },
