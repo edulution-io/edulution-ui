@@ -10,12 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface UploadResult {
-  name?: string;
-  success?: boolean;
-  filename?: string;
-  path?: string;
-  absolutePath?: string;
+import { IsOptional, IsString } from 'class-validator';
+
+class OrganisationInfoDto {
+  @IsString() @IsOptional() name?: string;
+
+  @IsString() @IsOptional() street?: string;
+
+  @IsString() @IsOptional() postalCode?: string;
+
+  @IsString() @IsOptional() city?: string;
+
+  @IsString() @IsOptional() website?: string;
 }
 
-export default UploadResult;
+export default OrganisationInfoDto;

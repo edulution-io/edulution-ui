@@ -10,12 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface UploadResult {
-  name?: string;
-  success?: boolean;
-  filename?: string;
-  path?: string;
-  absolutePath?: string;
-}
+import { ThemeType } from '@libs/common/constants/theme';
 
-export default UploadResult;
+const getMainLogoFilename = (theme: ThemeType) => `main-logo-${theme}.webp`;
+export default getMainLogoFilename;

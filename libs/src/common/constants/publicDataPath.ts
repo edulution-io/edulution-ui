@@ -10,12 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface UploadResult {
-  name?: string;
-  success?: boolean;
-  filename?: string;
-  path?: string;
-  absolutePath?: string;
-}
+const PUBLIC_DATA_PATH = './data/public';
 
-export default UploadResult;
+export default PUBLIC_DATA_PATH;

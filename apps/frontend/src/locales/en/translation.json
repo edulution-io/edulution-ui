@@ -932,6 +932,33 @@
         "edulution-binduser-description": "Here you can configure the LDAP access data required for group synchronization.",
         "edulution-binduser-dn": "Distinguished Name (DN)",
         "edulution-binduser-password": "Password"
+      },
+
+      "branding": {
+        "title": "Branding"
+      },
+
+      "logo": {
+        "title": "Logo",
+        "descriptionSchool": "Upload your Logo. It will be shown on the login screen and on the edulution app ID card.",
+        "descriptionGeneric": "Upload your Logo. It will be shown on the login screen.",
+        "uploadLightLogo": "Upload Light Logo",
+        "uploadDarkLogo": "Upload Dark Logo",
+        "deleteSuccessful": "Logo deleted successfully."
+      },
+      "organisationInfo": {
+        "title": "Organisational information",
+        "descriptionSchool": "Enter your organization’s official details. This information may be displayed in the edulution app. Please provide the name, street, postal code, and optionally the school website.",
+        "descriptionGeneric": "Enter your organization's official details.",
+        "name": "Organization name",
+        "namePlaceholder": "Sampletown Organization",
+        "street": "Street",
+        "streetPlaceholder": "1 Organization Street",
+        "postalCode": "Postal code",
+        "postalCodePlaceholder": "12345",
+        "postalCityPlaceholder": "Berlin",
+        "website": "Organization website",
+        "city": "City"
       }
     },
     "userAdministration": {
@@ -1194,6 +1221,8 @@
     "of": "of",
     "confirm": "Confirm",
     "creator": "Creator",
+    "chooseFile": "Choose file",
+    "changeFile": "Change file",
     "share": "Share",
     "answers": "Answers",
     "error": "Error",

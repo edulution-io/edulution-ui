@@ -10,12 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-interface UploadResult {
-  name?: string;
-  success?: boolean;
-  filename?: string;
-  path?: string;
-  absolutePath?: string;
-}
+import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
+import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 
-export default UploadResult;
+const useDeploymentTarget = () => {
+  const globalSettings = useGlobalSettingsApiStore((s) => s.globalSettings);
+
+  const isLmn = globalSettings.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER;
+  const isGeneric = globalSettings.general.deploymentTarget === DEPLOYMENT_TARGET.GENERIC;
+
+  return { isLmn, isGeneric };
+};
+
+export default useDeploymentTarget;

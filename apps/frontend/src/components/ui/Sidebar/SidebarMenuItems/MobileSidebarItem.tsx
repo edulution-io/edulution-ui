@@ -17,36 +17,41 @@ import { SidebarMenuItemProps } from '@libs/ui/types/sidebar';
 import { getRootPathName } from '@libs/common/utils';
 import ROOT_ROUTE from '@libs/common/constants/rootRoute';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
+import PageTitle from '@/components/PageTitle';
 import useSidebarStore from '../useSidebarStore';
 
-const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({ menuItem }) => {
+const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({
+  menuItem: { color, icon, link, notificationCounter, title },
+}) => {
   const { pathname } = useLocation();
   const { toggleMobileSidebar } = useSidebarStore();
 
   const rootPathName = getRootPathName(pathname);
-  const menuItemColor = rootPathName === menuItem.link && pathname !== ROOT_ROUTE ? menuItem.color : '';
+  const isSelected = rootPathName === link;
+  const menuItemColor = isSelected && pathname !== ROOT_ROUTE ? color : '';
 
   return (
     <div
-      key={menuItem.title}
+      key={title}
       className="relative"
     >
+      {isSelected && <PageTitle translationId={title} />}
       <NavLink
-        to={menuItem.link}
+        to={link}
         onClick={toggleMobileSidebar}
         className={`group relative flex cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-2 ${menuItemColor}`}
       >
-        <p className="md:hidden">{menuItem.title}</p>
+        <p className="md:hidden">{title}</p>
 
         <img
-          src={menuItem.icon}
+          src={icon}
           width={SIDEBAR_ICON_WIDTH}
           className="relative"
-          alt={`${menuItem.title}-icon`}
+          alt={`${title}-icon`}
         />
       </NavLink>
 
-      <NotificationCounter count={menuItem.notificationCounter || 0} />
+      <NotificationCounter count={notificationCounter || 0} />
     </div>
   );
 };
