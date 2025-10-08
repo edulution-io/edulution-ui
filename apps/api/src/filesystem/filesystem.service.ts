@@ -48,9 +48,9 @@ import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
 import THIRTY_DAYS from '@libs/common/constants/thirtyDays';
-import CustomHttpException from '../common/CustomHttpException';
-import UsersService from '../users/users.service';
 import WebdavSharesService from '../webdav/shares/webdav-shares.service';
+import UsersService from '../users/users.service';
+import CustomHttpException from '../common/CustomHttpException';
 
 @Injectable()
 class FilesystemService {

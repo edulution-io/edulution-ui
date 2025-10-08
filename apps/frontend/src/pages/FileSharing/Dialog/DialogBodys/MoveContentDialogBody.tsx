@@ -36,6 +36,8 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   showHome = true,
   fileType,
   isCurrentPathDefaultDestination = false,
+  enableRowSelection,
+  getRowDisabled,
   showRootOnly = false,
 }) => {
   const { webdavShare } = useParams();
@@ -172,6 +174,8 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
             showSelectedCount={false}
             filterKey="select-filename"
             filterPlaceHolderText="filesharing.filterPlaceHolderText"
+            enableRowSelection={enableRowSelection}
+            getRowDisabled={getRowDisabled}
             isDialog
           />
         )}

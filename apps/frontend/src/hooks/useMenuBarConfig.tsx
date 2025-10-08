@@ -74,6 +74,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
     label: item.disableTranslation ? item.label : t(item.label),
     action: () => item.action(),
     icon: item.icon,
+    disableTranslation: item.disableTranslation,
   }));
 
   return {

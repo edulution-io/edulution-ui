@@ -34,6 +34,7 @@ import DialogInputValues from '@libs/filesharing/types/dialogInputValues';
 import FILESHARING_SHARED_FILES_API_ENDPOINT from '@libs/filesharing/constants/filesharingSharedFilesApiEndpoint';
 import { t } from 'i18next';
 import stripTrailingSlash from '@libs/filesharing/utils/stripTrailingSlash';
+import FileSelectorDialogProps from '@libs/filesharing/types/fileSelectorDialogProps';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FileSharingFormValues>;
@@ -77,13 +78,18 @@ interface SaveExternalFileDialogBodyConfiguration extends DialogBodyConfiguratio
   Component: React.ComponentType<FilesharingDialogProps>;
 }
 
+interface FileSelectorDialogBodyConfiguration extends DialogBodyConfigurationBase {
+  Component: React.ComponentType<FileSelectorDialogProps>;
+}
+
 type DialogBodyConfiguration =
   | CreateFolderDialogBodyConfiguration
   | CreateFileDialogBodyConfiguration
   | RenameDialogBodyConfiguration
   | MoveDialogBodyConfiguration
   | PlainDialogBodyConfiguration
-  | SaveExternalFileDialogBodyConfiguration;
+  | SaveExternalFileDialogBodyConfiguration
+  | FileSelectorDialogBodyConfiguration;
 
 const initialFormValues = {
   filename: '',
