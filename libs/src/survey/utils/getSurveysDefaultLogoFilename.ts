@@ -13,5 +13,5 @@
 import { ThemeType } from '@libs/common/constants/theme';
 
 const getSurveysDefaultLogoFilename = (theme: ThemeType) =>
-  theme === 'dark' ? `surveys-default-logo-${theme}.webp` : `surveys-default-logo.png`;
+  theme === 'dark' ? `surveys-default-logo-${theme}.webp` : `surveys-default-logo-dark.webp`;
 export default getSurveysDefaultLogoFilename;
