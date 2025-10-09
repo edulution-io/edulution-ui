@@ -21,7 +21,7 @@ import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { type AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import type AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
 import EmbeddedPageEditorForm from '@libs/appconfig/types/embeddedPageEditorForm';
-import AppConfigDropdownSelect from '@/pages/Settings/AppConfig/components/AppConfigDropdownSelect';
+import AppConfigDropdownSelect from '@/pages/Settings/AppConfig/components/dropdown/AppConfigDropdownSelect';
 import AppConfigSwitch from './booleanField/AppConfigSwitch';
 import EmbeddedPageEditor from './EmbeddedPageEditor';
 
@@ -133,16 +133,16 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
                 </div>
                 {options?.map((option: AppConfigExtendedOption) => (
                   <div
-                      key={`key_${section}_${option.name}`}
-                      className={cn(
-                        { 'w-full': option.width === 'full' },
-                        { 'w-[calc(50%-0.75rem)]': option.width === 'half' },
-                        { 'w-[calc(33%-1.5rem)]': option.width === 'third' },
-                        { 'w-[calc(25%-2.25rem)]': option.width === 'quarter' },
-                      )}
-                    >
-                      {renderComponent(option)}
-                    </div>
+                    key={`key_${section}_${option.name}`}
+                    className={cn(
+                      { 'w-full': option.width === 'full' },
+                      { 'w-[calc(50%-0.75rem)]': option.width === 'half' },
+                      { 'w-[calc(33%-1.5rem)]': option.width === 'third' },
+                      { 'w-[calc(25%-2.25rem)]': option.width === 'quarter' },
+                    )}
+                  >
+                    {renderComponent(option)}
+                  </div>
                 ))}
               </AccordionContent>
             </AccordionItem>
