@@ -680,7 +680,9 @@
         "upperLimit": "Limit",
         "upperBackendLimiters": "Choices with an upper limit",
         "addChoice": "Add",
-        "filterPlaceHolderText": "Search for option"
+        "filterPlaceHolderText": "Search for option",
+        "imageWidth": "Width of one image in pixel [px]",
+        "imageWidthPlaceholder": "0 means that the width is only limited by the available space."
       }
     },
     "participate": {
