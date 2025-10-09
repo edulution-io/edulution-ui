@@ -19,13 +19,17 @@ import type VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import { type VeyonConfigTableStore } from '@libs/appconfig/types/veyonConfigTableStore';
 import { type FileTableStore } from '@libs/appconfig/types/fileTableStore';
 import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
+import type WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
+import { type WebdavServerTableStore, type WebdavShareTableStore } from '@libs/appconfig/types/webdavShareTableStore';
 import type AppConfigTableEntry from './appConfigTableEntry';
 
 type AllowedTableEntry =
   | AppConfigTableEntry<BulletinCategoryResponseDto, BulletinCategoryTableStore>
   | AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>
   | AppConfigTableEntry<VeyonProxyItem, VeyonConfigTableStore>
-  | AppConfigTableEntry<FileInfoDto, FileTableStore>;
+  | AppConfigTableEntry<FileInfoDto, FileTableStore>
+  | AppConfigTableEntry<WebdavShareDto, WebdavServerTableStore>
+  | AppConfigTableEntry<WebdavShareDto, WebdavShareTableStore>;
 
 type AppConfigTableConfigsByAppName = {
   [APPS.BULLETIN_BOARD]: AppConfigTableEntry<BulletinCategoryResponseDto, BulletinCategoryTableStore>[];
@@ -35,7 +39,11 @@ type AppConfigTableConfigsByAppName = {
   )[];
   [APPS.MAIL]: AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>[];
   [APPS.DESKTOP_DEPLOYMENT]: AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>[];
-  [APPS.FILE_SHARING]: AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>[];
+  [APPS.FILE_SHARING]: (
+    | AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>
+    | AppConfigTableEntry<WebdavShareDto, WebdavServerTableStore>
+    | AppConfigTableEntry<WebdavShareDto, WebdavShareTableStore>
+  )[];
 } & {
   [key: string]: AllowedTableEntry[];
 };

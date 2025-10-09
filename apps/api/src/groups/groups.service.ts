@@ -11,12 +11,12 @@
  */
 
 import axios from 'axios';
-import { Interval, SchedulerRegistry } from '@nestjs/schedule';
-import { HttpStatus, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Interval, Timeout } from '@nestjs/schedule';
+import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
 import { Group } from '@libs/groups/types/group';
 import GroupsErrorMessage from '@libs/groups/types/groupsErrorMessage';
-import { GROUPS_CACHE_TTL_MS, KEYCLOACK_SYNC_MS } from '@libs/common/constants/cacheTtl';
+import { GROUPS_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import GroupMemberDto from '@libs/groups/types/groupMember.dto';
@@ -25,13 +25,9 @@ import {
   ALL_SCHOOLS_CACHE_KEY,
   GROUP_WITH_MEMBERS_CACHE_KEY,
 } from '@libs/groups/constants/cacheKeys';
-import { readFileSync } from 'fs';
-import { JwtService } from '@nestjs/jwt';
-import { HTTP_HEADERS, HttpMethods, RequestResponseContentType } from '@libs/common/types/http-methods';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import AUTH_PATHS from '@libs/auth/constants/auth-paths';
-import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
-import GROUPS_TOKEN_INTERVAL from '@libs/groups/constants/schedulerRegistry';
 import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import AttendeeDto from '@libs/user/types/attendee.dto';
@@ -42,110 +38,39 @@ import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import ALL_GROUPS_PREFIX from '@libs/lmnApi/constants/prefixes/allGroupsPrefix';
 import LINBO_DEVICE_GROUPS_PREFIX from '@libs/lmnApi/constants/prefixes/dPrefix';
 import ROLES_PREFIX from '@libs/lmnApi/constants/prefixes/rolesPrefix';
+import { KEYCLOAK_STARTUP_TIMEOUT_MS, KEYCLOAK_SYNC_MS } from '@libs/ldapKeycloakSync/constants/keycloakSyncValues';
+import { OnEvent } from '@nestjs/event-emitter';
+import GROUPS_CACHE_REFRESH_EVENT from '@libs/groups/constants/groupsCacheRefreshEvent';
 import CustomHttpException from '../common/CustomHttpException';
 import Attendee from '../conferences/attendee.schema';
+import KeycloakRequestQueue from '../ldap-keycloak-sync/queue/keycloak-request.queue';
 
-const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API, KEYCLOAK_EDU_API_CLIENT_ID, KEYCLOAK_EDU_API_CLIENT_SECRET } =
-  process.env as {
-    [key: string]: string;
-  };
+const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API } = process.env as { [key: string]: string };
 
 @Injectable()
-class GroupsService implements OnModuleInit {
+class GroupsService {
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    private jwtService: JwtService,
-    private schedulerRegistry: SchedulerRegistry,
+    private readonly keycloakQueue: KeycloakRequestQueue,
   ) {}
 
-  private keycloakAccessToken: string;
+  private isUpdatingGroupsAndMembersInCache = false;
 
-  private accessTokenRefreshInterval: number = 5000;
+  private maximumRetries = 3;
 
-  onModuleInit() {
-    this.scheduleTokenRefresh();
-    void this.initializeService();
-  }
-
-  private async initializeService() {
-    await this.obtainAccessToken();
-
+  @Timeout(KEYCLOAK_STARTUP_TIMEOUT_MS)
+  async initializeService() {
     await this.updateGroupsAndMembersInCache();
   }
 
-  scheduleTokenRefresh() {
-    const callback = () => {
-      void this.obtainAccessToken();
-    };
-
-    const interval = setInterval(callback, this.accessTokenRefreshInterval);
-    this.schedulerRegistry.addInterval(GROUPS_TOKEN_INTERVAL, interval);
-  }
-
-  async obtainAccessToken() {
-    const tokenEndpoint = `${KEYCLOAK_API}/realms/${KEYCLOAK_EDU_UI_REALM}${AUTH_PATHS.AUTH_OIDC_TOKEN_PATH}`;
-
-    const params = new URLSearchParams({
-      grant_type: 'client_credentials',
-      client_id: KEYCLOAK_EDU_API_CLIENT_ID,
-      client_secret: KEYCLOAK_EDU_API_CLIENT_SECRET,
-    });
-
-    try {
-      const response = await axios.post<{ access_token: string }>(tokenEndpoint, params.toString(), {
-        headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED },
-      });
-
-      const pubKey = readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
-
-      const decoded: JwtUser = await this.jwtService.verifyAsync<JwtUser>(response.data.access_token, {
-        publicKey: pubKey,
-        algorithms: ['RS256'],
-      });
-
-      this.keycloakAccessToken = response.data.access_token;
-
-      const newInterval = (decoded.exp - decoded.iat) * 1000 * 0.9;
-      if (newInterval !== this.accessTokenRefreshInterval) {
-        this.accessTokenRefreshInterval = newInterval;
-        this.updateTokenRefreshInterval();
-      }
-    } catch (error) {
-      Logger.error(error, GroupsService.name);
-    }
-  }
-
-  updateTokenRefreshInterval() {
-    this.schedulerRegistry.deleteInterval(GROUPS_TOKEN_INTERVAL);
-    this.scheduleTokenRefresh();
-  }
-
-  private async makeAuthorizedRequest<T>(method: HttpMethods, urlPath: string, queryParams: string = ''): Promise<T> {
-    const url = `${KEYCLOAK_API}/admin/realms/${KEYCLOAK_EDU_UI_REALM}/${urlPath}?${queryParams}`;
-    const headers = {
-      [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
-      [HTTP_HEADERS.Authorization]: `Bearer ${this.keycloakAccessToken}`,
-    };
-    const config = {
-      method: method as string,
-      url,
-      headers,
-      maxBodyLength: Infinity,
-    };
-
-    const response = await axios.request<T>(config);
-    return response.data;
+  @OnEvent(GROUPS_CACHE_REFRESH_EVENT, { async: true })
+  async handleGroupsCacheRefresh() {
+    await this.updateGroupsAndMembersInCache();
   }
 
   async fetchAllUsers(): Promise<LDAPUser[]> {
     try {
-      const usersCount = await this.makeAuthorizedRequest<number>(HttpMethods.GET, 'users/count');
-
-      if (!usersCount) {
-        Logger.warn('No users found.', GroupsService.name);
-      }
-
-      return await this.makeAuthorizedRequest<LDAPUser[]>(HttpMethods.GET, 'users', `max=${usersCount}`);
+      return await this.keycloakQueue.fetchAllPaginated<LDAPUser>('/users', '');
     } catch (error) {
       throw new CustomHttpException(
         GroupsErrorMessage.CouldNotGetUsers,
@@ -170,7 +95,7 @@ class GroupsService implements OnModuleInit {
       return response.data;
     } catch (error) {
       throw new CustomHttpException(
-        GroupsErrorMessage.CouldNotGetUsers,
+        GroupsErrorMessage.CouldNotGetCurrentUser,
         HttpStatus.BAD_GATEWAY,
         undefined,
         GroupsService.name,
@@ -178,13 +103,9 @@ class GroupsService implements OnModuleInit {
     }
   }
 
-  private static sanitizeGroup(group: Group) {
-    return { id: group.id, name: group.name, path: group.path };
-  }
-
-  private static sanitizeGroupMembers(members: LDAPUser[]): GroupMemberDto[] {
+  private static sanitizeGroupMembers(members: LDAPUser[] | GroupMemberDto[]): GroupMemberDto[] {
     return Array.isArray(members)
-      ? members.map((member: LDAPUser) => ({
+      ? members.map((member) => ({
           id: member.id,
           username: member.username,
           firstName: member.firstName,
@@ -249,8 +170,8 @@ class GroupsService implements OnModuleInit {
     await Promise.all(setGroupsPromises);
   }
 
-  private async updateGroupsInCache(groups: Group[]): Promise<void> {
-    const failedGroups = await this.tryUpdateGroupsInCache(groups, 1);
+  private async updateGroupsWithMembersInCache(groups: Group[]): Promise<void> {
+    const failedGroups = await this.tryUpdateGroupsWithMembersInCache(groups, 1);
 
     if (failedGroups.length > 0) {
       Logger.error(
@@ -264,8 +185,8 @@ class GroupsService implements OnModuleInit {
     }
   }
 
-  private async tryUpdateGroupsInCache(groups: Group[], attempt: number): Promise<Group[]> {
-    const results = await Promise.allSettled(groups.map((group) => this.updateGroupInCache(this.cacheManager, group)));
+  private async tryUpdateGroupsWithMembersInCache(groups: Group[], attempt: number): Promise<Group[]> {
+    const results = await Promise.allSettled(groups.map((group) => this.updateGroupWithMembersInCache(group)));
 
     const failedGroups: Group[] = [];
     results.forEach((result, index) => {
@@ -275,45 +196,51 @@ class GroupsService implements OnModuleInit {
     });
 
     if (failedGroups.length > 0 && attempt < this.maximumRetries) {
-      return this.tryUpdateGroupsInCache(failedGroups, attempt + 1);
+      return this.tryUpdateGroupsWithMembersInCache(failedGroups, attempt + 1);
     }
 
     return failedGroups;
   }
 
-  private async updateGroupInCache(cacheManager: Cache, group: Group): Promise<void> {
-    const members = await this.fetchGroupMembers(group.id);
-    if (!members?.length) {
-      return;
+  async updateGroupWithMembersInCache(
+    group: Group | GroupWithMembers,
+    updatedMembers?: GroupMemberDto[],
+  ): Promise<void> {
+    let newMembers = updatedMembers;
+    if (!newMembers?.length) {
+      newMembers = await this.fetchGroupMembers(group.id);
     }
 
-    const sanitizedMembers = GroupsService.sanitizeGroupMembers(members);
-    const sanitizedGroup = GroupsService.sanitizeGroup(group);
+    const sanitizedMembers = newMembers?.length ? GroupsService.sanitizeGroupMembers(newMembers) : [];
 
-    await cacheManager.set(
+    await this.cacheManager.set(
       `${GROUP_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
       {
-        ...sanitizedGroup,
+        ...group,
         members: sanitizedMembers,
       },
       GROUPS_CACHE_TTL_MS,
     );
   }
 
-  private maximumRetries = 3;
-
-  @Interval(KEYCLOACK_SYNC_MS)
+  @Interval(KEYCLOAK_SYNC_MS)
   async updateGroupsAndMembersInCache(): Promise<void> {
+    if (this.isUpdatingGroupsAndMembersInCache) return;
+    this.isUpdatingGroupsAndMembersInCache = true;
+
     try {
+      Logger.debug(`Starting to update all groups in cache...`, GroupsService.name);
       const allGroups = await this.fetchAndCacheAllGroups();
 
       const schoolGroupNames = await this.cacheSchoolGroups(allGroups);
 
       await this.cacheGroupsBySchoolName(schoolGroupNames, allGroups);
 
-      await this.updateGroupsInCache(allGroups);
+      await this.updateGroupsWithMembersInCache(allGroups);
     } catch (error) {
       Logger.error(`updateGroupsAndMembersInCache failed.`, GroupsService.name);
+    } finally {
+      this.isUpdatingGroupsAndMembersInCache = false;
     }
   }
 
@@ -355,11 +282,11 @@ class GroupsService implements OnModuleInit {
 
   async fetchAllGroups(): Promise<Group[]> {
     try {
-      const groups = await this.makeAuthorizedRequest<Group[]>(HttpMethods.GET, 'groups', 'search');
+      const groups = await this.keycloakQueue.fetchAllPaginated<Group>('/groups', 'briefRepresentation=false&search');
       return GroupsService.flattenGroups(groups);
     } catch (error) {
       throw new CustomHttpException(
-        GroupsErrorMessage.CouldNotGetUsers,
+        GroupsErrorMessage.CouldNotGetAllGroups,
         HttpStatus.BAD_GATEWAY,
         undefined,
         GroupsService.name,
@@ -368,11 +295,7 @@ class GroupsService implements OnModuleInit {
   }
 
   async fetchGroupMembers(groupId: string): Promise<LDAPUser[] | undefined> {
-    return this.makeAuthorizedRequest<LDAPUser[]>(
-      HttpMethods.GET,
-      `groups/${groupId}/members`,
-      'briefRepresentation=true',
-    );
+    return this.keycloakQueue.fetchAllPaginated<LDAPUser>(`/groups/${groupId}/members`, 'briefRepresentation=true');
   }
 
   public async searchGroups(school: string, searchKeyWord?: string): Promise<Group[]> {

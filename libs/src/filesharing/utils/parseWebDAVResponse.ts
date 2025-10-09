@@ -57,7 +57,7 @@ const parseWebDAVResponse = (response: WebdavResponse) => {
   return {
     filename: decodedBasename,
     etag,
-    filePath: response[WebdavXmlAttributes.Href],
+    filePath: decodeURIComponent(response[WebdavXmlAttributes.Href]),
     lastmod,
     size: contentLength ? parseInt(contentLength, 10) : undefined,
     type: isCollection ? ContentType.DIRECTORY : ContentType.FILE,

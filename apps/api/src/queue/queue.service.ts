@@ -23,16 +23,13 @@ import MoveOrRenameConsumer from '../filesharing/consumers/moveOrRename.consumer
 import CopyFileConsumer from '../filesharing/consumers/copyFile.consumer';
 import CreateFolderConsumer from '../filesharing/consumers/createFolder.consumer';
 import UploadFileConsumer from '../filesharing/consumers/uploadFile.consumer';
+import redisConnection from '../common/redis.connection';
 
 @Injectable()
 class QueueService implements OnModuleInit {
   private workers = new Map<string, Worker>();
 
   private queues = new Map<string, Queue>();
-
-  private redisHost = process.env.REDIS_HOST ?? 'localhost';
-
-  private redisPort = +(process.env.REDIS_PORT ?? 6379);
 
   constructor(
     private readonly duplicateFileConsumer: DuplicateFileConsumer,
@@ -45,7 +42,7 @@ class QueueService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    const redis = new Redis({ host: this.redisHost, port: this.redisPort });
+    const redis = new Redis(redisConnection);
 
     const userIds = await this.scanUserIds(redis, QUEUE_CONSTANTS.PREFIX);
 
@@ -71,10 +68,7 @@ class QueueService implements OnModuleInit {
         await this.handleJob(job);
       },
       {
-        connection: {
-          host: this.redisHost,
-          port: this.redisPort,
-        },
+        connection: redisConnection,
       },
     );
 
@@ -86,10 +80,7 @@ class QueueService implements OnModuleInit {
     const queueName = QUEUE_CONSTANTS.PREFIX + userId;
     if (!this.queues.has(userId)) {
       const queue = new Queue(queueName, {
-        connection: {
-          host: this.redisHost,
-          port: this.redisPort,
-        },
+        connection: redisConnection,
         defaultJobOptions: {
           removeOnComplete: true,
           removeOnFail: true,

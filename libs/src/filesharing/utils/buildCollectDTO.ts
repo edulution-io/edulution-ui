@@ -20,8 +20,7 @@ const buildCollectDTO = (
   currentGroupName: string,
   homePath: string,
 ): CollectFileRequestDTO[] | undefined => {
-  if (!students) return undefined;
-  if (!currentUser) return undefined;
+  if (!students || !currentUser) return undefined;
 
   return students.map((student) => buildCollectPath(currentUser.cn, homePath, currentGroupName, student));
 };

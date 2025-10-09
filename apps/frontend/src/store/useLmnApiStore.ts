@@ -21,6 +21,7 @@ import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
 import lmnApi from '@/api/lmnApi';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
+import { encodeBase64 } from '@libs/common/utils/getBase64String';
 
 const { USER, USERS_QUOTA } = LMN_API_EDU_API_ENDPOINTS;
 
@@ -70,7 +71,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
           set(initialState);
         }
         try {
-          lmnApi.defaults.headers.Authorization = `Basic ${btoa(`${username}:${password}`)}`;
+          lmnApi.defaults.headers.Authorization = `Basic ${encodeBase64(`${username}:${password}`)}`;
           const response = await lmnApi.get<string>('/auth/');
           set({ lmnApiToken: response.data });
         } catch (error) {
@@ -81,7 +82,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
       },
 
       getOwnUser: async () => {
-        if (get().isGetOwnUserLoading) return;
+        if (!get().lmnApiToken || get().isGetOwnUserLoading) return;
         set({ isGetOwnUserLoading: true, error: null });
         try {
           const response = await eduApi.get<LmnUserInfo>(USER, {
@@ -123,7 +124,9 @@ const useLmnApiStore = create<UseLmnApiStore>(
           });
           set({ usersQuota: data });
         } catch (error) {
-          handleApiError(error, set);
+          // TODO: Readd error handling when LMN API 7.3 supports this endpoint, https://github.com/edulution-io/edulution-ui/issues/1331
+          // handleApiError(error, set);
+          set({ usersQuota: null });
         } finally {
           set({ isFetchUserLoading: false });
         }

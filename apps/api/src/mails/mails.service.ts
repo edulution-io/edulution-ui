@@ -11,7 +11,7 @@
  */
 
 import { Model } from 'mongoose';
-import { FetchMessageObject, ImapFlow, MailboxLockObject } from 'imapflow';
+import { ImapFlow, MailboxLockObject } from 'imapflow';
 import { ArgumentMetadata, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { OnEvent } from '@nestjs/event-emitter';
@@ -65,7 +65,7 @@ class MailsService implements OnModuleInit {
 
   onModuleInit() {
     void this.updateImapConfig();
-    Logger.debug(`Imap connection timeout: ${connectionTimeout}}`, MailsService.name);
+    Logger.debug(`Imap connection timeout: ${connectionTimeout}`, MailsService.name);
   }
 
   @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
@@ -118,12 +118,9 @@ class MailsService implements OnModuleInit {
       this.imapClient.close();
     });
 
-    await this.imapClient.connect().catch((err) => {
-      throw new CustomHttpException(
-        MailsErrorMessages.NotAbleToConnectClientError,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        err,
-      );
+    await this.imapClient.connect().catch((e) => {
+      Logger.error(`IMAP-Connection-Error: ${e instanceof Error && e.message}`, MailsService.name);
+      return [];
     });
 
     let mailboxLock: MailboxLockObject | undefined;
@@ -131,10 +128,7 @@ class MailsService implements OnModuleInit {
     try {
       mailboxLock = await this.imapClient.getMailboxLock('INBOX');
 
-      const fetchMail: AsyncGenerator<FetchMessageObject> = this.imapClient.fetch(
-        { recent: true },
-        { envelope: true, labels: true },
-      );
+      const fetchMail = this.imapClient.fetch({ recent: true }, { envelope: true, labels: true });
 
       // eslint-disable-next-line no-restricted-syntax
       for await (const mail of fetchMail) {
@@ -145,12 +139,9 @@ class MailsService implements OnModuleInit {
         };
         mails.push(mailDto);
       }
-    } catch (error) {
-      throw new CustomHttpException(
-        MailsErrorMessages.NotAbleToFetchMailsError,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        emailAddress,
-      );
+    } catch (e) {
+      Logger.error(`Get mails error: ${e instanceof Error && e.message}`, MailsService.name);
+      return [];
     } finally {
       if (mailboxLock) {
         mailboxLock.release();
@@ -159,7 +150,7 @@ class MailsService implements OnModuleInit {
     await this.imapClient.logout();
     this.imapClient.close();
 
-    Logger.log(`Feed: ${mails.length} new mails were fetched (imap)`, MailsService.name);
+    Logger.verbose(`Feed: ${mails.length} new mails were fetched (imap)`, MailsService.name);
     return mails;
   }
 

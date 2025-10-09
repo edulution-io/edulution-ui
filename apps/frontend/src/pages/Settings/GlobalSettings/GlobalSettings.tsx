@@ -19,22 +19,24 @@ import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/compone
 import useGroupStore from '@/store/GroupStore';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
-import AppConfigSwitch from '@/pages/Settings/AppConfig/components/booleanField/AppConfigSwitch';
 import AppDropdownSelectFormField from '@/components/ui/DropdownSelect/AppDropdownSelectFormField';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
 import { GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
+import LdapSettings from '@/pages/Settings/components/LdapSettings';
+import AddOrganisationLogo from '@/pages/Settings/components/AddOrganisationLogo';
+import { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSettings.form';
+import AddOrganisationInfo from '@/pages/Settings/components/AddOrganisationInfo';
 import useGlobalSettingsApiStore from './useGlobalSettingsApiStore';
 import GlobalSettingsFloatingButtons from './GlobalSettingsFloatingButtons';
-import DeploymentTargetDropdownSelectFormField from './DeploymentTargetDropdownSelectFormField';
+import DeploymentTargetDropdownSelectFormField from '../components/DeploymentTargetDropdownSelectFormField';
 
 const GlobalSettings: React.FC = () => {
   const { t } = useTranslation();
   const { searchGroups } = useGroupStore();
   const { appConfigs } = useAppConfigsStore();
-  const { globalSettings, getGlobalSettings, setGlobalSettings } = useGlobalSettingsApiStore();
-
-  const form = useForm<GlobalSettingsDto>({ defaultValues });
+  const { globalSettings, getGlobalAdminSettings, setGlobalSettings } = useGlobalSettingsApiStore();
+  const form = useForm<GlobalSettingsFormValues>({ defaultValues });
 
   const {
     watch,
@@ -47,24 +49,30 @@ const GlobalSettings: React.FC = () => {
   } = form;
 
   useEffect(() => {
-    void getGlobalSettings();
-  }, [getGlobalSettings]);
+    void getGlobalAdminSettings();
+  }, [getGlobalAdminSettings]);
 
   useEffect(() => {
-    if (globalSettings) {
-      reset({
-        auth: {
-          mfaEnforcedGroups: globalSettings.auth?.mfaEnforcedGroups || [],
-        },
+    if (!globalSettings) return;
+
+    reset(
+      {
+        ...defaultValues,
+        ...globalSettings,
         general: {
-          defaultLandingPage: {
-            ...defaultValues.general.defaultLandingPage,
-            ...globalSettings.general?.defaultLandingPage,
-          },
-          deploymentTarget: globalSettings.general?.deploymentTarget,
+          ...defaultValues.general,
+          ...(globalSettings.general ?? {}),
         },
-      });
-    }
+        organisationInfo: {
+          ...defaultValues.organisationInfo,
+          ...(globalSettings.organisationInfo ?? {}),
+        },
+        auth: {
+          mfaEnforcedGroups: globalSettings.auth?.mfaEnforcedGroups ?? [],
+        },
+      },
+      { keepDirtyValues: false },
+    );
   }, [globalSettings, reset]);
 
   const defaultLandingPageAppName = watch('general.defaultLandingPage.appName');
@@ -96,7 +104,7 @@ const GlobalSettings: React.FC = () => {
     <>
       <AccordionSH
         type="multiple"
-        defaultValue={['general', 'security']}
+        defaultValue={['general', 'security', 'ldap', 'branding', 'organisationInfo']}
       >
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -104,27 +112,20 @@ const GlobalSettings: React.FC = () => {
               <AccordionTrigger className="flex">
                 <h4>{t('settings.globalSettings.general')}</h4>
               </AccordionTrigger>
+
               <AccordionContent className="space-y-2 px-1 text-p">
                 <p className="text-xl font-bold">{t('settings.globalSettings.deploymentTarget')}</p>
                 <DeploymentTargetDropdownSelectFormField form={form} />
               </AccordionContent>
+
               <AccordionContent className="space-y-2 px-1 text-p">
                 <p className="text-xl font-bold">{t('settings.globalSettings.defaultLandingPageTitle')}</p>
-                <AppConfigSwitch
-                  fieldPath="general.defaultLandingPage.isCustomLandingPageEnabled"
-                  control={control}
-                  option={{
-                    title: t('settings.globalSettings.defaultLandingPageDescription'),
-                    description: t('settings.globalSettings.defaultLandingPageSwitchDescription'),
-                  }}
+                <p> {t('settings.globalSettings.defaultLandingPageDescription')}</p>
+                <AppDropdownSelectFormField
+                  appNamePath="general.defaultLandingPage.appName"
+                  form={form}
+                  variant="default"
                 />
-                {isCustomLandingPageEnabled && (
-                  <AppDropdownSelectFormField
-                    appNamePath="general.defaultLandingPage.appName"
-                    form={form}
-                    variant="default"
-                  />
-                )}
               </AccordionContent>
             </AccordionItem>
 
@@ -142,7 +143,7 @@ const GlobalSettings: React.FC = () => {
                       <p className="font-bold">{t('permission.groups')}</p>
                       <FormControl>
                         <AsyncMultiSelect<MultipleSelectorGroup>
-                          value={getValues(`auth.${GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS}`)}
+                          value={getValues(`auth.${GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS}`) ?? []}
                           onSearch={searchGroups}
                           onChange={handleGroupsChange}
                           placeholder={t('search.type-to-search')}
@@ -154,6 +155,40 @@ const GlobalSettings: React.FC = () => {
                   )}
                 />
               </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="ldap">
+              <AccordionTrigger className="flex">
+                <h4>{t('settings.globalSettings.ldap.title')}</h4>
+              </AccordionTrigger>
+              <LdapSettings form={form} />
+            </AccordionItem>
+
+            <AccordionItem value="branding">
+              <AccordionTrigger className="flex">
+                <h4>{t('settings.globalSettings.branding.title')}</h4>
+              </AccordionTrigger>
+
+              <AccordionContent className="space-y-2 px-1">
+                <AccordionSH
+                  type="multiple"
+                  defaultValue={['organisationLogo']}
+                >
+                  <AccordionItem value="organisationLogo">
+                    <AccordionTrigger className="flex">
+                      <p className="font-bold">{t('settings.globalSettings.logo.title')}</p>
+                    </AccordionTrigger>
+                    <AddOrganisationLogo form={form} />
+                  </AccordionItem>
+                </AccordionSH>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="organisationInfo">
+              <AccordionTrigger className="flex">
+                <h4>{t('settings.globalSettings.organisationInfo.title')}</h4>
+              </AccordionTrigger>
+              <AddOrganisationInfo form={form} />
             </AccordionItem>
           </form>
         </Form>

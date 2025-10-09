@@ -34,6 +34,8 @@ const SelectableTextCellInner = <TData,>(
   const checkboxRef = useRef<HTMLButtonElement>(null);
   const [checkboxWidth, setCheckboxWidth] = useState(0);
 
+  const canSelect = row?.getCanSelect?.() ?? true;
+
   useEffect(() => {
     if (checkboxRef.current) {
       const width = checkboxRef.current.offsetWidth;
@@ -49,7 +51,7 @@ const SelectableTextCellInner = <TData,>(
       tabIndex={0}
       role="button"
       className={cn(
-        `flex items-center justify-start ${isFirstColumn ? 'space-x-2' : ''} py-0`,
+        `flex items-center justify-start ${isFirstColumn ? 'space-x-2' : ''} min-w-4 py-0`,
         onClick ? 'cursor-pointer' : 'cursor-default',
         className,
       )}
@@ -59,10 +61,11 @@ const SelectableTextCellInner = <TData,>(
       {row ? (
         <Checkbox
           ref={checkboxRef}
+          disabled={!canSelect}
           checked={isChecked}
           onClick={(e) => e.stopPropagation()}
           onCheckedChange={(checked) => {
-            row.toggleSelected(!!checked);
+            if (canSelect) row.toggleSelected(!!checked);
           }}
           aria-label="Select row"
         />
@@ -75,6 +78,7 @@ const SelectableTextCellInner = <TData,>(
         style={{
           marginLeft: isFirstColumn && !row ? `${checkboxWidth + 30}px` : undefined,
         }}
+        aria-disabled={!canSelect}
       >
         {isHovered && textOnHover ? textOnHover : text}
       </span>

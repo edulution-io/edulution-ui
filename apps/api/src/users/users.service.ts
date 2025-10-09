@@ -28,6 +28,8 @@ import { ALL_USERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import type UserAccountDto from '@libs/user/types/userAccount.dto';
 import type CachedUser from '@libs/user/types/cachedUser';
 import QUEUE_CONSTANTS from '@libs/queue/constants/queueConstants';
+import UserDeviceDto from '@libs/notification/types/userDevice.dto';
+import { Expo } from 'expo-server-sdk';
 import CustomHttpException from '../common/CustomHttpException';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
@@ -64,7 +66,7 @@ class UsersService {
   }
 
   async findOne(username: string): Promise<User | null> {
-    return this.userModel.findOne({ username }, USER_DB_PROJECTION).lean();
+    return this.userModel.findOne({ username }).select(USER_DB_PROJECTION).lean();
   }
 
   async update(username: string, updateUserDto: UpdateUserDto): Promise<User | null> {
@@ -281,6 +283,41 @@ class UsersService {
         UsersService.name,
       );
     }
+  }
+
+  async getPushTokensByUsersnames(usernames: string[]): Promise<string[]> {
+    const users = await this.userModel
+      .find({ username: { $in: usernames } })
+      .select('registeredPushTokens')
+      .exec();
+
+    const allTokens = users
+      .flatMap((user) => user.registeredPushTokens ?? [])
+      .filter((token) => Expo.isExpoPushToken(token));
+
+    return Array.from(new Set(allTokens));
+  }
+
+  async updateDeviceByUsername(username: string, userDeviceDto: UserDeviceDto): Promise<void> {
+    const { expoPushToken } = userDeviceDto;
+
+    if (!Expo.isExpoPushToken(expoPushToken)) {
+      return;
+    }
+    await this.userModel
+      .findOneAndUpdate({ username }, { $addToSet: { registeredPushTokens: expoPushToken } }, { new: true })
+      .exec();
+  }
+
+  async clearDeviceByUsername(username: string, userDeviceDto: UserDeviceDto): Promise<void> {
+    const { expoPushToken } = userDeviceDto;
+
+    if (!Expo.isExpoPushToken(expoPushToken)) {
+      return;
+    }
+    await this.userModel
+      .findOneAndUpdate({ username }, { $pull: { registeredPushTokens: expoPushToken } }, { new: true })
+      .exec();
   }
 }
 

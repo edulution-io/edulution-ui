@@ -12,6 +12,7 @@
 
 const EVENT_EMITTER_EVENTS = {
   APPCONFIG_UPDATED: 'appconfig.updated',
+  WEBDAV_BASEURL_CHANGED: 'webdav.baseUrlChanged',
 } as const;
 
 export default EVENT_EMITTER_EVENTS;

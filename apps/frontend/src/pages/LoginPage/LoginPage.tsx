@@ -20,7 +20,6 @@ import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
 import { MdOutlineQrCode } from 'react-icons/md';
 import { toast } from 'sonner';
-import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
@@ -39,6 +38,10 @@ import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import APPS from '@libs/appconfig/constants/apps';
 import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
+import { decodeBase64, encodeBase64 } from '@libs/common/utils/getBase64String';
+import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
+import getMainLogoUrl from '@libs/assets/getMainLogoUrl';
+import COLOR_SCHEME from '@libs/ui/constants/colorScheme';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 import useAppConfigsStore from '../Settings/AppConfig/useAppConfigsStore';
@@ -54,10 +57,14 @@ const LoginPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { state } = useLocation() as { state: LocationState };
+
   const { eduApiToken, totpIsLoading, isAuthenticated, createOrUpdateUser, setEduApiToken, getTotpStatus } =
     useUserStore();
   const { appConfigs } = useAppConfigsStore();
   const { silentLogin } = useSilentLoginWithPassword();
+  const theme = COLOR_SCHEME;
+
+  const logoSrc = getMainLogoUrl(theme);
 
   const { isLoading } = auth;
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
@@ -84,7 +91,7 @@ const LoginPage: React.FC = () => {
       const password = form.getValues('password');
       const totpValue = form.getValues('totpValue');
 
-      const passwordHash = btoa(`${password}${isEnterTotpVisible || totpValue ? `:${totpValue}` : ''}`);
+      const passwordHash = encodeBase64(`${password}${isEnterTotpVisible || totpValue ? `:${totpValue}` : ''}`);
       const requestUser = await auth.signinResourceOwnerCredentials({
         username,
         password: passwordHash,
@@ -162,7 +169,7 @@ const LoginPage: React.FC = () => {
 
     const handleLoginEvent = (e: MessageEvent<string>) => {
       try {
-        const { username, password } = JSON.parse(atob(e.data)) as LoginQrSseDto;
+        const { username, password } = JSON.parse(decodeBase64(e.data)) as LoginQrSseDto;
 
         form.setValue('username', username);
         form.setValue('password', password);
@@ -325,9 +332,12 @@ const LoginPage: React.FC = () => {
         className="overflow-y-auto bg-background scrollbar-thin"
       >
         <img
-          src={DesktopLogo}
-          alt="edulution"
+          src={logoSrc}
+          alt={t('settings.settings.logo.title')}
           className="mx-auto w-64"
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).src = DesktopLogo;
+          }}
         />
         <Form
           {...form}

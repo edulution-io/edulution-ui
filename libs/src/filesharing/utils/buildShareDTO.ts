@@ -13,7 +13,6 @@
 import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileRequestDto';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import buildSharePath from '@libs/filesharing/utils/buildSharePath';
 
 const buildShareDTO = (
@@ -23,14 +22,13 @@ const buildShareDTO = (
 ): DuplicateFileRequestDto | undefined => {
   if (!students) return undefined;
 
+  const originFilePath = fileName.filePath;
+
   const destinationFilePaths = students
     .map((student) => buildSharePath(userName || '', fileName.filePath, student))
     .filter(Boolean);
 
-  return {
-    originFilePath: getPathWithoutWebdav(fileName.filePath),
-    destinationFilePaths,
-  };
+  return { originFilePath, destinationFilePaths };
 };
 
 export default buildShareDTO;

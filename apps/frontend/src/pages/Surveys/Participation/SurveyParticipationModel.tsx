@@ -16,6 +16,7 @@ import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
 import { ClearFilesEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
 import { FileDownloadDto } from '@libs/survey/types/api/file-download.dto';
+import { removeUuidFromFileName } from '@libs/common/utils/uuidAndFileNames';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import SURVEY_ANSWERS_MAXIMUM_FILE_SIZE from '@libs/survey/constants/survey-answers-maximum-file-size';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
@@ -38,6 +39,7 @@ Serializer.getProperty('rating', 'displayMode').defaultValue = 'buttons';
 Serializer.getProperty('file', 'storeDataAsText').defaultValue = false;
 Serializer.getProperty('file', 'waitForUpload').defaultValue = true;
 Serializer.getProperty('file', 'showPreview').defaultValue = true;
+Serializer.getProperty('file', 'allowMultiple').defaultValue = false;
 Serializer.getProperty('text', 'textUpdateMode').defaultValue = 'onTyping';
 Serializer.getProperty('signaturepad', 'penColor').defaultValue = 'rgba(255, 255, 255, 1)';
 Serializer.getProperty('signaturepad', 'signatureWidth').defaultValue = '800';
@@ -103,19 +105,24 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
       const uploadPromises = files.map(async (file) => {
         const data = await uploadTempFile(selectedSurvey.id!, file);
+        if (data === null) {
+          return null;
+        }
+
         const newFile: FileDownloadDto = {
           ...file,
           type: file.type || 'image/png',
-          originalName: file.name || data.name,
-          name: data.name,
+          originalName: data.name || file.name,
+          name: removeUuidFromFileName(data.name || file.name),
           url: `${EDU_API_URL}/${data.url}`,
           content: data.content,
         };
         return newFile;
       });
       const results = await Promise.all(uploadPromises);
+      const filteredResults = results.filter((result) => result !== null);
       return callback(
-        results.map((result) => ({
+        filteredResults.map((result) => ({
           file: result,
           content: result.url,
         })),

@@ -18,7 +18,6 @@ import PrintPasswordsFormat from '@libs/classManagement/types/printPasswordsForm
 import Checkbox from '@/components/ui/Checkbox';
 import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import usePrintPasswordsStore from '@/pages/ClassManagement/PasswordsPage/usePrintPasswordsStore';
-import useLmnApiStore from '@/store/useLmnApiStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
@@ -29,17 +28,18 @@ interface PrintPasswordsDialogProps {
 }
 
 const PrintPasswordsDialog: React.FC<PrintPasswordsDialogProps> = ({ selectedClasses, title, onClose }) => {
-  const { user } = useLmnApiStore();
   const { printPasswords, isLoading } = usePrintPasswordsStore();
   const [isPdfLatexSelected, setIsPdfLatexSelected] = useState<boolean>(false);
   const [isOneItemPerPageSelected, setIsOneItemPerPageSelected] = useState<boolean>(false);
 
   const handelConfirm = async () => {
+    const school = selectedClasses.length > 0 ? selectedClasses[0].sophomorixSchoolname : DEFAULT_SCHOOL;
+
     switch (title) {
       case PrintPasswordsFormat.PDF:
         await printPasswords({
           format: PrintPasswordsFormat.PDF,
-          school: user?.school || DEFAULT_SCHOOL,
+          school,
           pdflatex: isPdfLatexSelected,
           one_per_page: isOneItemPerPageSelected,
           schoolclasses: selectedClasses.map((m) => m.cn),
@@ -49,7 +49,7 @@ const PrintPasswordsDialog: React.FC<PrintPasswordsDialogProps> = ({ selectedCla
       default:
         await printPasswords({
           format: PrintPasswordsFormat.CSV,
-          school: user?.school || DEFAULT_SCHOOL,
+          school,
           pdflatex: false,
           one_per_page: false,
           schoolclasses: selectedClasses.map((m) => m.cn),

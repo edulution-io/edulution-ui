@@ -17,6 +17,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import CustomHttpException from '../common/CustomHttpException';
 import SurveysController from './surveys.controller';
 import SurveysService from './surveys.service';
@@ -54,6 +55,7 @@ import mockFilesystemService from '../filesystem/filesystem.service.mock';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveysTemplateService from './surveys-template.service';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
+import NotificationsService from '../notifications/notifications.service';
 
 describe(SurveysController.name, () => {
   let controller: SurveysController;
@@ -61,10 +63,9 @@ describe(SurveysController.name, () => {
   let surveyAnswersService: SurveyAnswersService;
   let surveyModel: Model<SurveyDocument>;
   let surveyAnswerModel: Model<SurveyAnswerDocument>;
-
+  const pushMock = { notify: jest.fn() };
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [],
       controllers: [SurveysController],
       providers: [
         SurveysService,
@@ -87,6 +88,7 @@ describe(SurveysController.name, () => {
           },
         },
         { provide: FilesystemService, useValue: mockFilesystemService },
+        { provide: NotificationsService, useValue: pushMock },
       ],
     }).compile();
 
@@ -103,6 +105,53 @@ describe(SurveysController.name, () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  describe('fileUpload', () => {
+    it('returns 201 and file URL for allowed mime types', () => {
+      const file = { filename: 'upload.png', mimetype: 'image/png' } as unknown as Express.Multer.File;
+      const json = jest.fn();
+      const status = jest.fn().mockReturnValue({ json });
+
+      controller.fileUpload(file, { status } as unknown as import('express').Response);
+
+      expect(status).toHaveBeenCalledWith(HttpStatus.CREATED);
+      expect(json).toHaveBeenCalledWith('surveys/files/upload.png');
+    });
+
+    it('throws CustomHttpException on missing file (malformed upload)', () => {
+      const json = jest.fn();
+      const status = jest.fn().mockReturnValue({ json });
+
+      try {
+        controller.fileUpload(
+          undefined as unknown as Express.Multer.File,
+          { status } as unknown as import('express').Response,
+        );
+        fail('Expected to throw');
+      } catch (e) {
+        expect(e).toBeInstanceOf(CustomHttpException);
+        expect((e as Error).message).toBe(CommonErrorMessages.FILE_NOT_PROVIDED);
+        expect((e as CustomHttpException).getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      }
+    });
+
+    it('throws CustomHttpException on disallowed mime types', () => {
+      const json = jest.fn();
+      const status = jest.fn().mockReturnValue({ json });
+
+      try {
+        controller.fileUpload(
+          { filename: 'file.txt', mimetype: 'text/plain' } as unknown as Express.Multer.File,
+          { status } as unknown as import('express').Response,
+        );
+        fail('Expected to throw');
+      } catch (e) {
+        expect(e).toBeInstanceOf(CustomHttpException);
+        expect((e as Error).message).toBe(CommonErrorMessages.FILE_UPLOAD_FAILED);
+        expect((e as CustomHttpException).getStatus()).toBe(HttpStatus.BAD_REQUEST);
+      }
+    });
   });
 
   describe('findOne', () => {

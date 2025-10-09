@@ -32,7 +32,8 @@ import getDialogComponent from '@/pages/ClassManagement/LessonPage/getDialogComp
 import buildCollectDTO from '@libs/filesharing/utils/buildCollectDTO';
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 import VEYON_FEATURE_ACTIONS from '@libs/veyon/constants/veyonFeatureActions';
-import getStringFromArray from '@libs/common/utils/getStringFromArray';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useUserPath from '@/pages/FileSharing/hooks/useUserPath';
 import useVeyonFeatures from './UserArea/useVeyonFeatures';
 import useVeyonApiStore from '../useVeyonApiStore';
 
@@ -68,6 +69,8 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
   const { moveOrCopyItemToPath } = useFileSharingDialogStore();
   const { userConnectionUids } = useVeyonApiStore();
   const { handleSetVeyonFeature } = useVeyonFeatures();
+  const selectedWebdavShare = useFileSharingStore((s) => s.selectedWebdavShare);
+  const { homePath } = useUserPath();
 
   const updateStudents = async () => {
     const updatedStudents = await Promise.all(students.map((m) => fetchUser(m.cn)));
@@ -98,7 +101,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
       enableAction: async () => {
         const shareDTO = buildShareDTO(user?.cn, students, moveOrCopyItemToPath);
         if (!shareDTO) return;
-        await shareFiles(shareDTO);
+        await shareFiles(shareDTO, selectedWebdavShare);
       },
       disableAction: async () => {},
     },
@@ -106,14 +109,9 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
       icon: FaArrowRightToBracket,
       text: CLASSMGMT_OPTIONS.COLLECT,
       enableAction: async () => {
-        const collectDTO = buildCollectDTO(
-          students,
-          user,
-          groupNameFromStore || '',
-          getStringFromArray(user?.sophomorixIntrinsic2),
-        );
+        const collectDTO = buildCollectDTO(students, user, groupNameFromStore || '', homePath);
         if (!collectDTO) return;
-        await collectFiles(collectDTO, user?.sophomorixRole || '', activeCollectionOperation);
+        await collectFiles(collectDTO, user?.sophomorixRole || '', activeCollectionOperation, selectedWebdavShare);
       },
       disableAction: async () => {},
     },

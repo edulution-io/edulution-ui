@@ -19,9 +19,10 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { BullModule } from '@nestjs/bullmq';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
-import { BullModule } from '@nestjs/bullmq';
+import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
 import LoggingInterceptor from '../logging/logging.interceptor';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
@@ -40,14 +41,18 @@ import DockerModule from '../docker/docker.module';
 import VeyonModule from '../veyon/veyon.module';
 import GlobalSettingsModule from '../global-settings/global-settings.module';
 import SseModule from '../sse/sse.module';
-import TldrawSyncModule from '../tldraw-sync/tldraw-sync.module';
+import TLDrawSyncModule from '../tldraw-sync/tldraw-sync.module';
 import FileSystemModule from '../filesystem/filesystem.module';
 import WebDavModule from '../webdav/webdav.module';
 import HealthModule from '../health/health.module';
 import ScriptsModule from '../scripts/scripts.module';
-
-const redisHost = process.env.REDIS_HOST ?? 'localhost';
-const redisPort = +(process.env.REDIS_PORT ?? 6379);
+import WebdavSharesModule from '../webdav/shares/webdav-shares.module';
+import LdapKeycloakSyncModule from '../ldap-keycloak-sync/ldap-keycloak-sync.module';
+import redisConnection from '../common/redis.connection';
+import NotificationsModule from '../notifications/notifications.module';
+import MobileAppModuleModule from '../mobileAppModule/mobileAppModule.module';
+import UserPreferencesModule from '../user-preferences/user-preferences.module';
+import DevCacheFlushService from '../common/cache/dev-cache-flush.service';
 
 @Module({
   imports: [
@@ -56,11 +61,13 @@ const redisPort = +(process.env.REDIS_PORT ?? 6379);
       serveRoot: `/${EDU_API_ROOT}/downloads`,
     }),
 
+    ServeStaticModule.forRoot({
+      rootPath: PUBLIC_ASSET_PATH,
+      serveRoot: `/${EDU_API_ROOT}/public/assets`,
+    }),
+
     BullModule.forRoot({
-      connection: {
-        host: redisHost,
-        port: redisPort,
-      },
+      connection: redisConnection,
       defaultJobOptions: {
         removeOnComplete: true,
         removeOnFail: true,
@@ -86,7 +93,11 @@ const redisPort = +(process.env.REDIS_PORT ?? 6379);
     GlobalSettingsModule,
     WebDavModule,
     SseModule,
-    TldrawSyncModule,
+    TLDrawSyncModule,
+    LdapKeycloakSyncModule,
+    NotificationsModule,
+    MobileAppModuleModule,
+    UserPreferencesModule,
     JwtModule.register({
       global: true,
     }),
@@ -100,18 +111,20 @@ const redisPort = +(process.env.REDIS_PORT ?? 6379);
     CacheModule.registerAsync({
       isGlobal: true,
       useFactory: () => ({
-        stores: [new KeyvRedis(`redis://${redisHost}:${redisPort}`)],
+        stores: [new KeyvRedis(`redis://${redisConnection.host}:${redisConnection.port}`)],
       }),
     }),
 
     EventEmitterModule.forRoot(),
     ScriptsModule,
+    WebdavSharesModule,
   ],
   providers: [
     {
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
     },
+    ...(process.env.NODE_ENV === 'development' ? [DevCacheFlushService] : []),
   ],
 })
 export default class AppModule {}

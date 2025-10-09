@@ -58,7 +58,7 @@ interface ParticipateSurveyStore {
   uploadTempFile: (
     surveyId: string,
     file: File,
-  ) => Promise<{ name: string; url: string; content: Buffer<ArrayBufferLike> }>;
+  ) => Promise<{ name: string; url: string; content: Buffer<ArrayBufferLike> } | null>;
   isUploadingFile?: boolean;
   deleteTempFile: (surveyId: string, file: File, callback: CallableFunction) => Promise<string | undefined>;
   isDeletingFile?: boolean;
@@ -185,10 +185,9 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
   uploadTempFile: async (
     surveyId: string,
     file: File,
-  ): Promise<{ name: string; url: string; content: Buffer<ArrayBufferLike> }> => {
+  ): Promise<{ name: string; url: string; content: Buffer<ArrayBufferLike> } | null> => {
     const { attendee } = get();
     set({ isUploadingFile: true });
-
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -202,7 +201,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       return response.data;
     } catch (error) {
       handleApiError(error, set);
-      return { name: '', url: '', content: Buffer.from('') };
+      return null;
     } finally {
       set({ isUploadingFile: false });
     }

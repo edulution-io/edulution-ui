@@ -13,14 +13,14 @@
 import { create } from 'zustand';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import eduApi from '@/api/eduApi';
-import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import ContentType from '@libs/filesharing/types/contentType';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import handleApiError from '@/utils/handleApiError';
 import { RowSelectionState } from '@tanstack/react-table';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
+import processWebdavResponse from '@libs/filesharing/utils/processWebdavResponse';
+import useFileSharingStore from './useFileSharingStore';
 
 interface UseFileSharingMoveDialogStore {
   activeCollectionOperation: LmnApiCollectOperationsType;
@@ -30,8 +30,8 @@ interface UseFileSharingMoveDialogStore {
   dialogShownDirs: DirectoryFileDTO[];
   selectedRows: RowSelectionState;
   setSelectedRows: (rows: RowSelectionState) => void;
-  fetchDialogFiles: (path?: string) => Promise<void>;
-  fetchDialogDirs: (path: string) => Promise<void>;
+  fetchDialogFiles: (shareName: string | undefined, path?: string) => Promise<void>;
+  fetchDialogDirs: (shareName: string | undefined, path: string) => Promise<void>;
   setDialogShownFiles: (files: DirectoryFileDTO[]) => void;
   setIsLoading: (isLoading: boolean) => void;
   setSelectedItems: (items: DirectoryFileDTO[]) => void;
@@ -54,14 +54,20 @@ const useFileSharingMoveDialogStore = create<UseFileSharingMoveDialogStore>((set
   setActiveCollectionOperation: (collectionType: LmnApiCollectOperationsType) =>
     set({ activeCollectionOperation: collectionType }),
 
-  fetchDialogFiles: async (path: string = '/') => {
+  fetchDialogFiles: async (shareName, path: string = '/') => {
     try {
       set({ isLoading: true });
-      const directoryFiles = await eduApi.get<DirectoryFileDTO[]>(
-        buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, path),
-      );
+      const { data } = await eduApi.get<DirectoryFileDTO[]>(FileSharingApiEndpoints.BASE, {
+        params: { type: ContentType.FILE, path, share: shareName },
+      });
+      const webdavShareType = useFileSharingStore
+        .getState()
+        .webdavShares.find((s) => s.displayName === shareName)?.type;
+      if (!webdavShareType) return;
+      const dialogShownFiles = processWebdavResponse(data, webdavShareType);
+
       set({
-        dialogShownFiles: directoryFiles.data,
+        dialogShownFiles,
         selectedItems: [],
         selectedRows: {},
       });
@@ -72,13 +78,20 @@ const useFileSharingMoveDialogStore = create<UseFileSharingMoveDialogStore>((set
     }
   },
 
-  fetchDialogDirs: async (path: string) => {
+  fetchDialogDirs: async (shareName, path: string) => {
     try {
       set({ isLoading: true });
-      const directoryFiles = await eduApi.get<DirectoryFileDTO[]>(
-        buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.DIRECTORY, getPathWithoutWebdav(path)),
-      );
-      set({ dialogShownDirs: directoryFiles.data });
+      const { data } = await eduApi.get<DirectoryFileDTO[]>(FileSharingApiEndpoints.BASE, {
+        params: { type: ContentType.DIRECTORY, path, share: shareName },
+      });
+
+      const webdavShareType = useFileSharingStore
+        .getState()
+        .webdavShares.find((s) => s.displayName === shareName)?.type;
+      if (!webdavShareType) return;
+      const dialogShownDirs = processWebdavResponse(data, webdavShareType);
+
+      set({ dialogShownDirs });
     } catch (error) {
       handleApiError(error, set);
     } finally {

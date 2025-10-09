@@ -10,36 +10,24 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useLocation } from 'react-router-dom';
-import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
-import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
+import { useEffect, useState } from 'react';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
-import getStringFromArray from '@libs/common/utils/getStringFromArray';
-import useFileSharingStore from '../useFileSharingStore';
+import useLdapGroups from '@/hooks/useLdapGroups';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import normalizeLdapHomeDirectory from '@libs/filesharing/utils/normalizeLdapHomeDirectory';
 
 const useUserPath = () => {
-  const { mountPoints } = useFileSharingStore();
-  const { globalSettings } = useGlobalSettingsApiStore();
-  const { pathname } = useLocation();
   const { user: lmnUser } = useLmnApiStore();
+  const { isSuperAdmin } = useLdapGroups();
+  const { isGeneric } = useDeploymentTarget();
 
-  let homePath: string;
-  const fallbackPath = `${pathname.split('/').at(-1)}/`;
-  if (globalSettings.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER) {
-    const getFallbackPath = () => {
-      const filtered = mountPoints.filter((mp) => mp.filename === fallbackPath.split('/').at(-1));
-      if (filtered.length !== 0) {
-        return getPathWithoutWebdav(filtered[0]?.filePath);
-      }
+  const [homePath, setHomePath] = useState<string>('');
 
-      return getStringFromArray(lmnUser?.sophomorixIntrinsic2);
-    };
-
-    homePath = getFallbackPath();
-  } else {
-    homePath = fallbackPath;
-  }
+  useEffect(() => {
+    if (isSuperAdmin || isGeneric) {
+      setHomePath('/');
+    } else setHomePath(normalizeLdapHomeDirectory(lmnUser?.homeDirectory || ''));
+  }, [isSuperAdmin, isGeneric, lmnUser]);
 
   return { homePath };
 };

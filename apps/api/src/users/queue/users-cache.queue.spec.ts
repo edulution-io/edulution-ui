@@ -18,6 +18,7 @@ import JOB_NAMES from '@libs/queue/constants/jobNames';
 import USERS_CACHE_UPDATE_LIMIT from '@libs/user/constants/usersCacheUpdateLimit';
 import UsersCacheQueue from './users-cache.queue';
 import UsersService from '../users.service';
+import redisConnection from '../../common/redis.connection';
 
 jest.mock('bullmq', () => ({
   Queue: jest.fn().mockImplementation((name: string, opts: unknown) => ({
@@ -71,10 +72,7 @@ describe('UsersCacheQueue', () => {
     expect(BullQueueMock).toHaveBeenCalledWith(
       QUEUE_CONSTANTS.USERS_CACHE_REFRESH,
       expect.objectContaining({
-        connection: {
-          host: process.env.REDIS_HOST ?? 'localhost',
-          port: +(process.env.REDIS_PORT ?? 6379),
-        },
+        connection: redisConnection,
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         defaultJobOptions: expect.any(Object),
       }),
@@ -84,10 +82,7 @@ describe('UsersCacheQueue', () => {
       QUEUE_CONSTANTS.USERS_CACHE_REFRESH,
       expect.any(Function),
       expect.objectContaining({
-        connection: {
-          host: process.env.REDIS_HOST ?? 'localhost',
-          port: +(process.env.REDIS_PORT ?? 6379),
-        },
+        connection: redisConnection,
         limiter: {
           max: 1,
           duration: USERS_CACHE_UPDATE_LIMIT,

@@ -21,9 +21,11 @@ import i18n from '@/i18n';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import PatchConfigDto from '@libs/common/types/patchConfigDto';
 import APPS from '@libs/appconfig/constants/apps';
+import { decodeBase64 } from '@libs/common/utils/getBase64String';
 
 type UseAppConfigsStore = {
   appConfigs: AppConfigDto[];
+  publicAppConfigs: AppConfigDto[];
   isLoading: boolean;
   isConfigFileLoading: boolean;
   error: Error | null;
@@ -34,7 +36,11 @@ type UseAppConfigsStore = {
   reset: () => void;
   createAppConfig: (appConfig: AppConfigDto) => Promise<void>;
   getAppConfigs: () => Promise<void>;
+  getPublicAppConfigs: () => Promise<void>;
+  getPublicAppConfigByName: (name: string) => Promise<AppConfigDto>;
   isGetAppConfigsLoading: boolean;
+  isGetPublicAppConfigsLoading: boolean;
+  isGetPublicAppConfigByNameLoading: boolean;
   updateAppConfig: (appConfigs: AppConfigDto) => Promise<void>;
   patchSingleFieldInConfig: (name: string, patchConfigDto: PatchConfigDto) => Promise<void>;
   deleteAppConfigEntry: (name: string) => Promise<void>;
@@ -61,8 +67,11 @@ const initialState = {
       position: 0,
     },
   ],
+  publicAppConfigs: [],
   isLoading: false,
   isGetAppConfigsLoading: false,
+  isGetPublicAppConfigsLoading: false,
+  isGetPublicAppConfigByNameLoading: false,
   isConfigFileLoading: false,
   error: null,
 };
@@ -71,8 +80,11 @@ const useAppConfigsStore = create<UseAppConfigsStore>(
   (persist as PersistedAppConfigsStore)(
     (set, get) => ({
       ...initialState,
-      reset: () => set(initialState),
-
+      reset: () =>
+        set((state) => ({
+          ...initialState,
+          publicAppConfigs: state.publicAppConfigs,
+        })),
       setIsAddAppConfigDialogOpen: (isAddAppConfigDialogOpen) => {
         set({ isAddAppConfigDialogOpen });
       },
@@ -104,6 +116,31 @@ const useAppConfigsStore = create<UseAppConfigsStore>(
           handleApiError(e, set);
         } finally {
           set({ isGetAppConfigsLoading: false });
+        }
+      },
+
+      getPublicAppConfigs: async () => {
+        set({ isGetPublicAppConfigsLoading: true, error: null });
+        try {
+          const { data } = await eduApi.get<AppConfigDto[]>(`${EDU_API_CONFIG_ENDPOINTS.ROOT}/public`);
+          set({ publicAppConfigs: data });
+        } catch (e) {
+          handleApiError(e, set);
+        } finally {
+          set({ isGetPublicAppConfigsLoading: false });
+        }
+      },
+
+      getPublicAppConfigByName: async (name: string) => {
+        set({ isGetPublicAppConfigByNameLoading: true, error: null });
+        try {
+          const { data } = await eduApi.get<AppConfigDto>(`${EDU_API_CONFIG_ENDPOINTS.ROOT}/public/${name}`);
+          return data;
+        } catch (e) {
+          handleApiError(e, set);
+          return {} as AppConfigDto;
+        } finally {
+          set({ isGetPublicAppConfigByNameLoading: false });
         }
       },
 
@@ -158,7 +195,7 @@ const useAppConfigsStore = create<UseAppConfigsStore>(
           const { data } = await eduApi.get<string>(
             `${EDU_API_CONFIG_ENDPOINTS.ROOT}/${EDU_API_CONFIG_ENDPOINTS.PROXYCONFIG}?filePath=${filePath}`,
           );
-          return atob(data);
+          return decodeBase64(data);
         } catch (e) {
           handleApiError(e, set);
           return '';
@@ -185,7 +222,7 @@ const useAppConfigsStore = create<UseAppConfigsStore>(
     {
       name: 'appConfig-storage',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ appConfigs: state.appConfigs }),
+      partialize: (state) => ({ appConfigs: state.appConfigs, publicAppConfigs: state.publicAppConfigs }),
     },
   ),
 );
