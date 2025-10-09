@@ -1660,7 +1660,7 @@
       "light": "Light",
       "dark": "Dark"
     },
-    "mailSogoThemeDisabled": "Disabled because SOGo container is not running."
+    "mailSogoThemeDisabled": "Disabled because the mail server is not running."
   },
   "mails": {
     "errors": {

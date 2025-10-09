@@ -1681,7 +1681,7 @@
       "light": "Hell",
       "dark": "Dunkel"
     },
-    "mailSogoThemeDisabled": "Deaktiviert, da der SOGo-Container nicht läuft."
+    "mailSogoThemeDisabled": "Deaktiviert, da der Mailserver nicht läuft."
   },
   "preview": {
     "image": "Bildvorschau",

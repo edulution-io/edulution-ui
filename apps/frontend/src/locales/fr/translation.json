@@ -1482,7 +1482,7 @@
       "light": "Clair",
       "dark": "Sombre"
     },
-    "mailSogoThemeDisabled": "Désactivé car le conteneur SOGo n'est pas en cours d'exécution."
+    "mailSogoThemeDisabled": "Désactivé, car le serveur de messagerie ne fonctionne pas."
   },
   "preview": {
     "image": "Aperçu de l'image",
