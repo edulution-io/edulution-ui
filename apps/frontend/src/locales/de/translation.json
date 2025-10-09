@@ -1654,7 +1654,7 @@
   "licensing": {
     "communityLicenseDialog": {
       "title": "Community-Edition",
-      "description": "Kostenlose Community Edition der {{ applicationName }} UI.<br/>Besuche uns auf <link1>{{link}}</link1>.<br/><strong>Diese Version erhält keinen Hersteller-Support.</strong>"
+      "description": "Kostenlose Community Edition der {{ applicationName }} UI. <strong>Diese Version erhält keinen Hersteller-Support.</strong>"
     }
   },
   "appExtendedOptions": {

@@ -1669,7 +1669,7 @@
   "licensing": {
     "communityLicenseDialog": {
       "title": "Community Edition",
-      "description": "Free community edition of {{ applicationName }} UI.<br/>Visit us on <link1>{{link}}</link1>.<br/><strong>This version does not provide support.</strong>"
+      "description": "Free community edition of {{ applicationName }} UI. <strong>This version does not provide support.</strong>"
     }
   },
   "preview": {
