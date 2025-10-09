@@ -1457,7 +1457,7 @@
   "licensing": {
     "communityLicenseDialog": {
       "title": "Version communautaire",
-      "description": "Version communautaire gratuite de {{ applicationName }} Ui.<br/>Nous rendre visite <link1>{{link}}</link1>.<br/><strong>Cette version ne reçoit aucun support du fabricant.</strong>"
+      "description": "Version communautaire gratuite de {{ applicationName }} Ui. <strong>Cette version ne reçoit aucun support du fabricant.</strong>"
     }
   },
   "appExtendedOptions": {
