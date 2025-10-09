@@ -31,6 +31,7 @@ interface DropdownProps {
   variant?: DropdownVariant;
   searchEnabled?: boolean;
   placeholder?: string;
+  translate?: boolean;
 }
 
 const DropdownSelect: React.FC<DropdownProps> = ({
@@ -42,6 +43,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
   variant = 'default',
   searchEnabled = true,
   placeholder = '',
+  translate = true,
 }) => {
   const { t } = useTranslation();
   const [query, setQuery] = useState<string>('');
@@ -49,8 +51,10 @@ const DropdownSelect: React.FC<DropdownProps> = ({
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const translateLabel = (label: string) => (translate ? t(label) : label);
+
   const selectedOption = options.find((o) => o.id === selectedVal) || null;
-  const selectedLabel = selectedOption ? t(selectedOption.name) : '';
+  const selectedLabel = selectedOption ? translateLabel(selectedOption.name) : '';
 
   const openMenu = () => {
     setIsOpen(true);
@@ -68,7 +72,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
   const filteredOptions = (allOptions: DropdownOptions[]): DropdownOptions[] => {
     if (!query) return allOptions;
     const q = query.toLowerCase();
-    return allOptions.filter((option) => t(option.name).toLowerCase().includes(q));
+    return allOptions.filter((option) => translateLabel(option.name).toLowerCase().includes(q));
   };
 
   return (
@@ -131,7 +135,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
         id="dropdown-listbox"
       >
         {filteredOptions(options).map((option) => {
-          const label = t(option.name);
+          const label = translateLabel(option.name);
           const selected = option.id === selectedVal;
           return (
             <div

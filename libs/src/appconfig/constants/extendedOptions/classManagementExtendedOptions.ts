@@ -12,17 +12,16 @@
 
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
-import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+import TAppFieldWidth from '@libs/appconfig/types/tAppFieldWidth';
 
-const DOCKER_CONTAINER_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
+const CLASS_MANAGEMENT_EXTENDED_OPTIONS = [
   {
-    name: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
-    description: 'containerApplication.description',
-    title: 'containerApplication.title',
+    name: ExtendedOptionKeys.VEYON_PROXYS,
+    description: 'appExtendedOptions.veyonProxys',
     type: ExtendedOptionField.table,
     value: '',
-    width: 'full',
+    width: 'full' as TAppFieldWidth,
   },
 ];
 
-export default DOCKER_CONTAINER_EXTENDED_OPTIONS;
+export default CLASS_MANAGEMENT_EXTENDED_OPTIONS;

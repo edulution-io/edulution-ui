@@ -10,19 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
-import TAppFieldWidth from '@libs/appconfig/types/tAppFieldWidth';
+import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
+import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 
-const CLASS_MANAGEMENT_EXTENDED_OPTIONS = [
-  {
-    name: ExtendedOptionKeys.VEYON_PROXYS,
-    description: 'appExtendedOptions.veyonProxys',
-    title: 'appExtendedOptions.veyonProxysTitle',
-    type: ExtendedOptionField.table,
-    value: '',
-    width: 'full' as TAppFieldWidth,
-  },
-];
+const useDeploymentTarget = () => {
+  const globalSettings = useGlobalSettingsApiStore((s) => s.globalSettings);
 
-export default CLASS_MANAGEMENT_EXTENDED_OPTIONS;
+  const isLmn = globalSettings.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER;
+  const isGeneric = globalSettings.general.deploymentTarget === DEPLOYMENT_TARGET.GENERIC;
+
+  return { isLmn, isGeneric };
+};
+
+export default useDeploymentTarget;

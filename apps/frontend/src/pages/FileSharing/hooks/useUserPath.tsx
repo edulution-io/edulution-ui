@@ -11,24 +11,23 @@
  */
 
 import { useEffect, useState } from 'react';
-import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
-import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import getStringFromArray from '@libs/common/utils/getStringFromArray';
 import useLdapGroups from '@/hooks/useLdapGroups';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import normalizeLdapHomeDirectory from '@libs/filesharing/utils/normalizeLdapHomeDirectory';
 
 const useUserPath = () => {
-  const { globalSettings } = useGlobalSettingsApiStore();
   const { user: lmnUser } = useLmnApiStore();
   const { isSuperAdmin } = useLdapGroups();
+  const { isGeneric } = useDeploymentTarget();
 
   const [homePath, setHomePath] = useState<string>('');
 
   useEffect(() => {
-    if (isSuperAdmin || globalSettings.general.deploymentTarget !== DEPLOYMENT_TARGET.LINUXMUSTER) {
+    if (isSuperAdmin || isGeneric) {
       setHomePath('/');
-    } else setHomePath(getStringFromArray(lmnUser?.sophomorixIntrinsic2));
-  }, [isSuperAdmin, globalSettings.general.deploymentTarget, lmnUser]);
+    } else setHomePath(normalizeLdapHomeDirectory(lmnUser?.homeDirectory || ''));
+  }, [isSuperAdmin, isGeneric, lmnUser]);
 
   return { homePath };
 };

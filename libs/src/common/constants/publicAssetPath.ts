@@ -10,6 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const COMMUNITY_URL = 'https://ask.linuxmuster.net/c/edulution';
+import PUBLIC_DATA_PATH from '@libs/common/constants/publicDataPath';
 
-export default COMMUNITY_URL;
+const PUBLIC_ASSET_PATH = `${PUBLIC_DATA_PATH}/assets`;
+
+export default PUBLIC_ASSET_PATH;

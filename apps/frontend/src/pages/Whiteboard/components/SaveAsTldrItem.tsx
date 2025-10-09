@@ -26,7 +26,7 @@ const SaveAsTldrItem = () => {
 
   return (
     <TldrawUiMenuItem
-      id="saveAsTldr"
+      id="saveAsTldrItem"
       label={t('common.save')}
       readonlyOk
       onSelect={handleSave}

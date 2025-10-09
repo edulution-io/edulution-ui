@@ -15,6 +15,8 @@ import { DefaultMainMenu, DefaultMainMenuContent, TldrawUiMenuGroup, TldrawUiMen
 import SaveAsTldrItem from '@/pages/Whiteboard/components/SaveAsTldrItem';
 import OpenTldrItem from '@/pages/Whiteboard/components/OpenTldrItem';
 import { useTranslation } from 'react-i18next';
+import SaveTldrToLocalItem from '@/pages/Whiteboard/components/SaveLocalTldrItem';
+import OpenLocalTldrItem from '@/pages/Whiteboard/components/OpenLocalTldrItem';
 
 const CustomMainTLDrawMenu = () => {
   const { t } = useTranslation();
@@ -26,8 +28,21 @@ const CustomMainTLDrawMenu = () => {
           id="file-submenu"
           label={t('common.file')}
         >
-          <SaveAsTldrItem />
-          <OpenTldrItem />
+          <TldrawUiMenuSubmenu
+            id="file-save"
+            label={t('common.save')}
+          >
+            <SaveAsTldrItem />
+            <SaveTldrToLocalItem />
+          </TldrawUiMenuSubmenu>
+
+          <TldrawUiMenuSubmenu
+            id="file-open"
+            label={t('common.open')}
+          >
+            <OpenTldrItem />
+            <OpenLocalTldrItem />
+          </TldrawUiMenuSubmenu>
         </TldrawUiMenuSubmenu>
       </TldrawUiMenuGroup>
       <DefaultMainMenuContent />

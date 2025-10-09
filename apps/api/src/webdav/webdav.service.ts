@@ -107,8 +107,8 @@ class WebdavService {
 
   async initializeClient(username: string, share: string): Promise<void> {
     const password = await this.usersService.getPassword(username);
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
-    const client = WebdavClientFactory.createWebdavClient(baseUrl, username, password);
+    const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
+    const client = WebdavClientFactory.createWebdavClient(webdavShare.url, username, password);
     const timeout = this.scheduleClientTimeout(username);
     this.webdavClientCache.set(username, { client, timeout });
   }
@@ -238,8 +238,8 @@ class WebdavService {
     onProgress?: (transferred: number, total?: number) => void,
   ): Promise<WebdavStatusResponse> {
     const password = await this.usersService.getPassword(username);
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath(share);
-    const url = WebdavService.safeJoinUrl(baseUrl, fullPath);
+    const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
+    const url = WebdavService.safeJoinUrl(webdavShare.url, fullPath);
 
     const headers: Record<string, string> = { [HTTP_HEADERS.ContentType]: contentType };
     if (totalSize && Number.isFinite(totalSize) && totalSize > 0) {

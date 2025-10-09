@@ -345,6 +345,11 @@
       "CopyFailed": "La copie a échoué",
       "FileFormatNotSupported": "Le format de fichier n'est pas pris en charge."
     },
+    "publicFileSharing": {
+      "errors": {
+        "PublicFileDownloadFailed": "Le téléchargement du fichier a échoué. Veuillez réessayer plus tard."
+      }
+    },
     "progressBox": {
       "info": "Informations",
       "titleSharing": "Les fichiers seront distribués",
@@ -794,6 +799,33 @@
         "updateError": "Les paramètres n'ont pas pu être mis à jour.",
         "notFoundError": "Les paramètres n'ont pas pu être chargés."
       },
+
+      "branding": {
+        "title": "Identité visuelle"
+      },
+
+      "logo": {
+        "title": "Logo",
+        "descriptionSchool": "Téléversez le logo. Il sera affiché sur l’écran de connexion et sur la carte d’identification de l’application Edulution.",
+        "descriptionGeneric": "Téléversez le logo. Il sera affiché sur l’écran de connexion.",
+        "uploadLightLogo": "Téléverser le logo clair",
+        "uploadDarkLogo": "Téléverser le logo sombre",
+        "deleteSuccessful": "Logo supprimé avec succès."
+      },
+      "organisationInfo": {
+        "title": "Informations sur l’organisation",
+        "descriptionSchool": "Saisissez les informations officielles de votre organisation. Ces informations peuvent être affichées dans l’application Edulution. Veuillez indiquer le nom, la rue, le code postal et, éventuellement, le site web de l’école.",
+        "descriptionGeneric": "Saisissez les informations officielles de votre organisation.",
+        "name": "Nom de l’organisation",
+        "namePlaceholder": "p. ex. Organisation de Sampletown",
+        "street": "Rue",
+        "streetPlaceholder": "p. ex. 1, rue de l’Organisation",
+        "postalCode": "Code postal",
+        "postalCodePlaceholder": "p. ex. 12345",
+        "postalCityPlaceholder": "p. ex. Berlin",
+        "website": "Site web de l’organisation",
+        "city": "Ville"
+      },
       "deploymentTarget": "Plate-forme cible de déploiement"
     },
     "info": {
@@ -833,9 +865,14 @@
           "invalidUrlFormat": "URL non valide"
         },
         "webdavShare": {
-          "title": "WebDAV-Server",
-          "description": "Vous pouvez configurer ici vos propres partages WebDAV.",
+          "title": "WebDAV",
+          "sectionTitle": "WebDAV-Partage",
+          "description": "Vous pouvez configurer ici vos propres serveur WebDAV.",
           "filterPlaceHolderText": "Rechercher le nom de partages"
+        },
+        "webdavServer": {
+          "title": "WebDAV serveurs",
+          "filterPlaceHolderText": "Rechercher un serveur"
         },
         "files": {
           "title": "Fichiers",
@@ -1157,7 +1194,13 @@
     "format": "Format",
     "upload": "Téléverser",
     "mode": "mode",
-    "file": "Fichier"
+    "file": "Fichier",
+    "chooseFile": "Choisir un fichier",
+    "changeFile": "Changer de fichier",
+    "saveLocal": "Enregistrer sur l’appareil",
+    "openLocal": "Ouvrir depuis l’appareil",
+    "openFileFromEdu": "Ouvrir le fichier",
+    "saveFileToEdu": "Enregistrer dans les fichiers"
   },
 
   "saveExternalFileDialogBody": {
@@ -1235,10 +1278,14 @@
     "sidebar": "Linuxmuster"
   },
   "whiteboard": {
-    "title": "Whiteboard",
-    "sidebar": "Whiteboard",
-    "saveAsTlFile": "Enregistrer le tableau blanc au format .tldr",
-    "openTlFile": "Ouvrir un fichier .tldr"
+    "title": "TABLEAU BLANC",
+    "sidebar": "Tableau blanc",
+    "saveAsTlFile": "Enregistrer le tableau blanc sous forme de fichier .tldr",
+    "openTLFileFailed": "Impossible d’ouvrir le fichier",
+    "openTLFileSuccess": "Le fichier a été chargé avec succès",
+    "openTlFile": "Ouvrir",
+    "openLocalTlFile": "Ouvrir un fichier .tldr local",
+    "file": "Fichier"
   },
   "whiteboard-collaboration": {
     "title": "Whiteboard",
@@ -1410,7 +1457,7 @@
   "licensing": {
     "communityLicenseDialog": {
       "title": "Version communautaire",
-      "description": "Version communautaire gratuite de {{ applicationName }} Ui.<br/>Nous rendre visite <link1>{{link}}</link1>.<br/><strong>Cette version ne reçoit aucun support du fabricant.</strong>"
+      "description": "Version communautaire gratuite de {{ applicationName }} Ui. <strong>Cette version ne reçoit aucun support du fabricant.</strong>"
     }
   },
   "appExtendedOptions": {
@@ -1530,6 +1577,28 @@
       "generic": "Générique"
     },
     "status": "Statut",
-    "offline": "Le serveur est actuellement indisponible."
+    "offline": "Le serveur est actuellement indisponible.",
+    "pathVariables": {
+      "title": "Variable de chemin ",
+      "description": "Une variable de chemin dynamique peut être sélectionnée ici à partir des attributs utilisateur. "
+    },
+    "isRootServer": {
+      "title": "Chemin racine",
+      "description": "Pour les fonctions scolaires Linuxmuster, au moins un partage WebDAV doit être configuré comme chemin racine.",
+      "short": "Root",
+      "notConfigured": "Aucun chemin racine n'est configuré. Veuillez contacter l'administrateur système."
+    },
+    "selectPlaceholder": "Sélectionner...",
+    "authentication": {
+      "title": "Authentification",
+      "description": "Vous pouvez sélectionner ici la méthode d'authentification pour le serveur WebDAV.",
+      "basic": " Basic (nom d'utilisateur, mot de passe)"
+    },
+    "selectRootServer": {
+      "title": "Sélection du serveur WebDAV",
+      "description": "Sélectionnez le serveur WebDAV qui doit servir de chemin racine."
+    },
+    "sharePath": "Chemin de partage",
+    "pathPreview": "Aperçu du chemin"
   }
 }

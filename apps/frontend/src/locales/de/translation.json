@@ -682,7 +682,9 @@
         "upperLimit": "Grenzwert",
         "upperBackendLimiters": "Auswahlmöglichkeiten mit Obergrenze",
         "addChoice": "Hinzufügen",
-        "filterPlaceHolderText": "Option suchen"
+        "filterPlaceHolderText": "Option suchen",
+        "imageWidth": "Breite eines Bildes in Pixel [px]",
+        "imageWidthPlaceholder": "0 bedeutet, dass die Breite nur von dem vorhandenen Platz beschränkt wird."
       }
     },
     "participate": {
@@ -935,6 +937,33 @@
         "edulution-binduser-description": "Hier können Zugangsdaten zum LDAP konfiguriert werden, die für den Gruppen-Sync notwendig sind.",
         "edulution-binduser-dn": "Distinguished Name (DN)",
         "edulution-binduser-password": "Passwort"
+      },
+
+      "branding": {
+        "title": "Branding"
+      },
+
+      "logo": {
+        "title": "Logo",
+        "descriptionSchool": "Lade hier das Logo hoch. Es wird auf der Login-Seite und auf dem Ausweis in der edulution App angezeigt.",
+        "descriptionGeneric": "Laden Sie hier Ihr Logo hoch. Es wird auf der Login-Seite angezeigt.",
+        "uploadLightLogo": "Helles Logo hochladen",
+        "uploadDarkLogo": "Dunkles Logo hochladen",
+        "deleteSuccessful": "Logo wurde erfolgreich gelöscht"
+      },
+      "organisationInfo": {
+        "title": "Organisationsinformationen",
+        "descriptionSchool": "Trage die offiziellen Angaben deiner Organisation ein. Diese Informationen werden in der edulution App angezeigt. Bitte gib den Namen, die Straße, die Postleitzahl und optional die Website der Schule an.",
+        "descriptionGeneric": "Trage die offiziellen Angaben deiner Organisation ein.",
+        "name": "Organisation",
+        "namePlaceholder": "Gemeinschaftsschule Musterstadt",
+        "street": "Straße",
+        "streetPlaceholder": "Hauptstraße 1",
+        "postalCode": "Postleitzahl",
+        "postalCodePlaceholder": "12345",
+        "website": "Website der Organisation",
+        "city": "Stadt",
+        "postalCityPlaceholder": "Berlin"
       }
     },
     "userAdministration": {
@@ -986,8 +1015,13 @@
           "invalidUrlFormat": "Ungültige URL"
         },
         "webdavShare": {
-          "title": "WebDAV-Server",
+          "title": "WebDAV",
+          "sectionTitle": "WebDAV-Shares",
           "description": "Hier können WebDAV-Server für den Dateimanager eingerichtet werden.",
+          "filterPlaceHolderText": "Suche nach WebDAV-Share"
+        },
+        "webdavServer": {
+          "title": "WebDAV-Server",
           "filterPlaceHolderText": "Suche nach WebDAV-Server"
         },
         "files": {
@@ -1195,6 +1229,8 @@
     "of": "von",
     "back": "Zurück",
     "confirm": "Bestätigen",
+    "chooseFile": "Datei auswählen",
+    "changeFile": "Datei ändern",
     "creator": "Ersteller",
     "share": "Teilen",
     "answers": "Antworten",
@@ -1324,7 +1360,11 @@
     "mode": "Modus",
     "orContinueWithoutAccount": "Oder fahre ohne Account fort",
     "reset": "Zurücksetzen",
-    "file": "Datei"
+    "file": "Datei",
+    "saveLocal": "Auf dem Gerät speichern",
+    "openLocal": "Von dem Gerät öffnen",
+    "openFileFromEdu": "Datei öffnen",
+    "saveFileToEdu": "In Dateien speichern"
   },
   "form": {
     "path": "Link",
@@ -1408,7 +1448,11 @@
     "title": "WHITEBOARD",
     "sidebar": "Whiteboard",
     "saveAsTlFile": "Whiteboard als .tldr Datei speichern",
-    "openTlFile": ".tldr Datei öffnen"
+    "openTLFileFailed": "Datei kann nicht geöffnet werden",
+    "openTLFileSuccess": "Datei wurde erfolgreich geladen",
+    "openTlFile": "Öffnen",
+    "openLocalTlFile": "Lokale .tldr Datei öffnen",
+    "file": "Datei"
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
@@ -1475,6 +1519,11 @@
   "copyItemDialog": {
     "copyFilesOrDirectoriesToDirectory": "Dateien oder Verzeichnisse in ein Verzeichnis kopieren",
     "copy": "Kopieren"
+  },
+
+  "fileSelectorDialogBody": {
+    "title": "Wähle eine Datei zum Öffnen aus",
+    "selectFile": "Ausgewählte Datei"
   },
 
   "saveExternalFileDialogBody": {
@@ -1607,7 +1656,7 @@
   "licensing": {
     "communityLicenseDialog": {
       "title": "Community-Edition",
-      "description": "Kostenlose Community Edition der {{ applicationName }} UI.<br/>Besuche uns auf <link1>{{link}}</link1>.<br/><strong>Diese Version erhält keinen Hersteller-Support.</strong>"
+      "description": "Kostenlose Community Edition der {{ applicationName }} UI. <strong>Diese Version erhält keinen Hersteller-Support.</strong>"
     }
   },
   "appExtendedOptions": {
@@ -1730,6 +1779,28 @@
       "generic": "Generisch"
     },
     "status": "Status",
-    "offline": "Server ist aktuell nicht erreichbar"
+    "offline": "Server ist aktuell nicht erreichbar",
+    "pathVariables": {
+      "title": "Pfad-Variable",
+      "description": "Hier kann aus den Nutzerattributen eine dynamische Pfadvariable ausgewählt werden."
+    },
+    "isRootServer": {
+      "title": "Root-Pfad",
+      "description": "Für Linuxmuster-Schulfunktionen muss ein WebDAV-Share als Root-Pfad konfiguriert sein, der den gemeinsamen Root-Ordner von Schülern und Lehrern repräsentiert.",
+      "short": "Root",
+      "notConfigured": "Kein Root-Pfad konfiguriert. Bitte kontaktiere den Systemadministrator."
+    },
+    "selectPlaceholder": "Wähle...",
+    "authentication": {
+      "title": "Authentifizierung",
+      "description": "Hier kann die Authentifizierungsmethode für den WebDAV-Server ausgewählt werden.",
+      "basic": "Basic (Benutzername, Passwort)"
+    },
+    "selectRootServer": {
+      "title": "WebDAV Server-Auswahl",
+      "description": "Wähle den WebDAV-Server, der als Root-Pfad fungieren soll."
+    },
+    "sharePath": "Pfad",
+    "pathPreview": "Pfad-Vorschau"
   }
 }

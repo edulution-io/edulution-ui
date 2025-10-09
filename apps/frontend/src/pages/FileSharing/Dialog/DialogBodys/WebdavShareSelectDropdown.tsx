@@ -16,30 +16,38 @@ import { DropdownSelect } from '@/components';
 import { type DropdownOptions } from '@/components/ui/DropdownSelect/DropdownSelect';
 import useFileSharingStore from '../../useFileSharingStore';
 
-const WebdavShareSelectDropdown: React.FC<{ webdavShare: string | undefined }> = ({ webdavShare }) => {
+type WebdavShareSelectDropdownProps = { webdavShare?: string; showRootOnly?: boolean };
+
+const WebdavShareSelectDropdown: React.FC<WebdavShareSelectDropdownProps> = ({ webdavShare, showRootOnly = false }) => {
   const { t } = useTranslation();
   const { webdavShares, selectedWebdavShare, setSelectedWebdavShare } = useFileSharingStore();
 
-  const webdavShareOptions: DropdownOptions[] = webdavShares.map((item) => ({
+  const filteredShares = showRootOnly ? webdavShares.filter((share) => share.isRootServer) : webdavShares;
+
+  const webdavShareOptions: DropdownOptions[] = filteredShares.map((item) => ({
     id: item.displayName,
     name: item.displayName,
   }));
 
   useEffect(() => {
     if (webdavShares.length > 0) {
-      setSelectedWebdavShare(
-        webdavShares.find((share) => share.displayName === webdavShare)?.displayName || webdavShares[0].displayName,
-      );
+      const currentWebdavShare =
+        filteredShares.find((share) => share.displayName === webdavShare)?.displayName ||
+        filteredShares[0]?.displayName;
+
+      setSelectedWebdavShare(currentWebdavShare);
     }
-  }, [webdavShare, webdavShares]);
+  }, [webdavShare, webdavShares, showRootOnly]);
 
   return (
     <DropdownSelect
-      placeholder={t('whiteboard-collaboration.dropdownPlaceholder')}
+      placeholder={t('webdavShare.selectPlaceholder')}
       options={webdavShareOptions}
       selectedVal={selectedWebdavShare}
       handleChange={setSelectedWebdavShare}
       variant="dialog"
+      translate={false}
+      searchEnabled={false}
     />
   );
 };
