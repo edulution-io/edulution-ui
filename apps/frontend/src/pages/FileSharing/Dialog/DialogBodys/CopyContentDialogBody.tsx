@@ -14,16 +14,18 @@ import React from 'react';
 import useUserPath from '@/pages/FileSharing/hooks/useUserPath';
 import MoveContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveContentDialogBody';
 import ContentType from '@libs/filesharing/types/contentType';
-import MoveContentDialogProps from '@libs/filesharing/types/moveContentDialogBodyProps';
+import type MoveContentDialogProps from '@libs/filesharing/types/moveContentDialogBodyProps';
+import { useSearchParams } from 'react-router-dom';
 
 const CopyContentDialogBody: React.FC<Omit<MoveContentDialogProps, 'pathToFetch'>> = (props) => {
   const { homePath } = useUserPath();
+  const [searchParams] = useSearchParams();
+  const pathToFetch = searchParams.get('path');
 
   return (
     <MoveContentDialogBody
       {...props}
-      showAllFiles
-      pathToFetch={homePath}
+      pathToFetch={pathToFetch || homePath}
       fileType={ContentType.DIRECTORY}
       isCurrentPathDefaultDestination
     />

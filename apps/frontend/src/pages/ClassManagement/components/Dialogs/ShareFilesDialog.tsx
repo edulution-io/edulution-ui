@@ -10,25 +10,35 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import React from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { t } from 'i18next';
-import React from 'react';
 import MoveContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveContentDialogBody';
 import ShareCollectDialogProps from '@libs/classManagement/types/shareCollectDialogProps';
-import useUserPath from '@/pages/FileSharing/hooks/useUserPath';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableSharePathname';
 
 const ShareFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose, action }) => {
-  const { homePath } = useUserPath();
   const { moveOrCopyItemToPath } = useFileSharingDialogStore();
+  const { webdavShares } = useFileSharingStore();
+  const { createVariableSharePathname } = useVariableSharePathname();
 
-  const getDialogBody = () => (
-    <MoveContentDialogBody
-      showAllFiles
-      pathToFetch={homePath}
-    />
-  );
+  const rootShares = webdavShares.filter((share) => share.isRootServer);
+  const pathToFetch =
+    rootShares.length > 0 ? createVariableSharePathname(rootShares[0].pathname, rootShares[0].pathVariables) : '/';
+
+  const getDialogBody = () =>
+    rootShares.length === 0 ? (
+      <p>{t('webdavShare.isRootServer.notConfigured')}</p>
+    ) : (
+      <MoveContentDialogBody
+        showAllFiles
+        pathToFetch={pathToFetch}
+        showRootOnly
+      />
+    );
 
   const getFooter = () => (
     <DialogFooterButtons

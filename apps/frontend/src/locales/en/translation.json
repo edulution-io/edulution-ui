@@ -680,7 +680,9 @@
         "upperLimit": "Limit",
         "upperBackendLimiters": "Choices with an upper limit",
         "addChoice": "Add",
-        "filterPlaceHolderText": "Search for option"
+        "filterPlaceHolderText": "Search for option",
+        "imageWidth": "Width of one image in pixel [px]",
+        "imageWidthPlaceholder": "0 means that the width is only limited by the available space."
       }
     },
     "participate": {
@@ -1010,8 +1012,13 @@
           "invalidUrlFormat": "Invalid URL"
         },
         "webdavShare": {
-          "title": "WebDAV-Server",
+          "title": "WebDAV",
+          "sectionTitle": "WebDAV-Shares",
           "description": "WebDAV servers can be set up for the file manager here.",
+          "filterPlaceHolderText": "Search for WebDAV shares"
+        },
+        "webdavServer": {
+          "title": "WebDAV-Server",
           "filterPlaceHolderText": "Search for WebDAV servers"
         },
         "files": {
@@ -1669,7 +1676,7 @@
   "licensing": {
     "communityLicenseDialog": {
       "title": "Community Edition",
-      "description": "Free community edition of {{ applicationName }} UI.<br/>Visit us on <link1>{{link}}</link1>.<br/><strong>This version does not provide support.</strong>"
+      "description": "Free community edition of {{ applicationName }} UI. <strong>This version does not provide support.</strong>"
     }
   },
   "preview": {
@@ -1768,6 +1775,28 @@
       "generic": "Generic"
     },
     "status": "Status",
-    "offline": "Server is currently unavailable"
+    "offline": "Server is currently unavailable",
+    "pathVariables": {
+      "title": "Path variable",
+      "description": "A dynamic path variable can be selected here from the user attributes."
+    },
+    "isRootServer": {
+      "title": "Root path",
+      "description": "For the Linuxmuster school functions, at least one WebDAV share must be configured as the root path.",
+      "short": "Root",
+      "notConfigured": "No root path configured. Please contact the system administrator."
+    },
+    "selectPlaceholder": "Select...",
+    "authentication": {
+      "title": "Authentication",
+      "description": "The authentication method for the WebDAV server can be selected here.",
+      "basic": "Basic (username, password)"
+    },
+    "selectRootServer": {
+      "title": "WebDAV Server Selection",
+      "description": "Select the WebDAV server that should serve as the root path."
+    },
+    "sharePath": "Path",
+    "pathPreview": "Path preview"
   }
 }

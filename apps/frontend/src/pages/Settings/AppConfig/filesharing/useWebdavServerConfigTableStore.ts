@@ -11,7 +11,7 @@
  */
 
 import { create, StoreApi, UseBoundStore } from 'zustand';
-import { WebdavShareTableStore } from '@libs/appconfig/types/webdavShareTableStore';
+import { WebdavServerTableStore } from '@libs/appconfig/types/webdavShareTableStore';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
@@ -23,7 +23,7 @@ const initialValues = {
   selectedConfig: null,
 };
 
-const useWebdavShareConfigTableStore: UseBoundStore<StoreApi<WebdavShareTableStore>> = create<WebdavShareTableStore>(
+const useWebdavServerConfigTableStore: UseBoundStore<StoreApi<WebdavServerTableStore>> = create<WebdavServerTableStore>(
   (set) => ({
     ...initialValues,
 
@@ -33,7 +33,7 @@ const useWebdavShareConfigTableStore: UseBoundStore<StoreApi<WebdavShareTableSto
 
     fetchTableContent: async () => {
       try {
-        const { data } = await eduApi.get<WebdavShareDto[]>('/webdav-shares', { params: { isRootServer: false } });
+        const { data } = await eduApi.get<WebdavShareDto[]>('/webdav-shares', { params: { isRootServer: true } });
         set({
           tableContentData: data,
         });
@@ -42,34 +42,10 @@ const useWebdavShareConfigTableStore: UseBoundStore<StoreApi<WebdavShareTableSto
       }
     },
 
-    createWebdavShare: async (webdavShareDto: WebdavShareDto) => {
-      set({ isLoading: true });
-      try {
-        await eduApi.post('/webdav-shares', webdavShareDto);
-        set({ isLoading: false });
-      } catch (error) {
-        handleApiError(error, set);
-      } finally {
-        set({ isLoading: false });
-      }
-    },
-
-    updateWebdavShare: async (webdavShareId, webdavShareDto) => {
-      set({ isLoading: true });
-      try {
-        await eduApi.put<WebdavShareDto[]>(`/webdav-shares/${webdavShareId}`, webdavShareDto);
-        set({ isLoading: false });
-      } catch (error) {
-        handleApiError(error, set);
-      } finally {
-        set({ isLoading: false });
-      }
-    },
-
     deleteTableEntry: async (_applicationName, webdavShareId) => {
       set({ isLoading: true });
       try {
-        await eduApi.delete(`/webdav-shares/${webdavShareId}`);
+        await eduApi.delete(`/webdav-shares/${webdavShareId}`, { params: { isRootServer: true } });
         set({ isLoading: false });
       } catch (error) {
         handleApiError(error, set);
@@ -82,4 +58,4 @@ const useWebdavShareConfigTableStore: UseBoundStore<StoreApi<WebdavShareTableSto
   }),
 );
 
-export default useWebdavShareConfigTableStore;
+export default useWebdavServerConfigTableStore;

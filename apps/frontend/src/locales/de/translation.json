@@ -682,7 +682,9 @@
         "upperLimit": "Grenzwert",
         "upperBackendLimiters": "Auswahlmöglichkeiten mit Obergrenze",
         "addChoice": "Hinzufügen",
-        "filterPlaceHolderText": "Option suchen"
+        "filterPlaceHolderText": "Option suchen",
+        "imageWidth": "Breite eines Bildes in Pixel [px]",
+        "imageWidthPlaceholder": "0 bedeutet, dass die Breite nur von dem vorhandenen Platz beschränkt wird."
       }
     },
     "participate": {
@@ -1013,8 +1015,13 @@
           "invalidUrlFormat": "Ungültige URL"
         },
         "webdavShare": {
-          "title": "WebDAV-Server",
+          "title": "WebDAV",
+          "sectionTitle": "WebDAV-Shares",
           "description": "Hier können WebDAV-Server für den Dateimanager eingerichtet werden.",
+          "filterPlaceHolderText": "Suche nach WebDAV-Share"
+        },
+        "webdavServer": {
+          "title": "WebDAV-Server",
           "filterPlaceHolderText": "Suche nach WebDAV-Server"
         },
         "files": {
@@ -1654,7 +1661,7 @@
   "licensing": {
     "communityLicenseDialog": {
       "title": "Community-Edition",
-      "description": "Kostenlose Community Edition der {{ applicationName }} UI.<br/>Besuche uns auf <link1>{{link}}</link1>.<br/><strong>Diese Version erhält keinen Hersteller-Support.</strong>"
+      "description": "Kostenlose Community Edition der {{ applicationName }} UI. <strong>Diese Version erhält keinen Hersteller-Support.</strong>"
     }
   },
   "appExtendedOptions": {
@@ -1770,6 +1777,28 @@
       "generic": "Generisch"
     },
     "status": "Status",
-    "offline": "Server ist aktuell nicht erreichbar"
+    "offline": "Server ist aktuell nicht erreichbar",
+    "pathVariables": {
+      "title": "Pfad-Variable",
+      "description": "Hier kann aus den Nutzerattributen eine dynamische Pfadvariable ausgewählt werden."
+    },
+    "isRootServer": {
+      "title": "Root-Pfad",
+      "description": "Für Linuxmuster-Schulfunktionen muss ein WebDAV-Share als Root-Pfad konfiguriert sein, der den gemeinsamen Root-Ordner von Schülern und Lehrern repräsentiert.",
+      "short": "Root",
+      "notConfigured": "Kein Root-Pfad konfiguriert. Bitte kontaktiere den Systemadministrator."
+    },
+    "selectPlaceholder": "Wähle...",
+    "authentication": {
+      "title": "Authentifizierung",
+      "description": "Hier kann die Authentifizierungsmethode für den WebDAV-Server ausgewählt werden.",
+      "basic": "Basic (Benutzername, Passwort)"
+    },
+    "selectRootServer": {
+      "title": "WebDAV Server-Auswahl",
+      "description": "Wähle den WebDAV-Server, der als Root-Pfad fungieren soll."
+    },
+    "sharePath": "Pfad",
+    "pathPreview": "Pfad-Vorschau"
   }
 }

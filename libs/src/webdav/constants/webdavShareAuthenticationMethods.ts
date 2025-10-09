@@ -10,19 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
-import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+const WEBDAV_SHARE_AUTHENTICATION_METHODS = {
+  BASIC: 'basic',
+} as const;
 
-const DOCKER_CONTAINER_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
-  {
-    name: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
-    description: 'containerApplication.description',
-    title: 'containerApplication.title',
-    type: ExtendedOptionField.table,
-    value: '',
-    width: 'full',
-  },
-];
-
-export default DOCKER_CONTAINER_EXTENDED_OPTIONS;
+export default WEBDAV_SHARE_AUTHENTICATION_METHODS;

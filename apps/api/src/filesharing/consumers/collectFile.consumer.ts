@@ -32,12 +32,11 @@ class CollectFileConsumer extends WorkerHost {
   }
 
   async process(job: Job<FileOperationQueueJobData>): Promise<void> {
-    const { username, userRole, item, operationType, processed, total, share } = job.data as CollectFileJobData;
+    const { username, item, operationType, processed, total, share } = job.data as CollectFileJobData;
     const failedPaths: string[] = [];
 
-    const initFolderName = `${userRole}s/${username}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}`;
     try {
-      await this.webDavService.createFolder(username, `${initFolderName}/${item.newFolderName}`, item.userName, share);
+      await this.webDavService.createFolder(username, item.destinationPath, item.userName, share);
 
       if (operationType === LMN_API_COLLECT_OPERATIONS.CUT) {
         await this.webDavService.cutCollectedItems(username, item.originPath, item.destinationPath, share);

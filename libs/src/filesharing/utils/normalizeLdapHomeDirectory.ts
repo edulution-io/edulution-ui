@@ -10,6 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const COMMUNITY_URL = 'https://ask.linuxmuster.net/c/edulution';
+const normalizeLdapHomeDirectory = (path: string): string => {
+  const withoutServer = path.replace(/^\\\\[^\\]+\\/, '');
+  return `/${withoutServer.replace(/\\/g, '/')}`;
+};
 
-export default COMMUNITY_URL;
+export default normalizeLdapHomeDirectory;

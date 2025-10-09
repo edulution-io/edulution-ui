@@ -13,12 +13,21 @@
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import TAppFieldWidth from '@libs/appconfig/types/tAppFieldWidth';
+import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 
-const WEBDAV_SHARE_TABLE_EXTENDED_OPTIONS = [
+const WEBDAV_SHARE_TABLE_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
+  {
+    name: ExtendedOptionKeys.WEBDAV_SERVER_TABLE,
+    description: 'appExtendedOptions.webdavServers',
+    title: 'settings.appconfig.sections.webdavServer.title',
+    type: ExtendedOptionField.table,
+    value: '',
+    width: 'full' as TAppFieldWidth,
+  },
   {
     name: ExtendedOptionKeys.WEBDAV_SHARE_TABLE,
-    description: 'appExtendedOptions.veyonProxys',
-    title: 'appExtendedOptions.veyonProxysTitle',
+    description: 'webdavShares.title',
+    title: 'settings.appconfig.sections.webdavShare.sectionTitle',
     type: ExtendedOptionField.table,
     value: '',
     width: 'full' as TAppFieldWidth,

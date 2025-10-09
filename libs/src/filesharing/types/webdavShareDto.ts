@@ -10,9 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IsArray, IsDate, IsMongoId, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsDate, IsMongoId, IsString } from 'class-validator';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import type WebdavShareStatusType from '@libs/webdav/types/webdavShareStatusType';
+import type WebdavShareAuthenticationMethodsType from '@libs/webdav/types/webdavShareAuthenticationMethodsType';
+import type MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import type WebdavShareType from './webdavShareType';
 
 class WebdavShareDto {
@@ -26,7 +28,19 @@ class WebdavShareDto {
   url: string;
 
   @IsString()
+  sharePath: string;
+
+  @IsString()
   pathname: string;
+
+  @IsString()
+  rootServer: string;
+
+  @IsBoolean()
+  isRootServer: boolean;
+
+  @IsString()
+  pathVariables: MultipleSelectorOptionSH[] = [];
 
   @IsArray()
   accessGroups: MultipleSelectorGroup[] = [];
@@ -39,6 +53,9 @@ class WebdavShareDto {
 
   @IsDate()
   lastChecked: Date | null = null;
+
+  @IsString()
+  authentication: WebdavShareAuthenticationMethodsType;
 }
 
 export default WebdavShareDto;
