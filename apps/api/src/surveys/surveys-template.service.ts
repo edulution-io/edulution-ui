@@ -79,7 +79,7 @@ class SurveysTemplateService implements OnModuleInit {
     const filesToDelete: string[] = [];
 
     const creationPromises = fileNames.map(async (fileName) => {
-      const content = await FilesystemService.readFile<TemplateDto>(join(path, fileName));
+      const content = await FilesystemService.readFileAs<TemplateDto>(join(path, fileName));
       if (!content) {
         throw new CustomHttpException(
           CommonErrorMessages.FILE_READING_FAILED,
