@@ -117,6 +117,20 @@ class FilesystemService {
     }
   }
 
+  static async readFileAs<T>(filePath: string): Promise<T> {
+    try {
+      const fileContent = await readFile(filePath, 'utf-8');
+      return JSON.parse(fileContent) as T;
+    } catch (error) {
+      throw new CustomHttpException(
+        CommonErrorMessages.FILE_READING_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        filePath,
+        FilesystemService.name,
+      );
+    }
+  }
+
   static async moveFile(oldFilePath: string, newFilePath: string): Promise<void> {
     try {
       await move(oldFilePath, newFilePath, { overwrite: true });

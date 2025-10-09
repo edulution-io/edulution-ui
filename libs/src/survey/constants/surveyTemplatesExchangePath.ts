@@ -10,11 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SurveyDto from './survey.dto';
+import { join } from 'path';
+import APPS from '@libs/appconfig/constants/apps';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import { TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
 
-interface SurveyTemplateDto {
-  fileName?: string;
-  template: Partial<SurveyDto>;
-}
+const SURVEY_TEMPLATES_EXCHANGE_PATH = join(APPS_FILES_PATH, APPS.SURVEYS, TEMPLATES);
 
-export default SurveyTemplateDto;
+export default SURVEY_TEMPLATES_EXCHANGE_PATH;

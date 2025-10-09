@@ -10,9 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
+import { join } from 'path';
+import APPS from '@libs/appconfig/constants/apps';
 import { TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
 
-const SURVEYS_FILE_FOLDERS = [TEMPLATES, ATTACHMENT_FOLDER];
+const SURVEY_TEMPLATES_DEFAULT_TEMPLATE_PATH = join('./dist/apps', 'api', APPS.SURVEYS, TEMPLATES);
 
-export default SURVEYS_FILE_FOLDERS;
+export default SURVEY_TEMPLATES_DEFAULT_TEMPLATE_PATH;
