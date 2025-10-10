@@ -38,7 +38,7 @@ import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVar
 import getDisplayName from '@/utils/getDisplayName';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import type AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
-import AppConfigDropdownSelect from '@/pages/Settings/AppConfig/components/AppConfigDropdownSelect';
+import AppConfigPositionSelect from '@/pages/Settings/AppConfig/components/dropdown/AppConfigPositionSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailImporterConfig from './mails/MailImporterConfig';
@@ -172,7 +172,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
       >
         {matchingConfig && (
           <div className="m-5 space-y-3">
-            <AppConfigDropdownSelect
+            <AppConfigPositionSelect
               form={form}
               appConfig={matchingConfig}
             />

@@ -27,7 +27,7 @@ interface AppConfigFormProps {
   appConfig: AppConfigDto;
 }
 
-const AppConfigDropdownSelect = ({ form, appConfig }: AppConfigFormProps) => {
+const AppConfigPositionSelect = ({ form, appConfig }: AppConfigFormProps) => {
   const { setValue, control, getValues } = form;
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -58,4 +58,4 @@ const AppConfigDropdownSelect = ({ form, appConfig }: AppConfigFormProps) => {
   );
 };
 
-export default AppConfigDropdownSelect;
+export default AppConfigPositionSelect;

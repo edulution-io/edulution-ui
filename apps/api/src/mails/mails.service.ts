@@ -23,7 +23,15 @@ import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
+import DOCKER_COMMANDS from '@libs/docker/constants/dockerCommands';
+import DOCKER_CONTAINER_NAMES from '@libs/docker/constants/dockerContainerNames';
+import MailTheme from '@libs/mail/constants/mailTheme';
+import SOGO_THEME from '@libs/mail/constants/sogoTheme';
+import { extractTheme, extractVersion } from '@libs/mail/utils/sogoThemeMetadata';
+import DOCKER_STATES from '@libs/docker/constants/dockerStates';
 import CustomHttpException from '../common/CustomHttpException';
+import DockerService from '../docker/docker.service';
+import FilesystemService from '../filesystem/filesystem.service';
 import { MailProvider, MailProviderDocument } from './mail-provider.schema';
 import FilterUserPipe from '../common/pipes/filterUser.pipe';
 import AppConfigService from '../appconfig/appconfig.service';
@@ -49,6 +57,8 @@ class MailsService implements OnModuleInit {
   constructor(
     @InjectModel(MailProvider.name) private mailProviderModel: Model<MailProviderDocument>,
     private readonly appConfigService: AppConfigService,
+    private readonly dockerService: DockerService,
+    private readonly filesystemService: FilesystemService,
   ) {
     const httpsAgent = new HttpsAgent({
       rejectUnauthorized: false,
@@ -90,6 +100,88 @@ class MailsService implements OnModuleInit {
       })}`,
       MailsService.name,
     );
+  }
+
+  @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
+  async updateSogoTheme() {
+    try {
+      const extendedOptions = (await this.appConfigService.getAppConfigByName(APPS.MAIL))?.extendedOptions;
+      if (!extendedOptions || typeof extendedOptions !== 'object') return;
+
+      const themeRaw = (extendedOptions[ExtendedOptionKeys.MAIL_SOGO_THEME] as string) ?? MailTheme.DARK;
+      const theme = themeRaw.toLowerCase();
+      const isLight = theme === MailTheme.LIGHT;
+
+      const requiredContainer = DOCKER_CONTAINER_NAMES.MAILCOWDOCKERIZED_SOGO_MAILCOW_1;
+      const containers = await this.dockerService.getContainers([requiredContainer]);
+      const isRunning = Array.isArray(containers) && containers.some((c) => c.State === DOCKER_STATES.RUNNING);
+      if (!isRunning) {
+        Logger.debug(
+          `Skipping SOGo theme update because container '${requiredContainer}' is not running`,
+          MailsService.name,
+        );
+        return;
+      }
+
+      const sourceUrl = isLight ? SOGO_THEME.LIGHT_CSS_URL : SOGO_THEME.DARK_CSS_URL;
+      const response = await axios.get<string>(sourceUrl, { responseType: 'text' });
+      const newCss = response.data ?? '';
+
+      const targetPath = `${SOGO_THEME.TARGET_DIR}/${SOGO_THEME.TARGET_FILE_NAME}`;
+
+      if (!(await this.shouldWriteNewCss(targetPath, newCss))) {
+        Logger.debug(`SOGo theme unchanged; skipping update at ${targetPath}`, MailsService.name);
+        return;
+      }
+
+      await this.filesystemService.ensureDirectoryExists(SOGO_THEME.TARGET_DIR);
+      await FilesystemService.writeFile(targetPath, newCss);
+      Logger.debug(`SOGo theme updated to '${theme}' at ${targetPath}`, MailsService.name);
+
+      const containersToRestart = [
+        DOCKER_CONTAINER_NAMES.MAILCOWDOCKERIZED_MEMCACHED_MAILCOW_1,
+        DOCKER_CONTAINER_NAMES.MAILCOWDOCKERIZED_SOGO_MAILCOW_1,
+      ];
+      await Promise.all(
+        containersToRestart.map((id) =>
+          this.dockerService.executeContainerCommand({ id, operation: DOCKER_COMMANDS.RESTART }),
+        ),
+      );
+      Logger.log(`Restarted Mailcow containers to apply SOGo theme.`, MailsService.name);
+    } catch (error) {
+      Logger.error(
+        `Failed to update SOGo theme: ${error instanceof Error ? error.message : String(error)}`,
+        MailsService.name,
+      );
+    }
+  }
+
+  private async shouldWriteNewCss(targetPath: string, newCss: string): Promise<boolean> {
+    const exists = await FilesystemService.checkIfFileExist(targetPath);
+    if (!exists) return true;
+
+    try {
+      const currentCss = (await FilesystemService.readFile(targetPath)).toString('utf-8');
+
+      if (currentCss.trim() === newCss.trim()) return false;
+
+      const currentVersion = extractVersion(currentCss);
+      const newVersion = extractVersion(newCss);
+      const currentTheme = extractTheme(currentCss);
+      const newTheme = extractTheme(newCss);
+
+      const bothHeadersEqual =
+        !!currentVersion &&
+        !!newVersion &&
+        !!currentTheme &&
+        !!newTheme &&
+        currentVersion === newVersion &&
+        currentTheme === newTheme;
+
+      return !bothHeadersEqual;
+    } catch {
+      return true;
+    }
   }
 
   async getMails(emailAddress: string, password: string): Promise<MailDto[]> {

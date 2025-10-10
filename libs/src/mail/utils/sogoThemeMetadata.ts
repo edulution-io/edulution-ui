@@ -10,14 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const ExtendedOptionField = {
-  input: 'input',
-  password: 'password',
-  table: 'table',
-  number: 'number',
-  switch: 'switch',
-  textarea: 'textarea',
-  dropdown: 'dropdown',
-} as const;
+export const extractVersion = (content: string): string | undefined => content.match(/@version\s+([^\s*]+)/i)?.[1];
 
-export default ExtendedOptionField;
+export const extractTheme = (content: string): string | undefined => content.match(/@theme\s+([^\s*]+)/i)?.[1];

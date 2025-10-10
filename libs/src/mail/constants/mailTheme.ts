@@ -10,14 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const ExtendedOptionField = {
-  input: 'input',
-  password: 'password',
-  table: 'table',
-  number: 'number',
-  switch: 'switch',
-  textarea: 'textarea',
-  dropdown: 'dropdown',
+const MailTheme = {
+  LIGHT: 'light',
+  DARK: 'dark',
 } as const;
 
-export default ExtendedOptionField;
+export default MailTheme;

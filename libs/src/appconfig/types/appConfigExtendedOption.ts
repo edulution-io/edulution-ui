@@ -22,4 +22,7 @@ export interface AppConfigExtendedOption {
   type: ExtendedOptionFieldType;
   value?: TAppFieldType;
   width?: TAppFieldWidth;
+  options?: { id: string; name: string }[];
+  requiredContainers?: string[];
+  disabledWarningText?: string;
 }
