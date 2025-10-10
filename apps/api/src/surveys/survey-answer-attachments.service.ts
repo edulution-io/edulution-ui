@@ -11,13 +11,12 @@
  */
 
 import { join } from 'path';
-import { Response } from 'express';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import SURVEY_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersAttachmentPath';
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import { PUBLIC_SURVEYS, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
@@ -26,24 +25,6 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
 
   onModuleInit() {
     void this.fileSystemService.ensureDirectoryExists(SURVEY_ANSWERS_ATTACHMENT_PATH);
-  }
-
-  async serveFileFromAnswer(userName: string, surveyId: string, fileName: string, res: Response): Promise<Response> {
-    const tempPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, fileName);
-    const permanentPath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName, fileName);
-    const tempFileExists = await FilesystemService.checkIfFileExist(tempPath);
-    if (tempFileExists) {
-      const fileStream = await this.fileSystemService.createReadStream(tempPath);
-      fileStream.pipe(res);
-      return res;
-    }
-    const permanentFileExists = await FilesystemService.checkIfFileExist(permanentPath);
-    if (permanentFileExists) {
-      const fileStream = await this.fileSystemService.createReadStream(permanentPath);
-      fileStream.pipe(res);
-      return res;
-    }
-    throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   static async deleteTempFileFromAnswer(userName: string, surveyId: string, fileName: string): Promise<void> {
@@ -92,6 +73,8 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
           }
           if (fileName && tempFileNames.includes(fileName)) {
             fileNamesToMove.push(fileName);
+            // eslint-disable-next-line no-param-reassign
+            item.content = item.content?.replace(`/${PUBLIC_SURVEYS}/`, `/${SURVEYS}/`);
           }
         });
       } else {
@@ -99,6 +82,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
         if (fileName && tempFileNames.includes(fileName)) {
           fileNamesToMove.push(fileName);
         }
+        questionAnswer.content = questionAnswer.content?.replace(`/${PUBLIC_SURVEYS}/`, `/${SURVEYS}/`);
       }
     });
     const movingPromises = fileNamesToMove.map(async (fileName) =>
