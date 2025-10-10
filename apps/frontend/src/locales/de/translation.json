@@ -70,7 +70,7 @@
       "FULLY_VISIBLE-short": "Vollständig",
       "ONLY_TITLE": "Nur Titel anzeigen",
       "ONLY_TITLE-short": "Nur Titel",
-      "visibleByUsersAndGroups": "Diese Kategorie mit ihren Mitteilungen ist sichtbar für Nutzer und Gruppen in der Info Board App",
+      "visibleByUsersAndGroups": "Diese Kategorie mit deinen Mitteilungen ist sichtbar für Nutzer und Gruppen in der Info Board App",
       "visibleByUsersAndGroupsTitle": "Info Board App",
       "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen in der Info Board App",
       "editableByUsersAndGroupsTitle": "Mitteilungen verwalten"
@@ -109,14 +109,14 @@
   "dashboard": {
     "pageTitle": "Dashboard",
     "sidebar": "Dashboard",
-    "description": "Hier ist ihr persönliches {{ applicationName }} Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Unterricht gesammelt sind.",
+    "description": "Hier ist dein persönliches {{ applicationName }} Dashboard. Dem Ort an dem all deine Anwendungen für den digitalen Unterricht gesammelt sind.",
     "mobileAccess": {
       "title": "Mobiler Zugriff",
       "manual": "Anleitung",
       "manualSetup": "Manuelles Einrichten",
       "setupWithQrCode": "Einrichtung via QR-Code",
       "accessData": "Zugangsdaten",
-      "content": "Du kannst von vielen mobilen Geräten aus auf den Schulserver zugreifen. Drücke auf Anleitung um zu starten.",
+      "content": "Du kannst von vielen mobilen Geräten aus auf den Schulserver zugreifen. Drücke auf Anleitung, um zu starten.",
       "scanAccessInfo": "Um die Zugangsdaten zu übertragen, bitte folgenden QR-Code mit der {{ applicationName }} App scannen.",
       "manualAccessInfo": "Gib die Anmeldedaten manuell in der {{ applicationName }} App ein. Das folgende Beispiel zeigt, wie die einzelnen Felder auszufüllen sind.",
       "nextStepPreview": "Im nächsten Schritt kannst du die Zugangsdaten übertragen.",
@@ -177,7 +177,7 @@
       "GetProjectFailed": "Abrufen des Projekts fehlgeschlagen",
       "PasswordMismatch": "Aktuelles Passwort stimmt nicht",
       "PasswordChangeFailed": "Passwort ändern fehlgeschlagen",
-      "GetUsersQuotaFailed": "Abrufen der Benutzerkontigente fehlgeschlagen."
+      "GetUsersQuotaFailed": "Abrufen der Benutzerkontingente fehlgeschlagen."
     }
   },
   "ticketsystem": {
@@ -195,7 +195,7 @@
     "rowSelected": "{{selected}} von {{total}} Job ausgewählt",
     "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
     "importer": {
-      "filterPlaceHolderText": "Suche nach Benutzername",
+      "filterPlaceHolderText": "Suche nach Benutzernamen",
       "title": "E-Mail-Sync",
       "provider": "E-Mail-Provider",
       "interval": "Sync-Intervall",
@@ -227,7 +227,7 @@
       "BbbUnauthorized": "Du bist nicht autorisiert auf den externen BBB-Server zuzugreifen",
       "AppNotProperlyConfigured": "Die Konferenz-App ist nicht richtig konfiguriert, wende dich an den Systemadministrator",
       "YouAreNotTheCreator": "Du bist nicht der Ersteller der Konferenz",
-      "AlreadyInAnotherMeeting": "Du befindest dich bereits in einer Konferenz. Bitte verlasse die laufende Konferenz, bevor du einer neuen beitritst.",
+      "AlreadyInAnotherMeeting": "Du befindest dich bereits in einer Konferenz. Bitte verlasse die laufende Konferenz, bevor du einer neuen beitrittst.",
       "DBAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "WrongPassword": "Das eingegebene Passwort ist falsch",
       "ConferenceIsNotRunning": "Die Konferenz wurde nicht gestartet",
@@ -267,7 +267,7 @@
     "editConference": "Konferenz bearbeiten",
     "conferenceUpdatedSuccessfully": "Konferenz erfolgreich gespeichert ",
     "conferenceFetchedSuccessfully": "Konferenzen erfolgreich aktualisiert ",
-    "conferenceCreatedSuccessfully": "Konferenz erfolgreich erstellet",
+    "conferenceCreatedSuccessfully": "Konferenz erfolgreich erstellt",
     "confirmSingleDelete": "Soll diese Konferenz wirklich gelöscht werden?",
     "confirmMultiDelete": "Sollen diese Konferenzen wirklich gelöscht werden?",
     "name": "Name der Konferenz",
@@ -346,7 +346,7 @@
       "SaveFailed": "Speichern fehlgeschlagen",
       "DuplicateFailed": "Kopieren fehlgeschlagen",
       "AppNotProperlyConfigured": "OnlyOffice ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator.",
-      "CollectingFailed": "Einasmmeln der Dateien fehlgeschlagen",
+      "CollectingFailed": "Einsammeln der Dateien fehlgeschlagen",
       "MissingCallbackURL": "Fehlende Callback-URL",
       "SharingFailed": "Austeilen der Dateien fehlgeschlagen",
       "CopyFailed": "Kopieren fehlgeschlagen",
@@ -406,7 +406,7 @@
       "isAccessibleBy": "Zugänglich für",
       "isPasswordProtected": "Passwort",
       "publiclyAccessible": "Öffentlich zugänglich",
-      "qrCodePublicShareFile": "QR-Code für öffentlichen Freigabelinks",
+      "qrCodePublicShareFile": "QR-Code für öffentliche Freigabelinks",
       "createNewFileLink": "Neuen Freigabe-Link erstellen",
       "editPublicShareFile": "Freigabe-Link bearbeiten",
       "sharePublicFile": "Öffentliche Freigabe-Links",
@@ -551,7 +551,7 @@
     "firstPasswordIsCurrentlySet": "Das initiale Passwort ist als aktuelles Passwort gesetzt.",
     "firstPasswordIsCurrentlyNotSet": "Das initiale Passwort ist nicht als aktuelles Passwort gesetzt.",
     "passwordRequirements": "Verwenden Sie Großbuchstaben, Kleinbuchstaben und Sonderzeichen oder Zahlen.",
-    "projectsPageDescription": "Hier findest du eine Übersicht über alle Projekte in denen du Admin bist.",
+    "projectsPageDescription": "Hier findest du eine Übersicht über alle Projekte, in denen du Admin bist.",
     "typeToFilter": "Tippen um zu filtern...",
     "systemName": "Systemname",
     "printing": "Drucken",
@@ -607,7 +607,7 @@
       "subnet": "Subnet",
       "subnetDescription": "Subnet in CIDR-Notation (10.0.0.0/24)",
       "subnetPlaceholder": "10.0.0.0/24",
-      "proxyAdress": "Proxy Addresse",
+      "proxyAdress": "Proxy Adresse",
       "proxyAdressDescription": "URL des Veyon-WebAPI-Proxy",
       "proxyAdressPlaceholder": "http://localhost:11080",
       "createConfig": "Konfiguration erstellen",
@@ -698,7 +698,7 @@
       "idParagraph": "Um deine Antwort einzusehen oder, falls konfiguriert, nochmals zu bearbeiten, kannst du die Teilnahme-ID hier benutzen.",
       "usernameRequired": "Der Benutzername ist erforderlich",
       "fileSizeExceeded": "Eine Datei überschreitet die maximal erlaubte Größe von {{size}} MB.",
-      "completeMessage": "Vielen Dank, dass du an der Umfrage Teilgenommen hast"
+      "completeMessage": "Vielen Dank, dass du an der Umfrage teilgenommen hast"
     },
     "errors": {
       "submitAnswerError": "Die Antwort konnte nicht gespeichert werden.",
@@ -708,7 +708,7 @@
       "noFormulaError": "Das Formular der Umfrage ist nicht lesbar.",
       "noBackendLimitersError": "Um diese Funktion nutzen zu können müssen im Editor die Grenzwerte definiert werden.",
       "notFoundError": "Umfrage konnte nicht gefunden werden.",
-      "surveyFormulaStructuralError": "Das Formular der Umfrage weist Struktureller Fehler auf.",
+      "surveyFormulaStructuralError": "Das Formular der Umfrage weist strukturelle Fehler auf.",
       "participationErrorUserNotAssigned": "Du bist zu dieser Umfrage nicht eingeladen.",
       "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
       "participationErrorSurveyExpired": "Umfrage ist abgelaufen.",
@@ -912,7 +912,7 @@
       "linuxmuster": "Hier kannst du alle Einstellungen vornehmen.",
       "whiteboard": "Hier kannst du alle Einstellungen vornehmen.",
       "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Info Board haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden.",
-      "forwarded": "Weiterleitungs: Einfach den Link zur Webanwendung unter URL eintragen.",
+      "forwarded": "Weiterleitung: Einfach den Link zur Webanwendung unter URL eintragen.",
       "framed": "Frame: Einfach den Link zur Webanwendung unter URL eintragen.",
       "embedded": "Eingebettet: Hier kann eine eigene Webanwendung im Editor erstellt werden."
     },
@@ -946,7 +946,7 @@
       "logo": {
         "title": "Logo",
         "descriptionSchool": "Lade hier das Logo hoch. Es wird auf der Login-Seite und auf dem Ausweis in der edulution App angezeigt.",
-        "descriptionGeneric": "Laden Sie hier Ihr Logo hoch. Es wird auf der Login-Seite angezeigt.",
+        "descriptionGeneric": "Lade hier das Logo hoch. Es wird auf der Login-Seite angezeigt.",
         "uploadLightLogo": "Helles Logo hochladen",
         "uploadDarkLogo": "Dunkles Logo hochladen",
         "deleteSuccessful": "Logo wurde erfolgreich gelöscht"
@@ -1034,10 +1034,10 @@
         },
         "editor": {
           "title": "Editor",
-          "description": "Hier im Editor kannst du eigene Webanwendungen gestalten oder bestehende Inhalte integrieren. Du kannst dabei Webseiten erstellen, Inhalte formatieren und individuell anpassen. Auch bereits vorhandene Anwendungen oder externe Inhalte lassen sich einfügen und komfortabel mit deinen eigenen Inhalten verbinden. So entsteht ein flexibler Bereich, in dem du auf einfache Weise Inhalte darstellen oder interaktive Anwendungen anbieten kannst. Starte mit der Wahle des Modus, in welchem die Webanwendung gestartet werden soll.",
-          "sandboxMode": "Sparates Layout",
+          "description": "Hier im Editor kannst du eigene Webanwendungen gestalten oder bestehende Inhalte integrieren. Du kannst dabei Webseiten erstellen, Inhalte formatieren und individuell anpassen. Auch bereits vorhandene Anwendungen oder externe Inhalte lassen sich einfügen und komfortabel mit deinen eigenen Inhalten verbinden. So entsteht ein flexibler Bereich, in dem du auf einfache Weise Inhalte darstellen oder interaktive Anwendungen anbieten kannst. Starte mit der Wahl des Modus, in welchem die Webanwendung gestartet werden soll.",
+          "sandboxMode": "Separates Layout",
           "nativeMode": "Integriertes Layout",
-          "sandboxModeDescription": "Im Modus „Sparates Layout“ wird der Inhalt als eigenständige Seite angezeigt, ähnlich wie ein Fenster innerhalb der Anwendung. Dabei können neben dem eigentlichen Inhalt auch zusätzliche Designelemente oder Funktionen aus anderen Quellen geladen werden. Dadurch ist die Gestaltung unabhängig von der Anwendung, könnte also anders aussehen oder sich anders verhalten. Hier muss der Inhalt als HTML-Datei hochgeladen werden.",
+          "sandboxModeDescription": "Im Modus „Separates Layout“ wird der Inhalt als eigenständige Seite angezeigt, ähnlich wie ein Fenster innerhalb der Anwendung. Dabei können neben dem eigentlichen Inhalt auch zusätzliche Designelemente oder Funktionen aus anderen Quellen geladen werden. Dadurch ist die Gestaltung unabhängig von der Anwendung, könnte also anders aussehen oder sich anders verhalten. Hier muss der Inhalt als HTML-Datei hochgeladen werden.",
           "nativeModeDescription": "Im Modus „Integriertes Layout“ dagegen wird der Inhalt direkt in die Oberfläche der Anwendung eingefügt. Dadurch sieht der Inhalt genauso aus wie die Anwendung selbst und fügt sich optisch nahtlos ein. Allerdings können hier keine zusätzlichen externen Designelemente oder Funktionen dynamisch hinzugefügt werden. Es können jedoch statische Elemente wie Bilder hochgeladen und hier eingesetzt werden.",
           "visibilityDescription": "Hier können Sie festlegen, ob die App öffentlich zugänglich sein soll. Aktiv bedeutet öffentlich, inaktiv bedeutet, dass nur konfigurierte Nutzergruppen Zugriff haben. Die App öffentlich zugänglich zu machen erzeugt einen Link im Footer. Um die App in der Sidebar für registrierte Nutzer sichtbar zu machen, muss deren Zugriff über die Nutzergruppen konfiguriert werden"
         }
@@ -1070,7 +1070,7 @@
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",
-      "placeholder": "Hier ihre Traefik-Konfiguration eintragen"
+      "placeholder": "Hier die Traefik-Konfiguration eintragen"
     },
     "rowsSelected": "{{selected}} von {{total}} Container ausgewählt",
     "rowSelected": "{{selected}} von {{total}} Container ausgewählt",
@@ -1101,7 +1101,7 @@
     "rowsSelected": "{{selected}} von {{total}} Konten ausgewählt",
     "details": {
       "title": "Benutzerdetails",
-      "description": "Hier können Sie Ihre Benutzerdaten einsehen und teilweise bearbeiten.",
+      "description": "Hier kannst du Benutzerdaten einsehen und teilweise bearbeiten.",
       "userInformation": "Benutzerbezogene Informationen",
       "dateOfBirth": "Geburtsdatum",
       "givenName": "Vorname",
@@ -1112,7 +1112,7 @@
       "schoolSubjects": "Klassen",
       "sophomorixState": "Status",
       "quotas": "Quotas",
-      "proxyAddresses": "E-Mail Proxy-Addressen",
+      "proxyAddresses": "E-Mail Proxy-Adressen",
       "addNew": "Tippen um hinzuzufügen",
       "badgeAlreadyExists": "Der Eintrag existiert bereits",
       "sophomorixCustom1_teacher": "Schulfach 1",
@@ -1175,7 +1175,7 @@
       "qrCodeInstructions": "Den QR-Code mit einer Authenticator App scannen, die TOTP (Time-based One-Time Password) unterstützt.",
       "copyTotpSecretInstructions": "Falls keine Kamera vorhanden ist, kann hier das Secret kopiert werden:",
       "totpCodeInstructions": "Danach das generierte Passwort hier eintragen und speichern:",
-      "mfaSetupRequired": "Die globalen Richtlinien erfordern die Eintrichtung der Zwei-Faktor-Authentisierungs:",
+      "mfaSetupRequired": "Die globalen Richtlinien erfordern die Einrichtung der Zwei-Faktor-Authentisierungs:",
       "mfaSetupSuccess": "Die Zwei-Faktor-Authentisierungs wurde erfolgreich eingerichtet."
     },
     "errors": {
@@ -1343,7 +1343,7 @@
     "install": "Installieren",
     "update": "Update",
     "progress": "Fortschritt...",
-    "pressInstall": "Drücke Installieren um zu Starten.",
+    "pressInstall": "Drücke auf 'Installieren' um zu starten.",
     "enable": "Einschalten",
     "enabled": "Aktiviert",
     "disable": "Ausschalten",
@@ -1362,7 +1362,7 @@
     "reset": "Zurücksetzen",
     "file": "Datei",
     "saveLocal": "Auf dem Gerät speichern",
-    "openLocal": "Von dem Gerät öffnen",
+    "openLocal": "Vom Gerät öffnen",
     "openFileFromEdu": "Datei öffnen",
     "saveFileToEdu": "In Dateien speichern"
   },
@@ -1376,8 +1376,8 @@
     "saved": "Konfiguration gespeichert!",
     "url": "URL",
     "urlDescription": "Bitte eine URL zur Applikation eintragen",
-    "apiKey": "API Schlüssel",
-    "apiKeyDescription": "Der API Schlüssel wird für die Authentifizierung verwendet",
+    "apiKey": "API-Schlüssel",
+    "apiKeyDescription": "Der API-Schlüssel wird für die Authentifizierung verwendet",
     "proxyConfig": "Proxy-Konfiguration",
     "proxyConfigDescription": "Hier kann eine eigene Proxy-Konfiguration für Traefik hinterlegt werden. Dabei kann entweder über die Eingabefelder mithilfe einer Vorlage gearbeitet werden, oder direkt im Expertenmodus eine Konfiguration im YAML-Format erstellt werden. <br/><strong>Achtung:</strong> Eine falsche Konfiguration könnte dazu führen, dass die Anwendung nicht mehr erreichbar ist.",
     "expertMode": "Expertenmodus",
@@ -1387,7 +1387,7 @@
     "proxyDestinationPlaceholder": "z.B. http://localhost:1234/",
     "stripPrefix": "Prefix entfernen",
     "embeddedPageEditor": "Editor",
-    "embeddedPageEditorModeDescription": "Hier kann zwischen Sandbox und nativ gerendert ausgewählt werden. Sandbox ist die sicherste Variante, native das Original-Rendering. Beachte, dass bei nativen Rendering keine Sicherheitsvorkehrungen getroffen werden können. Im Sandbox-Modus wird die HTML-Datei aus dem Speicher gelesen. Lade dazu die Datei hoch.",
+    "embeddedPageEditorModeDescription": "Hier kann zwischen Sandbox und nativ gerendert ausgewählt werden. Sandbox ist die sicherste Variante, native das Original-Rendering. Beachte, dass beim nativen Rendering keine Sicherheitsvorkehrungen getroffen werden können. Im Sandbox-Modus wird die HTML-Datei aus dem Speicher gelesen. Lade dazu die Datei hoch.",
     "sandboxed": "Sandbox",
     "pathname": "Share-Pfad",
     "input": {
@@ -1510,8 +1510,8 @@
   },
   "fileRenameContent": {
     "placeholder": "Geben Sie den neuen Namen ein",
-    "renameYourDirectory": "Benennen Sie Ihr Verzeichnis um",
-    "renameYourFile": "Benennen Sie Ihre Datei um",
+    "renameYourDirectory": "Benenne das Verzeichnis um",
+    "renameYourFile": "Benenne die Datei um",
     "to": "zu",
     "rename": "Umbenennen",
     "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten"
@@ -1709,7 +1709,7 @@
     },
     "events": {
       "pullingImage": "Docker Image wird abgerufen...",
-      "checkingImage": "Check, ob Image schon vorhande ist...",
+      "checkingImage": "Check, ob Image schon vorhanden ist...",
       "creatingContainer": "Docker Container wird erstellt...",
       "containerCreated": "Container erstellt.",
       "startContainer": "Container gestartet.",
@@ -1734,16 +1734,16 @@
   },
   "veyon": {
     "lockScreen": "Bildschirm sperren",
-    "unlockScreen": "Bildschirm entsprerren",
+    "unlockScreen": "Bildschirm entsperren",
     "lockInputDevices": "Eingabe sperren",
-    "unlockInputDevices": "Eingabe entsprerren",
+    "unlockInputDevices": "Eingabe entsperren",
     "rebootSystem": "System neu starten",
     "powerDown": "System herunterfahren",
     "errors": {
       "AppNotProperlyConfigured": "Veyon ist nicht richtig konfiguriert, wende dich an den Systemadministrator",
       "VeyonAuthFailed": "Veyon-Authentifizierung fehlgeschlagen",
       "GetUserFailed": "Benutzer konnte nicht abgerufen werden",
-      "VeyonApiNotReachable": "Der externen Veyon-Server ist nicht erreichbar"
+      "VeyonApiNotReachable": "Der externe Veyon-Server ist nicht erreichbar"
     }
   },
   "Invalid user credentials": "Benutzername oder Passwort falsch",
