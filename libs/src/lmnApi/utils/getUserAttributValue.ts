@@ -10,12 +10,17 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
+import normalizeLdapHomeDirectory from '@libs/filesharing/utils/normalizeLdapHomeDirectory';
+import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 
-const getUserAttributValue = (user: LmnUserInfo | null, key?: string): string => {
+const getUserAttributValue = (user: LmnUserInfo | null, key?: keyof LmnUserInfo): string => {
   if (!user || !key || !(key in user)) return '';
 
-  const value = user[key as keyof LmnUserInfo];
+  const value = user[key];
+
+  if (key === 'homeDirectory' && typeof value === 'string') {
+    return normalizeLdapHomeDirectory(value).split('/').filter(Boolean).join('/');
+  }
 
   if (Array.isArray(value)) {
     return value.join(',');
