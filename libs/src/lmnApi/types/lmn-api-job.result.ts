@@ -10,11 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const QUEUE_CONSTANTS = {
-  PREFIX: 'queue-user-',
-  USERS_CACHE_REFRESH: 'USERS_CACHE_REFRESH',
-  KEYCLOAK_REQUESTS_QUEUE: 'KEYCLOAK_REQUESTS_QUEUE',
-  LMN_API_REQUESTS_QUEUE: 'LMN_API_REQUESTS_QUEUE',
-} as const;
+interface LmnApiJobResult<T> {
+  data: T;
+  headers: Record<string, unknown>;
+  status: number;
+}
 
-export default QUEUE_CONSTANTS;
+export default LmnApiJobResult;
