@@ -213,6 +213,26 @@ class AppConfigService implements OnModuleInit {
     return appConfig;
   }
 
+  async getAppConfigHasPublicAssets(name: string): Promise<AppConfigDto | undefined> {
+    const appConfig = await this.appConfigModel
+      .findOne({
+        $and: [
+          { name },
+          {
+            $or: [
+              { [`extendedOptions.${ExtendedOptionKeys.PAGE_HAS_PUBLIC_ASSETS}`]: true },
+              { [`extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_IS_PUBLIC}`]: true },
+            ],
+          },
+        ],
+      })
+      .lean();
+    if (!appConfig) {
+      return undefined;
+    }
+    return appConfig;
+  }
+
   async getPublicAppConfigByName(name: string): Promise<AppConfigDto | undefined> {
     const appConfig = await this.appConfigModel
       .findOne({ name, [`extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_IS_PUBLIC}`]: true })

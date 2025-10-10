@@ -21,12 +21,10 @@ class IsPublicAppGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
     const { appName } = request.params;
-
-    const appConfig = await this.appConfigService.getPublicAppConfigByName(appName);
+    const appConfig = await this.appConfigService.getAppConfigHasPublicAssets(appName);
     if (!appConfig) {
       return false;
     }
-
     return true;
   }
 }

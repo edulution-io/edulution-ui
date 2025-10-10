@@ -12,8 +12,8 @@
 
 import { join } from 'path';
 import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
-import APPS_FILES_PATH from '@libs/survey/constants/surveysFilesPath';
+import SURVEYS_FILES_PATH from '@libs/survey/constants/surveysFilesPath';
 
-const SURVEYS_ATTACHMENT_PATH = join(APPS_FILES_PATH, ATTACHMENT_FOLDER);
+const SURVEYS_ATTACHMENT_PATH = join(SURVEYS_FILES_PATH, ATTACHMENT_FOLDER);
 
 export default SURVEYS_ATTACHMENT_PATH;

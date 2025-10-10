@@ -91,7 +91,7 @@ class FileSystemController {
     @Param('filename') filename: string | string[],
     @Res() res: Response,
   ) {
-    return this.filesystemService.serveFiles(appName, FilesystemService.buildPathString(filename), res);
+    return this.filesystemService.servePublicFiles(appName, FilesystemService.buildPathString(filename), res);
   }
 
   @Delete(':appName/*filename')

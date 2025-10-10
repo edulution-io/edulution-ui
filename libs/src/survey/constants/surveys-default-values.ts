@@ -10,8 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import PUBLIC_DATA_PATH from '@libs/common/constants/publicDataPath';
+import i18next from 'i18next';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
+import getSurveysDefaultLogoUrl from '@libs/survey/utils/getSurveysDefaultLogoUrl';
 
-const PUBLIC_ASSET_PATH: string = `${PUBLIC_DATA_PATH}/assets`;
+const surveysDefaultValues: Partial<SurveyDto> & { formula: SurveyFormula } = {
+  formula: {
+    title: i18next.t('survey.newTitle').toString(),
+    logo: getSurveysDefaultLogoUrl(),
+  },
+  isAnonymous: false,
+  canSubmitMultipleAnswers: false,
+  isPublic: false,
+  canUpdateFormerAnswer: false,
+};
 
-export default PUBLIC_ASSET_PATH;
+export default surveysDefaultValues;

@@ -10,8 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import PUBLIC_DATA_PATH from '@libs/common/constants/publicDataPath';
+import { ThemeType } from '@libs/common/constants/theme';
 
-const PUBLIC_ASSET_PATH: string = `${PUBLIC_DATA_PATH}/assets`;
-
-export default PUBLIC_ASSET_PATH;
+const getSurveysDefaultLogoFilename = (theme: ThemeType) =>
+  theme === 'dark' ? `surveys-default-logo-${theme}.webp` : `surveys-default-logo-dark.webp`;
+export default getSurveysDefaultLogoFilename;
