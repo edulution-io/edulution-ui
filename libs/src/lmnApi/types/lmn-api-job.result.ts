@@ -10,14 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { AxiosRequestConfig } from 'axios';
-import { HttpMethods } from '@libs/common/types/http-methods';
-
-interface LmnApiJobData {
-  method: HttpMethods;
-  endpoint: string;
-  payload?: unknown;
-  config?: AxiosRequestConfig;
+interface LmnApiJobResult<T> {
+  data: T;
+  headers: Record<string, unknown>;
+  status: number;
 }
 
-export default LmnApiJobData;
+export default LmnApiJobResult;

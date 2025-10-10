@@ -37,16 +37,17 @@ import LmnApiProjectWithMembers from '@libs/lmnApi/types/lmnApiProjectWithMember
 import GroupForm from '@libs/groups/types/groupForm';
 import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
-import { HttpMethods, HTTP_HEADERS } from '@libs/common/types/http-methods';
+import { HTTP_HEADERS, HttpMethods } from '@libs/common/types/http-methods';
 import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
 import { decodeBase64Api } from '@libs/common/utils/getBase64StringApi';
 import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
 import GroupFormDto from '@libs/groups/types/groupForm.dto';
+import LmnApiJobResult from '@libs/lmnApi/types/lmn-api-job.result';
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
 import LdapKeycloakSyncService from '../ldap-keycloak-sync/ldap-keycloak-sync.service';
-import LmnApiRequestQueue, { LmnApiJobResult } from './queue/lmn-api-request.queue';
+import LmnApiRequestQueue from './queue/lmn-api-request.queue';
 
 @Injectable()
 class LmnApiService {

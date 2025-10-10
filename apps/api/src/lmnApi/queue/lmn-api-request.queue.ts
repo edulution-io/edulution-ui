@@ -17,13 +17,8 @@ import { Agent as HttpsAgent } from 'https';
 import { HttpMethods } from '@libs/common/types/http-methods';
 import QUEUE_CONSTANTS from '@libs/queue/constants/queueConstants';
 import LmnApiJobData from '@libs/lmnApi/types/lmnApiJobData';
+import LmnApiJobResult from '@libs/lmnApi/types/lmn-api-job.result';
 import redisConnection from '../../common/redis.connection';
-
-export interface LmnApiJobResult<T> {
-  data: T;
-  headers: Record<string, unknown>;
-  status: number;
-}
 
 @Injectable()
 class LmnApiRequestQueue implements OnModuleInit, OnModuleDestroy {
