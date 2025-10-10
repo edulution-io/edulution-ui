@@ -57,7 +57,7 @@ const UserCardButtonBar = ({
   disabled,
 }: UserCardButtonBarProps) => {
   const { t } = useTranslation();
-  const { fetchUser, schoolPrefix } = useLmnApiStore();
+  const { fetchUser, schoolPrefix, getOwnUser } = useLmnApiStore();
   const {
     addManagementGroup,
     removeManagementGroup,
@@ -101,6 +101,8 @@ const UserCardButtonBar = ({
     const updatedUser = await fetchUser(commonName);
     if (!updatedUser) return;
     setMember([...member.filter((m) => m.cn !== commonName), updatedUser]);
+
+    await getOwnUser();
   };
 
   const userCardButtons: UserCardButton[] = [
