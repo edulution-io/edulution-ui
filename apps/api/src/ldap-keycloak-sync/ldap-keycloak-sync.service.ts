@@ -118,7 +118,19 @@ class LdapKeycloakSyncService implements OnModuleInit {
           const existingGroup = await this.ensureKeycloakGroupUsingCache(groupPath, groupsByPath);
 
           const desiredUsernames = new Set(await this.fetchMembers(client, dn, groupsByName));
-          const currentMembers = await this.getCachedGroupMembers(groupPath);
+
+          const rawMembers = await this.getCachedGroupMembers(groupPath);
+
+          const invalid = rawMembers.filter((m) => !m || !m.id || !m.username);
+          if (invalid.length) {
+            Logger.warn(
+              `Group ${groupPath} has ${invalid.length} cached member(s) without id/username`,
+              LdapKeycloakSyncService.name,
+            );
+          }
+
+          const currentMembers = rawMembers.filter((m): m is GroupMemberDto => Boolean(m && m.id && m.username));
+
           const currentUsernames = new Set(currentMembers.map((m) => m.username));
 
           Logger.verbose(
@@ -146,8 +158,9 @@ class LdapKeycloakSyncService implements OnModuleInit {
           currentMembers.forEach((member) => {
             if (!desiredUsernames.has(member.username)) {
               updates.push({ userId: member.id, add: [], remove: [existingGroup.id] });
+              const nameForLog = member?.username ?? `(id:${member?.id ?? 'unknown'})`;
               Logger.debug(
-                `Will REMOVE user ${member.username} -> group ${existingGroup.path}`,
+                `Will REMOVE user ${nameForLog} -> group ${existingGroup.path}`,
                 LdapKeycloakSyncService.name,
               );
             }
