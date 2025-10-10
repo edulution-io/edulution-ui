@@ -118,10 +118,10 @@ export class LmnApiController {
   @Get('sessions/:sessionId')
   async getUserSession(
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
-    @Param() params: { sessionSid: string },
+    @Param() params: { sessionId: string },
     @GetCurrentUsername() username: string,
   ) {
-    return this.lmnApiService.getUserSession(lmnApiToken, params.sessionSid, username);
+    return this.lmnApiService.getUserSession(lmnApiToken, params.sessionId, username);
   }
 
   @Get('sessions')

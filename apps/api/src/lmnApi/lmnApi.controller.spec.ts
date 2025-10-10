@@ -57,7 +57,8 @@ describe('LmnApiController', () => {
 
   describe('printPasswords', () => {
     it('should call printPasswords and send response', async () => {
-      const mockResponse = { headers: { 'content-disposition': 'attachment' }, data: new ArrayBuffer(8) };
+      const mockBuffer = Buffer.from('mock');
+      const mockResponse = { headers: { 'content-disposition': 'attachment' }, data: mockBuffer };
       mockLmnApiService.printPasswords.mockResolvedValue(mockResponse);
       const res = { setHeader: jest.fn(), send: jest.fn() } as unknown as Response;
 
@@ -65,7 +66,7 @@ describe('LmnApiController', () => {
 
       expect(service.printPasswords).toHaveBeenCalledWith('mockToken', {});
       expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'application/pdf');
-      expect(res.send).toHaveBeenCalledWith(expect.any(Buffer));
+      expect(res.send).toHaveBeenCalledWith(mockBuffer);
     });
   });
 
@@ -189,7 +190,7 @@ describe('LmnApiController', () => {
 
   describe('getUserSession', () => {
     it('should call getUserSession', async () => {
-      await controller.getUserSession('mockToken', { sessionSid: 'session1' }, 'username');
+      await controller.getUserSession('mockToken', { sessionId: 'session1' }, 'username');
       expect(service.getUserSession).toHaveBeenCalledWith('mockToken', 'session1', 'username');
     });
   });
