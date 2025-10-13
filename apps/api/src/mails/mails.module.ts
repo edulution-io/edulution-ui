@@ -16,9 +16,14 @@ import MailsController from './mails.controller';
 import MailsService from './mails.service';
 import { MailProvider, MailProviderSchema } from './mail-provider.schema';
 import DockerModule from '../docker/docker.module';
+import GroupsModule from '../groups/groups.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: MailProvider.name, schema: MailProviderSchema }]), DockerModule],
+  imports: [
+    MongooseModule.forFeature([{ name: MailProvider.name, schema: MailProviderSchema }]),
+    DockerModule,
+    GroupsModule,
+  ],
   controllers: [MailsController],
   providers: [MailsService],
 })

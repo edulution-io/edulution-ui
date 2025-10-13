@@ -203,6 +203,10 @@
     "encryption": "Encryption",
     "rowsSelected": "{{selected}} of {{total}} jobs selected",
     "rowSelected": "{{selected}} of {{total}} job selected",
+    "themeUpdated": {
+      "generic": "The mail theme has been updated. Please reload the page to apply the changes.",
+      "failed": "The mail theme could not be updated."
+    },
     "importer": {
       "filterPlaceHolderText": "Search for username",
       "title": "E-Mail Sync",
@@ -1218,6 +1222,7 @@
   },
   "edit": "Edit",
   "common": {
+    "refreshPage": "Refresh page",
     "showMore": "Show more",
     "visibility": "Visibility",
     "offline": "Offline",
