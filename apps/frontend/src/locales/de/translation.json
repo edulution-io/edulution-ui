@@ -228,7 +228,7 @@
       "BbbUnauthorized": "Du bist nicht autorisiert auf den externen BBB-Server zuzugreifen",
       "AppNotProperlyConfigured": "Die Konferenz-App ist nicht richtig konfiguriert, wende dich an den Systemadministrator",
       "YouAreNotTheCreator": "Du bist nicht der Ersteller der Konferenz",
-      "AlreadyInAnotherMeeting": "Du befindest dich bereits in einer Konferenz. Bitte verlasse die laufende Konferenz, bevor du einer neuen beitrittst.",
+      "AlreadyInAnotherMeeting": "Du befindest dich bereits in einer Konferenz. Bitte schließe die laufende Konferenz, bevor du einer neuen beitrittst.",
       "DBAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "WrongPassword": "Das eingegebene Passwort ist falsch",
       "ConferenceIsNotRunning": "Die Konferenz wurde nicht gestartet",
