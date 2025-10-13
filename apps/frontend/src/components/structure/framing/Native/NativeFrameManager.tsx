@@ -14,6 +14,7 @@ import React, { useEffect } from 'react';
 import MailPage from '@/pages/Mail/MailPage';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
+import LinuxmusterPage from '@/pages/LinuxmusterPage/LinuxmusterPage';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import APPS from '@libs/appconfig/constants/apps';
@@ -56,6 +57,8 @@ const NativeFrameManager = () => {
       switch (appConfig.name) {
         case APPS.MAIL:
           return <MailPage key={appConfig.name} />;
+        case APPS.LINUXMUSTER:
+          return <LinuxmusterPage key={appConfig.name} />;
         default:
           return null;
       }
