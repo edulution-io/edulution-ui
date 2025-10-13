@@ -24,6 +24,7 @@ import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import { useTranslation } from 'react-i18next';
 import { LuMonitor } from 'react-icons/lu';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
+import useLdapGroups from '@/hooks/useLdapGroups';
 
 const QuickAccess = () => {
   const { t } = useTranslation();
@@ -42,7 +43,9 @@ const QuickAccess = () => {
     areProjectsLoading,
     areSchoolClassesLoading,
     isRoomLoading,
+    selectedSchool,
   } = useClassManagementStore();
+  const { isSuperAdmin } = useLdapGroups();
 
   useEffect(() => {
     if (lmnApiToken) {
@@ -59,13 +62,18 @@ const QuickAccess = () => {
 
   const userRegex = getUserRegex(user.cn);
 
-  const getGroupsWhereUserIsMember = (
-    groups: LmnApiProject[] | LmnApiSchoolClass[],
-  ): LmnApiProject[] | LmnApiSchoolClass[] => {
-    const isMemberGroups = groups.filter((g) => g.member.some((member) => new RegExp(userRegex.source).test(member)));
-    const isAdminGroups = groups.filter((g) => g.sophomorixAdmins.includes(user.cn));
+  const getGroupsWhereUserIsMember = <T extends LmnApiProject | LmnApiSchoolClass>(groups: T[]) => {
+    const isMemberGroups = groups.filter(
+      (g) =>
+        (!isSuperAdmin || g.sophomorixSchoolname === selectedSchool) &&
+        g.member.some((member) => new RegExp(userRegex.source).test(member)),
+    );
 
-    return Array.from(new Set([...isAdminGroups, ...isMemberGroups])) as LmnApiProject[] | LmnApiSchoolClass[];
+    const isAdminGroups = groups.filter(
+      (g) => (!isSuperAdmin || g.sophomorixSchoolname === selectedSchool) && g.sophomorixAdmins.includes(user.cn),
+    );
+
+    return Array.from(new Set([...isAdminGroups, ...isMemberGroups]));
   };
 
   const groupColumns: GroupColumn[] = [

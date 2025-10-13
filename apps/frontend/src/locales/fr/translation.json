@@ -170,7 +170,8 @@
       "GetProjectFailed": "Echec de l'appel du projet",
       "PasswordMismatch": "Le mot de passe actuel est incorrect",
       "PasswordChangeFailed": "Echec de modification du mot de passe",
-      "GetUsersQuotaFailed": "L'appel du quota l'utilisateur a échoué."
+      "GetUsersQuotaFailed": "L'appel du quota l'utilisateur a échoué.",
+      "GetSchoolsFailed": "L'appel des écoles a échoué"
     }
   },
   "ticketsystem": {
@@ -520,6 +521,11 @@
       "proxyAdressPlaceholder": "http://localhost:11080",
       "createConfig": "Créer une configuration",
       "editConfig": "Modifier la configuration"
+    },
+    "selectSchool": {
+      "title": "Sélectionner l'école",
+      "description": "Veuillez d'abord sélectionner une école afin de pouvoir afficher vos classes et projets.",
+      "placeholder": "Sélectionner une école"
     }
   },
   "select": "Choisir",
@@ -1457,7 +1463,7 @@
   "licensing": {
     "communityLicenseDialog": {
       "title": "Version communautaire",
-      "description": "Version communautaire gratuite de {{ applicationName }} Ui.<br/>Nous rendre visite <link1>{{link}}</link1>.<br/><strong>Cette version ne reçoit aucun support du fabricant.</strong>"
+      "description": "Version communautaire gratuite de {{ applicationName }} Ui. <strong>Cette version ne reçoit aucun support du fabricant.</strong>"
     }
   },
   "appExtendedOptions": {
@@ -1475,7 +1481,14 @@
     "mailImapSecureTitle": "Connexion chiffrée",
     "mailImapSecureDescription": "La connexion via «tls» ou «starttls» doit être établie.",
     "mailImapRejectUnauthorizedTitle": "Rejeter les connexions non certifiées",
-    "mailImapRejectUnauthorizedDescription": "Une vérification de certificat doit-il être effectué pour cette connexion?"
+    "mailImapRejectUnauthorizedDescription": "Une vérification de certificat doit-il être effectué pour cette connexion?",
+    "mailSogoThemeTitle": "Thème",
+    "mailSogoThemeDescription": "Sélectionnez le thème pour l'application Mail. La modification du thème redémarre les conteneurs associés.",
+    "mailSogoTheme": {
+      "light": "Clair",
+      "dark": "Sombre"
+    },
+    "mailSogoThemeDisabled": "Désactivé, car le serveur de messagerie ne fonctionne pas."
   },
   "preview": {
     "image": "Aperçu de l'image",

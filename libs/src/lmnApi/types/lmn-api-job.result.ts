@@ -10,6 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const COMMUNITY_URL = 'https://ask.linuxmuster.net/c/edulution';
+interface LmnApiJobResult<T> {
+  data: T;
+  headers: Record<string, unknown>;
+  status: number;
+}
 
-export default COMMUNITY_URL;
+export default LmnApiJobResult;
