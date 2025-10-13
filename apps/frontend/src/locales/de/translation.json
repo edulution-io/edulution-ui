@@ -1680,7 +1680,14 @@
     "mailImapSecureTitle": "Sichere Verbindung",
     "mailImapSecureDescription": "Soll die Verbindung über 'TLS' oder 'STARTTLS' aufgebaut werden.",
     "mailImapRejectUnauthorizedTitle": "Nicht zertifizierte Verbindungen ablehnen",
-    "mailImapRejectUnauthorizedDescription": "Soll eine Zertifikatsprüfung für diese Verbindung durchgeführt werden?"
+    "mailImapRejectUnauthorizedDescription": "Soll eine Zertifikatsprüfung für diese Verbindung durchgeführt werden?",
+    "mailSogoThemeTitle": "Theme",
+    "mailSogoThemeDescription": "Wähle das Theme für die Mail-App. Das Ändern des Themes startet die zugehörigen Container neu.",
+    "mailSogoTheme": {
+      "light": "Hell",
+      "dark": "Dunkel"
+    },
+    "mailSogoThemeDisabled": "Deaktiviert, da der Mailserver nicht läuft."
   },
   "preview": {
     "image": "Bildvorschau",

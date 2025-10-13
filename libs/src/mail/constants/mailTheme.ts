@@ -10,11 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const logoutScript = `
-    const logoutButton = document.querySelector('a[ng\\:click="identity.logout()"]');
-    if (logoutButton) {
-      logoutButton.click();
-    }
-  `;
+const MailTheme = {
+  LIGHT: 'light',
+  DARK: 'dark',
+} as const;
 
-export default logoutScript;
+export default MailTheme;
