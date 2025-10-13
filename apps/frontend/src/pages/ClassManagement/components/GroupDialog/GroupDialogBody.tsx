@@ -27,8 +27,6 @@ import GroupPropertiesTable from '@/pages/ClassManagement/components/GroupDialog
 import UserGroups from '@libs/groups/types/userGroups.enum';
 import useGroupStore from '@/store/GroupStore';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
-import useLdapGroups from '@/hooks/useLdapGroups';
-import SchoolSelectorDropdown from '../SchoolSelectorDropdown';
 
 interface GroupDialogBodyProps {
   form: UseFormReturn<GroupForm>;
@@ -44,7 +42,6 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
   const { isSessionLoading, isSchoolClassLoading, isProjectLoading } = useClassManagementStore();
   const { userGroupToEdit } = useLessonStore();
   const { t } = useTranslation();
-  const { isSuperAdmin } = useLdapGroups();
 
   const isDialogLoading = isProjectLoading || isSchoolClassLoading || isSessionLoading;
   if (isDialogLoading) return <CircleLoader className="mx-auto" />;
@@ -104,7 +101,6 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
           event.preventDefault();
         }}
       >
-        {isSuperAdmin && <SchoolSelectorDropdown />}
         <FormField
           name="displayName"
           disabled={isNameChangeDisabled || disabled}

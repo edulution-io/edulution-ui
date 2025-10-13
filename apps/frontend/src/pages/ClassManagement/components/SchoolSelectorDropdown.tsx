@@ -30,7 +30,7 @@ const SchoolSelectorDropdown: React.FC = () => {
   }));
 
   useEffect(() => {
-    if (schools.length > 0) {
+    if (schools.length > 0 && !selectedSchool) {
       setSelectedSchool(schools[0].ou);
     }
   }, [schools]);
@@ -41,7 +41,6 @@ const SchoolSelectorDropdown: React.FC = () => {
       options={schoolOptions}
       selectedVal={selectedSchool}
       handleChange={setSelectedSchool}
-      variant="dialog"
       translate={false}
       searchEnabled={false}
     />
