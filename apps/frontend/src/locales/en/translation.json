@@ -186,7 +186,8 @@
       "GetProjectFailed": "Failed to get project",
       "PasswordMismatch": "The current password is wrong",
       "PasswordChangeFailed": "Password change failed",
-      "GetUsersQuotaFailed": "Failed to get users quota"
+      "GetUsersQuotaFailed": "Failed to get users quota",
+      "GetSchoolsFailed": "Failed to get schools"
     }
   },
   "ticketsystem": {
@@ -607,6 +608,11 @@
       "proxyAdressPlaceholder": "http://localhost:11080",
       "createConfig": "Create config",
       "editConfig": "Edit config"
+    },
+    "selectSchool": {
+      "title": "Select school",
+      "description": "Please select the school to which the class or project belongs.",
+      "placeholder": "Select school"
     },
     "copyOrCut": "Would you like to cut or copy the files?",
     "filesShared": "Files shared",
