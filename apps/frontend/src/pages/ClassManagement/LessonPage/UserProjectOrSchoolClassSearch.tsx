@@ -25,14 +25,16 @@ import {
   SOPHOMORIX_STUDENT,
 } from '@libs/lmnApi/constants/sophomorixRoles';
 import getUniqueValues from '@libs/lmnApi/utils/getUniqueValues';
+import useLdapGroups from '@/hooks/useLdapGroups';
 
 const UserProjectOrSchoolClassSearch = () => {
   const { t } = useTranslation();
   const { member, setMember } = useLessonStore();
   const { user, fetchUser } = useLmnApiStore();
-  const { searchGroupsOrUsers, fetchSchoolClass, fetchProject } = useClassManagementStore();
+  const { searchGroupsOrUsers, fetchSchoolClass, fetchProject, selectedSchool } = useClassManagementStore();
   const [selectedValues, setSelectedValues] = useState<MultipleSelectorOptionSH[]>([]);
   const { groupName } = useParams();
+  const { isSuperAdmin } = useLdapGroups();
 
   useEffect(() => {
     setSelectedValues(selectedValues.filter((selected) => member.find((m) => m.dn === selected.id)));
@@ -44,7 +46,9 @@ const UserProjectOrSchoolClassSearch = () => {
     const isValidSearchResult = (r: MultipleSelectorOptionSH & LmnApiSearchResult) =>
       r.cn !== user?.cn &&
       [SOPHOMORIX_SCHOOL_CLASS, SOPHOMORIX_STUDENT, SOPHOMORIX_PROJECT].includes(r.type) &&
-      !!(r.displayName || r.cn);
+      (!!r.displayName || !!r.cn) &&
+      (!isSuperAdmin || r.sophomorixSchoolname === selectedSchool);
+
     return result.filter(isValidSearchResult);
   };
 

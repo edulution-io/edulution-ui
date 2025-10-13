@@ -14,7 +14,7 @@ import { create, StateCreator } from 'zustand';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
+import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/lmnApiEduApiEndpoints';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import LessonStore from '@libs/classManagement/types/store/lessonStore';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';

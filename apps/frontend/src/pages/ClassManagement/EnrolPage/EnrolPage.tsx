@@ -26,6 +26,8 @@ import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
+import useLdapGroups from '@/hooks/useLdapGroups';
+import SchoolSelectorDropdown from '../components/SchoolSelectorDropdown';
 
 const EnrolPage: React.FC = () => {
   const { t } = useTranslation();
@@ -40,6 +42,7 @@ const EnrolPage: React.FC = () => {
     fetchPrinters,
   } = useClassManagementStore();
   const [filterKeyWord, setFilterKeyWord] = useState<string>('');
+  const { isSuperAdmin } = useLdapGroups();
 
   useEffect(() => {
     if (lmnApiToken) {
@@ -76,12 +79,18 @@ const EnrolPage: React.FC = () => {
 
   return (
     <PageLayout>
-      <Input
-        name="filter"
-        onChange={(e) => setFilterKeyWord(e.target.value)}
-        placeholder={t('classmanagement.typeToFilter')}
-        className="mb-2"
-      />
+      <div className="mb-2 flex w-full flex-col gap-2 md:flex-row md:items-center md:gap-4">
+        <div className="min-w-0 flex-1">
+          <Input
+            className="h-10 w-full"
+            name="filter"
+            onChange={(e) => setFilterKeyWord(e.target.value)}
+            placeholder={t('classmanagement.typeToFilter')}
+          />
+        </div>
+
+        {isSuperAdmin && <SchoolSelectorDropdown />}
+      </div>
       <div className="flex max-h-full max-w-full flex-row flex-wrap overflow-y-auto scrollbar-thin">
         <p className="mt-2 min-w-full">{t('classmanagement.enrolPageDescription')}</p>
         {groupRows.map((row) => (

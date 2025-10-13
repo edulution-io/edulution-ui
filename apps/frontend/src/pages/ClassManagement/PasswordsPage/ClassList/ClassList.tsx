@@ -16,6 +16,8 @@ import GroupColumn from '@libs/groups/types/groupColumn';
 import PasswordsFloatingButtonsBar from '@/pages/ClassManagement/PasswordsPage/PasswordsFloatingButtonsBar';
 import ClassListCard from '@/pages/ClassManagement/PasswordsPage/ClassList/ClassListCard';
 import { useTranslation } from 'react-i18next';
+import useLdapGroups from '@/hooks/useLdapGroups';
+import useClassManagementStore from '../../useClassManagementStore';
 
 interface EnrolGroupListProps {
   row: GroupColumn;
@@ -26,19 +28,23 @@ interface EnrolGroupListProps {
 
 const ClassList = ({ row, selectedClasses, setSelectedClasses, activeSchool }: EnrolGroupListProps) => {
   const { t } = useTranslation();
+  const { selectedSchool } = useClassManagementStore();
+  const { isSuperAdmin } = useLdapGroups();
 
   return (
     <div className="flex flex-row flex-wrap">
       {row.groups.length ? (
-        row.groups.map((group) => (
-          <ClassListCard
-            key={(group as LmnApiSchoolClass).dn}
-            group={group as LmnApiSchoolClass}
-            selectedClasses={selectedClasses}
-            setSelectedClasses={setSelectedClasses}
-            disabled={!!activeSchool && (group as LmnApiSchoolClass).sophomorixSchoolname !== activeSchool}
-          />
-        ))
+        row.groups
+          .filter((group) => !isSuperAdmin || (group as LmnApiSchoolClass).sophomorixSchoolname === selectedSchool)
+          .map((group) => (
+            <ClassListCard
+              key={(group as LmnApiSchoolClass).dn}
+              group={group as LmnApiSchoolClass}
+              selectedClasses={selectedClasses}
+              setSelectedClasses={setSelectedClasses}
+              disabled={!!activeSchool && (group as LmnApiSchoolClass).sophomorixSchoolname !== activeSchool}
+            />
+          ))
       ) : (
         <div className="mt-3">{t('classmanagement.notMemberOfClass')}</div>
       )}
