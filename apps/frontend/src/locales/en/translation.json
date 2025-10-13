@@ -236,7 +236,7 @@
       "BbbUnauthorized": "You are not authorized at external BBB server",
       "AppNotProperlyConfigured": "The conferencing app is not properly configured, contact your system administrator",
       "YouAreNotTheCreator": "You are not the creator of the conference",
-      "AlreadyInAnotherMeeting": "You are already in a conference. Please leave the current conference before joining another one.",
+      "AlreadyInAnotherMeeting": "You are already in a conference. Please close the current conference before joining another one.",
       "DBAccessFailed": "Database access failed",
       "WrongPassword": "The entered password is wrong",
       "ConferenceIsNotRunning": "Conference is not running",

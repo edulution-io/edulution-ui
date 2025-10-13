@@ -249,20 +249,16 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
 
       const { icon, text } = getRowAction(isRunning, isRowLoading, isUserTheCreator);
 
-      const onClick =
-        isRowLoading || !isUserTheCreator
-          ? undefined
-          : async () => {
-              let wasConferenceStateToggled;
-              if (isUserTheCreator) {
-                wasConferenceStateToggled = await toggleConferenceRunningState(meetingID, isRunning);
-                if (!isRunning) {
-                  await joinConference(meetingID);
-                } else if (joinConferenceUrl.includes(meetingID)) {
-                  setJoinConferenceUrl('');
-                }
-              } else if (isRunning) {
+      const onClick = isRowLoading
+        ? undefined
+        : async () => {
+            let wasConferenceStateToggled;
+            if (isUserTheCreator) {
+              wasConferenceStateToggled = await toggleConferenceRunningState(meetingID, isRunning);
+              if (!isRunning) {
                 await joinConference(meetingID);
+              } else if (joinConferenceUrl.includes(meetingID)) {
+                setJoinConferenceUrl('');
               }
 
               if (wasConferenceStateToggled) {
@@ -271,8 +267,12 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
               } else {
                 setJoinConferenceUrl('');
               }
-              await getConferences();
-            };
+            } else if (isRunning) {
+              await joinConference(meetingID);
+            }
+
+            await getConferences();
+          };
       return (
         <SelectableTextCell
           onClick={isUserTheCreator || isRunning ? onClick : undefined}
