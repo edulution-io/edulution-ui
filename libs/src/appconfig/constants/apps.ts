@@ -36,7 +36,6 @@ const APPS = {
   ANTIMALWARE: 'antimalware',
   BACKUP: 'backup',
   AICHAT: 'aichat',
-  LINUXMUSTER: 'linuxmuster',
   WHITEBOARD: 'whiteboard',
   SETTINGS: 'settings',
   USER_SETTINGS: 'usersettings',

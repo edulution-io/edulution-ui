@@ -19,7 +19,6 @@ import {
   EmbeddedIcon,
   FileSharingIcon,
   ForwardIcon,
-  LinuxmusterIcon,
   MailIcon,
   NativeIcon,
   SurveysMenuIcon,
@@ -102,12 +101,6 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     extendedOptions: {
       [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
     },
-  },
-  {
-    id: APPS.LINUXMUSTER,
-    icon: LinuxmusterIcon,
-    options: [APP_CONFIG_OPTION_KEYS.URL, APP_CONFIG_OPTION_KEYS.PROXYCONFIG],
-    isNativeApp: true,
   },
   {
     id: APPS.WHITEBOARD,
