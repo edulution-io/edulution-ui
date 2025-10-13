@@ -24,10 +24,12 @@ const SchoolSelectorDropdown: React.FC = () => {
     void getSchools();
   }, []);
 
-  const schoolOptions: DropdownOptions[] = schools.map((item) => ({
-    id: item.ou,
-    name: item.displayName || item.ou,
-  }));
+  const schoolOptions: DropdownOptions[] = schools
+    .map((item) => ({
+      id: item.ou,
+      name: item.displayName || item.ou,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   useEffect(() => {
     if (schools.length > 0 && !selectedSchool) {
@@ -42,7 +44,7 @@ const SchoolSelectorDropdown: React.FC = () => {
       selectedVal={selectedSchool}
       handleChange={setSelectedSchool}
       translate={false}
-      searchEnabled={false}
+      searchEnabled
     />
   );
 };
