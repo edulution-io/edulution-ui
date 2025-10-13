@@ -44,6 +44,8 @@ class MobileAppUserDto {
   @ApiProperty() institutionLogo: string;
 
   @ApiProperty() deploymentTarget: string;
+
+  @ApiProperty() homeDirectory: string;
 }
 
 export default MobileAppUserDto;

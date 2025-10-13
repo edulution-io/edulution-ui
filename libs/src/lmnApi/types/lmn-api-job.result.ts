@@ -10,11 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const logoutScript = `
-    const logoutButton = document.querySelector('a[ng\\:click="identity.logout()"]');
-    if (logoutButton) {
-      logoutButton.click();
-    }
-  `;
+interface LmnApiJobResult<T> {
+  data: T;
+  headers: Record<string, unknown>;
+  status: number;
+}
 
-export default logoutScript;
+export default LmnApiJobResult;
