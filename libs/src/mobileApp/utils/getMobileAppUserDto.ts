@@ -15,6 +15,7 @@ import MobileAppUserDto from '@libs/mobileApp/types/mobileAppUserDto';
 import UserDto from '@libs/user/types/user.dto';
 import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import parseLmnGeneralizedTimeAttribute from '@libs/mobileApp/utils/parseLmnGeneralizedTimeAttribute';
+import normalizeLdapHomeDirectory from '@libs/filesharing/utils/normalizeLdapHomeDirectory';
 
 const getMobileAppUserDto = ({
   usernameFallback,
@@ -47,6 +48,7 @@ const getMobileAppUserDto = ({
   userProfilePicture: lmn?.thumbnailPhoto || '',
   institutionLogo: `edu-api/public/branding/logo`,
   deploymentTarget: globalSettings?.general.deploymentTarget || '',
+  homeDirectory: normalizeLdapHomeDirectory(lmn?.homeDirectory || ''),
 });
 
 export default getMobileAppUserDto;
