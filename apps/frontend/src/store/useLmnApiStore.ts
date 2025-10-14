@@ -12,7 +12,7 @@
 
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
-import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
+import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/lmnApiEduApiEndpoints';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';

@@ -36,7 +36,7 @@ const parseWebDAVResponse = (response: WebdavResponse) => {
 
   const getDisplayName = (name: string | undefined, fallback: string): string | undefined => {
     if (!name) {
-      const fallbackName = fallback.split('/').filter(Boolean)[1] || '/';
+      const fallbackName = fallback.split('/').filter(Boolean).at(-1) || '/';
       return fallbackName;
     }
     return name;

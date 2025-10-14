@@ -10,14 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const ExtendedOptionField = {
-  input: 'input',
-  password: 'password',
-  table: 'table',
-  number: 'number',
-  switch: 'switch',
-  textarea: 'textarea',
-  dropdown: 'dropdown',
-} as const;
+interface LmnApiJobResult<T> {
+  data: T;
+  headers: Record<string, unknown>;
+  status: number;
+}
 
-export default ExtendedOptionField;
+export default LmnApiJobResult;
