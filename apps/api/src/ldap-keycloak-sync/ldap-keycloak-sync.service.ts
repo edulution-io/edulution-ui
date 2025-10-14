@@ -740,7 +740,8 @@ class LdapKeycloakSyncService implements OnModuleInit {
   }
 
   private async cnToKeycloakUsernameIfNeeded(nameFromLdap: string): Promise<string | null> {
-    if (this.userCache.has(nameFromLdap)) return nameFromLdap;
+    const cached = this.userCache.get(nameFromLdap);
+    if (cached?.username) return cached.username;
 
     const deploymentTarget = await this.getDeploymentTarget();
     if (deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER) return nameFromLdap;
