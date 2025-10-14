@@ -17,7 +17,7 @@ import {
   Elternbrief,
   TeilnahmeVeranstaltungLimitiert,
   Vortragsthema,
-} from '@libs/survey/assets/templates';
+} from '@libs/survey/constants/templates/index';
 import { SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
 import { Migration } from '../../migration/migration.type';
 
@@ -29,18 +29,22 @@ const surveysTemplateMigration000DefaultTemplates: Migration<SurveysTemplateDocu
   name,
   version: 1,
   execute: async (model) => {
+    const anyExistingDefaultTemplate = await model.findOne({
+      fileName: { $in: list.map((template) => template.fileName) },
+    });
+    if (anyExistingDefaultTemplate) {
+      Logger.log(`Migration ${name} skipped: default templates already exist`);
+      return;
+    }
+
     Logger.log(`Found ${list.length} documents to process...`);
 
     let processedCount = 0;
-
     await Promise.all(
       list.map(async (surveyTemplate) => {
         try {
-          const existingTemplate = await model.findOne({ fileName: surveyTemplate.fileName });
-          if (!existingTemplate) {
-            await model.create(surveyTemplate);
-            processedCount += 1;
-          }
+          await model.create(surveyTemplate);
+          processedCount += 1;
         } catch (error) {
           Logger.error(`Failed to migrate document ${surveyTemplate.fileName}:`, error);
         }

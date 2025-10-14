@@ -12,13 +12,17 @@
 
 const host = process.env['EDUI_HOST'] ?? 'localhost';
 const port = process.env['EDUI_PORT'] ?? '3001';
+const protocol = window.location.protocol || 'http:';
+const frontend = window.location.host || `localhost:5173`;
 
 const TeilnahmeVeranstaltungLimitiert = {
   fileName: 'TeilnahmeVeranstaltungLimitiert',
+  isActive: false,
   schemaVersion: 1,
   template: {
     formula: {
       title: 'Anmeldung zur Veranstaltung',
+      logo: `${protocol}//${frontend}/edu-api/files/public/file/surveys/surveys-default-logo-dark.webp`,
       description: 'Möchtest du an der Veranstaltung teilnehmen?',
       pages: [
         {

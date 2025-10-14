@@ -12,13 +12,17 @@
 
 const host = process.env['EDUI_HOST'] ?? 'localhost';
 const port = process.env['EDUI_PORT'] ?? '3001';
+const protocol = window.location.protocol || 'http:';
+const frontend = window.location.host || `localhost:5173`;
 
 const Elternbrief = {
   fileName: 'Elternbrief',
+  isActive: true,
   schemaVersion: 1,
   template: {
     formula: {
       title: 'Elternbrief – Rückmeldung erforderlich',
+      logo: `${protocol}//${frontend}/edu-api/files/public/file/surveys/surveys-default-logo-dark.webp`,
       description: 'Bitte geben Sie den Grund für die Benachrichtigung der Erziehungsberechtigten an.',
       pages: [
         {

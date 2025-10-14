@@ -12,13 +12,17 @@
 
 const host = process.env['EDUI_HOST'] ?? 'localhost';
 const port = process.env['EDUI_PORT'] ?? '3001';
+const protocol = window.location.protocol || 'http:';
+const frontend = window.location.host || `localhost:5173`;
 
 const ElternAbend = {
   fileName: 'Eltern-Abend',
+  isActive: true,
   schemaVersion: 1,
   template: {
     formula: {
       title: 'Eltern-Abend (DATUM?)',
+      logo: `${protocol}//${frontend}/edu-api/files/public/file/surveys/surveys-default-logo-dark.webp`,
       description: 'Auf jeder Seite bietet der Lehrer eines Faches in der jeweiligen Klasse verschiedene Timeslots an.',
       pages: [
         {

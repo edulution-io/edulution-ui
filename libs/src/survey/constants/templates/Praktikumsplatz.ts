@@ -10,30 +10,35 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const Vortragsthema = {
-  fileName: 'Vortragsthema',
+const protocol = window.location.protocol || 'http:';
+const frontend = window.location.host || `localhost:5173`;
+
+const Praktikumsplatz = {
+  fileName: 'Praktikumsplatz',
+  isActive: true,
   schemaVersion: 1,
   template: {
     formula: {
-      title: 'Vortragsthema Wunschliste',
+      title: 'Praktikumsplatz Wunschliste',
+      logo: `${protocol}//${frontend}/edu-api/files/public/file/surveys/surveys-default-logo-dark.webp`,
       elements: [
         {
           type: 'paneldynamic',
           name: 'Frage1',
-          title: 'Prioritätenliste möglicher Vortragsthemen',
+          title: 'Prioritätenliste möglicher Praktikumsplätze',
           description:
-            'Bitte gib eine Prioritätenliste mit Themen an, die für dich als Vortragsthema in Frage kommen. Beginne mit deiner höchsten Priorität.',
+            'Bitte gib eine Prioritätenliste mit Unternehmen an, die für dich als Praktikumsplatz in Frage kommen. Beginne mit deiner höchsten Priorität.',
           templateElements: [
             {
               type: 'text',
               name: 'Frage2',
-              title: 'Thema',
+              title: 'Name des Unternehmens',
               isRequired: true,
             },
           ],
-          minPanelCount: 1,
+          minPanelCount: 3,
           maxPanelCount: 10,
-          panelAddText: 'Weiteres Thema hinzufügen',
+          panelAddText: 'Weiteres Unternehmen hinzufügen',
         },
       ],
     },
@@ -56,4 +61,4 @@ const Vortragsthema = {
   },
 };
 
-export default Vortragsthema;
+export default Praktikumsplatz;

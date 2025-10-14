@@ -19,5 +19,4 @@ export interface SurveyTemplateDto {
   template: TemplateDto;
   fileName?: string;
   isActive?: boolean;
-  schemaVersion?: number;
 }
