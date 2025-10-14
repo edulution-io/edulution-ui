@@ -27,6 +27,7 @@ const LMN_API_EDU_API_ENDPOINTS = {
   FIRST_PASSWORD: `${LMN_API_EDU_API_ENDPOINT}/first-password`,
   PRINTERS: `${LMN_API_EDU_API_ENDPOINT}/printers`,
   USERS_QUOTA: 'quotas',
+  SCHOOLS: `${LMN_API_EDU_API_ENDPOINT}/schools`,
 } as const;
 
 export default LMN_API_EDU_API_ENDPOINTS;

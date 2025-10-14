@@ -788,6 +788,23 @@ class LmnApiService {
       );
     }
   }
+
+  public async getSchools(lmnApiToken: string): Promise<string[]> {
+    try {
+      const response = await this.request<string[]>(HttpMethods.GET, 'schools', undefined, {
+        headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+      });
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.GetSchoolsFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
 }
 
 export default LmnApiService;

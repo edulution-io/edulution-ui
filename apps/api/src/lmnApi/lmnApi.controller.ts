@@ -27,7 +27,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { Response } from 'express';
-import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
+import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/lmnApiEduApiEndpoints';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
 import GroupForm from '@libs/groups/types/groupForm';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
@@ -57,7 +57,7 @@ export class LmnApiController {
     const apiResponse = await this.lmnApiService.printPasswords(lmnApiToken, body.options);
     res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_PDF as string);
     res.setHeader(HTTP_HEADERS.ContentDisposition, apiResponse.headers['content-disposition'] as string);
-    res.send(Buffer.from(apiResponse.data as ArrayBuffer));
+    res.send(Buffer.from(apiResponse.data));
   }
 
   @Put('exam-mode/:state')
@@ -280,6 +280,11 @@ export class LmnApiController {
     @Body() body: { password: string; username: string },
   ) {
     return this.lmnApiService.setFirstPassword(lmnApiToken, body.username, body.password);
+  }
+
+  @Get('schools')
+  async getSchools(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string) {
+    return this.lmnApiService.getSchools(lmnApiToken);
   }
 }
 

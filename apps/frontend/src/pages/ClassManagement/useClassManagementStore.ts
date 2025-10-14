@@ -10,27 +10,28 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ClassManagementStore from '@libs/classManagement/types/store/classManagementStore';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import eduApi from '@/api/eduApi';
+import type ClassManagementStore from '@libs/classManagement/types/store/classManagementStore';
 import handleApiError from '@/utils/handleApiError';
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import LmnApiSearchResult from '@libs/lmnApi/types/lmnApiSearchResult';
-import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
-import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
-import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
-import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
-import LmnApiProjectWithMembers from '@libs/lmnApi/types/lmnApiProjectWithMembers';
-import LmnApiSchoolClassWithMembers from '@libs/lmnApi/types/lmnApiSchoolClassWithMembers';
+import type LmnApiSearchResult from '@libs/lmnApi/types/lmnApiSearchResult';
+import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/lmnApiEduApiEndpoints';
+import type LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
+import type LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
+import type LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
+import type LmnApiProjectWithMembers from '@libs/lmnApi/types/lmnApiProjectWithMembers';
+import type LmnApiSchoolClassWithMembers from '@libs/lmnApi/types/lmnApiSchoolClassWithMembers';
 import sortGroups from '@libs/groups/utils/sortGroups';
 import sortByName from '@libs/common/utils/sortByName';
-import LmnApiRoom from '@libs/lmnApi/types/lmnApiRoom';
+import type LmnApiRoom from '@libs/lmnApi/types/lmnApiRoom';
 import minimizeFormValues from '@libs/groups/utils/minimizeFormValues';
-import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
-import LmnApiPrinterWithMembers from '@libs/lmnApi/types/lmnApiPrinterWithMembers';
+import type LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
+import type LmnApiPrinterWithMembers from '@libs/lmnApi/types/lmnApiPrinterWithMembers';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+import type LmnApiSchools from '@libs/lmnApi/types/lmnApiSchools';
 
 const { PROJECT, SCHOOL_CLASSES, PRINTERS, ROOM, SEARCH_USERS_OR_GROUPS, USER_SESSIONS } = LMN_API_EDU_API_ENDPOINTS;
 
@@ -52,6 +53,8 @@ const initialState = {
   printers: [],
   searchGroupsError: null,
   isSearchGroupsLoading: false,
+  schools: [],
+  selectedSchool: '',
 
   error: null,
 };
@@ -65,6 +68,8 @@ const useClassManagementStore = create<ClassManagementStore>(
   (persist as PersistentClassManagementStore)(
     (set, get) => ({
       ...initialState,
+
+      setSelectedSchool: (school) => set({ selectedSchool: school }),
 
       fetchProject: async (projectName: string) => {
         if (get().isProjectLoading) return null;
@@ -375,6 +380,19 @@ const useClassManagementStore = create<ClassManagementStore>(
           return [];
         } finally {
           set({ isSearchGroupsLoading: false });
+        }
+      },
+
+      getSchools: async () => {
+        try {
+          const { lmnApiToken } = useLmnApiStore.getState();
+          const { data } = await eduApi.get<LmnApiSchools[]>(LMN_API_EDU_API_ENDPOINTS.SCHOOLS, {
+            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+          });
+
+          set({ schools: data });
+        } catch (error) {
+          handleApiError(error, set);
         }
       },
 

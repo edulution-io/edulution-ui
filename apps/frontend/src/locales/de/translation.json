@@ -177,7 +177,8 @@
       "GetProjectFailed": "Abrufen des Projekts fehlgeschlagen",
       "PasswordMismatch": "Aktuelles Passwort stimmt nicht",
       "PasswordChangeFailed": "Passwort ändern fehlgeschlagen",
-      "GetUsersQuotaFailed": "Abrufen der Benutzerkontingente fehlgeschlagen."
+      "GetUsersQuotaFailed": "Abrufen der Benutzerkontingente fehlgeschlagen.",
+      "GetSchoolsFailed": "Abrufen der Schulen fehlgeschlagen"
     }
   },
   "ticketsystem": {
@@ -616,6 +617,11 @@
       "proxyAdressPlaceholder": "http://localhost:11080",
       "createConfig": "Konfiguration erstellen",
       "editConfig": "Konfiguration bearbeiten"
+    },
+    "selectSchool": {
+      "title": "Schule auswählen",
+      "description": "Bitte wähle die Schule aus, deren Klassen du verwalten möchtest",
+      "placeholder": "Schule auswählen"
     }
   },
   "select": "Auswählen",
