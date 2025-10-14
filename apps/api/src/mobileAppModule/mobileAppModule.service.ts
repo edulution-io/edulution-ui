@@ -15,9 +15,13 @@ import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import UserDto from '@libs/user/types/user.dto';
 import getMobileAppUserDto from '@libs/mobileApp/utils/getMobileAppUserDto';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
+import getStringFromArray from '@libs/common/utils/getStringFromArray';
+import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
+import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import LmnApiService from '../lmnApi/lmnApi.service';
 import UsersService from '../users/users.service';
 import GlobalSettingsService from '../global-settings/global-settings.service';
+import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 
 @Injectable()
 class MobileAppModuleService {
@@ -25,6 +29,7 @@ class MobileAppModuleService {
     private readonly userService: UsersService,
     private readonly globalSettingsService: GlobalSettingsService,
     private readonly lmnApiService: LmnApiService,
+    private readonly webdavSharesService: WebdavSharesService,
   ) {}
 
   async getAppUserData(username: string) {
@@ -33,7 +38,7 @@ class MobileAppModuleService {
 
     let lmnApiToken = '';
     let lmnInfo: LmnUserInfo = {} as LmnUserInfo;
-    if (globalSettingsDto.general.deploymentTarget === 'linuxmuster') {
+    if (globalSettingsDto.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER) {
       try {
         const password = await this.userService.getPassword(username);
         lmnApiToken = await this.lmnApiService.getLmnApiToken(username, password);
@@ -43,9 +48,16 @@ class MobileAppModuleService {
       }
     }
 
+    const webdavServers = await this.webdavSharesService.findAllWebdavServers();
+
+    const isFileEduProxy = !!webdavServers.find((server) => server.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY);
+
+    const homeDirectory = isFileEduProxy ? lmnInfo.homeDirectory : getStringFromArray(lmnInfo.sophomorixIntrinsic2);
+
     const user: UserDto | null = await this.userService.findOne(username);
 
     return getMobileAppUserDto({
+      homeDirectory,
       usernameFallback: username,
       user,
       globalSettings: globalSettingsDto,
