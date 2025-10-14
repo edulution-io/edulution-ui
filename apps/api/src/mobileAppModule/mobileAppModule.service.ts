@@ -18,6 +18,7 @@ import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.d
 import getStringFromArray from '@libs/common/utils/getStringFromArray';
 import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
+import normalizeLdapHomeDirectory from '@libs/filesharing/utils/normalizeLdapHomeDirectory';
 import LmnApiService from '../lmnApi/lmnApi.service';
 import UsersService from '../users/users.service';
 import GlobalSettingsService from '../global-settings/global-settings.service';
@@ -52,7 +53,9 @@ class MobileAppModuleService {
 
     const isFileEduProxy = !!webdavServers.find((server) => server.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY);
 
-    const homeDirectory = isFileEduProxy ? lmnInfo.homeDirectory : getStringFromArray(lmnInfo.sophomorixIntrinsic2);
+    const homeDirectory = isFileEduProxy
+      ? normalizeLdapHomeDirectory(lmnInfo.homeDirectory)
+      : getStringFromArray(lmnInfo.sophomorixIntrinsic2);
 
     const user: UserDto | null = await this.userService.findOne(username);
 
