@@ -25,26 +25,22 @@ const list = [Praktikumsplatz, ElternAbend, Elternbrief, TeilnahmeVeranstaltungL
 
 const name = '000-load-the-default-survey-templates';
 
-const surveysTemplateMigration000DefaultTemplates: Migration<SurveysTemplateDocument> = {
+const surveysTemplateInitialization000LoadDefaultTemplates: Migration<SurveysTemplateDocument> = {
   name,
   version: 1,
   execute: async (model) => {
-    const anyExistingDefaultTemplate = await model.findOne({
-      fileName: { $in: list.map((template) => template.fileName) },
-    });
-    if (anyExistingDefaultTemplate) {
-      Logger.log(`Migration ${name} skipped: default templates already exist`);
-      return;
-    }
-
     Logger.log(`Found ${list.length} documents to process...`);
 
     let processedCount = 0;
+
     await Promise.all(
       list.map(async (surveyTemplate) => {
         try {
-          await model.create(surveyTemplate);
-          processedCount += 1;
+          const existingTemplate = await model.findOne({ fileName: surveyTemplate.fileName });
+          if (!existingTemplate) {
+            await model.create(surveyTemplate);
+            processedCount += 1;
+          }
         } catch (error) {
           Logger.error(`Failed to migrate document ${surveyTemplate.fileName}:`, error);
         }
@@ -57,4 +53,4 @@ const surveysTemplateMigration000DefaultTemplates: Migration<SurveysTemplateDocu
   },
 };
 
-export default surveysTemplateMigration000DefaultTemplates;
+export default surveysTemplateInitialization000LoadDefaultTemplates;

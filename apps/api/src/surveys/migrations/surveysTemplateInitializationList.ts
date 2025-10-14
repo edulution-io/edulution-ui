@@ -10,8 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import migration000 from './surveysTemplateMigration000DefaultTemplates';
+import { SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
+import { Migration } from 'apps/api/src/migration/migration.type';
+import migration000 from './surveysTemplateInitialization000LoadDefaultTemplates';
 
-const surveysTemplateMigrationsList = [migration000];
+const surveysTemplateInitializationList: Migration<SurveysTemplateDocument>[] = [migration000];
 
-export default surveysTemplateMigrationsList;
+export default surveysTemplateInitializationList;
