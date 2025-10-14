@@ -48,7 +48,7 @@ const surveyTemplatesMigration000NewFromExchangeFolder: Migration<SurveysTemplat
           const newTemplate = JSON.parse(fileContent) as TemplateDto;
           const newDocument: SurveysTemplateDocument | null = await model.findOneAndUpdate(
             { fileName },
-            { $set: { template: { ...newTemplate, schemaVersion } } },
+            { $set: { template: newTemplate, schemaVersion } },
             { new: true, upsert: true },
           );
           if (newDocument !== null) {
