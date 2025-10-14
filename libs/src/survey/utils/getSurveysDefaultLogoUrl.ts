@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ThemeType } from '@libs/common/constants/theme';
+import { Theme, ThemeType } from '@libs/common/constants/theme';
 import APPS from '@libs/appconfig/constants/apps';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
@@ -18,7 +18,7 @@ import getSurveysDefaultLogoFilename from '@libs/survey/utils/getSurveysDefaultL
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 
 const getSurveysDefaultLogoUrl = (theme?: ThemeType) => {
-  const fileName = getSurveysDefaultLogoFilename(theme || 'dark');
+  const fileName = getSurveysDefaultLogoFilename(theme || Theme.dark);
   return `${EDU_API_URL}/${EDU_API_CONFIG_ENDPOINTS.FILES}/public/${FILE_ENDPOINTS.FILE}/${APPS.SURVEYS}/${fileName}`;
 };
 
