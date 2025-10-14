@@ -150,7 +150,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
         webdavShare={webdavShare}
         showRootOnly={showRootOnly}
       />
-      <div className="h-[60vh] flex-col overflow-auto text-background scrollbar-thin">
+      <div className="text-background">
         <div className="pb-2">
           <DirectoryBreadcrumb
             path={currentPath}
@@ -162,22 +162,24 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
         </div>
         <div className="w-full">{isLoading ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}</div>
         {!isLoading && (
-          <ScrollableTable
-            columns={columns}
-            data={files}
-            selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filePath]: true } : {}}
-            onRowSelectionChange={handleRowSelectionChange}
-            applicationName={APPS.FILE_SHARING}
-            getRowId={(row) => row.filePath}
-            showHeader={false}
-            textColorClassname="text-background"
-            showSelectedCount={false}
-            filterKey="select-filename"
-            filterPlaceHolderText="filesharing.filterPlaceHolderText"
-            enableRowSelection={enableRowSelection}
-            getRowDisabled={getRowDisabled}
-            isDialog
-          />
+          <div className="display-inline-block dialog-table h-[45vh] max-h-[45vh] overflow-auto scrollbar-thin">
+            <ScrollableTable
+              columns={columns}
+              data={files}
+              selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filePath]: true } : {}}
+              onRowSelectionChange={handleRowSelectionChange}
+              applicationName={APPS.FILE_SHARING}
+              getRowId={(row) => row.filePath}
+              showHeader={false}
+              textColorClassname="text-background"
+              showSelectedCount={false}
+              filterKey="select-filename"
+              filterPlaceHolderText="filesharing.filterPlaceHolderText"
+              enableRowSelection={enableRowSelection}
+              getRowDisabled={getRowDisabled}
+              isDialog
+            />
+          </div>
         )}
       </div>
       {footer}
