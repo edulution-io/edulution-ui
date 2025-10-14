@@ -33,6 +33,8 @@ const SSE_MESSAGE_TYPE = {
   FILESHARING_CREATE_FOLDER: 'filesharing_create_folder',
   FILESHARING_FILE_UPLOAD: 'filesharing_file_upload',
   TLDRAW_SYNC_ROOM_LOG_MESSAGE: 'tldraw_sync_room_log_message',
+  MAIL_THEME_UPDATED: 'mail_theme_updated',
+  MAIL_THEME_UPDATE_FAILED: 'mail_theme_update_failed',
 } as const;
 
 export default SSE_MESSAGE_TYPE;

@@ -11,6 +11,7 @@
  */
 
 import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useInterval } from 'usehooks-ts';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import FEED_PULL_TIME_INTERVAL_SLOW from '@libs/dashboard/constants/pull-time-interval';
@@ -30,8 +31,10 @@ import useFileOperationToast from '@/pages/FileSharing/hooks/useFileOperationToa
 import useTLDRawHistoryStore from '@/pages/Whiteboard/TLDrawWithSync/useTLDRawHistoryStore';
 import HistoryEntryDto from '@libs/whiteboard/types/historyEntryDto';
 import useFileDownloadProgressToast from '@/hooks/useDownloadProgressToast';
+import { toast } from 'sonner';
 
 const useNotifications = () => {
+  const { t } = useTranslation();
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
   const isMailsAppActivated = useIsAppActive(APPS.MAIL);
   const { getMails } = useMailsStore();
@@ -79,6 +82,33 @@ const useNotifications = () => {
       void getMails();
     }
   }, FEED_PULL_TIME_INTERVAL_SLOW);
+
+  useEffect(() => {
+    if (!isMailsAppActivated || !eventSource) {
+      return undefined;
+    }
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    const handleMailThemeUpdated = () => {
+      toast.info(t('mail.themeUpdated.generic'), {
+        action: {
+          label: t('common.refreshPage'),
+          onClick: () => window.location.reload(),
+        },
+        duration: undefined,
+      });
+    };
+
+    const handleMailThemeUpdateFailed = () => toast.error(t('mail.themeUpdated.failed'));
+
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.MAIL_THEME_UPDATED, handleMailThemeUpdated, { signal });
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.MAIL_THEME_UPDATE_FAILED, handleMailThemeUpdateFailed, { signal });
+
+    return () => {
+      controller.abort();
+    };
+  }, [eventSource, isMailsAppActivated, t]);
 
   useEffect(() => {
     if (!isConferenceAppActivated || !eventSource) {

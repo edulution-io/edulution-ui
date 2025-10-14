@@ -10,11 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const logoutScript = `
-    const logoutButton = document.querySelector('a[ng\\:click="identity.logout()"]');
-    if (logoutButton) {
-      logoutButton.click();
-    }
-  `;
+// This type is based on a third-party object definition from the Linuxmuster API.
+// Any modifications should be carefully reviewed to ensure compatibility with the source.
 
-export default logoutScript;
+type LmnApiSchools = {
+  objectClass: string[];
+  ou: string;
+  displayName: string;
+  distinguishedName: string;
+};
+
+export default LmnApiSchools;

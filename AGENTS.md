@@ -25,8 +25,10 @@
 - Linting: ESLint (Airbnb + TypeScript, a11y, import rules). Run `npm run lint`.
 - Formatting: Prettier (2 spaces, 120 cols, single quotes, trailing commas). Run `npm run format`.
 - React: Function components as arrow functions; allow prop spreading; avoid `console` except `info|warn|error`.
-- File names: TypeScript `*.ts|*.tsx`; shared code lives under `libs/`.
+- Shared code lives under `libs/`.
+- File names: The file name should match the default export name.
 - Never comment in the code.
+- Prefer default exports over named exports. Default export at the end of the file.
 
 ## Testing Guidelines
 

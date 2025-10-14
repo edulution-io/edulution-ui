@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
@@ -19,6 +19,8 @@ import GroupForm from '@libs/groups/types/groupForm';
 import Checkbox from '@/components/ui/Checkbox';
 import Input from '@/components/shared/Input';
 import { FormMessage } from '@/components/ui/Form';
+import useLdapGroups from '@/hooks/useLdapGroups';
+import useClassManagementStore from '../../useClassManagementStore';
 
 dayjs.extend(customParseFormat);
 
@@ -38,6 +40,14 @@ interface GroupPropertiesTableProps {
 const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesTableProps) => {
   const { watch, setValue, register, formState } = form;
   const { t } = useTranslation();
+  const { selectedSchool } = useClassManagementStore();
+  const { isSuperAdmin } = useLdapGroups();
+
+  useEffect(() => {
+    if (isSuperAdmin) {
+      form.setValue('school', selectedSchool);
+    }
+  }, [selectedSchool]);
 
   const groupProperties: GroupProperty[] = [
     {
