@@ -10,14 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const ExtendedOptionField = {
-  input: 'input',
-  password: 'password',
-  table: 'table',
-  number: 'number',
-  switch: 'switch',
-  textarea: 'textarea',
-  dropdown: 'dropdown',
-} as const;
+import { AxiosRequestConfig } from 'axios';
+import { HttpMethods } from '@libs/common/types/http-methods';
 
-export default ExtendedOptionField;
+interface LmnApiJobData {
+  method: HttpMethods;
+  endpoint: string;
+  payload?: unknown;
+  config?: AxiosRequestConfig;
+}
+
+export default LmnApiJobData;

@@ -10,14 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const ExtendedOptionField = {
-  input: 'input',
-  password: 'password',
-  table: 'table',
-  number: 'number',
-  switch: 'switch',
-  textarea: 'textarea',
-  dropdown: 'dropdown',
+const DOCKER_CONTAINER_NAMES = {
+  MAILCOWDOCKERIZED_SOGO_MAILCOW_1: 'mailcowdockerized-sogo-mailcow-1',
+  MAILCOWDOCKERIZED_MEMCACHED_MAILCOW_1: 'mailcowdockerized-memcached-mailcow-1',
 } as const;
 
-export default ExtendedOptionField;
+export default DOCKER_CONTAINER_NAMES;

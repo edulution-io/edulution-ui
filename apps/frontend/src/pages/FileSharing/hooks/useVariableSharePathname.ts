@@ -12,14 +12,13 @@
 
 import { useCallback, useEffect } from 'react';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
-import useLdapGroups from '@/hooks/useLdapGroups';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import appendSlashToUrl from '@libs/common/utils/URL/appendSlashToUrl';
 import getUserAttributValue from '@libs/lmnApi/utils/getUserAttributValue';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
+import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 
 const useVariableSharePathname = () => {
-  const { isSuperAdmin } = useLdapGroups();
   const { isLmn } = useDeploymentTarget();
   const lmnUser = useLmnApiStore((s) => s.user);
   const getOwnUser = useLmnApiStore((s) => s.getOwnUser);
@@ -30,9 +29,9 @@ const useVariableSharePathname = () => {
 
   const createVariableSharePathname = useCallback(
     (pathname: string, pathVariables?: MultipleSelectorOptionSH[]) => {
-      if (!isSuperAdmin && isLmn && Array.isArray(pathVariables) && pathVariables.length > 0) {
+      if (isLmn && Array.isArray(pathVariables) && pathVariables.length > 0) {
         const variablePath = pathVariables
-          .map((variable) => getUserAttributValue(lmnUser, variable.label))
+          .map((variable) => getUserAttributValue(lmnUser, variable.label as keyof LmnUserInfo))
           .filter(Boolean)
           .join('/');
 
@@ -41,7 +40,7 @@ const useVariableSharePathname = () => {
 
       return pathname;
     },
-    [isSuperAdmin, isLmn, lmnUser],
+    [isLmn, lmnUser],
   );
 
   return { createVariableSharePathname };
