@@ -11,6 +11,7 @@
  */
 
 import { ApiProperty } from '@nestjs/swagger';
+import OrganisationInfoDto from '@libs/global-settings/types/organisationInfoDto';
 
 class MobileAppUserDto {
   @ApiProperty() username: string;
@@ -29,14 +30,6 @@ class MobileAppUserDto {
 
   @ApiProperty() school: string;
 
-  @ApiProperty() street: string;
-
-  @ApiProperty() organisationName: string;
-
-  @ApiProperty() postalCode: string;
-
-  @ApiProperty() city: string;
-
   @ApiProperty() classes: string[];
 
   @ApiProperty() userProfilePicture: string;
@@ -47,7 +40,8 @@ class MobileAppUserDto {
 
   @ApiProperty() homeDirectory: string;
 
-  @ApiProperty() website: string;
+  @ApiProperty({ type: () => OrganisationInfoDto })
+  organisationInfo: OrganisationInfoDto;
 }
 
 export default MobileAppUserDto;

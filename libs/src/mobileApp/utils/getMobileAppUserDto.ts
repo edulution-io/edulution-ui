@@ -41,15 +41,17 @@ const getMobileAppUserDto = ({
   classes: Array.isArray(lmn?.schoolclasses)
     ? lmn.schoolclasses.map((userClass) => userClass.match(/([^-]+)$/)?.at(1) || '')
     : [],
-  street: globalSettings?.organisationInfo?.street || '',
-  organisationName: globalSettings?.organisationInfo?.name || '',
-  postalCode: globalSettings?.organisationInfo?.postalCode || '',
-  city: globalSettings?.organisationInfo?.city || '',
   userProfilePicture: lmn?.thumbnailPhoto || '',
   institutionLogo: `edu-api/public/branding/logo`,
   deploymentTarget: globalSettings?.general.deploymentTarget || '',
   homeDirectory: normalizeLdapHomeDirectory(lmn?.homeDirectory || ''),
-  website: globalSettings?.organisationInfo?.website || '',
+  organisationInfo: {
+    name: globalSettings?.organisationInfo?.name,
+    street: globalSettings?.organisationInfo?.street,
+    city: globalSettings?.organisationInfo?.city,
+    postalCode: globalSettings?.organisationInfo?.postalCode,
+    website: globalSettings?.organisationInfo?.website,
+  },
 });
 
 export default getMobileAppUserDto;
