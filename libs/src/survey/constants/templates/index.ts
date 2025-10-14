@@ -10,9 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import surveyTemplatesMigration001NewFromExchangeFolder from './surveyTemplatesMigration001NewFromExchangeFolder';
-
-// Add new migrations here
-const surveyTemplatesMigrationsList = [surveyTemplatesMigration001NewFromExchangeFolder];
-
-export default surveyTemplatesMigrationsList;
+export { default as Praktikumsplatz } from './Praktikumsplatz';
+export { default as ElternAbend } from './ElternAbend';
+export { default as Elternbrief } from './Elternbrief';
+export { default as TeilnahmeVeranstaltungLimitiert } from './TeilnahmeVeranstaltungLimitiert';
+export { default as Vortragsthema } from './Vortragsthema';

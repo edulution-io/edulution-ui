@@ -19,20 +19,21 @@ import { SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.s
 import MigrationService from 'apps/api/src/migration/migration.service';
 import { Migration } from '../../migration/migration.type';
 
-const name = '000-migrate-templates-from-exchange-folder-to-db';
+const name = '001-migrate-templates-from-exchange-folder-to-db';
 const schemaVersion = 1;
 
-const surveyTemplatesMigration000NewFromExchangeFolder: Migration<SurveysTemplateDocument> = {
+const surveyTemplatesMigration001NewFromExchangeFolder: Migration<SurveysTemplateDocument> = {
   name,
   version: 1,
   execute: async (model) => {
     const path = SURVEY_TEMPLATES_EXCHANGE_PATH;
     const exists = await pathExists(path);
     if (!exists) {
+      Logger.log(`Migration "${name}": Skipped: exchange folder does not exist at path ${path}`, MigrationService.name);
       return;
     }
     const includedFiles = await readdir(path);
-    Logger.log(`Found ${includedFiles.length} files to migrate...`, MigrationService.name);
+    Logger.log(`Migration "${name}": Found ${includedFiles.length} files to migrate...`, MigrationService.name);
 
     let processedCount = 0;
     const filesToDelete: string[] = [];
@@ -42,8 +43,7 @@ const surveyTemplatesMigration000NewFromExchangeFolder: Migration<SurveysTemplat
           const filePath = join(path, fileName);
           const fileContent = await readFile(filePath, 'utf-8');
           if (!fileContent) {
-            Logger.error(`Failed to read file content from ${filePath}`, MigrationService.name);
-            return;
+            throw new Error(`Failed to read file content from ${filePath}`);
           }
           const newTemplate = JSON.parse(fileContent) as TemplateDto;
           const newDocument: SurveysTemplateDocument | null = await model.findOneAndUpdate(
@@ -55,11 +55,11 @@ const surveyTemplatesMigration000NewFromExchangeFolder: Migration<SurveysTemplat
             processedCount += 1;
             filesToDelete.push(fileName);
           } else {
-            Logger.error(`Failed to create or update mongo document for file ${fileName}`, MigrationService.name);
+            throw new Error(`Failed to create or update mongo document for file ${fileName}`);
           }
         } catch (error) {
           Logger.error(
-            `Error processing file ${fileName}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            `Migration "${name}": Error processing file ${fileName}: ${error instanceof Error ? error.message : 'Unknown error'}`,
             MigrationService.name,
           );
         }
@@ -74,21 +74,20 @@ const surveyTemplatesMigration000NewFromExchangeFolder: Migration<SurveysTemplat
           deletedCount += 1;
         } catch (error) {
           Logger.error(
-            `Error deleting file ${fileName}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            `Migration "${name}": Error deleting file ${fileName}: ${error instanceof Error ? error.message : 'Unknown error'}`,
             MigrationService.name,
           );
         }
       }),
     );
 
-    Logger.log(`Migration ${name} completed`, MigrationService.name);
-    if (processedCount > 0) {
+    if (processedCount > 0 || deletedCount > 0) {
       Logger.log(
-        `Migration ${name} completed: ${processedCount} files migrated and removed ${deletedCount} files successfully.`,
+        `Migration "${name}": Completed: ${processedCount} files migrated and removed ${deletedCount} files successfully.`,
         MigrationService.name,
       );
     }
   },
 };
 
-export default surveyTemplatesMigration000NewFromExchangeFolder;
+export default surveyTemplatesMigration001NewFromExchangeFolder;

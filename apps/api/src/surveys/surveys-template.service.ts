@@ -10,34 +10,45 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Model } from 'mongoose';
 import { Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { InjectModel } from '@nestjs/mongoose';
+import { Connection, Model } from 'mongoose';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
 import SURVEY_TEMPLATES_EXCHANGE_PATH from '@libs/survey/constants/surveyTemplatesExchangePath';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
-import MigrationService from 'apps/api/src/migration/migration.service';
-import surveyTemplatesMigrationsList from 'apps/api/src/surveys/migrations/surveyTemplatesMigrationsList';
 import { SurveysTemplate, SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
 import CustomHttpException from '../common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
+import MigrationService from '../migration/migration.service';
+import surveysTemplateInitializationList from './migrations/surveysTemplateInitializationList';
+import surveyTemplatesMigrationsList from './migrations/surveyTemplatesMigrationsList';
 
 @Injectable()
 class SurveysTemplateService implements OnModuleInit {
   constructor(
+    @InjectConnection() private readonly connection: Connection,
     @InjectModel(SurveysTemplate.name) private surveyTemplateModel: Model<SurveysTemplateDocument>,
     private fileSystemService: FilesystemService,
   ) {}
 
   async onModuleInit() {
     await this.fileSystemService.ensureDirectoryExists(SURVEY_TEMPLATES_EXCHANGE_PATH);
+
+    const collectionsNamedMigration = await this.connection.db?.listCollections({ name: 'surveystemplates' }).toArray();
+    if (collectionsNamedMigration?.length === 0) {
+      await this.connection.db?.createCollection('surveystemplates');
+    }
+
+    const count = await this.surveyTemplateModel.countDocuments();
     await MigrationService.runMigrations<SurveysTemplateDocument>(
       this.surveyTemplateModel,
-      surveyTemplatesMigrationsList,
+      count === 0
+        ? [...surveysTemplateInitializationList, ...surveyTemplatesMigrationsList]
+        : surveyTemplatesMigrationsList,
     );
   }
 
