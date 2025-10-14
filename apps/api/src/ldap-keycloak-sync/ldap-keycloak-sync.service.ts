@@ -42,6 +42,18 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import GROUPS_CACHE_REFRESH_EVENT from '@libs/groups/constants/groupsCacheRefreshEvent';
 import sleep from '@libs/common/utils/sleep';
 import DeploymentTarget from '@libs/common/types/deployment-target';
+import {
+  cnToKeycloakCandidates,
+  dedupeAddRemove,
+  extractCn,
+  extractDn,
+  missKeyBase,
+  missKeyExact,
+  parseGroupDn,
+  probeCandidatesWithNegativeCache,
+  stripDiacritics,
+  usernameMatchesBaseOrNumbered,
+} from '@libs/ldapKeycloakSync/utils/ldap-utils';
 import { LdapKeycloakSync, LdapKeycloakSyncDocument } from './ldap-keycloak-sync.schema';
 import GlobalSettingsService from '../global-settings/global-settings.service';
 import KeycloakRequestQueue from './queue/keycloak-request.queue';
@@ -59,14 +71,6 @@ class LdapKeycloakSyncService implements OnModuleInit {
   private deploymentTarget: DeploymentTarget | '' = '';
 
   private notFoundUserKeys = new Set<string>();
-
-  private static getFromNotFoundUsersKeyExact(username: string) {
-    return `exact:${username.toLowerCase()}`;
-  }
-
-  private static getFromNotFoundUsersKeyBase(base: string) {
-    return `base:${base.toLowerCase()}`;
-  }
 
   constructor(
     @Inject(CACHE_MANAGER) private cache: Cache,
@@ -112,7 +116,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
       const client = await this.setupClient();
 
       const ldapEntries = await this.searchAllGroups(client);
-      const ldapDns = new Set(ldapEntries.map((e) => LdapKeycloakSyncService.extractDn(e.distinguishedName)));
+      const ldapDns = new Set(ldapEntries.map((e) => extractDn(e.distinguishedName)));
 
       const cachedGroupsFlat = (await this.cache.get<Group[]>(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL)) || [];
       if (!cachedGroupsFlat.length) {
@@ -137,7 +141,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
 
       await Promise.all(
         Array.from(ldapDns).map(async (dn) => {
-          const { groupPath } = LdapKeycloakSyncService.parseGroupDn(dn);
+          const { groupPath } = parseGroupDn(dn);
           const existingGroup = await this.ensureKeycloakGroupUsingCache(groupPath, groupsByPath);
 
           const desiredRaw = await this.fetchMembers(client, dn, groupsByName);
@@ -222,7 +226,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
 
       await this.applyUpdatesDeduped(updates);
 
-      const ldapPaths = new Set(Array.from(ldapDns).map((dn) => LdapKeycloakSyncService.parseGroupDn(dn).groupPath));
+      const ldapPaths = new Set(Array.from(ldapDns).map((dn) => parseGroupDn(dn).groupPath));
       const cachedPaths = new Set(Array.from(groupsByPath.keys()));
       const toDeletePaths = Array.from(cachedPaths).filter((p) => !ldapPaths.has(p));
 
@@ -594,7 +598,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
       raw.map(async (rawDn) => {
         const dnString = typeof rawDn === 'string' ? rawDn : rawDn.toString();
 
-        const cn = LdapKeycloakSyncService.extractCn(dnString);
+        const cn = extractCn(dnString);
         if (!cn) return null;
         const isGroup = groupsByName.has(cn);
         if (isGroup) {
@@ -612,7 +616,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
     if (this.groupCache.has(name)) return LDAP_MEMBER_TYPES.GROUP;
 
     const tryExact = async (username: string) => {
-      const key = LdapKeycloakSyncService.getFromNotFoundUsersKeyExact(username);
+      const key = missKeyExact(username);
       if (this.notFoundUserKeys.has(key)) return undefined;
 
       const users = await this.keycloakQueue.enqueue<GroupMemberDto[]>(
@@ -620,12 +624,12 @@ class LdapKeycloakSyncService implements OnModuleInit {
         `/users?username=${encodeURIComponent(username)}&exact=true`,
       );
       if (users?.length) {
-        this.userCache.set(name, users[0]);
-        return users[0];
+        const u = users[0];
+        this.userCache.set(name, u);
+        this.userCache.set(u.username, u);
+        return u;
       }
-
       this.notFoundUserKeys.add(key);
-
       return undefined;
     };
 
@@ -633,55 +637,41 @@ class LdapKeycloakSyncService implements OnModuleInit {
 
     const deploymentTarget = await this.getDeploymentTarget();
     if (!user && deploymentTarget !== DEPLOYMENT_TARGET.LINUXMUSTER) {
-      const unchecked = LdapKeycloakSyncService.cnToKeycloakCandidates(name).filter(
-        (b) => !this.notFoundUserKeys.has(LdapKeycloakSyncService.getFromNotFoundUsersKeyBase(b)),
+      const bases = cnToKeycloakCandidates(name);
+      const hit = await probeCandidatesWithNegativeCache<GroupMemberDto>(
+        bases,
+        this.notFoundUserKeys,
+        missKeyBase,
+        (base) => this.findUserByBaseOrNumbered(base),
       );
-
-      const results = await Promise.all(
-        unchecked.map(async (base) => {
-          const hit = await this.findUserByBaseOrNumbered(base);
-          if (!hit) {
-            this.notFoundUserKeys.add(LdapKeycloakSyncService.getFromNotFoundUsersKeyBase(base));
-          }
-          return hit;
-        }),
-      );
-
-      const firstIdx = results.findIndex(Boolean);
-      if (firstIdx !== -1) {
-        user = results[firstIdx]!;
+      if (hit) {
+        user = hit;
         this.userCache.set(name, user);
         this.userCache.set(user.username, user);
       }
     }
 
-    if (!user) {
-      if (/\s/.test(name)) {
-        const plain = LdapKeycloakSyncService.stripDiacritics(name).trim().replace(/\s+/g, ' ');
-        const parts = plain.split(' ');
-        const first = parts[0]?.toLowerCase();
-        const last = parts[parts.length - 1]?.toLowerCase();
+    if (!user && /\s/.test(name)) {
+      const plain = stripDiacritics(name).trim().replace(/\s+/g, ' ');
+      const parts = plain.split(' ');
+      const first = parts[0]?.toLowerCase();
+      const last = parts[parts.length - 1]?.toLowerCase();
 
-        if (first && last) {
-          const results = await this.keycloakQueue.enqueue<GroupMemberDto[]>(
-            HttpMethods.GET,
-            `/users?search=${encodeURIComponent(plain)}`,
-          );
+      if (first && last) {
+        const results = await this.keycloakQueue.enqueue<GroupMemberDto[]>(
+          HttpMethods.GET,
+          `/users?search=${encodeURIComponent(plain)}`,
+        );
+        const candidates = (results || []).filter((u) => {
+          const fPlain = stripDiacritics(u.firstName ? String(u.firstName) : '').toLowerCase();
+          const lPlain = stripDiacritics(u.lastName ? String(u.lastName) : '').toLowerCase();
+          return fPlain === first && lPlain === last;
+        });
 
-          const candidates = (results || []).filter((u) => {
-            const f = u.firstName ? String(u.firstName) : '';
-            const l = u.lastName ? String(u.lastName) : '';
-            const fPlain = LdapKeycloakSyncService.stripDiacritics(f).toLowerCase();
-            const lPlain = LdapKeycloakSyncService.stripDiacritics(l).toLowerCase();
-            return fPlain === first && lPlain === last;
-          });
-
-          if (candidates.length === 1) {
-            const [only] = candidates;
-            user = only;
-          } else if (candidates.length > 1) {
-            const [first1] = candidates;
-            user = first1;
+        if (candidates.length) {
+          const [first1] = candidates;
+          user = first1;
+          if (candidates.length > 1) {
             Logger.warn(
               `Multiple Keycloak users match "${plain}" (first+last). Using id=${user.id}.`,
               LdapKeycloakSyncService.name,
@@ -701,8 +691,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
       HttpMethods.GET,
       `/groups?search=${encodeURIComponent(name)}`,
     );
-
-    const match = groups.find((group) => group.name === name);
+    const match = groups.find((g) => g.name === name);
     if (match) {
       this.groupCache.set(name, match);
       return LDAP_MEMBER_TYPES.GROUP;
@@ -711,52 +700,28 @@ class LdapKeycloakSyncService implements OnModuleInit {
     return LDAP_MEMBER_TYPES.MISSING;
   }
 
-  private static extractDn(raw: string | string[] | Buffer | Buffer[]): string {
-    return Array.isArray(raw) ? raw[0].toString() : raw.toString();
-  }
-
-  private static extractCn(dn: string): string | null {
-    const match = /^CN=([^,]+)/i.exec(dn);
-    return match ? match[1] : null;
-  }
-
-  private static parseGroupDn(groupDn: string): { groupPath: string; cn: string } {
-    const match = /^CN=([^,]+)/i.exec(groupDn);
-
-    if (!match) throw new Error(`Invalid DN: ${groupDn}`);
-
-    const cn = match[1];
-    return { groupPath: `/${cn}`, cn };
-  }
-
   private async applyUpdatesDeduped(updates: Array<{ userId: string; add: string[]; remove: string[] }>) {
     const byUser = new Map<string, { add: Set<string>; remove: Set<string> }>();
 
-    updates.forEach((user) => {
-      const entry = byUser.get(user.userId) || { add: new Set<string>(), remove: new Set<string>() };
-      user.add.forEach((g) => entry.add.add(g));
-      user.remove.forEach((g) => entry.remove.add(g));
-      byUser.set(user.userId, entry);
+    updates.forEach((u) => {
+      const entry = byUser.get(u.userId) || { add: new Set<string>(), remove: new Set<string>() };
+      u.add.forEach((g) => entry.add.add(g));
+      u.remove.forEach((g) => entry.remove.add(g));
+      byUser.set(u.userId, entry);
     });
 
-    const tasks = Array.from(byUser.entries()).map(async ([userId, { add, remove }]) => {
-      add.forEach((groupId) => {
-        if (remove.has(groupId)) {
-          add.delete(groupId);
-          remove.delete(groupId);
+    await Promise.all(
+      Array.from(byUser.entries()).map(async ([userId, { add, remove }]) => {
+        dedupeAddRemove(add, remove);
+        if (add.size || remove.size) {
+          Logger.verbose(
+            `Applying updates for user=${userId}: add=[${Array.from(add).join(',')}] remove=[${Array.from(remove).join(',')}]`,
+            LdapKeycloakSyncService.name,
+          );
+          await this.updateUserGroups(userId, Array.from(add), Array.from(remove));
         }
-      });
-
-      if (add.size || remove.size) {
-        Logger.verbose(
-          `Applying updates for user=${userId}: add=[${Array.from(add).join(',')}] remove=[${Array.from(remove).join(',')}]`,
-          LdapKeycloakSyncService.name,
-        );
-        await this.updateUserGroups(userId, Array.from(add), Array.from(remove));
-      }
-    });
-
-    await Promise.all(tasks);
+      }),
+    );
   }
 
   private async updateUserGroups(userId: string, toAddIds: string[], toRemoveIds: string[]) {
@@ -774,94 +739,35 @@ class LdapKeycloakSyncService implements OnModuleInit {
     }
   }
 
-  private static latinize(input: string): string {
-    const pre = input.replace(/ä/gi, 'ae').replace(/ö/gi, 'oe').replace(/ü/gi, 'ue').replace(/ß/gi, 'ss');
-    return pre.normalize('NFKD').replace(/\p{Diacritic}/gu, '');
-  }
-
-  private static stripDiacritics(input: string): string {
-    return input
-      .normalize('NFKD')
-      .replace(/ß/g, 'ss')
-      .replace(/[\u0300-\u036f]/g, '');
-  }
-
-  private static parseCnHumanName(cn: string): { first?: string; last?: string } {
-    const raw = cn.trim();
-    if (!raw) return {};
-    if (raw.includes(',')) {
-      const [last, rest] = raw.split(',', 2);
-      const parts = rest.trim().split(/\s+/).filter(Boolean);
-      const first = parts[0];
-      return { first, last: last.trim() };
-    }
-    const parts = raw.split(/\s+/).filter(Boolean);
-    if (parts.length === 1) return { first: parts[0] };
-    return { first: parts[0], last: parts[parts.length - 1] };
-  }
-
-  private static cnToKeycloakCandidates(cn: string): string[] {
-    const { first, last } = LdapKeycloakSyncService.parseCnHumanName(cn);
-    if (!first || !last) return [];
-
-    const f = LdapKeycloakSyncService.latinize(first.toLowerCase()).replace(/[^a-z0-9-]/g, '');
-    const l = LdapKeycloakSyncService.latinize(last.toLowerCase()).replace(/[^a-z0-9-]/g, '');
-
-    const set = new Set<string>([`${f}.${l}`, `${f}${l}`, `${f[0]}.${l}`, `${f}.${l[0]}`]);
-    return Array.from(set).filter(Boolean);
-  }
-
   private async cnToKeycloakUsernameIfNeeded(nameFromLdap: string): Promise<string | null> {
     if (this.userCache.has(nameFromLdap)) return nameFromLdap;
 
     const deploymentTarget = await this.getDeploymentTarget();
     if (deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER) return nameFromLdap;
 
-    const cnMissKey = LdapKeycloakSyncService.getFromNotFoundUsersKeyExact(nameFromLdap);
-    if (this.notFoundUserKeys.has(cnMissKey)) return null;
+    const cnMiss = missKeyExact(nameFromLdap);
+    if (this.notFoundUserKeys.has(cnMiss)) return null;
 
-    const bases = LdapKeycloakSyncService.cnToKeycloakCandidates(nameFromLdap);
-    const unchecked = bases.filter(
-      (b) => !this.notFoundUserKeys.has(LdapKeycloakSyncService.getFromNotFoundUsersKeyBase(b)),
+    const bases = cnToKeycloakCandidates(nameFromLdap);
+    const hit = await probeCandidatesWithNegativeCache<GroupMemberDto>(
+      bases,
+      this.notFoundUserKeys,
+      missKeyBase,
+      (base) => this.findUserByBaseOrNumbered(base),
     );
 
-    if (!unchecked.length) {
-      return null;
-    }
-
-    const results = await Promise.all(
-      unchecked.map(async (base) => {
-        const hit = await this.findUserByBaseOrNumbered(base);
-        if (!hit) {
-          this.notFoundUserKeys.add(LdapKeycloakSyncService.getFromNotFoundUsersKeyBase(base));
-        }
-        return hit;
-      }),
-    );
-
-    const idx = results.findIndex(Boolean);
-    if (idx !== -1) {
-      const hit = results[idx]!;
+    if (hit) {
       this.userCache.set(nameFromLdap, hit);
       this.userCache.set(hit.username, hit);
       return hit.username;
     }
 
-    this.notFoundUserKeys.add(cnMissKey);
+    this.notFoundUserKeys.add(cnMiss);
     return null;
   }
 
-  private static escapeRegExp(s: string) {
-    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  }
-
-  private static usernameMatchesBaseOrNumbered(username: string, base: string): boolean {
-    const rx = new RegExp(`^${LdapKeycloakSyncService.escapeRegExp(base)}\\d*$`, 'i');
-    return rx.test(username);
-  }
-
   private async findUserByBaseOrNumbered(base: string): Promise<GroupMemberDto | undefined> {
-    const baseKey = LdapKeycloakSyncService.getFromNotFoundUsersKeyBase(base);
+    const baseKey = missKeyBase(base);
     if (this.notFoundUserKeys.has(baseKey)) return undefined;
 
     const exact = await this.keycloakQueue.enqueue<GroupMemberDto[]>(
@@ -875,13 +781,8 @@ class LdapKeycloakSyncService implements OnModuleInit {
       `/users?search=${encodeURIComponent(base)}`,
     );
 
-    const match = (results || []).find(
-      (u) => u?.username && LdapKeycloakSyncService.usernameMatchesBaseOrNumbered(u.username, base),
-    );
-
-    if (!match) {
-      this.notFoundUserKeys.add(baseKey);
-    }
+    const match = (results || []).find((u) => u?.username && usernameMatchesBaseOrNumbered(u.username, base));
+    if (!match) this.notFoundUserKeys.add(baseKey);
     return match;
   }
 
