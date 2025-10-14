@@ -24,8 +24,8 @@ import { SurveysTemplate, SurveysTemplateDocument } from 'apps/api/src/surveys/s
 import CustomHttpException from '../common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
 import MigrationService from '../migration/migration.service';
-import surveyTemplatesMigrationsList from './migrations/surveyTemplatesMigrationsList';
 import surveysTemplateInitializationList from './migrations/surveysTemplateInitializationList';
+import surveyTemplatesMigrationsList from './migrations/surveyTemplatesMigrationsList';
 
 @Injectable()
 class SurveysTemplateService implements OnModuleInit {
@@ -41,15 +41,14 @@ class SurveysTemplateService implements OnModuleInit {
     const collectionsNamedMigration = await this.connection.db?.listCollections({ name: 'surveystemplates' }).toArray();
     if (collectionsNamedMigration?.length === 0) {
       await this.connection.db?.createCollection('surveystemplates');
-      await MigrationService.runMigrations<SurveysTemplateDocument>(
-        this.surveyTemplateModel,
-        surveysTemplateInitializationList,
-      );
     }
 
+    const count = await this.surveyTemplateModel.countDocuments();
     await MigrationService.runMigrations<SurveysTemplateDocument>(
       this.surveyTemplateModel,
-      surveyTemplatesMigrationsList,
+      count === 0
+        ? [...surveysTemplateInitializationList, ...surveyTemplatesMigrationsList]
+        : surveyTemplatesMigrationsList,
     );
   }
 

@@ -29,28 +29,24 @@ const surveysTemplateInitialization000LoadDefaultTemplates: Migration<SurveysTem
   name,
   version: 1,
   execute: async (model) => {
-    Logger.log(`Found ${list.length} documents to process...`);
+    const anyExistingDefaultTemplate = await model.findOne({
+      fileName: { $in: list.map((template) => template.fileName) },
+    });
+    if (anyExistingDefaultTemplate) {
+      Logger.log(`Migration "${name}": Skipped: default templates already exist`);
+      return;
+    }
 
-    let processedCount = 0;
-
+    Logger.log(`Migration "${name}": Found ${list.length} documents to process...`);
     await Promise.all(
       list.map(async (surveyTemplate) => {
         try {
-          const existingTemplate = await model.findOne({ fileName: surveyTemplate.fileName });
-          if (!existingTemplate) {
-            await model.create(surveyTemplate);
-            processedCount += 1;
-          }
+          await model.create(surveyTemplate);
         } catch (error) {
-          Logger.error(`Failed to migrate document ${surveyTemplate.fileName}:`, error);
+          Logger.error(`Migration "${name}": Failed to migrate document ${surveyTemplate.fileName}:`, error);
         }
       }),
     );
-
-    if (processedCount > 0) {
-      Logger.log(`Migration ${name} completed: ${processedCount} documents migrated`);
-    }
   },
 };
-
 export default surveysTemplateInitialization000LoadDefaultTemplates;
