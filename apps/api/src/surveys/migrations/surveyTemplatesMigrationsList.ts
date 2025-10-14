@@ -10,10 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { join } from 'path';
-import APPS from '@libs/appconfig/constants/apps';
-import { TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
+import surveyTemplatesMigration000NewFromExchangeFolder from './surveyTemplatesMigration000NewFromExchangeFolder';
 
-const SURVEY_TEMPLATES_DEFAULT_TEMPLATE_PATH = join('./dist/apps', 'api', APPS.SURVEYS, TEMPLATES);
+// Add new migrations here
+const surveyTemplatesMigrationsList = [surveyTemplatesMigration000NewFromExchangeFolder];
 
-export default SURVEY_TEMPLATES_DEFAULT_TEMPLATE_PATH;
+export default surveyTemplatesMigrationsList;

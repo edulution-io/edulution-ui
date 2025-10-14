@@ -10,7 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { join } from 'path';
 import { Model } from 'mongoose';
 import { Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
@@ -19,9 +18,10 @@ import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
 import SURVEY_TEMPLATES_EXCHANGE_PATH from '@libs/survey/constants/surveyTemplatesExchangePath';
-import SURVEY_TEMPLATES_DEFAULT_TEMPLATE_PATH from '@libs/survey/constants/surveyTemplatesDefaultTemplatePath';
-import { SurveyTemplateDto, TemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import MigrationService from 'apps/api/src/migration/migration.service';
+import surveyTemplatesMigrationsList from 'apps/api/src/surveys/migrations/surveyTemplatesMigrationsList';
 import { SurveysTemplate, SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
 import CustomHttpException from '../common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
@@ -35,8 +35,10 @@ class SurveysTemplateService implements OnModuleInit {
 
   async onModuleInit() {
     await this.fileSystemService.ensureDirectoryExists(SURVEY_TEMPLATES_EXCHANGE_PATH);
-    await this.migrateTemplatesFromFolderToDb(SURVEY_TEMPLATES_EXCHANGE_PATH);
-    await this.migrateTemplatesFromFolderToDb(SURVEY_TEMPLATES_DEFAULT_TEMPLATE_PATH);
+    await MigrationService.runMigrations<SurveysTemplateDocument>(
+      this.surveyTemplateModel,
+      surveyTemplatesMigrationsList,
+    );
   }
 
   async updateOrCreateTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
@@ -68,37 +70,6 @@ class SurveysTemplateService implements OnModuleInit {
       );
     }
     return res.status(HttpStatus.OK).json(documents);
-  }
-
-  async migrateTemplatesFromFolderToDb(path: string): Promise<void> {
-    const fileNames = await this.fileSystemService.getAllFilenamesInDirectory(path);
-    if (fileNames.length === 0) {
-      return;
-    }
-
-    const filesToDelete: string[] = [];
-
-    const creationPromises = fileNames.map(async (fileName) => {
-      const content = await FilesystemService.readFileAs<TemplateDto>(join(path, fileName));
-      if (!content) {
-        throw new CustomHttpException(
-          CommonErrorMessages.FILE_READING_FAILED,
-          HttpStatus.NOT_FOUND,
-          undefined,
-          SurveysTemplateService.name,
-        );
-      }
-      const newDocument: SurveysTemplateDocument | null = await this.updateOrCreateTemplateDocument({
-        fileName,
-        template: content,
-      });
-      if (newDocument !== null) {
-        filesToDelete.push(fileName);
-      }
-    });
-    await Promise.all(creationPromises);
-
-    await FilesystemService.deleteFiles(path, filesToDelete);
   }
 
   async toggleIsTemplateActive(fileName: string): Promise<SurveysTemplateDocument | null> {
