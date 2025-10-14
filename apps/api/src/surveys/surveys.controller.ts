@@ -51,7 +51,7 @@ import getUsernameFromRequest from 'apps/api/src/common/utils/getUsernameFromReq
 import SurveysService from './surveys.service';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveysTemplateService from './surveys-template.service';
-import SurveyAnswerService from './survey-answer.service';
+import SurveyAnswerService from './survey-answers.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
@@ -161,13 +161,13 @@ class SurveysController {
 
   @Patch()
   async answerSurvey(@Body() postAnswerDto: PostSurveyAnswerDto, @GetCurrentUser() currentUser: JWTUser) {
-    const { surveyId, saveNo, answer } = postAnswerDto;
+    const { surveyId, answer } = postAnswerDto;
     const attendee = {
       username: currentUser.preferred_username,
       firstName: currentUser.given_name,
       lastName: currentUser.family_name,
     };
-    return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, attendee);
+    return this.surveyAnswerService.addAnswer(surveyId, answer, attendee);
   }
 
   @Get(`${FILES}/:filename`)

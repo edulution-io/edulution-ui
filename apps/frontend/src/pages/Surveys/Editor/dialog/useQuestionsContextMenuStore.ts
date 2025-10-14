@@ -12,8 +12,7 @@
 
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
-import { ChoicesRestful } from 'survey-core';
-import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
+import { Question, ChoicesRestful } from 'survey-core';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 
@@ -23,8 +22,8 @@ interface QuestionsContextMenuStore {
   isOpenQuestionContextMenu: boolean;
   setIsOpenQuestionContextMenu: (state: boolean) => void;
 
-  selectedQuestion: TSurveyQuestion | undefined;
-  setSelectedQuestion: (question: TSurveyQuestion | undefined) => void;
+  selectedQuestion: Question | undefined;
+  setSelectedQuestion: (question: Question | undefined) => void;
 
   onRemoveQuestionName: (questionName: string) => void;
 
@@ -88,7 +87,7 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     set({ isOpenQuestionContextMenu: state });
   },
 
-  setSelectedQuestion: (question: TSurveyQuestion | undefined) => {
+  setSelectedQuestion: (question: Question | undefined) => {
     const type = question?.getType();
     set({
       selectedQuestion: question,
@@ -240,7 +239,7 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     if (!showOtherItem) {
       selectedQuestion.showOtherItem = true;
       set({ showOtherItem: true });
-      addChoice(SHOW_OTHER_ITEM);
+      addChoice(SHOW_OTHER_ITEM, SHOW_OTHER_ITEM);
     } else {
       selectedQuestion.showOtherItem = false;
       set({ showOtherItem: false });

@@ -17,8 +17,8 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 import { Button } from '@/components/shared/Button';
-import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
+import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
 import useAppConfigTableDialogStore from './table/useAppConfigTableDialogStore';
 import useAppConfigsStore from '../useAppConfigsStore';
 
@@ -30,7 +30,7 @@ interface UploadFileDialogProps {
 const UploadFileDialog: React.FC<UploadFileDialogProps> = ({ settingLocation, tableId }) => {
   const { t } = useTranslation();
   const { isLoading, uploadFile } = useAppConfigsStore();
-  const { filesToUpload, setFilesToUpload } = useFileSharingDialogStore();
+  const { filesToUpload, setFilesToUpload } = useHandelUploadFileStore();
 
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
   const isOpen = isDialogOpen === tableId;

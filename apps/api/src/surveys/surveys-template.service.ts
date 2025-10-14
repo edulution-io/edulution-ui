@@ -20,6 +20,8 @@ import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTime
 import SURVEY_TEMPLATES_EXCHANGE_PATH from '@libs/survey/constants/surveyTemplatesExchangePath';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import MigrationService from 'apps/api/src/migration/migration.service';
+import surveyTemplatesMigrationsList from 'apps/api/src/surveys/migrations/surveyTemplatesMigrationsList';
 import { SurveysTemplate, SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
 import CustomHttpException from '../common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
@@ -45,6 +47,11 @@ class SurveysTemplateService implements OnModuleInit {
         surveysTemplateInitializationList,
       );
     }
+
+    await MigrationService.runMigrations<SurveysTemplateDocument>(
+      this.surveyTemplateModel,
+      surveyTemplatesMigrationsList,
+    );
   }
 
   async updateOrCreateTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {

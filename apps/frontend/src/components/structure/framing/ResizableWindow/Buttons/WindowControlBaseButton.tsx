@@ -10,9 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { FC, ReactNode } from 'react';
+import React, { FC, ReactNode, useMemo } from 'react';
 import cn from '@libs/common/utils/className';
-import { TooltipProvider } from '@/components/ui/Tooltip';
 import ActionTooltip from '@/components/shared/ActionTooltip';
 import { useTranslation } from 'react-i18next';
 
@@ -31,22 +30,25 @@ const WindowControlBaseButton: FC<WindowControlBaseButtonProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  const trigger = useMemo(
+    () => (
+      <button
+        type="button"
+        onClick={onClick}
+        className={cn('flex h-10 w-16 items-center justify-center p-5 text-sm hover:bg-gray-600', className)}
+      >
+        {children}
+      </button>
+    ),
+    [onClick, children, className],
+  );
+
   return (
-    <TooltipProvider>
-      <ActionTooltip
-        tooltipText={t(tooltipTranslationId)}
-        openOnSide="left"
-        trigger={
-          <button
-            type="button"
-            onClick={onClick}
-            className={cn('flex h-10 w-16 items-center justify-center p-5 text-sm hover:bg-gray-600', className)}
-          >
-            {children}
-          </button>
-        }
-      />
-    </TooltipProvider>
+    <ActionTooltip
+      trigger={trigger}
+      tooltipText={t(tooltipTranslationId)}
+      openOnSide="left"
+    />
   );
 };
 

@@ -13,14 +13,15 @@
 enum CommonErrorMessages {
   DB_ACCESS_FAILED = 'common.errors.dbAccessFailed',
   DIRECTORY_CREATION_FAILED = 'common.errors.directoryNotCreated',
+  FILE_CREATION_FAILED = 'common.errors.fileNotCreated',
   FILE_UPLOAD_FAILED = 'common.errors.fileUploadFailed',
   FILE_DELETION_FAILED = 'common.errors.fileDeletionFailed',
   FILE_WRITING_FAILED = 'common.errors.fileWritingFailed',
-  FILE_READING_FAILED = 'common.errors.fileReadingFailed',
   FILE_MOVE_FAILED = 'common.errors.fileMoveFailed',
   FILE_NOT_FOUND = 'common.errors.fileNotFound',
   FILE_NOT_PROVIDED = 'common.errors.fileNotProvided',
   INVALID_FILE_TYPE = 'common.errors.invalidFileType',
+  INVALID_REQUEST_DATA = 'common.errors.invalidRequestData',
   WRONG_SEVER_CONFIG = 'common.errors.wrongServerConfig',
 }
 

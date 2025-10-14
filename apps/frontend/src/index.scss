@@ -1,14 +1,16 @@
 @tailwind base;
 @layer base {
-  .loader:empty {
-    background-image: var(--background-image);
-  }
-
   html {
     @apply text-white;
     font-family: 'Lato', sans-serif;
 
     @apply scrollbar-thin scrollbar-track-black/10 scrollbar-thumb-ciLightGrey scrollbar-thumb-rounded-full;
+  }
+
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
   }
 
   :root {
@@ -178,3 +180,21 @@ button:hover .ql-fill,
 .ql-active .ql-fill {
   stroke: white !important;
 }
+
+/* TLDRAW SPECIFIC START */
+[data-radix-popper-content-wrapper] {
+  z-index: 1000 !important;
+}
+
+@layer components {
+  [data-radix-popper-content-wrapper] input {
+    @apply pointer-events-none cursor-default opacity-50;
+  }
+}
+
+@layer components {
+  [data-radix-popper-content-wrapper] [data-testid='people-menu.change-name'] {
+    @apply hidden;
+  }
+}
+/* TLDRAW SPECIFIC END */

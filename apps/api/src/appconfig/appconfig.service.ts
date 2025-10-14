@@ -22,12 +22,15 @@ import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import APPS from '@libs/appconfig/constants/apps';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import CustomHttpException from '../common/CustomHttpException';
 import { AppConfig } from './appconfig.schema';
 import initializeCollection from './initializeCollection';
 import MigrationService from '../migration/migration.service';
 import appConfigMigrationsList from './migrations/appConfigMigrationsList';
 import FilesystemService from '../filesystem/filesystem.service';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 @Injectable()
 class AppConfigService implements OnModuleInit {
@@ -35,6 +38,7 @@ class AppConfigService implements OnModuleInit {
     @InjectConnection() private readonly connection: Connection,
     @InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfig>,
     private eventEmitter: EventEmitter2,
+    private readonly globalSettingsService: GlobalSettingsService,
   ) {}
 
   async onModuleInit() {
@@ -157,6 +161,7 @@ class AppConfigService implements OnModuleInit {
   async getAppConfigs(ldapGroups: string[]): Promise<AppConfigDto[]> {
     try {
       let appConfigDto: AppConfigDto[];
+
       if (getIsAdmin(ldapGroups)) {
         appConfigDto = await this.appConfigModel
           .find({}, 'name translations icon appType options accessGroups extendedOptions position')
@@ -171,16 +176,21 @@ class AppConfigService implements OnModuleInit {
           .sort({ position: 1 })
           .lean();
 
-        appConfigDto = appConfigObjects.map((config) => ({
-          name: config.name,
-          translations: config.translations,
-          icon: config.icon,
-          appType: config.appType,
-          options: { url: config.options.url ?? '' },
-          accessGroups: [],
-          extendedOptions: config.extendedOptions,
-          position: config.position,
-        }));
+        appConfigDto = appConfigObjects.map((config) => {
+          const extendedOptions = { ...(config.extendedOptions ?? {}) };
+          delete extendedOptions.ONLY_OFFICE_JWT_SECRET;
+
+          return {
+            name: config.name,
+            translations: config.translations,
+            icon: config.icon,
+            appType: config.appType,
+            options: { url: config.options?.url ?? '' },
+            accessGroups: [],
+            extendedOptions,
+            position: config.position,
+          };
+        });
       }
 
       return appConfigDto;
@@ -200,6 +210,44 @@ class AppConfigService implements OnModuleInit {
       Logger.debug(`AppConfig with name ${name} not found`, AppConfigService.name);
       return undefined;
     }
+    return appConfig;
+  }
+
+  async getAppConfigHasPublicAssets(name: string): Promise<AppConfigDto | undefined> {
+    const appConfig = await this.appConfigModel
+      .findOne({
+        $and: [
+          { name },
+          {
+            $or: [
+              { [`extendedOptions.${ExtendedOptionKeys.PAGE_HAS_PUBLIC_ASSETS}`]: true },
+              { [`extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_IS_PUBLIC}`]: true },
+            ],
+          },
+        ],
+      })
+      .lean();
+    if (!appConfig) {
+      return undefined;
+    }
+    return appConfig;
+  }
+
+  async getPublicAppConfigByName(name: string): Promise<AppConfigDto | undefined> {
+    const appConfig = await this.appConfigModel
+      .findOne({ name, [`extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_IS_PUBLIC}`]: true })
+      .lean();
+    if (!appConfig) {
+      return undefined;
+    }
+    return appConfig;
+  }
+
+  async getPublicAppConfigs(): Promise<AppConfigDto[]> {
+    const appConfig = await this.appConfigModel
+      .find({ [`extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_IS_PUBLIC}`]: true })
+      .lean();
+
     return appConfig;
   }
 
@@ -227,7 +275,24 @@ class AppConfigService implements OnModuleInit {
 
       await this.appConfigModel.bulkWrite(bulkOperations, { ordered: true });
 
-      return await this.getAppConfigs(ldapGroups);
+      const appConfigs = await this.getAppConfigs(ldapGroups);
+
+      const globalSettings = await this.globalSettingsService.getGlobalSettings();
+      if (globalSettings?.general?.defaultLandingPage?.appName === configName) {
+        const appConfigAtPosition1 = appConfigs.find((c) => c.position === 1);
+        await this.globalSettingsService.setGlobalSettings({
+          ...globalSettings,
+          general: {
+            ...globalSettings.general,
+            defaultLandingPage: {
+              isCustomLandingPageEnabled: true,
+              appName: appConfigAtPosition1?.name || APPS.DASHBOARD,
+            },
+          },
+        });
+      }
+
+      return appConfigs;
     } catch (error) {
       throw new CustomHttpException(
         AppConfigErrorMessages.DisableAppConfigFailed,

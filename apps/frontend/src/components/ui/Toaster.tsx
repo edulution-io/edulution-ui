@@ -14,7 +14,7 @@
 
 import React from 'react';
 import { Toaster as Sonner } from 'sonner';
-import SHOW_TOASTER_DURATION from '@libs/ui/constants/showToasterDuration';
+import { SHOW_TOASTER_DURATION } from '@libs/ui/constants/showToasterDuration';
 import COLOR_SCHEME from '@libs/ui/constants/colorScheme';
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
