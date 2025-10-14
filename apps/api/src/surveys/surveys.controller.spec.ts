@@ -12,7 +12,7 @@
 
 import { Model } from 'mongoose';
 import { HttpStatus } from '@nestjs/common';
-import { getModelToken } from '@nestjs/mongoose';
+import { getConnectionToken, getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
@@ -78,15 +78,10 @@ describe(SurveysController.name, () => {
         { provide: GroupsService, useValue: mockGroupsService },
         SurveysAttachmentService,
         SurveyAnswersService,
+        SurveysTemplateService,
         {
-          provide: getModelToken(SurveysTemplateService.name),
-          useValue: {
-            onModuleInit: jest.fn().mockReturnThis(),
-            updateOrCreateTemplateDocument: jest.fn().mockReturnThis(),
-            serveTemplates: jest.fn().mockResolvedValueOnce([]),
-            toggleIsTemplateActive: jest.fn().mockReturnThis(),
-            deleteTemplate: jest.fn().mockReturnThis(),
-          },
+          provide: getConnectionToken(),
+          useValue: jest.fn(),
         },
         SurveyAnswerAttachmentsService,
         {
