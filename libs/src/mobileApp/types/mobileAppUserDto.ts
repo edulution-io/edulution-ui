@@ -46,6 +46,8 @@ class MobileAppUserDto {
   @ApiProperty() deploymentTarget: string;
 
   @ApiProperty() homeDirectory: string;
+
+  @ApiProperty() website: string;
 }
 
 export default MobileAppUserDto;

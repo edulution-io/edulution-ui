@@ -49,6 +49,7 @@ const getMobileAppUserDto = ({
   institutionLogo: `edu-api/public/branding/logo`,
   deploymentTarget: globalSettings?.general.deploymentTarget || '',
   homeDirectory: normalizeLdapHomeDirectory(lmn?.homeDirectory || ''),
+  website: globalSettings?.organisationInfo?.website || '',
 });
 
 export default getMobileAppUserDto;
