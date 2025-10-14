@@ -118,7 +118,10 @@ class GroupsService {
 
     const dropped = sanitized.length - valid.length;
     if (dropped > 0) {
-      Logger.warn(`sanitizeGroupMembers dropped ${dropped} invalid entries`, GroupsService.name);
+      Logger.warn(
+        `Sanitizing group members dropped ${dropped} invalid entries (${valid.length} valid).`,
+        GroupsService.name,
+      );
     }
 
     return valid;
@@ -220,6 +223,7 @@ class GroupsService {
       newMembers = await this.fetchGroupMembers(group.id);
     }
 
+    Logger.verbose(`Updating group ${group.name} (${group.id}) with ${newMembers?.length} members`, GroupsService.name);
     const sanitizedMembers = newMembers?.length ? GroupsService.sanitizeGroupMembers(newMembers) : [];
 
     await this.cacheManager.set(
