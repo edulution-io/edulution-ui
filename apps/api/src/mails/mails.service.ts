@@ -28,6 +28,9 @@ import DOCKER_CONTAINER_NAMES from '@libs/docker/constants/dockerContainerNames'
 import MailTheme from '@libs/mail/constants/mailTheme';
 import SOGO_THEME from '@libs/mail/constants/sogoTheme';
 import { extractTheme, extractVersion } from '@libs/mail/utils/sogoThemeMetadata';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import GroupRoles from '@libs/groups/types/group-roles.enum';
+import SseMessageType from '@libs/common/types/sseMessageType';
 import DOCKER_STATES from '@libs/docker/constants/dockerStates';
 import CustomHttpException from '../common/CustomHttpException';
 import DockerService from '../docker/docker.service';
@@ -35,6 +38,8 @@ import FilesystemService from '../filesystem/filesystem.service';
 import { MailProvider, MailProviderDocument } from './mail-provider.schema';
 import FilterUserPipe from '../common/pipes/filterUser.pipe';
 import AppConfigService from '../appconfig/appconfig.service';
+import GroupsService from '../groups/groups.service';
+import SseService from '../sse/sse.service';
 
 const { MAILCOW_API_URL, MAILCOW_API_TOKEN, EDUI_MAIL_IMAP_TIMEOUT } = process.env;
 
@@ -59,6 +64,8 @@ class MailsService implements OnModuleInit {
     private readonly appConfigService: AppConfigService,
     private readonly dockerService: DockerService,
     private readonly filesystemService: FilesystemService,
+    private readonly groupsService: GroupsService,
+    private readonly sseService: SseService,
   ) {
     const httpsAgent = new HttpsAgent({
       rejectUnauthorized: false,
@@ -105,9 +112,11 @@ class MailsService implements OnModuleInit {
   @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
   async updateSogoTheme() {
     try {
-      const extendedOptions = (await this.appConfigService.getAppConfigByName(APPS.MAIL))?.extendedOptions;
+      const appConfig = await this.appConfigService.getAppConfigByName(APPS.MAIL);
+      const extendedOptions = appConfig?.extendedOptions;
       if (!extendedOptions || typeof extendedOptions !== 'object') return;
 
+      const accessGroups = appConfig?.accessGroups ?? [];
       const themeRaw = (extendedOptions[ExtendedOptionKeys.MAIL_SOGO_THEME] as string) ?? MailTheme.DARK;
       const theme = themeRaw.toLowerCase();
       const isLight = theme === MailTheme.LIGHT;
@@ -129,7 +138,7 @@ class MailsService implements OnModuleInit {
 
       const targetPath = `${SOGO_THEME.TARGET_DIR}/${SOGO_THEME.TARGET_FILE_NAME}`;
 
-      if (!(await this.shouldWriteNewCss(targetPath, newCss))) {
+      if (!(await MailsService.shouldWriteNewCss(targetPath, newCss))) {
         Logger.debug(`SOGo theme unchanged; skipping update at ${targetPath}`, MailsService.name);
         return;
       }
@@ -147,16 +156,21 @@ class MailsService implements OnModuleInit {
           this.dockerService.executeContainerCommand({ id, operation: DOCKER_COMMANDS.RESTART }),
         ),
       );
+
+      await this.notifyMailThemeChange(accessGroups, SSE_MESSAGE_TYPE.MAIL_THEME_UPDATED, theme);
       Logger.log(`Restarted Mailcow containers to apply SOGo theme.`, MailsService.name);
     } catch (error) {
-      Logger.error(
-        `Failed to update SOGo theme: ${error instanceof Error ? error.message : String(error)}`,
-        MailsService.name,
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      await this.notifyMailThemeChange(
+        [{ path: GroupRoles.SUPER_ADMIN }],
+        SSE_MESSAGE_TYPE.MAIL_THEME_UPDATE_FAILED,
+        errorMessage,
       );
+      Logger.error(`Failed to update SOGo theme: ${errorMessage}`, MailsService.name);
     }
   }
 
-  private async shouldWriteNewCss(targetPath: string, newCss: string): Promise<boolean> {
+  private static async shouldWriteNewCss(targetPath: string, newCss: string): Promise<boolean> {
     const exists = await FilesystemService.checkIfFileExist(targetPath);
     if (!exists) return true;
 
@@ -182,6 +196,19 @@ class MailsService implements OnModuleInit {
     } catch {
       return true;
     }
+  }
+
+  private async notifyMailThemeChange(
+    accessGroups: { path: string }[],
+    message: SseMessageType,
+    data: string,
+  ): Promise<void> {
+    if (!Array.isArray(accessGroups) || accessGroups.length === 0) return;
+
+    const usernames = await this.groupsService.getInvitedMembers(accessGroups, []);
+    if (!usernames.length) return;
+
+    this.sseService.sendEventToUsers(usernames, data, message);
   }
 
   async getMails(emailAddress: string, password: string): Promise<MailDto[]> {

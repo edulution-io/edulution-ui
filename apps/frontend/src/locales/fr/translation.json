@@ -188,6 +188,10 @@
     "encryption": "Chiffrement",
     "rowSelected": "{{selected}} de {{total}} tâche sélectionnée",
     "rowsSelected": "{{selected}} de {{total}} tâches sélectionnées",
+    "themeUpdated": {
+      "generic": "Le thème du courrier électronique a été mis à jour. Veuillez actualiser la page pour que les modifications soient prises en compte.",
+      "failed": "Le thème du courrier électronique n'a pas pu être mis à jour."
+    },
     "importer": {
       "filterPlaceHolderText": "Rechercher le nom d'utilisateur",
       "title": "Importateur de courrier électronique",
@@ -1071,6 +1075,7 @@
     "infoQrCodeExpired": "Le temps de connexion avec l'application edulution.io a expiré."
   },
   "common": {
+    "refreshPage": "Actualiser la page",
     "guest": "Invité",
     "ok": "OK",
     "next": "Prochain",
