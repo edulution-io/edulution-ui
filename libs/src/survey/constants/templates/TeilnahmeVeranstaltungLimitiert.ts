@@ -10,10 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const host = process.env['EDUI_HOST'] ?? 'localhost';
-const port = process.env['EDUI_PORT'] ?? '3001';
-const protocol = window.location.protocol || 'http:';
-const frontend = window.location.host || `localhost:5173`;
+const eduHost = process.env['EDUI_HOST'] ?? 'localhost';
+const eduPort = process.env['EDUI_PORT'] ?? '3001';
+const frontendHost = process.env['FRONTEND_HOST'] ?? 'localhost';
+const frontendPort = process.env['FRONTEND_PORT'] ?? '5173';
 
 const TeilnahmeVeranstaltungLimitiert = {
   fileName: 'TeilnahmeVeranstaltungLimitiert',
@@ -22,7 +22,7 @@ const TeilnahmeVeranstaltungLimitiert = {
   template: {
     formula: {
       title: 'Anmeldung zur Veranstaltung',
-      logo: `${protocol}//${frontend}/edu-api/files/public/file/surveys/surveys-default-logo-dark.webp`,
+      logo: `http://${frontendHost}:${frontendPort}/edu-api/files/public/file/surveys/surveys-default-logo-dark.webp`,
       description: 'Möchtest du an der Veranstaltung teilnehmen?',
       pages: [
         {
@@ -42,7 +42,7 @@ const TeilnahmeVeranstaltungLimitiert = {
               description:
                 'Die Teilnehmerzahl pro Termin ist auf 20 begrenzt. Ausgebuchte Termine werden nicht mehr angezeigt.',
               choicesByUrl: {
-                url: `http://${host}:${port}/edu-api/public-surveys/choices/temporalSurveyId/Frage2`,
+                url: `http://${eduHost}:${eduPort}/edu-api/public-surveys/choices/temporalSurveyId/Frage2`,
                 valueName: 'name',
                 titleName: 'title',
                 allowEmptyResponse: true,

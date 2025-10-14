@@ -10,8 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const protocol = window.location.protocol || 'http:';
-const frontend = window.location.host || `localhost:5173`;
+const frontendHost = process.env['FRONTEND_HOST'] ?? 'localhost';
+const frontendPort = process.env['FRONTEND_PORT'] ?? '5173';
 
 const Vortragsthema = {
   fileName: 'Vortragsthema',
@@ -20,7 +20,7 @@ const Vortragsthema = {
   template: {
     formula: {
       title: 'Vortragsthema Wunschliste',
-      logo: `${protocol}//${frontend}/edu-api/files/public/file/surveys/surveys-default-logo-dark.webp`,
+      logo: `http://${frontendHost}:${frontendPort}/edu-api/files/public/file/surveys/surveys-default-logo-dark.webp`,
       elements: [
         {
           type: 'paneldynamic',

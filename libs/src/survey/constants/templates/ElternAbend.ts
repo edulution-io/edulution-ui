@@ -10,10 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const host = process.env['EDUI_HOST'] ?? 'localhost';
-const port = process.env['EDUI_PORT'] ?? '3001';
-const protocol = window.location.protocol || 'http:';
-const frontend = window.location.host || `localhost:5173`;
+const eduHost = process.env['EDUI_HOST'] ?? 'localhost';
+const eduPort = process.env['EDUI_PORT'] ?? '3001';
+const frontendHost = process.env['FRONTEND_HOST'] ?? 'localhost';
+const frontendPort = process.env['FRONTEND_PORT'] ?? '5173';
 
 const ElternAbend = {
   fileName: 'Eltern-Abend',
@@ -22,7 +22,7 @@ const ElternAbend = {
   template: {
     formula: {
       title: 'Eltern-Abend (DATUM?)',
-      logo: `${protocol}//${frontend}/edu-api/files/public/file/surveys/surveys-default-logo-dark.webp`,
+      logo: `http://${frontendHost}:${frontendPort}/edu-api/files/public/file/surveys/surveys-default-logo-dark.webp`,
       description: 'Auf jeder Seite bietet der Lehrer eines Faches in der jeweiligen Klasse verschiedene Timeslots an.',
       pages: [
         {
@@ -35,7 +35,7 @@ const ElternAbend = {
               description:
                 'Als Erziehungsberechtigte Person kann ein Termin pro Schüler:in, Fach und Klasse gebucht werden; Bereits belegte Termine werden ausgeblendet',
               choicesByUrl: {
-                url: `http://${host}:${port}/edu-api/public-surveys/choices/temporalSurveyId/Frage1`,
+                url: `http://${eduHost}:${eduPort}/edu-api/public-surveys/choices/temporalSurveyId/Frage1`,
                 valueName: 'name',
                 titleName: 'title',
                 allowEmptyResponse: true,
@@ -56,7 +56,7 @@ const ElternAbend = {
               description:
                 'Als Erziehungsberechtigte Person kann ein Termin pro Schüler:in, Fach und Klasse gebucht werden; Bereits belegte Termine werden ausgeblendet',
               choicesByUrl: {
-                url: `http://${host}:${port}/edu-api/public-surveys/choices/temporalSurveyId/Frage2`,
+                url: `http://${eduHost}:${eduPort}/edu-api/public-surveys/choices/temporalSurveyId/Frage2`,
                 valueName: 'name',
                 titleName: 'title',
                 allowEmptyResponse: true,

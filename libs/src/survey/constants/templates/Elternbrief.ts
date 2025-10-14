@@ -10,10 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const host = process.env['EDUI_HOST'] ?? 'localhost';
-const port = process.env['EDUI_PORT'] ?? '3001';
-const protocol = window.location.protocol || 'http:';
-const frontend = window.location.host || `localhost:5173`;
+const eduHost = process.env['EDUI_HOST'] ?? 'localhost';
+const eduPort = process.env['EDUI_PORT'] ?? '3001';
+const frontendHost = process.env['FRONTEND_HOST'] ?? 'localhost';
+const frontendPort = process.env['FRONTEND_PORT'] ?? '5173';
 
 const Elternbrief = {
   fileName: 'Elternbrief',
@@ -22,7 +22,7 @@ const Elternbrief = {
   template: {
     formula: {
       title: 'Elternbrief – Rückmeldung erforderlich',
-      logo: `${protocol}//${frontend}/edu-api/files/public/file/surveys/surveys-default-logo-dark.webp`,
+      logo: `http://${frontendHost}:${frontendPort}/edu-api/files/public/file/surveys/surveys-default-logo-dark.webp`,
       description: 'Bitte geben Sie den Grund für die Benachrichtigung der Erziehungsberechtigten an.',
       pages: [
         {
@@ -34,7 +34,7 @@ const Elternbrief = {
               title: 'Verfügbare Termine für ein Gespräch',
               description: 'Bitte wählen Sie einen passenden Termin für das Gespräch aus.',
               choicesByUrl: {
-                url: `http://${host}:${port}/edu-api/public-surveys/choices/temporalSurveyId/Frage1`,
+                url: `http://${eduHost}:${eduPort}/edu-api/public-surveys/choices/temporalSurveyId/Frage1`,
                 valueName: 'name',
                 titleName: 'title',
                 allowEmptyResponse: true,

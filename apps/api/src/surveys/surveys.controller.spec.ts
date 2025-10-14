@@ -78,7 +78,16 @@ describe(SurveysController.name, () => {
         { provide: GroupsService, useValue: mockGroupsService },
         SurveysAttachmentService,
         SurveyAnswersService,
-        SurveysTemplateService,
+        {
+          provide: getModelToken(SurveysTemplateService.name),
+          useValue: {
+            onModuleInit: jest.fn().mockReturnThis(),
+            updateOrCreateTemplateDocument: jest.fn().mockReturnThis(),
+            serveTemplates: jest.fn().mockResolvedValueOnce([]),
+            toggleIsTemplateActive: jest.fn().mockReturnThis(),
+            deleteTemplate: jest.fn().mockReturnThis(),
+          },
+        },
         SurveyAnswerAttachmentsService,
         {
           provide: getModelToken(SurveyAnswer.name),
