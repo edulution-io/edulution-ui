@@ -117,7 +117,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
         const newFile: FileDownloadDto = {
           ...file,
-          type: file.type || '*/*'
+          type: file.type || '*/*',
           originalName: data.name || file.name,
           name: removeUuidFromFileName(data.name || file.name),
           url: `${EDU_API_URL}/${data.url}`,
