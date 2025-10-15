@@ -151,7 +151,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
         webdavShare={webdavShare}
         showRootOnly={showRootOnly}
       />
-      <div className="h-[45vh] text-background">
+      <div className="text-background">
         <div className="pb-2">
           <DirectoryBreadcrumb
             path={currentPath}
@@ -162,7 +162,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
           />
         </div>
         <div className="w-full">{isLoading ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}</div>
-        <div className="mb-4 h-[45vh] max-h-[45vh] overflow-auto scrollbar-thin">
+        <div className="h-[45vh] max-h-[45vh] overflow-auto scrollbar-thin">
           <ScrollableTable
             columns={columns}
             data={files}
@@ -181,7 +181,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
           />
         </div>
       </div>
-      <div className="mt-4">{footer}</div>
+      <div className="pt-2">{footer}</div>
     </>
   );
 };
