@@ -11,6 +11,7 @@
  */
 
 const APPS = {
+  DASHBOARD: 'dashboard',
   BULLETIN_BOARD: 'bulletinboard',
   TICKET_SYSTEM: 'ticketsystem',
   MAIL: 'mail',

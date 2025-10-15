@@ -78,6 +78,7 @@ const RowAndColumnOptions = () => {
   };
 
   const removeRow = () => {
+    if (rows.length <= 1) return;
     const newRows = rows;
     newRows.pop();
     question.rows = newRows;
@@ -85,6 +86,7 @@ const RowAndColumnOptions = () => {
 
   const handleRowCountChange = (count: number) => {
     const currentCount = rows.length;
+    if (count < 1) return;
     if (currentCount > count) {
       const newRows = rows.slice(0, count);
       question.rows = newRows;
@@ -100,6 +102,7 @@ const RowAndColumnOptions = () => {
   };
 
   const removeColumn = () => {
+    if (columns.length <= 1) return;
     const newColumns = columns;
     newColumns.pop();
     question.columns = newColumns;
@@ -107,6 +110,7 @@ const RowAndColumnOptions = () => {
 
   const handleColumnCountChange = (count: number) => {
     const currentCount = columns.length;
+    if (count < 1) return;
     if (currentCount > count) {
       const newColumns = columns.slice(0, count);
       question.columns = newColumns;
@@ -124,8 +128,8 @@ const RowAndColumnOptions = () => {
         <Input
           type="number"
           min="1"
-          value={question.rows.length || 0}
-          onChange={(e) => handleRowCountChange(Number(e.currentTarget.value))}
+          value={question.rows.length || 1}
+          onChange={(e) => handleRowCountChange(Math.min(1, Number(e.currentTarget.value)))}
           variant="dialog"
           className="ml-2 max-w-[75px] flex-1 text-primary-foreground"
         />
@@ -151,8 +155,8 @@ const RowAndColumnOptions = () => {
         <Input
           type="number"
           min="1"
-          value={question.columns.length || 0}
-          onChange={(e) => handleColumnCountChange(Number(e.currentTarget.value))}
+          value={question.columns.length || 1}
+          onChange={(e) => handleColumnCountChange(Math.min(1, Number(e.currentTarget.value)))}
           variant="dialog"
           className="ml-2 max-w-[75px] flex-1 text-primary-foreground"
         />

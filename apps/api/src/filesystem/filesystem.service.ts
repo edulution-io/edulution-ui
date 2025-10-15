@@ -22,13 +22,14 @@ import {
   readdir,
   readFile,
   rm,
+  remove,
   stat as fsStat,
   unlink,
 } from 'fs-extra';
-import { promisify } from 'util';
 import { createHash } from 'crypto';
 import { firstValueFrom, from } from 'rxjs';
-import { pipeline, Readable } from 'stream';
+import { Readable } from 'stream';
+import { pipeline } from 'stream/promises';
 import { extname, join } from 'path';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
@@ -47,11 +48,9 @@ import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
 import THIRTY_DAYS from '@libs/common/constants/thirtyDays';
-import CustomHttpException from '../common/CustomHttpException';
-import UsersService from '../users/users.service';
 import WebdavSharesService from '../webdav/shares/webdav-shares.service';
-
-const pipelineAsync = promisify(pipeline);
+import UsersService from '../users/users.service';
+import CustomHttpException from '../common/CustomHttpException';
 
 @Injectable()
 class FilesystemService {
@@ -104,6 +103,19 @@ class FilesystemService {
     }
   }
 
+  static async readFile(filePath: string): Promise<Buffer> {
+    try {
+      return await readFile(filePath);
+    } catch (error) {
+      throw new CustomHttpException(
+        FileSharingErrorMessage.DownloadFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        filePath,
+        FilesystemService.name,
+      );
+    }
+  }
+
   static async moveFile(oldFilePath: string, newFilePath: string): Promise<void> {
     try {
       await move(oldFilePath, newFilePath, { overwrite: true });
@@ -126,7 +138,7 @@ class FilesystemService {
   static async saveFileStream(stream: AxiosResponse<Readable> | Readable, outputPath: string): Promise<void> {
     const writeStream = createWriteStream(outputPath);
     const actualStream = (stream as AxiosResponse<Readable>).data ? (stream as AxiosResponse<Readable>).data : stream;
-    await pipelineAsync(actualStream as Readable, writeStream);
+    await pipeline(actualStream as Readable, writeStream);
   }
 
   static getOutputFilePath(directory: string, hashedFilename: string): string {
@@ -262,9 +274,10 @@ class FilesystemService {
     filePath: string,
     filename: string,
     client: AxiosInstance,
+    share: string,
   ): Promise<WebdavStatusResponse> {
-    const baseUrl = await this.webdavSharesService.getWebdavSharePath();
-    const url = `${baseUrl}${getPathWithoutWebdav(filePath)}`;
+    const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
+    const url = `${webdavShare.url}${getPathWithoutWebdav(filePath, webdavShare.pathname)}`;
     await this.ensureDirectoryExists(PUBLIC_DOWNLOADS_PATH);
 
     try {
@@ -295,9 +308,20 @@ class FilesystemService {
     return readdir(directory);
   }
 
+  async deleteEmptyFolder(directory: string): Promise<void> {
+    const exists = await pathExists(directory);
+    if (!exists) {
+      return;
+    }
+    const filesNames = await readdir(directory);
+    if (filesNames.length === 0) {
+      await remove(directory);
+    }
+  }
+
   async createReadStream(filePath: string): Promise<Readable> {
     try {
-      await access(filePath);
+      await FilesystemService.throwErrorIfFileNotExists(filePath);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -346,7 +370,6 @@ class FilesystemService {
 
     const fileStream = await this.createReadStream(filePath);
     fileStream.pipe(res);
-
     return res;
   }
 

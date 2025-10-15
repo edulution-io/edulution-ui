@@ -14,9 +14,7 @@ import React, { useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import useUserStore from '@/store/UserStore/useUserStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import LinkText from '@/components/ui/LinkText';
 import { Button } from '@/components/shared/Button';
-import COMMUNITY_URL from '@libs/common/constants/communityLink';
 import APPLICATION_NAME from '@libs/common/constants/applicationName';
 import useCommunityLicenseStore from './useCommunityLicenseStore';
 
@@ -35,24 +33,14 @@ const CommunityLicenseDialog: React.FC = () => {
     return null;
   }
 
-  const urlObject = new URL(COMMUNITY_URL);
-  const rootUrl = `${urlObject.protocol}//${urlObject.hostname}`;
-
   const getDialogBody = () => (
-    <div className="flex flex-col items-start">
+    <div className="flex flex-col items-start space-y-3">
       <p className="mb-5 text-left">
         <Trans
           i18nKey="licensing.communityLicenseDialog.description"
-          values={{ link: rootUrl, applicationName: APPLICATION_NAME }}
+          values={{ applicationName: APPLICATION_NAME }}
           components={{
-            link1: (
-              <LinkText
-                to={COMMUNITY_URL}
-                title={rootUrl}
-              />
-            ),
             strong: <strong />,
-            br: <br />,
           }}
         />
       </p>

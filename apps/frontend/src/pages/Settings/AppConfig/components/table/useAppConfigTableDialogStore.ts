@@ -15,6 +15,7 @@ import { create } from 'zustand';
 interface AppConfigTableDialogStore {
   isDialogOpen: string;
   setDialogOpen: (open: string) => void;
+  reset: () => void;
 }
 
 const initialState = {
@@ -23,6 +24,9 @@ const initialState = {
 
 const useAppConfigTableDialogStore = create<AppConfigTableDialogStore>((set) => ({
   ...initialState,
+
+  reset: () => set(initialState),
+
   setDialogOpen: (open) => set({ isDialogOpen: open }),
 }));
 

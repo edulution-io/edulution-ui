@@ -15,6 +15,7 @@ enum SurveyQuestionOtherTypes {
   BOOLEAN = 'boolean',
   DATE = 'date',
   DATETIME = 'datetime',
+  RANKING = 'ranking',
   FILE = 'file',
 }
 

@@ -59,6 +59,11 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
     try {
       const res = await this.axiosClient[method](endpoint, payload, config);
 
+      Logger.verbose(
+        `Request succeeded: ${method.toUpperCase()} ${endpoint} (status ${res.status})`,
+        KeycloakRequestQueue.name,
+      );
+
       return res.data as unknown;
     } catch (err) {
       const e = err as AxiosError;
@@ -72,6 +77,12 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
         await this.initKeycloakClient();
 
         const retry = await this.axiosClient[method](endpoint, payload, config);
+
+        Logger.verbose(
+          `Request succeeded on retry: ${method.toUpperCase()} ${endpoint} (status ${retry.status})`,
+          KeycloakRequestQueue.name,
+        );
+
         return retry.data as unknown;
       }
       throw err;
@@ -116,12 +127,31 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
       {
         removeOnComplete: true,
         removeOnFail: true,
-        attempts: 10,
+        attempts: 3,
         backoff: { type: 'exponential', delay: this.jobRetryDelay },
       },
     );
 
     return (await job.waitUntilFinished(this.queueEvents)) as T;
+  }
+
+  public async fetchAllPaginated<T>(
+    path: string,
+    baseQuery = '',
+    pageSize = 100,
+    first = 0,
+    acc: T[] = [],
+  ): Promise<T[]> {
+    const qp = baseQuery ? `${baseQuery}&first=${first}&max=${pageSize}` : `first=${first}&max=${pageSize}`;
+    const endpoint = `${path.startsWith('/') ? path : `/${path}`}${qp ? `?${qp}` : ''}`;
+    const batch = await this.enqueue<T[]>(HttpMethods.GET, endpoint);
+
+    if (!batch || batch.length === 0) return acc;
+
+    const nextAcc = [...acc, ...batch];
+    if (batch.length < pageSize) return nextAcc;
+
+    return this.fetchAllPaginated<T>(path, baseQuery, pageSize, first + pageSize, nextAcc);
   }
 
   async onModuleDestroy() {

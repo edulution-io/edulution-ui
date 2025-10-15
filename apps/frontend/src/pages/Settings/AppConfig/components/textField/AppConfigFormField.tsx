@@ -14,7 +14,7 @@ import React, { HTMLInputTypeAttribute } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Control, FieldValues, Path, PathValue } from 'react-hook-form';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
-import { FormDescription, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
+import { FormControl, FormDescription, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
 
 type AppConfigFormFieldProps<T extends FieldValues> = {
@@ -39,7 +39,7 @@ const AppConfigFormField = <T extends FieldValues>({
       defaultValue={'' as PathValue<T, Path<T>>}
       render={({ field }) => (
         <FormItem>
-          <div>{t(option.title)}</div>
+          {option.title && <p className="font-bold">{t(option.title)}</p>}
           <FormControl>
             <Input
               autoComplete="new-password"

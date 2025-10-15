@@ -12,7 +12,7 @@
 
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
-import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
+import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/lmnApiEduApiEndpoints';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
@@ -82,7 +82,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
       },
 
       getOwnUser: async () => {
-        if (get().isGetOwnUserLoading) return;
+        if (!get().lmnApiToken || get().isGetOwnUserLoading) return;
         set({ isGetOwnUserLoading: true, error: null });
         try {
           const response = await eduApi.get<LmnUserInfo>(USER, {
@@ -124,7 +124,9 @@ const useLmnApiStore = create<UseLmnApiStore>(
           });
           set({ usersQuota: data });
         } catch (error) {
-          handleApiError(error, set);
+          // TODO: Readd error handling when LMN API 7.3 supports this endpoint, https://github.com/edulution-io/edulution-ui/issues/1331
+          // handleApiError(error, set);
+          set({ usersQuota: null });
         } finally {
           set({ isFetchUserLoading: false });
         }

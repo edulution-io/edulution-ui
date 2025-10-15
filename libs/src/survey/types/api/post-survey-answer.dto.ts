@@ -13,8 +13,6 @@
 import ParticipantDto from '@libs/survey/types/api/participant.dto';
 
 interface PostSurveyAnswerDto extends ParticipantDto {
-  saveNo: number;
-
   answer: JSON;
 }
 

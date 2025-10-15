@@ -37,6 +37,8 @@ import PageLayout from '@/components/structure/layout/PageLayout';
 import QuotaLimitInfo from '@/pages/FileSharing/utilities/QuotaLimitInfo';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useLdapGroups from '@/hooks/useLdapGroups';
+import SchoolSelectorDropdown from '../components/SchoolSelectorDropdown';
 
 const LessonPage = () => {
   const {
@@ -48,6 +50,7 @@ const LessonPage = () => {
     fetchSchoolClass,
     fetchUserSessions,
   } = useClassManagementStore();
+  const { isSuperAdmin } = useLdapGroups();
 
   const { percentageUsed } = useQuotaInfo();
 
@@ -74,7 +77,14 @@ const LessonPage = () => {
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [currentSelectedSession, setCurrentSelectedSession] = useState<LmnApiSession | null>(null);
 
-  const [isFileSharingProgessInfoDialogOpen, setIsFileSharingProgessInfoDialogOpen] = useState(false);
+  const [isFileSharingProgressInfoDialogOpen, setIsFileSharingProgressInfoDialogOpen] = useState(false);
+
+  useEffect(
+    () => () => {
+      setMember([]);
+    },
+    [setMember],
+  );
 
   useEffect(() => {
     if (lmnApiToken) {
@@ -86,6 +96,7 @@ const LessonPage = () => {
     if (isPageLoading) return;
 
     setIsPageLoading(true);
+    setCurrentSelectedSession(null);
 
     switch (groupTypeParams) {
       case UserGroups.Projects: {
@@ -96,8 +107,8 @@ const LessonPage = () => {
         break;
       }
       case UserGroups.Sessions: {
-        await fetchUserSessions();
-        const session = userSessions.find((s) => s.name === groupNameParams);
+        const userSessionsWithMembers = await fetchUserSessions(true);
+        const session = userSessionsWithMembers.find((s) => s.name === groupNameParams);
         setCurrentSelectedSession(session || null);
         setMember(session?.members || []);
         break;
@@ -151,17 +162,20 @@ const LessonPage = () => {
     setGroupTypeInStore();
     setGroupNameInStore();
     navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}`);
+    setIsPageLoading(false);
   };
 
   const createSessionAndNavigate = async (form: UseFormReturn<GroupForm>): Promise<void> => {
     setIsPageLoading(true);
     await createSession(form);
     navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}/sessions/${form.getValues().name}`);
+    setIsPageLoading(false);
   };
 
   const updateSessionWithLoading = async (form: UseFormReturn<GroupForm>): Promise<void> => {
     setIsPageLoading(true);
     await updateSession(form);
+    setIsPageLoading(false);
   };
 
   const sessionToSave: GroupColumn = {
@@ -181,7 +195,7 @@ const LessonPage = () => {
   useEffect(() => {
     const hasProgressCompleted = (fileOperationProgress?.percent ?? 0) >= 100;
     const hasFailedPaths = (fileOperationProgress?.failedPaths?.length ?? 0) > 0;
-    setIsFileSharingProgessInfoDialogOpen(hasProgressCompleted && hasFailedPaths);
+    setIsFileSharingProgressInfoDialogOpen(hasProgressCompleted && hasFailedPaths);
   }, [fileOperationProgress]);
 
   return (
@@ -198,6 +212,7 @@ const LessonPage = () => {
             classname="md:w-1/3"
           />
         )}
+        {isSuperAdmin && <SchoolSelectorDropdown />}
         {groupNameParams || member.length ? (
           <div className="flex flex-row justify-between gap-2">
             <button
@@ -227,8 +242,8 @@ const LessonPage = () => {
 
       {fileOperationProgress && fileOperationProgress.failedPaths && (
         <AdaptiveDialog
-          isOpen={isFileSharingProgessInfoDialogOpen}
-          handleOpenChange={() => setIsFileSharingProgessInfoDialogOpen(!isFileSharingProgessInfoDialogOpen)}
+          isOpen={isFileSharingProgressInfoDialogOpen}
+          handleOpenChange={() => setIsFileSharingProgressInfoDialogOpen(!isFileSharingProgressInfoDialogOpen)}
           title={t('classmanagement.failDialog.title', {
             file: fileOperationProgress?.currentFilePath?.split('/').pop(),
           })}

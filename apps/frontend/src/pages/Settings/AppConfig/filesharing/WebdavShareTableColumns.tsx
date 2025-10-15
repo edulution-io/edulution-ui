@@ -12,7 +12,6 @@
 
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import { useTranslation } from 'react-i18next';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
@@ -21,8 +20,10 @@ import TableActionCell from '@/components/ui/Table/TableActionCell';
 import { MdDelete, MdEdit } from 'react-icons/md';
 import ID_ACTION_TABLE_COLUMN from '@libs/common/constants/idActionTableColumn';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 import useWebdavShareConfigTableStore from './useWebdavShareConfigTableStore';
+import useWebdavServerConfigTableStore from './useWebdavServerConfigTableStore';
 
 const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
   {
@@ -54,19 +55,70 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
     ),
   },
   {
-    id: WEBDAV_SHARE_TABLE_COLUMNS.URL,
+    id: WEBDAV_SHARE_TABLE_COLUMNS.ROOT_SERVER,
     header: ({ column }) => <SortableHeader<WebdavShareDto, unknown> column={column} />,
 
     meta: {
-      translationId: 'form.url',
+      translationId: 'server',
     },
-    accessorFn: (row) => row.url,
+    accessorFn: (row) => row.rootServer,
+    cell: ({ row }) => {
+      const { tableContentData } = useWebdavServerConfigTableStore();
+
+      return (
+        <SelectableTextCell
+          text={
+            tableContentData.find((server) => server.webdavShareId === row.original.rootServer)?.displayName ||
+            row.original.rootServer
+          }
+          onClick={() => row.toggleSelected()}
+        />
+      );
+    },
+  },
+  {
+    id: WEBDAV_SHARE_TABLE_COLUMNS.PATHNAME,
+    header: ({ column }) => <SortableHeader<WebdavShareDto, unknown> column={column} />,
+
+    meta: {
+      translationId: 'form.pathname',
+    },
+    accessorFn: (row) => row.pathname,
     cell: ({ row }) => (
       <SelectableTextCell
-        text={row.original.url}
+        text={row.original.pathname}
         onClick={() => row.toggleSelected()}
       />
     ),
+  },
+
+  {
+    id: WEBDAV_SHARE_TABLE_COLUMNS.PATH_VARIABLES,
+    header: ({ column }) => {
+      const { isLmn } = useDeploymentTarget();
+      if (!isLmn) return null;
+      return <SortableHeader<WebdavShareDto, unknown> column={column} />;
+    },
+
+    meta: {
+      translationId: 'webdavShare.pathVariables.title',
+    },
+    accessorFn: (row) => row.pathVariables,
+    cell: ({ row }) => {
+      const { isLmn } = useDeploymentTarget();
+      if (!isLmn) return null;
+
+      return (
+        <SelectableTextCell
+          text={
+            row.original.pathVariables?.length > 0
+              ? row.original.pathVariables.map((variable) => variable.value).join(', ')
+              : '-'
+          }
+          onClick={() => row.toggleSelected()}
+        />
+      );
+    },
   },
   {
     id: WEBDAV_SHARE_TABLE_COLUMNS.ACCESSGROUPS,
@@ -79,30 +131,12 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
     cell: ({ row }) => (
       <SelectableTextCell
         text={
-          row.original.accessGroups.length > 0 ? row.original.accessGroups.map((group) => group.name).join(', ') : '-'
+          row.original.accessGroups?.length > 0 ? row.original.accessGroups.map((group) => group.name).join(', ') : '-'
         }
         onClick={() => row.toggleSelected()}
-        className="max-w-80 overflow-hidden text-ellipsis whitespace-nowrap"
+        className="max-w-60 overflow-hidden text-ellipsis whitespace-nowrap"
       />
     ),
-  },
-  {
-    id: WEBDAV_SHARE_TABLE_COLUMNS.TYPE,
-    header: ({ column }) => <SortableHeader<WebdavShareDto, unknown> column={column} />,
-
-    meta: {
-      translationId: 'common.type',
-    },
-    accessorFn: (row) => row.type,
-    cell: ({ row }) => {
-      const { t } = useTranslation();
-      return (
-        <SelectableTextCell
-          text={t(`webdavShare.type.${row.original.type}`)}
-          onClick={() => row.toggleSelected()}
-        />
-      );
-    },
   },
   {
     id: ID_ACTION_TABLE_COLUMN,
@@ -122,7 +156,9 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
               icon: MdEdit,
               translationId: 'common.edit',
               onClick: () => {
-                row.toggleSelected();
+                if (!row.getIsSelected()) {
+                  row.toggleSelected();
+                }
                 setDialogOpen(ExtendedOptionKeys.WEBDAV_SHARE_TABLE);
               },
             },

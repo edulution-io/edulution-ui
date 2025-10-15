@@ -11,17 +11,9 @@
  */
 
 import React from 'react';
-import getLoginScript from '@/pages/LinuxmusterPage/scripts/login';
-import logoutScript from '@/pages/LinuxmusterPage/scripts/logout';
 import APPS from '@libs/appconfig/constants/apps';
-import NativeFrameScriptInjector from '@/components/structure/framing/Native/NativeFrameScriptInjector';
+import NativeFrame from '@/components/structure/framing/Native/NativeFrame';
 
-const LinuxmusterPage: React.FC = () => (
-  <NativeFrameScriptInjector
-    appName={APPS.LINUXMUSTER}
-    getLoginScript={getLoginScript}
-    logoutScript={logoutScript}
-  />
-);
+const LinuxmusterPage: React.FC = () => <NativeFrame appName={APPS.LINUXMUSTER} />;
 
 export default LinuxmusterPage;

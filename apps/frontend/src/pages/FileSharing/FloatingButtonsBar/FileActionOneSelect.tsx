@@ -26,6 +26,7 @@ import ShareButton from '@/components/shared/FloatingsButtonsBar/CommonButtonCon
 
 const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItems }) => {
   const startDownload = useStartWebdavFileDownload();
+
   const config: FloatingButtonsBarConfig = {
     buttons: [
       DeleteButton(() => openDialog(FileActionType.DELETE_FILE_OR_FOLDER)),
@@ -37,9 +38,8 @@ const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedIt
       },
       DownloadButton(async () => {
         if (!selectedItems) return;
-        const files = Array.isArray(selectedItems) ? selectedItems : [selectedItems];
-        await startDownload(files);
-      }, true),
+        await startDownload(selectedItems);
+      }),
       CopyButton(() => openDialog(FileActionType.COPY_FILE_OR_FOLDER)),
       ShareButton(() => openDialog(FileActionType.SHARE_FILE_OR_FOLDER)),
     ],

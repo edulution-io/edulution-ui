@@ -20,6 +20,7 @@ import { VirtualMachines } from '@libs/desktopdeployment/types';
 import { VDI_SYNC_TIME_INTERVAL } from '@libs/desktopdeployment/constants';
 import { useInterval } from 'usehooks-ts';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import DOCKER_STATES from '@libs/docker/constants/dockerStates';
 import ConnectionErrorDialog from './components/ConnectionErrorDialog';
 import useDesktopDeploymentStore from './useDesktopDeploymentStore';
 import VdiCard from './components/VdiCard';
@@ -83,7 +84,7 @@ const DesktopDeploymentPage: React.FC = () => {
   const getAvailableClients = (osType: VirtualMachineOs, vms: VirtualMachines | null): number => {
     if (vms && vms.data[osType]) {
       const cloneVms = vms.data[osType].clone_vms;
-      return Object.values(cloneVms).filter((vm) => vm.status === 'running').length;
+      return Object.values(cloneVms).filter((vm) => vm.status === DOCKER_STATES.RUNNING).length;
     }
     return 0;
   };
