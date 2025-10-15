@@ -23,7 +23,7 @@ import useLanguage from '@/hooks/useLanguage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
-import ExportToPdfWarningDialog from '@/pages/Surveys/Participation/exportToPdf/ExportToPdfWarningDialog';
+import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/ExportSurveyToPdfDialog';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import '../theme/custom.participation.css';
@@ -200,7 +200,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
   if (isFetching) {
     return <LoadingIndicatorDialog isOpen />;
   }
-  if (!surveyParticipationModel) {
+  if (!surveyParticipationModel || !selectedSurvey) {
     return (
       <div className="relative top-1/3">
         <h4 className="flex justify-center">{t('survey.notFound')}</h4>
@@ -212,12 +212,10 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       <div className="survey-participation">
         <Survey model={surveyParticipationModel} />
       </div>
-      {selectedSurvey ? (
-        <ExportToPdfWarningDialog
-          formula={selectedSurvey.formula}
-          answer={surveyParticipationModel ? (surveyParticipationModel.data as JSON) : undefined}
-        />
-      ) : null}
+      <ExportSurveyToPdfDialog
+        formula={selectedSurvey.formula}
+        answer={surveyParticipationModel ? (surveyParticipationModel.data as JSON) : undefined}
+      />
     </>
   );
 };

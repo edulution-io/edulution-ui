@@ -648,7 +648,7 @@
       "processing": "Export wird verarbeitet...",
       "success": "Export erfolgreich",
       "error": "Fehler beim Exportieren",
-      "warning": "Einige Fragen können im PDF-Export nicht korrekt angezeigt werden. Dazu gehören unter anderem der Datei-Upload, die Bildauswahl, und das Passwortfeld."
+      "warning": "Einige Fragen können im PDF-Export nicht korrekt angezeigt werden. Dazu gehören unter anderem der Datei-Upload, die Bildauswahl und das Passwortfeld."
     },
     "editor": {
       "inputFieldTitle": "Eingabefeld",

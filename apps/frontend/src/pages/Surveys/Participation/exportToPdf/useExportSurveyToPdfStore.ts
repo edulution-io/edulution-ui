@@ -48,7 +48,7 @@ const useExportSurveyToPdfStore = create<ExportSurveyToPdfStore>((set) => ({
   ): Promise<void> => {
     set({ isProcessing: true });
 
-    toast.info(t('survey.export.processing'));
+    toast.info(t('survey.export.processing'), { id: 'processing-export-survey-to-pdf' });
 
     const surveyPdf = new SurveyPDF(surveyFormula, pdfDocOptions || defaultDocOptions);
 
@@ -58,8 +58,10 @@ const useExportSurveyToPdfStore = create<ExportSurveyToPdfStore>((set) => ({
 
     try {
       await surveyPdf.save(`survey-${sanitizeFilename(surveyFormula.title)}-${getCurrentDateTimeString()}`);
+      toast.dismiss('processing-export-survey-to-pdf');
       toast.success(t('survey.export.success'));
     } catch (error) {
+      toast.dismiss('processing-export-survey-to-pdf');
       toast.error(t('survey.export.error'));
       console.error('Error during PDF export:', error);
     } finally {

@@ -43,7 +43,7 @@ import PageLayout from '@/components/structure/layout/PageLayout';
 import QuestionContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
-import ExportToPdfWarningDialog from '@/pages/Surveys/Participation/exportToPdf/ExportToPdfWarningDialog';
+import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/ExportSurveyToPdfDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 
 const SurveyEditorPage = () => {
@@ -264,7 +264,7 @@ const SurveyEditorPage = () => {
         setIsOpenQuestionContextMenu={setIsOpenQuestionContextMenu}
         isLoading={isUpdatingBackendLimiters}
       />
-      <ExportToPdfWarningDialog formula={creator.JSON as SurveyFormula} />
+      <ExportSurveyToPdfDialog formula={creator.JSON as SurveyFormula} />
     </PageLayout>
   );
 };

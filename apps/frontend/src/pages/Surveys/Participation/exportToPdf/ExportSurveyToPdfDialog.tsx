@@ -24,7 +24,7 @@ interface ExportToPdfWarningProps {
   trigger?: React.ReactNode;
 }
 
-const ExportToPdfWarningDialog = ({ formula, answer, trigger }: ExportToPdfWarningProps) => {
+const ExportSurveyToPdfDialog = ({ formula, answer, trigger }: ExportToPdfWarningProps) => {
   const { isOpen, setIsOpen, isProcessing, saveSurveyAsPdf } = useExportSurveyToPdfStore();
 
   const { t } = useTranslation();
@@ -63,4 +63,4 @@ const ExportToPdfWarningDialog = ({ formula, answer, trigger }: ExportToPdfWarni
   );
 };
 
-export default ExportToPdfWarningDialog;
+export default ExportSurveyToPdfDialog;
