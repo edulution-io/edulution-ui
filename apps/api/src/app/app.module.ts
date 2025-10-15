@@ -53,6 +53,7 @@ import NotificationsModule from '../notifications/notifications.module';
 import MobileAppModuleModule from '../mobileAppModule/mobileAppModule.module';
 import UserPreferencesModule from '../user-preferences/user-preferences.module';
 import DevCacheFlushService from '../common/cache/dev-cache-flush.service';
+import MetricsModule from '../metrics/metrics.module';
 
 @Module({
   imports: [
@@ -118,6 +119,7 @@ import DevCacheFlushService from '../common/cache/dev-cache-flush.service';
     EventEmitterModule.forRoot(),
     ScriptsModule,
     WebdavSharesModule,
+    MetricsModule,
   ],
   providers: [
     {
