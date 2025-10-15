@@ -24,6 +24,7 @@ import PageTitle from '@/components/PageTitle';
 import { useTranslation } from 'react-i18next';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableSharePathname';
 
 const MenuBar: React.FC = () => {
   const { t } = useTranslation();
@@ -33,6 +34,7 @@ const MenuBar: React.FC = () => {
   const menuBarEntries = useMenuBarConfig();
   const { setCurrentPath, setPathToRestoreSession } = useFileSharingStore();
   const webdavShares = useFileSharingStore((state) => state.webdavShares);
+  const { createVariableSharePathname } = useVariableSharePathname();
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
   const { isMobileView } = useMedia();
@@ -60,13 +62,18 @@ const MenuBar: React.FC = () => {
       case APPS.FILE_SHARING: {
         const currentShare = webdavShares.find((s) => s.displayName === pathParts[1]) ?? webdavShares[0];
 
-        setCurrentPath(currentShare.pathname);
-        setPathToRestoreSession(currentShare.pathname);
+        let currentSharePath = currentShare.pathname;
+        if (currentShare.pathVariables) {
+          currentSharePath = createVariableSharePathname(currentSharePath, currentShare.pathVariables);
+        }
+
+        setCurrentPath(currentSharePath);
+        setPathToRestoreSession(currentSharePath);
 
         navigate(
           {
             pathname: `/${APPS.FILE_SHARING}/${currentShare.displayName}`,
-            search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(currentShare.pathname)}`,
+            search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(currentSharePath)}`,
           },
           { replace: true },
         );
@@ -82,6 +89,11 @@ const MenuBar: React.FC = () => {
         setIsSelected(firstMenuBarItem);
     }
   };
+
+  const activeItem = useMemo(
+    () => menuBarEntries.menuItems.find((item) => item.id === isSelected),
+    [isSelected, menuBarEntries.menuItems],
+  );
 
   const renderMenuBarContent = () => (
     <div
@@ -106,12 +118,6 @@ const MenuBar: React.FC = () => {
         <div className="flex-1 overflow-y-auto pb-10 scrollbar-thin">
           {menuBarEntries.menuItems.map((item) => (
             <React.Fragment key={item.label}>
-              {isSelected === item.id && (
-                <PageTitle
-                  title={t(`${menuBarEntries.appName}.sidebar`)}
-                  translationId={item.label}
-                />
-              )}
               <MenubarTrigger
                 className={cn(
                   'flex w-full cursor-pointer items-center gap-3 py-1 pl-3 pr-10 transition-colors',
@@ -138,43 +144,55 @@ const MenuBar: React.FC = () => {
     </div>
   );
 
-  return isMobileView ? (
+  return (
     <>
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-foreground bg-opacity-50"
-          role="button"
-          tabIndex={0}
-          onClickCapture={toggle}
+      {activeItem && (
+        <PageTitle
+          title={t(`${menuBarEntries.appName}.sidebar`)}
+          translationId={activeItem.label}
+          disableTranslation={activeItem.disableTranslation}
         />
       )}
 
-      <VerticalMenubar
-        className={cn(
-          'fixed top-0 z-50 h-full bg-gray-700 duration-300 ease-in-out',
-          !isOpen ? 'w-0' : 'w-64',
-          'bg-foreground',
-        )}
-      >
-        {isOpen && renderMenuBarContent()}
-      </VerticalMenubar>
+      {isMobileView ? (
+        <>
+          {isOpen && (
+            <div
+              className="fixed inset-0 z-40 bg-foreground bg-opacity-50"
+              role="button"
+              tabIndex={0}
+              onClickCapture={toggle}
+            />
+          )}
 
-      <div
-        role="button"
-        tabIndex={0}
-        className={cn(
-          'absolute top-0 z-50 flex h-screen w-4 cursor-pointer items-center justify-center bg-gray-700 bg-opacity-60',
-          !isOpen ? 'left-0' : 'left-64',
-        )}
-        onClickCapture={toggle}
-      >
-        <p className="text-xl text-background">{!isOpen ? '≡' : '×'}</p>
-      </div>
+          <VerticalMenubar
+            className={cn(
+              'fixed top-0 z-50 h-full bg-gray-700 duration-300 ease-in-out',
+              !isOpen ? 'w-0' : 'w-64',
+              'bg-foreground',
+            )}
+          >
+            {isOpen && renderMenuBarContent()}
+          </VerticalMenubar>
+
+          <div
+            role="button"
+            tabIndex={0}
+            className={cn(
+              'absolute top-0 z-50 flex h-screen w-4 cursor-pointer items-center justify-center bg-gray-700 bg-opacity-60',
+              !isOpen ? 'left-0' : 'left-64',
+            )}
+            onClickCapture={toggle}
+          >
+            <p className="text-xl text-background">{!isOpen ? '≡' : '×'}</p>
+          </div>
+        </>
+      ) : (
+        <div className="relative flex h-screen">
+          <VerticalMenubar className="w-64 bg-foreground bg-opacity-40">{renderMenuBarContent()}</VerticalMenubar>
+        </div>
+      )}
     </>
-  ) : (
-    <div className="relative flex h-screen">
-      <VerticalMenubar className="w-64 bg-foreground bg-opacity-40">{renderMenuBarContent()}</VerticalMenubar>
-    </div>
   );
 };
 

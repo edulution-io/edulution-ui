@@ -10,19 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
-import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+import { ThemeType } from '@libs/common/constants/theme';
 
-const DOCKER_CONTAINER_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
-  {
-    name: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
-    description: 'containerApplication.description',
-    title: 'containerApplication.title',
-    type: ExtendedOptionField.table,
-    value: '',
-    width: 'full',
-  },
-];
-
-export default DOCKER_CONTAINER_EXTENDED_OPTIONS;
+export type UploadGlobalAssetDto = { destination?: string; filename?: string; variant: ThemeType; file: File | Blob };

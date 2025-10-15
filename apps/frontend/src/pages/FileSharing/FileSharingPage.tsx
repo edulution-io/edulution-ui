@@ -34,9 +34,9 @@ import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
 import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import UploadFileDialog from '@/pages/FileSharing/Dialog/UploadFileDialog';
-import useUploadProgressToast from '@/hooks/useUploadProgressToast';
 import DeletePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DeletePublicShareDialog';
 import APPS from '@libs/appconfig/constants/apps';
+import useVariableSharePathname from './hooks/useVariableSharePathname';
 
 const FileSharingPage = () => {
   const { webdavShare } = useParams();
@@ -45,8 +45,7 @@ const FileSharingPage = () => {
   const { fileOperationProgress, fetchFiles, webdavShares } = useFileSharingStore();
   const { fetchShares } = usePublicShareStore();
   const navigate = useNavigate();
-
-  useUploadProgressToast();
+  const { createVariableSharePathname } = useVariableSharePathname();
 
   useEffect(() => {
     const handleFileOperationProgress = async () => {
@@ -79,10 +78,15 @@ const FileSharingPage = () => {
 
       if (!currentShare) return;
 
+      let currentSharePath = currentShare.pathname;
+      if (currentShare.pathVariables) {
+        currentSharePath = createVariableSharePathname(currentSharePath, currentShare.pathVariables);
+      }
+
       navigate(
         {
           pathname: `/${APPS.FILE_SHARING}/${currentShare.displayName}`,
-          search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(currentShare.pathname)}`,
+          search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(currentSharePath)}`,
         },
         { replace: true },
       );

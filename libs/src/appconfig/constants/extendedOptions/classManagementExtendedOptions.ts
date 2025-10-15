@@ -10,15 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ContentType from '@libs/filesharing/types/contentType';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
+import TAppFieldWidth from '@libs/appconfig/types/tAppFieldWidth';
 
-interface MoveContentDialogBodyProps {
-  showAllFiles?: boolean;
-  pathToFetch?: string;
-  showSelectedFile?: boolean;
-  showHome?: boolean;
-  fileType?: ContentType;
-  isCurrentPathDefaultDestination?: boolean;
-}
+const CLASS_MANAGEMENT_EXTENDED_OPTIONS = [
+  {
+    name: ExtendedOptionKeys.VEYON_PROXYS,
+    description: 'appExtendedOptions.veyonProxys',
+    type: ExtendedOptionField.table,
+    value: '',
+    width: 'full' as TAppFieldWidth,
+  },
+];
 
-export default MoveContentDialogBodyProps;
+export default CLASS_MANAGEMENT_EXTENDED_OPTIONS;

@@ -372,4 +372,7 @@ $RECYCLE.BIN/
 /swagger-spec.json
 
 # data folder
-data
+/data/*
+!/data/public/
+/data/public/*
+!/data/public/assets/

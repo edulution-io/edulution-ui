@@ -18,6 +18,8 @@ import GroupColumn from '@libs/groups/types/groupColumn';
 import GroupListCard from '@/pages/ClassManagement/components/GroupList/GroupListCard';
 import { useTranslation } from 'react-i18next';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
+import useLdapGroups from '@/hooks/useLdapGroups';
+import useClassManagementStore from '../../useClassManagementStore';
 
 interface GroupListProps {
   row: GroupColumn;
@@ -27,19 +29,26 @@ interface GroupListProps {
 const GroupList = ({ row, isEnrolEnabled }: GroupListProps) => {
   const { t } = useTranslation();
   const { openDialogType } = useLessonStore();
+  const { selectedSchool } = useClassManagementStore();
+  const { isSuperAdmin } = useLdapGroups();
 
   return (
     <div className="flex flex-row flex-wrap">
       {row.groups.length ? (
-        row.groups.map((group) => (
-          <GroupListCard
-            key={row.name + (group as LmnApiProject | LmnApiSchoolClass).dn}
-            group={group as LmnApiProject | LmnApiSchoolClass}
-            type={row.name}
-            icon={row.icon}
-            isEnrolEnabled={isEnrolEnabled}
-          />
-        ))
+        row.groups
+          .filter(
+            (group) =>
+              !isSuperAdmin || (group as LmnApiProject | LmnApiSchoolClass).sophomorixSchoolname === selectedSchool,
+          )
+          .map((group) => (
+            <GroupListCard
+              key={row.name + (group as LmnApiProject | LmnApiSchoolClass).dn}
+              group={group as LmnApiProject | LmnApiSchoolClass}
+              type={row.name}
+              icon={row.icon}
+              isEnrolEnabled={isEnrolEnabled}
+            />
+          ))
       ) : (
         <div className="mt-3">{t('classmanagement.noGroupsToShow')}</div>
       )}

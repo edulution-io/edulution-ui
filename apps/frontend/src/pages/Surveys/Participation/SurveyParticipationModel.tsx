@@ -16,6 +16,7 @@ import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
 import { ClearFilesEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
 import { FileDownloadDto } from '@libs/survey/types/api/file-download.dto';
+import { removeUuidFromFileName } from '@libs/common/utils/uuidAndFileNames';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import SURVEY_ANSWERS_MAXIMUM_FILE_SIZE from '@libs/survey/constants/survey-answers-maximum-file-size';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
@@ -117,11 +118,12 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         if (data === null) {
           return null;
         }
+
         const newFile: FileDownloadDto = {
           ...file,
           type: file.type || 'image/png',
-          originalName: file.name || data.name,
-          name: data.name,
+          originalName: data.name || file.name,
+          name: removeUuidFromFileName(data.name || file.name),
           url: `${EDU_API_URL}/${data.url}`,
           content: data.content,
         };

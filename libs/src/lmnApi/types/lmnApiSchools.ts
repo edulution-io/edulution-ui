@@ -10,19 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
-import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+// This type is based on a third-party object definition from the Linuxmuster API.
+// Any modifications should be carefully reviewed to ensure compatibility with the source.
 
-const BULLETIN_BOARD_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
-  {
-    name: ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE,
-    description: 'appExtendedOptions.bulletinBoardUrl',
-    title: 'appExtendedOptions.bulletinBoardUrlTitle',
-    type: ExtendedOptionField.table,
-    value: '',
-    width: 'full',
-  },
-];
+type LmnApiSchools = {
+  objectClass: string[];
+  ou: string;
+  displayName: string;
+  distinguishedName: string;
+};
 
-export default BULLETIN_BOARD_EXTENDED_OPTIONS;
+export default LmnApiSchools;

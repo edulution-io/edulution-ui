@@ -23,8 +23,8 @@ export interface CreateFileUploaderDependencies {
   httpClient: AxiosInstance;
   uploadEndpointPath?: string;
   destinationPath: string;
-  onProgressUpdate: (fileName: string, next: FileProgress) => void;
-  onUploadingChange?: (fileName: string, uploading: boolean) => void;
+  onProgressUpdate: (fileItem: UploadFile, next: FileProgress) => void;
+  onUploadingChange?: (fileItem: UploadFile, uploading: boolean) => void;
 }
 
 const createFileUploader = (dependencies: CreateFileUploaderDependencies) => {
@@ -43,10 +43,10 @@ const createFileUploader = (dependencies: CreateFileUploaderDependencies) => {
 
     const progress = createProgressHandler({
       fileSize: fileItem.size,
-      setProgress: (next) => onProgressUpdate(fileName, next),
+      setProgress: (next) => onProgressUpdate(fileItem, next),
     });
 
-    onUploadingChange?.(fileName, true);
+    onUploadingChange?.(fileItem, true);
 
     try {
       progress.markStart();
@@ -54,15 +54,15 @@ const createFileUploader = (dependencies: CreateFileUploaderDependencies) => {
         progress.onUploadProgress(event);
       });
       progress.markDone();
-      return { name: fileName, ok: true };
+      return { name: fileName, success: true };
     } catch (error) {
       progress.markError();
       return {
         name: fileName,
-        ok: false,
+        success: false,
       };
     } finally {
-      onUploadingChange?.(fileName, false);
+      onUploadingChange?.(fileItem, false);
     }
   };
 };

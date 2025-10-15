@@ -170,7 +170,8 @@
       "GetProjectFailed": "Echec de l'appel du projet",
       "PasswordMismatch": "Le mot de passe actuel est incorrect",
       "PasswordChangeFailed": "Echec de modification du mot de passe",
-      "GetUsersQuotaFailed": "L'appel du quota l'utilisateur a échoué."
+      "GetUsersQuotaFailed": "L'appel du quota l'utilisateur a échoué.",
+      "GetSchoolsFailed": "L'appel des écoles a échoué"
     }
   },
   "ticketsystem": {
@@ -187,6 +188,10 @@
     "encryption": "Chiffrement",
     "rowSelected": "{{selected}} de {{total}} tâche sélectionnée",
     "rowsSelected": "{{selected}} de {{total}} tâches sélectionnées",
+    "themeUpdated": {
+      "generic": "Le thème du courrier électronique a été mis à jour. Veuillez actualiser la page pour que les modifications soient prises en compte.",
+      "failed": "Le thème du courrier électronique n'a pas pu être mis à jour."
+    },
     "importer": {
       "filterPlaceHolderText": "Rechercher le nom d'utilisateur",
       "title": "Importateur de courrier électronique",
@@ -344,6 +349,11 @@
       "SharingFailed": "La distribution des fichiers a échoué",
       "CopyFailed": "La copie a échoué",
       "FileFormatNotSupported": "Le format de fichier n'est pas pris en charge."
+    },
+    "publicFileSharing": {
+      "errors": {
+        "PublicFileDownloadFailed": "Le téléchargement du fichier a échoué. Veuillez réessayer plus tard."
+      }
     },
     "progressBox": {
       "info": "Informations",
@@ -515,6 +525,11 @@
       "proxyAdressPlaceholder": "http://localhost:11080",
       "createConfig": "Créer une configuration",
       "editConfig": "Modifier la configuration"
+    },
+    "selectSchool": {
+      "title": "Sélectionner l'école",
+      "description": "Veuillez d'abord sélectionner une école afin de pouvoir afficher vos classes et projets.",
+      "placeholder": "Sélectionner une école"
     }
   },
   "select": "Choisir",
@@ -794,6 +809,33 @@
         "updateError": "Les paramètres n'ont pas pu être mis à jour.",
         "notFoundError": "Les paramètres n'ont pas pu être chargés."
       },
+
+      "branding": {
+        "title": "Identité visuelle"
+      },
+
+      "logo": {
+        "title": "Logo",
+        "descriptionSchool": "Téléversez le logo. Il sera affiché sur l’écran de connexion et sur la carte d’identification de l’application Edulution.",
+        "descriptionGeneric": "Téléversez le logo. Il sera affiché sur l’écran de connexion.",
+        "uploadLightLogo": "Téléverser le logo clair",
+        "uploadDarkLogo": "Téléverser le logo sombre",
+        "deleteSuccessful": "Logo supprimé avec succès."
+      },
+      "organisationInfo": {
+        "title": "Informations sur l’organisation",
+        "descriptionSchool": "Saisissez les informations officielles de votre organisation. Ces informations peuvent être affichées dans l’application Edulution. Veuillez indiquer le nom, la rue, le code postal et, éventuellement, le site web de l’école.",
+        "descriptionGeneric": "Saisissez les informations officielles de votre organisation.",
+        "name": "Nom de l’organisation",
+        "namePlaceholder": "p. ex. Organisation de Sampletown",
+        "street": "Rue",
+        "streetPlaceholder": "p. ex. 1, rue de l’Organisation",
+        "postalCode": "Code postal",
+        "postalCodePlaceholder": "p. ex. 12345",
+        "postalCityPlaceholder": "p. ex. Berlin",
+        "website": "Site web de l’organisation",
+        "city": "Ville"
+      },
       "deploymentTarget": "Plate-forme cible de déploiement"
     },
     "info": {
@@ -833,9 +875,14 @@
           "invalidUrlFormat": "URL non valide"
         },
         "webdavShare": {
-          "title": "WebDAV-Server",
-          "description": "Vous pouvez configurer ici vos propres partages WebDAV.",
+          "title": "WebDAV",
+          "sectionTitle": "WebDAV-Partage",
+          "description": "Vous pouvez configurer ici vos propres serveur WebDAV.",
           "filterPlaceHolderText": "Rechercher le nom de partages"
+        },
+        "webdavServer": {
+          "title": "WebDAV serveurs",
+          "filterPlaceHolderText": "Rechercher un serveur"
         },
         "files": {
           "title": "Fichiers",
@@ -1028,6 +1075,7 @@
     "infoQrCodeExpired": "Le temps de connexion avec l'application edulution.io a expiré."
   },
   "common": {
+    "refreshPage": "Actualiser la page",
     "guest": "Invité",
     "ok": "OK",
     "next": "Prochain",
@@ -1042,6 +1090,7 @@
       "attachmentUploadFailed": "La pièce jointe n'a pas pu être téléversée",
       "dbAccessFailed": "L'accès à la base de données a échoué",
       "directoryNotCreated": "La création du répertoire a échoué",
+      "fileNotCreated": "Échec de la création du fichier",
       "fileDeletionFailed": "Echec de suppression du fichier",
       "fileWritingFailed": "Echec d'écriture du fichier",
       "fileNotFound": "Fichier introuvable",
@@ -1156,7 +1205,13 @@
     "format": "Format",
     "upload": "Téléverser",
     "mode": "mode",
-    "file": "Fichier"
+    "file": "Fichier",
+    "chooseFile": "Choisir un fichier",
+    "changeFile": "Changer de fichier",
+    "saveLocal": "Enregistrer sur l’appareil",
+    "openLocal": "Ouvrir depuis l’appareil",
+    "openFileFromEdu": "Ouvrir le fichier",
+    "saveFileToEdu": "Enregistrer dans les fichiers"
   },
 
   "saveExternalFileDialogBody": {
@@ -1234,10 +1289,14 @@
     "sidebar": "Linuxmuster"
   },
   "whiteboard": {
-    "title": "Whiteboard",
-    "sidebar": "Whiteboard",
-    "saveAsTlFile": "Enregistrer le tableau blanc au format .tldr",
-    "openTlFile": "Ouvrir un fichier .tldr"
+    "title": "TABLEAU BLANC",
+    "sidebar": "Tableau blanc",
+    "saveAsTlFile": "Enregistrer le tableau blanc sous forme de fichier .tldr",
+    "openTLFileFailed": "Impossible d’ouvrir le fichier",
+    "openTLFileSuccess": "Le fichier a été chargé avec succès",
+    "openTlFile": "Ouvrir",
+    "openLocalTlFile": "Ouvrir un fichier .tldr local",
+    "file": "Fichier"
   },
   "whiteboard-collaboration": {
     "title": "Whiteboard",
@@ -1409,7 +1468,7 @@
   "licensing": {
     "communityLicenseDialog": {
       "title": "Version communautaire",
-      "description": "Version communautaire gratuite de {{ applicationName }} Ui.<br/>Nous rendre visite <link1>{{link}}</link1>.<br/><strong>Cette version ne reçoit aucun support du fabricant.</strong>"
+      "description": "Version communautaire gratuite de {{ applicationName }} Ui. <strong>Cette version ne reçoit aucun support du fabricant.</strong>"
     }
   },
   "appExtendedOptions": {
@@ -1427,7 +1486,14 @@
     "mailImapSecureTitle": "Connexion chiffrée",
     "mailImapSecureDescription": "La connexion via «tls» ou «starttls» doit être établie.",
     "mailImapRejectUnauthorizedTitle": "Rejeter les connexions non certifiées",
-    "mailImapRejectUnauthorizedDescription": "Une vérification de certificat doit-il être effectué pour cette connexion?"
+    "mailImapRejectUnauthorizedDescription": "Une vérification de certificat doit-il être effectué pour cette connexion?",
+    "mailSogoThemeTitle": "Thème",
+    "mailSogoThemeDescription": "Sélectionnez le thème pour l'application Mail. La modification du thème redémarre les conteneurs associés.",
+    "mailSogoTheme": {
+      "light": "Clair",
+      "dark": "Sombre"
+    },
+    "mailSogoThemeDisabled": "Désactivé, car le serveur de messagerie ne fonctionne pas."
   },
   "preview": {
     "image": "Aperçu de l'image",
@@ -1522,6 +1588,28 @@
       "generic": "Générique"
     },
     "status": "Statut",
-    "offline": "Le serveur est actuellement indisponible."
+    "offline": "Le serveur est actuellement indisponible.",
+    "pathVariables": {
+      "title": "Variable de chemin ",
+      "description": "Une variable de chemin dynamique peut être sélectionnée ici à partir des attributs utilisateur. "
+    },
+    "isRootServer": {
+      "title": "Chemin racine",
+      "description": "Pour les fonctions scolaires Linuxmuster, au moins un partage WebDAV doit être configuré comme chemin racine.",
+      "short": "Root",
+      "notConfigured": "Aucun chemin racine n'est configuré. Veuillez contacter l'administrateur système."
+    },
+    "selectPlaceholder": "Sélectionner...",
+    "authentication": {
+      "title": "Authentification",
+      "description": "Vous pouvez sélectionner ici la méthode d'authentification pour le serveur WebDAV.",
+      "basic": " Basic (nom d'utilisateur, mot de passe)"
+    },
+    "selectRootServer": {
+      "title": "Sélection du serveur WebDAV",
+      "description": "Sélectionnez le serveur WebDAV qui doit servir de chemin racine."
+    },
+    "sharePath": "Chemin de partage",
+    "pathPreview": "Aperçu du chemin"
   }
 }

@@ -23,10 +23,23 @@ import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
+import DOCKER_COMMANDS from '@libs/docker/constants/dockerCommands';
+import DOCKER_CONTAINER_NAMES from '@libs/docker/constants/dockerContainerNames';
+import MailTheme from '@libs/mail/constants/mailTheme';
+import SOGO_THEME from '@libs/mail/constants/sogoTheme';
+import { extractTheme, extractVersion } from '@libs/mail/utils/sogoThemeMetadata';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import GroupRoles from '@libs/groups/types/group-roles.enum';
+import SseMessageType from '@libs/common/types/sseMessageType';
+import DOCKER_STATES from '@libs/docker/constants/dockerStates';
 import CustomHttpException from '../common/CustomHttpException';
+import DockerService from '../docker/docker.service';
+import FilesystemService from '../filesystem/filesystem.service';
 import { MailProvider, MailProviderDocument } from './mail-provider.schema';
 import FilterUserPipe from '../common/pipes/filterUser.pipe';
 import AppConfigService from '../appconfig/appconfig.service';
+import GroupsService from '../groups/groups.service';
+import SseService from '../sse/sse.service';
 
 const { MAILCOW_API_URL, MAILCOW_API_TOKEN, EDUI_MAIL_IMAP_TIMEOUT } = process.env;
 
@@ -49,6 +62,10 @@ class MailsService implements OnModuleInit {
   constructor(
     @InjectModel(MailProvider.name) private mailProviderModel: Model<MailProviderDocument>,
     private readonly appConfigService: AppConfigService,
+    private readonly dockerService: DockerService,
+    private readonly filesystemService: FilesystemService,
+    private readonly groupsService: GroupsService,
+    private readonly sseService: SseService,
   ) {
     const httpsAgent = new HttpsAgent({
       rejectUnauthorized: false,
@@ -92,6 +109,108 @@ class MailsService implements OnModuleInit {
     );
   }
 
+  @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
+  async updateSogoTheme() {
+    try {
+      const appConfig = await this.appConfigService.getAppConfigByName(APPS.MAIL);
+      const extendedOptions = appConfig?.extendedOptions;
+      if (!extendedOptions || typeof extendedOptions !== 'object') return;
+
+      const accessGroups = appConfig?.accessGroups ?? [];
+      const themeRaw = (extendedOptions[ExtendedOptionKeys.MAIL_SOGO_THEME] as string) ?? MailTheme.DARK;
+      const theme = themeRaw.toLowerCase();
+      const isLight = theme === MailTheme.LIGHT;
+
+      const requiredContainer = DOCKER_CONTAINER_NAMES.MAILCOWDOCKERIZED_SOGO_MAILCOW_1;
+      const containers = await this.dockerService.getContainers([requiredContainer]);
+      const isRunning = Array.isArray(containers) && containers.some((c) => c.State === DOCKER_STATES.RUNNING);
+      if (!isRunning) {
+        Logger.debug(
+          `Skipping SOGo theme update because container '${requiredContainer}' is not running`,
+          MailsService.name,
+        );
+        return;
+      }
+
+      const sourceUrl = isLight ? SOGO_THEME.LIGHT_CSS_URL : SOGO_THEME.DARK_CSS_URL;
+      const response = await axios.get<string>(sourceUrl, { responseType: 'text' });
+      const newCss = response.data ?? '';
+
+      const targetPath = `${SOGO_THEME.TARGET_DIR}/${SOGO_THEME.TARGET_FILE_NAME}`;
+
+      if (!(await MailsService.shouldWriteNewCss(targetPath, newCss))) {
+        Logger.debug(`SOGo theme unchanged; skipping update at ${targetPath}`, MailsService.name);
+        return;
+      }
+
+      await this.filesystemService.ensureDirectoryExists(SOGO_THEME.TARGET_DIR);
+      await FilesystemService.writeFile(targetPath, newCss);
+      Logger.debug(`SOGo theme updated to '${theme}' at ${targetPath}`, MailsService.name);
+
+      const containersToRestart = [
+        DOCKER_CONTAINER_NAMES.MAILCOWDOCKERIZED_MEMCACHED_MAILCOW_1,
+        DOCKER_CONTAINER_NAMES.MAILCOWDOCKERIZED_SOGO_MAILCOW_1,
+      ];
+      await Promise.all(
+        containersToRestart.map((id) =>
+          this.dockerService.executeContainerCommand({ id, operation: DOCKER_COMMANDS.RESTART }),
+        ),
+      );
+
+      await this.notifyMailThemeChange(accessGroups, SSE_MESSAGE_TYPE.MAIL_THEME_UPDATED, theme);
+      Logger.log(`Restarted Mailcow containers to apply SOGo theme.`, MailsService.name);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      await this.notifyMailThemeChange(
+        [{ path: GroupRoles.SUPER_ADMIN }],
+        SSE_MESSAGE_TYPE.MAIL_THEME_UPDATE_FAILED,
+        errorMessage,
+      );
+      Logger.error(`Failed to update SOGo theme: ${errorMessage}`, MailsService.name);
+    }
+  }
+
+  private static async shouldWriteNewCss(targetPath: string, newCss: string): Promise<boolean> {
+    const exists = await FilesystemService.checkIfFileExist(targetPath);
+    if (!exists) return true;
+
+    try {
+      const currentCss = (await FilesystemService.readFile(targetPath)).toString('utf-8');
+
+      if (currentCss.trim() === newCss.trim()) return false;
+
+      const currentVersion = extractVersion(currentCss);
+      const newVersion = extractVersion(newCss);
+      const currentTheme = extractTheme(currentCss);
+      const newTheme = extractTheme(newCss);
+
+      const bothHeadersEqual =
+        !!currentVersion &&
+        !!newVersion &&
+        !!currentTheme &&
+        !!newTheme &&
+        currentVersion === newVersion &&
+        currentTheme === newTheme;
+
+      return !bothHeadersEqual;
+    } catch {
+      return true;
+    }
+  }
+
+  private async notifyMailThemeChange(
+    accessGroups: { path: string }[],
+    message: SseMessageType,
+    data: string,
+  ): Promise<void> {
+    if (!Array.isArray(accessGroups) || accessGroups.length === 0) return;
+
+    const usernames = await this.groupsService.getInvitedMembers(accessGroups, []);
+    if (!usernames.length) return;
+
+    this.sseService.sendEventToUsers(usernames, data, message);
+  }
+
   async getMails(emailAddress: string, password: string): Promise<MailDto[]> {
     if (!this.imapUrl || !this.imapPort) {
       return [];
@@ -118,12 +237,9 @@ class MailsService implements OnModuleInit {
       this.imapClient.close();
     });
 
-    await this.imapClient.connect().catch((err) => {
-      throw new CustomHttpException(
-        MailsErrorMessages.NotAbleToConnectClientError,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        err,
-      );
+    await this.imapClient.connect().catch((e) => {
+      Logger.error(`IMAP-Connection-Error: ${e instanceof Error && e.message}`, MailsService.name);
+      return [];
     });
 
     let mailboxLock: MailboxLockObject | undefined;
@@ -142,12 +258,9 @@ class MailsService implements OnModuleInit {
         };
         mails.push(mailDto);
       }
-    } catch (error) {
-      throw new CustomHttpException(
-        MailsErrorMessages.NotAbleToFetchMailsError,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        emailAddress,
-      );
+    } catch (e) {
+      Logger.error(`Get mails error: ${e instanceof Error && e.message}`, MailsService.name);
+      return [];
     } finally {
       if (mailboxLock) {
         mailboxLock.release();
@@ -156,7 +269,7 @@ class MailsService implements OnModuleInit {
     await this.imapClient.logout();
     this.imapClient.close();
 
-    Logger.log(`Feed: ${mails.length} new mails were fetched (imap)`, MailsService.name);
+    Logger.verbose(`Feed: ${mails.length} new mails were fetched (imap)`, MailsService.name);
     return mails;
   }
 

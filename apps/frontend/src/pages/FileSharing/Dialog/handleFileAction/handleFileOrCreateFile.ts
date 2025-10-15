@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpMethods } from '@libs/common/types/http-methods';
+import { HTTP_HEADERS, HttpMethods, RequestResponseContentType } from '@libs/common/types/http-methods';
 import ContentType from '@libs/filesharing/types/contentType';
 import eduApi from '@/api/eduApi';
 
@@ -24,17 +24,31 @@ const handleFileOrCreateFile = async (
   const path = String(originalFormData.get('path') ?? '');
 
   const file = originalFormData.get('file') as File | null;
+  if (!file) return;
+
   const filenameFromForm =
     (originalFormData.get('name') as string) || (originalFormData.get('filename') as string) || file?.name || '';
 
-  await eduApi[httpMethod](endpoint, originalFormData, {
+  if (!filenameFromForm) {
+    return;
+  }
+
+  const originalFolderName = (originalFormData.get('originalFolderName') as string | null) || undefined;
+
+  await eduApi[httpMethod](endpoint, file, {
+    withCredentials: true,
     params: {
       share: webdavShare,
       type,
       path,
       name: filenameFromForm,
+      isZippedFolder: false,
+      ...(originalFolderName ? { originalFolderName } : {}),
+      contentLength: file.size,
     },
-    withCredentials: true,
+    headers: {
+      [HTTP_HEADERS.ContentType]: file.type || RequestResponseContentType.APPLICATION_OCTET_STREAM,
+    },
   });
 };
 

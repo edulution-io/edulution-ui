@@ -245,7 +245,7 @@ class GroupsService {
   }
 
   async getInvitedMembers(
-    invitedGroups: (MultipleSelectorGroup | Group)[],
+    invitedGroups: (MultipleSelectorGroup | Group | { path: string })[],
     invitedAttendees: (AttendeeDto | Attendee)[],
   ): Promise<string[]> {
     const usersInGroups = await Promise.all(

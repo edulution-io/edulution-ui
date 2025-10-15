@@ -37,6 +37,8 @@ import PageLayout from '@/components/structure/layout/PageLayout';
 import QuotaLimitInfo from '@/pages/FileSharing/utilities/QuotaLimitInfo';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useLdapGroups from '@/hooks/useLdapGroups';
+import SchoolSelectorDropdown from '../components/SchoolSelectorDropdown';
 
 const LessonPage = () => {
   const {
@@ -48,6 +50,7 @@ const LessonPage = () => {
     fetchSchoolClass,
     fetchUserSessions,
   } = useClassManagementStore();
+  const { isSuperAdmin } = useLdapGroups();
 
   const { percentageUsed } = useQuotaInfo();
 
@@ -209,6 +212,7 @@ const LessonPage = () => {
             classname="md:w-1/3"
           />
         )}
+        {isSuperAdmin && <SchoolSelectorDropdown />}
         {groupNameParams || member.length ? (
           <div className="flex flex-row justify-between gap-2">
             <button

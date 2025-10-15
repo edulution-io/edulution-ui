@@ -19,7 +19,6 @@ import {
   HealthIndicatorResult,
 } from '@nestjs/terminus';
 import { HttpService } from '@nestjs/axios';
-import GroupRoles from '@libs/groups/types/group-roles.enum';
 import { Interval } from '@nestjs/schedule';
 import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 
@@ -64,7 +63,7 @@ class HealthService {
 
   @Interval(30_000)
   private async checkWebDavServer(): Promise<HealthIndicatorResult> {
-    const webdavShares = await this.webdavSharesService.findAllWebdavShares([GroupRoles.SUPER_ADMIN]);
+    const webdavShares = await this.webdavSharesService.findAllWebdavServers();
 
     const results = await Promise.all(
       webdavShares.map(async (share) => {
@@ -72,11 +71,10 @@ class HealthService {
           return { [share.displayName]: { status: 'down' as const, message: 'Missing ID' } };
         }
 
-        const { origin } = new URL(share.url);
-
         try {
-          const result = await this.httpIndicator.pingCheck(share.displayName, origin, {
+          const result = await this.httpIndicator.pingCheck(share.displayName, share.url, {
             httpClient: this.httpService,
+            validateStatus: (status) => [200, 401, 403].includes(status),
           });
           Logger.verbose(`WebDAV Share is ${JSON.stringify(result)}`, HealthService.name);
 
