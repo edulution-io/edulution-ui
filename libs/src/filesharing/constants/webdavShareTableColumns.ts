@@ -14,8 +14,15 @@ const WEBDAV_SHARE_TABLE_COLUMNS = {
   DISPLAY_NAME: 'displayName',
   WEBDAV_SHARE_ID: 'webdavShareId',
   URL: 'url',
+  SHARE_PATH: 'sharePath',
+  PATHNAME: 'pathname',
+  IS_ROOT_SERVER: 'isRootServer',
+  PATH_VARIABLES: 'pathVariables',
   ACCESSGROUPS: 'accessGroups',
   TYPE: 'type',
+  STATUS: 'status',
+  ROOT_SERVER: 'rootServer',
+  AUTHENTICATION: 'authentication',
 } as const;
 
 export default WEBDAV_SHARE_TABLE_COLUMNS;

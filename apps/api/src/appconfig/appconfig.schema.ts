@@ -44,14 +44,14 @@ export class AppConfig extends Document {
   @Prop({ type: Number, required: true })
   position: number;
 
-  @Prop({ default: 5 })
+  @Prop({ default: 6 })
   schemaVersion: number;
 }
 
 export const AppConfigSchema = SchemaFactory.createForClass(AppConfig);
 
 AppConfigSchema.pre<AppConfig>('save', async function countPosition(next) {
-  if (this.isNew) {
+  if (this.isNew && !this.position) {
     const model = this.constructor as Model<AppConfig>;
     const count = await model.countDocuments();
     this.position = count + 1;

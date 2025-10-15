@@ -56,7 +56,7 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
       if (file) {
         try {
           const uploadedFilename = await onUpload(file);
-          const fetchImageUrl = `${EDU_API_ROOT}/${uploadedFilename}?token=${eduApiToken}`;
+          const fetchImageUrl = `/${EDU_API_ROOT}/${uploadedFilename}?token=${eduApiToken}`;
 
           const quillInstance = quillRef.current?.getEditor();
           if (quillInstance) {

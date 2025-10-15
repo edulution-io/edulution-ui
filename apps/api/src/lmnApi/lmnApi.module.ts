@@ -13,9 +13,12 @@
 import { Module } from '@nestjs/common';
 import LmnApiService from './lmnApi.service';
 import { LmnApiController } from './lmnApi.controller';
+import LdapKeycloakSyncModule from '../ldap-keycloak-sync/ldap-keycloak-sync.module';
+import LmnApiRequestQueue from './queue/lmn-api-request.queue';
 
 @Module({
-  providers: [LmnApiService],
+  providers: [LmnApiService, LmnApiRequestQueue],
+  imports: [LdapKeycloakSyncModule],
   controllers: [LmnApiController],
   exports: [LmnApiService],
 })

@@ -52,7 +52,7 @@ const BulletinBoardPageColumn = ({
   return (
     <div
       style={{ width }}
-      className="flex max-h-full w-full min-w-[400px] flex-shrink-0 flex-col rounded-lg pr-2 md:ml-0 md:pr-3 md:pt-3"
+      className="flex max-h-full w-full min-w-[85vw] flex-shrink-0 flex-col rounded-lg pr-2 md:ml-0 md:min-w-[400px] md:pr-3 md:pt-3"
     >
       <BulletinBoardColumnHeader
         category={category}

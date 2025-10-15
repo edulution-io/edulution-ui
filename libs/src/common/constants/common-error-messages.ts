@@ -13,6 +13,7 @@
 enum CommonErrorMessages {
   DB_ACCESS_FAILED = 'common.errors.dbAccessFailed',
   DIRECTORY_CREATION_FAILED = 'common.errors.directoryNotCreated',
+  FILE_CREATION_FAILED = 'common.errors.fileNotCreated',
   FILE_UPLOAD_FAILED = 'common.errors.fileUploadFailed',
   FILE_DELETION_FAILED = 'common.errors.fileDeletionFailed',
   FILE_WRITING_FAILED = 'common.errors.fileWritingFailed',

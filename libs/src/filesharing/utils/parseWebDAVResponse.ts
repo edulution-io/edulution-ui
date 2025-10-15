@@ -36,7 +36,7 @@ const parseWebDAVResponse = (response: WebdavResponse) => {
 
   const getDisplayName = (name: string | undefined, fallback: string): string | undefined => {
     if (!name) {
-      const fallbackName = fallback.split('/').filter(Boolean)[1] || '/';
+      const fallbackName = fallback.split('/').filter(Boolean).at(-1) || '/';
       return fallbackName;
     }
     return name;
@@ -57,7 +57,7 @@ const parseWebDAVResponse = (response: WebdavResponse) => {
   return {
     filename: decodedBasename,
     etag,
-    filePath: response[WebdavXmlAttributes.Href],
+    filePath: decodeURIComponent(response[WebdavXmlAttributes.Href]),
     lastmod,
     size: contentLength ? parseInt(contentLength, 10) : undefined,
     type: isCollection ? ContentType.DIRECTORY : ContentType.FILE,

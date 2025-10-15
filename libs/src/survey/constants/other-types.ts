@@ -18,6 +18,7 @@ enum OtherTypes {
   DROPDOWN = 'dropdown',
   MATRIX = 'matrix',
   RANKING = 'ranking',
+  FILE = 'file',
 }
 
 export default OtherTypes;
