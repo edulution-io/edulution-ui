@@ -14,16 +14,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 class MetricsService {
-  private requestCount = 0;
-
-  private totalDuration = 0;
-
-  recordRequest(durationMs: number) {
-    this.requestCount += 1;
-    this.totalDuration += durationMs;
-  }
-
-  getMetrics() {
+  static getMetrics() {
     const mem = process.memoryUsage();
     const cpu = process.cpuUsage();
     const uptime = process.uptime().toFixed(2);
@@ -37,8 +28,6 @@ class MetricsService {
         heapUsedMB: +(mem.heapUsed / 1024 / 1024).toFixed(1),
         heapTotalMB: +(mem.heapTotal / 1024 / 1024).toFixed(1),
       },
-      avgLatencyMs: this.requestCount > 0 ? +(this.totalDuration / this.requestCount).toFixed(2) : 0,
-      requestsHandled: this.requestCount,
     };
   }
 }
