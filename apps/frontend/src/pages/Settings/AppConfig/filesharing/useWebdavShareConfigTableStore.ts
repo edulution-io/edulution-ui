@@ -33,7 +33,7 @@ const useWebdavShareConfigTableStore: UseBoundStore<StoreApi<WebdavShareTableSto
 
     fetchTableContent: async () => {
       try {
-        const { data } = await eduApi.get<WebdavShareDto[]>('/webdav-shares');
+        const { data } = await eduApi.get<WebdavShareDto[]>('/webdav-shares', { params: { isRootServer: false } });
         set({
           tableContentData: data,
         });

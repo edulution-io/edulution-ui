@@ -10,17 +10,33 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { BulletinBoardIcon, ClassManagementIcon, FilesharingIcon, SurveysIcon, WhiteboardIcon } from '@libs/assets';
+import {
+  BulletinBoardIcon,
+  DashboardIcon,
+  ClassManagementIcon,
+  FilesharingIcon,
+  SurveysIcon,
+  WhiteboardIcon,
+} from '@libs/assets';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APPS from './apps';
 import APP_INTEGRATION_VARIANT from './appIntegrationVariants';
 
-const { BULLETIN_BOARD, FILE_SHARING, SURVEYS, CLASS_MANAGEMENT, WHITEBOARD } = APPS;
+const { BULLETIN_BOARD, DASHBOARD, FILE_SHARING, SURVEYS, CLASS_MANAGEMENT, WHITEBOARD } = APPS;
 const { NATIVE } = APP_INTEGRATION_VARIANT;
 
 const getImageUrl = (src: string) => `data:image/svg+xml,${encodeURIComponent(src)}`;
 
 const defaultAppConfig: AppConfigDto[] = [
+  {
+    name: DASHBOARD,
+    icon: getImageUrl(DashboardIcon),
+    appType: NATIVE,
+    options: {},
+    accessGroups: [],
+    extendedOptions: {},
+    position: 1,
+  },
   {
     name: BULLETIN_BOARD,
     icon: getImageUrl(BulletinBoardIcon),
@@ -28,7 +44,7 @@ const defaultAppConfig: AppConfigDto[] = [
     options: {},
     accessGroups: [],
     extendedOptions: {},
-    position: 1,
+    position: 2,
   },
   {
     name: FILE_SHARING,
@@ -39,7 +55,7 @@ const defaultAppConfig: AppConfigDto[] = [
     },
     accessGroups: [],
     extendedOptions: {},
-    position: 2,
+    position: 3,
   },
   {
     name: SURVEYS,
@@ -48,7 +64,7 @@ const defaultAppConfig: AppConfigDto[] = [
     options: {},
     accessGroups: [],
     extendedOptions: {},
-    position: 3,
+    position: 4,
   },
   {
     name: CLASS_MANAGEMENT,
@@ -57,7 +73,7 @@ const defaultAppConfig: AppConfigDto[] = [
     options: {},
     accessGroups: [],
     extendedOptions: {},
-    position: 4,
+    position: 5,
   },
   {
     name: WHITEBOARD,
@@ -66,7 +82,7 @@ const defaultAppConfig: AppConfigDto[] = [
     options: {},
     accessGroups: [],
     extendedOptions: {},
-    position: 5,
+    position: 6,
   },
 ];
 

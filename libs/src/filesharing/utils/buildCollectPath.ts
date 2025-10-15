@@ -14,8 +14,8 @@ import buildNewCollectFolderName from '@libs/filesharing/utils/buildNewCollectFo
 import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import UserRoles from '@libs/user/constants/userRoles';
-import getStringFromArray from '@libs/common/utils/getStringFromArray';
 import FILE_PATHS from '../constants/file-paths';
+import normalizeLdapHomeDirectory from './normalizeLdapHomeDirectory';
 
 const buildCollectPath = (
   username: string,
@@ -29,7 +29,7 @@ const buildCollectPath = (
 
   const studentOriginPath = student.examMode
     ? `/${UserRoles.EXAM_USER}/${studentName}`
-    : getStringFromArray(student?.sophomorixIntrinsic2);
+    : normalizeLdapHomeDirectory(student?.homeDirectory);
 
   const destinationPath = `${homePath}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}/${newFolderName}/${studentName}/${FILE_PATHS.COLLECT}/`;
   const originPath = `${studentOriginPath}/${FILE_PATHS.TRANSFER}/${username}/${FILE_PATHS.COLLECT}/`;

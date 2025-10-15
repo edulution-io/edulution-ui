@@ -20,21 +20,34 @@ import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDial
 import PageLayout from '@/components/structure/layout/PageLayout';
 import PageTitle from '@/components/PageTitle';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
+import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
+import APPS from '@libs/appconfig/constants/apps';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 
 const FullScreenFileViewer = () => {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
+  const webdavShare = searchParams.get('share') || undefined;
   const { loadDownloadUrl, temporaryDownloadUrl, isEditorLoading, isCreatingBlobUrl, isFetchingPublicUrl } =
     useFileSharingDownloadStore();
 
   const { filesToOpenInNewTab, currentlyEditingFile, setCurrentlyEditingFile } = useFileEditorStore();
+  const appConfigs = useAppConfigsStore((s) => s.appConfigs);
+
   const [isLoading, setIsLoading] = useState(true);
   const fileETag = searchParams.get('file');
+
+  const isDocumentServerConfigured = !!getExtendedOptionsValue(
+    appConfigs,
+    APPS.FILE_SHARING,
+    ExtendedOptionKeys.ONLY_OFFICE_URL,
+  );
 
   const initializeFile = async () => {
     const fileToOpen = filesToOpenInNewTab.find((f) => f.etag === fileETag);
     if (fileToOpen) {
-      await loadDownloadUrl(fileToOpen);
+      await loadDownloadUrl(fileToOpen, webdavShare);
       setCurrentlyEditingFile(fileToOpen);
       setIsLoading(false);
     }
@@ -60,6 +73,7 @@ const FullScreenFileViewer = () => {
       <FileRenderer
         editMode
         isOpenedInNewTab
+        isOnlyOfficeConfigured={isDocumentServerConfigured}
       />
     </PageLayout>
   );

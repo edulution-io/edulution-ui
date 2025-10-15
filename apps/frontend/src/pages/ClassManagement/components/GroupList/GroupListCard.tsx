@@ -76,10 +76,13 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
     setOpenDialogType(type);
   };
 
+  const isJoinable = sophomorixJoinable || type === UserGroups.Printers;
+
   const onSelect = async () => {
-    if (!sophomorixJoinable) {
+    if (!isJoinable) {
       return;
     }
+
     setIsCardLoading(true);
 
     switch (type) {
@@ -145,7 +148,7 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
           <>
             <div className="flex w-full flex-col justify-around">
               <div className="flew-row flex overflow-hidden">
-                {sophomorixJoinable && isEnrolEnabled ? (
+                {isJoinable && isEnrolEnabled ? (
                   <Checkbox
                     className="-mr-1 ml-2 rounded-lg"
                     checked={isSelected}

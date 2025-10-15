@@ -18,11 +18,12 @@ import type UserDto from '@libs/user/types/user.dto';
 import useSseStore from '@/store/useSseStore';
 import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
 import isDev from '@libs/common/constants/isDev';
-import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
+import ROOT_ROUTE from '@libs/common/constants/rootRoute';
 import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 import COOKIE_DESCRIPTORS from '@libs/common/constants/cookieDescriptors';
 import useVersionChecker from '@/hooks/useVersionChecker';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useUploadProgressToast from '@/hooks/useUploadProgressToast';
 import useAppConfigsStore from '../pages/Settings/AppConfig/useAppConfigsStore';
 import useUserStore from '../store/UserStore/useUserStore';
 import useLogout from '../hooks/useLogout';
@@ -31,7 +32,7 @@ import useTokenEventListeners from '../hooks/useTokenEventListeners';
 
 const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const auth = useAuth();
-  const { getAppConfigs } = useAppConfigsStore();
+  const { getAppConfigs, getPublicAppConfigs } = useAppConfigsStore();
   const { getGlobalSettings } = useGlobalSettingsApiStore();
   const { getIsEduApiHealthy } = useEduApiStore();
   const { isAuthenticated, eduApiToken, setEduApiToken, user, getWebdavKey } = useUserStore();
@@ -42,12 +43,18 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const handleLogout = useLogout();
 
+  useUploadProgressToast();
+
+  useEffect(() => {
+    void getPublicAppConfigs();
+  }, []);
+
   useEffect(() => {
     if (auth.user?.access_token) {
       setEduApiToken(auth.user?.access_token);
 
       setCookie(COOKIE_DESCRIPTORS.AUTH_TOKEN, auth.user?.access_token, {
-        path: DASHBOARD_ROUTE,
+        path: ROOT_ROUTE,
         domain: window.location.hostname,
         secure: !isDev,
         sameSite: isDev ? 'lax' : 'none',

@@ -11,38 +11,28 @@
  */
 
 import { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
-import userStore from '@/store/UserStore/useUserStore';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import useUserPath from './useUserPath';
 
 const useFileSharingPage = () => {
   const {
-    fetchMountPoints,
     fetchFiles,
     currentPath,
     setPathToRestoreSession,
     pathToRestoreSession,
     isLoading: isFileProcessing,
-    fetchWebdavShares,
   } = useFileSharingStore();
   const { isLoading, fileOperationResult } = useFileSharingDialogStore();
   const { fetchShares } = usePublicShareStore();
-  const { user } = userStore();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { webdavShare } = useParams();
   const { homePath } = useUserPath();
   const path = searchParams.get(URL_SEARCH_PARAMS.PATH) || homePath;
-
-  useEffect(() => {
-    if (user) {
-      void fetchMountPoints();
-      void fetchWebdavShares();
-    }
-  }, [user]);
 
   useEffect(() => {
     if (!isFileProcessing) {
@@ -52,21 +42,21 @@ const useFileSharingPage = () => {
           newSearchParams.set(URL_SEARCH_PARAMS.PATH, pathToRestoreSession);
           setSearchParams(newSearchParams);
         } else {
-          void fetchFiles(homePath);
+          void fetchFiles(webdavShare, homePath);
         }
       } else {
-        void fetchFiles(path);
+        void fetchFiles(webdavShare, path);
         void fetchShares();
         setPathToRestoreSession(path);
       }
     }
-  }, [path, pathToRestoreSession, homePath, setPathToRestoreSession, fetchFiles]);
+  }, [path, pathToRestoreSession, homePath, setPathToRestoreSession, fetchFiles, webdavShare]);
 
   useEffect(() => {
     const updateFilesAfterSuccess = async () => {
       if (fileOperationResult && !isLoading) {
         if (fileOperationResult.success) {
-          await fetchFiles(currentPath);
+          await fetchFiles(webdavShare, currentPath);
           await fetchShares();
           toast.success(fileOperationResult.message);
         } else {

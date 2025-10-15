@@ -6,6 +6,8 @@
   "framebufferImage": "Framebuffer-Bild",
   "previewImage": "Bildvorschau",
   "not-set": "Nicht gesetzt",
+  "imprint": "Impressum",
+  "public": "Öffentlich",
   "bulletinboard": {
     "settings": "Einstellungen",
     "noBulletinsToShow": "Aktuell gibt es keine Mitteilungen anzuzeigen, schaue am besten später noch mal vorbei!",
@@ -21,7 +23,7 @@
     "activeFrom": "Aktiv von",
     "activeUntil": "Aktiv bis",
     "appTitle": "Info Board",
-    "description": "Hier findest du deine aktuelle Mitteilungen",
+    "description": "Hier findest du deine aktuellen Mitteilungen",
     "filterPlaceHolderText": "Suche nach Kategoriename",
     "sidebar": "Info Board",
     "newCategorie": "Neue Kategorie",
@@ -68,7 +70,7 @@
       "FULLY_VISIBLE-short": "Vollständig",
       "ONLY_TITLE": "Nur Titel anzeigen",
       "ONLY_TITLE-short": "Nur Titel",
-      "visibleByUsersAndGroups": "Diese Kategorie mit ihren Mitteilungen ist sichtbar für Nutzer und Gruppen in der Info Board App",
+      "visibleByUsersAndGroups": "Diese Kategorie mit deinen Mitteilungen ist sichtbar für Nutzer und Gruppen in der Info Board App",
       "visibleByUsersAndGroupsTitle": "Info Board App",
       "editableByUsersAndGroups": "Diese Kategorie ist redaktionierbar von Nutzern und Gruppen in der Info Board App",
       "editableByUsersAndGroupsTitle": "Mitteilungen verwalten"
@@ -106,14 +108,15 @@
   },
   "dashboard": {
     "pageTitle": "Dashboard",
-    "description": "Hier ist ihr persönliches {{ applicationName }} Dashboard. Dem Ort an dem all ihre Anwendungen für den digitalen Unterricht gesammelt sind.",
+    "sidebar": "Dashboard",
+    "description": "Hier ist dein persönliches {{ applicationName }} Dashboard. Dem Ort an dem all deine Anwendungen für den digitalen Unterricht gesammelt sind.",
     "mobileAccess": {
       "title": "Mobiler Zugriff",
       "manual": "Anleitung",
       "manualSetup": "Manuelles Einrichten",
       "setupWithQrCode": "Einrichtung via QR-Code",
       "accessData": "Zugangsdaten",
-      "content": "Du kannst von vielen mobilen Geräten aus auf den Schulserver zugreifen. Drücke auf Anleitung um zu starten.",
+      "content": "Du kannst von vielen mobilen Geräten aus auf den Schulserver zugreifen. Drücke auf Anleitung, um zu starten.",
       "scanAccessInfo": "Um die Zugangsdaten zu übertragen, bitte folgenden QR-Code mit der {{ applicationName }} App scannen.",
       "manualAccessInfo": "Gib die Anmeldedaten manuell in der {{ applicationName }} App ein. Das folgende Beispiel zeigt, wie die einzelnen Felder auszufüllen sind.",
       "nextStepPreview": "Im nächsten Schritt kannst du die Zugangsdaten übertragen.",
@@ -174,7 +177,8 @@
       "GetProjectFailed": "Abrufen des Projekts fehlgeschlagen",
       "PasswordMismatch": "Aktuelles Passwort stimmt nicht",
       "PasswordChangeFailed": "Passwort ändern fehlgeschlagen",
-      "GetUsersQuotaFailed": "Abrufen der Benutzerkontigente fehlgeschlagen."
+      "GetUsersQuotaFailed": "Abrufen der Benutzerkontingente fehlgeschlagen.",
+      "GetSchoolsFailed": "Abrufen der Schulen fehlgeschlagen"
     }
   },
   "ticketsystem": {
@@ -191,8 +195,12 @@
     "encryption": "Verschlüsselung",
     "rowSelected": "{{selected}} von {{total}} Job ausgewählt",
     "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
+    "themeUpdated": {
+      "generic": "Das Mail-Theme wurde aktualisiert. Bitte lade die Seite neu, um die Änderungen zu übernehmen.",
+      "failed": "Das Mail-Theme konnte nicht aktualisiert werden."
+    },
     "importer": {
-      "filterPlaceHolderText": "Suche nach Benutzername",
+      "filterPlaceHolderText": "Suche nach Benutzernamen",
       "title": "E-Mail-Sync",
       "provider": "E-Mail-Provider",
       "interval": "Sync-Intervall",
@@ -224,7 +232,7 @@
       "BbbUnauthorized": "Du bist nicht autorisiert auf den externen BBB-Server zuzugreifen",
       "AppNotProperlyConfigured": "Die Konferenz-App ist nicht richtig konfiguriert, wende dich an den Systemadministrator",
       "YouAreNotTheCreator": "Du bist nicht der Ersteller der Konferenz",
-      "AlreadyInAnotherMeeting": "Du befindest dich bereits in einer Konferenz. Bitte verlasse die laufende Konferenz, bevor du einer neuen beitritst.",
+      "AlreadyInAnotherMeeting": "Du befindest dich bereits in einer Konferenz. Bitte schließe die laufende Konferenz, bevor du einer neuen beitrittst.",
       "DBAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "WrongPassword": "Das eingegebene Passwort ist falsch",
       "ConferenceIsNotRunning": "Die Konferenz wurde nicht gestartet",
@@ -264,7 +272,7 @@
     "editConference": "Konferenz bearbeiten",
     "conferenceUpdatedSuccessfully": "Konferenz erfolgreich gespeichert ",
     "conferenceFetchedSuccessfully": "Konferenzen erfolgreich aktualisiert ",
-    "conferenceCreatedSuccessfully": "Konferenz erfolgreich erstellet",
+    "conferenceCreatedSuccessfully": "Konferenz erfolgreich erstellt",
     "confirmSingleDelete": "Soll diese Konferenz wirklich gelöscht werden?",
     "confirmMultiDelete": "Sollen diese Konferenzen wirklich gelöscht werden?",
     "name": "Name der Konferenz",
@@ -311,7 +319,7 @@
     "students-home": "Schüler-Home"
   },
   "filesharing": {
-    "filterPlaceHolderText": "Suche nach Dateiname",
+    "filterPlaceHolderText": "Tippen, um zu filtern",
     "title": "DATEIEN",
     "selectFile": "Datei auswählen",
     "sidebar": "Dateien",
@@ -343,12 +351,12 @@
       "SaveFailed": "Speichern fehlgeschlagen",
       "DuplicateFailed": "Kopieren fehlgeschlagen",
       "AppNotProperlyConfigured": "OnlyOffice ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator.",
-      "CollectingFailed": "Einasmmeln der Dateien fehlgeschlagen",
+      "CollectingFailed": "Einsammeln der Dateien fehlgeschlagen",
       "MissingCallbackURL": "Fehlende Callback-URL",
       "SharingFailed": "Austeilen der Dateien fehlgeschlagen",
-      "CopyFailed": "Kopieren fehlgeschlagen"
+      "CopyFailed": "Kopieren fehlgeschlagen",
+      "FileFormatNotSupported": "Dateiformat wird nicht unterstützt"
     },
-
     "publicShareFilesPage": {
       "title": "Geteilte Dateien",
       "description": "Hier findest du alle Dateien, die du geteilt hast. Beachte: Jeder, der den Freigabe-Link und ggf. das dazugehörige Passwort hat, kann diese Dateien herunterladen."
@@ -374,13 +382,16 @@
       "errorInfo": "{{failed}} Dateien konnten nicht ausgeteilt werden",
       "downloadInfo": "Datei {{filename}} wird heruntergeladen",
       "fileStructureIsCreating": "Dateistruktur wird erstellt",
-      "zipFilesAreUploading": "Dateien werden in Ordnerstruktur hochgeladen"
+      "zipFilesAreUploading": "Dateien werden in Ordnerstruktur hochgeladen",
+      "fileIsUploading": "{{filename}} wird hochgeladen"
     },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
       "FileNameRequired": "Dateiname ist erforderlich",
       "NewFileNameRequired": "Neuer Dateiname ist erforderlich",
-      "NameRequired": "Name erforderlich"
+      "NameRequired": "Name erforderlich",
+      "NameExceedsCharacterLimit": "Der Dateiname darf maximal 30 Zeichen haben.",
+      "NameMustNotEndWithDot": "Der Name darf nicht mit einem Punkt enden."
     },
 
     "publicFileSharing": {
@@ -400,7 +411,7 @@
       "isAccessibleBy": "Zugänglich für",
       "isPasswordProtected": "Passwort",
       "publiclyAccessible": "Öffentlich zugänglich",
-      "qrCodePublicShareFile": "QR-Code für öffentlichen Freigabelinks",
+      "qrCodePublicShareFile": "QR-Code für öffentliche Freigabelinks",
       "createNewFileLink": "Neuen Freigabe-Link erstellen",
       "editPublicShareFile": "Freigabe-Link bearbeiten",
       "sharePublicFile": "Öffentliche Freigabe-Links",
@@ -437,6 +448,22 @@
       "selectedItemPrefix": "Ausgewählter Inhalt, welcher geteilt wird:",
       "noInviteesWarning": "⚠️  WARNUNG: Jeder, der den Link besitzt, kann diesen Inhalt herunterladen.",
       "inviteesWarning": "⚠️ WARNUNG: Jeder, der zu den ausgewählten Gruppen oder Benutzern gehört, kann diesen Inhalt herunterladen."
+    },
+
+    "eta": {
+      "fewSeconds": "ein paar Sekunden verbleibend",
+      "lessThanMinute": "weniger als eine Minute verbleibend",
+      "aboutOneMinute": "etwa eine Minute verbleibend",
+      "aboutMinutes_one": "etwa {{count}} Minute verbleibend",
+      "aboutMinutes_other": "etwa {{count}} Minuten verbleibend",
+      "aboutHours_one": "etwa {{count}} Stunde verbleibend",
+      "aboutHours_other": "etwa {{count}} Stunden verbleibend",
+      "moreThanHours_one": "mehr als {{count}} Stunde verbleibend",
+      "moreThanHours_other": "mehr als {{count}} Stunden verbleibend",
+      "aboutDays_one": "etwa {{count}} Tag verbleibend",
+      "aboutDays_other": "etwa {{count}} Tage verbleibend",
+      "moreThanDays_one": "mehr als {{count}} Tag verbleibend",
+      "moreThanDays_other": "mehr als {{count}} Tage verbleibend"
     }
   },
   "forums": {
@@ -529,7 +556,7 @@
     "firstPasswordIsCurrentlySet": "Das initiale Passwort ist als aktuelles Passwort gesetzt.",
     "firstPasswordIsCurrentlyNotSet": "Das initiale Passwort ist nicht als aktuelles Passwort gesetzt.",
     "passwordRequirements": "Verwenden Sie Großbuchstaben, Kleinbuchstaben und Sonderzeichen oder Zahlen.",
-    "projectsPageDescription": "Hier findest du eine Übersicht über alle Projekte in denen du Admin bist.",
+    "projectsPageDescription": "Hier findest du eine Übersicht über alle Projekte, in denen du Admin bist.",
     "typeToFilter": "Tippen um zu filtern...",
     "systemName": "Systemname",
     "printing": "Drucken",
@@ -585,11 +612,16 @@
       "subnet": "Subnet",
       "subnetDescription": "Subnet in CIDR-Notation (10.0.0.0/24)",
       "subnetPlaceholder": "10.0.0.0/24",
-      "proxyAdress": "Proxy Addresse",
+      "proxyAdress": "Proxy Adresse",
       "proxyAdressDescription": "URL des Veyon-WebAPI-Proxy",
       "proxyAdressPlaceholder": "http://localhost:11080",
       "createConfig": "Konfiguration erstellen",
       "editConfig": "Konfiguration bearbeiten"
+    },
+    "selectSchool": {
+      "title": "Schule auswählen",
+      "description": "Bitte wähle die Schule aus, deren Klassen du verwalten möchtest",
+      "placeholder": "Schule auswählen"
     }
   },
   "select": "Auswählen",
@@ -660,7 +692,9 @@
         "upperLimit": "Grenzwert",
         "upperBackendLimiters": "Auswahlmöglichkeiten mit Obergrenze",
         "addChoice": "Hinzufügen",
-        "filterPlaceHolderText": "Option suchen"
+        "filterPlaceHolderText": "Option suchen",
+        "imageWidth": "Breite eines Bildes in Pixel [px]",
+        "imageWidthPlaceholder": "0 bedeutet, dass die Breite nur von dem vorhandenen Platz beschränkt wird."
       }
     },
     "participate": {
@@ -674,7 +708,7 @@
       "idParagraph": "Um deine Antwort einzusehen oder, falls konfiguriert, nochmals zu bearbeiten, kannst du die Teilnahme-ID hier benutzen.",
       "usernameRequired": "Der Benutzername ist erforderlich",
       "fileSizeExceeded": "Eine Datei überschreitet die maximal erlaubte Größe von {{size}} MB.",
-      "completeMessage": "Vielen Dank, dass du an der Umfrage Teilgenommen hast"
+      "completeMessage": "Vielen Dank, dass du an der Umfrage teilgenommen hast"
     },
     "errors": {
       "submitAnswerError": "Die Antwort konnte nicht gespeichert werden.",
@@ -684,7 +718,7 @@
       "noFormulaError": "Das Formular der Umfrage ist nicht lesbar.",
       "noBackendLimitersError": "Um diese Funktion nutzen zu können müssen im Editor die Grenzwerte definiert werden.",
       "notFoundError": "Umfrage konnte nicht gefunden werden.",
-      "surveyFormulaStructuralError": "Das Formular der Umfrage weist Struktureller Fehler auf.",
+      "surveyFormulaStructuralError": "Das Formular der Umfrage weist strukturelle Fehler auf.",
       "participationErrorUserNotAssigned": "Du bist zu dieser Umfrage nicht eingeladen.",
       "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
       "participationErrorSurveyExpired": "Umfrage ist abgelaufen.",
@@ -888,7 +922,7 @@
       "linuxmuster": "Hier kannst du alle Einstellungen vornehmen.",
       "whiteboard": "Hier kannst du alle Einstellungen vornehmen.",
       "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Info Board haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden.",
-      "forwarded": "Weiterleitungs: Einfach den Link zur Webanwendung unter URL eintragen.",
+      "forwarded": "Weiterleitung: Einfach den Link zur Webanwendung unter URL eintragen.",
       "framed": "Frame: Einfach den Link zur Webanwendung unter URL eintragen.",
       "embedded": "Eingebettet: Hier kann eine eigene Webanwendung im Editor erstellt werden."
     },
@@ -913,6 +947,33 @@
         "edulution-binduser-description": "Hier können Zugangsdaten zum LDAP konfiguriert werden, die für den Gruppen-Sync notwendig sind.",
         "edulution-binduser-dn": "Distinguished Name (DN)",
         "edulution-binduser-password": "Passwort"
+      },
+
+      "branding": {
+        "title": "Branding"
+      },
+
+      "logo": {
+        "title": "Logo",
+        "descriptionSchool": "Lade hier das Logo hoch. Es wird auf der Login-Seite und auf dem Ausweis in der edulution App angezeigt.",
+        "descriptionGeneric": "Lade hier das Logo hoch. Es wird auf der Login-Seite angezeigt.",
+        "uploadLightLogo": "Helles Logo hochladen",
+        "uploadDarkLogo": "Dunkles Logo hochladen",
+        "deleteSuccessful": "Logo wurde erfolgreich gelöscht"
+      },
+      "organisationInfo": {
+        "title": "Organisationsinformationen",
+        "descriptionSchool": "Trage die offiziellen Angaben deiner Organisation ein. Diese Informationen werden in der edulution App angezeigt. Bitte gib den Namen, die Straße, die Postleitzahl und optional die Website der Schule an.",
+        "descriptionGeneric": "Trage die offiziellen Angaben deiner Organisation ein.",
+        "name": "Organisation",
+        "namePlaceholder": "Gemeinschaftsschule Musterstadt",
+        "street": "Straße",
+        "streetPlaceholder": "Hauptstraße 1",
+        "postalCode": "Postleitzahl",
+        "postalCodePlaceholder": "12345",
+        "website": "Website der Organisation",
+        "city": "Stadt",
+        "postalCityPlaceholder": "Berlin"
       }
     },
     "userAdministration": {
@@ -964,9 +1025,14 @@
           "invalidUrlFormat": "Ungültige URL"
         },
         "webdavShare": {
-          "title": "WebDAV-Share",
-          "description": "Hier können eigene WebDAV-Shares eingerichtet werden.",
+          "title": "WebDAV",
+          "sectionTitle": "WebDAV-Shares",
+          "description": "Hier können WebDAV-Server für den Dateimanager eingerichtet werden.",
           "filterPlaceHolderText": "Suche nach WebDAV-Share"
+        },
+        "webdavServer": {
+          "title": "WebDAV-Server",
+          "filterPlaceHolderText": "Suche nach WebDAV-Server"
         },
         "files": {
           "title": "Dateien",
@@ -978,11 +1044,12 @@
         },
         "editor": {
           "title": "Editor",
-          "description": "Hier im Editor kannst du eigene Webanwendungen gestalten oder bestehende Inhalte integrieren. Du kannst dabei Webseiten erstellen, Inhalte formatieren und individuell anpassen. Auch bereits vorhandene Anwendungen oder externe Inhalte lassen sich einfügen und komfortabel mit deinen eigenen Inhalten verbinden. So entsteht ein flexibler Bereich, in dem du auf einfache Weise Inhalte darstellen oder interaktive Anwendungen anbieten kannst. Starte mit der Wahle des Modus, in welchem die Webanwendung gestartet werden soll.",
-          "sandboxMode": "Sparates Layout",
+          "description": "Hier im Editor kannst du eigene Webanwendungen gestalten oder bestehende Inhalte integrieren. Du kannst dabei Webseiten erstellen, Inhalte formatieren und individuell anpassen. Auch bereits vorhandene Anwendungen oder externe Inhalte lassen sich einfügen und komfortabel mit deinen eigenen Inhalten verbinden. So entsteht ein flexibler Bereich, in dem du auf einfache Weise Inhalte darstellen oder interaktive Anwendungen anbieten kannst. Starte mit der Wahl des Modus, in welchem die Webanwendung gestartet werden soll.",
+          "sandboxMode": "Separates Layout",
           "nativeMode": "Integriertes Layout",
-          "sandboxModeDescription": "Im Modus „Sparates Layout“ wird der Inhalt als eigenständige Seite angezeigt, ähnlich wie ein Fenster innerhalb der Anwendung. Dabei können neben dem eigentlichen Inhalt auch zusätzliche Designelemente oder Funktionen aus anderen Quellen geladen werden. Dadurch ist die Gestaltung unabhängig von der Anwendung, könnte also anders aussehen oder sich anders verhalten. Hier muss der Inhalt als HTML-Datei hochgeladen werden.",
-          "nativeModeDescription": "Im Modus „Integriertes Layout“ dagegen wird der Inhalt direkt in die Oberfläche der Anwendung eingefügt. Dadurch sieht der Inhalt genauso aus wie die Anwendung selbst und fügt sich optisch nahtlos ein. Allerdings können hier keine zusätzlichen externen Designelemente oder Funktionen dynamisch hinzugefügt werden. Es können jedoch statische Elemente wie Bilder hochgeladen und hier eingesetzt werden."
+          "sandboxModeDescription": "Im Modus „Separates Layout“ wird der Inhalt als eigenständige Seite angezeigt, ähnlich wie ein Fenster innerhalb der Anwendung. Dabei können neben dem eigentlichen Inhalt auch zusätzliche Designelemente oder Funktionen aus anderen Quellen geladen werden. Dadurch ist die Gestaltung unabhängig von der Anwendung, könnte also anders aussehen oder sich anders verhalten. Hier muss der Inhalt als HTML-Datei hochgeladen werden.",
+          "nativeModeDescription": "Im Modus „Integriertes Layout“ dagegen wird der Inhalt direkt in die Oberfläche der Anwendung eingefügt. Dadurch sieht der Inhalt genauso aus wie die Anwendung selbst und fügt sich optisch nahtlos ein. Allerdings können hier keine zusätzlichen externen Designelemente oder Funktionen dynamisch hinzugefügt werden. Es können jedoch statische Elemente wie Bilder hochgeladen und hier eingesetzt werden.",
+          "visibilityDescription": "Hier können Sie festlegen, ob die App öffentlich zugänglich sein soll. Aktiv bedeutet öffentlich, inaktiv bedeutet, dass nur konfigurierte Nutzergruppen Zugriff haben. Die App öffentlich zugänglich zu machen erzeugt einen Link im Footer. Um die App in der Sidebar für registrierte Nutzer sichtbar zu machen, muss deren Zugriff über die Nutzergruppen konfiguriert werden"
         }
       },
       "update": {
@@ -1008,11 +1075,12 @@
       "fieldRequired": "Dieses Feld ist erforderlich",
       "maxChars": "Maximal {{count}} Zeichen",
       "nameAlreadyExists": "App mit diesem Namen existiert bereits",
-      "nameIsNotAllowed": "Dieser Appname ist nicht erlaubt"
+      "nameIsNotAllowed": "Dieser Appname ist nicht erlaubt",
+      "webdavShareNameAlreadyExists": "Dieser Name exisitiert bereits"
     },
     "yamleditor": {
       "invalidYaml": "Ungültiger YAML Syntax",
-      "placeholder": "Hier ihre Traefik-Konfiguration eintragen"
+      "placeholder": "Hier die Traefik-Konfiguration eintragen"
     },
     "rowsSelected": "{{selected}} von {{total}} Container ausgewählt",
     "rowSelected": "{{selected}} von {{total}} Container ausgewählt",
@@ -1043,7 +1111,7 @@
     "rowsSelected": "{{selected}} von {{total}} Konten ausgewählt",
     "details": {
       "title": "Benutzerdetails",
-      "description": "Hier können Sie Ihre Benutzerdaten einsehen und teilweise bearbeiten.",
+      "description": "Hier kannst du Benutzerdaten einsehen und teilweise bearbeiten.",
       "userInformation": "Benutzerbezogene Informationen",
       "dateOfBirth": "Geburtsdatum",
       "givenName": "Vorname",
@@ -1054,7 +1122,7 @@
       "schoolSubjects": "Klassen",
       "sophomorixState": "Status",
       "quotas": "Quotas",
-      "proxyAddresses": "E-Mail Proxy-Addressen",
+      "proxyAddresses": "E-Mail Proxy-Adressen",
       "addNew": "Tippen um hinzuzufügen",
       "badgeAlreadyExists": "Der Eintrag existiert bereits",
       "sophomorixCustom1_teacher": "Schulfach 1",
@@ -1117,7 +1185,7 @@
       "qrCodeInstructions": "Den QR-Code mit einer Authenticator App scannen, die TOTP (Time-based One-Time Password) unterstützt.",
       "copyTotpSecretInstructions": "Falls keine Kamera vorhanden ist, kann hier das Secret kopiert werden:",
       "totpCodeInstructions": "Danach das generierte Passwort hier eintragen und speichern:",
-      "mfaSetupRequired": "Die globalen Richtlinien erfordern die Eintrichtung der Zwei-Faktor-Authentisierungs:",
+      "mfaSetupRequired": "Die globalen Richtlinien erfordern die Einrichtung der Zwei-Faktor-Authentisierungs:",
       "mfaSetupSuccess": "Die Zwei-Faktor-Authentisierungs wurde erfolgreich eingerichtet."
     },
     "errors": {
@@ -1162,14 +1230,18 @@
     "infoQrCodeExpired": "Zeit für Login mit edulution.io APP abgelaufen."
   },
   "common": {
+    "refreshPage": "Seite neu laden",
     "showMore": "Mehr anzeigen",
     "visibility": "Sichtbarkeit",
     "offline": "Offline",
     "guest": "Gast",
     "ok": "OK",
     "next": "Weiter",
+    "of": "von",
     "back": "Zurück",
     "confirm": "Bestätigen",
+    "chooseFile": "Datei auswählen",
+    "changeFile": "Datei ändern",
     "creator": "Ersteller",
     "share": "Teilen",
     "answers": "Antworten",
@@ -1177,6 +1249,7 @@
     "errors": {
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "directoryNotCreated": "Erstellen des Verzeichnisses fehlgeschlagen",
+      "fileNotCreated": "Erstellen der Datei fehlgeschlagen",
       "fileUploadFailed": "Die Datei konnte nicht hochgeladen werden",
       "fileDeletionFailed": "Löschen der Datei fehlgeschlagen",
       "fileWritingFailed": "Schreiben der Datei fehlgeschlagen",
@@ -1281,7 +1354,7 @@
     "install": "Installieren",
     "update": "Update",
     "progress": "Fortschritt...",
-    "pressInstall": "Drücke Installieren um zu Starten.",
+    "pressInstall": "Drücke auf 'Installieren' um zu starten.",
     "enable": "Einschalten",
     "enabled": "Aktiviert",
     "disable": "Ausschalten",
@@ -1297,7 +1370,12 @@
     "upload": "Hochladen",
     "mode": "Modus",
     "orContinueWithoutAccount": "Oder fahre ohne Account fort",
-    "reset": "Zurücksetzen"
+    "reset": "Zurücksetzen",
+    "file": "Datei",
+    "saveLocal": "Auf dem Gerät speichern",
+    "openLocal": "Vom Gerät öffnen",
+    "openFileFromEdu": "Datei öffnen",
+    "saveFileToEdu": "In Dateien speichern"
   },
   "form": {
     "path": "Link",
@@ -1309,8 +1387,8 @@
     "saved": "Konfiguration gespeichert!",
     "url": "URL",
     "urlDescription": "Bitte eine URL zur Applikation eintragen",
-    "apiKey": "API Schlüssel",
-    "apiKeyDescription": "Der API Schlüssel wird für die Authentifizierung verwendet",
+    "apiKey": "API-Schlüssel",
+    "apiKeyDescription": "Der API-Schlüssel wird für die Authentifizierung verwendet",
     "proxyConfig": "Proxy-Konfiguration",
     "proxyConfigDescription": "Hier kann eine eigene Proxy-Konfiguration für Traefik hinterlegt werden. Dabei kann entweder über die Eingabefelder mithilfe einer Vorlage gearbeitet werden, oder direkt im Expertenmodus eine Konfiguration im YAML-Format erstellt werden. <br/><strong>Achtung:</strong> Eine falsche Konfiguration könnte dazu führen, dass die Anwendung nicht mehr erreichbar ist.",
     "expertMode": "Expertenmodus",
@@ -1320,8 +1398,9 @@
     "proxyDestinationPlaceholder": "z.B. http://localhost:1234/",
     "stripPrefix": "Prefix entfernen",
     "embeddedPageEditor": "Editor",
-    "embeddedPageEditorModeDescription": "Hier kann zwischen Sandbox und nativ gerendert ausgewählt werden. Sandbox ist die sicherste Variante, native das Original-Rendering. Beachte, dass bei nativen Rendering keine Sicherheitsvorkehrungen getroffen werden können. Im Sandbox-Modus wird die HTML-Datei aus dem Speicher gelesen. Lade dazu die Datei hoch.",
+    "embeddedPageEditorModeDescription": "Hier kann zwischen Sandbox und nativ gerendert ausgewählt werden. Sandbox ist die sicherste Variante, native das Original-Rendering. Beachte, dass beim nativen Rendering keine Sicherheitsvorkehrungen getroffen werden können. Im Sandbox-Modus wird die HTML-Datei aus dem Speicher gelesen. Lade dazu die Datei hoch.",
     "sandboxed": "Sandbox",
+    "pathname": "Share-Pfad",
     "input": {
       "dateTimePicker": {
         "timeSlot": "Uhr",
@@ -1378,11 +1457,21 @@
   },
   "whiteboard": {
     "title": "WHITEBOARD",
-    "sidebar": "Whiteboard"
+    "sidebar": "Whiteboard",
+    "saveAsTlFile": "Whiteboard als .tldr Datei speichern",
+    "openTLFileFailed": "Datei kann nicht geöffnet werden",
+    "openTLFileSuccess": "Datei wurde erfolgreich geladen",
+    "openTlFile": "Öffnen",
+    "openLocalTlFile": "Lokale .tldr Datei öffnen",
+    "file": "Datei"
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
-    "sidebar": "Kollaboratives Whiteboard"
+    "sidebar": "Kollaboratives Whiteboard",
+    "privateRoom": "Privater Raum",
+    "dropdownPlaceholder": "Wähle hier deinen aktuelle Raum",
+    "historyTitle": "Verlauf",
+    "historyNoMore": "Keine weiteren Einträge"
   },
   "table": {
     "noDataAvailable": "Keine Daten verfügbar"
@@ -1432,8 +1521,8 @@
   },
   "fileRenameContent": {
     "placeholder": "Geben Sie den neuen Namen ein",
-    "renameYourDirectory": "Benennen Sie Ihr Verzeichnis um",
-    "renameYourFile": "Benennen Sie Ihre Datei um",
+    "renameYourDirectory": "Benenne das Verzeichnis um",
+    "renameYourFile": "Benenne die Datei um",
     "to": "zu",
     "rename": "Umbenennen",
     "unknownErrorOccurred": "Ein unbekannter Fehler ist aufgetreten"
@@ -1441,6 +1530,21 @@
   "copyItemDialog": {
     "copyFilesOrDirectoriesToDirectory": "Dateien oder Verzeichnisse in ein Verzeichnis kopieren",
     "copy": "Kopieren"
+  },
+
+  "fileSelectorDialogBody": {
+    "title": "Wähle eine Datei zum Öffnen aus",
+    "selectFile": "Ausgewählte Datei"
+  },
+
+  "saveExternalFileDialogBody": {
+    "saveExternalFile": "Externe Datei speichern",
+    "destinationFolder": "Zielordner",
+    "filename": "Dateiname",
+    "filenamePlaceholder": "Dateiname hier eingeben",
+    "filenameRequired": "Dateiname darf nicht leer sein",
+    "fileSavedSuccessful": "Datei erfolgreich gespeichert",
+    "fileSaveFailed": "Datei konnte nicht gespeichert werden"
   },
 
   "moveItemDialog": {
@@ -1472,7 +1576,7 @@
     "deleteFiles": "Dateien löschen"
   },
   "timeAgo": {
-    "justNow": "gerade Eben",
+    "justNow": "gerade eben",
     "minuteAgo": "vor {{count}} Minuten",
     "hourAgo": "vor {{count}} Stunden",
     "dayAgo": "vor {{count}} Tagen",
@@ -1492,7 +1596,8 @@
     "delete": "Löschen",
     "download": "Herunterladen",
     "copy": "Kopieren",
-    "share": "Teilen"
+    "share": "Teilen",
+    "back": "Zurück"
   },
   "response": {
     "successfully": "Aktion war erfolgreich",
@@ -1562,7 +1667,7 @@
   "licensing": {
     "communityLicenseDialog": {
       "title": "Community-Edition",
-      "description": "Kostenlose Community Edition der {{ applicationName }} UI.<br/>Besuche uns auf <link1>{{link}}</link1>.<br/><strong>Diese Version erhält keinen Hersteller-Support.</strong>"
+      "description": "Kostenlose Community Edition der {{ applicationName }} UI. <strong>Diese Version erhält keinen Hersteller-Support.</strong>"
     }
   },
   "appExtendedOptions": {
@@ -1580,7 +1685,14 @@
     "mailImapSecureTitle": "Sichere Verbindung",
     "mailImapSecureDescription": "Soll die Verbindung über 'TLS' oder 'STARTTLS' aufgebaut werden.",
     "mailImapRejectUnauthorizedTitle": "Nicht zertifizierte Verbindungen ablehnen",
-    "mailImapRejectUnauthorizedDescription": "Soll eine Zertifikatsprüfung für diese Verbindung durchgeführt werden?"
+    "mailImapRejectUnauthorizedDescription": "Soll eine Zertifikatsprüfung für diese Verbindung durchgeführt werden?",
+    "mailSogoThemeTitle": "Theme",
+    "mailSogoThemeDescription": "Wähle das Theme für die Mail-App. Das Ändern des Themes startet die zugehörigen Container neu.",
+    "mailSogoTheme": {
+      "light": "Hell",
+      "dark": "Dunkel"
+    },
+    "mailSogoThemeDisabled": "Deaktiviert, da der Mailserver nicht läuft."
   },
   "preview": {
     "image": "Bildvorschau",
@@ -1615,7 +1727,7 @@
     },
     "events": {
       "pullingImage": "Docker Image wird abgerufen...",
-      "checkingImage": "Check, ob Image schon vorhande ist...",
+      "checkingImage": "Check, ob Image schon vorhanden ist...",
       "creatingContainer": "Docker Container wird erstellt...",
       "containerCreated": "Container erstellt.",
       "startContainer": "Container gestartet.",
@@ -1640,16 +1752,16 @@
   },
   "veyon": {
     "lockScreen": "Bildschirm sperren",
-    "unlockScreen": "Bildschirm entsprerren",
+    "unlockScreen": "Bildschirm entsperren",
     "lockInputDevices": "Eingabe sperren",
-    "unlockInputDevices": "Eingabe entsprerren",
+    "unlockInputDevices": "Eingabe entsperren",
     "rebootSystem": "System neu starten",
     "powerDown": "System herunterfahren",
     "errors": {
       "AppNotProperlyConfigured": "Veyon ist nicht richtig konfiguriert, wende dich an den Systemadministrator",
       "VeyonAuthFailed": "Veyon-Authentifizierung fehlgeschlagen",
       "GetUserFailed": "Benutzer konnte nicht abgerufen werden",
-      "VeyonApiNotReachable": "Der externen Veyon-Server ist nicht erreichbar"
+      "VeyonApiNotReachable": "Der externe Veyon-Server ist nicht erreichbar"
     }
   },
   "Invalid user credentials": "Benutzername oder Passwort falsch",
@@ -1676,6 +1788,30 @@
       "linuxmuster": "Linuxmuster",
       "edu-file-proxy": "edulution File Proxy",
       "generic": "Generisch"
-    }
+    },
+    "status": "Status",
+    "offline": "Server ist aktuell nicht erreichbar",
+    "pathVariables": {
+      "title": "Pfad-Variable",
+      "description": "Hier kann aus den Nutzerattributen eine dynamische Pfadvariable ausgewählt werden."
+    },
+    "isRootServer": {
+      "title": "Root-Pfad",
+      "description": "Für Linuxmuster-Schulfunktionen muss ein WebDAV-Share als Root-Pfad konfiguriert sein, der den gemeinsamen Root-Ordner von Schülern und Lehrern repräsentiert.",
+      "short": "Root",
+      "notConfigured": "Kein Root-Pfad konfiguriert. Bitte kontaktiere den Systemadministrator."
+    },
+    "selectPlaceholder": "Wähle...",
+    "authentication": {
+      "title": "Authentifizierung",
+      "description": "Hier kann die Authentifizierungsmethode für den WebDAV-Server ausgewählt werden.",
+      "basic": "Basic (Benutzername, Passwort)"
+    },
+    "selectRootServer": {
+      "title": "WebDAV Server-Auswahl",
+      "description": "Wähle den WebDAV-Server, der als Root-Pfad fungieren soll."
+    },
+    "sharePath": "Pfad",
+    "pathPreview": "Pfad-Vorschau"
   }
 }

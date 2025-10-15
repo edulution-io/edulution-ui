@@ -44,6 +44,9 @@ export class Bulletin {
 
   @Prop({ type: Date, required: false })
   isVisibleEndDate: Date | null;
+
+  @Prop({ default: 1 })
+  schemaVersion: number;
 }
 
 export const BulletinSchema = SchemaFactory.createForClass(Bulletin);

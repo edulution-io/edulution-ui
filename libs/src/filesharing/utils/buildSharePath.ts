@@ -12,15 +12,15 @@
 
 import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import UserRoles from '@libs/user/constants/userRoles';
-import getStringFromArray from '@libs/common/utils/getStringFromArray';
 import FILE_PATHS from '../constants/file-paths';
+import normalizeLdapHomeDirectory from './normalizeLdapHomeDirectory';
 
 const buildSharePath = (userName: string, fileName: string, student: LmnUserInfo): string => {
   const file = fileName.split('/').pop();
 
   const studentPath = student.examMode
     ? `/${UserRoles.EXAM_USER}/${student.cn}-exam`
-    : getStringFromArray(student?.sophomorixIntrinsic2);
+    : normalizeLdapHomeDirectory(student?.homeDirectory);
 
   return `${studentPath}/${FILE_PATHS.TRANSFER}/${userName}/${file}`;
 };
