@@ -10,33 +10,46 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-/* 
-  eslint-disable
-    @typescript-eslint/no-explicit-any,
-    @typescript-eslint/no-unsafe-assignment,
-    @typescript-eslint/no-unsafe-call,
-    @typescript-eslint/no-unsafe-member-access,
-    @typescript-eslint/no-unsafe-return
-*/
-import React from 'react';
+import React, { useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useTranslation } from 'react-i18next';
 import { MdAdd, MdRemove } from 'react-icons/md';
+import { Base, ItemValue, QuestionMatrixBaseModel } from 'survey-core';
 import isQuestionTypeMatrixType from '@libs/survey/utils/isQuestionTypeMatrixType';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 
+type TRow = Partial<Array<ItemValue | Base>> & {
+  name?: string;
+  value?: string;
+  title?: string;
+  text?: string;
+  clone: () => TRow;
+};
+
+type TColumn = Partial<Array<ItemValue | Base>> & {
+  name?: string;
+  value?: string;
+  title?: string;
+  text?: string;
+  clone: () => TColumn;
+};
+
 const RowAndColumnOptions = () => {
   const { t } = useTranslation();
 
-  const { selectedQuestion: question, questionType: type } = useQuestionsContextMenuStore();
-
-  if (!question) return null;
+  const { selectedQuestion, questionType: type } = useQuestionsContextMenuStore();
+  if (!selectedQuestion) return null;
   if (!isQuestionTypeMatrixType(type)) return null;
 
+  const question = selectedQuestion as QuestionMatrixBaseModel<TRow, TColumn>;
+
+  const rows = useMemo(() => (question.rows as Array<TRow>) || [], [question.rows]);
+  const columns = useMemo(() => (question.columns as Array<TColumn>) || [], [question.columns]);
+
   const getNewRow = () => {
-    const newRow = question.rows[question.rows.length - 1].clone();
+    const newRow = rows[rows.length - 1].clone();
     if (newRow.value) {
       newRow.value = uuidv4();
       newRow.text = t('survey.editor.questionSettings.newRow');
@@ -48,7 +61,7 @@ const RowAndColumnOptions = () => {
   };
 
   const getNewColumn = () => {
-    const newColumn = question.columns[question.columns.length - 1].clone();
+    const newColumn = columns[columns.length - 1].clone();
     if (newColumn.name) {
       newColumn.name = uuidv4();
       newColumn.title = t('survey.editor.questionSettings.newColumn');
@@ -60,46 +73,46 @@ const RowAndColumnOptions = () => {
   };
 
   const addRow = () => {
-    const newRows = [...question.rows, getNewRow()];
+    const newRows = [...rows, getNewRow()];
     question.rows = newRows;
   };
 
   const removeRow = () => {
-    const newRows = question.rows;
+    const newRows = rows;
     newRows.pop();
     question.rows = newRows;
   };
 
   const handleRowCountChange = (count: number) => {
-    const currentCount = question.rows.length;
+    const currentCount = rows.length;
     if (currentCount > count) {
-      const newRows = question.rows.slice(0, count);
+      const newRows = rows.slice(0, count);
       question.rows = newRows;
     } else if (currentCount < count) {
       const newRows = Array.from({ length: count - currentCount }, () => getNewRow());
-      question.rows = [...question.rows, ...newRows];
+      question.rows = [...rows, ...newRows];
     }
   };
 
   const addColumn = () => {
-    const newColumns = [...question.columns, getNewColumn()];
+    const newColumns = [...columns, getNewColumn()];
     question.columns = newColumns;
   };
 
   const removeColumn = () => {
-    const newColumns = question.columns;
+    const newColumns = columns;
     newColumns.pop();
     question.columns = newColumns;
   };
 
   const handleColumnCountChange = (count: number) => {
-    const currentCount = question.columns.length;
+    const currentCount = columns.length;
     if (currentCount > count) {
-      const newColumns = question.columns.slice(0, count);
+      const newColumns = columns.slice(0, count);
       question.columns = newColumns;
     } else if (currentCount < count) {
       const newColumns = Array.from({ length: count - currentCount }, () => getNewColumn());
-      question.columns = [...question.columns, ...newColumns];
+      question.columns = [...columns, ...newColumns];
     }
   };
 
@@ -111,7 +124,7 @@ const RowAndColumnOptions = () => {
         <Input
           type="number"
           min="1"
-          value={question?.rows.length || 0}
+          value={question.rows.length || 0}
           onChange={(e) => handleRowCountChange(Number(e.currentTarget.value))}
           variant="dialog"
           className="ml-2 max-w-[75px] flex-1 text-primary-foreground"
@@ -138,7 +151,7 @@ const RowAndColumnOptions = () => {
         <Input
           type="number"
           min="1"
-          value={question?.columns.length || 0}
+          value={question.columns.length || 0}
           onChange={(e) => handleColumnCountChange(Number(e.currentTarget.value))}
           variant="dialog"
           className="ml-2 max-w-[75px] flex-1 text-primary-foreground"
