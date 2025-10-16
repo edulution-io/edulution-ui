@@ -11,15 +11,18 @@
  */
 
 import { CanActivate, ExecutionContext, HttpStatus, Injectable } from '@nestjs/common';
-import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import { Request } from 'express';
+import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../CustomHttpException';
+import GlobalSettingsService from '../../global-settings/global-settings.service';
 
 @Injectable()
 class AdminGuard implements CanActivate {
+  constructor(private readonly globalSettingsService: GlobalSettingsService) {}
+
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  canActivate(context: ExecutionContext): boolean {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
     const { user } = request;
 
@@ -29,7 +32,9 @@ class AdminGuard implements CanActivate {
 
     const ldapGroups = user.ldapGroups || [];
 
-    if (getIsAdmin(ldapGroups)) {
+    const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
+
+    if (getIsAdmin(ldapGroups, adminGroups)) {
       return true;
     }
     throw new CustomHttpException(AuthErrorMessages.Unauthorized, HttpStatus.UNAUTHORIZED, undefined, AdminGuard.name);
