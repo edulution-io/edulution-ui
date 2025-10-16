@@ -36,7 +36,7 @@ class MockGlobalSettings {
   static create = jest.fn();
 }
 
-describe('GlobalSettingsService', () => {
+describe(GlobalSettingsService.name, () => {
   let service: GlobalSettingsService;
   let model: Partial<Record<keyof Model<GlobalSettingsDocument>, jest.Mock>> & {
     findOne?: jest.Mock;
