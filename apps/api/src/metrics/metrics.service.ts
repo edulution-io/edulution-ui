@@ -11,13 +11,18 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import DockerService from '../docker/docker.service';
 
 @Injectable()
 class MetricsService {
-  static getMetrics() {
+  constructor(private readonly dockerService: DockerService) {}
+
+  async getMetrics() {
     const mem = process.memoryUsage();
     const cpu = process.cpuUsage();
     const uptime = process.uptime().toFixed(2);
+
+    const dockerStats = await this.dockerService.getContainerStats();
 
     return {
       uptime,
@@ -28,6 +33,7 @@ class MetricsService {
         heapUsedMB: +(mem.heapUsed / 1024 / 1024).toFixed(1),
         heapTotalMB: +(mem.heapTotal / 1024 / 1024).toFixed(1),
       },
+      dockerStats,
     };
   }
 }

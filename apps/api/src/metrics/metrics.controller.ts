@@ -16,11 +16,12 @@ import AppConfigGuard from '../appconfig/appconfig.guard';
 
 @Controller('system')
 class MetricsController {
+  constructor(private readonly metricsService: MetricsService) {}
+
   @UseGuards(AppConfigGuard)
   @Get('metrics')
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   getMetrics() {
-    return MetricsService.getMetrics();
+    return this.metricsService.getMetrics();
   }
 }
 
