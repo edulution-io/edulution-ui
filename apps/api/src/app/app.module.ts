@@ -20,6 +20,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { BullModule } from '@nestjs/bullmq';
+import { ConfigModule } from '@nestjs/config';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
@@ -53,9 +54,15 @@ import NotificationsModule from '../notifications/notifications.module';
 import MobileAppModuleModule from '../mobileAppModule/mobileAppModule.module';
 import UserPreferencesModule from '../user-preferences/user-preferences.module';
 import DevCacheFlushService from '../common/cache/dev-cache-flush.service';
+import MetricsModule from '../metrics/metrics.module';
+import configuration from '../config/configuration';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration],
+    }),
     ServeStaticModule.forRoot({
       rootPath: PUBLIC_DOWNLOADS_PATH,
       serveRoot: `/${EDU_API_ROOT}/downloads`,
@@ -118,6 +125,7 @@ import DevCacheFlushService from '../common/cache/dev-cache-flush.service';
     EventEmitterModule.forRoot(),
     ScriptsModule,
     WebdavSharesModule,
+    MetricsModule,
   ],
   providers: [
     {
