@@ -315,8 +315,8 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
             memUsageMB: +(data.memory_stats.usage / 1024 / 1024).toFixed(1),
             memLimitMB: +(data.memory_stats.limit / 1024 / 1024).toFixed(1),
           };
-        } catch (err: unknown) {
-          const message = err instanceof Error ? err.message : String(err);
+        } catch (e) {
+          const message = e instanceof Error ? e.message : String(e);
           return { id: container.Id.slice(0, 12), error: message };
         }
       }),

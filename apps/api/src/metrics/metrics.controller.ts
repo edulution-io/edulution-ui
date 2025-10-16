@@ -14,12 +14,12 @@ import { Controller, Get, UseGuards } from '@nestjs/common';
 import MetricsService from './metrics.service';
 import AppConfigGuard from '../appconfig/appconfig.guard';
 
-@Controller('system')
+@Controller('metrics')
 class MetricsController {
   constructor(private readonly metricsService: MetricsService) {}
 
   @UseGuards(AppConfigGuard)
-  @Get('metrics')
+  @Get()
   getMetrics() {
     return this.metricsService.getMetrics();
   }
