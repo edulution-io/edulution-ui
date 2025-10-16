@@ -10,17 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export function latinize(input: string): string {
-  const pre = input.replace(/ä/gi, 'ae').replace(/ö/gi, 'oe').replace(/ü/gi, 'ue').replace(/ß/gi, 'ss');
-  return pre.normalize('NFKD').replace(/\p{Diacritic}/gu, '');
-}
-
-export function stripDiacritics(input: string): string {
-  return input
-    .normalize('NFKD')
-    .replace(/ß/g, 'ss')
-    .replace(/[\u0300-\u036f]/g, '');
-}
+import { latinize } from '@libs/common/utils/string/latinize';
 
 export function parseCnHumanName(cn: string): { first?: string; last?: string } {
   const raw = cn.trim();

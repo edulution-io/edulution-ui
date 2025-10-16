@@ -51,9 +51,10 @@ import {
   missKeyExact,
   parseGroupDn,
   probeCandidatesWithNegativeCache,
-  stripDiacritics,
   usernameMatchesBaseOrNumbered,
 } from '@libs/ldapKeycloakSync/utils/ldap-utils';
+import GroupRoles from '@libs/groups/types/group-roles.enum';
+import { latinize } from '@libs/common/utils/string/latinize';
 import { LdapKeycloakSync, LdapKeycloakSyncDocument } from './ldap-keycloak-sync.schema';
 import GlobalSettingsService from '../global-settings/global-settings.service';
 import KeycloakRequestQueue from './queue/keycloak-request.queue';
@@ -137,7 +138,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
       const updates: Array<{ userId: string; add: string[]; remove: string[] }> = [];
 
       // TODO: https://github.com/edulution-io/edulution-ui/issues/1010 Get group from DB
-      const localAdminGroup = 'role-globaladministrator';
+      const localAdminGroup = GroupRoles.SUPER_ADMIN.substring(1);
 
       await Promise.all(
         Array.from(ldapDns).map(async (dn) => {
@@ -652,7 +653,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
     }
 
     if (!user && /\s/.test(name)) {
-      const plain = stripDiacritics(name).trim().replace(/\s+/g, ' ');
+      const plain = latinize(name, { umlauts: true }).trim().replace(/\s+/g, ' ');
       const parts = plain.split(' ');
       const first = parts[0]?.toLowerCase();
       const last = parts[parts.length - 1]?.toLowerCase();
@@ -663,8 +664,8 @@ class LdapKeycloakSyncService implements OnModuleInit {
           `/users?search=${encodeURIComponent(plain)}`,
         );
         const candidates = (results || []).filter((u) => {
-          const fPlain = stripDiacritics(u.firstName ? String(u.firstName) : '').toLowerCase();
-          const lPlain = stripDiacritics(u.lastName ? String(u.lastName) : '').toLowerCase();
+          const fPlain = latinize(u.firstName ? String(u.firstName) : '', { umlauts: true, toLower: true });
+          const lPlain = latinize(u.lastName ? String(u.lastName) : '', { umlauts: true, toLower: true });
           return fPlain === first && lPlain === last;
         });
 
