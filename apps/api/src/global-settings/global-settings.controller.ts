@@ -19,7 +19,7 @@ import {
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
-import AppConfigGuard from '../appconfig/appconfig.guard';
+import AdminGuard from '../appconfig/admin.guard';
 import GlobalSettingsService from './global-settings.service';
 
 @ApiTags(GLOBAL_SETTINGS_ROOT_ENDPOINT)
@@ -36,13 +36,13 @@ class GlobalSettingsController {
   }
 
   @Get(GLOBAL_SETTINGS_ADMIN_ENDPOINT)
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   async getGlobalAdminSettings() {
     return this.globalSettingsService.getGlobalAdminSettings();
   }
 
   @Put()
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   async setGlobalSettings(@Body() globalSettingsDto: GlobalSettingsDto) {
     return this.globalSettingsService.setGlobalSettings(globalSettingsDto);
   }

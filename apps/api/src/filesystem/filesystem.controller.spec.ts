@@ -16,7 +16,7 @@ import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import { Response } from 'express';
 import FileSystemController from './filesystem.controller';
 import FilesystemService from './filesystem.service';
-import AppConfigGuard from '../appconfig/appconfig.guard';
+import AdminGuard from '../appconfig/admin.guard';
 import IsPublicAppGuard from '../common/guards/isPublicApp.guard';
 import AppConfigService from '../appconfig/appconfig.service';
 import CustomHttpException from '../common/CustomHttpException';
@@ -29,7 +29,7 @@ describe(FileSystemController.name, () => {
       controllers: [FileSystemController],
       providers: [
         { provide: FilesystemService, useValue: {} },
-        AppConfigGuard,
+        AdminGuard,
         IsPublicAppGuard,
         { provide: AppConfigService, useValue: { getPublicAppConfigByName: jest.fn().mockResolvedValue(true) } },
       ],

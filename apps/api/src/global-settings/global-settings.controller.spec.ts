@@ -18,7 +18,7 @@ import defaultValues from '@libs/global-settings/constants/defaultValues';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import GlobalSettingsController from './global-settings.controller';
 import GlobalSettingsService from './global-settings.service';
-import AppConfigGuard from '../appconfig/appconfig.guard';
+import AdminGuard from '../appconfig/admin.guard';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';
 
 const mockedGlobalSettingsDto: GlobalSettingsDto = defaultValues;
@@ -60,7 +60,7 @@ describe('GlobalSettingsController', () => {
         },
       ],
     })
-      .overrideGuard(AppConfigGuard)
+      .overrideGuard(AdminGuard)
       .useValue({
         canActivate: jest.fn((_context: ExecutionContext) => true),
       })

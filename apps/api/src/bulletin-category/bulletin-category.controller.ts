@@ -17,7 +17,7 @@ import JWTUser from '@libs/user/types/jwt/jwtUser';
 import { BulletinCategoryPermissionType } from '@libs/appconfig/types/bulletinCategoryPermissionType';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import BulletinCategoryService from './bulletin-category.service';
-import AppConfigGuard from '../appconfig/appconfig.guard';
+import AdminGuard from '../appconfig/admin.guard';
 
 @ApiTags('bulletin-category')
 @ApiBearerAuth()
@@ -31,31 +31,31 @@ class BulletinCategoryController {
   }
 
   @Post()
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   create(@GetCurrentUser() currentUser: JWTUser, @Body() bulletinCategory: CreateBulletinCategoryDto) {
     return this.bulletinBoardService.create(currentUser, bulletinCategory);
   }
 
   @Get(':name')
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   async checkName(@Param('name') name: string): Promise<{ exists: boolean }> {
     return this.bulletinBoardService.checkIfNameExists(name);
   }
 
   @Patch(':id')
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   update(@Param('id') id: string, @Body() bulletinCategory: CreateBulletinCategoryDto) {
     return this.bulletinBoardService.update(id, bulletinCategory);
   }
 
   @Delete(':id')
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   remove(@Param('id') id: string) {
     return this.bulletinBoardService.remove(id);
   }
 
   @Post('position')
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   setPosition(@Body() { categoryId, position }: { categoryId: string; position: number }) {
     return this.bulletinBoardService.setPosition(categoryId, position);
   }

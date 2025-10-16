@@ -17,14 +17,14 @@ import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../common/CustomHttpException';
 
 @Injectable()
-class AppConfigGuard implements CanActivate {
+class AdminGuard implements CanActivate {
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   canActivate(context: ExecutionContext): boolean {
     const request: Request = context.switchToHttp().getRequest();
     const { user } = request;
 
     if (!user) {
-      throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.NOT_FOUND, undefined, AppConfigGuard.name);
+      throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.NOT_FOUND, undefined, AdminGuard.name);
     }
 
     const ldapGroups = user.ldapGroups || [];
@@ -32,13 +32,8 @@ class AppConfigGuard implements CanActivate {
     if (getIsAdmin(ldapGroups)) {
       return true;
     }
-    throw new CustomHttpException(
-      AuthErrorMessages.Unauthorized,
-      HttpStatus.UNAUTHORIZED,
-      undefined,
-      AppConfigGuard.name,
-    );
+    throw new CustomHttpException(AuthErrorMessages.Unauthorized, HttpStatus.UNAUTHORIZED, undefined, AdminGuard.name);
   }
 }
 
-export default AppConfigGuard;
+export default AdminGuard;
