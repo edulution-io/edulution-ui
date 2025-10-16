@@ -60,7 +60,6 @@ import configuration from '../config/configuration';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.env', 'edulution.env'],
       isGlobal: true,
       load: [configuration],
     }),
