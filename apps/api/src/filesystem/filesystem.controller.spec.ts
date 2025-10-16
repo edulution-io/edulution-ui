@@ -20,6 +20,7 @@ import IsPublicAppGuard from '../common/guards/isPublicApp.guard';
 import AdminGuard from '../common/guards/admin.guard';
 import AppConfigService from '../appconfig/appconfig.service';
 import CustomHttpException from '../common/CustomHttpException';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 describe(FileSystemController.name, () => {
   let controller: FileSystemController;
@@ -32,6 +33,7 @@ describe(FileSystemController.name, () => {
         AdminGuard,
         IsPublicAppGuard,
         { provide: AppConfigService, useValue: { getPublicAppConfigByName: jest.fn().mockResolvedValue(true) } },
+        { provide: GlobalSettingsService, useValue: { getAdminGroupsFromCache: jest.fn() } },
       ],
     }).compile();
 

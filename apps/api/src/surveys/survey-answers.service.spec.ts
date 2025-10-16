@@ -73,6 +73,7 @@ import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
 import NotificationsService from '../notifications/notifications.service';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 describe('SurveyAnswersService', () => {
   let service: SurveyAnswersService;
@@ -104,6 +105,7 @@ describe('SurveyAnswersService', () => {
         },
         { provide: FilesystemService, useValue: mockFilesystemService },
         { provide: NotificationsService, useValue: notificationMock },
+        { provide: GlobalSettingsService, useValue: { getAdminGroupsFromCache: jest.fn() } },
       ],
     }).compile();
 

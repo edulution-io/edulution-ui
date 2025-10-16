@@ -21,7 +21,6 @@ import GlobalSettingsService from '../../global-settings/global-settings.service
 class AdminGuard implements CanActivate {
   constructor(private readonly globalSettingsService: GlobalSettingsService) {}
 
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
     const { user } = request;
