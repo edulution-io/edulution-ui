@@ -10,18 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const umlautMap = {
-  ä: 'ae',
-  ö: 'oe',
-  ü: 'ue',
-  Ä: 'Ae',
-  Ö: 'Oe',
-  Ü: 'Ue',
-  ß: 'ss',
-} as const;
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import MetricsService from './metrics.service';
+import AppConfigGuard from '../appconfig/appconfig.guard';
 
-type Umlaut = keyof typeof umlautMap;
+@Controller('metrics')
+class MetricsController {
+  constructor(private readonly metricsService: MetricsService) {}
 
-const replaceDiacritics = (str: string) => str.replace(/[äöüÄÖÜß]/g, (match) => umlautMap[match as Umlaut]);
+  @UseGuards(AppConfigGuard)
+  @Get()
+  getMetrics() {
+    return this.metricsService.getMetrics();
+  }
+}
 
-export default replaceDiacritics;
+export default MetricsController;
