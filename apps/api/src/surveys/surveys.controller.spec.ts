@@ -18,6 +18,7 @@ import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import { ConfigService } from '@nestjs/config';
 import CustomHttpException from '../common/CustomHttpException';
 import SurveysController from './surveys.controller';
 import SurveysService from './surveys.service';
@@ -70,6 +71,7 @@ describe(SurveysController.name, () => {
       providers: [
         SurveysService,
         SseService,
+        ConfigService,
         {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),

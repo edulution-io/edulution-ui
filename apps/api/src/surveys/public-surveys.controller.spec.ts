@@ -13,6 +13,7 @@
 import { Model, Types } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveysAttachmentService from 'apps/api/src/surveys/surveys-attachment.service';
 import SurveysService from './surveys.service';
@@ -55,6 +56,7 @@ describe(PublicSurveysController.name, () => {
       providers: [
         SurveysService,
         SseService,
+        ConfigService,
         {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
