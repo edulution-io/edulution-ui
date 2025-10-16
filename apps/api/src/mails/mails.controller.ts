@@ -17,7 +17,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import GetUsersEmailAddress from '../common/decorators/getUsersEmailAddress.decorator';
 import MailsService from './mails.service';
 import UsersService from '../users/users.service';
-import AdminGuard from '../appconfig/admin.guard';
+import AdminGuard from '../common/guards/admin.guard';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 
 @ApiTags(MAIL_ENDPOINT)

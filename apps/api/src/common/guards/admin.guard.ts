@@ -14,7 +14,7 @@ import { CanActivate, ExecutionContext, HttpStatus, Injectable } from '@nestjs/c
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import { Request } from 'express';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '../CustomHttpException';
 
 @Injectable()
 class AdminGuard implements CanActivate {

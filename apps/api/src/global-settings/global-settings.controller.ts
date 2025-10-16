@@ -19,7 +19,7 @@ import {
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
-import AdminGuard from '../appconfig/admin.guard';
+import AdminGuard from '../common/guards/admin.guard';
 import GlobalSettingsService from './global-settings.service';
 
 @ApiTags(GLOBAL_SETTINGS_ROOT_ENDPOINT)

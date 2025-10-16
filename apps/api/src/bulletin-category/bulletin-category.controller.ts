@@ -17,7 +17,7 @@ import JWTUser from '@libs/user/types/jwt/jwtUser';
 import { BulletinCategoryPermissionType } from '@libs/appconfig/types/bulletinCategoryPermissionType';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import BulletinCategoryService from './bulletin-category.service';
-import AdminGuard from '../appconfig/admin.guard';
+import AdminGuard from '../common/guards/admin.guard';
 
 @ApiTags('bulletin-category')
 @ApiBearerAuth()

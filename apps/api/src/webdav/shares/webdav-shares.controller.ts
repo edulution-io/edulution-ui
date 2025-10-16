@@ -13,7 +13,7 @@
 import { Body, Controller, Delete, Get, Param, ParseBoolPipe, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
-import AdminGuard from '../../appconfig/admin.guard';
+import AdminGuard from '../../common/guards/admin.guard';
 import WebdavSharesService from './webdav-shares.service';
 import GetCurrentUserGroups from '../../common/decorators/getCurrentUserGroups.decorator';
 

@@ -55,7 +55,7 @@ import SurveyAnswerService from './survey-answers.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import { checkAttachmentFile, createAttachmentUploadOptions } from '../filesystem/multer.utilities';
-import AdminGuard from '../appconfig/admin.guard';
+import AdminGuard from '../common/guards/admin.guard';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
