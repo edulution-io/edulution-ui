@@ -16,7 +16,7 @@ import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import type { Migration } from '../../migration/migration.type';
 import type { GlobalSettings, GlobalSettingsDocument } from '../global-settings.schema';
 
-const initialAdminGroups = process.env.EDUI_INITIAL_ADMIN_GROUPS as string | string[] | undefined;
+const initialAdminGroups = process.env.EDUI_INITIAL_ADMIN_GROUP;
 
 const migration004: Migration<GlobalSettingsDocument> = {
   name: '004-add-adminGroups',
@@ -45,17 +45,16 @@ const migration004: Migration<GlobalSettingsDocument> = {
     let adminGroups: MultipleSelectorGroup[] = [];
     if (initialAdminGroups) {
       Logger.log(`Update global settings document with initial adminGroups…`);
-      const adminGroupsList = Array.isArray(initialAdminGroups) ? initialAdminGroups : [initialAdminGroups];
-      adminGroups = adminGroupsList.map((group) => {
-        const normalizedGroup = group.replace(/^\/+/, '');
-        return {
+      const normalizedGroup = initialAdminGroups.replace(/^\/+/, '');
+      adminGroups = [
+        {
           id: '',
           name: normalizedGroup,
           path: `/${normalizedGroup}`,
           label: normalizedGroup,
           value: '',
-        };
-      });
+        },
+      ];
     } else {
       Logger.log(`Update global settings document with empty array…`);
       adminGroups = [];

@@ -13,6 +13,7 @@
 import { Model, ProjectionType } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import GlobalSettingsErrorMessages from '@libs/global-settings/constants/globalSettingsErrorMessages';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
@@ -28,11 +29,10 @@ import globalSettingsMigrationsList from './migrations/globalSettingsMigrationsL
 
 @Injectable()
 class GlobalSettingsService implements OnModuleInit {
-  private initialAdminGroups: string | string[] = process.env.EDUI_INITIAL_ADMIN_GROUPS || '';
-
   constructor(
     @InjectModel(GlobalSettings.name) private globalSettingsModel: Model<GlobalSettingsDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private readonly configService: ConfigService,
   ) {}
 
   async onModuleInit() {
@@ -100,19 +100,22 @@ class GlobalSettingsService implements OnModuleInit {
     try {
       const globalSetting = await this.getGlobalSettings('auth.adminGroups');
 
-      let adminGroupsList = Array.isArray(this.initialAdminGroups)
-        ? this.initialAdminGroups
-        : [this.initialAdminGroups];
+      const initialAdminGroups = this.configService.get<string>('EDUI_INITIAL_ADMIN_GROUP', '');
+      const normalizedGroup = initialAdminGroups.startsWith('/') ? initialAdminGroups : `/${initialAdminGroups}`;
+
+      let adminGroupsList: string[] = [normalizedGroup];
+
       if (globalSetting?.auth?.adminGroups) {
-        const { adminGroups } = globalSetting.auth;
-        adminGroupsList = adminGroups.map((group) => group.path);
+        adminGroupsList = globalSetting.auth.adminGroups.map((group) => group.path);
       }
 
       await this.cacheManager.set(ADMIN_GROUPS, adminGroupsList);
 
+      Logger.debug(`Cached admin groups: ${JSON.stringify(adminGroupsList)}`, GlobalSettingsService.name);
+
       return adminGroupsList;
     } catch (error) {
-      Logger.warn(`Failed to update admin groups cache: ${(error as Error).message}`, GlobalSettings.name);
+      Logger.warn(`Failed to update admin groups cache: ${(error as Error).message}`, GlobalSettingsService.name);
       return [];
     }
   }
