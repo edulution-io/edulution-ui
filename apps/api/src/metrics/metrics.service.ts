@@ -11,20 +11,26 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import DockerService from '../docker/docker.service';
 
 @Injectable()
 class MetricsService {
-  constructor(private readonly dockerService: DockerService) {}
+  constructor(
+    private readonly dockerService: DockerService,
+    private configService: ConfigService,
+  ) {}
 
   async getMetrics() {
     const mem = process.memoryUsage();
     const cpu = process.cpuUsage();
     const uptime = process.uptime().toFixed(2);
+    const version = this.configService.get<string>('version');
 
     const dockerStats = await this.dockerService.getContainerStats();
 
     return {
+      version,
       uptime,
       cpuUserMs: cpu.user / 1000,
       cpuSystemMs: cpu.system / 1000,

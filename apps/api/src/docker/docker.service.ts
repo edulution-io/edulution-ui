@@ -311,6 +311,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
           return {
             id: container.Id.slice(0, 12),
             name: container.Names[0].replace('/', ''),
+            image: container.Image,
             cpuPercent: +cpuPercent.toFixed(2),
             memUsageMB: +(data.memory_stats.usage / 1024 / 1024).toFixed(1),
             memLimitMB: +(data.memory_stats.limit / 1024 / 1024).toFixed(1),
