@@ -982,7 +982,10 @@
       "resetMfaFormDescription": "Hier kannst du die Zwei-Faktor-Authentisierung für einen oder mehrere Nutzer zurücksetzen.",
       "selectUsersTitle": "Nutzer auswählen",
       "selectUsersDescription": "Wähle hier die Nutzer aus, für welche die Zwei-Faktor-Authentisierung zurückgesetzt werden soll.",
-      "totpResetSuccess": "TOTP für {{username}} wurde erfolgreich zurückgesetzt."
+      "totpResetSuccess": "TOTP für {{username}} wurde erfolgreich zurückgesetzt.",
+      "setAdminGroupTitle": "Administratorengruppe festlegen",
+      "setAdminGroupDescription": "Hier können zusätzliche Administratoren definiert werden. Der Global Admin beleibt dabei erhalten.",
+      "setAdminGroupSelectDescription": "Über die Sucheingabe können Gruppen ausgewählt werden."
     },
     "info": {
       "title": "Info"
