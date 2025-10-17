@@ -157,10 +157,14 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
     });
 
     newModel.onClearFiles.add(async (_surveyModel: SurveyModel, options: ClearFilesEvent): Promise<void> => {
+      // eslint-disable-next-line no-console
+      console.log('ClearFilesEvent options:', options);
+      // eslint-disable-next-line no-console
+      console.log('Appended files:', options.value);
+
       let filesToDelete: File[] = [];
       if (Array.isArray(options.value)) {
         if (options.value.length === 0) {
-          options.callback('success');
           return;
         }
         const files = options.value as File[];
@@ -169,7 +173,6 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         );
       } else {
         if (!options.value) {
-          options.callback('success');
           return;
         }
         const file = options.value as File;
