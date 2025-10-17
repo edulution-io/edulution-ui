@@ -81,8 +81,19 @@ class PublicSurveysController {
 
   @Get(`${FILES}/:surveyId/:questionId/:filename`)
   @Public()
-  serveFile(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
+  async serveFile(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
     const { surveyId, questionId, filename } = params;
+
+    const publicSurvey = await this.surveyService.findPublicSurvey(surveyId);
+    if (publicSurvey == null) {
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.UNAUTHORIZED,
+        `No public survey with id ${surveyId} found`,
+        PublicSurveysController.name,
+      );
+    }
+
     const filePath = join(APPS.SURVEYS, ATTACHMENT_FOLDER, surveyId, questionId);
     return this.filesystemService.serveFiles(filePath, filename, res);
   }

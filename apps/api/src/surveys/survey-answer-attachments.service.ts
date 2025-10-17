@@ -12,11 +12,11 @@
 
 import { join } from 'path';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
-import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import SURVEY_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersAttachmentPath';
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
 import { PUBLIC_SURVEYS, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
+import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
@@ -36,6 +36,11 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     await FilesystemService.deleteFile(tempFilesPath, fileName);
   }
 
+  static makeUrlPermanent = (url: string | undefined): string | undefined =>
+    url?.replace(`/${PUBLIC_SURVEYS}/`, `/${SURVEYS}/`);
+
+  static getFileNameFromUrl = (url: string | undefined): string | undefined => url?.split('/').pop();
+
   async moveAnswersAttachmentsToPermanentStorage(userName: string, surveyId: string, answer: JSON): Promise<JSON> {
     if (!userName || !surveyId || !answer) {
       throw new CustomHttpException(
@@ -46,7 +51,6 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
       );
     }
     const directory = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName);
-
     const tempDirectory = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
     const tempFileNames = await this.fileSystemService.getAllFilenamesInDirectory(tempDirectory);
     if (tempFileNames.length === 0) {
@@ -60,31 +64,40 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
       (object & { content: string }) | (object & { content: string })[]
     >;
 
+    const permanentFiles = await this.fileSystemService.getAllFilenamesInDirectory(directory);
+
     const fileNamesToMove: string[] = [];
     const persistentFiles: string[] = [];
-    const permanentFiles = await this.fileSystemService.getAllFilenamesInDirectory(directory);
+
+    const nextAnswer: Record<string, (object & { content: string }) | (object & { content: string })[]> = {};
     Object.keys(surveyAnswer).forEach((questionName) => {
       const questionAnswer = surveyAnswer[questionName];
       if (Array.isArray(questionAnswer)) {
         questionAnswer.forEach((item) => {
-          const fileName = item.content?.split('/').pop();
+          const fileName = SurveyAnswerAttachmentsService.getFileNameFromUrl(item.content);
           if (fileName && permanentFiles.includes(fileName)) {
             persistentFiles.push(fileName);
           }
           if (fileName && tempFileNames.includes(fileName)) {
             fileNamesToMove.push(fileName);
-            // eslint-disable-next-line no-param-reassign
-            item.content = item.content?.replace(`/${PUBLIC_SURVEYS}/`, `/${SURVEYS}/`);
+            nextAnswer[questionName] = {
+              ...item,
+              content: SurveyAnswerAttachmentsService.makeUrlPermanent(item.content)!,
+            };
           }
         });
       } else {
-        const fileName = questionAnswer.content?.split('/').pop();
+        const fileName = SurveyAnswerAttachmentsService.getFileNameFromUrl(questionAnswer.content);
         if (fileName && tempFileNames.includes(fileName)) {
           fileNamesToMove.push(fileName);
         }
-        questionAnswer.content = questionAnswer.content?.replace(`/${PUBLIC_SURVEYS}/`, `/${SURVEYS}/`);
+        nextAnswer[questionName] = {
+          ...questionAnswer,
+          content: SurveyAnswerAttachmentsService.makeUrlPermanent(questionAnswer.content)!,
+        };
       }
     });
+
     const movingPromises = fileNamesToMove.map(async (fileName) =>
       FilesystemService.moveFile(join(tempDirectory, fileName), join(directory, fileName)),
     );
@@ -96,7 +109,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     );
     await Promise.all(deletionPromises);
 
-    return JSON.parse(JSON.stringify(surveyAnswer)) as JSON;
+    return JSON.parse(JSON.stringify(nextAnswer)) as JSON;
   }
 
   async clearUpSurveyAnswersTempFiles(userName: string, surveyId: string): Promise<void> {
