@@ -161,8 +161,9 @@ class AppConfigService implements OnModuleInit {
   async getAppConfigs(ldapGroups: string[]): Promise<AppConfigDto[]> {
     try {
       let appConfigDto: AppConfigDto[];
+      const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
 
-      if (getIsAdmin(ldapGroups)) {
+      if (getIsAdmin(ldapGroups, adminGroups)) {
         appConfigDto = await this.appConfigModel
           .find({}, 'name translations icon appType options accessGroups extendedOptions position')
           .sort({ position: 1 })

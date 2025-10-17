@@ -979,7 +979,10 @@
       "resetMfaFormDescription": "Here you can reset the two-factor authentication for users.",
       "selectUsersTitle": "Select Users",
       "selectUsersDescription": "Select the users for whom you want to reset the two-factor authentication.",
-      "totpResetSuccess": "TOTP for user {{username}} has been disabled successfully."
+      "totpResetSuccess": "TOTP for user {{username}} has been disabled successfully.",
+      "setAdminGroupTitle": "Set administrator group",
+      "setAdminGroupDescription": "Additional administrators can be defined here. The global administrator remains unchanged.",
+      "setAdminGroupSelectDescription": "Groups can be selected using the search field."
     },
     "info": {
       "title": "Info"

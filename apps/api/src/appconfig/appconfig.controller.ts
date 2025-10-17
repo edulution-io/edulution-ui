@@ -17,7 +17,7 @@ import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import AppConfigService from './appconfig.service';
 import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
-import AppConfigGuard from './appconfig.guard';
+import AdminGuard from '../common/guards/admin.guard';
 import { Public } from '../common/decorators/public.decorator';
 
 @ApiTags(EDU_API_CONFIG_ENDPOINTS.ROOT)
@@ -27,13 +27,13 @@ class AppConfigController {
   constructor(private readonly appConfigService: AppConfigService) {}
 
   @Post()
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   createConfig(@GetCurrentUserGroups() ldapGroups: string[], @Body() appConfigDto: AppConfigDto) {
     return this.appConfigService.insertConfig(appConfigDto, ldapGroups);
   }
 
   @Put(':name')
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   updateConfig(
     @Param('name') name: string,
     @Body() appConfigDto: AppConfigDto,
@@ -43,7 +43,7 @@ class AppConfigController {
   }
 
   @Patch(':name')
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   patchConfig(
     @Param('name') name: string,
     @Body() patchConfigDto: PatchConfigDto,
@@ -70,13 +70,13 @@ class AppConfigController {
   }
 
   @Delete(':name')
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   deleteConfig(@Param('name') name: string, @GetCurrentUserGroups() ldapGroups: string[]) {
     return this.appConfigService.deleteConfig(name, ldapGroups);
   }
 
   @Get(EDU_API_CONFIG_ENDPOINTS.PROXYCONFIG)
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   getConfigFile(@Query('filePath') filePath: string) {
     return this.appConfigService.getFileAsBase64(filePath);
   }
