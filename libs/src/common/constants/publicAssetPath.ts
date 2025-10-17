@@ -12,6 +12,6 @@
 
 import PUBLIC_DATA_PATH from '@libs/common/constants/publicDataPath';
 
-const PUBLIC_ASSET_PATH: string = `${PUBLIC_DATA_PATH}/assets`;
+const PUBLIC_ASSET_PATH = `${PUBLIC_DATA_PATH}/assets`;
 
 export default PUBLIC_ASSET_PATH;

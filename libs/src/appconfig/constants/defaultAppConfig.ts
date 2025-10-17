@@ -63,7 +63,7 @@ const defaultAppConfig: AppConfigDto[] = [
     appType: NATIVE,
     options: {},
     accessGroups: [],
-    extendedOptions: { PAGE_HAS_PUBLIC_ASSETS: true },
+    extendedOptions: {},
     position: 4,
   },
   {
