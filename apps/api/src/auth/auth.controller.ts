@@ -37,19 +37,28 @@ import AuthService from './auth.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
 
-const oidcConfigCacheTtl = Number(process.env.EDUI_OIDC_CONFIG_CACHE_TTL ?? AUTH_CACHE_TTL_MS);
+const { EDUI_OIDC_CONFIG_CACHE_TTL } = process.env;
+const oidcConfigCacheTtl =
+  EDUI_OIDC_CONFIG_CACHE_TTL === undefined || EDUI_OIDC_CONFIG_CACHE_TTL === ''
+    ? AUTH_CACHE_TTL_MS
+    : Number(EDUI_OIDC_CONFIG_CACHE_TTL);
 
 @ApiTags(AUTH_PATHS.AUTH_ENDPOINT)
 @Controller(AUTH_PATHS.AUTH_ENDPOINT)
 class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {
+    if (oidcConfigCacheTtl > 0) {
+      Logger.debug(`OIDC Config Cache TTL: ${oidcConfigCacheTtl} ms`, AuthController.name);
+    } else {
+      Logger.debug(`OIDC Config Cache deactivated`, AuthController.name);
+    }
+  }
 
   @Public()
   @(oidcConfigCacheTtl > 0 ? UseInterceptors(CacheInterceptor) : () => {})
   @CacheTTL(oidcConfigCacheTtl)
   @Get(AUTH_PATHS.AUTH_OIDC_CONFIG_PATH)
   authconfig(@Req() req: Request) {
-    Logger.debug(oidcConfigCacheTtl, AuthController.name);
     return this.authService.authconfig(req);
   }
 
