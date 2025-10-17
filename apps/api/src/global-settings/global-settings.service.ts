@@ -105,7 +105,7 @@ class GlobalSettingsService implements OnModuleInit {
 
       let adminGroupsList: string[] = [normalizedGroup];
 
-      if (globalSetting?.auth?.adminGroups) {
+      if (Array.isArray(globalSetting?.auth?.adminGroups) && globalSetting.auth.adminGroups.length > 0) {
         adminGroupsList = globalSetting.auth.adminGroups.map((group) => group.path);
       }
 
