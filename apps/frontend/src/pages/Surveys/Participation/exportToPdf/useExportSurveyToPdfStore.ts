@@ -16,7 +16,6 @@ import { create } from 'zustand';
 import { IDocOptions, SurveyPDF } from 'survey-pdf';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
-import sanitizeFilename from '@libs/common/utils/sanitizeFilename';
 
 const defaultDocOptions: IDocOptions = {
   compress: false,
@@ -57,7 +56,8 @@ const useExportSurveyToPdfStore = create<ExportSurveyToPdfStore>((set) => ({
     }
 
     try {
-      await surveyPdf.save(`survey-${sanitizeFilename(surveyFormula.title)}-${getCurrentDateTimeString()}`);
+      const normalizedTitle = surveyFormula.title.replace(/[-_.]/g, '').trim().toLowerCase();
+      await surveyPdf.save(`survey-${normalizedTitle}-${getCurrentDateTimeString()}`);
       toast.dismiss('processing-export-survey-to-pdf');
       toast.success(t('survey.export.success'));
     } catch (error) {
