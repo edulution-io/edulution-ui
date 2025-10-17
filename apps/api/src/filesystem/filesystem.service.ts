@@ -47,7 +47,6 @@ import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResul
 import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
-import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
 import THIRTY_DAYS from '@libs/common/constants/thirtyDays';
 import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 import UsersService from '../users/users.service';
@@ -361,7 +360,9 @@ class FilesystemService {
     }
   }
 
-  async serveFile(filePath: string, res: Response) {
+  async serveFiles(name: string, filename: string, res: Response) {
+    const filePath = join(APPS_FILES_PATH, name, filename);
+
     await FilesystemService.throwErrorIfFileNotExists(filePath);
 
     const contentType = lookup(filePath) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
@@ -370,16 +371,6 @@ class FilesystemService {
     const fileStream = await this.createReadStream(filePath);
     fileStream.pipe(res);
     return res;
-  }
-
-  async serveFiles(name: string, filename: string, res: Response) {
-    const filePath = join(APPS_FILES_PATH, name, filename);
-    return this.serveFile(filePath, res);
-  }
-
-  async servePublicFiles(name: string, filename: string, res: Response) {
-    const filePath = join(PUBLIC_ASSET_PATH, name, filename);
-    return this.serveFile(filePath, res);
   }
 
   async removeOldTempFiles(path: string, currentTimeMs?: number): Promise<void> {
