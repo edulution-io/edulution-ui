@@ -14,6 +14,7 @@ import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Logger } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
+import { ConfigService } from '@nestjs/config';
 import SurveysService from './surveys.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import { createdSurvey01, createSurvey01, firstMockJWTUser } from './mocks';
@@ -37,6 +38,7 @@ describe('SurveyService', () => {
       providers: [
         SurveysService,
         SseService,
+        ConfigService,
         {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),

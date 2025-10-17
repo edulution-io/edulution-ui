@@ -66,11 +66,9 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
   const initialFormValues = selectedConfig || {
     [WEBDAV_SHARE_TABLE_COLUMNS.ROOT_SERVER]: rootServers[0]?.displayName,
     [WEBDAV_SHARE_TABLE_COLUMNS.DISPLAY_NAME]: '',
-    [WEBDAV_SHARE_TABLE_COLUMNS.URL]: '',
+    [WEBDAV_SHARE_TABLE_COLUMNS.SHARE_PATH]: '',
     [WEBDAV_SHARE_TABLE_COLUMNS.PATH_VARIABLES]: [],
-    [WEBDAV_SHARE_TABLE_COLUMNS.IS_ROOT_SERVER]: false,
     [WEBDAV_SHARE_TABLE_COLUMNS.ACCESSGROUPS]: [],
-    [WEBDAV_SHARE_TABLE_COLUMNS.TYPE]: WEBDAV_SHARE_TYPE.LINUXMUSTER,
   };
 
   const form = useForm<WebdavShareDto>({
@@ -129,6 +127,7 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
       ...webdavShareValues,
       url: appendSlashToUrl(newUrl.href),
       rootServer: selectedRootServer?.webdavShareId || '',
+      isRootServer: false,
       pathname: appendSlashToUrl(newUrl.pathname),
       type: selectedRootServer?.type || WEBDAV_SHARE_TYPE.LINUXMUSTER,
       authentication: selectedRootServer?.authentication || WEBDAV_SHARE_AUTHENTICATION_METHODS.BASIC,

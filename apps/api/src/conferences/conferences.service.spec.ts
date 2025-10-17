@@ -11,6 +11,7 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import axios from 'axios';
@@ -114,6 +115,7 @@ describe(ConferencesService.name, () => {
       providers: [
         ConferencesService,
         SseService,
+        ConfigService,
         {
           provide: getModelToken(Conference.name),
           useValue: conferencesModelMock,

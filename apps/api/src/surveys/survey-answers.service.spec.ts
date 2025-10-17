@@ -13,6 +13,7 @@
 import { Model, Types } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveysAttachmentService from 'apps/api/src/surveys/surveys-attachment.service';
@@ -88,6 +89,7 @@ describe('SurveyAnswersService', () => {
       providers: [
         SurveysService,
         SseService,
+        ConfigService,
         {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),

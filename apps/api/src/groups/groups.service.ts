@@ -103,16 +103,28 @@ class GroupsService {
     }
   }
 
-  private static sanitizeGroupMembers(members: LDAPUser[] | GroupMemberDto[]): GroupMemberDto[] {
-    return Array.isArray(members)
-      ? members.map((member) => ({
-          id: member.id,
-          username: member.username,
-          firstName: member.firstName,
-          lastName: member.lastName,
-          email: member.email,
-        }))
-      : [];
+  private static sanitizeGroupMembers(members: (LDAPUser | GroupMemberDto)[]): GroupMemberDto[] {
+    if (!Array.isArray(members)) return [];
+
+    const sanitized: GroupMemberDto[] = members.map((m) => ({
+      id: m.id ?? '',
+      username: m.username ?? '',
+      firstName: m.firstName ?? '',
+      lastName: m.lastName ?? '',
+      email: m.email ?? '',
+    }));
+
+    const valid = sanitized.filter((m) => m.id.trim().length > 0 && m.username.trim().length > 0);
+
+    const dropped = sanitized.length - valid.length;
+    if (dropped > 0) {
+      Logger.warn(
+        `Sanitizing group members dropped ${dropped} invalid entries (${valid.length} valid).`,
+        GroupsService.name,
+      );
+    }
+
+    return valid;
   }
 
   private async fetchAndCacheAllGroups(): Promise<Group[]> {
@@ -211,6 +223,7 @@ class GroupsService {
       newMembers = await this.fetchGroupMembers(group.id);
     }
 
+    Logger.verbose(`Updating group ${group.name} (${group.id}) with ${newMembers?.length} members`, GroupsService.name);
     const sanitizedMembers = newMembers?.length ? GroupsService.sanitizeGroupMembers(newMembers) : [];
 
     await this.cacheManager.set(

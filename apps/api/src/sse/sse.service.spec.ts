@@ -13,6 +13,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Response } from 'express';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import { ConfigService } from '@nestjs/config';
 import SseService from './sse.service';
 
 describe('SseService', () => {
@@ -20,7 +21,7 @@ describe('SseService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SseService],
+      providers: [SseService, ConfigService],
     }).compile();
 
     sseService = module.get<SseService>(SseService);
