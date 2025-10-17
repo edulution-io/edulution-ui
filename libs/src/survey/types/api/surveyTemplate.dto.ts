@@ -10,9 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
-import { TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
+import SurveyDto from './survey.dto';
 
-const SURVEYS_FILE_FOLDERS = [TEMPLATES, ATTACHMENT_FOLDER];
+export type TemplateDto = Partial<SurveyDto> & { formula: SurveyFormula };
 
-export default SURVEYS_FILE_FOLDERS;
+export interface SurveyTemplateDto {
+  template: TemplateDto;
+  fileName?: string;
+  isActive?: boolean;
+}

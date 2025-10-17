@@ -10,11 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SurveyDto from './survey.dto';
+import surveyTemplatesMigration000NewFromExchangeFolder from './surveyTemplatesMigration000NewFromExchangeFolder';
 
-interface SurveyTemplateDto {
-  fileName?: string;
-  template: Partial<SurveyDto>;
-}
+// Add new migrations here
+const surveyTemplatesMigrationsList = [surveyTemplatesMigration000NewFromExchangeFolder];
 
-export default SurveyTemplateDto;
+export default surveyTemplatesMigrationsList;
