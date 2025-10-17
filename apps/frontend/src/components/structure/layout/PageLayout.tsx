@@ -18,6 +18,7 @@ import { useLocation } from 'react-router-dom';
 import FLOATING_BUTTONS_BAR_ID from '@libs/ui/constants/floatingButtonsBarId';
 import useUserAccounts from '@/hooks/useUserAccounts';
 import { getFromPathName } from '@libs/common/utils';
+import useIsEdulutionApp from '@/hooks/useIsEduLutionApp';
 
 interface AppLayoutProps {
   nativeAppHeader?: NativeAppHeaderProps;
@@ -27,6 +28,7 @@ interface AppLayoutProps {
 
 const PageLayout = ({ nativeAppHeader, children, isFullScreen }: AppLayoutProps) => {
   const { pathname } = useLocation();
+  const isEdulutionApp = useIsEdulutionApp();
   const rootPathName = getFromPathName(pathname, 1);
 
   useUserAccounts(rootPathName);
@@ -49,7 +51,7 @@ const PageLayout = ({ nativeAppHeader, children, isFullScreen }: AppLayoutProps)
 
       <div id={FLOATING_BUTTONS_BAR_ID} />
 
-      <Footer />
+      {!isEdulutionApp && <Footer />}
     </div>
   );
 };
