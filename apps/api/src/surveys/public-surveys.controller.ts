@@ -78,14 +78,14 @@ class PublicSurveysController {
     return response;
   }
 
-  @Get(`${FILES}/:surveyId/:questionId/:filename`)
+  @Get(`${FILES}/:surveyId/:questionName/:filename`)
   @Public()
-  serveFile(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
-    const { surveyId, questionId, filename } = params;
-    return this.surveysAttachmentService.serveFiles(surveyId, questionId, filename, res);
+  serveFile(@Param() params: { surveyId: string; questionName: string; filename: string }, @Res() res: Response) {
+    const { surveyId, questionName, filename } = params;
+    return this.surveysAttachmentService.serveFiles(surveyId, questionName, filename, res);
   }
 
-  @Post(`${ANSWER}/${FILES}/:userName/:surveyId`)
+  @Post(`${ANSWER}/${FILES}/:userName/:surveyId/:questionName`)
   @Public()
   @ApiConsumes(RequestResponseContentType.MULTIPART_FORM_DATA)
   @UseInterceptors(
@@ -95,7 +95,8 @@ class PublicSurveysController {
         (req) => {
           const userName = req.params?.userName;
           const surveyId = req.params?.surveyId;
-          if (!userName || !surveyId) {
+          const questionName = req.params?.questionName;
+          if (!userName || !surveyId || !questionName) {
             throw new CustomHttpException(
               CommonErrorMessages.INVALID_REQUEST_DATA,
               HttpStatus.UNPROCESSABLE_ENTITY,
@@ -103,7 +104,7 @@ class PublicSurveysController {
               PublicSurveysController.name,
             );
           }
-          return join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
+          return join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionName);
         },
         false,
         (_req, file) => addUuidToFileName(file.originalname),
@@ -123,10 +124,10 @@ class PublicSurveysController {
     )
     file: Express.Multer.File,
     @Res() res: Response,
-    @Param() params: { userName: string; surveyId: string },
+    @Param() params: { userName: string; surveyId: string; questionName: string },
   ) {
-    const { userName, surveyId } = params;
-    if (!userName || !surveyId || !file) {
+    const { userName, surveyId, questionName } = params;
+    if (!userName || !surveyId || !questionName || !file) {
       throw new CustomHttpException(
         CommonErrorMessages.INVALID_REQUEST_DATA,
         HttpStatus.UNPROCESSABLE_ENTITY,
@@ -134,20 +135,20 @@ class PublicSurveysController {
         PublicSurveysController.name,
       );
     }
-    const filePath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, file.filename);
-    const url = `${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${userName}/${surveyId}/${file.filename}`;
+    const filePath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionName, file.filename);
+    const url = `${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${userName}/${surveyId}/${questionName}/${file.filename}`;
 
     await FilesystemService.checkIfFileExist(filePath);
     const content = (await FilesystemService.readFile(filePath)).toString('base64');
     return res.status(HttpStatus.CREATED).json({ name: file.filename, url, content });
   }
 
-  @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:fileName`)
+  @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:questionName`)
   @Public()
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  async deleteTempFiles(@Param() params: { userName: string; surveyId: string; fileName: string }) {
-    const { userName, surveyId, fileName } = params;
-    if (!userName || !surveyId || !fileName) {
+  async deleteTempQuestionAnswerFiles(@Param() params: { userName: string; surveyId: string; questionName: string }) {
+    const { userName, surveyId, questionName } = params;
+    if (!userName || !surveyId || !questionName) {
       throw new CustomHttpException(
         CommonErrorMessages.INVALID_REQUEST_DATA,
         HttpStatus.UNPROCESSABLE_ENTITY,
@@ -155,14 +156,17 @@ class PublicSurveysController {
         PublicSurveysController.name,
       );
     }
-    await SurveyAnswerAttachmentsService.deleteTempFileFromAnswer(userName, surveyId, fileName);
+    await this.surveyAnswerAttachmentsService.deleteTempQuestionAnswerFiles(userName, surveyId, questionName);
   }
 
-  @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:filename`)
+  @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:questionName/:fileName`)
   @Public()
-  serveFileFromAnswer(@Param() params: { userName: string; surveyId: string; filename: string }, @Res() res: Response) {
-    const { userName, surveyId, filename } = params;
-    if (!userName || !surveyId || !filename) {
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  async deleteTempAnswerFiles(
+    @Param() params: { userName: string; surveyId: string; questionName: string; fileName: string },
+  ) {
+    const { userName, surveyId, questionName, fileName } = params;
+    if (!userName || !surveyId || !questionName || !fileName) {
       throw new CustomHttpException(
         CommonErrorMessages.INVALID_REQUEST_DATA,
         HttpStatus.UNPROCESSABLE_ENTITY,
@@ -170,7 +174,25 @@ class PublicSurveysController {
         PublicSurveysController.name,
       );
     }
-    return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, filename, res);
+    await SurveyAnswerAttachmentsService.deleteTempAnswerFiles(userName, surveyId, questionName, fileName);
+  }
+
+  @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:questionName/:filename`)
+  @Public()
+  serveFileFromAnswer(
+    @Param() params: { userName: string; surveyId: string; questionName: string; filename: string },
+    @Res() res: Response,
+  ) {
+    const { userName, surveyId, questionName, filename } = params;
+    if (!userName || !surveyId || !questionName || !filename) {
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+        undefined,
+        PublicSurveysController.name,
+      );
+    }
+    return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, questionName, filename, res);
   }
 
   @Get(`${CHOICES}/:surveyId/:questionName`)

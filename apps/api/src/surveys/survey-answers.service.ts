@@ -311,7 +311,7 @@ class SurveyAnswersService implements OnModuleInit {
   async anonymousStrategy(survey: SurveyDocument, answer: JSON): Promise<SurveyAnswerDocument | null> {
     const username = `anonymous_${uuidv4()}`;
     const user: Attendee = { username };
-    const updatedAnswer = await this.surveyAnswerAttachmentsService.moveAnswersAttachmentsToPermanentStorage(
+    const updatedAnswer = await this.surveyAnswerAttachmentsService.moveAnswerAttachmentsToPermanentStorage(
       username,
       String(survey.id),
       answer,
@@ -350,7 +350,7 @@ class SurveyAnswersService implements OnModuleInit {
     const newPublicUserLogin = createNewPublicUserLogin(firstName, newPublicUserId);
     const user: Attendee = { ...attendee, username: newPublicUserLogin, lastName: newPublicUserId };
 
-    const updatedAnswer = await this.surveyAnswerAttachmentsService.moveAnswersAttachmentsToPermanentStorage(
+    const updatedAnswer = await this.surveyAnswerAttachmentsService.moveAnswerAttachmentsToPermanentStorage(
       firstName,
       String(survey.id),
       answer,
@@ -386,7 +386,7 @@ class SurveyAnswersService implements OnModuleInit {
 
     await this.throwErrorIfParticipationIsNotPossible(survey, attendee.username);
 
-    const updatedAnswer = await this.surveyAnswerAttachmentsService.moveAnswersAttachmentsToPermanentStorage(
+    const updatedAnswer = await this.surveyAnswerAttachmentsService.moveAnswerAttachmentsToPermanentStorage(
       attendee.username,
       String(survey.id),
       answer,
@@ -423,7 +423,7 @@ class SurveyAnswersService implements OnModuleInit {
 
     await this.throwErrorIfParticipationIsNotPossible(survey, attendee.username);
 
-    const updatedAnswer = await this.surveyAnswerAttachmentsService.moveAnswersAttachmentsToPermanentStorage(
+    const updatedAnswer = await this.surveyAnswerAttachmentsService.moveAnswerAttachmentsToPermanentStorage(
       attendee.username,
       String(survey.id),
       answer,

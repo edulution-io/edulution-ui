@@ -13,7 +13,7 @@
 import { t } from 'i18next';
 import { toast } from 'sonner';
 import { create } from 'zustand';
-import { Model, CompletingEvent } from 'survey-core';
+import { Model, CompletingEvent, SurveyModel, UploadFilesEvent, ClearFilesEvent } from 'survey-core';
 import SurveyAnswerResponseDto from '@libs/survey/types/api/survey-answer-response.dto';
 import AnswerSurvey from '@libs/survey/types/api/answer-survey';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
@@ -55,13 +55,22 @@ interface ParticipateSurveyStore {
 
   publicUserId?: string;
 
-  uploadTempFile: (
+  uploadTempFiles: (
+    formData: FormData,
     surveyId: string,
-    file: File,
+  ) => Promise<Record<string, { name: string; url: string; content: Buffer<ArrayBufferLike> }> | null>;
+  uploadTempFile: (
+    formData: FormData,
+    surveyId: string,
   ) => Promise<{ name: string; url: string; content: Buffer<ArrayBufferLike> } | null>;
+  onUploadFiles: (_: SurveyModel, options: UploadFilesEvent, surveyId: string) => Promise<void>;
   isUploadingFile?: boolean;
-  deleteTempFile: (surveyId: string, file: File, callback: CallableFunction) => Promise<string | undefined>;
+
+  deleteTempFiles: (surveyId: string, questionName: string) => Promise<string>;
+  deleteTempFile: (surveyId: string, questionName: string, file: File & { content?: string }) => Promise<string>;
+  onClearFiles: (_: SurveyModel, options: ClearFilesEvent, surveyId: string) => Promise<void>;
   isDeletingFile?: boolean;
+
   reset: () => void;
 }
 
@@ -182,15 +191,37 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
   },
 
-  uploadTempFile: async (
+  uploadTempFiles: async (
+    formData: FormData,
     surveyId: string,
-    file: File,
-  ): Promise<{ name: string; url: string; content: Buffer<ArrayBufferLike> } | null> => {
+  ): Promise<Record<string, { name: string; url: string; content: Buffer<ArrayBufferLike> }> | null> => {
     const { attendee } = get();
     set({ isUploadingFile: true });
+
     try {
-      const formData = new FormData();
-      formData.append('file', file);
+      const response = await eduApi.post<
+        Record<string, { name: string; url: string; content: Buffer<ArrayBufferLike> }>
+      >(
+        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}`,
+        formData,
+        {
+          headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
+        },
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error: ', error);
+      return null;
+    } finally {
+      set({ isUploadingFile: false });
+    }
+  },
+
+  uploadTempFile: async (formData: FormData, surveyId: string) => {
+    const { attendee } = get();
+    set({ isUploadingFile: true });
+
+    try {
       const response = await eduApi.post<{ name: string; url: string; content: Buffer<ArrayBufferLike> }>(
         `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}`,
         formData,
@@ -200,34 +231,143 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       );
       return response.data;
     } catch (error) {
-      handleApiError(error, set);
+      console.error('Error: ', error);
       return null;
     } finally {
       set({ isUploadingFile: false });
     }
   },
 
+  onUploadFiles: async (_: SurveyModel, options: UploadFilesEvent, surveyId: string) => {
+    const { uploadTempFiles } = get();
+    const formData = new FormData();
+    options.files.forEach((file) => {
+      formData.append(file.name, file);
+    });
+    const response = await uploadTempFiles(formData, surveyId);
+    if (response === null) {
+      options.callback([]);
+      return;
+    }
+    options.callback(
+      options.files.map((file) => ({
+        file,
+        content: `${EDU_API_URL}/${response[file.name]?.url}`,
+      })),
+    );
+  },
+
+  deleteTempFiles: async (surveyId: string, questionName: string): Promise<string> => {
+    // eslint-disable-next-line no-console
+    console.log('Delete all Temp Files...');
+
+    const { attendee } = get();
+    try {
+      const response = await eduApi.delete<string>(
+        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionName}`,
+      );
+      if (response.status === 200) {
+        toast.success(`Files for the question with ${questionName} were deleted successfully`);
+        return 'success';
+      }
+    } catch (error) {
+      toast.error(`Failed to delete file for the question with ID: ${questionName}`);
+    }
+    return 'error';
+  },
+
   deleteTempFile: async (
     surveyId: string,
+    questionName: string,
     file: File & { content?: string },
-    callback: CallableFunction,
-  ): Promise<string | undefined> => {
+  ): Promise<string> => {
+    // eslint-disable-next-line no-console
+    console.log('Delete Temp File:', file.name);
+
     const { attendee } = get();
-    set({ isDeletingFile: true });
+    const fileName = file.name || file.content?.split('/').pop();
     try {
-      const fileName = file.name || file.content?.split('/').pop();
       const response = await eduApi.delete<string>(
-        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${fileName}`,
+        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionName}/${fileName}`,
       );
-      toast.success(t('survey.editor.fileDeletionSuccess'));
-      callback('success', `${EDU_API_URL}/${response.data}`);
-      return 'success';
+      if (response.status === 200) {
+        toast.success(`File ${fileName} was deleted successfully`);
+        return 'success';
+      }
     } catch (error) {
-      handleApiError(error, set);
-      callback('error');
-      return undefined;
-    } finally {
-      set({ isDeletingFile: false });
+      toast.error(`Failed to delete file: ${fileName}`);
+    }
+    return 'error';
+  },
+
+  onClearFiles: async (_: SurveyModel, options: ClearFilesEvent, surveyId: string): Promise<void> => {
+    const { deleteTempFiles, deleteTempFile } = get();
+
+    // eslint-disable-next-line no-console
+    console.log('ClearFilesEvent options:', options);
+
+    // eslint-disable-next-line no-console
+    console.log('fileName:', options.fileName);
+    if (options.fileName === null) {
+      // eslint-disable-next-line no-console
+      console.log('  -> should delete all temp files.');
+      try {
+        await deleteTempFiles(surveyId, '');
+        options.callback('success');
+        return;
+      } catch (error) {
+        options.callback('error');
+        return;
+      }
+    }
+
+    // eslint-disable-next-line no-console
+    console.log('value:', options.value);
+    let filesToDelete: Array<File & { content?: string }> = [];
+    const value = options.value as undefined | (File & { content?: string }) | Array<File & { content?: string }>;
+    if (!value) {
+      // eslint-disable-next-line no-console
+      console.log('  -> undefined -> nothing to delete.');
+      options.callback('success');
+      return;
+    }
+    if (Array.isArray(value)) {
+      if (value.length === 0) {
+        // eslint-disable-next-line no-console
+        console.log('  -> empty array -> nothing to delete.');
+        options.callback('success');
+        return;
+      }
+      if (options.fileName) {
+        const file = value.filter((item: File & { content?: string }) => item.name === options.fileName);
+        filesToDelete.push(...file);
+      } else {
+        filesToDelete = value;
+      }
+    } else {
+      filesToDelete.push(value);
+    }
+
+    // eslint-disable-next-line no-console
+    console.log('filesToDelete:', filesToDelete);
+    if (filesToDelete.length === 0) {
+      // eslint-disable-next-line no-console
+      console.log('  -> empty array -> nothing to delete.');
+
+      console.error(`File with name ${options.fileName} is not found`);
+      options.callback('error');
+      return;
+    }
+
+    const questionName = options.question?.name;
+    const results = await Promise.all(
+      filesToDelete.map((file: File & { content?: string }) => deleteTempFile(surveyId, questionName, file)),
+    );
+
+    if (results.every((res) => res === 'success')) {
+      options.callback('success');
+    } else {
+      options.callback('error');
     }
   },
 
