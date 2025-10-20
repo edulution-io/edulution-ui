@@ -12,10 +12,10 @@
 
 import React, { useMemo } from 'react';
 import { MdClose, MdMenu } from 'react-icons/md';
-import { IconContext } from 'react-icons';
 import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
 import useMenuBarStore from '@/components/shared/useMenuBarStore';
-import { MOBILE_TOP_BAR_HEIGHT_PX } from '@libs/ui/constants/sidebar';
+import { MOBILE_TOP_BAR_HEIGHT_PX, SIDEBAR_ICON_WIDTH } from '@libs/ui/constants/sidebar';
+import { MobileLogoIcon } from '@/assets/icons';
 
 interface MobileTopBarProps {
   showLeftButton?: boolean;
@@ -25,7 +25,7 @@ interface MobileTopBarProps {
 const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, showRightButton = true }) => {
   const { toggleMobileSidebar: onRightButtonClick, isMobileSidebarOpen: isRightMenuOpen } = useSidebarStore();
   const { toggleMobileMenuBar: onLeftButtonClick, isMobileMenuBarOpen: isLeftMenuOpen } = useMenuBarStore();
-  const iconContextValue = useMemo(() => ({ className: 'h-8 w-8' }), []);
+  const iconClassName = useMemo(() => 'h-10 w-10', []);
 
   if (!showLeftButton && !showRightButton) {
     return null;
@@ -45,9 +45,7 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
             onClick={onLeftButtonClick}
             className="rounded-md border-2 border-black border-opacity-10 bg-black bg-opacity-50"
           >
-            <IconContext.Provider value={iconContextValue}>
-              <MdMenu />
-            </IconContext.Provider>
+            <MdMenu className={iconClassName} />
           </button>
         ) : (
           <div />
@@ -59,9 +57,12 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
             onClick={onRightButtonClick}
             className="rounded-md border-2 border-black border-opacity-10 bg-black bg-opacity-50"
           >
-            <IconContext.Provider value={iconContextValue}>
-              <MdMenu />
-            </IconContext.Provider>
+            <img
+              src={MobileLogoIcon}
+              className={iconClassName}
+              width={SIDEBAR_ICON_WIDTH}
+              alt="edulution-mobile-logo"
+            />
           </button>
         ) : (
           <div />
@@ -72,11 +73,9 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
         <button
           type="button"
           onClick={onLeftButtonClick}
-          className="fixed right-4 top-1 z-[1000] rounded-md border-2 border-black border-opacity-10 bg-black bg-opacity-50"
+          className="fixed right-4 top-0 z-[1000] rounded-md border-2 border-black border-opacity-10 bg-black bg-opacity-50"
         >
-          <IconContext.Provider value={iconContextValue}>
-            <MdClose />
-          </IconContext.Provider>
+          <MdClose className={iconClassName} />
         </button>
       )}
 
@@ -84,11 +83,9 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
         <button
           type="button"
           onClick={onRightButtonClick}
-          className="fixed left-4 top-1 z-[1000] rounded-md border-2 border-black border-opacity-10 bg-black bg-opacity-50"
+          className="fixed left-4 top-0 z-[1000] rounded-md border-2 border-black border-opacity-10 bg-black bg-opacity-50"
         >
-          <IconContext.Provider value={iconContextValue}>
-            <MdClose />
-          </IconContext.Provider>
+          <MdClose className={iconClassName} />
         </button>
       )}
     </>
