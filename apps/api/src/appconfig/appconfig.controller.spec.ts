@@ -18,6 +18,7 @@ import { AppConfig } from './appconfig.schema';
 import { mockAppConfig, mockAppConfigModel, mockAppConfigService, mockLdapGroup } from './appconfig.mock';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 jest.mock('./appconfig.service');
 
@@ -38,6 +39,7 @@ describe('AppConfigController', () => {
           useValue: mockAppConfigModel,
         },
         { provide: FilesystemService, useValue: mockFilesystemService },
+        { provide: GlobalSettingsService, useValue: { getAdminGroupsFromCache: jest.fn() } },
       ],
     }).compile();
 

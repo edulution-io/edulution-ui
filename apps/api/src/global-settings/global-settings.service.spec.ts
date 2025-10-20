@@ -9,9 +9,10 @@
  *
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
+import { ConfigService } from '@nestjs/config';
 import { Model, UpdateWriteOpResult } from 'mongoose';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
@@ -35,7 +36,7 @@ class MockGlobalSettings {
   static create = jest.fn();
 }
 
-describe('GlobalSettingsService', () => {
+describe(GlobalSettingsService.name, () => {
   let service: GlobalSettingsService;
   let model: Partial<Record<keyof Model<GlobalSettingsDocument>, jest.Mock>> & {
     findOne?: jest.Mock;
@@ -51,6 +52,7 @@ describe('GlobalSettingsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GlobalSettingsService,
+        ConfigService,
         { provide: getModelToken(GlobalSettings.name), useValue: MockGlobalSettings },
         {
           provide: CACHE_MANAGER,

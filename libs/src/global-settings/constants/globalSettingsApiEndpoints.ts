@@ -15,3 +15,4 @@ export const GLOBAL_SETTINGS_ADMIN_ENDPOINT = 'admin';
 export const GLOBAL_SETTINGS_BRANDING_ENDPOINT = 'branding';
 export const GLOBAL_SETTINGS_BRANDING_LOGO = `${GLOBAL_SETTINGS_BRANDING_ENDPOINT}/logo`;
 export const GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS = 'mfaEnforcedGroups';
+export const GLOBAL_SETTINGS_ADMIN_GROUPS = 'adminGroups';

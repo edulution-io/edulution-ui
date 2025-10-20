@@ -10,9 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const ALL_GROUPS_CACHE_KEY = 'allGroups-';
-export const GROUP_WITH_MEMBERS_CACHE_KEY = 'groupWithMembers';
-export const ALL_USERS_CACHE_KEY = 'allUsers-';
-export const ALL_SCHOOLS_CACHE_KEY = 'allSchools';
-export const DEPLOYMENT_TARGET_CACHE_KEY = 'deployment-target';
-export const ADMIN_GROUPS = 'adminGroups';
+const GLOBAL_SETTINGS_TABS = {
+  CONTAINER: 'container',
+  GLOBAL_SETTINGS: 'global-settings',
+  USER_ADMINISTRATION: 'user-administration',
+  INFO: 'info',
+} as const;
+
+export default GLOBAL_SETTINGS_TABS;
