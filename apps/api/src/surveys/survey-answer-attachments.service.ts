@@ -14,7 +14,6 @@ import { join } from 'path';
 import { Response } from 'express';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
-// import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import SURVEY_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersAttachmentPath';
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
@@ -70,66 +69,6 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     }
     await FilesystemService.deleteFile(tempFilesPath, fileName);
   }
-
-  //   async moveAnswersAttachmentsToPermanentStorage(userName: string, surveyId: string, answer: JSON): Promise<JSON> {
-  //   if (!userName || !surveyId || !answer) {
-  //     throw new CustomHttpException(
-  //       SurveyAnswerErrorMessages.NotAbleToUpdateSurveyAnswerError,
-  //       HttpStatus.INTERNAL_SERVER_ERROR,
-  //       undefined,
-  //       SurveyAnswerAttachmentsService.name,
-  //     );
-  //   }
-  //   const directory = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName);
-
-  //   const tempDirectory = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
-  //   const tempFileNames = await this.fileSystemService.getAllFilenamesInDirectory(tempDirectory);
-  //   if (tempFileNames.length === 0) {
-  //     return answer;
-  //   }
-
-  //   await this.fileSystemService.ensureDirectoryExists(directory);
-
-  //   const surveyAnswer = answer as unknown as Record<
-  //     string,
-  //     (object & { content: string }) | (object & { content: string })[]
-  //   >;
-
-  //   const fileNamesToMove: string[] = [];
-  //   const persistentFiles: string[] = [];
-  //   const permanentFiles = await this.fileSystemService.getAllFilenamesInDirectory(directory);
-  //   Object.keys(surveyAnswer).forEach((questionName) => {
-  //     const questionAnswer = surveyAnswer[questionName];
-  //     if (Array.isArray(questionAnswer)) {
-  //       questionAnswer.forEach((item) => {
-  //         const fileName = item.content?.split('/').pop();
-  //         if (fileName && permanentFiles.includes(fileName)) {
-  //           persistentFiles.push(fileName);
-  //         }
-  //         if (fileName && tempFileNames.includes(fileName)) {
-  //           fileNamesToMove.push(fileName);
-  //         }
-  //       });
-  //     } else {
-  //       const fileName = questionAnswer.content?.split('/').pop();
-  //       if (fileName && tempFileNames.includes(fileName)) {
-  //         fileNamesToMove.push(fileName);
-  //       }
-  //     }
-  //   });
-  //   const movingPromises = fileNamesToMove.map(async (fileName) =>
-  //     FilesystemService.moveFile(join(tempDirectory, fileName), join(directory, fileName)),
-  //   );
-  //   await Promise.all(movingPromises);
-
-  //   const deletionPromises = permanentFiles.map(
-  //     (fileName): Promise<void> =>
-  //       persistentFiles.includes(fileName) ? Promise.resolve() : FilesystemService.deleteFile(directory, fileName),
-  //   );
-  //   await Promise.all(deletionPromises);
-
-  //   return JSON.parse(JSON.stringify(surveyAnswer)) as JSON;
-  // }
 
   async moveQuestionAttachmentsToPermanentStorage(
     userName: string,

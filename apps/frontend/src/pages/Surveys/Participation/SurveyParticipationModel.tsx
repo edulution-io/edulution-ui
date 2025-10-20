@@ -23,10 +23,7 @@ import {
   SurveyModel,
   UploadFilesEvent,
 } from 'survey-core';
-// import { FileDownloadDto } from '@libs/survey/types/api/file-download.dto';
-// import { removeUuidFromFileName } from '@libs/common/utils/uuidAndFileNames';
-// import EDU_API_URL from '@libs/common/constants/eduApiUrl';
-// import SURVEY_ANSWERS_MAXIMUM_FILE_SIZE from '@libs/survey/constants/survey-answers-maximum-file-size';
+import SURVEY_ANSWERS_MAXIMUM_FILE_SIZE from '@libs/survey/constants/survey-answers-maximum-file-size';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import useLanguage from '@/hooks/useLanguage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
@@ -65,14 +62,8 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
   const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
 
-  const {
-    fetchAnswer,
-    isFetching,
-    answerSurvey,
-    previousAnswer,
-    /* uploadTempFile, deleteTempFile */ onClearFiles,
-    onUploadFiles,
-  } = useParticipateSurveyStore();
+  const { fetchAnswer, isFetching, answerSurvey, previousAnswer, uploadTempFile, deleteTempFile, deleteTempFiles } =
+    useParticipateSurveyStore();
 
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -113,50 +104,33 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       }
     });
 
-    // newModel.onUploadFiles.add(async (_: SurveyModel, options: UploadFilesEvent): Promise<void> => {
-    //   // eslint-disable-next-line no-console
-    //   console.log('UploadFilesEvent options:', options);
-    //   // eslint-disable-next-line no-console
-    //   console.log('Appended files:', options.files);
-
-    //   const { files, callback } = options;
-    //   if (!selectedSurvey.id || !files?.length || files.some((file) => !file.name?.length)) {
-    //     return callback([]);
-    //   }
-    //   if (files.some((file) => file.size > SURVEY_ANSWERS_MAXIMUM_FILE_SIZE)) {
-    //     toast.error(
-    //       t('survey.participate.fileSizeExceeded', { size: SURVEY_ANSWERS_MAXIMUM_FILE_SIZE / (1024 * 1024) }),
-    //     );
-    //     return callback([]);
-    //   }
-
-    //   const uploadPromises = files.map(async (file) => {
-    //     const data = await uploadTempFile(selectedSurvey.id!, file);
-    //     if (data === null) {
-    //       return null;
-    //     }
-
-    //     const newFile: FileDownloadDto = {
-    //       ...file,
-    //       type: file.type || '*/*',
-    //       originalName: data.name || file.name,
-    //       name: removeUuidFromFileName(data.name || file.name),
-    //       url: `${EDU_API_URL}/${data.url}`,
-    //       content: data.content,
-    //     };
-    //     return newFile;
-    //   });
-    //   const results = await Promise.all(uploadPromises);
-    //   const filteredResults = results.filter((result) => result !== null);
-    //   return callback(
-    //     filteredResults.map((result) => ({
-    //       file: result,
-    //       content: result.url,
-    //     })),
-    //   );
-    // });
     newModel.onUploadFiles.add(async (_: SurveyModel, options: UploadFilesEvent): Promise<void> => {
-      await onUploadFiles(_, options, selectedSurvey.id!);
+      const { files, callback } = options;
+      const { id: surveyId } = selectedSurvey;
+
+      if (!surveyId || !files?.length || files.some((file) => !file.name?.length)) {
+        callback([]);
+        return;
+      }
+      if (files.some((file) => file.size > SURVEY_ANSWERS_MAXIMUM_FILE_SIZE)) {
+        toast.error(
+          t('survey.participate.fileSizeExceeded', { size: SURVEY_ANSWERS_MAXIMUM_FILE_SIZE / (1024 * 1024) }),
+        );
+        callback([]);
+        return;
+      }
+      const questionName = options.question?.name;
+      if (surveyId) {
+        const uploadPromises = files.map(async (file) => uploadTempFile(surveyId, questionName, file));
+        const results = await Promise.all(uploadPromises);
+        const filteredResults = results.filter((result) => result !== null);
+        callback(
+          filteredResults.map((result) => ({
+            file: result,
+            content: result.url,
+          })),
+        );
+      }
     });
 
     newModel.onDownloadFile.add((_: SurveyModel, options: DownloadFileEvent) => {
@@ -180,54 +154,62 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         });
     });
 
-    // newModel.onClearFiles.add(async (_surveyModel: SurveyModel, options: ClearFilesEvent): Promise<void> => {
-    //   // eslint-disable-next-line no-console
-    //   console.log('ClearFilesEvent options:', options);
-    //   // eslint-disable-next-line no-console
-    //   console.log('Appended files:', options.value);
-
-    //   let filesToDelete: File[] = [];
-
-    //   if (options.fileName === null) {
-    //     filesToDelete = ;
-    //   }
-    //   if (!options.value || (Array.isArray(options.value) && options.value.length === 0)) {
-    //     options.callback('success', );
-    //     return;
-    //   }
-
-    //   if (Array.isArray(options.value)) {
-    //     const files = options.value as File[];
-    //     filesToDelete = files.filter((item: File) =>
-    //       options.fileName === null ? true : item.name === options.fileName,
-    //     );
-    //   } else {
-    //     const file = options.value as File;
-    //     filesToDelete = [file];
-    //   }
-    //   if (filesToDelete.length === 0) {
-    //     toast.error(t('common.errors.fileDeletionFailed'));
-    //     options.callback('success');
-    //     return;
-    //   }
-
-    //   const result = await Promise.all(
-    //     filesToDelete.map((file: File) => {
-    //       if (!selectedSurvey || !selectedSurvey.id) {
-    //         options.callback('error');
-    //         return Promise.resolve('error');
-    //       }
-    //       return deleteTempFile(selectedSurvey.id, file, options.callback);
-    //     }),
-    //   );
-    //   if (result.every((res: string | undefined) => res === 'success')) {
-    //     options.callback('success');
-    //     return;
-    //   }
-    //   options.callback('error');
-    // });
     newModel.onClearFiles.add(async (_surveyModel: SurveyModel, options: ClearFilesEvent): Promise<void> => {
-      await onClearFiles(_surveyModel, options, selectedSurvey.id!);
+      const { id: surveyId } = selectedSurvey;
+
+      if (!surveyId) {
+        options.callback('success');
+        return;
+      }
+
+      const questionName = options.question?.name;
+      if (options.fileName === null) {
+        try {
+          await deleteTempFiles(surveyId, questionName);
+          options.callback('success');
+          return;
+        } catch (error) {
+          options.callback('error');
+          return;
+        }
+      }
+
+      let filesToDelete: Array<File & { content?: string }> = [];
+      const value = options.value as undefined | (File & { content?: string }) | Array<File & { content?: string }>;
+      if (!value) {
+        options.callback('success');
+        return;
+      }
+      if (Array.isArray(value)) {
+        if (value.length === 0) {
+          options.callback('success');
+          return;
+        }
+        if (options.fileName) {
+          const file = value.filter((item: File & { content?: string }) => item.name === options.fileName);
+          filesToDelete.push(...file);
+        } else {
+          filesToDelete = value;
+        }
+      } else {
+        filesToDelete.push(value);
+      }
+
+      if (filesToDelete.length === 0) {
+        console.error(`File with name ${options.fileName} is not found`);
+        options.callback('error');
+        return;
+      }
+
+      const results = await Promise.all(
+        filesToDelete.map((file: File & { content?: string }) => deleteTempFile(surveyId, questionName, file)),
+      );
+
+      if (results.every((res) => res === 'success')) {
+        options.callback('success');
+      } else {
+        options.callback('error');
+      }
     });
 
     return newModel;
