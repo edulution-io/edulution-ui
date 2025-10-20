@@ -226,16 +226,11 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
 
   deleteTempFiles: async (surveyId: string, questionName: string): Promise<string> => {
     const { attendee } = get();
-    try {
-      const response = await eduApi.delete<string>(
-        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionName}`,
-      );
-      if (response.status === 200) {
-        // toast.success(`Files for the question with ${questionName} were deleted successfully`);
-        return 'success';
-      }
-    } catch (error) {
-      // toast.error(`Failed to delete file for the question with ID: ${questionName}`);
+    const response = await eduApi.delete<string>(
+      `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionName}`,
+    );
+    if (response.status === 200) {
+      return 'success';
     }
     return 'error';
   },
@@ -245,21 +240,13 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     questionName: string,
     file: File & { content?: string },
   ): Promise<string> => {
-    // eslint-disable-next-line no-console
-    console.log('Delete Temp File:', file.name);
-
     const { attendee } = get();
     const fileName = file.name || file.content?.split('/').pop();
-    try {
-      const response = await eduApi.delete<string>(
-        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionName}/${fileName}`,
-      );
-      if (response.status === 200) {
-        // toast.success(`File ${fileName} was deleted successfully`);
-        return 'success';
-      }
-    } catch (error) {
-      // toast.error(`Failed to delete file: ${fileName}`);
+    const response = await eduApi.delete<string>(
+      `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionName}/${fileName}`,
+    );
+    if (response.status === 200) {
+      return 'success';
     }
     return 'error';
   },
