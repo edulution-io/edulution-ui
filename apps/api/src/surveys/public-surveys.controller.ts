@@ -24,6 +24,7 @@ import {
   UseInterceptors,
   HttpStatus,
   ParseFilePipeBuilder,
+  Logger,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -82,6 +83,9 @@ class PublicSurveysController {
   @Public()
   serveFile(@Param() params: { surveyId: string; questionName: string; filename: string }, @Res() res: Response) {
     const { surveyId, questionName, filename } = params;
+
+    Logger.debug(`Serving public file: survey: ${surveyId}, question: ${questionName}, filename: ${filename}`);
+
     return this.surveysAttachmentService.serveFiles(surveyId, questionName, filename, res);
   }
 
@@ -126,6 +130,8 @@ class PublicSurveysController {
     @Res() res: Response,
     @Param() params: { userName: string; surveyId: string; questionName: string },
   ) {
+    Logger.debug(`Uploaded file: ${file.originalname}, size: ${file.size} bytes`);
+
     const { userName, surveyId, questionName } = params;
     if (!userName || !surveyId || !questionName || !file) {
       throw new CustomHttpException(
@@ -148,6 +154,9 @@ class PublicSurveysController {
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async deleteTempQuestionAnswerFiles(@Param() params: { userName: string; surveyId: string; questionName: string }) {
     const { userName, surveyId, questionName } = params;
+
+    Logger.debug(`Deleting temporary files for user: ${userName}, survey: ${surveyId}, question: ${questionName}`);
+
     if (!userName || !surveyId || !questionName) {
       throw new CustomHttpException(
         CommonErrorMessages.INVALID_REQUEST_DATA,
@@ -166,6 +175,11 @@ class PublicSurveysController {
     @Param() params: { userName: string; surveyId: string; questionName: string; fileName: string },
   ) {
     const { userName, surveyId, questionName, fileName } = params;
+
+    Logger.debug(
+      `Deleting temporary file with name: ${fileName} for user: ${params.userName}, survey: ${params.surveyId}, question: ${params.questionName}`,
+    );
+
     if (!userName || !surveyId || !questionName || !fileName) {
       throw new CustomHttpException(
         CommonErrorMessages.INVALID_REQUEST_DATA,
@@ -184,6 +198,11 @@ class PublicSurveysController {
     @Res() res: Response,
   ) {
     const { userName, surveyId, questionName, filename } = params;
+
+    Logger.debug(
+      `Serving file from answer for user: ${userName}, survey: ${surveyId}, question: ${questionName}, filename: ${filename}`,
+    );
+
     if (!userName || !surveyId || !questionName || !filename) {
       throw new CustomHttpException(
         CommonErrorMessages.INVALID_REQUEST_DATA,

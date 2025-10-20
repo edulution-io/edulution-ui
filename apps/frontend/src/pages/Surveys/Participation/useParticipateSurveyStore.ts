@@ -29,6 +29,9 @@ import { publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
+import SURVEY_ANSWERS_MAXIMUM_FILE_SIZE from '@libs/survey/constants/survey-answers-maximum-file-size';
+import { FileDownloadDto } from '@libs/survey/types/api/file-download.dto';
+import { removeUuidFromFileName } from '@libs/common/utils/uuidAndFileNames';
 
 interface ParticipateSurveyStore {
   attendee: Partial<AttendeeDto> | undefined;
@@ -58,10 +61,12 @@ interface ParticipateSurveyStore {
   uploadTempFiles: (
     formData: FormData,
     surveyId: string,
+    questionName: string,
   ) => Promise<Record<string, { name: string; url: string; content: Buffer<ArrayBufferLike> }> | null>;
   uploadTempFile: (
     formData: FormData,
     surveyId: string,
+    questionName: string,
   ) => Promise<{ name: string; url: string; content: Buffer<ArrayBufferLike> } | null>;
   onUploadFiles: (_: SurveyModel, options: UploadFilesEvent, surveyId: string) => Promise<void>;
   isUploadingFile?: boolean;
@@ -194,6 +199,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
   uploadTempFiles: async (
     formData: FormData,
     surveyId: string,
+    questionName: string,
   ): Promise<Record<string, { name: string; url: string; content: Buffer<ArrayBufferLike> }> | null> => {
     const { attendee } = get();
     set({ isUploadingFile: true });
@@ -202,7 +208,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       const response = await eduApi.post<
         Record<string, { name: string; url: string; content: Buffer<ArrayBufferLike> }>
       >(
-        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}`,
+        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionName}`,
         formData,
         {
           headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
@@ -217,13 +223,58 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
   },
 
-  uploadTempFile: async (formData: FormData, surveyId: string) => {
+  // uploadTempFile: async (
+  //   surveyId: string,
+  //   file: File,
+  // ): Promise<{ name: string; url: string; content: Buffer<ArrayBufferLike> } | null> => {
+  //   const { attendee } = get();
+  //   set({ isUploadingFile: true });
+  //   try {
+  //     const formData = new FormData();
+  //     formData.append('file', file);
+  //     const response = await eduApi.post<{ name: string; url: string; content: Buffer<ArrayBufferLike> }>(
+  //       `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}`,
+  //       formData,
+  //       {
+  //         headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
+  //       },
+  //     );
+  //     return response.data;
+  //   } catch (error) {
+  //     handleApiError(error, set);
+  //     return null;
+  //   } finally {
+  //     set({ isUploadingFile: false });
+  //   }
+  // },
+
+  // onUploadFiles: async (_: SurveyModel, options: UploadFilesEvent, surveyId: string) => {
+  //   const { uploadTempFiles } = get();
+  //   const formData = new FormData();
+  //   options.files.forEach((file) => {
+  //     formData.append(file.name, file);
+  //   });
+  //   const questionName = options.question?.name;
+  //   const response = await uploadTempFiles(formData, surveyId, questionName);
+  //   if (response === null) {
+  //     options.callback([]);
+  //     return;
+  //   }
+  //   options.callback(
+  //     options.files.map((file) => ({
+  //       file,
+  //       content: `${EDU_API_URL}/${response[file.name]?.url}`,
+  //     })),
+  //   );
+  // },
+
+  uploadTempFile: async (formData: FormData, surveyId: string, questionName: string) => {
     const { attendee } = get();
     set({ isUploadingFile: true });
 
     try {
       const response = await eduApi.post<{ name: string; url: string; content: Buffer<ArrayBufferLike> }>(
-        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}`,
+        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionName}`,
         formData,
         {
           headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
@@ -239,20 +290,43 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
   },
 
   onUploadFiles: async (_: SurveyModel, options: UploadFilesEvent, surveyId: string) => {
-    const { uploadTempFiles } = get();
-    const formData = new FormData();
-    options.files.forEach((file) => {
-      formData.append(file.name, file);
-    });
-    const response = await uploadTempFiles(formData, surveyId);
-    if (response === null) {
-      options.callback([]);
+    const { files, callback } = options;
+    if (!surveyId || !files?.length || files.some((file) => !file.name?.length)) {
+      callback([]);
       return;
     }
-    options.callback(
-      options.files.map((file) => ({
-        file,
-        content: `${EDU_API_URL}/${response[file.name]?.url}`,
+    if (files.some((file) => file.size > SURVEY_ANSWERS_MAXIMUM_FILE_SIZE)) {
+      toast.error(t('survey.participate.fileSizeExceeded', { size: SURVEY_ANSWERS_MAXIMUM_FILE_SIZE / (1024 * 1024) }));
+      callback([]);
+      return;
+    }
+
+    const { uploadTempFile } = get();
+    const questionName = options.question?.name;
+    const uploadPromises = files.map(async (file) => {
+      const formData = new FormData();
+      formData.append('file', file);
+      const data = await uploadTempFile(formData, surveyId, questionName);
+      if (data === null) {
+        return null;
+      }
+
+      const newFile: FileDownloadDto = {
+        ...file,
+        type: file.type || '*/*',
+        originalName: data.name || file.name,
+        name: removeUuidFromFileName(data.name || file.name),
+        url: `${EDU_API_URL}/${data.url}`,
+        content: data.content,
+      };
+      return newFile;
+    });
+    const results = await Promise.all(uploadPromises);
+    const filteredResults = results.filter((result) => result !== null);
+    callback(
+      filteredResults.map((result) => ({
+        file: result,
+        content: result.url,
       })),
     );
   },
@@ -302,17 +376,19 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
 
   onClearFiles: async (_: SurveyModel, options: ClearFilesEvent, surveyId: string): Promise<void> => {
     const { deleteTempFiles, deleteTempFile } = get();
+    const questionName = options.question?.name;
 
     // eslint-disable-next-line no-console
     console.log('ClearFilesEvent options:', options);
 
     // eslint-disable-next-line no-console
     console.log('fileName:', options.fileName);
+
     if (options.fileName === null) {
       // eslint-disable-next-line no-console
       console.log('  -> should delete all temp files.');
       try {
-        await deleteTempFiles(surveyId, '');
+        await deleteTempFiles(surveyId, questionName);
         options.callback('success');
         return;
       } catch (error) {
@@ -359,7 +435,6 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       return;
     }
 
-    const questionName = options.question?.name;
     const results = await Promise.all(
       filesToDelete.map((file: File & { content?: string }) => deleteTempFile(surveyId, questionName, file)),
     );
