@@ -31,13 +31,14 @@ const TableActionFooter = <TData,>(props: TableActionFooterProps<TData>) => {
 
   if (actions.length < 3) {
     const actionButtons = actions.map((action) => {
-      const { icon: Icon, onClick, translationId } = action;
+      const { icon: Icon, onClick, translationId, disabled = false } = action;
       return (
         <ButtonSH
           key={translationId}
           className="flex h-2 max-h-[2.25rem] min-h-[32px] w-full items-center justify-center rounded-md border border-gray-500"
           onClick={() => onClick()}
           type="button"
+          disabled={disabled}
         >
           <Icon className="h-[18px] w-[18px] text-xl text-background" />
         </ButtonSH>

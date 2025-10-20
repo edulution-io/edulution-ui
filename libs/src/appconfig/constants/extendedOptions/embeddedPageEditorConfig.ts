@@ -26,7 +26,6 @@ const EMBEDDED_PAGE_EDITOR_CONFIG: AppConfigExtendedOption[] = [
   {
     name: ExtendedOptionKeys.EMBEDDED_PAGE_HTML_CONTENT,
     description: 'fileTable.description',
-    title: 'fileTable.title',
     type: ExtendedOptionField.textarea,
     value: '',
     width: 'full',
@@ -34,8 +33,15 @@ const EMBEDDED_PAGE_EDITOR_CONFIG: AppConfigExtendedOption[] = [
   {
     name: ExtendedOptionKeys.EMBEDDED_PAGE_TABLE,
     description: 'fileTable.description',
-    title: 'fileTable.title',
     type: ExtendedOptionField.table,
+    value: '',
+    width: 'full',
+  },
+  {
+    name: ExtendedOptionKeys.EMBEDDED_PAGE_IS_PUBLIC,
+    description: 'settings.appconfig.sections.editor.visibilityDescription',
+    title: 'common.visibility',
+    type: ExtendedOptionField.switch,
     value: '',
     width: 'full',
   },

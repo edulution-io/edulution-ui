@@ -11,16 +11,17 @@
  */
 
 import buildNewCollectFolderName from '@libs/filesharing/utils/buildNewCollectFolderName';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import UserRoles from '@libs/user/constants/userRoles';
 import FILE_PATHS from '../constants/file-paths';
+import normalizeLdapHomeDirectory from './normalizeLdapHomeDirectory';
 
 const buildCollectPath = (
   username: string,
   homePath: string,
   schoolClass: string,
-  student: UserLmnInfo,
+  student: LmnUserInfo,
 ): CollectFileRequestDTO => {
   const newFolderName = buildNewCollectFolderName(schoolClass);
 
@@ -28,7 +29,7 @@ const buildCollectPath = (
 
   const studentOriginPath = student.examMode
     ? `/${UserRoles.EXAM_USER}/${studentName}`
-    : student.sophomorixIntrinsic2[0];
+    : normalizeLdapHomeDirectory(student?.homeDirectory);
 
   const destinationPath = `${homePath}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}/${newFolderName}/${studentName}/${FILE_PATHS.COLLECT}/`;
   const originPath = `${studentOriginPath}/${FILE_PATHS.TRANSFER}/${username}/${FILE_PATHS.COLLECT}/`;

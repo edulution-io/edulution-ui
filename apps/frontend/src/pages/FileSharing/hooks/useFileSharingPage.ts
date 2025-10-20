@@ -11,16 +11,16 @@
  */
 
 import { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
-import userStore from '@/store/UserStore/UserStore';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import useUserPath from './useUserPath';
 
 const useFileSharingPage = () => {
   const {
-    fetchMountPoints,
     fetchFiles,
     currentPath,
     setPathToRestoreSession,
@@ -28,37 +28,36 @@ const useFileSharingPage = () => {
     isLoading: isFileProcessing,
   } = useFileSharingStore();
   const { isLoading, fileOperationResult } = useFileSharingDialogStore();
-  const { user } = userStore();
+  const { fetchShares } = usePublicShareStore();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { webdavShare } = useParams();
   const { homePath } = useUserPath();
-  const path = searchParams.get('path') || '/';
-
-  useEffect(() => {
-    if (user) {
-      void fetchMountPoints();
-    }
-  }, [user]);
+  const path = searchParams.get(URL_SEARCH_PARAMS.PATH) || homePath;
 
   useEffect(() => {
     if (!isFileProcessing) {
       if (path === '/') {
         if (pathToRestoreSession !== '/') {
-          setSearchParams(pathToRestoreSession);
+          const newSearchParams = new URLSearchParams(searchParams);
+          newSearchParams.set(URL_SEARCH_PARAMS.PATH, pathToRestoreSession);
+          setSearchParams(newSearchParams);
         } else {
-          void fetchFiles(homePath);
+          void fetchFiles(webdavShare, homePath);
         }
       } else {
-        void fetchFiles(path);
+        void fetchFiles(webdavShare, path);
+        void fetchShares();
         setPathToRestoreSession(path);
       }
     }
-  }, [path, pathToRestoreSession, homePath, setPathToRestoreSession, fetchFiles]);
+  }, [path, pathToRestoreSession, homePath, setPathToRestoreSession, fetchFiles, webdavShare]);
 
   useEffect(() => {
     const updateFilesAfterSuccess = async () => {
       if (fileOperationResult && !isLoading) {
         if (fileOperationResult.success) {
-          await fetchFiles(currentPath);
+          await fetchFiles(webdavShare, currentPath);
+          await fetchShares();
           toast.success(fileOperationResult.message);
         } else {
           toast.info(fileOperationResult.message);

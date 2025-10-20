@@ -28,8 +28,8 @@ import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsVal
 import { type ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 import VEYON_PROXY_TABLE_COLUMNS from '@libs/classManagement/constants/veyonProxyTableColumns';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
-import useVeyonConfigTableStore from './useVeyonTableStore';
-import useAppConfigsStore from '../appConfigsStore';
+import useVeyonConfigTableStore from './useVeyonConfigTableStore';
+import useAppConfigsStore from '../useAppConfigsStore';
 
 interface AddVeyonProxyDialogProps {
   tableId: ExtendedOptionKeysType;
@@ -126,7 +126,7 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
         </div>
       )}
       <DialogFooterButtons
-        handleClose={() => setDialogOpen('')}
+        handleClose={closeDialog}
         handleSubmit={() => {}}
         disableSubmit={!formState.isValid}
         submitButtonText="common.save"

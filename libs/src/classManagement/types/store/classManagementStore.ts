@@ -12,17 +12,18 @@
 
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { UseFormReturn } from 'react-hook-form';
-import GroupForm from '@libs/groups/types/groupForm';
-import LmnApiSearchResult from '@libs/lmnApi/types/lmnApiSearchResult';
-import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
-import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
-import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
-import LmnApiProjectWithMembers from '@libs/lmnApi/types/lmnApiProjectWithMembers';
-import LmnApiSchoolClassWithMembers from '@libs/lmnApi/types/lmnApiSchoolClassWithMembers';
-import LmnApiRoom from '@libs/lmnApi/types/lmnApiRoom';
-import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
-import LmnApiPrinterWithMembers from '@libs/lmnApi/types/lmnApiPrinterWithMembers';
 import { TFunction } from 'i18next';
+import type GroupForm from '@libs/groups/types/groupForm';
+import type LmnApiSearchResult from '@libs/lmnApi/types/lmnApiSearchResult';
+import type LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
+import type LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
+import type LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
+import type LmnApiProjectWithMembers from '@libs/lmnApi/types/lmnApiProjectWithMembers';
+import type LmnApiSchoolClassWithMembers from '@libs/lmnApi/types/lmnApiSchoolClassWithMembers';
+import type LmnApiRoom from '@libs/lmnApi/types/lmnApiRoom';
+import type LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
+import type LmnApiPrinterWithMembers from '@libs/lmnApi/types/lmnApiPrinterWithMembers';
+import type LmnApiSchools from '@libs/lmnApi/types/lmnApiSchools';
 
 interface ClassManagementState {
   userSessions: LmnApiSession[];
@@ -43,10 +44,13 @@ interface ClassManagementState {
   error: Error | null;
   userRoom: LmnApiRoom | null;
   printers: LmnApiPrinter[];
+  schools: LmnApiSchools[];
+  selectedSchool: string;
 }
 
 interface ClassManagementActions {
   reset: () => void;
+  setSelectedSchool: (school: string) => void;
   searchGroupsOrUsers: (
     searchQuery: string,
     t: TFunction<'translation', undefined>,
@@ -62,10 +66,11 @@ interface ClassManagementActions {
   fetchProject: (name: string) => Promise<LmnApiProjectWithMembers | null>;
   fetchUserProjects: () => Promise<void>;
   fetchUserSession: (name: string) => Promise<LmnApiSession | null>;
-  fetchUserSessions: () => Promise<void>;
+  fetchUserSessions: (withMemberDetails: boolean) => Promise<LmnApiSession[]>;
   fetchRoom: () => Promise<void>;
   fetchPrinters: () => Promise<void>;
   fetchPrinter: (name: string) => Promise<LmnApiPrinterWithMembers | null>;
+  getSchools: () => Promise<void>;
 }
 
 type ClassManagementStore = ClassManagementState & ClassManagementActions;

@@ -13,10 +13,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import UserAccountsToastContent from '@/components/ui/UserAccountsToastContent';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import DASHBOARD_ROUTE from '@libs/dashboard/constants/dashboardRoute';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
+import ROOT_ROUTE from '@libs/common/constants/rootRoute';
 
 const useUserAccounts = (appName: string | null) => {
   const { appConfigs } = useAppConfigsStore();
@@ -52,7 +52,7 @@ const useUserAccounts = (appName: string | null) => {
   }, []);
 
   useEffect(() => {
-    if (!appName || appName === DASHBOARD_ROUTE) return;
+    if (!appName || appName === ROOT_ROUTE) return;
 
     if (!appConfig) return;
 

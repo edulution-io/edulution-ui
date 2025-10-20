@@ -35,53 +35,65 @@ export default defineConfig(({ mode }) => {
         '@': resolve(__dirname, './src'),
         '@libs': resolve(__dirname, '../../libs/src'),
       },
+      dedupe: ['@tldraw/store', '@tldraw/validate', '@tldraw/tlschema'],
     },
-    server: {
-      allowedHosts: ['host.docker.internal'],
-      port: 5173,
-      host: 'localhost',
-      fs: { strict: false },
-      proxy: {
-        '/webdav': {
-          target: env.VITE_LMN_URL,
-          changeOrigin: true,
-          secure: false,
-          headers: {
-            Origin: env.VITE_LMN_URL,
-          },
-        },
-        '/api': {
-          rewrite: (path) => path.replace(/^\/api/, ''),
-          target: env.VITE_LMN_API_URL,
-          changeOrigin: true,
-          secure: false,
-          headers: {
-            Origin: env.VITE_LMN_URL,
-          },
-        },
-        '/edu-api': {
-          target: env.VITE_EDU_API_URL,
-          changeOrigin: true,
-          ws: true,
-          secure: false,
-          headers: {
-            Origin: env.VITE_EDU_API_URL,
-          },
-        },
-        '/guacamole': {
-          rewrite: (path) => path.replace(/^\/guacamole/, ''),
-          target: `${env.VITE_GUACAMOLE_URL}/guacamole`,
-          changeOrigin: true,
-          secure: false,
-          ws: true,
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-          },
-        },
-      },
-    },
+    server:
+      mode === 'development'
+        ? {
+            allowedHosts: ['host.docker.internal'],
+            port: 5173,
+            host: 'localhost',
+            fs: { strict: false },
+            proxy: {
+              '/auth': {
+                target: env.VITE_KEYCLOAK_URL,
+                changeOrigin: true,
+                secure: true,
+                headers: {
+                  Origin: env.VITE_KEYCLOAK_URL,
+                },
+              },
+              '/webdav': {
+                target: env.VITE_LMN_URL,
+                changeOrigin: true,
+                secure: false,
+                headers: {
+                  Origin: env.VITE_LMN_URL,
+                },
+              },
+              '/api': {
+                rewrite: (path) => path.replace(/^\/api/, ''),
+                target: env.VITE_LMN_API_URL,
+                changeOrigin: true,
+                secure: false,
+                headers: {
+                  Origin: env.VITE_LMN_URL,
+                },
+              },
+              '/edu-api': {
+                target: env.VITE_EDU_API_URL,
+                changeOrigin: true,
+                ws: true,
+                secure: false,
+                headers: {
+                  Origin: env.VITE_EDU_API_URL,
+                },
+              },
+              '/guacamole': {
+                rewrite: (path) => path.replace(/^\/guacamole/, ''),
+                target: `${env.VITE_GUACAMOLE_URL}/guacamole`,
+                changeOrigin: true,
+                secure: false,
+                ws: true,
+                headers: {
+                  'Access-Control-Allow-Origin': '*',
+                  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+                  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                },
+              },
+            },
+          }
+        : undefined,
     preview: {
       port: 4300,
       host: 'localhost',

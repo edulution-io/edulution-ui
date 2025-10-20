@@ -10,17 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 import UserDto from '@libs/user/types/user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import UserAccountDto from '@libs/user/types/userAccount.dto';
-import { EDU_API_USERS_ENDPOINT, EDU_API_USER_ACCOUNTS_ENDPOINT } from '@libs/user/constants/usersApiEndpoints';
+import { EDU_API_USER_ACCOUNTS_ENDPOINT, EDU_API_USERS_ENDPOINT } from '@libs/user/constants/usersApiEndpoints';
+import { NOTIFICATION_DEVICES_EDU_API_ENDPOINT } from '@libs/notification/constants/apiEndpoints';
+import UserDeviceDto from '@libs/notification/types/userDevice.dto';
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from './users.service';
 import UpdateUserDto from './dto/update-user.dto';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
-import GetCurrentSchool from '../common/decorators/getCurrentSchool.decorator';
+import GetCurrentOrganisationPrefix from '../common/decorators/getCurrentOrganisationPrefix.decorator';
+import DeploymentTargetInterceptor from '../common/interceptors/deploymentTarget.interceptor';
 
 @ApiTags(EDU_API_USERS_ENDPOINT)
 @ApiBearerAuth()
@@ -72,9 +75,13 @@ export class UsersController {
     return this.usersService.remove(username);
   }
 
+  @UseInterceptors(DeploymentTargetInterceptor)
   @Get('search/:searchString')
-  async search(@Param('searchString') searchString: string, @GetCurrentSchool() school: string) {
-    return this.usersService.searchUsersByName(school, searchString);
+  async search(
+    @Param('searchString') searchString: string,
+    @GetCurrentOrganisationPrefix() currentOrganisationPrefix: string,
+  ) {
+    return this.usersService.searchUsersByName(currentOrganisationPrefix, searchString);
   }
 
   @Post(`:username/${EDU_API_USER_ACCOUNTS_ENDPOINT}`)
@@ -116,6 +123,26 @@ export class UsersController {
     UsersController.throwIfNotCurrentUser(username, currentUsername);
 
     return this.usersService.deleteUserAccount(currentUsername, accountId);
+  }
+
+  @Patch(`:username/${NOTIFICATION_DEVICES_EDU_API_ENDPOINT}`)
+  async registerDevice(
+    @Param('username') username: string,
+    @GetCurrentUsername() currentUsername: string,
+    @Body() userDeviceDto: UserDeviceDto,
+  ) {
+    UsersController.throwIfNotCurrentUser(username, currentUsername);
+    return this.usersService.updateDeviceByUsername(currentUsername, userDeviceDto);
+  }
+
+  @Delete(`:username/${NOTIFICATION_DEVICES_EDU_API_ENDPOINT}`)
+  async unregisterDevice(
+    @Param('username') username: string,
+    @GetCurrentUsername() currentUsername: string,
+    @Body() userDeviceDto: UserDeviceDto,
+  ) {
+    UsersController.throwIfNotCurrentUser(username, currentUsername);
+    return this.usersService.clearDeviceByUsername(currentUsername, userDeviceDto);
   }
 }
 

@@ -11,12 +11,14 @@
  */
 
 import { Injectable, MessageEvent } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Response } from 'express';
 import { Interval } from '@nestjs/schedule';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type SseStatus from '@libs/common/types/sseMessageType';
+import getDeploymentTarget from '@libs/common/utils/getDeploymentTarget';
 import type UserConnections from '../types/userConnections';
 import type SseEvent from '../types/sseEvent';
 import type SseEventData from '../types/sseEventData';
@@ -25,11 +27,15 @@ import type SseEventData from '../types/sseEventData';
 class SseService {
   private userConnections: UserConnections = new Map();
 
+  constructor(private configService: ConfigService) {}
+
   @Interval(25000)
   sendHeartbeat(): void {
     this.informAllUsers(
       JSON.stringify({
         timestamp: new Date().toISOString(),
+        version: this.configService.get<string>('version'),
+        target: getDeploymentTarget(),
       }),
       SSE_MESSAGE_TYPE.PING,
     );

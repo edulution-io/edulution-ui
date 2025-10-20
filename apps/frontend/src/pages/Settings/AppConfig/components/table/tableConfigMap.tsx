@@ -24,15 +24,24 @@ import { type DockerContainerTableStore } from '@libs/appconfig/types/dockerCont
 import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import { VeyonConfigTableStore } from '@libs/appconfig/types/veyonConfigTableStore';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import BULLETIN_BOARD_TABLE_COLUMNS from '@libs/appconfig/constants/bulletinBoardCategoryTableColumns';
+import BULLETIN_BOARD_CATEGORY_TABLE_COLUMNS from '@libs/appconfig/constants/bulletinBoardCategoryTableColumns';
 import DOCKER_CONTAINER_TABLE_COLUMNS from '@libs/docker/constants/dockerContainerTableColumns';
 import VEYON_PROXY_TABLE_COLUMNS from '@libs/classManagement/constants/veyonProxyTableColumns';
+import type WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
+import { WebdavServerTableStore, type WebdavShareTableStore } from '@libs/appconfig/types/webdavShareTableStore';
+import WEBDAV_SHARE_TABLE_COLUMNS from '@libs/filesharing/constants/webdavShareTableColumns';
 import DockerContainerTableColumns from '../../DockerIntegration/DockerContainerTableColumns';
 import CreateDockerContainerDialog from '../../DockerIntegration/CreateDockerContainerDialog';
 import useDockerApplicationStore from '../../DockerIntegration/useDockerApplicationStore';
 import VeyonConfigTableColumns from '../../classmanagement/VeyonConfigTableColumns';
-import useVeyonConfigTableStore from '../../classmanagement/useVeyonTableStore';
+import useVeyonConfigTableStore from '../../classmanagement/useVeyonConfigTableStore';
 import AddVeyonProxyDialog from '../../classmanagement/AddVeyonProxyDialog';
+import WebdavShareTableColumns from '../../filesharing/WebdavShareTableColumns';
+import useWebdavShareConfigTableStore from '../../filesharing/useWebdavShareConfigTableStore';
+import AddWebdavShareDialog from '../../filesharing/AddWebdavShareDialog';
+import WebdavServerTableColumns from '../../filesharing/WebdavServerTableColumns';
+import useWebdavServerConfigTableStore from '../../filesharing/useWebdavServerConfigTableStore';
+import AddWebdavServerDialog from '../../filesharing/AddWebdavServerDialog';
 
 const DOCKER_CONTAINER_TABLE_COLUMS = {
   hideColumnsInMobileView: [
@@ -57,8 +66,14 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
       filterKey: DOCKER_CONTAINER_TABLE_COLUMNS.NAME,
       filterPlaceHolderText: 'bulletinboard.filterPlaceHolderText',
       type: ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE,
-      hideColumnsInMobileView: [BULLETIN_BOARD_TABLE_COLUMNS.CREATED_AT],
-      hideColumnsInTabletView: [BULLETIN_BOARD_TABLE_COLUMNS.CREATED_AT],
+      hideColumnsInMobileView: [
+        BULLETIN_BOARD_CATEGORY_TABLE_COLUMNS.CREATED_AT,
+        BULLETIN_BOARD_CATEGORY_TABLE_COLUMNS.BULLETIN_VISIBILITY,
+      ],
+      hideColumnsInTabletView: [
+        BULLETIN_BOARD_CATEGORY_TABLE_COLUMNS.CREATED_AT,
+        BULLETIN_BOARD_CATEGORY_TABLE_COLUMNS.BULLETIN_VISIBILITY,
+      ],
     }),
   ],
   [APPS.CLASS_MANAGEMENT]: [
@@ -138,6 +153,35 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
       filterPlaceHolderText: 'dockerOverview.filterPlaceHolderText',
       type: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
       ...DOCKER_CONTAINER_TABLE_COLUMS,
+    }),
+    createAppConfigTableEntry<WebdavShareDto, WebdavServerTableStore>({
+      columns: WebdavServerTableColumns,
+      useStore: useWebdavServerConfigTableStore,
+      dialogBody: <AddWebdavServerDialog tableId={ExtendedOptionKeys.WEBDAV_SERVER_TABLE} />,
+      showAddButton: true,
+      showRemoveButton: true,
+      filterKey: WEBDAV_SHARE_TABLE_COLUMNS.DISPLAY_NAME,
+      filterPlaceHolderText: 'settings.appconfig.sections.webdavServer.filterPlaceHolderText',
+      type: ExtendedOptionKeys.WEBDAV_SERVER_TABLE,
+      hideColumnsInMobileView: [WEBDAV_SHARE_TABLE_COLUMNS.TYPE],
+      hideColumnsInTabletView: [],
+    }),
+    createAppConfigTableEntry<WebdavShareDto, WebdavShareTableStore>({
+      columns: WebdavShareTableColumns,
+      useStore: useWebdavShareConfigTableStore,
+      dialogBody: <AddWebdavShareDialog tableId={ExtendedOptionKeys.WEBDAV_SHARE_TABLE} />,
+      showAddButton: true,
+      showRemoveButton: true,
+      filterKey: WEBDAV_SHARE_TABLE_COLUMNS.DISPLAY_NAME,
+      filterPlaceHolderText: 'settings.appconfig.sections.webdavShare.filterPlaceHolderText',
+      type: ExtendedOptionKeys.WEBDAV_SHARE_TABLE,
+      hideColumnsInMobileView: [
+        WEBDAV_SHARE_TABLE_COLUMNS.URL,
+        WEBDAV_SHARE_TABLE_COLUMNS.PATHNAME,
+        WEBDAV_SHARE_TABLE_COLUMNS.PATH_VARIABLES,
+        WEBDAV_SHARE_TABLE_COLUMNS.ACCESSGROUPS,
+      ],
+      hideColumnsInTabletView: [WEBDAV_SHARE_TABLE_COLUMNS.URL],
     }),
   ],
 };

@@ -13,7 +13,6 @@
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import { HttpMethods } from '@libs/common/types/http-methods';
 import ContentType from '@libs/filesharing/types/contentType';
-import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
 import eduApi from '@/api/eduApi';
 import buildApiFilePathUrl from '@libs/filesharing/utils/buildApiFilePathUrl';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
@@ -24,10 +23,18 @@ const handleSingleData = async (
   httpMethod: HttpMethods,
   type: ContentType,
   data: PathChangeOrCreateProps,
-) => {
+  webdavShare: string | undefined,
+): Promise<void> => {
   if (action === FileActionType.CREATE_FOLDER) {
-    await eduApi[httpMethod](buildApiFileTypePathUrl(endpoint, type, data.path), data);
-  } else if (action === FileActionType.MOVE_FILE_OR_FOLDER || action === FileActionType.RENAME_FILE_OR_FOLDER) {
+    await eduApi[httpMethod](endpoint, data, {
+      params: {
+        share: webdavShare,
+        type,
+        path: data.path,
+      },
+    });
+  }
+  if (action === FileActionType.MOVE_FILE_OR_FOLDER || action === FileActionType.RENAME_FILE_OR_FOLDER) {
     await eduApi[httpMethod](buildApiFilePathUrl(endpoint, data.path), data);
   }
 };

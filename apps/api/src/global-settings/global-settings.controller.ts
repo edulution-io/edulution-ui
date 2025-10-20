@@ -10,16 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Body, Controller, Get, Put, Query, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Put, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import {
-  GLOBAL_SETTINGS_PROJECTION_QUERY_PARAM,
+  GLOBAL_SETTINGS_ADMIN_ENDPOINT,
   GLOBAL_SETTINGS_ROOT_ENDPOINT,
 } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
-import AppConfigGuard from '../appconfig/appconfig.guard';
+import AdminGuard from '../common/guards/admin.guard';
 import GlobalSettingsService from './global-settings.service';
 
 @ApiTags(GLOBAL_SETTINGS_ROOT_ENDPOINT)
@@ -31,12 +31,18 @@ class GlobalSettingsController {
   @Get()
   @UseInterceptors(CacheInterceptor)
   @CacheTTL(DEFAULT_CACHE_TTL_MS)
-  async getGlobalSettings(@Query(GLOBAL_SETTINGS_PROJECTION_QUERY_PARAM) projection?: string) {
-    return this.globalSettingsService.getGlobalSettings(projection);
+  async getGlobalSettings() {
+    return this.globalSettingsService.getGlobalSettings();
+  }
+
+  @Get(GLOBAL_SETTINGS_ADMIN_ENDPOINT)
+  @UseGuards(AdminGuard)
+  async getGlobalAdminSettings() {
+    return this.globalSettingsService.getGlobalAdminSettings();
   }
 
   @Put()
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   async setGlobalSettings(@Body() globalSettingsDto: GlobalSettingsDto) {
     return this.globalSettingsService.setGlobalSettings(globalSettingsDto);
   }

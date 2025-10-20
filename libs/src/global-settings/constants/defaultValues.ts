@@ -10,15 +10,32 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import APPS from '@libs/appconfig/constants/apps';
+import getDeploymentTarget from '@libs/common/utils/getDeploymentTarget';
 import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 
+const { LDAP_EDULUTION_BINDUSER_DN, LDAP_EDULUTION_BINDUSER_PASSWORD } = process.env as Record<string, string>;
+
 const defaultValues: GlobalSettingsDto = {
-  auth: { mfaEnforcedGroups: [] },
+  auth: { mfaEnforcedGroups: [], adminGroups: [] },
   general: {
     defaultLandingPage: {
-      isCustomLandingPageEnabled: undefined,
-      appName: '',
+      isCustomLandingPageEnabled: true,
+      appName: APPS.DASHBOARD,
     },
+    deploymentTarget: getDeploymentTarget(),
+    ldap: {
+      binduser: {
+        dn: LDAP_EDULUTION_BINDUSER_DN || '',
+        password: LDAP_EDULUTION_BINDUSER_PASSWORD || '',
+      },
+    },
+  },
+  organisationInfo: {
+    name: '',
+    street: '',
+    postalCode: '',
+    website: '',
   },
 };
 

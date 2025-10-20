@@ -23,7 +23,7 @@ import FILE_PREVIEW_ROUTE from '@libs/filesharing/constants/routes';
 import EditButton from '@/components/structure/framing/ResizableWindow/Buttons/EditButton';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 import useMedia from '@/hooks/useMedia';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
@@ -79,10 +79,13 @@ const FileSharingPreviewFrame = () => {
     setCurrentlyEditingFile(null);
   };
 
+  const pathSegments = location.pathname.split('/').filter(Boolean);
+  const webdavShare = decodeURIComponent(pathSegments[1]);
+
   const openInNewTab = () => {
     if (currentlyEditingFile) {
       addFileToOpenInNewTab(currentlyEditingFile);
-      window.open(`/${FILE_PREVIEW_ROUTE}?file=${currentlyEditingFile.etag}`, '_blank');
+      window.open(`/${FILE_PREVIEW_ROUTE}?share=${webdavShare}&file=${currentlyEditingFile.etag}`, '_blank');
       resetPreview();
     }
   };
@@ -94,7 +97,7 @@ const FileSharingPreviewFrame = () => {
     abortControllerRef.current = controller;
 
     if (currentlyEditingFile) {
-      void loadDownloadUrl(currentlyEditingFile, controller.signal);
+      void loadDownloadUrl(currentlyEditingFile, webdavShare, controller.signal);
     }
 
     return () => controller.abort();
@@ -129,17 +132,22 @@ const FileSharingPreviewFrame = () => {
     APPS.FILE_SHARING,
     ExtendedOptionKeys.ONLY_OFFICE_URL,
   );
-  const isValidFile = currentlyEditingFile?.type === ContentType.FILE && isValidFileToPreview(currentlyEditingFile);
-  const isFileReady = isValidFile && isDocumentServerConfigured && !isMobileView;
+  const isOnlyOfficeDoc =
+    !!currentlyEditingFile && isOnlyOfficeDocument(currentlyEditingFile.filename ?? currentlyEditingFile.filePath);
 
-  const pathSegments = location.pathname.split('/').filter(Boolean);
+  const isValidFile = currentlyEditingFile?.type === ContentType.FILE && isValidFileToPreview(currentlyEditingFile);
+
+  const isFileReady =
+    (isValidFile && !isMobileView && (isOnlyOfficeDoc ? isDocumentServerConfigured : true)) ||
+    currentlyEditingFile?.filename.endsWith('pdf');
+
   const hidePreviewOnOtherPages = pathSegments[0] !== APPS.FILE_SHARING && isFilePreviewDocked;
 
   if (!isFilePreviewVisible || !isFileReady || !filePreviewRect || hidePreviewOnOtherPages) return null;
 
   const windowTitle = currentlyEditingFile?.filename || t(`filesharing.filePreview`);
 
-  const isEditButtonVisible = !isEditMode && isOnlyOfficeDocument(currentlyEditingFile.filename);
+  const isEditButtonVisible = !isEditMode && isOnlyOfficeDocument(currentlyEditingFile?.filename || '');
   const additionalButtons = [
     <OpenInNewTabButton
       onClick={openInNewTab}
@@ -178,6 +186,7 @@ const FileSharingPreviewFrame = () => {
       <FileRenderer
         editMode={isEditMode}
         closingRef={closingRef}
+        isOnlyOfficeConfigured={isDocumentServerConfigured}
       />
     </ResizableWindow>
   );

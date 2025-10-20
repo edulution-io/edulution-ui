@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import generateFile from '@/pages/FileSharing/utilities/generateFile';
 import getDocumentVendor from '@libs/filesharing/utils/getDocumentVendor';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 
 const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ form, isRenaming }) => {
   const { selectedItems, files } = useFileSharingStore();
@@ -28,20 +28,19 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
   const { appConfigs } = useAppConfigsStore();
   const documentVendor = getDocumentVendor(appConfigs);
   const { t } = useTranslation();
-  const filename = form.watch('filename');
-  const extension = form.watch('extension');
+  const filename = form.watch('filename')?.trim() || '';
+  const extension = form.watch('extension')?.trim() || '';
 
   useEffect(() => {
     if (isRenaming && selectedItems.length === 1) {
       if (selectedItems[0].type === ContentType.FILE) {
         const dotIndex = selectedItems[0].filename.lastIndexOf('.');
-        form.setValue(
-          'filename',
-          dotIndex > 0 ? selectedItems[0].filename.substring(0, dotIndex) : selectedItems[0].filename,
-        );
-        form.setValue('extension', dotIndex > 0 ? selectedItems[0].filename.substring(dotIndex) : '');
+        const base = dotIndex > 0 ? selectedItems[0].filename.substring(0, dotIndex) : selectedItems[0].filename;
+        const ext = dotIndex > 0 ? selectedItems[0].filename.substring(dotIndex) : '';
+        form.setValue('filename', base.trim());
+        form.setValue('extension', ext.trim());
       } else {
-        form.setValue('filename', selectedItems[0].filename);
+        form.setValue('filename', selectedItems[0].filename.trim());
         form.setValue('extension', '');
       }
     } else {
@@ -57,6 +56,7 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
 
   useEffect(() => {
     const checkIfFilenameAlreadyExists = async () => {
+      if (!filename) return;
       let alreadyExists: boolean;
 
       if (selectedFileType) {
@@ -67,11 +67,11 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
       }
 
       setFilenameAlreadyExists(alreadyExists);
-      setSubmitButtonIsDisabled(alreadyExists);
+      setSubmitButtonIsDisabled(alreadyExists || filename.length === 0);
     };
 
     void checkIfFilenameAlreadyExists();
-  }, [files, selectedFileType, filename, documentVendor, extension]);
+  }, [files, selectedFileType, filename, documentVendor, extension, setSubmitButtonIsDisabled]);
 
   return (
     <Form {...form}>

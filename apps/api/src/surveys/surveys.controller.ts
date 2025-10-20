@@ -47,12 +47,15 @@ import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import getUsernameFromRequest from 'apps/api/src/common/utils/getUsernameFromRequest';
 import SurveysService from './surveys.service';
-import SurveyAnswerService from './survey-answer.service';
+import SurveysAttachmentService from './surveys-attachment.service';
+import SurveysTemplateService from './surveys-template.service';
+import SurveyAnswerService from './survey-answers.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
-import GetCurrentUser from '../common/decorators/getUser.decorator';
+import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import { checkAttachmentFile, createAttachmentUploadOptions } from '../filesystem/multer.utilities';
-import AppConfigGuard from '../appconfig/appconfig.guard';
+import AdminGuard from '../common/guards/admin.guard';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
@@ -60,6 +63,8 @@ import AppConfigGuard from '../appconfig/appconfig.guard';
 class SurveysController {
   constructor(
     private readonly surveyService: SurveysService,
+    private readonly surveysAttachmentService: SurveysAttachmentService,
+    private readonly surveysTemplateService: SurveysTemplateService,
     private readonly surveyAnswerService: SurveyAnswerService,
   ) {}
 
@@ -97,7 +102,10 @@ class SurveysController {
   @UseInterceptors(
     FileInterceptor(
       'file',
-      createAttachmentUploadOptions((req) => `${SURVEYS_TEMP_FILES_PATH}/${req.user?.preferred_username}`),
+      createAttachmentUploadOptions((req) => {
+        const username = getUsernameFromRequest(req);
+        return join(SURVEYS_TEMP_FILES_PATH, username);
+      }),
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
@@ -107,22 +115,22 @@ class SurveysController {
     return res.status(HttpStatus.CREATED).json(fileUrl);
   }
 
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   @Post(TEMPLATES)
   async createTemplate(@Body() surveyTemplateDto: SurveyTemplateDto) {
-    return this.surveyService.createTemplate(surveyTemplateDto);
+    return this.surveysTemplateService.createTemplate(surveyTemplateDto);
   }
 
   @Get(TEMPLATES)
   getTemplateNames() {
-    return this.surveyService.serveTemplateNames();
+    return this.surveysTemplateService.serveTemplateNames();
   }
 
   @Get(`${TEMPLATES}/:filename`)
   getTemplate(@Param() params: { filename: string }, @Res() res: Response) {
     const { filename } = params;
     res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_JSON);
-    return this.surveyService.serveTemplate(filename, res);
+    return this.surveysTemplateService.serveTemplate(filename, res);
   }
 
   @Get(`${ANSWER}/:surveyId`)
@@ -153,24 +161,24 @@ class SurveysController {
     const { surveyIds } = deleteSurveyDto;
     await this.surveyService.deleteSurveys(surveyIds);
     await this.surveyAnswerService.onSurveyRemoval(surveyIds);
-    await this.surveyService.onSurveyRemoval(surveyIds);
+    await SurveysAttachmentService.onSurveyRemoval(surveyIds);
   }
 
   @Patch()
   async answerSurvey(@Body() postAnswerDto: PostSurveyAnswerDto, @GetCurrentUser() currentUser: JWTUser) {
-    const { surveyId, saveNo, answer } = postAnswerDto;
+    const { surveyId, answer } = postAnswerDto;
     const attendee = {
       username: currentUser.preferred_username,
       firstName: currentUser.given_name,
       lastName: currentUser.family_name,
     };
-    return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, attendee);
+    return this.surveyAnswerService.addAnswer(surveyId, answer, attendee);
   }
 
   @Get(`${FILES}/:filename`)
   serveTempFile(@Param() params: { filename: string }, @Res() res: Response, @GetCurrentUsername() username: string) {
     const { filename } = params;
-    return this.surveyService.serveTempFiles(username, filename, res);
+    return this.surveysAttachmentService.serveTempFiles(username, filename, res);
   }
 }
 

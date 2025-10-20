@@ -14,10 +14,11 @@ import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
+import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/lmnApiEduApiEndpoints';
 import PrintPasswordsStore from '@libs/classManagement/types/store/printPasswordsStore';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
-import { HTTP_HEADERS, ResponseType } from '@libs/common/types/http-methods';
+import { HTTP_HEADERS, RequestResponseContentType, ResponseType } from '@libs/common/types/http-methods';
+import PrintPasswordsFormat from '@libs/classManagement/types/printPasswordsFormat';
 
 const initialState = {
   isLoading: false,
@@ -31,28 +32,33 @@ const usePrintPasswordsStore = create<PrintPasswordsStore>((set) => ({
     set({ error: null, isLoading: true });
     try {
       const { lmnApiToken } = useLmnApiStore.getState();
-      const response = await eduApi.post<Blob>(
+      const response = await eduApi.post<ArrayBuffer>(
         LMN_API_EDU_API_ENDPOINTS.PRINT_PASSWORDS,
-        {
-          options,
-        },
+        { options },
         {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
-          responseType: ResponseType.BLOB,
+          responseType: ResponseType.ARRAYBUFFER,
         },
       );
 
-      const url = window.URL.createObjectURL(response.data);
-      const link = document.createElement('a');
-      link.href = url;
+      const mimeType =
+        options.format === PrintPasswordsFormat.CSV
+          ? `${RequestResponseContentType.TEXT_CSV};charset=utf-8;`
+          : RequestResponseContentType.APPLICATION_PDF;
+
+      const blob = new Blob([response.data], { type: mimeType });
+      const url = window.URL.createObjectURL(blob);
 
       const filename = `${options.schoolclasses.join('-')}-${options.school}-passwords.${options.format}`;
+
+      const link = document.createElement('a');
+      link.href = url;
       link.setAttribute('download', filename);
 
       document.body.appendChild(link);
       link.click();
-
       link.parentNode?.removeChild(link);
+
       window.URL.revokeObjectURL(url);
     } catch (error) {
       handleApiError(error, set);

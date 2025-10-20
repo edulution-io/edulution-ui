@@ -14,12 +14,13 @@ import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
+import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/lmnApiEduApiEndpoints';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import UserSettingsPageStore from '@libs/userSettings/constants/userSettingsPageStore';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+import { encodeBase64 } from '@libs/common/utils/getBase64String';
 
 const initialState = {
   isLoading: false,
@@ -36,8 +37,8 @@ const useUserSettingsPageStore = create<UserSettingsPageStore>((set) => ({
       await eduApi.put<LmnApiSession>(
         LMN_API_EDU_API_ENDPOINTS.CHANGE_PASSWORD,
         {
-          oldPassword: btoa(oldPassword),
-          newPassword: btoa(newPassword),
+          oldPassword: encodeBase64(oldPassword),
+          newPassword: encodeBase64(newPassword),
         },
         {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },

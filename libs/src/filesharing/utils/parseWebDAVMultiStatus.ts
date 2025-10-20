@@ -23,6 +23,7 @@ const xmlOptions = {
   parseNodeValue: true,
   parseAttributeValue: false,
   trimValues: true,
+  transformTagName: (tagName: string) => tagName.toLowerCase(),
 };
 
 const parseWebDAVMultiStatus = (xmlData: string) => {
@@ -40,7 +41,8 @@ const parseWebDAVMultiStatus = (xmlData: string) => {
       return [];
     }
 
-    return Array.isArray(responsesRaw) ? responsesRaw : [responsesRaw];
+    const responses = Array.isArray(responsesRaw) ? responsesRaw : [responsesRaw];
+    return responses;
   } catch (error) {
     Logger.error('Error parsing XML data:', error);
     return [];

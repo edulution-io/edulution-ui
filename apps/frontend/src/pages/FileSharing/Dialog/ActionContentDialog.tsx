@@ -11,17 +11,17 @@
  */
 
 import React from 'react';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
-import getDialogBodySetup from '@/pages/FileSharing/Dialog/DialogBodys/dialogBodyConfigurations';
+import getDialogBodyConfigurations from '@/pages/FileSharing/Dialog/DialogBodys/getDialogBodyConfigurations';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import { FileSharingFormValues } from '@libs/filesharing/types/filesharingDialogProps';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileActionType from '@libs/filesharing/types/fileActionType';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import getDocumentVendor from '@libs/filesharing/utils/getDocumentVendor';
 import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
 import ContentType from '@libs/filesharing/types/contentType';
@@ -30,7 +30,8 @@ import MAX_UPLOAD_CHUNK_SIZE from '@libs/ui/constants/maxUploadChunkSize';
 import splitArrayIntoChunks from '@libs/common/utils/splitArrayIntoChunks';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import UploadFileDto from '@libs/filesharing/types/uploadFileDto';
-import getFileSharingFormSchema from '../formSchema';
+import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
+import { FileSharingFormValues } from '@libs/filesharing/types/filesharingDialogProps';
 
 interface CreateContentDialogProps {
   trigger?: React.ReactNode;
@@ -50,10 +51,12 @@ interface BatchUploadOptions {
     httpMethod: HttpMethods,
     type: ContentType,
     formData: FormData,
+    webdavShare: string | undefined,
   ) => Promise<void>;
 }
 
 const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) => {
+  const { webdavShare } = useParams();
   const { t } = useTranslation();
   const {
     isDialogOpen,
@@ -65,30 +68,42 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     action,
     handleItemAction,
     selectedFileType,
-    filesToUpload,
     setSelectedFileType,
     setMoveOrCopyItemToPath,
-    setFilesToUpload,
     isSubmitButtonDisabled,
     setSubmitButtonIsDisabled,
   } = useFileSharingDialogStore();
-  const { currentPath, selectedItems } = useFileSharingStore();
+  const { currentPath, selectedItems, setSelectedItems, setSelectedRows } = useFileSharingStore();
   const { appConfigs } = useAppConfigsStore();
 
-  const { Component, schema, titleKey, submitKey, initialValues, endpoint, httpMethod, type, getData } =
-    getDialogBodySetup(action);
+  const {
+    Component,
+    schema,
+    titleKey,
+    submitKey,
+    initialValues,
+    endpoint,
+    httpMethod,
+    requiresForm,
+    type,
+    getData,
+    desktopComponentClassName,
+    mobileComponentClassName,
+    hideSubmitButton = false,
+  } = getDialogBodyConfigurations(action);
 
   const form = useForm<FileSharingFormValues>({
-    resolver: schema ? zodResolver(getFileSharingFormSchema(t)) : undefined,
+    resolver: schema ? zodResolver(schema) : undefined,
     mode: 'onChange',
-    defaultValues: initialValues || {},
+    defaultValues: initialValues,
   });
 
   const clearAllSelectedItems = () => {
     setSubmitButtonIsDisabled(false);
     setMoveOrCopyItemToPath({} as DirectoryFileDTO);
     setSelectedFileType('');
-    setFilesToUpload([]);
+    setSelectedItems([]);
+    setSelectedRows({});
     closeDialog();
     form.reset();
   };
@@ -119,12 +134,12 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
           };
 
           const formData = new FormData();
+          formData.append('uploadFileDto', JSON.stringify(uploadDto));
           formData.append('currentPath', destinationPath);
           formData.append('file', uploadItem.file);
           formData.append('path', uploadItem.path);
-          formData.append('uploadFileDto', JSON.stringify(uploadDto));
 
-          return handleFileUploadAction(actionType, endpointUrl, method, requestContentType, formData);
+          return handleFileUploadAction(actionType, endpointUrl, method, requestContentType, formData, webdavShare);
         });
 
       await Promise.all(uploadPromises);
@@ -133,12 +148,11 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
 
   const onSubmit = async () => {
     const documentVendor = getDocumentVendor(appConfigs);
-
+    if (!getData) return;
     const uploadPayload = await getData(form, currentPath, {
       selectedItems,
       moveOrCopyItemToPath,
       selectedFileType,
-      filesToUpload,
       documentVendor,
     });
 
@@ -158,7 +172,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
       });
     } else {
       setSubmitButtonIsDisabled(false);
-      await handleItemAction(action, endpoint, httpMethod, type, uploadPayload);
+      await handleItemAction(action, endpoint, httpMethod, type, uploadPayload as PathChangeOrCreateProps, webdavShare);
     }
 
     clearAllSelectedItems();
@@ -187,6 +201,8 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
       handleOpenChange={handelOpenChange}
       trigger={trigger}
       title={t(title)}
+      desktopContentClassName={desktopComponentClassName}
+      mobileContentClassName={mobileComponentClassName}
       body={
         <div
           role="presentation"
@@ -206,12 +222,13 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
             <form onSubmit={handleFormSubmit}>
               <DialogFooterButtons
                 handleClose={handelOpenChange}
-                handleSubmit={handleFormSubmit}
+                handleSubmit={hideSubmitButton ? undefined : handleFormSubmit}
                 submitButtonText={submitKey}
                 submitButtonType="submit"
                 disableSubmit={
                   isLoading ||
                   isSubmitButtonDisabled ||
+                  (requiresForm && !form.formState.isValid) ||
                   (action === FileActionType.MOVE_FILE_OR_FOLDER && moveOrCopyItemToPath?.filePath === undefined)
                 }
               />

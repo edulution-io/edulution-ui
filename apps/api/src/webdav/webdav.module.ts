@@ -10,9 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import WebdavService from './webdav.service';
 
+@Global()
 @Module({
   providers: [WebdavService],
   exports: [WebdavService],

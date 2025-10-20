@@ -41,9 +41,11 @@ export enum RequestResponseContentType {
   APPLICATION_PDF = 'application/pdf',
   APPLICATION_X_WWW_FORM_URLENCODED = 'application/x-www-form-urlencoded',
   TEXT_PLAIN = 'text/plain',
+  TEXT_CSV = 'text/csv',
   MULTIPART_FORM_DATA = 'multipart/form-data',
   APPLICATION_OCTET_STREAM = 'application/octet-stream',
   APPLICATION_GITHUB_RAW = 'application/vnd.github.v3.raw',
+  TEXT_HTML = 'text/html',
 }
 
 export const HTTP_HEADERS = {
@@ -55,4 +57,11 @@ export const HTTP_HEADERS = {
   CONNECTION_UID: 'Connection-Uid',
   XForwaredFor: 'x-forwarded-for',
   UserAgent: 'User-Agent',
+  Depth: 'Depth',
 } as const;
+
+export enum WebdavRequestDepth {
+  ONLY_SELF = '0',
+  ONE_LEVEL = '1',
+  ALL = 'infinity',
+}

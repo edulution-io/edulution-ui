@@ -38,6 +38,7 @@ import AppConfigService from '../appconfig/appconfig.service';
 import Attendee from './attendee.schema';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
+import NotificationsService from '../notifications/notifications.service';
 
 @Injectable()
 class ConferencesService implements OnModuleInit {
@@ -50,13 +51,14 @@ class ConferencesService implements OnModuleInit {
     private readonly appConfigService: AppConfigService,
     private readonly groupsService: GroupsService,
     private readonly sseService: SseService,
+    private readonly notificationService: NotificationsService,
   ) {}
 
   onModuleInit() {
     void this.updateConferenceServiceConfig();
   }
 
-  @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
+  @OnEvent(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${APPS.CONFERENCES}`)
   async updateConferenceServiceConfig() {
     const appConfig = await this.appConfigService.getAppConfigByName(APPS.CONFERENCES);
     const url = appConfig?.options.url?.trim() ?? '';
@@ -214,6 +216,18 @@ class ConferencesService implements OnModuleInit {
         conference.invitedGroups,
         conference.invitedAttendees,
       );
+
+      // TODO: #1152
+
+      await this.notificationService.notifyUsernames(invitedMembersList, {
+        title: `Konferenz gestartet: ${conference.name}`,
+        body: `Die Konferenz "${conference.name}" wurde gestartet.`,
+        data: {
+          meetingID: conference.meetingID,
+          type: 'conference_started',
+        },
+      });
+
       const publicConferencesSubscriber = conference.meetingID;
       this.sseService.sendEventToUsers(
         [...invitedMembersList, publicConferencesSubscriber],

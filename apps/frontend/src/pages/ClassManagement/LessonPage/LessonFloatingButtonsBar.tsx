@@ -15,7 +15,7 @@ import { MdSchool } from 'react-icons/md';
 import { t } from 'i18next';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import { FaArrowRightFromBracket, FaArrowRightToBracket, FaEarthAmericas } from 'react-icons/fa6';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import { FaFileAlt, FaWifi } from 'react-icons/fa';
 import { TbFilterCode } from 'react-icons/tb';
 import { FiPrinter } from 'react-icons/fi';
@@ -32,11 +32,13 @@ import getDialogComponent from '@/pages/ClassManagement/LessonPage/getDialogComp
 import buildCollectDTO from '@libs/filesharing/utils/buildCollectDTO';
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 import VEYON_FEATURE_ACTIONS from '@libs/veyon/constants/veyonFeatureActions';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useUserPath from '@/pages/FileSharing/hooks/useUserPath';
 import useVeyonFeatures from './UserArea/useVeyonFeatures';
 import useVeyonApiStore from '../useVeyonApiStore';
 
 interface FloatingButtonsBarProps {
-  students: UserLmnInfo[];
+  students: LmnUserInfo[];
   isMemberSelected: boolean;
   isVeyonEnabled: boolean;
   isQuotaExceeded: boolean;
@@ -67,13 +69,15 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
   const { moveOrCopyItemToPath } = useFileSharingDialogStore();
   const { userConnectionUids } = useVeyonApiStore();
   const { handleSetVeyonFeature } = useVeyonFeatures();
+  const selectedWebdavShare = useFileSharingStore((s) => s.selectedWebdavShare);
+  const { homePath } = useUserPath();
 
   const updateStudents = async () => {
     const updatedStudents = await Promise.all(students.map((m) => fetchUser(m.cn)));
 
     setMember(
       [...member.filter((m) => !updatedStudents.find((us) => us?.cn === m.cn)), ...updatedStudents].filter(
-        (m): m is UserLmnInfo => !!m,
+        (m): m is LmnUserInfo => !!m,
       ),
     );
   };
@@ -97,7 +101,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
       enableAction: async () => {
         const shareDTO = buildShareDTO(user?.cn, students, moveOrCopyItemToPath);
         if (!shareDTO) return;
-        await shareFiles(shareDTO);
+        await shareFiles(shareDTO, selectedWebdavShare);
       },
       disableAction: async () => {},
     },
@@ -105,14 +109,9 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
       icon: FaArrowRightToBracket,
       text: CLASSMGMT_OPTIONS.COLLECT,
       enableAction: async () => {
-        const collectDTO = buildCollectDTO(
-          students,
-          user,
-          groupNameFromStore || '',
-          user?.sophomorixIntrinsic2[0] || '',
-        );
+        const collectDTO = buildCollectDTO(students, user, groupNameFromStore || '', homePath);
         if (!collectDTO) return;
-        await collectFiles(collectDTO, user?.sophomorixRole || '', activeCollectionOperation);
+        await collectFiles(collectDTO, user?.sophomorixRole || '', activeCollectionOperation, selectedWebdavShare);
       },
       disableAction: async () => {},
     },

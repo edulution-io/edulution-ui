@@ -13,8 +13,10 @@
 interface DeleteFileJobData {
   username: string;
   originFilePath: string;
+  webdavFilePath: string;
   total: number;
   processed: number;
+  share: string;
 }
 
 export default DeleteFileJobData;

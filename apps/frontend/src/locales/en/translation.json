@@ -2,10 +2,12 @@
   "welcome": "Welcome to the application",
   "changeLang": "Change Language",
   "heading": "Welcome {{givenName}} {{familyName}}",
-  "content": "Here is your personal {{ applicationName }} dashboard. The place where all your applications for digital teaching are collected.",
   "closeEditingWindow": "Close editing window",
   "framebufferImage": "Framebuffer image",
   "previewImage": "Image preview",
+  "not-set": "Not set",
+  "imprint": "Imprint",
+  "public": "Public",
   "bulletinboard": {
     "settings": "Settings",
     "noBulletinsToShow": "There are currently no messages to display, so check back later!",
@@ -21,7 +23,7 @@
     "activeFrom": "Active from",
     "activeUntil": "Active until",
     "appTitle": "Info Board",
-    "description": "Here you find your latest bulletins",
+    "description": "Here you can find your latest bulletins",
     "sidebar": "Info Board",
     "newCategorie": "New category",
     "category": "Category",
@@ -37,7 +39,7 @@
     "isActive": "Active",
     "isPermanentlyActive": "Permanently active",
     "error": "Error",
-    "filterPlaceHolderText": "Search for categoriename",
+    "filterPlaceHolderText": "Search for category name",
     "manageCategories": "Manage categories",
     "manageBulletins": "Manage bulletins",
     "placeholderCategoryName": "Name",
@@ -63,8 +65,13 @@
     "editCategory": "Edit category",
     "createNewCategory": "Create category",
     "categories": {
-      "visibleByUsersAndGroups": "This category with its bulletins is visible to users and groups on the homepage",
-      "visibleByUsersAndGroupsTitle": "Homepage",
+      "FULLY_VISIBLE": "Fully visible",
+      "FULLY_VISIBLE-short": "Visible",
+      "ONLY_TITLE": "Show titles only",
+      "ONLY_TITLE-short": "Titles only",
+      "visibilityState": "Default visibility of bulletins",
+      "visibleByUsersAndGroups": "This category with its bulletins is visible to users and groups in the Info Board app",
+      "visibleByUsersAndGroupsTitle": "Info Board app",
       "editableByUsersAndGroups": "This category is editable by users and groups in the Info Board app",
       "editableByUsersAndGroupsTitle": "Manage Bulletins"
     },
@@ -110,6 +117,8 @@
   },
   "dashboard": {
     "pageTitle": "Dashboard",
+    "sidebar": "Dashboard",
+    "description": "Here is your personal {{ applicationName }} dashboard. The place where all your applications for digital teaching are collected.",
     "mobileAccess": {
       "title": "Mobile Access",
       "manual": "Setup",
@@ -135,6 +144,7 @@
   "auth": {
     "errors": {
       "TokenExpired": "Session expired.",
+      "tokenIsNotActive": "Session is no longer active.",
       "SessionExpiring": "You will be logged off in less than a minute.",
       "Unauthorized": "You are not authorized.",
       "Unknown": "User not found.",
@@ -153,7 +163,7 @@
       "ToggleSchoolClassJoinedFailed": "Failed to join or leave the classroom",
       "ToggleProjectJoinedFailed": "Failed to join or leave the project",
       "TogglePrinterJoinedFailed": "Failed to add or remove the printer",
-      "GetUserSessionsFailed": "Get user session failed",
+      "GetUserSessionsFailed": "Failed to get user session",
       "AddUserSessionsFailed": "Add user session failed",
       "GetPrintersFailed": "Fetching printers failed",
       "RemoveUserSessionsFailed": "Remove user session failed",
@@ -163,20 +173,21 @@
       "StopExamModeFailed": "Stop exam mode failed",
       "RemoveManagementGroupFailed": "Remove management group failed",
       "AddManagementGroupFailed": "Add management group failed",
-      "GetUserSchoolClassesFailed": "Get user school classes failed",
-      "GetUserSchoolClassFailed": "Get user school class failed",
-      "GetUserProjectsFailed": "Get user projects failed",
+      "GetUserSchoolClassesFailed": "Failed to get user school classes",
+      "GetUserSchoolClassFailed": "Failed to get user school class",
+      "GetUserProjectsFailed": "Failed to get user projects",
       "GetUserFailed": "Fetching failed",
       "UpdateUserFailed": "Update failed",
-      "GetCurrentUserRoomFailed": "Get current user room failed",
+      "GetCurrentUserRoomFailed": "Failed to get current user room",
       "CreateProjectFailed": "Create project failed",
       "RemoveProjectFailed": "Remove project failed",
       "UpdateProjectFailed": "Update project failed",
       "SearchUsersOrGroupsFailed": "Search users or groups failed",
-      "GetProjectFailed": "Get project failed",
+      "GetProjectFailed": "Failed to get project",
       "PasswordMismatch": "The current password is wrong",
       "PasswordChangeFailed": "Password change failed",
-      "GetUsersQuotaFailed": "Get users quota failed"
+      "GetUsersQuotaFailed": "Failed to get users quota",
+      "GetSchoolsFailed": "Failed to get schools"
     }
   },
   "ticketsystem": {
@@ -193,6 +204,10 @@
     "encryption": "Encryption",
     "rowsSelected": "{{selected}} of {{total}} jobs selected",
     "rowSelected": "{{selected}} of {{total}} job selected",
+    "themeUpdated": {
+      "generic": "The mail theme has been updated. Please reload the page to apply the changes.",
+      "failed": "The mail theme could not be updated."
+    },
     "importer": {
       "filterPlaceHolderText": "Search for username",
       "title": "E-Mail Sync",
@@ -226,7 +241,7 @@
       "BbbUnauthorized": "You are not authorized at external BBB server",
       "AppNotProperlyConfigured": "The conferencing app is not properly configured, contact your system administrator",
       "YouAreNotTheCreator": "You are not the creator of the conference",
-      "AlreadyInAnotherMeeting": "You are already in a conference. Please leave the current conference before joining another one.",
+      "AlreadyInAnotherMeeting": "You are already in a conference. Please close the current conference before joining another one.",
       "DBAccessFailed": "Database access failed",
       "WrongPassword": "The entered password is wrong",
       "ConferenceIsNotRunning": "Conference is not running",
@@ -261,10 +276,9 @@
     "description": "The conference tool enables audio and video conferencing and supports presentations with advanced whiteboard functions.",
     "sidebar": "Conferences",
     "create": "Create conference",
-    "creator": "Creator",
     "delete": "Delete",
     "deleteConference": "Delete conference",
-    "deleteConferences": "Delete {count}} conferences",
+    "deleteConferences": "Delete {count} conferences",
     "editConference": "Edit conference",
     "conferenceUpdatedSuccessfully": "Conference updated successfully",
     "conferenceCreatedSuccessfully": "Conference created successfully",
@@ -283,7 +297,7 @@
     "rowsSelected": "{{selected}} of {{total}} conferences selected",
     "rowSelected": "{{selected}} of {{total}} conference selected",
     "cancel": "Cancel",
-    "password_required": "No Password entered",
+    "password_required": "No password entered",
     "error": "Error",
     "action": "Action",
     "start": "Start",
@@ -306,7 +320,7 @@
     "nobulletinboard": "No new bulletins"
   },
   "filesharing": {
-    "filterPlaceHolderText": "Search for filename",
+    "filterPlaceHolderText": "Type to filter",
     "title": "FILES",
     "sidebar": "Files",
     "previewTitle": "File Preview",
@@ -341,13 +355,16 @@
       "CollectingFailed": "Collecting files failed",
       "MissingCallbackURL": "Missing callback URL",
       "SharingFailed": "Sharing files failed",
-      "CopyFailed": "Copy failed"
+      "CopyFailed": "Copy failed",
+      "FileFormatNotSupported": "File format is not supported"
     },
     "tooltips": {
       "folderNameRequired": "Folder name is required",
       "FileNameRequired": "File name is required",
       "NewFileNameRequired": "New file name is required",
-      "NameRequired": "Name is required"
+      "NameRequired": "Name is required",
+      "NameExceedsCharacterLimit": "Name exceeds character limit",
+      "NameMustNotEndWithDot": "The name must not end with a dot."
     },
     "progressBox": {
       "info": "Info",
@@ -368,8 +385,86 @@
       "fileInfoDeleting": "File {{filename}} is being deleted",
       "downloadInfo": "Downloading {{filename}}",
       "errorInfo": "{{failed}} files could not be handed out",
-      "fileStructureIsCreating": "File structure is creating",
-      "zipFilesAreUploading": "Files are uploading"
+      "fileStructureIsCreating": "File structure is being creating",
+      "zipFilesAreUploading": "Files are uploading",
+      "fileIsUploading": "{{filename}} is uploading"
+    },
+
+    "publicShareFilesPage": {
+      "title": "Shared Files",
+      "description": "Here you will find all the files you have shared. Please note: Anyone who has the share link and the corresponding password can download these files."
+    },
+
+    "publicFileSharing": {
+      "fileName": "Filename",
+      "selectedFile": "Selected file: ",
+      "searchSharedFiles": "Search for shared files",
+      "actions": "Actions",
+      "createdAt": "Created at",
+      "validUntil": "Valid until",
+      "isActive": "Active",
+      "fileLink": "Share link",
+      "selectPersonsOrGroupsWhoCanAccess": "Restrict persons or groups who can access the file",
+      "invitedAttendees": "Invited",
+      "isAccessibleBy": "Accessible by",
+      "publiclyAccessible": "Publicly accessible",
+      "confirmMultiDelete": "Should these share links for the following contents really be deleted?",
+      "confirmSingleDelete": "Should this share link for the following content really be deleted?",
+      "deleteFileLink": "Delete share links",
+      "deleteFileLinks": "Delete share links",
+      "isPasswordProtected": "Password",
+      "qrCodePublicShareFile": "QR Code for public share link",
+      "createNewFileLink": "Create new share link",
+      "editPublicShareFile": "Edit share link",
+      "sharePublicFile": "Share public content",
+      "sharedBy": "Shared by: ",
+      "getFileAccess": "Please enter the password for this share to access the contents.",
+      "downloadPublicFile": "Download content",
+      "nameOfContent": "Content name:",
+      "errors": {
+        "PublicFileDeletionFailed": "Failed to delete share links",
+        "PublicFileIsOnlyDeletableByOwner": "The share link can only be deleted by the owner of this conent.",
+        "PublicFileNotFound": "Share link not found",
+        "PublicFileIsRestricted": "This share link is restricted to specific users or groups.",
+        "PublicIsRestrictedByInvalidToken": "The share link cannot be accessed because the token is invalid.",
+        "PublicFileWrongPassword": "The password for the sharing is incorrect.",
+        "FileCouldNotBeFound": "The requested content could not be found. Please check the share link or contact the owner of this content.",
+        "PublicFileDownloadFailed": "Downloading the file failed. Please try again later."
+      },
+      "success": {
+        "PublicFileLinkCreated": "Share link created successfully",
+        "PublicFileLinkDeleted": "Share link deleted successfully",
+        "PublicFileLinkUpdated": "Share link updated successfully"
+      },
+      "scope": {
+        "public": "Public",
+        "publicHint": "Anyone with the share link can access this content.",
+        "restricted": "Restricted",
+        "restrictedHint": "Only selected users or groups can access this content."
+      }
+    },
+
+    "expiry": {
+      "select": "Select expiry time",
+      "selectedItemPrefix": "Selected content that is shared:",
+      "noInviteesWarning": "⚠️  WARNING: Anyone with the share link will be able to download this content.",
+      "inviteesWarning": "⚠️  WARNING: Anyone within the selected groups or users will be able to download this content."
+    },
+
+    "eta": {
+      "fewSeconds": "a few seconds remaining",
+      "lessThanMinute": "less than a minute remaining",
+      "aboutOneMinute": "about one minute remaining",
+      "aboutMinutes_one": "about {{count}} minute remaining",
+      "aboutMinutes_other": "about {{count}} minutes remaining",
+      "aboutHours_one": "about {{count}} hour remaining",
+      "aboutHours_other": "about {{count}} hours remaining",
+      "moreThanHours_one": "more than {{count}} hour remaining",
+      "moreThanHours_other": "more than {{count}} hours remaining",
+      "aboutDays_one": "about {{count}} day remaining",
+      "aboutDays_other": "about {{count}} days remaining",
+      "moreThanDays_one": "more than {{count}} day remaining",
+      "moreThanDays_other": "more than {{count}} days remaining"
     }
   },
   "forums": {
@@ -402,7 +497,7 @@
     "invalidQuota": "The quota must be specified according to the documentation",
     "invalidMailQuota": "The E-Mail quota must be specified as a number in MB",
     "mailQuota": "E-Mail Quota (MB)",
-    "proxyAddresses": "Proxy E-Mail-Adresses",
+    "proxyAddresses": "Proxy E-Mail-Addresses",
     "descriptionPlaceholder": "Short description of the project",
     "proxyAddressesPlaceholder": "info@email1.de,kontakt@email2.com",
     "quotaPlaceholder": "[{\"share\":\"default-school\",\"quota\":50}]",
@@ -512,11 +607,16 @@
       "subnet": "Subnet",
       "subnetDescription": "Subnet in CIDR notation (10.0.0.0/24)",
       "subnetPlaceholder": "10.0.0.0/24",
-      "proxyAdress": "Proxy Adress",
+      "proxyAdress": "Proxy Address",
       "proxyAdressDescription": "URL of the Veyon-WebAPI-Proxy",
       "proxyAdressPlaceholder": "http://localhost:11080",
       "createConfig": "Create config",
       "editConfig": "Edit config"
+    },
+    "selectSchool": {
+      "title": "Select school",
+      "description": "Please select the school to which the class or project belongs.",
+      "placeholder": "Select school"
     },
     "copyOrCut": "Would you like to cut or copy the files?",
     "filesShared": "Files shared",
@@ -533,10 +633,10 @@
   "survey": {
     "attendee": "Attendee",
     "attendees": "Attendees",
-    "filterPlaceHolderText": "Search for surveyname",
+    "filterPlaceHolderText": "Search for survey name",
     "invitedAttendees": "Invited",
     "publicSurvey": "Public survey",
-    "isPublic": "Publicly displayed (?)",
+    "isPublic": "Publicly displayed",
     "isPublicTrue": "Public",
     "isPublicFalse": "Private",
     "newTitle": "New survey",
@@ -546,24 +646,33 @@
     "expirationDate": "Expiration date",
     "finished": "You successfully completed the survey.",
     "thanks": "Thank you for your participation.",
-    "noAnswer": "No answers available jet.",
+    "noAnswer": "No answers available yet.",
     "notFound": "Survey could not be found.",
     "noFormula": "The formula of the survey is not readable.",
-    "canSubmitMultiple": "Allow multiple submission",
+    "canSubmitMultiple": "Allow multiple submissions",
     "editor": {
+      "inputFieldTitle": "Input field",
       "new": "New (blank)",
-      "fileUploadSuccess": "Saved the image successfully.",
-      "fileUploadError": "Error on Image Upload, please retry later.",
+      "fileUploadSuccess": "Saved the file successfully.",
+      "fileUploadError": "Error on file upload, please retry later.",
+      "fileDeletionSuccess": "Deleted the file successfully.",
       "saveSurveySuccess": "Saved the survey.",
       "reset": "Reset",
       "addDescription": "Add a description",
       "expectingUserInput": "Expecting the user to answer here, ... ",
       "templates": "Templates",
       "templateMenu": {
-        "fetch": "Choose one of the following templates.",
         "submit": "Save Survey as template.",
-        "title": "Templates store/load",
-        "emptyMessage": "There are no templates available, yet"
+        "title": "Templates:",
+        "userMessage": "Here you can load a template that is available to you.",
+        "adminMessage": "Here you can either load a template or update/create the template of the current survey, for later usage.",
+        "emptyMessage": "There are no templates available yet",
+        "deletion": {
+          "title": "Delete template",
+          "message": "Are you sure you want to delete this template?",
+          "success": "Template deleted successfully",
+          "error": "Failed to delete template"
+        }
       },
       "questionSettings": {
         "settings": "Settings",
@@ -575,13 +684,15 @@
         "limit": "Limit",
         "nullLimit": "An upper limit of 0 means, that the option selectable, infinitely often",
         "backendLimiters": "Option limits",
-        "addBackendLimiters": "Define options with limiters, to limit the number of times the option can be selected",
-        "useOtherItem": "Enable users to add user defined options",
-        "addBackendLimiterForOtherItem": "This is the limit, for how often the option will be selectable",
+        "addBackendLimiters": "Define options with limiters to control how often they can be selected",
+        "useOtherItem": "Enable users to add user-defined options",
+        "addBackendLimiterForOtherItem": "Set how often participants may choose this option",
         "upperLimit": "Limit",
         "upperBackendLimiters": "Choices with an upper limit",
         "addChoice": "Add",
-        "filterPlaceHolderText": "Search for option"
+        "filterPlaceHolderText": "Search for option",
+        "imageWidth": "Width of one image in pixel [px]",
+        "imageWidthPlaceholder": "0 means that the width is only limited by the available space."
       }
     },
     "participate": {
@@ -589,16 +700,17 @@
       "username": "User name",
       "pleaseEnterYourFullName": "You may participate in the survey by entering your full name, use the participation-ID if you want to change your submission.",
       "yourFullName": "Your full name",
-      "invalidUsername": "Username is invalid (permitted are letters, number, and [. -])",
+      "invalidUsername": "Username is invalid (permitted are letters, numbers, and [. -])",
       "idHeader": "Your participation ID (optional)",
-      "idText": "Pls copy this for later",
+      "idText": "Please copy this for later",
       "idParagraph": "To view your former answer or to edit it, if configured, you can use the participation-ID here.",
       "usernameRequired": "User name is required",
-      "completeMessage": "Thank you very much for participating in this survey"
+      "fileSizeExceeded": "A file exceeds the maximum allowed size of {{size}} MB.",
+      "completeMessage": "Thank you very much for participating in this survey."
     },
     "errors": {
       "submitAnswerError": "The answer could not be submitted.",
-      "updateOrCreateError": "Neither able to update a survey nor to create a new one.",
+      "updateOrCreateError": "Unable to update or create the survey.",
       "deleteError": "The surveys could not be deleted.",
       "noAnswerError": "No answers available jet.",
       "noFormulaError": "The formula of the survey is not readable.",
@@ -614,11 +726,12 @@
   },
   "survey-answer": {
     "errors": {
-      "notAbleToFindOrCreateSurveyAnswerError": "Neither able to find nor to create the users survey answer entry in database.",
+      "notAbleToFindOrCreateSurveyAnswerError": "Unable to find or create the user's survey answer entry in database.",
       "notAbleToFindSurveyAnswerError": "Survey answers not found.",
-      "notAbleToUpdateSurveyAnswerError": "Not able to update the submitted survey answer.",
-      "notAbleToCreateSurveyAnswerError": "Not able to create the users survey answer.",
-      "notAbleToDeleteSurveyAnswerError": "Not able to delete the users survey answer."
+      "notAbleToUpdateSurveyAnswerError": "Unable to update the submitted survey answer.",
+      "notAbleToCreateSurveyAnswerError": "Unable to create the user's survey answer.",
+      "notAbleToDeleteSurveyAnswerError": "Unable to delete the user's survey answer.",
+      "notAbleToCountChoices": "Unable to count the choices."
     }
   },
   "surveys": {
@@ -636,17 +749,17 @@
       "open": {
         "menu": "Open Surveys",
         "title": "Open Surveys",
-        "description": "Here you find the surveys you were invited to participate."
+        "description": "Here you can find the surveys you were invited to participate."
       },
       "created": {
         "menu": "Own Surveys",
         "title": "Self-created Surveys",
-        "description": "Here you find the surveys that you have created by yourself."
+        "description": "Here you can find the surveys that you have created by yourself."
       },
       "answered": {
         "menu": "Answered Surveys",
         "title": "Answered Surveys",
-        "description": "Here you find the surveys that you have already participated in."
+        "description": "Here you can find the surveys that you have already participated in."
       },
       "editor": {
         "menu": "Create new"
@@ -824,7 +937,52 @@
       "errors": {
         "updateError": "Settings could not be updated.",
         "notFoundError": "Settings could not be loaded."
+      },
+      "deploymentTarget": "Target platform",
+      "ldap": {
+        "title": "LDAP",
+        "edulution-binduser-description": "Here you can configure the LDAP access data required for group synchronization.",
+        "edulution-binduser-dn": "Distinguished Name (DN)",
+        "edulution-binduser-password": "Password"
+      },
+
+      "branding": {
+        "title": "Branding"
+      },
+
+      "logo": {
+        "title": "Logo",
+        "descriptionSchool": "Upload your logo. It will be shown on the login screen and on the edulution app ID card.",
+        "descriptionGeneric": "Upload your logo. It will be shown on the login screen.",
+        "uploadLightLogo": "Upload light logo",
+        "uploadDarkLogo": "Upload dark logo",
+        "deleteSuccessful": "Logo deleted successfully."
+      },
+      "organisationInfo": {
+        "title": "Organisational information",
+        "descriptionSchool": "Enter your organization’s official details. This information may be displayed in the edulution app. Please provide the name, street, postal code, and optionally the school website.",
+        "descriptionGeneric": "Enter your organization's official details.",
+        "name": "Organization name",
+        "namePlaceholder": "Sampletown Organization",
+        "street": "Street",
+        "streetPlaceholder": "1 Organization Street",
+        "postalCode": "Postal code",
+        "postalCodePlaceholder": "12345",
+        "postalCityPlaceholder": "Berlin",
+        "website": "Organization website",
+        "city": "City"
       }
+    },
+    "userAdministration": {
+      "title": "User Administration",
+      "resetMfaForm": "Reset Two-Factor Authentication",
+      "resetMfaFormDescription": "Here you can reset the two-factor authentication for users.",
+      "selectUsersTitle": "Select Users",
+      "selectUsersDescription": "Select the users for whom you want to reset the two-factor authentication.",
+      "totpResetSuccess": "TOTP for user {{username}} has been disabled successfully.",
+      "setAdminGroupTitle": "Set administrator group",
+      "setAdminGroupDescription": "Additional administrators can be defined here. The global administrator remains unchanged.",
+      "setAdminGroupSelectDescription": "Groups can be selected using the search field."
     },
     "info": {
       "title": "Info"
@@ -866,6 +1024,16 @@
           "invalidCidrFormat": "Invalid CIDR notation",
           "invalidUrlFormat": "Invalid URL"
         },
+        "webdavShare": {
+          "title": "WebDAV",
+          "sectionTitle": "WebDAV-Shares",
+          "description": "WebDAV servers can be set up for the file manager here.",
+          "filterPlaceHolderText": "Search for WebDAV shares"
+        },
+        "webdavServer": {
+          "title": "WebDAV-Server",
+          "filterPlaceHolderText": "Search for WebDAV servers"
+        },
         "files": {
           "title": "Files",
           "description": "The files that are displayed in the app can be managed here.",
@@ -879,8 +1047,9 @@
           "description": "Here in the editor you can design your own web applications or integrate existing content. You can create websites, format and customize content. Existing applications or external content can also be inserted and conveniently linked to your own content. This creates a flexible area in which you can easily display content or offer interactive applications. Start by selecting the mode in which the web application is to be launched.",
           "sandboxMode": "Separate Layout",
           "nativeMode": "Integrated Layout",
-          "sandboxModeDescription": "In “Sparate layout” mode, the content is displayed as a separate page, similar to a window within the application. In addition to the actual content, additional design elements or functions can also be loaded from other sources. This means that the design is independent of the application and could therefore look or behave differently. Here, the content must be uploaded as an HTML file.",
-          "nativeModeDescription": "In “Integrated layout” mode, on the other hand, the content is inserted directly into the user interface of the application. This means that the content looks exactly like the application itself and fits in seamlessly. However, no additional external design elements or functions can be added dynamically here. However, static elements such as images can be uploaded and used here."
+          "sandboxModeDescription": "In “Separate layout” mode, the content is displayed as a separate page, similar to a window within the application. In addition to the actual content, additional design elements or functions can also be loaded from other sources. This means that the design is independent of the application and could therefore look or behave differently. Here, the content must be uploaded as an HTML file.",
+          "nativeModeDescription": "In “Integrated layout” mode, on the other hand, the content is inserted directly into the user interface of the application. This means that the content looks exactly like the application itself and fits in seamlessly. However, no additional external design elements or functions can be added dynamically here. However, static elements such as images can be uploaded and used here.",
+          "visibilityDescription": "Here you can specify whether the app should be publicly accessible. Active means public, inactive means that only configured user groups have access. Making the app publicly accessible creates a link in the footer. To make the app visible to registered users in the sidebar, their access must be configured via the user groups."
         }
       },
       "update": {
@@ -906,7 +1075,8 @@
       "fieldRequired": "This field is required",
       "maxChars": "Maximum {{count}} characters",
       "nameAlreadyExists": "App with this name already exists",
-      "nameIsNotAllowed": "This app name is not allowed"
+      "nameIsNotAllowed": "This app name is not allowed",
+      "webdavShareNameAlreadyExists": "WebDAV-Share with this name already exists"
     },
     "yamleditor": {
       "invalidYaml": "Wrong YAML syntax",
@@ -995,8 +1165,8 @@
     "faq": "FAQ",
     "externalIntegration": "External Integration",
     "config": {
-      "mfa": "Two-Factor-Authentication",
-      "mfaInfo": "Currently the Two-Factor-Authentication is",
+      "mfa": "Two-Factor Authentication",
+      "mfaInfo": "Currently the Two-Factor Authentication is",
       "enabled": "enabled",
       "enable": "Enable",
       "disabled": "disabled",
@@ -1007,11 +1177,13 @@
       "description": "Please select the language for the user interface.",
       "german": "German",
       "english": "English",
+      "french": "French",
       "system": "System language"
     },
     "addTotp": {
       "title": "Set up Two-Factor Authentication",
       "qrCodeInstructions": "Scan the QR code with an authenticator app that supports TOTP (Time-based One-Time Password).",
+      "copyTotpSecretInstructions": "If no camera is available, the secret can be copied here:",
       "totpCodeInstructions": "Then enter the generated code here and save it:",
       "mfaSetupRequired": "The global guidelines require two-factor authentication to be set up:",
       "mfaSetupSuccess": "Two-factor authentication has been successfully set up."
@@ -1040,14 +1212,16 @@
   "teacher": "Teacher",
   "student": "Student",
   "students": "Students",
+  "parent": "Parent",
+  "staff": "Staff",
   "user": "User",
   "login": {
     "pageTitle": "Login",
-    "username_too_long": "Username to long",
+    "username_too_long": "Username too long",
     "username_too_short": "Username to short",
     "username_not_regex": "Invalid username/participation-ID",
     "publicUsername_notExisting": "There is no submission with the given participation-ID",
-    "password_too_long": "Password to long",
+    "password_too_long": "Password too long",
     "forgot_password": "Forgot password?",
     "remember_me": "Remember me",
     "enterMultiFactorCode": "Two-Factor Authentication",
@@ -1057,18 +1231,26 @@
   },
   "edit": "Edit",
   "common": {
+    "refreshPage": "Refresh page",
+    "showMore": "Show more",
+    "visibility": "Visibility",
     "offline": "Offline",
     "guest": "Guest",
     "ok": "OK",
     "next": "Next",
     "back": "Back",
+    "of": "of",
     "confirm": "Confirm",
+    "creator": "Creator",
+    "chooseFile": "Choose file",
+    "changeFile": "Change file",
     "share": "Share",
     "answers": "Answers",
     "error": "Error",
     "errors": {
       "dbAccessFailed": "Database access failed",
       "directoryNotCreated": "Failed to create directory",
+      "fileNotCreated": "Failed to create file",
       "fileUploadFailed": "Failed to upload the file",
       "fileDeletionFailed": "Failed to delete the file",
       "fileWritingFailed": "Failed to write the file",
@@ -1076,7 +1258,9 @@
       "fileNotFound": "File not found",
       "fileNotProvided": "File not provided",
       "invalidFileType": "Invalid file type",
-      "startDateBeforeEndDate": "The start date must be before the end date"
+      "startDateBeforeEndDate": "The start date must be before the end date",
+      "invalidRequestData": "Invalid request data",
+      "wrongServerConfig": "Incorrect server configuration"
     },
     "cut": "Cut",
     "sortOrder": "Sort order",
@@ -1114,6 +1298,7 @@
     "yes": "Yes",
     "no": "No",
     "title": "Title",
+    "filename": "File name",
     "add": "Add",
     "reload": "Reload",
     "stop": "Stop",
@@ -1184,8 +1369,14 @@
     "format": "Format",
     "upload": "Upload",
     "mode": "Mode",
-    "orContinueWithoutAccount": "Or continue without account",
-    "application": "Application"
+    "orContinueWithoutAccount": "Or continue without an account",
+    "application": "Application",
+    "reset": "Reset",
+    "file": "File",
+    "saveLocal": "Save to device",
+    "openLocal": "Open from device",
+    "openFileFromEdu": "Open file",
+    "saveFileToEdu": "Save to files"
   },
   "form": {
     "path": "Path",
@@ -1210,14 +1401,20 @@
     "embeddedPageEditor": "Editor",
     "embeddedPageEditorModeDescription": "Here you can choose between sandbox and native rendering. Sandbox is the safest variant, native the original rendering. Please note that no security precautions can be taken with native rendering. In sandbox mode, the HTML file is read from memory. To do this, upload the file.",
     "sandboxed": "Sandbox",
+    "pathname": "Share-Path",
     "input": {
       "dateTimePicker": {
         "timeSlot": "o'clock",
         "placeholder": "MM/DD/YYYY HH:mm AM/PM"
       }
+    },
+    "errors": {
+      "dateRequired": "Date is required",
+      "dateInvalid": "Invalid date format",
+      "datePast": "Date must be in the future"
     }
   },
-  "fileOperationSuccessful": "File operation successful started",
+  "fileOperationSuccessful": "File operation started successfully",
   "fileOperationStarted": "File operation started",
   "unknownErrorOccurred": "An unknown error occurred",
   "fileSharingTable": {
@@ -1225,6 +1422,7 @@
     "size": "Size",
     "lastModified": "Last Modified",
     "type": "Type",
+    "isShared": "Shared",
     "filesOrFoldersSelected": "{{selected}} of {{total}} file(s)/folder(s) were selected"
   },
   "filesharingUpload": {
@@ -1243,6 +1441,8 @@
     "overwriteWarningDescriptionFiles": "The following files will be overwritten:",
     "oversizedFilesDetected": "Oversized files detected",
     "oversizedFileDetected": "Oversized file detected!",
+    "folderTooLargeTitle": "Too many files in the folder",
+    "folderTooLargeDescription": "The folder contains more then 100 files. Please select another folder or reduce the number of files.",
     "cannotUploadOversized": "Files larger than 50 MB cannot be uploaded.",
     "addFiles": "Add files",
     "addFolder": "Add folder",
@@ -1257,11 +1457,21 @@
   },
   "whiteboard": {
     "title": "WHITEBOARD",
-    "sidebar": "Whiteboard"
+    "sidebar": "Whiteboard",
+    "saveAsTlFile": "Save Whiteboard as .tldr file",
+    "openTlFile": "Open",
+    "openLocalTlFile": "Open local .tldr file",
+    "file": "File",
+    "openTLFileFailed": "Could not open file",
+    "openTLFileSuccess": "File loaded successfully"
   },
   "whiteboard-collaboration": {
     "title": "WHITEBOARD",
-    "sidebar": "Collaborative Whiteboard"
+    "sidebar": "Collaborative Whiteboard",
+    "privateRoom": "Private room",
+    "dropdownPlaceholder": "Choose your current room",
+    "historyTitle": "History",
+    "historyNoMore": "No more entries"
   },
   "table": {
     "noDataAvailable": "No data available"
@@ -1322,6 +1532,22 @@
     "unknownErrorOccurred": "An unknown error occurred"
   },
   "currentDirectory": "Current directory",
+
+  "saveExternalFileDialogBody": {
+    "saveExternalFile": "Save external file",
+    "destinationFolder": "Destination folder",
+    "filename": "Filename",
+    "filenamePlaceholder": "Enter filename here",
+    "filenameRequired": "Filename cannot be empty",
+    "fileSavedSuccessful": "File saved successfully",
+    "fileSaveFailed": "File could not be saved"
+  },
+
+  "fileSelectorDialogBody": {
+    "title": "Select a file to open",
+    "selectFile": "Selected file"
+  },
+
   "moveItemDialog": {
     "changeDirectory": "Change directory",
     "currentDirectory": "Current directory",
@@ -1335,6 +1561,12 @@
     "unknownErrorOccurred": "An unknown error occurred",
     "selectedItem": "selected item"
   },
+
+  "shareDialog": {
+    "shareFilesOrDirectories": "Share files",
+    "share": "Share"
+  },
+
   "deleteDialog": {
     "areYouSure": "Are you absolutely sure?",
     "actionCannotBeUndone": "This action cannot be undone. This will permanently delete the files:",
@@ -1347,7 +1579,7 @@
   "timeAgo": {
     "justNow": "just now",
     "minuteAgo": "{{count}} minutes ago",
-    "hourAgo": "{{count}} hour ago",
+    "hourAgo": "{{count}} hours ago",
     "dayAgo": "{{count}} days ago",
     "invalidDate": "Invalid date"
   },
@@ -1364,7 +1596,9 @@
     "move": "Move",
     "delete": "Delete",
     "download": "Download",
-    "copy": "Copy"
+    "copy": "Copy",
+    "share": "Share",
+    "back": "Back"
   },
   "response": {
     "successfully": "Action was successful",
@@ -1400,6 +1634,8 @@
     "errors": {
       "CouldNotGetGroupByPath": "Group could not be found by path",
       "CouldNotGetUsers": "Users could not be found",
+      "CouldNotGetCurrentUser": "Current user could not be found",
+      "CouldNotGetAllGroups": "Failed to find all groups",
       "CouldNotFetchGroupMembers": "Group members could not be found",
       "CouldNotFetchUserById": "User could not be found by ID",
       "CouldNotSearchGroups": "Could not search for groups"
@@ -1429,9 +1665,16 @@
     "mailImapPortTitle": "Port",
     "mailImapPortDescription": "Enter the port number of the IMAP-server (i.e. 993)",
     "mailImapSecureTitle": "Secure Connection",
-    "mailImapSecureDescription": "Should the connection be established via TLS or STARTTLS",
+    "mailImapSecureDescription": "Should the connection be established via TLS or STARTTLS?",
     "mailImapRejectUnauthorizedTitle": "Reject Unauthorized",
-    "mailImapRejectUnauthorizedDescription": "Should a certificate check be carried out for this connection?"
+    "mailImapRejectUnauthorizedDescription": "Should a certificate check be carried out for this connection?",
+    "mailSogoThemeTitle": "Theme",
+    "mailSogoThemeDescription": "Select the theme for the Mail app. Changing the theme restarts related containers.",
+    "mailSogoTheme": {
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "mailSogoThemeDisabled": "Disabled because the mail server is not running."
   },
   "mails": {
     "errors": {
@@ -1449,7 +1692,7 @@
   "licensing": {
     "communityLicenseDialog": {
       "title": "Community Edition",
-      "description": "Free community edition of {{ applicationName }} UI.<br/>Visit us on <link1>{{link}}</link1>.<br/><strong>This version does not provide support.</strong>"
+      "description": "Free community edition of {{ applicationName }} UI. <strong>This version does not provide support.</strong>"
     }
   },
   "preview": {
@@ -1504,6 +1747,10 @@
       "dead": "dead"
     }
   },
+  "version": {
+    "newVersionAvailable": "A new version of {{ appName }} is available.",
+    "update": "Refresh"
+  },
   "veyon": {
     "lockScreen": "Lock screen",
     "unlockScreen": "Unlock screen",
@@ -1523,5 +1770,49 @@
   "Failed to fetch": "Connection to edulution server failed. Please try again later.",
   "Invalid client or Invalid client credentials": "Invalid server configuration. Please check the client ID or the client secret.",
   "Not Found (404)": "Connection to edulution server failed. Please try again later.",
-  "NetworkError when attempting to fetch resource.": "Network error when attempting to fetch resource."
+  "NetworkError when attempting to fetch resource.": "Network error when attempting to fetch resource.",
+  "deploymentTarget": {
+    "title": "Selection",
+    "description": "Here you can select the platform to which {{ appName }} will be connected.",
+    "linuxmuster": "Linuxmuster",
+    "generic": "Generic"
+  },
+  "webdavShare": {
+    "displayName": "Display name",
+    "accessGroups": {
+      "title": "User groups",
+      "description": "Select the user groups that should have access to the WebDAV share."
+    },
+    "type": {
+      "title": "WebDAV Server Schema",
+      "description": "Here you can select the type of WebDAV server schema.",
+      "linuxmuster": "Linuxmuster",
+      "edu-file-proxy": "edulution File Proxy",
+      "generic": "Generic"
+    },
+    "status": "Status",
+    "offline": "Server is currently unavailable",
+    "pathVariables": {
+      "title": "Path variable",
+      "description": "A dynamic path variable can be selected here from the user attributes."
+    },
+    "isRootServer": {
+      "title": "Root path",
+      "description": "For the Linuxmuster school functions, at least one WebDAV share must be configured as the root path.",
+      "short": "Root",
+      "notConfigured": "No root path configured. Please contact the system administrator."
+    },
+    "selectPlaceholder": "Select...",
+    "authentication": {
+      "title": "Authentication",
+      "description": "The authentication method for the WebDAV server can be selected here.",
+      "basic": "Basic (username, password)"
+    },
+    "selectRootServer": {
+      "title": "WebDAV Server Selection",
+      "description": "Select the WebDAV server that should serve as the root path."
+    },
+    "sharePath": "Path",
+    "pathPreview": "Path preview"
+  }
 }

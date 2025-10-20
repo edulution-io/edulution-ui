@@ -48,7 +48,7 @@ class VeyonService implements OnModuleInit {
     void this.updateVeyonProxyConfig();
   }
 
-  @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
+  @OnEvent(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${APPS.CLASS_MANAGEMENT}`)
   async updateVeyonProxyConfig() {
     try {
       const appConfig = await this.appConfigService.getAppConfigByName(APPS.CLASS_MANAGEMENT).catch((error) => {

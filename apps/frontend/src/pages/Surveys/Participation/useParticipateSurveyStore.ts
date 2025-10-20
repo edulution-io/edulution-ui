@@ -16,7 +16,15 @@ import { create } from 'zustand';
 import { Model, CompletingEvent } from 'survey-core';
 import SurveyAnswerResponseDto from '@libs/survey/types/api/survey-answer-response.dto';
 import AnswerSurvey from '@libs/survey/types/api/answer-survey';
-import { SURVEYS, PUBLIC_SURVEYS, SURVEY_ANSWER_ENDPOINT, PUBLIC_USER } from '@libs/survey/constants/surveys-endpoint';
+import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import {
+  SURVEYS,
+  PUBLIC_SURVEYS,
+  SURVEY_ANSWER_ENDPOINT,
+  PUBLIC_USER,
+  SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT,
+} from '@libs/survey/constants/surveys-endpoint';
 import { publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import handleApiError from '@/utils/handleApiError';
@@ -33,7 +41,11 @@ interface ParticipateSurveyStore {
   ) => Promise<SurveyAnswerResponseDto | undefined>;
   isSubmitting: boolean;
 
-  checkForMatchingUserNameAndPubliUserId: (surveyId: string, attendee: Partial<AttendeeDto>) => Promise<boolean>;
+  checkForMatchingUserNameAndPubliUserId: (
+    surveyId: string,
+    attendee: Partial<AttendeeDto>,
+    canUpdateFormerAnswer?: boolean,
+  ) => Promise<boolean>;
   setIsUserAuthenticated: (isUserAuthenticated: boolean) => void;
   isUserAuthenticated: boolean;
 
@@ -43,6 +55,13 @@ interface ParticipateSurveyStore {
 
   publicUserId?: string;
 
+  uploadTempFile: (
+    surveyId: string,
+    file: File,
+  ) => Promise<{ name: string; url: string; content: Buffer<ArrayBufferLike> } | null>;
+  isUploadingFile?: boolean;
+  deleteTempFile: (surveyId: string, file: File, callback: CallableFunction) => Promise<string | undefined>;
+  isDeletingFile?: boolean;
   reset: () => void;
 }
 
@@ -57,6 +76,9 @@ const ParticipateSurveyStoreInitialState: Partial<ParticipateSurveyStore> = {
   isFetching: false,
 
   publicUserId: undefined,
+
+  isUploadingFile: false,
+  isDeletingFile: false,
 };
 
 const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => ({
@@ -70,7 +92,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     surveyModel: Model,
     completingEvent: CompletingEvent,
   ): Promise<SurveyAnswerResponseDto | undefined> => {
-    const { surveyId, saveNo, answer, isPublic = false } = answerDto;
+    const { surveyId, answer, isPublic = false } = answerDto;
     const { isSubmitting, attendee } = get();
     if (isSubmitting) {
       return undefined;
@@ -84,13 +106,11 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       const response = isPublic
         ? await eduApi.post<SurveyAnswerResponseDto>(PUBLIC_SURVEYS, {
             surveyId,
-            saveNo,
             answer,
             attendee,
           })
         : await eduApi.patch<SurveyAnswerResponseDto>(SURVEYS, {
             surveyId,
-            saveNo,
             answer,
             attendee,
           });
@@ -140,6 +160,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
   checkForMatchingUserNameAndPubliUserId: async (
     surveyId: string,
     attendee: Partial<AttendeeDto>,
+    canUpdateFormerAnswer: boolean = false,
   ): Promise<boolean> => {
     set({ isFetching: true });
     try {
@@ -151,13 +172,62 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
         return false;
       }
       const surveyAnswer: SurveyAnswerResponseDto = response.data;
-      set({ attendee: surveyAnswer.attendee, previousAnswer: surveyAnswer });
+      set({ attendee: surveyAnswer.attendee, previousAnswer: canUpdateFormerAnswer ? surveyAnswer : undefined });
       return true;
     } catch (error) {
       set({ attendee: undefined, previousAnswer: undefined });
       return false;
     } finally {
       set({ isFetching: false });
+    }
+  },
+
+  uploadTempFile: async (
+    surveyId: string,
+    file: File,
+  ): Promise<{ name: string; url: string; content: Buffer<ArrayBufferLike> } | null> => {
+    const { attendee } = get();
+    set({ isUploadingFile: true });
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const response = await eduApi.post<{ name: string; url: string; content: Buffer<ArrayBufferLike> }>(
+        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}`,
+        formData,
+        {
+          headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
+        },
+      );
+      return response.data;
+    } catch (error) {
+      handleApiError(error, set);
+      return null;
+    } finally {
+      set({ isUploadingFile: false });
+    }
+  },
+
+  deleteTempFile: async (
+    surveyId: string,
+    file: File & { content?: string },
+    callback: CallableFunction,
+  ): Promise<string | undefined> => {
+    const { attendee } = get();
+    set({ isDeletingFile: true });
+    try {
+      const fileName = file.name || file.content?.split('/').pop();
+      const response = await eduApi.delete<string>(
+        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${fileName}`,
+      );
+      toast.success(t('survey.editor.fileDeletionSuccess'));
+      callback('success', `${EDU_API_URL}/${response.data}`);
+      return 'success';
+    } catch (error) {
+      handleApiError(error, set);
+      callback('error');
+      return undefined;
+    } finally {
+      set({ isDeletingFile: false });
     }
   },
 

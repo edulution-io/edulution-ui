@@ -18,9 +18,12 @@ import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import { useTranslation } from 'react-i18next';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import useGroupStore from '@/store/GroupStore';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import { DropdownSelect } from '@/components';
+import BulletinVisibilityStatesType from '@libs/bulletinBoard/types/bulletinVisibilityStatesType';
+import BULLETIN_VISIBILITY_STATES from '@libs/bulletinBoard/constants/bulletinVisibilityStates';
 
 interface CreateAndUpdateBulletinCategoryBodyProps {
   handleFormSubmit: (e: React.FormEvent) => void;
@@ -51,6 +54,15 @@ const CreateAndUpdateBulletinCategoryBody = ({
     setValue('name', e.target.value, { shouldValidate: true });
   };
 
+  const handleVisibilityStateChange = (visibilityState: string) => {
+    form.setValue('bulletinVisibility', BULLETIN_VISIBILITY_STATES[visibilityState as BulletinVisibilityStatesType]);
+  };
+
+  const bulletinVisibilityOptions = Object.keys(BULLETIN_VISIBILITY_STATES).map((s) => ({
+    name: t(`bulletinboard.categories.${s}`),
+    id: BULLETIN_VISIBILITY_STATES[s as BulletinVisibilityStatesType],
+  }));
+
   return (
     <Form {...form}>
       <form
@@ -73,6 +85,15 @@ const CreateAndUpdateBulletinCategoryBody = ({
             form.setValue('isActive', isChecked);
           }}
         />
+
+        <div className="mb-1 font-bold">{t('bulletinboard.categories.visibilityState')}</div>
+        <DropdownSelect
+          options={bulletinVisibilityOptions}
+          selectedVal={watch('bulletinVisibility') || BULLETIN_VISIBILITY_STATES.FULLY_VISIBLE}
+          handleChange={handleVisibilityStateChange}
+          variant="dialog"
+        />
+
         <p className="pt-4 text-lg font-bold text-background">
           {t('bulletinboard.categories.visibleByUsersAndGroupsTitle')}
         </p>

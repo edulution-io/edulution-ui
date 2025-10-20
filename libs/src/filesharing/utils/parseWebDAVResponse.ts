@@ -20,7 +20,7 @@ import WebdavProperty from '@libs/filesharing/types/webdavProperty';
 
 const parseWebDAVResponse = (response: WebdavResponse) => {
   const rawPropstat = response[WebdavXmlAttributes.PropStat];
-
+  const rawHref = response[WebdavXmlAttributes.Href];
   const propstatArray: WebdavPropStat[] = Array.isArray(rawPropstat) ? rawPropstat : [rawPropstat];
 
   const successEntry = propstatArray.find((ps) => {
@@ -34,6 +34,14 @@ const parseWebDAVResponse = (response: WebdavResponse) => {
     return {} as DirectoryFileDTO;
   }
 
+  const getDisplayName = (name: string | undefined, fallback: string): string | undefined => {
+    if (!name) {
+      const fallbackName = fallback.split('/').filter(Boolean).at(-1) || '/';
+      return fallbackName;
+    }
+    return name;
+  };
+
   const {
     [WebdavXmlAttributes.DisplayName]: displayName,
     [WebdavXmlAttributes.ResourceType]: resourceType,
@@ -44,12 +52,12 @@ const parseWebDAVResponse = (response: WebdavResponse) => {
 
   const isCollection = resourceType?.[WebdavXmlAttributes.Collection] !== undefined;
 
-  const decodedBasename = decode(String(displayName));
+  const decodedBasename = decode(String(getDisplayName(displayName, rawHref)));
 
   return {
     filename: decodedBasename,
     etag,
-    filePath: response[WebdavXmlAttributes.Href],
+    filePath: decodeURIComponent(response[WebdavXmlAttributes.Href]),
     lastmod,
     size: contentLength ? parseInt(contentLength, 10) : undefined,
     type: isCollection ? ContentType.DIRECTORY : ContentType.FILE,

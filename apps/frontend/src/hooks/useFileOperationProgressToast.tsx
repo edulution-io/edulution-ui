@@ -15,6 +15,11 @@ import { toast } from 'sonner';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import ProgressBox from '@/components/ui/ProgressBox';
 import { t } from 'i18next';
+import {
+  DONE_TOAST_DURATION_MS,
+  ERROR_TOAST_DURATION_MS,
+  LIVE_TOAST_DURATION_MS,
+} from '@libs/ui/constants/showToasterDuration';
 
 const useFileOperationProgressToast = (progress: FilesharingProgressDto | null | undefined) => {
   const lastPercent = useRef<number | null>(null);
@@ -47,9 +52,9 @@ const useFileOperationProgressToast = (progress: FilesharingProgressDto | null |
     };
 
     const getToastDuration = (failedOperations: number, precent: number): number | undefined => {
-      if (failedOperations > 0) return 10000;
-      if (precent >= 100) return 5000;
-      return Infinity;
+      if (failedOperations > 0) return ERROR_TOAST_DURATION_MS;
+      if (precent >= 100) return DONE_TOAST_DURATION_MS;
+      return LIVE_TOAST_DURATION_MS;
     };
 
     toast(<ProgressBox data={toasterData} />, {

@@ -18,7 +18,7 @@ import { USER_SETTINGS_PATH } from '@libs/userSettings/constants/user-settings-e
 import useAppConfigPageMenu from '@/pages/Settings/useAppConfigPageMenu';
 import useUserSettingsMenuConfig from '@/pages/UserSettings/useUserSettingsMenu';
 import useSurveysPageMenu from '@/pages/Surveys/useSurveysPageMenu';
-import useFileSharingMenuConfig from '@/pages/FileSharing/useMenuConfig';
+import useFileSharingMenuConfig from '@/pages/FileSharing/useFileSharingMenuConfig';
 import useClassManagementMenu from '@/pages/ClassManagement/useClassManagementMenu';
 import type TApps from '@libs/appconfig/types/appsType';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
@@ -71,9 +71,10 @@ const useMenuBarConfig = (): MenuBarEntry => {
   const configValues = menuBarConfigSwitch();
   const menuItems: MenuItem[] = configValues.menuItems.map((item) => ({
     id: item.id,
-    label: t(item.label),
+    label: item.disableTranslation ? item.label : t(item.label),
     action: () => item.action(),
     icon: item.icon,
+    disableTranslation: item.disableTranslation,
   }));
 
   return {

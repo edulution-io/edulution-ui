@@ -13,7 +13,7 @@
 'use client';
 
 import React, { useCallback, useState } from 'react';
-import { enUS, de } from 'date-fns/locale';
+import { de, enUS } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { HiTrash } from 'react-icons/hi2';
@@ -30,18 +30,20 @@ import { Calendar } from '@/components/ui/Calendar';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
-import MinuteButton from '@/components/ui/DateTimePicker/MinuteButtons';
-import HourButton from '@/components/ui/DateTimePicker/HourButtons';
+import MinuteButton from '@/components/ui/DateTimePicker/MinuteButton';
+import HourButton from '@/components/ui/DateTimePicker/HourButton';
 
 interface DateTimePickerFieldProps<T extends FieldValues> {
   form: UseFormReturn<T>;
   path: Path<T>;
   translationId?: string;
   variant?: DropdownVariant;
+  allowPast?: boolean;
+  isDateRequired?: boolean;
 }
 
 const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldProps<T>) => {
-  const { form, path, translationId, variant = 'default' } = props;
+  const { form, path, translationId, variant = 'default', isDateRequired, allowPast } = props;
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -54,7 +56,10 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
   const minutes = safeGetMinutes(fieldValue);
 
   const handleClear = useCallback(() => {
-    form.setValue(path, null as PathValue<T, Path<T>>);
+    form.setValue(path, null as PathValue<T, Path<T>>, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
   }, [fieldValue, form, path]);
 
   const handleDateSelect = useCallback(
@@ -67,7 +72,10 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
       newDate.setDate(date.getDate());
       newDate.setMonth(date.getMonth());
       newDate.setFullYear(date.getFullYear());
-      form.setValue(path, newDate as PathValue<T, Path<T>>);
+      form.setValue(path, newDate as PathValue<T, Path<T>>, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
     },
     [fieldValue, form, path],
   );
@@ -76,7 +84,10 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
     (hour: number) => {
       const newDate = safeGetDate(fieldValue);
       newDate.setHours(hour);
-      form.setValue(path, newDate as PathValue<T, Path<T>>);
+      form.setValue(path, newDate as PathValue<T, Path<T>>, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
     },
     [fieldValue, form, path],
   );
@@ -85,7 +96,10 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
     (minute: number) => {
       const newDate = safeGetDate(fieldValue);
       newDate.setMinutes(minute);
-      form.setValue(path, newDate as PathValue<T, Path<T>>);
+      form.setValue(path, newDate as PathValue<T, Path<T>>, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
     },
     [fieldValue, form, path],
   );
@@ -115,10 +129,24 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
       <FormFieldSH
         control={form.control}
         name={path}
+        rules={{
+          required: isDateRequired ? t('form.errors.dateRequired') : false,
+          validate: (value: unknown) => {
+            if (!value) return true;
+            const date = value instanceof Date ? value : null;
+            if (!date || Number.isNaN(date.getTime())) {
+              return t('form.errors.dateInvalid');
+            }
+            if (!allowPast && date.getTime() < Date.now()) {
+              return t('form.errors.datePast');
+            }
+
+            return true;
+          },
+        }}
         render={() => (
           <FormItem className="flex flex-col space-y-0">
             {translationId ? <p className="text-m font-bold text-background">{t(translationId)}</p> : null}
-
             <Popover
               open={isOpen}
               onOpenChange={setIsOpen}

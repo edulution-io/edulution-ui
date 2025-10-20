@@ -10,11 +10,23 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Body, Controller, Get, HttpStatus, Param, Post, Put, Query, Req, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Logger,
+  Param,
+  Post,
+  Put,
+  Query,
+  Req,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import { Request } from 'express';
-import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
+import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 import AuthRequestArgs from '@libs/auth/types/auth-request';
 import { AUTH_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
@@ -23,15 +35,28 @@ import CustomHttpException from '../common/CustomHttpException';
 import { Public } from '../common/decorators/public.decorator';
 import AuthService from './auth.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
+import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
+
+const { EDUI_OIDC_CONFIG_CACHE_TTL } = process.env;
+const oidcConfigCacheTtl =
+  EDUI_OIDC_CONFIG_CACHE_TTL === undefined || EDUI_OIDC_CONFIG_CACHE_TTL === ''
+    ? AUTH_CACHE_TTL_MS
+    : Number(EDUI_OIDC_CONFIG_CACHE_TTL);
 
 @ApiTags(AUTH_PATHS.AUTH_ENDPOINT)
 @Controller(AUTH_PATHS.AUTH_ENDPOINT)
 class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {
+    if (oidcConfigCacheTtl > 0) {
+      Logger.debug(`OIDC Config Cache TTL: ${oidcConfigCacheTtl} ms`, AuthController.name);
+    } else {
+      Logger.debug(`OIDC Config Cache deactivated`, AuthController.name);
+    }
+  }
 
   @Public()
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(AUTH_CACHE_TTL_MS)
+  @(oidcConfigCacheTtl > 0 ? UseInterceptors(CacheInterceptor) : () => {})
+  @CacheTTL(oidcConfigCacheTtl)
   @Get(AUTH_PATHS.AUTH_OIDC_CONFIG_PATH)
   authconfig(@Req() req: Request) {
     return this.authService.authconfig(req);
@@ -64,10 +89,22 @@ class AuthController {
     return this.authService.disableTotp(username);
   }
 
+  @Put(`${AUTH_PATHS.AUTH_CHECK_TOTP}/:username`)
+  disableTotpForUser(
+    @GetCurrentUsername() currentUsername: string,
+    @GetCurrentUserGroups() ldapGroups: string[],
+    @Param() params: { username: string },
+  ) {
+    const { username } = params;
+    Logger.log(`Disable TOTP for user ${username} by ${currentUsername}`);
+    return this.authService.disableTotpForUser(username, ldapGroups);
+  }
+
   @Public()
   @Post(AUTH_PATHS.AUTH_VIA_APP)
   loginViaApp(@Body() body: LoginQrSseDto, @Query('sessionId') sessionId: string) {
-    if (!sessionId) throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.BAD_REQUEST);
+    if (!sessionId)
+      throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.BAD_REQUEST, undefined, AuthController.name);
     return this.authService.loginViaApp(body, sessionId);
   }
 }

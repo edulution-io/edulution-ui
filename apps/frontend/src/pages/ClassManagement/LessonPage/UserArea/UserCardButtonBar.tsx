@@ -12,7 +12,7 @@
 
 import React from 'react';
 import { FaWifi } from 'react-icons/fa';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import { useTranslation } from 'react-i18next';
 import { FiPrinter } from 'react-icons/fi';
 import { IconType } from 'react-icons';
@@ -33,7 +33,7 @@ import useVeyonApiStore from '../../useVeyonApiStore';
 import useVeyonFeatures from './useVeyonFeatures';
 
 interface UserCardButtonBarProps {
-  user: UserLmnInfo;
+  user: LmnUserInfo;
   isTeacherInSameClass: boolean;
   isScreenLocked: boolean;
   areInputDevicesLocked: boolean;
@@ -57,7 +57,7 @@ const UserCardButtonBar = ({
   disabled,
 }: UserCardButtonBarProps) => {
   const { t } = useTranslation();
-  const { fetchUser, schoolPrefix } = useLmnApiStore();
+  const { fetchUser, schoolPrefix, getOwnUser } = useLmnApiStore();
   const {
     addManagementGroup,
     removeManagementGroup,
@@ -101,6 +101,8 @@ const UserCardButtonBar = ({
     const updatedUser = await fetchUser(commonName);
     if (!updatedUser) return;
     setMember([...member.filter((m) => m.cn !== commonName), updatedUser]);
+
+    await getOwnUser();
   };
 
   const userCardButtons: UserCardButton[] = [

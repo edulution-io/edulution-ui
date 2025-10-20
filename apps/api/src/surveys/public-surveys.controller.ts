@@ -10,15 +10,40 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { join } from 'path';
 import { Response } from 'express';
-import { ApiTags } from '@nestjs/swagger';
-import { Body, Controller, Get, Post, Param, Res } from '@nestjs/common';
-import { PUBLIC_USER, FILES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Delete,
+  Param,
+  Res,
+  UploadedFile,
+  UseInterceptors,
+  HttpStatus,
+  ParseFilePipeBuilder,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ANSWER, PUBLIC_USER, FILES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
+import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import { addUuidToFileName } from '@libs/common/utils/uuidAndFileNames';
+import SURVEY_ANSWERS_MAXIMUM_FILE_SIZE from '@libs/survey/constants/survey-answers-maximum-file-size';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import FilesystemService from 'apps/api/src/filesystem/filesystem.service';
+import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import SurveysService from './surveys.service';
-import SurveyAnswerService from './survey-answer.service';
+import SurveyAnswerService from './survey-answers.service';
+import SurveysAttachmentService from './surveys-attachment.service';
 import { Public } from '../common/decorators/public.decorator';
+import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
+import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 
 @ApiTags(PUBLIC_SURVEYS)
 @Controller(PUBLIC_SURVEYS)
@@ -26,6 +51,8 @@ class PublicSurveysController {
   constructor(
     private readonly surveyService: SurveysService,
     private readonly surveyAnswerService: SurveyAnswerService,
+    private readonly surveysAttachmentService: SurveysAttachmentService,
+    private readonly surveyAnswerAttachmentsService: SurveyAnswerAttachmentsService,
   ) {}
 
   @Get(`/:surveyId`)
@@ -38,8 +65,9 @@ class PublicSurveysController {
   @Post()
   @Public()
   async answerSurvey(@Body() postAnswerDto: PostSurveyAnswerDto) {
-    const { surveyId, saveNo, answer, attendee } = postAnswerDto;
-    return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, attendee);
+    const { surveyId, answer, attendee } = postAnswerDto;
+    const savedAnswer = await this.surveyAnswerService.addAnswer(surveyId, answer, attendee);
+    return savedAnswer;
   }
 
   @Get(`${PUBLIC_USER}/:surveyId/:publicUserName`)
@@ -54,7 +82,95 @@ class PublicSurveysController {
   @Public()
   serveFile(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
     const { surveyId, questionId, filename } = params;
-    return this.surveyService.serveFiles(surveyId, questionId, filename, res);
+    return this.surveysAttachmentService.serveFiles(surveyId, questionId, filename, res);
+  }
+
+  @Post(`${ANSWER}/${FILES}/:userName/:surveyId`)
+  @Public()
+  @ApiConsumes(RequestResponseContentType.MULTIPART_FORM_DATA)
+  @UseInterceptors(
+    FileInterceptor(
+      'file',
+      createAttachmentUploadOptions(
+        (req) => {
+          const userName = req.params?.userName;
+          const surveyId = req.params?.surveyId;
+          if (!userName || !surveyId) {
+            throw new CustomHttpException(
+              CommonErrorMessages.INVALID_REQUEST_DATA,
+              HttpStatus.UNPROCESSABLE_ENTITY,
+              undefined,
+              PublicSurveysController.name,
+            );
+          }
+          return join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
+        },
+        false,
+        (_req, file) => addUuidToFileName(file.originalname),
+      ),
+    ),
+  )
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  async tempFileUpload(
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addMaxSizeValidator({
+          maxSize: SURVEY_ANSWERS_MAXIMUM_FILE_SIZE,
+        })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    file: Express.Multer.File,
+    @Res() res: Response,
+    @Param() params: { userName: string; surveyId: string },
+  ) {
+    const { userName, surveyId } = params;
+    if (!userName || !surveyId || !file) {
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+        undefined,
+        PublicSurveysController.name,
+      );
+    }
+    const filePath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, file.filename);
+    const url = `${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${userName}/${surveyId}/${file.filename}`;
+
+    await FilesystemService.checkIfFileExist(filePath);
+    const content = (await FilesystemService.readFile(filePath)).toString('base64');
+    return res.status(HttpStatus.CREATED).json({ name: file.filename, url, content });
+  }
+
+  @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:fileName`)
+  @Public()
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  async deleteTempFiles(@Param() params: { userName: string; surveyId: string; fileName: string }) {
+    const { userName, surveyId, fileName } = params;
+    if (!userName || !surveyId || !fileName) {
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+        undefined,
+        PublicSurveysController.name,
+      );
+    }
+    await SurveyAnswerAttachmentsService.deleteTempFileFromAnswer(userName, surveyId, fileName);
+  }
+
+  @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:filename`)
+  @Public()
+  serveFileFromAnswer(@Param() params: { userName: string; surveyId: string; filename: string }, @Res() res: Response) {
+    const { userName, surveyId, filename } = params;
+    if (!userName || !surveyId || !filename) {
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+        undefined,
+        PublicSurveysController.name,
+      );
+    }
+    return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, filename, res);
   }
 
   @Get(`${CHOICES}/:surveyId/:questionName`)
@@ -64,7 +180,8 @@ class PublicSurveysController {
     if (surveyId === TEMPORAL_SURVEY_ID_STRING) {
       return [];
     }
-    return this.surveyAnswerService.getSelectableChoices(surveyId, questionName);
+    const choices = await this.surveyAnswerService.getSelectableChoices(surveyId, questionName);
+    return choices.filter((choice) => choice.name !== SHOW_OTHER_ITEM);
   }
 }
 

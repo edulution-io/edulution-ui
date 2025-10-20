@@ -14,25 +14,40 @@ import { useCallback } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { useCookies } from 'react-cookie';
 import { useTranslation } from 'react-i18next';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import cleanAllStores from '@/store/utils/cleanAllStores';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import { toast } from 'sonner';
+import ROOT_ROUTE from '@libs/common/constants/rootRoute';
+import COOKIE_DESCRIPTORS from '@libs/common/constants/cookieDescriptors';
+import useSilentLoginWithPassword from '@/pages/LoginPage/useSilentLoginWithPassword';
 
 const useLogout = () => {
   const { t } = useTranslation();
   const auth = useAuth();
   const { logout } = useUserStore();
-  const [, , removeCookie] = useCookies(['authToken']);
+  const [, , removeCookie] = useCookies([COOKIE_DESCRIPTORS.AUTH_TOKEN]);
+  const { silentLogout } = useSilentLoginWithPassword();
 
   const handleLogout = useCallback(async () => {
     await logout();
+
     await auth.removeUser();
-    await cleanAllStores();
-    removeCookie('authToken');
+
     window.history.pushState(null, '', LOGIN_ROUTE);
     window.dispatchEvent(new PopStateEvent('popstate'));
+
+    await cleanAllStores();
+
+    removeCookie(COOKIE_DESCRIPTORS.AUTH_TOKEN, {
+      path: ROOT_ROUTE,
+      domain: window.location.hostname,
+    });
+
+    await silentLogout();
+
     toast.dismiss();
+
     if (auth.user?.expired) {
       toast.error(t('auth.errors.TokenExpired'));
     } else {

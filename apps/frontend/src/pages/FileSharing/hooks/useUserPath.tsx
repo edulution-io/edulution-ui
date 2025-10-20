@@ -10,15 +10,24 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import useLdapGroups from '@/hooks/useLdapGroups';
+import { useEffect, useState } from 'react';
 import useLmnApiStore from '@/store/useLmnApiStore';
+import useLdapGroups from '@/hooks/useLdapGroups';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import normalizeLdapHomeDirectory from '@libs/filesharing/utils/normalizeLdapHomeDirectory';
 
 const useUserPath = () => {
   const { user: lmnUser } = useLmnApiStore();
   const { isSuperAdmin } = useLdapGroups();
-  const homePath = isSuperAdmin
-    ? `/global/${lmnUser?.sophomorixIntrinsic2[0]}`
-    : lmnUser?.sophomorixIntrinsic2[0] || '';
+  const { isGeneric } = useDeploymentTarget();
+
+  const [homePath, setHomePath] = useState<string>('');
+
+  useEffect(() => {
+    if (isSuperAdmin || isGeneric) {
+      setHomePath('/');
+    } else setHomePath(normalizeLdapHomeDirectory(lmnUser?.homeDirectory || ''));
+  }, [isSuperAdmin, isGeneric, lmnUser]);
 
   return { homePath };
 };

@@ -48,7 +48,7 @@ interface MultipleSelectorProps {
    * */
   triggerSearchOnFocus?: boolean;
   /** async search */
-  onSearch?: (value: string) => Promise<MultipleSelectorOptionSH[]>;
+  onSearch?: (value: string) => Promise<MultipleSelectorOptionSH[]> | MultipleSelectorOptionSH[];
   onChange?: (options: MultipleSelectorOptionSH[]) => void;
   /** Limit the maximum number of selected options. */
   maxSelected?: number;
@@ -152,7 +152,7 @@ const CommandEmpty = forwardRef<HTMLDivElement, React.ComponentProps<typeof Comm
 
 CommandEmpty.displayName = 'CommandEmpty';
 
-const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorProps>(
+const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelectorProps>(
   (
     {
       showRemoveIconInBadge = true,
@@ -512,5 +512,5 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
   },
 );
 
-MultipleSelector.displayName = 'MultipleSelector';
-export default MultipleSelector;
+MultipleSelectorSH.displayName = 'MultipleSelector';
+export default MultipleSelectorSH;

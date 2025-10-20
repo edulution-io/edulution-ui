@@ -10,11 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 
-const getUniqueValues = <T extends UserLmnInfo | LmnApiSchoolClass | LmnApiProject>(values: T[]): T[] => {
+const getUniqueValues = <T extends LmnUserInfo | LmnApiSchoolClass | LmnApiProject>(values: T[]): T[] => {
   const uniqueValuesSet = new Set<string>(values.map((obj) => JSON.stringify(obj)));
   return Array.from(uniqueValuesSet).map((str) => JSON.parse(str) as T);
 };

@@ -1,0 +1,1615 @@
+{
+  "welcome": "Bienvenue dans l'application",
+  "changeLang": "changer la langue",
+  "heading": "Bienvenue {{givenName}} {{familyName}}",
+  "content": "Voici votre tableau de bord {{ applicationName }} personnel. L'endroit où toutes vos applications de cours numériques sont rassemblées.",
+  "closeEditingWindow": "Voulez-vous vraiment fermer la fenêtre de modification ?",
+  "framebufferImage": "Image tampon",
+  "previewImage": "Aperçu de l'image",
+  "imprint": "Mentions légales",
+  "public": "Publique",
+  "bulletinboard": {
+    "settings": "Paramètres",
+    "noBulletinsToShow": "Il n'y a actuellement aucun message à afficher, il est préférable de passer à nouveau plus tard!",
+    "categoryIsRequired": "Une catégorie doit être sélectionnée",
+    "createdFrom": "depuis {{ createdBy }}, mis à jour sur {{ lastUpdated }}",
+    "createdFromAndUpdatedBy": "depuis {{ createdBy }}, mis à jour par {{ lastUpdatedBy }} sur {{ lastUpdated }}",
+    "deleteBulletinCategory": "Supprimer la catégorie",
+    "confirmSingleCategoryDelete": "Cette catégorie devrait-elle vraiment être supprimée?",
+    "confirmSingleCategoryDeleteWarning": "Faites attention à ce que toutes les communications de cette catégorie soient supprimées!",
+    "isVisibleStartDate": "Actif",
+    "isVisibleEndDate": "Actif jusqu'à",
+    "isActiveOrExpired": "Actif / expiré",
+    "activeFrom": "Actif",
+    "activeUntil": "Actif jusqu'à",
+    "appTitle": "Tableau d'affichage",
+    "description": "Ici, vous trouverez vos messages actuels",
+    "filterPlaceHolderText": "Rechercher des noms de catégorie",
+    "sidebar": "Tableau d'affichage",
+    "newCategorie": "Nouvelle catégorie",
+    "category": "catégorie",
+    "categoryPositionChanged": "La position de la catégorie a changé",
+    "name": "nom",
+    "editCategorie": "Modifier la catégorie",
+    "isActive": "Actif",
+    "isPermanentlyActive": "Est en permanence actif",
+    "visibleFor": "Visible",
+    "visibleForUsers": "Visible pour les utilisateurs",
+    "visibleForGroups": "Visible pour les groupes",
+    "editableByUsers": "Éditeur des utilisateurs",
+    "editableByGroups": "Éditeur de groupes",
+    "editorialAccess": "Accès en écriture",
+    "manageCategories": "Gérer les catégories",
+    "manageBulletins": "Gérer les messages",
+    "error": "Erreur",
+    "delete": "Supprimer",
+    "deleteBulletin": "Supprimer la communication",
+    "deleteBulletins": "{{count}} Supprimer les messages",
+    "editBulletin": "Modifier",
+    "createBulletin": "Créer une communication",
+    "confirmSingleDelete": "Ce message devrait-il vraiment être supprimé?",
+    "confirmMultiDelete": "Ces messages devraient-ils vraiment être supprimés?",
+    "rowsSelected": "{{selected}} depuis {{total}} messages sélectionnés",
+    "rowSelected": "{{selected}} depuis {{total}} notification sélectionnée",
+    "cancel": "Annuler",
+    "title": "titre",
+    "content": "Contenu",
+    "placeholderCategoryName": "nom",
+    "categoryName": "Nom de la catégorie",
+    "bulletinUpdatedSuccessfully": "Message enregistré avec succès",
+    "bulletinCreatedSuccessfully": "Créé avec succès",
+    "bulletinsDeletedSuccessfully": "Messages supprimé avec succès",
+    "categoryCreatedSuccessfully": "Catégorie créée avec succès",
+    "categoryUpdatedSuccessfully": "Catégorie mise à jour avec succès",
+    "categoryDeletedSuccessfully": "Catégorie supprimée avec succès",
+    "editCategory": "Modifier la catégorie",
+    "createNewCategory": "Créer une catégorie",
+    "categories": {
+      "visibleByUsersAndGroups": "Cette catégorie avec ses messages est visible pour les utilisateurs et les groupes sur la page d'accueil",
+      "visibleByUsersAndGroupsTitle": "Page d'accueil",
+      "editableByUsersAndGroups": "Cette catégorie est éditable par les utilisateurs et les groupes de l'application Bulletin Board",
+      "editableByUsersAndGroupsTitle": "Gérer les messages"
+    },
+    "errors": {
+      "categoryNotFound": "Catégorie introuvable",
+      "categoryDeleteFailed": "La catégorie n'a pas pu être supprimée",
+      "invalidCategory": "Catégorie non valide",
+      "bulletinNotFound": "Bulletin introuvable",
+      "unauthorizedUpdateBulletin": "Aucune autorisation pour mettre à jour ce bulletin",
+      "unauthorizedDeleteBulletin": "Aucune autorisation pour supprimer ce bulletin",
+      "categoryNameAlreadyExists": "Le nom de catégorie existe déjà",
+      "unauthorizedCreateBulletin": "Aucune autorisation pour créer ce bulletin",
+      "unauthorizedCreateCategory": "Aucune autorisation pour créer cette catégorie",
+      "unauthorizedDeleteCategory": "Aucune autorisation pour supprimer cette catégorie",
+      "unauthorizedUpdateCategory": "Aucune autorisation pour mettre à jour cette catégorie",
+      "attachmentDeletionFailed": "La suppression d'une pièce jointe a échoué"
+    }
+  },
+  "appstore": {
+    "title": "App Store",
+    "description": "Ici tu peux ajouter des applications {{ applicationName }}.",
+    "chooseIcon": "Sélectionner l'icône",
+    "uploadIcon": "Icône de téléchargement",
+    "dropIconDescription": "Glissez une image ici ou cliquez pour sélectionner une image. Formats pris en charge: SVG, webp"
+  },
+  "forwarding": {
+    "sidebar": "Transfert"
+  },
+  "frame": {
+    "sidebar": "Cadre"
+  },
+  "embedded": {
+    "sidebar": "Intégré"
+  },
+  "dashboard": {
+    "pageTitle": "Tableau de bord",
+    "sidebar": "Dashboard",
+    "mobileAccess": {
+      "title": "Accès mobile",
+      "manual": "Instructions",
+      "manualSetup": "Configuration manuelle",
+      "setupWithQrCode": "Configuration via un QR-code",
+      "accessData": "Identifiants",
+      "content": "Vous pouvez accéder au serveur scolaire à partir de nombreux appareils mobiles. Appuyez sur les instructions pour commencer.",
+      "scanAccessInfo": "Pour transférer les identifiants, veuillez scanner le QR-code suivant avec le   l'application {{ applicationName }}.",
+      "manualAccessInfo": "Saisir les identifiants manuellement dans l'app {{ applicationName }}. L'exemple suivant montre comment les champs individuels doivent être remplis.",
+      "nextStepPreview": "À l'étape suivante, vous pouvez transférer les identifiants.",
+      "downloadDirect": "Ou téléchargez directement l'application:",
+      "downloadApp": "Téléchargez l'application {{ applicationName }}:"
+    },
+    "quota": {
+      "title": "Quotas",
+      "globalQuota": "Cloudquota calculé ",
+      "mailQuota": "MailQuota calculé",
+      "mibibyte": "Mib",
+      "remainingLow": "Quota restant bas - {{free}} %",
+      "remainingVeryLow": "Quota restant très bas - {{free}} %"
+    }
+  },
+  "auth": {
+    "errors": {
+      "TokenExpired": "Session expirée.",
+      "SessionExpiring": "Vous serez déconnnecté dans moins d'une minute.",
+      "Unauthorized": "Vous n'êtes pas autorisé.",
+      "Unknown": "Utilisateurs introuvables.",
+      "TotpMissing": "TOTP manquant.",
+      "TotpInvalid": "TOTP invalide.",
+      "LmnConnectionFailed": "La connexion au serveur scolaire a échoué.",
+      "KeycloakConnectionFailed": "La connexion au serveur d'authentification a échoué.",
+      "EdulutionConnectionFailed": "La connexion au serveur Edulution a échoué. Veuillez réessayer plus tard."
+    },
+    "logout": {
+      "success": "Avec succès"
+    }
+  },
+  "lmnApi": {
+    "errors": {
+      "ToggleSchoolClassJoinedFailed": "Joindre ou quitter la classe a échoué",
+      "ToggleProjectJoinedFailed": "Joindre ou quitter le projet a échoué",
+      "TogglePrinterJoinedFailed": "Ajouter ou supprimer l'imprimante a échoué",
+      "GetUserSessionsFailed": "L'appel des sessions utilisateur a échoué",
+      "AddUserSessionsFailed": "L'ajout de la session utilisateur a échoué",
+      "GetPrintersFailed": "Echec de requête des imprimantes",
+      "RemoveUserSessionsFailed": "Echec de la suppression de la session utilisateur",
+      "UpdateUserSessionsFailed": "La mise à jour de la session utilisateur a échoué",
+      "StartExamModeFailed": "Echec de démarrage du mode d'examen",
+      "PrintPasswordsFailed": "Echec de l'impression des mots de passe",
+      "StopExamModeFailed": "La fin du mode d'examen a échoué",
+      "RemoveManagementGroupFailed": "Echec de la suppression du groupe de gestion",
+      "AddManagementGroupFailed": "Echec de l'ajout du groupe de gestion",
+      "GetUserSchoolClassesFailed": "Echec d'appel des classes de l'utilisateur",
+      "GetUserSchoolClassFailed": "Echecc d'appel de la classe de l'utilisateur",
+      "GetUserProjectsFailed": "L'appel des projets de l'utilisateur a échoué",
+      "GetUserFailed": "Échec de l'appel",
+      "UpdateUserFailed": "La mise à jour a échoué",
+      "GetCurrentUserRoomFailed": "Echec d'appel de la salle actuelle",
+      "CreateProjectFailed": "La création du projet a échoué",
+      "RemoveProjectFailed": "Echec de suppression du projet",
+      "UpdateProjectFailed": "La mise à jour du projet a échoué",
+      "SearchUsersOrGroupsFailed": "La recherche d'utilisateurs ou de groupes a échoué",
+      "GetProjectFailed": "Echec de l'appel du projet",
+      "PasswordMismatch": "Le mot de passe actuel est incorrect",
+      "PasswordChangeFailed": "Echec de modification du mot de passe",
+      "GetUsersQuotaFailed": "L'appel du quota l'utilisateur a échoué.",
+      "GetSchoolsFailed": "L'appel des écoles a échoué"
+    }
+  },
+  "ticketsystem": {
+    "title": "Système de tickets",
+    "sidebar": "Système de tickets"
+  },
+  "mail": {
+    "title": "E-mail",
+    "sidebar": "E-mail",
+    "configName": "Nom de la configuration",
+    "hostname": "Nom d'hôte",
+    "port": "port",
+    "portPlaceholder": "par exemple 993",
+    "encryption": "Chiffrement",
+    "rowSelected": "{{selected}} de {{total}} tâche sélectionnée",
+    "rowsSelected": "{{selected}} de {{total}} tâches sélectionnées",
+    "themeUpdated": {
+      "generic": "Le thème du courrier électronique a été mis à jour. Veuillez actualiser la page pour que les modifications soient prises en compte.",
+      "failed": "Le thème du courrier électronique n'a pas pu être mis à jour."
+    },
+    "importer": {
+      "filterPlaceHolderText": "Rechercher le nom d'utilisateur",
+      "title": "Importateur de courrier électronique",
+      "provider": "Fournisseur de messagerie",
+      "interval": "Intervalle de synchronisation",
+      "isActive": "Actif",
+      "syncJobsTable": "Tâches des importateurs",
+      "mailAddress": "Adresse email",
+      "noMailConfigured": "L'application de messagerie n'est pas configurée. Veuillez contacter l'administrateur système."
+    }
+  },
+  "chat": {
+    "title": "Chat",
+    "sidebar": "Chat"
+  },
+  "errors": {
+    "unexpectedError": "Une erreur inattendue s'est produite",
+    "automaticLoginFailed": "La connexion automatique a échoué",
+    "uploadOrFetchAttachmentFailed": "Erreur lors du téléchargement de la pièce jointe",
+    "fileGenerationFailed": "Le fichier n'a pas pu être généré",
+    "requestTooLarge": "Votre requête est trop grand. Si vous avez joint des fichiers, essayez de les compresser ou de les supprimer"
+  },
+  "conferences": {
+    "errors": {
+      "MeetingNotFound": "Une réunion avec cet id n'a pas été trouvée",
+      "BbbServerNotReachable": "Le serveur BBB externe n'est pas joignable",
+      "CouldNotStartConference": "La conférence n'a pas pu être démarrée",
+      "CouldNotStopConference": "La conférence n'a pas pu être arrêtée",
+      "BbbUnauthorized": "Vous n'êtes pas autorisé à accéder au serveur BBB externe",
+      "AppNotProperlyConfigured": "L'application de conférence n'est pas configurée correctement, contactez l'administrateur système",
+      "YouAreNotTheCreator": "Vous n'êtes pas le propriétaire de la conférence",
+      "AlreadyInAnotherMeeting": "Vous êtes déjà dans une conférence. Veuillez quitter la conférence en cours avant d'en rejoindre une nouvelle.",
+      "DBAccessFailed": "L'accès à la base de données a échoué",
+      "WrongPassword": "Le mot de passe saisi est incorrect",
+      "ConferenceIsNotRunning": "La conférence n'a pas été lancée",
+      "MissingMandatoryParameters": "La requête a échoué en raison du manque de paramètres"
+    },
+    "sharePublicDialog": {
+      "title": "Partager la conférence",
+      "description": "Ici, vous pouvez copier et partager le lien vers la conférence."
+    },
+    "joinThisConference": "Participer à cette conférence",
+    "filterPlaceHolderText": "Rechercher une conférence par son nom",
+    "started": "La conférence a commencé",
+    "stopped": "Conférence finie",
+    "isStarting": "La conférence est lancée",
+    "isStopping": "La conférence est terminée",
+    "tryManually": "Manuellement",
+    "changeUser": "Modifier l'utilisateur",
+    "joinAgain": "Rejoindre à nouveau",
+    "passwordOfConference": "Mot de passe de la conférence",
+    "orContinueWithoutAccount": "Ou poursuivre sans compte",
+    "conferenceIsNotStartedYet": "La conférence n'a pas encore commencé. Vous êtes actuellement dans la salle d'attente et vous serez redirigé automatiquement dès le début de la conférence.",
+    "conferenceIsPasswordProtected": "Cette conférence est protégée par un mot de passe. Veuillez saisir le mot de passe pour participer.",
+    "pleaseEnterYourFullName": "Entrez votre nom complet pour rejoindre la conférence.",
+    "yourFullName": "Votre nom complet",
+    "isNotPublicOrDoesNotExist": "La conférence n'a pas pu être trouvée.",
+    "publicConference": "Conférence publique",
+    "joinUrl": "Lien d'accès",
+    "isPublic": "Restriction d'accès",
+    "isPublicTrue": "Publique",
+    "isPublicFalse": "Privé",
+    "title": "Conférences",
+    "description": "L'outil de conférence permet des conférences audio et vidéo et prend en charge les présentations avec des fonctions de tableau blanc étendues.",
+    "sidebar": "Conférences",
+    "create": "Créer une conférence",
+    "creator": "Créateur",
+    "delete": "Supprimer",
+    "deleteConference": "Supprimer la conférence",
+    "deleteConferences": "{{count}} Supprimer les conférences",
+    "editConference": "Modifier la conférence",
+    "conferenceUpdatedSuccessfully": "Conférence enregistrée avec succès ",
+    "conferenceFetchedSuccessfully": "Conférences actualisée avec succès ",
+    "conferenceCreatedSuccessfully": "Conférence créée avec succès",
+    "confirmSingleDelete": "Cette conférence devrait-elle vraiment être supprimée?",
+    "confirmMultiDelete": "Ces conférences devraient-elles vraiment être supprimées?",
+    "name": "Nom de la conférence",
+    "conference": "conférence",
+    "password": "mot de passe",
+    "attendee": "Participant",
+    "attendees": "Participants",
+    "invitedAttendees": "Invité",
+    "joinedAttendees": "Joint",
+    "privacyStatus": "Accéder",
+    "public": "Publique",
+    "private": "Privé",
+    "rowsSelected": "{{selected}} de {{total}} conférences sélectionnées",
+    "rowSelected": "{{selected}} de {{total}} conférence sélectionnée",
+    "cancel": "Annuler",
+    "password_required": "Aucun mot de passe saisi",
+    "error": "Erreur",
+    "action": "action",
+    "start": "Commencer",
+    "stop": "Arrêt",
+    "join": "Rejoindre",
+    "minimize": "Minimiser",
+    "maximize": "Maximiser",
+    "close": "Quitter la conférence"
+  },
+  "knowledgebase": {
+    "title": "Base de données de connaissances",
+    "sidebar": "Base de données de connaissances"
+  },
+  "feed": {
+    "title": "Actuel",
+    "noconferences": "Pas de conférence en cours",
+    "nomail": "Pas de courriels non lus",
+    "nosurveys": "Pas de sondage ouvert",
+    "nobulletinboard": "Pas de nouvelles communications"
+  },
+  "mountpoints": {
+    "home": "Mes dossiers",
+    "examusers": "Interrogations",
+    "projects": "Projets",
+    "iso": "ISO",
+    "programs": "Programmes",
+    "shares": "Partages",
+    "students-home": "Dossiers élèves"
+  },
+  "filesharing": {
+    "filterPlaceHolderText": "Tapez pour filtrer",
+    "title": "Partage de fichiers",
+    "selectFile": "Sélectionner le fichier",
+    "sidebar": "Partage de fichiers",
+    "previewTitle": "Aperçu des fichiers",
+    "saveFile": "Enregistrer le fichier",
+    "fileEditor": "Editeur de fichier",
+    "filePreview": "Aperçu des fichiers",
+    "closeEditor": "Ferme l'éditeur",
+    "loadingDocument": "Chargement du document ...",
+    "rowsSelected": "{{selected}} de {{total}} fichiers sélectionnés",
+    "rowSelected": "{{selected}} de {{total}} fichier sélectionné",
+    "fileWithSameNameAlreadyExists": "Un fichier avec ce nom existe déjà.",
+    "folderWithSameNameAlreadyExists": "Un dossier avec ce nom existe déjà.",
+    "errors": {
+      "FileNotFound": "Fichier introuvable",
+      "MountPointsNotFound": "Partage non trouvé",
+      "FolderNotFound": "Dossiers introuvables",
+      "UploadFailed": "Le fichier n'a pas pu être ajouté",
+      "DeletionFailed": "Echec de la suppression",
+      "RenameFailed": "Le changement de nom a échoué",
+      "MoveFailed": "Le déplacement a échoué",
+      "CreationFailed": "Echec de la création",
+      "DbAccessFailed": "L'accès à la base de données a échoué",
+      "WebDavError": "Le serveur de fichiers ne peut pas être atteint",
+      "DownloadFailed": "Échec du téléchargement",
+      "FolderCreationFailed": "Les dossiers n'ont pas pu être créés",
+      "CreateCollectFolderForStudentFailed": "Echec de la création d'un dossier de collecte des fichiers élèves",
+      "DeleteFromServerFailed": "Echec de la suppresion sur le serveur",
+      "SaveFailed": "Échec de l'enregistrement",
+      "DuplicateFailed": "La duplication a échoué",
+      "AppNotProperlyConfigured": "OnlyOffice n'est pas correctement configuré, veuillez contacter l'administrateur système.",
+      "CollectingFailed": "Echec de la collecte des fichiers",
+      "MissingCallbackURL": "Callback-URL manquante",
+      "SharingFailed": "La distribution des fichiers a échoué",
+      "CopyFailed": "La copie a échoué",
+      "FileFormatNotSupported": "Le format de fichier n'est pas pris en charge."
+    },
+    "publicFileSharing": {
+      "errors": {
+        "PublicFileDownloadFailed": "Le téléchargement du fichier a échoué. Veuillez réessayer plus tard."
+      }
+    },
+    "progressBox": {
+      "info": "Informations",
+      "titleSharing": "Les fichiers seront distribués",
+      "titleCollecting": "Les fichiers seront collectés",
+      "titleDeleting": "Les fichiers seront supprimés",
+      "processedSharingInfo": "{{processed}} de {{total}} fichiers distribués avec succès",
+      "processedCollectingInfo": "{{processed}} de {{total}} fichiers collectés avec succès",
+      "processedDeletingInfo": "{{processed}} de {{total}} fichiers supprimés avec succès",
+      "fileInfoSharing": "Le fichier {{filename}} va être distribué à {{studentName}}",
+      "fileInfoCollecting": "Le fichier {{filename}} va être collecté de {{studentName}}",
+      "fileInfoDeleting": "Le fichier {{filename}} va être supprimé",
+      "errorInfo": "{{failed}} Les fichiers n'ont pas pu être distribués"
+    },
+    "tooltips": {
+      "folderNameRequired": "Un nom de dossier est requis",
+      "FileNameRequired": "Le nom du fichier est requis",
+      "NewFileNameRequired": "Un nouveau nom de fichier est requis",
+      "NameRequired": "Nom requis"
+    }
+  },
+  "forums": {
+    "title": "Forums",
+    "sidebar": "Forums"
+  },
+  "learningmanagement": {
+    "title": "Gestion de l'apprentissage",
+    "sidebar": "Gestion de l'apprentissage"
+  },
+  "schoolinformation": {
+    "title": "Information sur l'école",
+    "sidebar": "Information sur l'école"
+  },
+  "edit": "Modifier",
+  "schoolclass": "Classe",
+  "project": "projet",
+  "unknown": "Inconnu",
+  "device": "Appareil",
+  "globalbinduser": "Utilisateur système global",
+  "globaladministrator": "Administrateur global",
+  "schoolbinduser": "Utilisateur système scolaire",
+  "schooladministrator": "Administrateur scolaire",
+  "classroom-studentcomputer": "Ordinateur élève en classe",
+  "server": "serveur",
+  "loginname": "Identifiant",
+  "classmanagement": {
+    "title": "Salle",
+    "sidebar": "Salle",
+    "invalidProxyAddresses": "Les adresses e-mail proxy doivent être séparées par une virgule et sans espaces",
+    "invalidQuota": "Le quota doit être donné en fonction de la documentation",
+    "invalidMailQuota": "Le quota de courrier doit être spécifié en nombre en Mo",
+    "name": "nom",
+    "mailQuota": "Quota de courrier (Mo)",
+    "proxyAddresses": "Adresses e-mail proxy",
+    "descriptionPlaceholder": "Brève description du projet",
+    "proxyAddressesPlaceholder": "info@email1.de, contact@email2.com",
+    "quotaPlaceholder": "[{\"share\": \"defaut-school\", \"quota\": 50}]",
+    "quota": "Quota (Mo)",
+    "notMemberOfClass": "Vous n'êtes pas membre d'une classe.",
+    "noGroupsToShow": "Aucun groupe disponible.",
+    "classes": "Classe",
+    "detailsprinters": "Détails de l'imprimante",
+    "overview": "Aperçu",
+    "lesson": "Cours",
+    "enrol": "Inscriptions",
+    "printPasswords": "Impression des mots de passe",
+    "Printers": "Imprimante",
+    "projects": "Projets",
+    "editmyProjects": "Editer un projet",
+    "createmyProjects": "Créer un projet",
+    "detailsmyProjects": "Détails du projet",
+    "myClasses": "Mes classes",
+    "detailsmyClasses": "Détails de la classe",
+    "closeSession": "Fermer",
+    "session": "Session",
+    "startSession": "Démarrer la session",
+    "mySessions": "Mes sessions",
+    "addsessions": "Ajouter une session",
+    "editmySessions": "Editer la session",
+    "createmySessions": "Créer une session",
+    "myProjects": "Mes projets",
+    "members": "Membres",
+    "member": "Membre",
+    "noneAvailable": "Aucune",
+    "isJoinable": "Les utilisateurs peuvent rejoindre",
+    "joinclass": "Joindre la classe",
+    "hide": "Ne pas afficher les autres utilisateurs",
+    "typeToSearchUsersGroupsProjects": "Cliquer pour ajouter des élèves, des cours ou des projets",
+    "typeToSearchUsersGroupsProjectsToNewSession": "Cliquer pour ajouter des élèves, des cours ou des projets à une nouvelle session",
+    "itsNotPossibleToEditExternalStudents": "Ce n'est pas possible de gérer les élèves d'autres classes. Veuillez rejoindre la classe de l'élève.",
+    "itsNotPossibleToEditOtherSchoolStudents": "Pour le moment, ce n'est pas possible de créer un répertoire de partage d'un élève d'une autre école ou de changer les groupes de gestion.",
+    "usersInThisSession": "Utilisateur dans cette session",
+    "webfilter": "Filtre Web",
+    "internet": "Internet",
+    "noStudentsForAction": "Il n'y a pas d'étudiants auxquels cette action peut être appliquée.",
+    "wifi": "Wifi",
+    "teacher": "Professeur",
+    "exammode": "Mode examen",
+    "exam": "Interrogation",
+    "printPasswordsPageDescription": "Créer des fichiers pour imprimer les mots de passe des classes individuelles ou sélectionnez des classes pour en imprimer plusieurs en même temps.",
+    "userPasswordDialogTitle": "Mot de passe de {{displayName}}",
+    "firstPassword": "Mot de passe initial",
+    "firstPasswordNotSet": "Le mot de passe initial n'est plus actif",
+    "currentPassword": "Mot de passe actuel",
+    "restoreFirstPassword": "Restaurer le mot de passe initial",
+    "setRandom": "Choisir aléatoirement",
+    "currentPasswordChangedSuccessfully": "Le mot de passe actuel a été changé avec succès",
+    "firstPasswordChangedSuccessfully": "Le mot de passe initial a été changé avec succès",
+    "firstPasswordIsCurrentlySet": "Le mot de passe initial est défini comme un mot de passe actuel.",
+    "firstPasswordIsCurrentlyNotSet": "Le mot de passe initial n'est pas défini comme un mot de passe actuel.",
+    "passwordRequirements": "Utilisez des lettres majuscules, de petites lettres et des caractères ou des chiffres spéciaux.",
+    "projectsPageDescription": "Ici, vous trouverez un aperçu de tous les projets dans lesquels vous êtes administrateur.",
+    "typeToFilter": "Appuyez pour filtrer ...",
+    "systemName": "Nom du système",
+    "printing": "Imprimer",
+    "veyon": "Veyon",
+    "enable": "allumer",
+    "disable": "éteindre",
+    "featureIsStillInDevelopment": "La fonctionnalité est toujours en développement et sera implémentée dans la prochaine version.",
+    "collect": "Ramasser",
+    "CollectFilesDescription": "Ici, tous les fichiers des élèves seront à nouveau ramassés.",
+    "showcollectedfiles": "Afficher les fichiers",
+    "share": "Distribuer",
+    "exammodeDescription": "Changer le mode examen pour {{count}} élèves",
+    "wifiDescription": "Changer le wifi pour {{count}} élèves",
+    "webfilterDescription": "Changer le filtre Web pour {{count}} élèves",
+    "internetDescription": "Changer l'accès internet pour {{count}} élèves",
+    "printingDescription": "Changer l'accès à l'impression pour {{count}} élèves",
+    "collectDescription": "Ramasser les fichiers de {{count}} élèves",
+    "shareDescription": "Distribuer les fichiers {{count}} élèves",
+    "showcollectedfilesDescription": "Montrer les fichiers de {{count}} élèves",
+    "deactivate": "Désactiver",
+    "activate": "Activer",
+    "passwordoptions": "Options de mot de passe",
+    "createFile": "Créer un fichier",
+    "pdf": "PDF",
+    "csv": "CSV",
+    "usePdfLatexInsteadOfLatex": "Utilisez pdflatex au lieu de latex",
+    "pdfDescription": "Créez un fichier PDF pour imprimer les mots de passe de ces classes",
+    "csvDescription": "Créez un fichier CSV pour imprimer les mots de passe de ces classes",
+    "printOneItemPerPage": "Imprimez un mot de passe par page",
+    "selectSavedSession": "Choisissez parmi les séances stockées",
+    "saveSession": "Enregistrer la session",
+    "editSession": "Modifier la session",
+    "myRoom": "Ma salle",
+    "sharedMailBox": "Boîte aux lettres partagée",
+    "enrolPageDescription": "Sélectionnez les classes et projets pour lesquels vous souhaitez vous inscrire en activant les cases à cocher.",
+    "copyOrCut": "Souhaitez-vous couper ou copier les fichiers?",
+    "filesShared": "Fichiers partagés",
+    "filesSharingStarted": "Les fichiers seront partagés",
+    "filesCollectingStarted": "Les fichiers sont collectés",
+    "failDialog": {
+      "title": "Le fichier {{file}} n'a pas pu être partagé",
+      "reasonMissing": "Le fichier n'est peut-être plus disponible ou a été renommé.",
+      "reasonAlreadyReceived": "Le destinataire a déjà le fichier.",
+      "reasonDuplicate": "Le nom du fichier est double.",
+      "affectedPersons": "Les personnes suivantes n'ont pas reçu le fichier:",
+      "affectedPerson": "La personne suivante n'a pas reçu le fichier:",
+      "filenameAdvice": "Si la distribution doit être réessayée, le fichier sera distribué avec le nom {{filename}}",
+      "retryButton": "Essayer à nouveau"
+    },
+    "veyonConfigTable": {
+      "id": "ID",
+      "subnet": "Sous-réseau",
+      "subnetDescription": "Sous-réseau en notation CIDR (10.0.0.0/24)",
+      "subnetPlaceholder": "10.0.0.0/24",
+      "proxyAdress": "Adresse proxy",
+      "proxyAdressDescription": "URL du proxy Veyon Webapi",
+      "proxyAdressPlaceholder": "http://localhost:11080",
+      "createConfig": "Créer une configuration",
+      "editConfig": "Modifier la configuration"
+    },
+    "selectSchool": {
+      "title": "Sélectionner l'école",
+      "description": "Veuillez d'abord sélectionner une école afin de pouvoir afficher vos classes et projets.",
+      "placeholder": "Sélectionner une école"
+    }
+  },
+  "select": "Choisir",
+  "selectAll": "Sélectionnez tout",
+  "details": "Détails",
+  "quickAccess": "Accès rapide",
+  "delete": "Supprimer",
+  "options": "Options",
+  "downloadFile": "Télécharger le fichier",
+  "cancel": "Annuler",
+  "survey": {
+    "attendee": "Participant",
+    "attendees": "Participants",
+    "newTitle": "Nouveau sondage",
+    "filterPlaceHolderText": "Rechercher des sondages",
+    "publicSurvey": "Sondage publique",
+    "invitedAttendees": "Invité",
+    "isPublic": "visibilité",
+    "isPublicTrue": "Public",
+    "isPublicFalse": "Privé",
+    "created": "Créé",
+    "creationDate": "Date de création",
+    "expires": "S'enfuir",
+    "expirationDate": "Date d'expiration",
+    "finished": "Vous avez réussi à participer au sondage.",
+    "thanks": "Merci pour votre participation.",
+    "notFound": "Le sondage n'a pas pu être trouvé.",
+    "noFormula": "Le formulaire n'est pas lisible.",
+    "noAnswer": "Aucune réponse n'est encore disponible.",
+    "canSubmitMultiple": "Autoriser plusieurs réponses.",
+    "editor": {
+      "new": "Nouveau (vide)",
+      "saveSurveySuccess": "Le sondage a été enregistrée.",
+      "reset": "Rejeter",
+      "addDescription": "Ajouter une description",
+      "expectingUserInput": "Ici, la réponse du participant est attendue ... ",
+      "templates": "Modèles",
+      "templateMenu": {
+        "fetch": "Choisissez l'un des modèles disponibles.",
+        "submit": "Enregistrez le sondage en tant que modèle.",
+        "title": "Modèles d'enregistrement / charge",
+        "emptyMessage": "Il n'y a pas encore de modèles"
+      },
+      "questionSettings": {
+        "settings": "Paramètres",
+        "title": "Paramètres de la question",
+        "questionTitle": "titre",
+        "addQuestionTitle": "Ajouter un titre",
+        "questionDescription": "Description",
+        "addQuestionDescription": "Ajouter une description",
+        "limit": "limite",
+        "nullLimit": "Une limite de 0 signifie que l'option est illimitée.",
+        "backendLimiters": "Limiter les options de sélection",
+        "addBackendLimiters": "Les options avec des valeurs limites peuvent être définies ici. Par conséquent, celles-ci ne peuvent être sélectionnées que dans une mesure limitée.",
+        "useOtherItem": "Permettre aux utilisateurs d'ajouter leurs propres options",
+        "addBackendLimiterForOtherItem": "Cela fixe à quelle fréquence les participants peuvent sélectionner ces options.",
+        "upperLimit": "limite",
+        "upperBackendLimiters": "Options de sélection avec limite supérieure",
+        "addChoice": "Ajouter"
+      }
+    },
+    "participate": {
+      "saveAnswerSuccess": "La réponse a été enregistrée."
+    },
+    "errors": {
+      "submitAnswerError": "La réponse n'a pas pu être enregistrée.",
+      "updateOrCreateError": "L'enquête ne pouvait ni être mise à jour ni créée.",
+      "deleteError": "Les enquêtes n'ont pas pu être supprimées.",
+      "imageDeletionFailed": "Pas toutes les images des enquêtes n'ont pu être supprimées.",
+      "noAnswerError": "Aucune réponse n'a encore été donnée.",
+      "noFormulaError": "Le formulaire du sondage ne peut pas être lue.",
+      "noBackendLimitersError": "Afin de pouvoir utiliser cette fonction, les valeurs limites doivent être définies dans l'éditeur.",
+      "notFoundError": "Le sondage n'a pas pu être trouvé.",
+      "surveyFormulaStructuralError": "Le formulaire du sondage a des erreurs structurelles.",
+      "participationErrorUserNotAssigned": "Vous n'êtes pas invité à ce sondage.",
+      "participationErrorAlreadyParticipated": "Vous avez déjà participé.",
+      "participationErrorSurveyExpired": "Le sondage a expiré.",
+      "idTypeError": "ID de sondage non valide.",
+      "missingAnswerError": "Veuillez remplir le sondage avant d'envoyer votre réponse."
+    }
+  },
+  "survey-answer": {
+    "errors": {
+      "notAbleToFindOrCreateSurveyAnswerError": "La réponse n'a pas pu être trouvée ou créée.",
+      "notAbleToFindSurveyAnswerError": "Aucune réponse disponible.",
+      "notAbleToUpdateSurveyAnswerError": "La réponse n'a pas pu être mise à jour.",
+      "notAbleToCreateSurveyAnswerError": "La réponse n'a pas pu être créée.",
+      "notAbleToDeleteSurveyAnswerError": "La réponse n'a pas pu être supprimée."
+    }
+  },
+  "surveys": {
+    "rowsSelected": "{{selected}} de {{total}} sondages sélectionnés",
+    "rowSelected": "{{selected}} de {{total}} sondages sélectionné",
+    "confirmMultiDelete": "Ces sondages devraient-ils vraiment être supprimés?",
+    "confirmSingleDelete": "Le sondage devrait-il vraiment être supprimé?",
+    "deleteSurveys": "Supprimer {{count}} sondages",
+    "deleteSurvey": "Supprimer le sondage",
+    "title": "Sondages",
+    "sidebar": "Sondages",
+    "view": {
+      "open": {
+        "menu": "Sondages ouvertes",
+        "title": "Sondages ouvertes",
+        "description": "Ici, vous trouverez les sondages auxquels vous avez été invités."
+      },
+      "created": {
+        "menu": "Mes sondages",
+        "title": "Sondages créées",
+        "description": "Ici, vous trouverez les sondages que vous avez créés vous-même."
+      },
+      "answered": {
+        "menu": "Déjà répondu",
+        "title": "Sondages déjà répondus",
+        "description": "Ici, vous trouverez les sondages auxquels vous avez déjà participés."
+      },
+      "editor": {
+        "menu": "Créer un nouveau"
+      }
+    },
+    "actions": {
+      "showResultsChart": "Graphique",
+      "showResultsTable": "Tableau",
+      "showSubmittedAnswers": "Réponses"
+    },
+    "submittedAnswersDialog": {
+      "title": "Réponse soumise de l'utilisateur"
+    },
+    "saveDialog": {
+      "title": "Enregistrer et affecter les utilisateurs",
+      "settingsFlags": "Paramètres",
+      "isAnonymous": "Le sondage doit-elle être anonyme?",
+      "isPublic": "Le sondage doit-elle être publique?",
+      "canSubmitMultipleAnswers": "Un participant devrait-il être en mesure de répondre àau sondage plusieurs fois?",
+      "canUpdateFormerAnswer": "Les réponses doivent-elles être éditables par la suite?"
+    },
+    "sharePublicSurveyDialog": {
+      "title": "Partager le sondage",
+      "description": "Ici, vous pouvez copier et partager le lien vers le sondage."
+    },
+    "participateDialog": {
+      "title": "Participer au sondage"
+    },
+    "resultChartDialog": {
+      "title": "Résultats - Graphique"
+    },
+    "resultTableDialog": {
+      "title": "Résultats - Tableau"
+    }
+  },
+  "printer": {
+    "title": "Imprimante",
+    "sidebar": "Imprimante"
+  },
+  "network": {
+    "title": "Réseau",
+    "sidebar": "réseau"
+  },
+  "locationservices": {
+    "title": "Connexion au site",
+    "sidebar": "Connexion au site"
+  },
+  "desktopdeployment": {
+    "title": "Bureau",
+    "topic": "Partage de bureau",
+    "description": "Ici, vous pouvez vous connecter à votre bureau virtuel.",
+    "sidebar": "Bureau",
+    "connect": "Connecter",
+    "reload": "Recharger",
+    "close": "Fermer la connexion",
+    "error": {
+      "title": "Erreur de connexion",
+      "description": "Veuillez vérifier votre connexion réseau et réessayer."
+    },
+    "win10": "Windows 10",
+    "win11": "Windows 11",
+    "ubuntu": "Ubuntu",
+    "clients": "Clients disponibles",
+    "client": "Client disponible",
+    "errors": {
+      "GuacamoleNotResponding": "Service RDP non disponible.",
+      "GuacamoleUserNotFound": "Le nom d'utilisateur ou le mot de passe n'a pas pu être trouvé.",
+      "LmnVdiApiNotResponding": "Le service VDI Linuxmuster ne répond pas.",
+      "SessionNotFound": "Session introuvable.",
+      "AppNotProperlyConfigured": "Guacamole n'est pas correctement configuré, veuillez contacter l'administrateur système."
+    }
+  },
+  "wlan": {
+    "title": "Wlan",
+    "sidebar": "Wlan"
+  },
+  "mobiledevices": {
+    "title": "Appareils mobiles",
+    "sidebar": "Appareils mobiles"
+  },
+  "virtualization": {
+    "title": "Virtualisation",
+    "sidebar": "Virtualisation"
+  },
+  "firewall": {
+    "title": "Pare-feu",
+    "sidebar": "Pare-feu"
+  },
+  "antimalware": {
+    "title": "Anti-malware",
+    "sidebar": "Anti-malware"
+  },
+  "backup": {
+    "title": "Sauvegarde",
+    "sidebar": "Sauvegarde"
+  },
+  "aichat": {
+    "title": "IA chat",
+    "sidebar": "IA chat"
+  },
+  "roombooking": {
+    "sidebar": "Réservation de salles"
+  },
+  "mobileAccessSetup": {
+    "connectionTitle": "Configuration de la connexion",
+    "pleaseEnterCredentials": "Veuillez saisir les identifiants pour le serveur scolaire",
+    "scanQrCode": "Scanner le code QR",
+    "orText": "OU",
+    "yourPassword": "Votre mot de passe",
+    "addButton": "Ajouter"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "sidebar": "Paramètres",
+    "addApp": {
+      "title": "Ajouter l'application",
+      "description": "Veuillez sélectionner une application:"
+    },
+    "deleteApp": {
+      "title": "Supprimer l'application",
+      "description": "Souhaitez-vous supprimer cette application en toute sécurité?"
+    },
+    "delete": "Supprimer",
+    "description": {
+      "ticketsystem": "Ici, vous pouvez appliquer tous les paramètres.",
+      "mail": "Ici, vous pouvez appliquer tous les paramètres.",
+      "chat": "Ici, vous pouvez appliquer tous les paramètres.",
+      "conferences": "Ici, vous pouvez appliquer tous les paramètres.",
+      "surveys": "Ici, vous pouvez appliquer tous les paramètres.",
+      "knowledgebase": "Ici, vous pouvez appliquer tous les paramètres.",
+      "filesharing": "Ici, vous pouvez appliquer tous les paramètres.",
+      "forums": "Ici, vous pouvez appliquer tous les paramètres.",
+      "roombooking": "Ici, vous pouvez appliquer tous les paramètres.",
+      "learningmanagement": "Ici, vous pouvez appliquer tous les paramètres.",
+      "schoolinformation": "Ici, vous pouvez appliquer tous les paramètres.",
+      "classmanagement": "Ici, vous pouvez appliquer tous les paramètres.",
+      "printer": "Ici, vous pouvez appliquer tous les paramètres.",
+      "network": "Ici, vous pouvez appliquer tous les paramètres.",
+      "locationservices": "Ici, vous pouvez appliquer tous les paramètres.",
+      "desktopdeployment": "Ici, vous pouvez appliquer tous les paramètres.",
+      "wlan": "Ici, vous pouvez appliquer tous les paramètres.",
+      "mobiledevices": "Ici, vous pouvez appliquer tous les paramètres.",
+      "virtualization": "Ici, vous pouvez appliquer tous les paramètres.",
+      "firewall": "Ici, vous pouvez appliquer tous les paramètres.",
+      "antimalware": "Ici, vous pouvez appliquer tous les paramètres.",
+      "backup": "Ici, vous pouvez appliquer tous les paramètres.",
+      "aichat": "Ici, vous pouvez appliquer tous les paramètres.",
+      "linuxmuster": "Ici, vous pouvez appliquer tous les paramètres.",
+      "whiteboard": "Ici, vous pouvez appliquer tous les paramètres.",
+      "bulletinboard": "Configurez les groupes d'utilisateurs qui ont accès à l'application Schwarzes Brett. Il est possible de configurer dans les catégories pour contrôler les messages affichés chez les utilisateurs.",
+      "forwarded": "Redirection: entrez simplement le lien vers l'application Web sous URL.",
+      "framed": "Frame: Entrez simplement le lien vers l'application Web sous URL.",
+      "embedded": "Embedded: Ici, votre propre application Web peut être créée dans l'éditeur."
+    },
+    "globalSettings": {
+      "title": "Paramètres globaux",
+      "security": "Sécurité",
+      "multiFactorAuthentication": "Authentification à deux facteurs",
+      "description": "Ici, vous pouvez déterminer pour quels groupes d'utilisateurs la double authentification à deux facteurs doit être forcée.",
+      "selectUserGroups": "Sélectionnez des groupes d'utilisateurs pour lesquels la configuration MFA est forcée.",
+      "updateSuccessful": "Configuration mise à jour avec succès.",
+      "errors": {
+        "updateError": "Les paramètres n'ont pas pu être mis à jour.",
+        "notFoundError": "Les paramètres n'ont pas pu être chargés."
+      },
+
+      "branding": {
+        "title": "Identité visuelle"
+      },
+
+      "logo": {
+        "title": "Logo",
+        "descriptionSchool": "Téléversez le logo. Il sera affiché sur l’écran de connexion et sur la carte d’identification de l’application Edulution.",
+        "descriptionGeneric": "Téléversez le logo. Il sera affiché sur l’écran de connexion.",
+        "uploadLightLogo": "Téléverser le logo clair",
+        "uploadDarkLogo": "Téléverser le logo sombre",
+        "deleteSuccessful": "Logo supprimé avec succès."
+      },
+      "organisationInfo": {
+        "title": "Informations sur l’organisation",
+        "descriptionSchool": "Saisissez les informations officielles de votre organisation. Ces informations peuvent être affichées dans l’application Edulution. Veuillez indiquer le nom, la rue, le code postal et, éventuellement, le site web de l’école.",
+        "descriptionGeneric": "Saisissez les informations officielles de votre organisation.",
+        "name": "Nom de l’organisation",
+        "namePlaceholder": "p. ex. Organisation de Sampletown",
+        "street": "Rue",
+        "streetPlaceholder": "p. ex. 1, rue de l’Organisation",
+        "postalCode": "Code postal",
+        "postalCodePlaceholder": "p. ex. 12345",
+        "postalCityPlaceholder": "p. ex. Berlin",
+        "website": "Site web de l’organisation",
+        "city": "Ville"
+      },
+      "deploymentTarget": "Plate-forme cible de déploiement"
+    },
+    "info": {
+      "title": "Informations"
+    },
+    "appconfig": {
+      "sections": {
+        "onlyOffice": {
+          "title": "Intégration OnlyOffice",
+          "description": ""
+        },
+        "imapMailFeed": {
+          "title": "Intégration IMAP",
+          "description": ""
+        },
+        "bulletinBoard": {
+          "title": "Catégories",
+          "description": "Ajoutez de nouvelles catégories ou modifiez l'existence pour contrôler les utilisateurs et les groupes pour lesquels les messages doivent être affichés."
+        },
+        "general": {
+          "title": "En général",
+          "description": ""
+        },
+        "fileSharing": {
+          "title": "Paramètres généraux",
+          "description": ""
+        },
+        "docker": {
+          "title": "Applications Docker",
+          "description": "Afin de pouvoir utiliser les services étendus, les applications de conteneurs requises peuvent être installées et démarrées ici."
+        },
+        "veyon": {
+          "title": "Proxy veyon",
+          "description": "Les proxys Veyon WebAPI peuvent être configurés ici.",
+          "filterPlaceHolderText": "Rechercher le nom de proxy",
+          "invalidCidrFormat": "Notation CIDR non valide",
+          "invalidUrlFormat": "URL non valide"
+        },
+        "webdavShare": {
+          "title": "WebDAV",
+          "sectionTitle": "WebDAV-Partage",
+          "description": "Vous pouvez configurer ici vos propres serveur WebDAV.",
+          "filterPlaceHolderText": "Rechercher le nom de partages"
+        },
+        "webdavServer": {
+          "title": "WebDAV serveurs",
+          "filterPlaceHolderText": "Rechercher un serveur"
+        },
+        "files": {
+          "title": "Fichiers",
+          "description": "Ici, les fichiers affichés dans l'application peuvent être gérés.",
+          "uploadSuccess": "Fichiers téléversés avec succès",
+          "uploadFailed": "Le téléversement a échoué",
+          "rowSelected": "{{selected}} de {{total}} fichier sélectionné",
+          "rowsSelected": "{{selected}} de {{total}} fichiers sélectionnés"
+        },
+        "editor": {
+          "title": "Editeur",
+          "description": "Ici, dans l'éditeur, vous pouvez concevoir vos propres applications Web ou intégrer le contenu existant. Vous pouvez créer des sites Web, formater du contenu et le personnaliser individuellement. Les applications existantes ou le contenu externe peuvent également être insérés et combinés facilement avec votre propre contenu. Cela crée une zone flexible dans laquelle vous pouvez facilement représenter du contenu ou offrir des applications interactives. Démarrez le mode avec le choix dans lequel l'application Web doit être démarrée.",
+          "sandboxMode": "Disposition séparée",
+          "nativeMode": "Disposition intégrée",
+          "sandboxModeDescription": "Dans le mode \"disposition séparée\", le contenu s'affiche comme une page indépendante, similaire à une fenêtre dans l'application. En plus du contenu réel, des éléments de conception ou des fonctions supplémentaires provenant d'autres sources peuvent également être chargés. En conséquence, la conception est indépendante de l'application, il pourrait donc être différent ou se comporter différemment. Ici, le contenu doit être téléchargé en fichier HTML.",
+          "nativeModeDescription": "Dans le mode \"Disposition intégrée\", en revanche, le contenu est inséré directement dans la surface de l'application. En conséquence, le contenu semble autant que l'application elle-même et s'adapte de manière optiquement. Cependant, aucun éléments ou fonctions de conception externes supplémentaires ne peut être ajouté dynamiquement ici. Cependant, des éléments statiques tels que des images peuvent être téléchargés et utilisés ici.",
+          "visibilityDescription": "Vous pouvez ici déterminer si l'application doit être accessible au public. Actif signifie public, inactif signifie que seuls les groupes d'utilisateurs configurés y ont accès. Rendre l'application accessible au public crée un lien dans le pied de page. Pour rendre l'application visible dans la barre latérale pour les utilisateurs enregistrés, leur accès doit être configuré via les groupes d'utilisateurs."
+        }
+      },
+      "update": {
+        "success": "Application enregistrée avec succès",
+        "failed": "La mise à jour a échoué"
+      },
+      "delete": {
+        "success": "L'application a été supprimée",
+        "failed": "Echec de la suppression"
+      },
+      "create": {
+        "success": "L'application a été créée",
+        "failed": "Echec de création de l'application"
+      }
+    },
+    "errors": {
+      "WriteAppConfigFailed": "Echec de l'enregistrement de l'application",
+      "ReadAppConfigFailed": "Echec de lancement de l'application",
+      "DisableAppConfigFailed": "Echec de désactivation de l'application",
+      "WriteTraefikConfigFailed": "Echec d'enregistrement de la configuration de Trafik",
+      "ReadTraefikConfigFailed": "Echec de lecture de la configuration de Trafik",
+      "forbiddenProxyPath": "Ce chemin proxy n'est pas autorisé.",
+      "fieldRequired": "Ce champ est obligatoire",
+      "maxChars": "Maximum {{count}} caractères",
+      "nameAlreadyExists": "Une application avec ce nom existe déjà",
+      "webdavShareNameAlreadyExists": "Un partage WebDAV avec ce nom existe déjà"
+    },
+    "yamleditor": {
+      "invalidYaml": "Syntaxe YAML non valide",
+      "placeholder": "Saisissez votre configuration Trafik ici"
+    },
+    "rowsSelected": "{{selected}} de {{total}} conteneurs sélectionnés",
+    "rowSelected": "{{selected}} de {{total}} conteneur sélectionné",
+    "license": {
+      "title": "Licence",
+      "customerId": "Numéro de client",
+      "licenseId": "ID de licence",
+      "numberOfUsers": "Nombre d'utilisateurs",
+      "validFromUtc": "Valide de",
+      "validToUtc": "Valide jusqu'à",
+      "licenseStatus": "Statut de licence",
+      "register": "Registre",
+      "registerLicense": "Enregistrer la licence",
+      "licenseKey": "Clé de licence",
+      "licenseKeyDescription": "Entrez la clé de licence ici que vous avez obtenu lorsque vous achetez.",
+      "licenseSignedSuccessfully": "Licence enregistrée avec succès",
+      "noLicenseRegistered": "Aucune licence enregistrée",
+      "errors": {
+        "signingFailed": "L'inscription a échoué",
+        "verificationFailed": "La vérification des jetons a échoué"
+      }
+    }
+  },
+  "usersettings": {
+    "title": "Mon profil",
+    "sidebar": "Mon profil",
+    "rowSelected": "{{selected}} de {{total}} compte sélectionné",
+    "rowsSelected": "{{selected}} de {{total}} comptes sélectionnés",
+    "details": {
+      "title": "Coordonnées",
+      "description": "Ici, vous pouvez afficher vos données utilisateur et les modifier en partie.",
+      "userInformation": "Informations liées à l'utilisateur",
+      "dateOfBirth": "Date de naissance",
+      "givenName": "Prénom",
+      "displayName": "Nom d'affichage",
+      "name": "Nom d'utilisateur",
+      "role": "Rôle",
+      "schoolName": "Nom de l'école",
+      "schoolSubjects": "Classe",
+      "sophomorixState": "Statut",
+      "quotas": "Quotas",
+      "proxyAddresses": "Adresses email proxy",
+      "addNew": "Cliquer pour ajouter",
+      "badgeAlreadyExists": "L'entrée existe déjà",
+      "sophomorixCustom1_teacher": "Complément 1",
+      "sophomorixCustom2_teacher": "Complément 2",
+      "sophomorixCustomMulti1_teacher": "Types de café",
+      "userimageconfig": "Image de profil"
+    },
+    "security": {
+      "title": "Sécurité",
+      "sidebar": "Sécurité",
+      "description": "Configurez les paramètres de sécurité du compte ici",
+      "changePassword": {
+        "title": "Changer le mot de passe",
+        "currentPassword": "Mot de passe actuel",
+        "newPassword": "Nouveau mot de passe",
+        "confirmPassword": "Confirmez le mot de passe",
+        "confirm": "Changer le mot de passe",
+        "passwordChangedSuccessfully": "Le mot de passe a changé avec succès"
+      },
+      "filterPlaceHolderText": "Rechercher une application",
+      "passwordSafe": "Mot de passe",
+      "passwordSafeInfo": "Ici, vous pouvez enregistrer vos données d'accès pour différentes applications. Ceux-ci sont chiffrés et ne sont visibles que pour vous.",
+      "addUserAccount": "Ajouter un compte",
+      "accountId": "ID de compte",
+      "accountData": "Accéder aux données",
+      "safePin": "Coffre-fort",
+      "firstEnterSafePin": "Veuillez saisir un code PIN.",
+      "enterSavePin": "Veuillez saisir un code PIN.",
+      "wrongSafePin": "Le code PIN est erronée.",
+      "enterSafePin": "Veuillez saisir le code PIN pour déchiffrer.",
+      "safePinDescription": "Un code PIN est nécessaire pour chiffrer les données d'accès. Ce code PIN n'est visible pour personne et n'est pas sauvegardé."
+    },
+    "mails": {
+      "title": "Email"
+    },
+    "mobileAccess": {
+      "title": "Accès à l'application",
+      "description": "Ici, vous pouvez configurer l'accès mobile de l'app {{ applicationName }} pour l'accès aux fichiers. Actuellement disponible uniquement pour Apple iOS."
+    },
+    "faq": "FAQ",
+    "externalIntegration": "Connexion externe",
+    "config": {
+      "mfa": "Authentification à deux facteurs",
+      "mfaInfo": "L'authentification à deux facteurs est actuelle",
+      "enabled": "activé",
+      "enable": "Activer",
+      "disabled": "désactivé",
+      "disable": "Désactiver"
+    },
+    "language": {
+      "title": "Langue",
+      "description": "Veuillez sélectionner la langue pour l'interface utilisateur.",
+      "german": "Allemand",
+      "english": "Anglais",
+      "french": "Français",
+      "system": "Langue du système"
+    },
+    "addTotp": {
+      "title": "Configurer l'authentification à deux facteurs",
+      "qrCodeInstructions": "Scannez le code QR avec une application Authenticator qui prend en charge TOTP (mot de passe unique basé sur le temps).",
+      "totpCodeInstructions": "Entrez ensuite et enregistrez le mot de passe généré ici:",
+      "mfaSetupRequired": "Les directives globales nécessitent la vue de l'authentification à deux facteurs:",
+      "mfaSetupSuccess": "L'authentification à deux facteurs a été établie avec succès."
+    },
+    "errors": {
+      "currentPasswordRequired": "Le mot de passe actuel est requis",
+      "newPasswordRequired": "Un nouveau mot de passe est requis",
+      "confirmPasswordRequired": "Le renouvellement du mot de passe est nécessaire pour la confirmation",
+      "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
+      "passwordLength": "Le mot de passe doit comporter au moins 8 caractères",
+      "notSupportedFileFormat": "Format de fichier non supporté.",
+      "notAbleToCompressImage": "L'image n'a pas pu être compressée."
+    }
+  },
+  "forwardingpage": {
+    "action": "Ce lien peut être atteint du côté extérieur du fournisseur.",
+    "description": "L'application s'ouvre dans une nouvelle fenêtre. Aucune autre autorisation n'est nécessaire.",
+    "missing_link": "Le lien est manquant"
+  },
+  "menu": "Menu",
+  "home": "Maison",
+  "projects": "Projets",
+  "iso": "ISO",
+  "program": "Programmes",
+  "share": "Partager",
+  "teacher": "Professeur",
+  "student": "Élève",
+  "students": "Élèves",
+  "parent": "Parent",
+  "staff": "Personnel",
+  "user": "utilisateur",
+  "login": {
+    "pageTitle": "Se connecter",
+    "username_too_long": "Nom d'utilisateur trop long",
+    "password_too_long": "Mot de passe trop long",
+    "forgot_password": "Mot de passe oublié?",
+    "remember_me": "Mémoriser",
+    "enterMultiFactorCode": "Authentification à deux facteurs",
+    "loginWithApp": "Se connecter avec un code QR",
+    "loginWithQrDescription": "Ouvrez l'application edulution.io pour vous identifer simplement avec le code QR.",
+    "infoQrCodeExpired": "Le temps de connexion avec l'application edulution.io a expiré."
+  },
+  "common": {
+    "refreshPage": "Actualiser la page",
+    "guest": "Invité",
+    "ok": "OK",
+    "next": "Prochain",
+    "back": "Précédent",
+    "confirm": "Confirmer",
+    "share": "Partager",
+    "savedToClipboard": "Copié dans le presse-papiers.",
+    "savedToClipboardError": "N'a pas pu être copié dans le presse-papiers.",
+    "answers": "Répondre",
+    "error": "Erreur",
+    "errors": {
+      "attachmentUploadFailed": "La pièce jointe n'a pas pu être téléversée",
+      "dbAccessFailed": "L'accès à la base de données a échoué",
+      "directoryNotCreated": "La création du répertoire a échoué",
+      "fileNotCreated": "Échec de la création du fichier",
+      "fileDeletionFailed": "Echec de suppression du fichier",
+      "fileWritingFailed": "Echec d'écriture du fichier",
+      "fileNotFound": "Fichier introuvable",
+      "fileNotProvided": "Le fichier n'a pas été fourni",
+      "invalidFileType": "Type de fichier non valide",
+      "startDateBeforeEndDate": "La date de début ne doit pas être après la date de fin"
+    },
+    "cut": "Couper",
+    "sortOrder": "Tri",
+    "options": "Options",
+    "checking": "Vérifier",
+    "cancel": "Annuler",
+    "columns": "Colonnes",
+    "table": "Tableau",
+    "copy": {
+      "success": "Copié avec succès dans le presse-papiers",
+      "error": "Echec de copie dans le presse-papiers",
+      "doCopy": "Copier",
+      "link": "Copier le lien",
+      "url": "Copier l'URL"
+    },
+    "openInNewTab": "Dans un nouvel onglet",
+    "maximize": "Maximiser",
+    "minimize": "Minimiser",
+    "restore": "Restaurer",
+    "dock": "Ajouter au Dock",
+    "undock": "Supprimer du Dock",
+    "from": "de",
+    "youAreCurrentlyNotLoggedIn": "Vous n'êtes actuellement pas authentifié",
+    "toLogin": "À la page de connexion",
+    "name": "Nom",
+    "join": "Participer",
+    "details": "Détails",
+    "createdAt": "Créé à",
+    "updatedAt": "Édité à",
+    "actions": "Actions",
+    "forward": "Transférer",
+    "showOptions": "Afficher les options",
+    "open": "Ouvrir",
+    "and": "et",
+    "yes": "Oui",
+    "no": "Non",
+    "title": "titre",
+    "add": "Ajouter",
+    "reload": "Recharger",
+    "logout": "Déconnecter",
+    "save": "Sauvegarder",
+    "stop": "Arrêt",
+    "selected": "choisi",
+    "successful": "Réussi",
+    "failed": "Échoué",
+    "login": "Se connecter",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
+    "load": "Charger",
+    "loading": "Charger...",
+    "overview": "Vue d'ensemble",
+    "create": "Créer",
+    "icon": "Icône",
+    "group": "groupe",
+    "groups": "Groupes",
+    "min_chars": "Au moins {{count}} caractères",
+    "max_chars": "Maximum {{count}} caractères",
+    "groupAdmins": "Administrateurs de groupe",
+    "admins": "Administrateurs",
+    "adminsShort": "Admins",
+    "adminShort": "Admin",
+    "admin": "Administrateur",
+    "teacher": "Professeur",
+    "users": "Utilisateur",
+    "groupUsers": "Utilisateur de groupe",
+    "description": "Description",
+    "school": "École",
+    "properties": "Caractéristiques",
+    "type": "Type",
+    "creationDate": "Date de création",
+    "schoolName": "Nom de l'école",
+    "mailList": "Liste de diffusion",
+    "invalid_chars": "Contient des caractères non valides",
+    "clearSelection": "Supprimer la sélection",
+    "start": "Commencer",
+    "close": "Fermer",
+    "delete": "Supprimer",
+    "connect": "Connecter",
+    "custom": "Défini par l'utilisateur",
+    "select": "Choisir...",
+    "none": "Aucun",
+    "edit": "Modifier",
+    "participate": "Participer",
+    "participated": "Participé",
+    "not-available": "Indisponible",
+    "date": "Date",
+    "time": "temps",
+    "revert": "Rétablir",
+    "restart": "Recommencer",
+    "kill": "Finir",
+    "install": "Installer",
+    "update": "Mise à jour",
+    "progress": "Progrès...",
+    "pressInstall": "Cliquer sur Installer pour démarrer.",
+    "enable": "Activer",
+    "enabled": "Activé",
+    "disable": "Désactiver",
+    "disabled": "Désactivé",
+    "invalid_url": "URL non valide",
+    "invalid_fqdn": "FQDN non valide. Veuillez spécifier uniquement le nom d'hôte.",
+    "required": "Nécessaire",
+    "download": "Télécharger",
+    "template": "Modèle",
+    "application": "Application",
+    "preview": "prévisualisation",
+    "format": "Format",
+    "upload": "Téléverser",
+    "mode": "mode",
+    "file": "Fichier",
+    "chooseFile": "Choisir un fichier",
+    "changeFile": "Changer de fichier",
+    "saveLocal": "Enregistrer sur l’appareil",
+    "openLocal": "Ouvrir depuis l’appareil",
+    "openFileFromEdu": "Ouvrir le fichier",
+    "saveFileToEdu": "Enregistrer dans les fichiers"
+  },
+
+  "saveExternalFileDialogBody": {
+    "saveExternalFile": "Enregistrer un fichier externe",
+    "destinationFolder": "Dossier de destination",
+    "filename": "Nom du fichier",
+    "filenamePlaceholder": "Saisissez le nom du fichier ici",
+    "filenameRequired": "Le nom du fichier ne peut pas être vide",
+    "fileSavedSuccessful": "Fichier enregistré avec succès",
+    "fileSaveFailed": "Le fichier n'a pas pu être enregistré"
+  },
+
+  "form": {
+    "path": "Lien",
+    "pathDescription": "Veuillez saisir une URL.",
+    "apptype": "Type d'application",
+    "native": "Support natif",
+    "forwarded": "Transfertr",
+    "embedded": "Intégré",
+    "saved": "Configuration enregistrée!",
+    "url": "URL",
+    "urlDescription": "Veuillez saisir une URL pour la demande",
+    "apiKey": "Clé API",
+    "apiKeyDescription": "La clé API est utilisée pour l'authentification",
+    "proxyConfig": "Configuration proxy",
+    "proxyConfigDescription": "Une configuration proxy distincte pour Trafik peut être stockée ici. Vous pouvez soit utiliser un modèle à l'aide des champs d'entrée, soit une configuration au format YAML peut être créée directement en mode expert. <br/><strong>Danger:</strong> Une fausse configuration peut conduire à une application inaccessible.",
+    "expertMode": "Mode expert",
+    "proxyPath": "Chemin proxy",
+    "proxyPathPlaceholder": "par exemple SOGo",
+    "proxyDestination": "Hôte cible",
+    "proxyDestinationPlaceholder": "Par exemple, http://localhost:1234/",
+    "stripPrefix": "Supprimer le préfixe",
+    "embeddedPageEditor": "Editeur",
+    "embeddedPageEditorModeDescription": "Ici, vous pouvez choisir entre Sandbox et Native. Sandbox est la variante la plus sûre, native du rendu d'origine. Notez qu'aucune précaution de sécurité ne peut être prise dans le rendu natif. En mode sandbox, le fichier HTML est lu à partir de la mémoire. Pour ce faire, téléchargez le fichier.",
+    "sandboxed": "Bac à sable",
+    "pathname": "Chemin d’accès",
+    "input": {
+      "dateTimePicker": {
+        "timeSlot": "Heure",
+        "placeholder": "DD/MM/YYYY HH:mm"
+      }
+    }
+  },
+  "fileOperationSuccessful": "Succès de l'opération sur le fichier",
+  "fileOperationStarted": "Opération sur le fichier démarrée",
+  "unknownErrorOccurred": "Une erreur inconnue s'est produite",
+  "fileSharingTable": {
+    "filename": "Nom de fichier",
+    "size": "Taille",
+    "lastModified": "Modifié récemmen",
+    "type": "Type",
+    "filesOrFoldersSelected": "{{selected}} de {{total}} fichiers/dossiers sélectionnés"
+  },
+  "currentDirectory": "Répertoire actuel",
+  "filesharingUpload": {
+    "title": "Téléverser des fichiers",
+    "dataLimitExceeded": "Limite de données de 50 Mo dépassée",
+    "fileSize": "Taille de fichier",
+    "upload": "Télécverser",
+    "selectFile": "Sélectionnez jusqu'à 5 fichiers en même temps",
+    "uploadItems": "Téléverser: {{count}} fichier(s)",
+    "dragDropClick": "Déposer les fichiers ici ou cliquez pour sélectionner les fichiers",
+    "dropHere": "Lâcher ici",
+    "filesToUpload": "Fichiers pour le téléversement",
+    "overwriteWarningTitleFile": "AVERTISSEMENT: le fichier existe déjà",
+    "overwriteWarningTitleFiles": "AVERTISSEMENT: les fichiers existent déjà",
+    "overwriteWarningDescriptionFile": "Le fichier suivant est écrasé:",
+    "overwriteWarningDescriptionFiles": "Les fichiers suivants sont écrasés:",
+    "oversizedFilesDetected": "Fichiers trop grands découverts",
+    "oversizedFileDetected": "Fichier trop grand découvert!",
+    "cannotUploadOversized": "Aucun fichier de plus de 50 Mo ne peut être téléversé."
+  },
+  "linuxmuster": {
+    "title": "Linuxmuster",
+    "sidebar": "Linuxmuster"
+  },
+  "whiteboard": {
+    "title": "TABLEAU BLANC",
+    "sidebar": "Tableau blanc",
+    "saveAsTlFile": "Enregistrer le tableau blanc sous forme de fichier .tldr",
+    "openTLFileFailed": "Impossible d’ouvrir le fichier",
+    "openTLFileSuccess": "Le fichier a été chargé avec succès",
+    "openTlFile": "Ouvrir",
+    "openLocalTlFile": "Ouvrir un fichier .tldr local",
+    "file": "Fichier"
+  },
+  "whiteboard-collaboration": {
+    "title": "Whiteboard",
+    "sidebar": "Whiteboard collaboratif"
+  },
+  "table": {
+    "noDataAvailable": "Aucune donnée disponible"
+  },
+  "loadingIndicator": {
+    "message": "S'il vous plaît, attendez..."
+  },
+  "search": {
+    "type-to-search": "Cliquer pour rechercher",
+    "loading": "Chargement",
+    "no-results": "Aucun résultat",
+    "usersAdded": "{{ count }} ajouté"
+  },
+  "fileCategory": {
+    "folder": "Dossier",
+    "document": "Document",
+    "image": "Image",
+    "video": "Vidéo",
+    "audio": "Audio",
+    "acrobat": "Pdf",
+    "presentation": "Diaporama",
+    "spreadsheet": "Tableur",
+    "vector": "Diagramme",
+    "compressed": "Archive"
+  },
+  "fileCreateNewContent": {
+    "documentFile": "Créer un nouveau document",
+    "spreadsheetFile": "Créer un nouvelle tableur",
+    "presentationFile": "Créer une nouveau diaporama",
+    "textFile": "Créer un nouveau fichier texte",
+    "drawIoFile": "Créer un nouveau fichier draw.io",
+    "fileDialogTitle": "Créer un nouveau fichier",
+    "directoryDialogTitle": "Créer un nouveau répertoire",
+    "createButtonText": "Créer",
+    "min_3_chars": "Au moins 3 caractères",
+    "max_30_chars": "Maximum de 30 caractères",
+    "fileOperationSuccessful": "Fichier créé avec succès",
+    "noMessageAvailable": "Aucun message disponible",
+    "unknownErrorOccurred": "Une erreur inconnue s'est produite",
+    "newFileFromType": {
+      "drawIoFile": "Nouveau fichier draw.io",
+      "textFile": "Nouveau fichier texte",
+      "spreadsheetFile": "Nouvelle tableur",
+      "presentationFile": "Nouveau diaporama",
+      "documentFile": "Nouveau document"
+    }
+  },
+  "fileRenameContent": {
+    "placeholder": "Entrez le nouveau nom",
+    "renameYourDirectory": "Nommez votre répertoire",
+    "renameYourFile": "Renommez votre fichier autour",
+    "to": "à",
+    "rename": "Renommer",
+    "unknownErrorOccurred": "Une erreur inconnue s'est produite"
+  },
+  "moveItemDialog": {
+    "changeDirectory": "Changer de répertoire",
+    "currentDirectory": "Répertoire actuel",
+    "folderName": "Nom de répertoire",
+    "movingItems": {
+      "one": "1 élément va être déplacé",
+      "other": "{{count}} éléments seront déplacés"
+    },
+    "moveTo": "Déplacer après",
+    "move": "Déplacer",
+    "unknownErrorOccurred": "Une erreur inconnue s'est produite",
+    "selectedItem": "Élément sélectionné"
+  },
+  "deleteDialog": {
+    "areYouSure": "Êtes-vous absolument sûr?",
+    "actionCannotBeUndone": "Cette action est irréversible. Cela supprimera les fichiers définitivement:",
+    "selectedItems": "Éléments sélectionnés:",
+    "cancel": "Annuler",
+    "continue": "Continuer",
+    "unknownErrorOccurredDuringDeletion": "Une erreur inconnue s'est produite pendant la suppression",
+    "deleteFiles": "Supprimer les fichiers"
+  },
+  "timeAgo": {
+    "justNow": "à l'instant",
+    "minuteAgo": "avant {{count}} minute",
+    "hourAgo": "avant {{count}} heures",
+    "dayAgo": "avant {{count}} jours",
+    "invalidDate": "Date non valide"
+  },
+  "dialog": {
+    "close": "Fermer"
+  },
+  "tooltip": {
+    "upload": "Téléverser",
+    "create": {
+      "file": "Créer un fichier",
+      "folder": "Créer un dossier"
+    },
+    "rename": "Renommer",
+    "move": "Déplacer",
+    "delete": "Supprimer",
+    "download": "Télécharger",
+    "back": "Retour"
+  },
+  "response": {
+    "successfully": "L'action a réussi",
+    "error": "Erreur",
+    "move_successful": "Déplacement réussi de {{sourcePath}} vers {{destinationPath}}",
+    "move_failed": "Echec du déplacement",
+    "unexpected_error_occurred": "Des erreurs inattendues se sont produites",
+    "upload_failed_with_status": "Le téléversement a échoué avec le statut {{status}}",
+    "network_error_occurred_during_the_upload": "Les erreurs de réseau se sont produites pendant le téléversement",
+    "file_uploaded_successfully": "Fichier {{fileName}} téléversé avec succès",
+    "file_uploaded_failed": "Le fichier {{nom de fichier} n'a pas pu être téléversé {{status}}",
+    "directory_created_successfully": "Dossier {{directoryName}} créé avec succès",
+    "file_created_successfully": "Fichier {{fileName}} créé avec succès",
+    "file_was_deleted_successfully": "Fichier {{fileName}} supprimé avec succès",
+    "files_deleted_successfully": "Fichiers supprimés avec succès",
+    "all_items_moved_successfully": "Déplacement de tous les fichiers réussi",
+    "destination_path_is_undefined": "Le chemin cible n'est pas défini"
+  },
+  "accountData": {
+    "account_info": "Informations sur le compte",
+    "name": "Nom",
+    "email": "Email",
+    "school": "École",
+    "role": "Rôle",
+    "classes": "Classe",
+    "change_password": "Changer le mot de passe",
+    "my_information": "Mes informations",
+    "mail_alias": "Alias ​​courrier",
+    "change_my_data": "Changer les données",
+    "school_classes": "Classes"
+  },
+  "groups": {
+    "errors": {
+      "CouldNotGetGroupByPath": "Le groupe n'a pas pu être trouvé à partir du chemin",
+      "CouldNotGetUsers": "Les utilisateurs n'ont pas pu être trouvés",
+      "CouldNotGetCurrentUser": "Impossible de trouver l'utilisateur actuel",
+      "CouldNotGetAllGroups": "Échec de la recherche de tous les groupes",
+      "CouldNotFetchGroupMembers": "Les membres du groupe n'ont pas pu être trouvés",
+      "CouldNotFetchUserById": "Les utilisateurs n'ont pas pu être trouvés sur la base de l'ID",
+      "CouldNotSearchGroups": "La recherche de groupes n'était pas possible"
+    },
+    "classes": "Classe"
+  },
+  "users": {
+    "errors": {
+      "notFoundError": "L'utilisateur n'existe pas",
+      "updateError": "Les utilisateurs n'ont pas pu être mis à jour"
+    }
+  },
+  "permission": {
+    "groups": "Groupes d'utilisateurs",
+    "selectGroupsDescription": "Sélectionnez les groupes d'utilisateurs qui devraient avoir accès à l'application."
+  },
+  "mails": {
+    "errors": {
+      "NotAbleToGetImapOption": "La lecture de la «configuration IMAP» n'est pas possible",
+      "NotAbleToConnectClientError": "La connexion au serveur IMAP n'est pas possible",
+      "NotAbleToLockMailboxError": "La boîte aux lettres ne pouvait pas être appelée",
+      "NotAbleToFetchMailsError": "Les emails ne pouvaient pas être appelés",
+      "NotValidPortTypeError": "Le port doit être spécifié en tant que nombre",
+      "MailProviderNotFound": "Fournisseur email non trouvé",
+      "MailcowApiGetSyncJobsFailed": "Les tâches de synchronisation ne pouvaient pas être appelés",
+      "MailcowApiCreateSyncJobFailed": "Le tâche de synchronisation n'a pas pu être créé",
+      "MailcowApiDeleteSyncJobsFailed": "Les tâches de synchronisation n'ont pas pu être supprimés"
+    }
+  },
+  "licensing": {
+    "communityLicenseDialog": {
+      "title": "Version communautaire",
+      "description": "Version communautaire gratuite de {{ applicationName }} Ui. <strong>Cette version ne reçoit aucun support du fabricant.</strong>"
+    }
+  },
+  "appExtendedOptions": {
+    "title": "Extensions",
+    "onlyOfficeUrl": "Entrez l'URL d'OnlyOffice ici",
+    "onlyOfficeUrlTitle": "URL OnlyOffice",
+    "onlyOfficeJwtSecretTitle": "JWT OnlyOffice",
+    "onlyOfficeJwtSecretDescription": "Entrez ici la clé secrète JWT OnlyOffice",
+    "overrideDocumentVendorMSWithOOTitle": "Utilisez l'OpenDocument comme format de document standard",
+    "overrideDocumentVendorMSWithOODescription": "Le format OpenDocument (ODT, ODS, ODP) devrait-il être utilisé à la place des formats Microsoft Office (DOCX, PPTX, XLSX)?",
+    "mailImapUrlTitle": "URL",
+    "mailImapUrlDescription": "Entrez le FQDN (par exemple 'imap.example.com') du serveur IMAP ici.",
+    "mailImapPortTitle": "port",
+    "mailImapPortDescription": "Entrez ici le numéro de port du serveur IMAP (par ex. 993)",
+    "mailImapSecureTitle": "Connexion chiffrée",
+    "mailImapSecureDescription": "La connexion via «tls» ou «starttls» doit être établie.",
+    "mailImapRejectUnauthorizedTitle": "Rejeter les connexions non certifiées",
+    "mailImapRejectUnauthorizedDescription": "Une vérification de certificat doit-il être effectué pour cette connexion?",
+    "mailSogoThemeTitle": "Thème",
+    "mailSogoThemeDescription": "Sélectionnez le thème pour l'application Mail. La modification du thème redémarre les conteneurs associés.",
+    "mailSogoTheme": {
+      "light": "Clair",
+      "dark": "Sombre"
+    },
+    "mailSogoThemeDisabled": "Désactivé, car le serveur de messagerie ne fonctionne pas."
+  },
+  "preview": {
+    "image": "Aperçu de l'image",
+    "failedToLoadImage": "L'image ne pouvait pas être chargée"
+  },
+  "containerApplication": {
+    "dialogTitle": "Installer le plugin {{applicationName}}-Plugin",
+    "EDULUTION_MAIL_HOSTNAME": {
+      "title": "Nom d'hôte",
+      "description": "Nom d'hôte du serveur de messagerie. Cela peut différer du domaine Edulution."
+    }
+  },
+  "dockerOverview": {
+    "title": "Aperçu des conteneurs",
+    "containerName": "Nom de conteneur",
+    "state": "État",
+    "state-badge": "Badge",
+    "status": "Statut",
+    "imageName": "Image",
+    "filterPlaceHolderText": "Rechercher le nom du conteneur",
+    "port": "Port",
+    "created": "Créé à",
+    "container-view": "Conteneur"
+  },
+  "docker": {
+    "error": {
+      "dockerConnectionError": "La connexion docker a échoué",
+      "dockerImageNotFound": "L'image docker n'a pas pu être trouvée",
+      "dockerCreationError": "Le conteneur docker n'a pas pu être créé",
+      "dockerCommandExecutionError": "La commande docker n'a pas pu être exécutée",
+      "dockerContainerDeletionError": "Le conteneur docker n'a pas pu être supprimé"
+    },
+    "events": {
+      "pullingImage": "Requête de l'image docker ...",
+      "checkingImage": "Vérification si l'image est déjà disponible ...",
+      "creatingContainer": "Création du conteneur docker ...",
+      "containerCreated": "Conteneur créé.",
+      "startContainer": "Conteneur démarré.",
+      "stopContainer": "Conteneur arrêté.",
+      "restartContainer": "Conteneur redémarré.",
+      "killContainer": "Forcer l'arrêt du conteneur.",
+      "containerCreationSuccessful": "Conteneur créé avec succès.",
+      "containerCreationFailed": "Le conteneur n'a pas pu être créé."
+    },
+    "status": {
+      "running": "en cours d'exécution",
+      "created": "créé",
+      "restarting": "redémarré",
+      "paused": "en pause",
+      "exited": "arrêté",
+      "dead": "mort"
+    }
+  },
+  "veyon": {
+    "lockScreen": "Verrouiller l'écran",
+    "unlockScreen": "Déverrouiller l'écran",
+    "lockInputDevices": "Verrouiller la saisie",
+    "unlockInputDevices": "Déverrouiller la saisie",
+    "rebootSystem": "Redémarrer le système",
+    "powerDown": "Système",
+    "errors": {
+      "AppNotProperlyConfigured": "Veyon n'est pas correctement configuré, contactez l'administrateur système",
+      "VeyonAuthFailed": "L'authentification Veyon a échoué",
+      "GetUserFailed": "Les utilisateurs ne pouvaient pas être appelés",
+      "VeyonApiNotReachable": "Le serveur Veyon externe n'est pas disponible"
+    }
+  },
+  "Invalid user credentials": "Nom d'utilisateur ou mot de passe incorrect",
+  "For more on this error consult the server log at the debug level.": "La connexion au serveur AD a échoué. Veuillez réessayer plus tard.",
+  "Failed to fetch": "La connexion au serveur Edulution a échoué. Veuillez réessayer plus tard.",
+  "Invalid client or Invalid client credentials": "Configuration du serveur non valide. Veuillez vérifier l'ID client ou le secret du client.",
+  "Not Found (404)": "La connexion au serveur Edulution a échoué. Veuillez réessayer plus tard.",
+  "NetworkError when attempting to fetch resource.": "Erreurs de réseau lors de l'accès au site Web.",
+  "deploymentTarget": {
+    "title": "Sélection",
+    "description": "Ici, on peut choisir la plateforme à laquelle {{appName }} doit être connecté.",
+    "linuxmuster": "Linuxmuster",
+    "generic": "Générique"
+  },
+
+  "webdavShare": {
+    "displayName": "Nom d'affichage",
+    "accessGroups": {
+      "title": "Groupes d'utilisateurs",
+      "description": "Sélectionnez les groupes d'utilisateurs qui doivent avoir accès au partage WebDAV."
+    },
+    "type": {
+      "title": "Schéma du serveur WebDAV",
+      "description": "Ici, vous pouvez sélectionner le type de schéma du serveur WebDAV.",
+      "linuxmuster": "Linuxmuster",
+      "edu-file-proxy": "Proxy de fichiers edulution",
+      "generic": "Générique"
+    },
+    "status": "Statut",
+    "offline": "Le serveur est actuellement indisponible.",
+    "pathVariables": {
+      "title": "Variable de chemin ",
+      "description": "Une variable de chemin dynamique peut être sélectionnée ici à partir des attributs utilisateur. "
+    },
+    "isRootServer": {
+      "title": "Chemin racine",
+      "description": "Pour les fonctions scolaires Linuxmuster, au moins un partage WebDAV doit être configuré comme chemin racine.",
+      "short": "Root",
+      "notConfigured": "Aucun chemin racine n'est configuré. Veuillez contacter l'administrateur système."
+    },
+    "selectPlaceholder": "Sélectionner...",
+    "authentication": {
+      "title": "Authentification",
+      "description": "Vous pouvez sélectionner ici la méthode d'authentification pour le serveur WebDAV.",
+      "basic": " Basic (nom d'utilisateur, mot de passe)"
+    },
+    "selectRootServer": {
+      "title": "Sélection du serveur WebDAV",
+      "description": "Sélectionnez le serveur WebDAV qui doit servir de chemin racine."
+    },
+    "sharePath": "Chemin de partage",
+    "pathPreview": "Aperçu du chemin"
+  }
+}

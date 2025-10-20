@@ -14,7 +14,14 @@ import { z } from 'zod';
 import { t } from 'i18next';
 
 const fileSharingFromSchema = z.object({
-  filename: z.string({ required_error: t('filesharing.tooltips.folderNameRequired') }),
+  filename: z
+    .string()
+    .trim()
+    .min(1, t('filesharing.tooltips.NameRequired'))
+    .max(30, t('filesharing.tooltips.NameExceedsCharacterLimit'))
+    .refine((v) => !v.endsWith('.'), {
+      message: t('filesharing.tooltips.NameMustNotEndWithDot'),
+    }),
   extension: z.string(),
 });
 

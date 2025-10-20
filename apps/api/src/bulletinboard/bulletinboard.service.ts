@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Response } from 'express';
 import { Model, Types } from 'mongoose';
@@ -22,17 +22,21 @@ import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardErrorMessage';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
-import GroupRoles from '@libs/groups/types/group-roles.enum';
-import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPaths';
+import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPath';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../common/CustomHttpException';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
-
 import { BulletinCategory, BulletinCategoryDocument } from '../bulletin-category/bulletin-category.schema';
 import BulletinCategoryService from '../bulletin-category/bulletin-category.service';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
 import FilesystemService from '../filesystem/filesystem.service';
+import NotificationsService from '../notifications/notifications.service';
+import UserPreferencesService from '../user-preferences/user-preferences.service';
+import MigrationService from '../migration/migration.service';
+import bulletinsMigrationList from './migrations/bulletinsMigrationList';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 @Injectable()
 class BulletinBoardService implements OnModuleInit {
@@ -43,12 +47,17 @@ class BulletinBoardService implements OnModuleInit {
     private fileSystemService: FilesystemService,
     private readonly groupsService: GroupsService,
     private readonly sseService: SseService,
+    private readonly notificationService: NotificationsService,
+    private readonly userPreferencesService: UserPreferencesService,
+    private readonly globalSettingsService: GlobalSettingsService,
   ) {}
 
   private readonly attachmentsPath = BULLETIN_ATTACHMENTS_PATH;
 
-  onModuleInit() {
+  async onModuleInit() {
     void this.fileSystemService.ensureDirectoryExists(this.attachmentsPath);
+
+    await MigrationService.runMigrations<BulletinDocument>(this.bulletinModel, bulletinsMigrationList);
   }
 
   async serveBulletinAttachment(filename: string, res: Response) {
@@ -106,10 +115,11 @@ class BulletinBoardService implements OnModuleInit {
     filterOnlyActiveBulletins?: boolean,
   ): Promise<BulletinResponseDto[]> {
     const filter: Record<string, unknown> = {};
+    const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
 
     if (filterOnlyActiveBulletins !== undefined) {
       filter.isActive = filterOnlyActiveBulletins;
-    } else if (!currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
+    } else if (!getIsAdmin(currentUser.ldapGroups, adminGroups)) {
       filter['creator.username'] = currentUser.preferred_username;
     }
     const bulletins = await this.bulletinModel.find(filter).populate('category').sort({ updatedAt: -1 }).exec();
@@ -149,11 +159,13 @@ class BulletinBoardService implements OnModuleInit {
       throw new CustomHttpException(BulletinBoardErrorMessage.INVALID_CATEGORY, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
+
     const hasUserPermission = await this.bulletinCategoryService.hasUserPermission(
       currentUser.preferred_username,
       dto.category.id,
       BulletinCategoryPermission.EDIT,
-      currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN),
+      getIsAdmin(currentUser.ldapGroups, adminGroups),
     );
     if (!hasUserPermission) {
       throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_CREATE_BULLETIN, HttpStatus.FORBIDDEN);
@@ -175,7 +187,7 @@ class BulletinBoardService implements OnModuleInit {
       isVisibleEndDate: dto.isVisibleEndDate,
     });
 
-    await this.notifyUsers(dto, createdBulletin);
+    await this.notifyUsers(dto, createdBulletin, currentUser);
 
     return createdBulletin;
   }
@@ -190,7 +202,9 @@ class BulletinBoardService implements OnModuleInit {
       throw new CustomHttpException(BulletinBoardErrorMessage.BULLETIN_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    const isUserSuperAdmin = currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN);
+    const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
+
+    const isUserSuperAdmin = getIsAdmin(currentUser.ldapGroups, adminGroups);
     if (bulletin.creator.username !== currentUser.preferred_username && !isUserSuperAdmin) {
       throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_BULLETIN, HttpStatus.UNAUTHORIZED);
     }
@@ -227,16 +241,20 @@ class BulletinBoardService implements OnModuleInit {
 
     const updatedBulletin = await bulletin.save();
 
-    await this.notifyUsers(dto, updatedBulletin);
+    await this.notifyUsers(dto, updatedBulletin, currentUser);
 
     return updatedBulletin;
   }
 
-  async notifyUsers(dto: CreateBulletinDto, resultingBulletin: BulletinDocument) {
-    const invitedMembersList = await this.groupsService.getInvitedMembers(
+  async notifyUsers(dto: CreateBulletinDto, resultingBulletin: BulletinDocument, currentUser?: JwtUser) {
+    let invitedMembersList = await this.groupsService.getInvitedMembers(
       [...dto.category.visibleForGroups, ...dto.category.editableByGroups],
       [...dto.category.visibleForUsers, ...dto.category.editableByUsers],
     );
+
+    if (currentUser) {
+      invitedMembersList = invitedMembersList.filter((username) => username !== currentUser.preferred_username);
+    }
 
     const now = new Date();
     const isWithinVisibilityPeriod =
@@ -245,6 +263,17 @@ class BulletinBoardService implements OnModuleInit {
 
     if (isWithinVisibilityPeriod) {
       this.sseService.sendEventToUsers(invitedMembersList, resultingBulletin, SSE_MESSAGE_TYPE.BULLETIN_UPDATED);
+
+      // TODO: #1152
+      const title = `Aushang bereit: ${dto.title}`;
+
+      await this.notificationService.notifyUsernames(invitedMembersList, {
+        title,
+        data: {
+          bulletinId: resultingBulletin.id,
+          type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
+        },
+      });
     }
   }
 
@@ -259,7 +288,9 @@ class BulletinBoardService implements OnModuleInit {
       (bulletin) => bulletin.creator.username !== currentUser.preferred_username,
     );
 
-    const isUserSuperAdmin = currentUser.ldapGroups.includes(GroupRoles.SUPER_ADMIN);
+    const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
+
+    const isUserSuperAdmin = getIsAdmin(currentUser.ldapGroups, adminGroups);
     if (!isUserSuperAdmin && unauthorizedBulletins.length > 0) {
       throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_DELETE_BULLETIN, HttpStatus.UNAUTHORIZED);
     }
@@ -279,6 +310,12 @@ class BulletinBoardService implements OnModuleInit {
       );
 
       await this.bulletinModel.deleteMany({ _id: { $in: ids } }).exec();
+
+      try {
+        await this.userPreferencesService.unsetCollapsedForBulletins(ids);
+      } catch (error) {
+        Logger.error((error as Error).message, BulletinBoardService.name);
+      }
     } catch (error) {
       throw new CustomHttpException(
         BulletinBoardErrorMessage.ATTACHMENT_DELETION_FAILED,

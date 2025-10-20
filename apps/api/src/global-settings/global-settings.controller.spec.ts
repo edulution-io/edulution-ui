@@ -14,12 +14,11 @@ import { ExecutionContext } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import type { UpdateWriteOpResult } from 'mongoose';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
-import { GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import GlobalSettingsController from './global-settings.controller';
 import GlobalSettingsService from './global-settings.service';
-import AppConfigGuard from '../appconfig/appconfig.guard';
+import AdminGuard from '../common/guards/admin.guard';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';
 
 const mockedGlobalSettingsDto: GlobalSettingsDto = defaultValues;
@@ -61,7 +60,7 @@ describe('GlobalSettingsController', () => {
         },
       ],
     })
-      .overrideGuard(AppConfigGuard)
+      .overrideGuard(AdminGuard)
       .useValue({
         canActivate: jest.fn((_context: ExecutionContext) => true),
       })
@@ -80,15 +79,14 @@ describe('GlobalSettingsController', () => {
       jest.spyOn(service, 'getGlobalSettings').mockResolvedValue(mockedGlobalSettingsDbResponse);
 
       expect(await controller.getGlobalSettings()).toBe(mockedGlobalSettingsDbResponse);
-      expect(service.getGlobalSettings).toHaveBeenCalledWith(undefined);
+      expect(service.getGlobalSettings).toHaveBeenCalledWith();
     });
 
-    it('should return projected global settings when projection is provided', async () => {
-      const projection = GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH;
+    it('should return projected global settings', async () => {
       jest.spyOn(service, 'getGlobalSettings').mockResolvedValue(mockedGlobalSettingsDbResponse);
 
-      expect(await controller.getGlobalSettings(projection)).toBe(mockedGlobalSettingsDbResponse);
-      expect(service.getGlobalSettings).toHaveBeenCalledWith(projection);
+      expect(await controller.getGlobalSettings()).toBe(mockedGlobalSettingsDbResponse);
+      expect(service.getGlobalSettings).toHaveBeenCalledWith();
     });
   });
 

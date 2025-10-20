@@ -17,24 +17,34 @@ import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJ
 import DeleteFileJobData from '@libs/queue/types/deleteFileJobData';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import buildNormalizedWebdavPath from '@libs/filesharing/utils/buildNormalizedWebdavPath';
+import toSanitizedPathRegex from '@libs/filesharing/utils/toSanitizedPathRegex';
 import WebdavService from '../../webdav/webdav.service';
 import SseService from '../../sse/sse.service';
+import { PublicShare } from '../publicFileShare.schema';
 
 @Injectable()
 class DeleteFileConsumer extends WorkerHost {
   constructor(
     private readonly webDavService: WebdavService,
     private readonly sseService: SseService,
+    @InjectModel(PublicShare.name)
+    private readonly shareModel: Model<PublicShare>,
   ) {
     super();
   }
 
   async process(job: Job<FileOperationQueueJobData>): Promise<void> {
-    const { username, originFilePath, processed, total } = job.data as DeleteFileJobData;
+    const { username, originFilePath, processed, total, webdavFilePath, share } = job.data as DeleteFileJobData;
+    const targetPath = buildNormalizedWebdavPath(webdavFilePath);
+    const sanitizedPathRegex = toSanitizedPathRegex(targetPath, 'g');
 
     const failedPaths: string[] = [];
     try {
-      await this.webDavService.deletePath(username, originFilePath);
+      await this.webDavService.deletePath(username, originFilePath, share);
+      await this.shareModel.deleteMany({ filePath: sanitizedPathRegex });
     } catch (error) {
       failedPaths.push(originFilePath);
     }

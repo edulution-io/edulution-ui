@@ -16,18 +16,24 @@ import { BULLETIN_BOARD_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/a
 import handleApiError from '@/utils/handleApiError';
 import BulletinsByCategories from '@libs/bulletinBoard/types/bulletinsByCategories';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
+import UpdateBulletinCollapsedDto from '@libs/user-preferences/types/update-bulletin-collapsed.dto';
+import USER_PREFERENCES_ENDPOINT from '@libs/user-preferences/constants/user-preferences-endpoint';
 
 export interface BulletinBoardTableStore {
   reset: () => void;
   isLoading: boolean;
   error: Error | null;
+  collapsedMap: Record<string, boolean>;
+  setCollapsed: (bulletinId: string, collapsed: boolean) => Promise<void>;
+  toggleCollapsed: (bulletinId: string) => void;
+  hydrateCollapsed: (map: Record<string, boolean>) => void;
   getBulletinsByCategories: (isLoading?: boolean) => Promise<void>;
   bulletinsByCategories: BulletinsByCategories | null;
   isEditorialModeEnabled: boolean;
   setIsEditorialModeEnabled: (isEditorialModeEnabled: boolean) => void;
   bulletinBoardNotifications: BulletinResponseDto[];
   addBulletinBoardNotification: (bulletin: BulletinResponseDto) => void;
-  resetBulletinBoardNotifications: () => void;
+  markBulletinAsRead: (bulletinId: string) => void;
 }
 
 const initialValues = {
@@ -36,11 +42,34 @@ const initialValues = {
   bulletinsByCategories: null,
   isEditorialModeEnabled: false,
   bulletinBoardNotifications: [],
+  collapsedMap: {},
 };
 
 const useBulletinBoardStore = create<BulletinBoardTableStore>((set, get) => ({
   ...initialValues,
   reset: () => set(initialValues),
+
+  setCollapsed: async (bulletinId, collapsed) => {
+    set((state) => ({
+      collapsedMap: { ...state.collapsedMap, [bulletinId]: collapsed },
+    }));
+
+    try {
+      const dto: UpdateBulletinCollapsedDto = { bulletinId, collapsed };
+      await eduApi.patch(`${USER_PREFERENCES_ENDPOINT}/bulletin-collapsed`, dto);
+    } catch (error) {
+      set((state) => ({
+        collapsedMap: { ...state.collapsedMap, [bulletinId]: !collapsed },
+      }));
+    }
+  },
+
+  toggleCollapsed: (bulletinId) => {
+    const current = get().collapsedMap[bulletinId];
+    void get().setCollapsed(bulletinId, !current);
+  },
+
+  hydrateCollapsed: (map) => set({ collapsedMap: map ?? {} }),
 
   setIsEditorialModeEnabled: (isEditorialModeEnabled) => set({ isEditorialModeEnabled }),
 
@@ -48,7 +77,11 @@ const useBulletinBoardStore = create<BulletinBoardTableStore>((set, get) => ({
     set({
       bulletinBoardNotifications: [...get().bulletinBoardNotifications.filter((b) => b.id !== bulletin.id), bulletin],
     }),
-  resetBulletinBoardNotifications: () => set({ bulletinBoardNotifications: [] }),
+
+  markBulletinAsRead: (bulletinId) =>
+    set({
+      bulletinBoardNotifications: get().bulletinBoardNotifications.filter((b) => b.id !== bulletinId),
+    }),
 
   getBulletinsByCategories: async (isLoading = true) => {
     if (get().isLoading) return;

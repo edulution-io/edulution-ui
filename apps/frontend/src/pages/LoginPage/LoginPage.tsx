@@ -20,16 +20,15 @@ import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
 import { MdOutlineQrCode } from 'react-icons/md';
 import { toast } from 'sonner';
-import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import type UserDto from '@libs/user/types/user.dto';
 import processLdapGroups from '@libs/user/utils/processLdapGroups';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
+import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import PageTitle from '@/components/PageTitle';
 import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
@@ -39,9 +38,15 @@ import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import APPS from '@libs/appconfig/constants/apps';
 import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
+import { decodeBase64, encodeBase64 } from '@libs/common/utils/getBase64String';
+import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
+import getMainLogoUrl from '@libs/assets/getMainLogoUrl';
+import COLOR_SCHEME from '@libs/ui/constants/colorScheme';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
-import useAppConfigsStore from '../Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '../Settings/AppConfig/useAppConfigsStore';
+import useAuthErrorHandler from './useAuthErrorHandler';
+import useSilentLoginWithPassword from './useSilentLoginWithPassword';
 
 type LocationState = {
   from: string;
@@ -52,9 +57,14 @@ const LoginPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { state } = useLocation() as { state: LocationState };
+
   const { eduApiToken, totpIsLoading, isAuthenticated, createOrUpdateUser, setEduApiToken, getTotpStatus } =
     useUserStore();
   const { appConfigs } = useAppConfigsStore();
+  const { silentLogin } = useSilentLoginWithPassword();
+  const theme = COLOR_SCHEME;
+
+  const logoSrc = getMainLogoUrl(theme);
 
   const { isLoading } = auth;
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
@@ -73,23 +83,7 @@ const LoginPage: React.FC = () => {
     },
   });
 
-  useEffect(() => {
-    if (auth.error) {
-      if (auth.error.message.includes('Invalid response Content-Type:')) {
-        form.setError('password', { message: t('auth.errors.EdulutionConnectionFailed') });
-        return;
-      }
-      if (auth.error.source.includes('renewSilent')) {
-        form.setError('password', { message: t('auth.errors.TokenExpired') });
-        return;
-      }
-      form.setError('password', { message: t(auth.error.message) });
-
-      if (showQrCode) {
-        toast.error(t(auth.error.message));
-      }
-    }
-  }, [auth.error]);
+  useAuthErrorHandler(auth.error, form, showQrCode);
 
   const onSubmit = async () => {
     try {
@@ -97,7 +91,7 @@ const LoginPage: React.FC = () => {
       const password = form.getValues('password');
       const totpValue = form.getValues('totpValue');
 
-      const passwordHash = btoa(`${password}${isEnterTotpVisible || totpValue ? `:${totpValue}` : ''}`);
+      const passwordHash = encodeBase64(`${password}${isEnterTotpVisible || totpValue ? `:${totpValue}` : ''}`);
       const requestUser = await auth.signinResourceOwnerCredentials({
         username,
         password: passwordHash,
@@ -107,6 +101,8 @@ const LoginPage: React.FC = () => {
         setEncryptKey(newEncryptKey);
         setEduApiToken(requestUser.access_token);
         setWebdavKey(CryptoJS.AES.encrypt(password, newEncryptKey).toString());
+
+        await silentLogin(username, password);
       }
     } catch (e) {
       console.error(e);
@@ -173,7 +169,7 @@ const LoginPage: React.FC = () => {
 
     const handleLoginEvent = (e: MessageEvent<string>) => {
       try {
-        const { username, password } = JSON.parse(atob(e.data)) as LoginQrSseDto;
+        const { username, password } = JSON.parse(decodeBase64(e.data)) as LoginQrSseDto;
 
         form.setValue('username', username);
         form.setValue('password', password);
@@ -266,6 +262,7 @@ const LoginPage: React.FC = () => {
                   disabled={isLoading}
                   placeholder={label}
                   variant="login"
+                  widthVariant="full"
                   data-testid={`test-id-login-page-${fieldName}-input`}
                 />
               </FormControl>
@@ -289,10 +286,12 @@ const LoginPage: React.FC = () => {
     if (showQrCode && !isEnterTotpVisible) {
       return (
         <>
-          <QRCodeDisplay
-            value={`${window.location.origin}/${EDU_API_ROOT}/${AUTH_PATHS.AUTH_ENDPOINT}/${AUTH_PATHS.AUTH_VIA_APP}?sessionId=${sessionID}`}
-            size="lg"
-          />
+          <div className="flex flex-col items-center justify-center">
+            <QRCodeDisplay
+              value={`${window.location.origin}/${EDU_API_ROOT}/${AUTH_PATHS.AUTH_ENDPOINT}/${AUTH_PATHS.AUTH_VIA_APP}?sessionId=${sessionID}`}
+              size="lg"
+            />
+          </div>
           <p className="font-bold">{t('login.loginWithQrDescription')}</p>
         </>
       );
@@ -333,9 +332,12 @@ const LoginPage: React.FC = () => {
         className="overflow-y-auto bg-background scrollbar-thin"
       >
         <img
-          src={DesktopLogo}
-          alt="edulution"
+          src={logoSrc}
+          alt={t('settings.settings.logo.title')}
           className="mx-auto w-64"
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).src = DesktopLogo;
+          }}
         />
         <Form
           {...form}

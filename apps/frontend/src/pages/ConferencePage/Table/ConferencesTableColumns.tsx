@@ -17,11 +17,11 @@ import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
 import { MdLogin, MdPending, MdPlayArrow, MdStop } from 'react-icons/md';
-import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
+import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import { useTranslation } from 'react-i18next';
-import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
+import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/useConferenceDetailsDialogStore';
 import i18next from 'i18next';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import { toast } from 'sonner';
 import delay from '@libs/common/utils/delay';
 import OpenShareQRDialogTextCell from '@/components/ui/Table/OpenShareQRDialogTextCell';
@@ -102,7 +102,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     id: CONFERENCES_TABLE_COLUMNS.CONFERENCE_CREATOR,
     header: ({ column }) => <SortableHeader<ConferenceDto, unknown> column={column} />,
     meta: {
-      translationId: 'conferences.creator',
+      translationId: 'common.creator',
     },
     accessorFn: (row) => row.creator,
     cell: ({ row }) => {
@@ -249,20 +249,16 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
 
       const { icon, text } = getRowAction(isRunning, isRowLoading, isUserTheCreator);
 
-      const onClick =
-        isRowLoading || !isUserTheCreator
-          ? undefined
-          : async () => {
-              let wasConferenceStateToggled;
-              if (isUserTheCreator) {
-                wasConferenceStateToggled = await toggleConferenceRunningState(meetingID, isRunning);
-                if (!isRunning) {
-                  await joinConference(meetingID);
-                } else if (joinConferenceUrl.includes(meetingID)) {
-                  setJoinConferenceUrl('');
-                }
-              } else if (isRunning) {
+      const onClick = isRowLoading
+        ? undefined
+        : async () => {
+            let wasConferenceStateToggled;
+            if (isUserTheCreator) {
+              wasConferenceStateToggled = await toggleConferenceRunningState(meetingID, isRunning);
+              if (!isRunning) {
                 await joinConference(meetingID);
+              } else if (joinConferenceUrl.includes(meetingID)) {
+                setJoinConferenceUrl('');
               }
 
               if (wasConferenceStateToggled) {
@@ -271,8 +267,12 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
               } else {
                 setJoinConferenceUrl('');
               }
-              await getConferences();
-            };
+            } else if (isRunning) {
+              await joinConference(meetingID);
+            }
+
+            await getConferences();
+          };
       return (
         <SelectableTextCell
           onClick={isUserTheCreator || isRunning ? onClick : undefined}

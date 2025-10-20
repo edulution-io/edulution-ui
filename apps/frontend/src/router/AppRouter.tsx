@@ -13,8 +13,8 @@
 import React from 'react';
 import { RouterProvider } from 'react-router-dom';
 import createRouter from '@/router/CreateRouter';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
-import useUserStore from '@/store/UserStore/UserStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 
 const AppRouter: React.FC = () => {
   const { appConfigs } = useAppConfigsStore();

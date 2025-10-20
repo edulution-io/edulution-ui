@@ -52,7 +52,7 @@ const BulletinBoardPageColumn = ({
   return (
     <div
       style={{ width }}
-      className="flex max-h-full w-full min-w-[400px] flex-shrink-0 flex-col rounded-lg pr-2 md:ml-0 md:pr-3 md:pt-3"
+      className="flex max-h-full w-full min-w-[85vw] flex-shrink-0 flex-col rounded-lg pr-2 md:ml-0 md:min-w-[400px] md:pr-3 md:pt-3"
     >
       <BulletinBoardColumnHeader
         category={category}
@@ -61,10 +61,11 @@ const BulletinBoardPageColumn = ({
       <div className="mb-2 flex flex-col gap-4 overflow-y-auto pb-20 text-background scrollbar-thin">
         {bulletins.map((bulletin) => (
           <BulletinBoardColumnItem
-            key={bulletin.id}
+            key={`${bulletin.id}:${category.bulletinVisibility}`}
             bulletin={bulletin}
             canManageBulletins={canEditCategory}
             handleImageClick={handleImagePreviewClick}
+            initialBulletinVisibility={category.bulletinVisibility}
           />
         ))}
       </div>

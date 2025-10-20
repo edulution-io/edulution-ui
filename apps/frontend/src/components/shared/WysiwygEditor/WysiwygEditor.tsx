@@ -15,7 +15,7 @@ import ReactQuill from 'react-quill-new';
 import 'react-quill-new/node_modules/quill/dist/quill.snow.css';
 import './WysiwygEditor.css';
 import BULLETIN_EDITOR_FORMATS from '@libs/bulletinBoard/constants/bulletinEditorFormats';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
@@ -56,7 +56,7 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
       if (file) {
         try {
           const uploadedFilename = await onUpload(file);
-          const fetchImageUrl = `${EDU_API_ROOT}/${uploadedFilename}?token=${eduApiToken}`;
+          const fetchImageUrl = `/${EDU_API_ROOT}/${uploadedFilename}?token=${eduApiToken}`;
 
           const quillInstance = quillRef.current?.getEditor();
           if (quillInstance) {
