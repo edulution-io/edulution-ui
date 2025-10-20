@@ -60,7 +60,7 @@ class AppConfigService implements OnModuleInit {
       );
     } finally {
       await AppConfigService.writeProxyConfigFile(appConfigDto);
-      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
+      this.eventEmitter.emit(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${appConfigDto.name}`);
     }
   }
 
@@ -119,7 +119,7 @@ class AppConfigService implements OnModuleInit {
       );
     } finally {
       await AppConfigService.writeProxyConfigFile(appConfigDto);
-      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
+      this.eventEmitter.emit(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${appConfigDto.name}`);
     }
   }
 
@@ -135,7 +135,7 @@ class AppConfigService implements OnModuleInit {
         AppConfigService.name,
       );
     } finally {
-      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
+      this.eventEmitter.emit(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${name}`);
     }
   }
 
@@ -292,7 +292,7 @@ class AppConfigService implements OnModuleInit {
         await FilesystemService.deleteDirectories([`${APPS_FILES_PATH}/${configName}`]);
       }
 
-      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
+      this.eventEmitter.emit(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${configName}`);
     }
   }
 
