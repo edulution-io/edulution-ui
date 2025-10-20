@@ -29,6 +29,9 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
 import SURVEY_ANSWERS_MAXIMUM_FILE_SIZE from '@libs/survey/constants/survey-answers-maximum-file-size';
+import { FileDownloadDto } from '@libs/survey/types/api/file-download.dto';
+import EDU_API_URL from '@libs/common/constants/eduApiUrl';
+import { removeUuidFromFileName } from '@libs/common/utils/uuidAndFileNames';
 
 interface ParticipateSurveyStore {
   attendee: Partial<AttendeeDto> | undefined;
@@ -59,7 +62,7 @@ interface ParticipateSurveyStore {
     surveyId: string,
     questionName: string,
     file: File & { content?: string },
-  ) => Promise<{ name: string; url: string; content: Buffer<ArrayBufferLike> } | null>;
+  ) => Promise<FileDownloadDto | null>;
   onUploadFiles: (_: SurveyModel, options: UploadFilesEvent, surveyId: string) => Promise<void>;
   isUploadingFile?: boolean;
 
@@ -188,7 +191,10 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
   },
 
-  uploadTempFile: async (surveyId: string, questionName: string, file: File) => {
+  uploadTempFile: async (surveyId: string, questionName: string, file: File): Promise<FileDownloadDto | null> => {
+    // eslint-disable-next-line no-console
+    console.log('uploadTempFile:', surveyId, questionName, file);
+
     const { attendee } = get();
     set({ isUploadingFile: true });
 
@@ -202,7 +208,19 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
           headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
         },
       );
-      return response.data;
+      if (response.data === null) {
+        return null;
+      }
+
+      const newFile: FileDownloadDto = {
+        ...file,
+        type: file.type || '*/*',
+        originalName: response.data.name || file.name,
+        name: removeUuidFromFileName(response.data.name || file.name),
+        url: `${EDU_API_URL}/${response.data.url}`,
+        content: response.data.content,
+      };
+      return newFile;
     } catch (error) {
       console.error('Error: ', error);
       return null;
@@ -212,6 +230,9 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
   },
 
   onUploadFiles: async (_: SurveyModel, options: UploadFilesEvent, surveyId: string) => {
+    // eslint-disable-next-line no-console
+    console.log('onUploadFiles options:', options);
+
     const { files, callback } = options;
     if (!surveyId || !files?.length || files.some((file) => !file.name?.length)) {
       callback([]);
@@ -222,7 +243,6 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       callback([]);
       return;
     }
-
     const { uploadTempFile } = get();
     const questionName = options.question?.name;
     const uploadPromises = files.map(async (file) => uploadTempFile(surveyId, questionName, file));

@@ -184,12 +184,16 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
       string,
       (object & { content: string }) | (object & { content: string })[]
     >;
-    const moveQuestionAttachmentPromises = Object.keys(surveyAnswer).map((question) =>
-      this.moveQuestionAttachmentsToPermanentStorage(userName, surveyId, question, surveyAnswer[question]),
+    await Promise.all(
+      Object.keys(surveyAnswer).map(async (question) => {
+        surveyAnswer[question] = await this.moveQuestionAttachmentsToPermanentStorage(
+          userName,
+          surveyId,
+          question,
+          surveyAnswer[question],
+        );
+      }),
     );
-
-    await Promise.all(moveQuestionAttachmentPromises);
-
     return JSON.parse(JSON.stringify(surveyAnswer)) as JSON;
   }
 
