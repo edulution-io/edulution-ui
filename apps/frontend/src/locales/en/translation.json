@@ -586,6 +586,7 @@
     "pdfDescription": "Create a PDF file to print the passwords for these school classes",
     "csvDescription": "Create a CSV file to print the passwords for these school classes",
     "printOneItemPerPage": "Print one password per page",
+    "shouldSplitNamesInCsv": "First and last name in separate columns",
     "selectSavedSession": "Select from saved sessions",
     "saveSession": "Save session",
     "editSession": "Edit session",

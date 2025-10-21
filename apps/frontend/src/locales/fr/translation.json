@@ -495,6 +495,7 @@
     "pdfDescription": "Créez un fichier PDF pour imprimer les mots de passe de ces classes",
     "csvDescription": "Créez un fichier CSV pour imprimer les mots de passe de ces classes",
     "printOneItemPerPage": "Imprimez un mot de passe par page",
+    "shouldSplitNamesInCsv": "Prénom et nom dans des colonnes séparées",
     "selectSavedSession": "Choisissez parmi les séances stockées",
     "saveSession": "Enregistrer la session",
     "editSession": "Modifier la session",
