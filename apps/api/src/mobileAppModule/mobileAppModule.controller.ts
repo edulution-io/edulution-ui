@@ -14,6 +14,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Controller, Get, Injectable } from '@nestjs/common';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import MobileAppModuleService from './mobileAppModule.service';
+import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
 
 @ApiTags('mobile-app')
 @Controller('mobile-app')
@@ -22,8 +23,8 @@ class MobileAppModuleController {
   constructor(private readonly edulutionAppService: MobileAppModuleService) {}
 
   @Get('user-data')
-  async getAppUserData(@GetCurrentUsername() username: string) {
-    return this.edulutionAppService.getAppUserData(username);
+  async getAppUserData(@GetCurrentUsername() username: string, @GetCurrentUserGroups() currentUserGroups: string[]) {
+    return this.edulutionAppService.getAppUserData(username, currentUserGroups);
   }
 }
 

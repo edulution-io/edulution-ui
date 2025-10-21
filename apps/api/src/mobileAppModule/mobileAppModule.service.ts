@@ -19,6 +19,8 @@ import getStringFromArray from '@libs/common/utils/getStringFromArray';
 import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import normalizeLdapHomeDirectory from '@libs/filesharing/utils/normalizeLdapHomeDirectory';
+import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
+import MobileUserFileShare from '@libs/mobileApp/types/mobileUserFileShare';
 import LmnApiService from '../lmnApi/lmnApi.service';
 import UsersService from '../users/users.service';
 import GlobalSettingsService from '../global-settings/global-settings.service';
@@ -33,7 +35,7 @@ class MobileAppModuleService {
     private readonly webdavSharesService: WebdavSharesService,
   ) {}
 
-  async getAppUserData(username: string) {
+  async getAppUserData(username: string, currentUserGroups: string[]) {
     const globalSettingsDto: GlobalSettingsDto =
       (await this.globalSettingsService.getGlobalSettings()) as GlobalSettingsDto;
 
@@ -48,8 +50,36 @@ class MobileAppModuleService {
         lmnInfo = {} as LmnUserInfo;
       }
     }
+    const webdavServers = (await this.webdavSharesService.findAllWebdavServers()) as unknown as WebdavShareDto[];
 
-    const webdavServers = await this.webdavSharesService.findAllWebdavServers();
+    const shares = (await this.webdavSharesService.findAllWebdavShares(
+      currentUserGroups,
+    )) as unknown as WebdavShareDto[];
+
+    const userShares: MobileUserFileShare[] = [];
+
+    shares.forEach((share) => {
+      let resolvedPath = '';
+
+      if (!share.pathVariables || share.pathVariables.length === 0) {
+        resolvedPath = share.sharePath || share.displayName || '';
+      } else {
+        resolvedPath = share.pathVariables
+          .map((pathVariable) => pathVariable.label in lmnInfo
+              ? (lmnInfo[pathVariable.label as keyof LmnUserInfo] as string)
+              : pathVariable.value || '')
+          .filter((val) => val !== '')
+          .join('/');
+      }
+
+      if (resolvedPath) {
+        userShares.push({
+          type: share.type,
+          path: normalizeLdapHomeDirectory(resolvedPath),
+          displayName: share.displayName,
+        });
+      }
+    });
 
     const isFileEduProxy = !!webdavServers.find((server) => server.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY);
 
@@ -65,6 +95,7 @@ class MobileAppModuleService {
       user,
       globalSettings: globalSettingsDto,
       lmn: lmnInfo,
+      userShares,
     });
   }
 }

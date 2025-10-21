@@ -15,6 +15,7 @@ import MobileAppUserDto from '@libs/mobileApp/types/mobileAppUserDto';
 import UserDto from '@libs/user/types/user.dto';
 import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import parseLmnGeneralizedTimeAttribute from '@libs/mobileApp/utils/parseLmnGeneralizedTimeAttribute';
+import MobileUserFileShare from '@libs/mobileApp/types/mobileUserFileShare';
 
 const getMobileAppUserDto = ({
   homeDirectory,
@@ -22,12 +23,14 @@ const getMobileAppUserDto = ({
   globalSettings,
   user = null,
   lmn = null,
+  userShares = [],
 }: {
   homeDirectory: string;
   usernameFallback: string;
   user?: UserDto | null;
   lmn?: LmnUserInfo | null;
   globalSettings?: GlobalSettingsDto | null;
+  userShares: MobileUserFileShare[];
 }): MobileAppUserDto => ({
   username: user?.username || usernameFallback,
   firstName: user?.firstName || '',
@@ -47,6 +50,7 @@ const getMobileAppUserDto = ({
   deploymentTarget: globalSettings?.general.deploymentTarget || '',
   homeDirectory,
   organisationInfo: globalSettings?.organisationInfo || {},
+  userShares,
 });
 
 export default getMobileAppUserDto;
