@@ -769,6 +769,7 @@
     },
     "delete": "Supprimer",
     "description": {
+      "dashboard": "Ici, vous pouvez appliquer tous les paramètres.",
       "ticketsystem": "Ici, vous pouvez appliquer tous les paramètres.",
       "mail": "Ici, vous pouvez appliquer tous les paramètres.",
       "chat": "Ici, vous pouvez appliquer tous les paramètres.",
