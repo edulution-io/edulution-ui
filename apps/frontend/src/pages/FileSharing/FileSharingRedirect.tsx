@@ -10,10 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import APPS from '@libs/appconfig/constants/apps';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
+import SHARED from '@libs/filesharing/constants/shared';
 import useFileSharingStore from './useFileSharingStore';
 import useVariableSharePathname from './hooks/useVariableSharePathname';
 
@@ -21,13 +22,22 @@ const FileSharingRedirect = () => {
   const navigate = useNavigate();
   const { webdavShares, fetchWebdavShares } = useFileSharingStore();
   const { createVariableSharePathname } = useVariableSharePathname();
+  const hasRunRef = useRef(false);
 
   useEffect(() => {
+    if (hasRunRef.current)
+      navigate(
+        {
+          pathname: `/${APPS.FILE_SHARING}/${SHARED}`,
+        },
+        { replace: true },
+      );
     const ensureShares = async () => {
       let shares = webdavShares.filter((share) => !share.isRootServer);
 
       if (shares.length === 0) {
         shares = await fetchWebdavShares();
+        hasRunRef.current = true;
       }
 
       if (shares.length > 0) {
@@ -39,8 +49,6 @@ const FileSharingRedirect = () => {
           },
           { replace: true },
         );
-      } else {
-        navigate('/', { replace: true });
       }
     };
 
