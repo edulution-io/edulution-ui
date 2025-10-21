@@ -901,6 +901,7 @@
     },
     "delete": "Remove",
     "description": {
+      "dashboard": "Here you can make all the settings.",
       "ticketsystem": "Here you can make all the settings.",
       "mail": "Here you can make all the settings.",
       "chat": "Here you can make all the settings.",

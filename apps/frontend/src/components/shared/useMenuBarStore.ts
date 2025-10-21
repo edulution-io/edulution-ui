@@ -10,9 +10,24 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const SIDEBAR_TRANSLATE_AMOUNT = 56;
-export const SIDEBAR_ARROW_BUTTON_HEIGHT = 18;
-export const SIDEBAR_ICON_WIDTH = '40px';
-export const SIDEBAR_ICON_HEIGHT = '40px';
-export const SIDEBAR_WIDTH = 66;
-export const MOBILE_TOP_BAR_HEIGHT_PX = 40;
+import { create } from 'zustand';
+
+interface MenuBarStore {
+  isMobileMenuBarOpen: boolean;
+  toggleMobileMenuBar: () => void;
+  closeMobileMenuBar: () => void;
+  reset: () => void;
+}
+
+const initialValues = {
+  isMobileMenuBarOpen: false,
+};
+
+const useMenuBarStore = create<MenuBarStore>((set) => ({
+  ...initialValues,
+  reset: () => set(initialValues),
+  toggleMobileMenuBar: () => set((state) => ({ isMobileMenuBarOpen: !state.isMobileMenuBarOpen })),
+  closeMobileMenuBar: () => set({ isMobileMenuBarOpen: false }),
+}));
+
+export default useMenuBarStore;
