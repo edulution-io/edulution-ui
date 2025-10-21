@@ -20,6 +20,12 @@ import useFrameStore from '@/components/structure/framing/useFrameStore';
 import GUACAMOLE_WEBSOCKET_URL from '@libs/desktopdeployment/constants/guacamole-websocket-url';
 import useDesktopDeploymentStore from './useDesktopDeploymentStore';
 
+const stateMap = Object.fromEntries(
+  Object.entries(Client.State)
+    .filter(([_key, value]) => typeof value === 'number')
+    .map(([key, value]) => [value, key]),
+);
+
 const VDIFrame = () => {
   const displayRef = useRef<HTMLDivElement>(null);
   const guacRef = useRef<Client | null>(null);
@@ -121,18 +127,10 @@ const VDIFrame = () => {
     });
 
     guac.onstatechange = (state) => {
-      const stateMap = {
-        0: 'IDLE',
-        1: 'CONNECTING',
-        2: 'WAITING',
-        3: 'CONNECTED',
-        4: 'DISCONNECTING',
-        5: 'DISCONNECTED',
-      };
       console.info(`Guacamole changed the state to ${stateMap[state]}`);
       setClientState(state);
 
-      if (state === (5 as Client.State)) {
+      if (state === Client.State.DISCONNECTED) {
         handleDisconnect();
       }
     };
