@@ -22,38 +22,40 @@ const FileSharingRedirect = () => {
   const navigate = useNavigate();
   const { webdavShares, fetchWebdavShares } = useFileSharingStore();
   const { createVariableSharePathname } = useVariableSharePathname();
-  const hasRunRef = useRef(false);
+  const hasNavigatedRef = useRef(false);
 
   useEffect(() => {
-    if (hasRunRef.current)
+    if (webdavShares.length === 0) {
+      void fetchWebdavShares();
+    }
+  }, [fetchWebdavShares, webdavShares.length]);
+
+  useEffect(() => {
+    if (hasNavigatedRef.current) return;
+    if (webdavShares.length === 0) return;
+
+    const shares = webdavShares.filter((share) => !share.isRootServer);
+    hasNavigatedRef.current = true;
+
+    if (shares.length > 0) {
+      const navigationPath = createVariableSharePathname(shares[0].pathname, shares[0].pathVariables);
+
+      navigate(
+        {
+          pathname: `/${APPS.FILE_SHARING}/${shares[0].displayName}`,
+          search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(navigationPath)}`,
+        },
+        { replace: true },
+      );
+    } else {
       navigate(
         {
           pathname: `/${APPS.FILE_SHARING}/${SHARED}`,
         },
         { replace: true },
       );
-    const ensureShares = async () => {
-      let shares = webdavShares.filter((share) => !share.isRootServer);
-
-      if (shares.length === 0) {
-        shares = await fetchWebdavShares();
-        hasRunRef.current = true;
-      }
-
-      if (shares.length > 0) {
-        const navigationPath = createVariableSharePathname(shares[0].pathname, shares[0].pathVariables);
-        navigate(
-          {
-            pathname: `/${APPS.FILE_SHARING}/${shares[0].displayName}`,
-            search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(navigationPath)}`,
-          },
-          { replace: true },
-        );
-      }
-    };
-
-    void ensureShares();
-  }, [navigate, webdavShares, fetchWebdavShares]);
+    }
+  }, [navigate, webdavShares]);
 
   return <div />;
 };

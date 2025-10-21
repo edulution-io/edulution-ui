@@ -62,7 +62,7 @@ const MenuBar: React.FC = () => {
       case APPS.FILE_SHARING: {
         const currentShare = webdavShares.find((s) => s.displayName === pathParts[1]) ?? webdavShares[0];
 
-        if (!currentShare) break;
+        if (!currentShare || currentShare.isRootServer) break;
 
         let currentSharePath = currentShare.pathname;
         if (currentShare.pathVariables) {
