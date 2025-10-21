@@ -174,7 +174,6 @@ const SettingsOverviewPage: React.FC = () => {
           options={tabOptions}
           selectedVal={option}
           handleChange={goToTab}
-          classname="w-[calc(100%-2.5rem)]"
         />
       </div>
       <Separator className="my-2" />

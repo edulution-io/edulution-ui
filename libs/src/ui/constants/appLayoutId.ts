@@ -10,9 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const SIDEBAR_TRANSLATE_AMOUNT = 56;
-export const SIDEBAR_ARROW_BUTTON_HEIGHT = 18;
-export const SIDEBAR_ICON_WIDTH = '40px';
-export const SIDEBAR_ICON_HEIGHT = '40px';
-export const SIDEBAR_WIDTH = 66;
-export const MOBILE_TOP_BAR_HEIGHT_PX = 40;
+const APP_LAYOUT_ID = 'app-layout';
+
+export default APP_LAYOUT_ID;

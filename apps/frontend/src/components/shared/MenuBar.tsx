@@ -16,7 +16,7 @@ import { MenubarMenu, MenubarTrigger, VerticalMenubar } from '@/components/ui/Me
 
 import cn from '@libs/common/utils/className';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useOnClickOutside, useToggle } from 'usehooks-ts';
+import { useOnClickOutside } from 'usehooks-ts';
 import useMedia from '@/hooks/useMedia';
 import { getFromPathName } from '@libs/common/utils';
 import APPS from '@libs/appconfig/constants/apps';
@@ -25,10 +25,11 @@ import { useTranslation } from 'react-i18next';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableSharePathname';
+import useMenuBarStore from './useMenuBarStore';
 
 const MenuBar: React.FC = () => {
   const { t } = useTranslation();
-  const [isOpen, toggle] = useToggle(false);
+  const { isMobileMenuBarOpen, toggleMobileMenuBar } = useMenuBarStore();
   const menubarRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
   const menuBarEntries = useMenuBarConfig();
@@ -41,7 +42,7 @@ const MenuBar: React.FC = () => {
 
   const navigate = useNavigate();
 
-  useOnClickOutside(menubarRef, toggle);
+  useOnClickOutside(menubarRef, toggleMobileMenuBar);
 
   if (menuBarEntries.disabled) {
     return null;
@@ -128,7 +129,7 @@ const MenuBar: React.FC = () => {
                 )}
                 onClick={() => {
                   setIsSelected(item.id);
-                  toggle();
+                  toggleMobileMenuBar();
                   item.action();
                 }}
               >
@@ -157,38 +158,14 @@ const MenuBar: React.FC = () => {
       )}
 
       {isMobileView ? (
-        <>
-          {isOpen && (
-            <div
-              className="fixed inset-0 z-40 bg-foreground bg-opacity-50"
-              role="button"
-              tabIndex={0}
-              onClickCapture={toggle}
-            />
-          )}
-
-          <VerticalMenubar
+        <VerticalMenubar
             className={cn(
-              'fixed top-0 z-50 h-full bg-gray-700 duration-300 ease-in-out',
-              !isOpen ? 'w-0' : 'w-64',
-              'bg-foreground',
+              'fixed top-0 z-50 h-full bg-foreground duration-300 ease-in-out',
+              isMobileMenuBarOpen ? 'w-64 border-r-[1px] border-muted' : 'w-0',
             )}
           >
-            {isOpen && renderMenuBarContent()}
+            {isMobileMenuBarOpen && renderMenuBarContent()}
           </VerticalMenubar>
-
-          <div
-            role="button"
-            tabIndex={0}
-            className={cn(
-              'absolute top-0 z-50 flex h-screen w-4 cursor-pointer items-center justify-center bg-gray-700 bg-opacity-60',
-              !isOpen ? 'left-0' : 'left-64',
-            )}
-            onClickCapture={toggle}
-          >
-            <p className="text-xl text-background">{!isOpen ? '≡' : '×'}</p>
-          </div>
-        </>
       ) : (
         <div className="relative flex h-screen">
           <VerticalMenubar className="w-64 bg-foreground bg-opacity-40">{renderMenuBarContent()}</VerticalMenubar>
