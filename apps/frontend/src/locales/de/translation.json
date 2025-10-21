@@ -652,6 +652,14 @@
     "noFormula": "Das Formular ist nicht lesbar.",
     "noAnswer": "Es sind noch keine Antworten verfügbar.",
     "canSubmitMultiple": "Erlaube Mehrfachantworten.",
+    "export": {
+      "exportToPDF": "Als PDF exportieren",
+      "saveInPDF": "Als PDF speichern",
+      "processing": "Export wird verarbeitet...",
+      "success": "Export erfolgreich",
+      "error": "Fehler beim Exportieren",
+      "warning": "Einige Fragen können im PDF-Export nicht korrekt angezeigt werden. Dazu gehören unter anderem der Datei-Upload, die Bildauswahl und das Passwortfeld."
+    },
     "editor": {
       "inputFieldTitle": "Eingabefeld",
       "new": "Neu (Leer)",
