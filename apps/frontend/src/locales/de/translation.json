@@ -586,7 +586,7 @@
     "pdfDescription": "Erzeuge eine PDF Datei um die Passwörter für diese Schulklassen auszudrucken",
     "csvDescription": "Erzeuge eine CSV Datei um die Passwörter für diese Schulklassen auszudrucken",
     "printOneItemPerPage": "Drucke ein Passwort pro Seite",
-    "shouldSplitNamesInCsv": "Vor- und Nachname in getrennten Spalten",
+    "shouldSplitNamesInCsv": "Vor- und Nachname in getrennten Spalten (funktioniert erst ab Linuxmuster 7.3)",
     "selectSavedSession": "Aus gespeicherten Sitzungen wählen",
     "saveSession": "Sitzung speichern",
     "editSession": "Sitzung editieren",
