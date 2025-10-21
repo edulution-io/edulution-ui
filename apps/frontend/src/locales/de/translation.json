@@ -904,6 +904,7 @@
     },
     "delete": "Löschen",
     "description": {
+      "dashboard": "Hier kannst du alle Einstellungen vornehmen.",
       "ticketsystem": "Hier kannst du alle Einstellungen vornehmen.",
       "mail": "Hier kannst du alle Einstellungen vornehmen.",
       "chat": "Hier kannst du alle Einstellungen vornehmen.",
