@@ -319,6 +319,21 @@ class FilesystemService {
     }
   }
 
+  async deleteEmptyFolderWithDepth(path: string, deep: number): Promise<void> {
+    const exists = await pathExists(path);
+    if (!exists) {
+      return;
+    }
+    const filesNames = await readdir(path);
+    if (filesNames.length === 0) {
+      await remove(path);
+    }
+    if (deep >= 1) {
+      path.split('/').slice(0, -1).join('/');
+      await this.deleteEmptyFolderWithDepth(path, deep - 1);
+    }
+  }
+
   async createReadStream(filePath: string): Promise<Readable> {
     try {
       await FilesystemService.throwErrorIfFileNotExists(filePath);

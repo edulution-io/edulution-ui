@@ -115,6 +115,11 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     );
     await Promise.all(deletionPromises);
 
+    await this.fileSystemService.deleteEmptyFolderWithDepth(
+      join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId),
+      3,
+    );
+
     return questionAnswer;
   }
 
