@@ -40,7 +40,7 @@ describe(BulletinBoardController.name, () => {
       const json = jest.fn();
       const status = jest.fn().mockReturnValue({ json });
 
-      controller.uploadBulletinAttachment(file, { status } as unknown as Response);
+      controller.uploadTempFile(file, { status } as unknown as Response);
 
       expect(status).toHaveBeenCalledWith(200);
       expect(json).toHaveBeenCalledWith('image.png');
@@ -51,10 +51,7 @@ describe(BulletinBoardController.name, () => {
       const status = jest.fn().mockReturnValue({ json });
 
       try {
-        controller.uploadBulletinAttachment(
-          undefined as unknown as Express.Multer.File,
-          { status } as unknown as Response,
-        );
+        controller.uploadTempFile(undefined as unknown as Express.Multer.File, { status } as unknown as Response);
         fail('Expected to throw');
       } catch (e) {
         expect(e).toBeInstanceOf(CustomHttpException);
@@ -67,7 +64,7 @@ describe(BulletinBoardController.name, () => {
       const json = jest.fn();
       const status = jest.fn().mockReturnValue({ json });
       try {
-        controller.uploadBulletinAttachment(
+        controller.uploadTempFile(
           { filename: 'doc.txt', mimetype: 'text/plain' } as unknown as Express.Multer.File,
           { status } as unknown as Response,
         );

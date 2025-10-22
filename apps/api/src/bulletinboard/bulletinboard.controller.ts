@@ -10,7 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Body, Controller, Delete, Get, Param, Patch, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Res,
+  UploadedFile,
+  UseInterceptors,
+  Logger,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
@@ -74,8 +86,13 @@ class BulletinBoardController {
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  uploadBulletinAttachment(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
+  uploadTempFile(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
+    Logger.debug(`Uploading bulletin board attachment file: ${file.originalname}`, BulletinBoardController.name);
+
     const fileName = checkAttachmentFile(file);
+
+    Logger.debug(`${BULLETIN_ATTACHMENTS_PATH}/${fileName}`, BulletinBoardController.name);
+
     return res.status(200).json(fileName);
   }
 }

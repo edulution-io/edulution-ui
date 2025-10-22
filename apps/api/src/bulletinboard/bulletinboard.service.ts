@@ -23,6 +23,7 @@ import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardEr
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPath';
+import BULLETIN_TEMP_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinTempAttachmentsPath';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../common/CustomHttpException';
@@ -238,6 +239,31 @@ class BulletinBoardService implements OnModuleInit {
     bulletin.attachmentFileNames = dto.attachmentFileNames;
     bulletin.isVisibleEndDate = dto.isVisibleEndDate;
     bulletin.updatedBy = updatedBy;
+
+    const permanentFiles = await this.fileSystemService.getAllFilenamesInDirectory(BULLETIN_ATTACHMENTS_PATH);
+    const filesToRemoveFromPermanentStorage = permanentFiles.filter(
+      (fileName) => !dto.attachmentFileNames.includes(fileName),
+    );
+    await Promise.all(
+      filesToRemoveFromPermanentStorage.map(async (fileName) => {
+        const filePath = join(BULLETIN_ATTACHMENTS_PATH, fileName);
+        await FilesystemService.checkIfFileExistAndDelete(filePath);
+      }),
+    );
+
+    const temporaryFiles = await this.fileSystemService.getAllFilenamesInDirectory(BULLETIN_TEMP_ATTACHMENTS_PATH);
+    const filesToMoveToPermanentStorage = temporaryFiles.filter((fileName) =>
+      dto.attachmentFileNames.includes(fileName),
+    );
+    await Promise.all(
+      filesToMoveToPermanentStorage.map(async (fileName) => {
+        const tempFilePath = join(BULLETIN_TEMP_ATTACHMENTS_PATH, fileName);
+        const permanentFilePath = join(BULLETIN_ATTACHMENTS_PATH, fileName);
+        await FilesystemService.moveFile(tempFilePath, permanentFilePath);
+      }),
+    );
+
+    await this.fileSystemService.deleteFilesInFolder(BULLETIN_TEMP_ATTACHMENTS_PATH);
 
     const updatedBulletin = await bulletin.save();
 
