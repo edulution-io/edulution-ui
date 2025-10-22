@@ -55,7 +55,7 @@ class GlobalSettingsController {
   getSentryConfig() {
     if (this.configService.get<string>('ENABLE_SENTRY', '') === 'true') {
       return {
-        dsn: this.configService.get<string>('SENTRY_DSN', ''),
+        dsn: this.configService.get<string>('SENTRY_EDU_UI_DSN', ''),
         enabled: this.configService.get<string>('ENABLE_SENTRY', ''),
       };
     }
