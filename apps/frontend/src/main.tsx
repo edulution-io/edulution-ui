@@ -22,9 +22,9 @@ import '@fontsource/lato/400.css';
 import '@fontsource/lato/700.css';
 import '@fontsource/lato/400-italic.css';
 
-const cached = localStorage.getItem('sentryConfig');
-if (cached) {
-  const { state } = JSON.parse(cached) as { state: { config: SentryConfig } };
+const sentryConfig = localStorage.getItem('sentryConfig');
+if (sentryConfig) {
+  const { state } = JSON.parse(sentryConfig) as { state: { config: SentryConfig } };
   useSentryStore.getState().init(state.config);
 }
 
