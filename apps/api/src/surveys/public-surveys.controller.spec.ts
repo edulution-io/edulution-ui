@@ -183,7 +183,7 @@ describe(PublicSurveysController.name, () => {
 
       const result = await controller.getChoices({
         surveyId: idOfPublicSurvey02.toString(),
-        questionName: publicSurvey02QuestionNameWithLimiters,
+        questionId: publicSurvey02QuestionNameWithLimiters,
       });
       expect(result).toEqual(filteredChoices);
 
@@ -208,7 +208,7 @@ describe(PublicSurveysController.name, () => {
 
       const result = await controller.getChoices({
         surveyId: idOfPublicSurvey02.toString(),
-        questionName: publicSurvey02QuestionNameWithLimiters,
+        questionId: publicSurvey02QuestionNameWithLimiters,
       });
       expect(result).toEqual(filteredChoicesAfterAddingValidAnswer);
 
