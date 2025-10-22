@@ -15,7 +15,7 @@ import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 
 const resolveSharePath = (share: WebdavShareDto, lmnInfo: LmnUserInfo): string => {
   if (!share.pathVariables || share.pathVariables.length === 0) {
-    return share.sharePath || share.displayName || '';
+    return share.sharePath || '';
   }
 
   return share.pathVariables
