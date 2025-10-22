@@ -14,19 +14,34 @@ import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import MobileUserFileShare from '@libs/mobileApp/types/mobileUserFileShare';
 import normalizeLdapHomeDirectory from '@libs/filesharing/utils/normalizeLdapHomeDirectory';
-import resolveSharePath from '@libs/mobileApp/utils/resolveSharePath';
 
-const buildUserShares = (shares: WebdavShareDto[], lmnInfo: LmnUserInfo): MobileUserFileShare[] =>
-  shares
+const buildUserShares = (shares: WebdavShareDto[], lmnInfo: LmnUserInfo): MobileUserFileShare[] => shares
     .map((share) => {
-      const resolvedPath = resolveSharePath(share, lmnInfo);
+      let resolvedPath = '';
 
-      if (!resolvedPath) return null;
+      if (!share.pathVariables || share.pathVariables.length === 0) {
+        resolvedPath = share.sharePath || '';
+      } else {
+        resolvedPath = share.pathVariables
+          .map((pathVariable) =>
+            pathVariable.label in lmnInfo
+              ? (lmnInfo[pathVariable.label as keyof LmnUserInfo] as string)
+              : pathVariable.value || '',
+          )
+          .filter((val) => val !== '')
+          .join('/');
+      }
+
+      const finalPath = resolvedPath || share.displayName || '';
+
+      if (!finalPath) {
+        return null;
+      }
 
       return {
         type: share.type,
-        path: normalizeLdapHomeDirectory(resolvedPath),
-        displayName: share.displayName,
+        path: normalizeLdapHomeDirectory(finalPath),
+        displayName: `${lmnInfo.cn} ${share.displayName}`,
         webdavShareId: share.webdavShareId,
       };
     })
