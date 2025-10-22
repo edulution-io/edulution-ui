@@ -30,12 +30,12 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
   async serveFileFromAnswer(
     userName: string,
     surveyId: string,
-    questionName: string,
+    questionId: string,
     fileName: string,
     res: Response,
   ): Promise<Response> {
-    const tempPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionName, fileName);
-    const permanentPath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName, questionName, fileName);
+    const tempPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId, fileName);
+    const permanentPath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName, questionId, fileName);
     const tempFileExists = await FilesystemService.checkIfFileExist(tempPath);
     if (tempFileExists) {
       const fileStream = await this.fileSystemService.createReadStream(tempPath);
@@ -51,18 +51,18 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
-  async deleteTempQuestionAnswerFiles(userName: string, surveyId: string, questionName: string): Promise<void> {
-    const tempFilesPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionName);
+  async deleteTempQuestionAnswerFiles(userName: string, surveyId: string, questionId: string): Promise<void> {
+    const tempFilesPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId);
     return this.fileSystemService.deleteDirectory(tempFilesPath);
   }
 
   static async deleteTempAnswerFiles(
     userName: string,
     surveyId: string,
-    questionName: string,
+    questionId: string,
     fileName: string,
   ): Promise<void> {
-    const tempFilesPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionName);
+    const tempFilesPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId);
     const tempExistence = await FilesystemService.checkIfFileExist(join(tempFilesPath, fileName));
     if (!tempExistence) {
       return;
@@ -73,11 +73,11 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
   async moveQuestionAttachmentsToPermanentStorage(
     userName: string,
     surveyId: string,
-    questionName: string,
+    questionId: string,
     questionAnswer: (object & { content: string }) | (object & { content: string })[],
   ): Promise<(object & { content: string }) | (object & { content: string })[]> {
-    const directory = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName, questionName);
-    const tempDirectory = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionName);
+    const directory = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName, questionId);
+    const tempDirectory = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId);
     const tempFileNames = await this.fileSystemService.getAllFilenamesInDirectory(tempDirectory);
     if (tempFileNames.length === 0) {
       return questionAnswer;

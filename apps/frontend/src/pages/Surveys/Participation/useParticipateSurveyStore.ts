@@ -59,13 +59,13 @@ interface ParticipateSurveyStore {
 
   uploadTempFile: (
     surveyId: string,
-    questionName: string,
+    questionId: string,
     file: File & { content?: string },
   ) => Promise<FileDownloadDto | null>;
   isUploadingFile?: boolean;
 
-  deleteTempFiles: (surveyId: string, questionName: string) => Promise<string>;
-  deleteTempFile: (surveyId: string, questionName: string, file: File & { content?: string }) => Promise<string>;
+  deleteTempFiles: (surveyId: string, questionId: string) => Promise<string>;
+  deleteTempFile: (surveyId: string, questionId: string, file: File & { content?: string }) => Promise<string>;
   onClearFiles: (_: SurveyModel, options: ClearFilesEvent, surveyId: string) => Promise<void>;
   isDeletingFile?: boolean;
 
@@ -189,14 +189,14 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
   },
 
-  uploadTempFile: async (surveyId: string, questionName: string, file: File): Promise<FileDownloadDto | null> => {
+  uploadTempFile: async (surveyId: string, questionId: string, file: File): Promise<FileDownloadDto | null> => {
     const { attendee } = get();
     set({ isUploadingFile: true });
     try {
       const formData = new FormData();
       formData.append('file', file);
       const response = await eduApi.post<{ name: string; url: string; content: Buffer<ArrayBufferLike> }>(
-        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionName}`,
+        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}`,
         formData,
         {
           headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
@@ -222,17 +222,13 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
   },
 
-  deleteTempFile: async (
-    surveyId: string,
-    questionName: string,
-    file: File & { content?: string },
-  ): Promise<string> => {
+  deleteTempFile: async (surveyId: string, questionId: string, file: File & { content?: string }): Promise<string> => {
     const { attendee } = get();
     set({ isDeletingFile: true });
     try {
       const fileName = file.name || file.content?.split('/').pop();
       const response = await eduApi.delete<string>(
-        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionName}/${fileName}`,
+        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}/${fileName}`,
       );
       if (response.status === 200) {
         return 'success';
@@ -245,12 +241,12 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     return 'error';
   },
 
-  deleteTempFiles: async (surveyId: string, questionName: string): Promise<string> => {
+  deleteTempFiles: async (surveyId: string, questionId: string): Promise<string> => {
     const { attendee } = get();
     set({ isDeletingFile: true });
     try {
       const response = await eduApi.delete<string>(
-        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionName}`,
+        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}`,
       );
       if (response.status === 200) {
         return 'success';

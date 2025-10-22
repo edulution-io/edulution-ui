@@ -95,7 +95,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
     });
 
     newModel.onUploadFiles.add(async (_: SurveyModel, options: UploadFilesEvent): Promise<void> => {
-      const { files, callback } = options;
+      const { files, callback, question } = options;
       const { id: surveyId } = selectedSurvey;
 
       if (!surveyId || !files?.length || files.some((file) => !file.name?.length)) {
@@ -109,9 +109,8 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         callback([]);
         return;
       }
-      const questionName = options.question?.name;
       if (surveyId) {
-        const uploadPromises = files.map(async (file) => uploadTempFile(surveyId, questionName, file));
+        const uploadPromises = files.map(async (file) => uploadTempFile(surveyId, question?.name, file));
         const results = await Promise.all(uploadPromises);
         const filteredResults = results.filter((result) => result !== null);
         callback(
@@ -145,21 +144,21 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
     });
 
     newModel.onClearFiles.add(async (_surveyModel: SurveyModel, options: ClearFilesEvent): Promise<void> => {
+      const { callback, question, fileName } = options;
       const { id: surveyId } = selectedSurvey;
 
       if (!surveyId) {
-        options.callback('success');
+        callback('success');
         return;
       }
 
-      const questionName = options.question?.name;
-      if (options.fileName === null) {
+      if (fileName === null) {
         try {
-          await deleteTempFiles(surveyId, questionName);
-          options.callback('success');
+          await deleteTempFiles(surveyId, question?.name);
+          callback('success');
           return;
         } catch (error) {
-          options.callback('error');
+          callback('error');
           return;
         }
       }
@@ -167,16 +166,16 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       let filesToDelete: Array<File & { content?: string }> = [];
       const value = options.value as undefined | (File & { content?: string }) | Array<File & { content?: string }>;
       if (!value) {
-        options.callback('success');
+        callback('success');
         return;
       }
       if (Array.isArray(value)) {
         if (value.length === 0) {
-          options.callback('success');
+          callback('success');
           return;
         }
-        if (options.fileName) {
-          const file = value.filter((item: File & { content?: string }) => item.name === options.fileName);
+        if (fileName) {
+          const file = value.filter((item: File & { content?: string }) => item.name === fileName);
           filesToDelete.push(...file);
         } else {
           filesToDelete = value;
@@ -187,18 +186,18 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
       if (filesToDelete.length === 0) {
         console.error(`File with name ${options.fileName} is not found`);
-        options.callback('error');
+        callback('error');
         return;
       }
 
       const results = await Promise.all(
-        filesToDelete.map((file: File & { content?: string }) => deleteTempFile(surveyId, questionName, file)),
+        filesToDelete.map((file: File & { content?: string }) => deleteTempFile(surveyId, question?.name, file)),
       );
 
       if (results.every((res) => res === 'success')) {
-        options.callback('success');
+        callback('success');
       } else {
-        options.callback('error');
+        callback('error');
       }
     });
 
