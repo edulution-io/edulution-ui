@@ -10,8 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
-import { Client, WebSocketTunnel, Mouse, Touch, Keyboard } from '@glokon/guacamole-common-js';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Client, WebSocketTunnel, Mouse, Touch, Keyboard, Status } from '@glokon/guacamole-common-js';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import { MAXIMIZED_BAR_HEIGHT } from '@libs/ui/constants/resizableWindowElements';
 import RESIZABLE_WINDOW_DEFAULT_SIZE from '@libs/ui/constants/resizableWindowDefaultSize';
@@ -31,18 +31,24 @@ const VDIFrame = () => {
   const guacRef = useRef<Client | null>(null);
   const { error, guacToken, dataSource, guacId, isVdiConnectionOpen, setIsVdiConnectionOpen } =
     useDesktopDeploymentStore();
-  const [clientState, setClientState] = useState(0);
+  const [clientState, setClientState] = useState<Client.State>(Client.State.IDLE);
   const [hasCurrentFrameSizeLoaded, setHasCurrentFrameSizeLoaded] = useState(false);
   const { currentWindowedFrameSizes, minimizedWindowedFrames } = useFrameStore();
 
-  const handleDisconnect = () => {
-    if (guacRef.current) {
-      guacRef.current.disconnect();
+  const handleDisconnect = useCallback(() => {
+    try {
+      if (guacRef.current) {
+        guacRef.current.disconnect();
+      }
+    } catch (e) {
+      console.error('Guacamole disconnect error:', e);
+    } finally {
+      guacRef.current = null;
+      setIsVdiConnectionOpen(false);
+      setClientState(Client.State.IDLE);
+      setHasCurrentFrameSizeLoaded(false);
     }
-    setIsVdiConnectionOpen(false);
-    setClientState(0);
-    setHasCurrentFrameSizeLoaded(false);
-  };
+  }, [setIsVdiConnectionOpen]);
 
   const id = 'desktopdeployment.topic';
   const width = currentWindowedFrameSizes[id]?.width || RESIZABLE_WINDOW_DEFAULT_SIZE.width;
@@ -81,7 +87,7 @@ const VDIFrame = () => {
       GUAC_HEIGHT: height,
       GUAC_DPI: 96,
       GUAC_TIMEZONE: 'Europe/Berlin',
-      GUAC_AUDIO: ['audio/L8', 'audio/L16'],
+      GUAC_AUDIO: ['audio/L16'],
       GUAC_IMAGE: ['image/jpeg', 'image/png', 'image/webp'],
     };
 
@@ -94,7 +100,11 @@ const VDIFrame = () => {
         params.append(key, value as string);
       }
     });
-    guac.connect(params);
+    try {
+      guac.connect(params);
+    } catch (e) {
+      console.error('Guacamole connect error', e);
+    }
 
     const guacSendMouseState = guac.sendMouseState.bind(guac);
 
@@ -135,6 +145,18 @@ const VDIFrame = () => {
       }
     };
 
+    guac.onerror = (status) => {
+      if (status.code === Status.Code.SERVER_ERROR) {
+        console.error(`Server error: ${status.message}`);
+      } else {
+        console.error('Guacamole error:', status);
+      }
+    };
+
+    tunnel.onerror = (status) => {
+      console.error('WebSocket tunnel error:', status);
+    };
+
     return () => {
       handleDisconnect();
     };
@@ -154,7 +176,7 @@ const VDIFrame = () => {
   return (
     <ResizableWindow
       titleTranslationId={id}
-      handleClose={handleDisconnect}
+      handleClose={() => setIsVdiConnectionOpen(false)}
       disableToggleMaximizeWindow
     >
       <div
@@ -162,7 +184,7 @@ const VDIFrame = () => {
         ref={displayRef}
         className="h-full w-full border-none bg-black"
       />
-      {clientState < 3 && <LoadingIndicatorDialog isOpen />}
+      {clientState < Client.State.CONNECTED && <LoadingIndicatorDialog isOpen />}
     </ResizableWindow>
   );
 };
