@@ -12,13 +12,21 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import type SentryConfig from '@libs/common/types/sentryConfig';
 import App from './App';
+import useSentryStore from './store/useSentryStore';
 import './index.scss';
 
 import '@fontsource/lato/300.css';
 import '@fontsource/lato/400.css';
 import '@fontsource/lato/700.css';
 import '@fontsource/lato/400-italic.css';
+
+const cached = localStorage.getItem('sentryConfig');
+if (cached) {
+  const { state } = JSON.parse(cached) as { state: { config: SentryConfig } };
+  useSentryStore.getState().init(state.config);
+}
 
 const root = document.getElementById('root');
 

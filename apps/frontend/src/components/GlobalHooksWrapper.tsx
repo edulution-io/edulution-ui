@@ -24,6 +24,7 @@ import COOKIE_DESCRIPTORS from '@libs/common/constants/cookieDescriptors';
 import useVersionChecker from '@/hooks/useVersionChecker';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useUploadProgressToast from '@/hooks/useUploadProgressToast';
+import useSentryStore from '@/store/useSentryStore';
 import useAppConfigsStore from '../pages/Settings/AppConfig/useAppConfigsStore';
 import useUserStore from '../store/UserStore/useUserStore';
 import useLogout from '../hooks/useLogout';
@@ -40,6 +41,7 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   const { eventSource, setEventSource } = useSseStore();
   const [, setCookie] = useCookies([COOKIE_DESCRIPTORS.AUTH_TOKEN]);
   const { fetchWebdavShares } = useFileSharingStore();
+  const { fetchAndInit } = useSentryStore();
 
   const handleLogout = useLogout();
 
@@ -81,6 +83,8 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
         void getGlobalSettings();
         void getAppConfigs();
         void fetchWebdavShares();
+        void fetchAndInit(eduApiToken);
+
         return;
       }
       void handleLogout();

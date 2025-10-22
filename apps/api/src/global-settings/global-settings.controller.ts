@@ -12,6 +12,7 @@
 
 import { Body, Controller, Get, Put, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 import {
   GLOBAL_SETTINGS_ADMIN_ENDPOINT,
   GLOBAL_SETTINGS_ROOT_ENDPOINT,
@@ -26,7 +27,10 @@ import GlobalSettingsService from './global-settings.service';
 @ApiBearerAuth()
 @Controller(GLOBAL_SETTINGS_ROOT_ENDPOINT)
 class GlobalSettingsController {
-  constructor(private readonly globalSettingsService: GlobalSettingsService) {}
+  constructor(
+    private readonly globalSettingsService: GlobalSettingsService,
+    private configService: ConfigService,
+  ) {}
 
   @Get()
   @UseInterceptors(CacheInterceptor)
@@ -45,6 +49,17 @@ class GlobalSettingsController {
   @UseGuards(AdminGuard)
   async setGlobalSettings(@Body() globalSettingsDto: GlobalSettingsDto) {
     return this.globalSettingsService.setGlobalSettings(globalSettingsDto);
+  }
+
+  @Get('sentry')
+  getSentryConfig() {
+    if (this.configService.get<string>('ENABLE_SENTRY', '') === 'true') {
+      return {
+        dsn: this.configService.get<string>('SENTRY_DSN', ''),
+        enabled: this.configService.get<string>('ENABLE_SENTRY', ''),
+      };
+    }
+    return {};
   }
 }
 
