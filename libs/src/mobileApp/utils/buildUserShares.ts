@@ -27,6 +27,7 @@ const buildUserShares = (shares: WebdavShareDto[], lmnInfo: LmnUserInfo): Mobile
         type: share.type,
         path: normalizeLdapHomeDirectory(resolvedPath),
         displayName: share.displayName,
+        webdavShareId: share.webdavShareId,
       };
     })
     .filter((share): share is MobileUserFileShare => share !== null);

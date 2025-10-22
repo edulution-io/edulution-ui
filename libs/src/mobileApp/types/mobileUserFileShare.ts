@@ -21,6 +21,9 @@ class MobileUserFileShare {
 
   @IsString()
   displayName: string;
+
+  @IsString()
+  webdavShareId: string;
 }
 
 export default MobileUserFileShare;
