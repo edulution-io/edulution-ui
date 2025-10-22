@@ -39,8 +39,6 @@ class MobileAppUserDto {
 
   @ApiProperty() deploymentTarget: string;
 
-  @ApiProperty() homeDirectory: string;
-
   @ApiProperty({ type: () => OrganisationInfoDto })
   organisationInfo: OrganisationInfoDto;
 

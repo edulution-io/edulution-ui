@@ -18,14 +18,12 @@ import parseLmnGeneralizedTimeAttribute from '@libs/mobileApp/utils/parseLmnGene
 import MobileUserFileShare from '@libs/mobileApp/types/mobileUserFileShare';
 
 const getMobileAppUserDto = ({
-  homeDirectory,
   usernameFallback,
   globalSettings,
   user = null,
   lmn = null,
   userShares = [],
 }: {
-  homeDirectory: string;
   usernameFallback: string;
   user?: UserDto | null;
   lmn?: LmnUserInfo | null;
@@ -48,7 +46,6 @@ const getMobileAppUserDto = ({
   userProfilePicture: lmn?.thumbnailPhoto || '',
   institutionLogo: `edu-api/public/branding/logo`,
   deploymentTarget: globalSettings?.general.deploymentTarget || '',
-  homeDirectory,
   organisationInfo: globalSettings?.organisationInfo || {},
   userShares,
 });
