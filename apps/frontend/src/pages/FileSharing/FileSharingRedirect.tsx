@@ -10,10 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import APPS from '@libs/appconfig/constants/apps';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
+import SHARED from '@libs/filesharing/constants/shared';
 import useFileSharingStore from './useFileSharingStore';
 import useVariableSharePathname from './hooks/useVariableSharePathname';
 
@@ -21,31 +22,40 @@ const FileSharingRedirect = () => {
   const navigate = useNavigate();
   const { webdavShares, fetchWebdavShares } = useFileSharingStore();
   const { createVariableSharePathname } = useVariableSharePathname();
+  const hasNavigatedRef = useRef(false);
 
   useEffect(() => {
-    const ensureShares = async () => {
-      let shares = webdavShares.filter((share) => !share.isRootServer);
+    if (webdavShares.length === 0) {
+      void fetchWebdavShares();
+    }
+  }, [fetchWebdavShares, webdavShares.length]);
 
-      if (shares.length === 0) {
-        shares = await fetchWebdavShares();
-      }
+  useEffect(() => {
+    if (hasNavigatedRef.current) return;
+    if (webdavShares.length === 0) return;
 
-      if (shares.length > 0) {
-        const navigationPath = createVariableSharePathname(shares[0].pathname, shares[0].pathVariables);
-        navigate(
-          {
-            pathname: `/${APPS.FILE_SHARING}/${shares[0].displayName}`,
-            search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(navigationPath)}`,
-          },
-          { replace: true },
-        );
-      } else {
-        navigate('/', { replace: true });
-      }
-    };
+    const shares = webdavShares.filter((share) => !share.isRootServer);
+    hasNavigatedRef.current = true;
 
-    void ensureShares();
-  }, [navigate, webdavShares, fetchWebdavShares]);
+    if (shares.length > 0) {
+      const navigationPath = createVariableSharePathname(shares[0].pathname, shares[0].pathVariables);
+
+      navigate(
+        {
+          pathname: `/${APPS.FILE_SHARING}/${shares[0].displayName}`,
+          search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(navigationPath)}`,
+        },
+        { replace: true },
+      );
+    } else {
+      navigate(
+        {
+          pathname: `/${APPS.FILE_SHARING}/${SHARED}`,
+        },
+        { replace: true },
+      );
+    }
+  }, [navigate, webdavShares]);
 
   return <div />;
 };

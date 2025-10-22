@@ -60,8 +60,6 @@ const useFileSharingMenuConfig = () => {
   }, [firstPathPart]);
 
   useEffect(() => {
-    if (!webdavShares.length) return;
-
     const menuBarItems: MenuItem[] = webdavShares
       .filter((share) => !share.isRootServer)
       .map((share) => ({
