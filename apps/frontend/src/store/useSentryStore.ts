@@ -20,7 +20,7 @@ interface UseSentryStore {
   initialized: boolean;
   config: SentryConfig | null;
   init: (config: SentryConfig) => void;
-  fetchAndInit: (token?: string) => Promise<void>;
+  fetchAndInit: () => Promise<void>;
   setUser: (user: { id?: string; username?: string; email?: string }) => void;
   clear: () => void;
 }

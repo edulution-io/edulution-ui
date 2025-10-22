@@ -83,7 +83,7 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
         void getGlobalSettings();
         void getAppConfigs();
         void fetchWebdavShares();
-        void fetchAndInit(eduApiToken);
+        void fetchAndInit();
 
         return;
       }
