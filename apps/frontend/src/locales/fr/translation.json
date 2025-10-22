@@ -171,7 +171,8 @@
       "PasswordMismatch": "Le mot de passe actuel est incorrect",
       "PasswordChangeFailed": "Echec de modification du mot de passe",
       "GetUsersQuotaFailed": "L'appel du quota l'utilisateur a échoué.",
-      "GetSchoolsFailed": "L'appel des écoles a échoué"
+      "GetSchoolsFailed": "L'appel des écoles a échoué",
+      "GetLmnVersionFailed": "L'appel de la version Linuxmuster a échoué."
     }
   },
   "ticketsystem": {
@@ -843,6 +844,7 @@
     "info": {
       "title": "Informations"
     },
+    "lmnVersion": { "title": "Aperçu des versions de Linuxmuster" },
     "appconfig": {
       "sections": {
         "onlyOffice": {
