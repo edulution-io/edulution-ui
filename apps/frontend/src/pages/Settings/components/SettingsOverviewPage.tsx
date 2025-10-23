@@ -24,11 +24,11 @@ import defaultValues from '@libs/global-settings/constants/defaultValues';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import GLOBAL_SETTINGS_TABS from '@libs/global-settings/constants/globalSettingsTabs';
 import DockerContainerTable from '../AppConfig/DockerIntegration/DockerContainerTable';
-import LicenseOverview from './LicenseOverview';
 import GlobalSettings from '../GlobalSettings/GlobalSettings';
 import UserAdministration from './UserAdministration';
 import useGlobalSettingsApiStore from '../GlobalSettings/useGlobalSettingsApiStore';
 import GlobalSettingsFloatingButtons from '../GlobalSettings/GlobalSettingsFloatingButtons';
+import InfoPage from '../Info/InfoPage';
 
 interface TabOption {
   id: string;
@@ -65,7 +65,7 @@ const TAB_OPTIONS: TabOption[] = [
       />
     ),
   },
-  { id: GLOBAL_SETTINGS_TABS.INFO, nameKey: 'settings.info.title', component: () => <LicenseOverview /> },
+  { id: GLOBAL_SETTINGS_TABS.INFO, nameKey: 'settings.info.title', component: () => <InfoPage /> },
 ];
 
 const showFloatingButtonsTabList: Set<string> = new Set([
@@ -142,7 +142,7 @@ const SettingsOverviewPage: React.FC = () => {
                   key={item.id}
                   value={item.id}
                   onClick={() => goToTab(item.id)}
-                  className="min-w-20 text-[clamp(0.65rem,2vw,0.8rem)] lg:min-w-64 lg:text-p"
+                  className="text-[clamp(0.65rem,2vw,0.8rem)] xl:min-w-64"
                 >
                   {item.name}
                 </TabsTrigger>
@@ -174,7 +174,6 @@ const SettingsOverviewPage: React.FC = () => {
           options={tabOptions}
           selectedVal={option}
           handleChange={goToTab}
-          classname="w-[calc(100%-2.5rem)]"
         />
       </div>
       <Separator className="my-2" />

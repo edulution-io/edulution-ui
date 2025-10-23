@@ -15,3 +15,4 @@ export const SIDEBAR_ARROW_BUTTON_HEIGHT = 18;
 export const SIDEBAR_ICON_WIDTH = '40px';
 export const SIDEBAR_ICON_HEIGHT = '40px';
 export const SIDEBAR_WIDTH = 66;
+export const MOBILE_TOP_BAR_HEIGHT_PX = 40;

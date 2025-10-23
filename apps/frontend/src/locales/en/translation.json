@@ -188,7 +188,8 @@
       "PasswordMismatch": "The current password is wrong",
       "PasswordChangeFailed": "Password change failed",
       "GetUsersQuotaFailed": "Failed to get users quota",
-      "GetSchoolsFailed": "Failed to get schools"
+      "GetSchoolsFailed": "Failed to get schools",
+      "GetLmnVersionFailed": "Failed to retrieve the Linuxmuster version."
     }
   },
   "ticketsystem": {
@@ -587,6 +588,7 @@
     "pdfDescription": "Create a PDF file to print the passwords for these school classes",
     "csvDescription": "Create a CSV file to print the passwords for these school classes",
     "printOneItemPerPage": "Print one password per page",
+    "shouldSplitNamesInCsv": "First and last name in separate columns (works from Linuxmuster 7.3 onwards)",
     "selectSavedSession": "Select from saved sessions",
     "saveSession": "Save session",
     "editSession": "Edit session",
@@ -902,6 +904,7 @@
     },
     "delete": "Remove",
     "description": {
+      "dashboard": "Here you can make all the settings.",
       "ticketsystem": "Here you can make all the settings.",
       "mail": "Here you can make all the settings.",
       "chat": "Here you can make all the settings.",
@@ -996,6 +999,7 @@
     "info": {
       "title": "Info"
     },
+    "lmnVersion": { "title": "Linuxmuster version overview" },
     "appconfig": {
       "position": {
         "title": "Sorting",

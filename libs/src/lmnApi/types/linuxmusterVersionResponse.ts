@@ -10,20 +10,17 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SURVEYS_FILES_PATH from '@libs/survey/constants/surveysFilesPath';
-import APPS_FILES_PATH from './appsFilesPath';
-import PUBLIC_DOWNLOADS_PATH from './publicDownloadsPath';
-import TRAEFIK_CONFIG_FILES_PATH from './traefikConfigPath';
-import TEMP_FILES_PATH from '../../filesystem/constants/tempFilesPath';
-import PUBLIC_ASSET_PATH from './publicAssetPath';
+type LinuxmusterVersionResponse = {
+  'linuxmuster-api7': string;
+  'linuxmuster-base7': string;
+  'linuxmuster-cli7': string;
+  'linuxmuster-common': string;
+  'linuxmuster-linbo-gui7': string;
+  'linuxmuster-linbo7': string;
+  'linuxmuster-prepare': string;
+  'linuxmuster-tools7': string;
+  'linuxmuster-webui7': string;
+  'sophomorix-samba': string;
+};
 
-const folderPaths = [
-  APPS_FILES_PATH,
-  PUBLIC_DOWNLOADS_PATH,
-  TRAEFIK_CONFIG_FILES_PATH,
-  TEMP_FILES_PATH,
-  PUBLIC_ASSET_PATH,
-  SURVEYS_FILES_PATH,
-];
-
-export default folderPaths;
+export default LinuxmusterVersionResponse;
