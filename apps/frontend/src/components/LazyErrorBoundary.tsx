@@ -22,7 +22,7 @@ const LazyErrorBoundary: FC<{ children: ReactNode }> = ({ children }) => {
     const sentryConfigRaw = localStorage.getItem('sentryConfig');
     if (!sentryConfigRaw) return;
 
-    let parsed: SentryConfigStore | undefined;
+    let parsed: SentryConfigStore;
     try {
       parsed = JSON.parse(sentryConfigRaw) as SentryConfigStore;
     } catch (e) {
