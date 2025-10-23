@@ -33,6 +33,8 @@ const buildUserShares = (shares: WebdavShareDto[], lmnInfo: LmnUserInfo): Mobile
           .join('/');
       }
 
+      resolvedPath = resolvedPath.replace(/^\\\\[^\\]+\\/, '').replace(/\\/g, '/');
+
       const combinedPath = share.pathname + share.sharePath + resolvedPath;
       const normalizedPath = normalizeLdapHomeDirectory(combinedPath);
       const finalPath = normalizedPath.replace(/\/+/g, '/');
