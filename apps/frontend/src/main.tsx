@@ -25,7 +25,7 @@ import '@fontsource/lato/400-italic.css';
 const sentryConfig = localStorage.getItem('sentryConfig');
 if (sentryConfig) {
   const { state } = JSON.parse(sentryConfig) as { state: { config: SentryConfig } };
-  useSentryStore.getState().init(state.config);
+  void useSentryStore.getState().init(state.config);
 }
 
 const root = document.getElementById('root');

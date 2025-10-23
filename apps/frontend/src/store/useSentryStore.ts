@@ -10,7 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { init as sentryInit, setTag } from '@sentry/react';
 import { create, StateCreator } from 'zustand';
 import type SentryConfig from '@libs/common/types/sentryConfig';
 import eduApi from '@/api/eduApi';
@@ -19,7 +18,7 @@ import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 interface UseSentryStore {
   initialized: boolean;
   config: SentryConfig | null;
-  init: (config: SentryConfig) => void;
+  init: (config: SentryConfig) => Promise<void>;
   fetchAndInit: () => Promise<void>;
   clear: () => void;
 }
@@ -35,11 +34,13 @@ const useSentryStore = create<UseSentryStore>(
       initialized: false,
       config: null,
 
-      init: (config) => {
+      init: async (config) => {
         if (get().initialized || !config?.dsn) return;
 
+        const { init, setTag } = await import('@sentry/react');
+
         const tenant = window.location.hostname;
-        sentryInit({
+        init({
           dsn: config.dsn,
           environment: tenant,
           sendDefaultPii: true,
@@ -58,7 +59,7 @@ const useSentryStore = create<UseSentryStore>(
         try {
           const { data } = await eduApi.get<SentryConfig>('global-settings/sentry');
           set({ config: data });
-          get().init(data);
+          await get().init(data);
         } catch (e) {
           console.warn('[Sentry] fetch failed', e);
         }

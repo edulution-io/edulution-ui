@@ -15,7 +15,6 @@ import AppRouter from '@/router/AppRouter';
 import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
 import { WebStorageStateStore } from 'oidc-client-ts';
 import { CookiesProvider } from 'react-cookie';
-import { ErrorBoundary } from '@sentry/react';
 import i18n from '@/i18n';
 import eduApi from '@/api/eduApi';
 import useLmnApiStore from '@/store/useLmnApiStore';
@@ -28,6 +27,7 @@ import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import GlobalHooksWrapper from './components/GlobalHooksWrapper';
+import LazyErrorBoundary from './components/LazyErrorBoundary';
 
 const App = () => {
   const { eduApiToken } = useUserStore();
@@ -58,7 +58,7 @@ const App = () => {
   };
 
   return (
-    <ErrorBoundary>
+    <LazyErrorBoundary>
       <AuthProvider {...oidcConfig}>
         <CookiesProvider>
           <GlobalHooksWrapper>
@@ -71,7 +71,7 @@ const App = () => {
           </GlobalHooksWrapper>
         </CookiesProvider>
       </AuthProvider>
-    </ErrorBoundary>
+    </LazyErrorBoundary>
   );
 };
 
