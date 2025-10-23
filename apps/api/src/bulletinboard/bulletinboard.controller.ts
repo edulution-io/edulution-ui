@@ -29,12 +29,12 @@ import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import { Response } from 'express';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import APPS from '@libs/appconfig/constants/apps';
-import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPath';
+import BULLETIN_TEMP_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinTempAttachmentsPath';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
-import BulletinBoardService from './bulletinboard.service';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import GetToken from '../common/decorators/getToken.decorator';
 import { checkAttachmentFile, createAttachmentUploadOptions } from '../filesystem/multer.utilities';
+import BulletinBoardService from './bulletinboard.service';
 
 @ApiTags(APPS.BULLETIN_BOARD)
 @ApiBearerAuth()
@@ -82,16 +82,16 @@ class BulletinBoardController {
   @UseInterceptors(
     FileInterceptor(
       'file',
-      createAttachmentUploadOptions(() => BULLETIN_ATTACHMENTS_PATH),
+      createAttachmentUploadOptions(() => BULLETIN_TEMP_ATTACHMENTS_PATH),
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  uploadTempFile(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
+  fileUpload(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
     Logger.debug(`Uploading bulletin board attachment file: ${file.originalname}`, BulletinBoardController.name);
 
     const fileName = checkAttachmentFile(file);
 
-    Logger.debug(`${BULLETIN_ATTACHMENTS_PATH}/${fileName}`, BulletinBoardController.name);
+    Logger.debug(`${BULLETIN_TEMP_ATTACHMENTS_PATH}/${fileName}`, BulletinBoardController.name);
 
     return res.status(200).json(fileName);
   }

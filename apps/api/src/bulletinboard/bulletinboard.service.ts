@@ -71,6 +71,40 @@ class BulletinBoardService implements OnModuleInit {
     return res;
   }
 
+  async updateBulletinAttachments(fileNames: string[]) {
+    Logger.log(`attachedFiles: ${fileNames.join(', ')}`, BulletinBoardService.name);
+
+    const permanentFiles = await this.fileSystemService.getAllFilenamesInDirectory(BULLETIN_ATTACHMENTS_PATH);
+
+    Logger.log(`permanentFiles: ${permanentFiles.join(', ')}`, BulletinBoardService.name);
+
+    await Promise.all(
+      permanentFiles.map(async (fileName) => {
+        if (!fileNames.includes(fileName)) {
+          Logger.log(`Deleting deprecated permanent file: ${fileName}`, BulletinBoardService.name);
+          await FilesystemService.deleteFile(BULLETIN_ATTACHMENTS_PATH, fileName);
+        }
+      }),
+    );
+    const temporaryFiles = await this.fileSystemService.getAllFilenamesInDirectory(BULLETIN_TEMP_ATTACHMENTS_PATH);
+
+    Logger.log(`temporaryFiles: ${temporaryFiles.join(', ')}`, BulletinBoardService.name);
+
+    await Promise.all(
+      temporaryFiles.map(async (fileName) => {
+        if (!fileNames.includes(fileName)) {
+          Logger.log(`Deleting deprecated temporary file: ${fileName}`, BulletinBoardService.name);
+          await FilesystemService.deleteFile(BULLETIN_TEMP_ATTACHMENTS_PATH, fileName);
+        } else {
+          Logger.log(`Move temporary file to the permanent ones: ${fileName}`, BulletinBoardService.name);
+          const tempFilePath = join(BULLETIN_TEMP_ATTACHMENTS_PATH, fileName);
+          const permanentFilePath = join(BULLETIN_ATTACHMENTS_PATH, fileName);
+          await FilesystemService.moveFile(tempFilePath, permanentFilePath);
+        }
+      }),
+    );
+  }
+
   async removeAllBulletinsByCategory(currentUser: JwtUser, categoryId: string): Promise<void> {
     const bulletins = await this.bulletinModel
       .find<BulletinResponseDto>({ category: new Types.ObjectId(categoryId) })
@@ -188,6 +222,8 @@ class BulletinBoardService implements OnModuleInit {
       isVisibleEndDate: dto.isVisibleEndDate,
     });
 
+    await this.updateBulletinAttachments(dto.attachmentFileNames);
+
     await this.notifyUsers(dto, createdBulletin, currentUser);
 
     return createdBulletin;
@@ -240,32 +276,9 @@ class BulletinBoardService implements OnModuleInit {
     bulletin.isVisibleEndDate = dto.isVisibleEndDate;
     bulletin.updatedBy = updatedBy;
 
-    const permanentFiles = await this.fileSystemService.getAllFilenamesInDirectory(BULLETIN_ATTACHMENTS_PATH);
-    const filesToRemoveFromPermanentStorage = permanentFiles.filter(
-      (fileName) => !dto.attachmentFileNames.includes(fileName),
-    );
-    await Promise.all(
-      filesToRemoveFromPermanentStorage.map(async (fileName) => {
-        const filePath = join(BULLETIN_ATTACHMENTS_PATH, fileName);
-        await FilesystemService.checkIfFileExistAndDelete(filePath);
-      }),
-    );
-
-    const temporaryFiles = await this.fileSystemService.getAllFilenamesInDirectory(BULLETIN_TEMP_ATTACHMENTS_PATH);
-    const filesToMoveToPermanentStorage = temporaryFiles.filter((fileName) =>
-      dto.attachmentFileNames.includes(fileName),
-    );
-    await Promise.all(
-      filesToMoveToPermanentStorage.map(async (fileName) => {
-        const tempFilePath = join(BULLETIN_TEMP_ATTACHMENTS_PATH, fileName);
-        const permanentFilePath = join(BULLETIN_ATTACHMENTS_PATH, fileName);
-        await FilesystemService.moveFile(tempFilePath, permanentFilePath);
-      }),
-    );
-
-    await this.fileSystemService.deleteFilesInFolder(BULLETIN_TEMP_ATTACHMENTS_PATH);
-
     const updatedBulletin = await bulletin.save();
+
+    await this.updateBulletinAttachments(dto.attachmentFileNames);
 
     await this.notifyUsers(dto, updatedBulletin, currentUser);
 
@@ -327,8 +340,10 @@ class BulletinBoardService implements OnModuleInit {
           if (bulletin.attachmentFileNames?.length) {
             await Promise.all(
               bulletin.attachmentFileNames.map(async (fileName) => {
-                const filePath = join(this.attachmentsPath, fileName);
-                await FilesystemService.checkIfFileExistAndDelete(filePath);
+                const permanentFilePath = join(BULLETIN_ATTACHMENTS_PATH, fileName);
+                await FilesystemService.checkIfFileExistAndDelete(permanentFilePath);
+                const temporaryFilePath = join(BULLETIN_TEMP_ATTACHMENTS_PATH, fileName);
+                await FilesystemService.checkIfFileExistAndDelete(temporaryFilePath);
               }),
             );
           }

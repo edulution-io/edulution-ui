@@ -51,6 +51,9 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
     input.setAttribute('accept', IMAGE_UPLOAD_ALLOWED_MIME_TYPES.join(', '));
     input.click();
 
+    // eslint-disable-next-line no-console
+    console.log('Image upload initiated');
+
     input.onchange = async () => {
       const file = input.files?.[0];
       if (file) {
