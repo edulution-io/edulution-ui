@@ -37,8 +37,8 @@ const LazyErrorBoundary: FC<{ children: ReactNode }> = ({ children }) => {
       try {
         const { ErrorBoundary } = await import('@sentry/react');
         setBoundary(() => ErrorBoundary as ComponentType<{ children?: ReactNode }>);
-      } catch (err) {
-        console.warn('[Sentry] ErrorBoundary load failed', err);
+      } catch (e) {
+        console.warn('[Sentry] ErrorBoundary load failed', e);
       }
     };
 
