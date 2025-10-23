@@ -18,7 +18,7 @@ import { SentryModule, SentryGlobalFilter } from '@sentry/nestjs/setup';
 import configuration from '../config/configuration';
 
 const enableSentryForNest = (): DynamicModule[] => {
-  const enable = process.env.ENABLE_SENTRY === 'true';
+  const enable = process.env.ENABLE_SENTRY?.toLowerCase() === 'true';
   const dsn = process.env.SENTRY_EDU_API_DSN;
 
   if (!enable || !dsn) {

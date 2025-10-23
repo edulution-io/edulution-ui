@@ -19,7 +19,7 @@ interface UseSentryStore {
   initialized: boolean;
   config: SentryConfig | null;
   init: (config: SentryConfig) => Promise<void>;
-  fetchAndInit: () => Promise<void>;
+  fetchAndInitSentry: () => Promise<void>;
   clear: () => void;
 }
 
@@ -55,7 +55,7 @@ const useSentryStore = create<UseSentryStore>(
         set({ initialized: true, config });
       },
 
-      fetchAndInit: async () => {
+      fetchAndInitSentry: async () => {
         try {
           const { data } = await eduApi.get<SentryConfig>('global-settings/sentry');
           set({ config: data });

@@ -12,7 +12,7 @@
 
 type SentryConfig = {
   dsn: string;
-  enabled: string;
+  enabled: boolean;
 };
 
 export default SentryConfig;

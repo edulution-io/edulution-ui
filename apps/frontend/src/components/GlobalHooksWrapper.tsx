@@ -41,7 +41,7 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   const { eventSource, setEventSource } = useSseStore();
   const [, setCookie] = useCookies([COOKIE_DESCRIPTORS.AUTH_TOKEN]);
   const { fetchWebdavShares } = useFileSharingStore();
-  const fetchAndInit = useSentryStore((s) => s.fetchAndInit);
+  const fetchAndInitSentry = useSentryStore((s) => s.fetchAndInitSentry);
 
   const handleLogout = useLogout();
 
@@ -83,7 +83,7 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
         void getGlobalSettings();
         void getAppConfigs();
         void fetchWebdavShares();
-        void fetchAndInit();
+        void fetchAndInitSentry();
 
         return;
       }
