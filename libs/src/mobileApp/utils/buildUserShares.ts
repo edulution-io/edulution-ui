@@ -18,7 +18,7 @@ import normalizeLdapHomeDirectory from '@libs/filesharing/utils/normalizeLdapHom
 const buildUserShares = (shares: WebdavShareDto[], lmnInfo: LmnUserInfo): MobileUserFileShare[] =>
   shares
     .map((share) => {
-      let resolvedPath = '';
+      let resolvedPath;
 
       if (!share.pathVariables || share.pathVariables.length === 0) {
         resolvedPath = share.sharePath || '';
@@ -33,9 +33,13 @@ const buildUserShares = (shares: WebdavShareDto[], lmnInfo: LmnUserInfo): Mobile
           .join('/');
       }
 
+      const combinedPath = share.pathname + share.sharePath + resolvedPath;
+      const normalizedPath = normalizeLdapHomeDirectory(combinedPath);
+      const finalPath = normalizedPath.replace(/\/+/g, '/');
+
       return {
         type: share.type,
-        path: normalizeLdapHomeDirectory(resolvedPath),
+        path: finalPath,
         displayName: `${lmnInfo.cn} ${share.displayName}`,
         webdavShareId: share.webdavShareId,
       };
