@@ -178,7 +178,8 @@
       "PasswordMismatch": "Aktuelles Passwort stimmt nicht",
       "PasswordChangeFailed": "Passwort ändern fehlgeschlagen",
       "GetUsersQuotaFailed": "Abrufen der Benutzerkontingente fehlgeschlagen.",
-      "GetSchoolsFailed": "Abrufen der Schulen fehlgeschlagen"
+      "GetSchoolsFailed": "Abrufen der Schulen fehlgeschlagen",
+      "GetLmnVersionFailed": "Abrufen der Linuxmuster-Version fehlgeschlagen."
     }
   },
   "ticketsystem": {
@@ -1000,6 +1001,7 @@
     "info": {
       "title": "Info"
     },
+    "lmnVersion": { "title": "Linuxmuster Versionsübersicht" },
     "appconfig": {
       "position": {
         "title": "Sortierung",

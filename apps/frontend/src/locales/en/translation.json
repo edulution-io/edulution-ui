@@ -187,7 +187,8 @@
       "PasswordMismatch": "The current password is wrong",
       "PasswordChangeFailed": "Password change failed",
       "GetUsersQuotaFailed": "Failed to get users quota",
-      "GetSchoolsFailed": "Failed to get schools"
+      "GetSchoolsFailed": "Failed to get schools",
+      "GetLmnVersionFailed": "Failed to retrieve the Linuxmuster version."
     }
   },
   "ticketsystem": {
@@ -997,6 +998,7 @@
     "info": {
       "title": "Info"
     },
+    "lmnVersion": { "title": "Linuxmuster version overview" },
     "appconfig": {
       "position": {
         "title": "Sorting",
