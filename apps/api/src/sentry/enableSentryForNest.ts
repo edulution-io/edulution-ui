@@ -15,6 +15,7 @@ import { DynamicModule, Logger } from '@nestjs/common';
 import * as Sentry from '@sentry/nestjs';
 import { nodeProfilingIntegration } from '@sentry/profiling-node';
 import { SentryModule, SentryGlobalFilter } from '@sentry/nestjs/setup';
+import configuration from '../config/configuration';
 
 const enableSentryForNest = (): DynamicModule[] => {
   const enable = process.env.ENABLE_SENTRY === 'true';
@@ -25,6 +26,9 @@ const enableSentryForNest = (): DynamicModule[] => {
     return [];
   }
 
+  const config = configuration();
+  const version = config.version ?? 'unknown';
+
   Sentry.init({
     dsn,
     sendDefaultPii: true,
@@ -32,6 +36,7 @@ const enableSentryForNest = (): DynamicModule[] => {
     tracesSampleRate: 1.0,
     profilesSampleRate: 1.0,
     environment: process.env.EDULUTION_BASE_DOMAIN ?? 'localhost',
+    release: version,
   });
 
   Logger.debug('Initialized ✅', 'Sentry');

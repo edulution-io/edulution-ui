@@ -45,6 +45,7 @@ const useSentryStore = create<UseSentryStore>(
           environment: tenant,
           sendDefaultPii: true,
           tracesSampleRate: 1.0,
+          release: String(APP_VERSION),
         });
 
         Sentry.setTag('tenant', tenant);
@@ -59,8 +60,8 @@ const useSentryStore = create<UseSentryStore>(
           const { data } = await eduApi.get<SentryConfig>('global-settings/sentry');
           set({ config: data });
           get().init(data);
-        } catch (err) {
-          console.warn('[Sentry] fetch failed', err);
+        } catch (e) {
+          console.warn('[Sentry] fetch failed', e);
         }
       },
 
