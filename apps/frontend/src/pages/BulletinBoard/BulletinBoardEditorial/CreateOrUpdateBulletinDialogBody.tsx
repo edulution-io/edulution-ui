@@ -29,11 +29,7 @@ interface CreateOrUpdateBulletinDialogBodyProps {
 
 const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialogBodyProps) => {
   const { t } = useTranslation();
-  const {
-    uploadTempFile: uploadAttachment,
-    categoriesWithEditPermission,
-    isGetCategoriesLoading,
-  } = useBulletinBoardEditorialStore();
+  const { uploadAttachment, categoriesWithEditPermission, isGetCategoriesLoading } = useBulletinBoardEditorialStore();
   const { setValue, watch, formState } = form;
 
   const isVisibilityDateSet = !!watch('isVisibleStartDate') || !!watch('isVisibleEndDate');
@@ -63,16 +59,6 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
     form.setValue('attachmentFileNames', [...filenames, filePath]);
     return `${BULLETIN_BOARD_ATTACHMENT_EDU_API_ENDPOINT}/${filePath}`;
   };
-
-  // const handleSaveChanges = () => {
-  //   // TODO: Set all prior attachments to correspond to temporary attachments
-  //   // TODO: Move the temporary attachments to permanent storage (gets persistent)
-  // }
-
-  // const handleCancelSaveChanges = () => {
-  //   // TODO: Set all prior attachments to correspond to temporary attachments
-  //   // TODO: remove all temporary attachments from storage (persistent should not be changed!)
-  // }
 
   const isActive = watch('isActive');
 

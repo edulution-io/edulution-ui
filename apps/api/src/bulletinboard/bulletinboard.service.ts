@@ -61,48 +61,57 @@ class BulletinBoardService implements OnModuleInit {
     await MigrationService.runMigrations<BulletinDocument>(this.bulletinModel, bulletinsMigrationList);
   }
 
-  async serveBulletinAttachment(filename: string, res: Response) {
-    const filePath = join(this.attachmentsPath, filename);
-
-    await FilesystemService.throwErrorIfFileNotExists(filePath);
+  async serveBulletinAttachment(filePath: string, res: Response) {
     const fileStream = await this.fileSystemService.createReadStream(filePath);
     fileStream.pipe(res);
-
     return res;
   }
 
-  async updateBulletinAttachments(fileNames: string[]) {
-    Logger.log(`attachedFiles: ${fileNames.join(', ')}`, BulletinBoardService.name);
+  async serveBulletinAttachmentIfExists(filename: string, res: Response) {
+    const permanentFilePath = join(BULLETIN_ATTACHMENTS_PATH, filename);
+    const existPermanentFile = await FilesystemService.checkIfFileExist(permanentFilePath);
+    if (existPermanentFile) {
+      await this.serveBulletinAttachment(permanentFilePath, res);
+      return res;
+    }
+    const temporaryFilePath = join(BULLETIN_TEMP_ATTACHMENTS_PATH, filename);
+    const existTemporaryFile = await FilesystemService.checkIfFileExist(temporaryFilePath);
+    if (existTemporaryFile) {
+      await this.serveBulletinAttachment(temporaryFilePath, res);
+      return res;
+    }
+    throw new CustomHttpException(BulletinBoardErrorMessage.ATTACHMENT_NOT_FOUND, HttpStatus.NOT_FOUND);
+  }
+
+  async updateBulletinAttachments(content: string, attachedFileNames: string[]) {
+    const fileNames: string[] = [];
+    (attachedFileNames || []).forEach((name) => {
+      if (content.includes(`<img src="/edu-api/bulletinboard/attachments/${name}?token={{token}}">`)) {
+        fileNames.push(name);
+      }
+    });
 
     const permanentFiles = await this.fileSystemService.getAllFilenamesInDirectory(BULLETIN_ATTACHMENTS_PATH);
-
-    Logger.log(`permanentFiles: ${permanentFiles.join(', ')}`, BulletinBoardService.name);
-
     await Promise.all(
       permanentFiles.map(async (fileName) => {
         if (!fileNames.includes(fileName)) {
-          Logger.log(`Deleting deprecated permanent file: ${fileName}`, BulletinBoardService.name);
           await FilesystemService.deleteFile(BULLETIN_ATTACHMENTS_PATH, fileName);
         }
       }),
     );
     const temporaryFiles = await this.fileSystemService.getAllFilenamesInDirectory(BULLETIN_TEMP_ATTACHMENTS_PATH);
-
-    Logger.log(`temporaryFiles: ${temporaryFiles.join(', ')}`, BulletinBoardService.name);
-
     await Promise.all(
       temporaryFiles.map(async (fileName) => {
         if (!fileNames.includes(fileName)) {
-          Logger.log(`Deleting deprecated temporary file: ${fileName}`, BulletinBoardService.name);
           await FilesystemService.deleteFile(BULLETIN_TEMP_ATTACHMENTS_PATH, fileName);
         } else {
-          Logger.log(`Move temporary file to the permanent ones: ${fileName}`, BulletinBoardService.name);
           const tempFilePath = join(BULLETIN_TEMP_ATTACHMENTS_PATH, fileName);
           const permanentFilePath = join(BULLETIN_ATTACHMENTS_PATH, fileName);
           await FilesystemService.moveFile(tempFilePath, permanentFilePath);
         }
       }),
     );
+    return fileNames;
   }
 
   async removeAllBulletinsByCategory(currentUser: JwtUser, categoryId: string): Promise<void> {
@@ -211,18 +220,18 @@ class BulletinBoardService implements OnModuleInit {
       lastName: currentUser.family_name,
       username: currentUser.preferred_username,
     };
+    const content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content);
+    const attachmentFileNames = await this.updateBulletinAttachments(content, dto.attachmentFileNames);
 
     const createdBulletin = await this.bulletinModel.create({
       creator,
       title: dto.title,
-      attachmentFileNames: dto.attachmentFileNames,
-      content: BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content),
+      attachmentFileNames,
+      content,
       category: new Types.ObjectId(dto.category.id),
       isVisibleStartDate: dto.isVisibleStartDate,
       isVisibleEndDate: dto.isVisibleEndDate,
     });
-
-    await this.updateBulletinAttachments(dto.attachmentFileNames);
 
     await this.notifyUsers(dto, createdBulletin, currentUser);
 
@@ -267,18 +276,19 @@ class BulletinBoardService implements OnModuleInit {
       username: currentUser.preferred_username,
     };
 
+    const content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content);
+    const attachmentFileNames = await this.updateBulletinAttachments(content, dto.attachmentFileNames);
+
     bulletin.title = dto.title;
     bulletin.isActive = dto.isActive;
-    bulletin.content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content);
+    bulletin.content = content;
     bulletin.category = new Types.ObjectId(dto.category.id);
     bulletin.isVisibleStartDate = dto.isVisibleStartDate;
-    bulletin.attachmentFileNames = dto.attachmentFileNames;
+    bulletin.attachmentFileNames = attachmentFileNames;
     bulletin.isVisibleEndDate = dto.isVisibleEndDate;
     bulletin.updatedBy = updatedBy;
 
     const updatedBulletin = await bulletin.save();
-
-    await this.updateBulletinAttachments(dto.attachmentFileNames);
 
     await this.notifyUsers(dto, updatedBulletin, currentUser);
 

@@ -196,11 +196,6 @@ class FilesystemService {
     await Promise.all(fileNames.map((fileName) => FilesystemService.deleteFile(path, fileName)));
   }
 
-  async deleteFilesInFolder(path: string): Promise<void> {
-    const fileNames = await this.getAllFilenamesInDirectory(path);
-    await Promise.all(fileNames.map((fileName) => FilesystemService.deleteFile(path, fileName)));
-  }
-
   static async checkIfFileExist(filePath: string): Promise<boolean> {
     return pathExists(filePath);
   }

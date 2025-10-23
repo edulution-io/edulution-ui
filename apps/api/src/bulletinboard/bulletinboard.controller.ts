@@ -10,19 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Res,
-  UploadedFile,
-  UseInterceptors,
-  Logger,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
@@ -31,10 +19,10 @@ import JWTUser from '@libs/user/types/jwt/jwtUser';
 import APPS from '@libs/appconfig/constants/apps';
 import BULLETIN_TEMP_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinTempAttachmentsPath';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import BulletinBoardService from './bulletinboard.service';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import GetToken from '../common/decorators/getToken.decorator';
 import { checkAttachmentFile, createAttachmentUploadOptions } from '../filesystem/multer.utilities';
-import BulletinBoardService from './bulletinboard.service';
 
 @ApiTags(APPS.BULLETIN_BOARD)
 @ApiBearerAuth()
@@ -74,7 +62,7 @@ class BulletinBoardController {
 
   @Get('attachments/:filename')
   serveBulletinAttachment(@Param('filename') filename: string, @Res() res: Response) {
-    return this.bulletinBoardService.serveBulletinAttachment(filename, res);
+    return this.bulletinBoardService.serveBulletinAttachmentIfExists(filename, res);
   }
 
   @Post('files')
@@ -86,13 +74,8 @@ class BulletinBoardController {
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  fileUpload(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
-    Logger.debug(`Uploading bulletin board attachment file: ${file.originalname}`, BulletinBoardController.name);
-
+  uploadBulletinAttachment(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
     const fileName = checkAttachmentFile(file);
-
-    Logger.debug(`${BULLETIN_TEMP_ATTACHMENTS_PATH}/${fileName}`, BulletinBoardController.name);
-
     return res.status(200).json(fileName);
   }
 }

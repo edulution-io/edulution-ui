@@ -45,7 +45,7 @@ interface BulletinBoardEditorialStore {
   isCreateBulletinDialogOpen: boolean;
   setIsCreateBulletinDialogOpen: (isOpen: boolean) => void;
   isDialogLoading: boolean;
-  uploadTempFile: (attachment: File) => Promise<string>;
+  uploadAttachment: (attachment: File) => Promise<string>;
   isAttachmentUploadLoading: boolean;
   categoriesWithEditPermission: BulletinCategoryResponseDto[];
   getCategoriesWithEditPermission: () => Promise<void>;
@@ -137,7 +137,7 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
     }
   },
 
-  uploadTempFile: async (file): Promise<string> => {
+  uploadAttachment: async (file): Promise<string> => {
     set({ isAttachmentUploadLoading: true, error: null });
     const formData = new FormData();
     formData.append('file', file);
