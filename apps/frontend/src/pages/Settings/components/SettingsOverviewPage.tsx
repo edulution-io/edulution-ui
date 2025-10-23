@@ -142,7 +142,7 @@ const SettingsOverviewPage: React.FC = () => {
                   key={item.id}
                   value={item.id}
                   onClick={() => goToTab(item.id)}
-                  className="min-w-20 text-[clamp(0.65rem,2vw,0.8rem)] lg:min-w-64 lg:text-p"
+                  className="text-[clamp(0.65rem,2vw,0.8rem)] xl:min-w-64"
                 >
                   {item.name}
                 </TabsTrigger>
