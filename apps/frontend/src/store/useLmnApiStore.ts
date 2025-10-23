@@ -33,6 +33,7 @@ interface UseLmnApiStore {
   isGetOwnUserLoading: boolean;
   isFetchUserLoading: boolean;
   isPatchingUserLoading: boolean;
+  isGetVersionLoading: boolean;
   error: Error | null;
   schoolPrefix: string;
   usersQuota: QuotaResponse | null;
@@ -53,6 +54,7 @@ const initialState = {
   isGetOwnUserLoading: false,
   isFetchUserLoading: false,
   isPatchingUserLoading: false,
+  isGetVersionLoading: false,
   error: null,
   schoolPrefix: '',
   usersQuota: null,
@@ -153,7 +155,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
       },
 
       getLmnVersion: async (): Promise<void> => {
-        set({ isFetchUserLoading: true, error: null });
+        set({ isGetVersionLoading: true, error: null });
         try {
           const { data } = await eduApi.get<LinuxmusterVersionResponse>(
             `${LMN_API_EDU_API_ENDPOINTS.ROOT}/server/lmnversion`,
@@ -165,7 +167,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
         } catch (error) {
           handleApiError(error, set);
         } finally {
-          set({ isFetchUserLoading: false });
+          set({ isGetVersionLoading: false });
         }
       },
 

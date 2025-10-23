@@ -19,7 +19,7 @@ import { BadgeSH } from '@/components/ui/BadgeSH';
 
 const LmnVersionInfo = () => {
   const { t } = useTranslation();
-  const { lmnVersions, getLmnVersion } = useLmnApiStore();
+  const { lmnVersions, isGetVersionLoading, getLmnVersion } = useLmnApiStore();
 
   useEffect(() => {
     void getLmnVersion();
@@ -43,7 +43,7 @@ const LmnVersionInfo = () => {
                 variant="text"
               >
                 <p className="font-bold">{pkg}</p>
-                <BadgeSH className="text-p">{version}</BadgeSH>
+                <BadgeSH className="text-p">{!version && isGetVersionLoading ? '...' : version}</BadgeSH>
               </Card>
             ))}
           </div>
