@@ -15,7 +15,7 @@ import AppRouter from '@/router/AppRouter';
 import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
 import { WebStorageStateStore } from 'oidc-client-ts';
 import { CookiesProvider } from 'react-cookie';
-import * as Sentry from '@sentry/react';
+import { ErrorBoundary } from '@sentry/react';
 import i18n from '@/i18n';
 import eduApi from '@/api/eduApi';
 import useLmnApiStore from '@/store/useLmnApiStore';
@@ -58,7 +58,7 @@ const App = () => {
   };
 
   return (
-    <Sentry.ErrorBoundary>
+    <ErrorBoundary>
       <AuthProvider {...oidcConfig}>
         <CookiesProvider>
           <GlobalHooksWrapper>
@@ -71,7 +71,7 @@ const App = () => {
           </GlobalHooksWrapper>
         </CookiesProvider>
       </AuthProvider>
-    </Sentry.ErrorBoundary>
+    </ErrorBoundary>
   );
 };
 

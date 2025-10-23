@@ -12,7 +12,7 @@
 
 import { APP_FILTER } from '@nestjs/core';
 import { DynamicModule, Logger } from '@nestjs/common';
-import * as Sentry from '@sentry/nestjs';
+import { init as sentryInit } from '@sentry/nestjs';
 import { nodeProfilingIntegration } from '@sentry/profiling-node';
 import { SentryModule, SentryGlobalFilter } from '@sentry/nestjs/setup';
 import configuration from '../config/configuration';
@@ -29,14 +29,14 @@ const enableSentryForNest = (): DynamicModule[] => {
   const config = configuration();
   const version = config.version ?? 'unknown';
 
-  Sentry.init({
+  sentryInit({
     dsn,
     sendDefaultPii: true,
     integrations: [nodeProfilingIntegration()],
     tracesSampleRate: 1.0,
     profilesSampleRate: 1.0,
     environment: process.env.EDULUTION_BASE_DOMAIN ?? 'localhost',
-    release: version,
+    release: `edulution-api@${version}`,
   });
 
   Logger.debug('Initialized ✅', 'Sentry');
