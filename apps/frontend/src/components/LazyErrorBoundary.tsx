@@ -12,7 +12,6 @@
 
 import React, { ComponentType, FC, Fragment, ReactNode, useEffect, useState } from 'react';
 import type SentryConfig from '@libs/common/types/sentryConfig';
-import WrappedErrorBoundary from './WrappedErrorBoundary';
 
 type SentryConfigStore = { state: { config: SentryConfig } };
 
@@ -48,7 +47,7 @@ const LazyErrorBoundary: FC<{ children: ReactNode }> = ({ children }) => {
 
   if (Boundary === Fragment) return children;
 
-  return <WrappedErrorBoundary Component={Boundary}>{children}</WrappedErrorBoundary>;
+  return <Boundary>{children}</Boundary>;
 };
 
 export default LazyErrorBoundary;
