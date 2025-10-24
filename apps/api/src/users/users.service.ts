@@ -97,7 +97,7 @@ class UsersService {
     return cachedUsers ?? [];
   }
 
-  async refreshUsersCache(): Promise<void> {
+  async refreshUsersCache(): Promise<number> {
     const mapToCachedUser = (user: LDAPUser): CachedUser => ({
       ...user,
       school: user.attributes.school?.[0] || SPECIAL_SCHOOLS.GLOBAL,
@@ -125,6 +125,8 @@ class UsersService {
     );
 
     await this.cacheManager.set(ALL_USERS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, cachedUserList, USERS_CACHE_TTL_MS);
+
+    return cachedUserList.length;
   }
 
   @Interval(KEYCLOAK_SYNC_MS)
@@ -134,8 +136,10 @@ class UsersService {
 
     try {
       Logger.debug('Starting to update all users in cache...', UsersService.name);
-      await this.refreshUsersCache();
-      Logger.log('Users cache updated successfully ✅', UsersService.name);
+
+      const userCount = await this.refreshUsersCache();
+
+      Logger.log(`${userCount} users updated successfully in cache ✅`, UsersService.name);
     } catch (error) {
       Logger.error('updateUsersInCache failed.', UsersService.name);
     } finally {
