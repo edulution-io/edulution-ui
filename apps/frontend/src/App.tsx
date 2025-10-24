@@ -27,6 +27,7 @@ import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import GlobalHooksWrapper from './components/GlobalHooksWrapper';
+import LazyErrorBoundary from './components/LazyErrorBoundary';
 
 const App = () => {
   const { eduApiToken } = useUserStore();
@@ -57,18 +58,20 @@ const App = () => {
   };
 
   return (
-    <AuthProvider {...oidcConfig}>
-      <CookiesProvider>
-        <GlobalHooksWrapper>
-          <HelmetProvider>
-            <TooltipProvider>
-              <AppRouter />
-            </TooltipProvider>
-          </HelmetProvider>
-          <Toaster />
-        </GlobalHooksWrapper>
-      </CookiesProvider>
-    </AuthProvider>
+    <LazyErrorBoundary>
+      <AuthProvider {...oidcConfig}>
+        <CookiesProvider>
+          <GlobalHooksWrapper>
+            <HelmetProvider>
+              <TooltipProvider>
+                <AppRouter />
+              </TooltipProvider>
+            </HelmetProvider>
+            <Toaster />
+          </GlobalHooksWrapper>
+        </CookiesProvider>
+      </AuthProvider>
+    </LazyErrorBoundary>
   );
 };
 

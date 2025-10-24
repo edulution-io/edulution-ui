@@ -171,7 +171,8 @@
       "PasswordMismatch": "Le mot de passe actuel est incorrect",
       "PasswordChangeFailed": "Echec de modification du mot de passe",
       "GetUsersQuotaFailed": "L'appel du quota l'utilisateur a échoué.",
-      "GetSchoolsFailed": "L'appel des écoles a échoué"
+      "GetSchoolsFailed": "L'appel des écoles a échoué",
+      "GetLmnVersionFailed": "L'appel de la version Linuxmuster a échoué."
     }
   },
   "ticketsystem": {
@@ -495,6 +496,7 @@
     "pdfDescription": "Créez un fichier PDF pour imprimer les mots de passe de ces classes",
     "csvDescription": "Créez un fichier CSV pour imprimer les mots de passe de ces classes",
     "printOneItemPerPage": "Imprimez un mot de passe par page",
+    "shouldSplitNamesInCsv": "Prénom et nom dans des colonnes séparées (fonctionne à partir de Linuxmuster 7.3)",
     "selectSavedSession": "Choisissez parmi les séances stockées",
     "saveSession": "Enregistrer la session",
     "editSession": "Modifier la session",
@@ -842,6 +844,7 @@
     "info": {
       "title": "Informations"
     },
+    "lmnVersion": { "title": "Aperçu des versions de Linuxmuster" },
     "appconfig": {
       "sections": {
         "onlyOffice": {
