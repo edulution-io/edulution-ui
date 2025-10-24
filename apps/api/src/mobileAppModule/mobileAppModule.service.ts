@@ -53,8 +53,8 @@ class MobileAppModuleService {
     ]);
 
     return {
-      servers: servers as unknown as WebdavShareDto[],
-      shares: shares as unknown as WebdavShareDto[],
+      servers,
+      shares: shares as WebdavShareDto[],
     };
   }
 
