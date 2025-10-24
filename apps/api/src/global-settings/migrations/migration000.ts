@@ -11,12 +11,13 @@
  */
 
 import { Logger } from '@nestjs/common';
+import APPS from '@libs/appconfig/constants/apps';
 import { Migration } from '../../migration/migration.type';
 import { GlobalSettingsDocument } from '../global-settings.schema';
 
 const migration000: Migration<GlobalSettingsDocument> = {
   name: '000-add-general-settings',
-  version: 2,
+  version: 0,
   execute: async (model) => {
     const previousSchemaVersion = 1;
     const newSchemaVersion = 2;
@@ -31,8 +32,8 @@ const migration000: Migration<GlobalSettingsDocument> = {
     const ids = unprocessedDocuments.map((doc) => doc._id);
 
     const defaultLandingPage = {
-      isCustomLandingPageEnabled: false,
-      appName: '',
+      isCustomLandingPageEnabled: true,
+      appName: APPS.DASHBOARD,
     };
 
     const result = await model.updateMany(

@@ -15,10 +15,10 @@ import { type ContainerCreateOptions } from 'dockerode';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
 import { EDU_API_DOCKER_CONTAINER_ENDPOINT, EDU_API_DOCKER_ENDPOINT } from '@libs/docker/constants/dockerEndpoints';
 import DockerService from './docker.service';
-import AppConfigGuard from '../appconfig/appconfig.guard';
+import AdminGuard from '../common/guards/admin.guard';
 
 @Controller(EDU_API_DOCKER_ENDPOINT)
-@UseGuards(AppConfigGuard)
+@UseGuards(AdminGuard)
 class DockerController {
   constructor(private readonly dockerService: DockerService) {}
 

@@ -13,23 +13,22 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpStatus,
   Param,
+  ParseBoolPipe,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
   Req,
   Res,
   StreamableFile,
-  UploadedFile,
-  UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import ContentType from '@libs/filesharing/types/contentType';
-import CustomFile from '@libs/filesharing/types/customFile';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import { Request, Response } from 'express';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
@@ -42,22 +41,20 @@ import DuplicateFileRequestDto from '@libs/filesharing/types/DuplicateFileReques
 import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreateProps';
 import CreateOrEditPublicShareDto from '@libs/filesharing/types/createOrEditPublicShareDto';
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
-import UploadFileDto from '@libs/filesharing/types/uploadFileDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
+import { pipeline } from 'stream/promises';
+import { v4 as uuidv4 } from 'uuid';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
 import FilesharingService from './filesharing.service';
 import WebdavService from '../webdav/webdav.service';
 import { Public } from '../common/decorators/public.decorator';
-import ParseJsonPipe from '../common/pipes/parseJson.pipe';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
 @Controller(FileSharingApiEndpoints.BASE)
 class FilesharingController {
-  private readonly baseurl = process.env.EDUI_WEBDAV_URL as string;
-
   constructor(
     private readonly filesharingService: FilesharingService,
     private readonly webdavService: WebdavService,
@@ -67,54 +64,50 @@ class FilesharingController {
   async getFilesAtPath(
     @Query('type') type: string,
     @Query('path') path: string,
+    @Query('share') share: string,
     @GetCurrentUsername() username: string,
   ) {
     if (type.toUpperCase() === ContentType.FILE.valueOf()) {
-      return this.webdavService.getFilesAtPath(username, path);
+      return this.webdavService.getFilesAtPath(username, path, share);
     }
-    return this.webdavService.getDirectoryAtPath(username, path);
+    return this.webdavService.getDirectoryAtPath(username, path, share);
   }
 
   @Post()
   async createFileOrFolder(
     @Query('path') path: string,
-    @Query('type') type: string,
+    @Query('share') share: string,
     @Body()
     body: {
       newPath: string;
     },
     @GetCurrentUsername() username: string,
   ) {
-    if (type.toUpperCase() === ContentType.DIRECTORY.toString()) {
-      return this.webdavService.createFolder(username, path, body.newPath);
-    }
-    return this.webdavService.createFile(username, path, body.newPath);
+    return this.webdavService.createFolder(username, path, body.newPath, share);
   }
 
   @Post(FileSharingApiEndpoints.UPLOAD)
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(
-    @UploadedFile() file: CustomFile,
-    @Query('path') path: string,
-    @Body('uploadFileDto', ParseJsonPipe<UploadFileDto>) uploadFileDto: UploadFileDto,
+  async uploadFileViaWebDav(
+    @Req() req: Request,
     @GetCurrentUsername() username: string,
+    @Query('path') path: string,
+    @Query('name') name: string,
+    @Query('isZippedFolder', new DefaultValuePipe(false), ParseBoolPipe) isZippedFolder: boolean,
+    @Query('contentLength', new DefaultValuePipe(0), ParseIntPipe) contentLength: number,
+    @Query('share') share: string,
   ) {
-    const { originalFolderName, isZippedFolder, name } = uploadFileDto;
-    const fullPath = `${this.baseurl}${path}/${name}`;
-
-    return isZippedFolder && originalFolderName
-      ? this.filesharingService.uploadZippedFolder(username, path, originalFolderName, file)
-      : this.webdavService.uploadFile(username, fullPath, file);
+    return this.filesharingService.uploadFileViaWebDav(username, path, name, req, share, isZippedFolder, contentLength);
   }
 
   @Delete()
   async deleteFile(
     @Body('paths') paths: string[],
     @Query('target') target: DeleteTargetType,
+    @Query('share') share: string,
     @GetCurrentUsername() username: string,
   ) {
     if (target === DeleteTargetType.FILE_SERVER) {
-      return this.filesharingService.deleteFileAtPath(username, paths);
+      return this.filesharingService.deleteFileAtPath(username, paths, share);
     }
     return FilesystemService.deleteFiles(PUBLIC_DOWNLOADS_PATH, paths);
   }
@@ -122,36 +115,47 @@ class FilesharingController {
   @Patch()
   async moveOrRenameResource(
     @Body() pathChangeOrCreateDtos: PathChangeOrCreateDto[],
+    @Query('share') share: string,
     @GetCurrentUsername() username: string,
   ) {
-    return this.filesharingService.moveOrRenameResources(username, pathChangeOrCreateDtos);
+    return this.filesharingService.moveOrRenameResources(username, pathChangeOrCreateDtos, share);
   }
 
   @Get(FileSharingApiEndpoints.FILE_STREAM)
   async webDavFileStream(
-    @Query('filePath') filePath: string | string[],
+    @Query('filePath') filePath: string,
+    @Query('share') share: string,
     @Res() res: Response,
     @GetCurrentUsername() username: string,
   ) {
-    const files = Array.isArray(filePath) ? filePath : [filePath];
-    if (files.length === 1) {
-      res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_OCTET_STREAM);
-      const stream = await this.filesharingService.getWebDavFileStream(username, files[0]);
-      res.setHeader(HTTP_HEADERS.ContentDisposition, `attachment; filename="${files[0].split('/').pop()}"`);
-      return stream.pipe(res);
-    }
+    const stream = await this.filesharingService.getWebDavFileStream(username, filePath, share);
 
-    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_ZIP);
-    return this.filesharingService.streamFilesAsZipBuffered(username, files, res);
+    const filename = filePath.split('/').pop() || uuidv4();
+    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_OCTET_STREAM);
+    res.setHeader(HTTP_HEADERS.ContentDisposition, `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`);
+
+    try {
+      await pipeline(stream, res);
+    } catch (error) {
+      if (!res.headersSent) {
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          message: 'Error while streaming file',
+          details: (error as Error).message,
+        });
+      } else {
+        res.end();
+      }
+    }
   }
 
   @Get(FileSharingApiEndpoints.FILE_LOCATION)
   async getDownloadLink(
     @Query('filePath') filePath: string,
     @Query('fileName') fileName: string,
+    @Query('share') share: string,
     @GetCurrentUsername() username: string,
   ) {
-    return this.filesharingService.fileLocation(username, filePath, fileName);
+    return this.filesharingService.fileLocation(username, filePath, fileName, share);
   }
 
   @Post(FileSharingApiEndpoints.ONLY_OFFICE_TOKEN)
@@ -162,14 +166,19 @@ class FilesharingController {
   @Post(FileSharingApiEndpoints.DUPLICATE)
   async duplicateFile(
     @Body() duplicateFileRequestDto: DuplicateFileRequestDto,
+    @Query('share') share: string,
     @GetCurrentUsername() username: string,
   ) {
-    return this.filesharingService.duplicateFile(username, duplicateFileRequestDto);
+    return this.filesharingService.duplicateFile(username, duplicateFileRequestDto, share);
   }
 
   @Post(FileSharingApiEndpoints.COPY)
-  async copyFile(@Body() pathChangeOrCreateDto: PathChangeOrCreateDto[], @GetCurrentUsername() username: string) {
-    return this.filesharingService.copyFileOrFolder(username, pathChangeOrCreateDto);
+  async copyFile(
+    @Body() pathChangeOrCreateDto: PathChangeOrCreateDto[],
+    @Query('share') share: string,
+    @GetCurrentUsername() username: string,
+  ) {
+    return this.filesharingService.copyFileOrFolder(username, pathChangeOrCreateDto, share);
   }
 
   @Post(FileSharingApiEndpoints.COLLECT)
@@ -177,10 +186,11 @@ class FilesharingController {
     @Body() body: { collectFileRequestDTO: CollectFileRequestDTO[] },
     @Query('type') type: LmnApiCollectOperationsType,
     @Query('userRole') userRole: string,
+    @Query('share') share: string,
     @GetCurrentUsername() username: string,
   ) {
     const { collectFileRequestDTO } = body;
-    return this.filesharingService.collectFiles(username, collectFileRequestDTO, userRole, type);
+    return this.filesharingService.collectFiles(username, collectFileRequestDTO, userRole, type, share);
   }
 
   @Post(FileSharingApiEndpoints.PUBLIC_SHARE)
@@ -202,6 +212,7 @@ class FilesharingController {
     @Res() res: Response,
     @Query('path') path: string,
     @Query('filename') filename: string,
+    @Query('share') share: string,
     @GetCurrentUsername() username: string,
   ) {
     try {
@@ -210,7 +221,7 @@ class FilesharingController {
         return res.status(HttpStatus.OK).json({ error: 0 });
       }
 
-      return await this.filesharingService.handleCallback(req, res, path, filename, username);
+      return await this.filesharingService.handleCallback(req, res, path, filename, username, share);
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 1 });
     }
@@ -239,6 +250,7 @@ class FilesharingController {
   @Post(`${FileSharingApiEndpoints.PUBLIC_SHARE_DOWNLOAD}/:publicShareId`)
   async downloadSharedContent(
     @Param('publicShareId') publicShareId: string,
+    @Query('share') share: string,
     @Body('password') password: string | undefined,
     @Res({ passthrough: true }) res: Response,
     @GetCurrentUser({ required: false }) currentUser?: JWTUser,
@@ -246,6 +258,7 @@ class FilesharingController {
     const { stream, filename, fileType } = await this.filesharingService.getPublicShare(
       publicShareId,
       currentUser,
+      share,
       password,
     );
 

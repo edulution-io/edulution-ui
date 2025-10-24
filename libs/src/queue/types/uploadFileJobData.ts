@@ -10,17 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import CustomFile from '@libs/filesharing/types/customFile';
-
 interface UploadFileJobData {
   username: string;
   fullPath: string;
-  file: CustomFile;
-  mimeType: string | false;
-  size: number;
+  tempPath: string;
+  mimeType: string;
   base64?: string;
   total: number;
   processed: number;
+  share: string;
 }
 
 export default UploadFileJobData;

@@ -13,9 +13,25 @@
 import { ValidateNested } from 'class-validator';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import type DeploymentTarget from '@libs/common/types/deployment-target';
+import OrganisationInfoDto from '@libs/global-settings/types/organisationInfoDto';
 
 type GlobalSettingsAuth = {
   mfaEnforcedGroups: MultipleSelectorGroup[];
+  adminGroups: MultipleSelectorGroup[];
+};
+
+type GlobalSettingsGeneral = {
+  defaultLandingPage: {
+    isCustomLandingPageEnabled: boolean | undefined;
+    appName: string;
+  };
+  deploymentTarget: DeploymentTarget;
+  ldap: {
+    binduser: {
+      dn: string;
+      password: string;
+    };
+  };
 };
 
 class GlobalSettingsDto {
@@ -23,13 +39,10 @@ class GlobalSettingsDto {
   auth: GlobalSettingsAuth;
 
   @ValidateNested()
-  general: {
-    defaultLandingPage: {
-      isCustomLandingPageEnabled: boolean | undefined;
-      appName: string;
-    };
-    deploymentTarget: DeploymentTarget;
-  };
+  general: GlobalSettingsGeneral;
+
+  @ValidateNested()
+  organisationInfo?: OrganisationInfoDto;
 }
 
 export default GlobalSettingsDto;

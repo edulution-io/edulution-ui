@@ -21,8 +21,10 @@ import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCateg
 import SortTableCell from '@/components/ui/Table/SortTableCell';
 import DEFAULT_TABLE_SORT_PROPERTY_KEY from '@libs/common/constants/defaultTableSortProperty';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import BULLETIN_BOARD_TABLE_COLUMNS from '@libs/appconfig/constants/bulletinBoardCategoryTableColumns';
+import BULLETIN_BOARD_CATEGORY_TABLE_COLUMNS from '@libs/appconfig/constants/bulletinBoardCategoryTableColumns';
 import hideOnMobileClassName from '@libs/ui/constants/hideOnMobileClassName';
+import BULLETIN_VISIBILITY_STATES from '@libs/bulletinBoard/constants/bulletinVisibilityStates';
+import { useTranslation } from 'react-i18next';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 
 const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDto>[] = [
@@ -62,7 +64,7 @@ const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDt
     },
   },
   {
-    id: BULLETIN_BOARD_TABLE_COLUMNS.NAME,
+    id: BULLETIN_BOARD_CATEGORY_TABLE_COLUMNS.NAME,
     header: ({ column }) => <SortableHeader<BulletinCategoryResponseDto, unknown> column={column} />,
 
     meta: {
@@ -86,7 +88,33 @@ const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDt
     },
   },
   {
-    id: BULLETIN_BOARD_TABLE_COLUMNS.IS_ACTIVE,
+    id: BULLETIN_BOARD_CATEGORY_TABLE_COLUMNS.BULLETIN_VISIBILITY,
+    size: 105,
+    header: ({ column }) => <SortableHeader<BulletinCategoryResponseDto, unknown> column={column} />,
+    meta: {
+      translationId: 'common.visibility',
+    },
+    accessorFn: (row) => row.bulletinVisibility,
+    cell: ({ row }) => {
+      const { t } = useTranslation();
+      const { setSelectedCategory } = useBulletinCategoryTableStore();
+      const { setDialogOpen } = useAppConfigTableDialogStore();
+      const handleRowClick = () => {
+        setSelectedCategory(row.original);
+        setDialogOpen(ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE);
+      };
+      return (
+        <SelectableTextCell
+          onClick={handleRowClick}
+          text={t(
+            `bulletinboard.categories.${BULLETIN_VISIBILITY_STATES[row.original.bulletinVisibility || BULLETIN_VISIBILITY_STATES.FULLY_VISIBLE]}-short`,
+          )}
+        />
+      );
+    },
+  },
+  {
+    id: BULLETIN_BOARD_CATEGORY_TABLE_COLUMNS.IS_ACTIVE,
     size: 60,
     header: ({ column }) => <SortableHeader<BulletinCategoryResponseDto, unknown> column={column} />,
     meta: {
@@ -111,7 +139,7 @@ const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDt
     },
   },
   {
-    id: BULLETIN_BOARD_TABLE_COLUMNS.CREATED_AT,
+    id: BULLETIN_BOARD_CATEGORY_TABLE_COLUMNS.CREATED_AT,
     size: 130,
     header: ({ column }) => <SortableHeader<BulletinCategoryResponseDto, unknown> column={column} />,
     meta: {

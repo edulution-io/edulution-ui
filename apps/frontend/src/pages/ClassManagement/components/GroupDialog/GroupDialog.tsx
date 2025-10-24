@@ -29,7 +29,7 @@ import LmnApiSchoolClassWithMembers from '@libs/lmnApi/types/lmnApiSchoolClassWi
 import LmnApiProjectWithMembers from '@libs/lmnApi/types/lmnApiProjectWithMembers';
 import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import LmnApiPrinterWithMembers from '@libs/lmnApi/types/lmnApiPrinterWithMembers';
 import useLmnApiStore from '@/store/useLmnApiStore';
@@ -37,6 +37,7 @@ import parseSophomorixQuota from '@libs/lmnApi/utils/parseSophomorixQuota';
 import parseSophomorixMailQuota from '@libs/lmnApi/utils/parseSophomorixMailQuota';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
 interface GroupDialogProps {
   item: GroupColumn;
@@ -86,7 +87,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     defaultValues: initialFormValues,
   });
 
-  const getSelectOptionsFromLmnUsers = (users: UserLmnInfo[]) =>
+  const getSelectUserOptions = (users: LmnUserInfo[]) =>
     users.map(
       (lmnUser) =>
         ({
@@ -98,6 +99,15 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
           username: lmnUser.cn,
         }) as AttendeeDto,
     );
+
+  const getSelectedGroupOptions = (groups: string[]): MultipleSelectorGroup[] =>
+    groups.map((group) => ({
+      name: group,
+      path: `/${group}`,
+      value: group,
+      label: group,
+      id: group,
+    }));
 
   const setFormInitialValues = (
     fetchedGroup: LmnApiSchoolClassWithMembers | LmnApiProjectWithMembers | LmnApiSession | LmnApiPrinterWithMembers,
@@ -129,11 +139,23 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
       'proxyAddresses',
       (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).proxyAddresses?.join(',') || '',
     );
-    form.setValue('members', getSelectOptionsFromLmnUsers(fetchedGroup.members));
+    form.setValue('members', getSelectUserOptions(fetchedGroup.members));
     if ((fetchedGroup as LmnApiProjectWithMembers | LmnApiSchoolClassWithMembers).admins) {
       form.setValue(
         'admins',
-        getSelectOptionsFromLmnUsers((fetchedGroup as LmnApiSchoolClassWithMembers | LmnApiProjectWithMembers).admins),
+        getSelectUserOptions((fetchedGroup as LmnApiSchoolClassWithMembers | LmnApiProjectWithMembers).admins),
+      );
+    }
+    if ((fetchedGroup as LmnApiProjectWithMembers).sophomorixMemberGroups) {
+      form.setValue(
+        'membergroups',
+        getSelectedGroupOptions((fetchedGroup as LmnApiProjectWithMembers).sophomorixMemberGroups),
+      );
+    }
+    if ((fetchedGroup as LmnApiProjectWithMembers).sophomorixAdminGroups) {
+      form.setValue(
+        'admingroups',
+        getSelectedGroupOptions((fetchedGroup as LmnApiProjectWithMembers).sophomorixAdminGroups),
       );
     }
   };
@@ -141,7 +163,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
   useEffect(() => {
     if (!userGroupToEdit) {
       form.reset(initialFormValues);
-      form.setValue('members', getSelectOptionsFromLmnUsers(member));
+      form.setValue('members', getSelectUserOptions(member));
       return;
     }
 
@@ -186,7 +208,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
         await fetchUserProjects();
         break;
       case UserGroups.Sessions:
-        await fetchUserSessions();
+        await fetchUserSessions(true);
         break;
       case UserGroups.Classes:
         await fetchUserSchoolClasses();

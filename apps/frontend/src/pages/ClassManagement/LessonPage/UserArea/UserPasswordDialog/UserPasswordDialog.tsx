@@ -21,7 +21,7 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import UserPasswordDialogBody from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/UserPasswordDialogBody';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import { Form } from '@/components/ui/Form';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
@@ -30,7 +30,7 @@ const UserPasswordDialog = () => {
 
   const { isLoading, setCurrentUser, currentUser } = UseLmnApiPasswordStore();
   const { isFetchUserLoading, fetchUser } = useLmnApiStore();
-  const [user, setUser] = useState<UserLmnInfo | null>(null);
+  const [user, setUser] = useState<LmnUserInfo | null>(null);
 
   const initialFormValues: UserPasswordDialogForm = {
     currentPassword: '',

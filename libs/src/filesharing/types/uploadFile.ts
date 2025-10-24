@@ -13,4 +13,6 @@
 export type UploadFile = File & {
   isZippedFolder?: boolean;
   originalFolderName?: string;
+  fileCount?: number;
+  id: string;
 };

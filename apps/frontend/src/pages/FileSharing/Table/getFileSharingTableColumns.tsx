@@ -28,7 +28,6 @@ import { BUTTONS_ICON_WIDTH, TABLE_ICON_SIZE } from '@libs/ui/constants';
 import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import { useTranslation } from 'react-i18next';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
@@ -41,6 +40,7 @@ import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareS
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
+import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
@@ -68,6 +68,7 @@ const renderFileIcon = (item: DirectoryFileDTO, isCurrentlyDisabled: boolean) =>
 const getFileSharingTableColumns = (
   visibleColumns?: string[],
   onFilenameClick?: (item: Row<DirectoryFileDTO>) => void,
+  isDocumentServerConfigured?: boolean,
 ): ColumnDef<DirectoryFileDTO>[] => {
   const allColumns: ColumnDef<DirectoryFileDTO>[] = [
     {
@@ -91,26 +92,37 @@ const getFileSharingTableColumns = (
         const isCurrentlyDisabled = currentlyDisabledFiles[row.original.filename];
         const { isMobileView } = useMedia();
         const handleFilenameClick = () => {
+          const isPdf = row.original.filename.toLowerCase().endsWith('.pdf');
+
           if (onFilenameClick) {
             onFilenameClick(row);
             return;
           }
-
-          if (isCurrentlyDisabled) {
-            return;
-          }
-
+          if (isCurrentlyDisabled) return;
           setPublicDownloadLink('');
           if (row.original.type === ContentType.DIRECTORY) {
             if (isFilePreviewDocked) setIsFilePreviewVisible(false);
             const newParams = new URLSearchParams(searchParams);
-            newParams.set(URL_SEARCH_PARAMS.PATH, getPathWithoutWebdav(row.original.filePath));
+            newParams.set(URL_SEARCH_PARAMS.PATH, row.original.filePath);
             setSearchParams(newParams);
-          } else if (isValidFileToPreview(row.original) && !isMobileView) {
-            void setFileIsCurrentlyDisabled(row.original.filename, true);
-            setIsFilePreviewVisible(true);
-            void resetCurrentlyEditingFile(row.original);
+            return;
           }
+
+          if (!isValidFileToPreview(row.original) || isMobileView) {
+            row.toggleSelected();
+            return;
+          }
+          const isOnlyOfficeDoc = isOnlyOfficeDocument(row.original.filename);
+          if (isOnlyOfficeDoc && !isDocumentServerConfigured && !isPdf) {
+            row.toggleSelected();
+            return;
+          }
+          if (isOnlyOfficeDoc || isPdf) {
+            void setFileIsCurrentlyDisabled(row.original.filename, true, 5000);
+          }
+
+          setIsFilePreviewVisible(true);
+          void resetCurrentlyEditingFile(row.original);
         };
 
         const isSaving = currentlyDisabledFiles[row.original.filename];

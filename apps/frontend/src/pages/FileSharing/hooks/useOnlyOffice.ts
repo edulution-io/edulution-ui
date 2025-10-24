@@ -14,15 +14,16 @@ import { useEffect, useMemo, useState } from 'react';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
 import findDocumentsEditorType from '@/pages/FileSharing/FilePreview/OnlyOffice/utilities/documentsEditorType';
-import getCallbackBaseUrl from '@/pages/FileSharing/FilePreview/OnlyOffice/utilities/callbackBaseUrl';
+import getCallbackBaseUrl from '@/pages/FileSharing/FilePreview/OnlyOffice/utilities/getCallbackBaseUrl';
 import generateOnlyOfficeConfig from '@/pages/FileSharing/FilePreview/OnlyOffice/utilities/generateOnlyOfficeConfig';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import useUserStore from '@/store/UserStore/useUserStore';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import APPS from '@libs/appconfig/constants/apps';
 import useLanguage from '@/hooks/useLanguage';
+import { useParams } from 'react-router-dom';
 
 interface UseOnlyOfficeProps {
   filePath: string;
@@ -33,6 +34,7 @@ interface UseOnlyOfficeProps {
 }
 
 const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficeProps) => {
+  const { webdavShare } = useParams();
   const [editorConfig, setEditorConfig] = useState<OnlyOfficeEditorConfig | null>(null);
   const { eduApiToken, user } = useUserStore();
   const { getOnlyOfficeJwtToken } = useFileEditorStore();
@@ -53,6 +55,7 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
     fileName,
     filePath,
     token,
+    share: webdavShare,
   });
 
   useEffect(() => {

@@ -10,9 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Model } from 'mongoose';
+import { Model, ProjectionType } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import GlobalSettingsErrorMessages from '@libs/global-settings/constants/globalSettingsErrorMessages';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
@@ -20,7 +21,7 @@ import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import { GLOBAL_SETTINGS_ROOT_ENDPOINT } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import { DEPLOYMENT_TARGET_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
+import { ADMIN_GROUPS, DEPLOYMENT_TARGET_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import CustomHttpException from '../common/CustomHttpException';
 import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
 import MigrationService from '../migration/migration.service';
@@ -31,6 +32,7 @@ class GlobalSettingsService implements OnModuleInit {
   constructor(
     @InjectModel(GlobalSettings.name) private globalSettingsModel: Model<GlobalSettingsDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private readonly configService: ConfigService,
   ) {}
 
   async onModuleInit() {
@@ -42,7 +44,8 @@ class GlobalSettingsService implements OnModuleInit {
         globalSettingsMigrationsList,
       );
 
-      await this.updateCache();
+      await this.setDeploymentTargetInCache();
+      await this.setAdminGroupsInCache();
 
       return;
     }
@@ -63,11 +66,11 @@ class GlobalSettingsService implements OnModuleInit {
     }
   }
 
-  async updateCache() {
+  async setDeploymentTargetInCache() {
     try {
       const globalSetting = await this.getGlobalSettings('general.deploymentTarget');
-      if (!globalSetting?.general) {
-        Logger.warn(`Global settings not found`, GlobalSettings.name);
+      if (!globalSetting?.general?.deploymentTarget) {
+        Logger.warn(`Global setting for deploymentTarget not found`, GlobalSettings.name);
         return null;
       }
 
@@ -77,14 +80,66 @@ class GlobalSettingsService implements OnModuleInit {
 
       return deploymentTarget;
     } catch (error) {
-      Logger.warn(`Failed to update cache: ${(error as Error).message}`, GlobalSettings.name);
+      Logger.warn(`Failed to update deployment target cache: ${(error as Error).message}`, GlobalSettings.name);
       return null;
+    }
+  }
+
+  async getAdminGroupsFromCache() {
+    const adminGroups = await this.cacheManager.get<string[]>(ADMIN_GROUPS);
+
+    if (!adminGroups) {
+      Logger.verbose('adminGroups missing in redis cache, refreshing via DB', GlobalSettingsService.name);
+      return this.setAdminGroupsInCache();
+    }
+
+    return adminGroups;
+  }
+
+  async setAdminGroupsInCache() {
+    try {
+      const globalSetting = await this.getGlobalSettings('auth.adminGroups');
+
+      const initialAdminGroups = this.configService.get<string>('EDUI_INITIAL_ADMIN_GROUP', '');
+      const normalizedGroup = initialAdminGroups.startsWith('/') ? initialAdminGroups : `/${initialAdminGroups}`;
+
+      let adminGroupsList: string[] = [normalizedGroup];
+
+      if (Array.isArray(globalSetting?.auth?.adminGroups) && globalSetting.auth.adminGroups.length > 0) {
+        adminGroupsList = globalSetting.auth.adminGroups.map((group) => group.path);
+      }
+
+      await this.cacheManager.set(ADMIN_GROUPS, adminGroupsList);
+
+      Logger.debug(`Cached admin groups: ${JSON.stringify(adminGroupsList)}`, GlobalSettingsService.name);
+
+      return adminGroupsList;
+    } catch (error) {
+      Logger.warn(`Failed to update admin groups cache: ${(error as Error).message}`, GlobalSettingsService.name);
+      return [];
     }
   }
 
   async getGlobalSettings(projection?: string) {
     try {
-      return await this.globalSettingsModel.findOne({}, projection).lean();
+      const PUBLIC_PROJECTION: ProjectionType<GlobalSettingsDocument> = {
+        'general.ldap': 0,
+      } as const;
+
+      return await this.globalSettingsModel.findOne({}, projection || PUBLIC_PROJECTION).lean();
+    } catch (error) {
+      throw new CustomHttpException(
+        GlobalSettingsErrorMessages.NotFoundError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        GlobalSettings.name,
+      );
+    }
+  }
+
+  async getGlobalAdminSettings() {
+    try {
+      return await this.globalSettingsModel.findOne({}).lean();
     } catch (error) {
       throw new CustomHttpException(
         GlobalSettingsErrorMessages.NotFoundError,
@@ -102,13 +157,14 @@ class GlobalSettingsService implements OnModuleInit {
         { $set: globalSettingsDto },
       );
 
-      if (updateWriteResult.modifiedCount === 0) {
+      if (updateWriteResult.matchedCount === 0) {
         throw new Error();
       }
 
       await this.invalidateCache();
 
-      await this.updateCache();
+      await this.setDeploymentTargetInCache();
+      await this.setAdminGroupsInCache();
 
       return updateWriteResult;
     } catch (error) {

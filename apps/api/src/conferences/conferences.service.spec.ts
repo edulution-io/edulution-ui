@@ -10,9 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-/* eslint-disable @typescript-eslint/unbound-method */
-
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import axios from 'axios';
@@ -30,6 +29,9 @@ import cacheManagerMock from '../common/mocks/cacheManagerMock';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
+import FilesystemService from '../filesystem/filesystem.service';
+import mockFilesystemService from '../filesystem/filesystem.service.mock';
+import NotificationsService from '../notifications/notifications.service';
 
 const mockConference: CreateConferenceDto = {
   name: 'Testconference',
@@ -84,20 +86,20 @@ const schedulerRegistryMock = {
 
 const conferencesModelMock = {
   create: jest.fn().mockResolvedValue(mockConferenceDocument),
-  find: jest.fn().mockReturnValue({
+  find: jest.fn().mockImplementation(() => ({
     lean: jest.fn().mockResolvedValue([mockConferenceDocument]),
     exec: jest.fn().mockResolvedValue([mockConferenceDocument]),
-  }),
-  findOne: jest.fn().mockReturnValue({
+  })),
+  findOne: jest.fn().mockImplementation(() => ({
     lean: jest.fn().mockReturnThis(),
     exec: jest.fn().mockResolvedValue(mockConferenceDocument),
-  }),
-  findOneAndUpdate: jest.fn().mockReturnValue({
+  })),
+  findOneAndUpdate: jest.fn().mockImplementation(() => ({
     exec: jest.fn().mockResolvedValue(mockConferenceDocument),
-  }),
-  deleteMany: jest.fn().mockReturnValue({
+  })),
+  deleteMany: jest.fn().mockImplementation(() => ({
     exec: jest.fn().mockResolvedValue({ deletedCount: 1 }),
-  }),
+  })),
 };
 
 describe(ConferencesService.name, () => {
@@ -105,10 +107,15 @@ describe(ConferencesService.name, () => {
   let model: Model<ConferenceDocument>;
 
   beforeEach(async () => {
+    const notificationMock = {
+      notifyUsernames: jest.fn().mockResolvedValue(undefined),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ConferencesService,
         SseService,
+        ConfigService,
         {
           provide: getModelToken(Conference.name),
           useValue: conferencesModelMock,
@@ -126,6 +133,8 @@ describe(ConferencesService.name, () => {
           provide: SchedulerRegistry,
           useValue: schedulerRegistryMock,
         },
+        { provide: FilesystemService, useValue: mockFilesystemService },
+        { provide: NotificationsService, useValue: notificationMock },
       ],
     }).compile();
 
@@ -150,6 +159,16 @@ describe(ConferencesService.name, () => {
   });
 
   describe('findAll', () => {
+    beforeEach(() => {
+      jest
+        .spyOn(service as any, 'syncConferencesInfoWithBBB')
+        .mockResolvedValue([mockConferenceDocument] as unknown as Partial<Conference>[]);
+
+      jest
+        .spyOn(ConferencesService as any, 'replaceForeignConferencesPasswords')
+        .mockReturnValue([mockConferenceDocument] as unknown as Partial<Conference>[]);
+    });
+
     it('should return an array of conferences', async () => {
       const result = await service.findAllConferencesTheUserHasAccessTo(mockJWTUser);
       expect(result[0].creator).toEqual(mockCreator);

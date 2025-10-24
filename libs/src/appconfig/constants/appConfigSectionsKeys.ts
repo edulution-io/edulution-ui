@@ -20,6 +20,7 @@ const AppConfigSectionsKeys = {
   docker: 'docker',
   files: 'files',
   editor: 'editor',
+  webdavShare: 'webdavShare',
 } as const;
 
 export default AppConfigSectionsKeys;

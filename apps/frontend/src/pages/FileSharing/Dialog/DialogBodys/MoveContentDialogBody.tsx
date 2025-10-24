@@ -10,22 +10,25 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import DirectoryBreadcrumb from '@/pages/FileSharing/Table/DirectoryBreadcrumb';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import APPS from '@libs/appconfig/constants/apps';
 import { ColumnDef, OnChangeFn, Row, RowSelectionState } from '@tanstack/react-table';
 import FILESHARING_TABLE_COLUM_NAMES from '@libs/filesharing/constants/filesharingTableColumNames';
-import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogProps';
+import type MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogBodyProps';
 import ContentType from '@libs/filesharing/types/contentType';
-import useLmnApiStore from '@/store/useLmnApiStore';
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/getFileSharingTableColumns';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
-import { getFileNameFromPath } from '@/pages/FileSharing/utilities/filesharingUtilities';
+import Input from '@/components/shared/Input';
+import WebdavShareSelectDropdown from './WebdavShareSelectDropdown';
+import useFileSharingStore from '../../useFileSharingStore';
+import useVariableSharePathname from '../../hooks/useVariableSharePathname';
 
 const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   showAllFiles = false,
@@ -34,18 +37,21 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   showHome = true,
   fileType,
   isCurrentPathDefaultDestination = false,
+  enableRowSelection,
+  getRowDisabled,
+  showRootOnly = false,
 }) => {
+  const { webdavShare } = useParams();
   const { t } = useTranslation();
-  const [currentPath, setCurrentPath] = useState(pathToFetch || '');
-
-  const { user } = useLmnApiStore();
-
+  const [currentPath, setCurrentPath] = useState(pathToFetch || '/');
+  const { selectedWebdavShare, webdavShares } = useFileSharingStore();
+  const { createVariableSharePathname } = useVariableSharePathname();
   const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
 
-  const { fetchDialogDirs, fetchDialogFiles, dialogShownDirs, dialogShownFiles, isLoading } =
+  const { fetchDialogFiles, fetchDialogDirs, dialogShownDirs, dialogShownFiles, isLoading } =
     useFileSharingMoveDialogStore();
 
-  const fetchMechanism = fileType === ContentType.DIRECTORY ? fetchDialogDirs : fetchDialogFiles;
+  const firstRender = useRef(true);
 
   const currentDirItem: DirectoryFileDTO = {
     filePath: currentPath,
@@ -55,14 +61,32 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   };
 
   useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    const share = webdavShares.find((s) => s.displayName === selectedWebdavShare) || webdavShares[0];
+    const newCurrentPath = createVariableSharePathname(share.pathname, share.pathVariables);
+    setCurrentPath(newCurrentPath);
+  }, [selectedWebdavShare]);
+
+  useEffect(() => {
+    if (!selectedWebdavShare && !webdavShare) return;
+
+    if (showAllFiles) {
+      void fetchDialogFiles(selectedWebdavShare || webdavShare, currentPath);
+    } else {
+      void fetchDialogDirs(selectedWebdavShare || webdavShare, currentPath);
+    }
+  }, [webdavShare, selectedWebdavShare, currentPath, showAllFiles]);
+
+  useEffect(() => {
     if (isCurrentPathDefaultDestination) {
       setMoveOrCopyItemToPath(currentDirItem);
     }
-  }, [isCurrentPathDefaultDestination, currentPath]);
+  }, [isCurrentPathDefaultDestination, currentPath, selectedWebdavShare]);
 
   const files = fileType === ContentType.DIRECTORY ? dialogShownDirs : dialogShownFiles;
-
-  const pathPrefixRegex = new RegExp(`(?:/webdav/|server/${user?.school}/)`, 'g');
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
     const selectionValue = typeof updaterOrValue === 'function' ? updaterOrValue({}) : updaterOrValue;
@@ -79,53 +103,43 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
 
   const onFilenameClick = (item: Row<DirectoryFileDTO>) => {
     if (item.original.type === ContentType.DIRECTORY) {
-      let newPath = currentPath;
-      if (!newPath.endsWith('/')) {
-        newPath += '/';
-      }
-      if (newPath === '/') {
-        newPath += item.original.filePath.replace(pathPrefixRegex, '');
-      } else {
-        newPath += getFileNameFromPath(item.original.filePath);
-      }
+      const newPath = item.original.filePath;
       setCurrentPath(newPath);
     } else {
       item.toggleSelected();
     }
   };
 
-  useEffect(() => {
-    if (!showAllFiles || !pathToFetch || currentPath.includes(pathToFetch)) {
-      void fetchMechanism(currentPath);
-    } else {
-      void fetchMechanism(pathToFetch);
-    }
-  }, [currentPath, showAllFiles, pathToFetch]);
-
   const handleBreadcrumbNavigate = (path: string) => {
-    const newPath = path.replace('webdav/', '');
-    setCurrentPath(newPath);
+    if (path === '/') {
+      const currentShare = webdavShares.find((s) => s.displayName === selectedWebdavShare) ?? webdavShares[0];
+
+      let currentSharePath = currentShare.pathname;
+      if (currentShare.pathVariables) {
+        currentSharePath = createVariableSharePathname(currentSharePath, currentShare.pathVariables);
+      }
+
+      setCurrentPath(currentSharePath);
+    } else {
+      setCurrentPath(path);
+    }
   };
 
-  const getHiddenSegments = (): string[] => {
-    if (!pathToFetch) return [];
-    const segments = pathToFetch.split('/');
-    const index = segments.findIndex((segment) => segment === segments.at(segments.length - 1));
-    return index > -1 ? segments.slice(0, index) : [];
-  };
+  const getHiddenSegments = () =>
+    webdavShares.find((s) => s.displayName === (selectedWebdavShare || webdavShare))?.pathname;
+
+  const selectedInputValue =
+    moveOrCopyItemToPath?.filename && showSelectedFile
+      ? `${t('moveItemDialog.selectedItem')}: ${decodeURIComponent(moveOrCopyItemToPath.filename)}`
+      : t('filesharing.selectFile');
 
   const footer = (
-    <div className="bottom-0 justify-end bg-secondary p-4 text-sm text-foreground">
-      {moveOrCopyItemToPath?.filename && showSelectedFile ? (
-        <p className="bg-secondary">
-          {t('moveItemDialog.selectedItem')}: {decodeURIComponent(moveOrCopyItemToPath.filename)}
-        </p>
-      ) : (
-        <p className="bg-secondary">
-          <span>{t('filesharing.selectFile')}</span>
-        </p>
-      )}
-    </div>
+    <Input
+      title={t('moveItemDialog.selectedItem')}
+      value={selectedInputValue}
+      variant="dialog"
+      className="h-10"
+    />
   );
 
   const visibleColumns = [FILESHARING_TABLE_COLUM_NAMES.SELECT_FILENAME];
@@ -133,7 +147,11 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
 
   return (
     <>
-      <div className="h-[60vh] flex-col overflow-auto text-background scrollbar-thin">
+      <WebdavShareSelectDropdown
+        webdavShare={webdavShare}
+        showRootOnly={showRootOnly}
+      />
+      <div className="text-background">
         <div className="pb-2">
           <DirectoryBreadcrumb
             path={currentPath}
@@ -144,7 +162,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
           />
         </div>
         <div className="w-full">{isLoading ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}</div>
-        {!isLoading && (
+        <div className="h-[45vh] max-h-[45vh] overflow-auto scrollbar-thin">
           <ScrollableTable
             columns={columns}
             data={files}
@@ -157,11 +175,13 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
             showSelectedCount={false}
             filterKey="select-filename"
             filterPlaceHolderText="filesharing.filterPlaceHolderText"
+            enableRowSelection={enableRowSelection}
+            getRowDisabled={getRowDisabled}
             isDialog
           />
-        )}
+        </div>
       </div>
-      {footer}
+      <div className="pt-2">{footer}</div>
     </>
   );
 };

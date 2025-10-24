@@ -27,6 +27,8 @@ import RectangleSize from '@libs/ui/types/rectangleSize';
 import { HiOutlineCursorArrowRipple } from 'react-icons/hi2';
 import RESIZEABLE_WINDOW_DEFAULT_POSITION from '@libs/ui/constants/resizableWindowDefaultPosition';
 import RESIZABLE_WINDOW_DEFAULT_SIZE from '@libs/ui/constants/resizableWindowDefaultSize';
+import { MOBILE_TOP_BAR_HEIGHT_PX } from '@libs/ui/constants/sidebar';
+import APP_LAYOUT_ID from '@libs/ui/constants/appLayoutId';
 
 interface ResizableWindowProps {
   titleTranslationId: string;
@@ -36,6 +38,8 @@ interface ResizableWindowProps {
   disableToggleMaximizeWindow?: boolean;
   initialPosition?: Position;
   initialSize?: RectangleSize;
+  minimalSize?: Partial<RectangleSize>;
+  maximalSize?: Partial<RectangleSize>;
   openMaximized?: boolean;
   stickToInitialSizeAndPositionWhenRestored?: boolean;
   additionalButtons?: (ReactElement | null)[];
@@ -50,6 +54,8 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
   openMaximized = true,
   initialPosition,
   initialSize,
+  minimalSize,
+  maximalSize,
   stickToInitialSizeAndPositionWhenRestored = false,
   additionalButtons = [],
 }) => {
@@ -80,9 +86,10 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
 
   const setMaxWidth = () => {
     const width = isMobileView ? documentWidth : documentWidth - SIDEBAR_WIDTH;
+    const height = isMobileView ? documentHeight - MOBILE_TOP_BAR_HEIGHT_PX : documentHeight;
     setCurrentWindowedFrameSize(titleTranslationId, {
       width,
-      height: documentHeight,
+      height,
     });
   };
 
@@ -95,6 +102,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
   useEffect(() => {
     if (isMaximized && !isMinimized) {
       setMaxWidth();
+      setCurrentPosition({ x: 0, y: isMobileView ? MOBILE_TOP_BAR_HEIGHT_PX : 0 });
       return;
     }
 
@@ -132,7 +140,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
 
       setCurrentPosition({ x: calculatedPosition, y: documentHeight - DEFAULT_MINIMIZED_BAR_HEIGHT });
     }
-  }, [minimizedWindowedFrames, isMinimized, titleTranslationId]);
+  }, [minimizedWindowedFrames, isMinimized, titleTranslationId, documentHeight]);
 
   const savePreviousValues = () => {
     setPrevSize(currentWindowedFrameSizes[titleTranslationId]);
@@ -167,16 +175,16 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
     } else {
       savePreviousValues();
       setMaxWidth();
-      setCurrentPosition({ x: 0, y: 0 });
+      setCurrentPosition({ x: 0, y: isMobileView ? MOBILE_TOP_BAR_HEIGHT_PX : 0 });
     }
 
-    setIsMaximized(!isMaximized);
+    setIsMaximized((wasMaximized) => !wasMaximized);
     setWindowedFrameOpen(titleTranslationId, true);
   };
 
   useEffect(() => {
     setWindowedFramesZIndices(titleTranslationId);
-  }, []);
+  }, [titleTranslationId]);
 
   const zIndex = windowedFramesZIndices[titleTranslationId] || 0;
   const hasCurrentFramedWindowHighestZIndex = hasFramedWindowHighestZIndex(titleTranslationId);
@@ -187,8 +195,10 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
   return createPortal(
     <Rnd
       dragHandleClassName="drag-handle"
-      minHeight={isMinimized ? DEFAULT_MINIMIZED_BAR_HEIGHT : 300}
-      minWidth={isMinimized ? minimizedWidth : undefined}
+      minHeight={isMinimized ? DEFAULT_MINIMIZED_BAR_HEIGHT : minimalSize?.height}
+      minWidth={isMinimized ? minimizedWidth : minimalSize?.width}
+      maxHeight={maximalSize?.height}
+      maxWidth={maximalSize?.width}
       size={{
         width: currentWindowedFrameSizes[titleTranslationId]?.width || RESIZABLE_WINDOW_DEFAULT_SIZE.width,
         height: currentWindowedFrameSizes[titleTranslationId]?.height || RESIZABLE_WINDOW_DEFAULT_SIZE.height,
@@ -206,7 +216,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
         'rounded-t-lg border border-slate-500 bg-gray-800': !isMaximized && !isMinimized && !isCurrentlySticky,
         'rounded-none transition-transform active:transition-none': isMinimized,
       })}
-      bounds="window"
+      bounds={`#${APP_LAYOUT_ID}`}
       disableDragging={disableDragging}
       enableResizing={!isMaximized && !isCurrentlySticky}
       style={{
@@ -268,7 +278,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
         </div>
       </div>
       <div
-        style={{ height: isMinimized ? 0 : `calc(100% - ${MAXIMIZED_BAR_HEIGHT}px)` }} // here i want the equivalent of h-[calc(100%-40px)]
+        style={{ height: isMinimized ? 0 : `calc(100% - ${MAXIMIZED_BAR_HEIGHT}px)` }}
         className={isMinimized ? 'hidden w-0' : 'w-full overflow-hidden'}
       >
         {children}

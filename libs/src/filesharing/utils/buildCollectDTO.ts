@@ -10,18 +10,17 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import CollectFileRequestDTO from '@libs/filesharing/types/CollectFileRequestDTO';
 import buildCollectPath from '@libs/filesharing/utils/buildCollectPath';
 
 const buildCollectDTO = (
-  students: UserLmnInfo[] | null,
-  currentUser: UserLmnInfo | null,
+  students: LmnUserInfo[] | null,
+  currentUser: LmnUserInfo | null,
   currentGroupName: string,
   homePath: string,
 ): CollectFileRequestDTO[] | undefined => {
-  if (!students) return undefined;
-  if (!currentUser) return undefined;
+  if (!students || !currentUser) return undefined;
 
   return students.map((student) => buildCollectPath(currentUser.cn, homePath, currentGroupName, student));
 };

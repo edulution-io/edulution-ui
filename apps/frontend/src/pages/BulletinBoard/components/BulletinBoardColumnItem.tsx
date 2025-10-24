@@ -18,7 +18,6 @@ import { PiDotsThreeVerticalBold } from 'react-icons/pi';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
 import { useTranslation } from 'react-i18next';
-import { RowSelectionState } from '@tanstack/react-table';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialStore';
@@ -26,15 +25,21 @@ import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import { useParams } from 'react-router-dom';
 import cn from '@libs/common/utils/className';
 import BulletinContent from '@/pages/BulletinBoard/components/BulletinContent/BulletinContent';
+import BULLETIN_VISIBILITY_STATES from '@libs/bulletinBoard/constants/bulletinVisibilityStates';
+import BulletinVisibilityStatesType from '@libs/bulletinBoard/types/bulletinVisibilityStatesType';
+import { ChevronRightIcon } from '@radix-ui/react-icons';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const BulletinBoardColumnItem = ({
   bulletin,
   canManageBulletins,
   handleImageClick,
+  initialBulletinVisibility,
 }: {
   bulletin: BulletinResponseDto;
   canManageBulletins: boolean;
   handleImageClick: (imageUrl: string) => void;
+  initialBulletinVisibility?: BulletinVisibilityStatesType;
 }) => {
   const { t } = useTranslation();
   const { bulletinId } = useParams();
@@ -47,48 +52,79 @@ const BulletinBoardColumnItem = ({
     setSelectedBulletinToEdit,
     getBulletins,
   } = useBulletinBoardEditorialStore();
-  const { resetBulletinBoardNotifications, setIsEditorialModeEnabled } = useBulletinBoardStore();
-
-  const isCurrentBulletin = bulletinId === bulletin.id;
+  const {
+    collapsedMap,
+    setCollapsed,
+    toggleCollapsed,
+    setIsEditorialModeEnabled,
+    bulletinBoardNotifications,
+    markBulletinAsRead,
+  } = useBulletinBoardStore();
 
   useEffect(() => {
-    if (!isCurrentBulletin) return undefined;
+    if (collapsedMap[bulletin.id] === undefined) {
+      const shouldBeCollapsed =
+        (initialBulletinVisibility ?? BULLETIN_VISIBILITY_STATES.FULLY_VISIBLE) !==
+        BULLETIN_VISIBILITY_STATES.FULLY_VISIBLE;
+      void setCollapsed(bulletin.id, shouldBeCollapsed);
+    }
+  }, [bulletin.id, collapsedMap, initialBulletinVisibility, setCollapsed]);
+
+  const isCollapsed = collapsedMap[bulletin.id];
+
+  useEffect(() => {
+    if (bulletinId !== bulletin.id) return undefined;
 
     const element = document.getElementById(bulletinId);
 
-    if (element) {
-      element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-        inline: 'center',
-      });
+    if (!element) return undefined;
 
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            element.classList.add('blinking');
-            resetBulletinBoardNotifications();
-          } else {
-            element.classList.remove('blinking');
-          }
-        },
-        { threshold: 0.5 },
-      );
+    void setCollapsed(bulletin.id, false);
 
-      observer.observe(element);
+    element.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'center',
+    });
 
-      return () => {
-        observer.disconnect();
-      };
-    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          element.classList.add('blinking');
+          markBulletinAsRead(bulletin.id);
+        } else {
+          element.classList.remove('blinking');
+        }
+      },
+      { threshold: 0.5 },
+    );
 
-    return undefined;
+    observer.observe(element);
+
+    return () => observer.disconnect();
   }, [bulletinId]);
+
+  useEffect(() => {
+    const hasNotification = bulletinBoardNotifications.some((b) => b.id === bulletin.id);
+    if (!hasNotification) return undefined;
+
+    const element = document.getElementById(bulletin.id);
+    if (!element) return undefined;
+
+    void setCollapsed(bulletin.id, false);
+
+    element.classList.add('blinking');
+
+    const timer = setTimeout(() => {
+      element.classList.remove('blinking');
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [bulletinBoardNotifications, bulletin.id, setCollapsed]);
 
   const handleDeleteBulletin = async () => {
     await getBulletins();
-    const rowSelectionState: RowSelectionState = { [bulletin.id]: true };
-    setSelectedRows(rowSelectionState);
+    setSelectedRows({ [bulletin.id]: true });
     setIsDeleteBulletinDialogOpen(true);
   };
 
@@ -145,26 +181,64 @@ const BulletinBoardColumnItem = ({
     return items;
   };
 
+  const isNew = bulletinBoardNotifications.some((b) => b.id === bulletin.id);
+  const markAsRead = () => {
+    if (isNew) markBulletinAsRead(bulletin.id);
+  };
+
   return (
     <div
       id={bulletin.id}
-      key={bulletin.id}
-      className={cn('relative mx-1 flex items-center justify-between break-all rounded-lg bg-white bg-opacity-5 p-4', {
-        ring: isCurrentBulletin,
-      })}
+      role="button"
+      tabIndex={0}
+      className={cn(
+        'relative mx-1 flex items-start justify-between break-all rounded-lg bg-ciDarkGreyDisabled p-4 pb-2',
+        {
+          ring: isNew,
+          'cursor-pointer': isNew,
+        },
+      )}
+      onClick={markAsRead}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === '') markAsRead();
+      }}
     >
       <div className="flex-1">
-        <h4 className="w-[calc(100%-20px)] overflow-x-hidden text-ellipsis break-normal text-lg font-bold text-background">
-          {bulletin.title}
+        <h4 className="mb-2 w-[calc(100%-20px)] break-normal">
+          <button
+            type="button"
+            className="flex items-start space-x-2 text-left hover:opacity-75"
+            onClick={() => toggleCollapsed(bulletin.id)}
+          >
+            <ChevronRightIcon
+              className={cn('mt-1 h-3 w-3 flex-shrink-0 transition-transform duration-200', {
+                'rotate-90': !isCollapsed,
+              })}
+            />
+            <span className="break-words text-lg font-bold leading-tight text-background">{bulletin.title}</span>
+          </button>
         </h4>
-        <div className="quill-content mt-2 break-normal text-white">
-          <BulletinContent
-            html={bulletin.content}
-            handleImageClick={handleImageClick}
-          />
-        </div>
-        {getAuthorDescription()}
+
+        <AnimatePresence initial={false}>
+          {!isCollapsed && (
+            <motion.div
+              key="content"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="quill-content overflow-hidden break-normal text-background"
+            >
+              <BulletinContent
+                html={bulletin.content}
+                handleImageClick={handleImageClick}
+              />
+              {getAuthorDescription()}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
+
       <DropdownMenu
         trigger={
           <Button

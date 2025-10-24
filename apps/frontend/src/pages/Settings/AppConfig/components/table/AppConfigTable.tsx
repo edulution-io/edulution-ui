@@ -26,17 +26,19 @@ import type TApps from '@libs/appconfig/types/appsType';
 import useMedia from '@/hooks/useMedia';
 import { OnChangeFn, RowSelectionState, VisibilityState } from '@tanstack/react-table';
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
-import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
+import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
+import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 
 interface AppConfigTableProps {
   applicationName: string;
-  tableId: ExtendedOptionKeysType;
+  option: AppConfigExtendedOption;
 }
 
-const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableId }) => {
+const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option }) => {
   const { isMobileView, isTabletView } = useMedia();
   const { t } = useTranslation();
 
+  const { name: tableId, title } = option;
   const appConfigTableConfig = getAppConfigTableConfig(applicationName, tableId) as AppConfigTableConfig;
 
   if (!appConfigTableConfig) {
@@ -92,6 +94,11 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
         if (row && 'filename' in row && row.filename && deleteTableEntry) {
           return deleteTableEntry(applicationName, row.filename);
         }
+
+        if (row && 'webdavShareId' in row && row.webdavShareId && deleteTableEntry) {
+          return deleteTableEntry(applicationName, row.webdavShareId);
+        }
+
         return Promise.resolve();
       });
 
@@ -116,8 +123,9 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
     }, [isMobileView, isTabletView, hideColumnsInMobileView, hideColumnsInTabletView]);
 
     const getScrollableTable = () => {
-      const tableActions: TableAction<BulletinCategoryResponseDto | ContainerInfo | FileInfoDto | VeyonProxyItem>[] =
-        [];
+      const tableActions: TableAction<
+        BulletinCategoryResponseDto | ContainerInfo | FileInfoDto | VeyonProxyItem | WebdavShareDto
+      >[] = [];
       if (showAddButton) {
         tableActions.push({
           icon: IoAdd,
@@ -192,6 +200,38 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
             />
           );
         }
+        case ExtendedOptionKeys.WEBDAV_SERVER_TABLE: {
+          return (
+            <ScrollableTable
+              columns={columns}
+              data={tableContentData as WebdavShareDto[]}
+              filterKey={filterKey}
+              filterPlaceHolderText={filterPlaceHolderText}
+              applicationName={applicationName}
+              enableRowSelection
+              initialColumnVisibility={initialColumnVisibility}
+              selectedRows={selectedRows}
+              onRowSelectionChange={handleRowSelectionChange}
+              actions={tableActions as TableAction<WebdavShareDto>[]}
+            />
+          );
+        }
+        case ExtendedOptionKeys.WEBDAV_SHARE_TABLE: {
+          return (
+            <ScrollableTable
+              columns={columns}
+              data={tableContentData as WebdavShareDto[]}
+              filterKey={filterKey}
+              filterPlaceHolderText={filterPlaceHolderText}
+              applicationName={applicationName}
+              enableRowSelection
+              initialColumnVisibility={initialColumnVisibility}
+              selectedRows={selectedRows}
+              onRowSelectionChange={handleRowSelectionChange}
+              actions={tableActions as TableAction<WebdavShareDto>[]}
+            />
+          );
+        }
         default:
           return null;
       }
@@ -199,6 +239,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, tableI
 
     return (
       <div className="mb-8">
+        {title && <p className="font-bold">{t(title)}</p>}
         {getScrollableTable()}
         {dialogBody}
       </div>

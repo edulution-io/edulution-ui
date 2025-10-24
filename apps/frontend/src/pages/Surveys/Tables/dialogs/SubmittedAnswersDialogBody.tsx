@@ -13,7 +13,7 @@
 import React from 'react';
 import { Survey } from 'survey-react-ui';
 import { Model } from 'survey-core';
-import * as SurveyThemes from 'survey-core/themes';
+import { FlatDark } from 'survey-core/themes';
 import { useTranslation } from 'react-i18next';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import '@/pages/Surveys/theme/creator.min.css';
@@ -38,10 +38,10 @@ const SubmittedAnswersDialogBody = (props: SurveySubmissionProps) => {
 
   surveyModel.mode = 'display';
 
-  surveyModel.applyTheme(SurveyThemes.FlatDark);
+  surveyModel.applyTheme(FlatDark);
 
   return (
-    <div className="max-h-[75vh] overflow-y-scroll rounded bg-gray-600 p-4">
+    <div className="participated-survey max-h-[75vh] overflow-y-scroll rounded bg-gray-600 p-4">
       <Survey model={surveyModel} />
     </div>
   );

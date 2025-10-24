@@ -14,22 +14,28 @@ import React, { useEffect, useMemo } from 'react';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
-import useFileSharingMenuConfig from '@/pages/FileSharing/useFileSharingMenuConfig';
 import useMedia from '@/hooks/useMedia';
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/getFileSharingTableColumns';
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
-import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
+import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
+import APPS from '@libs/appconfig/constants/apps';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import { useParams } from 'react-router-dom';
 
 const FileSharingTable = () => {
+  const { webdavShare } = useParams();
+
   const { isMobileView, isTabletView } = useMedia();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
-  const { setSelectedRows, setSelectedItems, selectedRows, files, isLoading } = useFileSharingStore();
-  const { fetchShares } = usePublicShareStore();
+  const appConfigs = useAppConfigsStore((s) => s.appConfigs);
+  const { setSelectedRows, setSelectedItems, fetchFiles, selectedRows, files, isLoading, currentPath } =
+    useFileSharingStore();
 
   useEffect(() => {
-    void fetchShares();
+    if (currentPath !== '/') void fetchFiles(webdavShare, currentPath);
   }, []);
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
@@ -45,8 +51,6 @@ const FileSharingTable = () => {
     setSelectedItems(selectedItemData);
   };
 
-  const { appName } = useFileSharingMenuConfig();
-
   const shouldHideColumns = !(isMobileView || isTabletView || (isFilePreviewVisible && isFilePreviewDocked));
 
   const initialColumnVisibility = useMemo(
@@ -59,9 +63,15 @@ const FileSharingTable = () => {
     [shouldHideColumns],
   );
 
+  const isDocumentServerConfigured = !!getExtendedOptionsValue(
+    appConfigs,
+    APPS.FILE_SHARING,
+    ExtendedOptionKeys.ONLY_OFFICE_URL,
+  );
+
   return (
     <ScrollableTable
-      columns={getFileSharingTableColumns()}
+      columns={getFileSharingTableColumns(undefined, undefined, isDocumentServerConfigured)}
       data={files}
       filterKey={FILE_SHARING_TABLE_COLUMNS.SELECT_FILENAME}
       filterPlaceHolderText="filesharing.filterPlaceHolderText"
@@ -69,7 +79,7 @@ const FileSharingTable = () => {
       isLoading={isLoading}
       selectedRows={selectedRows}
       getRowId={(row) => row.filePath}
-      applicationName={appName}
+      applicationName={APPS.FILE_SHARING}
       initialSorting={[
         { id: 'type', desc: false },
         { id: 'select-filename', desc: false },

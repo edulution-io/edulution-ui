@@ -10,12 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import type { Model, UpdateWriteOpResult } from 'mongoose';
+import { ConfigService } from '@nestjs/config';
+import { Model, UpdateWriteOpResult } from 'mongoose';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
-import { GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import CustomHttpException from '../common/CustomHttpException';
@@ -37,7 +36,7 @@ class MockGlobalSettings {
   static create = jest.fn();
 }
 
-describe('GlobalSettingsService', () => {
+describe(GlobalSettingsService.name, () => {
   let service: GlobalSettingsService;
   let model: Partial<Record<keyof Model<GlobalSettingsDocument>, jest.Mock>> & {
     findOne?: jest.Mock;
@@ -47,12 +46,13 @@ describe('GlobalSettingsService', () => {
     create?: jest.Mock;
   };
 
-  const mockGlobalSettingsDto: GlobalSettingsDto = defaultValues;
+  const mockGlobalAdminSettingsDto: GlobalSettingsDto = defaultValues;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GlobalSettingsService,
+        ConfigService,
         { provide: getModelToken(GlobalSettings.name), useValue: MockGlobalSettings },
         {
           provide: CACHE_MANAGER,
@@ -76,12 +76,29 @@ describe('GlobalSettingsService', () => {
   });
 
   describe('getGlobalSettings', () => {
-    it('should return settings with projection', async () => {
-      model.findOne?.mockReturnValue({ lean: () => Promise.resolve(mockGlobalSettingsDto) });
+    it('should return settings', async () => {
+      const {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        general: { ldap: _, ...generalWithoutLdap },
+        ...rest
+      } = mockGlobalAdminSettingsDto;
+      const cleanedGlobalSettings = {
+        ...rest,
+        general: generalWithoutLdap,
+      };
+      model.findOne?.mockReturnValue({ lean: () => Promise.resolve(cleanedGlobalSettings) });
 
-      const result = await service.getGlobalSettings(GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH);
-      expect(model.findOne).toHaveBeenCalledWith({}, GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH);
-      expect(result).toEqual(mockGlobalSettingsDto);
+      const result = await service.getGlobalSettings();
+      expect(model.findOne).toHaveBeenCalledWith({}, { 'general.ldap': 0 });
+      expect(result).toEqual(cleanedGlobalSettings);
+    });
+
+    it('should return admin settings', async () => {
+      model.findOne?.mockReturnValue({ lean: () => Promise.resolve(mockGlobalAdminSettingsDto) });
+
+      const result = await service.getGlobalAdminSettings();
+      expect(model.findOne).toHaveBeenCalledWith({}, { 'general.ldap': 0 });
+      expect(result).toEqual(mockGlobalAdminSettingsDto);
     });
 
     it('should return null if error occurs', async () => {
@@ -89,9 +106,7 @@ describe('GlobalSettingsService', () => {
         throw new Error('Mongo error');
       });
 
-      await expect(service.getGlobalSettings(GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH)).rejects.toThrow(
-        CustomHttpException,
-      );
+      await expect(service.getGlobalSettings()).rejects.toThrow(CustomHttpException);
     });
   });
 
@@ -106,15 +121,15 @@ describe('GlobalSettingsService', () => {
       };
       model.updateOne?.mockResolvedValue(mockResult);
 
-      const result = await service.setGlobalSettings(mockGlobalSettingsDto);
-      expect(model.updateOne).toHaveBeenCalledWith({ singleton: true }, { $set: mockGlobalSettingsDto });
+      const result = await service.setGlobalSettings(mockGlobalAdminSettingsDto);
+      expect(model.updateOne).toHaveBeenCalledWith({ singleton: true }, { $set: mockGlobalAdminSettingsDto });
       expect(result).toBe(mockResult);
     });
 
     it('should throw CustomHttpException on update error', async () => {
       model.updateOne?.mockRejectedValue(new Error('Update failed'));
 
-      await expect(service.setGlobalSettings(mockGlobalSettingsDto)).rejects.toThrow(CustomHttpException);
+      await expect(service.setGlobalSettings(mockGlobalAdminSettingsDto)).rejects.toThrow(CustomHttpException);
     });
   });
 });

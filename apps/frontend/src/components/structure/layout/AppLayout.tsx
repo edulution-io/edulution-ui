@@ -15,18 +15,22 @@ import { Sidebar } from '@/components';
 import { Outlet } from 'react-router-dom';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import MenuBar from '@/components/shared/MenuBar';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import MobileTopBar from '@/components/shared/MobileTopBar';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import Overlays from '@/components/structure/layout/Overlays';
 import useUserStore from '@/store/UserStore/useUserStore';
 import APPS from '@libs/appconfig/constants/apps';
 import OfflineBanner from '@/components/shared/OfflineBanner';
 import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
+import useMedia from '@/hooks/useMedia';
+import APP_LAYOUT_ID from '@libs/ui/constants/appLayoutId';
 
 const AppLayout = () => {
   const { isAuthenticated } = useUserStore();
   const menuBar = useMenuBarConfig();
   const { appConfigs } = useAppConfigsStore();
   const { isEduApiHealthy } = useEduApiStore();
+  const { isMobileView } = useMedia();
 
   const isAppConfigReady = !appConfigs.find((appConfig) => appConfig.name === APPS.NONE);
   const isAuthenticatedAppReady = isAppConfigReady && isAuthenticated;
@@ -34,9 +38,19 @@ const AppLayout = () => {
   return (
     <div className="flex h-screen flex-row">
       <div className="flex h-screen flex-1 flex-col overflow-hidden">
-        <div className="flex min-h-0 flex-1 flex-row">
-          {isEduApiHealthy === false && <OfflineBanner />}
+        {isEduApiHealthy === false && <OfflineBanner />}
 
+        {isMobileView && isAuthenticatedAppReady && (
+          <MobileTopBar
+            showLeftButton={!menuBar.disabled}
+            showRightButton
+          />
+        )}
+
+        <div
+          className="relative flex min-h-0 flex-1 flex-row"
+          id={APP_LAYOUT_ID}
+        >
           {!menuBar.disabled && <MenuBar />}
 
           <Outlet />

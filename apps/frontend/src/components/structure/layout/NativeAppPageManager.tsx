@@ -17,13 +17,12 @@ import type TApps from '@libs/appconfig/types/appsType';
 import { ConferencePage } from '@/pages/ConferencePage';
 import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPage';
 import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
-import FramePlaceholder from '@/components/structure/framing/FramePlaceholder';
 import Whiteboard from '@/pages/Whiteboard/Whiteboard';
+import { DashboardPage } from '@/pages/Dashboard';
 
 const nativeAppPages: Partial<Record<TApps, JSX.Element>> = {
+  [APPS.DASHBOARD]: <DashboardPage />,
   [APPS.CONFERENCES]: <ConferencePage />,
-  [APPS.MAIL]: <FramePlaceholder />,
-  [APPS.LINUXMUSTER]: <FramePlaceholder />,
   [APPS.WHITEBOARD]: <Whiteboard />,
   [APPS.DESKTOP_DEPLOYMENT]: <DesktopDeploymentPage />,
   [APPS.CLASS_MANAGEMENT]: <Outlet />,

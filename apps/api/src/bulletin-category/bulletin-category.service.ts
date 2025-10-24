@@ -29,12 +29,14 @@ import CustomHttpException from '../common/CustomHttpException';
 import { BulletinCategory, BulletinCategoryDocument } from './bulletin-category.schema';
 import MigrationService from '../migration/migration.service';
 import bulletinCategoryMigrationsList from './migrations/bulletinCategoryMigrationsList';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 @Injectable()
 class BulletinCategoryService implements OnModuleInit {
   constructor(
     @InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private readonly globalSettingsService: GlobalSettingsService,
   ) {}
 
   async onModuleInit() {
@@ -113,7 +115,9 @@ class BulletinCategoryService implements OnModuleInit {
       .find<BulletinCategoryResponseDto>(filter)
       .exec();
 
-    if (getIsAdmin(currentUser.ldapGroups)) {
+    const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
+
+    if (getIsAdmin(currentUser.ldapGroups, adminGroups)) {
       return bulletinCategories;
     }
     const accessibleCategories = await Promise.all(
@@ -129,6 +133,7 @@ class BulletinCategoryService implements OnModuleInit {
   async create(currentUser: JWTUser, dto: CreateBulletinCategoryDto) {
     const category = (await this.bulletinCategoryModel.create({
       name: dto.name,
+      bulletinVisibility: dto.bulletinVisibility,
       isActive: dto.isActive ?? true,
       visibleForUsers: dto.visibleForUsers ?? [],
       visibleForGroups: dto.visibleForGroups ?? [],

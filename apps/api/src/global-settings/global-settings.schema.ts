@@ -15,6 +15,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { AuthSettings, AuthSettingsSchema } from './schemas/global-settings.auth.schema';
 import { GeneralSettings, GeneralSettingsSchema } from './schemas/global-settings.general.schema';
+import { OrganisationInfo, OrganisationInfoSchema } from './schemas/global-settings.organisation-info.schema';
 
 export type GlobalSettingsDocument = GlobalSettings & Document;
 
@@ -29,7 +30,9 @@ export class GlobalSettings {
   @Prop({ type: GeneralSettingsSchema, required: true })
   general: GeneralSettings;
 
-  @Prop({ default: 3 })
+  @Prop({ type: OrganisationInfoSchema, default: {} }) organisationInfo?: OrganisationInfo;
+
+  @Prop({ default: 6 })
   schemaVersion: number;
 }
 

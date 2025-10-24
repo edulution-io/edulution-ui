@@ -25,7 +25,9 @@ import Toaster from '@/components/ui/Toaster';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import AUTH_PATHS from '@libs/auth/constants/auth-paths';
+import { TooltipProvider } from '@/components/ui/Tooltip';
 import GlobalHooksWrapper from './components/GlobalHooksWrapper';
+import LazyErrorBoundary from './components/LazyErrorBoundary';
 
 const App = () => {
   const { eduApiToken } = useUserStore();
@@ -49,24 +51,27 @@ const App = () => {
     client_secret: ' ',
     redirect_uri: '',
     loadUserInfo: true,
-    automaticSilentRenew: true,
-    silent_redirect_uri: window.location.origin,
+    automaticSilentRenew: false,
     userStore: new WebStorageStateStore({
       store: localStorage,
     }),
   };
 
   return (
-    <AuthProvider {...oidcConfig}>
-      <CookiesProvider>
-        <GlobalHooksWrapper>
-          <HelmetProvider>
-            <AppRouter />
-          </HelmetProvider>
-          <Toaster />
-        </GlobalHooksWrapper>
-      </CookiesProvider>
-    </AuthProvider>
+    <LazyErrorBoundary>
+      <AuthProvider {...oidcConfig}>
+        <CookiesProvider>
+          <GlobalHooksWrapper>
+            <HelmetProvider>
+              <TooltipProvider>
+                <AppRouter />
+              </TooltipProvider>
+            </HelmetProvider>
+            <Toaster />
+          </GlobalHooksWrapper>
+        </CookiesProvider>
+      </AuthProvider>
+    </LazyErrorBoundary>
   );
 };
 

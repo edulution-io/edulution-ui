@@ -12,33 +12,38 @@
 
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
-import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
+import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/lmnApiEduApiEndpoints';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import getSchoolPrefix from '@libs/classManagement/utils/getSchoolPrefix';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
 import lmnApi from '@/api/lmnApi';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
+import { encodeBase64 } from '@libs/common/utils/getBase64String';
+import LinuxmusterVersionResponse from '@libs/lmnApi/types/linuxmusterVersionResponse';
 
 const { USER, USERS_QUOTA } = LMN_API_EDU_API_ENDPOINTS;
 
 interface UseLmnApiStore {
   lmnApiToken: string;
-  user: UserLmnInfo | null;
+  user: LmnUserInfo | null;
   isLoading: boolean;
   isGetOwnUserLoading: boolean;
   isFetchUserLoading: boolean;
   isPatchingUserLoading: boolean;
+  isGetVersionLoading: boolean;
   error: Error | null;
   schoolPrefix: string;
   usersQuota: QuotaResponse | null;
+  lmnVersions: LinuxmusterVersionResponse;
   setLmnApiToken: (username: string, password: string) => Promise<void>;
   getOwnUser: () => Promise<void>;
-  fetchUser: (name: string, checkIfFirstPasswordIsSet?: boolean) => Promise<UserLmnInfo | null>;
+  fetchUser: (name: string, checkIfFirstPasswordIsSet?: boolean) => Promise<LmnUserInfo | null>;
   fetchUsersQuota: (name: string) => Promise<void>;
   patchUserDetails: (details: Partial<UpdateUserDetailsDto>) => Promise<void>;
+  getLmnVersion: () => Promise<void>;
   reset: () => void;
 }
 
@@ -49,9 +54,11 @@ const initialState = {
   isGetOwnUserLoading: false,
   isFetchUserLoading: false,
   isPatchingUserLoading: false,
+  isGetVersionLoading: false,
   error: null,
   schoolPrefix: '',
   usersQuota: null,
+  lmnVersions: {} as LinuxmusterVersionResponse,
 };
 
 type PersistedUserLmnInfoStore = (
@@ -70,7 +77,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
           set(initialState);
         }
         try {
-          lmnApi.defaults.headers.Authorization = `Basic ${btoa(`${username}:${password}`)}`;
+          lmnApi.defaults.headers.Authorization = `Basic ${encodeBase64(`${username}:${password}`)}`;
           const response = await lmnApi.get<string>('/auth/');
           set({ lmnApiToken: response.data });
         } catch (error) {
@@ -81,10 +88,10 @@ const useLmnApiStore = create<UseLmnApiStore>(
       },
 
       getOwnUser: async () => {
-        if (get().isGetOwnUserLoading) return;
+        if (!get().lmnApiToken || get().isGetOwnUserLoading) return;
         set({ isGetOwnUserLoading: true, error: null });
         try {
-          const response = await eduApi.get<UserLmnInfo>(USER, {
+          const response = await eduApi.get<LmnUserInfo>(USER, {
             headers: { [HTTP_HEADERS.XApiKey]: get().lmnApiToken },
           });
           set({ user: response.data, schoolPrefix: getSchoolPrefix(response.data) });
@@ -95,12 +102,12 @@ const useLmnApiStore = create<UseLmnApiStore>(
         }
       },
 
-      fetchUser: async (username, checkIfFirstPasswordIsSet): Promise<UserLmnInfo | null> => {
+      fetchUser: async (username, checkIfFirstPasswordIsSet): Promise<LmnUserInfo | null> => {
         if (get().isFetchUserLoading) return null;
 
         set({ isFetchUserLoading: true, error: null });
         try {
-          const response = await eduApi.get<UserLmnInfo>(
+          const response = await eduApi.get<LmnUserInfo>(
             `${USER}/${username}?checkFirstPassword=${!!checkIfFirstPasswordIsSet}`,
             {
               headers: { [HTTP_HEADERS.XApiKey]: get().lmnApiToken },
@@ -123,7 +130,9 @@ const useLmnApiStore = create<UseLmnApiStore>(
           });
           set({ usersQuota: data });
         } catch (error) {
-          handleApiError(error, set);
+          // TODO: Readd error handling when LMN API 7.3 supports this endpoint, https://github.com/edulution-io/edulution-ui/issues/1331
+          // handleApiError(error, set);
+          set({ usersQuota: null });
         } finally {
           set({ isFetchUserLoading: false });
         }
@@ -132,7 +141,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
       patchUserDetails: async (userDetails) => {
         set({ isPatchingUserLoading: true, error: null });
         try {
-          const { data } = await eduApi.patch<UserLmnInfo>(
+          const { data } = await eduApi.patch<LmnUserInfo>(
             `${USER}`,
             { userDetails },
             { headers: { [HTTP_HEADERS.XApiKey]: get().lmnApiToken } },
@@ -142,6 +151,23 @@ const useLmnApiStore = create<UseLmnApiStore>(
           handleApiError(error, set);
         } finally {
           set({ isPatchingUserLoading: false });
+        }
+      },
+
+      getLmnVersion: async (): Promise<void> => {
+        set({ isGetVersionLoading: true, error: null });
+        try {
+          const { data } = await eduApi.get<LinuxmusterVersionResponse>(
+            `${LMN_API_EDU_API_ENDPOINTS.ROOT}/server/lmnversion`,
+            {
+              headers: { [HTTP_HEADERS.XApiKey]: get().lmnApiToken },
+            },
+          );
+          set({ lmnVersions: data });
+        } catch (error) {
+          handleApiError(error, set);
+        } finally {
+          set({ isGetVersionLoading: false });
         }
       },
 
@@ -161,7 +187,6 @@ const useLmnApiStore = create<UseLmnApiStore>(
             dn: '',
             sophomorixBirthdate: '',
             memberOf: [],
-            sophomorixIntrinsic3: [],
           },
         });
       },

@@ -14,6 +14,7 @@ import { ConsoleLogger, Logger } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 import { copyFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
 import helmet from 'helmet';
 import { JwtService } from '@nestjs/jwt';
@@ -23,7 +24,6 @@ import { WsAdapter } from '@nestjs/platform-ws';
 import AppModule from './app/app.module';
 import AuthGuard from './auth/auth.guard';
 import getLogLevels from './logging/getLogLevels';
-import * as rootPackage from '../../../package.json';
 
 async function bootstrap() {
   const globalPrefix = EDU_API_ROOT;
@@ -39,6 +39,10 @@ async function bootstrap() {
     cors: { origin: process.env.EDUI_CORS_URL },
     logger,
   });
+
+  const configService = app.get(ConfigService);
+  const version = configService.get<string>('version');
+
   app.setGlobalPrefix(globalPrefix);
   const port = process.env.EDUI_PORT || 3000;
   app.set('trust proxy', true);
@@ -72,9 +76,18 @@ async function bootstrap() {
     SwaggerModule.setup('/docs', app, swaggerDocument);
   }
 
+  await app.init();
+
+  const server = app.getHttpServer();
+
+  server.setTimeout?.(0);
+  server.requestTimeout = 0;
+  server.headersTimeout = 0;
+  server.keepAliveTimeout = 0;
+
   await app.listen(port);
   if (logLevels) {
-    Logger.log(`🚀 Application Version ${rootPackage.version} is running on: http://localhost:${port}/${globalPrefix}`);
+    Logger.log(`🚀 Application Version ${version} is running on: http://localhost:${port}/${globalPrefix}`);
     Logger.log(`Logging-Levels: ${logLevels.map((level) => level.toUpperCase()).join(', ')}`);
   } else {
     console.info(`Application is running on: http://localhost:${port}/${globalPrefix}`);

@@ -21,6 +21,8 @@ import BulletinBoardPageColumn from '@/pages/BulletinBoard/components/BulletinBo
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialStore';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import CreateOrUpdateBulletinDialog from '@/pages/BulletinBoard/BulletinBoardEditorial/CreateOrUpdateBulletinDialog';
+import useUserPreferencesStore from '@/store/useUserPreferencesStore';
+import USER_PREFERENCES_FIELDS from '@libs/user-preferences/constants/user-preferences-fields';
 
 const BulletinBoardPage = () => {
   const { t } = useTranslation();
@@ -30,19 +32,37 @@ const BulletinBoardPage = () => {
     getBulletinsByCategories,
     isLoading,
     isEditorialModeEnabled,
+    hydrateCollapsed,
   } = useBulletinBoardStore();
+
+  const { getUserPreferences } = useUserPreferencesStore();
   const { getCategoriesWithEditPermission } = useBulletinBoardEditorialStore();
   const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    void getBulletinsByCategories(false);
-    void getCategoriesWithEditPermission();
-    setIsInitialLoading(false);
-  }, [isEditorialModeEnabled, bulletinBoardNotifications]);
+    const fetchData = async () => {
+      const userPreferences = await getUserPreferences([USER_PREFERENCES_FIELDS.collapsedBulletins]);
 
-  if (isLoading && isInitialLoading) {
-    return <LoadingIndicatorDialog isOpen />;
-  }
+      if (userPreferences?.collapsedBulletins) {
+        hydrateCollapsed(userPreferences.collapsedBulletins);
+      } else {
+        hydrateCollapsed({});
+      }
+
+      void getCategoriesWithEditPermission();
+      await getBulletinsByCategories(false);
+      setIsInitialLoading(false);
+    };
+
+    void fetchData();
+  }, [
+    isEditorialModeEnabled,
+    bulletinBoardNotifications,
+    getUserPreferences,
+    hydrateCollapsed,
+    getBulletinsByCategories,
+    getCategoriesWithEditPermission,
+  ]);
 
   const getPageContent = () => {
     if (isEditorialModeEnabled) {
@@ -51,7 +71,9 @@ const BulletinBoardPage = () => {
 
     return (
       <div className="flex h-full max-h-full overflow-x-auto overflow-y-hidden scrollbar-thin">
-        {bulletinsByCategories?.length ? (
+        {(isLoading || isInitialLoading) && <LoadingIndicatorDialog isOpen />}
+
+        {bulletinsByCategories &&
           bulletinsByCategories
             .sort((a, b) => a.category.position - b.category.position)
             .map(({ bulletins, category, canEditCategory }) => (
@@ -62,8 +84,9 @@ const BulletinBoardPage = () => {
                 category={category}
                 bulletins={bulletins}
               />
-            ))
-        ) : (
+            ))}
+
+        {!(isLoading || isInitialLoading) && !bulletinsByCategories?.length && (
           <div className="flex h-full min-h-full w-full items-center justify-center">
             <div>{t('bulletinboard.noBulletinsToShow')}</div>
           </div>

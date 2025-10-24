@@ -18,7 +18,7 @@ import { VscNewFile } from 'react-icons/vsc';
 import { RiResetLeftLine } from 'react-icons/ri';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { TbTemplate } from 'react-icons/tb';
+import { TbFileTypePdf, TbTemplate } from 'react-icons/tb';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -40,8 +40,10 @@ import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuS
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import PageLayout from '@/components/structure/layout/PageLayout';
-import QuestionContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
+import QuestionsContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
+import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
+import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/ExportSurveyToPdfDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 
 const SurveyEditorPage = () => {
@@ -66,6 +68,7 @@ const SurveyEditorPage = () => {
     setSelectedQuestion,
     isUpdatingBackendLimiters,
   } = useQuestionsContextMenuStore();
+  const { setIsOpen: setOpenExportPDFDialog } = useExportSurveyToPdfStore();
 
   const { t } = useTranslation();
   const { user } = useUserStore();
@@ -219,6 +222,11 @@ const SurveyEditorPage = () => {
           }
         },
       },
+      {
+        icon: TbFileTypePdf,
+        text: t('survey.export.exportToPDF'),
+        onClick: () => setOpenExportPDFDialog(true),
+      },
     ],
     keyPrefix: 'surveys-page-floating-button_',
   };
@@ -249,13 +257,14 @@ const SurveyEditorPage = () => {
         submitSurvey={handleSaveSurvey}
         isSubmitting={isLoading}
       />
-      <QuestionContextMenu
+      <QuestionsContextMenu
         form={form}
         creator={creator}
         isOpenQuestionContextMenu={isOpenQuestionContextMenu}
         setIsOpenQuestionContextMenu={setIsOpenQuestionContextMenu}
         isLoading={isUpdatingBackendLimiters}
       />
+      <ExportSurveyToPdfDialog formula={creator.JSON as SurveyFormula} />
     </PageLayout>
   );
 };

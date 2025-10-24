@@ -10,9 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { IsArray, IsBoolean, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsEnum, IsNumber, IsString } from 'class-validator';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import BulletinVisibilityStatesType from '@libs/bulletinBoard/types/bulletinVisibilityStatesType';
+import BULLETIN_VISIBILITY_STATES from '@libs/bulletinBoard/constants/bulletinVisibilityStates';
 
 class CreateBulletinCategoryDto {
   @IsString()
@@ -35,6 +37,9 @@ class CreateBulletinCategoryDto {
 
   @IsNumber()
   position: number;
+
+  @IsEnum(BULLETIN_VISIBILITY_STATES)
+  bulletinVisibility?: BulletinVisibilityStatesType;
 }
 
 export default CreateBulletinCategoryDto;

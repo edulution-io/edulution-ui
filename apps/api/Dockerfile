@@ -10,7 +10,8 @@ COPY package*.json ./
 RUN npm ci
 
 COPY ./dist/apps/api/ ./
+COPY ./data/public/assets /opt/edulution/api/assets
 
 EXPOSE 3000
 
-CMD ["node", "./main.js"]
+CMD ["/bin/sh", "-c", "cp -rn /opt/edulution/api/assets /opt/edulution/api/data/public/assets && node ./main.js"]

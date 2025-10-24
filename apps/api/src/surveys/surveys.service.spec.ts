@@ -14,26 +14,32 @@ import { Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Logger } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
+import { ConfigService } from '@nestjs/config';
 import SurveysService from './surveys.service';
 import { Survey, SurveyDocument } from './survey.schema';
-import { firstMockJWTUser, createSurvey01, createdSurvey01 } from './mocks';
+import { createdSurvey01, createSurvey01, firstMockJWTUser } from './mocks';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
 import SurveysAttachmentService from './surveys-attachment.service';
+import NotificationsService from '../notifications/notifications.service';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 describe('SurveyService', () => {
   let service: SurveysService;
   let surveyModel: Model<SurveyDocument>;
-
+  const notificationMock = {
+    notifyUsernames: jest.fn().mockResolvedValue(undefined),
+  };
   beforeEach(async () => {
     Logger.error = jest.fn();
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SurveysService,
         SseService,
+        ConfigService,
         {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
@@ -41,6 +47,8 @@ describe('SurveyService', () => {
         SurveysAttachmentService,
         { provide: GroupsService, useValue: mockGroupsService },
         { provide: FilesystemService, useValue: mockFilesystemService },
+        { provide: NotificationsService, useValue: notificationMock },
+        { provide: GlobalSettingsService, useValue: { getAdminGroupsFromCache: jest.fn() } },
       ],
     }).compile();
 

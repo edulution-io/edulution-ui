@@ -14,11 +14,12 @@ import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
-import LmnApiStore from '@libs/lmnApi/types/lmnApiPasswordStore';
+import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/lmnApiEduApiEndpoints';
+import LmnApiStore from '@libs/lmnApi/types/lmnApiStore';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+import { encodeBase64 } from '@libs/common/utils/getBase64String';
 
 const { CHANGE_PASSWORD, FIRST_PASSWORD } = LMN_API_EDU_API_ENDPOINTS;
 
@@ -43,7 +44,7 @@ const useLmnApiPasswordStore = create<LmnApiStore>((set) => ({
         FIRST_PASSWORD,
         {
           username,
-          password: btoa(password),
+          password: encodeBase64(password),
         },
         {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
@@ -65,7 +66,7 @@ const useLmnApiPasswordStore = create<LmnApiStore>((set) => ({
         CHANGE_PASSWORD,
         {
           username,
-          password: btoa(password),
+          password: encodeBase64(password),
         },
         {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },

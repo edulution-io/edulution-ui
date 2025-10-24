@@ -16,6 +16,21 @@ class DownloadFileDto {
   fileName: string;
 
   percent: number;
-}
 
+  totalBytes?: number;
+
+  loadedBytes?: number;
+
+  speedBps?: number;
+
+  etaSeconds?: number;
+
+  lastUpdateAt?: number;
+
+  startedAt?: number;
+
+  speedFormatted?: string;
+
+  etaFormatted?: string;
+}
 export default DownloadFileDto;
