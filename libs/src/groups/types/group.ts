@@ -17,7 +17,11 @@ export interface Group {
   subGroupCount: number;
   subGroups: Group[];
   attributes: {
+    description: string[];
+    cn: string[];
+    sophomorixMaillist: string[];
     displayName: string[];
+    mail: string[];
     [key: string]: unknown;
   };
   realmRoles: string[];
