@@ -11,7 +11,7 @@ env:
 jobs:
   prepare:
     if: github.event.pull_request.draft == false
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - name: Checkout
@@ -38,7 +38,7 @@ jobs:
         run: npm ci
 
   build-frontend:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: prepare
     timeout-minutes: 15
     steps:
@@ -96,7 +96,7 @@ jobs:
           cache-to: type=gha,mode=max
 
   build-api:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: prepare
     timeout-minutes: 15
     steps:
@@ -152,7 +152,7 @@ jobs:
           cache-to: type=gha,mode=max
 
   test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: prepare
     timeout-minutes: 15
     steps:
