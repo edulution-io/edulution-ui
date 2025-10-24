@@ -36,7 +36,7 @@ jobs:
 
       - name: Push changes
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           # Push the new commit + the new version tag to the 'dev' branch
           git push --follow-tags origin ${{ github.ref_name }}
