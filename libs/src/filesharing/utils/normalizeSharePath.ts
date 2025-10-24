@@ -13,8 +13,8 @@
 import normalizeLdapHomeDirectory from '@libs/filesharing/utils/normalizeLdapHomeDirectory';
 
 const normalizeSharePath = (path: string): string => {
-  let normalized = path.replace(/^\\\\[^\\]+\\/, '');
-  normalized = normalized.replace(/\\/g, '/');
+  let normalized = path.replace(/\\/g, '/');
+  normalized = normalized.replace(/\/\/[^/]+\//, '/');
   normalized = normalizeLdapHomeDirectory(normalized);
   normalized = normalized.replace(/\/+/g, '/');
 
