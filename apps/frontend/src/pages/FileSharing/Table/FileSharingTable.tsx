@@ -95,15 +95,7 @@ const FileSharingTable = () => {
     const { active, over } = event;
     setActiveId(null);
 
-    if (!over) {
-      return;
-    }
-
-    if (active.id === over.id) {
-      return;
-    }
-
-    if (!webdavShare) {
+    if (!over || !webdavShare || active.id === over.id) {
       return;
     }
 
@@ -119,10 +111,10 @@ const FileSharingTable = () => {
       ContentType.FILE || ContentType.DIRECTORY,
       [
         {
-          path: sourcePath.endsWith('/') ? sourcePath.slice(0, -1) : sourcePath,
+          path: sourcePath,
           newPath: targetPath,
         },
-      ] as PathChangeOrCreateDto[],
+      ] as PathChangeOrCreateDto,
       webdavShare,
     );
     await fetchFiles(webdavShare, currentPath);
