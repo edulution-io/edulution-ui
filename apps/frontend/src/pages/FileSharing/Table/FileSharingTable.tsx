@@ -10,8 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
+  PointerSensor,
+  rectIntersection,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import useMedia from '@/hooks/useMedia';
@@ -33,6 +44,7 @@ import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreatePro
 
 const FileSharingTable = () => {
   const { webdavShare } = useParams();
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   const { isMobileView, isTabletView } = useMedia();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
@@ -40,6 +52,20 @@ const FileSharingTable = () => {
   const appConfigs = useAppConfigsStore((s) => s.appConfigs);
   const { setSelectedRows, setSelectedItems, fetchFiles, selectedRows, files, isLoading, currentPath } =
     useFileSharingStore();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
+      },
+    }),
+  );
 
   useEffect(() => {
     if (currentPath !== '/') void fetchFiles(webdavShare, currentPath);
@@ -58,26 +84,49 @@ const FileSharingTable = () => {
     setSelectedItems(selectedItemData);
   };
 
-  const handleFileDrop = async (sourceFile: DirectoryFileDTO, targetFolder: DirectoryFileDTO) => {
-    try {
-      const sourcePath = sourceFile.filePath;
-      const targetPath = `${targetFolder.filePath}/${sourceFile.filename}`;
-      await handleItemAction(
-        FileActionType.MOVE_FILE_OR_FOLDER,
-        `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
-        HttpMethods.PATCH,
-        ContentType.FILE || ContentType.DIRECTORY,
-        [
-          {
-            path: sourcePath.endsWith('/') ? sourcePath.slice(0, -1) : sourcePath,
-            newPath: targetPath,
-          },
-        ] as PathChangeOrCreateDto[],
-        webdavShare,
-      );
-    } catch (error) {
-      console.error('Fehler beim Verschieben:', error);
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id as string);
+  };
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    setActiveId(null);
+
+    if (!over) {
+      return;
     }
+
+    if (active.id === over.id) {
+      return;
+    }
+
+    if (!webdavShare) {
+      return;
+    }
+
+    const sourceFile = active.data.current as DirectoryFileDTO;
+    const targetFolder = over.data.current as DirectoryFileDTO;
+
+    const sourcePath = sourceFile.filePath;
+    const targetPath = `${targetFolder.filePath}/${sourceFile.filename}`;
+    await handleItemAction(
+      FileActionType.MOVE_FILE_OR_FOLDER,
+      `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
+      HttpMethods.PATCH,
+      ContentType.FILE || ContentType.DIRECTORY,
+      [
+        {
+          path: sourcePath.endsWith('/') ? sourcePath.slice(0, -1) : sourcePath,
+          newPath: targetPath,
+        },
+      ] as PathChangeOrCreateDto[],
+      webdavShare,
+    );
+    await fetchFiles(webdavShare, currentPath);
+  };
+
+  const handleDragCancel = () => {
+    setActiveId(null);
   };
 
   const shouldHideColumns = !(isMobileView || isTabletView || (isFilePreviewVisible && isFilePreviewDocked));
@@ -98,26 +147,40 @@ const FileSharingTable = () => {
     ExtendedOptionKeys.ONLY_OFFICE_URL,
   );
 
+  const canDropOnRow = (file: DirectoryFileDTO) => file.type === ContentType.DIRECTORY;
+
+  const activeFile = activeId ? files.find((file) => file.filePath === activeId) : null;
+
   return (
-    <ScrollableTable
-      columns={getFileSharingTableColumns(undefined, undefined, isDocumentServerConfigured)}
-      data={files}
-      filterKey={FILE_SHARING_TABLE_COLUMNS.SELECT_FILENAME}
-      filterPlaceHolderText="filesharing.filterPlaceHolderText"
-      onRowSelectionChange={handleRowSelectionChange}
-      isLoading={isLoading}
-      selectedRows={selectedRows}
-      getRowId={(row) => row.filePath}
-      applicationName={APPS.FILE_SHARING}
-      initialSorting={[
-        { id: 'type', desc: false },
-        { id: 'select-filename', desc: false },
-      ]}
-      initialColumnVisibility={initialColumnVisibility}
-      enableDragAndDrop
-      onFileDrop={handleFileDrop}
-      canDropOnRow={(file) => file.type === ContentType.DIRECTORY}
-    />
+    <DndContext
+      sensors={sensors}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      onDragCancel={handleDragCancel}
+      collisionDetection={rectIntersection}
+    >
+      <ScrollableTable
+        columns={getFileSharingTableColumns(undefined, undefined, isDocumentServerConfigured)}
+        data={files}
+        filterKey={FILE_SHARING_TABLE_COLUMNS.SELECT_FILENAME}
+        filterPlaceHolderText="filesharing.filterPlaceHolderText"
+        onRowSelectionChange={handleRowSelectionChange}
+        isLoading={isLoading}
+        selectedRows={selectedRows}
+        getRowId={(row) => row.filePath}
+        applicationName={APPS.FILE_SHARING}
+        initialSorting={[
+          { id: 'type', desc: false },
+          { id: 'select-filename', desc: false },
+        ]}
+        initialColumnVisibility={initialColumnVisibility}
+        enableDragAndDrop
+        canDropOnRow={canDropOnRow}
+      />
+      <DragOverlay>
+        {activeFile ? <div className="rounded bg-foreground p-2 shadow-lg">📁 {activeFile.filename}</div> : null}
+      </DragOverlay>
+    </DndContext>
   );
 };
 
