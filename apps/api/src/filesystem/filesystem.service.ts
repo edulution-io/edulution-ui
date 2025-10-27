@@ -30,7 +30,7 @@ import { createHash } from 'crypto';
 import { firstValueFrom, from } from 'rxjs';
 import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
-import { extname, join } from 'path';
+import { extname, join, dirname } from 'path';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
@@ -319,18 +319,23 @@ class FilesystemService {
     }
   }
 
-  async deleteEmptyFolderWithDepth(path: string, deep: number): Promise<void> {
-    const exists = await pathExists(path);
-    if (!exists) {
-      return;
-    }
-    const filesNames = await readdir(path);
-    if (filesNames.length === 0) {
-      await remove(path);
-    }
-    if (deep >= 1) {
-      path.split('/').slice(0, -1).join('/');
-      await this.deleteEmptyFolderWithDepth(path, deep - 1);
+  async deleteEmptyFolderWithDepth(folderPath: string, deep: number): Promise<void> {
+    if (deep < 0) return;
+
+    const exists = await pathExists(folderPath);
+    if (!exists) return;
+
+    const files = await readdir(folderPath);
+
+    if (files.length === 0) {
+      await remove(folderPath);
+
+      if (deep > 0) {
+        const parentPath = dirname(folderPath);
+        if (parentPath !== folderPath) {
+          await this.deleteEmptyFolderWithDepth(parentPath, deep - 1);
+        }
+      }
     }
   }
 
