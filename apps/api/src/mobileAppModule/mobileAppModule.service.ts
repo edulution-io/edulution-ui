@@ -15,8 +15,8 @@ import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import getMobileAppUserDto from '@libs/mobileApp/utils/getMobileAppUserDto';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
-import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import buildUserShares from '@libs/mobileApp/utils/buildUserShares';
+import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import LmnApiService from '../lmnApi/lmnApi.service';
 import UsersService from '../users/users.service';
 import GlobalSettingsService from '../global-settings/global-settings.service';
@@ -47,14 +47,10 @@ class MobileAppModuleService {
   }
 
   private async fetchWebdavData(currentUserGroups: string[]) {
-    const [servers, shares] = await Promise.all([
-      this.webdavSharesService.findAllWebdavServers(),
-      this.webdavSharesService.findAllWebdavShares(currentUserGroups),
-    ]);
+    const [shares] = await Promise.all([this.webdavSharesService.findAllWebdavShares(currentUserGroups)]);
 
     return {
-      servers,
-      shares: shares as WebdavShareDto[],
+      shares: shares as WebdavShareDto[] | undefined,
     };
   }
 

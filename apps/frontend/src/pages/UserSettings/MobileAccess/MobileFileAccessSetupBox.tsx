@@ -32,7 +32,7 @@ const MobileFileAccessSetupBox: React.FC = () => {
 
   const webdavAccessDetails = {
     displayName: APPLICATION_NAME,
-    url: `${EDU_BASE_URL}`,
+    url: EDU_BASE_URL,
     username: user?.username,
     password: '',
     token: '',
