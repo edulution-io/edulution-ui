@@ -41,6 +41,9 @@ import FileActionType from '@libs/filesharing/types/fileActionType';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import { HttpMethods } from '@libs/common/types/http-methods';
 import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreateProps';
+import { FcFolder } from 'react-icons/fc';
+import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
+import { TABLE_ICON_SIZE } from '@libs/ui/constants';
 
 const FileSharingTable = () => {
   const { webdavShare } = useParams();
@@ -178,7 +181,20 @@ const FileSharingTable = () => {
         canDropOnRow={canDropOnRow}
       />
       <DragOverlay>
-        {activeFile ? <div className="rounded bg-foreground p-2 shadow-lg">📁 {activeFile.filename}</div> : null}
+        {activeFile ? (
+          <div className="flex items-center gap-2 rounded bg-foreground p-2 shadow-lg">
+            {activeFile.type === ContentType.DIRECTORY ? (
+              <FcFolder className="size-5 shrink-0" />
+            ) : (
+              <FileIconComponent
+                filename={activeFile.filePath}
+                size={Number(TABLE_ICON_SIZE)}
+              />
+            )}
+
+            <span className="truncate">{activeFile.filename}</span>
+          </div>
+        ) : null}
       </DragOverlay>
     </DndContext>
   );
