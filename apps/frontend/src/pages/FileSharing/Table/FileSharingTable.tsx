@@ -24,12 +24,19 @@ import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsVal
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { useParams } from 'react-router-dom';
+import ContentType from '@libs/filesharing/types/contentType';
+import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
+import FileActionType from '@libs/filesharing/types/fileActionType';
+import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
+import { HttpMethods } from '@libs/common/types/http-methods';
+import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreateProps';
 
 const FileSharingTable = () => {
   const { webdavShare } = useParams();
 
   const { isMobileView, isTabletView } = useMedia();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
+  const { handleItemAction } = useFileSharingDialogStore();
   const appConfigs = useAppConfigsStore((s) => s.appConfigs);
   const { setSelectedRows, setSelectedItems, fetchFiles, selectedRows, files, isLoading, currentPath } =
     useFileSharingStore();
@@ -49,6 +56,28 @@ const FileSharingTable = () => {
       .map((rowId) => files.find((file) => file.filePath === rowId))
       .filter(Boolean) as DirectoryFileDTO[];
     setSelectedItems(selectedItemData);
+  };
+
+  const handleFileDrop = async (sourceFile: DirectoryFileDTO, targetFolder: DirectoryFileDTO) => {
+    try {
+      const sourcePath = sourceFile.filePath;
+      const targetPath = `${targetFolder.filePath}/${sourceFile.filename}`;
+      await handleItemAction(
+        FileActionType.MOVE_FILE_OR_FOLDER,
+        `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
+        HttpMethods.PATCH,
+        ContentType.FILE || ContentType.DIRECTORY,
+        [
+          {
+            path: sourcePath.endsWith('/') ? sourcePath.slice(0, -1) : sourcePath,
+            newPath: targetPath,
+          },
+        ] as PathChangeOrCreateDto[],
+        webdavShare,
+      );
+    } catch (error) {
+      console.error('Fehler beim Verschieben:', error);
+    }
   };
 
   const shouldHideColumns = !(isMobileView || isTabletView || (isFilePreviewVisible && isFilePreviewDocked));
@@ -85,6 +114,9 @@ const FileSharingTable = () => {
         { id: 'select-filename', desc: false },
       ]}
       initialColumnVisibility={initialColumnVisibility}
+      enableDragAndDrop
+      onFileDrop={handleFileDrop}
+      canDropOnRow={(file) => file.type === ContentType.DIRECTORY}
     />
   );
 };

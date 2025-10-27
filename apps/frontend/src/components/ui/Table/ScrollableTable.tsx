@@ -53,6 +53,9 @@ interface DataTableProps<TData, TValue> {
   actions?: TableAction<TData>[];
   showSearchBarAndColumnSelect?: boolean;
   getRowDisabled?: (row: Row<TData>) => boolean;
+  enableDragAndDrop?: boolean;
+  onFileDrop?: (sourceRow: TData, targetRow: TData) => void;
+  canDropOnRow?: (row: TData) => boolean;
 }
 
 const ScrollableTable = <TData, TValue>({
@@ -75,9 +78,63 @@ const ScrollableTable = <TData, TValue>({
   actions,
   showSearchBarAndColumnSelect = true,
   getRowDisabled,
+  enableDragAndDrop = false,
+  onFileDrop,
+  canDropOnRow,
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(initialColumnVisibility);
+  const [draggedRowId, setDraggedRowId] = useState<string | null>(null);
+  const [dropTargetRowId, setDropTargetRowId] = useState<string | null>(null);
+
+  const handleDragStart = (e: React.DragEvent, row: Row<TData>) => {
+    if (!enableDragAndDrop) return;
+
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('application/json', JSON.stringify(row.original));
+    setDraggedRowId(row.id);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedRowId(null);
+    setDropTargetRowId(null);
+  };
+
+  const handleDragOver = (e: React.DragEvent, row: Row<TData>) => {
+    if (!enableDragAndDrop || !canDropOnRow?.(row.original)) return;
+
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDragEnter = (row: Row<TData>) => {
+    if (!enableDragAndDrop || !canDropOnRow?.(row.original)) return;
+    setDropTargetRowId(row.id);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    if (e.currentTarget === e.target) {
+      setDropTargetRowId(null);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent, targetRow: Row<TData>) => {
+    e.preventDefault();
+    setDropTargetRowId(null);
+    setDraggedRowId(null);
+
+    if (!enableDragAndDrop || !canDropOnRow?.(targetRow.original) || !onFileDrop) return;
+
+    try {
+      const sourceData = JSON.parse(e.dataTransfer.getData('application/json')) as TData;
+
+      if (getRowId?.(sourceData) !== targetRow.id) {
+        onFileDrop(sourceData, targetRow.original);
+      }
+    } catch (error) {
+      console.error('Error handling drop:', error);
+    }
+  };
 
   useEffect(() => {
     setColumnVisibility((prev) => {
@@ -178,6 +235,9 @@ const ScrollableTable = <TData, TValue>({
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => {
                 const isRowDisabled = getRowDisabled?.(row);
+                const isDragging = enableDragAndDrop && draggedRowId === row.id;
+                const isDropTarget = enableDragAndDrop && dropTargetRowId === row.id;
+                const canDrop = enableDragAndDrop && canDropOnRow?.(row.original);
 
                 return (
                   <TableRow
@@ -185,9 +245,22 @@ const ScrollableTable = <TData, TValue>({
                     data-state={row.getIsSelected() ? 'selected' : undefined}
                     data-disabled={isRowDisabled ? 'true' : undefined}
                     aria-disabled={isRowDisabled || undefined}
-                    className={
-                      isRowDisabled ? 'pointer-events-none cursor-not-allowed opacity-50 saturate-0' : undefined
-                    }
+                    draggable={enableDragAndDrop && !isRowDisabled}
+                    onDragStart={(e) => handleDragStart(e, row)}
+                    onDragEnd={handleDragEnd}
+                    onDragOver={(e) => handleDragOver(e, row)}
+                    onDragEnter={() => handleDragEnter(row)}
+                    onDragLeave={(e) => handleDragLeave(e)}
+                    onDrop={(e) => handleDrop(e, row)}
+                    className={`
+                      ${isRowDisabled ? 'pointer-events-none cursor-not-allowed opacity-50 saturate-0' : ''}
+                      ${enableDragAndDrop && !isRowDisabled ? 'cursor-move' : ''}
+                      ${isDragging ? 'opacity-50' : ''}
+                      ${isDropTarget && canDrop ? 'bg-primary/10 ring-2 ring-inset ring-primary' : ''}
+                    `}
+                    style={{
+                      transition: 'all 0.2s ease',
+                    }}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
