@@ -10,25 +10,17 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import '@glokon/guacamole-common-js';
+type LinuxmusterVersionResponse = {
+  'linuxmuster-api7': string;
+  'linuxmuster-base7': string;
+  'linuxmuster-cli7': string;
+  'linuxmuster-common': string;
+  'linuxmuster-linbo-gui7': string;
+  'linuxmuster-linbo7': string;
+  'linuxmuster-prepare': string;
+  'linuxmuster-tools7': string;
+  'linuxmuster-webui7': string;
+  'sophomorix-samba': string;
+};
 
-declare module '@glokon/guacamole-common-js' {
-  namespace Mouse {
-    interface Touchscreen {
-      onmousedown?: (state: Mouse.State) => void;
-      onmouseup?: (state: Mouse.State) => void;
-      onmousemove?: (state: Mouse.State) => void;
-    }
-  }
-  interface Mouse {
-    onmousedown?: (state: Mouse.State) => void;
-    onmouseup?: (state: Mouse.State) => void;
-    onmousemove?: (state: Mouse.State) => void;
-  }
-
-  interface Touch {
-    ontouchstart?: (state: Touch.State) => void;
-    ontouchend?: (state: Touch.State) => void;
-    ontouchmove?: (state: Touch.State) => void;
-  }
-}
+export default LinuxmusterVersionResponse;

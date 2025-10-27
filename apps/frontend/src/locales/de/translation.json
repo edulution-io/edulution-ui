@@ -178,7 +178,8 @@
       "PasswordMismatch": "Aktuelles Passwort stimmt nicht",
       "PasswordChangeFailed": "Passwort ändern fehlgeschlagen",
       "GetUsersQuotaFailed": "Abrufen der Benutzerkontingente fehlgeschlagen.",
-      "GetSchoolsFailed": "Abrufen der Schulen fehlgeschlagen"
+      "GetSchoolsFailed": "Abrufen der Schulen fehlgeschlagen",
+      "GetLmnVersionFailed": "Abrufen der Linuxmuster-Version fehlgeschlagen."
     }
   },
   "ticketsystem": {
@@ -586,6 +587,7 @@
     "pdfDescription": "Erzeuge eine PDF Datei um die Passwörter für diese Schulklassen auszudrucken",
     "csvDescription": "Erzeuge eine CSV Datei um die Passwörter für diese Schulklassen auszudrucken",
     "printOneItemPerPage": "Drucke ein Passwort pro Seite",
+    "shouldSplitNamesInCsv": "Vor- und Nachname in getrennten Spalten (funktioniert erst ab Linuxmuster 7.3)",
     "selectSavedSession": "Aus gespeicherten Sitzungen wählen",
     "saveSession": "Sitzung speichern",
     "editSession": "Sitzung editieren",
@@ -999,6 +1001,7 @@
     "info": {
       "title": "Info"
     },
+    "lmnVersion": { "title": "Linuxmuster Versionsübersicht" },
     "appconfig": {
       "position": {
         "title": "Sortierung",

@@ -10,25 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import '@glokon/guacamole-common-js';
+import React from 'react';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import LicenseOverview from '../components/LicenseOverview';
+import LmnVersionInfo from './LmnVersionInfo';
 
-declare module '@glokon/guacamole-common-js' {
-  namespace Mouse {
-    interface Touchscreen {
-      onmousedown?: (state: Mouse.State) => void;
-      onmouseup?: (state: Mouse.State) => void;
-      onmousemove?: (state: Mouse.State) => void;
-    }
-  }
-  interface Mouse {
-    onmousedown?: (state: Mouse.State) => void;
-    onmouseup?: (state: Mouse.State) => void;
-    onmousemove?: (state: Mouse.State) => void;
-  }
+const InfoPage = () => {
+  const { isLmn } = useDeploymentTarget();
 
-  interface Touch {
-    ontouchstart?: (state: Touch.State) => void;
-    ontouchend?: (state: Touch.State) => void;
-    ontouchmove?: (state: Touch.State) => void;
-  }
-}
+  return (
+    <>
+      <LicenseOverview />
+      {isLmn && <LmnVersionInfo />}
+    </>
+  );
+};
+
+export default InfoPage;

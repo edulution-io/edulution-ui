@@ -116,7 +116,7 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
     );
   }
 
-  if (currentlyEditingFile.filename.endsWith('.pdf')) {
+  if (fileExtension === 'pdf') {
     return <PdfViewer fetchUrl={fileUrl} />;
   }
 

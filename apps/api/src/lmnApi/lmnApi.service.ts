@@ -805,6 +805,23 @@ class LmnApiService {
       );
     }
   }
+
+  public async getLmnVersion(lmnApiToken: string) {
+    try {
+      const response = await this.request<string[]>(HttpMethods.GET, 'server/lmnversion', undefined, {
+        headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+      });
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.GetLmnVersionFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
 }
 
 export default LmnApiService;
