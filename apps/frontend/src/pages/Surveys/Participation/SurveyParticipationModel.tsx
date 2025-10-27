@@ -23,6 +23,8 @@ import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import useLanguage from '@/hooks/useLanguage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
+import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
+import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/ExportSurveyToPdfDialog';
 import surveyTheme from '@/pages/Surveys/theme/theme';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import '../theme/custom.participation.css';
@@ -58,6 +60,8 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
   const { fetchAnswer, isFetching, answerSurvey, previousAnswer, uploadTempFile, deleteTempFile } =
     useParticipateSurveyStore();
 
+  const { setIsOpen: setOpenExportPDFDialog } = useExportSurveyToPdfStore();
+
   const { t } = useTranslation();
   const { language } = useLanguage();
 
@@ -73,6 +77,12 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       newModel.showProgressBar = 'top';
     }
     newModel.completedHtml = `${t('survey.participate.completeMessage')}`;
+
+    newModel.addNavigationItem({
+      id: 'pdf-export',
+      title: t('survey.export.saveInPDF'),
+      action: () => setOpenExportPDFDialog(true),
+    });
 
     newModel.onCompleting.add(async (surveyModel, completingEvent) => {
       if (!selectedSurvey.id) {
@@ -219,7 +229,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
   if (isFetching) {
     return <LoadingIndicatorDialog isOpen />;
   }
-  if (!surveyParticipationModel) {
+  if (!surveyParticipationModel || !selectedSurvey) {
     return (
       <div className="relative top-1/3">
         <h4 className="flex justify-center">{t('survey.notFound')}</h4>
@@ -227,9 +237,15 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
     );
   }
   return (
-    <div className="survey-participation">
-      <Survey model={surveyParticipationModel} />
-    </div>
+    <>
+      <div className="survey-participation">
+        <Survey model={surveyParticipationModel} />
+      </div>
+      <ExportSurveyToPdfDialog
+        formula={selectedSurvey.formula}
+        answer={surveyParticipationModel ? (surveyParticipationModel.data as JSON) : undefined}
+      />
+    </>
   );
 };
 

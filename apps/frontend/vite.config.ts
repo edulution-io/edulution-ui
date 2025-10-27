@@ -113,6 +113,7 @@ export default defineConfig(({ mode }) => {
               'survey-creator-react',
               'survey-react-ui',
             ],
+            sentry: ['@sentry/react'],
           },
         },
       },

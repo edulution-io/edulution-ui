@@ -19,6 +19,7 @@ interface PrintPasswordsRequest {
   one_per_page: boolean;
   pdflatex: boolean;
   school: string;
+  nosplit_names: boolean;
   schoolclasses: string[];
 }
 

@@ -27,6 +27,8 @@ import RectangleSize from '@libs/ui/types/rectangleSize';
 import { HiOutlineCursorArrowRipple } from 'react-icons/hi2';
 import RESIZEABLE_WINDOW_DEFAULT_POSITION from '@libs/ui/constants/resizableWindowDefaultPosition';
 import RESIZABLE_WINDOW_DEFAULT_SIZE from '@libs/ui/constants/resizableWindowDefaultSize';
+import { MOBILE_TOP_BAR_HEIGHT_PX } from '@libs/ui/constants/sidebar';
+import APP_LAYOUT_ID from '@libs/ui/constants/appLayoutId';
 
 interface ResizableWindowProps {
   titleTranslationId: string;
@@ -84,9 +86,10 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
 
   const setMaxWidth = () => {
     const width = isMobileView ? documentWidth : documentWidth - SIDEBAR_WIDTH;
+    const height = isMobileView ? documentHeight - MOBILE_TOP_BAR_HEIGHT_PX : documentHeight;
     setCurrentWindowedFrameSize(titleTranslationId, {
       width,
-      height: documentHeight,
+      height,
     });
   };
 
@@ -99,6 +102,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
   useEffect(() => {
     if (isMaximized && !isMinimized) {
       setMaxWidth();
+      setCurrentPosition({ x: 0, y: isMobileView ? MOBILE_TOP_BAR_HEIGHT_PX : 0 });
       return;
     }
 
@@ -171,7 +175,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
     } else {
       savePreviousValues();
       setMaxWidth();
-      setCurrentPosition({ x: 0, y: 0 });
+      setCurrentPosition({ x: 0, y: isMobileView ? MOBILE_TOP_BAR_HEIGHT_PX : 0 });
     }
 
     setIsMaximized((wasMaximized) => !wasMaximized);
@@ -212,7 +216,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
         'rounded-t-lg border border-slate-500 bg-gray-800': !isMaximized && !isMinimized && !isCurrentlySticky,
         'rounded-none transition-transform active:transition-none': isMinimized,
       })}
-      bounds="window"
+      bounds={`#${APP_LAYOUT_ID}`}
       disableDragging={disableDragging}
       enableResizing={!isMaximized && !isCurrentlySticky}
       style={{

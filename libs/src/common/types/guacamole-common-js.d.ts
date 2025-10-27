@@ -10,9 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'guacamole-common-js';
+import '@glokon/guacamole-common-js';
 
-declare module 'guacamole-common-js' {
+declare module '@glokon/guacamole-common-js' {
   namespace Mouse {
     interface Touchscreen {
       onmousedown?: (state: Mouse.State) => void;

@@ -17,7 +17,7 @@ import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 const { LDAP_EDULUTION_BINDUSER_DN, LDAP_EDULUTION_BINDUSER_PASSWORD } = process.env as Record<string, string>;
 
 const defaultValues: GlobalSettingsDto = {
-  auth: { mfaEnforcedGroups: [] },
+  auth: { mfaEnforcedGroups: [], adminGroups: [] },
   general: {
     defaultLandingPage: {
       isCustomLandingPageEnabled: true,

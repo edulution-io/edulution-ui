@@ -16,10 +16,11 @@ import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import { Response } from 'express';
 import FileSystemController from './filesystem.controller';
 import FilesystemService from './filesystem.service';
-import AppConfigGuard from '../appconfig/appconfig.guard';
 import IsPublicAppGuard from '../common/guards/isPublicApp.guard';
+import AdminGuard from '../common/guards/admin.guard';
 import AppConfigService from '../appconfig/appconfig.service';
 import CustomHttpException from '../common/CustomHttpException';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 describe(FileSystemController.name, () => {
   let controller: FileSystemController;
@@ -29,9 +30,10 @@ describe(FileSystemController.name, () => {
       controllers: [FileSystemController],
       providers: [
         { provide: FilesystemService, useValue: {} },
-        AppConfigGuard,
+        AdminGuard,
         IsPublicAppGuard,
         { provide: AppConfigService, useValue: { getPublicAppConfigByName: jest.fn().mockResolvedValue(true) } },
+        { provide: GlobalSettingsService, useValue: { getAdminGroupsFromCache: jest.fn() } },
       ],
     }).compile();
 

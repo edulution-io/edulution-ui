@@ -14,14 +14,14 @@ import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/com
 import { OnEvent } from '@nestjs/event-emitter';
 import axios, { AxiosInstance } from 'axios';
 import {
-  RDPConnection,
-  VdiErrorMessages,
-  Parameters,
   Attributes,
-  LmnVdiRequest,
   GuacamoleConnections,
   GuacamoleDto,
+  LmnVdiRequest,
   LmnVdiResponse,
+  Parameters,
+  RDPConnection,
+  VdiErrorMessages,
   VirtualMachines,
 } from '@libs/desktopdeployment/types';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
@@ -57,7 +57,7 @@ class VdiService implements OnModuleInit {
     void this.updateVdiConfig();
   }
 
-  @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
+  @OnEvent(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${APPS.DESKTOP_DEPLOYMENT}`)
   async updateVdiConfig() {
     try {
       const appConfig = await this.appConfigService.getAppConfigByName(APPS.DESKTOP_DEPLOYMENT).catch((error) => {
