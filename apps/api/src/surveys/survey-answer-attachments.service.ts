@@ -70,6 +70,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     const persistentFiles: string[] = [];
 
     const nextAnswer: Record<string, (object & { content: string }) | (object & { content: string })[]> = {};
+    const nextAnswerContent: (object & { content: string })[] = [];
     Object.keys(surveyAnswer).forEach((questionName) => {
       const questionAnswer = surveyAnswer[questionName];
       if (Array.isArray(questionAnswer)) {
@@ -80,10 +81,11 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
           }
           if (fileName && tempFileNames.includes(fileName)) {
             fileNamesToMove.push(fileName);
-            nextAnswer[questionName] = {
+            const newFile: object & { content: string } = {
               ...item,
               content: SurveyAnswerAttachmentsService.makeUrlPermanent(item.content)!,
             };
+            nextAnswerContent.push(newFile);
           }
         });
       } else {
@@ -91,11 +93,13 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
         if (fileName && tempFileNames.includes(fileName)) {
           fileNamesToMove.push(fileName);
         }
-        nextAnswer[questionName] = {
+        const newFile: object & { content: string } = {
           ...questionAnswer,
           content: SurveyAnswerAttachmentsService.makeUrlPermanent(questionAnswer.content)!,
         };
+        nextAnswerContent.push(newFile);
       }
+      nextAnswer[questionName] = nextAnswerContent;
     });
 
     const movingPromises = fileNamesToMove.map(async (fileName) =>
