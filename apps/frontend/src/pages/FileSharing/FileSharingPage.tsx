@@ -36,6 +36,10 @@ import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import UploadFileDialog from '@/pages/FileSharing/Dialog/UploadFileDialog';
 import DeletePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DeletePublicShareDialog';
 import APPS from '@libs/appconfig/constants/apps';
+import FileDropZone from '@/components/ui/FileDropZone';
+import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
+import useUserStore from '@/store/UserStore/useUserStore';
+import { UploadFile } from '@libs/filesharing/types/uploadFile';
 import useVariableSharePathname from './hooks/useVariableSharePathname';
 
 const FileSharingPage = () => {
@@ -44,6 +48,8 @@ const FileSharingPage = () => {
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const { fileOperationProgress, fetchFiles, webdavShares } = useFileSharingStore();
   const { fetchShares } = usePublicShareStore();
+  const { uploadFiles, setFilesToUpload } = useHandelUploadFileStore();
+  const { eduApiToken } = useUserStore();
   const navigate = useNavigate();
   const { createVariableSharePathname } = useVariableSharePathname();
 
@@ -59,6 +65,7 @@ const FileSharingPage = () => {
 
     void handleFileOperationProgress();
   }, [fileOperationProgress]);
+
   const { percentageUsed } = useQuotaInfo();
 
   const { share, setShare, closeDialog, dialog } = usePublicShareStore();
@@ -97,34 +104,61 @@ const FileSharingPage = () => {
     }
   };
 
+  const handleFileUpload = async (files: File[]) => {
+    if (!webdavShare) return;
+
+    try {
+      const uploadFilesList: UploadFile[] = files.map(
+        (file) =>
+          ({
+            ...file,
+            id: crypto.randomUUID(),
+            isZippedFolder: false,
+            originalFolderName: undefined,
+            fileCount: undefined,
+            name: file.name,
+            size: file.size,
+          }) as UploadFile,
+      );
+
+      setFilesToUpload(uploadFilesList);
+      await uploadFiles(currentPath, eduApiToken, webdavShare);
+      await fetchFiles(webdavShare, currentPath);
+    } catch (error) {
+      console.error('❌ Fehler beim Upload:', error);
+    }
+  };
+
   return (
     <PageLayout>
       <LoadingIndicatorDialog isOpen={isLoading} />
 
-      <div className="flex w-full flex-row justify-between space-x-2 pb-2 pt-2">
-        <DirectoryBreadcrumb
-          path={currentPath}
-          onNavigate={handleBreadcrumbNavigate}
-          style={{ color: 'white' }}
-          hiddenSegments={getHiddenSegments()}
-        />
-        <QuotaLimitInfo percentageUsed={percentageUsed} />
-      </div>
-
-      <div className="flex h-full w-full flex-row overflow-hidden pb-6">
-        <div className={isFilePreviewVisible && isFilePreviewDocked ? 'w-1/2 2xl:w-2/3' : 'w-full'}>
-          {isFileProcessing ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}
-
-          <FileSharingTable />
+      <FileDropZone onFileDrop={handleFileUpload}>
+        <div className="flex w-full flex-row justify-between space-x-2 pb-2 pt-2">
+          <DirectoryBreadcrumb
+            path={currentPath}
+            onNavigate={handleBreadcrumbNavigate}
+            style={{ color: 'white' }}
+            hiddenSegments={getHiddenSegments()}
+          />
+          <QuotaLimitInfo percentageUsed={percentageUsed} />
         </div>
 
-        {isFilePreviewVisible && (
-          <div
-            id={FILE_PREVIEW_ELEMENT_ID}
-            className={isFilePreviewDocked ? 'h-full w-1/2 2xl:w-1/3' : ''}
-          />
-        )}
-      </div>
+        <div className="flex h-full w-full flex-row overflow-hidden pb-6">
+          <div className={isFilePreviewVisible && isFilePreviewDocked ? 'w-1/2 2xl:w-2/3' : 'w-full'}>
+            {isFileProcessing ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}
+
+            <FileSharingTable />
+          </div>
+
+          {isFilePreviewVisible && (
+            <div
+              id={FILE_PREVIEW_ELEMENT_ID}
+              className={isFilePreviewDocked ? 'h-full w-1/2 2xl:w-1/3' : ''}
+            />
+          )}
+        </div>
+      </FileDropZone>
 
       <ActionContentDialog />
       <DownloadPublicShareDialog />
