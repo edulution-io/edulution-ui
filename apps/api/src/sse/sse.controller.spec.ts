@@ -14,6 +14,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Response } from 'express';
 import { of } from 'rxjs';
 import { getModelToken } from '@nestjs/mongoose';
+import { ConfigService } from '@nestjs/config';
 import SseController from './sse.controller';
 import SseService from './sse.service';
 import { Conference } from '../conferences/conference.schema';
@@ -34,6 +35,7 @@ describe('SseController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [SseController],
       providers: [
+        ConfigService,
         { provide: SseService, useValue: mockSseService },
         { provide: getModelToken(Conference.name), useValue: conferencesModelMock },
       ],

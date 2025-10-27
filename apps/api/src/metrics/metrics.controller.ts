@@ -10,9 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const ALL_GROUPS_CACHE_KEY = 'allGroups-';
-export const GROUP_WITH_MEMBERS_CACHE_KEY = 'groupWithMembers';
-export const ALL_USERS_CACHE_KEY = 'allUsers-';
-export const ALL_SCHOOLS_CACHE_KEY = 'allSchools';
-export const DEPLOYMENT_TARGET_CACHE_KEY = 'deployment-target';
-export const ADMIN_GROUPS = 'adminGroups';
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import MetricsService from './metrics.service';
+import AdminGuard from '../common/guards/admin.guard';
+
+@Controller('metrics')
+class MetricsController {
+  constructor(private readonly metricsService: MetricsService) {}
+
+  @UseGuards(AdminGuard)
+  @Get()
+  getMetrics() {
+    return this.metricsService.getMetrics();
+  }
+}
+
+export default MetricsController;

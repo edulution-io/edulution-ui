@@ -10,9 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const ALL_GROUPS_CACHE_KEY = 'allGroups-';
-export const GROUP_WITH_MEMBERS_CACHE_KEY = 'groupWithMembers';
-export const ALL_USERS_CACHE_KEY = 'allUsers-';
-export const ALL_SCHOOLS_CACHE_KEY = 'allSchools';
-export const DEPLOYMENT_TARGET_CACHE_KEY = 'deployment-target';
-export const ADMIN_GROUPS = 'adminGroups';
+import { Module } from '@nestjs/common';
+import MetricsService from './metrics.service';
+import MetricsController from './metrics.controller';
+import DockerModule from '../docker/docker.module';
+
+@Module({
+  imports: [DockerModule],
+  controllers: [MetricsController],
+  providers: [MetricsService],
+})
+export default class MetricsModule {}

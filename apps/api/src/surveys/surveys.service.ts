@@ -26,9 +26,10 @@ import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
 import surveysMigrationsList from './migrations/surveysMigrationsList';
 import MigrationService from '../migration/migration.service';
-import NotificationsService from '../notifications/notifications.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import SurveysAttachmentService from './surveys-attachment.service';
+import NotificationsService from '../notifications/notifications.service';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 @Injectable()
 class SurveysService implements OnModuleInit {
@@ -38,6 +39,7 @@ class SurveysService implements OnModuleInit {
     private readonly groupsService: GroupsService,
     private readonly sseService: SseService,
     private readonly notificationService: NotificationsService,
+    private readonly globalSettingsService: GlobalSettingsService,
   ) {}
 
   async onModuleInit() {
@@ -137,7 +139,7 @@ class SurveysService implements OnModuleInit {
       if (!existingSurvey) {
         throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
       }
-      SurveysService.assertUserIsAuthorized(existingSurvey.creator.username, user);
+      await this.assertUserIsAuthorized(existingSurvey.creator.username, user);
     }
 
     const processedFormula = await this.surveysAttachmentService.preProcessFormula(
@@ -210,9 +212,10 @@ class SurveysService implements OnModuleInit {
     }
   };
 
-  static assertUserIsAuthorized = (creatorUsername: string, currentUser: JwtUser): void => {
+  assertUserIsAuthorized = async (creatorUsername: string, currentUser: JwtUser): Promise<void> => {
     const isOwner = creatorUsername === currentUser.preferred_username;
-    const isSuperAdmin = getIsAdmin(currentUser.ldapGroups);
+    const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
+    const isSuperAdmin = getIsAdmin(currentUser.ldapGroups, adminGroups);
     if (!isOwner && !isSuperAdmin) {
       throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.UNAUTHORIZED);
     }
