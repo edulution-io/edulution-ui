@@ -55,21 +55,25 @@ class MobileAppModuleService {
   }
 
   async getAppUserData(username: string, currentUserGroups: string[]) {
-    const globalSettingsDto: GlobalSettingsDto =
-      (await this.globalSettingsService.getGlobalSettings()) as GlobalSettingsDto;
+    try {
+      const globalSettingsDto: GlobalSettingsDto =
+        (await this.globalSettingsService.getGlobalSettings()) as GlobalSettingsDto;
 
-    const lmnData = await this.fetchLmnData(username, globalSettingsDto);
-    const webdavData = await this.fetchWebdavData(currentUserGroups);
-    const userShares = buildUserShares(webdavData.shares, lmnData.info);
-    const user = await this.userService.findOne(username);
+      const lmnData = await this.fetchLmnData(username, globalSettingsDto);
+      const webdavData = await this.fetchWebdavData(currentUserGroups);
+      const userShares = buildUserShares(webdavData.shares, lmnData.info);
+      const user = await this.userService.findOne(username);
 
-    return getMobileAppUserDto({
-      usernameFallback: username,
-      user,
-      globalSettings: globalSettingsDto,
-      lmn: lmnData.info,
-      userShares,
-    });
+      return getMobileAppUserDto({
+        usernameFallback: username,
+        user,
+        globalSettings: globalSettingsDto,
+        lmn: lmnData.info,
+        userShares,
+      });
+    } catch {
+      return {};
+    }
   }
 }
 
