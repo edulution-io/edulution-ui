@@ -58,7 +58,7 @@ class ConferencesService implements OnModuleInit {
     void this.updateConferenceServiceConfig();
   }
 
-  @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
+  @OnEvent(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${APPS.CONFERENCES}`)
   async updateConferenceServiceConfig() {
     const appConfig = await this.appConfigService.getAppConfigByName(APPS.CONFERENCES);
     const url = appConfig?.options.url?.trim() ?? '';

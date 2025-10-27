@@ -28,6 +28,7 @@ import CustomHttpException from '../../common/CustomHttpException';
 import { AppConfig } from '../../appconfig/appconfig.schema';
 import MigrationService from '../../migration/migration.service';
 import webdavSharesMigrationList from './migrations/webdavSharesMigrationList';
+import GlobalSettingsService from '../../global-settings/global-settings.service';
 
 type WebdavShareCache = Record<string, { url: string; type: string; pathname: string }>;
 
@@ -39,6 +40,7 @@ class WebdavSharesService implements OnModuleInit {
     @InjectModel(WebdavShares.name) private webdavSharesModel: Model<WebdavSharesDocument>,
     @InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfig>,
     private eventEmitter: EventEmitter2,
+    private readonly globalSettingsService: GlobalSettingsService,
   ) {}
 
   async onModuleInit() {
@@ -101,7 +103,9 @@ class WebdavSharesService implements OnModuleInit {
     try {
       const basePipeline: PipelineStage[] = [];
 
-      if (!getIsAdmin(currentUserGroups)) {
+      const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
+
+      if (!getIsAdmin(currentUserGroups, adminGroups)) {
         basePipeline.push({
           $match: {
             'accessGroups.path': { $in: currentUserGroups },

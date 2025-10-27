@@ -187,7 +187,8 @@
       "PasswordMismatch": "The current password is wrong",
       "PasswordChangeFailed": "Password change failed",
       "GetUsersQuotaFailed": "Failed to get users quota",
-      "GetSchoolsFailed": "Failed to get schools"
+      "GetSchoolsFailed": "Failed to get schools",
+      "GetLmnVersionFailed": "Failed to retrieve the Linuxmuster version."
     }
   },
   "ticketsystem": {
@@ -586,6 +587,7 @@
     "pdfDescription": "Create a PDF file to print the passwords for these school classes",
     "csvDescription": "Create a CSV file to print the passwords for these school classes",
     "printOneItemPerPage": "Print one password per page",
+    "shouldSplitNamesInCsv": "First and last name in separate columns (works from Linuxmuster 7.3 onwards)",
     "selectSavedSession": "Select from saved sessions",
     "saveSession": "Save session",
     "editSession": "Edit session",
@@ -650,6 +652,14 @@
     "notFound": "Survey could not be found.",
     "noFormula": "The formula of the survey is not readable.",
     "canSubmitMultiple": "Allow multiple submissions",
+    "export": {
+      "exportToPDF": "Export as PDF",
+      "saveInPDF": "Save as PDF",
+      "processing": "Processing export ...",
+      "success": "Successfully exported as PDF",
+      "error": "Error exporting",
+      "warning": "Some questions can not be displayed correctly in the PDF export. This includes file upload, image selection and the password field."
+    },
     "editor": {
       "inputFieldTitle": "Input field",
       "new": "New (blank)",
@@ -893,6 +903,7 @@
     },
     "delete": "Remove",
     "description": {
+      "dashboard": "Here you can make all the settings.",
       "ticketsystem": "Here you can make all the settings.",
       "mail": "Here you can make all the settings.",
       "chat": "Here you can make all the settings.",
@@ -979,11 +990,15 @@
       "resetMfaFormDescription": "Here you can reset the two-factor authentication for users.",
       "selectUsersTitle": "Select Users",
       "selectUsersDescription": "Select the users for whom you want to reset the two-factor authentication.",
-      "totpResetSuccess": "TOTP for user {{username}} has been disabled successfully."
+      "totpResetSuccess": "TOTP for user {{username}} has been disabled successfully.",
+      "setAdminGroupTitle": "Set administrator group",
+      "setAdminGroupDescription": "Additional administrators can be defined here. The global administrator remains unchanged.",
+      "setAdminGroupSelectDescription": "Groups can be selected using the search field."
     },
     "info": {
       "title": "Info"
     },
+    "lmnVersion": { "title": "Linuxmuster version overview" },
     "appconfig": {
       "position": {
         "title": "Sorting",
@@ -1029,7 +1044,11 @@
         },
         "webdavServer": {
           "title": "WebDAV-Server",
-          "filterPlaceHolderText": "Search for WebDAV servers"
+          "filterPlaceHolderText": "Search for WebDAV servers",
+          "deleteWarning": {
+            "title": "Deletion not possible",
+            "description": "The WebDAV server ‘{{serverName}}’ is used by {{count}} share(s): {{shares}}. Please delete the dependent shares first."
+          }
         },
         "files": {
           "title": "Files",

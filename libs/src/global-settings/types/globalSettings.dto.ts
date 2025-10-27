@@ -17,6 +17,21 @@ import OrganisationInfoDto from '@libs/global-settings/types/organisationInfoDto
 
 type GlobalSettingsAuth = {
   mfaEnforcedGroups: MultipleSelectorGroup[];
+  adminGroups: MultipleSelectorGroup[];
+};
+
+type GlobalSettingsGeneral = {
+  defaultLandingPage: {
+    isCustomLandingPageEnabled: boolean | undefined;
+    appName: string;
+  };
+  deploymentTarget: DeploymentTarget;
+  ldap: {
+    binduser: {
+      dn: string;
+      password: string;
+    };
+  };
 };
 
 class GlobalSettingsDto {
@@ -24,19 +39,7 @@ class GlobalSettingsDto {
   auth: GlobalSettingsAuth;
 
   @ValidateNested()
-  general: {
-    defaultLandingPage: {
-      isCustomLandingPageEnabled: boolean | undefined;
-      appName: string;
-    };
-    deploymentTarget: DeploymentTarget;
-    ldap: {
-      binduser: {
-        dn: string;
-        password: string;
-      };
-    };
-  };
+  general: GlobalSettingsGeneral;
 
   @ValidateNested()
   organisationInfo?: OrganisationInfoDto;

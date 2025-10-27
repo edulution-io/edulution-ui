@@ -10,6 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import SURVEYS_FILES_PATH from '@libs/survey/constants/surveysFilesPath';
 import APPS_FILES_PATH from './appsFilesPath';
 import PUBLIC_DOWNLOADS_PATH from './publicDownloadsPath';
 import TRAEFIK_CONFIG_FILES_PATH from './traefikConfigPath';
@@ -22,6 +23,7 @@ const folderPaths = [
   TRAEFIK_CONFIG_FILES_PATH,
   TEMP_FILES_PATH,
   PUBLIC_ASSET_PATH,
+  SURVEYS_FILES_PATH,
 ];
 
 export default folderPaths;

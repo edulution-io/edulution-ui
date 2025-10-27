@@ -55,7 +55,7 @@ import SurveyAnswerService from './survey-answers.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import { checkAttachmentFile, createAttachmentUploadOptions } from '../filesystem/multer.utilities';
-import AppConfigGuard from '../appconfig/appconfig.guard';
+import AdminGuard from '../common/guards/admin.guard';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
@@ -115,7 +115,7 @@ class SurveysController {
     return res.status(HttpStatus.CREATED).json(fileUrl);
   }
 
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   @Post(TEMPLATES)
   async createTemplate(@Body() surveyTemplateDto: SurveyTemplateDto) {
     return this.surveysTemplateService.createTemplate(surveyTemplateDto);

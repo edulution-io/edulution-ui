@@ -35,6 +35,7 @@ import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../common/CustomHttpException';
 import { User, UserDocument } from '../users/user.schema';
 import SseService from '../sse/sse.service';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 const { KEYCLOAK_EDU_UI_SECRET, KEYCLOAK_EDU_UI_CLIENT_ID, KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API } = process.env;
 
@@ -45,6 +46,7 @@ class AuthService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private readonly sseService: SseService,
+    private readonly globalSettingsService: GlobalSettingsService,
   ) {
     this.keycloakApi = axios.create({
       baseURL: `${KEYCLOAK_API}/realms/${KEYCLOAK_EDU_UI_REALM}`,
@@ -221,8 +223,10 @@ class AuthService {
     try {
       const updateUser = await this.userModel.findOne<User>({ username }).lean();
       const updateUserRoles = updateUser?.ldapGroups;
+      const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
+
       const userHasPermission =
-        getIsAdmin(ldapGroups) ||
+        getIsAdmin(ldapGroups, adminGroups) ||
         (ldapGroups.includes(GroupRoles.TEACHER) && !!updateUserRoles?.roles.includes(UserRoles.STUDENT));
 
       if (!userHasPermission) {

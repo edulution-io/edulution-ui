@@ -13,6 +13,7 @@
 import { Model, Types } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveysAttachmentService from 'apps/api/src/surveys/surveys-attachment.service';
 import SurveysService from './surveys.service';
@@ -40,6 +41,7 @@ import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 import NotificationsService from '../notifications/notifications.service';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 describe(PublicSurveysController.name, () => {
   let controller: PublicSurveysController;
@@ -55,6 +57,7 @@ describe(PublicSurveysController.name, () => {
       providers: [
         SurveysService,
         SseService,
+        ConfigService,
         {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
@@ -69,6 +72,7 @@ describe(PublicSurveysController.name, () => {
         },
         { provide: FilesystemService, useValue: mockFilesystemService },
         { provide: NotificationsService, useValue: jest.fn() },
+        { provide: GlobalSettingsService, useValue: { getAdminGroupsFromCache: jest.fn() } },
       ],
     }).compile();
 

@@ -25,12 +25,12 @@ import type FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floati
 import syncjobDefaultConfig from '@libs/mail/constants/sync-job-default-config';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import StateLoader from '@/pages/FileSharing/utilities/StateLoader';
-import replaceDiacritics from '@libs/common/utils/replaceDiacritics';
 import FormField from '@/components/shared/FormField';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import APPS from '@libs/appconfig/constants/apps';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import { replaceGermanUmlauts } from '@libs/common/utils/string/latinize';
 import MailImporterTable from './MailImporterTable';
 
 const UserSettingsMailsPage: React.FC = () => {
@@ -83,7 +83,7 @@ const UserSettingsMailsPage: React.FC = () => {
       user1: form.getValues('email') as string,
       password1: form.getValues('password') as string,
       enc1: selectedProviderConfig.encryption,
-      subfolder2: replaceDiacritics(selectedProviderConfig.label),
+      subfolder2: replaceGermanUmlauts(selectedProviderConfig.label),
     };
 
     void postSyncJob(createSyncJobDto);

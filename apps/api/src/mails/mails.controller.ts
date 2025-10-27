@@ -17,7 +17,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import GetUsersEmailAddress from '../common/decorators/getUsersEmailAddress.decorator';
 import MailsService from './mails.service';
 import UsersService from '../users/users.service';
-import AppConfigGuard from '../appconfig/appconfig.guard';
+import AdminGuard from '../common/guards/admin.guard';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 
 @ApiTags(MAIL_ENDPOINT)
@@ -44,7 +44,7 @@ class MailsController {
   }
 
   @Post('provider-config')
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   async postExternalMailProviderConfig(
     @Body() mailProviderConfig: MailProviderConfigDto,
   ): Promise<MailProviderConfigDto[]> {
@@ -52,7 +52,7 @@ class MailsController {
   }
 
   @Delete('provider-config/:mailProviderId')
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   deleteExternalMailProviderConfig(@Param('mailProviderId') mailProviderId: string) {
     return this.mailsService.deleteExternalMailProviderConfig(mailProviderId);
   }

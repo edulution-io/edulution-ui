@@ -10,18 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const umlautMap = {
-  ä: 'ae',
-  ö: 'oe',
-  ü: 'ue',
-  Ä: 'Ae',
-  Ö: 'Oe',
-  Ü: 'Ue',
-  ß: 'ss',
-} as const;
+const APP_LAYOUT_ID = 'app-layout';
 
-type Umlaut = keyof typeof umlautMap;
-
-const replaceDiacritics = (str: string) => str.replace(/[äöüÄÖÜß]/g, (match) => umlautMap[match as Umlaut]);
-
-export default replaceDiacritics;
+export default APP_LAYOUT_ID;

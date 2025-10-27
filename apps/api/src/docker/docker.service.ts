@@ -294,6 +294,35 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       );
     }
   }
+
+  async getContainerStats() {
+    const containers = await this.getContainers();
+
+    return Promise.all(
+      containers.map(async (container) => {
+        try {
+          const c = this.docker.getContainer(container.Id);
+          const data = await c.stats({ stream: false });
+
+          const cpuDelta = data.cpu_stats.cpu_usage.total_usage - data.precpu_stats.cpu_usage.total_usage;
+          const systemDelta = data.cpu_stats.system_cpu_usage - data.precpu_stats.system_cpu_usage;
+          const cpuPercent = systemDelta > 0 ? (cpuDelta / systemDelta) * data.cpu_stats.online_cpus * 100 : 0;
+
+          return {
+            id: container.Id.slice(0, 12),
+            name: container.Names[0].replace('/', ''),
+            image: container.Image,
+            cpuPercent: +cpuPercent.toFixed(2),
+            memUsageMB: +(data.memory_stats.usage / 1024 / 1024).toFixed(1),
+            memLimitMB: +(data.memory_stats.limit / 1024 / 1024).toFixed(1),
+          };
+        } catch (e) {
+          const message = e instanceof Error ? e.message : String(e);
+          return { id: container.Id.slice(0, 12), error: message };
+        }
+      }),
+    );
+  }
 }
 
 export default DockerService;

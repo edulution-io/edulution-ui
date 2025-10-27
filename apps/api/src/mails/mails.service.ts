@@ -85,7 +85,7 @@ class MailsService implements OnModuleInit {
     Logger.debug(`Imap connection timeout: ${connectionTimeout}`, MailsService.name);
   }
 
-  @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
+  @OnEvent(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${APPS.MAIL}`)
   async updateImapConfig() {
     const appConfig = await this.appConfigService.getAppConfigByName(APPS.MAIL);
 
@@ -109,7 +109,7 @@ class MailsService implements OnModuleInit {
     );
   }
 
-  @OnEvent(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED)
+  @OnEvent(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${APPS.MAIL}`)
   async updateSogoTheme() {
     try {
       const appConfig = await this.appConfigService.getAppConfigByName(APPS.MAIL);
