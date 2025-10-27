@@ -15,17 +15,17 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5.0.0
         with:
           token: ${{ github.token }}
 
       - name: Use Node.js
-        uses: actions/setup-node@v4.1.0
+        uses: actions/setup-node@v6.0.0
         with:
           node-version: 20.x
 
       - name: Cache Node.js modules
-        uses: actions/cache@v4.2.0
+        uses: actions/cache@v4.3.0
         continue-on-error: true
         with:
           path: |
@@ -53,17 +53,17 @@ jobs:
           echo "docker_tags_fe=$docker_tags_fe" >> $GITHUB_OUTPUT
 
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5.0.0
         with:
           token: ${{ github.token }}
 
       - name: Use Node.js
-        uses: actions/setup-node@v4.1.0
+        uses: actions/setup-node@v6.0.0
         with:
           node-version: 20.x
 
       - name: Restore cached Node.js modules
-        uses: actions/cache@v4.2.0
+        uses: actions/cache@v4.3.0
         continue-on-error: true
         with:
           path: |
@@ -83,7 +83,7 @@ jobs:
           driver: docker-container
 
       - name: Build docker image
-        uses: docker/build-push-action@v6.10.0
+        uses: docker/build-push-action@v6.18.0
         with:
           build-args: |
             buildId=${{ github.sha }}
@@ -111,17 +111,17 @@ jobs:
           echo "docker_tags_api=$docker_tags_api" >> $GITHUB_OUTPUT
 
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5.0.0
         with:
           token: ${{ github.token }}
 
       - name: Use Node.js
-        uses: actions/setup-node@v4.1.0
+        uses: actions/setup-node@v6.0.0
         with:
           node-version: 20.x
 
       - name: Restore cached Node.js modules
-        uses: actions/cache@v4.2.0
+        uses: actions/cache@v4.3.0
         continue-on-error: true
         with:
           path: |
@@ -139,7 +139,7 @@ jobs:
           driver: docker-container
 
       - name: Build docker image
-        uses: docker/build-push-action@v6.10.0
+        uses: docker/build-push-action@v6.18.0
         with:
           build-args: |
             buildId=${{ github.sha }}
@@ -157,17 +157,17 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5.0.0
         with:
           token: ${{ github.token }}
 
       - name: Use Node.js
-        uses: actions/setup-node@v4.1.0
+        uses: actions/setup-node@v6.0.0
         with:
           node-version: 20.x
 
       - name: Restore cached Node.js modules
-        uses: actions/cache@v4.2.0
+        uses: actions/cache@v4.3.0
         continue-on-error: true
         with:
           path: |
