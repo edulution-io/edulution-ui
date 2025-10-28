@@ -18,6 +18,8 @@ import keycloakUserStorageProvider from '@libs/ldapKeycloakSync/constants/keyclo
 import LdapComponent from '@libs/ldapKeycloakSync/types/ldapComponent';
 import LdapMapper from '@libs/ldapKeycloakSync/types/ldapMapper';
 import REQUIRED_USER_ATTRIBUTES from '@libs/ldapKeycloakSync/constants/requiredUserAttributes';
+import LDAP_PROVIDER_ID from '@libs/ldapKeycloakSync/constants/ldapProviderId';
+import LDAP_STORAGE_MAPPER_TYPE from '@libs/ldapKeycloakSync/constants/ldapStorageMapperType';
 
 const { KEYCLOAK_ADMIN, KEYCLOAK_ADMIN_PASSWORD } = process.env as Record<string, string>;
 
@@ -43,7 +45,7 @@ const addUserAttributeMappers: Scripts = {
         params: { type: keycloakUserStorageProvider },
       });
 
-      const ldapComponents = components.filter((c) => c.providerId === 'ldap');
+      const ldapComponents = components.filter((c) => c.providerId === LDAP_PROVIDER_ID);
 
       if (ldapComponents.length === 0) {
         Logger.warn('No LDAP user federation found; exiting.', addUserAttributeMappers.name);
@@ -63,7 +65,7 @@ const addUserAttributeMappers: Scripts = {
         const { data: mappers } = await keycloakClient.get<LdapMapper[]>('/components', {
           params: {
             parent: ldapComponent.id,
-            type: 'org.keycloak.storage.ldap.mappers.LDAPStorageMapper',
+            type: LDAP_STORAGE_MAPPER_TYPE,
           },
         });
 
@@ -82,7 +84,7 @@ const addUserAttributeMappers: Scripts = {
           const mapperConfig = {
             name: userAttribute,
             providerId: 'user-attribute-ldap-mapper',
-            providerType: 'org.keycloak.storage.ldap.mappers.LDAPStorageMapper',
+            providerType: LDAP_STORAGE_MAPPER_TYPE,
             parentId: ldapComponent.id,
             config: {
               'ldap.attribute': [userAttribute],
