@@ -498,6 +498,16 @@
     "invalidQuota": "Die Quota muss der Dokumentation entsprechend angegeben werden",
     "invalidMailQuota": "Die E-Mailquota muss als Zahl in MB angegeben werden",
     "name": "Name",
+    "project": {
+      "createSuccess": "Projekt erfolgreich erstellt",
+      "updateSuccess": "Projekt erfolgreich aktualisiert",
+      "deleteSuccess": "Projekt erfolgreich gelöscht"
+    },
+    "sessions": {
+      "createSuccess": "Sitzung erfolgreich erstellt",
+      "updateSuccess": "Sitzung erfolgreich aktualisiert",
+      "deleteSuccess": "Sitzung erfolgreich gelöscht"
+    },
     "mailQuota": "E-Mail Quota (MB)",
     "proxyAddresses": "Proxy E-Mail-Adressen",
     "descriptionPlaceholder": "Kurze Beschreibung des Projekts",
