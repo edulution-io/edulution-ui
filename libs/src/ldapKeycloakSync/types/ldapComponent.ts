@@ -10,27 +10,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export interface Group {
+type LdapComponent = {
   id: string;
   name: string;
-  path: string;
-  subGroupCount: number;
-  subGroups: Group[];
-  attributes: {
-    description: string[];
-    cn: string[];
-    sophomorixMaillist: string[];
-    displayName: string[];
-    mail: string[];
-    [key: string]: unknown;
-  };
-  realmRoles: string[];
-  clientRoles: Record<string, unknown>;
-  access: {
-    view: boolean;
-    viewMembers: boolean;
-    manageMembers: boolean;
-    manage: boolean;
-    manageMembership: boolean;
-  };
-}
+  providerId: string;
+  providerType: string;
+  config: Record<string, string[]>;
+};
+
+export default LdapComponent;

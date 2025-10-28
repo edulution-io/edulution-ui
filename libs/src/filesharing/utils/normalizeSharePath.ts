@@ -10,27 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export interface Group {
-  id: string;
-  name: string;
-  path: string;
-  subGroupCount: number;
-  subGroups: Group[];
-  attributes: {
-    description: string[];
-    cn: string[];
-    sophomorixMaillist: string[];
-    displayName: string[];
-    mail: string[];
-    [key: string]: unknown;
-  };
-  realmRoles: string[];
-  clientRoles: Record<string, unknown>;
-  access: {
-    view: boolean;
-    viewMembers: boolean;
-    manageMembers: boolean;
-    manage: boolean;
-    manageMembership: boolean;
-  };
-}
+import normalizeLdapHomeDirectory from '@libs/filesharing/utils/normalizeLdapHomeDirectory';
+
+const normalizeSharePath = (path: string): string => {
+  let normalized = path.replace(/\\/g, '/');
+  normalized = normalized.replace(/\/\/[^/]+\//, '/');
+  normalized = normalizeLdapHomeDirectory(normalized);
+  normalized = normalized.replace(/\/+/g, '/');
+
+  return normalized;
+};
+
+export default normalizeSharePath;
