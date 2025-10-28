@@ -15,21 +15,25 @@ import { WebdavServerTableStore } from '@libs/appconfig/types/webdavShareTableSt
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
+import useWebdavShareConfigTableStore from './useWebdavShareConfigTableStore';
 
 const initialValues = {
   selectedRows: {},
   isLoading: false,
   tableContentData: [],
   selectedConfig: null,
+  isDeleteWebdavServerWarningDialogOpen: undefined,
 };
 
 const useWebdavServerConfigTableStore: UseBoundStore<StoreApi<WebdavServerTableStore>> = create<WebdavServerTableStore>(
-  (set) => ({
+  (set, get) => ({
     ...initialValues,
 
     setSelectedRows: (selectedRows) => set({ selectedRows }),
 
     setSelectedConfig: (config) => set({ selectedConfig: config }),
+
+    setIsDeleteWebdavServerWarningDialogOpen: (open) => set({ isDeleteWebdavServerWarningDialogOpen: open }),
 
     fetchTableContent: async () => {
       try {
@@ -43,6 +47,12 @@ const useWebdavServerConfigTableStore: UseBoundStore<StoreApi<WebdavServerTableS
     },
 
     deleteTableEntry: async (_applicationName, webdavShareId) => {
+      const { tableContentData: webdavShares } = useWebdavShareConfigTableStore.getState();
+      const dependentShares = webdavShares.filter((share) => share.rootServer === webdavShareId);
+      if (dependentShares.length > 0) {
+        get().setIsDeleteWebdavServerWarningDialogOpen(webdavShareId);
+        return;
+      }
       set({ isLoading: true });
       try {
         await eduApi.delete(`/webdav-shares/${webdavShareId}`, { params: { isRootServer: true } });

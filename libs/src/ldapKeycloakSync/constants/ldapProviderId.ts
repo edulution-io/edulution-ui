@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const publicEmbeddedRoutes = ['imprint', 'impressum', 'privacy', 'datenschutz'];
+const LDAP_PROVIDER_ID = 'ldap';
 
-export default publicEmbeddedRoutes;
+export default LDAP_PROVIDER_ID;

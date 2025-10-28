@@ -10,6 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const publicEmbeddedRoutes = ['imprint', 'impressum', 'privacy', 'datenschutz'];
+import normalizeLdapHomeDirectory from '@libs/filesharing/utils/normalizeLdapHomeDirectory';
 
-export default publicEmbeddedRoutes;
+const normalizeSharePath = (path: string): string => {
+  let normalized = path.replace(/\\/g, '/');
+  normalized = normalized.replace(/\/\/[^/]+\//, '/');
+  normalized = normalizeLdapHomeDirectory(normalized);
+  normalized = normalized.replace(/\/+/g, '/');
+
+  return normalized;
+};
+
+export default normalizeSharePath;

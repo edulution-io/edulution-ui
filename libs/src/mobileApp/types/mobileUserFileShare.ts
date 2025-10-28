@@ -10,6 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const publicEmbeddedRoutes = ['imprint', 'impressum', 'privacy', 'datenschutz'];
+import WebdavShareType from '@libs/filesharing/types/webdavShareType';
+import { IsString } from 'class-validator';
 
-export default publicEmbeddedRoutes;
+class MobileUserFileShare {
+  type: WebdavShareType;
+
+  @IsString()
+  path: string;
+
+  @IsString()
+  displayName: string;
+
+  @IsString()
+  webdavShareId: string;
+}
+
+export default MobileUserFileShare;

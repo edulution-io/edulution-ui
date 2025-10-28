@@ -20,6 +20,8 @@ import LdapMapper from '@libs/ldapKeycloakSync/types/ldapMapper';
 import SCHOOL_GROUPS_MAPPER_NAME from '@libs/ldapKeycloakSync/constants/schoolGroupsMapperName';
 import GLOBAL_GROUPS_MAPPER_NAME from '@libs/ldapKeycloakSync/constants/globalGroupsMapperName';
 import REQUIRED_GROUP_ATTRIBUTES from '@libs/ldapKeycloakSync/constants/requiredGroupAttributes';
+import LDAP_PROVIDER_ID from '@libs/ldapKeycloakSync/constants/ldapProviderId';
+import LDAP_STORAGE_MAPPER_TYPE from '@libs/ldapKeycloakSync/constants/ldapStorageMapperType';
 
 const { KEYCLOAK_ADMIN, KEYCLOAK_ADMIN_PASSWORD } = process.env as Record<string, string>;
 
@@ -47,7 +49,7 @@ const addLdapGroupMappers: Scripts = {
         params: { type: keycloakUserStorageProvider },
       });
 
-      const ldapComponents = components.filter((c) => c.providerId === 'ldap');
+      const ldapComponents = components.filter((c) => c.providerId === LDAP_PROVIDER_ID);
 
       if (ldapComponents.length === 0) {
         Logger.warn('No LDAP user federation found; exiting.', addLdapGroupMappers.name);
@@ -67,7 +69,7 @@ const addLdapGroupMappers: Scripts = {
         const { data: mappers } = await keycloakClient.get<LdapMapper[]>('/components', {
           params: {
             parent: ldapComponent.id,
-            type: 'org.keycloak.storage.ldap.mappers.LDAPStorageMapper',
+            type: LDAP_STORAGE_MAPPER_TYPE,
           },
         });
 
