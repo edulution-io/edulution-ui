@@ -25,9 +25,9 @@ import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/
 import VEYON_FEATURE_ACTIONS from '@libs/veyon/constants/veyonFeatureActions';
 import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
 import getStringFromArray from '@libs/common/utils/getStringFromArray';
+import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
 import useVeyonApiStore from '../../useVeyonApiStore';
 import UserCardVeyonPreview from './UserCardVeyonPreview';
-import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
 
 interface UserCardProps {
   user: LmnUserInfo;
