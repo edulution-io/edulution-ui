@@ -45,12 +45,6 @@ const UserProjectOrSchoolClassSearch = () => {
       (
         [
           SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES.SCHOOL_CLASS,
-          SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES.PARENTS,
-          SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES.TEACHERS,
-          SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES.STAFF_MEMBERS,
-          SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES.DEVICES,
-          SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES.STUDENTS,
-          SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES.PROJECTS,
           SOPHOMORIX_GROUP_TYPES.STUDENT,
           SOPHOMORIX_GROUP_TYPES.PROJECT,
         ] as string[]
@@ -67,13 +61,7 @@ const UserProjectOrSchoolClassSearch = () => {
     const { type, value } = newlySelected[0];
 
     switch (type) {
-      case SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES.SCHOOL_CLASS:
-      case SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES.PARENTS:
-      case SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES.TEACHERS:
-      case SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES.STAFF_MEMBERS:
-      case SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES.DEVICES:
-      case SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES.STUDENTS:
-      case SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES.PROJECTS: {
+      case SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES.SCHOOL_CLASS: {
         const schoolClass = await fetchSchoolClass(value);
         if (schoolClass) {
           setMember(getUniqueValues([...member, ...schoolClass.members]));
