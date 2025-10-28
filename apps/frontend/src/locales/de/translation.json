@@ -113,15 +113,9 @@
     "mobileAccess": {
       "title": "Mobiler Zugriff",
       "manual": "Anleitung",
-      "manualSetup": "Manuelles Einrichten",
       "setupWithQrCode": "Einrichtung via QR-Code",
-      "accessData": "Zugangsdaten",
       "content": "Du kannst von vielen mobilen Geräten aus auf den Schulserver zugreifen. Drücke auf Anleitung, um zu starten.",
-      "scanAccessInfo": "Um die Zugangsdaten zu übertragen, bitte folgenden QR-Code mit der {{ applicationName }} App scannen.",
-      "manualAccessInfo": "Gib die Anmeldedaten manuell in der {{ applicationName }} App ein. Das folgende Beispiel zeigt, wie die einzelnen Felder auszufüllen sind.",
-      "nextStepPreview": "Im nächsten Schritt kannst du die Zugangsdaten übertragen.",
-      "downloadDirect": "Oder lade die App direkt herunter:",
-      "downloadApp": "Lade hier die {{ applicationName }} App herunter:"
+      "scanAccessInfo": "Um die Zugangsdaten zu übertragen, bitte folgenden QR-Code mit der edulution App scannen."
     },
     "quota": {
       "title": "Quotas",
@@ -1201,7 +1195,7 @@
     },
     "mobileAccess": {
       "title": "App-Zugriff",
-      "description": "Hier kannst du für den mobilen Zugriff auf deine Dateien die {{ applicationName }} App einrichten. Aktuell nur für Apple iOS verfügbar.",
+      "description": "Hier kannst du den mobilen Zugriff für die edulution App einrichten.",
       "docsDescription": "Den Download-Link zur edulution App und wie du sie einrichtest findest in der edulution Doku.",
       "button": "Doku öffnen"
     },
