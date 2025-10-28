@@ -107,15 +107,9 @@
     "mobileAccess": {
       "title": "Accès mobile",
       "manual": "Instructions",
-      "manualSetup": "Configuration manuelle",
       "setupWithQrCode": "Configuration via un QR-code",
-      "accessData": "Identifiants",
       "content": "Vous pouvez accéder au serveur scolaire à partir de nombreux appareils mobiles. Appuyez sur les instructions pour commencer.",
-      "scanAccessInfo": "Pour transférer les identifiants, veuillez scanner le QR-code suivant avec le   l'application {{ applicationName }}.",
-      "manualAccessInfo": "Saisir les identifiants manuellement dans l'app {{ applicationName }}. L'exemple suivant montre comment les champs individuels doivent être remplis.",
-      "nextStepPreview": "À l'étape suivante, vous pouvez transférer les identifiants.",
-      "downloadDirect": "Ou téléchargez directement l'application:",
-      "downloadApp": "Téléchargez l'application {{ applicationName }}:"
+      "scanAccessInfo": "Pour transférer les identifiants, veuillez scanner le QR-code suivant avec l'edulution App."
     },
     "quota": {
       "title": "Quotas",
@@ -1039,7 +1033,9 @@
     },
     "mobileAccess": {
       "title": "Accès à l'application",
-      "description": "Ici, vous pouvez configurer l'accès mobile de l'app {{ applicationName }} pour l'accès aux fichiers. Actuellement disponible uniquement pour Apple iOS."
+      "description": "Ici, vous pouvez configurer l'accès mobile de l'app {{ applicationName }} pour l'accès aux fichiers. Actuellement disponible uniquement pour Apple iOS.",
+      "docsDescription": "Tu trouveras le lien de téléchargement de l'application edulution et les instructions d'installation dans la documentation edulution.",
+      "button": "Ouvrir le documentaire"
     },
     "faq": "FAQ",
     "externalIntegration": "Connexion externe",

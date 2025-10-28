@@ -122,15 +122,9 @@
     "mobileAccess": {
       "title": "Mobile Access",
       "manual": "Setup",
-      "manualSetup": "Manual setup",
       "setupWithQrCode": "Setup with QR code",
-      "accessData": "Login data",
       "content": "You can access the school server from many mobile devices. Click on Manual to start.",
-      "scanAccessInfo": "To transfer the access data, please scan the following QR code with the {{ applicationName }} app.",
-      "manualAccessInfo": "Enter your login details manually in the {{ applicationName }} app. The example below shows how to fill in each field.",
-      "nextStepPreview": "In the next step you can transfer the access data.",
-      "downloadDirect": "Or download the app directly:",
-      "downloadApp": "Download the {{ applicationName }} app here:"
+      "scanAccessInfo": "To transfer the access data, please scan the following QR code with the edulution App."
     },
     "quota": {
       "title": "Quotas",
@@ -1198,7 +1192,9 @@
     },
     "mobileAccess": {
       "title": "Mobile Access",
-      "description": "Here you can set up the {{ applicationName }} app for mobile access to your files. Currently only available for Apple iOS."
+      "description": "Here you can set up the {{ applicationName }} app for mobile access to your files. Currently only available for Apple iOS.",
+      "docsDescription": "You can find the download link for the edulution app and instructions on how to set it up in the edulution documentation.",
+      "button": "Open Docs"
     },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
