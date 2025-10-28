@@ -10,21 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-// This type is based on a third-party object definition from the LDAP API.
-// Any modifications should be carefully reviewed to ensure compatibility with the source.
-type LmnApiGroupTypes =
-  | 'schoolclass'
-  | 'student'
-  | 'project'
-  | 'teacher'
-  | 'unknown'
-  | 'device'
-  | 'globalbinduser'
-  | 'globaladministrator'
-  | 'schoolbinduser'
-  | 'schooladministrator'
-  | 'classroom-studentcomputer'
-  | 'server'
-  | 'printer';
+import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
 
-export default LmnApiGroupTypes;
+type SophomorixGroupTypes = (typeof SOPHOMORIX_GROUP_TYPES)[keyof typeof SOPHOMORIX_GROUP_TYPES];
+
+export default SophomorixGroupTypes;
