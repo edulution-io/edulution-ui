@@ -14,27 +14,14 @@ import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import MobileUserFileShare from '@libs/mobileApp/types/mobileUserFileShare';
 import normalizeSharePath from '@libs/filesharing/utils/normalizeSharePath';
+import resolveSharePath from '@libs/mobileApp/utils/resolveSharePath';
 
 const buildUserShares = (shares: WebdavShareDto[] | undefined, lmnInfo: LmnUserInfo) => {
   if (!shares) return [];
 
   return shares
     .map((share) => {
-      let resolvedPath;
-
-      if (!share.pathVariables || share.pathVariables.length === 0) {
-        resolvedPath = share.sharePath || '';
-      } else {
-        resolvedPath = share.pathVariables
-          .map((pathVariable) =>
-            pathVariable.label in lmnInfo
-              ? (lmnInfo[pathVariable.label as keyof LmnUserInfo] as string)
-              : pathVariable.value || '',
-          )
-          .filter((val) => val !== '')
-          .join('/');
-      }
-
+      const resolvedPath = resolveSharePath(share, lmnInfo);
       const combinedPath = share.pathname + share.sharePath + resolvedPath;
       const finalPath = normalizeSharePath(combinedPath);
 
