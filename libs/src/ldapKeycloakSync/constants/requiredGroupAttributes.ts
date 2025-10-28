@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const REQUIRED_GROUP_ATTRIBUTES = ['mail', 'sophomorixMaillist', 'description', 'proxyAddresses'];
+const REQUIRED_GROUP_ATTRIBUTES = ['mail', 'displayName', 'sophomorixMaillist', 'description', 'proxyAddresses'];
 
 export default REQUIRED_GROUP_ATTRIBUTES;
