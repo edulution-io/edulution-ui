@@ -81,7 +81,7 @@ const NativeFrame: React.FC<NativeFrameProps> = ({ scriptOnStartUp, scriptOnStop
     <iframe
       ref={iframeRef}
       title={appName}
-      className="absolute inset-y-0 left-0 ml-0 mr-14 w-full md:w-[calc(100%-var(--sidebar-width))]"
+      className="absolute inset-y-0 left-0 ml-0 w-full"
       height="100%"
       src={loadedEmbeddedFrames.includes(currentAppConfig.name) ? initialUrlRef.current : undefined}
       style={activeEmbeddedFrame === appName ? { display: 'block' } : { display: 'none' }}
