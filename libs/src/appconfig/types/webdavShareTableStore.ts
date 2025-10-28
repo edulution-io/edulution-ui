@@ -25,6 +25,8 @@ export interface WebdavShareTableStore extends AppConfigTable<WebdavShareDto> {
 export interface WebdavServerTableStore extends AppConfigTable<WebdavShareDto> {
   isLoading: boolean;
   selectedConfig: WebdavShareDto | null;
+  isDeleteWebdavServerWarningDialogOpen: string | undefined;
+  setIsDeleteWebdavServerWarningDialogOpen: (open: string | undefined) => void;
   setSelectedConfig: (config: WebdavShareDto | null) => void;
   reset: () => void;
 }

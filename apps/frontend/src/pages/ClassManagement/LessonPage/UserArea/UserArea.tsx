@@ -16,7 +16,6 @@ import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import { useTranslation } from 'react-i18next';
 import LessonFloatingButtonsBar from '@/pages/ClassManagement/LessonPage/LessonFloatingButtonsBar';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
-import { SOPHOMORIX_STUDENT, SOPHOMORIX_TEACHER } from '@libs/lmnApi/constants/sophomorixRoles';
 import sortByName from '@libs/common/utils/sortByName';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useUserStore from '@/store/UserStore/useUserStore';
@@ -27,6 +26,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
 import QuotaThresholdPercent from '@libs/filesharing/constants/quotaThresholdPercent';
+import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
 
 const UserArea = ({ fetchData }: { fetchData: () => Promise<void> }) => {
   const { t } = useTranslation();
@@ -51,11 +51,13 @@ const UserArea = ({ fetchData }: { fetchData: () => Promise<void> }) => {
   }, [teacher, user]);
 
   const { members, selectableMembers } = useMemo(() => {
-    const filteredMembers = member.filter((m) => [SOPHOMORIX_STUDENT, SOPHOMORIX_TEACHER].includes(m.sophomorixRole));
+    const filteredMembers = member.filter((m) =>
+      [SOPHOMORIX_GROUP_TYPES.STUDENT, SOPHOMORIX_GROUP_TYPES.TEACHER].includes(m.sophomorixRole),
+    );
     return {
       members: filteredMembers,
       selectableMembers: filteredMembers.filter(
-        (m) => m.sophomorixRole === SOPHOMORIX_STUDENT && isTeacherInSameClass(m),
+        (m) => m.sophomorixRole === SOPHOMORIX_GROUP_TYPES.STUDENT && isTeacherInSameClass(m),
       ),
     };
   }, [member]);
@@ -67,7 +69,7 @@ const UserArea = ({ fetchData }: { fetchData: () => Promise<void> }) => {
 
   const getSelectedStudents = () => {
     if (selectedMemberCount) {
-      return selectedMember.filter((m) => m.sophomorixRole === SOPHOMORIX_STUDENT);
+      return selectedMember.filter((m) => m.sophomorixRole === SOPHOMORIX_GROUP_TYPES.STUDENT);
     }
     return selectableMembers;
   };

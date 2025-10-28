@@ -13,7 +13,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/shared/Button';
-import { AppleLogo } from '@/assets/icons';
 import { Card, CardContent } from '@/components/shared/Card';
 import { useNavigate } from 'react-router-dom';
 import { USER_SETTINGS_MOBILE_ACCESS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';
@@ -35,11 +34,6 @@ const MobileFileAccessCard: React.FC = () => {
           size="lg"
           onClick={() => navigate(USER_SETTINGS_MOBILE_ACCESS_PATH)}
         >
-          <img
-            src={AppleLogo}
-            alt="AppleLogo"
-            width="20px"
-          />
           <p>{t('dashboard.mobileAccess.manual')}</p>
         </Button>
       </CardContent>

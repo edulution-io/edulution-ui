@@ -10,18 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const umlautMap = {
-  ä: 'ae',
-  ö: 'oe',
-  ü: 'ue',
-  Ä: 'Ae',
-  Ö: 'Oe',
-  Ü: 'Ue',
-  ß: 'ss',
-} as const;
+import ThemeColors from '@libs/global-settings/types/themeColors';
 
-type Umlaut = keyof typeof umlautMap;
+const applyThemeColors = (theme: ThemeColors, root: HTMLElement = document.documentElement) => {
+  root.style.setProperty('--primary', theme.primary);
+  root.style.setProperty('--secondary', theme.secondary);
+  root.style.setProperty('--ci-light-green', theme.ciLightGreen);
+  root.style.setProperty('--ci-light-blue', theme.ciLightBlue);
+};
 
-const replaceDiacritics = (str: string) => str.replace(/[äöüÄÖÜß]/g, (match) => umlautMap[match as Umlaut]);
-
-export default replaceDiacritics;
+export default applyThemeColors;

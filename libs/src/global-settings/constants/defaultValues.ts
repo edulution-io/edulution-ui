@@ -13,11 +13,12 @@
 import APPS from '@libs/appconfig/constants/apps';
 import getDeploymentTarget from '@libs/common/utils/getDeploymentTarget';
 import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
+import DEFAULT_THEME from '@libs/global-settings/constants/defaultTheme';
 
 const { LDAP_EDULUTION_BINDUSER_DN, LDAP_EDULUTION_BINDUSER_PASSWORD } = process.env as Record<string, string>;
 
 const defaultValues: GlobalSettingsDto = {
-  auth: { mfaEnforcedGroups: [] },
+  auth: { mfaEnforcedGroups: [], adminGroups: [] },
   general: {
     defaultLandingPage: {
       isCustomLandingPageEnabled: true,
@@ -37,6 +38,7 @@ const defaultValues: GlobalSettingsDto = {
     postalCode: '',
     website: '',
   },
+  theme: DEFAULT_THEME,
 };
 
 export default defaultValues;

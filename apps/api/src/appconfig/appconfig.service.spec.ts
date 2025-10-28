@@ -44,7 +44,11 @@ const mockConnection = {
   },
 };
 
-const globalSettingsServiceMock = { setGlobalSettings: jest.fn(), getGlobalSettings: jest.fn() };
+const globalSettingsServiceMock = {
+  setGlobalSettings: jest.fn(),
+  getGlobalSettings: jest.fn(),
+  getAdminGroupsFromCache: jest.fn(),
+};
 
 describe('AppConfigService', () => {
   let service: AppConfigService;

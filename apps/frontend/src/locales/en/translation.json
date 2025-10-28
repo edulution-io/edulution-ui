@@ -122,15 +122,9 @@
     "mobileAccess": {
       "title": "Mobile Access",
       "manual": "Setup",
-      "manualSetup": "Manual setup",
       "setupWithQrCode": "Setup with QR code",
-      "accessData": "Login data",
       "content": "You can access the school server from many mobile devices. Click on Manual to start.",
-      "scanAccessInfo": "To transfer the access data, please scan the following QR code with the {{ applicationName }} app.",
-      "manualAccessInfo": "Enter your login details manually in the {{ applicationName }} app. The example below shows how to fill in each field.",
-      "nextStepPreview": "In the next step you can transfer the access data.",
-      "downloadDirect": "Or download the app directly:",
-      "downloadApp": "Download the {{ applicationName }} app here:"
+      "scanAccessInfo": "To transfer the access data, please scan the following QR code with the edulution App."
     },
     "quota": {
       "title": "Quotas",
@@ -187,7 +181,8 @@
       "PasswordMismatch": "The current password is wrong",
       "PasswordChangeFailed": "Password change failed",
       "GetUsersQuotaFailed": "Failed to get users quota",
-      "GetSchoolsFailed": "Failed to get schools"
+      "GetSchoolsFailed": "Failed to get schools",
+      "GetLmnVersionFailed": "Failed to retrieve the Linuxmuster version."
     }
   },
   "ticketsystem": {
@@ -204,6 +199,10 @@
     "encryption": "Encryption",
     "rowsSelected": "{{selected}} of {{total}} jobs selected",
     "rowSelected": "{{selected}} of {{total}} job selected",
+    "themeUpdated": {
+      "generic": "The mail theme has been updated. Please reload the page to apply the changes.",
+      "failed": "The mail theme could not be updated."
+    },
     "importer": {
       "filterPlaceHolderText": "Search for username",
       "title": "E-Mail Sync",
@@ -501,6 +500,16 @@
     "detailsprinters": "Details of printer",
     "classes": "Classes",
     "name": "Name",
+    "project": {
+      "createSuccess": "Project created successfully",
+      "updateSuccess": "Project updated successfully",
+      "deleteSuccess": "Project deleted successfully"
+    },
+    "sessions": {
+      "createSuccess": "Session created successfully",
+      "updateSuccess": "Session updated successfully",
+      "deleteSuccess": "Session deleted successfully"
+    },
     "notMemberOfClass": "You are no member of a class.",
     "noGroupsToShow": "No groups available.",
     "overview": "Overview",
@@ -582,6 +591,7 @@
     "pdfDescription": "Create a PDF file to print the passwords for these school classes",
     "csvDescription": "Create a CSV file to print the passwords for these school classes",
     "printOneItemPerPage": "Print one password per page",
+    "shouldSplitNamesInCsv": "First and last name in separate columns (works from Linuxmuster 7.3 onwards)",
     "selectSavedSession": "Select from saved sessions",
     "saveSession": "Save session",
     "editSession": "Edit session",
@@ -646,6 +656,14 @@
     "notFound": "Survey could not be found.",
     "noFormula": "The formula of the survey is not readable.",
     "canSubmitMultiple": "Allow multiple submissions",
+    "export": {
+      "exportToPDF": "Export as PDF",
+      "saveInPDF": "Save as PDF",
+      "processing": "Processing export ...",
+      "success": "Successfully exported as PDF",
+      "error": "Error exporting",
+      "warning": "Some questions can not be displayed correctly in the PDF export. This includes file upload, image selection and the password field."
+    },
     "editor": {
       "inputFieldTitle": "Input field",
       "new": "New (blank)",
@@ -889,6 +907,7 @@
     },
     "delete": "Remove",
     "description": {
+      "dashboard": "Here you can make all the settings.",
       "ticketsystem": "Here you can make all the settings.",
       "mail": "Here you can make all the settings.",
       "chat": "Here you can make all the settings.",
@@ -954,6 +973,18 @@
         "uploadDarkLogo": "Upload dark logo",
         "deleteSuccessful": "Logo deleted successfully."
       },
+      "theme": {
+        "title": "Theme Customization",
+        "primaryColor": "Primary Color",
+        "primaryDescription": "Main color used for buttons, links, and highlights",
+        "secondaryColor": "Secondary Color",
+        "secondaryDescription": "Secondary color used for text and borders",
+        "ciLightGreen": "Brand Green",
+        "ciLightGreenDescription": "Brand green color used in gradients and logos",
+        "ciLightBlue": "Brand Blue",
+        "ciLightBlueDescription": "Brand blue color used in gradients and logos",
+        "resetToDefaults": "Reset to Defaults"
+      },
       "organisationInfo": {
         "title": "Organisational information",
         "descriptionSchool": "Enter your organization’s official details. This information may be displayed in the edulution app. Please provide the name, street, postal code, and optionally the school website.",
@@ -975,11 +1006,15 @@
       "resetMfaFormDescription": "Here you can reset the two-factor authentication for users.",
       "selectUsersTitle": "Select Users",
       "selectUsersDescription": "Select the users for whom you want to reset the two-factor authentication.",
-      "totpResetSuccess": "TOTP for user {{username}} has been disabled successfully."
+      "totpResetSuccess": "TOTP for user {{username}} has been disabled successfully.",
+      "setAdminGroupTitle": "Set administrator group",
+      "setAdminGroupDescription": "Additional administrators can be defined here. The global administrator remains unchanged.",
+      "setAdminGroupSelectDescription": "Groups can be selected using the search field."
     },
     "info": {
       "title": "Info"
     },
+    "lmnVersion": { "title": "Linuxmuster version overview" },
     "appconfig": {
       "position": {
         "title": "Sorting",
@@ -1025,7 +1060,11 @@
         },
         "webdavServer": {
           "title": "WebDAV-Server",
-          "filterPlaceHolderText": "Search for WebDAV servers"
+          "filterPlaceHolderText": "Search for WebDAV servers",
+          "deleteWarning": {
+            "title": "Deletion not possible",
+            "description": "The WebDAV server ‘{{serverName}}’ is used by {{count}} share(s): {{shares}}. Please delete the dependent shares first."
+          }
         },
         "files": {
           "title": "Files",
@@ -1153,7 +1192,9 @@
     },
     "mobileAccess": {
       "title": "Mobile Access",
-      "description": "Here you can set up the {{ applicationName }} app for mobile access to your files. Currently only available for Apple iOS."
+      "description": "Here you can set up the {{ applicationName }} app for mobile access to your files. Currently only available for Apple iOS.",
+      "docsDescription": "You can find the download link for the edulution app and instructions on how to set it up in the edulution documentation.",
+      "button": "Open Docs"
     },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
@@ -1224,6 +1265,7 @@
   },
   "edit": "Edit",
   "common": {
+    "refreshPage": "Refresh page",
     "showMore": "Show more",
     "visibility": "Visibility",
     "offline": "Offline",

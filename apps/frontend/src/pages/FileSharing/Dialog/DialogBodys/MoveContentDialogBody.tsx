@@ -25,6 +25,7 @@ import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/getFileSharingTableColumns';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
+import Input from '@/components/shared/Input';
 import WebdavShareSelectDropdown from './WebdavShareSelectDropdown';
 import useFileSharingStore from '../../useFileSharingStore';
 import useVariableSharePathname from '../../hooks/useVariableSharePathname';
@@ -127,18 +128,18 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   const getHiddenSegments = () =>
     webdavShares.find((s) => s.displayName === (selectedWebdavShare || webdavShare))?.pathname;
 
+  const selectedInputValue =
+    moveOrCopyItemToPath?.filename && showSelectedFile
+      ? `${t('moveItemDialog.selectedItem')}: ${decodeURIComponent(moveOrCopyItemToPath.filename)}`
+      : t('filesharing.selectFile');
+
   const footer = (
-    <div className="bottom-0 justify-end bg-secondary p-4 text-sm text-foreground">
-      {moveOrCopyItemToPath?.filename && showSelectedFile ? (
-        <p className="bg-secondary">
-          {t('moveItemDialog.selectedItem')}: {decodeURIComponent(moveOrCopyItemToPath.filename)}
-        </p>
-      ) : (
-        <p className="bg-secondary">
-          <span>{t('filesharing.selectFile')}</span>
-        </p>
-      )}
-    </div>
+    <Input
+      title={t('moveItemDialog.selectedItem')}
+      value={selectedInputValue}
+      variant="dialog"
+      className="h-10"
+    />
   );
 
   const visibleColumns = [FILESHARING_TABLE_COLUM_NAMES.SELECT_FILENAME];
@@ -150,7 +151,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
         webdavShare={webdavShare}
         showRootOnly={showRootOnly}
       />
-      <div className="h-[60vh] flex-col overflow-auto text-background scrollbar-thin">
+      <div className="text-background">
         <div className="pb-2">
           <DirectoryBreadcrumb
             path={currentPath}
@@ -161,7 +162,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
           />
         </div>
         <div className="w-full">{isLoading ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}</div>
-        {!isLoading && (
+        <div className="h-[45vh] max-h-[45vh] overflow-auto scrollbar-thin">
           <ScrollableTable
             columns={columns}
             data={files}
@@ -178,9 +179,9 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
             getRowDisabled={getRowDisabled}
             isDialog
           />
-        )}
+        </div>
       </div>
-      {footer}
+      <div className="pt-2">{footer}</div>
     </>
   );
 };
