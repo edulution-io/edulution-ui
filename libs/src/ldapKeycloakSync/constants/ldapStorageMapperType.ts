@@ -10,19 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import removeRealmRoles from './removeRealmRoles';
-import addMailcowSyncRoles from './addMailcowSyncRoles';
-import patchEduUiClient from './patchEduUiClient';
-import addLdapGroupMappers from './addLdapGroupMappers';
-import addUserAttributeMappers from './addUserAttributeMappers';
+const LDAP_STORAGE_MAPPER_TYPE = 'org.keycloak.storage.ldap.mappers.LDAPStorageMapper';
 
-// Add new scripts here
-const keycloakConfigScripts = [
-  removeRealmRoles,
-  addMailcowSyncRoles,
-  patchEduUiClient,
-  addLdapGroupMappers,
-  addUserAttributeMappers,
-];
-
-export default keycloakConfigScripts;
+export default LDAP_STORAGE_MAPPER_TYPE;
