@@ -106,7 +106,7 @@ const useClassManagementStore = create<ClassManagementStore>(
               headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
             },
           );
-          toast.success(i18n.t('classManagement.project.createSuccess'));
+          toast.success(i18n.t('classmanagement.project.createSuccess'));
         } catch (error) {
           handleApiError(error, set);
         } finally {
@@ -128,7 +128,7 @@ const useClassManagementStore = create<ClassManagementStore>(
               headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
             },
           );
-          toast.success(i18n.t('classManagement.project.updateSuccess'));
+          toast.success(i18n.t('classmanagement.project.updateSuccess'));
         } catch (error) {
           handleApiError(error, set);
         } finally {
@@ -144,7 +144,7 @@ const useClassManagementStore = create<ClassManagementStore>(
           await eduApi.delete(`${PROJECT}/${projectName}`, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
-          toast.success(i18n.t('classManagement.project.deleteSuccess'));
+          toast.success(i18n.t('classmanagement.project.deleteSuccess'));
         } catch (error) {
           handleApiError(error, set);
         } finally {
@@ -202,7 +202,7 @@ const useClassManagementStore = create<ClassManagementStore>(
               headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
             },
           );
-          toast.success(i18n.t('classManagement.sessions.createSuccess'));
+          toast.success(i18n.t('classmanagement.sessions.createSuccess'));
         } catch (error) {
           handleApiError(error, set);
         } finally {
@@ -225,7 +225,7 @@ const useClassManagementStore = create<ClassManagementStore>(
               headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
             },
           );
-          toast.success(i18n.t('classManagement.sessions.updateSuccess'));
+          toast.success(i18n.t('classmanagement.sessions.updateSuccess'));
         } catch (error) {
           handleApiError(error, set);
         } finally {
@@ -240,7 +240,7 @@ const useClassManagementStore = create<ClassManagementStore>(
           await eduApi.delete(`${USER_SESSIONS}/${sessionId}`, {
             headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
           });
-          toast.success(i18n.t('classManagement.sessions.deleteSuccess'));
+          toast.success(i18n.t('classmanagement.sessions.deleteSuccess'));
         } catch (error) {
           handleApiError(error, set);
         } finally {
