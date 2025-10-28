@@ -506,6 +506,16 @@
     "detailsprinters": "Details of printer",
     "classes": "Classes",
     "name": "Name",
+    "project": {
+      "createSuccess": "Project created successfully",
+      "updateSuccess": "Project updated successfully",
+      "deleteSuccess": "Project deleted successfully"
+    },
+    "sessions": {
+      "createSuccess": "Session created successfully",
+      "updateSuccess": "Session updated successfully",
+      "deleteSuccess": "Session deleted successfully"
+    },
     "notMemberOfClass": "You are no member of a class.",
     "noGroupsToShow": "No groups available.",
     "overview": "Overview",
