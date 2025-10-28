@@ -80,7 +80,7 @@ module.exports = {
         },
       },
       backgroundImage: {
-        ciGreenToBlue: 'linear-gradient(45deg, var(--ci-light-blue), var(--ci-light-green))',
+        ciGreenToBlue: 'linear-gradient(45deg, var(--ci-light-green), var(--ci-light-blue))',
       },
 
       borderRadius: {
