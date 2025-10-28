@@ -25,7 +25,6 @@ import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.d
 import type ThemeSettingsDto from '@libs/global-settings/types/themeSettings.dto';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
 import deepMerge from '@libs/common/utils/Object/deepMerge';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 
 type GlobalSettingsStore = {
   isSetGlobalSettingLoading: boolean;
@@ -102,14 +101,12 @@ const useGlobalSettingsApiStore = create<GlobalSettingsStore>()(
       getPublicTheme: async () => {
         set({ isGetPublicThemeLoading: true });
         try {
-          const response = await fetch(`/${EDU_API_ROOT}/global-settings/${GLOBAL_SETTINGS_PUBLIC_THEME_ENDPOINT}`);
-          if (response.ok) {
-            const data = (await response.json()) as ThemeSettingsDto | null;
-            if (data) {
-              set({ publicTheme: data });
-            } else {
-              set({ publicTheme: defaultValues.theme });
-            }
+          const { data } = await eduApi.get<ThemeSettingsDto>(
+            `${GLOBAL_SETTINGS_ROOT_ENDPOINT}/${GLOBAL_SETTINGS_PUBLIC_THEME_ENDPOINT}`,
+          );
+
+          if (data) {
+            set({ publicTheme: data });
           } else {
             set({ publicTheme: defaultValues.theme });
           }

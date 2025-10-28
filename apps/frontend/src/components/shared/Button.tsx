@@ -13,8 +13,8 @@
 import * as React from 'react';
 import { ButtonSH as SHButton } from '@/components/ui/ButtonSH';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { HexagonIcon } from '@/assets/layout';
 import cn from '@libs/common/utils/className';
+import HexagonIcon from '@/assets/layout/Hexagon.svg?react';
 
 const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-xl text-background justify-center'], {
   variants: {

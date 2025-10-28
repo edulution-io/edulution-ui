@@ -10,15 +10,18 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { AccordionContent } from '@/components/ui/AccordionSH';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
 import ThemeColors from '@libs/global-settings/types/themeColors';
-import useThemePreview from '@/hooks/useThemePreview';
 import ThemeColorPicker from '@/pages/Settings/GlobalSettings/components/ThemeColorPicker';
 import type { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSettings.form';
+import { Button } from '@/components/shared/Button';
+import applyThemeColors from '@/utils/applyThemeColors';
+import getThemeWithDefaults from '@/utils/getThemeWithDefaults';
+import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 
 type ThemeSettingsProps = {
   form: UseFormReturn<GlobalSettingsFormValues>;
@@ -26,12 +29,25 @@ type ThemeSettingsProps = {
 
 const ThemeSettings: React.FC<ThemeSettingsProps> = ({ form }) => {
   const { t } = useTranslation();
+  const { publicTheme } = useGlobalSettingsApiStore();
   const { watch, setValue, getValues } = form;
 
   const themeColors = watch('theme.dark');
   const [previewTheme, setPreviewTheme] = useState<ThemeColors | null>(null);
 
-  useThemePreview(previewTheme);
+  useEffect(() => {
+    if (!previewTheme) {
+      return undefined;
+    }
+
+    const root = document.documentElement;
+    applyThemeColors(previewTheme, root);
+
+    return () => {
+      const actualTheme = getThemeWithDefaults(publicTheme);
+      applyThemeColors(actualTheme, root);
+    };
+  }, [previewTheme, publicTheme]);
 
   const handleThemeColorChange = (colorType: keyof ThemeColors, value: string) => {
     const newTheme = {
@@ -66,13 +82,14 @@ const ThemeSettings: React.FC<ThemeSettingsProps> = ({ form }) => {
         />
       ))}
 
-      <button
+      <Button
         type="button"
+        variant="btn-collaboration"
+        size="md"
         onClick={handleResetTheme}
-        className="hover:bg-muted-foreground/10 rounded bg-muted px-4 py-2 text-sm"
       >
         {t('settings.globalSettings.theme.resetToDefaults')}
-      </button>
+      </Button>
     </AccordionContent>
   );
 };

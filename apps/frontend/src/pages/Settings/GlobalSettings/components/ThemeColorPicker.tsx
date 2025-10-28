@@ -12,7 +12,7 @@
 
 import React from 'react';
 import Label from '@/components/ui/Label';
-import { Input } from '@/components/ui/Input';
+import Input from '@/components/shared/Input';
 
 type ThemeColorPickerProps = {
   label: string;
@@ -42,9 +42,9 @@ const ThemeColorPicker = ({ label, value, onChange, description }: ThemeColorPic
         />
         <Input
           type="text"
+          variant="default"
           value={value}
           onChange={handleTextChange}
-          className="w-32 font-mono text-sm text-foreground"
           placeholder="#000000"
           maxLength={7}
         />
