@@ -10,6 +10,22 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const publicEmbeddedRoutes = ['imprint', 'impressum', 'privacy', 'datenschutz'];
+import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
+import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 
-export default publicEmbeddedRoutes;
+const resolveSharePath = (share: WebdavShareDto, lmnInfo: LmnUserInfo): string => {
+  if (!share.pathVariables || share.pathVariables.length === 0) {
+    return share.sharePath || '';
+  }
+
+  return share.pathVariables
+    .map((pathVariable) =>
+      pathVariable.label in lmnInfo
+        ? (lmnInfo[pathVariable.label as keyof LmnUserInfo] as string)
+        : pathVariable.value || '',
+    )
+    .filter((val) => val !== '')
+    .join('/');
+};
+
+export default resolveSharePath;

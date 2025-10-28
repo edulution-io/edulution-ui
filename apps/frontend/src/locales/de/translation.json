@@ -1047,7 +1047,11 @@
         },
         "webdavServer": {
           "title": "WebDAV-Server",
-          "filterPlaceHolderText": "Suche nach WebDAV-Server"
+          "filterPlaceHolderText": "Suche nach WebDAV-Server",
+          "deleteWarning": {
+            "title": "Löschen nicht möglich",
+            "description": "Der WebDAV-Server '{{serverName}}' wird von {{count}} Share(s) verwendet: {{shares}}. Bitte lösche die abhängigen Shares zuerst."
+          }
         },
         "files": {
           "title": "Dateien",
