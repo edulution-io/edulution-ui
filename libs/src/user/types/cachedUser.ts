@@ -10,8 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import UserDto from './user.dto';
+import { LDAPUser } from '@libs/groups/types/ldapUser';
 
-type CachedUser = Pick<UserDto, 'firstName' | 'lastName' | 'username'> & { school?: string };
+type CachedUser = LDAPUser & { school?: string };
 
 export default CachedUser;

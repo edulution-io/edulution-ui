@@ -10,27 +10,22 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export interface Group {
-  id: string;
-  name: string;
-  path: string;
-  subGroupCount: number;
-  subGroups: Group[];
-  attributes: {
-    description: string[];
-    cn: string[];
-    sophomorixMaillist: string[];
-    displayName: string[];
-    mail: string[];
-    [key: string]: unknown;
-  };
-  realmRoles: string[];
-  clientRoles: Record<string, unknown>;
-  access: {
-    view: boolean;
-    viewMembers: boolean;
-    manageMembers: boolean;
-    manage: boolean;
-    manageMembership: boolean;
-  };
-}
+import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
+import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
+
+const resolveSharePath = (share: WebdavShareDto, lmnInfo: LmnUserInfo): string => {
+  if (!share.pathVariables || share.pathVariables.length === 0) {
+    return share.sharePath || '';
+  }
+
+  return share.pathVariables
+    .map((pathVariable) =>
+      pathVariable.label in lmnInfo
+        ? (lmnInfo[pathVariable.label as keyof LmnUserInfo] as string)
+        : pathVariable.value || '',
+    )
+    .filter((val) => val !== '')
+    .join('/');
+};
+
+export default resolveSharePath;

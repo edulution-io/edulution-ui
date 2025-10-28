@@ -18,4 +18,8 @@ export type LDAPUserAttributes = {
   LDAP_ID: string[];
   modifyTimestamp: string[];
   createTimestamp: string[];
+  sophomorixMailQuotaCalculated?: string[];
+  mail?: string[];
+  sophomorixStatus?: string[];
+  proxyAddresses?: string[];
 };

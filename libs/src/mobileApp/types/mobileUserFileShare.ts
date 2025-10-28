@@ -10,27 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export interface Group {
-  id: string;
-  name: string;
+import WebdavShareType from '@libs/filesharing/types/webdavShareType';
+import { IsString } from 'class-validator';
+
+class MobileUserFileShare {
+  type: WebdavShareType;
+
+  @IsString()
   path: string;
-  subGroupCount: number;
-  subGroups: Group[];
-  attributes: {
-    description: string[];
-    cn: string[];
-    sophomorixMaillist: string[];
-    displayName: string[];
-    mail: string[];
-    [key: string]: unknown;
-  };
-  realmRoles: string[];
-  clientRoles: Record<string, unknown>;
-  access: {
-    view: boolean;
-    viewMembers: boolean;
-    manageMembers: boolean;
-    manage: boolean;
-    manageMembership: boolean;
-  };
+
+  @IsString()
+  displayName: string;
+
+  @IsString()
+  webdavShareId: string;
 }
+
+export default MobileUserFileShare;
