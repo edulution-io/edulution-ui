@@ -61,10 +61,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {variant === 'btn-hexagon' ? (
           <div className="relative flex items-center justify-center">
-            <img
+            <HexagonIcon
               className="absolute"
-              src={HexagonIcon}
-              alt={hexagonIconAltText}
+              aria-label={hexagonIconAltText}
             />
             <div className="">{children}</div>
           </div>

@@ -11,84 +11,127 @@
  */
 
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
 import {
   GLOBAL_SETTINGS_ADMIN_ENDPOINT,
+  GLOBAL_SETTINGS_PUBLIC_THEME_ENDPOINT,
   GLOBAL_SETTINGS_ROOT_ENDPOINT,
 } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
+import type ThemeSettingsDto from '@libs/global-settings/types/themeSettings.dto';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
 import deepMerge from '@libs/common/utils/Object/deepMerge';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 
 type GlobalSettingsStore = {
   isSetGlobalSettingLoading: boolean;
   isGetGlobalSettingsLoading: boolean;
   isGetGlobalAdminSettingsLoading: boolean;
+  isGetPublicThemeLoading: boolean;
   globalSettings: GlobalSettingsDto;
+  publicTheme: ThemeSettingsDto | null;
   reset: () => void;
   getGlobalSettings: () => Promise<void>;
   getGlobalAdminSettings: () => Promise<void>;
   setGlobalSettings: (globalSettingsDto: GlobalSettingsDto) => Promise<void>;
+  getPublicTheme: () => Promise<void>;
 };
 
 const initialValues = {
   isSetGlobalSettingLoading: false,
   isGetGlobalSettingsLoading: false,
   isGetGlobalAdminSettingsLoading: false,
+  isGetPublicThemeLoading: false,
   mfaEnforcedGroups: [],
   globalSettings: defaultValues,
+  publicTheme: null,
 };
 
-const useGlobalSettingsApiStore = create<GlobalSettingsStore>((set, get) => ({
-  ...initialValues,
+const useGlobalSettingsApiStore = create<GlobalSettingsStore>()(
+  persist(
+    (set, get) => ({
+      ...initialValues,
 
-  getGlobalSettings: async () => {
-    set({ isGetGlobalSettingsLoading: true });
-    try {
-      const { data } = await eduApi.get<GlobalSettingsDto>(GLOBAL_SETTINGS_ROOT_ENDPOINT);
+      getGlobalSettings: async () => {
+        set({ isGetGlobalSettingsLoading: true });
+        try {
+          const { data } = await eduApi.get<GlobalSettingsDto>(GLOBAL_SETTINGS_ROOT_ENDPOINT);
 
-      const merged = deepMerge(get().globalSettings, data);
-      set({ globalSettings: merged });
-    } catch (error) {
-      handleApiError(error, set);
-    } finally {
-      set({ isGetGlobalSettingsLoading: false });
-    }
-  },
+          const merged = deepMerge(get().globalSettings, data);
+          set({ globalSettings: merged });
+        } catch (error) {
+          handleApiError(error, set);
+        } finally {
+          set({ isGetGlobalSettingsLoading: false });
+        }
+      },
 
-  getGlobalAdminSettings: async () => {
-    set({ isGetGlobalAdminSettingsLoading: true });
-    try {
-      const { data } = await eduApi.get<GlobalSettingsDto>(
-        `${GLOBAL_SETTINGS_ROOT_ENDPOINT}/${GLOBAL_SETTINGS_ADMIN_ENDPOINT}`,
-      );
+      getGlobalAdminSettings: async () => {
+        set({ isGetGlobalAdminSettingsLoading: true });
+        try {
+          const { data } = await eduApi.get<GlobalSettingsDto>(
+            `${GLOBAL_SETTINGS_ROOT_ENDPOINT}/${GLOBAL_SETTINGS_ADMIN_ENDPOINT}`,
+          );
 
-      const merged = deepMerge(get().globalSettings, data);
-      set({ globalSettings: merged });
-    } catch (error) {
-      handleApiError(error, set);
-    } finally {
-      set({ isGetGlobalAdminSettingsLoading: false });
-    }
-  },
+          const merged = deepMerge(get().globalSettings, data);
+          set({ globalSettings: merged });
+        } catch (error) {
+          handleApiError(error, set);
+        } finally {
+          set({ isGetGlobalAdminSettingsLoading: false });
+        }
+      },
 
-  setGlobalSettings: async (globalSettingsDto) => {
-    set({ isSetGlobalSettingLoading: true });
-    try {
-      await eduApi.put(GLOBAL_SETTINGS_ROOT_ENDPOINT, globalSettingsDto);
-      set({ globalSettings: globalSettingsDto });
-      toast.success(i18n.t('settings.globalSettings.updateSuccessful'));
-    } catch (error) {
-      handleApiError(error, set);
-    } finally {
-      set({ isSetGlobalSettingLoading: false });
-    }
-  },
+      setGlobalSettings: async (globalSettingsDto) => {
+        set({ isSetGlobalSettingLoading: true });
+        try {
+          await eduApi.put(GLOBAL_SETTINGS_ROOT_ENDPOINT, globalSettingsDto);
+          set({ globalSettings: globalSettingsDto, publicTheme: globalSettingsDto.theme });
+          toast.success(i18n.t('settings.globalSettings.updateSuccessful'));
+        } catch (error) {
+          handleApiError(error, set);
+        } finally {
+          set({ isSetGlobalSettingLoading: false });
+        }
+      },
 
-  reset: () => set(initialValues),
-}));
+      getPublicTheme: async () => {
+        set({ isGetPublicThemeLoading: true });
+        try {
+          const response = await fetch(`/${EDU_API_ROOT}/global-settings/${GLOBAL_SETTINGS_PUBLIC_THEME_ENDPOINT}`);
+          if (response.ok) {
+            const data = (await response.json()) as ThemeSettingsDto | null;
+            if (data) {
+              set({ publicTheme: data });
+            } else {
+              set({ publicTheme: defaultValues.theme });
+            }
+          } else {
+            set({ publicTheme: defaultValues.theme });
+          }
+        } catch (error) {
+          set({ publicTheme: defaultValues.theme });
+          handleApiError(error, set);
+        } finally {
+          set({ isGetPublicThemeLoading: false });
+        }
+      },
+
+      reset: () => {
+        const currentPublicTheme = get().publicTheme;
+        set({ ...initialValues, publicTheme: currentPublicTheme });
+      },
+    }),
+    {
+      name: 'global-settings-storage',
+      version: 1,
+      partialize: (state) => ({ publicTheme: state.publicTheme }),
+    },
+  ),
+);
 
 export default useGlobalSettingsApiStore;

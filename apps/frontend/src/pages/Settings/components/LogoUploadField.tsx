@@ -13,7 +13,6 @@
 import React from 'react';
 import { Theme, ThemeType } from '@libs/common/constants/theme';
 import FileSelectButton from '@/components/ui/FileSelectButton';
-import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
 import clsx from 'clsx';
 
 type LogoUploadFieldProps = {
@@ -44,7 +43,7 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
   changeText = 'Change file',
   accept = 'image/*',
   alt = 'Logo preview',
-  fallbackSrc = DesktopLogo,
+  fallbackSrc,
   className,
 }) => {
   const backdropClass = variant === Theme.light ? 'bg-neutral-900' : 'bg-white';
@@ -60,15 +59,19 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
       aria-busy={uploading}
       aria-live="polite"
     >
-      <img
-        key={cacheKey}
-        src={previewSrc || fallbackSrc}
-        alt={alt}
-        className="h-20 w-auto object-contain"
-        onError={(e) => {
-          (e.currentTarget as HTMLImageElement).src = fallbackSrc;
-        }}
-      />
+      {(previewSrc || fallbackSrc) && (
+        <img
+          key={cacheKey}
+          src={previewSrc || fallbackSrc}
+          alt={alt}
+          className="h-20 w-auto object-contain"
+          onError={(e) => {
+            if (fallbackSrc) {
+              (e.currentTarget as HTMLImageElement).src = fallbackSrc;
+            }
+          }}
+        />
+      )}
 
       <div className="mt-3 grid w-full grid-cols-1 gap-2">
         <FileSelectButton

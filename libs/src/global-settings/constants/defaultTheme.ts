@@ -10,5 +10,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { default as HexagonIcon } from '@/assets/layout/Hexagon.svg?react';
-export { default as RoundArrowIcon } from '@/assets/layout/Pfeil.svg?react';
+const DEFAULT_THEME = {
+  light: {
+    primary: '#2c78dc',
+    secondary: '#2e2a24',
+    ciLightGreen: '#88d840',
+    ciLightBlue: '#0081c6',
+  },
+  dark: {
+    primary: '#0281c7',
+    secondary: '#d1d5db',
+    ciLightGreen: '#88d840',
+    ciLightBlue: '#0081c6',
+  },
+};
+
+export default DEFAULT_THEME;

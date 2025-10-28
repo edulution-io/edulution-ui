@@ -10,5 +10,22 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { default as HexagonIcon } from '@/assets/layout/Hexagon.svg?react';
-export { default as RoundArrowIcon } from '@/assets/layout/Pfeil.svg?react';
+import { useEffect } from 'react';
+import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
+import applyThemeColors from '@/utils/applyThemeColors';
+import getThemeWithDefaults from '@/utils/getThemeWithDefaults';
+
+const useThemeColors = () => {
+  const { publicTheme, getPublicTheme } = useGlobalSettingsApiStore();
+
+  useEffect(() => {
+    void getPublicTheme();
+  }, [getPublicTheme]);
+
+  useEffect(() => {
+    const theme = getThemeWithDefaults(publicTheme);
+    applyThemeColors(theme);
+  }, [publicTheme]);
+};
+
+export default useThemeColors;
