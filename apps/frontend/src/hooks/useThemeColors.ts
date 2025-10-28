@@ -10,5 +10,22 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-/// <reference types="vite/client" />
-/// <reference types="vite-plugin-svgr/client" />
+import { useEffect } from 'react';
+import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
+import applyThemeColors from '@/utils/applyThemeColors';
+import getThemeWithDefaults from '@/utils/getThemeWithDefaults';
+
+const useThemeColors = () => {
+  const { publicTheme, getPublicTheme } = useGlobalSettingsApiStore();
+
+  useEffect(() => {
+    void getPublicTheme();
+  }, [getPublicTheme]);
+
+  useEffect(() => {
+    const theme = getThemeWithDefaults(publicTheme);
+    applyThemeColors(theme);
+  }, [publicTheme]);
+};
+
+export default useThemeColors;

@@ -15,6 +15,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import {
   GLOBAL_SETTINGS_ADMIN_ENDPOINT,
+  GLOBAL_SETTINGS_PUBLIC_THEME_ENDPOINT,
   GLOBAL_SETTINGS_ROOT_ENDPOINT,
 } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
@@ -23,6 +24,7 @@ import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import type SentryConfig from '@libs/common/types/sentryConfig';
 import AdminGuard from '../common/guards/admin.guard';
 import GlobalSettingsService from './global-settings.service';
+import { Public } from '../common/decorators/public.decorator';
 
 @ApiTags(GLOBAL_SETTINGS_ROOT_ENDPOINT)
 @ApiBearerAuth()
@@ -50,6 +52,14 @@ class GlobalSettingsController {
   @UseGuards(AdminGuard)
   async setGlobalSettings(@Body() globalSettingsDto: GlobalSettingsDto) {
     return this.globalSettingsService.setGlobalSettings(globalSettingsDto);
+  }
+
+  @Public()
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(DEFAULT_CACHE_TTL_MS)
+  @Get(GLOBAL_SETTINGS_PUBLIC_THEME_ENDPOINT)
+  async getPublicTheme() {
+    return this.globalSettingsService.getPublicTheme();
   }
 
   @Get('sentry')

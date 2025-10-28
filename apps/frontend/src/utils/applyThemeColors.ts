@@ -10,5 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-/// <reference types="vite/client" />
-/// <reference types="vite-plugin-svgr/client" />
+import ThemeColors from '@libs/global-settings/types/themeColors';
+
+const applyThemeColors = (theme: ThemeColors, root: HTMLElement = document.documentElement) => {
+  root.style.setProperty('--primary', theme.primary);
+  root.style.setProperty('--secondary', theme.secondary);
+  root.style.setProperty('--ci-light-green', theme.ciLightGreen);
+  root.style.setProperty('--ci-light-blue', theme.ciLightBlue);
+};
+
+export default applyThemeColors;

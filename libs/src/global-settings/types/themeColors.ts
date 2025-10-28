@@ -10,5 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-/// <reference types="vite/client" />
-/// <reference types="vite-plugin-svgr/client" />
+type ThemeColors = {
+  primary: string;
+  secondary: string;
+  ciLightGreen: string;
+  ciLightBlue: string;
+};
+
+export default ThemeColors;

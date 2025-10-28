@@ -33,11 +33,10 @@ const LauncherButton: React.FC = () => {
     >
       <p className="text-md font-bold md:hidden">{t('launcher.title')}</p>
 
-      <img
-        src={MobileLogoIcon}
+      <MobileLogoIcon
         className="g transform rounded-full transition-transform duration-200 group-hover:scale-[1.3]"
         width={SIDEBAR_ICON_WIDTH}
-        alt="edulution-mobile-logo"
+        aria-label="edulution-mobile-logo"
       />
 
       <NotificationCounter count={totalNotifications} />
