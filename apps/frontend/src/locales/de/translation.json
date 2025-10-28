@@ -1201,7 +1201,9 @@
     },
     "mobileAccess": {
       "title": "App-Zugriff",
-      "description": "Hier kannst du für den mobilen Zugriff auf deine Dateien die {{ applicationName }} App einrichten. Aktuell nur für Apple iOS verfügbar."
+      "description": "Hier kannst du für den mobilen Zugriff auf deine Dateien die {{ applicationName }} App einrichten. Aktuell nur für Apple iOS verfügbar.",
+      "docsDescription": "Den Download-Link zur edulution App und wie du sie einrichtest findest in der edulution Doku.",
+      "button": "Doku öffnen"
     },
     "faq": "FAQ",
     "externalIntegration": "Externe Anbindung",

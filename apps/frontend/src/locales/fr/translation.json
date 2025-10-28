@@ -1039,7 +1039,9 @@
     },
     "mobileAccess": {
       "title": "Accès à l'application",
-      "description": "Ici, vous pouvez configurer l'accès mobile de l'app {{ applicationName }} pour l'accès aux fichiers. Actuellement disponible uniquement pour Apple iOS."
+      "description": "Ici, vous pouvez configurer l'accès mobile de l'app {{ applicationName }} pour l'accès aux fichiers. Actuellement disponible uniquement pour Apple iOS.",
+      "docsDescription": "Tu trouveras le lien de téléchargement de l'application edulution et les instructions d'installation dans la documentation edulution.",
+      "button": "Ouvrir le documentaire"
     },
     "faq": "FAQ",
     "externalIntegration": "Connexion externe",
