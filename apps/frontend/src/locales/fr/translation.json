@@ -407,6 +407,16 @@
     "invalidQuota": "Le quota doit être donné en fonction de la documentation",
     "invalidMailQuota": "Le quota de courrier doit être spécifié en nombre en Mo",
     "name": "nom",
+    "project": {
+      "createSuccess": "Projet créé avec succès",
+      "updateSuccess": "Projet mis à jour avec succès",
+      "deleteSuccess": "Projet supprimé avec succès"
+    },
+    "sessions": {
+      "createSuccess": "Session créée avec succès",
+      "updateSuccess": "Session mise à jour avec succès",
+      "deleteSuccess": "Session supprimée avec succès"
+    },
     "mailQuota": "Quota de courrier (Mo)",
     "proxyAddresses": "Adresses e-mail proxy",
     "descriptionPlaceholder": "Brève description du projet",
