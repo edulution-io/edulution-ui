@@ -14,9 +14,10 @@
 import { Model } from 'mongoose';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
 import { InjectModel } from '@nestjs/mongoose';
+import { Interval, Timeout } from '@nestjs/schedule';
 import { getDecryptedPassword } from '@libs/common/utils';
 import { USERS_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
@@ -30,6 +31,7 @@ import type CachedUser from '@libs/user/types/cachedUser';
 import QUEUE_CONSTANTS from '@libs/queue/constants/queueConstants';
 import UserDeviceDto from '@libs/notification/types/userDevice.dto';
 import { Expo } from 'expo-server-sdk';
+import { KEYCLOAK_STARTUP_TIMEOUT_MS, KEYCLOAK_SYNC_MS } from '@libs/ldapKeycloakSync/constants/keycloakSyncValues';
 import CustomHttpException from '../common/CustomHttpException';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
@@ -43,8 +45,19 @@ class UsersService {
     @InjectModel(UserAccounts.name) private userAccountModel: Model<UserAccountsDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly groupsService: GroupsService,
-    private readonly eventEmitter: EventEmitter2,
   ) {}
+
+  private isUpdatingUsersInCache = false;
+
+  @Timeout(KEYCLOAK_STARTUP_TIMEOUT_MS)
+  async initializeService() {
+    await this.updateUsersInCache();
+  }
+
+  @OnEvent(QUEUE_CONSTANTS.USERS_CACHE_REFRESH, { async: true })
+  async handleUsersCacheRefresh() {
+    await this.updateUsersInCache();
+  }
 
   async createOrUpdate(userDto: UserDto): Promise<User | null> {
     return this.userModel
@@ -81,21 +94,12 @@ class UsersService {
   async findAllCachedUsers(schoolName: string): Promise<CachedUser[]> {
     const cacheKey = ALL_USERS_CACHE_KEY + schoolName;
     const cachedUsers = await this.cacheManager.get<CachedUser[]>(cacheKey);
-
-    if (cachedUsers?.length) {
-      return cachedUsers;
-    }
-
-    await this.refreshUsersCache();
-
-    return (await this.cacheManager.get<CachedUser[]>(cacheKey)) ?? [];
+    return cachedUsers ?? [];
   }
 
-  async refreshUsersCache(): Promise<void> {
+  async refreshUsersCache(): Promise<number> {
     const mapToCachedUser = (user: LDAPUser): CachedUser => ({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      username: user.username,
+      ...user,
       school: user.attributes.school?.[0] || SPECIAL_SCHOOLS.GLOBAL,
     });
 
@@ -121,14 +125,32 @@ class UsersService {
     );
 
     await this.cacheManager.set(ALL_USERS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, cachedUserList, USERS_CACHE_TTL_MS);
+
+    return cachedUserList.length;
+  }
+
+  @Interval(KEYCLOAK_SYNC_MS)
+  async updateUsersInCache(): Promise<void> {
+    if (this.isUpdatingUsersInCache) return;
+    this.isUpdatingUsersInCache = true;
+
+    try {
+      Logger.debug('Starting to update all users in cache...', UsersService.name);
+
+      const userCount = await this.refreshUsersCache();
+
+      Logger.log(`${userCount} users updated successfully in cache ✅`, UsersService.name);
+    } catch (error) {
+      Logger.error('updateUsersInCache failed.', UsersService.name);
+    } finally {
+      this.isUpdatingUsersInCache = false;
+    }
   }
 
   async searchUsersByName(schoolName: string, name: string): Promise<CachedUser[]> {
     const searchString = name.toLowerCase();
 
     const users = await this.findAllCachedUsers(schoolName);
-
-    this.eventEmitter.emit(QUEUE_CONSTANTS.USERS_CACHE_REFRESH);
 
     return users.filter(
       (user) =>

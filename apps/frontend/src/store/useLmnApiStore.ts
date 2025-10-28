@@ -22,6 +22,7 @@ import lmnApi from '@/api/lmnApi';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { encodeBase64 } from '@libs/common/utils/getBase64String';
+import LinuxmusterVersionResponse from '@libs/lmnApi/types/linuxmusterVersionResponse';
 
 const { USER, USERS_QUOTA } = LMN_API_EDU_API_ENDPOINTS;
 
@@ -32,14 +33,17 @@ interface UseLmnApiStore {
   isGetOwnUserLoading: boolean;
   isFetchUserLoading: boolean;
   isPatchingUserLoading: boolean;
+  isGetVersionLoading: boolean;
   error: Error | null;
   schoolPrefix: string;
   usersQuota: QuotaResponse | null;
+  lmnVersions: LinuxmusterVersionResponse;
   setLmnApiToken: (username: string, password: string) => Promise<void>;
   getOwnUser: () => Promise<void>;
   fetchUser: (name: string, checkIfFirstPasswordIsSet?: boolean) => Promise<LmnUserInfo | null>;
   fetchUsersQuota: (name: string) => Promise<void>;
   patchUserDetails: (details: Partial<UpdateUserDetailsDto>) => Promise<void>;
+  getLmnVersion: () => Promise<void>;
   reset: () => void;
 }
 
@@ -50,9 +54,11 @@ const initialState = {
   isGetOwnUserLoading: false,
   isFetchUserLoading: false,
   isPatchingUserLoading: false,
+  isGetVersionLoading: false,
   error: null,
   schoolPrefix: '',
   usersQuota: null,
+  lmnVersions: {} as LinuxmusterVersionResponse,
 };
 
 type PersistedUserLmnInfoStore = (
@@ -145,6 +151,23 @@ const useLmnApiStore = create<UseLmnApiStore>(
           handleApiError(error, set);
         } finally {
           set({ isPatchingUserLoading: false });
+        }
+      },
+
+      getLmnVersion: async (): Promise<void> => {
+        set({ isGetVersionLoading: true, error: null });
+        try {
+          const { data } = await eduApi.get<LinuxmusterVersionResponse>(
+            `${LMN_API_EDU_API_ENDPOINTS.ROOT}/server/lmnversion`,
+            {
+              headers: { [HTTP_HEADERS.XApiKey]: get().lmnApiToken },
+            },
+          );
+          set({ lmnVersions: data });
+        } catch (error) {
+          handleApiError(error, set);
+        } finally {
+          set({ isGetVersionLoading: false });
         }
       },
 

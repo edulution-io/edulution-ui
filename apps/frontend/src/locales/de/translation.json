@@ -178,7 +178,8 @@
       "PasswordMismatch": "Aktuelles Passwort stimmt nicht",
       "PasswordChangeFailed": "Passwort ändern fehlgeschlagen",
       "GetUsersQuotaFailed": "Abrufen der Benutzerkontingente fehlgeschlagen.",
-      "GetSchoolsFailed": "Abrufen der Schulen fehlgeschlagen"
+      "GetSchoolsFailed": "Abrufen der Schulen fehlgeschlagen",
+      "GetLmnVersionFailed": "Abrufen der Linuxmuster-Version fehlgeschlagen."
     }
   },
   "ticketsystem": {
@@ -586,6 +587,7 @@
     "pdfDescription": "Erzeuge eine PDF Datei um die Passwörter für diese Schulklassen auszudrucken",
     "csvDescription": "Erzeuge eine CSV Datei um die Passwörter für diese Schulklassen auszudrucken",
     "printOneItemPerPage": "Drucke ein Passwort pro Seite",
+    "shouldSplitNamesInCsv": "Vor- und Nachname in getrennten Spalten (funktioniert erst ab Linuxmuster 7.3)",
     "selectSavedSession": "Aus gespeicherten Sitzungen wählen",
     "saveSession": "Sitzung speichern",
     "editSession": "Sitzung editieren",
@@ -970,6 +972,18 @@
         "uploadDarkLogo": "Dunkles Logo hochladen",
         "deleteSuccessful": "Logo wurde erfolgreich gelöscht"
       },
+      "theme": {
+        "title": "Design-Anpassung",
+        "primaryColor": "Primärfarbe",
+        "primaryDescription": "Hauptfarbe für Schaltflächen, Links und Hervorhebungen",
+        "secondaryColor": "Sekundärfarbe",
+        "secondaryDescription": "Sekundärfarbe für Text und Rahmen",
+        "ciLightGreen": "Markengrün",
+        "ciLightGreenDescription": "Grüne Markenfarbe für Farbverläufe und Logos",
+        "ciLightBlue": "Markenblau",
+        "ciLightBlueDescription": "Blaue Markenfarbe für Farbverläufe und Logos",
+        "resetToDefaults": "Auf Standard zurücksetzen"
+      },
       "organisationInfo": {
         "title": "Organisationsinformationen",
         "descriptionSchool": "Trage die offiziellen Angaben deiner Organisation ein. Diese Informationen werden in der edulution App angezeigt. Bitte gib den Namen, die Straße, die Postleitzahl und optional die Website der Schule an.",
@@ -999,6 +1013,7 @@
     "info": {
       "title": "Info"
     },
+    "lmnVersion": { "title": "Linuxmuster Versionsübersicht" },
     "appconfig": {
       "position": {
         "title": "Sortierung",
@@ -1044,7 +1059,11 @@
         },
         "webdavServer": {
           "title": "WebDAV-Server",
-          "filterPlaceHolderText": "Suche nach WebDAV-Server"
+          "filterPlaceHolderText": "Suche nach WebDAV-Server",
+          "deleteWarning": {
+            "title": "Löschen nicht möglich",
+            "description": "Der WebDAV-Server '{{serverName}}' wird von {{count}} Share(s) verwendet: {{shares}}. Bitte lösche die abhängigen Shares zuerst."
+          }
         },
         "files": {
           "title": "Dateien",

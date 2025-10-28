@@ -171,7 +171,8 @@
       "PasswordMismatch": "Le mot de passe actuel est incorrect",
       "PasswordChangeFailed": "Echec de modification du mot de passe",
       "GetUsersQuotaFailed": "L'appel du quota l'utilisateur a échoué.",
-      "GetSchoolsFailed": "L'appel des écoles a échoué"
+      "GetSchoolsFailed": "L'appel des écoles a échoué",
+      "GetLmnVersionFailed": "L'appel de la version Linuxmuster a échoué."
     }
   },
   "ticketsystem": {
@@ -495,6 +496,7 @@
     "pdfDescription": "Créez un fichier PDF pour imprimer les mots de passe de ces classes",
     "csvDescription": "Créez un fichier CSV pour imprimer les mots de passe de ces classes",
     "printOneItemPerPage": "Imprimez un mot de passe par page",
+    "shouldSplitNamesInCsv": "Prénom et nom dans des colonnes séparées (fonctionne à partir de Linuxmuster 7.3)",
     "selectSavedSession": "Choisissez parmi les séances stockées",
     "saveSession": "Enregistrer la session",
     "editSession": "Modifier la session",
@@ -817,11 +819,23 @@
 
       "logo": {
         "title": "Logo",
-        "descriptionSchool": "Téléversez le logo. Il sera affiché sur l’écran de connexion et sur la carte d’identification de l’application Edulution.",
-        "descriptionGeneric": "Téléversez le logo. Il sera affiché sur l’écran de connexion.",
+        "descriptionSchool": "Téléversez le logo. Il sera affiché sur l'écran de connexion et sur la carte d'identification de l'application Edulution.",
+        "descriptionGeneric": "Téléversez le logo. Il sera affiché sur l'écran de connexion.",
         "uploadLightLogo": "Téléverser le logo clair",
         "uploadDarkLogo": "Téléverser le logo sombre",
         "deleteSuccessful": "Logo supprimé avec succès."
+      },
+      "theme": {
+        "title": "Personnalisation du thème",
+        "primaryColor": "Couleur primaire",
+        "primaryDescription": "Couleur principale utilisée pour les boutons, les liens et les éléments mis en évidence",
+        "secondaryColor": "Couleur secondaire",
+        "secondaryDescription": "Couleur secondaire utilisée pour le texte et les bordures",
+        "ciLightGreen": "Vert de marque",
+        "ciLightGreenDescription": "Couleur verte de marque utilisée dans les dégradés et les logos",
+        "ciLightBlue": "Bleu de marque",
+        "ciLightBlueDescription": "Couleur bleue de marque utilisée dans les dégradés et les logos",
+        "resetToDefaults": "Réinitialiser aux valeurs par défaut"
       },
       "organisationInfo": {
         "title": "Informations sur l’organisation",
@@ -842,6 +856,7 @@
     "info": {
       "title": "Informations"
     },
+    "lmnVersion": { "title": "Aperçu des versions de Linuxmuster" },
     "appconfig": {
       "sections": {
         "onlyOffice": {
@@ -883,7 +898,11 @@
         },
         "webdavServer": {
           "title": "WebDAV serveurs",
-          "filterPlaceHolderText": "Rechercher un serveur"
+          "filterPlaceHolderText": "Rechercher un serveur",
+          "deleteWarning": {
+            "title": "Suppression impossible",
+            "description": "Le serveur WebDAV « {{serverName}} » est utilisé par {{count}} partage(s) : {{shares}}. Veuillez d'abord supprimer les partages dépendants."
+          }
         },
         "files": {
           "title": "Fichiers",

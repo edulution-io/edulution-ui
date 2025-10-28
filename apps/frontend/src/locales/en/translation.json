@@ -187,7 +187,8 @@
       "PasswordMismatch": "The current password is wrong",
       "PasswordChangeFailed": "Password change failed",
       "GetUsersQuotaFailed": "Failed to get users quota",
-      "GetSchoolsFailed": "Failed to get schools"
+      "GetSchoolsFailed": "Failed to get schools",
+      "GetLmnVersionFailed": "Failed to retrieve the Linuxmuster version."
     }
   },
   "ticketsystem": {
@@ -586,6 +587,7 @@
     "pdfDescription": "Create a PDF file to print the passwords for these school classes",
     "csvDescription": "Create a CSV file to print the passwords for these school classes",
     "printOneItemPerPage": "Print one password per page",
+    "shouldSplitNamesInCsv": "First and last name in separate columns (works from Linuxmuster 7.3 onwards)",
     "selectSavedSession": "Select from saved sessions",
     "saveSession": "Save session",
     "editSession": "Edit session",
@@ -967,6 +969,18 @@
         "uploadDarkLogo": "Upload dark logo",
         "deleteSuccessful": "Logo deleted successfully."
       },
+      "theme": {
+        "title": "Theme Customization",
+        "primaryColor": "Primary Color",
+        "primaryDescription": "Main color used for buttons, links, and highlights",
+        "secondaryColor": "Secondary Color",
+        "secondaryDescription": "Secondary color used for text and borders",
+        "ciLightGreen": "Brand Green",
+        "ciLightGreenDescription": "Brand green color used in gradients and logos",
+        "ciLightBlue": "Brand Blue",
+        "ciLightBlueDescription": "Brand blue color used in gradients and logos",
+        "resetToDefaults": "Reset to Defaults"
+      },
       "organisationInfo": {
         "title": "Organisational information",
         "descriptionSchool": "Enter your organization’s official details. This information may be displayed in the edulution app. Please provide the name, street, postal code, and optionally the school website.",
@@ -996,6 +1010,7 @@
     "info": {
       "title": "Info"
     },
+    "lmnVersion": { "title": "Linuxmuster version overview" },
     "appconfig": {
       "position": {
         "title": "Sorting",
@@ -1041,7 +1056,11 @@
         },
         "webdavServer": {
           "title": "WebDAV-Server",
-          "filterPlaceHolderText": "Search for WebDAV servers"
+          "filterPlaceHolderText": "Search for WebDAV servers",
+          "deleteWarning": {
+            "title": "Deletion not possible",
+            "description": "The WebDAV server ‘{{serverName}}’ is used by {{count}} share(s): {{shares}}. Please delete the dependent shares first."
+          }
         },
         "files": {
           "title": "Files",

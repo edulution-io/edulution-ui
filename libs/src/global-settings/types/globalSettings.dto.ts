@@ -14,6 +14,7 @@ import { ValidateNested } from 'class-validator';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import type DeploymentTarget from '@libs/common/types/deployment-target';
 import OrganisationInfoDto from '@libs/global-settings/types/organisationInfoDto';
+import ThemeSettingsDto from '@libs/global-settings/types/themeSettings.dto';
 
 type GlobalSettingsAuth = {
   mfaEnforcedGroups: MultipleSelectorGroup[];
@@ -43,6 +44,9 @@ class GlobalSettingsDto {
 
   @ValidateNested()
   organisationInfo?: OrganisationInfoDto;
+
+  @ValidateNested()
+  theme: ThemeSettingsDto;
 }
 
 export default GlobalSettingsDto;
