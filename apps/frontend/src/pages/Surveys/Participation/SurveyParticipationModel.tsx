@@ -14,7 +14,7 @@ import React, { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
-import { ClearFilesEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
+import { ClearFilesEvent, DownloadFileEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
 import { FileDownloadDto } from '@libs/survey/types/api/file-download.dto';
 import { removeUuidFromFileName } from '@libs/common/utils/uuidAndFileNames';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
@@ -25,12 +25,18 @@ import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPag
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
 import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/ExportSurveyToPdfDialog';
-import surveyTheme from '@/pages/Surveys/theme/theme';
+import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import '../theme/custom.participation.css';
 import 'survey-core/i18n/french';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
+
+interface SurveyFileValue {
+  name: string;
+  type: string;
+  [key: string]: unknown;
+}
 
 interface SurveyParticipationModelProps {
   isPublic: boolean;
@@ -121,7 +127,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
         const newFile: FileDownloadDto = {
           ...file,
-          type: file.type || 'image/png',
+          type: file.type || '*/*',
           originalName: data.name || file.name,
           name: removeUuidFromFileName(data.name || file.name),
           url: `${EDU_API_URL}/${data.url}`,
@@ -137,6 +143,27 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
           content: result.url,
         })),
       );
+    });
+
+    newModel.onDownloadFile.add((_: SurveyModel, options: DownloadFileEvent) => {
+      const fileValue = options.fileValue as SurveyFileValue;
+
+      fetch(options.content as string)
+        .then((response) => response.blob())
+        .then((blob) => {
+          const file = new File([blob], fileValue.name, {
+            type: fileValue.type,
+          });
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            options.callback('success', e.target?.result);
+          };
+          reader.readAsDataURL(file);
+        })
+        .catch((error) => {
+          console.error('Error: ', error);
+          options.callback('error');
+        });
     });
 
     newModel.onClearFiles.add(async (_surveyModel: SurveyModel, options: ClearFilesEvent): Promise<void> => {

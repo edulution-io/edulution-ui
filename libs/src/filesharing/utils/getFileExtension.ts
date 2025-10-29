@@ -12,7 +12,7 @@
 
 const getFileExtension = (filename: string): string => {
   const extension = filename.split('.').pop();
-  return extension || '';
+  return extension?.toLowerCase() || '';
 };
 
 export default getFileExtension;
