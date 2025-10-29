@@ -22,7 +22,7 @@ type AppConfigUpdateCheckerStore = {
   isUpdating: boolean;
   versionInfo: SogoThemeVersionDto | null;
   error: Error | null;
-  checkVersion: (baseEndpoint: string, path: string) => Promise<void>;
+  checkVersion: (baseEndpoint: string, path: string, silent?: boolean) => Promise<void>;
   triggerUpdate: (baseEndpoint: string, path: string) => Promise<void>;
   reset: () => void;
 };
@@ -37,7 +37,7 @@ const initialState = {
 const useAppConfigUpdateCheckerStore = create<AppConfigUpdateCheckerStore>((set) => ({
   ...initialState,
 
-  checkVersion: async (baseEndpoint: string, path: string) => {
+  checkVersion: async (baseEndpoint: string, path: string, silent?: boolean) => {
     if (!baseEndpoint || !path) return;
 
     set({ isLoading: true, error: null });
@@ -46,7 +46,9 @@ const useAppConfigUpdateCheckerStore = create<AppConfigUpdateCheckerStore>((set)
 
       set({ versionInfo: data });
 
-      toast.success(i18n.t('appExtendedOptions.updateChecker.checkVersionSuccess'));
+      if (!silent) {
+        toast.success(i18n.t('appExtendedOptions.updateChecker.checkVersionSuccess'));
+      }
     } catch (error) {
       handleApiError(error, set);
     } finally {

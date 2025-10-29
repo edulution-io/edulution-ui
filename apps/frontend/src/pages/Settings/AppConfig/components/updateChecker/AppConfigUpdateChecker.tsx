@@ -31,7 +31,7 @@ const AppConfigUpdateChecker: React.FC<AppConfigUpdateCheckerProps> = ({ option 
   const path = option.value as string;
 
   useEffect(() => {
-    void checkVersion(baseEndpoint, path);
+    void checkVersion(baseEndpoint, path, true);
   }, [baseEndpoint, path, checkVersion]);
 
   const renderContent = () => {

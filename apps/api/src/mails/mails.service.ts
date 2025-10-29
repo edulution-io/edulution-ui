@@ -21,9 +21,9 @@ import {
   CreateSyncJobDto,
   MailDto,
   MailProviderConfigDto,
+  SogoThemeVersionDto,
   SyncJobDto,
   SyncJobResponseDto,
-  SogoThemeVersionDto,
 } from '@libs/mail/types';
 import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
 import APPS from '@libs/appconfig/constants/apps';
@@ -47,6 +47,7 @@ import FilterUserPipe from '../common/pipes/filterUser.pipe';
 import AppConfigService from '../appconfig/appconfig.service';
 import GroupsService from '../groups/groups.service';
 import SseService from '../sse/sse.service';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 const { MAILCOW_API_URL, MAILCOW_API_TOKEN, EDUI_MAIL_IMAP_TIMEOUT } = process.env;
 
@@ -73,6 +74,7 @@ class MailsService implements OnModuleInit {
     private readonly filesystemService: FilesystemService,
     private readonly groupsService: GroupsService,
     private readonly sseService: SseService,
+    private readonly globalSettingsService: GlobalSettingsService,
   ) {
     const httpsAgent = new HttpsAgent({
       rejectUnauthorized: false,
@@ -275,7 +277,13 @@ class MailsService implements OnModuleInit {
   ): Promise<void> {
     if (!Array.isArray(accessGroups) || accessGroups.length === 0) return;
 
-    const usernames = await this.groupsService.getInvitedMembers(accessGroups, []);
+    const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
+
+    const usernames = await this.groupsService.getInvitedMembers(
+      [...accessGroups, ...adminGroups.map((g) => ({ path: g }))],
+      [],
+    );
+
     if (!usernames.length) return;
 
     this.sseService.sendEventToUsers(usernames, data, message);

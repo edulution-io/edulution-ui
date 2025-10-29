@@ -1731,7 +1731,7 @@
     },
     "mailSogoThemeDisabled": "Deaktiviert, da der Mailserver nicht läuft.",
     "mailSogoThemeUpdateCheckerTitle": "Theme-Versionsprüfung",
-    "mailSogoThemeUpdateCheckerDescription": "Prüfen Sie, ob eine neue Version des aktuellen Themes verfügbar ist und aktualisieren Sie es bei Bedarf.",
+    "mailSogoThemeUpdateCheckerDescription": "Prüfe, ob eine neue Version des aktuellen Themes verfügbar ist und aktualisiere es bei Bedarf.",
     "updateChecker": {
       "currentVersion": "Aktuelle Version",
       "latestVersion": "Neueste Version",
