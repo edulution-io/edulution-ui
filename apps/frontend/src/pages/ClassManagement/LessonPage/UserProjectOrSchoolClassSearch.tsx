@@ -19,13 +19,10 @@ import useClassManagementStore from '@/pages/ClassManagement/useClassManagementS
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
-import {
-  SOPHOMORIX_PROJECT,
-  SOPHOMORIX_SCHOOL_CLASS,
-  SOPHOMORIX_STUDENT,
-} from '@libs/lmnApi/constants/sophomorixRoles';
 import getUniqueValues from '@libs/lmnApi/utils/getUniqueValues';
 import useLdapGroups from '@/hooks/useLdapGroups';
+import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
+import SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixSchoolClassGroupTypes';
 
 const UserProjectOrSchoolClassSearch = () => {
   const { t } = useTranslation();
@@ -45,7 +42,13 @@ const UserProjectOrSchoolClassSearch = () => {
 
     const isValidSearchResult = (r: MultipleSelectorOptionSH & LmnApiSearchResult) =>
       r.cn !== user?.cn &&
-      [SOPHOMORIX_SCHOOL_CLASS, SOPHOMORIX_STUDENT, SOPHOMORIX_PROJECT].includes(r.type) &&
+      (
+        [
+          SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES.SCHOOL_CLASS,
+          SOPHOMORIX_GROUP_TYPES.STUDENT,
+          SOPHOMORIX_GROUP_TYPES.PROJECT,
+        ] as string[]
+      ).includes(r.type) &&
       (!!r.displayName || !!r.cn) &&
       (!isSuperAdmin || r.sophomorixSchoolname === selectedSchool);
 
@@ -58,21 +61,21 @@ const UserProjectOrSchoolClassSearch = () => {
     const { type, value } = newlySelected[0];
 
     switch (type) {
-      case SOPHOMORIX_SCHOOL_CLASS: {
+      case SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES.SCHOOL_CLASS: {
         const schoolClass = await fetchSchoolClass(value);
         if (schoolClass) {
           setMember(getUniqueValues([...member, ...schoolClass.members]));
         }
         break;
       }
-      case SOPHOMORIX_STUDENT: {
+      case SOPHOMORIX_GROUP_TYPES.STUDENT: {
         const student = await fetchUser(value);
         if (student) {
           setMember(getUniqueValues([...member, student]));
         }
         break;
       }
-      case SOPHOMORIX_PROJECT: {
+      case SOPHOMORIX_GROUP_TYPES.PROJECT: {
         const project = await fetchProject(value);
         if (project) {
           setMember(getUniqueValues([...member, ...project.members]));

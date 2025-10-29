@@ -10,5 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { default as HexagonIcon } from '@/assets/layout/Hexagon.svg';
-export { default as RoundArrowIcon } from '@/assets/layout/Pfeil.svg';
+import ThemeColors from '@libs/global-settings/types/themeColors';
+import ThemeSettingsDto from '@libs/global-settings/types/themeSettings.dto';
+import defaultValues from '@libs/global-settings/constants/defaultValues';
+
+const getThemeWithDefaults = (publicTheme: ThemeSettingsDto | null): ThemeColors => ({
+  ...defaultValues.theme.dark,
+  ...(publicTheme?.dark || {}),
+});
+
+export default getThemeWithDefaults;

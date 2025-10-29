@@ -22,7 +22,7 @@ import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPag
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
 import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/ExportSurveyToPdfDialog';
-import surveyTheme from '@/pages/Surveys/theme/theme';
+import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import '../theme/custom.participation.css';
 import 'survey-core/i18n/french';

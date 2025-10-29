@@ -22,7 +22,7 @@ import {
   PUBLIC_SURVEYS,
   SURVEY_ANSWER_ENDPOINT,
   PUBLIC_USER,
-  SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT,
+  SURVEYS_ANSWER_TEMP_FILE_ATTACHMENT_ENDPOINT,
 } from '@libs/survey/constants/surveys-endpoint';
 import { publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
 import AttendeeDto from '@libs/user/types/attendee.dto';
@@ -196,7 +196,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       const formData = new FormData();
       formData.append('file', file);
       const response = await eduApi.post<{ name: string; url: string; content: Buffer<ArrayBufferLike> }>(
-        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}`,
+        `${SURVEYS_ANSWER_TEMP_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}`,
         formData,
         {
           headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
@@ -228,7 +228,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     try {
       const fileName = file.name || file.content?.split('/').pop();
       const response = await eduApi.delete<string>(
-        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}/${fileName}`,
+        `${SURVEYS_ANSWER_TEMP_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}/${fileName}`,
       );
       if (response.status === 200) {
         return 'success';
@@ -246,7 +246,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     set({ isDeletingFile: true });
     try {
       const response = await eduApi.delete<string>(
-        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}`,
+        `${SURVEYS_ANSWER_TEMP_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}`,
       );
       if (response.status === 200) {
         return 'success';
