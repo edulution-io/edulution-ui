@@ -23,6 +23,7 @@ import DOCKER_PROTECTED_CONTAINERS from '@libs/docker/constants/dockerProtectedC
 import SPECIAL_USERS from '@libs/common/constants/specialUsers';
 import type TDockerProtectedContainer from '@libs/docker/types/TDockerProtectedContainer';
 import CONTAINER from '@libs/docker/constants/container';
+import type PullEvent from '@libs/docker/types/pullEvent';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
 
@@ -124,26 +125,69 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  private async pullImage(image: string) {
+  private async pullImage(image: string): Promise<'up_to_date' | 'updated'> {
     try {
       this.sseService.sendEventToUsers(
         [SPECIAL_USERS.GLOBAL_ADMIN],
-        { progress: 'docker.events.pullingImage', from: `${image}` } as DockerEvent,
+        {
+          progress: 'docker.events.pullingImage',
+          from: image,
+        } as DockerEvent,
         SSE_MESSAGE_TYPE.CONTAINER_PROGRESS,
       );
+
       const stream = await this.docker.pull(image);
+
+      const pullEvents: PullEvent[] = [];
+
       await new Promise<void>((resolve, reject) => {
         this.docker.modem.followProgress(
           stream,
-          (error) => (error ? reject(error) : resolve()),
-          (event: DockerEvent) => {
-            if (event) {
-              this.sseService.sendEventToUsers([SPECIAL_USERS.GLOBAL_ADMIN], event, SSE_MESSAGE_TYPE.CONTAINER_STATUS);
+          (error, output: unknown) => {
+            if (error) {
+              reject(error);
+              return;
             }
+
+            if (Array.isArray(output)) {
+              output.forEach((o) => pullEvents.push(o as PullEvent));
+            }
+
+            resolve();
+          },
+          (event: unknown) => {
+            const pullEvent = event as PullEvent;
+            pullEvents.push(pullEvent);
+
+            this.sseService.sendEventToUsers(
+              [SPECIAL_USERS.GLOBAL_ADMIN],
+              event as DockerEvent,
+              SSE_MESSAGE_TYPE.CONTAINER_STATUS,
+            );
           },
         );
       });
-    } catch (error) {
+
+      const updated = pullEvents.some(
+        (evt) => typeof evt.status === 'string' && evt.status.includes('Downloaded newer image'),
+      );
+
+      if (updated) {
+        Logger.debug(`Image ${image} pulled and updated`, DockerService.name);
+        return 'updated';
+      }
+
+      const upToDate = pullEvents.some(
+        (evt) => typeof evt.status === 'string' && evt.status.includes('Image is up to date'),
+      );
+
+      if (upToDate) {
+        Logger.debug(`Image ${image} is up to date`, DockerService.name);
+        return 'up_to_date';
+      }
+
+      return 'updated';
+    } catch (err) {
       throw new CustomHttpException(
         DockerErrorMessages.DOCKER_IMAGE_NOT_FOUND,
         HttpStatus.NOT_FOUND,
@@ -333,10 +377,17 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       const imageName = inspectData.Config.Image;
 
       Logger.debug('Pulling latest image:', DockerService.name);
+      const pullImageStatus = await this.pullImage(imageName);
 
-      await this.pullImage(imageName);
+      if (pullImageStatus === 'up_to_date') {
+        Logger.debug(
+          `Image ${imageName} is already up to date. No update needed for container ${container.id}`,
+          DockerService.name,
+        );
+        return { id: container.id, status: pullImageStatus };
+      }
 
-      Logger.debug(`Stopping container...${container.id}`, DockerService.name);
+      Logger.debug(`Stopping container ${container.id}`, DockerService.name);
       await container.stop();
 
       Logger.debug(`Removing container ${container.id}`, DockerService.name);
@@ -356,7 +407,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       Logger.debug('Starting new container...');
       await newContainer.start();
 
-      return newContainer.id;
+      return { id: newContainer.id, status: 'updated' };
     } catch (error) {
       throw new CustomHttpException(
         DockerErrorMessages.DOCKER_UPDATE_ERROR,
