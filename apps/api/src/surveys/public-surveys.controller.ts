@@ -145,22 +145,6 @@ class PublicSurveysController {
     return res.status(HttpStatus.CREATED).json({ name: file.filename, url, content });
   }
 
-  @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:questionName`)
-  @Public()
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  async deleteTempQuestionAnswerFiles(@Param() params: { userName: string; surveyId: string; questionId: string }) {
-    const { userName, surveyId, questionId } = params;
-    if (!userName || !surveyId || !questionId) {
-      throw new CustomHttpException(
-        CommonErrorMessages.INVALID_REQUEST_DATA,
-        HttpStatus.UNPROCESSABLE_ENTITY,
-        undefined,
-        PublicSurveysController.name,
-      );
-    }
-    await this.surveyAnswerAttachmentsService.deleteTempQuestionAnswerFiles(userName, surveyId, questionId);
-  }
-
   @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:filename`)
   @Public()
   serveTempFileFromAnswer(
@@ -177,6 +161,22 @@ class PublicSurveysController {
       );
     }
     return this.surveyAnswerAttachmentsService.serveTempFileFromAnswer(userName, surveyId, questionId, filename, res);
+  }
+
+  @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId`)
+  @Public()
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  async deleteTempQuestionAnswerFiles(@Param() params: { userName: string; surveyId: string; questionId: string }) {
+    const { userName, surveyId, questionId } = params;
+    if (!userName || !surveyId || !questionId) {
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+        undefined,
+        PublicSurveysController.name,
+      );
+    }
+    await this.surveyAnswerAttachmentsService.deleteTempQuestionAnswerFiles(userName, surveyId, questionId);
   }
 
   @Get(`${CHOICES}/:surveyId/:questionId`)
