@@ -262,7 +262,7 @@ class SurveysAttachmentService implements OnModuleInit {
       await this.fileSystemService.ensureDirectoryExists(permanentDir);
       await FilesystemService.moveFile(tempPath, permanentPath);
       const baseUrl = url.substring(0, url.indexOf(`/${SURVEY_FILE_ATTACHMENT_ENDPOINT}`));
-      const endpoint = isPublic ? PUBLIC_SURVEY_FILE_ATTACHMENT_ENDPOINT : SURVEY_FILE_ATTACHMENT_ENDPOINT;
+      const endpoint = `${isPublic ? PUBLIC_SURVEY_FILE_ATTACHMENT_ENDPOINT : SURVEY_FILE_ATTACHMENT_ENDPOINT}`;
       Logger.log(`Moved temp file ${tempPath} to ${permanentPath}`, SurveysAttachmentService.name);
       Logger.log(`filename: ${filename}; newUrl: ${baseUrl}/${endpoint}/${pathForUrl}`, SurveysAttachmentService.name);
       return {

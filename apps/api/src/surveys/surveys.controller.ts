@@ -168,13 +168,11 @@ class SurveysController {
   }
 
   @Delete()
-  async deleteSurveys(@Body() deleteSurveyDto: DeleteSurveyDto, @GetCurrentUsername() currentUsername: string) {
+  async deleteSurveys(@Body() deleteSurveyDto: DeleteSurveyDto, @GetCurrentUser() currentUser: JWTUser) {
     const { surveyIds } = deleteSurveyDto;
     await Promise.all(
       surveyIds.map(async (surveyId) => {
-        await this.surveyService.throwErrorIfUserIsNotCreator(surveyId, {
-          preferred_username: currentUsername,
-        } as JWTUser);
+        await this.surveyService.throwErrorIfUserIsNotCreator(surveyId, currentUser);
       }),
     );
     await this.surveyService.deleteSurveys(surveyIds);
