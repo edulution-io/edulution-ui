@@ -1529,7 +1529,7 @@
       "updateAvailable": "Une nouvelle version est disponible !",
       "checkAgain": "Vérifier à nouveau",
       "updateNow": "Mettre à jour maintenant",
-      "updateSuccess": "Thème mis à jour avec succès !",
+      "checkVersionSuccess": "Thème vérifié avec succès !",
       "noData": "Aucune information de version disponible."
     }
   },

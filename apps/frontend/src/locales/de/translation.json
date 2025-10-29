@@ -1739,7 +1739,7 @@
       "updateAvailable": "Eine neue Version ist verfügbar!",
       "checkAgain": "Erneut prüfen",
       "updateNow": "Jetzt aktualisieren",
-      "updateSuccess": "Theme erfolgreich aktualisiert!",
+      "checkVersionSuccess": "Theme erfolgreich überprüft!",
       "noData": "Keine Versionsinformationen verfügbar."
     }
   },

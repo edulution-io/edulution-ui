@@ -14,6 +14,8 @@ import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import SogoThemeVersionDto from '@libs/mail/types/sogo-theme-version.dto';
+import { toast } from 'sonner';
+import i18n from '@/i18n';
 
 type AppConfigUpdateCheckerStore = {
   isLoading: boolean;
@@ -41,7 +43,10 @@ const useAppConfigUpdateCheckerStore = create<AppConfigUpdateCheckerStore>((set)
     set({ isLoading: true, error: null });
     try {
       const { data } = await eduApi.get<SogoThemeVersionDto>(`${baseEndpoint}/${path}`);
+
       set({ versionInfo: data });
+
+      toast.success(i18n.t('appExtendedOptions.updateChecker.checkVersionSuccess'));
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -57,6 +62,7 @@ const useAppConfigUpdateCheckerStore = create<AppConfigUpdateCheckerStore>((set)
       await eduApi.post(`${baseEndpoint}/${path}/update`);
 
       const { data } = await eduApi.get<SogoThemeVersionDto>(`${baseEndpoint}/${path}`);
+
       set({ versionInfo: data });
     } catch (error) {
       handleApiError(error, set);

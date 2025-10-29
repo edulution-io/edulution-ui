@@ -1718,7 +1718,7 @@
       "updateAvailable": "A new version is available!",
       "checkAgain": "Check Again",
       "updateNow": "Update Now",
-      "updateSuccess": "Theme successfully updated!",
+      "checkVersionSuccess": "Theme successfully checked!",
       "noData": "No version information available."
     }
   },

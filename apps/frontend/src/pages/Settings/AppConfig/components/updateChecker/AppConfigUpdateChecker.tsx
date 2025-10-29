@@ -35,14 +35,6 @@ const AppConfigUpdateChecker: React.FC<AppConfigUpdateCheckerProps> = ({ option 
   }, [baseEndpoint, path, checkVersion]);
 
   const renderContent = () => {
-    if (isLoading) {
-      return (
-        <div className="flex items-center justify-center py-4">
-          <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
-        </div>
-      );
-    }
-
     if (!versionInfo) {
       return <p className="text-center text-muted-foreground">{t('appExtendedOptions.updateChecker.noData')}</p>;
     }
@@ -63,8 +55,8 @@ const AppConfigUpdateChecker: React.FC<AppConfigUpdateCheckerProps> = ({ option 
         </div>
 
         {versionInfo.isUpdateAvailable && (
-          <div className="bg-warning/10 rounded-md p-3">
-            <p className="text-warning text-sm font-medium">{t('appExtendedOptions.updateChecker.updateAvailable')}</p>
+          <div className="mx-auto w-64 rounded-md border border-primary p-3">
+            <p className="text-center text-sm font-medium">{t('appExtendedOptions.updateChecker.updateAvailable')}</p>
           </div>
         )}
 
@@ -82,7 +74,7 @@ const AppConfigUpdateChecker: React.FC<AppConfigUpdateCheckerProps> = ({ option 
           <Button
             onClick={() => triggerUpdate(baseEndpoint, path)}
             disabled={isUpdating || isLoading}
-            variant={versionInfo.isUpdateAvailable ? undefined : 'btn-outline'}
+            variant={versionInfo.isUpdateAvailable ? 'btn-collaboration' : 'btn-outline'}
             size="sm"
           >
             {isUpdating && <RefreshCw className="mr-2 h-4 w-4 animate-spin" />}
