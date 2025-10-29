@@ -187,7 +187,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       }
 
       return true;
-    } catch (err) {
+    } catch (error) {
       throw new CustomHttpException(
         DockerErrorMessages.DOCKER_IMAGE_NOT_FOUND,
         HttpStatus.NOT_FOUND,
