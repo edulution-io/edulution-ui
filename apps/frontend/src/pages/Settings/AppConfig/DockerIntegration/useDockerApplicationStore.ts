@@ -167,6 +167,21 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
     }
   },
 
+  updateContainer: async (containerNames: string[]) => {
+    set({ isLoading: true, error: null });
+    try {
+      await Promise.all(
+        containerNames.map((containerName) =>
+          eduApi.patch(`${EDU_API_DOCKER_ENDPOINT}/${EDU_API_DOCKER_CONTAINER_ENDPOINT}/${containerName}`),
+        ),
+      );
+    } catch (error) {
+      handleApiError(error, set);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
   reset: () => set(initialValues),
 }));
 

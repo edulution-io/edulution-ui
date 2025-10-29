@@ -241,6 +241,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
   async executeContainerCommand(params: { id: string; operation: TDockerCommands }) {
     const { id, operation } = params;
+    const container = this.docker.getContainer(id);
 
     DockerService.checkProtectedContainer(id);
 
@@ -252,16 +253,16 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       );
       switch (operation) {
         case DOCKER_COMMANDS.START:
-          await this.docker.getContainer(id).start();
+          await container.start();
           break;
         case DOCKER_COMMANDS.STOP:
-          await this.docker.getContainer(id).stop();
+          await container.stop();
           break;
         case DOCKER_COMMANDS.RESTART:
-          await this.docker.getContainer(id).restart();
+          await container.restart();
           break;
         case DOCKER_COMMANDS.KILL:
-          await this.docker.getContainer(id).kill();
+          await container.kill();
           break;
         default:
           throw new CustomHttpException(
@@ -322,6 +323,48 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
         }
       }),
     );
+  }
+
+  async updateContainer(containerId: string) {
+    try {
+      const container = this.docker.getContainer(containerId);
+
+      const inspectData = await container.inspect();
+      const imageName = inspectData.Config.Image;
+
+      Logger.debug('Pulling latest image:', DockerService.name);
+
+      await this.pullImage(imageName);
+
+      Logger.debug(`Stopping container...${container.id}`, DockerService.name);
+      await container.stop();
+
+      Logger.debug(`Removing container ${container.id}`, DockerService.name);
+      await container.remove();
+
+      Logger.debug(`Recreating container`, DockerService.name);
+      const newContainer = await this.docker.createContainer({
+        ...inspectData.Config,
+        HostConfig: inspectData.HostConfig,
+        NetworkingConfig: inspectData.NetworkSettings?.Networks
+          ? { EndpointsConfig: inspectData.NetworkSettings.Networks }
+          : undefined,
+        Image: imageName,
+        name: inspectData.Name.replace('/', ''),
+      });
+
+      Logger.debug('Starting new container...');
+      await newContainer.start();
+
+      return newContainer.id;
+    } catch (error) {
+      throw new CustomHttpException(
+        DockerErrorMessages.DOCKER_UPDATE_ERROR,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        DockerService.name,
+      );
+    }
   }
 }
 
