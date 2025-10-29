@@ -18,13 +18,13 @@ import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
-interface ExportToPdfWarningProps {
+interface ExportSurveyToPdfDialogProps {
   formula: SurveyFormula;
   answer?: JSON;
   trigger?: React.ReactNode;
 }
 
-const ExportSurveyToPdfDialog = ({ formula, answer, trigger }: ExportToPdfWarningProps) => {
+const ExportSurveyToPdfDialog = ({ formula, answer, trigger }: ExportSurveyToPdfDialogProps) => {
   const { isOpen, setIsOpen, isProcessing, saveSurveyAsPdf } = useExportSurveyToPdfStore();
 
   const { t } = useTranslation();

@@ -62,10 +62,11 @@ class PublicSurveysController {
     return this.surveyService.findPublicSurvey(surveyId);
   }
 
-  @Post()
+  @Post(ANSWER)
   @Public()
   async answerSurvey(@Body() postAnswerDto: PostSurveyAnswerDto) {
     const { surveyId, answer, attendee } = postAnswerDto;
+    await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
     const savedAnswer = await this.surveyAnswerService.addAnswer(surveyId, answer, attendee);
     return savedAnswer;
   }
@@ -74,14 +75,16 @@ class PublicSurveysController {
   @Public()
   async hasPublicUserAnswered(@Param() params: { surveyId: string; publicUserName: string }) {
     const { surveyId, publicUserName } = params;
+    await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
     const response = await this.surveyAnswerService.hasPublicUserAnsweredSurvey(surveyId, publicUserName);
     return response;
   }
 
   @Get(`${FILES}/:surveyId/:questionId/:filename`)
   @Public()
-  serveFile(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
+  async serveFile(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
     const { surveyId, questionId, filename } = params;
+    await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
     return this.surveysAttachmentService.serveFiles(surveyId, questionId, filename, res);
   }
 
@@ -112,7 +115,7 @@ class PublicSurveysController {
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  async tempFileUpload(
+  async answeringFileUpload(
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addMaxSizeValidator({
@@ -123,8 +126,8 @@ class PublicSurveysController {
         }),
     )
     file: Express.Multer.File,
-    @Res() res: Response,
     @Param() params: { userName: string; surveyId: string; questionId: string },
+    @Res() res: Response,
   ) {
     const { userName, surveyId, questionId } = params;
     if (!userName || !surveyId || !questionId || !file) {
@@ -135,12 +138,25 @@ class PublicSurveysController {
         PublicSurveysController.name,
       );
     }
-    const filePath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId, file.filename);
+    const path = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId);
+    const filePath = join(path, file.filename);
     const url = `${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${userName}/${surveyId}/${questionId}/${file.filename}`;
 
     await FilesystemService.checkIfFileExist(filePath);
-    const content = (await FilesystemService.readFile(filePath)).toString('base64');
-    return res.status(HttpStatus.CREATED).json({ name: file.filename, url, content });
+
+    const survey = await this.surveyService.findPublicSurvey(surveyId);
+    if (!survey) {
+      await FilesystemService.deleteFile(path, file.filename);
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+        undefined,
+        PublicSurveysController.name,
+      );
+    } else {
+      const content = (await FilesystemService.readFile(filePath)).toString('base64');
+      return res.status(HttpStatus.CREATED).json({ name: file.filename, url, content });
+    }
   }
 
   @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:questionName`)
@@ -156,12 +172,13 @@ class PublicSurveysController {
         PublicSurveysController.name,
       );
     }
+    await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
     await this.surveyAnswerAttachmentsService.deleteTempQuestionAnswerFiles(userName, surveyId, questionId);
   }
 
   @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:filename`)
   @Public()
-  serveFileFromAnswer(
+  async serveFileFromAnswer(
     @Param() params: { userName: string; surveyId: string; questionId: string; filename: string },
     @Res() res: Response,
   ) {
@@ -174,6 +191,7 @@ class PublicSurveysController {
         PublicSurveysController.name,
       );
     }
+    await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
     return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, questionId, filename, res);
   }
 
@@ -184,6 +202,7 @@ class PublicSurveysController {
     if (surveyId === TEMPORAL_SURVEY_ID_STRING) {
       return [];
     }
+    await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
     const choices = await this.surveyAnswerService.getSelectableChoices(surveyId, questionId);
     return choices.filter((choice) => choice.name !== SHOW_OTHER_ITEM);
   }
@@ -203,6 +222,7 @@ class PublicSurveysController {
         PublicSurveysController.name,
       );
     }
+    await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
     await SurveyAnswerAttachmentsService.deleteTempAnswerFiles(userName, surveyId, questionId, fileName);
   }
 }

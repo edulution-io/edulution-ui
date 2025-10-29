@@ -18,15 +18,15 @@ import SurveyAnswerResponseDto from '@libs/survey/types/api/survey-answer-respon
 import AnswerSurvey from '@libs/survey/types/api/answer-survey';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import {
-  SURVEYS,
+  PUBLIC_USER,
   PUBLIC_SURVEYS,
   SURVEY_ANSWER_ENDPOINT,
-  PUBLIC_USER,
+  PUBLIC_SURVEY_ANSWER_ENDPOINT,
   SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT,
+  PUBLIC_SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT,
 } from '@libs/survey/constants/surveys-endpoint';
 import { publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import handleApiError from '@/utils/handleApiError';
 import eduApi from '@/api/eduApi';
 import { FileDownloadDto } from '@libs/survey/types/api/file-download.dto';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
@@ -61,6 +61,7 @@ interface ParticipateSurveyStore {
     surveyId: string,
     questionId: string,
     file: File & { content?: string },
+    isPublic?: boolean,
   ) => Promise<FileDownloadDto | null>;
   isUploadingFile?: boolean;
 
@@ -109,19 +110,16 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     // eslint-disable-next-line no-param-reassign
     completingEvent.allow = false;
 
-    try {
-      const response = isPublic
-        ? await eduApi.post<SurveyAnswerResponseDto>(PUBLIC_SURVEYS, {
-            surveyId,
-            answer,
-            attendee,
-          })
-        : await eduApi.patch<SurveyAnswerResponseDto>(SURVEYS, {
-            surveyId,
-            answer,
-            attendee,
-          });
+    const response = await eduApi.post<SurveyAnswerResponseDto>(
+      isPublic ? PUBLIC_SURVEY_ANSWER_ENDPOINT : SURVEY_ANSWER_ENDPOINT,
+      {
+        surveyId,
+        answer,
+        attendee,
+      },
+    );
 
+    if ([200, 201].includes(response.status)) {
       // eslint-disable-next-line no-param-reassign
       completingEvent.allow = true;
       surveyModel.doComplete();
@@ -130,19 +128,15 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       const { username = '' } = surveyAnswer.attendee || {};
       const isPublicUser = !!username && publicUserLoginRegex.test(username);
       if (isPublicUser) {
-        set({ publicUserId: username, previousAnswer: surveyAnswer });
+        set({ isSubmitting: false, publicUserId: username, previousAnswer: surveyAnswer });
       } else {
-        set({ publicUserId: undefined, previousAnswer: undefined });
+        set({ isSubmitting: false, publicUserId: undefined, previousAnswer: undefined });
       }
       return surveyAnswer;
-    } catch (error) {
-      set({ publicUserId: undefined, previousAnswer: undefined });
-      handleApiError(error, set);
-      toast.error(t('survey.errors.submitAnswerError'));
-      return undefined;
-    } finally {
-      set({ isSubmitting: false });
     }
+    set({ isSubmitting: false, publicUserId: undefined, previousAnswer: undefined });
+    toast.error(t('survey.errors.submitAnswerError'));
+    return undefined;
   },
 
   fetchAnswer: async (surveyId: string): Promise<void> => {
@@ -189,14 +183,19 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
   },
 
-  uploadTempFile: async (surveyId: string, questionId: string, file: File): Promise<FileDownloadDto | null> => {
+  uploadTempFile: async (
+    surveyId: string,
+    questionId: string,
+    file: File,
+    isPublic = false,
+  ): Promise<FileDownloadDto | null> => {
     const { attendee } = get();
     set({ isUploadingFile: true });
     try {
       const formData = new FormData();
       formData.append('file', file);
       const response = await eduApi.post<{ name: string; url: string; content: Buffer<ArrayBufferLike> }>(
-        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}`,
+        `${isPublic ? PUBLIC_SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT : SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}`,
         formData,
         {
           headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
@@ -222,13 +221,18 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
   },
 
-  deleteTempFile: async (surveyId: string, questionId: string, file: File & { content?: string }): Promise<string> => {
+  deleteTempFile: async (
+    surveyId: string,
+    questionId: string,
+    file: File & { content?: string },
+    isPublic = false,
+  ): Promise<string> => {
     const { attendee } = get();
     set({ isDeletingFile: true });
     try {
       const fileName = file.name || file.content?.split('/').pop();
       const response = await eduApi.delete<string>(
-        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}/${fileName}`,
+        `${isPublic ? PUBLIC_SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT : SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}/${fileName}`,
       );
       if (response.status === 200) {
         return 'success';
@@ -241,12 +245,12 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     return 'error';
   },
 
-  deleteTempFiles: async (surveyId: string, questionId: string): Promise<string> => {
+  deleteTempFiles: async (surveyId: string, questionId: string, isPublic = false): Promise<string> => {
     const { attendee } = get();
     set({ isDeletingFile: true });
     try {
       const response = await eduApi.delete<string>(
-        `${SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}`,
+        `${isPublic ? PUBLIC_SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT : SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}`,
       );
       if (response.status === 200) {
         return 'success';

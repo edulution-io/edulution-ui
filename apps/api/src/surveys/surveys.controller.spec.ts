@@ -309,7 +309,10 @@ describe(SurveysController.name, () => {
       surveyModel.deleteMany = jest.fn().mockResolvedValueOnce(true);
       surveyAnswerModel.deleteMany = jest.fn().mockReturnValue(true);
 
-      await controller.deleteSurvey({ surveyIds: [idOfAnsweredSurvey01.toString()] });
+      await controller.deleteSurveys(
+        { surveyIds: [idOfAnsweredSurvey01.toString()] },
+        firstMockJWTUser.preferred_username,
+      );
 
       expect(surveyService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01.toString()]);
       expect(surveyAnswersService.onSurveyRemoval).toHaveBeenCalledWith([idOfAnsweredSurvey01.toString()]);
@@ -330,7 +333,10 @@ describe(SurveysController.name, () => {
       surveyAnswerModel.deleteMany = jest.fn();
 
       try {
-        await controller.deleteSurvey({ surveyIds: [idOfAnsweredSurvey01.toString()] });
+        await controller.deleteSurveys(
+          { surveyIds: [idOfAnsweredSurvey01.toString()] },
+          firstMockJWTUser.preferred_username,
+        );
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e instanceof Error && e.message).toBe(SurveyErrorMessages.DeleteError);
