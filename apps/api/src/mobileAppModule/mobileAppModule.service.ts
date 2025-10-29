@@ -12,13 +12,11 @@
 
 import { Injectable } from '@nestjs/common';
 import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
-import UserDto from '@libs/user/types/user.dto';
 import getMobileAppUserDto from '@libs/mobileApp/utils/getMobileAppUserDto';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
-import getStringFromArray from '@libs/common/utils/getStringFromArray';
-import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
-import normalizeLdapHomeDirectory from '@libs/filesharing/utils/normalizeLdapHomeDirectory';
+import buildUserShares from '@libs/mobileApp/utils/buildUserShares';
+import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import LmnApiService from '../lmnApi/lmnApi.service';
 import UsersService from '../users/users.service';
 import GlobalSettingsService from '../global-settings/global-settings.service';
@@ -33,39 +31,49 @@ class MobileAppModuleService {
     private readonly webdavSharesService: WebdavSharesService,
   ) {}
 
-  async getAppUserData(username: string) {
-    const globalSettingsDto: GlobalSettingsDto =
-      (await this.globalSettingsService.getGlobalSettings()) as GlobalSettingsDto;
-
-    let lmnApiToken = '';
-    let lmnInfo: LmnUserInfo = {} as LmnUserInfo;
-    if (globalSettingsDto.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER) {
-      try {
-        const password = await this.userService.getPassword(username);
-        lmnApiToken = await this.lmnApiService.getLmnApiToken(username, password);
-        lmnInfo = await this.lmnApiService.getUser(lmnApiToken, username);
-      } catch (error) {
-        lmnInfo = {} as LmnUserInfo;
-      }
+  private async fetchLmnData(username: string, globalSettings: GlobalSettingsDto) {
+    if (globalSettings.general.deploymentTarget !== DEPLOYMENT_TARGET.LINUXMUSTER) {
+      return { token: '', info: {} as LmnUserInfo };
     }
 
-    const webdavServers = await this.webdavSharesService.findAllWebdavServers();
+    try {
+      const password = await this.userService.getPassword(username);
+      const token = await this.lmnApiService.getLmnApiToken(username, password);
+      const info = await this.lmnApiService.getUser(token, username);
+      return { token, info };
+    } catch (error) {
+      return { token: '', info: {} as LmnUserInfo };
+    }
+  }
 
-    const isFileEduProxy = !!webdavServers.find((server) => server.type === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY);
+  private async fetchWebdavData(currentUserGroups: string[]) {
+    const [shares] = await Promise.all([this.webdavSharesService.findAllWebdavShares(currentUserGroups)]);
 
-    const homeDirectory = isFileEduProxy
-      ? normalizeLdapHomeDirectory(lmnInfo.homeDirectory)
-      : getStringFromArray(lmnInfo.sophomorixIntrinsic2);
+    return {
+      shares: shares as WebdavShareDto[] | undefined,
+    };
+  }
 
-    const user: UserDto | null = await this.userService.findOne(username);
+  async getAppUserData(username: string, currentUserGroups: string[]) {
+    try {
+      const globalSettingsDto: GlobalSettingsDto =
+        (await this.globalSettingsService.getGlobalSettings()) as GlobalSettingsDto;
 
-    return getMobileAppUserDto({
-      homeDirectory,
-      usernameFallback: username,
-      user,
-      globalSettings: globalSettingsDto,
-      lmn: lmnInfo,
-    });
+      const lmnData = await this.fetchLmnData(username, globalSettingsDto);
+      const webdavData = await this.fetchWebdavData(currentUserGroups);
+      const userShares = buildUserShares(webdavData.shares, lmnData.info);
+      const user = await this.userService.findOne(username);
+
+      return getMobileAppUserDto({
+        usernameFallback: username,
+        user,
+        globalSettings: globalSettingsDto,
+        lmn: lmnData.info,
+        userShares,
+      });
+    } catch {
+      return {};
+    }
   }
 }
 

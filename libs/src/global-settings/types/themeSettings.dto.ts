@@ -10,21 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-// This type is based on a third-party object definition from the LDAP API.
-// Any modifications should be carefully reviewed to ensure compatibility with the source.
-type LmnApiGroupTypes =
-  | 'schoolclass'
-  | 'student'
-  | 'project'
-  | 'teacher'
-  | 'unknown'
-  | 'device'
-  | 'globalbinduser'
-  | 'globaladministrator'
-  | 'schoolbinduser'
-  | 'schooladministrator'
-  | 'classroom-studentcomputer'
-  | 'server'
-  | 'printer';
+import ThemeColors from '@libs/global-settings/types/themeColors';
 
-export default LmnApiGroupTypes;
+type ThemeSettingsDto = {
+  light: ThemeColors;
+  dark: ThemeColors;
+};
+
+export default ThemeSettingsDto;

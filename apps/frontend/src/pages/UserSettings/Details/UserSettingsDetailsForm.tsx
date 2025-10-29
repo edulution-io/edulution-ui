@@ -13,13 +13,13 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { SOPHOMORIX_TEACHER } from '@libs/lmnApi/constants/sophomorixRoles';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import BadgeFormField from '@/components/shared/BadgeFormField';
 import FormField from '@/components/shared/FormField';
 import { Button } from '@/components/shared/Button';
 import { Form } from '@/components/ui/Form';
 import InputProp from '@/types/input-prop';
+import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
 
 const UserSettingsDetailsForm = () => {
   const { user, patchUserDetails } = useLmnApiStore();
@@ -28,7 +28,7 @@ const UserSettingsDetailsForm = () => {
 
   // TODO: NIEDUUI-417: Make this dynamic using the user object
   let userDataFields: Array<InputProp<string> | InputProp<number> | InputProp<boolean>> = [];
-  if (user?.sophomorixRole === SOPHOMORIX_TEACHER) {
+  if (user?.sophomorixRole === SOPHOMORIX_GROUP_TYPES.TEACHER) {
     userDataFields = [
       {
         type: 'text',
@@ -47,7 +47,7 @@ const UserSettingsDetailsForm = () => {
 
   // TODO: NIEDUUI-417: Make this dynamic using the user object
   let userDataMultiFields: Array<InputProp<string[]>> = [];
-  if (user?.sophomorixRole === SOPHOMORIX_TEACHER) {
+  if (user?.sophomorixRole === SOPHOMORIX_GROUP_TYPES.TEACHER) {
     userDataMultiFields = [
       {
         type: 'badges',

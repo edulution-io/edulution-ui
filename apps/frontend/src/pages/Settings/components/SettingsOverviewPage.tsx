@@ -117,6 +117,10 @@ const SettingsOverviewPage: React.FC = () => {
           mfaEnforcedGroups: globalSettings.auth?.mfaEnforcedGroups ?? [],
           adminGroups: globalSettings.auth?.adminGroups ?? [],
         },
+        theme: {
+          ...defaultValues.theme,
+          ...(globalSettings.theme ?? {}),
+        },
       },
       { keepDirtyValues: false },
     );

@@ -193,7 +193,7 @@ class GroupsService {
         GroupsService.name,
       );
     } else {
-      Logger.log(`All ${groups.length} groups updated successfully in cache. ✅`, GroupsService.name);
+      Logger.log(`${groups.length} groups updated successfully in cache. ✅`, GroupsService.name);
     }
   }
 

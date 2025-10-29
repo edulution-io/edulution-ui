@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { default as MobileLogoIcon } from '@/assets/logos/edulution-logo-small-colorfull.svg';
+export { default as MobileLogoIcon } from '@/assets/logos/edulution-logo-small-colorfull.svg?react';
 export { default as FirewallIcon } from '@/assets/icons/firewall-light.svg';
 export { default as ConferencesIcon } from '@/assets/icons/edulution/Konferenzen.svg';
 export { default as LearningManagementIcon } from '@/assets/icons/edulution/Lernmanagement.svg';

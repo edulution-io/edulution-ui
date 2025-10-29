@@ -14,6 +14,7 @@
 // Any modifications should be carefully reviewed to ensure compatibility with the source.
 
 import type LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
+import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
 
 interface UserPermissions {
   'core:config:read': boolean;
@@ -132,7 +133,7 @@ interface LmnUserInfo {
   sophomorixMailQuotaCalculated: string[];
   sophomorixMailQuotaUsed: string[];
   sophomorixQuota: string[];
-  sophomorixRole: string;
+  sophomorixRole: (typeof SOPHOMORIX_GROUP_TYPES)['STUDENT' | 'TEACHER'];
   sophomorixSchoolname: string;
   sophomorixSchoolPrefix: string;
   sophomorixSessions: string[];
