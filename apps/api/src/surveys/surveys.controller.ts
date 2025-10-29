@@ -30,6 +30,7 @@ import {
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
+import APPS from '@libs/appconfig/constants/apps';
 import {
   ANSWER,
   CAN_PARTICIPATE,
@@ -40,6 +41,8 @@ import {
   SURVEYS,
   TEMPLATES,
 } from '@libs/survey/constants/surveys-endpoint';
+import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
+import SURVEYS_ANSWER_FOLDER from '@libs/survey/constants/surveyAnswersFolder';
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -47,15 +50,18 @@ import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getUsernameFromRequest from 'apps/api/src/common/utils/getUsernameFromRequest';
 import SurveysService from './surveys.service';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveysTemplateService from './surveys-template.service';
 import SurveyAnswerService from './survey-answers.service';
+import FilesystemService from '../filesystem/filesystem.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import { checkAttachmentFile, createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import AdminGuard from '../common/guards/admin.guard';
+import CustomHttpException from '../common/CustomHttpException';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
@@ -63,9 +69,9 @@ import AdminGuard from '../common/guards/admin.guard';
 class SurveysController {
   constructor(
     private readonly surveyService: SurveysService,
-    private readonly surveysAttachmentService: SurveysAttachmentService,
     private readonly surveysTemplateService: SurveysTemplateService,
     private readonly surveyAnswerService: SurveyAnswerService,
+    private readonly filesystemService: FilesystemService,
   ) {}
 
   @Get(`${FIND_ONE}/:surveyId`)
@@ -151,6 +157,34 @@ class SurveysController {
     return this.surveyAnswerService.getAnswer(surveyId, username || currentUsername);
   }
 
+  @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:filename`)
+  async servePermanentFileFromAnswer(
+    @Param() params: { userName: string; surveyId: string; filename: string },
+    @Res() res: Response,
+    @GetCurrentUser() user: JWTUser,
+  ) {
+    const { userName, surveyId, filename } = params;
+    if (!userName || !surveyId || !filename) {
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+        undefined,
+        SurveysController.name,
+      );
+    }
+    const survey = await this.surveyService.findSurveyWithCreatorDependency(surveyId, user);
+    if (survey === null) {
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveysController.name,
+      );
+    }
+    const filePath = join(SURVEYS_ANSWER_FOLDER, ATTACHMENT_FOLDER, surveyId, userName);
+    return this.filesystemService.serveFiles(filePath, filename, res);
+  }
+
   @Post()
   async updateOrCreateSurvey(@Body() surveyDto: SurveyDto, @GetCurrentUser() user: JWTUser) {
     return this.surveyService.updateOrCreateSurvey(surveyDto, user);
@@ -178,7 +212,8 @@ class SurveysController {
   @Get(`${FILES}/:filename`)
   serveTempFile(@Param() params: { filename: string }, @Res() res: Response, @GetCurrentUsername() username: string) {
     const { filename } = params;
-    return this.surveysAttachmentService.serveTempFiles(username, filename, res);
+    const filePath = join(APPS.SURVEYS, username);
+    return this.filesystemService.serveTempFiles(filePath, filename, res);
   }
 }
 
