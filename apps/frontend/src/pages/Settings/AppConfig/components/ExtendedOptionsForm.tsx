@@ -24,6 +24,7 @@ import EmbeddedPageEditorForm from '@libs/appconfig/types/embeddedPageEditorForm
 import AppConfigDropdownSelect from '@/pages/Settings/AppConfig/components/dropdown/AppConfigDropdownSelect';
 import AppConfigSwitch from './booleanField/AppConfigSwitch';
 import EmbeddedPageEditor from './EmbeddedPageEditor';
+import AppConfigUpdateChecker from './updateChecker/AppConfigUpdateChecker';
 
 type ExtendedOptionsFormProps<T extends FieldValues> = {
   extendedOptions: AppConfigExtendedOptionsBySections | undefined;
@@ -106,6 +107,13 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
             key={fieldPath}
             control={control as unknown as Control<FieldValues>}
             fieldPath={fieldPath as string}
+            option={option}
+          />
+        );
+      case ExtendedOptionField.updateChecker:
+        return (
+          <AppConfigUpdateChecker
+            key={`${option.name}_updateChecker`}
             option={option}
           />
         );

@@ -17,7 +17,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { OnEvent } from '@nestjs/event-emitter';
 import axios, { AxiosInstance } from 'axios';
 import { Agent as HttpsAgent } from 'https';
-import { CreateSyncJobDto, MailDto, MailProviderConfigDto, SyncJobDto, SyncJobResponseDto } from '@libs/mail/types';
+import {
+  CreateSyncJobDto,
+  MailDto,
+  MailProviderConfigDto,
+  SyncJobDto,
+  SyncJobResponseDto,
+  SogoThemeVersionDto,
+} from '@libs/mail/types';
 import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
@@ -109,17 +116,35 @@ class MailsService implements OnModuleInit {
     );
   }
 
+  private async getThemeConfig(): Promise<{
+    theme: string;
+    isLight: boolean;
+    sourceUrl: string;
+    accessGroups: { path: string }[];
+  } | null> {
+    const appConfig = await this.appConfigService.getAppConfigByName(APPS.MAIL);
+    const extendedOptions = appConfig?.extendedOptions;
+
+    if (!extendedOptions || typeof extendedOptions !== 'object') {
+      return null;
+    }
+
+    const accessGroups = appConfig?.accessGroups ?? [];
+    const themeRaw = (extendedOptions[ExtendedOptionKeys.MAIL_SOGO_THEME] as string) ?? MailTheme.DARK;
+    const theme = themeRaw.toLowerCase();
+    const isLight = theme === MailTheme.LIGHT;
+    const sourceUrl = isLight ? SOGO_THEME.LIGHT_CSS_URL : SOGO_THEME.DARK_CSS_URL;
+
+    return { theme, isLight, sourceUrl, accessGroups };
+  }
+
   @OnEvent(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${APPS.MAIL}`)
   async updateSogoTheme() {
     try {
-      const appConfig = await this.appConfigService.getAppConfigByName(APPS.MAIL);
-      const extendedOptions = appConfig?.extendedOptions;
-      if (!extendedOptions || typeof extendedOptions !== 'object') return;
+      const themeConfig = await this.getThemeConfig();
+      if (!themeConfig) return;
 
-      const accessGroups = appConfig?.accessGroups ?? [];
-      const themeRaw = (extendedOptions[ExtendedOptionKeys.MAIL_SOGO_THEME] as string) ?? MailTheme.DARK;
-      const theme = themeRaw.toLowerCase();
-      const isLight = theme === MailTheme.LIGHT;
+      const { theme, sourceUrl, accessGroups } = themeConfig;
 
       const requiredContainer = DOCKER_CONTAINER_NAMES.MAILCOWDOCKERIZED_SOGO_MAILCOW_1;
       const containers = await this.dockerService.getContainers([requiredContainer]);
@@ -132,7 +157,6 @@ class MailsService implements OnModuleInit {
         return;
       }
 
-      const sourceUrl = isLight ? SOGO_THEME.LIGHT_CSS_URL : SOGO_THEME.DARK_CSS_URL;
       const response = await axios.get<string>(sourceUrl, { responseType: 'text' });
       const newCss = response.data ?? '';
 
@@ -167,6 +191,52 @@ class MailsService implements OnModuleInit {
         errorMessage,
       );
       Logger.error(`Failed to update SOGo theme: ${errorMessage}`, MailsService.name);
+    }
+  }
+
+  async checkSogoThemeVersion(): Promise<SogoThemeVersionDto> {
+    const result: SogoThemeVersionDto = {
+      currentVersion: undefined,
+      latestVersion: undefined,
+      currentTheme: undefined,
+      latestTheme: undefined,
+      isUpdateAvailable: false,
+    };
+
+    try {
+      const themeConfig = await this.getThemeConfig();
+      if (!themeConfig) {
+        return result;
+      }
+
+      const { sourceUrl } = themeConfig;
+
+      const targetPath = `${SOGO_THEME.TARGET_DIR}/${SOGO_THEME.TARGET_FILE_NAME}`;
+      const exists = await FilesystemService.checkIfFileExist(targetPath);
+
+      if (exists) {
+        const currentCss = (await FilesystemService.readFile(targetPath)).toString('utf-8');
+        result.currentVersion = extractVersion(currentCss);
+        result.currentTheme = extractTheme(currentCss);
+      }
+
+      const response = await axios.get<string>(sourceUrl, { responseType: 'text' });
+      const latestCss = response.data ?? '';
+
+      result.latestVersion = extractVersion(latestCss);
+      result.latestTheme = extractTheme(latestCss);
+
+      result.isUpdateAvailable = !!(
+        result.currentVersion &&
+        result.latestVersion &&
+        result.currentVersion !== result.latestVersion
+      );
+
+      return result;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      Logger.error(`Failed to check SOGo theme version: ${errorMessage}`, MailsService.name);
+      return result;
     }
   }
 

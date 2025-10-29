@@ -1519,7 +1519,19 @@
       "light": "Clair",
       "dark": "Sombre"
     },
-    "mailSogoThemeDisabled": "Désactivé, car le serveur de messagerie ne fonctionne pas."
+    "mailSogoThemeDisabled": "Désactivé, car le serveur de messagerie ne fonctionne pas.",
+    "mailSogoThemeUpdateCheckerTitle": "Vérification de version du thème",
+    "mailSogoThemeUpdateCheckerDescription": "Vérifiez si une nouvelle version du thème actuel est disponible et mettez-la à jour si nécessaire.",
+    "updateChecker": {
+      "currentVersion": "Version actuelle",
+      "latestVersion": "Dernière version",
+      "theme": "Thème",
+      "updateAvailable": "Une nouvelle version est disponible !",
+      "checkAgain": "Vérifier à nouveau",
+      "updateNow": "Mettre à jour maintenant",
+      "updateSuccess": "Thème mis à jour avec succès !",
+      "noData": "Aucune information de version disponible."
+    }
   },
   "preview": {
     "image": "Aperçu de l'image",

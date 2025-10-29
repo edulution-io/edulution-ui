@@ -1729,7 +1729,19 @@
       "light": "Hell",
       "dark": "Dunkel"
     },
-    "mailSogoThemeDisabled": "Deaktiviert, da der Mailserver nicht läuft."
+    "mailSogoThemeDisabled": "Deaktiviert, da der Mailserver nicht läuft.",
+    "mailSogoThemeUpdateCheckerTitle": "Theme-Versionsprüfung",
+    "mailSogoThemeUpdateCheckerDescription": "Prüfen Sie, ob eine neue Version des aktuellen Themes verfügbar ist und aktualisieren Sie es bei Bedarf.",
+    "updateChecker": {
+      "currentVersion": "Aktuelle Version",
+      "latestVersion": "Neueste Version",
+      "theme": "Theme",
+      "updateAvailable": "Eine neue Version ist verfügbar!",
+      "checkAgain": "Erneut prüfen",
+      "updateNow": "Jetzt aktualisieren",
+      "updateSuccess": "Theme erfolgreich aktualisiert!",
+      "noData": "Keine Versionsinformationen verfügbar."
+    }
   },
   "preview": {
     "image": "Bildvorschau",
