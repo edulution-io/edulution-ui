@@ -22,6 +22,7 @@ import DOCKER_COMMANDS from '@libs/docker/constants/dockerCommands';
 import DOCKER_PROTECTED_CONTAINERS from '@libs/docker/constants/dockerProtectedContainer';
 import SPECIAL_USERS from '@libs/common/constants/specialUsers';
 import type TDockerProtectedContainer from '@libs/docker/types/TDockerProtectedContainer';
+import type UpdateContainerResponse from '@libs/docker/types/updateContainerResponse';
 import CONTAINER from '@libs/docker/constants/container';
 import type PullEvent from '@libs/docker/types/pullEvent';
 import CustomHttpException from '../common/CustomHttpException';
@@ -143,27 +144,22 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       await new Promise<void>((resolve, reject) => {
         this.docker.modem.followProgress(
           stream,
-          (error, output: unknown) => {
+          (error, output: PullEvent[]) => {
             if (error) {
               reject(error);
               return;
             }
 
             if (Array.isArray(output)) {
-              output.forEach((o) => pullEvents.push(o as PullEvent));
+              output.forEach((o) => pullEvents.push(o));
             }
 
             resolve();
           },
-          (event: unknown) => {
-            const pullEvent = event as PullEvent;
-            pullEvents.push(pullEvent);
+          (event: PullEvent) => {
+            pullEvents.push(event);
 
-            this.sseService.sendEventToUsers(
-              [SPECIAL_USERS.GLOBAL_ADMIN],
-              event as DockerEvent,
-              SSE_MESSAGE_TYPE.CONTAINER_STATUS,
-            );
+            this.sseService.sendEventToUsers([SPECIAL_USERS.GLOBAL_ADMIN], event, SSE_MESSAGE_TYPE.CONTAINER_STATUS);
           },
         );
       });
@@ -369,7 +365,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     );
   }
 
-  async updateContainer(containerId: string) {
+  async updateContainer(containerId: string): Promise<UpdateContainerResponse> {
     try {
       const container = this.docker.getContainer(containerId);
 

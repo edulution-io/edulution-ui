@@ -13,6 +13,8 @@
 import { create } from 'zustand';
 import axios from 'axios';
 import { parse, type YAMLMap } from 'yaml';
+import i18n from '@/i18n';
+import { toast } from 'sonner';
 import eduApi from '@/api/eduApi';
 import { type ContainerInfo, type ContainerCreateOptions } from 'dockerode';
 import { type RowSelectionState } from '@tanstack/react-table';
@@ -24,6 +26,7 @@ import { type DockerContainerTableStore } from '@libs/appconfig/types/dockerCont
 import type TApps from '@libs/appconfig/types/appsType';
 import type DockerCompose from '@libs/docker/types/dockerCompose';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import type UpdateContainerResponse from '@libs/docker/types/updateContainerResponse';
 
 const initialValues = {
   containers: [],
@@ -171,9 +174,20 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
     set({ isLoading: true, error: null });
     try {
       await Promise.all(
-        containerNames.map((containerName) =>
-          eduApi.patch(`${EDU_API_DOCKER_ENDPOINT}/${EDU_API_DOCKER_CONTAINER_ENDPOINT}/${containerName}`),
-        ),
+        containerNames.map(async (containerName) => {
+          const { data } = await eduApi.patch<UpdateContainerResponse>(
+            `${EDU_API_DOCKER_ENDPOINT}/${EDU_API_DOCKER_CONTAINER_ENDPOINT}/${containerName}`,
+          );
+
+          const { isImageUpdated } = data;
+
+          if (!isImageUpdated) {
+            toast.info(i18n.t('docker.events.containerAlreadyUpdateToDate', { containerName }));
+            return;
+          }
+
+          toast.success(i18n.t('docker.events.containerUpdateSuccessful', { containerName }));
+        }),
       );
     } catch (error) {
       handleApiError(error, set);
