@@ -125,7 +125,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  private async pullImage(image: string): Promise<'up_to_date' | 'updated'> {
+  private async pullImage(image: string): Promise<boolean> {
     try {
       this.sseService.sendEventToUsers(
         [SPECIAL_USERS.GLOBAL_ADMIN],
@@ -174,7 +174,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
       if (updated) {
         Logger.debug(`Image ${image} pulled and updated`, DockerService.name);
-        return 'updated';
+        return true;
       }
 
       const upToDate = pullEvents.some(
@@ -183,10 +183,10 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
       if (upToDate) {
         Logger.debug(`Image ${image} is up to date`, DockerService.name);
-        return 'up_to_date';
+        return false;
       }
 
-      return 'updated';
+      return true;
     } catch (err) {
       throw new CustomHttpException(
         DockerErrorMessages.DOCKER_IMAGE_NOT_FOUND,
@@ -377,14 +377,14 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       const imageName = inspectData.Config.Image;
 
       Logger.debug('Pulling latest image:', DockerService.name);
-      const pullImageStatus = await this.pullImage(imageName);
+      const isImageUpdated = await this.pullImage(imageName);
 
-      if (pullImageStatus === 'up_to_date') {
+      if (!isImageUpdated) {
         Logger.debug(
           `Image ${imageName} is already up to date. No update needed for container ${container.id}`,
           DockerService.name,
         );
-        return { id: container.id, status: pullImageStatus };
+        return { id: container.id, isImageUpdated };
       }
 
       Logger.debug(`Stopping container ${container.id}`, DockerService.name);
@@ -407,7 +407,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       Logger.debug('Starting new container...');
       await newContainer.start();
 
-      return { id: newContainer.id, status: 'updated' };
+      return { id: newContainer.id, isImageUpdated };
     } catch (error) {
       throw new CustomHttpException(
         DockerErrorMessages.DOCKER_UPDATE_ERROR,
