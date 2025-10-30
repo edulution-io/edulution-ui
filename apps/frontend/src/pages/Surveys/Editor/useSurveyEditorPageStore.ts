@@ -16,7 +16,7 @@ import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import { SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
+import { SURVEY_FILE_ATTACHMENT_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import eduApi from '@/api/eduApi';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import handleApiError from '@/utils/handleApiError';
@@ -100,7 +100,7 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
         try {
           const formData = new FormData();
           formData.append('file', file);
-          const response = await eduApi.post<string>(`${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}`, formData, {
+          const response = await eduApi.post<string>(`${SURVEY_FILE_ATTACHMENT_ENDPOINT}`, formData, {
             headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
           });
           toast.success(t('survey.editor.fileUploadSuccess'));

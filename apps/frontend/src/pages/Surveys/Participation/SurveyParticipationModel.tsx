@@ -120,7 +120,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         return;
       }
       if (surveyId) {
-        const uploadPromises = files.map(async (file) => uploadTempFile(surveyId, question?.name, file));
+        const uploadPromises = files.map(async (file) => uploadTempFile(surveyId, question?.name, file, isPublic));
         const results = await Promise.all(uploadPromises);
         const filteredResults = results.filter((result) => result !== null);
         callback(
