@@ -15,6 +15,7 @@ import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import DOCKER_CONTAINER_NAMES from '@libs/docker/constants/dockerContainerNames';
+import SOGO_THEME from '@libs/mail/constants/sogoTheme';
 
 const MAIL_GENERAL_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
   {
@@ -30,6 +31,14 @@ const MAIL_GENERAL_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
     ],
     requiredContainers: [DOCKER_CONTAINER_NAMES.MAILCOWDOCKERIZED_SOGO_MAILCOW_1],
     disabledWarningText: 'appExtendedOptions.mailSogoThemeDisabled',
+  },
+  {
+    name: ExtendedOptionKeys.MAIL_SOGO_THEME_UPDATE_CHECKER,
+    description: 'appExtendedOptions.mailSogoThemeUpdateCheckerDescription',
+    title: 'appExtendedOptions.mailSogoThemeUpdateCheckerTitle',
+    type: ExtendedOptionField.updateChecker,
+    value: SOGO_THEME.VERSION_CHECK_PATH,
+    width: 'full',
   },
 ];
 

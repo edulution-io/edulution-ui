@@ -12,8 +12,9 @@
 
 import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 import MAIL_ENDPOINT from '@libs/mail/constants/mail-endpoint';
-import { CreateSyncJobDto, MailDto, MailProviderConfigDto, SyncJobDto } from '@libs/mail/types';
+import { CreateSyncJobDto, MailDto, MailProviderConfigDto, SogoThemeVersionDto, SyncJobDto } from '@libs/mail/types';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import SOGO_THEME from '@libs/mail/constants/sogoTheme';
 import GetUsersEmailAddress from '../common/decorators/getUsersEmailAddress.decorator';
 import MailsService from './mails.service';
 import UsersService from '../users/users.service';
@@ -76,6 +77,18 @@ class MailsController {
     @GetUsersEmailAddress() emailAddress: string,
   ): Promise<SyncJobDto[]> {
     return this.mailsService.deleteSyncJobs(syncJobIds, emailAddress);
+  }
+
+  @Get(SOGO_THEME.VERSION_CHECK_PATH)
+  @UseGuards(AdminGuard)
+  async checkSogoThemeVersion(): Promise<SogoThemeVersionDto> {
+    return this.mailsService.checkSogoThemeVersion();
+  }
+
+  @Post(`${SOGO_THEME.VERSION_CHECK_PATH}/update`)
+  @UseGuards(AdminGuard)
+  async updateSogoThemeManually(): Promise<void> {
+    await this.mailsService.updateSogoTheme();
   }
 }
 

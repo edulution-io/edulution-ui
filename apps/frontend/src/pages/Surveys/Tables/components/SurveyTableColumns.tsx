@@ -11,7 +11,7 @@
  */
 
 import React from 'react';
-import i18next from 'i18next';
+import i18n from '@/i18n';
 import { format } from 'date-fns';
 import { ColumnDef } from '@tanstack/react-table';
 import getLocaleDateFormat from '@libs/common/utils/getLocaleDateFormat';
@@ -39,7 +39,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     cell: ({ row }) => (
       <SelectableTextCell
         row={row}
-        text={row.original.formula.title || i18next.t('common.not-available')}
+        text={row.original.formula.title || i18n.t('common.not-available')}
         className="h-full w-full"
         onClick={() => row.toggleSelected()}
       />
@@ -60,7 +60,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       const localDateFormat = getLocaleDateFormat(language);
       const text = row.original?.createdAt
         ? format(row.original.createdAt, 'PPP', { locale: localDateFormat })
-        : i18next.t('common.not-available');
+        : i18n.t('common.not-available');
       return (
         <SelectableTextCell
           text={text}
@@ -84,7 +84,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       const localDateFormat = getLocaleDateFormat(language);
       const text = row.original?.expires
         ? format(row.original.expires, 'PPP', { locale: localDateFormat })
-        : i18next.t('common.not-available');
+        : i18n.t('common.not-available');
       return (
         <SelectableTextCell
           text={text}

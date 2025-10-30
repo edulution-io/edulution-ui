@@ -10,11 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { default as MailDto } from './mail.dto';
-export { default as MailProviderConfigDto } from './mailProviderConfig.dto';
-export { default as MailsStore } from './mailsStore';
-export { default as CreateSyncJobDto } from './mailcow-create-sync-job.dto';
-export { default as SyncJobResponseDto } from './mailcow-create-sync-job-response.dto';
-export { default as TMailEncryption } from './mailEncryption.type';
-export { default as SyncJobDto } from './mailcow-sync-job.dto';
-export { default as SogoThemeVersionDto } from './sogo-theme-version.dto';
+import MAIL_ENDPOINT from '@libs/mail/constants/mail-endpoint';
+import ExtendedOptionKeys from './extendedOptionKeys';
+
+const UPDATE_CHECKER_ENDPOINTS: Record<string, string> = {
+  [ExtendedOptionKeys.MAIL_SOGO_THEME_UPDATE_CHECKER]: MAIL_ENDPOINT,
+};
+
+export default UPDATE_CHECKER_ENDPOINTS;
