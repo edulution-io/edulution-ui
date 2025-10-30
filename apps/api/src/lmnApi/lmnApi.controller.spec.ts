@@ -21,13 +21,8 @@ import GroupFormDto from '@libs/groups/types/groupForm.dto';
 import { LmnApiController } from './lmnApi.controller';
 import LmnApiService from './lmnApi.service';
 import mockLmnApiService from './lmnApi.service.mock';
+import mockCacheManager from '../common/cache-manager.mock';
 import GlobalSettingsService from '../global-settings/global-settings.service';
-
-const cacheManagerMock = {
-  get: jest.fn(),
-  set: jest.fn(),
-  del: jest.fn(),
-};
 
 jest.mock('got');
 
@@ -42,7 +37,7 @@ describe('LmnApiController', () => {
       controllers: [LmnApiController],
       providers: [
         { provide: LmnApiService, useValue: mockLmnApiService },
-        { provide: CACHE_MANAGER, useValue: cacheManagerMock },
+        { provide: CACHE_MANAGER, useValue: mockCacheManager },
         { provide: GlobalSettingsService, useValue: globalSettingsServiceMock },
       ],
     }).compile();

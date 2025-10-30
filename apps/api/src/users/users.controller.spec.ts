@@ -20,6 +20,7 @@ import { UsersController } from './users.controller';
 import UsersService from './users.service';
 import { User } from './user.schema';
 import UpdateUserDto from './dto/update-user.dto';
+import mockCacheManager from '../common/cache-manager.mock';
 import GlobalSettingsService from '../global-settings/global-settings.service';
 
 const mockUserModel = {
@@ -49,12 +50,6 @@ const mockLdapGroups: LdapGroups = {
   others: ['group1', 'group2'],
 };
 
-const cacheManagerMock = {
-  get: jest.fn(),
-  set: jest.fn(),
-  del: jest.fn(),
-};
-
 const globalSettingsServiceMock = { updateCache: jest.fn() };
 
 describe(UsersController.name, () => {
@@ -73,7 +68,7 @@ describe(UsersController.name, () => {
           provide: getModelToken(User.name),
           useValue: mockUserModel,
         },
-        { provide: CACHE_MANAGER, useValue: cacheManagerMock },
+        { provide: CACHE_MANAGER, useValue: mockCacheManager },
         { provide: GlobalSettingsService, useValue: globalSettingsServiceMock },
       ],
     }).compile();

@@ -14,14 +14,25 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Response } from 'express';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { ConfigService } from '@nestjs/config';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import mockCacheManager from '../common/cache-manager.mock';
 import SseService from './sse.service';
 
 describe('SseService', () => {
   let sseService: SseService;
 
   beforeEach(async () => {
+    jest.clearAllMocks();
+
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SseService, ConfigService],
+      providers: [
+        SseService,
+        ConfigService,
+        {
+          provide: CACHE_MANAGER,
+          useValue: mockCacheManager,
+        },
+      ],
     }).compile();
 
     sseService = module.get<SseService>(SseService);

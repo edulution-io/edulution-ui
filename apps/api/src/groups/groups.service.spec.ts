@@ -23,17 +23,13 @@ import {
   GROUP_WITH_MEMBERS_CACHE_KEY,
 } from '@libs/groups/constants/cacheKeys';
 import CustomHttpException from '../common/CustomHttpException';
+import mockCacheManager from '../common/cache-manager.mock';
 import KeycloakRequestQueue from '../ldap-keycloak-sync/queue/keycloak-request.queue';
 import GroupsService from './groups.service';
 
 jest.useFakeTimers();
 
 jest.mock('axios');
-
-const cacheManagerMock = {
-  get: jest.fn(),
-  set: jest.fn(),
-};
 
 const keycloakQueueMock = {
   fetchAllPaginated: jest.fn(),
@@ -47,7 +43,7 @@ describe('GroupsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GroupsService,
-        { provide: CACHE_MANAGER, useValue: cacheManagerMock },
+        { provide: CACHE_MANAGER, useValue: mockCacheManager },
         { provide: KeycloakRequestQueue, useValue: keycloakQueueMock },
       ],
     }).compile();
@@ -136,13 +132,13 @@ describe('GroupsService', () => {
 
       await service.updateGroupsAndMembersInCache();
 
-      expect(cacheManagerMock.set).toHaveBeenCalledWith(
+      expect(mockCacheManager.set).toHaveBeenCalledWith(
         ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL,
         expect.any(Array),
         expect.any(Number),
       );
-      expect(cacheManagerMock.set).toHaveBeenCalledWith(ALL_SCHOOLS_CACHE_KEY, expect.any(Array), expect.any(Number));
-      const hasMemberSetCall = cacheManagerMock.set.mock.calls.some(
+      expect(mockCacheManager.set).toHaveBeenCalledWith(ALL_SCHOOLS_CACHE_KEY, expect.any(Array), expect.any(Number));
+      const hasMemberSetCall = mockCacheManager.set.mock.calls.some(
         ([key]) => typeof key === 'string' && key.startsWith(GROUP_WITH_MEMBERS_CACHE_KEY),
       );
       expect(hasMemberSetCall).toBe(true);
@@ -152,7 +148,7 @@ describe('GroupsService', () => {
   describe('searchGroups', () => {
     it('should return all groups when no search keyword is provided', async () => {
       const mockGroups = [{ id: '1', path: 'group1' }];
-      cacheManagerMock.get.mockResolvedValue(mockGroups);
+      mockCacheManager.get.mockResolvedValue(mockGroups);
 
       const result = await service.searchGroups(SPECIAL_SCHOOLS.GLOBAL);
       expect(result).toEqual(mockGroups);
@@ -163,14 +159,14 @@ describe('GroupsService', () => {
         { id: '1', path: '/s_test' },
         { id: '2', path: '/s-testgroup' },
       ];
-      cacheManagerMock.get.mockResolvedValue(mockGroups);
+      mockCacheManager.get.mockResolvedValue(mockGroups);
 
       const result = await service.searchGroups('test');
       expect(result).toEqual(mockGroups);
     });
 
     it('should return an empty array if no groups match the search', async () => {
-      cacheManagerMock.get.mockResolvedValue([]);
+      mockCacheManager.get.mockResolvedValue([]);
 
       const result = await service.searchGroups('nonexistent');
       expect(result).toEqual([]);

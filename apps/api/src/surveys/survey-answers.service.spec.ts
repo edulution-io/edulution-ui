@@ -14,11 +14,12 @@ import { Model, Types } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyStatus from '@libs/survey/survey-status-enum';
-import SurveysAttachmentService from 'apps/api/src/surveys/surveys-attachment.service';
-import SurveyAnswerAttachmentsService from 'apps/api/src/surveys/survey-answer-attachments.service';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
+import SurveysAttachmentService from './surveys-attachment.service';
+import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import SurveyAnswersService from './survey-answers.service';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
@@ -72,6 +73,7 @@ import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
+import mockCacheManager from '../common/cache-manager.mock';
 import NotificationsService from '../notifications/notifications.service';
 import GlobalSettingsService from '../global-settings/global-settings.service';
 
@@ -106,6 +108,9 @@ describe('SurveyAnswersService', () => {
         { provide: FilesystemService, useValue: mockFilesystemService },
         { provide: NotificationsService, useValue: notificationMock },
         { provide: GlobalSettingsService, useValue: { getAdminGroupsFromCache: jest.fn() } },
+        { provide: CACHE_MANAGER, useValue: mockCacheManager },
+        SseService,
+        SurveysService,
       ],
     }).compile();
 

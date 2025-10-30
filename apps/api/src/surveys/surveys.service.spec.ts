@@ -15,6 +15,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Logger } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import SurveysService from './surveys.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import { createdSurvey01, createSurvey01, firstMockJWTUser } from './mocks';
@@ -23,6 +24,7 @@ import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
+import mockCacheManager from '../common/cache-manager.mock';
 import SurveysAttachmentService from './surveys-attachment.service';
 import NotificationsService from '../notifications/notifications.service';
 import GlobalSettingsService from '../global-settings/global-settings.service';
@@ -49,6 +51,7 @@ describe('SurveyService', () => {
         { provide: FilesystemService, useValue: mockFilesystemService },
         { provide: NotificationsService, useValue: notificationMock },
         { provide: GlobalSettingsService, useValue: { getAdminGroupsFromCache: jest.fn() } },
+        { provide: CACHE_MANAGER, useValue: mockCacheManager },
       ],
     }).compile();
 
