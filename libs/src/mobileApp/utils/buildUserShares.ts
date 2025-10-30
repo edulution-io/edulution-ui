@@ -22,8 +22,7 @@ const buildUserShares = (shares: WebdavShareDto[] | undefined, lmnInfo: LmnUserI
   return shares
     .map((share) => {
       const resolvedPath = resolveSharePath(share, lmnInfo);
-      const combinedPath = share.pathname + share.sharePath + resolvedPath;
-      const finalPath = normalizeSharePath(combinedPath);
+      const finalPath = normalizeSharePath(resolvedPath);
 
       return {
         type: share.type,
