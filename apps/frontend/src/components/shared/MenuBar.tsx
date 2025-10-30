@@ -159,13 +159,17 @@ const MenuBar: React.FC = () => {
 
       {isMobileView ? (
         <VerticalMenubar
-            className={cn(
-              'fixed top-0 z-50 h-full bg-foreground duration-300 ease-in-out',
-              isMobileMenuBarOpen ? 'w-64 border-r-[1px] border-muted' : 'w-0',
-            )}
+          className={cn(
+            'fixed top-0 z-50 h-full overflow-hidden bg-foreground duration-300 ease-in-out',
+            isMobileMenuBarOpen ? 'w-64 border-r-[1px] border-muted' : 'w-0',
+          )}
+        >
+          <div
+            className={cn('w-64 transition-opacity duration-300', isMobileMenuBarOpen ? 'opacity-100' : 'opacity-0')}
           >
-            {isMobileMenuBarOpen && renderMenuBarContent()}
-          </VerticalMenubar>
+            {renderMenuBarContent()}
+          </div>
+        </VerticalMenubar>
       ) : (
         <div className="relative flex h-screen">
           <VerticalMenubar className="w-64 bg-foreground bg-opacity-40">{renderMenuBarContent()}</VerticalMenubar>
