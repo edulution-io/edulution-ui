@@ -24,6 +24,8 @@ import COOKIE_DESCRIPTORS from '@libs/common/constants/cookieDescriptors';
 import useVersionChecker from '@/hooks/useVersionChecker';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useUploadProgressToast from '@/hooks/useUploadProgressToast';
+import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
+import EDULUTION_APP_AGENT_IDENTIFIER from '@libs/common/constants/edulutionAppAgentIdentifier';
 import useAppConfigsStore from '../pages/Settings/AppConfig/useAppConfigsStore';
 import useUserStore from '../store/UserStore/useUserStore';
 import useLogout from '../hooks/useLogout';
@@ -40,6 +42,7 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   const { eventSource, setEventSource } = useSseStore();
   const [, setCookie] = useCookies([COOKIE_DESCRIPTORS.AUTH_TOKEN]);
   const { fetchWebdavShares } = useFileSharingStore();
+  const { setIsEdulutionApp } = usePlatformStore();
 
   const handleLogout = useLogout();
 
@@ -47,6 +50,12 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
 
   useEffect(() => {
     void getPublicAppConfigs();
+  }, []);
+
+  useEffect(() => {
+    const { userAgent } = navigator;
+    const isEdulutionApp = userAgent.includes(EDULUTION_APP_AGENT_IDENTIFIER);
+    setIsEdulutionApp(isEdulutionApp);
   }, []);
 
   useEffect(() => {

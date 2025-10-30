@@ -10,18 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useEffect, useState } from 'react';
+const EDULUTION_APP_AGENT_IDENTIFIER = 'EdulutionApp/1.0';
 
-const useIsEdulutionApp = (): boolean => {
-  const [isRenderingInApp, setIsRenderingInApp] = useState<boolean>(false);
-
-  useEffect(() => {
-    const {userAgent} = navigator;
-    const isEdulutionApp = userAgent.includes('EdulutionApp/1.0');
-    setIsRenderingInApp(isEdulutionApp);
-  }, []);
-
-  return isRenderingInApp;
-};
-
-export default useIsEdulutionApp;
+export default EDULUTION_APP_AGENT_IDENTIFIER;
