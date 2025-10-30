@@ -18,10 +18,10 @@ import SurveyAnswerResponseDto from '@libs/survey/types/api/survey-answer-respon
 import AnswerSurvey from '@libs/survey/types/api/answer-survey';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import {
-  SURVEYS,
+  PUBLIC_USER,
   PUBLIC_SURVEYS,
   SURVEY_ANSWER_ENDPOINT,
-  PUBLIC_USER,
+  PUBLIC_SURVEY_ANSWER_ENDPOINT,
   SURVEYS_ANSWER_TEMP_FILE_ATTACHMENT_ENDPOINT,
 } from '@libs/survey/constants/surveys-endpoint';
 import { publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
@@ -110,17 +110,10 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     completingEvent.allow = false;
 
     try {
-      const response = isPublic
-        ? await eduApi.post<SurveyAnswerResponseDto>(PUBLIC_SURVEYS, {
-            surveyId,
-            answer,
-            attendee,
-          })
-        : await eduApi.patch<SurveyAnswerResponseDto>(SURVEYS, {
-            surveyId,
-            answer,
-            attendee,
-          });
+      const response = await eduApi.post<SurveyAnswerResponseDto>(
+        `${isPublic ? PUBLIC_SURVEY_ANSWER_ENDPOINT : SURVEY_ANSWER_ENDPOINT}`,
+        { surveyId, answer, attendee },
+      );
 
       // eslint-disable-next-line no-param-reassign
       completingEvent.allow = true;
@@ -195,7 +188,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const response = await eduApi.post<{ name: string; url: string; content: Buffer<ArrayBufferLike> }>(
+      const response = await eduApi.post<FileDownloadDto>(
         `${SURVEYS_ANSWER_TEMP_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}`,
         formData,
         {

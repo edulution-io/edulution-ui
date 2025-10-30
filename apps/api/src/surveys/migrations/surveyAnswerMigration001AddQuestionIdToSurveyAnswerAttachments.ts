@@ -93,23 +93,24 @@ const updateSurveyQuestionAnswer = async (
   await Promise.all(
     Object.keys(surveyAnswer).map(async (questionId) => {
       const newPath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, questionId, userName);
-
+      const progressedFiles: (object & { content: string })[] = [];
       const question = surveyAnswer[questionId];
       if (Array.isArray(question)) {
-        const updatedAnswer = await Promise.all(
-          question.map(async (item) => {
+        await Promise.all(
+          question.map(async (item: object & { content: string }) => {
             const updatedItem = await updateFileQuestionItem(questionId, item, files, path, newPath);
-            return updatedItem;
+            progressedFiles.push(updatedItem);
           }),
         );
-        answer[questionId] = updatedAnswer;
+        answer[questionId] = progressedFiles;
         return answer;
       }
-      answer[questionId] = await updateFileQuestionItem(questionId, question, files, path, newPath);
+      const updatedItem = await updateFileQuestionItem(questionId, question, files, path, newPath);
+      progressedFiles.push(updatedItem);
+      answer[questionId] = progressedFiles;
       return answer;
     }),
   );
-
   return answer;
 };
 

@@ -140,14 +140,23 @@ class PublicSurveysController {
     const filePath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId, file.filename);
     const url = `${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${userName}/${surveyId}/${questionId}/${file.filename}`;
 
-    await FilesystemService.checkIfFileExist(filePath);
+    const fileExists = await FilesystemService.checkIfFileExist(filePath);
+    if (!fileExists) {
+      throw new CustomHttpException(
+        CommonErrorMessages.FILE_CREATION_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        PublicSurveysController.name,
+      );
+    }
+
     const content = (await FilesystemService.readFile(filePath)).toString('base64');
     return res.status(HttpStatus.CREATED).json({ name: file.filename, url, content });
   }
 
   @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:filename`)
   @Public()
-  serveTempFileFromAnswer(
+  serveFileFromAnswer(
     @Param() params: { userName: string; surveyId: string; questionId: string; filename: string },
     @Res() res: Response,
   ) {
@@ -160,7 +169,7 @@ class PublicSurveysController {
         PublicSurveysController.name,
       );
     }
-    return this.surveyAnswerAttachmentsService.serveTempFileFromAnswer(userName, surveyId, questionId, filename, res);
+    return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, questionId, filename, res);
   }
 
   @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId`)
@@ -193,7 +202,7 @@ class PublicSurveysController {
   @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:fileName`)
   @Public()
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  async deleteTempAnswerFiles(
+  async deleteTempAnswerFile(
     @Param() params: { userName: string; surveyId: string; questionId: string; fileName: string },
   ) {
     const { userName, surveyId, questionId, fileName } = params;
@@ -205,7 +214,7 @@ class PublicSurveysController {
         PublicSurveysController.name,
       );
     }
-    await SurveyAnswerAttachmentsService.deleteTempAnswerFiles(userName, surveyId, questionId, fileName);
+    await SurveyAnswerAttachmentsService.deleteTempAnswerFile(userName, surveyId, questionId, fileName);
   }
 }
 

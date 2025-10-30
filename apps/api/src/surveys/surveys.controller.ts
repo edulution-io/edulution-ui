@@ -19,7 +19,6 @@ import {
   Get,
   HttpStatus,
   Param,
-  Patch,
   Post,
   Query,
   Res,
@@ -157,14 +156,14 @@ class SurveysController {
     return this.surveyAnswerService.getAnswer(surveyId, username || currentUsername);
   }
 
-  @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:filename`)
+  @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:filename`)
   async servePermanentFileFromAnswer(
-    @Param() params: { userName: string; surveyId: string; filename: string },
+    @Param() params: { userName: string; surveyId: string; questionId: string; filename: string },
     @Res() res: Response,
     @GetCurrentUser() user: JWTUser,
   ) {
-    const { userName, surveyId, filename } = params;
-    if (!userName || !surveyId || !filename) {
+    const { userName, surveyId, questionId, filename } = params;
+    if (!userName || !surveyId || !questionId || !filename) {
       throw new CustomHttpException(
         CommonErrorMessages.INVALID_REQUEST_DATA,
         HttpStatus.UNPROCESSABLE_ENTITY,
@@ -181,7 +180,7 @@ class SurveysController {
         SurveysController.name,
       );
     }
-    const filePath = join(SURVEYS_ANSWER_FOLDER, ATTACHMENT_FOLDER, surveyId, userName);
+    const filePath = join(SURVEYS_ANSWER_FOLDER, ATTACHMENT_FOLDER, surveyId, questionId, userName);
     return this.filesystemService.serveFiles(filePath, filename, res);
   }
 
@@ -198,7 +197,7 @@ class SurveysController {
     await SurveysAttachmentService.onSurveyRemoval(surveyIds);
   }
 
-  @Patch()
+  @Post(ANSWER)
   async answerSurvey(@Body() postAnswerDto: PostSurveyAnswerDto, @GetCurrentUser() currentUser: JWTUser) {
     const { surveyId, answer } = postAnswerDto;
     const attendee = {
