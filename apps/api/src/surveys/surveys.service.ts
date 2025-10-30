@@ -46,6 +46,24 @@ class SurveysService implements OnModuleInit {
     await MigrationService.runMigrations<SurveyDocument>(this.surveyModel, surveysMigrationsList);
   }
 
+  async findSurveyWithCreatorDependency(surveyId: string, creator: JwtUser): Promise<Survey | null> {
+    try {
+      const survey = await this.surveyModel
+        .findOne({
+          $and: [{ 'creator.username': creator.preferred_username }, { _id: new Types.ObjectId(surveyId) }],
+        })
+        .exec();
+      return survey;
+    } catch (error) {
+      throw new CustomHttpException(
+        CommonErrorMessages.DB_ACCESS_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error instanceof Error ? error.message : undefined,
+        SurveysService.name,
+      );
+    }
+  }
+
   async findSurvey(surveyId: string, user: JwtUser): Promise<Survey | null> {
     try {
       return await this.surveyModel

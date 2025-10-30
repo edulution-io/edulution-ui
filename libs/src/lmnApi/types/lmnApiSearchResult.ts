@@ -12,7 +12,7 @@
 
 // This type is based on a third-party object definition from the LDAP API.
 // Any modifications should be carefully reviewed to ensure compatibility with the source.
-import LmnApiGroupTypes from '@libs/lmnApi/types/lmnApiGroupTypes';
+import SophomorixGroupTypes from '@libs/lmnApi/types/sophomorixGroupTypes';
 
 interface LmnApiSearchResult {
   cn: string;
@@ -38,7 +38,7 @@ interface LmnApiSearchResult {
   sophomorixSchoolPrefix: string;
   sophomorixStatus: string;
   dn: string;
-  type: LmnApiGroupTypes;
+  type: SophomorixGroupTypes;
 }
 
 export default LmnApiSearchResult;

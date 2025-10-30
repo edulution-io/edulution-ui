@@ -107,15 +107,9 @@
     "mobileAccess": {
       "title": "Accès mobile",
       "manual": "Instructions",
-      "manualSetup": "Configuration manuelle",
       "setupWithQrCode": "Configuration via un QR-code",
-      "accessData": "Identifiants",
       "content": "Vous pouvez accéder au serveur scolaire à partir de nombreux appareils mobiles. Appuyez sur les instructions pour commencer.",
-      "scanAccessInfo": "Pour transférer les identifiants, veuillez scanner le QR-code suivant avec le   l'application {{ applicationName }}.",
-      "manualAccessInfo": "Saisir les identifiants manuellement dans l'app {{ applicationName }}. L'exemple suivant montre comment les champs individuels doivent être remplis.",
-      "nextStepPreview": "À l'étape suivante, vous pouvez transférer les identifiants.",
-      "downloadDirect": "Ou téléchargez directement l'application:",
-      "downloadApp": "Téléchargez l'application {{ applicationName }}:"
+      "scanAccessInfo": "Pour transférer les identifiants, veuillez scanner le QR-code suivant avec l'edulution App."
     },
     "quota": {
       "title": "Quotas",
@@ -407,6 +401,16 @@
     "invalidQuota": "Le quota doit être donné en fonction de la documentation",
     "invalidMailQuota": "Le quota de courrier doit être spécifié en nombre en Mo",
     "name": "nom",
+    "project": {
+      "createSuccess": "Projet créé avec succès",
+      "updateSuccess": "Projet mis à jour avec succès",
+      "deleteSuccess": "Projet supprimé avec succès"
+    },
+    "sessions": {
+      "createSuccess": "Session créée avec succès",
+      "updateSuccess": "Session mise à jour avec succès",
+      "deleteSuccess": "Session supprimée avec succès"
+    },
     "mailQuota": "Quota de courrier (Mo)",
     "proxyAddresses": "Adresses e-mail proxy",
     "descriptionPlaceholder": "Brève description du projet",
@@ -819,11 +823,23 @@
 
       "logo": {
         "title": "Logo",
-        "descriptionSchool": "Téléversez le logo. Il sera affiché sur l’écran de connexion et sur la carte d’identification de l’application Edulution.",
-        "descriptionGeneric": "Téléversez le logo. Il sera affiché sur l’écran de connexion.",
+        "descriptionSchool": "Téléversez le logo. Il sera affiché sur l'écran de connexion et sur la carte d'identification de l'application Edulution.",
+        "descriptionGeneric": "Téléversez le logo. Il sera affiché sur l'écran de connexion.",
         "uploadLightLogo": "Téléverser le logo clair",
         "uploadDarkLogo": "Téléverser le logo sombre",
         "deleteSuccessful": "Logo supprimé avec succès."
+      },
+      "theme": {
+        "title": "Personnalisation du thème",
+        "primaryColor": "Couleur primaire",
+        "primaryDescription": "Couleur principale utilisée pour les boutons, les liens et les éléments mis en évidence",
+        "secondaryColor": "Couleur secondaire",
+        "secondaryDescription": "Couleur secondaire utilisée pour le texte et les bordures",
+        "ciLightGreen": "Vert de marque",
+        "ciLightGreenDescription": "Couleur verte de marque utilisée dans les dégradés et les logos",
+        "ciLightBlue": "Bleu de marque",
+        "ciLightBlueDescription": "Couleur bleue de marque utilisée dans les dégradés et les logos",
+        "resetToDefaults": "Réinitialiser aux valeurs par défaut"
       },
       "organisationInfo": {
         "title": "Informations sur l’organisation",
@@ -1017,7 +1033,9 @@
     },
     "mobileAccess": {
       "title": "Accès à l'application",
-      "description": "Ici, vous pouvez configurer l'accès mobile de l'app {{ applicationName }} pour l'accès aux fichiers. Actuellement disponible uniquement pour Apple iOS."
+      "description": "Ici, vous pouvez configurer l'accès mobile de l'app {{ applicationName }} pour l'accès aux fichiers. Actuellement disponible uniquement pour Apple iOS.",
+      "docsDescription": "Tu trouveras le lien de téléchargement de l'application edulution et les instructions d'installation dans la documentation edulution.",
+      "button": "Ouvrir le documentaire"
     },
     "faq": "FAQ",
     "externalIntegration": "Connexion externe",

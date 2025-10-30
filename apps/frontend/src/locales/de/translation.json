@@ -113,15 +113,9 @@
     "mobileAccess": {
       "title": "Mobiler Zugriff",
       "manual": "Anleitung",
-      "manualSetup": "Manuelles Einrichten",
       "setupWithQrCode": "Einrichtung via QR-Code",
-      "accessData": "Zugangsdaten",
       "content": "Du kannst von vielen mobilen Geräten aus auf den Schulserver zugreifen. Drücke auf Anleitung, um zu starten.",
-      "scanAccessInfo": "Um die Zugangsdaten zu übertragen, bitte folgenden QR-Code mit der {{ applicationName }} App scannen.",
-      "manualAccessInfo": "Gib die Anmeldedaten manuell in der {{ applicationName }} App ein. Das folgende Beispiel zeigt, wie die einzelnen Felder auszufüllen sind.",
-      "nextStepPreview": "Im nächsten Schritt kannst du die Zugangsdaten übertragen.",
-      "downloadDirect": "Oder lade die App direkt herunter:",
-      "downloadApp": "Lade hier die {{ applicationName }} App herunter:"
+      "scanAccessInfo": "Um die Zugangsdaten zu übertragen, bitte folgenden QR-Code mit der edulution App scannen."
     },
     "quota": {
       "title": "Quotas",
@@ -498,6 +492,16 @@
     "invalidQuota": "Die Quota muss der Dokumentation entsprechend angegeben werden",
     "invalidMailQuota": "Die E-Mailquota muss als Zahl in MB angegeben werden",
     "name": "Name",
+    "project": {
+      "createSuccess": "Projekt erfolgreich erstellt",
+      "updateSuccess": "Projekt erfolgreich aktualisiert",
+      "deleteSuccess": "Projekt erfolgreich gelöscht"
+    },
+    "sessions": {
+      "createSuccess": "Sitzung erfolgreich erstellt",
+      "updateSuccess": "Sitzung erfolgreich aktualisiert",
+      "deleteSuccess": "Sitzung erfolgreich gelöscht"
+    },
     "mailQuota": "E-Mail Quota (MB)",
     "proxyAddresses": "Proxy E-Mail-Adressen",
     "descriptionPlaceholder": "Kurze Beschreibung des Projekts",
@@ -972,6 +976,18 @@
         "uploadDarkLogo": "Dunkles Logo hochladen",
         "deleteSuccessful": "Logo wurde erfolgreich gelöscht"
       },
+      "theme": {
+        "title": "Design-Anpassung",
+        "primaryColor": "Primärfarbe",
+        "primaryDescription": "Hauptfarbe für Schaltflächen, Links und Hervorhebungen",
+        "secondaryColor": "Sekundärfarbe",
+        "secondaryDescription": "Sekundärfarbe für Text und Rahmen",
+        "ciLightGreen": "Markengrün",
+        "ciLightGreenDescription": "Grüne Markenfarbe für Farbverläufe und Logos",
+        "ciLightBlue": "Markenblau",
+        "ciLightBlueDescription": "Blaue Markenfarbe für Farbverläufe und Logos",
+        "resetToDefaults": "Auf Standard zurücksetzen"
+      },
       "organisationInfo": {
         "title": "Organisationsinformationen",
         "descriptionSchool": "Trage die offiziellen Angaben deiner Organisation ein. Diese Informationen werden in der edulution App angezeigt. Bitte gib den Namen, die Straße, die Postleitzahl und optional die Website der Schule an.",
@@ -1179,7 +1195,9 @@
     },
     "mobileAccess": {
       "title": "App-Zugriff",
-      "description": "Hier kannst du für den mobilen Zugriff auf deine Dateien die {{ applicationName }} App einrichten. Aktuell nur für Apple iOS verfügbar."
+      "description": "Hier kannst du den mobilen Zugriff für die edulution App einrichten.",
+      "docsDescription": "Den Download-Link zur edulution App und wie du sie einrichtest findest in der edulution Doku.",
+      "button": "Doku öffnen"
     },
     "faq": "FAQ",
     "externalIntegration": "Externe Anbindung",

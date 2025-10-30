@@ -19,7 +19,7 @@ import 'survey-core/i18n/french';
 import 'survey-creator-core/i18n/english';
 import 'survey-creator-core/i18n/german';
 import 'survey-creator-core/i18n/french';
-import surveyTheme from '@/pages/Surveys/theme/theme';
+import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
 import '@/pages/Surveys/theme/custom.survey.css';

@@ -13,10 +13,13 @@
 import { join } from 'path';
 import { Response } from 'express';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
-import CustomHttpException from 'apps/api/src/common/CustomHttpException';
+import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
+import SURVEYS_ANSWER_FOLDER from '@libs/survey/constants/surveyAnswersFolder';
 import SURVEY_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersAttachmentPath';
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
+import { PUBLIC_SURVEYS, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
@@ -34,19 +37,17 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     fileName: string,
     res: Response,
   ): Promise<Response> {
-    const tempPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId, fileName);
-    const permanentPath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName, questionId, fileName);
-    const tempFileExists = await FilesystemService.checkIfFileExist(tempPath);
+    const tempFilePath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId, fileName);
+    const permanentFilePath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, questionId, userName, fileName);
+    const tempFileExists = await FilesystemService.checkIfFileExist(tempFilePath);
     if (tempFileExists) {
-      const fileStream = await this.fileSystemService.createReadStream(tempPath);
-      fileStream.pipe(res);
-      return res;
+      const path = join(SURVEYS_ANSWER_FOLDER, userName, surveyId, questionId, fileName);
+      return this.fileSystemService.serveTempFiles(path, fileName, res);
     }
-    const permanentFileExists = await FilesystemService.checkIfFileExist(permanentPath);
+    const permanentFileExists = await FilesystemService.checkIfFileExist(permanentFilePath);
     if (permanentFileExists) {
-      const fileStream = await this.fileSystemService.createReadStream(permanentPath);
-      fileStream.pipe(res);
-      return res;
+      const path = join(SURVEYS_ANSWER_FOLDER, ATTACHMENT_FOLDER, surveyId, questionId, userName, fileName);
+      return this.fileSystemService.serveFiles(path, fileName, res);
     }
     throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
   }
@@ -70,6 +71,11 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     await FilesystemService.deleteFile(tempFilesPath, fileName);
   }
 
+  static makeUrlPermanent = (url: string | undefined): string | undefined =>
+    url?.replace(`/${PUBLIC_SURVEYS}/`, `/${SURVEYS}/`);
+
+  static getFileNameFromUrl = (url: string | undefined): string | undefined => url?.split('/').pop();
+
   async moveQuestionAttachmentsToPermanentStorage(
     userName: string,
     surveyId: string,
@@ -88,6 +94,8 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     const fileNamesToMove: string[] = [];
     const persistentFiles: string[] = [];
     const permanentFiles = await this.fileSystemService.getAllFilenamesInDirectory(directory);
+
+    const nextAnswerContent: (object & { content: string })[] = [];
     if (Array.isArray(questionAnswer)) {
       questionAnswer.forEach((item) => {
         const fileName = item.content?.split('/').pop();
@@ -96,6 +104,11 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
         }
         if (fileName && tempFileNames.includes(fileName)) {
           fileNamesToMove.push(fileName);
+          const newFile: object & { content: string } = {
+            ...item,
+            content: SurveyAnswerAttachmentsService.makeUrlPermanent(item.content)!,
+          };
+          nextAnswerContent.push(newFile);
         }
       });
     } else {
@@ -103,6 +116,11 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
       if (fileName && tempFileNames.includes(fileName)) {
         fileNamesToMove.push(fileName);
       }
+      const newFile: object & { content: string } = {
+        ...questionAnswer,
+        content: SurveyAnswerAttachmentsService.makeUrlPermanent(questionAnswer.content)!,
+      };
+      nextAnswerContent.push(newFile);
     }
     const movingPromises = fileNamesToMove.map(async (fileName) =>
       FilesystemService.moveFile(join(tempDirectory, fileName), join(directory, fileName)),
@@ -120,7 +138,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
       3,
     );
 
-    return questionAnswer;
+    return nextAnswerContent;
   }
 
   async moveAnswerAttachmentsToPermanentStorage(userName: string, surveyId: string, answer: JSON): Promise<JSON> {

@@ -55,11 +55,10 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
             type="button"
             onClick={onRightButtonClick}
           >
-            <img
-              src={MobileLogoIcon}
+            <MobileLogoIcon
               className={iconClassName}
               width={SIDEBAR_ICON_WIDTH}
-              alt="edulution-mobile-logo"
+              aria-label="edulution-mobile-logo"
             />
           </button>
         ) : (
