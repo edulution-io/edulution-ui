@@ -18,10 +18,14 @@ import GlobalSettingsErrorMessages from '@libs/global-settings/constants/globalS
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import { GLOBAL_SETTINGS_ROOT_ENDPOINT } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
+import {
+  GLOBAL_SETTINGS_PUBLIC_THEME_ENDPOINT,
+  GLOBAL_SETTINGS_ROOT_ENDPOINT,
+} from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { ADMIN_GROUPS, DEPLOYMENT_TARGET_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
+import DEFAULT_THEME from '@libs/global-settings/constants/defaultTheme';
 import CustomHttpException from '../common/CustomHttpException';
 import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
 import MigrationService from '../migration/migration.service';
@@ -61,6 +65,9 @@ class GlobalSettingsService implements OnModuleInit {
   async invalidateCache(): Promise<void> {
     try {
       await this.cacheManager.del(`/${EDU_API_ROOT}/${GLOBAL_SETTINGS_ROOT_ENDPOINT}`);
+      await this.cacheManager.del(
+        `/${EDU_API_ROOT}/${GLOBAL_SETTINGS_ROOT_ENDPOINT}/${GLOBAL_SETTINGS_PUBLIC_THEME_ENDPOINT}`,
+      );
     } catch (error) {
       Logger.warn(`Failed to invalidate cache for GlobalSettings: ${(error as Error).message}`, GlobalSettings.name);
     }
@@ -140,6 +147,29 @@ class GlobalSettingsService implements OnModuleInit {
   async getGlobalAdminSettings() {
     try {
       return await this.globalSettingsModel.findOne({}).lean();
+    } catch (error) {
+      throw new CustomHttpException(
+        GlobalSettingsErrorMessages.NotFoundError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        GlobalSettings.name,
+      );
+    }
+  }
+
+  async getPublicTheme() {
+    try {
+      const settings = await this.globalSettingsModel.findOne({}, { theme: 1, _id: 0 }).lean();
+      return {
+        light: {
+          ...DEFAULT_THEME.light,
+          ...(settings?.theme?.light ?? {}),
+        },
+        dark: {
+          ...DEFAULT_THEME.dark,
+          ...(settings?.theme?.dark ?? {}),
+        },
+      };
     } catch (error) {
       throw new CustomHttpException(
         GlobalSettingsErrorMessages.NotFoundError,

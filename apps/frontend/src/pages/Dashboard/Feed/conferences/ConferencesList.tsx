@@ -38,7 +38,7 @@ const ConferencesList = (props: ConferencesListProps) => {
 
       badges.push(
         <BadgeSH
-          className="max-w-[100px] hover:bg-ciLightBlue"
+          className="max-w-[100px] hover:bg-primary"
           key={`feed-conferences-${item.name}-badge-${name}`}
         >
           <p className="overflow-hidden text-ellipsis text-sm">{name}</p>
@@ -70,7 +70,7 @@ const ConferencesList = (props: ConferencesListProps) => {
               {item.joinedAttendees.length > NUMBER_OF_BADGES_TO_SHOW ? (
                 <BadgeSH
                   key={`feed-conferences-${item.name}-badge-remaining-attendees`}
-                  className="text-xs hover:bg-ciLightBlue"
+                  className="text-xs hover:bg-primary"
                 >
                   +{item.joinedAttendees.length - NUMBER_OF_BADGES_TO_SHOW}
                 </BadgeSH>

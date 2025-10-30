@@ -23,7 +23,7 @@ const OfflineBanner = () => {
   return (
     <div
       className={cn(
-        'absolute left-1/2 top-[2px] z-[500] inline-flex -translate-x-1/2 transform items-center space-x-1 rounded-3xl',
+        'absolute left-1/2 top-[5px] z-[500] inline-flex -translate-x-1/2 transform items-center space-x-1 rounded-3xl',
         'bg-secondary-foreground px-2 py-1 text-muted-foreground shadow-xl',
         { 'left-[calc(50%-var(--sidebar-width)/2)]': !isMobileView },
       )}

@@ -57,6 +57,7 @@ import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/
 import useOpenFileDialogStore from '@/pages/FileSharing/useOpenFileDialogStore';
 import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
+import useMenuBarStore from '@/components/shared/useMenuBarStore';
 import useSseStore from '../useSseStore';
 
 const cleanAllStores = async () => {
@@ -89,6 +90,7 @@ const cleanAllStores = async () => {
   useLmnApiPasswordStore.getState().reset();
   useLmnApiStore.getState().reset();
   useMailsStore.getState().reset();
+  useMenuBarStore.getState().reset();
   useParticipateSurveyStore.getState().reset();
   usePrintPasswordsStore.getState().reset();
   usePublicConferenceStore.getState().reset();

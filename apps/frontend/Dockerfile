@@ -1,5 +1,5 @@
-### manifest digest for nginx:1.27.3-alpine3.20 arch:amd64
-FROM nginx@sha256:b1f7437a6d0398a47a5d74a1e178ea6fff3ea692c9e41d19c2b3f7ce52cdb371
+### manifest digest for nginx:1.29.2-alpine3.22 arch:amd64
+FROM nginx@sha256:b03ccb7431a2e3172f5cbae96d82bd792935f33ecb88fbf2940559e475745c4e
 
 WORKDIR /usr/share/nginx/html
 

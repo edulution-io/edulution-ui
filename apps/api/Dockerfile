@@ -1,5 +1,5 @@
-### manifest digest for node:20.19.1-alpine3.21 arch:amd64
-FROM node@sha256:c628bdc7ebc7f95b1b23249a445eb415ce68ae9def8b68364b35ee15e3065b0f
+### manifest digest for node:20.19.5-alpine3.22 arch:amd64
+FROM node@sha256:be8d32d651b3e0c9c2b28fdc1d3888408125d703232013cff955344d052027e5
 
 WORKDIR /opt/edulution/api
 

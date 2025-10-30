@@ -36,7 +36,7 @@ const PageLayout = ({ nativeAppHeader, children, isFullScreen }: AppLayoutProps)
   if (isFullScreen) return <main className="flex-1">{children}</main>;
 
   return (
-    <div className="flex h-full w-full flex-col pl-4 pt-4">
+    <div className="flex h-full w-full flex-col pl-2 pt-1 md:pl-4 md:pt-1">
       {nativeAppHeader && (
         <NativeAppHeader
           title={nativeAppHeader.title}

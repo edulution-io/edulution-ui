@@ -13,19 +13,17 @@
 import React, { useCallback, useRef } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
 import { SidebarProps } from '@libs/ui/types/sidebar';
-import { HomeButton, MobileMenuButton, MobileSidebarItem, UserMenuButton } from './SidebarMenuItems';
+import { HomeButton, MobileSidebarItem, UserMenuButton } from './SidebarMenuItems';
 import useSidebarStore from './useSidebarStore';
 
 const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
   const sidebarRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
   const { isMobileSidebarOpen, toggleMobileSidebar } = useSidebarStore();
 
   const handleClickOutside = useCallback(
     (event: MouseEvent | TouchEvent) => {
       const isSidebarRef = sidebarRef.current && !sidebarRef.current.contains(event.target as Node);
-      const isButtonRef = buttonRef.current && !buttonRef.current.contains(event.target as Node);
-      if (isMobileSidebarOpen && isSidebarRef && isButtonRef) {
+      if (isMobileSidebarOpen && isSidebarRef) {
         toggleMobileSidebar();
       }
     },
@@ -34,33 +32,35 @@ const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
 
   useOnClickOutside(sidebarRef, handleClickOutside);
 
-  const sidebarHeightWithoutSpecialButtons = 'h-[calc(100%-112px)]';
+  const sidebarHeightWithoutSpecialButtons = 'h-[calc(100%-121px)]';
 
   return (
-    <>
-      <MobileMenuButton ref={buttonRef} />
+    <div
+      className="fixed right-0 top-0 z-[400] h-full w-full transform transition-transform duration-300 ease-in-out"
+      style={{ transform: `translateX(${isMobileSidebarOpen ? '0%' : '100%'})` }}
+    >
       <div
-        className="fixed right-0 top-0 z-[400] h-full w-full transform transition-transform duration-300 ease-in-out"
-        style={{ transform: `translateX(${isMobileSidebarOpen ? '0%' : '100%'})` }}
+        ref={sidebarRef}
+        className="fixed right-0 h-full min-w-[260px] border-l-[1px] border-muted bg-black md:bg-none"
       >
+        <div className="h-1" />
+
+        <HomeButton />
+
         <div
-          ref={sidebarRef}
-          className="fixed right-0 h-full min-w-[260px] border-l-[1px] border-muted bg-black md:bg-none"
+          className={`${sidebarHeightWithoutSpecialButtons} overflow-auto border-b-[1px] border-t-[1px] border-muted `}
         >
-          <div className="h-4" />
-          <HomeButton />
-          <div className={`${sidebarHeightWithoutSpecialButtons} overflow-auto`}>
-            {sidebarItems.map((item) => (
-              <MobileSidebarItem
-                key={item.link}
-                menuItem={item}
-              />
-            ))}
-            <UserMenuButton />
-          </div>
+          {sidebarItems.map((item) => (
+            <MobileSidebarItem
+              key={item.link}
+              menuItem={item}
+            />
+          ))}
         </div>
+
+        <UserMenuButton />
       </div>
-    </>
+    </div>
   );
 };
 

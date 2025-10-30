@@ -17,7 +17,6 @@ import { UsersController } from './users.controller';
 import { User, UserSchema } from './user.schema';
 import { UserAccounts, UserAccountsSchema } from './account.schema';
 import GroupsModule from '../groups/groups.module';
-import UsersCacheQueue from './queue/users-cache.queue';
 
 @Global()
 @Module({
@@ -29,7 +28,7 @@ import UsersCacheQueue from './queue/users-cache.queue';
     GroupsModule,
   ],
   controllers: [UsersController],
-  providers: [UsersService, UsersCacheQueue],
+  providers: [UsersService],
   exports: [UsersService],
 })
 export default class UsersModule {}
