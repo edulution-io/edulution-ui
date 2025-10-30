@@ -15,13 +15,13 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   Post,
   Query,
   Res,
   UploadedFile,
   UseInterceptors,
-  HttpStatus,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { type Response } from 'express';
@@ -33,6 +33,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import HistoryPageDto from '@libs/whiteboard/types/historyPageDto';
 import TLDRAW_MULTI_USER_ROOM_PREFIX from '@libs/whiteboard/constants/tldrawMultiUserRoomPrefix';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import ROOM_ID_PARAM from '@libs/tldraw-sync/constants/roomIdParam';
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import FilesystemService from '../filesystem/filesystem.service';
 import TLDrawSyncService from './tldraw-sync.service';
@@ -82,12 +83,12 @@ class TLDrawSyncController {
     );
   }
 
-  @Get(`${TLDRAW_SYNC_ENDPOINTS.HISTORY}/:roomId`)
+  @Get(`${TLDRAW_SYNC_ENDPOINTS.HISTORY}/:${ROOM_ID_PARAM}`)
   @ApiOkResponse({ type: HistoryPageDto })
   @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 20 })
   async getHistory(
-    @Param('roomId') roomId: string,
+    @Param(ROOM_ID_PARAM) roomId: string,
     @GetCurrentUsername() username: string,
     @Query('page') page = '1',
     @Query('limit') limit = '20',

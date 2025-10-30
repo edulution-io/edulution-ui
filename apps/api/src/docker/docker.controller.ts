@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { type ContainerCreateOptions } from 'dockerode';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
 import { EDU_API_DOCKER_CONTAINER_ENDPOINT, EDU_API_DOCKER_ENDPOINT } from '@libs/docker/constants/dockerEndpoints';
@@ -40,6 +40,11 @@ class DockerController {
   @Delete(`${EDU_API_DOCKER_CONTAINER_ENDPOINT}/:id`)
   async deleteContainer(@Param('id') id: string) {
     return this.dockerService.deleteContainer(id);
+  }
+
+  @Patch(`${EDU_API_DOCKER_CONTAINER_ENDPOINT}/:id`)
+  async updateContainer(@Param('id') id: string) {
+    return this.dockerService.updateContainer(id);
   }
 }
 
