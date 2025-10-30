@@ -10,14 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ChoiceTypes from '@libs/survey/constants/choice-types';
-import ImageTypes from '@libs/survey/constants/image-types';
-import OtherTypes from '@libs/survey/constants/other-types';
+import SurveyQuestionChoiceTypes from '@libs/survey/constants/surveyQuestionChoiceTypes';
+import SurveyQuestionMatrixTypes from '@libs/survey/constants/surveyQuestionMatrixTypes';
+import SurveyQuestionImageTypes from '@libs/survey/constants/surveyQuestionImageTypes';
+import SurveyQuestionOtherTypes from '@libs/survey/constants/surveyQuestionOtherTypes';
 
-type ChoiceType = (typeof ChoiceTypes)[keyof typeof ChoiceTypes];
-type ImageType = (typeof ImageTypes)[keyof typeof ImageTypes];
-type OtherType = (typeof OtherTypes)[keyof typeof OtherTypes];
+type ChoiceType = (typeof SurveyQuestionChoiceTypes)[keyof typeof SurveyQuestionChoiceTypes];
+type MatrixType = (typeof SurveyQuestionMatrixTypes)[keyof typeof SurveyQuestionMatrixTypes];
+type ImageType = (typeof SurveyQuestionImageTypes)[keyof typeof SurveyQuestionImageTypes];
+type OtherType = (typeof SurveyQuestionOtherTypes)[keyof typeof SurveyQuestionOtherTypes];
 
-type TSurveyQuestionTypes = ChoiceType | ImageType | OtherType;
+type TSurveyQuestionTypes = ChoiceType | MatrixType | ImageType | OtherType;
 
 export default TSurveyQuestionTypes;

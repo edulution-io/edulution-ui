@@ -10,9 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum ImageTypes {
-  IMAGE = 'image',
-  IMAGE_PICKER = 'imagepicker',
-}
+import SurveyQuestionChoiceTypes from '@libs/survey/constants/surveyQuestionChoiceTypes';
+import SurveyQuestionMatrixTypes from '@libs/survey/constants/surveyQuestionMatrixTypes';
+import SurveyQuestionImageTypes from '@libs/survey/constants/surveyQuestionImageTypes';
+import SurveyQuestionOtherTypes from '@libs/survey/constants/surveyQuestionOtherTypes';
 
-export default ImageTypes;
+const SurveyQuestionsType = {
+  ...SurveyQuestionChoiceTypes,
+  ...SurveyQuestionMatrixTypes,
+  ...SurveyQuestionImageTypes,
+  ...SurveyQuestionOtherTypes,
+};
+
+export default SurveyQuestionsType;
