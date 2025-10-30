@@ -10,6 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const TEMP_FILES_PATH = './data/temp';
+import { join } from 'path';
+import APPS from '@libs/appconfig/constants/apps';
+import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
 
-export default TEMP_FILES_PATH;
+const BULLETIN_TEMP_ATTACHMENTS_PATH = join(TEMP_FILES_PATH, APPS.BULLETIN_BOARD);
+
+export default BULLETIN_TEMP_ATTACHMENTS_PATH;

@@ -87,6 +87,7 @@
       "unauthorizedCreateCategory": "No permission to create this category",
       "unauthorizedDeleteCategory": "No permission to delete this category",
       "unauthorizedUpdateCategory": "No permission to update this category",
+      "attachmentNotFound": "Attachment not found",
       "attachmentDeletionFailed": "Failed to delete an attachment"
     }
   },

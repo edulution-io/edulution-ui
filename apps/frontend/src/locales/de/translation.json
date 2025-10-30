@@ -87,6 +87,7 @@
       "unauthorizedCreateCategory": "Keine Berechtigung, um diese Kategorie zu erstellen",
       "unauthorizedDeleteCategory": "Keine Berechtigung, um diese Kategorie zu löschen",
       "unauthorizedUpdateCategory": "Keine Berechtigung, um diese Kategorie zu aktualisieren",
+      "attachmentNotFound": "Anhang nicht gefunden",
       "attachmentDeletionFailed": "Löschen eines Anhangs ist fehlgeschlagen"
     }
   },
