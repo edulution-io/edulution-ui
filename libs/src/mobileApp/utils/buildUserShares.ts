@@ -27,7 +27,7 @@ const buildUserShares = (shares: WebdavShareDto[] | undefined, lmnInfo: LmnUserI
       return {
         type: share.type,
         path: finalPath,
-        displayName: `${lmnInfo.cn} ${share.displayName}`,
+        displayName: `${lmnInfo.name} ${share.displayName}`,
         webdavShareId: share.webdavShareId,
       };
     })
