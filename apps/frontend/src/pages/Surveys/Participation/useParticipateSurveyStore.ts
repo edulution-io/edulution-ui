@@ -112,11 +112,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
 
     const response = await eduApi.post<SurveyAnswerResponseDto>(
       isPublic ? PUBLIC_SURVEY_ANSWER_ENDPOINT : SURVEY_ANSWER_ENDPOINT,
-      {
-        surveyId,
-        answer,
-        attendee,
-      },
+      { surveyId, answer, attendee },
     );
 
     if ([200, 201].includes(response.status)) {

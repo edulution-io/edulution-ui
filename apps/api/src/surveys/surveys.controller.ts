@@ -164,14 +164,14 @@ class SurveysController {
     return this.surveyAnswerService.getAnswer(surveyId, username || currentUsername);
   }
 
-  @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:filename`)
+  @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:filename`)
   async servePermanentFileFromAnswer(
-    @Param() params: { userName: string; surveyId: string; filename: string },
+    @Param() params: { userName: string; surveyId: string; questionId: string; filename: string },
     @Res() res: Response,
     @GetCurrentUser() user: JWTUser,
   ) {
-    const { userName, surveyId, filename } = params;
-    if (!userName || !surveyId || !filename) {
+    const { userName, surveyId, questionId, filename } = params;
+    if (!userName || !surveyId || !questionId || !filename) {
       throw new CustomHttpException(
         CommonErrorMessages.INVALID_REQUEST_DATA,
         HttpStatus.UNPROCESSABLE_ENTITY,
@@ -188,7 +188,7 @@ class SurveysController {
         SurveysController.name,
       );
     }
-    const path = join(SURVEYS_ANSWER_FOLDER, ATTACHMENT_FOLDER, surveyId, userName);
+    const path = join(SURVEYS_ANSWER_FOLDER, ATTACHMENT_FOLDER, surveyId, questionId, userName);
     return this.filesystemService.serveFiles(path, filename, res);
   }
 
@@ -357,7 +357,7 @@ class SurveysController {
 
   @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:fileName`)
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  async deleteTempAnswerFiles(
+  async deleteTempAnswerFile(
     @Param() params: { userName: string; surveyId: string; questionId: string; fileName: string },
     @GetCurrentUser() currentUser: JWTUser,
   ) {
@@ -371,7 +371,7 @@ class SurveysController {
       );
     }
     await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
-    await SurveyAnswerAttachmentsService.deleteTempAnswerFiles(userName, surveyId, questionId, fileName);
+    await SurveyAnswerAttachmentsService.deleteTempAnswerFile(userName, surveyId, questionId, fileName);
   }
 
   @Get(`${CHOICES}/:surveyId/:questionId`)

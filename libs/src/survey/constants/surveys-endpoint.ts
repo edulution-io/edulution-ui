@@ -33,10 +33,10 @@ export const HAS_ANSWERS = 'has-answers';
 export const PUBLIC_USER = 'public-user';
 
 export const SURVEY_FIND_ONE_ENDPOINT = `${SURVEYS}/${FIND_ONE}`;
+export const SURVEY_RESULT_ENDPOINT = `${SURVEYS}/${RESULT}`;
 export const SURVEY_TEMPLATES_ENDPOINT = `${SURVEYS}/${TEMPLATES}`;
 export const SURVEY_CAN_PARTICIPATE_ENDPOINT = `${SURVEYS}/${CAN_PARTICIPATE}`;
 export const SURVEY_HAS_ANSWERS_ENDPOINT = `${SURVEYS}/${HAS_ANSWERS}`;
-export const SURVEY_RESULT_ENDPOINT = `${SURVEYS}/${RESULT}`;
 
 export const SURVEY_CHOICES = `${SURVEYS}/${CHOICES}`;
 export const PUBLIC_SURVEY_CHOICES = `${PUBLIC_SURVEYS}/${CHOICES}`;

@@ -41,12 +41,12 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     const permanentFilePath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, questionId, userName, fileName);
     const tempFileExists = await FilesystemService.checkIfFileExist(tempFilePath);
     if (tempFileExists) {
-      const path = join(SURVEYS_ANSWER_FOLDER, userName, surveyId, questionId, fileName);
+      const path = join(SURVEYS_ANSWER_FOLDER, userName, surveyId, questionId);
       return this.fileSystemService.serveTempFiles(path, fileName, res);
     }
     const permanentFileExists = await FilesystemService.checkIfFileExist(permanentFilePath);
     if (permanentFileExists) {
-      const path = join(SURVEYS_ANSWER_FOLDER, ATTACHMENT_FOLDER, surveyId, questionId, userName, fileName);
+      const path = join(SURVEYS_ANSWER_FOLDER, ATTACHMENT_FOLDER, surveyId, questionId, userName);
       return this.fileSystemService.serveFiles(path, fileName, res);
     }
     throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -57,7 +57,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     return this.fileSystemService.deleteDirectory(tempFilesPath);
   }
 
-  static async deleteTempAnswerFiles(
+  static async deleteTempAnswerFile(
     userName: string,
     surveyId: string,
     questionId: string,
@@ -82,7 +82,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     questionId: string,
     questionAnswer: (object & { content: string }) | (object & { content: string })[],
   ): Promise<(object & { content: string }) | (object & { content: string })[]> {
-    const directory = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName, questionId);
+    const directory = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, questionId, userName);
     const tempDirectory = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId);
     const tempFileNames = await this.fileSystemService.getAllFilenamesInDirectory(tempDirectory);
     if (tempFileNames.length === 0) {

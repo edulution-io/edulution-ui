@@ -143,7 +143,15 @@ class PublicSurveysController {
     const filePath = join(path, file.filename);
     const url = `${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${userName}/${surveyId}/${questionId}/${file.filename}`;
 
-    await FilesystemService.checkIfFileExist(filePath);
+    const fileExists = await FilesystemService.checkIfFileExist(path);
+    if (!fileExists) {
+      throw new CustomHttpException(
+        CommonErrorMessages.FILE_CREATION_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        PublicSurveysController.name,
+      );
+    }
 
     const survey = await this.surveyService.findPublicSurvey(surveyId);
     if (!survey) {
@@ -158,6 +166,23 @@ class PublicSurveysController {
       const content = (await FilesystemService.readFile(filePath)).toString('base64');
       return res.status(HttpStatus.CREATED).json({ name: file.filename, url, content });
     }
+  }
+
+  @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId`)
+  @Public()
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  async deleteTempQuestionAnswerFiles(@Param() params: { userName: string; surveyId: string; questionId: string }) {
+    const { userName, surveyId, questionId } = params;
+    if (!userName || !surveyId || !questionId) {
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+        undefined,
+        PublicSurveysController.name,
+      );
+    }
+    await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
+    await this.surveyAnswerAttachmentsService.deleteTempQuestionAnswerFiles(userName, surveyId, questionId);
   }
 
   @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:filename`)
@@ -179,23 +204,6 @@ class PublicSurveysController {
     return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, questionId, filename, res);
   }
 
-  @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId`)
-  @Public()
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  async deleteTempQuestionAnswerFiles(@Param() params: { userName: string; surveyId: string; questionId: string }) {
-    const { userName, surveyId, questionId } = params;
-    if (!userName || !surveyId || !questionId) {
-      throw new CustomHttpException(
-        CommonErrorMessages.INVALID_REQUEST_DATA,
-        HttpStatus.UNPROCESSABLE_ENTITY,
-        undefined,
-        PublicSurveysController.name,
-      );
-    }
-    await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
-    await this.surveyAnswerAttachmentsService.deleteTempQuestionAnswerFiles(userName, surveyId, questionId);
-  }
-
   @Get(`${CHOICES}/:surveyId/:questionId`)
   @Public()
   async getChoices(@Param() params: { surveyId: string; questionId: string }) {
@@ -211,7 +219,7 @@ class PublicSurveysController {
   @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:fileName`)
   @Public()
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  async deleteTempAnswerFiles(
+  async deleteTempAnswerFile(
     @Param() params: { userName: string; surveyId: string; questionId: string; fileName: string },
   ) {
     const { userName, surveyId, questionId, fileName } = params;
@@ -224,7 +232,7 @@ class PublicSurveysController {
       );
     }
     await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
-    await SurveyAnswerAttachmentsService.deleteTempAnswerFiles(userName, surveyId, questionId, fileName);
+    await SurveyAnswerAttachmentsService.deleteTempAnswerFile(userName, surveyId, questionId, fileName);
   }
 }
 
