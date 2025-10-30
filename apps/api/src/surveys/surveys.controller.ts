@@ -42,7 +42,6 @@ import {
   TEMPLATES,
 } from '@libs/survey/constants/surveys-endpoint';
 import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
-import SURVEYS_ANSWER_FOLDER from '@libs/survey/constants/surveyAnswersFolder';
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -165,10 +164,10 @@ class SurveysController {
   }
 
   @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:filename`)
-  async servePermanentFileFromAnswer(
+  async serveFileFromAnswer(
     @Param() params: { userName: string; surveyId: string; questionId: string; filename: string },
+    @GetCurrentUser() currentUser: JWTUser,
     @Res() res: Response,
-    @GetCurrentUser() user: JWTUser,
   ) {
     const { userName, surveyId, questionId, filename } = params;
     if (!userName || !surveyId || !questionId || !filename) {
@@ -179,17 +178,10 @@ class SurveysController {
         SurveysController.name,
       );
     }
-    const survey = await this.surveyService.findSurveyWithCreatorDependency(surveyId, user);
-    if (survey === null) {
-      throw new CustomHttpException(
-        CommonErrorMessages.INVALID_REQUEST_DATA,
-        HttpStatus.NOT_FOUND,
-        undefined,
-        SurveysController.name,
-      );
+    if (userName !== currentUser.preferred_username) {
+      await this.surveyService.throwErrorIfUserIsNotCreator(surveyId, currentUser);
     }
-    const path = join(SURVEYS_ANSWER_FOLDER, ATTACHMENT_FOLDER, surveyId, questionId, userName);
-    return this.filesystemService.serveFiles(path, filename, res);
+    return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, questionId, filename, res);
   }
 
   @Post()
@@ -300,7 +292,15 @@ class SurveysController {
     const filePath = join(path, file.filename);
     const url = `${SURVEYS}/${ANSWER}/${FILES}/${userName}/${surveyId}/${questionId}/${file.filename}`;
 
-    await FilesystemService.checkIfFileExist(filePath);
+    const fileExists = await FilesystemService.checkIfFileExist(filePath);
+    if (!fileExists) {
+      throw new CustomHttpException(
+        CommonErrorMessages.FILE_CREATION_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        SurveysController.name,
+      );
+    }
 
     const survey = await this.surveyService.findSurvey(surveyId, currentUser);
     if (!survey) {
@@ -317,7 +317,7 @@ class SurveysController {
     }
   }
 
-  @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:questionName`)
+  @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId`)
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async deleteTempQuestionAnswerFiles(
     @Param() params: { userName: string; surveyId: string; questionId: string },
@@ -334,25 +334,6 @@ class SurveysController {
     }
     await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
     await this.surveyAnswerAttachmentsService.deleteTempQuestionAnswerFiles(userName, surveyId, questionId);
-  }
-
-  @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:filename`)
-  async serveTempFileFromAnswer(
-    @Param() params: { userName: string; surveyId: string; questionId: string; filename: string },
-    @GetCurrentUser() currentUser: JWTUser,
-    @Res() res: Response,
-  ) {
-    const { userName, surveyId, questionId, filename } = params;
-    if (!userName || !surveyId || !questionId || !filename) {
-      throw new CustomHttpException(
-        CommonErrorMessages.INVALID_REQUEST_DATA,
-        HttpStatus.UNPROCESSABLE_ENTITY,
-        undefined,
-        SurveysController.name,
-      );
-    }
-    await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
-    return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, questionId, filename, res);
   }
 
   @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:fileName`)

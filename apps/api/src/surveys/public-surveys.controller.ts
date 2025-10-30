@@ -143,7 +143,7 @@ class PublicSurveysController {
     const filePath = join(path, file.filename);
     const url = `${PUBLIC_SURVEYS}/${ANSWER}/${FILES}/${userName}/${surveyId}/${questionId}/${file.filename}`;
 
-    const fileExists = await FilesystemService.checkIfFileExist(path);
+    const fileExists = await FilesystemService.checkIfFileExist(filePath);
     if (!fileExists) {
       throw new CustomHttpException(
         CommonErrorMessages.FILE_CREATION_FAILED,
@@ -185,14 +185,14 @@ class PublicSurveysController {
     await this.surveyAnswerAttachmentsService.deleteTempQuestionAnswerFiles(userName, surveyId, questionId);
   }
 
-  @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:filename`)
+  @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:fileName`)
   @Public()
   async serveFileFromAnswer(
-    @Param() params: { userName: string; surveyId: string; questionId: string; filename: string },
+    @Param() params: { userName: string; surveyId: string; questionId: string; fileName: string },
     @Res() res: Response,
   ) {
-    const { userName, surveyId, questionId, filename } = params;
-    if (!userName || !surveyId || !questionId || !filename) {
+    const { userName, surveyId, questionId, fileName } = params;
+    if (!userName || !surveyId || !questionId || !fileName) {
       throw new CustomHttpException(
         CommonErrorMessages.INVALID_REQUEST_DATA,
         HttpStatus.UNPROCESSABLE_ENTITY,
@@ -201,7 +201,7 @@ class PublicSurveysController {
       );
     }
     await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
-    return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, questionId, filename, res);
+    return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, questionId, fileName, res);
   }
 
   @Get(`${CHOICES}/:surveyId/:questionId`)
