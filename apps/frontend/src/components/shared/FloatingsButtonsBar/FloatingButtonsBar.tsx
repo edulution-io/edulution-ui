@@ -12,8 +12,8 @@
 
 import React from 'react';
 import useMedia from '@/hooks/useMedia';
-import MobileButtonsBar from '@/components/shared/FloatingsButtonsBar/MobileButtonsBar';
-import DesktopButtonsBar from '@/components/shared/FloatingsButtonsBar/DesktopButtonsBar';
+import MobileFloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/MobileFloatingButtonsBar';
+import DesktopFloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/DesktopFloatingButtonsBar';
 import FloatingButtonsBarProps from '@libs/ui/types/FloatingButtons/floatingButtonsProps';
 import { createPortal } from 'react-dom';
 import FLOATING_BUTTONS_BAR_ID from '@libs/ui/constants/floatingButtonsBarId';
@@ -25,7 +25,10 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
 
   if (!portalRoot) return null;
 
-  return createPortal(isMobileView ? <MobileButtonsBar {...props} /> : <DesktopButtonsBar {...props} />, portalRoot);
+  return createPortal(
+    isMobileView ? <MobileFloatingButtonsBar {...props} /> : <DesktopFloatingButtonsBar {...props} />,
+    portalRoot,
+  );
 };
 
 export default FloatingButtonsBar;
