@@ -14,11 +14,13 @@ import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 
 const resolveSharePath = (share: WebdavShareDto, lmnInfo: LmnUserInfo): string => {
+  const basePath = share.pathname || '';
+
   if (!share.pathVariables || share.pathVariables.length === 0) {
-    return share.sharePath || '';
+    return basePath;
   }
 
-  return share.pathVariables
+  const resolvedVariables = share.pathVariables
     .map((pathVariable) =>
       pathVariable.label in lmnInfo
         ? (lmnInfo[pathVariable.label as keyof LmnUserInfo] as string)
@@ -26,6 +28,12 @@ const resolveSharePath = (share: WebdavShareDto, lmnInfo: LmnUserInfo): string =
     )
     .filter((val) => val !== '')
     .join('/');
+
+  if (basePath.endsWith('/')) {
+    return basePath + resolvedVariables;
+  }
+
+  return `${basePath}/${resolvedVariables}`;
 };
 
 export default resolveSharePath;
