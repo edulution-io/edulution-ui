@@ -56,6 +56,7 @@ import useFileTableStore from '@/pages/Settings/AppConfig/components/useFileTabl
 import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
 import useOpenFileDialogStore from '@/pages/FileSharing/useOpenFileDialogStore';
 import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
+import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import useMenuBarStore from '@/components/shared/useMenuBarStore';
 import useSseStore from '../useSseStore';
 
@@ -110,6 +111,7 @@ const cleanAllStores = async () => {
   useWebdavShareConfigTableStore.getState().reset();
   useOpenFileDialogStore.getState().reset();
   useFilesystemStore.getState().reset();
+  usePlatformStore.getState().reset();
   localStorage.removeItem('i18nextLng');
   await clearTLDrawPersistence(TLDRAW_PERSISTENCE_KEY);
 };
