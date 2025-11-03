@@ -205,7 +205,12 @@ class BulletinBoardService implements OnModuleInit {
   async createBulletin(currentUser: JwtUser, dto: CreateBulletinDto) {
     const category = await this.bulletinCategoryModel.findById(dto.category.id).exec();
     if (!category) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.INVALID_CATEGORY, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.INVALID_CATEGORY,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        BulletinBoardService.name,
+      );
     }
 
     const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
@@ -217,7 +222,12 @@ class BulletinBoardService implements OnModuleInit {
       getIsAdmin(currentUser.ldapGroups, adminGroups),
     );
     if (!hasUserPermission) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_CREATE_BULLETIN, HttpStatus.FORBIDDEN);
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.UNAUTHORIZED_CREATE_BULLETIN,
+        HttpStatus.FORBIDDEN,
+        undefined,
+        BulletinBoardService.name,
+      );
     }
 
     const creator = {
@@ -250,19 +260,34 @@ class BulletinBoardService implements OnModuleInit {
   async updateBulletin(currentUser: JwtUser, id: string, dto: CreateBulletinDto) {
     const bulletin = await this.bulletinModel.findById(id).exec();
     if (!bulletin) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.BULLETIN_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.BULLETIN_NOT_FOUND,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        BulletinBoardService.name,
+      );
     }
 
     const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
 
     const isUserSuperAdmin = getIsAdmin(currentUser.ldapGroups, adminGroups);
     if (bulletin.creator.username !== currentUser.preferred_username && !isUserSuperAdmin) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_BULLETIN, HttpStatus.UNAUTHORIZED);
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_BULLETIN,
+        HttpStatus.UNAUTHORIZED,
+        undefined,
+        BulletinBoardService.name,
+      );
     }
 
     const category = await this.bulletinCategoryModel.findById(dto.category.id).exec();
     if (!category) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.INVALID_CATEGORY, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.INVALID_CATEGORY,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        BulletinBoardService.name,
+      );
     }
 
     const hasUserPermissionToCategory = await this.bulletinCategoryService.hasUserPermission(
@@ -272,7 +297,12 @@ class BulletinBoardService implements OnModuleInit {
       isUserSuperAdmin,
     );
     if (!hasUserPermissionToCategory) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_BULLETIN, HttpStatus.FORBIDDEN);
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_BULLETIN,
+        HttpStatus.FORBIDDEN,
+        undefined,
+        BulletinBoardService.name,
+      );
     }
 
     const updatedBy = {
@@ -335,7 +365,12 @@ class BulletinBoardService implements OnModuleInit {
     const bulletins = await this.bulletinModel.find({ _id: { $in: ids } }).exec();
 
     if (bulletins.length !== ids.length) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.BULLETIN_NOT_FOUND, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.BULLETIN_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        BulletinBoardService.name,
+      );
     }
 
     const unauthorizedBulletins = bulletins.filter(
@@ -346,7 +381,12 @@ class BulletinBoardService implements OnModuleInit {
 
     const isUserSuperAdmin = getIsAdmin(currentUser.ldapGroups, adminGroups);
     if (!isUserSuperAdmin && unauthorizedBulletins.length > 0) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_DELETE_BULLETIN, HttpStatus.UNAUTHORIZED);
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.UNAUTHORIZED_DELETE_BULLETIN,
+        HttpStatus.UNAUTHORIZED,
+        undefined,
+        BulletinBoardService.name,
+      );
     }
 
     try {
@@ -376,6 +416,8 @@ class BulletinBoardService implements OnModuleInit {
       throw new CustomHttpException(
         BulletinBoardErrorMessage.ATTACHMENT_DELETION_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        BulletinBoardService.name,
       );
     }
   }
