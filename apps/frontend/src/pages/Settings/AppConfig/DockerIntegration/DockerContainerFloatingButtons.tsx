@@ -12,7 +12,7 @@
 
 import React from 'react';
 import { AiOutlineStop } from 'react-icons/ai';
-import { MdOutlineRestartAlt } from 'react-icons/md';
+import { MdOutlineRestartAlt, MdOutlineUpdate } from 'react-icons/md';
 import { useTranslation } from 'react-i18next';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
@@ -29,8 +29,15 @@ import useDockerApplicationStore from './useDockerApplicationStore';
 
 const DockerContainerFloatingButtons: React.FC = () => {
   const { t } = useTranslation();
-  const { containers, selectedRows, setSelectedRows, getContainers, runDockerCommand, deleteDockerContainer } =
-    useDockerApplicationStore();
+  const {
+    containers,
+    selectedRows,
+    setSelectedRows,
+    getContainers,
+    runDockerCommand,
+    deleteDockerContainer,
+    updateContainer,
+  } = useDockerApplicationStore();
   const selectedContainerId = Object.keys(selectedRows);
   const selectedContainers = containers.filter((container) => selectedContainerId.includes(container.Id));
   const containerNames = selectedContainers.map((container) => container.Names?.[0].split('/')[1]) || [''];
@@ -50,6 +57,11 @@ const DockerContainerFloatingButtons: React.FC = () => {
 
   const handleActionClick = (action: TDockerCommands) => {
     void runDockerCommand(containerNames, action);
+  };
+
+  const handleUpdateClick = () => {
+    void updateContainer(containerNames);
+    setSelectedRows({});
   };
 
   const handleDeleteClick = () => {
@@ -77,6 +89,12 @@ const DockerContainerFloatingButtons: React.FC = () => {
       ReloadButton(() => {
         void getContainers();
       }),
+      {
+        icon: MdOutlineUpdate,
+        text: t(`common.update`),
+        onClick: () => handleUpdateClick(),
+        isVisible: isButtonVisible,
+      },
     ],
     keyPrefix: 'docker-table-floating-button_',
   };

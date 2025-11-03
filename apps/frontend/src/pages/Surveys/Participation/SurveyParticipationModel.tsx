@@ -14,7 +14,7 @@ import React, { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
-import { ClearFilesEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
+import { ClearFilesEvent, DownloadFileEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
 import { FileDownloadDto } from '@libs/survey/types/api/file-download.dto';
 import { removeUuidFromFileName } from '@libs/common/utils/uuidAndFileNames';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
@@ -23,12 +23,20 @@ import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import useLanguage from '@/hooks/useLanguage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
-import surveyTheme from '@/pages/Surveys/theme/theme';
+import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
+import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/ExportSurveyToPdfDialog';
+import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import '../theme/custom.participation.css';
 import 'survey-core/i18n/french';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
+
+interface SurveyFileValue {
+  name: string;
+  type: string;
+  [key: string]: unknown;
+}
 
 interface SurveyParticipationModelProps {
   isPublic: boolean;
@@ -52,6 +60,8 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
   const { fetchAnswer, isFetching, answerSurvey, previousAnswer, uploadTempFile, deleteTempFile } =
     useParticipateSurveyStore();
 
+  const { setIsOpen: setOpenExportPDFDialog } = useExportSurveyToPdfStore();
+
   const { t } = useTranslation();
   const { language } = useLanguage();
 
@@ -67,6 +77,12 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       newModel.showProgressBar = 'top';
     }
     newModel.completedHtml = `${t('survey.participate.completeMessage')}`;
+
+    newModel.addNavigationItem({
+      id: 'pdf-export',
+      title: t('survey.export.saveInPDF'),
+      action: () => setOpenExportPDFDialog(true),
+    });
 
     newModel.onCompleting.add(async (surveyModel, completingEvent) => {
       if (!selectedSurvey.id) {
@@ -111,7 +127,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
         const newFile: FileDownloadDto = {
           ...file,
-          type: file.type || 'image/png',
+          type: file.type || '*/*',
           originalName: data.name || file.name,
           name: removeUuidFromFileName(data.name || file.name),
           url: `${EDU_API_URL}/${data.url}`,
@@ -127,6 +143,27 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
           content: result.url,
         })),
       );
+    });
+
+    newModel.onDownloadFile.add((_: SurveyModel, options: DownloadFileEvent) => {
+      const fileValue = options.fileValue as SurveyFileValue;
+
+      fetch(options.content as string)
+        .then((response) => response.blob())
+        .then((blob) => {
+          const file = new File([blob], fileValue.name, {
+            type: fileValue.type,
+          });
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            options.callback('success', e.target?.result);
+          };
+          reader.readAsDataURL(file);
+        })
+        .catch((error) => {
+          console.error('Error: ', error);
+          options.callback('error');
+        });
     });
 
     newModel.onClearFiles.add(async (_surveyModel: SurveyModel, options: ClearFilesEvent): Promise<void> => {
@@ -192,7 +229,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
   if (isFetching) {
     return <LoadingIndicatorDialog isOpen />;
   }
-  if (!surveyParticipationModel) {
+  if (!surveyParticipationModel || !selectedSurvey) {
     return (
       <div className="relative top-1/3">
         <h4 className="flex justify-center">{t('survey.notFound')}</h4>
@@ -200,9 +237,15 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
     );
   }
   return (
-    <div className="survey-participation">
-      <Survey model={surveyParticipationModel} />
-    </div>
+    <>
+      <div className="survey-participation">
+        <Survey model={surveyParticipationModel} />
+      </div>
+      <ExportSurveyToPdfDialog
+        formula={selectedSurvey.formula}
+        answer={surveyParticipationModel ? (surveyParticipationModel.data as JSON) : undefined}
+      />
+    </>
   );
 };
 

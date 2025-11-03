@@ -17,7 +17,7 @@ import LICENSE_ENDPOINT from '@libs/license/constants/license-endpoints';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import type SignLicenseDto from '@libs/license/types/sign-license.dto';
 import LicenseService from './license.service';
-import AppConfigGuard from '../appconfig/appconfig.guard';
+import AdminGuard from '../common/guards/admin.guard';
 
 @ApiTags(LICENSE_ENDPOINT)
 @ApiBearerAuth()
@@ -33,7 +33,7 @@ class LicenseController {
   }
 
   @Post()
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   async signLicense(@Body() signLicenseDto: SignLicenseDto) {
     return this.licenseService.signLicense(signLicenseDto);
   }

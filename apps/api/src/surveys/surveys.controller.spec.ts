@@ -18,6 +18,7 @@ import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import { ConfigService } from '@nestjs/config';
 import CustomHttpException from '../common/CustomHttpException';
 import SurveysController from './surveys.controller';
 import SurveysService from './surveys.service';
@@ -56,6 +57,7 @@ import SurveysAttachmentService from './surveys-attachment.service';
 import SurveysTemplateService from './surveys-template.service';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 import NotificationsService from '../notifications/notifications.service';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 describe(SurveysController.name, () => {
   let controller: SurveysController;
@@ -70,6 +72,7 @@ describe(SurveysController.name, () => {
       providers: [
         SurveysService,
         SseService,
+        ConfigService,
         {
           provide: getModelToken(Survey.name),
           useValue: jest.fn(),
@@ -89,6 +92,7 @@ describe(SurveysController.name, () => {
         },
         { provide: FilesystemService, useValue: mockFilesystemService },
         { provide: NotificationsService, useValue: pushMock },
+        { provide: GlobalSettingsService, useValue: { getAdminGroupsFromCache: jest.fn() } },
       ],
     }).compile();
 

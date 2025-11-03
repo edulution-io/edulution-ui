@@ -286,6 +286,11 @@ export class LmnApiController {
   async getSchools(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string) {
     return this.lmnApiService.getSchools(lmnApiToken);
   }
+
+  @Get('server/lmnversion')
+  async getLmnVersion(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string) {
+    return this.lmnApiService.getLmnVersion(lmnApiToken);
+  }
 }
 
 export default LmnApiController;

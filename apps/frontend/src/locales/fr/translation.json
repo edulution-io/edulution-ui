@@ -107,15 +107,9 @@
     "mobileAccess": {
       "title": "Accès mobile",
       "manual": "Instructions",
-      "manualSetup": "Configuration manuelle",
       "setupWithQrCode": "Configuration via un QR-code",
-      "accessData": "Identifiants",
       "content": "Vous pouvez accéder au serveur scolaire à partir de nombreux appareils mobiles. Appuyez sur les instructions pour commencer.",
-      "scanAccessInfo": "Pour transférer les identifiants, veuillez scanner le QR-code suivant avec le   l'application {{ applicationName }}.",
-      "manualAccessInfo": "Saisir les identifiants manuellement dans l'app {{ applicationName }}. L'exemple suivant montre comment les champs individuels doivent être remplis.",
-      "nextStepPreview": "À l'étape suivante, vous pouvez transférer les identifiants.",
-      "downloadDirect": "Ou téléchargez directement l'application:",
-      "downloadApp": "Téléchargez l'application {{ applicationName }}:"
+      "scanAccessInfo": "Pour transférer les identifiants, veuillez scanner le QR-code suivant avec l'edulution App."
     },
     "quota": {
       "title": "Quotas",
@@ -171,7 +165,8 @@
       "PasswordMismatch": "Le mot de passe actuel est incorrect",
       "PasswordChangeFailed": "Echec de modification du mot de passe",
       "GetUsersQuotaFailed": "L'appel du quota l'utilisateur a échoué.",
-      "GetSchoolsFailed": "L'appel des écoles a échoué"
+      "GetSchoolsFailed": "L'appel des écoles a échoué",
+      "GetLmnVersionFailed": "L'appel de la version Linuxmuster a échoué."
     }
   },
   "ticketsystem": {
@@ -188,6 +183,10 @@
     "encryption": "Chiffrement",
     "rowSelected": "{{selected}} de {{total}} tâche sélectionnée",
     "rowsSelected": "{{selected}} de {{total}} tâches sélectionnées",
+    "themeUpdated": {
+      "generic": "Le thème du courrier électronique a été mis à jour. Veuillez actualiser la page pour que les modifications soient prises en compte.",
+      "failed": "Le thème du courrier électronique n'a pas pu être mis à jour."
+    },
     "importer": {
       "filterPlaceHolderText": "Rechercher le nom d'utilisateur",
       "title": "Importateur de courrier électronique",
@@ -402,6 +401,16 @@
     "invalidQuota": "Le quota doit être donné en fonction de la documentation",
     "invalidMailQuota": "Le quota de courrier doit être spécifié en nombre en Mo",
     "name": "nom",
+    "project": {
+      "createSuccess": "Projet créé avec succès",
+      "updateSuccess": "Projet mis à jour avec succès",
+      "deleteSuccess": "Projet supprimé avec succès"
+    },
+    "sessions": {
+      "createSuccess": "Session créée avec succès",
+      "updateSuccess": "Session mise à jour avec succès",
+      "deleteSuccess": "Session supprimée avec succès"
+    },
     "mailQuota": "Quota de courrier (Mo)",
     "proxyAddresses": "Adresses e-mail proxy",
     "descriptionPlaceholder": "Brève description du projet",
@@ -491,6 +500,7 @@
     "pdfDescription": "Créez un fichier PDF pour imprimer les mots de passe de ces classes",
     "csvDescription": "Créez un fichier CSV pour imprimer les mots de passe de ces classes",
     "printOneItemPerPage": "Imprimez un mot de passe par page",
+    "shouldSplitNamesInCsv": "Prénom et nom dans des colonnes séparées (fonctionne à partir de Linuxmuster 7.3)",
     "selectSavedSession": "Choisissez parmi les séances stockées",
     "saveSession": "Enregistrer la session",
     "editSession": "Modifier la session",
@@ -764,6 +774,7 @@
     },
     "delete": "Supprimer",
     "description": {
+      "dashboard": "Ici, vous pouvez appliquer tous les paramètres.",
       "ticketsystem": "Ici, vous pouvez appliquer tous les paramètres.",
       "mail": "Ici, vous pouvez appliquer tous les paramètres.",
       "chat": "Ici, vous pouvez appliquer tous les paramètres.",
@@ -812,11 +823,23 @@
 
       "logo": {
         "title": "Logo",
-        "descriptionSchool": "Téléversez le logo. Il sera affiché sur l’écran de connexion et sur la carte d’identification de l’application Edulution.",
-        "descriptionGeneric": "Téléversez le logo. Il sera affiché sur l’écran de connexion.",
+        "descriptionSchool": "Téléversez le logo. Il sera affiché sur l'écran de connexion et sur la carte d'identification de l'application Edulution.",
+        "descriptionGeneric": "Téléversez le logo. Il sera affiché sur l'écran de connexion.",
         "uploadLightLogo": "Téléverser le logo clair",
         "uploadDarkLogo": "Téléverser le logo sombre",
         "deleteSuccessful": "Logo supprimé avec succès."
+      },
+      "theme": {
+        "title": "Personnalisation du thème",
+        "primaryColor": "Couleur primaire",
+        "primaryDescription": "Couleur principale utilisée pour les boutons, les liens et les éléments mis en évidence",
+        "secondaryColor": "Couleur secondaire",
+        "secondaryDescription": "Couleur secondaire utilisée pour le texte et les bordures",
+        "ciLightGreen": "Vert de marque",
+        "ciLightGreenDescription": "Couleur verte de marque utilisée dans les dégradés et les logos",
+        "ciLightBlue": "Bleu de marque",
+        "ciLightBlueDescription": "Couleur bleue de marque utilisée dans les dégradés et les logos",
+        "resetToDefaults": "Réinitialiser aux valeurs par défaut"
       },
       "organisationInfo": {
         "title": "Informations sur l’organisation",
@@ -837,6 +860,7 @@
     "info": {
       "title": "Informations"
     },
+    "lmnVersion": { "title": "Aperçu des versions de Linuxmuster" },
     "appconfig": {
       "sections": {
         "onlyOffice": {
@@ -878,7 +902,11 @@
         },
         "webdavServer": {
           "title": "WebDAV serveurs",
-          "filterPlaceHolderText": "Rechercher un serveur"
+          "filterPlaceHolderText": "Rechercher un serveur",
+          "deleteWarning": {
+            "title": "Suppression impossible",
+            "description": "Le serveur WebDAV « {{serverName}} » est utilisé par {{count}} partage(s) : {{shares}}. Veuillez d'abord supprimer les partages dépendants."
+          }
         },
         "files": {
           "title": "Fichiers",
@@ -1005,7 +1033,9 @@
     },
     "mobileAccess": {
       "title": "Accès à l'application",
-      "description": "Ici, vous pouvez configurer l'accès mobile de l'app {{ applicationName }} pour l'accès aux fichiers. Actuellement disponible uniquement pour Apple iOS."
+      "description": "Ici, vous pouvez configurer l'accès mobile de l'app {{ applicationName }} pour l'accès aux fichiers. Actuellement disponible uniquement pour Apple iOS.",
+      "docsDescription": "Tu trouveras le lien de téléchargement de l'application edulution et les instructions d'installation dans la documentation edulution.",
+      "button": "Ouvrir le documentaire"
     },
     "faq": "FAQ",
     "externalIntegration": "Connexion externe",
@@ -1071,6 +1101,7 @@
     "infoQrCodeExpired": "Le temps de connexion avec l'application edulution.io a expiré."
   },
   "common": {
+    "refreshPage": "Actualiser la page",
     "guest": "Invité",
     "ok": "OK",
     "next": "Prochain",
@@ -1519,7 +1550,8 @@
       "dockerImageNotFound": "L'image docker n'a pas pu être trouvée",
       "dockerCreationError": "Le conteneur docker n'a pas pu être créé",
       "dockerCommandExecutionError": "La commande docker n'a pas pu être exécutée",
-      "dockerContainerDeletionError": "Le conteneur docker n'a pas pu être supprimé"
+      "dockerContainerDeletionError": "Le conteneur docker n'a pas pu être supprimé",
+      "dockerUpdateError": "La mise à jour du conteneur docker a échoué"
     },
     "events": {
       "pullingImage": "Requête de l'image docker ...",
@@ -1531,7 +1563,9 @@
       "restartContainer": "Conteneur redémarré.",
       "killContainer": "Forcer l'arrêt du conteneur.",
       "containerCreationSuccessful": "Conteneur créé avec succès.",
-      "containerCreationFailed": "Le conteneur n'a pas pu être créé."
+      "containerCreationFailed": "Le conteneur n'a pas pu être créé.",
+      "containerUpdateSuccessful": "{{containerName}} mis à jour avec succès.",
+      "containerAlreadyUpdateToDate": "{{containerName}} est déjà à jour."
     },
     "status": {
       "running": "en cours d'exécution",

@@ -56,7 +56,7 @@ const FileSelectButton = forwardRef<HTMLInputElement, FileSelectButtonProps>(
         />
         <label
           htmlFor={id}
-          className={`flex w-full cursor-pointer items-center justify-center rounded-lg border bg-ciLightBlue px-4 py-2 text-sm font-medium
+          className={`flex w-full cursor-pointer items-center justify-center rounded-xl border bg-primary px-4 py-2 text-sm font-medium
             ${disabled ? 'cursor-not-allowed opacity-50' : ''} ${labelClassName}`}
         >
           {hasSelection ? changeText : chooseText}

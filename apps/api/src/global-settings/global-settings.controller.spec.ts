@@ -16,9 +16,10 @@ import type { UpdateWriteOpResult } from 'mongoose';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { ConfigService } from '@nestjs/config';
 import GlobalSettingsController from './global-settings.controller';
 import GlobalSettingsService from './global-settings.service';
-import AppConfigGuard from '../appconfig/appconfig.guard';
+import AdminGuard from '../common/guards/admin.guard';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';
 
 const mockedGlobalSettingsDto: GlobalSettingsDto = defaultValues;
@@ -47,6 +48,7 @@ describe('GlobalSettingsController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [GlobalSettingsController],
       providers: [
+        ConfigService,
         {
           provide: GlobalSettingsService,
           useValue: {
@@ -60,7 +62,7 @@ describe('GlobalSettingsController', () => {
         },
       ],
     })
-      .overrideGuard(AppConfigGuard)
+      .overrideGuard(AdminGuard)
       .useValue({
         canActivate: jest.fn((_context: ExecutionContext) => true),
       })

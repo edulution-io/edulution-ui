@@ -22,7 +22,9 @@ import DOCKER_COMMANDS from '@libs/docker/constants/dockerCommands';
 import DOCKER_PROTECTED_CONTAINERS from '@libs/docker/constants/dockerProtectedContainer';
 import SPECIAL_USERS from '@libs/common/constants/specialUsers';
 import type TDockerProtectedContainer from '@libs/docker/types/TDockerProtectedContainer';
+import type UpdateContainerResponse from '@libs/docker/types/updateContainerResponse';
 import CONTAINER from '@libs/docker/constants/container';
+import type PullEvent from '@libs/docker/types/pullEvent';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
 
@@ -124,25 +126,63 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  private async pullImage(image: string) {
+  private async pullImage(image: string): Promise<boolean> {
     try {
       this.sseService.sendEventToUsers(
         [SPECIAL_USERS.GLOBAL_ADMIN],
-        { progress: 'docker.events.pullingImage', from: `${image}` } as DockerEvent,
+        {
+          progress: 'docker.events.pullingImage',
+          from: image,
+        } as DockerEvent,
         SSE_MESSAGE_TYPE.CONTAINER_PROGRESS,
       );
+
       const stream = await this.docker.pull(image);
+
+      const pullEvents: PullEvent[] = [];
+
       await new Promise<void>((resolve, reject) => {
         this.docker.modem.followProgress(
           stream,
-          (error) => (error ? reject(error) : resolve()),
-          (event: DockerEvent) => {
-            if (event) {
-              this.sseService.sendEventToUsers([SPECIAL_USERS.GLOBAL_ADMIN], event, SSE_MESSAGE_TYPE.CONTAINER_STATUS);
+          (error, output: PullEvent[]) => {
+            if (error) {
+              reject(error);
+              return;
             }
+
+            if (Array.isArray(output)) {
+              output.forEach((o) => pullEvents.push(o));
+            }
+
+            resolve();
+          },
+          (event: PullEvent) => {
+            pullEvents.push(event);
+
+            this.sseService.sendEventToUsers([SPECIAL_USERS.GLOBAL_ADMIN], event, SSE_MESSAGE_TYPE.CONTAINER_STATUS);
           },
         );
       });
+
+      const updated = pullEvents.some(
+        (evt) => typeof evt.status === 'string' && evt.status.includes('Downloaded newer image'),
+      );
+
+      if (updated) {
+        Logger.debug(`Image ${image} pulled and updated`, DockerService.name);
+        return true;
+      }
+
+      const upToDate = pullEvents.some(
+        (evt) => typeof evt.status === 'string' && evt.status.includes('Image is up to date'),
+      );
+
+      if (upToDate) {
+        Logger.debug(`Image ${image} is up to date`, DockerService.name);
+        return false;
+      }
+
+      return true;
     } catch (error) {
       throw new CustomHttpException(
         DockerErrorMessages.DOCKER_IMAGE_NOT_FOUND,
@@ -241,6 +281,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
   async executeContainerCommand(params: { id: string; operation: TDockerCommands }) {
     const { id, operation } = params;
+    const container = this.docker.getContainer(id);
 
     DockerService.checkProtectedContainer(id);
 
@@ -252,16 +293,16 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       );
       switch (operation) {
         case DOCKER_COMMANDS.START:
-          await this.docker.getContainer(id).start();
+          await container.start();
           break;
         case DOCKER_COMMANDS.STOP:
-          await this.docker.getContainer(id).stop();
+          await container.stop();
           break;
         case DOCKER_COMMANDS.RESTART:
-          await this.docker.getContainer(id).restart();
+          await container.restart();
           break;
         case DOCKER_COMMANDS.KILL:
-          await this.docker.getContainer(id).kill();
+          await container.kill();
           break;
         default:
           throw new CustomHttpException(
@@ -288,6 +329,84 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     } catch (error) {
       throw new CustomHttpException(
         DockerErrorMessages.DOCKER_CONTAINER_DELETION_ERROR,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        DockerService.name,
+      );
+    }
+  }
+
+  async getContainerStats() {
+    const containers = await this.getContainers();
+
+    return Promise.all(
+      containers.map(async (container) => {
+        try {
+          const c = this.docker.getContainer(container.Id);
+          const data = await c.stats({ stream: false });
+
+          const cpuDelta = data.cpu_stats.cpu_usage.total_usage - data.precpu_stats.cpu_usage.total_usage;
+          const systemDelta = data.cpu_stats.system_cpu_usage - data.precpu_stats.system_cpu_usage;
+          const cpuPercent = systemDelta > 0 ? (cpuDelta / systemDelta) * data.cpu_stats.online_cpus * 100 : 0;
+
+          return {
+            id: container.Id.slice(0, 12),
+            name: container.Names[0].replace('/', ''),
+            image: container.Image,
+            cpuPercent: +cpuPercent.toFixed(2),
+            memUsageMB: +(data.memory_stats.usage / 1024 / 1024).toFixed(1),
+            memLimitMB: +(data.memory_stats.limit / 1024 / 1024).toFixed(1),
+          };
+        } catch (e) {
+          const message = e instanceof Error ? e.message : String(e);
+          return { id: container.Id.slice(0, 12), error: message };
+        }
+      }),
+    );
+  }
+
+  async updateContainer(containerId: string): Promise<UpdateContainerResponse> {
+    try {
+      const container = this.docker.getContainer(containerId);
+
+      const inspectData = await container.inspect();
+      const imageName = inspectData.Config.Image;
+
+      Logger.debug('Pulling latest image:', DockerService.name);
+      const isImageUpdated = await this.pullImage(imageName);
+
+      if (!isImageUpdated) {
+        Logger.debug(
+          `Image ${imageName} is already up to date. No update needed for container ${container.id}`,
+          DockerService.name,
+        );
+        return { id: container.id, isImageUpdated };
+      }
+
+      Logger.debug(`Stopping container ${container.id}`, DockerService.name);
+      await container.stop();
+
+      Logger.debug(`Removing container ${container.id}`, DockerService.name);
+      await container.remove();
+
+      Logger.debug(`Recreating container`, DockerService.name);
+      const newContainer = await this.docker.createContainer({
+        ...inspectData.Config,
+        HostConfig: inspectData.HostConfig,
+        NetworkingConfig: inspectData.NetworkSettings?.Networks
+          ? { EndpointsConfig: inspectData.NetworkSettings.Networks }
+          : undefined,
+        Image: imageName,
+        name: inspectData.Name.replace('/', ''),
+      });
+
+      Logger.debug('Starting new container...');
+      await newContainer.start();
+
+      return { id: newContainer.id, isImageUpdated };
+    } catch (error) {
+      throw new CustomHttpException(
+        DockerErrorMessages.DOCKER_UPDATE_ERROR,
         HttpStatus.INTERNAL_SERVER_ERROR,
         undefined,
         DockerService.name,

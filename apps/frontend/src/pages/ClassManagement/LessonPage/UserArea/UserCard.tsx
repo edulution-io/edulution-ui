@@ -19,13 +19,13 @@ import UserCardButtonBar from '@/pages/ClassManagement/LessonPage/UserArea/UserC
 import Checkbox from '@/components/ui/Checkbox';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import ActionTooltip from '@/components/shared/ActionTooltip';
-import { SOPHOMORIX_STUDENT } from '@libs/lmnApi/constants/sophomorixRoles';
 import { useTranslation } from 'react-i18next';
 import UserPasswordDialog from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/UserPasswordDialog';
 import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
 import VEYON_FEATURE_ACTIONS from '@libs/veyon/constants/veyonFeatureActions';
 import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
 import getStringFromArray from '@libs/common/utils/getStringFromArray';
+import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
 import useVeyonApiStore from '../../useVeyonApiStore';
 import UserCardVeyonPreview from './UserCardVeyonPreview';
 
@@ -45,7 +45,7 @@ const UserCard = ({ user, selectedMember, isTeacherInSameClass, setSelectedMembe
 
   const studentName = examMode ? `${name}-exam` : name;
 
-  const isSelectable = user.sophomorixRole === SOPHOMORIX_STUDENT && isTeacherInSameClass;
+  const isSelectable = user.sophomorixRole === SOPHOMORIX_GROUP_TYPES.STUDENT && isTeacherInSameClass;
   const isMemberSelected = !!selectedMember.find((m) => m.dn === user.dn) && isSelectable;
   const schoolClassName = removeSchoolPrefix(sophomorixAdminClass, school);
   const connectionUid = userConnectionUids.find((conn) => conn.veyonUsername === user.cn)?.connectionUid || '';
@@ -74,7 +74,7 @@ const UserCard = ({ user, selectedMember, isTeacherInSameClass, setSelectedMembe
 
   const onCardClick = () => {
     if (!isSelectable) {
-      if (user.sophomorixRole === SOPHOMORIX_STUDENT)
+      if (user.sophomorixRole === SOPHOMORIX_GROUP_TYPES.STUDENT)
         toast.info(t('classmanagement.itsNotPossibleToEditExternalStudents'));
       return;
     }
