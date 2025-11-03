@@ -16,12 +16,14 @@ import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
+import TSurveyElement from '@libs/survey/types/TSurveyElement';
+import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import TemplateDialogBody from '@/pages/Surveys/Editor/dialog/TemplateDialogBody';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
+import DeleteTemplateDialog from '@/pages/Surveys/Editor/dialog/DeleteTemplateDialog';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
-import DeleteTemplateDialog from '@/pages/Surveys/Editor/dialog/DeleteTemplateDialog';
 
 interface TemplateDialogProps {
   form: UseFormReturn<SurveyDto>;
@@ -43,6 +45,57 @@ const TemplateDialog = (props: TemplateDialogProps) => {
 
   const { t } = useTranslation();
 
+  const updateLinkForRestfulChoices = (elements: TSurveyElement[] | undefined, surveyId: string) =>
+    (elements || []).map((el) => {
+      if (el.choicesByUrl) {
+        return {
+          ...el,
+          choicesByUrl: {
+            ...el.choicesByUrl,
+            url: el.choicesByUrl.url.replace(surveyId, TEMPORAL_SURVEY_ID_STRING),
+          },
+        };
+      }
+      return el;
+    });
+
+  const handleSaveTemplate = async () => {
+    const values = form.getValues();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, formula, createdAt, saveNo, expires, answers, ...remainingSurvey } = values;
+    const creationDate = template?.template.createdAt || new Date();
+    const processingFormula = { ...(creator.JSON as SurveyFormula) };
+
+    // eslint-disable-next-line no-console
+    console.log({ formula });
+    // eslint-disable-next-line no-console
+    console.log({ processingFormula });
+
+    let processedFormula: SurveyFormula | undefined;
+    if (id) {
+      if (processingFormula.pages) {
+        const updatedPages = processingFormula.pages.map((page) => ({
+          ...page,
+          elements: updateLinkForRestfulChoices(page.elements, id),
+        }));
+        processedFormula = { ...processingFormula, pages: updatedPages };
+      }
+      if (processingFormula.elements) {
+        const updatedElements = updateLinkForRestfulChoices(processingFormula.elements, id);
+        processedFormula = { ...processingFormula, elements: updatedElements };
+      }
+    }
+
+    // eslint-disable-next-line no-console
+    console.log({ processedFormula });
+
+    await uploadTemplate({
+      fileName: template?.fileName,
+      template: { formula: processedFormula, createdAt: creationDate, ...remainingSurvey },
+    });
+    setIsOpenTemplateMenu(false);
+  };
+
   const getDialogBody = () => (
     <>
       <TemplateDialogBody
@@ -57,18 +110,6 @@ const TemplateDialog = (props: TemplateDialogProps) => {
   );
 
   const handleClose = () => setIsOpenTemplateMenu(!isOpenTemplateMenu);
-
-  const handleSaveTemplate = async () => {
-    const values = form.getValues();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id, formula, createdAt, saveNo, expires, answers, ...remainingSurvey } = values;
-    const creationDate = template?.template.createdAt || new Date();
-    await uploadTemplate({
-      fileName: template?.fileName,
-      template: { formula: creator.JSON as SurveyFormula, createdAt: creationDate, ...remainingSurvey },
-    });
-    setIsOpenTemplateMenu(false);
-  };
 
   const getFooter = () => {
     if (isSuperAdmin) {

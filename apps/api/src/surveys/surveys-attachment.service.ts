@@ -182,19 +182,6 @@ class SurveysAttachmentService implements OnModuleInit {
     return processedElement;
   }
 
-  static updateLinkForRestfulChoices(surveyId: string, question: TSurveyElement): TSurveyElement {
-    if (question.choicesByUrl && question.choicesByUrl?.url.includes(TEMPORAL_SURVEY_ID_STRING)) {
-      return {
-        ...question,
-        choicesByUrl: {
-          ...question.choicesByUrl,
-          url: question.choicesByUrl.url.replace(TEMPORAL_SURVEY_ID_STRING, surveyId),
-        },
-      };
-    }
-    return question;
-  }
-
   async processUrl(
     url: string,
     username: string,
