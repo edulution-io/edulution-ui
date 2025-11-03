@@ -16,6 +16,7 @@ enum DockerErrorMessages {
   DOCKER_CREATION_ERROR = 'docker.error.dockerCreationError',
   DOCKER_COMMAND_EXECUTION_ERROR = 'docker.error.dockerCommandExecutionError',
   DOCKER_CONTAINER_DELETION_ERROR = 'docker.error.dockerContainerDeletionError',
+  DOCKER_UPDATE_ERROR = 'docker.error.dockerUpdateError',
 }
 
 export default DockerErrorMessages;

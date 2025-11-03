@@ -16,6 +16,7 @@ import { Document } from 'mongoose';
 import { AuthSettings, AuthSettingsSchema } from './schemas/global-settings.auth.schema';
 import { GeneralSettings, GeneralSettingsSchema } from './schemas/global-settings.general.schema';
 import { OrganisationInfo, OrganisationInfoSchema } from './schemas/global-settings.organisation-info.schema';
+import { ThemeSettings, ThemeSettingsSchema } from './schemas/global-settings.theme.schema';
 
 export type GlobalSettingsDocument = GlobalSettings & Document;
 
@@ -32,7 +33,10 @@ export class GlobalSettings {
 
   @Prop({ type: OrganisationInfoSchema, default: {} }) organisationInfo?: OrganisationInfo;
 
-  @Prop({ default: 5 })
+  @Prop({ type: ThemeSettingsSchema, required: true })
+  theme: ThemeSettings;
+
+  @Prop({ default: 7 })
   schemaVersion: number;
 }
 

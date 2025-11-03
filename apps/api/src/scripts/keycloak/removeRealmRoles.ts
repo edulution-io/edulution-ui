@@ -11,7 +11,7 @@
  */
 
 import { Logger } from '@nestjs/common';
-import { Scripts } from '../../scripts/script.type';
+import { Scripts } from '../script.type';
 import getKeycloakToken from './utilities/getKeycloakToken';
 import createKeycloakAxiosClient from './utilities/createKeycloakAxiosClient';
 

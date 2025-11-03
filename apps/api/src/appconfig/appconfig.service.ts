@@ -60,7 +60,7 @@ class AppConfigService implements OnModuleInit {
       );
     } finally {
       await AppConfigService.writeProxyConfigFile(appConfigDto);
-      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
+      this.eventEmitter.emit(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${appConfigDto.name}`);
     }
   }
 
@@ -119,7 +119,7 @@ class AppConfigService implements OnModuleInit {
       );
     } finally {
       await AppConfigService.writeProxyConfigFile(appConfigDto);
-      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
+      this.eventEmitter.emit(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${appConfigDto.name}`);
     }
   }
 
@@ -135,7 +135,7 @@ class AppConfigService implements OnModuleInit {
         AppConfigService.name,
       );
     } finally {
-      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
+      this.eventEmitter.emit(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${name}`);
     }
   }
 
@@ -161,8 +161,9 @@ class AppConfigService implements OnModuleInit {
   async getAppConfigs(ldapGroups: string[]): Promise<AppConfigDto[]> {
     try {
       let appConfigDto: AppConfigDto[];
+      const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
 
-      if (getIsAdmin(ldapGroups)) {
+      if (getIsAdmin(ldapGroups, adminGroups)) {
         appConfigDto = await this.appConfigModel
           .find({}, 'name translations icon appType options accessGroups extendedOptions position')
           .sort({ position: 1 })
@@ -291,7 +292,7 @@ class AppConfigService implements OnModuleInit {
         await FilesystemService.deleteDirectories([`${APPS_FILES_PATH}/${configName}`]);
       }
 
-      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
+      this.eventEmitter.emit(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${configName}`);
     }
   }
 

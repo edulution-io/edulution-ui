@@ -12,21 +12,28 @@
 
 import { Body, Controller, Get, Put, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 import {
   GLOBAL_SETTINGS_ADMIN_ENDPOINT,
+  GLOBAL_SETTINGS_PUBLIC_THEME_ENDPOINT,
   GLOBAL_SETTINGS_ROOT_ENDPOINT,
 } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
-import AppConfigGuard from '../appconfig/appconfig.guard';
+import type SentryConfig from '@libs/common/types/sentryConfig';
+import AdminGuard from '../common/guards/admin.guard';
 import GlobalSettingsService from './global-settings.service';
+import { Public } from '../common/decorators/public.decorator';
 
 @ApiTags(GLOBAL_SETTINGS_ROOT_ENDPOINT)
 @ApiBearerAuth()
 @Controller(GLOBAL_SETTINGS_ROOT_ENDPOINT)
 class GlobalSettingsController {
-  constructor(private readonly globalSettingsService: GlobalSettingsService) {}
+  constructor(
+    private readonly globalSettingsService: GlobalSettingsService,
+    private configService: ConfigService,
+  ) {}
 
   @Get()
   @UseInterceptors(CacheInterceptor)
@@ -36,15 +43,36 @@ class GlobalSettingsController {
   }
 
   @Get(GLOBAL_SETTINGS_ADMIN_ENDPOINT)
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   async getGlobalAdminSettings() {
     return this.globalSettingsService.getGlobalAdminSettings();
   }
 
   @Put()
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   async setGlobalSettings(@Body() globalSettingsDto: GlobalSettingsDto) {
     return this.globalSettingsService.setGlobalSettings(globalSettingsDto);
+  }
+
+  @Public()
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(DEFAULT_CACHE_TTL_MS)
+  @Get(GLOBAL_SETTINGS_PUBLIC_THEME_ENDPOINT)
+  async getPublicTheme() {
+    return this.globalSettingsService.getPublicTheme();
+  }
+
+  @Get('sentry')
+  getSentryConfig(): SentryConfig | Record<string, never> {
+    const isSentryEnabled = this.configService.get<string>('ENABLE_SENTRY', '').toLowerCase() === 'true';
+
+    if (isSentryEnabled) {
+      return {
+        dsn: this.configService.get<string>('SENTRY_EDU_UI_DSN', ''),
+        enabled: true,
+      };
+    }
+    return {};
   }
 }
 

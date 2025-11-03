@@ -10,9 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-// This type is based on a third-party object definition from the LDAP API.
-// Any modifications should be carefully reviewed to ensure compatibility with the source.
-export const SOPHOMORIX_STUDENT = 'student';
-export const SOPHOMORIX_TEACHER = 'teacher';
-export const SOPHOMORIX_PROJECT = 'project';
-export const SOPHOMORIX_SCHOOL_CLASS = 'schoolclass';
+const APP_LAYOUT_ID = 'app-layout';
+
+export default APP_LAYOUT_ID;

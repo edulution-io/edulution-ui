@@ -106,14 +106,14 @@ const ClassListCard = ({ selectedClasses, setSelectedClasses, group, disabled }:
           <button
             type="button"
             onClick={(event) => onButtonClick(event, PrintPasswordsFormat.PDF)}
-            className="absolute -top-[1px] right-9 h-[42px] bg-ciLightBlue px-2 py-3 text-xl hover:bg-opacity-90"
+            className="absolute -top-[1px] right-9 h-[42px] bg-primary px-2 py-3 text-xl hover:bg-opacity-90"
           >
             <FaRegFilePdf />
           </button>
           <button
             type="button"
             onClick={(event) => onButtonClick(event, PrintPasswordsFormat.CSV)}
-            className="absolute -right-0 -top-[1px] h-[42px] rounded-r-lg bg-ciLightBlue px-2 py-3 text-lg hover:bg-opacity-90"
+            className="absolute -right-0 -top-[1px] h-[42px] rounded-r-lg bg-primary px-2 py-3 text-lg hover:bg-opacity-90"
           >
             <FaFileCsv />
           </button>

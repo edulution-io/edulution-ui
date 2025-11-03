@@ -13,8 +13,16 @@
 import removeRealmRoles from './removeRealmRoles';
 import addMailcowSyncRoles from './addMailcowSyncRoles';
 import patchEduUiClient from './patchEduUiClient';
+import addLdapGroupMappers from './addLdapGroupMappers';
+import addUserAttributeMappers from './addUserAttributeMappers';
 
 // Add new scripts here
-const keycloakConfigScripts = [removeRealmRoles, addMailcowSyncRoles, patchEduUiClient];
+const keycloakConfigScripts = [
+  removeRealmRoles,
+  addMailcowSyncRoles,
+  patchEduUiClient,
+  addLdapGroupMappers,
+  addUserAttributeMappers,
+];
 
 export default keycloakConfigScripts;

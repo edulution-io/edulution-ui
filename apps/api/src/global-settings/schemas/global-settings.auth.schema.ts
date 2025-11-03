@@ -17,6 +17,9 @@ import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 export class AuthSettings {
   @Prop({ type: Array, default: [] })
   mfaEnforcedGroups: MultipleSelectorGroup[];
+
+  @Prop({ type: Array, default: [] })
+  adminGroups: MultipleSelectorGroup[];
 }
 
 export const AuthSettingsSchema = SchemaFactory.createForClass(AuthSettings);
