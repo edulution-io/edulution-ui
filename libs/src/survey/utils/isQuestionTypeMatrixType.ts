@@ -10,15 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum OtherTypes {
-  TEXT = 'text',
-  BOOLEAN = 'boolean',
-  DATE = 'date',
-  DATETIME = 'datetime',
-  DROPDOWN = 'dropdown',
-  MATRIX = 'matrix',
-  RANKING = 'ranking',
-  FILE = 'file',
-}
+import SurveyQuestionMatrixTypes from '@libs/survey/constants/surveyQuestionMatrixTypes';
 
-export default OtherTypes;
+const isQuestionTypeMatrixType = (questionType: string): boolean =>
+  Object.values(SurveyQuestionMatrixTypes).includes(questionType as SurveyQuestionMatrixTypes);
+
+export default isQuestionTypeMatrixType;

@@ -10,14 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ChoiceTypes from '@libs/survey/constants/choice-types';
-import ImageTypes from '@libs/survey/constants/image-types';
-import OtherTypes from '@libs/survey/constants/other-types';
-
-const QuestionsType = {
-  ...ChoiceTypes,
-  ...ImageTypes,
-  ...OtherTypes,
+type PullEvent = {
+  status?: string;
+  id?: string;
+  progress?: string;
+  progressDetail?: Record<string, unknown>;
 };
 
-export default QuestionsType;
+export default PullEvent;

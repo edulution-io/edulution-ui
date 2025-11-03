@@ -19,7 +19,7 @@ import QuestionsContextMenuBody from '@/pages/Surveys/Editor/dialog/QuestionsCon
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 
-interface QuestionContextMenuProps {
+interface QuestionsContextMenuProps {
   form: UseFormReturn<SurveyDto>;
   creator: SurveyCreatorModel;
   isOpenQuestionContextMenu: boolean;
@@ -28,7 +28,7 @@ interface QuestionContextMenuProps {
   trigger?: React.ReactNode;
 }
 
-const QuestionsContextMenu = (props: QuestionContextMenuProps) => {
+const QuestionsContextMenu = (props: QuestionsContextMenuProps) => {
   const { form, trigger, isOpenQuestionContextMenu, setIsOpenQuestionContextMenu, creator, isLoading } = props;
 
   const { t } = useTranslation();
