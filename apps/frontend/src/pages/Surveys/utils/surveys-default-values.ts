@@ -17,7 +17,7 @@ import getSurveysDefaultLogoUrl from '@libs/survey/utils/getSurveysDefaultLogoUr
 
 const surveysDefaultValues: Partial<SurveyDto> & { formula: SurveyFormula } = {
   formula: {
-    title: i18n.t('survey.newTitle').toString(),
+    title: i18n.t('survey.newTitle'),
     logo: getSurveysDefaultLogoUrl(),
   },
   isAnonymous: false,
