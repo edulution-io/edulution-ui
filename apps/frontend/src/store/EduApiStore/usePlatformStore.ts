@@ -15,7 +15,6 @@ import { create } from 'zustand';
 interface PlatformStore {
   isEdulutionApp: boolean;
   setIsEdulutionApp: (value: boolean) => void;
-  reset: () => void;
 }
 
 const initialState = {
@@ -25,7 +24,6 @@ const initialState = {
 const usePlatformStore = create<PlatformStore>((set) => ({
   ...initialState,
   setIsEdulutionApp: (value) => set({ isEdulutionApp: value }),
-  reset: () => set(initialState),
 }));
 
 export default usePlatformStore;
