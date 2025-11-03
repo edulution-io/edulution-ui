@@ -10,15 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum OtherTypes {
-  TEXT = 'text',
-  BOOLEAN = 'boolean',
-  DATE = 'date',
-  DATETIME = 'datetime',
-  DROPDOWN = 'dropdown',
-  MATRIX = 'matrix',
-  RANKING = 'ranking',
-  FILE = 'file',
-}
+const LDAP_PROVIDER_ID = 'ldap';
 
-export default OtherTypes;
+export default LDAP_PROVIDER_ID;

@@ -44,6 +44,7 @@ import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailImporterConfig from './mails/MailImporterConfig';
 import getAppConfigFormSchema from './schemas/getAppConfigFormSchema';
 import ProxyConfigForm from './components/ProxyConfigForm';
+import DeleteWebdavServerWarningDialog from './filesharing/DeleteWebdavServerWarningDialog';
 
 interface AppConfigPageProps {
   settingLocation: string;
@@ -274,6 +275,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
         handleSaveSettingsItem={handleSubmit(onSubmit)}
       />
       <DeleteAppConfigDialog handleDeleteSettingsItem={handleDeleteSettingsItem} />
+      {matchingConfig?.name === APPS.FILE_SHARING && <DeleteWebdavServerWarningDialog />}
     </PageLayout>
   );
 };

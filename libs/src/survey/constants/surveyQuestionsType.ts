@@ -10,21 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-// This type is based on a third-party object definition from the LDAP API.
-// Any modifications should be carefully reviewed to ensure compatibility with the source.
-type LmnApiGroupTypes =
-  | 'schoolclass'
-  | 'student'
-  | 'project'
-  | 'teacher'
-  | 'unknown'
-  | 'device'
-  | 'globalbinduser'
-  | 'globaladministrator'
-  | 'schoolbinduser'
-  | 'schooladministrator'
-  | 'classroom-studentcomputer'
-  | 'server'
-  | 'printer';
+import SurveyQuestionChoiceTypes from '@libs/survey/constants/surveyQuestionChoiceTypes';
+import SurveyQuestionMatrixTypes from '@libs/survey/constants/surveyQuestionMatrixTypes';
+import SurveyQuestionImageTypes from '@libs/survey/constants/surveyQuestionImageTypes';
+import SurveyQuestionOtherTypes from '@libs/survey/constants/surveyQuestionOtherTypes';
 
-export default LmnApiGroupTypes;
+const SurveyQuestionsType = {
+  ...SurveyQuestionChoiceTypes,
+  ...SurveyQuestionMatrixTypes,
+  ...SurveyQuestionImageTypes,
+  ...SurveyQuestionOtherTypes,
+};
+
+export default SurveyQuestionsType;

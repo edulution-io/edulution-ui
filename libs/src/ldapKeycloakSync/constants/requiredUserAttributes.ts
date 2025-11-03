@@ -10,14 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ChoiceTypes from '@libs/survey/constants/choice-types';
-import ImageTypes from '@libs/survey/constants/image-types';
-import OtherTypes from '@libs/survey/constants/other-types';
+const REQUIRED_USER_ATTRIBUTES = ['mail', 'sophomorixMailQuotaCalculated', 'sophomorixStatus', 'proxyAddresses'];
 
-const QuestionsType = {
-  ...ChoiceTypes,
-  ...ImageTypes,
-  ...OtherTypes,
-};
-
-export default QuestionsType;
+export default REQUIRED_USER_ATTRIBUTES;

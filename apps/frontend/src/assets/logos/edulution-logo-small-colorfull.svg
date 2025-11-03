@@ -8,8 +8,8 @@
       }
     </style>
     <linearGradient id="Unbenannter_Verlauf_11" data-name="Unbenannter Verlauf 11" x1="49.44" y1="174.43" x2="174.71" y2="44.26" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#8fc046"/>
-      <stop offset="1" stop-color="#1084c0"/>
+      <stop offset="0" stop-color="var(--ci-light-green)"/>
+      <stop offset="1" stop-color="var(--ci-light-blue)"/>
     </linearGradient>
   </defs>
   <path class="cls-1" d="M142.73,163.01c-1.29.05-2.58.09-3.85.09-24.37,0-46.65-8.91-57.05-28.23,5.94.89,11.89,1.19,17.83,1.19,41.9,0,79.64-17.53,79.64-52.89,0-29.42-25.85-51.7-63.29-51.7-45.17,0-78.74,32.39-78.74,81.42,0,56.54,45.24,83.59,96.39,84.07l9.09-33.94ZM114.21,64.45c14.56,0,27.34,8.62,27.34,20.21,0,16.34-24.37,23.47-49.33,23.47-5.65,0-10.99-.3-16.34-1.19.89-29.71,20.5-42.49,38.33-42.49Z"/>

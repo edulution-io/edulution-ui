@@ -10,10 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum ChoiceTypes {
-  RADIO_GROUP = 'radiogroup',
-  CHECKBOX = 'checkbox',
-  DROPDOWN = 'dropdown',
-}
+const GLOBAL_GROUPS_MAPPER_NAME = 'global-groups';
 
-export default ChoiceTypes;
+export default GLOBAL_GROUPS_MAPPER_NAME;

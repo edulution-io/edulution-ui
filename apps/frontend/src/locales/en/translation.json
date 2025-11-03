@@ -123,15 +123,9 @@
     "mobileAccess": {
       "title": "Mobile Access",
       "manual": "Setup",
-      "manualSetup": "Manual setup",
       "setupWithQrCode": "Setup with QR code",
-      "accessData": "Login data",
       "content": "You can access the school server from many mobile devices. Click on Manual to start.",
-      "scanAccessInfo": "To transfer the access data, please scan the following QR code with the {{ applicationName }} app.",
-      "manualAccessInfo": "Enter your login details manually in the {{ applicationName }} app. The example below shows how to fill in each field.",
-      "nextStepPreview": "In the next step you can transfer the access data.",
-      "downloadDirect": "Or download the app directly:",
-      "downloadApp": "Download the {{ applicationName }} app here:"
+      "scanAccessInfo": "To transfer the access data, please scan the following QR code with the edulution App."
     },
     "quota": {
       "title": "Quotas",
@@ -507,6 +501,16 @@
     "detailsprinters": "Details of printer",
     "classes": "Classes",
     "name": "Name",
+    "project": {
+      "createSuccess": "Project created successfully",
+      "updateSuccess": "Project updated successfully",
+      "deleteSuccess": "Project deleted successfully"
+    },
+    "sessions": {
+      "createSuccess": "Session created successfully",
+      "updateSuccess": "Session updated successfully",
+      "deleteSuccess": "Session deleted successfully"
+    },
     "notMemberOfClass": "You are no member of a class.",
     "noGroupsToShow": "No groups available.",
     "overview": "Overview",
@@ -692,6 +696,15 @@
         "addQuestionTitle": "Add a title",
         "questionDescription": "Description",
         "addQuestionDescription": "Add a description",
+        "rowsAndColumns": "Edit rows and columns",
+        "columns": "Columns",
+        "addColumn": "Add column",
+        "newColumn": "New column",
+        "removeColumn": "Remove column",
+        "rows": "Rows",
+        "addRow": "Add row",
+        "newRow": "New row",
+        "removeRow": "Remove row",
         "limit": "Limit",
         "nullLimit": "An upper limit of 0 means, that the option selectable, infinitely often",
         "backendLimiters": "Option limits",
@@ -970,6 +983,18 @@
         "uploadDarkLogo": "Upload dark logo",
         "deleteSuccessful": "Logo deleted successfully."
       },
+      "theme": {
+        "title": "Theme Customization",
+        "primaryColor": "Primary Color",
+        "primaryDescription": "Main color used for buttons, links, and highlights",
+        "secondaryColor": "Secondary Color",
+        "secondaryDescription": "Secondary color used for text and borders",
+        "ciLightGreen": "Brand Green",
+        "ciLightGreenDescription": "Brand green color used in gradients and logos",
+        "ciLightBlue": "Brand Blue",
+        "ciLightBlueDescription": "Brand blue color used in gradients and logos",
+        "resetToDefaults": "Reset to Defaults"
+      },
       "organisationInfo": {
         "title": "Organisational information",
         "descriptionSchool": "Enter your organization’s official details. This information may be displayed in the edulution app. Please provide the name, street, postal code, and optionally the school website.",
@@ -1045,7 +1070,11 @@
         },
         "webdavServer": {
           "title": "WebDAV-Server",
-          "filterPlaceHolderText": "Search for WebDAV servers"
+          "filterPlaceHolderText": "Search for WebDAV servers",
+          "deleteWarning": {
+            "title": "Deletion not possible",
+            "description": "The WebDAV server ‘{{serverName}}’ is used by {{count}} share(s): {{shares}}. Please delete the dependent shares first."
+          }
         },
         "files": {
           "title": "Files",
@@ -1173,7 +1202,9 @@
     },
     "mobileAccess": {
       "title": "Mobile Access",
-      "description": "Here you can set up the {{ applicationName }} app for mobile access to your files. Currently only available for Apple iOS."
+      "description": "Here you can set up the {{ applicationName }} app for mobile access to your files. Currently only available for Apple iOS.",
+      "docsDescription": "You can find the download link for the edulution app and instructions on how to set it up in the edulution documentation.",
+      "button": "Open Docs"
     },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
@@ -1737,7 +1768,8 @@
       "dockerImageNotFound": "Docker Image could not be found",
       "dockerCreationError": "Docker Container could not be created",
       "dockerCommandExecutionError": "Docker command could not be executed",
-      "dockerContainerDeletionError": "Docker Container could not be deleted"
+      "dockerContainerDeletionError": "Docker Container could not be deleted",
+      "dockerUpdateError": "Docker Container could not be updated"
     },
     "events": {
       "pullingImage": "Pulling docker image...",
@@ -1749,7 +1781,9 @@
       "restartContainer": "Restart Container.",
       "killContainer": "Container killed.",
       "containerCreationSuccessful": "Container successfully created.",
-      "containerCreationFailed": "Container could not be created."
+      "containerCreationFailed": "Container could not be created.",
+      "containerUpdateSuccessful": "{{containerName}} updated successfully.",
+      "containerAlreadyUpdateToDate": "{{containerName}} is already up to date."
     },
     "status": {
       "running": "running",

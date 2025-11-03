@@ -10,9 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ChoiceTypes from '@libs/survey/constants/choice-types';
+import SurveyQuestionChoiceTypes from '@libs/survey/constants/surveyQuestionChoiceTypes';
 
 const isQuestionTypeChoiceType = (questionType: string): boolean =>
-  Object.values(ChoiceTypes).includes(questionType as ChoiceTypes);
+  Object.values(SurveyQuestionChoiceTypes).includes(questionType as SurveyQuestionChoiceTypes);
 
 export default isQuestionTypeChoiceType;

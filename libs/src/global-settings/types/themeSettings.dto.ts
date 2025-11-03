@@ -10,9 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum ImageTypes {
-  IMAGE = 'image',
-  IMAGE_PICKER = 'imagepicker',
-}
+import ThemeColors from '@libs/global-settings/types/themeColors';
 
-export default ImageTypes;
+type ThemeSettingsDto = {
+  light: ThemeColors;
+  dark: ThemeColors;
+};
+
+export default ThemeSettingsDto;

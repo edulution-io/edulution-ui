@@ -46,7 +46,7 @@ const IconWithCount: FC<IconWithCountProps> = ({
           className="
             absolute -right-1 -top-1
             flex items-center justify-center
-            rounded-full bg-ciLightBlue font-semibold leading-none text-background
+            rounded-full bg-primary font-semibold leading-none text-background
           "
           style={{
             height: badgePx,
