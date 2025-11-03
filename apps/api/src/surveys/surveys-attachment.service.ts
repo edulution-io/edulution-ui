@@ -23,7 +23,7 @@ import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SURVEYS_HEADER_IMAGE from '@libs/survey/constants/surveys-header-image';
 import TSurveyElement from '@libs/survey/types/TSurveyElement';
-import QuestionsType from '@libs/survey/constants/questions-type';
+import SurveyQuestionsType from '@libs/survey/constants/surveyQuestionsType';
 import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import FilesystemService from '../filesystem/filesystem.service';
@@ -145,9 +145,9 @@ class SurveysAttachmentService implements OnModuleInit {
   ): Promise<TSurveyElement> {
     const processedElement = { ...element };
     switch (element.type) {
-      case QuestionsType.CHECKBOX:
-      case QuestionsType.DROPDOWN:
-      case QuestionsType.RADIO_GROUP:
+      case SurveyQuestionsType.CHECKBOX:
+      case SurveyQuestionsType.DROPDOWN:
+      case SurveyQuestionsType.RADIO_GROUP:
         if (!element.choicesByUrl) {
           break;
         }
@@ -170,7 +170,7 @@ class SurveysAttachmentService implements OnModuleInit {
         }
         break;
 
-      case QuestionsType.IMAGE:
+      case SurveyQuestionsType.IMAGE:
         if (element.imageLink) {
           const { newUrl, filename } = await this.processUrl(
             element.imageLink,
@@ -184,7 +184,7 @@ class SurveysAttachmentService implements OnModuleInit {
         }
         break;
 
-      case QuestionsType.IMAGE_PICKER:
+      case SurveyQuestionsType.IMAGE_PICKER:
         if (element.choices) {
           processedElement.choices = await Promise.all(
             element.choices.map(async (choice) => {
@@ -205,7 +205,7 @@ class SurveysAttachmentService implements OnModuleInit {
         }
         break;
 
-      case QuestionsType.FILE:
+      case SurveyQuestionsType.FILE:
         if (element.value && typeof element.value === 'string') {
           const { newUrl, filename } = await this.processUrl(element.value, username, surveyId, element.name, isPublic);
           processedElement.value = newUrl;

@@ -695,6 +695,15 @@
         "addQuestionTitle": "Add a title",
         "questionDescription": "Description",
         "addQuestionDescription": "Add a description",
+        "rowsAndColumns": "Edit rows and columns",
+        "columns": "Columns",
+        "addColumn": "Add column",
+        "newColumn": "New column",
+        "removeColumn": "Remove column",
+        "rows": "Rows",
+        "addRow": "Add row",
+        "newRow": "New row",
+        "removeRow": "Remove row",
         "limit": "Limit",
         "nullLimit": "An upper limit of 0 means, that the option selectable, infinitely often",
         "backendLimiters": "Option limits",
@@ -1758,7 +1767,8 @@
       "dockerImageNotFound": "Docker Image could not be found",
       "dockerCreationError": "Docker Container could not be created",
       "dockerCommandExecutionError": "Docker command could not be executed",
-      "dockerContainerDeletionError": "Docker Container could not be deleted"
+      "dockerContainerDeletionError": "Docker Container could not be deleted",
+      "dockerUpdateError": "Docker Container could not be updated"
     },
     "events": {
       "pullingImage": "Pulling docker image...",
@@ -1770,7 +1780,9 @@
       "restartContainer": "Restart Container.",
       "killContainer": "Container killed.",
       "containerCreationSuccessful": "Container successfully created.",
-      "containerCreationFailed": "Container could not be created."
+      "containerCreationFailed": "Container could not be created.",
+      "containerUpdateSuccessful": "{{containerName}} updated successfully.",
+      "containerAlreadyUpdateToDate": "{{containerName}} is already up to date."
     },
     "status": {
       "running": "running",

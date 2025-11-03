@@ -1550,7 +1550,8 @@
       "dockerImageNotFound": "L'image docker n'a pas pu être trouvée",
       "dockerCreationError": "Le conteneur docker n'a pas pu être créé",
       "dockerCommandExecutionError": "La commande docker n'a pas pu être exécutée",
-      "dockerContainerDeletionError": "Le conteneur docker n'a pas pu être supprimé"
+      "dockerContainerDeletionError": "Le conteneur docker n'a pas pu être supprimé",
+      "dockerUpdateError": "La mise à jour du conteneur docker a échoué"
     },
     "events": {
       "pullingImage": "Requête de l'image docker ...",
@@ -1562,7 +1563,9 @@
       "restartContainer": "Conteneur redémarré.",
       "killContainer": "Forcer l'arrêt du conteneur.",
       "containerCreationSuccessful": "Conteneur créé avec succès.",
-      "containerCreationFailed": "Le conteneur n'a pas pu être créé."
+      "containerCreationFailed": "Le conteneur n'a pas pu être créé.",
+      "containerUpdateSuccessful": "{{containerName}} mis à jour avec succès.",
+      "containerAlreadyUpdateToDate": "{{containerName}} est déjà à jour."
     },
     "status": {
       "running": "en cours d'exécution",

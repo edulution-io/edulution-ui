@@ -32,7 +32,7 @@ const EmbeddedFrameManager = () => {
         <iframe
           key={appConfig.name}
           title={appConfig.name}
-          className={`absolute inset-y-0 left-0 ml-0 mr-14 w-full md:w-[calc(100%-var(--sidebar-width))] ${isOpen ? 'block' : 'hidden'}`}
+          className={`absolute inset-y-0 left-0 ml-0 w-full ${isOpen ? 'block' : 'hidden'}`}
           height="100%"
           src={url}
         />
