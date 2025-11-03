@@ -80,7 +80,12 @@ class BulletinBoardService implements OnModuleInit {
       await this.serveBulletinAttachment(temporaryFilePath, res);
       return res;
     }
-    throw new CustomHttpException(BulletinBoardErrorMessage.ATTACHMENT_NOT_FOUND, HttpStatus.NOT_FOUND);
+    throw new CustomHttpException(
+      BulletinBoardErrorMessage.ATTACHMENT_NOT_FOUND,
+      HttpStatus.NOT_FOUND,
+      undefined,
+      BulletinBoardService.name,
+    );
   }
 
   async updateBulletinAttachments(content: string, attachedFileNames: string[]) {
