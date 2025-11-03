@@ -47,12 +47,12 @@ const TemplateDialog = (props: TemplateDialogProps) => {
 
   const updateLinkForRestfulChoices = (elements: TSurveyElement[] | undefined, surveyId: string) =>
     (elements || []).map((el) => {
-      if (el.choicesByUrl) {
+      if (el.choicesByUrl && el.choicesByUrl.url.includes(surveyId)) {
         return {
           ...el,
           choicesByUrl: {
             ...el.choicesByUrl,
-            url: el.choicesByUrl.url.replace(surveyId, TEMPORAL_SURVEY_ID_STRING),
+            url: el.choicesByUrl.url.replace(`/${surveyId}/`, `/${TEMPORAL_SURVEY_ID_STRING}/`),
           },
         };
       }
@@ -66,32 +66,23 @@ const TemplateDialog = (props: TemplateDialogProps) => {
     const creationDate = template?.template.createdAt || new Date();
     const processingFormula = { ...(creator.JSON as SurveyFormula) };
 
-    // eslint-disable-next-line no-console
-    console.log({ formula });
-    // eslint-disable-next-line no-console
-    console.log({ processingFormula });
-
     let processedFormula: SurveyFormula | undefined;
     if (id) {
-      if (processingFormula.pages) {
+      if (processingFormula.pages && processingFormula.pages.length > 0) {
         const updatedPages = processingFormula.pages.map((page) => ({
           ...page,
           elements: updateLinkForRestfulChoices(page.elements, id),
         }));
         processedFormula = { ...processingFormula, pages: updatedPages };
-      }
-      if (processingFormula.elements) {
+      } else if (processingFormula.elements && processingFormula.elements.length > 0) {
         const updatedElements = updateLinkForRestfulChoices(processingFormula.elements, id);
         processedFormula = { ...processingFormula, elements: updatedElements };
       }
     }
 
-    // eslint-disable-next-line no-console
-    console.log({ processedFormula });
-
     await uploadTemplate({
       fileName: template?.fileName,
-      template: { formula: processedFormula, createdAt: creationDate, ...remainingSurvey },
+      template: { formula: processedFormula || processingFormula, createdAt: creationDate, ...remainingSurvey },
     });
     setIsOpenTemplateMenu(false);
   };
