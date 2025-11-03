@@ -17,7 +17,6 @@ import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
 import SURVEYS_ANSWER_FOLDER from '@libs/survey/constants/surveyAnswersFolder';
 import SURVEY_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersAttachmentPath';
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
-import { PUBLIC_SURVEYS, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
@@ -71,16 +70,12 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     await FilesystemService.deleteFile(tempFilesPath, fileName);
   }
 
-  static makeUrlPermanent = (url: string | undefined): string | undefined =>
-    url?.replace(`/${PUBLIC_SURVEYS}/`, `/${SURVEYS}/`);
-
-  static getFileNameFromUrl = (url: string | undefined): string | undefined => url?.split('/').pop();
-
   async moveQuestionAttachmentsToPermanentStorage(
     userName: string,
     surveyId: string,
     questionId: string,
     questionAnswer: (object & { content: string }) | (object & { content: string })[],
+    keepOldFiles: boolean = false,
   ): Promise<(object & { content: string }) | (object & { content: string })[]> {
     const directory = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, questionId, userName);
     const tempDirectory = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId);
@@ -104,11 +99,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
         }
         if (fileName && tempFileNames.includes(fileName)) {
           fileNamesToMove.push(fileName);
-          const newFile: object & { content: string } = {
-            ...item,
-            content: SurveyAnswerAttachmentsService.makeUrlPermanent(item.content)!,
-          };
-          nextAnswerContent.push(newFile);
+          nextAnswerContent.push(item);
         }
       });
     } else {
@@ -116,22 +107,20 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
       if (fileName && tempFileNames.includes(fileName)) {
         fileNamesToMove.push(fileName);
       }
-      const newFile: object & { content: string } = {
-        ...questionAnswer,
-        content: SurveyAnswerAttachmentsService.makeUrlPermanent(questionAnswer.content)!,
-      };
-      nextAnswerContent.push(newFile);
+      nextAnswerContent.push(questionAnswer);
     }
     const movingPromises = fileNamesToMove.map(async (fileName) =>
       FilesystemService.moveFile(join(tempDirectory, fileName), join(directory, fileName)),
     );
     await Promise.all(movingPromises);
 
-    const deletionPromises = permanentFiles.map(
-      (fileName): Promise<void> =>
-        persistentFiles.includes(fileName) ? Promise.resolve() : FilesystemService.deleteFile(directory, fileName),
-    );
-    await Promise.all(deletionPromises);
+    if (!keepOldFiles) {
+      const deletionPromises = permanentFiles.map(
+        (fileName): Promise<void> =>
+          persistentFiles.includes(fileName) ? Promise.resolve() : FilesystemService.deleteFile(directory, fileName),
+      );
+      await Promise.all(deletionPromises);
+    }
 
     await this.fileSystemService.deleteEmptyFolderWithDepth(
       join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId),
@@ -141,7 +130,12 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     return nextAnswerContent;
   }
 
-  async moveAnswerAttachmentsToPermanentStorage(userName: string, surveyId: string, answer: JSON): Promise<JSON> {
+  async moveAnswerAttachmentsToPermanentStorage(
+    userName: string,
+    surveyId: string,
+    answer: JSON,
+    keepOldFiles?: boolean,
+  ): Promise<JSON> {
     const surveyAnswer = answer as unknown as Record<
       string,
       (object & { content: string }) | (object & { content: string })[]
@@ -153,6 +147,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
           surveyId,
           question,
           surveyAnswer[question],
+          keepOldFiles,
         );
       }),
     );
