@@ -10,9 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SurveyQuestionChoiceTypes from '@libs/survey/constants/surveyQuestionChoiceTypes';
+enum SurveyQuestionImageTypes {
+  IMAGE = 'image',
+  IMAGE_PICKER = 'imagepicker',
+}
 
-const isQuestionTypeChoiceType = (questionType: string): boolean =>
-  Object.values(SurveyQuestionChoiceTypes).includes(questionType as SurveyQuestionChoiceTypes);
-
-export default isQuestionTypeChoiceType;
+export default SurveyQuestionImageTypes;
