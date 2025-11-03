@@ -14,15 +14,12 @@ import React, { useRef } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { AccordionContent } from '@/components/ui/AccordionSH';
 import type { UseFormReturn } from 'react-hook-form';
-import type { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSettings.form';
 import { useTranslation } from 'react-i18next';
 import { Theme, ThemeType } from '@libs/common/constants/theme';
-import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
-import getMainLogoUrl from '@libs/assets/getMainLogoUrl';
-import LogoUploadField from '@/pages/Settings/components/LogoUploadField';
-import BRANDING_UPLOADS_LOGO from '@libs/global-settings/constants/brandingUploadsLogo';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import ThemedFile from '@libs/common/types/themedFile';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
+import LogoUploadField from '@/pages/Settings/components/LogoUploadField';
 
 const uploadImageWithPreviewVariants = cva(['p-4 hover:opacity-90 rounded-xl text-background justify-center'], {
   variants: {
@@ -39,65 +36,63 @@ const uploadImageWithPreviewVariants = cva(['p-4 hover:opacity-90 rounded-xl tex
 
 export type UploadImageWithPreviewProps = VariantProps<typeof uploadImageWithPreviewVariants> & {
   form: UseFormReturn<ThemedFile>;
-  imageName: string;
+  name: string;
   url: string;
 };
 
-type AddOrganisationLogoProps = { form: UseFormReturn<ThemedFile> };
+const UploadImageWithPreview: React.FC<UploadImageWithPreviewProps> = ({ form, name, url }) => {
+  const { t } = useTranslation();
+  const { uploadVariant, darkVersion, uploadingVariant } = useFilesystemStore();
 
-const AddOrganisationLogo: React.FC<AddOrganisationLogoProps> = ({ form }) => {
-const { t } = useTranslation();
-const { uploadVariant, darkVersion, uploadingVariant } = useFilesystemStore();
+  const lightInputRef = useRef<HTMLInputElement>(null);
+  const darkInputRef = useRef<HTMLInputElement>(null);
 
-const lightInputRef = useRef<HTMLInputElement>(null);
-const darkInputRef = useRef<HTMLInputElement>(null);
+  const setFormFileForVariant = (variant: ThemeType, file: File | null) => {
+      const path: 'brandingUploads.logo.light' | 'brandingUploads.logo.dark' =
+      variant === Theme.light ? 'brandingUploads.logo.light' : 'brandingUploads.logo.dark';
+      form.setValue(path, file, { shouldDirty: true });
+  };
+  const onFileChange =
+      (variant: ThemeType): React.ChangeEventHandler<HTMLInputElement> =>
+      async (event) => {
+      const file = event.target.files?.[0] ?? null;
+      if (file && !file.type.startsWith('image/')) {
+          const input = variant === Theme.light ? lightInputRef : darkInputRef;
+          if (input.current) input.current.value = '';
+          return;
+      }
+      setFormFileForVariant(variant, file);
+      if (file) await uploadVariant(variant, file);
+      };
 
-const setFormFileForVariant = (variant: ThemeType, file: File | null) => {
-    const path: 'brandingUploads.logo.light' | 'brandingUploads.logo.dark' =
-    variant === Theme.light ? 'brandingUploads.logo.light' : 'brandingUploads.logo.dark';
-    form.setValue(path, file, { shouldDirty: true });
-};
-const onFileChange =
-    (variant: ThemeType): React.ChangeEventHandler<HTMLInputElement> =>
-    async (event) => {
-    const file = event.target.files?.[0] ?? null;
-    if (file && !file.type.startsWith('image/')) {
-        const input = variant === Theme.light ? lightInputRef : darkInputRef;
-        if (input.current) input.current.value = '';
-        return;
-    }
-    setFormFileForVariant(variant, file);
-    if (file) await uploadVariant(variant, file);
-    };
+  const darkPreviewSrc = `${getMainLogoUrl(Theme.dark)}?v=${darkVersion}`;
+  const hasDarkSelection = !!form.watch(BRANDING_UPLOADS_LOGO.dark);
+  const { isGeneric } = useDeploymentTarget();
 
-const darkPreviewSrc = `${getMainLogoUrl(Theme.dark)}?v=${darkVersion}`;
-const hasDarkSelection = !!form.watch(BRANDING_UPLOADS_LOGO.dark);
-const { isGeneric } = useDeploymentTarget();
-
-return (
-    <AccordionContent className="space-y-4 px-1">
-    <p>
-        {t(
-        isGeneric
-            ? 'settings.globalSettings.logo.descriptionGeneric'
-            : 'settings.globalSettings.logo.descriptionSchool',
-        )}
-    </p>
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-1">
-        <LogoUploadField
-        variant={Theme.dark}
-        previewSrc={darkPreviewSrc}
-        cacheKey={darkVersion}
-        hasLocalSelection={hasDarkSelection}
-        uploading={uploadingVariant === Theme.dark}
-        inputRef={darkInputRef}
-        onFileChange={onFileChange(Theme.dark)}
-        chooseText={t('common.chooseFile')}
-        changeText={t('common.changeFile')}
-        />
-    </div>
-    </AccordionContent>
-);
+  return (
+      <AccordionContent className="space-y-4 px-1">
+      <p>
+          {t(
+          isGeneric
+              ? 'settings.globalSettings.logo.descriptionGeneric'
+              : 'settings.globalSettings.logo.descriptionSchool',
+          )}
+      </p>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-1">
+          <LogoUploadField
+          variant={Theme.dark}
+          previewSrc={darkPreviewSrc}
+          cacheKey={darkVersion}
+          hasLocalSelection={hasDarkSelection}
+          uploading={uploadingVariant === Theme.dark}
+          inputRef={darkInputRef}
+          onFileChange={onFileChange(Theme.dark)}
+          chooseText={t('common.chooseFile')}
+          changeText={t('common.changeFile')}
+          />
+      </div>
+      </AccordionContent>
+  );
 };
 
-export default AddOrganisationLogo;
+export default UploadImageWithPreview;
