@@ -16,7 +16,6 @@ import { useCookies } from 'react-cookie';
 import { useTranslation } from 'react-i18next';
 import useUserStore from '@/store/UserStore/useUserStore';
 import cleanAllStores from '@/store/utils/cleanAllStores';
-import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import { toast } from 'sonner';
 import ROOT_ROUTE from '@libs/common/constants/rootRoute';
 import COOKIE_DESCRIPTORS from '@libs/common/constants/cookieDescriptors';
@@ -33,9 +32,6 @@ const useLogout = () => {
     await logout();
 
     await auth.removeUser();
-
-    window.history.pushState(null, '', LOGIN_ROUTE);
-    window.dispatchEvent(new PopStateEvent('popstate'));
 
     await cleanAllStores();
 
