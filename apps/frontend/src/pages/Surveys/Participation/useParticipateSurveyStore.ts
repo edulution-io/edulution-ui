@@ -13,7 +13,8 @@
 import { t } from 'i18next';
 import { toast } from 'sonner';
 import { create } from 'zustand';
-import { Model, CompletingEvent, SurveyModel, ClearFilesEvent } from 'survey-core';
+import { HttpStatusCode } from 'axios';
+import { Model, CompletingEvent } from 'survey-core';
 import SurveyAnswerResponseDto from '@libs/survey/types/api/survey-answer-response.dto';
 import AnswerSurvey from '@libs/survey/types/api/answer-survey';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
@@ -67,7 +68,6 @@ interface ParticipateSurveyStore {
 
   deleteTempFiles: (surveyId: string, questionId: string) => Promise<string>;
   deleteTempFile: (surveyId: string, questionId: string, file: File & { content?: string }) => Promise<string>;
-  onClearFiles: (_: SurveyModel, options: ClearFilesEvent, surveyId: string) => Promise<void>;
   isDeletingFile?: boolean;
 
   reset: () => void;
@@ -230,15 +230,15 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       const response = await eduApi.delete<string>(
         `${isPublic ? PUBLIC_SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT : SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}/${fileName}`,
       );
-      if (response.status === 200) {
+      if (response.status === Number(HttpStatusCode.Ok)) {
         return 'success';
       }
+      return 'error';
     } catch (error) {
       return 'error';
     } finally {
       set({ isDeletingFile: false });
     }
-    return 'error';
   },
 
   deleteTempFiles: async (surveyId: string, questionId: string, isPublic = false): Promise<string> => {
@@ -248,15 +248,15 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       const response = await eduApi.delete<string>(
         `${isPublic ? PUBLIC_SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT : SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}`,
       );
-      if (response.status === 200) {
+      if (response.status === Number(HttpStatusCode.Ok)) {
         return 'success';
       }
+      return 'error';
     } catch (error) {
       return 'error';
     } finally {
       set({ isDeletingFile: false });
     }
-    return 'error';
   },
 
   setIsUserAuthenticated: (isUserAuthenticated: boolean) => set({ isUserAuthenticated }),
