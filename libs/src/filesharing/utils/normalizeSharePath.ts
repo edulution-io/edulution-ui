@@ -18,6 +18,10 @@ const normalizeSharePath = (path: string): string => {
   normalized = normalizeLdapHomeDirectory(normalized);
   normalized = normalized.replace(/\/+/g, '/');
 
+  if (!normalized.endsWith('/')) {
+    normalized += '/';
+  }
+
   return normalized;
 };
 

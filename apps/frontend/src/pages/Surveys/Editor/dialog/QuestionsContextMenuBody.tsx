@@ -19,6 +19,8 @@ import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuest
 import ChoicesByUrl from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesByUrl';
 import DefaultQuestionOptions from '@/pages/Surveys/Editor/dialog/DefaultQuestionOptions';
 import ImageQuestionOptions from '@/pages/Surveys/Editor/dialog/ImageQuestionOptions';
+import RowAndColumnOptions from '@/pages/Surveys/Editor/dialog/matrix-options/RowAndColumnOptions';
+import isQuestionTypeMatrixType from '@libs/survey/utils/isQuestionTypeMatrixType';
 
 interface QuestionsContextMenuBodyProps {
   form: UseFormReturn<SurveyDto>;
@@ -38,6 +40,9 @@ const QuestionsContextMenuBody = (props: QuestionsContextMenuBodyProps) => {
   options.push(<DefaultQuestionOptions key="all-questions" />);
   if (isQuestionTypeImageType(questionType)) {
     options.push(<ImageQuestionOptions key="image-questions" />);
+  }
+  if (isQuestionTypeMatrixType(questionType)) {
+    options.push(<RowAndColumnOptions key="matrix-options" />);
   }
   if (isQuestionTypeChoiceType(questionType)) {
     options.push(
