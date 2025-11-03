@@ -1782,7 +1782,7 @@
       "containerCreationSuccessful": "Container successfully created.",
       "containerCreationFailed": "Container could not be created.",
       "containerUpdateSuccessful": "{{containerName}} updated successfully.",
-      "containerAlreadyUpdateToDate": "{{containerName}} is already up to date."
+      "containerAlreadyUpToDate": "{{containerName}} is already up to date."
     },
     "status": {
       "running": "running",
