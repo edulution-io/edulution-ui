@@ -148,21 +148,24 @@ class SurveysAttachmentService implements OnModuleInit {
       case QuestionsType.CHECKBOX:
       case QuestionsType.DROPDOWN:
       case QuestionsType.RADIO_GROUP:
-        if (element.choicesByUrl && element.choicesByUrl?.url.includes(TEMPORAL_SURVEY_ID_STRING)) {
+        if (!element.choicesByUrl) {
+          break;
+        }
+        if (element.choicesByUrl?.url.includes(TEMPORAL_SURVEY_ID_STRING)) {
           processedElement.choicesByUrl = {
             ...element.choicesByUrl,
             url: element.choicesByUrl.url.replace(TEMPORAL_SURVEY_ID_STRING, surveyId),
           };
         }
-        if (element.choicesByUrl && !element.choicesByUrl?.url.includes(`/${PUBLIC_SURVEY_CHOICES}/`) && isPublic) {
-          processedElement.choicesByUrl = {
-            ...element.choicesByUrl,
-            url: element.choicesByUrl.url.replace(`/${PUBLIC_SURVEY_CHOICES}/`, `/${SURVEY_CHOICES}/`),
-          };
-        } else if (element.choicesByUrl && !element.choicesByUrl?.url.includes(`/${SURVEY_CHOICES}/`) && !isPublic) {
+        if (isPublic && element.choicesByUrl?.url.includes(`/${SURVEY_CHOICES}/`)) {
           processedElement.choicesByUrl = {
             ...element.choicesByUrl,
             url: element.choicesByUrl.url.replace(`/${SURVEY_CHOICES}/`, `/${PUBLIC_SURVEY_CHOICES}/`),
+          };
+        } else if (!isPublic && element.choicesByUrl?.url.includes(`/${PUBLIC_SURVEY_CHOICES}/`)) {
+          processedElement.choicesByUrl = {
+            ...element.choicesByUrl,
+            url: element.choicesByUrl.url.replace(`/${PUBLIC_SURVEY_CHOICES}/`, `/${SURVEY_CHOICES}/`),
           };
         }
         break;

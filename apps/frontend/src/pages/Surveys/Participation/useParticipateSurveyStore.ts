@@ -190,7 +190,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const response = await eduApi.post<{ name: string; url: string; content: Buffer<ArrayBufferLike> }>(
+      const response = await eduApi.post<FileDownloadDto>(
         `${isPublic ? PUBLIC_SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT : SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}`,
         formData,
         {
