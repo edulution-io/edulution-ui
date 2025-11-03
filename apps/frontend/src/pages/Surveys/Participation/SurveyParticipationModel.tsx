@@ -119,17 +119,15 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         callback([]);
         return;
       }
-      if (surveyId) {
-        const uploadPromises = files.map(async (file) => uploadTempFile(surveyId, question?.name, file, isPublic));
-        const results = await Promise.all(uploadPromises);
-        const filteredResults = results.filter((result) => result !== null);
-        callback(
-          filteredResults.map((result) => ({
-            file: result,
-            content: result.url,
-          })),
-        );
-      }
+      const uploadPromises = files.map(async (file) => uploadTempFile(surveyId, question?.name, file, isPublic));
+      const results = await Promise.all(uploadPromises);
+      const filteredResults = results.filter((result) => result !== null);
+      callback(
+        filteredResults.map((result) => ({
+          file: result,
+          content: result.url,
+        })),
+      );
     });
 
     newModel.onDownloadFile.add((_: SurveyModel, options: DownloadFileEvent) => {
