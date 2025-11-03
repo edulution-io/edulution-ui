@@ -1274,6 +1274,8 @@
   },
   "edit": "Edit",
   "common": {
+    "more": "More",
+    "less": "Less",
     "refreshPage": "Refresh page",
     "showMore": "Show more",
     "visibility": "Visibility",

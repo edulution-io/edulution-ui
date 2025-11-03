@@ -30,7 +30,7 @@ const Footer = () => {
           <span className="hidden md:inline"> All rights reserved.</span> V{APP_VERSION}
         </span>
 
-        <div className="mt-1 flex flex-wrap justify-center gap-2 scrollbar-thin md:mt-0 md:flex-nowrap md:overflow-x-auto md:whitespace-nowrap">
+        <div className="mt-1 flex flex-wrap justify-center gap-2 leading-none scrollbar-thin md:mt-0 md:flex-nowrap md:overflow-x-auto md:whitespace-nowrap md:leading-[inherit]">
           {publicAppConfigs.map((config) => (
             <Link
               key={config.name}
