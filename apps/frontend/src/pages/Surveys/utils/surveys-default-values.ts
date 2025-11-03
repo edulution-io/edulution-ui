@@ -10,6 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const TEMP_FILES_PATH = './data/temp';
+import i18n from '@/i18n';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
+import getSurveysDefaultLogoUrl from '@libs/survey/utils/getSurveysDefaultLogoUrl';
 
-export default TEMP_FILES_PATH;
+const surveysDefaultValues: Partial<SurveyDto> & { formula: SurveyFormula } = {
+  formula: {
+    title: i18n.t('survey.newTitle'),
+    logo: getSurveysDefaultLogoUrl(),
+  },
+  isAnonymous: false,
+  canSubmitMultipleAnswers: false,
+  isPublic: false,
+  canUpdateFormerAnswer: false,
+};
+
+export default surveysDefaultValues;
