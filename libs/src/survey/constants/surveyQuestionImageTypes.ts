@@ -10,15 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-enum OtherTypes {
-  TEXT = 'text',
-  BOOLEAN = 'boolean',
-  DATE = 'date',
-  DATETIME = 'datetime',
-  DROPDOWN = 'dropdown',
-  MATRIX = 'matrix',
-  RANKING = 'ranking',
-  FILE = 'file',
+enum SurveyQuestionImageTypes {
+  IMAGE = 'image',
+  IMAGE_PICKER = 'imagepicker',
 }
 
-export default OtherTypes;
+export default SurveyQuestionImageTypes;
