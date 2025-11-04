@@ -116,7 +116,7 @@ class LoggingInterceptor implements NestInterceptor {
           JSON.stringify({
             method,
             url,
-            message: error.message,
+            error,
           }),
           LoggingInterceptor.name,
         );
