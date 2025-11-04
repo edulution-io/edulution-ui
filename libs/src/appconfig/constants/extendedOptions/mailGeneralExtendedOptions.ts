@@ -39,6 +39,7 @@ const MAIL_GENERAL_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
     type: ExtendedOptionField.updateChecker,
     value: SOGO_THEME.VERSION_CHECK_PATH,
     width: 'full',
+    requiredContainers: [DOCKER_CONTAINER_NAMES.MAILCOWDOCKERIZED_SOGO_MAILCOW_1],
   },
 ];
 

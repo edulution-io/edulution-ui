@@ -16,6 +16,7 @@ import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/shared/Button';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import UPDATE_CHECKER_ENDPOINTS from '@libs/appconfig/constants/updateCheckerEndpoints';
+import useRequiredContainers from '@/pages/Settings/AppConfig/hooks/useRequiredContainers';
 import useAppConfigUpdateCheckerStore from './useAppConfigUpdateCheckerStore';
 import ThemeVersionInfo from './ThemeVersionInfo';
 
@@ -26,6 +27,7 @@ type AppConfigUpdateCheckerProps = {
 const AppConfigUpdateChecker: React.FC<AppConfigUpdateCheckerProps> = ({ option }) => {
   const { t } = useTranslation();
   const { isLoading, isUpdating, versionInfo, checkVersion, triggerUpdate } = useAppConfigUpdateCheckerStore();
+  const { hasFetched, isDisabled } = useRequiredContainers(option.requiredContainers);
 
   const baseEndpoint = UPDATE_CHECKER_ENDPOINTS[option.name];
   const path = option.value as string;
@@ -33,6 +35,10 @@ const AppConfigUpdateChecker: React.FC<AppConfigUpdateCheckerProps> = ({ option 
   useEffect(() => {
     void checkVersion(baseEndpoint, path, true);
   }, [baseEndpoint, path, checkVersion]);
+
+  if (hasFetched && isDisabled) {
+    return null;
+  }
 
   const renderContent = () => {
     if (!versionInfo) {
@@ -90,7 +96,7 @@ const AppConfigUpdateChecker: React.FC<AppConfigUpdateCheckerProps> = ({ option 
       {option.title && <p className="font-bold">{t(option.title)}</p>}
       {option.description && <p className="text-sm text-muted-foreground">{t(option.description)}</p>}
 
-      <div className="rounded-lg border border-border bg-card p-4">{renderContent()}</div>
+      <div className="rounded-xl border border-border bg-card p-4">{renderContent()}</div>
     </div>
   );
 };
