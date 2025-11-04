@@ -14,7 +14,7 @@ import { create } from 'zustand';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import { SSE_MAX_RECONNECT_ATTEMPTS, SSE_RECONNECT_DELAY_MS } from '@libs/sse/constants/sseConfig';
+import { SSE_RECONNECT_DELAY_MS } from '@libs/sse/constants/sseConfig';
 
 type SseStore = {
   eventSource: EventSource | null;
@@ -40,14 +40,12 @@ const useSseStore = create<SseStore>((set, get) => {
     eventSource.addEventListener('error', () => {
       if (eventSource.readyState === EventSource.CLOSED) {
         const state = get();
-        if (state.reconnectAttempts < SSE_MAX_RECONNECT_ATTEMPTS) {
-          setTimeout(
-            () => {
-              state.reconnect();
-            },
-            SSE_RECONNECT_DELAY_MS * (state.reconnectAttempts + 1),
-          );
-        }
+        setTimeout(
+          () => {
+            state.reconnect();
+          },
+          SSE_RECONNECT_DELAY_MS * (state.reconnectAttempts + 1),
+        );
       }
     });
 
