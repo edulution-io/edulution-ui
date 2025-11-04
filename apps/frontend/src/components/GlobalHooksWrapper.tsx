@@ -76,7 +76,7 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     if (eduApiToken) {
       if (!eventSource) {
-        setEventSource(eduApiToken);
+        setEventSource();
       }
     }
   }, [eduApiToken]);
