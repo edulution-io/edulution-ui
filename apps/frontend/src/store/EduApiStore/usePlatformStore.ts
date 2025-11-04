@@ -10,9 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SurveyQuestionChoiceTypes from '@libs/survey/constants/surveyQuestionChoiceTypes';
+import { create } from 'zustand';
 
-const isQuestionTypeChoiceType = (questionType: string): boolean =>
-  Object.values(SurveyQuestionChoiceTypes).includes(questionType as SurveyQuestionChoiceTypes);
+interface PlatformStore {
+  isEdulutionApp: boolean;
+  setIsEdulutionApp: (value: boolean) => void;
+}
 
-export default isQuestionTypeChoiceType;
+const initialState = {
+  isEdulutionApp: false,
+};
+
+const usePlatformStore = create<PlatformStore>((set) => ({
+  ...initialState,
+  setIsEdulutionApp: (value) => set({ isEdulutionApp: value }),
+}));
+
+export default usePlatformStore;

@@ -82,6 +82,7 @@
       "unauthorizedCreateCategory": "Aucune autorisation pour créer cette catégorie",
       "unauthorizedDeleteCategory": "Aucune autorisation pour supprimer cette catégorie",
       "unauthorizedUpdateCategory": "Aucune autorisation pour mettre à jour cette catégorie",
+      "attachmentNotFound": "Pièce jointe introuvable",
       "attachmentDeletionFailed": "La suppression d'une pièce jointe a échoué"
     }
   },
@@ -1033,7 +1034,7 @@
     },
     "mobileAccess": {
       "title": "Accès à l'application",
-      "description": "Ici, vous pouvez configurer l'accès mobile de l'app {{ applicationName }} pour l'accès aux fichiers. Actuellement disponible uniquement pour Apple iOS.",
+      "description": "Tu peux configurer ici l'accès mobile à l'application edulution.",
       "docsDescription": "Tu trouveras le lien de téléchargement de l'application edulution et les instructions d'installation dans la documentation edulution.",
       "button": "Ouvrir le documentaire"
     },

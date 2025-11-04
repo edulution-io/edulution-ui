@@ -10,9 +10,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SurveyQuestionChoiceTypes from '@libs/survey/constants/surveyQuestionChoiceTypes';
+import { join } from 'path';
+import APPS from '@libs/appconfig/constants/apps';
+import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
 
-const isQuestionTypeChoiceType = (questionType: string): boolean =>
-  Object.values(SurveyQuestionChoiceTypes).includes(questionType as SurveyQuestionChoiceTypes);
+const BULLETIN_TEMP_ATTACHMENTS_PATH = join(TEMP_FILES_PATH, APPS.BULLETIN_BOARD);
 
-export default isQuestionTypeChoiceType;
+export default BULLETIN_TEMP_ATTACHMENTS_PATH;
