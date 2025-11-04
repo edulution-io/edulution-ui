@@ -13,12 +13,17 @@
 import React, { useCallback, useRef } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
 import { SidebarProps } from '@libs/ui/types/sidebar';
+import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
+import cn from '@libs/common/utils/className';
 import { HomeButton, MobileSidebarItem, UserMenuButton } from './SidebarMenuItems';
 import useSidebarStore from './useSidebarStore';
 
 const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const { isMobileSidebarOpen, toggleMobileSidebar } = useSidebarStore();
+  const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
+
+  const sidebarClassName = isEdulutionApp ? '' : 'lg:bg-none';
 
   const handleClickOutside = useCallback(
     (event: MouseEvent | TouchEvent) => {
@@ -41,7 +46,7 @@ const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
     >
       <div
         ref={sidebarRef}
-        className="fixed right-0 h-full min-w-[260px] border-l-[1px] border-muted bg-black lg:bg-none"
+        className={cn('fixed right-0 h-full min-w-[260px] border-l-[1px] border-muted bg-black', sidebarClassName)}
       >
         <div className="h-1" />
 

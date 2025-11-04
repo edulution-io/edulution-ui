@@ -18,6 +18,8 @@ import { getRootPathName } from '@libs/common/utils';
 import ROOT_ROUTE from '@libs/common/constants/rootRoute';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import PageTitle from '@/components/PageTitle';
+import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
+import cn from '@libs/common/utils/className';
 import useSidebarStore from '../useSidebarStore';
 
 const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({
@@ -25,10 +27,14 @@ const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({
 }) => {
   const { pathname } = useLocation();
   const { toggleMobileSidebar } = useSidebarStore();
+  const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
 
   const rootPathName = getRootPathName(pathname);
   const isSelected = rootPathName === link;
   const menuItemColor = isSelected && pathname !== ROOT_ROUTE ? color : '';
+
+  const navLinkClassName = isEdulutionApp ? '' : 'lg:block lg:px-2';
+  const titleClassName = isEdulutionApp ? '' : 'lg:hidden';
 
   return (
     <div
@@ -39,9 +45,13 @@ const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({
       <NavLink
         to={link}
         onClick={toggleMobileSidebar}
-        className={`group relative flex cursor-pointer items-center justify-end gap-4 px-4 py-2 lg:block lg:px-2 ${menuItemColor}`}
+        className={cn(
+          'group relative flex cursor-pointer items-center justify-end gap-4 px-4 py-2',
+          menuItemColor,
+          navLinkClassName,
+        )}
       >
-        <p className="lg:hidden">{title}</p>
+        <p className={titleClassName}>{title}</p>
 
         <img
           src={icon}
