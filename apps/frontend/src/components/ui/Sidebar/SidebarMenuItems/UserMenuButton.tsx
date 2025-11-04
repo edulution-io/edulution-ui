@@ -37,14 +37,14 @@ const UserMenuButton: React.FC = () => {
   return (
     <div
       key="usermenu"
-      className="min-w-[260px] bg-black md:min-w-[var(--sidebar-width)]"
+      className="min-w-[260px] bg-black lg:min-w-[var(--sidebar-width)]"
     >
-      <div className="flex max-h-14 cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-3">
+      <div className="flex max-h-14 cursor-pointer items-center justify-end gap-4 px-4 py-2 lg:block lg:px-3">
         <DropdownMenu
           menuContentClassName="z-[600]"
           trigger={
             <div className="group flex items-center gap-4">
-              <p className="text-md font-bold md:hidden">
+              <p className="text-md font-bold lg:hidden">
                 {auth?.user?.profile?.given_name ?? ''} {auth?.user?.profile?.family_name ?? ''}
               </p>
               <Avatar

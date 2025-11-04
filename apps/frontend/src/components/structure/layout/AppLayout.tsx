@@ -30,17 +30,19 @@ const AppLayout = () => {
   const menuBar = useMenuBarConfig();
   const { appConfigs } = useAppConfigsStore();
   const { isEduApiHealthy } = useEduApiStore();
-  const { isMobileView } = useMedia();
+  const { isMobileView, isTabletView } = useMedia();
 
   const isAppConfigReady = !appConfigs.find((appConfig) => appConfig.name === APPS.NONE);
   const isAuthenticatedAppReady = isAppConfigReady && isAuthenticated;
+
+  const showMobileTopBar = (isMobileView || isTabletView) && isAuthenticatedAppReady;
 
   return (
     <div className="flex h-screen flex-row">
       <div className="flex h-screen flex-1 flex-col overflow-hidden">
         {isEduApiHealthy === false && <OfflineBanner />}
 
-        {isMobileView && isAuthenticatedAppReady && (
+        {showMobileTopBar && (
           <MobileTopBar
             showLeftButton={!menuBar.disabled}
             showRightButton

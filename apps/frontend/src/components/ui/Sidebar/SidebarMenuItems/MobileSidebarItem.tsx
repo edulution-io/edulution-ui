@@ -39,9 +39,9 @@ const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({
       <NavLink
         to={link}
         onClick={toggleMobileSidebar}
-        className={`group relative flex cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-2 ${menuItemColor}`}
+        className={`group relative flex cursor-pointer items-center justify-end gap-4 px-4 py-2 lg:block lg:px-2 ${menuItemColor}`}
       >
-        <p className="md:hidden">{title}</p>
+        <p className="lg:hidden">{title}</p>
 
         <img
           src={icon}

@@ -17,11 +17,16 @@ import DesktopSidebar from './DesktopSidebar';
 import MobileSidebar from './MobileSidebar';
 
 const Sidebar: React.FC = () => {
-  const { isMobileView } = useMedia();
+  const { isMobileView, isTabletView } = useMedia();
 
   const sidebarItems = useSidebarItems();
+  const showMobileSidebar = isMobileView || isTabletView;
 
-  return isMobileView ? <MobileSidebar sidebarItems={sidebarItems} /> : <DesktopSidebar sidebarItems={sidebarItems} />;
+  return showMobileSidebar ? (
+    <MobileSidebar sidebarItems={sidebarItems} />
+  ) : (
+    <DesktopSidebar sidebarItems={sidebarItems} />
+  );
 };
 
 export default Sidebar;

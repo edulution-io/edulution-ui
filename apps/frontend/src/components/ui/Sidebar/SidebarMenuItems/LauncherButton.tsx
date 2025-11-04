@@ -29,9 +29,9 @@ const LauncherButton: React.FC = () => {
     <button
       type="button"
       onClick={toggleLauncher}
-      className="group relative z-50 flex max-h-14 w-full items-center justify-end gap-4 bg-black px-4 py-2 md:block md:px-3"
+      className="group relative z-50 flex max-h-14 w-full items-center justify-end gap-4 bg-black px-4 py-2 lg:block lg:px-3"
     >
-      <p className="text-md font-bold md:hidden">{t('launcher.title')}</p>
+      <p className="text-md font-bold lg:hidden">{t('launcher.title')}</p>
 
       <MobileLogoIcon
         className="g transform rounded-full transition-transform duration-200 group-hover:scale-[1.3]"

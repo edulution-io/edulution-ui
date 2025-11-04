@@ -38,7 +38,7 @@ const MenuBar: React.FC = () => {
   const { createVariableSharePathname } = useVariableSharePathname();
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
-  const { isMobileView } = useMedia();
+  const { isMobileView, isTabletView } = useMedia();
 
   const navigate = useNavigate();
 
@@ -157,7 +157,7 @@ const MenuBar: React.FC = () => {
         />
       )}
 
-      {isMobileView ? (
+      {isMobileView || isTabletView ? (
         <VerticalMenubar
           className={cn(
             'fixed top-0 z-50 h-full bg-foreground duration-300 ease-in-out',
