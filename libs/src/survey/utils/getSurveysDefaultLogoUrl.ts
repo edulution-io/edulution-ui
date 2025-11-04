@@ -10,6 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const TEMP_FILES_PATH = './data/temp';
+import { Theme, ThemeType } from '@libs/common/constants/theme';
+import APPS from '@libs/appconfig/constants/apps';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import getSurveysDefaultLogoFilename from '@libs/survey/utils/getSurveysDefaultLogoFilename';
 
-export default TEMP_FILES_PATH;
+const getSurveysDefaultLogoUrl = (theme?: ThemeType) => {
+  const fileName = getSurveysDefaultLogoFilename(theme || Theme.dark);
+  return `/${EDU_API_ROOT}/public/assets/${APPS.SURVEYS}/${fileName}`;
+};
+
+export default getSurveysDefaultLogoUrl;

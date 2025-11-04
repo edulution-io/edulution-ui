@@ -19,6 +19,7 @@ import FLOATING_BUTTONS_BAR_ID from '@libs/ui/constants/floatingButtonsBarId';
 import useUserAccounts from '@/hooks/useUserAccounts';
 import { getFromPathName } from '@libs/common/utils';
 import useFloatingBarHeight from '@/hooks/useFloatingBarHeight';
+import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 
 interface AppLayoutProps {
   nativeAppHeader?: NativeAppHeaderProps;
@@ -28,6 +29,7 @@ interface AppLayoutProps {
 
 const PageLayout = ({ nativeAppHeader, children, isFullScreen }: AppLayoutProps) => {
   const { pathname } = useLocation();
+  const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
   const rootPathName = getFromPathName(pathname, 1);
   const barRef = useRef<HTMLDivElement | null>(null);
 
@@ -59,7 +61,7 @@ const PageLayout = ({ nativeAppHeader, children, isFullScreen }: AppLayoutProps)
         className="pointer-events-none absolute bottom-[52px] left-1 right-0 overflow-visible text-background md:bottom-9 md:left-4"
       />
 
-      <Footer />
+      {!isEdulutionApp && <Footer />}
     </div>
   );
 };

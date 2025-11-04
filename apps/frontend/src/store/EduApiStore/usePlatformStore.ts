@@ -10,6 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const TEMP_FILES_PATH = './data/temp';
+import { create } from 'zustand';
 
-export default TEMP_FILES_PATH;
+interface PlatformStore {
+  isEdulutionApp: boolean;
+  setIsEdulutionApp: (value: boolean) => void;
+}
+
+const initialState = {
+  isEdulutionApp: false,
+};
+
+const usePlatformStore = create<PlatformStore>((set) => ({
+  ...initialState,
+  setIsEdulutionApp: (value) => set({ isEdulutionApp: value }),
+}));
+
+export default usePlatformStore;
