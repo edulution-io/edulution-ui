@@ -1202,7 +1202,7 @@
     },
     "mobileAccess": {
       "title": "Mobile Access",
-      "description": "Here you can set up the {{ applicationName }} app for mobile access to your files. Currently only available for Apple iOS.",
+      "description": "Here you can set up the edulution app for mobile access.",
       "docsDescription": "You can find the download link for the edulution app and instructions on how to set it up in the edulution documentation.",
       "button": "Open Docs"
     },
