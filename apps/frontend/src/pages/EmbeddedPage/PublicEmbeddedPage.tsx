@@ -66,7 +66,7 @@ const PublicEmbeddedPage: React.FC = () => {
   };
 
   return (
-    <PageLayout isFullScreen>
+    <PageLayout classNames={{ page: 'px-0 md:px-0', main: 'px-0' }}>
       <PageTitle
         title={pageTitle}
         translationId="public"

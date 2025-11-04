@@ -19,24 +19,37 @@ import FLOATING_BUTTONS_BAR_ID from '@libs/ui/constants/floatingButtonsBarId';
 import useUserAccounts from '@/hooks/useUserAccounts';
 import { getFromPathName } from '@libs/common/utils';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
+import cn from '@libs/common/utils/className';
 
 interface AppLayoutProps {
   nativeAppHeader?: NativeAppHeaderProps;
   children: React.ReactNode;
-  isFullScreen?: boolean;
+  isFullScreenAppWithoutFloatingButtons?: boolean;
+  classNames?: {
+    page?: string;
+    main?: string;
+  };
 }
 
-const PageLayout = ({ nativeAppHeader, children, isFullScreen }: AppLayoutProps) => {
+const PageLayout = ({
+  nativeAppHeader,
+  children,
+  isFullScreenAppWithoutFloatingButtons,
+  classNames,
+}: AppLayoutProps) => {
   const { pathname } = useLocation();
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
   const rootPathName = getFromPathName(pathname, 1);
 
   useUserAccounts(rootPathName);
 
-  if (isFullScreen) return <main className="flex-1">{children}</main>;
+  if (isFullScreenAppWithoutFloatingButtons) return <main className="flex-1">{children}</main>;
 
   return (
-    <div className="flex h-full w-full flex-col pl-2 pt-1 md:pl-4 md:pt-1">
+    <div
+      id="page"
+      className={cn('flex h-full w-full flex-col pl-2 pt-1 md:pl-4 md:pt-1', classNames?.page)}
+    >
       {nativeAppHeader && (
         <NativeAppHeader
           title={nativeAppHeader.title}
@@ -45,7 +58,12 @@ const PageLayout = ({ nativeAppHeader, children, isFullScreen }: AppLayoutProps)
         />
       )}
 
-      <main className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden pl-2 pr-6 scrollbar-thin">
+      <main
+        className={cn(
+          'flex flex-1 flex-col overflow-y-auto overflow-x-hidden pl-2 pr-6 scrollbar-thin',
+          classNames?.main,
+        )}
+      >
         {children}
       </main>
 

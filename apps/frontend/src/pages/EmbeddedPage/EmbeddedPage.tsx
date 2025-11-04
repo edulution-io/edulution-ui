@@ -49,7 +49,7 @@ const EmbeddedPage: React.FC = () => {
   const htmlContent = (currentAppConfig.extendedOptions?.EMBEDDED_PAGE_HTML_CONTENT as string) || '';
 
   return (
-    <PageLayout isFullScreen>
+    <PageLayout isFullScreenAppWithoutFloatingButtons>
       <EmbeddedPageContent
         pageTitle={pageTitle}
         isSandboxMode={isSandboxMode}
