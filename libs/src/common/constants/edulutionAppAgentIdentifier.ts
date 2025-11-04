@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const TEMP_FILES_PATH = './data/temp';
+const EDULUTION_APP_AGENT_IDENTIFIER = 'EdulutionApp/1.0';
 
-export default TEMP_FILES_PATH;
+export default EDULUTION_APP_AGENT_IDENTIFIER;
