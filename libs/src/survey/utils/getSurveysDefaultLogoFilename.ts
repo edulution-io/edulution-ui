@@ -10,6 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-const TEMP_FILES_PATH = './data/temp';
+import { ThemeType } from '@libs/common/constants/theme';
 
-export default TEMP_FILES_PATH;
+const getSurveysDefaultLogoFilename = (theme: ThemeType) => `surveys-default-logo-${theme}.webp`;
+export default getSurveysDefaultLogoFilename;
