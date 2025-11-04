@@ -21,6 +21,7 @@ import { toast } from 'sonner';
 import ROOT_ROUTE from '@libs/common/constants/rootRoute';
 import COOKIE_DESCRIPTORS from '@libs/common/constants/cookieDescriptors';
 import useSilentLoginWithPassword from '@/pages/LoginPage/useSilentLoginWithPassword';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 
 type UseLogoutProps = {
   isForceLogout?: boolean;
@@ -29,17 +30,21 @@ type UseLogoutProps = {
 const useLogout = ({ isForceLogout = false }: UseLogoutProps = {}) => {
   const { t } = useTranslation();
   const auth = useAuth();
+  const { pathname } = window.location;
   const { logout } = useUserStore();
   const [, , removeCookie] = useCookies([COOKIE_DESCRIPTORS.AUTH_TOKEN]);
   const { silentLogout } = useSilentLoginWithPassword();
+
+  const publicAppConfigs = useAppConfigsStore((s) => s.publicAppConfigs);
+  const isPublicPage = publicAppConfigs?.some((config) => config.name === pathname.split('/')[1]);
 
   const handleLogout = useCallback(async () => {
     await logout();
 
     await auth.removeUser();
 
-    if (isForceLogout) {
-      window.history.pushState(null, '', LOGIN_ROUTE);
+    if (isForceLogout || isPublicPage) {
+      window.history.replaceState({}, '', LOGIN_ROUTE);
       window.dispatchEvent(new PopStateEvent('popstate'));
     }
 
@@ -61,7 +66,7 @@ const useLogout = ({ isForceLogout = false }: UseLogoutProps = {}) => {
         id: 'logout-success',
       });
     }
-  }, [auth]);
+  }, [auth, isPublicPage]);
 
   return handleLogout;
 };
