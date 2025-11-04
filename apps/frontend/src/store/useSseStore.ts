@@ -15,20 +15,19 @@ import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { SSE_RECONNECT_DELAY_MS } from '@libs/sse/constants/sseConfig';
+import useUserStore from './UserStore/useUserStore';
 
 type SseStore = {
   eventSource: EventSource | null;
-  currentToken: string | null;
   reconnectAttempts: number;
   lastPingTime: number | null;
-  setEventSource: (eduApiToken: string) => void;
+  setEventSource: () => void;
   reconnect: () => void;
   reset: () => void;
 };
 
 const initialValues = {
   eventSource: null,
-  currentToken: null,
   reconnectAttempts: 0,
   lastPingTime: null,
 };
@@ -66,19 +65,23 @@ const useSseStore = create<SseStore>((set, get) => {
   return {
     ...initialValues,
 
-    setEventSource: (eduApiToken) => {
+    setEventSource: () => {
+      const { eduApiToken } = useUserStore.getState();
+      if (!eduApiToken) return;
+
       closeExistingSource();
-      set({ currentToken: eduApiToken, reconnectAttempts: 0 });
+      set({ reconnectAttempts: 0 });
       const newEventSource = createEventSource(eduApiToken);
       set({ eventSource: newEventSource, lastPingTime: Date.now() });
     },
     reconnect: () => {
-      const { currentToken, reconnectAttempts } = get();
-      if (!currentToken) return;
+      const { eduApiToken } = useUserStore.getState();
+      const { reconnectAttempts } = get();
+      if (!eduApiToken) return;
 
       closeExistingSource();
       set({ reconnectAttempts: reconnectAttempts + 1 });
-      const newEventSource = createEventSource(currentToken);
+      const newEventSource = createEventSource(eduApiToken);
       set({ eventSource: newEventSource, lastPingTime: Date.now() });
     },
     reset: () => {
