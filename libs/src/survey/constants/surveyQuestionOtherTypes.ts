@@ -10,9 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SurveyQuestionChoiceTypes from '@libs/survey/constants/surveyQuestionChoiceTypes';
+enum SurveyQuestionOtherTypes {
+  TEXT = 'text',
+  BOOLEAN = 'boolean',
+  DATE = 'date',
+  DATETIME = 'datetime',
+  RANKING = 'ranking',
+  FILE = 'file',
+}
 
-const isQuestionTypeChoiceType = (questionType: string): boolean =>
-  Object.values(SurveyQuestionChoiceTypes).includes(questionType as SurveyQuestionChoiceTypes);
-
-export default isQuestionTypeChoiceType;
+export default SurveyQuestionOtherTypes;

@@ -87,6 +87,7 @@
       "unauthorizedCreateCategory": "No permission to create this category",
       "unauthorizedDeleteCategory": "No permission to delete this category",
       "unauthorizedUpdateCategory": "No permission to update this category",
+      "attachmentNotFound": "Attachment not found",
       "attachmentDeletionFailed": "Failed to delete an attachment"
     }
   },
@@ -695,6 +696,15 @@
         "addQuestionTitle": "Add a title",
         "questionDescription": "Description",
         "addQuestionDescription": "Add a description",
+        "rowsAndColumns": "Edit rows and columns",
+        "columns": "Columns",
+        "addColumn": "Add column",
+        "newColumn": "New column",
+        "removeColumn": "Remove column",
+        "rows": "Rows",
+        "addRow": "Add row",
+        "newRow": "New row",
+        "removeRow": "Remove row",
         "limit": "Limit",
         "nullLimit": "An upper limit of 0 means, that the option selectable, infinitely often",
         "backendLimiters": "Option limits",

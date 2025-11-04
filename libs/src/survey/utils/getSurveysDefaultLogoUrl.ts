@@ -10,14 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ChoiceTypes from '@libs/survey/constants/choice-types';
-import ImageTypes from '@libs/survey/constants/image-types';
-import OtherTypes from '@libs/survey/constants/other-types';
+import { Theme, ThemeType } from '@libs/common/constants/theme';
+import APPS from '@libs/appconfig/constants/apps';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import getSurveysDefaultLogoFilename from '@libs/survey/utils/getSurveysDefaultLogoFilename';
 
-const QuestionsType = {
-  ...ChoiceTypes,
-  ...ImageTypes,
-  ...OtherTypes,
+const getSurveysDefaultLogoUrl = (theme?: ThemeType) => {
+  const fileName = getSurveysDefaultLogoFilename(theme || Theme.dark);
+  return `/${EDU_API_ROOT}/public/assets/${APPS.SURVEYS}/${fileName}`;
 };
 
-export default QuestionsType;
+export default getSurveysDefaultLogoUrl;
