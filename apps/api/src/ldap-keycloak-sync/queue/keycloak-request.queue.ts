@@ -143,27 +143,24 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
     return (await job.waitUntilFinished(this.queueEvents, KEYCLOAK_TIMEOUT_MS)) as T;
   }
 
-  public async fetchAllPaginated<T>(
-    path: string,
-    baseQuery = '',
-    pageSize = 100,
-    first = 0,
-    acc: T[] = [],
-  ): Promise<T[]> {
-    const results: T[] = acc.length > 0 ? acc : [];
-    let currentFirst = first;
-    let totalFetched = acc.length;
+  public async fetchAllPaginated<T>(path: string, baseQuery = '', pageSize = 100): Promise<T[]> {
+    // Note: await in loop is intentional - pagination must be sequential
+    // We cannot fetch page N+1 until we know if page N has more results
+    /* eslint-disable no-await-in-loop */
+    const results: T[] = [];
+    let currentFirst = 0;
     let hasMorePages = true;
 
     while (hasMorePages) {
-      const qp = baseQuery
-        ? `${baseQuery}&first=${currentFirst}&max=${pageSize}`
-        : `first=${currentFirst}&max=${pageSize}`;
-      const endpoint = `${path.startsWith('/') ? path : `/${path}`}${qp ? `?${qp}` : ''}`;
+      const params = new URLSearchParams(baseQuery);
+      params.set('first', currentFirst.toString());
+      params.set('max', pageSize.toString());
+
+      const separator = path.includes('?') ? '&' : '?';
+      const endpoint = `${path.startsWith('/') ? path : `/${path}`}${separator}${params.toString()}`;
 
       let batch: T[];
       try {
-        // eslint-disable-next-line no-await-in-loop
         batch = await this.enqueue<T[]>(HttpMethods.GET, endpoint);
       } catch (error) {
         Logger.error(`Failed to fetch page at offset ${currentFirst} for ${path}:`, error, KeycloakRequestQueue.name);
@@ -171,27 +168,24 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
       }
 
       if (!batch || batch.length === 0) {
-        Logger.verbose(
-          `Pagination complete for ${path}. Total items fetched: ${totalFetched}, Total pages: ${Math.ceil(totalFetched / pageSize)}`,
-          KeycloakRequestQueue.name,
-        );
         hasMorePages = false;
         break;
       }
 
       results.push(...batch);
-      totalFetched += batch.length;
 
       if (batch.length < pageSize) {
-        Logger.verbose(
-          `Pagination complete for ${path}. Total items fetched: ${totalFetched}, Total pages: ${Math.ceil(totalFetched / pageSize)}`,
-          KeycloakRequestQueue.name,
-        );
         hasMorePages = false;
       } else {
         currentFirst += pageSize;
       }
     }
+
+    Logger.verbose(
+      `Fetched ${results.length} items from ${path} (${Math.ceil(results.length / pageSize)} pages)`,
+      KeycloakRequestQueue.name,
+    );
+    /* eslint-enable no-await-in-loop */
 
     return results;
   }
