@@ -162,13 +162,6 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
         : `first=${currentFirst}&max=${pageSize}`;
       const endpoint = `${path.startsWith('/') ? path : `/${path}`}${qp ? `?${qp}` : ''}`;
 
-      if (currentFirst % 500 === 0 && currentFirst > 0) {
-        Logger.debug(
-          `Fetching paginated data: ${path}, total fetched so far: ${totalFetched}`,
-          KeycloakRequestQueue.name,
-        );
-      }
-
       let batch: T[];
       try {
         // eslint-disable-next-line no-await-in-loop
@@ -179,7 +172,10 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
       }
 
       if (!batch || batch.length === 0) {
-        Logger.debug(`Pagination complete for ${path}, total items: ${totalFetched}`, KeycloakRequestQueue.name);
+        Logger.verbose(
+          `Pagination complete for ${path}. Total items fetched: ${totalFetched}, Total pages: ${Math.ceil(totalFetched / pageSize)}`,
+          KeycloakRequestQueue.name,
+        );
         hasMorePages = false;
         break;
       }
@@ -187,8 +183,16 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
       results.push(...batch);
       totalFetched += batch.length;
 
+      Logger.debug(
+        `Fetched page at offset ${currentFirst} for ${path}: ${batch.length} items (total so far: ${totalFetched})`,
+        KeycloakRequestQueue.name,
+      );
+
       if (batch.length < pageSize) {
-        Logger.debug(`Pagination complete for ${path}, total items: ${totalFetched}`, KeycloakRequestQueue.name);
+        Logger.verbose(
+          `Pagination complete for ${path}. Total items fetched: ${totalFetched}, Total pages: ${Math.ceil(totalFetched / pageSize)}`,
+          KeycloakRequestQueue.name,
+        );
         hasMorePages = false;
       } else {
         currentFirst += pageSize;

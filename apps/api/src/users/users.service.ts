@@ -124,15 +124,26 @@ class UsersService {
 
     Logger.debug('Fetching all users from Keycloak...', UsersService.name);
     const fetchedUsers = await this.groupsService.fetchAllUsers();
-    Logger.debug(`Fetched ${fetchedUsers.length} users from Keycloak`, UsersService.name);
+    Logger.verbose(`Fetched ${fetchedUsers.length} users from Keycloak`, UsersService.name);
 
     if (fetchedUsers.length === 0) {
       Logger.warn('No users fetched from Keycloak, skipping cache update', UsersService.name);
       return 0;
     }
 
-    Logger.debug('Mapping users to cached user format...', UsersService.name);
-    const cachedUserList: CachedUser[] = fetchedUsers.map(mapToCachedUser);
+    const usersWithoutAttributes = fetchedUsers.filter((user) => !user.attributes).length;
+    if (usersWithoutAttributes > 0) {
+      Logger.warn(`Found ${usersWithoutAttributes} users without attributes - skipping these users`, UsersService.name);
+    }
+
+    Logger.debug('Filtering and mapping users to cached user format...', UsersService.name);
+    const validUsers = fetchedUsers.filter((user) => user.attributes);
+    const cachedUserList: CachedUser[] = validUsers.map(mapToCachedUser);
+
+    Logger.verbose(
+      `Processing ${cachedUserList.length} valid users (${usersWithoutAttributes} skipped)`,
+      UsersService.name,
+    );
 
     Logger.debug('Grouping users by school...', UsersService.name);
     const usersBySchool = cachedUserList.reduce<Record<string, CachedUser[]>>((acc, user) => {
