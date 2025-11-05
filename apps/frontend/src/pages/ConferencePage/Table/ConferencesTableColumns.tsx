@@ -20,7 +20,7 @@ import { MdLogin, MdPending, MdPlayArrow, MdStop } from 'react-icons/md';
 import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import { useTranslation } from 'react-i18next';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/useConferenceDetailsDialogStore';
-import i18next from 'i18next';
+import i18n from '@/i18n';
 import useUserStore from '@/store/UserStore/useUserStore';
 import { toast } from 'sonner';
 import delay from '@libs/common/utils/delay';
@@ -33,25 +33,25 @@ function getRowAction(isRunning: boolean, isLoading: boolean, isUserTheCreator: 
   if (isLoading) {
     return {
       icon: <MdPending />,
-      text: i18next.t('common.loading'),
+      text: i18n.t('common.loading'),
     };
   }
   if (isUserTheCreator) {
     if (isRunning) {
       return {
         icon: <MdStop />,
-        text: i18next.t('conferences.stop'),
+        text: i18n.t('conferences.stop'),
       };
     }
     return {
       icon: <MdPlayArrow />,
-      text: i18next.t('conferences.start'),
+      text: i18n.t('conferences.start'),
     };
   }
   if (isRunning) {
     return {
       icon: <MdLogin />,
-      text: i18next.t('conferences.join'),
+      text: i18n.t('conferences.join'),
     };
   }
   return { icon: undefined, text: '' };
@@ -241,6 +241,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     accessorFn: (row) => row.isRunning,
     cell: ({ row }) => {
       const { creator, isRunning, meetingID } = row.original;
+      const { t } = useTranslation();
       const { user } = useUserStore();
       const { joinConference, joinConferenceUrl, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
       const { toggleConferenceRunningState, getConferences, loadingMeetingId } = useConferenceStore();
@@ -263,7 +264,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
 
               if (wasConferenceStateToggled) {
                 await delay(5000);
-                toast.info(i18next.t(`conferences.${isRunning ? 'stopped' : 'started'}`));
+                toast.info(t(`conferences.${isRunning ? 'stopped' : 'started'}`));
               } else {
                 setJoinConferenceUrl('');
               }

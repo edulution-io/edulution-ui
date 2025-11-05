@@ -17,13 +17,8 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { GroupsController } from './groups.controller';
 import GroupsService from './groups.service';
 import mockGroupsService from './groups.service.mock';
+import mockCacheManager from '../common/cache-manager.mock';
 import GlobalSettingsService from '../global-settings/global-settings.service';
-
-const cacheManagerMock = {
-  get: jest.fn(),
-  set: jest.fn(),
-  del: jest.fn(),
-};
 
 const globalSettingsServiceMock = { updateCache: jest.fn() };
 
@@ -39,7 +34,7 @@ describe(GroupsController.name, () => {
           provide: GroupsService,
           useValue: mockGroupsService,
         },
-        { provide: CACHE_MANAGER, useValue: cacheManagerMock },
+        { provide: CACHE_MANAGER, useValue: mockCacheManager },
         { provide: GlobalSettingsService, useValue: globalSettingsServiceMock },
       ],
     }).compile();

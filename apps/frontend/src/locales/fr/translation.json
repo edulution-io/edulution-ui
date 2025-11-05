@@ -1034,7 +1034,7 @@
     },
     "mobileAccess": {
       "title": "Accès à l'application",
-      "description": "Ici, vous pouvez configurer l'accès mobile de l'app {{ applicationName }} pour l'accès aux fichiers. Actuellement disponible uniquement pour Apple iOS.",
+      "description": "Tu peux configurer ici l'accès mobile à l'application edulution.",
       "docsDescription": "Tu trouveras le lien de téléchargement de l'application edulution et les instructions d'installation dans la documentation edulution.",
       "button": "Ouvrir le documentaire"
     },
@@ -1522,7 +1522,19 @@
       "light": "Clair",
       "dark": "Sombre"
     },
-    "mailSogoThemeDisabled": "Désactivé, car le serveur de messagerie ne fonctionne pas."
+    "mailSogoThemeDisabled": "Désactivé, car le serveur de messagerie ne fonctionne pas.",
+    "mailSogoThemeUpdateCheckerTitle": "Vérification de version du thème",
+    "mailSogoThemeUpdateCheckerDescription": "Vérifiez si une nouvelle version du thème actuel est disponible et mettez-la à jour si nécessaire.",
+    "updateChecker": {
+      "currentVersion": "Version actuelle",
+      "latestVersion": "Dernière version",
+      "theme": "Thème",
+      "updateAvailable": "Une nouvelle version est disponible !",
+      "checkAgain": "Vérifier à nouveau",
+      "updateNow": "Mettre à jour maintenant",
+      "checkVersionSuccess": "Thème vérifié avec succès !",
+      "noData": "Aucune information de version disponible."
+    }
   },
   "preview": {
     "image": "Aperçu de l'image",
