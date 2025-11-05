@@ -14,8 +14,9 @@ import { Model, Types } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
-import SurveysAttachmentService from 'apps/api/src/surveys/surveys-attachment.service';
+import SurveysAttachmentService from './surveys-attachment.service';
 import SurveysService from './surveys.service';
 import SurveyAnswersService from './survey-answers.service';
 import { Survey, SurveyDocument } from './survey.schema';
@@ -39,6 +40,7 @@ import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
+import mockCacheManager from '../common/cache-manager.mock';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 import NotificationsService from '../notifications/notifications.service';
 import GlobalSettingsService from '../global-settings/global-settings.service';
@@ -73,6 +75,7 @@ describe(PublicSurveysController.name, () => {
         { provide: FilesystemService, useValue: mockFilesystemService },
         { provide: NotificationsService, useValue: jest.fn() },
         { provide: GlobalSettingsService, useValue: { getAdminGroupsFromCache: jest.fn() } },
+        { provide: CACHE_MANAGER, useValue: mockCacheManager },
       ],
     }).compile();
 

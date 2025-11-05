@@ -13,23 +13,82 @@
 import { create } from 'zustand';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import { SSE_RECONNECT_DELAY_MS } from '@libs/sse/constants/sseConfig';
+import useUserStore from './UserStore/useUserStore';
 
 type SseStore = {
   eventSource: EventSource | null;
-  setEventSource: (eduApiToken: string) => void;
+  reconnectAttempts: number;
+  lastPingTime: number | null;
+  setEventSource: () => void;
+  reconnect: () => void;
   reset: () => void;
 };
 
-const useSseStore = create<SseStore>((set, get) => ({
+const initialValues = {
   eventSource: null,
-  setEventSource: (eduApiToken) =>
-    set({
-      eventSource: new EventSource(`/${EDU_API_ROOT}/${SSE_EDU_API_ENDPOINTS.SSE}?token=${eduApiToken}`),
-    }),
-  reset: () => {
-    get().eventSource?.close();
-    set({ eventSource: null });
-  },
-}));
+  reconnectAttempts: 0,
+  lastPingTime: null,
+};
+
+const useSseStore = create<SseStore>((set, get) => {
+  const createEventSource = (token: string): EventSource => {
+    const eventSource = new EventSource(`/${EDU_API_ROOT}/${SSE_EDU_API_ENDPOINTS.SSE}?token=${token}`);
+
+    eventSource.addEventListener('error', () => {
+      if (eventSource.readyState === EventSource.CLOSED) {
+        const state = get();
+        setTimeout(
+          () => {
+            state.reconnect();
+          },
+          SSE_RECONNECT_DELAY_MS * (state.reconnectAttempts + 1),
+        );
+      }
+    });
+
+    eventSource.addEventListener(SSE_MESSAGE_TYPE.PING, () => {
+      set({ lastPingTime: Date.now(), reconnectAttempts: 0 });
+    });
+
+    return eventSource;
+  };
+
+  const closeExistingSource = () => {
+    const existing = get().eventSource;
+    if (existing) {
+      existing.close();
+    }
+  };
+
+  return {
+    ...initialValues,
+
+    setEventSource: () => {
+      const { eduApiToken } = useUserStore.getState();
+      if (!eduApiToken) return;
+
+      closeExistingSource();
+      set({ reconnectAttempts: 0 });
+      const newEventSource = createEventSource(eduApiToken);
+      set({ eventSource: newEventSource, lastPingTime: Date.now() });
+    },
+    reconnect: () => {
+      const { eduApiToken } = useUserStore.getState();
+      const { reconnectAttempts } = get();
+      if (!eduApiToken) return;
+
+      closeExistingSource();
+      set({ reconnectAttempts: reconnectAttempts + 1 });
+      const newEventSource = createEventSource(eduApiToken);
+      set({ eventSource: newEventSource, lastPingTime: Date.now() });
+    },
+    reset: () => {
+      closeExistingSource();
+      set(initialValues);
+    },
+  };
+});
 
 export default useSseStore;
