@@ -11,24 +11,28 @@
  */
 
 import React from 'react';
-import useMedia from '@/hooks/useMedia';
-import useSidebarItems from '@/hooks/useSidebarItems';
-import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
-import DesktopSidebar from './DesktopSidebar';
-import MobileSidebar from './MobileSidebar';
+import { useTranslation } from 'react-i18next';
 
-const Sidebar: React.FC = () => {
-  const { isMobileView, isTabletView } = useMedia();
-  const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
+type ThemeVersionInfoProps = {
+  label: string;
+  version: string | undefined;
+  theme: string | undefined;
+};
 
-  const sidebarItems = useSidebarItems();
-  const showMobileSidebar = isMobileView || isTabletView || isEdulutionApp;
+const ThemeVersionInfo: React.FC<ThemeVersionInfoProps> = ({ label, version, theme }) => {
+  const { t } = useTranslation();
 
-  return showMobileSidebar ? (
-    <MobileSidebar sidebarItems={sidebarItems} />
-  ) : (
-    <DesktopSidebar sidebarItems={sidebarItems} />
+  return (
+    <div>
+      <p className="text-sm font-medium text-muted-foreground">{label}</p>
+      <p className="text-md font-semibold">{version || t('common.not-available')}</p>
+      {theme && (
+        <p className="text-xs text-muted-foreground">
+          {t('appExtendedOptions.updateChecker.theme')}: {theme}
+        </p>
+      )}
+    </div>
   );
 };
 
-export default Sidebar;
+export default ThemeVersionInfo;

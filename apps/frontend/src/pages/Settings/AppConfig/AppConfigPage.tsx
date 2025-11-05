@@ -197,17 +197,6 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
                 </FormItem>
               )}
             />
-            {matchingConfig.extendedOptions && isSupportedAppType(matchingConfig.appType) ? (
-              <ExtendedOptionsForm
-                extendedOptions={
-                  APP_CONFIG_OPTIONS.find((itm) => itm.id === settingLocation || itm.id === APPS.EMBEDDED)
-                    ?.extendedOptions
-                }
-                control={control}
-                settingLocation={settingLocation}
-                form={form}
-              />
-            ) : null}
             {Object.keys(matchingConfig.options)
               .filter((key) => key === APP_CONFIG_OPTION_KEYS.URL || key === APP_CONFIG_OPTION_KEYS.APIKEY)
               .map((filteredKey) => (
@@ -227,6 +216,17 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
                   )}
                 />
               ))}
+            {matchingConfig.extendedOptions && isSupportedAppType(matchingConfig.appType) ? (
+              <ExtendedOptionsForm
+                extendedOptions={
+                  APP_CONFIG_OPTIONS.find((itm) => itm.id === settingLocation || itm.id === APPS.EMBEDDED)
+                    ?.extendedOptions
+                }
+                control={control}
+                settingLocation={settingLocation}
+                form={form}
+              />
+            ) : null}
             {APP_CONFIG_OPTION_KEYS.PROXYCONFIG in matchingConfig.options && (
               <ProxyConfigForm
                 key={`${matchingConfig.name}.options.${APP_CONFIG_OPTION_KEYS.PROXYCONFIG}`}

@@ -25,6 +25,7 @@ import { useTranslation } from 'react-i18next';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableSharePathname';
+import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import useMenuBarStore from './useMenuBarStore';
 
 const MenuBar: React.FC = () => {
@@ -36,9 +37,10 @@ const MenuBar: React.FC = () => {
   const { setCurrentPath, setPathToRestoreSession } = useFileSharingStore();
   const webdavShares = useFileSharingStore((state) => state.webdavShares);
   const { createVariableSharePathname } = useVariableSharePathname();
+  const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
-  const { isMobileView } = useMedia();
+  const { isMobileView, isTabletView } = useMedia();
 
   const navigate = useNavigate();
 
@@ -157,7 +159,7 @@ const MenuBar: React.FC = () => {
         />
       )}
 
-      {isMobileView ? (
+      {isMobileView || isTabletView || isEdulutionApp ? (
         <VerticalMenubar
           className={cn(
             'fixed top-0 z-50 h-full overflow-hidden bg-foreground duration-300 ease-in-out',

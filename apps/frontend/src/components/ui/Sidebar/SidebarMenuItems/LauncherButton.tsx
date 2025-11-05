@@ -17,21 +17,30 @@ import { useTranslation } from 'react-i18next';
 import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
 import useSidebarItems from '@/hooks/useSidebarItems';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
+import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
+import cn from '@libs/common/utils/className';
 
 const LauncherButton: React.FC = () => {
   const { t } = useTranslation();
   const { toggleLauncher } = useLauncherStore();
   const sidebarItems = useSidebarItems();
+  const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
 
   const totalNotifications = sidebarItems.reduce((sum, item) => sum + (item.notificationCounter ?? 0), 0);
+
+  const buttonClassName = isEdulutionApp ? '' : 'lg:block lg:px-3';
+  const titleClassName = isEdulutionApp ? '' : 'lg:hidden';
 
   return (
     <button
       type="button"
       onClick={toggleLauncher}
-      className="group relative z-50 flex max-h-14 w-full items-center justify-end gap-4 bg-black px-4 py-2 md:block md:px-3"
+      className={cn(
+        'group relative z-50 flex max-h-14 w-full items-center justify-end gap-4 bg-black px-4 py-2',
+        buttonClassName,
+      )}
     >
-      <p className="text-md font-bold md:hidden">{t('launcher.title')}</p>
+      <p className={cn('text-md font-bold', titleClassName)}>{t('launcher.title')}</p>
 
       <MobileLogoIcon
         className="g transform rounded-full transition-transform duration-200 group-hover:scale-[1.3]"

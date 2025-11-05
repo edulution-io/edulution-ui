@@ -57,6 +57,7 @@ import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/
 import useOpenFileDialogStore from '@/pages/FileSharing/useOpenFileDialogStore';
 import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
 import useMenuBarStore from '@/components/shared/useMenuBarStore';
+import useAppConfigUpdateCheckerStore from '@/pages/Settings/AppConfig/components/updateChecker/useAppConfigUpdateCheckerStore';
 import useSseStore from '../useSseStore';
 
 const cleanAllStores = async () => {
@@ -65,6 +66,7 @@ const cleanAllStores = async () => {
   UserStore.getState().resetUserAccountsSlice();
   UserStore.getState().resetUserSlice();
   useAppConfigTableDialogStore.getState().reset();
+  useAppConfigUpdateCheckerStore.getState().reset();
   useAppConfigsStore.getState().reset();
   useBulletinBoardEditorialStore.getState().reset();
   useBulletinBoardStore.getState().reset();

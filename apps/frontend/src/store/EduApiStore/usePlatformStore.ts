@@ -10,11 +10,20 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export { default as MailDto } from './mail.dto';
-export { default as MailProviderConfigDto } from './mailProviderConfig.dto';
-export { default as MailsStore } from './mailsStore';
-export { default as CreateSyncJobDto } from './mailcow-create-sync-job.dto';
-export { default as SyncJobResponseDto } from './mailcow-create-sync-job-response.dto';
-export { default as TMailEncryption } from './mailEncryption.type';
-export { default as SyncJobDto } from './mailcow-sync-job.dto';
-export { default as SogoThemeVersionDto } from './sogo-theme-version.dto';
+import { create } from 'zustand';
+
+interface PlatformStore {
+  isEdulutionApp: boolean;
+  setIsEdulutionApp: (value: boolean) => void;
+}
+
+const initialState = {
+  isEdulutionApp: false,
+};
+
+const usePlatformStore = create<PlatformStore>((set) => ({
+  ...initialState,
+  setIsEdulutionApp: (value) => set({ isEdulutionApp: value }),
+}));
+
+export default usePlatformStore;

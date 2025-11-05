@@ -104,7 +104,14 @@ const AddWebdavServerDialog: React.FC<AddWebdavServerDialogProps> = ({ tableId }
     e.stopPropagation();
 
     const webdavShareValues = getValues();
-    const webdavShareDto: WebdavShareDto = { ...webdavShareValues, pathname: new URL(webdavShareValues.url).pathname };
+    const urlWithTrailingSlash = webdavShareValues.url.endsWith('/')
+      ? webdavShareValues.url
+      : `${webdavShareValues.url}/`;
+    const webdavShareDto: WebdavShareDto = {
+      ...webdavShareValues,
+      url: urlWithTrailingSlash,
+      pathname: new URL(urlWithTrailingSlash).pathname,
+    };
     if (selectedConfig) {
       void updateWebdavShare(selectedConfig?.webdavShareId || '', webdavShareDto);
     } else {
