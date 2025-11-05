@@ -43,17 +43,38 @@ const targetDirectories = ['apps', 'libs', 'scripts'];
 const excludedPatterns = [/\.config\.ts$/, /\.config\.js$/];
 const fileExtensions = ['.js', '.jsx', '.ts', '.tsx'];
 
-const hasLicenseHeader = (fileContent: string) => {
-  return fileContent.includes('info@netzint.de');
+const removeLicenseHeader = (fileContent: string): string => {
+  const licenseHeaderPattern = /^\/\*[\s\S]*?\*\/\n*/;
+  const match = fileContent.match(licenseHeaderPattern);
+
+  if (match) {
+    const headerContent = match[0];
+    const licenseKeywords = [
+      'LICENSE',
+      'Copyright',
+      'Netzint',
+      'info@netzint.de',
+      'AGPL',
+      'Affero',
+      'GNU',
+      'Free Software Foundation',
+      'This program is free software',
+    ];
+
+    if (licenseKeywords.some((keyword) => headerContent.includes(keyword))) {
+      return fileContent.substring(match[0].length);
+    }
+  }
+
+  return fileContent;
 };
 
 const addLicenseHeader = (filePath: string) => {
   const fileContent = readFileSync(filePath, 'utf8');
-  if (!hasLicenseHeader(fileContent)) {
-    const newContent = licenseText + '\n' + fileContent;
-    writeFileSync(filePath, newContent, 'utf8');
-    console.log(`License header added: ${filePath}`);
-  }
+  const contentWithoutOldHeader = removeLicenseHeader(fileContent);
+  const newContent = `${licenseText}\n\n${contentWithoutOldHeader}`;
+  writeFileSync(filePath, newContent, 'utf8');
+  console.log(`License header updated: ${filePath}`);
 };
 
 const isExcluded = (filePath: string) => {
