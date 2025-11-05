@@ -47,7 +47,7 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
     this.worker = new Worker<KeycloakJobData, unknown>(
       QUEUE_CONSTANTS.KEYCLOAK_REQUESTS_QUEUE,
       (job) => this.handleJob(job),
-      { connection: redisConnection, concurrency: 20, autorun: false },
+      { connection: redisConnection, concurrency: 10, autorun: false },
     );
 
     void this.bootstrapKeycloakClientWithRetry();
@@ -136,7 +136,7 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
       {
         removeOnComplete: true,
         removeOnFail: true,
-        attempts: 3,
+        attempts: 5,
         backoff: { type: 'exponential', delay: this.jobRetryDelay },
       },
     );
