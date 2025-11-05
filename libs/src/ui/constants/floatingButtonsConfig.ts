@@ -13,3 +13,6 @@
 export const DEBOUNCE_MS = 50;
 export const WIDTH_TOLERANCE_PX = 1;
 export const DEFAULT_BUTTON_WIDTH = 108;
+export const DECREASE_DELAY_MS = 100;
+export const FLOATING_BUTTON_CLASS_NAME =
+  'w-24 justify-center overflow-hidden text-ellipsis whitespace-nowrap text-center leading-tight text-background hover:max-w-28 hover:overflow-visible md:leading-[inherit]';

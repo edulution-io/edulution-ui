@@ -16,9 +16,7 @@ import { IconContext } from 'react-icons';
 import { useTranslation } from 'react-i18next';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import type FloatingButtonConfig from '@libs/ui/types/FloatingButtons/floatingButtonConfig';
-
-export const FLOATING_BUTTON_CLASS_NAME =
-  'w-24 justify-center overflow-hidden text-ellipsis whitespace-nowrap text-center leading-tight text-background hover:max-w-28 hover:overflow-visible md:leading-[inherit]';
+import { FLOATING_BUTTON_CLASS_NAME } from '@libs/ui/constants/floatingButtonsConfig';
 
 const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
   icon: Icon,

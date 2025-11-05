@@ -49,7 +49,7 @@ const PageLayout = ({ nativeAppHeader, children, isFullScreen }: AppLayoutProps)
       )}
 
       <main
-        style={{ paddingBottom: 'var(--floating-bar-h, 0px)' }}
+        style={{ marginBottom: 'var(--floating-bar-h, 0px)' }}
         className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden pl-2 pr-6 transition-[padding-bottom] duration-200 ease-in-out scrollbar-thin"
       >
         {children}

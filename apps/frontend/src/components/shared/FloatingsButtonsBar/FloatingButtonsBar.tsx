@@ -15,15 +15,21 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { HiOutlineChevronDoubleDown, HiOutlineChevronDoubleUp } from 'react-icons/hi';
 import { IconContext } from 'react-icons';
+import { useDebounceCallback, useEventListener, useOnClickOutside } from 'usehooks-ts';
 
 import FloatingButtonsBarProps from '@libs/ui/types/FloatingButtons/floatingButtonsBarProps';
 import FloatingButtonConfig from '@libs/ui/types/FloatingButtons/floatingButtonConfig';
 import FLOATING_BUTTONS_BAR_ID from '@libs/ui/constants/floatingButtonsBarId';
-import { DEBOUNCE_MS, DEFAULT_BUTTON_WIDTH, WIDTH_TOLERANCE_PX } from '@libs/ui/constants/floatingButtonsConfig';
+import {
+  DEBOUNCE_MS,
+  DEFAULT_BUTTON_WIDTH,
+  FLOATING_BUTTON_CLASS_NAME,
+  WIDTH_TOLERANCE_PX,
+} from '@libs/ui/constants/floatingButtonsConfig';
 import calculateButtonLayout from '@libs/ui/utils/calculateButtonLayout';
 import cn from '@libs/common/utils/className';
 import usePortalRoot from '@/hooks/usePortalRoot';
-import FloatingActionButton, { FLOATING_BUTTON_CLASS_NAME } from '@/components/ui/FloatingActionButton';
+import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { Button } from '@/components/shared/Button';
 
 const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
@@ -68,84 +74,60 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
     return undefined;
   }, [isDropupOpen, shouldRenderDropup]);
 
-  useEffect(() => {
-    if (!isDropupOpen) return undefined;
+  useOnClickOutside([dropupRef, moreButtonRef], () => {
+    if (isDropupOpen) {
+      setIsDropupOpen(false);
+    }
+  });
 
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropupRef.current &&
-        moreButtonRef.current &&
-        !dropupRef.current.contains(event.target as Node) &&
-        !moreButtonRef.current.contains(event.target as Node)
-      ) {
-        setIsDropupOpen(false);
+  const lastWidthRef = useRef(0);
+  const lastButtonWidthRef = useRef(0);
+
+  const measureDimensions = (): { containerWidth: number; buttonWidth: number } | null => {
+    if (!containerRef.current || !portalRoot) return null;
+
+    const newContainerWidth = portalRoot.getBoundingClientRect().width;
+    const firstButton = containerRef.current.querySelector<HTMLElement>('div.flex-shrink-0');
+    const newButtonWidth: number = firstButton?.offsetWidth ?? lastButtonWidthRef.current;
+
+    return { containerWidth: newContainerWidth, buttonWidth: newButtonWidth };
+  };
+
+  const updateDimensions = () => {
+    const measurements = measureDimensions();
+    if (!measurements) return;
+
+    const { containerWidth: newContainerWidth, buttonWidth: newButtonWidth } = measurements;
+
+    const widthChanged = Math.abs(newContainerWidth - lastWidthRef.current) > WIDTH_TOLERANCE_PX;
+    const buttonWidthChanged = newButtonWidth !== lastButtonWidthRef.current;
+
+    if (widthChanged || buttonWidthChanged) {
+      lastWidthRef.current = newContainerWidth;
+      lastButtonWidthRef.current = newButtonWidth;
+      setContainerWidth(newContainerWidth);
+      if (newButtonWidth > 0) {
+        setButtonWidth(newButtonWidth);
       }
-    };
+    }
+  };
 
-    document.addEventListener('mousedown', handleClickOutside);
+  const debouncedUpdate = useDebounceCallback(updateDimensions, DEBOUNCE_MS);
 
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isDropupOpen]);
+  useEventListener('resize', debouncedUpdate);
 
   useEffect(() => {
     if (!portalRoot) return undefined;
 
-    let debounceTimer: number | undefined;
-    let lastWidth = 0;
-    let lastButtonWidth = 0;
-
-    const measureDimensions = (): { containerWidth: number; buttonWidth: number } | null => {
-      if (!containerRef.current || !portalRoot) return null;
-
-      const newContainerWidth = portalRoot.getBoundingClientRect().width;
-      const firstButton = containerRef.current.querySelector<HTMLElement>('div.flex-shrink-0');
-      const newButtonWidth: number = firstButton?.offsetWidth ?? lastButtonWidth;
-
-      return { containerWidth: newContainerWidth, buttonWidth: newButtonWidth };
-    };
-
-    const updateDimensions = () => {
-      const measurements = measureDimensions();
-      if (!measurements) return;
-
-      const { containerWidth: newContainerWidth, buttonWidth: newButtonWidth } = measurements;
-
-      const widthChanged = Math.abs(newContainerWidth - lastWidth) > WIDTH_TOLERANCE_PX;
-      const buttonWidthChanged = newButtonWidth !== lastButtonWidth;
-
-      if (widthChanged || buttonWidthChanged) {
-        lastWidth = newContainerWidth;
-        lastButtonWidth = newButtonWidth;
-        setContainerWidth(newContainerWidth);
-        if (newButtonWidth > 0) {
-          setButtonWidth(newButtonWidth);
-        }
-      }
-    };
-
-    const debouncedUpdate = () => {
-      if (debounceTimer) {
-        clearTimeout(debounceTimer);
-      }
-      debounceTimer = window.setTimeout(updateDimensions, DEBOUNCE_MS);
-    };
-
     const initialTimer = setTimeout(updateDimensions, 0);
     const resizeObserver = new ResizeObserver(debouncedUpdate);
     resizeObserver.observe(portalRoot);
-    window.addEventListener('resize', debouncedUpdate);
 
     return () => {
       clearTimeout(initialTimer);
-      if (debounceTimer) {
-        clearTimeout(debounceTimer);
-      }
       resizeObserver.disconnect();
-      window.removeEventListener('resize', debouncedUpdate);
     };
-  }, [visibleButtons, portalRoot]);
+  }, [visibleButtons, portalRoot, debouncedUpdate]);
 
   const iconContextValue = useMemo(() => ({ className: 'h-6 w-6 m-4 md:h-8 md:w-8 md:m-5' }), []);
 

@@ -11,8 +11,7 @@
  */
 
 import { RefObject, useLayoutEffect } from 'react';
-
-const DECREASE_DELAY_MS = 100;
+import { DECREASE_DELAY_MS } from '@libs/ui/constants/floatingButtonsConfig';
 
 const useFloatingBarHeight = (barRef: RefObject<HTMLDivElement>) => {
   useLayoutEffect(() => {
