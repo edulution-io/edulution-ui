@@ -167,7 +167,7 @@ const MenuBar: React.FC = () => {
           <div
             className={cn('w-64 transition-opacity duration-300', isMobileMenuBarOpen ? 'opacity-100' : 'opacity-0')}
           >
-            {renderMenuBarContent()}
+            {isMobileMenuBarOpen && renderMenuBarContent()}
           </div>
         </VerticalMenubar>
       ) : (
