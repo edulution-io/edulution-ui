@@ -19,6 +19,7 @@
 
 import axios from 'axios';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import { KEYCLOAK_TIMEOUT_MS } from '@libs/ldapKeycloakSync/constants/keycloakSyncValues';
 
 const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API } = process.env as Record<string, string>;
 
@@ -29,7 +30,7 @@ const createKeycloakAxiosClient = (token: string) =>
       [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_JSON,
       [HTTP_HEADERS.Authorization]: `Bearer ${token}`,
     },
-    timeout: 60000,
+    timeout: KEYCLOAK_TIMEOUT_MS,
   });
 
 export default createKeycloakAxiosClient;

@@ -24,6 +24,7 @@ import { HttpMethods } from '@libs/common/types/http-methods';
 import { KeycloakJobData } from '@libs/ldapKeycloakSync/types/keycloakJobData';
 import QUEUE_CONSTANTS from '@libs/queue/constants/queueConstants';
 import sleep from '@libs/common/utils/sleep';
+import { KEYCLOAK_TIMEOUT_MS } from '@libs/ldapKeycloakSync/constants/keycloakSyncValues';
 import getKeycloakToken from '../../scripts/keycloak/utilities/getKeycloakToken';
 import createKeycloakAxiosClient from '../../scripts/keycloak/utilities/createKeycloakAxiosClient';
 import redisConnection from '../../common/redis.connection';
@@ -122,8 +123,6 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
 
   private readonly jobRetryDelay = 3000;
 
-  private readonly jobTimeout = 120000;
-
   public async enqueue<T>(
     method: HttpMethods.GET | HttpMethods.POST | HttpMethods.PUT | HttpMethods.DELETE,
     endpoint: string,
@@ -141,7 +140,7 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
       },
     );
 
-    return (await job.waitUntilFinished(this.queueEvents, this.jobTimeout)) as T;
+    return (await job.waitUntilFinished(this.queueEvents, KEYCLOAK_TIMEOUT_MS)) as T;
   }
 
   public async fetchAllPaginated<T>(

@@ -122,7 +122,6 @@ class UsersService {
       school: user.attributes.school?.[0] || SPECIAL_SCHOOLS.GLOBAL,
     });
 
-    Logger.debug('Fetching all users from Keycloak...', UsersService.name);
     const fetchedUsers = await this.groupsService.fetchAllUsers();
     Logger.verbose(`Fetched ${fetchedUsers.length} users from Keycloak`, UsersService.name);
 
@@ -131,21 +130,9 @@ class UsersService {
       return 0;
     }
 
-    const usersWithoutAttributes = fetchedUsers.filter((user) => !user.attributes).length;
-    if (usersWithoutAttributes > 0) {
-      Logger.warn(`Found ${usersWithoutAttributes} users without attributes - skipping these users`, UsersService.name);
-    }
-
-    Logger.debug('Filtering and mapping users to cached user format...', UsersService.name);
     const validUsers = fetchedUsers.filter((user) => user.attributes);
     const cachedUserList: CachedUser[] = validUsers.map(mapToCachedUser);
 
-    Logger.verbose(
-      `Processing ${cachedUserList.length} valid users (${usersWithoutAttributes} skipped)`,
-      UsersService.name,
-    );
-
-    Logger.debug('Grouping users by school...', UsersService.name);
     const usersBySchool = cachedUserList.reduce<Record<string, CachedUser[]>>((acc, user) => {
       const userSchool = user.school;
       if (userSchool) {
@@ -160,7 +147,6 @@ class UsersService {
     const schoolCount = Object.keys(usersBySchool).length;
     Logger.debug(`Grouped users into ${schoolCount} schools`, UsersService.name);
 
-    Logger.debug('Setting cache for each school...', UsersService.name);
     const cachePromises = Object.entries(usersBySchool).map(async ([school, userList]) => {
       const key = ALL_USERS_CACHE_KEY + school;
       Logger.debug(`Setting cache for school '${school}' with ${userList.length} users`, UsersService.name);
@@ -174,7 +160,6 @@ class UsersService {
 
     await Promise.all(cachePromises);
 
-    Logger.debug('Setting global cache...', UsersService.name);
     try {
       await this.cacheManager.set(ALL_USERS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, cachedUserList, USERS_CACHE_TTL_MS);
     } catch (error) {
