@@ -179,31 +179,33 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
         className="column max-w-screen-2xl space-y-6"
       >
         {matchingConfig && (
-          <div className="m-5 space-y-3">
-            <AppConfigPositionSelect
-              form={form}
-              appConfig={matchingConfig}
-            />
-            <FormFieldSH
-              key={`${matchingConfig.name}.accessGroups`}
-              control={control}
-              name={`${matchingConfig.name}.accessGroups`}
-              render={() => (
-                <FormItem>
-                  <h4 className="text-background">{t(`permission.groups`)}</h4>
-                  <FormControl>
-                    <AsyncMultiSelect<MultipleSelectorGroup>
-                      value={getValues(`${matchingConfig.name}.accessGroups`)}
-                      onSearch={searchGroups}
-                      onChange={(groups) => handleGroupsChange(groups, `${matchingConfig.name}`)}
-                      placeholder={t('search.type-to-search')}
-                    />
-                  </FormControl>
-                  <p className="text-background">{t(`permission.selectGroupsDescription`)}</p>
-                  <FormMessage className="text-p" />
-                </FormItem>
-              )}
-            />
+          <div className="m-5 space-y-10 [&>*]:rounded-lg [&>*]:bg-ciDarkGreyDisabled [&>*]:px-2">
+            <div className="space-y-3 py-3">
+              <AppConfigPositionSelect
+                form={form}
+                appConfig={matchingConfig}
+              />
+              <FormFieldSH
+                key={`${matchingConfig.name}.accessGroups`}
+                control={control}
+                name={`${matchingConfig.name}.accessGroups`}
+                render={() => (
+                  <FormItem>
+                    <h4 className="text-background">{t(`permission.groups`)}</h4>
+                    <FormControl>
+                      <AsyncMultiSelect<MultipleSelectorGroup>
+                        value={getValues(`${matchingConfig.name}.accessGroups`)}
+                        onSearch={searchGroups}
+                        onChange={(groups) => handleGroupsChange(groups, `${matchingConfig.name}`)}
+                        placeholder={t('search.type-to-search')}
+                      />
+                    </FormControl>
+                    <p className="text-background">{t(`permission.selectGroupsDescription`)}</p>
+                    <FormMessage className="text-p" />
+                  </FormItem>
+                )}
+              />
+            </div>
             {Object.keys(matchingConfig.options)
               .filter((key) => key === APP_CONFIG_OPTION_KEYS.URL || key === APP_CONFIG_OPTION_KEYS.APIKEY)
               .map((filteredKey) => (
@@ -213,7 +215,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
                   name={`${matchingConfig.name}.options.${filteredKey}`}
                   defaultValue={filteredKey}
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="py-3">
                       <h4 className="text-background">{t(`form.${filteredKey}`)}</h4>
                       <FormControl>
                         <Input {...field} />

@@ -80,10 +80,14 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
   return (
     <AccordionSH
       type="multiple"
+      className="mt-5"
       defaultValue={['general', 'security', 'ldap', 'branding', 'theme', 'organisationInfo']}
     >
       <Form {...form}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-10 [&>*]:rounded-lg [&>*]:bg-ciDarkGreyDisabled [&>*]:px-2"
+        >
           <AccordionItem value="general">
             <AccordionTrigger className="flex">
               <h4>{t('settings.globalSettings.general')}</h4>
