@@ -18,6 +18,7 @@ const ExtendedOptionField = {
   switch: 'switch',
   textarea: 'textarea',
   dropdown: 'dropdown',
+  updateChecker: 'updateChecker',
 } as const;
 
 export default ExtendedOptionField;

@@ -1723,7 +1723,19 @@
       "light": "Light",
       "dark": "Dark"
     },
-    "mailSogoThemeDisabled": "Disabled because the mail server is not running."
+    "mailSogoThemeDisabled": "Disabled because the mail server is not running.",
+    "mailSogoThemeUpdateCheckerTitle": "Theme Version Check",
+    "mailSogoThemeUpdateCheckerDescription": "Check if a new version of the current theme is available and update it if necessary.",
+    "updateChecker": {
+      "currentVersion": "Current Version",
+      "latestVersion": "Latest Version",
+      "theme": "Theme",
+      "updateAvailable": "A new version is available!",
+      "checkAgain": "Check Again",
+      "updateNow": "Update Now",
+      "checkVersionSuccess": "Theme successfully checked!",
+      "noData": "No version information available."
+    }
   },
   "mails": {
     "errors": {
