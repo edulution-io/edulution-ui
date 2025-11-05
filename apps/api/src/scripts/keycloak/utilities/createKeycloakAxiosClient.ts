@@ -29,6 +29,7 @@ const createKeycloakAxiosClient = (token: string) =>
       [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_JSON,
       [HTTP_HEADERS.Authorization]: `Bearer ${token}`,
     },
+    timeout: 60000,
   });
 
 export default createKeycloakAxiosClient;

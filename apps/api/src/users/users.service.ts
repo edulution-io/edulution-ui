@@ -126,6 +126,11 @@ class UsersService {
     const fetchedUsers = await this.groupsService.fetchAllUsers();
     Logger.debug(`Fetched ${fetchedUsers.length} users from Keycloak`, UsersService.name);
 
+    if (fetchedUsers.length === 0) {
+      Logger.warn('No users fetched from Keycloak, skipping cache update', UsersService.name);
+      return 0;
+    }
+
     Logger.debug('Mapping users to cached user format...', UsersService.name);
     const cachedUserList: CachedUser[] = fetchedUsers.map(mapToCachedUser);
 
@@ -145,16 +150,26 @@ class UsersService {
     Logger.debug(`Grouped users into ${schoolCount} schools`, UsersService.name);
 
     Logger.debug('Setting cache for each school...', UsersService.name);
-    await Promise.all(
-      Object.entries(usersBySchool).map(async ([school, userList]) => {
-        const key = ALL_USERS_CACHE_KEY + school;
-        Logger.debug(`Setting cache for school '${school}' with ${userList.length} users`, UsersService.name);
+    const cachePromises = Object.entries(usersBySchool).map(async ([school, userList]) => {
+      const key = ALL_USERS_CACHE_KEY + school;
+      Logger.debug(`Setting cache for school '${school}' with ${userList.length} users`, UsersService.name);
+      try {
         await this.cacheManager.set(key, userList, USERS_CACHE_TTL_MS);
-      }),
-    );
+      } catch (error) {
+        Logger.error(`Failed to set cache for school '${school}':`, error, UsersService.name);
+        throw error;
+      }
+    });
+
+    await Promise.all(cachePromises);
 
     Logger.debug('Setting global cache...', UsersService.name);
-    await this.cacheManager.set(ALL_USERS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, cachedUserList, USERS_CACHE_TTL_MS);
+    try {
+      await this.cacheManager.set(ALL_USERS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, cachedUserList, USERS_CACHE_TTL_MS);
+    } catch (error) {
+      Logger.error('Failed to set global cache:', error, UsersService.name);
+      throw error;
+    }
 
     return cachedUserList.length;
   }

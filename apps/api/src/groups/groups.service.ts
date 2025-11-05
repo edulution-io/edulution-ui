@@ -77,8 +77,12 @@ class GroupsService {
 
   async fetchAllUsers(): Promise<LDAPUser[]> {
     try {
-      return await this.keycloakQueue.fetchAllPaginated<LDAPUser>('/users', '');
+      Logger.debug('Starting to fetch all users from Keycloak...', GroupsService.name);
+      const users = await this.keycloakQueue.fetchAllPaginated<LDAPUser>('/users', '');
+      Logger.debug(`Successfully fetched ${users.length} users from Keycloak`, GroupsService.name);
+      return users;
     } catch (error) {
+      Logger.error('Failed to fetch users from Keycloak:', error, GroupsService.name);
       throw new CustomHttpException(
         GroupsErrorMessage.CouldNotGetUsers,
         HttpStatus.BAD_GATEWAY,

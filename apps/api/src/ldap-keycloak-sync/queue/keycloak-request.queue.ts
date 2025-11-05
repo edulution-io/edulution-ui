@@ -122,6 +122,8 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
 
   private readonly jobRetryDelay = 3000;
 
+  private readonly jobTimeout = 120000;
+
   public async enqueue<T>(
     method: HttpMethods.GET | HttpMethods.POST | HttpMethods.PUT | HttpMethods.DELETE,
     endpoint: string,
@@ -139,7 +141,7 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
       },
     );
 
-    return (await job.waitUntilFinished(this.queueEvents)) as T;
+    return (await job.waitUntilFinished(this.queueEvents, this.jobTimeout)) as T;
   }
 
   public async fetchAllPaginated<T>(
@@ -149,16 +151,51 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
     first = 0,
     acc: T[] = [],
   ): Promise<T[]> {
-    const qp = baseQuery ? `${baseQuery}&first=${first}&max=${pageSize}` : `first=${first}&max=${pageSize}`;
-    const endpoint = `${path.startsWith('/') ? path : `/${path}`}${qp ? `?${qp}` : ''}`;
-    const batch = await this.enqueue<T[]>(HttpMethods.GET, endpoint);
+    const results: T[] = acc.length > 0 ? acc : [];
+    let currentFirst = first;
+    let totalFetched = acc.length;
+    let hasMorePages = true;
 
-    if (!batch || batch.length === 0) return acc;
+    while (hasMorePages) {
+      const qp = baseQuery
+        ? `${baseQuery}&first=${currentFirst}&max=${pageSize}`
+        : `first=${currentFirst}&max=${pageSize}`;
+      const endpoint = `${path.startsWith('/') ? path : `/${path}`}${qp ? `?${qp}` : ''}`;
 
-    const nextAcc = [...acc, ...batch];
-    if (batch.length < pageSize) return nextAcc;
+      if (currentFirst % 500 === 0 && currentFirst > 0) {
+        Logger.debug(
+          `Fetching paginated data: ${path}, total fetched so far: ${totalFetched}`,
+          KeycloakRequestQueue.name,
+        );
+      }
 
-    return this.fetchAllPaginated<T>(path, baseQuery, pageSize, first + pageSize, nextAcc);
+      let batch: T[];
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        batch = await this.enqueue<T[]>(HttpMethods.GET, endpoint);
+      } catch (error) {
+        Logger.error(`Failed to fetch page at offset ${currentFirst} for ${path}:`, error, KeycloakRequestQueue.name);
+        throw error;
+      }
+
+      if (!batch || batch.length === 0) {
+        Logger.debug(`Pagination complete for ${path}, total items: ${totalFetched}`, KeycloakRequestQueue.name);
+        hasMorePages = false;
+        break;
+      }
+
+      results.push(...batch);
+      totalFetched += batch.length;
+
+      if (batch.length < pageSize) {
+        Logger.debug(`Pagination complete for ${path}, total items: ${totalFetched}`, KeycloakRequestQueue.name);
+        hasMorePages = false;
+      } else {
+        currentFirst += pageSize;
+      }
+    }
+
+    return results;
   }
 
   async onModuleDestroy() {
