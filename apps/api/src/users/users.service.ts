@@ -122,9 +122,14 @@ class UsersService {
       school: user.attributes.school?.[0] || SPECIAL_SCHOOLS.GLOBAL,
     });
 
+    Logger.debug('Fetching all users from Keycloak...', UsersService.name);
     const fetchedUsers = await this.groupsService.fetchAllUsers();
+    Logger.debug(`Fetched ${fetchedUsers.length} users from Keycloak`, UsersService.name);
+
+    Logger.debug('Mapping users to cached user format...', UsersService.name);
     const cachedUserList: CachedUser[] = fetchedUsers.map(mapToCachedUser);
 
+    Logger.debug('Grouping users by school...', UsersService.name);
     const usersBySchool = cachedUserList.reduce<Record<string, CachedUser[]>>((acc, user) => {
       const userSchool = user.school;
       if (userSchool) {
@@ -136,13 +141,19 @@ class UsersService {
       return acc;
     }, {});
 
+    const schoolCount = Object.keys(usersBySchool).length;
+    Logger.debug(`Grouped users into ${schoolCount} schools`, UsersService.name);
+
+    Logger.debug('Setting cache for each school...', UsersService.name);
     await Promise.all(
       Object.entries(usersBySchool).map(async ([school, userList]) => {
         const key = ALL_USERS_CACHE_KEY + school;
+        Logger.debug(`Setting cache for school '${school}' with ${userList.length} users`, UsersService.name);
         await this.cacheManager.set(key, userList, USERS_CACHE_TTL_MS);
       }),
     );
 
+    Logger.debug('Setting global cache...', UsersService.name);
     await this.cacheManager.set(ALL_USERS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, cachedUserList, USERS_CACHE_TTL_MS);
 
     return cachedUserList.length;
@@ -150,17 +161,23 @@ class UsersService {
 
   @Interval(KEYCLOAK_SYNC_MS)
   async updateUsersInCache(): Promise<void> {
-    if (this.isUpdatingUsersInCache) return;
+    if (this.isUpdatingUsersInCache) {
+      Logger.debug('User cache update already in progress, skipping...', UsersService.name);
+      return;
+    }
     this.isUpdatingUsersInCache = true;
 
+    const startTime = Date.now();
     try {
       Logger.debug('Starting to update all users in cache...', UsersService.name);
 
       const userCount = await this.refreshUsersCache();
 
-      Logger.log(`${userCount} users updated successfully in cache ✅`, UsersService.name);
+      const duration = Date.now() - startTime;
+      Logger.log(`${userCount} users updated successfully in cache ✅ (took ${duration}ms)`, UsersService.name);
     } catch (error) {
-      Logger.error('updateUsersInCache failed.', UsersService.name);
+      const duration = Date.now() - startTime;
+      Logger.error(`updateUsersInCache failed after ${duration}ms:`, error, UsersService.name);
     } finally {
       this.isUpdatingUsersInCache = false;
     }
