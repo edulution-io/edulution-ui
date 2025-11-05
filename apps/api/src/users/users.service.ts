@@ -50,7 +50,10 @@ import type CachedUser from '@libs/user/types/cachedUser';
 import QUEUE_CONSTANTS from '@libs/queue/constants/queueConstants';
 import UserDeviceDto from '@libs/notification/types/userDevice.dto';
 import { Expo } from 'expo-server-sdk';
-import { KEYCLOAK_STARTUP_TIMEOUT_MS, KEYCLOAK_SYNC_MS } from '@libs/ldapKeycloakSync/constants/keycloakSyncValues';
+import {
+  KEYCLOAK_STARTUP_TIMEOUT_MS,
+  KEYCLOAK_USERS_SYNC_INTERVAL_MS,
+} from '@libs/ldapKeycloakSync/constants/keycloakSyncValues';
 import CustomHttpException from '../common/CustomHttpException';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
@@ -170,7 +173,7 @@ class UsersService {
     return cachedUserList.length;
   }
 
-  @Interval(KEYCLOAK_SYNC_MS)
+  @Interval(KEYCLOAK_USERS_SYNC_INTERVAL_MS)
   async updateUsersInCache(): Promise<void> {
     if (this.isUpdatingUsersInCache) {
       Logger.debug('User cache update already in progress, skipping...', UsersService.name);

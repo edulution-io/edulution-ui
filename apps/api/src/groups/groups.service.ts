@@ -45,7 +45,10 @@ import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import ALL_GROUPS_PREFIX from '@libs/lmnApi/constants/prefixes/allGroupsPrefix';
 import LINBO_DEVICE_GROUPS_PREFIX from '@libs/lmnApi/constants/prefixes/dPrefix';
 import ROLES_PREFIX from '@libs/lmnApi/constants/prefixes/rolesPrefix';
-import { KEYCLOAK_STARTUP_TIMEOUT_MS, KEYCLOAK_SYNC_MS } from '@libs/ldapKeycloakSync/constants/keycloakSyncValues';
+import {
+  KEYCLOAK_GROUPS_SYNC_INTERVAL_MS,
+  KEYCLOAK_STARTUP_TIMEOUT_MS,
+} from '@libs/ldapKeycloakSync/constants/keycloakSyncValues';
 import { OnEvent } from '@nestjs/event-emitter';
 import GROUPS_CACHE_REFRESH_EVENT from '@libs/groups/constants/groupsCacheRefreshEvent';
 import CustomHttpException from '../common/CustomHttpException';
@@ -243,7 +246,7 @@ class GroupsService {
     );
   }
 
-  @Interval(KEYCLOAK_SYNC_MS)
+  @Interval(KEYCLOAK_GROUPS_SYNC_INTERVAL_MS)
   async updateGroupsAndMembersInCache(): Promise<void> {
     if (this.isUpdatingGroupsAndMembersInCache) return;
     this.isUpdatingGroupsAndMembersInCache = true;

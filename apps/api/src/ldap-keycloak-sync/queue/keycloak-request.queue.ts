@@ -182,11 +182,6 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
       results.push(...batch);
       totalFetched += batch.length;
 
-      Logger.debug(
-        `Fetched page at offset ${currentFirst} for ${path}: ${batch.length} items (total so far: ${totalFetched})`,
-        KeycloakRequestQueue.name,
-      );
-
       if (batch.length < pageSize) {
         Logger.verbose(
           `Pagination complete for ${path}. Total items fetched: ${totalFetched}, Total pages: ${Math.ceil(totalFetched / pageSize)}`,
