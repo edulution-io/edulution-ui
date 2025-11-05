@@ -32,6 +32,23 @@ const createSurveyCreatorObject = (language = 'en') => {
   editorLocalization.defaultLocale = language;
   editorLocalization.currentLocale = language;
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  editorLocalization.getLocale(language).ed.surveyPlaceHolder = t('survey.editor.surveyPlaceHolder');
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  editorLocalization.getLocale(language).ed.surveyPlaceholderDescription = t(
+    'survey.editor.surveyPlaceholderDescription',
+  );
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  editorLocalization.getLocale(language).ed.surveyPlaceholderDescriptionMobile = t(
+    'survey.editor.surveyPlaceholderDescription',
+  );
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  editorLocalization.getLocale(language).ed.surveyPlaceHolder = t('survey.editor.surveyPlaceHolder');
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  editorLocalization.getLocale(language).ed.pagePlaceHolder = t('survey.editor.pagePlaceHolder');
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  editorLocalization.getLocale(language).ed.panelPlaceHolder = t('survey.editor.panelPlaceHolder');
+
   const creatorOptions = {
     generateValidJSON: true,
     isAutoSave: true,
