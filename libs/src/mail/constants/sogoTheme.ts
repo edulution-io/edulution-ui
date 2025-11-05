@@ -17,6 +17,7 @@ const SOGO_THEME = {
     'https://raw.githubusercontent.com/edulution-io/edulution-mail/refs/heads/main/build/templates/sogo/custom-theme.css',
   TARGET_DIR: '/data/apps/mail/sogo/overrides',
   TARGET_FILE_NAME: 'custom-theme.css',
+  VERSION_CHECK_PATH: 'sogo-theme-version',
 } as const;
 
 export default SOGO_THEME;
