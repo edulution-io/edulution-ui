@@ -326,7 +326,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <PageLayout>
+    <PageLayout classNames={{ page: 'px-0 md:px-0', main: 'px-0' }}>
       <PageTitle translationId="login.pageTitle" />
       <Card
         variant="modal"
