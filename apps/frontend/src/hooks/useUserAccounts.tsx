@@ -43,7 +43,7 @@ const useUserAccounts = (appName: string | null) => {
   }, [pathname, toastId]);
 
   useEffect(() => {
-    if (userAccounts.length === 0) {
+    if (!userAccounts || userAccounts.length === 0) {
       void getUserAccounts();
     }
     return () => {

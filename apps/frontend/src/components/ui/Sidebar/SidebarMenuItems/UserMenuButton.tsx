@@ -25,7 +25,7 @@ const UserMenuButton: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const auth = useAuth();
-  const handleLogout = useLogout();
+  const handleLogout = useLogout({ isForceLogout: true });
   const { user } = useUserStore();
   const { user: lmnApiUser } = useLmnApiStore();
   const thumbnailPhoto = lmnApiUser?.thumbnailPhoto || '';

@@ -10,15 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import { FormControl, FormDescription, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { Control, FieldValues } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import DropdownSelect from '@/components/ui/DropdownSelect/DropdownSelect';
-import useDockerApplicationStore from '@/pages/Settings/AppConfig/DockerIntegration/useDockerApplicationStore';
-import { type ContainerInfo } from 'dockerode';
-import DOCKER_STATES from '@libs/docker/constants/dockerStates';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+import useRequiredContainers from '@/pages/Settings/AppConfig/hooks/useRequiredContainers';
 
 type AppConfigDropdownSelectProps = {
   control: Control<FieldValues>;
@@ -31,42 +29,9 @@ const AppConfigDropdownSelect = (props: AppConfigDropdownSelectProps) => {
 
   const { control, fieldPath, option } = props;
 
-  const { getContainers } = useDockerApplicationStore();
-  const [hasFetched, setHasFetched] = useState(false);
+  const { hasFetched, isDisabled } = useRequiredContainers(option.requiredContainers);
 
-  const [allContainers, setAllContainers] = useState<ContainerInfo[] | null>(null);
-
-  useEffect(() => {
-    const fetchContainers = async () => {
-      try {
-        setAllContainers(await getContainers());
-      } finally {
-        setHasFetched(true);
-      }
-    };
-
-    if (option.requiredContainers && option.requiredContainers.length > 0) {
-      void fetchContainers();
-    } else {
-      setHasFetched(true);
-    }
-  }, [getContainers, (option.requiredContainers ?? []).join('|')]);
-
-  const areRequiredContainersRunning = useMemo(() => {
-    if (!option.requiredContainers || option.requiredContainers.length === 0) return true;
-    if (!allContainers) return false;
-
-    return option.requiredContainers.every((name) =>
-      allContainers.some((containerInfo) => {
-        const names = (containerInfo as unknown as { Names?: string[] }).Names || [];
-        const matchesName = names.some((n) => n === `/${name}` || n === name);
-        return matchesName && containerInfo.State === DOCKER_STATES.RUNNING;
-      }),
-    );
-  }, [allContainers, (option.requiredContainers ?? []).join('|')]);
-
-  const computedDisabled = !!option.requiredContainers?.length && !areRequiredContainersRunning;
-  const computedWarning = hasFetched && computedDisabled ? option.disabledWarningText : undefined;
+  const computedWarning = hasFetched && isDisabled ? option.disabledWarningText : undefined;
 
   return (
     <FormFieldSH
@@ -76,7 +41,7 @@ const AppConfigDropdownSelect = (props: AppConfigDropdownSelectProps) => {
         <FormItem>
           {option.title && <p className="font-bold">{t(option.title)}</p>}
           <FormControl>
-            <div className={computedDisabled ? 'pointer-events-none opacity-60' : ''}>
+            <div className={isDisabled ? 'pointer-events-none opacity-60' : ''}>
               <DropdownSelect
                 options={option.options || []}
                 selectedVal={(field.value as string) || ''}
@@ -88,7 +53,7 @@ const AppConfigDropdownSelect = (props: AppConfigDropdownSelectProps) => {
 
           {option.description && <FormDescription>{t(option.description)}</FormDescription>}
 
-          {computedDisabled && computedWarning && <div className="text-sm">{t(computedWarning)}</div>}
+          {isDisabled && computedWarning && <div className="text-sm">{t(computedWarning)}</div>}
 
           <FormMessage className="text-p" />
         </FormItem>

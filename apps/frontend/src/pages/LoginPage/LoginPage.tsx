@@ -148,6 +148,18 @@ const LoginPage: React.FC = () => {
   useEffect(() => {
     if (!isAuthenticatedAppReady) return;
 
+    const currentUser = auth.user?.profile?.preferred_username;
+    const previousUser = sessionStorage.getItem('username');
+
+    if (previousUser && previousUser !== currentUser) {
+      sessionStorage.setItem('username', currentUser ?? '');
+
+      navigate(LANDING_PAGE_ROUTE, { replace: true });
+      return;
+    }
+
+    sessionStorage.setItem('username', currentUser ?? '');
+
     if (state?.from) {
       navigate(state.from, { replace: true });
       return;

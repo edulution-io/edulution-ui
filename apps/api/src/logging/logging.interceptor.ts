@@ -10,7 +10,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } from '@nestjs/common';
+import {
+  CallHandler,
+  ExecutionContext,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Logger,
+  NestInterceptor,
+} from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Request, Response } from 'express';
@@ -34,84 +42,118 @@ class LoggingInterceptor implements NestInterceptor {
       return next.handle();
     }
 
-    const { method, url, params, query, path } = req;
-    const ip = req.headers[HTTP_HEADERS.XForwaredFor] || req.socket.remoteAddress;
-    const userAgent = req.headers[HTTP_HEADERS.UserAgent];
     const start = Date.now();
 
     return next.handle().pipe(
       tap(() => {
         const duration = Date.now() - start;
-        const { statusCode } = res;
-        const contentLength = res.getHeader(HTTP_HEADERS.ContentLength) ?? '-';
-        const contextClassName = context.getClass().name;
-        const contextHandlerName = context.getHandler().name;
-
-        switch (logLevel) {
-          case LOG_LEVELS.DEBUG:
-            Logger.debug(`${statusCode} ${duration}ms ${contextClassName}.${contextHandlerName} ${method} ${path}`);
-            break;
-          case LOG_LEVELS.VERBOSE:
-            Logger.verbose(
-              JSON.stringify({
-                method,
-                path,
-                params,
-                query,
-                ip,
-                userAgent,
-                statusCode,
-                contentLength,
-                duration,
-                handler: `${contextClassName}.${contextHandlerName}`,
-              }),
-              LoggingInterceptor.name,
-            );
-            break;
-          default:
-            break;
-        }
+        LoggingInterceptor.logSuccess(context, res, req, duration);
       }),
       catchError((err: unknown) => {
-        const error = err instanceof Error ? err : new Error(String(err));
-
-        switch (logLevel) {
-          case LOG_LEVELS.WARN:
-            Logger.error(
-              JSON.stringify({
-                method,
-                url,
-                params,
-                query,
-                ip,
-                message: error.message,
-              }),
-              undefined,
-              LoggingInterceptor.name,
-            );
-            break;
-          case LOG_LEVELS.VERBOSE:
-          case LOG_LEVELS.DEBUG:
-            Logger.error(
-              JSON.stringify({
-                method,
-                url,
-                params,
-                query,
-                ip,
-                message: error.message,
-              }),
-              error.stack,
-              LoggingInterceptor.name,
-            );
-            break;
-          default:
-            break;
-        }
-
+        LoggingInterceptor.logError(err, req);
         return throwError(() => err);
       }),
     );
+  }
+
+  private static isAuthEndpointUnauthorized(err: unknown, path: string): boolean {
+    return (
+      err instanceof HttpException &&
+      err.getStatus() === Number(HttpStatus.UNAUTHORIZED) &&
+      path.includes('/auth') &&
+      !path.includes('/auth/')
+    );
+  }
+
+  private static logSuccess(context: ExecutionContext, res: Response, req: Request, duration: number): void {
+    if (!logLevel || logLevel === LOG_LEVELS.WARN) {
+      return;
+    }
+
+    const { method, path, params, query } = req;
+    const { statusCode } = res;
+
+    if (logLevel === LOG_LEVELS.DEBUG) {
+      const contextClassName = context.getClass().name;
+      const contextHandlerName = context.getHandler().name;
+      Logger.debug(`${statusCode} ${duration}ms ${contextClassName}.${contextHandlerName} ${method} ${path}`);
+      return;
+    }
+
+    if (logLevel === LOG_LEVELS.VERBOSE) {
+      const ip = req.headers[HTTP_HEADERS.XForwaredFor] || req.socket.remoteAddress;
+      const userAgent = req.headers[HTTP_HEADERS.UserAgent];
+      const contentLength = res.getHeader(HTTP_HEADERS.ContentLength) ?? '-';
+      const contextClassName = context.getClass().name;
+      const contextHandlerName = context.getHandler().name;
+
+      Logger.verbose(
+        JSON.stringify({
+          method,
+          path,
+          params,
+          query,
+          ip,
+          userAgent,
+          statusCode,
+          contentLength,
+          duration,
+          handler: `${contextClassName}.${contextHandlerName}`,
+        }),
+        LoggingInterceptor.name,
+      );
+    }
+  }
+
+  private static logError(err: unknown, req: Request): void {
+    const { method, url, params, query, path } = req;
+    const error = err instanceof Error ? err : new Error(String(err));
+    const ip = req.headers[HTTP_HEADERS.XForwaredFor] || req.socket.remoteAddress;
+
+    if (LoggingInterceptor.isAuthEndpointUnauthorized(err, path)) {
+      if (logLevel === LOG_LEVELS.DEBUG || logLevel === LOG_LEVELS.VERBOSE) {
+        Logger.debug(
+          JSON.stringify({
+            method,
+            url,
+            error,
+          }),
+          LoggingInterceptor.name,
+        );
+      }
+      return;
+    }
+
+    if (!logLevel || logLevel === LOG_LEVELS.WARN) {
+      Logger.error(
+        JSON.stringify({
+          method,
+          url,
+          params,
+          query,
+          ip,
+          message: error.message,
+        }),
+        undefined,
+        LoggingInterceptor.name,
+      );
+      return;
+    }
+
+    if (logLevel === LOG_LEVELS.DEBUG || logLevel === LOG_LEVELS.VERBOSE) {
+      Logger.error(
+        JSON.stringify({
+          method,
+          url,
+          params,
+          query,
+          ip,
+          message: error.message,
+        }),
+        error.stack,
+        LoggingInterceptor.name,
+      );
+    }
   }
 }
 
