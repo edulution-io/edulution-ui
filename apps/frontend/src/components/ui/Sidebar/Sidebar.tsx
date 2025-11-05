@@ -13,15 +13,22 @@
 import React from 'react';
 import useMedia from '@/hooks/useMedia';
 import useSidebarItems from '@/hooks/useSidebarItems';
+import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import DesktopSidebar from './DesktopSidebar';
 import MobileSidebar from './MobileSidebar';
 
 const Sidebar: React.FC = () => {
-  const { isMobileView } = useMedia();
+  const { isMobileView, isTabletView } = useMedia();
+  const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
 
   const sidebarItems = useSidebarItems();
+  const showMobileSidebar = isMobileView || isTabletView || isEdulutionApp;
 
-  return isMobileView ? <MobileSidebar sidebarItems={sidebarItems} /> : <DesktopSidebar sidebarItems={sidebarItems} />;
+  return showMobileSidebar ? (
+    <MobileSidebar sidebarItems={sidebarItems} />
+  ) : (
+    <DesktopSidebar sidebarItems={sidebarItems} />
+  );
 };
 
 export default Sidebar;

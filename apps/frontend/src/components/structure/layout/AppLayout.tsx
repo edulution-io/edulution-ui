@@ -24,23 +24,27 @@ import OfflineBanner from '@/components/shared/OfflineBanner';
 import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
 import useMedia from '@/hooks/useMedia';
 import APP_LAYOUT_ID from '@libs/ui/constants/appLayoutId';
+import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 
 const AppLayout = () => {
   const { isAuthenticated } = useUserStore();
   const menuBar = useMenuBarConfig();
   const { appConfigs } = useAppConfigsStore();
   const { isEduApiHealthy } = useEduApiStore();
-  const { isMobileView } = useMedia();
+  const { isMobileView, isTabletView } = useMedia();
+  const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
 
   const isAppConfigReady = !appConfigs.find((appConfig) => appConfig.name === APPS.NONE);
   const isAuthenticatedAppReady = isAppConfigReady && isAuthenticated;
+
+  const showMobileTopBar = (isMobileView || isTabletView || isEdulutionApp) && isAuthenticatedAppReady;
 
   return (
     <div className="flex h-screen flex-row">
       <div className="flex h-screen flex-1 flex-col overflow-hidden">
         {isEduApiHealthy === false && <OfflineBanner />}
 
-        {isMobileView && isAuthenticatedAppReady && (
+        {showMobileTopBar && (
           <MobileTopBar
             showLeftButton={!menuBar.disabled}
             showRightButton
