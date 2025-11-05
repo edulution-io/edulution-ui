@@ -56,7 +56,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     return this.fileSystemService.deleteDirectory(tempFilesPath);
   }
 
-  static async deleteTempAnswerFile(
+  static async deleteTempQuestionAnswerFile(
     userName: string,
     surveyId: string,
     questionId: string,

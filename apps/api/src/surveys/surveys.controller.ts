@@ -338,7 +338,7 @@ class SurveysController {
 
   @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:fileName`)
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  async deleteTempAnswerFile(
+  async deleteTempQuestionAnswerFile(
     @Param() params: { userName: string; surveyId: string; questionId: string; fileName: string },
     @GetCurrentUser() currentUser: JWTUser,
   ) {
@@ -352,7 +352,7 @@ class SurveysController {
       );
     }
     await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
-    await SurveyAnswerAttachmentsService.deleteTempAnswerFile(userName, surveyId, questionId, fileName);
+    await SurveyAnswerAttachmentsService.deleteTempQuestionAnswerFile(userName, surveyId, questionId, fileName);
   }
 
   @Get(`${CHOICES}/:surveyId/:questionId`)

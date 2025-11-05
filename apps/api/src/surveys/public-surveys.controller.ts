@@ -232,7 +232,7 @@ class PublicSurveysController {
       );
     }
     await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
-    await SurveyAnswerAttachmentsService.deleteTempAnswerFile(userName, surveyId, questionId, fileName);
+    await SurveyAnswerAttachmentsService.deleteTempQuestionAnswerFile(userName, surveyId, questionId, fileName);
   }
 }
 
