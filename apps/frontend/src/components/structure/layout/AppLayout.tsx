@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Sidebar } from '@/components';
 import { Outlet } from 'react-router-dom';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
@@ -31,9 +31,14 @@ const AppLayout = () => {
   const { appConfigs } = useAppConfigsStore();
   const { isEduApiHealthy } = useEduApiStore();
   const { isMobileView } = useMedia();
+  const [pageKey, setPageKey] = useState(0);
 
   const isAppConfigReady = !appConfigs.find((appConfig) => appConfig.name === APPS.NONE);
   const isAuthenticatedAppReady = isAppConfigReady && isAuthenticated;
+
+  const refreshPage = () => {
+    setPageKey((k) => k + 1);
+  };
 
   return (
     <div className="flex h-screen flex-row">
@@ -44,6 +49,7 @@ const AppLayout = () => {
           <MobileTopBar
             showLeftButton={!menuBar.disabled}
             showRightButton
+            refreshPage={refreshPage}
           />
         )}
 
@@ -53,9 +59,9 @@ const AppLayout = () => {
         >
           {!menuBar.disabled && <MenuBar />}
 
-          <Outlet />
+          <Outlet key={`outlet-${pageKey}`} />
 
-          {isAuthenticatedAppReady && <Overlays />}
+          {isAuthenticatedAppReady && <Overlays key={`overlays-${pageKey}`} />}
         </div>
       </div>
 

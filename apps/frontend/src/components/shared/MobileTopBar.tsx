@@ -21,17 +21,14 @@ import { MobileLogoIcon } from '@/assets/icons';
 interface MobileTopBarProps {
   showLeftButton?: boolean;
   showRightButton?: boolean;
+  refreshPage: () => void;
 }
 
-const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, showRightButton = true }) => {
+const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, showRightButton = true, refreshPage }) => {
   const { toggleMobileSidebar: onRightButtonClick, isMobileSidebarOpen: isRightMenuOpen } = useSidebarStore();
   const { toggleMobileMenuBar: onLeftButtonClick, isMobileMenuBarOpen: isLeftMenuOpen } = useMenuBarStore();
   const { isEdulutionApp } = usePlatformStore();
   const iconClassName = useMemo(() => 'h-8 w-8', []);
-
-  const handleRefresh = () => {
-    window.location.reload();
-  };
 
   if (!showLeftButton && !showRightButton) {
     return null;
@@ -59,7 +56,7 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
         {!isAnyMenuOpen && isEdulutionApp && (
           <button
             type="button"
-            onClick={handleRefresh}
+            onClick={refreshPage}
             className="absolute left-1/2 -translate-x-1/2"
           >
             <MdRefresh className="h-6 w-6 text-muted hover:text-muted-foreground" />
