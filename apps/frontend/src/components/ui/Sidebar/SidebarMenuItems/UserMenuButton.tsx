@@ -20,6 +20,8 @@ import useLogout from '@/hooks/useLogout';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useLmnApiStore from '@/store/useLmnApiStore';
+import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
+import cn from '@libs/common/utils/className';
 
 const UserMenuButton: React.FC = () => {
   const { t } = useTranslation();
@@ -29,6 +31,11 @@ const UserMenuButton: React.FC = () => {
   const { user } = useUserStore();
   const { user: lmnApiUser } = useLmnApiStore();
   const thumbnailPhoto = lmnApiUser?.thumbnailPhoto || '';
+  const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
+
+  const userMenuClassName = isEdulutionApp ? '' : 'lg:min-w-[var(--sidebar-width)]';
+  const dropdownWrapperClassName = isEdulutionApp ? '' : 'lg:block lg:px-3';
+  const nameClassName = isEdulutionApp ? '' : 'lg:hidden';
 
   const handleUserSettingsClick = () => {
     navigate(USER_SETTINGS_USER_DETAILS_PATH);
@@ -37,14 +44,19 @@ const UserMenuButton: React.FC = () => {
   return (
     <div
       key="usermenu"
-      className="min-w-[260px] bg-black md:min-w-[var(--sidebar-width)]"
+      className={cn('min-w-[260px] bg-black', userMenuClassName)}
     >
-      <div className="flex max-h-14 cursor-pointer items-center justify-end gap-4 px-4 py-2 md:block md:px-3">
+      <div
+        className={cn(
+          'flex max-h-14 cursor-pointer items-center justify-end gap-4 px-4 py-2',
+          dropdownWrapperClassName,
+        )}
+      >
         <DropdownMenu
           menuContentClassName="z-[600]"
           trigger={
             <div className="group flex items-center gap-4">
-              <p className="text-md font-bold md:hidden">
+              <p className={cn('text-md font-bold', nameClassName)}>
                 {auth?.user?.profile?.given_name ?? ''} {auth?.user?.profile?.family_name ?? ''}
               </p>
               <Avatar
