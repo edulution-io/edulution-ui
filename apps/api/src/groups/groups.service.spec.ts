@@ -20,6 +20,7 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 import { Test, TestingModule } from '@nestjs/testing';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import axios from 'axios';
 import { Group } from '@libs/groups/types/group';
 import { LDAPUser } from '@libs/groups/types/ldapUser';
@@ -31,7 +32,7 @@ import {
 } from '@libs/groups/constants/cacheKeys';
 import CustomHttpException from '../common/CustomHttpException';
 import mockCacheManager from '../common/cache-manager.mock';
-import KeycloakRequestQueue from '../ldap-keycloak-sync/queue/keycloak-request.queue';
+import KeycloakRequestQueue from './queue/keycloak-request.queue';
 import GroupsService from './groups.service';
 
 jest.useFakeTimers();
@@ -52,6 +53,10 @@ describe('GroupsService', () => {
         GroupsService,
         { provide: CACHE_MANAGER, useValue: mockCacheManager },
         { provide: KeycloakRequestQueue, useValue: keycloakQueueMock },
+        {
+          provide: EventEmitter2,
+          useValue: { emit: jest.fn() },
+        },
       ],
     }).compile();
 
@@ -206,7 +211,13 @@ describe('GroupsService', () => {
               path: 'path2',
               subGroups: [],
               subGroupCount: 0,
-              attributes: { displayName: [] },
+              attributes: {
+                description: [],
+                cn: [],
+                sophomorixMaillist: [],
+                displayName: [],
+                mail: [],
+              },
               realmRoles: [],
               clientRoles: {},
               access: {

@@ -22,6 +22,7 @@ import addMailcowSyncRoles from './addMailcowSyncRoles';
 import patchEduUiClient from './patchEduUiClient';
 import addLdapGroupMappers from './addLdapGroupMappers';
 import addUserAttributeMappers from './addUserAttributeMappers';
+import enableLdapConnectionPoolingAndPagination from './enableLdapConnectionPoolingAndPagination';
 
 // Add new scripts here
 const keycloakConfigScripts = [
@@ -30,6 +31,7 @@ const keycloakConfigScripts = [
   patchEduUiClient,
   addLdapGroupMappers,
   addUserAttributeMappers,
+  enableLdapConnectionPoolingAndPagination,
 ];
 
 export default keycloakConfigScripts;

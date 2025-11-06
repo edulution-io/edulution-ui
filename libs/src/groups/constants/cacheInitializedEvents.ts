@@ -17,20 +17,5 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import axios from 'axios';
-import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
-import { KEYCLOAK_REQUEST_TIMEOUT_MS } from '@libs/groups/constants/keycloakQueueConfig';
-
-const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API } = process.env as Record<string, string>;
-
-const createKeycloakAxiosClient = (token: string) =>
-  axios.create({
-    baseURL: `${KEYCLOAK_API}/admin/realms/${KEYCLOAK_EDU_UI_REALM}`,
-    headers: {
-      [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_JSON,
-      [HTTP_HEADERS.Authorization]: `Bearer ${token}`,
-    },
-    timeout: KEYCLOAK_REQUEST_TIMEOUT_MS,
-  });
-
-export default createKeycloakAxiosClient;
+export const GROUPS_CACHE_INITIALIZED_EVENT = 'groups.cache.initialized';
+export const USERS_CACHE_INITIALIZED_EVENT = 'users.cache.initialized';
