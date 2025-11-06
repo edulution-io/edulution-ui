@@ -20,6 +20,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import CryptoJS from 'crypto-js';
@@ -118,6 +119,10 @@ describe(UsersService.name, () => {
         {
           provide: CACHE_MANAGER,
           useValue: cacheManagerMock,
+        },
+        {
+          provide: EventEmitter2,
+          useValue: { emit: jest.fn() },
         },
       ],
     }).compile();
