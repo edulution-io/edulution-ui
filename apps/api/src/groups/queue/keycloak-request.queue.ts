@@ -24,7 +24,6 @@ import { HttpMethods } from '@libs/common/types/http-methods';
 import { KeycloakJobData } from '@libs/ldapKeycloakSync/types/keycloakJobData';
 import QUEUE_CONSTANTS from '@libs/queue/constants/queueConstants';
 import sleep from '@libs/common/utils/sleep';
-import { KEYCLOAK_TIMEOUT_MS } from '@libs/ldapKeycloakSync/constants/keycloakSyncValues';
 import {
   KEYCLOAK_QUEUE_CONCURRENT_REQUESTS_COUNT,
   KEYCLOAK_QUEUE_REQUESTS_ATTEMPTS,
@@ -144,7 +143,7 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
       },
     );
 
-    return (await job.waitUntilFinished(this.queueEvents, KEYCLOAK_TIMEOUT_MS)) as T;
+    return (await job.waitUntilFinished(this.queueEvents)) as T;
   }
 
   public async fetchAllPaginated<T>(path: string, baseQuery = '', pageSize = 100): Promise<T[]> {

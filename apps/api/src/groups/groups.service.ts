@@ -212,14 +212,21 @@ class GroupsService {
   }
 
   private async tryUpdateGroupsWithMembersInCache(groups: Group[], attempt: number): Promise<Group[]> {
-    const results = await Promise.allSettled(groups.map((group) => this.updateGroupWithMembersInCache(group)));
-
+    const batchSize = 20;
     const failedGroups: Group[] = [];
-    results.forEach((result, index) => {
-      if (result.status === 'rejected') {
-        failedGroups.push(groups[index]);
-      }
-    });
+
+    for (let i = 0; i < groups.length; i += batchSize) {
+      const batch = groups.slice(i, i + batchSize);
+
+      // eslint-disable-next-line no-await-in-loop
+      const results = await Promise.allSettled(batch.map((group) => this.updateGroupWithMembersInCache(group)));
+
+      results.forEach((result, index) => {
+        if (result.status === 'rejected') {
+          failedGroups.push(batch[index]);
+        }
+      });
+    }
 
     if (failedGroups.length > 0 && attempt < this.maximumRetries) {
       return this.tryUpdateGroupsWithMembersInCache(failedGroups, attempt + 1);

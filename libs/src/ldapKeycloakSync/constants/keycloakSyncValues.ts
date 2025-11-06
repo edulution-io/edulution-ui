@@ -20,4 +20,3 @@
 export const KEYCLOAK_STARTUP_TIMEOUT_MS = Number(process.env['KEYCLOAK_STARTUP_TIMEOUT_MS']) || 60_000;
 export const KEYCLOAK_GROUPS_SYNC_INTERVAL_MS = Number(process.env['KEYCLOAK_SYNC_MS']) || 61_000;
 export const KEYCLOAK_USERS_SYNC_INTERVAL_MS = Number(process.env['KEYCLOAK_SYNC_MS']) || 62_000;
-export const KEYCLOAK_TIMEOUT_MS = Number(process.env['KEYCLOAK_TIMEOUT_MS']) || 60_000;

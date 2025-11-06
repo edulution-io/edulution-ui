@@ -28,7 +28,7 @@ import LDAP_PROVIDER_ID from '@libs/ldapKeycloakSync/constants/ldapProviderId';
 const { KEYCLOAK_ADMIN, KEYCLOAK_ADMIN_PASSWORD } = process.env as Record<string, string>;
 
 const enableLdapConnectionPoolingAndPagination: Scripts = {
-  name: '006-enableLdapConnectionPoolingAndPagination',
+  name: '005-enableLdapConnectionPoolingAndPagination',
   version: 1,
   execute: async () => {
     if (!KEYCLOAK_ADMIN || !KEYCLOAK_ADMIN_PASSWORD) {
