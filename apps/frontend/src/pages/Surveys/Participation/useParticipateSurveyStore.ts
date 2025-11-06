@@ -32,6 +32,7 @@ import eduApi from '@/api/eduApi';
 import { FileDownloadDto } from '@libs/survey/types/api/file-download.dto';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import { removeUuidFromFileName } from '@libs/common/utils/uuidAndFileNames';
+import handleApiError from '@/utils/handleApiError';
 
 interface ParticipateSurveyStore {
   attendee: Partial<AttendeeDto> | undefined;
@@ -66,8 +67,12 @@ interface ParticipateSurveyStore {
   ) => Promise<FileDownloadDto | null>;
   isUploadingFile?: boolean;
 
-  deleteTempFiles: (surveyId: string, questionId: string) => Promise<string>;
-  deleteTempFile: (surveyId: string, questionId: string, file: File & { content?: string }) => Promise<string>;
+  deleteTempFile: (
+    surveyId: string,
+    questionId: string,
+    file?: File & { content?: string },
+    isPublic?: boolean,
+  ) => Promise<string>;
   isDeletingFile?: boolean;
 
   reset: () => void;
@@ -110,29 +115,35 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     // eslint-disable-next-line no-param-reassign
     completingEvent.allow = false;
 
-    const response = await eduApi.post<SurveyAnswerResponseDto>(
-      isPublic ? PUBLIC_SURVEY_ANSWER_ENDPOINT : SURVEY_ANSWER_ENDPOINT,
-      { surveyId, answer, attendee },
-    );
+    try {
+      const endpoint = isPublic ? PUBLIC_SURVEY_ANSWER_ENDPOINT : SURVEY_ANSWER_ENDPOINT;
+      const response = await eduApi.post<SurveyAnswerResponseDto>(endpoint, { surveyId, answer, attendee });
 
-    if ([200, 201].includes(response.status)) {
-      // eslint-disable-next-line no-param-reassign
-      completingEvent.allow = true;
-      surveyModel.doComplete();
+      if ([Number(HttpStatusCode.Ok), Number(HttpStatusCode.Created)].includes(response.status)) {
+        // eslint-disable-next-line no-param-reassign
+        completingEvent.allow = true;
+        surveyModel.doComplete();
 
-      const surveyAnswer: SurveyAnswerResponseDto = response.data;
-      const { username = '' } = surveyAnswer.attendee || {};
-      const isPublicUser = !!username && publicUserLoginRegex.test(username);
-      if (isPublicUser) {
-        set({ isSubmitting: false, publicUserId: username, previousAnswer: surveyAnswer });
-      } else {
-        set({ isSubmitting: false, publicUserId: undefined, previousAnswer: undefined });
+        const surveyAnswer: SurveyAnswerResponseDto = response.data;
+        const { username = '' } = surveyAnswer.attendee || {};
+        const isPublicUser = !!username && publicUserLoginRegex.test(username);
+        if (isPublicUser) {
+          set({ isSubmitting: false, publicUserId: username, previousAnswer: surveyAnswer });
+        } else {
+          set({ isSubmitting: false, publicUserId: undefined, previousAnswer: undefined });
+        }
+        return surveyAnswer;
       }
-      return surveyAnswer;
+      set({ publicUserId: undefined, previousAnswer: undefined });
+      toast.error(t('survey.errors.submitAnswerError'));
+      return undefined;
+    } catch (error) {
+      set({ publicUserId: undefined, previousAnswer: undefined });
+      handleApiError(error, set);
+      return undefined;
+    } finally {
+      set({ isSubmitting: false });
     }
-    set({ isSubmitting: false, publicUserId: undefined, previousAnswer: undefined });
-    toast.error(t('survey.errors.submitAnswerError'));
-    return undefined;
   },
 
   fetchAnswer: async (surveyId: string): Promise<void> => {
@@ -190,8 +201,9 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     try {
       const formData = new FormData();
       formData.append('file', file);
+      const endpoint = `${isPublic ? PUBLIC_SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT : SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}`;
       const response = await eduApi.post<FileDownloadDto>(
-        `${isPublic ? PUBLIC_SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT : SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}`,
+        `${endpoint}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}`,
         formData,
         {
           headers: { [HTTP_HEADERS.ContentType]: RequestResponseContentType.MULTIPART_FORM_DATA },
@@ -217,36 +229,14 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     }
   },
 
-  deleteTempFile: async (
-    surveyId: string,
-    questionId: string,
-    file: File & { content?: string },
-    isPublic = false,
-  ): Promise<string> => {
+  deleteTempFile: async (surveyId: string, questionId: string, file = undefined, isPublic = false): Promise<string> => {
     const { attendee } = get();
     set({ isDeletingFile: true });
     try {
-      const fileName = file.name || file.content?.split('/').pop();
+      const fileName = file?.name || file?.content?.split('/').pop() || null;
+      const endpoint = `${isPublic ? PUBLIC_SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT : SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}`;
       const response = await eduApi.delete<string>(
-        `${isPublic ? PUBLIC_SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT : SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}/${fileName}`,
-      );
-      if (response.status === Number(HttpStatusCode.Ok)) {
-        return 'success';
-      }
-      return 'error';
-    } catch (error) {
-      return 'error';
-    } finally {
-      set({ isDeletingFile: false });
-    }
-  },
-
-  deleteTempFiles: async (surveyId: string, questionId: string, isPublic = false): Promise<string> => {
-    const { attendee } = get();
-    set({ isDeletingFile: true });
-    try {
-      const response = await eduApi.delete<string>(
-        `${isPublic ? PUBLIC_SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT : SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}`,
+        `${endpoint}/${attendee?.username || attendee?.firstName}/${surveyId}/${questionId}/${fileName}`,
       );
       if (response.status === Number(HttpStatusCode.Ok)) {
         return 'success';

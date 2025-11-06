@@ -80,6 +80,18 @@ class SurveysController {
     private readonly surveyAnswerAttachmentsService: SurveyAnswerAttachmentsService,
   ) {}
 
+  private static validateParams(params: Record<string, string | undefined>, requiredFields: string[]): void {
+    const missingFields = requiredFields.filter((field) => !params[field]);
+    if (missingFields.length > 0) {
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+        undefined,
+        SurveysController.name,
+      );
+    }
+  }
+
   @Get(`${FIND_ONE}/:surveyId`)
   async findOne(@Param() params: { surveyId: string }, @GetCurrentUser() user: JWTUser) {
     const { surveyId } = params;
@@ -170,14 +182,7 @@ class SurveysController {
     @Res() res: Response,
   ) {
     const { userName, surveyId, questionId, filename } = params;
-    if (!userName || !surveyId || !questionId || !filename) {
-      throw new CustomHttpException(
-        CommonErrorMessages.INVALID_REQUEST_DATA,
-        HttpStatus.UNPROCESSABLE_ENTITY,
-        undefined,
-        SurveysController.name,
-      );
-    }
+    SurveysController.validateParams(params, ['userName', 'surveyId', 'questionId', 'filename']);
     if (userName !== currentUser.preferred_username) {
       await this.surveyService.throwErrorIfUserIsNotCreator(surveyId, currentUser);
     }
@@ -245,17 +250,8 @@ class SurveysController {
       'file',
       createAttachmentUploadOptions(
         (req) => {
-          const userName = req.params?.userName;
-          const surveyId = req.params?.surveyId;
-          const questionId = req.params?.questionId;
-          if (!userName || !surveyId || !questionId) {
-            throw new CustomHttpException(
-              CommonErrorMessages.INVALID_REQUEST_DATA,
-              HttpStatus.UNPROCESSABLE_ENTITY,
-              undefined,
-              SurveysController.name,
-            );
-          }
+          const { userName, surveyId, questionId } = req.params || {};
+          SurveysController.validateParams(req.params, ['userName', 'surveyId', 'questionId']);
           return join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId);
         },
         false,
@@ -280,14 +276,7 @@ class SurveysController {
     @Res() res: Response,
   ) {
     const { userName, surveyId, questionId } = params;
-    if (!userName || !surveyId || !questionId || !file) {
-      throw new CustomHttpException(
-        CommonErrorMessages.INVALID_REQUEST_DATA,
-        HttpStatus.UNPROCESSABLE_ENTITY,
-        undefined,
-        SurveysController.name,
-      );
-    }
+    SurveysController.validateParams(params, ['userName', 'surveyId', 'questionId']);
     const path = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId);
     const filePath = join(path, file.filename);
     const url = `${SURVEYS}/${ANSWER}/${FILES}/${userName}/${surveyId}/${questionId}/${file.filename}`;
@@ -317,42 +306,20 @@ class SurveysController {
     }
   }
 
-  @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId`)
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  async deleteTempQuestionAnswerFiles(
-    @Param() params: { userName: string; surveyId: string; questionId: string },
-    @GetCurrentUser() currentUser: JWTUser,
-  ) {
-    const { userName, surveyId, questionId } = params;
-    if (!userName || !surveyId || !questionId) {
-      throw new CustomHttpException(
-        CommonErrorMessages.INVALID_REQUEST_DATA,
-        HttpStatus.UNPROCESSABLE_ENTITY,
-        undefined,
-        SurveysController.name,
-      );
-    }
-    await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
-    await this.surveyAnswerAttachmentsService.deleteTempQuestionAnswerFiles(userName, surveyId, questionId);
-  }
-
   @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:fileName`)
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async deleteTempQuestionAnswerFile(
-    @Param() params: { userName: string; surveyId: string; questionId: string; fileName: string },
+    @Param() params: { userName: string; surveyId: string; questionId: string; fileName?: string },
     @GetCurrentUser() currentUser: JWTUser,
   ) {
     const { userName, surveyId, questionId, fileName } = params;
-    if (!userName || !surveyId || !questionId || !fileName) {
-      throw new CustomHttpException(
-        CommonErrorMessages.INVALID_REQUEST_DATA,
-        HttpStatus.UNPROCESSABLE_ENTITY,
-        undefined,
-        SurveysController.name,
-      );
-    }
+    SurveysController.validateParams(params, ['userName', 'surveyId', 'questionId']);
     await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
-    await SurveyAnswerAttachmentsService.deleteTempQuestionAnswerFile(userName, surveyId, questionId, fileName);
+    if (fileName) {
+      await SurveyAnswerAttachmentsService.deleteTempQuestionAnswerFile(userName, surveyId, questionId, fileName);
+    } else {
+      await this.surveyAnswerAttachmentsService.deleteTempQuestionAnswerFiles(userName, surveyId, questionId);
+    }
   }
 
   @Get(`${CHOICES}/:surveyId/:questionId`)

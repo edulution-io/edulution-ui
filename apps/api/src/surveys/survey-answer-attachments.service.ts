@@ -63,11 +63,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     fileName: string,
   ): Promise<void> {
     const tempFilesPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId);
-    const tempExistence = await FilesystemService.checkIfFileExist(join(tempFilesPath, fileName));
-    if (!tempExistence) {
-      return;
-    }
-    await FilesystemService.deleteFile(tempFilesPath, fileName);
+    await FilesystemService.checkIfFileExistAndDelete(join(tempFilesPath, fileName));
   }
 
   async moveQuestionAttachmentsToPermanentStorage(
