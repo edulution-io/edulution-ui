@@ -390,6 +390,7 @@ class SurveyAnswersService implements OnModuleInit {
       attendee.username,
       String(survey.id),
       answer,
+      survey.canSubmitMultipleAnswers,
     );
     const createdAnswer: SurveyAnswerDocument | null = await this.createAnswer(
       attendee as Attendee,
