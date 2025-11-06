@@ -17,15 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import LdapKeycloakSyncService from './ldap-keycloak-sync.service';
-import { LdapKeycloakSync, LdapKeycloakSyncSchema } from './ldap-keycloak-sync.schema';
-import GroupsModule from '../groups/groups.module';
-
-@Module({
-  imports: [MongooseModule.forFeature([{ name: LdapKeycloakSync.name, schema: LdapKeycloakSyncSchema }]), GroupsModule],
-  providers: [LdapKeycloakSyncService],
-  exports: [LdapKeycloakSyncService],
-})
-export default class LdapKeycloakSyncModule {}
+export const KEYCLOAK_QUEUE_CONCURRENT_REQUESTS_COUNT =
+  Number(process.env['KEYCLOAK_QUEUE_CONCURRENT_REQUESTS_COUNT']) || 10;
+export const KEYCLOAK_QUEUE_REQUESTS_ATTEMPTS = Number(process.env['KEYCLOAK_QUEUE_REQUESTS_ATTEMPTS']) || 5;

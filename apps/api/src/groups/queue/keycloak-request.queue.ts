@@ -25,6 +25,10 @@ import { KeycloakJobData } from '@libs/ldapKeycloakSync/types/keycloakJobData';
 import QUEUE_CONSTANTS from '@libs/queue/constants/queueConstants';
 import sleep from '@libs/common/utils/sleep';
 import { KEYCLOAK_TIMEOUT_MS } from '@libs/ldapKeycloakSync/constants/keycloakSyncValues';
+import {
+  KEYCLOAK_QUEUE_CONCURRENT_REQUESTS_COUNT,
+  KEYCLOAK_QUEUE_REQUESTS_ATTEMPTS,
+} from '@libs/groups/constants/keycloakQueueConfig';
 import getKeycloakToken from '../../scripts/keycloak/utilities/getKeycloakToken';
 import createKeycloakAxiosClient from '../../scripts/keycloak/utilities/createKeycloakAxiosClient';
 import redisConnection from '../../common/redis.connection';
@@ -48,7 +52,7 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
     this.worker = new Worker<KeycloakJobData, unknown>(
       QUEUE_CONSTANTS.KEYCLOAK_REQUESTS_QUEUE,
       (job) => this.handleJob(job),
-      { connection: redisConnection, concurrency: 10, autorun: false },
+      { connection: redisConnection, concurrency: KEYCLOAK_QUEUE_CONCURRENT_REQUESTS_COUNT, autorun: false },
     );
 
     void this.bootstrapKeycloakClientWithRetry();
@@ -135,7 +139,7 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
       {
         removeOnComplete: true,
         removeOnFail: true,
-        attempts: 5,
+        attempts: KEYCLOAK_QUEUE_REQUESTS_ATTEMPTS,
         backoff: { type: 'exponential', delay: this.jobRetryDelay },
       },
     );
@@ -144,9 +148,6 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
   }
 
   public async fetchAllPaginated<T>(path: string, baseQuery = '', pageSize = 100): Promise<T[]> {
-    // Note: await in loop is intentional - pagination must be sequential
-    // We cannot fetch page N+1 until we know if page N has more results
-    /* eslint-disable no-await-in-loop */
     const results: T[] = [];
     let currentFirst = 0;
     let hasMorePages = true;
@@ -161,6 +162,7 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
 
       let batch: T[];
       try {
+        // eslint-disable-next-line no-await-in-loop
         batch = await this.enqueue<T[]>(HttpMethods.GET, endpoint);
       } catch (error) {
         Logger.error(`Failed to fetch page at offset ${currentFirst} for ${path}:`, error, KeycloakRequestQueue.name);
@@ -185,7 +187,6 @@ export default class KeycloakRequestQueue implements OnModuleInit, OnModuleDestr
       `Fetched ${results.length} items from ${path} (${Math.ceil(results.length / pageSize)} pages)`,
       KeycloakRequestQueue.name,
     );
-    /* eslint-enable no-await-in-loop */
 
     return results;
   }

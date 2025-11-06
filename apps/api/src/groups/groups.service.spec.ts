@@ -31,7 +31,7 @@ import {
 } from '@libs/groups/constants/cacheKeys';
 import CustomHttpException from '../common/CustomHttpException';
 import mockCacheManager from '../common/cache-manager.mock';
-import KeycloakRequestQueue from '../ldap-keycloak-sync/queue/keycloak-request.queue';
+import KeycloakRequestQueue from './queue/keycloak-request.queue';
 import GroupsService from './groups.service';
 
 jest.useFakeTimers();
@@ -206,7 +206,13 @@ describe('GroupsService', () => {
               path: 'path2',
               subGroups: [],
               subGroupCount: 0,
-              attributes: { displayName: [] },
+              attributes: {
+                description: [],
+                cn: [],
+                sophomorixMaillist: [],
+                displayName: [],
+                mail: [],
+              },
               realmRoles: [],
               clientRoles: {},
               access: {

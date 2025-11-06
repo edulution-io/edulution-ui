@@ -34,7 +34,7 @@ import { Model } from 'mongoose';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { InjectModel } from '@nestjs/mongoose';
 import { Interval, Timeout } from '@nestjs/schedule';
 import { getDecryptedPassword } from '@libs/common/utils';
@@ -48,6 +48,7 @@ import { ALL_USERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import type UserAccountDto from '@libs/user/types/userAccount.dto';
 import type CachedUser from '@libs/user/types/cachedUser';
 import QUEUE_CONSTANTS from '@libs/queue/constants/queueConstants';
+import { USERS_CACHE_INITIALIZED_EVENT } from '@libs/groups/constants/cacheInitializedEvents';
 import UserDeviceDto from '@libs/notification/types/userDevice.dto';
 import { Expo } from 'expo-server-sdk';
 import {
@@ -67,9 +68,12 @@ class UsersService {
     @InjectModel(UserAccounts.name) private userAccountModel: Model<UserAccountsDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly groupsService: GroupsService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   private isUpdatingUsersInCache = false;
+
+  private usersCacheInitialized = false;
 
   @Timeout(KEYCLOAK_STARTUP_TIMEOUT_MS)
   async initializeService() {
@@ -189,6 +193,12 @@ class UsersService {
 
       const duration = Date.now() - startTime;
       Logger.log(`${userCount} users updated successfully in cache ✅ (took ${duration}ms)`, UsersService.name);
+
+      if (!this.usersCacheInitialized) {
+        this.usersCacheInitialized = true;
+        this.eventEmitter.emit(USERS_CACHE_INITIALIZED_EVENT);
+        Logger.debug('Users cache initialized for the first time', UsersService.name);
+      }
     } catch (error) {
       const duration = Date.now() - startTime;
       Logger.error(`updateUsersInCache failed after ${duration}ms:`, error, UsersService.name);

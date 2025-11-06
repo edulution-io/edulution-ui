@@ -17,15 +17,5 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import LdapKeycloakSyncService from './ldap-keycloak-sync.service';
-import { LdapKeycloakSync, LdapKeycloakSyncSchema } from './ldap-keycloak-sync.schema';
-import GroupsModule from '../groups/groups.module';
-
-@Module({
-  imports: [MongooseModule.forFeature([{ name: LdapKeycloakSync.name, schema: LdapKeycloakSyncSchema }]), GroupsModule],
-  providers: [LdapKeycloakSyncService],
-  exports: [LdapKeycloakSyncService],
-})
-export default class LdapKeycloakSyncModule {}
+export const GROUPS_CACHE_INITIALIZED_EVENT = 'groups.cache.initialized';
+export const USERS_CACHE_INITIALIZED_EVENT = 'users.cache.initialized';
