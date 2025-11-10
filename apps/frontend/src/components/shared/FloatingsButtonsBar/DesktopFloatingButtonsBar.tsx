@@ -21,7 +21,7 @@ import React from 'react';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import FloatingButtonsBarProps from '@libs/ui/types/FloatingButtons/floatingButtonsProps';
 
-const DesktopButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
+const DesktopFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
   const { config } = props;
   const { buttons, keyPrefix } = config;
 
@@ -46,4 +46,4 @@ const DesktopButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
   );
 };
 
-export default DesktopButtonsBar;
+export default DesktopFloatingButtonsBar;
