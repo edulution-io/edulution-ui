@@ -11,6 +11,7 @@
  */
 
 const ExtendedOptionField = {
+  logo: 'logo',
   input: 'input',
   password: 'password',
   table: 'table',
