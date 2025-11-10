@@ -20,12 +20,11 @@
 import { Module } from '@nestjs/common';
 import GroupsService from './groups.service';
 import { GroupsController } from './groups.controller';
-import LdapKeycloakSyncModule from '../ldap-keycloak-sync/ldap-keycloak-sync.module';
+import KeycloakRequestQueue from './queue/keycloak-request.queue';
 
 @Module({
-  imports: [LdapKeycloakSyncModule],
-  providers: [GroupsService],
+  providers: [GroupsService, KeycloakRequestQueue],
   controllers: [GroupsController],
-  exports: [GroupsService],
+  exports: [GroupsService, KeycloakRequestQueue],
 })
 export default class GroupsModule {}
