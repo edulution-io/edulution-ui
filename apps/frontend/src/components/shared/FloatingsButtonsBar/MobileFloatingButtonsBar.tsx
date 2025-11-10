@@ -26,7 +26,7 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { IconContext } from 'react-icons';
 import { useTranslation } from 'react-i18next';
 
-const MobileButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
+const MobileFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
   const { config } = props;
   const { t } = useTranslation();
 
@@ -59,7 +59,7 @@ const MobileButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
         type="button"
         variant="btn-hexagon"
         onClick={() => setIsOpen(!isOpen)}
-        className="mx-auto"
+        className="mx-auto -translate-x-1"
         hexagonIconAltText={isOpen ? t('common.close') : t('common.open')}
       >
         <IconContext.Provider value={iconContextValue}>
@@ -78,4 +78,4 @@ const MobileButtonsBar: React.FC<FloatingButtonsBarProps> = (props) => {
   );
 };
 
-export default MobileButtonsBar;
+export default MobileFloatingButtonsBar;

@@ -17,20 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import axios from 'axios';
-import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
-import { KEYCLOAK_REQUEST_TIMEOUT_MS } from '@libs/groups/constants/keycloakQueueConfig';
-
-const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API } = process.env as Record<string, string>;
-
-const createKeycloakAxiosClient = (token: string) =>
-  axios.create({
-    baseURL: `${KEYCLOAK_API}/admin/realms/${KEYCLOAK_EDU_UI_REALM}`,
-    headers: {
-      [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_JSON,
-      [HTTP_HEADERS.Authorization]: `Bearer ${token}`,
-    },
-    timeout: KEYCLOAK_REQUEST_TIMEOUT_MS,
-  });
-
-export default createKeycloakAxiosClient;
+export const KEYCLOAK_QUEUE_CONCURRENT_REQUESTS_COUNT =
+  Number(process.env['KEYCLOAK_QUEUE_CONCURRENT_REQUESTS_COUNT']) || 5;
+export const KEYCLOAK_QUEUE_REQUESTS_ATTEMPTS = Number(process.env['KEYCLOAK_QUEUE_REQUESTS_ATTEMPTS']) || 5;
+export const KEYCLOAK_REQUEST_TIMEOUT_MS = Number(process.env['KEYCLOAK_REQUEST_TIMEOUT_MS']) || 60_000;
