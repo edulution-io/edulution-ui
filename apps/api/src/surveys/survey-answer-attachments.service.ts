@@ -21,15 +21,36 @@ import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
 
+// TODO: MOVE CONSTANTS AND UTILS TO LIBS
 type SingleFileQuestionAnswer = object & { content?: string };
 
-type MultipleFileQuestionAnswer = (object & { content?: string })[];
+type AnswerType =
+  | string
+  | number
+  | boolean
+  | bigint
+  | string[]
+  | number[]
+  | boolean[]
+  | bigint[]
+  | SingleFileQuestionAnswer
+  | SingleFileQuestionAnswer[];
 
-type NestedSurveyAnswerType = Record<string, SingleFileQuestionAnswer | MultipleFileQuestionAnswer>;
-
-type QuestionAnswerType = SingleFileQuestionAnswer | MultipleFileQuestionAnswer | NestedSurveyAnswerType;
+type QuestionAnswerType = AnswerType | Record<string, AnswerType> | Record<string, AnswerType>[];
 
 type SurveyAnswerType = Record<string, QuestionAnswerType>;
+
+const isSimpleAnswerQuestion = (questionAnswer: AnswerType): boolean =>
+  typeof questionAnswer === 'string' ||
+  typeof questionAnswer === 'number' ||
+  typeof questionAnswer === 'boolean' ||
+  typeof questionAnswer === 'bigint' ||
+  typeof questionAnswer === 'undefined';
+
+const isSimpleFileTypeQuestion = (questionAnswer: AnswerType): boolean =>
+  Object.isObject(questionAnswer) &&
+  Object(questionAnswer).content &&
+  typeof Object(questionAnswer).content === 'string';
 
 @Injectable()
 class SurveyAnswerAttachmentsService implements OnModuleInit {
@@ -83,14 +104,24 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     questionAnswer: QuestionAnswerType,
     keepOldFiles: boolean = false,
   ): Promise<QuestionAnswerType> {
-    const isSingleFileAnswer =
-      !Array.isArray(questionAnswer) && !!questionAnswer.content && typeof questionAnswer.content === 'string';
-    const isMultipleFileAnswer =
-      Array.isArray(questionAnswer) &&
-      questionAnswer.some((entries) => entries.content && typeof entries.content === 'string');
-
-    if (!isSingleFileAnswer && !isMultipleFileAnswer) {
-      const nestedQuestionAnswer = questionAnswer as NestedSurveyAnswerType;
+    let isFileQuestionAnswer = false;
+    if (Array.isArray(questionAnswer)) {
+      if (questionAnswer.every((entry) => isSimpleAnswerQuestion(entry))) {
+        return questionAnswer;
+      }
+      if (questionAnswer.every((entry) => isSimpleFileTypeQuestion(entry))) {
+        isFileQuestionAnswer = true;
+      }
+    } else {
+      if (isSimpleAnswerQuestion(questionAnswer)) {
+        return questionAnswer;
+      }
+      if (isSimpleFileTypeQuestion(questionAnswer)) {
+        isFileQuestionAnswer = true;
+      }
+    }
+    if (!isFileQuestionAnswer) {
+      const nestedQuestionAnswer = questionAnswer as SurveyAnswerType;
       const updatedQuestionAnswer = await this.processSurveyAnswer(userName, surveyId, nestedQuestionAnswer, true);
       return updatedQuestionAnswer;
     }
@@ -108,10 +139,10 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     const fileNamesToKeep: string[] = [];
     const permanentFileNames = await this.fileSystemService.getAllFilenamesInDirectory(directory);
 
-    const surveysQuestionAnswer: MultipleFileQuestionAnswer = [];
+    let surveysQuestionAnswer: QuestionAnswerType[] = [];
     if (Array.isArray(questionAnswer)) {
-      questionAnswer.forEach((item: SingleFileQuestionAnswer) => {
-        const fileName = item.content?.split('/').pop();
+      questionAnswer.forEach((item) => {
+        const fileName = (item as SingleFileQuestionAnswer).content?.split('/').pop();
         if (fileName && permanentFileNames.includes(fileName)) {
           fileNamesToKeep.push(fileName);
         }
