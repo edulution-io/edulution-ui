@@ -76,42 +76,6 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     await FilesystemService.checkIfFileExistAndDelete(join(tempFilesPath, fileName));
   }
 
-  static processSingleFileQuestionAnswer(
-    questionAnswer: SingleFileQuestionAnswer,
-    tempFileNames: string[],
-    permanentFileNames: string[],
-    fileNamesToMove: string[] = [],
-    fileNamesToKeep: string[] = [],
-  ): { questionAnswer: QuestionAnswerType; fileNamesToMove: string[]; fileNamesToKeep: string[] } {
-    const fileName = questionAnswer.content?.split('/').pop();
-    if (fileName && tempFileNames.includes(fileName)) {
-      fileNamesToMove.push(fileName);
-    }
-    if (fileName && permanentFileNames.includes(fileName)) {
-      fileNamesToKeep.push(fileName);
-    }
-    return { questionAnswer: [questionAnswer], fileNamesToMove, fileNamesToKeep };
-  }
-
-  static processMultiFileQuestionAnswer(
-    questionAnswer: MultipleFileQuestionAnswer,
-    tempFileNames: string[],
-    permanentFileNames: string[],
-    fileNamesToMove: string[] = [],
-    fileNamesToKeep: string[] = [],
-  ): { questionAnswer: QuestionAnswerType; fileNamesToMove: string[]; fileNamesToKeep: string[] } {
-    questionAnswer.forEach((item: SingleFileQuestionAnswer) => {
-      const fileName = item.content?.split('/').pop();
-      if (fileName && tempFileNames.includes(fileName)) {
-        fileNamesToMove.push(fileName);
-      }
-      if (fileName && permanentFileNames.includes(fileName)) {
-        fileNamesToKeep.push(fileName);
-      }
-    });
-    return { questionAnswer, fileNamesToMove, fileNamesToKeep };
-  }
-
   async processFileQuestionAnswer(
     userName: string,
     surveyId: string,
@@ -140,17 +104,32 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
 
     await this.fileSystemService.ensureDirectoryExists(directory);
 
+    const fileNamesToMove: string[] = [];
+    const fileNamesToKeep: string[] = [];
     const permanentFileNames = await this.fileSystemService.getAllFilenamesInDirectory(directory);
 
-    const processingFileQuestionAnswersResult = isMultipleFileAnswer
-      ? SurveyAnswerAttachmentsService.processMultiFileQuestionAnswer(questionAnswer, tempFileNames, permanentFileNames)
-      : SurveyAnswerAttachmentsService.processSingleFileQuestionAnswer(
-          questionAnswer,
-          tempFileNames,
-          permanentFileNames,
-        );
-
-    const { questionAnswer: surveyAnswer, fileNamesToMove, fileNamesToKeep } = processingFileQuestionAnswersResult;
+    const surveysQuestionAnswer: MultipleFileQuestionAnswer = [];
+    if (Array.isArray(questionAnswer)) {
+      questionAnswer.forEach((item: SingleFileQuestionAnswer) => {
+        const fileName = item.content?.split('/').pop();
+        if (fileName && permanentFileNames.includes(fileName)) {
+          fileNamesToKeep.push(fileName);
+        }
+        if (fileName && tempFileNames.includes(fileName)) {
+          fileNamesToMove.push(fileName);
+        }
+        surveysQuestionAnswer.push(item);
+      });
+    } else {
+      const fileName = (questionAnswer as SingleFileQuestionAnswer).content?.split('/').pop();
+      if (fileName && permanentFileNames.includes(fileName)) {
+        fileNamesToKeep.push(fileName);
+      }
+      if (fileName && tempFileNames.includes(fileName)) {
+        fileNamesToMove.push(fileName);
+      }
+      surveysQuestionAnswer.push(questionAnswer);
+    }
 
     const movingPromises = fileNamesToMove.map(async (fileName) =>
       FilesystemService.moveFile(join(tempDirectory, fileName), join(directory, fileName)),
@@ -167,7 +146,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
 
     await this.fileSystemService.deleteEmptyFolderWithDepth(tempDirectory, 3);
 
-    return surveyAnswer;
+    return surveysQuestionAnswer;
   }
 
   async processSurveyAnswer(
