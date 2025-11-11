@@ -130,40 +130,36 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
   };
 
   return (
-    <div className="space-y-10">
-      {extendedOptions &&
-        Object.entries(extendedOptions).map(([section, options]) => (
-          <AccordionSH
-            type="multiple"
-            key={section}
-            defaultValue={[section]}
-          >
-            <AccordionItem value={section}>
-              <AccordionTrigger className="flex text-xl font-bold">
-                <h4 className="text-background">{t(`settings.appconfig.sections.${section}.title`)}</h4>
-              </AccordionTrigger>
-              <AccordionContent className="mx-1 flex flex-wrap justify-between gap-4 text-p">
-                <div className="text-base text-background">
-                  {t(`settings.appconfig.sections.${section}.description`)}
-                </div>
-                {options?.map((option: AppConfigExtendedOption) => (
-                  <div
-                    key={`key_${section}_${option.name}`}
-                    className={cn(
-                      { 'w-full': option.width === 'full' },
-                      { 'w-[calc(50%-0.75rem)]': option.width === 'half' },
-                      { 'w-[calc(33%-1.5rem)]': option.width === 'third' },
-                      { 'w-[calc(25%-2.25rem)]': option.width === 'quarter' },
-                    )}
-                  >
-                    {renderComponent(option)}
-                  </div>
-                ))}
-              </AccordionContent>
-            </AccordionItem>
-          </AccordionSH>
-        ))}
-    </div>
+    extendedOptions &&
+    Object.entries(extendedOptions).map(([section, options]) => (
+      <AccordionSH
+        type="multiple"
+        key={section}
+        defaultValue={[section]}
+      >
+        <AccordionItem value={section}>
+          <AccordionTrigger className="flex text-xl font-bold">
+            <h4 className="text-background">{t(`settings.appconfig.sections.${section}.title`)}</h4>
+          </AccordionTrigger>
+          <AccordionContent className="mx-1 flex flex-wrap justify-between gap-4 text-p">
+            <div className="text-base text-background">{t(`settings.appconfig.sections.${section}.description`)}</div>
+            {options?.map((option: AppConfigExtendedOption) => (
+              <div
+                key={`key_${section}_${option.name}`}
+                className={cn(
+                  { 'w-full': option.width === 'full' },
+                  { 'w-[calc(50%-0.75rem)]': option.width === 'half' },
+                  { 'w-[calc(33%-1.5rem)]': option.width === 'third' },
+                  { 'w-[calc(25%-2.25rem)]': option.width === 'quarter' },
+                )}
+              >
+                {renderComponent(option)}
+              </div>
+            ))}
+          </AccordionContent>
+        </AccordionItem>
+      </AccordionSH>
+    ))
   );
 };
 

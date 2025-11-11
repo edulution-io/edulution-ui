@@ -42,7 +42,7 @@ const LmnVersionInfo = () => {
           <h4>{t('settings.lmnVersion.title')}</h4>
         </AccordionTrigger>
         <AccordionContent>
-          <div className="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2 py-4 pr-4 sm:grid-cols-2 lg:grid-cols-3">
             {Object.entries(lmnVersions).map(([pkg, version]) => (
               <Card
                 key={pkg}
