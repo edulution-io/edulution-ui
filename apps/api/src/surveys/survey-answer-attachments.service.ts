@@ -48,7 +48,8 @@ const isSimpleAnswerQuestion = (questionAnswer: AnswerType): boolean =>
   typeof questionAnswer === 'undefined';
 
 const isSimpleFileTypeQuestion = (questionAnswer: AnswerType): boolean =>
-  Object.isObject(questionAnswer) &&
+  typeof questionAnswer === 'object' &&
+  questionAnswer !== null &&
   !!(questionAnswer as SingleFileQuestionAnswer).content &&
   typeof (questionAnswer as SingleFileQuestionAnswer).content === 'string';
 

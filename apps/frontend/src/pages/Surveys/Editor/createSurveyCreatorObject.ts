@@ -61,7 +61,7 @@ const createSurveyCreatorObject = (language = 'en') => {
       panel: ['panel', 'paneldynamic'],
       paneldynamic: ['panel', 'paneldynamic', 'file'],
     },
-    maxNestedPanels: 0,
+    maxNestedPanels: 1,
   };
 
   const creator = new SurveyCreator(creatorOptions);
