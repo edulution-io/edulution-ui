@@ -34,19 +34,26 @@ export interface CreateFileUploaderDependencies {
   onUploadingChange?: (fileItem: UploadFile, uploading: boolean) => void;
 }
 
-const createFileUploader = (dependencies: CreateFileUploaderDependencies) => {
+const createFileUploader = (createFileUploaderDependencies: CreateFileUploaderDependencies) => {
   const {
     httpClient,
     destinationPath,
     onProgressUpdate,
     onUploadingChange,
     uploadEndpointPath = `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.UPLOAD}`,
-  } = dependencies;
+  } = createFileUploaderDependencies;
 
   return async function uploadSingleFile(fileItem: UploadFile): Promise<UploadResult> {
     const fileName = fileItem.name;
 
-    const url = buildOctetStreamUrl(uploadEndpointPath, destinationPath, fileItem);
+    let finalPath = destinationPath;
+
+    if (fileItem.uploadPath) {
+      const lastSlash = fileItem.uploadPath.lastIndexOf('/');
+      finalPath = fileItem.uploadPath.substring(0, lastSlash + 1);
+    }
+
+    const url = buildOctetStreamUrl(uploadEndpointPath, finalPath, fileItem);
 
     const progress = createProgressHandler({
       fileSize: fileItem.size,

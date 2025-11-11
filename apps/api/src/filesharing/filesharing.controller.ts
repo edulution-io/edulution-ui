@@ -25,7 +25,6 @@ import {
   Get,
   HttpStatus,
   Param,
-  ParseBoolPipe,
   ParseIntPipe,
   Patch,
   Post,
@@ -99,11 +98,10 @@ class FilesharingController {
     @GetCurrentUsername() username: string,
     @Query('path') path: string,
     @Query('name') name: string,
-    @Query('isZippedFolder', new DefaultValuePipe(false), ParseBoolPipe) isZippedFolder: boolean,
     @Query('contentLength', new DefaultValuePipe(0), ParseIntPipe) contentLength: number,
     @Query('share') share: string,
   ) {
-    return this.filesharingService.uploadFileViaWebDav(username, path, name, req, share, isZippedFolder, contentLength);
+    return this.filesharingService.uploadFileViaWebDav(username, path, name, req, share, contentLength);
   }
 
   @Delete()

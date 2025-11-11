@@ -16,11 +16,3 @@
  *
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
-
-interface WorkerOutputMessage {
-  blob: Blob;
-  root: string;
-  fileCount: number;
-}
-
-export default WorkerOutputMessage;

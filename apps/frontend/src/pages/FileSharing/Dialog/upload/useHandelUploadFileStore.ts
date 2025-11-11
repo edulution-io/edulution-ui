@@ -26,12 +26,19 @@ import UploadResult from '@libs/filesharing/types/uploadResult';
 import createFileUploader from '@libs/filesharing/utils/createFileUploader';
 import createUploadClient from '@libs/filesharing/utils/createUploadClient';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
+import ContentType from '@libs/filesharing/types/contentType';
+import eduApi from '@/api/eduApi';
+import extractAllDirectories from '@libs/filesharing/utils/extractAllDirectories';
+import { toast } from 'sonner';
 
 interface HandelUploadFileStore {
   isUploadDialogOpen: boolean;
   filesToUpload: UploadFile[];
   isUploading: boolean;
   lastError?: string;
+  totalFilesCount: number;
+  totalBytesCount: number;
   progressById: Record<string, { share: string | undefined; fileName: string; progress: FileProgress }>;
   uploadingById: Map<string, boolean>;
   setIsUploadDialogOpen: (isOpen: boolean) => void;
@@ -39,16 +46,15 @@ interface HandelUploadFileStore {
   setFilesToUpload: (files: UploadFile[]) => void;
   updateFilesToUpload: (updater: (files: UploadFile[]) => UploadFile[]) => void;
   markUploading: (fileId: string, uploading: boolean) => void;
-  uploadFiles: (
-    currentPath: string,
-    accessToken: string,
-    share: string | undefined,
-    parallel?: boolean,
-  ) => Promise<UploadResult[]>;
+  setDirectoryCreationProgress: (current: number, total: number, share: string | undefined) => void;
+  uploadFiles: (currentPath: string, accessToken: string, share: string | undefined) => Promise<UploadResult[]>;
+  clearProgress: () => void;
   reset: () => void;
 }
 
 const initialState = {
+  totalFilesCount: 0,
+  totalBytesCount: 0,
   isUploadDialogOpen: false,
   filesToUpload: [],
   isUploading: false,
@@ -57,97 +63,257 @@ const initialState = {
   uploadingById: new Map<string, boolean>(),
 };
 
+const calculateTotalFilesAndBytes = (files: UploadFile[]): { filesCount: number; bytesCount: number } => {
+  let filesCount = 0;
+  let bytesCount = 0;
+
+  files.forEach((file) => {
+    if (file.isFolder && file.files) {
+      filesCount += file.files.length;
+      file.files.forEach((innerFile) => {
+        bytesCount += innerFile.size;
+      });
+    } else {
+      filesCount += 1;
+      bytesCount += file.size;
+    }
+  });
+
+  return { filesCount, bytesCount };
+};
+
+const createDirectory = async (path: string, webdavShare: string | undefined): Promise<void> => {
+  try {
+    const pathParts = path.split('/').filter((part) => part);
+    const directoryName = pathParts[pathParts.length - 1];
+    const parentPath = pathParts.slice(0, -1).join('/');
+    const parentPathWithSlash = `/${parentPath}/`;
+
+    await eduApi.post(
+      FileSharingApiEndpoints.FILESHARING_ACTIONS,
+      {
+        path: parentPathWithSlash,
+        newPath: directoryName,
+      },
+      {
+        params: {
+          share: webdavShare,
+          type: ContentType.DIRECTORY,
+          path: parentPathWithSlash,
+        },
+      },
+    );
+  } catch (error) {
+    toast.error('Fehler beim Erstellen des Verzeichnisses');
+  }
+};
+
+const uploadFolderWithFiles = async (
+  folder: UploadFile,
+  basePath: string,
+  webdavShare: string | undefined,
+  uploadFile: (file: File, uploadPath: string) => Promise<void>,
+  setDirectoryProgress: (current: number, total: number, share: string | undefined) => void,
+): Promise<void> => {
+  if (!folder.isFolder || !folder.files) {
+    return;
+  }
+
+  const directories = extractAllDirectories(folder, basePath);
+
+  let createdCount = 0;
+
+  await directories.reduce(async (previousPromise, directory) => {
+    await previousPromise;
+    try {
+      setDirectoryProgress(createdCount, directories.length, webdavShare);
+      await createDirectory(directory, webdavShare);
+      createdCount += 1;
+    } catch (error) {
+      toast.error('Fehler beim Erstellen des Verzeichnisses');
+    }
+  }, Promise.resolve());
+
+  setDirectoryProgress(directories.length, directories.length, webdavShare);
+
+  await folder.files.reduce(async (previousPromise, file) => {
+    await previousPromise;
+
+    const relativePath = file.webkitRelativePath || file.name;
+    const cleanBasePath = basePath.endsWith('/') ? basePath.slice(0, -1) : basePath;
+    const uploadPath = `${cleanBasePath}/${relativePath}`;
+
+    try {
+      await uploadFile(file, uploadPath);
+    } catch (error) {
+      toast.error('Fehler beim Hochladen des Datei-Inhalts');
+    }
+  }, Promise.resolve());
+};
+
 const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
   ...initialState,
 
   setIsUploadDialogOpen: (isOpen) => set({ isUploadDialogOpen: isOpen }),
+
   closeUploadDialog: () => set({ isUploadDialogOpen: false }),
 
-  setFilesToUpload: (files) =>
-    set((state) => ({
-      filesToUpload: [
-        ...state.filesToUpload,
-        ...files.map((file) => ({
-          ...file,
-          id: file.id ?? uuid(),
-        })),
-      ],
-    })),
+  setFilesToUpload: (files) => {
+    const filesWithIds = files.map((file) => ({
+      ...file,
+      id: file.id ?? uuid(),
+    }));
+
+    const allFiles = [...get().filesToUpload, ...filesWithIds];
+    const { filesCount, bytesCount } = calculateTotalFilesAndBytes(allFiles);
+
+    set({
+      filesToUpload: allFiles,
+      totalFilesCount: filesCount,
+      totalBytesCount: bytesCount,
+    });
+  },
 
   updateFilesToUpload: (updater) => set((state) => ({ filesToUpload: updater(state.filesToUpload) })),
 
   markUploading: (fileId: string, uploading: boolean): void => {
     set((state) => {
-      const next = new Map(state.uploadingById);
-      if (uploading) next.set(fileId, true);
-      else next.delete(fileId);
+      const nextUploadingById = new Map(state.uploadingById);
+      if (uploading) {
+        nextUploadingById.set(fileId, true);
+      } else {
+        nextUploadingById.delete(fileId);
+      }
       return {
-        uploadingById: next,
-        isUploading: next.size > 0,
+        uploadingById: nextUploadingById,
+        isUploading: nextUploadingById.size > 0,
       };
     });
+  },
+
+  setDirectoryCreationProgress: (current: number, total: number, share: string | undefined) => {
+    const progressId = 'directory-creation';
+
+    if (current >= total) {
+      set((state) => {
+        const newProgressById = { ...state.progressById };
+        delete newProgressById[progressId];
+        return { progressById: newProgressById };
+      });
+    } else {
+      const progress: FileProgress = {
+        status: 'uploading' as const,
+        percent: Math.round((current / total) * 100),
+        loaded: current,
+        total,
+        percentageComplete: Math.round((current / total) * 100),
+        loadedByteCount: current,
+        totalByteCount: total,
+      };
+
+      set((state) => ({
+        progressById: {
+          ...state.progressById,
+          [progressId]: {
+            share,
+            fileName: 'Ordnerstruktur wird angelegt...',
+            progress,
+          },
+        },
+      }));
+    }
   },
 
   uploadFiles: async (
     currentPath: string,
     accessToken: string,
     webdavShare: string | undefined,
-    parallel: boolean = true,
   ): Promise<UploadResult[]> => {
     const files = get().filesToUpload;
-    if (!files || files.length === 0) return [];
 
-    set({ lastError: undefined });
+    if (!files || files.length === 0) {
+      return [];
+    }
 
-    const setProgressForFile = (fileId: string, fileName: string, share: string | undefined, next: FileProgress) =>
-      set((state) => ({
-        progressById: {
-          ...state.progressById,
-          [fileId]: { share, fileName, progress: next },
-        },
-      }));
+    const { filesCount, bytesCount } = calculateTotalFilesAndBytes(files);
+
+    set({
+      lastError: undefined,
+      filesToUpload: [],
+      totalFilesCount: filesCount,
+      totalBytesCount: bytesCount,
+    });
 
     const uploadHttpClient = createUploadClient(`/${EDU_API_ROOT}`, { share: webdavShare }, accessToken);
 
-    const uploader = createFileUploader({
+    const setProgressForFile = (fileId: string, fileName: string, share: string | undefined, progress: FileProgress) =>
+      set((state) => ({
+        progressById: {
+          ...state.progressById,
+          [fileId]: { share, fileName, progress },
+        },
+      }));
+
+    const singleFileUploader = createFileUploader({
       httpClient: uploadHttpClient,
       destinationPath: currentPath,
-      onProgressUpdate: (fileItem, next) => setProgressForFile(fileItem.id, fileItem.name, webdavShare, next),
+      onProgressUpdate: (fileItem, progress) => setProgressForFile(fileItem.id, fileItem.name, webdavShare, progress),
       onUploadingChange: (fileItem, uploading) => get().markUploading(fileItem.id, uploading),
     });
 
-    let outcomes: UploadResult[];
+    const outcomes: UploadResult[] = [];
+    let processedItems = 0;
 
-    if (parallel) {
-      const uploadPromises = files.map((fileItem) => uploader(fileItem));
-      set({ filesToUpload: [] });
-      const settledUploadResults = await Promise.allSettled(uploadPromises);
+    await files.reduce(async (previousPromise, fileItem) => {
+      await previousPromise;
 
-      const successfulIds = settledUploadResults.filter((r) => r.status === 'fulfilled').map((_r, i) => files[i].id);
+      processedItems += 1;
 
-      set((state) => ({
-        filesToUpload: state.filesToUpload.filter((f) => !successfulIds.includes(f.id)),
-      }));
+      try {
+        if ('isFolder' in fileItem && fileItem.isFolder && fileItem.files) {
+          const uploadFileCallback = async (file: File, uploadPath: string) => {
+            const tempUploadFile: UploadFile = Object.assign(file, {
+              id: `${fileItem.id}-${uploadPath}`,
+              uploadPath,
+            });
+            await singleFileUploader(tempUploadFile);
+          };
 
-      outcomes = settledUploadResults.map((result, index) =>
-        result.status === 'fulfilled'
-          ? result.value
-          : {
-              id: files[index].id,
-              name: files[index].name,
-              success: false,
-              error: String(result.reason),
-            },
-      );
-    } else {
-      outcomes = await files.reduce<Promise<UploadResult[]>>(async (accPromise, fileItem) => {
-        const acc = await accPromise;
-        const outcome = await uploader(fileItem);
-        return [...acc, outcome];
-      }, Promise.resolve([]));
-    }
+          await uploadFolderWithFiles(
+            fileItem,
+            currentPath,
+            webdavShare,
+            uploadFileCallback,
+            get().setDirectoryCreationProgress,
+          );
+
+          outcomes.push({
+            name: fileItem.folderName || fileItem.name,
+            success: true,
+          });
+        } else {
+          const result = await singleFileUploader(fileItem);
+
+          outcomes.push(result);
+        }
+      } catch (error) {
+        console.error(`❌ [${processedItems}/${files.length}] Failed: ${fileItem.name}`, error);
+        outcomes.push({
+          name: fileItem.name,
+          success: false,
+        });
+      }
+    }, Promise.resolve());
 
     return outcomes;
+  },
+
+  clearProgress: () => {
+    set({
+      progressById: {},
+      totalFilesCount: 0,
+      totalBytesCount: 0,
+    });
   },
 
   reset: () => set({ ...initialState }),

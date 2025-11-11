@@ -1323,7 +1323,10 @@
     "overwriteWarningDescriptionFiles": "Les fichiers suivants sont écrasés:",
     "oversizedFilesDetected": "Fichiers trop grands découverts",
     "oversizedFileDetected": "Fichier trop grand découvert!",
-    "cannotUploadOversized": "Aucun fichier de plus de 50 Mo ne peut être téléversé."
+    "cannotUploadOversized": "Aucun fichier de plus de 50 Mo ne peut être téléversé.",
+    "file": "Fichier",
+    "files": "Fichiers",
+    "creatingDirectoryStructure": "Création de la structure des dossiers"
   },
   "linuxmuster": {
     "title": "Linuxmuster",

@@ -24,7 +24,6 @@ const JOB_NAMES = {
   MOVE_OR_RENAME_JOB: 'move-or-rename-file',
   COPY_FILE_JOB: 'copy-file',
   CREATE_FOLDER_JOB: 'create-folder',
-  FILE_UPLOAD_JOB: 'file-upload',
   REFRESH_USERS_IN_CACHE: 'REFRESH_USERS_IN_CACHE',
 } as const;
 

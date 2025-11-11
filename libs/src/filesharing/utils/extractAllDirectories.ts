@@ -17,9 +17,25 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface WorkerInputMessage {
-  files: File[];
-  root: string;
-}
+import { UploadFile } from '@libs/filesharing/types/uploadFile';
 
-export default WorkerInputMessage;
+const extractAllDirectories = (folder: UploadFile, basePath: string): string[] => {
+  if (!folder.files) return [];
+
+  const directories = new Set<string>();
+
+  folder.files.forEach((file) => {
+    const relativePath = file.webkitRelativePath || '';
+    if (!relativePath) return;
+
+    const parts = relativePath.split('/');
+    for (let i = 0; i < parts.length - 1; i += 1) {
+      const dirPath = parts.slice(0, i + 1).join('/');
+      directories.add(`${basePath}/${dirPath}`);
+    }
+  });
+
+  return Array.from(directories).sort();
+};
+
+export default extractAllDirectories;

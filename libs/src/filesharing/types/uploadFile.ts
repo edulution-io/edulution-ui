@@ -17,9 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export type UploadFile = File & {
+export interface UploadFile extends File {
+  id: string;
+  isFolder?: boolean;
+  folderName?: string;
+  files?: File[];
+  fileCount?: number;
   isZippedFolder?: boolean;
   originalFolderName?: string;
-  fileCount?: number;
-  id: string;
-};
+  uploadPath?: string;
+}
