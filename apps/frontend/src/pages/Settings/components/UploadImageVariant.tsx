@@ -15,24 +15,31 @@ import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { ThemeType } from '@libs/common/constants/theme';
 import ThemedFile from '@libs/common/types/themedFile';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
+import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import uploadImageFile from '@/store/FilesystemStore/uploadImageFile';
 import LogoUploadField from '@/pages/Settings/components/LogoUploadField';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 
 export type UploadImageVariantProps = {
   variant: ThemeType;
-  settingLocation: string;
+  appName: string;
   fieldPath: string;
   form: UseFormReturn<ThemedFile>;
 };
 
-const UploadImageVariant: React.FC<UploadImageVariantProps> = ({ variant, settingLocation, fieldPath, form }) => {
+const UploadImageVariant: React.FC<UploadImageVariantProps> = ({ variant, appName, fieldPath, form }) => {
   const { t } = useTranslation();
+
+  const [keyValue, setKeyValue] = React.useState<number>(0);
 
   const path = `${fieldPath}.${variant}` as keyof ThemedFile;
 
-  const fileName = `${settingLocation}-default-logo-${variant}.webp`;
-  const url = `/${EDU_API_ROOT}/public/assets/${settingLocation}/${fileName}`;
+  const filename = `${appName}-custom-logo-${variant}.webp`;
+  const previewSrc = `/${EDU_API_ROOT}/${EDU_API_CONFIG_ENDPOINTS.FILES}/${FILE_ENDPOINTS.FILE}/${appName}/${filename}`;
+
+  const fallbackFileName = `${appName}-default-logo-${variant}.webp`;
+  const fallbackSrc = `/${EDU_API_ROOT}/public/assets/${appName}/${fallbackFileName}`;
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -47,20 +54,24 @@ const UploadImageVariant: React.FC<UploadImageVariantProps> = ({ variant, settin
 
     form.setValue(path, file, { shouldDirty: true });
 
-    if (file && variant)
+    if (file && variant) {
       await uploadImageFile({
-        destination: path,
-        filename: fileName,
+        destination: '',
+        filename,
         file,
-        appName: settingLocation,
+        appName,
       });
+      setKeyValue(keyValue + 1);
+    }
   };
 
   return (
     <LogoUploadField
+      cacheKey={keyValue}
       variant={variant}
       inputRef={inputRef}
-      previewSrc={url}
+      previewSrc={previewSrc}
+      fallbackSrc={fallbackSrc}
       hasLocalSelection={hasLocalSelection}
       onFileChange={onFileChange()}
       chooseText={t(`common.chooseFile`)}

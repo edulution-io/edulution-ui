@@ -26,13 +26,13 @@ const UploadImageWithPreview: React.FC<UploadImageWithPreviewProps> = ({ setting
   <div className="flex min-w-[480px] flex-grow flex-row gap-4">
     <UploadImageVariant
       variant={Theme.light}
-      settingLocation={settingLocation}
+      appName={settingLocation}
       fieldPath={fieldPath}
       form={form}
     />
     <UploadImageVariant
       variant={Theme.dark}
-      settingLocation={settingLocation}
+      appName={settingLocation}
       fieldPath={fieldPath}
       form={form}
     />

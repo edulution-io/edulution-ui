@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { readdir, ensureDir, moveSync } from 'fs-extra';
+import { readdir, ensureDir, moveSync, stat as fsStat } from 'fs-extra';
 import { Logger } from '@nestjs/common';
 import SURVEYS_FILES_PATH from '@libs/survey/constants/surveysFilesPath';
 import SURVEYS_FILE_FOLDERS from '@libs/survey/constants/surveysFileFolders';
@@ -30,6 +30,13 @@ const surveysMigration001Attachments = {
         Logger.error(`Failed to create directory ${SURVEYS_ATTACHMENT_PATH}`, surveysMigration001Attachments.name);
       }
     }
+    includedFolders.filter(async (folder) => {
+      const stat = await fsStat(`${SURVEYS_FILES_PATH}/${folder}`);
+      if (stat.isDirectory()) {
+        return true;
+      }
+      return false;
+    });
     includedFolders.forEach((folder) => {
       if (!SURVEYS_FILE_FOLDERS.includes(folder)) {
         try {
