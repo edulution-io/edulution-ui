@@ -36,7 +36,7 @@ type AnswerType =
   | SingleFileQuestionAnswer
   | SingleFileQuestionAnswer[];
 
-type QuestionAnswerType = AnswerType | Record<string, AnswerType> | Record<string, AnswerType>[];
+type QuestionAnswerType = AnswerType | Record<string, AnswerType>;
 
 type SurveyAnswerType = Record<string, QuestionAnswerType>;
 
@@ -49,8 +49,8 @@ const isSimpleAnswerQuestion = (questionAnswer: AnswerType): boolean =>
 
 const isSimpleFileTypeQuestion = (questionAnswer: AnswerType): boolean =>
   Object.isObject(questionAnswer) &&
-  Object(questionAnswer).content &&
-  typeof Object(questionAnswer).content === 'string';
+  !!(questionAnswer as SingleFileQuestionAnswer).content &&
+  typeof (questionAnswer as SingleFileQuestionAnswer).content === 'string';
 
 @Injectable()
 class SurveyAnswerAttachmentsService implements OnModuleInit {
@@ -139,7 +139,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     const fileNamesToKeep: string[] = [];
     const permanentFileNames = await this.fileSystemService.getAllFilenamesInDirectory(directory);
 
-    let surveysQuestionAnswer: QuestionAnswerType[] = [];
+    const surveysQuestionAnswer: QuestionAnswerType[] = [];
     if (Array.isArray(questionAnswer)) {
       questionAnswer.forEach((item) => {
         const fileName = (item as SingleFileQuestionAnswer).content?.split('/').pop();
