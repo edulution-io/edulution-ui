@@ -83,7 +83,7 @@ const Whiteboard = () => {
   };
 
   return (
-    <PageLayout isFullScreen>
+    <PageLayout isFullScreenAppWithoutFloatingButtons>
       <Suspense fallback={loader}>
         <div className="z-0 h-full w-full">{getPageContent()}</div>
       </Suspense>

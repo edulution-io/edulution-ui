@@ -30,6 +30,8 @@ import { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSett
 import defaultValues from '@libs/global-settings/constants/defaultValues';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import GLOBAL_SETTINGS_TABS from '@libs/global-settings/constants/globalSettingsTabs';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import { toast } from 'sonner';
 import DockerContainerTable from '../AppConfig/DockerIntegration/DockerContainerTable';
 import GlobalSettings from '../GlobalSettings/GlobalSettings';
 import UserAdministration from './UserAdministration';
@@ -86,6 +88,7 @@ const SettingsOverviewPage: React.FC = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { globalSettings, setGlobalSettings, getGlobalAdminSettings } = useGlobalSettingsApiStore();
+  const { isGeneric } = useDeploymentTarget();
 
   const form = useForm<GlobalSettingsFormValues>({ defaultValues });
 
@@ -134,6 +137,10 @@ const SettingsOverviewPage: React.FC = () => {
   }, [globalSettings, form.reset]);
 
   const onSubmit: SubmitHandler<GlobalSettingsDto> = (newGlobalSettings) => {
+    if (isGeneric && newGlobalSettings.auth.adminGroups.length === 0) {
+      toast.warning(t('settings.userAdministration.setAdminGroupWarning'));
+      return;
+    }
     void setGlobalSettings(newGlobalSettings);
   };
 

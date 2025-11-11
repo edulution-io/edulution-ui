@@ -23,6 +23,7 @@ import { IconContext } from 'react-icons';
 import { useTranslation } from 'react-i18next';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import type FloatingButtonConfig from '@libs/ui/types/FloatingButtons/floatingButtonConfig';
+import { FLOATING_BUTTON_CLASS_NAME } from '@libs/ui/constants/floatingButtonsConfig';
 
 const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
   icon: Icon,
@@ -33,7 +34,7 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
   dropdownItems = [],
 }) => {
   const { t } = useTranslation();
-  const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
+  const iconContextValue = useMemo(() => ({ className: 'h-6 w-6 m-4 md:h-8 md:w-8 md:m-5' }), []);
 
   const renderContent = () => {
     if (variant === 'dropdown' && dropdownItems.length > 0) {
@@ -43,7 +44,7 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
             <Button
               type="button"
               variant="btn-hexagon"
-              className="bg-opacity-90 p-4"
+              className="bg-opacity-90 p-1"
               hexagonIconAltText={t('common.showOptions')}
             >
               <IconContext.Provider value={iconContextValue}>
@@ -60,7 +61,7 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
       <Button
         type={type}
         variant="btn-hexagon"
-        className="bg-opacity-90 p-4"
+        className="bg-opacity-90 p-1 md:p-4"
         onClick={onClick}
         hexagonIconAltText={text}
       >
@@ -72,11 +73,9 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center pr-1 md:pt-1">
       {renderContent()}
-      <span className="max-w-24 justify-center overflow-hidden text-ellipsis whitespace-nowrap text-center text-background hover:max-w-28 hover:overflow-visible">
-        {text}
-      </span>
+      <span className={FLOATING_BUTTON_CLASS_NAME}>{text}</span>
     </div>
   );
 };
