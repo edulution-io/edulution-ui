@@ -20,7 +20,6 @@
 import { Model, ProjectionType } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import GlobalSettingsErrorMessages from '@libs/global-settings/constants/globalSettingsErrorMessages';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
@@ -43,7 +42,6 @@ class GlobalSettingsService implements OnModuleInit {
   constructor(
     @InjectModel(GlobalSettings.name) private globalSettingsModel: Model<GlobalSettingsDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    private readonly configService: ConfigService,
   ) {}
 
   async onModuleInit() {
@@ -114,10 +112,7 @@ class GlobalSettingsService implements OnModuleInit {
     try {
       const globalSetting = await this.getGlobalSettings('auth.adminGroups');
 
-      const initialAdminGroups = this.configService.get<string>('EDUI_INITIAL_ADMIN_GROUP', '');
-      const normalizedGroup = initialAdminGroups.startsWith('/') ? initialAdminGroups : `/${initialAdminGroups}`;
-
-      let adminGroupsList: string[] = [normalizedGroup];
+      let adminGroupsList: string[] = [];
 
       if (Array.isArray(globalSetting?.auth?.adminGroups) && globalSetting.auth.adminGroups.length > 0) {
         adminGroupsList = globalSetting.auth.adminGroups.map((group) => group.path);
