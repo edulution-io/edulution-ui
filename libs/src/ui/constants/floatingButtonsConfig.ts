@@ -10,10 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import FloatingButtonsBarConfig from './floatingButtonsBarConfig';
-
-type FloatingButtonsBarProps = {
-  config: FloatingButtonsBarConfig;
-};
-
-export default FloatingButtonsBarProps;
+export const DEBOUNCE_MS = 50;
+export const WIDTH_TOLERANCE_PX = 1;
+export const DEFAULT_BUTTON_WIDTH = 108;
+export const DECREASE_DELAY_MS = 100;
+export const FLOATING_BUTTON_CLASS_NAME =
+  'w-24 justify-center overflow-hidden text-ellipsis whitespace-nowrap text-center leading-tight text-background hover:max-w-28 hover:overflow-visible md:leading-[inherit]';
