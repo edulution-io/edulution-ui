@@ -17,7 +17,7 @@ import NativeAppHeaderProps from '@libs/ui/types/NativeAppHeaderProps';
 const NativeAppHeader = ({ title, iconSrc, description }: NativeAppHeaderProps) => {
   const { t } = useTranslation();
   return (
-    <div className="mr-2 flex min-h-[6.25rem] text-background xl:max-h-[6.25rem]">
+    <div className="mr-2 flex min-h-[6.25rem] pl-2 text-background md:pl-4 xl:max-h-[6.25rem]">
       <img
         src={iconSrc}
         alt={`${title} ${t('common.icon')}`}

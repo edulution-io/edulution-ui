@@ -21,22 +21,19 @@ import { getFromPathName } from '@libs/common/utils';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import cn from '@libs/common/utils/className';
 
-interface AppLayoutProps {
+interface PageLayoutProps {
   nativeAppHeader?: NativeAppHeaderProps;
   children: React.ReactNode;
   isFullScreenAppWithoutFloatingButtons?: boolean;
-  classNames?: {
-    page?: string;
-    main?: string;
-  };
+  hasFullWidthMain?: boolean;
 }
 
 const PageLayout = ({
   nativeAppHeader,
   children,
   isFullScreenAppWithoutFloatingButtons,
-  classNames,
-}: AppLayoutProps) => {
+  hasFullWidthMain,
+}: PageLayoutProps) => {
   const { pathname } = useLocation();
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
   const rootPathName = getFromPathName(pathname, 1);
@@ -48,7 +45,7 @@ const PageLayout = ({
   return (
     <div
       id="page"
-      className={cn('flex h-full w-full flex-col pl-2 pt-1 md:pl-4 md:pt-1', classNames?.page)}
+      className="flex h-full w-full flex-col pt-1 md:pt-1"
     >
       {nativeAppHeader && (
         <NativeAppHeader
@@ -59,10 +56,9 @@ const PageLayout = ({
       )}
 
       <main
-        className={cn(
-          'flex flex-1 flex-col overflow-y-auto overflow-x-hidden pl-2 pr-6 scrollbar-thin',
-          classNames?.main,
-        )}
+        className={cn('flex flex-1 flex-col overflow-y-auto overflow-x-hidden pl-4 pr-6 scrollbar-thin md:pl-6', {
+          'px-0 md:px-0': hasFullWidthMain,
+        })}
       >
         {children}
       </main>
