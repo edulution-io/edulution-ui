@@ -21,14 +21,19 @@ import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoi
 import uploadImageFile from '@/store/FilesystemStore/uploadImageFile';
 import LogoUploadField from '@/pages/Settings/components/LogoUploadField';
 
-export type UploadImageVariantProps = {
+export type LogoUploadBrandingAppFieldProps = {
   variant: ThemeType;
   appName: string;
   fieldPath: string;
   form: UseFormReturn<ThemedFile>;
 };
 
-const UploadImageVariant: React.FC<UploadImageVariantProps> = ({ variant, appName, fieldPath, form }) => {
+const LogoUploadBrandingAppField: React.FC<LogoUploadBrandingAppFieldProps> = ({
+  variant,
+  appName,
+  fieldPath,
+  form,
+}) => {
   const { t } = useTranslation();
 
   const [keyValue, setKeyValue] = React.useState<number>(0);
@@ -80,4 +85,4 @@ const UploadImageVariant: React.FC<UploadImageVariantProps> = ({ variant, appNam
   );
 };
 
-export default UploadImageVariant;
+export default LogoUploadBrandingAppField;

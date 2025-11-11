@@ -11,7 +11,6 @@
  */
 
 const ExtendedOptionField = {
-  logo: 'logo',
   input: 'input',
   password: 'password',
   table: 'table',
@@ -19,6 +18,7 @@ const ExtendedOptionField = {
   switch: 'switch',
   textarea: 'textarea',
   dropdown: 'dropdown',
+  logo: 'logo',
 } as const;
 
 export default ExtendedOptionField;

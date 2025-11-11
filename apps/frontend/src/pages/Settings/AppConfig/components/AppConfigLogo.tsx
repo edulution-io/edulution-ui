@@ -14,23 +14,23 @@ import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { Theme } from '@libs/common/constants/theme';
 import ThemedFile from '@libs/common/types/themedFile';
-import UploadImageVariant from '@/pages/Settings/components/UploadImageVariant';
+import LogoUploadBrandingAppField from '@/pages/Settings/components/LogoUploadBrandingAppField';
 
-export type UploadImageWithPreviewProps = {
+export type AppConfigLogoProps = {
   settingLocation: string;
   fieldPath: string;
   form: UseFormReturn<ThemedFile>;
 };
 
-const UploadImageWithPreview: React.FC<UploadImageWithPreviewProps> = ({ settingLocation, fieldPath, form }) => (
+const AppConfigLogo: React.FC<AppConfigLogoProps> = ({ settingLocation, fieldPath, form }) => (
   <div className="flex min-w-[480px] flex-grow flex-row gap-4">
-    <UploadImageVariant
+    <LogoUploadBrandingAppField
       variant={Theme.light}
       appName={settingLocation}
       fieldPath={fieldPath}
       form={form}
     />
-    <UploadImageVariant
+    <LogoUploadBrandingAppField
       variant={Theme.dark}
       appName={settingLocation}
       fieldPath={fieldPath}
@@ -39,4 +39,4 @@ const UploadImageWithPreview: React.FC<UploadImageWithPreviewProps> = ({ setting
   </div>
 );
 
-export default UploadImageWithPreview;
+export default AppConfigLogo;

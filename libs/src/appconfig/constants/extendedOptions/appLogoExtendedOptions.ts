@@ -10,7 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Theme } from '@libs/common/constants/theme';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
@@ -21,15 +20,12 @@ const ThemedValue: ThemedFile = { dark: null, light: null };
 const APP_LOGO_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
   {
     name: ExtendedOptionKeys.APP_LOGO,
-    description: 'appExtendedOptions.appLogoDescription',
-    title: 'appExtendedOptions.appLogoTitle',
+    description: '',
+    title: '',
     type: ExtendedOptionField.logo,
     value: ThemedValue,
     width: 'full',
-    options: [
-      { id: Theme.dark, name: 'appExtendedOptions.appLogo.dark' },
-      { id: Theme.light, name: 'appExtendedOptions.appLogo.light' },
-    ],
+    options: [],
   },
 ];
 
