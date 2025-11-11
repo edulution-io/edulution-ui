@@ -179,7 +179,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
         className="column max-w-screen-2xl space-y-6"
       >
         {matchingConfig && (
-          <div className="m-5 space-y-10 [&>*]:rounded-lg [&>*]:bg-ciDarkGreyDisabled [&>*]:px-2">
+          <div className="m-5 space-y-10 [&>*]:rounded-xl [&>*]:bg-muted-background [&>*]:px-2">
             <div className="space-y-3 py-3">
               <AppConfigPositionSelect
                 form={form}

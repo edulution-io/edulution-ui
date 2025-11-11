@@ -60,6 +60,7 @@ module.exports = {
         muted: {
           DEFAULT: 'var(--muted)',
           foreground: 'var(--muted-foreground)',
+          background: 'var(--muted-background)',
         },
         accent: {
           DEFAULT: 'var(--accent)',

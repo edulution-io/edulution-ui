@@ -32,7 +32,7 @@ const TLDrawHistory = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { isMobileView } = useMedia();
 
-  const className = 'absolute top-[40px] rounded-b-lg bg-ciDarkGreyDisabled text-muted-foreground z-[11] h-[40px]';
+  const className = 'absolute top-[40px] rounded-b-lg bg-muted-background text-muted-foreground z-[11] h-[40px]';
 
   if (currentRoomHistory === null)
     return (
