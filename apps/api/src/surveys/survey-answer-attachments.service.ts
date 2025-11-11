@@ -17,41 +17,14 @@ import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
 import SURVEYS_ANSWER_FOLDER from '@libs/survey/constants/surveyAnswersFolder';
 import SURVEY_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersAttachmentPath';
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
+import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
+import TSurveyFileQuestionAnswerType from '@libs/survey/types/TSurveyFileQuestionAnswerType';
+import TSurveyQuestionAnswerTypes from '@libs/survey/types/TSurveyQuestionAnswerTypes';
+import isAnswerSimpleQuestionAnswer from '@libs/survey/utils/isAnswerSimpleQuestionAnswer';
+import isAnswerSimpleFileQuestionAnswer from '@libs/survey/utils/isAnswerSimpleFileQuestionAnswer';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
-
-// TODO: MOVE CONSTANTS AND UTILS TO LIBS
-type SingleFileQuestionAnswer = object & { content?: string };
-
-type AnswerType =
-  | string
-  | number
-  | boolean
-  | bigint
-  | string[]
-  | number[]
-  | boolean[]
-  | bigint[]
-  | SingleFileQuestionAnswer
-  | SingleFileQuestionAnswer[];
-
-type QuestionAnswerType = AnswerType | Record<string, AnswerType>;
-
-type SurveyAnswerType = Record<string, QuestionAnswerType>;
-
-const isSimpleAnswerQuestion = (questionAnswer: AnswerType): boolean =>
-  typeof questionAnswer === 'string' ||
-  typeof questionAnswer === 'number' ||
-  typeof questionAnswer === 'boolean' ||
-  typeof questionAnswer === 'bigint' ||
-  typeof questionAnswer === 'undefined';
-
-const isSimpleFileTypeQuestion = (questionAnswer: AnswerType): boolean =>
-  typeof questionAnswer === 'object' &&
-  questionAnswer !== null &&
-  !!(questionAnswer as SingleFileQuestionAnswer).content &&
-  typeof (questionAnswer as SingleFileQuestionAnswer).content === 'string';
 
 @Injectable()
 class SurveyAnswerAttachmentsService implements OnModuleInit {
@@ -102,27 +75,27 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     userName: string,
     surveyId: string,
     questionId: string,
-    questionAnswer: QuestionAnswerType,
+    questionAnswer: TSurveyQuestionAnswerTypes,
     keepOldFiles: boolean = false,
-  ): Promise<QuestionAnswerType> {
+  ): Promise<TSurveyQuestionAnswerTypes> {
     let isFileQuestionAnswer = false;
     if (Array.isArray(questionAnswer)) {
-      if (questionAnswer.every((entry) => isSimpleAnswerQuestion(entry))) {
+      if (questionAnswer.every((entry) => isAnswerSimpleQuestionAnswer(entry))) {
         return questionAnswer;
       }
-      if (questionAnswer.every((entry) => isSimpleFileTypeQuestion(entry))) {
+      if (questionAnswer.every((entry) => isAnswerSimpleFileQuestionAnswer(entry))) {
         isFileQuestionAnswer = true;
       }
     } else {
-      if (isSimpleAnswerQuestion(questionAnswer)) {
+      if (isAnswerSimpleQuestionAnswer(questionAnswer)) {
         return questionAnswer;
       }
-      if (isSimpleFileTypeQuestion(questionAnswer)) {
+      if (isAnswerSimpleFileQuestionAnswer(questionAnswer)) {
         isFileQuestionAnswer = true;
       }
     }
     if (!isFileQuestionAnswer) {
-      const nestedQuestionAnswer = questionAnswer as SurveyAnswerType;
+      const nestedQuestionAnswer = questionAnswer as TSurveyAnswer;
       const updatedQuestionAnswer = await this.processSurveyAnswer(userName, surveyId, nestedQuestionAnswer, true);
       return updatedQuestionAnswer;
     }
@@ -140,10 +113,10 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     const fileNamesToKeep: string[] = [];
     const permanentFileNames = await this.fileSystemService.getAllFilenamesInDirectory(directory);
 
-    const surveysQuestionAnswer: QuestionAnswerType[] = [];
+    const surveysQuestionAnswer: TSurveyQuestionAnswerTypes[] = [];
     if (Array.isArray(questionAnswer)) {
       questionAnswer.forEach((item) => {
-        const fileName = (item as SingleFileQuestionAnswer).content?.split('/').pop();
+        const fileName = (item as TSurveyFileQuestionAnswerType).content?.split('/').pop();
         if (fileName && permanentFileNames.includes(fileName)) {
           fileNamesToKeep.push(fileName);
         }
@@ -153,7 +126,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
         surveysQuestionAnswer.push(item);
       });
     } else {
-      const fileName = (questionAnswer as SingleFileQuestionAnswer).content?.split('/').pop();
+      const fileName = (questionAnswer as TSurveyFileQuestionAnswerType).content?.split('/').pop();
       if (fileName && permanentFileNames.includes(fileName)) {
         fileNamesToKeep.push(fileName);
       }
@@ -184,9 +157,9 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
   async processSurveyAnswer(
     userName: string,
     surveyId: string,
-    answer: SurveyAnswerType,
+    answer: TSurveyAnswer,
     keepOldFiles: boolean = false,
-  ): Promise<SurveyAnswerType> {
+  ): Promise<TSurveyAnswer> {
     const surveyAnswer = answer;
     await Promise.all(
       Object.keys(surveyAnswer).map(async (question) => {
@@ -208,7 +181,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     answer: JSON,
     keepOldFiles: boolean = false,
   ): Promise<JSON> {
-    const surveyAnswer = answer as unknown as SurveyAnswerType;
+    const surveyAnswer = answer as unknown as TSurveyAnswer;
     const processedSurveyAnswer = await this.processSurveyAnswer(userName, surveyId, surveyAnswer, keepOldFiles);
     return processedSurveyAnswer as unknown as JSON;
   }
