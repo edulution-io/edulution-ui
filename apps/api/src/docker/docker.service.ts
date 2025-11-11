@@ -200,18 +200,6 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  private async imageExists(imageName: string): Promise<boolean> {
-    const images = await this.docker.listImages();
-
-    this.sseService.sendEventToUsers(
-      [SPECIAL_USERS.GLOBAL_ADMIN],
-      { progress: 'docker.events.checkingImage', from: `${imageName}` } as DockerEvent,
-      SSE_MESSAGE_TYPE.CONTAINER_PROGRESS,
-    );
-
-    return images.some((img) => img.RepoTags?.includes(imageName));
-  }
-
   static replaceEnvVariables(createContainersDto: Docker.ContainerCreateOptions[]) {
     let newCreateContainersDto: Docker.ContainerCreateOptions[] = [];
     newCreateContainersDto = createContainersDto.map((service) => ({
@@ -231,10 +219,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
         newCreateContainersDto.map(async (containerDto) => {
           const { Image } = containerDto;
           if (Image) {
-            const imageExists = await this.imageExists(Image);
-            if (!imageExists) {
-              await this.pullImage(Image);
-            }
+            await this.pullImage(Image);
           }
         }),
       );
