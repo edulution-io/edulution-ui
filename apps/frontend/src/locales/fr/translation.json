@@ -1326,7 +1326,11 @@
     "cannotUploadOversized": "Aucun fichier de plus de 50 Mo ne peut être téléversé.",
     "file": "Fichier",
     "files": "Fichiers",
-    "creatingDirectoryStructure": "Création de la structure des dossiers"
+    "creatingDirectoryStructure": "Création de la structure des dossiers",
+    "errors": {
+      "directoryCreationFailed": "Échec de la création du répertoire",
+      "fileUploadFailed": "Échec du téléchargement du fichier"
+    }
   },
   "linuxmuster": {
     "title": "Linuxmuster",

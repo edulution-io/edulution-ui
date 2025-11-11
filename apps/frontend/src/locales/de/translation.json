@@ -1499,7 +1499,11 @@
     "preparingFolder": "Ordner wird vorbereitet",
     "file": "Datei",
     "files": "Dateien",
-    "creatingDirectoryStructure": "Creating directory structure"
+    "creatingDirectoryStructure": "Ordnerstruktur wird angelegt",
+    "errors": {
+      "directoryCreationFailed": "Fehler beim Erstellen des Verzeichnisses",
+      "fileUploadFailed": "Fehler beim Hochladen des Datei-Inhalts"
+    }
   },
   "warnings": {
     "colorMayConflictWithTheme": "Manuelle Einstellung der Farbe kann zukünftig zu Problemen mit anderen Themes (hell/dunkel) führen. Es wird empfohlen, die Farbe der Schrift immer gleichzeitig mit der Hintergrundfarbe zu setzen."

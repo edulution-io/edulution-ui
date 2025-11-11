@@ -31,6 +31,7 @@ import ContentType from '@libs/filesharing/types/contentType';
 import eduApi from '@/api/eduApi';
 import extractAllDirectories from '@libs/filesharing/utils/extractAllDirectories';
 import { toast } from 'sonner';
+import { t } from 'i18next';
 
 interface HandelUploadFileStore {
   isUploadDialogOpen: boolean;
@@ -104,7 +105,7 @@ const createDirectory = async (path: string, webdavShare: string | undefined): P
       },
     );
   } catch (error) {
-    toast.error('Fehler beim Erstellen des Verzeichnisses');
+    toast.error(t('filesharing.filesharingUpload.errors.directoryCreationFailed'));
   }
 };
 
@@ -130,7 +131,7 @@ const uploadFolderWithFiles = async (
       await createDirectory(directory, webdavShare);
       createdCount += 1;
     } catch (error) {
-      toast.error('Fehler beim Erstellen des Verzeichnisses');
+      toast.error(t('filesharing.filesharingUpload.errors.directoryCreationFailed'));
     }
   }, Promise.resolve());
 
@@ -146,7 +147,7 @@ const uploadFolderWithFiles = async (
     try {
       await uploadFile(file, uploadPath);
     } catch (error) {
-      toast.error('Fehler beim Hochladen des Datei-Inhalts');
+      toast.error(t('filesharing.filesharingUpload.errors.fileUploadFailed'));
     }
   }, Promise.resolve());
 };
@@ -193,7 +194,6 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
 
   setDirectoryCreationProgress: (current: number, total: number, share: string | undefined) => {
     const progressId = 'directory-creation';
-
     if (current >= total) {
       set((state) => {
         const newProgressById = { ...state.progressById };
@@ -216,7 +216,7 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
           ...state.progressById,
           [progressId]: {
             share,
-            fileName: 'Ordnerstruktur wird angelegt...',
+            fileName: t('filesharing.filesharingUpload.creatingDirectoryStructure'),
             progress,
           },
         },
