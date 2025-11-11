@@ -21,7 +21,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { MdAdd } from 'react-icons/md';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import type FloatingButtonsBarProps from '@libs/ui/types/FloatingButtons/floatingButtonsProps';
+import type FloatingButtonsBarProps from '@libs/ui/types/FloatingButtons/floatingButtonsBarProps';
 import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
 import APPS from '@libs/appconfig/constants/apps';
 

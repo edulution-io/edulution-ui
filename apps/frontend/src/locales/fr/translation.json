@@ -1114,6 +1114,8 @@
     "infoQrCodeExpired": "Le temps de connexion avec l'application edulution.io a expiré."
   },
   "common": {
+    "more": "Plus",
+    "less": "Moins",
     "refreshPage": "Actualiser la page",
     "guest": "Invité",
     "ok": "OK",

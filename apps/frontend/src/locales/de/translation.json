@@ -1278,6 +1278,8 @@
     "infoQrCodeExpired": "Zeit für Login mit edulution.io APP abgelaufen."
   },
   "common": {
+    "more": "Mehr",
+    "less": "Weniger",
     "refreshPage": "Seite neu laden",
     "showMore": "Mehr anzeigen",
     "visibility": "Sichtbarkeit",

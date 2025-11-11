@@ -17,10 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import React from 'react';
 import FloatingButtonsBarConfig from './floatingButtonsBarConfig';
 
 type FloatingButtonsBarProps = {
   config: FloatingButtonsBarConfig;
+  ref?: React.MutableRefObject<HTMLDivElement | null>;
 };
 
 export default FloatingButtonsBarProps;
