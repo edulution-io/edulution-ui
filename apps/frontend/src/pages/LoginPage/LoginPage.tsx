@@ -345,7 +345,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <PageLayout>
+    <PageLayout hasFullWidthMain>
       <PageTitle translationId="login.pageTitle" />
       <Card
         variant="modal"

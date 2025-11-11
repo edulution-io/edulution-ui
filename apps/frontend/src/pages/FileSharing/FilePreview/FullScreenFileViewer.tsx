@@ -72,7 +72,7 @@ const FullScreenFileViewer = () => {
   if (!temporaryDownloadUrl) return null;
 
   return (
-    <PageLayout isFullScreen>
+    <PageLayout isFullScreenAppWithoutFloatingButtons>
       <PageTitle
         title={currentlyEditingFile?.filename}
         translationId="filesharing.sidebar"
