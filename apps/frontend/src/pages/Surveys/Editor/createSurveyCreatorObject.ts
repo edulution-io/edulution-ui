@@ -25,6 +25,16 @@ import '@/pages/Surveys/theme/creator.min.css';
 import '@/pages/Surveys/theme/custom.survey.css';
 import '@/pages/Surveys/theme/custom.creator.css';
 
+interface EditorLocale {
+  ed: {
+    surveyPlaceHolder: string;
+    surveyPlaceholderDescription: string;
+    surveyPlaceholderDescriptionMobile: string;
+    pagePlaceHolder: string;
+    panelPlaceHolder: string;
+  };
+}
+
 const createSurveyCreatorObject = (language = 'en') => {
   surveyLocalization.supportedLocales = ['en', 'de', 'fr'];
   surveyLocalization.defaultLocale = language;
@@ -32,22 +42,14 @@ const createSurveyCreatorObject = (language = 'en') => {
   editorLocalization.defaultLocale = language;
   editorLocalization.currentLocale = language;
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  editorLocalization.getLocale(language).ed.surveyPlaceHolder = t('survey.editor.surveyPlaceHolder');
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  editorLocalization.getLocale(language).ed.surveyPlaceholderDescription = t(
-    'survey.editor.surveyPlaceholderDescription',
-  );
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  editorLocalization.getLocale(language).ed.surveyPlaceholderDescriptionMobile = t(
-    'survey.editor.surveyPlaceholderDescription',
-  );
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  editorLocalization.getLocale(language).ed.surveyPlaceHolder = t('survey.editor.surveyPlaceHolder');
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  editorLocalization.getLocale(language).ed.pagePlaceHolder = t('survey.editor.pagePlaceHolder');
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  editorLocalization.getLocale(language).ed.panelPlaceHolder = t('survey.editor.panelPlaceHolder');
+  const locale = editorLocalization.getLocale(language) as EditorLocale;
+
+  locale.ed.surveyPlaceHolder = t('survey.editor.surveyPlaceHolder');
+  locale.ed.surveyPlaceholderDescription = t('survey.editor.surveyPlaceholderDescription');
+  locale.ed.surveyPlaceholderDescriptionMobile = t('survey.editor.surveyPlaceholderDescription');
+  locale.ed.surveyPlaceHolder = t('survey.editor.surveyPlaceHolder');
+  locale.ed.pagePlaceHolder = t('survey.editor.pagePlaceHolder');
+  locale.ed.panelPlaceHolder = t('survey.editor.panelPlaceHolder');
 
   const creatorOptions = {
     generateValidJSON: true,
@@ -100,8 +102,7 @@ const createSurveyCreatorObject = (language = 'en') => {
   if (settingsActionFooter >= 0) creator.footerToolbar.actions.splice(settingsActionFooter, 1);
 
   creator.onElementAllowOperations.add((_, options) => {
-    // eslint-disable-next-line no-param-reassign
-    options.allowShowSettings = true;
+    Object.assign(options, { allowShowSettings: true });
   });
 
   return creator;
