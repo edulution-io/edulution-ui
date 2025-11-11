@@ -1024,6 +1024,10 @@
         "description": "An welcher Position soll die App in der App-Leiste und in den Einstellungen angezeigt werden?"
       },
       "sections": {
+        "logo": {
+          "title": "Logo",
+          "description": "Lade hier das app Logo hoch, um das vorgegebene Bild zu überschreiben ."
+        },
         "onlyOffice": {
           "title": "Only Office Integration",
           "description": ""

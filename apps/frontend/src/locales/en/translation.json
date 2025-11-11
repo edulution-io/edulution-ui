@@ -1021,6 +1021,10 @@
         "description": "At which position should the app be displayed in the app bar and in the settings?"
       },
       "sections": {
+        "logo": {
+          "title": "Logo",
+          "description": "Upload your app logo here to override the default image."
+        },
         "onlyOffice": {
           "title": "Only Office Integration",
           "description": ""

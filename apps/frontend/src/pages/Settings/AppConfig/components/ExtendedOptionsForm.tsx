@@ -17,10 +17,11 @@ import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { type AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import type AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
 import EmbeddedPageEditorForm from '@libs/appconfig/types/embeddedPageEditorForm';
+import ThemedFile from '@libs/common/types/themedFile';
+import cn from '@libs/common/utils/className';
 import AppConfigFormField from '@/pages/Settings/AppConfig/components/textField/AppConfigFormField';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import AppConfigTable from '@/pages/Settings/AppConfig/components/table/AppConfigTable';
-import cn from '@libs/common/utils/className';
 import UploadImageWithPreview from '@/pages/Settings/components/UploadImageWithPreview';
 import AppConfigDropdownSelect from '@/pages/Settings/AppConfig/components/dropdown/AppConfigDropdownSelect';
 import AppConfigSwitch from './booleanField/AppConfigSwitch';
@@ -49,13 +50,9 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
         return (
           <UploadImageWithPreview
             key={fieldPath}
-            destination={fieldPath}
-            filename=""
-            appName=""
-            path=""
-            formValue={form.getValues(fieldPath)}
-            setFormValue={() => {}}
-            getUrl={() => ''}
+            fieldPath={fieldPath}
+            settingLocation={settingLocation}
+            form={form as unknown as UseFormReturn<ThemedFile>}
           />
         );
       case ExtendedOptionField.input:

@@ -10,6 +10,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type TAppFieldType = string | number | boolean;
+import ThemedFile from '@libs/common/types/themedFile';
+
+type TAppFieldType = string | number | boolean | ThemedFile;
 
 export default TAppFieldType;

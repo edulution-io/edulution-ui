@@ -46,7 +46,7 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
   fallbackSrc,
   className,
 }) => {
-  const backdropClass = variant === Theme.light ? 'bg-neutral-900' : 'bg-white';
+  const backdropClass = variant === Theme.light ? 'bg-white' : 'bg-neutral-900';
 
   return (
     <div

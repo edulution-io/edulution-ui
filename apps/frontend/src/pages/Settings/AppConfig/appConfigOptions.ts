@@ -38,6 +38,7 @@ import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKey
 import EMBEDDED_PAGE_EDITOR_CONFIG from '@libs/appconfig/constants/extendedOptions/embeddedPageEditorConfig';
 import WEBDAV_SHARE_TABLE_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/webdavShareTableExtendedOptions';
 import MAIL_GENERAL_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/mailGeneralExtendedOptions';
+import APP_LOGO_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/appLogoExtendedOptions';
 
 const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -74,6 +75,9 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     id: APPS.SURVEYS,
     icon: SurveysMenuIcon,
     isNativeApp: true,
+    extendedOptions: {
+      [AppConfigSectionsKeys.logo]: APP_LOGO_EXTENDED_OPTIONS,
+    },
   },
   {
     id: APPS.FILE_SHARING,

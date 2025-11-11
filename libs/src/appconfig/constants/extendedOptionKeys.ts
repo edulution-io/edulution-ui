@@ -28,6 +28,7 @@ const ExtendedOptionKeys = {
   EMBEDDED_PAGE_IS_PUBLIC: 'EMBEDDED_PAGE_IS_PUBLIC',
   WEBDAV_SERVER_TABLE: 'WEBDAV_SERVER_TABLE',
   WEBDAV_SHARE_TABLE: 'WEBDAV_SHARE_TABLE',
+  APP_LOGO: 'APP_LOGO',
 } as const;
 
 export default ExtendedOptionKeys;

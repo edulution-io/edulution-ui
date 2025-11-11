@@ -21,6 +21,7 @@ const AppConfigSectionsKeys = {
   files: 'files',
   editor: 'editor',
   webdavShare: 'webdavShare',
+  logo: 'logo',
 } as const;
 
 export default AppConfigSectionsKeys;

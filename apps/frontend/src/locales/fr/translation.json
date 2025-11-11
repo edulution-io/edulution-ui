@@ -863,6 +863,10 @@
     "lmnVersion": { "title": "Aperçu des versions de Linuxmuster" },
     "appconfig": {
       "sections": {
+        "logo": {
+          "title": "Logo",
+          "description": "Téléchargez votre logo d'application ici pour remplacer l'image par défaut."
+        },
         "onlyOffice": {
           "title": "Intégration OnlyOffice",
           "description": ""
