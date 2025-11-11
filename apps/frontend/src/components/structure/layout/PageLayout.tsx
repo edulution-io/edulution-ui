@@ -29,13 +29,19 @@ import useFloatingBarHeight from '@/hooks/useFloatingBarHeight';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import cn from '@libs/common/utils/className';
 
-interface AppLayoutProps {
+interface PageLayoutProps {
   nativeAppHeader?: NativeAppHeaderProps;
   children: React.ReactNode;
-  isFullScreen?: boolean;
+  isFullScreenAppWithoutFloatingButtons?: boolean;
+  hasFullWidthMain?: boolean;
 }
 
-const PageLayout = ({ nativeAppHeader, children, isFullScreen }: AppLayoutProps) => {
+const PageLayout = ({
+  nativeAppHeader,
+  children,
+  isFullScreenAppWithoutFloatingButtons,
+  hasFullWidthMain,
+}: PageLayoutProps) => {
   const { pathname } = useLocation();
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
   const rootPathName = getFromPathName(pathname, 1);
@@ -44,10 +50,13 @@ const PageLayout = ({ nativeAppHeader, children, isFullScreen }: AppLayoutProps)
   useFloatingBarHeight(barRef);
   useUserAccounts(rootPathName);
 
-  if (isFullScreen) return <main className="flex-1">{children}</main>;
+  if (isFullScreenAppWithoutFloatingButtons) return <main className="flex-1">{children}</main>;
 
   return (
-    <div className="relative flex h-full w-full flex-col pl-2 pt-1 md:pl-4 md:pt-1">
+    <div
+      id="page"
+      className="relative flex h-full w-full flex-col pt-1 md:pt-1"
+    >
       {nativeAppHeader && (
         <NativeAppHeader
           title={nativeAppHeader.title}
@@ -57,8 +66,10 @@ const PageLayout = ({ nativeAppHeader, children, isFullScreen }: AppLayoutProps)
       )}
 
       <main
-        style={{ marginBottom: 'var(--floating-bar-h, 0px)' }}
-        className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden pl-2 pr-6 transition-[padding-bottom] duration-200 ease-in-out scrollbar-thin"
+       style={{ marginBottom: 'var(--floating-bar-h, 0px)' }}
+        className={cn('flex flex-1 flex-col overflow-y-auto overflow-x-hidden pl-4 pr-6 transition-[padding-bottom] duration-200 ease-in-outscrollbar-thin md:pl-6', {
+          'px-0 md:px-0': hasFullWidthMain,
+        })}
       >
         {children}
       </main>
