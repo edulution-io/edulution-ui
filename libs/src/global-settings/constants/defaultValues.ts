@@ -22,10 +22,27 @@ import getDeploymentTarget from '@libs/common/utils/getDeploymentTarget';
 import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import DEFAULT_THEME from '@libs/global-settings/constants/defaultTheme';
 
-const { LDAP_EDULUTION_BINDUSER_DN, LDAP_EDULUTION_BINDUSER_PASSWORD } = process.env as Record<string, string>;
+const { LDAP_EDULUTION_BINDUSER_DN, LDAP_EDULUTION_BINDUSER_PASSWORD, EDUI_INITIAL_ADMIN_GROUP } =
+  process.env as Record<string, string>;
+
+const normalizedAdminGroup = EDUI_INITIAL_ADMIN_GROUP?.replace(/^\/+/, '') || '';
+const adminGroups = normalizedAdminGroup
+  ? [
+      {
+        id: 'EDUI_INITIAL_ADMIN_GROUP',
+        name: normalizedAdminGroup,
+        path: `/${normalizedAdminGroup}`,
+        label: normalizedAdminGroup,
+        value: 'EDUI_INITIAL_ADMIN_GROUP',
+      },
+    ]
+  : [];
 
 const defaultValues: GlobalSettingsDto = {
-  auth: { mfaEnforcedGroups: [], adminGroups: [] },
+  auth: {
+    mfaEnforcedGroups: [],
+    adminGroups,
+  },
   general: {
     defaultLandingPage: {
       isCustomLandingPageEnabled: true,
