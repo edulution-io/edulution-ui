@@ -191,7 +191,7 @@ const SettingsOverviewPage: React.FC = () => {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="sticky top-0 z-20 backdrop-blur-xl">
+      <div className="sticky top-0 z-20">
         <DropdownSelect
           options={tabOptions}
           selectedVal={option}
@@ -199,7 +199,7 @@ const SettingsOverviewPage: React.FC = () => {
         />
         <Separator className="my-2 bg-muted" />
       </div>
-      <div className="flex-1 overflow-y-auto scrollbar-thin">
+      <div className="flex-1 overflow-y-auto">
         {tabOptions.find((opt) => opt.id === option)?.component({ form, onSubmit })}
       </div>
       {showFloatingButtons && <GlobalSettingsFloatingButtons handleSave={form.handleSubmit(onSubmit)} />}
