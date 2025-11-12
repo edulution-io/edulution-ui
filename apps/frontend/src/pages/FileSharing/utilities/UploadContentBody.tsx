@@ -129,18 +129,18 @@ const UploadContentBody = () => {
     [files, webdavShares, webdavShare, updateFilesToUpload],
   );
 
-  const extractFilesFromEvent = (event: DropEvent): File[] => {
+  const extractFilesFromEvent = (event: DropEvent): Promise<File[]> => {
     if ('dataTransfer' in event && event.dataTransfer) {
       const items = Array.from(event.dataTransfer.items ?? []);
 
-      return items.map((item) => item.getAsFile()).filter((file): file is File => file !== null);
+      return Promise.resolve(items.map((item) => item.getAsFile()).filter((file): file is File => file !== null));
     }
 
     if ('target' in event && (event.target as HTMLInputElement).files) {
-      return Array.from((event.target as HTMLInputElement).files!);
+      return Promise.resolve(Array.from((event.target as HTMLInputElement).files!));
     }
 
-    return [];
+    return Promise.resolve([]);
   };
 
   const handleFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
