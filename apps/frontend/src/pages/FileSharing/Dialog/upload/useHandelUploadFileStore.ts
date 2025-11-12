@@ -264,6 +264,7 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
       filesToUpload: [],
       totalFilesCount: filesCount,
       totalBytesCount: bytesCount,
+      progressById: {},
     });
 
     const uploadHttpClient = createUploadClient(`/${EDU_API_ROOT}`, { share: webdavShare }, accessToken);
