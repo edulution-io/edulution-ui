@@ -114,27 +114,23 @@ const FileSharingPage = () => {
   const handleFileUpload = async (files: File[]) => {
     if (!webdavShare) return;
 
-    try {
-      updateFilesToUpload(() =>
-        files.map((file) => {
-          const uploadFile: UploadFile = Object.assign(new File([file], file.name, { type: file.type }), {
-            id: crypto.randomUUID(),
-            isZippedFolder: false,
-            originalFolderName: undefined,
-            fileCount: undefined,
-          });
-          return uploadFile;
-        }),
-      );
+    updateFilesToUpload(() =>
+      files.map((file) => {
+        const uploadFile: UploadFile = Object.assign(new File([file], file.name, { type: file.type }), {
+          id: crypto.randomUUID(),
+          isZippedFolder: false,
+          originalFolderName: undefined,
+          fileCount: undefined,
+        });
+        return uploadFile;
+      }),
+    );
 
-      const results = await uploadFiles(currentPath, eduApiToken, webdavShare);
+    const results = await uploadFiles(currentPath, eduApiToken, webdavShare);
 
-      if (results) {
-        await fetchFiles(webdavShare, currentPath);
-        await fetchShares();
-      }
-    } catch (error) {
-      console.error('❌ Fehler beim Upload:', error);
+    if (results) {
+      await fetchFiles(webdavShare, currentPath);
+      await fetchShares();
     }
   };
 
