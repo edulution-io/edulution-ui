@@ -55,7 +55,7 @@ const FileSharingPage = () => {
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const { fileOperationProgress, fetchFiles, webdavShares } = useFileSharingStore();
   const { fetchShares } = usePublicShareStore();
-  const { uploadFiles, setFilesToUpload } = useHandelUploadFileStore();
+  const { uploadFiles, updateFilesToUpload } = useHandelUploadFileStore();
   const { eduApiToken } = useUserStore();
   const navigate = useNavigate();
   const { createVariableSharePathname } = useVariableSharePathname();
@@ -115,22 +115,24 @@ const FileSharingPage = () => {
     if (!webdavShare) return;
 
     try {
-      const uploadFilesList: UploadFile[] = files.map(
-        (file) =>
-          ({
-            ...file,
+      updateFilesToUpload(() =>
+        files.map((file) => {
+          const uploadFile: UploadFile = Object.assign(new File([file], file.name, { type: file.type }), {
             id: crypto.randomUUID(),
             isZippedFolder: false,
             originalFolderName: undefined,
             fileCount: undefined,
-            name: file.name,
-            size: file.size,
-          }) as UploadFile,
+          });
+          return uploadFile;
+        }),
       );
 
-      setFilesToUpload(uploadFilesList);
-      await uploadFiles(currentPath, eduApiToken, webdavShare);
-      await fetchFiles(webdavShare, currentPath);
+      const results = await uploadFiles(currentPath, eduApiToken, webdavShare);
+
+      if (results) {
+        await fetchFiles(webdavShare, currentPath);
+        await fetchShares();
+      }
     } catch (error) {
       console.error('❌ Fehler beim Upload:', error);
     }
@@ -140,32 +142,31 @@ const FileSharingPage = () => {
     <PageLayout>
       <LoadingIndicatorDialog isOpen={isLoading} />
 
-      <FileDropZone onFileDrop={handleFileUpload}>
-        <div className="flex w-full flex-row justify-between space-x-2 pb-2 pt-2">
-          <DirectoryBreadcrumb
-            path={currentPath}
-            onNavigate={handleBreadcrumbNavigate}
-            style={{ color: 'white' }}
-            hiddenSegments={getHiddenSegments()}
-          />
-          <QuotaLimitInfo percentageUsed={percentageUsed} />
-        </div>
+      <div className="flex w-full flex-row justify-between space-x-2 pb-2 pt-2">
+        <DirectoryBreadcrumb
+          path={currentPath}
+          onNavigate={handleBreadcrumbNavigate}
+          style={{ color: 'white' }}
+          hiddenSegments={getHiddenSegments()}
+        />
+        <QuotaLimitInfo percentageUsed={percentageUsed} />
+      </div>
 
-        <div className="flex h-full w-full flex-row overflow-hidden pb-6">
-          <div className={isFilePreviewVisible && isFilePreviewDocked ? 'w-1/2 2xl:w-2/3' : 'w-full'}>
-            {isFileProcessing ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}
-
+      <div className="flex h-full w-full flex-row overflow-hidden pb-6">
+        <div className={isFilePreviewVisible && isFilePreviewDocked ? 'w-1/2 2xl:w-2/3' : 'w-full'}>
+          {isFileProcessing ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}
+          <FileDropZone onFileDrop={handleFileUpload}>
             <FileSharingTable />
-          </div>
-
-          {isFilePreviewVisible && (
-            <div
-              id={FILE_PREVIEW_ELEMENT_ID}
-              className={isFilePreviewDocked ? 'h-full w-1/2 2xl:w-1/3' : ''}
-            />
-          )}
+          </FileDropZone>
         </div>
-      </FileDropZone>
+
+        {isFilePreviewVisible && (
+          <div
+            id={FILE_PREVIEW_ELEMENT_ID}
+            className={isFilePreviewDocked ? 'h-full w-1/2 2xl:w-1/3' : ''}
+          />
+        )}
+      </div>
 
       <ActionContentDialog />
       <DownloadPublicShareDialog />
