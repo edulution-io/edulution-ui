@@ -1500,6 +1500,7 @@
     "file": "Datei",
     "files": "Dateien",
     "creatingDirectoryStructure": "Ordnerstruktur wird angelegt",
+    "hiddenFiles": "versteckte & System-Dateien",
     "errors": {
       "directoryCreationFailed": "Fehler beim Erstellen des Verzeichnisses",
       "fileUploadFailed": "Fehler beim Hochladen des Datei-Inhalts"

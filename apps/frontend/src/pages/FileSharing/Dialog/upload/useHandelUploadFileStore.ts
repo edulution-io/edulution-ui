@@ -155,7 +155,19 @@ const uploadFolderWithFiles = async (
 const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
   ...initialState,
 
-  setIsUploadDialogOpen: (isOpen) => set({ isUploadDialogOpen: isOpen }),
+  setIsUploadDialogOpen: (isOpen) => {
+    if (isOpen) {
+      set({
+        isUploadDialogOpen: true,
+        filesToUpload: [],
+        totalFilesCount: 0,
+        totalBytesCount: 0,
+        progressById: {},
+      });
+    } else {
+      set({ isUploadDialogOpen: false });
+    }
+  },
 
   closeUploadDialog: () => set({ isUploadDialogOpen: false }),
 
@@ -175,7 +187,17 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
     });
   },
 
-  updateFilesToUpload: (updater) => set((state) => ({ filesToUpload: updater(state.filesToUpload) })),
+  updateFilesToUpload: (updater) =>
+    set((state) => {
+      const newFiles = updater(state.filesToUpload);
+      const { filesCount, bytesCount } = calculateTotalFilesAndBytes(newFiles);
+
+      return {
+        filesToUpload: newFiles,
+        totalFilesCount: filesCount,
+        totalBytesCount: bytesCount,
+      };
+    }),
 
   markUploading: (fileId: string, uploading: boolean): void => {
     set((state) => {
@@ -262,12 +284,9 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
     });
 
     const outcomes: UploadResult[] = [];
-    let processedItems = 0;
 
     await files.reduce(async (previousPromise, fileItem) => {
       await previousPromise;
-
-      processedItems += 1;
 
       try {
         if ('isFolder' in fileItem && fileItem.isFolder && fileItem.files) {
@@ -297,7 +316,6 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
           outcomes.push(result);
         }
       } catch (error) {
-        console.error(`❌ [${processedItems}/${files.length}] Failed: ${fileItem.name}`, error);
         outcomes.push({
           name: fileItem.name,
           success: false,

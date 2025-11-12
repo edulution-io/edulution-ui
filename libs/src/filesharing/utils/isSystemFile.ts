@@ -17,14 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export interface UploadFile extends File {
-  id: string;
-  isFolder?: boolean;
-  folderName?: string;
-  files?: File[];
-  fileCount?: number;
-  isZippedFolder?: boolean;
-  originalFolderName?: string;
-  uploadPath?: string;
-  visibleFiles?: File[];
-}
+import systemFiles from '@libs/filesharing/constants/systemFiles';
+
+const isSystemFile = (filename: string): boolean => {
+  const basename = filename.split('/').pop() || '';
+
+  if (systemFiles.includes(basename)) {
+    return true;
+  }
+
+  return basename.startsWith('._');
+};
+
+export default isSystemFile;

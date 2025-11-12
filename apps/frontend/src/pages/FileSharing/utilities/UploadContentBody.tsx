@@ -23,7 +23,7 @@ import { MdOutlineCloudUpload } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
-import { HiExclamationTriangle, HiTrash } from 'react-icons/hi2';
+import { HiExclamationTriangle, HiEyeSlash, HiTrash } from 'react-icons/hi2';
 import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -36,6 +36,10 @@ import { FcFolder } from 'react-icons/fc';
 import getFileUploadLimit from '@libs/ui/utils/getFileUploadLimit';
 import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
 import { v4 as uuidv4 } from 'uuid';
+import isHiddenFile from '@libs/filesharing/utils/isHiddenFile';
+import isSystemFile from '@libs/filesharing/utils/isSystemFile';
+import ActionTooltip from '@/components/shared/ActionTooltip';
+import { BUTTONS_ICON_WIDTH, SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
 
 const UploadContentBody = () => {
   const { webdavShare } = useParams();
@@ -58,8 +62,15 @@ const UploadContentBody = () => {
 
   const isFolderUpload = (
     file: UploadFile,
-  ): file is UploadFile & { isFolder: true; folderName: string; files: File[]; fileCount: number } =>
-    'isFolder' in file && file.isFolder === true && 'folderName' in file && typeof file.folderName === 'string';
+  ): file is UploadFile & {
+    isFolder: true;
+    folderName: string;
+    files: File[];
+    fileCount: number;
+    visibleFiles?: File[];
+    hiddenFiles?: File[];
+    includeHidden?: boolean;
+  } => 'isFolder' in file && file.isFolder === true && 'folderName' in file && typeof file.folderName === 'string';
 
   const displayName = (file: UploadFile | { name: string }): string => {
     if ('isFolder' in file && isFolderUpload(file)) {
@@ -93,7 +104,7 @@ const UploadContentBody = () => {
       const { oversize, normal } = splitFilesByMaxFileSize(regularFiles, getFileUploadLimit(webdavShares, webdavShare));
 
       const duplicates = findDuplicateFiles(
-        [...normal, ...folders].map((file) => Object.assign(file, { id: file.name || uuidv4() })),
+        [...normal, ...folders].map((file) => Object.assign(file, { id: uuidv4() })),
         files,
       );
 
@@ -151,22 +162,53 @@ const UploadContentBody = () => {
 
   const handleFolderSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = Array.from(e.target.files ?? []);
+
     if (selected.length > 0) {
       const firstFile = selected[0];
       const pathParts = firstFile.webkitRelativePath?.split('/') || [];
       const folderName = pathParts[0] || 'folder';
 
+      const visibleFiles = selected.filter((file) => !isSystemFile(file.name) && !isHiddenFile(file.name));
+      const hiddenAndSystemFiles = selected.filter((file) => isSystemFile(file.name) || isHiddenFile(file.name));
+
       const folderEntry: UploadFile = Object.assign(new File([], folderName, { type: 'application/x-directory' }), {
         id: uuidv4(),
         isFolder: true,
         folderName,
-        files: selected,
-        fileCount: selected.length,
+        files: visibleFiles,
+        fileCount: visibleFiles.length,
+        visibleFiles,
+        hiddenFiles: hiddenAndSystemFiles,
+        includeHidden: false,
       });
 
       onDrop([folderEntry]);
     }
     e.target.value = '';
+  };
+
+  const toggleHiddenFilesForFolder = (folderId: string) => {
+    updateFilesToUpload((prev) =>
+      prev.map((file) => {
+        if (file.id !== folderId || !isFolderUpload(file)) {
+          return file;
+        }
+
+        const includeHidden = !file.includeHidden;
+
+        const baseFiles = file.visibleFiles || [];
+        const hiddenSystemFiles = file.hiddenFiles || [];
+
+        const newFiles = includeHidden ? [...baseFiles, ...hiddenSystemFiles] : baseFiles;
+
+        return {
+          ...file,
+          includeHidden,
+          files: newFiles,
+          fileCount: newFiles.length,
+        };
+      }),
+    );
   };
 
   const removeFile = (identifier: string) => {
@@ -194,7 +236,7 @@ const UploadContentBody = () => {
     if (isFolderUpload(file)) {
       return (
         <div className="flex h-20 items-center justify-center">
-          <FcFolder size={60} />
+          <FcFolder size={SIDEBAR_ICON_WIDTH} />
         </div>
       );
     }
@@ -213,7 +255,7 @@ const UploadContentBody = () => {
     return (
       <div className="flex h-20 items-center justify-center">
         <FileIconComponent
-          size={60}
+          size={Number(SIDEBAR_ICON_WIDTH)}
           filename={file.name}
         />
       </div>
@@ -261,7 +303,7 @@ const UploadContentBody = () => {
           onClick={() => fileInputRef.current?.click()}
         >
           <div className="flex flex-col items-center">
-            <TiDocumentAdd size={24} />
+            <TiDocumentAdd size={BUTTONS_ICON_WIDTH} />
             {t('filesharingUpload.addFiles')}
           </div>
         </Button>
@@ -273,7 +315,9 @@ const UploadContentBody = () => {
           onClick={() => folderInputRef.current?.click()}
         >
           <div className="flex flex-col items-center">
-            <TiFolderAdd size={24} />
+            <div>
+              <TiFolderAdd size={BUTTONS_ICON_WIDTH} />
+            </div>
             {t('filesharingUpload.addFolder')}
           </div>
         </Button>
@@ -368,6 +412,29 @@ const UploadContentBody = () => {
                       </div>
                     )}
                   </div>
+                  {isFolder && file.hiddenFiles && file.hiddenFiles.length > 0 && (
+                    <div className="flex items-center justify-center gap-1 pt-1">
+                      <ActionTooltip
+                        tooltipText={t('filesharingUpload.hiddenFiles')}
+                        trigger={
+                          <label
+                            htmlFor={`hidden-${file.id}`}
+                            className="mt-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-neutral-700 px-2 py-1 text-xs text-neutral-300 hover:bg-neutral-600"
+                          >
+                            <input
+                              type="checkbox"
+                              id={`hidden-${file.id}`}
+                              checked={file.includeHidden || false}
+                              onChange={() => toggleHiddenFilesForFolder(file.id)}
+                              className="h-3 w-3 rounded border-gray-300"
+                            />
+                            <HiEyeSlash className="h-3 w-3" />
+                            <span>+{file.hiddenFiles.length}</span>
+                          </label>
+                        }
+                      />
+                    </div>
+                  )}
                 </li>
               );
             })}

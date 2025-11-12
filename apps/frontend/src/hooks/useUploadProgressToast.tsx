@@ -119,7 +119,7 @@ const useUploadProgressToast = () => {
     }
     lastShownPercentage.current = overallPercentage;
 
-    const isDone = completedFiles + 1 === totalFilesCount;
+    const isDone = overallPercentage === 100;
     const hasErrors = failedFiles > 0;
 
     if (isDone && !hasRefreshedAfterComplete.current) {
@@ -134,9 +134,9 @@ const useUploadProgressToast = () => {
 
     if (hasErrors && !hasActiveUploads) {
       toast.dismiss(COMBINED_UPLOAD_TOAST_ID);
-      const failedFileText = failedFiles === 1 ? t('filesharing.file') : t('filesharing.files');
+      const failedFileText = failedFiles === 1 ? t('filesharingUpload.file') : t('filesharingUpload.files');
       toast.error(
-        t('filesharing.errors.UploadFailed', {
+        t('filesharingUpload.errors.UploadFailed', {
           filename: `${failedFiles} ${failedFileText}`,
         }),
         {
@@ -149,11 +149,11 @@ const useUploadProgressToast = () => {
     const currentFileNumber = completedFiles + (hasActiveUploads ? 1 : 0);
     const etaSeconds = totalBytesPerSecond > 0 ? (totalBytesCount - totalLoadedBytes) / totalBytesPerSecond : undefined;
 
-    const fileText = totalFilesCount === 1 ? t('filesharing.file') : t('filesharing.files');
+    const fileText = totalFilesCount === 1 ? t('filesharingUpload.file') : t('filesharingUpload.files');
 
     let title: string;
     if (isCreatingDirectories) {
-      title = `${t('filesharing.creatingDirectoryStructure')} (${directoryProgress.current}/${directoryProgress.total})`;
+      title = `${t('filesharingUpload.creatingDirectoryStructure')} (${directoryProgress.current}/${directoryProgress.total})`;
     } else if (currentFileName) {
       title = `${currentFileNumber} / ${totalFilesCount} ${fileText} • ${currentFileName}`;
     } else {
@@ -192,6 +192,7 @@ const useUploadProgressToast = () => {
     getPercent,
     getLoadedBytes,
     getTotalBytes,
+    clearProgress,
   ]);
 };
 

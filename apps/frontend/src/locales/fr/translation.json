@@ -1327,6 +1327,7 @@
     "file": "Fichier",
     "files": "Fichiers",
     "creatingDirectoryStructure": "Création de la structure des dossiers",
+    "hiddenFiles": "fichiers cachés et système",
     "errors": {
       "directoryCreationFailed": "Échec de la création du répertoire",
       "fileUploadFailed": "Échec du téléchargement du fichier"
