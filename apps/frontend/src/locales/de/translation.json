@@ -1496,7 +1496,11 @@
     "cannotUploadOversized": "Dateien, die größer als 50 MB sind, können nicht hochgeladen werden.",
     "addFiles": "Dateien hinzufügen",
     "addFolder": "Ordner hinzufügen",
-    "preparingFolder": "Ordner wird vorbereitet"
+    "preparingFolder": "Ordner wird vorbereitet",
+
+    "error": {
+      "uploadError": "Fehler beim Hochladen der Dateien"
+    }
   },
   "warnings": {
     "colorMayConflictWithTheme": "Manuelle Einstellung der Farbe kann zukünftig zu Problemen mit anderen Themes (hell/dunkel) führen. Es wird empfohlen, die Farbe der Schrift immer gleichzeitig mit der Hintergrundfarbe zu setzen."

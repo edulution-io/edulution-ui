@@ -47,6 +47,8 @@ import FileDropZone from '@/components/ui/FileDropZone';
 import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
 import useUserStore from '@/store/UserStore/useUserStore';
 import { UploadFile } from '@libs/filesharing/types/uploadFile';
+import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import useVariableSharePathname from './hooks/useVariableSharePathname';
 
 const FileSharingPage = () => {
@@ -59,6 +61,7 @@ const FileSharingPage = () => {
   const { eduApiToken } = useUserStore();
   const navigate = useNavigate();
   const { createVariableSharePathname } = useVariableSharePathname();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const handleFileOperationProgress = async () => {
@@ -113,22 +116,25 @@ const FileSharingPage = () => {
 
   const handleFileUpload = async (files: File[]) => {
     if (!webdavShare) return;
+    try {
+      updateFilesToUpload(() =>
+        files.map((file) => {
+          const uploadFile: UploadFile = Object.assign(new File([file], file.name, { type: file.type }), {
+            id: crypto.randomUUID(),
+            isZippedFolder: false,
+          });
+          return uploadFile;
+        }),
+      );
 
-    updateFilesToUpload(() =>
-      files.map((file) => {
-        const uploadFile: UploadFile = Object.assign(new File([file], file.name, { type: file.type }), {
-          id: crypto.randomUUID(),
-          isZippedFolder: false,
-        });
-        return uploadFile;
-      }),
-    );
+      const results = await uploadFiles(currentPath, eduApiToken, webdavShare);
 
-    const results = await uploadFiles(currentPath, eduApiToken, webdavShare);
-
-    if (results && results.length > 0) {
-      await fetchFiles(webdavShare, currentPath);
-      await fetchShares();
+      if (results && results.length > 0) {
+        await fetchFiles(webdavShare, currentPath);
+        await fetchShares();
+      }
+    } catch (error) {
+      toast.error(t('filesharingUpload.error.uploadError'));
     }
   };
 
