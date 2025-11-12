@@ -109,21 +109,38 @@ const FileSharingTable = () => {
     const sourceFile = active.data.current as DirectoryFileDTO;
     const targetFolder = over.data.current as DirectoryFileDTO;
 
-    const sourcePath = sourceFile.filePath;
-    const targetPath = `${targetFolder.filePath}/${sourceFile.filename}`;
+    const isDraggedFileSelected = selectedRows[sourceFile.filePath];
+
+    const filesToMove = isDraggedFileSelected
+      ? Object.keys(selectedRows)
+          .filter((key) => selectedRows[key])
+          .map((filePath) => {
+            const file = files.find((f) => f.filePath === filePath);
+            if (!file) return null;
+            return {
+              path: file.filePath,
+              newPath: `${targetFolder.filePath}/${file.filename}`,
+            };
+          })
+      : [
+          {
+            path: sourceFile.filePath,
+            newPath: `${targetFolder.filePath}/${sourceFile.filename}`,
+          } as PathChangeOrCreateDto,
+        ];
+
     await handleItemAction(
       FileActionType.MOVE_FILE_OR_FOLDER,
       `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
       HttpMethods.PATCH,
       ContentType.FILE || ContentType.DIRECTORY,
-      [
-        {
-          path: sourcePath,
-          newPath: targetPath,
-        },
-      ] as PathChangeOrCreateDto,
+      filesToMove as PathChangeOrCreateDto[],
       webdavShare,
     );
+
+    setSelectedRows({});
+    setSelectedItems([]);
+
     await fetchFiles(webdavShare, currentPath);
   };
 
@@ -153,6 +170,21 @@ const FileSharingTable = () => {
 
   const activeFile = activeId ? files.find((file) => file.filePath === activeId) : null;
 
+  const draggedFiles = useMemo(() => {
+    if (!activeFile) return [];
+
+    const isDraggedFileSelected = selectedRows[activeFile.filePath];
+
+    if (isDraggedFileSelected) {
+      return Object.keys(selectedRows)
+        .filter((key) => selectedRows[key])
+        .map((filePath) => files.find((f) => f.filePath === filePath))
+        .filter(Boolean) as DirectoryFileDTO[];
+    }
+
+    return [activeFile];
+  }, [activeFile, selectedRows, files]);
+
   return (
     <DndContext
       sensors={sensors}
@@ -180,18 +212,40 @@ const FileSharingTable = () => {
         canDropOnRow={canDropOnRow}
       />
       <DragOverlay>
-        {activeFile ? (
+        {draggedFiles.length > 0 ? (
           <div className="flex items-center gap-2 rounded bg-foreground p-2 shadow-lg">
-            {activeFile.type === ContentType.DIRECTORY ? (
-              <FcFolder className="size-5 shrink-0" />
+            {draggedFiles.length === 1 ? (
+              <>
+                {draggedFiles[0].type === ContentType.DIRECTORY ? (
+                  <FcFolder className="size-5 shrink-0" />
+                ) : (
+                  <FileIconComponent
+                    filename={draggedFiles[0].filePath}
+                    size={Number(TABLE_ICON_SIZE)}
+                  />
+                )}
+                <span className="truncate">{draggedFiles[0].filename}</span>
+              </>
             ) : (
-              <FileIconComponent
-                filename={activeFile.filePath}
-                size={Number(TABLE_ICON_SIZE)}
-              />
+              <>
+                <div className="relative">
+                  {draggedFiles[0].type === ContentType.DIRECTORY ? (
+                    <FcFolder className="size-5 shrink-0" />
+                  ) : (
+                    <FileIconComponent
+                      filename={draggedFiles[0].filePath}
+                      size={Number(TABLE_ICON_SIZE)}
+                    />
+                  )}
+                  <div className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                    {draggedFiles.length}
+                  </div>
+                </div>
+                <span className="truncate">
+                  {draggedFiles.length} {draggedFiles.length === 1 ? 'Element' : 'Elemente'}
+                </span>
+              </>
             )}
-
-            <span className="truncate">{activeFile.filename}</span>
           </div>
         ) : null}
       </DragOverlay>

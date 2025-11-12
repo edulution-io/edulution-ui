@@ -54,18 +54,21 @@ const DraggableTableRow = <TData,>({
       setDragRef(element);
       setDropRef(element);
     },
-    [setDragRef, setDropRef, row.id, canDrop],
+    [setDragRef, setDropRef],
   );
+
+  const isSelected = row.getIsSelected();
 
   return (
     <TableRow
       ref={combinedRef}
-      data-state={row.getIsSelected() ? 'selected' : undefined}
+      data-state={isSelected ? 'selected' : undefined}
       data-disabled={isRowDisabled ? 'true' : undefined}
       className={`
         ${isRowDisabled ? 'pointer-events-none cursor-not-allowed opacity-50 saturate-0' : ''}
         ${enableDragAndDrop && !isRowDisabled ? 'cursor-move' : ''}
         ${isDragging ? 'opacity-30' : ''}
+        ${isDragging && isSelected ? 'ring-2 ring-primary ring-offset-2' : ''}
         ${isOver && canDrop ? 'bg-primary/10 ring-2 ring-inset ring-primary' : ''}
       `}
       style={{ transition: 'all 0.2s ease' }}
