@@ -17,7 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
+import type { Request } from 'express';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
 import {
   EDU_API_DOCKER_CONTAINER_ENDPOINT,
@@ -28,7 +29,6 @@ import type CreateContainerDto from '@libs/docker/types/create-container.dto';
 import DockerService from './docker.service';
 import AdminGuard from '../common/guards/admin.guard';
 import { Public } from '../common/decorators/public.decorator';
-import LocalhostGuard from '../common/guards/localhost.guard';
 
 @Controller(EDU_API_DOCKER_ENDPOINT)
 @UseGuards(AdminGuard)
@@ -61,10 +61,9 @@ class DockerController {
   }
 
   @Public()
-  @UseGuards(LocalhostGuard)
   @Patch(`${EDU_API_EDU_MANAGER_AGENT_CONTAINER_ENDPOINT}`)
-  async updateEduManagerAgentContainer() {
-    return this.dockerService.updateEduManagerAgentContainer();
+  async updateEduManagerAgentContainer(@Req() req: Request) {
+    return this.dockerService.updateEduManagerAgentContainer(req);
   }
 }
 

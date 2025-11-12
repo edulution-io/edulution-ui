@@ -445,7 +445,58 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  async updateEduManagerAgentContainer(): Promise<boolean> {
+  private async getContainerNameByIp(ip: string): Promise<string | null> {
+    try {
+      const containers = await this.docker.listContainers();
+
+      const inspections = await Promise.all(
+        containers.map(async (container) => {
+          const inspectData = await this.docker.getContainer(container.Id).inspect();
+          const networks = inspectData.NetworkSettings?.Networks || {};
+          const hasMatchingIp = Object.values(networks).some((network) => network.IPAddress === ip);
+
+          return hasMatchingIp ? container.Names[0]?.replace('/', '') || null : null;
+        }),
+      );
+
+      return inspections.find((name) => name !== null) || null;
+    } catch (error) {
+      Logger.error(
+        `Failed to lookup container by IP: ${error instanceof Error ? error.message : String(error)}`,
+        DockerService.name,
+      );
+      return null;
+    }
+  }
+
+  async updateEduManagerAgentContainer(req: { ip?: string; socket?: { remoteAddress?: string } }): Promise<boolean> {
+    const requestIp = req.ip || req.socket?.remoteAddress;
+
+    if (!requestIp) {
+      throw new CustomHttpException(
+        DockerErrorMessages.DOCKER_COMMAND_EXECUTION_ERROR,
+        HttpStatus.FORBIDDEN,
+        undefined,
+        DockerService.name,
+      );
+    }
+
+    const cleanIp = requestIp.replace('::ffff:', '');
+    const containerName = await this.getContainerNameByIp(cleanIp);
+
+    if (containerName !== DOCKER_APPLICATION_LIST.eduManagerAgent) {
+      Logger.warn(
+        `Unauthorized update attempt from container: ${containerName || 'unknown'} (IP: ${requestIp})`,
+        DockerService.name,
+      );
+      throw new CustomHttpException(
+        DockerErrorMessages.DOCKER_COMMAND_EXECUTION_ERROR,
+        HttpStatus.FORBIDDEN,
+        undefined,
+        DockerService.name,
+      );
+    }
+
     const containers = await this.getContainers(DOCKER_APPLICATION_LIST.eduManagerAgent);
 
     if (containers.length === 0) return false;
