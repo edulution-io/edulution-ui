@@ -130,18 +130,17 @@ const UploadContentBody = () => {
 
       updateFilesToUpload((prevFiles) => {
         const existingNames = new Set(prevFiles.map((f) => f.name));
-
-        const newFiles = acceptedFiles
+        const newUploadFiles = acceptedFiles
           .filter((file) => !existingNames.has(file.name))
           .map((file) => {
             const uploadFile: UploadFile = Object.assign(new File([file], file.name, { type: file.type }), {
-              id: uuidv4(),
+              id: crypto.randomUUID(),
               isZippedFolder: false,
             });
             return uploadFile;
           });
 
-        return [...prevFiles, ...newFiles];
+        return [...prevFiles, ...newUploadFiles];
       });
     },
     [files, setOversizedFiles, setFilesThatWillBeOverwritten, setFilesToUpload, setTooLargeFolders],

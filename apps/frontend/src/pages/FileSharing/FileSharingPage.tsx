@@ -119,8 +119,6 @@ const FileSharingPage = () => {
         const uploadFile: UploadFile = Object.assign(new File([file], file.name, { type: file.type }), {
           id: crypto.randomUUID(),
           isZippedFolder: false,
-          originalFolderName: undefined,
-          fileCount: undefined,
         });
         return uploadFile;
       }),
@@ -128,7 +126,7 @@ const FileSharingPage = () => {
 
     const results = await uploadFiles(currentPath, eduApiToken, webdavShare);
 
-    if (results) {
+    if (results && results.length > 0) {
       await fetchFiles(webdavShare, currentPath);
       await fetchShares();
     }
