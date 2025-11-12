@@ -149,7 +149,10 @@ const SettingsOverviewPage: React.FC = () => {
   if (!isMobileView && !isTabletView)
     return (
       <>
-        <Tabs value={tabValue}>
+        <Tabs
+          value={tabValue}
+          className="flex h-full flex-col"
+        >
           <div className="sticky top-0 z-20 backdrop-blur-xl">
             <TabsList
               className="grid sm:w-fit"
@@ -166,17 +169,18 @@ const SettingsOverviewPage: React.FC = () => {
                 </TabsTrigger>
               ))}
             </TabsList>
+            <Separator className="my-2 bg-muted" />
           </div>
           {tabOptions.map((opt) => (
             <TabsContent
               key={opt.id}
               value={opt.id}
+              className="flex-1 overflow-y-auto scrollbar-thin"
             >
               <PageTitle
                 title={t('settings.sidebar')}
                 translationId={opt.name}
               />
-              <Separator />
               {opt.component({ form, onSubmit })}
             </TabsContent>
           ))}
@@ -194,7 +198,7 @@ const SettingsOverviewPage: React.FC = () => {
           handleChange={goToTab}
         />
       </div>
-      <Separator className="my-2" />
+      <Separator className="my-2 bg-muted" />
       {tabOptions.find((opt) => opt.id === option)?.component({ form, onSubmit })}
       {showFloatingButtons && <GlobalSettingsFloatingButtons handleSave={form.handleSubmit(onSubmit)} />}
     </>
