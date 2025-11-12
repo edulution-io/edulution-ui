@@ -134,6 +134,7 @@
     "keyv": "^5.3.3",
     "ldapts": "^8.0.9",
     "lucide-react": "^0.323.0",
+    "mime": "^4.1.0",
     "mime-types": "^3.0.1",
     "mongoose": "^8.9.5",
     "multer": "^2.0.2",
