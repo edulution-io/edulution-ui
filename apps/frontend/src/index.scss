@@ -17,8 +17,8 @@
     --sidebar-width: 66px;
     --radius: 0.25rem;
     --menubar-max-width: 300px;
-    --edulution-green: #88d840;
-    --edulution-blue: #0081c6;
+    --ci-light-green: #88d840;
+    --ci-light-blue: #0081c6;
   }
 
   .bg-global {
@@ -33,6 +33,7 @@
     --background: #000000;
     --foreground: #ffffff;
     --muted-foreground: #505050;
+    --muted-background: #bbbbbb;
     --muted-light: #dcdcdc;
     --primary: #2c78dc;
     --primary-foreground: #ffffff;
@@ -62,6 +63,7 @@
     --background: #ffffff;
     --foreground: #000000;
     --muted-foreground: #bbbbbb;
+    --muted-background: #1a1a1a;
     --primary: #0281c7;
     --primary-foreground: #ffffff;
     --secondary: #d1d5db; /* früher ciLightGrey */
@@ -93,7 +95,7 @@
     border-width: 4px !important;
     background:
       var(--background-image) padding-box,
-      linear-gradient(to right top, var(--edulution-green), var(--edulution-blue)) border-box;
+      linear-gradient(to right top, var(--ci-light-green), var(--ci-light-blue)) border-box;
     border-radius: 4px;
     border-style: solid;
     border-color: transparent;

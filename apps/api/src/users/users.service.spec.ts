@@ -1,29 +1,34 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import CryptoJS from 'crypto-js';
-import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
-import { USERS_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import LdapGroups from '@libs/groups/types/ldapGroups';
 import USER_DB_PROJECTION from '@libs/user/constants/user-db-projection';
 import { getDecryptedPassword } from '@libs/common/utils';
 import { ALL_USERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { User, UserDocument } from './user.schema';
 import UsersService from './users.service';
 import GroupsService from '../groups/groups.service';
@@ -59,38 +64,6 @@ const cachedUsers = [
     firstName: 'Test',
     lastName: 'User',
     school: 'agy',
-  },
-];
-
-const fetchedUsers: LDAPUser[] = [
-  {
-    id: '2',
-    username: 'testuser',
-    firstName: 'Test',
-    lastName: 'User',
-    email: 'testuser@example.com',
-    emailVerified: true,
-    attributes: {
-      LDAP_ENTRY_DN: ['dn'],
-      LDAP_ID: ['id'],
-      modifyTimestamp: ['timestamp'],
-      createTimestamp: ['timestamp'],
-      school: ['agy'],
-    },
-    createdTimestamp: Date.now(),
-    enabled: true,
-    totp: false,
-    federationLink: 'link',
-    disableableCredentialTypes: [],
-    requiredActions: [],
-    notBefore: 0,
-    access: {
-      manageGroupMembership: false,
-      view: true,
-      mapRoles: false,
-      impersonate: false,
-      manage: false,
-    },
   },
 ];
 
@@ -149,9 +122,7 @@ describe(UsersService.name, () => {
         },
         {
           provide: EventEmitter2,
-          useValue: {
-            emit: jest.fn(),
-          },
+          useValue: { emit: jest.fn() },
         },
       ],
     }).compile();
@@ -244,14 +215,13 @@ describe(UsersService.name, () => {
       expect(cacheManagerMock.get).toHaveBeenCalledWith(ALL_USERS_CACHE_KEY + school);
     });
 
-    it('should fetch users from external API if not cached', async () => {
+    it('should return empty array if not cached', async () => {
       const school = 'agy';
-      cacheManagerMock.get.mockResolvedValueOnce(null).mockResolvedValueOnce(cachedUsers);
-      mockGroupsService.fetchAllUsers.mockResolvedValue(fetchedUsers);
+      cacheManagerMock.get.mockResolvedValue(null);
 
       const result = await service.findAllCachedUsers(school);
-      expect(result).toEqual(cachedUsers);
-      expect(cacheManagerMock.set).toHaveBeenCalledWith(ALL_USERS_CACHE_KEY + school, cachedUsers, USERS_CACHE_TTL_MS);
+      expect(result).toEqual([]);
+      expect(cacheManagerMock.get).toHaveBeenCalledWith(ALL_USERS_CACHE_KEY + school);
     });
   });
 

@@ -28,8 +28,8 @@ module.exports = {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
         ciDarkBlue: '#1A202C',
-        ciLightBlue: '#66B2DF',
-        ciLightGreen: '#88D840',
+        ciLightBlue: 'var(--ci-light-blue)',
+        ciLightGreen: 'var(--ci-light-green)',
         ciRed: '#dc2626',
         ciLightRed: '#F87171',
         ciYellow: '#FFD700',
@@ -60,6 +60,7 @@ module.exports = {
         muted: {
           DEFAULT: 'var(--muted)',
           foreground: 'var(--muted-foreground)',
+          background: 'var(--muted-background)',
         },
         accent: {
           DEFAULT: 'var(--accent)',
@@ -80,7 +81,7 @@ module.exports = {
         },
       },
       backgroundImage: {
-        ciGreenToBlue: 'linear-gradient(45deg, #88D840, #0081C6)',
+        ciGreenToBlue: 'linear-gradient(45deg, var(--ci-light-green), var(--ci-light-blue))',
       },
 
       borderRadius: {

@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { HttpStatus, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
@@ -22,7 +29,9 @@ import DOCKER_COMMANDS from '@libs/docker/constants/dockerCommands';
 import DOCKER_PROTECTED_CONTAINERS from '@libs/docker/constants/dockerProtectedContainer';
 import SPECIAL_USERS from '@libs/common/constants/specialUsers';
 import type TDockerProtectedContainer from '@libs/docker/types/TDockerProtectedContainer';
+import type UpdateContainerResponse from '@libs/docker/types/updateContainerResponse';
 import CONTAINER from '@libs/docker/constants/container';
+import type PullEvent from '@libs/docker/types/pullEvent';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
 
@@ -124,25 +133,63 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  private async pullImage(image: string) {
+  private async pullImage(image: string): Promise<boolean> {
     try {
       this.sseService.sendEventToUsers(
         [SPECIAL_USERS.GLOBAL_ADMIN],
-        { progress: 'docker.events.pullingImage', from: `${image}` } as DockerEvent,
+        {
+          progress: 'docker.events.pullingImage',
+          from: image,
+        } as DockerEvent,
         SSE_MESSAGE_TYPE.CONTAINER_PROGRESS,
       );
+
       const stream = await this.docker.pull(image);
+
+      const pullEvents: PullEvent[] = [];
+
       await new Promise<void>((resolve, reject) => {
         this.docker.modem.followProgress(
           stream,
-          (error) => (error ? reject(error) : resolve()),
-          (event: DockerEvent) => {
-            if (event) {
-              this.sseService.sendEventToUsers([SPECIAL_USERS.GLOBAL_ADMIN], event, SSE_MESSAGE_TYPE.CONTAINER_STATUS);
+          (error, output: PullEvent[]) => {
+            if (error) {
+              reject(error);
+              return;
             }
+
+            if (Array.isArray(output)) {
+              output.forEach((o) => pullEvents.push(o));
+            }
+
+            resolve();
+          },
+          (event: PullEvent) => {
+            pullEvents.push(event);
+
+            this.sseService.sendEventToUsers([SPECIAL_USERS.GLOBAL_ADMIN], event, SSE_MESSAGE_TYPE.CONTAINER_STATUS);
           },
         );
       });
+
+      const updated = pullEvents.some(
+        (evt) => typeof evt.status === 'string' && evt.status.includes('Downloaded newer image'),
+      );
+
+      if (updated) {
+        Logger.debug(`Image ${image} pulled and updated`, DockerService.name);
+        return true;
+      }
+
+      const upToDate = pullEvents.some(
+        (evt) => typeof evt.status === 'string' && evt.status.includes('Image is up to date'),
+      );
+
+      if (upToDate) {
+        Logger.debug(`Image ${image} is up to date`, DockerService.name);
+        return false;
+      }
+
+      return true;
     } catch (error) {
       throw new CustomHttpException(
         DockerErrorMessages.DOCKER_IMAGE_NOT_FOUND,
@@ -241,6 +288,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
   async executeContainerCommand(params: { id: string; operation: TDockerCommands }) {
     const { id, operation } = params;
+    const container = this.docker.getContainer(id);
 
     DockerService.checkProtectedContainer(id);
 
@@ -252,16 +300,16 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       );
       switch (operation) {
         case DOCKER_COMMANDS.START:
-          await this.docker.getContainer(id).start();
+          await container.start();
           break;
         case DOCKER_COMMANDS.STOP:
-          await this.docker.getContainer(id).stop();
+          await container.stop();
           break;
         case DOCKER_COMMANDS.RESTART:
-          await this.docker.getContainer(id).restart();
+          await container.restart();
           break;
         case DOCKER_COMMANDS.KILL:
-          await this.docker.getContainer(id).kill();
+          await container.kill();
           break;
         default:
           throw new CustomHttpException(
@@ -322,6 +370,55 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
         }
       }),
     );
+  }
+
+  async updateContainer(containerId: string): Promise<UpdateContainerResponse> {
+    try {
+      const container = this.docker.getContainer(containerId);
+
+      const inspectData = await container.inspect();
+      const imageName = inspectData.Config.Image;
+
+      Logger.debug('Pulling latest image:', DockerService.name);
+      const isImageUpdated = await this.pullImage(imageName);
+
+      if (!isImageUpdated) {
+        Logger.debug(
+          `Image ${imageName} is already up to date. No update needed for container ${container.id}`,
+          DockerService.name,
+        );
+        return { id: container.id, isImageUpdated };
+      }
+
+      Logger.debug(`Stopping container ${container.id}`, DockerService.name);
+      await container.stop();
+
+      Logger.debug(`Removing container ${container.id}`, DockerService.name);
+      await container.remove();
+
+      Logger.debug(`Recreating container`, DockerService.name);
+      const newContainer = await this.docker.createContainer({
+        ...inspectData.Config,
+        HostConfig: inspectData.HostConfig,
+        NetworkingConfig: inspectData.NetworkSettings?.Networks
+          ? { EndpointsConfig: inspectData.NetworkSettings.Networks }
+          : undefined,
+        Image: imageName,
+        name: inspectData.Name.replace('/', ''),
+      });
+
+      Logger.debug('Starting new container...');
+      await newContainer.start();
+
+      return { id: newContainer.id, isImageUpdated };
+    } catch (error) {
+      throw new CustomHttpException(
+        DockerErrorMessages.DOCKER_UPDATE_ERROR,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        DockerService.name,
+      );
+    }
   }
 }
 

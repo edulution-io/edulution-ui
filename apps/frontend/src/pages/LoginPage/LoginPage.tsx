@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { useEffect, useState } from 'react';
@@ -39,7 +46,7 @@ import PageLayout from '@/components/structure/layout/PageLayout';
 import APPS from '@libs/appconfig/constants/apps';
 import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
 import { decodeBase64, encodeBase64 } from '@libs/common/utils/getBase64String';
-import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
+import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg?react';
 import getMainLogoUrl from '@libs/assets/getMainLogoUrl';
 import COLOR_SCHEME from '@libs/ui/constants/colorScheme';
 import getLoginFormSchema from './getLoginFormSchema';
@@ -72,6 +79,7 @@ const LoginPage: React.FC = () => {
   const [encryptKey, setEncryptKey] = useState('');
   const [showQrCode, setShowQrCode] = useState(false);
   const [sessionID, setSessionID] = useState<string | null>(null);
+  const [useDefaultLogo, setUseDefaultLogo] = useState(false);
 
   const form = useForm({
     mode: 'onSubmit',
@@ -146,6 +154,18 @@ const LoginPage: React.FC = () => {
 
   useEffect(() => {
     if (!isAuthenticatedAppReady) return;
+
+    const currentUser = auth.user?.profile?.preferred_username;
+    const previousUser = sessionStorage.getItem('username');
+
+    if (previousUser && previousUser !== currentUser) {
+      sessionStorage.setItem('username', currentUser ?? '');
+
+      navigate(LANDING_PAGE_ROUTE, { replace: true });
+      return;
+    }
+
+    sessionStorage.setItem('username', currentUser ?? '');
 
     if (state?.from) {
       navigate(state.from, { replace: true });
@@ -325,20 +345,22 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <PageLayout>
+    <PageLayout hasFullWidthMain>
       <PageTitle translationId="login.pageTitle" />
       <Card
         variant="modal"
         className="overflow-y-auto bg-background scrollbar-thin"
       >
-        <img
-          src={logoSrc}
-          alt={t('settings.settings.logo.title')}
-          className="mx-auto w-64"
-          onError={(e) => {
-            (e.currentTarget as HTMLImageElement).src = DesktopLogo;
-          }}
-        />
+        {useDefaultLogo ? (
+          <DesktopLogo className="mx-auto w-64" />
+        ) : (
+          <img
+            src={logoSrc}
+            alt={t('settings.settings.logo.title')}
+            className="mx-auto w-64"
+            onError={() => setUseDefaultLogo(true)}
+          />
+        )}
         <Form
           {...form}
           data-testid="test-id-login-page-form"
