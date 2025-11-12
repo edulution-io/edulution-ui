@@ -127,7 +127,7 @@ const MenuBar: React.FC = () => {
         </button>
       </div>
       <MenubarMenu>
-        <div className="flex-1 overflow-y-auto pb-10 scrollbar-thin">
+        <div className="flex-1 overflow-y-auto pb-10">
           {menuBarEntries.menuItems.map((item) => (
             <React.Fragment key={item.label}>
               <MenubarTrigger
