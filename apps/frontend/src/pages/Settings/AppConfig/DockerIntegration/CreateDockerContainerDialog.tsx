@@ -35,7 +35,7 @@ import extractEnvPlaceholders from '@libs/docker/utils/extractEnvPlaceholders';
 import { type ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 import updateContainerConfig from '@libs/docker/utils/updateContainerConfig';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
-import DOCKER_APPLICATIONS from '@libs/docker/constants/dockerApplicationList';
+import DOCKER_APPLICATION_LIST from '@libs/docker/constants/dockerApplicationList';
 import useDockerApplicationStore from './useDockerApplicationStore';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 import getCreateContainerFormSchema from './getCreateContainerFormSchema';
@@ -103,7 +103,7 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
     if (createContainerConfig && dockerContainerConfig) {
       const formValues = form.getValues();
       const updatedConfig = updateContainerConfig(createContainerConfig, formValues);
-      const containerName = DOCKER_APPLICATIONS[settingLocation] || '';
+      const containerName = DOCKER_APPLICATION_LIST[settingLocation] || '';
 
       await createAndRunContainer({
         applicationName: settingLocation,
