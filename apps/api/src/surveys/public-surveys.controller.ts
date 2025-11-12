@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { join } from 'path';
@@ -27,7 +34,10 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import APPS from '@libs/appconfig/constants/apps';
 import { ANSWER, PUBLIC_USER, FILES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
+import SURVEYS_ANSWER_FOLDER from '@libs/survey/constants/surveyAnswersFolder';
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
@@ -40,7 +50,6 @@ import FilesystemService from 'apps/api/src/filesystem/filesystem.service';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answers.service';
-import SurveysAttachmentService from './surveys-attachment.service';
 import { Public } from '../common/decorators/public.decorator';
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
@@ -51,8 +60,7 @@ class PublicSurveysController {
   constructor(
     private readonly surveyService: SurveysService,
     private readonly surveyAnswerService: SurveyAnswerService,
-    private readonly surveysAttachmentService: SurveysAttachmentService,
-    private readonly surveyAnswerAttachmentsService: SurveyAnswerAttachmentsService,
+    private readonly filesystemService: FilesystemService,
   ) {}
 
   @Get(`/:surveyId`)
@@ -80,9 +88,10 @@ class PublicSurveysController {
 
   @Get(`${FILES}/:surveyId/:questionId/:filename`)
   @Public()
-  serveFile(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
+  async serveFile(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
     const { surveyId, questionId, filename } = params;
-    return this.surveysAttachmentService.serveFiles(surveyId, questionId, filename, res);
+    const filePath = join(APPS.SURVEYS, ATTACHMENT_FOLDER, surveyId, questionId);
+    return this.filesystemService.serveFiles(filePath, filename, res);
   }
 
   @Post(`${ANSWER}/${FILES}/:userName/:surveyId`)
@@ -160,7 +169,10 @@ class PublicSurveysController {
 
   @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:filename`)
   @Public()
-  serveFileFromAnswer(@Param() params: { userName: string; surveyId: string; filename: string }, @Res() res: Response) {
+  serveTempFileFromAnswer(
+    @Param() params: { userName: string; surveyId: string; filename: string },
+    @Res() res: Response,
+  ) {
     const { userName, surveyId, filename } = params;
     if (!userName || !surveyId || !filename) {
       throw new CustomHttpException(
@@ -170,7 +182,8 @@ class PublicSurveysController {
         PublicSurveysController.name,
       );
     }
-    return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, filename, res);
+    const filePath = join(SURVEYS_ANSWER_FOLDER, userName, surveyId);
+    return this.filesystemService.serveTempFiles(filePath, filename, res);
   }
 
   @Get(`${CHOICES}/:surveyId/:questionName`)

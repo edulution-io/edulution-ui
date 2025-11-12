@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "1.6.38",
+  "version": "1.6.79",
   "scripts": {
     "test": "nx run-many --target=test --projects=api",
     "test:api": "nx run api:test --detectOpenHandles",
@@ -271,6 +271,7 @@
     "typescript": "^5.5.2",
     "typescript-eslint": "^7.14.1",
     "vite": "^5.0.8",
+    "vite-plugin-svgr": "^4.5.0",
     "vite-tsconfig-paths": "^4.3.1",
     "vitest": "^1.6.1",
     "webpack-cli": "^5.1.4"
