@@ -21,6 +21,8 @@ import { HttpStatus, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@
 import Docker from 'dockerode';
 import { fromEvent, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { ensureDirSync, writeFileSync } from 'fs-extra';
+import { join } from 'path';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type DockerEvent from '@libs/docker/types/dockerEvents';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
@@ -32,6 +34,8 @@ import type TDockerProtectedContainer from '@libs/docker/types/TDockerProtectedC
 import type UpdateContainerResponse from '@libs/docker/types/updateContainerResponse';
 import CONTAINER from '@libs/docker/constants/container';
 import type PullEvent from '@libs/docker/types/pullEvent';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import type CreateContainerDto from '@libs/docker/types/create-container.dto';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
 
@@ -212,8 +216,27 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     return newCreateContainersDto;
   }
 
-  async createContainer(createContainersDto: Docker.ContainerCreateOptions[]) {
-    const newCreateContainersDto = DockerService.replaceEnvVariables(createContainersDto);
+  private static saveDockerCompose(appname: string, composeConfig: string): void {
+    try {
+      const fileDir = join(APPS_FILES_PATH, appname);
+      ensureDirSync(fileDir);
+      const filePath = join(APPS_FILES_PATH, appname, 'docker-compose.yml');
+
+      writeFileSync(filePath, composeConfig, 'utf-8');
+      Logger.log(`Docker compose file saved: ${filePath}`, DockerService.name);
+    } catch (error) {
+      Logger.error(
+        `Failed to save docker-compose.yml: ${error instanceof Error ? error.message : String(error)}`,
+        DockerService.name,
+      );
+    }
+  }
+
+  async createContainer(createContainerDto: CreateContainerDto) {
+    const { applicationName, containers, originalComposeConfig } = createContainerDto;
+
+    const newCreateContainersDto = DockerService.replaceEnvVariables(containers);
+
     try {
       await Promise.all(
         newCreateContainersDto.map(async (containerDto) => {
@@ -234,6 +257,10 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
           const container = await this.docker.createContainer(containerDto);
           await container.start();
           Logger.log(`Container ${containerDto.name} created and started.`, DockerService.name);
+
+          if (applicationName && originalComposeConfig) {
+            DockerService.saveDockerCompose(applicationName, originalComposeConfig);
+          }
         }),
       );
 

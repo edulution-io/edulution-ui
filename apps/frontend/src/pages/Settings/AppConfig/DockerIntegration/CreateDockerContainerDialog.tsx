@@ -35,6 +35,7 @@ import extractEnvPlaceholders from '@libs/docker/utils/extractEnvPlaceholders';
 import { type ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 import updateContainerConfig from '@libs/docker/utils/updateContainerConfig';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import DOCKER_APPLICATIONS from '@libs/docker/constants/dockerApplicationList';
 import useDockerApplicationStore from './useDockerApplicationStore';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 import getCreateContainerFormSchema from './getCreateContainerFormSchema';
@@ -50,8 +51,14 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
   const [showInputForm, setShowInputForm] = useState(false);
   const [createContainerConfig, setCreateContainerConfig] = useState([{}]);
   const [combinedEnvPlaceholders, setCombinedEnvPlaceholders] = useState({});
-  const { isLoading, tableContentData, dockerContainerConfig, createAndRunContainer, fetchTableContent } =
-    useDockerApplicationStore();
+  const {
+    isLoading,
+    tableContentData,
+    dockerContainerConfig,
+    dockerComposeFiles,
+    createAndRunContainer,
+    fetchTableContent,
+  } = useDockerApplicationStore();
   const { eventSource } = useSseStore();
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
   const isOpen = isDialogOpen === tableId;
@@ -93,10 +100,16 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
   }, []);
 
   const handleCreateContainer = async () => {
-    if (createContainerConfig) {
+    if (createContainerConfig && dockerContainerConfig) {
       const formValues = form.getValues();
       const updatedConfig = updateContainerConfig(createContainerConfig, formValues);
-      await createAndRunContainer(updatedConfig);
+      const containerName = DOCKER_APPLICATIONS[settingLocation] || '';
+
+      await createAndRunContainer({
+        applicationName: settingLocation,
+        containers: updatedConfig,
+        originalComposeConfig: dockerComposeFiles[containerName] || '',
+      });
       await fetchTableContent(settingLocation);
     }
   };

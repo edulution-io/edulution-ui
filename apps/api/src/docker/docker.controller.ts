@@ -18,9 +18,9 @@
  */
 
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
-import { type ContainerCreateOptions } from 'dockerode';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
 import { EDU_API_DOCKER_CONTAINER_ENDPOINT, EDU_API_DOCKER_ENDPOINT } from '@libs/docker/constants/dockerEndpoints';
+import type CreateContainerDto from '@libs/docker/types/create-container.dto';
 import DockerService from './docker.service';
 import AdminGuard from '../common/guards/admin.guard';
 
@@ -35,8 +35,8 @@ class DockerController {
   }
 
   @Post(EDU_API_DOCKER_CONTAINER_ENDPOINT)
-  async createContainer(@Body() createContainersDto: ContainerCreateOptions[]) {
-    return this.dockerService.createContainer(createContainersDto);
+  async createContainer(@Body() createContainerDto: CreateContainerDto) {
+    return this.dockerService.createContainer(createContainerDto);
   }
 
   @Put(`${EDU_API_DOCKER_CONTAINER_ENDPOINT}/:id/:operation`)
