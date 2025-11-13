@@ -104,6 +104,63 @@ describe('LmnApiService', () => {
     requestSpy = jest.spyOn<any, any>(service, 'request');
   });
 
+  describe('getLmnApiToken', () => {
+    it('should get password from usersService and call auth endpoint with basic auth', async () => {
+      const username = 'testuser';
+      const password = 'testpassword';
+      const expectedToken = 'mock-api-token-12345';
+
+      jest.spyOn(usersService, 'getPassword').mockResolvedValue(password);
+
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      const axiosGetSpy = jest.spyOn<any, any>(service['lmnApi'], 'get').mockResolvedValue({
+        data: expectedToken,
+      });
+
+      const result = await service.getLmnApiToken(username);
+
+      expect(usersService.getPassword).toHaveBeenCalledWith(username);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      expect(axiosGetSpy).toHaveBeenCalledWith('/auth/', {
+        auth: { username, password },
+        timeout: 10_000,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        validateStatus: expect.any(Function),
+      });
+      expect(result).toBe(expectedToken);
+    });
+
+    it('should return empty string with space if token is not returned', async () => {
+      const username = 'testuser';
+      const password = 'testpassword';
+
+      jest.spyOn(usersService, 'getPassword').mockResolvedValue(password);
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      jest.spyOn<any, any>(service['lmnApi'], 'get').mockResolvedValue({
+        data: '',
+      });
+
+      const result = await service.getLmnApiToken(username);
+
+      expect(result).toBe(' ');
+    });
+
+    it('should return empty string with space if token is null', async () => {
+      const username = 'testuser';
+      const password = 'testpassword';
+
+      jest.spyOn(usersService, 'getPassword').mockResolvedValue(password);
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      jest.spyOn<any, any>(service['lmnApi'], 'get').mockResolvedValue({
+        data: null,
+      });
+
+      const result = await service.getLmnApiToken(username);
+
+      expect(result).toBe(' ');
+    });
+  });
+
   describe('printPasswords', () => {
     it('should call printPasswords endpoint with correct headers and handle response', async () => {
       const buffer = Buffer.from('mock');
