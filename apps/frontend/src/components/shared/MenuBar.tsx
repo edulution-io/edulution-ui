@@ -180,7 +180,7 @@ const MenuBar: React.FC = () => {
           </div>
         </VerticalMenubar>
       ) : (
-        <div className="relative flex h-screen">
+        <div className="relative flex h-dvh">
           <VerticalMenubar className="w-64 bg-foreground bg-opacity-40">{renderMenuBarContent()}</VerticalMenubar>
         </div>
       )}
