@@ -20,7 +20,7 @@
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import { extension as mimeExtension } from 'mime-types';
+import mime from 'mime';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import { ThemeType } from '@libs/common/constants/theme';
@@ -62,7 +62,7 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
         form.append('file', file, name);
       } else if (file instanceof Blob) {
         const type = file.type || RequestResponseContentType.APPLICATION_OCTET_STREAM;
-        const ext = mimeExtension(type);
+        const ext = mime.getExtension(type);
         const fullName = ext && !name.toLowerCase().endsWith(`.${ext.toLowerCase()}`) ? `${name}.${ext}` : name;
 
         const wrapped = new File([file], fullName, { type });

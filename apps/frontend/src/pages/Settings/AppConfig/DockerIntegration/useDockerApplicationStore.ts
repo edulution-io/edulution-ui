@@ -23,7 +23,7 @@ import { parse, type YAMLMap } from 'yaml';
 import i18n from '@/i18n';
 import { toast } from 'sonner';
 import eduApi from '@/api/eduApi';
-import { type ContainerInfo, type ContainerCreateOptions } from 'dockerode';
+import { type ContainerInfo } from 'dockerode';
 import { type RowSelectionState } from '@tanstack/react-table';
 import handleApiError from '@/utils/handleApiError';
 import DOCKER_APPLICATIONS from '@libs/docker/constants/dockerApplicationList';
@@ -43,6 +43,7 @@ const initialValues = {
   selectedRows: {},
   dockerContainerConfig: null,
   traefikConfig: null,
+  dockerComposeFiles: {},
 };
 
 const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) => ({
@@ -86,10 +87,14 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
     }
   },
 
-  createAndRunContainer: async (createContainerDto: ContainerCreateOptions[]) => {
+  createAndRunContainer: async ({ applicationName, containers, originalComposeConfig }) => {
     set({ isLoading: true, error: null });
     try {
-      await eduApi.post(`${EDU_API_DOCKER_ENDPOINT}/${EDU_API_DOCKER_CONTAINER_ENDPOINT}`, createContainerDto);
+      await eduApi.post(`${EDU_API_DOCKER_ENDPOINT}/${EDU_API_DOCKER_CONTAINER_ENDPOINT}`, {
+        applicationName,
+        containers,
+        originalComposeConfig,
+      });
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -129,17 +134,24 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
 
   getDockerContainerConfig: async (applicationName: TApps, containerName: string) => {
     set({ isLoading: true, error: null });
+
+    const url = `${EDU_PLUGINS_GITHUB_URL}/${applicationName}/${containerName}/docker-compose.yml?ts=${Date.now()}}`;
     try {
-      const { data } = await axios.get<string>(
-        `${EDU_PLUGINS_GITHUB_URL}/${applicationName}/${containerName}/docker-compose.yml`,
-        {
-          headers: {
-            Accept: RequestResponseContentType.APPLICATION_GITHUB_RAW,
-          },
+      const { data } = await axios.get<string>(url, {
+        headers: {
+          Accept: RequestResponseContentType.APPLICATION_GITHUB_RAW,
         },
-      );
+      });
       const dockerContainerConfig = parse(data) as DockerCompose;
-      set({ dockerContainerConfig });
+
+      set((state) => ({
+        dockerContainerConfig,
+        dockerComposeFiles: {
+          ...state.dockerComposeFiles,
+          [containerName]: data,
+        },
+      }));
+
       return dockerContainerConfig;
     } catch (error) {
       handleApiError(error, set);
