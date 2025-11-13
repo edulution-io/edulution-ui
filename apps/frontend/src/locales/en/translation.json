@@ -1019,7 +1019,8 @@
       "totpResetSuccess": "TOTP for user {{username}} has been disabled successfully.",
       "setAdminGroupTitle": "Set administrator group",
       "setAdminGroupDescription": "Additional administrators can be defined here. The global administrator remains unchanged.",
-      "setAdminGroupSelectDescription": "Groups can be selected using the search field."
+      "setAdminGroupSelectDescription": "Groups can be selected using the search field.",
+      "setAdminGroupWarning": "At least one admin group must be selected."
     },
     "info": {
       "title": "Info"
@@ -1275,6 +1276,8 @@
   },
   "edit": "Edit",
   "common": {
+    "more": "More",
+    "less": "Less",
     "refreshPage": "Refresh page",
     "showMore": "Show more",
     "visibility": "Visibility",

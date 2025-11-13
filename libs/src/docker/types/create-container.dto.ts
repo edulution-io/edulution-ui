@@ -17,10 +17,21 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import FloatingButtonsBarConfig from './floatingButtonsBarConfig';
+import { Type } from 'class-transformer';
+import { IsArray, IsString, ValidateNested } from 'class-validator';
+import { type ContainerCreateOptions } from 'dockerode';
 
-type FloatingButtonsBarProps = {
-  config: FloatingButtonsBarConfig;
-};
+class CreateContainerDto {
+  @IsString()
+  applicationName: string;
 
-export default FloatingButtonsBarProps;
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Object)
+  containers: ContainerCreateOptions[];
+
+  @IsString()
+  originalComposeConfig: string;
+}
+
+export default CreateContainerDto;

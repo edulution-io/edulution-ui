@@ -18,19 +18,11 @@
  */
 
 import React from 'react';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
-import LicenseOverview from '../components/LicenseOverview';
-import LmnVersionInfo from './LmnVersionInfo';
+import FloatingButtonsBarConfig from './floatingButtonsBarConfig';
 
-const InfoPage = () => {
-  const { isLmn } = useDeploymentTarget();
-
-  return (
-    <div className="mt-5 space-y-10 [&>*]:rounded-lg [&>*]:bg-muted-background [&>*]:px-2">
-      <LicenseOverview />
-      {isLmn && <LmnVersionInfo />}
-    </div>
-  );
+type FloatingButtonsBarProps = {
+  config: FloatingButtonsBarConfig;
+  ref?: React.MutableRefObject<HTMLDivElement | null>;
 };
 
-export default InfoPage;
+export default FloatingButtonsBarProps;

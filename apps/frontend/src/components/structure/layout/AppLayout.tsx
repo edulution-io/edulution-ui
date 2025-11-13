@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Sidebar } from '@/components';
 import { Outlet } from 'react-router-dom';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
@@ -40,21 +40,27 @@ const AppLayout = () => {
   const { isEduApiHealthy } = useEduApiStore();
   const { isMobileView, isTabletView } = useMedia();
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
+  const [pageKey, setPageKey] = useState(0);
 
   const isAppConfigReady = !appConfigs.find((appConfig) => appConfig.name === APPS.NONE);
   const isAuthenticatedAppReady = isAppConfigReady && isAuthenticated;
 
   const showMobileTopBar = (isMobileView || isTabletView || isEdulutionApp) && isAuthenticatedAppReady;
 
+  const refreshPage = () => {
+    setPageKey((k) => k + 1);
+  };
+
   return (
-    <div className="flex h-screen flex-row">
-      <div className="flex h-screen flex-1 flex-col overflow-hidden">
+    <div className="flex h-dvh flex-row">
+      <div className="flex h-dvh flex-1 flex-col overflow-hidden">
         {isEduApiHealthy === false && <OfflineBanner />}
 
         {showMobileTopBar && (
           <MobileTopBar
             showLeftButton={!menuBar.disabled}
             showRightButton
+            refreshPage={refreshPage}
           />
         )}
 
@@ -64,9 +70,9 @@ const AppLayout = () => {
         >
           {!menuBar.disabled && <MenuBar />}
 
-          <Outlet />
+          <Outlet key={`outlet-${pageKey}`} />
 
-          {isAuthenticatedAppReady && <Overlays />}
+          {isAuthenticatedAppReady && <Overlays key={`overlays-${pageKey}`} />}
         </div>
       </div>
 

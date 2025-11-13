@@ -21,6 +21,8 @@ import { HttpStatus, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@
 import Docker from 'dockerode';
 import { fromEvent, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { ensureDirSync, writeFileSync } from 'fs-extra';
+import { join } from 'path';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type DockerEvent from '@libs/docker/types/dockerEvents';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
@@ -32,6 +34,9 @@ import type TDockerProtectedContainer from '@libs/docker/types/TDockerProtectedC
 import type UpdateContainerResponse from '@libs/docker/types/updateContainerResponse';
 import CONTAINER from '@libs/docker/constants/container';
 import type PullEvent from '@libs/docker/types/pullEvent';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import type CreateContainerDto from '@libs/docker/types/create-container.dto';
+import { injectEnvIntoCompose, parseDockerEnv } from '@libs/docker/utils/createComposeFile';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
 
@@ -200,18 +205,6 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  private async imageExists(imageName: string): Promise<boolean> {
-    const images = await this.docker.listImages();
-
-    this.sseService.sendEventToUsers(
-      [SPECIAL_USERS.GLOBAL_ADMIN],
-      { progress: 'docker.events.checkingImage', from: `${imageName}` } as DockerEvent,
-      SSE_MESSAGE_TYPE.CONTAINER_PROGRESS,
-    );
-
-    return images.some((img) => img.RepoTags?.includes(imageName));
-  }
-
   static replaceEnvVariables(createContainersDto: Docker.ContainerCreateOptions[]) {
     let newCreateContainersDto: Docker.ContainerCreateOptions[] = [];
     newCreateContainersDto = createContainersDto.map((service) => ({
@@ -224,23 +217,49 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     return newCreateContainersDto;
   }
 
-  async createContainer(createContainersDto: Docker.ContainerCreateOptions[]) {
-    const newCreateContainersDto = DockerService.replaceEnvVariables(createContainersDto);
+  private static saveDockerCompose(
+    applicationName: string,
+    containers: Docker.ContainerCreateOptions[],
+    originalComposeConfig: string,
+  ): void {
+    const parsedEnvsPerContainer = containers.map((c) => parseDockerEnv(c.Env));
+    const mergedEnvs: Record<string, string> = parsedEnvsPerContainer.reduce((acc, obj) => ({ ...acc, ...obj }), {});
+    const finalComposeConfig = injectEnvIntoCompose(originalComposeConfig, mergedEnvs);
+
+    try {
+      const fileDir = join(APPS_FILES_PATH, applicationName);
+      ensureDirSync(fileDir);
+
+      const filePath = join(fileDir, 'docker-compose.yml');
+
+      writeFileSync(filePath, finalComposeConfig, 'utf-8');
+
+      Logger.log(`Docker compose file saved: ${filePath}`, DockerService.name);
+    } catch (error) {
+      Logger.error(
+        `Failed to save docker-compose.yml: ${error instanceof Error ? error.message : String(error)}`,
+        DockerService.name,
+      );
+    }
+  }
+
+  async createContainer(createContainerDto: CreateContainerDto) {
+    const { applicationName, containers, originalComposeConfig } = createContainerDto;
+
+    const newContainers = DockerService.replaceEnvVariables(containers);
+
     try {
       await Promise.all(
-        newCreateContainersDto.map(async (containerDto) => {
+        newContainers.map(async (containerDto) => {
           const { Image } = containerDto;
           if (Image) {
-            const imageExists = await this.imageExists(Image);
-            if (!imageExists) {
-              await this.pullImage(Image);
-            }
+            await this.pullImage(Image);
           }
         }),
       );
 
       await Promise.all(
-        newCreateContainersDto.map(async (containerDto) => {
+        newContainers.map(async (containerDto) => {
           this.sseService.sendEventToUsers(
             [SPECIAL_USERS.GLOBAL_ADMIN],
             { progress: 'docker.events.creatingContainer', from: `${containerDto.name}` } as DockerEvent,
@@ -251,6 +270,10 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
           Logger.log(`Container ${containerDto.name} created and started.`, DockerService.name);
         }),
       );
+
+      if (applicationName && newContainers && originalComposeConfig) {
+        DockerService.saveDockerCompose(applicationName, newContainers, originalComposeConfig);
+      }
 
       this.sseService.sendEventToUsers(
         [SPECIAL_USERS.GLOBAL_ADMIN],
