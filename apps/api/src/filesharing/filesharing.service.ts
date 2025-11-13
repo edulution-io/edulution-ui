@@ -38,7 +38,7 @@ import FILE_ACCESS_RESULT from '@libs/filesharing/constants/fileAccessResult';
 import checkFileAccessRights from '@libs/filesharing/utils/checkFileAccessRights';
 import CreateOrEditPublicShareDto from '@libs/filesharing/types/createOrEditPublicShareDto';
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import PublicShareResponseDto from '@libs/filesharing/types/publicShareResponseDto';
 import PUBLIC_SHARE_LINK_SCOPE from '@libs/filesharing/constants/publicShareLinkScope';
 import CustomFile from '@libs/filesharing/types/customFile';
@@ -340,7 +340,7 @@ class FilesharingService {
         return { success: false, status: HttpStatus.INTERNAL_SERVER_ERROR };
       }
 
-      const publicShareId = uuidv4();
+      const publicShareId = randomUUID();
       const newShare = await this.shareModel.create({
         publicShareId,
         etag,

@@ -18,8 +18,6 @@
  */
 
 import { create } from 'zustand';
-import { v4 as uuid } from 'uuid';
-
 import { UploadFile } from '@libs/filesharing/types/uploadFile';
 import FileProgress from '@libs/filesharing/types/fileProgress';
 import UploadResult from '@libs/filesharing/types/uploadResult';
@@ -69,7 +67,7 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
         ...state.filesToUpload,
         ...files.map((file) => ({
           ...file,
-          id: file.id ?? uuid(),
+          id: file.id ?? crypto.randomUUID(),
         })),
       ],
     })),

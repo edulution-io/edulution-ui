@@ -34,6 +34,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { randomUUID } from 'crypto';
 import APPS from '@libs/appconfig/constants/apps';
 import { ANSWER, PUBLIC_USER, FILES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
@@ -115,7 +116,7 @@ class PublicSurveysController {
           return join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
         },
         false,
-        (_req, file) => addUuidToFileName(file.originalname),
+        (_req, file) => addUuidToFileName(file.originalname, randomUUID()),
       ),
     ),
   )

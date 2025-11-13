@@ -19,7 +19,7 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import DEFAULT_FILE_LINK_EXPIRY from '@libs/filesharing/constants/defaultFileLinkExpiry';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
@@ -29,7 +29,7 @@ export type PublicShareDocument = PublicShare & Document & { _id: Types.ObjectId
 
 @Schema({ timestamps: true, strict: true })
 export class PublicShare {
-  @Prop({ type: String, default: uuidv4, unique: true, index: true })
+  @Prop({ type: String, default: randomUUID(), unique: true, index: true })
   publicShareId: string;
 
   @Prop({ required: true })

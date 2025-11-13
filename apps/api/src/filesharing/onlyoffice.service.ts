@@ -18,7 +18,7 @@
  */
 
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import OnlyOfficeCallbackData from '@libs/filesharing/types/onlyOfficeCallBackData';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
 import { Request, Response } from 'express';
@@ -83,7 +83,7 @@ class OnlyofficeService implements OnModuleInit {
     uploadFile: (username: string, path: string, file: CustomFile, name: string) => Promise<WebdavStatusResponse>,
   ) {
     const callbackData = req.body as OnlyOfficeCallbackData;
-    const uniqueFileName = `${uuidv4()}-${filename}`;
+    const uniqueFileName = `${randomUUID()}-${filename}`;
 
     if (callbackData.status !== 2 && callbackData.status !== 4) {
       return res.status(HttpStatus.OK).json({ error: 0 });

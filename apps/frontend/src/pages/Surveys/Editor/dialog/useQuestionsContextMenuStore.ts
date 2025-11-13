@@ -18,7 +18,6 @@
  */
 
 import { create } from 'zustand';
-import { v4 as uuidv4 } from 'uuid';
 import { Question, ChoicesRestful } from 'survey-core';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
@@ -190,7 +189,7 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
   addNewChoice: () => {
     const { currentChoices, addChoice } = get();
     const newChoiceTitle = `choice-${currentChoices.length}`;
-    const newChoiceName = `${newChoiceTitle}-${uuidv4()}`;
+    const newChoiceName = `${newChoiceTitle}-${crypto.randomUUID()}`;
     addChoice(newChoiceName, `${newChoiceTitle}`, 1);
   },
 
