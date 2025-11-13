@@ -21,7 +21,6 @@ import React, { useEffect } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { useCookies } from 'react-cookie';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import type UserDto from '@libs/user/types/user.dto';
 import useSseStore from '@/store/useSseStore';
 import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
 import isDev from '@libs/common/constants/isDev';
@@ -45,7 +44,7 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   const { getAppConfigs, getPublicAppConfigs } = useAppConfigsStore();
   const { getGlobalSettings } = useGlobalSettingsApiStore();
   const { getIsEduApiHealthy } = useEduApiStore();
-  const { isAuthenticated, eduApiToken, setEduApiToken, user, getWebdavKey } = useUserStore();
+  const { isAuthenticated, eduApiToken, setEduApiToken } = useUserStore();
   const { lmnApiToken, setLmnApiToken } = useLmnApiStore();
   const { eventSource, setEventSource } = useSseStore();
   const [, setCookie] = useCookies([COOKIE_DESCRIPTORS.AUTH_TOKEN]);
@@ -112,13 +111,12 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [isAuthenticated]);
 
   useEffect(() => {
-    const handleGetLmnApiKey = async (usr: UserDto) => {
-      const webdavKey = await getWebdavKey();
-      await setLmnApiToken(usr.username, webdavKey);
+    const handleGetLmnApiKey = async () => {
+      await setLmnApiToken();
     };
 
-    if (isAuthenticated && !lmnApiToken && user) {
-      void handleGetLmnApiKey(user);
+    if (isAuthenticated && !lmnApiToken) {
+      void handleGetLmnApiKey();
     }
   }, [isAuthenticated]);
 
