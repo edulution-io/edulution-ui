@@ -111,12 +111,8 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [isAuthenticated]);
 
   useEffect(() => {
-    const handleGetLmnApiKey = async () => {
-      await setLmnApiToken();
-    };
-
     if (isAuthenticated && !lmnApiToken) {
-      void handleGetLmnApiKey();
+      void setLmnApiToken();
     }
   }, [isAuthenticated]);
 
