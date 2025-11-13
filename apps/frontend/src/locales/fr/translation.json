@@ -1554,10 +1554,18 @@
   },
   "containerApplication": {
     "dialogTitle": "Installer le plugin {{applicationName}}-Plugin",
+    "EDU_MANAGER_INSTALL_TOKEN": {
+      "title": "Installer Jeton",
+      "description": "Veuillez saisir le jeton d'installation qui a été créé dans le Edulution Manager."
+    },
     "EDULUTION_MAIL_HOSTNAME": {
       "title": "Nom d'hôte",
       "description": "Nom d'hôte du serveur de messagerie. Cela peut différer du domaine Edulution."
     }
+  },
+  "edulution-manager": {
+    "sidebar": "Gestionnaire Edulution",
+    "title": "Gestionnaire Edulution"
   },
   "dockerOverview": {
     "title": "Aperçu des conteneurs",
@@ -1569,7 +1577,9 @@
     "filterPlaceHolderText": "Rechercher le nom du conteneur",
     "port": "Port",
     "created": "Créé à",
-    "container-view": "Conteneur"
+    "container-view": "Conteneur",
+    "selectPluginForInstallationTitle": "Sélectionnez le plugin à installer",
+    "selectPluginForInstallationDescription": "Sélectionnez ici une application pour laquelle un plugin doit être installé."
   },
   "docker": {
     "error": {

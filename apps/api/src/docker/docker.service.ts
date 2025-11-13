@@ -37,7 +37,7 @@ import type PullEvent from '@libs/docker/types/pullEvent';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import type CreateContainerDto from '@libs/docker/types/create-container.dto';
 import { injectEnvIntoCompose, parseDockerEnv } from '@libs/docker/utils/createComposeFile';
-import DOCKER_APPLICATION_LIST from '@libs/docker/constants/dockerApplicationList';
+import { EDULUTION_MANAGER_CONTAINER_NAME } from '@libs/docker/constants/edulution-manager';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
 
@@ -484,7 +484,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     const cleanIp = requestIp.replace('::ffff:', '');
     const containerName = await this.getContainerNameByIp(cleanIp);
 
-    if (containerName !== DOCKER_APPLICATION_LIST.eduManagerAgent) {
+    if (containerName !== EDULUTION_MANAGER_CONTAINER_NAME) {
       Logger.warn(
         `Unauthorized update attempt from container: ${containerName || 'unknown'} (IP: ${requestIp})`,
         DockerService.name,
@@ -497,7 +497,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       );
     }
 
-    const containers = await this.getContainers(DOCKER_APPLICATION_LIST.eduManagerAgent);
+    const containers = await this.getContainers(EDULUTION_MANAGER_CONTAINER_NAME);
 
     if (containers.length === 0) return false;
 

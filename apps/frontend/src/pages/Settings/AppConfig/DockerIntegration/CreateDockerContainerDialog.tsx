@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -25,7 +25,6 @@ import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
 import ProgressTextArea from '@/components/shared/ProgressTextArea';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useSseStore from '@/store/useSseStore';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type DockerEvent from '@libs/docker/types/dockerEvents';
@@ -36,6 +35,7 @@ import { type ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptio
 import updateContainerConfig from '@libs/docker/utils/updateContainerConfig';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import DOCKER_APPLICATION_LIST from '@libs/docker/constants/dockerApplicationList';
+import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import useDockerApplicationStore from './useDockerApplicationStore';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 import getCreateContainerFormSchema from './getCreateContainerFormSchema';
@@ -65,9 +65,18 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
 
   useEffect(() => {
     if (!eventSource) return undefined;
+
+    const containerName = DOCKER_APPLICATION_LIST[settingLocation];
+
     const dockerProgressHandler = (e: MessageEvent<string>) => {
       const { progress, from } = JSON.parse(e.data) as DockerEvent;
-      if (!progress) return;
+      if (!progress || !from) return;
+
+      const isRelevantToThisApp =
+        from === containerName || (containerName && from.includes(containerName)) || from === 'DockerService';
+
+      if (!isRelevantToThisApp) return;
+
       setDockerProgress((prevDockerProgress) => [...prevDockerProgress, `${from}: ${t(progress) ?? ''}`]);
     };
 
@@ -76,12 +85,12 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
     return () => {
       eventSource.removeEventListener(SSE_MESSAGE_TYPE.CONTAINER_PROGRESS, dockerProgressHandler);
     };
-  }, []);
+  }, [eventSource, settingLocation, t]);
 
   useEffect(() => {
     if (dockerContainerConfig) {
       const containerConfig = convertComposeToDockerode(dockerContainerConfig);
-      const envPlaceholders = extractEnvPlaceholders(createContainerConfig);
+      const envPlaceholders = extractEnvPlaceholders(containerConfig);
       const showInput = Object.keys(envPlaceholders).length > 0;
 
       setCreateContainerConfig(containerConfig);
@@ -90,14 +99,25 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
     }
   }, [dockerContainerConfig]);
 
+  const formSchema = useMemo(
+    () => getCreateContainerFormSchema(t, combinedEnvPlaceholders),
+    [t, combinedEnvPlaceholders],
+  );
+
   const form = useForm({
     mode: 'onSubmit',
-    resolver: zodResolver(getCreateContainerFormSchema(t, showInputForm)),
+    resolver: zodResolver(formSchema),
   });
 
   useEffect(() => {
     form.reset();
-  }, []);
+  }, [formSchema]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setDockerProgress(['']);
+    }
+  }, [isOpen]);
 
   const handleCreateContainer = async () => {
     if (createContainerConfig && dockerContainerConfig) {
@@ -138,6 +158,7 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
             ))
           : null}
         <ProgressTextArea text={dockerProgress} />
+        {isLoading && <HorizontalLoader className="m-auto" />}
         <DialogFooterButtons
           handleClose={handleClose}
           handleSubmit={() => {}}
@@ -152,15 +173,12 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
   );
 
   return (
-    <>
-      <div className="absolute right-10 top-12 md:right-24 md:top-1">{isLoading ? <CircleLoader /> : null}</div>
-      <AdaptiveDialog
-        title={t(`containerApplication.dialogTitle`, { applicationName: t(`${settingLocation}.sidebar`) })}
-        isOpen={isOpen}
-        body={getDialogBody()}
-        handleOpenChange={handleClose}
-      />
-    </>
+    <AdaptiveDialog
+      title={t(`containerApplication.dialogTitle`, { applicationName: t(`${settingLocation}.sidebar`) })}
+      isOpen={isOpen}
+      body={getDialogBody()}
+      handleOpenChange={handleClose}
+    />
   );
 };
 

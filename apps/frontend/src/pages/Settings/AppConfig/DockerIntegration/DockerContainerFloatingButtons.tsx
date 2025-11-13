@@ -32,10 +32,13 @@ import DOCKER_PROTECTED_CONTAINERS from '@libs/docker/constants/dockerProtectedC
 import DOCKER_STATES from '@libs/docker/constants/dockerStates';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
 import type TDockerProtectedContainer from '@libs/docker/types/TDockerProtectedContainer';
+import CreateButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/createButton';
+import useSelectCreateDockerContainerDialogStore from '@/pages/Settings/AppConfig/DockerIntegration/SelectCreateDockerContainerDialog/useSelectCreateDockerContainerDialogStore';
 import useDockerApplicationStore from './useDockerApplicationStore';
 
 const DockerContainerFloatingButtons: React.FC = () => {
   const { t } = useTranslation();
+  const { setDialogOpen } = useSelectCreateDockerContainerDialogStore();
   const {
     containers,
     selectedRows,
@@ -78,6 +81,7 @@ const DockerContainerFloatingButtons: React.FC = () => {
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
+      CreateButton(() => setDialogOpen(true)),
       StartButton(() => handleActionClick(DOCKER_COMMANDS.START), isButtonVisible && !areSelectedContainersRunning),
       StopButton(() => handleActionClick(DOCKER_COMMANDS.STOP), isButtonVisible && areSelectedContainersNotRunning),
       {

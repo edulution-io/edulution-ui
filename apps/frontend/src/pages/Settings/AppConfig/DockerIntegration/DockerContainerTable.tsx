@@ -27,6 +27,7 @@ import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '
 import useMedia from '@/hooks/useMedia';
 import DOCKER_CONTAINER_TABLE_COLUMNS from '@libs/docker/constants/dockerContainerTableColumns';
 import CONTAINER from '@libs/docker/constants/container';
+import SelectCreateDockerContainerDialog from '@/pages/Settings/AppConfig/DockerIntegration/SelectCreateDockerContainerDialog/SelectCreateDockerContainerDialog';
 import useDockerApplicationStore from './useDockerApplicationStore';
 import DockerContainerTableColumns from './DockerContainerTableColumns';
 import DockerContainerFloatingButtons from './DockerContainerFloatingButtons';
@@ -82,6 +83,7 @@ const DockerContainerTable: React.FC = () => {
           </AccordionContent>
         </AccordionItem>
       </AccordionSH>
+      <SelectCreateDockerContainerDialog />
       <DockerContainerFloatingButtons />
     </>
   );

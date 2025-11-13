@@ -17,20 +17,24 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type TApps from '@libs/appconfig/types/appsType';
-import {
-  EDULUTION_MANAGER_APPLICATION_NAME,
-  EDULUTION_MANAGER_CONTAINER_NAME,
-} from '@libs/docker/constants/edulution-manager';
+import { create } from 'zustand';
 
-type DockerApplicationList = { [EDULUTION_MANAGER_APPLICATION_NAME]: string } & { [key in TApps]: string };
+interface DialogStore {
+  isDialogOpen: boolean;
+  setDialogOpen: (isOpen: boolean) => void;
+  reset: () => void;
+}
 
-const DOCKER_APPLICATION_LIST: Partial<DockerApplicationList> = {
-  mail: 'edulution-mail',
-  classmanagement: 'edulution-veyon',
-  desktopdeployment: 'edulution-guacamole',
-  filesharing: 'edulution-onlyoffice',
-  [EDULUTION_MANAGER_APPLICATION_NAME]: EDULUTION_MANAGER_CONTAINER_NAME,
-} as const;
+const initialState = {
+  isDialogOpen: false,
+};
 
-export default DOCKER_APPLICATION_LIST;
+const useSelectCreateDockerContainerDialogStore = create<DialogStore>((set) => ({
+  ...initialState,
+
+  reset: () => set(initialState),
+
+  setDialogOpen: (open) => set({ isDialogOpen: open }),
+}));
+
+export default useSelectCreateDockerContainerDialogStore;
