@@ -1764,7 +1764,7 @@
     "dialogTitle": "{{applicationName}}-Plugins installieren",
     "EDU_MANAGER_INSTALL_TOKEN": {
       "title": "Installations-Token",
-      "description": "Bitte geben Sie den Installations-Token ein, der im Edulution-Manager erstellt wurde."
+      "description": "Bitte gib den Installations-Token ein, der im Edulution-Manager erstellt wurde."
     },
     "EDULUTION_MAIL_HOSTNAME": {
       "title": "Hostname",
