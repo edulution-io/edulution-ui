@@ -26,7 +26,7 @@ const isSystemFile = (filename: string): boolean => {
     return true;
   }
 
-  return basename.startsWith('._');
+  return basename.startsWith('_') || basename.startsWith('.');
 };
 
 export default isSystemFile;

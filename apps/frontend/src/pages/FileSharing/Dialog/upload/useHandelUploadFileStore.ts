@@ -28,10 +28,13 @@ import createUploadClient from '@libs/filesharing/utils/createUploadClient';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import ContentType from '@libs/filesharing/types/contentType';
-import eduApi from '@/api/eduApi';
 import extractAllDirectories from '@libs/filesharing/utils/extractAllDirectories';
 import { toast } from 'sonner';
 import { t } from 'i18next';
+import calculateTotalFilesAndBytes from '@libs/filesharing/utils/calculateTotalFilesAndBytes';
+import { HttpMethods } from '@libs/common/types/http-methods';
+import handleSingleData from '@/pages/FileSharing/Dialog/handleFileAction/handleSingleData';
+import FileActionType from '@libs/filesharing/types/fileActionType';
 
 interface HandelUploadFileStore {
   isUploadDialogOpen: boolean;
@@ -64,52 +67,7 @@ const initialState = {
   uploadingById: new Map<string, boolean>(),
 };
 
-const calculateTotalFilesAndBytes = (files: UploadFile[]): { filesCount: number; bytesCount: number } => {
-  let filesCount = 0;
-  let bytesCount = 0;
-
-  files.forEach((file) => {
-    if (file.isFolder && file.files) {
-      filesCount += file.files.length;
-      file.files.forEach((innerFile) => {
-        bytesCount += innerFile.size;
-      });
-    } else {
-      filesCount += 1;
-      bytesCount += file.size;
-    }
-  });
-
-  return { filesCount, bytesCount };
-};
-
-const createDirectory = async (path: string, webdavShare: string | undefined): Promise<void> => {
-  try {
-    const pathParts = path.split('/').filter((part) => part);
-    const directoryName = pathParts[pathParts.length - 1];
-    const parentPath = pathParts.slice(0, -1).join('/');
-    const parentPathWithSlash = `/${parentPath}/`;
-
-    await eduApi.post(
-      FileSharingApiEndpoints.FILESHARING_ACTIONS,
-      {
-        path: parentPathWithSlash,
-        newPath: directoryName,
-      },
-      {
-        params: {
-          share: webdavShare,
-          type: ContentType.DIRECTORY,
-          path: parentPathWithSlash,
-        },
-      },
-    );
-  } catch (error) {
-    toast.error(t('filesharing.filesharingUpload.errors.directoryCreationFailed'));
-  }
-};
-
-const uploadFolderWithFiles = async (
+const uploadFolder = async (
   folder: UploadFile,
   basePath: string,
   webdavShare: string | undefined,
@@ -124,11 +82,28 @@ const uploadFolderWithFiles = async (
 
   let createdCount = 0;
 
-  await directories.reduce(async (previousPromise, directory) => {
+  await directories.reduce(async (previousPromise, directoryPath) => {
     await previousPromise;
     try {
       setDirectoryProgress(createdCount, directories.length, webdavShare);
-      await createDirectory(directory, webdavShare);
+
+      const pathParts = directoryPath.split('/').filter((part) => part);
+      const directoryName = pathParts[pathParts.length - 1];
+      const parentPath = pathParts.slice(0, -1).join('/');
+      const parentPathWithSlash = `/${parentPath}/`;
+
+      await handleSingleData(
+        FileActionType.CREATE_FOLDER,
+        FileSharingApiEndpoints.FILESHARING_ACTIONS,
+        HttpMethods.POST,
+        ContentType.DIRECTORY,
+        {
+          path: parentPathWithSlash,
+          newPath: directoryName,
+        },
+        webdavShare,
+      );
+
       createdCount += 1;
     } catch (error) {
       toast.error(t('filesharing.filesharingUpload.errors.directoryCreationFailed'));
@@ -299,7 +274,7 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
             await singleFileUploader(tempUploadFile);
           };
 
-          await uploadFolderWithFiles(
+          await uploadFolder(
             fileItem,
             currentPath,
             webdavShare,

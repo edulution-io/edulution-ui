@@ -1503,7 +1503,7 @@
     "hiddenFiles": "versteckte & System-Dateien",
     "errors": {
       "directoryCreationFailed": "Fehler beim Erstellen des Verzeichnisses",
-      "fileUploadFailed": "Fehler beim Hochladen des Datei-Inhalts"
+      "fileUploadFailed": "Fehler beim Hochladen des Ordner-Inhalts"
     }
   },
   "warnings": {
