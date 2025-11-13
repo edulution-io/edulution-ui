@@ -30,7 +30,7 @@ const getCreateContainerFormSchema = (
     return z.object({});
   }
 
-  const schemaFields: Record<string, z.ZodString> = {};
+  const schemaFields: Record<string, z.ZodString | z.ZodEffects<z.ZodString, string, string>> = {};
 
   Object.keys(envPlaceholders).forEach((placeholder) => {
     if (placeholder.includes('HOSTNAME')) {

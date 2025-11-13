@@ -81,7 +81,7 @@ const DockerContainerFloatingButtons: React.FC = () => {
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
-      CreateButton(() => setDialogOpen(true)),
+      CreateButton(() => setDialogOpen(true), selectedContainerId.length === 0),
       StartButton(() => handleActionClick(DOCKER_COMMANDS.START), isButtonVisible && !areSelectedContainersRunning),
       StopButton(() => handleActionClick(DOCKER_COMMANDS.STOP), isButtonVisible && areSelectedContainersNotRunning),
       {

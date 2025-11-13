@@ -65,17 +65,9 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
 
   useEffect(() => {
     if (!eventSource) return undefined;
-
-    const containerName = DOCKER_APPLICATION_LIST[settingLocation];
-
     const dockerProgressHandler = (e: MessageEvent<string>) => {
       const { progress, from } = JSON.parse(e.data) as DockerEvent;
-      if (!progress || !from) return;
-
-      const isRelevantToThisApp =
-        from === containerName || (containerName && from.includes(containerName)) || from === 'DockerService';
-
-      if (!isRelevantToThisApp) return;
+      if (!progress) return;
 
       setDockerProgress((prevDockerProgress) => [...prevDockerProgress, `${from}: ${t(progress) ?? ''}`]);
     };
@@ -85,7 +77,7 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
     return () => {
       eventSource.removeEventListener(SSE_MESSAGE_TYPE.CONTAINER_PROGRESS, dockerProgressHandler);
     };
-  }, [eventSource, settingLocation, t]);
+  }, []);
 
   useEffect(() => {
     if (dockerContainerConfig) {
