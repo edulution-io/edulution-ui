@@ -33,7 +33,7 @@ const PublicSurveyParticipationIdDisplay = ({ publicUserId }: PublicSurveyPartic
   const { t } = useTranslation();
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
+    <div className="flex min-h-dvh items-center justify-center">
       <Card
         variant="text"
         className="w-[660px] max-w-[660px] border-none bg-white bg-opacity-5 p-5 md:w-[60%]"
