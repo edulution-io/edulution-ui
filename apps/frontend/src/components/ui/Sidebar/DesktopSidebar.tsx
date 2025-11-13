@@ -184,7 +184,7 @@ const DesktopSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
   }, [pathname, sidebarItems]);
 
   return (
-    <div className="relative h-screen w-[var(--sidebar-width)]">
+    <div className="relative h-dvh w-[var(--sidebar-width)]">
       <div className="fixed right-0 z-[600] flex h-full flex-col bg-black md:bg-none">
         <HomeButton />
 
