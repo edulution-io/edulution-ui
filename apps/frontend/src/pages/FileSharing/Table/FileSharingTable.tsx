@@ -31,6 +31,7 @@ import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsVal
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { useParams } from 'react-router-dom';
+import { FolderIcon } from 'lucide-react';
 
 const FileSharingTable = () => {
   const { webdavShare } = useParams();
@@ -92,6 +93,13 @@ const FileSharingTable = () => {
         { id: 'select-filename', desc: false },
       ]}
       initialColumnVisibility={initialColumnVisibility}
+      contextMenuActions={[
+        {
+          label: 'fgggg',
+          icon: <FolderIcon className="h-4 w-4" />,
+          onClick: () => {},
+        },
+      ]}
     />
   );
 };
