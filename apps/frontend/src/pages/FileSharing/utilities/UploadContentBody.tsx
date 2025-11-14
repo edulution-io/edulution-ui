@@ -43,7 +43,6 @@ import { FcFolder } from 'react-icons/fc';
 import MAX_FOLDER_UPLOAD_CONTENT_SIZE from '@libs/ui/constants/maxFolderUploadContentSize';
 import getFileUploadLimit from '@libs/ui/utils/getFileUploadLimit';
 import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
-import { v4 as uuidv4 } from 'uuid';
 
 const UploadContentBody = () => {
   const { webdavShare } = useParams();
@@ -100,7 +99,7 @@ const UploadContentBody = () => {
         getFileUploadLimit(webdavShares, webdavShare),
       );
       const duplicates = findDuplicateFiles(
-        normal.map((file) => Object.assign(file, { id: uuidv4() })),
+        normal.map((file) => Object.assign(file, { id: crypto.randomUUID() })),
         files,
       );
 
@@ -135,7 +134,7 @@ const UploadContentBody = () => {
           .filter((file) => !existingNames.has(file.name))
           .map((file) => {
             const uploadFile: UploadFile = Object.assign(new File([file], file.name, { type: file.type }), {
-              id: uuidv4(),
+              id: crypto.randomUUID(),
               isZippedFolder: false,
             });
             return uploadFile;
@@ -170,7 +169,7 @@ const UploadContentBody = () => {
             isZippedFolder: true,
             originalFolderName: root,
             fileCount,
-            id: uuidv4(),
+            id: crypto.randomUUID(),
           },
         );
 

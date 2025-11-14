@@ -24,7 +24,6 @@ import { useForm } from 'react-hook-form';
 import CryptoJS from 'crypto-js';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { v4 as uuidv4 } from 'uuid';
 import { MdOutlineQrCode } from 'react-icons/md';
 import { toast } from 'sonner';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
@@ -255,7 +254,7 @@ const LoginPage: React.FC = () => {
     if (isEnterTotpVisible) {
       onTotpCancelButtonClick();
     } else {
-      const newSessionID = uuidv4();
+      const newSessionID = crypto.randomUUID();
       setSessionID(newSessionID);
       setShowQrCode((prev) => !prev);
     }

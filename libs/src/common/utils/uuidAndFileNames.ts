@@ -17,11 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { v4 as uuidv4 } from 'uuid';
-
 const STR_DISTINGUISHER = '_--_';
 
-export const addUuidToFileName = (originalFileName: string): string => {
+export const addUuidToFileName = (originalFileName: string, id: string): string => {
   const dotIndex = originalFileName.lastIndexOf('.');
   if (dotIndex === -1) {
     return originalFileName;
@@ -30,7 +28,7 @@ export const addUuidToFileName = (originalFileName: string): string => {
   const name = originalFileName.slice(0, dotIndex);
   const ext = originalFileName.slice(dotIndex + 1);
 
-  return `${name}${STR_DISTINGUISHER}${uuidv4()}.${ext}`;
+  return `${name}${STR_DISTINGUISHER}${id}.${ext}`;
 };
 
 export const removeUuidFromFileName = (fileName: string): string => {
