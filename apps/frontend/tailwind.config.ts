@@ -27,8 +27,7 @@ module.exports = {
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
-        ciDarkBlue: '#1A202C',
-        ciLightBlue: 'var(--ci-light-blue)',
+        ciLightBlue: 'var(--ci-dark-blue)',
         ciLightGreen: 'var(--ci-light-green)',
         ciRed: '#dc2626',
         ciLightRed: '#F87171',
@@ -81,7 +80,7 @@ module.exports = {
         },
       },
       backgroundImage: {
-        ciGreenToBlue: 'linear-gradient(45deg, var(--ci-light-green), var(--ci-light-blue))',
+        ciGreenToBlue: 'linear-gradient(45deg, var(--ci-light-green), var(--ci-dark-blue))',
       },
 
       borderRadius: {

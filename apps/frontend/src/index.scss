@@ -18,7 +18,7 @@
     --radius: 0.25rem;
     --menubar-max-width: 300px;
     --ci-light-green: #8fc046;
-    --ci-light-blue: #0081c6;
+    --ci-dark-blue: #0081c6;
   }
 
   .bg-global {
@@ -95,7 +95,7 @@
     border-width: 4px !important;
     background:
       var(--background-image) padding-box,
-      linear-gradient(to right top, var(--ci-light-green), var(--ci-light-blue)) border-box;
+      linear-gradient(to right top, var(--ci-light-green), var(--ci-dark-blue)) border-box;
     border-radius: 4px;
     border-style: solid;
     border-color: transparent;

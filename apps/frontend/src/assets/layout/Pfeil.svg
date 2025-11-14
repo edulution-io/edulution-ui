@@ -23,7 +23,7 @@
     </clipPath>
     <linearGradient id="Unbenannter_Verlauf_2" data-name="Unbenannter Verlauf 2" x1="-697.57" y1="552.46" x2="-695.24" y2="552.46" gradientTransform="translate(73159.49 184688.76) rotate(30) scale(223.15 -223.15)" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="var(--ci-light-green)"/>
-      <stop offset="1" stop-color="var(--ci-light-blue)"/>
+      <stop offset="1" stop-color="var(--ci-dark-blue)"/>
     </linearGradient>
   </defs>
   <g class="cls-3">
