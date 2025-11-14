@@ -18,7 +18,6 @@
  */
 
 import React, { useMemo } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import { useTranslation } from 'react-i18next';
 import { MdAdd, MdRemove } from 'react-icons/md';
 import { Base, ItemValue, QuestionMatrixBaseModel } from 'survey-core';
@@ -58,10 +57,10 @@ const RowAndColumnOptions = () => {
   const getNewRow = () => {
     const newRow = rows[rows.length - 1].clone();
     if (newRow.value) {
-      newRow.value = uuidv4();
+      newRow.value = crypto.randomUUID();
       newRow.text = t('survey.editor.questionSettings.newRow');
     } else if (newRow.name) {
-      newRow.name = uuidv4();
+      newRow.name = crypto.randomUUID();
       newRow.title = t('survey.editor.questionSettings.newRow');
     }
     return newRow;
@@ -70,10 +69,10 @@ const RowAndColumnOptions = () => {
   const getNewColumn = () => {
     const newColumn = columns[columns.length - 1].clone();
     if (newColumn.name) {
-      newColumn.name = uuidv4();
+      newColumn.name = crypto.randomUUID();
       newColumn.title = t('survey.editor.questionSettings.newColumn');
     } else if (newColumn.value) {
-      newColumn.value = uuidv4();
+      newColumn.value = crypto.randomUUID();
       newColumn.text = t('survey.editor.questionSettings.newColumn');
     }
     return newColumn;

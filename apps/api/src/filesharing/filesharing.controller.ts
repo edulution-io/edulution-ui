@@ -50,7 +50,7 @@ import CreateOrEditPublicShareDto from '@libs/filesharing/types/createOrEditPubl
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import { pipeline } from 'stream/promises';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
 import FilesharingService from './filesharing.service';
@@ -137,7 +137,7 @@ class FilesharingController {
   ) {
     const stream = await this.filesharingService.getWebDavFileStream(username, filePath, share);
 
-    const filename = filePath.split('/').pop() || uuidv4();
+    const filename = filePath.split('/').pop() || randomUUID();
     res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_OCTET_STREAM);
     res.setHeader(HTTP_HEADERS.ContentDisposition, `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`);
 

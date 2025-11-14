@@ -24,12 +24,9 @@ import { WebStorageStateStore } from 'oidc-client-ts';
 import { CookiesProvider } from 'react-cookie';
 import i18n from '@/i18n';
 import eduApi from '@/api/eduApi';
-import useLmnApiStore from '@/store/useLmnApiStore';
 import { HelmetProvider } from 'react-helmet-async';
-import lmnApi from '@/api/lmnApi';
 import useUserStore from '@/store/UserStore/useUserStore';
 import Toaster from '@/components/ui/Toaster';
-import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 import { TooltipProvider } from '@/components/ui/Tooltip';
@@ -39,12 +36,10 @@ import LazyErrorBoundary from './components/LazyErrorBoundary';
 
 const App = () => {
   const { eduApiToken } = useUserStore();
-  const { lmnApiToken } = useLmnApiStore();
   const { user } = useUserStore();
 
   useThemeColors();
 
-  lmnApi.defaults.headers.common[HTTP_HEADERS.XApiKey] = lmnApiToken;
   eduApi.defaults.headers.Authorization = `Bearer ${eduApiToken}`;
 
   useEffect(() => {
