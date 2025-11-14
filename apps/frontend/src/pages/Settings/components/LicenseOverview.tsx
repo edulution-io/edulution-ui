@@ -61,7 +61,7 @@ const LicenseOverview: React.FC = () => {
       >
         <AccordionItem value="license">
           <AccordionTrigger className="flex text-h4">
-            <h4>{t('settings.license.title')}</h4>
+            <h3>{t('settings.license.title')}</h3>
           </AccordionTrigger>
           <AccordionContent className="space-y-2 px-1">
             {licenseInfo && licenseInfo.customerId ? (

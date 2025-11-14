@@ -86,7 +86,7 @@ const MailImporterConfig: React.FC<MailsConfigProps> = ({ form }) => {
     <AccordionSH type="multiple">
       <AccordionItem value="mails">
         <AccordionTrigger className="flex text-h4">
-          <h4>{t(`mail.importer.title`)}</h4>
+          <h3>{t(`mail.importer.title`)}</h3>
         </AccordionTrigger>
         <AccordionContent className="space-y-2 px-1">
           <div className="flex gap-4">

@@ -39,7 +39,7 @@ const LmnVersionInfo = () => {
     >
       <AccordionItem value="lmnVersions">
         <AccordionTrigger className="text-h4">
-          <h4>{t('settings.lmnVersion.title')}</h4>
+          <h3>{t('settings.lmnVersion.title')}</h3>
         </AccordionTrigger>
         <AccordionContent>
           <div className="grid grid-cols-1 gap-2 py-4 pr-4 sm:grid-cols-2 lg:grid-cols-3">

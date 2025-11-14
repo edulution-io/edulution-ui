@@ -131,7 +131,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
     <AccordionSH type="multiple">
       <AccordionItem value={item.name}>
         <AccordionTrigger className="flex text-h4">
-          <h4 className="text-background">{t(`form.proxyConfig`)}</h4>
+          <h3 className="text-background">{t(`form.proxyConfig`)}</h3>
         </AccordionTrigger>
         <AccordionContent>
           <p>

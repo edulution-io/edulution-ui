@@ -37,7 +37,7 @@ const ProgressBox: React.FC<{ data: ProgressBoxProps }> = ({ data }) => {
 
   return (
     <div className="flex flex-col gap-2">
-      {title && <h2 className="text-sm font-bold">{title}</h2>}
+      {title && <h1 className="text-sm font-bold">{title}</h1>}
 
       <div className="flex items-center gap-2">
         <Progress value={percent} />
