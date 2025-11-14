@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { useEffect } from 'react';
@@ -172,31 +179,33 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
         className="column max-w-screen-2xl space-y-6"
       >
         {matchingConfig && (
-          <div className="m-5 space-y-3">
-            <AppConfigPositionSelect
-              form={form}
-              appConfig={matchingConfig}
-            />
-            <FormFieldSH
-              key={`${matchingConfig.name}.accessGroups`}
-              control={control}
-              name={`${matchingConfig.name}.accessGroups`}
-              render={() => (
-                <FormItem>
-                  <h4 className="text-background">{t(`permission.groups`)}</h4>
-                  <FormControl>
-                    <AsyncMultiSelect<MultipleSelectorGroup>
-                      value={getValues(`${matchingConfig.name}.accessGroups`)}
-                      onSearch={searchGroups}
-                      onChange={(groups) => handleGroupsChange(groups, `${matchingConfig.name}`)}
-                      placeholder={t('search.type-to-search')}
-                    />
-                  </FormControl>
-                  <p className="text-background">{t(`permission.selectGroupsDescription`)}</p>
-                  <FormMessage className="text-p" />
-                </FormItem>
-              )}
-            />
+          <div className="m-5 space-y-10 [&>*]:rounded-xl [&>*]:bg-muted-background [&>*]:px-2">
+            <div className="space-y-3 py-3">
+              <AppConfigPositionSelect
+                form={form}
+                appConfig={matchingConfig}
+              />
+              <FormFieldSH
+                key={`${matchingConfig.name}.accessGroups`}
+                control={control}
+                name={`${matchingConfig.name}.accessGroups`}
+                render={() => (
+                  <FormItem>
+                    <h4 className="text-background">{t(`permission.groups`)}</h4>
+                    <FormControl>
+                      <AsyncMultiSelect<MultipleSelectorGroup>
+                        value={getValues(`${matchingConfig.name}.accessGroups`)}
+                        onSearch={searchGroups}
+                        onChange={(groups) => handleGroupsChange(groups, `${matchingConfig.name}`)}
+                        placeholder={t('search.type-to-search')}
+                      />
+                    </FormControl>
+                    <p className="text-background">{t(`permission.selectGroupsDescription`)}</p>
+                    <FormMessage className="text-p" />
+                  </FormItem>
+                )}
+              />
+            </div>
             {Object.keys(matchingConfig.options)
               .filter((key) => key === APP_CONFIG_OPTION_KEYS.URL || key === APP_CONFIG_OPTION_KEYS.APIKEY)
               .map((filteredKey) => (
@@ -206,7 +215,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
                   name={`${matchingConfig.name}.options.${filteredKey}`}
                   defaultValue={filteredKey}
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="py-3">
                       <h4 className="text-background">{t(`form.${filteredKey}`)}</h4>
                       <FormControl>
                         <Input {...field} />
