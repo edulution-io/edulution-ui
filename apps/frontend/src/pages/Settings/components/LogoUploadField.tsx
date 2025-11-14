@@ -10,10 +10,11 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import clsx from 'clsx';
 import React from 'react';
+import { HiTrash } from 'react-icons/hi2';
 import { Theme, ThemeType } from '@libs/common/constants/theme';
 import FileSelectButton from '@/components/ui/FileSelectButton';
-import clsx from 'clsx';
 
 type LogoUploadFieldProps = {
   variant: ThemeType;
@@ -29,6 +30,7 @@ type LogoUploadFieldProps = {
   alt?: string;
   fallbackSrc?: string;
   className?: string;
+  onHandleReset?: () => Promise<void>;
 };
 
 const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
@@ -45,6 +47,7 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
   alt = 'Logo preview',
   fallbackSrc,
   className,
+  onHandleReset,
 }) => {
   const backdropClass = variant === Theme.light ? 'bg-white' : 'bg-neutral-900';
 
@@ -59,6 +62,18 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
       aria-busy={uploading}
       aria-live="polite"
     >
+      <div className="absolute right-4 top-4">
+        {onHandleReset && (
+          <button
+            type="button"
+            onClick={async () => {
+              await onHandleReset();
+            }}
+          >
+            <HiTrash className="h-6 w-6 p-1 text-ciRed" />
+          </button>
+        )}
+      </div>
       {(previewSrc || fallbackSrc) && (
         <img
           key={cacheKey}

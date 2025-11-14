@@ -32,6 +32,7 @@ import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoi
 import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
+import { ThemeType } from '@libs/common/constants/theme';
 import { UploadGlobalAssetDto } from '@libs/filesystem/types/uploadGlobalAssetDto';
 import CustomHttpException from '../common/CustomHttpException';
 import { createAttachmentUploadOptions, createDiskStorage } from './multer.utilities';
@@ -71,6 +72,13 @@ class FileSystemController {
     return this.filesystemService.getFilesInfo(FilesystemService.buildPathString(path));
   }
 
+  @Public()
+  @UseGuards(IsPublicAppGuard)
+  @Get('public/logo/:appName/:variant')
+  serveAppLogo(@Param('appName') appName: string, @Param('variant') variant: ThemeType, @Res() res: Response) {
+    return this.filesystemService.serveAppLogo(appName, variant, res);
+  }
+
   @Get(`${FILE_ENDPOINTS.FILE}/:appName/*filename`)
   serveFiles(@Param('appName') appName: string, @Param('filename') filename: string | string[], @Res() res: Response) {
     return this.filesystemService.serveFiles(appName, FilesystemService.buildPathString(filename), res);
@@ -92,6 +100,13 @@ class FileSystemController {
     @Res() res: Response,
   ) {
     return this.filesystemService.serveFiles(appName, FilesystemService.buildPathString(filename), res);
+  }
+
+  @Delete('public/:appName/*filename')
+  @UseGuards(AdminGuard)
+  deletePublicFile(@Param('appName') appName: string, @Param('filename') filename: string) {
+    const appsPath = join(PUBLIC_ASSET_PATH, appName);
+    return FilesystemService.deleteFile(appsPath, FilesystemService.buildPathString(filename));
   }
 
   @Delete(':appName/*filename')

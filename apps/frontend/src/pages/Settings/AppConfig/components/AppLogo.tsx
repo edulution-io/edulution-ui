@@ -14,23 +14,23 @@ import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { Theme } from '@libs/common/constants/theme';
 import ThemedFile from '@libs/common/types/themedFile';
-import LogoUploadBrandingAppField from '@/pages/Settings/components/LogoUploadBrandingAppField';
+import AddAppLogo from '@/pages/Settings/components/AddAppLogo';
 
-export type AppConfigLogoProps = {
+export type AppLogoProps = {
   settingLocation: string;
   fieldPath: string;
   form: UseFormReturn<ThemedFile>;
 };
 
-const AppConfigLogo: React.FC<AppConfigLogoProps> = ({ settingLocation, fieldPath, form }) => (
+const AppLogo: React.FC<AppLogoProps> = ({ settingLocation, fieldPath, form }) => (
   <div className="flex min-w-[480px] flex-grow flex-row gap-4">
-    <LogoUploadBrandingAppField
+    <AddAppLogo
       variant={Theme.light}
       appName={settingLocation}
       fieldPath={fieldPath}
       form={form}
     />
-    <LogoUploadBrandingAppField
+    <AddAppLogo
       variant={Theme.dark}
       appName={settingLocation}
       fieldPath={fieldPath}
@@ -39,4 +39,4 @@ const AppConfigLogo: React.FC<AppConfigLogoProps> = ({ settingLocation, fieldPat
   </div>
 );
 
-export default AppConfigLogo;
+export default AppLogo;

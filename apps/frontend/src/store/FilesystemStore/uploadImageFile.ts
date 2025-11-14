@@ -18,13 +18,13 @@ import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoi
 import convertImageFileToWebp from '@libs/common/utils/convertImageFileToWebp';
 
 type UploadImageFileProps = {
-  destination: string,
-  filename: string,
-  file: File | Blob,
-  appName?: string,
-}
+  destination: string;
+  filename: string;
+  file: File | Blob;
+  appName?: string;
+};
 
-const UploadImageFile = async ({ destination, filename, file, appName }: UploadImageFileProps) => {
+const uploadImageFile = async ({ destination, filename, file, appName }: UploadImageFileProps) => {
   try {
     const form = new FormData();
     form.append('destination', destination);
@@ -36,7 +36,8 @@ const UploadImageFile = async ({ destination, filename, file, appName }: UploadI
     } else if (file instanceof Blob) {
       const type = file.type || RequestResponseContentType.APPLICATION_OCTET_STREAM;
       const ext = mimeExtension(type);
-      const fullName = ext && !filename.toLowerCase().endsWith(`.${ext.toLowerCase()}`) ? `${filename}.${ext}` : filename;
+      const fullName =
+        ext && !filename.toLowerCase().endsWith(`.${ext.toLowerCase()}`) ? `${filename}.${ext}` : filename;
 
       const wrapped = new File([file], fullName, { type });
       form.append('file', wrapped, fullName);
@@ -48,11 +49,11 @@ const UploadImageFile = async ({ destination, filename, file, appName }: UploadI
     await eduApi.post<void>(url, form);
   } catch (err: unknown) {
     if (err instanceof Error) {
-      handleApiError(err, () => { });
+      handleApiError(err, () => {});
     } else {
-      handleApiError(new Error('Unknown upload error'), () => { });
+      handleApiError(new Error('Unknown upload error'), () => {});
     }
   }
 };
 
-export default UploadImageFile;
+export default uploadImageFile;

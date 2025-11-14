@@ -15,36 +15,28 @@ import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { ThemeType } from '@libs/common/constants/theme';
 import ThemedFile from '@libs/common/types/themedFile';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
-import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
+import { getFallbackUrl, getLogoName, getLogoUrl } from '@libs/appconfig/utils/getAppLogo';
 import uploadImageFile from '@/store/FilesystemStore/uploadImageFile';
+import removeImageFile from '@/store/FilesystemStore/removeImageFile';
 import LogoUploadField from '@/pages/Settings/components/LogoUploadField';
 
-export type LogoUploadBrandingAppFieldProps = {
+export type AddAppLogoProps = {
   variant: ThemeType;
   appName: string;
   fieldPath: string;
   form: UseFormReturn<ThemedFile>;
 };
 
-const LogoUploadBrandingAppField: React.FC<LogoUploadBrandingAppFieldProps> = ({
-  variant,
-  appName,
-  fieldPath,
-  form,
-}) => {
+const AddAppLogo: React.FC<AddAppLogoProps> = ({ variant, appName, fieldPath, form }) => {
   const { t } = useTranslation();
 
   const [keyValue, setKeyValue] = React.useState<number>(0);
 
   const path = `${fieldPath}.${variant}` as keyof ThemedFile;
 
-  const filename = `${appName}-custom-logo-${variant}.webp`;
-  const previewSrc = `/${EDU_API_ROOT}/${EDU_API_CONFIG_ENDPOINTS.FILES}/${FILE_ENDPOINTS.FILE}/${appName}/${filename}`;
-
-  const fallbackFileName = `${appName}-default-logo-${variant}.webp`;
-  const fallbackSrc = `/${EDU_API_ROOT}/public/assets/${appName}/${fallbackFileName}`;
+  const fileName = getLogoName(appName, variant);
+  const previewSrc = getLogoUrl(appName, variant);
+  const fallbackSrc = getFallbackUrl(appName, variant);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -61,13 +53,20 @@ const LogoUploadBrandingAppField: React.FC<LogoUploadBrandingAppFieldProps> = ({
 
     if (file && variant) {
       await uploadImageFile({
-        destination: '',
-        filename,
+        destination: appName,
+        filename: fileName,
         file,
-        appName,
       });
       setKeyValue(keyValue + 1);
     }
+  };
+
+  const onHandleReset = () => async () => {
+    await removeImageFile({
+      appName,
+      filename: fileName,
+    });
+    setKeyValue(keyValue + 1);
   };
 
   return (
@@ -81,8 +80,9 @@ const LogoUploadBrandingAppField: React.FC<LogoUploadBrandingAppFieldProps> = ({
       onFileChange={onFileChange()}
       chooseText={t(`common.chooseFile`)}
       changeText={t(`common.changeFile`)}
+      onHandleReset={onHandleReset()}
     />
   );
 };
 
-export default LogoUploadBrandingAppField;
+export default AddAppLogo;

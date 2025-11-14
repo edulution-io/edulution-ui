@@ -10,7 +10,26 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ThemeType } from '@libs/common/constants/theme';
+import eduApi from '@/api/eduApi';
+import handleApiError from '@/utils/handleApiError';
+import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 
-const getSurveysDefaultLogoFilename = (theme: ThemeType) => `surveys-default-logo-${theme}.webp`;
-export default getSurveysDefaultLogoFilename;
+type RemoveImageFileProps = {
+  appName: string;
+  filename: string;
+};
+
+const removeImageFile = async ({ appName, filename }: RemoveImageFileProps) => {
+  try {
+    const url = `${EDU_API_CONFIG_ENDPOINTS.FILES}/${appName}/${filename}`;
+    await eduApi.delete<void>(url);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      handleApiError(err, () => {});
+    } else {
+      handleApiError(new Error('Unknown deletion error'), () => {});
+    }
+  }
+};
+
+export default removeImageFile;

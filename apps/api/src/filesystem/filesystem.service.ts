@@ -48,6 +48,9 @@ import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
 import THIRTY_DAYS from '@libs/common/constants/thirtyDays';
+import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
+import { getLogoName, getFallbackName } from '@libs/appconfig/utils/getAppLogo';
+import { ThemeType } from '@libs/common/constants/theme';
 import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 import UsersService from '../users/users.service';
 import CustomHttpException from '../common/CustomHttpException';
@@ -358,6 +361,17 @@ class FilesystemService {
     } catch (error) {
       return [];
     }
+  }
+
+  async serveAppLogo(appName: string, variant: ThemeType, res: Response) {
+    const customFilePath = join(PUBLIC_ASSET_PATH, appName, getLogoName(appName, variant));
+    const customLogoExists = await FilesystemService.checkIfFileExist(customFilePath);
+    if (customLogoExists) {
+      return this.serve(customFilePath, res);
+    }
+    const fallbackFilePath = join(PUBLIC_ASSET_PATH, appName, getFallbackName(appName, variant));
+    await FilesystemService.throwErrorIfFileNotExists(fallbackFilePath);
+    return this.serve(fallbackFilePath, res);
   }
 
   async serveTempFiles(name: string, filename: string, res: Response) {

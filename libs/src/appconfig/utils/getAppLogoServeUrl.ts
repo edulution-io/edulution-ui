@@ -11,13 +11,10 @@
  */
 
 import { Theme, ThemeType } from '@libs/common/constants/theme';
-import APPS from '@libs/appconfig/constants/apps';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import getSurveysDefaultLogoFilename from '@libs/survey/utils/getSurveysDefaultLogoFilename';
+import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 
-const getSurveysDefaultLogoUrl = (theme?: ThemeType) => {
-  const fileName = getSurveysDefaultLogoFilename(theme || Theme.dark);
-  return `/${EDU_API_ROOT}/public/assets/${APPS.SURVEYS}/${fileName}`;
-};
+const getAppLogoServeUrl = (appName: string, theme?: ThemeType) =>
+  `/${EDU_API_ROOT}/${EDU_API_CONFIG_ENDPOINTS.FILES}/public/logo/${appName}/${theme || Theme.dark}`;
 
-export default getSurveysDefaultLogoUrl;
+export default getAppLogoServeUrl;
