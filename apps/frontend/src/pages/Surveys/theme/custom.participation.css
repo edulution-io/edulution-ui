@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .survey-participation {
-  height: 100vh;
+  height: 100dvh;
   overflow: auto;
 
   .sv-string-viewer {

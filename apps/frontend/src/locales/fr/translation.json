@@ -82,6 +82,7 @@
       "unauthorizedCreateCategory": "Aucune autorisation pour créer cette catégorie",
       "unauthorizedDeleteCategory": "Aucune autorisation pour supprimer cette catégorie",
       "unauthorizedUpdateCategory": "Aucune autorisation pour mettre à jour cette catégorie",
+      "attachmentNotFound": "Pièce jointe introuvable",
       "attachmentDeletionFailed": "La suppression d'une pièce jointe a échoué"
     }
   },
@@ -855,6 +856,18 @@
         "website": "Site web de l’organisation",
         "city": "Ville"
       },
+      "userAdministration": {
+        "title": "Administration des utilisateurs",
+        "resetMfaForm": "Réinitialiser l’authentification à deux facteurs",
+        "resetMfaFormDescription": "Ici, vous pouvez réinitialiser l’authentification à deux facteurs pour les utilisateurs.",
+        "selectUsersTitle": "Sélectionner les utilisateurs",
+        "selectUsersDescription": "Sélectionnez les utilisateurs pour lesquels vous souhaitez réinitialiser l’authentification à deux facteurs.",
+        "totpResetSuccess": "Le TOTP pour l’utilisateur {{username}} a été désactivé avec succès.",
+        "setAdminGroupTitle": "Définir le groupe d’administrateurs",
+        "setAdminGroupDescription": "Des administrateurs supplémentaires peuvent être définis ici. L’administrateur global reste inchangé.",
+        "setAdminGroupSelectDescription": "Les groupes peuvent être sélectionnés via le champ de recherche.",
+        "setAdminGroupWarning": "Au moins un groupe d’administrateurs doit être sélectionné."
+      },
       "deploymentTarget": "Plate-forme cible de déploiement"
     },
     "info": {
@@ -1037,7 +1050,7 @@
     },
     "mobileAccess": {
       "title": "Accès à l'application",
-      "description": "Ici, vous pouvez configurer l'accès mobile de l'app {{ applicationName }} pour l'accès aux fichiers. Actuellement disponible uniquement pour Apple iOS.",
+      "description": "Tu peux configurer ici l'accès mobile à l'application edulution.",
       "docsDescription": "Tu trouveras le lien de téléchargement de l'application edulution et les instructions d'installation dans la documentation edulution.",
       "button": "Ouvrir le documentaire"
     },
@@ -1105,6 +1118,8 @@
     "infoQrCodeExpired": "Le temps de connexion avec l'application edulution.io a expiré."
   },
   "common": {
+    "more": "Plus",
+    "less": "Moins",
     "refreshPage": "Actualiser la page",
     "guest": "Invité",
     "ok": "OK",
@@ -1523,7 +1538,19 @@
       "light": "Clair",
       "dark": "Sombre"
     },
-    "mailSogoThemeDisabled": "Désactivé, car le serveur de messagerie ne fonctionne pas."
+    "mailSogoThemeDisabled": "Désactivé, car le serveur de messagerie ne fonctionne pas.",
+    "mailSogoThemeUpdateCheckerTitle": "Vérification de version du thème",
+    "mailSogoThemeUpdateCheckerDescription": "Vérifiez si une nouvelle version du thème actuel est disponible et mettez-la à jour si nécessaire.",
+    "updateChecker": {
+      "currentVersion": "Version actuelle",
+      "latestVersion": "Dernière version",
+      "theme": "Thème",
+      "updateAvailable": "Une nouvelle version est disponible !",
+      "checkAgain": "Vérifier à nouveau",
+      "updateNow": "Mettre à jour maintenant",
+      "checkVersionSuccess": "Thème vérifié avec succès !",
+      "noData": "Aucune information de version disponible."
+    }
   },
   "preview": {
     "image": "Aperçu de l'image",
@@ -1531,10 +1558,18 @@
   },
   "containerApplication": {
     "dialogTitle": "Installer le plugin {{applicationName}}-Plugin",
+    "EDU_MANAGER_INSTALL_TOKEN": {
+      "title": "Installer Jeton",
+      "description": "Veuillez saisir le jeton d'installation qui a été créé dans le Edulution Manager."
+    },
     "EDULUTION_MAIL_HOSTNAME": {
       "title": "Nom d'hôte",
       "description": "Nom d'hôte du serveur de messagerie. Cela peut différer du domaine Edulution."
     }
+  },
+  "edulution-manager": {
+    "sidebar": "Gestionnaire Edulution",
+    "title": "Gestionnaire Edulution"
   },
   "dockerOverview": {
     "title": "Aperçu des conteneurs",
@@ -1546,7 +1581,9 @@
     "filterPlaceHolderText": "Rechercher le nom du conteneur",
     "port": "Port",
     "created": "Créé à",
-    "container-view": "Conteneur"
+    "container-view": "Conteneur",
+    "selectPluginForInstallationTitle": "Sélectionnez le plugin à installer",
+    "selectPluginForInstallationDescription": "Sélectionnez ici une application pour laquelle un plugin doit être installé."
   },
   "docker": {
     "error": {

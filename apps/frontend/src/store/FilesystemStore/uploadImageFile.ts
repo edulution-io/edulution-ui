@@ -12,7 +12,7 @@
 
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import { extension as mimeExtension } from 'mime-types';
+import mime from 'mime';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import convertImageFileToWebp from '@libs/common/utils/convertImageFileToWebp';
@@ -35,7 +35,8 @@ const uploadImageFile = async ({ destination, filename, file, appName }: UploadI
       form.append('file', webpFile, filename);
     } else if (file instanceof Blob) {
       const type = file.type || RequestResponseContentType.APPLICATION_OCTET_STREAM;
-      const ext = mimeExtension(type);
+      
+      const ext = mime.getExtension(type);
       const fullName =
         ext && !filename.toLowerCase().endsWith(`.${ext.toLowerCase()}`) ? `${filename}.${ext}` : filename;
 
