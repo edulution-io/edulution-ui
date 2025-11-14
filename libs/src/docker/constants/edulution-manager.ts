@@ -17,6 +17,5 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export const EDU_API_DOCKER_ENDPOINT = 'docker';
-export const EDU_API_DOCKER_CONTAINER_ENDPOINT = 'containers';
-export const EDU_API_EDU_MANAGER_AGENT_CONTAINER_ENDPOINT = 'edulution-manager-agent';
+export const EDULUTION_MANAGER_APPLICATION_NAME = 'edulution-manager';
+export const EDULUTION_MANAGER_CONTAINER_NAME = 'edulution-manager-agent';

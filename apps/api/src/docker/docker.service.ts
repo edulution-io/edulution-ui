@@ -37,6 +37,7 @@ import type PullEvent from '@libs/docker/types/pullEvent';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import type CreateContainerDto from '@libs/docker/types/create-container.dto';
 import { injectEnvIntoCompose, parseDockerEnv } from '@libs/docker/utils/createComposeFile';
+import { EDULUTION_MANAGER_CONTAINER_NAME } from '@libs/docker/constants/edulution-manager';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
 
@@ -402,7 +403,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       const inspectData = await container.inspect();
       const imageName = inspectData.Config.Image;
 
-      Logger.debug('Pulling latest image:', DockerService.name);
+      Logger.debug(`Pulling latest image: ${imageName}`, DockerService.name);
       const isImageUpdated = await this.pullImage(imageName);
 
       if (!isImageUpdated) {
@@ -413,13 +414,13 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
         return { id: container.id, isImageUpdated };
       }
 
-      Logger.debug(`Stopping container ${container.id}`, DockerService.name);
+      Logger.debug(`Stopping container ${container.id} (${imageName})`, DockerService.name);
       await container.stop();
 
-      Logger.debug(`Removing container ${container.id}`, DockerService.name);
+      Logger.debug(`Removing container ${container.id} (${imageName})`, DockerService.name);
       await container.remove();
 
-      Logger.debug(`Recreating container`, DockerService.name);
+      Logger.debug(`Recreating container for ${imageName}`, DockerService.name);
       const newContainer = await this.docker.createContainer({
         ...inspectData.Config,
         HostConfig: inspectData.HostConfig,
@@ -430,7 +431,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
         name: inspectData.Name.replace('/', ''),
       });
 
-      Logger.debug('Starting new container...');
+      Logger.debug(`Starting new container for ${imageName}...`, DockerService.name);
       await newContainer.start();
 
       return { id: newContainer.id, isImageUpdated };
@@ -442,6 +443,67 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
         DockerService.name,
       );
     }
+  }
+
+  private async getContainerNameByIp(ip: string): Promise<string | null> {
+    try {
+      const containers = await this.docker.listContainers();
+
+      const inspections = await Promise.all(
+        containers.map(async (container) => {
+          const inspectData = await this.docker.getContainer(container.Id).inspect();
+          const networks = inspectData.NetworkSettings?.Networks || {};
+          const hasMatchingIp = Object.values(networks).some((network) => network.IPAddress === ip);
+
+          return hasMatchingIp ? container.Names[0]?.replace('/', '') || null : null;
+        }),
+      );
+
+      return inspections.find((name) => name !== null) || null;
+    } catch (error) {
+      Logger.error(
+        `Failed to lookup container by IP: ${error instanceof Error ? error.message : String(error)}`,
+        DockerService.name,
+      );
+      return null;
+    }
+  }
+
+  async updateEduManagerAgentContainer(req: { ip?: string; socket?: { remoteAddress?: string } }): Promise<boolean> {
+    const requestIp = req.ip || req.socket?.remoteAddress;
+
+    if (!requestIp) {
+      throw new CustomHttpException(
+        DockerErrorMessages.DOCKER_COMMAND_EXECUTION_ERROR,
+        HttpStatus.FORBIDDEN,
+        undefined,
+        DockerService.name,
+      );
+    }
+
+    const cleanIp = requestIp.replace('::ffff:', '');
+    const containerName = await this.getContainerNameByIp(cleanIp);
+
+    if (containerName !== EDULUTION_MANAGER_CONTAINER_NAME) {
+      Logger.warn(
+        `Unauthorized update attempt from container: ${containerName || 'unknown'} (IP: ${requestIp})`,
+        DockerService.name,
+      );
+      throw new CustomHttpException(
+        DockerErrorMessages.DOCKER_COMMAND_EXECUTION_ERROR,
+        HttpStatus.FORBIDDEN,
+        undefined,
+        DockerService.name,
+      );
+    }
+
+    const containers = await this.getContainers(EDULUTION_MANAGER_CONTAINER_NAME);
+
+    if (containers.length === 0) return false;
+
+    void this.updateContainer(containers[0].Id);
+
+    return true;
   }
 }
 
