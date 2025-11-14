@@ -60,7 +60,7 @@ const LicenseOverview: React.FC = () => {
         defaultValue={['license']}
       >
         <AccordionItem value="license">
-          <AccordionTrigger className="flex text-h4">
+          <AccordionTrigger>
             <h3>{t('settings.license.title')}</h3>
           </AccordionTrigger>
           <AccordionContent className="space-y-2 px-1">

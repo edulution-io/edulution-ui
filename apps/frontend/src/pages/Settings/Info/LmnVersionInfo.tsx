@@ -38,7 +38,7 @@ const LmnVersionInfo = () => {
       defaultValue={['lmnVersions']}
     >
       <AccordionItem value="lmnVersions">
-        <AccordionTrigger className="text-h4">
+        <AccordionTrigger>
           <h3>{t('settings.lmnVersion.title')}</h3>
         </AccordionTrigger>
         <AccordionContent>
