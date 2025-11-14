@@ -11,11 +11,12 @@
  */
 
 import TSurveyQuestionAnswerTypes from '@libs/survey/types/TSurveyQuestionAnswerTypes';
-import isAnswerSimpleQuestionSimpleAnswer from '@libs/survey/utils/isAnswerSimpleQuestionSimpleAnswer';
 
-const isAnswerSimpleQuestionAnswer = (questionAnswer: TSurveyQuestionAnswerTypes): boolean =>
-  Array.isArray(questionAnswer)
-    ? questionAnswer.every((answer) => isAnswerSimpleQuestionSimpleAnswer(answer))
-    : isAnswerSimpleQuestionSimpleAnswer(questionAnswer);
+const isAnswerSimpleQuestionSimpleAnswer = (questionAnswer: TSurveyQuestionAnswerTypes): boolean =>
+  typeof questionAnswer === 'string' ||
+  typeof questionAnswer === 'number' ||
+  typeof questionAnswer === 'boolean' ||
+  typeof questionAnswer === 'bigint' ||
+  typeof questionAnswer === 'undefined';
 
-export default isAnswerSimpleQuestionAnswer;
+export default isAnswerSimpleQuestionSimpleAnswer;
