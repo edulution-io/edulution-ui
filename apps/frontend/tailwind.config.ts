@@ -134,6 +134,10 @@ module.exports = {
         h4: { fontSize: theme('fontSize.h4'), letterSpacing: '0.040em', fontWeight: '700' },
         p: { fontSize: theme('fontSize.p'), letterSpacing: '0.020em' },
         span: { fontSize: theme('fontSize.span'), letterSpacing: '0.020em' },
+        '*': {
+          'scrollbar-width': 'thin',
+          'scrollbar-color': 'var(--scrollbar-thumb) var(--scrollbar-track)',
+        },
       });
     }),
     plugin(function ({ addUtilities }) {

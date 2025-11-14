@@ -127,7 +127,7 @@ const MenuBar: React.FC = () => {
         </button>
       </div>
       <MenubarMenu>
-        <div className="flex-1 overflow-y-auto pb-10 scrollbar-thin">
+        <div className="flex-1 overflow-y-auto pb-10">
           {menuBarEntries.menuItems.map((item) => (
             <React.Fragment key={item.label}>
               <MenubarTrigger
@@ -169,12 +169,15 @@ const MenuBar: React.FC = () => {
       {isMobileView || isTabletView || isEdulutionApp ? (
         <VerticalMenubar
           className={cn(
-            'fixed top-0 z-50 h-full overflow-hidden bg-foreground duration-300 ease-in-out',
+            'fixed top-0 z-50 h-full overflow-x-hidden bg-foreground duration-300 ease-in-out',
             isMobileMenuBarOpen ? 'w-64 border-r-[1px] border-muted' : 'w-0',
           )}
         >
           <div
-            className={cn('w-64 transition-opacity duration-300', isMobileMenuBarOpen ? 'opacity-100' : 'opacity-0')}
+            className={cn(
+              'h-full w-64 transition-opacity duration-300',
+              isMobileMenuBarOpen ? 'opacity-100' : 'opacity-0',
+            )}
           >
             {isMobileMenuBarOpen && renderMenuBarContent()}
           </div>

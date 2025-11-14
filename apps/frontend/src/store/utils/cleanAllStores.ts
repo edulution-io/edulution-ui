@@ -65,6 +65,7 @@ import useOpenFileDialogStore from '@/pages/FileSharing/useOpenFileDialogStore';
 import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
 import useMenuBarStore from '@/components/shared/useMenuBarStore';
 import useAppConfigUpdateCheckerStore from '@/pages/Settings/AppConfig/components/updateChecker/useAppConfigUpdateCheckerStore';
+import useSelectCreateDockerContainerDialogStore from '@/pages/Settings/AppConfig/DockerIntegration/SelectCreateDockerContainerDialog/useSelectCreateDockerContainerDialogStore';
 import useSseStore from '../useSseStore';
 
 const cleanAllStores = async () => {
@@ -107,6 +108,7 @@ const cleanAllStores = async () => {
   useQuestionsContextMenuStore.getState().reset();
   useResultDialogStore.getState().reset();
   useResultDialogStore.getState().reset();
+  useSelectCreateDockerContainerDialogStore.getState().reset();
   useSidebarStore.getState().reset();
   useSseStore.getState().reset();
   useSubmittedAnswersDialogStore.getState().reset();

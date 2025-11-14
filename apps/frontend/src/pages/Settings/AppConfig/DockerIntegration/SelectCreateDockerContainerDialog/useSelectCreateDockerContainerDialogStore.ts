@@ -17,6 +17,24 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export const EDU_API_DOCKER_ENDPOINT = 'docker';
-export const EDU_API_DOCKER_CONTAINER_ENDPOINT = 'containers';
-export const EDU_API_EDU_MANAGER_AGENT_CONTAINER_ENDPOINT = 'edulution-manager-agent';
+import { create } from 'zustand';
+
+interface SelectCreateDockerContainerDialogStore {
+  isDialogOpen: boolean;
+  setDialogOpen: (isOpen: boolean) => void;
+  reset: () => void;
+}
+
+const initialState = {
+  isDialogOpen: false,
+};
+
+const useSelectCreateDockerContainerDialogStore = create<SelectCreateDockerContainerDialogStore>((set) => ({
+  ...initialState,
+
+  reset: () => set(initialState),
+
+  setDialogOpen: (open) => set({ isDialogOpen: open }),
+}));
+
+export default useSelectCreateDockerContainerDialogStore;
