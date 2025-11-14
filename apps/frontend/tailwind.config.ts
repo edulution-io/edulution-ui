@@ -17,11 +17,11 @@ module.exports = {
     },
     extend: {
       fontSize: {
-        h1: '37pt',
-        h2: '30pt',
-        h3: '20pt',
-        h4: '17pt',
-        p: '12pt',
+        h1: '2rem',
+        h2: '1.625rem',
+        h3: '1.25rem',
+        h4: '1rem',
+        p: '0.938rem',
         span: '0.875rem',
       },
       colors: {
