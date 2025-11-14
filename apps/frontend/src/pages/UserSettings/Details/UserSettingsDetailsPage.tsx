@@ -65,7 +65,7 @@ const UserSettingsDetailsPage: React.FC = () => {
       }}
     >
       <UserImageConfig />
-      <Separator className="my-4 bg-ciGrey" />
+      <Separator className="my-4 bg-muted" />
 
       <div className="md:max-w-[75%]">
         <h3 className="text-background">{t('usersettings.details.userInformation')}</h3>

@@ -17,12 +17,5 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import axios from 'axios';
-
-const axiosInstanceLmn = axios.create({
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-export default axiosInstanceLmn;
+export const EDULUTION_MANAGER_APPLICATION_NAME = 'edulution-manager';
+export const EDULUTION_MANAGER_CONTAINER_NAME = 'edulution-manager-agent';

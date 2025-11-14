@@ -19,7 +19,7 @@
 
 import { join } from 'path';
 import { Model, Types } from 'mongoose';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import SurveyStatus from '@libs/survey/survey-status-enum';
@@ -316,7 +316,7 @@ class SurveyAnswersService implements OnModuleInit {
   };
 
   async anonymousStrategy(survey: SurveyDocument, answer: JSON): Promise<SurveyAnswerDocument | null> {
-    const username = `anonymous_${uuidv4()}`;
+    const username = `anonymous_${randomUUID()}`;
     const user: Attendee = { username };
     const updatedAnswer = await this.surveyAnswerAttachmentsService.moveAnswersAttachmentsToPermanentStorage(
       username,
@@ -353,7 +353,7 @@ class SurveyAnswersService implements OnModuleInit {
       );
     }
 
-    const newPublicUserId = uuidv4();
+    const newPublicUserId = randomUUID();
     const newPublicUserLogin = createNewPublicUserLogin(firstName, newPublicUserId);
     const user: Attendee = { ...attendee, username: newPublicUserLogin, lastName: newPublicUserId };
 

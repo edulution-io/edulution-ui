@@ -17,11 +17,24 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import axios from 'axios';
-import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
+import { create } from 'zustand';
 
-const lmnApi = axios.create({
-  baseURL: `${EDU_BASE_URL}/api/v1/`,
-});
+interface SelectCreateDockerContainerDialogStore {
+  isDialogOpen: boolean;
+  setDialogOpen: (isOpen: boolean) => void;
+  reset: () => void;
+}
 
-export default lmnApi;
+const initialState = {
+  isDialogOpen: false,
+};
+
+const useSelectCreateDockerContainerDialogStore = create<SelectCreateDockerContainerDialogStore>((set) => ({
+  ...initialState,
+
+  reset: () => set(initialState),
+
+  setDialogOpen: (open) => set({ isDialogOpen: open }),
+}));
+
+export default useSelectCreateDockerContainerDialogStore;
