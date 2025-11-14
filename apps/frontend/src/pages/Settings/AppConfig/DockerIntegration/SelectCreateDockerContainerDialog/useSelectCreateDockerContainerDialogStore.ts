@@ -19,7 +19,7 @@
 
 import { create } from 'zustand';
 
-interface DialogStore {
+interface SelectCreateDockerContainerDialogStore {
   isDialogOpen: boolean;
   setDialogOpen: (isOpen: boolean) => void;
   reset: () => void;
@@ -29,7 +29,7 @@ const initialState = {
   isDialogOpen: false,
 };
 
-const useSelectCreateDockerContainerDialogStore = create<DialogStore>((set) => ({
+const useSelectCreateDockerContainerDialogStore = create<SelectCreateDockerContainerDialogStore>((set) => ({
   ...initialState,
 
   reset: () => set(initialState),

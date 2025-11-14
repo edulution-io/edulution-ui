@@ -85,7 +85,7 @@ const SelectCreateDockerContainerDialog: React.FC = () => {
           handleClose();
         }}
         cancelButtonText="common.cancel"
-        submitButtonText="common.select"
+        submitButtonText="select"
         submitButtonType="submit"
       />
     </>
