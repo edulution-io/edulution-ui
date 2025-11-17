@@ -96,7 +96,7 @@ const PublicSurveyAccessForm = (): React.ReactNode => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
+    <div className="flex min-h-dvh items-center justify-center">
       <Card className="w-[450px] max-w-[450px] border-none bg-white bg-opacity-5 p-5 md:w-[60%]">
         <PublicAccessFormHeader />
         <Form {...form}>

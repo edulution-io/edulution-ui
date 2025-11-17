@@ -29,7 +29,6 @@ import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStor
 import buildTldrFileFromEditor from '@libs/tldraw-sync/utils/buildTldrFileFromEditor';
 import useUserStore from '@/store/UserStore/useUserStore';
 import { UploadItem } from '@libs/filesharing/types/uploadItem';
-import { v4 as uuidv4 } from 'uuid';
 import useFileSharingStore from '../FileSharing/useFileSharingStore';
 
 const SaveTldrDialog: React.FC = () => {
@@ -54,7 +53,7 @@ const SaveTldrDialog: React.FC = () => {
     const targetDir = moveOrCopyItemToPath?.filePath || '';
     const name = (file as File)?.name && (file as File)?.name.trim() !== '' ? (file as File).name : 'untitled.tldr';
     const uploadFile: UploadItem = Object.assign(new File([file], name, { type: file.type }), {
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       isZippedFolder: false,
     });
     updateFilesToUpload(() => [uploadFile]);

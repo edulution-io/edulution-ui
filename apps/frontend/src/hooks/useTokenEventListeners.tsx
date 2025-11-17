@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
@@ -29,19 +29,41 @@ const useTokenEventListeners = () => {
   const auth = useAuth();
   const handleLogout = useLogout();
   const alreadyLoggedOutRef = useRef(false);
+  const renewInProgressRef = useRef(false);
 
-  const handleTokenExpiredRef = useRef<() => void>(() => {
+  const handleTokenExpired = useCallback(() => {
     if (alreadyLoggedOutRef.current) return;
     alreadyLoggedOutRef.current = true;
-
+    toast.error(t('auth.errors.TokenExpired'));
     void handleLogout();
-  });
+  }, [handleLogout, t]);
 
-  useEffect(() => {
-    if (auth.user?.expired) {
-      handleTokenExpiredRef.current();
-    }
-  }, [auth.user?.expired]);
+  const handleRenew = useCallback(
+    async (message: string) => {
+      if (alreadyLoggedOutRef.current || renewInProgressRef.current) return;
+
+      renewInProgressRef.current = true;
+      console.info(message);
+
+      if (!auth.user?.expired) {
+        await delay(2000);
+        const response = await auth.signinSilent();
+
+        if (!response) {
+          renewInProgressRef.current = false;
+          await handleRenew('Retry token renew');
+          return;
+        }
+      } else {
+        alreadyLoggedOutRef.current = true;
+        toast.error(t('auth.errors.TokenExpired'));
+        await handleLogout();
+      }
+
+      renewInProgressRef.current = false;
+    },
+    [auth, t, handleLogout],
+  );
 
   useEffect(() => {
     const removeUserLoaded = auth.events.addUserLoaded(() => {
@@ -53,35 +75,30 @@ const useTokenEventListeners = () => {
     };
   }, [auth.events]);
 
-  const handleRenew = async (message: string) => {
-    if (alreadyLoggedOutRef.current) return;
-
-    if (!auth.user?.expired) {
-      console.info(message);
-
-      await delay(2000);
-      const response = await auth.signinSilent();
-      if (!response) {
-        await handleRenew('Retry token renew');
-      }
-    } else {
-      alreadyLoggedOutRef.current = true;
-      toast.error(t('auth.errors.TokenExpired'));
-      await handleLogout();
+  useEffect(() => {
+    if (auth.user?.expired) {
+      handleTokenExpired();
     }
-  };
+  }, [auth.user?.expired, handleTokenExpired]);
 
   useEffect(() => {
-    auth.events.addSilentRenewError(() => handleRenew('Token renew error.'));
-    auth.events.addAccessTokenExpiring(() => handleRenew('Token expiring. Try renew.'));
-    auth.events.addAccessTokenExpired(handleTokenExpiredRef.current);
+    const handleSilentRenewError = () => {
+      void handleRenew('Token renew error.');
+    };
+    const handleTokenExpiring = () => {
+      void handleRenew('Token expiring. Try renew.');
+    };
+
+    const removeSilentRenewError = auth.events.addSilentRenewError(handleSilentRenewError);
+    const removeTokenExpiring = auth.events.addAccessTokenExpiring(handleTokenExpiring);
+    const removeTokenExpired = auth.events.addAccessTokenExpired(handleTokenExpired);
 
     return () => {
-      auth.events.removeSilentRenewError(() => handleRenew('Token renew error.'));
-      auth.events.removeAccessTokenExpiring(() => handleRenew('Token expiring. Try renew.'));
-      auth.events.removeAccessTokenExpired(handleTokenExpiredRef.current);
+      removeSilentRenewError();
+      removeTokenExpiring();
+      removeTokenExpired();
     };
-  }, []);
+  }, [auth.events, handleRenew, handleTokenExpired]);
 };
 
 export default useTokenEventListeners;

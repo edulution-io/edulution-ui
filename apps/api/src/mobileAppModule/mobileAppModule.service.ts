@@ -44,8 +44,7 @@ class MobileAppModuleService {
     }
 
     try {
-      const password = await this.userService.getPassword(username);
-      const token = await this.lmnApiService.getLmnApiToken(username, password);
+      const token = await this.lmnApiService.getLmnApiToken(username);
       const info = await this.lmnApiService.getUser(token, username);
       return { token, info };
     } catch (error) {

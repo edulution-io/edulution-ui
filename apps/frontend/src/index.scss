@@ -3,8 +3,6 @@
   html {
     @apply text-white;
     font-family: 'Lato', sans-serif;
-
-    @apply scrollbar-thin scrollbar-track-black/10 scrollbar-thumb-ciLightGrey scrollbar-thumb-rounded-full;
   }
 
   html,
@@ -19,6 +17,8 @@
     --menubar-max-width: 300px;
     --ci-light-green: #88d840;
     --ci-light-blue: #0081c6;
+    --scrollbar-track: transparent;
+    --scrollbar-thumb: #2d3748;
   }
 
   .bg-global {
@@ -57,6 +57,7 @@
     --overlay-transparent: #ffffff50;
     --overlay-foreground: #ffffff;
     --muted-dialog: #eaeaea;
+    --scrollbar-thumb: #b1b1ac;
   }
   .dark {
     --background-image: url('assets/backgroundDarkMode.webp');
@@ -87,6 +88,7 @@
     --overlay-transparent: #1e293850;
     --overlay-foreground: #ffffff;
     --muted-dialog: #1e293b;
+    --scrollbar-thumb: #2d2d30;
   }
 }
 

@@ -18,8 +18,6 @@
  */
 
 import { create } from 'zustand';
-import { v4 as uuid } from 'uuid';
-
 import { UploadItem } from '@libs/filesharing/types/uploadItem';
 import FileProgress from '@libs/filesharing/types/fileProgress';
 import UploadResult from '@libs/filesharing/types/uploadResult';
@@ -81,7 +79,8 @@ const createProgressFromCounts = (current: number, total: number): FileProgress 
   };
 };
 
-const isFolderUpload = (fileItem: UploadItem): fileItem is UploadItem & { isFolder: true; files: File[] } => 'isFolder' in fileItem && fileItem.isFolder === true && Array.isArray(fileItem.files);
+const isFolderUpload = (fileItem: UploadItem): fileItem is UploadItem & { isFolder: true; files: File[] } =>
+  'isFolder' in fileItem && fileItem.isFolder === true && Array.isArray(fileItem.files);
 
 const createSingleDirectory = async (directoryPath: string, webdavShare: string | undefined): Promise<void> => {
   const pathParts = directoryPath.split('/').filter((part) => part);
@@ -187,9 +186,8 @@ const processSingleUploadItem = async (
         name: fileItem.folderName || fileItem.name,
         success: true,
       };
-    } 
-      return await singleFileUploader(fileItem);
-    
+    }
+    return await singleFileUploader(fileItem);
   } catch (error) {
     return {
       name: fileItem.name,
@@ -220,7 +218,7 @@ const useHandelUploadFileStore = create<HandleUploadFileStore>((set, get) => ({
   setFilesToUpload: (files) => {
     const filesWithIds = files.map((file) => ({
       ...file,
-      id: file.id ?? uuid(),
+      id: file.id ?? crypto.randomUUID(),
     }));
 
     const allFiles = [...get().filesToUpload, ...filesWithIds];

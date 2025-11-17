@@ -22,13 +22,27 @@ import { TFunction } from 'i18next';
 
 const fqdnRegex = /^(?=.{1,253}$)(?:(?!-)[a-zA-Z0-9-]{1,63}(?<!-)\.)+[a-zA-Z]{2,}$/;
 
-const getCreateContainerFormSchema = (t: TFunction<'translation', undefined>, showInputForm: boolean) =>
-  showInputForm
-    ? z.object({
-        EDULUTION_MAIL_HOSTNAME: z.string({ message: t('common.required') }).refine((val) => fqdnRegex.test(val), {
-          message: t('common.invalid_fqdn'),
-        }),
-      })
-    : z.object({});
+const getCreateContainerFormSchema = (
+  t: TFunction<'translation', undefined>,
+  envPlaceholders: Record<string, string>,
+) => {
+  if (Object.keys(envPlaceholders).length === 0) {
+    return z.object({});
+  }
+
+  const schemaFields: Record<string, z.ZodString | z.ZodEffects<z.ZodString, string, string>> = {};
+
+  Object.keys(envPlaceholders).forEach((placeholder) => {
+    if (placeholder.includes('HOSTNAME')) {
+      schemaFields[placeholder] = z.string({ message: t('common.required') }).refine((val) => fqdnRegex.test(val), {
+        message: t('common.invalid_fqdn'),
+      });
+    } else {
+      schemaFields[placeholder] = z.string({ message: t('common.required') }).min(1, t('common.required'));
+    }
+  });
+
+  return z.object(schemaFields);
+};
 
 export default getCreateContainerFormSchema;

@@ -52,8 +52,8 @@ const AppLayout = () => {
   };
 
   return (
-    <div className="flex h-screen flex-row">
-      <div className="flex h-screen flex-1 flex-col overflow-hidden">
+    <div className="flex h-dvh flex-row">
+      <div className="flex h-dvh flex-1 flex-col overflow-hidden">
         {isEduApiHealthy === false && <OfflineBanner />}
 
         {showMobileTopBar && (

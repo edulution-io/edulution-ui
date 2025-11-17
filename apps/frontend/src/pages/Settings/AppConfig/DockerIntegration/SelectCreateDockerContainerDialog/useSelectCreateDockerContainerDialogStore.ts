@@ -17,27 +17,24 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import AttendeeDto from '@libs/user/types/attendee.dto';
-import UserLanguageType from '@libs/user/types/userLanguageType';
-import UserDto from '../user.dto';
+import { create } from 'zustand';
 
-type UserSlice = {
-  isAuthenticated: boolean;
-  user: UserDto | null;
-  getUser: (username: string) => Promise<void>;
-  createOrUpdateUser: (user: UserDto) => Promise<UserDto | undefined>;
-  updateUserLanguage: (language: UserLanguageType) => Promise<void>;
-  updateUser: (user: Partial<UserDto>) => Promise<void>;
-  eduApiToken: string;
-  setEduApiToken: (eduApiToken: string) => void;
-  isPreparingLogout: boolean;
-  logout: () => Promise<void>;
-  userIsLoading: boolean;
-  userError: Error | null;
-  searchAttendees: (searchQuery: string) => Promise<AttendeeDto[]>;
-  searchError: Error | null;
-  searchIsLoading: boolean;
-  resetUserSlice: () => void;
+interface SelectCreateDockerContainerDialogStore {
+  isDialogOpen: boolean;
+  setDialogOpen: (isOpen: boolean) => void;
+  reset: () => void;
+}
+
+const initialState = {
+  isDialogOpen: false,
 };
 
-export default UserSlice;
+const useSelectCreateDockerContainerDialogStore = create<SelectCreateDockerContainerDialogStore>((set) => ({
+  ...initialState,
+
+  reset: () => set(initialState),
+
+  setDialogOpen: (open) => set({ isDialogOpen: open }),
+}));
+
+export default useSelectCreateDockerContainerDialogStore;

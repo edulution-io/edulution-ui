@@ -17,11 +17,5 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import axios from 'axios';
-import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
-
-const lmnApi = axios.create({
-  baseURL: `${EDU_BASE_URL}/api/v1/`,
-});
-
-export default lmnApi;
+export const EDULUTION_MANAGER_APPLICATION_NAME = 'edulution-manager';
+export const EDULUTION_MANAGER_CONTAINER_NAME = 'edulution-manager-agent';

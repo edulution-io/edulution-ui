@@ -34,7 +34,6 @@ import { UploadItem } from '@libs/filesharing/types/uploadItem';
 import { FcFolder } from 'react-icons/fc';
 import getFileUploadLimit from '@libs/ui/utils/getFileUploadLimit';
 import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
-import { v4 as uuidv4 } from 'uuid';
 import ActionTooltip from '@/components/shared/ActionTooltip';
 import { BUTTONS_ICON_WIDTH, SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
 import shouldFilterFile from '@libs/filesharing/utils/shouldFilterFile';
@@ -64,7 +63,7 @@ const UploadContentBody = () => {
       const regularFiles = acceptedFiles.filter((file) => !isFolderUpload(file as UploadItem));
       const { oversize, normal } = splitFilesByMaxFileSize(regularFiles, getFileUploadLimit(webdavShares, webdavShare));
       const duplicates = findDuplicateFiles(
-        [...normal, ...folders].map((file) => Object.assign(file, { id: uuidv4() })),
+        [...normal, ...folders].map((file) => Object.assign(file, { id: crypto.randomUUID() })),
         files,
       );
 
@@ -89,7 +88,7 @@ const UploadContentBody = () => {
               return file as UploadItem;
             }
             const uploadFile: UploadItem = Object.assign(new File([file], file.name, { type: file.type }), {
-              id: uuidv4(),
+              id: crypto.randomUUID(),
             });
             return uploadFile;
           });
@@ -131,7 +130,7 @@ const UploadContentBody = () => {
       const hiddenAndSystemFiles = selected.filter((file) => shouldFilterFile(file.name));
 
       const folderEntry: UploadItem = Object.assign(new File([], folderName, { type: 'application/x-directory' }), {
-        id: uuidv4(),
+        id: crypto.randomUUID(),
         isFolder: true,
         folderName,
         files: visibleFiles,

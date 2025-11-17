@@ -21,6 +21,8 @@ import { HttpStatus, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@
 import Docker from 'dockerode';
 import { fromEvent, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { ensureDirSync, writeFileSync } from 'fs-extra';
+import { join } from 'path';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type DockerEvent from '@libs/docker/types/dockerEvents';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
@@ -32,6 +34,10 @@ import type TDockerProtectedContainer from '@libs/docker/types/TDockerProtectedC
 import type UpdateContainerResponse from '@libs/docker/types/updateContainerResponse';
 import CONTAINER from '@libs/docker/constants/container';
 import type PullEvent from '@libs/docker/types/pullEvent';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import type CreateContainerDto from '@libs/docker/types/create-container.dto';
+import { injectEnvIntoCompose, parseDockerEnv } from '@libs/docker/utils/createComposeFile';
+import { EDULUTION_MANAGER_CONTAINER_NAME } from '@libs/docker/constants/edulution-manager';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
 
@@ -200,18 +206,6 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  private async imageExists(imageName: string): Promise<boolean> {
-    const images = await this.docker.listImages();
-
-    this.sseService.sendEventToUsers(
-      [SPECIAL_USERS.GLOBAL_ADMIN],
-      { progress: 'docker.events.checkingImage', from: `${imageName}` } as DockerEvent,
-      SSE_MESSAGE_TYPE.CONTAINER_PROGRESS,
-    );
-
-    return images.some((img) => img.RepoTags?.includes(imageName));
-  }
-
   static replaceEnvVariables(createContainersDto: Docker.ContainerCreateOptions[]) {
     let newCreateContainersDto: Docker.ContainerCreateOptions[] = [];
     newCreateContainersDto = createContainersDto.map((service) => ({
@@ -224,23 +218,49 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
     return newCreateContainersDto;
   }
 
-  async createContainer(createContainersDto: Docker.ContainerCreateOptions[]) {
-    const newCreateContainersDto = DockerService.replaceEnvVariables(createContainersDto);
+  private static saveDockerCompose(
+    applicationName: string,
+    containers: Docker.ContainerCreateOptions[],
+    originalComposeConfig: string,
+  ): void {
+    const parsedEnvsPerContainer = containers.map((c) => parseDockerEnv(c.Env));
+    const mergedEnvs: Record<string, string> = parsedEnvsPerContainer.reduce((acc, obj) => ({ ...acc, ...obj }), {});
+    const finalComposeConfig = injectEnvIntoCompose(originalComposeConfig, mergedEnvs);
+
+    try {
+      const fileDir = join(APPS_FILES_PATH, applicationName);
+      ensureDirSync(fileDir);
+
+      const filePath = join(fileDir, 'docker-compose.yml');
+
+      writeFileSync(filePath, finalComposeConfig, 'utf-8');
+
+      Logger.log(`Docker compose file saved: ${filePath}`, DockerService.name);
+    } catch (error) {
+      Logger.error(
+        `Failed to save docker-compose.yml: ${error instanceof Error ? error.message : String(error)}`,
+        DockerService.name,
+      );
+    }
+  }
+
+  async createContainer(createContainerDto: CreateContainerDto) {
+    const { applicationName, containers, originalComposeConfig } = createContainerDto;
+
+    const newContainers = DockerService.replaceEnvVariables(containers);
+
     try {
       await Promise.all(
-        newCreateContainersDto.map(async (containerDto) => {
+        newContainers.map(async (containerDto) => {
           const { Image } = containerDto;
           if (Image) {
-            const imageExists = await this.imageExists(Image);
-            if (!imageExists) {
-              await this.pullImage(Image);
-            }
+            await this.pullImage(Image);
           }
         }),
       );
 
       await Promise.all(
-        newCreateContainersDto.map(async (containerDto) => {
+        newContainers.map(async (containerDto) => {
           this.sseService.sendEventToUsers(
             [SPECIAL_USERS.GLOBAL_ADMIN],
             { progress: 'docker.events.creatingContainer', from: `${containerDto.name}` } as DockerEvent,
@@ -251,6 +271,10 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
           Logger.log(`Container ${containerDto.name} created and started.`, DockerService.name);
         }),
       );
+
+      if (applicationName && newContainers && originalComposeConfig) {
+        DockerService.saveDockerCompose(applicationName, newContainers, originalComposeConfig);
+      }
 
       this.sseService.sendEventToUsers(
         [SPECIAL_USERS.GLOBAL_ADMIN],
@@ -379,7 +403,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
       const inspectData = await container.inspect();
       const imageName = inspectData.Config.Image;
 
-      Logger.debug('Pulling latest image:', DockerService.name);
+      Logger.debug(`Pulling latest image: ${imageName}`, DockerService.name);
       const isImageUpdated = await this.pullImage(imageName);
 
       if (!isImageUpdated) {
@@ -390,13 +414,13 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
         return { id: container.id, isImageUpdated };
       }
 
-      Logger.debug(`Stopping container ${container.id}`, DockerService.name);
+      Logger.debug(`Stopping container ${container.id} (${imageName})`, DockerService.name);
       await container.stop();
 
-      Logger.debug(`Removing container ${container.id}`, DockerService.name);
+      Logger.debug(`Removing container ${container.id} (${imageName})`, DockerService.name);
       await container.remove();
 
-      Logger.debug(`Recreating container`, DockerService.name);
+      Logger.debug(`Recreating container for ${imageName}`, DockerService.name);
       const newContainer = await this.docker.createContainer({
         ...inspectData.Config,
         HostConfig: inspectData.HostConfig,
@@ -407,7 +431,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
         name: inspectData.Name.replace('/', ''),
       });
 
-      Logger.debug('Starting new container...');
+      Logger.debug(`Starting new container for ${imageName}...`, DockerService.name);
       await newContainer.start();
 
       return { id: newContainer.id, isImageUpdated };
@@ -419,6 +443,67 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
         DockerService.name,
       );
     }
+  }
+
+  private async getContainerNameByIp(ip: string): Promise<string | null> {
+    try {
+      const containers = await this.docker.listContainers();
+
+      const inspections = await Promise.all(
+        containers.map(async (container) => {
+          const inspectData = await this.docker.getContainer(container.Id).inspect();
+          const networks = inspectData.NetworkSettings?.Networks || {};
+          const hasMatchingIp = Object.values(networks).some((network) => network.IPAddress === ip);
+
+          return hasMatchingIp ? container.Names[0]?.replace('/', '') || null : null;
+        }),
+      );
+
+      return inspections.find((name) => name !== null) || null;
+    } catch (error) {
+      Logger.error(
+        `Failed to lookup container by IP: ${error instanceof Error ? error.message : String(error)}`,
+        DockerService.name,
+      );
+      return null;
+    }
+  }
+
+  async updateEduManagerAgentContainer(req: { ip?: string; socket?: { remoteAddress?: string } }): Promise<boolean> {
+    const requestIp = req.ip || req.socket?.remoteAddress;
+
+    if (!requestIp) {
+      throw new CustomHttpException(
+        DockerErrorMessages.DOCKER_COMMAND_EXECUTION_ERROR,
+        HttpStatus.FORBIDDEN,
+        undefined,
+        DockerService.name,
+      );
+    }
+
+    const cleanIp = requestIp.replace('::ffff:', '');
+    const containerName = await this.getContainerNameByIp(cleanIp);
+
+    if (containerName !== EDULUTION_MANAGER_CONTAINER_NAME) {
+      Logger.warn(
+        `Unauthorized update attempt from container: ${containerName || 'unknown'} (IP: ${requestIp})`,
+        DockerService.name,
+      );
+      throw new CustomHttpException(
+        DockerErrorMessages.DOCKER_COMMAND_EXECUTION_ERROR,
+        HttpStatus.FORBIDDEN,
+        undefined,
+        DockerService.name,
+      );
+    }
+
+    const containers = await this.getContainers(EDULUTION_MANAGER_CONTAINER_NAME);
+
+    if (containers.length === 0) return false;
+
+    void this.updateContainer(containers[0].Id);
+
+    return true;
   }
 }
 

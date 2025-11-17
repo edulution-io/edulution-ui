@@ -1770,10 +1770,18 @@
   },
   "containerApplication": {
     "dialogTitle": "{{applicationName}}-Plugins installieren",
+    "EDU_MANAGER_INSTALL_TOKEN": {
+      "title": "Installations-Token",
+      "description": "Bitte gib den Installations-Token ein, der im Edulution-Manager erstellt wurde."
+    },
     "EDULUTION_MAIL_HOSTNAME": {
       "title": "Hostname",
       "description": "Hostname des Mailservers. Dieser kann von der edulution Domain abweichen."
     }
+  },
+  "edulution-manager": {
+    "sidebar": "Edulution-Manager",
+    "title": "Edulution-Manager"
   },
   "dockerOverview": {
     "title": "Container-Übersicht",
@@ -1785,7 +1793,9 @@
     "filterPlaceHolderText": "Suche nach Container-Name",
     "port": "Port",
     "created": "Erstellt am",
-    "container-view": "Container"
+    "container-view": "Container",
+    "selectPluginForInstallationTitle": "Plugin zur Installation auswählen",
+    "selectPluginForInstallationDescription": "Wähle hier eine App aus, für die ein Plugin installiert werden soll."
   },
   "docker": {
     "error": {

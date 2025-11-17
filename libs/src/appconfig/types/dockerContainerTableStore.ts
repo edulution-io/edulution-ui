@@ -18,11 +18,12 @@
  */
 
 import { type RowSelectionState } from '@tanstack/react-table';
-import { type ContainerCreateOptions, type ContainerInfo } from 'dockerode';
+import { type ContainerInfo } from 'dockerode';
 import { type YAMLMap } from 'yaml';
 import type AppConfigTable from '@libs/bulletinBoard/types/appConfigTable';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
 import type DockerCompose from '@libs/docker/types/dockerCompose';
+import type CreateContainerDto from '@libs/docker/types/create-container.dto';
 import type TApps from './appsType';
 
 export interface DockerContainerTableStore extends AppConfigTable<ContainerInfo> {
@@ -33,9 +34,10 @@ export interface DockerContainerTableStore extends AppConfigTable<ContainerInfo>
   error: string | null;
   dockerContainerConfig: DockerCompose | null;
   traefikConfig: YAMLMap | null;
+  dockerComposeFiles: Record<string, string>;
   getContainers: (applicationNames?: string[]) => Promise<ContainerInfo[]>;
   updateContainers: (containers: ContainerInfo[]) => void;
-  createAndRunContainer: (createContainerDto: ContainerCreateOptions[]) => Promise<void>;
+  createAndRunContainer: (createContainerDto: CreateContainerDto) => Promise<void>;
   runDockerCommand: (containerNames: string[], operation: TDockerCommands) => Promise<void>;
   deleteDockerContainer: (containerNames: string[]) => Promise<void>;
   getDockerContainerConfig: (applicationName: TApps, containerName: string) => Promise<DockerCompose>;
