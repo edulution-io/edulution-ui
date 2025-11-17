@@ -547,7 +547,6 @@ class SurveyAnswersService implements OnModuleInit {
       surveyId: new Types.ObjectId(surveyId),
       saveNo,
       answer,
-      schemaVersion: 2,
     });
     if (newSurveyAnswer == null) {
       throw new CustomHttpException(

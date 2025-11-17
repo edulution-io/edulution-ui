@@ -326,7 +326,7 @@ class FilesystemService {
     }
   }
 
-  async deleteEmptyFolderWithDepth(folderPath: string, deep: number): Promise<void> {
+  async deleteFolderAndParentsUpToDepth(folderPath: string, deep: number): Promise<void> {
     if (deep < 0) return;
 
     const exists = await pathExists(folderPath);
@@ -340,7 +340,7 @@ class FilesystemService {
       if (deep > 0) {
         const parentPath = dirname(folderPath);
         if (parentPath !== folderPath) {
-          await this.deleteEmptyFolderWithDepth(parentPath, deep - 1);
+          await this.deleteFolderAndParentsUpToDepth(parentPath, deep - 1);
         }
       }
     }

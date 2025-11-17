@@ -37,7 +37,7 @@ export class SurveyAnswer {
   @Prop({ type: JSON, required: true })
   answer: JSON;
 
-  @Prop({ default: 1 })
+  @Prop({ default: 2 })
   schemaVersion: number;
 }
 
