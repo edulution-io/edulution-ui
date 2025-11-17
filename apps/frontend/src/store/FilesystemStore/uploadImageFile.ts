@@ -35,7 +35,7 @@ const uploadImageFile = async ({ destination, filename, file, appName }: UploadI
       form.append('file', webpFile, filename);
     } else if (file instanceof Blob) {
       const type = file.type || RequestResponseContentType.APPLICATION_OCTET_STREAM;
-      
+
       const ext = mime.getExtension(type);
       const fullName =
         ext && !filename.toLowerCase().endsWith(`.${ext.toLowerCase()}`) ? `${filename}.${ext}` : filename;
@@ -46,8 +46,8 @@ const uploadImageFile = async ({ destination, filename, file, appName }: UploadI
       return;
     }
 
-    const url = appName ? `${EDU_API_CONFIG_ENDPOINTS.FILES}/${appName}` : `${EDU_API_CONFIG_ENDPOINTS.FILES}`;
-    await eduApi.post<void>(url, form);
+    const endpoint = appName ? `${EDU_API_CONFIG_ENDPOINTS.FILES}/${appName}` : `${EDU_API_CONFIG_ENDPOINTS.FILES}`;
+    await eduApi.post<void>(endpoint, form);
   } catch (err: unknown) {
     if (err instanceof Error) {
       handleApiError(err, () => {});

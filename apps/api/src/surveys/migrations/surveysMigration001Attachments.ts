@@ -37,13 +37,16 @@ const surveysMigration001Attachments = {
         Logger.error(`Failed to create directory ${SURVEYS_ATTACHMENT_PATH}`, surveysMigration001Attachments.name);
       }
     }
-    const includedFolders = includedNames.filter(async (folder) => {
-      const stat = await fsStat(`${SURVEYS_FILES_PATH}/${folder}`);
-      if (stat.isDirectory()) {
-        return true;
-      }
-      return false;
-    });
+
+    const includedFolders = (
+      await Promise.all(
+        includedNames.map(async (folder) => {
+          const stat = await fsStat(`${SURVEYS_FILES_PATH}/${folder}`);
+          return stat.isDirectory() ? folder : null;
+        }),
+      )
+    ).filter((folder): folder is string => folder !== null);
+
     includedFolders.forEach((folder) => {
       if (!SURVEYS_FILE_FOLDERS.includes(folder)) {
         try {

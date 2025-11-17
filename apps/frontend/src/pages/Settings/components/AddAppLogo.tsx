@@ -34,7 +34,8 @@ const AddAppLogo: React.FC<AddAppLogoProps> = ({ variant, appName, fieldPath, fo
 
   const path = `${fieldPath}.${variant}` as keyof ThemedFile;
 
-  const fileName = getLogoName(appName, variant);
+  const destination = appName;
+  const filename = getLogoName(appName, variant);
   const previewSrc = getLogoUrl(appName, variant);
   const fallbackSrc = getFallbackUrl(appName, variant);
 
@@ -53,8 +54,8 @@ const AddAppLogo: React.FC<AddAppLogoProps> = ({ variant, appName, fieldPath, fo
 
     if (file && variant) {
       await uploadImageFile({
-        destination: appName,
-        filename: fileName,
+        destination,
+        filename,
         file,
       });
       setKeyValue((prev) => prev + 1);
@@ -64,7 +65,7 @@ const AddAppLogo: React.FC<AddAppLogoProps> = ({ variant, appName, fieldPath, fo
   const onHandleReset = async () => {
     await removeImageFile({
       appName,
-      filename: fileName,
+      filename,
     });
     setKeyValue((prev) => prev + 1);
   };

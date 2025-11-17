@@ -1037,7 +1037,7 @@
       "sections": {
         "logo": {
           "title": "Logo",
-          "description": "Lade hier das App Logo hoch, um das vorgegebene Bild zu überschreiben ."
+          "description": "Lade hier das App Logo hoch, um das vorgegebene Bild zu überschreiben."
         },
         "onlyOffice": {
           "title": "Only Office Integration",
