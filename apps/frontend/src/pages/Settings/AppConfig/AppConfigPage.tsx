@@ -191,7 +191,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
                 name={`${matchingConfig.name}.accessGroups`}
                 render={() => (
                   <FormItem>
-                    <h4 className="text-background">{t(`permission.groups`)}</h4>
+                    <h3 className="text-background">{t(`permission.groups`)}</h3>
                     <FormControl>
                       <AsyncMultiSelect<MultipleSelectorGroup>
                         value={getValues(`${matchingConfig.name}.accessGroups`)}
@@ -216,7 +216,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
                   defaultValue={filteredKey}
                   render={({ field }) => (
                     <FormItem className="py-3">
-                      <h4 className="text-background">{t(`form.${filteredKey}`)}</h4>
+                      <h3 className="text-background">{t(`form.${filteredKey}`)}</h3>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>

@@ -39,12 +39,12 @@ const PublicSurveyParticipationIdDisplay = ({ publicUserId }: PublicSurveyPartic
         className="w-[660px] max-w-[660px] border-none bg-white bg-opacity-5 p-5 md:w-[60%]"
       >
         <div className="mb-6 mt-2 flex flex-row items-center justify-center">
-          <h3>{t('survey.thanks')}</h3>
+          <h2>{t('survey.thanks')}</h2>
         </div>
 
         <Separator className="my-4" />
 
-        <h4 className="my-4 mt-0 ">{t('survey.participate.idHeader')}</h4>
+        <h3 className="my-4 mt-0 ">{t('survey.participate.idHeader')}</h3>
 
         <div className="mx-4">
           <p>{t('survey.participate.idText')}</p>

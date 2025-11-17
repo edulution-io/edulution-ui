@@ -104,10 +104,10 @@ const UserArea = ({ fetchData }: { fetchData: () => Promise<void> }) => {
           <p className="ml-2 text-background">{t('selectAll')}</p>
         </div>
 
-        <h3 className="mb-2 flex flex-grow justify-center text-center text-lg text-background md:text-xl">
+        <h2 className="mb-2 flex flex-grow justify-center text-center text-lg text-background md:text-xl">
           {members.length} {t('classmanagement.usersInThisSession')}{' '}
           {selectedMemberCount ? `(${selectedMemberCount} ${t('common.selected')})` : null}
-        </h3>
+        </h2>
       </div>
       <div className="flex flex-wrap overflow-y-auto scrollbar-thin">
         {members.sort(sortByName).map((m) => (

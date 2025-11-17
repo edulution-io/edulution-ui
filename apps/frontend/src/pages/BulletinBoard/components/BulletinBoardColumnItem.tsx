@@ -211,7 +211,7 @@ const BulletinBoardColumnItem = ({
       }}
     >
       <div className="flex-1">
-        <h4 className="mb-2 w-[calc(100%-20px)] break-normal">
+        <h3 className="mb-2 w-[calc(100%-20px)] break-normal">
           <button
             type="button"
             className="flex items-start space-x-2 text-left hover:opacity-75"
@@ -224,7 +224,7 @@ const BulletinBoardColumnItem = ({
             />
             <span className="break-words text-lg font-bold leading-tight text-background">{bulletin.title}</span>
           </button>
-        </h4>
+        </h3>
 
         <AnimatePresence initial={false}>
           {!isCollapsed && (
