@@ -221,7 +221,7 @@ const UploadContentBody = () => {
     return (
       <div className="flex h-20 items-center justify-center">
         <FileIconComponent
-          size={Number(SIDEBAR_ICON_WIDTH)}
+          size={40}
           filename={file.name}
         />
       </div>
