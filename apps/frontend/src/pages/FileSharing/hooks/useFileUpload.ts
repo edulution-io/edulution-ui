@@ -17,17 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
 import { useTranslation } from 'react-i18next';
 import { useCallback } from 'react';
-import { UploadFile } from '@libs/filesharing/types/uploadFile';
 import useUserStore from '@/store/UserStore/useUserStore';
 import { toast } from 'sonner';
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
+import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
 import useFileSharingStore from '../useFileSharingStore';
 import usePublicShareStore from '../publicShare/usePublicShareStore';
 
 const useFileUpload = () => {
-  const { uploadFiles, updateFilesToUpload } = useHandelUploadFileStore();
+  const { uploadFiles, updateFilesToUpload } = useHandleUploadFileStore();
   const { fetchFiles } = useFileSharingStore();
   const { fetchShares } = usePublicShareStore();
   const { eduApiToken } = useUserStore();
@@ -43,7 +43,7 @@ const useFileUpload = () => {
             Object.assign(new File([file], file.name, { type: file.type }), {
               id: crypto.randomUUID(),
               isZippedFolder: false,
-            } as UploadFile),
+            } as UploadItem),
           ),
         );
 
@@ -54,7 +54,7 @@ const useFileUpload = () => {
           await fetchShares();
         }
       } catch {
-        toast.error(t('filesharingUpload.error.uploadError'));
+        toast.error(t('filesharingUpload.errors.uploadError'));
       }
     },
     [updateFilesToUpload, uploadFiles, eduApiToken, fetchFiles, fetchShares, t],

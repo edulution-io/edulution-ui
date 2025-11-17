@@ -56,7 +56,7 @@ const AddMfaForm: React.FC = () => {
 
   return (
     <>
-      <h3 className="text-background">{t('usersettings.config.mfa')}</h3>
+      <h2 className="text-background">{t('usersettings.config.mfa')}</h2>
       <div className="flex flex-col">
         <div className="my-4 flex justify-start">
           <div className="text-background">

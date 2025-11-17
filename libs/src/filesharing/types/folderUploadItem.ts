@@ -17,6 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const ZIP_PROCESS_TIMEOUT = 5000;
+import { UploadItem } from './uploadItem';
 
-export default ZIP_PROCESS_TIMEOUT;
+interface FolderUploadItem extends UploadItem {
+  isFolder: true;
+  folderName: string;
+  files: File[];
+}
+
+export default FolderUploadItem;

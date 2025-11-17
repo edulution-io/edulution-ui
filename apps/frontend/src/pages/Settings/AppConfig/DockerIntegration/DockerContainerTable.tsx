@@ -65,8 +65,8 @@ const DockerContainerTable: React.FC = () => {
         className="mt-5 space-y-10 [&>*]:rounded-lg [&>*]:bg-muted-background [&>*]:px-2"
       >
         <AccordionItem value={CONTAINER}>
-          <AccordionTrigger className="flex text-h4">
-            <h4>{t('dockerOverview.title')}</h4>
+          <AccordionTrigger>
+            <h3>{t('dockerOverview.title')}</h3>
           </AccordionTrigger>
           <AccordionContent className="space-y-2 px-1">
             <ScrollableTable

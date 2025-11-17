@@ -60,7 +60,7 @@ const GroupsColumn = ({ column }: GroupsColumnProps) => {
 
   return (
     <>
-      <h4 className="mb-4 whitespace-nowrap text-center">{t(`classmanagement.${translationId}`)}</h4>
+      <h3 className="mb-4 whitespace-nowrap text-center">{t(`classmanagement.${translationId}`)}</h3>
       <div className="flex flex-wrap justify-center gap-4">{getContent()}</div>
       <div className="mt-1 flex justify-center" />
     </>

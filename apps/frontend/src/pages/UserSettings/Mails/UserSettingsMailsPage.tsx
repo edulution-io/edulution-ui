@@ -129,7 +129,7 @@ const UserSettingsMailsPage: React.FC = () => {
       <StateLoader isLoading={isEditSyncJobLoading} />
       {isMailConfigured ? (
         <>
-          <h3 className="text-background">{t('mail.importer.title')}</h3>
+          <h2 className="text-background">{t('mail.importer.title')}</h2>
           <div className="space-y-4">
             <DropdownSelect
               options={externalMailProviderConfig}
@@ -149,7 +149,7 @@ const UserSettingsMailsPage: React.FC = () => {
             </Form>
 
             <div className="px-4">
-              <h3 className="pt-5 text-background">{t('mail.importer.syncJobsTable')}</h3>
+              <h2 className="pt-5 text-background">{t('mail.importer.syncJobsTable')}</h2>
               <MailImporterTable />
             </div>
           </div>

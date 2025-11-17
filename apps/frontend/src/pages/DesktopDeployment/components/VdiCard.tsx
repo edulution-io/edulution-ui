@@ -48,7 +48,7 @@ const VdiCard: FC<CardProps> = ({ title, availableClients = 0, onClick, osType, 
         />
       </div>
       <div className="col-span-2">
-        <h4>{title}</h4>
+        <h3>{title}</h3>
         <p>{`${availableClients} ${t('desktopdeployment.clients')}`}</p>
       </div>
       <div className="col-span-3 flex justify-end">
