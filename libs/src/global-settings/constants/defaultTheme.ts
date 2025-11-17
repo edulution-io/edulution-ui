@@ -19,15 +19,15 @@
 
 const DEFAULT_THEME = {
   light: {
-    primary: '#2c78dc',
+    primary: '#0081C6',
     secondary: '#2e2a24',
-    ciLightGreen: '#88d840',
+    ciLightGreen: '#8fc046',
     ciLightBlue: '#0081c6',
   },
   dark: {
-    primary: '#0281c7',
+    primary: '#0081C6',
     secondary: '#d1d5db',
-    ciLightGreen: '#88d840',
+    ciLightGreen: '#8fc046',
     ciLightBlue: '#0081c6',
   },
 };

@@ -118,7 +118,7 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
   if (isAccessRestricted) {
     const restrictedBody = (
       <div className="space-y-6 text-center">
-        <h3 className="text-xl font-semibold">{t('filesharing.publicFileSharing.errors.PublicFileIsRestricted')}</h3>
+        <h2 className="text-xl font-semibold">{t('filesharing.publicFileSharing.errors.PublicFileIsRestricted')}</h2>
 
         {!isAuthenticated && (
           <Button
@@ -152,7 +152,7 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
         titleIcon={titleIcon}
         handleOpenChange={isAuthenticated ? closePublicShareDialog : () => {}}
         title={t('filesharing.publicFileSharing.downloadPublicFile')}
-        body={<h3 className="text-xl font-semibold">{t('filesharing.publicFileSharing.errors.PublicFileNotFound')}</h3>}
+        body={<h2 className="text-xl font-semibold">{t('filesharing.publicFileSharing.errors.PublicFileNotFound')}</h2>}
       />
     );
   }

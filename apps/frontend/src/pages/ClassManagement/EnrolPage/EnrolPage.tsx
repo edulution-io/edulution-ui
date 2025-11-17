@@ -111,7 +111,7 @@ const EnrolPage: React.FC = () => {
             >
               <AccordionItem value={row.name}>
                 <AccordionTrigger>
-                  <h4>{t(`classmanagement.${row.name}`)}</h4>
+                  <h3>{t(`classmanagement.${row.name}`)}</h3>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-2 px-1">
                   <GroupList

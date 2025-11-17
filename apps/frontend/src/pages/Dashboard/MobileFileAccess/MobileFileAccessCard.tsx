@@ -33,7 +33,7 @@ const MobileFileAccessCard: React.FC = () => {
       className="h-full"
     >
       <CardContent>
-        <h4 className="mb-6 font-bold">{t('dashboard.mobileAccess.title')}</h4>
+        <h3 className="mb-6 font-bold">{t('dashboard.mobileAccess.title')}</h3>
         <p className="mb-6">{t('dashboard.mobileAccess.content')}</p>
         <Button
           className="bottom-6"
