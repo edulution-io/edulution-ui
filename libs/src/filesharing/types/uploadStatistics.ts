@@ -17,14 +17,20 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const JOB_NAMES = {
-  DUPLICATE_FILE_JOB: 'duplicate-file',
-  COLLECT_FILE_JOB: 'collect-file',
-  DELETE_FILE_JOB: 'delete-file',
-  MOVE_OR_RENAME_JOB: 'move-or-rename-file',
-  COPY_FILE_JOB: 'copy-file',
-  CREATE_FOLDER_JOB: 'create-folder',
-  REFRESH_USERS_IN_CACHE: 'REFRESH_USERS_IN_CACHE',
-} as const;
+interface UploadStatistics {
+  completedFiles: number;
+  failedFiles: number;
+  totalLoadedBytes: number;
+  totalBytesPerSecond: number;
+  hasActiveUploads: boolean;
+  webdavShare?: string;
+  currentFileName?: string;
+  isCreatingDirectories: boolean;
+  directoryProgress: {
+    current: number;
+    total: number;
+  };
+  overallPercentage: number;
+}
 
-export default JOB_NAMES;
+export default UploadStatistics;

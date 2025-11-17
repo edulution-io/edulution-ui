@@ -17,5 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const MAX_FOLDER_UPLOAD_CONTENT_SIZE = 100; // Nested Files in Folder
-export default MAX_FOLDER_UPLOAD_CONTENT_SIZE;
+export interface UploadItem extends File {
+  id: string;
+  isFolder?: boolean;
+  folderName?: string;
+  files?: File[];
+  isZippedFolder?: boolean;
+  originalFolderName?: string;
+  uploadPath?: string;
+  visibleFiles?: File[];
+  includeHidden?: boolean;
+  hiddenFiles?: File[];
+}
