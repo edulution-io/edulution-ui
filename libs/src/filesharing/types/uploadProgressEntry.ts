@@ -16,3 +16,13 @@
  *
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
+
+import RawProgressData from '@libs/filesharing/types/rawProgressData';
+
+interface UploadProgressEntry {
+  share?: string;
+  fileName?: string;
+  progress: RawProgressData;
+}
+
+export default UploadProgressEntry;

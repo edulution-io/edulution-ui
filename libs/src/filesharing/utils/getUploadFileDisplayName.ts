@@ -18,24 +18,13 @@
  */
 
 import { UploadItem } from '@libs/filesharing/types/uploadItem';
+import isFolderUpload from '@libs/filesharing/utils/isFolderUpload';
 
-const calculateTotalFilesAndBytes = (files: UploadItem[]): { filesCount: number; bytesCount: number } => {
-  let filesCount = 0;
-  let bytesCount = 0;
-
-  files.forEach((file) => {
-    if (file.isFolder && file.files) {
-      filesCount += file.files.length;
-      file.files.forEach((innerFile) => {
-        bytesCount += innerFile.size;
-      });
-    } else {
-      filesCount += 1;
-      bytesCount += file.size;
-    }
-  });
-
-  return { filesCount, bytesCount };
+const getUploadFileDisplayName = (file: UploadItem | { name: string }): string => {
+  if ('isFolder' in file && isFolderUpload(file)) {
+    return file.folderName || '';
+  }
+  return file.name;
 };
 
-export default calculateTotalFilesAndBytes;
+export default getUploadFileDisplayName;

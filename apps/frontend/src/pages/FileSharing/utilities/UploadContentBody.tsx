@@ -23,23 +23,26 @@ import { MdOutlineCloudUpload } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
-import { HiExclamationTriangle, HiEyeSlash, HiTrash } from 'react-icons/hi2';
+import { HiEyeSlash, HiTrash } from 'react-icons/hi2';
 import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import WarningBox from '@/components/shared/WarningBox';
 import { TiDocumentAdd, TiFolderAdd } from 'react-icons/ti';
-import { UploadFile } from '@libs/filesharing/types/uploadFile';
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
 import { FcFolder } from 'react-icons/fc';
 import getFileUploadLimit from '@libs/ui/utils/getFileUploadLimit';
 import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
 import { v4 as uuidv4 } from 'uuid';
-import isHiddenFile from '@libs/filesharing/utils/isHiddenFile';
-import isSystemFile from '@libs/filesharing/utils/isSystemFile';
 import ActionTooltip from '@/components/shared/ActionTooltip';
 import { BUTTONS_ICON_WIDTH, SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
+import shouldFilterFile from '@libs/filesharing/utils/shouldFilterFile';
+import isFolderUpload from '@libs/filesharing/utils/isFolderUpload';
+import splitFilesByMaxFileSize from '@libs/filesharing/utils/splitFilesByMaxFileSize';
+import findDuplicateFiles from '@libs/filesharing/utils/findDuplicateFiles';
+import getUploadFileDisplayName from '@libs/filesharing/utils/getUploadFileDisplayName';
+import ValidationWarnings from '@/pages/FileSharing/utilities/ValidationWarnings';
 
 const UploadContentBody = () => {
   const { webdavShare } = useParams();
@@ -48,7 +51,6 @@ const UploadContentBody = () => {
   const [oversizedFiles, setOversizedFiles] = useState<File[]>([]);
   const [tooLargeFolders, setTooLargeFolders] = useState<string[]>([]);
   const { setSubmitButtonIsDisabled } = useFileSharingDialogStore();
-
   const [filesThatWillBeOverwritten, setFilesThatWillBeOverwritten] = useState<string[]>([]);
 
   const { filesToUpload, updateFilesToUpload } = useHandelUploadFileStore();
@@ -56,53 +58,11 @@ const UploadContentBody = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
 
-  const hasMultipleDuplicates = filesThatWillBeOverwritten.length > 1;
-  const hasMultipleOversizedFiles = oversizedFiles.length > 1;
-  const isAnyFileOversized = oversizedFiles.length > 0;
-
-  const isFolderUpload = (
-    file: UploadFile,
-  ): file is UploadFile & {
-    isFolder: true;
-    folderName: string;
-    files: File[];
-    fileCount: number;
-    visibleFiles?: File[];
-    hiddenFiles?: File[];
-    includeHidden?: boolean;
-  } => 'isFolder' in file && file.isFolder === true && 'folderName' in file && typeof file.folderName === 'string';
-
-  const displayName = (file: UploadFile | { name: string }): string => {
-    if ('isFolder' in file && isFolderUpload(file)) {
-      return file.folderName || '';
-    }
-    return file.name;
-  };
-
-  const splitFilesByMaxFileSize = (incomingFiles: File[], maxSizeMB: number): { oversize: File[]; normal: File[] } => {
-    const oversize = incomingFiles.filter((f) => bytesToMegabytes(f.size) > maxSizeMB);
-    const normal = incomingFiles.filter((f) => bytesToMegabytes(f.size) <= maxSizeMB);
-    return { oversize, normal };
-  };
-
-  const findDuplicateFiles = (incoming: UploadFile[], existing: { filename: string }[]): { name: string }[] => {
-    const normalize = (filename: string) => decodeURIComponent(filename).trim().toLowerCase();
-    const existingFilenameSet = new Set(existing.map((existingFile) => normalize(existingFile.filename)));
-
-    return incoming
-      .filter((file) => existingFilenameSet.has(normalize(displayName(file))))
-      .map((file) => ({ name: displayName(file) }));
-  };
-
-  const duplicateKey = (f: UploadFile | { name: string }) => f.name;
-
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const folders = acceptedFiles.filter((file): file is UploadFile => isFolderUpload(file as UploadFile));
-      const regularFiles = acceptedFiles.filter((file) => !isFolderUpload(file as UploadFile));
-
+      const folders = acceptedFiles.filter((file): file is UploadItem => isFolderUpload(file as UploadItem));
+      const regularFiles = acceptedFiles.filter((file) => !isFolderUpload(file as UploadItem));
       const { oversize, normal } = splitFilesByMaxFileSize(regularFiles, getFileUploadLimit(webdavShares, webdavShare));
-
       const duplicates = findDuplicateFiles(
         [...normal, ...folders].map((file) => Object.assign(file, { id: uuidv4() })),
         files,
@@ -115,20 +75,20 @@ const UploadContentBody = () => {
 
       setFilesThatWillBeOverwritten((prev) => {
         const seen = new Set(prev);
-        const fresh = duplicates.map(duplicateKey).filter((k) => !seen.has(k));
+        const fresh = duplicates.map((d) => d.name).filter((k) => !seen.has(k));
         return [...prev, ...fresh];
       });
 
       updateFilesToUpload((prevFiles) => {
-        const existingNames = new Set(prevFiles.map((f) => displayName(f)));
+        const existingNames = new Set(prevFiles.map((f) => getUploadFileDisplayName(f)));
 
         const newFiles = [...normal, ...folders]
-          .filter((file) => !existingNames.has(displayName(file)))
+          .filter((file) => !existingNames.has(getUploadFileDisplayName(file)))
           .map((file) => {
-            if (isFolderUpload(file as UploadFile)) {
-              return file as UploadFile;
+            if (isFolderUpload(file as UploadItem)) {
+              return file as UploadItem;
             }
-            const uploadFile: UploadFile = Object.assign(new File([file], file.name, { type: file.type }), {
+            const uploadFile: UploadItem = Object.assign(new File([file], file.name, { type: file.type }), {
               id: uuidv4(),
             });
             return uploadFile;
@@ -143,7 +103,6 @@ const UploadContentBody = () => {
   const extractFilesFromEvent = (event: DropEvent): Promise<File[]> => {
     if ('dataTransfer' in event && event.dataTransfer) {
       const items = Array.from(event.dataTransfer.items ?? []);
-
       return Promise.resolve(items.map((item) => item.getAsFile()).filter((file): file is File => file !== null));
     }
 
@@ -168,15 +127,14 @@ const UploadContentBody = () => {
       const pathParts = firstFile.webkitRelativePath?.split('/') || [];
       const folderName = pathParts[0] || 'folder';
 
-      const visibleFiles = selected.filter((file) => !isSystemFile(file.name) && !isHiddenFile(file.name));
-      const hiddenAndSystemFiles = selected.filter((file) => isSystemFile(file.name) || isHiddenFile(file.name));
+      const visibleFiles = selected.filter((file) => !shouldFilterFile(file.name));
+      const hiddenAndSystemFiles = selected.filter((file) => shouldFilterFile(file.name));
 
-      const folderEntry: UploadFile = Object.assign(new File([], folderName, { type: 'application/x-directory' }), {
+      const folderEntry: UploadItem = Object.assign(new File([], folderName, { type: 'application/x-directory' }), {
         id: uuidv4(),
         isFolder: true,
         folderName,
         files: visibleFiles,
-        fileCount: visibleFiles.length,
         visibleFiles,
         hiddenFiles: hiddenAndSystemFiles,
         includeHidden: false,
@@ -195,17 +153,14 @@ const UploadContentBody = () => {
         }
 
         const includeHidden = !file.includeHidden;
-
         const baseFiles = file.visibleFiles || [];
         const hiddenSystemFiles = file.hiddenFiles || [];
-
         const newFiles = includeHidden ? [...baseFiles, ...hiddenSystemFiles] : baseFiles;
 
         return {
           ...file,
           includeHidden,
           files: newFiles,
-          fileCount: newFiles.length,
         };
       }),
     );
@@ -214,7 +169,7 @@ const UploadContentBody = () => {
   const removeFile = (identifier: string) => {
     updateFilesToUpload((prev) =>
       prev.filter((file) => {
-        const name = displayName(file);
+        const name = getUploadFileDisplayName(file);
         return name !== identifier;
       }),
     );
@@ -232,7 +187,7 @@ const UploadContentBody = () => {
     onDrop,
   });
 
-  const renderPreview = (file: UploadFile) => {
+  const renderPreview = (file: UploadItem) => {
     if (isFolderUpload(file)) {
       return (
         <div className="flex h-20 items-center justify-center">
@@ -323,60 +278,18 @@ const UploadContentBody = () => {
         </Button>
       </div>
 
-      {filesThatWillBeOverwritten.length > 0 && (
-        <WarningBox
-          icon={<HiExclamationTriangle className=" text-ciYellow" />}
-          title={
-            hasMultipleDuplicates
-              ? t('filesharingUpload.overwriteWarningTitleFiles')
-              : t('filesharingUpload.overwriteWarningTitleFile')
-          }
-          description={
-            hasMultipleDuplicates
-              ? t('filesharingUpload.overwriteWarningDescriptionFiles')
-              : t('filesharingUpload.overwriteWarningDescriptionFile')
-          }
-          filenames={filesThatWillBeOverwritten}
-          borderColor="border-ciLightYellow"
-          backgroundColor="bg-background"
-          textColor="text-ciLightYellow"
-        />
-      )}
-
-      {isAnyFileOversized && (
-        <WarningBox
-          icon={<HiExclamationTriangle className=" text-ciRed" />}
-          title={
-            hasMultipleOversizedFiles
-              ? t('filesharingUpload.oversizedFilesDetected')
-              : t('filesharingUpload.oversizedFileDetected')
-          }
-          description={t('filesharingUpload.cannotUploadOversized')}
-          filenames={oversizedFiles.map((file) => file.name)}
-          borderColor="border-ciLightRed"
-          backgroundColor="bg-background"
-          textColor="text-ciLightRed"
-        />
-      )}
-
-      {tooLargeFolders.length > 0 && (
-        <WarningBox
-          icon={<HiExclamationTriangle className=" text-ciRed" />}
-          title={t('filesharingUpload.folderTooLargeTitle')}
-          description={t('filesharingUpload.folderTooLargeDescription')}
-          filenames={tooLargeFolders.map((name) => name)}
-          borderColor="border-ciRed"
-          backgroundColor="bg-background"
-          textColor="text-ciRed"
-        />
-      )}
+      <ValidationWarnings
+        oversizedFiles={oversizedFiles}
+        duplicateFiles={filesThatWillBeOverwritten}
+        tooLargeFolders={tooLargeFolders}
+      />
 
       {filesToUpload.length > 0 && (
         <ScrollArea className="mt-2 max-h-[50vh] overflow-y-auto overflow-x-hidden rounded-xl border border-gray-600 px-2 scrollbar-thin">
           <ul className="my-3 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
             {filesToUpload.map((file) => {
               const isFolder = isFolderUpload(file);
-              const fileName = displayName(file);
+              const fileName = getUploadFileDisplayName(file);
 
               const totalSize = isFolder && file.files ? file.files.reduce((sum, f) => sum + f.size, 0) : file.size;
 
@@ -407,8 +320,8 @@ const UploadContentBody = () => {
                     </div>
                     {isFolder && (
                       <div className="text-center text-xs text-neutral-400">
-                        {file.fileCount}{' '}
-                        {file.fileCount === 1 ? t('filesharingUpload.file') : t('filesharingUpload.files')}
+                        {file.files?.length || 0}{' '}
+                        {(file.files?.length || 0) === 1 ? t('filesharingUpload.file') : t('filesharingUpload.files')}
                       </div>
                     )}
                   </div>

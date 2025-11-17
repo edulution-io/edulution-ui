@@ -21,12 +21,7 @@ import systemFiles from '@libs/filesharing/constants/systemFiles';
 
 const isSystemFile = (filename: string): boolean => {
   const basename = filename.split('/').pop() || '';
-
-  if (systemFiles.includes(basename)) {
-    return true;
-  }
-
-  return basename.startsWith('_') || basename.startsWith('.');
+  return systemFiles.includes(basename);
 };
 
 export default isSystemFile;

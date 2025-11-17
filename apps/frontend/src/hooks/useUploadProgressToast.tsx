@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import ProgressBox from '@/components/ui/ProgressBox';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
@@ -25,13 +25,15 @@ import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHande
 import formatTransferSpeed from '@libs/filesharing/utils/formatTransferSpeed';
 import formatEstimatedTimeRemaining from '@libs/filesharing/utils/formatEstimatedTimeRemaining';
 import { useTranslation } from 'react-i18next';
-import UploadStatus from '@libs/filesharing/types/uploadStatus';
 import { formatBytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import {
   DONE_TOAST_DURATION_MS,
   ERROR_TOAST_DURATION_MS,
   LIVE_TOAST_DURATION_MS,
 } from '@libs/ui/constants/showToasterDuration';
+import UploadProgressEntry from '@libs/filesharing/types/uploadProgressEntry';
+import aggregateUploadProgress from '@libs/filesharing/utils/aggregateUploadProgress';
+import formatProgressToastMessage from '@libs/filesharing/utils/formatProgressToastMessage';
 
 const COMBINED_UPLOAD_TOAST_ID = 'upload:combined';
 
@@ -43,21 +45,8 @@ const useUploadProgressToast = () => {
   const hasRefreshedAfterComplete = useRef<boolean>(false);
   const lastShownPercentage = useRef<number>(-1);
 
-  const getPercent = useCallback(
-    (item: { percent?: number; percentageComplete?: number }) => item.percent ?? item.percentageComplete ?? 0,
-    [],
-  );
-  const getLoadedBytes = useCallback(
-    (item: { loaded?: number; loadedByteCount?: number }) => item.loaded ?? item.loadedByteCount ?? 0,
-    [],
-  );
-  const getTotalBytes = useCallback(
-    (item: { total?: number; totalByteCount?: number }) => item.total ?? item.totalByteCount ?? 0,
-    [],
-  );
-
   useEffect(() => {
-    const entries = Object.entries(progressById);
+    const entries = Object.entries(progressById) as [string, UploadProgressEntry][];
 
     if (entries.length === 0) {
       toast.dismiss(COMBINED_UPLOAD_TOAST_ID);
@@ -66,55 +55,10 @@ const useUploadProgressToast = () => {
       return;
     }
 
-    let completedFiles = 0;
-    let failedFiles = 0;
-    let totalLoadedBytes = 0;
-    let totalBytesPerSecond = 0;
-    let hasActiveUploads = false;
-    let webdavShare: string | undefined;
-    let currentFileName: string | undefined;
-    let isCreatingDirectories = false;
-    let directoryProgress = { current: 0, total: 0 };
+    const statistics = aggregateUploadProgress(entries, totalBytesCount);
+    const { overallPercentage, failedFiles, hasActiveUploads, totalLoadedBytes, webdavShare } = statistics;
 
-    entries.forEach(([fileId, { share, progress, fileName }]) => {
-      const { status } = progress;
-      const percent = getPercent(progress);
-      const loadedBytes = getLoadedBytes(progress);
-      const fileTotalBytes = getTotalBytes(progress);
-      const bytesPerSecond = progress.bytesPerSecond ?? progress.speedBps ?? 0;
-
-      if (!webdavShare && share) {
-        webdavShare = share;
-      }
-
-      if (fileId === 'directory-creation') {
-        isCreatingDirectories = true;
-        directoryProgress = {
-          current: progress.loaded || 0,
-          total: progress.total || 0,
-        };
-        return;
-      }
-
-      if (status === UploadStatus.uploading) {
-        currentFileName = fileName;
-      }
-
-      if (status === UploadStatus.done || percent >= 100) {
-        completedFiles += 1;
-        totalLoadedBytes += fileTotalBytes;
-      } else if (status === UploadStatus.error) {
-        failedFiles += 1;
-      } else if (status === UploadStatus.uploading) {
-        hasActiveUploads = true;
-        totalLoadedBytes += loadedBytes;
-        totalBytesPerSecond += bytesPerSecond;
-      }
-    });
-
-    const overallPercentage = totalBytesCount > 0 ? Math.round((totalLoadedBytes / totalBytesCount) * 100) : 0;
-
-    if (overallPercentage === lastShownPercentage.current && !isCreatingDirectories) {
+    if (overallPercentage === lastShownPercentage.current && !statistics.isCreatingDirectories) {
       return;
     }
     lastShownPercentage.current = overallPercentage;
@@ -146,23 +90,14 @@ const useUploadProgressToast = () => {
       return;
     }
 
-    const currentFileNumber = completedFiles + (hasActiveUploads ? 1 : 0);
-    const etaSeconds = totalBytesPerSecond > 0 ? (totalBytesCount - totalLoadedBytes) / totalBytesPerSecond : undefined;
-
     const fileText = totalFilesCount === 1 ? t('filesharingUpload.file') : t('filesharingUpload.files');
-
-    let title: string;
-    if (isCreatingDirectories) {
-      title = `${t('filesharingUpload.creatingDirectoryStructure')} (${directoryProgress.current}/${directoryProgress.total})`;
-    } else if (currentFileName) {
-      title = `${currentFileNumber} / ${totalFilesCount} ${fileText} • ${currentFileName}`;
-    } else {
-      title = `${currentFileNumber} / ${totalFilesCount} ${fileText} • ${formatBytes(totalBytesCount)}`;
-    }
-
-    const speedEtaLine = `${formatTransferSpeed(totalBytesPerSecond)} • ${formatEstimatedTimeRemaining(etaSeconds)}`;
-    const bytesLine = `${formatBytes(totalLoadedBytes)} / ${formatBytes(totalBytesCount)}`;
-    const description = `${speedEtaLine}\n${bytesLine}`;
+    const { title, description } = formatProgressToastMessage(statistics, totalFilesCount, totalBytesCount, {
+      fileText,
+      directoryStructureText: t('filesharingUpload.creatingDirectoryStructure'),
+      formatBytes,
+      formatTransferSpeed,
+      formatEstimatedTimeRemaining,
+    });
 
     const toastData = {
       percent: overallPercentage,
@@ -182,18 +117,7 @@ const useUploadProgressToast = () => {
       </div>,
       { id: toastData.id, duration: toastDuration },
     );
-  }, [
-    progressById,
-    totalFilesCount,
-    totalBytesCount,
-    currentPath,
-    fetchFiles,
-    t,
-    getPercent,
-    getLoadedBytes,
-    getTotalBytes,
-    clearProgress,
-  ]);
+  }, [progressById, totalFilesCount, totalBytesCount, currentPath, fetchFiles, t, clearProgress]);
 };
 
 export default useUploadProgressToast;

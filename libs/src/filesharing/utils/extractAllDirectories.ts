@@ -17,15 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { UploadFile } from '@libs/filesharing/types/uploadFile';
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
 
-const extractAllDirectories = (folder: UploadFile, basePath: string): string[] => {
+const extractAllDirectories = (folder: UploadItem, basePath: string): string[] => {
   if (!folder.files) return [];
 
   const directories = new Set<string>();
 
   folder.files.forEach((file) => {
-    const relativePath = file.webkitRelativePath || '';
+    const relativePath = file.webkitRelativePath;
     if (!relativePath) return;
 
     const parts = relativePath.split('/');

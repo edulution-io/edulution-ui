@@ -17,25 +17,18 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { UploadItem } from '@libs/filesharing/types/uploadItem';
+import { UploadStatusType } from '@libs/filesharing/types/uploadStatusType';
 
-const calculateTotalFilesAndBytes = (files: UploadItem[]): { filesCount: number; bytesCount: number } => {
-  let filesCount = 0;
-  let bytesCount = 0;
+interface RawProgressData {
+  status: UploadStatusType;
+  percent?: number;
+  percentageComplete?: number;
+  loaded?: number;
+  loadedByteCount?: number;
+  total?: number;
+  totalByteCount?: number;
+  bytesPerSecond?: number;
+  speedBps?: number;
+}
 
-  files.forEach((file) => {
-    if (file.isFolder && file.files) {
-      filesCount += file.files.length;
-      file.files.forEach((innerFile) => {
-        bytesCount += innerFile.size;
-      });
-    } else {
-      filesCount += 1;
-      bytesCount += file.size;
-    }
-  });
-
-  return { filesCount, bytesCount };
-};
-
-export default calculateTotalFilesAndBytes;
+export default RawProgressData;

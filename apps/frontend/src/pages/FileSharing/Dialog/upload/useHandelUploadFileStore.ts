@@ -20,7 +20,7 @@
 import { create } from 'zustand';
 import { v4 as uuid } from 'uuid';
 
-import { UploadFile } from '@libs/filesharing/types/uploadFile';
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
 import FileProgress from '@libs/filesharing/types/fileProgress';
 import UploadResult from '@libs/filesharing/types/uploadResult';
 import createFileUploader from '@libs/filesharing/utils/createFileUploader';
@@ -36,19 +36,18 @@ import { HttpMethods } from '@libs/common/types/http-methods';
 import handleSingleData from '@/pages/FileSharing/Dialog/handleFileAction/handleSingleData';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 
-interface HandelUploadFileStore {
+interface HandleUploadFileStore {
   isUploadDialogOpen: boolean;
-  filesToUpload: UploadFile[];
+  filesToUpload: UploadItem[];
   isUploading: boolean;
-  lastError?: string;
   totalFilesCount: number;
   totalBytesCount: number;
   progressById: Record<string, { share: string | undefined; fileName: string; progress: FileProgress }>;
   uploadingById: Map<string, boolean>;
   setIsUploadDialogOpen: (isOpen: boolean) => void;
   closeUploadDialog: () => void;
-  setFilesToUpload: (files: UploadFile[]) => void;
-  updateFilesToUpload: (updater: (files: UploadFile[]) => UploadFile[]) => void;
+  setFilesToUpload: (files: UploadItem[]) => void;
+  updateFilesToUpload: (updater: (files: UploadItem[]) => UploadItem[]) => void;
   markUploading: (fileId: string, uploading: boolean) => void;
   setDirectoryCreationProgress: (current: number, total: number, share: string | undefined) => void;
   uploadFiles: (currentPath: string, accessToken: string, share: string | undefined) => Promise<UploadResult[]>;
@@ -56,54 +55,67 @@ interface HandelUploadFileStore {
   reset: () => void;
 }
 
-const initialState = {
+const DIRECTORY_CREATION_PROGRESS_ID = 'directory-creation';
+
+const createInitialState = () => ({
   totalFilesCount: 0,
   totalBytesCount: 0,
   isUploadDialogOpen: false,
   filesToUpload: [],
   isUploading: false,
-  lastError: undefined,
   progressById: {},
   uploadingById: new Map<string, boolean>(),
+});
+
+const createProgressFromCounts = (current: number, total: number): FileProgress => {
+  const percent = total === 0 ? 0 : Math.round((current / total) * 100);
+
+  return {
+    status: 'uploading',
+    percent,
+    loaded: current,
+    total,
+    percentageComplete: percent,
+    loadedByteCount: current,
+    totalByteCount: total,
+  };
 };
 
-const uploadFolder = async (
-  folder: UploadFile,
-  basePath: string,
+const isFolderUpload = (fileItem: UploadItem): fileItem is UploadItem & { isFolder: true; files: File[] } => 'isFolder' in fileItem && fileItem.isFolder === true && Array.isArray(fileItem.files);
+
+const createSingleDirectory = async (directoryPath: string, webdavShare: string | undefined): Promise<void> => {
+  const pathParts = directoryPath.split('/').filter((part) => part);
+  const directoryName = pathParts[pathParts.length - 1];
+  const parentPath = pathParts.slice(0, -1).join('/');
+  const parentPathWithSlash = `/${parentPath}/`;
+
+  await handleSingleData(
+    FileActionType.CREATE_FOLDER,
+    FileSharingApiEndpoints.FILESHARING_ACTIONS,
+    HttpMethods.POST,
+    ContentType.DIRECTORY,
+    {
+      path: parentPathWithSlash,
+      newPath: directoryName,
+    },
+    webdavShare,
+  );
+};
+
+const createDirectoryStructure = async (
+  directories: string[],
   webdavShare: string | undefined,
-  uploadFile: (file: File, uploadPath: string) => Promise<void>,
   setDirectoryProgress: (current: number, total: number, share: string | undefined) => void,
 ): Promise<void> => {
-  if (!folder.isFolder || !folder.files) {
-    return;
-  }
-
-  const directories = extractAllDirectories(folder, basePath);
-
   let createdCount = 0;
 
   await directories.reduce(async (previousPromise, directoryPath) => {
     await previousPromise;
+
+    setDirectoryProgress(createdCount, directories.length, webdavShare);
+
     try {
-      setDirectoryProgress(createdCount, directories.length, webdavShare);
-
-      const pathParts = directoryPath.split('/').filter((part) => part);
-      const directoryName = pathParts[pathParts.length - 1];
-      const parentPath = pathParts.slice(0, -1).join('/');
-      const parentPathWithSlash = `/${parentPath}/`;
-
-      await handleSingleData(
-        FileActionType.CREATE_FOLDER,
-        FileSharingApiEndpoints.FILESHARING_ACTIONS,
-        HttpMethods.POST,
-        ContentType.DIRECTORY,
-        {
-          path: parentPathWithSlash,
-          newPath: directoryName,
-        },
-        webdavShare,
-      );
-
+      await createSingleDirectory(directoryPath, webdavShare);
       createdCount += 1;
     } catch (error) {
       toast.error(t('filesharing.filesharingUpload.errors.directoryCreationFailed'));
@@ -111,8 +123,14 @@ const uploadFolder = async (
   }, Promise.resolve());
 
   setDirectoryProgress(directories.length, directories.length, webdavShare);
+};
 
-  await folder.files.reduce(async (previousPromise, file) => {
+const uploadFolderFiles = async (
+  files: File[],
+  basePath: string,
+  uploadFile: (file: File, uploadPath: string) => Promise<void>,
+): Promise<void> => {
+  await files.reduce(async (previousPromise, file) => {
     await previousPromise;
 
     const relativePath = file.webkitRelativePath || file.name;
@@ -127,8 +145,61 @@ const uploadFolder = async (
   }, Promise.resolve());
 };
 
-const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
-  ...initialState,
+const uploadFolder = async (
+  folder: UploadItem,
+  basePath: string,
+  webdavShare: string | undefined,
+  uploadFile: (file: File, uploadPath: string) => Promise<void>,
+  setDirectoryProgress: (current: number, total: number, share: string | undefined) => void,
+): Promise<void> => {
+  if (!isFolderUpload(folder)) {
+    return;
+  }
+
+  const directories = extractAllDirectories(folder, basePath);
+
+  await createDirectoryStructure(directories, webdavShare, setDirectoryProgress);
+  await uploadFolderFiles(folder.files, basePath, uploadFile);
+};
+
+type FileUploader = (fileItem: UploadItem) => Promise<UploadResult>;
+
+const processSingleUploadItem = async (
+  fileItem: UploadItem,
+  currentPath: string,
+  webdavShare: string | undefined,
+  singleFileUploader: FileUploader,
+  setDirectoryProgress: (current: number, total: number, share: string | undefined) => void,
+): Promise<UploadResult> => {
+  try {
+    if (isFolderUpload(fileItem)) {
+      const uploadFileCallback = async (file: File, uploadPath: string) => {
+        const tempUploadFile: UploadItem = Object.assign(file, {
+          id: `${fileItem.id}-${uploadPath}`,
+          uploadPath,
+        });
+        await singleFileUploader(tempUploadFile);
+      };
+
+      await uploadFolder(fileItem, currentPath, webdavShare, uploadFileCallback, setDirectoryProgress);
+
+      return {
+        name: fileItem.folderName || fileItem.name,
+        success: true,
+      };
+    } 
+      return await singleFileUploader(fileItem);
+    
+  } catch (error) {
+    return {
+      name: fileItem.name,
+      success: false,
+    };
+  }
+};
+
+const useHandelUploadFileStore = create<HandleUploadFileStore>((set, get) => ({
+  ...createInitialState(),
 
   setIsUploadDialogOpen: (isOpen) => {
     if (isOpen) {
@@ -190,28 +261,19 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
   },
 
   setDirectoryCreationProgress: (current: number, total: number, share: string | undefined) => {
-    const progressId = 'directory-creation';
     if (current >= total) {
       set((state) => {
         const newProgressById = { ...state.progressById };
-        delete newProgressById[progressId];
+        delete newProgressById[DIRECTORY_CREATION_PROGRESS_ID];
         return { progressById: newProgressById };
       });
     } else {
-      const progress: FileProgress = {
-        status: 'uploading' as const,
-        percent: Math.round((current / total) * 100),
-        loaded: current,
-        total,
-        percentageComplete: Math.round((current / total) * 100),
-        loadedByteCount: current,
-        totalByteCount: total,
-      };
+      const progress = createProgressFromCounts(current, total);
 
       set((state) => ({
         progressById: {
           ...state.progressById,
-          [progressId]: {
+          [DIRECTORY_CREATION_PROGRESS_ID]: {
             share,
             fileName: t('filesharing.filesharingUpload.creatingDirectoryStructure'),
             progress,
@@ -235,7 +297,6 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
     const { filesCount, bytesCount } = calculateTotalFilesAndBytes(files);
 
     set({
-      lastError: undefined,
       filesToUpload: [],
       totalFilesCount: filesCount,
       totalBytesCount: bytesCount,
@@ -264,39 +325,15 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
     await files.reduce(async (previousPromise, fileItem) => {
       await previousPromise;
 
-      try {
-        if ('isFolder' in fileItem && fileItem.isFolder && fileItem.files) {
-          const uploadFileCallback = async (file: File, uploadPath: string) => {
-            const tempUploadFile: UploadFile = Object.assign(file, {
-              id: `${fileItem.id}-${uploadPath}`,
-              uploadPath,
-            });
-            await singleFileUploader(tempUploadFile);
-          };
+      const result = await processSingleUploadItem(
+        fileItem,
+        currentPath,
+        webdavShare,
+        singleFileUploader,
+        get().setDirectoryCreationProgress,
+      );
 
-          await uploadFolder(
-            fileItem,
-            currentPath,
-            webdavShare,
-            uploadFileCallback,
-            get().setDirectoryCreationProgress,
-          );
-
-          outcomes.push({
-            name: fileItem.folderName || fileItem.name,
-            success: true,
-          });
-        } else {
-          const result = await singleFileUploader(fileItem);
-
-          outcomes.push(result);
-        }
-      } catch (error) {
-        outcomes.push({
-          name: fileItem.name,
-          success: false,
-        });
-      }
+      outcomes.push(result);
     }, Promise.resolve());
 
     return outcomes;
@@ -310,7 +347,7 @@ const useHandelUploadFileStore = create<HandelUploadFileStore>((set, get) => ({
     });
   },
 
-  reset: () => set({ ...initialState }),
+  reset: () => set(createInitialState()),
 }));
 
 export default useHandelUploadFileStore;

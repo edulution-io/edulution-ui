@@ -18,24 +18,16 @@
  */
 
 import { UploadItem } from '@libs/filesharing/types/uploadItem';
+import getUploadFileDisplayName from '@libs/filesharing/utils/getUploadFileDisplayName';
 
-const calculateTotalFilesAndBytes = (files: UploadItem[]): { filesCount: number; bytesCount: number } => {
-  let filesCount = 0;
-  let bytesCount = 0;
+const findDuplicateFiles = (incoming: UploadItem[], existing: { filename: string }[]): { name: string }[] => {
+  const existingFilenameSet = new Set(
+    existing.map((existingFile) => decodeURIComponent(existingFile.filename).trim().toLowerCase()),
+  );
 
-  files.forEach((file) => {
-    if (file.isFolder && file.files) {
-      filesCount += file.files.length;
-      file.files.forEach((innerFile) => {
-        bytesCount += innerFile.size;
-      });
-    } else {
-      filesCount += 1;
-      bytesCount += file.size;
-    }
-  });
-
-  return { filesCount, bytesCount };
+  return incoming
+    .filter((file) => existingFilenameSet.has(decodeURIComponent(file.name).trim().toLowerCase()))
+    .map((file) => ({ name: getUploadFileDisplayName(file) }));
 };
 
-export default calculateTotalFilesAndBytes;
+export default findDuplicateFiles;

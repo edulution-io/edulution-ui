@@ -17,14 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export interface UploadFile extends File {
-  id: string;
-  isFolder?: boolean;
-  folderName?: string;
-  files?: File[];
-  fileCount?: number;
-  isZippedFolder?: boolean;
-  originalFolderName?: string;
-  uploadPath?: string;
-  visibleFiles?: File[];
-}
+const splitFilesByMaxFileSize = (files: File[], maxSizeMB: number): { oversize: File[]; normal: File[] } => {
+  const bytesToMegabytes = (bytes: number) => bytes / (1024 * 1024);
+
+  const oversize = files.filter((f) => bytesToMegabytes(f.size) > maxSizeMB);
+  const normal = files.filter((f) => bytesToMegabytes(f.size) <= maxSizeMB);
+
+  return { oversize, normal };
+};
+
+export default splitFilesByMaxFileSize;

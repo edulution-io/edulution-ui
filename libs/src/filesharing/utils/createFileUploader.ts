@@ -18,7 +18,7 @@
  */
 
 import { AxiosInstance, AxiosProgressEvent } from 'axios';
-import { UploadFile } from '@libs/filesharing/types/uploadFile';
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
 import UploadResult from '@libs/filesharing/types/uploadResult';
 import buildOctetStreamUrl from '@libs/filesharing/utils/buildOctetStreamUrl';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
@@ -30,8 +30,8 @@ export interface CreateFileUploaderDependencies {
   httpClient: AxiosInstance;
   uploadEndpointPath?: string;
   destinationPath: string;
-  onProgressUpdate: (fileItem: UploadFile, next: FileProgress) => void;
-  onUploadingChange?: (fileItem: UploadFile, uploading: boolean) => void;
+  onProgressUpdate: (fileItem: UploadItem, next: FileProgress) => void;
+  onUploadingChange?: (fileItem: UploadItem, uploading: boolean) => void;
 }
 
 const createFileUploader = (createFileUploaderDependencies: CreateFileUploaderDependencies) => {
@@ -43,7 +43,7 @@ const createFileUploader = (createFileUploaderDependencies: CreateFileUploaderDe
     uploadEndpointPath = `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.UPLOAD}`,
   } = createFileUploaderDependencies;
 
-  return async function uploadSingleFile(fileItem: UploadFile): Promise<UploadResult> {
+  return async function uploadSingleFile(fileItem: UploadItem): Promise<UploadResult> {
     const fileName = fileItem.name;
 
     let finalPath = destinationPath;

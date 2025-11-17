@@ -17,25 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { UploadItem } from '@libs/filesharing/types/uploadItem';
+import RawProgressData from '@libs/filesharing/types/rawProgressData';
+import StandardizedProgressData from '@libs/filesharing/types/standardizedProgressData';
 
-const calculateTotalFilesAndBytes = (files: UploadItem[]): { filesCount: number; bytesCount: number } => {
-  let filesCount = 0;
-  let bytesCount = 0;
+const unifyProgressFields = (progress: RawProgressData): StandardizedProgressData => {
+  const percent = progress.percent ?? progress.percentageComplete ?? 0;
+  const loadedBytes = progress.loaded ?? progress.loadedByteCount ?? 0;
+  const totalBytes = progress.total ?? progress.totalByteCount ?? 0;
+  const bytesPerSecond = progress.bytesPerSecond ?? progress.speedBps ?? 0;
 
-  files.forEach((file) => {
-    if (file.isFolder && file.files) {
-      filesCount += file.files.length;
-      file.files.forEach((innerFile) => {
-        bytesCount += innerFile.size;
-      });
-    } else {
-      filesCount += 1;
-      bytesCount += file.size;
-    }
-  });
-
-  return { filesCount, bytesCount };
+  return { percent, loadedBytes, totalBytes, bytesPerSecond };
 };
 
-export default calculateTotalFilesAndBytes;
+export default unifyProgressFields;

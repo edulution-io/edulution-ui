@@ -17,25 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { UploadItem } from '@libs/filesharing/types/uploadItem';
+interface ProgressToastContent {
+  title: string;
+  description: string;
+  isDone: boolean;
+  hasErrors: boolean;
+}
 
-const calculateTotalFilesAndBytes = (files: UploadItem[]): { filesCount: number; bytesCount: number } => {
-  let filesCount = 0;
-  let bytesCount = 0;
-
-  files.forEach((file) => {
-    if (file.isFolder && file.files) {
-      filesCount += file.files.length;
-      file.files.forEach((innerFile) => {
-        bytesCount += innerFile.size;
-      });
-    } else {
-      filesCount += 1;
-      bytesCount += file.size;
-    }
-  });
-
-  return { filesCount, bytesCount };
-};
-
-export default calculateTotalFilesAndBytes;
+export default ProgressToastContent;

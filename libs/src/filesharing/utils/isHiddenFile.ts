@@ -17,8 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import isSystemFile from '@libs/filesharing/utils/isSystemFile';
-
 const isHiddenFile = (filename: string): boolean => {
   const basename = filename.split('/').pop() || '';
 
@@ -26,11 +24,7 @@ const isHiddenFile = (filename: string): boolean => {
     return false;
   }
 
-  if (isSystemFile(filename)) {
-    return false;
-  }
-
-  return basename.startsWith('.');
+  return basename.startsWith('.') || basename.startsWith('_');
 };
 
 export default isHiddenFile;

@@ -1502,7 +1502,7 @@
     "creatingDirectoryStructure": "Ordnerstruktur wird angelegt",
     "hiddenFiles": "versteckte & System-Dateien",
     "errors": {
-      "directoryCreationFailed": "Fehler beim Erstellen des Verzeichnisses",
+      "directoryCreationFailed": "Fehler beim Erstellen des Ordners",
       "fileUploadFailed": "Fehler beim Hochladen des Ordner-Inhalts"
     }
   },
