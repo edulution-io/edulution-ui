@@ -29,15 +29,15 @@ const surveysMigration001Attachments = {
   name,
   version: 1,
   execute: async () => {
-    const includedFolders = await readdir(SURVEYS_FILES_PATH);
-    if (includedFolders.length > 1) {
+    const includedNames = await readdir(SURVEYS_FILES_PATH);
+    if (includedNames.length > 1) {
       try {
         await ensureDir(SURVEYS_ATTACHMENT_PATH);
       } catch (error) {
         Logger.error(`Failed to create directory ${SURVEYS_ATTACHMENT_PATH}`, surveysMigration001Attachments.name);
       }
     }
-    includedFolders.filter(async (folder) => {
+    const includedFolders = includedNames.filter(async (folder) => {
       const stat = await fsStat(`${SURVEYS_FILES_PATH}/${folder}`);
       if (stat.isDirectory()) {
         return true;

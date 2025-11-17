@@ -20,7 +20,6 @@
 import { create } from 'zustand';
 import handleApiError from '@/utils/handleApiError';
 import { ThemeType } from '@libs/common/constants/theme';
-import convertImageFileToWebp from '@libs/common/utils/convertImageFileToWebp';
 import getMainLogoFilename from '@libs/filesharing/utils/getMainLogoFilename';
 import { GLOBAL_SETTINGS_BRANDING_LOGO } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import uploadImageFile from '@/store/FilesystemStore/uploadImageFile';
@@ -49,11 +48,10 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
   uploadVariant: async (variant: ThemeType, file: File) => {
     try {
       set({ uploadingVariant: variant });
-      const webpFile = await convertImageFileToWebp(file);
       await uploadImageFile({
         destination: GLOBAL_SETTINGS_BRANDING_LOGO as string,
         filename: getMainLogoFilename(variant),
-        file: webpFile,
+        file,
       });
       get().setDarkVersion((v) => v + 1);
     } catch (error) {

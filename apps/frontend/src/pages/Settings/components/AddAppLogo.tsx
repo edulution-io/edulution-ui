@@ -42,7 +42,7 @@ const AddAppLogo: React.FC<AddAppLogoProps> = ({ variant, appName, fieldPath, fo
 
   const hasLocalSelection = !!form.watch(path);
 
-  const onFileChange = (): React.ChangeEventHandler<HTMLInputElement> => async (event) => {
+  const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] ?? null;
     if (file && !file.type.startsWith('image/')) {
       if (inputRef.current) inputRef.current.value = '';
@@ -57,16 +57,16 @@ const AddAppLogo: React.FC<AddAppLogoProps> = ({ variant, appName, fieldPath, fo
         filename: fileName,
         file,
       });
-      setKeyValue(keyValue + 1);
+      setKeyValue((prev) => prev + 1);
     }
   };
 
-  const onHandleReset = () => async () => {
+  const onHandleReset = async () => {
     await removeImageFile({
       appName,
       filename: fileName,
     });
-    setKeyValue(keyValue + 1);
+    setKeyValue((prev) => prev + 1);
   };
 
   return (
@@ -77,10 +77,10 @@ const AddAppLogo: React.FC<AddAppLogoProps> = ({ variant, appName, fieldPath, fo
       previewSrc={previewSrc}
       fallbackSrc={fallbackSrc}
       hasLocalSelection={hasLocalSelection}
-      onFileChange={onFileChange()}
+      onFileChange={onFileChange}
       chooseText={t(`common.chooseFile`)}
       changeText={t(`common.changeFile`)}
-      onHandleReset={onHandleReset()}
+      onHandleReset={onHandleReset}
     />
   );
 };
