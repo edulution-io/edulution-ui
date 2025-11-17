@@ -153,11 +153,13 @@ const FileSharingPage = () => {
       </div>
 
       <div className="flex h-full w-full flex-row overflow-hidden pb-6">
-        <div className={isFilePreviewVisible && isFilePreviewDocked ? 'w-1/2 2xl:w-2/3' : 'w-full'}>
+        <div className={`flex flex-col ${isFilePreviewVisible && isFilePreviewDocked ? 'w-1/2 2xl:w-2/3' : 'w-full'}`}>
           {isFileProcessing ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}
-          <FileDropZone onFileDrop={handleFileUpload}>
-            <FileSharingTable />
-          </FileDropZone>
+          <div className="flex-1 overflow-hidden">
+            <FileDropZone onFileDrop={handleFileUpload}>
+              <FileSharingTable />
+            </FileDropZone>
+          </div>
         </div>
 
         {isFilePreviewVisible && (
