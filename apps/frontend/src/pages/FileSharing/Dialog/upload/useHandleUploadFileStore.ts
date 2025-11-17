@@ -196,7 +196,7 @@ const processSingleUploadItem = async (
   }
 };
 
-const useHandelUploadFileStore = create<HandleUploadFileStore>((set, get) => ({
+const useHandleUploadFileStore = create<HandleUploadFileStore>((set, get) => ({
   ...createInitialState(),
 
   setIsUploadDialogOpen: (isOpen) => {
@@ -348,4 +348,4 @@ const useHandelUploadFileStore = create<HandleUploadFileStore>((set, get) => ({
   reset: () => set(createInitialState()),
 }));
 
-export default useHandelUploadFileStore;
+export default useHandleUploadFileStore;

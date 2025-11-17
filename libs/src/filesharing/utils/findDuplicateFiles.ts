@@ -18,7 +18,7 @@
  */
 
 import { UploadItem } from '@libs/filesharing/types/uploadItem';
-import getUploadFileDisplayName from '@libs/filesharing/utils/getUploadFileDisplayName';
+import getUploadItemDisplayName from '@libs/filesharing/utils/getUploadItemDisplayName';
 
 const findDuplicateFiles = (incoming: UploadItem[], existing: { filename: string }[]): { name: string }[] => {
   const existingFilenameSet = new Set(
@@ -27,7 +27,7 @@ const findDuplicateFiles = (incoming: UploadItem[], existing: { filename: string
 
   return incoming
     .filter((file) => existingFilenameSet.has(decodeURIComponent(file.name).trim().toLowerCase()))
-    .map((file) => ({ name: getUploadFileDisplayName(file) }));
+    .map((file) => ({ name: getUploadItemDisplayName(file) }));
 };
 
 export default findDuplicateFiles;

@@ -18,16 +18,13 @@
  */
 
 import { UploadItem } from '@libs/filesharing/types/uploadItem';
+import isFolderUploadItem from '@libs/filesharing/utils/isFolderUploadItem';
 
-const isFolderUpload = (
-  file: UploadItem,
-): file is UploadItem & {
-  isFolder: true;
-  folderName: string;
-  files: File[];
-  visibleFiles?: File[];
-  hiddenFiles?: File[];
-  includeHidden?: boolean;
-} => 'isFolder' in file && file.isFolder === true && 'folderName' in file && typeof file.folderName === 'string';
+const getUploadItemDisplayName = (file: UploadItem | { name: string }): string => {
+  if ('isFolder' in file && isFolderUploadItem(file)) {
+    return file.folderName || '';
+  }
+  return file.name;
+};
 
-export default isFolderUpload;
+export default getUploadItemDisplayName;

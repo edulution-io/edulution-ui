@@ -23,7 +23,7 @@ import SaveExternalFileDialog from '@/pages/FileSharing/Dialog/SaveExternalFileD
 import SaveExternalFileDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/SaveExternalFileDialogBody';
 import saveExternalFileFormSchema from '@libs/filesharing/types/saveExternalFileFormSchema';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
-import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
+import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
 import buildTldrFileFromEditor from '@libs/tldraw-sync/utils/buildTldrFileFromEditor';
@@ -34,7 +34,7 @@ import useFileSharingStore from '../FileSharing/useFileSharingStore';
 const SaveTldrDialog: React.FC = () => {
   const { t } = useTranslation();
 
-  const { updateFilesToUpload, uploadFiles } = useHandelUploadFileStore();
+  const { updateFilesToUpload, uploadFiles } = useHandleUploadFileStore();
   const { eduApiToken } = useUserStore();
   const { editor, isDialogOpen, setIsDialogOpen } = useWhiteboardEditorStore();
   const { moveOrCopyItemToPath } = useFileSharingDialogStore();

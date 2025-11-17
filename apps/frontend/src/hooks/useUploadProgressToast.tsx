@@ -21,7 +21,7 @@ import React, { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import ProgressBox from '@/components/ui/ProgressBox';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
+import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
 import formatTransferSpeed from '@libs/filesharing/utils/formatTransferSpeed';
 import formatEstimatedTimeRemaining from '@libs/filesharing/utils/formatEstimatedTimeRemaining';
 import { useTranslation } from 'react-i18next';
@@ -38,7 +38,7 @@ import formatProgressToastMessage from '@libs/filesharing/utils/formatProgressTo
 const COMBINED_UPLOAD_TOAST_ID = 'upload:combined';
 
 const useUploadProgressToast = () => {
-  const { progressById, totalFilesCount, totalBytesCount, clearProgress } = useHandelUploadFileStore();
+  const { progressById, totalFilesCount, totalBytesCount, clearProgress } = useHandleUploadFileStore();
   const { currentPath, fetchFiles } = useFileSharingStore();
   const { t } = useTranslation();
 
@@ -80,7 +80,7 @@ const useUploadProgressToast = () => {
       toast.dismiss(COMBINED_UPLOAD_TOAST_ID);
       const failedFileText = failedFiles === 1 ? t('filesharingUpload.file') : t('filesharingUpload.files');
       toast.error(
-        t('filesharingUpload.errors.UploadFailed', {
+        t('filesharingUpload.errors.fileUploadFailed', {
           filename: `${failedFiles} ${failedFileText}`,
         }),
         {

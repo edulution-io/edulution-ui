@@ -33,14 +33,14 @@ import { TiDocumentAdd, TiFolderAdd } from 'react-icons/ti';
 import { UploadItem } from '@libs/filesharing/types/uploadItem';
 import { FcFolder } from 'react-icons/fc';
 import getFileUploadLimit from '@libs/ui/utils/getFileUploadLimit';
-import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
+import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
 import ActionTooltip from '@/components/shared/ActionTooltip';
 import { BUTTONS_ICON_WIDTH, SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
 import shouldFilterFile from '@libs/filesharing/utils/shouldFilterFile';
-import isFolderUpload from '@libs/filesharing/utils/isFolderUpload';
+import isFolderUploadItem from '@libs/filesharing/utils/isFolderUploadItem';
 import splitFilesByMaxFileSize from '@libs/filesharing/utils/splitFilesByMaxFileSize';
 import findDuplicateFiles from '@libs/filesharing/utils/findDuplicateFiles';
-import getUploadFileDisplayName from '@libs/filesharing/utils/getUploadFileDisplayName';
+import getUploadItemDisplayName from '@libs/filesharing/utils/getUploadItemDisplayName';
 import ValidationWarnings from '@/pages/FileSharing/utilities/ValidationWarnings';
 
 const UploadContentBody = () => {
@@ -52,15 +52,15 @@ const UploadContentBody = () => {
   const { setSubmitButtonIsDisabled } = useFileSharingDialogStore();
   const [filesThatWillBeOverwritten, setFilesThatWillBeOverwritten] = useState<string[]>([]);
 
-  const { filesToUpload, updateFilesToUpload } = useHandelUploadFileStore();
+  const { filesToUpload, updateFilesToUpload } = useHandleUploadFileStore();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const folders = acceptedFiles.filter((file): file is UploadItem => isFolderUpload(file as UploadItem));
-      const regularFiles = acceptedFiles.filter((file) => !isFolderUpload(file as UploadItem));
+      const folders = acceptedFiles.filter((file): file is UploadItem => isFolderUploadItem(file as UploadItem));
+      const regularFiles = acceptedFiles.filter((file) => !isFolderUploadItem(file as UploadItem));
       const { oversize, normal } = splitFilesByMaxFileSize(regularFiles, getFileUploadLimit(webdavShares, webdavShare));
       const duplicates = findDuplicateFiles(
         [...normal, ...folders].map((file) => Object.assign(file, { id: crypto.randomUUID() })),
@@ -79,12 +79,12 @@ const UploadContentBody = () => {
       });
 
       updateFilesToUpload((prevFiles) => {
-        const existingNames = new Set(prevFiles.map((f) => getUploadFileDisplayName(f)));
+        const existingNames = new Set(prevFiles.map((f) => getUploadItemDisplayName(f)));
 
         const newFiles = [...normal, ...folders]
-          .filter((file) => !existingNames.has(getUploadFileDisplayName(file)))
+          .filter((file) => !existingNames.has(getUploadItemDisplayName(file)))
           .map((file) => {
-            if (isFolderUpload(file as UploadItem)) {
+            if (isFolderUploadItem(file as UploadItem)) {
               return file as UploadItem;
             }
             const uploadFile: UploadItem = Object.assign(new File([file], file.name, { type: file.type }), {
@@ -145,9 +145,11 @@ const UploadContentBody = () => {
   };
 
   const toggleHiddenFilesForFolder = (folderId: string) => {
+    const maxSizeMB = getFileUploadLimit(webdavShares, webdavShare);
+
     updateFilesToUpload((prev) =>
       prev.map((file) => {
-        if (file.id !== folderId || !isFolderUpload(file)) {
+        if (file.id !== folderId || !isFolderUploadItem(file)) {
           return file;
         }
 
@@ -156,11 +158,21 @@ const UploadContentBody = () => {
         const hiddenSystemFiles = file.hiddenFiles || [];
         const newFiles = includeHidden ? [...baseFiles, ...hiddenSystemFiles] : baseFiles;
 
+        const newTotalSize = newFiles.reduce((sum, f) => sum + f.size, 0);
+        const newSizeMB = bytesToMegabytes(newTotalSize);
+
+        if (newSizeMB > maxSizeMB) {
+          setTooLargeFolders((prevFolders) => [...new Set([...prevFolders, file.folderName])]);
+          return file;
+        }
+
+        setTooLargeFolders((prevFolders) => prevFolders.filter((name) => name !== file.folderName));
+
         return {
           ...file,
           includeHidden,
           files: newFiles,
-        };
+        } as UploadItem;
       }),
     );
   };
@@ -168,7 +180,7 @@ const UploadContentBody = () => {
   const removeFile = (identifier: string) => {
     updateFilesToUpload((prev) =>
       prev.filter((file) => {
-        const name = getUploadFileDisplayName(file);
+        const name = getUploadItemDisplayName(file);
         return name !== identifier;
       }),
     );
@@ -187,7 +199,7 @@ const UploadContentBody = () => {
   });
 
   const renderPreview = (file: UploadItem) => {
-    if (isFolderUpload(file)) {
+    if (isFolderUploadItem(file)) {
       return (
         <div className="flex h-20 items-center justify-center">
           <FcFolder size={SIDEBAR_ICON_WIDTH} />
@@ -287,8 +299,8 @@ const UploadContentBody = () => {
         <ScrollArea className="mt-2 max-h-[50vh] overflow-y-auto overflow-x-hidden rounded-xl border border-gray-600 px-2 scrollbar-thin">
           <ul className="my-3 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
             {filesToUpload.map((file) => {
-              const isFolder = isFolderUpload(file);
-              const fileName = getUploadFileDisplayName(file);
+              const isFolder = isFolderUploadItem(file);
+              const fileName = getUploadItemDisplayName(file);
 
               const totalSize = isFolder && file.files ? file.files.reduce((sum, f) => sum + f.size, 0) : file.size;
 

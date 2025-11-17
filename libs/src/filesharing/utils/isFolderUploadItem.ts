@@ -17,15 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export interface UploadItem extends File {
-  id: string;
-  isFolder?: boolean;
-  folderName?: string;
-  files?: File[];
-  isZippedFolder?: boolean;
-  originalFolderName?: string;
-  uploadPath?: string;
-  visibleFiles?: File[];
-  includeHidden?: boolean;
-  hiddenFiles?: File[];
-}
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
+import FolderUploadItem from '../types/folderUploadItem';
+
+const isFolderUploadItem = (file: UploadItem): file is FolderUploadItem =>
+  file.isFolder === true && 'folderName' in file;
+
+export default isFolderUploadItem;

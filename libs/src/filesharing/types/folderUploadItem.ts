@@ -17,14 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { UploadItem } from '@libs/filesharing/types/uploadItem';
-import isFolderUpload from '@libs/filesharing/utils/isFolderUpload';
+import { UploadItem } from './uploadItem';
 
-const getUploadFileDisplayName = (file: UploadItem | { name: string }): string => {
-  if ('isFolder' in file && isFolderUpload(file)) {
-    return file.folderName || '';
-  }
-  return file.name;
-};
+interface FolderUploadItem extends UploadItem {
+  isFolder: true;
+  folderName: string;
+  files: File[];
+}
 
-export default getUploadFileDisplayName;
+export default FolderUploadItem;
