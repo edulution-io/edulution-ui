@@ -17,8 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React from 'react';
+import { useParams } from 'react-router-dom';
 import DirectoryBreadcrumb from '@/pages/FileSharing/Table/DirectoryBreadcrumb';
 import ActionContentDialog from '@/pages/FileSharing/Dialog/ActionContentDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
@@ -35,21 +35,14 @@ import useQuotaInfo from '@/hooks/useQuotaInfo';
 import DownloadPublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DownloadPublicShareDialog';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import CreateOrEditPublicShareDialog from '@/pages/FileSharing/publicShare/dialog/CreateOrEditPublicShareDialog';
-import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
-import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
-import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
-import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import UploadFileDialog from '@/pages/FileSharing/Dialog/UploadFileDialog';
 import DeletePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DeletePublicShareDialog';
-import APPS from '@libs/appconfig/constants/apps';
 import FileDropZone from '@/components/ui/FileDropZone';
-import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
-import useUserStore from '@/store/UserStore/useUserStore';
-import { UploadFile } from '@libs/filesharing/types/uploadFile';
-import { toast } from 'sonner';
-import { useTranslation } from 'react-i18next';
-import useVariableSharePathname from './hooks/useVariableSharePathname';
+import usePublicShareQr from '@/pages/FileSharing/hooks/usePublicShareQr';
+import useFileUpload from '@/pages/FileSharing/hooks/useFileUpload';
+import useBreadcrumbNavigation from '@/pages/FileSharing/hooks/useBreadcrumbNavigation';
+import useRefreshOnFileOperationComplete from './hooks/useRefreshOnFileOperationComplete';
 
 const FileSharingPage = () => {
   const { webdavShare } = useParams();
@@ -57,86 +50,29 @@ const FileSharingPage = () => {
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const { fileOperationProgress, fetchFiles, webdavShares } = useFileSharingStore();
   const { fetchShares } = usePublicShareStore();
-  const { uploadFiles, updateFilesToUpload } = useHandelUploadFileStore();
-  const { eduApiToken } = useUserStore();
-  const navigate = useNavigate();
-  const { createVariableSharePathname } = useVariableSharePathname();
-  const { t } = useTranslation();
 
-  useEffect(() => {
-    const handleFileOperationProgress = async () => {
-      if (!fileOperationProgress) return;
-      const percent = fileOperationProgress.percent ?? 0;
-      if (percent >= 100) {
-        await fetchFiles(webdavShare, currentPath);
-        await fetchShares();
-      }
-    };
-
-    void handleFileOperationProgress();
-  }, [fileOperationProgress]);
+  useRefreshOnFileOperationComplete({
+    fileOperationProgress,
+    currentPath,
+    webdavShare,
+    fetchFiles,
+    fetchShares,
+  });
 
   const { percentageUsed } = useQuotaInfo();
 
-  const { share, setShare, closeDialog, dialog } = usePublicShareStore();
-  const { origin } = window.location;
-  const url = `${origin}/${FileSharingApiEndpoints.PUBLIC_SHARE}/${share?.publicShareId}`;
-
-  const handleClose = () => {
-    setShare({} as PublicShareDto);
-    closeDialog(PUBLIC_SHARE_DIALOG_NAMES.QR_CODE);
-  };
+  const { dialog, url, handleClose } = usePublicShareQr();
 
   const getHiddenSegments = () => webdavShares.find((s) => s.displayName === webdavShare)?.pathname;
 
-  const handleBreadcrumbNavigate = (filenamePath: string) => {
-    if (filenamePath === '/') {
-      const currentShare = webdavShares.find((s) => s.displayName === webdavShare);
+  const { handleBreadcrumbNavigate } = useBreadcrumbNavigation(
+    webdavShare,
+    webdavShares,
+    searchParams,
+    setSearchParams,
+  );
 
-      if (!currentShare) return;
-
-      let currentSharePath = currentShare.pathname;
-      if (currentShare.pathVariables) {
-        currentSharePath = createVariableSharePathname(currentSharePath, currentShare.pathVariables);
-      }
-
-      navigate(
-        {
-          pathname: `/${APPS.FILE_SHARING}/${currentShare.displayName}`,
-          search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(currentSharePath)}`,
-        },
-        { replace: true },
-      );
-    } else {
-      const newParams = new URLSearchParams(searchParams);
-      newParams.set(URL_SEARCH_PARAMS.PATH, filenamePath);
-      setSearchParams(newParams);
-    }
-  };
-
-  const handleFileUpload = async (files: File[]) => {
-    if (!webdavShare) return;
-    try {
-      updateFilesToUpload(() =>
-        files.map((file) => {
-          const uploadFile: UploadFile = Object.assign(new File([file], file.name, { type: file.type }), {
-            id: crypto.randomUUID(),
-            isZippedFolder: false,
-          });
-          return uploadFile;
-        }),
-      );
-
-      const results = await uploadFiles(currentPath, eduApiToken, webdavShare);
-
-      if (results && results.length > 0) {
-        await fetchFiles(webdavShare, currentPath);
-        await fetchShares();
-      }
-    } catch (error) {
-      toast.error(t('filesharingUpload.error.uploadError'));
-    }
-  };
+  const { handleFileUpload } = useFileUpload();
 
   return (
     <PageLayout>
@@ -156,7 +92,7 @@ const FileSharingPage = () => {
         <div className={`flex flex-col ${isFilePreviewVisible && isFilePreviewDocked ? 'w-1/2 2xl:w-2/3' : 'w-full'}`}>
           {isFileProcessing ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}
           <div className="flex-1 overflow-hidden">
-            <FileDropZone onFileDrop={handleFileUpload}>
+            <FileDropZone onFileDrop={(files) => handleFileUpload(files, webdavShare, currentPath)}>
               <FileSharingTable />
             </FileDropZone>
           </div>
