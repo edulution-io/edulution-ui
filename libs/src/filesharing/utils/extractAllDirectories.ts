@@ -17,14 +17,25 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const JOB_NAMES = {
-  DUPLICATE_FILE_JOB: 'duplicate-file',
-  COLLECT_FILE_JOB: 'collect-file',
-  DELETE_FILE_JOB: 'delete-file',
-  MOVE_OR_RENAME_JOB: 'move-or-rename-file',
-  COPY_FILE_JOB: 'copy-file',
-  CREATE_FOLDER_JOB: 'create-folder',
-  REFRESH_USERS_IN_CACHE: 'REFRESH_USERS_IN_CACHE',
-} as const;
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
 
-export default JOB_NAMES;
+const extractAllDirectories = (folder: UploadItem, basePath: string): string[] => {
+  if (!folder.files) return [];
+
+  const directories = new Set<string>();
+
+  folder.files.forEach((file) => {
+    const relativePath = file.webkitRelativePath;
+    if (!relativePath) return;
+
+    const parts = relativePath.split('/');
+    for (let i = 0; i < parts.length - 1; i += 1) {
+      const dirPath = parts.slice(0, i + 1).join('/');
+      directories.add(`${basePath}/${dirPath}`);
+    }
+  });
+
+  return Array.from(directories).sort();
+};
+
+export default extractAllDirectories;

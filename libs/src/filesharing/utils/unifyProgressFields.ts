@@ -17,14 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const JOB_NAMES = {
-  DUPLICATE_FILE_JOB: 'duplicate-file',
-  COLLECT_FILE_JOB: 'collect-file',
-  DELETE_FILE_JOB: 'delete-file',
-  MOVE_OR_RENAME_JOB: 'move-or-rename-file',
-  COPY_FILE_JOB: 'copy-file',
-  CREATE_FOLDER_JOB: 'create-folder',
-  REFRESH_USERS_IN_CACHE: 'REFRESH_USERS_IN_CACHE',
-} as const;
+import RawProgressData from '@libs/filesharing/types/rawProgressData';
+import StandardizedProgressData from '@libs/filesharing/types/standardizedProgressData';
 
-export default JOB_NAMES;
+const unifyProgressFields = (progress: RawProgressData): StandardizedProgressData => {
+  const percent = progress.percent ?? progress.percentageComplete ?? 0;
+  const loadedBytes = progress.loaded ?? progress.loadedByteCount ?? 0;
+  const totalBytes = progress.total ?? progress.totalByteCount ?? 0;
+  const bytesPerSecond = progress.bytesPerSecond ?? progress.speedBps ?? 0;
+
+  return { percent, loadedBytes, totalBytes, bytesPerSecond };
+};
+
+export default unifyProgressFields;
