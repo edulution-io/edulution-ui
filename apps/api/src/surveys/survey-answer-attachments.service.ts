@@ -80,7 +80,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     );
   }
 
-  static async removeOldFiles(
+  static async cleanupOldFiles(
     directory: string,
     permanentFileNames: string[],
     keepOldFiles: boolean,
@@ -134,7 +134,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     await SurveyAnswerAttachmentsService.moveNewFiles(fileNamesToMove, tempDirectory, directory);
 
     if (!keepOldFiles) {
-      await SurveyAnswerAttachmentsService.removeOldFiles(directory, permanentFileNames, true, fileNamesToKeep);
+      await SurveyAnswerAttachmentsService.cleanupOldFiles(directory, permanentFileNames, true, fileNamesToKeep);
     }
 
     await this.fileSystemService.deleteEmptyFolderWithDepth(tempDirectory, 3);
