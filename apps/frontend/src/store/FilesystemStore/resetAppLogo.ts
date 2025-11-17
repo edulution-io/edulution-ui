@@ -13,15 +13,16 @@
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
+import { ThemeType } from '@libs/common/constants/theme';
 
-type RemoveImageFileProps = {
+type ResetAppLogoProps = {
   appName: string;
-  filename: string;
+  variant: ThemeType;
 };
 
-const removeImageFile = async ({ appName, filename }: RemoveImageFileProps) => {
+const resetAppLogo = async ({ appName, variant }: ResetAppLogoProps) => {
   try {
-    const url = `${EDU_API_CONFIG_ENDPOINTS.FILES}/${appName}/${filename}`;
+    const url = `${EDU_API_CONFIG_ENDPOINTS.FILES}/public/logo/${appName}/${variant}`;
     await eduApi.delete<void>(url);
   } catch (err: unknown) {
     if (err instanceof Error) {
@@ -32,4 +33,4 @@ const removeImageFile = async ({ appName, filename }: RemoveImageFileProps) => {
   }
 };
 
-export default removeImageFile;
+export default resetAppLogo;

@@ -32,6 +32,7 @@ import {
   remove,
   stat as fsStat,
   unlink,
+  copyFile,
 } from 'fs-extra';
 import { createHash } from 'crypto';
 import { firstValueFrom, from } from 'rxjs';
@@ -129,6 +130,19 @@ class FilesystemService {
   static async moveFile(oldFilePath: string, newFilePath: string): Promise<void> {
     try {
       await move(oldFilePath, newFilePath, { overwrite: true });
+    } catch (error) {
+      throw new CustomHttpException(
+        FileSharingErrorMessage.MoveFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error,
+        FilesystemService.name,
+      );
+    }
+  }
+
+  static async copyFile(oldFilePath: string, newFilePath: string): Promise<void> {
+    try {
+      await copyFile(oldFilePath, newFilePath);
     } catch (error) {
       throw new CustomHttpException(
         FileSharingErrorMessage.MoveFailed,
@@ -379,6 +393,14 @@ class FilesystemService {
     const fallbackFilePath = join(PUBLIC_ASSET_PATH, appName, getFallbackName(appName, variant));
     await FilesystemService.throwErrorIfFileNotExists(fallbackFilePath);
     return this.serve(fallbackFilePath, res);
+  }
+
+  async resetAppLogo(appName: string, variant: ThemeType) {
+    const customFilePath = join(PUBLIC_ASSET_PATH, appName, getLogoName(appName, variant));
+    await FilesystemService.checkIfFileExistAndDelete(customFilePath);
+    const fallbackFilePath = join(PUBLIC_ASSET_PATH, appName, getFallbackName(appName, variant));
+    await FilesystemService.throwErrorIfFileNotExists(fallbackFilePath);
+    await FilesystemService.copyFile(fallbackFilePath, customFilePath);
   }
 
   async serveTempFiles(name: string, filename: string, res: Response) {

@@ -87,6 +87,12 @@ class FileSystemController {
     return this.filesystemService.serveAppLogo(appName, variant, res);
   }
 
+  @Delete('public/logo/:appName/:variant')
+  @UseGuards(AdminGuard)
+  async resetAppLogo(@Param('appName') appName: string, @Param('variant') variant: ThemeType) {
+    return this.filesystemService.resetAppLogo(appName, variant);
+  }
+
   @Get(`${FILE_ENDPOINTS.FILE}/:appName/*filename`)
   serveFiles(@Param('appName') appName: string, @Param('filename') filename: string | string[], @Res() res: Response) {
     return this.filesystemService.serveFiles(appName, FilesystemService.buildPathString(filename), res);
@@ -108,13 +114,6 @@ class FileSystemController {
     @Res() res: Response,
   ) {
     return this.filesystemService.serveFiles(appName, FilesystemService.buildPathString(filename), res);
-  }
-
-  @Delete('public/:appName/*filename')
-  @UseGuards(AdminGuard)
-  deletePublicFile(@Param('appName') appName: string, @Param('filename') filename: string) {
-    const appsPath = join(PUBLIC_ASSET_PATH, appName);
-    return FilesystemService.deleteFile(appsPath, FilesystemService.buildPathString(filename));
   }
 
   @Delete(':appName/*filename')

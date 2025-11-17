@@ -17,7 +17,7 @@ import { ThemeType } from '@libs/common/constants/theme';
 import ThemedFile from '@libs/common/types/themedFile';
 import { getFallbackUrl, getLogoName, getLogoUrl } from '@libs/appconfig/utils/getAppLogo';
 import uploadImageFile from '@/store/FilesystemStore/uploadImageFile';
-import removeImageFile from '@/store/FilesystemStore/removeImageFile';
+import resetAppLogo from '@/store/FilesystemStore/resetAppLogo';
 import LogoUploadField from '@/pages/Settings/components/LogoUploadField';
 
 export type AddAppLogoProps = {
@@ -63,9 +63,9 @@ const AddAppLogo: React.FC<AddAppLogoProps> = ({ variant, appName, fieldPath, fo
   };
 
   const onHandleReset = async () => {
-    await removeImageFile({
+    await resetAppLogo({
       appName,
-      filename,
+      variant,
     });
     setKeyValue((prev) => prev + 1);
   };
