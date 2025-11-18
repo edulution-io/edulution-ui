@@ -48,11 +48,14 @@ import { decodeBase64, encodeBase64 } from '@libs/common/utils/getBase64String';
 import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg?react';
 import getMainLogoUrl from '@libs/assets/getMainLogoUrl';
 import COLOR_SCHEME from '@libs/ui/constants/colorScheme';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import useLmnApiStore from '@/store/useLmnApiStore';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 import useAppConfigsStore from '../Settings/AppConfig/useAppConfigsStore';
 import useAuthErrorHandler from './useAuthErrorHandler';
 import useSilentLoginWithPassword from './useSilentLoginWithPassword';
+import useGlobalSettingsApiStore from '../Settings/GlobalSettings/useGlobalSettingsApiStore';
 
 type LocationState = {
   from: string;
@@ -66,6 +69,10 @@ const LoginPage: React.FC = () => {
 
   const { eduApiToken, totpIsLoading, isAuthenticated, createOrUpdateUser, setEduApiToken, getTotpStatus } =
     useUserStore();
+  const { isLmn, isGeneric } = useDeploymentTarget();
+  const { lmnApiToken, user: lmnUser } = useLmnApiStore();
+  const { globalSettings } = useGlobalSettingsApiStore();
+
   const { appConfigs } = useAppConfigsStore();
   const { silentLogin } = useSilentLoginWithPassword();
   const theme = COLOR_SCHEME;
@@ -149,7 +156,10 @@ const LoginPage: React.FC = () => {
   }, [auth.isAuthenticated, eduApiToken]);
 
   const isAppConfigReady = !appConfigs.find((appConfig) => appConfig.name === APPS.NONE);
-  const isAuthenticatedAppReady = isAppConfigReady && isAuthenticated;
+  const isGlobalSettingsReady = globalSettings !== null;
+  const isDeploymentTargetReady = (isGeneric && !isLmn) || !!(isLmn && lmnApiToken && lmnUser);
+  const isAuthenticatedAppReady =
+    isAppConfigReady && isAuthenticated && isGlobalSettingsReady && isDeploymentTargetReady;
 
   useEffect(() => {
     if (!isAuthenticatedAppReady) return;

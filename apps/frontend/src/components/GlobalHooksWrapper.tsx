@@ -20,7 +20,6 @@
 import React, { useEffect } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { useCookies } from 'react-cookie';
-import useLmnApiStore from '@/store/useLmnApiStore';
 import useSseStore from '@/store/useSseStore';
 import isDev from '@libs/common/constants/isDev';
 import ROOT_ROUTE from '@libs/common/constants/rootRoute';
@@ -29,8 +28,8 @@ import useVersionChecker from '@/hooks/useVersionChecker';
 import useUploadProgressToast from '@/hooks/useUploadProgressToast';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import EDULUTION_APP_AGENT_IDENTIFIER from '@libs/common/constants/edulutionAppAgentIdentifier';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useInitialAppData from '@/hooks/useInitialAppData';
+import useInitLmnApi from '@/hooks/useInitLmnApi';
 import useUserStore from '../store/UserStore/useUserStore';
 import useNotifications from '../hooks/useNotifications';
 import useTokenEventListeners from '../hooks/useTokenEventListeners';
@@ -38,13 +37,13 @@ import useTokenEventListeners from '../hooks/useTokenEventListeners';
 const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const auth = useAuth();
   const { isAuthenticated, eduApiToken, setEduApiToken } = useUserStore();
-  const { lmnApiToken, setLmnApiToken, getOwnUser } = useLmnApiStore();
   const { eventSource, setEventSource } = useSseStore();
   const [, setCookie] = useCookies([COOKIE_DESCRIPTORS.AUTH_TOKEN]);
   const { setIsEdulutionApp } = usePlatformStore();
-  const { isLmn } = useDeploymentTarget();
 
   useInitialAppData(isAuthenticated);
+
+  useInitLmnApi();
 
   useUploadProgressToast();
 
@@ -78,18 +77,6 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   useNotifications();
 
   useVersionChecker();
-
-  useEffect(() => {
-    if (isLmn && isAuthenticated && !lmnApiToken) {
-      void setLmnApiToken();
-    }
-  }, [isAuthenticated, isLmn]);
-
-  useEffect(() => {
-    if (isLmn && lmnApiToken) {
-      void getOwnUser();
-    }
-  }, [lmnApiToken, isLmn]);
 
   useTokenEventListeners();
 
