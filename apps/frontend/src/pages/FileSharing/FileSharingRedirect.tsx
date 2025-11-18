@@ -22,6 +22,9 @@ import { useNavigate } from 'react-router-dom';
 import APPS from '@libs/appconfig/constants/apps';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import SHARED from '@libs/filesharing/constants/shared';
+import useLmnApiStore from '@/store/useLmnApiStore';
+import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useFileSharingStore from './useFileSharingStore';
 import useVariableSharePathname from './hooks/useVariableSharePathname';
 
@@ -30,6 +33,12 @@ const FileSharingRedirect = () => {
   const { webdavShares, fetchWebdavShares } = useFileSharingStore();
   const { createVariableSharePathname } = useVariableSharePathname();
   const hasNavigatedRef = useRef(false);
+  const globalSettings = useGlobalSettingsApiStore((s) => s.globalSettings);
+  const { isLmn } = useDeploymentTarget();
+  const lmnUser = useLmnApiStore((s) => s.user);
+  const lmnApiToken = useLmnApiStore((s) => s.lmnApiToken);
+  const isGetOwnUserLoading = useLmnApiStore((s) => s.isGetOwnUserLoading);
+  const isLoading = useLmnApiStore((s) => s.isLoading);
 
   useEffect(() => {
     if (webdavShares.length === 0) {
@@ -40,13 +49,14 @@ const FileSharingRedirect = () => {
   useEffect(() => {
     if (hasNavigatedRef.current) return;
     if (webdavShares.length === 0) return;
+    if (!globalSettings) return;
+    if (isLmn && (!lmnApiToken || !lmnUser || isLoading || isGetOwnUserLoading)) return;
 
     const shares = webdavShares.filter((share) => !share.isRootServer);
     hasNavigatedRef.current = true;
 
     if (shares.length > 0) {
       const navigationPath = createVariableSharePathname(shares[0].pathname, shares[0].pathVariables);
-
       navigate(
         {
           pathname: `/${APPS.FILE_SHARING}/${shares[0].displayName}`,
@@ -62,7 +72,17 @@ const FileSharingRedirect = () => {
         { replace: true },
       );
     }
-  }, [navigate, webdavShares]);
+  }, [
+    navigate,
+    webdavShares,
+    createVariableSharePathname,
+    isLmn,
+    lmnUser,
+    lmnApiToken,
+    isLoading,
+    isGetOwnUserLoading,
+    globalSettings,
+  ]);
 
   return <div />;
 };

@@ -17,34 +17,25 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
+import { useEffect } from 'react';
+import useLmnApiStore from '@/store/useLmnApiStore';
 import useUserStore from '@/store/UserStore/useUserStore';
-import getTokenPayload from '@libs/common/utils/getTokenPayload';
-import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import useDeploymentTarget from './useDeploymentTarget';
 
-const useLdapGroups = () => {
-  const { isAuthenticated, eduApiToken } = useUserStore();
-  const { globalSettings } = useGlobalSettingsApiStore();
+const useInitLmnApi = () => {
+  const { isLmn } = useDeploymentTarget();
+  const isAuthenticated = useUserStore((s) => s.isAuthenticated);
+  const { lmnApiToken, setLmnApiToken, getOwnUser } = useLmnApiStore();
 
-  if (!isAuthenticated || !eduApiToken || !globalSettings) {
-    return {
-      isSuperAdmin: false,
-      ldapGroups: [],
-      isAuthReady: false,
-    };
-  }
+  useEffect(() => {
+    if (!isLmn || !isAuthenticated) return;
 
-  const { adminGroups } = globalSettings.auth;
-  const adminGroupsList = adminGroups.map((group) => group.path);
-  const payload = getTokenPayload(eduApiToken);
-  const ldapGroups = payload.ldapGroups ?? [];
-  const isSuperAdmin = getIsAdmin(ldapGroups, adminGroupsList);
-
-  return {
-    isSuperAdmin,
-    ldapGroups,
-    isAuthReady: true,
-  };
+    if (!lmnApiToken) {
+      void setLmnApiToken();
+    } else {
+      void getOwnUser();
+    }
+  }, [isLmn, isAuthenticated, lmnApiToken, setLmnApiToken, getOwnUser]);
 };
 
-export default useLdapGroups;
+export default useInitLmnApi;
