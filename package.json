@@ -33,7 +33,7 @@
     "addLicenseHeader": "tsx ./scripts/addLicenseHeader.ts"
   },
   "engines": {
-    "node": "^20.19.3",
+    "node": "^20.19.5",
     "npm": "^10.8.2"
   },
   "dependencies": {
