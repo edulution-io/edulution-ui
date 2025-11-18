@@ -17,18 +17,17 @@ module.exports = {
     },
     extend: {
       fontSize: {
-        h1: '37pt',
-        h2: '30pt',
-        h3: '20pt',
-        h4: '17pt',
-        p: '12pt',
+        h1: '2rem',
+        h2: '1.625rem',
+        h3: '1.25rem',
+        h4: '1rem',
+        p: '0.938rem',
         span: '0.875rem',
       },
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
-        ciDarkBlue: '#1A202C',
-        ciLightBlue: 'var(--ci-light-blue)',
+        ciLightBlue: 'var(--ci-dark-blue)',
         ciLightGreen: 'var(--ci-light-green)',
         ciRed: '#dc2626',
         ciLightRed: '#F87171',
@@ -81,7 +80,7 @@ module.exports = {
         },
       },
       backgroundImage: {
-        ciGreenToBlue: 'linear-gradient(45deg, var(--ci-light-green), var(--ci-light-blue))',
+        ciGreenToBlue: 'linear-gradient(45deg, var(--ci-light-green), var(--ci-dark-blue))',
       },
 
       borderRadius: {
@@ -135,6 +134,10 @@ module.exports = {
         h4: { fontSize: theme('fontSize.h4'), letterSpacing: '0.040em', fontWeight: '700' },
         p: { fontSize: theme('fontSize.p'), letterSpacing: '0.020em' },
         span: { fontSize: theme('fontSize.span'), letterSpacing: '0.020em' },
+        '*': {
+          'scrollbar-width': 'thin',
+          'scrollbar-color': 'var(--scrollbar-thumb) var(--scrollbar-track)',
+        },
       });
     }),
     plugin(function ({ addUtilities }) {

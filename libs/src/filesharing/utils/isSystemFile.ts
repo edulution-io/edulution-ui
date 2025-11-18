@@ -17,5 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const MAX_FOLDER_UPLOAD_CONTENT_SIZE = 100; // Nested Files in Folder
-export default MAX_FOLDER_UPLOAD_CONTENT_SIZE;
+import systemFiles from '@libs/filesharing/constants/systemFiles';
+
+const isSystemFile = (filename: string): boolean => {
+  const basename = filename.split('/').pop() || '';
+  return systemFiles.includes(basename);
+};
+
+export default isSystemFile;

@@ -19,3 +19,4 @@
 
 export const EDU_API_DOCKER_ENDPOINT = 'docker';
 export const EDU_API_DOCKER_CONTAINER_ENDPOINT = 'containers';
+export const EDU_API_EDU_MANAGER_AGENT_CONTAINER_ENDPOINT = 'edulution-manager-agent';

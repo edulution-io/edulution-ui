@@ -56,7 +56,7 @@ const UserImageConfig: React.FC = () => {
 
   return (
     <>
-      <h3>{t('usersettings.details.userimageconfig')}</h3>
+      <h2>{t('usersettings.details.userimageconfig')}</h2>
       <div className="space-y-4 py-4 text-ciGrey">
         <Avatar
           user={{ username: user?.name || '', firstName: user?.givenName, lastName: user?.sn }}

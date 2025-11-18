@@ -1493,7 +1493,16 @@
     "cannotUploadOversized": "Files larger than 50 MB cannot be uploaded.",
     "addFiles": "Add files",
     "addFolder": "Add folder",
-    "preparingFolder": "Preparing folder"
+    "preparingFolder": "Preparing folder",
+    "file": "File",
+    "files": "Files",
+    "creatingDirectoryStructure": "Creating directory structure",
+    "hiddenFiles": "hidden & system files",
+    "errors": {
+      "directoryCreationFailed": "Failed to create directory",
+      "fileUploadFailed": "Failed to upload file",
+      "uploadError": "Error uploading files"
+    }
   },
   "warnings": {
     "colorMayConflictWithTheme": "Manual setting of the color can lead to problems with other themes (light/dark) in the future. It is recommended to always set the color of the font at the same time as the background color."
@@ -1760,10 +1769,18 @@
   },
   "containerApplication": {
     "dialogTitle": "{{applicationName}}-Plugins Installer",
+    "EDU_MANAGER_INSTALL_TOKEN": {
+      "title": "Install Token",
+      "description": "Please enter the install token that was created in the Edulution Manager."
+    },
     "EDULUTION_MAIL_HOSTNAME": {
       "title": "Hostname",
       "description": "Hostname of the mail server. This could be different from the edulution domain name."
     }
+  },
+  "edulution-manager": {
+    "title": "Edulution Manager",
+    "sidebar": "Edulution Manager"
   },
   "dockerOverview": {
     "title": "Container Overview",
@@ -1775,7 +1792,9 @@
     "filterPlaceHolderText": "Search for container name",
     "port": "Port",
     "created": "Created at",
-    "container-view": "Container"
+    "container-view": "Container",
+    "selectPluginForInstallationTitle": "Select plugin for installation",
+    "selectPluginForInstallationDescription": "Select an app here for which a plugin should be installed."
   },
   "docker": {
     "error": {

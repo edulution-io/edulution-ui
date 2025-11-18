@@ -26,7 +26,7 @@ const useLdapGroups = () => {
   const { isAuthenticated, eduApiToken } = useUserStore();
   const { globalSettings } = useGlobalSettingsApiStore();
 
-  if (!isAuthenticated || !eduApiToken) {
+  if (!isAuthenticated || !eduApiToken || !globalSettings) {
     return {
       isSuperAdmin: false,
       ldapGroups: [],

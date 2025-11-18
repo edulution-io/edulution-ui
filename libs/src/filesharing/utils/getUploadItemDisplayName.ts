@@ -17,7 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import WorkerProgressMessage from '@/worker/workerProgressMessage';
-import WorkerOutputMessage from '@/worker/workerOutputMessage';
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
+import isFolderUploadItem from '@libs/filesharing/utils/isFolderUploadItem';
 
-export type WorkerMessage = WorkerProgressMessage | WorkerOutputMessage;
+const getUploadItemDisplayName = (file: UploadItem | { name: string }): string => {
+  if ('isFolder' in file && isFolderUploadItem(file)) {
+    return file.folderName || '';
+  }
+  return file.name;
+};
+
+export default getUploadItemDisplayName;

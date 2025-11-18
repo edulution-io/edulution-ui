@@ -19,11 +19,10 @@
 
 import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID, createHash } from 'crypto';
 import axios from 'axios';
 import { parseString } from 'xml2js';
 import { Model } from 'mongoose';
-import { createHash } from 'crypto';
 import { Interval } from '@nestjs/schedule';
 import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
@@ -159,7 +158,7 @@ class ConferencesService implements OnModuleInit {
     const newConference = {
       name: createConferenceDto.name,
       creator,
-      meetingID: uuidv4(),
+      meetingID: randomUUID(),
       password: createConferenceDto.password,
       isPublic: createConferenceDto.isPublic,
       invitedAttendees: [...createConferenceDto.invitedAttendees, creator],

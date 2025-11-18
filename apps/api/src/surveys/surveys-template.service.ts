@@ -19,7 +19,7 @@
 
 import { join } from 'path';
 import { Response } from 'express';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
@@ -36,7 +36,7 @@ class SurveysTemplateService {
     let filename = surveyTemplateDto.fileName;
     if (!filename) {
       const dateTimeString = getCurrentDateTimeString();
-      filename = `${dateTimeString}_-_${uuidv4()}.json`;
+      filename = `${dateTimeString}_-_${randomUUID()}.json`;
     }
     const templatePath = join(SURVEYS_TEMPLATE_PATH, filename);
     try {
