@@ -71,9 +71,8 @@ const LoginPage: React.FC = () => {
     useUserStore();
   const { isLmn, isGeneric } = useDeploymentTarget();
   const { lmnApiToken, user: lmnUser } = useLmnApiStore();
-  const { globalSettings } = useGlobalSettingsApiStore();
-
-  const { appConfigs } = useAppConfigsStore();
+  const globalSettings = useGlobalSettingsApiStore((s) => s.globalSettings);
+  const appConfigs = useAppConfigsStore((s) => s.appConfigs);
   const { silentLogin } = useSilentLoginWithPassword();
   const theme = COLOR_SCHEME;
 
