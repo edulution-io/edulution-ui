@@ -17,14 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import TSurveyElement from '@libs/survey/types/TSurveyElement';
-import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
+import resetSurveyIdFromFormulasBackendLimiters from '@libs/survey/utils/resetSurveyIdFromFormulasBackendLimiters';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import TemplateDialogBody from '@/pages/Surveys/Editor/dialog/TemplateDialogBody';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
@@ -42,59 +41,50 @@ interface TemplateDialogProps {
   trigger?: React.ReactNode;
 }
 
-const TemplateDialog = (props: TemplateDialogProps) => {
-  const { trigger, form, creator, isOpenTemplateMenu, setIsOpenTemplateMenu } = props;
-
+const TemplateDialog: React.FC<TemplateDialogProps> = ({
+  trigger,
+  form,
+  creator,
+  isOpenTemplateMenu,
+  setIsOpenTemplateMenu,
+}) => {
   const { template, uploadTemplate, isOpenTemplateConfirmDeletion, setIsOpenTemplateConfirmDeletion } =
     useTemplateMenuStore();
 
   const { isSuperAdmin } = useLdapGroups();
-
   const { t } = useTranslation();
 
-  const updateLinkForRestfulChoices = (elements: TSurveyElement[] | undefined, surveyId: string) =>
-    (elements || []).map((el) => {
-      if (el.choicesByUrl && el.choicesByUrl.url.includes(surveyId)) {
-        return {
-          ...el,
-          choicesByUrl: {
-            ...el.choicesByUrl,
-            url: el.choicesByUrl.url.replace(`/${surveyId}/`, `/${TEMPORAL_SURVEY_ID_STRING}/`),
-          },
-        };
-      }
-      return el;
-    });
+  const handleOpenChange = useCallback(() => {
+    setIsOpenTemplateMenu(!isOpenTemplateMenu);
+  }, [isOpenTemplateMenu, setIsOpenTemplateMenu]);
 
-  const handleSaveTemplate = async () => {
+  const handleClose = useCallback(() => {
+    setIsOpenTemplateMenu(false);
+  }, [setIsOpenTemplateMenu]);
+
+  const handleSaveTemplate = useCallback(async () => {
     const values = form.getValues();
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, formula, createdAt, saveNo, expires, answers, ...remainingSurvey } = values;
-    const creationDate = template?.template.createdAt || new Date();
-    const processingFormula = { ...(creator.JSON as SurveyFormula) };
 
-    let processedFormula: SurveyFormula | undefined;
-    if (id) {
-      if (processingFormula.pages && processingFormula.pages.length > 0) {
-        const updatedPages = processingFormula.pages.map((page) => ({
-          ...page,
-          elements: updateLinkForRestfulChoices(page.elements, id),
-        }));
-        processedFormula = { ...processingFormula, pages: updatedPages };
-      } else if (processingFormula.elements && processingFormula.elements.length > 0) {
-        const updatedElements = updateLinkForRestfulChoices(processingFormula.elements, id);
-        processedFormula = { ...processingFormula, elements: updatedElements };
-      }
-    }
+    const creationDate = template?.template.createdAt || new Date();
+    const rawFormula = creator.JSON as SurveyFormula;
+
+    const processedFormula: SurveyFormula = resetSurveyIdFromFormulasBackendLimiters(rawFormula, id);
 
     await uploadTemplate({
       fileName: template?.fileName,
-      template: { formula: processedFormula || processingFormula, createdAt: creationDate, ...remainingSurvey },
+      template: {
+        formula: processedFormula,
+        createdAt: creationDate,
+        ...remainingSurvey,
+      },
     });
-    setIsOpenTemplateMenu(false);
-  };
+    handleClose();
+  }, [form, creator, template, uploadTemplate, handleClose]);
 
-  const getDialogBody = () => (
+  const body = (
     <>
       <TemplateDialogBody
         form={form}
@@ -107,28 +97,21 @@ const TemplateDialog = (props: TemplateDialogProps) => {
     </>
   );
 
-  const handleClose = () => setIsOpenTemplateMenu(!isOpenTemplateMenu);
-
-  const getFooter = () => {
-    if (isSuperAdmin) {
-      return (
-        <DialogFooterButtons
-          handleClose={handleClose}
-          handleSubmit={handleSaveTemplate}
-        />
-      );
-    }
-    return <DialogFooterButtons handleClose={handleClose} />;
-  };
+  const footer = (
+    <DialogFooterButtons
+      handleClose={handleClose}
+      handleSubmit={isSuperAdmin ? handleSaveTemplate : undefined}
+    />
+  );
 
   return (
     <AdaptiveDialog
       isOpen={isOpenTemplateMenu}
       trigger={trigger}
-      handleOpenChange={handleClose}
+      handleOpenChange={handleOpenChange}
       title={t('survey.editor.templateMenu.title')}
-      body={getDialogBody()}
-      footer={getFooter()}
+      body={body}
+      footer={footer}
       desktopContentClassName="max-w-[50%] min-h-[200px] max-h-[90%] overflow-auto"
     />
   );
