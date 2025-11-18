@@ -33,6 +33,7 @@ import useUploadProgressToast from '@/hooks/useUploadProgressToast';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import EDULUTION_APP_AGENT_IDENTIFIER from '@libs/common/constants/edulutionAppAgentIdentifier';
 import useSentryStore from '@/store/useSentryStore';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useAppConfigsStore from '../pages/Settings/AppConfig/useAppConfigsStore';
 import useUserStore from '../store/UserStore/useUserStore';
 import useLogout from '../hooks/useLogout';
@@ -45,12 +46,13 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   const { getGlobalSettings } = useGlobalSettingsApiStore();
   const { getIsEduApiHealthy } = useEduApiStore();
   const { isAuthenticated, eduApiToken, setEduApiToken } = useUserStore();
-  const { lmnApiToken, setLmnApiToken } = useLmnApiStore();
+  const { lmnApiToken, setLmnApiToken, getOwnUser } = useLmnApiStore();
   const { eventSource, setEventSource } = useSseStore();
   const [, setCookie] = useCookies([COOKIE_DESCRIPTORS.AUTH_TOKEN]);
   const { fetchWebdavShares } = useFileSharingStore();
   const fetchAndInitSentry = useSentryStore((s) => s.fetchAndInitSentry);
   const { setIsEdulutionApp } = usePlatformStore();
+  const { isLmn } = useDeploymentTarget();
 
   const handleLogout = useLogout();
 
@@ -111,10 +113,16 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [isAuthenticated]);
 
   useEffect(() => {
-    if (isAuthenticated && !lmnApiToken) {
+    if (isLmn && isAuthenticated && !lmnApiToken) {
       void setLmnApiToken();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, isLmn]);
+
+  useEffect(() => {
+    if (isLmn && lmnApiToken) {
+      void getOwnUser();
+    }
+  }, [lmnApiToken, isLmn]);
 
   useTokenEventListeners();
 

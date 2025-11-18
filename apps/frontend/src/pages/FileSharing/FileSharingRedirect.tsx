@@ -22,6 +22,9 @@ import { useNavigate } from 'react-router-dom';
 import APPS from '@libs/appconfig/constants/apps';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import SHARED from '@libs/filesharing/constants/shared';
+import useLmnApiStore from '@/store/useLmnApiStore';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useFileSharingStore from './useFileSharingStore';
 import useVariableSharePathname from './hooks/useVariableSharePathname';
 
@@ -29,7 +32,9 @@ const FileSharingRedirect = () => {
   const navigate = useNavigate();
   const { webdavShares, fetchWebdavShares } = useFileSharingStore();
   const { createVariableSharePathname } = useVariableSharePathname();
+  const { user: lmnUser, isGetOwnUserLoading } = useLmnApiStore();
   const hasNavigatedRef = useRef(false);
+  const { isLmn } = useDeploymentTarget();
 
   useEffect(() => {
     if (webdavShares.length === 0) {
@@ -38,6 +43,7 @@ const FileSharingRedirect = () => {
   }, [fetchWebdavShares, webdavShares.length]);
 
   useEffect(() => {
+    if (isLmn && (isGetOwnUserLoading || !lmnUser?.dn)) return;
     if (hasNavigatedRef.current) return;
     if (webdavShares.length === 0) return;
 
@@ -62,9 +68,9 @@ const FileSharingRedirect = () => {
         { replace: true },
       );
     }
-  }, [navigate, webdavShares]);
+  }, [navigate, webdavShares, lmnUser, isGetOwnUserLoading, isLmn]);
 
-  return <div />;
+  return <LoadingIndicatorDialog isOpen={isGetOwnUserLoading} />;
 };
 
 export default FileSharingRedirect;

@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import appendSlashToUrl from '@libs/common/utils/URL/appendSlashToUrl';
@@ -28,11 +28,6 @@ import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 const useVariableSharePathname = () => {
   const { isLmn } = useDeploymentTarget();
   const lmnUser = useLmnApiStore((s) => s.user);
-  const getOwnUser = useLmnApiStore((s) => s.getOwnUser);
-
-  useEffect(() => {
-    void getOwnUser();
-  }, [getOwnUser]);
 
   const createVariableSharePathname = useCallback(
     (pathname: string, pathVariables?: MultipleSelectorOptionSH[]) => {
