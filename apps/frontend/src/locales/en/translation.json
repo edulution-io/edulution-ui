@@ -1500,7 +1500,8 @@
     "hiddenFiles": "hidden & system files",
     "errors": {
       "directoryCreationFailed": "Failed to create directory",
-      "fileUploadFailed": "Failed to upload file"
+      "fileUploadFailed": "Failed to upload file",
+      "uploadError": "Error uploading files"
     }
   },
   "warnings": {

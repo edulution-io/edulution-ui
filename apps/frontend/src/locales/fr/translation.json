@@ -1330,7 +1330,8 @@
     "hiddenFiles": "fichiers cachés et système",
     "errors": {
       "directoryCreationFailed": "Échec de la création du répertoire",
-      "fileUploadFailed": "Échec du téléchargement du fichier"
+      "fileUploadFailed": "Échec du téléchargement du fichier",
+      "uploadError": "Erreur lors du téléchargement des fichiers"
     }
   },
   "linuxmuster": {
