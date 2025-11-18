@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React from 'react';
@@ -20,7 +27,7 @@ import { MdLogin, MdPending, MdPlayArrow, MdStop } from 'react-icons/md';
 import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import { useTranslation } from 'react-i18next';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/useConferenceDetailsDialogStore';
-import i18next from 'i18next';
+import i18n from '@/i18n';
 import useUserStore from '@/store/UserStore/useUserStore';
 import { toast } from 'sonner';
 import delay from '@libs/common/utils/delay';
@@ -33,25 +40,25 @@ function getRowAction(isRunning: boolean, isLoading: boolean, isUserTheCreator: 
   if (isLoading) {
     return {
       icon: <MdPending />,
-      text: i18next.t('common.loading'),
+      text: i18n.t('common.loading'),
     };
   }
   if (isUserTheCreator) {
     if (isRunning) {
       return {
         icon: <MdStop />,
-        text: i18next.t('conferences.stop'),
+        text: i18n.t('conferences.stop'),
       };
     }
     return {
       icon: <MdPlayArrow />,
-      text: i18next.t('conferences.start'),
+      text: i18n.t('conferences.start'),
     };
   }
   if (isRunning) {
     return {
       icon: <MdLogin />,
-      text: i18next.t('conferences.join'),
+      text: i18n.t('conferences.join'),
     };
   }
   return { icon: undefined, text: '' };
@@ -241,6 +248,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     accessorFn: (row) => row.isRunning,
     cell: ({ row }) => {
       const { creator, isRunning, meetingID } = row.original;
+      const { t } = useTranslation();
       const { user } = useUserStore();
       const { joinConference, joinConferenceUrl, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
       const { toggleConferenceRunningState, getConferences, loadingMeetingId } = useConferenceStore();
@@ -263,7 +271,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
 
               if (wasConferenceStateToggled) {
                 await delay(5000);
-                toast.info(i18next.t(`conferences.${isRunning ? 'stopped' : 'started'}`));
+                toast.info(t(`conferences.${isRunning ? 'stopped' : 'started'}`));
               } else {
                 setJoinConferenceUrl('');
               }

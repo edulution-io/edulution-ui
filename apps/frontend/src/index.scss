@@ -3,8 +3,6 @@
   html {
     @apply text-white;
     font-family: 'Lato', sans-serif;
-
-    @apply scrollbar-thin scrollbar-track-black/10 scrollbar-thumb-ciLightGrey scrollbar-thumb-rounded-full;
   }
 
   html,
@@ -17,8 +15,10 @@
     --sidebar-width: 66px;
     --radius: 0.25rem;
     --menubar-max-width: 300px;
-    --ci-light-green: #88d840;
-    --ci-light-blue: #0081c6;
+    --ci-light-green: #8fc046;
+    --ci-dark-blue: #0081c6;
+    --scrollbar-track: transparent;
+    --scrollbar-thumb: #2d3748;
   }
 
   .bg-global {
@@ -33,8 +33,9 @@
     --background: #000000;
     --foreground: #ffffff;
     --muted-foreground: #505050;
+    --muted-background: #bbbbbb;
     --muted-light: #dcdcdc;
-    --primary: #2c78dc;
+    --primary: #0081c6;
     --primary-foreground: #ffffff;
     --secondary: #2e2a24;
     --secondary-foreground: #f2f2f2;
@@ -56,13 +57,15 @@
     --overlay-transparent: #ffffff50;
     --overlay-foreground: #ffffff;
     --muted-dialog: #eaeaea;
+    --scrollbar-thumb: #b1b1ac;
   }
   .dark {
     --background-image: url('assets/backgroundDarkMode.webp');
     --background: #ffffff;
     --foreground: #000000;
     --muted-foreground: #bbbbbb;
-    --primary: #0281c7;
+    --muted-background: #1a1a1a;
+    --primary: #0081c6;
     --primary-foreground: #ffffff;
     --secondary: #d1d5db; /* früher ciLightGrey */
     --secondary-foreground: #2d2d30;
@@ -85,6 +88,7 @@
     --overlay-transparent: #1e293850;
     --overlay-foreground: #ffffff;
     --muted-dialog: #1e293b;
+    --scrollbar-thumb: #2d2d30;
   }
 }
 
@@ -93,7 +97,7 @@
     border-width: 4px !important;
     background:
       var(--background-image) padding-box,
-      linear-gradient(to right top, var(--ci-light-green), var(--ci-light-blue)) border-box;
+      linear-gradient(to right top, var(--ci-light-green), var(--ci-dark-blue)) border-box;
     border-radius: 4px;
     border-style: solid;
     border-color: transparent;

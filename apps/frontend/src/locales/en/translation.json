@@ -87,6 +87,7 @@
       "unauthorizedCreateCategory": "No permission to create this category",
       "unauthorizedDeleteCategory": "No permission to delete this category",
       "unauthorizedUpdateCategory": "No permission to update this category",
+      "attachmentNotFound": "Attachment not found",
       "attachmentDeletionFailed": "Failed to delete an attachment"
     }
   },
@@ -1018,7 +1019,8 @@
       "totpResetSuccess": "TOTP for user {{username}} has been disabled successfully.",
       "setAdminGroupTitle": "Set administrator group",
       "setAdminGroupDescription": "Additional administrators can be defined here. The global administrator remains unchanged.",
-      "setAdminGroupSelectDescription": "Groups can be selected using the search field."
+      "setAdminGroupSelectDescription": "Groups can be selected using the search field.",
+      "setAdminGroupWarning": "At least one admin group must be selected."
     },
     "info": {
       "title": "Info"
@@ -1201,7 +1203,7 @@
     },
     "mobileAccess": {
       "title": "Mobile Access",
-      "description": "Here you can set up the {{ applicationName }} app for mobile access to your files. Currently only available for Apple iOS.",
+      "description": "Here you can set up the edulution app for mobile access.",
       "docsDescription": "You can find the download link for the edulution app and instructions on how to set it up in the edulution documentation.",
       "button": "Open Docs"
     },
@@ -1274,6 +1276,8 @@
   },
   "edit": "Edit",
   "common": {
+    "more": "More",
+    "less": "Less",
     "refreshPage": "Refresh page",
     "showMore": "Show more",
     "visibility": "Visibility",
@@ -1489,7 +1493,16 @@
     "cannotUploadOversized": "Files larger than 50 MB cannot be uploaded.",
     "addFiles": "Add files",
     "addFolder": "Add folder",
-    "preparingFolder": "Preparing folder"
+    "preparingFolder": "Preparing folder",
+    "file": "File",
+    "files": "Files",
+    "creatingDirectoryStructure": "Creating directory structure",
+    "hiddenFiles": "hidden & system files",
+    "errors": {
+      "directoryCreationFailed": "Failed to create directory",
+      "fileUploadFailed": "Failed to upload file",
+      "uploadError": "Error uploading files"
+    }
   },
   "warnings": {
     "colorMayConflictWithTheme": "Manual setting of the color can lead to problems with other themes (light/dark) in the future. It is recommended to always set the color of the font at the same time as the background color."
@@ -1717,7 +1730,19 @@
       "light": "Light",
       "dark": "Dark"
     },
-    "mailSogoThemeDisabled": "Disabled because the mail server is not running."
+    "mailSogoThemeDisabled": "Disabled because the mail server is not running.",
+    "mailSogoThemeUpdateCheckerTitle": "Theme Version Check",
+    "mailSogoThemeUpdateCheckerDescription": "Check if a new version of the current theme is available and update it if necessary.",
+    "updateChecker": {
+      "currentVersion": "Current Version",
+      "latestVersion": "Latest Version",
+      "theme": "Theme",
+      "updateAvailable": "A new version is available!",
+      "checkAgain": "Check Again",
+      "updateNow": "Update Now",
+      "checkVersionSuccess": "Theme successfully checked!",
+      "noData": "No version information available."
+    }
   },
   "mails": {
     "errors": {
@@ -1744,10 +1769,18 @@
   },
   "containerApplication": {
     "dialogTitle": "{{applicationName}}-Plugins Installer",
+    "EDU_MANAGER_INSTALL_TOKEN": {
+      "title": "Install Token",
+      "description": "Please enter the install token that was created in the Edulution Manager."
+    },
     "EDULUTION_MAIL_HOSTNAME": {
       "title": "Hostname",
       "description": "Hostname of the mail server. This could be different from the edulution domain name."
     }
+  },
+  "edulution-manager": {
+    "title": "Edulution Manager",
+    "sidebar": "Edulution Manager"
   },
   "dockerOverview": {
     "title": "Container Overview",
@@ -1759,7 +1792,9 @@
     "filterPlaceHolderText": "Search for container name",
     "port": "Port",
     "created": "Created at",
-    "container-view": "Container"
+    "container-view": "Container",
+    "selectPluginForInstallationTitle": "Select plugin for installation",
+    "selectPluginForInstallationDescription": "Select an app here for which a plugin should be installed."
   },
   "docker": {
     "error": {
