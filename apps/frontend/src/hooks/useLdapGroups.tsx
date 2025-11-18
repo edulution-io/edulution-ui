@@ -23,8 +23,9 @@ import getTokenPayload from '@libs/common/utils/getTokenPayload';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 
 const useLdapGroups = () => {
-  const { isAuthenticated, eduApiToken } = useUserStore();
-  const { globalSettings } = useGlobalSettingsApiStore();
+  const isAuthenticated = useUserStore((s) => s.isAuthenticated);
+  const eduApiToken = useUserStore((s) => s.eduApiToken);
+  const globalSettings = useGlobalSettingsApiStore((s) => s.globalSettings);
 
   if (!isAuthenticated || !eduApiToken || !globalSettings) {
     return {
@@ -34,7 +35,7 @@ const useLdapGroups = () => {
     };
   }
 
-  const { adminGroups } = globalSettings.auth;
+  const adminGroups = globalSettings.auth?.adminGroups || [];
   const adminGroupsList = adminGroups.map((group) => group.path);
   const payload = getTokenPayload(eduApiToken);
   const ldapGroups = payload.ldapGroups ?? [];
