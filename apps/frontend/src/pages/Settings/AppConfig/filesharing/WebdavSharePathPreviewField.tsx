@@ -25,7 +25,6 @@ import { FormLabel } from '@/components/ui/Form';
 import WEBDAV_SHARE_TABLE_COLUMNS from '@libs/filesharing/constants/webdavShareTableColumns';
 import type WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableSharePathname';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useWebdavServerConfigTableStore from './useWebdavServerConfigTableStore';
 
 type WebdavSharePathPreviewFieldProps = {
@@ -37,7 +36,6 @@ const WebdavSharePathPreviewField: React.FC<WebdavSharePathPreviewFieldProps> = 
   const [sharePathValue, setSharePathValue] = useState('');
   const tableContentData = useWebdavServerConfigTableStore((s) => s.tableContentData);
   const { createVariableSharePathname } = useVariableSharePathname();
-  const { isLmn } = useDeploymentTarget();
 
   const rootServer = useWatch({
     control: form.control,
@@ -59,9 +57,9 @@ const WebdavSharePathPreviewField: React.FC<WebdavSharePathPreviewFieldProps> = 
 
     if (!selectedRootServer) return '';
 
-    const currentSharePath = createVariableSharePathname(sharePath, pathVariables, isLmn);
+    const currentSharePath = createVariableSharePathname(sharePath, pathVariables);
     return `${selectedRootServer}${currentSharePath}`;
-  }, [tableContentData, rootServer, sharePath, pathVariables, isLmn, createVariableSharePathname]);
+  }, [tableContentData, rootServer, sharePath, pathVariables, createVariableSharePathname]);
 
   useEffect(() => {
     setSharePathValue(getInputValue());

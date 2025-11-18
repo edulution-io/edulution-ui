@@ -33,7 +33,6 @@ import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMov
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/getFileSharingTableColumns';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import Input from '@/components/shared/Input';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import WebdavShareSelectDropdown from './WebdavShareSelectDropdown';
 import useFileSharingStore from '../../useFileSharingStore';
 import useVariableSharePathname from '../../hooks/useVariableSharePathname';
@@ -55,7 +54,6 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   const { selectedWebdavShare, webdavShares } = useFileSharingStore();
   const { createVariableSharePathname } = useVariableSharePathname();
   const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
-  const { isLmn } = useDeploymentTarget();
 
   const { fetchDialogFiles, fetchDialogDirs, dialogShownDirs, dialogShownFiles, isLoading } =
     useFileSharingMoveDialogStore();
@@ -75,7 +73,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
       return;
     }
     const share = webdavShares.find((s) => s.displayName === selectedWebdavShare) || webdavShares[0];
-    const newCurrentPath = createVariableSharePathname(share.pathname, share.pathVariables, isLmn);
+    const newCurrentPath = createVariableSharePathname(share.pathname, share.pathVariables);
     setCurrentPath(newCurrentPath);
   }, [selectedWebdavShare]);
 
@@ -125,7 +123,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
 
       let currentSharePath = currentShare.pathname;
       if (currentShare.pathVariables) {
-        currentSharePath = createVariableSharePathname(currentSharePath, currentShare.pathVariables, isLmn);
+        currentSharePath = createVariableSharePathname(currentSharePath, currentShare.pathVariables);
       }
 
       setCurrentPath(currentSharePath);

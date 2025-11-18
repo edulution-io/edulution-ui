@@ -29,7 +29,6 @@ import SHARED from '@libs/filesharing/constants/shared';
 import WEBDAV_SHARE_STATUS from '@libs/webdav/constants/webdavShareStatus';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import { toast } from 'sonner';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useVariableSharePathname from './hooks/useVariableSharePathname';
 
 const useFileSharingMenuConfig = () => {
@@ -39,7 +38,6 @@ const useFileSharingMenuConfig = () => {
   const navigate = useNavigate();
   const { user } = userStore();
   const { createVariableSharePathname } = useVariableSharePathname();
-  const { isLmn } = useDeploymentTarget();
 
   const handlePathChange = useCallback(
     (shareDisplayName: string, sharePathname: string) => {
@@ -78,10 +76,7 @@ const useFileSharingMenuConfig = () => {
         color: 'hover:bg-ciGreenToBlue',
         action: () => {
           if (share.status === WEBDAV_SHARE_STATUS.UP) {
-            handlePathChange(
-              share.displayName,
-              createVariableSharePathname(share.pathname, share.pathVariables, isLmn),
-            );
+            handlePathChange(share.displayName, createVariableSharePathname(share.pathname, share.pathVariables));
           } else {
             toast.info(t('webdavShare.offline'), {
               position: 'top-right',

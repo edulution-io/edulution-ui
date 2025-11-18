@@ -24,7 +24,7 @@ import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import SHARED from '@libs/filesharing/constants/shared';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
-import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useFileSharingStore from './useFileSharingStore';
 import useVariableSharePathname from './hooks/useVariableSharePathname';
 
@@ -34,7 +34,7 @@ const FileSharingRedirect = () => {
   const { createVariableSharePathname } = useVariableSharePathname();
   const hasNavigatedRef = useRef(false);
   const globalSettings = useGlobalSettingsApiStore((s) => s.globalSettings);
-  const isLmn = globalSettings?.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER;
+  const { isLmn } = useDeploymentTarget();
   const lmnUser = useLmnApiStore((s) => s.user);
   const lmnApiToken = useLmnApiStore((s) => s.lmnApiToken);
   const isGetOwnUserLoading = useLmnApiStore((s) => s.isGetOwnUserLoading);
@@ -56,7 +56,7 @@ const FileSharingRedirect = () => {
     hasNavigatedRef.current = true;
 
     if (shares.length > 0) {
-      const navigationPath = createVariableSharePathname(shares[0].pathname, shares[0].pathVariables, isLmn);
+      const navigationPath = createVariableSharePathname(shares[0].pathname, shares[0].pathVariables);
       navigate(
         {
           pathname: `/${APPS.FILE_SHARING}/${shares[0].displayName}`,

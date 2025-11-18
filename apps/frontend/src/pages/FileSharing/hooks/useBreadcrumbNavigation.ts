@@ -22,7 +22,6 @@ import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useVariableSharePathname from './useVariableSharePathname';
 
 const useBreadcrumbNavigation = (
@@ -33,7 +32,6 @@ const useBreadcrumbNavigation = (
 ) => {
   const navigate = useNavigate();
   const { createVariableSharePathname } = useVariableSharePathname();
-  const { isLmn } = useDeploymentTarget();
 
   const currentShare = useMemo(
     () => webdavShares.find((s) => s.displayName === webdavShare),
@@ -48,7 +46,7 @@ const useBreadcrumbNavigation = (
     if (filenamePath === '/') {
       let currentSharePath = currentShare.pathname;
       if (currentShare.pathVariables) {
-        currentSharePath = createVariableSharePathname(currentSharePath, currentShare.pathVariables, isLmn);
+        currentSharePath = createVariableSharePathname(currentSharePath, currentShare.pathVariables);
       }
 
       navigate(

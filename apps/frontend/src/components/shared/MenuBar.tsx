@@ -33,7 +33,6 @@ import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableSharePathname';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useMenuBarStore from './useMenuBarStore';
 
 const MenuBar: React.FC = () => {
@@ -46,7 +45,6 @@ const MenuBar: React.FC = () => {
   const webdavShares = useFileSharingStore((state) => state.webdavShares);
   const { createVariableSharePathname } = useVariableSharePathname();
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
-  const { isLmn } = useDeploymentTarget();
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
   const { isMobileView, isTabletView } = useMedia();
@@ -78,7 +76,7 @@ const MenuBar: React.FC = () => {
 
         let currentSharePath = currentShare.pathname;
         if (currentShare.pathVariables) {
-          currentSharePath = createVariableSharePathname(currentSharePath, currentShare.pathVariables, isLmn);
+          currentSharePath = createVariableSharePathname(currentSharePath, currentShare.pathVariables);
         }
 
         setCurrentPath(currentSharePath);

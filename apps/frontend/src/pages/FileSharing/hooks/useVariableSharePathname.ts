@@ -18,6 +18,7 @@
  */
 
 import { useCallback } from 'react';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import appendSlashToUrl from '@libs/common/utils/URL/appendSlashToUrl';
 import getUserAttributValue from '@libs/lmnApi/utils/getUserAttributValue';
@@ -25,13 +26,14 @@ import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 
 const useVariableSharePathname = () => {
+  const { isLmn } = useDeploymentTarget();
   const lmnUser = useLmnApiStore((s) => s.user);
 
   const createVariableSharePathname = useCallback(
-    (pathname: string, pathVariables?: MultipleSelectorOptionSH[], isLmn?: boolean) => {
+    (pathname: string, pathVariables?: MultipleSelectorOptionSH[]) => {
       if (isLmn && Array.isArray(pathVariables) && pathVariables.length > 0) {
         const variablePath = pathVariables
-          .map((variable) => getUserAttributValue(lmnUser, variable.label as keyof LmnUserInfo))
+          .map((variable) => getUserAttributValue(lmnUser, variable.value as keyof LmnUserInfo))
           .filter(Boolean)
           .join('/');
 
@@ -40,7 +42,7 @@ const useVariableSharePathname = () => {
 
       return pathname;
     },
-    [lmnUser],
+    [isLmn, lmnUser],
   );
 
   return { createVariableSharePathname };

@@ -17,25 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useEffect, useState } from 'react';
 import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 
 const useDeploymentTarget = () => {
   const globalSettings = useGlobalSettingsApiStore((s) => s.globalSettings);
-  const [isLmn, setIsLmn] = useState(false);
-  const [isGeneric, setIsGeneric] = useState(false);
 
-  useEffect(() => {
-    if (globalSettings?.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER) {
-      setIsLmn(true);
-      setIsGeneric(false);
-    }
-    if (globalSettings?.general.deploymentTarget === DEPLOYMENT_TARGET.GENERIC) {
-      setIsLmn(false);
-      setIsGeneric(true);
-    }
-  }, [globalSettings]);
+  const isLmn = globalSettings?.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER;
+  const isGeneric = globalSettings?.general.deploymentTarget === DEPLOYMENT_TARGET.GENERIC;
 
   return { isLmn, isGeneric };
 };
