@@ -23,8 +23,8 @@ import APPS from '@libs/appconfig/constants/apps';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import SHARED from '@libs/filesharing/constants/shared';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
+import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import useFileSharingStore from './useFileSharingStore';
 import useVariableSharePathname from './hooks/useVariableSharePathname';
 
@@ -32,9 +32,13 @@ const FileSharingRedirect = () => {
   const navigate = useNavigate();
   const { webdavShares, fetchWebdavShares } = useFileSharingStore();
   const { createVariableSharePathname } = useVariableSharePathname();
-  const { user: lmnUser, isGetOwnUserLoading } = useLmnApiStore();
   const hasNavigatedRef = useRef(false);
-  const { isLmn } = useDeploymentTarget();
+  const globalSettings = useGlobalSettingsApiStore((s) => s.globalSettings);
+  const isLmn = globalSettings?.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER;
+  const lmnUser = useLmnApiStore((s) => s.user);
+  const lmnApiToken = useLmnApiStore((s) => s.lmnApiToken);
+  const isGetOwnUserLoading = useLmnApiStore((s) => s.isGetOwnUserLoading);
+  const isLoading = useLmnApiStore((s) => s.isLoading);
 
   useEffect(() => {
     if (webdavShares.length === 0) {
@@ -43,16 +47,16 @@ const FileSharingRedirect = () => {
   }, [fetchWebdavShares, webdavShares.length]);
 
   useEffect(() => {
-    if (isLmn && (isGetOwnUserLoading || !lmnUser?.dn)) return;
     if (hasNavigatedRef.current) return;
     if (webdavShares.length === 0) return;
+    if (!globalSettings) return;
+    if (isLmn && (!lmnApiToken || !lmnUser || isLoading || isGetOwnUserLoading)) return;
 
     const shares = webdavShares.filter((share) => !share.isRootServer);
     hasNavigatedRef.current = true;
 
     if (shares.length > 0) {
-      const navigationPath = createVariableSharePathname(shares[0].pathname, shares[0].pathVariables);
-
+      const navigationPath = createVariableSharePathname(shares[0].pathname, shares[0].pathVariables, isLmn);
       navigate(
         {
           pathname: `/${APPS.FILE_SHARING}/${shares[0].displayName}`,
@@ -68,9 +72,19 @@ const FileSharingRedirect = () => {
         { replace: true },
       );
     }
-  }, [navigate, webdavShares, lmnUser, isGetOwnUserLoading, isLmn]);
+  }, [
+    navigate,
+    webdavShares,
+    createVariableSharePathname,
+    isLmn,
+    lmnUser,
+    lmnApiToken,
+    isLoading,
+    isGetOwnUserLoading,
+    globalSettings,
+  ]);
 
-  return <LoadingIndicatorDialog isOpen={isGetOwnUserLoading} />;
+  return <div />;
 };
 
 export default FileSharingRedirect;
