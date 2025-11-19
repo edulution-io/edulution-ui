@@ -17,19 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
-import {
-  DndContext,
-  DragEndEvent,
-  DragOverlay,
-  DragStartEvent,
-  PointerSensor,
-  rectIntersection,
-  TouchSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
+import { DndContext, DragOverlay, rectIntersection } from '@dnd-kit/core';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import useMedia from '@/hooks/useMedia';
@@ -43,39 +33,24 @@ import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { useParams } from 'react-router-dom';
 import ContentType from '@libs/filesharing/types/contentType';
-import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
-import FileActionType from '@libs/filesharing/types/fileActionType';
-import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
-import { HttpMethods } from '@libs/common/types/http-methods';
-import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreateProps';
 import { FcFolder } from 'react-icons/fc';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 import { TABLE_ICON_SIZE } from '@libs/ui/constants';
+import useFileSharingDragAndDrop from '@/pages/FileSharing/hooks/useFileSharingDragAndDrop';
 
 const FileSharingTable = () => {
   const { webdavShare } = useParams();
-  const [activeId, setActiveId] = useState<string | null>(null);
-
   const { isMobileView, isTabletView } = useMedia();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
-  const { handleItemAction } = useFileSharingDialogStore();
   const appConfigs = useAppConfigsStore((s) => s.appConfigs);
   const { setSelectedRows, setSelectedItems, fetchFiles, selectedRows, files, isLoading, currentPath } =
     useFileSharingStore();
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 250,
-        tolerance: 5,
-      },
-    }),
-  );
+  const { sensors, draggedFiles, handleDragStart, handleDragEnd, handleDragCancel, canDropOnRow } =
+    useFileSharingDragAndDrop({
+      webdavShare,
+      currentPath,
+    });
 
   useEffect(() => {
     if (currentPath !== '/') void fetchFiles(webdavShare, currentPath);
@@ -92,60 +67,6 @@ const FileSharingTable = () => {
       .map((rowId) => files.find((file) => file.filePath === rowId))
       .filter(Boolean) as DirectoryFileDTO[];
     setSelectedItems(selectedItemData);
-  };
-
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active.id as string);
-  };
-
-  const handleDragEnd = async (event: DragEndEvent) => {
-    const { active, over } = event;
-    setActiveId(null);
-
-    if (!over || !webdavShare || active.id === over.id) {
-      return;
-    }
-
-    const sourceFile = active.data.current as DirectoryFileDTO;
-    const targetFolder = over.data.current as DirectoryFileDTO;
-
-    const isDraggedFileSelected = selectedRows[sourceFile.filePath];
-
-    const filesToMove = isDraggedFileSelected
-      ? Object.keys(selectedRows)
-          .filter((key) => selectedRows[key])
-          .map((filePath) => {
-            const file = files.find((f) => f.filePath === filePath);
-            if (!file) return null;
-            return {
-              path: file.filePath,
-              newPath: `${targetFolder.filePath}/${file.filename}`,
-            };
-          })
-      : [
-          {
-            path: sourceFile.filePath,
-            newPath: `${targetFolder.filePath}/${sourceFile.filename}`,
-          } as PathChangeOrCreateDto,
-        ];
-
-    await handleItemAction(
-      FileActionType.MOVE_FILE_OR_FOLDER,
-      `${FileSharingApiEndpoints.FILESHARING_ACTIONS}`,
-      HttpMethods.PATCH,
-      ContentType.FILE || ContentType.DIRECTORY,
-      filesToMove as PathChangeOrCreateDto[],
-      webdavShare,
-    );
-
-    setSelectedRows({});
-    setSelectedItems([]);
-
-    await fetchFiles(webdavShare, currentPath);
-  };
-
-  const handleDragCancel = () => {
-    setActiveId(null);
   };
 
   const shouldHideColumns = !(isMobileView || isTabletView || (isFilePreviewVisible && isFilePreviewDocked));
@@ -165,25 +86,6 @@ const FileSharingTable = () => {
     APPS.FILE_SHARING,
     ExtendedOptionKeys.ONLY_OFFICE_URL,
   );
-
-  const canDropOnRow = (file: DirectoryFileDTO) => file.type === ContentType.DIRECTORY;
-
-  const activeFile = activeId ? files.find((file) => file.filePath === activeId) : null;
-
-  const draggedFiles = useMemo(() => {
-    if (!activeFile) return [];
-
-    const isDraggedFileSelected = selectedRows[activeFile.filePath];
-
-    if (isDraggedFileSelected) {
-      return Object.keys(selectedRows)
-        .filter((key) => selectedRows[key])
-        .map((filePath) => files.find((f) => f.filePath === filePath))
-        .filter(Boolean) as DirectoryFileDTO[];
-    }
-
-    return [activeFile];
-  }, [activeFile, selectedRows, files]);
 
   return (
     <DndContext
