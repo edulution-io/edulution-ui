@@ -18,12 +18,14 @@
  */
 
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
 import MobileAppModuleService from './mobileAppModule.service';
 import MobileAppModuleController from './mobileAppModule.controller';
 import LmnApiModule from '../lmnApi/lmnApi.module';
+import { User, UserSchema } from '../users/user.schema';
 
 @Module({
-  imports: [LmnApiModule],
+  imports: [LmnApiModule, MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])],
   controllers: [MobileAppModuleController],
   providers: [MobileAppModuleService],
 })

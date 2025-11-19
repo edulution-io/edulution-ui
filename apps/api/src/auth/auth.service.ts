@@ -179,7 +179,7 @@ class AuthService {
       const user = await this.userModel
         .findOneAndUpdate<User>(
           { username },
-          { $set: { mfaEnabled: true, totpSecret: secret } },
+          { $set: { mfaEnabled: true, totpSecret: secret, totpCreatedAt: new Date() } },
           { new: true, projection: { totpSecret: 0, password: 0 } },
         )
         .lean();
@@ -203,7 +203,7 @@ class AuthService {
       const user = await this.userModel
         .findOneAndUpdate<User>(
           { username },
-          { $set: { mfaEnabled: false, totpSecret: '' } },
+          { $set: { mfaEnabled: false, totpSecret: '' }, $unset: { totpCreatedAt: '' } },
           { new: true, projection: { totpSecret: 0, password: 0 } },
         )
         .lean();

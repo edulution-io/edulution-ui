@@ -33,6 +33,11 @@ class MobileAppModuleController {
   async getAppUserData(@GetCurrentUsername() username: string, @GetCurrentUserGroups() currentUserGroups: string[]) {
     return this.edulutionAppService.getAppUserData(username, currentUserGroups);
   }
+
+  @Get('totp-info')
+  async getTotpInfo(@GetCurrentUsername() username: string) {
+    return this.edulutionAppService.getTotpInfo(username);
+  }
 }
 
 export default MobileAppModuleController;
