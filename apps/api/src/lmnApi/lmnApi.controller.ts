@@ -55,6 +55,11 @@ const { ROOT, USERS_QUOTA } = LMN_API_EDU_API_ENDPOINTS;
 export class LmnApiController {
   constructor(private readonly lmnApiService: LmnApiService) {}
 
+  @Get('auth')
+  async getLmnApiToken(@GetCurrentUsername() username: string) {
+    return this.lmnApiService.getLmnApiToken(username);
+  }
+
   @Post('passwords')
   async printPasswords(
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,

@@ -1323,7 +1323,16 @@
     "overwriteWarningDescriptionFiles": "Les fichiers suivants sont écrasés:",
     "oversizedFilesDetected": "Fichiers trop grands découverts",
     "oversizedFileDetected": "Fichier trop grand découvert!",
-    "cannotUploadOversized": "Aucun fichier de plus de 50 Mo ne peut être téléversé."
+    "cannotUploadOversized": "Aucun fichier de plus de 50 Mo ne peut être téléversé.",
+    "file": "Fichier",
+    "files": "Fichiers",
+    "creatingDirectoryStructure": "Création de la structure des dossiers",
+    "hiddenFiles": "fichiers cachés et système",
+    "errors": {
+      "directoryCreationFailed": "Échec de la création du répertoire",
+      "fileUploadFailed": "Échec du téléchargement du fichier",
+      "uploadError": "Erreur lors du téléchargement des fichiers"
+    }
   },
   "linuxmuster": {
     "title": "Linuxmuster",
@@ -1554,10 +1563,18 @@
   },
   "containerApplication": {
     "dialogTitle": "Installer le plugin {{applicationName}}-Plugin",
+    "EDU_MANAGER_INSTALL_TOKEN": {
+      "title": "Installer Jeton",
+      "description": "Veuillez saisir le jeton d'installation qui a été créé dans le Edulution Manager."
+    },
     "EDULUTION_MAIL_HOSTNAME": {
       "title": "Nom d'hôte",
       "description": "Nom d'hôte du serveur de messagerie. Cela peut différer du domaine Edulution."
     }
+  },
+  "edulution-manager": {
+    "sidebar": "Gestionnaire Edulution",
+    "title": "Gestionnaire Edulution"
   },
   "dockerOverview": {
     "title": "Aperçu des conteneurs",
@@ -1569,7 +1586,9 @@
     "filterPlaceHolderText": "Rechercher le nom du conteneur",
     "port": "Port",
     "created": "Créé à",
-    "container-view": "Conteneur"
+    "container-view": "Conteneur",
+    "selectPluginForInstallationTitle": "Sélectionnez le plugin à installer",
+    "selectPluginForInstallationDescription": "Sélectionnez ici une application pour laquelle un plugin doit être installé."
   },
   "docker": {
     "error": {

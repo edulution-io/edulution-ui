@@ -17,12 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { UploadFile } from '@libs/filesharing/types/uploadFile';
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
 
 interface FileUploadProps {
   path: string;
   name: string;
-  file: UploadFile;
+  file: UploadItem;
 }
 
 export default FileUploadProps;

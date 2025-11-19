@@ -17,11 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import axios from 'axios';
-import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
+import { UploadItem } from './uploadItem';
 
-const lmnApi = axios.create({
-  baseURL: `${EDU_BASE_URL}/api/v1/`,
-});
+interface FolderUploadItem extends UploadItem {
+  isFolder: true;
+  folderName: string;
+  files: File[];
+}
 
-export default lmnApi;
+export default FolderUploadItem;

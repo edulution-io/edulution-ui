@@ -46,7 +46,7 @@ const AppConfigPositionSelect = ({ form, appConfig }: AppConfigFormProps) => {
       name={`${appConfig.name}.position`}
       render={() => (
         <FormItem>
-          <h4>{t('settings.appconfig.position.title')}</h4>
+          <h3>{t('settings.appconfig.position.title')}</h3>
           <FormControl>
             <DropdownSelect
               options={Array.from({ length: appConfigs.length }).map((_, index) => ({

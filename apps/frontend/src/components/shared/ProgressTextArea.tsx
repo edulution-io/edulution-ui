@@ -37,7 +37,7 @@ const ProgressTextArea: React.FC<ProgressTextAreaProps> = ({ text }) => {
   }, [text]);
 
   return (
-    <div className="flex flex-col items-center p-4">
+    <div className="flex flex-col items-center py-4">
       <Textarea
         ref={textAreaRef}
         value={progressText}

@@ -58,7 +58,7 @@ const AccountInformation = () => {
       className="min-h-[100%]"
     >
       <CardContent className="flex flex-col gap-2">
-        <h4 className="mb-4 font-bold">{t('accountData.account_info')}</h4>
+        <h3 className="mb-4 font-bold">{t('accountData.account_info')}</h3>
         {userInfoFields.map((field) => (
           <Field
             key={`userInfoField-${field.name}`}

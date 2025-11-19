@@ -23,7 +23,7 @@ const applyThemeColors = (theme: ThemeColors, root: HTMLElement = document.docum
   root.style.setProperty('--primary', theme.primary);
   root.style.setProperty('--secondary', theme.secondary);
   root.style.setProperty('--ci-light-green', theme.ciLightGreen);
-  root.style.setProperty('--ci-light-blue', theme.ciLightBlue);
+  root.style.setProperty('--ci-dark-blue', theme.ciLightBlue);
 };
 
 export default applyThemeColors;

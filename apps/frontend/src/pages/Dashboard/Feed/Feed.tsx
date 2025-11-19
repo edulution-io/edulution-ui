@@ -85,7 +85,7 @@ const Feed = () => {
       style={{ height: '10px', maxHeight: 'initial', width: '100%' }}
     >
       <CardContent>
-        <h4 className="mb-6 font-bold">{t('feed.title')}</h4>
+        <h3 className="mb-6 font-bold">{t('feed.title')}</h3>
         <div className="flex flex-col gap-3 p-0">
           <ScrollArea className="scrollbar-thin">
             <AccordionSH

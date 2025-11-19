@@ -82,8 +82,8 @@ const TemplateItem = (props: TemplateItemProps) => {
       key={template.fileName}
       value={template.fileName || ''}
     >
-      <AccordionTrigger className="px-4 pt-2 text-h4">
-        <p className="font-bold ">{`${formula?.title}`}</p>
+      <AccordionTrigger className="px-4 pt-2">
+        <h4>{formula?.title}</h4>
       </AccordionTrigger>
       <AccordionContent className="my-0 px-4 py-0">
         <Textarea

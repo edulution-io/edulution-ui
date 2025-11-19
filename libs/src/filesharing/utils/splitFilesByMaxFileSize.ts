@@ -17,9 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface WorkerInputMessage {
-  files: File[];
-  root: string;
-}
+const splitFilesByMaxFileSize = (files: File[], maxSizeMB: number): { oversize: File[]; normal: File[] } => {
+  const bytesToMegabytes = (bytes: number) => bytes / (1024 * 1024);
 
-export default WorkerInputMessage;
+  const oversize = files.filter((f) => bytesToMegabytes(f.size) > maxSizeMB);
+  const normal = files.filter((f) => bytesToMegabytes(f.size) <= maxSizeMB);
+
+  return { oversize, normal };
+};
+
+export default splitFilesByMaxFileSize;

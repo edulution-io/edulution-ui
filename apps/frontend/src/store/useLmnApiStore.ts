@@ -25,13 +25,11 @@ import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import getSchoolPrefix from '@libs/classManagement/utils/getSchoolPrefix';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
-import lmnApi from '@/api/lmnApi';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import { encodeBase64 } from '@libs/common/utils/getBase64String';
 import LinuxmusterVersionResponse from '@libs/lmnApi/types/linuxmusterVersionResponse';
 
-const { USER, USERS_QUOTA } = LMN_API_EDU_API_ENDPOINTS;
+const { USER, USERS_QUOTA, AUTH } = LMN_API_EDU_API_ENDPOINTS;
 
 interface UseLmnApiStore {
   lmnApiToken: string;
@@ -45,7 +43,7 @@ interface UseLmnApiStore {
   schoolPrefix: string;
   usersQuota: QuotaResponse | null;
   lmnVersions: LinuxmusterVersionResponse;
-  setLmnApiToken: (username: string, password: string) => Promise<void>;
+  setLmnApiToken: () => Promise<void>;
   getOwnUser: () => Promise<void>;
   fetchUser: (name: string, checkIfFirstPasswordIsSet?: boolean) => Promise<LmnUserInfo | null>;
   fetchUsersQuota: (name: string) => Promise<void>;
@@ -78,15 +76,11 @@ const useLmnApiStore = create<UseLmnApiStore>(
     (set, get) => ({
       ...initialState,
 
-      setLmnApiToken: async (username, password): Promise<void> => {
+      setLmnApiToken: async (): Promise<void> => {
         set({ isLoading: true, error: null });
-        if (username !== get().user?.cn) {
-          set(initialState);
-        }
         try {
-          lmnApi.defaults.headers.Authorization = `Basic ${encodeBase64(`${username}:${password}`)}`;
-          const response = await lmnApi.get<string>('/auth/');
-          set({ lmnApiToken: response.data });
+          const { data } = await eduApi.get<string>(AUTH);
+          set({ lmnApiToken: data });
         } catch (error) {
           handleApiError(error, set);
         } finally {
@@ -179,23 +173,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
       },
 
       reset: () => {
-        const lmnUser = get().user;
-        return set({
-          lmnApiToken: '',
-          isLoading: false,
-          isGetOwnUserLoading: false,
-          isFetchUserLoading: false,
-          isPatchingUserLoading: false,
-          error: null,
-          user: {
-            ...lmnUser!,
-            sophomorixFirstPassword: '',
-            distinguishedName: '',
-            dn: '',
-            sophomorixBirthdate: '',
-            memberOf: [],
-          },
-        });
+        set(initialState);
       },
     }),
     {

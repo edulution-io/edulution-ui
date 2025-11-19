@@ -17,12 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import axios from 'axios';
-
-const axiosInstanceLmn = axios.create({
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-export default axiosInstanceLmn;
+export interface UploadItem extends File {
+  id: string;
+  isFolder?: boolean;
+  folderName?: string;
+  files?: File[];
+  isZippedFolder?: boolean;
+  originalFolderName?: string;
+  uploadPath?: string;
+  visibleFiles?: File[];
+  includeHidden?: boolean;
+  hiddenFiles?: File[];
+}

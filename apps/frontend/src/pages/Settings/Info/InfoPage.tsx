@@ -26,7 +26,7 @@ const InfoPage = () => {
   const { isLmn } = useDeploymentTarget();
 
   return (
-    <div className="mt-5 space-y-10 [&>*]:rounded-lg [&>*]:bg-muted-background [&>*]:px-2">
+    <div className="mt-5 space-y-10 [&>*]:rounded-xl [&>*]:bg-muted-background [&>*]:px-2">
       <LicenseOverview />
       {isLmn && <LmnVersionInfo />}
     </div>

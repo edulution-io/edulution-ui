@@ -17,6 +17,36 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const ZIP_PROCESS_TIMEOUT = 5000;
+const systemFiles = [
+  '.DS_Store',
+  '._.DS_Store',
+  '.Spotlight-V100',
+  '.Trashes',
+  '.fseventsd',
+  '.TemporaryItems',
+  '.DocumentRevisions-V100',
+  '.VolumeIcon.icns',
+  '.com.apple.timemachine.donotpresent',
+  '.AppleDB',
+  '.AppleDesktop',
+  '.AppleDouble',
+  'Network Trash Folder',
+  'Temporary Items',
+  '.apdisk',
+  'Thumbs.db',
+  'thumbs.db',
+  'ehthumbs.db',
+  'ehthumbs_vista.db',
+  'Desktop.ini',
+  'desktop.ini',
+  '$RECYCLE.BIN',
+  'System Volume Information',
+  'RECYCLER',
+  '.directory',
+  '.Trash-1000',
+  '.idea',
+  '.vscode',
+  '.vs',
+];
 
-export default ZIP_PROCESS_TIMEOUT;
+export default systemFiles;

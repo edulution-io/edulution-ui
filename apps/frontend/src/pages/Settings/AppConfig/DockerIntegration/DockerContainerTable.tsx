@@ -27,6 +27,7 @@ import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '
 import useMedia from '@/hooks/useMedia';
 import DOCKER_CONTAINER_TABLE_COLUMNS from '@libs/docker/constants/dockerContainerTableColumns';
 import CONTAINER from '@libs/docker/constants/container';
+import SelectCreateDockerContainerDialog from '@/pages/Settings/AppConfig/DockerIntegration/SelectCreateDockerContainerDialog/SelectCreateDockerContainerDialog';
 import useDockerApplicationStore from './useDockerApplicationStore';
 import DockerContainerTableColumns from './DockerContainerTableColumns';
 import DockerContainerFloatingButtons from './DockerContainerFloatingButtons';
@@ -61,14 +62,11 @@ const DockerContainerTable: React.FC = () => {
       <AccordionSH
         type="multiple"
         defaultValue={[CONTAINER]}
-        className="mt-5"
+        className="mt-5 space-y-10 [&>*]:rounded-xl [&>*]:bg-muted-background [&>*]:px-2"
       >
-        <AccordionItem
-          className="rounded-xl bg-muted-background px-2"
-          value={CONTAINER}
-        >
-          <AccordionTrigger className="flex text-h4">
-            <h4>{t('dockerOverview.title')}</h4>
+        <AccordionItem value={CONTAINER}>
+          <AccordionTrigger>
+            <h3>{t('dockerOverview.title')}</h3>
           </AccordionTrigger>
           <AccordionContent className="space-y-2 px-1">
             <ScrollableTable
@@ -85,6 +83,7 @@ const DockerContainerTable: React.FC = () => {
           </AccordionContent>
         </AccordionItem>
       </AccordionSH>
+      <SelectCreateDockerContainerDialog />
       <DockerContainerFloatingButtons />
     </>
   );
