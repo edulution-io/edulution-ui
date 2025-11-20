@@ -32,7 +32,6 @@ import {
   remove,
   stat as fsStat,
   unlink,
-  copyFile,
 } from 'fs-extra';
 import { createHash } from 'crypto';
 import { firstValueFrom, from } from 'rxjs';
@@ -57,8 +56,6 @@ import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
 import THIRTY_DAYS from '@libs/common/constants/thirtyDays';
 import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
-import { getLogoName, getFallbackName } from '@libs/appconfig/utils/getAppLogo';
-import { ThemeType } from '@libs/common/constants/theme';
 import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 import UsersService from '../users/users.service';
 import CustomHttpException from '../common/CustomHttpException';
@@ -130,19 +127,6 @@ class FilesystemService {
   static async moveFile(oldFilePath: string, newFilePath: string): Promise<void> {
     try {
       await move(oldFilePath, newFilePath, { overwrite: true });
-    } catch (error) {
-      throw new CustomHttpException(
-        FileSharingErrorMessage.MoveFailed,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
-        FilesystemService.name,
-      );
-    }
-  }
-
-  static async copyFile(oldFilePath: string, newFilePath: string): Promise<void> {
-    try {
-      await copyFile(oldFilePath, newFilePath);
     } catch (error) {
       throw new CustomHttpException(
         FileSharingErrorMessage.MoveFailed,
@@ -384,23 +368,26 @@ class FilesystemService {
     }
   }
 
-  async serveAppLogo(appName: string, variant: ThemeType, res: Response) {
-    const customFilePath = join(PUBLIC_ASSET_PATH, appName, getLogoName(appName, variant));
-    const customLogoExists = await FilesystemService.checkIfFileExist(customFilePath);
-    if (customLogoExists) {
-      return this.serve(customFilePath, res);
+  async servePublicFileWithFallback(
+    res: Response,
+    appName: string,
+    filename: string | string[],
+    fallbackFilename?: string | undefined,
+  ): Promise<Response> {
+    const filePath = join(PUBLIC_ASSET_PATH, appName, FilesystemService.buildPathString(filename));
+    const fileExists = await FilesystemService.checkIfFileExist(filePath);
+    if (!fileExists && fallbackFilename) {
+      if (Array.isArray(filename)) {
+        const path = filename;
+        path.pop();
+        path.push(fallbackFilename);
+        const fallbackPath = FilesystemService.buildPathString(path);
+        return this.serve(fallbackPath, res);
+      }
+      const fallbackPath = join(PUBLIC_ASSET_PATH, appName, fallbackFilename);
+      return this.serve(fallbackPath, res);
     }
-    const fallbackFilePath = join(PUBLIC_ASSET_PATH, appName, getFallbackName(appName, variant));
-    await FilesystemService.throwErrorIfFileNotExists(fallbackFilePath);
-    return this.serve(fallbackFilePath, res);
-  }
-
-  async resetAppLogo(appName: string, variant: ThemeType) {
-    const customFilePath = join(PUBLIC_ASSET_PATH, appName, getLogoName(appName, variant));
-    await FilesystemService.checkIfFileExistAndDelete(customFilePath);
-    const fallbackFilePath = join(PUBLIC_ASSET_PATH, appName, getFallbackName(appName, variant));
-    await FilesystemService.throwErrorIfFileNotExists(fallbackFilePath);
-    await FilesystemService.copyFile(fallbackFilePath, customFilePath);
+    return this.serve(filePath, res);
   }
 
   async serveTempFiles(name: string, filename: string, res: Response) {

@@ -38,6 +38,7 @@ type LogoUploadFieldProps = {
   fallbackSrc?: string;
   className?: string;
   onHandleReset?: () => Promise<void>;
+  isLoginPage?: boolean;
 };
 
 const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
@@ -55,9 +56,12 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
   fallbackSrc,
   className,
   onHandleReset,
+  isLoginPage: invertBGClolor = false,
 }) => {
-  const backdropClass = variant === Theme.light ? 'bg-white' : 'bg-neutral-900';
-
+  const backdropClass =
+    variant === Theme.light
+      ? `${invertBGClolor ? 'bg-neutral-900' : 'bg-white'}`
+      : `${invertBGClolor ? 'bg-white' : 'bg-neutral-900'}`;
   return (
     <div
       className={clsx(

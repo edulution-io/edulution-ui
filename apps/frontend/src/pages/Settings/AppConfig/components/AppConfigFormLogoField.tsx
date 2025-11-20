@@ -15,19 +15,20 @@ import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { ThemeType } from '@libs/common/constants/theme';
 import ThemedFile from '@libs/common/types/themedFile';
-import { getFallbackUrl, getLogoName, getLogoUrl } from '@libs/appconfig/utils/getAppLogo';
-import uploadImageFile from '@/store/FilesystemStore/uploadImageFile';
-import resetAppLogo from '@/store/FilesystemStore/resetAppLogo';
+import { getLogoName, getLogoUrl } from '@libs/appconfig/utils/getAppLogo';
 import LogoUploadField from '@/pages/Settings/components/LogoUploadField';
+import FilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
 
-export type AddAppLogoProps = {
+export type AppConfigFormLogoFieldProps = {
   variant: ThemeType;
   appName: string;
   fieldPath: string;
   form: UseFormReturn<ThemedFile>;
 };
 
-const AddAppLogo: React.FC<AddAppLogoProps> = ({ variant, appName, fieldPath, form }) => {
+const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({ variant, appName, fieldPath, form }) => {
+  const { uploadImageFile, deleteImageFile } = FilesystemStore();
+
   const { t } = useTranslation();
 
   const [keyValue, setKeyValue] = React.useState<number>(0);
@@ -37,7 +38,6 @@ const AddAppLogo: React.FC<AddAppLogoProps> = ({ variant, appName, fieldPath, fo
   const destination = appName;
   const filename = getLogoName(appName, variant);
   const previewSrc = getLogoUrl(appName, variant);
-  const fallbackSrc = getFallbackUrl(appName, variant);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -53,20 +53,13 @@ const AddAppLogo: React.FC<AddAppLogoProps> = ({ variant, appName, fieldPath, fo
     form.setValue(path, file, { shouldDirty: true });
 
     if (file && variant) {
-      await uploadImageFile({
-        destination,
-        filename,
-        file,
-      });
+      await uploadImageFile(destination, filename, file);
       setKeyValue((prev) => prev + 1);
     }
   };
 
   const onHandleReset = async () => {
-    await resetAppLogo({
-      appName,
-      variant,
-    });
+    await deleteImageFile(appName, filename);
     setKeyValue((prev) => prev + 1);
   };
 
@@ -76,7 +69,6 @@ const AddAppLogo: React.FC<AddAppLogoProps> = ({ variant, appName, fieldPath, fo
       variant={variant}
       inputRef={inputRef}
       previewSrc={previewSrc}
-      fallbackSrc={fallbackSrc}
       hasLocalSelection={hasLocalSelection}
       onFileChange={onFileChange}
       chooseText={t(`common.chooseFile`)}
@@ -86,4 +78,4 @@ const AddAppLogo: React.FC<AddAppLogoProps> = ({ variant, appName, fieldPath, fo
   );
 };
 
-export default AddAppLogo;
+export default AppConfigFormLogoField;

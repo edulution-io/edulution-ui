@@ -12,12 +12,13 @@
 
 import { Theme, ThemeType } from '@libs/common/constants/theme';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
+import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
 
 export const getLogoName = (appName: string, theme: ThemeType = Theme.dark) => `${appName}-custom-logo-${theme}.webp`;
-export const getLogoUrl = (appName: string, theme?: ThemeType) =>
-  `/${EDU_API_ROOT}/public/assets/${appName}/${getLogoName(appName, theme)}`;
 
 export const getFallbackName = (appName: string, theme: ThemeType = Theme.dark) =>
   `${appName}-default-logo-${theme}.webp`;
-export const getFallbackUrl = (appName: string, theme?: ThemeType) =>
-  `/${EDU_API_ROOT}/public/assets/${appName}/${getFallbackName(appName, theme)}`;
+
+export const getLogoUrl = (appName: string, theme?: ThemeType) =>
+  `/${EDU_API_ROOT}/${EDU_API_CONFIG_ENDPOINTS.FILES}/public/${FILE_ENDPOINTS.FILE}/${appName}/${getLogoName(appName, theme)}?fallback=${getFallbackName(appName, theme)}`;

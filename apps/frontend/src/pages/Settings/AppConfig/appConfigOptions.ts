@@ -83,7 +83,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     icon: SurveysMenuIcon,
     isNativeApp: true,
     extendedOptions: {
-      [AppConfigSectionsKeys.logo]: APP_LOGO_EXTENDED_OPTIONS,
+      [AppConfigSectionsKeys.appLogo]: APP_LOGO_EXTENDED_OPTIONS,
     },
   },
   {

@@ -26,6 +26,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   Res,
   UploadedFile,
   UseGuards,
@@ -40,7 +41,6 @@ import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoi
 import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
-import { ThemeType } from '@libs/common/constants/theme';
 import { UploadGlobalAssetDto } from '@libs/filesystem/types/uploadGlobalAssetDto';
 import CustomHttpException from '../common/CustomHttpException';
 import { createAttachmentUploadOptions, createDiskStorage } from './multer.utilities';
@@ -80,19 +80,6 @@ class FileSystemController {
     return this.filesystemService.getFilesInfo(FilesystemService.buildPathString(path));
   }
 
-  @Public()
-  @UseGuards(IsPublicAppGuard)
-  @Get('public/logo/:appName/:variant')
-  serveAppLogo(@Param('appName') appName: string, @Param('variant') variant: ThemeType, @Res() res: Response) {
-    return this.filesystemService.serveAppLogo(appName, variant, res);
-  }
-
-  @Delete('public/logo/:appName/:variant')
-  @UseGuards(AdminGuard)
-  async resetAppLogo(@Param('appName') appName: string, @Param('variant') variant: ThemeType) {
-    return this.filesystemService.resetAppLogo(appName, variant);
-  }
-
   @Get(`${FILE_ENDPOINTS.FILE}/:appName/*filename`)
   serveFiles(@Param('appName') appName: string, @Param('filename') filename: string | string[], @Res() res: Response) {
     return this.filesystemService.serveFiles(appName, FilesystemService.buildPathString(filename), res);
@@ -108,12 +95,21 @@ class FileSystemController {
   @Public()
   @UseGuards(IsPublicAppGuard)
   @Get(`public/${FILE_ENDPOINTS.FILE}/:appName/*filename`)
-  servePublicFiles(
+  async servePublicFiles(
+    @Res() res: Response,
     @Param('appName') appName: string,
     @Param('filename') filename: string | string[],
-    @Res() res: Response,
+    @Query('fallback') fallbackFilename: string | undefined,
   ) {
-    return this.filesystemService.serveFiles(appName, FilesystemService.buildPathString(filename), res);
+    return this.filesystemService.servePublicFileWithFallback(res, appName, filename, fallbackFilename);
+  }
+
+  @UseGuards(AdminGuard)
+  @Delete(`public/${FILE_ENDPOINTS.FILE}/:appName/*filename`)
+  async deletePublicFiles(@Param('appName') appName: string, @Param('filename') filename: string | string[]) {
+    const fileName = FilesystemService.buildPathString(filename);
+    const filePath = join(PUBLIC_ASSET_PATH, appName, fileName);
+    return FilesystemService.deleteFile(filePath, fileName);
   }
 
   @Delete(':appName/*filename')

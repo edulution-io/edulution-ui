@@ -1035,7 +1035,7 @@
         "description": "An welcher Position soll die App in der App-Leiste und in den Einstellungen angezeigt werden?"
       },
       "sections": {
-        "logo": {
+        "appLogo": {
           "title": "Logo",
           "description": "Lade hier das App Logo hoch, um das vorgegebene Bild zu überschreiben."
         },

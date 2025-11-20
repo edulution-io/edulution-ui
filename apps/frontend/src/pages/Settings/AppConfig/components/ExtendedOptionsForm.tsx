@@ -29,7 +29,7 @@ import cn from '@libs/common/utils/className';
 import AppConfigFormField from '@/pages/Settings/AppConfig/components/textField/AppConfigFormField';
 import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import AppConfigTable from '@/pages/Settings/AppConfig/components/table/AppConfigTable';
-import AppLogo from '@/pages/Settings/AppConfig/components/AppLogo';
+import AppConfigFormBrandingField from '@/pages/Settings/AppConfig/components/AppConfigFormBrandingField';
 import AppConfigDropdownSelect from '@/pages/Settings/AppConfig/components/dropdown/AppConfigDropdownSelect';
 import AppConfigSwitch from './booleanField/AppConfigSwitch';
 import EmbeddedPageEditor from './EmbeddedPageEditor';
@@ -54,9 +54,9 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
     const fieldPath = (settingLocation ? `${settingLocation}.extendedOptions.${option.name}` : option.name) as Path<T>;
 
     switch (option.type) {
-      case ExtendedOptionField.logo:
+      case ExtendedOptionField.appLogo:
         return (
-          <AppLogo
+          <AppConfigFormBrandingField
             key={fieldPath}
             fieldPath={fieldPath}
             settingLocation={settingLocation}

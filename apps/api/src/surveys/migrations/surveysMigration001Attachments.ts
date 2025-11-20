@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { readdir, ensureDir, moveSync, stat as fsStat } from 'fs-extra';
+import { readdir, ensureDir, moveSync } from 'fs-extra';
 import { Logger } from '@nestjs/common';
 import SURVEYS_FILES_PATH from '@libs/survey/constants/surveysFilesPath';
 import SURVEYS_FILE_FOLDERS from '@libs/survey/constants/surveysFileFolders';
@@ -29,24 +29,14 @@ const surveysMigration001Attachments = {
   name,
   version: 1,
   execute: async () => {
-    const includedNames = await readdir(SURVEYS_FILES_PATH);
-    if (includedNames.length > 1) {
+    const includedFolders = await readdir(SURVEYS_FILES_PATH);
+    if (includedFolders.length > 1) {
       try {
         await ensureDir(SURVEYS_ATTACHMENT_PATH);
       } catch (error) {
         Logger.error(`Failed to create directory ${SURVEYS_ATTACHMENT_PATH}`, surveysMigration001Attachments.name);
       }
     }
-
-    const includedFolders = (
-      await Promise.all(
-        includedNames.map(async (folder) => {
-          const stat = await fsStat(`${SURVEYS_FILES_PATH}/${folder}`);
-          return stat.isDirectory() ? folder : null;
-        }),
-      )
-    ).filter((folder): folder is string => folder !== null);
-
     includedFolders.forEach((folder) => {
       if (!SURVEYS_FILE_FOLDERS.includes(folder)) {
         try {

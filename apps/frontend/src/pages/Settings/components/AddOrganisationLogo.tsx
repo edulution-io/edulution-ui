@@ -80,6 +80,7 @@ const AddOrganisationLogo: React.FC<AddOrganisationLogoProps> = ({ form }) => {
           onFileChange={onFileChange(Theme.dark)}
           chooseText={t('common.chooseFile')}
           changeText={t('common.changeFile')}
+          isLoginPage
         />
       </div>
     </AccordionContent>

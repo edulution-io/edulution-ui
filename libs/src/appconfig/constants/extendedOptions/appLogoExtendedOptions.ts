@@ -27,12 +27,11 @@ const ThemedValue: ThemedFile = { dark: null, light: null };
 const APP_LOGO_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
   {
     name: ExtendedOptionKeys.APP_LOGO,
-    description: '',
-    title: '',
-    type: ExtendedOptionField.logo,
+    title: 'settings.appconfig.sections.appLogo.title',
+    description: 'settings.appconfig.sections.appLogo.description',
+    type: ExtendedOptionField.appLogo,
     value: ThemedValue,
     width: 'full',
-    options: [],
   },
 ];
 
