@@ -25,6 +25,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  ParseBoolPipe,
   ParseIntPipe,
   Patch,
   Post,
@@ -71,12 +72,13 @@ class FilesharingController {
     @Query('type') type: string,
     @Query('path') path: string,
     @Query('share') share: string,
+    @Query('forceCleanupCache', new DefaultValuePipe(false), ParseBoolPipe) forceCleanupCache: boolean,
     @GetCurrentUsername() username: string,
   ) {
     if (type.toUpperCase() === ContentType.FILE.valueOf()) {
-      return this.webdavService.getFilesAtPath(username, path, share);
+      return this.webdavService.getFilesAtPath(username, path, share, forceCleanupCache);
     }
-    return this.webdavService.getDirectoryAtPath(username, path, share);
+    return this.webdavService.getDirectoryAtPath(username, path, share, forceCleanupCache);
   }
 
   @Post()

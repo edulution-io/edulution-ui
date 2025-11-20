@@ -61,6 +61,8 @@ type UseFileSharingStore = {
   fetchWebdavShares: () => Promise<WebdavShareDto[]>;
   selectedWebdavShare: string;
   setSelectedWebdavShare: (webdavShare: string) => void;
+  forceCleanupCache: boolean;
+  setForceCleanupCache: (forceCleanupCache: boolean) => void;
 };
 
 const initialState = {
@@ -79,6 +81,7 @@ const initialState = {
   fileOperationProgress: null,
   webdavShares: [],
   selectedWebdavShare: '',
+  forceCleanupCache: false,
 };
 
 type PersistedFileManagerStore = (
@@ -132,8 +135,9 @@ const useFileSharingStore = create<UseFileSharingStore>(
       fetchFiles: async (shareName, path: string = '/') => {
         try {
           set({ isLoading: true });
+          const { forceCleanupCache } = get();
           const { data } = await eduApi.get<DirectoryFileDTO[]>(FileSharingApiEndpoints.BASE, {
-            params: { type: ContentType.FILE, path, share: shareName },
+            params: { type: ContentType.FILE, path, share: shareName, forceCleanupCache },
           });
 
           const webdavShareType = get().webdavShares.find((s) => s.displayName === shareName)?.type;
@@ -192,6 +196,10 @@ const useFileSharingStore = create<UseFileSharingStore>(
 
       setSelectedWebdavShare: (webdavShare) => {
         set({ selectedWebdavShare: webdavShare });
+      },
+
+      setForceCleanupCache: (forceCleanupCache) => {
+        set({ forceCleanupCache });
       },
 
       reset: () => set(initialState),

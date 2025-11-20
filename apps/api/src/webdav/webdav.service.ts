@@ -170,11 +170,26 @@ class WebdavService {
     }
   }
 
-  async getFilesAtPath(username: string, path: string, share: string): Promise<DirectoryFileDTO[]> {
+  async getFilesAtPath(
+    username: string,
+    path: string,
+    share: string,
+    forceCleanupCache: boolean = false,
+  ): Promise<DirectoryFileDTO[]> {
+    console.log(`'getFilesAtPath' ${JSON.stringify('getFilesAtPath', null, 2)}`);
+    console.log(`forceCleanupCache ${JSON.stringify(forceCleanupCache, null, 2)}`);
     const client = await this.getClient(username, share);
     const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
     const pathWithoutWebdav = getPathWithoutWebdav(path, webdavShare.pathname);
     const url = WebdavService.safeJoinUrl(webdavShare.url, pathWithoutWebdav);
+
+    const headers: Record<string, string> = {
+      [HTTP_HEADERS.Depth]: WebdavRequestDepth.ONE_LEVEL,
+    };
+
+    if (forceCleanupCache) {
+      headers['X-Force-Cleanup-Cache'] = 'true';
+    }
 
     return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
       client,
@@ -182,20 +197,33 @@ class WebdavService {
         method: HttpMethodsWebDav.PROPFIND,
         url,
         data: DEFAULT_PROPFIND_XML,
-        headers: {
-          [HTTP_HEADERS.Depth]: WebdavRequestDepth.ONE_LEVEL,
-        },
+        headers,
       },
       FileSharingErrorMessage.FileNotFound,
       mapToDirectoryFiles,
     )) as DirectoryFileDTO[];
   }
 
-  async getDirectoryAtPath(username: string, path: string, share: string): Promise<DirectoryFileDTO[]> {
+  async getDirectoryAtPath(
+    username: string,
+    path: string,
+    share: string,
+    forceCleanupCache: boolean = false,
+  ): Promise<DirectoryFileDTO[]> {
+    console.log(`getDirectoryAtPath ${JSON.stringify('getDirectoryAtPath', null, 2)}`);
+    console.log(`forceCleanupCache ${JSON.stringify(forceCleanupCache, null, 2)}`);
     const client = await this.getClient(username, share);
     const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
     const pathWithoutWebdav = getPathWithoutWebdav(path, webdavShare.pathname);
     const url = WebdavService.safeJoinUrl(webdavShare.url, pathWithoutWebdav);
+
+    const headers: Record<string, string> = {
+      [HTTP_HEADERS.Depth]: WebdavRequestDepth.ONE_LEVEL,
+    };
+
+    if (forceCleanupCache) {
+      headers['X-Force-Cleanup-Cache'] = 'true';
+    }
 
     return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
       client,
@@ -203,9 +231,7 @@ class WebdavService {
         method: HttpMethodsWebDav.PROPFIND,
         url,
         data: DEFAULT_PROPFIND_XML,
-        headers: {
-          [HTTP_HEADERS.Depth]: WebdavRequestDepth.ONE_LEVEL,
-        },
+        headers,
       },
       FileSharingErrorMessage.FolderNotFound,
       mapToDirectories,

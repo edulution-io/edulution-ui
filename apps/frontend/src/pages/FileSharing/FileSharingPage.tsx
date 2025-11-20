@@ -43,12 +43,14 @@ import usePublicShareQr from '@/pages/FileSharing/hooks/usePublicShareQr';
 import useFileUpload from '@/pages/FileSharing/hooks/useFileUpload';
 import useBreadcrumbNavigation from '@/pages/FileSharing/hooks/useBreadcrumbNavigation';
 import useRefreshOnFileOperationComplete from './hooks/useRefreshOnFileOperationComplete';
+import Checkbox from '@/components/ui/Checkbox';
 
 const FileSharingPage = () => {
   const { webdavShare } = useParams();
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
-  const { fileOperationProgress, fetchFiles, webdavShares } = useFileSharingStore();
+  const { fileOperationProgress, fetchFiles, webdavShares, forceCleanupCache, setForceCleanupCache } =
+    useFileSharingStore();
   const { fetchShares } = usePublicShareStore();
 
   useRefreshOnFileOperationComplete({
@@ -85,7 +87,14 @@ const FileSharingPage = () => {
           style={{ color: 'white' }}
           hiddenSegments={getHiddenSegments()}
         />
-        <QuotaLimitInfo percentageUsed={percentageUsed} />
+        <div className="flex items-center space-x-4">
+          <Checkbox
+            checked={forceCleanupCache}
+            onCheckedChange={(checked) => setForceCleanupCache(checked === true)}
+            label="Force Cache Cleanup"
+          />
+          <QuotaLimitInfo percentageUsed={percentageUsed} />
+        </div>
       </div>
 
       <div className="flex h-full w-full flex-row overflow-hidden pb-6">
