@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { AiOutlineStop } from 'react-icons/ai';
 import { MdOutlineRestartAlt, MdOutlineUpdate } from 'react-icons/md';
 import { useTranslation } from 'react-i18next';
@@ -35,10 +35,12 @@ import type TDockerProtectedContainer from '@libs/docker/types/TDockerProtectedC
 import CreateButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/createButton';
 import useSelectCreateDockerContainerDialogStore from '@/pages/Settings/AppConfig/DockerIntegration/SelectCreateDockerContainerDialog/useSelectCreateDockerContainerDialogStore';
 import useDockerApplicationStore from './useDockerApplicationStore';
+import DeleteDockerContainersDialog from './DeleteDockerContainersDialog';
 
 const DockerContainerFloatingButtons: React.FC = () => {
   const { t } = useTranslation();
   const { setDialogOpen } = useSelectCreateDockerContainerDialogStore();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const {
     containers,
     selectedRows,
@@ -75,7 +77,11 @@ const DockerContainerFloatingButtons: React.FC = () => {
   };
 
   const handleDeleteClick = () => {
-    void deleteDockerContainer(containerNames);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    await deleteDockerContainer(containerNames);
     setSelectedRows({});
   };
 
@@ -110,7 +116,17 @@ const DockerContainerFloatingButtons: React.FC = () => {
     keyPrefix: 'docker-table-floating-button_',
   };
 
-  return <FloatingButtonsBar config={config} />;
+  return (
+    <>
+      <FloatingButtonsBar config={config} />
+      <DeleteDockerContainersDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        containerNames={containerNames}
+        onConfirmDelete={handleConfirmDelete}
+      />
+    </>
+  );
 };
 
 export default DockerContainerFloatingButtons;

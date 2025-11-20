@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IoAdd, IoRemove } from 'react-icons/io5';
 import { type ContainerInfo } from 'dockerode';
@@ -35,6 +35,7 @@ import { OnChangeFn, RowSelectionState, VisibilityState } from '@tanstack/react-
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 
 interface AppConfigTableProps {
   applicationName: string;
@@ -67,6 +68,8 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
     } = config;
     const { tableContentData, fetchTableContent, selectedRows, setSelectedRows, deleteTableEntry } = useStore();
     const { setDialogOpen, isDialogOpen } = useAppConfigTableDialogStore();
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [itemsToDelete, setItemsToDelete] = useState<Array<{ name: string; id: string }>>([]);
 
     const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
       if (selectedRows && setSelectedRows) {
@@ -89,7 +92,29 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
       setDialogOpen(tableId);
     };
 
-    const handleRemoveClick = async () => {
+    const handleRemoveClick = () => {
+      if (!selectedRows) return;
+
+      const selectedIndices = Object.keys(selectedRows)
+        .filter((key) => selectedRows[key])
+        .map(Number);
+
+      const items = selectedIndices.map((index) => {
+        const row = tableContentData[index];
+        if (row && 'filename' in row && row.filename) {
+          return { name: row.filename, id: String(index) };
+        }
+        if (row && 'webdavShareId' in row && row.webdavShareId) {
+          return { name: row.webdavShareId, id: String(index) };
+        }
+        return { name: t('common.entry', { index: index + 1 }), id: String(index) };
+      });
+
+      setItemsToDelete(items);
+      setIsDeleteDialogOpen(true);
+    };
+
+    const handleConfirmDelete = async () => {
       if (!selectedRows) return;
 
       const selectedIndices = Object.keys(selectedRows)
@@ -249,6 +274,12 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
         {title && <p className="font-bold">{t(title)}</p>}
         {getScrollableTable()}
         {dialogBody}
+        <DeleteAppConfigDialog
+          isOpen={isDeleteDialogOpen}
+          onOpenChange={setIsDeleteDialogOpen}
+          items={itemsToDelete}
+          onConfirmDelete={handleConfirmDelete}
+        />
       </div>
     );
   };
