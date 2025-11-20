@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
@@ -23,6 +30,7 @@ import BulletinBoardErrorMessage from '@libs/bulletinBoard/types/bulletinBoardEr
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPath';
+import BULLETIN_TEMP_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinTempAttachmentsPath';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../common/CustomHttpException';
@@ -36,6 +44,7 @@ import NotificationsService from '../notifications/notifications.service';
 import UserPreferencesService from '../user-preferences/user-preferences.service';
 import MigrationService from '../migration/migration.service';
 import bulletinsMigrationList from './migrations/bulletinsMigrationList';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 @Injectable()
 class BulletinBoardService implements OnModuleInit {
@@ -48,6 +57,7 @@ class BulletinBoardService implements OnModuleInit {
     private readonly sseService: SseService,
     private readonly notificationService: NotificationsService,
     private readonly userPreferencesService: UserPreferencesService,
+    private readonly globalSettingsService: GlobalSettingsService,
   ) {}
 
   private readonly attachmentsPath = BULLETIN_ATTACHMENTS_PATH;
@@ -58,14 +68,62 @@ class BulletinBoardService implements OnModuleInit {
     await MigrationService.runMigrations<BulletinDocument>(this.bulletinModel, bulletinsMigrationList);
   }
 
-  async serveBulletinAttachment(filename: string, res: Response) {
-    const filePath = join(this.attachmentsPath, filename);
-
-    await FilesystemService.throwErrorIfFileNotExists(filePath);
+  async serveBulletinAttachment(filePath: string, res: Response) {
     const fileStream = await this.fileSystemService.createReadStream(filePath);
     fileStream.pipe(res);
-
     return res;
+  }
+
+  async serveBulletinAttachmentIfExists(filename: string, res: Response) {
+    const permanentFilePath = join(BULLETIN_ATTACHMENTS_PATH, filename);
+    const existPermanentFile = await FilesystemService.checkIfFileExist(permanentFilePath);
+    if (existPermanentFile) {
+      await this.serveBulletinAttachment(permanentFilePath, res);
+      return res;
+    }
+    const temporaryFilePath = join(BULLETIN_TEMP_ATTACHMENTS_PATH, filename);
+    const existTemporaryFile = await FilesystemService.checkIfFileExist(temporaryFilePath);
+    if (existTemporaryFile) {
+      await this.serveBulletinAttachment(temporaryFilePath, res);
+      return res;
+    }
+    throw new CustomHttpException(
+      BulletinBoardErrorMessage.ATTACHMENT_NOT_FOUND,
+      HttpStatus.NOT_FOUND,
+      undefined,
+      BulletinBoardService.name,
+    );
+  }
+
+  async updateBulletinAttachments(content: string, attachedFileNames: string[]) {
+    const fileNames: string[] = [];
+    (attachedFileNames || []).forEach((name) => {
+      if (content.includes(`<img src="/edu-api/bulletinboard/attachments/${name}?token={{token}}">`)) {
+        fileNames.push(name);
+      }
+    });
+
+    const permanentFiles = await this.fileSystemService.getAllFilenamesInDirectory(BULLETIN_ATTACHMENTS_PATH);
+    await Promise.all(
+      permanentFiles.map(async (fileName) => {
+        if (!fileNames.includes(fileName)) {
+          await FilesystemService.deleteFile(BULLETIN_ATTACHMENTS_PATH, fileName);
+        }
+      }),
+    );
+    const temporaryFiles = await this.fileSystemService.getAllFilenamesInDirectory(BULLETIN_TEMP_ATTACHMENTS_PATH);
+    await Promise.all(
+      temporaryFiles.map(async (fileName) => {
+        if (!fileNames.includes(fileName)) {
+          await FilesystemService.deleteFile(BULLETIN_TEMP_ATTACHMENTS_PATH, fileName);
+        } else {
+          const tempFilePath = join(BULLETIN_TEMP_ATTACHMENTS_PATH, fileName);
+          const permanentFilePath = join(BULLETIN_ATTACHMENTS_PATH, fileName);
+          await FilesystemService.moveFile(tempFilePath, permanentFilePath);
+        }
+      }),
+    );
+    return fileNames;
   }
 
   async removeAllBulletinsByCategory(currentUser: JwtUser, categoryId: string): Promise<void> {
@@ -113,10 +171,11 @@ class BulletinBoardService implements OnModuleInit {
     filterOnlyActiveBulletins?: boolean,
   ): Promise<BulletinResponseDto[]> {
     const filter: Record<string, unknown> = {};
+    const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
 
     if (filterOnlyActiveBulletins !== undefined) {
       filter.isActive = filterOnlyActiveBulletins;
-    } else if (!getIsAdmin(currentUser.ldapGroups)) {
+    } else if (!getIsAdmin(currentUser.ldapGroups, adminGroups)) {
       filter['creator.username'] = currentUser.preferred_username;
     }
     const bulletins = await this.bulletinModel.find(filter).populate('category').sort({ updatedAt: -1 }).exec();
@@ -153,17 +212,29 @@ class BulletinBoardService implements OnModuleInit {
   async createBulletin(currentUser: JwtUser, dto: CreateBulletinDto) {
     const category = await this.bulletinCategoryModel.findById(dto.category.id).exec();
     if (!category) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.INVALID_CATEGORY, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.INVALID_CATEGORY,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        BulletinBoardService.name,
+      );
     }
+
+    const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
 
     const hasUserPermission = await this.bulletinCategoryService.hasUserPermission(
       currentUser.preferred_username,
       dto.category.id,
       BulletinCategoryPermission.EDIT,
-      getIsAdmin(currentUser.ldapGroups),
+      getIsAdmin(currentUser.ldapGroups, adminGroups),
     );
     if (!hasUserPermission) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_CREATE_BULLETIN, HttpStatus.FORBIDDEN);
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.UNAUTHORIZED_CREATE_BULLETIN,
+        HttpStatus.FORBIDDEN,
+        undefined,
+        BulletinBoardService.name,
+      );
     }
 
     const creator = {
@@ -171,12 +242,14 @@ class BulletinBoardService implements OnModuleInit {
       lastName: currentUser.family_name,
       username: currentUser.preferred_username,
     };
+    const content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content);
+    const attachmentFileNames = await this.updateBulletinAttachments(content, dto.attachmentFileNames);
 
     const createdBulletin = await this.bulletinModel.create({
       creator,
       title: dto.title,
-      attachmentFileNames: dto.attachmentFileNames,
-      content: BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content),
+      attachmentFileNames,
+      content,
       category: new Types.ObjectId(dto.category.id),
       isVisibleStartDate: dto.isVisibleStartDate,
       isVisibleEndDate: dto.isVisibleEndDate,
@@ -194,17 +267,34 @@ class BulletinBoardService implements OnModuleInit {
   async updateBulletin(currentUser: JwtUser, id: string, dto: CreateBulletinDto) {
     const bulletin = await this.bulletinModel.findById(id).exec();
     if (!bulletin) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.BULLETIN_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.BULLETIN_NOT_FOUND,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        BulletinBoardService.name,
+      );
     }
 
-    const isUserSuperAdmin = getIsAdmin(currentUser.ldapGroups);
+    const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
+
+    const isUserSuperAdmin = getIsAdmin(currentUser.ldapGroups, adminGroups);
     if (bulletin.creator.username !== currentUser.preferred_username && !isUserSuperAdmin) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_BULLETIN, HttpStatus.UNAUTHORIZED);
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_BULLETIN,
+        HttpStatus.UNAUTHORIZED,
+        undefined,
+        BulletinBoardService.name,
+      );
     }
 
     const category = await this.bulletinCategoryModel.findById(dto.category.id).exec();
     if (!category) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.INVALID_CATEGORY, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.INVALID_CATEGORY,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        BulletinBoardService.name,
+      );
     }
 
     const hasUserPermissionToCategory = await this.bulletinCategoryService.hasUserPermission(
@@ -214,7 +304,12 @@ class BulletinBoardService implements OnModuleInit {
       isUserSuperAdmin,
     );
     if (!hasUserPermissionToCategory) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_BULLETIN, HttpStatus.FORBIDDEN);
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.UNAUTHORIZED_UPDATE_BULLETIN,
+        HttpStatus.FORBIDDEN,
+        undefined,
+        BulletinBoardService.name,
+      );
     }
 
     const updatedBy = {
@@ -223,12 +318,15 @@ class BulletinBoardService implements OnModuleInit {
       username: currentUser.preferred_username,
     };
 
+    const content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content);
+    const attachmentFileNames = await this.updateBulletinAttachments(content, dto.attachmentFileNames);
+
     bulletin.title = dto.title;
     bulletin.isActive = dto.isActive;
-    bulletin.content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content);
+    bulletin.content = content;
     bulletin.category = new Types.ObjectId(dto.category.id);
     bulletin.isVisibleStartDate = dto.isVisibleStartDate;
-    bulletin.attachmentFileNames = dto.attachmentFileNames;
+    bulletin.attachmentFileNames = attachmentFileNames;
     bulletin.isVisibleEndDate = dto.isVisibleEndDate;
     bulletin.updatedBy = updatedBy;
 
@@ -274,16 +372,28 @@ class BulletinBoardService implements OnModuleInit {
     const bulletins = await this.bulletinModel.find({ _id: { $in: ids } }).exec();
 
     if (bulletins.length !== ids.length) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.BULLETIN_NOT_FOUND, HttpStatus.NOT_FOUND);
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.BULLETIN_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        BulletinBoardService.name,
+      );
     }
 
     const unauthorizedBulletins = bulletins.filter(
       (bulletin) => bulletin.creator.username !== currentUser.preferred_username,
     );
 
-    const isUserSuperAdmin = getIsAdmin(currentUser.ldapGroups);
+    const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
+
+    const isUserSuperAdmin = getIsAdmin(currentUser.ldapGroups, adminGroups);
     if (!isUserSuperAdmin && unauthorizedBulletins.length > 0) {
-      throw new CustomHttpException(BulletinBoardErrorMessage.UNAUTHORIZED_DELETE_BULLETIN, HttpStatus.UNAUTHORIZED);
+      throw new CustomHttpException(
+        BulletinBoardErrorMessage.UNAUTHORIZED_DELETE_BULLETIN,
+        HttpStatus.UNAUTHORIZED,
+        undefined,
+        BulletinBoardService.name,
+      );
     }
 
     try {
@@ -292,8 +402,10 @@ class BulletinBoardService implements OnModuleInit {
           if (bulletin.attachmentFileNames?.length) {
             await Promise.all(
               bulletin.attachmentFileNames.map(async (fileName) => {
-                const filePath = join(this.attachmentsPath, fileName);
-                await FilesystemService.checkIfFileExistAndDelete(filePath);
+                const permanentFilePath = join(BULLETIN_ATTACHMENTS_PATH, fileName);
+                await FilesystemService.checkIfFileExistAndDelete(permanentFilePath);
+                const temporaryFilePath = join(BULLETIN_TEMP_ATTACHMENTS_PATH, fileName);
+                await FilesystemService.checkIfFileExistAndDelete(temporaryFilePath);
               }),
             );
           }
@@ -311,6 +423,8 @@ class BulletinBoardService implements OnModuleInit {
       throw new CustomHttpException(
         BulletinBoardErrorMessage.ATTACHMENT_DELETION_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        BulletinBoardService.name,
       );
     }
   }

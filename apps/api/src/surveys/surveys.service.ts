@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { Model, Types } from 'mongoose';
@@ -29,6 +36,7 @@ import MigrationService from '../migration/migration.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import SurveysAttachmentService from './surveys-attachment.service';
 import NotificationsService from '../notifications/notifications.service';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 @Injectable()
 class SurveysService implements OnModuleInit {
@@ -38,10 +46,29 @@ class SurveysService implements OnModuleInit {
     private readonly groupsService: GroupsService,
     private readonly sseService: SseService,
     private readonly notificationService: NotificationsService,
+    private readonly globalSettingsService: GlobalSettingsService,
   ) {}
 
   async onModuleInit() {
     await MigrationService.runMigrations<SurveyDocument>(this.surveyModel, surveysMigrationsList);
+  }
+
+  async findSurveyWithCreatorDependency(surveyId: string, creator: JwtUser): Promise<Survey | null> {
+    try {
+      const survey = await this.surveyModel
+        .findOne({
+          $and: [{ 'creator.username': creator.preferred_username }, { _id: new Types.ObjectId(surveyId) }],
+        })
+        .exec();
+      return survey;
+    } catch (error) {
+      throw new CustomHttpException(
+        CommonErrorMessages.DB_ACCESS_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error instanceof Error ? error.message : undefined,
+        SurveysService.name,
+      );
+    }
   }
 
   async findSurvey(surveyId: string, user: JwtUser): Promise<Survey | null> {
@@ -60,7 +87,6 @@ class SurveysService implements OnModuleInit {
         ],
       })
       .exec();
-
     if (!survey) {
       throw new CustomHttpException(
         SurveyErrorMessages.NotFoundError,
@@ -69,7 +95,6 @@ class SurveysService implements OnModuleInit {
         SurveysService.name,
       );
     }
-
     return survey;
   }
 
@@ -121,7 +146,7 @@ class SurveysService implements OnModuleInit {
       if (!existingSurvey) {
         throw new CustomHttpException(SurveyErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
       }
-      SurveysService.assertUserIsAuthorized(existingSurvey.creator.username, user);
+      await this.assertUserIsAuthorized(existingSurvey.creator.username, user);
     }
 
     const processedFormula = await this.surveysAttachmentService.preProcessFormula(
@@ -194,9 +219,10 @@ class SurveysService implements OnModuleInit {
     }
   };
 
-  static assertUserIsAuthorized = (creatorUsername: string, currentUser: JwtUser): void => {
+  assertUserIsAuthorized = async (creatorUsername: string, currentUser: JwtUser): Promise<void> => {
     const isOwner = creatorUsername === currentUser.preferred_username;
-    const isSuperAdmin = getIsAdmin(currentUser.ldapGroups);
+    const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
+    const isSuperAdmin = getIsAdmin(currentUser.ldapGroups, adminGroups);
     if (!isOwner && !isSuperAdmin) {
       throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.UNAUTHORIZED);
     }

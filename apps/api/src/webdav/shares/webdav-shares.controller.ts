@@ -1,19 +1,26 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Body, Controller, Get, Param, Put, Post, UseGuards, Delete } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseBoolPipe, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
-import AppConfigGuard from '../../appconfig/appconfig.guard';
+import AdminGuard from '../../common/guards/admin.guard';
 import WebdavSharesService from './webdav-shares.service';
 import GetCurrentUserGroups from '../../common/decorators/getCurrentUserGroups.decorator';
 
@@ -24,24 +31,36 @@ class WebdavSharesController {
   constructor(private readonly webdavSharesService: WebdavSharesService) {}
 
   @Get()
-  findAllShares(@GetCurrentUserGroups() currentUserGroups: string[]) {
+  async findAllShares(
+    @Query('isRootServer', new ParseBoolPipe({ optional: true })) isRootServer: boolean | undefined,
+    @GetCurrentUserGroups() currentUserGroups: string[],
+  ) {
+    if (isRootServer) {
+      return this.webdavSharesService.findAllWebdavServers();
+    }
+    if (isRootServer === undefined) {
+      const servers = await this.webdavSharesService.findAllWebdavServers();
+      const shares = await this.webdavSharesService.findAllWebdavShares(currentUserGroups);
+      return [...servers, ...shares];
+    }
+
     return this.webdavSharesService.findAllWebdavShares(currentUserGroups);
   }
 
   @Post()
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   createWebdavShare(@Body() webdavShareDto: WebdavShareDto) {
     return this.webdavSharesService.createWebdavShare(webdavShareDto);
   }
 
   @Put(':webdavShareId')
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   async updateWebdavShare(@Param('webdavShareId') webdavShareId: string, @Body() webdavShareDto: WebdavShareDto) {
     return this.webdavSharesService.updateWebdavShare(webdavShareId, webdavShareDto);
   }
 
   @Delete(':webdavShareId')
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   async deleteWebdavShare(@Param('webdavShareId') webdavShareId: string) {
     return this.webdavSharesService.deleteWebdavShare(webdavShareId);
   }

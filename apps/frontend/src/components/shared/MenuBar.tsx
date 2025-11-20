@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -16,7 +23,7 @@ import { MenubarMenu, MenubarTrigger, VerticalMenubar } from '@/components/ui/Me
 
 import cn from '@libs/common/utils/className';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useOnClickOutside, useToggle } from 'usehooks-ts';
+import { useOnClickOutside } from 'usehooks-ts';
 import useMedia from '@/hooks/useMedia';
 import { getFromPathName } from '@libs/common/utils';
 import APPS from '@libs/appconfig/constants/apps';
@@ -24,22 +31,27 @@ import PageTitle from '@/components/PageTitle';
 import { useTranslation } from 'react-i18next';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableSharePathname';
+import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
+import useMenuBarStore from './useMenuBarStore';
 
 const MenuBar: React.FC = () => {
   const { t } = useTranslation();
-  const [isOpen, toggle] = useToggle(false);
+  const { isMobileMenuBarOpen, toggleMobileMenuBar } = useMenuBarStore();
   const menubarRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
   const menuBarEntries = useMenuBarConfig();
   const { setCurrentPath, setPathToRestoreSession } = useFileSharingStore();
   const webdavShares = useFileSharingStore((state) => state.webdavShares);
+  const { createVariableSharePathname } = useVariableSharePathname();
+  const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
-  const { isMobileView } = useMedia();
+  const { isMobileView, isTabletView } = useMedia();
 
   const navigate = useNavigate();
 
-  useOnClickOutside(menubarRef, toggle);
+  useOnClickOutside(menubarRef, toggleMobileMenuBar);
 
   if (menuBarEntries.disabled) {
     return null;
@@ -60,13 +72,20 @@ const MenuBar: React.FC = () => {
       case APPS.FILE_SHARING: {
         const currentShare = webdavShares.find((s) => s.displayName === pathParts[1]) ?? webdavShares[0];
 
-        setCurrentPath(currentShare.pathname);
-        setPathToRestoreSession(currentShare.pathname);
+        if (!currentShare || currentShare.isRootServer) break;
+
+        let currentSharePath = currentShare.pathname;
+        if (currentShare.pathVariables) {
+          currentSharePath = createVariableSharePathname(currentSharePath, currentShare.pathVariables);
+        }
+
+        setCurrentPath(currentSharePath);
+        setPathToRestoreSession(currentSharePath);
 
         navigate(
           {
             pathname: `/${APPS.FILE_SHARING}/${currentShare.displayName}`,
-            search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(currentShare.pathname)}`,
+            search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(currentSharePath)}`,
           },
           { replace: true },
         );
@@ -104,11 +123,11 @@ const MenuBar: React.FC = () => {
             alt={menuBarEntries.title}
             className="h-20 w-20 object-contain"
           />
-          <h3 className="mb-4 mt-4 text-center font-bold">{menuBarEntries.title}</h3>
+          <h2 className="mb-4 mt-4 text-center font-bold">{menuBarEntries.title}</h2>
         </button>
       </div>
       <MenubarMenu>
-        <div className="flex-1 overflow-y-auto pb-10 scrollbar-thin">
+        <div className="flex-1 overflow-y-auto pb-10">
           {menuBarEntries.menuItems.map((item) => (
             <React.Fragment key={item.label}>
               <MenubarTrigger
@@ -119,7 +138,7 @@ const MenuBar: React.FC = () => {
                 )}
                 onClick={() => {
                   setIsSelected(item.id);
-                  toggle();
+                  toggleMobileMenuBar();
                   item.action();
                 }}
               >
@@ -147,41 +166,24 @@ const MenuBar: React.FC = () => {
         />
       )}
 
-      {isMobileView ? (
-        <>
-          {isOpen && (
-            <div
-              className="fixed inset-0 z-40 bg-foreground bg-opacity-50"
-              role="button"
-              tabIndex={0}
-              onClickCapture={toggle}
-            />
+      {isMobileView || isTabletView || isEdulutionApp ? (
+        <VerticalMenubar
+          className={cn(
+            'fixed top-0 z-50 h-full overflow-x-hidden bg-foreground duration-300 ease-in-out',
+            isMobileMenuBarOpen ? 'w-64 border-r-[1px] border-muted' : 'w-0',
           )}
-
-          <VerticalMenubar
-            className={cn(
-              'fixed top-0 z-50 h-full bg-gray-700 duration-300 ease-in-out',
-              !isOpen ? 'w-0' : 'w-64',
-              'bg-foreground',
-            )}
-          >
-            {isOpen && renderMenuBarContent()}
-          </VerticalMenubar>
-
+        >
           <div
-            role="button"
-            tabIndex={0}
             className={cn(
-              'absolute top-0 z-50 flex h-screen w-4 cursor-pointer items-center justify-center bg-gray-700 bg-opacity-60',
-              !isOpen ? 'left-0' : 'left-64',
+              'h-full w-64 transition-opacity duration-300',
+              isMobileMenuBarOpen ? 'opacity-100' : 'opacity-0',
             )}
-            onClickCapture={toggle}
           >
-            <p className="text-xl text-background">{!isOpen ? '≡' : '×'}</p>
+            {isMobileMenuBarOpen && renderMenuBarContent()}
           </div>
-        </>
+        </VerticalMenubar>
       ) : (
-        <div className="relative flex h-screen">
+        <div className="relative flex h-dvh">
           <VerticalMenubar className="w-64 bg-foreground bg-opacity-40">{renderMenuBarContent()}</VerticalMenubar>
         </div>
       )}

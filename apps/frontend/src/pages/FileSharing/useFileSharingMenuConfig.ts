@@ -1,17 +1,24 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { CloudIcon, FileSharingIcon } from '@/assets/icons';
 import userStore from '@/store/UserStore/useUserStore';
@@ -22,12 +29,15 @@ import SHARED from '@libs/filesharing/constants/shared';
 import WEBDAV_SHARE_STATUS from '@libs/webdav/constants/webdavShareStatus';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import { toast } from 'sonner';
+import useVariableSharePathname from './hooks/useVariableSharePathname';
 
 const useFileSharingMenuConfig = () => {
-  const { webdavShares } = useFileSharingStore();
+  const { pathname } = useLocation();
+  const { webdavShares, fetchWebdavShares } = useFileSharingStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const navigate = useNavigate();
   const { user } = userStore();
+  const { createVariableSharePathname } = useVariableSharePathname();
 
   const handlePathChange = useCallback(
     (shareDisplayName: string, sharePathname: string) => {
@@ -42,26 +52,40 @@ const useFileSharingMenuConfig = () => {
     [navigate],
   );
 
-  useEffect(() => {
-    if (!webdavShares.length) return;
+  const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
+  const firstPathPart = pathParts[0] || '';
+  const previousFirstPathPart = useRef<string | null>(null);
 
-    const menuBarItems: MenuItem[] = webdavShares.map((share) => ({
-      id: share.displayName,
-      label: share.displayName,
-      icon: FileSharingIcon,
-      color: 'hover:bg-ciGreenToBlue',
-      action: () => {
-        if (share.status === WEBDAV_SHARE_STATUS.UP) {
-          handlePathChange(share.displayName, share.pathname);
-        } else {
-          toast.info(t('webdavShare.offline'), {
-            position: 'top-right',
-            duration: 1000,
-          });
-        }
-      },
-      disableTranslation: true,
-    }));
+  useEffect(() => {
+    if (firstPathPart !== previousFirstPathPart.current) {
+      previousFirstPathPart.current = firstPathPart;
+
+      if (firstPathPart === APPS.FILE_SHARING) {
+        void fetchWebdavShares();
+      }
+    }
+  }, [firstPathPart]);
+
+  useEffect(() => {
+    const menuBarItems: MenuItem[] = webdavShares
+      .filter((share) => !share.isRootServer)
+      .map((share) => ({
+        id: share.displayName,
+        label: share.displayName,
+        icon: FileSharingIcon,
+        color: 'hover:bg-ciGreenToBlue',
+        action: () => {
+          if (share.status === WEBDAV_SHARE_STATUS.UP) {
+            handlePathChange(share.displayName, createVariableSharePathname(share.pathname, share.pathVariables));
+          } else {
+            toast.info(t('webdavShare.offline'), {
+              position: 'top-right',
+              duration: 1000,
+            });
+          }
+        },
+        disableTranslation: true,
+      }));
 
     const sharedItem: MenuItem = {
       id: SHARED,

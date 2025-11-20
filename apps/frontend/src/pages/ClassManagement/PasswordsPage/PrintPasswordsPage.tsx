@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { useEffect, useState } from 'react';
@@ -24,6 +31,7 @@ import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import SchoolSelectorDropdown from '../components/SchoolSelectorDropdown';
 
 const PrintPasswordsPage: React.FC = () => {
   const { t } = useTranslation();
@@ -69,12 +77,19 @@ const PrintPasswordsPage: React.FC = () => {
 
   return (
     <PageLayout>
-      <Input
-        name="filter"
-        onChange={(e) => setFilterKeyWord(e.target.value)}
-        placeholder={t('classmanagement.typeToFilter')}
-        className="mb-2"
-      />
+      <div className="mb-2 flex w-full flex-col gap-2 md:flex-row md:items-center md:gap-4">
+        <div className="min-w-0 flex-1">
+          <Input
+            className="h-10 w-full"
+            name="filter"
+            onChange={(e) => setFilterKeyWord(e.target.value)}
+            placeholder={t('classmanagement.typeToFilter')}
+          />
+        </div>
+
+        {isSuperAdmin && <SchoolSelectorDropdown />}
+      </div>
+
       <div className="flex max-h-full max-w-full flex-row flex-wrap overflow-y-auto scrollbar-thin">
         <p className="mt-2 min-w-full">{t('classmanagement.printPasswordsPageDescription')}</p>
         {groupRows.map((row) => (
@@ -82,7 +97,7 @@ const PrintPasswordsPage: React.FC = () => {
             key={row.name}
             className="mt-4 min-w-full"
           >
-            <h4 className="text-background">{t(`classmanagement.printPasswords`)}</h4>
+            <h3 className="text-background">{t(`classmanagement.printPasswords`)}</h3>
             <ClassList
               row={row}
               selectedClasses={selectedClasses}

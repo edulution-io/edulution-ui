@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
@@ -17,6 +24,9 @@ import type WebdavShareType from '@libs/filesharing/types/webdavShareType';
 import WEBDAV_SHARE_TYPE from '@libs/filesharing/constants/webdavShareType';
 import WEBDAV_SHARE_STATUS from '@libs/webdav/constants/webdavShareStatus';
 import type WebdavShareStatusType from '@libs/webdav/types/webdavShareStatusType';
+import WebdavShareAuthenticationMethodsType from '@libs/webdav/types/webdavShareAuthenticationMethodsType';
+import WEBDAV_SHARE_AUTHENTICATION_METHODS from '@libs/webdav/constants/webdavShareAuthenticationMethods';
+import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 
 export type WebdavSharesDocument = WebdavShares & Document;
 
@@ -28,8 +38,20 @@ export class WebdavShares {
   @Prop({ default: '' })
   url: string;
 
+  @Prop({ default: '' })
+  sharePath: string;
+
   @Prop({ default: '/webdav/' })
   pathname: string;
+
+  @Prop({ default: false })
+  isRootServer: boolean;
+
+  @Prop({ default: '' })
+  rootServer: string;
+
+  @Prop({ type: Array, default: [] })
+  pathVariables: MultipleSelectorOptionSH[];
 
   @Prop({ type: Array, default: [] })
   accessGroups: MultipleSelectorGroup[];
@@ -42,6 +64,9 @@ export class WebdavShares {
 
   @Prop({ type: Date, default: null })
   lastChecked: Date | null;
+
+  @Prop({ type: String, required: true, default: WEBDAV_SHARE_AUTHENTICATION_METHODS.BASIC })
+  authentication: WebdavShareAuthenticationMethodsType;
 
   @Prop({ default: 1 })
   schemaVersion: number;
