@@ -19,7 +19,7 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IoAdd, IoRemove } from 'react-icons/io5';
+import { IoAdd, IoRemove, IoPencil } from 'react-icons/io5';
 import { type ContainerInfo } from 'dockerode';
 import TableAction from '@libs/common/types/tableAction';
 import { AppConfigTableConfig } from '@/pages/Settings/AppConfig/components/table/types/appConfigTableConfig';
@@ -134,9 +134,13 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
         BulletinCategoryResponseDto | ContainerInfo | FileInfoDto | VeyonProxyItem | WebdavShareDto
       >[] = [];
       if (showAddButton) {
+        const hasData = tableContentData && tableContentData.length > 0;
+        const selectedCount = selectedRows ? Object.values(selectedRows).filter(Boolean).length : 0;
+        const isEditMode = hasData && selectedCount === 1;
+
         tableActions.push({
-          icon: IoAdd,
-          translationId: 'common.add',
+          icon: isEditMode ? IoPencil : IoAdd,
+          translationId: isEditMode ? 'common.edit' : 'common.add',
           onClick: handleAddClick,
         });
       }
