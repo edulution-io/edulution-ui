@@ -31,12 +31,16 @@ import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import useThemeColors from '@/hooks/useThemeColors';
+import EDULUTION_APP_AGENT_IDENTIFIER from '@libs/common/constants/edulutionAppAgentIdentifier';
 import GlobalHooksWrapper from './components/GlobalHooksWrapper';
 import LazyErrorBoundary from './components/LazyErrorBoundary';
+import SilentLoginWrapper from './components/SilentLoginWrapper';
+import usePlatformStore from './store/EduApiStore/usePlatformStore';
 
 const App = () => {
   const { eduApiToken } = useUserStore();
   const { user } = useUserStore();
+  const { setIsEdulutionApp } = usePlatformStore();
 
   useThemeColors();
 
@@ -49,6 +53,12 @@ const App = () => {
       i18n.changeLanguage(navigator.language).catch((e) => console.error('Reset to System Language Error', e));
     }
   }, [user?.language]);
+
+  useEffect(() => {
+    const { userAgent } = navigator;
+    const isEdulutionApp = userAgent.includes(EDULUTION_APP_AGENT_IDENTIFIER);
+    setIsEdulutionApp(isEdulutionApp);
+  }, []);
 
   const oidcConfig: AuthProviderProps = {
     authority: `${EDU_API_URL}/${AUTH_PATHS.AUTH_ENDPOINT}`,
@@ -66,14 +76,16 @@ const App = () => {
     <LazyErrorBoundary>
       <AuthProvider {...oidcConfig}>
         <CookiesProvider>
-          <GlobalHooksWrapper>
-            <HelmetProvider>
-              <TooltipProvider>
-                <AppRouter />
-              </TooltipProvider>
-            </HelmetProvider>
-            <Toaster />
-          </GlobalHooksWrapper>
+          <SilentLoginWrapper>
+            <GlobalHooksWrapper>
+              <HelmetProvider>
+                <TooltipProvider>
+                  <AppRouter />
+                </TooltipProvider>
+              </HelmetProvider>
+              <Toaster />
+            </GlobalHooksWrapper>
+          </SilentLoginWrapper>
         </CookiesProvider>
       </AuthProvider>
     </LazyErrorBoundary>
