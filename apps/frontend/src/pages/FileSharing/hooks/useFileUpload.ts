@@ -23,6 +23,7 @@ import useUserStore from '@/store/UserStore/useUserStore';
 import { toast } from 'sonner';
 import { UploadItem } from '@libs/filesharing/types/uploadItem';
 import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
+import getRandomUUID from '@/utils/getRandomUUID';
 import useFileSharingStore from '../useFileSharingStore';
 import usePublicShareStore from '../publicShare/usePublicShareStore';
 
@@ -41,7 +42,7 @@ const useFileUpload = () => {
         updateFilesToUpload(() =>
           files.map((file) =>
             Object.assign(new File([file], file.name, { type: file.type }), {
-              id: crypto.randomUUID(),
+              id: getRandomUUID(),
               isZippedFolder: false,
             } as UploadItem),
           ),

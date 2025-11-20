@@ -50,6 +50,7 @@ import getMainLogoUrl from '@libs/assets/getMainLogoUrl';
 import COLOR_SCHEME from '@libs/ui/constants/colorScheme';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useLmnApiStore from '@/store/useLmnApiStore';
+import getRandomUUID from '@/utils/getRandomUUID';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
 import useAppConfigsStore from '../Settings/AppConfig/useAppConfigsStore';
@@ -263,7 +264,7 @@ const LoginPage: React.FC = () => {
     if (isEnterTotpVisible) {
       onTotpCancelButtonClick();
     } else {
-      const newSessionID = crypto.randomUUID();
+      const newSessionID = getRandomUUID();
       setSessionID(newSessionID);
       setShowQrCode((prev) => !prev);
     }

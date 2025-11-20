@@ -25,6 +25,7 @@ import isQuestionTypeMatrixType from '@libs/survey/utils/isQuestionTypeMatrixTyp
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
+import getRandomUUID from '@/utils/getRandomUUID';
 
 type TRow = Partial<Array<ItemValue | Base>> & {
   name?: string;
@@ -57,10 +58,10 @@ const RowAndColumnOptions = () => {
   const getNewRow = () => {
     const newRow = rows[rows.length - 1].clone();
     if (newRow.value) {
-      newRow.value = crypto.randomUUID();
+      newRow.value = getRandomUUID();
       newRow.text = t('survey.editor.questionSettings.newRow');
     } else if (newRow.name) {
-      newRow.name = crypto.randomUUID();
+      newRow.name = getRandomUUID();
       newRow.title = t('survey.editor.questionSettings.newRow');
     }
     return newRow;
@@ -69,10 +70,10 @@ const RowAndColumnOptions = () => {
   const getNewColumn = () => {
     const newColumn = columns[columns.length - 1].clone();
     if (newColumn.name) {
-      newColumn.name = crypto.randomUUID();
+      newColumn.name = getRandomUUID();
       newColumn.title = t('survey.editor.questionSettings.newColumn');
     } else if (newColumn.value) {
-      newColumn.value = crypto.randomUUID();
+      newColumn.value = getRandomUUID();
       newColumn.text = t('survey.editor.questionSettings.newColumn');
     }
     return newColumn;

@@ -21,6 +21,7 @@ import { create } from 'zustand';
 import { Question, ChoicesRestful } from 'survey-core';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
+import getRandomUUID from '@/utils/getRandomUUID';
 
 interface QuestionsContextMenuStore {
   reset: () => void;
@@ -189,7 +190,7 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
   addNewChoice: () => {
     const { currentChoices, addChoice } = get();
     const newChoiceTitle = `choice-${currentChoices.length}`;
-    const newChoiceName = `${newChoiceTitle}-${crypto.randomUUID()}`;
+    const newChoiceName = `${newChoiceTitle}-${getRandomUUID()}`;
     addChoice(newChoiceName, `${newChoiceTitle}`, 1);
   },
 

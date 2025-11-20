@@ -17,24 +17,21 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { toast } from 'sonner';
-import ToasterTranslationIds from '@libs/ui/types/toasterTranslationIds';
-import i18n from '@/i18n';
-
-const copyToClipboard = (url: string, toasterTranslationIds?: ToasterTranslationIds) => {
-  if (!navigator?.clipboard?.writeText) {
-    toast.error(i18n.t(toasterTranslationIds?.error || 'common.copy.error'));
-    return;
+const getRandomUUID = (): string => {
+  if (crypto?.randomUUID) {
+    return crypto.randomUUID();
   }
 
-  navigator.clipboard
-    .writeText(url)
-    .then(() => {
-      toast.info(i18n.t(toasterTranslationIds?.success || 'common.copy.success'));
-    })
-    .catch(() => {
-      toast.error(i18n.t(toasterTranslationIds?.error || 'common.copy.error'));
-    });
+  const getRn = () => {
+    const randomValue = crypto?.getRandomValues?.(new Uint8Array(1))[0] ?? Math.random() * 256;
+    return Math.floor(randomValue) % 16;
+  };
+
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = getRn();
+    const v = c === 'x' ? r : (r % 4) + 8;
+    return v.toString(16);
+  });
 };
 
-export default copyToClipboard;
+export default getRandomUUID;

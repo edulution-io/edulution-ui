@@ -42,6 +42,7 @@ import splitFilesByMaxFileSize from '@libs/filesharing/utils/splitFilesByMaxFile
 import findDuplicateFiles from '@libs/filesharing/utils/findDuplicateFiles';
 import getUploadItemDisplayName from '@libs/filesharing/utils/getUploadItemDisplayName';
 import ValidationWarnings from '@/pages/FileSharing/utilities/ValidationWarnings';
+import getRandomUUID from '@/utils/getRandomUUID';
 
 const UploadContentBody = () => {
   const { webdavShare } = useParams();
@@ -63,7 +64,7 @@ const UploadContentBody = () => {
       const regularFiles = acceptedFiles.filter((file) => !isFolderUploadItem(file as UploadItem));
       const { oversize, normal } = splitFilesByMaxFileSize(regularFiles, getFileUploadLimit(webdavShares, webdavShare));
       const duplicates = findDuplicateFiles(
-        [...normal, ...folders].map((file) => Object.assign(file, { id: crypto.randomUUID() })),
+        [...normal, ...folders].map((file) => Object.assign(file, { id: getRandomUUID() })),
         files,
       );
 
@@ -87,7 +88,7 @@ const UploadContentBody = () => {
               return file as UploadItem;
             }
             const uploadFile: UploadItem = Object.assign(new File([file], file.name, { type: file.type }), {
-              id: crypto.randomUUID(),
+              id: getRandomUUID(),
             });
             return uploadFile;
           });
@@ -129,7 +130,7 @@ const UploadContentBody = () => {
       const hiddenAndSystemFiles = selected.filter((file) => shouldFilterFile(file.name));
 
       const folderEntry: UploadItem = Object.assign(new File([], folderName, { type: 'application/x-directory' }), {
-        id: crypto.randomUUID(),
+        id: getRandomUUID(),
         isFolder: true,
         folderName,
         files: visibleFiles,
