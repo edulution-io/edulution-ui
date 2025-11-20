@@ -200,14 +200,16 @@ class AuthService {
 
   async disableTotp(username: string) {
     try {
-      const user = await this.userModel
+      return await this.userModel
         .findOneAndUpdate<User>(
           { username },
-          { $set: { mfaEnabled: false, totpSecret: '' }, $unset: { totpCreatedAt: '' } },
+          {
+            $set: { mfaEnabled: false },
+            $unset: { totpSecret: 1, totpCreatedAt: 1 },
+          },
           { new: true, projection: { totpSecret: 0, password: 0 } },
         )
         .lean();
-      return user;
     } catch (error) {
       throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND, undefined, AuthService.name);
     }

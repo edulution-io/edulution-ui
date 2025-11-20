@@ -24,18 +24,14 @@ import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.d
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import buildUserShares from '@libs/mobileApp/utils/buildUserShares';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import LmnApiService from '../lmnApi/lmnApi.service';
 import UsersService from '../users/users.service';
 import GlobalSettingsService from '../global-settings/global-settings.service';
 import WebdavSharesService from '../webdav/shares/webdav-shares.service';
-import { User, UserDocument } from '../users/user.schema';
 
 @Injectable()
-class MobileAppModuleService {
+class MobileAppService {
   constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
     private readonly userService: UsersService,
     private readonly globalSettingsService: GlobalSettingsService,
     private readonly lmnApiService: LmnApiService,
@@ -88,7 +84,7 @@ class MobileAppModuleService {
   }
 
   async getTotpInfo(username: string) {
-    const user = await this.userModel.findOne({ username }, 'mfaEnabled totpSecret totpCreatedAt').lean();
+    const user = await this.userService.findOne(username, { mfaEnabled: 1, secret: 1, createdAt: 0 });
 
     if (!user || !user.mfaEnabled) {
       return { secret: null, createdAt: null };
@@ -101,4 +97,4 @@ class MobileAppModuleService {
   }
 }
 
-export default MobileAppModuleService;
+export default MobileAppService;

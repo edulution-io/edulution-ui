@@ -20,24 +20,24 @@
 import { ApiTags } from '@nestjs/swagger';
 import { Controller, Get, Injectable } from '@nestjs/common';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
-import MobileAppModuleService from './mobileAppModule.service';
+import MobileAppService from './mobileApp.service';
 import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
 
 @ApiTags('mobile-app')
 @Controller('mobile-app')
 @Injectable()
-class MobileAppModuleController {
-  constructor(private readonly edulutionAppService: MobileAppModuleService) {}
+class MobileAppController {
+  constructor(private readonly mobileAppService: MobileAppService) {}
 
   @Get('user-data')
   async getAppUserData(@GetCurrentUsername() username: string, @GetCurrentUserGroups() currentUserGroups: string[]) {
-    return this.edulutionAppService.getAppUserData(username, currentUserGroups);
+    return this.mobileAppService.getAppUserData(username, currentUserGroups);
   }
 
   @Get('totp-info')
   async getTotpInfo(@GetCurrentUsername() username: string) {
-    return this.edulutionAppService.getTotpInfo(username);
+    return this.mobileAppService.getTotpInfo(username);
   }
 }
 
-export default MobileAppModuleController;
+export default MobileAppController;
