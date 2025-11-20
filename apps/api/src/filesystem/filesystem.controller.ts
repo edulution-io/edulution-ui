@@ -108,7 +108,7 @@ class FileSystemController {
   @Delete(`public/${FILE_ENDPOINTS.FILE}/:appName/*filename`)
   async deletePublicFiles(@Param('appName') appName: string, @Param('filename') filename: string | string[]) {
     const fileName = FilesystemService.buildPathString(filename);
-    const filePath = join(PUBLIC_ASSET_PATH, appName, fileName);
+    const filePath = join(PUBLIC_ASSET_PATH, appName);
     return FilesystemService.deleteFile(filePath, fileName);
   }
 

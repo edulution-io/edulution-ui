@@ -381,7 +381,7 @@ class FilesystemService {
         const path = filename;
         path.pop();
         path.push(fallbackFilename);
-        const fallbackPath = FilesystemService.buildPathString(path);
+        const fallbackPath = join(PUBLIC_ASSET_PATH, appName, FilesystemService.buildPathString(path));
         return this.serve(fallbackPath, res);
       }
       const fallbackPath = join(PUBLIC_ASSET_PATH, appName, fallbackFilename);
