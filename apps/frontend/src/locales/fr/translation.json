@@ -196,7 +196,15 @@
       "isActive": "Actif",
       "syncJobsTable": "Tâches des importateurs",
       "mailAddress": "Adresse email",
-      "noMailConfigured": "L'application de messagerie n'est pas configurée. Veuillez contacter l'administrateur système."
+      "noMailConfigured": "L'application de messagerie n'est pas configurée. Veuillez contacter l'administrateur système.",
+      "syncAccountAdded": "Compte pour la tâche de synchronisation ajouté.",
+      "syncAccountDeleted": "Compte pour la tâche de synchronisation supprimé.",
+      "confirmMultiDeleteSyncJob": "Êtes-vous sûr de vouloir supprimer ces tâches de synchronisation ? Cette action ne peut pas être annulée.",
+      "confirmSingleDeleteSyncJob": "Êtes-vous sûr de vouloir supprimer cette tâche de synchronisation ? Cette action ne peut pas être annulée.",
+      "deleteSyncJobs": "Supprimer {{count}} tâches de synchronisation",
+      "deleteSyncJob": "Supprimer la tâche de synchronisation",
+      "confirmDeleteProviderConfig": "Êtes-vous sûr de vouloir supprimer cette configuration de fournisseur de messagerie ? Cette action ne peut pas être annulée.",
+      "deleteProviderConfig": "Supprimer la configuration du fournisseur de messagerie"
     }
   },
   "chat": {
@@ -402,6 +410,8 @@
     "invalidQuota": "Le quota doit être donné en fonction de la documentation",
     "invalidMailQuota": "Le quota de courrier doit être spécifié en nombre en Mo",
     "name": "nom",
+    "confirmDeleteGroup": "Êtes-vous sûr de vouloir supprimer ce groupe ? Cette action ne peut pas être annulée.",
+    "deleteGroup": "Supprimer {{type}}",
     "project": {
       "createSuccess": "Projet créé avec succès",
       "updateSuccess": "Projet mis à jour avec succès",
@@ -875,6 +885,8 @@
     },
     "lmnVersion": { "title": "Aperçu des versions de Linuxmuster" },
     "appconfig": {
+      "deleteEntries": "Supprimer {{count}} entrées",
+      "confirmDeleteEntries": "Êtes-vous sûr de vouloir supprimer ces entrées ? Cette action ne peut pas être annulée.",
       "sections": {
         "onlyOffice": {
           "title": "Intégration OnlyOffice",
@@ -898,7 +910,11 @@
         },
         "docker": {
           "title": "Applications Docker",
-          "description": "Afin de pouvoir utiliser les services étendus, les applications de conteneurs requises peuvent être installées et démarrées ici."
+          "description": "Afin de pouvoir utiliser les services étendus, les applications de conteneurs requises peuvent être installées et démarrées ici.",
+          "confirmMultiDeleteContainer": "Êtes-vous sûr de vouloir supprimer ces conteneurs ? Cette action ne peut pas être annulée.",
+          "confirmSingleDeleteContainer": "Êtes-vous sûr de vouloir supprimer ce conteneur ? Cette action ne peut pas être annulée.",
+          "deleteContainers": "Supprimer {{count}} conteneurs",
+          "deleteContainer": "Supprimer le conteneur"
         },
         "veyon": {
           "title": "Proxy veyon",
@@ -1039,7 +1055,11 @@
       "enterSavePin": "Veuillez saisir un code PIN.",
       "wrongSafePin": "Le code PIN est erronée.",
       "enterSafePin": "Veuillez saisir le code PIN pour déchiffrer.",
-      "safePinDescription": "Un code PIN est nécessaire pour chiffrer les données d'accès. Ce code PIN n'est visible pour personne et n'est pas sauvegardé."
+      "safePinDescription": "Un code PIN est nécessaire pour chiffrer les données d'accès. Ce code PIN n'est visible pour personne et n'est pas sauvegardé.",
+      "confirmMultiDeleteAccount": "Êtes-vous sûr de vouloir supprimer ces comptes ? Cette action ne peut pas être annulée.",
+      "confirmSingleDeleteAccount": "Êtes-vous sûr de vouloir supprimer ce compte ? Cette action ne peut pas être annulée.",
+      "deleteUserAccounts": "Supprimer {{count}} comptes",
+      "deleteUserAccount": "Supprimer le compte"
     },
     "mails": {
       "title": "Email"
@@ -1127,6 +1147,7 @@
     "savedToClipboardError": "N'a pas pu être copié dans le presse-papiers.",
     "answers": "Répondre",
     "error": "Erreur",
+    "entry": "Entrée {{index}}",
     "errors": {
       "attachmentUploadFailed": "La pièce jointe n'a pas pu être téléversée",
       "dbAccessFailed": "L'accès à la base de données a échoué",

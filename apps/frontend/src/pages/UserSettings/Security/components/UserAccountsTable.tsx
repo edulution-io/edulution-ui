@@ -29,12 +29,14 @@ import UserAccountDto from '@libs/user/types/userAccount.dto';
 import useUserStore from '@/store/UserStore/useUserStore';
 import UserAccountsTableColumns from './UserAccountsTableColumns';
 import AddUserAccountDialog from './AddUserAccountDialog';
+import DeleteUserAccountsDialog from './DeleteUserAccountsDialog';
 
 const UserAccountsTable: React.FC = () => {
   const { t } = useTranslation();
   const { userAccounts, selectedRows, userAccountsIsLoading, setSelectedRows, getUserAccounts, deleteUserAccount } =
     useUserStore();
   const [isOpen, setIsOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const keys = Object.keys(selectedRows);
   const isOneRowSelected = keys.length === 1;
 
@@ -46,7 +48,11 @@ const UserAccountsTable: React.FC = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleRemoveClick = async () => {
+  const handleRemoveClick = () => {
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
     await Promise.all(
       Object.entries(selectedRows)
         .filter(([_, isSelected]) => isSelected)
@@ -92,6 +98,13 @@ const UserAccountsTable: React.FC = () => {
     return actions;
   }, [isOneRowSelected]);
 
+  const selectedAccounts = Object.entries(selectedRows)
+    .filter(([_, isSelected]) => isSelected)
+    .map(([rowId]) => {
+      const idx = parseInt(rowId, 10);
+      return userAccounts[idx];
+    });
+
   return (
     <>
       <div>
@@ -117,6 +130,13 @@ const UserAccountsTable: React.FC = () => {
         isOneRowSelected={isOneRowSelected}
         keys={keys}
         handleOpenChange={handleClose}
+      />
+      <DeleteUserAccountsDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        selectedAccounts={selectedAccounts}
+        onConfirmDelete={handleConfirmDelete}
+        isLoading={userAccountsIsLoading}
       />
     </>
   );
