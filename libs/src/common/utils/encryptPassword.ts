@@ -20,7 +20,15 @@
 import toArrayBuffer from '@libs/common/utils/toArrayBuffer';
 import EncryptedPasswordObject from '../types/encryptPasswordObject';
 
+const checkCryptoAvailability = () => {
+  if (!crypto?.subtle) {
+    throw new Error('CRYPTO_NOT_AVAILABLE');
+  }
+};
+
 export const deriveKey = async (password: string, salt: Uint8Array): Promise<CryptoKey> => {
+  checkCryptoAvailability();
+
   const encoder = new TextEncoder();
   const keyMaterial = await crypto.subtle.importKey('raw', encoder.encode(password), { name: 'PBKDF2' }, false, [
     'deriveKey',
@@ -44,6 +52,8 @@ export const encryptPassword = async (
   password: string,
   key: CryptoKey,
 ): Promise<{ iv: Uint8Array; ciphertext: ArrayBuffer }> => {
+  checkCryptoAvailability();
+
   const encoder = new TextEncoder();
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, encoder.encode(password));

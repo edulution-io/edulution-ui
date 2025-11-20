@@ -90,48 +90,56 @@ const AddUserAccountDialog: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowS
   };
 
   const onSubmit = async (data: UserAccountFormValues) => {
-    if (!isFirstUserAccount) {
-      const isSafePinValid = await decryptPassword(
-        JSON.parse(decodeBase64(userAccounts[0].accountPassword)) as EncryptedPasswordObject,
-        data.safePin,
-      );
+    try {
+      if (!isFirstUserAccount) {
+        const isSafePinValid = await decryptPassword(
+          JSON.parse(decodeBase64(userAccounts[0].accountPassword)) as EncryptedPasswordObject,
+          data.safePin,
+        );
 
-      if (!isSafePinValid) {
-        form.setValue('safePin', '');
-        toast.error(t('usersettings.security.wrongSafePin'));
-        return;
+        if (!isSafePinValid) {
+          form.setValue('safePin', '');
+          toast.error(t('usersettings.security.wrongSafePin'));
+          return;
+        }
       }
-    }
 
-    const salt = crypto.getRandomValues(new Uint8Array(16));
-    const key = await deriveKey(data.safePin, salt);
-    const { iv, ciphertext } = await encryptPassword(data.accountPassword, key);
+      const salt = crypto.getRandomValues(new Uint8Array(16));
+      const key = await deriveKey(data.safePin, salt);
+      const { iv, ciphertext } = await encryptPassword(data.accountPassword, key);
 
-    const newPassword = {
-      ciphertext: Array.from(new Uint8Array(ciphertext)),
-      iv: Array.from(iv),
-      salt: Array.from(salt),
-    };
-
-    const userAccountDto = {
-      appName: data.appName,
-      accountUser: data.accountUser,
-      accountPassword: encodeBase64(JSON.stringify(newPassword)),
-    };
-
-    if (idx !== undefined) {
-      const { accountId } = userAccounts[idx];
-
-      const updatedUserAccountDto = {
-        ...userAccountDto,
-        accountId,
+      const newPassword = {
+        ciphertext: Array.from(new Uint8Array(ciphertext)),
+        iv: Array.from(iv),
+        salt: Array.from(salt),
       };
 
-      await updateUserAccount(accountId, updatedUserAccountDto);
-    } else {
-      await addUserAccount(userAccountDto);
+      const userAccountDto = {
+        appName: data.appName,
+        accountUser: data.accountUser,
+        accountPassword: encodeBase64(JSON.stringify(newPassword)),
+      };
+
+      if (idx !== undefined) {
+        const { accountId } = userAccounts[idx];
+
+        const updatedUserAccountDto = {
+          ...userAccountDto,
+          accountId,
+        };
+
+        await updateUserAccount(accountId, updatedUserAccountDto);
+      } else {
+        await addUserAccount(userAccountDto);
+      }
+      handleClose();
+    } catch (error) {
+      if (error instanceof Error && error.message === 'CRYPTO_NOT_AVAILABLE') {
+        toast.error(t('usersettings.security.cryptoNotAvailable'));
+      } else {
+        toast.error(t('common.error'));
+      }
     }
-    handleClose();
   };
 
   const getDialogBody = () => (
