@@ -23,7 +23,7 @@
     "activeFrom": "Active from",
     "activeUntil": "Active until",
     "appTitle": "Info Board",
-    "description": "Here you find your latest bulletins",
+    "description": "Here you can find your latest bulletins",
     "sidebar": "Info Board",
     "newCategorie": "New category",
     "category": "Category",
@@ -39,7 +39,7 @@
     "isActive": "Active",
     "isPermanentlyActive": "Permanently active",
     "error": "Error",
-    "filterPlaceHolderText": "Search for categoriename",
+    "filterPlaceHolderText": "Search for category name",
     "manageCategories": "Manage categories",
     "manageBulletins": "Manage bulletins",
     "placeholderCategoryName": "Name",
@@ -87,6 +87,7 @@
       "unauthorizedCreateCategory": "No permission to create this category",
       "unauthorizedDeleteCategory": "No permission to delete this category",
       "unauthorizedUpdateCategory": "No permission to update this category",
+      "attachmentNotFound": "Attachment not found",
       "attachmentDeletionFailed": "Failed to delete an attachment"
     }
   },
@@ -122,15 +123,9 @@
     "mobileAccess": {
       "title": "Mobile Access",
       "manual": "Setup",
-      "manualSetup": "Manual setup",
       "setupWithQrCode": "Setup with QR code",
-      "accessData": "Login data",
       "content": "You can access the school server from many mobile devices. Click on Manual to start.",
-      "scanAccessInfo": "To transfer the access data, please scan the following QR code with the {{ applicationName }} app.",
-      "manualAccessInfo": "Enter your login details manually in the {{ applicationName }} app. The example below shows how to fill in each field.",
-      "nextStepPreview": "In the next step you can transfer the access data.",
-      "downloadDirect": "Or download the app directly:",
-      "downloadApp": "Download the {{ applicationName }} app here:"
+      "scanAccessInfo": "To transfer the access data, please scan the following QR code with the edulution App."
     },
     "quota": {
       "title": "Quotas",
@@ -163,7 +158,7 @@
       "ToggleSchoolClassJoinedFailed": "Failed to join or leave the classroom",
       "ToggleProjectJoinedFailed": "Failed to join or leave the project",
       "TogglePrinterJoinedFailed": "Failed to add or remove the printer",
-      "GetUserSessionsFailed": "Get user session failed",
+      "GetUserSessionsFailed": "Failed to get user session",
       "AddUserSessionsFailed": "Add user session failed",
       "GetPrintersFailed": "Fetching printers failed",
       "RemoveUserSessionsFailed": "Remove user session failed",
@@ -173,20 +168,22 @@
       "StopExamModeFailed": "Stop exam mode failed",
       "RemoveManagementGroupFailed": "Remove management group failed",
       "AddManagementGroupFailed": "Add management group failed",
-      "GetUserSchoolClassesFailed": "Get user school classes failed",
-      "GetUserSchoolClassFailed": "Get user school class failed",
-      "GetUserProjectsFailed": "Get user projects failed",
+      "GetUserSchoolClassesFailed": "Failed to get user school classes",
+      "GetUserSchoolClassFailed": "Failed to get user school class",
+      "GetUserProjectsFailed": "Failed to get user projects",
       "GetUserFailed": "Fetching failed",
       "UpdateUserFailed": "Update failed",
-      "GetCurrentUserRoomFailed": "Get current user room failed",
+      "GetCurrentUserRoomFailed": "Failed to get current user room",
       "CreateProjectFailed": "Create project failed",
       "RemoveProjectFailed": "Remove project failed",
       "UpdateProjectFailed": "Update project failed",
       "SearchUsersOrGroupsFailed": "Search users or groups failed",
-      "GetProjectFailed": "Get project failed",
+      "GetProjectFailed": "Failed to get project",
       "PasswordMismatch": "The current password is wrong",
       "PasswordChangeFailed": "Password change failed",
-      "GetUsersQuotaFailed": "Get users quota failed"
+      "GetUsersQuotaFailed": "Failed to get users quota",
+      "GetSchoolsFailed": "Failed to get schools",
+      "GetLmnVersionFailed": "Failed to retrieve the Linuxmuster version."
     }
   },
   "ticketsystem": {
@@ -203,6 +200,10 @@
     "encryption": "Encryption",
     "rowsSelected": "{{selected}} of {{total}} jobs selected",
     "rowSelected": "{{selected}} of {{total}} job selected",
+    "themeUpdated": {
+      "generic": "The mail theme has been updated. Please reload the page to apply the changes.",
+      "failed": "The mail theme could not be updated."
+    },
     "importer": {
       "filterPlaceHolderText": "Search for username",
       "title": "E-Mail Sync",
@@ -236,7 +237,7 @@
       "BbbUnauthorized": "You are not authorized at external BBB server",
       "AppNotProperlyConfigured": "The conferencing app is not properly configured, contact your system administrator",
       "YouAreNotTheCreator": "You are not the creator of the conference",
-      "AlreadyInAnotherMeeting": "You are already in a conference. Please leave the current conference before joining another one.",
+      "AlreadyInAnotherMeeting": "You are already in a conference. Please close the current conference before joining another one.",
       "DBAccessFailed": "Database access failed",
       "WrongPassword": "The entered password is wrong",
       "ConferenceIsNotRunning": "Conference is not running",
@@ -273,7 +274,7 @@
     "create": "Create conference",
     "delete": "Delete",
     "deleteConference": "Delete conference",
-    "deleteConferences": "Delete {count}} conferences",
+    "deleteConferences": "Delete {count} conferences",
     "editConference": "Edit conference",
     "conferenceUpdatedSuccessfully": "Conference updated successfully",
     "conferenceCreatedSuccessfully": "Conference created successfully",
@@ -292,7 +293,7 @@
     "rowsSelected": "{{selected}} of {{total}} conferences selected",
     "rowSelected": "{{selected}} of {{total}} conference selected",
     "cancel": "Cancel",
-    "password_required": "No Password entered",
+    "password_required": "No password entered",
     "error": "Error",
     "action": "Action",
     "start": "Start",
@@ -380,7 +381,7 @@
       "fileInfoDeleting": "File {{filename}} is being deleted",
       "downloadInfo": "Downloading {{filename}}",
       "errorInfo": "{{failed}} files could not be handed out",
-      "fileStructureIsCreating": "File structure is creating",
+      "fileStructureIsCreating": "File structure is being creating",
       "zipFilesAreUploading": "Files are uploading",
       "fileIsUploading": "{{filename}} is uploading"
     },
@@ -492,7 +493,7 @@
     "invalidQuota": "The quota must be specified according to the documentation",
     "invalidMailQuota": "The E-Mail quota must be specified as a number in MB",
     "mailQuota": "E-Mail Quota (MB)",
-    "proxyAddresses": "Proxy E-Mail-Adresses",
+    "proxyAddresses": "Proxy E-Mail-Addresses",
     "descriptionPlaceholder": "Short description of the project",
     "proxyAddressesPlaceholder": "info@email1.de,kontakt@email2.com",
     "quotaPlaceholder": "[{\"share\":\"default-school\",\"quota\":50}]",
@@ -500,6 +501,16 @@
     "detailsprinters": "Details of printer",
     "classes": "Classes",
     "name": "Name",
+    "project": {
+      "createSuccess": "Project created successfully",
+      "updateSuccess": "Project updated successfully",
+      "deleteSuccess": "Project deleted successfully"
+    },
+    "sessions": {
+      "createSuccess": "Session created successfully",
+      "updateSuccess": "Session updated successfully",
+      "deleteSuccess": "Session deleted successfully"
+    },
     "notMemberOfClass": "You are no member of a class.",
     "noGroupsToShow": "No groups available.",
     "overview": "Overview",
@@ -581,6 +592,7 @@
     "pdfDescription": "Create a PDF file to print the passwords for these school classes",
     "csvDescription": "Create a CSV file to print the passwords for these school classes",
     "printOneItemPerPage": "Print one password per page",
+    "shouldSplitNamesInCsv": "First and last name in separate columns (works from Linuxmuster 7.3 onwards)",
     "selectSavedSession": "Select from saved sessions",
     "saveSession": "Save session",
     "editSession": "Edit session",
@@ -602,11 +614,16 @@
       "subnet": "Subnet",
       "subnetDescription": "Subnet in CIDR notation (10.0.0.0/24)",
       "subnetPlaceholder": "10.0.0.0/24",
-      "proxyAdress": "Proxy Adress",
+      "proxyAdress": "Proxy Address",
       "proxyAdressDescription": "URL of the Veyon-WebAPI-Proxy",
       "proxyAdressPlaceholder": "http://localhost:11080",
       "createConfig": "Create config",
       "editConfig": "Edit config"
+    },
+    "selectSchool": {
+      "title": "Select school",
+      "description": "Please select the school to which the class or project belongs.",
+      "placeholder": "Select school"
     },
     "copyOrCut": "Would you like to cut or copy the files?",
     "filesShared": "Files shared",
@@ -623,10 +640,10 @@
   "survey": {
     "attendee": "Attendee",
     "attendees": "Attendees",
-    "filterPlaceHolderText": "Search for surveyname",
+    "filterPlaceHolderText": "Search for survey name",
     "invitedAttendees": "Invited",
     "publicSurvey": "Public survey",
-    "isPublic": "Publicly displayed (?)",
+    "isPublic": "Publicly displayed",
     "isPublicTrue": "Public",
     "isPublicFalse": "Private",
     "newTitle": "New survey",
@@ -636,10 +653,18 @@
     "expirationDate": "Expiration date",
     "finished": "You successfully completed the survey.",
     "thanks": "Thank you for your participation.",
-    "noAnswer": "No answers available jet.",
+    "noAnswer": "No answers available yet.",
     "notFound": "Survey could not be found.",
     "noFormula": "The formula of the survey is not readable.",
-    "canSubmitMultiple": "Allow multiple submission",
+    "canSubmitMultiple": "Allow multiple submissions",
+    "export": {
+      "exportToPDF": "Export as PDF",
+      "saveInPDF": "Save as PDF",
+      "processing": "Processing export ...",
+      "success": "Successfully exported as PDF",
+      "error": "Error exporting",
+      "warning": "Some questions can not be displayed correctly in the PDF export. This includes file upload, image selection and the password field."
+    },
     "editor": {
       "inputFieldTitle": "Input field",
       "new": "New (blank)",
@@ -671,16 +696,27 @@
         "addQuestionTitle": "Add a title",
         "questionDescription": "Description",
         "addQuestionDescription": "Add a description",
+        "rowsAndColumns": "Edit rows and columns",
+        "columns": "Columns",
+        "addColumn": "Add column",
+        "newColumn": "New column",
+        "removeColumn": "Remove column",
+        "rows": "Rows",
+        "addRow": "Add row",
+        "newRow": "New row",
+        "removeRow": "Remove row",
         "limit": "Limit",
         "nullLimit": "An upper limit of 0 means, that the option selectable, infinitely often",
         "backendLimiters": "Option limits",
-        "addBackendLimiters": "Define options with limiters, to limit the number of times the option can be selected",
-        "useOtherItem": "Enable users to add user defined options",
-        "addBackendLimiterForOtherItem": "This is the limit, for how often the option will be selectable",
+        "addBackendLimiters": "Define options with limiters to control how often they can be selected",
+        "useOtherItem": "Enable users to add user-defined options",
+        "addBackendLimiterForOtherItem": "Set how often participants may choose this option",
         "upperLimit": "Limit",
         "upperBackendLimiters": "Choices with an upper limit",
         "addChoice": "Add",
-        "filterPlaceHolderText": "Search for option"
+        "filterPlaceHolderText": "Search for option",
+        "imageWidth": "Width of one image in pixel [px]",
+        "imageWidthPlaceholder": "0 means that the width is only limited by the available space."
       }
     },
     "participate": {
@@ -688,17 +724,17 @@
       "username": "User name",
       "pleaseEnterYourFullName": "You may participate in the survey by entering your full name, use the participation-ID if you want to change your submission.",
       "yourFullName": "Your full name",
-      "invalidUsername": "Username is invalid (permitted are letters, number, and [. -])",
+      "invalidUsername": "Username is invalid (permitted are letters, numbers, and [. -])",
       "idHeader": "Your participation ID (optional)",
-      "idText": "Pls copy this for later",
+      "idText": "Please copy this for later",
       "idParagraph": "To view your former answer or to edit it, if configured, you can use the participation-ID here.",
       "usernameRequired": "User name is required",
       "fileSizeExceeded": "A file exceeds the maximum allowed size of {{size}} MB.",
-      "completeMessage": "Thank you very much for participating in this survey"
+      "completeMessage": "Thank you very much for participating in this survey."
     },
     "errors": {
       "submitAnswerError": "The answer could not be submitted.",
-      "updateOrCreateError": "Neither able to update a survey nor to create a new one.",
+      "updateOrCreateError": "Unable to update or create the survey.",
       "deleteError": "The surveys could not be deleted.",
       "noAnswerError": "No answers available jet.",
       "noFormulaError": "The formula of the survey is not readable.",
@@ -714,12 +750,12 @@
   },
   "survey-answer": {
     "errors": {
-      "notAbleToFindOrCreateSurveyAnswerError": "Neither able to find nor to create the users survey answer entry in database.",
+      "notAbleToFindOrCreateSurveyAnswerError": "Unable to find or create the user's survey answer entry in database.",
       "notAbleToFindSurveyAnswerError": "Survey answers not found.",
-      "notAbleToUpdateSurveyAnswerError": "Not able to update the submitted survey answer.",
-      "notAbleToCreateSurveyAnswerError": "Not able to create the users survey answer.",
-      "notAbleToDeleteSurveyAnswerError": "Not able to delete the users survey answer.",
-      "notAbleToCountChoices": "Not able to count the choices."
+      "notAbleToUpdateSurveyAnswerError": "Unable to update the submitted survey answer.",
+      "notAbleToCreateSurveyAnswerError": "Unable to create the user's survey answer.",
+      "notAbleToDeleteSurveyAnswerError": "Unable to delete the user's survey answer.",
+      "notAbleToCountChoices": "Unable to count the choices."
     }
   },
   "surveys": {
@@ -737,17 +773,17 @@
       "open": {
         "menu": "Open Surveys",
         "title": "Open Surveys",
-        "description": "Here you find the surveys you were invited to participate."
+        "description": "Here you can find the surveys you were invited to participate."
       },
       "created": {
         "menu": "Own Surveys",
         "title": "Self-created Surveys",
-        "description": "Here you find the surveys that you have created by yourself."
+        "description": "Here you can find the surveys that you have created by yourself."
       },
       "answered": {
         "menu": "Answered Surveys",
         "title": "Answered Surveys",
-        "description": "Here you find the surveys that you have already participated in."
+        "description": "Here you can find the surveys that you have already participated in."
       },
       "editor": {
         "menu": "Create new"
@@ -881,6 +917,7 @@
     },
     "delete": "Remove",
     "description": {
+      "dashboard": "Here you can make all the settings.",
       "ticketsystem": "Here you can make all the settings.",
       "mail": "Here you can make all the settings.",
       "chat": "Here you can make all the settings.",
@@ -940,11 +977,23 @@
 
       "logo": {
         "title": "Logo",
-        "descriptionSchool": "Upload your Logo. It will be shown on the login screen and on the edulution app ID card.",
-        "descriptionGeneric": "Upload your Logo. It will be shown on the login screen.",
-        "uploadLightLogo": "Upload Light Logo",
-        "uploadDarkLogo": "Upload Dark Logo",
+        "descriptionSchool": "Upload your logo. It will be shown on the login screen and on the edulution app ID card.",
+        "descriptionGeneric": "Upload your logo. It will be shown on the login screen.",
+        "uploadLightLogo": "Upload light logo",
+        "uploadDarkLogo": "Upload dark logo",
         "deleteSuccessful": "Logo deleted successfully."
+      },
+      "theme": {
+        "title": "Theme Customization",
+        "primaryColor": "Primary Color",
+        "primaryDescription": "Main color used for buttons, links, and highlights",
+        "secondaryColor": "Secondary Color",
+        "secondaryDescription": "Secondary color used for text and borders",
+        "ciLightGreen": "Brand Green",
+        "ciLightGreenDescription": "Brand green color used in gradients and logos",
+        "ciLightBlue": "Brand Blue",
+        "ciLightBlueDescription": "Brand blue color used in gradients and logos",
+        "resetToDefaults": "Reset to Defaults"
       },
       "organisationInfo": {
         "title": "Organisational information",
@@ -967,11 +1016,16 @@
       "resetMfaFormDescription": "Here you can reset the two-factor authentication for users.",
       "selectUsersTitle": "Select Users",
       "selectUsersDescription": "Select the users for whom you want to reset the two-factor authentication.",
-      "totpResetSuccess": "TOTP for user {{username}} has been disabled successfully."
+      "totpResetSuccess": "TOTP for user {{username}} has been disabled successfully.",
+      "setAdminGroupTitle": "Set administrator group",
+      "setAdminGroupDescription": "Additional administrators can be defined here. The global administrator remains unchanged.",
+      "setAdminGroupSelectDescription": "Groups can be selected using the search field.",
+      "setAdminGroupWarning": "At least one admin group must be selected."
     },
     "info": {
       "title": "Info"
     },
+    "lmnVersion": { "title": "Linuxmuster version overview" },
     "appconfig": {
       "position": {
         "title": "Sorting",
@@ -1010,9 +1064,18 @@
           "invalidUrlFormat": "Invalid URL"
         },
         "webdavShare": {
-          "title": "WebDAV-Server",
+          "title": "WebDAV",
+          "sectionTitle": "WebDAV-Shares",
           "description": "WebDAV servers can be set up for the file manager here.",
-          "filterPlaceHolderText": "Search for WebDAV servers"
+          "filterPlaceHolderText": "Search for WebDAV shares"
+        },
+        "webdavServer": {
+          "title": "WebDAV-Server",
+          "filterPlaceHolderText": "Search for WebDAV servers",
+          "deleteWarning": {
+            "title": "Deletion not possible",
+            "description": "The WebDAV server ‘{{serverName}}’ is used by {{count}} share(s): {{shares}}. Please delete the dependent shares first."
+          }
         },
         "files": {
           "title": "Files",
@@ -1027,14 +1090,9 @@
           "description": "Here in the editor you can design your own web applications or integrate existing content. You can create websites, format and customize content. Existing applications or external content can also be inserted and conveniently linked to your own content. This creates a flexible area in which you can easily display content or offer interactive applications. Start by selecting the mode in which the web application is to be launched.",
           "sandboxMode": "Separate Layout",
           "nativeMode": "Integrated Layout",
-          "sandboxModeDescription": "In “Sparate layout” mode, the content is displayed as a separate page, similar to a window within the application. In addition to the actual content, additional design elements or functions can also be loaded from other sources. This means that the design is independent of the application and could therefore look or behave differently. Here, the content must be uploaded as an HTML file.",
+          "sandboxModeDescription": "In “Separate layout” mode, the content is displayed as a separate page, similar to a window within the application. In addition to the actual content, additional design elements or functions can also be loaded from other sources. This means that the design is independent of the application and could therefore look or behave differently. Here, the content must be uploaded as an HTML file.",
           "nativeModeDescription": "In “Integrated layout” mode, on the other hand, the content is inserted directly into the user interface of the application. This means that the content looks exactly like the application itself and fits in seamlessly. However, no additional external design elements or functions can be added dynamically here. However, static elements such as images can be uploaded and used here.",
           "visibilityDescription": "Here you can specify whether the app should be publicly accessible. Active means public, inactive means that only configured user groups have access. Making the app publicly accessible creates a link in the footer. To make the app visible to registered users in the sidebar, their access must be configured via the user groups."
-        },
-        "hasPublicAssets": {
-          "title": "Public assets",
-          "description": "Here you can manage static elements such as images that can be used in the app. These elements are publicly accessible if the corresponding option is enabled in the app settings.",
-          "publicAssetAvailability": "Should static elements such as images be publicly accessible? If this is disabled, they are only visible to registered users. This could result in some content not being displayed correctly."
         }
       },
       "update": {
@@ -1145,13 +1203,15 @@
     },
     "mobileAccess": {
       "title": "Mobile Access",
-      "description": "Here you can set up the {{ applicationName }} app for mobile access to your files. Currently only available for Apple iOS."
+      "description": "Here you can set up the edulution app for mobile access.",
+      "docsDescription": "You can find the download link for the edulution app and instructions on how to set it up in the edulution documentation.",
+      "button": "Open Docs"
     },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
     "config": {
-      "mfa": "Two-Factor-Authentication",
-      "mfaInfo": "Currently the Two-Factor-Authentication is",
+      "mfa": "Two-Factor Authentication",
+      "mfaInfo": "Currently the Two-Factor Authentication is",
       "enabled": "enabled",
       "enable": "Enable",
       "disabled": "disabled",
@@ -1202,11 +1262,11 @@
   "user": "User",
   "login": {
     "pageTitle": "Login",
-    "username_too_long": "Username to long",
+    "username_too_long": "Username too long",
     "username_too_short": "Username to short",
     "username_not_regex": "Invalid username/participation-ID",
     "publicUsername_notExisting": "There is no submission with the given participation-ID",
-    "password_too_long": "Password to long",
+    "password_too_long": "Password too long",
     "forgot_password": "Forgot password?",
     "remember_me": "Remember me",
     "enterMultiFactorCode": "Two-Factor Authentication",
@@ -1216,8 +1276,11 @@
   },
   "edit": "Edit",
   "common": {
+    "more": "More",
+    "less": "Less",
+    "refreshPage": "Refresh page",
     "showMore": "Show more",
-    "visibility": "Vsibility",
+    "visibility": "Visibility",
     "offline": "Offline",
     "guest": "Guest",
     "ok": "OK",
@@ -1353,7 +1416,7 @@
     "format": "Format",
     "upload": "Upload",
     "mode": "Mode",
-    "orContinueWithoutAccount": "Or continue without account",
+    "orContinueWithoutAccount": "Or continue without an account",
     "application": "Application",
     "reset": "Reset",
     "file": "File",
@@ -1398,7 +1461,7 @@
       "datePast": "Date must be in the future"
     }
   },
-  "fileOperationSuccessful": "File operation successful started",
+  "fileOperationSuccessful": "File operation started successfully",
   "fileOperationStarted": "File operation started",
   "unknownErrorOccurred": "An unknown error occurred",
   "fileSharingTable": {
@@ -1430,7 +1493,16 @@
     "cannotUploadOversized": "Files larger than 50 MB cannot be uploaded.",
     "addFiles": "Add files",
     "addFolder": "Add folder",
-    "preparingFolder": "Preparing folder"
+    "preparingFolder": "Preparing folder",
+    "file": "File",
+    "files": "Files",
+    "creatingDirectoryStructure": "Creating directory structure",
+    "hiddenFiles": "hidden & system files",
+    "errors": {
+      "directoryCreationFailed": "Failed to create directory",
+      "fileUploadFailed": "Failed to upload file",
+      "uploadError": "Error uploading files"
+    }
   },
   "warnings": {
     "colorMayConflictWithTheme": "Manual setting of the color can lead to problems with other themes (light/dark) in the future. It is recommended to always set the color of the font at the same time as the background color."
@@ -1563,7 +1635,7 @@
   "timeAgo": {
     "justNow": "just now",
     "minuteAgo": "{{count}} minutes ago",
-    "hourAgo": "{{count}} hour ago",
+    "hourAgo": "{{count}} hours ago",
     "dayAgo": "{{count}} days ago",
     "invalidDate": "Invalid date"
   },
@@ -1649,9 +1721,28 @@
     "mailImapPortTitle": "Port",
     "mailImapPortDescription": "Enter the port number of the IMAP-server (i.e. 993)",
     "mailImapSecureTitle": "Secure Connection",
-    "mailImapSecureDescription": "Should the connection be established via TLS or STARTTLS",
+    "mailImapSecureDescription": "Should the connection be established via TLS or STARTTLS?",
     "mailImapRejectUnauthorizedTitle": "Reject Unauthorized",
-    "mailImapRejectUnauthorizedDescription": "Should a certificate check be carried out for this connection?"
+    "mailImapRejectUnauthorizedDescription": "Should a certificate check be carried out for this connection?",
+    "mailSogoThemeTitle": "Theme",
+    "mailSogoThemeDescription": "Select the theme for the Mail app. Changing the theme restarts related containers.",
+    "mailSogoTheme": {
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "mailSogoThemeDisabled": "Disabled because the mail server is not running.",
+    "mailSogoThemeUpdateCheckerTitle": "Theme Version Check",
+    "mailSogoThemeUpdateCheckerDescription": "Check if a new version of the current theme is available and update it if necessary.",
+    "updateChecker": {
+      "currentVersion": "Current Version",
+      "latestVersion": "Latest Version",
+      "theme": "Theme",
+      "updateAvailable": "A new version is available!",
+      "checkAgain": "Check Again",
+      "updateNow": "Update Now",
+      "checkVersionSuccess": "Theme successfully checked!",
+      "noData": "No version information available."
+    }
   },
   "mails": {
     "errors": {
@@ -1669,7 +1760,7 @@
   "licensing": {
     "communityLicenseDialog": {
       "title": "Community Edition",
-      "description": "Free community edition of {{ applicationName }} UI.<br/>Visit us on <link1>{{link}}</link1>.<br/><strong>This version does not provide support.</strong>"
+      "description": "Free community edition of {{ applicationName }} UI. <strong>This version does not provide support.</strong>"
     }
   },
   "preview": {
@@ -1678,10 +1769,18 @@
   },
   "containerApplication": {
     "dialogTitle": "{{applicationName}}-Plugins Installer",
+    "EDU_MANAGER_INSTALL_TOKEN": {
+      "title": "Install Token",
+      "description": "Please enter the install token that was created in the Edulution Manager."
+    },
     "EDULUTION_MAIL_HOSTNAME": {
       "title": "Hostname",
       "description": "Hostname of the mail server. This could be different from the edulution domain name."
     }
+  },
+  "edulution-manager": {
+    "title": "Edulution Manager",
+    "sidebar": "Edulution Manager"
   },
   "dockerOverview": {
     "title": "Container Overview",
@@ -1693,7 +1792,9 @@
     "filterPlaceHolderText": "Search for container name",
     "port": "Port",
     "created": "Created at",
-    "container-view": "Container"
+    "container-view": "Container",
+    "selectPluginForInstallationTitle": "Select plugin for installation",
+    "selectPluginForInstallationDescription": "Select an app here for which a plugin should be installed."
   },
   "docker": {
     "error": {
@@ -1701,7 +1802,8 @@
       "dockerImageNotFound": "Docker Image could not be found",
       "dockerCreationError": "Docker Container could not be created",
       "dockerCommandExecutionError": "Docker command could not be executed",
-      "dockerContainerDeletionError": "Docker Container could not be deleted"
+      "dockerContainerDeletionError": "Docker Container could not be deleted",
+      "dockerUpdateError": "Docker Container could not be updated"
     },
     "events": {
       "pullingImage": "Pulling docker image...",
@@ -1713,7 +1815,9 @@
       "restartContainer": "Restart Container.",
       "killContainer": "Container killed.",
       "containerCreationSuccessful": "Container successfully created.",
-      "containerCreationFailed": "Container could not be created."
+      "containerCreationFailed": "Container could not be created.",
+      "containerUpdateSuccessful": "{{containerName}} updated successfully.",
+      "containerAlreadyUpdateToDate": "{{containerName}} is already up to date."
     },
     "status": {
       "running": "running",
@@ -1768,6 +1872,28 @@
       "generic": "Generic"
     },
     "status": "Status",
-    "offline": "Server is currently unavailable"
+    "offline": "Server is currently unavailable",
+    "pathVariables": {
+      "title": "Path variable",
+      "description": "A dynamic path variable can be selected here from the user attributes."
+    },
+    "isRootServer": {
+      "title": "Root path",
+      "description": "For the Linuxmuster school functions, at least one WebDAV share must be configured as the root path.",
+      "short": "Root",
+      "notConfigured": "No root path configured. Please contact the system administrator."
+    },
+    "selectPlaceholder": "Select...",
+    "authentication": {
+      "title": "Authentication",
+      "description": "The authentication method for the WebDAV server can be selected here.",
+      "basic": "Basic (username, password)"
+    },
+    "selectRootServer": {
+      "title": "WebDAV Server Selection",
+      "description": "Select the WebDAV server that should serve as the root path."
+    },
+    "sharePath": "Path",
+    "pathPreview": "Path preview"
   }
 }

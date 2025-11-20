@@ -23,7 +23,7 @@ export class SurveysTemplate {
   template: Partial<Survey> & { formula: SurveyFormula };
 
   @Prop({ required: true })
-  fileName: string;
+  name: string;
 
   @Prop({ default: true, required: true })
   isActive: boolean;

@@ -1,18 +1,25 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React from 'react';
 import { AiOutlineStop } from 'react-icons/ai';
-import { MdOutlineRestartAlt } from 'react-icons/md';
+import { MdOutlineRestartAlt, MdOutlineUpdate } from 'react-icons/md';
 import { useTranslation } from 'react-i18next';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
@@ -25,12 +32,22 @@ import DOCKER_PROTECTED_CONTAINERS from '@libs/docker/constants/dockerProtectedC
 import DOCKER_STATES from '@libs/docker/constants/dockerStates';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
 import type TDockerProtectedContainer from '@libs/docker/types/TDockerProtectedContainer';
+import CreateButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/createButton';
+import useSelectCreateDockerContainerDialogStore from '@/pages/Settings/AppConfig/DockerIntegration/SelectCreateDockerContainerDialog/useSelectCreateDockerContainerDialogStore';
 import useDockerApplicationStore from './useDockerApplicationStore';
 
 const DockerContainerFloatingButtons: React.FC = () => {
   const { t } = useTranslation();
-  const { containers, selectedRows, setSelectedRows, getContainers, runDockerCommand, deleteDockerContainer } =
-    useDockerApplicationStore();
+  const { setDialogOpen } = useSelectCreateDockerContainerDialogStore();
+  const {
+    containers,
+    selectedRows,
+    setSelectedRows,
+    getContainers,
+    runDockerCommand,
+    deleteDockerContainer,
+    updateContainer,
+  } = useDockerApplicationStore();
   const selectedContainerId = Object.keys(selectedRows);
   const selectedContainers = containers.filter((container) => selectedContainerId.includes(container.Id));
   const containerNames = selectedContainers.map((container) => container.Names?.[0].split('/')[1]) || [''];
@@ -52,6 +69,11 @@ const DockerContainerFloatingButtons: React.FC = () => {
     void runDockerCommand(containerNames, action);
   };
 
+  const handleUpdateClick = () => {
+    void updateContainer(containerNames);
+    setSelectedRows({});
+  };
+
   const handleDeleteClick = () => {
     void deleteDockerContainer(containerNames);
     setSelectedRows({});
@@ -59,6 +81,7 @@ const DockerContainerFloatingButtons: React.FC = () => {
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
+      CreateButton(() => setDialogOpen(true), selectedContainerId.length === 0),
       StartButton(() => handleActionClick(DOCKER_COMMANDS.START), isButtonVisible && !areSelectedContainersRunning),
       StopButton(() => handleActionClick(DOCKER_COMMANDS.STOP), isButtonVisible && areSelectedContainersNotRunning),
       {
@@ -77,6 +100,12 @@ const DockerContainerFloatingButtons: React.FC = () => {
       ReloadButton(() => {
         void getContainers();
       }),
+      {
+        icon: MdOutlineUpdate,
+        text: t(`common.update`),
+        onClick: () => handleUpdateClick(),
+        isVisible: isButtonVisible,
+      },
     ],
     keyPrefix: 'docker-table-floating-button_',
   };

@@ -1,39 +1,48 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { useEffect, useMemo } from 'react';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
-import useFileSharingMenuConfig from '@/pages/FileSharing/useFileSharingMenuConfig';
 import useMedia from '@/hooks/useMedia';
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/getFileSharingTableColumns';
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
-import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import { useParams } from 'react-router-dom';
 
 const FileSharingTable = () => {
+  const { webdavShare } = useParams();
+
   const { isMobileView, isTabletView } = useMedia();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
-  const { setSelectedRows, setSelectedItems, selectedRows, files, isLoading } = useFileSharingStore();
-  const { fetchShares } = usePublicShareStore();
+  const appConfigs = useAppConfigsStore((s) => s.appConfigs);
+  const { setSelectedRows, setSelectedItems, fetchFiles, selectedRows, files, isLoading, currentPath } =
+    useFileSharingStore();
 
   useEffect(() => {
-    void fetchShares();
+    if (currentPath !== '/') void fetchFiles(webdavShare, currentPath);
   }, []);
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
@@ -49,8 +58,6 @@ const FileSharingTable = () => {
     setSelectedItems(selectedItemData);
   };
 
-  const { appName } = useFileSharingMenuConfig();
-
   const shouldHideColumns = !(isMobileView || isTabletView || (isFilePreviewVisible && isFilePreviewDocked));
 
   const initialColumnVisibility = useMemo(
@@ -62,8 +69,6 @@ const FileSharingTable = () => {
     }),
     [shouldHideColumns],
   );
-
-  const { appConfigs } = useAppConfigsStore();
 
   const isDocumentServerConfigured = !!getExtendedOptionsValue(
     appConfigs,
@@ -81,7 +86,7 @@ const FileSharingTable = () => {
       isLoading={isLoading}
       selectedRows={selectedRows}
       getRowId={(row) => row.filePath}
-      applicationName={appName}
+      applicationName={APPS.FILE_SHARING}
       initialSorting={[
         { id: 'type', desc: false },
         { id: 'select-filename', desc: false },

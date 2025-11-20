@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { join } from 'path';
@@ -30,6 +37,7 @@ import {
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
+import APPS from '@libs/appconfig/constants/apps';
 import {
   ANSWER,
   CAN_PARTICIPATE,
@@ -40,6 +48,8 @@ import {
   SURVEYS,
   TEMPLATES,
 } from '@libs/survey/constants/surveys-endpoint';
+import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
+import SURVEYS_ANSWER_FOLDER from '@libs/survey/constants/surveyAnswersFolder';
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -47,16 +57,19 @@ import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getUsernameFromRequest from 'apps/api/src/common/utils/getUsernameFromRequest';
 import SurveysService from './surveys.service';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveysTemplateService from './surveys-template.service';
 import SurveyAnswerService from './survey-answers.service';
+import FilesystemService from '../filesystem/filesystem.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
 import { checkAttachmentFile, createAttachmentUploadOptions } from '../filesystem/multer.utilities';
-import AppConfigGuard from '../appconfig/appconfig.guard';
+import AdminGuard from '../common/guards/admin.guard';
+import CustomHttpException from '../common/CustomHttpException';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
@@ -64,9 +77,9 @@ import AppConfigGuard from '../appconfig/appconfig.guard';
 class SurveysController {
   constructor(
     private readonly surveyService: SurveysService,
-    private readonly surveysAttachmentService: SurveysAttachmentService,
     private readonly surveysTemplateService: SurveysTemplateService,
     private readonly surveyAnswerService: SurveyAnswerService,
+    private readonly filesystemService: FilesystemService,
   ) {}
 
   @Get(`${FIND_ONE}/:surveyId`)
@@ -116,7 +129,7 @@ class SurveysController {
     return res.status(HttpStatus.CREATED).json(fileUrl);
   }
 
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   @Post(TEMPLATES)
   async createTemplate(@Body() surveyTemplateDto: SurveyTemplateDto) {
     return this.surveysTemplateService.updateOrCreateTemplateDocument(surveyTemplateDto);
@@ -146,6 +159,34 @@ class SurveysController {
     return this.surveyAnswerService.getAnswer(surveyId, username || currentUsername);
   }
 
+  @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:filename`)
+  async servePermanentFileFromAnswer(
+    @Param() params: { userName: string; surveyId: string; filename: string },
+    @Res() res: Response,
+    @GetCurrentUser() user: JWTUser,
+  ) {
+    const { userName, surveyId, filename } = params;
+    if (!userName || !surveyId || !filename) {
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+        undefined,
+        SurveysController.name,
+      );
+    }
+    const survey = await this.surveyService.findSurveyWithCreatorDependency(surveyId, user);
+    if (survey === null) {
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveysController.name,
+      );
+    }
+    const filePath = join(SURVEYS_ANSWER_FOLDER, ATTACHMENT_FOLDER, surveyId, userName);
+    return this.filesystemService.serveFiles(filePath, filename, res);
+  }
+
   @Post()
   async updateOrCreateSurvey(@Body() surveyDto: SurveyDto, @GetCurrentUser() user: JWTUser) {
     return this.surveyService.updateOrCreateSurvey(surveyDto, user);
@@ -173,19 +214,20 @@ class SurveysController {
   @Get(`${FILES}/:filename`)
   serveTempFile(@Param() params: { filename: string }, @Res() res: Response, @GetCurrentUsername() username: string) {
     const { filename } = params;
-    return this.surveysAttachmentService.serveTempFiles(username, filename, res);
+    const filePath = join(APPS.SURVEYS, username);
+    return this.filesystemService.serveTempFiles(filePath, filename, res);
   }
 
-  @Delete(`${TEMPLATES}/:filename`)
-  async deleteTemplate(@Param() params: { filename: string }) {
-    const { filename } = params;
-    return this.surveysTemplateService.deleteTemplate(filename);
+  @Delete(`${TEMPLATES}/:name`)
+  async deleteTemplate(@Param() params: { name: string }) {
+    const { name } = params;
+    return this.surveysTemplateService.deleteTemplate(name);
   }
 
-  @Patch(`${TEMPLATES}/:filename`)
-  async toggleIsTemplateActive(@Param() params: { filename: string }) {
-    const { filename } = params;
-    return this.surveysTemplateService.toggleIsTemplateActive(filename);
+  @Patch(`${TEMPLATES}/:name`)
+  async toggleIsTemplateActive(@Param() params: { name: string }) {
+    const { name } = params;
+    return this.surveysTemplateService.toggleIsTemplateActive(name);
   }
 }
 

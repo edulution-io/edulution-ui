@@ -1,29 +1,35 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
-import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
+import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/lmnApiEduApiEndpoints';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import getSchoolPrefix from '@libs/classManagement/utils/getSchoolPrefix';
 import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
-import lmnApi from '@/api/lmnApi';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import { encodeBase64 } from '@libs/common/utils/getBase64String';
+import LinuxmusterVersionResponse from '@libs/lmnApi/types/linuxmusterVersionResponse';
 
-const { USER, USERS_QUOTA } = LMN_API_EDU_API_ENDPOINTS;
+const { USER, USERS_QUOTA, AUTH } = LMN_API_EDU_API_ENDPOINTS;
 
 interface UseLmnApiStore {
   lmnApiToken: string;
@@ -32,14 +38,17 @@ interface UseLmnApiStore {
   isGetOwnUserLoading: boolean;
   isFetchUserLoading: boolean;
   isPatchingUserLoading: boolean;
+  isGetVersionLoading: boolean;
   error: Error | null;
   schoolPrefix: string;
   usersQuota: QuotaResponse | null;
-  setLmnApiToken: (username: string, password: string) => Promise<void>;
+  lmnVersions: LinuxmusterVersionResponse;
+  setLmnApiToken: () => Promise<void>;
   getOwnUser: () => Promise<void>;
   fetchUser: (name: string, checkIfFirstPasswordIsSet?: boolean) => Promise<LmnUserInfo | null>;
   fetchUsersQuota: (name: string) => Promise<void>;
   patchUserDetails: (details: Partial<UpdateUserDetailsDto>) => Promise<void>;
+  getLmnVersion: () => Promise<void>;
   reset: () => void;
 }
 
@@ -50,9 +59,11 @@ const initialState = {
   isGetOwnUserLoading: false,
   isFetchUserLoading: false,
   isPatchingUserLoading: false,
+  isGetVersionLoading: false,
   error: null,
   schoolPrefix: '',
   usersQuota: null,
+  lmnVersions: {} as LinuxmusterVersionResponse,
 };
 
 type PersistedUserLmnInfoStore = (
@@ -65,15 +76,11 @@ const useLmnApiStore = create<UseLmnApiStore>(
     (set, get) => ({
       ...initialState,
 
-      setLmnApiToken: async (username, password): Promise<void> => {
+      setLmnApiToken: async (): Promise<void> => {
         set({ isLoading: true, error: null });
-        if (username !== get().user?.cn) {
-          set(initialState);
-        }
         try {
-          lmnApi.defaults.headers.Authorization = `Basic ${encodeBase64(`${username}:${password}`)}`;
-          const response = await lmnApi.get<string>('/auth/');
-          set({ lmnApiToken: response.data });
+          const { data } = await eduApi.get<string>(AUTH);
+          set({ lmnApiToken: data });
         } catch (error) {
           handleApiError(error, set);
         } finally {
@@ -124,7 +131,9 @@ const useLmnApiStore = create<UseLmnApiStore>(
           });
           set({ usersQuota: data });
         } catch (error) {
-          handleApiError(error, set);
+          // TODO: Readd error handling when LMN API 7.3 supports this endpoint, https://github.com/edulution-io/edulution-ui/issues/1331
+          // handleApiError(error, set);
+          set({ usersQuota: null });
         } finally {
           set({ isFetchUserLoading: false });
         }
@@ -146,24 +155,25 @@ const useLmnApiStore = create<UseLmnApiStore>(
         }
       },
 
+      getLmnVersion: async (): Promise<void> => {
+        set({ isGetVersionLoading: true, error: null });
+        try {
+          const { data } = await eduApi.get<LinuxmusterVersionResponse>(
+            `${LMN_API_EDU_API_ENDPOINTS.ROOT}/server/lmnversion`,
+            {
+              headers: { [HTTP_HEADERS.XApiKey]: get().lmnApiToken },
+            },
+          );
+          set({ lmnVersions: data });
+        } catch (error) {
+          handleApiError(error, set);
+        } finally {
+          set({ isGetVersionLoading: false });
+        }
+      },
+
       reset: () => {
-        const lmnUser = get().user;
-        return set({
-          lmnApiToken: '',
-          isLoading: false,
-          isGetOwnUserLoading: false,
-          isFetchUserLoading: false,
-          isPatchingUserLoading: false,
-          error: null,
-          user: {
-            ...lmnUser!,
-            sophomorixFirstPassword: '',
-            distinguishedName: '',
-            dn: '',
-            sophomorixBirthdate: '',
-            memberOf: [],
-          },
-        });
+        set(initialState);
       },
     }),
     {
