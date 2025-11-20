@@ -31,11 +31,11 @@ import type FileActionButtonProps from '@libs/filesharing/types/fileActionButton
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/constants/availableFileTypes';
 import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
-import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
+import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
 
 const FileActionNonSelect: FC<FileActionButtonProps> = ({ openDialog }) => {
   const { setSelectedFileType } = useFileSharingDialogStore();
-  const { setIsUploadDialogOpen } = useHandelUploadFileStore();
+  const { setIsUploadDialogOpen } = useHandleUploadFileStore();
 
   const handleSelectCreateFile = (fileType: TAvailableFileTypes) => {
     setSelectedFileType(fileType);

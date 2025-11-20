@@ -1498,7 +1498,16 @@
     "cannotUploadOversized": "Files larger than 50 MB cannot be uploaded.",
     "addFiles": "Add files",
     "addFolder": "Add folder",
-    "preparingFolder": "Preparing folder"
+    "preparingFolder": "Preparing folder",
+    "file": "File",
+    "files": "Files",
+    "creatingDirectoryStructure": "Creating directory structure",
+    "hiddenFiles": "hidden & system files",
+    "errors": {
+      "directoryCreationFailed": "Failed to create directory",
+      "fileUploadFailed": "Failed to upload file",
+      "uploadError": "Error uploading files"
+    }
   },
   "warnings": {
     "colorMayConflictWithTheme": "Manual setting of the color can lead to problems with other themes (light/dark) in the future. It is recommended to always set the color of the font at the same time as the background color."

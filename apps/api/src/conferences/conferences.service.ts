@@ -19,7 +19,7 @@
 
 import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { randomUUID , createHash } from 'crypto';
+import { randomUUID, createHash } from 'crypto';
 import axios from 'axios';
 import { parseString } from 'xml2js';
 import { Model } from 'mongoose';
