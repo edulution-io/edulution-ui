@@ -103,7 +103,7 @@ const AddUserAccountDialog: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowS
       }
     }
 
-    const salt = window.crypto.getRandomValues(new Uint8Array(16));
+    const salt = crypto.getRandomValues(new Uint8Array(16));
     const key = await deriveKey(data.safePin, salt);
     const { iv, ciphertext } = await encryptPassword(data.accountPassword, key);
 

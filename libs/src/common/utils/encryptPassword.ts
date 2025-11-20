@@ -22,11 +22,11 @@ import EncryptedPasswordObject from '../types/encryptPasswordObject';
 
 export const deriveKey = async (password: string, salt: Uint8Array): Promise<CryptoKey> => {
   const encoder = new TextEncoder();
-  const keyMaterial = await window.crypto.subtle.importKey('raw', encoder.encode(password), { name: 'PBKDF2' }, false, [
+  const keyMaterial = await crypto.subtle.importKey('raw', encoder.encode(password), { name: 'PBKDF2' }, false, [
     'deriveKey',
   ]);
 
-  return window.crypto.subtle.deriveKey(
+  return crypto.subtle.deriveKey(
     {
       name: 'PBKDF2',
       salt: toArrayBuffer(salt),
@@ -45,15 +45,15 @@ export const encryptPassword = async (
   key: CryptoKey,
 ): Promise<{ iv: Uint8Array; ciphertext: ArrayBuffer }> => {
   const encoder = new TextEncoder();
-  const iv = window.crypto.getRandomValues(new Uint8Array(12));
-  const ciphertext = await window.crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, encoder.encode(password));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, encoder.encode(password));
   return { iv, ciphertext };
 };
 
 export const decryptPassword = async (encryptedData: EncryptedPasswordObject, safePin: string): Promise<string> => {
   try {
     const key = await deriveKey(safePin, new Uint8Array(encryptedData.salt));
-    const decrypted = await window.crypto.subtle.decrypt(
+    const decrypted = await crypto.subtle.decrypt(
       {
         name: 'AES-GCM',
         iv: new Uint8Array(encryptedData.iv),
