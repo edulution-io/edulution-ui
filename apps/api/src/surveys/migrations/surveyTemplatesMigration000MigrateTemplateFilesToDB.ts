@@ -34,7 +34,6 @@ const surveyTemplatesMigration000MigrateTemplateFilesToDB: Migration<SurveysTemp
 
     const exists = await pathExists(path);
     if (!exists) {
-      Logger.log(`Migration "${name}": Skipped: exchange folder does not exist at path ${path}`, MigrationService.name);
       return;
     }
 
