@@ -17,24 +17,18 @@ import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
-import SURVEY_TEMPLATES_EXCHANGE_PATH from '@libs/survey/constants/surveyTemplatesExchangePath';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import MigrationService from 'apps/api/src/migration/migration.service';
 import surveyTemplatesMigrationsList from 'apps/api/src/surveys/migrations/surveyTemplatesMigrationsList';
 import { SurveysTemplate, SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
 import CustomHttpException from '../common/CustomHttpException';
-import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
 class SurveysTemplateService implements OnModuleInit {
-  constructor(
-    @InjectModel(SurveysTemplate.name) private surveyTemplateModel: Model<SurveysTemplateDocument>,
-    private fileSystemService: FilesystemService,
-  ) {}
+  constructor(@InjectModel(SurveysTemplate.name) private surveyTemplateModel: Model<SurveysTemplateDocument>) {}
 
   async onModuleInit() {
-    await this.fileSystemService.ensureDirectoryExists(SURVEY_TEMPLATES_EXCHANGE_PATH);
     await MigrationService.runMigrations<SurveysTemplateDocument>(
       this.surveyTemplateModel,
       surveyTemplatesMigrationsList,
@@ -42,11 +36,11 @@ class SurveysTemplateService implements OnModuleInit {
   }
 
   async updateOrCreateTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
-    const { template, isActive = true, fileName = `${getCurrentDateTimeString()}_-_${uuidv4()}` } = surveyTemplate;
+    const { template, isActive = true, name = `${getCurrentDateTimeString()}_-_${uuidv4()}` } = surveyTemplate;
     try {
       return await this.surveyTemplateModel.findOneAndUpdate(
-        { fileName },
-        { template, isActive, fileName },
+        { name },
+        { template, isActive, name },
         { new: true, upsert: true },
       );
     } catch (error) {
@@ -72,17 +66,17 @@ class SurveysTemplateService implements OnModuleInit {
     return res.status(HttpStatus.OK).json(documents);
   }
 
-  async toggleIsTemplateActive(fileName: string): Promise<SurveysTemplateDocument | null> {
+  async toggleIsTemplateActive(name: string): Promise<SurveysTemplateDocument | null> {
     return this.surveyTemplateModel.findOneAndUpdate(
-      { fileName, isActive: true },
+      { name, isActive: true },
       [{ $set: { isActive: { $not: '$isActive' } } }],
       { new: true, upsert: false },
     );
   }
 
-  async deleteTemplate(fileName: string): Promise<void> {
+  async deleteTemplate(name: string): Promise<void> {
     try {
-      await this.surveyTemplateModel.deleteOne({ fileName });
+      await this.surveyTemplateModel.deleteOne({ name });
     } catch {
       throw new CustomHttpException(
         CommonErrorMessages.FILE_DELETION_FAILED,

@@ -176,16 +176,16 @@ class SurveysController {
     return this.surveysAttachmentService.serveTempFiles(username, filename, res);
   }
 
-  @Delete(`${TEMPLATES}/:filename`)
-  async deleteTemplate(@Param() params: { filename: string }) {
-    const { filename } = params;
-    return this.surveysTemplateService.deleteTemplate(filename);
+  @Delete(`${TEMPLATES}/:name`)
+  async deleteTemplate(@Param() params: { name: string }) {
+    const { name } = params;
+    return this.surveysTemplateService.deleteTemplate(name);
   }
 
-  @Patch(`${TEMPLATES}/:filename`)
-  async toggleIsTemplateActive(@Param() params: { filename: string }) {
-    const { filename } = params;
-    return this.surveysTemplateService.toggleIsTemplateActive(filename);
+  @Patch(`${TEMPLATES}/:name`)
+  async toggleIsTemplateActive(@Param() params: { name: string }) {
+    const { name } = params;
+    return this.surveysTemplateService.toggleIsTemplateActive(name);
   }
 }
 

@@ -10,32 +10,37 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { Model } from 'mongoose';
 import { join } from 'path';
-import { pathExists, readdir, readFile, unlink } from 'fs-extra';
+import { pathExists, readdir, readFile, unlink, remove } from 'fs-extra';
 import { Logger } from '@nestjs/common';
+import APPS from '@libs/appconfig/constants/apps';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import { TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
 import { TemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
-import SURVEY_TEMPLATES_EXCHANGE_PATH from '@libs/survey/constants/surveyTemplatesExchangePath';
 import { SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
 import MigrationService from 'apps/api/src/migration/migration.service';
 import { Migration } from '../../migration/migration.type';
 
 const name = '000-migrate-templates-from-exchange-folder-to-db';
+
 const schemaVersion = 1;
 
-const surveyTemplatesMigration000NewFromExchangeFolder: Migration<SurveysTemplateDocument> = {
+const surveyTemplatesMigration000MigrateTemplateFilesToDB: Migration<SurveysTemplateDocument> = {
   name,
-  version: 1,
-  execute: async (model) => {
-    const path = SURVEY_TEMPLATES_EXCHANGE_PATH;
+  version: schemaVersion,
+  execute: async (model: Model<SurveysTemplateDocument>) => {
+    const path = join(APPS_FILES_PATH, APPS.SURVEYS, TEMPLATES);
+
     const exists = await pathExists(path);
     if (!exists) {
       return;
     }
-    const includedFiles = await readdir(path);
-    Logger.log(`Found ${includedFiles.length} files to migrate...`, MigrationService.name);
 
-    let processedCount = 0;
+    const includedFiles = await readdir(path);
+
     const filesToDelete: string[] = [];
+
     await Promise.all(
       includedFiles.map(async (fileName) => {
         try {
@@ -48,11 +53,10 @@ const surveyTemplatesMigration000NewFromExchangeFolder: Migration<SurveysTemplat
           const newTemplate = JSON.parse(fileContent) as TemplateDto;
           const newDocument: SurveysTemplateDocument | null = await model.findOneAndUpdate(
             { fileName },
-            { $set: { template: newTemplate, schemaVersion } },
+            { $set: { template: newTemplate, schemaVersion, isActive: true } },
             { new: true, upsert: true },
           );
           if (newDocument !== null) {
-            processedCount += 1;
             filesToDelete.push(fileName);
           } else {
             Logger.error(`Failed to create or update mongo document for file ${fileName}`, MigrationService.name);
@@ -66,12 +70,10 @@ const surveyTemplatesMigration000NewFromExchangeFolder: Migration<SurveysTemplat
       }),
     );
 
-    let deletedCount = 0;
     await Promise.all(
       filesToDelete.map(async (fileName) => {
         try {
           await unlink(join(path, fileName));
-          deletedCount += 1;
         } catch (error) {
           Logger.error(
             `Error deleting file ${fileName}: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -81,14 +83,17 @@ const surveyTemplatesMigration000NewFromExchangeFolder: Migration<SurveysTemplat
       }),
     );
 
-    Logger.log(`Migration ${name} completed`, MigrationService.name);
-    if (processedCount > 0) {
-      Logger.log(
-        `Migration ${name} completed: ${processedCount} files migrated and removed ${deletedCount} files successfully.`,
-        MigrationService.name,
-      );
+    Logger.log(
+      `Migration ${name} completed: Should have migrated ${includedFiles.length} files, and removed ${filesToDelete.length} files.`,
+      MigrationService.name,
+    );
+
+    const remainingFiles = await readdir(path);
+    if (remainingFiles.length === 0) {
+      await remove(path);
+      Logger.log(`Removed empty templates directory at ${path}`, MigrationService.name);
     }
   },
 };
 
-export default surveyTemplatesMigration000NewFromExchangeFolder;
+export default surveyTemplatesMigration000MigrateTemplateFilesToDB;

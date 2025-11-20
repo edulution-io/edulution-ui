@@ -29,8 +29,8 @@ interface TemplateMenuStore {
 
   isOpenTemplateConfirmDeletion: boolean;
   setIsOpenTemplateConfirmDeletion: (state: boolean) => void;
-  deleteTemplate: (templateFileName: string) => Promise<void>;
-  toggleIsTemplateActive: (templateFileName: string) => Promise<void>;
+  deleteTemplate: (templateName: string) => Promise<void>;
+  toggleIsTemplateActive: (templateName: string) => Promise<void>;
   error?: Error;
 
   template?: SurveyTemplateDto;
@@ -87,14 +87,14 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
 
   setIsOpenTemplateConfirmDeletion: (state: boolean) => set({ isOpenTemplateConfirmDeletion: state }),
 
-  deleteTemplate: async (templateFileName: string): Promise<void> => {
-    if (!templateFileName) {
+  deleteTemplate: async (templateName: string): Promise<void> => {
+    if (!templateName) {
       return;
     }
 
     set({ isSubmitting: true });
     try {
-      await eduApi.delete(`${SURVEY_TEMPLATES_ENDPOINT}/${templateFileName}`);
+      await eduApi.delete(`${SURVEY_TEMPLATES_ENDPOINT}/${templateName}`);
       toast.success(t('survey.editor.templateMenu.deletion.success'));
     } catch (error) {
       handleApiError(error, set);
