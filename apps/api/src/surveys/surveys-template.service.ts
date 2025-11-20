@@ -26,6 +26,7 @@ import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import GlobalSettingsService from 'apps/api/src/global-settings/global-settings.service';
 import MigrationService from 'apps/api/src/migration/migration.service';
 import surveyTemplatesMigrationsList from 'apps/api/src/surveys/migrations/surveyTemplatesMigrationsList';
 import { SurveysTemplate, SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
@@ -33,7 +34,10 @@ import CustomHttpException from '../common/CustomHttpException';
 
 @Injectable()
 class SurveysTemplateService implements OnModuleInit {
-  constructor(@InjectModel(SurveysTemplate.name) private surveyTemplateModel: Model<SurveysTemplateDocument>) {}
+  constructor(
+    @InjectModel(SurveysTemplate.name) private surveyTemplateModel: Model<SurveysTemplateDocument>,
+    private readonly globalSettingsService: GlobalSettingsService,
+  ) {}
 
   async onModuleInit() {
     await MigrationService.runMigrations<SurveysTemplateDocument>(
@@ -61,7 +65,10 @@ class SurveysTemplateService implements OnModuleInit {
   }
 
   async serveTemplates(ldapGroups: string[], res: Response): Promise<Response> {
-    const documents = await this.surveyTemplateModel.find(getIsAdmin(ldapGroups) ? {} : { isActive: true });
+    const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
+    const documents = await this.surveyTemplateModel.find(
+      getIsAdmin(ldapGroups, adminGroups) ? {} : { isActive: true },
+    );
     if (!documents || documents.length === 0) {
       throw new CustomHttpException(
         CommonErrorMessages.FILE_NOT_FOUND,

@@ -33,7 +33,7 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/getSurveyEditorForm.schema';
-import surveysDefaultValues from '@libs/survey/constants/surveys-default-values';
+import surveysDefaultValues from '@/pages/Surveys/utils/surveys-default-values';
 import getInitialSurveyFormValues from '@/pages/Surveys/utils/getInitialSurveyFormValues';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';

@@ -41,7 +41,7 @@ const TemplateList = (props: TemplateListProps) => {
     >
       {templates.map((template: SurveyTemplateDto) => (
         <TemplateItem
-          key={template.fileName}
+          key={template.name}
           form={form}
           creator={creator}
           template={template}

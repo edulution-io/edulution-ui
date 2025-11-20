@@ -86,8 +86,8 @@ const TemplateItem = (props: TemplateItemProps) => {
 
   return (
     <AccordionItem
-      key={template.fileName}
-      value={template.fileName || ''}
+      key={template.name}
+      value={template.name || ''}
     >
       <AccordionTrigger className="px-4 pt-2">
         <h4>{formula?.title}</h4>
@@ -117,8 +117,8 @@ const TemplateItem = (props: TemplateItemProps) => {
               </Button>
               <Button
                 onClick={async () => {
-                  if (!template.fileName) return;
-                  await toggleIsTemplateActive(template.fileName);
+                  if (!template.name) return;
+                  await toggleIsTemplateActive(template.name);
                   await fetchTemplates();
                 }}
                 variant="btn-collaboration"
