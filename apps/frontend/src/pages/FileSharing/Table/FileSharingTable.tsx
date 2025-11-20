@@ -37,6 +37,7 @@ import { FcFolder } from 'react-icons/fc';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 import { TABLE_ICON_SIZE } from '@libs/ui/constants';
 import useFileSharingDragAndDrop from '@/pages/FileSharing/hooks/useFileSharingDragAndDrop';
+import { useTranslation } from 'react-i18next';
 
 const FileSharingTable = () => {
   const { webdavShare } = useParams();
@@ -45,6 +46,8 @@ const FileSharingTable = () => {
   const appConfigs = useAppConfigsStore((s) => s.appConfigs);
   const { setSelectedRows, setSelectedItems, fetchFiles, selectedRows, files, isLoading, currentPath } =
     useFileSharingStore();
+
+  const { t } = useTranslation();
 
   const { sensors, draggedFiles, handleDragStart, handleDragEnd, handleDragCancel, canDropOnRow } =
     useFileSharingDragAndDrop({
@@ -144,7 +147,8 @@ const FileSharingTable = () => {
                   </div>
                 </div>
                 <span className="truncate">
-                  {draggedFiles.length} {draggedFiles.length === 1 ? 'Element' : 'Elemente'}
+                  {draggedFiles.length}{' '}
+                  {draggedFiles.length === 1 ? t('fileSharingTable.element') : 'fileSharingTable.elements'}
                 </span>
               </>
             )}

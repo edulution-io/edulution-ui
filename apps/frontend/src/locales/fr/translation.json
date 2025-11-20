@@ -1304,7 +1304,9 @@
     "size": "Taille",
     "lastModified": "Modifié récemmen",
     "type": "Type",
-    "filesOrFoldersSelected": "{{selected}} de {{total}} fichiers/dossiers sélectionnés"
+    "filesOrFoldersSelected": "{{selected}} de {{total}} fichiers/dossiers sélectionnés",
+    "element": "Élément",
+    "elements": "Éléments"
   },
   "currentDirectory": "Répertoire actuel",
   "filesharingUpload": {
