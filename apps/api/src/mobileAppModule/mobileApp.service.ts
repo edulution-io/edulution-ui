@@ -84,7 +84,7 @@ class MobileAppService {
   }
 
   async getTotpInfo(username: string) {
-    const user = await this.userService.findOne(username, { mfaEnabled: 1, secret: 1, createdAt: 0 });
+    const user = await this.userService.findOne(username, { mfaEnabled: 1, totpSecret: 1, totpCreatedAt: 1 });
 
     if (!user || !user.mfaEnabled) {
       return { secret: null, createdAt: null };

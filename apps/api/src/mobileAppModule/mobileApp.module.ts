@@ -21,11 +21,10 @@ import { Module } from '@nestjs/common';
 import MobileAppService from './mobileApp.service';
 import MobileAppController from './mobileApp.controller';
 import LmnApiModule from '../lmnApi/lmnApi.module';
-import UsersService from '../users/users.service';
 
 @Module({
   imports: [LmnApiModule],
   controllers: [MobileAppController],
-  providers: [MobileAppService, UsersService],
+  providers: [MobileAppService],
 })
 export default class MobileAppModule {}
