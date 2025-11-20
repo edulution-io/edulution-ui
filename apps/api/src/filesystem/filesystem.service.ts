@@ -401,6 +401,18 @@ class FilesystemService {
     return res;
   }
 
+  static async makeTempFilesPermanent(
+    fileNames: string[],
+    tempDirectory: string,
+    permanentDirectory: string,
+  ): Promise<void> {
+    await Promise.all(
+      fileNames.map((fileName) =>
+        FilesystemService.moveFile(join(tempDirectory, fileName), join(permanentDirectory, fileName)),
+      ),
+    );
+  }
+
   async removeOldTempFiles(path: string, currentTimeMs?: number): Promise<void> {
     if (!path) {
       return;

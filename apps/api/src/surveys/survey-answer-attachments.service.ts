@@ -72,27 +72,14 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     await FilesystemService.checkIfFileExistAndDelete(join(tempFilesPath, fileName));
   }
 
-  static async moveNewFiles(fileNamesToMove: string[], tempDirectory: string, targetDirectory: string): Promise<void> {
-    await Promise.all(
-      fileNamesToMove.map((fileName) =>
-        FilesystemService.moveFile(join(tempDirectory, fileName), join(targetDirectory, fileName)),
-      ),
-    );
-  }
-
-  static async cleanupOldFiles(
+  static async removeDeprecatedFiles(
     directory: string,
-    permanentFileNames: string[],
-    keepOldFiles: boolean,
-    fileNamesToKeep?: string[],
+    fileNames: string[],
+    fileNamesToKeep: string[] = [],
   ): Promise<void> {
-    if (keepOldFiles) {
-      return;
-    }
-    const deletions = permanentFileNames
-      .filter((fileName) => !(fileNamesToKeep || []).includes(fileName))
+    const deletions = fileNames
+      .filter((fileName) => !fileNamesToKeep.includes(fileName))
       .map((fileName) => FilesystemService.deleteFile(directory, fileName));
-
     await Promise.all(deletions);
   }
 
@@ -131,10 +118,10 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
       }
     });
 
-    await SurveyAnswerAttachmentsService.moveNewFiles(fileNamesToMove, tempDirectory, directory);
+    await FilesystemService.makeTempFilesPermanent(fileNamesToMove, tempDirectory, directory);
 
     if (!keepOldFiles) {
-      await SurveyAnswerAttachmentsService.cleanupOldFiles(directory, permanentFileNames, true, fileNamesToKeep);
+      await SurveyAnswerAttachmentsService.removeDeprecatedFiles(directory, permanentFileNames, fileNamesToKeep);
     }
 
     await this.fileSystemService.deleteEmptyFolderWithDepth(tempDirectory, 3);
