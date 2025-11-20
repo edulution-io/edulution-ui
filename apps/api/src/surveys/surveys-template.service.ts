@@ -17,10 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Model } from 'mongoose';
 import { Response } from 'express';
 import { randomUUID } from 'crypto';
-import { InjectModel } from '@nestjs/mongoose';
+import { Connection, Model } from 'mongoose';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
@@ -28,21 +28,32 @@ import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTime
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import GlobalSettingsService from 'apps/api/src/global-settings/global-settings.service';
 import MigrationService from 'apps/api/src/migration/migration.service';
-import surveyTemplatesMigrationsList from 'apps/api/src/surveys/migrations/surveyTemplatesMigrationsList';
 import { SurveysTemplate, SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
+import surveysTemplateInitializationList from './migrations/surveysTemplateInitializationList';
+import surveyTemplatesMigrationsList from './migrations/surveyTemplatesMigrationsList';
 import CustomHttpException from '../common/CustomHttpException';
 
 @Injectable()
 class SurveysTemplateService implements OnModuleInit {
   constructor(
+    @InjectConnection() private readonly connection: Connection,
     @InjectModel(SurveysTemplate.name) private surveyTemplateModel: Model<SurveysTemplateDocument>,
     private readonly globalSettingsService: GlobalSettingsService,
   ) {}
 
   async onModuleInit() {
+
+    const collectionsNamedMigration = await this.connection.db?.listCollections({ name: 'surveystemplates' }).toArray();
+    if (collectionsNamedMigration?.length === 0) {
+      await this.connection.db?.createCollection('surveystemplates');
+    }
+
+    const count = await this.surveyTemplateModel.countDocuments();
     await MigrationService.runMigrations<SurveysTemplateDocument>(
       this.surveyTemplateModel,
-      surveyTemplatesMigrationsList,
+      count === 0
+        ? [...surveysTemplateInitializationList, ...surveyTemplatesMigrationsList]
+        : surveyTemplatesMigrationsList,
     );
   }
 
