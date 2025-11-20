@@ -30,7 +30,7 @@ import GlobalSettingsService from '../global-settings/global-settings.service';
 import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 
 @Injectable()
-class MobileAppModuleService {
+class MobileAppService {
   constructor(
     private readonly userService: UsersService,
     private readonly globalSettingsService: GlobalSettingsService,
@@ -76,11 +76,25 @@ class MobileAppModuleService {
         globalSettings: globalSettingsDto,
         lmn: lmnData.info,
         userShares,
+        totpCreatedAt: user?.totpCreatedAt,
       });
     } catch {
       return {};
     }
   }
+
+  async getTotpInfo(username: string) {
+    const user = await this.userService.findOne(username, { mfaEnabled: 1, totpSecret: 1, totpCreatedAt: 1 });
+
+    if (!user || !user.mfaEnabled) {
+      return { secret: null, createdAt: null };
+    }
+
+    return {
+      secret: user.totpSecret || null,
+      createdAt: user.totpCreatedAt || null,
+    };
+  }
 }
 
-export default MobileAppModuleService;
+export default MobileAppService;
