@@ -17,7 +17,20 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Body, Controller, Delete, Get, Param, Patch, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  ParseFilePipeBuilder,
+  Patch,
+  Post,
+  Res,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { randomUUID } from 'crypto';
@@ -26,6 +39,7 @@ import { Response } from 'express';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import APPS from '@libs/appconfig/constants/apps';
 import BULLETIN_TEMP_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinTempAttachmentsPath';
+import BULLETIN_ATTACHMENT_MAXIMUM_FILE_SIZE from '@libs/bulletinBoard/constants/bulletinAttachmentMaximumFileSize';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import { addUuidToFileName } from '@libs/common/utils/uuidAndFileNames';
 import BulletinBoardService from './bulletinboard.service';
@@ -83,11 +97,24 @@ class BulletinBoardController {
         () => BULLETIN_TEMP_ATTACHMENTS_PATH,
         true,
         (_req, file) => addUuidToFileName(file.originalname, randomUUID()),
+        BULLETIN_ATTACHMENT_MAXIMUM_FILE_SIZE,
       ),
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  uploadBulletinAttachment(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
+  uploadBulletinAttachment(
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addMaxSizeValidator({
+          maxSize: BULLETIN_ATTACHMENT_MAXIMUM_FILE_SIZE,
+        })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    file: Express.Multer.File,
+    @Res() res: Response,
+  ) {
     const fileName = checkAttachmentFile(file);
     return res.status(200).json(fileName);
   }
