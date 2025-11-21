@@ -39,6 +39,7 @@ import { TABLE_ICON_SIZE } from '@libs/ui/constants';
 import useFileSharingDragAndDrop from '@/pages/FileSharing/hooks/useFileSharingDragAndDrop';
 import { useTranslation } from 'react-i18next';
 import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
+import useVariableSharePathname from '../hooks/useVariableSharePathname';
 
 const FileSharingTable = () => {
   const { webdavShare } = useParams();
@@ -55,6 +56,7 @@ const FileSharingTable = () => {
       webdavShare,
       currentPath,
     });
+  const { createVariableSharePathname } = useVariableSharePathname();
 
   useEffect(() => {
     if (currentPath !== '/') void fetchFiles(webdavShare, currentPath);
@@ -105,7 +107,8 @@ const FileSharingTable = () => {
     }
 
     const currentShare = webdavShares.find((s) => s.displayName === webdavShare);
-    const shareRootPath = currentShare?.pathname || `/${webdavShare}`;
+    const baseSharePath = currentShare?.pathname || `/${webdavShare}`;
+    const shareRootPath = createVariableSharePathname(baseSharePath, currentShare?.pathVariables);
 
     if (currentPath === shareRootPath || currentPath === `/${shareRootPath}`) {
       return files;
@@ -119,7 +122,7 @@ const FileSharingTable = () => {
     };
 
     return [parentEntry, ...files];
-  }, [files, currentPath, webdavShare, webdavShares]);
+  }, [files, currentPath, webdavShare, webdavShares, createVariableSharePathname]);
 
   return (
     <DndContext
