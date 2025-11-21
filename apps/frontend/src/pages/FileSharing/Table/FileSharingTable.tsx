@@ -38,6 +38,7 @@ import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 import { TABLE_ICON_SIZE } from '@libs/ui/constants';
 import useFileSharingDragAndDrop from '@/pages/FileSharing/hooks/useFileSharingDragAndDrop';
 import { useTranslation } from 'react-i18next';
+import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
 
 const FileSharingTable = () => {
   const { webdavShare } = useParams();
@@ -66,7 +67,7 @@ const FileSharingTable = () => {
         : updaterOrValue;
 
     const filteredValue = Object.keys(newValue).reduce((acc, key) => {
-      if (key !== '__parent__' && newValue[key]) {
+      if (key !== PARENT_FOLDER_PATH && newValue[key]) {
         acc[key] = newValue[key];
       }
       return acc;
@@ -111,7 +112,7 @@ const FileSharingTable = () => {
     }
 
     const parentEntry: DirectoryFileDTO = {
-      filePath: '__parent__',
+      filePath: PARENT_FOLDER_PATH,
       filename: '..',
       type: ContentType.DIRECTORY,
       etag: '',
@@ -137,8 +138,8 @@ const FileSharingTable = () => {
         isLoading={isLoading}
         selectedRows={selectedRows}
         getRowId={(row) => row.filePath}
-        getRowDisabled={(row) => row.original.filePath === '__parent__'}
-        enableRowSelection={(row) => row.original.filePath !== '__parent__'}
+        getRowDisabled={(row) => row.original.filePath === PARENT_FOLDER_PATH}
+        enableRowSelection={(row) => row.original.filePath !== PARENT_FOLDER_PATH}
         applicationName={APPS.FILE_SHARING}
         initialSorting={[
           { id: 'type', desc: false },

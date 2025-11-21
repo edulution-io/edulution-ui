@@ -27,6 +27,7 @@ import { HttpMethods } from '@libs/common/types/http-methods';
 import ContentType from '@libs/filesharing/types/contentType';
 import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreateProps';
 import { DragEndEvent, DragStartEvent, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
+import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
 
 interface UseFileSharingDragAndDropProps {
   webdavShare: string | undefined;
@@ -55,14 +56,14 @@ const useFileSharingDragAndDrop = ({ webdavShare, currentPath }: UseFileSharingD
 
   const handleDragStart = (event: DragStartEvent) => {
     const draggedFile = event.active.data.current as DirectoryFileDTO;
-    if (draggedFile?.filePath === '__parent__') {
+    if (draggedFile?.filePath === PARENT_FOLDER_PATH) {
       return;
     }
     setActiveId(event.active.id as string);
   };
 
   const canDropOnRow = (file: DirectoryFileDTO) =>
-    file.type === ContentType.DIRECTORY && file.filePath !== '__parent__';
+    file.type === ContentType.DIRECTORY && file.filePath !== PARENT_FOLDER_PATH;
 
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;

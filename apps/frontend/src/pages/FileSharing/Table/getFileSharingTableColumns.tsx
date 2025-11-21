@@ -48,6 +48,7 @@ import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharing
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
+import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
@@ -111,7 +112,7 @@ const getFileSharingTableColumns = (
             if (isFilePreviewDocked) setIsFilePreviewVisible(false);
             const newParams = new URLSearchParams(searchParams);
 
-            if (row.original.filePath === '__parent__') {
+            if (row.original.filePath === PARENT_FOLDER_PATH) {
               const currentPath = searchParams.get(URL_SEARCH_PARAMS.PATH) || '/';
               const hadTrailingSlash = currentPath.endsWith('/') && currentPath !== '/';
               const pathParts = currentPath.split('/').filter(Boolean);
@@ -209,7 +210,7 @@ const getFileSharingTableColumns = (
       },
       accessorFn: (row) => row.lastmod,
       cell: ({ row }) => {
-        if (row.original.filePath === '__parent__') {
+        if (row.original.filePath === PARENT_FOLDER_PATH) {
           return null;
         }
 
@@ -246,7 +247,7 @@ const getFileSharingTableColumns = (
         translationId: 'fileSharingTable.size',
       },
       cell: ({ row }) => {
-        if (row.original.filePath === '__parent__') {
+        if (row.original.filePath === PARENT_FOLDER_PATH) {
           return null;
         }
 
@@ -271,7 +272,7 @@ const getFileSharingTableColumns = (
       },
 
       cell: ({ row }) => {
-        if (row.original.filePath === '__parent__') {
+        if (row.original.filePath === PARENT_FOLDER_PATH) {
           return null;
         }
 
