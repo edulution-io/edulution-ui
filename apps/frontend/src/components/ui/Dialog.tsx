@@ -135,7 +135,7 @@ const DialogDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn('hidden', className)}
+    className={cn('sr-only', className)}
     {...props}
   />
 ));

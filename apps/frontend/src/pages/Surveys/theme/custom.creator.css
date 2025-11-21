@@ -446,7 +446,6 @@
   .sd-text__content,
   .sd-comment {
     display: none !important;
-    cursor: not-allowed;
   }
 
   /* fixes white color boolean switch  */
@@ -756,7 +755,6 @@
 
   .sd-multipletext__item-container.sd-input {
     display: none !important;
-    cursor: not-allowed;
   }
 
   .svc-question__dropdown-choices {
@@ -767,7 +765,6 @@
   .svc-question__content--dropdown {
     .sv-dropdown_select-wrapper {
       display: none !important;
-      cursor: not-allowed;
     }
   }
 
@@ -782,7 +779,6 @@
 
     .sv-dropdown_select-wrapper {
       display: none !important;
-      cursor: not-allowed;
     }
 
     .sv-popup__body-content {
@@ -822,9 +818,9 @@
           background-color: transparent;
           color: var(--accent-foreground);
           border-radius: 0.75rem;
-          border: 0.1rem solid var(--secondary);
+          border: 0.063rem solid var(--secondary);
         }
-        .sv-popup__body-footer-item.sv-popup__button.sd-btn.sv-popup__button--apply.sd-btn {
+        .sv-popup__body-footer-item.sv-popup__button.sd-btn.sv-popup__button--apply {
           background-color: var(--primary);
           border: none;
         }
