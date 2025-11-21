@@ -85,7 +85,40 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       const updatedFormula = JSON.parse(JSON.stringify(surveyFormula)) as SurveyFormula;
 
       let correspondingQuestion: SurveyElement | undefined;
-      if (selectedQuestion?.page.name) {
+
+      const { parent } = selectedQuestion;
+
+      // eslint-disable-next-line no-console
+      console.log('Parent Question:', parent);
+
+      if (parent?.isPanel) {
+        // eslint-disable-next-line no-console
+        console.log('Parent Question is a panel');
+
+        const parentQuestion = parent as unknown as TSurveyQuestion;
+
+        if (parentQuestion?.page?.name) {
+          // eslint-disable-next-line no-console
+          console.log(`Parent Question is on page: ${parentQuestion.page.name}`);
+
+          const correspondingPage = updatedFormula?.pages?.find((page) => page.name === parentQuestion.page.name);
+          const parentPanel = correspondingPage?.elements?.find((question) => question.name === parentQuestion.name);
+
+          // eslint-disable-next-line no-console
+          console.log(`parentPanel: ${JSON.stringify(parentPanel)}`);
+
+          if (parentPanel?.elements) {
+            correspondingQuestion = parentPanel?.elements?.find((question) => question.name === selectedQuestion.name);
+          }
+          if (parentPanel?.templateElements) {
+            correspondingQuestion = parentPanel?.templateElements?.find(
+              (question) => question.name === selectedQuestion.name,
+            );
+          }
+        } else {
+          correspondingQuestion = updatedFormula?.elements?.find((element) => element.name === selectedQuestion.name);
+        }
+      } else if (selectedQuestion?.page?.name) {
         const correspondingPage = updatedFormula?.pages?.find((page) => page.name === selectedQuestion.page.name);
         correspondingQuestion = correspondingPage?.elements?.find(
           (question) => question.name === selectedQuestion.name,

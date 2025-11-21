@@ -32,6 +32,8 @@ interface TSurveyElement {
   imageLink?: string;
   showOtherItem?: boolean | null;
   showNoneItem?: boolean;
+  elements?: TSurveyElement[] | null;
+  templateElements?: TSurveyElement[] | null;
 }
 
 export default TSurveyElement;
