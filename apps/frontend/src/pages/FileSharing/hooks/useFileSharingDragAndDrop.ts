@@ -54,10 +54,15 @@ const useFileSharingDragAndDrop = ({ webdavShare, currentPath }: UseFileSharingD
   );
 
   const handleDragStart = (event: DragStartEvent) => {
+    const draggedFile = event.active.data.current as DirectoryFileDTO;
+    if (draggedFile?.filePath === '__parent__') {
+      return;
+    }
     setActiveId(event.active.id as string);
   };
 
-  const canDropOnRow = (file: DirectoryFileDTO) => file.type === ContentType.DIRECTORY;
+  const canDropOnRow = (file: DirectoryFileDTO) =>
+    file.type === ContentType.DIRECTORY && file.filePath !== '__parent__';
 
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;

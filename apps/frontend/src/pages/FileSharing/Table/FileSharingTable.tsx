@@ -44,7 +44,7 @@ const FileSharingTable = () => {
   const { isMobileView, isTabletView } = useMedia();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const appConfigs = useAppConfigsStore((s) => s.appConfigs);
-  const { setSelectedRows, setSelectedItems, fetchFiles, selectedRows, files, isLoading, currentPath } =
+  const { setSelectedRows, setSelectedItems, fetchFiles, selectedRows, files, isLoading, currentPath, webdavShares } =
     useFileSharingStore();
 
   const { t } = useTranslation();
@@ -64,9 +64,17 @@ const FileSharingTable = () => {
       typeof updaterOrValue === 'function'
         ? updaterOrValue(useFileSharingStore.getState().selectedRows)
         : updaterOrValue;
-    setSelectedRows(newValue);
-    const selectedItemData = Object.keys(newValue)
-      .filter((key) => newValue[key])
+
+    const filteredValue = Object.keys(newValue).reduce((acc, key) => {
+      if (key !== '__parent__' && newValue[key]) {
+        acc[key] = newValue[key];
+      }
+      return acc;
+    }, {} as RowSelectionState);
+
+    setSelectedRows(filteredValue);
+    const selectedItemData = Object.keys(filteredValue)
+      .filter((key) => filteredValue[key])
       .map((rowId) => files.find((file) => file.filePath === rowId))
       .filter(Boolean) as DirectoryFileDTO[];
     setSelectedItems(selectedItemData);
@@ -90,6 +98,28 @@ const FileSharingTable = () => {
     ExtendedOptionKeys.ONLY_OFFICE_URL,
   );
 
+  const filesWithParentNav = useMemo(() => {
+    if (!webdavShare || currentPath === '/') {
+      return files;
+    }
+
+    const currentShare = webdavShares.find((s) => s.displayName === webdavShare);
+    const shareRootPath = currentShare?.pathname || `/${webdavShare}`;
+
+    if (currentPath === shareRootPath || currentPath === `/${shareRootPath}`) {
+      return files;
+    }
+
+    const parentEntry: DirectoryFileDTO = {
+      filePath: '__parent__',
+      filename: '..',
+      type: ContentType.DIRECTORY,
+      etag: '',
+    };
+
+    return [parentEntry, ...files];
+  }, [files, currentPath, webdavShare, webdavShares]);
+
   return (
     <DndContext
       sensors={sensors}
@@ -100,13 +130,15 @@ const FileSharingTable = () => {
     >
       <ScrollableTable
         columns={getFileSharingTableColumns(undefined, undefined, isDocumentServerConfigured)}
-        data={files}
+        data={filesWithParentNav}
         filterKey={FILE_SHARING_TABLE_COLUMNS.SELECT_FILENAME}
         filterPlaceHolderText="filesharing.filterPlaceHolderText"
         onRowSelectionChange={handleRowSelectionChange}
         isLoading={isLoading}
         selectedRows={selectedRows}
         getRowId={(row) => row.filePath}
+        getRowDisabled={(row) => row.original.filePath === '__parent__'}
+        enableRowSelection={(row) => row.original.filePath !== '__parent__'}
         applicationName={APPS.FILE_SHARING}
         initialSorting={[
           { id: 'type', desc: false },
@@ -118,7 +150,7 @@ const FileSharingTable = () => {
       />
       <DragOverlay>
         {draggedFiles.length > 0 ? (
-          <div className="flex items-center gap-2 rounded bg-foreground p-2 shadow-lg">
+          <div className="flex w-fit items-center gap-2 rounded bg-accent p-2 shadow-lg">
             {draggedFiles.length === 1 ? (
               <>
                 {draggedFiles[0].type === ContentType.DIRECTORY ? (
