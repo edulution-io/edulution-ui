@@ -54,6 +54,7 @@ const DeploymentTargetDropdownSelectFormField = <T extends FieldValues>({
               options={deploymentTargetOptions}
               selectedVal={field.value}
               handleChange={field.onChange}
+              searchEnabled={false}
             />
           </FormControl>
           <FormDescription>{t('deploymentTarget.description', { appName: APPLICATION_NAME })}</FormDescription>

@@ -95,6 +95,7 @@ const MailImporterConfig: React.FC<MailsConfigProps> = ({ form }) => {
               selectedVal={option}
               handleChange={setOption}
               classname="md:w-1/3"
+              searchEnabled={false}
             />
             {option !== t('common.custom') ? (
               <Button
