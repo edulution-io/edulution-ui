@@ -105,6 +105,7 @@ const MailImporterConfigForm: React.FC<MailsConfigProps> = ({ form }) => {
                   handleChange={field.onChange}
                   classname="z-50"
                   openToTop
+                  searchEnabled={false}
                 />
               </FormControl>
               <FormMessage className="text-p" />
