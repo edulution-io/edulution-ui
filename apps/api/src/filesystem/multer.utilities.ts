@@ -70,9 +70,11 @@ export const createAttachmentUploadOptions = (
   getDestinationPath: (req: Request) => string,
   filter: boolean = true,
   fileNameGenerator?: (req: Request, file: Express.Multer.File) => string,
+  maxFileSize?: number,
 ) => ({
   storage: createDiskStorage(getDestinationPath, fileNameGenerator),
   fileFilter: filter ? attachmentFileFilter : undefined,
+  limits: maxFileSize ? { fileSize: maxFileSize } : undefined,
 });
 
 export const checkAttachmentFile = (file: Express.Multer.File): string => {
