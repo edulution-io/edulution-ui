@@ -52,32 +52,6 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
     }
   };
 
-  const handleImage = () => {
-    const input = document.createElement('input');
-    input.setAttribute('type', 'file');
-    input.setAttribute('accept', IMAGE_UPLOAD_ALLOWED_MIME_TYPES.join(', '));
-    input.click();
-
-    input.onchange = async () => {
-      const file = input.files?.[0];
-      if (file) {
-        try {
-          const uploadedFilename = await onUpload(file);
-          const fetchImageUrl = `/${EDU_API_ROOT}/${uploadedFilename}?token=${eduApiToken}`;
-
-          const quillInstance = quillRef.current?.getEditor();
-          if (quillInstance) {
-            const range = quillInstance.getSelection();
-            quillInstance.insertEmbed(range?.index || 0, 'image', fetchImageUrl);
-          }
-        } catch (error) {
-          console.error('Failed to upload or fetch attachment:', error);
-          toast.error(t('errors.uploadOrFetchAttachmentFailed'));
-        }
-      }
-    };
-  };
-
   const uploadImage = async (file: File, index?: number) => {
     try {
       const uploadedFilename = await onUpload(file);
@@ -92,6 +66,20 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
       console.error('Failed to upload or fetch attachment:', error);
       toast.error(t('errors.uploadOrFetchAttachmentFailed'));
     }
+  };
+
+  const handleImage = () => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', IMAGE_UPLOAD_ALLOWED_MIME_TYPES.join(', '));
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (file) {
+        await uploadImage(file);
+      }
+    };
   };
 
   useEffect(() => {
