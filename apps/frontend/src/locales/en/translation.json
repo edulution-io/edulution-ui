@@ -672,6 +672,11 @@
       "fileUploadError": "Error on file upload, please retry later.",
       "fileDeletionSuccess": "Deleted the file successfully.",
       "saveSurveySuccess": "Saved the survey.",
+      "surveyPlaceHolder": "Click the \"Add Question\" button below to start creating your form.",
+      "surveyPlaceholderDescription": "Click the \"Add Question\" button below to start creating your form.",
+      "surveyPlaceholderDescriptionMobile": "Click the \"Add Question\" button below to start creating your form.",
+      "pagePlaceHolder": "Click the \"Add Question\" button below to add a new element to the page.",
+      "panelPlaceHolder": "Click on the \"Add Question\" below to add a new element to the panel.",
       "reset": "Reset",
       "addDescription": "Add a description",
       "expectingUserInput": "Expecting the user to answer here, ... ",
@@ -1500,7 +1505,8 @@
     "hiddenFiles": "hidden & system files",
     "errors": {
       "directoryCreationFailed": "Failed to create directory",
-      "fileUploadFailed": "Failed to upload file"
+      "fileUploadFailed": "Failed to upload file",
+      "uploadError": "Error uploading files"
     }
   },
   "warnings": {

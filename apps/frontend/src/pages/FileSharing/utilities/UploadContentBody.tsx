@@ -80,8 +80,7 @@ const UploadContentBody = () => {
 
       updateFilesToUpload((prevFiles) => {
         const existingNames = new Set(prevFiles.map((f) => getUploadItemDisplayName(f)));
-
-        const newFiles = [...normal, ...folders]
+        const newUploadFiles = [...normal, ...folders]
           .filter((file) => !existingNames.has(getUploadItemDisplayName(file)))
           .map((file) => {
             if (isFolderUploadItem(file as UploadItem)) {
@@ -93,7 +92,7 @@ const UploadContentBody = () => {
             return uploadFile;
           });
 
-        return [...prevFiles, ...newFiles];
+        return [...prevFiles, ...newUploadFiles];
       });
     },
     [files, webdavShares, webdavShare, updateFilesToUpload],

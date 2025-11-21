@@ -17,16 +17,35 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
-import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
+import { useEffect } from 'react';
 
-const useDeploymentTarget = () => {
-  const globalSettings = useGlobalSettingsApiStore((s) => s.globalSettings);
+type FileOperationProgress = { percent?: number };
 
-  const isLmn = globalSettings?.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER;
-  const isGeneric = globalSettings?.general.deploymentTarget === DEPLOYMENT_TARGET.GENERIC;
+interface Options {
+  fileOperationProgress?: FileOperationProgress | null;
+  currentPath: string;
+  webdavShare?: string;
+  fetchFiles: (share: string | undefined, path: string) => Promise<void>;
+  fetchShares: () => Promise<void>;
+}
 
-  return { isLmn, isGeneric };
+const useRefreshOnFileOperationComplete = ({
+  fileOperationProgress,
+  currentPath,
+  webdavShare,
+  fetchFiles,
+  fetchShares,
+}: Options) => {
+  useEffect(() => {
+    if (!fileOperationProgress) return;
+    const percent = fileOperationProgress.percent ?? 0;
+    if (percent < 100) return;
+
+    void (async () => {
+      await fetchFiles(webdavShare, currentPath);
+      await fetchShares();
+    })();
+  }, [fileOperationProgress, currentPath, webdavShare, fetchFiles, fetchShares]);
 };
 
-export default useDeploymentTarget;
+export default useRefreshOnFileOperationComplete;

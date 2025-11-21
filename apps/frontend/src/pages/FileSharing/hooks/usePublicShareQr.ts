@@ -17,16 +17,22 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
-import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
+import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
+import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
+import PublicShareDto from '@libs/filesharing/types/publicShareDto';
+import usePublicShareStore from '../publicShare/usePublicShareStore';
 
-const useDeploymentTarget = () => {
-  const globalSettings = useGlobalSettingsApiStore((s) => s.globalSettings);
+const usePublicShareQr = () => {
+  const { share, setShare, closeDialog, dialog } = usePublicShareStore();
+  const { origin } = window.location;
+  const url = share?.publicShareId ? `${origin}/${FileSharingApiEndpoints.PUBLIC_SHARE}/${share.publicShareId}` : '';
 
-  const isLmn = globalSettings?.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER;
-  const isGeneric = globalSettings?.general.deploymentTarget === DEPLOYMENT_TARGET.GENERIC;
+  const handleClose = () => {
+    setShare({} as PublicShareDto);
+    closeDialog(PUBLIC_SHARE_DIALOG_NAMES.QR_CODE);
+  };
 
-  return { isLmn, isGeneric };
+  return { share, dialog, url, handleClose };
 };
 
-export default useDeploymentTarget;
+export default usePublicShareQr;

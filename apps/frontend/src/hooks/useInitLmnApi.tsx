@@ -17,16 +17,25 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
-import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
+import { useEffect } from 'react';
+import useLmnApiStore from '@/store/useLmnApiStore';
+import useUserStore from '@/store/UserStore/useUserStore';
+import useDeploymentTarget from './useDeploymentTarget';
 
-const useDeploymentTarget = () => {
-  const globalSettings = useGlobalSettingsApiStore((s) => s.globalSettings);
+const useInitLmnApi = () => {
+  const { isLmn } = useDeploymentTarget();
+  const isAuthenticated = useUserStore((s) => s.isAuthenticated);
+  const { lmnApiToken, setLmnApiToken, getOwnUser } = useLmnApiStore();
 
-  const isLmn = globalSettings?.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER;
-  const isGeneric = globalSettings?.general.deploymentTarget === DEPLOYMENT_TARGET.GENERIC;
+  useEffect(() => {
+    if (!isLmn || !isAuthenticated) return;
 
-  return { isLmn, isGeneric };
+    if (!lmnApiToken) {
+      void setLmnApiToken();
+    } else {
+      void getOwnUser();
+    }
+  }, [isLmn, isAuthenticated, lmnApiToken, setLmnApiToken, getOwnUser]);
 };
 
-export default useDeploymentTarget;
+export default useInitLmnApi;
