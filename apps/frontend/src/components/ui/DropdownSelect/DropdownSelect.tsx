@@ -22,7 +22,6 @@ import { useTranslation } from 'react-i18next';
 import { useOnClickOutside } from 'usehooks-ts';
 import cn from '@libs/common/utils/className';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
-import styles from './dropdownselect.module.scss';
 
 export type DropdownOptions = {
   id: string;
@@ -84,60 +83,73 @@ const DropdownSelect: React.FC<DropdownProps> = ({
 
   return (
     <div
-      className={cn(styles.dropdown, classname, {
-        [styles.default]: variant === 'default',
-        [styles.dialog]: variant === 'dialog',
-      })}
+      className={cn('relative cursor-default', classname)}
       ref={dropdownRef}
       role="combobox"
       aria-expanded={isOpen}
       aria-haspopup="listbox"
       aria-controls="dropdown-listbox"
     >
-      <div className={styles['selected-value']}>
-        {searchEnabled ? (
-          <input
-            type="text"
-            name="searchTerm"
-            value={query}
-            placeholder={selectedLabel || t(placeholder)}
-            onChange={(e) => {
-              setQuery(e.target.value);
-            }}
-            onClick={openMenu}
-            onFocus={openMenu}
-            disabled={options.length === 0}
-            className={cn('text-start', {
-              'bg-background text-foreground': variant === 'default',
-              'bg-muted text-secondary': variant === 'dialog',
-            })}
-            aria-autocomplete="list"
-            aria-controls="dropdown-listbox"
-          />
-        ) : (
-          <input
-            type="button"
-            value={selectedLabel || t(placeholder)}
-            onClick={openMenu}
-            readOnly
-            disabled={options.length === 0}
-            className={cn('text-start', {
-              'bg-background text-foreground': variant === 'default',
-              'bg-muted text-secondary': variant === 'dialog',
-            })}
-          />
-        )}
-      </div>
-
-      <div className={cn(styles.arrow, { [styles.open]: isOpen, [styles.up]: openToTop })} />
+      {searchEnabled ? (
+        <input
+          type="text"
+          name="searchTerm"
+          value={query}
+          placeholder={selectedLabel || t(placeholder)}
+          onChange={(e) => {
+            setQuery(e.target.value);
+          }}
+          onClick={openMenu}
+          onFocus={openMenu}
+          disabled={options.length === 0}
+          className={cn(
+            'box-border w-full cursor-text rounded-lg py-2 pl-2.5 pr-[52px] text-start text-base leading-6 text-secondary outline-none transition-all duration-200',
+            {
+              'bg-accent': variant === 'default',
+              'bg-muted': variant === 'dialog',
+            },
+          )}
+          aria-autocomplete="list"
+          aria-controls="dropdown-listbox"
+        />
+      ) : (
+        <input
+          type="button"
+          value={selectedLabel || t(placeholder)}
+          onClick={openMenu}
+          readOnly
+          disabled={options.length === 0}
+          className={cn(
+            'box-border w-full cursor-pointer rounded-lg py-2 pl-2.5 pr-[52px] text-start text-base leading-6 text-secondary outline-none transition-all duration-200',
+            {
+              'bg-accent': variant === 'default',
+              'bg-muted': variant === 'dialog',
+            },
+          )}
+        />
+      )}
 
       <div
-        className={cn('shadow-xl scrollbar-thin', styles.options, {
-          [styles.open]: isOpen,
-          [styles.up]: openToTop,
-          'bg-background text-foreground': variant === 'default',
-          'bg-muted text-secondary': variant === 'dialog',
+        className={cn('absolute right-2.5 top-3.5 mt-1.5 block h-0 w-0 border-solid border-border', {
+          'border-x-[5px] border-b-0 border-t-[5px] border-x-transparent':
+            (!isOpen && !openToTop) || (isOpen && openToTop),
+          'border-x-[5px] border-b-[5px] border-t-0 border-x-transparent':
+            (isOpen && !openToTop) || (!isOpen && openToTop),
         })}
+      />
+
+      <div
+        className={cn(
+          'absolute z-[1000] -mt-px box-border max-h-[125px] w-full overflow-y-auto text-secondary shadow-xl scrollbar-thin',
+          {
+            block: isOpen,
+            hidden: !isOpen,
+            'top-full': !openToTop,
+            'bottom-full -mb-px': openToTop,
+            'bg-accent ': variant === 'default',
+            'bg-muted': variant === 'dialog',
+          },
+        )}
         role="listbox"
         id="dropdown-listbox"
       >
@@ -157,10 +169,11 @@ const DropdownSelect: React.FC<DropdownProps> = ({
                   selectOption(option);
                 }
               }}
-              className={cn(styles.option, {
-                [styles.selected]: selected,
-                'hover:bg-accent-light': variant === 'default',
-                'bg-muted hover:bg-secondary': variant === 'dialog',
+              className={cn('box-border block cursor-pointer px-2.5 py-2', {
+                'text-secondary hover:bg-muted': variant === 'default' && !selected,
+                'bg-muted text-secondary': variant === 'default' && selected,
+                'text-secondary hover:bg-muted-light': variant === 'dialog' && !selected,
+                'bg-muted-light text-secondary': variant === 'dialog' && selected,
               })}
               title={label}
             >
@@ -170,7 +183,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
         })}
         {filteredOptions(options).length === 0 && (
           <div
-            className={styles.option}
+            className="box-border block cursor-pointer px-2.5 py-2"
             aria-disabled="true"
           >
             {t('search.no-results')}
