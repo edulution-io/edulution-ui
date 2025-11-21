@@ -62,8 +62,7 @@ const useFileSharingDragAndDrop = ({ webdavShare, currentPath }: UseFileSharingD
     setActiveId(event.active.id as string);
   };
 
-  const canDropOnRow = (file: DirectoryFileDTO) =>
-    file.type === ContentType.DIRECTORY && file.filePath !== PARENT_FOLDER_PATH;
+  const canDropOnRow = (file: DirectoryFileDTO) => file.type === ContentType.DIRECTORY;
 
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
@@ -76,6 +75,12 @@ const useFileSharingDragAndDrop = ({ webdavShare, currentPath }: UseFileSharingD
     const sourceFile = active.data.current as DirectoryFileDTO;
     const targetFolder = over.data.current as DirectoryFileDTO;
 
+    let targetPath = targetFolder.filePath;
+    if (targetPath === PARENT_FOLDER_PATH) {
+      const pathParts = currentPath.split('/').filter(Boolean);
+      targetPath = pathParts.length > 1 ? `/${pathParts.slice(0, -1).join('/')}` : '/';
+    }
+
     const isDraggedFileSelected = selectedRows[sourceFile.filePath];
 
     const filesToMove = isDraggedFileSelected
@@ -86,14 +91,14 @@ const useFileSharingDragAndDrop = ({ webdavShare, currentPath }: UseFileSharingD
             if (!file) return null;
             return {
               path: file.filePath,
-              newPath: `${targetFolder.filePath}/${file.filename}`,
+              newPath: `${targetPath}/${file.filename}`,
             };
           })
           .filter(Boolean)
       : [
           {
             path: sourceFile.filePath,
-            newPath: `${targetFolder.filePath}/${sourceFile.filename}`,
+            newPath: `${targetPath}/${sourceFile.filename}`,
           } as PathChangeOrCreateDto,
         ];
 
