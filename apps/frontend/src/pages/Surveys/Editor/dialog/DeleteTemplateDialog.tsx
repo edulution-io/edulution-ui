@@ -47,8 +47,8 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
   const locale = getLocaleDateFormat(language);
 
   const handleRemoveTemplate = async () => {
-    if (template?.fileName) {
-      await deleteTemplate(template?.fileName);
+    if (template?.name) {
+      await deleteTemplate(template?.name);
       void fetchTemplates();
       setIsOpenTemplateConfirmDeletion(false);
     }

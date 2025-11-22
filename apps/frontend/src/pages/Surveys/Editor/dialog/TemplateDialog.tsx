@@ -71,7 +71,7 @@ const TemplateDialog = (props: TemplateDialogProps) => {
     const { id, formula, createdAt, saveNo, expires, answers, ...remainingSurvey } = values;
     const creationDate = template?.template.createdAt || new Date();
     await uploadTemplate({
-      fileName: template?.fileName,
+      name: template?.name,
       template: { formula: creator.JSON as SurveyFormula, createdAt: creationDate, ...remainingSurvey },
     });
     setIsOpenTemplateMenu(false);

@@ -23,8 +23,9 @@ import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
 import cn from '@libs/common/utils/className';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import useLdapGroups from '@/hooks/useLdapGroups';
+import { EyeLightIcon, EyeLightSlashIcon } from '@/assets/icons';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import { Button } from '@/components/shared/Button';
 import { Textarea } from '@/components/ui/Textarea';
@@ -48,7 +49,13 @@ const TemplateItem = (props: TemplateItemProps) => {
     canSubmitMultipleAnswers,
     canUpdateFormerAnswer,
   } = template.template;
-  const { setTemplate, setIsOpenTemplateMenu, setIsOpenTemplateConfirmDeletion } = useTemplateMenuStore();
+  const {
+    setTemplate,
+    setIsOpenTemplateMenu,
+    setIsOpenTemplateConfirmDeletion,
+    toggleIsTemplateActive,
+    fetchTemplates,
+  } = useTemplateMenuStore();
 
   const { isSuperAdmin } = useLdapGroups();
 
@@ -79,8 +86,8 @@ const TemplateItem = (props: TemplateItemProps) => {
 
   return (
     <AccordionItem
-      key={template.fileName}
-      value={template.fileName || ''}
+      key={template.name}
+      value={template.name || ''}
     >
       <AccordionTrigger className="px-4 pt-2">
         <h4>{formula?.title}</h4>
@@ -92,19 +99,38 @@ const TemplateItem = (props: TemplateItemProps) => {
           className={cn(
             'overflow-y-auto bg-accent text-secondary transition-[max-height,opacity] duration-300 ease-in-out scrollbar-thin placeholder:text-p focus:outline-none',
             'max-h-80 overflow-visible opacity-100',
+            { 'bg-accent': template.isActive },
+            { 'bg-card-muted': !template.isActive },
           )}
           style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '12pt' }}
           disabled
         />
         <div className="mt-2 flex flex-row justify-end space-x-2">
           {isSuperAdmin && (
-            <Button
-              onClick={handleRemoveTemplate}
-              variant="btn-attention"
-              size="sm"
-            >
-              {t('common.delete')}
-            </Button>
+            <>
+              <Button
+                onClick={handleRemoveTemplate}
+                variant="btn-attention"
+                size="sm"
+              >
+                {t('common.delete')}
+              </Button>
+              <Button
+                onClick={async () => {
+                  if (!template.name) return;
+                  await toggleIsTemplateActive(template.name);
+                  await fetchTemplates();
+                }}
+                variant="btn-collaboration"
+                size="sm"
+              >
+                <img
+                  src={template.isActive ? EyeLightIcon : EyeLightSlashIcon}
+                  alt="eye"
+                  className="h-6 min-h-6 w-6 min-w-6"
+                />
+              </Button>
+            </>
           )}
           <Button
             onClick={handleLoadTemplate}

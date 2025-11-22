@@ -53,7 +53,7 @@ import SURVEYS_ANSWER_FOLDER from '@libs/survey/constants/surveyAnswersFolder';
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
@@ -66,6 +66,7 @@ import SurveyAnswerService from './survey-answers.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
+import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
 import { checkAttachmentFile, createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import AdminGuard from '../common/guards/admin.guard';
 import CustomHttpException from '../common/CustomHttpException';
@@ -131,19 +132,13 @@ class SurveysController {
   @UseGuards(AdminGuard)
   @Post(TEMPLATES)
   async createTemplate(@Body() surveyTemplateDto: SurveyTemplateDto) {
-    return this.surveysTemplateService.createTemplate(surveyTemplateDto);
+    return this.surveysTemplateService.updateOrCreateTemplateDocument(surveyTemplateDto);
   }
 
   @Get(TEMPLATES)
-  getTemplateNames() {
-    return this.surveysTemplateService.serveTemplateNames();
-  }
-
-  @Get(`${TEMPLATES}/:filename`)
-  getTemplate(@Param() params: { filename: string }, @Res() res: Response) {
-    const { filename } = params;
+  getTemplate(@Res() res: Response, @GetCurrentUserGroups() ldapGroups: string[]) {
     res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_JSON);
-    return this.surveysTemplateService.serveTemplate(filename, res);
+    return this.surveysTemplateService.serveTemplates(ldapGroups, res);
   }
 
   @Get(`${ANSWER}/:surveyId`)
@@ -221,6 +216,18 @@ class SurveysController {
     const { filename } = params;
     const filePath = join(APPS.SURVEYS, username);
     return this.filesystemService.serveTempFiles(filePath, filename, res);
+  }
+
+  @Delete(`${TEMPLATES}/:name`)
+  async deleteTemplate(@Param() params: { name: string }) {
+    const { name } = params;
+    return this.surveysTemplateService.deleteTemplate(name);
+  }
+
+  @Patch(`${TEMPLATES}/:name`)
+  async toggleIsTemplateActive(@Param() params: { name: string }) {
+    const { name } = params;
+    return this.surveysTemplateService.toggleIsTemplateActive(name);
   }
 }
 
