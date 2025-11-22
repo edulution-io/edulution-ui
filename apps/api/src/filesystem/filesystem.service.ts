@@ -37,7 +37,7 @@ import { createHash } from 'crypto';
 import { firstValueFrom, from } from 'rxjs';
 import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
-import { extname, join } from 'path';
+import { extname, join, dirname } from 'path';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
@@ -323,6 +323,26 @@ class FilesystemService {
     const filesNames = await readdir(directory);
     if (filesNames.length === 0) {
       await remove(directory);
+    }
+  }
+
+  async deleteFolderAndParentsUpToDepth(folderPath: string, deep: number): Promise<void> {
+    if (deep < 0) return;
+
+    const exists = await pathExists(folderPath);
+    if (!exists) return;
+
+    const files = await readdir(folderPath);
+
+    if (files.length === 0) {
+      await remove(folderPath);
+
+      if (deep > 0) {
+        const parentPath = dirname(folderPath);
+        if (parentPath !== folderPath) {
+          await this.deleteFolderAndParentsUpToDepth(parentPath, deep - 1);
+        }
+      }
     }
   }
 
