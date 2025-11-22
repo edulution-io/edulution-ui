@@ -26,6 +26,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   Res,
   UploadedFile,
   UseGuards,
@@ -94,12 +95,21 @@ class FileSystemController {
   @Public()
   @UseGuards(IsPublicAppGuard)
   @Get(`public/${FILE_ENDPOINTS.FILE}/:appName/*filename`)
-  servePublicFiles(
+  async servePublicFiles(
+    @Res() res: Response,
     @Param('appName') appName: string,
     @Param('filename') filename: string | string[],
-    @Res() res: Response,
+    @Query('fallback') fallbackFilename: string | undefined,
   ) {
-    return this.filesystemService.serveFiles(appName, FilesystemService.buildPathString(filename), res);
+    return this.filesystemService.servePublicFileWithFallback(res, appName, filename, fallbackFilename);
+  }
+
+  @UseGuards(AdminGuard)
+  @Delete(`public/${FILE_ENDPOINTS.FILE}/:appName/*filename`)
+  async deletePublicFiles(@Param('appName') appName: string, @Param('filename') filename: string | string[]) {
+    const fileName = FilesystemService.buildPathString(filename);
+    const filePath = join(PUBLIC_ASSET_PATH, appName);
+    return FilesystemService.deleteFile(filePath, fileName);
   }
 
   @Delete(':appName/*filename')
