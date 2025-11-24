@@ -50,6 +50,7 @@ interface QuestionsContextMenuStore {
   shouldToggleShowOtherItem: boolean;
 
   formerChoices: string[];
+  setFormerChoices: (choices: string[]) => void;
   currentChoices: ChoiceDto[];
 
   addChoice: (name: string, title?: string, limit?: number) => void;
@@ -82,6 +83,8 @@ const QuestionsContextMenuStoreInitialState = {
 const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get) => ({
   ...QuestionsContextMenuStoreInitialState,
   reset: () => set(QuestionsContextMenuStoreInitialState),
+
+  setFormerChoices: (choices: string[]) => set({ formerChoices: choices }),
 
   setIsOpenQuestionContextMenu: (state: boolean) => {
     const { reset } = get();

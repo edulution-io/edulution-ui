@@ -10,18 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SurveyQuestionChoiceTypes from '@libs/survey/constants/surveyQuestionChoiceTypes';
-import SurveyQuestionMatrixTypes from '@libs/survey/constants/surveyQuestionMatrixTypes';
-import SurveyQuestionImageTypes from '@libs/survey/constants/surveyQuestionImageTypes';
-import SurveyQuestionOtherTypes from '@libs/survey/constants/surveyQuestionOtherTypes';
-import SurveyQuestionPanelTypes from '@libs/survey/constants/SurveyQuestionPanelTypes';
+enum SurveyQuestionPanelTypes {
+  PANEL = 'panel',
+  DYNAMIC_PANEL = 'paneldynamic',
+}
 
-const SurveyQuestionsType = {
-  ...SurveyQuestionPanelTypes,
-  ...SurveyQuestionChoiceTypes,
-  ...SurveyQuestionMatrixTypes,
-  ...SurveyQuestionImageTypes,
-  ...SurveyQuestionOtherTypes,
-};
-
-export default SurveyQuestionsType;
+export default SurveyQuestionPanelTypes;

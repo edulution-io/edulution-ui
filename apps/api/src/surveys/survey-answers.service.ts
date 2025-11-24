@@ -14,7 +14,7 @@ import { join } from 'path';
 import { Model, Types } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import { InjectModel } from '@nestjs/mongoose';
-import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
@@ -107,6 +107,7 @@ class SurveyAnswersService implements OnModuleInit {
     return filteredChoices;
   };
 
+  // TODO: THIS MAY HAVE TO BE RECURSIVE
   async countChoiceSelections(surveyId: string, questionName: string, choiceId: string): Promise<number> {
     const documents = await this.surveyAnswerModel
       .find<SurveyAnswerDocument>({ surveyId: new Types.ObjectId(surveyId) })
@@ -115,12 +116,37 @@ class SurveyAnswersService implements OnModuleInit {
     documents.forEach((document) => {
       try {
         const updatedAnswer = structuredClone(document.answer) as unknown as { [key: string]: string | object };
+        if (!updatedAnswer[questionName]) {
+          Object.keys(updatedAnswer).forEach((parentQuestion) => {
+            if (Array.isArray(updatedAnswer[parentQuestion])) {
+              if (updatedAnswer[parentQuestion].every((entry) => typeof entry === 'string')) {
+                return;
+              }
 
-        if (Array.isArray(updatedAnswer[questionName])) {
-          const choices = updatedAnswer[questionName] as string[];
-          const choice = choices.find((c) => c === choiceId);
-          if (choice) {
-            filteredAnswers.push(choice);
+              (updatedAnswer[parentQuestion] as { [key: string]: string }[]).forEach((entry) => {
+                Object.keys(entry).forEach((question) => {
+                  if (question === questionName) {
+                    const value = entry[question];
+
+                    Logger.warn(`value: ${JSON.stringify(value)}`);
+
+                    if (typeof value === 'string') {
+                      if (value === choiceId) {
+                        filteredAnswers.push(value);
+                      }
+                    }
+                  }
+                });
+              });
+            }
+          });
+        } else if (Array.isArray(updatedAnswer[questionName])) {
+          if (updatedAnswer[questionName].every((c) => typeof c === 'string')) {
+            const choices = updatedAnswer[questionName];
+            const choice = choices.find((c) => c === choiceId);
+            if (choice) {
+              filteredAnswers.push(choice);
+            }
           }
         } else if (updatedAnswer[questionName] === choiceId) {
           filteredAnswers.push(choiceId);

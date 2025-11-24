@@ -14,12 +14,14 @@ import SurveyQuestionChoiceTypes from '@libs/survey/constants/surveyQuestionChoi
 import SurveyQuestionMatrixTypes from '@libs/survey/constants/surveyQuestionMatrixTypes';
 import SurveyQuestionImageTypes from '@libs/survey/constants/surveyQuestionImageTypes';
 import SurveyQuestionOtherTypes from '@libs/survey/constants/surveyQuestionOtherTypes';
+import SurveyQuestionPanelTypes from '@libs/survey/constants/SurveyQuestionPanelTypes';
 
+type PanelType = (typeof SurveyQuestionPanelTypes)[keyof typeof SurveyQuestionPanelTypes];
 type ChoiceType = (typeof SurveyQuestionChoiceTypes)[keyof typeof SurveyQuestionChoiceTypes];
 type MatrixType = (typeof SurveyQuestionMatrixTypes)[keyof typeof SurveyQuestionMatrixTypes];
 type ImageType = (typeof SurveyQuestionImageTypes)[keyof typeof SurveyQuestionImageTypes];
 type OtherType = (typeof SurveyQuestionOtherTypes)[keyof typeof SurveyQuestionOtherTypes];
 
-type TSurveyQuestionTypes = ChoiceType | MatrixType | ImageType | OtherType;
+type TSurveyQuestionTypes = PanelType | ChoiceType | MatrixType | ImageType | OtherType;
 
 export default TSurveyQuestionTypes;

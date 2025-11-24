@@ -145,6 +145,27 @@ class SurveysAttachmentService implements OnModuleInit {
   ): Promise<TSurveyElement> {
     const processedElement = { ...element };
     switch (element.type) {
+      case SurveyQuestionsType.PANEL:
+      case SurveyQuestionsType.DYNAMIC_PANEL:
+        if (element.elements) {
+          processedElement.elements = await this.processElements(
+            element.elements,
+            username,
+            surveyId,
+            includedFileNames,
+            isPublic,
+          );
+        }
+        if (element.templateElements) {
+          processedElement.templateElements = await this.processElements(
+            element.templateElements,
+            username,
+            surveyId,
+            includedFileNames,
+            isPublic,
+          );
+        }
+        break;
       case SurveyQuestionsType.CHECKBOX:
       case SurveyQuestionsType.DROPDOWN:
       case SurveyQuestionsType.RADIO_GROUP:
