@@ -30,7 +30,7 @@ const surveysTemplateInitialization000LoadDefaultTemplates: Migration<SurveysTem
   version: 1,
   execute: async (model) => {
     const anyExistingDefaultTemplate = await model.findOne({
-      fileName: { $in: list.map((template) => template.fileName) },
+      name: { $in: list.map((template) => template.name) },
     });
     if (anyExistingDefaultTemplate) {
       Logger.log(`Migration "${name}": Skipped: default templates already exist`);
@@ -43,7 +43,7 @@ const surveysTemplateInitialization000LoadDefaultTemplates: Migration<SurveysTem
         try {
           await model.create(surveyTemplate);
         } catch (error) {
-          Logger.error(`Migration "${name}": Failed to migrate document ${surveyTemplate.fileName}:`, error);
+          Logger.error(`Migration "${name}": Failed to migrate document ${surveyTemplate.name}:`, error);
         }
       }),
     );
