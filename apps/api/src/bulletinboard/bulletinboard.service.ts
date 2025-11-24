@@ -95,7 +95,11 @@ class BulletinBoardService implements OnModuleInit {
     );
   }
 
-  async updateBulletinAttachments(content: string, attachedFileNames: string[]) {
+  async updateBulletinAttachments(
+    content: string,
+    attachedFileNames: string[],
+    previousAttachmentFileNames?: string[],
+  ) {
     const fileNames: string[] = [];
     (attachedFileNames || []).forEach((name) => {
       if (content.includes(`<img src="/edu-api/bulletinboard/attachments/${name}?token={{token}}">`)) {
@@ -103,14 +107,17 @@ class BulletinBoardService implements OnModuleInit {
       }
     });
 
-    const permanentFiles = await this.fileSystemService.getAllFilenamesInDirectory(BULLETIN_ATTACHMENTS_PATH);
-    await Promise.all(
-      permanentFiles.map(async (fileName) => {
-        if (!fileNames.includes(fileName)) {
-          await FilesystemService.deleteFile(BULLETIN_ATTACHMENTS_PATH, fileName);
-        }
-      }),
-    );
+    if (previousAttachmentFileNames) {
+      await Promise.all(
+        previousAttachmentFileNames.map(async (fileName) => {
+          if (!fileNames.includes(fileName)) {
+            const permanentFilePath = join(BULLETIN_ATTACHMENTS_PATH, fileName);
+            await FilesystemService.checkIfFileExistAndDelete(permanentFilePath);
+          }
+        }),
+      );
+    }
+
     const temporaryFiles = await this.fileSystemService.getAllFilenamesInDirectory(BULLETIN_TEMP_ATTACHMENTS_PATH);
     await Promise.all(
       temporaryFiles.map(async (fileName) => {
@@ -243,7 +250,7 @@ class BulletinBoardService implements OnModuleInit {
       username: currentUser.preferred_username,
     };
     const content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content);
-    const attachmentFileNames = await this.updateBulletinAttachments(content, dto.attachmentFileNames);
+    const attachmentFileNames = await this.updateBulletinAttachments(content, dto.attachmentFileNames, []);
 
     const createdBulletin = await this.bulletinModel.create({
       creator,
@@ -319,7 +326,11 @@ class BulletinBoardService implements OnModuleInit {
     };
 
     const content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content);
-    const attachmentFileNames = await this.updateBulletinAttachments(content, dto.attachmentFileNames);
+    const attachmentFileNames = await this.updateBulletinAttachments(
+      content,
+      dto.attachmentFileNames,
+      bulletin.attachmentFileNames,
+    );
 
     bulletin.title = dto.title;
     bulletin.isActive = dto.isActive;
