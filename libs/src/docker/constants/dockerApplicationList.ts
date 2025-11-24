@@ -18,16 +18,19 @@
  */
 
 import type TApps from '@libs/appconfig/types/appsType';
+import {
+  EDULUTION_MANAGER_APPLICATION_NAME,
+  EDULUTION_MANAGER_CONTAINER_NAME,
+} from '@libs/docker/constants/edulution-manager';
 
-type DockerApplicationList = {
-  [key in TApps]: string;
-};
+type DockerApplicationList = { [EDULUTION_MANAGER_APPLICATION_NAME]: string } & { [key in TApps]: string };
 
-const DOCKER_APPLICATIONS: Partial<DockerApplicationList> = {
+const DOCKER_APPLICATION_LIST: Partial<DockerApplicationList> = {
   mail: 'edulution-mail',
   classmanagement: 'edulution-veyon',
   desktopdeployment: 'edulution-guacamole',
   filesharing: 'edulution-onlyoffice',
+  [EDULUTION_MANAGER_APPLICATION_NAME]: EDULUTION_MANAGER_CONTAINER_NAME,
 } as const;
 
-export default DOCKER_APPLICATIONS;
+export default DOCKER_APPLICATION_LIST;

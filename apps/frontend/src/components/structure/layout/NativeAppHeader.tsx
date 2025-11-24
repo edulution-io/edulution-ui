@@ -31,7 +31,7 @@ const NativeAppHeader = ({ title, iconSrc, description }: NativeAppHeaderProps) 
         className="hidden h-20 w-20 object-contain md:block"
       />
       <div className="ml-4">
-        <h2>{title}</h2>
+        <h1>{title}</h1>
         <div className="pt-5 sm:pt-0">{description && <p className="pb-4">{description}</p>}</div>
       </div>
     </div>

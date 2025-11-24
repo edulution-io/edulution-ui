@@ -51,7 +51,7 @@ const PasswordChangeForm: FC = () => {
   return (
     <div className="pt-5 sm:pt-0">
       <LoadingIndicatorDialog isOpen={isLoading} />
-      <h3 className="text-background">{t('usersettings.security.changePassword.title')}</h3>
+      <h2 className="text-background">{t('usersettings.security.changePassword.title')}</h2>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 py-4"

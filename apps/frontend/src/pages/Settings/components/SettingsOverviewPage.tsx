@@ -149,7 +149,10 @@ const SettingsOverviewPage: React.FC = () => {
   if (!isMobileView && !isTabletView)
     return (
       <>
-        <Tabs value={tabValue}>
+        <Tabs
+          value={tabValue}
+          className="flex h-full flex-col"
+        >
           <div className="sticky top-0 z-20 backdrop-blur-xl">
             <TabsList
               className="grid sm:w-fit"
@@ -166,17 +169,18 @@ const SettingsOverviewPage: React.FC = () => {
                 </TabsTrigger>
               ))}
             </TabsList>
+            <Separator className="my-2 bg-muted" />
           </div>
           {tabOptions.map((opt) => (
             <TabsContent
               key={opt.id}
               value={opt.id}
+              className="flex-1 overflow-y-auto scrollbar-thin"
             >
               <PageTitle
                 title={t('settings.sidebar')}
                 translationId={opt.name}
               />
-              <Separator />
               {opt.component({ form, onSubmit })}
             </TabsContent>
           ))}
@@ -186,18 +190,20 @@ const SettingsOverviewPage: React.FC = () => {
     );
 
   return (
-    <>
-      <div className="sticky top-0 z-20 backdrop-blur-xl">
+    <div className="flex h-full flex-col">
+      <div className="sticky top-0 z-20">
         <DropdownSelect
           options={tabOptions}
           selectedVal={option}
           handleChange={goToTab}
         />
+        <Separator className="my-2 bg-muted" />
       </div>
-      <Separator className="my-2" />
-      {tabOptions.find((opt) => opt.id === option)?.component({ form, onSubmit })}
+      <div className="flex-1 overflow-y-auto">
+        {tabOptions.find((opt) => opt.id === option)?.component({ form, onSubmit })}
+      </div>
       {showFloatingButtons && <GlobalSettingsFloatingButtons handleSave={form.handleSubmit(onSubmit)} />}
-    </>
+    </div>
   );
 };
 

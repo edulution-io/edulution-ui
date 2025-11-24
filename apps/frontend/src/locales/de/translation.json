@@ -674,6 +674,11 @@
       "fileUploadError": "Die Datei konnte nicht hochgeladen werden, bitte versuche es später erneut.",
       "fileDeletionSuccess": "Die Datei wurde erfolgreich gelöscht.",
       "saveSurveySuccess": "Die Umfrage wurde gespeichert.",
+      "surveyPlaceHolder": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
+      "surveyPlaceholderDescription": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
+      "surveyPlaceholderDescriptionMobile": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
+      "pagePlaceHolder": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um der Seite ein neues Element hinzuzufügen.",
+      "panelPlaceHolder": "Klicke unten auf \"Frage hinzufügen\", um dem Bedienfeld ein neues Element hinzuzufügen.",
       "reset": "Verwerfen",
       "addDescription": "Beschreibung hinzufügen",
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
@@ -1496,6 +1501,15 @@
     "cannotUploadOversized": "Dateien, die größer als 50 MB sind, können nicht hochgeladen werden.",
     "addFiles": "Dateien hinzufügen",
     "addFolder": "Ordner hinzufügen",
+    "file": "Datei",
+    "files": "Dateien",
+    "creatingDirectoryStructure": "Ordnerstruktur wird angelegt",
+    "hiddenFiles": "versteckte & System-Dateien",
+    "errors": {
+      "directoryCreationFailed": "Fehler beim Erstellen des Ordners",
+      "fileUploadFailed": "Fehler beim Hochladen des Ordner-Inhalts",
+      "uploadError": "Fehler beim Hochladen der Dateien"
+    },
     "preparingFolder": "Ordner wird vorbereitet"
   },
   "warnings": {
@@ -1762,10 +1776,18 @@
   },
   "containerApplication": {
     "dialogTitle": "{{applicationName}}-Plugins installieren",
+    "EDU_MANAGER_INSTALL_TOKEN": {
+      "title": "Installations-Token",
+      "description": "Bitte gib den Installations-Token ein, der im Edulution-Manager erstellt wurde."
+    },
     "EDULUTION_MAIL_HOSTNAME": {
       "title": "Hostname",
       "description": "Hostname des Mailservers. Dieser kann von der edulution Domain abweichen."
     }
+  },
+  "edulution-manager": {
+    "sidebar": "Edulution-Manager",
+    "title": "Edulution-Manager"
   },
   "dockerOverview": {
     "title": "Container-Übersicht",
@@ -1777,7 +1799,9 @@
     "filterPlaceHolderText": "Suche nach Container-Name",
     "port": "Port",
     "created": "Erstellt am",
-    "container-view": "Container"
+    "container-view": "Container",
+    "selectPluginForInstallationTitle": "Plugin zur Installation auswählen",
+    "selectPluginForInstallationDescription": "Wähle hier eine App aus, für die ein Plugin installiert werden soll."
   },
   "docker": {
     "error": {

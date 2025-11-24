@@ -65,7 +65,7 @@ const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({
 
   let className = 'h-full';
   if (isOpenedInNewTab) {
-    className = 'h-screen';
+    className = 'h-dvh';
   }
 
   return (

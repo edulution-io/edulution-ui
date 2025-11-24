@@ -26,7 +26,7 @@ import eduApi from '@/api/eduApi';
 import { type ContainerInfo } from 'dockerode';
 import { type RowSelectionState } from '@tanstack/react-table';
 import handleApiError from '@/utils/handleApiError';
-import DOCKER_APPLICATIONS from '@libs/docker/constants/dockerApplicationList';
+import DOCKER_APPLICATION_LIST from '@libs/docker/constants/dockerApplicationList';
 import { EDU_API_DOCKER_CONTAINER_ENDPOINT, EDU_API_DOCKER_ENDPOINT } from '@libs/docker/constants/dockerEndpoints';
 import { EDU_PLUGINS_GITHUB_URL } from '@libs/common/constants';
 import { type DockerContainerTableStore } from '@libs/appconfig/types/dockerContainerTableStore';
@@ -57,9 +57,9 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
 
   fetchTableContent: async (applicationName) => {
     if (applicationName) {
-      if (Object.keys(DOCKER_APPLICATIONS).includes(applicationName)) {
+      if (Object.keys(DOCKER_APPLICATION_LIST).includes(applicationName)) {
         set({ isLoading: true, error: null });
-        const containerName = DOCKER_APPLICATIONS[applicationName] || '';
+        const containerName = DOCKER_APPLICATION_LIST[applicationName] || '';
         const dockerContainerConfig = await get().getDockerContainerConfig(applicationName, containerName);
         const applicationNames = Object.keys(dockerContainerConfig.services);
         const containers = await get().getContainers(applicationNames);

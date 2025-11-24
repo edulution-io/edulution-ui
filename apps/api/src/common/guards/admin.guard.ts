@@ -18,17 +18,31 @@
  */
 
 import { CanActivate, ExecutionContext, HttpStatus, Injectable } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../CustomHttpException';
 import GlobalSettingsService from '../../global-settings/global-settings.service';
+import { PUBLIC_ROUTE_KEY } from '../decorators/public.decorator';
 
 @Injectable()
 class AdminGuard implements CanActivate {
-  constructor(private readonly globalSettingsService: GlobalSettingsService) {}
+  constructor(
+    private readonly globalSettingsService: GlobalSettingsService,
+    private readonly reflector: Reflector,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(PUBLIC_ROUTE_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    if (isPublic) {
+      return true;
+    }
+
     const request: Request = context.switchToHttp().getRequest();
     const { user } = request;
 

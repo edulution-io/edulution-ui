@@ -17,8 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface WorkerProgressMessage {
-  progress: number;
+import { UploadItem } from './uploadItem';
+
+interface FolderUploadItem extends UploadItem {
+  isFolder: true;
+  folderName: string;
+  files: File[];
 }
 
-export default WorkerProgressMessage;
+export default FolderUploadItem;

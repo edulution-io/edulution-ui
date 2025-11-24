@@ -17,6 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const ZIP_PROCESS_TIMEOUT = 5000;
+interface ProgressToastContent {
+  title: string;
+  description: string;
+  isDone: boolean;
+  hasErrors: boolean;
+}
 
-export default ZIP_PROCESS_TIMEOUT;
+export default ProgressToastContent;
