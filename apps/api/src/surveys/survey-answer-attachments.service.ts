@@ -54,7 +54,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
       const path = join(SURVEYS_ANSWER_FOLDER, ATTACHMENT_FOLDER, surveyId, questionId, userName);
       return this.fileSystemService.serveFiles(path, fileName, res);
     }
-    throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
+    throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
   }
 
   async deleteTempQuestionAnswerFiles(userName: string, surveyId: string, questionId: string): Promise<void> {
@@ -194,7 +194,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
   }
 
   async updateSurveyAnswer(userName: string, surveyId: string, answer: JSON, keepOldFiles = false): Promise<JSON> {
-    const surveyAnswer = answer as unknown as TSurveyAnswer;
+    const surveyAnswer = JSON.parse(JSON.stringify(answer)) as TSurveyAnswer;
     const processedSurveyAnswer = await this.processSurveyAnswer(userName, surveyId, surveyAnswer, keepOldFiles);
     return processedSurveyAnswer as unknown as JSON;
   }
