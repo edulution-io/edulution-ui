@@ -118,7 +118,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
       }
     });
 
-    await FilesystemService.makeTempFilesPermanent(fileNamesToMove, tempDirectory, directory);
+    await FilesystemService.moveFiles(fileNamesToMove, tempDirectory, directory);
 
     if (!keepOldFiles) {
       await SurveyAnswerAttachmentsService.removeDeprecatedFiles(directory, permanentFileNames, fileNamesToKeep);
