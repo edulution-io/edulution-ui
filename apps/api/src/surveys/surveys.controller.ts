@@ -138,7 +138,7 @@ class SurveysController {
   @Get(TEMPLATES)
   getTemplate(@Res() res: Response, @GetCurrentUserGroups() ldapGroups: string[]) {
     res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_JSON);
-    return this.surveysTemplateService.serveTemplates(ldapGroups, res);
+    return this.surveysTemplateService.getTemplates(ldapGroups, res);
   }
 
   @Get(`${ANSWER}/:surveyId`)

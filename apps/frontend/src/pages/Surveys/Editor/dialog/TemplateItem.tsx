@@ -30,6 +30,8 @@ import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuS
 import { Button } from '@/components/shared/Button';
 import { Textarea } from '@/components/ui/Textarea';
 import { AccordionTrigger, AccordionItem, AccordionContent } from '@/components/ui/AccordionSH';
+import { TooltipProvider } from '@/components/ui/Tooltip';
+import ActionTooltip from '@/components/shared/ActionTooltip';
 
 interface TemplateItemProps {
   form: UseFormReturn<SurveyDto>;
@@ -115,21 +117,34 @@ const TemplateItem = (props: TemplateItemProps) => {
               >
                 {t('common.delete')}
               </Button>
-              <Button
-                onClick={async () => {
-                  if (!template.name) return;
-                  await toggleIsTemplateActive(template.name);
-                  await fetchTemplates();
-                }}
-                variant="btn-collaboration"
-                size="sm"
-              >
-                <img
-                  src={template.isActive ? EyeLightIcon : EyeLightSlashIcon}
-                  alt="eye"
-                  className="h-6 min-h-6 w-6 min-w-6"
+              <TooltipProvider>
+                <ActionTooltip
+                  tooltipText={t(
+                    template.isActive
+                      ? 'survey.editor.templateMenu.hideTemplate'
+                      : 'survey.editor.templateMenu.showTemplate',
+                  )}
+                  openOnSide="bottom"
+                  className="bg-muted"
+                  trigger={
+                    <Button
+                      onClick={async () => {
+                        if (!template.name) return;
+                        await toggleIsTemplateActive(template.name);
+                        await fetchTemplates();
+                      }}
+                      variant="btn-collaboration"
+                      size="sm"
+                    >
+                      <img
+                        src={template.isActive ? EyeLightIcon : EyeLightSlashIcon}
+                        alt="eye"
+                        className="h-6 min-h-6 w-6 min-w-6"
+                      />
+                    </Button>
+                  }
                 />
-              </Button>
+              </TooltipProvider>
             </>
           )}
           <Button

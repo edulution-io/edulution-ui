@@ -64,28 +64,19 @@ class SurveysTemplateService implements OnModuleInit {
     }
   }
 
-  async serveTemplates(ldapGroups: string[], res: Response): Promise<Response> {
+  async getTemplates(ldapGroups: string[], res: Response): Promise<Response> {
     const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
     const documents = await this.surveyTemplateModel.find(
       getIsAdmin(ldapGroups, adminGroups) ? {} : { isActive: true },
     );
-    if (!documents || documents.length === 0) {
-      throw new CustomHttpException(
-        CommonErrorMessages.FILE_NOT_FOUND,
-        HttpStatus.NOT_FOUND,
-        undefined,
-        SurveysTemplateService.name,
-      );
-    }
     return res.status(HttpStatus.OK).json(documents);
   }
 
   async toggleIsTemplateActive(name: string): Promise<SurveysTemplateDocument | null> {
-    return this.surveyTemplateModel.findOneAndUpdate(
-      { name, isActive: true },
-      [{ $set: { isActive: { $not: '$isActive' } } }],
-      { new: true, upsert: false },
-    );
+    return this.surveyTemplateModel.findOneAndUpdate({ name }, [{ $set: { isActive: { $not: '$isActive' } } }], {
+      new: true,
+      upsert: false,
+    });
   }
 
   async deleteTemplate(name: string): Promise<void> {
