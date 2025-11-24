@@ -65,7 +65,7 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
   return (
     <div
       className={clsx(
-        'relative flex min-w-[50%] flex-col items-center rounded-2xl border border-dashed border-gray-300 p-6 text-center shadow-sm hover:border-gray-400',
+        'relative flex min-w-[49%] flex-col items-center rounded-2xl border border-dashed border-gray-300 p-6 text-center shadow-sm hover:border-gray-400',
         backdropClass,
         uploading && 'pointer-events-none opacity-60',
         className,

@@ -16,13 +16,17 @@ import { Theme } from '@libs/common/constants/theme';
 import ThemedFile from '@libs/common/types/themedFile';
 import AppConfigFormLogoField from '@/pages/Settings/AppConfig/components/AppConfigFormLogoField';
 
-export type AppConfigFormLogoFieldProps = {
+export type AppConfigFormDarkAndLightLogoFieldProps = {
   settingLocation: string;
   fieldPath: string;
   form: UseFormReturn<ThemedFile>;
 };
 
-const AppConfigFormBrandingField: React.FC<AppConfigFormLogoFieldProps> = ({ settingLocation, fieldPath, form }) => (
+const AppConfigFormDarkAndLightLogoField: React.FC<AppConfigFormDarkAndLightLogoFieldProps> = ({
+  settingLocation,
+  fieldPath,
+  form,
+}) => (
   <div className="flex min-w-[480px] flex-grow flex-row gap-4">
     <AppConfigFormLogoField
       variant={Theme.light}
@@ -39,4 +43,4 @@ const AppConfigFormBrandingField: React.FC<AppConfigFormLogoFieldProps> = ({ set
   </div>
 );
 
-export default AppConfigFormBrandingField;
+export default AppConfigFormDarkAndLightLogoField;

@@ -39,12 +39,14 @@ interface FilesystemStore {
   uploadingVariant: ThemeType | null;
   uploadVariant: (variant: ThemeType, file: File) => Promise<void>;
 
+  error: Error | null;
   reset: () => void;
 }
 
 const initialState = {
   darkVersion: 0,
   uploadingVariant: null,
+  error: null,
 };
 
 const useFilesystemStore = create<FilesystemStore>((set, get) => ({
@@ -59,12 +61,8 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
     try {
       const url = `${EDU_API_CONFIG_ENDPOINTS.FILES}/public/${FILE_ENDPOINTS.FILE}/${appName}/${fileName}`;
       await eduApi.delete<void>(url);
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        handleApiError(err, () => {});
-      } else {
-        handleApiError(new Error('Unknown deletion error'), () => {});
-      }
+    } catch (e) {
+      handleApiError(e, set);
     }
   },
 
@@ -92,12 +90,8 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
 
       const endpoint = appName ? `${EDU_API_CONFIG_ENDPOINTS.FILES}/${appName}` : `${EDU_API_CONFIG_ENDPOINTS.FILES}`;
       await eduApi.post<void>(endpoint, form);
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        handleApiError(err, () => {});
-      } else {
-        handleApiError(new Error('Unknown upload error'), () => {});
-      }
+    } catch (e) {
+      handleApiError(e, set);
     }
   },
 
@@ -106,8 +100,8 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
       set({ uploadingVariant: variant });
       await get().uploadImageFile(GLOBAL_SETTINGS_BRANDING_LOGO as string, getMainLogoFilename(variant), file);
       get().setDarkVersion((v) => v + 1);
-    } catch (error) {
-      handleApiError(error, set);
+    } catch (e) {
+      handleApiError(e, set);
     } finally {
       set({ uploadingVariant: null });
     }
