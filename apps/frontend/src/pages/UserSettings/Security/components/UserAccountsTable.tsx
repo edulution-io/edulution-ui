@@ -90,11 +90,13 @@ const UserAccountsTable: React.FC = () => {
         onClick: handleAddClick,
       });
     }
-    actions.push({
-      icon: IoRemove,
-      translationId: 'common.remove',
-      onClick: handleRemoveClick,
-    });
+    if (selectedRows && Object.keys(selectedRows).length > 0) {
+      actions.push({
+        icon: IoRemove,
+        translationId: 'common.remove',
+        onClick: handleRemoveClick,
+      });
+    }
     return actions;
   }, [isOneRowSelected]);
 

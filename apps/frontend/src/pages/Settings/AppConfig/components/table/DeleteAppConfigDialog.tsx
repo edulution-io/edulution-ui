@@ -40,8 +40,8 @@ const DeleteAppConfigDialog: React.FC<DeleteAppConfigDialogProps> = ({
   items,
   onConfirmDelete,
   isLoading = false,
-  titleTranslationKey = 'settings.appConfig.deleteEntries',
-  warningTranslationKey = 'settings.appConfig.confirmDeleteEntries',
+  titleTranslationKey = 'settings.appconfig.deleteEntries',
+  warningTranslationKey = 'settings.appconfig.confirmDeleteEntries',
 }) => {
   const { t } = useTranslation();
 

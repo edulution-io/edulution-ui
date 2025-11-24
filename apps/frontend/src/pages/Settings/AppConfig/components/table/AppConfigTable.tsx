@@ -105,7 +105,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
           return { name: row.filename, id: String(index) };
         }
         if (row && 'webdavShareId' in row && row.webdavShareId) {
-          return { name: row.webdavShareId, id: String(index) };
+          return { name: row.displayName, id: String(index) };
         }
         return { name: t('common.entry', { index: index + 1 }), id: String(index) };
       });
@@ -165,7 +165,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
           onClick: handleAddClick,
         });
       }
-      if (showRemoveButton) {
+      if (showRemoveButton && selectedRows && Object.keys(selectedRows).length > 0) {
         tableActions.push({
           icon: IoRemove,
           translationId: 'common.remove',

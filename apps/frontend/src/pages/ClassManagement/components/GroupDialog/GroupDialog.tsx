@@ -264,7 +264,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
   const disableDialogButtons = isDialogLoading || isFetching;
 
   const getFooter = () => (
-    <div className="flex gap-4">
+    <div className="flex w-full justify-between gap-4">
       {item.createFunction && userGroupToEdit && (
         <Button
           className="mt-4"

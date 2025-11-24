@@ -46,7 +46,7 @@ const MailImporterConfig: React.FC<MailsConfigProps> = ({ form }) => {
     port: '993',
     encryption: MailEncryption.SSL,
   };
-  const [option, setOption] = useState(customConfigOption.id);
+  const [option, setOption] = useState<string>(customConfigOption.id);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [providerIdToDelete, setProviderIdToDelete] = useState('');
 
@@ -108,7 +108,7 @@ const MailImporterConfig: React.FC<MailsConfigProps> = ({ form }) => {
                 handleChange={setOption}
                 classname="md:w-1/3"
               />
-              {option !== t('common.custom') ? (
+              {mailProviderDropdownOptions.find((opt) => opt.id === option)?.name !== t('common.custom') ? (
                 <Button
                   variant="btn-collaboration"
                   size="lg"

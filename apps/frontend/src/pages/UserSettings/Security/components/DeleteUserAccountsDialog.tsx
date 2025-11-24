@@ -43,12 +43,12 @@ const DeleteUserAccountsDialog: React.FC<DeleteUserAccountsDialogProps> = ({
   const { t } = useTranslation();
   const isMultiDelete = selectedAccounts.length > 1;
 
+  const handleClose = () => onOpenChange(false);
+
   const handleSubmit = async () => {
     await onConfirmDelete();
-    onOpenChange(false);
+    handleClose();
   };
-
-  const handleClose = () => onOpenChange(false);
 
   const getDialogBody = () => {
     if (isLoading) return <CircleLoader className="mx-auto" />;
@@ -61,7 +61,9 @@ const DeleteUserAccountsDialog: React.FC<DeleteUserAccountsDialogProps> = ({
               ? 'usersettings.security.confirmMultiDeleteAccount'
               : 'usersettings.security.confirmSingleDeleteAccount'
           }
-          items={selectedAccounts.map((account) => ({ name: account.appName, id: account.accountId }))}
+          items={selectedAccounts
+            .filter((account) => account?.accountId)
+            .map((account) => ({ name: account.appName || '', id: account.accountId }))}
         />
       </div>
     );
