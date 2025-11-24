@@ -118,7 +118,7 @@ const FileSharingTable = () => {
       />
       <DragOverlay>
         {draggedFiles.length > 0 ? (
-          <div className="flex items-center gap-2 rounded bg-foreground p-2 shadow-lg">
+          <div className="flex w-fit items-center gap-2 rounded bg-accent p-2 shadow-lg">
             {draggedFiles.length === 1 ? (
               <>
                 {draggedFiles[0].type === ContentType.DIRECTORY ? (
