@@ -32,6 +32,7 @@ import FileActionType from '@libs/filesharing/types/fileActionType';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/constants/availableFileTypes';
 import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
 import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
+import useKeyboardShortcut from '@/hooks/useKeyboardShortcut';
 
 const FileActionNonSelect: FC<FileActionButtonProps> = ({ openDialog }) => {
   const { setSelectedFileType } = useFileSharingDialogStore();
@@ -41,6 +42,17 @@ const FileActionNonSelect: FC<FileActionButtonProps> = ({ openDialog }) => {
     setSelectedFileType(fileType);
     openDialog(FileActionType.CREATE_FILE);
   };
+
+  useKeyboardShortcut([
+    {
+      key: 'n',
+      ctrlKey: true,
+      shiftKey: false,
+      altKey: false,
+      callback: () => openDialog(FileActionType.CREATE_FOLDER),
+    },
+    { key: 'u', ctrlKey: true, shiftKey: false, altKey: false, callback: () => setIsUploadDialogOpen(true) },
+  ]);
 
   const fileTypesConfiguration = [
     {

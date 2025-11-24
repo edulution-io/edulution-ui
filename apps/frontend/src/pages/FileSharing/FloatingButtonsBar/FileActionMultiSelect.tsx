@@ -23,20 +23,37 @@ import FileActionType from '@libs/filesharing/types/fileActionType';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
 import MoveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/moveButton';
-
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import CopyButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/copyButton';
 import DownloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/downloadButton';
 import useStartWebdavFileDownload from '@/pages/FileSharing/hooks/useStartWebdavFileDownload';
+import useKeyboardShortcut from '@/hooks/useKeyboardShortcut';
 
 const FileActionMultiSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItems }) => {
   const startDownload = useStartWebdavFileDownload();
+
+  const handleDownloadAsync = async () => {
+    if (!selectedItems) return;
+    await startDownload(selectedItems);
+  };
+
+  const handleDownloadSync = () => {
+    if (!selectedItems) return;
+    void startDownload(selectedItems);
+  };
+
+  useKeyboardShortcut([
+    { key: 'Backspace', callback: () => openDialog(FileActionType.DELETE_FILE_OR_FOLDER) },
+    { key: 'd', ctrlKey: true, callback: handleDownloadSync },
+    { key: 'c', ctrlKey: true, shiftKey: true, callback: () => openDialog(FileActionType.COPY_FILE_OR_FOLDER) },
+    { key: 'x', ctrlKey: true, callback: () => openDialog(FileActionType.MOVE_FILE_OR_FOLDER) },
+  ]);
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
       DeleteButton(() => openDialog(FileActionType.DELETE_FILE_OR_FOLDER)),
       MoveButton(() => openDialog(FileActionType.MOVE_FILE_OR_FOLDER)),
-      DownloadButton(async () => selectedItems && startDownload(selectedItems)),
+      DownloadButton(handleDownloadAsync),
       CopyButton(() => openDialog(FileActionType.COPY_FILE_OR_FOLDER)),
     ],
     keyPrefix: 'file-sharing-page-floating-button_',

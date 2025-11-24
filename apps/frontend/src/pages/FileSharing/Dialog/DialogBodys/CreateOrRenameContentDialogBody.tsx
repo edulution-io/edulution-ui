@@ -28,6 +28,7 @@ import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharing
 import generateFile from '@/pages/FileSharing/utilities/generateFile';
 import getDocumentVendor from '@libs/filesharing/utils/getDocumentVendor';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
+import ShortcutHint from '@/components/ui/ShortcutHint';
 
 const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ form, isRenaming }) => {
   const { selectedItems, files } = useFileSharingStore();
@@ -112,6 +113,17 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
         </div>
         {filenameAlreadyExists && (
           <div>{t(`filesharing.${selectedFileType || extension ? 'file' : 'folder'}WithSameNameAlreadyExists`)}</div>
+        )}
+        {!isRenaming ? (
+          <ShortcutHint
+            shortcuts={[{ keys: ['Ctrl', 'N'], label: 'filesharing.shortcutHint.createFolder' }]}
+            className="pt-2"
+          />
+        ) : (
+          <ShortcutHint
+            shortcuts={[{ keys: ['Ctrl', 'R'], label: 'filesharing.shortcutHint.createFolder' }]}
+            className="pt-2"
+          />
         )}
       </form>
     </Form>

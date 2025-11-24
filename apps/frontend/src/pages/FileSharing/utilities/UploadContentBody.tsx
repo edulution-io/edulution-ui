@@ -42,6 +42,7 @@ import splitFilesByMaxFileSize from '@libs/filesharing/utils/splitFilesByMaxFile
 import findDuplicateFiles from '@libs/filesharing/utils/findDuplicateFiles';
 import getUploadItemDisplayName from '@libs/filesharing/utils/getUploadItemDisplayName';
 import ValidationWarnings from '@/pages/FileSharing/utilities/ValidationWarnings';
+import ShortcutHint from '@/components/ui/ShortcutHint';
 
 const UploadContentBody = () => {
   const { webdavShare } = useParams();
@@ -364,6 +365,10 @@ const UploadContentBody = () => {
           </ul>
         </ScrollArea>
       )}
+      <ShortcutHint
+        shortcuts={[{ keys: ['Ctrl', 'U'], label: 'filesharing.shortcutHint.uploadFile' }]}
+        className="pb-4"
+      />
     </form>
   );
 };

@@ -30,9 +30,29 @@ import DownloadButton from '@/components/shared/FloatingsButtonsBar/CommonButton
 import useStartWebdavFileDownload from '@/pages/FileSharing/hooks/useStartWebdavFileDownload';
 import CopyButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/copyButton';
 import ShareButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/shareButton';
+import useKeyboardShortcut from '@/hooks/useKeyboardShortcut';
 
 const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItems }) => {
   const startDownload = useStartWebdavFileDownload();
+
+  const handleDownloadAsync = async () => {
+    if (!selectedItems) return;
+    await startDownload(selectedItems);
+  };
+
+  const handleDownloadSync = () => {
+    if (!selectedItems) return;
+    void startDownload(selectedItems);
+  };
+
+  useKeyboardShortcut([
+    { key: 'Backspace', callback: () => openDialog(FileActionType.DELETE_FILE_OR_FOLDER) },
+    { key: 'r', ctrlKey: true, callback: () => openDialog(FileActionType.RENAME_FILE_OR_FOLDER) },
+    { key: 'd', ctrlKey: true, callback: handleDownloadSync },
+    { key: 'c', ctrlKey: true, shiftKey: true, callback: () => openDialog(FileActionType.COPY_FILE_OR_FOLDER) },
+    { key: 'x', ctrlKey: true, callback: () => openDialog(FileActionType.MOVE_FILE_OR_FOLDER) },
+    { key: 's', ctrlKey: true, shiftKey: true, callback: () => openDialog(FileActionType.SHARE_FILE_OR_FOLDER) },
+  ]);
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
@@ -43,10 +63,7 @@ const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedIt
         text: t('tooltip.rename'),
         onClick: () => openDialog(FileActionType.RENAME_FILE_OR_FOLDER),
       },
-      DownloadButton(async () => {
-        if (!selectedItems) return;
-        await startDownload(selectedItems);
-      }),
+      DownloadButton(handleDownloadAsync),
       CopyButton(() => openDialog(FileActionType.COPY_FILE_OR_FOLDER)),
       ShareButton(() => openDialog(FileActionType.SHARE_FILE_OR_FOLDER)),
     ],
@@ -55,4 +72,5 @@ const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedIt
 
   return <FloatingButtonsBar config={config} />;
 };
+
 export default FileActionOneSelect;

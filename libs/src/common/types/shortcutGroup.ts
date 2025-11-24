@@ -17,21 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ContentType from '@libs/filesharing/types/contentType';
-import { Row } from '@tanstack/react-table';
-import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
+import ShortcutKey from '@libs/common/types/shortcutKey';
 
-interface MoveContentDialogBodyProps {
-  showAllFiles?: boolean;
-  pathToFetch?: string;
-  showSelectedFile?: boolean;
-  showHome?: boolean;
-  fileType?: ContentType;
-  isCurrentPathDefaultDestination?: boolean;
-  enableRowSelection?: (row: Row<DirectoryFileDTO>) => boolean;
-  getRowDisabled?: (row: Row<DirectoryFileDTO>) => boolean;
-  showRootOnly?: boolean;
-  isCopy?: boolean;
+interface ShortcutGroup {
+  keys: (ShortcutKey | string)[];
+  label?: string;
 }
 
-export default MoveContentDialogBodyProps;
+export default ShortcutGroup;

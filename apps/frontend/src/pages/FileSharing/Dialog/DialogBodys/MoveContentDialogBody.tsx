@@ -33,6 +33,7 @@ import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMov
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/getFileSharingTableColumns';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import Input from '@/components/shared/Input';
+import ShortcutHint from '@/components/ui/ShortcutHint';
 import WebdavShareSelectDropdown from './WebdavShareSelectDropdown';
 import useFileSharingStore from '../../useFileSharingStore';
 import useVariableSharePathname from '../../hooks/useVariableSharePathname';
@@ -47,6 +48,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   enableRowSelection,
   getRowDisabled,
   showRootOnly = false,
+  isCopy = true,
 }) => {
   const { webdavShare } = useParams();
   const { t } = useTranslation();
@@ -189,6 +191,17 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
         </div>
       </div>
       <div className="pt-2">{footer}</div>
+      {isCopy ? (
+        <ShortcutHint
+          shortcuts={[{ keys: ['Ctrl', 'Shift', 'C'], label: 'filesharing.shortcutHint.copy' }]}
+          className="pt-4"
+        />
+      ) : (
+        <ShortcutHint
+          shortcuts={[{ keys: ['Ctrl', 'X'], label: 'filesharing.shortcutHint.move' }]}
+          className="pt-4"
+        />
+      )}
     </>
   );
 };
