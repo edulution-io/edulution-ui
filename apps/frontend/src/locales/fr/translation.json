@@ -580,6 +580,11 @@
     "editor": {
       "new": "Nouveau (vide)",
       "saveSurveySuccess": "Le sondage a été enregistrée.",
+      "surveyPlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
+      "surveyPlaceholderDescription": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
+      "surveyPlaceholderDescriptionMobile": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
+      "pagePlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour ajouter un nouvel élément à la page.",
+      "panelPlaceHolder": "Cliquez sur « Ajouter une question » ci-dessous pour ajouter un nouvel élément au panneau.",
       "reset": "Rejeter",
       "addDescription": "Ajouter une description",
       "expectingUserInput": "Ici, la réponse du participant est attendue ... ",
