@@ -75,6 +75,9 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
   }, [currentChoices]);
 
   const getNestedQuestion = (partialFormula: TSurveyElement, questionsNames: string[]): TSurveyElement => {
+    // eslint-disable-next-line no-console
+    console.log('Partial Formula:', partialFormula, 'Questions Names:', questionsNames);
+
     const currentQuestionName = questionsNames.pop();
     if (partialFormula.elements && partialFormula.elements.length > 0) {
       const nextQuestionFormula = partialFormula.elements.find((el) => el.name === currentQuestionName);
@@ -104,12 +107,20 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     if (currentQuestion?.page?.name) {
       const correspondingPage = formula?.pages?.find((page) => page.name === currentQuestion.page.name);
       const nextQuestionFormula = correspondingPage?.elements?.find((el) => el.name === currentQuestion.name);
+
+      // eslint-disable-next-line no-console
+      console.log('Partial Formula:', nextQuestionFormula, 'Questions Names:', formerQuestionsNames);
+
       if (!nextQuestionFormula) {
         throw new Error('Corresponding question element was not found in the page');
       }
       return getNestedQuestion(nextQuestionFormula, formerQuestionsNames);
     }
     const nextQuestionFormula = formula?.elements?.find((el) => el.name === currentQuestion.name);
+
+    // eslint-disable-next-line no-console
+    console.log('Partial Formula:', nextQuestionFormula, 'Questions Names:', formerQuestionsNames);
+
     if (!nextQuestionFormula) {
       throw new Error('Corresponding question element was not found in the page');
     }
