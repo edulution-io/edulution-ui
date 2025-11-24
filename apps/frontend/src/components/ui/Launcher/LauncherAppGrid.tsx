@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Card } from '@/components/shared/Card';
 import { NavLink, useNavigate } from 'react-router-dom';
 import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
@@ -27,10 +27,11 @@ import { useTranslation } from 'react-i18next';
 import useSidebarItems from '@/hooks/useSidebarItems';
 import Input from '@/components/shared/Input';
 import isSubsequence from '@libs/common/utils/string/isSubsequence';
-import useMedia from '@/hooks/useMedia';
 import cn from '@libs/common/utils/className';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import LAUNCHER_SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
+import ShortcutHint from '@/components/ui/ShortcutHint';
+import useKeyboardShortcut from '@/hooks/useKeyboardShortcut';
 
 const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
   const { toggleMobileSidebar } = useSidebarStore();
@@ -40,7 +41,6 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
   const [search, setSearch] = useState('');
   const sidebarItems = useSidebarItems();
   const navigate = useNavigate();
-  const { isMobileView, isTabletView } = useMedia();
 
   const filteredApps = useMemo(() => {
     const searchString = search.trim().toLowerCase();
@@ -49,7 +49,6 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
 
     return sidebarItems.filter((app) => {
       const name = app.title.toLowerCase();
-
       return isSubsequence(searchString, name);
     });
   }, [sidebarItems, language, search]);
@@ -59,28 +58,17 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
     toggleLauncher();
   }, [toggleMobileSidebar, toggleLauncher]);
 
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent) => {
-      if (event.key !== 'Enter') return;
-
-      const active = document.activeElement;
-      if (active instanceof HTMLInputElement && active.getAttribute('aria-label') === LAUNCHER_SEARCH_INPUT_LABEL) {
-        event.preventDefault();
-        onClose();
-        if (filteredApps.length > 0) {
-          navigate(filteredApps[0].link);
-        }
+  const handleEnterKey = useCallback(() => {
+    const active = document.activeElement;
+    if (active instanceof HTMLInputElement && active.getAttribute('aria-label') === LAUNCHER_SEARCH_INPUT_LABEL) {
+      onClose();
+      if (filteredApps.length > 0) {
+        navigate(filteredApps[0].link);
       }
-    },
-    [filteredApps, navigate, onClose],
-  );
+    }
+  }, [filteredApps, navigate, onClose]);
 
-  useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [handleKeyDown]);
+  useKeyboardShortcut([{ key: 'Enter', callback: handleEnterKey, altKey: false, shiftKey: false, ctrlKey: false }]);
 
   return (
     <>
@@ -134,19 +122,12 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
         )}
       </div>
 
-      {!isMobileView && !isTabletView && (
-        <div className="text-center text-sm text-muted-foreground">
-          <span>{t('launcher.pressShortKey')} </span>
-          <span className="ml-0.5 rounded border-2 border-muted-light bg-muted px-1 py-0.5 text-xs">
-            {modKeyLabel}
-          </span>{' '}
-          +<span className="ml-0.5 rounded border-2 border-muted-light bg-muted px-1 py-0.5 text-xs">K</span>
-          <span className="ml-8">{t('launcher.pressEnterToStartApp')} </span>
-          <span className="ml-0.5 rounded border-2 border-muted-light bg-muted px-1 py-0.5 text-xs">
-            {t('enterKey')}
-          </span>
-        </div>
-      )}
+      <ShortcutHint
+        shortcuts={[
+          { label: 'launcher.pressShortKey', keys: [{ key: 'mod', label: modKeyLabel }, 'K'] },
+          { label: 'launcher.pressEnterToStartApp', keys: [{ key: 'enter', label: t('enterKey') }] },
+        ]}
+      />
     </>
   );
 };

@@ -44,6 +44,7 @@ import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
+  ContextMenuLabel,
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
@@ -161,25 +162,28 @@ const ScrollableTable = <TData, TValue>({
 
     return (
       <ContextMenu key={row.id}>
-        <ContextMenuTrigger
-          asChild
-          className="bg-foreground"
-        >
-          {rowContent}
-        </ContextMenuTrigger>
-        <ContextMenuContent className="w-52 border-border bg-popover text-popover-foreground">
+        <ContextMenuTrigger asChild>{rowContent}</ContextMenuTrigger>
+        <ContextMenuContent className="w-52 border-border">
+          <ContextMenuLabel>
+            {`${t('fileSharingTable.filename')}: ${(rowData as { filename?: string }).filename ?? ''}`}
+          </ContextMenuLabel>
+          <ContextMenuSeparator />
           {contextMenuActions.map((action, _index) => {
             const isDisabled = action.disabled?.(rowData) ?? false;
-
             return (
               <Fragment key={action.label}>
                 <ContextMenuItem
-                  onClick={() => !isDisabled && action.onClick(rowData)}
+                  onClick={() => {
+                    if (!isDisabled) {
+                      onRowSelectionChange?.({ [row.id]: true });
+                      action.onClick(rowData);
+                    }
+                  }}
                   disabled={isDisabled}
                   className={`
-            ${action.variant === 'destructive' ? 'text-destructive focus:text-destructive' : ''}
-            hover:bg-accent hover:text-accent-foreground
-          `}
+                ${action.variant === 'destructive' ? 'text-destructive focus:text-destructive' : ''}
+                hover:bg-accent hover:text-background
+              `}
                 >
                   {action.icon && <span className="mr-2">{action.icon}</span>}
                   {action.label}

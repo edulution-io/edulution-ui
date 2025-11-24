@@ -369,6 +369,16 @@
       "FileNameRequired": "Le nom du fichier est requis",
       "NewFileNameRequired": "Un nouveau nom de fichier est requis",
       "NameRequired": "Nom requis"
+    },
+    "shortcutHint": {
+      "createFolder": "Créer un nouveau dossier avec",
+      "uploadFile": "Télécharger un fichier avec",
+      "delete": "Supprimer la sélection avec",
+      "move": "Déplacer la sélection avec",
+      "copy": "Copier la sélection avec",
+      "share": "Partager la sélection avec",
+      "rename": "Renommer avec",
+      "download": "Télécharger avec"
     }
   },
   "forums": {

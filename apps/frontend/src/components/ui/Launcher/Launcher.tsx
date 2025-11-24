@@ -17,31 +17,18 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useCallback, useEffect } from 'react';
+import React from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
 import LauncherAppGrid from '@/components/ui/Launcher/LauncherAppGrid';
 import useModKeyLabel from '@/hooks/useModKeyLabel';
+import useKeyboardShortcut from '@/hooks/useKeyboardShortcut';
 
 const Launcher = () => {
   const { isLauncherOpen, toggleLauncher } = useLauncherStore();
   const modKeyLabel = useModKeyLabel();
 
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      const isMod = e.ctrlKey || e.metaKey;
-      if (isMod && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        toggleLauncher();
-      }
-    },
-    [toggleLauncher],
-  );
-
-  useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleKeyDown]);
+  useKeyboardShortcut([{ key: 'k', ctrlKey: true, callback: toggleLauncher, altKey: false, shiftKey: false }]);
 
   return (
     <AdaptiveDialog

@@ -461,6 +461,16 @@
       "aboutDays_other": "about {{count}} days remaining",
       "moreThanDays_one": "more than {{count}} day remaining",
       "moreThanDays_other": "more than {{count}} days remaining"
+    },
+    "shortcutHint": {
+      "createFolder": "Create new folder with",
+      "uploadFile": "Upload file with",
+      "delete": "Delete selection with",
+      "move": "Move selection with",
+      "copy": "Copy selection with",
+      "share": "Share selection with",
+      "rename": "Rename with",
+      "download": "Download with"
     }
   },
   "forums": {

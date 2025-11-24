@@ -31,7 +31,12 @@ import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsVal
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { useParams } from 'react-router-dom';
-import { FolderIcon } from 'lucide-react';
+import { Copy, Download, FolderInput, Pencil, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import useStartWebdavFileDownload from '@/pages/FileSharing/hooks/useStartWebdavFileDownload';
+import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
+import FileActionType from '@libs/filesharing/types/fileActionType';
+import { VscShare } from 'react-icons/vsc';
 
 const FileSharingTable = () => {
   const { webdavShare } = useParams();
@@ -41,6 +46,12 @@ const FileSharingTable = () => {
   const appConfigs = useAppConfigsStore((s) => s.appConfigs);
   const { setSelectedRows, setSelectedItems, fetchFiles, selectedRows, files, isLoading, currentPath } =
     useFileSharingStore();
+
+  const startDownload = useStartWebdavFileDownload();
+
+  const { openDialog } = useFileSharingDialogStore();
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (currentPath !== '/') void fetchFiles(webdavShare, currentPath);
@@ -77,6 +88,58 @@ const FileSharingTable = () => {
     ExtendedOptionKeys.ONLY_OFFICE_URL,
   );
 
+  const contextMenuActions = useMemo(
+    () => [
+      {
+        label: t('tooltip.download'),
+        icon: <Download className="h-4 w-4" />,
+        onClick: async (row: DirectoryFileDTO) => startDownload([row]),
+        separator: true,
+      },
+      {
+        label: t('tooltip.copy'),
+        icon: <Copy className="h-4 w-4" />,
+        onClick: () => {
+          openDialog(FileActionType.COPY_FILE_OR_FOLDER);
+        },
+        separator: true,
+      },
+      {
+        label: t('tooltip.move'),
+        icon: <FolderInput className="h-4 w-4" />,
+        onClick: () => {
+          openDialog(FileActionType.MOVE_FILE_OR_FOLDER);
+        },
+        separator: true,
+      },
+      {
+        label: t('tooltip.rename'),
+        icon: <Pencil className="h-4 w-4" />,
+        onClick: () => {
+          openDialog(FileActionType.RENAME_FILE_OR_FOLDER);
+        },
+        separator: true,
+      },
+      {
+        label: t('tooltip.share'),
+        icon: <VscShare className="h-4 w-4" />,
+        onClick: () => {
+          openDialog(FileActionType.SHARE_FILE_OR_FOLDER);
+        },
+        separator: true,
+      },
+      {
+        label: t('common.delete'),
+        icon: <Trash2 className="h-4 w-4 text-red-500" />,
+        onClick: () => {
+          openDialog(FileActionType.DELETE_FILE_OR_FOLDER);
+        },
+        className: 'text-red-500',
+      },
+    ],
+    [],
+  );
+
   return (
     <ScrollableTable
       columns={getFileSharingTableColumns(undefined, undefined, isDocumentServerConfigured)}
@@ -93,13 +156,7 @@ const FileSharingTable = () => {
         { id: 'select-filename', desc: false },
       ]}
       initialColumnVisibility={initialColumnVisibility}
-      contextMenuActions={[
-        {
-          label: 'fgggg',
-          icon: <FolderIcon className="h-4 w-4" />,
-          onClick: () => {},
-        },
-      ]}
+      contextMenuActions={contextMenuActions}
     />
   );
 };

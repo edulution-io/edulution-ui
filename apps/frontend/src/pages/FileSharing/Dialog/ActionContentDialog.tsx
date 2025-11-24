@@ -39,6 +39,7 @@ import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import UploadFileDto from '@libs/filesharing/types/uploadFileDto';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
 import { FileSharingFormValues } from '@libs/filesharing/types/filesharingDialogProps';
+import useKeyboardShortcut from '@/hooks/useKeyboardShortcut';
 
 interface CreateContentDialogProps {
   trigger?: React.ReactNode;
@@ -95,6 +96,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     type,
     getData,
     desktopComponentClassName,
+    isRenaming = false,
     mobileComponentClassName,
     hideSubmitButton = false,
   } = getDialogBodyConfigurations(action);
@@ -193,14 +195,25 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     }
   };
 
+  const isSubmitDisabled =
+    isLoading ||
+    isSubmitButtonDisabled ||
+    (requiresForm && !form.formState.isValid) ||
+    (action === FileActionType.MOVE_FILE_OR_FOLDER && moveOrCopyItemToPath?.filePath === undefined);
+
   const title = action === FileActionType.CREATE_FILE ? t(`fileCreateNewContent.${selectedFileType}`) : t(titleKey);
   const handleFormSubmit = form.handleSubmit(onSubmit);
 
-  const handleDialogKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Enter') {
-      void handleFormSubmit();
-    }
-  };
+  useKeyboardShortcut([
+    {
+      key: 'Enter',
+      callback: () => {
+        if (isDialogOpen && !isSubmitDisabled) {
+          void handleFormSubmit();
+        }
+      },
+    },
+  ]);
 
   return (
     <AdaptiveDialog
@@ -211,15 +224,10 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
       desktopContentClassName={desktopComponentClassName}
       mobileContentClassName={mobileComponentClassName}
       body={
-        <div
-          role="presentation"
-          onKeyDown={handleDialogKeyDown}
-        >
-          <Component
-            form={form}
-            isRenaming
-          />
-        </div>
+        <Component
+          form={form}
+          isRenaming={isRenaming}
+        />
       }
       footer={
         error ? (

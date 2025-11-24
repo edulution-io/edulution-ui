@@ -109,6 +109,7 @@ const createFolderConfig: CreateFolderDialogBodyConfiguration = {
   submitKey: 'fileCreateNewContent.createButtonText',
   initialValues: initialFormValues,
   schema: fileSharingFromSchema,
+  isRenaming: false,
   endpoint: FileSharingApiEndpoints.FILESHARING_ACTIONS,
   httpMethod: HttpMethods.POST,
   type: ContentType.DIRECTORY,

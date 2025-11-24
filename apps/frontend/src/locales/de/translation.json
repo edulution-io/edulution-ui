@@ -460,6 +460,17 @@
       "aboutDays_other": "etwa {{count}} Tage verbleibend",
       "moreThanDays_one": "mehr als {{count}} Tag verbleibend",
       "moreThanDays_other": "mehr als {{count}} Tage verbleibend"
+    },
+
+    "shortcutHint": {
+      "createFolder": "Neuen Ordner erstellen mit",
+      "uploadFile": "Datei hochladen mit",
+      "delete": "Auswahl löschen mit",
+      "move": "Auswahl verschieben mit",
+      "copy": "Auswahl kopieren mit",
+      "share": "Auswahl teilen mit",
+      "rename": "Umbenennen mit",
+      "download": "Herunterladen mit"
     }
   },
   "forums": {

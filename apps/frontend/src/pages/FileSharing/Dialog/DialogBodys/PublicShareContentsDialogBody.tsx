@@ -29,6 +29,7 @@ import { IoAdd } from 'react-icons/io5';
 import useMedia from '@/hooks/useMedia';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
+import ShortcutHint from '@/components/ui/ShortcutHint';
 
 const PublicShareContentsDialogBody = () => {
   const { t } = useTranslation();
@@ -83,6 +84,11 @@ const PublicShareContentsDialogBody = () => {
       />
 
       {isLoading && <LoadingIndicatorDialog isOpen />}
+
+      <ShortcutHint
+        shortcuts={[{ keys: ['Ctrl', 'Shift', 'S'], label: 'filesharing.shortcutHint.share' }]}
+        className="pt-4"
+      />
     </>
   );
 };

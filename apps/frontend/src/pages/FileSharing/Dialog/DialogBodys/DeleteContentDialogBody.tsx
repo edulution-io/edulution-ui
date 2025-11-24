@@ -20,16 +20,24 @@
 import React from 'react';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import ItemDialogList from '@/components/shared/ItemDialogList';
+import ShortcutHint from '@/components/ui/ShortcutHint';
 
 const DeleteContentDialogBody: React.FC = () => {
   const { selectedItems } = useFileSharingStore();
   const deleteWarningTranslationId = 'deleteDialog.actionCannotBeUndone';
 
   return (
-    <ItemDialogList
-      deleteWarningTranslationId={deleteWarningTranslationId}
-      items={selectedItems.map((i) => ({ name: i.filename, id: i.etag }))}
-    />
+    <>
+      <ItemDialogList
+        deleteWarningTranslationId={deleteWarningTranslationId}
+        items={selectedItems.map((i) => ({ name: i.filename, id: i.etag }))}
+      />
+      <ShortcutHint
+        shortcuts={[{ keys: ['⌫'], label: 'filesharing.shortcutHint.delete' }]}
+        className="pt-4"
+      />
+    </>
   );
 };
+
 export default DeleteContentDialogBody;
