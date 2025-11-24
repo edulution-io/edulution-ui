@@ -16,7 +16,7 @@ const frontendHost = process.env['FRONTEND_HOST'] ?? 'localhost';
 const frontendPort = process.env['FRONTEND_PORT'] ?? '5173';
 
 const TeilnahmeVeranstaltungLimitiert = {
-  fileName: 'TeilnahmeVeranstaltungLimitiert',
+  name: 'TeilnahmeVeranstaltungLimitiert',
   isActive: false,
   schemaVersion: 1,
   template: {

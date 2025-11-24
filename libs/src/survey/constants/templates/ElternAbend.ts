@@ -16,7 +16,7 @@ const frontendHost = process.env['FRONTEND_HOST'] ?? 'localhost';
 const frontendPort = process.env['FRONTEND_PORT'] ?? '5173';
 
 const ElternAbend = {
-  fileName: 'Eltern-Abend',
+  name: 'Eltern-Abend',
   isActive: true,
   schemaVersion: 1,
   template: {
