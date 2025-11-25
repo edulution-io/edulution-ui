@@ -184,7 +184,7 @@ const FileSharingTable = () => {
                 </div>
                 <span className="truncate">
                   {draggedFiles.length}{' '}
-                  {draggedFiles.length === 1 ? t('fileSharingTable.element') : 'fileSharingTable.elements'}
+                  {draggedFiles.length === 1 ? t('fileSharingTable.element') : t('fileSharingTable.elements')}
                 </span>
               </>
             )}
