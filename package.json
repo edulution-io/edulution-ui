@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "1.6.100",
+  "version": "1.6.105",
   "scripts": {
     "test": "nx run-many --target=test --projects=api",
     "test:api": "nx run api:test --detectOpenHandles",
@@ -37,6 +37,8 @@
     "npm": "^10.8.2"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/utilities": "^3.2.2",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@fontsource/lato": "^5.2.6",
