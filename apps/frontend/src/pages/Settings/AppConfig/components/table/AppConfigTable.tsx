@@ -19,7 +19,8 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IoAdd, IoRemove, IoPencil } from 'react-icons/io5';
+import { IoAdd, IoRemove } from 'react-icons/io5';
+import { FiEdit } from 'react-icons/fi';
 import { type ContainerInfo } from 'dockerode';
 import TableAction from '@libs/common/types/tableAction';
 import { AppConfigTableConfig } from '@/pages/Settings/AppConfig/components/table/types/appConfigTableConfig';
@@ -139,7 +140,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
         const isEditMode = hasData && selectedCount === 1;
 
         tableActions.push({
-          icon: isEditMode ? IoPencil : IoAdd,
+          icon: isEditMode ? FiEdit : IoAdd,
           translationId: isEditMode ? 'common.edit' : 'common.add',
           onClick: handleAddClick,
         });
