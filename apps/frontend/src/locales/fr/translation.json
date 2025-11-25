@@ -1558,6 +1558,12 @@
       "updateNow": "Mettre à jour maintenant",
       "checkVersionSuccess": "Thème vérifié avec succès !",
       "noData": "Aucune information de version disponible."
+    },
+    "appLogo": {
+      "light": "clair",
+      "dark": "sombre",
+      "title": "Logo thématique {{variant}}",
+      "description": "Téléversez ou réinitialisez votre logo personnalisé."
     }
   },
   "preview": {

@@ -1766,6 +1766,12 @@
       "updateNow": "Jetzt aktualisieren",
       "checkVersionSuccess": "Theme erfolgreich überprüft!",
       "noData": "Keine Versionsinformationen verfügbar."
+    },
+    "appLogo": {
+      "light": "helle",
+      "dark": "dunkle",
+      "title": "Logo für das {{variant}} Farbschema",
+      "description": "Lade hier dein eigenes app Logo hoch oder setze das Standard-Logo wieder her."
     }
   },
   "preview": {

@@ -10,12 +10,13 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import i18n from '@/i18n';
 import React, { useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { ThemeType } from '@libs/common/constants/theme';
 import ThemedFile from '@libs/common/types/themedFile';
 import { getLogoName, getLogoUrl } from '@libs/appconfig/utils/getAppLogo';
+import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import LogoUploadField from '@/pages/Settings/components/LogoUploadField';
 import FilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
 
@@ -23,13 +24,18 @@ export type AppConfigFormLogoFieldProps = {
   variant: ThemeType;
   appName: string;
   fieldPath: string;
+  option: AppConfigExtendedOption;
   form: UseFormReturn<ThemedFile>;
 };
 
-const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({ variant, appName, fieldPath, form }) => {
+const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
+  variant,
+  appName,
+  fieldPath,
+  option,
+  form,
+}) => {
   const { uploadImageFile, deleteImageFile } = FilesystemStore();
-
-  const { t } = useTranslation();
 
   const [keyValue, setKeyValue] = React.useState<number>(0);
 
@@ -63,18 +69,23 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({ variant
     setKeyValue((prev) => prev + 1);
   };
 
+  const variantText = i18n.t(`appExtendedOptions.appLogo.${variant}`);
   return (
-    <LogoUploadField
-      cacheKey={keyValue}
-      variant={variant}
-      inputRef={inputRef}
-      previewSrc={previewSrc}
-      hasLocalSelection={hasLocalSelection}
-      onFileChange={onFileChange}
-      chooseText={t(`common.chooseFile`)}
-      changeText={t(`common.changeFile`)}
-      onHandleReset={onHandleReset}
-    />
+    <div>
+      {option.title && <p className="font-bold">{i18n.t(option.title, { variant: variantText })}</p>}
+      {option.description && <p className="mb-2 text-[0.8rem] text-muted-foreground">{i18n.t(option.description)}</p>}
+      <LogoUploadField
+        cacheKey={keyValue}
+        variant={variant}
+        inputRef={inputRef}
+        previewSrc={previewSrc}
+        hasLocalSelection={hasLocalSelection}
+        onFileChange={onFileChange}
+        chooseText={i18n.t(`common.chooseFile`)}
+        changeText={i18n.t(`common.changeFile`)}
+        onHandleReset={onHandleReset}
+      />
+    </div>
   );
 };
 

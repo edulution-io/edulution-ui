@@ -1745,6 +1745,12 @@
       "updateNow": "Update Now",
       "checkVersionSuccess": "Theme successfully checked!",
       "noData": "No version information available."
+    },
+    "appLogo": {
+      "light": "light",
+      "dark": "dark",
+      "title": "Logo for the {{variant}} color scheme",
+      "description": "Upload or reset your custom themed app logo."
     }
   },
   "mails": {

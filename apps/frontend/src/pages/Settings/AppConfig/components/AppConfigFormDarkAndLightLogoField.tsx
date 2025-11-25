@@ -15,16 +15,19 @@ import { UseFormReturn } from 'react-hook-form';
 import { Theme } from '@libs/common/constants/theme';
 import ThemedFile from '@libs/common/types/themedFile';
 import AppConfigFormLogoField from '@/pages/Settings/AppConfig/components/AppConfigFormLogoField';
+import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 
 export type AppConfigFormDarkAndLightLogoFieldProps = {
   settingLocation: string;
   fieldPath: string;
+  option: AppConfigExtendedOption;
   form: UseFormReturn<ThemedFile>;
 };
 
 const AppConfigFormDarkAndLightLogoField: React.FC<AppConfigFormDarkAndLightLogoFieldProps> = ({
   settingLocation,
   fieldPath,
+  option,
   form,
 }) => (
   <div className="flex min-w-[480px] flex-grow flex-row gap-4">
@@ -32,12 +35,14 @@ const AppConfigFormDarkAndLightLogoField: React.FC<AppConfigFormDarkAndLightLogo
       variant={Theme.light}
       appName={settingLocation}
       fieldPath={fieldPath}
+      option={option}
       form={form}
     />
     <AppConfigFormLogoField
       variant={Theme.dark}
       appName={settingLocation}
       fieldPath={fieldPath}
+      option={option}
       form={form}
     />
   </div>

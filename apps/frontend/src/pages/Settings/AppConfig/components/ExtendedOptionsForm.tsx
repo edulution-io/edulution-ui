@@ -60,6 +60,7 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
             key={fieldPath}
             fieldPath={fieldPath}
             settingLocation={settingLocation}
+            option={option}
             form={form as unknown as UseFormReturn<ThemedFile>}
           />
         );
