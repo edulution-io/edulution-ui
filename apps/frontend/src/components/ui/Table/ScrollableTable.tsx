@@ -39,6 +39,7 @@ import DEFAULT_TABLE_SORT_PROPERTY_KEY from '@libs/common/constants/defaultTable
 import SelectColumnsDropdown from '@/components/ui/Table/SelectColumnsDropdown';
 import TABLE_DEFAULT_COLUMN_WIDTH from '@libs/ui/constants/tableDefaultColumnWidth';
 import TableActionFooter from '@/components/ui/Table/TableActionFooter';
+import DraggableTableRow from '@/components/ui/DraggableTableRow';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -60,6 +61,8 @@ interface DataTableProps<TData, TValue> {
   actions?: TableAction<TData>[];
   showSearchBarAndColumnSelect?: boolean;
   getRowDisabled?: (row: Row<TData>) => boolean;
+  enableDragAndDrop?: boolean;
+  canDropOnRow?: (row: TData) => boolean;
 }
 
 const ScrollableTable = <TData, TValue>({
@@ -82,6 +85,8 @@ const ScrollableTable = <TData, TValue>({
   actions,
   showSearchBarAndColumnSelect = true,
   getRowDisabled,
+  enableDragAndDrop = false,
+  canDropOnRow,
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(initialColumnVisibility);
@@ -187,14 +192,13 @@ const ScrollableTable = <TData, TValue>({
                 const isRowDisabled = getRowDisabled?.(row);
 
                 return (
-                  <TableRow
+                  <DraggableTableRow
                     key={row.id}
-                    data-state={row.getIsSelected() ? 'selected' : undefined}
-                    data-disabled={isRowDisabled ? 'true' : undefined}
-                    aria-disabled={isRowDisabled || undefined}
-                    className={
-                      isRowDisabled ? 'pointer-events-none cursor-not-allowed opacity-50 saturate-0' : undefined
-                    }
+                    row={row}
+                    isRowDisabled={isRowDisabled}
+                    enableDragAndDrop={enableDragAndDrop}
+                    canDropOnRow={canDropOnRow}
+                    textColorClassname={textColorClassname}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
@@ -204,7 +208,7 @@ const ScrollableTable = <TData, TValue>({
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
-                  </TableRow>
+                  </DraggableTableRow>
                 );
               })
             ) : (
