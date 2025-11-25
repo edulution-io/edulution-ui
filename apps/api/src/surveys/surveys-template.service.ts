@@ -72,11 +72,15 @@ class SurveysTemplateService implements OnModuleInit {
     return res.status(HttpStatus.OK).json(documents);
   }
 
-  async toggleIsTemplateActive(name: string): Promise<SurveysTemplateDocument | null> {
-    return this.surveyTemplateModel.findOneAndUpdate({ name }, [{ $set: { isActive: { $not: '$isActive' } } }], {
-      new: true,
-      upsert: false,
-    });
+  async setIsTemplateActive(name: string, isActive: boolean): Promise<SurveysTemplateDocument | null> {
+    return this.surveyTemplateModel.findOneAndUpdate(
+      { name },
+      { isActive },
+      {
+        new: true,
+        upsert: false,
+      },
+    );
   }
 
   async deleteTemplate(name: string): Promise<void> {

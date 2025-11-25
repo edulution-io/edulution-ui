@@ -52,7 +52,7 @@ const surveyTemplatesMigration000MigrateTemplateFilesToDB: Migration<SurveysTemp
           }
           const newTemplate = JSON.parse(fileContent) as TemplateDto;
           const newDocument: SurveysTemplateDocument | null = await model.findOneAndUpdate(
-            { fileName },
+            { name: fileName },
             { $set: { template: newTemplate, schemaVersion, isActive: true } },
             { new: true, upsert: true },
           );

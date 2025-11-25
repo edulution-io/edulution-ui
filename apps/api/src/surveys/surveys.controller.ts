@@ -224,10 +224,10 @@ class SurveysController {
     return this.surveysTemplateService.deleteTemplate(name);
   }
 
-  @Patch(`${TEMPLATES}/:name`)
-  async toggleIsTemplateActive(@Param() params: { name: string }) {
-    const { name } = params;
-    return this.surveysTemplateService.toggleIsTemplateActive(name);
+  @Patch(`${TEMPLATES}/:name/:isActive`)
+  async setIsTemplateActive(@Param() params: { name: string; isActive: boolean }) {
+    const { name, isActive } = params;
+    return this.surveysTemplateService.setIsTemplateActive(name, isActive);
   }
 }
 

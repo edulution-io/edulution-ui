@@ -588,9 +588,7 @@
           "message": "Êtes-vous sûr de vouloir supprimer ce modèle ?",
           "success": "Modèle supprimé avec succès",
           "error": "Échec de la suppression du modèle"
-        },
-        "hideTemplate": "Masquer le modèle pour les autres utilisateurs",
-        "showTemplate": "Afficher le modèle pour les autres utilisateurs"
+        }
       },
       "questionSettings": {
         "settings": "Paramètres",

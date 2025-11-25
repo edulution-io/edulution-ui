@@ -693,9 +693,7 @@
           "message": "Soll die Vorlage wirklich gelöscht werden?",
           "success": "Vorlage erfolgreich gelöscht",
           "error": "Die Vorlage konnte nicht gelöscht werden"
-        },
-        "hideTemplate": "Vorlage für andere Nutzer ausblenden",
-        "showTemplate": "Vorlage für andere Nutzer anzeigen"
+        }
       },
       "questionSettings": {
         "settings": "Einstellungen",
