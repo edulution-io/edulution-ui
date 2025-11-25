@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "1.6.97",
+  "version": "1.6.100",
   "scripts": {
     "test": "nx run-many --target=test --projects=api",
     "test:api": "nx run api:test --detectOpenHandles",
@@ -156,7 +156,6 @@
     "react-icons": "^5.0.1",
     "react-oidc-context": "^3.2.0",
     "react-player": "^2.15.0",
-    "react-quill": "^2.0.0",
     "react-quill-new": "^3.3.3",
     "react-resizable-panels": "^2.1.6",
     "react-rnd": "^10.4.13",
