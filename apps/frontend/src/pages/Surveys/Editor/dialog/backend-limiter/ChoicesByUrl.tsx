@@ -76,15 +76,23 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
 
   const getNestedQuestion = (partialFormula: TSurveyElement, questionsNames: string[]): TSurveyElement => {
     // eslint-disable-next-line no-console
-    console.log('Partial Formula:', partialFormula, 'Questions Names:', questionsNames);
+    console.log('getNestedQuestion()', questionsNames, 'partialFormula:', partialFormula);
 
     const currentQuestionName = questionsNames.pop();
     if (partialFormula.elements && partialFormula.elements.length > 0) {
       const nextQuestionFormula = partialFormula.elements.find((el) => el.name === currentQuestionName);
+
+      // eslint-disable-next-line no-console
+      console.log(questionsNames, 'getNestedQuestion::nextQuestionFormula:', nextQuestionFormula);
+
       return getNestedQuestion(nextQuestionFormula as TSurveyElement, questionsNames);
     }
     if (partialFormula.templateElements && partialFormula.templateElements.length > 0) {
       const nextQuestionFormula = partialFormula.templateElements.find((el) => el.name === currentQuestionName);
+
+      // eslint-disable-next-line no-console
+      console.log(questionsNames, 'getNestedQuestion::nextQuestionFormula:', nextQuestionFormula);
+
       return getNestedQuestion(nextQuestionFormula as TSurveyElement, questionsNames);
     }
     return partialFormula;
@@ -95,34 +103,62 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     currentQuestion: TSurveyQuestion,
     formerQuestionsNames: string[],
   ): TSurveyElement => {
+    // eslint-disable-next-line no-console
+    console.log(
+      'getNestedQuestionPath() formula',
+      formula,
+      'currentQuestion:',
+      currentQuestion,
+      'Questions Names:',
+      formerQuestionsNames,
+    );
+
     if (currentQuestion.hasParent) {
       const { parent, parentQuestion } = currentQuestion;
-      if (parent?.isPanel || parentQuestion?.isPanel) {
-        const panelQuestion = parentQuestion || (parent as unknown as TSurveyElement);
-        formerQuestionsNames.push(panelQuestion.name);
-        return getNestedQuestionPath(formula, panelQuestion as unknown as TSurveyQuestion, formerQuestionsNames);
+
+      // problem for dynamic panels are both defined
+      // problem for dynamic panels are both defined
+      // problem for dynamic panels are both defined
+
+      if (parent?.isPanel && !parentQuestion) {
+        formerQuestionsNames.push(currentQuestion.name);
+        // eslint-disable-next-line no-console
+        console.log(formerQuestionsNames, 'getNestedQuestionPath::panelQuestion:', parent as unknown as TSurveyElement);
+        return getNestedQuestionPath(formula, parent as unknown as TSurveyQuestion, formerQuestionsNames);
+      }
+      if (parentQuestion?.isPanel) {
+        formerQuestionsNames.push(currentQuestion.name);
+
+        // eslint-disable-next-line no-console
+        console.log(formerQuestionsNames, 'getNestedQuestionPath::parentQuestion:', parentQuestion);
+
+        return getNestedQuestionPath(formula, parentQuestion as unknown as TSurveyQuestion, formerQuestionsNames);
       }
       throw new Error('Corresponding parent question was not found');
     }
     if (currentQuestion?.page?.name) {
+      formerQuestionsNames.push(currentQuestion.name);
+      formerQuestionsNames.reverse();
       const correspondingPage = formula?.pages?.find((page) => page.name === currentQuestion.page.name);
       const nextQuestionFormula = correspondingPage?.elements?.find((el) => el.name === currentQuestion.name);
 
       // eslint-disable-next-line no-console
-      console.log('Partial Formula:', nextQuestionFormula, 'Questions Names:', formerQuestionsNames);
+      console.log(formerQuestionsNames, 'getNestedQuestionPath::nextQuestionFormula:', nextQuestionFormula);
 
       if (!nextQuestionFormula) {
         throw new Error('Corresponding question element was not found in the page');
       }
       return getNestedQuestion(nextQuestionFormula, formerQuestionsNames);
     }
+    formerQuestionsNames.push(currentQuestion.name);
+    formerQuestionsNames.reverse();
     const nextQuestionFormula = formula?.elements?.find((el) => el.name === currentQuestion.name);
 
     // eslint-disable-next-line no-console
-    console.log('Partial Formula:', nextQuestionFormula, 'Questions Names:', formerQuestionsNames);
+    console.log(formerQuestionsNames, 'getNestedQuestionPath::nextQuestionFormula:', nextQuestionFormula);
 
     if (!nextQuestionFormula) {
-      throw new Error('Corresponding question element was not found in the page');
+      throw new Error('Corresponding question element was not found in the formula');
     }
     return getNestedQuestion(nextQuestionFormula, formerQuestionsNames);
   };

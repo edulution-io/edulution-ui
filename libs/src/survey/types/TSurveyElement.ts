@@ -30,10 +30,10 @@ interface TSurveyElement {
   } | null;
   hideIfChoicesEmpty?: boolean;
   imageLink?: string;
-  showOtherItem?: boolean | null;
+  showOtherItem?: boolean;
   showNoneItem?: boolean;
-  elements?: TSurveyElement[] | null;
-  templateElements?: TSurveyElement[] | null;
+  elements?: TSurveyElement[];
+  templateElements?: TSurveyElement[];
 }
 
 export default TSurveyElement;
