@@ -32,13 +32,13 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
 import APPS from '@libs/appconfig/constants/apps';
 import slugify from '@libs/common/utils/slugify';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import { Button } from '@/components/shared/Button';
+import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
 import getCustomAppConfigFormSchema from './schemas/getCustomAppConfigFormSchema';
 import SelectIconField from './components/SelectIconField';
 
@@ -66,18 +66,6 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
 
   const onSubmit = async () => {
     const newAppIcon = form.getValues('customIcon');
-    const getAppType = () => {
-      switch (selectedApp.id) {
-        case APPS.FORWARDING:
-          return APP_INTEGRATION_VARIANT.FORWARDED;
-        case APPS.FRAME:
-          return APP_INTEGRATION_VARIANT.FRAMED;
-        case APPS.EMBEDDED:
-          return APP_INTEGRATION_VARIANT.EMBEDDED;
-        default:
-          return APP_INTEGRATION_VARIANT.FORWARDED;
-      }
-    };
 
     const getOptions = () => {
       if (selectedApp.id === APPS.EMBEDDED) {
@@ -106,7 +94,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
         fr: newAppName,
       },
       icon: newAppIcon,
-      appType: getAppType(),
+      appType: selectedApp.id as AppIntegrationType,
       options: getOptions(),
       accessGroups: [],
       extendedOptions: getExtendedOptions(),
