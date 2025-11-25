@@ -137,7 +137,6 @@ const UserSettingsMailsPage: React.FC = () => {
               handleChange={setOption}
               classname="md:w-1/3"
               placeholder={t('common.loading')}
-              searchEnabled={false}
             />
             <Form {...form}>
               <form

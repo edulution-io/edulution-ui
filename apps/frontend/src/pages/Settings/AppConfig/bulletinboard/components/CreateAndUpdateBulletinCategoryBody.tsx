@@ -99,7 +99,6 @@ const CreateAndUpdateBulletinCategoryBody = ({
           selectedVal={watch('bulletinVisibility') || BULLETIN_VISIBILITY_STATES.FULLY_VISIBLE}
           handleChange={handleVisibilityStateChange}
           variant="dialog"
-          searchEnabled={false}
         />
 
         <p className="pt-4 text-lg font-bold text-background">

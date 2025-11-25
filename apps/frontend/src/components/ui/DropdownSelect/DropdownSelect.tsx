@@ -35,7 +35,6 @@ interface DropdownProps {
   openToTop?: boolean;
   classname?: string;
   variant?: DropdownVariant;
-  searchEnabled?: boolean;
   placeholder?: string;
   translate?: boolean;
 }
@@ -47,11 +46,11 @@ const DropdownSelect = ({
   openToTop = false,
   classname,
   variant = 'default',
-  searchEnabled = true,
   placeholder = '',
   translate = true,
 }: DropdownProps) => {
   const { t } = useTranslation();
+  const searchEnabled = options.length > 3;
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
