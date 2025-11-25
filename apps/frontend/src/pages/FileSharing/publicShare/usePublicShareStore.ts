@@ -126,8 +126,7 @@ const usePublicShareStore = create<PublicShareStoreState>((set, get) => ({
   async createShare(dto) {
     set({ isLoading: true, error: null });
     try {
-      const shareDto = !dto.etag ? { ...dto, etag: crypto.randomUUID() } : dto;
-
+      const shareDto = dto.etag ? dto : { ...dto, etag: crypto.randomUUID() };
       await eduApi.post(FILESHARING_SHARED_FILES_API_ENDPOINT, shareDto, { params: { share: shareDto.share } });
       toast.success(t('filesharing.publicFileSharing.success.PublicFileLinkCreated'));
       await get().fetchShares();
