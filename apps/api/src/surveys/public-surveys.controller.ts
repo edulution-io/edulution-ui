@@ -117,6 +117,7 @@ class PublicSurveysController {
         },
         false,
         (_req, file) => addUuidToFileName(file.originalname, randomUUID()),
+        MAXIMUM_UPLOAD_FILE_SIZE,
       ),
     ),
   )
