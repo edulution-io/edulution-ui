@@ -17,44 +17,27 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus, Logger } from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus, Logger, PayloadTooLargeException } from '@nestjs/common';
 import { Response } from 'express';
+import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
 
-interface PayloadTooLargeException {
-  type?: string;
-  message?: string;
-  limit?: number;
-  length?: number;
-  expected?: number;
-}
-
-@Catch()
+@Catch(PayloadTooLargeException)
 class PayloadTooLargeFilter implements ExceptionFilter {
   private readonly logger = new Logger(PayloadTooLargeFilter.name);
 
-  catch(exception: PayloadTooLargeException, host: ArgumentsHost) {
+  catch(_exception: PayloadTooLargeException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    if (
-      exception.type === 'entity.too.large' ||
-      exception.message?.includes('request entity too large') ||
-      exception.message === 'File too large'
-    ) {
-      const limitInKB = exception.limit ? (exception.limit / 1024).toFixed(2) : 'unknown';
-      const receivedInKB = exception.length ? (exception.length / 1024).toFixed(2) : 'unknown';
+    const limitInMB = (MAXIMUM_UPLOAD_FILE_SIZE / 1024 / 1024).toFixed(2);
 
-      this.logger.error(`Payload too large: received ${receivedInKB}KB, limit is ${limitInKB}KB`);
+    this.logger.error(`Payload too large: limit is ${limitInMB}MB`);
 
-      response.status(HttpStatus.PAYLOAD_TOO_LARGE).json({
-        statusCode: HttpStatus.PAYLOAD_TOO_LARGE,
-        message: 'Request payload is too large',
-        error: 'Payload Too Large',
-      });
-      return;
-    }
-
-    throw new Error(exception.message || 'Unknown error');
+    response.status(HttpStatus.PAYLOAD_TOO_LARGE).json({
+      statusCode: HttpStatus.PAYLOAD_TOO_LARGE,
+      message: 'Request payload is too large',
+      error: 'Payload Too Large',
+    });
   }
 }
 
