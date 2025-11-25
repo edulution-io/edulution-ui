@@ -19,11 +19,12 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import axios from 'axios';
+import axios, { HttpStatusCode } from 'axios';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import CustomAxiosError from '@libs/error/CustomAxiosError';
 import { SHOW_TOASTER_DURATION } from '@libs/ui/constants/showToasterDuration';
+import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
 
 /*
  * Use this function to handle errors in your store functions that do requests to the API.
@@ -43,8 +44,8 @@ const handleApiError = (error: any, set: (params: any) => void, errorName = 'err
 
     let errorMessage = i18n.t(axiosError.response?.data?.message) || axiosError.response?.statusText;
 
-    if (error.response?.status === 413) {
-      errorMessage = i18n.t('errors.requestTooLarge');
+    if (error.response?.status === HttpStatusCode.PayloadTooLarge) {
+      errorMessage = i18n.t('errors.requestTooLarge', { limit: MAXIMUM_UPLOAD_FILE_SIZE / (1024 * 1024) });
     }
 
     if (!displayedErrors.has(errorMessage)) {

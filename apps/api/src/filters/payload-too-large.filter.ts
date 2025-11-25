@@ -36,7 +36,11 @@ class PayloadTooLargeFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    if (exception.type === 'entity.too.large' || exception.message?.includes('request entity too large')) {
+    if (
+      exception.type === 'entity.too.large' ||
+      exception.message?.includes('request entity too large') ||
+      exception.message === 'File too large'
+    ) {
       const limitInKB = exception.limit ? (exception.limit / 1024).toFixed(2) : 'unknown';
       const receivedInKB = exception.length ? (exception.length / 1024).toFixed(2) : 'unknown';
 
