@@ -17,22 +17,21 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { ApiTags } from '@nestjs/swagger';
-import { Controller, Get, Injectable } from '@nestjs/common';
-import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
-import MobileAppModuleService from './mobileAppModule.service';
-import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
-
-@ApiTags('mobile-app')
-@Controller('mobile-app')
-@Injectable()
-class MobileAppModuleController {
-  constructor(private readonly edulutionAppService: MobileAppModuleService) {}
-
-  @Get('user-data')
-  async getAppUserData(@GetCurrentUsername() username: string, @GetCurrentUserGroups() currentUserGroups: string[]) {
-    return this.edulutionAppService.getAppUserData(username, currentUserGroups);
+const getRandomUUID = (): string => {
+  if (crypto?.randomUUID) {
+    return crypto.randomUUID();
   }
-}
 
-export default MobileAppModuleController;
+  const getRn = () => {
+    const randomValue = crypto?.getRandomValues?.(new Uint8Array(1))[0] ?? Math.random() * 256;
+    return Math.floor(randomValue) % 16;
+  };
+
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = getRn();
+    const v = c === 'x' ? r : (r % 4) + 8;
+    return v.toString(16);
+  });
+};
+
+export default getRandomUUID;
