@@ -38,13 +38,15 @@ import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 import { TABLE_ICON_SIZE } from '@libs/ui/constants';
 import useFileSharingDragAndDrop from '@/pages/FileSharing/hooks/useFileSharingDragAndDrop';
 import { useTranslation } from 'react-i18next';
+import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
+import useVariableSharePathname from '../hooks/useVariableSharePathname';
 
 const FileSharingTable = () => {
   const { webdavShare } = useParams();
   const { isMobileView, isTabletView } = useMedia();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const appConfigs = useAppConfigsStore((s) => s.appConfigs);
-  const { setSelectedRows, setSelectedItems, fetchFiles, selectedRows, files, isLoading, currentPath } =
+  const { setSelectedRows, setSelectedItems, fetchFiles, selectedRows, files, isLoading, currentPath, webdavShares } =
     useFileSharingStore();
 
   const { t } = useTranslation();
@@ -54,6 +56,7 @@ const FileSharingTable = () => {
       webdavShare,
       currentPath,
     });
+  const { createVariableSharePathname } = useVariableSharePathname();
 
   useEffect(() => {
     if (currentPath !== '/') void fetchFiles(webdavShare, currentPath);
@@ -64,9 +67,17 @@ const FileSharingTable = () => {
       typeof updaterOrValue === 'function'
         ? updaterOrValue(useFileSharingStore.getState().selectedRows)
         : updaterOrValue;
-    setSelectedRows(newValue);
-    const selectedItemData = Object.keys(newValue)
-      .filter((key) => newValue[key])
+
+    const filteredValue = Object.keys(newValue).reduce((acc, key) => {
+      if (key !== PARENT_FOLDER_PATH && newValue[key]) {
+        acc[key] = newValue[key];
+      }
+      return acc;
+    }, {} as RowSelectionState);
+
+    setSelectedRows(filteredValue);
+    const selectedItemData = Object.keys(filteredValue)
+      .filter((key) => filteredValue[key])
       .map((rowId) => files.find((file) => file.filePath === rowId))
       .filter(Boolean) as DirectoryFileDTO[];
     setSelectedItems(selectedItemData);
@@ -90,6 +101,29 @@ const FileSharingTable = () => {
     ExtendedOptionKeys.ONLY_OFFICE_URL,
   );
 
+  const filesWithParentNav = useMemo(() => {
+    if (!webdavShare || currentPath === '/') {
+      return files;
+    }
+
+    const currentShare = webdavShares.find((s) => s.displayName === webdavShare);
+    const baseSharePath = currentShare?.pathname || `/${webdavShare}`;
+    const shareRootPath = createVariableSharePathname(baseSharePath, currentShare?.pathVariables);
+
+    if (currentPath === shareRootPath || currentPath === `/${shareRootPath}`) {
+      return files;
+    }
+
+    const parentEntry: DirectoryFileDTO = {
+      filePath: PARENT_FOLDER_PATH,
+      filename: '..',
+      type: ContentType.DIRECTORY,
+      etag: '',
+    };
+
+    return [parentEntry, ...files];
+  }, [files, currentPath, webdavShare, webdavShares, createVariableSharePathname]);
+
   return (
     <DndContext
       sensors={sensors}
@@ -100,13 +134,15 @@ const FileSharingTable = () => {
     >
       <ScrollableTable
         columns={getFileSharingTableColumns(undefined, undefined, isDocumentServerConfigured)}
-        data={files}
+        data={filesWithParentNav}
         filterKey={FILE_SHARING_TABLE_COLUMNS.SELECT_FILENAME}
         filterPlaceHolderText="filesharing.filterPlaceHolderText"
         onRowSelectionChange={handleRowSelectionChange}
         isLoading={isLoading}
         selectedRows={selectedRows}
         getRowId={(row) => row.filePath}
+        getRowDisabled={(row) => row.original.filePath === PARENT_FOLDER_PATH}
+        enableRowSelection={(row) => row.original.filePath !== PARENT_FOLDER_PATH}
         applicationName={APPS.FILE_SHARING}
         initialSorting={[
           { id: 'type', desc: false },

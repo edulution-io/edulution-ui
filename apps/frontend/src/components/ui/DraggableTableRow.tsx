@@ -65,7 +65,6 @@ const DraggableTableRow = <TData,>({
       data-state={isSelected ? 'selected' : undefined}
       data-disabled={isRowDisabled ? 'true' : undefined}
       className={`
-        ${isRowDisabled ? 'pointer-events-none cursor-not-allowed opacity-50 saturate-0' : ''}
         ${enableDragAndDrop && !isRowDisabled ? 'cursor-move' : ''}
         ${isDragging ? 'opacity-30' : ''}
         ${isDragging && isSelected ? 'ring-2 ring-primary ring-offset-2' : ''}

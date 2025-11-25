@@ -27,6 +27,7 @@ import { HttpMethods } from '@libs/common/types/http-methods';
 import ContentType from '@libs/filesharing/types/contentType';
 import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreateProps';
 import { DragEndEvent, DragStartEvent, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
+import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
 
 interface UseFileSharingDragAndDropProps {
   webdavShare: string | undefined;
@@ -54,6 +55,10 @@ const useFileSharingDragAndDrop = ({ webdavShare, currentPath }: UseFileSharingD
   );
 
   const handleDragStart = (event: DragStartEvent) => {
+    const draggedFile = event.active.data.current as DirectoryFileDTO;
+    if (draggedFile?.filePath === PARENT_FOLDER_PATH) {
+      return;
+    }
     setActiveId(event.active.id as string);
   };
 
@@ -70,6 +75,12 @@ const useFileSharingDragAndDrop = ({ webdavShare, currentPath }: UseFileSharingD
     const sourceFile = active.data.current as DirectoryFileDTO;
     const targetFolder = over.data.current as DirectoryFileDTO;
 
+    let targetPath = targetFolder.filePath;
+    if (targetPath === PARENT_FOLDER_PATH) {
+      const pathParts = currentPath.split('/').filter(Boolean);
+      targetPath = pathParts.length > 1 ? `/${pathParts.slice(0, -1).join('/')}` : '/';
+    }
+
     const isDraggedFileSelected = selectedRows[sourceFile.filePath];
 
     const filesToMove = isDraggedFileSelected
@@ -80,14 +91,14 @@ const useFileSharingDragAndDrop = ({ webdavShare, currentPath }: UseFileSharingD
             if (!file) return null;
             return {
               path: file.filePath,
-              newPath: `${targetFolder.filePath}/${file.filename}`,
+              newPath: `${targetPath}/${file.filename}`,
             };
           })
           .filter(Boolean)
       : [
           {
             path: sourceFile.filePath,
-            newPath: `${targetFolder.filePath}/${sourceFile.filename}`,
+            newPath: `${targetPath}/${sourceFile.filename}`,
           } as PathChangeOrCreateDto,
         ];
 
