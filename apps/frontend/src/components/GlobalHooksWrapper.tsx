@@ -26,8 +26,6 @@ import ROOT_ROUTE from '@libs/common/constants/rootRoute';
 import COOKIE_DESCRIPTORS from '@libs/common/constants/cookieDescriptors';
 import useVersionChecker from '@/hooks/useVersionChecker';
 import useUploadProgressToast from '@/hooks/useUploadProgressToast';
-import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
-import EDULUTION_APP_AGENT_IDENTIFIER from '@libs/common/constants/edulutionAppAgentIdentifier';
 import useInitialAppData from '@/hooks/useInitialAppData';
 import useInitLmnApi from '@/hooks/useInitLmnApi';
 import useUserStore from '../store/UserStore/useUserStore';
@@ -39,19 +37,12 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   const { isAuthenticated, eduApiToken, setEduApiToken } = useUserStore();
   const { eventSource, setEventSource } = useSseStore();
   const [, setCookie] = useCookies([COOKIE_DESCRIPTORS.AUTH_TOKEN]);
-  const { setIsEdulutionApp } = usePlatformStore();
 
   useInitialAppData(isAuthenticated);
 
   useInitLmnApi();
 
   useUploadProgressToast();
-
-  useEffect(() => {
-    const { userAgent } = navigator;
-    const isEdulutionApp = userAgent.includes(EDULUTION_APP_AGENT_IDENTIFIER);
-    setIsEdulutionApp(isEdulutionApp);
-  }, []);
 
   useEffect(() => {
     if (auth.user?.access_token) {

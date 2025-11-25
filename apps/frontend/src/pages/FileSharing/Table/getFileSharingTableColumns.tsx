@@ -48,6 +48,7 @@ import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharing
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
+import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
@@ -110,7 +111,20 @@ const getFileSharingTableColumns = (
           if (row.original.type === ContentType.DIRECTORY) {
             if (isFilePreviewDocked) setIsFilePreviewVisible(false);
             const newParams = new URLSearchParams(searchParams);
-            newParams.set(URL_SEARCH_PARAMS.PATH, row.original.filePath);
+
+            if (row.original.filePath === PARENT_FOLDER_PATH) {
+              const currentPath = searchParams.get(URL_SEARCH_PARAMS.PATH) || '/';
+              const hadTrailingSlash = currentPath.endsWith('/') && currentPath !== '/';
+              const pathParts = currentPath.split('/').filter(Boolean);
+              let parentPath = pathParts.length > 1 ? `/${pathParts.slice(0, -1).join('/')}` : '/';
+              if (hadTrailingSlash && parentPath !== '/') {
+                parentPath += '/';
+              }
+              newParams.set(URL_SEARCH_PARAMS.PATH, parentPath);
+            } else {
+              newParams.set(URL_SEARCH_PARAMS.PATH, row.original.filePath);
+            }
+
             setSearchParams(newParams);
             return;
           }
@@ -196,6 +210,10 @@ const getFileSharingTableColumns = (
       },
       accessorFn: (row) => row.lastmod,
       cell: ({ row }) => {
+        if (row.original.filePath === PARENT_FOLDER_PATH) {
+          return null;
+        }
+
         const directoryFile = row.original;
         let formattedDate: string;
 
@@ -229,6 +247,10 @@ const getFileSharingTableColumns = (
         translationId: 'fileSharingTable.size',
       },
       cell: ({ row }) => {
+        if (row.original.filePath === PARENT_FOLDER_PATH) {
+          return null;
+        }
+
         let fileSize = 0;
         if (row.original.size !== undefined) {
           fileSize = row.original.size;
@@ -250,6 +272,10 @@ const getFileSharingTableColumns = (
       },
 
       cell: ({ row }) => {
+        if (row.original.filePath === PARENT_FOLDER_PATH) {
+          return null;
+        }
+
         const { t } = useTranslation();
 
         const renderFileCategorize = (item: DirectoryFileDTO) => {
