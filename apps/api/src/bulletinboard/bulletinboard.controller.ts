@@ -39,7 +39,7 @@ import { Response } from 'express';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import APPS from '@libs/appconfig/constants/apps';
 import BULLETIN_TEMP_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinTempAttachmentsPath';
-import BULLETIN_ATTACHMENT_MAXIMUM_FILE_SIZE from '@libs/bulletinBoard/constants/bulletinAttachmentMaximumFileSize';
+import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import { addUuidToFileName } from '@libs/common/utils/uuidAndFileNames';
 import BulletinBoardService from './bulletinboard.service';
@@ -97,7 +97,7 @@ class BulletinBoardController {
         () => BULLETIN_TEMP_ATTACHMENTS_PATH,
         true,
         (_req, file) => addUuidToFileName(file.originalname, randomUUID()),
-        BULLETIN_ATTACHMENT_MAXIMUM_FILE_SIZE,
+        MAXIMUM_UPLOAD_FILE_SIZE,
       ),
     ),
   )
@@ -106,7 +106,7 @@ class BulletinBoardController {
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addMaxSizeValidator({
-          maxSize: BULLETIN_ATTACHMENT_MAXIMUM_FILE_SIZE,
+          maxSize: MAXIMUM_UPLOAD_FILE_SIZE,
         })
         .build({
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
