@@ -193,12 +193,6 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     return Object.fromEntries(processedEntries) as TSurveyAnswer;
   }
 
-  async updateSurveyAnswer(userName: string, surveyId: string, answer: JSON, keepOldFiles = false): Promise<JSON> {
-    const surveyAnswer = JSON.parse(JSON.stringify(answer)) as TSurveyAnswer;
-    const processedSurveyAnswer = await this.processSurveyAnswer(userName, surveyId, surveyAnswer, keepOldFiles);
-    return processedSurveyAnswer as unknown as JSON;
-  }
-
   async clearUpSurveyAnswersTempFiles(userName: string, surveyId: string): Promise<void> {
     const tempSurveyPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
     await this.fileSystemService.deleteEmptyFolder(tempSurveyPath);

@@ -23,6 +23,7 @@ import { createNewPublicUserLogin, publicUserLoginRegex } from '@libs/survey/uti
 import SURVEY_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersAttachmentPath';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
+import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 import CustomHttpException from '../common/CustomHttpException';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
@@ -261,7 +262,7 @@ class SurveyAnswersService implements OnModuleInit {
     }
   };
 
-  async addAnswer(surveyId: string, answer: JSON, attendee: Partial<Attendee>): Promise<SurveyAnswer | null> {
+  async addAnswer(surveyId: string, answer: TSurveyAnswer, attendee: Partial<Attendee>): Promise<SurveyAnswer | null> {
     const survey = await this.surveyModel.findById<SurveyDocument>(surveyId).exec();
     if (!survey) {
       throw new CustomHttpException(
@@ -291,7 +292,7 @@ class SurveyAnswersService implements OnModuleInit {
   selectStrategy = (
     survey: SurveyDocument,
     attendee: Partial<Attendee>,
-    answer: JSON,
+    answer: TSurveyAnswer,
     existingUsersAnswerId?: string,
   ): Promise<SurveyAnswer | null> => {
     if (survey.isAnonymous) return this.anonymousStrategy(survey, answer);
@@ -308,10 +309,10 @@ class SurveyAnswersService implements OnModuleInit {
     );
   };
 
-  async anonymousStrategy(survey: SurveyDocument, answer: JSON): Promise<SurveyAnswerDocument | null> {
+  async anonymousStrategy(survey: SurveyDocument, answer: TSurveyAnswer): Promise<SurveyAnswerDocument | null> {
     const username = `anonymous_${uuidv4()}`;
     const user: Attendee = { username };
-    const updatedAnswer = await this.surveyAnswerAttachmentsService.updateSurveyAnswer(
+    const updatedAnswer = await this.surveyAnswerAttachmentsService.processSurveyAnswer(
       username,
       String(survey.id),
       answer,
@@ -334,7 +335,7 @@ class SurveyAnswersService implements OnModuleInit {
 
   async publicFirstStrategy(
     survey: SurveyDocument,
-    answer: JSON,
+    answer: TSurveyAnswer,
     attendee: Partial<Attendee>,
   ): Promise<SurveyAnswerDocument | null> {
     const { firstName } = attendee;
@@ -351,7 +352,7 @@ class SurveyAnswersService implements OnModuleInit {
     const newPublicUserLogin = createNewPublicUserLogin(firstName, newPublicUserId);
     const user: Attendee = { ...attendee, username: newPublicUserLogin, lastName: newPublicUserId };
 
-    const updatedAnswer = await this.surveyAnswerAttachmentsService.updateSurveyAnswer(
+    const updatedAnswer = await this.surveyAnswerAttachmentsService.processSurveyAnswer(
       firstName,
       String(survey.id),
       answer,
@@ -373,7 +374,7 @@ class SurveyAnswersService implements OnModuleInit {
 
   async loggedOrPublicStrategy(
     survey: SurveyDocument,
-    answer: JSON,
+    answer: TSurveyAnswer,
     attendee: Partial<Attendee>,
   ): Promise<SurveyAnswerDocument | null> {
     if (!attendee.username) {
@@ -387,7 +388,7 @@ class SurveyAnswersService implements OnModuleInit {
 
     await this.throwErrorIfParticipationIsNotPossible(survey, attendee.username);
 
-    const updatedAnswer = await this.surveyAnswerAttachmentsService.updateSurveyAnswer(
+    const updatedAnswer = await this.surveyAnswerAttachmentsService.processSurveyAnswer(
       attendee.username,
       String(survey.id),
       answer,
@@ -410,7 +411,7 @@ class SurveyAnswersService implements OnModuleInit {
 
   async updatingStrategy(
     survey: SurveyDocument,
-    answer: JSON,
+    answer: TSurveyAnswer,
     attendee: Partial<Attendee>,
     existingUsersAnswerId: string,
   ): Promise<SurveyAnswerDocument | null> {
@@ -425,7 +426,7 @@ class SurveyAnswersService implements OnModuleInit {
 
     await this.throwErrorIfParticipationIsNotPossible(survey, attendee.username);
 
-    const updatedAnswer = await this.surveyAnswerAttachmentsService.updateSurveyAnswer(
+    const updatedAnswer = await this.surveyAnswerAttachmentsService.processSurveyAnswer(
       attendee.username,
       String(survey.id),
       answer,
@@ -481,7 +482,7 @@ class SurveyAnswersService implements OnModuleInit {
     return latestUserAnswer || undefined;
   }
 
-  async getPublicAnswers(surveyId: string): Promise<JSON[] | null> {
+  async getPublicAnswers(surveyId: string): Promise<Record<string, unknown>[] | null> {
     const surveyAnswers = await this.surveyAnswerModel.find<SurveyAnswer>({ surveyId: new Types.ObjectId(surveyId) });
     if (surveyAnswers.length === 0) {
       throw new CustomHttpException(
@@ -535,7 +536,7 @@ class SurveyAnswersService implements OnModuleInit {
     attendee: Attendee,
     surveyId: string,
     saveNo: number,
-    answer: JSON,
+    answer: TSurveyAnswer,
   ): Promise<SurveyAnswerDocument> {
     const newSurveyAnswer: SurveyAnswerDocument | null = await this.surveyAnswerModel.create({
       attendee,
