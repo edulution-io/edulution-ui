@@ -58,7 +58,6 @@ import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
-import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
 import getUsernameFromRequest from 'apps/api/src/common/utils/getUsernameFromRequest';
 import SurveysService from './surveys.service';
 import SurveysAttachmentService from './surveys-attachment.service';
@@ -116,15 +115,10 @@ class SurveysController {
   @UseInterceptors(
     FileInterceptor(
       'file',
-      createAttachmentUploadOptions(
-        (req) => {
-          const username = getUsernameFromRequest(req);
-          return join(SURVEYS_TEMP_FILES_PATH, username);
-        },
-        false,
-        undefined,
-        MAXIMUM_UPLOAD_FILE_SIZE,
-      ),
+      createAttachmentUploadOptions((req) => {
+        const username = getUsernameFromRequest(req);
+        return join(SURVEYS_TEMP_FILES_PATH, username);
+      }),
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this

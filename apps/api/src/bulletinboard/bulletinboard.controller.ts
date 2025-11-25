@@ -97,7 +97,6 @@ class BulletinBoardController {
         () => BULLETIN_TEMP_ATTACHMENTS_PATH,
         true,
         (_req, file) => addUuidToFileName(file.originalname, randomUUID()),
-        MAXIMUM_UPLOAD_FILE_SIZE,
       ),
     ),
   )

@@ -24,6 +24,7 @@ import { existsSync, mkdirSync } from 'fs';
 import { HttpStatus } from '@nestjs/common';
 import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
 import CustomHttpException from '../common/CustomHttpException';
 
 /**
@@ -74,7 +75,7 @@ export const createAttachmentUploadOptions = (
 ) => ({
   storage: createDiskStorage(getDestinationPath, fileNameGenerator),
   fileFilter: filter ? attachmentFileFilter : undefined,
-  limits: maxFileSize ? { fileSize: maxFileSize } : undefined,
+  limits: maxFileSize ? { fileSize: maxFileSize } : { fileSize: MAXIMUM_UPLOAD_FILE_SIZE },
 });
 
 export const checkAttachmentFile = (file: Express.Multer.File): string => {

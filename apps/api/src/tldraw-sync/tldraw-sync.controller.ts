@@ -41,7 +41,6 @@ import HistoryPageDto from '@libs/whiteboard/types/historyPageDto';
 import TLDRAW_MULTI_USER_ROOM_PREFIX from '@libs/whiteboard/constants/tldrawMultiUserRoomPrefix';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import ROOM_ID_PARAM from '@libs/tldraw-sync/constants/roomIdParam';
-import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import FilesystemService from '../filesystem/filesystem.service';
 import TLDrawSyncService from './tldraw-sync.service';
@@ -66,7 +65,6 @@ class TLDrawSyncController {
         () => `${APPS_FILES_PATH}/${APPS.WHITEBOARD}`,
         false,
         (_req, file) => file.originalname,
-        MAXIMUM_UPLOAD_FILE_SIZE,
       ),
     ),
   )

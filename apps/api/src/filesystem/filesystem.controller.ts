@@ -41,7 +41,6 @@ import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
 import { UploadGlobalAssetDto } from '@libs/filesystem/types/uploadGlobalAssetDto';
-import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
 import CustomHttpException from '../common/CustomHttpException';
 import { createAttachmentUploadOptions, createDiskStorage } from './multer.utilities';
 import AdminGuard from '../common/guards/admin.guard';
@@ -65,7 +64,6 @@ class FileSystemController {
         (req) => `${APPS_FILES_PATH}/${req.params.name}`,
         false,
         (_req, file) => file.originalname,
-        MAXIMUM_UPLOAD_FILE_SIZE,
       ),
     ),
   )
