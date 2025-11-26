@@ -47,10 +47,11 @@ interface DateTimePickerFieldProps<T extends FieldValues> {
   variant?: DropdownVariant;
   allowPast?: boolean;
   isDateRequired?: boolean;
+  placeholder?: string;
 }
 
 const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldProps<T>) => {
-  const { form, path, translationId, variant = 'default', isDateRequired, allowPast } = props;
+  const { form, path, translationId, variant = 'default', isDateRequired, allowPast, placeholder } = props;
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -129,7 +130,7 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
         minute: 'numeric',
         hour12: language === 'en',
       })
-    : t('form.input.dateTimePicker.placeholder');
+    : placeholder || t('form.input.dateTimePicker.placeholder');
 
   return (
     <Form {...form}>
