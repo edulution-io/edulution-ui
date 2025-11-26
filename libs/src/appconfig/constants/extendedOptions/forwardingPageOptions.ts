@@ -17,11 +17,19 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const APP_INTEGRATION_VARIANT = {
-  NATIVE: 'native',
-  FORWARDED: 'forwarded',
-  FRAMED: 'framed',
-  EMBEDDED: 'embedded',
-} as const;
+import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 
-export default APP_INTEGRATION_VARIANT;
+const FORWARDING_PAGE_OPTIONS: AppConfigExtendedOption[] = [
+  {
+    name: ExtendedOptionKeys.FORWARDING_FORWARD_DIRECTLY,
+    title: 'forwarding.behaviorAtSidebarClick',
+    description: 'forwarding.forwardDirectly',
+    type: ExtendedOptionField.switch,
+    value: false,
+    width: 'full',
+  },
+];
+
+export default FORWARDING_PAGE_OPTIONS;
