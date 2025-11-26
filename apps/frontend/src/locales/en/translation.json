@@ -1219,7 +1219,8 @@
       "confirmMultiDeleteAccount": "Are you sure you want to delete these accounts? This action cannot be undone.",
       "confirmSingleDeleteAccount": "Are you sure you want to delete this account? This action cannot be undone.",
       "deleteUserAccounts": "Delete {{count}} Accounts",
-      "deleteUserAccount": "Delete Account"
+      "deleteUserAccount": "Delete Account",
+      "cryptoNotAvailable": "Encryption is only available over HTTPS. Please use a secure connection."
     },
     "mails": {
       "title": "E-Mail"
@@ -1494,7 +1495,9 @@
     "lastModified": "Last Modified",
     "type": "Type",
     "isShared": "Shared",
-    "filesOrFoldersSelected": "{{selected}} of {{total}} file(s)/folder(s) were selected"
+    "filesOrFoldersSelected": "{{selected}} of {{total}} file(s)/folder(s) were selected",
+    "element": "Element",
+    "elements": "Elements"
   },
   "filesharingUpload": {
     "title": "Upload Files",

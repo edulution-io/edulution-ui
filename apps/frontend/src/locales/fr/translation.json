@@ -1064,7 +1064,8 @@
       "confirmMultiDeleteAccount": "Êtes-vous sûr de vouloir supprimer ces comptes ? Cette action ne peut pas être annulée.",
       "confirmSingleDeleteAccount": "Êtes-vous sûr de vouloir supprimer ce compte ? Cette action ne peut pas être annulée.",
       "deleteUserAccounts": "Supprimer {{count}} comptes",
-      "deleteUserAccount": "Supprimer le compte"
+      "deleteUserAccount": "Supprimer le compte",
+      "cryptoNotAvailable": "Le cryptage n'est disponible que via HTTPS. Veuillez utiliser une connexion sécurisée."
     },
     "mails": {
       "title": "Email"
@@ -1330,7 +1331,9 @@
     "size": "Taille",
     "lastModified": "Modifié récemmen",
     "type": "Type",
-    "filesOrFoldersSelected": "{{selected}} de {{total}} fichiers/dossiers sélectionnés"
+    "filesOrFoldersSelected": "{{selected}} de {{total}} fichiers/dossiers sélectionnés",
+    "element": "Élément",
+    "elements": "Éléments"
   },
   "currentDirectory": "Répertoire actuel",
   "filesharingUpload": {

@@ -51,6 +51,9 @@ class MobileAppUserDto {
 
   @ApiProperty({ type: () => MobileUserFileShare })
   userShares: MobileUserFileShare[];
+
+  @ApiProperty()
+  totpCreatedAt?: Date | null;
 }
 
 export default MobileAppUserDto;
