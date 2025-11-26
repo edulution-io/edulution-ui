@@ -672,6 +672,11 @@
       "fileUploadError": "Error on file upload, please retry later.",
       "fileDeletionSuccess": "Deleted the file successfully.",
       "saveSurveySuccess": "Saved the survey.",
+      "surveyPlaceHolder": "Click the \"Add Question\" button below to start creating your form.",
+      "surveyPlaceholderDescription": "Click the \"Add Question\" button below to start creating your form.",
+      "surveyPlaceholderDescriptionMobile": "Click the \"Add Question\" button below to start creating your form.",
+      "pagePlaceHolder": "Click the \"Add Question\" button below to add a new element to the page.",
+      "panelPlaceHolder": "Click on the \"Add Question\" below to add a new element to the panel.",
       "reset": "Reset",
       "addDescription": "Add a description",
       "expectingUserInput": "Expecting the user to answer here, ... ",
@@ -1196,7 +1201,8 @@
       "enterSavePin": "Please enter your safe PIN.",
       "wrongSafePin": "Wrong PIN Number",
       "enterSafePin": "Please enter your PIN number for decryption",
-      "safePinDescription": "A PIN is required to encrypt the access data. This PIN isn't visible for anyone else and is not saved."
+      "safePinDescription": "A PIN is required to encrypt the access data. This PIN isn't visible for anyone else and is not saved.",
+      "cryptoNotAvailable": "Encryption is only available over HTTPS. Please use a secure connection."
     },
     "mails": {
       "title": "E-Mail"
@@ -1470,7 +1476,9 @@
     "lastModified": "Last Modified",
     "type": "Type",
     "isShared": "Shared",
-    "filesOrFoldersSelected": "{{selected}} of {{total}} file(s)/folder(s) were selected"
+    "filesOrFoldersSelected": "{{selected}} of {{total}} file(s)/folder(s) were selected",
+    "element": "Element",
+    "elements": "Elements"
   },
   "filesharingUpload": {
     "title": "Upload Files",

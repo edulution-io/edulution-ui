@@ -17,16 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
-import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
+interface TEditorLocale {
+  ed: {
+    surveyPlaceHolder: string;
+    surveyPlaceholderDescription: string;
+    surveyPlaceholderDescriptionMobile: string;
+    pagePlaceHolder: string;
+    panelPlaceHolder: string;
+  };
+}
 
-const useDeploymentTarget = () => {
-  const globalSettings = useGlobalSettingsApiStore((s) => s.globalSettings);
-
-  const isLmn = globalSettings?.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER;
-  const isGeneric = globalSettings?.general.deploymentTarget === DEPLOYMENT_TARGET.GENERIC;
-
-  return { isLmn, isGeneric };
-};
-
-export default useDeploymentTarget;
+export default TEditorLocale;

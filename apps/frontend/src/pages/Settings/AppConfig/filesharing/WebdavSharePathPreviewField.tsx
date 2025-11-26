@@ -59,7 +59,7 @@ const WebdavSharePathPreviewField: React.FC<WebdavSharePathPreviewFieldProps> = 
 
     const currentSharePath = createVariableSharePathname(sharePath, pathVariables);
     return `${selectedRootServer}${currentSharePath}`;
-  }, [tableContentData, rootServer, sharePath, pathVariables]);
+  }, [tableContentData, rootServer, sharePath, pathVariables, createVariableSharePathname]);
 
   useEffect(() => {
     setSharePathValue(getInputValue());

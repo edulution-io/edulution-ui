@@ -17,16 +17,21 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
-import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
+const getRandomUUID = (): string => {
+  if (crypto?.randomUUID) {
+    return crypto.randomUUID();
+  }
 
-const useDeploymentTarget = () => {
-  const globalSettings = useGlobalSettingsApiStore((s) => s.globalSettings);
+  const getRn = () => {
+    const randomValue = crypto?.getRandomValues?.(new Uint8Array(1))[0] ?? Math.random() * 256;
+    return Math.floor(randomValue) % 16;
+  };
 
-  const isLmn = globalSettings?.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER;
-  const isGeneric = globalSettings?.general.deploymentTarget === DEPLOYMENT_TARGET.GENERIC;
-
-  return { isLmn, isGeneric };
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = getRn();
+    const v = c === 'x' ? r : (r % 4) + 8;
+    return v.toString(16);
+  });
 };
 
-export default useDeploymentTarget;
+export default getRandomUUID;
