@@ -24,6 +24,9 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import ItemDialogList from '@/components/shared/ItemDialogList';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import UserAccountDto from '@libs/user/types/userAccount.dto';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
+import getDisplayName from '@/utils/getDisplayName';
+import useLanguage from '@/hooks/useLanguage';
 
 interface DeleteUserAccountsDialogProps {
   isOpen: boolean;
@@ -41,6 +44,8 @@ const DeleteUserAccountsDialog: React.FC<DeleteUserAccountsDialogProps> = ({
   isLoading = false,
 }) => {
   const { t } = useTranslation();
+  const { language } = useLanguage();
+  const appConfigs = useAppConfigsStore((s) => s.appConfigs);
   const isMultiDelete = selectedAccounts.length > 1;
 
   const handleClose = () => onOpenChange(false);
@@ -48,6 +53,12 @@ const DeleteUserAccountsDialog: React.FC<DeleteUserAccountsDialogProps> = ({
   const handleSubmit = async () => {
     await onConfirmDelete();
     handleClose();
+  };
+
+  const displayName = (appName: string) => {
+    const appConfig = appConfigs.find((appCfg) => appCfg.name === appName);
+    if (!appConfig) return appName;
+    return getDisplayName(appConfig, language);
   };
 
   const getDialogBody = () => {
@@ -63,7 +74,7 @@ const DeleteUserAccountsDialog: React.FC<DeleteUserAccountsDialogProps> = ({
           }
           items={selectedAccounts
             .filter((account) => account?.accountId)
-            .map((account) => ({ name: account.appName || '', id: account.accountId }))}
+            .map((account) => ({ name: displayName(account.appName) || '', id: account.accountId }))}
         />
       </div>
     );

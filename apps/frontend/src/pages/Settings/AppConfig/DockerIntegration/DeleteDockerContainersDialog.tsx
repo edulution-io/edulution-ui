@@ -57,8 +57,8 @@ const DeleteDockerContainersDialog: React.FC<DeleteDockerContainersDialogProps> 
         <ItemDialogList
           deleteWarningTranslationId={
             isMultiDelete
-              ? 'settings.appConfig.docker.confirmMultiDeleteContainer'
-              : 'settings.appConfig.docker.confirmSingleDeleteContainer'
+              ? 'settings.appconfig.sections.docker.confirmMultiDeleteContainer'
+              : 'settings.appconfig.sections.docker.confirmSingleDeleteContainer'
           }
           items={containerNames.map((name) => ({ name, id: name }))}
         />
@@ -79,7 +79,9 @@ const DeleteDockerContainersDialog: React.FC<DeleteDockerContainersDialogProps> 
       isOpen={isOpen}
       handleOpenChange={handleClose}
       title={t(
-        isMultiDelete ? 'settings.appConfig.docker.deleteContainers' : 'settings.appConfig.docker.deleteContainer',
+        isMultiDelete
+          ? 'settings.appconfig.sections.docker.deleteContainers'
+          : 'settings.appconfig.sections.docker.deleteContainer',
         {
           count: containerNames.length,
         },
