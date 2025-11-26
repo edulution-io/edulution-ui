@@ -54,9 +54,6 @@ class MobileAppUserDto {
 
   @ApiProperty()
   totpCreatedAt?: Date | null;
-
-  @ApiProperty()
-  edulutionVersion: string;
 }
 
 export default MobileAppUserDto;

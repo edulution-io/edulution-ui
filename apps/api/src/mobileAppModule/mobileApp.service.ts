@@ -24,7 +24,6 @@ import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.d
 import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import buildUserShares from '@libs/mobileApp/utils/buildUserShares';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
-import { ConfigService } from '@nestjs/config';
 import LmnApiService from '../lmnApi/lmnApi.service';
 import UsersService from '../users/users.service';
 import GlobalSettingsService from '../global-settings/global-settings.service';
@@ -37,7 +36,6 @@ class MobileAppService {
     private readonly globalSettingsService: GlobalSettingsService,
     private readonly lmnApiService: LmnApiService,
     private readonly webdavSharesService: WebdavSharesService,
-    private readonly configService: ConfigService,
   ) {}
 
   private async fetchLmnData(username: string, globalSettings: GlobalSettingsDto) {
@@ -79,7 +77,6 @@ class MobileAppService {
         lmn: lmnData.info,
         userShares,
         totpCreatedAt: user?.totpCreatedAt,
-        edulutionVersion: this.configService.get<string>('version'),
       });
     } catch {
       return {};
