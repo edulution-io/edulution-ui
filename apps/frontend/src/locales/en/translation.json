@@ -1476,7 +1476,9 @@
     "lastModified": "Last Modified",
     "type": "Type",
     "isShared": "Shared",
-    "filesOrFoldersSelected": "{{selected}} of {{total}} file(s)/folder(s) were selected"
+    "filesOrFoldersSelected": "{{selected}} of {{total}} file(s)/folder(s) were selected",
+    "element": "Element",
+    "elements": "Elements"
   },
   "filesharingUpload": {
     "title": "Upload Files",
