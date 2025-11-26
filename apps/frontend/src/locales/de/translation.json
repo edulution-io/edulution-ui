@@ -207,7 +207,13 @@
       "mailAddress": "E-Mail-Adresse",
       "noMailConfigured": "E-Mail-App ist nicht konfiguriert. Bitte kontaktiere den Systemadministrator.",
       "syncAccountAdded": "Konto für Sync-Job hinzugefügt.",
-      "syncAccountDeleted": "Konto für Sync-Job gelöscht."
+      "syncAccountDeleted": "Konto für Sync-Job gelöscht.",
+      "confirmMultiDeleteSyncJob": "Möchtest du diese Sync-Jobs wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "confirmSingleDeleteSyncJob": "Möchtest du diesen Sync-Job wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "deleteSyncJobs": "{{count}} Sync-Jobs löschen",
+      "deleteSyncJob": "Sync-Job löschen",
+      "confirmDeleteProviderConfig": "Möchtest du diese E-Mail-Provider-Konfiguration wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "deleteProviderConfig": "E-Mail-Provider-Konfiguration löschen"
     }
   },
   "chat": {
@@ -495,6 +501,8 @@
     "invalidQuota": "Die Quota muss der Dokumentation entsprechend angegeben werden",
     "invalidMailQuota": "Die E-Mailquota muss als Zahl in MB angegeben werden",
     "name": "Name",
+    "confirmDeleteGroup": "Möchtest du diese Gruppe wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "deleteGroup": "{{type}} löschen",
     "project": {
       "createSuccess": "Projekt erfolgreich erstellt",
       "updateSuccess": "Projekt erfolgreich aktualisiert",
@@ -1041,6 +1049,8 @@
         "title": "Sortierung",
         "description": "An welcher Position soll die App in der App-Leiste und in den Einstellungen angezeigt werden?"
       },
+      "deleteEntries": "{{count}} Einträge löschen",
+      "confirmDeleteEntries": "Möchtest du diese Einträge wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
       "sections": {
         "onlyOffice": {
           "title": "Only Office Integration",
@@ -1064,7 +1074,11 @@
         },
         "docker": {
           "title": "Docker Anwendungen",
-          "description": "Um die erweiterten Dienste nutzen zu können, können hier die benötigten Container-Anwendungen installiert und gestartet werden."
+          "description": "Um die erweiterten Dienste nutzen zu können, können hier die benötigten Container-Anwendungen installiert und gestartet werden.",
+          "confirmMultiDeleteContainer": "Möchtest du diese Container wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+          "confirmSingleDeleteContainer": "Möchtest du diesen Container wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+          "deleteContainers": "{{count}} Container löschen",
+          "deleteContainer": "Container löschen"
         },
         "veyon": {
           "title": "Veyon Proxy",
@@ -1207,6 +1221,10 @@
       "wrongSafePin": "PIN ist falsch.",
       "enterSafePin": "Bitte PIN zum Entschlüsseln eingeben.",
       "safePinDescription": "Zur Verschlüsselung der Zugangsdaten wird eine PIN benötigt. Diese PIN ist für niemanden sichtbar und wird nicht gespeichert.",
+      "confirmMultiDeleteAccount": "Möchtest du diese Konten wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "confirmSingleDeleteAccount": "Möchtest du dieses Konto wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "deleteUserAccounts": "{{count}} Konten löschen",
+      "deleteUserAccount": "Konto löschen",
       "cryptoNotAvailable": "Verschlüsselung ist nur über HTTPS verfügbar. Bitte verwende eine sichere Verbindung."
     },
     "mails": {
@@ -1304,6 +1322,7 @@
     "share": "Teilen",
     "answers": "Antworten",
     "error": "Fehler",
+    "entry": "Eintrag {{index}}",
     "errors": {
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "directoryNotCreated": "Erstellen des Verzeichnisses fehlgeschlagen",

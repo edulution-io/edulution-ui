@@ -91,7 +91,7 @@ const AppStorePage: React.FC = () => {
         iconSrc: AppStoreIcon,
       }}
     >
-      <div className="space-2 flex max-h-[27rem] w-full flex-wrap gap-2 overflow-y-auto scrollbar-thin md:max-h-[36rem]">
+      <div className="space-2 flex w-full flex-wrap gap-2 overflow-y-auto scrollbar-thin">
         {APP_CONFIG_OPTIONS.map((item) => (
           <button
             key={item.id}
