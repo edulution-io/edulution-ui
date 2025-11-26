@@ -20,7 +20,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getConnectionToken, getModelToken } from '@nestjs/mongoose';
 import { readFileSync } from 'fs';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import type PatchConfigDto from '@libs/common/types/patchConfigDto';
