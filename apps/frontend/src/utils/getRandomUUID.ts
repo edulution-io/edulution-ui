@@ -17,20 +17,21 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { Route } from 'react-router-dom';
-import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
-import NativeAppPageManager from '@/components/structure/layout/NativeAppPageManager';
+const getRandomUUID = (): string => {
+  if (crypto?.randomUUID) {
+    return crypto.randomUUID();
+  }
 
-const getNativeAppRoutes = (appConfigs: AppConfigDto[]) =>
-  appConfigs
-    .filter((item) => item.appType === APP_INTEGRATION_VARIANT.NATIVE)
-    .map((item) => (
-      <Route
-        key={item.name}
-        path={item.name}
-        element={<NativeAppPageManager page={item.name} />}
-      />
-    ));
-export default getNativeAppRoutes;
+  const getRn = () => {
+    const randomValue = crypto?.getRandomValues?.(new Uint8Array(1))[0] ?? Math.random() * 256;
+    return Math.floor(randomValue) % 16;
+  };
+
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = getRn();
+    const v = c === 'x' ? r : (r % 4) + 8;
+    return v.toString(16);
+  });
+};
+
+export default getRandomUUID;

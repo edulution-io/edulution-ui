@@ -34,8 +34,8 @@ import useThemeColors from '@/hooks/useThemeColors';
 import EDULUTION_APP_AGENT_IDENTIFIER from '@libs/common/constants/edulutionAppAgentIdentifier';
 import GlobalHooksWrapper from './components/GlobalHooksWrapper';
 import LazyErrorBoundary from './components/LazyErrorBoundary';
-import SilentLoginWrapper from './components/SilentLoginWrapper';
 import usePlatformStore from './store/EduApiStore/usePlatformStore';
+import SilentLoginWrapper from './components/SilentLoginWrapper';
 
 const App = () => {
   const { eduApiToken } = useUserStore();

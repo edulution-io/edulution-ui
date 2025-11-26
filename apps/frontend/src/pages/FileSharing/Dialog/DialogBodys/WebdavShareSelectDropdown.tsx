@@ -54,7 +54,6 @@ const WebdavShareSelectDropdown: React.FC<WebdavShareSelectDropdownProps> = ({ w
       handleChange={setSelectedWebdavShare}
       variant="dialog"
       translate={false}
-      searchEnabled={false}
     />
   );
 };
