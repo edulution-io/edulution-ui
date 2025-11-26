@@ -23,16 +23,16 @@ import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVar
 import { Migration } from '../../migration/migration.type';
 import { AppConfig } from '../appconfig.schema';
 
-const migration003: Migration<AppConfig> = {
-  name: '003-change-embed-to-framed-type',
-  version: 4,
+const migration006: Migration<AppConfig> = {
+  name: '006-unify-app-integration-variant-values',
+  version: 7,
   execute: async (model) => {
-    const previousSchemaVersion = 3;
-    const newSchemaVersion = 4;
+    const previousSchemaVersion = 6;
+    const newSchemaVersion = 7;
 
     const unprocessedDocuments = await model.find({ schemaVersion: previousSchemaVersion });
     if (unprocessedDocuments.length === 0) {
-      Logger.log('No documents to update for "003-change-embed-to-framed-type"');
+      Logger.log('No documents to update for "006-unify-app-integration-variant-values"');
       return;
     }
 
@@ -43,11 +43,21 @@ const migration003: Migration<AppConfig> = {
       documents.map(async (doc) => {
         const id = String(doc._id);
         try {
+          let updatedAppType = doc.appType;
+
+          // @ts-expect-error types have no overlap
+          if (doc.appType === 'forwarded') {
+            updatedAppType = APP_INTEGRATION_VARIANT.FORWARDING;
+            // @ts-expect-error types have no overlap
+          } else if (doc.appType === 'framed') {
+            updatedAppType = APP_INTEGRATION_VARIANT.FRAME;
+          }
+
           await model.updateOne(
             { _id: doc._id },
             {
               $set: {
-                appType: doc.appType === APP_INTEGRATION_VARIANT.EMBEDDED ? APP_INTEGRATION_VARIANT.FRAME : doc.appType,
+                appType: updatedAppType,
                 schemaVersion: newSchemaVersion,
               },
             },
@@ -67,4 +77,4 @@ const migration003: Migration<AppConfig> = {
   },
 };
 
-export default migration003;
+export default migration006;
