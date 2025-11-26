@@ -31,7 +31,9 @@ const getMobileAppUserDto = ({
   lmn = null,
   userShares = [],
   totpCreatedAt = undefined,
+  edulutionVersion = undefined,
 }: {
+  edulutionVersion: string | undefined;
   usernameFallback: string;
   user?: UserDto | null;
   lmn?: LmnUserInfo | null;
@@ -58,6 +60,7 @@ const getMobileAppUserDto = ({
   organisationInfo: globalSettings?.organisationInfo || {},
   userShares,
   totpCreatedAt,
+  edulutionVersion,
 });
 
 export default getMobileAppUserDto;
