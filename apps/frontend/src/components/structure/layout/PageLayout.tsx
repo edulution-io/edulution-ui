@@ -66,8 +66,8 @@ const PageLayout = ({
       )}
 
       <main
-       style={{ marginBottom: 'var(--floating-bar-h, 0px)' }}
-        className={cn('flex flex-1 flex-col overflow-y-auto overflow-x-hidden pl-4 pr-6 transition-[padding-bottom] duration-200 ease-in-outscrollbar-thin md:pl-6', {
+        style={{ marginBottom: 'var(--floating-bar-h, 0px)' }}
+        className={cn('flex flex-1 flex-col overflow-y-auto overflow-x-hidden pl-4 pr-6 md:pl-6', {
           'px-0 md:px-0': hasFullWidthMain,
         })}
       >
@@ -79,7 +79,7 @@ const PageLayout = ({
         ref={barRef}
         className={cn(
           'pointer-events-none absolute left-1 right-0 overflow-visible text-background md:left-4',
-          isEdulutionApp ? 'bottom-1' : 'bottom-[52px] md:bottom-9',
+          isEdulutionApp ? 'bottom-1' : 'bottom-[24px]',
         )}
       />
 

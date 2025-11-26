@@ -28,6 +28,7 @@ import { useTranslation } from 'react-i18next';
 import MailEncryption from '@libs/mail/constants/mailEncryption';
 import type MailProviderConfig from '@libs/appconfig/types/mailProviderConfig';
 import MailImporterConfigForm from './MailImporterConfigForm';
+import DeleteMailProviderConfigDialog from './DeleteMailProviderConfigDialog';
 
 type MailsConfigProps = {
   form: UseFormReturn<MailProviderConfig>;
@@ -45,7 +46,9 @@ const MailImporterConfig: React.FC<MailsConfigProps> = ({ form }) => {
     port: '993',
     encryption: MailEncryption.SSL,
   };
-  const [option, setOption] = useState(customConfigOption.id);
+  const [option, setOption] = useState<string>(customConfigOption.id);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [providerIdToDelete, setProviderIdToDelete] = useState('');
 
   useEffect(() => {
     void getExternalMailProviderConfig();
@@ -76,41 +79,57 @@ const MailImporterConfig: React.FC<MailsConfigProps> = ({ form }) => {
     }
   }, [option]);
 
-  const handleDeleteMailProviderConfig = async (mailProviderId: string) => {
-    await deleteExternalMailProviderConfig(mailProviderId).finally(() => {
+  const handleDeleteMailProviderConfig = (mailProviderId: string) => {
+    setProviderIdToDelete(mailProviderId);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    await deleteExternalMailProviderConfig(providerIdToDelete).finally(() => {
       setOption(customConfigOption.id);
     });
   };
 
+  const selectedProviderName =
+    mailProviderDropdownOptions.find((config) => config.id === providerIdToDelete)?.name || '';
+
   return (
-    <AccordionSH type="multiple">
-      <AccordionItem value="mails">
-        <AccordionTrigger>
-          <h3>{t(`mail.importer.title`)}</h3>
-        </AccordionTrigger>
-        <AccordionContent className="space-y-2 px-1">
-          <div className="flex gap-4">
-            <DropdownSelect
-              options={mailProviderDropdownOptions}
-              selectedVal={option}
-              handleChange={setOption}
-              classname="md:w-1/3"
-            />
-            {option !== t('common.custom') ? (
-              <Button
-                variant="btn-collaboration"
-                size="lg"
-                type="button"
-                onClick={() => handleDeleteMailProviderConfig(form.getValues('mail.mailProviderId'))}
-              >
-                {t('common.delete')}
-              </Button>
-            ) : null}
-          </div>
-          <MailImporterConfigForm form={form} />
-        </AccordionContent>
-      </AccordionItem>
-    </AccordionSH>
+    <>
+      <AccordionSH type="multiple">
+        <AccordionItem value="mails">
+          <AccordionTrigger>
+            <h3>{t(`mail.importer.title`)}</h3>
+          </AccordionTrigger>
+          <AccordionContent className="space-y-2 px-1">
+            <div className="flex gap-4">
+              <DropdownSelect
+                options={mailProviderDropdownOptions}
+                selectedVal={option}
+                handleChange={setOption}
+                classname="md:w-1/3"
+              />
+              {mailProviderDropdownOptions.find((opt) => opt.id === option)?.name !== t('common.custom') ? (
+                <Button
+                  variant="btn-collaboration"
+                  size="lg"
+                  type="button"
+                  onClick={() => handleDeleteMailProviderConfig(form.getValues('mail.mailProviderId'))}
+                >
+                  {t('common.delete')}
+                </Button>
+              ) : null}
+            </div>
+            <MailImporterConfigForm form={form} />
+          </AccordionContent>
+        </AccordionItem>
+      </AccordionSH>
+      <DeleteMailProviderConfigDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        providerConfigName={selectedProviderName}
+        onConfirmDelete={handleConfirmDelete}
+      />
+    </>
   );
 };
 
