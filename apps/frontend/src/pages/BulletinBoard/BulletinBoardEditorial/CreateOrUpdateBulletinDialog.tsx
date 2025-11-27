@@ -24,7 +24,6 @@ import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialStore';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import getBulletinFormSchema from '@libs/bulletinBoard/constants/bulletinDialogFormSchema';
 import CreateOrUpdateBulletinDialogBody from '@/pages/BulletinBoard/BulletinBoardEditorial/CreateOrUpdateBulletinDialogBody';
 import { MdDelete } from 'react-icons/md';
@@ -83,10 +82,14 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
   }, [selectedBulletinToEdit, form]);
 
   const handleSubmit = async () => {
+    let success: boolean;
     if (selectedBulletinToEdit?.id) {
-      await updateBulletin(selectedBulletinToEdit.id, form.getValues());
+      success = await updateBulletin(selectedBulletinToEdit.id, form.getValues());
     } else {
-      await createBulletin(form.getValues());
+      success = await createBulletin(form.getValues());
+    }
+    if (!success) {
+      return;
     }
     setIsCreateBulletinDialogOpen(false);
     setSelectedBulletinToEdit(null);
@@ -100,10 +103,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
 
   const handleFormSubmit = form.handleSubmit(handleSubmit);
 
-  const getDialogBody = () => {
-    if (isDialogLoading) return <CircleLoader className="mx-auto" />;
-    return <CreateOrUpdateBulletinDialogBody form={form} />;
-  };
+  const getDialogBody = () => <CreateOrUpdateBulletinDialogBody form={form} />;
 
   const handleClose = () => {
     setIsCreateBulletinDialogOpen(false);
