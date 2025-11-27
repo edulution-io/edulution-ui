@@ -9,13 +9,39 @@ on:
 jobs:
   prepare:
     runs-on: ubuntu-24.04
-    timeout-minutes: 1
+    timeout-minutes: 5
 
     outputs:
       frontend-docker-tags: ${{ steps.generate_frontend_tags.outputs.docker_tags }}
       api-docker-tags: ${{ steps.generate_api_tags.outputs.docker_tags }}
+      cache-key: ${{ steps.cache-key.outputs.key }}
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+        with:
+          token: ${{ github.token }}
+
+      - name: Generate cache key
+        id: cache-key
+        run: echo "key=${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}" >> $GITHUB_OUTPUT
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: 22.x
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v4.2.0
+        with:
+          path: '**/node_modules'
+          key: ${{ steps.cache-key.outputs.key }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm ci
+
       - id: generate_frontend_tags
         run: |
           docker_registry_path="ghcr.io/edulution-io/edulution-ui"
@@ -54,13 +80,11 @@ jobs:
         with:
           node-version: 22.x
 
-      - name: Cache Node.js modules
-        uses: actions/cache@v4.2.0
-        continue-on-error: true
+      - name: Restore Node.js modules cache
+        uses: actions/cache/restore@v4.2.0
         with:
-          path: |
-            **/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          path: '**/node_modules'
+          key: ${{ needs.prepare.outputs.cache-key }}
           restore-keys: |
             ${{ runner.os }}-node-
 
@@ -108,13 +132,11 @@ jobs:
         with:
           node-version: 22.x
 
-      - name: Cache Node.js modules
-        uses: actions/cache@v4.2.0
-        continue-on-error: true
+      - name: Restore Node.js modules cache
+        uses: actions/cache/restore@v4.2.0
         with:
-          path: |
-            **/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          path: '**/node_modules'
+          key: ${{ needs.prepare.outputs.cache-key }}
           restore-keys: |
             ${{ runner.os }}-node-
 
