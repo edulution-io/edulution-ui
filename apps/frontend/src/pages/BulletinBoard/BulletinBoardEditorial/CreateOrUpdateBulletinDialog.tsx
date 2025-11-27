@@ -58,15 +58,30 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
     }
   }, [isCreateBulletinDialogOpen]);
 
+  const getDefaultEndDate = () => {
+    const date = new Date();
+    date.setDate(date.getDate() + 14);
+    date.setHours(23, 59, 0, 0);
+    return date;
+  };
+
+  const getInitialEndDate = () => {
+    if (!selectedBulletinToEdit) {
+      return getDefaultEndDate();
+    }
+    if (selectedBulletinToEdit.isVisibleEndDate) {
+      return new Date(selectedBulletinToEdit.isVisibleEndDate);
+    }
+    return null;
+  };
+
   const initialFormValues: CreateBulletinDto = {
     title: selectedBulletinToEdit?.title || '',
     category: selectedBulletinToEdit?.category || categoriesWithEditPermission[0],
     attachmentFileNames: selectedBulletinToEdit?.attachmentFileNames || [],
     content: selectedBulletinToEdit?.content || '',
     isActive: selectedBulletinToEdit?.isActive || true,
-    isVisibleEndDate: selectedBulletinToEdit?.isVisibleEndDate
-      ? new Date(selectedBulletinToEdit.isVisibleEndDate)
-      : null,
+    isVisibleEndDate: getInitialEndDate(),
     isVisibleStartDate: selectedBulletinToEdit?.isVisibleStartDate
       ? new Date(selectedBulletinToEdit.isVisibleStartDate)
       : null,
