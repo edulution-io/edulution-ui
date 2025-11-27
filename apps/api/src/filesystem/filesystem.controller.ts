@@ -41,6 +41,7 @@ import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
 import { UploadGlobalAssetDto } from '@libs/filesystem/types/uploadGlobalAssetDto';
+import { SkipPayloadFilter } from 'apps/api/src/common/decorators/skip-payload-filter.decorator';
 import CustomHttpException from '../common/CustomHttpException';
 import { createAttachmentUploadOptions, createDiskStorage } from './multer.utilities';
 import AdminGuard from '../common/guards/admin.guard';
@@ -55,6 +56,7 @@ class FileSystemController {
   constructor(private readonly filesystemService: FilesystemService) {}
 
   @Post(':name')
+  @SkipPayloadFilter()
   @UseGuards(AdminGuard)
   @ApiConsumes(RequestResponseContentType.MULTIPART_FORM_DATA)
   @UseInterceptors(
@@ -110,6 +112,7 @@ class FileSystemController {
   }
 
   @Post()
+  @SkipPayloadFilter()
   @UseGuards(AdminGuard)
   @UseInterceptors(
     FileInterceptor('file', {

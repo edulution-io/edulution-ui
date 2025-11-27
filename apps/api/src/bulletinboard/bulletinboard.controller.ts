@@ -28,6 +28,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import BULLETIN_TEMP_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinTempAttachmentsPath';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import { addUuidToFileName } from '@libs/common/utils/uuidAndFileNames';
+import { SkipPayloadFilter } from 'apps/api/src/common/decorators/skip-payload-filter.decorator';
 import BulletinBoardService from './bulletinboard.service';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import GetToken from '../common/decorators/getToken.decorator';
@@ -75,6 +76,7 @@ class BulletinBoardController {
   }
 
   @Post('files')
+  @SkipPayloadFilter()
   @ApiConsumes(RequestResponseContentType.MULTIPART_FORM_DATA)
   @UseInterceptors(
     FileInterceptor(

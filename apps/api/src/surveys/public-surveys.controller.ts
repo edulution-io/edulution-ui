@@ -47,6 +47,7 @@ import SURVEY_ANSWERS_MAXIMUM_FILE_SIZE from '@libs/survey/constants/survey-answ
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import FilesystemService from 'apps/api/src/filesystem/filesystem.service';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
+import { SkipPayloadFilter } from 'apps/api/src/common/decorators/skip-payload-filter.decorator';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answers.service';
 import { Public } from '../common/decorators/public.decorator';
@@ -111,6 +112,7 @@ class PublicSurveysController {
 
   @Post(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId`)
   @Public()
+  @SkipPayloadFilter()
   @ApiConsumes(RequestResponseContentType.MULTIPART_FORM_DATA)
   @UseInterceptors(
     FileInterceptor(
