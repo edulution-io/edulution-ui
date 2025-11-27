@@ -172,7 +172,7 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
                   <Button
                     variant="btn-outline"
                     className={cn(
-                      'my-0 h-10 w-fit px-3 py-0 pl-3 text-left font-normal',
+                      'my-0 h-10 w-fit rounded-lg px-3 py-0 pl-3 text-left font-normal',
                       !fieldValue && 'text-muted-foreground',
                     )}
                   >
