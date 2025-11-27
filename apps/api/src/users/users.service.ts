@@ -30,7 +30,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
@@ -295,7 +295,7 @@ class UsersService {
         .exec();
 
       const userAccountsDto = userAccounts.map((account) => ({
-        accountId: account._id.toHexString(),
+        accountId: (account._id as Types.ObjectId).toHexString(),
         appName: account.appName,
         accountUser: account.accountUser,
         accountPassword: account.accountPassword,
