@@ -41,7 +41,6 @@ import HistoryPageDto from '@libs/whiteboard/types/historyPageDto';
 import TLDRAW_MULTI_USER_ROOM_PREFIX from '@libs/whiteboard/constants/tldrawMultiUserRoomPrefix';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import ROOM_ID_PARAM from '@libs/tldraw-sync/constants/roomIdParam';
-import { SkipPayloadFilter } from 'apps/api/src/common/decorators/skip-payload-filter.decorator';
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import FilesystemService from '../filesystem/filesystem.service';
 import TLDrawSyncService from './tldraw-sync.service';
@@ -58,7 +57,6 @@ class TLDrawSyncController {
   ) {}
 
   @Post(`${TLDRAW_SYNC_ENDPOINTS.ASSETS}/:name`)
-  @SkipPayloadFilter()
   @ApiConsumes(RequestResponseContentType.MULTIPART_FORM_DATA)
   @UseInterceptors(
     FileInterceptor(

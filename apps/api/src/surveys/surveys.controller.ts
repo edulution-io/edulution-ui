@@ -65,7 +65,6 @@ import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import getUsernameFromRequest from 'apps/api/src/common/utils/getUsernameFromRequest';
-import { SkipPayloadFilter } from 'apps/api/src/common/decorators/skip-payload-filter.decorator';
 import SurveysService from './surveys.service';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveysTemplateService from './surveys-template.service';
@@ -131,7 +130,6 @@ class SurveysController {
   }
 
   @Post(FILES)
-  @SkipPayloadFilter()
   @ApiConsumes(RequestResponseContentType.MULTIPART_FORM_DATA)
   @UseInterceptors(
     FileInterceptor(
@@ -254,7 +252,6 @@ class SurveysController {
   }
 
   @Post(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId`)
-  @SkipPayloadFilter()
   @ApiConsumes(RequestResponseContentType.MULTIPART_FORM_DATA)
   @UseInterceptors(
     FileInterceptor(
