@@ -94,7 +94,9 @@
     "dropIconDescription": "Glissez une image ici ou cliquez pour sélectionner une image. Formats pris en charge: SVG, webp"
   },
   "forwarding": {
-    "sidebar": "Transfert"
+    "sidebar": "Transfert",
+    "behaviorAtSidebarClick": "Accès rapide à l'ouverture de l'application",
+    "forwardDirectly": "Rediriger directement à l'ouverture de l'application (si désactivé, l'utilisateur doit confirmer avec un autre clic)"
   },
   "frame": {
     "sidebar": "Cadre"
@@ -196,7 +198,15 @@
       "isActive": "Actif",
       "syncJobsTable": "Tâches des importateurs",
       "mailAddress": "Adresse email",
-      "noMailConfigured": "L'application de messagerie n'est pas configurée. Veuillez contacter l'administrateur système."
+      "noMailConfigured": "L'application de messagerie n'est pas configurée. Veuillez contacter l'administrateur système.",
+      "syncAccountAdded": "Compte pour la tâche de synchronisation ajouté.",
+      "syncAccountDeleted": "Compte pour la tâche de synchronisation supprimé.",
+      "confirmMultiDeleteSyncJob": "Êtes-vous sûr de vouloir supprimer ces tâches de synchronisation ? Cette action ne peut pas être annulée.",
+      "confirmSingleDeleteSyncJob": "Êtes-vous sûr de vouloir supprimer cette tâche de synchronisation ? Cette action ne peut pas être annulée.",
+      "deleteSyncJobs": "Supprimer {{count}} tâches de synchronisation",
+      "deleteSyncJob": "Supprimer la tâche de synchronisation",
+      "confirmDeleteProviderConfig": "Êtes-vous sûr de vouloir supprimer cette configuration de fournisseur de messagerie ? Cette action ne peut pas être annulée.",
+      "deleteProviderConfig": "Supprimer la configuration du fournisseur de messagerie"
     }
   },
   "chat": {
@@ -402,6 +412,8 @@
     "invalidQuota": "Le quota doit être donné en fonction de la documentation",
     "invalidMailQuota": "Le quota de courrier doit être spécifié en nombre en Mo",
     "name": "nom",
+    "confirmDeleteGroup": "Êtes-vous sûr de vouloir supprimer ce groupe ? Cette action ne peut pas être annulée.",
+    "deleteGroup": "Supprimer {{type}}",
     "project": {
       "createSuccess": "Projet créé avec succès",
       "updateSuccess": "Projet mis à jour avec succès",
@@ -570,6 +582,11 @@
     "editor": {
       "new": "Nouveau (vide)",
       "saveSurveySuccess": "Le sondage a été enregistrée.",
+      "surveyPlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
+      "surveyPlaceholderDescription": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
+      "surveyPlaceholderDescriptionMobile": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
+      "pagePlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour ajouter un nouvel élément à la page.",
+      "panelPlaceHolder": "Cliquez sur « Ajouter une question » ci-dessous pour ajouter un nouvel élément au panneau.",
       "reset": "Rejeter",
       "addDescription": "Ajouter une description",
       "expectingUserInput": "Ici, la réponse du participant est attendue ... ",
@@ -802,8 +819,8 @@
       "linuxmuster": "Ici, vous pouvez appliquer tous les paramètres.",
       "whiteboard": "Ici, vous pouvez appliquer tous les paramètres.",
       "bulletinboard": "Configurez les groupes d'utilisateurs qui ont accès à l'application Schwarzes Brett. Il est possible de configurer dans les catégories pour contrôler les messages affichés chez les utilisateurs.",
-      "forwarded": "Redirection: entrez simplement le lien vers l'application Web sous URL.",
-      "framed": "Frame: Entrez simplement le lien vers l'application Web sous URL.",
+      "forwarding": "Redirection: entrez simplement le lien vers l'application Web sous URL.",
+      "frame": "Frame: Entrez simplement le lien vers l'application Web sous URL.",
       "embedded": "Embedded: Ici, votre propre application Web peut être créée dans l'éditeur."
     },
     "globalSettings": {
@@ -875,6 +892,8 @@
     },
     "lmnVersion": { "title": "Aperçu des versions de Linuxmuster" },
     "appconfig": {
+      "deleteEntries": "Supprimer {{count}} entrées",
+      "confirmDeleteEntries": "Êtes-vous sûr de vouloir supprimer ces entrées ? Cette action ne peut pas être annulée.",
       "sections": {
         "onlyOffice": {
           "title": "Intégration OnlyOffice",
@@ -898,7 +917,11 @@
         },
         "docker": {
           "title": "Applications Docker",
-          "description": "Afin de pouvoir utiliser les services étendus, les applications de conteneurs requises peuvent être installées et démarrées ici."
+          "description": "Afin de pouvoir utiliser les services étendus, les applications de conteneurs requises peuvent être installées et démarrées ici.",
+          "confirmMultiDeleteContainer": "Êtes-vous sûr de vouloir supprimer ces conteneurs ? Cette action ne peut pas être annulée.",
+          "confirmSingleDeleteContainer": "Êtes-vous sûr de vouloir supprimer ce conteneur ? Cette action ne peut pas être annulée.",
+          "deleteContainers": "Supprimer {{count}} conteneurs",
+          "deleteContainer": "Supprimer le conteneur"
         },
         "veyon": {
           "title": "Proxy veyon",
@@ -1039,7 +1062,12 @@
       "enterSavePin": "Veuillez saisir un code PIN.",
       "wrongSafePin": "Le code PIN est erronée.",
       "enterSafePin": "Veuillez saisir le code PIN pour déchiffrer.",
-      "safePinDescription": "Un code PIN est nécessaire pour chiffrer les données d'accès. Ce code PIN n'est visible pour personne et n'est pas sauvegardé."
+      "safePinDescription": "Un code PIN est nécessaire pour chiffrer les données d'accès. Ce code PIN n'est visible pour personne et n'est pas sauvegardé.",
+      "confirmMultiDeleteAccount": "Êtes-vous sûr de vouloir supprimer ces comptes ? Cette action ne peut pas être annulée.",
+      "confirmSingleDeleteAccount": "Êtes-vous sûr de vouloir supprimer ce compte ? Cette action ne peut pas être annulée.",
+      "deleteUserAccounts": "Supprimer {{count}} comptes",
+      "deleteUserAccount": "Supprimer le compte",
+      "cryptoNotAvailable": "Le cryptage n'est disponible que via HTTPS. Veuillez utiliser une connexion sécurisée."
     },
     "mails": {
       "title": "Email"
@@ -1087,7 +1115,7 @@
   },
   "forwardingpage": {
     "action": "Ce lien peut être atteint du côté extérieur du fournisseur.",
-    "description": "L'application s'ouvre dans une nouvelle fenêtre. Aucune autre autorisation n'est nécessaire.",
+    "description": "L'application s'ouvre dans une nouvelle fenêtre.",
     "missing_link": "Le lien est manquant"
   },
   "menu": "Menu",
@@ -1127,6 +1155,7 @@
     "savedToClipboardError": "N'a pas pu être copié dans le presse-papiers.",
     "answers": "Répondre",
     "error": "Erreur",
+    "entry": "Entrée {{index}}",
     "errors": {
       "attachmentUploadFailed": "La pièce jointe n'a pas pu être téléversée",
       "dbAccessFailed": "L'accès à la base de données a échoué",
@@ -1270,7 +1299,7 @@
     "pathDescription": "Veuillez saisir une URL.",
     "apptype": "Type d'application",
     "native": "Support natif",
-    "forwarded": "Transfertr",
+    "forwarding": "Transfert",
     "embedded": "Intégré",
     "saved": "Configuration enregistrée!",
     "url": "URL",
@@ -1304,7 +1333,9 @@
     "size": "Taille",
     "lastModified": "Modifié récemmen",
     "type": "Type",
-    "filesOrFoldersSelected": "{{selected}} de {{total}} fichiers/dossiers sélectionnés"
+    "filesOrFoldersSelected": "{{selected}} de {{total}} fichiers/dossiers sélectionnés",
+    "element": "Élément",
+    "elements": "Éléments"
   },
   "currentDirectory": "Répertoire actuel",
   "filesharingUpload": {
@@ -1323,7 +1354,16 @@
     "overwriteWarningDescriptionFiles": "Les fichiers suivants sont écrasés:",
     "oversizedFilesDetected": "Fichiers trop grands découverts",
     "oversizedFileDetected": "Fichier trop grand découvert!",
-    "cannotUploadOversized": "Aucun fichier de plus de 50 Mo ne peut être téléversé."
+    "cannotUploadOversized": "Aucun fichier de plus de 50 Mo ne peut être téléversé.",
+    "file": "Fichier",
+    "files": "Fichiers",
+    "creatingDirectoryStructure": "Création de la structure des dossiers",
+    "hiddenFiles": "fichiers cachés et système",
+    "errors": {
+      "directoryCreationFailed": "Échec de la création du répertoire",
+      "fileUploadFailed": "Échec du téléchargement du fichier",
+      "uploadError": "Erreur lors du téléchargement des fichiers"
+    }
   },
   "linuxmuster": {
     "title": "Linuxmuster",

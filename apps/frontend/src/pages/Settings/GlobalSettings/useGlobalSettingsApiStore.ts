@@ -38,7 +38,7 @@ type GlobalSettingsStore = {
   isGetGlobalSettingsLoading: boolean;
   isGetGlobalAdminSettingsLoading: boolean;
   isGetPublicThemeLoading: boolean;
-  globalSettings: GlobalSettingsDto;
+  globalSettings: GlobalSettingsDto | null;
   publicTheme: ThemeSettingsDto | null;
   reset: () => void;
   getGlobalSettings: () => Promise<void>;
@@ -53,7 +53,7 @@ const initialValues = {
   isGetGlobalAdminSettingsLoading: false,
   isGetPublicThemeLoading: false,
   mfaEnforcedGroups: [],
-  globalSettings: defaultValues,
+  globalSettings: null,
   publicTheme: null,
 };
 

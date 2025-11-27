@@ -52,7 +52,7 @@ const MobileFileAccessSetupBox: React.FC = () => {
       }}
     >
       <div className="space-y-2">
-        <h3>{t('dashboard.mobileAccess.setupWithQrCode')}</h3>
+        <h2>{t('dashboard.mobileAccess.setupWithQrCode')}</h2>
         <p>{t('usersettings.mobileAccess.docsDescription')}</p>
         <Button
           type="button"

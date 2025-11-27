@@ -26,7 +26,7 @@ import cn from '@libs/common/utils/className';
 import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
 import APPS from '@libs/appconfig/constants/apps';
 import AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
 import PageLayout from '@/components/structure/layout/PageLayout';
@@ -91,7 +91,7 @@ const AppStorePage: React.FC = () => {
         iconSrc: AppStoreIcon,
       }}
     >
-      <div className="space-2 flex max-h-[27rem] w-full flex-wrap gap-2 overflow-y-auto scrollbar-thin md:max-h-[36rem]">
+      <div className="space-2 flex w-full flex-wrap gap-2 overflow-y-auto scrollbar-thin">
         {APP_CONFIG_OPTIONS.map((item) => (
           <button
             key={item.id}

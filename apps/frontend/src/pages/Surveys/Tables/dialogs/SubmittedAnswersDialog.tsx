@@ -52,7 +52,7 @@ const SubmittedAnswersDialog = () => {
   const getDialogBody = () => {
     // TODO: NIEDUUI-222: Add a user selection to show answers of a selected user when current user is admin
     if (!surveyJSON) {
-      return <h4 className="transform(-50%,-50%) absolute right-1/2 top-1/2">{t('survey.notFound')}</h4>;
+      return <h3 className="transform(-50%,-50%) absolute right-1/2 top-1/2">{t('survey.notFound')}</h3>;
     }
     return (
       <ScrollArea>

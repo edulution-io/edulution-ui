@@ -17,6 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import { randomUUID } from 'crypto';
 import { join } from 'path';
 import { Response } from 'express';
 import {
@@ -262,7 +263,7 @@ class SurveysController {
           return join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId);
         },
         false,
-        (_req, file) => addUuidToFileName(file.originalname),
+        (_req, file) => addUuidToFileName(file.originalname, randomUUID()),
       ),
     ),
   )

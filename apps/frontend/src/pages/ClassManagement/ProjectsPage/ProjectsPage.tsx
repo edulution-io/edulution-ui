@@ -94,7 +94,7 @@ const ProjectsPage = () => {
             key={row.name}
             className="mt-4 min-w-full"
           >
-            <h4 className="text-background">{t(`classmanagement.${row.name}`)}</h4>
+            <h3 className="text-background">{t(`classmanagement.${row.name}`)}</h3>
             <GroupList row={row} />
           </div>
         ))}

@@ -51,7 +51,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
     if (!surveyId) {
       return (
         <div className="relative top-1/3 flex justify-center">
-          <h4>{t('survey.notFound')}</h4>
+          <h3>{t('survey.notFound')}</h3>
         </div>
       );
     }
@@ -59,7 +59,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
     if (!selectedSurvey) {
       return (
         <div className="relative top-1/3 flex justify-center">
-          <h4>{t('survey.notFound')}</h4>
+          <h3>{t('survey.notFound')}</h3>
         </div>
       );
     }

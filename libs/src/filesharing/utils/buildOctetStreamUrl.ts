@@ -17,9 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { UploadFile } from '@libs/filesharing/types/uploadFile';
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
 
-const buildOctetStreamUrl = (baseUploadUrl: string, destinationPath: string, fileItem: UploadFile): string => {
+const buildOctetStreamUrl = (baseUploadUrl: string, destinationPath: string, fileItem: UploadItem): string => {
   const query = new URLSearchParams();
   query.set('path', destinationPath);
   query.set('name', fileItem.name);

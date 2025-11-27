@@ -64,8 +64,6 @@ const connectionTimeout = EDUI_MAIL_IMAP_TIMEOUT ? parseInt(EDUI_MAIL_IMAP_TIMEO
 class MailsService implements OnModuleInit {
   private mailcowApi: AxiosInstance;
 
-  private imapClient: ImapFlow;
-
   private imapUrl: string;
 
   private imapPort: number;
@@ -296,12 +294,40 @@ class MailsService implements OnModuleInit {
     this.sseService.sendEventToUsers(usernames, data, message);
   }
 
+  private static async cleanupImapClient(client: ImapFlow): Promise<void> {
+    try {
+      if (client?.usable) {
+        await client.logout();
+      }
+    } catch (logoutError) {
+      Logger.warn(
+        `Failed to logout IMAP client: ${logoutError instanceof Error ? logoutError.message : String(logoutError)}`,
+        MailsService.name,
+      );
+    } finally {
+      try {
+        client.close();
+      } catch (closeError) {
+        Logger.warn(
+          `Failed to close IMAP client: ${closeError instanceof Error ? closeError.message : String(closeError)}`,
+          MailsService.name,
+        );
+      }
+    }
+  }
+
   async getMails(emailAddress: string, password: string): Promise<MailDto[]> {
     if (!this.imapUrl || !this.imapPort) {
+      Logger.debug('IMAP configuration missing, skipping mail fetch', MailsService.name);
       return [];
     }
 
-    this.imapClient = new ImapFlow({
+    if (!emailAddress || !password) {
+      Logger.debug('Email credentials missing, skipping mail fetch', MailsService.name);
+      return [];
+    }
+
+    const imapClient = new ImapFlow({
       host: this.imapUrl,
       port: this.imapPort,
       secure: this.imapSecure,
@@ -316,23 +342,25 @@ class MailsService implements OnModuleInit {
       connectionTimeout,
     });
 
-    this.imapClient.on('error', (err: Error): void => {
+    imapClient.on('error', (err: Error): void => {
       Logger.error(`IMAP-Error: ${err.message}`, MailsService.name);
-      void this.imapClient.logout();
-      this.imapClient.close();
+      void MailsService.cleanupImapClient(imapClient);
     });
 
-    await this.imapClient.connect().catch((e) => {
+    try {
+      await imapClient.connect();
+    } catch (e) {
       Logger.error(`IMAP-Connection-Error: ${e instanceof Error && e.message}`, MailsService.name);
+      await MailsService.cleanupImapClient(imapClient);
       return [];
-    });
+    }
 
     let mailboxLock: MailboxLockObject | undefined;
     const mails: MailDto[] = [];
     try {
-      mailboxLock = await this.imapClient.getMailboxLock('INBOX');
+      mailboxLock = await imapClient.getMailboxLock('INBOX');
 
-      const fetchMail = this.imapClient.fetch({ recent: true }, { envelope: true, labels: true });
+      const fetchMail = imapClient.fetch({ recent: true }, { envelope: true, labels: true });
 
       // eslint-disable-next-line no-restricted-syntax
       for await (const mail of fetchMail) {
@@ -350,9 +378,8 @@ class MailsService implements OnModuleInit {
       if (mailboxLock) {
         mailboxLock.release();
       }
+      await MailsService.cleanupImapClient(imapClient);
     }
-    await this.imapClient.logout();
-    this.imapClient.close();
 
     Logger.verbose(`Feed: ${mails.length} new mails were fetched (imap)`, MailsService.name);
     return mails;

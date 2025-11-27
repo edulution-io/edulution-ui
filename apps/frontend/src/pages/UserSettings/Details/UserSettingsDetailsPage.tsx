@@ -54,7 +54,7 @@ const UserSettingsDetailsPage: React.FC = () => {
     [user, t],
   );
 
-  const schoolClasses = user?.schoolclasses.map((item) => removeSchoolPrefix(item, user.school)) || [];
+  const schoolClasses = user?.schoolclasses?.map((item) => removeSchoolPrefix(item, user.school)) || [];
 
   return (
     <PageLayout
@@ -68,7 +68,7 @@ const UserSettingsDetailsPage: React.FC = () => {
       <Separator className="my-4 bg-muted" />
 
       <div className="md:max-w-[75%]">
-        <h3 className="text-background">{t('usersettings.details.userInformation')}</h3>
+        <h2 className="text-background">{t('usersettings.details.userInformation')}</h2>
         <div className="py-4 text-background">
           {userInfo.map((field) => (
             <Field
@@ -92,7 +92,7 @@ const UserSettingsDetailsPage: React.FC = () => {
       </div>
       <Separator className="my-4 bg-muted" />
 
-      <h3 className="text-background">{t('usersettings.details.title')}</h3>
+      <h2 className="text-background">{t('usersettings.details.title')}</h2>
       <div className="mb-4 space-y-4 py-4">
         <UserSettingsDetailsForm />
       </div>
@@ -100,7 +100,7 @@ const UserSettingsDetailsPage: React.FC = () => {
       <Separator className="my-4 bg-muted" />
 
       <div className="md:max-w-[75%]">
-        <h3 className="text-background">{t('usersettings.details.quotas')}</h3>
+        <h2 className="text-background">{t('usersettings.details.quotas')}</h2>
         <div className="py-4 text-muted">
           <Quota />
         </div>

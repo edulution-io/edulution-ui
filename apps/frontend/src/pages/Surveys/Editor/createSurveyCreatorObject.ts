@@ -26,6 +26,7 @@ import 'survey-core/i18n/french';
 import 'survey-creator-core/i18n/english';
 import 'survey-creator-core/i18n/german';
 import 'survey-creator-core/i18n/french';
+import TEditorLocale from '@libs/survey/types/editor/TEditorLocale';
 import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
@@ -38,6 +39,15 @@ const createSurveyCreatorObject = (language = 'en') => {
   surveyLocalization.currentLocale = language;
   editorLocalization.defaultLocale = language;
   editorLocalization.currentLocale = language;
+
+  const locale = editorLocalization.getLocale(language) as TEditorLocale;
+
+  locale.ed.surveyPlaceHolder = t('survey.editor.surveyPlaceHolder');
+  locale.ed.surveyPlaceholderDescription = t('survey.editor.surveyPlaceholderDescription');
+  locale.ed.surveyPlaceholderDescriptionMobile = t('survey.editor.surveyPlaceholderDescription');
+  locale.ed.surveyPlaceHolder = t('survey.editor.surveyPlaceHolder');
+  locale.ed.pagePlaceHolder = t('survey.editor.pagePlaceHolder');
+  locale.ed.panelPlaceHolder = t('survey.editor.panelPlaceHolder');
 
   const creatorOptions = {
     generateValidJSON: true,
@@ -94,8 +104,7 @@ const createSurveyCreatorObject = (language = 'en') => {
   if (settingsActionFooter >= 0) creator.footerToolbar.actions.splice(settingsActionFooter, 1);
 
   creator.onElementAllowOperations.add((_, options) => {
-    // eslint-disable-next-line no-param-reassign
-    options.allowShowSettings = true;
+    Object.assign(options, { allowShowSettings: true });
   });
 
   return creator;

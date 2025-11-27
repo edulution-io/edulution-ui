@@ -246,7 +246,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
   if (!surveyParticipationModel || !selectedSurvey) {
     return (
       <div className="relative top-1/3">
-        <h4 className="flex justify-center">{t('survey.notFound')}</h4>
+        <h3 className="flex justify-center">{t('survey.notFound')}</h3>
       </div>
     );
   }
