@@ -17,19 +17,26 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { AxiosError, AxiosResponseHeaders, InternalAxiosRequestConfig, RawAxiosResponseHeaders } from 'axios';
+import { HttpStatus, Logger } from '@nestjs/common';
+import { Response } from 'express';
 
-interface CustomAxiosError extends AxiosError {
-  response: {
-    status: number;
-    statusText: string;
-    data: {
-      message: string;
-      errorType?: string;
-    };
-    headers: RawAxiosResponseHeaders | AxiosResponseHeaders;
-    config: InternalAxiosRequestConfig;
-  };
-}
+export type PayloadTooLargeErrorType = 'file_upload' | 'json_body';
 
-export default CustomAxiosError;
+const sendPayloadTooLargeResponse = (
+  response: Response,
+  logger: Logger,
+  errorType: PayloadTooLargeErrorType,
+  limit: number,
+) => {
+  const limitInMB = (limit / 1024 / 1024).toFixed(2);
+  logger.error(`Payload too large (${errorType}): limit is ${limitInMB}MB`);
+
+  response.status(HttpStatus.PAYLOAD_TOO_LARGE).json({
+    statusCode: HttpStatus.PAYLOAD_TOO_LARGE,
+    message: 'Request payload is too large',
+    error: 'Payload Too Large',
+    errorType,
+  });
+};
+
+export default sendPayloadTooLargeResponse;

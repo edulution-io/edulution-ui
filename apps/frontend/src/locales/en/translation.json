@@ -234,7 +234,8 @@
     "unexpectedError": "An unexpected error occurred",
     "uploadOrFetchAttachmentFailed": "Error uploading or fetching attachment",
     "fileGenerationFailed": "File generation failed",
-    "requestTooLarge": "Your request is larger than {{limit}} MB. If you have attached media files, try compressing or removing them."
+    "requestTooLarge": "Your request is larger than {{limit}} KB. If you have attached media files, try compressing or removing them.",
+    "fileTooLarge": "The file is larger than {{limit}} MB. Please compress or choose a smaller file."
   },
   "conferences": {
     "errors": {

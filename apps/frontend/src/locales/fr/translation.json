@@ -218,7 +218,8 @@
     "automaticLoginFailed": "La connexion automatique a échoué",
     "uploadOrFetchAttachmentFailed": "Erreur lors du téléchargement de la pièce jointe",
     "fileGenerationFailed": "Le fichier n'a pas pu être généré",
-    "requestTooLarge": "Votre demande dépasse la limite de {{limit}} Mo. Si vous avez joint des fichiers multimédias, essayez de les compresser ou de les supprimer."
+    "requestTooLarge": "Votre demande dépasse la limite de {{limit}} Ko. Si vous avez joint des fichiers multimédias, essayez de les compresser ou de les supprimer.",
+    "fileTooLarge": "Le fichier dépasse la limite de {{limit}} Mo. Veuillez le compresser ou choisir un fichier plus petit."
   },
   "conferences": {
     "errors": {

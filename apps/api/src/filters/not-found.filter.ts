@@ -17,19 +17,26 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { AxiosError, AxiosResponseHeaders, InternalAxiosRequestConfig, RawAxiosResponseHeaders } from 'axios';
+import { ExceptionFilter, Catch, ArgumentsHost, Logger, NotFoundException, HttpStatus } from '@nestjs/common';
+import { Response, Request } from 'express';
 
-interface CustomAxiosError extends AxiosError {
-  response: {
-    status: number;
-    statusText: string;
-    data: {
-      message: string;
-      errorType?: string;
-    };
-    headers: RawAxiosResponseHeaders | AxiosResponseHeaders;
-    config: InternalAxiosRequestConfig;
-  };
+@Catch(NotFoundException)
+class NotFoundFilter implements ExceptionFilter {
+  private readonly logger = new Logger(NotFoundFilter.name);
+
+  catch(_exception: NotFoundException, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
+
+    this.logger.error(`Not found: ${request.method} ${request.url.split('?')[0]}`);
+
+    response.status(HttpStatus.NOT_FOUND).json({
+      statusCode: HttpStatus.NOT_FOUND,
+      message: 'Not Found',
+      error: 'Not Found',
+    });
+  }
 }
 
-export default CustomAxiosError;
+export default NotFoundFilter;

@@ -17,27 +17,27 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus, Logger, PayloadTooLargeException } from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, Logger, PayloadTooLargeException } from '@nestjs/common';
 import { Response } from 'express';
 import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
+import MAXIMUM_JSON_BODY_SIZE from '@libs/common/constants/maximumJsonBodySize';
+import sendPayloadTooLargeResponse, { PayloadTooLargeErrorType } from './sendPayloadTooLargeResponse';
 
 @Catch(PayloadTooLargeException)
 class PayloadTooLargeFilter implements ExceptionFilter {
   private readonly logger = new Logger(PayloadTooLargeFilter.name);
 
-  catch(_exception: PayloadTooLargeException, host: ArgumentsHost) {
+  catch(exception: PayloadTooLargeException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    const limitInMB = (MAXIMUM_UPLOAD_FILE_SIZE / 1024 / 1024).toFixed(2);
+    const exceptionMessage = exception.message?.toLowerCase() || '';
+    const isFileUpload = exceptionMessage.includes('file too large');
 
-    this.logger.error(`Payload too large: limit is ${limitInMB}MB`);
+    const errorType: PayloadTooLargeErrorType = isFileUpload ? 'file_upload' : 'json_body';
+    const limit = isFileUpload ? MAXIMUM_UPLOAD_FILE_SIZE : MAXIMUM_JSON_BODY_SIZE;
 
-    response.status(HttpStatus.PAYLOAD_TOO_LARGE).json({
-      statusCode: HttpStatus.PAYLOAD_TOO_LARGE,
-      message: 'Request payload is too large',
-      error: 'Payload Too Large',
-    });
+    sendPayloadTooLargeResponse(response, this.logger, errorType, limit);
   }
 }
 

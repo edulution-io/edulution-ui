@@ -225,7 +225,8 @@
     "automaticLoginFailed": "Automatischer Login fehlgeschlagen",
     "uploadOrFetchAttachmentFailed": "Fehler beim Hochladen des Anhangs",
     "fileGenerationFailed": "Datei konnte nicht generiert werden",
-    "requestTooLarge": "Deine Anfrage ist größer als {{limit}} MB. Falls du Medien angehängt hast, versuche diese zu komprimieren oder zu entfernen."
+    "requestTooLarge": "Deine Anfrage ist größer als {{limit}} KB. Falls du Medien angehängt hast, versuche diese zu komprimieren oder zu entfernen.",
+    "fileTooLarge": "Die Datei ist größer als {{limit}} MB. Bitte komprimiere die Datei oder wähle eine kleinere."
   },
   "conferences": {
     "errors": {

@@ -25,6 +25,7 @@ import i18n from '@/i18n';
 import CustomAxiosError from '@libs/error/CustomAxiosError';
 import { SHOW_TOASTER_DURATION } from '@libs/ui/constants/showToasterDuration';
 import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
+import MAXIMUM_JSON_BODY_SIZE from '@libs/common/constants/maximumJsonBodySize';
 
 /*
  * Use this function to handle errors in your store functions that do requests to the API.
@@ -45,7 +46,13 @@ const handleApiError = (error: any, set: (params: any) => void, errorName = 'err
     let errorMessage = i18n.t(axiosError.response?.data?.message) || axiosError.response?.statusText;
 
     if (error.response?.status === HttpStatusCode.PayloadTooLarge) {
-      errorMessage = i18n.t('errors.requestTooLarge', { limit: MAXIMUM_UPLOAD_FILE_SIZE / (1024 * 1024) });
+      const { errorType } = axiosError.response?.data || {};
+
+      if (errorType === 'file_upload') {
+        errorMessage = i18n.t('errors.fileTooLarge', { limit: MAXIMUM_UPLOAD_FILE_SIZE / (1024 * 1024) });
+      } else {
+        errorMessage = i18n.t('errors.requestTooLarge', { limit: MAXIMUM_JSON_BODY_SIZE / 1024 });
+      }
     }
 
     if (!displayedErrors.has(errorMessage)) {
