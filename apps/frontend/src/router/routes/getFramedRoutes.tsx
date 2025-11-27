@@ -20,11 +20,11 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
 
 const getFramedRoutes = (appConfigs: AppConfigDto[]) =>
   appConfigs
-    .filter((item) => item.appType === APP_INTEGRATION_VARIANT.FRAMED)
+    .filter((item) => item.appType === APP_INTEGRATION_VARIANT.FRAME)
     .map((item) => (
       <Route
         key={item.name}

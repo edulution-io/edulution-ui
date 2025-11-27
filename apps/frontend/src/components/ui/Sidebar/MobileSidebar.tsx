@@ -22,6 +22,7 @@ import { useOnClickOutside } from 'usehooks-ts';
 import { SidebarProps } from '@libs/ui/types/sidebar';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import cn from '@libs/common/utils/className';
+import APPLICATION_NAME from '@libs/common/constants/applicationName';
 import { HomeButton, MobileSidebarItem, UserMenuButton } from './SidebarMenuItems';
 import useSidebarStore from './useSidebarStore';
 
@@ -47,32 +48,42 @@ const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
   const sidebarHeightWithoutSpecialButtons = 'h-[calc(100%-121px)]';
 
   return (
-    <div
-      className="fixed right-0 top-0 z-[400] h-full w-full transform transition-transform duration-300 ease-in-out"
-      style={{ transform: `translateX(${isMobileSidebarOpen ? '0%' : '100%'})` }}
-    >
+    <>
       <div
-        ref={sidebarRef}
-        className={cn('fixed right-0 h-full min-w-[260px] border-l-[1px] border-muted bg-black', sidebarClassName)}
+        className="fixed bottom-0 left-0 z-[400] rounded-tr-md bg-black px-2 py-1 text-xs text-muted transition-transform duration-300 ease-in-out"
+        style={{ transform: `translateX(${isMobileSidebarOpen ? '0%' : '-100%'})` }}
       >
-        <div className="h-1" />
-
-        <HomeButton />
-
-        <div
-          className={`${sidebarHeightWithoutSpecialButtons} overflow-auto border-b-[1px] border-t-[1px] border-muted `}
-        >
-          {sidebarItems.map((item) => (
-            <MobileSidebarItem
-              key={item.link}
-              menuItem={item}
-            />
-          ))}
-        </div>
-
-        <UserMenuButton />
+        <div>v{APP_VERSION}</div>
+        <div>&copy; {APPLICATION_NAME}.</div>
       </div>
-    </div>
+
+      <div
+        className="fixed right-0 top-0 z-[400] h-full w-full transform transition-transform duration-300 ease-in-out"
+        style={{ transform: `translateX(${isMobileSidebarOpen ? '0%' : '100%'})` }}
+      >
+        <div
+          ref={sidebarRef}
+          className={cn('fixed right-0 h-full min-w-[260px] border-l-[1px] border-muted bg-black', sidebarClassName)}
+        >
+          <div className="h-1" />
+
+          <HomeButton />
+
+          <div
+            className={`${sidebarHeightWithoutSpecialButtons} overflow-auto border-b-[1px] border-t-[1px] border-muted `}
+          >
+            {sidebarItems.map((item) => (
+              <MobileSidebarItem
+                key={item.link}
+                menuItem={item}
+              />
+            ))}
+          </div>
+
+          <UserMenuButton />
+        </div>
+      </div>
+    </>
   );
 };
 

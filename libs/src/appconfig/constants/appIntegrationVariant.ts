@@ -17,20 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { Route } from 'react-router-dom';
-import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
-import NativeAppPageManager from '@/components/structure/layout/NativeAppPageManager';
+import APPS from '@libs/appconfig/constants/apps';
 
-const getNativeAppRoutes = (appConfigs: AppConfigDto[]) =>
-  appConfigs
-    .filter((item) => item.appType === APP_INTEGRATION_VARIANT.NATIVE)
-    .map((item) => (
-      <Route
-        key={item.name}
-        path={item.name}
-        element={<NativeAppPageManager page={item.name} />}
-      />
-    ));
-export default getNativeAppRoutes;
+const APP_INTEGRATION_VARIANT = {
+  NATIVE: 'native',
+  FORWARDING: APPS.FORWARDING,
+  FRAME: APPS.FRAME,
+  EMBEDDED: APPS.EMBEDDED,
+} as const;
+
+export default APP_INTEGRATION_VARIANT;
