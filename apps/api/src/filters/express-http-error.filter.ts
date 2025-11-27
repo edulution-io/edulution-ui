@@ -43,17 +43,31 @@ class ExpressHttpErrorFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    const status = exception.status || exception.statusCode || HttpStatus.INTERNAL_SERVER_ERROR;
+    const isStaticFileError =
+      exception?.message?.includes('res.sendFile') ||
+      exception?.message?.includes('path must be absolute') ||
+      request.url.startsWith('/edu-api/public/');
+
+    if (isStaticFileError) {
+      this.logger.warn(`Static file not found: ${request.method} ${request.url.split('?')[0]}`);
+
+      return response.status(404).json({
+        statusCode: 404,
+        message: 'File not found',
+        path: request.url,
+      });
+    }
 
     if (exception.name === 'PayloadTooLargeError') {
       const limit = exception.limit || MAXIMUM_JSON_BODY_SIZE;
-      sendPayloadTooLargeResponse(response, this.logger, 'json_body', limit);
-      return;
+      return sendPayloadTooLargeResponse(response, this.logger, 'json_body', limit);
     }
+
+    const status = exception.status || exception.statusCode || HttpStatus.INTERNAL_SERVER_ERROR;
 
     this.logger.error(`${exception.name}: ${request.method} ${request.url.split('?')[0]} - ${exception.message}`);
 
-    response.status(status).json({
+    return response.status(status).json({
       statusCode: status,
       message: exception.message || HttpStatus[status] || 'Internal Server Error',
       error: exception.name || 'Error',

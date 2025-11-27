@@ -36,7 +36,11 @@ class HttpExceptionFilter implements ExceptionFilter {
         ? exceptionResponse
         : (exceptionResponse as { message?: string }).message || exception.message;
 
-    this.logger.error(`${exception.name} ${status}: ${request.method} ${request.url.split('?')[0]} - ${message}`);
+    if (status >= 500) {
+      this.logger.error(`${exception.name} ${status}: ${request.method} ${request.url.split('?')[0]} - ${message}`);
+    } else {
+      this.logger.warn(`${exception.name} ${status}: ${request.method} ${request.url.split('?')[0]} - ${message}`);
+    }
 
     response.status(status).json(exceptionResponse);
   }

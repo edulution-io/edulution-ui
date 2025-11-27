@@ -29,7 +29,7 @@ class NotFoundFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    this.logger.error(`Not found: ${request.method} ${request.url.split('?')[0]}`);
+    this.logger.warn(`Not found: ${request.method} ${request.url.split('?')[0]}`);
 
     response.status(HttpStatus.NOT_FOUND).json({
       statusCode: HttpStatus.NOT_FOUND,

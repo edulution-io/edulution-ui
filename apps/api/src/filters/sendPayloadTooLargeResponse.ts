@@ -29,7 +29,7 @@ const sendPayloadTooLargeResponse = (
   limit: number,
 ) => {
   const limitInMB = (limit / 1024 / 1024).toFixed(2);
-  logger.error(`Payload too large (${errorType}): limit is ${limitInMB}MB`);
+  logger.warn(`Payload too large (${errorType}): limit is ${limitInMB}MB`);
 
   response.status(HttpStatus.PAYLOAD_TOO_LARGE).json({
     statusCode: HttpStatus.PAYLOAD_TOO_LARGE,

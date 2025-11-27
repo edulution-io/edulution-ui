@@ -21,11 +21,8 @@ import { extname } from 'path';
 import { Request } from 'express';
 import { diskStorage, MulterError } from 'multer';
 import { existsSync, mkdirSync } from 'fs';
-import { HttpStatus } from '@nestjs/common';
 import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
-import CustomHttpException from '../common/CustomHttpException';
 
 /**
  * Generates a disk storage configuration that can dynamically
@@ -63,15 +60,9 @@ export const attachmentFileFilter = (
   if (IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
     callback(null, true);
   } else {
-    callback(
-      new CustomHttpException(
-        CommonErrorMessages.INVALID_FILE_TYPE,
-        HttpStatus.UNSUPPORTED_MEDIA_TYPE,
-        undefined,
-        MulterError.name,
-      ),
-      false,
-    );
+    const err = new MulterError('LIMIT_UNEXPECTED_FILE', file.fieldname);
+    err.message = 'common.errors.invalidFileType';
+    callback(err, false);
   }
 };
 
