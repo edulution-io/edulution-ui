@@ -58,7 +58,7 @@ const RadioGroupFormField = <T extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem className={cn('space-y-3 text-background', formClassname)}>
-          <h4 className={labelClassname}>{titleTranslationId && t(titleTranslationId)}</h4>
+          <h3 className={labelClassname}>{titleTranslationId && t(titleTranslationId)}</h3>
           <FormControl>
             <RadioGroupSH
               value={field.value}

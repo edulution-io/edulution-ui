@@ -17,10 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface WorkerOutputMessage {
-  blob: Blob;
-  root: string;
-  fileCount: number;
+import RawProgressData from '@libs/filesharing/types/rawProgressData';
+
+interface UploadProgressEntry {
+  share?: string;
+  fileName?: string;
+  progress: RawProgressData;
 }
 
-export default WorkerOutputMessage;
+export default UploadProgressEntry;

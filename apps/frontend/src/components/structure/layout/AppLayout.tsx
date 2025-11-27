@@ -19,7 +19,7 @@
 
 import React, { useState } from 'react';
 import { Sidebar } from '@/components';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import MenuBar from '@/components/shared/MenuBar';
 import MobileTopBar from '@/components/shared/MobileTopBar';
@@ -32,9 +32,11 @@ import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
 import useMedia from '@/hooks/useMedia';
 import APP_LAYOUT_ID from '@libs/ui/constants/appLayoutId';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
+import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 
 const AppLayout = () => {
   const { isAuthenticated } = useUserStore();
+  const location = useLocation();
   const menuBar = useMenuBarConfig();
   const { appConfigs } = useAppConfigsStore();
   const { isEduApiHealthy } = useEduApiStore();
@@ -43,7 +45,8 @@ const AppLayout = () => {
   const [pageKey, setPageKey] = useState(0);
 
   const isAppConfigReady = !appConfigs.find((appConfig) => appConfig.name === APPS.NONE);
-  const isAuthenticatedAppReady = isAppConfigReady && isAuthenticated;
+  const isOnLoginPage = location.pathname === LOGIN_ROUTE;
+  const isAuthenticatedAppReady = isAppConfigReady && isAuthenticated && !isOnLoginPage;
 
   const showMobileTopBar = (isMobileView || isTabletView || isEdulutionApp) && isAuthenticatedAppReady;
 

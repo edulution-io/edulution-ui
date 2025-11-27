@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import APP_INTEGRATION_VARIANT from '../constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '../constants/appIntegrationVariant';
 
 type AppIntegrationType = (typeof APP_INTEGRATION_VARIANT)[keyof typeof APP_INTEGRATION_VARIANT];
 

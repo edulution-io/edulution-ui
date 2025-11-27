@@ -41,7 +41,7 @@ const Groups = () => {
       className="h-full min-h-[200px] md:min-h-[100px]"
     >
       <CardContent>
-        <h4 className="mb-6 font-bold">{t('groups.classes')}</h4>
+        <h3 className="mb-6 font-bold">{t('groups.classes')}</h3>
         <div
           className="overflow-y-auto scrollbar-thin"
           style={{ flexShrink: 0, flexGrow: 0, height: `${cardContentHeight}px` }}

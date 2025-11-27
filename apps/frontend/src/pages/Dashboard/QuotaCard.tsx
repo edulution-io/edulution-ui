@@ -28,7 +28,7 @@ const QuotaCard = () => {
   return (
     <Card variant="security">
       <CardContent>
-        <h4 className="text-md mb-6 font-bold">{t('dashboard.quota.title')}</h4>
+        <h3 className="text-md mb-6 font-bold">{t('dashboard.quota.title')}</h3>
         <div className="flex flex-col gap-2">
           <Quota />
         </div>

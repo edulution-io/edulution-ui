@@ -20,7 +20,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
+import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
@@ -31,7 +31,7 @@ const UploadFileDialog = () => {
   const { webdavShare } = useParams();
   const { currentPath } = useFileSharingStore();
   const { isUploadDialogOpen, closeUploadDialog, uploadFiles, isUploading, setFilesToUpload } =
-    useHandelUploadFileStore();
+    useHandleUploadFileStore();
 
   const { eduApiToken } = useUserStore();
   const { t } = useTranslation();
