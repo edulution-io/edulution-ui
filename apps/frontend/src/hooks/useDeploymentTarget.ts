@@ -23,8 +23,8 @@ import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 const useDeploymentTarget = () => {
   const globalSettings = useGlobalSettingsApiStore((s) => s.globalSettings);
 
-  const isLmn = globalSettings.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER;
-  const isGeneric = globalSettings.general.deploymentTarget === DEPLOYMENT_TARGET.GENERIC;
+  const isLmn = globalSettings?.general.deploymentTarget === DEPLOYMENT_TARGET.LINUXMUSTER;
+  const isGeneric = globalSettings?.general.deploymentTarget === DEPLOYMENT_TARGET.GENERIC;
 
   return { isLmn, isGeneric };
 };

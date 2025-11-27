@@ -20,51 +20,29 @@
 import React, { useEffect } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { useCookies } from 'react-cookie';
-import useLmnApiStore from '@/store/useLmnApiStore';
 import useSseStore from '@/store/useSseStore';
-import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
 import isDev from '@libs/common/constants/isDev';
 import ROOT_ROUTE from '@libs/common/constants/rootRoute';
-import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
 import COOKIE_DESCRIPTORS from '@libs/common/constants/cookieDescriptors';
 import useVersionChecker from '@/hooks/useVersionChecker';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useUploadProgressToast from '@/hooks/useUploadProgressToast';
-import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
-import EDULUTION_APP_AGENT_IDENTIFIER from '@libs/common/constants/edulutionAppAgentIdentifier';
-import useSentryStore from '@/store/useSentryStore';
-import useAppConfigsStore from '../pages/Settings/AppConfig/useAppConfigsStore';
+import useInitialAppData from '@/hooks/useInitialAppData';
+import useInitLmnApi from '@/hooks/useInitLmnApi';
 import useUserStore from '../store/UserStore/useUserStore';
-import useLogout from '../hooks/useLogout';
 import useNotifications from '../hooks/useNotifications';
 import useTokenEventListeners from '../hooks/useTokenEventListeners';
 
 const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const auth = useAuth();
-  const { getAppConfigs, getPublicAppConfigs } = useAppConfigsStore();
-  const { getGlobalSettings } = useGlobalSettingsApiStore();
-  const { getIsEduApiHealthy } = useEduApiStore();
   const { isAuthenticated, eduApiToken, setEduApiToken } = useUserStore();
-  const { lmnApiToken, setLmnApiToken } = useLmnApiStore();
   const { eventSource, setEventSource } = useSseStore();
   const [, setCookie] = useCookies([COOKIE_DESCRIPTORS.AUTH_TOKEN]);
-  const { fetchWebdavShares } = useFileSharingStore();
-  const fetchAndInitSentry = useSentryStore((s) => s.fetchAndInitSentry);
-  const { setIsEdulutionApp } = usePlatformStore();
 
-  const handleLogout = useLogout();
+  useInitialAppData(isAuthenticated);
+
+  useInitLmnApi();
 
   useUploadProgressToast();
-
-  useEffect(() => {
-    void getPublicAppConfigs();
-  }, []);
-
-  useEffect(() => {
-    const { userAgent } = navigator;
-    const isEdulutionApp = userAgent.includes(EDULUTION_APP_AGENT_IDENTIFIER);
-    setIsEdulutionApp(isEdulutionApp);
-  }, []);
 
   useEffect(() => {
     if (auth.user?.access_token) {
@@ -90,31 +68,6 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   useNotifications();
 
   useVersionChecker();
-
-  useEffect(() => {
-    const getInitialAppData = async () => {
-      const isApiResponding = await getIsEduApiHealthy();
-      if (isApiResponding) {
-        void getGlobalSettings();
-        void getAppConfigs();
-        void fetchWebdavShares();
-        void fetchAndInitSentry();
-
-        return;
-      }
-      void handleLogout();
-    };
-
-    if (isAuthenticated) {
-      void getInitialAppData();
-    }
-  }, [isAuthenticated]);
-
-  useEffect(() => {
-    if (isAuthenticated && !lmnApiToken) {
-      void setLmnApiToken();
-    }
-  }, [isAuthenticated]);
 
   useTokenEventListeners();
 

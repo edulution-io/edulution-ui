@@ -97,7 +97,7 @@ const PrintPasswordsPage: React.FC = () => {
             key={row.name}
             className="mt-4 min-w-full"
           >
-            <h4 className="text-background">{t(`classmanagement.printPasswords`)}</h4>
+            <h3 className="text-background">{t(`classmanagement.printPasswords`)}</h3>
             <ClassList
               row={row}
               selectedClasses={selectedClasses}

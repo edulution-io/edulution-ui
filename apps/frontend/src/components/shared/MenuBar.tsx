@@ -123,7 +123,7 @@ const MenuBar: React.FC = () => {
             alt={menuBarEntries.title}
             className="h-20 w-20 object-contain"
           />
-          <h3 className="mb-4 mt-4 text-center font-bold">{menuBarEntries.title}</h3>
+          <h2 className="mb-4 mt-4 text-center font-bold">{menuBarEntries.title}</h2>
         </button>
       </div>
       <MenubarMenu>

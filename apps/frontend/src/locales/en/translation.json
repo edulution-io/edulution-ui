@@ -108,7 +108,9 @@
     "dropIconDescription": "Drag an image here or click to select an image. Supported formats: SVG, WEBP"
   },
   "forwarding": {
-    "sidebar": "Forwarding"
+    "sidebar": "Forwarding",
+    "behaviorAtSidebarClick": "Quick access when opening the app",
+    "forwardDirectly": "Forward directly when opening the app (if disabled, the user must confirm with another click)"
   },
   "frame": {
     "sidebar": "Frame"
@@ -214,7 +216,13 @@
       "mailAddress": "E-Mail address",
       "noMailConfigured": "E-Mail app is not active. Please contact your system administrator.",
       "syncAccountAdded": "Account for sync job added.",
-      "syncAccountDeleted": "Account for sync job deleted."
+      "syncAccountDeleted": "Account for sync job deleted.",
+      "confirmMultiDeleteSyncJob": "Are you sure you want to delete these sync jobs? This action cannot be undone.",
+      "confirmSingleDeleteSyncJob": "Are you sure you want to delete this sync job? This action cannot be undone.",
+      "deleteSyncJobs": "Delete {{count}} Sync Jobs",
+      "deleteSyncJob": "Delete Sync Job",
+      "confirmDeleteProviderConfig": "Are you sure you want to delete this mail provider configuration? This action cannot be undone.",
+      "deleteProviderConfig": "Delete Mail Provider Configuration"
     }
   },
   "chat": {
@@ -501,6 +509,8 @@
     "detailsprinters": "Details of printer",
     "classes": "Classes",
     "name": "Name",
+    "confirmDeleteGroup": "Are you sure you want to delete this group? This action cannot be undone.",
+    "deleteGroup": "Delete {{type}}",
     "project": {
       "createSuccess": "Project created successfully",
       "updateSuccess": "Project updated successfully",
@@ -672,6 +682,11 @@
       "fileUploadError": "Error on file upload, please retry later.",
       "fileDeletionSuccess": "Deleted the file successfully.",
       "saveSurveySuccess": "Saved the survey.",
+      "surveyPlaceHolder": "Click the \"Add Question\" button below to start creating your form.",
+      "surveyPlaceholderDescription": "Click the \"Add Question\" button below to start creating your form.",
+      "surveyPlaceholderDescriptionMobile": "Click the \"Add Question\" button below to start creating your form.",
+      "pagePlaceHolder": "Click the \"Add Question\" button below to add a new element to the page.",
+      "panelPlaceHolder": "Click on the \"Add Question\" below to add a new element to the panel.",
       "reset": "Reset",
       "addDescription": "Add a description",
       "expectingUserInput": "Expecting the user to answer here, ... ",
@@ -944,8 +959,8 @@
       "linuxmuster": "Here you can make all the settings.",
       "whiteboard": "Here you can make all the settings.",
       "bulletinboard": "Configure the user groups that have access to the Info Board app here. The categories can be used to control which messages are displayed to users.",
-      "forwarded": "Forwarding: Simply enter the link to the web application under URL.",
-      "framed": "Frame: Simply enter the link to the web application under URL.",
+      "forwarding": "Forwarding: Simply enter the link to the web application under URL.",
+      "frame": "Frame: Simply enter the link to the web application under URL.",
       "embedded": "Embedded: Here you can create your own web application in the editor."
     },
     "globalSettings": {
@@ -1031,6 +1046,8 @@
         "title": "Sorting",
         "description": "At which position should the app be displayed in the app bar and in the settings?"
       },
+      "deleteEntries": "Delete {{count}} Entries",
+      "confirmDeleteEntries": "Are you sure you want to delete these entries? This action cannot be undone.",
       "sections": {
         "onlyOffice": {
           "title": "Only Office Integration",
@@ -1054,7 +1071,11 @@
         },
         "docker": {
           "title": "Docker Applications",
-          "description": "To be able to use the extended services, the required container applications must be started here."
+          "description": "To be able to use the extended services, the required container applications must be started here.",
+          "confirmMultiDeleteContainer": "Are you sure you want to delete these containers? This action cannot be undone.",
+          "confirmSingleDeleteContainer": "Are you sure you want to delete this container? This action cannot be undone.",
+          "deleteContainers": "Delete {{count}} Containers",
+          "deleteContainer": "Delete Container"
         },
         "veyon": {
           "title": "Veyon Proxy",
@@ -1196,7 +1217,12 @@
       "enterSavePin": "Please enter your safe PIN.",
       "wrongSafePin": "Wrong PIN Number",
       "enterSafePin": "Please enter your PIN number for decryption",
-      "safePinDescription": "A PIN is required to encrypt the access data. This PIN isn't visible for anyone else and is not saved."
+      "safePinDescription": "A PIN is required to encrypt the access data. This PIN isn't visible for anyone else and is not saved.",
+      "confirmMultiDeleteAccount": "Are you sure you want to delete these accounts? This action cannot be undone.",
+      "confirmSingleDeleteAccount": "Are you sure you want to delete this account? This action cannot be undone.",
+      "deleteUserAccounts": "Delete {{count}} Accounts",
+      "deleteUserAccount": "Delete Account",
+      "cryptoNotAvailable": "Encryption is only available over HTTPS. Please use a secure connection."
     },
     "mails": {
       "title": "E-Mail"
@@ -1245,7 +1271,7 @@
   },
   "forwardingpage": {
     "action": "This link will take you to the external site of the provider.",
-    "description": "The application opens in a new window. No further authorization is required.",
+    "description": "The application opens in a new window.",
     "missing_link": "Missing link"
   },
   "menu": "Menu",
@@ -1294,6 +1320,7 @@
     "share": "Share",
     "answers": "Answers",
     "error": "Error",
+    "entry": "Entry {{index}}",
     "errors": {
       "dbAccessFailed": "Database access failed",
       "directoryNotCreated": "Failed to create directory",
@@ -1430,7 +1457,7 @@
     "pathDescription": "Please enter a valid URL.",
     "apptype": "App type",
     "native": "Native Support",
-    "forwarded": "Forwarded",
+    "forwarding": "Forwarded",
     "embedded": "Embedded",
     "saved": "Configuration saved!",
     "url": "URL",
@@ -1470,7 +1497,9 @@
     "lastModified": "Last Modified",
     "type": "Type",
     "isShared": "Shared",
-    "filesOrFoldersSelected": "{{selected}} of {{total}} file(s)/folder(s) were selected"
+    "filesOrFoldersSelected": "{{selected}} of {{total}} file(s)/folder(s) were selected",
+    "element": "Element",
+    "elements": "Elements"
   },
   "filesharingUpload": {
     "title": "Upload Files",
@@ -1493,7 +1522,16 @@
     "cannotUploadOversized": "Files larger than 50 MB cannot be uploaded.",
     "addFiles": "Add files",
     "addFolder": "Add folder",
-    "preparingFolder": "Preparing folder"
+    "preparingFolder": "Preparing folder",
+    "file": "File",
+    "files": "Files",
+    "creatingDirectoryStructure": "Creating directory structure",
+    "hiddenFiles": "hidden & system files",
+    "errors": {
+      "directoryCreationFailed": "Failed to create directory",
+      "fileUploadFailed": "Failed to upload file",
+      "uploadError": "Error uploading files"
+    }
   },
   "warnings": {
     "colorMayConflictWithTheme": "Manual setting of the color can lead to problems with other themes (light/dark) in the future. It is recommended to always set the color of the font at the same time as the background color."

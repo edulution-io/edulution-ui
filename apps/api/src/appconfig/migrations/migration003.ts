@@ -19,7 +19,7 @@
 
 /* eslint-disable no-underscore-dangle */
 import { Logger } from '@nestjs/common';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
 import { Migration } from '../../migration/migration.type';
 import { AppConfig } from '../appconfig.schema';
 
@@ -47,8 +47,7 @@ const migration003: Migration<AppConfig> = {
             { _id: doc._id },
             {
               $set: {
-                appType:
-                  doc.appType === APP_INTEGRATION_VARIANT.EMBEDDED ? APP_INTEGRATION_VARIANT.FRAMED : doc.appType,
+                appType: doc.appType === APP_INTEGRATION_VARIANT.EMBEDDED ? APP_INTEGRATION_VARIANT.FRAME : doc.appType,
                 schemaVersion: newSchemaVersion,
               },
             },

@@ -90,7 +90,7 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
         >
           <AccordionItem value="general">
             <AccordionTrigger className="flex">
-              <h4>{t('settings.globalSettings.general')}</h4>
+              <h3>{t('settings.globalSettings.general')}</h3>
             </AccordionTrigger>
 
             <AccordionContent className="space-y-2 px-1 text-p">
@@ -111,7 +111,7 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
 
           <AccordionItem value="security">
             <AccordionTrigger className="flex">
-              <h4>{t('settings.globalSettings.multiFactorAuthentication')}</h4>
+              <h3>{t('settings.globalSettings.multiFactorAuthentication')}</h3>
             </AccordionTrigger>
             <AccordionContent className="space-y-2 px-1">
               <p className="text-background">{t('settings.globalSettings.mfaDescription')}</p>
@@ -139,14 +139,14 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
 
           <AccordionItem value="ldap">
             <AccordionTrigger className="flex">
-              <h4>{t('settings.globalSettings.ldap.title')}</h4>
+              <h3>{t('settings.globalSettings.ldap.title')}</h3>
             </AccordionTrigger>
             <LdapSettings form={form} />
           </AccordionItem>
 
           <AccordionItem value="branding">
             <AccordionTrigger className="flex">
-              <h4>{t('settings.globalSettings.branding.title')}</h4>
+              <h3>{t('settings.globalSettings.branding.title')}</h3>
             </AccordionTrigger>
 
             <AccordionContent className="space-y-2 px-1">
@@ -166,14 +166,14 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
 
           <AccordionItem value="theme">
             <AccordionTrigger className="flex">
-              <h4>{t('settings.globalSettings.theme.title')}</h4>
+              <h3>{t('settings.globalSettings.theme.title')}</h3>
             </AccordionTrigger>
             <ThemeSettings form={form} />
           </AccordionItem>
 
           <AccordionItem value="organisationInfo">
             <AccordionTrigger className="flex">
-              <h4>{t('settings.globalSettings.organisationInfo.title')}</h4>
+              <h3>{t('settings.globalSettings.organisationInfo.title')}</h3>
             </AccordionTrigger>
             <AddOrganisationInfo form={form} />
           </AccordionItem>

@@ -17,11 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const APP_INTEGRATION_VARIANT = {
-  NATIVE: 'native',
-  FORWARDED: 'forwarded',
-  FRAMED: 'framed',
-  EMBEDDED: 'embedded',
-} as const;
+import { Module } from '@nestjs/common';
+import MobileAppService from './mobileApp.service';
+import MobileAppController from './mobileApp.controller';
+import LmnApiModule from '../lmnApi/lmnApi.module';
 
-export default APP_INTEGRATION_VARIANT;
+@Module({
+  imports: [LmnApiModule],
+  controllers: [MobileAppController],
+  providers: [MobileAppService],
+})
+export default class MobileAppModule {}

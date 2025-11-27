@@ -57,7 +57,7 @@ const UserAdministration = ({ form, onSubmit }: UserAdministrationProps<GlobalSe
     >
       <AccordionItem value="reset-mfa">
         <AccordionTrigger className="flex">
-          <h4>{t('settings.userAdministration.resetMfaForm')}</h4>
+          <h3>{t('settings.userAdministration.resetMfaForm')}</h3>
         </AccordionTrigger>
         <AccordionContent>
           <ResetMfaForm />
@@ -67,7 +67,7 @@ const UserAdministration = ({ form, onSubmit }: UserAdministrationProps<GlobalSe
         <form onSubmit={handleSubmit(onSubmit)}>
           <AccordionItem value="setAdminGroup">
             <AccordionTrigger className="flex">
-              <h4>{t('settings.userAdministration.setAdminGroupTitle')}</h4>
+              <h3>{t('settings.userAdministration.setAdminGroupTitle')}</h3>
             </AccordionTrigger>
             <AccordionContent className="space-y-2 px-1">
               <p className="text-background">{t('settings.userAdministration.setAdminGroupDescription')}</p>

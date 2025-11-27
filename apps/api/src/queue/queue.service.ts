@@ -29,7 +29,6 @@ import DeleteFileConsumer from '../filesharing/consumers/deleteFile.consumer';
 import MoveOrRenameConsumer from '../filesharing/consumers/moveOrRename.consumer';
 import CopyFileConsumer from '../filesharing/consumers/copyFile.consumer';
 import CreateFolderConsumer from '../filesharing/consumers/createFolder.consumer';
-import UploadFileConsumer from '../filesharing/consumers/uploadFile.consumer';
 import redisConnection from '../common/redis.connection';
 
 @Injectable()
@@ -45,7 +44,6 @@ class QueueService implements OnModuleInit {
     private readonly moveOrRenameFileConsumer: MoveOrRenameConsumer,
     private readonly copyFileConsumer: CopyFileConsumer,
     private readonly createFolderConsumer: CreateFolderConsumer,
-    private readonly uploadFileConsumer: UploadFileConsumer,
   ) {}
 
   async onModuleInit() {
@@ -129,9 +127,6 @@ class QueueService implements OnModuleInit {
         break;
       case JOB_NAMES.CREATE_FOLDER_JOB:
         await this.createFolderConsumer.process(job);
-        break;
-      case JOB_NAMES.FILE_UPLOAD_JOB:
-        await this.uploadFileConsumer.process(job);
         break;
       default:
     }
