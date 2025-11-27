@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
@@ -95,6 +102,63 @@ describe('LmnApiService', () => {
     service = module.get<LmnApiService>(LmnApiService);
     usersService = module.get<UsersService>(UsersService);
     requestSpy = jest.spyOn<any, any>(service, 'request');
+  });
+
+  describe('getLmnApiToken', () => {
+    it('should get password from usersService and call auth endpoint with basic auth', async () => {
+      const username = 'testuser';
+      const password = 'testpassword';
+      const expectedToken = 'mock-api-token-12345';
+
+      jest.spyOn(usersService, 'getPassword').mockResolvedValue(password);
+
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      const axiosGetSpy = jest.spyOn<any, any>(service['lmnApi'], 'get').mockResolvedValue({
+        data: expectedToken,
+      });
+
+      const result = await service.getLmnApiToken(username);
+
+      expect(usersService.getPassword).toHaveBeenCalledWith(username);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      expect(axiosGetSpy).toHaveBeenCalledWith('/auth/', {
+        auth: { username, password },
+        timeout: 10_000,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        validateStatus: expect.any(Function),
+      });
+      expect(result).toBe(expectedToken);
+    });
+
+    it('should return empty string with space if token is not returned', async () => {
+      const username = 'testuser';
+      const password = 'testpassword';
+
+      jest.spyOn(usersService, 'getPassword').mockResolvedValue(password);
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      jest.spyOn<any, any>(service['lmnApi'], 'get').mockResolvedValue({
+        data: '',
+      });
+
+      const result = await service.getLmnApiToken(username);
+
+      expect(result).toBe(' ');
+    });
+
+    it('should return empty string with space if token is null', async () => {
+      const username = 'testuser';
+      const password = 'testpassword';
+
+      jest.spyOn(usersService, 'getPassword').mockResolvedValue(password);
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      jest.spyOn<any, any>(service['lmnApi'], 'get').mockResolvedValue({
+        data: null,
+      });
+
+      const result = await service.getLmnApiToken(username);
+
+      expect(result).toBe(' ');
+    });
   });
 
   describe('printPasswords', () => {

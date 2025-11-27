@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { HttpStatus, Injectable } from '@nestjs/common';
@@ -58,7 +65,7 @@ class LmnApiService {
   private readonly requestTimeout = +(process.env.LMN_API_TIMEOUT_MS ?? 15000);
 
   constructor(
-    private readonly userService: UsersService,
+    private readonly usersService: UsersService,
     private readonly ldapKeycloakSyncService: LdapKeycloakSyncService,
     private readonly lmnApiQueue: LmnApiRequestQueue,
   ) {
@@ -97,14 +104,15 @@ class LmnApiService {
     }
   }
 
-  public async getLmnApiToken(username: string, password: string): Promise<string> {
-    const resp = await this.lmnApi.get('/auth/', {
+  public async getLmnApiToken(username: string): Promise<string> {
+    const password = await this.usersService.getPassword(username);
+    const { data } = await this.lmnApi.get<string>('/auth/', {
       auth: { username, password },
       timeout: 10_000,
       validateStatus: () => true,
     });
 
-    return (resp.data as string) || ' ';
+    return data || ' ';
   }
 
   public async startExamMode(lmnApiToken: string, users: string[]): Promise<unknown> {
@@ -728,7 +736,7 @@ class LmnApiService {
   ): Promise<null> {
     if (!bypassSecurityCheck) {
       const oldPassword = decodeBase64Api(oldPasswordEncoded);
-      const currentPassword = await this.userService.getPassword(username);
+      const currentPassword = await this.usersService.getPassword(username);
 
       if (oldPassword !== currentPassword) {
         throw new CustomHttpException(
