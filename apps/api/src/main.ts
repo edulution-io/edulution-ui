@@ -62,11 +62,11 @@ async function bootstrap() {
   app.use(helmet());
 
   app.useGlobalFilters(
-    new MulterExceptionFilter(),
+    new ExpressHttpErrorFilter(),
+    new HttpExceptionFilter(),
     new PayloadTooLargeFilter(),
     new NotFoundFilter(),
-    new HttpExceptionFilter(),
-    new ExpressHttpErrorFilter(),
+    new MulterExceptionFilter(),
   );
 
   app.useWebSocketAdapter(new WsAdapter(app));
