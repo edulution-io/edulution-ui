@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { HttpStatus, Injectable } from '@nestjs/common';
@@ -22,7 +29,6 @@ import JOB_NAMES from '@libs/queue/constants/jobNames';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
-import { createWriteStream } from 'fs';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import ContentType from '@libs/filesharing/types/contentType';
@@ -31,15 +37,10 @@ import FILE_ACCESS_RESULT from '@libs/filesharing/constants/fileAccessResult';
 import checkFileAccessRights from '@libs/filesharing/utils/checkFileAccessRights';
 import CreateOrEditPublicShareDto from '@libs/filesharing/types/createOrEditPublicShareDto';
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import PublicShareResponseDto from '@libs/filesharing/types/publicShareResponseDto';
 import PUBLIC_SHARE_LINK_SCOPE from '@libs/filesharing/constants/publicShareLinkScope';
 import CustomFile from '@libs/filesharing/types/customFile';
-import { lookup } from 'mime-types';
-import unzipper, { Entry } from 'unzipper';
-import { join } from 'path';
-import { tmpdir } from 'os';
-import { pipeline } from 'stream/promises';
 import { PublicShare, PublicShareDocument } from './publicFileShare.schema';
 import UsersService from '../users/users.service';
 import WebdavService from '../webdav/webdav.service';
@@ -62,75 +63,6 @@ class FilesharingService {
     private readonly webdavSharesService: WebdavSharesService,
   ) {}
 
-  async uploadZippedFolderStream(
-    username: string,
-    parentPath: string,
-    folderName: string,
-    zipStream: Readable,
-    share: string,
-  ): Promise<WebdavStatusResponse> {
-    const destinationFolderPath = `${parentPath}/${folderName}`;
-    await this.webDavService.ensureFolderExists(username, parentPath, folderName, share);
-
-    const zipEntryStream = zipStream.pipe(unzipper.Parse());
-    const directoryPaths = new Set<string>();
-    const fileJobPromises: Promise<void>[] = [];
-
-    await new Promise<void>((resolve, reject) => {
-      zipEntryStream
-        .on('entry', (zipEntry: Entry) => {
-          if (zipEntry.type === 'Directory') {
-            directoryPaths.add(zipEntry.path);
-            zipEntry.autodrain();
-            return;
-          }
-          zipEntry.path
-            .split('/')
-            .slice(0, -1)
-            .reduce((accumulatedPath, pathSegment) => {
-              const nextDirectoryPath = `${accumulatedPath}${pathSegment}/`;
-              directoryPaths.add(nextDirectoryPath);
-              return nextDirectoryPath;
-            }, '');
-
-          const fullWebDavFilePath = `${destinationFolderPath}/${zipEntry.path}`;
-          const detectedMimeType = lookup(zipEntry.path) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
-          const tmpPath = join(tmpdir(), crypto.randomUUID());
-          const writePromise = pipeline(zipEntry, createWriteStream(tmpPath));
-          fileJobPromises.push(
-            writePromise.then(() =>
-              this.dynamicQueueService.addJobForUser(username, JOB_NAMES.FILE_UPLOAD_JOB, {
-                username,
-                fullPath: fullWebDavFilePath,
-                tempPath: tmpPath,
-                mimeType: detectedMimeType,
-                total: 0,
-                processed: 0,
-                share,
-              }),
-            ),
-          );
-        })
-        .once('error', (err) => reject(err))
-        .once('close', () => resolve());
-    });
-    const sortedDirs = Array.from(directoryPaths).sort((a, b) => a.length - b.length);
-    await Promise.all(
-      sortedDirs.map((folderPath, idx) =>
-        this.dynamicQueueService.addJobForUser(username, JOB_NAMES.CREATE_FOLDER_JOB, {
-          username,
-          basePath: destinationFolderPath,
-          folderPath,
-          total: sortedDirs.length,
-          processed: idx + 1,
-          share,
-        }),
-      ),
-    );
-    await Promise.all(fileJobPromises);
-    return { success: true, status: HttpStatus.CREATED, filename: folderName };
-  }
-
   private static resolveFileSize(req: Request, fileSize: number): number | undefined {
     const incomingLen = Number(req.headers[HTTP_HEADERS.ContentLength] || 0);
     if (Number.isFinite(incomingLen) && incomingLen > 0) return incomingLen;
@@ -138,22 +70,10 @@ class FilesharingService {
     return undefined;
   }
 
-  async uploadFileViaWebDav(
-    username: string,
-    path: string,
-    name: string,
-    req: Request,
-    share: string,
-    isZippedFolder = false,
-    fileSize = 0,
-  ) {
+  async uploadFileViaWebDav(username: string, path: string, name: string, req: Request, share: string, fileSize = 0) {
     const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
     const basePath = getPathWithoutWebdav(path, webdavShare.pathname);
     const fullPath = `${basePath.replace(/\/+$/, '')}/${name.replace(/^\/+/, '')}`;
-
-    if (isZippedFolder) {
-      return this.uploadZippedFolderStream(username, basePath, name, req, share);
-    }
 
     const contentType =
       (req.headers[HTTP_HEADERS.ContentType] as string) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
@@ -333,7 +253,7 @@ class FilesharingService {
         return { success: false, status: HttpStatus.INTERNAL_SERVER_ERROR };
       }
 
-      const publicShareId = uuidv4();
+      const publicShareId = randomUUID();
       const newShare = await this.shareModel.create({
         publicShareId,
         etag,

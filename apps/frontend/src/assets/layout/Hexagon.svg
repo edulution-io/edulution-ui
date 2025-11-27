@@ -6,7 +6,7 @@
     </clipPath>
     <linearGradient id="hexagon-gradient" x1="-176.63" y1="510.55" x2="-175.15" y2="510.55" gradientTransform="translate(58069.09 168062.02) scale(328.77 -328.77)" gradientUnits="userSpaceOnUse">
       <stop offset="0" stopColor="var(--ci-light-green)"/>
-      <stop offset="1" stopColor="var(--ci-light-blue)"/>
+      <stop offset="1" stopColor="var(--ci-dark-blue)"/>
     </linearGradient>
   </defs>
   <g clipPath="url(#hexagon-clippath)">

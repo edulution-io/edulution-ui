@@ -1,16 +1,23 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, FormMessage } from '@/components/ui/Form';
 import { UseFormReturn } from 'react-hook-form';
@@ -31,20 +38,6 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
   const { t } = useTranslation();
   const { uploadAttachment, categoriesWithEditPermission, isGetCategoriesLoading } = useBulletinBoardEditorialStore();
   const { setValue, watch, formState } = form;
-
-  const isVisibilityDateSet = !!watch('isVisibleStartDate') || !!watch('isVisibleEndDate');
-  const [isPermanentlyActive, setIsPermanentlyActive] = useState<boolean>(!isVisibilityDateSet);
-
-  useEffect(() => {
-    setIsPermanentlyActive(!isVisibilityDateSet);
-  }, [isVisibilityDateSet]);
-
-  useEffect(() => {
-    if (isPermanentlyActive) {
-      setValue('isVisibleStartDate', null);
-      setValue('isVisibleEndDate', null);
-    }
-  }, [isPermanentlyActive]);
 
   const handleCategoryChange = (categoryName: string) => {
     form.setValue(
@@ -98,30 +91,26 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
           />
 
           {isActive && (
-            <DialogSwitch
-              translationId="bulletinboard.isPermanentlyActive"
-              checked={isPermanentlyActive}
-              onCheckedChange={(isChecked) => {
-                setIsPermanentlyActive(isChecked);
-              }}
-            />
-          )}
-
-          {isActive && !isPermanentlyActive && (
-            <>
-              <DateTimePickerField
-                form={form}
-                path="isVisibleStartDate"
-                translationId="bulletinboard.activeFrom"
-                variant="dialog"
-              />
-              <DateTimePickerField
-                form={form}
-                path="isVisibleEndDate"
-                translationId="bulletinboard.activeUntil"
-                variant="dialog"
-              />
-            </>
+            <div className="flex gap-4">
+              <div className="w-1/2">
+                <DateTimePickerField
+                  form={form}
+                  path="isVisibleStartDate"
+                  translationId="bulletinboard.activeFrom"
+                  variant="dialog"
+                  placeholder={t('bulletinboard.activeFromPlaceholder')}
+                />
+              </div>
+              <div className="w-1/2">
+                <DateTimePickerField
+                  form={form}
+                  path="isVisibleEndDate"
+                  translationId="bulletinboard.activeUntil"
+                  variant="dialog"
+                  placeholder={t('bulletinboard.activeUntilPlaceholder')}
+                />
+              </div>
+            </div>
           )}
         </div>
 

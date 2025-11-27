@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React from 'react';
@@ -41,6 +48,7 @@ import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharing
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
+import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
@@ -103,7 +111,20 @@ const getFileSharingTableColumns = (
           if (row.original.type === ContentType.DIRECTORY) {
             if (isFilePreviewDocked) setIsFilePreviewVisible(false);
             const newParams = new URLSearchParams(searchParams);
-            newParams.set(URL_SEARCH_PARAMS.PATH, row.original.filePath);
+
+            if (row.original.filePath === PARENT_FOLDER_PATH) {
+              const currentPath = searchParams.get(URL_SEARCH_PARAMS.PATH) || '/';
+              const hadTrailingSlash = currentPath.endsWith('/') && currentPath !== '/';
+              const pathParts = currentPath.split('/').filter(Boolean);
+              let parentPath = pathParts.length > 1 ? `/${pathParts.slice(0, -1).join('/')}` : '/';
+              if (hadTrailingSlash && parentPath !== '/') {
+                parentPath += '/';
+              }
+              newParams.set(URL_SEARCH_PARAMS.PATH, parentPath);
+            } else {
+              newParams.set(URL_SEARCH_PARAMS.PATH, row.original.filePath);
+            }
+
             setSearchParams(newParams);
             return;
           }
@@ -189,6 +210,10 @@ const getFileSharingTableColumns = (
       },
       accessorFn: (row) => row.lastmod,
       cell: ({ row }) => {
+        if (row.original.filePath === PARENT_FOLDER_PATH) {
+          return null;
+        }
+
         const directoryFile = row.original;
         let formattedDate: string;
 
@@ -222,6 +247,10 @@ const getFileSharingTableColumns = (
         translationId: 'fileSharingTable.size',
       },
       cell: ({ row }) => {
+        if (row.original.filePath === PARENT_FOLDER_PATH) {
+          return null;
+        }
+
         let fileSize = 0;
         if (row.original.size !== undefined) {
           fileSize = row.original.size;
@@ -243,6 +272,10 @@ const getFileSharingTableColumns = (
       },
 
       cell: ({ row }) => {
+        if (row.original.filePath === PARENT_FOLDER_PATH) {
+          return null;
+        }
+
         const { t } = useTranslation();
 
         const renderFileCategorize = (item: DirectoryFileDTO) => {
