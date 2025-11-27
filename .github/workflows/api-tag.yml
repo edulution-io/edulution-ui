@@ -1,58 +1,32 @@
-name: Release API Container
+name: CI API for building the container
 
 on:
+  push:
+    tags:
+      - v*.*.*
   workflow_dispatch:
 
 jobs:
   prepare:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 1
-    permissions:
-      contents: write
 
     outputs:
       docker-tags: ${{ steps.generate_docker_tags.outputs.docker_tags }}
-      version: ${{ steps.get_version.outputs.version }}
 
     steps:
-      - uses: actions/create-github-app-token@v2.1.4
-        id: app-token
-        with:
-          app-id: ${{ vars.VERSION_BUMPER_APPID }}
-          private-key: ${{ secrets.VERSION_BUMPER_SECRET }}
-
-      - uses: actions/checkout@v4.2.2
-        with:
-          token: ${{ steps.app-token.outputs.token }}
-
-      - name: Get version from package.json
-        id: get_version
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          echo "version=v$VERSION" >> $GITHUB_OUTPUT
-
-      - name: Configure Git
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-
-      - name: Create and push tag
-        env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          git tag -a "v$VERSION" -m "Release v$VERSION"
-          git push origin "v$VERSION"
-
       - id: generate_docker_tags
         run: |
-          VERSION=$(node -p "require('./package.json').version")
           docker_registry_path="ghcr.io/edulution-io/edulution-api"
-          docker_tags="$docker_registry_path:v$VERSION,$docker_registry_path:latest"
+          docker_tags="$docker_registry_path:$(echo ${{ github.ref }} | cut -d'/' -f3- | sed 's/[^a-z0-9_-]/-/gi')"
+          if [[ ${{ github.ref }} = 'refs/heads/master' ]] || [[ ${{ github.ref }} =~ ^refs/tags/v.*$ ]]
+          then
+            docker_tags+=",$docker_registry_path:latest"
+          fi
           echo "docker_tags=$docker_tags" >> $GITHUB_OUTPUT
 
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     needs: prepare
     timeout-minutes: 10
 
