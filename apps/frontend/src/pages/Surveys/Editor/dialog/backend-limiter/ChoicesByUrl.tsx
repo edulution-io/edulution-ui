@@ -32,6 +32,7 @@ import ChoicesWithBackendLimitsShowOtherItem from '@/pages/Surveys/Editor/dialog
 import ChoicesWithBackendLimitTableColumns from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitTableColumns';
 import Switch from '@/components/ui/Switch';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
+import TSurveyPage from '@libs/survey/types/TSurveyPage';
 
 interface ChoicesByUrlProps {
   form: UseFormReturn<SurveyDto>;
@@ -74,155 +75,179 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     form.setValue('backendLimiters', updatedBackendLimits);
   }, [currentChoices]);
 
-  const getNestedQuestion = (partialFormula: TSurveyElement, questionsNames: string[]): TSurveyElement => {
-    // eslint-disable-next-line no-console
-    console.log('getNestedQuestion()', questionsNames, 'partialFormula:', partialFormula);
+  // const getNestedQuestion = (partialFormula: TSurveyElement, questionsNames: string[]): TSurveyElement => {
+  //   // eslint-disable-next-line no-console
+  //   console.log('getNestedQuestion()', questionsNames, 'partialFormula:', partialFormula);
 
-    const currentQuestionName = questionsNames.pop();
-    if (partialFormula.elements && partialFormula.elements.length > 0) {
-      const nextQuestionFormula = partialFormula.elements.find((el) => el.name === currentQuestionName);
+  //   const currentQuestionName = questionsNames.pop();
+  //   if (partialFormula.elements && partialFormula.elements.length > 0) {
+  //     const nextQuestionFormula = partialFormula.elements.find((el) => el.name === currentQuestionName);
 
-      // eslint-disable-next-line no-console
-      console.log(questionsNames, 'getNestedQuestion::nextQuestionFormula:', nextQuestionFormula);
+  //     // eslint-disable-next-line no-console
+  //     console.log(questionsNames, 'getNestedQuestion::nextQuestionFormula:', nextQuestionFormula);
 
-      return getNestedQuestion(nextQuestionFormula as TSurveyElement, questionsNames);
-    }
-    if (partialFormula.templateElements && partialFormula.templateElements.length > 0) {
-      const nextQuestionFormula = partialFormula.templateElements.find((el) => el.name === currentQuestionName);
+  //     return getNestedQuestion(nextQuestionFormula as TSurveyElement, questionsNames);
+  //   }
+  //   if (partialFormula.templateElements && partialFormula.templateElements.length > 0) {
+  //     const nextQuestionFormula = partialFormula.templateElements.find((el) => el.name === currentQuestionName);
 
-      // eslint-disable-next-line no-console
-      console.log(questionsNames, 'getNestedQuestion::nextQuestionFormula:', nextQuestionFormula);
+  //     // eslint-disable-next-line no-console
+  //     console.log(questionsNames, 'getNestedQuestion::nextQuestionFormula:', nextQuestionFormula);
 
-      return getNestedQuestion(nextQuestionFormula as TSurveyElement, questionsNames);
-    }
-    return partialFormula;
-  };
+  //     return getNestedQuestion(nextQuestionFormula as TSurveyElement, questionsNames);
+  //   }
+  //   return partialFormula;
+  // };
 
-  const getNestedQuestionPath = (
-    formula: SurveyFormula,
-    currentQuestion: TSurveyQuestion,
-    formerQuestionsNames: string[],
-  ): TSurveyElement => {
-    // eslint-disable-next-line no-console
-    console.log(
-      'getNestedQuestionPath() formula',
-      formula,
-      'currentQuestion:',
-      currentQuestion,
-      'Questions Names:',
-      formerQuestionsNames,
-    );
+  // const getNestedQuestionPath = (
+  //   formula: SurveyFormula,
+  //   currentQuestion: TSurveyQuestion,
+  //   formerQuestionsNames: string[],
+  // ): TSurveyElement => {
+  //   // eslint-disable-next-line no-console
+  //   console.log(
+  //     'getNestedQuestionPath() formula',
+  //     formula,
+  //     'currentQuestion:',
+  //     currentQuestion,
+  //     'Questions Names:',
+  //     formerQuestionsNames,
+  //   );
 
-    if (currentQuestion.hasParent) {
-      const { parent, parentQuestion } = currentQuestion;
+  //   if (currentQuestion.hasParent) {
+  //     const { parent, parentQuestion } = currentQuestion;
 
-      // problem for dynamic panels are both defined
-      // problem for dynamic panels are both defined
-      // problem for dynamic panels are both defined
+  //     // problem for dynamic panels are both defined
+  //     // problem for dynamic panels are both defined
+  //     // problem for dynamic panels are both defined
 
-      if (parent?.isPanel && !parentQuestion) {
-        formerQuestionsNames.push(currentQuestion.name);
-        // eslint-disable-next-line no-console
-        console.log(formerQuestionsNames, 'getNestedQuestionPath::panelQuestion:', parent as unknown as TSurveyElement);
-        return getNestedQuestionPath(formula, parent as unknown as TSurveyQuestion, formerQuestionsNames);
-      }
-      if (parentQuestion?.isPanel) {
-        formerQuestionsNames.push(currentQuestion.name);
+  //     if (parent?.isPanel && !parentQuestion) {
+  //       formerQuestionsNames.push(currentQuestion.name);
+  //       // eslint-disable-next-line no-console
+  //       console.log(formerQuestionsNames, 'getNestedQuestionPath::panelQuestion:', parent as unknown as TSurveyElement);
+  //       return getNestedQuestionPath(formula, parent as unknown as TSurveyQuestion, formerQuestionsNames);
+  //     }
+  //     if (parentQuestion?.isPanel) {
+  //       formerQuestionsNames.push(currentQuestion.name);
 
-        // eslint-disable-next-line no-console
-        console.log(formerQuestionsNames, 'getNestedQuestionPath::parentQuestion:', parentQuestion);
+  //       // eslint-disable-next-line no-console
+  //       console.log(formerQuestionsNames, 'getNestedQuestionPath::parentQuestion:', parentQuestion);
 
-        return getNestedQuestionPath(formula, parentQuestion as unknown as TSurveyQuestion, formerQuestionsNames);
-      }
-      throw new Error('Corresponding parent question was not found');
-    }
-    if (currentQuestion?.page?.name) {
-      formerQuestionsNames.push(currentQuestion.name);
-      formerQuestionsNames.reverse();
-      const correspondingPage = formula?.pages?.find((page) => page.name === currentQuestion.page.name);
-      const nextQuestionFormula = correspondingPage?.elements?.find((el) => el.name === currentQuestion.name);
+  //       return getNestedQuestionPath(formula, parentQuestion as unknown as TSurveyQuestion, formerQuestionsNames);
+  //     }
+  //     throw new Error('Corresponding parent question was not found');
+  //   }
+  //   if (currentQuestion?.page?.name) {
+  //     formerQuestionsNames.push(currentQuestion.name);
+  //     formerQuestionsNames.reverse();
+  //     const correspondingPage = formula?.pages?.find((page) => page.name === currentQuestion.page.name);
+  //     const nextQuestionFormula = correspondingPage?.elements?.find((el) => el.name === currentQuestion.name);
 
-      // eslint-disable-next-line no-console
-      console.log(formerQuestionsNames, 'getNestedQuestionPath::nextQuestionFormula:', nextQuestionFormula);
+  //     // eslint-disable-next-line no-console
+  //     console.log(formerQuestionsNames, 'getNestedQuestionPath::nextQuestionFormula:', nextQuestionFormula);
 
-      if (!nextQuestionFormula) {
-        throw new Error('Corresponding question element was not found in the page');
-      }
-      return getNestedQuestion(nextQuestionFormula, formerQuestionsNames);
-    }
-    formerQuestionsNames.push(currentQuestion.name);
-    formerQuestionsNames.reverse();
-    const nextQuestionFormula = formula?.elements?.find((el) => el.name === currentQuestion.name);
+  //     if (!nextQuestionFormula) {
+  //       throw new Error('Corresponding question element was not found in the page');
+  //     }
+  //     return getNestedQuestion(nextQuestionFormula, formerQuestionsNames);
+  //   }
+  //   formerQuestionsNames.push(currentQuestion.name);
+  //   formerQuestionsNames.reverse();
+  //   const nextQuestionFormula = formula?.elements?.find((el) => el.name === currentQuestion.name);
 
-    // eslint-disable-next-line no-console
-    console.log(formerQuestionsNames, 'getNestedQuestionPath::nextQuestionFormula:', nextQuestionFormula);
+  //   // eslint-disable-next-line no-console
+  //   console.log(formerQuestionsNames, 'getNestedQuestionPath::nextQuestionFormula:', nextQuestionFormula);
 
-    if (!nextQuestionFormula) {
-      throw new Error('Corresponding question element was not found in the formula');
-    }
-    return getNestedQuestion(nextQuestionFormula, formerQuestionsNames);
-  };
+  //   if (!nextQuestionFormula) {
+  //     throw new Error('Corresponding question element was not found in the formula');
+  //   }
+  //   return getNestedQuestion(nextQuestionFormula, formerQuestionsNames);
+  // };
 
-  // TODO: SHOULD BE RECURSIVE
+  // // TODO: SHOULD BE RECURSIVE
+  // const processQuestion = (
+  //   formula: SurveyFormula,
+  //   currentQuestion: TSurveyQuestion,
+  // ): { question: TSurveyElement; formula: SurveyFormula } => {
+  //   if (!currentQuestion) {
+  //     throw new Error('No question selected');
+  //   }
+
+  //   // let correspondingQuestion: TSurveyElement | undefined;
+  //   //
+  //   // if (!currentQuestion.hasParent) {
+  //   //   if (selectedQuestion?.page?.name) {
+  //   //     const correspondingPage = formula?.pages?.find((page) => page.name === currentQuestion.page.name);
+  //   //     correspondingQuestion = correspondingPage?.elements?.find(
+  //   //       (question) => question.name === currentQuestion.name,
+  //   //     );
+  //   //   } else {
+  //   //     correspondingQuestion = formula?.elements?.find((element) => element.name === currentQuestion.name);
+  //   //   }
+  //   //   if (correspondingQuestion) {
+  //   //     return { question: correspondingQuestion, formula };
+  //   //   }
+  //   //   throw new Error('Corresponding Question was not found');
+  //   // }
+  //   //
+  //   // const { parent, parentQuestion } = currentQuestion;
+  //   // if (parent?.isPanel || parentQuestion?.isPanel) {
+  //   //   const panelQuestion = parentQuestion || parent as unknown as TSurveyQuestion;
+  //   //   if (panelQuestion?.page?.name) {
+  //   //     const correspondingPage = formula?.pages?.find((page) => page.name === panelQuestion.page.name);
+  //   //     const parentPanel = correspondingPage?.elements?.find((question) => question.name === panelQuestion.name);
+  //   //     if (parentPanel?.elements) {
+  //   //       correspondingQuestion = parentPanel?.elements?.find((question) => question.name === currentQuestion.name);
+  //   //     }
+  //   //     if (parentPanel?.templateElements) {
+  //   //       correspondingQuestion = parentPanel?.templateElements?.find((question) => question.name === currentQuestion.name);
+  //   //     }
+  //   //   } else {
+  //   //     const parentPanel = formula?.elements?.find((element) => element.name === panelQuestion.name);
+  //   //     if (parentPanel?.elements) {
+  //   //       correspondingQuestion = parentPanel?.elements?.find((question) => question.name === currentQuestion.name);
+  //   //     }
+  //   //     if (parentPanel?.templateElements) {
+  //   //       correspondingQuestion = parentPanel?.templateElements?.find((question) => question.name === currentQuestion.name);
+  //   //     }
+  //   //   }
+  //   //   if (correspondingQuestion) {
+  //   //     return { question: correspondingQuestion, formula };
+  //   //   }
+  //   //   throw new Error('Corresponding Question was not found');
+  //   // }
+  //   //
+  //   // throw new Error('Corresponding Question was not found');
+
+  //   const correspondingQuestion = getNestedQuestionPath(formula, currentQuestion, []);
+  //   if (correspondingQuestion) {
+  //     return { question: correspondingQuestion, formula };
+  //   }
+
+  //   throw new Error('Corresponding Question was not found');
+  // };
+
   const processQuestion = (
-    formula: SurveyFormula,
+    formula: SurveyFormula | TSurveyPage | TSurveyElement,
     currentQuestion: TSurveyQuestion,
-  ): { question: TSurveyElement; formula: SurveyFormula } => {
-    if (!currentQuestion) {
-      throw new Error('No question selected');
-    }
-
-    // let correspondingQuestion: TSurveyElement | undefined;
-    //
-    // if (!currentQuestion.hasParent) {
-    //   if (selectedQuestion?.page?.name) {
-    //     const correspondingPage = formula?.pages?.find((page) => page.name === currentQuestion.page.name);
-    //     correspondingQuestion = correspondingPage?.elements?.find(
-    //       (question) => question.name === currentQuestion.name,
-    //     );
-    //   } else {
-    //     correspondingQuestion = formula?.elements?.find((element) => element.name === currentQuestion.name);
-    //   }
-    //   if (correspondingQuestion) {
-    //     return { question: correspondingQuestion, formula };
-    //   }
-    //   throw new Error('Corresponding Question was not found');
-    // }
-    //
-    // const { parent, parentQuestion } = currentQuestion;
-    // if (parent?.isPanel || parentQuestion?.isPanel) {
-    //   const panelQuestion = parentQuestion || parent as unknown as TSurveyQuestion;
-    //   if (panelQuestion?.page?.name) {
-    //     const correspondingPage = formula?.pages?.find((page) => page.name === panelQuestion.page.name);
-    //     const parentPanel = correspondingPage?.elements?.find((question) => question.name === panelQuestion.name);
-    //     if (parentPanel?.elements) {
-    //       correspondingQuestion = parentPanel?.elements?.find((question) => question.name === currentQuestion.name);
-    //     }
-    //     if (parentPanel?.templateElements) {
-    //       correspondingQuestion = parentPanel?.templateElements?.find((question) => question.name === currentQuestion.name);
-    //     }
-    //   } else {
-    //     const parentPanel = formula?.elements?.find((element) => element.name === panelQuestion.name);
-    //     if (parentPanel?.elements) {
-    //       correspondingQuestion = parentPanel?.elements?.find((question) => question.name === currentQuestion.name);
-    //     }
-    //     if (parentPanel?.templateElements) {
-    //       correspondingQuestion = parentPanel?.templateElements?.find((question) => question.name === currentQuestion.name);
-    //     }
-    //   }
-    //   if (correspondingQuestion) {
-    //     return { question: correspondingQuestion, formula };
-    //   }
-    //   throw new Error('Corresponding Question was not found');
-    // }
-    //
-    // throw new Error('Corresponding Question was not found');
-
-    const correspondingQuestion = getNestedQuestionPath(formula, currentQuestion, []);
-    if (correspondingQuestion) {
-      return { question: correspondingQuestion, formula };
-    }
-    throw new Error('Corresponding Question was not found');
+  ): TSurveyElement | null => {
+    Object.entries(formula).forEach(([key, value]) => {
+      if (key === currentQuestion.name) {
+        return value as TSurveyElement;
+      }
+      if (key === 'pages' || key === 'elements' || key === 'templateElements') {
+        const items = value as Array<SurveyFormula | TSurveyPage | TSurveyElement>;
+        items.forEach((item) => {
+          const result = processQuestion(item, currentQuestion);
+          if (result) {
+            return result;
+          }
+          return null;
+        });
+      }
+      return null;
+    });
+    return null;
   };
 
   const handleToggleFormula = () => {
@@ -233,14 +258,18 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
 
     try {
       const isPublic = form.getValues('isPublic') || false;
-      const updatedFormula = JSON.parse(JSON.stringify(creator.JSON)) as SurveyFormula;
+      const updatedFormula = creator.JSON as SurveyFormula;
 
-      const { question, formula } = processQuestion(updatedFormula, selectedQuestion as TSurveyQuestion);
+      const question = processQuestion(updatedFormula, selectedQuestion as TSurveyQuestion);
 
       // eslint-disable-next-line no-console
-      console.log('Processed formula:', formula);
+      console.log('Processed formula:', updatedFormula);
       // eslint-disable-next-line no-console
       console.log('Corresponding question:', question);
+
+      if (!question) {
+        throw new Error('Corresponding Question was not found');
+      }
 
       if (useBackendLimits) {
         question.choicesByUrl = null;
@@ -260,8 +289,8 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       // eslint-disable-next-line no-console
       console.log('Updated Question:', question);
 
-      form.setValue('formula', formula);
-      creator.JSON = formula;
+      // form.setValue('formula', formula);
+      // creator.JSON = formula;
 
       toggleUseBackendLimits();
 
