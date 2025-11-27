@@ -131,7 +131,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
       await SurveyAnswerAttachmentsService.removeDeprecatedFiles(directory, permanentFileNames, fileNamesToKeep);
     }
 
-    await this.fileSystemService.deleteEmptyFolderWithDepth(tempDirectory, 3);
+    await this.fileSystemService.deleteFolderAndParentsUpToDepth(tempDirectory, 3);
   }
 
   async processFileQuestionAnswer(
@@ -149,11 +149,6 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     const fileNames = SurveyAnswerAttachmentsService.getFileNamesFromFileQuestionAnswer(questionAnswer);
 
     await this.updateSurveyAnswerAttachments(fileNames, tempDirectory, directory, keepOldFiles);
-
-    await this.fileSystemService.deleteFolderAndParentsUpToDepth(
-      join(tempDirectory),
-      3,
-    );
 
     return Array.isArray(questionAnswer) ? questionAnswer : [questionAnswer];
   }
