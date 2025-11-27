@@ -32,7 +32,9 @@ import AppModule from './app/app.module';
 import AuthGuard from './auth/auth.guard';
 import getLogLevels from './logging/getLogLevels';
 import PayloadTooLargeFilter from './filters/payload-too-large.filter';
+import ExpressHttpErrorFilter from './filters/express-http-error.filter';
 import NotFoundFilter from './filters/not-found.filter';
+import HttpExceptionFilter from './filters/http-exception.filter';
 
 async function bootstrap() {
   const globalPrefix = EDU_API_ROOT;
@@ -58,7 +60,12 @@ async function bootstrap() {
 
   app.use(helmet());
 
-  app.useGlobalFilters(new PayloadTooLargeFilter(), new NotFoundFilter());
+  app.useGlobalFilters(
+    new ExpressHttpErrorFilter(),
+    new HttpExceptionFilter(),
+    new PayloadTooLargeFilter(),
+    new NotFoundFilter(),
+  );
 
   app.useWebSocketAdapter(new WsAdapter(app));
 
