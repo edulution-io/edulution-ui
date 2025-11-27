@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { Model } from 'mongoose';
@@ -17,7 +24,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { OnEvent } from '@nestjs/event-emitter';
 import axios, { AxiosInstance } from 'axios';
 import { Agent as HttpsAgent } from 'https';
-import { CreateSyncJobDto, MailDto, MailProviderConfigDto, SyncJobDto, SyncJobResponseDto } from '@libs/mail/types';
+import {
+  CreateSyncJobDto,
+  MailDto,
+  MailProviderConfigDto,
+  SogoThemeVersionDto,
+  SyncJobDto,
+  SyncJobResponseDto,
+} from '@libs/mail/types';
 import MailsErrorMessages from '@libs/mail/constants/mails-error-messages';
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
@@ -40,6 +54,7 @@ import FilterUserPipe from '../common/pipes/filterUser.pipe';
 import AppConfigService from '../appconfig/appconfig.service';
 import GroupsService from '../groups/groups.service';
 import SseService from '../sse/sse.service';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 const { MAILCOW_API_URL, MAILCOW_API_TOKEN, EDUI_MAIL_IMAP_TIMEOUT } = process.env;
 
@@ -48,8 +63,6 @@ const connectionTimeout = EDUI_MAIL_IMAP_TIMEOUT ? parseInt(EDUI_MAIL_IMAP_TIMEO
 @Injectable()
 class MailsService implements OnModuleInit {
   private mailcowApi: AxiosInstance;
-
-  private imapClient: ImapFlow;
 
   private imapUrl: string;
 
@@ -66,6 +79,7 @@ class MailsService implements OnModuleInit {
     private readonly filesystemService: FilesystemService,
     private readonly groupsService: GroupsService,
     private readonly sseService: SseService,
+    private readonly globalSettingsService: GlobalSettingsService,
   ) {
     const httpsAgent = new HttpsAgent({
       rejectUnauthorized: false,
@@ -109,17 +123,35 @@ class MailsService implements OnModuleInit {
     );
   }
 
+  private async getThemeConfig(): Promise<{
+    theme: string;
+    isLight: boolean;
+    sourceUrl: string;
+    accessGroups: { path: string }[];
+  } | null> {
+    const appConfig = await this.appConfigService.getAppConfigByName(APPS.MAIL);
+    const extendedOptions = appConfig?.extendedOptions;
+
+    if (!extendedOptions || typeof extendedOptions !== 'object') {
+      return null;
+    }
+
+    const accessGroups = appConfig?.accessGroups ?? [];
+    const themeRaw = (extendedOptions[ExtendedOptionKeys.MAIL_SOGO_THEME] as string) ?? MailTheme.DARK;
+    const theme = themeRaw.toLowerCase();
+    const isLight = theme === MailTheme.LIGHT;
+    const sourceUrl = isLight ? SOGO_THEME.LIGHT_CSS_URL : SOGO_THEME.DARK_CSS_URL;
+
+    return { theme, isLight, sourceUrl, accessGroups };
+  }
+
   @OnEvent(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${APPS.MAIL}`)
   async updateSogoTheme() {
     try {
-      const appConfig = await this.appConfigService.getAppConfigByName(APPS.MAIL);
-      const extendedOptions = appConfig?.extendedOptions;
-      if (!extendedOptions || typeof extendedOptions !== 'object') return;
+      const themeConfig = await this.getThemeConfig();
+      if (!themeConfig) return;
 
-      const accessGroups = appConfig?.accessGroups ?? [];
-      const themeRaw = (extendedOptions[ExtendedOptionKeys.MAIL_SOGO_THEME] as string) ?? MailTheme.DARK;
-      const theme = themeRaw.toLowerCase();
-      const isLight = theme === MailTheme.LIGHT;
+      const { theme, sourceUrl, accessGroups } = themeConfig;
 
       const requiredContainer = DOCKER_CONTAINER_NAMES.MAILCOWDOCKERIZED_SOGO_MAILCOW_1;
       const containers = await this.dockerService.getContainers([requiredContainer]);
@@ -132,7 +164,6 @@ class MailsService implements OnModuleInit {
         return;
       }
 
-      const sourceUrl = isLight ? SOGO_THEME.LIGHT_CSS_URL : SOGO_THEME.DARK_CSS_URL;
       const response = await axios.get<string>(sourceUrl, { responseType: 'text' });
       const newCss = response.data ?? '';
 
@@ -167,6 +198,52 @@ class MailsService implements OnModuleInit {
         errorMessage,
       );
       Logger.error(`Failed to update SOGo theme: ${errorMessage}`, MailsService.name);
+    }
+  }
+
+  async checkSogoThemeVersion(): Promise<SogoThemeVersionDto> {
+    const result: SogoThemeVersionDto = {
+      currentVersion: undefined,
+      latestVersion: undefined,
+      currentTheme: undefined,
+      latestTheme: undefined,
+      isUpdateAvailable: false,
+    };
+
+    try {
+      const themeConfig = await this.getThemeConfig();
+      if (!themeConfig) {
+        return result;
+      }
+
+      const { sourceUrl } = themeConfig;
+
+      const targetPath = `${SOGO_THEME.TARGET_DIR}/${SOGO_THEME.TARGET_FILE_NAME}`;
+      const exists = await FilesystemService.checkIfFileExist(targetPath);
+
+      if (exists) {
+        const currentCss = (await FilesystemService.readFile(targetPath)).toString('utf-8');
+        result.currentVersion = extractVersion(currentCss);
+        result.currentTheme = extractTheme(currentCss);
+      }
+
+      const response = await axios.get<string>(sourceUrl, { responseType: 'text' });
+      const latestCss = response.data ?? '';
+
+      result.latestVersion = extractVersion(latestCss);
+      result.latestTheme = extractTheme(latestCss);
+
+      result.isUpdateAvailable = !!(
+        result.currentVersion &&
+        result.latestVersion &&
+        result.currentVersion !== result.latestVersion
+      );
+
+      return result;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      Logger.error(`Failed to check SOGo theme version: ${errorMessage}`, MailsService.name);
+      return result;
     }
   }
 
@@ -205,18 +282,52 @@ class MailsService implements OnModuleInit {
   ): Promise<void> {
     if (!Array.isArray(accessGroups) || accessGroups.length === 0) return;
 
-    const usernames = await this.groupsService.getInvitedMembers(accessGroups, []);
+    const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
+
+    const usernames = await this.groupsService.getInvitedMembers(
+      [...accessGroups, ...adminGroups.map((g) => ({ path: g }))],
+      [],
+    );
+
     if (!usernames.length) return;
 
     this.sseService.sendEventToUsers(usernames, data, message);
   }
 
+  private static async cleanupImapClient(client: ImapFlow): Promise<void> {
+    try {
+      if (client?.usable) {
+        await client.logout();
+      }
+    } catch (logoutError) {
+      Logger.warn(
+        `Failed to logout IMAP client: ${logoutError instanceof Error ? logoutError.message : String(logoutError)}`,
+        MailsService.name,
+      );
+    } finally {
+      try {
+        client.close();
+      } catch (closeError) {
+        Logger.warn(
+          `Failed to close IMAP client: ${closeError instanceof Error ? closeError.message : String(closeError)}`,
+          MailsService.name,
+        );
+      }
+    }
+  }
+
   async getMails(emailAddress: string, password: string): Promise<MailDto[]> {
     if (!this.imapUrl || !this.imapPort) {
+      Logger.debug('IMAP configuration missing, skipping mail fetch', MailsService.name);
       return [];
     }
 
-    this.imapClient = new ImapFlow({
+    if (!emailAddress || !password) {
+      Logger.debug('Email credentials missing, skipping mail fetch', MailsService.name);
+      return [];
+    }
+
+    const imapClient = new ImapFlow({
       host: this.imapUrl,
       port: this.imapPort,
       secure: this.imapSecure,
@@ -231,23 +342,25 @@ class MailsService implements OnModuleInit {
       connectionTimeout,
     });
 
-    this.imapClient.on('error', (err: Error): void => {
+    imapClient.on('error', (err: Error): void => {
       Logger.error(`IMAP-Error: ${err.message}`, MailsService.name);
-      void this.imapClient.logout();
-      this.imapClient.close();
+      void MailsService.cleanupImapClient(imapClient);
     });
 
-    await this.imapClient.connect().catch((e) => {
+    try {
+      await imapClient.connect();
+    } catch (e) {
       Logger.error(`IMAP-Connection-Error: ${e instanceof Error && e.message}`, MailsService.name);
+      await MailsService.cleanupImapClient(imapClient);
       return [];
-    });
+    }
 
     let mailboxLock: MailboxLockObject | undefined;
     const mails: MailDto[] = [];
     try {
-      mailboxLock = await this.imapClient.getMailboxLock('INBOX');
+      mailboxLock = await imapClient.getMailboxLock('INBOX');
 
-      const fetchMail = this.imapClient.fetch({ recent: true }, { envelope: true, labels: true });
+      const fetchMail = imapClient.fetch({ recent: true }, { envelope: true, labels: true });
 
       // eslint-disable-next-line no-restricted-syntax
       for await (const mail of fetchMail) {
@@ -265,9 +378,8 @@ class MailsService implements OnModuleInit {
       if (mailboxLock) {
         mailboxLock.release();
       }
+      await MailsService.cleanupImapClient(imapClient);
     }
-    await this.imapClient.logout();
-    this.imapClient.close();
 
     Logger.verbose(`Feed: ${mails.length} new mails were fetched (imap)`, MailsService.name);
     return mails;

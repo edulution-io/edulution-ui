@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import axios from 'axios';
@@ -25,7 +32,7 @@ import {
   ALL_SCHOOLS_CACHE_KEY,
   GROUP_WITH_MEMBERS_CACHE_KEY,
 } from '@libs/groups/constants/cacheKeys';
-import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import { HTTP_HEADERS, HttpMethods, RequestResponseContentType } from '@libs/common/types/http-methods';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
@@ -38,12 +45,16 @@ import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import ALL_GROUPS_PREFIX from '@libs/lmnApi/constants/prefixes/allGroupsPrefix';
 import LINBO_DEVICE_GROUPS_PREFIX from '@libs/lmnApi/constants/prefixes/dPrefix';
 import ROLES_PREFIX from '@libs/lmnApi/constants/prefixes/rolesPrefix';
-import { KEYCLOAK_STARTUP_TIMEOUT_MS, KEYCLOAK_SYNC_MS } from '@libs/ldapKeycloakSync/constants/keycloakSyncValues';
-import { OnEvent } from '@nestjs/event-emitter';
+import {
+  KEYCLOAK_GROUPS_SYNC_INTERVAL_MS,
+  KEYCLOAK_STARTUP_TIMEOUT_MS,
+} from '@libs/ldapKeycloakSync/constants/keycloakSyncValues';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import GROUPS_CACHE_REFRESH_EVENT from '@libs/groups/constants/groupsCacheRefreshEvent';
+import { GROUPS_CACHE_INITIALIZED_EVENT } from '@libs/groups/constants/cacheInitializedEvents';
 import CustomHttpException from '../common/CustomHttpException';
 import Attendee from '../conferences/attendee.schema';
-import KeycloakRequestQueue from '../ldap-keycloak-sync/queue/keycloak-request.queue';
+import KeycloakRequestQueue from './queue/keycloak-request.queue';
 
 const { KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API } = process.env as { [key: string]: string };
 
@@ -52,11 +63,14 @@ class GroupsService {
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly keycloakQueue: KeycloakRequestQueue,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   private isUpdatingGroupsAndMembersInCache = false;
 
   private maximumRetries = 3;
+
+  private groupsCacheInitialized = false;
 
   @Timeout(KEYCLOAK_STARTUP_TIMEOUT_MS)
   async initializeService() {
@@ -193,19 +207,26 @@ class GroupsService {
         GroupsService.name,
       );
     } else {
-      Logger.log(`All ${groups.length} groups updated successfully in cache. ✅`, GroupsService.name);
+      Logger.log(`${groups.length} groups updated successfully in cache. ✅`, GroupsService.name);
     }
   }
 
   private async tryUpdateGroupsWithMembersInCache(groups: Group[], attempt: number): Promise<Group[]> {
-    const results = await Promise.allSettled(groups.map((group) => this.updateGroupWithMembersInCache(group)));
-
+    const batchSize = 20;
     const failedGroups: Group[] = [];
-    results.forEach((result, index) => {
-      if (result.status === 'rejected') {
-        failedGroups.push(groups[index]);
-      }
-    });
+
+    for (let i = 0; i < groups.length; i += batchSize) {
+      const batch = groups.slice(i, i + batchSize);
+
+      // eslint-disable-next-line no-await-in-loop
+      const results = await Promise.allSettled(batch.map((group) => this.updateGroupWithMembersInCache(group)));
+
+      results.forEach((result, index) => {
+        if (result.status === 'rejected') {
+          failedGroups.push(batch[index]);
+        }
+      });
+    }
 
     if (failedGroups.length > 0 && attempt < this.maximumRetries) {
       return this.tryUpdateGroupsWithMembersInCache(failedGroups, attempt + 1);
@@ -236,7 +257,7 @@ class GroupsService {
     );
   }
 
-  @Interval(KEYCLOAK_SYNC_MS)
+  @Interval(KEYCLOAK_GROUPS_SYNC_INTERVAL_MS)
   async updateGroupsAndMembersInCache(): Promise<void> {
     if (this.isUpdatingGroupsAndMembersInCache) return;
     this.isUpdatingGroupsAndMembersInCache = true;
@@ -250,6 +271,12 @@ class GroupsService {
       await this.cacheGroupsBySchoolName(schoolGroupNames, allGroups);
 
       await this.updateGroupsWithMembersInCache(allGroups);
+
+      if (!this.groupsCacheInitialized) {
+        this.groupsCacheInitialized = true;
+        this.eventEmitter.emit(GROUPS_CACHE_INITIALIZED_EVENT);
+        Logger.debug('Groups cache initialized for the first time', GroupsService.name);
+      }
     } catch (error) {
       Logger.error(`updateGroupsAndMembersInCache failed.`, GroupsService.name);
     } finally {
@@ -322,12 +349,98 @@ class GroupsService {
         return groups;
       }
 
-      return groups.filter((group) => group.path.includes(searchKeyWord));
+      const searchLower = searchKeyWord.toLowerCase();
+      return groups.filter((group) => group.path.toLowerCase().includes(searchLower));
     } catch (error) {
       throw new CustomHttpException(
         GroupsErrorMessage.CouldNotSearchGroups,
         HttpStatus.BAD_GATEWAY,
         searchKeyWord,
+        GroupsService.name,
+      );
+    }
+  }
+
+  async createGroup(name: string): Promise<Group> {
+    try {
+      return await this.keycloakQueue.enqueue<Group>(HttpMethods.POST, '/groups', { name });
+    } catch (error) {
+      throw new CustomHttpException(
+        GroupsErrorMessage.CouldNotGetAllGroups,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        GroupsService.name,
+      );
+    }
+  }
+
+  async deleteGroup(groupId: string): Promise<void> {
+    try {
+      await this.keycloakQueue.enqueue(HttpMethods.DELETE, `/groups/${groupId}`);
+    } catch (error) {
+      throw new CustomHttpException(
+        GroupsErrorMessage.CouldNotGetAllGroups,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        GroupsService.name,
+      );
+    }
+  }
+
+  async searchGroupsByName(search: string): Promise<Group[]> {
+    try {
+      return await this.keycloakQueue.enqueue<Group[]>(HttpMethods.GET, `/groups?search=${encodeURIComponent(search)}`);
+    } catch (error) {
+      throw new CustomHttpException(
+        GroupsErrorMessage.CouldNotSearchGroups,
+        HttpStatus.BAD_GATEWAY,
+        search,
+        GroupsService.name,
+      );
+    }
+  }
+
+  async addUserToGroups(userId: string, groupIds: string[]): Promise<void> {
+    try {
+      await Promise.all(
+        groupIds.map((groupId) => this.keycloakQueue.enqueue(HttpMethods.PUT, `/users/${userId}/groups/${groupId}`)),
+      );
+    } catch (error) {
+      throw new CustomHttpException(
+        GroupsErrorMessage.CouldNotGetAllGroups,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        GroupsService.name,
+      );
+    }
+  }
+
+  async removeUserFromGroups(userId: string, groupIds: string[]): Promise<void> {
+    try {
+      await Promise.all(
+        groupIds.map((groupId) => this.keycloakQueue.enqueue(HttpMethods.DELETE, `/users/${userId}/groups/${groupId}`)),
+      );
+    } catch (error) {
+      throw new CustomHttpException(
+        GroupsErrorMessage.CouldNotGetAllGroups,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        GroupsService.name,
+      );
+    }
+  }
+
+  async searchUsersByUsername(username: string, exact: boolean = false): Promise<LDAPUser[]> {
+    try {
+      const endpoint = exact
+        ? `/users?username=${encodeURIComponent(username)}&exact=true`
+        : `/users?search=${encodeURIComponent(username)}`;
+      return await this.keycloakQueue.enqueue<LDAPUser[]>(HttpMethods.GET, endpoint);
+    } catch (error) {
+      throw new CustomHttpException(
+        GroupsErrorMessage.CouldNotGetUsers,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
         GroupsService.name,
       );
     }

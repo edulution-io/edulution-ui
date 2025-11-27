@@ -82,6 +82,7 @@
       "unauthorizedCreateCategory": "Aucune autorisation pour créer cette catégorie",
       "unauthorizedDeleteCategory": "Aucune autorisation pour supprimer cette catégorie",
       "unauthorizedUpdateCategory": "Aucune autorisation pour mettre à jour cette catégorie",
+      "attachmentNotFound": "Pièce jointe introuvable",
       "attachmentDeletionFailed": "La suppression d'une pièce jointe a échoué"
     }
   },
@@ -93,7 +94,9 @@
     "dropIconDescription": "Glissez une image ici ou cliquez pour sélectionner une image. Formats pris en charge: SVG, webp"
   },
   "forwarding": {
-    "sidebar": "Transfert"
+    "sidebar": "Transfert",
+    "behaviorAtSidebarClick": "Accès rapide à l'ouverture de l'application",
+    "forwardDirectly": "Rediriger directement à l'ouverture de l'application (si désactivé, l'utilisateur doit confirmer avec un autre clic)"
   },
   "frame": {
     "sidebar": "Cadre"
@@ -107,15 +110,9 @@
     "mobileAccess": {
       "title": "Accès mobile",
       "manual": "Instructions",
-      "manualSetup": "Configuration manuelle",
       "setupWithQrCode": "Configuration via un QR-code",
-      "accessData": "Identifiants",
       "content": "Vous pouvez accéder au serveur scolaire à partir de nombreux appareils mobiles. Appuyez sur les instructions pour commencer.",
-      "scanAccessInfo": "Pour transférer les identifiants, veuillez scanner le QR-code suivant avec le   l'application {{ applicationName }}.",
-      "manualAccessInfo": "Saisir les identifiants manuellement dans l'app {{ applicationName }}. L'exemple suivant montre comment les champs individuels doivent être remplis.",
-      "nextStepPreview": "À l'étape suivante, vous pouvez transférer les identifiants.",
-      "downloadDirect": "Ou téléchargez directement l'application:",
-      "downloadApp": "Téléchargez l'application {{ applicationName }}:"
+      "scanAccessInfo": "Pour transférer les identifiants, veuillez scanner le QR-code suivant avec l'edulution App."
     },
     "quota": {
       "title": "Quotas",
@@ -201,7 +198,15 @@
       "isActive": "Actif",
       "syncJobsTable": "Tâches des importateurs",
       "mailAddress": "Adresse email",
-      "noMailConfigured": "L'application de messagerie n'est pas configurée. Veuillez contacter l'administrateur système."
+      "noMailConfigured": "L'application de messagerie n'est pas configurée. Veuillez contacter l'administrateur système.",
+      "syncAccountAdded": "Compte pour la tâche de synchronisation ajouté.",
+      "syncAccountDeleted": "Compte pour la tâche de synchronisation supprimé.",
+      "confirmMultiDeleteSyncJob": "Êtes-vous sûr de vouloir supprimer ces tâches de synchronisation ? Cette action ne peut pas être annulée.",
+      "confirmSingleDeleteSyncJob": "Êtes-vous sûr de vouloir supprimer cette tâche de synchronisation ? Cette action ne peut pas être annulée.",
+      "deleteSyncJobs": "Supprimer {{count}} tâches de synchronisation",
+      "deleteSyncJob": "Supprimer la tâche de synchronisation",
+      "confirmDeleteProviderConfig": "Êtes-vous sûr de vouloir supprimer cette configuration de fournisseur de messagerie ? Cette action ne peut pas être annulée.",
+      "deleteProviderConfig": "Supprimer la configuration du fournisseur de messagerie"
     }
   },
   "chat": {
@@ -407,6 +412,18 @@
     "invalidQuota": "Le quota doit être donné en fonction de la documentation",
     "invalidMailQuota": "Le quota de courrier doit être spécifié en nombre en Mo",
     "name": "nom",
+    "confirmDeleteGroup": "Êtes-vous sûr de vouloir supprimer ce groupe ? Cette action ne peut pas être annulée.",
+    "deleteGroup": "Supprimer {{type}}",
+    "project": {
+      "createSuccess": "Projet créé avec succès",
+      "updateSuccess": "Projet mis à jour avec succès",
+      "deleteSuccess": "Projet supprimé avec succès"
+    },
+    "sessions": {
+      "createSuccess": "Session créée avec succès",
+      "updateSuccess": "Session mise à jour avec succès",
+      "deleteSuccess": "Session supprimée avec succès"
+    },
     "mailQuota": "Quota de courrier (Mo)",
     "proxyAddresses": "Adresses e-mail proxy",
     "descriptionPlaceholder": "Brève description du projet",
@@ -565,6 +582,11 @@
     "editor": {
       "new": "Nouveau (vide)",
       "saveSurveySuccess": "Le sondage a été enregistrée.",
+      "surveyPlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
+      "surveyPlaceholderDescription": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
+      "surveyPlaceholderDescriptionMobile": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
+      "pagePlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour ajouter un nouvel élément à la page.",
+      "panelPlaceHolder": "Cliquez sur « Ajouter une question » ci-dessous pour ajouter un nouvel élément au panneau.",
       "reset": "Rejeter",
       "addDescription": "Ajouter une description",
       "expectingUserInput": "Ici, la réponse du participant est attendue ... ",
@@ -797,8 +819,8 @@
       "linuxmuster": "Ici, vous pouvez appliquer tous les paramètres.",
       "whiteboard": "Ici, vous pouvez appliquer tous les paramètres.",
       "bulletinboard": "Configurez les groupes d'utilisateurs qui ont accès à l'application Schwarzes Brett. Il est possible de configurer dans les catégories pour contrôler les messages affichés chez les utilisateurs.",
-      "forwarded": "Redirection: entrez simplement le lien vers l'application Web sous URL.",
-      "framed": "Frame: Entrez simplement le lien vers l'application Web sous URL.",
+      "forwarding": "Redirection: entrez simplement le lien vers l'application Web sous URL.",
+      "frame": "Frame: Entrez simplement le lien vers l'application Web sous URL.",
       "embedded": "Embedded: Ici, votre propre application Web peut être créée dans l'éditeur."
     },
     "globalSettings": {
@@ -819,11 +841,23 @@
 
       "logo": {
         "title": "Logo",
-        "descriptionSchool": "Téléversez le logo. Il sera affiché sur l’écran de connexion et sur la carte d’identification de l’application Edulution.",
-        "descriptionGeneric": "Téléversez le logo. Il sera affiché sur l’écran de connexion.",
+        "descriptionSchool": "Téléversez le logo. Il sera affiché sur l'écran de connexion et sur la carte d'identification de l'application Edulution.",
+        "descriptionGeneric": "Téléversez le logo. Il sera affiché sur l'écran de connexion.",
         "uploadLightLogo": "Téléverser le logo clair",
         "uploadDarkLogo": "Téléverser le logo sombre",
         "deleteSuccessful": "Logo supprimé avec succès."
+      },
+      "theme": {
+        "title": "Personnalisation du thème",
+        "primaryColor": "Couleur primaire",
+        "primaryDescription": "Couleur principale utilisée pour les boutons, les liens et les éléments mis en évidence",
+        "secondaryColor": "Couleur secondaire",
+        "secondaryDescription": "Couleur secondaire utilisée pour le texte et les bordures",
+        "ciLightGreen": "Vert de marque",
+        "ciLightGreenDescription": "Couleur verte de marque utilisée dans les dégradés et les logos",
+        "ciLightBlue": "Bleu de marque",
+        "ciLightBlueDescription": "Couleur bleue de marque utilisée dans les dégradés et les logos",
+        "resetToDefaults": "Réinitialiser aux valeurs par défaut"
       },
       "organisationInfo": {
         "title": "Informations sur l’organisation",
@@ -839,6 +873,18 @@
         "website": "Site web de l’organisation",
         "city": "Ville"
       },
+      "userAdministration": {
+        "title": "Administration des utilisateurs",
+        "resetMfaForm": "Réinitialiser l’authentification à deux facteurs",
+        "resetMfaFormDescription": "Ici, vous pouvez réinitialiser l’authentification à deux facteurs pour les utilisateurs.",
+        "selectUsersTitle": "Sélectionner les utilisateurs",
+        "selectUsersDescription": "Sélectionnez les utilisateurs pour lesquels vous souhaitez réinitialiser l’authentification à deux facteurs.",
+        "totpResetSuccess": "Le TOTP pour l’utilisateur {{username}} a été désactivé avec succès.",
+        "setAdminGroupTitle": "Définir le groupe d’administrateurs",
+        "setAdminGroupDescription": "Des administrateurs supplémentaires peuvent être définis ici. L’administrateur global reste inchangé.",
+        "setAdminGroupSelectDescription": "Les groupes peuvent être sélectionnés via le champ de recherche.",
+        "setAdminGroupWarning": "Au moins un groupe d’administrateurs doit être sélectionné."
+      },
       "deploymentTarget": "Plate-forme cible de déploiement"
     },
     "info": {
@@ -846,6 +892,8 @@
     },
     "lmnVersion": { "title": "Aperçu des versions de Linuxmuster" },
     "appconfig": {
+      "deleteEntries": "Supprimer {{count}} entrées",
+      "confirmDeleteEntries": "Êtes-vous sûr de vouloir supprimer ces entrées ? Cette action ne peut pas être annulée.",
       "sections": {
         "onlyOffice": {
           "title": "Intégration OnlyOffice",
@@ -869,7 +917,11 @@
         },
         "docker": {
           "title": "Applications Docker",
-          "description": "Afin de pouvoir utiliser les services étendus, les applications de conteneurs requises peuvent être installées et démarrées ici."
+          "description": "Afin de pouvoir utiliser les services étendus, les applications de conteneurs requises peuvent être installées et démarrées ici.",
+          "confirmMultiDeleteContainer": "Êtes-vous sûr de vouloir supprimer ces conteneurs ? Cette action ne peut pas être annulée.",
+          "confirmSingleDeleteContainer": "Êtes-vous sûr de vouloir supprimer ce conteneur ? Cette action ne peut pas être annulée.",
+          "deleteContainers": "Supprimer {{count}} conteneurs",
+          "deleteContainer": "Supprimer le conteneur"
         },
         "veyon": {
           "title": "Proxy veyon",
@@ -886,7 +938,11 @@
         },
         "webdavServer": {
           "title": "WebDAV serveurs",
-          "filterPlaceHolderText": "Rechercher un serveur"
+          "filterPlaceHolderText": "Rechercher un serveur",
+          "deleteWarning": {
+            "title": "Suppression impossible",
+            "description": "Le serveur WebDAV « {{serverName}} » est utilisé par {{count}} partage(s) : {{shares}}. Veuillez d'abord supprimer les partages dépendants."
+          }
         },
         "files": {
           "title": "Fichiers",
@@ -1006,14 +1062,21 @@
       "enterSavePin": "Veuillez saisir un code PIN.",
       "wrongSafePin": "Le code PIN est erronée.",
       "enterSafePin": "Veuillez saisir le code PIN pour déchiffrer.",
-      "safePinDescription": "Un code PIN est nécessaire pour chiffrer les données d'accès. Ce code PIN n'est visible pour personne et n'est pas sauvegardé."
+      "safePinDescription": "Un code PIN est nécessaire pour chiffrer les données d'accès. Ce code PIN n'est visible pour personne et n'est pas sauvegardé.",
+      "confirmMultiDeleteAccount": "Êtes-vous sûr de vouloir supprimer ces comptes ? Cette action ne peut pas être annulée.",
+      "confirmSingleDeleteAccount": "Êtes-vous sûr de vouloir supprimer ce compte ? Cette action ne peut pas être annulée.",
+      "deleteUserAccounts": "Supprimer {{count}} comptes",
+      "deleteUserAccount": "Supprimer le compte",
+      "cryptoNotAvailable": "Le cryptage n'est disponible que via HTTPS. Veuillez utiliser une connexion sécurisée."
     },
     "mails": {
       "title": "Email"
     },
     "mobileAccess": {
       "title": "Accès à l'application",
-      "description": "Ici, vous pouvez configurer l'accès mobile de l'app {{ applicationName }} pour l'accès aux fichiers. Actuellement disponible uniquement pour Apple iOS."
+      "description": "Tu peux configurer ici l'accès mobile à l'application edulution.",
+      "docsDescription": "Tu trouveras le lien de téléchargement de l'application edulution et les instructions d'installation dans la documentation edulution.",
+      "button": "Ouvrir le documentaire"
     },
     "faq": "FAQ",
     "externalIntegration": "Connexion externe",
@@ -1052,7 +1115,7 @@
   },
   "forwardingpage": {
     "action": "Ce lien peut être atteint du côté extérieur du fournisseur.",
-    "description": "L'application s'ouvre dans une nouvelle fenêtre. Aucune autre autorisation n'est nécessaire.",
+    "description": "L'application s'ouvre dans une nouvelle fenêtre.",
     "missing_link": "Le lien est manquant"
   },
   "menu": "Menu",
@@ -1079,6 +1142,8 @@
     "infoQrCodeExpired": "Le temps de connexion avec l'application edulution.io a expiré."
   },
   "common": {
+    "more": "Plus",
+    "less": "Moins",
     "refreshPage": "Actualiser la page",
     "guest": "Invité",
     "ok": "OK",
@@ -1090,6 +1155,7 @@
     "savedToClipboardError": "N'a pas pu être copié dans le presse-papiers.",
     "answers": "Répondre",
     "error": "Erreur",
+    "entry": "Entrée {{index}}",
     "errors": {
       "attachmentUploadFailed": "La pièce jointe n'a pas pu être téléversée",
       "dbAccessFailed": "L'accès à la base de données a échoué",
@@ -1233,7 +1299,7 @@
     "pathDescription": "Veuillez saisir une URL.",
     "apptype": "Type d'application",
     "native": "Support natif",
-    "forwarded": "Transfertr",
+    "forwarding": "Transfert",
     "embedded": "Intégré",
     "saved": "Configuration enregistrée!",
     "url": "URL",
@@ -1267,7 +1333,9 @@
     "size": "Taille",
     "lastModified": "Modifié récemmen",
     "type": "Type",
-    "filesOrFoldersSelected": "{{selected}} de {{total}} fichiers/dossiers sélectionnés"
+    "filesOrFoldersSelected": "{{selected}} de {{total}} fichiers/dossiers sélectionnés",
+    "element": "Élément",
+    "elements": "Éléments"
   },
   "currentDirectory": "Répertoire actuel",
   "filesharingUpload": {
@@ -1286,7 +1354,16 @@
     "overwriteWarningDescriptionFiles": "Les fichiers suivants sont écrasés:",
     "oversizedFilesDetected": "Fichiers trop grands découverts",
     "oversizedFileDetected": "Fichier trop grand découvert!",
-    "cannotUploadOversized": "Aucun fichier de plus de 50 Mo ne peut être téléversé."
+    "cannotUploadOversized": "Aucun fichier de plus de 50 Mo ne peut être téléversé.",
+    "file": "Fichier",
+    "files": "Fichiers",
+    "creatingDirectoryStructure": "Création de la structure des dossiers",
+    "hiddenFiles": "fichiers cachés et système",
+    "errors": {
+      "directoryCreationFailed": "Échec de la création du répertoire",
+      "fileUploadFailed": "Échec du téléchargement du fichier",
+      "uploadError": "Erreur lors du téléchargement des fichiers"
+    }
   },
   "linuxmuster": {
     "title": "Linuxmuster",
@@ -1497,7 +1574,19 @@
       "light": "Clair",
       "dark": "Sombre"
     },
-    "mailSogoThemeDisabled": "Désactivé, car le serveur de messagerie ne fonctionne pas."
+    "mailSogoThemeDisabled": "Désactivé, car le serveur de messagerie ne fonctionne pas.",
+    "mailSogoThemeUpdateCheckerTitle": "Vérification de version du thème",
+    "mailSogoThemeUpdateCheckerDescription": "Vérifiez si une nouvelle version du thème actuel est disponible et mettez-la à jour si nécessaire.",
+    "updateChecker": {
+      "currentVersion": "Version actuelle",
+      "latestVersion": "Dernière version",
+      "theme": "Thème",
+      "updateAvailable": "Une nouvelle version est disponible !",
+      "checkAgain": "Vérifier à nouveau",
+      "updateNow": "Mettre à jour maintenant",
+      "checkVersionSuccess": "Thème vérifié avec succès !",
+      "noData": "Aucune information de version disponible."
+    }
   },
   "preview": {
     "image": "Aperçu de l'image",
@@ -1505,10 +1594,18 @@
   },
   "containerApplication": {
     "dialogTitle": "Installer le plugin {{applicationName}}-Plugin",
+    "EDU_MANAGER_INSTALL_TOKEN": {
+      "title": "Installer Jeton",
+      "description": "Veuillez saisir le jeton d'installation qui a été créé dans le Edulution Manager."
+    },
     "EDULUTION_MAIL_HOSTNAME": {
       "title": "Nom d'hôte",
       "description": "Nom d'hôte du serveur de messagerie. Cela peut différer du domaine Edulution."
     }
+  },
+  "edulution-manager": {
+    "sidebar": "Gestionnaire Edulution",
+    "title": "Gestionnaire Edulution"
   },
   "dockerOverview": {
     "title": "Aperçu des conteneurs",
@@ -1520,7 +1617,9 @@
     "filterPlaceHolderText": "Rechercher le nom du conteneur",
     "port": "Port",
     "created": "Créé à",
-    "container-view": "Conteneur"
+    "container-view": "Conteneur",
+    "selectPluginForInstallationTitle": "Sélectionnez le plugin à installer",
+    "selectPluginForInstallationDescription": "Sélectionnez ici une application pour laquelle un plugin doit être installé."
   },
   "docker": {
     "error": {
@@ -1528,7 +1627,8 @@
       "dockerImageNotFound": "L'image docker n'a pas pu être trouvée",
       "dockerCreationError": "Le conteneur docker n'a pas pu être créé",
       "dockerCommandExecutionError": "La commande docker n'a pas pu être exécutée",
-      "dockerContainerDeletionError": "Le conteneur docker n'a pas pu être supprimé"
+      "dockerContainerDeletionError": "Le conteneur docker n'a pas pu être supprimé",
+      "dockerUpdateError": "La mise à jour du conteneur docker a échoué"
     },
     "events": {
       "pullingImage": "Requête de l'image docker ...",
@@ -1540,7 +1640,9 @@
       "restartContainer": "Conteneur redémarré.",
       "killContainer": "Forcer l'arrêt du conteneur.",
       "containerCreationSuccessful": "Conteneur créé avec succès.",
-      "containerCreationFailed": "Le conteneur n'a pas pu être créé."
+      "containerCreationFailed": "Le conteneur n'a pas pu être créé.",
+      "containerUpdateSuccessful": "{{containerName}} mis à jour avec succès.",
+      "containerAlreadyUpdateToDate": "{{containerName}} est déjà à jour."
     },
     "status": {
       "running": "en cours d'exécution",

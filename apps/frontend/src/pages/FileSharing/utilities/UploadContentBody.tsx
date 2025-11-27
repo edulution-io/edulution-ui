@@ -1,14 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -17,84 +23,48 @@ import { MdOutlineCloudUpload } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
-import { HiExclamationTriangle, HiTrash } from 'react-icons/hi2';
+import { HiEyeSlash, HiTrash } from 'react-icons/hi2';
 import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import WarningBox from '@/components/shared/WarningBox';
-import { TiDocumentAdd } from 'react-icons/ti';
-import { UploadFile } from '@libs/filesharing/types/uploadFile';
-import Progress from '@/components/ui/Progress';
-import { WorkerMessage } from '@/worker/workerMessage';
-import WorkerProgressMessage from '@/worker/workerProgressMessage';
-import WorkerOutputMessage from '@/worker/workerOutputMessage';
-import zipDirectoryEntry from '@libs/filesharing/utils/zipDirectoryEntry';
-import { RequestResponseContentType, ResponseType } from '@libs/common/types/http-methods';
-import ZIP_PROCESS_TIMEOUT from '@libs/filesharing/constants/zipProcessTimeout';
+import { TiDocumentAdd, TiFolderAdd } from 'react-icons/ti';
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
 import { FcFolder } from 'react-icons/fc';
-import MAX_FOLDER_UPLOAD_CONTENT_SIZE from '@libs/ui/constants/maxFolderUploadContentSize';
 import getFileUploadLimit from '@libs/ui/utils/getFileUploadLimit';
-import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
-import { v4 as uuidv4 } from 'uuid';
+import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
+import ActionTooltip from '@/components/shared/ActionTooltip';
+import { BUTTONS_ICON_WIDTH, SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
+import shouldFilterFile from '@libs/filesharing/utils/shouldFilterFile';
+import isFolderUploadItem from '@libs/filesharing/utils/isFolderUploadItem';
+import splitFilesByMaxFileSize from '@libs/filesharing/utils/splitFilesByMaxFileSize';
+import findDuplicateFiles from '@libs/filesharing/utils/findDuplicateFiles';
+import getUploadItemDisplayName from '@libs/filesharing/utils/getUploadItemDisplayName';
+import ValidationWarnings from '@/pages/FileSharing/utilities/ValidationWarnings';
+import getRandomUUID from '@/utils/getRandomUUID';
 
 const UploadContentBody = () => {
   const { webdavShare } = useParams();
   const { t } = useTranslation();
   const { files, webdavShares } = useFileSharingStore();
   const [oversizedFiles, setOversizedFiles] = useState<File[]>([]);
-  const [zipProgress, setZipProgress] = useState(0);
   const [tooLargeFolders, setTooLargeFolders] = useState<string[]>([]);
   const { setSubmitButtonIsDisabled } = useFileSharingDialogStore();
-
-  const zipWorker = useRef<Worker>();
-
   const [filesThatWillBeOverwritten, setFilesThatWillBeOverwritten] = useState<string[]>([]);
 
-  const { filesToUpload, setFilesToUpload, updateFilesToUpload } = useHandelUploadFileStore();
+  const { filesToUpload, updateFilesToUpload } = useHandleUploadFileStore();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const hasMultipleDuplicates = filesThatWillBeOverwritten.length > 1;
-  const hasMultipleOversizedFiles = oversizedFiles.length > 1;
-  const isAnyFileOversized = oversizedFiles.length > 0;
-
-  const displayName = (file: UploadFile | { name: string }): string => {
-    if (!('isZippedFolder' in file)) return file.name;
-
-    if (file.isZippedFolder && file.originalFolderName) return file.originalFolderName;
-    return file.name.replace(/\.zip$/i, '');
-  };
-
-  const splitFilesByMaxFileSize = (incomingFiles: File[], maxSizeMB: number): { oversize: File[]; normal: File[] } => {
-    const oversize = incomingFiles.filter((f) => bytesToMegabytes(f.size) > maxSizeMB);
-    const normal = incomingFiles.filter((f) => bytesToMegabytes(f.size) <= maxSizeMB);
-    return { oversize, normal };
-  };
-
-  const findDuplicateFiles = (incoming: UploadFile[], existing: { filename: string }[]): { name: string }[] => {
-    const normalize = (filename: string) => decodeURIComponent(filename).trim().toLowerCase();
-    const existingFilenameSet = new Set(existing.map((existingFile) => normalize(existingFile.filename)));
-
-    return incoming
-      .filter((file) => existingFilenameSet.has(normalize(displayName(file))))
-      .map((file) => ({ name: displayName(file) }));
-  };
-
-  const duplicateKey = (f: UploadFile | { name: string; isZippedFolder?: boolean; originalFolderName?: string }) =>
-    'isZippedFolder' in f && f.isZippedFolder && f.originalFolderName
-      ? f.originalFolderName
-      : f.name.replace(/\.zip$/i, '');
+  const folderInputRef = useRef<HTMLInputElement>(null);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const { oversize, normal } = splitFilesByMaxFileSize(
-        acceptedFiles,
-        getFileUploadLimit(webdavShares, webdavShare),
-      );
+      const folders = acceptedFiles.filter((file): file is UploadItem => isFolderUploadItem(file as UploadItem));
+      const regularFiles = acceptedFiles.filter((file) => !isFolderUploadItem(file as UploadItem));
+      const { oversize, normal } = splitFilesByMaxFileSize(regularFiles, getFileUploadLimit(webdavShares, webdavShare));
       const duplicates = findDuplicateFiles(
-        normal.map((file) => Object.assign(file, { id: uuidv4() })),
+        [...normal, ...folders].map((file) => Object.assign(file, { id: getRandomUUID() })),
         files,
       );
 
@@ -105,113 +75,41 @@ const UploadContentBody = () => {
 
       setFilesThatWillBeOverwritten((prev) => {
         const seen = new Set(prev);
-        const fresh = duplicates.map(duplicateKey).filter((k) => !seen.has(k));
+        const fresh = duplicates.map((d) => d.name).filter((k) => !seen.has(k));
         return [...prev, ...fresh];
       });
 
-      const uploadFolder = acceptedFiles.filter(
-        (file): file is UploadFile => typeof (file as UploadFile).fileCount === 'number',
-      );
-
-      const newTooLarge = uploadFolder
-        .filter((file) => (file.fileCount ?? 0) > MAX_FOLDER_UPLOAD_CONTENT_SIZE)
-        .map((file) => file.originalFolderName ?? file.name)
-        .filter((filename) => !tooLargeFolders.includes(filename));
-
-      if (newTooLarge.length) {
-        setTooLargeFolders((prev) => [...prev, ...newTooLarge]);
-      }
-
       updateFilesToUpload((prevFiles) => {
-        const existingNames = new Set(prevFiles.map((f) => f.name));
-
-        const newFiles = acceptedFiles
-          .filter((file) => !existingNames.has(file.name))
+        const existingNames = new Set(prevFiles.map((f) => getUploadItemDisplayName(f)));
+        const newUploadFiles = [...normal, ...folders]
+          .filter((file) => !existingNames.has(getUploadItemDisplayName(file)))
           .map((file) => {
-            const uploadFile: UploadFile = Object.assign(new File([file], file.name, { type: file.type }), {
-              id: uuidv4(),
-              isZippedFolder: false,
+            if (isFolderUploadItem(file as UploadItem)) {
+              return file as UploadItem;
+            }
+            const uploadFile: UploadItem = Object.assign(new File([file], file.name, { type: file.type }), {
+              id: getRandomUUID(),
             });
             return uploadFile;
           });
 
-        return [...prevFiles, ...newFiles];
+        return [...prevFiles, ...newUploadFiles];
       });
     },
-    [files, setOversizedFiles, setFilesThatWillBeOverwritten, setFilesToUpload, setTooLargeFolders],
+    [files, webdavShares, webdavShare, updateFilesToUpload],
   );
 
-  const isZipProgress = (m: WorkerMessage): m is WorkerProgressMessage => 'progress' in m;
-  const isBlob = (m: WorkerMessage): m is WorkerOutputMessage => ResponseType.BLOB in m;
-
-  useEffect(() => {
-    zipWorker.current = new Worker(new URL('../../../worker/zipWorker.ts', import.meta.url), { type: 'module' });
-
-    zipWorker.current.onmessage = (ev: MessageEvent<WorkerMessage>) => {
-      const { data } = ev;
-
-      if (isZipProgress(data)) {
-        setZipProgress(data.progress);
-        return;
-      }
-
-      if (isBlob(data)) {
-        const { blob, root, fileCount } = data;
-
-        const zipFile: UploadFile = Object.assign(
-          new File([blob], `${root}.zip`, { type: RequestResponseContentType.APPLICATION_ZIP }),
-          {
-            isZippedFolder: true,
-            originalFolderName: root,
-            fileCount,
-            id: uuidv4(),
-          },
-        );
-
-        onDrop([zipFile]);
-      }
-    };
-
-    return () => zipWorker.current?.terminate();
-  }, [onDrop]);
-
-  useEffect(() => {
-    if (zipProgress === 100 || isAnyFileOversized) {
-      setTimeout(() => {
-        setZipProgress(0);
-      }, ZIP_PROCESS_TIMEOUT);
-    }
-  }, [zipProgress]);
-
-  const extractFilesFromEvent = async (event: DropEvent): Promise<File[]> => {
+  const extractFilesFromEvent = (event: DropEvent): Promise<File[]> => {
     if ('dataTransfer' in event && event.dataTransfer) {
       const items = Array.from(event.dataTransfer.items ?? []);
-      const resolved = await Promise.all(
-        items.map(async (item) => {
-          const entry = item.webkitGetAsEntry?.();
-          if (entry && entry.isDirectory) {
-            const root = entry.name;
-            const blob = await zipDirectoryEntry(entry as FileSystemDirectoryEntry);
-            return Object.assign(
-              new File([blob], `${root}.zip`, { type: RequestResponseContentType.APPLICATION_ZIP }),
-              {
-                isZippedFolder: true,
-                originalFolderName: root,
-              } as Partial<UploadFile>,
-            ) as UploadFile;
-          }
-          return item.getAsFile();
-        }),
-      );
-
-      return resolved.filter((f): f is File => Boolean(f));
+      return Promise.resolve(items.map((item) => item.getAsFile()).filter((file): file is File => file !== null));
     }
 
     if ('target' in event && (event.target as HTMLInputElement).files) {
-      return Array.from((event.target as HTMLInputElement).files!);
+      return Promise.resolve(Array.from((event.target as HTMLInputElement).files!));
     }
 
-    return [];
+    return Promise.resolve([]);
   };
 
   const handleFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -220,28 +118,91 @@ const UploadContentBody = () => {
     e.target.value = '';
   };
 
-  const removeFile = (name: string) => {
-    updateFilesToUpload((prev) => prev.filter((file) => file.name !== name));
-    setOversizedFiles((prev) => prev.filter((f) => f.name !== name));
-    const key = duplicateKey({ name } as UploadFile);
-    setFilesThatWillBeOverwritten((prev) => prev.filter((k) => k !== key));
-    setTooLargeFolders((prev) => prev.filter((k) => k !== key));
+  const handleFolderSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = Array.from(e.target.files ?? []);
+
+    if (selected.length > 0) {
+      const firstFile = selected[0];
+      const pathParts = firstFile.webkitRelativePath?.split('/') || [];
+      const folderName = pathParts[0] || 'folder';
+
+      const visibleFiles = selected.filter((file) => !shouldFilterFile(file.name));
+      const hiddenAndSystemFiles = selected.filter((file) => shouldFilterFile(file.name));
+
+      const folderEntry: UploadItem = Object.assign(new File([], folderName, { type: 'application/x-directory' }), {
+        id: getRandomUUID(),
+        isFolder: true,
+        folderName,
+        files: visibleFiles,
+        visibleFiles,
+        hiddenFiles: hiddenAndSystemFiles,
+        includeHidden: false,
+      });
+
+      onDrop([folderEntry]);
+    }
+    e.target.value = '';
+  };
+
+  const toggleHiddenFilesForFolder = (folderId: string) => {
+    const maxSizeMB = getFileUploadLimit(webdavShares, webdavShare);
+
+    updateFilesToUpload((prev) =>
+      prev.map((file) => {
+        if (file.id !== folderId || !isFolderUploadItem(file)) {
+          return file;
+        }
+
+        const includeHidden = !file.includeHidden;
+        const baseFiles = file.visibleFiles || [];
+        const hiddenSystemFiles = file.hiddenFiles || [];
+        const newFiles = includeHidden ? [...baseFiles, ...hiddenSystemFiles] : baseFiles;
+
+        const newTotalSize = newFiles.reduce((sum, f) => sum + f.size, 0);
+        const newSizeMB = bytesToMegabytes(newTotalSize);
+
+        if (newSizeMB > maxSizeMB) {
+          setTooLargeFolders((prevFolders) => [...new Set([...prevFolders, file.folderName])]);
+          return file;
+        }
+
+        setTooLargeFolders((prevFolders) => prevFolders.filter((name) => name !== file.folderName));
+
+        return {
+          ...file,
+          includeHidden,
+          files: newFiles,
+        } as UploadItem;
+      }),
+    );
+  };
+
+  const removeFile = (identifier: string) => {
+    updateFilesToUpload((prev) =>
+      prev.filter((file) => {
+        const name = getUploadItemDisplayName(file);
+        return name !== identifier;
+      }),
+    );
+    setOversizedFiles((prev) => prev.filter((f) => f.name !== identifier));
+    setFilesThatWillBeOverwritten((prev) => prev.filter((k) => k !== identifier));
+    setTooLargeFolders((prev) => prev.filter((k) => k !== identifier));
   };
 
   useEffect(() => {
     setSubmitButtonIsDisabled(oversizedFiles.length !== 0 || tooLargeFolders.length !== 0);
-  }, [oversizedFiles]);
+  }, [oversizedFiles, tooLargeFolders, setSubmitButtonIsDisabled]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     getFilesFromEvent: (event) => extractFilesFromEvent(event),
     onDrop,
   });
 
-  const renderPreview = (file: UploadFile) => {
-    if (file.isZippedFolder) {
+  const renderPreview = (file: UploadItem) => {
+    if (isFolderUploadItem(file)) {
       return (
         <div className="flex h-20 items-center justify-center">
-          <FcFolder size={60} />
+          <FcFolder size={SIDEBAR_ICON_WIDTH} />
         </div>
       );
     }
@@ -260,7 +221,7 @@ const UploadContentBody = () => {
     return (
       <div className="flex h-20 items-center justify-center">
         <FileIconComponent
-          size={60}
+          size={40}
           filename={file.name}
         />
       </div>
@@ -284,19 +245,20 @@ const UploadContentBody = () => {
         </div>
       </div>
 
-      {zipProgress > 0 && (
-        <div className="flex flex-col items-center p-8">
-          <p className="text-center font-semibold text-secondary">{t('filesharingUpload.preparingFolder')}</p>
-          <Progress value={zipProgress} />
-        </div>
-      )}
-
       <input
         type="file"
         multiple
         hidden
         ref={fileInputRef}
         onChange={handleFilesSelected}
+      />
+
+      <input
+        type="file"
+        hidden
+        ref={folderInputRef}
+        webkitdirectory=""
+        onChange={handleFolderSelected}
       />
 
       <div className="flex w-full gap-2 pb-8">
@@ -307,96 +269,96 @@ const UploadContentBody = () => {
           onClick={() => fileInputRef.current?.click()}
         >
           <div className="flex flex-col items-center">
-            <TiDocumentAdd size={24} />
+            <TiDocumentAdd size={BUTTONS_ICON_WIDTH} />
             {t('filesharingUpload.addFiles')}
+          </div>
+        </Button>
+
+        <Button
+          variant="btn-collaboration"
+          className="flex-1"
+          type="button"
+          onClick={() => folderInputRef.current?.click()}
+        >
+          <div className="flex flex-col items-center">
+            <div>
+              <TiFolderAdd size={BUTTONS_ICON_WIDTH} />
+            </div>
+            {t('filesharingUpload.addFolder')}
           </div>
         </Button>
       </div>
 
-      {filesThatWillBeOverwritten.length > 0 && (
-        <WarningBox
-          icon={<HiExclamationTriangle className=" text-ciYellow" />}
-          title={
-            hasMultipleDuplicates
-              ? t('filesharingUpload.overwriteWarningTitleFiles')
-              : t('filesharingUpload.overwriteWarningTitleFile')
-          }
-          description={
-            hasMultipleDuplicates
-              ? t('filesharingUpload.overwriteWarningDescriptionFiles')
-              : t('filesharingUpload.overwriteWarningDescriptionFile')
-          }
-          filenames={filesThatWillBeOverwritten}
-          borderColor="border-ciLightYellow"
-          backgroundColor="bg-background"
-          textColor="text-ciLightYellow"
-        />
-      )}
-
-      {isAnyFileOversized && (
-        <WarningBox
-          icon={<HiExclamationTriangle className=" text-ciRed" />}
-          title={
-            hasMultipleOversizedFiles
-              ? t('filesharingUpload.oversizedFilesDetected')
-              : t('filesharingUpload.oversizedFileDetected')
-          }
-          description={t('filesharingUpload.cannotUploadOversized')}
-          filenames={oversizedFiles.map((file) => file.name)}
-          borderColor="border-ciLightRed"
-          backgroundColor="bg-background"
-          textColor="text-ciLightRed"
-        />
-      )}
-
-      {tooLargeFolders.length > 0 && (
-        <WarningBox
-          icon={<HiExclamationTriangle className=" text-ciRed" />}
-          title={t('filesharingUpload.folderTooLargeTitle')}
-          description={t('filesharingUpload.folderTooLargeDescription')}
-          filenames={tooLargeFolders.map((name) => name)}
-          borderColor="border-ciRed"
-          backgroundColor="bg-background"
-          textColor="text-ciRed"
-        />
-      )}
+      <ValidationWarnings
+        oversizedFiles={oversizedFiles}
+        duplicateFiles={filesThatWillBeOverwritten}
+        tooLargeFolders={tooLargeFolders}
+      />
 
       {filesToUpload.length > 0 && (
         <ScrollArea className="mt-2 max-h-[50vh] overflow-y-auto overflow-x-hidden rounded-xl border border-gray-600 px-2 scrollbar-thin">
           <ul className="my-3 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
             {filesToUpload.map((file) => {
-              const isFolderTooLarge =
-                file.isZippedFolder && tooLargeFolders.includes(file.originalFolderName ?? file.name);
+              const isFolder = isFolderUploadItem(file);
+              const fileName = getUploadItemDisplayName(file);
+
+              const totalSize = isFolder && file.files ? file.files.reduce((sum, f) => sum + f.size, 0) : file.size;
+
+              const isOversized = bytesToMegabytes(totalSize) > getFileUploadLimit(webdavShares, webdavShare);
 
               let baseBorderClass = 'border-accent';
-
-              if (isFolderTooLarge || bytesToMegabytes(file.size) > getFileUploadLimit(webdavShares, webdavShare)) {
+              if (isOversized) {
                 baseBorderClass = 'border-ciRed opacity-50';
               }
 
               return (
                 <li
-                  key={file.name}
-                  className={`group relative overflow-hidden rounded-xl border p-2 shadow-lg transition-all duration-200 hover:min-h-[80px] hover:overflow-visible ${
-                    baseBorderClass
-                  }`}
+                  key={file.id}
+                  className={`group relative overflow-hidden rounded-xl border p-2 shadow-lg transition-all duration-200 hover:min-h-[80px] hover:overflow-visible ${baseBorderClass}`}
                 >
                   {renderPreview(file)}
 
                   <Button
-                    onClick={() => removeFile(file.name)}
+                    onClick={() => removeFile(fileName)}
                     className="absolute right-1 top-1 h-8 rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
                   >
                     <HiTrash className="text-text-ciRed h-4 w-4" />
                   </Button>
 
-                  <div className="flex items-center justify-center">
+                  <div className="flex flex-col items-center justify-center">
                     <div className="truncate text-center text-xs text-neutral-500 underline transition-all duration-200 group-hover:min-w-full group-hover:overflow-visible group-hover:whitespace-normal group-hover:break-words group-hover:p-1">
-                      {'isZippedFolder' in file && file.isZippedFolder && 'originalFolderName' in file
-                        ? file.originalFolderName
-                        : file.name}
+                      {fileName}
                     </div>
+                    {isFolder && (
+                      <div className="text-center text-xs text-neutral-400">
+                        {file.files?.length || 0}{' '}
+                        {(file.files?.length || 0) === 1 ? t('filesharingUpload.file') : t('filesharingUpload.files')}
+                      </div>
+                    )}
                   </div>
+                  {isFolder && file.hiddenFiles && file.hiddenFiles.length > 0 && (
+                    <div className="flex items-center justify-center gap-1 pt-1">
+                      <ActionTooltip
+                        tooltipText={t('filesharingUpload.hiddenFiles')}
+                        trigger={
+                          <label
+                            htmlFor={`hidden-${file.id}`}
+                            className="mt-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-neutral-700 px-2 py-1 text-xs text-neutral-300 hover:bg-neutral-600"
+                          >
+                            <input
+                              type="checkbox"
+                              id={`hidden-${file.id}`}
+                              checked={file.includeHidden || false}
+                              onChange={() => toggleHiddenFilesForFolder(file.id)}
+                              className="h-3 w-3 rounded border-gray-300"
+                            />
+                            <HiEyeSlash className="h-3 w-3" />
+                            <span>+{file.hiddenFiles.length}</span>
+                          </label>
+                        }
+                      />
+                    </div>
+                  )}
                 </li>
               );
             })}

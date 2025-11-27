@@ -1,18 +1,26 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IoAdd, IoRemove } from 'react-icons/io5';
+import { FiEdit } from 'react-icons/fi';
 import { type ContainerInfo } from 'dockerode';
 import TableAction from '@libs/common/types/tableAction';
 import { AppConfigTableConfig } from '@/pages/Settings/AppConfig/components/table/types/appConfigTableConfig';
@@ -28,6 +36,7 @@ import { OnChangeFn, RowSelectionState, VisibilityState } from '@tanstack/react-
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 
 interface AppConfigTableProps {
   applicationName: string;
@@ -60,6 +69,8 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
     } = config;
     const { tableContentData, fetchTableContent, selectedRows, setSelectedRows, deleteTableEntry } = useStore();
     const { setDialogOpen, isDialogOpen } = useAppConfigTableDialogStore();
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [itemsToDelete, setItemsToDelete] = useState<Array<{ name: string; id: string }>>([]);
 
     const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
       if (selectedRows && setSelectedRows) {
@@ -82,7 +93,29 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
       setDialogOpen(tableId);
     };
 
-    const handleRemoveClick = async () => {
+    const handleRemoveClick = () => {
+      if (!selectedRows) return;
+
+      const selectedIndices = Object.keys(selectedRows)
+        .filter((key) => selectedRows[key])
+        .map(Number);
+
+      const items = selectedIndices.map((index) => {
+        const row = tableContentData[index];
+        if (row && 'filename' in row && row.filename) {
+          return { name: row.filename, id: String(index) };
+        }
+        if (row && 'webdavShareId' in row && row.webdavShareId) {
+          return { name: row.displayName, id: String(index) };
+        }
+        return { name: t('common.entry', { index: index + 1 }), id: String(index) };
+      });
+
+      setItemsToDelete(items);
+      setIsDeleteDialogOpen(true);
+    };
+
+    const handleConfirmDelete = async () => {
       if (!selectedRows) return;
 
       const selectedIndices = Object.keys(selectedRows)
@@ -127,13 +160,17 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
         BulletinCategoryResponseDto | ContainerInfo | FileInfoDto | VeyonProxyItem | WebdavShareDto
       >[] = [];
       if (showAddButton) {
+        const hasData = tableContentData && tableContentData.length > 0;
+        const selectedCount = selectedRows ? Object.values(selectedRows).filter(Boolean).length : 0;
+        const isEditMode = hasData && selectedCount === 1;
+
         tableActions.push({
-          icon: IoAdd,
-          translationId: 'common.add',
+          icon: isEditMode ? FiEdit : IoAdd,
+          translationId: isEditMode ? 'common.edit' : 'common.add',
           onClick: handleAddClick,
         });
       }
-      if (showRemoveButton) {
+      if (showRemoveButton && selectedRows && Object.keys(selectedRows).length > 0) {
         tableActions.push({
           icon: IoRemove,
           translationId: 'common.remove',
@@ -242,6 +279,12 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
         {title && <p className="font-bold">{t(title)}</p>}
         {getScrollableTable()}
         {dialogBody}
+        <DeleteAppConfigDialog
+          isOpen={isDeleteDialogOpen}
+          onOpenChange={setIsDeleteDialogOpen}
+          items={itemsToDelete}
+          onConfirmDelete={handleConfirmDelete}
+        />
       </div>
     );
   };

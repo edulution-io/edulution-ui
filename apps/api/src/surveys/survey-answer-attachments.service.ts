@@ -1,23 +1,29 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { join } from 'path';
-import { Response } from 'express';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
-import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import SURVEY_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersAttachmentPath';
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import { PUBLIC_SURVEYS, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
+import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
@@ -26,24 +32,6 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
 
   onModuleInit() {
     void this.fileSystemService.ensureDirectoryExists(SURVEY_ANSWERS_ATTACHMENT_PATH);
-  }
-
-  async serveFileFromAnswer(userName: string, surveyId: string, fileName: string, res: Response): Promise<Response> {
-    const tempPath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, fileName);
-    const permanentPath = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName, fileName);
-    const tempFileExists = await FilesystemService.checkIfFileExist(tempPath);
-    if (tempFileExists) {
-      const fileStream = await this.fileSystemService.createReadStream(tempPath);
-      fileStream.pipe(res);
-      return res;
-    }
-    const permanentFileExists = await FilesystemService.checkIfFileExist(permanentPath);
-    if (permanentFileExists) {
-      const fileStream = await this.fileSystemService.createReadStream(permanentPath);
-      fileStream.pipe(res);
-      return res;
-    }
-    throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   static async deleteTempFileFromAnswer(userName: string, surveyId: string, fileName: string): Promise<void> {
@@ -55,6 +43,11 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     await FilesystemService.deleteFile(tempFilesPath, fileName);
   }
 
+  static makeUrlPermanent = (url: string | undefined): string | undefined =>
+    url?.replace(`/${PUBLIC_SURVEYS}/`, `/${SURVEYS}/`);
+
+  static getFileNameFromUrl = (url: string | undefined): string | undefined => url?.split('/').pop();
+
   async moveAnswersAttachmentsToPermanentStorage(userName: string, surveyId: string, answer: JSON): Promise<JSON> {
     if (!userName || !surveyId || !answer) {
       throw new CustomHttpException(
@@ -65,7 +58,6 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
       );
     }
     const directory = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, userName);
-
     const tempDirectory = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId);
     const tempFileNames = await this.fileSystemService.getAllFilenamesInDirectory(tempDirectory);
     if (tempFileNames.length === 0) {
@@ -79,28 +71,44 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
       (object & { content: string }) | (object & { content: string })[]
     >;
 
+    const permanentFiles = await this.fileSystemService.getAllFilenamesInDirectory(directory);
+
     const fileNamesToMove: string[] = [];
     const persistentFiles: string[] = [];
-    const permanentFiles = await this.fileSystemService.getAllFilenamesInDirectory(directory);
+
+    const nextAnswer: Record<string, (object & { content: string }) | (object & { content: string })[]> = {};
+    const nextAnswerContent: (object & { content: string })[] = [];
     Object.keys(surveyAnswer).forEach((questionName) => {
       const questionAnswer = surveyAnswer[questionName];
       if (Array.isArray(questionAnswer)) {
         questionAnswer.forEach((item) => {
-          const fileName = item.content?.split('/').pop();
+          const fileName = SurveyAnswerAttachmentsService.getFileNameFromUrl(item.content);
           if (fileName && permanentFiles.includes(fileName)) {
             persistentFiles.push(fileName);
           }
           if (fileName && tempFileNames.includes(fileName)) {
             fileNamesToMove.push(fileName);
+            const newFile: object & { content: string } = {
+              ...item,
+              content: SurveyAnswerAttachmentsService.makeUrlPermanent(item.content)!,
+            };
+            nextAnswerContent.push(newFile);
           }
         });
       } else {
-        const fileName = questionAnswer.content?.split('/').pop();
+        const fileName = SurveyAnswerAttachmentsService.getFileNameFromUrl(questionAnswer.content);
         if (fileName && tempFileNames.includes(fileName)) {
           fileNamesToMove.push(fileName);
         }
+        const newFile: object & { content: string } = {
+          ...questionAnswer,
+          content: SurveyAnswerAttachmentsService.makeUrlPermanent(questionAnswer.content)!,
+        };
+        nextAnswerContent.push(newFile);
       }
+      nextAnswer[questionName] = nextAnswerContent;
     });
+
     const movingPromises = fileNamesToMove.map(async (fileName) =>
       FilesystemService.moveFile(join(tempDirectory, fileName), join(directory, fileName)),
     );
@@ -112,7 +120,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     );
     await Promise.all(deletionPromises);
 
-    return JSON.parse(JSON.stringify(surveyAnswer)) as JSON;
+    return JSON.parse(JSON.stringify(nextAnswer)) as JSON;
   }
 
   async clearUpSurveyAnswersTempFiles(userName: string, surveyId: string): Promise<void> {

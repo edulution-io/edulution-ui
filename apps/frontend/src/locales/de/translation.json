@@ -87,6 +87,7 @@
       "unauthorizedCreateCategory": "Keine Berechtigung, um diese Kategorie zu erstellen",
       "unauthorizedDeleteCategory": "Keine Berechtigung, um diese Kategorie zu löschen",
       "unauthorizedUpdateCategory": "Keine Berechtigung, um diese Kategorie zu aktualisieren",
+      "attachmentNotFound": "Anhang nicht gefunden",
       "attachmentDeletionFailed": "Löschen eines Anhangs ist fehlgeschlagen"
     }
   },
@@ -98,7 +99,9 @@
     "dropIconDescription": "Ziehe ein Bild hierher oder klicke, um ein Bild auszuwählen. Unterstützte Formate: SVG, WEBP"
   },
   "forwarding": {
-    "sidebar": "Weiterleitung"
+    "sidebar": "Weiterleitung",
+    "behaviorAtSidebarClick": "Schnellzugriff beim Öffnen der App",
+    "forwardDirectly": "Direkt beim Öffnen der App weiterleiten (falls deaktiviert, muss der Nutzer mit einem weiteren Klick bestätigen)"
   },
   "frame": {
     "sidebar": "Frame"
@@ -113,15 +116,9 @@
     "mobileAccess": {
       "title": "Mobiler Zugriff",
       "manual": "Anleitung",
-      "manualSetup": "Manuelles Einrichten",
       "setupWithQrCode": "Einrichtung via QR-Code",
-      "accessData": "Zugangsdaten",
       "content": "Du kannst von vielen mobilen Geräten aus auf den Schulserver zugreifen. Drücke auf Anleitung, um zu starten.",
-      "scanAccessInfo": "Um die Zugangsdaten zu übertragen, bitte folgenden QR-Code mit der {{ applicationName }} App scannen.",
-      "manualAccessInfo": "Gib die Anmeldedaten manuell in der {{ applicationName }} App ein. Das folgende Beispiel zeigt, wie die einzelnen Felder auszufüllen sind.",
-      "nextStepPreview": "Im nächsten Schritt kannst du die Zugangsdaten übertragen.",
-      "downloadDirect": "Oder lade die App direkt herunter:",
-      "downloadApp": "Lade hier die {{ applicationName }} App herunter:"
+      "scanAccessInfo": "Um die Zugangsdaten zu übertragen, bitte folgenden QR-Code mit der edulution App scannen."
     },
     "quota": {
       "title": "Quotas",
@@ -210,7 +207,13 @@
       "mailAddress": "E-Mail-Adresse",
       "noMailConfigured": "E-Mail-App ist nicht konfiguriert. Bitte kontaktiere den Systemadministrator.",
       "syncAccountAdded": "Konto für Sync-Job hinzugefügt.",
-      "syncAccountDeleted": "Konto für Sync-Job gelöscht."
+      "syncAccountDeleted": "Konto für Sync-Job gelöscht.",
+      "confirmMultiDeleteSyncJob": "Möchtest du diese Sync-Jobs wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "confirmSingleDeleteSyncJob": "Möchtest du diesen Sync-Job wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "deleteSyncJobs": "{{count}} Sync-Jobs löschen",
+      "deleteSyncJob": "Sync-Job löschen",
+      "confirmDeleteProviderConfig": "Möchtest du diese E-Mail-Provider-Konfiguration wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "deleteProviderConfig": "E-Mail-Provider-Konfiguration löschen"
     }
   },
   "chat": {
@@ -498,6 +501,18 @@
     "invalidQuota": "Die Quota muss der Dokumentation entsprechend angegeben werden",
     "invalidMailQuota": "Die E-Mailquota muss als Zahl in MB angegeben werden",
     "name": "Name",
+    "confirmDeleteGroup": "Möchtest du diese Gruppe wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "deleteGroup": "{{type}} löschen",
+    "project": {
+      "createSuccess": "Projekt erfolgreich erstellt",
+      "updateSuccess": "Projekt erfolgreich aktualisiert",
+      "deleteSuccess": "Projekt erfolgreich gelöscht"
+    },
+    "sessions": {
+      "createSuccess": "Sitzung erfolgreich erstellt",
+      "updateSuccess": "Sitzung erfolgreich aktualisiert",
+      "deleteSuccess": "Sitzung erfolgreich gelöscht"
+    },
     "mailQuota": "E-Mail Quota (MB)",
     "proxyAddresses": "Proxy E-Mail-Adressen",
     "descriptionPlaceholder": "Kurze Beschreibung des Projekts",
@@ -669,6 +684,11 @@
       "fileUploadError": "Die Datei konnte nicht hochgeladen werden, bitte versuche es später erneut.",
       "fileDeletionSuccess": "Die Datei wurde erfolgreich gelöscht.",
       "saveSurveySuccess": "Die Umfrage wurde gespeichert.",
+      "surveyPlaceHolder": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
+      "surveyPlaceholderDescription": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
+      "surveyPlaceholderDescriptionMobile": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
+      "pagePlaceHolder": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um der Seite ein neues Element hinzuzufügen.",
+      "panelPlaceHolder": "Klicke unten auf \"Frage hinzufügen\", um dem Bedienfeld ein neues Element hinzuzufügen.",
       "reset": "Verwerfen",
       "addDescription": "Beschreibung hinzufügen",
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
@@ -693,6 +713,15 @@
         "addQuestionTitle": "Titel hinzufügen",
         "questionDescription": "Beschreibung",
         "addQuestionDescription": "Beschreibung hinzufügen",
+        "rowsAndColumns": "Zeilen und Spalten Bearbeiten",
+        "columns": "Spalten",
+        "addColumn": "Spalte hinzufügen",
+        "newColumn": "Neue Spalte",
+        "removeColumn": "Spalte entfernen",
+        "rows": "Zeilen",
+        "addRow": "Zeile hinzufügen",
+        "newRow": "Neue Zeile",
+        "removeRow": "Zeile entfernen",
         "limit": "Grenzwert",
         "nullLimit": "Ein Grenzwert von 0 bedeutet, dass die Option unbeschränkt verfügbar ist.",
         "backendLimiters": "Auswahlmöglichkeiten begrenzen",
@@ -933,8 +962,8 @@
       "linuxmuster": "Hier kannst du alle Einstellungen vornehmen.",
       "whiteboard": "Hier kannst du alle Einstellungen vornehmen.",
       "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Info Board haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden.",
-      "forwarded": "Weiterleitung: Einfach den Link zur Webanwendung unter URL eintragen.",
-      "framed": "Frame: Einfach den Link zur Webanwendung unter URL eintragen.",
+      "forwarding": "Weiterleitung: Einfach den Link zur Webanwendung unter URL eintragen.",
+      "frame": "Frame: Einfach den Link zur Webanwendung unter URL eintragen.",
       "embedded": "Eingebettet: Hier kann eine eigene Webanwendung im Editor erstellt werden."
     },
     "globalSettings": {
@@ -972,6 +1001,18 @@
         "uploadDarkLogo": "Dunkles Logo hochladen",
         "deleteSuccessful": "Logo wurde erfolgreich gelöscht"
       },
+      "theme": {
+        "title": "Design-Anpassung",
+        "primaryColor": "Primärfarbe",
+        "primaryDescription": "Hauptfarbe für Schaltflächen, Links und Hervorhebungen",
+        "secondaryColor": "Sekundärfarbe",
+        "secondaryDescription": "Sekundärfarbe für Text und Rahmen",
+        "ciLightGreen": "Markengrün",
+        "ciLightGreenDescription": "Grüne Markenfarbe für Farbverläufe und Logos",
+        "ciLightBlue": "Markenblau",
+        "ciLightBlueDescription": "Blaue Markenfarbe für Farbverläufe und Logos",
+        "resetToDefaults": "Auf Standard zurücksetzen"
+      },
       "organisationInfo": {
         "title": "Organisationsinformationen",
         "descriptionSchool": "Trage die offiziellen Angaben deiner Organisation ein. Diese Informationen werden in der edulution App angezeigt. Bitte gib den Namen, die Straße, die Postleitzahl und optional die Website der Schule an.",
@@ -996,7 +1037,8 @@
       "totpResetSuccess": "TOTP für {{username}} wurde erfolgreich zurückgesetzt.",
       "setAdminGroupTitle": "Administratorengruppe festlegen",
       "setAdminGroupDescription": "Hier können zusätzliche Administratoren definiert werden. Der Globale Administrator beleibt dabei erhalten.",
-      "setAdminGroupSelectDescription": "Über die Sucheingabe können Gruppen ausgewählt werden."
+      "setAdminGroupSelectDescription": "Über die Sucheingabe können Gruppen ausgewählt werden.",
+      "setAdminGroupWarning": "Es muss mindestens eine Administratorengruppe ausgewählt sein."
     },
     "info": {
       "title": "Info"
@@ -1007,6 +1049,8 @@
         "title": "Sortierung",
         "description": "An welcher Position soll die App in der App-Leiste und in den Einstellungen angezeigt werden?"
       },
+      "deleteEntries": "{{count}} Einträge löschen",
+      "confirmDeleteEntries": "Möchtest du diese Einträge wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
       "sections": {
         "onlyOffice": {
           "title": "Only Office Integration",
@@ -1030,7 +1074,11 @@
         },
         "docker": {
           "title": "Docker Anwendungen",
-          "description": "Um die erweiterten Dienste nutzen zu können, können hier die benötigten Container-Anwendungen installiert und gestartet werden."
+          "description": "Um die erweiterten Dienste nutzen zu können, können hier die benötigten Container-Anwendungen installiert und gestartet werden.",
+          "confirmMultiDeleteContainer": "Möchtest du diese Container wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+          "confirmSingleDeleteContainer": "Möchtest du diesen Container wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+          "deleteContainers": "{{count}} Container löschen",
+          "deleteContainer": "Container löschen"
         },
         "veyon": {
           "title": "Veyon Proxy",
@@ -1047,7 +1095,11 @@
         },
         "webdavServer": {
           "title": "WebDAV-Server",
-          "filterPlaceHolderText": "Suche nach WebDAV-Server"
+          "filterPlaceHolderText": "Suche nach WebDAV-Server",
+          "deleteWarning": {
+            "title": "Löschen nicht möglich",
+            "description": "Der WebDAV-Server '{{serverName}}' wird von {{count}} Share(s) verwendet: {{shares}}. Bitte lösche die abhängigen Shares zuerst."
+          }
         },
         "files": {
           "title": "Dateien",
@@ -1168,14 +1220,21 @@
       "enterSavePin": "Bitte Tresor-PIN eingeben.",
       "wrongSafePin": "PIN ist falsch.",
       "enterSafePin": "Bitte PIN zum Entschlüsseln eingeben.",
-      "safePinDescription": "Zur Verschlüsselung der Zugangsdaten wird eine PIN benötigt. Diese PIN ist für niemanden sichtbar und wird nicht gespeichert."
+      "safePinDescription": "Zur Verschlüsselung der Zugangsdaten wird eine PIN benötigt. Diese PIN ist für niemanden sichtbar und wird nicht gespeichert.",
+      "confirmMultiDeleteAccount": "Möchtest du diese Konten wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "confirmSingleDeleteAccount": "Möchtest du dieses Konto wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "deleteUserAccounts": "{{count}} Konten löschen",
+      "deleteUserAccount": "Konto löschen",
+      "cryptoNotAvailable": "Verschlüsselung ist nur über HTTPS verfügbar. Bitte verwende eine sichere Verbindung."
     },
     "mails": {
       "title": "E-Mail"
     },
     "mobileAccess": {
       "title": "App-Zugriff",
-      "description": "Hier kannst du für den mobilen Zugriff auf deine Dateien die {{ applicationName }} App einrichten. Aktuell nur für Apple iOS verfügbar."
+      "description": "Hier kannst du den mobilen Zugriff für die edulution App einrichten.",
+      "docsDescription": "Den Download-Link zur edulution App und wie du sie einrichtest findest in der edulution Doku.",
+      "button": "Doku öffnen"
     },
     "faq": "FAQ",
     "externalIntegration": "Externe Anbindung",
@@ -1215,7 +1274,7 @@
   },
   "forwardingpage": {
     "action": "Über diesen Link gelangen Sie zur externen Seite des Anbieters.",
-    "description": "Die Anwendung öffnet sich in einem neuen Fenster. Es ist keine weitere Autorisierung nötig.",
+    "description": "Die Anwendung öffnet sich in einem neuen Fenster.",
     "missing_link": "Link fehlt"
   },
   "menu": "MENÜ",
@@ -1245,6 +1304,8 @@
     "infoQrCodeExpired": "Zeit für Login mit edulution.io APP abgelaufen."
   },
   "common": {
+    "more": "Mehr",
+    "less": "Weniger",
     "refreshPage": "Seite neu laden",
     "showMore": "Mehr anzeigen",
     "visibility": "Sichtbarkeit",
@@ -1261,6 +1322,7 @@
     "share": "Teilen",
     "answers": "Antworten",
     "error": "Fehler",
+    "entry": "Eintrag {{index}}",
     "errors": {
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "directoryNotCreated": "Erstellen des Verzeichnisses fehlgeschlagen",
@@ -1397,7 +1459,7 @@
     "pathDescription": "Bitte eine URL eintragen.",
     "apptype": "Art der Anwendung",
     "native": "Native Unterstützung",
-    "forwarded": "Weiterleitung",
+    "forwarding": "Weiterleitung",
     "embedded": "Eingebettet",
     "saved": "Konfiguration gespeichert!",
     "url": "URL",
@@ -1437,7 +1499,9 @@
     "lastModified": "Zuletzt geändert",
     "type": "Typ",
     "isShared": "Geteilt",
-    "filesOrFoldersSelected": "{{selected}} von {{total}} Dateien/Ordnern ausgewählt"
+    "filesOrFoldersSelected": "{{selected}} von {{total}} Dateien/Ordnern ausgewählt",
+    "element": "Element",
+    "elements": "Elements"
   },
   "currentDirectory": "Aktuelles Verzeichnis",
   "filesharingUpload": {
@@ -1461,6 +1525,15 @@
     "cannotUploadOversized": "Dateien, die größer als 50 MB sind, können nicht hochgeladen werden.",
     "addFiles": "Dateien hinzufügen",
     "addFolder": "Ordner hinzufügen",
+    "file": "Datei",
+    "files": "Dateien",
+    "creatingDirectoryStructure": "Ordnerstruktur wird angelegt",
+    "hiddenFiles": "versteckte & System-Dateien",
+    "errors": {
+      "directoryCreationFailed": "Fehler beim Erstellen des Ordners",
+      "fileUploadFailed": "Fehler beim Hochladen des Ordner-Inhalts",
+      "uploadError": "Fehler beim Hochladen der Dateien"
+    },
     "preparingFolder": "Ordner wird vorbereitet"
   },
   "warnings": {
@@ -1707,7 +1780,19 @@
       "light": "Hell",
       "dark": "Dunkel"
     },
-    "mailSogoThemeDisabled": "Deaktiviert, da der Mailserver nicht läuft."
+    "mailSogoThemeDisabled": "Deaktiviert, da der Mailserver nicht läuft.",
+    "mailSogoThemeUpdateCheckerTitle": "Theme-Versionsprüfung",
+    "mailSogoThemeUpdateCheckerDescription": "Prüfe, ob eine neue Version des aktuellen Themes verfügbar ist und aktualisiere es bei Bedarf.",
+    "updateChecker": {
+      "currentVersion": "Aktuelle Version",
+      "latestVersion": "Neueste Version",
+      "theme": "Theme",
+      "updateAvailable": "Eine neue Version ist verfügbar!",
+      "checkAgain": "Erneut prüfen",
+      "updateNow": "Jetzt aktualisieren",
+      "checkVersionSuccess": "Theme erfolgreich überprüft!",
+      "noData": "Keine Versionsinformationen verfügbar."
+    }
   },
   "preview": {
     "image": "Bildvorschau",
@@ -1715,10 +1800,18 @@
   },
   "containerApplication": {
     "dialogTitle": "{{applicationName}}-Plugins installieren",
+    "EDU_MANAGER_INSTALL_TOKEN": {
+      "title": "Installations-Token",
+      "description": "Bitte gib den Installations-Token ein, der im Edulution-Manager erstellt wurde."
+    },
     "EDULUTION_MAIL_HOSTNAME": {
       "title": "Hostname",
       "description": "Hostname des Mailservers. Dieser kann von der edulution Domain abweichen."
     }
+  },
+  "edulution-manager": {
+    "sidebar": "Edulution-Manager",
+    "title": "Edulution-Manager"
   },
   "dockerOverview": {
     "title": "Container-Übersicht",
@@ -1730,7 +1823,9 @@
     "filterPlaceHolderText": "Suche nach Container-Name",
     "port": "Port",
     "created": "Erstellt am",
-    "container-view": "Container"
+    "container-view": "Container",
+    "selectPluginForInstallationTitle": "Plugin zur Installation auswählen",
+    "selectPluginForInstallationDescription": "Wähle hier eine App aus, für die ein Plugin installiert werden soll."
   },
   "docker": {
     "error": {
@@ -1738,7 +1833,8 @@
       "dockerImageNotFound": "Docker Image konnte nicht gefunden werden",
       "dockerCreationError": "Docker Container konnte nicht erstellt werden",
       "dockerCommandExecutionError": "Docker Befehl konnte nicht ausgeführt werden",
-      "dockerContainerDeletionError": "Docker Container konnte nicht gelöscht werden"
+      "dockerContainerDeletionError": "Docker Container konnte nicht gelöscht werden",
+      "dockerUpdateError": "Docker Container konnte nicht aktualisiert werden"
     },
     "events": {
       "pullingImage": "Docker Image wird abgerufen...",
@@ -1750,7 +1846,9 @@
       "restartContainer": "Container neu gestartet.",
       "killContainer": "Container erzwungen gestoppt.",
       "containerCreationSuccessful": "Container erfolgreich erstellt.",
-      "containerCreationFailed": "Container konnte nicht erstellt werden."
+      "containerCreationFailed": "Container konnte nicht erstellt werden.",
+      "containerUpdateSuccessful": "{{containerName}} erfolgreich aktualisiert.",
+      "containerAlreadyUpdateToDate": "{{containerName}} ist bereits aktuell."
     },
     "status": {
       "running": "läuft",

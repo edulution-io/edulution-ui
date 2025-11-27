@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { useEffect, useMemo, useState } from 'react';
@@ -23,6 +30,8 @@ import { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSett
 import defaultValues from '@libs/global-settings/constants/defaultValues';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import GLOBAL_SETTINGS_TABS from '@libs/global-settings/constants/globalSettingsTabs';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import { toast } from 'sonner';
 import DockerContainerTable from '../AppConfig/DockerIntegration/DockerContainerTable';
 import GlobalSettings from '../GlobalSettings/GlobalSettings';
 import UserAdministration from './UserAdministration';
@@ -79,6 +88,7 @@ const SettingsOverviewPage: React.FC = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { globalSettings, setGlobalSettings, getGlobalAdminSettings } = useGlobalSettingsApiStore();
+  const { isGeneric } = useDeploymentTarget();
 
   const form = useForm<GlobalSettingsFormValues>({ defaultValues });
 
@@ -117,12 +127,20 @@ const SettingsOverviewPage: React.FC = () => {
           mfaEnforcedGroups: globalSettings.auth?.mfaEnforcedGroups ?? [],
           adminGroups: globalSettings.auth?.adminGroups ?? [],
         },
+        theme: {
+          ...defaultValues.theme,
+          ...(globalSettings.theme ?? {}),
+        },
       },
       { keepDirtyValues: false },
     );
   }, [globalSettings, form.reset]);
 
   const onSubmit: SubmitHandler<GlobalSettingsDto> = (newGlobalSettings) => {
+    if (isGeneric && newGlobalSettings.auth.adminGroups.length === 0) {
+      toast.warning(t('settings.userAdministration.setAdminGroupWarning'));
+      return;
+    }
     void setGlobalSettings(newGlobalSettings);
   };
 
@@ -131,7 +149,10 @@ const SettingsOverviewPage: React.FC = () => {
   if (!isMobileView && !isTabletView)
     return (
       <>
-        <Tabs value={tabValue}>
+        <Tabs
+          value={tabValue}
+          className="flex h-full flex-col"
+        >
           <div className="sticky top-0 z-20 backdrop-blur-xl">
             <TabsList
               className="grid sm:w-fit"
@@ -148,17 +169,18 @@ const SettingsOverviewPage: React.FC = () => {
                 </TabsTrigger>
               ))}
             </TabsList>
+            <Separator className="my-2 bg-muted" />
           </div>
           {tabOptions.map((opt) => (
             <TabsContent
               key={opt.id}
               value={opt.id}
+              className="flex-1 overflow-y-auto scrollbar-thin"
             >
               <PageTitle
                 title={t('settings.sidebar')}
                 translationId={opt.name}
               />
-              <Separator />
               {opt.component({ form, onSubmit })}
             </TabsContent>
           ))}
@@ -168,18 +190,20 @@ const SettingsOverviewPage: React.FC = () => {
     );
 
   return (
-    <>
-      <div className="sticky top-0 z-20 backdrop-blur-xl">
+    <div className="flex h-full flex-col">
+      <div className="sticky top-0 z-20">
         <DropdownSelect
           options={tabOptions}
           selectedVal={option}
           handleChange={goToTab}
         />
+        <Separator className="my-2 bg-muted" />
       </div>
-      <Separator className="my-2" />
-      {tabOptions.find((opt) => opt.id === option)?.component({ form, onSubmit })}
+      <div className="flex-1 overflow-y-auto">
+        {tabOptions.find((opt) => opt.id === option)?.component({ form, onSubmit })}
+      </div>
       {showFloatingButtons && <GlobalSettingsFloatingButtons handleSave={form.handleSubmit(onSubmit)} />}
-    </>
+    </div>
   );
 };
 
