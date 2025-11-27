@@ -173,23 +173,7 @@ const useLmnApiStore = create<UseLmnApiStore>(
       },
 
       reset: () => {
-        const lmnUser = get().user;
-        return set({
-          lmnApiToken: '',
-          isLoading: false,
-          isGetOwnUserLoading: false,
-          isFetchUserLoading: false,
-          isPatchingUserLoading: false,
-          error: null,
-          user: {
-            ...lmnUser!,
-            sophomorixFirstPassword: '',
-            distinguishedName: '',
-            dn: '',
-            sophomorixBirthdate: '',
-            memberOf: [],
-          },
-        });
+        set(initialState);
       },
     }),
     {
