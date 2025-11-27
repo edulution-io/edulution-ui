@@ -173,7 +173,7 @@ const PublicConferencePage = (): React.ReactNode => {
     <PageLayout>
       <div className="mx-auto w-[90%] md:w-[400px]">
         <div>{t('conferences.publicConference')}</div>
-        <h3 className="mt-3">{publicConference.name}</h3>
+        <h2 className="mt-3">{publicConference.name}</h2>
         <div className="mb-8">
           {t('common.from')} {publicConference.creator?.firstName} {publicConference.creator?.lastName}
         </div>

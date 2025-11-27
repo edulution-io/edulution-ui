@@ -27,7 +27,7 @@ import {
 } from '@libs/assets';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APPS from './apps';
-import APP_INTEGRATION_VARIANT from './appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from './appIntegrationVariant';
 
 const { BULLETIN_BOARD, DASHBOARD, FILE_SHARING, SURVEYS, CLASS_MANAGEMENT, WHITEBOARD } = APPS;
 const { NATIVE } = APP_INTEGRATION_VARIANT;

@@ -34,6 +34,7 @@ import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsVal
 import { type ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 import VEYON_PROXY_TABLE_COLUMNS from '@libs/classManagement/constants/veyonProxyTableColumns';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import getRandomUUID from '@/utils/getRandomUUID';
 import useVeyonConfigTableStore from './useVeyonConfigTableStore';
 import useAppConfigsStore from '../useAppConfigsStore';
 
@@ -89,7 +90,7 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
       const filteredVeyonConfig = veyonProxyConfig.filter((item) => item.veyonProxyId !== selectedConfig.veyonProxyId);
       newConfig = [...filteredVeyonConfig, { veyonProxyId: selectedConfig.veyonProxyId, subnet, proxyAdress }];
     } else {
-      newConfig = [...veyonProxyConfig, { veyonProxyId: crypto.randomUUID(), subnet, proxyAdress }];
+      newConfig = [...veyonProxyConfig, { veyonProxyId: getRandomUUID(), subnet, proxyAdress }];
     }
 
     await patchSingleFieldInConfig(APPS.CLASS_MANAGEMENT, {

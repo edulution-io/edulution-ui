@@ -14,7 +14,7 @@
     <linearGradient id="Unbenannter_Verlauf_2" data-name="Unbenannter Verlauf 2" x1="139.12" y1="-4557.49" x2="264.39"
       y2="-4427.32" gradientTransform="translate(0 -4268.21) scale(1 -1)" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="var(--ci-light-green)" />
-      <stop offset="1" stop-color="var(--ci-light-blue)" />
+      <stop offset="1" stop-color="var(--ci-dark-blue)" />
     </linearGradient>
   </defs>
   <g>

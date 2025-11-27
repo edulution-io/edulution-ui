@@ -45,6 +45,7 @@ import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKey
 import EMBEDDED_PAGE_EDITOR_CONFIG from '@libs/appconfig/constants/extendedOptions/embeddedPageEditorConfig';
 import WEBDAV_SHARE_TABLE_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/webdavShareTableExtendedOptions';
 import MAIL_GENERAL_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/mailGeneralExtendedOptions';
+import FORWARDING_PAGE_OPTIONS from '@libs/appconfig/constants/extendedOptions/forwardingPageOptions';
 
 const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -128,6 +129,9 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     icon: ForwardIcon,
     options: [APP_CONFIG_OPTION_KEYS.URL, APP_CONFIG_OPTION_KEYS.PROXYCONFIG],
     isNativeApp: false,
+    extendedOptions: {
+      [AppConfigSectionsKeys.general]: FORWARDING_PAGE_OPTIONS,
+    },
   },
   {
     id: APPS.FRAME,

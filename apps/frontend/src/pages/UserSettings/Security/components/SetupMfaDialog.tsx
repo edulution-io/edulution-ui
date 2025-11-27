@@ -53,13 +53,15 @@ const SetupMfaDialog: React.FC = () => {
   const isRightAfterLogin = pathname === LOGIN_ROUTE;
 
   useEffect(() => {
+    if (globalSettings === null) return;
+
     const mfaGroups = globalSettings.auth?.mfaEnforcedGroups || [];
     const isMfaRequired = mfaGroups.some((g) => ldapGroups.includes(g.path));
 
     if (isMfaRequired && !user?.mfaEnabled && isRightAfterLogin) {
       setIsSetTotpDialogOpen(true);
     }
-  }, [globalSettings.auth?.mfaEnforcedGroups, user?.mfaEnabled, isRightAfterLogin]);
+  }, [globalSettings?.auth?.mfaEnforcedGroups, user?.mfaEnabled, isRightAfterLogin]);
 
   useEffect(() => {
     if (isSetTotpDialogOpen) {

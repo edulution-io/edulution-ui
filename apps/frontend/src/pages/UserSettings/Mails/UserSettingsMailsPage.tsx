@@ -39,6 +39,7 @@ import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import { replaceGermanUmlauts } from '@libs/common/utils/string/latinize';
 import MailImporterTable from './MailImporterTable';
+import DeleteMailSyncJobsDialog from './DeleteMailSyncJobsDialog';
 
 const UserSettingsMailsPage: React.FC = () => {
   const { t } = useTranslation();
@@ -54,6 +55,7 @@ const UserSettingsMailsPage: React.FC = () => {
   } = useMailsStore();
   const { user } = useUserStore();
   const [option, setOption] = useState('');
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const form = useForm();
   const { appConfigs } = useAppConfigsStore();
   const isMailConfigured = findAppConfigByName(appConfigs, APPS.MAIL);
@@ -73,10 +75,14 @@ const UserSettingsMailsPage: React.FC = () => {
 
   const handleDeleteSyncJob = () => {
     if (Object.keys(selectedSyncJob).length > 0) {
-      const syncJobsToDelete = Object.keys(selectedSyncJob);
-      void deleteSyncJobs(syncJobsToDelete);
-      setSelectedSyncJob({});
+      setIsDeleteDialogOpen(true);
     }
+  };
+
+  const handleConfirmDelete = async () => {
+    const syncJobsToDelete = Object.keys(selectedSyncJob);
+    await deleteSyncJobs(syncJobsToDelete);
+    setSelectedSyncJob({});
   };
 
   const handleCreateSyncJob = () => {
@@ -129,7 +135,7 @@ const UserSettingsMailsPage: React.FC = () => {
       <StateLoader isLoading={isEditSyncJobLoading} />
       {isMailConfigured ? (
         <>
-          <h3 className="text-background">{t('mail.importer.title')}</h3>
+          <h2 className="text-background">{t('mail.importer.title')}</h2>
           <div className="space-y-4">
             <DropdownSelect
               options={externalMailProviderConfig}
@@ -149,11 +155,18 @@ const UserSettingsMailsPage: React.FC = () => {
             </Form>
 
             <div className="px-4">
-              <h3 className="pt-5 text-background">{t('mail.importer.syncJobsTable')}</h3>
+              <h2 className="pt-5 text-background">{t('mail.importer.syncJobsTable')}</h2>
               <MailImporterTable />
             </div>
           </div>
           <FloatingButtonsBar config={config} />
+          <DeleteMailSyncJobsDialog
+            isOpen={isDeleteDialogOpen}
+            onOpenChange={setIsDeleteDialogOpen}
+            syncJobIds={Object.keys(selectedSyncJob)}
+            onConfirmDelete={handleConfirmDelete}
+            isLoading={isEditSyncJobLoading}
+          />
         </>
       ) : (
         <p>{t('mail.importer.noMailConfigured')}</p>

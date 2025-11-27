@@ -20,7 +20,7 @@
 import React from 'react';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
 import useUserAccounts from '@/hooks/useUserAccounts';
 
 const EmbeddedFrameManager = () => {
@@ -30,7 +30,7 @@ const EmbeddedFrameManager = () => {
   useUserAccounts(activeEmbeddedFrame);
 
   return appConfigs
-    .filter((appConfig) => appConfig.appType === APP_INTEGRATION_VARIANT.FRAMED)
+    .filter((appConfig) => appConfig.appType === APP_INTEGRATION_VARIANT.FRAME)
     .map((appConfig) => {
       const isOpen = activeEmbeddedFrame === appConfig.name;
       const url = loadedEmbeddedFrames.includes(appConfig.name) ? appConfig.options.url : undefined;

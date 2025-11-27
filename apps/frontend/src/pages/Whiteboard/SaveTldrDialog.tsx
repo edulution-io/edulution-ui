@@ -23,18 +23,19 @@ import SaveExternalFileDialog from '@/pages/FileSharing/Dialog/SaveExternalFileD
 import SaveExternalFileDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/SaveExternalFileDialogBody';
 import saveExternalFileFormSchema from '@libs/filesharing/types/saveExternalFileFormSchema';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
-import useHandelUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandelUploadFileStore';
+import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
 import buildTldrFileFromEditor from '@libs/tldraw-sync/utils/buildTldrFileFromEditor';
 import useUserStore from '@/store/UserStore/useUserStore';
-import { UploadFile } from '@libs/filesharing/types/uploadFile';
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
+import getRandomUUID from '@/utils/getRandomUUID';
 import useFileSharingStore from '../FileSharing/useFileSharingStore';
 
 const SaveTldrDialog: React.FC = () => {
   const { t } = useTranslation();
 
-  const { updateFilesToUpload, uploadFiles } = useHandelUploadFileStore();
+  const { updateFilesToUpload, uploadFiles } = useHandleUploadFileStore();
   const { eduApiToken } = useUserStore();
   const { editor, isDialogOpen, setIsDialogOpen } = useWhiteboardEditorStore();
   const { moveOrCopyItemToPath } = useFileSharingDialogStore();
@@ -52,8 +53,8 @@ const SaveTldrDialog: React.FC = () => {
   const save = async (file: File | Blob) => {
     const targetDir = moveOrCopyItemToPath?.filePath || '';
     const name = (file as File)?.name && (file as File)?.name.trim() !== '' ? (file as File).name : 'untitled.tldr';
-    const uploadFile: UploadFile = Object.assign(new File([file], name, { type: file.type }), {
-      id: crypto.randomUUID(),
+    const uploadFile: UploadItem = Object.assign(new File([file], name, { type: file.type }), {
+      id: getRandomUUID(),
       isZippedFolder: false,
     });
     updateFilesToUpload(() => [uploadFile]);

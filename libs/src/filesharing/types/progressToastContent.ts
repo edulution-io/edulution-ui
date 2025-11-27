@@ -17,7 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import WorkerProgressMessage from '@/worker/workerProgressMessage';
-import WorkerOutputMessage from '@/worker/workerOutputMessage';
+interface ProgressToastContent {
+  title: string;
+  description: string;
+  isDone: boolean;
+  hasErrors: boolean;
+}
 
-export type WorkerMessage = WorkerProgressMessage | WorkerOutputMessage;
+export default ProgressToastContent;
