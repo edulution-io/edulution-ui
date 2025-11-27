@@ -19,7 +19,7 @@ services:
 
   redisEdu:
     container_name: redisEdu
-    image: redis:7.2
+    image: redis:8.2
     restart: always
     ports:
       - '6379:6379'
@@ -29,7 +29,12 @@ services:
       timeout: 1s
       retries: 3
       start_period: 10s
-    command: ['redis-server', '--save', '', '--appendonly', 'no']
+    command: >
+      redis-server
+        --save ""
+        --appendonly no
+        --io-threads 2
+        --io-threads-do-reads yes
 
 volumes:
   db:
