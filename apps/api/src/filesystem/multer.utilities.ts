@@ -19,7 +19,7 @@
 
 import { extname } from 'path';
 import { Request } from 'express';
-import { diskStorage } from 'multer';
+import { diskStorage, MulterError } from 'multer';
 import { existsSync, mkdirSync } from 'fs';
 import { HttpStatus } from '@nestjs/common';
 import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
@@ -63,7 +63,15 @@ export const attachmentFileFilter = (
   if (IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
     callback(null, true);
   } else {
-    callback(new CustomHttpException(CommonErrorMessages.INVALID_FILE_TYPE, HttpStatus.INTERNAL_SERVER_ERROR), false);
+    callback(
+      new CustomHttpException(
+        CommonErrorMessages.INVALID_FILE_TYPE,
+        HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+        undefined,
+        MulterError.name,
+      ),
+      false,
+    );
   }
 };
 
@@ -77,13 +85,3 @@ export const createAttachmentUploadOptions = (
   fileFilter: filter ? attachmentFileFilter : undefined,
   limits: maxFileSize ? { fileSize: maxFileSize } : { fileSize: MAXIMUM_UPLOAD_FILE_SIZE },
 });
-
-export const checkAttachmentFile = (file: Express.Multer.File): string => {
-  if (!file) {
-    throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
-  }
-  if (!IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-    throw new CustomHttpException(CommonErrorMessages.FILE_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
-  }
-  return file.filename;
-};
