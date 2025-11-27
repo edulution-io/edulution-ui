@@ -295,7 +295,7 @@ class UsersService {
         .exec();
 
       const userAccountsDto = userAccounts.map((account) => ({
-        accountId: account._id as string,
+        accountId: account._id.toHexString(),
         appName: account.appName,
         accountUser: account.accountUser,
         accountPassword: account.accountPassword,
