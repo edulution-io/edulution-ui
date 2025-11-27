@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { useDropzone } from 'react-dropzone';
 import { MdOutlineCloudUpload } from 'react-icons/md';
-import { HiTrash } from 'react-icons/hi';
+import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
@@ -177,7 +177,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
                       onClick={() => form.setValue('customIcon', '')}
                       className="absolute right-1 top-1 h-8 rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
                     >
-                      <HiTrash className="text-text-ciRed h-4 w-4" />
+                      <DeleteIcon className="text-text-ciRed h-4 w-4" />
                     </Button>
                   </li>
                 </ul>

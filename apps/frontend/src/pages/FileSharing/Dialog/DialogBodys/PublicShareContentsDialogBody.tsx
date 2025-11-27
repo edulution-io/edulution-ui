@@ -25,10 +25,13 @@ import APPS from '@libs/appconfig/constants/apps';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import { IoAdd } from 'react-icons/io5';
 import useMedia from '@/hooks/useMedia';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
+import StandardActionTypes from '@libs/common/constants/standardActionTypes';
+import { TableActionsConfig } from '@libs/common/types/tableActionsConfig';
+import PublicShareDto from '@libs/filesharing/types/publicShareDto';
+import useTableActions from '@/hooks/useTableActions';
 
 const PublicShareContentsDialogBody = () => {
   const { t } = useTranslation();
@@ -55,6 +58,18 @@ const PublicShareContentsDialogBody = () => {
     [shouldHideColumns],
   );
 
+  const actionsConfig = useMemo<TableActionsConfig<PublicShareDto>>(
+    () => [
+      {
+        type: StandardActionTypes.ADD,
+        onClick: () => openDialog(PUBLIC_SHARE_DIALOG_NAMES.CREATE_LINK),
+      },
+    ],
+    [openDialog],
+  );
+
+  const actions = useTableActions(actionsConfig, []);
+
   return (
     <>
       <p>
@@ -73,13 +88,7 @@ const PublicShareContentsDialogBody = () => {
         applicationName={APPS.FILE_SHARING}
         initialColumnVisibility={initialColumnVisibility}
         showSearchBarAndColumnSelect={false}
-        actions={[
-          {
-            icon: IoAdd,
-            translationId: 'common.add',
-            onClick: () => openDialog(PUBLIC_SHARE_DIALOG_NAMES.CREATE_LINK),
-          },
-        ]}
+        actions={actions}
       />
 
       {isLoading && <LoadingIndicatorDialog isOpen />}

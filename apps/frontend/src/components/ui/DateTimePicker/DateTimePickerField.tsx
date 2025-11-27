@@ -23,7 +23,7 @@ import React, { useCallback, useState } from 'react';
 import { de, enUS } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
-import { HiTrash } from 'react-icons/hi2';
+import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { CalendarIcon } from '@radix-ui/react-icons';
 import { INPUT_DEFAULT, INPUT_VARIANT_DEFAULT, INPUT_VARIANT_DIALOG } from '@libs/ui/constants/commonClassNames';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
@@ -176,7 +176,7 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
                     )}
                   >
                     {timeDisplay}
-                    <HiTrash
+                    <DeleteIcon
                       className="ml-auto h-4 w-4 opacity-50 hover:opacity-100"
                       onClick={(event) => {
                         event.preventDefault();

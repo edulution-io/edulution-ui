@@ -17,14 +17,24 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { t } from 'i18next';
-import { EditIcon } from '@libs/common/constants/standardActionIcons';
+import { useMemo } from 'react';
+import { Row } from '@tanstack/react-table';
+import TableAction from '@libs/common/types/tableAction';
+import { TableActionContext, TableActionsConfig } from '@libs/common/types/tableActionsConfig';
+import createTableActions from '@libs/common/utils/createTableActions';
 
-const EditButton = (onClick: () => void, isVisible?: boolean) => ({
-  icon: EditIcon,
-  text: t('common.edit'),
-  onClick,
-  isVisible,
-});
+const useTableActions = <TData>(
+  config: TableActionsConfig<TData>,
+  selectedRows: Row<TData>[],
+): TableAction<TData>[] => useMemo(() => {
+    const context: TableActionContext<TData> = {
+      selectedRows,
+      selectedCount: selectedRows.length,
+      isOneRowSelected: selectedRows.length === 1,
+      hasSelection: selectedRows.length > 0,
+    };
 
-export default EditButton;
+    return createTableActions(config, context);
+  }, [config, selectedRows]);
+
+export default useTableActions;
