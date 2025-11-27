@@ -49,6 +49,8 @@
     "createBulletin": "Créer une communication",
     "confirmSingleDelete": "Ce message devrait-il vraiment être supprimé?",
     "confirmMultiDelete": "Ces messages devraient-ils vraiment être supprimés?",
+    "confirmDelete": "Ce message devrait-il vraiment être supprimé?",
+    "confirmDelete_other": "Ces {{count}} messages devraient-ils vraiment être supprimés?",
     "rowsSelected": "{{selected}} depuis {{total}} messages sélectionnés",
     "rowSelected": "{{selected}} depuis {{total}} notification sélectionnée",
     "cancel": "Annuler",
@@ -274,6 +276,8 @@
     "conferenceCreatedSuccessfully": "Conférence créée avec succès",
     "confirmSingleDelete": "Cette conférence devrait-elle vraiment être supprimée?",
     "confirmMultiDelete": "Ces conférences devraient-elles vraiment être supprimées?",
+    "confirmDelete": "Cette conférence devrait-elle vraiment être supprimée?",
+    "confirmDelete_other": "Ces {{count}} conférences devraient-elles vraiment être supprimées?",
     "name": "Nom de la conférence",
     "conference": "conférence",
     "password": "mot de passe",
@@ -543,7 +547,9 @@
       "proxyAdressDescription": "URL du proxy Veyon Webapi",
       "proxyAdressPlaceholder": "http://localhost:11080",
       "createConfig": "Créer une configuration",
-      "editConfig": "Modifier la configuration"
+      "editConfig": "Modifier la configuration",
+      "deleteConfig": "Supprimer la configuration",
+      "confirmDeleteConfig": "Êtes-vous sûr de vouloir supprimer cette configuration de proxy Veyon ?"
     },
     "selectSchool": {
       "title": "Sélectionner l'école",
@@ -649,6 +655,8 @@
     "rowSelected": "{{selected}} de {{total}} sondages sélectionné",
     "confirmMultiDelete": "Ces sondages devraient-ils vraiment être supprimés?",
     "confirmSingleDelete": "Le sondage devrait-il vraiment être supprimé?",
+    "confirmDelete": "Le sondage devrait-il vraiment être supprimé?",
+    "confirmDelete_other": "Ces {{count}} sondages devraient-ils vraiment être supprimés?",
     "deleteSurveys": "Supprimer {{count}} sondages",
     "deleteSurvey": "Supprimer le sondage",
     "title": "Sondages",
@@ -934,11 +942,15 @@
           "title": "WebDAV",
           "sectionTitle": "WebDAV-Partage",
           "description": "Vous pouvez configurer ici vos propres serveur WebDAV.",
-          "filterPlaceHolderText": "Rechercher le nom de partages"
+          "filterPlaceHolderText": "Rechercher le nom de partages",
+          "deleteWebdavShare": "Supprimer le partage WebDAV",
+          "confirmDeleteWebdavShare": "Êtes-vous sûr de vouloir supprimer ce partage WebDAV ?"
         },
         "webdavServer": {
           "title": "WebDAV serveurs",
           "filterPlaceHolderText": "Rechercher un serveur",
+          "deleteWebdavServer": "Supprimer le serveur WebDAV",
+          "confirmDeleteWebdavServer": "Êtes-vous sûr de vouloir supprimer ce serveur WebDAV ?",
           "deleteWarning": {
             "title": "Suppression impossible",
             "description": "Le serveur WebDAV « {{serverName}} » est utilisé par {{count}} partage(s) : {{shares}}. Veuillez d'abord supprimer les partages dépendants."
@@ -1244,6 +1256,8 @@
     "start": "Commencer",
     "close": "Fermer",
     "delete": "Supprimer",
+    "deleting": "Suppression...",
+    "noItemsSelected": "Aucun élément sélectionné",
     "connect": "Connecter",
     "custom": "Défini par l'utilisateur",
     "select": "Choisir...",

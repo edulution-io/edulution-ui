@@ -313,7 +313,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
         isOpen={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
         groupName={form.getValues('name')}
-        groupType={`classmanagement.${item.translationId}`}
+        groupType={t(`classmanagement.${item.translationId}`)}
         onConfirmDelete={handleConfirmDelete}
         isLoading={isDialogLoading}
       />

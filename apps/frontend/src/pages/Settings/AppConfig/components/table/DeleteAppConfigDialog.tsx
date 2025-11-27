@@ -18,11 +18,7 @@
  */
 
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import ItemDialogList from '@/components/shared/ItemDialogList';
-import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
 
 interface DeleteAppConfigDialogProps {
   isOpen: boolean;
@@ -31,7 +27,7 @@ interface DeleteAppConfigDialogProps {
   onConfirmDelete: () => Promise<void>;
   isLoading?: boolean;
   titleTranslationKey?: string;
-  warningTranslationKey?: string;
+  messageTranslationKey?: string;
 }
 
 const DeleteAppConfigDialog: React.FC<DeleteAppConfigDialogProps> = ({
@@ -41,45 +37,22 @@ const DeleteAppConfigDialog: React.FC<DeleteAppConfigDialogProps> = ({
   onConfirmDelete,
   isLoading = false,
   titleTranslationKey = 'settings.appconfig.deleteEntries',
-  warningTranslationKey = 'settings.appconfig.confirmDeleteEntries',
+  messageTranslationKey = 'settings.appconfig.confirmDeleteEntries',
 }) => {
-  const { t } = useTranslation();
-
-  const handleSubmit = async () => {
+  const handleConfirmDelete = async () => {
     await onConfirmDelete();
     onOpenChange(false);
   };
 
-  const handleClose = () => onOpenChange(false);
-
-  const getDialogBody = () => {
-    if (isLoading) return <CircleLoader className="mx-auto" />;
-
-    return (
-      <div className="text-background">
-        <ItemDialogList
-          deleteWarningTranslationId={warningTranslationKey}
-          items={items}
-        />
-      </div>
-    );
-  };
-
-  const getFooter = () => (
-    <DialogFooterButtons
-      handleClose={handleClose}
-      handleSubmit={handleSubmit}
-      submitButtonText="common.delete"
-    />
-  );
-
   return (
-    <AdaptiveDialog
+    <DeleteConfirmationDialog
       isOpen={isOpen}
-      handleOpenChange={handleClose}
-      title={t(titleTranslationKey, { count: items.length })}
-      body={getDialogBody()}
-      footer={getFooter()}
+      onOpenChange={onOpenChange}
+      items={items}
+      onConfirmDelete={handleConfirmDelete}
+      isLoading={isLoading}
+      titleTranslationKey={titleTranslationKey}
+      messageTranslationKey={messageTranslationKey}
     />
   );
 };

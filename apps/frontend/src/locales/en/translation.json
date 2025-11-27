@@ -57,6 +57,8 @@
     "createBulletin": "Create bulletin",
     "confirmSingleDelete": "Do you really want to delete this bulletin?",
     "confirmMultiDelete": "Do you really want to delete these bulletins?",
+    "confirmDelete": "Do you really want to delete this bulletin?",
+    "confirmDelete_other": "Do you really want to delete these {{count}} bulletins?",
     "rowsSelected": "{{selected}} out of {{total}} bulletins selected",
     "rowSelected": "{{selected}} out of {{total}} bulletin selected",
     "cancel": "Cancel",
@@ -288,6 +290,8 @@
     "conferenceCreatedSuccessfully": "Conference created successfully",
     "confirmSingleDelete": "Should this conference really be deleted?",
     "confirmMultiDelete": "Should these conferences really be deleted?",
+    "confirmDelete": "Should this conference really be deleted?",
+    "confirmDelete_other": "Should these {{count}} conferences really be deleted?",
     "name": "Name of conference",
     "conference": "Conference",
     "password": "Password",
@@ -414,6 +418,8 @@
       "publiclyAccessible": "Publicly accessible",
       "confirmMultiDelete": "Should these share links for the following contents really be deleted?",
       "confirmSingleDelete": "Should this share link for the following content really be deleted?",
+      "confirmDelete": "Should this share link really be deleted?",
+      "confirmDelete_other": "Should these {{count}} share links really be deleted?",
       "deleteFileLink": "Delete share links",
       "deleteFileLinks": "Delete share links",
       "isPasswordProtected": "Password",
@@ -628,7 +634,9 @@
       "proxyAdressDescription": "URL of the Veyon-WebAPI-Proxy",
       "proxyAdressPlaceholder": "http://localhost:11080",
       "createConfig": "Create config",
-      "editConfig": "Edit config"
+      "editConfig": "Edit config",
+      "deleteConfig": "Delete config",
+      "confirmDeleteConfig": "Are you sure you want to delete this Veyon proxy config?"
     },
     "selectSchool": {
       "title": "Select school",
@@ -778,6 +786,8 @@
     "rowSelected": "{{selected}} of {{total}} survey selected",
     "confirmMultiDelete": "Should these surveys really be deleted?",
     "confirmSingleDelete": "Should this survey really be deleted?",
+    "confirmDelete": "Should this survey really be deleted?",
+    "confirmDelete_other": "Should these {{count}} surveys really be deleted?",
     "deleteSurveys": "Delete {{count}} surveys",
     "deletedSurveys": "Deleted {{count}} surveys",
     "deleteSurvey": "Delete survey",
@@ -1088,14 +1098,18 @@
           "title": "WebDAV",
           "sectionTitle": "WebDAV-Shares",
           "description": "WebDAV servers can be set up for the file manager here.",
-          "filterPlaceHolderText": "Search for WebDAV shares"
+          "filterPlaceHolderText": "Search for WebDAV shares",
+          "deleteWebdavShare": "Delete WebDAV share",
+          "confirmDeleteWebdavShare": "Are you sure you want to delete this WebDAV share?"
         },
         "webdavServer": {
           "title": "WebDAV-Server",
           "filterPlaceHolderText": "Search for WebDAV servers",
+          "deleteWebdavServer": "Delete WebDAV server",
+          "confirmDeleteWebdavServer": "Are you sure you want to delete this WebDAV server?",
           "deleteWarning": {
             "title": "Deletion not possible",
-            "description": "The WebDAV server ‘{{serverName}}’ is used by {{count}} share(s): {{shares}}. Please delete the dependent shares first."
+            "description": "The WebDAV server '{{serverName}}' is used by {{count}} share(s): {{shares}}. Please delete the dependent shares first."
           }
         },
         "files": {
@@ -1413,6 +1427,8 @@
     "start": "Start",
     "close": "Close",
     "delete": "Delete",
+    "deleting": "Deleting...",
+    "noItemsSelected": "No items selected",
     "connect": "Connect",
     "custom": "Custom",
     "select": "Select...",

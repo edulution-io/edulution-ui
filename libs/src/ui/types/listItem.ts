@@ -17,23 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import ItemList from '@/components/shared/ItemList';
+interface ListItem {
+  id: string;
+  name: string;
+}
 
-const DeleteContentDialogBody: React.FC = () => {
-  const { t } = useTranslation();
-  const { selectedItems } = useFileSharingStore();
-
-  const items = selectedItems.map((i) => ({ name: i.filename, id: i.etag }));
-
-  return (
-    <div className="text-background">
-      <p>{t('deleteDialog.actionCannotBeUndone')}</p>
-      <ItemList items={items} />
-    </div>
-  );
-};
-
-export default DeleteContentDialogBody;
+export default ListItem;

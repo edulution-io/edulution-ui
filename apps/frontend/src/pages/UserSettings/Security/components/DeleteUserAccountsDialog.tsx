@@ -18,15 +18,11 @@
  */
 
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import ItemDialogList from '@/components/shared/ItemDialogList';
-import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import UserAccountDto from '@libs/user/types/userAccount.dto';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import getDisplayName from '@/utils/getDisplayName';
 import useLanguage from '@/hooks/useLanguage';
+import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
 
 interface DeleteUserAccountsDialogProps {
   isOpen: boolean;
@@ -43,60 +39,38 @@ const DeleteUserAccountsDialog: React.FC<DeleteUserAccountsDialogProps> = ({
   onConfirmDelete,
   isLoading = false,
 }) => {
-  const { t } = useTranslation();
   const { language } = useLanguage();
   const appConfigs = useAppConfigsStore((s) => s.appConfigs);
   const isMultiDelete = selectedAccounts.length > 1;
 
-  const handleClose = () => onOpenChange(false);
-
-  const handleSubmit = async () => {
-    await onConfirmDelete();
-    handleClose();
-  };
-
-  const displayName = (appName: string) => {
+  const getAppDisplayName = (appName: string) => {
     const appConfig = appConfigs.find((appCfg) => appCfg.name === appName);
     if (!appConfig) return appName;
     return getDisplayName(appConfig, language);
   };
 
-  const getDialogBody = () => {
-    if (isLoading) return <CircleLoader className="mx-auto" />;
-
-    return (
-      <div className="text-background">
-        <ItemDialogList
-          deleteWarningTranslationId={
-            isMultiDelete
-              ? 'usersettings.security.confirmMultiDeleteAccount'
-              : 'usersettings.security.confirmSingleDeleteAccount'
-          }
-          items={selectedAccounts
-            .filter((account) => account?.accountId)
-            .map((account) => ({ name: displayName(account.appName) || '', id: account.accountId }))}
-        />
-      </div>
-    );
+  const handleConfirmDelete = async () => {
+    await onConfirmDelete();
+    onOpenChange(false);
   };
 
-  const getFooter = () => (
-    <DialogFooterButtons
-      handleClose={handleClose}
-      handleSubmit={handleSubmit}
-      submitButtonText="common.delete"
-    />
-  );
-
   return (
-    <AdaptiveDialog
+    <DeleteConfirmationDialog
       isOpen={isOpen}
-      handleOpenChange={handleClose}
-      title={t(isMultiDelete ? 'usersettings.security.deleteUserAccounts' : 'usersettings.security.deleteUserAccount', {
-        count: selectedAccounts.length,
-      })}
-      body={getDialogBody()}
-      footer={getFooter()}
+      onOpenChange={onOpenChange}
+      items={selectedAccounts
+        .filter((account) => account?.accountId)
+        .map((account) => ({ id: account.accountId, name: getAppDisplayName(account.appName) || '' }))}
+      onConfirmDelete={handleConfirmDelete}
+      isLoading={isLoading}
+      titleTranslationKey={
+        isMultiDelete ? 'usersettings.security.deleteUserAccounts' : 'usersettings.security.deleteUserAccount'
+      }
+      messageTranslationKey={
+        isMultiDelete
+          ? 'usersettings.security.confirmMultiDeleteAccount'
+          : 'usersettings.security.confirmSingleDeleteAccount'
+      }
     />
   );
 };
