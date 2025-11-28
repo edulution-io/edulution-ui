@@ -19,7 +19,7 @@
 
 import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { randomUUID, createHash } from 'crypto';
+import { createHash, randomUUID } from 'crypto';
 import axios from 'axios';
 import { parseString } from 'xml2js';
 import { Model } from 'mongoose';
@@ -235,10 +235,15 @@ class ConferencesService implements OnModuleInit {
       });
 
       const publicConferencesSubscriber = conference.meetingID;
-      this.sseService.sendEventToUsers(
+      this.sseService.sendEventToUsersWithPush(
         [...invitedMembersList, publicConferencesSubscriber],
         conference.meetingID,
         SSE_MESSAGE_TYPE.CONFERENCE_STARTED,
+        {
+          title: 'Konferenz gestartet',
+          body: `${conference.name} hat begonnen`,
+          url: `/conference/${conference.meetingID}`,
+        },
       );
     }
   }

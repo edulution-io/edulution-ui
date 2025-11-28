@@ -26,6 +26,7 @@ import {
   LANGUAGE_PATH,
   MAILS_PATH,
   MOBILE_ACCESS_PATH,
+  NOTIFICATIONS_PATH,
   SECURITY_PATH,
   USER_DETAILS_PATH,
   USER_SETTINGS_PATH,
@@ -44,6 +45,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
 import DefaultLandingPageAfterLogin from '@/components/structure/DefaultLandingPageAfterLogin';
 import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
+import NotificationsSettings from '@/pages/UserSettings/NotificationSettings/NotificationsSettings';
 import ProtectedRoute from './ProtectedRoute';
 import getEmbeddedRoutes from './getEmbeddedRoutes';
 
@@ -91,6 +93,10 @@ const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
       <Route
         path={MOBILE_ACCESS_PATH}
         element={<UserSettingsMobileAccess />}
+      />
+      <Route
+        path={NOTIFICATIONS_PATH}
+        element={<NotificationsSettings />}
       />
     </Route>
 

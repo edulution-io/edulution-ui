@@ -1105,6 +1105,17 @@
       "mfaSetupRequired": "Les directives globales nécessitent la vue de l'authentification à deux facteurs:",
       "mfaSetupSuccess": "L'authentification à deux facteurs a été établie avec succès."
     },
+
+    "notifications": {
+      "title": "Notifications",
+      "description": "Gérez vos paramètres de notification",
+      "browserNotifications": "Notifications du navigateur",
+      "browserNotificationsInfo": "Recevez des notifications directement dans votre navigateur.",
+      "requestPermission": "Activer les notifications",
+      "blockedByBrowser": "Les notifications ont été bloquées par votre navigateur.",
+      "enableInBrowserSettings": "Pour recevoir des notifications, vous devez les autoriser dans les paramètres de votre navigateur."
+    },
+
     "errors": {
       "currentPasswordRequired": "Le mot de passe actuel est requis",
       "newPasswordRequired": "Un nouveau mot de passe est requis",

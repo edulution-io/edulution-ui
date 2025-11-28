@@ -17,28 +17,20 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export const USER_SETTINGS_PATH = 'user';
+import IconCircleVariant from '@libs/common/types/iconCircleVariant';
+import React from 'react';
 
-export const SECURITY_PATH = 'security';
+interface IconCircleProps {
+  variant: IconCircleVariant;
+  children: React.ReactNode;
+}
 
-export const USER_DETAILS_PATH = 'details';
+const variantStyles: Record<IconCircleVariant, string> = {
+  success: 'bg-green-500/20 text-green-400',
+  error: 'bg-red-500/20 text-red-400',
+  default: 'bg-ciLightGrey/20 text-ciLightGrey',
+};
 
-export const MAILS_PATH = 'mails';
+const IconCircle: React.FC<IconCircleProps> = ({ variant, children }) => <div className={`rounded-full p-3 ${variantStyles[variant]}`}>{children}</div>;
 
-export const LANGUAGE_PATH = 'language';
-
-export const MOBILE_ACCESS_PATH = 'mobile-access';
-
-export const NOTIFICATIONS_PATH = 'notifications';
-
-export const USER_SETTINGS_LANGUAGE_PATH = `/${USER_SETTINGS_PATH}/${LANGUAGE_PATH}`;
-
-export const USER_SETTINGS_SECURITY_PATH = `/${USER_SETTINGS_PATH}/${SECURITY_PATH}`;
-
-export const USER_SETTINGS_USER_DETAILS_PATH = `/${USER_SETTINGS_PATH}/${USER_DETAILS_PATH}`;
-
-export const USER_SETTINGS_MAILS_PATH = `/${USER_SETTINGS_PATH}/${MAILS_PATH}`;
-
-export const USER_SETTINGS_MOBILE_ACCESS_PATH = `/${USER_SETTINGS_PATH}/${MOBILE_ACCESS_PATH}`;
-
-export const USER_SETTINGS_NOTIFICATIONS_PATH = `/${USER_SETTINGS_PATH}/${NOTIFICATIONS_PATH}`;
+export default IconCircle;

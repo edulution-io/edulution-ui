@@ -85,3 +85,4 @@ export { default as WindowsLogo } from '@/assets/icons/windows.svg';
 export { default as LinuxLogo } from '@/assets/icons/ubuntu.svg';
 export { default as AppStoreIcon } from '@/assets/icons/appstore.svg';
 export { default as FranceIcon } from '@/assets/icons/france.svg';
+export { default as NotificationsIcon } from '@/assets/icons/notifications-icon.svg';
