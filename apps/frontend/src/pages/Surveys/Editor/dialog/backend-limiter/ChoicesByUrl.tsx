@@ -361,6 +361,8 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       // ) as TSurveyQuestion[];
       // const updatedQuestion: TSurveyQuestion | undefined = questions.find((q) => q.name === question.name);
       // setSelectedQuestion(updatedQuestion);
+
+      creator.text = JSON.stringify(updatedFormula);
     } catch (error) {
       console.error('Error toggling backend limits:', error);
       toast.error(t('survey.errors.updateOrCreateError'));
