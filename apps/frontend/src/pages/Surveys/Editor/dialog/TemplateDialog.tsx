@@ -43,7 +43,7 @@ interface TemplateDialogProps {
 const TemplateDialog = (props: TemplateDialogProps) => {
   const { trigger, form, creator, isOpenTemplateMenu, setIsOpenTemplateMenu } = props;
 
-  const { template, uploadTemplate, isOpenTemplateConfirmDeletion, setIsOpenTemplateConfirmDeletion } =
+  const { template, uploadTemplate, fetchTemplates, isOpenTemplateConfirmDeletion, setIsOpenTemplateConfirmDeletion } =
     useTemplateMenuStore();
 
   const { isSuperAdmin } = useLdapGroups();
@@ -71,9 +71,9 @@ const TemplateDialog = (props: TemplateDialogProps) => {
     const { id, formula, createdAt, saveNo, expires, answers, ...remainingSurvey } = values;
     const creationDate = template?.template.createdAt || new Date();
     await uploadTemplate({
-      name: template?.name,
       template: { formula: creator.JSON as SurveyFormula, createdAt: creationDate, ...remainingSurvey },
     });
+    void fetchTemplates();
     setIsOpenTemplateMenu(false);
   };
 

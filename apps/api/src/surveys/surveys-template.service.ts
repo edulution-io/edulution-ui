@@ -19,12 +19,10 @@
 
 import { Model } from 'mongoose';
 import { Response } from 'express';
-import { randomUUID } from 'crypto';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
-import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import GlobalSettingsService from 'apps/api/src/global-settings/global-settings.service';
 import MigrationService from 'apps/api/src/migration/migration.service';
@@ -47,18 +45,19 @@ class SurveysTemplateService implements OnModuleInit {
   }
 
   async updateOrCreateTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
-    const { template, isActive = true, name = `${getCurrentDateTimeString()}_-_${randomUUID()}` } = surveyTemplate;
+    const { template, name, isActive = true } = surveyTemplate;
     try {
+      const templateName = name || template.formula.title;
       return await this.surveyTemplateModel.findOneAndUpdate(
-        { name },
-        { template, isActive, name },
-        { new: true, upsert: true },
+        { name: templateName },
+        { template, isActive, name: templateName },
+        { new: true, upsert: !name },
       );
     } catch (error) {
       throw new CustomHttpException(
         CommonErrorMessages.DB_ACCESS_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
+        undefined,
         SurveysTemplateService.name,
       );
     }

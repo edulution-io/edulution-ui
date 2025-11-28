@@ -82,7 +82,7 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
     set({ isSubmitting: true });
     try {
       const result = await eduApi.post<string>(SURVEY_TEMPLATES_ENDPOINT, template);
-      const newTemplate = { ...template, fileName: result.data };
+      const newTemplate = { ...template, name: result.data };
       set({ template: newTemplate });
     } catch (error) {
       handleApiError(error, set);
@@ -98,7 +98,6 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
     if (!templateName) {
       return;
     }
-
     set({ isSubmitting: true });
     try {
       await eduApi.delete(`${SURVEY_TEMPLATES_ENDPOINT}/${templateName}`);
@@ -116,12 +115,10 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
     }
     set({ isSubmitting: true });
     try {
-      const result = await eduApi.patch<SurveyTemplateDto>(`${SURVEY_TEMPLATES_ENDPOINT}/${templateName}/${state}`);
-      set({ template: result.data });
+      await eduApi.patch<SurveyTemplateDto>(`${SURVEY_TEMPLATES_ENDPOINT}/${templateName}/${state}`);
       toast.success(t('survey.editor.templateMenu.upload.success'));
     } catch (error) {
       handleApiError(error, set);
-      set({ template: undefined });
     } finally {
       set({ isSubmitting: false });
     }
