@@ -41,10 +41,9 @@ import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import type MailProviderConfig from '@libs/appconfig/types/mailProviderConfig';
 import APPS from '@libs/appconfig/constants/apps';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
 import getDisplayName from '@/utils/getDisplayName';
 import PageLayout from '@/components/structure/layout/PageLayout';
-import type AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
 import AppConfigPositionSelect from '@/pages/Settings/AppConfig/components/dropdown/AppConfigPositionSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
@@ -169,8 +168,11 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
   };
 
   const matchingConfig = appConfigs.find((item) => item.name === settingLocation);
-  const isSupportedAppType = (appType: AppIntegrationType): appType is 'native' | 'embedded' =>
-    ['native', 'embedded'].includes(appType);
+
+  const extendedOptionsToRender = APP_CONFIG_OPTIONS.find((appConfigOption) => {
+    if (matchingConfig?.appType === APP_INTEGRATION_VARIANT.NATIVE) return appConfigOption.id === settingLocation;
+    return appConfigOption.id === matchingConfig?.appType;
+  })?.extendedOptions;
 
   const getSettingsForm = () => (
     <Form {...form}>
@@ -225,12 +227,9 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
                   )}
                 />
               ))}
-            {matchingConfig.extendedOptions && isSupportedAppType(matchingConfig.appType) ? (
+            {matchingConfig.extendedOptions ? (
               <ExtendedOptionsForm
-                extendedOptions={
-                  APP_CONFIG_OPTIONS.find((itm) => itm.id === settingLocation || itm.id === APPS.EMBEDDED)
-                    ?.extendedOptions
-                }
+                extendedOptions={extendedOptionsToRender}
                 control={control}
                 settingLocation={settingLocation}
                 form={form}

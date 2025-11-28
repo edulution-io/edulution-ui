@@ -23,7 +23,7 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import LinuxmusterPage from '@/pages/LinuxmusterPage/LinuxmusterPage';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
 import APPS from '@libs/appconfig/constants/apps';
 import { useLocation } from 'react-router-dom';
 import useUserStore from '@/store/UserStore/useUserStore';

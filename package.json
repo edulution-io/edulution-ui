@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "1.6.109",
+  "version": "1.6.117",
   "scripts": {
     "test": "nx run-many --target=test --projects=api",
     "test:api": "nx run api:test --detectOpenHandles",
@@ -33,8 +33,8 @@
     "addLicenseHeader": "tsx ./scripts/addLicenseHeader.ts"
   },
   "engines": {
-    "node": "^20.19.5",
-    "npm": "^10.8.2"
+    "node": "^22.21.1",
+    "npm": "^10.9.4"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -227,7 +227,7 @@
     "@types/lodash.debounce": "^4.0.9",
     "@types/mime-types": "^2.1.4",
     "@types/multer": "^1.4.11",
-    "@types/node": "^20.11.16",
+    "@types/node": "^22.19.1",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@types/react-file-icon": "^1.0.4",
@@ -264,7 +264,6 @@
     "tailwind-scrollbar": "^3.1.0",
     "tailwindcss": "^3.4.1",
     "ts-jest": "^29.1.2",
-    "ts-node": "10.9.1",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "^5.5.2",
     "typescript-eslint": "^7.14.1",

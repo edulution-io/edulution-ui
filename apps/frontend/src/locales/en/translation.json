@@ -21,7 +21,9 @@
     "isVisibleEndDate": "Active until",
     "isActiveOrExpired": "Active/Expired",
     "activeFrom": "Active from",
+    "activeFromPlaceholder": "immediately",
     "activeUntil": "Active until",
+    "activeUntilPlaceholder": "unlimited",
     "appTitle": "Info Board",
     "description": "Here you can find your latest bulletins",
     "sidebar": "Info Board",
@@ -108,7 +110,9 @@
     "dropIconDescription": "Drag an image here or click to select an image. Supported formats: SVG, WEBP"
   },
   "forwarding": {
-    "sidebar": "Forwarding"
+    "sidebar": "Forwarding",
+    "behaviorAtSidebarClick": "Quick access when opening the app",
+    "forwardDirectly": "Forward directly when opening the app (if disabled, the user must confirm with another click)"
   },
   "frame": {
     "sidebar": "Frame"
@@ -961,8 +965,8 @@
       "linuxmuster": "Here you can make all the settings.",
       "whiteboard": "Here you can make all the settings.",
       "bulletinboard": "Configure the user groups that have access to the Info Board app here. The categories can be used to control which messages are displayed to users.",
-      "forwarded": "Forwarding: Simply enter the link to the web application under URL.",
-      "framed": "Frame: Simply enter the link to the web application under URL.",
+      "forwarding": "Forwarding: Simply enter the link to the web application under URL.",
+      "frame": "Frame: Simply enter the link to the web application under URL.",
       "embedded": "Embedded: Here you can create your own web application in the editor."
     },
     "globalSettings": {
@@ -1273,7 +1277,7 @@
   },
   "forwardingpage": {
     "action": "This link will take you to the external site of the provider.",
-    "description": "The application opens in a new window. No further authorization is required.",
+    "description": "The application opens in a new window.",
     "missing_link": "Missing link"
   },
   "menu": "Menu",
@@ -1459,7 +1463,7 @@
     "pathDescription": "Please enter a valid URL.",
     "apptype": "App type",
     "native": "Native Support",
-    "forwarded": "Forwarded",
+    "forwarding": "Forwarded",
     "embedded": "Embedded",
     "saved": "Configuration saved!",
     "url": "URL",
