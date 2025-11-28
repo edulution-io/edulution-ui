@@ -54,7 +54,7 @@ const UserSettingsDetailsPage: React.FC = () => {
     [user, t],
   );
 
-  const schoolClasses = user?.schoolclasses.map((item) => removeSchoolPrefix(item, user.school)) || [];
+  const schoolClasses = user?.schoolclasses?.map((item) => removeSchoolPrefix(item, user.school)) || [];
 
   return (
     <PageLayout
