@@ -117,13 +117,13 @@ class AuthService {
   }
 
   async authenticateUser(body: AuthRequestArgs): Promise<SigninResponse> {
-    const { grant_type: grantType, password: passwordHash, username: identifier } = body;
+    const { grant_type: grantType, password: encodedPassword, username: identifier } = body;
 
     if (grantType === 'refresh_token') {
       return this.signin(body);
     }
 
-    const passwordString = decodeBase64Api(passwordHash);
+    const passwordString = decodeBase64Api(encodedPassword);
 
     const user = await this.userModel
       .findOne(
