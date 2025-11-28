@@ -26,8 +26,7 @@ import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuest
 import Input from '@/components/shared/Input';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
-import STANDARD_ACTION_ICONS from '@libs/common/constants/standardActionIcons';
-import StandardActionTypes from '@libs/common/constants/standardActionTypes';
+import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 
 const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
   {
@@ -87,7 +86,7 @@ const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
         <TableActionCell
           actions={[
             {
-              icon: STANDARD_ACTION_ICONS[StandardActionTypes.REMOVE],
+              icon: DeleteIcon,
               translationId: 'common.delete',
               onClick: () => (row ? removeChoice(row.original.name) : undefined),
             },

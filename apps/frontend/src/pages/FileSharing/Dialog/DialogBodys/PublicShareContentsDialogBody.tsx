@@ -28,7 +28,7 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useMedia from '@/hooks/useMedia';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
-import StandardActionTypes from '@libs/common/constants/standardActionTypes';
+import STANDARD_ACTION_TYPES from '@libs/common/constants/standardActionTypes';
 import { TableActionsConfig } from '@libs/common/types/tableActionsConfig';
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import useTableActions from '@/hooks/useTableActions';
@@ -61,7 +61,7 @@ const PublicShareContentsDialogBody = () => {
   const actionsConfig = useMemo<TableActionsConfig<PublicShareDto>>(
     () => [
       {
-        type: StandardActionTypes.ADD,
+        type: STANDARD_ACTION_TYPES.ADD,
         onClick: () => openDialog(PUBLIC_SHARE_DIALOG_NAMES.CREATE_LINK),
       },
     ],

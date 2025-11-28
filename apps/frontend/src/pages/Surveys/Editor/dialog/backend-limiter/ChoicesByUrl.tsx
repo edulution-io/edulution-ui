@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { SurveyCreatorModel } from 'survey-creator-core';
 import cn from '@libs/common/utils/className';
-import StandardActionTypes from '@libs/common/constants/standardActionTypes';
+import STANDARD_ACTION_TYPES from '@libs/common/constants/standardActionTypes';
 import { TableActionsConfig } from '@libs/common/types/tableActionsConfig';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import useTableActions from '@/hooks/useTableActions';
@@ -142,7 +142,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
   const actionsConfig = useMemo<TableActionsConfig<ChoiceDto>>(
     () => [
       {
-        type: StandardActionTypes.ADD,
+        type: STANDARD_ACTION_TYPES.ADD,
         onClick: () => addNewChoice(),
       },
     ],

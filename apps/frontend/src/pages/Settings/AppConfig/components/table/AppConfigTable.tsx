@@ -21,7 +21,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type ContainerInfo } from 'dockerode';
 import { OnChangeFn, Row, RowSelectionState, VisibilityState } from '@tanstack/react-table';
-import StandardActionTypes from '@libs/common/constants/standardActionTypes';
+import STANDARD_ACTION_TYPES from '@libs/common/constants/standardActionTypes';
 import TableAction from '@libs/common/types/tableAction';
 import { TableActionsConfig } from '@libs/common/types/tableActionsConfig';
 import { AppConfigTableConfig } from '@/pages/Settings/AppConfig/components/table/types/appConfigTableConfig';
@@ -175,19 +175,19 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
       const configs: TableActionsConfig<TableDataType> = [];
       if (showAddButton) {
         configs.push({
-          type: StandardActionTypes.ADD_OR_EDIT,
+          type: STANDARD_ACTION_TYPES.ADD_OR_EDIT,
           onClick: handleAddClick,
         });
       }
       if (showRemoveButton) {
         configs.push({
-          type: StandardActionTypes.REMOVE,
+          type: STANDARD_ACTION_TYPES.DELETE,
           onClick: handleRemoveClick,
           visible: ({ hasSelection }) => hasSelection,
         });
       }
       return configs;
-    }, [showAddButton, showRemoveButton]);
+    }, [showAddButton, showRemoveButton, selectedRows, tableContentData]);
 
     const tableActions = useTableActions(actionsConfig, selectedRowsArray);
 

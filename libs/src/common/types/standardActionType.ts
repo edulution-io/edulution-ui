@@ -17,11 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const STANDARD_ACTION_TYPES = {
-  ADD: 'add',
-  EDIT: 'edit',
-  ADD_OR_EDIT: 'addOrEdit',
-  DELETE: 'delete',
-} as const;
+import STANDARD_ACTION_TYPES from '../constants/standardActionTypes';
 
-export default STANDARD_ACTION_TYPES;
+type StandardActionType = (typeof STANDARD_ACTION_TYPES)[keyof typeof STANDARD_ACTION_TYPES];
+
+export default StandardActionType;

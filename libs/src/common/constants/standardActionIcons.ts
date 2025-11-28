@@ -18,17 +18,17 @@
  */
 
 import { IoAdd, IoPencil, IoTrash } from 'react-icons/io5';
-import StandardActionTypes from './standardActionTypes';
+import STANDARD_ACTION_TYPES from './standardActionTypes';
 
 export const AddIcon = IoAdd;
 export const EditIcon = IoPencil;
 export const DeleteIcon = IoTrash;
 
 const STANDARD_ACTION_ICONS = {
-  [StandardActionTypes.ADD]: AddIcon,
-  [StandardActionTypes.EDIT]: EditIcon,
-  [StandardActionTypes.ADD_OR_EDIT]: AddIcon,
-  [StandardActionTypes.REMOVE]: DeleteIcon,
+  [STANDARD_ACTION_TYPES.ADD]: AddIcon,
+  [STANDARD_ACTION_TYPES.EDIT]: EditIcon,
+  [STANDARD_ACTION_TYPES.ADD_OR_EDIT]: AddIcon,
+  [STANDARD_ACTION_TYPES.DELETE]: DeleteIcon,
 } as const;
 
 export default STANDARD_ACTION_ICONS;

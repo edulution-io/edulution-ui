@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next';
 import { OnChangeFn, Row, RowSelectionState } from '@tanstack/react-table';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import APPS from '@libs/appconfig/constants/apps';
-import StandardActionTypes from '@libs/common/constants/standardActionTypes';
+import STANDARD_ACTION_TYPES from '@libs/common/constants/standardActionTypes';
 import { TableActionsConfig } from '@libs/common/types/tableActionsConfig';
 import UserAccountDto from '@libs/user/types/userAccount.dto';
 import useUserStore from '@/store/UserStore/useUserStore';
@@ -89,11 +89,11 @@ const UserAccountsTable: React.FC = () => {
   const actionsConfig = useMemo<TableActionsConfig<UserAccountDto>>(
     () => [
       {
-        type: StandardActionTypes.ADD_OR_EDIT,
+        type: STANDARD_ACTION_TYPES.ADD_OR_EDIT,
         onClick: handleAddClick,
       },
       {
-        type: StandardActionTypes.REMOVE,
+        type: STANDARD_ACTION_TYPES.DELETE,
         onClick: handleRemoveClick,
         visible: ({ hasSelection }) => hasSelection,
       },

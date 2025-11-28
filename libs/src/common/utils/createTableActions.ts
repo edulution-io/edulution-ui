@@ -19,14 +19,15 @@
 
 import TableAction from '../types/tableAction';
 import { TableActionConfig, TableActionContext, TableActionsConfig } from '../types/tableActionsConfig';
-import StandardActionTypes from '../constants/standardActionTypes';
+import STANDARD_ACTION_TYPES from '../constants/standardActionTypes';
 import STANDARD_ACTION_ICONS from '../constants/standardActionIcons';
+import StandardActionType from '../types/standardActionType';
 
-const STANDARD_TRANSLATION_IDS: Record<StandardActionTypes, string> = {
-  [StandardActionTypes.ADD]: 'common.add',
-  [StandardActionTypes.EDIT]: 'common.edit',
-  [StandardActionTypes.ADD_OR_EDIT]: 'common.add',
-  [StandardActionTypes.REMOVE]: 'common.delete',
+const STANDARD_TRANSLATION_IDS: Record<StandardActionType, string> = {
+  [STANDARD_ACTION_TYPES.ADD]: 'common.add',
+  [STANDARD_ACTION_TYPES.EDIT]: 'common.edit',
+  [STANDARD_ACTION_TYPES.ADD_OR_EDIT]: 'common.add',
+  [STANDARD_ACTION_TYPES.DELETE]: 'common.delete',
 };
 
 const resolveCondition = <TData>(
@@ -65,13 +66,13 @@ const createTableAction = <TData>(
   }
 
   let resolvedType = config.type;
-  if (config.type === StandardActionTypes.ADD_OR_EDIT) {
-    resolvedType = context.isOneRowSelected ? StandardActionTypes.EDIT : StandardActionTypes.ADD;
+  if (config.type === STANDARD_ACTION_TYPES.ADD_OR_EDIT) {
+    resolvedType = context.isOneRowSelected ? STANDARD_ACTION_TYPES.EDIT : STANDARD_ACTION_TYPES.ADD;
   }
 
   const icon =
-    resolvedType === StandardActionTypes.EDIT
-      ? STANDARD_ACTION_ICONS[StandardActionTypes.EDIT]
+    resolvedType === STANDARD_ACTION_TYPES.EDIT
+      ? STANDARD_ACTION_ICONS[STANDARD_ACTION_TYPES.EDIT]
       : STANDARD_ACTION_ICONS[resolvedType];
   const translationId = config.translationId ?? STANDARD_TRANSLATION_IDS[resolvedType];
 

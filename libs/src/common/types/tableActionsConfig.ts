@@ -19,7 +19,7 @@
 
 import { IconType } from 'react-icons';
 import { Row } from '@tanstack/react-table';
-import StandardActionTypes from '../constants/standardActionTypes';
+import StandardActionType from './standardActionType';
 
 interface TableActionContext<TData> {
   selectedRows: Row<TData>[];
@@ -38,7 +38,7 @@ interface BaseActionConfig<TData> {
 }
 
 interface StandardActionConfig<TData> extends BaseActionConfig<TData> {
-  type: StandardActionTypes;
+  type: StandardActionType;
   translationId?: string;
 }
 
