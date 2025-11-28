@@ -1594,7 +1594,6 @@
       "noData": "Aucune information de version disponible."
     },
     "appLogo": {
-      "visibilityDescription": "Le logo de l'application est mis à disposition publiquement et n'est disponible que si l'application est marquée comme accessible publiquement ici.",
       "light": "clair",
       "dark": "sombre",
       "title": "Logo thématique {{variant}}",

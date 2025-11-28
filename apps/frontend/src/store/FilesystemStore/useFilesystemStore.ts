@@ -27,7 +27,6 @@ import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import getMainLogoFilename from '@libs/filesharing/utils/getMainLogoFilename';
 import { GLOBAL_SETTINGS_BRANDING_LOGO } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
-import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
 
 interface FilesystemStore {
   darkVersion: number;
@@ -59,7 +58,7 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
 
   deleteImageFile: async (appName: string, fileName: string) => {
     try {
-      const url = `${EDU_API_CONFIG_ENDPOINTS.FILES}/public/${FILE_ENDPOINTS.FILE}/${appName}/${fileName}`;
+      const url = `${EDU_API_CONFIG_ENDPOINTS.FILES}/public/assets/${appName}/${fileName}`;
       await eduApi.delete<void>(url);
     } catch (e) {
       handleApiError(e, set);

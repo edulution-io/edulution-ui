@@ -1800,7 +1800,6 @@
       "noData": "Keine Versionsinformationen verfügbar."
     },
     "appLogo": {
-      "visibilityDescription": "Das App-Logo wird öffentlich bereit gestellt und ist nur verfügbar, wenn die App hier als öffentlich zugänglich markiert ist.",
       "light": "helle",
       "dark": "dunkle",
       "title": "Logo für das {{variant}} Farbschema",

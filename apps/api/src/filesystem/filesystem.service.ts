@@ -368,7 +368,7 @@ class FilesystemService {
     }
   }
 
-  async servePublicFileWithFallback(
+  async servePublicAssetWithFallback(
     res: Response,
     appName: string,
     filename: string | string[],

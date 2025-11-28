@@ -92,20 +92,28 @@ class FileSystemController {
     return this.filesystemService.getFilesInfo(FilesystemService.buildPathString(appName));
   }
 
-  @Public()
-  @UseGuards(IsPublicAppGuard)
   @Get(`public/${FILE_ENDPOINTS.FILE}/:appName/*filename`)
-  async servePublicFiles(
+  servePublicFiles(
+    @Param('appName') appName: string,
+    @Param('filename') filename: string | string[],
+    @Res() res: Response,
+  ) {
+    return this.filesystemService.serveFiles(appName, FilesystemService.buildPathString(filename), res);
+  }
+
+  @Public()
+  @Get(`public/assets/:appName/*filename`)
+  async servePublicAsset(
     @Res() res: Response,
     @Param('appName') appName: string,
     @Param('filename') filename: string | string[],
     @Query('fallback') fallbackFilename: string | undefined,
   ) {
-    return this.filesystemService.servePublicFileWithFallback(res, appName, filename, fallbackFilename);
+    return this.filesystemService.servePublicAssetWithFallback(res, appName, filename, fallbackFilename);
   }
 
   @UseGuards(AdminGuard)
-  @Delete(`public/${FILE_ENDPOINTS.FILE}/:appName/*filename`)
+  @Delete(`public/assets/:appName/*filename`)
   async deletePublicFiles(@Param('appName') appName: string, @Param('filename') filename: string | string[]) {
     const fileName = FilesystemService.buildPathString(filename);
     const filePath = join(PUBLIC_ASSET_PATH, appName);

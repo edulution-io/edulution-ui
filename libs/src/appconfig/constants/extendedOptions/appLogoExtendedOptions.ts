@@ -26,13 +26,6 @@ const ThemedValue: ThemedFile = { dark: null, light: null };
 
 const APP_LOGO_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
   {
-    name: ExtendedOptionKeys.EMBEDDED_PAGE_IS_PUBLIC,
-    description: 'appExtendedOptions.appLogo.visibilityDescription',
-    title: 'filesharing.publicFileSharing.publiclyAccessible',
-    type: ExtendedOptionField.switch,
-    width: 'full',
-  },
-  {
     name: ExtendedOptionKeys.APP_LOGO,
     title: 'appExtendedOptions.appLogo.title',
     description: 'appExtendedOptions.appLogo.description',
