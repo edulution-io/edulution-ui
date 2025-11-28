@@ -117,50 +117,58 @@ class AuthService {
   }
 
   async authenticateUser(body: AuthRequestArgs): Promise<SigninResponse> {
-    const { grant_type: grantType } = body;
+    const { grant_type: grantType, password: passwordHash, username: identifier } = body;
+
     if (grantType === 'refresh_token') {
       return this.signin(body);
     }
-    const { password: passwordHash } = body;
+
     const passwordString = decodeBase64Api(passwordHash);
-    const { username } = body;
-    const user = (await this.userModel.findOne({ username }, 'mfaEnabled totpSecret').lean()) || ({} as User);
-    const { mfaEnabled = false, totpSecret = '' } = user;
 
-    if (mfaEnabled) {
-      const lastColonIndex = passwordString.lastIndexOf(':');
+    const user = await this.userModel
+      .findOne(
+        identifier.includes('@') ? { email: identifier.toLowerCase() } : { username: identifier },
+        'mfaEnabled totpSecret username email',
+      )
+      .lean();
 
-      let password: string;
-      let token: string | undefined;
+    if (!user) {
+      return this.signin(body, passwordString);
+    }
 
-      if (lastColonIndex !== -1) {
-        password = passwordString.slice(0, lastColonIndex);
-        token = passwordString.slice(lastColonIndex + 1);
-      } else {
-        throw new HttpException(
-          { error: AuthErrorMessages.TotpMissing, error_description: AuthErrorMessages.TotpMissing },
-          HttpStatus.UNAUTHORIZED,
-        );
-      }
+    const { mfaEnabled = false, totpSecret = '', username } = user;
 
-      if (!token)
-        throw new HttpException(
-          { error: AuthErrorMessages.TotpMissing, error_description: AuthErrorMessages.TotpMissing },
-          HttpStatus.UNAUTHORIZED,
-        );
+    if (!mfaEnabled) {
+      return this.signin(body, passwordString);
+    }
 
-      const isTotpValid = AuthService.checkTotp(token, username, totpSecret);
+    const lastColonIndex = passwordString.lastIndexOf(':');
 
-      if (isTotpValid) {
-        return this.signin(body, password);
-      }
+    if (lastColonIndex === -1) {
+      throw new HttpException(
+        { error: AuthErrorMessages.TotpMissing, error_description: AuthErrorMessages.TotpMissing },
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
 
+    const password = passwordString.slice(0, lastColonIndex);
+    const token = passwordString.slice(lastColonIndex + 1);
+
+    if (!token)
+      throw new HttpException(
+        { error: AuthErrorMessages.TotpMissing, error_description: AuthErrorMessages.TotpMissing },
+        HttpStatus.UNAUTHORIZED,
+      );
+
+    const isTotpValid = AuthService.checkTotp(token, username, totpSecret);
+
+    if (!isTotpValid) {
       throw new HttpException(
         { error: AuthErrorMessages.TotpInvalid, error_description: AuthErrorMessages.TotpInvalid },
         HttpStatus.UNAUTHORIZED,
       );
     }
-    return this.signin(body, passwordString);
+    return this.signin(body, password);
   }
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
@@ -188,14 +196,11 @@ class AuthService {
     throw new CustomHttpException(AuthErrorMessages.TotpInvalid, HttpStatus.UNAUTHORIZED, undefined, AuthService.name);
   }
 
-  async getTotpInfo(username: string) {
-    const user = await this.userModel.findOne({ username }, 'mfaEnabled').lean();
-    if (!user) return false;
-    const { mfaEnabled = false } = user;
-    if (mfaEnabled) {
-      return true;
-    }
-    return false;
+  async getTotpInfo(usernameOrEmail: string) {
+    const query = usernameOrEmail.includes('@') ? { email: usernameOrEmail } : { username: usernameOrEmail };
+
+    const user = await this.userModel.findOne(query, { mfaEnabled: 1 }).lean();
+    return user?.mfaEnabled ?? false;
   }
 
   async disableTotp(username: string) {
