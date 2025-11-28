@@ -64,6 +64,7 @@ import DevCacheFlushService from '../common/cache/dev-cache-flush.service';
 import MetricsModule from '../metrics/metrics.module';
 import configuration from '../config/configuration';
 import enableSentryForNest from '../sentry/enableSentryForNest';
+import AiModule from '../ai/ai.module';
 
 @Module({
   imports: [
@@ -114,6 +115,7 @@ import enableSentryForNest from '../sentry/enableSentryForNest';
     NotificationsModule,
     MobileAppModule,
     UserPreferencesModule,
+    AiModule,
     JwtModule.register({
       global: true,
     }),

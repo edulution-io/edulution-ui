@@ -19,7 +19,7 @@
 
 import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { randomUUID, createHash } from 'crypto';
+import { createHash, randomUUID } from 'crypto';
 import axios from 'axios';
 import { parseString } from 'xml2js';
 import { Model } from 'mongoose';
@@ -45,6 +45,8 @@ import Attendee from './attendee.schema';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
 import NotificationsService from '../notifications/notifications.service';
+import AiService from '../ai/ai.service';
+import UsersService from '../users/users.service';
 
 @Injectable()
 class ConferencesService implements OnModuleInit {
@@ -58,6 +60,8 @@ class ConferencesService implements OnModuleInit {
     private readonly groupsService: GroupsService,
     private readonly sseService: SseService,
     private readonly notificationService: NotificationsService,
+    private readonly aiService: AiService,
+    private readonly userService: UsersService,
   ) {}
 
   onModuleInit() {
@@ -225,14 +229,28 @@ class ConferencesService implements OnModuleInit {
 
       // TODO: #1152
 
-      await this.notificationService.notifyUsernames(invitedMembersList, {
+      const notification = {
         title: `Konferenz gestartet: ${conference.name}`,
         body: `Die Konferenz "${conference.name}" wurde gestartet.`,
-        data: {
-          meetingID: conference.meetingID,
-          type: 'conference_started',
-        },
-      });
+      };
+
+      await Promise.all(
+        invitedMembersList.map(async (username) => {
+          const user = await this.userService.findOne(username);
+          const translatedNotification = await this.aiService.translateNotification(
+            notification,
+            user?.language || 'DE',
+          );
+
+          await this.notificationService.notifyUsernames([username], {
+            ...translatedNotification,
+            data: {
+              meetingID: conference.meetingID,
+              type: 'conference_started',
+            },
+          });
+        }),
+      );
 
       const publicConferencesSubscriber = conference.meetingID;
       this.sseService.sendEventToUsers(
