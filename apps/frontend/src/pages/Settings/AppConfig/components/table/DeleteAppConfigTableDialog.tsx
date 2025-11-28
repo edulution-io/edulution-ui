@@ -20,7 +20,7 @@
 import React from 'react';
 import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
 
-interface DeleteAppConfigDialogProps {
+interface DeleteAppConfigTableDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   items: Array<{ name: string; id: string }>;
@@ -30,7 +30,7 @@ interface DeleteAppConfigDialogProps {
   messageTranslationKey?: string;
 }
 
-const DeleteAppConfigDialog: React.FC<DeleteAppConfigDialogProps> = ({
+const DeleteAppConfigTableDialog: React.FC<DeleteAppConfigTableDialogProps> = ({
   isOpen,
   onOpenChange,
   items,
@@ -57,4 +57,4 @@ const DeleteAppConfigDialog: React.FC<DeleteAppConfigDialogProps> = ({
   );
 };
 
-export default DeleteAppConfigDialog;
+export default DeleteAppConfigTableDialog;

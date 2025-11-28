@@ -20,10 +20,9 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import ItemList from '@/components/shared/ItemList';
-import { Button } from '@/components/shared/Button';
 import ListItem from '@libs/ui/types/listItem';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 interface DeleteConfirmationDialogProps {
   isOpen: boolean;
@@ -74,8 +73,6 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
   const isDisabled = isLoading || isSubmitting || items.length === 0;
 
   const getDialogBody = () => {
-    if (isLoading) return <CircleLoader className="mx-auto" />;
-
     if (error) {
       return (
         <div className="text-background">
@@ -100,26 +97,13 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
   };
 
   const getFooter = () => (
-    <div className="mt-4 flex justify-end gap-4">
-      <Button
-        variant="btn-outline"
-        disabled={isSubmitting}
-        size="lg"
-        type="button"
-        onClick={handleClose}
-      >
-        {t('common.cancel')}
-      </Button>
-      <Button
-        variant="btn-attention"
-        disabled={isDisabled}
-        size="lg"
-        type="button"
-        onClick={handleSubmit}
-      >
-        {isSubmitting ? t('common.deleting') : t('common.delete')}
-      </Button>
-    </div>
+    <DialogFooterButtons
+      handleClose={handleClose}
+      handleSubmit={handleSubmit}
+      submitButtonText={isSubmitting ? t('common.deleting') : t('common.delete')}
+      disableCancel={isSubmitting}
+      disableSubmit={isDisabled}
+    />
   );
 
   return (

@@ -39,6 +39,7 @@ const EmbeddedPageContent: React.FC<EmbeddedPageContentProps> = ({
       title={pageTitle}
       className="h-full w-full border-0"
       sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
+      allow="camera *; microphone *; display-capture *; clipboard-read *; clipboard-write *;"
     />
   ) : (
     <div
