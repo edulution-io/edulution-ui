@@ -73,8 +73,14 @@ const ForwardingPage = () => {
   const pageTitle = getDisplayName(currentAppConfig, language);
   const shouldForwardDirectly = !!currentAppConfig.extendedOptions?.[ExtendedOptionKeys.FORWARDING_FORWARD_DIRECTLY];
 
+  const targetUrl = currentAppConfig?.options?.url;
+
   return (
-    <div className="m-auto grid h-[80%] items-center justify-center">
+    <div
+      className="m-auto grid h-[80%] items-center justify-center"
+      data-forwarding-page="true"
+      data-target-url={targetUrl}
+    >
       <PageTitle translationId={pageTitle} />
       <h1 className="text-center text-background">{t('forwardingpage.action')}</h1>
       <div className="mt-20 flex justify-center">
@@ -88,6 +94,7 @@ const ForwardingPage = () => {
           variant="btn-hexagon"
           onClick={openExternalLink}
           hexagonIconAltText={t('common.forward')}
+          data-target-url={targetUrl}
         >
           <img
             className="m-10 w-[200px] md:m-[20] md:w-[200px]"
