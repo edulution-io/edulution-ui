@@ -24,7 +24,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { Form } from '@/components/ui/Form';
-import { Button } from '@/components/shared/Button';
 import FormField from '@/components/shared/FormField';
 import createVeyonProxyConfigSchema from '@libs/classManagement/constants/createVeyonProxyConfigSchema';
 import type VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
@@ -116,25 +115,11 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
   };
 
   const getFooter = () => (
-    <form
-      onSubmit={handleFormSubmit}
-      className="flex gap-4"
-    >
-      {selectedConfig && (
-        <div className="mt-4">
-          <Button
-            variant="btn-attention"
-            size="lg"
-            type="button"
-            onClick={() => setIsDeleteDialogOpen(true)}
-          >
-            {t('bulletinboard.delete')}
-          </Button>
-        </div>
-      )}
+    <form onSubmit={handleFormSubmit}>
       <DialogFooterButtons
         handleClose={closeDialog}
         handleSubmit={() => {}}
+        handleDelete={selectedConfig ? () => setIsDeleteDialogOpen(true) : undefined}
         disableSubmit={!formState.isValid}
         submitButtonText="common.save"
         submitButtonType="submit"
