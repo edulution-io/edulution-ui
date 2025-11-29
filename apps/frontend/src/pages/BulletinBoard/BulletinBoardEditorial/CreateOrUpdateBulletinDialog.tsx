@@ -27,7 +27,7 @@ import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardE
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import getBulletinFormSchema from '@libs/bulletinBoard/constants/bulletinDialogFormSchema';
 import CreateOrUpdateBulletinDialogBody from '@/pages/BulletinBoard/BulletinBoardEditorial/CreateOrUpdateBulletinDialogBody';
-import { MdDelete } from 'react-icons/md';
+import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
@@ -143,7 +143,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
               setSelectedBulletinToEdit(null);
             }}
           >
-            <MdDelete size={20} />
+            <DeleteIcon size={20} />
             {t('common.delete')}
           </Button>
         )}
