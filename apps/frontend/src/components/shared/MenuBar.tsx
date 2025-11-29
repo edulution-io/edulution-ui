@@ -19,8 +19,6 @@
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
-import { MenubarMenu, MenubarTrigger, VerticalMenubar } from '@/components/ui/MenubarSH';
-
 import cn from '@libs/common/utils/className';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useOnClickOutside } from 'usehooks-ts';
@@ -33,11 +31,12 @@ import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableSharePathname';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
 import useMenuBarStore from './useMenuBarStore';
 
 const MenuBar: React.FC = () => {
   const { t } = useTranslation();
-  const { isMobileMenuBarOpen, toggleMobileMenuBar } = useMenuBarStore();
+  const { isMobileMenuBarOpen, toggleMobileMenuBar, isCollapsed, toggleCollapsed } = useMenuBarStore();
   const menubarRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
   const menuBarEntries = useMenuBarConfig();
@@ -48,10 +47,12 @@ const MenuBar: React.FC = () => {
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
   const { isMobileView, isTabletView } = useMedia();
-
+  const isDesktopView = !isMobileView && !isTabletView && !isEdulutionApp;
   const navigate = useNavigate();
 
-  useOnClickOutside(menubarRef, toggleMobileMenuBar);
+  useOnClickOutside(menubarRef, () => {
+    if (isMobileView || isTabletView) toggleMobileMenuBar();
+  });
 
   if (menuBarEntries.disabled) {
     return null;
@@ -121,38 +122,58 @@ const MenuBar: React.FC = () => {
           <img
             src={menuBarEntries.icon}
             alt={menuBarEntries.title}
-            className="h-20 w-20 object-contain"
+            className={cn('object-contain transition-all', isCollapsed ? 'h-10 w-10' : 'h-20 w-20')}
           />
-          <h2 className="mb-4 mt-4 text-center font-bold">{menuBarEntries.title}</h2>
+          {!isCollapsed && <h2 className="mb-4 mt-4 text-center font-bold">{menuBarEntries.title}</h2>}
         </button>
       </div>
-      <MenubarMenu>
-        <div className="flex-1 overflow-y-auto pb-10">
-          {menuBarEntries.menuItems.map((item) => (
-            <React.Fragment key={item.label}>
-              <MenubarTrigger
-                className={cn(
-                  'flex w-full cursor-pointer items-center gap-3 py-1 pl-3 pr-10 transition-colors',
-                  menuBarEntries.color,
-                  isSelected === item.id ? menuBarEntries.color.split(':')[1] : '',
-                )}
-                onClick={() => {
-                  setIsSelected(item.id);
-                  toggleMobileMenuBar();
-                  item.action();
-                }}
-              >
-                <img
-                  src={item.icon}
-                  alt={item.label}
-                  className="h-12 w-12 object-contain"
-                />
-                <p className="text-left">{item.label}</p>
-              </MenubarTrigger>
-            </React.Fragment>
-          ))}
-        </div>
-      </MenubarMenu>
+
+      {isDesktopView && (
+        <button
+          type="button"
+          onClick={toggleCollapsed}
+          className="mx-3 mb-4 rounded-md border px-2 py-1 text-sm hover:bg-accent"
+        >
+          {isCollapsed ? '→' : '←'}
+        </button>
+      )}
+
+      <div className="flex-1 overflow-y-auto pb-10">
+        {menuBarEntries.menuItems.map((item) => {
+          const content = (
+            <button
+              type="button"
+              onClick={() => {
+                setIsSelected(item.id);
+                toggleMobileMenuBar();
+                item.action();
+              }}
+              className={cn(
+                'flex w-full items-center gap-3 py-1 pl-3 pr-3 transition-colors',
+                menuBarEntries.color,
+                isSelected === item.id ? menuBarEntries.color.split(':')[1] : '',
+                isCollapsed && 'justify-center',
+              )}
+            >
+              <img
+                src={item.icon}
+                alt={item.label}
+                className="h-12 w-12 object-contain"
+              />
+              {!isCollapsed && <p>{item.label}</p>}
+            </button>
+          );
+
+          return isCollapsed ? (
+            <Tooltip key={item.id}>
+              <TooltipTrigger asChild>{content}</TooltipTrigger>
+              <TooltipContent side="right">{item.label}</TooltipContent>
+            </Tooltip>
+          ) : (
+            <React.Fragment key={item.id}>{content}</React.Fragment>
+          );
+        })}
+      </div>
     </div>
   );
 
@@ -166,10 +187,10 @@ const MenuBar: React.FC = () => {
         />
       )}
 
-      {isMobileView || isTabletView || isEdulutionApp ? (
-        <VerticalMenubar
+      {!isDesktopView ? (
+        <div
           className={cn(
-            'fixed top-0 z-50 h-full overflow-x-hidden bg-foreground duration-300 ease-in-out',
+            'fixed left-0 top-0 z-50 h-full overflow-x-hidden bg-black duration-300 ease-in-out',
             isMobileMenuBarOpen ? 'w-64 border-r-[1px] border-muted' : 'w-0',
           )}
         >
@@ -181,11 +202,18 @@ const MenuBar: React.FC = () => {
           >
             {isMobileMenuBarOpen && renderMenuBarContent()}
           </div>
-        </VerticalMenubar>
-      ) : (
-        <div className="relative flex h-dvh">
-          <VerticalMenubar className="w-64 bg-foreground bg-opacity-40">{renderMenuBarContent()}</VerticalMenubar>
         </div>
+      ) : (
+        <aside className="relative flex h-dvh">
+          <div
+            className={cn(
+              'h-full overflow-hidden bg-foreground bg-opacity-40 transition-all duration-300',
+              isCollapsed ? 'w-16' : 'w-64',
+            )}
+          >
+            {renderMenuBarContent()}
+          </div>
+        </aside>
       )}
     </>
   );
