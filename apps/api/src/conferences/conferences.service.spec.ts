@@ -39,6 +39,7 @@ import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
 import NotificationsService from '../notifications/notifications.service';
+import AiService from '../ai/ai.service';
 
 const mockConference: CreateConferenceDto = {
   name: 'Testconference',
@@ -51,6 +52,12 @@ const mockCreator: Attendee = {
   username: 'username',
   lastName: 'lastName',
   firstName: 'firstName',
+};
+
+const mockAiService = {
+  chat: jest.fn().mockResolvedValue(''),
+  translate: jest.fn().mockResolvedValue(''),
+  translateNotification: jest.fn().mockResolvedValue({ title: 'Test', body: 'Test' }),
 };
 
 const mockJWTUser: JWTUser = {
@@ -142,6 +149,7 @@ describe(ConferencesService.name, () => {
         },
         { provide: FilesystemService, useValue: mockFilesystemService },
         { provide: NotificationsService, useValue: notificationMock },
+        { provide: AiService, useValue: mockAiService },
       ],
     }).compile();
 
