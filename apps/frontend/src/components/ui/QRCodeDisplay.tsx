@@ -47,7 +47,7 @@ const QRCodeDisplay: FC<QRCodeDisplayProps> = ({ value, size = 'default', classN
   }>(() => SIZE_CONFIG[size], [size]);
 
   return (
-    <div className={cn('flex flex-col items-center justify-center rounded-xl bg-background p-2', sizeClass, className)}>
+    <div className={cn('flex flex-col items-center justify-center rounded-xl bg-white p-2', sizeClass, className)}>
       {isLoading ? (
         <CircleLoader className={sizeClass} />
       ) : (

@@ -282,7 +282,7 @@ const LoginPage: React.FC = () => {
           name={fieldName}
           render={({ field }) => (
             <FormItem>
-              <p className="font-bold text-foreground">{label}</p>
+              <p className="font-bold text-black">{label}</p>
               <FormControl>
                 <Input
                   {...field}
@@ -358,7 +358,7 @@ const LoginPage: React.FC = () => {
       <PageTitle translationId="login.pageTitle" />
       <Card
         variant="modal"
-        className="overflow-y-auto bg-background scrollbar-thin"
+        className="overflow-y-auto bg-white shadow-lg scrollbar-thin"
       >
         {useDefaultLogo ? (
           <DesktopLogo className="mx-auto w-64" />
@@ -384,7 +384,7 @@ const LoginPage: React.FC = () => {
 
             {!showQrCode && (
               <Button
-                className="mx-auto w-full justify-center shadow-xl"
+                className="mx-auto w-full justify-center text-white shadow-xl"
                 type="submit"
                 variant="btn-security"
                 size="lg"
@@ -395,7 +395,7 @@ const LoginPage: React.FC = () => {
               </Button>
             )}
             <Button
-              className="mx-auto w-full justify-center shadow-xl hover:bg-ciGrey/10"
+              className="mx-auto w-full justify-center border-none text-black shadow-xl hover:bg-ciGrey/10 hover:text-black"
               type="button"
               variant="btn-outline"
               size="lg"
