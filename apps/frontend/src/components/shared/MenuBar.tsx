@@ -21,7 +21,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import cn from '@libs/common/utils/className';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { GoSidebarCollapse, GoSidebarExpand } from 'react-icons/go';
 import { useOnClickOutside } from 'usehooks-ts';
 import useMedia from '@/hooks/useMedia';
 import { getFromPathName } from '@libs/common/utils';
@@ -34,6 +34,7 @@ import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableShare
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
 import useMenuBarStore from './useMenuBarStore';
+import { Button } from './Button';
 
 const MenuBar: React.FC = () => {
   const { t } = useTranslation();
@@ -115,8 +116,23 @@ const MenuBar: React.FC = () => {
       ref={menubarRef}
     >
       <div className="flex flex-col items-center justify-center py-6">
+        {isDesktopView && (
+          <Button
+            type="button"
+            variant="btn-outline"
+            size="sm"
+            onClick={toggleCollapsed}
+            className={cn(
+              'absolute right-[-25px] top-2 mx-3 mb-4 border-accent px-2 py-1',
+              isCollapsed ? 'cursor-e-resize ' : 'cursor-w-resize ',
+            )}
+          >
+            {isCollapsed ? <GoSidebarCollapse size={18} /> : <GoSidebarExpand size={18} />}
+          </Button>
+        )}
+
         <button
-          className="flex flex-col items-center justify-center"
+          className="flex flex-col items-center justify-center rounded-xl hover:bg-accent"
           type="button"
           onClick={handleHeaderIconClick}
         >
@@ -128,16 +144,6 @@ const MenuBar: React.FC = () => {
           {!isCollapsed && <h2 className="mb-4 mt-4 text-center font-bold">{menuBarEntries.title}</h2>}
         </button>
       </div>
-
-      {isDesktopView && (
-        <button
-          type="button"
-          onClick={toggleCollapsed}
-          className="mx-3 mb-4 rounded-md border px-2 py-1 text-sm hover:bg-accent"
-        >
-          {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-        </button>
-      )}
 
       <div className="flex-1 overflow-y-auto pb-10">
         {menuBarEntries.menuItems.map((item) => {
