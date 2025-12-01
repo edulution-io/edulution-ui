@@ -148,6 +148,7 @@ const AddWebdavServerDialog: React.FC<AddWebdavServerDialogProps> = ({ tableId }
     }
     setItemToDelete(null);
     setIsDeleteDialogOpen(false);
+    setDialogOpen('');
   };
 
   const handleDeleteDialogClose = (open: boolean) => {

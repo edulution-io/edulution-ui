@@ -83,9 +83,6 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
       const fetchDataAsync = async () => {
         if (fetchTableContent) {
           await fetchTableContent(applicationName as TApps);
-          if (setSelectedRows) {
-            setSelectedRows({});
-          }
         }
       };
 

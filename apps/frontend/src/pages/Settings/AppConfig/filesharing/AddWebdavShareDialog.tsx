@@ -171,6 +171,7 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
     }
     setItemToDelete(null);
     setIsDeleteDialogOpen(false);
+    setDialogOpen('');
   };
 
   const handleDeleteDialogClose = (open: boolean) => {
