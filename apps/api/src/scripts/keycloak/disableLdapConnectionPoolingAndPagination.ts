@@ -27,24 +27,24 @@ import LDAP_PROVIDER_ID from '@libs/ldapKeycloakSync/constants/ldapProviderId';
 
 const { KEYCLOAK_ADMIN, KEYCLOAK_ADMIN_PASSWORD } = process.env as Record<string, string>;
 
-const enableLdapConnectionPoolingAndPagination: Scripts = {
-  name: '005-enableLdapConnectionPoolingAndPagination',
+const disableLdapConnectionPoolingAndPagination: Scripts = {
+  name: '005-disableLdapConnectionPoolingAndPagination',
   version: 1,
   execute: async () => {
     if (!KEYCLOAK_ADMIN || !KEYCLOAK_ADMIN_PASSWORD) {
       Logger.error(
         'KEYCLOAK_ADMIN and KEYCLOAK_ADMIN_PASSWORD environment variables must be set.',
-        enableLdapConnectionPoolingAndPagination.name,
+        disableLdapConnectionPoolingAndPagination.name,
       );
       return;
     }
 
     try {
-      Logger.debug('Fetching Keycloak access token...', enableLdapConnectionPoolingAndPagination.name);
+      Logger.debug('Fetching Keycloak access token...', disableLdapConnectionPoolingAndPagination.name);
       const keycloakAccessToken = await getKeycloakToken();
       const keycloakClient = createKeycloakAxiosClient(keycloakAccessToken);
 
-      Logger.debug('Fetching LDAP user storage components...', enableLdapConnectionPoolingAndPagination.name);
+      Logger.debug('Fetching LDAP user storage components...', disableLdapConnectionPoolingAndPagination.name);
       const { data: components } = await keycloakClient.get<LdapComponent[]>('/components', {
         params: { type: keycloakUserStorageProvider },
       });
@@ -52,32 +52,32 @@ const enableLdapConnectionPoolingAndPagination: Scripts = {
       const ldapComponents = components.filter((c) => c.providerId === LDAP_PROVIDER_ID);
 
       if (ldapComponents.length === 0) {
-        Logger.warn('No LDAP user federation found; exiting.', enableLdapConnectionPoolingAndPagination.name);
+        Logger.warn('No LDAP user federation found; exiting.', disableLdapConnectionPoolingAndPagination.name);
         return;
       }
 
-      Logger.debug(`Found ${ldapComponents.length} LDAP component(s)`, enableLdapConnectionPoolingAndPagination.name);
+      Logger.debug(`Found ${ldapComponents.length} LDAP component(s)`, disableLdapConnectionPoolingAndPagination.name);
 
       let modificationsApplied = false;
 
       for (const ldapComponent of ldapComponents) {
         Logger.debug(
           `Processing LDAP component: ${ldapComponent.name} (${ldapComponent.id})`,
-          enableLdapConnectionPoolingAndPagination.name,
+          disableLdapConnectionPoolingAndPagination.name,
         );
 
-        const currentConnectionPooling = ldapComponent.config.connectionPooling?.[0] === 'true';
-        const currentPagination = ldapComponent.config.pagination?.[0] === 'true';
+        const currentConnectionPooling = ldapComponent.config.connectionPooling?.[0] === 'false';
+        const currentPagination = ldapComponent.config.pagination?.[0] === 'false';
 
         Logger.debug(
           `Current settings - Connection Pooling: ${currentConnectionPooling}, Pagination: ${currentPagination}`,
-          enableLdapConnectionPoolingAndPagination.name,
+          disableLdapConnectionPoolingAndPagination.name,
         );
 
         if (currentConnectionPooling && currentPagination) {
           Logger.log(
             `Connection pooling and pagination already enabled for '${ldapComponent.name}'`,
-            enableLdapConnectionPoolingAndPagination.name,
+            disableLdapConnectionPoolingAndPagination.name,
           );
           continue;
         }
@@ -86,14 +86,14 @@ const enableLdapConnectionPoolingAndPagination: Scripts = {
           ...ldapComponent,
           config: {
             ...ldapComponent.config,
-            connectionPooling: ['true'],
-            pagination: ['true'],
+            connectionPooling: ['false'],
+            pagination: ['false'],
           },
         };
 
         Logger.debug(
           `Updating LDAP component to enable connection pooling and pagination...`,
-          enableLdapConnectionPoolingAndPagination.name,
+          disableLdapConnectionPoolingAndPagination.name,
         );
 
         const response = await keycloakClient.put(`/components/${ldapComponent.id}`, updatedComponent);
@@ -105,14 +105,14 @@ const enableLdapConnectionPoolingAndPagination: Scripts = {
 
           Logger.log(
             `Successfully enabled ${changes.join(' and ')} for '${ldapComponent.name}'`,
-            enableLdapConnectionPoolingAndPagination.name,
+            disableLdapConnectionPoolingAndPagination.name,
           );
           modificationsApplied = true;
         }
       }
 
       if (modificationsApplied) {
-        Logger.debug('Triggering full user sync...', enableLdapConnectionPoolingAndPagination.name);
+        Logger.debug('Triggering full user sync...', disableLdapConnectionPoolingAndPagination.name);
 
         for (const ldapComponent of ldapComponents) {
           try {
@@ -127,29 +127,29 @@ const enableLdapConnectionPoolingAndPagination: Scripts = {
             if (syncResponse.status === 200) {
               Logger.log(
                 `Full sync triggered successfully for ${ldapComponent.name}. Result: ${JSON.stringify(syncResponse.data)}`,
-                enableLdapConnectionPoolingAndPagination.name,
+                disableLdapConnectionPoolingAndPagination.name,
               );
             }
           } catch (syncError) {
             Logger.warn(
               `Failed to trigger sync for ${ldapComponent.name}: ${syncError.message}`,
-              enableLdapConnectionPoolingAndPagination.name,
+              disableLdapConnectionPoolingAndPagination.name,
             );
           }
         }
       } else {
-        Logger.log('No modifications needed, skipping sync.', enableLdapConnectionPoolingAndPagination.name);
+        Logger.log('No modifications needed, skipping sync.', disableLdapConnectionPoolingAndPagination.name);
       }
     } catch (error) {
-      Logger.error(error.message, enableLdapConnectionPoolingAndPagination.name);
+      Logger.error(error.message, disableLdapConnectionPoolingAndPagination.name);
       if (error.response?.data) {
         Logger.error(
           `Response error: ${JSON.stringify(error.response.data)}`,
-          enableLdapConnectionPoolingAndPagination.name,
+          disableLdapConnectionPoolingAndPagination.name,
         );
       }
     }
   },
 };
 
-export default enableLdapConnectionPoolingAndPagination;
+export default disableLdapConnectionPoolingAndPagination;
