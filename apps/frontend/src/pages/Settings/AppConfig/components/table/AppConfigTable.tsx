@@ -37,7 +37,7 @@ import useTableActions from '@/hooks/useTableActions';
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
-import DeleteAppConfigDialog from './DeleteAppConfigDialog';
+import DeleteAppConfigTableDialog from './DeleteAppConfigTableDialog';
 
 interface AppConfigTableProps {
   applicationName: string;
@@ -137,6 +137,10 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
       });
 
       await Promise.all(deletePromises);
+      if (setSelectedRows) {
+        setSelectedRows({});
+      }
+      setItemsToDelete([]);
       await fetchTableContent(applicationName as TApps);
     };
 
@@ -293,9 +297,14 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
         {title && <p className="font-bold">{t(title)}</p>}
         {getScrollableTable()}
         {dialogBody}
-        <DeleteAppConfigDialog
+        <DeleteAppConfigTableDialog
           isOpen={isDeleteDialogOpen}
-          onOpenChange={setIsDeleteDialogOpen}
+          onOpenChange={(open) => {
+            setIsDeleteDialogOpen(open);
+            if (!open) {
+              setItemsToDelete([]);
+            }
+          }}
           items={itemsToDelete}
           onConfirmDelete={handleConfirmDelete}
         />

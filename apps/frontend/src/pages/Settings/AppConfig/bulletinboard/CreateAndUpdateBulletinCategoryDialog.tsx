@@ -28,7 +28,7 @@ import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinC
 import { zodResolver } from '@hookform/resolvers/zod';
 import getCreateNewCategorieSchema from '@libs/bulletinBoard/constants/createNewCategorieSchema';
 import CreateAndUpdateBulletinCategoryBody from '@/pages/Settings/AppConfig/bulletinboard/components/CreateAndUpdateBulletinCategoryBody';
-import DeleteBulletinsCategoriesDialog from '@/pages/Settings/AppConfig/bulletinboard/components/DeleteBulletinCategoriesDialog';
+import DeleteBulletinCategoriesDialog from '@/pages/Settings/AppConfig/bulletinboard/components/DeleteBulletinCategoriesDialog';
 import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 import BULLETIN_VISIBILITY_STATES from '@libs/bulletinBoard/constants/bulletinVisibilityStates';
 
@@ -150,7 +150,7 @@ const CreateAndUpdateBulletinCategoryDialog: React.FC<CreateAndUpdateBulletinCat
         body={getDialogBody()}
         footer={getFooter()}
       />
-      <DeleteBulletinsCategoriesDialog />
+      <DeleteBulletinCategoriesDialog />
     </>
   );
 };

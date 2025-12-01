@@ -23,10 +23,8 @@ import TableAction from '@libs/common/types/tableAction';
 import { TableActionContext, TableActionsConfig } from '@libs/common/types/tableActionsConfig';
 import createTableActions from '@libs/common/utils/createTableActions';
 
-const useTableActions = <TData>(
-  config: TableActionsConfig<TData>,
-  selectedRows: Row<TData>[],
-): TableAction<TData>[] => useMemo(() => {
+const useTableActions = <TData>(config: TableActionsConfig<TData>, selectedRows: Row<TData>[]): TableAction<TData>[] =>
+  useMemo(() => {
     const context: TableActionContext<TData> = {
       selectedRows,
       selectedCount: selectedRows.length,

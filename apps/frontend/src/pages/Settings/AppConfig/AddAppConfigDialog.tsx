@@ -137,6 +137,11 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
     isDragActive ? 'bg-foreground' : 'bg-popover-foreground'
   }`;
 
+  const handleClose = () => {
+    form.reset();
+    setIsAddAppConfigDialogOpen(false);
+  };
+
   const getDialogBody = () => {
     if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
     return (
@@ -174,6 +179,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
                       onLoad={() => {}}
                     />
                     <Button
+                      type="button"
                       onClick={() => form.setValue('customIcon', '')}
                       className="absolute right-1 top-1 h-8 rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
                     >
@@ -184,26 +190,17 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
               </ScrollArea>
             )}
           </div>
+          <DialogFooterButtons
+            handleClose={handleClose}
+            handleSubmit={() => {}}
+            submitButtonText="common.add"
+            submitButtonType="submit"
+            disableSubmit={isLoading}
+          />
         </form>
       </Form>
     );
   };
-
-  const handleClose = () => {
-    form.reset();
-    setIsAddAppConfigDialogOpen(false);
-  };
-
-  const getFooter = () => (
-    <form>
-      <DialogFooterButtons
-        handleClose={handleClose}
-        handleSubmit={form.handleSubmit(onSubmit)}
-        submitButtonText="common.add"
-        disableSubmit={isLoading}
-      />
-    </form>
-  );
 
   return (
     <AdaptiveDialog
@@ -211,7 +208,6 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
       handleOpenChange={handleClose}
       title={t('settings.addApp.title')}
       body={getDialogBody()}
-      footer={getFooter()}
     />
   );
 };

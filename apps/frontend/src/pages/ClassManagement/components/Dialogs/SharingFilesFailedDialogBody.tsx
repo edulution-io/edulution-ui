@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import ItemDialogList from '@/components/shared/ItemDialogList';
+import ItemList from '@/components/shared/ItemList';
 import { Button } from '@/components/shared/Button';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
@@ -62,7 +62,7 @@ const SharingFilesFailedDialogBody: React.FC<SharingFilesFailedDialogBodyProps> 
           ? t('classmanagement.failDialog.affectedPersons')
           : t('classmanagement.failDialog.affectedPerson')}
       </p>
-      <ItemDialogList items={affectedUsers.map((user) => ({ name: user, id: user }))} />
+      <ItemList items={affectedUsers.map((user) => ({ name: user, id: user }))} />
 
       <p>
         {t('classmanagement.failDialog.filenameAdvice', {
