@@ -61,7 +61,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
       const path = join(SURVEYS_ANSWER_FOLDER, ATTACHMENT_FOLDER, surveyId, questionId, userName);
       return this.fileSystemService.serveFiles(path, fileName, res);
     }
-    throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
+    throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
   }
 
   async deleteTempQuestionAnswerFiles(userName: string, surveyId: string, questionId: string): Promise<void> {
@@ -125,13 +125,13 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
       }
     });
 
-    await FilesystemService.makeTempFilesPermanent(fileNamesToMove, tempDirectory, directory);
+    await FilesystemService.moveFiles(fileNamesToMove, tempDirectory, directory);
 
     if (!keepOldFiles) {
       await SurveyAnswerAttachmentsService.removeDeprecatedFiles(directory, permanentFileNames, fileNamesToKeep);
     }
 
-    await this.fileSystemService.deleteEmptyFolderWithDepth(tempDirectory, 3);
+    await this.fileSystemService.deleteFolderAndParentsUpToDepth(tempDirectory, 3);
   }
 
   async processFileQuestionAnswer(
@@ -198,12 +198,6 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     );
 
     return Object.fromEntries(processedEntries) as TSurveyAnswer;
-  }
-
-  async updateSurveyAnswer(userName: string, surveyId: string, answer: JSON, keepOldFiles = false): Promise<JSON> {
-    const surveyAnswer = answer as unknown as TSurveyAnswer;
-    const processedSurveyAnswer = await this.processSurveyAnswer(userName, surveyId, surveyAnswer, keepOldFiles);
-    return processedSurveyAnswer as unknown as JSON;
   }
 
   async clearUpSurveyAnswersTempFiles(userName: string, surveyId: string): Promise<void> {

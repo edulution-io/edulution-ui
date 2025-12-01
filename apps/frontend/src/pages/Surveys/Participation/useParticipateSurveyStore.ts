@@ -123,7 +123,7 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
     completingEvent.allow = false;
 
     try {
-      const endpoint = `${isPublic ? PUBLIC_SURVEY_ANSWER_ENDPOINT : SURVEY_ANSWER_ENDPOINT}`;
+      const endpoint = isPublic ? PUBLIC_SURVEY_ANSWER_ENDPOINT : SURVEY_ANSWER_ENDPOINT;
       const response = await eduApi.post<SurveyAnswerResponseDto>(endpoint, { surveyId, answer, attendee });
 
       if ([Number(HttpStatusCode.Ok), Number(HttpStatusCode.Created)].includes(response.status)) {

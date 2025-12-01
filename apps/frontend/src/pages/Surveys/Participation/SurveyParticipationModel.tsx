@@ -22,7 +22,7 @@ import { toast } from 'sonner';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
 import { ClearFilesEvent, DownloadFileEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
-import SURVEY_ANSWERS_MAXIMUM_FILE_SIZE from '@libs/survey/constants/survey-answers-maximum-file-size';
+import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import useLanguage from '@/hooks/useLanguage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
@@ -35,6 +35,7 @@ import '../theme/custom.participation.css';
 import 'survey-core/i18n/french';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
+import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 
 interface SurveyFileValue {
   name: string;
@@ -95,7 +96,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       const success = await answerSurvey(
         {
           surveyId: selectedSurvey.id,
-          answer: surveyModel.getData() as JSON,
+          answer: surveyModel.getData() as TSurveyAnswer,
           isPublic: selectedSurvey.isPublic || isPublic || false,
         },
         surveyModel,
@@ -119,10 +120,8 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         callback([]);
         return;
       }
-      if (files.some((file) => file.size > SURVEY_ANSWERS_MAXIMUM_FILE_SIZE)) {
-        toast.error(
-          t('survey.participate.fileSizeExceeded', { size: SURVEY_ANSWERS_MAXIMUM_FILE_SIZE / (1024 * 1024) }),
-        );
+      if (files.some((file) => file.size > MAXIMUM_UPLOAD_FILE_SIZE)) {
+        toast.error(t('survey.participate.fileSizeExceeded', { size: MAXIMUM_UPLOAD_FILE_SIZE / (1024 * 1024) }));
         callback([]);
         return;
       }

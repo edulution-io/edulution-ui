@@ -27,7 +27,6 @@ import {
   Get,
   HttpStatus,
   Param,
-  ParseFilePipeBuilder,
   Post,
   Query,
   Res,
@@ -59,7 +58,6 @@ import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
 import { addUuidToFileName } from '@libs/common/utils/uuidAndFileNames';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
-import SURVEY_ANSWERS_MAXIMUM_FILE_SIZE from '@libs/survey/constants/survey-answers-maximum-file-size';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
@@ -72,7 +70,7 @@ import SurveyAnswerService from './survey-answers.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
-import { checkAttachmentFile, createAttachmentUploadOptions } from '../filesystem/multer.utilities';
+import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import AdminGuard from '../common/guards/admin.guard';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 
@@ -142,8 +140,7 @@ class SurveysController {
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   fileUpload(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
-    const fileName = checkAttachmentFile(file);
-    const fileUrl = join(SURVEYS, FILES, fileName);
+    const fileUrl = join(SURVEYS, FILES, file.filename);
     return res.status(HttpStatus.CREATED).json(fileUrl);
   }
 
@@ -269,16 +266,7 @@ class SurveysController {
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async answeringFileUpload(
-    @UploadedFile(
-      new ParseFilePipeBuilder()
-        .addMaxSizeValidator({
-          maxSize: SURVEY_ANSWERS_MAXIMUM_FILE_SIZE,
-        })
-        .build({
-          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-        }),
-    )
-    file: Express.Multer.File,
+    @UploadedFile() file: Express.Multer.File,
     @Param() params: { userName: string; surveyId: string; questionId: string },
     @GetCurrentUser() currentUser: JWTUser,
     @Res() res: Response,

@@ -326,7 +326,7 @@ class FilesystemService {
     }
   }
 
-  async deleteEmptyFolderWithDepth(folderPath: string, deep: number): Promise<void> {
+  async deleteFolderAndParentsUpToDepth(folderPath: string, deep: number): Promise<void> {
     if (deep < 0) return;
 
     const exists = await pathExists(folderPath);
@@ -340,7 +340,7 @@ class FilesystemService {
       if (deep > 0) {
         const parentPath = dirname(folderPath);
         if (parentPath !== folderPath) {
-          await this.deleteEmptyFolderWithDepth(parentPath, deep - 1);
+          await this.deleteFolderAndParentsUpToDepth(parentPath, deep - 1);
         }
       }
     }
@@ -408,14 +408,10 @@ class FilesystemService {
     return res;
   }
 
-  static async makeTempFilesPermanent(
-    fileNames: string[],
-    tempDirectory: string,
-    permanentDirectory: string,
-  ): Promise<void> {
+  static async moveFiles(fileNames: string[], oldDirectory: string, newDirectory: string): Promise<void> {
     await Promise.all(
       fileNames.map((fileName) =>
-        FilesystemService.moveFile(join(tempDirectory, fileName), join(permanentDirectory, fileName)),
+        FilesystemService.moveFile(join(oldDirectory, fileName), join(newDirectory, fileName)),
       ),
     );
   }
