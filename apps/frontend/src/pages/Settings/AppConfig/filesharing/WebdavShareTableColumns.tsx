@@ -154,7 +154,7 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
     },
     cell: ({ row }) => {
       const { setDialogOpen } = useAppConfigTableDialogStore();
-      const { deleteTableEntry, fetchTableContent } = useWebdavShareConfigTableStore();
+      const { setItemToDelete } = useWebdavShareConfigTableStore();
 
       return (
         <TableActionCell
@@ -172,11 +172,8 @@ const WebdavShareTableColumns: ColumnDef<WebdavShareDto>[] = [
             {
               icon: DeleteIcon,
               translationId: 'common.delete',
-              onClick: async () => {
-                if (row.original.webdavShareId && deleteTableEntry) {
-                  await deleteTableEntry('', row.original.webdavShareId);
-                }
-                await fetchTableContent();
+              onClick: () => {
+                setItemToDelete(row.original);
               },
             },
           ]}
