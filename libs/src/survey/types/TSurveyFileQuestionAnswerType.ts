@@ -10,6 +10,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-type TSurveyFileQuestionAnswerType = object & { content?: string };
+type TSurveyFileQuestionAnswerType = object & { name?: string; title?: string; content?: string };
 
 export default TSurveyFileQuestionAnswerType;

@@ -21,7 +21,7 @@ import { join } from 'path';
 import { Model, Types } from 'mongoose';
 import { randomUUID } from 'crypto';
 import { InjectModel } from '@nestjs/mongoose';
-import { HttpStatus, Injectable, OnModuleInit, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
@@ -30,6 +30,8 @@ import { createNewPublicUserLogin, publicUserLoginRegex } from '@libs/survey/uti
 import SURVEY_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersAttachmentPath';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
+import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
+import TSurveyQuestionAnswerTypes from '@libs/survey/types/TSurveyQuestionAnswerTypes';
 import CustomHttpException from '../common/CustomHttpException';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
@@ -114,60 +116,83 @@ class SurveyAnswersService implements OnModuleInit {
     return filteredChoices;
   };
 
-  // TODO: THIS MAY HAVE TO BE RECURSIVE
-  async countChoiceSelections(surveyId: string, questionName: string, choiceId: string): Promise<number> {
+  static countQuestionAnswerChoiceSelections = (
+    questionAnswer: TSurveyQuestionAnswerTypes,
+    choiceTitle: string,
+  ): number => {
+    if (Array.isArray(questionAnswer)) {
+      let count = 0;
+      questionAnswer.forEach((answerValue) => {
+        if (typeof answerValue === 'string' && answerValue === choiceTitle) {
+          count += 1;
+        } else if (
+          typeof answerValue === 'object' &&
+          (answerValue.name === choiceTitle || answerValue.title === choiceTitle)
+        ) {
+          count += 1;
+        }
+      });
+      return count;
+    }
+    if (typeof questionAnswer === 'string' && questionAnswer === choiceTitle) {
+      return 1;
+    }
+    if (
+      typeof questionAnswer === 'object' &&
+      (questionAnswer.name === choiceTitle || questionAnswer.title === choiceTitle)
+    ) {
+      return 1;
+    }
+    return 0;
+  };
+
+  static countNestedQuestionAnswerChoiceSelections = (
+    answer: TSurveyAnswer,
+    questionName: string,
+    choiceTitle: string,
+  ): number => {
+    let count = 0;
+    Object.keys(answer).forEach((key) => {
+      if (key === questionName) {
+        const nestedCount = SurveyAnswersService.countQuestionAnswerChoiceSelections(answer[key], choiceTitle);
+        count += nestedCount;
+      } else if (Array.isArray(answer[key])) {
+        answer[key].forEach((entry) => {
+          if (typeof entry === 'object') {
+            const nestedCount = SurveyAnswersService.countNestedQuestionAnswerChoiceSelections(
+              entry as TSurveyAnswer,
+              questionName,
+              choiceTitle,
+            );
+            count += nestedCount;
+          }
+        });
+      } else if (typeof answer[key] === 'object') {
+        const nestedCount = SurveyAnswersService.countNestedQuestionAnswerChoiceSelections(
+          answer[key] as TSurveyAnswer,
+          questionName,
+          choiceTitle,
+        );
+        count += nestedCount;
+      }
+    });
+    return count;
+  };
+
+  async countChoiceSelections(surveyId: string, questionName: string, choiceTitle: string): Promise<number> {
     const documents = await this.surveyAnswerModel
       .find<SurveyAnswerDocument>({ surveyId: new Types.ObjectId(surveyId) })
       .exec();
-    const filteredAnswers: string[] = [];
+    let count = 0;
     documents.forEach((document) => {
-      try {
-        const updatedAnswer = structuredClone(document.answer) as unknown as { [key: string]: string | object };
-        if (!updatedAnswer[questionName]) {
-          Object.keys(updatedAnswer).forEach((parentQuestion) => {
-            if (Array.isArray(updatedAnswer[parentQuestion])) {
-              if (updatedAnswer[parentQuestion].every((entry) => typeof entry === 'string')) {
-                return;
-              }
-
-              (updatedAnswer[parentQuestion] as { [key: string]: string }[]).forEach((entry) => {
-                Object.keys(entry).forEach((question) => {
-                  if (question === questionName) {
-                    const value = entry[question];
-
-                    Logger.warn(`value: ${JSON.stringify(value)}`);
-
-                    if (typeof value === 'string') {
-                      if (value === choiceId) {
-                        filteredAnswers.push(value);
-                      }
-                    }
-                  }
-                });
-              });
-            }
-          });
-        } else if (Array.isArray(updatedAnswer[questionName])) {
-          if (updatedAnswer[questionName].every((c) => typeof c === 'string')) {
-            const choices = updatedAnswer[questionName];
-            const choice = choices.find((c) => c === choiceId);
-            if (choice) {
-              filteredAnswers.push(choice);
-            }
-          }
-        } else if (updatedAnswer[questionName] === choiceId) {
-          filteredAnswers.push(choiceId);
-        }
-      } catch (error) {
-        throw new CustomHttpException(
-          SurveyAnswerErrorMessages.NotAbleToCountChoices,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-          error,
-          SurveyAnswersService.name,
-        );
-      }
+      const answerCount = SurveyAnswersService.countNestedQuestionAnswerChoiceSelections(
+        document.answer as unknown as TSurveyAnswer,
+        questionName,
+        choiceTitle,
+      );
+      count += answerCount;
     });
-    return filteredAnswers.length || 0;
+    return count;
   }
 
   async getCreatedSurveys(username: string): Promise<Survey[]> {

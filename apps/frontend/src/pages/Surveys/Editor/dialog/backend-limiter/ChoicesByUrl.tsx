@@ -24,15 +24,15 @@ import { UseFormReturn } from 'react-hook-form';
 import { SurveyCreatorModel } from 'survey-creator-core';
 import { IoAdd } from 'react-icons/io5';
 import cn from '@libs/common/utils/className';
+import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import APPS from '@libs/appconfig/constants/apps';
+import { PUBLIC_SURVEY_CHOICES, SURVEY_CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import TSurveyElement from '@libs/survey/types/TSurveyElement';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
+import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import isQuestionTypeChoiceType from '@libs/survey/utils/isQuestionTypeChoiceType';
-import EDU_API_URL from '@libs/common/constants/eduApiUrl';
-import { PUBLIC_SURVEY_CHOICES, SURVEY_CHOICES } from '@libs/survey/constants/surveys-endpoint';
-import TSurveyElement from '@libs/survey/types/TSurveyElement';
-import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import ChoicesWithBackendLimitsShowOtherItem from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitsShowOtherItem';
 import ChoicesWithBackendLimitTableColumns from '@/pages/Surveys/Editor/dialog/backend-limiter/ChoicesWithBackendLimitTableColumns';
@@ -84,13 +84,6 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     const isPublic = form.getValues('isPublic') || false;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { choicesByUrl, choices, hideIfChoicesEmpty, ...rest } = element;
-
-    // eslint-disable-next-line no-console
-    console.log('formerChoices:', formerChoices);
-
-    // eslint-disable-next-line no-console
-    console.log('choices:', choices);
-
     if (choices && choices.length > 0) {
       setFormerChoices(choices);
     }
@@ -157,16 +150,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     try {
       const formula = creator.JSON as SurveyFormula;
 
-      // eslint-disable-next-line no-console
-      console.log('handleToggleFormula()', selectedQuestion);
-
-      // eslint-disable-next-line no-console
-      console.log('formula:', formula);
-
       const updatedFormula = toggleUseBackendLimiter(formula);
-
-      // eslint-disable-next-line no-console
-      console.log('updatedFormula:', updatedFormula);
 
       form.setValue('formula', updatedFormula);
       creator.JSON = updatedFormula;
