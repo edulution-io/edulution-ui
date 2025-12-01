@@ -58,7 +58,7 @@ import WebdavSharesModule from '../webdav/shares/webdav-shares.module';
 import LdapKeycloakSyncModule from '../ldap-keycloak-sync/ldap-keycloak-sync.module';
 import redisConnection from '../common/redis.connection';
 import NotificationsModule from '../notifications/notifications.module';
-import MobileAppModuleModule from '../mobileAppModule/mobileAppModule.module';
+import MobileAppModule from '../mobileAppModule/mobileApp.module';
 import UserPreferencesModule from '../user-preferences/user-preferences.module';
 import DevCacheFlushService from '../common/cache/dev-cache-flush.service';
 import MetricsModule from '../metrics/metrics.module';
@@ -112,7 +112,7 @@ import enableSentryForNest from '../sentry/enableSentryForNest';
     TLDrawSyncModule,
     LdapKeycloakSyncModule,
     NotificationsModule,
-    MobileAppModuleModule,
+    MobileAppModule,
     UserPreferencesModule,
     JwtModule.register({
       global: true,

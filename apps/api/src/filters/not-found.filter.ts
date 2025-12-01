@@ -17,34 +17,26 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { ScrollArea } from '@/components/ui/ScrollArea';
+import { ExceptionFilter, Catch, ArgumentsHost, Logger, NotFoundException, HttpStatus } from '@nestjs/common';
+import { Response, Request } from 'express';
 
-const ItemDialogList = ({
-  deleteWarningTranslationId,
-  items,
-}: {
-  items: { id: string; name: string }[];
-  deleteWarningTranslationId?: string;
-}) => {
-  const { t } = useTranslation();
+@Catch(NotFoundException)
+class NotFoundFilter implements ExceptionFilter {
+  private readonly logger = new Logger(NotFoundFilter.name);
 
-  return (
-    <div className="text-background">
-      {deleteWarningTranslationId && <p>{t(deleteWarningTranslationId)}</p>}
-      <ScrollArea className="mt-2 h-64 w-96 max-w-full overflow-y-auto rounded border p-2">
-        {items.map((item) => (
-          <div
-            key={item.id}
-            className="truncate"
-          >
-            {item.name}
-          </div>
-        ))}
-      </ScrollArea>
-    </div>
-  );
-};
+  catch(_exception: NotFoundException, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
 
-export default ItemDialogList;
+    this.logger.warn(`Not found: ${request.method} ${request.url.split('?')[0]}`);
+
+    response.status(HttpStatus.NOT_FOUND).json({
+      statusCode: HttpStatus.NOT_FOUND,
+      message: 'Not Found',
+      error: 'Not Found',
+    });
+  }
+}
+
+export default NotFoundFilter;

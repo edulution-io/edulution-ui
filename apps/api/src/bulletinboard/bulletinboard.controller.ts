@@ -20,16 +20,18 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { randomUUID } from 'crypto';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import { Response } from 'express';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import APPS from '@libs/appconfig/constants/apps';
 import BULLETIN_TEMP_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinTempAttachmentsPath';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import { addUuidToFileName } from '@libs/common/utils/uuidAndFileNames';
 import BulletinBoardService from './bulletinboard.service';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import GetToken from '../common/decorators/getToken.decorator';
-import { checkAttachmentFile, createAttachmentUploadOptions } from '../filesystem/multer.utilities';
+import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 
 @ApiTags(APPS.BULLETIN_BOARD)
 @ApiBearerAuth()
@@ -77,13 +79,16 @@ class BulletinBoardController {
   @UseInterceptors(
     FileInterceptor(
       'file',
-      createAttachmentUploadOptions(() => BULLETIN_TEMP_ATTACHMENTS_PATH),
+      createAttachmentUploadOptions(
+        () => BULLETIN_TEMP_ATTACHMENTS_PATH,
+        true,
+        (_req, file) => addUuidToFileName(file.originalname, randomUUID()),
+      ),
     ),
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   uploadBulletinAttachment(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
-    const fileName = checkAttachmentFile(file);
-    return res.status(200).json(fileName);
+    return res.status(200).json(file.filename);
   }
 }
 

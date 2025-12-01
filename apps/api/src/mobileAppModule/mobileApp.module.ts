@@ -17,22 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { ApiTags } from '@nestjs/swagger';
-import { Controller, Get, Injectable } from '@nestjs/common';
-import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
-import MobileAppModuleService from './mobileAppModule.service';
-import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
+import { Module } from '@nestjs/common';
+import MobileAppService from './mobileApp.service';
+import MobileAppController from './mobileApp.controller';
+import LmnApiModule from '../lmnApi/lmnApi.module';
 
-@ApiTags('mobile-app')
-@Controller('mobile-app')
-@Injectable()
-class MobileAppModuleController {
-  constructor(private readonly edulutionAppService: MobileAppModuleService) {}
-
-  @Get('user-data')
-  async getAppUserData(@GetCurrentUsername() username: string, @GetCurrentUserGroups() currentUserGroups: string[]) {
-    return this.edulutionAppService.getAppUserData(username, currentUserGroups);
-  }
-}
-
-export default MobileAppModuleController;
+@Module({
+  imports: [LmnApiModule],
+  controllers: [MobileAppController],
+  providers: [MobileAppService],
+})
+export default class MobileAppModule {}

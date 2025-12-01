@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import AppConfigTable from '@libs/bulletinBoard/types/appConfigTable';
+import AppConfigTable from '@libs/appconfig/types/appConfigTable';
 import AppConfigTableEntry from '@/pages/Settings/AppConfig/components/table/types/appConfigTableEntry';
 
 const createAppConfigTableEntry = <DataType, StoreType extends AppConfigTable<DataType>>(

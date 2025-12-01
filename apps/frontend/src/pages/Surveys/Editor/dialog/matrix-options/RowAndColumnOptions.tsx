@@ -19,12 +19,14 @@
 
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MdAdd, MdRemove } from 'react-icons/md';
+import { MdRemove } from 'react-icons/md';
+import { AddIcon } from '@libs/common/constants/standardActionIcons';
 import { Base, ItemValue, QuestionMatrixBaseModel } from 'survey-core';
 import isQuestionTypeMatrixType from '@libs/survey/utils/isQuestionTypeMatrixType';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
+import getRandomUUID from '@/utils/getRandomUUID';
 
 type TRow = Partial<Array<ItemValue | Base>> & {
   name?: string;
@@ -57,10 +59,10 @@ const RowAndColumnOptions = () => {
   const getNewRow = () => {
     const newRow = rows[rows.length - 1].clone();
     if (newRow.value) {
-      newRow.value = crypto.randomUUID();
+      newRow.value = getRandomUUID();
       newRow.text = t('survey.editor.questionSettings.newRow');
     } else if (newRow.name) {
-      newRow.name = crypto.randomUUID();
+      newRow.name = getRandomUUID();
       newRow.title = t('survey.editor.questionSettings.newRow');
     }
     return newRow;
@@ -69,10 +71,10 @@ const RowAndColumnOptions = () => {
   const getNewColumn = () => {
     const newColumn = columns[columns.length - 1].clone();
     if (newColumn.name) {
-      newColumn.name = crypto.randomUUID();
+      newColumn.name = getRandomUUID();
       newColumn.title = t('survey.editor.questionSettings.newColumn');
     } else if (newColumn.value) {
-      newColumn.value = crypto.randomUUID();
+      newColumn.value = getRandomUUID();
       newColumn.text = t('survey.editor.questionSettings.newColumn');
     }
     return newColumn;
@@ -145,7 +147,7 @@ const RowAndColumnOptions = () => {
           size="sm"
           title={t('survey.editor.questionSettings.addRow')}
         >
-          <MdAdd className="h-4 w-4" />
+          <AddIcon className="h-4 w-4" />
         </Button>
         <Button
           onClick={() => removeRow()}
@@ -172,7 +174,7 @@ const RowAndColumnOptions = () => {
           size="sm"
           title={t('survey.editor.questionSettings.addColumn')}
         >
-          <MdAdd className="h-4 w-4" />
+          <AddIcon className="h-4 w-4" />
         </Button>
         <Button
           onClick={() => removeColumn()}

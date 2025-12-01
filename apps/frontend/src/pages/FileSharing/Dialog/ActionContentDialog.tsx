@@ -225,22 +225,20 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
         error ? (
           <div className="rounded-xl bg-ciLightRed py-3 text-center text-background">{error.message}</div>
         ) : (
-          <div className="mt-4 flex justify-end">
-            <form onSubmit={handleFormSubmit}>
-              <DialogFooterButtons
-                handleClose={handelOpenChange}
-                handleSubmit={hideSubmitButton ? undefined : handleFormSubmit}
-                submitButtonText={submitKey}
-                submitButtonType="submit"
-                disableSubmit={
-                  isLoading ||
-                  isSubmitButtonDisabled ||
-                  (requiresForm && !form.formState.isValid) ||
-                  (action === FileActionType.MOVE_FILE_OR_FOLDER && moveOrCopyItemToPath?.filePath === undefined)
-                }
-              />
-            </form>
-          </div>
+          <form onSubmit={handleFormSubmit}>
+            <DialogFooterButtons
+              handleClose={handelOpenChange}
+              handleSubmit={hideSubmitButton ? undefined : handleFormSubmit}
+              submitButtonText={submitKey}
+              submitButtonType="submit"
+              disableSubmit={
+                isLoading ||
+                isSubmitButtonDisabled ||
+                (requiresForm && !form.formState.isValid) ||
+                (action === FileActionType.MOVE_FILE_OR_FOLDER && moveOrCopyItemToPath?.filePath === undefined)
+              }
+            />
+          </form>
         )
       }
     />

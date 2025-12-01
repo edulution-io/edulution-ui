@@ -19,7 +19,6 @@
 
 import React, { useEffect, useState } from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -45,6 +44,7 @@ import parseSophomorixMailQuota from '@libs/lmnApi/utils/parseSophomorixMailQuot
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import DeleteGroupDialog from './DeleteGroupDialog';
 
 interface GroupDialogProps {
   item: GroupColumn;
@@ -55,6 +55,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
   const { setOpenDialogType, openDialogType, userGroupToEdit, setUserGroupToEdit, member } = useLessonStore();
   const { user } = useLmnApiStore();
   const [isFetching, setIsFetching] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { t } = useTranslation();
 
   const {
@@ -250,7 +251,11 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     );
   };
 
-  const onDeleteButton = async () => {
+  const onDeleteButton = () => {
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
     await item.removeFunction?.(form.getValues('id'));
     await updateGroupsAndCloseDialog();
   };
@@ -258,32 +263,19 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
   const disableDialogButtons = isDialogLoading || isFetching;
 
   const getFooter = () => (
-    <div className="flex gap-4">
-      {item.createFunction && userGroupToEdit && (
-        <Button
-          className="mt-4"
-          variant="btn-attention"
-          disabled={isDialogLoading}
-          size="lg"
-          type="button"
-          onClick={onDeleteButton}
-        >
-          {t('delete')}
-        </Button>
-      )}
-
-      <form onSubmit={handleFormSubmit}>
-        <DialogFooterButtons
-          handleClose={onClose}
-          handleSubmit={item.createFunction ? () => {} : undefined}
-          submitButtonType="submit"
-          disableSubmit={disableDialogButtons}
-          disableCancel={disableDialogButtons}
-          cancelButtonText={item.createFunction ? 'cancel' : 'common.close'}
-          submitButtonText={userGroupToEdit ? 'common.save' : 'common.create'}
-        />
-      </form>
-    </div>
+    <form onSubmit={handleFormSubmit}>
+      <DialogFooterButtons
+        handleClose={onClose}
+        handleSubmit={item.createFunction ? () => {} : undefined}
+        handleDelete={item.createFunction && userGroupToEdit ? onDeleteButton : undefined}
+        submitButtonType="submit"
+        disableSubmit={disableDialogButtons}
+        disableCancel={disableDialogButtons}
+        disableDelete={disableDialogButtons}
+        cancelButtonText={item.createFunction ? 'cancel' : 'common.close'}
+        submitButtonText={userGroupToEdit ? 'common.save' : 'common.create'}
+      />
+    </form>
   );
 
   const getTitle = () => {
@@ -293,15 +285,25 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
   };
 
   return (
-    <AdaptiveDialog
-      isOpen
-      trigger={trigger}
-      handleOpenChange={isDialogLoading ? () => {} : onClose}
-      title={t(getTitle())}
-      desktopContentClassName="max-w-4xl"
-      body={getDialogBody()}
-      footer={getFooter()}
-    />
+    <>
+      <AdaptiveDialog
+        isOpen
+        trigger={trigger}
+        handleOpenChange={isDialogLoading ? () => {} : onClose}
+        title={t(getTitle())}
+        desktopContentClassName="max-w-4xl"
+        body={getDialogBody()}
+        footer={getFooter()}
+      />
+      <DeleteGroupDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        groupName={form.getValues('name')}
+        groupType={t(`classmanagement.${item.translationId}`)}
+        onConfirmDelete={handleConfirmDelete}
+        isLoading={isDialogLoading}
+      />
+    </>
   );
 };
 

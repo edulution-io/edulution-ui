@@ -17,14 +17,50 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Module } from '@nestjs/common';
-import MobileAppModuleService from './mobileAppModule.service';
-import MobileAppModuleController from './mobileAppModule.controller';
-import LmnApiModule from '../lmnApi/lmnApi.module';
+const IFRAME_ALLOWED_CONFIG = [
+  'autoplay *',
+  'camera *',
+  'microphone *',
+  'display-capture *',
+  'fullscreen *',
+  'picture-in-picture *',
+  'screen-wake-lock *',
 
-@Module({
-  imports: [LmnApiModule],
-  controllers: [MobileAppModuleController],
-  providers: [MobileAppModuleService],
-})
-export default class MobileAppModuleModule {}
+  'geolocation *',
+  'accelerometer *',
+  'gyroscope *',
+  'magnetometer *',
+
+  'clipboard-read *',
+  'clipboard-write *',
+
+  'gamepad *',
+  'keyboard-map *',
+  'xr-spatial-tracking *',
+
+  'usb *',
+  'serial *',
+  'bluetooth *',
+  'hid *',
+  'midi *',
+  'nfc *',
+  'speaker-selection *',
+
+  'payment *',
+  'encrypted-media *',
+  'sync-xhr *',
+
+  'idle-detection *',
+  'local-fonts *',
+
+  'clipboard-read *',
+  'clipboard-write *',
+  'interest-cohort *',
+  'browsing-topics *',
+  'attribution-reporting *',
+  'run-ad-auction *',
+  'join-ad-interest-group *',
+  'shared-autofill *',
+].join('; ');
+
+export default IFRAME_ALLOWED_CONFIG;

@@ -23,7 +23,8 @@ import { MdOutlineCloudUpload } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
-import { HiEyeSlash, HiTrash } from 'react-icons/hi2';
+import { HiEyeSlash } from 'react-icons/hi2';
+import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -42,6 +43,7 @@ import splitFilesByMaxFileSize from '@libs/filesharing/utils/splitFilesByMaxFile
 import findDuplicateFiles from '@libs/filesharing/utils/findDuplicateFiles';
 import getUploadItemDisplayName from '@libs/filesharing/utils/getUploadItemDisplayName';
 import ValidationWarnings from '@/pages/FileSharing/utilities/ValidationWarnings';
+import getRandomUUID from '@/utils/getRandomUUID';
 
 const UploadContentBody = () => {
   const { webdavShare } = useParams();
@@ -63,7 +65,7 @@ const UploadContentBody = () => {
       const regularFiles = acceptedFiles.filter((file) => !isFolderUploadItem(file as UploadItem));
       const { oversize, normal } = splitFilesByMaxFileSize(regularFiles, getFileUploadLimit(webdavShares, webdavShare));
       const duplicates = findDuplicateFiles(
-        [...normal, ...folders].map((file) => Object.assign(file, { id: crypto.randomUUID() })),
+        [...normal, ...folders].map((file) => Object.assign(file, { id: getRandomUUID() })),
         files,
       );
 
@@ -87,7 +89,7 @@ const UploadContentBody = () => {
               return file as UploadItem;
             }
             const uploadFile: UploadItem = Object.assign(new File([file], file.name, { type: file.type }), {
-              id: crypto.randomUUID(),
+              id: getRandomUUID(),
             });
             return uploadFile;
           });
@@ -129,7 +131,7 @@ const UploadContentBody = () => {
       const hiddenAndSystemFiles = selected.filter((file) => shouldFilterFile(file.name));
 
       const folderEntry: UploadItem = Object.assign(new File([], folderName, { type: 'application/x-directory' }), {
-        id: crypto.randomUUID(),
+        id: getRandomUUID(),
         isFolder: true,
         folderName,
         files: visibleFiles,
@@ -321,7 +323,7 @@ const UploadContentBody = () => {
                     onClick={() => removeFile(fileName)}
                     className="absolute right-1 top-1 h-8 rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
                   >
-                    <HiTrash className="text-text-ciRed h-4 w-4" />
+                    <DeleteIcon className="text-text-ciRed h-4 w-4" />
                   </Button>
 
                   <div className="flex flex-col items-center justify-center">
