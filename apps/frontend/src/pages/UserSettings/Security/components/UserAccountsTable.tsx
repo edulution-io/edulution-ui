@@ -19,14 +19,14 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IoAdd, IoRemove } from 'react-icons/io5';
-import { FiEdit } from 'react-icons/fi';
-import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
+import { OnChangeFn, Row, RowSelectionState } from '@tanstack/react-table';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import APPS from '@libs/appconfig/constants/apps';
-import TableAction from '@libs/common/types/tableAction';
+import STANDARD_ACTION_TYPES from '@libs/common/constants/standardActionTypes';
+import { TableActionsConfig } from '@libs/common/types/tableActionsConfig';
 import UserAccountDto from '@libs/user/types/userAccount.dto';
 import useUserStore from '@/store/UserStore/useUserStore';
+import useTableActions from '@/hooks/useTableActions';
 import UserAccountsTableColumns from './UserAccountsTableColumns';
 import AddUserAccountDialog from './AddUserAccountDialog';
 import DeleteUserAccountsDialog from './DeleteUserAccountsDialog';
@@ -75,30 +75,33 @@ const UserAccountsTable: React.FC = () => {
     setSelectedRows({});
   };
 
-  const tableActions: TableAction<UserAccountDto>[] = useMemo(() => {
-    const actions: TableAction<UserAccountDto>[] = [];
-    if (isOneRowSelected) {
-      actions.push({
-        icon: FiEdit,
-        translationId: 'common.edit',
+  const selectedRowsArray = useMemo(
+    () =>
+      Object.entries(selectedRows)
+        .filter(([_, isSelected]) => isSelected)
+        .map(([rowId]) => {
+          const idx = parseInt(rowId, 10);
+          return { original: userAccounts[idx] } as Row<UserAccountDto>;
+        }),
+    [selectedRows, userAccounts],
+  );
+
+  const actionsConfig = useMemo<TableActionsConfig<UserAccountDto>>(
+    () => [
+      {
+        type: STANDARD_ACTION_TYPES.ADD_OR_EDIT,
         onClick: handleAddClick,
-      });
-    } else {
-      actions.push({
-        icon: IoAdd,
-        translationId: 'common.add',
-        onClick: handleAddClick,
-      });
-    }
-    if (selectedRows && Object.keys(selectedRows).length > 0) {
-      actions.push({
-        icon: IoRemove,
-        translationId: 'common.remove',
+      },
+      {
+        type: STANDARD_ACTION_TYPES.DELETE,
         onClick: handleRemoveClick,
-      });
-    }
-    return actions;
-  }, [isOneRowSelected]);
+        visible: ({ hasSelection }) => hasSelection,
+      },
+    ],
+    [],
+  );
+
+  const tableActions = useTableActions(actionsConfig, selectedRowsArray);
 
   const selectedAccounts = Object.entries(selectedRows)
     .filter(([_, isSelected]) => isSelected)

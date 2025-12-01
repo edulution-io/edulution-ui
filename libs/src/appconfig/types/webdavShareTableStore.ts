@@ -17,13 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import AppConfigTable from '@libs/bulletinBoard/types/appConfigTable';
+import AppConfigTable from '@libs/appconfig/types/appConfigTable';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 
 export interface WebdavShareTableStore extends AppConfigTable<WebdavShareDto> {
   isLoading: boolean;
   selectedConfig: WebdavShareDto | null;
   setSelectedConfig: (config: WebdavShareDto | null) => void;
+  itemToDelete: WebdavShareDto | null;
+  setItemToDelete: (item: WebdavShareDto | null) => void;
   createWebdavShare: (webdavShareDto: WebdavShareDto) => Promise<void>;
   updateWebdavShare: (webdavShareId: string, webdavShareDto: WebdavShareDto) => Promise<void>;
   reset: () => void;
@@ -35,5 +37,7 @@ export interface WebdavServerTableStore extends AppConfigTable<WebdavShareDto> {
   isDeleteWebdavServerWarningDialogOpen: string | undefined;
   setIsDeleteWebdavServerWarningDialogOpen: (open: string | undefined) => void;
   setSelectedConfig: (config: WebdavShareDto | null) => void;
+  itemToDelete: WebdavShareDto | null;
+  setItemToDelete: (item: WebdavShareDto | null) => void;
   reset: () => void;
 }

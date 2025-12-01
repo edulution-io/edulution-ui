@@ -18,10 +18,10 @@
  */
 
 import { t } from 'i18next';
-import { MdAdd } from 'react-icons/md';
+import { AddIcon } from '@libs/common/constants/standardActionIcons';
 
 const CreateButton = (onClick: () => void, isVisible?: boolean) => ({
-  icon: MdAdd,
+  icon: AddIcon,
   text: t('common.create'),
   onClick,
   isVisible,

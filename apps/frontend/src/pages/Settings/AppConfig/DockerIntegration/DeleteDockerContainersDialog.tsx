@@ -18,11 +18,7 @@
  */
 
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import ItemDialogList from '@/components/shared/ItemDialogList';
-import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
 
 interface DeleteDockerContainersDialogProps {
   isOpen: boolean;
@@ -39,55 +35,24 @@ const DeleteDockerContainersDialog: React.FC<DeleteDockerContainersDialogProps> 
   onConfirmDelete,
   isLoading = false,
 }) => {
-  const { t } = useTranslation();
-  const isMultiDelete = containerNames.length > 1;
-
-  const handleSubmit = async () => {
+  const handleConfirmDelete = async () => {
     await onConfirmDelete();
     onOpenChange(false);
   };
 
-  const handleClose = () => onOpenChange(false);
-
-  const getDialogBody = () => {
-    if (isLoading) return <CircleLoader className="mx-auto" />;
-
-    return (
-      <div className="text-background">
-        <ItemDialogList
-          deleteWarningTranslationId={
-            isMultiDelete
-              ? 'settings.appconfig.sections.docker.confirmMultiDeleteContainer'
-              : 'settings.appconfig.sections.docker.confirmSingleDeleteContainer'
-          }
-          items={containerNames.map((name) => ({ name, id: name }))}
-        />
-      </div>
-    );
-  };
-
-  const getFooter = () => (
-    <DialogFooterButtons
-      handleClose={handleClose}
-      handleSubmit={handleSubmit}
-      submitButtonText="common.delete"
-    />
-  );
-
   return (
-    <AdaptiveDialog
+    <DeleteConfirmationDialog
       isOpen={isOpen}
-      handleOpenChange={handleClose}
-      title={t(
-        isMultiDelete
-          ? 'settings.appconfig.sections.docker.deleteContainers'
-          : 'settings.appconfig.sections.docker.deleteContainer',
-        {
-          count: containerNames.length,
-        },
-      )}
-      body={getDialogBody()}
-      footer={getFooter()}
+      onOpenChange={onOpenChange}
+      items={containerNames.map((name) => ({ id: name, name }))}
+      onConfirmDelete={handleConfirmDelete}
+      isLoading={isLoading}
+      titleTranslationKey="settings.appconfig.sections.docker.deleteContainers"
+      messageTranslationKey={
+        containerNames.length > 1
+          ? 'settings.appconfig.sections.docker.confirmMultiDeleteContainer'
+          : 'settings.appconfig.sections.docker.confirmSingleDeleteContainer'
+      }
     />
   );
 };

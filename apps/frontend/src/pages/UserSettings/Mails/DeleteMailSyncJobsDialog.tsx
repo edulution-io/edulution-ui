@@ -18,11 +18,7 @@
  */
 
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import ItemDialogList from '@/components/shared/ItemDialogList';
-import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
 
 interface DeleteMailSyncJobsDialogProps {
   isOpen: boolean;
@@ -39,48 +35,20 @@ const DeleteMailSyncJobsDialog: React.FC<DeleteMailSyncJobsDialogProps> = ({
   onConfirmDelete,
   isLoading = false,
 }) => {
-  const { t } = useTranslation();
-  const isMultiDelete = syncJobIds.length > 1;
-
-  const handleSubmit = async () => {
+  const handleConfirmDelete = async () => {
     await onConfirmDelete();
     onOpenChange(false);
   };
 
-  const handleClose = () => onOpenChange(false);
-
-  const getDialogBody = () => {
-    if (isLoading) return <CircleLoader className="mx-auto" />;
-
-    return (
-      <div className="text-background">
-        <ItemDialogList
-          deleteWarningTranslationId={
-            isMultiDelete ? 'mail.importer.confirmMultiDeleteSyncJob' : 'mail.importer.confirmSingleDeleteSyncJob'
-          }
-          items={syncJobIds.map((id) => ({ name: id, id }))}
-        />
-      </div>
-    );
-  };
-
-  const getFooter = () => (
-    <DialogFooterButtons
-      handleClose={handleClose}
-      handleSubmit={handleSubmit}
-      submitButtonText="common.delete"
-    />
-  );
-
   return (
-    <AdaptiveDialog
+    <DeleteConfirmationDialog
       isOpen={isOpen}
-      handleOpenChange={handleClose}
-      title={t(isMultiDelete ? 'mail.importer.deleteSyncJobs' : 'mail.importer.deleteSyncJob', {
-        count: syncJobIds.length,
-      })}
-      body={getDialogBody()}
-      footer={getFooter()}
+      onOpenChange={onOpenChange}
+      items={syncJobIds.map((id) => ({ id, name: id }))}
+      onConfirmDelete={handleConfirmDelete}
+      isLoading={isLoading}
+      titleTranslationKey="mail.importer.deleteSyncJobs"
+      messageTranslationKey="mail.importer.confirmDeleteSyncJob"
     />
   );
 };

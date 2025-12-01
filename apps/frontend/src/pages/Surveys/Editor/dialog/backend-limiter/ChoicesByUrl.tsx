@@ -18,12 +18,15 @@
  */
 
 import { toast } from 'sonner';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { SurveyCreatorModel } from 'survey-creator-core';
-import { IoAdd } from 'react-icons/io5';
 import cn from '@libs/common/utils/className';
+import STANDARD_ACTION_TYPES from '@libs/common/constants/standardActionTypes';
+import { TableActionsConfig } from '@libs/common/types/tableActionsConfig';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
+import useTableActions from '@/hooks/useTableActions';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import APPS from '@libs/appconfig/constants/apps';
 import { PUBLIC_SURVEY_CHOICES, SURVEY_CHOICES } from '@libs/survey/constants/surveys-endpoint';
@@ -137,6 +140,18 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     }
   };
 
+  const actionsConfig = useMemo<TableActionsConfig<ChoiceDto>>(
+    () => [
+      {
+        type: STANDARD_ACTION_TYPES.ADD,
+        onClick: () => addNewChoice(),
+      },
+    ],
+    [addNewChoice],
+  );
+
+  const actions = useTableActions(actionsConfig, []);
+
   if (!form) return null;
   if (!isQuestionTypeChoiceType(questionType)) return null;
 
@@ -168,13 +183,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
               filterKey="choice-title"
               filterPlaceHolderText={t('survey.editor.questionSettings.filterPlaceHolderText')}
               applicationName={APPS.SURVEYS}
-              actions={[
-                {
-                  icon: IoAdd,
-                  translationId: 'common.add',
-                  onClick: () => addNewChoice(),
-                },
-              ]}
+              actions={actions}
               showSelectedCount={false}
               isDialog
               initialSorting={[{ id: 'choice-title', desc: false }]}
