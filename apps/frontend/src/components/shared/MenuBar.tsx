@@ -195,7 +195,18 @@ const MenuBar: React.FC = () => {
         />
       )}
 
-      {!isDesktopView ? (
+      {isDesktopView ? (
+        <aside className="relative flex h-dvh">
+          <div
+            className={cn(
+              'h-full overflow-hidden bg-foreground bg-opacity-40 transition-all duration-300',
+              shouldCollapse ? 'w-16' : 'w-64',
+            )}
+          >
+            {renderMenuBarContent()}
+          </div>
+        </aside>
+      ) : (
         <div
           className={cn(
             'fixed left-0 top-0 z-50 h-full overflow-x-hidden bg-black duration-300 ease-in-out',
@@ -211,17 +222,6 @@ const MenuBar: React.FC = () => {
             {isMobileMenuBarOpen && renderMenuBarContent()}
           </div>
         </div>
-      ) : (
-        <aside className="relative flex h-dvh">
-          <div
-            className={cn(
-              'h-full overflow-hidden bg-foreground bg-opacity-40 transition-all duration-300',
-              shouldCollapse ? 'w-16' : 'w-64',
-            )}
-          >
-            {renderMenuBarContent()}
-          </div>
-        </aside>
       )}
     </>
   );
