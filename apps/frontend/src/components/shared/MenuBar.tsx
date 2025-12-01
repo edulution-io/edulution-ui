@@ -133,20 +133,17 @@ const MenuBar: React.FC = () => {
         )}
 
         <button
-          className={cn(
-            'flex flex-col items-center justify-center rounded-xl hover:bg-accent',
-            shouldCollapse ? 'h-10 w-10' : 'h-20 w-20',
-          )}
+          className="flex flex-col items-center justify-center rounded-xl p-2 hover:bg-accent"
           type="button"
           onClick={handleHeaderIconClick}
         >
           <img
             src={menuBarEntries.icon}
             alt={menuBarEntries.title}
-            className="h-full w-full object-contain transition-all"
+            className={cn('object-contain transition-all', shouldCollapse ? 'h-10 w-10' : 'h-20 w-20')}
           />
+          {!shouldCollapse && <h2 className="mb-2 mt-2 text-center font-bold">{menuBarEntries.title}</h2>}
         </button>
-        {!shouldCollapse && <h2 className="mb-4 mt-4 text-center font-bold">{menuBarEntries.title}</h2>}
       </div>
 
       <div className="flex-1 overflow-y-auto pb-10">
