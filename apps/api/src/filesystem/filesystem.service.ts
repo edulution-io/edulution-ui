@@ -408,6 +408,14 @@ class FilesystemService {
     return res;
   }
 
+  static async moveFiles(fileNames: string[], oldDirectory: string, newDirectory: string): Promise<void> {
+    await Promise.all(
+      fileNames.map((fileName) =>
+        FilesystemService.moveFile(join(oldDirectory, fileName), join(newDirectory, fileName)),
+      ),
+    );
+  }
+
   async removeOldTempFiles(path: string, currentTimeMs?: number): Promise<void> {
     if (!path) {
       return;

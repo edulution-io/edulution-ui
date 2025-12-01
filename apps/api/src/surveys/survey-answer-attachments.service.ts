@@ -24,6 +24,12 @@ import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
 import SURVEYS_ANSWER_FOLDER from '@libs/survey/constants/surveyAnswersFolder';
 import SURVEY_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersAttachmentPath';
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
+import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
+import TSurveyFileQuestionAnswerType from '@libs/survey/types/TSurveyFileQuestionAnswerType';
+import TSurveyQuestionAnswerTypes from '@libs/survey/types/TSurveyQuestionAnswerTypes';
+import isAnswerSimpleQuestionAnswer from '@libs/survey/utils/isAnswerSimpleQuestionAnswer';
+import isAnswerFileQuestionAnswer from '@libs/survey/utils/isAnswerFileQuestionAnswer';
+import isAnswerSimpleFileQuestionAnswer from '@libs/survey/utils/isAnswerSimpleFileQuestionAnswer';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import FilesystemService from '../filesystem/filesystem.service';
@@ -55,7 +61,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
       const path = join(SURVEYS_ANSWER_FOLDER, ATTACHMENT_FOLDER, surveyId, questionId, userName);
       return this.fileSystemService.serveFiles(path, fileName, res);
     }
-    throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
+    throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
   }
 
   async deleteTempQuestionAnswerFiles(userName: string, surveyId: string, questionId: string): Promise<void> {
@@ -73,88 +79,125 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     await FilesystemService.checkIfFileExistAndDelete(join(tempFilesPath, fileName));
   }
 
-  async moveQuestionAttachmentsToPermanentStorage(
+  static async removeDeprecatedFiles(
+    directory: string,
+    fileNames: string[],
+    fileNamesToKeep: string[] = [],
+  ): Promise<void> {
+    const deletions = fileNames
+      .filter((fileName) => !fileNamesToKeep.includes(fileName))
+      .map((fileName) => FilesystemService.deleteFile(directory, fileName));
+    await Promise.all(deletions);
+  }
+
+  static getFileNamesFromFileQuestionAnswer(answer: TSurveyQuestionAnswerTypes): string[] {
+    const fileNames: string[] = [];
+    const asArray = Array.isArray(answer) ? answer : [answer];
+    asArray.forEach((item) => {
+      if (isAnswerSimpleFileQuestionAnswer(item)) {
+        const fileName = (item as TSurveyFileQuestionAnswerType).content?.split('/').pop();
+        if (fileName) {
+          fileNames.push(fileName);
+        }
+      }
+    });
+    return fileNames;
+  }
+
+  async updateSurveyAnswerAttachments(
+    fileNames: string[],
+    tempDirectory: string,
+    directory: string,
+    keepOldFiles = false,
+  ): Promise<void> {
+    const tempFileNames = await this.fileSystemService.getAllFilenamesInDirectory(tempDirectory);
+    const permanentFileNames = await this.fileSystemService.getAllFilenamesInDirectory(directory);
+
+    const fileNamesToMove: string[] = [];
+    const fileNamesToKeep: string[] = [];
+    fileNames.forEach((fileName) => {
+      if (!fileName) return;
+      if (tempFileNames.includes(fileName)) {
+        fileNamesToMove.push(fileName);
+      }
+      if (permanentFileNames.includes(fileName)) {
+        fileNamesToKeep.push(fileName);
+      }
+    });
+
+    await FilesystemService.moveFiles(fileNamesToMove, tempDirectory, directory);
+
+    if (!keepOldFiles) {
+      await SurveyAnswerAttachmentsService.removeDeprecatedFiles(directory, permanentFileNames, fileNamesToKeep);
+    }
+
+    await this.fileSystemService.deleteFolderAndParentsUpToDepth(tempDirectory, 3);
+  }
+
+  async processFileQuestionAnswer(
     userName: string,
     surveyId: string,
     questionId: string,
-    questionAnswer: (object & { content: string }) | (object & { content: string })[],
-    keepOldFiles: boolean = false,
-  ): Promise<(object & { content: string }) | (object & { content: string })[]> {
+    questionAnswer: TSurveyQuestionAnswerTypes,
+    keepOldFiles = false,
+  ): Promise<TSurveyQuestionAnswerTypes> {
     const directory = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, questionId, userName);
+    await this.fileSystemService.ensureDirectoryExists(directory);
+
     const tempDirectory = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId);
-    const tempFileNames = await this.fileSystemService.getAllFilenamesInDirectory(tempDirectory);
-    if (tempFileNames.length === 0) {
+
+    const fileNames = SurveyAnswerAttachmentsService.getFileNamesFromFileQuestionAnswer(questionAnswer);
+
+    await this.updateSurveyAnswerAttachments(fileNames, tempDirectory, directory, keepOldFiles);
+
+    return Array.isArray(questionAnswer) ? questionAnswer : [questionAnswer];
+  }
+
+  async processQuestionAnswer(
+    userName: string,
+    surveyId: string,
+    questionId: string,
+    questionAnswer: TSurveyQuestionAnswerTypes,
+    keepOldFiles = false,
+  ): Promise<TSurveyQuestionAnswerTypes> {
+    if (isAnswerSimpleQuestionAnswer(questionAnswer)) {
       return questionAnswer;
     }
 
-    await this.fileSystemService.ensureDirectoryExists(directory);
-
-    const fileNamesToMove: string[] = [];
-    const persistentFiles: string[] = [];
-    const permanentFiles = await this.fileSystemService.getAllFilenamesInDirectory(directory);
-
-    const nextAnswerContent: (object & { content: string })[] = [];
-    if (Array.isArray(questionAnswer)) {
-      questionAnswer.forEach((item) => {
-        const fileName = item.content?.split('/').pop();
-        if (fileName && permanentFiles.includes(fileName)) {
-          persistentFiles.push(fileName);
-        }
-        if (fileName && tempFileNames.includes(fileName)) {
-          fileNamesToMove.push(fileName);
-          nextAnswerContent.push(item);
-        }
-      });
-    } else {
-      const fileName = questionAnswer.content?.split('/').pop();
-      if (fileName && tempFileNames.includes(fileName)) {
-        fileNamesToMove.push(fileName);
-      }
-      nextAnswerContent.push(questionAnswer);
-    }
-    const movingPromises = fileNamesToMove.map(async (fileName) =>
-      FilesystemService.moveFile(join(tempDirectory, fileName), join(directory, fileName)),
-    );
-    await Promise.all(movingPromises);
-
-    if (!keepOldFiles) {
-      const deletionPromises = permanentFiles.map(
-        (fileName): Promise<void> =>
-          persistentFiles.includes(fileName) ? Promise.resolve() : FilesystemService.deleteFile(directory, fileName),
+    if (!isAnswerFileQuestionAnswer(questionAnswer)) {
+      const nested = questionAnswer as unknown as Record<string, TSurveyQuestionAnswerTypes>;
+      const entries = Object.entries(nested).map(async ([_key, value]) =>
+        this.processSurveyAnswer(userName, surveyId, value as unknown as TSurveyAnswer, true),
       );
-      await Promise.all(deletionPromises);
+      const answer = await Promise.all(entries);
+      return answer as unknown as TSurveyQuestionAnswerTypes;
     }
 
-    await this.fileSystemService.deleteFolderAndParentsUpToDepth(
-      join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId),
-      3,
-    );
-
-    return nextAnswerContent;
+    return this.processFileQuestionAnswer(userName, surveyId, questionId, questionAnswer, keepOldFiles);
   }
 
-  async moveAnswerAttachmentsToPermanentStorage(
+  async processSurveyAnswer(
     userName: string,
     surveyId: string,
-    answer: JSON,
-    keepOldFiles?: boolean,
-  ): Promise<JSON> {
-    const surveyAnswer = answer as unknown as Record<
-      string,
-      (object & { content: string }) | (object & { content: string })[]
-    >;
-    await Promise.all(
-      Object.keys(surveyAnswer).map(async (question) => {
-        surveyAnswer[question] = await this.moveQuestionAttachmentsToPermanentStorage(
+    answer: TSurveyAnswer,
+    keepOldFiles = false,
+  ): Promise<TSurveyAnswer> {
+    const entries = Object.entries(answer);
+
+    const processedEntries = await Promise.all(
+      entries.map(async ([questionId, questionAnswer]) => {
+        const processed = await this.processQuestionAnswer(
           userName,
           surveyId,
-          question,
-          surveyAnswer[question],
+          questionId,
+          questionAnswer,
           keepOldFiles,
         );
+        return [questionId, processed] as const;
       }),
     );
-    return JSON.parse(JSON.stringify(surveyAnswer)) as JSON;
+
+    return Object.fromEntries(processedEntries) as TSurveyAnswer;
   }
 
   async clearUpSurveyAnswersTempFiles(userName: string, surveyId: string): Promise<void> {

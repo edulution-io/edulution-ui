@@ -35,6 +35,7 @@ import '../theme/custom.participation.css';
 import 'survey-core/i18n/french';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
+import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 
 interface SurveyFileValue {
   name: string;
@@ -95,7 +96,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       const success = await answerSurvey(
         {
           surveyId: selectedSurvey.id,
-          answer: surveyModel.getData() as JSON,
+          answer: surveyModel.getData() as TSurveyAnswer,
           isPublic: selectedSurvey.isPublic || isPublic || false,
         },
         surveyModel,
