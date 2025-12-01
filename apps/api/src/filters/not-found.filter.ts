@@ -17,9 +17,26 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export const DEBOUNCE_MS = 50;
-export const WIDTH_TOLERANCE_PX = 1;
-export const DEFAULT_BUTTON_WIDTH = 108;
-export const DECREASE_DELAY_MS = 100;
-export const FLOATING_BUTTON_CLASS_NAME =
-  'w-24 justify-center overflow-hidden text-ellipsis whitespace-nowrap text-center leading-tight text-background hover:max-w-28 hover:overflow-visible md:leading-[inherit]';
+import { ExceptionFilter, Catch, ArgumentsHost, Logger, NotFoundException, HttpStatus } from '@nestjs/common';
+import { Response, Request } from 'express';
+
+@Catch(NotFoundException)
+class NotFoundFilter implements ExceptionFilter {
+  private readonly logger = new Logger(NotFoundFilter.name);
+
+  catch(_exception: NotFoundException, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
+
+    this.logger.warn(`Not found: ${request.method} ${request.url.split('?')[0]}`);
+
+    response.status(HttpStatus.NOT_FOUND).json({
+      statusCode: HttpStatus.NOT_FOUND,
+      message: 'Not Found',
+      error: 'Not Found',
+    });
+  }
+}
+
+export default NotFoundFilter;

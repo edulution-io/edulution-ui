@@ -17,18 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus, Logger } from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, Logger, PayloadTooLargeException } from '@nestjs/common';
 import { Response } from 'express';
+import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
+import MAXIMUM_JSON_BODY_SIZE from '@libs/common/constants/maximumJsonBodySize';
+import sendPayloadTooLargeResponse, { PayloadTooLargeErrorType } from './sendPayloadTooLargeResponse';
 
-interface PayloadTooLargeException {
-  type?: string;
-  message?: string;
-  limit?: number;
-  length?: number;
-  expected?: number;
-}
-
-@Catch()
+@Catch(PayloadTooLargeException)
 class PayloadTooLargeFilter implements ExceptionFilter {
   private readonly logger = new Logger(PayloadTooLargeFilter.name);
 
@@ -36,21 +31,13 @@ class PayloadTooLargeFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    if (exception.type === 'entity.too.large' || exception.message?.includes('request entity too large')) {
-      const limitInKB = exception.limit ? (exception.limit / 1024).toFixed(2) : 'unknown';
-      const receivedInKB = exception.length ? (exception.length / 1024).toFixed(2) : 'unknown';
+    const exceptionMessage = exception.message?.toLowerCase() || '';
+    const isFileUpload = exceptionMessage.includes('file too large');
 
-      this.logger.error(`Payload too large: received ${receivedInKB}KB, limit is ${limitInKB}KB`);
+    const errorType: PayloadTooLargeErrorType = isFileUpload ? 'file_upload' : 'json_body';
+    const limit = isFileUpload ? MAXIMUM_UPLOAD_FILE_SIZE : MAXIMUM_JSON_BODY_SIZE;
 
-      response.status(HttpStatus.PAYLOAD_TOO_LARGE).json({
-        statusCode: HttpStatus.PAYLOAD_TOO_LARGE,
-        message: 'Request payload is too large',
-        error: 'Payload Too Large',
-      });
-      return;
-    }
-
-    throw new Error(exception.message || 'Unknown error');
+    sendPayloadTooLargeResponse(response, this.logger, errorType, limit);
   }
 }
 

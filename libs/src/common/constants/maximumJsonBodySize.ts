@@ -17,9 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export const DEBOUNCE_MS = 50;
-export const WIDTH_TOLERANCE_PX = 1;
-export const DEFAULT_BUTTON_WIDTH = 108;
-export const DECREASE_DELAY_MS = 100;
-export const FLOATING_BUTTON_CLASS_NAME =
-  'w-24 justify-center overflow-hidden text-ellipsis whitespace-nowrap text-center leading-tight text-background hover:max-w-28 hover:overflow-visible md:leading-[inherit]';
+const MAXIMUM_JSON_BODY_SIZE = 100 * 1024;
+
+export default MAXIMUM_JSON_BODY_SIZE;
