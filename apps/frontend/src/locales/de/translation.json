@@ -49,8 +49,8 @@
     "deleteBulletins": "{{count}} Mitteilungen löschen",
     "editBulletin": "Mitteilung bearbeiten",
     "createBulletin": "Mitteilung erstellen",
-    "confirmSingleDelete": "Soll diese Mitteilung wirklich gelöscht werden?",
-    "confirmMultiDelete": "Sollen diese Mitteilungen wirklich gelöscht werden?",
+    "confirmDelete": "Soll diese Mitteilung wirklich gelöscht werden?",
+    "confirmDelete_other": "Sollen diese {{count}} Mitteilungen wirklich gelöscht werden?",
     "rowsSelected": "{{selected}} von {{total}} Mitteilungen ausgewählt",
     "rowSelected": "{{selected}} von {{total}} Mitteilung ausgewählt",
     "cancel": "Abbrechen",
@@ -210,8 +210,8 @@
       "noMailConfigured": "E-Mail-App ist nicht konfiguriert. Bitte kontaktiere den Systemadministrator.",
       "syncAccountAdded": "Konto für Sync-Job hinzugefügt.",
       "syncAccountDeleted": "Konto für Sync-Job gelöscht.",
-      "confirmMultiDeleteSyncJob": "Möchtest du diese Sync-Jobs wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
-      "confirmSingleDeleteSyncJob": "Möchtest du diesen Sync-Job wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "confirmDeleteSyncJob_other": "Möchtest du diese {{count}} Sync-Jobs wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "confirmDeleteSyncJob": "Möchtest du diesen Sync-Job wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
       "deleteSyncJobs": "{{count}} Sync-Jobs löschen",
       "deleteSyncJob": "Sync-Job löschen",
       "confirmDeleteProviderConfig": "Möchtest du diese E-Mail-Provider-Konfiguration wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
@@ -227,7 +227,8 @@
     "automaticLoginFailed": "Automatischer Login fehlgeschlagen",
     "uploadOrFetchAttachmentFailed": "Fehler beim Hochladen des Anhangs",
     "fileGenerationFailed": "Datei konnte nicht generiert werden",
-    "requestTooLarge": "Deine Anfrage ist zu groß. Falls du Medien angehängt hast, versuche diese zu komprimieren oder zu entfernen"
+    "requestTooLarge": "Deine Anfrage ist größer als {{limit}} KB. Falls du Medien angehängt hast, versuche diese zu komprimieren oder zu entfernen.",
+    "fileTooLarge": "Die Datei ist größer als {{limit}} MB. Bitte komprimiere die Datei oder wähle eine kleinere."
   },
   "conferences": {
     "errors": {
@@ -274,13 +275,14 @@
     "create": "Konferenz erstellen",
     "delete": "Löschen",
     "deleteConference": "Konferenz löschen",
-    "deleteConferences": "{{count}} Konferenzen löschen",
+    "deleteConferences": "Konferenz löschen",
+    "deleteConferences_other": "{{count}} Konferenzen löschen",
     "editConference": "Konferenz bearbeiten",
     "conferenceUpdatedSuccessfully": "Konferenz erfolgreich gespeichert ",
     "conferenceFetchedSuccessfully": "Konferenzen erfolgreich aktualisiert ",
     "conferenceCreatedSuccessfully": "Konferenz erfolgreich erstellt",
-    "confirmSingleDelete": "Soll diese Konferenz wirklich gelöscht werden?",
-    "confirmMultiDelete": "Sollen diese Konferenzen wirklich gelöscht werden?",
+    "confirmDelete": "Soll diese Konferenz wirklich gelöscht werden?",
+    "confirmDelete_other": "Sollen diese {{count}} Konferenzen wirklich gelöscht werden?",
     "name": "Name der Konferenz",
     "conference": "Konferenz",
     "password": "Passwort",
@@ -409,10 +411,10 @@
       "isActive": "Aktiv",
       "fileLink": "Freigabe-Link",
       "invitedAttendees": "Eingeladen",
-      "confirmMultiDelete": "Sollen diese Freigabe-Links zu den folgenden Inhalten wirklich gelöscht werden?",
-      "confirmSingleDelete": "Soll dieser Freigabe-Link zu folgendem Inhalt wirklich gelöscht werden?",
+      "confirmDelete": "Soll dieser Freigabe-Link wirklich gelöscht werden?",
+      "confirmDelete_other": "Sollen diese {{count}} Freigabe-Links wirklich gelöscht werden?",
       "deleteFileLink": "Freigabe-Link löschen",
-      "deleteFileLinks": "Freigabe-Links löschen",
+      "deleteFileLink_other": "Freigabe-Links löschen",
       "selectPersonsOrGroupsWhoCanAccess": "Beschränke Personen oder Gruppen, die Zugriff auf diesen Inhalt haben",
       "isAccessibleBy": "Zugänglich für",
       "isPasswordProtected": "Passwort",
@@ -635,7 +637,9 @@
       "proxyAdressDescription": "URL des Veyon-WebAPI-Proxy",
       "proxyAdressPlaceholder": "http://localhost:11080",
       "createConfig": "Konfiguration erstellen",
-      "editConfig": "Konfiguration bearbeiten"
+      "editConfig": "Konfiguration bearbeiten",
+      "deleteConfig": "Konfiguration löschen",
+      "confirmDeleteConfig": "Soll diese Veyon-Proxy-Konfiguration wirklich gelöscht werden?"
     },
     "selectSchool": {
       "title": "Schule auswählen",
@@ -784,9 +788,10 @@
   "surveys": {
     "rowsSelected": "{{selected}} von {{total}} Umfragen ausgewählt",
     "rowSelected": "{{selected}} von {{total}} Umfrage ausgewählt",
-    "confirmMultiDelete": "Sollen diese Umfragen wirklich gelöscht werden?",
-    "confirmSingleDelete": "Soll die Umfrage wirklich gelöscht werden?",
-    "deleteSurveys": "Lösche {{count}} Umfragen",
+    "confirmDelete": "Soll diese Umfrage wirklich gelöscht werden?",
+    "confirmDelete_other": "Sollen diese {{count}} Umfragen wirklich gelöscht werden?",
+    "deleteSurveys_other": "Lösche {{count}} Umfragen",
+    "deleteSurveys": "Lösche Umfrage",
     "deletedSurveys": "{{count}} Umfragen erfolgreich gelöscht",
     "deleteSurvey": "Umfrage Löschen",
     "deletedSurvey": "Umfrage erfolgreich gelöscht",
@@ -1055,8 +1060,10 @@
         "title": "Sortierung",
         "description": "An welcher Position soll die App in der App-Leiste und in den Einstellungen angezeigt werden?"
       },
-      "deleteEntries": "{{count}} Einträge löschen",
-      "confirmDeleteEntries": "Möchtest du diese Einträge wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "deleteEntries": "Eintrag löschen",
+      "deleteEntries_other": "{{count}} Einträge löschen",
+      "confirmDeleteEntries": "Möchtest du diesen Eintrag wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "confirmDeleteEntries_other": "Möchtest du diese {{count}} Einträge wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
       "sections": {
         "onlyOffice": {
           "title": "Only Office Integration",
@@ -1083,8 +1090,8 @@
           "description": "Um die erweiterten Dienste nutzen zu können, können hier die benötigten Container-Anwendungen installiert und gestartet werden.",
           "confirmMultiDeleteContainer": "Möchtest du diese Container wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
           "confirmSingleDeleteContainer": "Möchtest du diesen Container wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
-          "deleteContainers": "{{count}} Container löschen",
-          "deleteContainer": "Container löschen"
+          "deleteContainers_other": "{{count}} Container löschen",
+          "deleteContainers": "Container löschen"
         },
         "veyon": {
           "title": "Veyon Proxy",
@@ -1097,11 +1104,15 @@
           "title": "WebDAV",
           "sectionTitle": "WebDAV-Shares",
           "description": "Hier können WebDAV-Server für den Dateimanager eingerichtet werden.",
-          "filterPlaceHolderText": "Suche nach WebDAV-Share"
+          "filterPlaceHolderText": "Suche nach WebDAV-Share",
+          "deleteWebdavShare": "WebDAV-Share löschen",
+          "confirmDeleteWebdavShare": "Soll dieses WebDAV-Share wirklich gelöscht werden?"
         },
         "webdavServer": {
           "title": "WebDAV-Server",
           "filterPlaceHolderText": "Suche nach WebDAV-Server",
+          "deleteWebdavServer": "WebDAV-Server löschen",
+          "confirmDeleteWebdavServer": "Soll dieser WebDAV-Server wirklich gelöscht werden?",
           "deleteWarning": {
             "title": "Löschen nicht möglich",
             "description": "Der WebDAV-Server '{{serverName}}' wird von {{count}} Share(s) verwendet: {{shares}}. Bitte lösche die abhängigen Shares zuerst."
@@ -1421,6 +1432,8 @@
     "start": "Starten",
     "close": "Schließen",
     "delete": "Löschen",
+    "deleting": "Löschen...",
+    "noItemsSelected": "Keine Elemente ausgewählt",
     "connect": "Verbinden",
     "custom": "Benutzerdefiniert",
     "select": "Wählen...",

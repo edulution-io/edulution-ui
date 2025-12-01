@@ -22,7 +22,7 @@ import { t } from 'i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import type ClassmanagementButtonConfigProps from '@libs/classManagement/types/classmanagementButtonConfigProps';
-import ItemDialogList from '@/components/shared/ItemDialogList';
+import ItemList from '@/components/shared/ItemList';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 type ConfirmationDialogProps = ClassmanagementButtonConfigProps & {
@@ -45,10 +45,8 @@ const LessonConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
     if (noMembers) return <div className="text-background">{t('classmanagement.noStudentsForAction')}</div>;
     return (
       <div className="text-background">
-        <ItemDialogList
-          deleteWarningTranslationId={t(`classmanagement.${title}Description`, { count: member.length })}
-          items={member.map((i) => ({ name: i.displayName, id: i.cn }))}
-        />
+        <p>{t(`classmanagement.${title}Description`, { count: member.length })}</p>
+        <ItemList items={member.map((i) => ({ name: i.displayName, id: i.cn }))} />
       </div>
     );
   };

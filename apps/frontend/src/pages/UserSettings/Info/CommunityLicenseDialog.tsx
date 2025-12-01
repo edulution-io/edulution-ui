@@ -41,8 +41,8 @@ const CommunityLicenseDialog: React.FC = () => {
   }
 
   const getDialogBody = () => (
-    <div className="flex flex-col items-start space-y-3">
-      <p className="mb-5 text-left">
+    <div className="flex flex-col items-start space-y-4">
+      <p className="text-left">
         <Trans
           i18nKey="licensing.communityLicenseDialog.description"
           values={{ applicationName: APPLICATION_NAME }}
@@ -53,7 +53,6 @@ const CommunityLicenseDialog: React.FC = () => {
       </p>
       <div className="flex w-full justify-center shadow">
         <Button
-          className="md:absolute md:bottom-4"
           variant="btn-collaboration"
           disabled={isLoading}
           size="lg"

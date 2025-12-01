@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { MdAdd } from 'react-icons/md';
+import { AddIcon } from '@libs/common/constants/standardActionIcons';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import type FloatingButtonsBarProps from '@libs/ui/types/FloatingButtons/floatingButtonsBarProps';
 import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
@@ -38,7 +38,7 @@ const AppStoreFloatingButtons: React.FC<AppStoreFloatingButtonsProps> = ({ handl
     config: {
       buttons: [
         {
-          icon: MdAdd,
+          icon: AddIcon,
           text: t(`common.add`),
           onClick: handleCreateApp,
           isVisible: areButtonsVisible,

@@ -28,6 +28,7 @@ const initialValues = {
   isLoading: false,
   tableContentData: [],
   selectedConfig: null,
+  itemToDelete: null,
 };
 
 const useWebdavShareConfigTableStore: UseBoundStore<StoreApi<WebdavShareTableStore>> = create<WebdavShareTableStore>(
@@ -37,6 +38,8 @@ const useWebdavShareConfigTableStore: UseBoundStore<StoreApi<WebdavShareTableSto
     setSelectedRows: (selectedRows) => set({ selectedRows }),
 
     setSelectedConfig: (config) => set({ selectedConfig: config }),
+
+    setItemToDelete: (item) => set({ itemToDelete: item }),
 
     fetchTableContent: async () => {
       try {

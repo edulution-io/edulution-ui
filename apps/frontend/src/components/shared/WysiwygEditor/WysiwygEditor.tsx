@@ -53,6 +53,11 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
   };
 
   const uploadImage = async (file: File, index?: number) => {
+    if (!IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.type)) {
+      toast.error(`${t('common.errors.invalidFileType')}: ${file.type}`);
+      return;
+    }
+
     try {
       const uploadedFilename = await onUpload(file);
       const fetchImageUrl = `/${EDU_API_ROOT}/${uploadedFilename}?token=${eduApiToken}`;

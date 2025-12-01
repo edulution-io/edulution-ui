@@ -29,6 +29,8 @@
 - File names: The file name should match the default export name.
 - Never comment in the code.
 - Prefer default exports over named exports. Default export at the end of the file.
+- Use const objects and derived types instead of enums.
+- Use the name "delete" over "remove".
 
 ## Testing Guidelines
 

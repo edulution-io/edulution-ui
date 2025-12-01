@@ -282,7 +282,11 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
         handleDeleteSettingsItem={() => setIsDeleteAppConfigDialogOpen(true)}
         handleSaveSettingsItem={handleSubmit(onSubmit)}
       />
-      <DeleteAppConfigDialog handleDeleteSettingsItem={handleDeleteSettingsItem} />
+      <DeleteAppConfigDialog
+        appName={settingLocation}
+        appDisplayName={matchingConfig ? getDisplayName(matchingConfig, language) : settingLocation}
+        handleDeleteSettingsItem={handleDeleteSettingsItem}
+      />
       {matchingConfig?.name === APPS.FILE_SHARING && <DeleteWebdavServerWarningDialog />}
     </PageLayout>
   );

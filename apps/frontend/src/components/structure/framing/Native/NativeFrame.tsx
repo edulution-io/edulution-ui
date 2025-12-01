@@ -25,6 +25,7 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import type TApps from '@libs/appconfig/types/appsType';
+import IFRAME_ALLOWED_CONFIG from '@libs/ui/constants/iframeAllowedConfig';
 
 interface NativeFrameProps {
   scriptOnStartUp?: string;
@@ -90,6 +91,7 @@ const NativeFrame: React.FC<NativeFrameProps> = ({ scriptOnStartUp, scriptOnStop
       title={appName}
       className="absolute inset-y-0 left-0 ml-0 w-full"
       height="100%"
+      allow={IFRAME_ALLOWED_CONFIG}
       src={loadedEmbeddedFrames.includes(currentAppConfig.name) ? initialUrlRef.current : undefined}
       style={activeEmbeddedFrame === appName ? { display: 'block' } : { display: 'none' }}
     />

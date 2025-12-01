@@ -25,7 +25,7 @@ import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import WEBDAV_SHARE_TABLE_COLUMNS from '@libs/filesharing/constants/webdavShareTableColumns';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
-import { MdDelete, MdEdit } from 'react-icons/md';
+import { DeleteIcon, EditIcon } from '@libs/common/constants/standardActionIcons';
 import ID_ACTION_TABLE_COLUMN from '@libs/common/constants/idActionTableColumn';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import cn from '@libs/common/utils/className';
@@ -125,13 +125,13 @@ const WebdavServerTableColumns: ColumnDef<WebdavShareDto>[] = [
     },
     cell: ({ row }) => {
       const { setDialogOpen } = useAppConfigTableDialogStore();
-      const { fetchTableContent, deleteTableEntry } = useWebdavServerConfigTableStore();
+      const { setItemToDelete } = useWebdavServerConfigTableStore();
 
       return (
         <TableActionCell
           actions={[
             {
-              icon: MdEdit,
+              icon: EditIcon,
               translationId: 'common.edit',
               onClick: () => {
                 if (!row.getIsSelected()) {
@@ -141,13 +141,10 @@ const WebdavServerTableColumns: ColumnDef<WebdavShareDto>[] = [
               },
             },
             {
-              icon: MdDelete,
+              icon: DeleteIcon,
               translationId: 'common.delete',
-              onClick: async () => {
-                if (row.original.webdavShareId && deleteTableEntry) {
-                  await deleteTableEntry('', row.original.webdavShareId);
-                }
-                await fetchTableContent();
+              onClick: () => {
+                setItemToDelete(row.original);
               },
             },
           ]}

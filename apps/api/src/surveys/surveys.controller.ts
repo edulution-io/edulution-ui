@@ -67,7 +67,7 @@ import FilesystemService from '../filesystem/filesystem.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
-import { checkAttachmentFile, createAttachmentUploadOptions } from '../filesystem/multer.utilities';
+import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import AdminGuard from '../common/guards/admin.guard';
 import CustomHttpException from '../common/CustomHttpException';
 
@@ -124,8 +124,7 @@ class SurveysController {
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   fileUpload(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
-    const fileName = checkAttachmentFile(file);
-    const fileUrl = join(SURVEYS, FILES, fileName);
+    const fileUrl = join(SURVEYS, FILES, file.filename);
     return res.status(HttpStatus.CREATED).json(fileUrl);
   }
 
