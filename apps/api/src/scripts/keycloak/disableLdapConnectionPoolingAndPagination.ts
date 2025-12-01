@@ -76,7 +76,7 @@ const disableLdapConnectionPoolingAndPagination: Scripts = {
 
         if (currentConnectionPooling && currentPagination) {
           Logger.log(
-            `Connection pooling and pagination already enabled for '${ldapComponent.name}'`,
+            `Connection pooling and pagination already disabled for '${ldapComponent.name}'`,
             disableLdapConnectionPoolingAndPagination.name,
           );
           continue;
@@ -104,7 +104,7 @@ const disableLdapConnectionPoolingAndPagination: Scripts = {
           if (!currentPagination) changes.push('pagination');
 
           Logger.log(
-            `Successfully enabled ${changes.join(' and ')} for '${ldapComponent.name}'`,
+            `Successfully disabled ${changes.join(' and ')} for '${ldapComponent.name}'`,
             disableLdapConnectionPoolingAndPagination.name,
           );
           modificationsApplied = true;
