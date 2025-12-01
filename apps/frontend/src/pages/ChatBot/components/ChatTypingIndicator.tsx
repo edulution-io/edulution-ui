@@ -17,12 +17,27 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ChatRole from '@libs/ai/types/chatRole';
+import React from 'react';
 
-interface ChatMessage {
-  id: string;
-  role: ChatRole;
-  content: string;
-}
+const ChatTypingIndicator = () => (
+  <div className="flex justify-start duration-300 animate-in fade-in slide-in-from-bottom-2">
+    <div className="rounded-2xl rounded-bl-sm bg-accent px-4 py-3 shadow-md">
+      <div className="flex gap-1">
+        <div
+          className="h-2 w-2 animate-bounce rounded-full bg-white/60"
+          style={{ animationDelay: '0ms' }}
+        />
+        <div
+          className="h-2 w-2 animate-bounce rounded-full bg-white/60"
+          style={{ animationDelay: '150ms' }}
+        />
+        <div
+          className="h-2 w-2 animate-bounce rounded-full bg-white/60"
+          style={{ animationDelay: '300ms' }}
+        />
+      </div>
+    </div>
+  </div>
+);
 
-export default ChatMessage;
+export default ChatTypingIndicator;

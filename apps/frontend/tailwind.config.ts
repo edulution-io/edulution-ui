@@ -78,11 +78,16 @@ module.exports = {
           foreground: 'var(--overlay-foreground)',
           transparent: 'var(--overlay-transparent)',
         },
+        shiki: {
+          light: 'var(--shiki-light)',
+          'light-bg': 'var(--shiki-light-bg)',
+          dark: 'var(--shiki-dark)',
+          'dark-bg': 'var(--shiki-dark-bg)',
+        },
       },
       backgroundImage: {
         ciGreenToBlue: 'linear-gradient(45deg, var(--ci-light-green), var(--ci-dark-blue))',
       },
-
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
@@ -90,12 +95,20 @@ module.exports = {
       },
       keyframes: {
         'accordion-down': {
-          from: { height: '0' },
-          to: { height: 'var(--radix-accordion-content-height)' },
+          from: {
+            height: '0',
+          },
+          to: {
+            height: 'var(--radix-accordion-content-height)',
+          },
         },
         'accordion-up': {
-          from: { height: 'var(--radix-accordion-content-height)' },
-          to: { height: '0' },
+          from: {
+            height: 'var(--radix-accordion-content-height)',
+          },
+          to: {
+            height: '0',
+          },
         },
         fadeInBottom: {
           '0%': {
@@ -108,8 +121,20 @@ module.exports = {
           },
         },
         'caret-blink': {
-          '0%,70%,100%': { opacity: '1' },
-          '20%,50%': { opacity: '0' },
+          '0%,70%,100%': {
+            opacity: '1',
+          },
+          '20%,50%': {
+            opacity: '0',
+          },
+        },
+        'typing-dot-bounce': {
+          '0%,40%': {
+            transform: 'translateY(0)',
+          },
+          '20%': {
+            transform: 'translateY(-0.25rem)',
+          },
         },
       },
       animation: {
@@ -117,6 +142,7 @@ module.exports = {
         'accordion-up': 'accordion-up 0.2s ease-out',
         fadeInBottom: 'fadeInBottom 0.5s ease-out forwards',
         'caret-blink': 'caret-blink 1.25s ease-out infinite',
+        'typing-dot-bounce': 'typing-dot-bounce 1.25s ease-out infinite',
       },
       flex: {
         '2': '2 1 0%',

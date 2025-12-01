@@ -24,6 +24,7 @@ import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/htt
 import AiRequestOptions from '@libs/ai/types/aiRequestOptions';
 import ChatMessage from '@libs/ai/types/chatMessage';
 import ChatCompletionResponse from '@libs/ai/types/chatCompletionResponse';
+import getRandomUUID from '@/utils/getRandomUUID';
 
 @Injectable()
 class AiService {
@@ -54,10 +55,10 @@ class AiService {
     const messages: ChatMessage[] = [];
 
     if (systemPrompt) {
-      messages.push({ role: 'system', content: systemPrompt });
+      messages.push({ id: getRandomUUID(), role: 'system', content: systemPrompt });
     }
 
-    messages.push({ role: 'user', content: prompt });
+    messages.push({ id: getRandomUUID(), role: 'user', content: prompt });
 
     const response = await this.client.post<ChatCompletionResponse>('/chat/completions', {
       model: model || this.defaultModel,
