@@ -58,13 +58,7 @@ const ReplaceFilesDialog = () => {
 
   const getDialogBody = () => (
     <div className="text-background">
-      <p>
-        {t(
-          duplicateCount === 1
-            ? 'filesharingUpload.overwriteWarningDescriptionFile'
-            : 'filesharingUpload.overwriteWarningDescriptionFiles',
-        )}
-      </p>
+      <p>{t('filesharingUpload.overwriteWarningDescription', { count: duplicateCount })}</p>
       <ItemList items={items} />
     </div>
   );
@@ -92,11 +86,7 @@ const ReplaceFilesDialog = () => {
     <AdaptiveDialog
       isOpen={isOpen}
       handleOpenChange={handleClose}
-      title={t(
-        duplicateCount === 1
-          ? 'filesharingUpload.overwriteWarningTitleFile'
-          : 'filesharingUpload.overwriteWarningTitleFiles',
-      )}
+      title={t('filesharingUpload.overwriteWarningTitle', { count: duplicateCount })}
       body={getDialogBody()}
       footer={getFooter()}
     />
