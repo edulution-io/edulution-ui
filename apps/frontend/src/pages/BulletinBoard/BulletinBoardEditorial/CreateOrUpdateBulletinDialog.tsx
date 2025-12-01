@@ -24,10 +24,9 @@ import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialStore';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import getBulletinFormSchema from '@libs/bulletinBoard/constants/bulletinDialogFormSchema';
 import CreateOrUpdateBulletinDialogBody from '@/pages/BulletinBoard/BulletinBoardEditorial/CreateOrUpdateBulletinDialogBody';
-import { MdDelete } from 'react-icons/md';
+import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
@@ -60,15 +59,30 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
     }
   }, [isCreateBulletinDialogOpen]);
 
+  const getDefaultEndDate = () => {
+    const date = new Date();
+    date.setDate(date.getDate() + 14);
+    date.setHours(23, 59, 0, 0);
+    return date;
+  };
+
+  const getInitialEndDate = () => {
+    if (!selectedBulletinToEdit) {
+      return getDefaultEndDate();
+    }
+    if (selectedBulletinToEdit.isVisibleEndDate) {
+      return new Date(selectedBulletinToEdit.isVisibleEndDate);
+    }
+    return null;
+  };
+
   const initialFormValues: CreateBulletinDto = {
     title: selectedBulletinToEdit?.title || '',
     category: selectedBulletinToEdit?.category || categoriesWithEditPermission[0],
     attachmentFileNames: selectedBulletinToEdit?.attachmentFileNames || [],
     content: selectedBulletinToEdit?.content || '',
     isActive: selectedBulletinToEdit?.isActive || true,
-    isVisibleEndDate: selectedBulletinToEdit?.isVisibleEndDate
-      ? new Date(selectedBulletinToEdit.isVisibleEndDate)
-      : null,
+    isVisibleEndDate: getInitialEndDate(),
     isVisibleStartDate: selectedBulletinToEdit?.isVisibleStartDate
       ? new Date(selectedBulletinToEdit.isVisibleStartDate)
       : null,
@@ -85,10 +99,14 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
   }, [selectedBulletinToEdit, form]);
 
   const handleSubmit = async () => {
+    let success: boolean;
     if (selectedBulletinToEdit?.id) {
-      await updateBulletin(selectedBulletinToEdit.id, form.getValues());
+      success = await updateBulletin(selectedBulletinToEdit.id, form.getValues());
     } else {
-      await createBulletin(form.getValues());
+      success = await createBulletin(form.getValues());
+    }
+    if (!success) {
+      return;
     }
     setIsCreateBulletinDialogOpen(false);
     setSelectedBulletinToEdit(null);
@@ -102,10 +120,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
 
   const handleFormSubmit = form.handleSubmit(handleSubmit);
 
-  const getDialogBody = () => {
-    if (isDialogLoading) return <CircleLoader className="mx-auto" />;
-    return <CreateOrUpdateBulletinDialogBody form={form} />;
-  };
+  const getDialogBody = () => <CreateOrUpdateBulletinDialogBody form={form} />;
 
   const handleClose = () => {
     setIsCreateBulletinDialogOpen(false);
@@ -134,7 +149,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
             type="button"
             onClick={() => setIsDeleteDialogOpen(true)}
           >
-            <MdDelete size={20} />
+            <DeleteIcon size={20} />
             {t('common.delete')}
           </Button>
         )}

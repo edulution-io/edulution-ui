@@ -25,6 +25,7 @@ interface CustomAxiosError extends AxiosError {
     statusText: string;
     data: {
       message: string;
+      errorType?: string;
     };
     headers: RawAxiosResponseHeaders | AxiosResponseHeaders;
     config: InternalAxiosRequestConfig;

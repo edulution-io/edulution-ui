@@ -17,14 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { t } from 'i18next';
-import { EditIcon } from '@libs/common/constants/standardActionIcons';
+const MAXIMUM_JSON_BODY_SIZE = 100 * 1024;
 
-const EditButton = (onClick: () => void, isVisible?: boolean) => ({
-  icon: EditIcon,
-  text: t('common.edit'),
-  onClick,
-  isVisible,
-});
-
-export default EditButton;
+export default MAXIMUM_JSON_BODY_SIZE;

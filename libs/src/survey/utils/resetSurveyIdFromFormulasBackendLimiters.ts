@@ -17,14 +17,28 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { t } from 'i18next';
-import { EditIcon } from '@libs/common/constants/standardActionIcons';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
+import resetSurveyIdForRestfulChoices from '@libs/survey/utils/resetSurveyIdForRestfulChoices';
 
-const EditButton = (onClick: () => void, isVisible?: boolean) => ({
-  icon: EditIcon,
-  text: t('common.edit'),
-  onClick,
-  isVisible,
-});
+const resetSurveyIdFromFormulasBackendLimiters = (formula: SurveyFormula, surveyId?: string) => {
+  if (!surveyId) {
+    return formula;
+  }
 
-export default EditButton;
+  if (formula.pages && formula.pages.length > 0) {
+    const pages = formula.pages.map((page) => ({
+      ...page,
+      elements: resetSurveyIdForRestfulChoices(page.elements, surveyId),
+    }));
+    return { ...formula, pages };
+  }
+
+  if (formula.elements && formula.elements.length > 0) {
+    const elements = resetSurveyIdForRestfulChoices(formula.elements, surveyId);
+    return { ...formula, elements };
+  }
+
+  return formula;
+};
+
+export default resetSurveyIdFromFormulasBackendLimiters;

@@ -17,14 +17,26 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { t } from 'i18next';
-import { EditIcon } from '@libs/common/constants/standardActionIcons';
+import { HttpStatus, Logger } from '@nestjs/common';
+import { Response } from 'express';
 
-const EditButton = (onClick: () => void, isVisible?: boolean) => ({
-  icon: EditIcon,
-  text: t('common.edit'),
-  onClick,
-  isVisible,
-});
+export type PayloadTooLargeErrorType = 'file_upload' | 'json_body';
 
-export default EditButton;
+const sendPayloadTooLargeResponse = (
+  response: Response,
+  logger: Logger,
+  errorType: PayloadTooLargeErrorType,
+  limit: number,
+) => {
+  const limitInMB = (limit / 1024 / 1024).toFixed(2);
+  logger.warn(`Payload too large (${errorType}): limit is ${limitInMB}MB`);
+
+  response.status(HttpStatus.PAYLOAD_TOO_LARGE).json({
+    statusCode: HttpStatus.PAYLOAD_TOO_LARGE,
+    message: 'Request payload is too large',
+    error: 'Payload Too Large',
+    errorType,
+  });
+};
+
+export default sendPayloadTooLargeResponse;

@@ -17,14 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { t } from 'i18next';
-import { EditIcon } from '@libs/common/constants/standardActionIcons';
+const STANDARD_ACTION_TYPES = {
+  ADD: 'add',
+  EDIT: 'edit',
+  ADD_OR_EDIT: 'addOrEdit',
+  DELETE: 'delete',
+} as const;
 
-const EditButton = (onClick: () => void, isVisible?: boolean) => ({
-  icon: EditIcon,
-  text: t('common.edit'),
-  onClick,
-  isVisible,
-});
-
-export default EditButton;
+export default STANDARD_ACTION_TYPES;
