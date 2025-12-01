@@ -26,7 +26,7 @@ import { IoAdd } from 'react-icons/io5';
 import cn from '@libs/common/utils/className';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import APPS from '@libs/appconfig/constants/apps';
-import { SURVEY_CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import { PUBLIC_SURVEY_CHOICES, SURVEY_CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
@@ -88,6 +88,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
 
     try {
       const surveyFormula = creator.JSON as SurveyFormula;
+      const isPublic = form.getValues('isPublic') || false;
       const updatedFormula = JSON.parse(JSON.stringify(surveyFormula)) as SurveyFormula;
 
       let correspondingQuestion: SurveyElement | undefined;
@@ -111,7 +112,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       } else {
         correspondingQuestion.choices = null;
         correspondingQuestion.choicesByUrl = {
-          url: `${EDU_API_URL}/${SURVEY_CHOICES}/${TEMPORAL_SURVEY_ID_STRING}/${selectedQuestion.name}`,
+          url: `${EDU_API_URL}/${isPublic ? PUBLIC_SURVEY_CHOICES : SURVEY_CHOICES}/${TEMPORAL_SURVEY_ID_STRING}/${selectedQuestion.name}`,
           valueName: 'title',
           titleName: 'title',
         };

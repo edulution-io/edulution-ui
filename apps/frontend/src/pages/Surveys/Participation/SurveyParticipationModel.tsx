@@ -35,6 +35,7 @@ import '../theme/custom.participation.css';
 import 'survey-core/i18n/french';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
+import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 
 interface SurveyFileValue {
   name: string;
@@ -61,7 +62,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
   const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
 
-  const { fetchAnswer, isFetching, answerSurvey, previousAnswer, uploadTempFile, deleteTempFile, deleteTempFiles } =
+  const { fetchAnswer, isFetching, answerSurvey, previousAnswer, uploadTempFile, deleteTempFile } =
     useParticipateSurveyStore();
 
   const { setIsOpen: setOpenExportPDFDialog } = useExportSurveyToPdfStore();
@@ -95,8 +96,8 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       const success = await answerSurvey(
         {
           surveyId: selectedSurvey.id,
-          answer: surveyModel.getData() as JSON,
-          isPublic,
+          answer: surveyModel.getData() as TSurveyAnswer,
+          isPublic: selectedSurvey.isPublic || isPublic || false,
         },
         surveyModel,
         completingEvent,
@@ -113,7 +114,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
     newModel.onUploadFiles.add(async (_: SurveyModel, options: UploadFilesEvent): Promise<void> => {
       const { files, callback, question } = options;
-      const { id: surveyId } = selectedSurvey;
+      const { id: surveyId, isPublic: surveyIsPublic } = selectedSurvey;
 
       if (!surveyId || !files?.length || files.some((file) => !file.name?.length)) {
         callback([]);
@@ -126,7 +127,8 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
         callback([]);
         return;
       }
-      const uploadPromises = files.map(async (file) => uploadTempFile(surveyId, question?.name, file));
+      const isSurveyPublic = surveyIsPublic || isPublic || false;
+      const uploadPromises = files.map(async (file) => uploadTempFile(surveyId, question?.name, file, isSurveyPublic));
       const results = await Promise.all(uploadPromises);
       const filteredResults = results.filter((result) => result !== null);
       callback(
@@ -160,16 +162,17 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
     newModel.onClearFiles.add(async (_surveyModel: SurveyModel, options: ClearFilesEvent): Promise<void> => {
       const { callback, question, fileName } = options;
-      const { id: surveyId } = selectedSurvey;
+      const { id: surveyId, isPublic: surveyIsPublic } = selectedSurvey;
 
       if (!surveyId) {
         callback('success');
         return;
       }
 
+      const isSurveyPublic = surveyIsPublic || isPublic || false;
       if (fileName === null) {
         try {
-          await deleteTempFiles(surveyId, question?.name);
+          await deleteTempFile(surveyId, question?.name, undefined, isSurveyPublic);
           callback('success');
           return;
         } catch (error) {
@@ -206,7 +209,9 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       }
 
       const results = await Promise.all(
-        filesToDelete.map((file: File & { content?: string }) => deleteTempFile(surveyId, question?.name, file)),
+        filesToDelete.map((file: File & { content?: string }) =>
+          deleteTempFile(surveyId, question?.name, file, isSurveyPublic),
+        ),
       );
 
       if (results.every((res) => res === 'success')) {

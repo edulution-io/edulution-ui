@@ -318,8 +318,9 @@ describe(SurveysController.name, () => {
       SurveysAttachmentService.onSurveyRemoval = jest.fn().mockImplementation(() => {});
       surveyModel.deleteMany = jest.fn().mockResolvedValueOnce(true);
       surveyAnswerModel.deleteMany = jest.fn().mockReturnValue(true);
+      surveyService.throwErrorIfUserIsNotCreator = jest.fn().mockResolvedValueOnce(true);
 
-      await controller.deleteSurvey({ surveyIds: [idOfAnsweredSurvey01.toString()] });
+      await controller.deleteSurveys({ surveyIds: [idOfAnsweredSurvey01.toString()] }, firstMockJWTUser);
 
       expect(surveyService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01.toString()]);
       expect(surveyAnswersService.onSurveyRemoval).toHaveBeenCalledWith([idOfAnsweredSurvey01.toString()]);
@@ -334,13 +335,15 @@ describe(SurveysController.name, () => {
       jest.spyOn(surveyService, 'deleteSurveys');
       jest.spyOn(surveyAnswersService, 'onSurveyRemoval');
 
+      surveyService.throwErrorIfUserIsNotCreator = jest.fn().mockResolvedValueOnce(true);
+
       surveyModel.deleteMany = jest
         .fn()
         .mockRejectedValue(new CustomHttpException(SurveyErrorMessages.DeleteError, HttpStatus.NOT_MODIFIED));
       surveyAnswerModel.deleteMany = jest.fn();
 
       try {
-        await controller.deleteSurvey({ surveyIds: [idOfAnsweredSurvey01.toString()] });
+        await controller.deleteSurveys({ surveyIds: [idOfAnsweredSurvey01.toString()] }, firstMockJWTUser);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e instanceof Error && e.message).toBe(SurveyErrorMessages.DeleteError);
@@ -367,6 +370,8 @@ describe(SurveysController.name, () => {
         exec: jest.fn().mockResolvedValue(surveyAnswerAnsweredSurvey03),
       });
       surveyAnswerModel.findByIdAndUpdate = jest.fn().mockReturnValue(updatedSurveyAnswerAnsweredSurvey03);
+
+      surveyService.throwErrorIfSurveyIsNotAccessible = jest.fn().mockResolvedValueOnce(true);
 
       const attendee = {
         username: firstMockJWTUser.preferred_username,

@@ -136,7 +136,7 @@ const RowAndColumnOptions = () => {
           type="number"
           min="1"
           value={question.rows.length || 1}
-          onChange={(e) => handleRowCountChange(Math.min(1, Number(e.currentTarget.value)))}
+          onChange={(e) => handleRowCountChange(Math.max(1, Number(e.currentTarget.value)))}
           variant="dialog"
           className="ml-2 max-w-[75px] flex-1 text-primary-foreground"
         />
@@ -163,7 +163,7 @@ const RowAndColumnOptions = () => {
           type="number"
           min="1"
           value={question.columns.length || 1}
-          onChange={(e) => handleColumnCountChange(Math.min(1, Number(e.currentTarget.value)))}
+          onChange={(e) => handleColumnCountChange(Math.max(1, Number(e.currentTarget.value)))}
           variant="dialog"
           className="ml-2 max-w-[75px] flex-1 text-primary-foreground"
         />
