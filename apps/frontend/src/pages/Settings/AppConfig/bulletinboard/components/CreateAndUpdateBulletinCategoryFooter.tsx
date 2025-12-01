@@ -18,7 +18,7 @@
  */
 
 import { Button } from '@/components/shared/Button';
-import { MdDelete } from 'react-icons/md';
+import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { BUTTONS_ICON_WIDTH } from '@libs/ui/constants';
@@ -51,7 +51,7 @@ const CreateAndUpdateBulletinCategoryFooter = ({
             type="button"
             onClick={() => handleDeleteCategory()}
           >
-            <MdDelete size={BUTTONS_ICON_WIDTH} />
+            <DeleteIcon size={BUTTONS_ICON_WIDTH} />
             {t('common.delete')}
           </Button>
         )}

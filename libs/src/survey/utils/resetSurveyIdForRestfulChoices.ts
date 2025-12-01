@@ -17,14 +17,21 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { t } from 'i18next';
-import { EditIcon } from '@libs/common/constants/standardActionIcons';
+import TSurveyElement from '@libs/survey/types/TSurveyElement';
+import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 
-const EditButton = (onClick: () => void, isVisible?: boolean) => ({
-  icon: EditIcon,
-  text: t('common.edit'),
-  onClick,
-  isVisible,
-});
+const resetSurveyIdForRestfulChoices = (elements: TSurveyElement[] | undefined, surveyId: string) =>
+  (elements || []).map((el) => {
+    if (el.choicesByUrl && el.choicesByUrl.url.includes(surveyId)) {
+      return {
+        ...el,
+        choicesByUrl: {
+          ...el.choicesByUrl,
+          url: el.choicesByUrl.url.replace(`/${surveyId}/`, `/${TEMPORAL_SURVEY_ID_STRING}/`),
+        },
+      };
+    }
+    return el;
+  });
 
-export default EditButton;
+export default resetSurveyIdForRestfulChoices;

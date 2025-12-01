@@ -17,14 +17,18 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { t } from 'i18next';
-import { EditIcon } from '@libs/common/constants/standardActionIcons';
+import { IoAdd, IoPencil, IoTrash } from 'react-icons/io5';
+import STANDARD_ACTION_TYPES from './standardActionTypes';
 
-const EditButton = (onClick: () => void, isVisible?: boolean) => ({
-  icon: EditIcon,
-  text: t('common.edit'),
-  onClick,
-  isVisible,
-});
+export const AddIcon = IoAdd;
+export const EditIcon = IoPencil;
+export const DeleteIcon = IoTrash;
 
-export default EditButton;
+const STANDARD_ACTION_ICONS = {
+  [STANDARD_ACTION_TYPES.ADD]: AddIcon,
+  [STANDARD_ACTION_TYPES.EDIT]: EditIcon,
+  [STANDARD_ACTION_TYPES.ADD_OR_EDIT]: AddIcon,
+  [STANDARD_ACTION_TYPES.DELETE]: DeleteIcon,
+} as const;
+
+export default STANDARD_ACTION_ICONS;

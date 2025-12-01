@@ -17,14 +17,50 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { t } from 'i18next';
-import { EditIcon } from '@libs/common/constants/standardActionIcons';
+const IFRAME_ALLOWED_CONFIG = [
+  'autoplay *',
+  'camera *',
+  'microphone *',
+  'display-capture *',
+  'fullscreen *',
+  'picture-in-picture *',
+  'screen-wake-lock *',
 
-const EditButton = (onClick: () => void, isVisible?: boolean) => ({
-  icon: EditIcon,
-  text: t('common.edit'),
-  onClick,
-  isVisible,
-});
+  'geolocation *',
+  'accelerometer *',
+  'gyroscope *',
+  'magnetometer *',
 
-export default EditButton;
+  'clipboard-read *',
+  'clipboard-write *',
+
+  'gamepad *',
+  'keyboard-map *',
+  'xr-spatial-tracking *',
+
+  'usb *',
+  'serial *',
+  'bluetooth *',
+  'hid *',
+  'midi *',
+  'nfc *',
+  'speaker-selection *',
+
+  'payment *',
+  'encrypted-media *',
+  'sync-xhr *',
+
+  'idle-detection *',
+  'local-fonts *',
+
+  'clipboard-read *',
+  'clipboard-write *',
+  'interest-cohort *',
+  'browsing-topics *',
+  'attribution-reporting *',
+  'run-ad-auction *',
+  'join-ad-interest-group *',
+  'shared-autofill *',
+].join('; ');
+
+export default IFRAME_ALLOWED_CONFIG;

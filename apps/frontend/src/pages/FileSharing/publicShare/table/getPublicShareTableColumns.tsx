@@ -30,7 +30,8 @@ import { useTranslation } from 'react-i18next';
 import { Globe, QrCodeIcon } from 'lucide-react';
 import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 import copyToClipboard from '@/utils/copyToClipboard';
-import { MdDelete, MdEdit, MdFileCopy } from 'react-icons/md';
+import { MdFileCopy } from 'react-icons/md';
+import { DeleteIcon, EditIcon } from '@libs/common/constants/standardActionIcons';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
@@ -245,7 +246,7 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
         <TableActionCell
           actions={[
             {
-              icon: MdEdit,
+              icon: EditIcon,
               translationId: 'common.edit',
               onClick: () => {
                 setShare(original);
@@ -253,7 +254,7 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
               },
             },
             {
-              icon: MdDelete,
+              icon: DeleteIcon,
               translationId: 'common.delete',
               onClick: () => {
                 setSelectedRows({ [original.publicShareId]: true });

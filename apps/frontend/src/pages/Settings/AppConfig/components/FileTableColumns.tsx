@@ -20,7 +20,6 @@
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { useLocation } from 'react-router-dom';
-import { MdFileCopy } from 'react-icons/md';
 import i18n from '@/i18n';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
@@ -34,6 +33,7 @@ import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoi
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import ActionTooltip from '@/components/shared/ActionTooltip';
 import { FcFolder } from 'react-icons/fc';
+import { IoLink } from 'react-icons/io5';
 
 const renderFileIcon = (item: FileInfoDto) => {
   if (item.type !== 'directory') {
@@ -152,7 +152,7 @@ const FileTableColumns: ColumnDef<FileInfoDto>[] = [
             tooltipText={i18n.t('common.copy.url')}
             trigger={
               <SelectableTextCell
-                text={<MdFileCopy size={TABLE_ICON_SIZE} />}
+                text={<IoLink size={TABLE_ICON_SIZE} />}
                 onClick={() => copyToClipboard(fileUrl, toasterTranslationIds)}
               />
             }
