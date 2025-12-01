@@ -1542,6 +1542,8 @@
     "files": "Files",
     "creatingDirectoryStructure": "Creating directory structure",
     "hiddenFiles": "hidden & system files",
+    "replaceFiles": "Replace",
+    "uploadNewOnly": "Upload new files only",
     "errors": {
       "directoryCreationFailed": "Failed to create directory",
       "fileUploadFailed": "Failed to upload file",

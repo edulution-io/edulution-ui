@@ -1544,6 +1544,8 @@
     "files": "Dateien",
     "creatingDirectoryStructure": "Ordnerstruktur wird angelegt",
     "hiddenFiles": "versteckte & System-Dateien",
+    "replaceFiles": "Ersetzen",
+    "uploadNewOnly": "Nur neue Dateien hochladen",
     "errors": {
       "directoryCreationFailed": "Fehler beim Erstellen des Ordners",
       "fileUploadFailed": "Fehler beim Hochladen des Ordner-Inhalts",

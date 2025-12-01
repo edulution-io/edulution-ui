@@ -1374,6 +1374,8 @@
     "files": "Fichiers",
     "creatingDirectoryStructure": "Création de la structure des dossiers",
     "hiddenFiles": "fichiers cachés et système",
+    "replaceFiles": "Remplacer",
+    "uploadNewOnly": "Téléverser uniquement les nouveaux fichiers",
     "errors": {
       "directoryCreationFailed": "Échec de la création du répertoire",
       "fileUploadFailed": "Échec du téléchargement du fichier",
