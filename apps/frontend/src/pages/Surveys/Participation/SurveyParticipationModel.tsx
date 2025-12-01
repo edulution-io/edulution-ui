@@ -25,7 +25,7 @@ import { ClearFilesEvent, DownloadFileEvent, Model, Serializer, SurveyModel, Upl
 import { FileDownloadDto } from '@libs/survey/types/api/file-download.dto';
 import { removeUuidFromFileName } from '@libs/common/utils/uuidAndFileNames';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
-import SURVEY_ANSWERS_MAXIMUM_FILE_SIZE from '@libs/survey/constants/survey-answers-maximum-file-size';
+import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import useLanguage from '@/hooks/useLanguage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
@@ -119,10 +119,8 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       if (!selectedSurvey.id || !files?.length || files.some((file) => !file.name?.length)) {
         return callback([]);
       }
-      if (files.some((file) => file.size > SURVEY_ANSWERS_MAXIMUM_FILE_SIZE)) {
-        toast.error(
-          t('survey.participate.fileSizeExceeded', { size: SURVEY_ANSWERS_MAXIMUM_FILE_SIZE / (1024 * 1024) }),
-        );
+      if (files.some((file) => file.size > MAXIMUM_UPLOAD_FILE_SIZE)) {
+        toast.error(t('survey.participate.fileSizeExceeded', { size: MAXIMUM_UPLOAD_FILE_SIZE / (1024 * 1024) }));
         return callback([]);
       }
 
