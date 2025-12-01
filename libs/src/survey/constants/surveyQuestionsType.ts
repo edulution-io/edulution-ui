@@ -21,7 +21,7 @@ import SurveyQuestionChoiceTypes from '@libs/survey/constants/surveyQuestionChoi
 import SurveyQuestionMatrixTypes from '@libs/survey/constants/surveyQuestionMatrixTypes';
 import SurveyQuestionImageTypes from '@libs/survey/constants/surveyQuestionImageTypes';
 import SurveyQuestionOtherTypes from '@libs/survey/constants/surveyQuestionOtherTypes';
-import SurveyQuestionPanelTypes from '@libs/survey/constants/SurveyQuestionPanelTypes';
+import SurveyQuestionPanelTypes from '@libs/survey/constants/surveyQuestionPanelTypes';
 
 const SurveyQuestionsType = {
   ...SurveyQuestionPanelTypes,

@@ -127,7 +127,8 @@ class SurveyAnswersService implements OnModuleInit {
           count += 1;
         } else if (
           typeof answerValue === 'object' &&
-          (answerValue.name === choiceTitle || answerValue.title === choiceTitle)
+          answerValue !== null &&
+          (answerValue.value === choiceTitle || answerValue.name === choiceTitle || answerValue.title === choiceTitle)
         ) {
           count += 1;
         }
@@ -139,7 +140,10 @@ class SurveyAnswersService implements OnModuleInit {
     }
     if (
       typeof questionAnswer === 'object' &&
-      (questionAnswer.name === choiceTitle || questionAnswer.title === choiceTitle)
+      questionAnswer !== null &&
+      (questionAnswer.value === choiceTitle ||
+        questionAnswer.name === choiceTitle ||
+        questionAnswer.title === choiceTitle)
     ) {
       return 1;
     }
@@ -158,7 +162,7 @@ class SurveyAnswersService implements OnModuleInit {
         count += nestedCount;
       } else if (Array.isArray(answer[key])) {
         answer[key].forEach((entry) => {
-          if (typeof entry === 'object') {
+          if (typeof entry === 'object' && entry !== null) {
             const nestedCount = SurveyAnswersService.countNestedQuestionAnswerChoiceSelections(
               entry as TSurveyAnswer,
               questionName,
@@ -167,7 +171,7 @@ class SurveyAnswersService implements OnModuleInit {
             count += nestedCount;
           }
         });
-      } else if (typeof answer[key] === 'object') {
+      } else if (typeof answer[key] === 'object' && answer[key] !== null) {
         const nestedCount = SurveyAnswersService.countNestedQuestionAnswerChoiceSelections(
           answer[key] as TSurveyAnswer,
           questionName,

@@ -112,19 +112,14 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       if (element.name === selectedQuestion?.name) {
         return toggleBackendLimiter(element);
       }
+      const updatedElement = { ...element };
       if (element.elements && element.elements.length > 0) {
-        return {
-          ...element,
-          elements: toggleBackendLimiters(element.elements),
-        };
+        updatedElement.elements = toggleBackendLimiters(element.elements);
       }
       if (element.templateElements && element.templateElements.length > 0) {
-        return {
-          ...element,
-          templateElements: toggleBackendLimiters(element.templateElements),
-        };
+        updatedElement.templateElements = toggleBackendLimiters(element.templateElements);
       }
-      return element;
+      return updatedElement;
     });
 
   const toggleUseBackendLimiter = (formula: SurveyFormula) => {
