@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/shared/Button';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
@@ -29,6 +29,7 @@ import CreateOrUpdateBulletinDialogBody from '@/pages/BulletinBoard/BulletinBoar
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
 
 interface BulletinCreateDialogProps {
   trigger?: React.ReactNode;
@@ -37,6 +38,7 @@ interface BulletinCreateDialogProps {
 
 const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialogProps) => {
   const { t } = useTranslation();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const {
     isDialogLoading,
     isCreateBulletinDialogOpen,
@@ -125,6 +127,17 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
     setSelectedBulletinToEdit(null);
   };
 
+  const handleConfirmDelete = async () => {
+    if (selectedBulletinToEdit) {
+      await deleteBulletins([selectedBulletinToEdit]);
+      if (onSubmit) {
+        await onSubmit();
+      }
+      setIsCreateBulletinDialogOpen(false);
+      setSelectedBulletinToEdit(null);
+    }
+  };
+
   const getFooter = () => (
     <form onSubmit={handleFormSubmit}>
       <div className="flex gap-4">
@@ -134,14 +147,7 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
             variant="btn-attention"
             size="lg"
             type="button"
-            onClick={async () => {
-              await deleteBulletins([selectedBulletinToEdit]);
-              if (onSubmit) {
-                await onSubmit();
-              }
-              setIsCreateBulletinDialogOpen(false);
-              setSelectedBulletinToEdit(null);
-            }}
+            onClick={() => setIsDeleteDialogOpen(true)}
           >
             <DeleteIcon size={20} />
             {t('common.delete')}
@@ -158,15 +164,28 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
   );
 
   return (
-    <AdaptiveDialog
-      isOpen={isCreateBulletinDialogOpen}
-      trigger={trigger}
-      handleOpenChange={handleClose}
-      desktopContentClassName="max-w-2xl"
-      title={t(`bulletinboard.${selectedBulletinToEdit?.id ? 'editBulletin' : 'createBulletin'}`)}
-      body={getDialogBody()}
-      footer={getFooter()}
-    />
+    <>
+      <AdaptiveDialog
+        isOpen={isCreateBulletinDialogOpen}
+        trigger={trigger}
+        handleOpenChange={handleClose}
+        desktopContentClassName="max-w-2xl"
+        title={t(`bulletinboard.${selectedBulletinToEdit?.id ? 'editBulletin' : 'createBulletin'}`)}
+        body={getDialogBody()}
+        footer={getFooter()}
+      />
+      {selectedBulletinToEdit && (
+        <DeleteConfirmationDialog
+          isOpen={isDeleteDialogOpen}
+          onOpenChange={setIsDeleteDialogOpen}
+          items={[{ id: selectedBulletinToEdit.id || '', name: selectedBulletinToEdit.title }]}
+          onConfirmDelete={handleConfirmDelete}
+          isLoading={isDialogLoading}
+          titleTranslationKey="bulletinboard.deleteBulletin"
+          messageTranslationKey="bulletinboard.confirmDelete"
+        />
+      )}
+    </>
   );
 };
 
