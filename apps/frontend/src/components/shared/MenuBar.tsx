@@ -50,6 +50,7 @@ const MenuBar: React.FC = () => {
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
   const { isMobileView, isTabletView } = useMedia();
   const isDesktopView = !isMobileView && !isTabletView && !isEdulutionApp;
+  const shouldCollapse = isDesktopView && isCollapsed;
   const navigate = useNavigate();
 
   useOnClickOutside(menubarRef, () => {
@@ -124,7 +125,7 @@ const MenuBar: React.FC = () => {
             onClick={toggleCollapsed}
             className={cn(
               'absolute right-[-25px] top-2 mx-3 mb-4 border-accent px-2 py-1',
-              isCollapsed ? 'cursor-e-resize ' : 'cursor-w-resize ',
+              shouldCollapse ? 'cursor-e-resize ' : 'cursor-w-resize ',
             )}
           >
             {isCollapsed ? <GoSidebarCollapse size={18} /> : <GoSidebarExpand size={18} />}
@@ -139,9 +140,9 @@ const MenuBar: React.FC = () => {
           <img
             src={menuBarEntries.icon}
             alt={menuBarEntries.title}
-            className={cn('object-contain transition-all', isCollapsed ? 'h-10 w-10' : 'h-20 w-20')}
+            className={cn('object-contain transition-all', shouldCollapse ? 'h-10 w-10' : 'h-20 w-20')}
           />
-          {!isCollapsed && <h2 className="mb-4 mt-4 text-center font-bold">{menuBarEntries.title}</h2>}
+          {!shouldCollapse && <h2 className="mb-4 mt-4 text-center font-bold">{menuBarEntries.title}</h2>}
         </button>
       </div>
 
@@ -159,7 +160,7 @@ const MenuBar: React.FC = () => {
                 'flex w-full items-center gap-3 py-1 pl-3 pr-3 transition-colors',
                 menuBarEntries.color,
                 isSelected === item.id ? menuBarEntries.color.split(':')[1] : '',
-                isCollapsed && 'justify-center',
+                shouldCollapse && 'justify-center',
               )}
             >
               <img
@@ -167,11 +168,11 @@ const MenuBar: React.FC = () => {
                 alt={item.label}
                 className="h-12 w-12 object-contain"
               />
-              {!isCollapsed && <p>{item.label}</p>}
+              {!shouldCollapse && <p>{item.label}</p>}
             </button>
           );
 
-          return isCollapsed ? (
+          return shouldCollapse ? (
             <Tooltip key={item.id}>
               <TooltipTrigger asChild>{content}</TooltipTrigger>
               <TooltipContent side="right">{item.label}</TooltipContent>
@@ -215,7 +216,7 @@ const MenuBar: React.FC = () => {
           <div
             className={cn(
               'h-full overflow-hidden bg-foreground bg-opacity-40 transition-all duration-300',
-              isCollapsed ? 'w-16' : 'w-64',
+              shouldCollapse ? 'w-16' : 'w-64',
             )}
           >
             {renderMenuBarContent()}
