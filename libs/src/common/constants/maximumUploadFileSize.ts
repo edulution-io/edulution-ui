@@ -17,19 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { AxiosError, AxiosResponseHeaders, InternalAxiosRequestConfig, RawAxiosResponseHeaders } from 'axios';
+const MAXIMUM_UPLOAD_FILE_SIZE = 50 * 1024 * 1024;
 
-interface CustomAxiosError extends AxiosError {
-  response: {
-    status: number;
-    statusText: string;
-    data: {
-      message: string;
-      errorType?: string;
-    };
-    headers: RawAxiosResponseHeaders | AxiosResponseHeaders;
-    config: InternalAxiosRequestConfig;
-  };
-}
-
-export default CustomAxiosError;
+export default MAXIMUM_UPLOAD_FILE_SIZE;
