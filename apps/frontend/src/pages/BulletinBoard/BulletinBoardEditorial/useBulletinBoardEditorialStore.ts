@@ -41,14 +41,14 @@ interface BulletinBoardEditorialStore {
   bulletins: BulletinResponseDto[];
   selectedBulletinToEdit: BulletinResponseDto | null;
   setSelectedBulletinToEdit: (bulletin: BulletinResponseDto | null) => void;
-  updateBulletin: (id: string, bulletin: Partial<CreateBulletinDto>) => Promise<void>;
+  updateBulletin: (id: string, bulletin: Partial<CreateBulletinDto>) => Promise<boolean>;
   isLoading: boolean;
   error: Error | null;
   getBulletins: (isLoading?: boolean) => Promise<void>;
   deleteBulletins: (bulletins: BulletinResponseDto[]) => Promise<void>;
   isDeleteBulletinDialogOpen: boolean;
   setIsDeleteBulletinDialogOpen: (isOpen: boolean) => void;
-  createBulletin: (bulletin: CreateBulletinDto) => Promise<void>;
+  createBulletin: (bulletin: CreateBulletinDto) => Promise<boolean>;
   isCreateBulletinDialogOpen: boolean;
   setIsCreateBulletinDialogOpen: (isOpen: boolean) => void;
   isDialogLoading: boolean;
@@ -123,8 +123,10 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
 
       set({ bulletins: [...get().bulletins, data], selectedRows: {} });
       toast.success(i18n.t('bulletinboard.bulletinCreatedSuccessfully'));
+      return true;
     } catch (error) {
       handleApiError(error, set);
+      return false;
     } finally {
       set({ isDialogLoading: false });
     }
@@ -137,8 +139,10 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
 
       set({ bulletins: [...get().bulletins.filter((item) => item.id !== id), data], selectedRows: {} });
       toast.success(i18n.t('bulletinboard.bulletinUpdatedSuccessfully'));
+      return true;
     } catch (error) {
       handleApiError(error, set);
+      return false;
     } finally {
       set({ isDialogLoading: false });
     }

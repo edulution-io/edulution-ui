@@ -31,7 +31,7 @@ import { addUuidToFileName } from '@libs/common/utils/uuidAndFileNames';
 import BulletinBoardService from './bulletinboard.service';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import GetToken from '../common/decorators/getToken.decorator';
-import { checkAttachmentFile, createAttachmentUploadOptions } from '../filesystem/multer.utilities';
+import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 
 @ApiTags(APPS.BULLETIN_BOARD)
 @ApiBearerAuth()
@@ -88,8 +88,7 @@ class BulletinBoardController {
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   uploadBulletinAttachment(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
-    const fileName = checkAttachmentFile(file);
-    return res.status(200).json(fileName);
+    return res.status(200).json(file.filename);
   }
 }
 

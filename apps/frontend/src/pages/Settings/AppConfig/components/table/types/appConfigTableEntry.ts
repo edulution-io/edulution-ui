@@ -20,7 +20,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { StoreApi, UseBoundStore } from 'zustand';
 import React from 'react';
-import AppConfigTable from '@libs/bulletinBoard/types/appConfigTable';
+import AppConfigTable from '@libs/appconfig/types/appConfigTable';
 import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 
 interface AppConfigTableEntry<DataType, StoreType extends AppConfigTable<DataType>> {

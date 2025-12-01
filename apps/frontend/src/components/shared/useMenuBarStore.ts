@@ -23,18 +23,34 @@ interface MenuBarStore {
   isMobileMenuBarOpen: boolean;
   toggleMobileMenuBar: () => void;
   closeMobileMenuBar: () => void;
+
+  isCollapsed: boolean;
+  toggleCollapsed: () => void;
+
   reset: () => void;
 }
 
 const initialValues = {
   isMobileMenuBarOpen: false,
+  isCollapsed: false,
 };
 
 const useMenuBarStore = create<MenuBarStore>((set) => ({
   ...initialValues,
-  reset: () => set(initialValues),
-  toggleMobileMenuBar: () => set((state) => ({ isMobileMenuBarOpen: !state.isMobileMenuBarOpen })),
+
+  toggleMobileMenuBar: () =>
+    set((state) => ({
+      isMobileMenuBarOpen: !state.isMobileMenuBarOpen,
+    })),
+
   closeMobileMenuBar: () => set({ isMobileMenuBarOpen: false }),
+
+  toggleCollapsed: () =>
+    set((state) => ({
+      isCollapsed: !state.isCollapsed,
+    })),
+
+  reset: () => set(initialValues),
 }));
 
 export default useMenuBarStore;

@@ -19,10 +19,11 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IoAdd, IoRemove } from 'react-icons/io5';
-import { FiEdit } from 'react-icons/fi';
 import { type ContainerInfo } from 'dockerode';
+import { OnChangeFn, Row, RowSelectionState, VisibilityState } from '@tanstack/react-table';
+import STANDARD_ACTION_TYPES from '@libs/common/constants/standardActionTypes';
 import TableAction from '@libs/common/types/tableAction';
+import { TableActionsConfig } from '@libs/common/types/tableActionsConfig';
 import { AppConfigTableConfig } from '@/pages/Settings/AppConfig/components/table/types/appConfigTableConfig';
 import getAppConfigTableConfig from '@/pages/Settings/AppConfig/components/table/getAppConfigTableConfig';
 import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
@@ -32,11 +33,11 @@ import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import type TApps from '@libs/appconfig/types/appsType';
 import useMedia from '@/hooks/useMedia';
-import { OnChangeFn, RowSelectionState, VisibilityState } from '@tanstack/react-table';
+import useTableActions from '@/hooks/useTableActions';
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
-import DeleteAppConfigDialog from './DeleteAppConfigDialog';
+import DeleteAppConfigTableDialog from './DeleteAppConfigTableDialog';
 
 interface AppConfigTableProps {
   applicationName: string;
@@ -136,6 +137,10 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
       });
 
       await Promise.all(deletePromises);
+      if (setSelectedRows) {
+        setSelectedRows({});
+      }
+      setItemsToDelete([]);
       await fetchTableContent(applicationName as TApps);
     };
 
@@ -155,29 +160,42 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
       return visibility;
     }, [isMobileView, isTabletView, hideColumnsInMobileView, hideColumnsInTabletView]);
 
-    const getScrollableTable = () => {
-      const tableActions: TableAction<
-        BulletinCategoryResponseDto | ContainerInfo | FileInfoDto | VeyonProxyItem | WebdavShareDto
-      >[] = [];
-      if (showAddButton) {
-        const hasData = tableContentData && tableContentData.length > 0;
-        const selectedCount = selectedRows ? Object.values(selectedRows).filter(Boolean).length : 0;
-        const isEditMode = hasData && selectedCount === 1;
+    type TableDataType = BulletinCategoryResponseDto | ContainerInfo | FileInfoDto | VeyonProxyItem | WebdavShareDto;
 
-        tableActions.push({
-          icon: isEditMode ? FiEdit : IoAdd,
-          translationId: isEditMode ? 'common.edit' : 'common.add',
+    const selectedRowsArray = useMemo(
+      () =>
+        selectedRows
+          ? Object.entries(selectedRows)
+              .filter(([_, isSelected]) => isSelected)
+              .map(([rowId]) => {
+                const idx = parseInt(rowId, 10);
+                return { original: tableContentData[idx] } as Row<TableDataType>;
+              })
+          : [],
+      [selectedRows, tableContentData],
+    );
+
+    const actionsConfig = useMemo<TableActionsConfig<TableDataType>>(() => {
+      const configs: TableActionsConfig<TableDataType> = [];
+      if (showAddButton) {
+        configs.push({
+          type: STANDARD_ACTION_TYPES.ADD_OR_EDIT,
           onClick: handleAddClick,
         });
       }
-      if (showRemoveButton && selectedRows && Object.keys(selectedRows).length > 0) {
-        tableActions.push({
-          icon: IoRemove,
-          translationId: 'common.remove',
+      if (showRemoveButton) {
+        configs.push({
+          type: STANDARD_ACTION_TYPES.DELETE,
           onClick: handleRemoveClick,
+          visible: ({ hasSelection }) => hasSelection,
         });
       }
+      return configs;
+    }, [showAddButton, showRemoveButton, selectedRows, tableContentData]);
 
+    const tableActions = useTableActions(actionsConfig, selectedRowsArray);
+
+    const getScrollableTable = () => {
       switch (type) {
         case ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE: {
           return (
@@ -279,9 +297,14 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
         {title && <p className="font-bold">{t(title)}</p>}
         {getScrollableTable()}
         {dialogBody}
-        <DeleteAppConfigDialog
+        <DeleteAppConfigTableDialog
           isOpen={isDeleteDialogOpen}
-          onOpenChange={setIsDeleteDialogOpen}
+          onOpenChange={(open) => {
+            setIsDeleteDialogOpen(open);
+            if (!open) {
+              setItemsToDelete([]);
+            }
+          }}
           items={itemsToDelete}
           onConfirmDelete={handleConfirmDelete}
         />

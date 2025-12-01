@@ -18,48 +18,31 @@
  */
 
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
-interface AddAppConfigDialogProps {
-  handleDeleteSettingsItem: () => void;
+interface DeleteAppConfigDialogProps {
+  appName: string;
+  appDisplayName: string;
+  handleDeleteSettingsItem: () => Promise<void>;
 }
 
-const DeleteAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ handleDeleteSettingsItem }) => {
-  const { t } = useTranslation();
+const DeleteAppConfigDialog: React.FC<DeleteAppConfigDialogProps> = ({
+  appName,
+  appDisplayName,
+  handleDeleteSettingsItem,
+}) => {
   const { isDeleteAppConfigDialogOpen, setIsDeleteAppConfigDialogOpen, isLoading } = useAppConfigsStore();
 
-  const getDialogBody = () => {
-    if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
-    return <p>{t('settings.deleteApp.description')}</p>;
-  };
-
-  const handleDelete = () => {
-    handleDeleteSettingsItem();
-    setIsDeleteAppConfigDialogOpen(false);
-  };
-
-  const handleClose = () => setIsDeleteAppConfigDialogOpen(false);
-
-  const getFooter = () => (
-    <DialogFooterButtons
-      handleClose={handleClose}
-      submitButtonText="common.delete"
-      handleSubmit={handleDelete}
-      disableSubmit={isLoading}
-    />
-  );
-
   return (
-    <AdaptiveDialog
+    <DeleteConfirmationDialog
       isOpen={isDeleteAppConfigDialogOpen}
-      handleOpenChange={handleClose}
-      title={t('settings.deleteApp.title')}
-      body={getDialogBody()}
-      footer={getFooter()}
+      onOpenChange={setIsDeleteAppConfigDialogOpen}
+      items={[{ id: appName, name: appDisplayName }]}
+      onConfirmDelete={handleDeleteSettingsItem}
+      isLoading={isLoading}
+      titleTranslationKey="settings.deleteApp.title"
+      messageTranslationKey="settings.deleteApp.description"
     />
   );
 };
