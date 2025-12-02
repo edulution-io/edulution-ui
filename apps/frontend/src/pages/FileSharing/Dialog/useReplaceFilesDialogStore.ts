@@ -17,11 +17,33 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import SurveyDto from './survey.dto';
+import { create } from 'zustand';
 
-interface SurveyTemplateDto {
-  fileName?: string;
-  template: Partial<SurveyDto>;
+interface PendingUpload {
+  files: File[];
+  duplicateFiles: File[];
+  newFiles: File[];
+  webdavShare: string;
+  currentPath: string;
 }
 
-export default SurveyTemplateDto;
+interface ReplaceFilesDialogStore {
+  isOpen: boolean;
+  pendingUpload: PendingUpload | null;
+  openDialog: (pendingUpload: PendingUpload) => void;
+  closeDialog: () => void;
+  reset: () => void;
+}
+
+const useReplaceFilesDialogStore = create<ReplaceFilesDialogStore>((set) => ({
+  isOpen: false,
+  pendingUpload: null,
+
+  openDialog: (pendingUpload) => set({ isOpen: true, pendingUpload }),
+
+  closeDialog: () => set({ isOpen: false, pendingUpload: null }),
+
+  reset: () => set({ isOpen: false, pendingUpload: null }),
+}));
+
+export default useReplaceFilesDialogStore;

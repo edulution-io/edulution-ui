@@ -17,10 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
-import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
-import { TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
+import SurveyDto from './survey.dto';
 
-const SURVEYS_TEMPLATE_PATH = `${APPS_FILES_PATH}/${APPS.SURVEYS}/${TEMPLATES}`;
+export type TemplateDto = Partial<SurveyDto> & { formula: SurveyFormula };
 
-export default SURVEYS_TEMPLATE_PATH;
+export interface SurveyTemplateDto {
+  template: TemplateDto;
+  name?: string;
+  isActive?: boolean;
+}
