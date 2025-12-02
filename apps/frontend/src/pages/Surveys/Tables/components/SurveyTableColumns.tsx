@@ -26,29 +26,36 @@ import sortDate from '@libs/common/utils/Date/sortDate';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import sortSurveyByTitle from '@libs/survey/utils/sortSurveyByTitle';
 import sortSurveyByInvitesAndParticipation from '@libs/survey/utils/sortSurveyByInvitesAndParticipation';
-import SortableHeader from '@/components/ui/Table/SortableHeader';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
-import { useTranslation } from 'react-i18next';
-import OpenShareQRDialogTextCell from '@/components/ui/Table/OpenShareQRDialogTextCell';
-import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import hideOnMobileClassName from '@libs/ui/constants/hideOnMobileClassName';
 import SURVEY_TABLE_COLUMNS from '@libs/survey/constants/surveyTableColumns';
 import useLanguage from '@/hooks/useLanguage';
+import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import SortableHeader from '@/components/ui/Table/SortableHeader';
+import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import OpenShareQRDialogTextCell from '@/components/ui/Table/OpenShareQRDialogTextCell';
 
 const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
   {
     accessorKey: SURVEY_TABLE_COLUMNS.SELECT_SURVEY,
+    size: 180,
     enableSorting: true,
-    header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
+    header: ({ table, column }) => (
+      <SortableHeader<SurveyDto, unknown>
+        className="min-w-32"
+        table={table}
+        column={column}
+      />
+    ),
     meta: {
       translationId: 'common.title',
     },
     cell: ({ row }) => (
       <SelectableTextCell
         row={row}
-        text={row.original.formula.title || i18n.t('common.not-available')}
-        className="h-full w-full"
         onClick={() => row.toggleSelected()}
+        text={row.original.formula.title || i18n.t('common.not-available')}
+        className="h-full w-full min-w-32"
+        isFirstColumn
       />
     ),
     accessorFn: (row) => row.formula.title,
@@ -56,7 +63,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
   },
   {
     accessorKey: SURVEY_TABLE_COLUMNS.CREATED_AT,
-    size: 130,
+    size: 120,
     enableSorting: true,
     header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
     meta: {
@@ -66,7 +73,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       const { language } = useLanguage();
       const localDateFormat = getLocaleDateFormat(language);
       const text = row.original?.createdAt
-        ? format(row.original.createdAt, 'PPP', { locale: localDateFormat })
+        ? format(row.original.createdAt, 'P', { locale: localDateFormat })
         : i18n.t('common.not-available');
       return (
         <SelectableTextCell
@@ -80,7 +87,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
   },
   {
     accessorKey: SURVEY_TABLE_COLUMNS.EXPIRES,
-    size: 130,
+    size: 120,
     enableSorting: true,
     header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
     meta: {
@@ -89,9 +96,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     cell: ({ row }) => {
       const { language } = useLanguage();
       const localDateFormat = getLocaleDateFormat(language);
-      const text = row.original?.expires
-        ? format(row.original.expires, 'PPP', { locale: localDateFormat })
-        : i18n.t('common.not-available');
+      const text = row.original?.expires ? format(row.original.expires, 'P', { locale: localDateFormat }) : '-';
       return (
         <SelectableTextCell
           text={text}
@@ -101,6 +106,23 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       );
     },
     sortingFn: (rowA, rowB) => sortDate(rowA.original.expires, rowB.original.expires),
+  },
+  {
+    accessorKey: SURVEY_TABLE_COLUMNS.CREATOR,
+    header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
+    meta: {
+      translationId: 'common.creator',
+    },
+    accessorFn: (row) => row.creator,
+    cell: ({ row }) => {
+      const { firstName, username, lastName } = row.original.creator;
+      return (
+        <SelectableTextCell
+          onClick={() => row.toggleSelected()}
+          text={firstName && lastName ? `${firstName} ${lastName}` : username}
+        />
+      );
+    },
   },
   {
     accessorKey: SURVEY_TABLE_COLUMNS.IS_PUBLIC,
@@ -137,12 +159,11 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     },
     accessorFn: (row) => row.invitedAttendees.length,
     cell: ({ row }) => {
-      const { t } = useTranslation();
       const { length } = row.original.invitedAttendees;
       const attendeeCount = length;
-      const attendeeText = `${attendeeCount} ${t(attendeeCount === 1 ? 'survey.attendee' : 'survey.attendees')}`;
+      const attendeeText = `${attendeeCount} ${i18n.t(attendeeCount === 1 ? 'survey.attendee' : 'survey.attendees')}`;
       const groupsCount = row.original.invitedGroups?.length;
-      const groupsText = `${groupsCount ? `, ${groupsCount} ${t(groupsCount === 1 ? 'common.group' : 'common.groups')}` : ''}`;
+      const groupsText = `${groupsCount ? `, ${groupsCount} ${i18n.t(groupsCount === 1 ? 'common.group' : 'common.groups')}` : ''}`;
       return (
         <SelectableTextCell
           text={`${attendeeText}${groupsText}`}
