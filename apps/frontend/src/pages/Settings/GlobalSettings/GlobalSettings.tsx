@@ -90,11 +90,11 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
         >
           <AccordionItem value="general">
             <AccordionTrigger className="flex">
-              <h3 className="text-background">{t('settings.globalSettings.general')}</h3>
+              <h3>{t('settings.globalSettings.general')}</h3>
             </AccordionTrigger>
 
             <AccordionContent className="space-y-2 px-1 text-p">
-              <p className="text-xl font-bold text-background">{t('settings.globalSettings.deploymentTarget')}</p>
+              <p className="text-xl font-bold">{t('settings.globalSettings.deploymentTarget')}</p>
               <DeploymentTargetDropdownSelectFormField form={form} />
             </AccordionContent>
 
@@ -114,7 +114,7 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
               <h3>{t('settings.globalSettings.multiFactorAuthentication')}</h3>
             </AccordionTrigger>
             <AccordionContent className="space-y-2 px-1">
-              <p className="text-background">{t('settings.globalSettings.mfaDescription')}</p>
+              <p>{t('settings.globalSettings.mfaDescription')}</p>
               <FormFieldSH
                 control={control}
                 name={`auth.${GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS}`}
@@ -129,7 +129,7 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
                         placeholder={t('search.type-to-search')}
                       />
                     </FormControl>
-                    <p className="text-background">{t('settings.globalSettings.selectUserGroups')}</p>
+                    <p>{t('settings.globalSettings.selectUserGroups')}</p>
                     <FormMessage className="text-p" />
                   </FormItem>
                 )}

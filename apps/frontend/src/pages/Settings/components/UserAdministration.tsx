@@ -57,7 +57,7 @@ const UserAdministration = ({ form, onSubmit }: UserAdministrationProps<GlobalSe
     >
       <AccordionItem value="reset-mfa">
         <AccordionTrigger className="flex">
-          <h3 className="text-background">{t('settings.userAdministration.resetMfaForm')}</h3>
+          <h3>{t('settings.userAdministration.resetMfaForm')}</h3>
         </AccordionTrigger>
         <AccordionContent>
           <ResetMfaForm />
@@ -67,10 +67,10 @@ const UserAdministration = ({ form, onSubmit }: UserAdministrationProps<GlobalSe
         <form onSubmit={handleSubmit(onSubmit)}>
           <AccordionItem value="setAdminGroup">
             <AccordionTrigger className="flex">
-              <h3 className="text-background">{t('settings.userAdministration.setAdminGroupTitle')}</h3>
+              <h3>{t('settings.userAdministration.setAdminGroupTitle')}</h3>
             </AccordionTrigger>
             <AccordionContent className="space-y-2 px-1">
-              <p className="text-background">{t('settings.userAdministration.setAdminGroupDescription')}</p>
+              <p>{t('settings.userAdministration.setAdminGroupDescription')}</p>
               <FormFieldSH
                 control={control}
                 name={`auth.${GLOBAL_SETTINGS_ADMIN_GROUPS}`}
@@ -85,7 +85,7 @@ const UserAdministration = ({ form, onSubmit }: UserAdministrationProps<GlobalSe
                         placeholder={t('search.type-to-search')}
                       />
                     </FormControl>
-                    <p className="text-background">{t('settings.userAdministration.setAdminGroupSelectDescription')}</p>
+                    <p>{t('settings.userAdministration.setAdminGroupSelectDescription')}</p>
                     <FormMessage className="text-p" />
                   </FormItem>
                 )}
