@@ -40,8 +40,9 @@ import UploadFileDialog from '@/pages/FileSharing/Dialog/UploadFileDialog';
 import DeletePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DeletePublicShareDialog';
 import FileDropZone from '@/components/ui/FileDropZone';
 import usePublicShareQr from '@/pages/FileSharing/hooks/usePublicShareQr';
-import useFileUpload from '@/pages/FileSharing/hooks/useFileUpload';
+import ReplaceFilesDialog from '@/pages/FileSharing/Dialog/ReplaceFilesDialog';
 import useBreadcrumbNavigation from '@/pages/FileSharing/hooks/useBreadcrumbNavigation';
+import useFileUploadWithReplace from '@/pages/FileSharing/hooks/useFileUploadWithReplace';
 import useRefreshOnFileOperationComplete from './hooks/useRefreshOnFileOperationComplete';
 
 const FileSharingPage = () => {
@@ -72,7 +73,7 @@ const FileSharingPage = () => {
     setSearchParams,
   );
 
-  const { handleFileUpload } = useFileUpload();
+  const { handleFileUploadWithDuplicateCheck } = useFileUploadWithReplace();
 
   return (
     <PageLayout>
@@ -92,7 +93,7 @@ const FileSharingPage = () => {
         <div className={`flex flex-col ${isFilePreviewVisible && isFilePreviewDocked ? 'w-1/2 2xl:w-2/3' : 'w-full'}`}>
           {isFileProcessing ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}
           <div className="flex-1 overflow-hidden pb-6">
-            <FileDropZone onFileDrop={(files) => handleFileUpload(files, webdavShare, currentPath)}>
+            <FileDropZone onFileDrop={(files) => handleFileUploadWithDuplicateCheck(files, webdavShare, currentPath)}>
               <FileSharingTable />
             </FileDropZone>
           </div>
@@ -118,6 +119,7 @@ const FileSharingPage = () => {
       <CreateOrEditPublicShareDialog />
       <DeletePublicShareDialog />
       <UploadFileDialog />
+      <ReplaceFilesDialog />
       <FileSharingFloatingButtonsBar />
     </PageLayout>
   );
