@@ -17,10 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
-import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
-import { TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
+import surveyTemplatesMigration000MigrateTemplateFilesToDB from './surveyTemplatesMigration000MigrateTemplateFilesToDB';
 
-const SURVEYS_TEMPLATE_PATH = `${APPS_FILES_PATH}/${APPS.SURVEYS}/${TEMPLATES}`;
+// Add new migrations here
+const surveyTemplatesMigrationsList = [surveyTemplatesMigration000MigrateTemplateFilesToDB];
 
-export default SURVEYS_TEMPLATE_PATH;
+export default surveyTemplatesMigrationsList;

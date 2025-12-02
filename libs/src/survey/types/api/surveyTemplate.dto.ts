@@ -17,11 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import SurveyDto from './survey.dto';
 
-interface SurveyTemplateDto {
-  fileName?: string;
-  template: Partial<SurveyDto>;
-}
+export type TemplateDto = Partial<SurveyDto> & { formula: SurveyFormula };
 
-export default SurveyTemplateDto;
+export interface SurveyTemplateDto {
+  template: TemplateDto;
+  name?: string;
+  isActive?: boolean;
+}
