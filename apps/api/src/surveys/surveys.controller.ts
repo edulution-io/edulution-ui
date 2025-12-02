@@ -28,6 +28,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Patch,
   Query,
   Res,
   UploadedFile,
