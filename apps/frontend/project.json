@@ -13,7 +13,7 @@
       "options": {
         "outputPath": "./dist/apps/frontend",
         "configFile": "./apps/frontend/vite.config.ts",
-        "postcssConfig": "./postcss.config.js"
+        "postcssConfig": "./postcss.config.mjs"
       }
     },
     "serve": {
