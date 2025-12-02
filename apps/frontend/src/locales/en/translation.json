@@ -1962,6 +1962,8 @@
       "createConfig": "Create AI Configuration",
       "editConfig": "Edit AI Configuration",
       "testConnection": "Test Connection",
+      "enterUrlFirst": "Enter URL first",
+      "selectModel": "Select model",
       "purposes": {
         "title": "Purposes",
         "placeholder": "Select purposes...",
@@ -1977,14 +1979,11 @@
     "apiStandards": {
       "openai": "OpenAI",
       "anthropic": "Anthropic",
-      "google": "Google Gemini"
+      "google": "Google",
+      "openai-compatible": "OpenAI-compatible"
     },
     "purposes": {
-      "chat": "Chat",
-      "translation": "Translation",
-      "assistant": "Assistant",
-      "coding": "Coding",
-      "analysis": "Analysis"
+      "translation": "Translation"
     },
     "errors": {
       "nameAlreadyExists": "An entry with this name already exists."

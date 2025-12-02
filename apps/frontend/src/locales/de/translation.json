@@ -1963,6 +1963,8 @@
       "createConfig": "KI-Konfiguration erstellen",
       "editConfig": "KI-Konfiguration bearbeiten",
       "testConnection": "Verbindung testen",
+      "enterUrlFirst": "Zuerst URL eingeben",
+      "selectModel": "Modell auswählen",
       "purposes": {
         "title": "Verwendungszwecke",
         "placeholder": "Verwendungszwecke auswählen...",
@@ -1978,7 +1980,8 @@
     "apiStandards": {
       "openai": "OpenAI",
       "anthropic": "Anthropic",
-      "google": "Google Gemini"
+      "google": "Google",
+      "openai-compatible": "OpenAI-kompatibel"
     },
     "purposes": {
       "translation": "Übersetzung"

@@ -17,21 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import AttendeeDto from '@libs/user/types/attendee.dto';
-import { AiConfigPurposeType } from '@libs/ai/types/aiConfigPurposeType';
-import { AiProviderType } from '@libs/ai/types/aiProviderType';
+import ModelListResponse from '@libs/ai/types/modelListResponse';
 
-interface AiConfigDto {
-  id: string;
-  name: string;
-  url: string;
-  apiKey: string;
-  aiModel: string;
-  apiStandard: AiProviderType;
-  allowedUsers: AttendeeDto[];
-  allowedGroups: MultipleSelectorGroup[];
-  purposes: AiConfigPurposeType[];
+interface AiProviderModelConfig {
+  getUrl: (baseUrl: string, apiKey: string) => string;
+  getHeaders: (apiKey: string) => Record<string, string> | undefined;
+  extractModels: (data: ModelListResponse) => string[];
 }
 
-export default AiConfigDto;
+export default AiProviderModelConfig;

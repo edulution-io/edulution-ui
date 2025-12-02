@@ -1,3 +1,22 @@
+/*
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
+ *
+ * This software is dual-licensed under the terms of:
+ *
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
+ *
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
+ */
+
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
@@ -17,7 +36,7 @@ interface AddAiConfigDialogProps {
 const AddAiConfigDialog: React.FC<AddAiConfigDialogProps> = ({ dialogKey }) => {
   const { t } = useTranslation();
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
-  const { setSelectedRows, addOrUpdateConfig, deleteTableEntry, selectedConfig, setSelectedConfig } =
+  const { setSelectedRows, addOrUpdateConfig, deleteTableEntry, selectedConfig, setSelectedConfig, tableContentData } =
     useAiConfigTableStore();
 
   const isOpen = isDialogOpen === dialogKey;
@@ -43,7 +62,14 @@ const AddAiConfigDialog: React.FC<AddAiConfigDialogProps> = ({ dialogKey }) => {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    void addOrUpdateConfig({ ...getValues(), id: selectedConfig?.id || '' });
+
+    const formValues = getValues();
+    const configToSave = {
+      ...formValues,
+      id: selectedConfig?.id || '',
+    };
+
+    void addOrUpdateConfig(configToSave);
     closeDialog();
   };
 
@@ -77,6 +103,7 @@ const AddAiConfigDialog: React.FC<AddAiConfigDialogProps> = ({ dialogKey }) => {
               modelsError={modelsError}
               isTesting={isTesting}
               testResult={testResult}
+              existingConfigs={tableContentData}
             />
           </form>
         </Form>
@@ -84,18 +111,16 @@ const AddAiConfigDialog: React.FC<AddAiConfigDialogProps> = ({ dialogKey }) => {
       footer={
         <form
           onSubmit={handleFormSubmit}
-          className="flex gap-4"
+          className="flex w-full items-center justify-end gap-4"
         >
           {selectedConfig && (
-            <div className="mt-4">
-              <Button
-                variant="btn-attention"
-                size="lg"
-                onClick={handleDeleteConfig}
-              >
-                {t('common.delete')}
-              </Button>
-            </div>
+            <Button
+              variant="btn-attention"
+              size="lg"
+              onClick={handleDeleteConfig}
+            >
+              {t('common.delete')}
+            </Button>
           )}
           <DialogFooterButtons
             handleClose={closeDialog}

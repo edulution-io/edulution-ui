@@ -17,14 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Global, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import AiController from './ai.controller';
 import AiService from './ai.service';
+import AiConfigService from './ai.config.service';
+import AiConfig, { AiConfigSchema } from './ai.config.schema';
 
-@Global()
 @Module({
-  providers: [AiService],
-  exports: [AiService],
+  imports: [MongooseModule.forFeature([{ name: AiConfig.name, schema: AiConfigSchema }])],
+  controllers: [AiController],
+  providers: [AiService, AiConfigService],
+  exports: [AiService, AiConfigService],
 })
-class AiModule {}
-
-export default AiModule;
+export default class AiModule {}

@@ -222,8 +222,6 @@ const AiConfigTableColumns: ColumnDef<AiConfigDto>[] = [
               icon: EditIcon,
               translationId: 'common.edit',
               onClick: () => {
-                console.log('Edit clicked', row.original);
-                console.log('ID:', row.original.id);
                 setSelectedConfig(row.original);
                 setDialogOpen(AI_CONFIG_DIALOG_KEY);
               },
@@ -232,8 +230,6 @@ const AiConfigTableColumns: ColumnDef<AiConfigDto>[] = [
               icon: DeleteIcon,
               translationId: 'common.delete',
               onClick: async () => {
-                console.log('Delete clicked', row.original);
-                console.log('ID:', row.original.id);
                 if (row.original.id) {
                   await deleteTableEntry('', row.original.id);
                 }

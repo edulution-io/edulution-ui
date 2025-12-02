@@ -17,106 +17,40 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+/*
+ * Copyright Header ...
+ */
+
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { CoreMessage, generateText, LanguageModel } from 'ai';
+import { generateText, LanguageModel, ModelMessage } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import AiRequestOptions from '@libs/ai/types/aiRequestOptions';
-import { SupportedProviderType } from '@libs/ai/types/supportedProviderType';
-import SupportedProvider from '@libs/ai/types/supportedProvider';
+import AiProvider from '@libs/ai/types/aiProvider';
+import type AiConfigDto from '@libs/ai/types/aiConfigDto';
+import AI_CONFIG_PURPOSES from '@libs/ai/constants/aiConfigPurposes';
+import AiConfigService from './ai.config.service';
 
 @Injectable()
 class AiService {
-  private readonly provider: SupportedProviderType;
+  constructor(private readonly aiConfigService: AiConfigService) {}
 
-  private readonly apiKey: string;
+  async chat(options: AiRequestOptions & { configId?: string; purpose?: string }): Promise<string> {
+    const { prompt, systemPrompt, model, temperature = 0.7, configId, purpose } = options;
 
-  private readonly apiUrl?: string;
+    const config = await this.resolveConfig(configId, purpose);
 
-  private readonly defaultModel: string;
-
-  private readonly baseClients: {
-    openai?: ReturnType<typeof createOpenAI>;
-    openaiCompatible?: ReturnType<typeof createOpenAICompatible>;
-    anthropic?: ReturnType<typeof createAnthropic>;
-    gemini?: ReturnType<typeof createGoogleGenerativeAI>;
-  };
-
-  constructor(private configService: ConfigService) {
-    const providerEnv = this.configService.get<string>('AI_PROVIDER')?.toLowerCase();
-
-    if (
-      providerEnv === SupportedProvider.OpenAI ||
-      providerEnv === SupportedProvider.OpenAICompatible ||
-      providerEnv === SupportedProvider.Anthropic ||
-      providerEnv === SupportedProvider.Gemini
-    ) {
-      this.provider = providerEnv;
-    } else {
-      this.provider = SupportedProvider.OpenAI;
-    }
-
-    this.apiKey = this.configService.get<string>('AI_API_KEY') || '';
-    this.apiUrl = this.configService.get<string>('AI_API_URL') || undefined;
-    this.defaultModel = this.configService.get<string>('AI_MODEL') || '';
-
-    if (!this.defaultModel) {
-      throw new Error('AI_MODEL is not configured');
-    }
-
-    this.baseClients = {};
-
-    if (this.provider === SupportedProvider.OpenAI) {
-      this.baseClients.openai = createOpenAI({
-        apiKey: this.apiKey,
-        baseURL: this.apiUrl,
-      });
-    }
-
-    if (this.provider === SupportedProvider.OpenAICompatible) {
-      this.baseClients.openaiCompatible = createOpenAICompatible({
-        name: 'openai-compatible',
-        apiKey: this.apiKey || 'unused',
-        baseURL: this.apiUrl || '',
-      });
-    }
-
-    if (this.provider === SupportedProvider.Anthropic) {
-      this.baseClients.anthropic = createAnthropic({
-        apiKey: this.apiKey,
-        baseURL: this.apiUrl,
-      });
-    }
-
-    if (this.provider === SupportedProvider.Gemini) {
-      this.baseClients.gemini = createGoogleGenerativeAI({
-        apiKey: this.apiKey,
-        baseURL: this.apiUrl,
-      });
-    }
-  }
-
-  async chat(options: AiRequestOptions): Promise<string> {
-    const { prompt, systemPrompt, model, temperature = 0.7 } = options;
-
-    const messages: CoreMessage[] = [];
+    const messages: ModelMessage[] = [];
 
     if (systemPrompt) {
-      messages.push({
-        role: 'system',
-        content: systemPrompt,
-      });
+      messages.push({ role: 'system', content: systemPrompt });
     }
 
-    messages.push({
-      role: 'user',
-      content: prompt,
-    });
+    messages.push({ role: 'user', content: prompt });
 
-    const languageModel = this.resolveModel(model || this.defaultModel);
+    const languageModel = this.createLanguageModel(config, model);
 
     const result = await generateText({
       model: languageModel,
@@ -127,55 +61,13 @@ class AiService {
     return result.text;
   }
 
-  private resolveModel(modelName: string): LanguageModel {
-    switch (this.provider) {
-      case SupportedProvider.Anthropic: {
-        if (!this.baseClients.anthropic) {
-          this.baseClients.anthropic = createAnthropic({
-            apiKey: this.apiKey,
-            baseURL: this.apiUrl,
-          });
-        }
-        return this.baseClients.anthropic(modelName);
-      }
-      case SupportedProvider.Gemini: {
-        if (!this.baseClients.gemini) {
-          this.baseClients.gemini = createGoogleGenerativeAI({
-            apiKey: this.apiKey,
-            baseURL: this.apiUrl,
-          });
-        }
-        return this.baseClients.gemini(modelName);
-      }
-      case SupportedProvider.OpenAICompatible: {
-        if (!this.baseClients.openaiCompatible) {
-          this.baseClients.openaiCompatible = createOpenAICompatible({
-            name: 'openai-compatible',
-            apiKey: this.apiKey || 'unused',
-            baseURL: this.apiUrl || '',
-          });
-        }
-        return this.baseClients.openaiCompatible(modelName);
-      }
-      case SupportedProvider.OpenAI:
-      default: {
-        if (!this.baseClients.openai) {
-          this.baseClients.openai = createOpenAI({
-            apiKey: this.apiKey,
-            baseURL: this.apiUrl,
-          });
-        }
-        return this.baseClients.openai(modelName);
-      }
-    }
-  }
-
   async translateNotification(
     notification: { title: string; body: string },
     targetLanguage: string,
   ): Promise<{ title: string; body: string }> {
     try {
       const resultText = await this.chat({
+        purpose: AI_CONFIG_PURPOSES.TRANSLATION,
         prompt: JSON.stringify(notification),
         systemPrompt: [
           'You are a translator.',
@@ -186,23 +78,70 @@ class AiService {
         temperature: 0.3,
       });
 
-      const parsed = JSON.parse(resultText) as {
-        title?: unknown;
-        body?: unknown;
-      };
+      const parsed = JSON.parse(resultText) as { title?: unknown; body?: unknown };
 
       if (typeof parsed.title !== 'string' || typeof parsed.body !== 'string') {
-        console.warn('LLM translation result has invalid structure. Falling back to original notification.');
+        console.warn('LLM translation result has invalid structure. Falling back to original.');
         return notification;
       }
 
-      return {
-        title: parsed.title,
-        body: parsed.body,
-      };
+      return { title: parsed.title, body: parsed.body };
     } catch (error) {
-      console.error('Error while translating notification. Falling back to original notification.', error);
+      console.error('Error while translating notification. Falling back to original.', error);
       return notification;
+    }
+  }
+
+  private async resolveConfig(configId?: string, purpose?: string): Promise<AiConfigDto> {
+    let config: AiConfigDto | null = null;
+
+    if (configId) {
+      config = await this.aiConfigService.getById(configId);
+    } else if (purpose) {
+      config = await this.aiConfigService.getByPurpose(purpose);
+    } else {
+      const configs = await this.aiConfigService.getAll();
+      config = configs[0] ?? null;
+    }
+
+    if (!config) {
+      throw new Error('No AI configuration found');
+    }
+
+    return config;
+  }
+
+  private createLanguageModel(config: AiConfigDto, modelOverride?: string): LanguageModel {
+    const modelName = modelOverride || config.aiModel;
+
+    switch (config.apiStandard) {
+      case AiProvider.Anthropic:
+        return createAnthropic({
+          apiKey: config.apiKey,
+          baseURL: config.url || undefined,
+        })(modelName);
+
+      case AiProvider.Google:
+        return createGoogleGenerativeAI({
+          apiKey: config.apiKey,
+          baseURL: config.url || undefined,
+        })(modelName);
+
+      case AiProvider.OpenAICompatible: {
+        const baseUrl = config.url.endsWith('/v1') ? config.url : `${config.url}/v1`;
+        return createOpenAICompatible({
+          name: 'openai-compatible',
+          apiKey: config.apiKey || 'unused',
+          baseURL: baseUrl,
+        })(modelName);
+      }
+
+      case AiProvider.OpenAI:
+      default:
+        return createOpenAI({
+          apiKey: config.apiKey,
+          baseURL: config.url || undefined,
+        })(modelName);
     }
   }
 }

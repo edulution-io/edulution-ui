@@ -18,10 +18,12 @@
  */
 
 import { Global, Module } from '@nestjs/common';
+import AiModule from '../ai/ai.module';
 import NotificationsService from './notifications.service';
 
 @Global()
 @Module({
+  imports: [AiModule],
   providers: [NotificationsService],
   exports: [NotificationsService],
 })

@@ -19,10 +19,9 @@
 
 import { create } from 'zustand';
 import type AiConfigDto from '@libs/ai/types/aiConfigDto';
-import AiConfigTableStore from '@libs/ai/types/aiConfigTableStore';
+import type AiConfigTableStore from '@libs/ai/types/aiConfigTableStore';
+import { AI_CONFIGS_EDU_API_ENDPOINT } from '@libs/ai/constants/aiEndpoints';
 import eduApi from '@/api/eduApi';
-
-const AI_CONFIG_ENDPOINT = 'global-settings/ai-configs';
 
 const initialValues = {
   tableContentData: [] as AiConfigDto[],
@@ -41,7 +40,7 @@ const useAiConfigTableStore = create<AiConfigTableStore>((set, get) => ({
   fetchTableContent: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await eduApi.get<AiConfigDto[]>(AI_CONFIG_ENDPOINT);
+      const response = await eduApi.get<AiConfigDto[]>(AI_CONFIGS_EDU_API_ENDPOINT);
       set({ tableContentData: response.data, isLoading: false });
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to fetch AI configs';
@@ -51,10 +50,9 @@ const useAiConfigTableStore = create<AiConfigTableStore>((set, get) => ({
   },
 
   deleteTableEntry: async (_applicationName: string, id: string) => {
-    console.log('deleteTableEntry', id);
     set({ isLoading: true, error: null });
     try {
-      await eduApi.delete(`${AI_CONFIG_ENDPOINT}/${id}`);
+      await eduApi.delete(`${AI_CONFIGS_EDU_API_ENDPOINT}/${id}`);
       const { tableContentData } = get();
       set({
         tableContentData: tableContentData.filter((c) => c.id !== id),
@@ -71,19 +69,19 @@ const useAiConfigTableStore = create<AiConfigTableStore>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const { tableContentData } = get();
-      const exists = tableContentData.find((c) => c.id === config.id);
+      const isUpdate = config.id && config.id !== '' && tableContentData.some((c) => c.id === config.id);
 
       let savedConfig: AiConfigDto;
-      if (exists) {
-        const response = await eduApi.put<AiConfigDto>(`${AI_CONFIG_ENDPOINT}/${config.id}`, config);
+      if (isUpdate) {
+        const response = await eduApi.put<AiConfigDto>(`${AI_CONFIGS_EDU_API_ENDPOINT}/${config.id}`, config);
         savedConfig = response.data;
         set({
           tableContentData: tableContentData.map((c) => (c.id === savedConfig.id ? savedConfig : c)),
           isLoading: false,
         });
       } else {
-        const { id, ...createDto } = config;
-        const response = await eduApi.post<AiConfigDto>(AI_CONFIG_ENDPOINT, createDto);
+        const { ...createDto } = config;
+        const response = await eduApi.post<AiConfigDto>(AI_CONFIGS_EDU_API_ENDPOINT, createDto);
         savedConfig = response.data;
         set({
           tableContentData: [...tableContentData, savedConfig],

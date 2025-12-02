@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Put, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import {
@@ -29,7 +29,6 @@ import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.d
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import type SentryConfig from '@libs/common/types/sentryConfig';
-import AiConfigDto from '@libs/ai/types/aiConfigDto';
 import AdminGuard from '../common/guards/admin.guard';
 import GlobalSettingsService from './global-settings.service';
 import { Public } from '../common/decorators/public.decorator';
@@ -60,42 +59,6 @@ class GlobalSettingsController {
   @UseGuards(AdminGuard)
   async setGlobalSettings(@Body() globalSettingsDto: GlobalSettingsDto) {
     return this.globalSettingsService.setGlobalSettings(globalSettingsDto);
-  }
-
-  @Get('ai-configs')
-  @UseGuards(AdminGuard)
-  async getAiConfigs() {
-    return this.globalSettingsService.getAiConfigs();
-  }
-
-  @Post('ai-configs')
-  @UseGuards(AdminGuard)
-  async createAiConfig(@Body() config: Omit<AiConfigDto, 'id'>) {
-    return this.globalSettingsService.createAiConfig(config);
-  }
-
-  @Post('ai-configs/models')
-  @UseGuards(AdminGuard)
-  async getAvailableModels(@Body() config: { url: string; apiKey: string; apiStandard: string }) {
-    return this.globalSettingsService.getAvailableModels(config.url, config.apiKey, config.apiStandard);
-  }
-
-  @Put('ai-configs/:id')
-  @UseGuards(AdminGuard)
-  async updateAiConfig(@Param('id') id: string, @Body() config: AiConfigDto) {
-    return this.globalSettingsService.updateAiConfig(id, config);
-  }
-
-  @Delete('ai-configs/:id')
-  @UseGuards(AdminGuard)
-  async deleteAiConfig(@Param('id') id: string) {
-    return this.globalSettingsService.deleteAiConfig(id);
-  }
-
-  @Post('ai-configs/test-connection')
-  @UseGuards(AdminGuard)
-  async testAiConnection(@Body() config: { url: string; apiKey: string; aiModel: string; apiStandard: string }) {
-    return this.globalSettingsService.testAiConnection(config);
   }
 
   @Public()

@@ -1,3 +1,22 @@
+/*
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
+ *
+ * This software is dual-licensed under the terms of:
+ *
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
+ *
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
+ */
+
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
@@ -10,11 +29,11 @@ import useGroupStore from '@/store/GroupStore';
 import useUserStore from '@/store/UserStore/useUserStore';
 import type AiConfigDto from '@libs/ai/types/aiConfigDto';
 import AI_CONFIG_TABLE_COLUMNS from '@libs/ai/constants/aiConfigTableColumns';
-import AI_API_STANDARDS from '@libs/ai/constants/aiApiStandards';
 import AI_CONFIG_PURPOSES from '@libs/ai/constants/aiConfigPurposes';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import AIConnectionStatus from '@/pages/Settings/GlobalSettings/ai/components/AIConnectionStatus';
+import AiProvider from '@libs/ai/types/aiProvider';
 
 interface AiConfigFormFieldsProps {
   control: Control<AiConfigDto>;
@@ -25,6 +44,8 @@ interface AiConfigFormFieldsProps {
   modelsError: string | null;
   isTesting: boolean;
   testResult: { success: boolean; message: string } | null;
+  existingConfigs: AiConfigDto[];
+  currentConfigId?: string;
 }
 
 const AiConfigFormFields: React.FC<AiConfigFormFieldsProps> = ({
@@ -36,6 +57,8 @@ const AiConfigFormFields: React.FC<AiConfigFormFieldsProps> = ({
   modelsError,
   isTesting,
   testResult,
+  existingConfigs,
+  currentConfigId,
 }) => {
   const { t } = useTranslation();
   const { searchGroups } = useGroupStore();
@@ -43,20 +66,27 @@ const AiConfigFormFields: React.FC<AiConfigFormFieldsProps> = ({
 
   const apiStandardOptions = useMemo(
     () =>
-      Object.values(AI_API_STANDARDS).map((standard) => ({
+      Object.values(AiProvider).map((standard) => ({
         id: standard,
         name: t(`aiconfig.apiStandards.${standard}`),
       })),
     [t],
   );
 
+  const isTranslationUsedByOther = useMemo(
+    () => existingConfigs.some((c) => c.id !== currentConfigId && c.purposes.includes('translation')),
+    [existingConfigs, currentConfigId],
+  );
+
   const purposeOptions = useMemo(
     () =>
-      Object.values(AI_CONFIG_PURPOSES).map((purpose) => ({
-        value: purpose,
-        label: t(`aiconfig.purposes.${purpose}`),
-      })),
-    [t],
+      Object.values(AI_CONFIG_PURPOSES)
+        .filter((purpose) => purpose !== 'translation' || !isTranslationUsedByOther)
+        .map((purpose) => ({
+          value: purpose,
+          label: t(`aiconfig.purposes.${purpose}`),
+        })),
+    [t, isTranslationUsedByOther],
   );
 
   const modelOptions = useMemo(() => models.map((model) => ({ id: model, name: model })), [models]);
@@ -70,6 +100,16 @@ const AiConfigFormFields: React.FC<AiConfigFormFieldsProps> = ({
   };
 
   const onUsersSearch = async (value: string): Promise<AttendeeDto[]> => searchAttendees(value);
+
+  const modelPlaceholder = useMemo(() => {
+    if (isLoadingModels) {
+      return t('common.loading');
+    }
+    if (models.length === 0) {
+      return t('aiconfig.settings.enterUrlFirst');
+    }
+    return t('aiconfig.settings.selectModel');
+  }, [isLoadingModels, models.length, t]);
 
   return (
     <>
@@ -168,13 +208,7 @@ const AiConfigFormFields: React.FC<AiConfigFormFieldsProps> = ({
                 translate={false}
                 handleChange={field.onChange}
                 variant="dialog"
-                placeholder={
-                  isLoadingModels
-                    ? t('common.loading')
-                    : models.length === 0
-                      ? t('aiconfig.settings.enterUrlFirst')
-                      : t('aiconfig.settings.selectModel')
-                }
+                placeholder={modelPlaceholder}
               />
             </FormControl>
             {modelsError && <p className="text-sm text-red-500">{modelsError}</p>}

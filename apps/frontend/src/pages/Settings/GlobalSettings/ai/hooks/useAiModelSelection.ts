@@ -1,4 +1,23 @@
-import { useEffect } from 'react';
+/*
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
+ *
+ * This software is dual-licensed under the terms of:
+ *
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
+ *
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
+ */
+
+import { useCallback, useEffect, useRef } from 'react';
 import { UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import type AiConfigDto from '@libs/ai/types/aiConfigDto';
 import AI_CONFIG_TABLE_COLUMNS from '@libs/ai/constants/aiConfigTableColumns';
@@ -19,20 +38,26 @@ const useAiModelSelection = ({ watch, setValue }: UseAiModelSelectionProps) => {
   const watchedModel = watch(AI_CONFIG_TABLE_COLUMNS.AI_MODEL);
   const watchedApiStandard = watch(AI_CONFIG_TABLE_COLUMNS.API_STANDARD);
 
+  const fetchModelsRef = useRef(fetchModels);
+  const resetModelsRef = useRef(resetModels);
+  const testConnectionRef = useRef(testConnection);
+  const resetResultRef = useRef(resetResult);
+
+  useEffect(() => {
+    fetchModelsRef.current = fetchModels;
+    resetModelsRef.current = resetModels;
+    testConnectionRef.current = testConnection;
+    resetResultRef.current = resetResult;
+  });
+
   useEffect(() => {
     if (!watchedUrl || !watchedApiStandard) {
-      resetModels();
-      return;
-    }
-
-    try {
-      new URL(watchedUrl);
-    } catch {
-      return;
+      resetModelsRef.current();
+      return undefined;
     }
 
     const timeoutId = setTimeout(() => {
-      fetchModels(watchedUrl, watchedApiKey || '', watchedApiStandard);
+      void fetchModelsRef.current(watchedUrl, watchedApiKey || '', watchedApiStandard);
     }, 500);
 
     return () => clearTimeout(timeoutId);
@@ -40,17 +65,17 @@ const useAiModelSelection = ({ watch, setValue }: UseAiModelSelectionProps) => {
 
   useEffect(() => {
     if (!watchedUrl || !watchedModel || !watchedApiStandard) {
-      resetResult();
+      resetResultRef.current();
       return;
     }
 
-    testConnection({
+    void testConnectionRef.current({
       url: watchedUrl,
       apiKey: watchedApiKey || '',
       aiModel: watchedModel,
       apiStandard: watchedApiStandard,
     });
-  }, [watchedModel]);
+  }, [watchedUrl, watchedApiKey, watchedModel, watchedApiStandard]);
 
   useEffect(() => {
     if (models.length > 0 && watchedModel && !models.includes(watchedModel)) {
@@ -58,10 +83,10 @@ const useAiModelSelection = ({ watch, setValue }: UseAiModelSelectionProps) => {
     }
   }, [models, watchedModel, setValue]);
 
-  const resetAll = () => {
+  const resetAll = useCallback(() => {
     resetModels();
     resetResult();
-  };
+  }, [resetModels, resetResult]);
 
   return {
     models,
