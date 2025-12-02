@@ -17,10 +17,33 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
-import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
-import { TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
+import { create } from 'zustand';
 
-const SURVEYS_TEMPLATE_PATH = `${APPS_FILES_PATH}/${APPS.SURVEYS}/${TEMPLATES}`;
+interface PendingUpload {
+  files: File[];
+  duplicateFiles: File[];
+  newFiles: File[];
+  webdavShare: string;
+  currentPath: string;
+}
 
-export default SURVEYS_TEMPLATE_PATH;
+interface ReplaceFilesDialogStore {
+  isOpen: boolean;
+  pendingUpload: PendingUpload | null;
+  openDialog: (pendingUpload: PendingUpload) => void;
+  closeDialog: () => void;
+  reset: () => void;
+}
+
+const useReplaceFilesDialogStore = create<ReplaceFilesDialogStore>((set) => ({
+  isOpen: false,
+  pendingUpload: null,
+
+  openDialog: (pendingUpload) => set({ isOpen: true, pendingUpload }),
+
+  closeDialog: () => set({ isOpen: false, pendingUpload: null }),
+
+  reset: () => set({ isOpen: false, pendingUpload: null }),
+}));
+
+export default useReplaceFilesDialogStore;
