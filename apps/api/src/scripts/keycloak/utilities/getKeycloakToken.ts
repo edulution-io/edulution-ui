@@ -24,7 +24,7 @@ import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/htt
 const { KEYCLOAK_API, KEYCLOAK_ADMIN, KEYCLOAK_ADMIN_PASSWORD } = process.env as Record<string, string>;
 
 const getKeycloakToken = async () => {
-  const tokenEndpoint = `${KEYCLOAK_API}/realms/master/${AUTH_PATHS.AUTH_OIDC_TOKEN_PATH}`;
+  const tokenEndpoint = `${KEYCLOAK_API}/realms/master${AUTH_PATHS.AUTH_OIDC_TOKEN_PATH}`;
 
   const params = {
     grant_type: 'password',
