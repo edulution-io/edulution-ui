@@ -28,6 +28,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule } from '@nestjs/config';
+import { Response } from 'express';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
 import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
@@ -80,6 +81,11 @@ import enableSentryForNest from '../sentry/enableSentryForNest';
     ServeStaticModule.forRoot({
       rootPath: PUBLIC_ASSET_PATH,
       serveRoot: `/${EDU_API_ROOT}/public/assets`,
+      serveStaticOptions: {
+        setHeaders: (res: Response) => {
+          res.setHeader('Cache-Control', 'public, max-age=86400, must-revalidate');
+        },
+      },
     }),
 
     BullModule.forRoot({
