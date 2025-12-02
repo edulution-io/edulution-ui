@@ -76,7 +76,7 @@ const UserAdministration = ({ form, onSubmit }: UserAdministrationProps<GlobalSe
                 name={`auth.${GLOBAL_SETTINGS_ADMIN_GROUPS}`}
                 render={() => (
                   <FormItem>
-                    <p className="font-bold text-background">{t('permission.groups')}</p>
+                    <p className="font-bold">{t('permission.groups')}</p>
                     <FormControl>
                       <AsyncMultiSelect<MultipleSelectorGroup>
                         value={getValues(`auth.${GLOBAL_SETTINGS_ADMIN_GROUPS}`) ?? []}
