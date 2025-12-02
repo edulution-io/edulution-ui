@@ -703,6 +703,10 @@
         "userMessage": "Here you can load a template that is available to you.",
         "adminMessage": "Here you can either load a template or update/create the template of the current survey, for later usage.",
         "emptyMessage": "There are no templates available yet",
+        "upload": {
+          "success": "Template saved successfully",
+          "error": "Failed to save template"
+        },
         "deletion": {
           "title": "Delete template",
           "message": "Are you sure you want to delete this template?",
@@ -1863,7 +1867,7 @@
       "containerCreationSuccessful": "Container successfully created.",
       "containerCreationFailed": "Container could not be created.",
       "containerUpdateSuccessful": "{{containerName}} updated successfully.",
-      "containerAlreadyUpdateToDate": "{{containerName}} is already up to date."
+      "containerAlreadyUpToDate": "{{containerName}} is already up to date."
     },
     "status": {
       "running": "running",
