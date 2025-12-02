@@ -3,6 +3,7 @@
  * All rights reserved.
  *
  * This software is dual-licensed under the terms of:
+
  *
  * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
  *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
@@ -17,11 +18,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ParticipantDto from '@libs/survey/types/api/participant.dto';
-import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
+import TSurveyAnswerTypes from './TSurveyAnswerTypes';
 
-interface PostSurveyAnswerDto extends ParticipantDto {
-  answer: TSurveyAnswer;
-}
+type TSurveyQuestionAnswerTypes = TSurveyAnswerTypes | Record<string, TSurveyAnswerTypes>;
 
-export default PostSurveyAnswerDto;
+export default TSurveyQuestionAnswerTypes;

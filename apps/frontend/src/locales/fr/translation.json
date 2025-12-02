@@ -1657,7 +1657,7 @@
       "containerCreationSuccessful": "Conteneur créé avec succès.",
       "containerCreationFailed": "Le conteneur n'a pas pu être créé.",
       "containerUpdateSuccessful": "{{containerName}} mis à jour avec succès.",
-      "containerAlreadyUpdateToDate": "{{containerName}} est déjà à jour."
+      "containerAlreadyUpToDate": "{{containerName}} est déjà à jour."
     },
     "status": {
       "running": "en cours d'exécution",

@@ -28,7 +28,6 @@ import sortSurveyByTitle from '@libs/survey/utils/sortSurveyByTitle';
 import sortSurveyByInvitesAndParticipation from '@libs/survey/utils/sortSurveyByInvitesAndParticipation';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
-import { useTranslation } from 'react-i18next';
 import OpenShareQRDialogTextCell from '@/components/ui/Table/OpenShareQRDialogTextCell';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import hideOnMobileClassName from '@libs/ui/constants/hideOnMobileClassName';
@@ -46,12 +45,12 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     cell: ({ row }) => (
       <SelectableTextCell
         row={row}
-        text={row.original.formula.title || i18n.t('common.not-available')}
+        text={row.original.formula?.title || i18n.t('common.not-available')}
         className="h-full w-full"
         onClick={() => row.toggleSelected()}
       />
     ),
-    accessorFn: (row) => row.formula.title,
+    accessorFn: (row) => row.formula?.title || i18n.t('common.not-available'),
     sortingFn: (rowA, rowB) => sortSurveyByTitle(rowA.original, rowB.original),
   },
   {
@@ -137,12 +136,11 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     },
     accessorFn: (row) => row.invitedAttendees.length,
     cell: ({ row }) => {
-      const { t } = useTranslation();
       const { length } = row.original.invitedAttendees;
       const attendeeCount = length;
-      const attendeeText = `${attendeeCount} ${t(attendeeCount === 1 ? 'survey.attendee' : 'survey.attendees')}`;
+      const attendeeText = `${attendeeCount} ${i18n.t(attendeeCount === 1 ? 'survey.attendee' : 'survey.attendees')}`;
       const groupsCount = row.original.invitedGroups?.length;
-      const groupsText = `${groupsCount ? `, ${groupsCount} ${t(groupsCount === 1 ? 'common.group' : 'common.groups')}` : ''}`;
+      const groupsText = `${groupsCount ? `, ${groupsCount} ${i18n.t(groupsCount === 1 ? 'common.group' : 'common.groups')}` : ''}`;
       return (
         <SelectableTextCell
           text={`${attendeeText}${groupsText}`}
