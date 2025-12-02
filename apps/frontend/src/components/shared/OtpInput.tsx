@@ -20,13 +20,14 @@
 import React, { FC, Dispatch, SetStateAction } from 'react';
 import { MdDialpad } from 'react-icons/md';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
+import cn from '@libs/common/utils/className';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '../ui/InputOtp';
 import { Button } from './Button';
 
 type OtpInputProps = {
   totp: string;
   maxLength?: number;
-  variant?: 'default' | 'dialog';
+  variant?: 'default' | 'dialog' | 'login';
   type?: 'default' | 'pin';
   setTotp: (value: string) => void;
   onComplete?: () => void;
@@ -70,7 +71,10 @@ const OtpInput: FC<OtpInputProps> = ({
         variant="btn-outline"
         type="button"
         onClick={() => setShowNumPad((prev) => !prev)}
-        className="ml-4 h-11 w-11 p-0 hover:bg-ciGrey/10"
+        className={cn(
+          'ml-4 h-11 w-11 p-0 hover:bg-ciGrey/10',
+          variant === 'login' && 'border-ciDarkGrey text-ciDarkGrey hover:bg-ciDarkGrey/10',
+        )}
       >
         <MdDialpad style={{ width: '18px', height: '18px' }} />
       </Button>

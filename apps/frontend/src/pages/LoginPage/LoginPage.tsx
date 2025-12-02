@@ -295,7 +295,7 @@ const LoginPage: React.FC = () => {
                   data-testid={`test-id-login-page-${fieldName}-input`}
                 />
               </FormControl>
-              <FormMessage className="text-foreground" />
+              <FormMessage className="text-ciDarkGrey" />
             </FormItem>
           )}
         />
@@ -305,7 +305,7 @@ const LoginPage: React.FC = () => {
   const renderErrorMessage = () => {
     const passwordError = form.getFieldState('password').error?.message;
     return passwordError ? (
-      <p className="h-5">
+      <p className="h-5 text-ciDarkGrey">
         <span>{t(passwordError)}</span>
       </p>
     ) : null;
@@ -321,7 +321,7 @@ const LoginPage: React.FC = () => {
               size="lg"
             />
           </div>
-          <p className="font-bold">{t('login.loginWithQrDescription')}</p>
+          <p className="font-bold text-black">{t('login.loginWithQrDescription')}</p>
         </>
       );
     }
@@ -340,6 +340,7 @@ const LoginPage: React.FC = () => {
                     title={t('login.enterMultiFactorCode')}
                     setTotp={field.onChange}
                     onComplete={onSubmit}
+                    variant="login"
                   />
                 </FormControl>
                 {renderErrorMessage()}
