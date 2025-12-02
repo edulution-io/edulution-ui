@@ -887,7 +887,11 @@
         "setAdminGroupSelectDescription": "Les groupes peuvent être sélectionnés via le champ de recherche.",
         "setAdminGroupWarning": "Au moins un groupe d’administrateurs doit être sélectionné."
       },
-      "deploymentTarget": "Plate-forme cible de déploiement"
+      "deploymentTarget": "Plate-forme cible de déploiement",
+      "aiconfig": {
+        "title": "Paramètres IA",
+        "description": "Configurez les services d'IA qui peuvent être utilisés dans la plateforme."
+      }
     },
     "info": {
       "title": "Informations"
@@ -962,6 +966,10 @@
           "sandboxModeDescription": "Dans le mode \"disposition séparée\", le contenu s'affiche comme une page indépendante, similaire à une fenêtre dans l'application. En plus du contenu réel, des éléments de conception ou des fonctions supplémentaires provenant d'autres sources peuvent également être chargés. En conséquence, la conception est indépendante de l'application, il pourrait donc être différent ou se comporter différemment. Ici, le contenu doit être téléchargé en fichier HTML.",
           "nativeModeDescription": "Dans le mode \"Disposition intégrée\", en revanche, le contenu est inséré directement dans la surface de l'application. En conséquence, le contenu semble autant que l'application elle-même et s'adapte de manière optiquement. Cependant, aucun éléments ou fonctions de conception externes supplémentaires ne peut être ajouté dynamiquement ici. Cependant, des éléments statiques tels que des images peuvent être téléchargés et utilisés ici.",
           "visibilityDescription": "Vous pouvez ici déterminer si l'application doit être accessible au public. Actif signifie public, inactif signifie que seuls les groupes d'utilisateurs configurés y ont accès. Rendre l'application accessible au public crée un lien dans le pied de page. Pour rendre l'application visible dans la barre latérale pour les utilisateurs enregistrés, leur accès doit être configuré via les groupes d'utilisateurs."
+        },
+        "aiSupport": {
+          "title": "Support IA",
+          "description": "Configurez ici les services d'IA pour la plateforme."
         }
       },
       "update": {
@@ -1283,7 +1291,10 @@
     "saveLocal": "Enregistrer sur l’appareil",
     "openLocal": "Ouvrir depuis l’appareil",
     "openFileFromEdu": "Ouvrir le fichier",
-    "saveFileToEdu": "Enregistrer dans les fichiers"
+    "saveFileToEdu": "Enregistrer dans les fichiers",
+    "testing": "Test en cours...",
+    "all": "Tous",
+    "invalidUrl": "URL invalide"
   },
 
   "saveExternalFileDialogBody": {
@@ -1719,5 +1730,45 @@
     },
     "sharePath": "Chemin de partage",
     "pathPreview": "Aperçu du chemin"
+  },
+
+  "aiconfig": {
+    "settings": {
+      "name": "Nom",
+      "serverUrl": "URL du serveur",
+      "apiKey": "Clé API",
+      "model": "Modèle",
+      "apiStandard": "Standard API",
+      "createConfig": "Créer une configuration IA",
+      "editConfig": "Modifier la configuration IA",
+      "testConnection": "Tester la connexion",
+      "purposes": {
+        "title": "Utilisations",
+        "placeholder": "Sélectionner les utilisations...",
+        "description": "Choisissez à quoi cette configuration IA doit être utilisée."
+      },
+      "allowedUsers": {
+        "title": "Utilisateurs autorisés"
+      },
+      "allowedGroups": {
+        "title": "Groupes autorisés"
+      }
+    },
+    "apiStandards": {
+      "openai": "OpenAI",
+      "anthropic": "Anthropic",
+      "google": "Google Gemini"
+    },
+    "purposes": {
+      "chat": "Chat",
+      "translation": "Traduction",
+      "assistant": "Assistant",
+      "coding": "Programmation",
+      "analysis": "Analyse"
+    },
+    "errors": {
+      "nameAlreadyExists": "Une entrée avec ce nom existe déjà."
+    },
+    "filterPlaceHolderText": "Filtrer par nom..."
   }
 }

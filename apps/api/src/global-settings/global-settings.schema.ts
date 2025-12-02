@@ -36,6 +36,7 @@ import { AuthSettings, AuthSettingsSchema } from './schemas/global-settings.auth
 import { GeneralSettings, GeneralSettingsSchema } from './schemas/global-settings.general.schema';
 import { OrganisationInfo, OrganisationInfoSchema } from './schemas/global-settings.organisation-info.schema';
 import { ThemeSettings, ThemeSettingsSchema } from './schemas/global-settings.theme.schema';
+import { AiConfig, AiConfigSchema } from './schemas/global-settings.ai.config.schema';
 
 export type GlobalSettingsDocument = GlobalSettings & Document;
 
@@ -55,7 +56,10 @@ export class GlobalSettings {
   @Prop({ type: ThemeSettingsSchema, required: true })
   theme: ThemeSettings;
 
-  @Prop({ default: 7 })
+  @Prop({ type: [AiConfigSchema], default: [] })
+  aiConfigs: AiConfig[];
+
+  @Prop({ default: 8 })
   schemaVersion: number;
 }
 

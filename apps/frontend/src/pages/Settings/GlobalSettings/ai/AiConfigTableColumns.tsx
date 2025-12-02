@@ -24,11 +24,11 @@ import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import AI_CONFIG_TABLE_COLUMNS from '@libs/ai/constants/aiConfigTableColumns';
 import type AiConfigDto from '@libs/ai/types/aiConfigDto';
-import useAiConfigTableStore from './useAiConfigTableStore';
-import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
 import { DeleteIcon, EditIcon } from '@libs/common/constants/standardActionIcons';
 import AI_CONFIG_DIALOG_KEY from '@libs/ai/constants/aiConfigDialogKey';
+import useAppConfigTableDialogStore from '../../AppConfig/components/table/useAppConfigTableDialogStore';
+import useAiConfigTableStore from './useAiConfigTableStore';
 
 const AiConfigTableColumns: ColumnDef<AiConfigDto>[] = [
   {

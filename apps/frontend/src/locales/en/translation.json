@@ -1025,6 +1025,10 @@
         "postalCityPlaceholder": "Berlin",
         "website": "Organization website",
         "city": "City"
+      },
+      "aiconfig": {
+        "title": "AI Settings",
+        "description": "Configure the AI services that can be used within the platform."
       }
     },
     "userAdministration": {
@@ -1116,6 +1120,10 @@
           "sandboxModeDescription": "In “Separate layout” mode, the content is displayed as a separate page, similar to a window within the application. In addition to the actual content, additional design elements or functions can also be loaded from other sources. This means that the design is independent of the application and could therefore look or behave differently. Here, the content must be uploaded as an HTML file.",
           "nativeModeDescription": "In “Integrated layout” mode, on the other hand, the content is inserted directly into the user interface of the application. This means that the content looks exactly like the application itself and fits in seamlessly. However, no additional external design elements or functions can be added dynamically here. However, static elements such as images can be uploaded and used here.",
           "visibilityDescription": "Here you can specify whether the app should be publicly accessible. Active means public, inactive means that only configured user groups have access. Making the app publicly accessible creates a link in the footer. To make the app visible to registered users in the sidebar, their access must be configured via the user groups."
+        },
+        "aiSupport": {
+          "title": "AI Support",
+          "description": "Configure AI services for the platform here."
         }
       },
       "update": {
@@ -1452,7 +1460,10 @@
     "saveLocal": "Save to device",
     "openLocal": "Open from device",
     "openFileFromEdu": "Open file",
-    "saveFileToEdu": "Save to files"
+    "saveFileToEdu": "Save to files",
+    "testing": "Testing...",
+    "all": "All",
+    "invalidUrl": "Invalid URL"
   },
   "form": {
     "path": "Path",
@@ -1926,5 +1937,45 @@
     },
     "sharePath": "Path",
     "pathPreview": "Path preview"
+  },
+
+  "aiconfig": {
+    "settings": {
+      "name": "Name",
+      "serverUrl": "Server URL",
+      "apiKey": "API Key",
+      "model": "Model",
+      "apiStandard": "API Standard",
+      "createConfig": "Create AI Configuration",
+      "editConfig": "Edit AI Configuration",
+      "testConnection": "Test Connection",
+      "purposes": {
+        "title": "Purposes",
+        "placeholder": "Select purposes...",
+        "description": "Choose what this AI configuration should be used for."
+      },
+      "allowedUsers": {
+        "title": "Allowed Users"
+      },
+      "allowedGroups": {
+        "title": "Allowed Groups"
+      }
+    },
+    "apiStandards": {
+      "openai": "OpenAI",
+      "anthropic": "Anthropic",
+      "google": "Google Gemini"
+    },
+    "purposes": {
+      "chat": "Chat",
+      "translation": "Translation",
+      "assistant": "Assistant",
+      "coding": "Coding",
+      "analysis": "Analysis"
+    },
+    "errors": {
+      "nameAlreadyExists": "An entry with this name already exists."
+    },
+    "filterPlaceHolderText": "Filter by name..."
   }
 }

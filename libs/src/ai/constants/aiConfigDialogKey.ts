@@ -1,0 +1,3 @@
+const AI_CONFIG_DIALOG_KEY = 'AI_CONFIG_DIALOG';
+
+export default AI_CONFIG_DIALOG_KEY;
