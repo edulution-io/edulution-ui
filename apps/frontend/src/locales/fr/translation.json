@@ -49,8 +49,8 @@
     "deleteBulletins": "{{count}} Supprimer les messages",
     "editBulletin": "Modifier",
     "createBulletin": "Créer une communication",
-    "confirmSingleDelete": "Ce message devrait-il vraiment être supprimé?",
-    "confirmMultiDelete": "Ces messages devraient-ils vraiment être supprimés?",
+    "confirmDelete": "Ce message devrait-il vraiment être supprimé?",
+    "confirmDelete_other": "Ces {{count}} messages devraient-ils vraiment être supprimés?",
     "rowsSelected": "{{selected}} depuis {{total}} messages sélectionnés",
     "rowSelected": "{{selected}} depuis {{total}} notification sélectionnée",
     "cancel": "Annuler",
@@ -203,8 +203,8 @@
       "noMailConfigured": "L'application de messagerie n'est pas configurée. Veuillez contacter l'administrateur système.",
       "syncAccountAdded": "Compte pour la tâche de synchronisation ajouté.",
       "syncAccountDeleted": "Compte pour la tâche de synchronisation supprimé.",
-      "confirmMultiDeleteSyncJob": "Êtes-vous sûr de vouloir supprimer ces tâches de synchronisation ? Cette action ne peut pas être annulée.",
-      "confirmSingleDeleteSyncJob": "Êtes-vous sûr de vouloir supprimer cette tâche de synchronisation ? Cette action ne peut pas être annulée.",
+      "confirmDeleteSyncJob_other": "Êtes-vous sûr de vouloir supprimer ces {{count}} tâches de synchronisation ? Cette action ne peut pas être annulée.",
+      "confirmDeleteSyncJob": "Êtes-vous sûr de vouloir supprimer cette tâche de synchronisation ? Cette action ne peut pas être annulée.",
       "deleteSyncJobs": "Supprimer {{count}} tâches de synchronisation",
       "deleteSyncJob": "Supprimer la tâche de synchronisation",
       "confirmDeleteProviderConfig": "Êtes-vous sûr de vouloir supprimer cette configuration de fournisseur de messagerie ? Cette action ne peut pas être annulée.",
@@ -220,7 +220,8 @@
     "automaticLoginFailed": "La connexion automatique a échoué",
     "uploadOrFetchAttachmentFailed": "Erreur lors du téléchargement de la pièce jointe",
     "fileGenerationFailed": "Le fichier n'a pas pu être généré",
-    "requestTooLarge": "Votre requête est trop grand. Si vous avez joint des fichiers, essayez de les compresser ou de les supprimer"
+    "requestTooLarge": "Votre demande dépasse la limite de {{limit}} Ko. Si vous avez joint des fichiers multimédias, essayez de les compresser ou de les supprimer.",
+    "fileTooLarge": "Le fichier dépasse la limite de {{limit}} Mo. Veuillez le compresser ou choisir un fichier plus petit."
   },
   "conferences": {
     "errors": {
@@ -269,13 +270,14 @@
     "creator": "Créateur",
     "delete": "Supprimer",
     "deleteConference": "Supprimer la conférence",
-    "deleteConferences": "{{count}} Supprimer les conférences",
+    "deleteConferences_other": "{{count}} Supprimer les conférences",
+    "deleteConferences": "Supprimer la conférence",
     "editConference": "Modifier la conférence",
     "conferenceUpdatedSuccessfully": "Conférence enregistrée avec succès ",
     "conferenceFetchedSuccessfully": "Conférences actualisée avec succès ",
     "conferenceCreatedSuccessfully": "Conférence créée avec succès",
-    "confirmSingleDelete": "Cette conférence devrait-elle vraiment être supprimée?",
-    "confirmMultiDelete": "Ces conférences devraient-elles vraiment être supprimées?",
+    "confirmDelete": "Cette conférence devrait-elle vraiment être supprimée?",
+    "confirmDelete_other": "Ces {{count}} conférences devraient-elles vraiment être supprimées?",
     "name": "Nom de la conférence",
     "conference": "conférence",
     "password": "mot de passe",
@@ -545,7 +547,9 @@
       "proxyAdressDescription": "URL du proxy Veyon Webapi",
       "proxyAdressPlaceholder": "http://localhost:11080",
       "createConfig": "Créer une configuration",
-      "editConfig": "Modifier la configuration"
+      "editConfig": "Modifier la configuration",
+      "deleteConfig": "Supprimer la configuration",
+      "confirmDeleteConfig": "Êtes-vous sûr de vouloir supprimer cette configuration de proxy Veyon ?"
     },
     "selectSchool": {
       "title": "Sélectionner l'école",
@@ -649,9 +653,10 @@
   "surveys": {
     "rowsSelected": "{{selected}} de {{total}} sondages sélectionnés",
     "rowSelected": "{{selected}} de {{total}} sondages sélectionné",
-    "confirmMultiDelete": "Ces sondages devraient-ils vraiment être supprimés?",
-    "confirmSingleDelete": "Le sondage devrait-il vraiment être supprimé?",
-    "deleteSurveys": "Supprimer {{count}} sondages",
+    "confirmDelete": "Le sondage devrait-il vraiment être supprimé?",
+    "confirmDelete_other": "Ces {{count}} sondages devraient-ils vraiment être supprimés?",
+    "deleteSurveys": "Supprimer sondage",
+    "deleteSurveys_other": "Supprimer {{count}} sondages",
     "deleteSurvey": "Supprimer le sondage",
     "title": "Sondages",
     "sidebar": "Sondages",
@@ -898,8 +903,10 @@
     },
     "lmnVersion": { "title": "Aperçu des versions de Linuxmuster" },
     "appconfig": {
-      "deleteEntries": "Supprimer {{count}} entrées",
-      "confirmDeleteEntries": "Êtes-vous sûr de vouloir supprimer ces entrées ? Cette action ne peut pas être annulée.",
+      "deleteEntries": "Supprimer entrée",
+      "deleteEntries_other": "Supprimer {{count}} entrées",
+      "confirmDeleteEntries": "Êtes-vous sûr de vouloir supprimer cette entrée? Cette action ne peut pas être annulée.",
+      "confirmDeleteEntries_other": "Êtes-vous sûr de vouloir supprimer ces {{count}} entrées? Cette action ne peut pas être annulée.",
       "sections": {
         "onlyOffice": {
           "title": "Intégration OnlyOffice",
@@ -926,8 +933,8 @@
           "description": "Afin de pouvoir utiliser les services étendus, les applications de conteneurs requises peuvent être installées et démarrées ici.",
           "confirmMultiDeleteContainer": "Êtes-vous sûr de vouloir supprimer ces conteneurs ? Cette action ne peut pas être annulée.",
           "confirmSingleDeleteContainer": "Êtes-vous sûr de vouloir supprimer ce conteneur ? Cette action ne peut pas être annulée.",
-          "deleteContainers": "Supprimer {{count}} conteneurs",
-          "deleteContainer": "Supprimer le conteneur"
+          "deleteContainers_other": "Supprimer {{count}} conteneurs",
+          "deleteContainers": "Supprimer le conteneur"
         },
         "veyon": {
           "title": "Proxy veyon",
@@ -940,11 +947,15 @@
           "title": "WebDAV",
           "sectionTitle": "WebDAV-Partage",
           "description": "Vous pouvez configurer ici vos propres serveur WebDAV.",
-          "filterPlaceHolderText": "Rechercher le nom de partages"
+          "filterPlaceHolderText": "Rechercher le nom de partages",
+          "deleteWebdavShare": "Supprimer le partage WebDAV",
+          "confirmDeleteWebdavShare": "Êtes-vous sûr de vouloir supprimer ce partage WebDAV ?"
         },
         "webdavServer": {
           "title": "WebDAV serveurs",
           "filterPlaceHolderText": "Rechercher un serveur",
+          "deleteWebdavServer": "Supprimer le serveur WebDAV",
+          "confirmDeleteWebdavServer": "Êtes-vous sûr de vouloir supprimer ce serveur WebDAV ?",
           "deleteWarning": {
             "title": "Suppression impossible",
             "description": "Le serveur WebDAV « {{serverName}} » est utilisé par {{count}} partage(s) : {{shares}}. Veuillez d'abord supprimer les partages dépendants."
@@ -1254,6 +1265,8 @@
     "start": "Commencer",
     "close": "Fermer",
     "delete": "Supprimer",
+    "deleting": "Suppression...",
+    "noItemsSelected": "Aucun élément sélectionné",
     "connect": "Connecter",
     "custom": "Défini par l'utilisateur",
     "select": "Choisir...",

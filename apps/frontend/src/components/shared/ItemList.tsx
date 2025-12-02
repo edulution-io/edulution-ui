@@ -17,6 +17,33 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-type ChatRole = 'system' | 'user' | 'assistant';
+import React from 'react';
+import { ScrollArea } from '@/components/ui/ScrollArea';
+import ListItem from '@libs/ui/types/listItem';
 
-export default ChatRole;
+interface ItemListProps {
+  items: ListItem[];
+}
+
+const ItemList: React.FC<ItemListProps> = ({ items }) => {
+  if (items.length === 0) return null;
+
+  if (items.length === 1) {
+    return <p className="mt-4 font-medium">{items[0].name}</p>;
+  }
+
+  return (
+    <ScrollArea className="mt-2 max-h-[218px] w-96 max-w-full overflow-y-auto rounded border p-2">
+      {items.map((item) => (
+        <div
+          key={item.id}
+          className="truncate"
+        >
+          {item.name}
+        </div>
+      ))}
+    </ScrollArea>
+  );
+};
+
+export default ItemList;

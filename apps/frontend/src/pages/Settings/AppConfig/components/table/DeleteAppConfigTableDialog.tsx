@@ -18,37 +18,27 @@
  */
 
 import React from 'react';
-import UserAccountDto from '@libs/user/types/userAccount.dto';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
-import getDisplayName from '@/utils/getDisplayName';
-import useLanguage from '@/hooks/useLanguage';
 import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
 
-interface DeleteUserAccountsDialogProps {
+interface DeleteAppConfigTableDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  selectedAccounts: UserAccountDto[];
+  items: Array<{ name: string; id: string }>;
   onConfirmDelete: () => Promise<void>;
   isLoading?: boolean;
+  titleTranslationKey?: string;
+  messageTranslationKey?: string;
 }
 
-const DeleteUserAccountsDialog: React.FC<DeleteUserAccountsDialogProps> = ({
+const DeleteAppConfigTableDialog: React.FC<DeleteAppConfigTableDialogProps> = ({
   isOpen,
   onOpenChange,
-  selectedAccounts,
+  items,
   onConfirmDelete,
   isLoading = false,
+  titleTranslationKey = 'settings.appconfig.deleteEntries',
+  messageTranslationKey = 'settings.appconfig.confirmDeleteEntries',
 }) => {
-  const { language } = useLanguage();
-  const appConfigs = useAppConfigsStore((s) => s.appConfigs);
-  const isMultiDelete = selectedAccounts.length > 1;
-
-  const getAppDisplayName = (appName: string) => {
-    const appConfig = appConfigs.find((appCfg) => appCfg.name === appName);
-    if (!appConfig) return appName;
-    return getDisplayName(appConfig, language);
-  };
-
   const handleConfirmDelete = async () => {
     await onConfirmDelete();
     onOpenChange(false);
@@ -58,21 +48,13 @@ const DeleteUserAccountsDialog: React.FC<DeleteUserAccountsDialogProps> = ({
     <DeleteConfirmationDialog
       isOpen={isOpen}
       onOpenChange={onOpenChange}
-      items={selectedAccounts
-        .filter((account) => account?.accountId)
-        .map((account) => ({ id: account.accountId, name: getAppDisplayName(account.appName) || '' }))}
+      items={items}
       onConfirmDelete={handleConfirmDelete}
       isLoading={isLoading}
-      titleTranslationKey={
-        isMultiDelete ? 'usersettings.security.deleteUserAccounts' : 'usersettings.security.deleteUserAccount'
-      }
-      messageTranslationKey={
-        isMultiDelete
-          ? 'usersettings.security.confirmMultiDeleteAccount'
-          : 'usersettings.security.confirmSingleDeleteAccount'
-      }
+      titleTranslationKey={titleTranslationKey}
+      messageTranslationKey={messageTranslationKey}
     />
   );
 };
 
-export default DeleteUserAccountsDialog;
+export default DeleteAppConfigTableDialog;

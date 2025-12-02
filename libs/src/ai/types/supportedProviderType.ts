@@ -17,14 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type AppConfigTable from '@libs/appconfig/types/appConfigTable';
-import type FileInfoDto from './fileInfo.dto';
+import SupportedProvider from './supportedProvider';
 
-export interface FileTableStore extends AppConfigTable<FileInfoDto> {
-  files: Record<string, string>;
-  isLoading: boolean;
-  error: string | null;
-  publicFilesInfo: FileInfoDto[];
-  getPublicFilesInfo: (applicationName: string) => Promise<void>;
-  reset: () => void;
-}
+export type SupportedProviderType = (typeof SupportedProvider)[keyof typeof SupportedProvider];

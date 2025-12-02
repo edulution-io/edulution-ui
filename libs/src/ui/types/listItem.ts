@@ -17,11 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ChatRole from '@libs/ai/types/chatRole';
-
-interface ChatMessage {
-  role: ChatRole;
-  content: string;
+interface ListItem {
+  id: string;
+  name: string;
 }
 
-export default ChatMessage;
+export default ListItem;

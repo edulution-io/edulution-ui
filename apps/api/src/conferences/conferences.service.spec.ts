@@ -39,8 +39,6 @@ import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
 import NotificationsService from '../notifications/notifications.service';
-import AiService from '../ai/ai.service';
-import UsersService from '../users/users.service';
 
 const mockConference: CreateConferenceDto = {
   name: 'Testconference',
@@ -53,12 +51,6 @@ const mockCreator: Attendee = {
   username: 'username',
   lastName: 'lastName',
   firstName: 'firstName',
-};
-
-const mockAiService = {
-  chat: jest.fn().mockResolvedValue(''),
-  translate: jest.fn().mockResolvedValue(''),
-  translateNotification: jest.fn().mockResolvedValue({ title: 'Test', body: 'Test' }),
 };
 
 const mockJWTUser: JWTUser = {
@@ -117,13 +109,6 @@ const conferencesModelMock = {
   })),
 };
 
-const mockUsersService = {
-  findOne: jest.fn().mockResolvedValue(null),
-  findByUsername: jest.fn().mockResolvedValue(null),
-  findByUsernames: jest.fn().mockResolvedValue([]),
-  getUserLanguage: jest.fn().mockResolvedValue('de'),
-};
-
 describe(ConferencesService.name, () => {
   let service: ConferencesService;
   let model: Model<ConferenceDocument>;
@@ -157,8 +142,6 @@ describe(ConferencesService.name, () => {
         },
         { provide: FilesystemService, useValue: mockFilesystemService },
         { provide: NotificationsService, useValue: notificationMock },
-        { provide: AiService, useValue: mockAiService },
-        { provide: UsersService, useValue: mockUsersService },
       ],
     }).compile();
 
