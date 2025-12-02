@@ -28,6 +28,9 @@ export class SurveysTemplate {
   @Prop({ default: true, required: true })
   isActive: boolean;
 
+  @Prop({ default: false, required: true })
+  isDefaultTemplate: boolean;
+
   @Prop({ default: 1, required: true, unique: false })
   schemaVersion: number;
 }

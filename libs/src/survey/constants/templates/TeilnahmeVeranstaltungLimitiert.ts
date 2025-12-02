@@ -17,6 +17,7 @@ const frontendPort = process.env['FRONTEND_PORT'] ?? '5173';
 
 const TeilnahmeVeranstaltungLimitiert = {
   name: 'TeilnahmeVeranstaltungLimitiert',
+  isDefaultTemplate: true,
   isActive: false,
   schemaVersion: 1,
   template: {

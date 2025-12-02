@@ -23,30 +23,30 @@ import { Migration } from '../../migration/migration.type';
 
 const list = [Praktikumsplatz, ElternAbend, Elternbrief, TeilnahmeVeranstaltungLimitiert, Vortragsthema];
 
-const name = '000-load-the-default-survey-templates';
+const name = '001-load-the-default-survey-templates';
 
-const surveysTemplateInitialization000LoadDefaultTemplates: Migration<SurveysTemplateDocument> = {
+const surveyTemplatesMigration001LoadDefaultTemplates: Migration<SurveysTemplateDocument> = {
   name,
   version: 1,
   execute: async (model) => {
-    const anyExistingDefaultTemplate = await model.findOne({
-      name: { $in: list.map((template) => template.name) },
-    });
-    if (anyExistingDefaultTemplate) {
-      Logger.log(`Migration "${name}": Skipped: default templates already exist`);
-      return;
-    }
-
     Logger.log(`Migration "${name}": Found ${list.length} documents to process...`);
     await Promise.all(
       list.map(async (surveyTemplate) => {
-        try {
-          await model.create(surveyTemplate);
-        } catch (error) {
-          Logger.error(`Migration "${name}": Failed to migrate document ${surveyTemplate.name}:`, error);
+        const existingTemplate = await model.findOne({ name: surveyTemplate.name, isDefaultTemplate: true });
+        if (existingTemplate && existingTemplate.schemaVersion >= surveyTemplate.schemaVersion) {
+          Logger.warn(
+            `Migration "${name}": Skipped: default template "${surveyTemplate.name}" already exists with same or higher schema version`,
+          );
+          return;
         }
+        await model.updateOne(
+          { name: surveyTemplate.name, isDefaultTemplate: true },
+          { ...surveyTemplate, isDefaultTemplate: true, isActive: existingTemplate?.isActive ?? true },
+          { new: true, upsert: true },
+        );
+        Logger.log(`Migration "${name}": Created default template "${surveyTemplate.name}"`);
       }),
     );
   },
 };
-export default surveysTemplateInitialization000LoadDefaultTemplates;
+export default surveyTemplatesMigration001LoadDefaultTemplates;

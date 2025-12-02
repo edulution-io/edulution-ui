@@ -26,4 +26,5 @@ export interface SurveyTemplateDto {
   template: TemplateDto;
   name?: string;
   isActive?: boolean;
+  isDefaultTemplate?: boolean;
 }

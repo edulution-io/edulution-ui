@@ -17,6 +17,7 @@ const frontendPort = process.env['FRONTEND_PORT'] ?? '5173';
 
 const Elternbrief = {
   name: 'Elternbrief',
+  isDefaultTemplate: true,
   isActive: true,
   schemaVersion: 1,
   template: {

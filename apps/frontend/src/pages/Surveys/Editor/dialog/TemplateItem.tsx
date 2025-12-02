@@ -103,6 +103,8 @@ const TemplateItem = (props: TemplateItemProps) => {
             'max-h-80 overflow-visible opacity-100',
             { 'bg-accent': active },
             { 'bg-card-muted': !active },
+            { 'border border-solid border-primary': template.isDefaultTemplate },
+            { 'border border-solid border-ring': !template.isDefaultTemplate },
           )}
           style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '12pt' }}
           disabled
@@ -110,13 +112,15 @@ const TemplateItem = (props: TemplateItemProps) => {
         <div className="mt-2 flex flex-row justify-end space-x-2">
           {isSuperAdmin && (
             <>
-              <Button
-                onClick={handleRemoveTemplate}
-                variant="btn-attention"
-                size="sm"
-              >
-                {t('common.delete')}
-              </Button>
+              {!template.isDefaultTemplate && (
+                <Button
+                  onClick={handleRemoveTemplate}
+                  variant="btn-attention"
+                  size="sm"
+                >
+                  {t('common.delete')}
+                </Button>
+              )}
               <Button
                 onClick={handleToggleIsActive}
                 variant="btn-collaboration"

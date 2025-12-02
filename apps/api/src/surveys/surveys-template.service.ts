@@ -27,7 +27,6 @@ import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import GlobalSettingsService from 'apps/api/src/global-settings/global-settings.service';
 import MigrationService from 'apps/api/src/migration/migration.service';
 import { SurveysTemplate, SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
-import surveysTemplateInitializationList from './migrations/surveysTemplateInitializationList';
 import surveyTemplatesMigrationsList from './migrations/surveyTemplatesMigrationsList';
 import CustomHttpException from '../common/CustomHttpException';
 
@@ -44,13 +43,9 @@ class SurveysTemplateService implements OnModuleInit {
     if (collectionsNamedMigration?.length === 0) {
       await this.connection.db?.createCollection('surveystemplates');
     }
-
-    const count = await this.surveyTemplateModel.countDocuments();
     await MigrationService.runMigrations<SurveysTemplateDocument>(
       this.surveyTemplateModel,
-      count === 0
-        ? [...surveysTemplateInitializationList, ...surveyTemplatesMigrationsList]
-        : surveyTemplatesMigrationsList,
+      surveyTemplatesMigrationsList,
     );
   }
 
@@ -94,7 +89,12 @@ class SurveysTemplateService implements OnModuleInit {
 
   async deleteTemplate(name: string): Promise<void> {
     try {
-      await this.surveyTemplateModel.deleteOne({ name });
+      const defaultTemplate = await this.surveyTemplateModel.findOne({ name, isDefaultTemplate: true });
+      if (defaultTemplate) {
+        await this.surveyTemplateModel.updateOne({ name }, { isActive: false });
+      } else {
+        await this.surveyTemplateModel.deleteOne({ name });
+      }
     } catch {
       throw new CustomHttpException(
         CommonErrorMessages.FILE_DELETION_FAILED,

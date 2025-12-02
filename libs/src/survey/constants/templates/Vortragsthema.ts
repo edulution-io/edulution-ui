@@ -15,6 +15,7 @@ const frontendPort = process.env['FRONTEND_PORT'] ?? '5173';
 
 const Vortragsthema = {
   name: 'Vortragsthema',
+  isDefaultTemplate: true,
   isActive: true,
   schemaVersion: 1,
   template: {
