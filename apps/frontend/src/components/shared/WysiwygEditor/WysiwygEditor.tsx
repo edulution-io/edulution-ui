@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/node_modules/quill/dist/quill.snow.css';
 import './WysiwygEditor.css';
@@ -52,6 +52,27 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
     }
   };
 
+  const uploadImage = async (file: File, index?: number) => {
+    if (!IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.type)) {
+      toast.error(`${t('common.errors.invalidFileType')}: ${file.type}`);
+      return;
+    }
+
+    try {
+      const uploadedFilename = await onUpload(file);
+      const fetchImageUrl = `/${EDU_API_ROOT}/${uploadedFilename}?token=${eduApiToken}`;
+
+      const quillInstance = quillRef.current?.getEditor();
+      if (quillInstance) {
+        const range = quillInstance.getSelection();
+        quillInstance.insertEmbed(index ?? range?.index ?? 0, 'image', fetchImageUrl);
+      }
+    } catch (error) {
+      console.error('Failed to upload or fetch attachment:', error);
+      toast.error(t('errors.uploadOrFetchAttachmentFailed'));
+    }
+  };
+
   const handleImage = () => {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
@@ -61,22 +82,41 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
     input.onchange = async () => {
       const file = input.files?.[0];
       if (file) {
-        try {
-          const uploadedFilename = await onUpload(file);
-          const fetchImageUrl = `/${EDU_API_ROOT}/${uploadedFilename}?token=${eduApiToken}`;
-
-          const quillInstance = quillRef.current?.getEditor();
-          if (quillInstance) {
-            const range = quillInstance.getSelection();
-            quillInstance.insertEmbed(range?.index || 0, 'image', fetchImageUrl);
-          }
-        } catch (error) {
-          console.error('Failed to upload or fetch attachment:', error);
-          toast.error(t('errors.uploadOrFetchAttachmentFailed'));
-        }
+        await uploadImage(file);
       }
     };
   };
+
+  useEffect(() => {
+    const quill = quillRef.current?.getEditor();
+    if (!quill) return undefined;
+
+    const handleDrop = (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const files = e.dataTransfer?.files;
+      if (!files || files.length === 0) return;
+
+      const imageFiles = Array.from(files).filter((file) => IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.type));
+
+      if (imageFiles.length === 0) return;
+
+      const range = quill.getSelection(true);
+      const index = range?.index ?? 0;
+
+      imageFiles.forEach((file, i) => {
+        void uploadImage(file, index + i);
+      });
+    };
+
+    const editorElement = quill.root;
+    editorElement.addEventListener('drop', handleDrop, true);
+
+    return () => {
+      editorElement.removeEventListener('drop', handleDrop, true);
+    };
+  }, [eduApiToken, onUpload, t, uploadImage]);
 
   const modules = useMemo(
     () => ({

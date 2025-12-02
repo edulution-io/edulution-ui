@@ -88,10 +88,10 @@ const FileSharingPage = () => {
         <QuotaLimitInfo percentageUsed={percentageUsed} />
       </div>
 
-      <div className="flex h-full w-full flex-row overflow-hidden pb-6">
+      <div className="flex h-full w-full flex-row overflow-hidden">
         <div className={`flex flex-col ${isFilePreviewVisible && isFilePreviewDocked ? 'w-1/2 2xl:w-2/3' : 'w-full'}`}>
           {isFileProcessing ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden pb-6">
             <FileDropZone onFileDrop={(files) => handleFileUpload(files, webdavShare, currentPath)}>
               <FileSharingTable />
             </FileDropZone>

@@ -24,6 +24,7 @@ import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants
 import ConferenceDto from '@libs/conferences/types/conference.dto';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import { encodeBase64 } from '@libs/common/utils/getBase64String';
+import getRandomUUID from '@/utils/getRandomUUID';
 
 interface UsePublicConferenceStore {
   reset: () => void;
@@ -40,7 +41,7 @@ interface UsePublicConferenceStore {
 }
 
 const initialState = {
-  publicUserId: crypto.randomUUID(),
+  publicUserId: getRandomUUID(),
   publicUserFullName: '',
   storedPasswordsByMeetingIds: {},
   isGetJoinConferenceUrlLoading: false,

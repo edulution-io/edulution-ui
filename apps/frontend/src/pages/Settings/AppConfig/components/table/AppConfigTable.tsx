@@ -17,11 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IoAdd, IoRemove } from 'react-icons/io5';
 import { type ContainerInfo } from 'dockerode';
+import { OnChangeFn, Row, RowSelectionState, VisibilityState } from '@tanstack/react-table';
+import STANDARD_ACTION_TYPES from '@libs/common/constants/standardActionTypes';
 import TableAction from '@libs/common/types/tableAction';
+import { TableActionsConfig } from '@libs/common/types/tableActionsConfig';
 import { AppConfigTableConfig } from '@/pages/Settings/AppConfig/components/table/types/appConfigTableConfig';
 import getAppConfigTableConfig from '@/pages/Settings/AppConfig/components/table/getAppConfigTableConfig';
 import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
@@ -31,10 +33,11 @@ import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import type TApps from '@libs/appconfig/types/appsType';
 import useMedia from '@/hooks/useMedia';
-import { OnChangeFn, RowSelectionState, VisibilityState } from '@tanstack/react-table';
+import useTableActions from '@/hooks/useTableActions';
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+import DeleteAppConfigTableDialog from './DeleteAppConfigTableDialog';
 
 interface AppConfigTableProps {
   applicationName: string;
@@ -67,6 +70,8 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
     } = config;
     const { tableContentData, fetchTableContent, selectedRows, setSelectedRows, deleteTableEntry } = useStore();
     const { setDialogOpen, isDialogOpen } = useAppConfigTableDialogStore();
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [itemsToDelete, setItemsToDelete] = useState<Array<{ name: string; id: string }>>([]);
 
     const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
       if (selectedRows && setSelectedRows) {
@@ -89,7 +94,29 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
       setDialogOpen(tableId);
     };
 
-    const handleRemoveClick = async () => {
+    const handleRemoveClick = () => {
+      if (!selectedRows) return;
+
+      const selectedIndices = Object.keys(selectedRows)
+        .filter((key) => selectedRows[key])
+        .map(Number);
+
+      const items = selectedIndices.map((index) => {
+        const row = tableContentData[index];
+        if (row && 'filename' in row && row.filename) {
+          return { name: row.filename, id: String(index) };
+        }
+        if (row && 'webdavShareId' in row && row.webdavShareId) {
+          return { name: row.displayName, id: String(index) };
+        }
+        return { name: t('common.entry', { index: index + 1 }), id: String(index) };
+      });
+
+      setItemsToDelete(items);
+      setIsDeleteDialogOpen(true);
+    };
+
+    const handleConfirmDelete = async () => {
       if (!selectedRows) return;
 
       const selectedIndices = Object.keys(selectedRows)
@@ -110,6 +137,10 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
       });
 
       await Promise.all(deletePromises);
+      if (setSelectedRows) {
+        setSelectedRows({});
+      }
+      setItemsToDelete([]);
       await fetchTableContent(applicationName as TApps);
     };
 
@@ -129,25 +160,42 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
       return visibility;
     }, [isMobileView, isTabletView, hideColumnsInMobileView, hideColumnsInTabletView]);
 
-    const getScrollableTable = () => {
-      const tableActions: TableAction<
-        BulletinCategoryResponseDto | ContainerInfo | FileInfoDto | VeyonProxyItem | WebdavShareDto
-      >[] = [];
+    type TableDataType = BulletinCategoryResponseDto | ContainerInfo | FileInfoDto | VeyonProxyItem | WebdavShareDto;
+
+    const selectedRowsArray = useMemo(
+      () =>
+        selectedRows
+          ? Object.entries(selectedRows)
+              .filter(([_, isSelected]) => isSelected)
+              .map(([rowId]) => {
+                const idx = parseInt(rowId, 10);
+                return { original: tableContentData[idx] } as Row<TableDataType>;
+              })
+          : [],
+      [selectedRows, tableContentData],
+    );
+
+    const actionsConfig = useMemo<TableActionsConfig<TableDataType>>(() => {
+      const configs: TableActionsConfig<TableDataType> = [];
       if (showAddButton) {
-        tableActions.push({
-          icon: IoAdd,
-          translationId: 'common.add',
+        configs.push({
+          type: STANDARD_ACTION_TYPES.ADD_OR_EDIT,
           onClick: handleAddClick,
         });
       }
       if (showRemoveButton) {
-        tableActions.push({
-          icon: IoRemove,
-          translationId: 'common.remove',
+        configs.push({
+          type: STANDARD_ACTION_TYPES.DELETE,
           onClick: handleRemoveClick,
+          visible: ({ hasSelection }) => hasSelection,
         });
       }
+      return configs;
+    }, [showAddButton, showRemoveButton, selectedRows, tableContentData]);
 
+    const tableActions = useTableActions(actionsConfig, selectedRowsArray);
+
+    const getScrollableTable = () => {
       switch (type) {
         case ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE: {
           return (
@@ -249,6 +297,17 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
         {title && <p className="font-bold">{t(title)}</p>}
         {getScrollableTable()}
         {dialogBody}
+        <DeleteAppConfigTableDialog
+          isOpen={isDeleteDialogOpen}
+          onOpenChange={(open) => {
+            setIsDeleteDialogOpen(open);
+            if (!open) {
+              setItemsToDelete([]);
+            }
+          }}
+          items={itemsToDelete}
+          onConfirmDelete={handleConfirmDelete}
+        />
       </div>
     );
   };

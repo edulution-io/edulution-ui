@@ -21,11 +21,11 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 import ForwardingPage from '@/pages/ForwardingPage/ForwardingPage';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
 
 const getForwardedAppRoutes = (appConfigs: AppConfigDto[]) =>
   appConfigs
-    .filter((item) => item.appType === APP_INTEGRATION_VARIANT.FORWARDED)
+    .filter((item) => item.appType === APP_INTEGRATION_VARIANT.FORWARDING)
     .map((item) => (
       <Route
         key={item.name}

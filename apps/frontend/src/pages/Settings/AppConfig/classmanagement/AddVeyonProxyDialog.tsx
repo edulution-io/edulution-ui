@@ -17,14 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { Form } from '@/components/ui/Form';
-import { Button } from '@/components/shared/Button';
 import FormField from '@/components/shared/FormField';
 import createVeyonProxyConfigSchema from '@libs/classManagement/constants/createVeyonProxyConfigSchema';
 import type VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
@@ -34,6 +33,8 @@ import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsVal
 import { type ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 import VEYON_PROXY_TABLE_COLUMNS from '@libs/classManagement/constants/veyonProxyTableColumns';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
+import getRandomUUID from '@/utils/getRandomUUID';
 import useVeyonConfigTableStore from './useVeyonConfigTableStore';
 import useAppConfigsStore from '../useAppConfigsStore';
 
@@ -43,6 +44,7 @@ interface AddVeyonProxyDialogProps {
 
 const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) => {
   const { t } = useTranslation();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
   const { appConfigs, patchSingleFieldInConfig } = useAppConfigsStore();
   const { selectedConfig, setSelectedConfig } = useVeyonConfigTableStore();
@@ -89,7 +91,7 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
       const filteredVeyonConfig = veyonProxyConfig.filter((item) => item.veyonProxyId !== selectedConfig.veyonProxyId);
       newConfig = [...filteredVeyonConfig, { veyonProxyId: selectedConfig.veyonProxyId, subnet, proxyAdress }];
     } else {
-      newConfig = [...veyonProxyConfig, { veyonProxyId: crypto.randomUUID(), subnet, proxyAdress }];
+      newConfig = [...veyonProxyConfig, { veyonProxyId: getRandomUUID(), subnet, proxyAdress }];
     }
 
     await patchSingleFieldInConfig(APPS.CLASS_MANAGEMENT, {
@@ -100,10 +102,7 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
     closeDialog();
   };
 
-  const handleDeleteVeyonProxyConfig = async (e: React.FormEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
+  const handleConfirmDelete = async () => {
     if (selectedConfig) {
       const newConfig = veyonProxyConfig.filter((item) => item.veyonProxyId !== selectedConfig.veyonProxyId);
       await patchSingleFieldInConfig(APPS.CLASS_MANAGEMENT, {
@@ -116,24 +115,11 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
   };
 
   const getFooter = () => (
-    <form
-      onSubmit={handleFormSubmit}
-      className="flex gap-4"
-    >
-      {selectedConfig && (
-        <div className="mt-4">
-          <Button
-            variant="btn-attention"
-            size="lg"
-            onClick={handleDeleteVeyonProxyConfig}
-          >
-            {t('bulletinboard.delete')}
-          </Button>
-        </div>
-      )}
+    <form onSubmit={handleFormSubmit}>
       <DialogFooterButtons
         handleClose={closeDialog}
         handleSubmit={() => {}}
+        handleDelete={selectedConfig ? () => setIsDeleteDialogOpen(true) : undefined}
         disableSubmit={!formState.isValid}
         submitButtonText="common.save"
         submitButtonType="submit"
@@ -162,20 +148,32 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
   );
 
   return (
-    <AdaptiveDialog
-      isOpen={isOpen}
-      handleOpenChange={() => {
-        setDialogOpen('');
-        setSelectedConfig(null);
-      }}
-      title={
-        selectedConfig
-          ? t('classmanagement.veyonConfigTable.editConfig')
-          : t('classmanagement.veyonConfigTable.createConfig')
-      }
-      body={getDialogBody()}
-      footer={getFooter()}
-    />
+    <>
+      <AdaptiveDialog
+        isOpen={isOpen}
+        handleOpenChange={() => {
+          setDialogOpen('');
+          setSelectedConfig(null);
+        }}
+        title={
+          selectedConfig
+            ? t('classmanagement.veyonConfigTable.editConfig')
+            : t('classmanagement.veyonConfigTable.createConfig')
+        }
+        body={getDialogBody()}
+        footer={getFooter()}
+      />
+      {selectedConfig && (
+        <DeleteConfirmationDialog
+          isOpen={isDeleteDialogOpen}
+          onOpenChange={setIsDeleteDialogOpen}
+          items={[{ id: selectedConfig.veyonProxyId, name: selectedConfig.subnet }]}
+          onConfirmDelete={handleConfirmDelete}
+          titleTranslationKey="classmanagement.veyonConfigTable.deleteConfig"
+          messageTranslationKey="classmanagement.veyonConfigTable.confirmDeleteConfig"
+        />
+      )}
+    </>
   );
 };
 

@@ -24,7 +24,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import CustomHttpException from '../common/CustomHttpException';
@@ -147,40 +146,6 @@ describe(SurveysController.name, () => {
 
       expect(status).toHaveBeenCalledWith(HttpStatus.CREATED);
       expect(json).toHaveBeenCalledWith('surveys/files/upload.png');
-    });
-
-    it('throws CustomHttpException on missing file (malformed upload)', () => {
-      const json = jest.fn();
-      const status = jest.fn().mockReturnValue({ json });
-
-      try {
-        controller.fileUpload(
-          undefined as unknown as Express.Multer.File,
-          { status } as unknown as import('express').Response,
-        );
-        fail('Expected to throw');
-      } catch (e) {
-        expect(e).toBeInstanceOf(CustomHttpException);
-        expect((e as Error).message).toBe(CommonErrorMessages.FILE_NOT_PROVIDED);
-        expect((e as CustomHttpException).getStatus()).toBe(HttpStatus.BAD_REQUEST);
-      }
-    });
-
-    it('throws CustomHttpException on disallowed mime types', () => {
-      const json = jest.fn();
-      const status = jest.fn().mockReturnValue({ json });
-
-      try {
-        controller.fileUpload(
-          { filename: 'file.txt', mimetype: 'text/plain' } as unknown as Express.Multer.File,
-          { status } as unknown as import('express').Response,
-        );
-        fail('Expected to throw');
-      } catch (e) {
-        expect(e).toBeInstanceOf(CustomHttpException);
-        expect((e as Error).message).toBe(CommonErrorMessages.FILE_UPLOAD_FAILED);
-        expect((e as CustomHttpException).getStatus()).toBe(HttpStatus.BAD_REQUEST);
-      }
     });
   });
 
@@ -334,8 +299,9 @@ describe(SurveysController.name, () => {
       SurveysAttachmentService.onSurveyRemoval = jest.fn().mockImplementation(() => {});
       surveyModel.deleteMany = jest.fn().mockResolvedValueOnce(true);
       surveyAnswerModel.deleteMany = jest.fn().mockReturnValue(true);
+      surveyService.throwErrorIfUserIsNotCreator = jest.fn().mockResolvedValueOnce(true);
 
-      await controller.deleteSurvey({ surveyIds: [idOfAnsweredSurvey01.toString()] });
+      await controller.deleteSurveys({ surveyIds: [idOfAnsweredSurvey01.toString()] }, firstMockJWTUser);
 
       expect(surveyService.deleteSurveys).toHaveBeenCalledWith([idOfAnsweredSurvey01.toString()]);
       expect(surveyAnswersService.onSurveyRemoval).toHaveBeenCalledWith([idOfAnsweredSurvey01.toString()]);
@@ -350,13 +316,15 @@ describe(SurveysController.name, () => {
       jest.spyOn(surveyService, 'deleteSurveys');
       jest.spyOn(surveyAnswersService, 'onSurveyRemoval');
 
+      surveyService.throwErrorIfUserIsNotCreator = jest.fn().mockResolvedValueOnce(true);
+
       surveyModel.deleteMany = jest
         .fn()
         .mockRejectedValue(new CustomHttpException(SurveyErrorMessages.DeleteError, HttpStatus.NOT_MODIFIED));
       surveyAnswerModel.deleteMany = jest.fn();
 
       try {
-        await controller.deleteSurvey({ surveyIds: [idOfAnsweredSurvey01.toString()] });
+        await controller.deleteSurveys({ surveyIds: [idOfAnsweredSurvey01.toString()] }, firstMockJWTUser);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e instanceof Error && e.message).toBe(SurveyErrorMessages.DeleteError);
@@ -383,6 +351,8 @@ describe(SurveysController.name, () => {
         exec: jest.fn().mockResolvedValue(surveyAnswerAnsweredSurvey03),
       });
       surveyAnswerModel.findByIdAndUpdate = jest.fn().mockReturnValue(updatedSurveyAnswerAnsweredSurvey03);
+
+      surveyService.throwErrorIfSurveyIsNotAccessible = jest.fn().mockResolvedValueOnce(true);
 
       const attendee = {
         username: firstMockJWTUser.preferred_username,

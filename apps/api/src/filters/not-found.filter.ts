@@ -17,22 +17,26 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { ApiTags } from '@nestjs/swagger';
-import { Controller, Get, Injectable } from '@nestjs/common';
-import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
-import MobileAppModuleService from './mobileAppModule.service';
-import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
+import { ExceptionFilter, Catch, ArgumentsHost, Logger, NotFoundException, HttpStatus } from '@nestjs/common';
+import { Response, Request } from 'express';
 
-@ApiTags('mobile-app')
-@Controller('mobile-app')
-@Injectable()
-class MobileAppModuleController {
-  constructor(private readonly edulutionAppService: MobileAppModuleService) {}
+@Catch(NotFoundException)
+class NotFoundFilter implements ExceptionFilter {
+  private readonly logger = new Logger(NotFoundFilter.name);
 
-  @Get('user-data')
-  async getAppUserData(@GetCurrentUsername() username: string, @GetCurrentUserGroups() currentUserGroups: string[]) {
-    return this.edulutionAppService.getAppUserData(username, currentUserGroups);
+  catch(_exception: NotFoundException, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
+
+    this.logger.warn(`Not found: ${request.method} ${request.url.split('?')[0]}`);
+
+    response.status(HttpStatus.NOT_FOUND).json({
+      statusCode: HttpStatus.NOT_FOUND,
+      message: 'Not Found',
+      error: 'Not Found',
+    });
   }
 }
 
-export default MobileAppModuleController;
+export default NotFoundFilter;

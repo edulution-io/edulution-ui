@@ -50,8 +50,9 @@ const surveyTemplatesMigration000MigrateTemplateFilesToDB: Migration<SurveysTemp
             throw new Error(`Failed to read file content from ${filePath}`);
           }
           const newTemplate = JSON.parse(fileContent) as TemplateDto;
+          const templateName = newTemplate?.formula?.title || fileName.replace('.json', '');
           const newDocument: SurveysTemplateDocument | null = await model.findOneAndUpdate(
-            { fileName },
+            { name: templateName },
             { $set: { template: newTemplate, schemaVersion, isActive: true } },
             { new: true, upsert: true },
           );

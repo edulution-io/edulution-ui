@@ -18,15 +18,18 @@
  */
 
 import { toast } from 'sonner';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { SurveyCreatorModel } from 'survey-creator-core';
-import { IoAdd } from 'react-icons/io5';
 import cn from '@libs/common/utils/className';
+import STANDARD_ACTION_TYPES from '@libs/common/constants/standardActionTypes';
+import { TableActionsConfig } from '@libs/common/types/tableActionsConfig';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
+import useTableActions from '@/hooks/useTableActions';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import APPS from '@libs/appconfig/constants/apps';
-import { SURVEY_CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import { PUBLIC_SURVEY_CHOICES, SURVEY_CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
@@ -88,6 +91,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
 
     try {
       const surveyFormula = creator.JSON as SurveyFormula;
+      const isPublic = form.getValues('isPublic') || false;
       const updatedFormula = JSON.parse(JSON.stringify(surveyFormula)) as SurveyFormula;
 
       let correspondingQuestion: SurveyElement | undefined;
@@ -111,7 +115,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       } else {
         correspondingQuestion.choices = null;
         correspondingQuestion.choicesByUrl = {
-          url: `${EDU_API_URL}/${SURVEY_CHOICES}/${TEMPORAL_SURVEY_ID_STRING}/${selectedQuestion.name}`,
+          url: `${EDU_API_URL}/${isPublic ? PUBLIC_SURVEY_CHOICES : SURVEY_CHOICES}/${TEMPORAL_SURVEY_ID_STRING}/${selectedQuestion.name}`,
           valueName: 'title',
           titleName: 'title',
         };
@@ -135,6 +139,18 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       toggleShowOtherItem();
     }
   };
+
+  const actionsConfig = useMemo<TableActionsConfig<ChoiceDto>>(
+    () => [
+      {
+        type: STANDARD_ACTION_TYPES.ADD,
+        onClick: () => addNewChoice(),
+      },
+    ],
+    [addNewChoice],
+  );
+
+  const actions = useTableActions(actionsConfig, []);
 
   if (!form) return null;
   if (!isQuestionTypeChoiceType(questionType)) return null;
@@ -167,13 +183,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
               filterKey="choice-title"
               filterPlaceHolderText={t('survey.editor.questionSettings.filterPlaceHolderText')}
               applicationName={APPS.SURVEYS}
-              actions={[
-                {
-                  icon: IoAdd,
-                  translationId: 'common.add',
-                  onClick: () => addNewChoice(),
-                },
-              ]}
+              actions={actions}
               showSelectedCount={false}
               isDialog
               initialSorting={[{ id: 'choice-title', desc: false }]}

@@ -18,6 +18,7 @@
  */
 
 import { Types } from 'mongoose';
+import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 import { Survey, SurveyDocument } from '../../survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from '../../survey-answers.schema';
 import { firstMockUser, secondMockUser } from '../user';
@@ -31,12 +32,14 @@ export const saveNoAnsweredSurvey01: number = 117;
 const firstUsersMockedAnswerForTheAnsweredSurvey01 = new Types.ObjectId();
 const secondUsersMockedAnswerForTheAnsweredSurvey01 = new Types.ObjectId();
 
-export const firstUsersMockedAnswerForAnsweredSurveys01: JSON = JSON.parse(
-  `{"Frage1": "User1 Antwort1", "identification": "${firstMockUser.firstName} ${firstMockUser.lastName}"}`,
-) as JSON;
-export const secondUsersMockedAnswerForAnsweredSurveys01: JSON = JSON.parse(
-  `{"Frage1": "User2 Antwort1", "identification": "${firstMockUser.firstName} ${firstMockUser.lastName}"}`,
-) as JSON;
+export const firstUsersMockedAnswerForAnsweredSurveys01: TSurveyAnswer = {
+  Frage1: 'User1 Antwort1',
+  identification: `${firstMockUser.firstName} ${firstMockUser.lastName}`,
+};
+export const secondUsersMockedAnswerForAnsweredSurveys01: TSurveyAnswer = {
+  Frage1: 'User2 Antwort1',
+  identification: `${firstMockUser.firstName} ${firstMockUser.lastName}`,
+};
 
 export const firstUsersSurveyAnswerAnsweredSurvey01: SurveyAnswerDocument = {
   _id: firstUsersMockedAnswerForTheAnsweredSurvey01,
@@ -101,7 +104,7 @@ export const idOfAnsweredSurvey02 = new Types.ObjectId();
 export const saveNoAnsweredSurvey02: number = 1;
 export const idOfTheSurveyAnswerForTheAnsweredSurvey02 = new Types.ObjectId();
 
-export const mockedAnswerForAnsweredSurveys02: JSON = JSON.parse('{"Frage1": "Max", "Frage2": "Musterman"}') as JSON;
+export const mockedAnswerForAnsweredSurveys02: TSurveyAnswer = { Frage1: 'Max', Frage2: 'Musterman' };
 
 export const surveyAnswerAnsweredSurvey02: SurveyAnswerDocument = {
   _id: idOfTheSurveyAnswerForTheAnsweredSurvey02,
@@ -152,10 +155,8 @@ export const idOfAnsweredSurvey03 = new Types.ObjectId();
 export const saveNoAnsweredSurvey03: number = 3;
 const idOfTheSurveyAnswerForTheAnsweredSurvey03 = new Types.ObjectId();
 
-export const mockedAnswerForAnsweredSurveys03: JSON = JSON.parse('{"Frage1": "Max", "Frage2": "Musterman"}') as JSON;
-export const updatedMockedAnswerForAnsweredSurveys03: JSON = JSON.parse(
-  '{"Frage1": "Maximilian", "Frage2": "Musterman"}',
-) as JSON;
+export const mockedAnswerForAnsweredSurveys03: TSurveyAnswer = { Frage1: 'Max', Frage2: 'Musterman' };
+export const updatedMockedAnswerForAnsweredSurveys03: TSurveyAnswer = { Frage1: 'Maximilian', Frage2: 'Musterman' };
 
 export const surveyAnswerAnsweredSurvey03: SurveyAnswerDocument = {
   _id: idOfTheSurveyAnswerForTheAnsweredSurvey03,
@@ -224,7 +225,7 @@ export const idOfAnsweredSurvey04 = new Types.ObjectId();
 export const saveNoAnsweredSurvey04: number = 4;
 export const idOfTheSurveyAnswerForTheAnsweredSurvey04 = new Types.ObjectId();
 
-export const mockedAnswerForAnsweredSurveys04: JSON = JSON.parse('{"Frage1": "Max", "Frage2": "Musterman"}') as JSON;
+export const mockedAnswerForAnsweredSurveys04: TSurveyAnswer = { Frage1: 'Max', Frage2: 'Musterman' };
 
 export const surveyAnswerAnsweredSurvey04: SurveyAnswer = {
   _id: idOfTheSurveyAnswerForTheAnsweredSurvey04,
@@ -275,10 +276,8 @@ export const idOfAnsweredSurvey05 = new Types.ObjectId();
 export const saveNoAnsweredSurvey05: number = 5;
 export const idOfTheSurveyAnswerForTheAnsweredSurvey05 = new Types.ObjectId();
 
-export const mockedAnswerForAnsweredSurveys05: JSON = JSON.parse('{"Frage1": "Max", "Frage2": "Musterman"}') as JSON;
-export const newMockedAnswerForAnsweredSurveys05: JSON = JSON.parse(
-  '{"Frage1": "Maximilian", "Frage2": "Musterman"}',
-) as JSON;
+export const mockedAnswerForAnsweredSurveys05: TSurveyAnswer = { Frage1: 'Max', Frage2: 'Musterman' };
+export const newMockedAnswerForAnsweredSurveys05: TSurveyAnswer = { Frage1: 'Maximilian', Frage2: 'Musterman' };
 
 export const surveyAnswerAnsweredSurvey05: SurveyAnswer = {
   _id: idOfTheSurveyAnswerForTheAnsweredSurvey05,

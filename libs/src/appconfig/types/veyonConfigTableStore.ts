@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import AppConfigTable from '@libs/bulletinBoard/types/appConfigTable';
+import AppConfigTable from '@libs/appconfig/types/appConfigTable';
 import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 
 export interface VeyonConfigTableStore extends AppConfigTable<VeyonProxyItem> {

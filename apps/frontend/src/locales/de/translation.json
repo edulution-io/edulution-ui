@@ -21,7 +21,9 @@
     "isVisibleEndDate": "Aktiv bis",
     "isActiveOrExpired": "Aktiv/Abgelaufen",
     "activeFrom": "Aktiv von",
+    "activeFromPlaceholder": "ab sofort",
     "activeUntil": "Aktiv bis",
+    "activeUntilPlaceholder": "unbegrenzt gültig",
     "appTitle": "Info Board",
     "description": "Hier findest du deine aktuellen Mitteilungen",
     "filterPlaceHolderText": "Suche nach Kategoriename",
@@ -47,8 +49,8 @@
     "deleteBulletins": "{{count}} Mitteilungen löschen",
     "editBulletin": "Mitteilung bearbeiten",
     "createBulletin": "Mitteilung erstellen",
-    "confirmSingleDelete": "Soll diese Mitteilung wirklich gelöscht werden?",
-    "confirmMultiDelete": "Sollen diese Mitteilungen wirklich gelöscht werden?",
+    "confirmDelete": "Soll diese Mitteilung wirklich gelöscht werden?",
+    "confirmDelete_other": "Sollen diese {{count}} Mitteilungen wirklich gelöscht werden?",
     "rowsSelected": "{{selected}} von {{total}} Mitteilungen ausgewählt",
     "rowSelected": "{{selected}} von {{total}} Mitteilung ausgewählt",
     "cancel": "Abbrechen",
@@ -99,7 +101,9 @@
     "dropIconDescription": "Ziehe ein Bild hierher oder klicke, um ein Bild auszuwählen. Unterstützte Formate: SVG, WEBP"
   },
   "forwarding": {
-    "sidebar": "Weiterleitung"
+    "sidebar": "Weiterleitung",
+    "behaviorAtSidebarClick": "Schnellzugriff beim Öffnen der App",
+    "forwardDirectly": "Direkt beim Öffnen der App weiterleiten (falls deaktiviert, muss der Nutzer mit einem weiteren Klick bestätigen)"
   },
   "frame": {
     "sidebar": "Frame"
@@ -205,7 +209,13 @@
       "mailAddress": "E-Mail-Adresse",
       "noMailConfigured": "E-Mail-App ist nicht konfiguriert. Bitte kontaktiere den Systemadministrator.",
       "syncAccountAdded": "Konto für Sync-Job hinzugefügt.",
-      "syncAccountDeleted": "Konto für Sync-Job gelöscht."
+      "syncAccountDeleted": "Konto für Sync-Job gelöscht.",
+      "confirmDeleteSyncJob_other": "Möchtest du diese {{count}} Sync-Jobs wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "confirmDeleteSyncJob": "Möchtest du diesen Sync-Job wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "deleteSyncJobs": "{{count}} Sync-Jobs löschen",
+      "deleteSyncJob": "Sync-Job löschen",
+      "confirmDeleteProviderConfig": "Möchtest du diese E-Mail-Provider-Konfiguration wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "deleteProviderConfig": "E-Mail-Provider-Konfiguration löschen"
     }
   },
   "chat": {
@@ -217,7 +227,8 @@
     "automaticLoginFailed": "Automatischer Login fehlgeschlagen",
     "uploadOrFetchAttachmentFailed": "Fehler beim Hochladen des Anhangs",
     "fileGenerationFailed": "Datei konnte nicht generiert werden",
-    "requestTooLarge": "Deine Anfrage ist zu groß. Falls du Medien angehängt hast, versuche diese zu komprimieren oder zu entfernen"
+    "requestTooLarge": "Deine Anfrage ist größer als {{limit}} KB. Falls du Medien angehängt hast, versuche diese zu komprimieren oder zu entfernen.",
+    "fileTooLarge": "Die Datei ist größer als {{limit}} MB. Bitte komprimiere die Datei oder wähle eine kleinere."
   },
   "conferences": {
     "errors": {
@@ -264,13 +275,14 @@
     "create": "Konferenz erstellen",
     "delete": "Löschen",
     "deleteConference": "Konferenz löschen",
-    "deleteConferences": "{{count}} Konferenzen löschen",
+    "deleteConferences": "Konferenz löschen",
+    "deleteConferences_other": "{{count}} Konferenzen löschen",
     "editConference": "Konferenz bearbeiten",
     "conferenceUpdatedSuccessfully": "Konferenz erfolgreich gespeichert ",
     "conferenceFetchedSuccessfully": "Konferenzen erfolgreich aktualisiert ",
     "conferenceCreatedSuccessfully": "Konferenz erfolgreich erstellt",
-    "confirmSingleDelete": "Soll diese Konferenz wirklich gelöscht werden?",
-    "confirmMultiDelete": "Sollen diese Konferenzen wirklich gelöscht werden?",
+    "confirmDelete": "Soll diese Konferenz wirklich gelöscht werden?",
+    "confirmDelete_other": "Sollen diese {{count}} Konferenzen wirklich gelöscht werden?",
     "name": "Name der Konferenz",
     "conference": "Konferenz",
     "password": "Passwort",
@@ -399,10 +411,10 @@
       "isActive": "Aktiv",
       "fileLink": "Freigabe-Link",
       "invitedAttendees": "Eingeladen",
-      "confirmMultiDelete": "Sollen diese Freigabe-Links zu den folgenden Inhalten wirklich gelöscht werden?",
-      "confirmSingleDelete": "Soll dieser Freigabe-Link zu folgendem Inhalt wirklich gelöscht werden?",
+      "confirmDelete": "Soll dieser Freigabe-Link wirklich gelöscht werden?",
+      "confirmDelete_other": "Sollen diese {{count}} Freigabe-Links wirklich gelöscht werden?",
       "deleteFileLink": "Freigabe-Link löschen",
-      "deleteFileLinks": "Freigabe-Links löschen",
+      "deleteFileLink_other": "Freigabe-Links löschen",
       "selectPersonsOrGroupsWhoCanAccess": "Beschränke Personen oder Gruppen, die Zugriff auf diesen Inhalt haben",
       "isAccessibleBy": "Zugänglich für",
       "isPasswordProtected": "Passwort",
@@ -493,6 +505,8 @@
     "invalidQuota": "Die Quota muss der Dokumentation entsprechend angegeben werden",
     "invalidMailQuota": "Die E-Mailquota muss als Zahl in MB angegeben werden",
     "name": "Name",
+    "confirmDeleteGroup": "Möchtest du diese Gruppe wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "deleteGroup": "{{type}} löschen",
     "project": {
       "createSuccess": "Projekt erfolgreich erstellt",
       "updateSuccess": "Projekt erfolgreich aktualisiert",
@@ -623,7 +637,9 @@
       "proxyAdressDescription": "URL des Veyon-WebAPI-Proxy",
       "proxyAdressPlaceholder": "http://localhost:11080",
       "createConfig": "Konfiguration erstellen",
-      "editConfig": "Konfiguration bearbeiten"
+      "editConfig": "Konfiguration bearbeiten",
+      "deleteConfig": "Konfiguration löschen",
+      "confirmDeleteConfig": "Soll diese Veyon-Proxy-Konfiguration wirklich gelöscht werden?"
     },
     "selectSchool": {
       "title": "Schule auswählen",
@@ -674,6 +690,11 @@
       "fileUploadError": "Die Datei konnte nicht hochgeladen werden, bitte versuche es später erneut.",
       "fileDeletionSuccess": "Die Datei wurde erfolgreich gelöscht.",
       "saveSurveySuccess": "Die Umfrage wurde gespeichert.",
+      "surveyPlaceHolder": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
+      "surveyPlaceholderDescription": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
+      "surveyPlaceholderDescriptionMobile": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
+      "pagePlaceHolder": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um der Seite ein neues Element hinzuzufügen.",
+      "panelPlaceHolder": "Klicke unten auf \"Frage hinzufügen\", um dem Bedienfeld ein neues Element hinzuzufügen.",
       "reset": "Verwerfen",
       "addDescription": "Beschreibung hinzufügen",
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
@@ -684,6 +705,10 @@
         "userMessage": "Zur Verfügung stehende Vorlagen können hier geladen werden.",
         "adminMessage": "Um deine aktuelle Umfrage als Vorlage zu veröffentlichen, klicke auf 'Speichern'. Vorhandene Vorlagen können hier gelöscht oder geladen werden.",
         "emptyMessage": "Es sind noch keine Vorlagen vorhanden",
+        "upload": {
+          "success": "Vorlage erfolgreich gespeichert",
+          "error": "Die Vorlage konnte nicht gespeichert werden"
+        },
         "deletion": {
           "title": "Vorlage löschen",
           "message": "Soll die Vorlage wirklich gelöscht werden?",
@@ -763,9 +788,10 @@
   "surveys": {
     "rowsSelected": "{{selected}} von {{total}} Umfragen ausgewählt",
     "rowSelected": "{{selected}} von {{total}} Umfrage ausgewählt",
-    "confirmMultiDelete": "Sollen diese Umfragen wirklich gelöscht werden?",
-    "confirmSingleDelete": "Soll die Umfrage wirklich gelöscht werden?",
-    "deleteSurveys": "Lösche {{count}} Umfragen",
+    "confirmDelete": "Soll diese Umfrage wirklich gelöscht werden?",
+    "confirmDelete_other": "Sollen diese {{count}} Umfragen wirklich gelöscht werden?",
+    "deleteSurveys_other": "Lösche {{count}} Umfragen",
+    "deleteSurveys": "Lösche Umfrage",
     "deletedSurveys": "{{count}} Umfragen erfolgreich gelöscht",
     "deleteSurvey": "Umfrage Löschen",
     "deletedSurvey": "Umfrage erfolgreich gelöscht",
@@ -947,8 +973,8 @@
       "linuxmuster": "Hier kannst du alle Einstellungen vornehmen.",
       "whiteboard": "Hier kannst du alle Einstellungen vornehmen.",
       "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Info Board haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden.",
-      "forwarded": "Weiterleitung: Einfach den Link zur Webanwendung unter URL eintragen.",
-      "framed": "Frame: Einfach den Link zur Webanwendung unter URL eintragen.",
+      "forwarding": "Weiterleitung: Einfach den Link zur Webanwendung unter URL eintragen.",
+      "frame": "Frame: Einfach den Link zur Webanwendung unter URL eintragen.",
       "embedded": "Eingebettet: Hier kann eine eigene Webanwendung im Editor erstellt werden."
     },
     "globalSettings": {
@@ -1034,6 +1060,10 @@
         "title": "Sortierung",
         "description": "An welcher Position soll die App in der App-Leiste und in den Einstellungen angezeigt werden?"
       },
+      "deleteEntries": "Eintrag löschen",
+      "deleteEntries_other": "{{count}} Einträge löschen",
+      "confirmDeleteEntries": "Möchtest du diesen Eintrag wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "confirmDeleteEntries_other": "Möchtest du diese {{count}} Einträge wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
       "sections": {
         "onlyOffice": {
           "title": "Only Office Integration",
@@ -1057,7 +1087,11 @@
         },
         "docker": {
           "title": "Docker Anwendungen",
-          "description": "Um die erweiterten Dienste nutzen zu können, können hier die benötigten Container-Anwendungen installiert und gestartet werden."
+          "description": "Um die erweiterten Dienste nutzen zu können, können hier die benötigten Container-Anwendungen installiert und gestartet werden.",
+          "confirmMultiDeleteContainer": "Möchtest du diese Container wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+          "confirmSingleDeleteContainer": "Möchtest du diesen Container wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+          "deleteContainers_other": "{{count}} Container löschen",
+          "deleteContainers": "Container löschen"
         },
         "veyon": {
           "title": "Veyon Proxy",
@@ -1070,11 +1104,15 @@
           "title": "WebDAV",
           "sectionTitle": "WebDAV-Shares",
           "description": "Hier können WebDAV-Server für den Dateimanager eingerichtet werden.",
-          "filterPlaceHolderText": "Suche nach WebDAV-Share"
+          "filterPlaceHolderText": "Suche nach WebDAV-Share",
+          "deleteWebdavShare": "WebDAV-Share löschen",
+          "confirmDeleteWebdavShare": "Soll dieses WebDAV-Share wirklich gelöscht werden?"
         },
         "webdavServer": {
           "title": "WebDAV-Server",
           "filterPlaceHolderText": "Suche nach WebDAV-Server",
+          "deleteWebdavServer": "WebDAV-Server löschen",
+          "confirmDeleteWebdavServer": "Soll dieser WebDAV-Server wirklich gelöscht werden?",
           "deleteWarning": {
             "title": "Löschen nicht möglich",
             "description": "Der WebDAV-Server '{{serverName}}' wird von {{count}} Share(s) verwendet: {{shares}}. Bitte lösche die abhängigen Shares zuerst."
@@ -1199,7 +1237,12 @@
       "enterSavePin": "Bitte Tresor-PIN eingeben.",
       "wrongSafePin": "PIN ist falsch.",
       "enterSafePin": "Bitte PIN zum Entschlüsseln eingeben.",
-      "safePinDescription": "Zur Verschlüsselung der Zugangsdaten wird eine PIN benötigt. Diese PIN ist für niemanden sichtbar und wird nicht gespeichert."
+      "safePinDescription": "Zur Verschlüsselung der Zugangsdaten wird eine PIN benötigt. Diese PIN ist für niemanden sichtbar und wird nicht gespeichert.",
+      "confirmMultiDeleteAccount": "Möchtest du diese Konten wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "confirmSingleDeleteAccount": "Möchtest du dieses Konto wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "deleteUserAccounts": "{{count}} Konten löschen",
+      "deleteUserAccount": "Konto löschen",
+      "cryptoNotAvailable": "Verschlüsselung ist nur über HTTPS verfügbar. Bitte verwende eine sichere Verbindung."
     },
     "mails": {
       "title": "E-Mail"
@@ -1248,7 +1291,7 @@
   },
   "forwardingpage": {
     "action": "Über diesen Link gelangen Sie zur externen Seite des Anbieters.",
-    "description": "Die Anwendung öffnet sich in einem neuen Fenster. Es ist keine weitere Autorisierung nötig.",
+    "description": "Die Anwendung öffnet sich in einem neuen Fenster.",
     "missing_link": "Link fehlt"
   },
   "menu": "MENÜ",
@@ -1296,6 +1339,7 @@
     "share": "Teilen",
     "answers": "Antworten",
     "error": "Fehler",
+    "entry": "Eintrag {{index}}",
     "errors": {
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "directoryNotCreated": "Erstellen des Verzeichnisses fehlgeschlagen",
@@ -1388,6 +1432,8 @@
     "start": "Starten",
     "close": "Schließen",
     "delete": "Löschen",
+    "deleting": "Löschen...",
+    "noItemsSelected": "Keine Elemente ausgewählt",
     "connect": "Verbinden",
     "custom": "Benutzerdefiniert",
     "select": "Wählen...",
@@ -1432,7 +1478,7 @@
     "pathDescription": "Bitte eine URL eintragen.",
     "apptype": "Art der Anwendung",
     "native": "Native Unterstützung",
-    "forwarded": "Weiterleitung",
+    "forwarding": "Weiterleitung",
     "embedded": "Eingebettet",
     "saved": "Konfiguration gespeichert!",
     "url": "URL",
@@ -1472,7 +1518,9 @@
     "lastModified": "Zuletzt geändert",
     "type": "Typ",
     "isShared": "Geteilt",
-    "filesOrFoldersSelected": "{{selected}} von {{total}} Dateien/Ordnern ausgewählt"
+    "filesOrFoldersSelected": "{{selected}} von {{total}} Dateien/Ordnern ausgewählt",
+    "element": "Element",
+    "elements": "Elements"
   },
   "currentDirectory": "Aktuelles Verzeichnis",
   "filesharingUpload": {
@@ -1819,7 +1867,7 @@
       "containerCreationSuccessful": "Container erfolgreich erstellt.",
       "containerCreationFailed": "Container konnte nicht erstellt werden.",
       "containerUpdateSuccessful": "{{containerName}} erfolgreich aktualisiert.",
-      "containerAlreadyUpdateToDate": "{{containerName}} ist bereits aktuell."
+      "containerAlreadyUpToDate": "{{containerName}} ist bereits aktuell."
     },
     "status": {
       "running": "läuft",

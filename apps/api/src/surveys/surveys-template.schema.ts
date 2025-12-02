@@ -22,7 +22,7 @@ export class SurveysTemplate {
   @Prop({ type: Object, required: true })
   template: Partial<Survey> & { formula: SurveyFormula };
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   name: string;
 
   @Prop({ default: true, required: true })

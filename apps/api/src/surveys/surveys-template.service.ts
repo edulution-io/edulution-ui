@@ -18,13 +18,11 @@
  */
 
 import { Response } from 'express';
-import { randomUUID } from 'crypto';
 import { Connection, Model } from 'mongoose';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
-import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import GlobalSettingsService from 'apps/api/src/global-settings/global-settings.service';
 import MigrationService from 'apps/api/src/migration/migration.service';
@@ -42,7 +40,6 @@ class SurveysTemplateService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-
     const collectionsNamedMigration = await this.connection.db?.listCollections({ name: 'surveystemplates' }).toArray();
     if (collectionsNamedMigration?.length === 0) {
       await this.connection.db?.createCollection('surveystemplates');
@@ -58,44 +55,40 @@ class SurveysTemplateService implements OnModuleInit {
   }
 
   async updateOrCreateTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
-    const { template, isActive = true, name = `${getCurrentDateTimeString()}_-_${randomUUID()}` } = surveyTemplate;
+    const { template, name, isActive = true } = surveyTemplate;
     try {
+      const templateName = name || template.formula.title;
       return await this.surveyTemplateModel.findOneAndUpdate(
-        { name },
-        { template, isActive, name },
-        { new: true, upsert: true },
+        { name: templateName },
+        { template, isActive, name: templateName },
+        { new: true, upsert: !name },
       );
     } catch (error) {
       throw new CustomHttpException(
         CommonErrorMessages.DB_ACCESS_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
-        SurveysTemplateService.name,
-      );
-    }
-  }
-
-  async serveTemplates(ldapGroups: string[], res: Response): Promise<Response> {
-    const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
-    const documents = await this.surveyTemplateModel.find(
-      getIsAdmin(ldapGroups, adminGroups) ? {} : { isActive: true },
-    );
-    if (!documents || documents.length === 0) {
-      throw new CustomHttpException(
-        CommonErrorMessages.FILE_NOT_FOUND,
-        HttpStatus.NOT_FOUND,
         undefined,
         SurveysTemplateService.name,
       );
     }
+  }
+
+  async getTemplates(ldapGroups: string[], res: Response): Promise<Response> {
+    const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
+    const documents = await this.surveyTemplateModel.find(
+      getIsAdmin(ldapGroups, adminGroups) ? {} : { isActive: true },
+    );
     return res.status(HttpStatus.OK).json(documents);
   }
 
-  async toggleIsTemplateActive(name: string): Promise<SurveysTemplateDocument | null> {
+  async setIsTemplateActive(name: string, isActive: boolean): Promise<SurveysTemplateDocument | null> {
     return this.surveyTemplateModel.findOneAndUpdate(
-      { name, isActive: true },
-      [{ $set: { isActive: { $not: '$isActive' } } }],
-      { new: true, upsert: false },
+      { name },
+      { isActive },
+      {
+        new: true,
+        upsert: false,
+      },
     );
   }
 
