@@ -33,6 +33,7 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableSharePathname';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
+import getAppIconClassName from '@libs/ui/utils/getAppIconClassName';
 import useMenuBarStore from './useMenuBarStore';
 import { Button } from './Button';
 
@@ -140,7 +141,11 @@ const MenuBar: React.FC = () => {
           <img
             src={menuBarEntries.icon}
             alt={menuBarEntries.title}
-            className={cn('object-contain transition-all', shouldCollapse ? 'h-10 w-10' : 'h-20 w-20')}
+            className={cn(
+              'object-contain transition-all',
+              shouldCollapse ? 'h-10 w-10' : 'h-20 w-20',
+              getAppIconClassName(menuBarEntries.icon),
+            )}
           />
           {!shouldCollapse && <h2 className="mb-2 mt-2 text-center font-bold">{menuBarEntries.title}</h2>}
         </button>
@@ -166,7 +171,7 @@ const MenuBar: React.FC = () => {
               <img
                 src={item.icon}
                 alt={item.label}
-                className="h-12 w-12 object-contain"
+                className={cn('h-12 w-12 object-contain', getAppIconClassName(item.icon))}
               />
               {!shouldCollapse && <p>{item.label}</p>}
             </button>

@@ -31,6 +31,7 @@ import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import APPLICATION_NAME from '@libs/common/constants/applicationName';
+import getAppIconClassName from '@libs/ui/utils/getAppIconClassName';
 import APP_CONFIG_OPTIONS from '../appConfigOptions';
 import AddAppConfigDialog from '../AddAppConfigDialog';
 import AppStoreFloatingButtons from './AppStoreFloatingButtons';
@@ -112,7 +113,7 @@ const AppStorePage: React.FC = () => {
                 <img
                   src={item.icon}
                   alt={item.id}
-                  className="h-12 w-12 md:h-14 md:w-14"
+                  className={cn('h-12 w-12 md:h-14 md:w-14', getAppIconClassName(item.icon))}
                 />
                 <p>{t(`${item.id}.sidebar`)}</p>
               </div>
