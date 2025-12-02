@@ -17,14 +17,26 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type AppConfigTable from '@libs/appconfig/types/appConfigTable';
-import type FileInfoDto from './fileInfo.dto';
+import { ExceptionFilter, Catch, ArgumentsHost, Logger, NotFoundException, HttpStatus } from '@nestjs/common';
+import { Response, Request } from 'express';
 
-export interface FileTableStore extends AppConfigTable<FileInfoDto> {
-  files: Record<string, string>;
-  isLoading: boolean;
-  error: string | null;
-  publicFilesInfo: FileInfoDto[];
-  getPublicFilesInfo: (applicationName: string) => Promise<void>;
-  reset: () => void;
+@Catch(NotFoundException)
+class NotFoundFilter implements ExceptionFilter {
+  private readonly logger = new Logger(NotFoundFilter.name);
+
+  catch(_exception: NotFoundException, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
+
+    this.logger.warn(`Not found: ${request.method} ${request.url.split('?')[0]}`);
+
+    response.status(HttpStatus.NOT_FOUND).json({
+      statusCode: HttpStatus.NOT_FOUND,
+      message: 'Not Found',
+      error: 'Not Found',
+    });
+  }
 }
+
+export default NotFoundFilter;

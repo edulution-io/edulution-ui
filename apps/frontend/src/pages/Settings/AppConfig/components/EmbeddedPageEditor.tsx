@@ -30,6 +30,7 @@ import ResizableWindow from '@/components/structure/framing/ResizableWindow/Resi
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import cn from '@libs/common/utils/className';
+import IFRAME_ALLOWED_CONFIG from '@libs/ui/constants/iframeAllowedConfig';
 import useFileTableStore from './useFileTableStore';
 
 interface EmbeddedPageEditorProps {
@@ -125,7 +126,8 @@ const EmbeddedPageEditor: React.FC<EmbeddedPageEditorProps> = ({ name, form }) =
               src={htmlContentUrl}
               title={name}
               className="h-full w-full border-0"
-              sandbox="allow-same-origin allow-scripts allow-forms "
+              sandbox="allow-same-origin allow-scripts allow-forms"
+              allow={IFRAME_ALLOWED_CONFIG}
             />
           ) : (
             <div

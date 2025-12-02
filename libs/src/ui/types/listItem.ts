@@ -17,14 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type AppConfigTable from '@libs/appconfig/types/appConfigTable';
-import type FileInfoDto from './fileInfo.dto';
-
-export interface FileTableStore extends AppConfigTable<FileInfoDto> {
-  files: Record<string, string>;
-  isLoading: boolean;
-  error: string | null;
-  publicFilesInfo: FileInfoDto[];
-  getPublicFilesInfo: (applicationName: string) => Promise<void>;
-  reset: () => void;
+interface ListItem {
+  id: string;
+  name: string;
 }
+
+export default ListItem;

@@ -27,6 +27,7 @@ import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDial
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import OpenInNewTabButton from '@/components/structure/framing/ResizableWindow/Buttons/OpenInNewTabButton';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import IFRAME_ALLOWED_CONFIG from '@libs/ui/constants/iframeAllowedConfig';
 
 const BBBIFrame = () => {
   const { t } = useTranslation();
@@ -97,7 +98,7 @@ const BBBIFrame = () => {
         className="h-full w-full border-none"
         src={joinConferenceUrl}
         title={t('conferences.conference')}
-        allow="camera *; microphone *; display-capture *;"
+        allow={IFRAME_ALLOWED_CONFIG}
         allowFullScreen
       />
     </ResizableWindow>,
