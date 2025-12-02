@@ -18,7 +18,7 @@
  */
 
 import { ConsoleLogger, Logger } from '@nestjs/common';
-import { NestFactory, Reflector } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
@@ -61,9 +61,10 @@ async function bootstrap() {
 
   app.use(helmet());
 
+  const httpAdapterHost = app.get(HttpAdapterHost);
   app.useGlobalFilters(
     new ExpressHttpErrorFilter(),
-    new HttpExceptionFilter(),
+    new HttpExceptionFilter(httpAdapterHost),
     new PayloadTooLargeFilter(),
     new NotFoundFilter(),
     new MulterExceptionFilter(),
