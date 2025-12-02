@@ -601,7 +601,17 @@
         "fetch": "Choisissez l'un des modèles disponibles.",
         "submit": "Enregistrez le sondage en tant que modèle.",
         "title": "Modèles d'enregistrement / charge",
-        "emptyMessage": "Il n'y a pas encore de modèles"
+        "emptyMessage": "Il n'y a pas encore de modèles",
+        "upload": {
+          "success": "Modèle enregistré avec succès",
+          "error": "Échec de l'enregistrement du modèle"
+        },
+        "deletion": {
+          "title": "Supprimer le modèle",
+          "message": "Êtes-vous sûr de vouloir supprimer ce modèle ?",
+          "success": "Modèle supprimé avec succès",
+          "error": "Échec de la suppression du modèle"
+        }
       },
       "questionSettings": {
         "settings": "Paramètres",
