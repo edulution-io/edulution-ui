@@ -19,7 +19,7 @@
 
 const getAppIconClassName = (iconSrc: string): string => {
   const supportsTheming = iconSrc.includes('currentColor');
-  return supportsTheming ? '' : 'light:invert';
+  return supportsTheming ? '' : 'light:icon-light-mode';
 };
 
 export default getAppIconClassName;

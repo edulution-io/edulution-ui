@@ -34,7 +34,7 @@ const SidebarItemIcon = ({ isHovered, iconSrc, title }: { isHovered: boolean; ic
       className={cn(
         'max-h-full max-w-full origin-top transform transition-transform duration-200',
         isHovered ? 'scale-[1.17]' : 'scale-100',
-        getAppIconClassName(iconSrc),
+        !isHovered && getAppIconClassName(iconSrc),
       )}
       alt={`${title}-icon`}
     />

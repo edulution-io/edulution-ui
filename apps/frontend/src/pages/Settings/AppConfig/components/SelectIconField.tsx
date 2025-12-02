@@ -118,7 +118,7 @@ const SelectIconField = ({ form }: { form: UseFormReturn<{ customAppName: string
               <img
                 src={icon}
                 alt={iconName}
-                className="h-14 w-14 light:invert"
+                className="h-14 w-14 light:icon-light-mode"
               />
             </button>
           );

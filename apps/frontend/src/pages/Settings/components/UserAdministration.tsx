@@ -53,11 +53,11 @@ const UserAdministration = ({ form, onSubmit }: UserAdministrationProps<GlobalSe
     <AccordionSH
       type="multiple"
       defaultValue={['reset-mfa', 'setAdminGroup']}
-      className="mt-5 space-y-10 [&>*]:rounded-xl [&>*]:bg-muted-background [&>*]:px-2"
+      className="mt-5 space-y-10 [&>*]:rounded-xl [&>*]:bg-foreground [&>*]:px-2 dark:[&>*]:bg-muted-background"
     >
       <AccordionItem value="reset-mfa">
         <AccordionTrigger className="flex">
-          <h3>{t('settings.userAdministration.resetMfaForm')}</h3>
+          <h3 className="text-background">{t('settings.userAdministration.resetMfaForm')}</h3>
         </AccordionTrigger>
         <AccordionContent>
           <ResetMfaForm />
@@ -67,7 +67,7 @@ const UserAdministration = ({ form, onSubmit }: UserAdministrationProps<GlobalSe
         <form onSubmit={handleSubmit(onSubmit)}>
           <AccordionItem value="setAdminGroup">
             <AccordionTrigger className="flex">
-              <h3>{t('settings.userAdministration.setAdminGroupTitle')}</h3>
+              <h3 className="text-background">{t('settings.userAdministration.setAdminGroupTitle')}</h3>
             </AccordionTrigger>
             <AccordionContent className="space-y-2 px-1">
               <p className="text-background">{t('settings.userAdministration.setAdminGroupDescription')}</p>
@@ -76,7 +76,7 @@ const UserAdministration = ({ form, onSubmit }: UserAdministrationProps<GlobalSe
                 name={`auth.${GLOBAL_SETTINGS_ADMIN_GROUPS}`}
                 render={() => (
                   <FormItem>
-                    <p className="font-bold">{t('permission.groups')}</p>
+                    <p className="font-bold text-background">{t('permission.groups')}</p>
                     <FormControl>
                       <AsyncMultiSelect<MultipleSelectorGroup>
                         value={getValues(`auth.${GLOBAL_SETTINGS_ADMIN_GROUPS}`) ?? []}

@@ -86,15 +86,15 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
       <Form {...form}>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="space-y-10 [&>*]:rounded-xl [&>*]:bg-muted-background [&>*]:px-2"
+          className="space-y-10 [&>*]:rounded-xl [&>*]:bg-foreground [&>*]:px-2 dark:[&>*]:bg-muted-background"
         >
           <AccordionItem value="general">
             <AccordionTrigger className="flex">
-              <h3>{t('settings.globalSettings.general')}</h3>
+              <h3 className="text-background">{t('settings.globalSettings.general')}</h3>
             </AccordionTrigger>
 
             <AccordionContent className="space-y-2 px-1 text-p">
-              <p className="text-xl font-bold">{t('settings.globalSettings.deploymentTarget')}</p>
+              <p className="text-xl font-bold text-background">{t('settings.globalSettings.deploymentTarget')}</p>
               <DeploymentTargetDropdownSelectFormField form={form} />
             </AccordionContent>
 

@@ -28,14 +28,14 @@ const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-xl text-backgrou
     variant: {
       'btn-transparent':
         'backdrop-bg-white absolute bottom-0 left-1/2 -translate-x-1/2 transform bg-opacity-70 backdrop-blur hover:bg-ciDarkGrey hover:opacity-85',
-      'btn-collaboration': 'bg-primary',
-      'btn-organisation': 'bg-primary',
-      'btn-infrastructure': 'bg-ciLightGreen',
-      'btn-security': 'bg-ciGreenToBlue',
+      'btn-collaboration': 'bg-primary text-white',
+      'btn-organisation': 'bg-primary text-white',
+      'btn-infrastructure': 'bg-ciLightGreen text-white',
+      'btn-security': 'bg-ciGreenToBlue text-white',
       'btn-outline':
         'border border-input shadow-sm hover:bg-muted-light hover:text-accent-foreground text-accent-foreground',
       'btn-hexagon': 'bg-cover bg-center flex items-center justify-center',
-      'btn-attention': 'bg-ciRed',
+      'btn-attention': 'bg-ciRed text-white',
       'btn-small': 'hover:bg-grey-700 mr-1 rounded bg-white px-4 text-background h-9 shadow-sm font-normal text-base',
     },
     size: {

@@ -185,7 +185,7 @@ const DesktopSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
 
   return (
     <div className="relative h-dvh w-[var(--sidebar-width)]">
-      <div className="fixed right-0 z-[600] flex h-full flex-col bg-black md:bg-none">
+      <div className="fixed right-0 z-[600] flex h-full flex-col bg-foreground text-muted-foreground dark:text-white md:bg-none">
         <HomeButton />
 
         {isUpButtonVisible && (
