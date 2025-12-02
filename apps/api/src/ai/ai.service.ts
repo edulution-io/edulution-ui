@@ -19,54 +19,155 @@
 
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import axios, { AxiosInstance } from 'axios';
-import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import { CoreMessage, generateText, LanguageModel } from 'ai';
+import { createOpenAI } from '@ai-sdk/openai';
+import { createAnthropic } from '@ai-sdk/anthropic';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import AiRequestOptions from '@libs/ai/types/aiRequestOptions';
-import ChatMessage from '@libs/ai/types/chatMessage';
-import ChatCompletionResponse from '@libs/ai/types/chatCompletionResponse';
+import { SupportedProviderType } from '@libs/ai/types/supportedProviderType';
+import SupportedProvider from '@libs/ai/types/supportedProvider';
 
 @Injectable()
 class AiService {
-  private client: AxiosInstance;
+  private readonly provider: SupportedProviderType;
+
+  private readonly apiKey: string;
+
+  private readonly apiUrl?: string;
 
   private readonly defaultModel: string;
 
-  constructor(private configService: ConfigService) {
-    const baseUrl = this.configService.get<string>('AI_API_URL') || '';
-    const apiKey = this.configService.get<string>('AI_API_KEY') || '';
+  private readonly baseClients: {
+    openai?: ReturnType<typeof createOpenAI>;
+    openaiCompatible?: ReturnType<typeof createOpenAICompatible>;
+    anthropic?: ReturnType<typeof createAnthropic>;
+    gemini?: ReturnType<typeof createGoogleGenerativeAI>;
+  };
 
+  constructor(private configService: ConfigService) {
+    const providerEnv = this.configService.get<string>('AI_PROVIDER')?.toLowerCase();
+
+    if (
+      providerEnv === SupportedProvider.OpenAI ||
+      providerEnv === SupportedProvider.OpenAICompatible ||
+      providerEnv === SupportedProvider.Anthropic ||
+      providerEnv === SupportedProvider.Gemini
+    ) {
+      this.provider = providerEnv;
+    } else {
+      this.provider = SupportedProvider.OpenAI;
+    }
+
+    this.apiKey = this.configService.get<string>('AI_API_KEY') || '';
+    this.apiUrl = this.configService.get<string>('AI_API_URL') || undefined;
     this.defaultModel = this.configService.get<string>('AI_MODEL') || '';
 
-    const normalizedUrl = baseUrl.endsWith('/v1') ? baseUrl : `${baseUrl}/v1`;
+    if (!this.defaultModel) {
+      throw new Error('AI_MODEL is not configured');
+    }
 
-    this.client = axios.create({
-      baseURL: normalizedUrl,
-      headers: {
-        [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_JSON,
-        ...(apiKey && { Authorization: `Bearer ${apiKey}` }),
-      },
-    });
+    this.baseClients = {};
+
+    if (this.provider === SupportedProvider.OpenAI) {
+      this.baseClients.openai = createOpenAI({
+        apiKey: this.apiKey,
+        baseURL: this.apiUrl,
+      });
+    }
+
+    if (this.provider === SupportedProvider.OpenAICompatible) {
+      this.baseClients.openaiCompatible = createOpenAICompatible({
+        name: 'openai-compatible',
+        apiKey: this.apiKey || 'unused',
+        baseURL: this.apiUrl || '',
+      });
+    }
+
+    if (this.provider === SupportedProvider.Anthropic) {
+      this.baseClients.anthropic = createAnthropic({
+        apiKey: this.apiKey,
+        baseURL: this.apiUrl,
+      });
+    }
+
+    if (this.provider === SupportedProvider.Gemini) {
+      this.baseClients.gemini = createGoogleGenerativeAI({
+        apiKey: this.apiKey,
+        baseURL: this.apiUrl,
+      });
+    }
   }
 
   async chat(options: AiRequestOptions): Promise<string> {
-    const { prompt, systemPrompt, model, maxTokens = 1024, temperature = 0.7 } = options;
+    const { prompt, systemPrompt, model, temperature = 0.7 } = options;
 
-    const messages: ChatMessage[] = [];
+    const messages: CoreMessage[] = [];
 
     if (systemPrompt) {
-      messages.push({ role: 'system', content: systemPrompt });
+      messages.push({
+        role: 'system',
+        content: systemPrompt,
+      });
     }
 
-    messages.push({ role: 'user', content: prompt });
+    messages.push({
+      role: 'user',
+      content: prompt,
+    });
 
-    const response = await this.client.post<ChatCompletionResponse>('/chat/completions', {
-      model: model || this.defaultModel,
+    const languageModel = this.resolveModel(model || this.defaultModel);
+
+    const result = await generateText({
+      model: languageModel,
       messages,
-      max_tokens: maxTokens,
       temperature,
     });
 
-    return response.data.choices[0]?.message?.content || '';
+    return result.text;
+  }
+
+  private resolveModel(modelName: string): LanguageModel {
+    switch (this.provider) {
+      case SupportedProvider.Anthropic: {
+        if (!this.baseClients.anthropic) {
+          this.baseClients.anthropic = createAnthropic({
+            apiKey: this.apiKey,
+            baseURL: this.apiUrl,
+          });
+        }
+        return this.baseClients.anthropic(modelName);
+      }
+      case SupportedProvider.Gemini: {
+        if (!this.baseClients.gemini) {
+          this.baseClients.gemini = createGoogleGenerativeAI({
+            apiKey: this.apiKey,
+            baseURL: this.apiUrl,
+          });
+        }
+        return this.baseClients.gemini(modelName);
+      }
+      case SupportedProvider.OpenAICompatible: {
+        if (!this.baseClients.openaiCompatible) {
+          this.baseClients.openaiCompatible = createOpenAICompatible({
+            name: 'openai-compatible',
+            apiKey: this.apiKey || 'unused',
+            baseURL: this.apiUrl || '',
+          });
+        }
+        return this.baseClients.openaiCompatible(modelName);
+      }
+      case SupportedProvider.OpenAI:
+      default: {
+        if (!this.baseClients.openai) {
+          this.baseClients.openai = createOpenAI({
+            apiKey: this.apiKey,
+            baseURL: this.apiUrl,
+          });
+        }
+        return this.baseClients.openai(modelName);
+      }
+    }
   }
 
   async translateNotification(
@@ -74,14 +175,33 @@ class AiService {
     targetLanguage: string,
   ): Promise<{ title: string; body: string }> {
     try {
-      const result = await this.chat({
+      const resultText = await this.chat({
         prompt: JSON.stringify(notification),
-        systemPrompt: `You are a translator. Translate the JSON notification to ${targetLanguage}. Return only valid JSON with "title" and "body" fields, nothing else.`,
+        systemPrompt: [
+          'You are a translator.',
+          `Translate the JSON notification to language code "${targetLanguage}".`,
+          'Return only valid JSON with "title" and "body" fields, nothing else.',
+          'Do not add explanations, comments or extra fields.',
+        ].join(' '),
         temperature: 0.3,
       });
 
-      return JSON.parse(result) as { title: string; body: string };
+      const parsed = JSON.parse(resultText) as {
+        title?: unknown;
+        body?: unknown;
+      };
+
+      if (typeof parsed.title !== 'string' || typeof parsed.body !== 'string') {
+        console.warn('LLM translation result has invalid structure. Falling back to original notification.');
+        return notification;
+      }
+
+      return {
+        title: parsed.title,
+        body: parsed.body,
+      };
     } catch (error) {
+      console.error('Error while translating notification. Falling back to original notification.', error);
       return notification;
     }
   }

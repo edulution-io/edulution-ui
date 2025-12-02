@@ -17,6 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-type ChatRole = 'system' | 'user' | 'assistant';
+const SupportedProvider = {
+  OpenAI: 'openai',
+  Anthropic: 'anthropic',
+  Gemini: 'gemini',
+  OpenAICompatible: 'openai-compatible',
+} as const;
 
-export default ChatRole;
+export default SupportedProvider;

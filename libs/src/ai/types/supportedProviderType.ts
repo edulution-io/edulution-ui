@@ -17,23 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ChatMessage from '@libs/ai/types/chatMessage';
+import SupportedProvider from './supportedProvider';
 
-interface ChatCompletionResponse {
-  id: string;
-  object: string;
-  created: number;
-  model: string;
-  choices: Array<{
-    index: number;
-    message: ChatMessage;
-    finish_reason: string;
-  }>;
-  usage: {
-    prompt_tokens: number;
-    completion_tokens: number;
-    total_tokens: number;
-  };
-}
-
-export default ChatCompletionResponse;
+export type SupportedProviderType = (typeof SupportedProvider)[keyof typeof SupportedProvider];

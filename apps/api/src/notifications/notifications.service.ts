@@ -78,6 +78,7 @@ class NotificationsService {
             { title: partialNotification.title ?? '', body: partialNotification.body ?? '' },
             user?.language || 'DE',
           );
+
           const tokens = await this.userService.getPushTokensByUsersnames([username]);
           await this.sendPushNotification({
             to: tokens,
