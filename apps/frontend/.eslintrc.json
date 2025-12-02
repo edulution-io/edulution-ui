@@ -1,6 +1,6 @@
 {
   "extends": ["../../.eslintrc.json"],
-  "ignorePatterns": ["jest.config.ts", "vite.config.ts", "postcss.config.mjs", "tailwind.config.ts", "public/*"],
+  "ignorePatterns": ["jest.config.ts", "vite.config.mts", "postcss.config.mjs", "tailwind.config.ts", "public/*"],
   "env": {
     "browser": true,
     "es2022": true
