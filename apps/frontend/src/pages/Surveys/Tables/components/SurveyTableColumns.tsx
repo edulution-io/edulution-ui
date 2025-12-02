@@ -52,13 +52,13 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     cell: ({ row }) => (
       <SelectableTextCell
         row={row}
-        onClick={() => row.toggleSelected()}
-        text={row.original.formula.title || i18n.t('common.not-available')}
+        text={row.original.formula?.title || i18n.t('common.not-available')}
         className="h-full w-full min-w-32"
+        onClick={() => row.toggleSelected()}
         isFirstColumn
       />
     ),
-    accessorFn: (row) => row.formula.title,
+    accessorFn: (row) => row.formula?.title || i18n.t('common.not-available'),
     sortingFn: (rowA, rowB) => sortSurveyByTitle(rowA.original, rowB.original),
   },
   {
