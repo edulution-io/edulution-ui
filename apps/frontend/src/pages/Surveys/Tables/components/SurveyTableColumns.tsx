@@ -113,7 +113,10 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     meta: {
       translationId: 'common.creator',
     },
-    accessorFn: (row) => row.creator,
+    accessorFn: (row) =>
+      row.creator.firstName && row.creator.lastName
+        ? `${row.creator.firstName} ${row.creator.lastName}`
+        : row.creator.username,
     cell: ({ row }) => {
       const { firstName, username, lastName } = row.original.creator;
       return (
