@@ -22,7 +22,17 @@ import { SIDEBAR_ICON_HEIGHT, SIDEBAR_ICON_WIDTH } from '@libs/ui/constants/side
 import getAppIconClassName from '@libs/ui/utils/getAppIconClassName';
 import cn from '@libs/common/utils/className';
 
-const SidebarItemIcon = ({ isHovered, iconSrc, title }: { isHovered: boolean; iconSrc: string; title: string }) => (
+const SidebarItemIcon = ({
+  isHovered,
+  isSelected,
+  iconSrc,
+  title,
+}: {
+  isHovered: boolean;
+  isSelected: boolean;
+  iconSrc: string;
+  title: string;
+}) => (
   <div
     style={{ height: SIDEBAR_ICON_HEIGHT, width: SIDEBAR_ICON_WIDTH }}
     className="relative z-0 -mt-2 ml-[0.8rem] flex items-center justify-center"
@@ -34,7 +44,7 @@ const SidebarItemIcon = ({ isHovered, iconSrc, title }: { isHovered: boolean; ic
       className={cn(
         'max-h-full max-w-full origin-top transform transition-transform duration-200',
         isHovered ? 'scale-[1.17]' : 'scale-100',
-        !isHovered && getAppIconClassName(iconSrc),
+        !isHovered && !isSelected && getAppIconClassName(iconSrc),
       )}
       alt={`${title}-icon`}
     />

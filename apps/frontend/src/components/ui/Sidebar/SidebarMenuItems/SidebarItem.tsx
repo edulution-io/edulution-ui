@@ -79,7 +79,7 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({
         className={`
           group relative z-40 flex h-14 cursor-pointer items-center
           justify-end gap-4 px-4 py-2 md:block md:px-0
-          ${isSelected ? color : ''}
+          ${isSelected ? `${color} text-white` : ''}
         `}
       >
         <p className="md:hidden">{title}</p>
@@ -90,6 +90,7 @@ const SidebarItem: React.FC<SidebarMenuItemProps> = ({
         >
           <SidebarItemIcon
             isHovered={isHovered}
+            isSelected={isSelected}
             iconSrc={icon}
             title={title}
           />
