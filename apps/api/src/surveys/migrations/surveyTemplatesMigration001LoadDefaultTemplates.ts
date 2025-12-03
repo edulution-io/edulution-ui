@@ -17,18 +17,19 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import { Types } from 'mongoose';
 import { Logger } from '@nestjs/common';
 import {
-  Praktikumsplatz,
-  ElternAbend,
-  Elternbrief,
-  TeilnahmeVeranstaltungLimitiert,
-  Vortragsthema,
+  ParentTeacherConference,
+  LetterToParents,
+  PaperSubject,
+  LimitedEventParticipation,
+  TraineeShip,
 } from '@libs/survey/constants/templates/index';
 import { SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
 import { Migration } from '../../migration/migration.type';
 
-const list = [Praktikumsplatz, ElternAbend, Elternbrief, TeilnahmeVeranstaltungLimitiert, Vortragsthema];
+const list = [ParentTeacherConference, LetterToParents, PaperSubject, LimitedEventParticipation, TraineeShip];
 
 const name = '001-load-the-default-survey-templates';
 
@@ -39,7 +40,9 @@ const surveyTemplatesMigration001LoadDefaultTemplates: Migration<SurveysTemplate
     Logger.log(`Migration "${name}": Found ${list.length} documents to process...`);
     await Promise.all(
       list.map(async (surveyTemplate) => {
-        const existingTemplate = await model.findOne({ name: surveyTemplate.name, isDefaultTemplate: true });
+        // eslint-disable-next-line no-underscore-dangle
+        const mongoId = new Types.ObjectId(surveyTemplate._id);
+        const existingTemplate = await model.findOne({ _id: mongoId, isDefaultTemplate: true });
         if (existingTemplate && existingTemplate.schemaVersion >= surveyTemplate.schemaVersion) {
           Logger.warn(
             `Migration "${name}": Skipped: default template "${surveyTemplate.name}" already exists with same or higher schema version`,
@@ -47,7 +50,7 @@ const surveyTemplatesMigration001LoadDefaultTemplates: Migration<SurveysTemplate
           return;
         }
         await model.updateOne(
-          { name: surveyTemplate.name, isDefaultTemplate: true },
+          { _id: mongoId, isDefaultTemplate: true },
           { ...surveyTemplate, isDefaultTemplate: true, isActive: existingTemplate?.isActive ?? true },
           { new: true, upsert: true },
         );

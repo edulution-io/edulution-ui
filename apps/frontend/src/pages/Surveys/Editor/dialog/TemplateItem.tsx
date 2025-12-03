@@ -76,8 +76,8 @@ const TemplateItem = (props: TemplateItemProps) => {
   };
 
   const handleToggleIsActive = async () => {
-    if (!template.name) return;
-    await setIsTemplateActive(template.name, !active);
+    if (!template.id) return;
+    await setIsTemplateActive(template.id, !active);
     setActive(!active);
   };
 

@@ -18,8 +18,8 @@
  */
 
 import { Response } from 'express';
-import { Connection, Model } from 'mongoose';
-import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import { Types, Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
@@ -33,16 +33,11 @@ import CustomHttpException from '../common/CustomHttpException';
 @Injectable()
 class SurveysTemplateService implements OnModuleInit {
   constructor(
-    @InjectConnection() private readonly connection: Connection,
     @InjectModel(SurveysTemplate.name) private surveyTemplateModel: Model<SurveysTemplateDocument>,
     private readonly globalSettingsService: GlobalSettingsService,
   ) {}
 
   async onModuleInit() {
-    const collectionsNamedMigration = await this.connection.db?.listCollections({ name: 'surveystemplates' }).toArray();
-    if (collectionsNamedMigration?.length === 0) {
-      await this.connection.db?.createCollection('surveystemplates');
-    }
     await MigrationService.runMigrations<SurveysTemplateDocument>(
       this.surveyTemplateModel,
       surveyTemplatesMigrationsList,
@@ -50,11 +45,11 @@ class SurveysTemplateService implements OnModuleInit {
   }
 
   async updateOrCreateTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
-    const { template, name, isActive = true } = surveyTemplate;
+    const { id, template, name, isActive = true } = surveyTemplate;
     try {
       const templateName = name || template.formula.title;
       return await this.surveyTemplateModel.findOneAndUpdate(
-        { name: templateName },
+        { _id: new Types.ObjectId(id) },
         { template, isActive, name: templateName },
         { new: true, upsert: !name },
       );
@@ -70,15 +65,15 @@ class SurveysTemplateService implements OnModuleInit {
 
   async getTemplates(ldapGroups: string[], res: Response): Promise<Response> {
     const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
-    const documents = await this.surveyTemplateModel.find(
-      getIsAdmin(ldapGroups, adminGroups) ? {} : { isActive: true },
-    );
+    const documents = await this.surveyTemplateModel
+      .find(getIsAdmin(ldapGroups, adminGroups) ? {} : { isActive: true })
+      .lean();
     return res.status(HttpStatus.OK).json(documents);
   }
 
-  async setIsTemplateActive(name: string, isActive: boolean): Promise<SurveysTemplateDocument | null> {
+  async setIsTemplateActive(id: string, isActive: boolean): Promise<SurveysTemplateDocument | null> {
     return this.surveyTemplateModel.findOneAndUpdate(
-      { name },
+      { _id: new Types.ObjectId(id) },
       { isActive },
       {
         new: true,
@@ -87,13 +82,14 @@ class SurveysTemplateService implements OnModuleInit {
     );
   }
 
-  async deleteTemplate(name: string): Promise<void> {
+  async deleteTemplate(id: string): Promise<void> {
     try {
-      const defaultTemplate = await this.surveyTemplateModel.findOne({ name, isDefaultTemplate: true });
+      const mongoId = new Types.ObjectId(id);
+      const defaultTemplate = await this.surveyTemplateModel.findOne({ _id: mongoId, isDefaultTemplate: true });
       if (defaultTemplate) {
-        await this.surveyTemplateModel.updateOne({ name }, { isActive: false });
+        await this.surveyTemplateModel.updateOne({ _id: mongoId }, { isActive: false });
       } else {
-        await this.surveyTemplateModel.deleteOne({ name });
+        await this.surveyTemplateModel.deleteOne({ _id: mongoId });
       }
     } catch {
       throw new CustomHttpException(

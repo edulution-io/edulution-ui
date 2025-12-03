@@ -17,10 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const frontendHost = process.env['FRONTEND_HOST'] ?? 'localhost';
-const frontendPort = process.env['FRONTEND_PORT'] ?? '5173';
+// const frontendHost = process.env['FRONTEND_HOST'] ?? 'localhost';
+// const frontendPort = process.env['FRONTEND_PORT'] ?? '5173';
 
-const Praktikumsplatz = {
+const TraineeShip = {
+  _id: '000000000000000000005555',
   name: 'Praktikumsplatz',
   isDefaultTemplate: true,
   isActive: true,
@@ -28,7 +29,7 @@ const Praktikumsplatz = {
   template: {
     formula: {
       title: 'Praktikumsplatz Wunschliste',
-      logo: `http://${frontendHost}:${frontendPort}/edu-api/files/public/file/surveys/surveys-default-logo-dark.webp`,
+      logo: /* `http://${frontendHost}:${frontendPort} */ `/edu-api/files/public/file/surveys/surveys-default-logo-dark.webp`,
       elements: [
         {
           type: 'paneldynamic',
@@ -69,4 +70,4 @@ const Praktikumsplatz = {
   },
 };
 
-export default Praktikumsplatz;
+export default TraineeShip;

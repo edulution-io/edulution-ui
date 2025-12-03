@@ -17,10 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const frontendHost = process.env['FRONTEND_HOST'] ?? 'localhost';
-const frontendPort = process.env['FRONTEND_PORT'] ?? '5173';
+// const frontendHost = process.env['FRONTEND_HOST'] ?? 'localhost';
+// const frontendPort = process.env['FRONTEND_PORT'] ?? '5173';
 
-const Vortragsthema = {
+const PaperSubject = {
+  _id: '000000000000000000003333',
   name: 'Vortragsthema',
   isDefaultTemplate: true,
   isActive: true,
@@ -28,7 +29,7 @@ const Vortragsthema = {
   template: {
     formula: {
       title: 'Vortragsthema Wunschliste',
-      logo: `http://${frontendHost}:${frontendPort}/edu-api/files/public/file/surveys/surveys-default-logo-dark.webp`,
+      logo: /* `http://${frontendHost}:${frontendPort} */ `/edu-api/files/public/file/surveys/surveys-default-logo-dark.webp`,
       elements: [
         {
           type: 'paneldynamic',
@@ -69,4 +70,4 @@ const Vortragsthema = {
   },
 };
 
-export default Vortragsthema;
+export default PaperSubject;

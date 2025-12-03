@@ -26,6 +26,9 @@ export type SurveysTemplateDocument = SurveysTemplate & Document;
 
 @Schema({ timestamps: true, strict: true })
 export class SurveysTemplate {
+  @Prop({ required: true, unique: true })
+  _id: string;
+
   @Prop({ type: Object, required: true })
   template: Partial<Survey> & { formula: SurveyFormula };
 

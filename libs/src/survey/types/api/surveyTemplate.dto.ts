@@ -24,6 +24,7 @@ export type TemplateDto = Partial<SurveyDto> & { formula: SurveyFormula };
 
 export interface SurveyTemplateDto {
   template: TemplateDto;
+  id?: string;
   name?: string;
   isActive?: boolean;
   isDefaultTemplate?: boolean;

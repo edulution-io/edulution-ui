@@ -17,8 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export { default as Praktikumsplatz } from './Praktikumsplatz';
-export { default as ElternAbend } from './ElternAbend';
-export { default as Elternbrief } from './Elternbrief';
-export { default as TeilnahmeVeranstaltungLimitiert } from './TeilnahmeVeranstaltungLimitiert';
-export { default as Vortragsthema } from './Vortragsthema';
+export { default as TraineeShip } from './traineeShip';
+export { default as ParentTeacherConference } from './parentTeacherConference';
+export { default as LetterToParents } from './letterToParents';
+export { default as LimitedEventParticipation } from './limitedEventParticipation';
+export { default as PaperSubject } from './paperSubject';
