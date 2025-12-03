@@ -512,6 +512,28 @@ class LdapKeycloakSyncService implements OnModuleInit {
     }
   }
 
+  private async searchWithPagedFallback(ldapClient: Client, searchBase: string, options: SearchOptions) {
+    const pagedOptions: SearchOptions = { ...options, paged: { pageSize: 500 } };
+
+    try {
+      const { searchEntries } = await ldapClient.search(searchBase, pagedOptions);
+      return searchEntries;
+    } catch (pagedError) {
+      const errorCode = (pagedError as { code?: number }).code;
+      const isUnsupportedOrUnavailable = errorCode === 12 || errorCode === 53;
+
+      if (isUnsupportedOrUnavailable) {
+        Logger.warn(
+          `Paged search not supported for ${searchBase}, falling back to non-paged search`,
+          LdapKeycloakSyncService.name,
+        );
+        const { searchEntries } = await ldapClient.search(searchBase, options);
+        return searchEntries;
+      }
+      throw pagedError;
+    }
+  }
+
   private async searchAllGroups(ldapClient: Client) {
     const base = this.ldapConfig!.config.usersDn[0];
 
@@ -521,7 +543,6 @@ class LdapKeycloakSyncService implements OnModuleInit {
       scope: 'sub',
       filter,
       attributes: [LDAP_ATTRIBUTE.DN],
-      paged: { pageSize: 500 },
     };
 
     if ((await this.getDeploymentTarget()) === DEPLOYMENT_TARGET.LINUXMUSTER) {
@@ -529,7 +550,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
 
       const results = await Promise.all(
         bases.map(async (b) => {
-          const { searchEntries } = await ldapClient.search(b, ldapSearchOptions);
+          const searchEntries = await this.searchWithPagedFallback(ldapClient, b, ldapSearchOptions);
 
           Logger.verbose(`Found ${searchEntries.length} LDAP groups under ${b}`, LdapKeycloakSyncService.name);
           return searchEntries;
@@ -541,7 +562,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
       return all;
     }
 
-    const { searchEntries } = await ldapClient.search(base, ldapSearchOptions);
+    const searchEntries = await this.searchWithPagedFallback(ldapClient, base, ldapSearchOptions);
     Logger.verbose(`Found ${searchEntries.length} LDAP groups under ${base}`, LdapKeycloakSyncService.name);
     return searchEntries;
   }
