@@ -517,7 +517,12 @@ class LdapKeycloakSyncService implements OnModuleInit {
 
     const filter = '(objectClass=group)';
 
-    const ldapSearchOptions: SearchOptions = { scope: 'sub', filter, attributes: [LDAP_ATTRIBUTE.DN] };
+    const ldapSearchOptions: SearchOptions = {
+      scope: 'sub',
+      filter,
+      attributes: [LDAP_ATTRIBUTE.DN],
+      paged: { pageSize: 500 },
+    };
 
     if ((await this.getDeploymentTarget()) === DEPLOYMENT_TARGET.LINUXMUSTER) {
       const bases = [`OU=SCHOOLS,${base}`, `OU=GLOBAL,${base}`];
