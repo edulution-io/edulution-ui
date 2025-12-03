@@ -25,6 +25,7 @@ const JOB_NAMES = {
   COPY_FILE_JOB: 'copy-file',
   CREATE_FOLDER_JOB: 'create-folder',
   REFRESH_USERS_IN_CACHE: 'REFRESH_USERS_IN_CACHE',
+  SEND_NOTIFICATION_JOB: 'sendNotificationJob',
 } as const;
 
 export default JOB_NAMES;

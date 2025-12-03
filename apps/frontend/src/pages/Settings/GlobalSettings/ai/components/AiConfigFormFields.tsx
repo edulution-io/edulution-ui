@@ -33,7 +33,7 @@ import AI_CONFIG_PURPOSES from '@libs/ai/constants/aiConfigPurposes';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import AIConnectionStatus from '@/pages/Settings/GlobalSettings/ai/components/AIConnectionStatus';
-import AiProvider from '@libs/ai/types/aiProvider';
+import SupportedAiProvider from '@libs/ai/types/SupportedAiProvider';
 
 interface AiConfigFormFieldsProps {
   control: Control<AiConfigDto>;
@@ -66,7 +66,7 @@ const AiConfigFormFields: React.FC<AiConfigFormFieldsProps> = ({
 
   const apiStandardOptions = useMemo(
     () =>
-      Object.values(AiProvider).map((standard) => ({
+      Object.values(SupportedAiProvider).map((standard) => ({
         id: standard,
         name: t(`aiconfig.apiStandards.${standard}`),
       })),

@@ -28,6 +28,7 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import prepareCreator from '@libs/survey/utils/prepareCreator';
 import SseMessageType from '@libs/common/types/sseMessageType';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import notificationsConfig from '@libs/notification/constants/notifications.config';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
@@ -72,21 +73,34 @@ class SurveysService implements OnModuleInit {
   }
 
   async findSurvey(surveyId: string, user: JwtUser): Promise<Survey | null> {
-    const survey = await this.surveyModel
-      .findOne({
-        $and: [
-          {
-            $or: [
-              { isPublic: true },
-              { 'creator.username': user.preferred_username },
-              { 'invitedAttendees.username': user.preferred_username },
-              { 'invitedGroups.path': { $in: user.ldapGroups } },
-            ],
-          },
-          { _id: new Types.ObjectId(surveyId) },
-        ],
-      })
-      .exec();
+    try {
+      return await this.surveyModel
+        .findOne({
+          $and: [
+            {
+              $or: [
+                { isPublic: true },
+                { 'creator.username': user.preferred_username },
+                { 'invitedAttendees.username': user.preferred_username },
+                { 'invitedGroups.path': { $in: user.ldapGroups } },
+              ],
+            },
+            { _id: new Types.ObjectId(surveyId) },
+          ],
+        })
+        .exec();
+    } catch (error) {
+      throw new CustomHttpException(
+        CommonErrorMessages.DB_ACCESS_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error,
+        SurveysService.name,
+      );
+    }
+  }
+
+  async throwErrorIfSurveyIsNotAccessible(surveyId: string, user: JwtUser): Promise<void> {
+    const survey = await this.findSurvey(surveyId, user);
     if (!survey) {
       throw new CustomHttpException(
         SurveyErrorMessages.NotFoundError,
@@ -95,7 +109,6 @@ class SurveysService implements OnModuleInit {
         SurveysService.name,
       );
     }
-    return survey;
   }
 
   async findPublicSurvey(surveyId: string): Promise<Survey | null> {
@@ -106,6 +119,35 @@ class SurveysService implements OnModuleInit {
         CommonErrorMessages.DB_ACCESS_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
         error,
+        SurveysService.name,
+      );
+    }
+  }
+
+  async throwErrorIfSurveyIsNotPublic(surveyId: string): Promise<void> {
+    const survey = await this.findPublicSurvey(surveyId);
+    if (!survey) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.NotFoundError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveysService.name,
+      );
+    }
+  }
+
+  async throwErrorIfUserIsNotCreator(surveyId: string, user: JwtUser): Promise<void> {
+    const survey = await this.surveyModel
+      .findOne({
+        $and: [{ _id: new Types.ObjectId(surveyId) }, { 'creator.username': user.preferred_username }],
+      })
+      .exec();
+
+    if (!survey) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.NotFoundError,
+        HttpStatus.NOT_FOUND,
+        undefined,
         SurveysService.name,
       );
     }
@@ -153,6 +195,7 @@ class SurveysService implements OnModuleInit {
       surveyId,
       surveyDto.formula,
       user.preferred_username,
+      surveyDto.isPublic,
     );
     if (processedFormula === null) {
       throw new CustomHttpException(
@@ -202,20 +245,12 @@ class SurveysService implements OnModuleInit {
           ? SSE_MESSAGE_TYPE.SURVEY_CREATED
           : SSE_MESSAGE_TYPE.SURVEY_UPDATED;
 
-      // TODO: #1152
-      const actionName = action === SSE_MESSAGE_TYPE.SURVEY_CREATED ? 'erstellt' : 'aktualisiert';
+      const notification =
+        action === SSE_MESSAGE_TYPE.SURVEY_CREATED
+          ? notificationsConfig.survey.created(survey.formula.title, String(survey.id))
+          : notificationsConfig.survey.updated(survey.formula.title, String(survey.id));
 
-      const title = `Umfrage ${survey.formula.title}: ${actionName}`;
-      const body = `Die Umfrage "${survey.formula.title}" wurde soeben ${actionName}.`;
-
-      await this.notificationService.notifyUsernames(invitedMembersList, {
-        title,
-        body,
-        data: {
-          surveyId: survey.id,
-          type: eventType,
-        },
-      });
+      await this.notificationService.notifyUsernames(invitedMembersList, notification);
     }
   };
 

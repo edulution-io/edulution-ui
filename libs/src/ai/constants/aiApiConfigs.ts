@@ -17,25 +17,25 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import AiProvider from '@libs/ai/types/aiProvider';
+import SUPPORTED_AI_PROVIDER from '@libs/ai/types/SupportedAiProvider';
 
 const aiApiConfigs = {
-  [AiProvider.OpenAI]: (url: string, apiKey: string, model: string) => ({
+  [SUPPORTED_AI_PROVIDER.OpenAI]: (url: string, apiKey: string, model: string) => ({
     endpoint: `${url}/v1/chat/completions`,
     headers: { Authorization: `Bearer ${apiKey}` },
     body: { model, messages: [{ role: 'user', content: 'Hi' }], max_tokens: 5 },
   }),
-  [AiProvider.OpenAICompatible]: (url: string, apiKey: string, model: string) => ({
+  [SUPPORTED_AI_PROVIDER.OpenAICompatible]: (url: string, apiKey: string, model: string) => ({
     endpoint: `${url}/v1/chat/completions`,
     headers: apiKey ? { Authorization: `Bearer ${apiKey}` } : {},
     body: { model, messages: [{ role: 'user', content: 'Hi' }], max_tokens: 5 },
   }),
-  [AiProvider.Anthropic]: (url: string, apiKey: string, model: string) => ({
+  [SUPPORTED_AI_PROVIDER.Anthropic]: (url: string, apiKey: string, model: string) => ({
     endpoint: `${url}/v1/messages`,
     headers: { 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
     body: { model, messages: [{ role: 'user', content: 'Hi' }], max_tokens: 5 },
   }),
-  [AiProvider.Google]: (url: string, apiKey: string, model: string) => ({
+  [SUPPORTED_AI_PROVIDER.Google]: (url: string, apiKey: string, model: string) => ({
     endpoint: `${url}/v1/models/${model}:generateContent?key=${apiKey}`,
     headers: {},
     body: { contents: [{ parts: [{ text: 'Hi' }] }], generationConfig: { maxOutputTokens: 5 } },

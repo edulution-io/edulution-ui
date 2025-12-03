@@ -17,16 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import AiProvider from '@libs/ai/types/aiProvider';
 import AiProviderModelConfig from '@libs/ai/types/aiProviderModelConfig';
+import SUPPORTED_AI_PROVIDER from '@libs/ai/types/SupportedAiProvider';
 
 const modelFetchConfig: Record<string, AiProviderModelConfig> = {
-  [AiProvider.OpenAI]: {
+  [SUPPORTED_AI_PROVIDER.OpenAI]: {
     getUrl: (baseUrl) => `${baseUrl}/v1/models`,
     getHeaders: (apiKey) => ({ Authorization: `Bearer ${apiKey}` }),
     extractModels: (data) => data.data?.map((m) => m.id) ?? [],
   },
-  [AiProvider.OpenAICompatible]: {
+  [SUPPORTED_AI_PROVIDER.OpenAICompatible]: {
     getUrl: (baseUrl) => {
       const isOllama = baseUrl.includes(':11434') || baseUrl.includes('ollama');
       return isOllama ? `${baseUrl}/api/tags` : `${baseUrl}/v1/models`;
@@ -34,12 +34,12 @@ const modelFetchConfig: Record<string, AiProviderModelConfig> = {
     getHeaders: (apiKey) => ({ Authorization: `Bearer ${apiKey}` }),
     extractModels: (data) => data.models?.map((m) => m.name) ?? data.data?.map((m) => m.id) ?? [],
   },
-  [AiProvider.Anthropic]: {
+  [SUPPORTED_AI_PROVIDER.Anthropic]: {
     getUrl: (baseUrl) => `${baseUrl}/v1/models`,
     getHeaders: (apiKey) => ({ 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' }),
     extractModels: (data) => data.data?.map((m) => m.id) ?? [],
   },
-  [AiProvider.Google]: {
+  [SUPPORTED_AI_PROVIDER.Google]: {
     getUrl: (baseUrl, apiKey) => `${baseUrl}/v1/models?key=${apiKey}`,
     getHeaders: () => ({}),
     extractModels: (data) => data.models?.map((m) => m.name?.replace('models/', '') ?? '') ?? [],

@@ -23,8 +23,8 @@ import type AiConfigDto from '@libs/ai/types/aiConfigDto';
 import type { AiConfigPurposeType } from '@libs/ai/types/aiConfigPurposeType';
 import type AttendeeDto from '@libs/user/types/attendee.dto';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import type { AiProviderType } from '@libs/ai/types/aiProviderType';
-import AiProvider from '@libs/ai/types/aiProvider';
+import { SupportedAiProviderType } from '@libs/ai/types/supportedAiProviderType';
+import SupportedAiProvider from '@libs/ai/types/SupportedAiProvider';
 
 export type AiConfigDocument = AiConfig & Document;
 
@@ -44,8 +44,8 @@ class AiConfig implements Omit<AiConfigDto, 'id'> {
   @Prop({ required: true })
   aiModel: string;
 
-  @Prop({ type: String, required: true, default: AiProvider.OpenAI })
-  apiStandard: AiProviderType;
+  @Prop({ type: String, required: true, default: SupportedAiProvider.OpenAI })
+  apiStandard: SupportedAiProviderType;
 
   @Prop({ type: [Object], default: [] })
   allowedUsers: AttendeeDto[];

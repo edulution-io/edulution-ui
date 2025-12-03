@@ -17,10 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
-import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
-import { TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
+import SUPPORTED_AI_PROVIDER from './SupportedAiProvider';
 
-const SURVEYS_TEMPLATE_PATH = `${APPS_FILES_PATH}/${APPS.SURVEYS}/${TEMPLATES}`;
-
-export default SURVEYS_TEMPLATE_PATH;
+export type SupportedAiProviderType = (typeof SUPPORTED_AI_PROVIDER)[keyof typeof SUPPORTED_AI_PROVIDER];

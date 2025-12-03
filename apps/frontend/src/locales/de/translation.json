@@ -705,6 +705,10 @@
         "userMessage": "Zur Verfügung stehende Vorlagen können hier geladen werden.",
         "adminMessage": "Um deine aktuelle Umfrage als Vorlage zu veröffentlichen, klicke auf 'Speichern'. Vorhandene Vorlagen können hier gelöscht oder geladen werden.",
         "emptyMessage": "Es sind noch keine Vorlagen vorhanden",
+        "upload": {
+          "success": "Vorlage erfolgreich gespeichert",
+          "error": "Die Vorlage konnte nicht gespeichert werden"
+        },
         "deletion": {
           "title": "Vorlage löschen",
           "message": "Soll die Vorlage wirklich gelöscht werden?",
@@ -1540,10 +1544,10 @@
     "dragDropClick": "Ziehen Sie Dateien hierher oder klicken Sie, um Dateien auszuwählen",
     "dropHere": "Hier loslassen",
     "filesToUpload": "Dateien zum Hochladen",
-    "overwriteWarningTitleFile": "Warnung: Datei existiert bereits",
-    "overwriteWarningTitleFiles": "Warnung: Dateien existieren bereits",
-    "overwriteWarningDescriptionFile": "Die folgende Datei wird überschrieben:",
-    "overwriteWarningDescriptionFiles": "Die folgenden Dateien werden überschrieben:",
+    "overwriteWarningTitle_one": "Warnung: Datei existiert bereits",
+    "overwriteWarningTitle_other": "Warnung: Dateien existieren bereits",
+    "overwriteWarningDescription_one": "Die folgende Datei wird überschrieben:",
+    "overwriteWarningDescription_other": "Die folgenden Dateien werden überschrieben:",
     "oversizedFilesDetected": "Zu große Dateien entdeckt",
     "folderTooLargeTitle": "Zu viele Dateien im Ordner",
     "folderTooLargeDescription": "Der Ordner enthält mehr als 100 Dateien. Bitte wähle einen anderen Ordner oder reduziere die Anzahl der Dateien.",
@@ -1555,6 +1559,8 @@
     "files": "Dateien",
     "creatingDirectoryStructure": "Ordnerstruktur wird angelegt",
     "hiddenFiles": "versteckte & System-Dateien",
+    "replaceFiles": "Ersetzen",
+    "uploadNewOnly": "Nur neue Dateien hochladen",
     "errors": {
       "directoryCreationFailed": "Fehler beim Erstellen des Ordners",
       "fileUploadFailed": "Fehler beim Hochladen des Ordner-Inhalts",
@@ -1874,7 +1880,7 @@
       "containerCreationSuccessful": "Container erfolgreich erstellt.",
       "containerCreationFailed": "Container konnte nicht erstellt werden.",
       "containerUpdateSuccessful": "{{containerName}} erfolgreich aktualisiert.",
-      "containerAlreadyUpdateToDate": "{{containerName}} ist bereits aktuell."
+      "containerAlreadyUpToDate": "{{containerName}} ist bereits aktuell."
     },
     "status": {
       "running": "läuft",

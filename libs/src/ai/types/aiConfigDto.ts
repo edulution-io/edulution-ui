@@ -20,7 +20,7 @@
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import { AiConfigPurposeType } from '@libs/ai/types/aiConfigPurposeType';
-import { AiProviderType } from '@libs/ai/types/aiProviderType';
+import { SupportedAiProviderType } from '@libs/ai/types/supportedAiProviderType';
 
 interface AiConfigDto {
   id: string;
@@ -28,7 +28,7 @@ interface AiConfigDto {
   url: string;
   apiKey: string;
   aiModel: string;
-  apiStandard: AiProviderType;
+  apiStandard: SupportedAiProviderType;
   allowedUsers: AttendeeDto[];
   allowedGroups: MultipleSelectorGroup[];
   purposes: AiConfigPurposeType[];

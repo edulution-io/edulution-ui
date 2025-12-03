@@ -601,7 +601,17 @@
         "fetch": "Choisissez l'un des modèles disponibles.",
         "submit": "Enregistrez le sondage en tant que modèle.",
         "title": "Modèles d'enregistrement / charge",
-        "emptyMessage": "Il n'y a pas encore de modèles"
+        "emptyMessage": "Il n'y a pas encore de modèles",
+        "upload": {
+          "success": "Modèle enregistré avec succès",
+          "error": "Échec de l'enregistrement du modèle"
+        },
+        "deletion": {
+          "title": "Supprimer le modèle",
+          "message": "Êtes-vous sûr de vouloir supprimer ce modèle ?",
+          "success": "Modèle supprimé avec succès",
+          "error": "Échec de la suppression du modèle"
+        }
       },
       "questionSettings": {
         "settings": "Paramètres",
@@ -1374,10 +1384,10 @@
     "dragDropClick": "Déposer les fichiers ici ou cliquez pour sélectionner les fichiers",
     "dropHere": "Lâcher ici",
     "filesToUpload": "Fichiers pour le téléversement",
-    "overwriteWarningTitleFile": "AVERTISSEMENT: le fichier existe déjà",
-    "overwriteWarningTitleFiles": "AVERTISSEMENT: les fichiers existent déjà",
-    "overwriteWarningDescriptionFile": "Le fichier suivant est écrasé:",
-    "overwriteWarningDescriptionFiles": "Les fichiers suivants sont écrasés:",
+    "overwriteWarningTitle_one": "Avertissement: le fichier existe déjà",
+    "overwriteWarningTitle_other": "Avertissement: les fichiers existent déjà",
+    "overwriteWarningDescription_one": "Le fichier suivant sera écrasé:",
+    "overwriteWarningDescription_other": "Les fichiers suivants seront écrasés:",
     "oversizedFilesDetected": "Fichiers trop grands découverts",
     "oversizedFileDetected": "Fichier trop grand découvert!",
     "cannotUploadOversized": "Aucun fichier de plus de 50 Mo ne peut être téléversé.",
@@ -1385,6 +1395,8 @@
     "files": "Fichiers",
     "creatingDirectoryStructure": "Création de la structure des dossiers",
     "hiddenFiles": "fichiers cachés et système",
+    "replaceFiles": "Remplacer",
+    "uploadNewOnly": "Téléverser uniquement les nouveaux fichiers",
     "errors": {
       "directoryCreationFailed": "Échec de la création du répertoire",
       "fileUploadFailed": "Échec du téléchargement du fichier",
@@ -1668,7 +1680,7 @@
       "containerCreationSuccessful": "Conteneur créé avec succès.",
       "containerCreationFailed": "Le conteneur n'a pas pu être créé.",
       "containerUpdateSuccessful": "{{containerName}} mis à jour avec succès.",
-      "containerAlreadyUpdateToDate": "{{containerName}} est déjà à jour."
+      "containerAlreadyUpToDate": "{{containerName}} est déjà à jour."
     },
     "status": {
       "running": "en cours d'exécution",
