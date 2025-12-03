@@ -35,6 +35,7 @@ import { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSett
 import AddOrganisationInfo from '@/pages/Settings/components/AddOrganisationInfo';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import ThemeSettings from '@/pages/Settings/components/ThemeSettings';
+import AiConfigSettings from '@/pages/Settings/components/AiConfigSettings';
 import DeploymentTargetDropdownSelectFormField from '../components/DeploymentTargetDropdownSelectFormField';
 
 type GlobalSettingsProps<T extends FieldValues> = {
@@ -81,7 +82,7 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
     <AccordionSH
       type="multiple"
       className="mt-5"
-      defaultValue={['general', 'security', 'ldap', 'branding', 'theme', 'organisationInfo']}
+      defaultValue={['general', 'security', 'ldap', 'branding', 'theme', 'organisationInfo', 'aiSupport']}
     >
       <Form {...form}>
         <form
@@ -176,6 +177,13 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
               <h3>{t('settings.globalSettings.organisationInfo.title')}</h3>
             </AccordionTrigger>
             <AddOrganisationInfo form={form} />
+          </AccordionItem>
+
+          <AccordionItem value="aiSupport">
+            <AccordionTrigger className="flex">
+              <h3>{t('settings.globalSettings.aiconfig.title')}</h3>
+            </AccordionTrigger>
+            <AiConfigSettings />
           </AccordionItem>
         </form>
       </Form>

@@ -1037,6 +1037,10 @@
         "website": "Website der Organisation",
         "city": "Stadt",
         "postalCityPlaceholder": "Berlin"
+      },
+      "aiconfig": {
+        "title": "KI-Einstellungen",
+        "description": "Konfigurieren Sie hier die KI-Dienste, die in der Plattform verwendet werden können."
       }
     },
     "userAdministration": {
@@ -1134,6 +1138,10 @@
           "sandboxModeDescription": "Im Modus „Separates Layout“ wird der Inhalt als eigenständige Seite angezeigt, ähnlich wie ein Fenster innerhalb der Anwendung. Dabei können neben dem eigentlichen Inhalt auch zusätzliche Designelemente oder Funktionen aus anderen Quellen geladen werden. Dadurch ist die Gestaltung unabhängig von der Anwendung, könnte also anders aussehen oder sich anders verhalten. Hier muss der Inhalt als HTML-Datei hochgeladen werden.",
           "nativeModeDescription": "Im Modus „Integriertes Layout“ dagegen wird der Inhalt direkt in die Oberfläche der Anwendung eingefügt. Dadurch sieht der Inhalt genauso aus wie die Anwendung selbst und fügt sich optisch nahtlos ein. Allerdings können hier keine zusätzlichen externen Designelemente oder Funktionen dynamisch hinzugefügt werden. Es können jedoch statische Elemente wie Bilder hochgeladen und hier eingesetzt werden.",
           "visibilityDescription": "Hier können Sie festlegen, ob die App öffentlich zugänglich sein soll. Aktiv bedeutet öffentlich, inaktiv bedeutet, dass nur konfigurierte Nutzergruppen Zugriff haben. Die App öffentlich zugänglich zu machen erzeugt einen Link im Footer. Um die App in der Sidebar für registrierte Nutzer sichtbar zu machen, muss deren Zugriff über die Nutzergruppen konfiguriert werden"
+        },
+        "aiSupport": {
+          "title": "KI-Unterstützung",
+          "description": "Konfigurieren Sie hier die KI-Dienste für die Plattform."
         }
       },
       "update": {
@@ -1471,7 +1479,10 @@
     "saveLocal": "Auf dem Gerät speichern",
     "openLocal": "Vom Gerät öffnen",
     "openFileFromEdu": "Datei öffnen",
-    "saveFileToEdu": "In Dateien speichern"
+    "saveFileToEdu": "In Dateien speichern",
+    "testing": "Testen...",
+    "all": "Alle",
+    "invalidUrl": "Ungültige URL"
   },
   "form": {
     "path": "Link",
@@ -1947,5 +1958,44 @@
     },
     "sharePath": "Pfad",
     "pathPreview": "Pfad-Vorschau"
+  },
+  "aiconfig": {
+    "settings": {
+      "name": "Name",
+      "serverUrl": "Server-URL",
+      "apiKey": "API-Schlüssel",
+      "model": "Modell",
+      "apiStandard": "API-Standard",
+      "createConfig": "KI-Konfiguration erstellen",
+      "editConfig": "KI-Konfiguration bearbeiten",
+      "testConnection": "Verbindung testen",
+      "enterUrlFirst": "Zuerst URL eingeben",
+      "selectModel": "Modell auswählen",
+      "purposes": {
+        "title": "Verwendungszwecke",
+        "placeholder": "Verwendungszwecke auswählen...",
+        "description": "Wählen Sie aus, wofür diese KI-Konfiguration verwendet werden soll."
+      },
+      "allowedUsers": {
+        "title": "Erlaubte Benutzer"
+      },
+      "allowedGroups": {
+        "title": "Erlaubte Gruppen"
+      }
+    },
+    "apiStandards": {
+      "openai": "OpenAI",
+      "anthropic": "Anthropic",
+      "google": "Google",
+      "openai-compatible": "OpenAI-kompatibel"
+    },
+    "purposes": {
+      "chat": "Chat",
+      "translation": "Übersetzung"
+    },
+    "errors": {
+      "nameAlreadyExists": "Ein Eintrag mit diesem Namen existiert bereits."
+    },
+    "filterPlaceHolderText": "Nach Name filtern..."
   }
 }

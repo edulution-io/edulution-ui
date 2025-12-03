@@ -17,10 +17,21 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const SUPPORTED_AI_PROVIDER = {
-  OpenAI: 'openai',
-  Anthropic: 'anthropic',
-  Google: 'google',
-  OpenAICompatible: 'openai-compatible',
-} as const;
-export default SUPPORTED_AI_PROVIDER;
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import AttendeeDto from '@libs/user/types/attendee.dto';
+import { AiConfigPurposeType } from '@libs/ai/types/aiConfigPurposeType';
+import { SupportedAiProviderType } from '@libs/ai/types/supportedAiProviderType';
+
+interface AiConfigDto {
+  id: string;
+  name: string;
+  url: string;
+  apiKey: string;
+  aiModel: string;
+  apiStandard: SupportedAiProviderType;
+  allowedUsers: AttendeeDto[];
+  allowedGroups: MultipleSelectorGroup[];
+  purposes: AiConfigPurposeType[];
+}
+
+export default AiConfigDto;

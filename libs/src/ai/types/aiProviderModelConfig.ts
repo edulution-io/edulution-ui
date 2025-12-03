@@ -17,10 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const SUPPORTED_AI_PROVIDER = {
-  OpenAI: 'openai',
-  Anthropic: 'anthropic',
-  Google: 'google',
-  OpenAICompatible: 'openai-compatible',
-} as const;
-export default SUPPORTED_AI_PROVIDER;
+import ModelListResponse from '@libs/ai/types/modelListResponse';
+
+interface AiProviderModelConfig {
+  getUrl: (baseUrl: string, apiKey: string) => string;
+  getHeaders: (apiKey: string) => Record<string, string> | undefined;
+  extractModels: (data: ModelListResponse) => string[];
+}
+
+export default AiProviderModelConfig;

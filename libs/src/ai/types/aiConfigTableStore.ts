@@ -17,10 +17,19 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const SUPPORTED_AI_PROVIDER = {
-  OpenAI: 'openai',
-  Anthropic: 'anthropic',
-  Google: 'google',
-  OpenAICompatible: 'openai-compatible',
-} as const;
-export default SUPPORTED_AI_PROVIDER;
+import type AiConfigDto from '@libs/ai/types/aiConfigDto';
+import { RowSelectionState } from '@tanstack/react-table';
+import AppConfigTable from '@libs/appconfig/types/appConfigTable';
+
+interface AiConfigTableStore extends AppConfigTable<AiConfigDto> {
+  selectedConfig: AiConfigDto | null;
+  setSelectedConfig: (config: AiConfigDto | null) => void;
+  addOrUpdateConfig: (config: AiConfigDto) => Promise<AiConfigDto>;
+  isLoading: boolean;
+  error: string | null;
+  selectedRows: RowSelectionState;
+  setSelectedRows: (rows: RowSelectionState) => void;
+  deleteTableEntry: (applicationName: string, id: string) => Promise<void>;
+}
+
+export default AiConfigTableStore;

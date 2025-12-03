@@ -17,10 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const SUPPORTED_AI_PROVIDER = {
-  OpenAI: 'openai',
-  Anthropic: 'anthropic',
-  Google: 'google',
-  OpenAICompatible: 'openai-compatible',
+const AI_CONFIG_TABLE_COLUMNS = {
+  NAME: 'name',
+  URL: 'url',
+  API_KEY: 'apiKey',
+  AI_MODEL: 'aiModel',
+  API_STANDARD: 'apiStandard',
+  ALLOWED_USERS: 'allowedUsers',
+  ALLOWED_GROUPS: 'allowedGroups',
+  PURPOSES: 'purposes',
+  ID: 'id',
 } as const;
-export default SUPPORTED_AI_PROVIDER;
+
+export default AI_CONFIG_TABLE_COLUMNS;

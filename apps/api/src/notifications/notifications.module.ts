@@ -17,10 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 import { Global, Module } from '@nestjs/common';
+import AiModule from '../ai/ai.module';
 import NotificationsService from './notifications.service';
 
 @Global()
 @Module({
+  imports: [AiModule],
   providers: [NotificationsService],
   exports: [NotificationsService],
 })

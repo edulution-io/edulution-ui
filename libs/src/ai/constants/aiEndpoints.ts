@@ -17,10 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const SUPPORTED_AI_PROVIDER = {
-  OpenAI: 'openai',
-  Anthropic: 'anthropic',
-  Google: 'google',
-  OpenAICompatible: 'openai-compatible',
-} as const;
-export default SUPPORTED_AI_PROVIDER;
+export const AI_EDU_API_ENDPOINT = 'ai';
+export const AI_CHAT_EDU_API_ENDPOINT = `${AI_EDU_API_ENDPOINT}/chat`;
+export const AI_TRANSLATE_EDU_API_ENDPOINT = `${AI_EDU_API_ENDPOINT}/translate`;
+
+export const AI_CONFIGS_EDU_API_ENDPOINT = `${AI_EDU_API_ENDPOINT}/configs`;
+export const AI_CONFIGS_TEST_EDU_API_ENDPOINT = `${AI_CONFIGS_EDU_API_ENDPOINT}/test`;
+export const AI_CONFIGS_MODELS_EDU_API_ENDPOINT = `${AI_CONFIGS_EDU_API_ENDPOINT}/models`;

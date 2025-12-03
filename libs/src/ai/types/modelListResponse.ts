@@ -17,10 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const SUPPORTED_AI_PROVIDER = {
-  OpenAI: 'openai',
-  Anthropic: 'anthropic',
-  Google: 'google',
-  OpenAICompatible: 'openai-compatible',
-} as const;
-export default SUPPORTED_AI_PROVIDER;
+interface ModelListResponse {
+  data?: Array<{ id: string }>;
+  models?: Array<{ name: string }>;
+}
+
+export default ModelListResponse;

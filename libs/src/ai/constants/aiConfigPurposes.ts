@@ -17,10 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const SUPPORTED_AI_PROVIDER = {
-  OpenAI: 'openai',
-  Anthropic: 'anthropic',
-  Google: 'google',
-  OpenAICompatible: 'openai-compatible',
+const AI_CONFIG_PURPOSES = {
+  TRANSLATION: 'translation',
+  CHAT: 'chat',
 } as const;
-export default SUPPORTED_AI_PROVIDER;
+
+export default AI_CONFIG_PURPOSES;
