@@ -26,11 +26,18 @@ import DeleteFileConsumer from '../filesharing/consumers/deleteFile.consumer';
 import MoveOrRenameConsumer from '../filesharing/consumers/moveOrRename.consumer';
 import CopyFileConsumer from '../filesharing/consumers/copyFile.consumer';
 import CreateFolderConsumer from '../filesharing/consumers/createFolder.consumer';
+import SendNotificationConsumer from '../notifications/consumers/sendNotification.consumer';
 import { PublicFileShareSchema, PublicShare } from '../filesharing/publicFileShare.schema';
+import AiModule from '../ai/ai.module';
+import UsersModule from '../users/users.module';
 
 @Global()
 @Module({
-  imports: [MongooseModule.forFeature([{ name: PublicShare.name, schema: PublicFileShareSchema }])],
+  imports: [
+    MongooseModule.forFeature([{ name: PublicShare.name, schema: PublicFileShareSchema }]),
+    AiModule,
+    UsersModule,
+  ],
   providers: [
     QueueService,
     DuplicateFileConsumer,
@@ -39,6 +46,7 @@ import { PublicFileShareSchema, PublicShare } from '../filesharing/publicFileSha
     MoveOrRenameConsumer,
     CopyFileConsumer,
     CreateFolderConsumer,
+    SendNotificationConsumer,
   ],
   exports: [QueueService],
 })
