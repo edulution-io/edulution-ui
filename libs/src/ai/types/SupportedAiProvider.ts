@@ -17,6 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import SupportedProvider from './supportedProvider';
+const SUPPORTED_AI_PROVIDER = {
+  OpenAI: 'openai',
+  Anthropic: 'anthropic',
+  Gemini: 'gemini',
+  OpenAICompatible: 'openai-compatible',
+} as const;
 
-export type SupportedProviderType = (typeof SupportedProvider)[keyof typeof SupportedProvider];
+export default SUPPORTED_AI_PROVIDER;

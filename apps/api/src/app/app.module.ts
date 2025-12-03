@@ -58,7 +58,6 @@ import ScriptsModule from '../scripts/scripts.module';
 import WebdavSharesModule from '../webdav/shares/webdav-shares.module';
 import LdapKeycloakSyncModule from '../ldap-keycloak-sync/ldap-keycloak-sync.module';
 import redisConnection from '../common/redis.connection';
-import NotificationsModule from '../notifications/notifications.module';
 import MobileAppModule from '../mobileAppModule/mobileApp.module';
 import UserPreferencesModule from '../user-preferences/user-preferences.module';
 import DevCacheFlushService from '../common/cache/dev-cache-flush.service';
@@ -66,6 +65,8 @@ import MetricsModule from '../metrics/metrics.module';
 import configuration from '../config/configuration';
 import enableSentryForNest from '../sentry/enableSentryForNest';
 import AiModule from '../ai/ai.module';
+import QueueModule from '../queue/queue.module';
+import NotificationModule from '../notifications/notifications.module';
 
 @Module({
   imports: [
@@ -134,10 +135,11 @@ import AiModule from '../ai/ai.module';
     SurveysModule,
     BulletinCategoryModule,
     BulletinBoardModule,
-    NotificationsModule,
+    NotificationModule,
     MobileAppModule,
     UserPreferencesModule,
     AiModule,
+    QueueModule,
     JwtModule.register({
       global: true,
     }),

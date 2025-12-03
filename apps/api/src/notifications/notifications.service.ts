@@ -21,17 +21,13 @@ import { Injectable } from '@nestjs/common';
 import { Expo, ExpoPushMessage } from 'expo-server-sdk';
 import pickDefinedNotificationFields from '@libs/notification/utils/pickDefinedNotificationFields';
 import SendPushNotificationDto from '@libs/notification/types/send-pushNotification.dto';
-import UsersService from '../users/users.service';
-import AiService from '../ai/ai.service';
+import QueueService from '../queue/queue.service';
 
 @Injectable()
 class NotificationsService {
   private readonly expo = new Expo();
 
-  constructor(
-    private userService: UsersService,
-    private aiService: AiService,
-  ) {}
+  constructor(private readonly queueService: QueueService) {}
 
   async sendPushNotification(sendPushNotificationDto: SendPushNotificationDto): Promise<void> {
     const tokens = Array.isArray(sendPushNotificationDto.to)
@@ -67,33 +63,17 @@ class NotificationsService {
 
   async notifyUsernames(
     usernames: string[],
-    partialNotification: Omit<SendPushNotificationDto, 'to'>,
-    translate: boolean = false,
+    notification: Omit<SendPushNotificationDto, 'to'> & { translate?: boolean },
   ): Promise<void> {
-    if (translate) {
-      await Promise.all(
-        usernames.map(async (username) => {
-          const user = await this.userService.findOne(username);
-          const translated = await this.aiService.translateNotification(
-            { title: partialNotification.title ?? '', body: partialNotification.body ?? '' },
-            user?.language || 'DE',
-          );
+    const { translate, ...rest } = notification;
 
-          const tokens = await this.userService.getPushTokensByUsersnames([username]);
-          await this.sendPushNotification({
-            to: tokens,
-            ...partialNotification,
-            ...translated,
-          });
-        }),
-      );
-    } else {
-      const uniqueTokens = await this.userService.getPushTokensByUsersnames(usernames);
-      await this.sendPushNotification({
-        to: uniqueTokens,
-        ...partialNotification,
-      });
-    }
+    await this.queueService.addNotificationJob({
+      usernames,
+      notification: {
+        ...rest,
+        translate,
+      },
+    });
   }
 }
 

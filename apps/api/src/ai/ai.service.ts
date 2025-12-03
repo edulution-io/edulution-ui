@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CoreMessage, generateText, LanguageModel } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
@@ -25,12 +25,13 @@ import { createAnthropic } from '@ai-sdk/anthropic';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import AiRequestOptions from '@libs/ai/types/aiRequestOptions';
-import { SupportedProviderType } from '@libs/ai/types/supportedProviderType';
-import SupportedProvider from '@libs/ai/types/supportedProvider';
+import { SupportedAiProviderType } from '@libs/ai/types/supportedAiProviderType';
+import SUPPORTED_AI_PROVIDER from '@libs/ai/types/SupportedAiProvider';
+import promptsConfig from '@libs/ai/prompts/prompts.config';
 
 @Injectable()
 class AiService {
-  private readonly provider: SupportedProviderType;
+  private readonly provider: SupportedAiProviderType;
 
   private readonly apiKey: string;
 
@@ -49,14 +50,14 @@ class AiService {
     const providerEnv = this.configService.get<string>('AI_PROVIDER')?.toLowerCase();
 
     if (
-      providerEnv === SupportedProvider.OpenAI ||
-      providerEnv === SupportedProvider.OpenAICompatible ||
-      providerEnv === SupportedProvider.Anthropic ||
-      providerEnv === SupportedProvider.Gemini
+      providerEnv === SUPPORTED_AI_PROVIDER.OpenAI ||
+      providerEnv === SUPPORTED_AI_PROVIDER.OpenAICompatible ||
+      providerEnv === SUPPORTED_AI_PROVIDER.Anthropic ||
+      providerEnv === SUPPORTED_AI_PROVIDER.Gemini
     ) {
       this.provider = providerEnv;
     } else {
-      this.provider = SupportedProvider.OpenAI;
+      this.provider = SUPPORTED_AI_PROVIDER.OpenAI;
     }
 
     this.apiKey = this.configService.get<string>('AI_API_KEY') || '';
@@ -69,14 +70,14 @@ class AiService {
 
     this.baseClients = {};
 
-    if (this.provider === SupportedProvider.OpenAI) {
+    if (this.provider === SUPPORTED_AI_PROVIDER.OpenAI) {
       this.baseClients.openai = createOpenAI({
         apiKey: this.apiKey,
         baseURL: this.apiUrl,
       });
     }
 
-    if (this.provider === SupportedProvider.OpenAICompatible) {
+    if (this.provider === SUPPORTED_AI_PROVIDER.OpenAICompatible) {
       this.baseClients.openaiCompatible = createOpenAICompatible({
         name: 'openai-compatible',
         apiKey: this.apiKey || 'unused',
@@ -84,14 +85,14 @@ class AiService {
       });
     }
 
-    if (this.provider === SupportedProvider.Anthropic) {
+    if (this.provider === SUPPORTED_AI_PROVIDER.Anthropic) {
       this.baseClients.anthropic = createAnthropic({
         apiKey: this.apiKey,
         baseURL: this.apiUrl,
       });
     }
 
-    if (this.provider === SupportedProvider.Gemini) {
+    if (this.provider === SUPPORTED_AI_PROVIDER.Gemini) {
       this.baseClients.gemini = createGoogleGenerativeAI({
         apiKey: this.apiKey,
         baseURL: this.apiUrl,
@@ -129,7 +130,7 @@ class AiService {
 
   private resolveModel(modelName: string): LanguageModel {
     switch (this.provider) {
-      case SupportedProvider.Anthropic: {
+      case SUPPORTED_AI_PROVIDER.Anthropic: {
         if (!this.baseClients.anthropic) {
           this.baseClients.anthropic = createAnthropic({
             apiKey: this.apiKey,
@@ -138,7 +139,7 @@ class AiService {
         }
         return this.baseClients.anthropic(modelName);
       }
-      case SupportedProvider.Gemini: {
+      case SUPPORTED_AI_PROVIDER.Gemini: {
         if (!this.baseClients.gemini) {
           this.baseClients.gemini = createGoogleGenerativeAI({
             apiKey: this.apiKey,
@@ -147,7 +148,7 @@ class AiService {
         }
         return this.baseClients.gemini(modelName);
       }
-      case SupportedProvider.OpenAICompatible: {
+      case SUPPORTED_AI_PROVIDER.OpenAICompatible: {
         if (!this.baseClients.openaiCompatible) {
           this.baseClients.openaiCompatible = createOpenAICompatible({
             name: 'openai-compatible',
@@ -157,7 +158,7 @@ class AiService {
         }
         return this.baseClients.openaiCompatible(modelName);
       }
-      case SupportedProvider.OpenAI:
+      case SUPPORTED_AI_PROVIDER.OpenAI:
       default: {
         if (!this.baseClients.openai) {
           this.baseClients.openai = createOpenAI({
@@ -175,15 +176,11 @@ class AiService {
     targetLanguage: string,
   ): Promise<{ title: string; body: string }> {
     try {
+      const config = promptsConfig.translation.notification;
       const resultText = await this.chat({
         prompt: JSON.stringify(notification),
-        systemPrompt: [
-          'You are a translator.',
-          `Translate the JSON notification to language code "${targetLanguage}".`,
-          'Return only valid JSON with "title" and "body" fields, nothing else.',
-          'Do not add explanations, comments or extra fields.',
-        ].join(' '),
-        temperature: 0.3,
+        systemPrompt: config.system(targetLanguage),
+        temperature: config.temperature,
       });
 
       const parsed = JSON.parse(resultText) as {
@@ -192,7 +189,7 @@ class AiService {
       };
 
       if (typeof parsed.title !== 'string' || typeof parsed.body !== 'string') {
-        console.warn('LLM translation result has invalid structure. Falling back to original notification.');
+        Logger.warn('LLM translation result has invalid structure. Falling back to original notification.');
         return notification;
       }
 
@@ -201,7 +198,7 @@ class AiService {
         body: parsed.body,
       };
     } catch (error) {
-      console.error('Error while translating notification. Falling back to original notification.', error);
+      Logger.debug('Error while translating notification. Falling back to original notification.', error);
       return notification;
     }
   }
