@@ -76,7 +76,7 @@ const BulletinBoardColumnHeader = ({
         trigger={
           <Button
             type="button"
-            className="text-white-500 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full p-0 hover:bg-blue-600 hover:text-white"
+            className="text-white-500 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full p-0 hover:bg-primary hover:text-white"
             title={t('common.options')}
           >
             <PiDotsThreeVerticalBold className="h-6 w-6" />
