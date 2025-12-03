@@ -21,6 +21,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import cn from '@libs/common/utils/className';
 import { AccordionTrigger } from '@/components/ui/AccordionSH';
+import getAppIconClassName from '@libs/ui/utils/getAppIconClassName';
 
 interface FeedWidgetAccordionTriggerProps {
   src: string;
@@ -40,7 +41,7 @@ const FeedWidgetAccordionTrigger = (props: FeedWidgetAccordionTriggerProps) => {
       <img
         src={src}
         alt={alt}
-        className={cn('mr-3', className)}
+        className={cn('mr-3', className, getAppIconClassName(src))}
         width={width}
       />
       <span className="mr-2 text-xl font-bold">{t(labelTranslationId)}</span>
