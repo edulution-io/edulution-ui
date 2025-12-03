@@ -175,29 +175,24 @@ class SurveysAttachmentService implements OnModuleInit {
         break;
       case SurveyQuestionsType.CHECKBOX:
       case SurveyQuestionsType.DROPDOWN:
-      case SurveyQuestionsType.RADIO_GROUP:
+      case SurveyQuestionsType.RADIO_GROUP: {
         if (!element.choicesByUrl) {
           break;
         }
-        if (element.choicesByUrl?.url.includes(TEMPORAL_SURVEY_ID_STRING)) {
+        const url = element.choicesByUrl?.url.replace(TEMPORAL_SURVEY_ID_STRING, surveyId);
+        if (isPublic && url.includes(`/${SURVEY_CHOICES}/`)) {
           processedElement.choicesByUrl = {
             ...element.choicesByUrl,
-            url: element.choicesByUrl.url.replace(TEMPORAL_SURVEY_ID_STRING, surveyId),
+            url: url.replace(`/${SURVEY_CHOICES}/`, `/${PUBLIC_SURVEY_CHOICES}/`),
           };
-        }
-        if (isPublic && element.choicesByUrl?.url.includes(`/${SURVEY_CHOICES}/`)) {
+        } else if (!isPublic && url.includes(`/${PUBLIC_SURVEY_CHOICES}/`)) {
           processedElement.choicesByUrl = {
             ...element.choicesByUrl,
-            url: element.choicesByUrl.url.replace(`/${SURVEY_CHOICES}/`, `/${PUBLIC_SURVEY_CHOICES}/`),
-          };
-        } else if (!isPublic && element.choicesByUrl?.url.includes(`/${PUBLIC_SURVEY_CHOICES}/`)) {
-          processedElement.choicesByUrl = {
-            ...element.choicesByUrl,
-            url: element.choicesByUrl.url.replace(`/${PUBLIC_SURVEY_CHOICES}/`, `/${SURVEY_CHOICES}/`),
+            url: url.replace(`/${PUBLIC_SURVEY_CHOICES}/`, `/${SURVEY_CHOICES}/`),
           };
         }
         break;
-
+      }
       case SurveyQuestionsType.IMAGE:
         if (element.imageLink) {
           const { newUrl, filename } = await this.processUrl(
