@@ -742,6 +742,14 @@
         "filterPlaceHolderText": "Search for option",
         "imageWidth": "Width of one image in pixel [px]",
         "imageWidthPlaceholder": "0 means that the width is only limited by the available space."
+      },
+      "surveySettings": {
+        "settings": "Settings",
+        "title": "Survey Settings",
+        "surveyLogo": "Survey Logo",
+        "surveyLogoWidth": "Width of the logo in pixels [px]",
+        "surveyLogoWidthPlaceholder": "0 means that the width is only limited by the available space.",
+        "invitees": "Invitees"
       }
     },
     "participate": {

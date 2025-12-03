@@ -744,6 +744,14 @@
         "filterPlaceHolderText": "Option suchen",
         "imageWidth": "Breite eines Bildes in Pixel [px]",
         "imageWidthPlaceholder": "0 bedeutet, dass die Breite nur von dem vorhandenen Platz beschränkt wird."
+      },
+      "surveySettings": {
+        "settings": "Einstellungen",
+        "title": "Einstellungen zur Umfrage",
+        "surveyLogo": "Logo der Umfrage",
+        "surveyLogoWidth": "Breite des Logos in Pixel [px]",
+        "surveyLogoWidthPlaceholder": "0 bedeutet, dass die Breite nur von dem vorhandenen Platz beschränkt wird.",
+        "invitees": "Teilnehmer"
       }
     },
     "participate": {

@@ -36,6 +36,9 @@ interface SurveyEditorPageStore {
   uploadFile: (file: File, callback: CallableFunction) => Promise<void>;
   isUploadingFile: boolean;
 
+  isOpenSurveyContextMenu: boolean;
+  setIsOpenSurveyContextMenu: (state: boolean) => void;
+
   isOpenSaveSurveyDialog: boolean;
   setIsOpenSaveSurveyDialog: (state: boolean) => void;
   updateOrCreateSurvey: (survey: SurveyDto) => Promise<boolean>;
@@ -59,6 +62,8 @@ const initialState = {
 
   isUploadingFile: false,
 
+  isOpenSurveyContextMenu: false,
+
   isOpenSaveSurveyDialog: false,
   isLoading: false,
 
@@ -74,6 +79,8 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
 
       updateStoredSurvey: (survey: SurveyDto) => set({ storedSurvey: survey }),
       resetStoredSurvey: () => set({ storedSurvey: undefined }),
+
+      setIsOpenSurveyContextMenu: (state: boolean) => set({ isOpenSurveyContextMenu: state }),
 
       setIsOpenSaveSurveyDialog: (state: boolean) => set({ isOpenSaveSurveyDialog: state }),
 

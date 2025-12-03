@@ -22,7 +22,7 @@ import { toast } from 'sonner';
 import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { VscNewFile } from 'react-icons/vsc';
-import { RiResetLeftLine } from 'react-icons/ri';
+import { RiListSettingsFill, RiResetLeftLine } from 'react-icons/ri';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { TbFileTypePdf, TbTemplate } from 'react-icons/tb';
@@ -42,6 +42,7 @@ import useLanguage from '@/hooks/useLanguage';
 import useBeforeUnload from '@/hooks/useBeforeUnload';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
+import SurveyContextMenu from '@/pages/Surveys/Editor/dialog/SurveyContextMenu';
 import createSurveyCreatorObject from '@/pages/Surveys/Editor/createSurveyCreatorObject';
 import TemplateDialog from '@/pages/Surveys/Editor/dialog/TemplateDialog';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
@@ -60,6 +61,8 @@ const SurveyEditorPage = () => {
   const {
     isOpenSaveSurveyDialog,
     setIsOpenSaveSurveyDialog,
+    isOpenSurveyContextMenu,
+    setIsOpenSurveyContextMenu,
     updateOrCreateSurvey,
     isLoading,
     reset: resetEditorPage,
@@ -231,6 +234,11 @@ const SurveyEditorPage = () => {
         },
       },
       {
+        icon: RiListSettingsFill,
+        text: t('survey.editor.surveySettings.settings'),
+        onClick: () => setIsOpenSurveyContextMenu(true),
+      },
+      {
         icon: TbFileTypePdf,
         text: t('survey.export.exportToPDF'),
         onClick: () => setOpenExportPDFDialog(true),
@@ -264,6 +272,12 @@ const SurveyEditorPage = () => {
         setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
         submitSurvey={handleSaveSurvey}
         isSubmitting={isLoading}
+      />
+      <SurveyContextMenu
+        form={form}
+        surveyCreator={creator}
+        isOpenSurveyContextMenu={isOpenSurveyContextMenu}
+        setIsOpenSurveyContextMenu={setIsOpenSurveyContextMenu}
       />
       <QuestionsContextMenu
         form={form}
