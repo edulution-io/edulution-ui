@@ -69,7 +69,7 @@ const BulletinBoardColumnHeader = ({
   return (
     <Card
       variant="security"
-      className="sticky mx-0 mb-4 flex h-[50px] min-h-[50px] items-center justify-between overflow-hidden rounded-lg py-1 pl-3 pr-2 opacity-90"
+      className="sticky mx-0 mb-4 flex h-[50px] min-h-[50px] items-center justify-between overflow-hidden py-1 pl-3 pr-2 opacity-90"
     >
       <h3 className="flex-1 truncate text-background">{category.name}</h3>
       <DropdownMenu

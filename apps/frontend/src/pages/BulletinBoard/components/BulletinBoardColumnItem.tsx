@@ -199,7 +199,7 @@ const BulletinBoardColumnItem = ({
       role="button"
       tabIndex={0}
       className={cn(
-        'relative mx-1 flex items-start justify-between break-all rounded-lg bg-muted-background p-4 pb-2',
+        'relative mx-1 flex items-start justify-between break-all rounded-xl bg-muted-background p-4 pb-2',
         {
           ring: isNew,
           'cursor-pointer': isNew,
