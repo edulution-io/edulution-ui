@@ -16,7 +16,6 @@
  *
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
-
 import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import QueueService from './queue.service';
@@ -27,10 +26,11 @@ import MoveOrRenameConsumer from '../filesharing/consumers/moveOrRename.consumer
 import CopyFileConsumer from '../filesharing/consumers/copyFile.consumer';
 import CreateFolderConsumer from '../filesharing/consumers/createFolder.consumer';
 import { PublicFileShareSchema, PublicShare } from '../filesharing/publicFileShare.schema';
+import AiModule from '../ai/ai.module';
 
 @Global()
 @Module({
-  imports: [MongooseModule.forFeature([{ name: PublicShare.name, schema: PublicFileShareSchema }])],
+  imports: [MongooseModule.forFeature([{ name: PublicShare.name, schema: PublicFileShareSchema }]), AiModule],
   providers: [
     QueueService,
     DuplicateFileConsumer,

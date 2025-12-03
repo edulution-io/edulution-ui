@@ -32,6 +32,8 @@ import ModelListResponse from '@libs/ai/types/modelListResponse';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import { AiConfigPurposeType } from '@libs/ai/types/aiConfigPurposeType';
+import LdapGroups from '@libs/groups/types/ldapGroups';
+import AvailableAiModel from '@libs/ai/types/availableAiModel';
 import AiConfig, { AiConfigDocument } from './ai.config.schema';
 import CustomHttpException from '../common/CustomHttpException';
 
@@ -150,6 +152,24 @@ class AiConfigService {
         : 'Failed to fetch models';
       return { success: false, models: [], message };
     }
+  }
+
+  async getAvailableModelsByUserAccess(
+    username: string,
+    userGroups: LdapGroups,
+    purpose?: string,
+  ): Promise<AvailableAiModel[]> {
+    const query: Record<string, unknown> = {
+      $or: [{ 'allowedUsers.username': username }, { 'allowedGroups.path': { $in: userGroups } }],
+    };
+
+    if (purpose) {
+      query.purposes = purpose;
+    }
+
+    const configs = await this.aiConfigModel.find(query, { name: 1, aiModel: 1, _id: 0 }).lean();
+
+    return configs as AvailableAiModel[];
   }
 }
 
