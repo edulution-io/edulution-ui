@@ -1789,10 +1789,7 @@
     },
     "purposes": {
       "chat": "Chat",
-      "translation": "Traduction",
-      "assistant": "Assistant",
-      "coding": "Programmation",
-      "analysis": "Analyse"
+      "translation": "Traduction"
     },
     "errors": {
       "nameAlreadyExists": "Une entrée avec ce nom existe déjà."

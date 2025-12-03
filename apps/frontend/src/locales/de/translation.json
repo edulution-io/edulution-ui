@@ -1990,6 +1990,7 @@
       "openai-compatible": "OpenAI-kompatibel"
     },
     "purposes": {
+      "chat": "Chat",
       "translation": "Übersetzung"
     },
     "errors": {

@@ -17,9 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AI_CONFIG_PURPOSES = {
-  TRANSLATION: 'translation',
-  CHAT: 'chat',
-} as const;
+import { IsArray, IsOptional, IsString } from 'class-validator';
 
-export default AI_CONFIG_PURPOSES;
+class PurposeFilterDto {
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  purposes?: string[];
+}
+
+export default PurposeFilterDto;

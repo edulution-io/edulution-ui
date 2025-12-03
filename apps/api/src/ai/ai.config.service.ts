@@ -34,6 +34,7 @@ import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import { AiConfigPurposeType } from '@libs/ai/types/aiConfigPurposeType';
 import LdapGroups from '@libs/groups/types/ldapGroups';
 import AvailableAiModel from '@libs/ai/types/availableAiModel';
+import PurposeFilterDto from '@libs/ai/types/purposeFilterDto';
 import AiConfig, { AiConfigDocument } from './ai.config.schema';
 import CustomHttpException from '../common/CustomHttpException';
 
@@ -157,19 +158,23 @@ class AiConfigService {
   async getAvailableModelsByUserAccess(
     username: string,
     userGroups: LdapGroups,
-    purpose?: string,
+    purposeFilterDto?: PurposeFilterDto,
   ): Promise<AvailableAiModel[]> {
     const query: Record<string, unknown> = {
       $or: [{ 'allowedUsers.username': username }, { 'allowedGroups.path': { $in: userGroups } }],
     };
 
-    if (purpose) {
-      query.purposes = purpose;
+    if (purposeFilterDto?.purposes && purposeFilterDto.purposes.length > 0) {
+      query.purposes = { $in: purposeFilterDto.purposes };
     }
 
-    const configs = await this.aiConfigModel.find(query, { name: 1, aiModel: 1, _id: 0 }).lean();
+    const configs = await this.aiConfigModel.find(query).select('name aiModel');
 
-    return configs as AvailableAiModel[];
+    return configs.map((config) => ({
+      name: config.name,
+      aiModel: config.aiModel,
+      configId: String(config.id),
+    }));
   }
 }
 

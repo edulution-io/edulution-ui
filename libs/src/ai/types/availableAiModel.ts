@@ -20,6 +20,7 @@
 interface AvailableAiModel {
   name: string;
   aiModel: string;
+  configId: string;
 }
 
 export default AvailableAiModel;

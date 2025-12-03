@@ -17,13 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import type AiConfigDto from '@libs/ai/types/aiConfigDto';
 import type AiRequestOptions from '@libs/ai/types/aiRequestOptions';
 import { AI_EDU_API_ENDPOINT } from '@libs/ai/constants/aiEndpoints';
 import UserDto from '@libs/user/types/user.dto';
 import AvailableAiModel from '@libs/ai/types/availableAiModel';
+import PurposeFilterDto from '@libs/ai/types/purposeFilterDto';
 import AdminGuard from '../common/guards/admin.guard';
 import AiConfigService from './ai.config.service';
 import AiService from './ai.service';
@@ -50,13 +51,13 @@ class AiController {
     return this.aiService.translateNotification(body.notification, body.targetLanguage);
   }
 
-  @Get('available')
+  @Post('available')
   async getAvailableConfigs(
     @GetCurrentUser() currentUser: UserDto,
     @GetCurrentUsername() username: string,
-    @Query('purpose') purpose?: string,
+    @Body() purposeFilterDto: PurposeFilterDto,
   ): Promise<AvailableAiModel[]> {
-    return this.aiConfigService.getAvailableModelsByUserAccess(username, currentUser.ldapGroups, purpose);
+    return this.aiConfigService.getAvailableModelsByUserAccess(username, currentUser.ldapGroups, purposeFilterDto);
   }
 
   @Get('configs')

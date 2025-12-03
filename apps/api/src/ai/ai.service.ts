@@ -36,8 +36,8 @@ class AiService {
 
   async chat(options: AiRequestOptions & { configId?: string; purpose?: string }): Promise<string> {
     const { prompt, systemPrompt, model, temperature = 0.7, configId, purpose } = options;
-
     const config = await this.resolveConfig(configId, purpose);
+
     const languageModel = this.createLanguageModel(config, model);
 
     const messages: ModelMessage[] = [];
@@ -85,7 +85,7 @@ class AiService {
   }
 
   private async resolveConfig(configId?: string, purpose?: string): Promise<AiConfigDto> {
-    let config: AiConfigDto | null = null;
+    let config: AiConfigDto | null;
 
     if (configId) {
       config = await this.aiConfigService.getById(configId);
@@ -129,11 +129,13 @@ class AiService {
       }
 
       case SUPPORTED_AI_PROVIDER.OpenAI:
-      default:
+      default: {
+        const baseUrl = config.url.endsWith('/v1') ? config.url : `${config.url}/v1`;
         return createOpenAI({
           apiKey: config.apiKey,
-          baseURL: config.url || undefined,
+          baseURL: baseUrl,
         })(modelName);
+      }
     }
   }
 }
