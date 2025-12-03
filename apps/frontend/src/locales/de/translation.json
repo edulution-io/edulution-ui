@@ -1271,6 +1271,17 @@
       "french": "Französisch",
       "system": "Systemsprache"
     },
+
+    "notifications": {
+      "title": "Benachrichtigungen",
+      "description": "Verwalte deine Benachrichtigungseinstellungen",
+      "browserNotifications": "Browser-Benachrichtigungen",
+      "browserNotificationsInfo": "Erhalte Benachrichtigungen direkt in deinem Browser.",
+      "requestPermission": "Benachrichtigungen aktivieren",
+      "blockedByBrowser": "Benachrichtigungen wurden im Browser blockiert.",
+      "enableInBrowserSettings": "Um Benachrichtigungen zu erhalten, musst du diese in deinen Browser-Einstellungen erlauben."
+    },
+
     "addTotp": {
       "title": "Zwei-Faktor-Authentisierung einrichten",
       "qrCodeInstructions": "Den QR-Code mit einer Authenticator App scannen, die TOTP (Time-based One-Time Password) unterstützt.",

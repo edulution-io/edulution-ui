@@ -30,8 +30,8 @@ import type SseStatus from '@libs/common/types/sseMessageType';
 import getDeploymentTarget from '@libs/common/utils/getDeploymentTarget';
 import {
   SSE_HEARTBEAT_INTERVAL_MS,
-  SSE_USER_CONNECTIONS_CACHE_KEY,
   SSE_PERSIST_DEBOUNCE_MS,
+  SSE_USER_CONNECTIONS_CACHE_KEY,
 } from '@libs/sse/constants/sseConfig';
 import type UserConnections from '../types/userConnections';
 import type SseEvent from '../types/sseEvent';
@@ -124,6 +124,18 @@ class SseService implements OnModuleInit {
 
   public sendEventToUsers(attendees: string[], data: SseEventData, type: SseStatus) {
     attendees.forEach((username) => this.sendEventToUser(username, data, type));
+  }
+
+  public sendEventToUsersWithPush(
+    usernames: string[],
+    data: SseEventData,
+    type: SseStatus,
+    push: { title: string; body: string; url?: string },
+  ) {
+    if (type !== SSE_MESSAGE_TYPE.PUSH_NOTIFICATION) {
+      this.sendEventToUsers(usernames, data, type);
+    }
+    this.sendEventToUsers(usernames, JSON.stringify(push), SSE_MESSAGE_TYPE.PUSH_NOTIFICATION);
   }
 
   public informAllUsers(data: SseEventData, type: SseStatus = SSE_MESSAGE_TYPE.MESSAGE): void {

@@ -17,28 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export const USER_SETTINGS_PATH = 'user';
+type IconCircleVariant = 'success' | 'error' | 'default';
 
-export const SECURITY_PATH = 'security';
-
-export const USER_DETAILS_PATH = 'details';
-
-export const MAILS_PATH = 'mails';
-
-export const LANGUAGE_PATH = 'language';
-
-export const MOBILE_ACCESS_PATH = 'mobile-access';
-
-export const NOTIFICATIONS_PATH = 'notifications';
-
-export const USER_SETTINGS_LANGUAGE_PATH = `/${USER_SETTINGS_PATH}/${LANGUAGE_PATH}`;
-
-export const USER_SETTINGS_SECURITY_PATH = `/${USER_SETTINGS_PATH}/${SECURITY_PATH}`;
-
-export const USER_SETTINGS_USER_DETAILS_PATH = `/${USER_SETTINGS_PATH}/${USER_DETAILS_PATH}`;
-
-export const USER_SETTINGS_MAILS_PATH = `/${USER_SETTINGS_PATH}/${MAILS_PATH}`;
-
-export const USER_SETTINGS_MOBILE_ACCESS_PATH = `/${USER_SETTINGS_PATH}/${MOBILE_ACCESS_PATH}`;
-
-export const USER_SETTINGS_NOTIFICATIONS_PATH = `/${USER_SETTINGS_PATH}/${NOTIFICATIONS_PATH}`;
+export default IconCircleVariant;

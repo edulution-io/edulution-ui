@@ -28,6 +28,8 @@ import useVersionChecker from '@/hooks/useVersionChecker';
 import useUploadProgressToast from '@/hooks/useUploadProgressToast';
 import useInitialAppData from '@/hooks/useInitialAppData';
 import useInitLmnApi from '@/hooks/useInitLmnApi';
+import useBrowserPushListener from '@/hooks/useBrowserPushListener';
+import useNotificationPrompt from '@/hooks/useBrowserNotificationSettings';
 import useUserStore from '../store/UserStore/useUserStore';
 import useNotifications from '../hooks/useNotifications';
 import useTokenEventListeners from '../hooks/useTokenEventListeners';
@@ -70,6 +72,10 @@ const GlobalHooksWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   useVersionChecker();
 
   useTokenEventListeners();
+
+  useNotificationPrompt();
+
+  useBrowserPushListener();
 
   return children;
 };

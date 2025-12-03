@@ -17,28 +17,26 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export const USER_SETTINGS_PATH = 'user';
+import React from 'react';
 
-export const SECURITY_PATH = 'security';
+interface SettingsCardProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  children: React.ReactNode;
+}
 
-export const USER_DETAILS_PATH = 'details';
+const SettingsCard: React.FC<SettingsCardProps> = ({ icon, title, description, children }) => (
+    <div className="rounded-lg border border-ciLightGrey/20 bg-ciDarkGrey/50 p-6">
+      <div className="flex items-start gap-4">
+        {icon}
+        <div className="flex-1">
+          <h2 className="text-lg font-semibold text-background">{title}</h2>
+          <p className="mt-1 text-sm text-ciLightGrey">{description}</p>
+          <div className="mt-4">{children}</div>
+        </div>
+      </div>
+    </div>
+  );
 
-export const MAILS_PATH = 'mails';
-
-export const LANGUAGE_PATH = 'language';
-
-export const MOBILE_ACCESS_PATH = 'mobile-access';
-
-export const NOTIFICATIONS_PATH = 'notifications';
-
-export const USER_SETTINGS_LANGUAGE_PATH = `/${USER_SETTINGS_PATH}/${LANGUAGE_PATH}`;
-
-export const USER_SETTINGS_SECURITY_PATH = `/${USER_SETTINGS_PATH}/${SECURITY_PATH}`;
-
-export const USER_SETTINGS_USER_DETAILS_PATH = `/${USER_SETTINGS_PATH}/${USER_DETAILS_PATH}`;
-
-export const USER_SETTINGS_MAILS_PATH = `/${USER_SETTINGS_PATH}/${MAILS_PATH}`;
-
-export const USER_SETTINGS_MOBILE_ACCESS_PATH = `/${USER_SETTINGS_PATH}/${MOBILE_ACCESS_PATH}`;
-
-export const USER_SETTINGS_NOTIFICATIONS_PATH = `/${USER_SETTINGS_PATH}/${NOTIFICATIONS_PATH}`;
+export default SettingsCard;

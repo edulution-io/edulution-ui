@@ -17,28 +17,33 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export const USER_SETTINGS_PATH = 'user';
+import StatusVariant from '@libs/common/types/statusVariant';
+import React from 'react';
 
-export const SECURITY_PATH = 'security';
+interface StatusBadgeProps {
+  variant: StatusVariant;
+  children: React.ReactNode;
+}
 
-export const USER_DETAILS_PATH = 'details';
+const variantStyles: Record<StatusVariant, string> = {
+  success: 'bg-green-500/20 text-green-400',
+  error: 'bg-red-500/20 text-red-400',
+  default: 'bg-ciLightGrey/20 text-ciLightGrey',
+};
 
-export const MAILS_PATH = 'mails';
+const dotStyles: Record<StatusVariant, string> = {
+  success: 'bg-green-400',
+  error: 'bg-red-400',
+  default: 'bg-ciLightGrey',
+};
 
-export const LANGUAGE_PATH = 'language';
+const StatusBadge: React.FC<StatusBadgeProps> = ({ variant, children }) => (
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium ${variantStyles[variant]}`}
+    >
+      <span className={`h-2 w-2 rounded-full ${dotStyles[variant]}`} />
+      {children}
+    </span>
+  );
 
-export const MOBILE_ACCESS_PATH = 'mobile-access';
-
-export const NOTIFICATIONS_PATH = 'notifications';
-
-export const USER_SETTINGS_LANGUAGE_PATH = `/${USER_SETTINGS_PATH}/${LANGUAGE_PATH}`;
-
-export const USER_SETTINGS_SECURITY_PATH = `/${USER_SETTINGS_PATH}/${SECURITY_PATH}`;
-
-export const USER_SETTINGS_USER_DETAILS_PATH = `/${USER_SETTINGS_PATH}/${USER_DETAILS_PATH}`;
-
-export const USER_SETTINGS_MAILS_PATH = `/${USER_SETTINGS_PATH}/${MAILS_PATH}`;
-
-export const USER_SETTINGS_MOBILE_ACCESS_PATH = `/${USER_SETTINGS_PATH}/${MOBILE_ACCESS_PATH}`;
-
-export const USER_SETTINGS_NOTIFICATIONS_PATH = `/${USER_SETTINGS_PATH}/${NOTIFICATIONS_PATH}`;
+export default StatusBadge;

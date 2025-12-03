@@ -1268,6 +1268,17 @@
       "french": "French",
       "system": "System language"
     },
+
+    "notifications": {
+      "title": "Notifications",
+      "description": "Manage your notification settings",
+      "browserNotifications": "Browser Notifications",
+      "browserNotificationsInfo": "Receive notifications directly in your browser.",
+      "requestPermission": "Enable Notifications",
+      "blockedByBrowser": "Notifications have been blocked by your browser.",
+      "enableInBrowserSettings": "To receive notifications, you need to allow them in your browser settings."
+    },
+
     "addTotp": {
       "title": "Set up Two-Factor Authentication",
       "qrCodeInstructions": "Scan the QR code with an authenticator app that supports TOTP (Time-based One-Time Password).",
