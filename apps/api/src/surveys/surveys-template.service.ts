@@ -67,7 +67,7 @@ class SurveysTemplateService implements OnModuleInit {
     const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
     const documents = await this.surveyTemplateModel
       .find(getIsAdmin(ldapGroups, adminGroups) ? {} : { isActive: true })
-      .lean();
+      .exec();
     return res.status(HttpStatus.OK).json(documents);
   }
 
