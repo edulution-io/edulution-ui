@@ -1,12 +1,10 @@
 <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
-     stroke-linejoin="round" height="200px" width="200px" xmlns="http://www.w3.org/2000/svg">
-  <defs
-    id="defs4">
-    <style
-      id="style2">
+  stroke-linejoin="round" height="200px" width="200px" xmlns="http://www.w3.org/2000/svg">
+  <defs id="defs4">
+    <style id="style2">
       .cls-1 {
-      stroke: #fffefe;
-      stroke-width: 0.6;
+        stroke: #fff;
+        stroke-width: 0.6;
       }
     </style>
   </defs>

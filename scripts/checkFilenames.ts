@@ -22,7 +22,7 @@ import * as path from 'path';
 import chalk from 'chalk';
 
 const IGNORED_EXTENSIONS = ['.spec.ts', '.mock.ts', '.d.ts'];
-const IGNORED_FILENAMES = ['vite.config.ts'];
+const IGNORED_FILENAMES = ['vite.config.mts'];
 const IGNORED_PREFIXES = ['migration'];
 const ALLOWED_SUFFIXES = ['decorator', 'schema', 'module', 'service', 'enum'];
 
