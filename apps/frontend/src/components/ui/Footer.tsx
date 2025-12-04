@@ -1,25 +1,61 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import useMedia from '@/hooks/useMedia';
 import React from 'react';
 import APPLICATION_NAME from '@libs/common/constants/applicationName';
+import { Link } from 'react-router-dom';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
+import getDisplayName from '@/utils/getDisplayName';
+import useLanguage from '@/hooks/useLanguage';
+import useUserStore from '@/store/UserStore/useUserStore';
+import useMedia from '@/hooks/useMedia';
 
 const Footer = () => {
-  const { isMobileView } = useMedia();
+  const { language } = useLanguage();
+  const isAuthenticated = useUserStore((s) => s.isAuthenticated);
+  const { isMobileView, isTabletView } = useMedia();
+
+  const publicAppConfigs = useAppConfigsStore((s) => s.publicAppConfigs);
+
+  const isVersionInfoVisible = (!isMobileView && !isTabletView && isAuthenticated) || !isAuthenticated;
 
   return (
-    <footer className="bg-background-centered-shadow flex h-[22px] w-full justify-center overflow-hidden whitespace-nowrap text-muted">
-      &copy; {new Date().getFullYear()} {APPLICATION_NAME}. {!isMobileView && 'All rights reserved.'} V{APP_VERSION}
+    <footer className="bg-background-centered-shadow w-full px-2 pb-1 text-sm text-muted">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-center md:gap-4">
+        {isVersionInfoVisible && (
+          <span className="text-center md:text-left">
+            &copy; {new Date().getFullYear()} {APPLICATION_NAME}.
+            <span className="hidden md:inline"> All rights reserved.</span> v{APP_VERSION}
+          </span>
+        )}
+
+        <div className="flex flex-wrap justify-center gap-2 leading-tight scrollbar-thin md:flex-nowrap md:overflow-x-auto md:whitespace-nowrap md:leading-[inherit]">
+          {publicAppConfigs.map((config) => (
+            <Link
+              key={config.name}
+              to={`/${config.name}`}
+            >
+              {getDisplayName(config, language)}
+            </Link>
+          ))}
+        </div>
+      </div>
     </footer>
   );
 };

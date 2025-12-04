@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { create } from 'zustand';
@@ -16,21 +23,24 @@ import { BULLETIN_BOARD_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/a
 import handleApiError from '@/utils/handleApiError';
 import BulletinsByCategories from '@libs/bulletinBoard/types/bulletinsByCategories';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
+import UpdateBulletinCollapsedDto from '@libs/user-preferences/types/update-bulletin-collapsed.dto';
+import USER_PREFERENCES_ENDPOINT from '@libs/user-preferences/constants/user-preferences-endpoint';
 
 export interface BulletinBoardTableStore {
   reset: () => void;
   isLoading: boolean;
   error: Error | null;
   collapsedMap: Record<string, boolean>;
-  setCollapsed: (bulletinId: string, collapsed: boolean) => void;
+  setCollapsed: (bulletinId: string, collapsed: boolean) => Promise<void>;
   toggleCollapsed: (bulletinId: string) => void;
+  hydrateCollapsed: (map: Record<string, boolean>) => void;
   getBulletinsByCategories: (isLoading?: boolean) => Promise<void>;
   bulletinsByCategories: BulletinsByCategories | null;
   isEditorialModeEnabled: boolean;
   setIsEditorialModeEnabled: (isEditorialModeEnabled: boolean) => void;
   bulletinBoardNotifications: BulletinResponseDto[];
   addBulletinBoardNotification: (bulletin: BulletinResponseDto) => void;
-  resetBulletinBoardNotifications: () => void;
+  markBulletinAsRead: (bulletinId: string) => void;
 }
 
 const initialValues = {
@@ -46,16 +56,27 @@ const useBulletinBoardStore = create<BulletinBoardTableStore>((set, get) => ({
   ...initialValues,
   reset: () => set(initialValues),
 
-  setCollapsed: (bulletinId, collapsed) =>
+  setCollapsed: async (bulletinId, collapsed) => {
     set((state) => ({
       collapsedMap: { ...state.collapsedMap, [bulletinId]: collapsed },
-    })),
+    }));
 
-  toggleCollapsed: (bulletinId) =>
-    set((state) => {
-      const current = state.collapsedMap[bulletinId];
-      return { collapsedMap: { ...state.collapsedMap, [bulletinId]: !current } };
-    }),
+    try {
+      const dto: UpdateBulletinCollapsedDto = { bulletinId, collapsed };
+      await eduApi.patch(`${USER_PREFERENCES_ENDPOINT}/bulletin-collapsed`, dto);
+    } catch (error) {
+      set((state) => ({
+        collapsedMap: { ...state.collapsedMap, [bulletinId]: !collapsed },
+      }));
+    }
+  },
+
+  toggleCollapsed: (bulletinId) => {
+    const current = get().collapsedMap[bulletinId];
+    void get().setCollapsed(bulletinId, !current);
+  },
+
+  hydrateCollapsed: (map) => set({ collapsedMap: map ?? {} }),
 
   setIsEditorialModeEnabled: (isEditorialModeEnabled) => set({ isEditorialModeEnabled }),
 
@@ -63,7 +84,11 @@ const useBulletinBoardStore = create<BulletinBoardTableStore>((set, get) => ({
     set({
       bulletinBoardNotifications: [...get().bulletinBoardNotifications.filter((b) => b.id !== bulletin.id), bulletin],
     }),
-  resetBulletinBoardNotifications: () => set({ bulletinBoardNotifications: [] }),
+
+  markBulletinAsRead: (bulletinId) =>
+    set({
+      bulletinBoardNotifications: get().bulletinBoardNotifications.filter((b) => b.id !== bulletinId),
+    }),
 
   getBulletinsByCategories: async (isLoading = true) => {
     if (get().isLoading) return;

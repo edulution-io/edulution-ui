@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 'use client';
@@ -48,32 +55,46 @@ const DialogContent = React.forwardRef<
     showCloseButton?: boolean;
     variant?: 'primary' | 'secondary' | 'tertiary' | 'loadingSpinner';
   }
->(({ className, children, showCloseButton = true, variant, ...props }, ref) => (
-  <DialogPortal>
-    <DialogOverlay className={cn({ 'bg-black/50': variant === 'primary' })} />{' '}
-    <DialogPrimitive.Content
-      ref={ref}
-      className={cn(
-        'fixed left-[50%] top-[50%] z-50 grid max-h-[90vh] w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 overflow-auto rounded-xl p-6 shadow-lg duration-200 scrollbar-thin',
-        { 'bg-overlay text-background': variant === 'primary' },
-        { 'color-white text-background': variant === 'secondary' || variant === 'tertiary' },
-        { 'bg-ciGray': variant === 'secondary' },
-        { 'bg-foreground': variant === 'tertiary' },
-        { 'w-40 bg-foreground': variant === 'loadingSpinner' },
-        className,
-      )}
-      {...props}
-    >
-      {children}
-      {showCloseButton && (
-        <DialogPrimitive.Close className="absolute right-5 top-5">
-          <Cross2Icon className="h-4 w-4 text-background" />
-          <span className="sr-only">${i18n.t('dialog.close')}</span>
-        </DialogPrimitive.Close>
-      )}
-    </DialogPrimitive.Content>
-  </DialogPortal>
-));
+>(({ className, children, showCloseButton = true, variant, ...props }, ref) => {
+  React.useEffect(() => {
+    const resetPointerEvents = () => {
+      document.body.style.pointerEvents = '';
+    };
+
+    document.addEventListener('animationend', resetPointerEvents);
+    return () => {
+      resetPointerEvents();
+      document.removeEventListener('animationend', resetPointerEvents);
+    };
+  }, []);
+
+  return (
+    <DialogPortal>
+      <DialogOverlay className={cn({ 'bg-black/50': variant === 'primary' })} />{' '}
+      <DialogPrimitive.Content
+        ref={ref}
+        className={cn(
+          'fixed left-[50%] top-[50%] z-50 grid max-h-[90vh] w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 overflow-auto rounded-xl p-6 shadow-lg duration-200 scrollbar-thin',
+          { 'bg-overlay text-background': variant === 'primary' },
+          { 'color-white text-background': variant === 'secondary' || variant === 'tertiary' },
+          { 'bg-ciGray': variant === 'secondary' },
+          { 'bg-foreground': variant === 'tertiary' },
+          { 'w-40 bg-foreground': variant === 'loadingSpinner' },
+          className,
+        )}
+        {...props}
+      >
+        {children}
+        {showCloseButton && (
+          <DialogPrimitive.Close className="absolute right-5 top-5">
+            <Cross2Icon className="h-4 w-4 text-background" />
+            <span className="sr-only">${i18n.t('dialog.close')}</span>
+          </DialogPrimitive.Close>
+        )}
+      </DialogPrimitive.Content>
+    </DialogPortal>
+  );
+});
 
 DialogContent.defaultProps = {
   showCloseButton: true,
@@ -114,7 +135,7 @@ const DialogDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn(' rounded-xl text-sm text-muted-foreground', className)}
+    className={cn('sr-only', className)}
     {...props}
   />
 ));

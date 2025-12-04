@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React from 'react';
@@ -21,8 +28,10 @@ import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { type AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import type AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
 import EmbeddedPageEditorForm from '@libs/appconfig/types/embeddedPageEditorForm';
+import AppConfigDropdownSelect from '@/pages/Settings/AppConfig/components/dropdown/AppConfigDropdownSelect';
 import AppConfigSwitch from './booleanField/AppConfigSwitch';
 import EmbeddedPageEditor from './EmbeddedPageEditor';
+import AppConfigUpdateChecker from './updateChecker/AppConfigUpdateChecker';
 
 type ExtendedOptionsFormProps<T extends FieldValues> = {
   extendedOptions: AppConfigExtendedOptionsBySections | undefined;
@@ -79,7 +88,7 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
           <AppConfigTable
             key={fieldPath}
             applicationName={settingLocation || ''}
-            tableId={option.name}
+            option={option}
           />
         );
       case ExtendedOptionField.switch:
@@ -99,46 +108,58 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
             form={form as unknown as UseFormReturn<EmbeddedPageEditorForm>}
           />
         );
+      case ExtendedOptionField.dropdown:
+        return (
+          <AppConfigDropdownSelect
+            key={fieldPath}
+            control={control as unknown as Control<FieldValues>}
+            fieldPath={fieldPath as string}
+            option={option}
+          />
+        );
+      case ExtendedOptionField.updateChecker:
+        return (
+          <AppConfigUpdateChecker
+            key={`${option.name}_updateChecker`}
+            option={option}
+          />
+        );
       default:
         return null;
     }
   };
 
   return (
-    <div className="space-y-10">
-      {extendedOptions &&
-        Object.entries(extendedOptions).map(([section, options]) => (
-          <AccordionSH
-            type="multiple"
-            key={section}
-            defaultValue={[section]}
-          >
-            <AccordionItem value={section}>
-              <AccordionTrigger className="flex text-xl font-bold">
-                <h4 className="text-background">{t(`settings.appconfig.sections.${section}.title`)}</h4>
-              </AccordionTrigger>
-              <AccordionContent className="mx-1 flex flex-wrap justify-between gap-4 text-p">
-                <div className="text-base text-background">
-                  {t(`settings.appconfig.sections.${section}.description`)}
-                </div>
-                {options?.map((option: AppConfigExtendedOption) => (
-                  <div
-                    key={`key_${section}_${option.name}`}
-                    className={cn(
-                      { 'w-full': option.width === 'full' },
-                      { 'w-[calc(50%-0.75rem)]': option.width === 'half' },
-                      { 'w-[calc(33%-1.5rem)]': option.width === 'third' },
-                      { 'w-[calc(25%-2.25rem)]': option.width === 'quarter' },
-                    )}
-                  >
-                    {renderComponent(option)}
-                  </div>
-                ))}
-              </AccordionContent>
-            </AccordionItem>
-          </AccordionSH>
-        ))}
-    </div>
+    extendedOptions &&
+    Object.entries(extendedOptions).map(([section, options]) => (
+      <AccordionSH
+        type="multiple"
+        key={section}
+        defaultValue={[section]}
+      >
+        <AccordionItem value={section}>
+          <AccordionTrigger className="flex text-xl font-bold">
+            <h3>{t(`settings.appconfig.sections.${section}.title`)}</h3>
+          </AccordionTrigger>
+          <AccordionContent className="mx-1 flex flex-wrap justify-between gap-4 text-p">
+            <div className="text-base">{t(`settings.appconfig.sections.${section}.description`)}</div>
+            {options?.map((option: AppConfigExtendedOption) => (
+              <div
+                key={`key_${section}_${option.name}`}
+                className={cn(
+                  { 'w-full': option.width === 'full' },
+                  { 'w-[calc(50%-0.75rem)]': option.width === 'half' },
+                  { 'w-[calc(33%-1.5rem)]': option.width === 'third' },
+                  { 'w-[calc(25%-2.25rem)]': option.width === 'quarter' },
+                )}
+              >
+                {renderComponent(option)}
+              </div>
+            ))}
+          </AccordionContent>
+        </AccordionItem>
+      </AccordionSH>
+    ))
   );
 };
 

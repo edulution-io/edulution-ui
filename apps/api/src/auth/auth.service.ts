@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -28,13 +35,14 @@ import type AuthRequestArgs from '@libs/auth/types/auth-request';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
-import decodeBase64Api from '@libs/common/utils/decodeBase64Api';
+import { decodeBase64Api, encodeBase64Api } from '@libs/common/utils/getBase64StringApi';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import UserRoles from '@libs/user/constants/userRoles';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../common/CustomHttpException';
 import { User, UserDocument } from '../users/user.schema';
 import SseService from '../sse/sse.service';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 const { KEYCLOAK_EDU_UI_SECRET, KEYCLOAK_EDU_UI_CLIENT_ID, KEYCLOAK_EDU_UI_REALM, KEYCLOAK_API } = process.env;
 
@@ -45,6 +53,7 @@ class AuthService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private readonly sseService: SseService,
+    private readonly globalSettingsService: GlobalSettingsService,
   ) {
     this.keycloakApi = axios.create({
       baseURL: `${KEYCLOAK_API}/realms/${KEYCLOAK_EDU_UI_REALM}`,
@@ -108,50 +117,58 @@ class AuthService {
   }
 
   async authenticateUser(body: AuthRequestArgs): Promise<SigninResponse> {
-    const { grant_type: grantType } = body;
+    const { grant_type: grantType, password: encodedPassword, username: identifier } = body;
+
     if (grantType === 'refresh_token') {
       return this.signin(body);
     }
-    const { password: passwordHash } = body;
-    const passwordString = decodeBase64Api(passwordHash);
-    const { username } = body;
-    const user = (await this.userModel.findOne({ username }, 'mfaEnabled totpSecret').lean()) || ({} as User);
-    const { mfaEnabled = false, totpSecret = '' } = user;
 
-    if (mfaEnabled) {
-      const lastColonIndex = passwordString.lastIndexOf(':');
+    const passwordString = decodeBase64Api(encodedPassword);
 
-      let password: string;
-      let token: string | undefined;
+    const user = await this.userModel
+      .findOne(
+        identifier.includes('@') ? { email: identifier.toLowerCase() } : { username: identifier },
+        'mfaEnabled totpSecret username email',
+      )
+      .lean();
 
-      if (lastColonIndex !== -1) {
-        password = passwordString.slice(0, lastColonIndex);
-        token = passwordString.slice(lastColonIndex + 1);
-      } else {
-        throw new HttpException(
-          { error: AuthErrorMessages.TotpMissing, error_description: AuthErrorMessages.TotpMissing },
-          HttpStatus.UNAUTHORIZED,
-        );
-      }
+    if (!user) {
+      return this.signin(body, passwordString);
+    }
 
-      if (!token)
-        throw new HttpException(
-          { error: AuthErrorMessages.TotpMissing, error_description: AuthErrorMessages.TotpMissing },
-          HttpStatus.UNAUTHORIZED,
-        );
+    const { mfaEnabled = false, totpSecret = '', username } = user;
 
-      const isTotpValid = AuthService.checkTotp(token, username, totpSecret);
+    if (!mfaEnabled) {
+      return this.signin(body, passwordString);
+    }
 
-      if (isTotpValid) {
-        return this.signin(body, password);
-      }
+    const lastColonIndex = passwordString.lastIndexOf(':');
 
+    if (lastColonIndex === -1) {
+      throw new HttpException(
+        { error: AuthErrorMessages.TotpMissing, error_description: AuthErrorMessages.TotpMissing },
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    const password = passwordString.slice(0, lastColonIndex);
+    const token = passwordString.slice(lastColonIndex + 1);
+
+    if (!token)
+      throw new HttpException(
+        { error: AuthErrorMessages.TotpMissing, error_description: AuthErrorMessages.TotpMissing },
+        HttpStatus.UNAUTHORIZED,
+      );
+
+    const isTotpValid = AuthService.checkTotp(token, username, totpSecret);
+
+    if (!isTotpValid) {
       throw new HttpException(
         { error: AuthErrorMessages.TotpInvalid, error_description: AuthErrorMessages.TotpInvalid },
         HttpStatus.UNAUTHORIZED,
       );
     }
-    return this.signin(body, passwordString);
+    return this.signin(body, password);
   }
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
@@ -170,7 +187,7 @@ class AuthService {
       const user = await this.userModel
         .findOneAndUpdate<User>(
           { username },
-          { $set: { mfaEnabled: true, totpSecret: secret } },
+          { $set: { mfaEnabled: true, totpSecret: secret, totpCreatedAt: new Date() } },
           { new: true, projection: { totpSecret: 0, password: 0 } },
         )
         .lean();
@@ -179,26 +196,25 @@ class AuthService {
     throw new CustomHttpException(AuthErrorMessages.TotpInvalid, HttpStatus.UNAUTHORIZED, undefined, AuthService.name);
   }
 
-  async getTotpInfo(username: string) {
-    const user = await this.userModel.findOne({ username }, 'mfaEnabled').lean();
-    if (!user) return false;
-    const { mfaEnabled = false } = user;
-    if (mfaEnabled) {
-      return true;
-    }
-    return false;
+  async getTotpInfo(usernameOrEmail: string) {
+    const query = usernameOrEmail.includes('@') ? { email: usernameOrEmail } : { username: usernameOrEmail };
+
+    const user = await this.userModel.findOne(query, { mfaEnabled: 1 }).lean();
+    return user?.mfaEnabled ?? false;
   }
 
   async disableTotp(username: string) {
     try {
-      const user = await this.userModel
+      return await this.userModel
         .findOneAndUpdate<User>(
           { username },
-          { $set: { mfaEnabled: false, totpSecret: '' } },
+          {
+            $set: { mfaEnabled: false },
+            $unset: { totpSecret: 1, totpCreatedAt: 1 },
+          },
           { new: true, projection: { totpSecret: 0, password: 0 } },
         )
         .lean();
-      return user;
     } catch (error) {
       throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND, undefined, AuthService.name);
     }
@@ -221,8 +237,10 @@ class AuthService {
     try {
       const updateUser = await this.userModel.findOne<User>({ username }).lean();
       const updateUserRoles = updateUser?.ldapGroups;
+      const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
+
       const userHasPermission =
-        getIsAdmin(ldapGroups) ||
+        getIsAdmin(ldapGroups, adminGroups) ||
         (ldapGroups.includes(GroupRoles.TEACHER) && !!updateUserRoles?.roles.includes(UserRoles.STUDENT));
 
       if (!userHasPermission) {
@@ -248,7 +266,11 @@ class AuthService {
 
     if (!isConnectionActive) throw new CustomHttpException(UserErrorMessages.NotFoundError, HttpStatus.NOT_FOUND);
 
-    this.sseService.sendEventToUser(sessionId, btoa(JSON.stringify({ username, password })), SSE_MESSAGE_TYPE.MESSAGE);
+    this.sseService.sendEventToUser(
+      sessionId,
+      encodeBase64Api(JSON.stringify({ username, password })),
+      SSE_MESSAGE_TYPE.MESSAGE,
+    );
   }
 }
 

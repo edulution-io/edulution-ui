@@ -1,15 +1,23 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import { t } from 'i18next';
 import { surveyLocalization } from 'survey-core';
 import { editorLocalization, SurveyCreator } from 'survey-creator-react';
 import 'survey-core/i18n/english';
@@ -18,7 +26,8 @@ import 'survey-core/i18n/french';
 import 'survey-creator-core/i18n/english';
 import 'survey-creator-core/i18n/german';
 import 'survey-creator-core/i18n/french';
-import surveyTheme from '@/pages/Surveys/theme/theme';
+import TEditorLocale from '@libs/survey/types/editor/TEditorLocale';
+import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
 import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.min.css';
 import '@/pages/Surveys/theme/custom.survey.css';
@@ -31,10 +40,18 @@ const createSurveyCreatorObject = (language = 'en') => {
   editorLocalization.defaultLocale = language;
   editorLocalization.currentLocale = language;
 
+  const locale = editorLocalization.getLocale(language) as TEditorLocale;
+
+  locale.ed.surveyPlaceHolder = t('survey.editor.surveyPlaceHolder');
+  locale.ed.surveyPlaceholderDescription = t('survey.editor.surveyPlaceholderDescription');
+  locale.ed.surveyPlaceholderDescriptionMobile = t('survey.editor.surveyPlaceholderDescription');
+  locale.ed.surveyPlaceHolder = t('survey.editor.surveyPlaceHolder');
+  locale.ed.pagePlaceHolder = t('survey.editor.pagePlaceHolder');
+  locale.ed.panelPlaceHolder = t('survey.editor.panelPlaceHolder');
+
   const creatorOptions = {
     generateValidJSON: true,
     isAutoSave: true,
-    maxNestedPanels: 0,
     showJSONEditorTab: true,
     showPreviewTab: false,
     showLogicTab: true,
@@ -57,6 +74,11 @@ const createSurveyCreatorObject = (language = 'en') => {
       'image',
       'signaturepad',
     ],
+    forbiddenNestedElements: {
+      panel: ['panel', 'paneldynamic'],
+      paneldynamic: ['panel', 'paneldynamic', 'file'],
+    },
+    maxNestedPanels: 1,
   };
 
   const creator = new SurveyCreator(creatorOptions);
@@ -67,6 +89,8 @@ const createSurveyCreatorObject = (language = 'en') => {
   creator.showToolbox = false;
   creator.showSidebar = false;
   creator.startEditTitleOnQuestionAdded = true;
+
+  creator.toolbox.getItemByName('text').title = t('survey.editor.inputFieldTitle');
 
   const settingsActionHeader = creator.toolbar.actions.findIndex((action) => action.id === 'svd-settings');
   if (settingsActionHeader >= 0) creator.toolbar.actions.splice(settingsActionHeader, 1);
@@ -80,8 +104,7 @@ const createSurveyCreatorObject = (language = 'en') => {
   if (settingsActionFooter >= 0) creator.footerToolbar.actions.splice(settingsActionFooter, 1);
 
   creator.onElementAllowOperations.add((_, options) => {
-    // eslint-disable-next-line no-param-reassign
-    options.allowShowSettings = true;
+    Object.assign(options, { allowShowSettings: true });
   });
 
   return creator;

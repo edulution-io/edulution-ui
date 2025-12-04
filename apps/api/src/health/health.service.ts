@@ -1,16 +1,23 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   DiskHealthIndicator,
   HealthCheckService,
@@ -19,8 +26,10 @@ import {
   HealthIndicatorResult,
 } from '@nestjs/terminus';
 import { HttpService } from '@nestjs/axios';
+import { Interval } from '@nestjs/schedule';
+import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 
-const { EDUI_WEBDAV_URL, KEYCLOAK_API, EDUI_DISK_SPACE_THRESHOLD } = process.env;
+const { KEYCLOAK_API, EDUI_DISK_SPACE_THRESHOLD } = process.env;
 
 @Injectable()
 class HealthService {
@@ -30,6 +39,7 @@ class HealthService {
     private httpIndicator: HttpHealthIndicator,
     private disk: DiskHealthIndicator,
     private httpService: HttpService,
+    private webdavSharesService: WebdavSharesService,
   ) {}
 
   async checkEduApiResponding() {
@@ -58,11 +68,48 @@ class HealthService {
     return this.httpIndicator.pingCheck('authServer', url);
   }
 
-  private checkWebDavServer(): Promise<HealthIndicatorResult> {
-    const { origin } = new URL(EDUI_WEBDAV_URL || '');
-    return this.httpIndicator.pingCheck('lmnServer', origin, {
-      httpClient: this.httpService,
-    });
+  @Interval(30_000)
+  private async checkWebDavServer(): Promise<HealthIndicatorResult> {
+    const webdavShares = await this.webdavSharesService.findAllWebdavServers();
+
+    const results = await Promise.all(
+      webdavShares.map(async (share) => {
+        if (!share.webdavShareId) {
+          return { [share.displayName]: { status: 'down' as const, message: 'Missing ID' } };
+        }
+
+        try {
+          const result = await this.httpIndicator.pingCheck(share.displayName, share.url, {
+            httpClient: this.httpService,
+            validateStatus: (status) => [200, 401, 403].includes(status),
+          });
+          Logger.verbose(`WebDAV Share is ${JSON.stringify(result)}`, HealthService.name);
+
+          await this.webdavSharesService.updateWebdavShare(share.webdavShareId, {
+            lastChecked: new Date(),
+            status: result[share.displayName].status,
+          });
+
+          return result;
+        } catch (e) {
+          Logger.warn(`WebDAV Share ${share.displayName} is down`, HealthService.name);
+
+          await this.webdavSharesService.updateWebdavShare(share.webdavShareId, {
+            lastChecked: new Date(),
+            status: 'down',
+          });
+
+          return {
+            [share.displayName]: {
+              status: 'down' as const,
+              message: (e as Error).message,
+            },
+          };
+        }
+      }),
+    );
+
+    return results.reduce<HealthIndicatorResult>((acc, curr) => ({ ...acc, ...curr }), {});
   }
 
   private checkDiskStorage(): Promise<HealthIndicatorResult> {

@@ -1,16 +1,24 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
+import { useParams } from 'react-router-dom';
 import DirectoryBreadcrumb from '@/pages/FileSharing/Table/DirectoryBreadcrumb';
 import ActionContentDialog from '@/pages/FileSharing/Dialog/ActionContentDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
@@ -27,44 +35,45 @@ import useQuotaInfo from '@/hooks/useQuotaInfo';
 import DownloadPublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DownloadPublicShareDialog';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import CreateOrEditPublicShareDialog from '@/pages/FileSharing/publicShare/dialog/CreateOrEditPublicShareDialog';
-import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
-import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
-import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
-import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
+import UploadFileDialog from '@/pages/FileSharing/Dialog/UploadFileDialog';
+import DeletePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DeletePublicShareDialog';
+import FileDropZone from '@/components/ui/FileDropZone';
+import usePublicShareQr from '@/pages/FileSharing/hooks/usePublicShareQr';
+import ReplaceFilesDialog from '@/pages/FileSharing/Dialog/ReplaceFilesDialog';
+import useBreadcrumbNavigation from '@/pages/FileSharing/hooks/useBreadcrumbNavigation';
+import useFileUploadWithReplace from '@/pages/FileSharing/hooks/useFileUploadWithReplace';
+import useRefreshOnFileOperationComplete from './hooks/useRefreshOnFileOperationComplete';
 
 const FileSharingPage = () => {
+  const { webdavShare } = useParams();
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
-  const { fileOperationProgress, fetchFiles } = useFileSharingStore();
+  const { fileOperationProgress, fetchFiles, webdavShares } = useFileSharingStore();
   const { fetchShares } = usePublicShareStore();
 
-  useEffect(() => {
-    const handleFileOperationProgress = async () => {
-      if (!fileOperationProgress) return;
-      const percent = fileOperationProgress.percent ?? 0;
-      if (percent >= 100) {
-        await fetchFiles(currentPath);
-        await fetchShares();
-      }
-    };
+  useRefreshOnFileOperationComplete({
+    fileOperationProgress,
+    currentPath,
+    webdavShare,
+    fetchFiles,
+    fetchShares,
+  });
 
-    void handleFileOperationProgress();
-  }, [fileOperationProgress]);
   const { percentageUsed } = useQuotaInfo();
 
-  useEffect(() => {
-    void fetchShares();
-  }, [currentPath, fetchFiles, fetchShares]);
+  const { dialog, url, handleClose } = usePublicShareQr();
 
-  const { share, setShare, closeDialog, dialog } = usePublicShareStore();
-  const { origin } = window.location;
-  const url = `${origin}/${FileSharingApiEndpoints.PUBLIC_SHARE}/${share?.publicShareId}`;
+  const getHiddenSegments = () => webdavShares.find((s) => s.displayName === webdavShare)?.pathname;
 
-  const handleClose = () => {
-    setShare({} as PublicShareDto);
-    closeDialog(PUBLIC_SHARE_DIALOG_NAMES.QR_CODE);
-  };
+  const { handleBreadcrumbNavigate } = useBreadcrumbNavigation(
+    webdavShare,
+    webdavShares,
+    searchParams,
+    setSearchParams,
+  );
+
+  const { handleFileUploadWithDuplicateCheck } = useFileUploadWithReplace();
 
   return (
     <PageLayout>
@@ -73,21 +82,21 @@ const FileSharingPage = () => {
       <div className="flex w-full flex-row justify-between space-x-2 pb-2 pt-2">
         <DirectoryBreadcrumb
           path={currentPath}
-          onNavigate={(filenamePath) => {
-            const newParams = new URLSearchParams(searchParams);
-            newParams.set(URL_SEARCH_PARAMS.PATH, filenamePath);
-            setSearchParams(newParams);
-          }}
+          onNavigate={handleBreadcrumbNavigate}
           style={{ color: 'white' }}
+          hiddenSegments={getHiddenSegments()}
         />
         <QuotaLimitInfo percentageUsed={percentageUsed} />
       </div>
 
-      <div className="flex h-full w-full flex-row overflow-hidden pb-6">
-        <div className={isFilePreviewVisible && isFilePreviewDocked ? 'w-1/2 2xl:w-2/3' : 'w-full'}>
+      <div className="flex h-full w-full flex-row overflow-hidden">
+        <div className={`flex flex-col ${isFilePreviewVisible && isFilePreviewDocked ? 'w-1/2 2xl:w-2/3' : 'w-full'}`}>
           {isFileProcessing ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}
-
-          <FileSharingTable />
+          <div className="flex-1 overflow-hidden pb-6">
+            <FileDropZone onFileDrop={(files) => handleFileUploadWithDuplicateCheck(files, webdavShare, currentPath)}>
+              <FileSharingTable />
+            </FileDropZone>
+          </div>
         </div>
 
         {isFilePreviewVisible && (
@@ -108,6 +117,9 @@ const FileSharingPage = () => {
         descriptionTranslationId=""
       />
       <CreateOrEditPublicShareDialog />
+      <DeletePublicShareDialog />
+      <UploadFileDialog />
+      <ReplaceFilesDialog />
       <FileSharingFloatingButtonsBar />
     </PageLayout>
   );

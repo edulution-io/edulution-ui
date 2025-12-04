@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { ReactElement, ReactNode, useEffect, useState } from 'react';
@@ -27,6 +34,8 @@ import RectangleSize from '@libs/ui/types/rectangleSize';
 import { HiOutlineCursorArrowRipple } from 'react-icons/hi2';
 import RESIZEABLE_WINDOW_DEFAULT_POSITION from '@libs/ui/constants/resizableWindowDefaultPosition';
 import RESIZABLE_WINDOW_DEFAULT_SIZE from '@libs/ui/constants/resizableWindowDefaultSize';
+import { MOBILE_TOP_BAR_HEIGHT_PX } from '@libs/ui/constants/sidebar';
+import APP_LAYOUT_ID from '@libs/ui/constants/appLayoutId';
 
 interface ResizableWindowProps {
   titleTranslationId: string;
@@ -36,6 +45,8 @@ interface ResizableWindowProps {
   disableToggleMaximizeWindow?: boolean;
   initialPosition?: Position;
   initialSize?: RectangleSize;
+  minimalSize?: Partial<RectangleSize>;
+  maximalSize?: Partial<RectangleSize>;
   openMaximized?: boolean;
   stickToInitialSizeAndPositionWhenRestored?: boolean;
   additionalButtons?: (ReactElement | null)[];
@@ -50,6 +61,8 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
   openMaximized = true,
   initialPosition,
   initialSize,
+  minimalSize,
+  maximalSize,
   stickToInitialSizeAndPositionWhenRestored = false,
   additionalButtons = [],
 }) => {
@@ -80,9 +93,10 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
 
   const setMaxWidth = () => {
     const width = isMobileView ? documentWidth : documentWidth - SIDEBAR_WIDTH;
+    const height = isMobileView ? documentHeight - MOBILE_TOP_BAR_HEIGHT_PX : documentHeight;
     setCurrentWindowedFrameSize(titleTranslationId, {
       width,
-      height: documentHeight,
+      height,
     });
   };
 
@@ -95,6 +109,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
   useEffect(() => {
     if (isMaximized && !isMinimized) {
       setMaxWidth();
+      setCurrentPosition({ x: 0, y: isMobileView ? MOBILE_TOP_BAR_HEIGHT_PX : 0 });
       return;
     }
 
@@ -132,7 +147,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
 
       setCurrentPosition({ x: calculatedPosition, y: documentHeight - DEFAULT_MINIMIZED_BAR_HEIGHT });
     }
-  }, [minimizedWindowedFrames, isMinimized, titleTranslationId]);
+  }, [minimizedWindowedFrames, isMinimized, titleTranslationId, documentHeight]);
 
   const savePreviousValues = () => {
     setPrevSize(currentWindowedFrameSizes[titleTranslationId]);
@@ -167,16 +182,16 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
     } else {
       savePreviousValues();
       setMaxWidth();
-      setCurrentPosition({ x: 0, y: 0 });
+      setCurrentPosition({ x: 0, y: isMobileView ? MOBILE_TOP_BAR_HEIGHT_PX : 0 });
     }
 
-    setIsMaximized(!isMaximized);
+    setIsMaximized((wasMaximized) => !wasMaximized);
     setWindowedFrameOpen(titleTranslationId, true);
   };
 
   useEffect(() => {
     setWindowedFramesZIndices(titleTranslationId);
-  }, []);
+  }, [titleTranslationId]);
 
   const zIndex = windowedFramesZIndices[titleTranslationId] || 0;
   const hasCurrentFramedWindowHighestZIndex = hasFramedWindowHighestZIndex(titleTranslationId);
@@ -187,8 +202,10 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
   return createPortal(
     <Rnd
       dragHandleClassName="drag-handle"
-      minHeight={isMinimized ? DEFAULT_MINIMIZED_BAR_HEIGHT : 300}
-      minWidth={isMinimized ? minimizedWidth : undefined}
+      minHeight={isMinimized ? DEFAULT_MINIMIZED_BAR_HEIGHT : minimalSize?.height}
+      minWidth={isMinimized ? minimizedWidth : minimalSize?.width}
+      maxHeight={maximalSize?.height}
+      maxWidth={maximalSize?.width}
       size={{
         width: currentWindowedFrameSizes[titleTranslationId]?.width || RESIZABLE_WINDOW_DEFAULT_SIZE.width,
         height: currentWindowedFrameSizes[titleTranslationId]?.height || RESIZABLE_WINDOW_DEFAULT_SIZE.height,
@@ -206,7 +223,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
         'rounded-t-lg border border-slate-500 bg-gray-800': !isMaximized && !isMinimized && !isCurrentlySticky,
         'rounded-none transition-transform active:transition-none': isMinimized,
       })}
-      bounds="window"
+      bounds={`#${APP_LAYOUT_ID}`}
       disableDragging={disableDragging}
       enableResizing={!isMaximized && !isCurrentlySticky}
       style={{
@@ -268,7 +285,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
         </div>
       </div>
       <div
-        style={{ height: isMinimized ? 0 : `calc(100% - ${MAXIMIZED_BAR_HEIGHT}px)` }} // here i want the equivalent of h-[calc(100%-40px)]
+        style={{ height: isMinimized ? 0 : `calc(100% - ${MAXIMIZED_BAR_HEIGHT}px)` }}
         className={isMinimized ? 'hidden w-0' : 'w-full overflow-hidden'}
       >
         {children}

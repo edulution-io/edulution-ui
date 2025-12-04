@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React from 'react';
@@ -22,14 +29,13 @@ import { useTranslation } from 'react-i18next';
 import { HiChevronDown } from 'react-icons/hi';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import useMedia from '@/hooks/useMedia';
-import useUserPath from '../hooks/useUserPath';
 
 interface DirectoryBreadcrumbProps {
   path: string;
   onNavigate: (path: string) => void;
   style?: React.CSSProperties;
   showHome?: boolean;
-  hiddenSegments?: string[];
+  hiddenSegments?: string;
   showTitle?: boolean;
 }
 
@@ -44,7 +50,6 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
   const { isMobileView } = useMedia();
   const displaySegments = isMobileView ? 1 : 4;
   const { t } = useTranslation();
-  const { homePath } = useUserPath();
 
   const segments = path
     .split('/')
@@ -57,15 +62,13 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
     })
     .filter(Boolean);
 
-  const clearSegments = segments.filter((segment) => hiddenSegments?.includes(segment) !== true);
+  const hiddenParts = (hiddenSegments ?? '').split('/').filter(Boolean);
+  const clearSegments = segments.slice(hiddenParts.length);
 
-  const getSegmentKey = (index: number) => segments.slice(0, index + 1).join('/');
-
+  const getSegmentKey = (index: number) => `/${segments.slice(0, index + 1).join('/')}`;
   const handleSegmentClick = (index: number) => {
     const newPath = getSegmentKey(index);
-    if (newPath !== path) {
-      onNavigate(newPath);
-    }
+    if (newPath !== path) onNavigate(newPath);
   };
 
   const shouldShowDropdown = clearSegments.length > displaySegments;
@@ -75,13 +78,11 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
       {showTitle && <p className="mr-2 text-background">{t('currentDirectory')}</p>}
       <BreadcrumbList>
         {showHome && (
-          <BreadcrumbItem key="home">
-            <BreadcrumbLink
-              href="#"
-              onClick={() => onNavigate(homePath)}
-            >
-              {t('home')}
-            </BreadcrumbLink>
+          <BreadcrumbItem
+            key="home"
+            className="cursor-pointer"
+          >
+            <BreadcrumbLink onClick={() => onNavigate('/')}>{t('home')}</BreadcrumbLink>
           </BreadcrumbItem>
         )}
 
@@ -96,41 +97,39 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
                     <HiChevronDown />
                   </span>
                 }
-                items={segments
-                  .slice(0, -1)
-                  .filter((segment) => clearSegments.includes(segment))
-                  .map((segment, index) => ({
+                items={clearSegments.slice(0, -1).map((segment, index) => {
+                  const segIndex = index + hiddenParts.length;
+                  return {
+                    key: getSegmentKey(segIndex),
                     label: segment,
-                    onClick: () => handleSegmentClick(index),
-                  }))}
+                    onClick: () => handleSegmentClick(segIndex),
+                  };
+                })}
               />
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <span className="text-background">{segments[segments.length - 1]}</span>
+              <span className="text-background">{clearSegments[clearSegments.length - 1]}</span>
             </BreadcrumbItem>
           </>
         ) : (
-          segments.map(
-            (segment, index) =>
-              clearSegments.includes(segment) && (
-                <React.Fragment key={getSegmentKey(index)}>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    {index === segments.length - 1 ? (
-                      <span className="text-background">{segment}</span>
-                    ) : (
-                      <BreadcrumbLink
-                        href="#"
-                        onClick={() => handleSegmentClick(index)}
-                      >
-                        {segment}
-                      </BreadcrumbLink>
-                    )}
-                  </BreadcrumbItem>
-                </React.Fragment>
-              ),
-          )
+          clearSegments.map((segment, index) => {
+            const isLast = index === clearSegments.length - 1;
+            return (
+              <React.Fragment key={getSegmentKey(index + hiddenParts.length)}>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem className="cursor-pointer">
+                  {isLast ? (
+                    <span className="text-background">{segment}</span>
+                  ) : (
+                    <BreadcrumbLink onClick={() => handleSegmentClick(index + hiddenParts.length)}>
+                      {segment}
+                    </BreadcrumbLink>
+                  )}
+                </BreadcrumbItem>
+              </React.Fragment>
+            );
+          })
         )}
       </BreadcrumbList>
     </Breadcrumb>

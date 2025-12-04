@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 /* eslint-disable react/require-default-props */
@@ -33,7 +40,7 @@ import useMedia from '@/hooks/useMedia';
 
 interface AdaptiveDialogProps {
   isOpen: boolean;
-  handleOpenChange: () => void;
+  handleOpenChange?: () => void;
   title: string;
   trigger?: React.ReactNode;
   body: React.ReactNode;
@@ -41,6 +48,7 @@ interface AdaptiveDialogProps {
   variant?: 'primary' | 'secondary' | 'tertiary';
   mobileContentClassName?: string;
   desktopContentClassName?: string;
+  titleIcon?: React.ReactNode;
 }
 
 const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
@@ -53,8 +61,17 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
   variant = 'primary',
   mobileContentClassName,
   desktopContentClassName,
+  titleIcon,
 }) => {
   const { isMobileView } = useMedia();
+  const closable = !handleOpenChange;
+
+  const dialogTitle = (
+    <div className={`flex flex-row items-center gap-2 font-bold ${isMobileView && 'pb-4'}`}>
+      {React.isValidElement(titleIcon) ? titleIcon : null}
+      <p className="max-w-[80vw] truncate sm:max-w-none">{title}</p>
+    </div>
+  );
 
   return isMobileView ? (
     <Sheet
@@ -66,9 +83,10 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
         side="bottom"
         variant={variant}
         className={mobileContentClassName}
+        showCloseButton={closable}
       >
         <SheetHeader variant={variant}>
-          <SheetTitle>{title}</SheetTitle>
+          <SheetTitle>{dialogTitle}</SheetTitle>
         </SheetHeader>
         {body}
         {footer ? <SheetFooter>{footer}</SheetFooter> : null}
@@ -84,8 +102,9 @@ const AdaptiveDialog: FC<AdaptiveDialogProps> = ({
       <DialogContent
         variant={variant}
         className={desktopContentClassName}
+        showCloseButton={closable}
       >
-        <DialogTitle>{title}</DialogTitle>
+        <DialogTitle>{dialogTitle}</DialogTitle>
         {body}
         {footer ? <DialogFooter>{footer}</DialogFooter> : null}
         <DialogDescription aria-disabled />

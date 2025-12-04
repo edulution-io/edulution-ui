@@ -1,22 +1,30 @@
-/* eslint-disable no-underscore-dangle */
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Model } from 'mongoose';
+/* eslint-disable no-underscore-dangle */
+import { Model, Types } from 'mongoose';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { InjectModel } from '@nestjs/mongoose';
+import { Interval, Timeout } from '@nestjs/schedule';
 import { getDecryptedPassword } from '@libs/common/utils';
 import { USERS_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
@@ -28,6 +36,13 @@ import { ALL_USERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import type UserAccountDto from '@libs/user/types/userAccount.dto';
 import type CachedUser from '@libs/user/types/cachedUser';
 import QUEUE_CONSTANTS from '@libs/queue/constants/queueConstants';
+import { USERS_CACHE_INITIALIZED_EVENT } from '@libs/groups/constants/cacheInitializedEvents';
+import UserDeviceDto from '@libs/notification/types/userDevice.dto';
+import { Expo } from 'expo-server-sdk';
+import {
+  KEYCLOAK_STARTUP_TIMEOUT_MS,
+  KEYCLOAK_USERS_SYNC_INTERVAL_MS,
+} from '@libs/ldapKeycloakSync/constants/keycloakSyncValues';
 import CustomHttpException from '../common/CustomHttpException';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
@@ -43,6 +58,20 @@ class UsersService {
     private readonly groupsService: GroupsService,
     private readonly eventEmitter: EventEmitter2,
   ) {}
+
+  private isUpdatingUsersInCache = false;
+
+  private usersCacheInitialized = false;
+
+  @Timeout(KEYCLOAK_STARTUP_TIMEOUT_MS)
+  async initializeService() {
+    await this.updateUsersInCache();
+  }
+
+  @OnEvent(QUEUE_CONSTANTS.USERS_CACHE_REFRESH, { async: true })
+  async handleUsersCacheRefresh() {
+    await this.updateUsersInCache();
+  }
 
   async createOrUpdate(userDto: UserDto): Promise<User | null> {
     return this.userModel
@@ -63,8 +92,11 @@ class UsersService {
       .lean();
   }
 
-  async findOne(username: string): Promise<User | null> {
-    return this.userModel.findOne({ username }, USER_DB_PROJECTION).lean();
+  async findOne(username: string, projection?: string | Record<string, 0 | 1>): Promise<User | null> {
+    return this.userModel
+      .findOne({ username })
+      .select(projection ?? USER_DB_PROJECTION)
+      .lean();
   }
 
   async update(username: string, updateUserDto: UpdateUserDto): Promise<User | null> {
@@ -79,26 +111,25 @@ class UsersService {
   async findAllCachedUsers(schoolName: string): Promise<CachedUser[]> {
     const cacheKey = ALL_USERS_CACHE_KEY + schoolName;
     const cachedUsers = await this.cacheManager.get<CachedUser[]>(cacheKey);
-
-    if (cachedUsers?.length) {
-      return cachedUsers;
-    }
-
-    await this.refreshUsersCache();
-
-    return (await this.cacheManager.get<CachedUser[]>(cacheKey)) ?? [];
+    return cachedUsers ?? [];
   }
 
-  async refreshUsersCache(): Promise<void> {
+  async refreshUsersCache(): Promise<number> {
     const mapToCachedUser = (user: LDAPUser): CachedUser => ({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      username: user.username,
+      ...user,
       school: user.attributes.school?.[0] || SPECIAL_SCHOOLS.GLOBAL,
     });
 
     const fetchedUsers = await this.groupsService.fetchAllUsers();
-    const cachedUserList: CachedUser[] = fetchedUsers.map(mapToCachedUser);
+    Logger.verbose(`Fetched ${fetchedUsers.length} users from Keycloak`, UsersService.name);
+
+    if (fetchedUsers.length === 0) {
+      Logger.warn('No users fetched from Keycloak, skipping cache update', UsersService.name);
+      return 0;
+    }
+
+    const validUsers = fetchedUsers.filter((user) => user.attributes);
+    const cachedUserList: CachedUser[] = validUsers.map(mapToCachedUser);
 
     const usersBySchool = cachedUserList.reduce<Record<string, CachedUser[]>>((acc, user) => {
       const userSchool = user.school;
@@ -111,22 +142,66 @@ class UsersService {
       return acc;
     }, {});
 
-    await Promise.all(
-      Object.entries(usersBySchool).map(async ([school, userList]) => {
-        const key = ALL_USERS_CACHE_KEY + school;
-        await this.cacheManager.set(key, userList, USERS_CACHE_TTL_MS);
-      }),
-    );
+    const schoolCount = Object.keys(usersBySchool).length;
+    Logger.debug(`Grouped users into ${schoolCount} schools`, UsersService.name);
 
-    await this.cacheManager.set(ALL_USERS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, cachedUserList, USERS_CACHE_TTL_MS);
+    const cachePromises = Object.entries(usersBySchool).map(async ([school, userList]) => {
+      const key = ALL_USERS_CACHE_KEY + school;
+      Logger.debug(`Setting cache for school '${school}' with ${userList.length} users`, UsersService.name);
+      try {
+        await this.cacheManager.set(key, userList, USERS_CACHE_TTL_MS);
+      } catch (error) {
+        Logger.error(`Failed to set cache for school '${school}':`, error, UsersService.name);
+        throw error;
+      }
+    });
+
+    await Promise.all(cachePromises);
+
+    try {
+      await this.cacheManager.set(ALL_USERS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, cachedUserList, USERS_CACHE_TTL_MS);
+    } catch (error) {
+      Logger.error('Failed to set global cache:', error, UsersService.name);
+      throw error;
+    }
+
+    return cachedUserList.length;
+  }
+
+  @Interval(KEYCLOAK_USERS_SYNC_INTERVAL_MS)
+  async updateUsersInCache(): Promise<void> {
+    if (this.isUpdatingUsersInCache) {
+      Logger.debug('User cache update already in progress, skipping...', UsersService.name);
+      return;
+    }
+    this.isUpdatingUsersInCache = true;
+
+    const startTime = Date.now();
+    try {
+      Logger.debug('Starting to update all users in cache...', UsersService.name);
+
+      const userCount = await this.refreshUsersCache();
+
+      const duration = Date.now() - startTime;
+      Logger.log(`${userCount} users updated successfully in cache ✅ (took ${duration}ms)`, UsersService.name);
+
+      if (!this.usersCacheInitialized) {
+        this.usersCacheInitialized = true;
+        this.eventEmitter.emit(USERS_CACHE_INITIALIZED_EVENT);
+        Logger.debug('Users cache initialized for the first time', UsersService.name);
+      }
+    } catch (error) {
+      const duration = Date.now() - startTime;
+      Logger.error(`updateUsersInCache failed after ${duration}ms:`, error, UsersService.name);
+    } finally {
+      this.isUpdatingUsersInCache = false;
+    }
   }
 
   async searchUsersByName(schoolName: string, name: string): Promise<CachedUser[]> {
     const searchString = name.toLowerCase();
 
     const users = await this.findAllCachedUsers(schoolName);
-
-    this.eventEmitter.emit(QUEUE_CONSTANTS.USERS_CACHE_REFRESH);
 
     return users.filter(
       (user) =>
@@ -208,7 +283,7 @@ class UsersService {
         .exec();
 
       const userAccountsDto = userAccounts.map((account) => ({
-        accountId: account._id as string,
+        accountId: (account._id as Types.ObjectId).toHexString(),
         appName: account.appName,
         accountUser: account.accountUser,
         accountPassword: account.accountPassword,
@@ -281,6 +356,41 @@ class UsersService {
         UsersService.name,
       );
     }
+  }
+
+  async getPushTokensByUsersnames(usernames: string[]): Promise<string[]> {
+    const users = await this.userModel
+      .find({ username: { $in: usernames } })
+      .select('registeredPushTokens')
+      .exec();
+
+    const allTokens = users
+      .flatMap((user) => user.registeredPushTokens ?? [])
+      .filter((token) => Expo.isExpoPushToken(token));
+
+    return Array.from(new Set(allTokens));
+  }
+
+  async updateDeviceByUsername(username: string, userDeviceDto: UserDeviceDto): Promise<void> {
+    const { expoPushToken } = userDeviceDto;
+
+    if (!Expo.isExpoPushToken(expoPushToken)) {
+      return;
+    }
+    await this.userModel
+      .findOneAndUpdate({ username }, { $addToSet: { registeredPushTokens: expoPushToken } }, { new: true })
+      .exec();
+  }
+
+  async clearDeviceByUsername(username: string, userDeviceDto: UserDeviceDto): Promise<void> {
+    const { expoPushToken } = userDeviceDto;
+
+    if (!Expo.isExpoPushToken(expoPushToken)) {
+      return;
+    }
+    await this.userModel
+      .findOneAndUpdate({ username }, { $pull: { registeredPushTokens: expoPushToken } }, { new: true })
+      .exec();
   }
 }
 

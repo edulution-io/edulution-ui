@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { useEffect } from 'react';
@@ -34,16 +41,16 @@ import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import type MailProviderConfig from '@libs/appconfig/types/mailProviderConfig';
 import APPS from '@libs/appconfig/constants/apps';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
 import getDisplayName from '@/utils/getDisplayName';
 import PageLayout from '@/components/structure/layout/PageLayout';
-import type AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
-import AppConfigDropdownSelect from '@/pages/Settings/AppConfig/components/AppConfigDropdownSelect';
+import AppConfigPositionSelect from '@/pages/Settings/AppConfig/components/dropdown/AppConfigPositionSelect';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailImporterConfig from './mails/MailImporterConfig';
 import getAppConfigFormSchema from './schemas/getAppConfigFormSchema';
 import ProxyConfigForm from './components/ProxyConfigForm';
+import DeleteWebdavServerWarningDialog from './filesharing/DeleteWebdavServerWarningDialog';
 
 interface AppConfigPageProps {
   settingLocation: string;
@@ -161,8 +168,11 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
   };
 
   const matchingConfig = appConfigs.find((item) => item.name === settingLocation);
-  const isSupportedAppType = (appType: AppIntegrationType): appType is 'native' | 'embedded' =>
-    ['native', 'embedded'].includes(appType);
+
+  const extendedOptionsToRender = APP_CONFIG_OPTIONS.find((appConfigOption) => {
+    if (matchingConfig?.appType === APP_INTEGRATION_VARIANT.NATIVE) return appConfigOption.id === settingLocation;
+    return appConfigOption.id === matchingConfig?.appType;
+  })?.extendedOptions;
 
   const getSettingsForm = () => (
     <Form {...form}>
@@ -171,42 +181,33 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
         className="column max-w-screen-2xl space-y-6"
       >
         {matchingConfig && (
-          <div className="m-5 space-y-3">
-            <AppConfigDropdownSelect
-              form={form}
-              appConfig={matchingConfig}
-            />
-            <FormFieldSH
-              key={`${matchingConfig.name}.accessGroups`}
-              control={control}
-              name={`${matchingConfig.name}.accessGroups`}
-              render={() => (
-                <FormItem>
-                  <h4 className="text-background">{t(`permission.groups`)}</h4>
-                  <FormControl>
-                    <AsyncMultiSelect<MultipleSelectorGroup>
-                      value={getValues(`${matchingConfig.name}.accessGroups`)}
-                      onSearch={searchGroups}
-                      onChange={(groups) => handleGroupsChange(groups, `${matchingConfig.name}`)}
-                      placeholder={t('search.type-to-search')}
-                    />
-                  </FormControl>
-                  <p className="text-background">{t(`permission.selectGroupsDescription`)}</p>
-                  <FormMessage className="text-p" />
-                </FormItem>
-              )}
-            />
-            {matchingConfig.extendedOptions && isSupportedAppType(matchingConfig.appType) ? (
-              <ExtendedOptionsForm
-                extendedOptions={
-                  APP_CONFIG_OPTIONS.find((itm) => itm.id === settingLocation || itm.id === APPS.EMBEDDED)
-                    ?.extendedOptions
-                }
-                control={control}
-                settingLocation={settingLocation}
+          <div className="m-5 space-y-10 [&>*]:rounded-xl [&>*]:bg-muted-background [&>*]:px-2">
+            <div className="space-y-3 py-3">
+              <AppConfigPositionSelect
                 form={form}
+                appConfig={matchingConfig}
               />
-            ) : null}
+              <FormFieldSH
+                key={`${matchingConfig.name}.accessGroups`}
+                control={control}
+                name={`${matchingConfig.name}.accessGroups`}
+                render={() => (
+                  <FormItem>
+                    <h3 className="text-background">{t(`permission.groups`)}</h3>
+                    <FormControl>
+                      <AsyncMultiSelect<MultipleSelectorGroup>
+                        value={getValues(`${matchingConfig.name}.accessGroups`)}
+                        onSearch={searchGroups}
+                        onChange={(groups) => handleGroupsChange(groups, `${matchingConfig.name}`)}
+                        placeholder={t('search.type-to-search')}
+                      />
+                    </FormControl>
+                    <p className="text-background">{t(`permission.selectGroupsDescription`)}</p>
+                    <FormMessage className="text-p" />
+                  </FormItem>
+                )}
+              />
+            </div>
             {Object.keys(matchingConfig.options)
               .filter((key) => key === APP_CONFIG_OPTION_KEYS.URL || key === APP_CONFIG_OPTION_KEYS.APIKEY)
               .map((filteredKey) => (
@@ -216,8 +217,8 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
                   name={`${matchingConfig.name}.options.${filteredKey}`}
                   defaultValue={filteredKey}
                   render={({ field }) => (
-                    <FormItem>
-                      <h4 className="text-background">{t(`form.${filteredKey}`)}</h4>
+                    <FormItem className="py-3">
+                      <h3 className="text-background">{t(`form.${filteredKey}`)}</h3>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -226,6 +227,14 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
                   )}
                 />
               ))}
+            {matchingConfig.extendedOptions ? (
+              <ExtendedOptionsForm
+                extendedOptions={extendedOptionsToRender}
+                control={control}
+                settingLocation={settingLocation}
+                form={form}
+              />
+            ) : null}
             {APP_CONFIG_OPTION_KEYS.PROXYCONFIG in matchingConfig.options && (
               <ProxyConfigForm
                 key={`${matchingConfig.name}.options.${APP_CONFIG_OPTION_KEYS.PROXYCONFIG}`}
@@ -273,7 +282,12 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
         handleDeleteSettingsItem={() => setIsDeleteAppConfigDialogOpen(true)}
         handleSaveSettingsItem={handleSubmit(onSubmit)}
       />
-      <DeleteAppConfigDialog handleDeleteSettingsItem={handleDeleteSettingsItem} />
+      <DeleteAppConfigDialog
+        appName={settingLocation}
+        appDisplayName={matchingConfig ? getDisplayName(matchingConfig, language) : settingLocation}
+        handleDeleteSettingsItem={handleDeleteSettingsItem}
+      />
+      {matchingConfig?.name === APPS.FILE_SHARING && <DeleteWebdavServerWarningDialog />}
     </PageLayout>
   );
 };

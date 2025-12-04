@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import useLmnApiStore from '@/store/useLmnApiStore';
@@ -43,53 +50,77 @@ import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuest
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 import useEduApiStore from '@/store/EduApiStore/useEduApiStore';
 import TLDRAW_PERSISTENCE_KEY from '@libs/whiteboard/constants/tldrawPersistenceKey';
-import clearTLDrawPersistence from '@/pages/Whiteboard/clearTLDrawPersitence';
+import clearTLDrawPersistence from '@/pages/Whiteboard/TLDrawOffline/clearTLDrawPersistence';
 import usePublicSharePageStore from '@/pages/FileSharing/publicShare/publicPage/usePublicSharePageStore';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
+import useTLDRawHistoryStore from '@/pages/Whiteboard/TLDrawWithSync/useTLDRawHistoryStore';
+import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
+import useVeyonApiStore from '@/pages/ClassManagement/useVeyonApiStore';
+import useVeyonConfigTableStore from '@/pages/Settings/AppConfig/classmanagement/useVeyonConfigTableStore';
+import useWebdavShareConfigTableStore from '@/pages/Settings/AppConfig/filesharing/useWebdavShareConfigTableStore';
+import useFileTableStore from '@/pages/Settings/AppConfig/components/useFileTableStore';
+import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
+import useOpenFileDialogStore from '@/pages/FileSharing/useOpenFileDialogStore';
+import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
+import useMenuBarStore from '@/components/shared/useMenuBarStore';
+import useAppConfigUpdateCheckerStore from '@/pages/Settings/AppConfig/components/updateChecker/useAppConfigUpdateCheckerStore';
+import useSelectCreateDockerContainerDialogStore from '@/pages/Settings/AppConfig/DockerIntegration/SelectCreateDockerContainerDialog/useSelectCreateDockerContainerDialogStore';
 import useSseStore from '../useSseStore';
 
 const cleanAllStores = async () => {
   UserStore.getState().resetQrCodeSlice();
   UserStore.getState().resetTotpSlice();
-  UserStore.getState().resetUserSlice();
   UserStore.getState().resetUserAccountsSlice();
+  UserStore.getState().resetUserSlice();
+  useAppConfigTableDialogStore.getState().reset();
+  useAppConfigUpdateCheckerStore.getState().reset();
   useAppConfigsStore.getState().reset();
-  useBulletinCategoryTableStore.getState().reset();
   useBulletinBoardEditorialStore.getState().reset();
   useBulletinBoardStore.getState().reset();
+  useBulletinCategoryTableStore.getState().reset();
   useClassManagementStore.getState().reset();
   useCommunityLicenseStore.getState().reset();
   useConferenceDetailsDialogStore.getState().reset();
   useConferenceStore.getState().reset();
   useCreateConferenceDialogStore.getState().reset();
+  useDeleteSurveyStore.getState().reset();
   useDesktopDeploymentStore.getState().reset();
   useEduApiStore.getState().reset();
   useFileEditorStore.getState().reset();
   useFileSharingDialogStore.getState().reset();
-  useFileSharingStore.getState().reset();
   useFileSharingDownloadStore.getState().reset();
+  useFileSharingStore.getState().reset();
+  useFileTableStore.getState().reset();
   useFrameStore.getState().reset();
+  useGlobalSettingsApiStore.getState().reset();
   useLauncherStore.getState().reset();
   useLessonStore.getState().reset();
   useLmnApiPasswordStore.getState().reset();
   useLmnApiStore.getState().reset();
   useMailsStore.getState().reset();
+  useMenuBarStore.getState().reset();
+  useParticipateSurveyStore.getState().reset();
   usePrintPasswordsStore.getState().reset();
   usePublicConferenceStore.getState().reset();
-  useResultDialogStore.getState().reset();
-  useSidebarStore.getState().reset();
-  useSurveysTablesPageStore.getState().reset();
-  useSurveyEditorPageStore.getState().reset();
-  useTemplateMenuStore.getState().reset();
-  useResultDialogStore.getState().reset();
-  useSubmittedAnswersDialogStore.getState().reset();
-  useDeleteSurveyStore.getState().reset();
-  useParticipateSurveyStore.getState().reset();
-  useQuestionsContextMenuStore.getState().reset();
-  useSseStore.getState().reset();
   usePublicSharePageStore.getState().reset();
   usePublicShareStore.getState().reset();
+  useQuestionsContextMenuStore.getState().reset();
+  useResultDialogStore.getState().reset();
+  useResultDialogStore.getState().reset();
+  useSelectCreateDockerContainerDialogStore.getState().reset();
+  useSidebarStore.getState().reset();
+  useSseStore.getState().reset();
+  useSubmittedAnswersDialogStore.getState().reset();
+  useSurveyEditorPageStore.getState().reset();
+  useSurveysTablesPageStore.getState().reset();
+  useTLDRawHistoryStore.getState().reset();
+  useTemplateMenuStore.getState().reset();
+  useVeyonApiStore.getState().reset();
+  useVeyonConfigTableStore.getState().reset();
+  useWebdavShareConfigTableStore.getState().reset();
+  useOpenFileDialogStore.getState().reset();
+  useFilesystemStore.getState().reset();
   localStorage.removeItem('i18nextLng');
   await clearTLDrawPersistence(TLDRAW_PERSISTENCE_KEY);
 };

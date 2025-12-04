@@ -1,15 +1,23 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import { randomUUID } from 'crypto';
 import { join } from 'path';
 import { Response } from 'express';
 import {
@@ -19,20 +27,21 @@ import {
   Get,
   HttpStatus,
   Param,
-  Patch,
   Post,
+  Patch,
   Query,
   Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import {
   ANSWER,
   CAN_PARTICIPATE,
+  CHOICES,
   FILES,
   FIND_ONE,
   HAS_ANSWERS,
@@ -40,22 +49,32 @@ import {
   SURVEYS,
   TEMPLATES,
 } from '@libs/survey/constants/surveys-endpoint';
+import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
+import { addUuidToFileName } from '@libs/common/utils/uuidAndFileNames';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
+import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
+import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
+import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import getUsernameFromRequest from 'apps/api/src/common/utils/getUsernameFromRequest';
 import SurveysService from './surveys.service';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveysTemplateService from './surveys-template.service';
-import SurveyAnswerService from './survey-answer.service';
+import SurveyAnswerService from './survey-answers.service';
+import FilesystemService from '../filesystem/filesystem.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
-import { checkAttachmentFile, createAttachmentUploadOptions } from '../filesystem/multer.utilities';
-import AppConfigGuard from '../appconfig/appconfig.guard';
+import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
+import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
+import AdminGuard from '../common/guards/admin.guard';
+import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
@@ -63,10 +82,23 @@ import AppConfigGuard from '../appconfig/appconfig.guard';
 class SurveysController {
   constructor(
     private readonly surveyService: SurveysService,
-    private readonly surveysAttachmentService: SurveysAttachmentService,
     private readonly surveysTemplateService: SurveysTemplateService,
     private readonly surveyAnswerService: SurveyAnswerService,
+    private readonly filesystemService: FilesystemService,
+    private readonly surveyAnswerAttachmentsService: SurveyAnswerAttachmentsService,
   ) {}
+
+  private static validateParams(params: Record<string, string | undefined>, requiredFields: string[]): void {
+    const missingFields = requiredFields.filter((field) => !params[field]);
+    if (missingFields.length > 0) {
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+        undefined,
+        SurveysController.name,
+      );
+    }
+  }
 
   @Get(`${FIND_ONE}/:surveyId`)
   async findOne(@Param() params: { surveyId: string }, @GetCurrentUser() user: JWTUser) {
@@ -110,27 +142,20 @@ class SurveysController {
   )
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   fileUpload(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
-    const fileName = checkAttachmentFile(file);
-    const fileUrl = join(SURVEYS, FILES, fileName);
+    const fileUrl = join(SURVEYS, FILES, file.filename);
     return res.status(HttpStatus.CREATED).json(fileUrl);
   }
 
-  @UseGuards(AppConfigGuard)
+  @UseGuards(AdminGuard)
   @Post(TEMPLATES)
   async createTemplate(@Body() surveyTemplateDto: SurveyTemplateDto) {
-    return this.surveysTemplateService.createTemplate(surveyTemplateDto);
+    return this.surveysTemplateService.updateOrCreateTemplateDocument(surveyTemplateDto);
   }
 
   @Get(TEMPLATES)
-  getTemplateNames() {
-    return this.surveysTemplateService.serveTemplateNames();
-  }
-
-  @Get(`${TEMPLATES}/:filename`)
-  getTemplate(@Param() params: { filename: string }, @Res() res: Response) {
-    const { filename } = params;
+  getTemplate(@Res() res: Response, @GetCurrentUserGroups() ldapGroups: string[]) {
     res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_JSON);
-    return this.surveysTemplateService.serveTemplate(filename, res);
+    return this.surveysTemplateService.getTemplates(ldapGroups, res);
   }
 
   @Get(`${ANSWER}/:surveyId`)
@@ -151,34 +176,165 @@ class SurveysController {
     return this.surveyAnswerService.getAnswer(surveyId, username || currentUsername);
   }
 
+  @Get(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:filename`)
+  async serveFileFromAnswer(
+    @Param() params: { userName: string; surveyId: string; questionId: string; filename: string },
+    @GetCurrentUser() currentUser: JWTUser,
+    @Res() res: Response,
+  ) {
+    const { userName, surveyId, questionId, filename } = params;
+    SurveysController.validateParams(params, ['userName', 'surveyId', 'questionId', 'filename']);
+    if (userName !== currentUser.preferred_username) {
+      await this.surveyService.throwErrorIfUserIsNotCreator(surveyId, currentUser);
+    }
+    return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, questionId, filename, res);
+  }
+
   @Post()
-  async updateOrCreateSurvey(@Body() surveyDto: SurveyDto, @GetCurrentUser() user: JWTUser) {
-    return this.surveyService.updateOrCreateSurvey(surveyDto, user);
+  async updateOrCreateSurvey(@Body() surveyDto: SurveyDto, @GetCurrentUser() currentUser: JWTUser) {
+    return this.surveyService.updateOrCreateSurvey(surveyDto, currentUser);
   }
 
   @Delete()
-  async deleteSurvey(@Body() deleteSurveyDto: DeleteSurveyDto) {
+  async deleteSurveys(@Body() deleteSurveyDto: DeleteSurveyDto, @GetCurrentUser() currentUser: JWTUser) {
     const { surveyIds } = deleteSurveyDto;
+    await Promise.all(
+      surveyIds.map(async (surveyId) => {
+        await this.surveyService.throwErrorIfUserIsNotCreator(surveyId, currentUser);
+      }),
+    );
     await this.surveyService.deleteSurveys(surveyIds);
     await this.surveyAnswerService.onSurveyRemoval(surveyIds);
     await SurveysAttachmentService.onSurveyRemoval(surveyIds);
   }
 
-  @Patch()
+  @Post(ANSWER)
   async answerSurvey(@Body() postAnswerDto: PostSurveyAnswerDto, @GetCurrentUser() currentUser: JWTUser) {
-    const { surveyId, saveNo, answer } = postAnswerDto;
+    const { surveyId, answer } = postAnswerDto;
     const attendee = {
       username: currentUser.preferred_username,
       firstName: currentUser.given_name,
       lastName: currentUser.family_name,
     };
-    return this.surveyAnswerService.addAnswer(surveyId, saveNo, answer, attendee);
+    await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
+    const savedAnswer = await this.surveyAnswerService.addAnswer(surveyId, answer, attendee);
+    return savedAnswer;
+  }
+
+  @Get(`${FILES}/:surveyId/:questionId/:filename`)
+  async serveFile(
+    @Param() params: { surveyId: string; questionId: string; filename: string },
+    @GetCurrentUser() currentUser: JWTUser,
+    @Res() res: Response,
+  ) {
+    const { surveyId, questionId, filename } = params;
+    await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
+    const path = join(SURVEYS, ATTACHMENT_FOLDER, surveyId, questionId);
+    return this.filesystemService.serveFiles(path, filename, res);
   }
 
   @Get(`${FILES}/:filename`)
-  serveTempFile(@Param() params: { filename: string }, @Res() res: Response, @GetCurrentUsername() username: string) {
+  async serveTempFile(
+    @Param() params: { filename: string },
+    @Res() res: Response,
+    @GetCurrentUsername() username: string,
+  ) {
     const { filename } = params;
-    return this.surveysAttachmentService.serveTempFiles(username, filename, res);
+    const path = join(SURVEYS, username);
+    return this.filesystemService.serveTempFiles(path, filename, res);
+  }
+
+  @Post(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId`)
+  @ApiConsumes(RequestResponseContentType.MULTIPART_FORM_DATA)
+  @UseInterceptors(
+    FileInterceptor(
+      'file',
+      createAttachmentUploadOptions(
+        (req) => {
+          const { userName, surveyId, questionId } = req.params || {};
+          SurveysController.validateParams(req.params, ['userName', 'surveyId', 'questionId']);
+          return join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId);
+        },
+        false,
+        (_req, file) => addUuidToFileName(file.originalname, randomUUID()),
+      ),
+    ),
+  )
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  async answeringFileUpload(
+    @UploadedFile() file: Express.Multer.File,
+    @Param() params: { userName: string; surveyId: string; questionId: string },
+    @GetCurrentUser() currentUser: JWTUser,
+    @Res() res: Response,
+  ) {
+    const { userName, surveyId, questionId } = params;
+    SurveysController.validateParams(params, ['userName', 'surveyId', 'questionId']);
+    const path = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId);
+    const filePath = join(path, file.filename);
+    const url = `${SURVEYS}/${ANSWER}/${FILES}/${userName}/${surveyId}/${questionId}/${file.filename}`;
+
+    const fileExists = await FilesystemService.checkIfFileExist(filePath);
+    if (!fileExists) {
+      throw new CustomHttpException(
+        CommonErrorMessages.FILE_CREATION_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        SurveysController.name,
+      );
+    }
+
+    const survey = await this.surveyService.findSurvey(surveyId, currentUser);
+    if (!survey) {
+      await FilesystemService.deleteFile(path, file.filename);
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+        undefined,
+        SurveysController.name,
+      );
+    } else {
+      const content = (await FilesystemService.readFile(filePath)).toString('base64');
+      return res.status(HttpStatus.CREATED).json({ name: file.filename, url, content });
+    }
+  }
+
+  @Delete(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId/:fileName`)
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  async deleteTempQuestionAnswerFile(
+    @Param() params: { userName: string; surveyId: string; questionId: string; fileName?: string },
+    @GetCurrentUser() currentUser: JWTUser,
+  ) {
+    const { userName, surveyId, questionId, fileName } = params;
+    SurveysController.validateParams(params, ['userName', 'surveyId', 'questionId']);
+    await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
+    if (fileName) {
+      await SurveyAnswerAttachmentsService.deleteTempQuestionAnswerFile(userName, surveyId, questionId, fileName);
+    } else {
+      await this.surveyAnswerAttachmentsService.deleteTempQuestionAnswerFiles(userName, surveyId, questionId);
+    }
+  }
+
+  @Get(`${CHOICES}/:surveyId/:questionId`)
+  async getChoices(@Param() params: { surveyId: string; questionId: string }, @GetCurrentUser() currentUser: JWTUser) {
+    const { surveyId, questionId } = params;
+    if (surveyId === TEMPORAL_SURVEY_ID_STRING) {
+      return [];
+    }
+    await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
+    const choices = await this.surveyAnswerService.getSelectableChoices(surveyId, questionId);
+    return choices.filter((choice) => choice.name !== SHOW_OTHER_ITEM);
+  }
+
+  @Delete(`${TEMPLATES}/:name`)
+  async deleteTemplate(@Param() params: { name: string }) {
+    const { name } = params;
+    return this.surveysTemplateService.deleteTemplate(name);
+  }
+
+  @Patch(`${TEMPLATES}/:name/:isActive`)
+  async setIsTemplateActive(@Param() params: { name: string; isActive: boolean }) {
+    const { name, isActive } = params;
+    return this.surveysTemplateService.setIsTemplateActive(name, isActive);
   }
 }
 

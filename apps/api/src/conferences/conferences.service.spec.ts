@@ -1,18 +1,24 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-/* eslint-disable @typescript-eslint/unbound-method */
-
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import axios from 'axios';
@@ -30,6 +36,9 @@ import cacheManagerMock from '../common/mocks/cacheManagerMock';
 import GroupsService from '../groups/groups.service';
 import mockGroupsService from '../groups/groups.service.mock';
 import SseService from '../sse/sse.service';
+import FilesystemService from '../filesystem/filesystem.service';
+import mockFilesystemService from '../filesystem/filesystem.service.mock';
+import NotificationsService from '../notifications/notifications.service';
 
 const mockConference: CreateConferenceDto = {
   name: 'Testconference',
@@ -84,20 +93,20 @@ const schedulerRegistryMock = {
 
 const conferencesModelMock = {
   create: jest.fn().mockResolvedValue(mockConferenceDocument),
-  find: jest.fn().mockReturnValue({
+  find: jest.fn().mockImplementation(() => ({
     lean: jest.fn().mockResolvedValue([mockConferenceDocument]),
     exec: jest.fn().mockResolvedValue([mockConferenceDocument]),
-  }),
-  findOne: jest.fn().mockReturnValue({
+  })),
+  findOne: jest.fn().mockImplementation(() => ({
     lean: jest.fn().mockReturnThis(),
     exec: jest.fn().mockResolvedValue(mockConferenceDocument),
-  }),
-  findOneAndUpdate: jest.fn().mockReturnValue({
+  })),
+  findOneAndUpdate: jest.fn().mockImplementation(() => ({
     exec: jest.fn().mockResolvedValue(mockConferenceDocument),
-  }),
-  deleteMany: jest.fn().mockReturnValue({
+  })),
+  deleteMany: jest.fn().mockImplementation(() => ({
     exec: jest.fn().mockResolvedValue({ deletedCount: 1 }),
-  }),
+  })),
 };
 
 describe(ConferencesService.name, () => {
@@ -105,10 +114,15 @@ describe(ConferencesService.name, () => {
   let model: Model<ConferenceDocument>;
 
   beforeEach(async () => {
+    const notificationMock = {
+      notifyUsernames: jest.fn().mockResolvedValue(undefined),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ConferencesService,
         SseService,
+        ConfigService,
         {
           provide: getModelToken(Conference.name),
           useValue: conferencesModelMock,
@@ -126,6 +140,8 @@ describe(ConferencesService.name, () => {
           provide: SchedulerRegistry,
           useValue: schedulerRegistryMock,
         },
+        { provide: FilesystemService, useValue: mockFilesystemService },
+        { provide: NotificationsService, useValue: notificationMock },
       ],
     }).compile();
 
@@ -150,6 +166,16 @@ describe(ConferencesService.name, () => {
   });
 
   describe('findAll', () => {
+    beforeEach(() => {
+      jest
+        .spyOn(service as any, 'syncConferencesInfoWithBBB')
+        .mockResolvedValue([mockConferenceDocument] as unknown as Partial<Conference>[]);
+
+      jest
+        .spyOn(ConferencesService as any, 'replaceForeignConferencesPasswords')
+        .mockReturnValue([mockConferenceDocument] as unknown as Partial<Conference>[]);
+    });
+
     it('should return an array of conferences', async () => {
       const result = await service.findAllConferencesTheUserHasAccessTo(mockJWTUser);
       expect(result[0].creator).toEqual(mockCreator);

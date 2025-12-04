@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
@@ -34,6 +41,8 @@ const SelectableTextCellInner = <TData,>(
   const checkboxRef = useRef<HTMLButtonElement>(null);
   const [checkboxWidth, setCheckboxWidth] = useState(0);
 
+  const canSelect = row?.getCanSelect?.() ?? true;
+
   useEffect(() => {
     if (checkboxRef.current) {
       const width = checkboxRef.current.offsetWidth;
@@ -49,7 +58,7 @@ const SelectableTextCellInner = <TData,>(
       tabIndex={0}
       role="button"
       className={cn(
-        `flex items-center justify-start ${isFirstColumn ? 'space-x-2' : ''} py-0`,
+        `flex items-center justify-start ${isFirstColumn ? 'space-x-2' : ''} min-w-4 py-0`,
         onClick ? 'cursor-pointer' : 'cursor-default',
         className,
       )}
@@ -59,10 +68,11 @@ const SelectableTextCellInner = <TData,>(
       {row ? (
         <Checkbox
           ref={checkboxRef}
+          disabled={!canSelect}
           checked={isChecked}
           onClick={(e) => e.stopPropagation()}
           onCheckedChange={(checked) => {
-            row.toggleSelected(!!checked);
+            if (canSelect) row.toggleSelected(!!checked);
           }}
           aria-label="Select row"
         />
@@ -75,6 +85,7 @@ const SelectableTextCellInner = <TData,>(
         style={{
           marginLeft: isFirstColumn && !row ? `${checkboxWidth + 30}px` : undefined,
         }}
+        aria-disabled={!canSelect}
       >
         {isHovered && textOnHover ? textOnHover : text}
       </span>

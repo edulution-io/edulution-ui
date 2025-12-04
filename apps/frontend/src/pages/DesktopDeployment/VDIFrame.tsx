@@ -1,17 +1,24 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
-import Guacamole from 'guacamole-common-js';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Client, WebSocketTunnel, Mouse, Touch, Keyboard, Status } from '@glokon/guacamole-common-js';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import { MAXIMIZED_BAR_HEIGHT } from '@libs/ui/constants/resizableWindowElements';
 import RESIZABLE_WINDOW_DEFAULT_SIZE from '@libs/ui/constants/resizableWindowDefaultSize';
@@ -20,23 +27,35 @@ import useFrameStore from '@/components/structure/framing/useFrameStore';
 import GUACAMOLE_WEBSOCKET_URL from '@libs/desktopdeployment/constants/guacamole-websocket-url';
 import useDesktopDeploymentStore from './useDesktopDeploymentStore';
 
+const stateMap = Object.fromEntries(
+  Object.entries(Client.State)
+    .filter(([_key, value]) => typeof value === 'number')
+    .map(([key, value]) => [value, key]),
+);
+
 const VDIFrame = () => {
   const displayRef = useRef<HTMLDivElement>(null);
-  const guacRef = useRef<Guacamole.Client | null>(null);
+  const guacRef = useRef<Client | null>(null);
   const { error, guacToken, dataSource, guacId, isVdiConnectionOpen, setIsVdiConnectionOpen } =
     useDesktopDeploymentStore();
-  const [clientState, setClientState] = useState(0);
+  const [clientState, setClientState] = useState<Client.State>(Client.State.IDLE);
   const [hasCurrentFrameSizeLoaded, setHasCurrentFrameSizeLoaded] = useState(false);
   const { currentWindowedFrameSizes, minimizedWindowedFrames } = useFrameStore();
 
-  const handleDisconnect = () => {
-    if (guacRef.current) {
-      guacRef.current.disconnect();
+  const handleDisconnect = useCallback(() => {
+    try {
+      if (guacRef.current) {
+        guacRef.current.disconnect();
+      }
+    } catch (e) {
+      console.error('Guacamole disconnect error:', e);
+    } finally {
+      guacRef.current = null;
+      setIsVdiConnectionOpen(false);
+      setClientState(Client.State.IDLE);
+      setHasCurrentFrameSizeLoaded(false);
     }
-    setIsVdiConnectionOpen(false);
-    setClientState(0);
-    setHasCurrentFrameSizeLoaded(false);
-  };
+  }, [setIsVdiConnectionOpen]);
 
   const id = 'desktopdeployment.topic';
   const width = currentWindowedFrameSizes[id]?.width || RESIZABLE_WINDOW_DEFAULT_SIZE.width;
@@ -60,8 +79,8 @@ const VDIFrame = () => {
   useEffect(() => {
     if (guacToken === '' || !displayRef.current || !isVdiConnectionOpen || !hasCurrentFrameSizeLoaded) return () => {};
 
-    const tunnel = new Guacamole.WebSocketTunnel(GUACAMOLE_WEBSOCKET_URL);
-    const guac = new Guacamole.Client(tunnel);
+    const tunnel = new WebSocketTunnel(GUACAMOLE_WEBSOCKET_URL);
+    const guac = new Client(tunnel);
     guacRef.current = guac;
     const displayElement = displayRef.current;
     displayElement.tabIndex = 0;
@@ -75,7 +94,7 @@ const VDIFrame = () => {
       GUAC_HEIGHT: height,
       GUAC_DPI: 96,
       GUAC_TIMEZONE: 'Europe/Berlin',
-      GUAC_AUDIO: ['audio/L8', 'audio/L16'],
+      GUAC_AUDIO: ['audio/L16'],
       GUAC_IMAGE: ['image/jpeg', 'image/png', 'image/webp'],
     };
 
@@ -88,26 +107,30 @@ const VDIFrame = () => {
         params.append(key, value as string);
       }
     });
-    guac.connect(params);
+    try {
+      guac.connect(params);
+    } catch (e) {
+      console.error('Guacamole connect error', e);
+    }
 
     const guacSendMouseState = guac.sendMouseState.bind(guac);
 
-    const mouse = new Guacamole.Mouse(displayElement);
+    const mouse = new Mouse(displayElement);
     mouse.onmousedown = guacSendMouseState;
     mouse.onmouseup = guacSendMouseState;
     mouse.onmousemove = guacSendMouseState;
 
-    const touchscreen = new Guacamole.Mouse.Touchscreen(displayElement);
+    const touchscreen = new Mouse.Touchscreen(displayElement);
     touchscreen.onmousedown = guacSendMouseState;
     touchscreen.onmouseup = guacSendMouseState;
     touchscreen.onmousemove = guacSendMouseState;
 
-    const touch = new Guacamole.Touch(displayElement);
+    const touch = new Touch(displayElement);
     touch.ontouchstart = guac.sendTouchState.bind(guac);
     touch.ontouchend = guac.sendTouchState.bind(guac);
     touch.ontouchmove = guac.sendTouchState.bind(guac);
 
-    const keyboard = new Guacamole.Keyboard(displayElement);
+    const keyboard = new Keyboard(displayElement);
     keyboard.onkeydown = (keysym) => guac.sendKeyEvent(1, keysym);
     keyboard.onkeyup = (keysym) => guac.sendKeyEvent(0, keysym);
 
@@ -121,20 +144,24 @@ const VDIFrame = () => {
     });
 
     guac.onstatechange = (state) => {
-      const stateMap = {
-        0: 'IDLE',
-        1: 'CONNECTING',
-        2: 'WAITING',
-        3: 'CONNECTED',
-        4: 'DISCONNECTING',
-        5: 'DISCONNECTED',
-      };
       console.info(`Guacamole changed the state to ${stateMap[state]}`);
       setClientState(state);
 
-      if (state === 5) {
+      if (state === Client.State.DISCONNECTED) {
         handleDisconnect();
       }
+    };
+
+    guac.onerror = (status) => {
+      if (status.code === Status.Code.SERVER_ERROR) {
+        console.error(`Server error: ${status.message}`);
+      } else {
+        console.error('Guacamole error:', status);
+      }
+    };
+
+    tunnel.onerror = (status) => {
+      console.error('WebSocket tunnel error:', status);
     };
 
     return () => {
@@ -156,7 +183,7 @@ const VDIFrame = () => {
   return (
     <ResizableWindow
       titleTranslationId={id}
-      handleClose={handleDisconnect}
+      handleClose={() => setIsVdiConnectionOpen(false)}
       disableToggleMaximizeWindow
     >
       <div
@@ -164,7 +191,7 @@ const VDIFrame = () => {
         ref={displayRef}
         className="h-full w-full border-none bg-black"
       />
-      {clientState < 3 && <LoadingIndicatorDialog isOpen />}
+      {clientState < Client.State.CONNECTED && <LoadingIndicatorDialog isOpen />}
     </ResizableWindow>
   );
 };

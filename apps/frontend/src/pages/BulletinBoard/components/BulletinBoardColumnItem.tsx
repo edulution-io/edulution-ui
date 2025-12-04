@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 /* eslint-disable react/no-danger */
@@ -52,15 +59,21 @@ const BulletinBoardColumnItem = ({
     setSelectedBulletinToEdit,
     getBulletins,
   } = useBulletinBoardEditorialStore();
-  const { collapsedMap, setCollapsed, toggleCollapsed, resetBulletinBoardNotifications, setIsEditorialModeEnabled } =
-    useBulletinBoardStore();
+  const {
+    collapsedMap,
+    setCollapsed,
+    toggleCollapsed,
+    setIsEditorialModeEnabled,
+    bulletinBoardNotifications,
+    markBulletinAsRead,
+  } = useBulletinBoardStore();
 
   useEffect(() => {
     if (collapsedMap[bulletin.id] === undefined) {
       const shouldBeCollapsed =
         (initialBulletinVisibility ?? BULLETIN_VISIBILITY_STATES.FULLY_VISIBLE) !==
         BULLETIN_VISIBILITY_STATES.FULLY_VISIBLE;
-      setCollapsed(bulletin.id, shouldBeCollapsed);
+      void setCollapsed(bulletin.id, shouldBeCollapsed);
     }
   }, [bulletin.id, collapsedMap, initialBulletinVisibility, setCollapsed]);
 
@@ -71,34 +84,50 @@ const BulletinBoardColumnItem = ({
 
     const element = document.getElementById(bulletinId);
 
-    if (element) {
-      element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-        inline: 'center',
-      });
+    if (!element) return undefined;
 
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            element.classList.add('blinking');
-            resetBulletinBoardNotifications();
-          } else {
-            element.classList.remove('blinking');
-          }
-        },
-        { threshold: 0.5 },
-      );
+    void setCollapsed(bulletin.id, false);
 
-      observer.observe(element);
+    element.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'center',
+    });
 
-      return () => {
-        observer.disconnect();
-      };
-    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          element.classList.add('blinking');
+          markBulletinAsRead(bulletin.id);
+        } else {
+          element.classList.remove('blinking');
+        }
+      },
+      { threshold: 0.5 },
+    );
 
-    return undefined;
+    observer.observe(element);
+
+    return () => observer.disconnect();
   }, [bulletinId]);
+
+  useEffect(() => {
+    const hasNotification = bulletinBoardNotifications.some((b) => b.id === bulletin.id);
+    if (!hasNotification) return undefined;
+
+    const element = document.getElementById(bulletin.id);
+    if (!element) return undefined;
+
+    void setCollapsed(bulletin.id, false);
+
+    element.classList.add('blinking');
+
+    const timer = setTimeout(() => {
+      element.classList.remove('blinking');
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [bulletinBoardNotifications, bulletin.id, setCollapsed]);
 
   const handleDeleteBulletin = async () => {
     await getBulletins();
@@ -159,18 +188,30 @@ const BulletinBoardColumnItem = ({
     return items;
   };
 
+  const isNew = bulletinBoardNotifications.some((b) => b.id === bulletin.id);
+  const markAsRead = () => {
+    if (isNew) markBulletinAsRead(bulletin.id);
+  };
+
   return (
     <div
       id={bulletin.id}
+      role="button"
+      tabIndex={0}
       className={cn(
-        'relative mx-1 flex items-start justify-between break-all rounded-lg bg-ciDarkGreyDisabled p-4 pb-2',
+        'relative mx-1 flex items-start justify-between break-all rounded-xl bg-muted-background p-4 pb-2',
         {
-          ring: bulletinId === bulletin.id,
+          ring: isNew,
+          'cursor-pointer': isNew,
         },
       )}
+      onClick={markAsRead}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === '') markAsRead();
+      }}
     >
       <div className="flex-1">
-        <h4 className="mb-2 w-[calc(100%-20px)] break-normal">
+        <h3 className="mb-2 w-[calc(100%-20px)] break-normal">
           <button
             type="button"
             className="flex items-start space-x-2 text-left hover:opacity-75"
@@ -183,7 +224,7 @@ const BulletinBoardColumnItem = ({
             />
             <span className="break-words text-lg font-bold leading-tight text-background">{bulletin.title}</span>
           </button>
-        </h4>
+        </h3>
 
         <AnimatePresence initial={false}>
           {!isCollapsed && (
@@ -209,7 +250,7 @@ const BulletinBoardColumnItem = ({
         trigger={
           <Button
             type="button"
-            className="text-white-500 absolute right-2 top-2 ml-2 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full p-1 hover:bg-blue-600 hover:text-white"
+            className="text-white-500 absolute right-2 top-2 ml-2 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full p-1 hover:bg-primary hover:text-white"
             title={t('common.options')}
           >
             <PiDotsThreeVerticalBold className="h-6 w-6" />

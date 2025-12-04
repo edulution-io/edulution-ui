@@ -1,20 +1,28 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React from 'react';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
 import useUserAccounts from '@/hooks/useUserAccounts';
+import IFRAME_ALLOWED_CONFIG from '@libs/ui/constants/iframeAllowedConfig';
 
 const EmbeddedFrameManager = () => {
   const { appConfigs } = useAppConfigsStore();
@@ -23,7 +31,7 @@ const EmbeddedFrameManager = () => {
   useUserAccounts(activeEmbeddedFrame);
 
   return appConfigs
-    .filter((appConfig) => appConfig.appType === APP_INTEGRATION_VARIANT.FRAMED)
+    .filter((appConfig) => appConfig.appType === APP_INTEGRATION_VARIANT.FRAME)
     .map((appConfig) => {
       const isOpen = activeEmbeddedFrame === appConfig.name;
       const url = loadedEmbeddedFrames.includes(appConfig.name) ? appConfig.options.url : undefined;
@@ -32,7 +40,8 @@ const EmbeddedFrameManager = () => {
         <iframe
           key={appConfig.name}
           title={appConfig.name}
-          className={`absolute inset-y-0 left-0 ml-0 mr-14 w-full md:w-[calc(100%-var(--sidebar-width))] ${isOpen ? 'block' : 'hidden'}`}
+          className={`absolute inset-y-0 left-0 ml-0 w-full ${isOpen ? 'block' : 'hidden'}`}
+          allow={IFRAME_ALLOWED_CONFIG}
           height="100%"
           src={url}
         />

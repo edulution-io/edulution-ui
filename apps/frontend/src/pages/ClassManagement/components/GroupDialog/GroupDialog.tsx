@@ -1,18 +1,24 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { useEffect, useState } from 'react';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -29,7 +35,7 @@ import LmnApiSchoolClassWithMembers from '@libs/lmnApi/types/lmnApiSchoolClassWi
 import LmnApiProjectWithMembers from '@libs/lmnApi/types/lmnApiProjectWithMembers';
 import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
-import UserLmnInfo from '@libs/lmnApi/types/userInfo';
+import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import LmnApiPrinterWithMembers from '@libs/lmnApi/types/lmnApiPrinterWithMembers';
 import useLmnApiStore from '@/store/useLmnApiStore';
@@ -37,6 +43,8 @@ import parseSophomorixQuota from '@libs/lmnApi/utils/parseSophomorixQuota';
 import parseSophomorixMailQuota from '@libs/lmnApi/utils/parseSophomorixMailQuota';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import DeleteGroupDialog from './DeleteGroupDialog';
 
 interface GroupDialogProps {
   item: GroupColumn;
@@ -47,6 +55,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
   const { setOpenDialogType, openDialogType, userGroupToEdit, setUserGroupToEdit, member } = useLessonStore();
   const { user } = useLmnApiStore();
   const [isFetching, setIsFetching] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { t } = useTranslation();
 
   const {
@@ -86,7 +95,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     defaultValues: initialFormValues,
   });
 
-  const getSelectOptionsFromLmnUsers = (users: UserLmnInfo[]) =>
+  const getSelectUserOptions = (users: LmnUserInfo[]) =>
     users.map(
       (lmnUser) =>
         ({
@@ -98,6 +107,15 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
           username: lmnUser.cn,
         }) as AttendeeDto,
     );
+
+  const getSelectedGroupOptions = (groups: string[]): MultipleSelectorGroup[] =>
+    groups.map((group) => ({
+      name: group,
+      path: `/${group}`,
+      value: group,
+      label: group,
+      id: group,
+    }));
 
   const setFormInitialValues = (
     fetchedGroup: LmnApiSchoolClassWithMembers | LmnApiProjectWithMembers | LmnApiSession | LmnApiPrinterWithMembers,
@@ -129,11 +147,23 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
       'proxyAddresses',
       (userGroupToEdit as LmnApiProject | LmnApiSchoolClass).proxyAddresses?.join(',') || '',
     );
-    form.setValue('members', getSelectOptionsFromLmnUsers(fetchedGroup.members));
+    form.setValue('members', getSelectUserOptions(fetchedGroup.members));
     if ((fetchedGroup as LmnApiProjectWithMembers | LmnApiSchoolClassWithMembers).admins) {
       form.setValue(
         'admins',
-        getSelectOptionsFromLmnUsers((fetchedGroup as LmnApiSchoolClassWithMembers | LmnApiProjectWithMembers).admins),
+        getSelectUserOptions((fetchedGroup as LmnApiSchoolClassWithMembers | LmnApiProjectWithMembers).admins),
+      );
+    }
+    if ((fetchedGroup as LmnApiProjectWithMembers).sophomorixMemberGroups) {
+      form.setValue(
+        'membergroups',
+        getSelectedGroupOptions((fetchedGroup as LmnApiProjectWithMembers).sophomorixMemberGroups),
+      );
+    }
+    if ((fetchedGroup as LmnApiProjectWithMembers).sophomorixAdminGroups) {
+      form.setValue(
+        'admingroups',
+        getSelectedGroupOptions((fetchedGroup as LmnApiProjectWithMembers).sophomorixAdminGroups),
       );
     }
   };
@@ -141,7 +171,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
   useEffect(() => {
     if (!userGroupToEdit) {
       form.reset(initialFormValues);
-      form.setValue('members', getSelectOptionsFromLmnUsers(member));
+      form.setValue('members', getSelectUserOptions(member));
       return;
     }
 
@@ -186,7 +216,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
         await fetchUserProjects();
         break;
       case UserGroups.Sessions:
-        await fetchUserSessions();
+        await fetchUserSessions(true);
         break;
       case UserGroups.Classes:
         await fetchUserSchoolClasses();
@@ -221,7 +251,11 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
     );
   };
 
-  const onDeleteButton = async () => {
+  const onDeleteButton = () => {
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
     await item.removeFunction?.(form.getValues('id'));
     await updateGroupsAndCloseDialog();
   };
@@ -229,32 +263,19 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
   const disableDialogButtons = isDialogLoading || isFetching;
 
   const getFooter = () => (
-    <div className="flex gap-4">
-      {item.createFunction && userGroupToEdit && (
-        <Button
-          className="mt-4"
-          variant="btn-attention"
-          disabled={isDialogLoading}
-          size="lg"
-          type="button"
-          onClick={onDeleteButton}
-        >
-          {t('delete')}
-        </Button>
-      )}
-
-      <form onSubmit={handleFormSubmit}>
-        <DialogFooterButtons
-          handleClose={onClose}
-          handleSubmit={item.createFunction ? () => {} : undefined}
-          submitButtonType="submit"
-          disableSubmit={disableDialogButtons}
-          disableCancel={disableDialogButtons}
-          cancelButtonText={item.createFunction ? 'cancel' : 'common.close'}
-          submitButtonText={userGroupToEdit ? 'common.save' : 'common.create'}
-        />
-      </form>
-    </div>
+    <form onSubmit={handleFormSubmit}>
+      <DialogFooterButtons
+        handleClose={onClose}
+        handleSubmit={item.createFunction ? () => {} : undefined}
+        handleDelete={item.createFunction && userGroupToEdit ? onDeleteButton : undefined}
+        submitButtonType="submit"
+        disableSubmit={disableDialogButtons}
+        disableCancel={disableDialogButtons}
+        disableDelete={disableDialogButtons}
+        cancelButtonText={item.createFunction ? 'cancel' : 'common.close'}
+        submitButtonText={userGroupToEdit ? 'common.save' : 'common.create'}
+      />
+    </form>
   );
 
   const getTitle = () => {
@@ -264,15 +285,25 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
   };
 
   return (
-    <AdaptiveDialog
-      isOpen
-      trigger={trigger}
-      handleOpenChange={isDialogLoading ? () => {} : onClose}
-      title={t(getTitle())}
-      desktopContentClassName="max-w-4xl"
-      body={getDialogBody()}
-      footer={getFooter()}
-    />
+    <>
+      <AdaptiveDialog
+        isOpen
+        trigger={trigger}
+        handleOpenChange={isDialogLoading ? () => {} : onClose}
+        title={t(getTitle())}
+        desktopContentClassName="max-w-4xl"
+        body={getDialogBody()}
+        footer={getFooter()}
+      />
+      <DeleteGroupDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        groupName={form.getValues('name')}
+        groupType={t(`classmanagement.${item.translationId}`)}
+        onConfirmDelete={handleConfirmDelete}
+        isLoading={isDialogLoading}
+      />
+    </>
   );
 };
 

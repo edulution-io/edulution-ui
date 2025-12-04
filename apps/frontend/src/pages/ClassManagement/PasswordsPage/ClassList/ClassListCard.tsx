@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { useState } from 'react';
@@ -27,9 +34,10 @@ interface ClassListCardProps {
   group: LmnApiSchoolClass;
   selectedClasses: LmnApiSchoolClass[];
   setSelectedClasses: React.Dispatch<React.SetStateAction<LmnApiSchoolClass[]>>;
+  disabled?: boolean;
 }
 
-const ClassListCard = ({ selectedClasses, setSelectedClasses, group }: ClassListCardProps) => {
+const ClassListCard = ({ selectedClasses, setSelectedClasses, group, disabled }: ClassListCardProps) => {
   const { user } = useLmnApiStore();
   const { displayName, cn: commonName, sophomorixSchoolname } = group;
   const [isHovered, setIsHovered] = useState<boolean>(false);
@@ -43,6 +51,8 @@ const ClassListCard = ({ selectedClasses, setSelectedClasses, group }: ClassList
   const isSelected = !!selectedClasses.find((s) => s.dn === group.dn);
 
   const toggleIsSelected = () => {
+    if (disabled) return;
+
     if (isSelected) {
       setSelectedClasses((prev) => prev.filter((p) => p.dn !== group.dn));
     } else {
@@ -70,7 +80,7 @@ const ClassListCard = ({ selectedClasses, setSelectedClasses, group }: ClassList
         className={cn(
           'h-13 my-2 ml-1 mr-8 flex w-64 min-w-64 overflow-hidden ',
           isActive && 'scale-105',
-          'cursor-pointer',
+          disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
         )}
         onClick={onSelect}
         onMouseOver={() => setIsHovered(true)}
@@ -103,14 +113,14 @@ const ClassListCard = ({ selectedClasses, setSelectedClasses, group }: ClassList
           <button
             type="button"
             onClick={(event) => onButtonClick(event, PrintPasswordsFormat.PDF)}
-            className="absolute -top-[1px] right-9 h-[42px] bg-ciLightBlue px-2 py-3 text-xl hover:bg-opacity-90"
+            className="absolute -top-[1px] right-9 h-[42px] bg-primary px-2 py-3 text-xl hover:bg-opacity-90"
           >
             <FaRegFilePdf />
           </button>
           <button
             type="button"
             onClick={(event) => onButtonClick(event, PrintPasswordsFormat.CSV)}
-            className="absolute -right-0 -top-[1px] h-[42px] rounded-r-lg bg-ciLightBlue px-2 py-3 text-lg hover:bg-opacity-90"
+            className="absolute -right-0 -top-[1px] h-[42px] rounded-r-lg bg-primary px-2 py-3 text-lg hover:bg-opacity-90"
           >
             <FaFileCsv />
           </button>

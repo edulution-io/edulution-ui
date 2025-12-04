@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { useEffect, useState } from 'react';
@@ -55,6 +62,9 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [isCardLoading, setIsCardLoading] = useState<boolean>(false);
 
+  const isProject = (g: LmnApiProject | LmnApiSchoolClass): g is LmnApiProject =>
+    'sophomorixMemberGroups' in g || 'sophomorixAdminGroups' in g;
+
   if (!user) {
     return null;
   }
@@ -73,10 +83,13 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
     setOpenDialogType(type);
   };
 
+  const isJoinable = sophomorixJoinable || type === UserGroups.Printers;
+
   const onSelect = async () => {
-    if (!sophomorixJoinable) {
+    if (!isJoinable) {
       return;
     }
+
     setIsCardLoading(true);
 
     switch (type) {
@@ -107,13 +120,17 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
       <div>{t('details')}</div>
     ) : (
       <>
-        {type === UserGroups.Projects ? (
+        {type === UserGroups.Projects && isProject(group) ? (
           <div>
-            {sophomorixAdmins.length} {t(sophomorixAdmins.length === 1 ? 'common.adminShort' : 'common.adminsShort')}
+            {sophomorixAdmins.length} ({group.sophomorixAdminGroups?.length}){' '}
+            {t(sophomorixAdmins.length === 1 ? 'common.adminShort' : 'common.adminsShort')}
           </div>
         ) : null}
         <div>
-          {sophomorixMembers.length} {t(sophomorixMembers.length === 1 ? 'user' : 'common.users')}
+          {isProject(group)
+            ? `${sophomorixMembers.length} (${group.sophomorixMemberGroups?.length})`
+            : sophomorixMembers.length}{' '}
+          {t(sophomorixMembers.length === 1 ? 'user' : 'common.users')}
         </div>
       </>
     );
@@ -138,7 +155,7 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
           <>
             <div className="flex w-full flex-col justify-around">
               <div className="flew-row flex overflow-hidden">
-                {sophomorixJoinable && isEnrolEnabled ? (
+                {isJoinable && isEnrolEnabled ? (
                   <Checkbox
                     className="-mr-1 ml-2 rounded-lg"
                     checked={isSelected}

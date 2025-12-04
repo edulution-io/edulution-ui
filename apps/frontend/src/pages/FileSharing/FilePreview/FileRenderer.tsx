@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { FC, MutableRefObject, useEffect } from 'react';
@@ -24,14 +31,16 @@ import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFi
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
+import PdfViewer from '@/components/shared/PDFViewer/PdfViewer';
 
 interface FileRendererProps {
   editMode: boolean;
   isOpenedInNewTab?: boolean;
   closingRef?: MutableRefObject<boolean>;
+  isOnlyOfficeConfigured?: boolean;
 }
 
-const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closingRef }) => {
+const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closingRef, isOnlyOfficeConfigured }) => {
   const { isMobileView } = useMedia();
   const {
     temporaryDownloadUrl: fileUrl,
@@ -43,6 +52,7 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
   } = useFileSharingDownloadStore();
 
   const { currentlyEditingFile } = useFileEditorStore();
+
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
 
   useEffect(() => {
@@ -61,9 +71,32 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
   );
 
   if (!currentlyEditingFile) return null;
-  const fileExtension = getFileExtension(currentlyEditingFile.filePath);
 
-  if (isEditorLoading || error || !fileUrl) {
+  const fileExtension = getFileExtension(currentlyEditingFile.filePath);
+  const isOnlyOfficeDoc = isOnlyOfficeDocument(currentlyEditingFile.filePath);
+  if (isOnlyOfficeDoc && isOnlyOfficeConfigured) {
+    const isDocReady = !!publicDownloadLink && !!currentlyEditingFile;
+    if (isEditorLoading || isCreatingBlobUrl || isFetchingPublicUrl || error || !isDocReady) {
+      return (
+        <div className="flex h-full items-center justify-center">
+          <CircleLoader />
+        </div>
+      );
+    }
+
+    return (
+      <OnlyOffice
+        url={publicDownloadLink}
+        fileName={currentlyEditingFile.filename}
+        filePath={currentlyEditingFile.filePath}
+        mode={editMode ? 'edit' : 'view'}
+        type={isMobileView ? 'mobile' : 'desktop'}
+        isOpenedInNewTab={isOpenedInNewTab}
+      />
+    );
+  }
+
+  if (isEditorLoading || isCreatingBlobUrl || isFetchingPublicUrl || error || !fileUrl) {
     return (
       <div className="flex h-full items-center justify-center">
         <CircleLoader />
@@ -81,24 +114,6 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
     );
   }
 
-  const isDocumentReady = publicDownloadLink && currentlyEditingFile;
-  if (isOnlyOfficeDocument(currentlyEditingFile.filePath)) {
-    return isDocumentReady ? (
-      <OnlyOffice
-        url={publicDownloadLink}
-        fileName={currentlyEditingFile.filename}
-        filePath={currentlyEditingFile.filePath}
-        mode={editMode ? 'edit' : 'view'}
-        type={isMobileView ? 'mobile' : 'desktop'}
-        isOpenedInNewTab={isOpenedInNewTab}
-      />
-    ) : (
-      <div className="flex flex-col items-center justify-center space-y-4">
-        <CircleLoader />
-      </div>
-    );
-  }
-
   if (isMediaExtension(fileExtension)) {
     return (
       <MediaComponent
@@ -107,7 +122,12 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
       />
     );
   }
-  return <p>{t('loadingIndicator.unsupportedFile')}</p>;
+
+  if (fileExtension === 'pdf') {
+    return <PdfViewer fetchUrl={fileUrl} />;
+  }
+
+  return <p>{t('filesharing.errors.FileFormatNotSupported')}</p>;
 };
 
 export default FileRenderer;

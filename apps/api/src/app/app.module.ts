@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { Module } from '@nestjs/common';
@@ -19,9 +26,12 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { BullModule } from '@nestjs/bullmq';
+import { ConfigModule } from '@nestjs/config';
+import { Response } from 'express';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
-import { BullModule } from '@nestjs/bullmq';
+import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
 import LoggingInterceptor from '../logging/logging.interceptor';
 import AppConfigModule from '../appconfig/appconfig.module';
 import UsersModule from '../users/users.module';
@@ -40,71 +50,93 @@ import DockerModule from '../docker/docker.module';
 import VeyonModule from '../veyon/veyon.module';
 import GlobalSettingsModule from '../global-settings/global-settings.module';
 import SseModule from '../sse/sse.module';
-import TldrawSyncModule from '../tldraw-sync/tldraw-sync.module';
+import TLDrawSyncModule from '../tldraw-sync/tldraw-sync.module';
 import FileSystemModule from '../filesystem/filesystem.module';
 import WebDavModule from '../webdav/webdav.module';
 import HealthModule from '../health/health.module';
 import ScriptsModule from '../scripts/scripts.module';
-
-const redisHost = process.env.REDIS_HOST ?? 'localhost';
-const redisPort = +(process.env.REDIS_PORT ?? 6379);
+import WebdavSharesModule from '../webdav/shares/webdav-shares.module';
+import LdapKeycloakSyncModule from '../ldap-keycloak-sync/ldap-keycloak-sync.module';
+import redisConnection from '../common/redis.connection';
+import NotificationsModule from '../notifications/notifications.module';
+import MobileAppModule from '../mobileAppModule/mobileApp.module';
+import UserPreferencesModule from '../user-preferences/user-preferences.module';
+import DevCacheFlushService from '../common/cache/dev-cache-flush.service';
+import MetricsModule from '../metrics/metrics.module';
+import configuration from '../config/configuration';
+import enableSentryForNest from '../sentry/enableSentryForNest';
 
 @Module({
   imports: [
-    ServeStaticModule.forRoot({
-      rootPath: PUBLIC_DOWNLOADS_PATH,
-      serveRoot: `/${EDU_API_ROOT}/downloads`,
+    ...enableSentryForNest(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration],
     }),
-
-    BullModule.forRoot({
-      connection: {
-        host: redisHost,
-        port: redisPort,
-      },
-      defaultJobOptions: {
-        removeOnComplete: true,
-        removeOnFail: true,
-      },
-    }),
-    HealthModule,
-    AuthModule,
-    AppConfigModule,
-    FileSystemModule,
-    UsersModule,
-    GroupsModule,
-    LmnApiModule,
-    ConferencesModule,
-    MailsModule,
-    FilesharingModule,
-    VdiModule,
-    LicenseModule,
-    SurveysModule,
-    BulletinCategoryModule,
-    BulletinBoardModule,
-    DockerModule,
-    VeyonModule,
-    GlobalSettingsModule,
-    WebDavModule,
-    SseModule,
-    TldrawSyncModule,
     JwtModule.register({
       global: true,
     }),
     MongooseModule.forRoot(process.env.MONGODB_SERVER_URL as string, {
       dbName: process.env.MONGODB_DATABASE_NAME,
       auth: { username: process.env.MONGODB_USERNAME, password: process.env.MONGODB_PASSWORD },
+      minPoolSize: 10,
     }),
-
-    ScheduleModule.forRoot(),
-
     CacheModule.registerAsync({
       isGlobal: true,
       useFactory: () => ({
-        stores: [new KeyvRedis(`redis://${redisHost}:${redisPort}`)],
+        stores: [new KeyvRedis(`redis://${redisConnection.host}:${redisConnection.port}`)],
       }),
     }),
-
+    BullModule.forRoot({
+      connection: redisConnection,
+      defaultJobOptions: {
+        removeOnComplete: true,
+        removeOnFail: true,
+      },
+    }),
+    ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
+    ServeStaticModule.forRoot({
+      rootPath: PUBLIC_DOWNLOADS_PATH,
+      serveRoot: `/${EDU_API_ROOT}/downloads`,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: PUBLIC_ASSET_PATH,
+      serveRoot: `/${EDU_API_ROOT}/public/assets`,
+      serveStaticOptions: {
+        setHeaders: (res: Response) => {
+          res.setHeader('Cache-Control', 'public, max-age=86400, must-revalidate');
+        },
+      },
+    }),
+
+    HealthModule,
+    MetricsModule,
+    AuthModule,
+    AppConfigModule,
+    GlobalSettingsModule,
+    UsersModule,
+    GroupsModule,
+    UserPreferencesModule,
+    FileSystemModule,
+    WebDavModule,
+    WebdavSharesModule,
+    FilesharingModule,
+    LmnApiModule,
+    LdapKeycloakSyncModule,
+    ConferencesModule,
+    MailsModule,
+    VdiModule,
+    DockerModule,
+    VeyonModule,
+    LicenseModule,
+    SurveysModule,
+    BulletinCategoryModule,
+    BulletinBoardModule,
+    NotificationsModule,
+    MobileAppModule,
+    SseModule,
+    TLDrawSyncModule,
     ScriptsModule,
   ],
   providers: [
@@ -112,6 +144,7 @@ const redisPort = +(process.env.REDIS_PORT ?? 6379);
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
     },
+    ...(process.env.NODE_ENV === 'development' ? [DevCacheFlushService] : []),
   ],
 })
 export default class AppModule {}

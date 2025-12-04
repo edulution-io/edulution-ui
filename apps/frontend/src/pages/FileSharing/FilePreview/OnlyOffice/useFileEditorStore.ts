@@ -1,20 +1,27 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { create, StateCreator } from 'zustand';
 import eduApi from '@/api/eduApi';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
-import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
+import type { IConfig } from '@onlyoffice/document-editor-react';
 import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import getLastPartOfUrl from '@libs/filesharing/utils/getLastPartOfUrl';
@@ -28,7 +35,7 @@ type FileEditorStore = {
   setIsFilePreviewDocked: (isFilePreviewDocked: boolean) => void;
   isFilePreviewVisible: boolean;
   setIsFilePreviewVisible: (isVisible: boolean) => void;
-  getOnlyOfficeJwtToken: (config: OnlyOfficeEditorConfig) => Promise<string>;
+  getOnlyOfficeJwtToken: (config: IConfig) => Promise<string>;
   deleteFileAfterEdit: (url: string) => Promise<void>;
   reset: () => void;
   error: Error | null;
