@@ -40,15 +40,15 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
 
   return (
     <Card
-      className={cn(GRID_CARD, 'bg-muted')}
+      className={cn(GRID_CARD, 'bg-muted', 'h-[13rem]', 'flex')}
       variant="text"
       onClick={() => assignTemplateToSelectedSurvey(creator, surveyTemplate)}
     >
       <MdOutlineOpenInNew className="h-10 w-10 md:h-14 md:w-14" />
 
-      <p>{title}</p>
+      <h3 className="line-clamp-2 h-[3.8rem] w-full">{title}</h3>
 
-      <p>{description}</p>
+      <p className="line-clamp-2 h-[2.8rem] w-full">{description}</p>
     </Card>
   );
 };
