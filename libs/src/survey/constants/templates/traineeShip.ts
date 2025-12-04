@@ -20,9 +20,6 @@
 import { Types } from 'mongoose';
 import getBase24HexStringFromDate from '@libs/survey/utils/getBase24HexStringFromDate';
 
-// const frontendHost = process.env['FRONTEND_HOST'] ?? 'localhost';
-// const frontendPort = process.env['FRONTEND_PORT'] ?? '5173';
-
 const TraineeShip = {
   _id: new Types.ObjectId(getBase24HexStringFromDate(new Date('2005-05-05T15:15:15.150Z'))),
   name: 'Praktikumsplatz',
@@ -32,7 +29,7 @@ const TraineeShip = {
   template: {
     formula: {
       title: 'Praktikumsplatz Wunschliste',
-      logo: /* `http://${frontendHost}:${frontendPort} */ `/edu-api/files/public/file/surveys/surveys-default-logo-dark.webp`,
+      logo: `/edu-api/files/public/assets/surveys/surveys-default-logo-dark.webp`,
       elements: [
         {
           type: 'paneldynamic',

@@ -20,9 +20,6 @@
 import { Types } from 'mongoose';
 import getBase24HexStringFromDate from '@libs/survey/utils/getBase24HexStringFromDate';
 
-// const frontendHost = process.env['FRONTEND_HOST'] ?? 'localhost';
-// const frontendPort = process.env['FRONTEND_PORT'] ?? '5173';
-
 const ParentTeacherConference = {
   _id: new Types.ObjectId(getBase24HexStringFromDate(new Date('2004-04-04T14:14:14.140Z'))),
   name: 'Eltern-Abend',
@@ -32,7 +29,7 @@ const ParentTeacherConference = {
   template: {
     formula: {
       title: 'Eltern-Abend (DATUM?)',
-      logo: /* `http://${frontendHost}:${frontendPort} */ `/edu-api/files/public/file/surveys/surveys-default-logo-dark.webp`,
+      logo: `/edu-api/files/public/assets/surveys/surveys-default-logo-dark.webp`,
       description: 'Auf jeder Seite bietet der Lehrer eines Faches in der jeweiligen Klasse verschiedene Timeslots an.',
       pages: [
         {

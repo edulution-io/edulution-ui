@@ -20,9 +20,6 @@
 import { Types } from 'mongoose';
 import getBase24HexStringFromDate from '@libs/survey/utils/getBase24HexStringFromDate';
 
-// const frontendHost = process.env['FRONTEND_HOST'] ?? 'localhost';
-// const frontendPort = process.env['FRONTEND_PORT'] ?? '5173';
-
 const PaperSubject = {
   _id: new Types.ObjectId(getBase24HexStringFromDate(new Date('2003-03-03T13:13:13.130Z'))),
   name: 'Vortragsthema',
@@ -32,7 +29,7 @@ const PaperSubject = {
   template: {
     formula: {
       title: 'Vortragsthema Wunschliste',
-      logo: /* `http://${frontendHost}:${frontendPort} */ `/edu-api/files/public/file/surveys/surveys-default-logo-dark.webp`,
+      logo: `/edu-api/files/public/assets/surveys/surveys-default-logo-dark.webp`,
       elements: [
         {
           type: 'paneldynamic',

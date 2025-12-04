@@ -20,9 +20,6 @@
 import { Types } from 'mongoose';
 import getBase24HexStringFromDate from '@libs/survey/utils/getBase24HexStringFromDate';
 
-// const frontendHost = process.env['FRONTEND_HOST'] ?? 'localhost';
-// const frontendPort = process.env['FRONTEND_PORT'] ?? '5173';
-
 const LetterToParents = {
   _id: new Types.ObjectId(getBase24HexStringFromDate(new Date('2001-01-01T11:11:11.110Z'))),
   name: 'Elternbrief',
@@ -32,7 +29,7 @@ const LetterToParents = {
   template: {
     formula: {
       title: 'Elternbrief – Rückmeldung erforderlich',
-      logo: /* `http://${frontendHost}:${frontendPort} */ `/edu-api/files/public/file/surveys/surveys-default-logo-dark.webp`,
+      logo: `/edu-api/files/public/assets/surveys/surveys-default-logo-dark.webp`,
       description: 'Bitte geben Sie den Grund für die Benachrichtigung der Erziehungsberechtigten an.',
       pages: [
         {
