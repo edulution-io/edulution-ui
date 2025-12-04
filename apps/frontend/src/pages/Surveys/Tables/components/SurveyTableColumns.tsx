@@ -37,7 +37,8 @@ import OpenShareQRDialogTextCell from '@/components/ui/Table/OpenShareQRDialogTe
 const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
   {
     accessorKey: SURVEY_TABLE_COLUMNS.SELECT_SURVEY,
-    size: 180,
+    size: 250,
+    minSize: 180,
     enableSorting: true,
     header: ({ table, column }) => (
       <SortableHeader<SurveyDto, unknown>
@@ -63,7 +64,9 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
   },
   {
     accessorKey: SURVEY_TABLE_COLUMNS.CREATED_AT,
-    size: 120,
+    size: 100,
+    minSize: 100,
+    maxSize: 120,
     enableSorting: true,
     header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
     meta: {
@@ -78,7 +81,6 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       return (
         <SelectableTextCell
           text={text}
-          className="h-full w-full"
           onClick={() => row.toggleSelected()}
         />
       );
@@ -87,7 +89,9 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
   },
   {
     accessorKey: SURVEY_TABLE_COLUMNS.EXPIRES,
-    size: 120,
+    size: 80,
+    minSize: 80,
+    maxSize: 100,
     enableSorting: true,
     header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
     meta: {
@@ -100,7 +104,6 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       return (
         <SelectableTextCell
           text={text}
-          className="h-full w-full"
           onClick={() => row.toggleSelected()}
         />
       );
@@ -109,6 +112,9 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
   },
   {
     accessorKey: SURVEY_TABLE_COLUMNS.CREATOR,
+    size: 120,
+    minSize: 120,
+    maxSize: 360,
     header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
     meta: {
       translationId: 'common.creator',
@@ -129,7 +135,9 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
   },
   {
     accessorKey: SURVEY_TABLE_COLUMNS.IS_PUBLIC,
-    size: 120,
+    size: 100,
+    minSize: 100,
+    maxSize: 120,
     header: ({ column }) => (
       <SortableHeader<SurveyDto, unknown>
         className={hideOnMobileClassName}
@@ -156,6 +164,9 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
   },
   {
     accessorKey: SURVEY_TABLE_COLUMNS.INVITED_ATTENDEES,
+    size: 80,
+    minSize: 80,
+    maxSize: 100,
     header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
     meta: {
       translationId: 'survey.invitedAttendees',
@@ -177,7 +188,9 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
   },
   {
     accessorKey: SURVEY_TABLE_COLUMNS.ANSWERS,
-    size: 85,
+    size: 70,
+    minSize: 70,
+    maxSize: 90,
     enableSorting: true,
     header: ({ column }) => <SortableHeader<SurveyDto, unknown> column={column} />,
     meta: {
@@ -186,7 +199,6 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     cell: ({ row }) => (
       <SelectableTextCell
         text={`${row.original?.answers.length || 0}`}
-        className="h-full w-full"
         onClick={() => row.toggleSelected()}
       />
     ),
