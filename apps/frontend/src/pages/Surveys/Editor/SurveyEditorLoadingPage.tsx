@@ -54,12 +54,7 @@ const SurveyEditorLoadingPage = () => {
   const filteredTemplates = useMemo(() => {
     const searchString = search.trim().toLowerCase();
     if (!searchString) return templates;
-
-    return templates.filter((surveyTemplate) => {
-      const name = surveyTemplate.template.formula.title?.toLowerCase();
-
-      return isSubsequence(searchString, name || '');
-    });
+    return templates.filter((surveyTemplate) => isSubsequence(searchString, surveyTemplate.name?.toLowerCase() || ''));
   }, [templates, language, search]);
 
   const handleKeyDown = useCallback(
@@ -104,7 +99,7 @@ const SurveyEditorLoadingPage = () => {
 
         {filteredTemplates.length ? (
           filteredTemplates.map((template) => (
-            <div key={template.fileName}>
+            <div key={template.name}>
               <SurveyEditorLoadingTemplate
                 creator={surveyCreator}
                 surveyTemplate={template}

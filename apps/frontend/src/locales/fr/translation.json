@@ -597,6 +597,7 @@
       "addDescription": "Ajouter une description",
       "expectingUserInput": "Ici, la réponse du participant est attendue ... ",
       "templates": "Modèles",
+      "noSearchResults": "Aucun modèle trouvé",
       "templateMenu": {
         "fetch": "Choisissez l'un des modèles disponibles.",
         "submit": "Enregistrez le sondage en tant que modèle.",

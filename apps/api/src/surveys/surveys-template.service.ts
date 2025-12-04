@@ -18,7 +18,7 @@
  */
 
 import { Model } from 'mongoose';
-import { Response } from 'express';;
+import { Response } from 'express';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
