@@ -34,7 +34,7 @@ const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-xl text-backgrou
       'btn-security': 'bg-ciGreenToBlue text-white',
       'btn-outline':
         'border border-input shadow-sm hover:bg-muted-light hover:text-accent-foreground text-accent-foreground',
-      'btn-hexagon': 'bg-cover bg-center flex items-center justify-center',
+      'btn-hexagon': 'bg-cover bg-center flex items-center justify-center hover:scale-105',
       'btn-attention': 'bg-ciRed text-white',
       'btn-small': 'hover:bg-grey-700 mr-1 rounded bg-white px-4 text-background h-9 shadow-sm font-normal text-base',
     },
@@ -72,7 +72,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               className="absolute"
               aria-label={hexagonIconAltText}
             />
-            <div className="">{children}</div>
+            {children}
           </div>
         ) : (
           children
