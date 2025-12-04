@@ -179,18 +179,16 @@ class SurveysAttachmentService implements OnModuleInit {
         if (!element.choicesByUrl) {
           break;
         }
-        const url = element.choicesByUrl?.url.replace(TEMPORAL_SURVEY_ID_STRING, surveyId);
-        if (isPublic && url.includes(`/${SURVEY_CHOICES}/`)) {
-          processedElement.choicesByUrl = {
-            ...element.choicesByUrl,
-            url: url.replace(`/${SURVEY_CHOICES}/`, `/${PUBLIC_SURVEY_CHOICES}/`),
-          };
-        } else if (!isPublic && url.includes(`/${PUBLIC_SURVEY_CHOICES}/`)) {
-          processedElement.choicesByUrl = {
-            ...element.choicesByUrl,
-            url: url.replace(`/${PUBLIC_SURVEY_CHOICES}/`, `/${SURVEY_CHOICES}/`),
-          };
+        let url = element.choicesByUrl.url.replace(TEMPORAL_SURVEY_ID_STRING, surveyId);
+        if (isPublic) {
+          url = url.replace(`/${SURVEY_CHOICES}/`, `/${PUBLIC_SURVEY_CHOICES}/`);
+        } else {
+          url = url.replace(`/${PUBLIC_SURVEY_CHOICES}/`, `/${SURVEY_CHOICES}/`);
         }
+        processedElement.choicesByUrl = {
+          ...element.choicesByUrl,
+          url,
+        };
         break;
       }
       case SurveyQuestionsType.IMAGE:
