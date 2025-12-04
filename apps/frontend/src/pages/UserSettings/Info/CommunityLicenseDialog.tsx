@@ -51,7 +51,7 @@ const CommunityLicenseDialog: React.FC = () => {
           }}
         />
       </p>
-      <div className="flex w-full justify-center shadow">
+      <div className="flex w-full justify-center">
         <Button
           variant="btn-collaboration"
           disabled={isLoading}

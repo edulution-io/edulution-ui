@@ -21,7 +21,7 @@ import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { SurveyCreator } from 'survey-creator-react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import TemplateItem from '@/pages/Surveys/Editor/dialog/TemplateItem';
 import { AccordionSH } from '@/components/ui/AccordionSH';
 
@@ -41,7 +41,7 @@ const TemplateList = (props: TemplateListProps) => {
     >
       {templates.map((template: SurveyTemplateDto) => (
         <TemplateItem
-          key={template.fileName}
+          key={template.name}
           form={form}
           creator={creator}
           template={template}

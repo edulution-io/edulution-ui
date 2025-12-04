@@ -1,7 +1,8 @@
-/** @type {import('tailwindcss').Config} */
 import plugin from 'tailwindcss/plugin';
+import tailwindcssAnimate from 'tailwindcss-animate';
+import tailwindScrollbar from 'tailwind-scrollbar';
 
-module.exports = {
+const TAILWIND_CONFIG = {
   darkMode: ['class'],
   content: ['./apps/frontend/**/*.{js,ts,jsx,tsx,html}', '!./apps/backend/**', '!./libs/**'],
   safelist: [{ pattern: /^ql-indent-[1-8]$/ }],
@@ -124,8 +125,8 @@ module.exports = {
     },
   },
   plugins: [
-    require('tailwindcss-animate'),
-    require('tailwind-scrollbar')({ nocompatible: true }),
+    tailwindcssAnimate,
+    tailwindScrollbar({ nocompatible: true }),
     plugin(function ({ addBase, theme }) {
       addBase({
         h1: { fontSize: theme('fontSize.h1'), fontWeight: '700' },
@@ -149,3 +150,5 @@ module.exports = {
     }),
   ],
 };
+
+export default TAILWIND_CONFIG;

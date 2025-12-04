@@ -19,6 +19,7 @@
 
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import SurveysTemplateSchema, { SurveysTemplate } from 'apps/api/src/surveys/surveys-template.schema';
 import SurveySchema, { Survey } from './survey.schema';
 import SurveyAnswersSchema, { SurveyAnswer } from './survey-answers.schema';
 import SurveysService from './surveys.service';
@@ -34,6 +35,7 @@ import SurveysTemplateService from './surveys-template.service';
   imports: [
     MongooseModule.forFeature([{ name: Survey.name, schema: SurveySchema }]),
     MongooseModule.forFeature([{ name: SurveyAnswer.name, schema: SurveyAnswersSchema }]),
+    MongooseModule.forFeature([{ name: SurveysTemplate.name, schema: SurveysTemplateSchema }]),
     GroupsModule,
   ],
   controllers: [SurveysController, PublicSurveysController],
