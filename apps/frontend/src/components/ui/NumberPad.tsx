@@ -19,14 +19,16 @@
 
 import React from 'react';
 import { MdOutlineBackspace } from 'react-icons/md';
+import cn from '@libs/common/utils/className';
 import { Button } from '../shared/Button';
 
 interface NumberPadProps {
   onPress: (digit: string) => void;
   onClear: () => void;
+  variant?: 'default' | 'login';
 }
 
-const NumberPad: React.FC<NumberPadProps> = ({ onPress, onClear }) => {
+const NumberPad: React.FC<NumberPadProps> = ({ onPress, onClear, variant = 'default' }) => {
   const digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
 
   return (
@@ -36,7 +38,10 @@ const NumberPad: React.FC<NumberPadProps> = ({ onPress, onClear }) => {
           key={digit}
           variant="btn-outline"
           type="button"
-          className="aspect-square hover:bg-ciGrey/10"
+          className={cn(
+            'aspect-square hover:bg-ciGrey/10',
+            variant === 'login' && 'border-ciDarkGrey text-ciDarkGrey hover:bg-ciDarkGrey/10',
+          )}
           onClick={() => onPress(digit)}
         >
           {digit}
@@ -45,7 +50,10 @@ const NumberPad: React.FC<NumberPadProps> = ({ onPress, onClear }) => {
       <Button
         variant="btn-outline"
         type="button"
-        className="w-[136px] hover:bg-ciGrey/10"
+        className={cn(
+          'w-[136px] hover:bg-ciGrey/10',
+          variant === 'login' && 'border-ciDarkGrey text-ciDarkGrey hover:bg-ciDarkGrey/10',
+        )}
         onClick={onClear}
       >
         <MdOutlineBackspace />

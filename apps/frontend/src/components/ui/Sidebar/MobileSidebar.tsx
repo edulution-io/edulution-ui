@@ -50,7 +50,7 @@ const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
   return (
     <>
       <div
-        className="fixed bottom-0 left-0 z-[400] rounded-tr-md bg-black px-2 py-1 text-xs text-muted transition-transform duration-300 ease-in-out"
+        className="fixed bottom-0 left-0 z-[400] rounded-tr-md bg-secondary px-2 py-1 text-xs text-background shadow-xl shadow-slate-500 transition-transform duration-300 ease-in-out dark:bg-black dark:shadow-black"
         style={{ transform: `translateX(${isMobileSidebarOpen ? '0%' : '-100%'})` }}
       >
         <div>v{APP_VERSION}</div>
@@ -63,7 +63,10 @@ const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
       >
         <div
           ref={sidebarRef}
-          className={cn('fixed right-0 h-full min-w-[260px] border-l-[1px] border-muted bg-black', sidebarClassName)}
+          className={cn(
+            'fixed right-0 h-full min-w-[260px] border-l-[1px] border-muted bg-secondary text-background shadow-xl shadow-slate-500 dark:bg-black dark:shadow-black',
+            sidebarClassName,
+          )}
         >
           <div className="h-1" />
 

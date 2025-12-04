@@ -17,20 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import useDeploymentTarget from '@/hooks/useDeploymentTarget';
-import LicenseOverview from '../components/LicenseOverview';
-import LmnVersionInfo from './LmnVersionInfo';
-
-const InfoPage = () => {
-  const { isLmn } = useDeploymentTarget();
-
-  return (
-    <div className="mt-5 space-y-10 [&>*]:rounded-xl [&>*]:bg-foreground [&>*]:px-2 dark:[&>*]:bg-muted-background">
-      <LicenseOverview />
-      {isLmn && <LmnVersionInfo />}
-    </div>
-  );
+const getAppIconClassName = (iconSrc: string): string => {
+  const supportsTheming = iconSrc.includes('currentColor');
+  return supportsTheming ? '' : 'light:icon-light-mode';
 };
 
-export default InfoPage;
+export default getAppIconClassName;

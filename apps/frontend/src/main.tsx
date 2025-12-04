@@ -35,6 +35,14 @@ if (sentryConfig) {
   void useSentryStore.getState().init(state.config);
 }
 
+const theme = localStorage.getItem('theme');
+
+if (theme === 'dark') {
+  document.documentElement.classList.add('dark');
+} else {
+  document.documentElement.classList.add('light');
+}
+
 const root = document.getElementById('root');
 
 if (root) {

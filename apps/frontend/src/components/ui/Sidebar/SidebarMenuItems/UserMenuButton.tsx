@@ -51,7 +51,7 @@ const UserMenuButton: React.FC = () => {
   return (
     <div
       key="usermenu"
-      className={cn('min-w-[260px] bg-black', userMenuClassName)}
+      className={cn('min-w-[260px] bg-foreground dark:bg-black', userMenuClassName)}
     >
       <div
         className={cn(

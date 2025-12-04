@@ -28,7 +28,7 @@ export const originInputVariants = cva(['rounded'], {
   variants: {
     variant: {
       login:
-        'block w-full border-2 border-gray-300 bg-background px-3 py-2 shadow-md placeholder:text-p focus:border-gray-600 focus:bg-background focus:placeholder-muted focus:outline-none text-foreground',
+        'block w-full border-2 border-gray-300 bg-white px-3 py-2 shadow-md placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-muted focus:outline-none text-black',
       lightGrayDisabled: 'bg-ciDarkGreyDisabled text-secondary placeholder:text-p focus:outline-none',
       default: INPUT_VARIANT_DEFAULT,
       dialog: INPUT_VARIANT_DIALOG,

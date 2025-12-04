@@ -28,6 +28,7 @@ import { getFromPathName } from '@libs/common/utils';
 import useFloatingBarHeight from '@/hooks/useFloatingBarHeight';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import cn from '@libs/common/utils/className';
+import ThemeToggle from './ThemeToggle';
 
 interface PageLayoutProps {
   nativeAppHeader?: NativeAppHeaderProps;
@@ -64,6 +65,8 @@ const PageLayout = ({
           iconSrc={nativeAppHeader.iconSrc}
         />
       )}
+
+      <ThemeToggle />
 
       <main
         style={{ marginBottom: 'var(--floating-bar-h, 0px)' }}

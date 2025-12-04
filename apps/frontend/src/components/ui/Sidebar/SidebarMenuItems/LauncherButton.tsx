@@ -43,7 +43,7 @@ const LauncherButton: React.FC = () => {
       type="button"
       onClick={toggleLauncher}
       className={cn(
-        'group relative z-50 flex max-h-14 w-full items-center justify-end gap-4 bg-black px-4 py-2',
+        'group relative z-50 flex max-h-14 w-full items-center justify-end gap-4 bg-foreground px-4 py-2 dark:bg-black',
         buttonClassName,
       )}
     >

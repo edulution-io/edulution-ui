@@ -30,6 +30,8 @@ import { getFromPathName } from '@libs/common/utils';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import getDisplayName from '@/utils/getDisplayName';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import getAppIconClassName from '@libs/ui/utils/getAppIconClassName';
+import cn from '@libs/common/utils/className';
 import RoundArrowIcon from '@/assets/layout/Pfeil.svg?react';
 
 const ForwardingPage = () => {
@@ -97,7 +99,7 @@ const ForwardingPage = () => {
           data-target-url={targetUrl}
         >
           <img
-            className="m-10 w-[200px] md:m-[20] md:w-[200px]"
+            className={cn('m-10 w-[200px] md:m-[20] md:w-[200px]', getAppIconClassName(currentAppConfig.icon))}
             src={currentAppConfig.icon}
             alt={currentAppConfig.name}
           />

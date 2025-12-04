@@ -62,7 +62,7 @@ const DockerContainerTable: React.FC = () => {
       <AccordionSH
         type="multiple"
         defaultValue={[CONTAINER]}
-        className="mt-5 space-y-10 [&>*]:rounded-xl [&>*]:bg-muted-background [&>*]:px-2"
+        className="mt-5 space-y-10 [&>*]:rounded-xl [&>*]:bg-foreground [&>*]:px-2 dark:[&>*]:bg-muted-background"
       >
         <AccordionItem value={CONTAINER}>
           <AccordionTrigger>

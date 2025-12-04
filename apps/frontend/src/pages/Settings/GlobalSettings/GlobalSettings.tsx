@@ -86,7 +86,7 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
       <Form {...form}>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="space-y-10 [&>*]:rounded-xl [&>*]:bg-muted-background [&>*]:px-2"
+          className="space-y-10 [&>*]:rounded-xl [&>*]:bg-foreground [&>*]:px-2 dark:[&>*]:bg-muted-background"
         >
           <AccordionItem value="general">
             <AccordionTrigger className="flex">

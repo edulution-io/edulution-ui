@@ -31,24 +31,24 @@
   .light {
     --background-image: url('assets/backgroundLightMode.webp');
     --background: #000000;
-    --foreground: #ffffff;
+    --foreground: #d1d5db;
     --muted-foreground: #505050;
     --muted-background: #bbbbbb;
     --muted-light: #dcdcdc;
     --primary: #0081c6;
     --primary-foreground: #ffffff;
     --secondary: #2e2a24;
-    --secondary-foreground: #f2f2f2;
+    --secondary-foreground: #c8c8c3;
     --muted: #b1b1ac;
     --muted-transparent: #b1b1ac50;
     --accent: #d2d2cf;
     --accent-light: #e3e3e3;
     --input: #1d170f;
-    --card: #00000000; /* bleibt transparent */
-    --card-foreground: #000000; /* Invertiert von #FFFFFF */
-    --popover: #000000; /* Invertiert von #FFFFFF */
-    --popover-foreground: #f0e8d5; /* Invertiert von #0F172A */
-    --border: #342b1b;
+    --card: #00000000;
+    --card-foreground: #000000;
+    --popover: #000000;
+    --popover-foreground: #f0e8d5;
+    --border: #333333;
     --destructive: #00ffff;
     --destructive-foreground: #130800;
     --ring: #735b49;
