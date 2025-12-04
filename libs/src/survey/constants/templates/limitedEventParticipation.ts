@@ -17,13 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-// const eduHost = process.env['EDUI_HOST'] ?? 'localhost';
-// const eduPort = process.env['EDUI_PORT'] ?? '3001';
+import { Types } from 'mongoose';
+import getBase24HexStringFromDate from '@libs/survey/utils/getBase24HexStringFromDate';
+
 // const frontendHost = process.env['FRONTEND_HOST'] ?? 'localhost';
 // const frontendPort = process.env['FRONTEND_PORT'] ?? '5173';
 
 const LimitedEventParticipation = {
-  _id: '000000000000000000002222',
+  _id: new Types.ObjectId(getBase24HexStringFromDate(new Date('2002-02-02T12:12:12.120Z'))),
   name: 'TeilnahmeVeranstaltungLimitiert',
   isDefaultTemplate: true,
   isActive: false,
@@ -51,7 +52,7 @@ const LimitedEventParticipation = {
               description:
                 'Die Teilnehmerzahl pro Termin ist auf 20 begrenzt. Ausgebuchte Termine werden nicht mehr angezeigt.',
               choicesByUrl: {
-                url: /* `http://${eduHost}:${eduPort} */ `/edu-api/public-surveys/choices/temporalSurveyId/Frage2`,
+                url: `/edu-api/public-surveys/choices/temporalSurveyId/Frage2`,
                 valueName: 'name',
                 titleName: 'title',
                 allowEmptyResponse: true,

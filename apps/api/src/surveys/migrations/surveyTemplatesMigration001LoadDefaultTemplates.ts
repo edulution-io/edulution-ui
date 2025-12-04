@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { Logger } from '@nestjs/common';
 import {
   ParentTeacherConference,
@@ -27,6 +27,7 @@ import {
   TraineeShip,
 } from '@libs/survey/constants/templates/index';
 import { SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
+import MigrationService from 'apps/api/src/migration/migration.service';
 import { Migration } from '../../migration/migration.type';
 
 const list = [ParentTeacherConference, LetterToParents, PaperSubject, LimitedEventParticipation, TraineeShip];
@@ -36,22 +37,23 @@ const name = '001-load-the-default-survey-templates';
 const surveyTemplatesMigration001LoadDefaultTemplates: Migration<SurveysTemplateDocument> = {
   name,
   version: 1,
-  execute: async (model) => {
-    Logger.log(`Migration "${name}": Found ${list.length} documents to process...`);
+  execute: async (model: Model<SurveysTemplateDocument>) => {
+    Logger.log(`Migration "${name}": Found ${list.length} documents to process...`, MigrationService.name);
     await Promise.all(
       list.map(async (surveyTemplate) => {
         // eslint-disable-next-line no-underscore-dangle
-        const mongoId = new Types.ObjectId(surveyTemplate._id);
-        const existingTemplate = await model.findOne({ _id: mongoId, isDefaultTemplate: true });
+        const existingTemplate = await model.findOne({ _id: surveyTemplate._id }).lean();
         if (existingTemplate && existingTemplate.schemaVersion >= surveyTemplate.schemaVersion) {
-          Logger.warn(
-            `Migration "${name}": Skipped: default template "${surveyTemplate.name}" already exists with same or higher schema version`,
-          );
           return;
         }
         await model.updateOne(
-          { _id: mongoId, isDefaultTemplate: true },
-          { ...surveyTemplate, isDefaultTemplate: true, isActive: existingTemplate?.isActive ?? true },
+          // eslint-disable-next-line no-underscore-dangle
+          { _id: surveyTemplate._id },
+          {
+            ...surveyTemplate,
+            isDefaultTemplate: true,
+            isActive: existingTemplate?.isActive ?? true,
+          },
           { new: true, upsert: true },
         );
         Logger.log(`Migration "${name}": Created default template "${surveyTemplate.name}"`);

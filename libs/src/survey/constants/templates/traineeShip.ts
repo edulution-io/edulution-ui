@@ -17,11 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import { Types } from 'mongoose';
+import getBase24HexStringFromDate from '@libs/survey/utils/getBase24HexStringFromDate';
+
 // const frontendHost = process.env['FRONTEND_HOST'] ?? 'localhost';
 // const frontendPort = process.env['FRONTEND_PORT'] ?? '5173';
 
 const TraineeShip = {
-  _id: '000000000000000000005555',
+  _id: new Types.ObjectId(getBase24HexStringFromDate(new Date('2005-05-05T15:15:15.150Z'))),
   name: 'Praktikumsplatz',
   isDefaultTemplate: true,
   isActive: true,
@@ -50,6 +53,7 @@ const TraineeShip = {
           panelAddText: 'Weiteres Unternehmen hinzufügen',
         },
       ],
+      calculatedValues: [],
     },
     backendLimiters: [],
     creator: {

@@ -17,13 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-// const eduHost = process.env['EDUI_HOST'] ?? 'localhost';
-// const eduPort = process.env['EDUI_PORT'] ?? '3001';
+import { Types } from 'mongoose';
+import getBase24HexStringFromDate from '@libs/survey/utils/getBase24HexStringFromDate';
+
 // const frontendHost = process.env['FRONTEND_HOST'] ?? 'localhost';
 // const frontendPort = process.env['FRONTEND_PORT'] ?? '5173';
 
 const ParentTeacherConference = {
-  _id: '000000000000000000004444',
+  _id: new Types.ObjectId(getBase24HexStringFromDate(new Date('2004-04-04T14:14:14.140Z'))),
   name: 'Eltern-Abend',
   isDefaultTemplate: true,
   isActive: true,
@@ -44,7 +45,7 @@ const ParentTeacherConference = {
               description:
                 'Als Erziehungsberechtigte Person kann ein Termin pro Schüler:in, Fach und Klasse gebucht werden; Bereits belegte Termine werden ausgeblendet',
               choicesByUrl: {
-                url: /* `http://${eduHost}:${eduPort} */ `/edu-api/public-surveys/choices/temporalSurveyId/Frage1`,
+                url: `/edu-api/public-surveys/choices/temporalSurveyId/Frage1`,
                 valueName: 'name',
                 titleName: 'title',
                 allowEmptyResponse: true,
@@ -65,7 +66,7 @@ const ParentTeacherConference = {
               description:
                 'Als Erziehungsberechtigte Person kann ein Termin pro Schüler:in, Fach und Klasse gebucht werden; Bereits belegte Termine werden ausgeblendet',
               choicesByUrl: {
-                url: /* `http://${eduHost}:${eduPort} */ `/edu-api/public-surveys/choices/temporalSurveyId/Frage2`,
+                url: `/edu-api/public-surveys/choices/temporalSurveyId/Frage2`,
                 valueName: 'name',
                 titleName: 'title',
                 allowEmptyResponse: true,
