@@ -699,6 +699,7 @@
       "addDescription": "Beschreibung hinzufügen",
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
       "templates": "Vorlagen",
+      "noSearchResults": "Keine Vorlage gefunden",
       "templateMenu": {
         "submit": "Die Umfrage als Vorlage speichern.",
         "title": "Vorlagen:",

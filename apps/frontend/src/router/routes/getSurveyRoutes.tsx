@@ -20,11 +20,11 @@
 import React from 'react';
 import { Navigate, Route } from 'react-router-dom';
 import { SURVEYS } from '@libs/survey/constants/surveys-endpoint';
-import SurveysPageView from '@libs/survey/types/api/page-view';
+import SurveysPageView from '@libs/survey/types/api/surveysPageView';
 import OpenSurveysPage from '@/pages/Surveys/Tables/OpenSurveysPage';
 import AnsweredSurveysPage from '@/pages/Surveys/Tables/AnsweredSurveysPage';
 import CreatedSurveysPage from '@/pages/Surveys/Tables/CreatedSurveysPage';
-import SurveyEditorPage from '@/pages/Surveys/Editor/SurveyEditorPage';
+import SurveyEditorOpeningPage from '@/pages/Surveys/Editor/SurveyEditorOpeningPage';
 import SurveyParticipationPage from '@/pages/Surveys/Participation/SurveyParticipationPage';
 
 const getSurveyRoutes = () => [
@@ -55,11 +55,11 @@ const getSurveyRoutes = () => [
     />
     <Route
       path={SurveysPageView.CREATOR}
-      element={<SurveyEditorPage />}
+      element={<SurveyEditorOpeningPage />}
     />
     <Route
       path={`${SurveysPageView.EDITOR}/:surveyId`}
-      element={<SurveyEditorPage />}
+      element={<SurveyEditorOpeningPage />}
     />
     <Route
       path={`${SurveysPageView.PARTICIPATION}/:surveyId`}

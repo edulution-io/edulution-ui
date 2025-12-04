@@ -25,7 +25,7 @@ import { ClearFilesEvent, DownloadFileEvent, Model, Serializer, SurveyModel, Upl
 import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import useLanguage from '@/hooks/useLanguage';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
 import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/ExportSurveyToPdfDialog';
@@ -60,7 +60,7 @@ Serializer.getProperty('signaturepad', 'signatureWidth').defaultValue = '800';
 const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.ReactNode => {
   const { isPublic } = props;
 
-  const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
+  const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveysTablesPageStore();
 
   const { fetchAnswer, isFetching, answerSurvey, previousAnswer, uploadTempFile, deleteTempFile } =
     useParticipateSurveyStore();

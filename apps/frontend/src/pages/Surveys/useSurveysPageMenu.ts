@@ -27,7 +27,7 @@ import {
 import { PlusIcon, SurveysMenuIcon, SurveysViewAnsweredIcon, SurveysViewOpenIcon, UserIcon } from '@/assets/icons';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import APPS from '@libs/appconfig/constants/apps';
-import SurveysPageView from '@libs/survey/types/api/page-view';
+import SurveysPageView from '@libs/survey/types/api/surveysPageView';
 
 const useSurveysPageMenu = () => {
   const navigate = useNavigate();

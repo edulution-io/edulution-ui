@@ -25,6 +25,7 @@ import { SURVEY_TEMPLATES_ENDPOINT } from '@libs/survey/constants/surveys-endpoi
 import handleApiError from '@/utils/handleApiError';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 
+
 interface TemplateMenuStore {
   reset: () => void;
 
@@ -41,7 +42,7 @@ interface TemplateMenuStore {
   error?: Error;
 
   template?: SurveyTemplateDto;
-  setTemplate: (template: SurveyTemplateDto) => void;
+  setTemplate: (template?: SurveyTemplateDto) => void;
   templates: SurveyTemplateDto[];
   fetchTemplates: () => Promise<void>;
   isLoading: boolean;
@@ -70,13 +71,10 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
       set({ templates: result.data });
     } catch (error) {
       handleApiError(error, set);
-      set({ templates: [] });
-    } finally {
-      set({ isLoading: false });
     }
   },
 
-  setTemplate: (template: SurveyTemplateDto) => set({ template }),
+  setTemplate: (template?: SurveyTemplateDto) => set({ template }),
 
   uploadTemplate: async (template: SurveyTemplateDto): Promise<void> => {
     set({ isSubmitting: true });

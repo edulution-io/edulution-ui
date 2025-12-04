@@ -20,9 +20,7 @@
 import { create } from 'zustand';
 import { RowSelectionState } from '@tanstack/react-table';
 import {
-  PUBLIC_SURVEYS,
   SURVEY_CAN_PARTICIPATE_ENDPOINT,
-  SURVEY_FIND_ONE_ENDPOINT,
   SURVEY_HAS_ANSWERS_ENDPOINT,
   SURVEYS,
 } from '@libs/survey/constants/surveys-endpoint';
@@ -31,6 +29,7 @@ import SurveyStatus from '@libs/survey/survey-status-enum';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { HttpStatusCode } from 'axios';
+import fetchSelectedSurvey from '@/pages/Surveys/utils/fetchSelectedSurvey';
 
 interface SurveysTablesPageStore {
   selectedSurvey: SurveyDto | undefined;
@@ -83,26 +82,17 @@ const SurveysTablesPageStoreInitialState: Partial<SurveysTablesPageStore> = {
   selectedRows: {},
 };
 
-const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
+const useSurveysTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
   ...(SurveysTablesPageStoreInitialState as SurveysTablesPageStore),
   reset: () => set(SurveysTablesPageStoreInitialState),
 
   selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
 
   fetchSelectedSurvey: async (surveyId?: string, isPublic?: boolean): Promise<void> => {
-    if (!surveyId) {
-      set({ selectedSurvey: undefined });
-      return;
-    }
-    set({ isFetching: true });
+    set({ isFetching: true, selectedSurvey: undefined });
     try {
-      if (isPublic) {
-        const response = await eduApi.get<SurveyDto>(`${PUBLIC_SURVEYS}/${surveyId}`);
-        set({ selectedSurvey: response.data });
-      } else {
-        const response = await eduApi.get<SurveyDto>(`${SURVEY_FIND_ONE_ENDPOINT}/${surveyId}`);
-        set({ selectedSurvey: response.data });
-      }
+      const survey = await fetchSelectedSurvey(surveyId, isPublic);
+      set({ selectedSurvey: survey });
     } catch (error) {
       set({ selectedSurvey: undefined });
       handleApiError(error, set);
@@ -200,4 +190,4 @@ const useSurveyTablesPageStore = create<SurveysTablesPageStore>((set, get) => ({
   setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
 }));
 
-export default useSurveyTablesPageStore;
+export default useSurveysTablesPageStore;

@@ -17,12 +17,24 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export const INPUT_VARIANT_DEFAULT = 'bg-accent text-secondary placeholder:text-p focus:outline-none';
-export const INPUT_VARIANT_DIALOG = 'bg-muted placeholder:text-p focus:outline-none text-background';
-export const INPUT_DEFAULT =
-  'flex h-9 rounded-md px-3 py-1 text-p text-background shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
+import { PUBLIC_SURVEYS, SURVEY_FIND_ONE_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
+import eduApi from '@/api/eduApi';
 
-export const GRID_SEARCH =
-  'mx-auto my-3 block w-[80%] min-w-[250px] rounded-xl border border-ring px-3 py-2 md:mb-2 md:mt-0 md:w-[400px]';
-export const GRID_CARD =
-  'h-26 relative flex w-full flex-col items-center overflow-hidden border border-muted-light bg-muted-dialog p-5 hover:bg-primary';
+const fetchSelectedSurvey = async (surveyId?: string, isPublic?: boolean): Promise<SurveyDto | undefined> => {
+  if (!surveyId) {
+    return Promise.resolve(undefined);
+  }
+  try {
+    if (isPublic) {
+      const response = await eduApi.get<SurveyDto>(`${PUBLIC_SURVEYS}/${surveyId}`);
+      return response.data;
+    }
+    const response = await eduApi.get<SurveyDto>(`${SURVEY_FIND_ONE_ENDPOINT}/${surveyId}`);
+    return response.data;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export default fetchSelectedSurvey;

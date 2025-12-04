@@ -20,7 +20,7 @@
 import React from 'react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import useDeleteSurveyStore from '@/pages/Surveys/Tables/dialogs/useDeleteSurveyStore';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
 
 interface DeleteSurveysDialogProps {
@@ -29,7 +29,7 @@ interface DeleteSurveysDialogProps {
 }
 
 const DeleteSurveysDialog = ({ surveys, trigger }: DeleteSurveysDialogProps) => {
-  const { selectedRows, setSelectedRows, updateUsersSurveys } = useSurveyTablesPageStore();
+  const { selectedRows, setSelectedRows, updateUsersSurveys } = useSurveysTablesPageStore();
   const { isLoading, error, reset, isDeleteSurveysDialogOpen, setIsDeleteSurveysDialogOpen, deleteSurveys } =
     useDeleteSurveyStore();
 

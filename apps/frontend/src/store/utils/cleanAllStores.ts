@@ -34,7 +34,7 @@ import useMailsStore from '@/pages/Mail/useMailsStore';
 import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';
 import useCommunityLicenseStore from '@/pages/UserSettings/Info/useCommunityLicenseStore';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useDeleteSurveyStore from '@/pages/Surveys/Tables/dialogs/useDeleteSurveyStore';
@@ -113,7 +113,7 @@ const cleanAllStores = async () => {
   useSseStore.getState().reset();
   useSubmittedAnswersDialogStore.getState().reset();
   useSurveyEditorPageStore.getState().reset();
-  useSurveyTablesPageStore.getState().reset();
+  useSurveysTablesPageStore.getState().reset();
   useTLDRawHistoryStore.getState().reset();
   useTemplateMenuStore.getState().reset();
   useVeyonApiStore.getState().reset();

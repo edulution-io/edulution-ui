@@ -24,7 +24,7 @@ import { AiOutlineUpSquare } from 'react-icons/ai';
 import { HiOutlineArrowDownOnSquare, HiOutlineArrowDownOnSquareStack } from 'react-icons/hi2';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import { EDIT_SURVEY_PAGE, PARTICIPATE_SURVEY_PAGE } from '@libs/survey/constants/surveys-endpoint';
-import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 import { TooltipProvider } from '@/components/ui/Tooltip';
@@ -61,7 +61,7 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
     answeredSurveys,
     openSurveys,
     createdSurveys,
-  } = useSurveyTablesPageStore();
+  } = useSurveysTablesPageStore();
   const { user } = useUserStore();
   const { setIsOpenPublicResultsTableDialog, setIsOpenPublicResultsVisualisationDialog } = useResultDialogStore();
   const { setIsOpenSubmittedAnswersDialog } = useSubmittedAnswersDialogStore();
