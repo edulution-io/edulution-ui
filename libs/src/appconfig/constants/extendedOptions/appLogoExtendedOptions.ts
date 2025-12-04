@@ -17,7 +17,22 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { ThemeType } from '@libs/common/constants/theme';
+import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+import ThemedFile from '@libs/common/types/themedFile';
 
-const getSurveysDefaultLogoFilename = (theme: ThemeType) => `surveys-default-logo-${theme}.webp`;
-export default getSurveysDefaultLogoFilename;
+const ThemedValue: ThemedFile = { dark: null, light: null };
+
+const APP_LOGO_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
+  {
+    name: ExtendedOptionKeys.APP_LOGO,
+    title: 'appExtendedOptions.appLogo.title',
+    description: 'appExtendedOptions.appLogo.description',
+    type: ExtendedOptionField.appLogo,
+    value: ThemedValue,
+    width: 'full',
+  },
+];
+
+export default APP_LOGO_EXTENDED_OPTIONS;

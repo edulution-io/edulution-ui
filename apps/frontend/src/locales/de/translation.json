@@ -1065,6 +1065,10 @@
       "confirmDeleteEntries": "Möchtest du diesen Eintrag wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
       "confirmDeleteEntries_other": "Möchtest du diese {{count}} Einträge wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
       "sections": {
+        "appLogo": {
+          "title": "Logo",
+          "description": "Lade hier das App Logo hoch, um das vorgegebene Bild zu überschreiben."
+        },
         "onlyOffice": {
           "title": "Only Office Integration",
           "description": ""
@@ -1813,6 +1817,12 @@
       "updateNow": "Jetzt aktualisieren",
       "checkVersionSuccess": "Theme erfolgreich überprüft!",
       "noData": "Keine Versionsinformationen verfügbar."
+    },
+    "appLogo": {
+      "light": "helle",
+      "dark": "dunkle",
+      "title": "Logo für das {{variant}} Farbschema",
+      "description": "Lade hier dein eigenes app Logo hoch oder setze das Standard-Logo wieder her."
     }
   },
   "preview": {

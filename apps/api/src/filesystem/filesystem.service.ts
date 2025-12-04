@@ -55,6 +55,7 @@ import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
 import THIRTY_DAYS from '@libs/common/constants/thirtyDays';
+import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
 import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 import UsersService from '../users/users.service';
 import CustomHttpException from '../common/CustomHttpException';
@@ -385,6 +386,28 @@ class FilesystemService {
     } catch (error) {
       return [];
     }
+  }
+
+  async servePublicAssetWithFallback(
+    res: Response,
+    appName: string,
+    filename: string | string[],
+    fallbackFilename?: string | undefined,
+  ): Promise<Response> {
+    const filePath = join(PUBLIC_ASSET_PATH, appName, FilesystemService.buildPathString(filename));
+    const fileExists = await FilesystemService.checkIfFileExist(filePath);
+    if (!fileExists && fallbackFilename) {
+      if (Array.isArray(filename)) {
+        const path = filename;
+        path.pop();
+        path.push(fallbackFilename);
+        const fallbackPath = join(PUBLIC_ASSET_PATH, appName, FilesystemService.buildPathString(path));
+        return this.serve(fallbackPath, res);
+      }
+      const fallbackPath = join(PUBLIC_ASSET_PATH, appName, fallbackFilename);
+      return this.serve(fallbackPath, res);
+    }
+    return this.serve(filePath, res);
   }
 
   async serveTempFiles(name: string, filename: string, res: Response) {

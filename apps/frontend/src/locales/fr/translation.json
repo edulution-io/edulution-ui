@@ -914,6 +914,10 @@
       "confirmDeleteEntries": "Êtes-vous sûr de vouloir supprimer cette entrée? Cette action ne peut pas être annulée.",
       "confirmDeleteEntries_other": "Êtes-vous sûr de vouloir supprimer ces {{count}} entrées? Cette action ne peut pas être annulée.",
       "sections": {
+        "appLogo": {
+          "title": "Logo",
+          "description": "Téléchargez votre logo d'application ici pour remplacer l'image par défaut."
+        },
         "onlyOffice": {
           "title": "Intégration OnlyOffice",
           "description": ""
@@ -1613,6 +1617,12 @@
       "updateNow": "Mettre à jour maintenant",
       "checkVersionSuccess": "Thème vérifié avec succès !",
       "noData": "Aucune information de version disponible."
+    },
+    "appLogo": {
+      "light": "clair",
+      "dark": "sombre",
+      "title": "Logo thématique {{variant}}",
+      "description": "Téléversez ou réinitialisez votre logo personnalisé."
     }
   },
   "preview": {

@@ -17,10 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import clsx from 'clsx';
 import React from 'react';
+import { HiTrash } from 'react-icons/hi2';
 import { Theme, ThemeType } from '@libs/common/constants/theme';
 import FileSelectButton from '@/components/ui/FileSelectButton';
-import clsx from 'clsx';
 
 type LogoUploadFieldProps = {
   variant: ThemeType;
@@ -36,6 +37,8 @@ type LogoUploadFieldProps = {
   alt?: string;
   fallbackSrc?: string;
   className?: string;
+  onHandleReset?: () => Promise<void>;
+  isLoginPage?: boolean;
 };
 
 const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
@@ -52,13 +55,17 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
   alt = 'Logo preview',
   fallbackSrc,
   className,
+  onHandleReset,
+  isLoginPage: invertBGClolor = false,
 }) => {
-  const backdropClass = variant === Theme.light ? 'bg-neutral-900' : 'bg-white';
-
+  const backdropClass =
+    variant === Theme.light
+      ? `${invertBGClolor ? 'bg-neutral-900' : 'bg-white'}`
+      : `${invertBGClolor ? 'bg-white' : 'bg-neutral-900'}`;
   return (
     <div
       className={clsx(
-        'relative flex flex-col items-center rounded-2xl border border-dashed border-gray-300 p-6 text-center shadow-sm hover:border-gray-400',
+        'relative flex min-w-[49%] flex-col items-center rounded-2xl border border-dashed border-gray-300 p-6 text-center shadow-sm hover:border-gray-400',
         backdropClass,
         uploading && 'pointer-events-none opacity-60',
         className,
@@ -66,6 +73,18 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
       aria-busy={uploading}
       aria-live="polite"
     >
+      <div className="absolute right-4 top-4">
+        {onHandleReset && (
+          <button
+            type="button"
+            onClick={async () => {
+              await onHandleReset();
+            }}
+          >
+            <HiTrash className="h-6 w-6 p-1 text-ciRed" />
+          </button>
+        )}
+      </div>
       {(previewSrc || fallbackSrc) && (
         <img
           key={cacheKey}

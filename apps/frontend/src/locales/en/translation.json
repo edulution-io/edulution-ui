@@ -1062,6 +1062,10 @@
       "confirmDeleteEntries": "Are you sure you want to delete this entry? This action cannot be undone.",
       "confirmDeleteEntries_other": "Are you sure you want to delete these {{count}} entries? This action cannot be undone.",
       "sections": {
+        "appLogo": {
+          "title": "Logo",
+          "description": "Upload your app logo here to override the default image."
+        },
         "onlyOffice": {
           "title": "Only Office Integration",
           "description": ""
@@ -1792,6 +1796,12 @@
       "updateNow": "Update Now",
       "checkVersionSuccess": "Theme successfully checked!",
       "noData": "No version information available."
+    },
+    "appLogo": {
+      "light": "light",
+      "dark": "dark",
+      "title": "Logo for the {{variant}} color scheme",
+      "description": "Upload or reset your custom themed app logo."
     }
   },
   "mails": {
