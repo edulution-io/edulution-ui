@@ -18,10 +18,9 @@
  */
 
 import { Types } from 'mongoose';
-import getBase24HexStringFromDate from '@libs/survey/utils/getBase24HexStringFromDate';
 
 const PaperSubject = {
-  _id: new Types.ObjectId(getBase24HexStringFromDate(new Date('2003-03-03T13:13:13.130Z'))),
+  _id: new Types.ObjectId('000000000000000000000003'),
   name: 'Vortragsthema',
   isDefaultTemplate: true,
   isActive: true,

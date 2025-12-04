@@ -18,10 +18,9 @@
  */
 
 import { Types } from 'mongoose';
-import getBase24HexStringFromDate from '@libs/survey/utils/getBase24HexStringFromDate';
 
 const TraineeShip = {
-  _id: new Types.ObjectId(getBase24HexStringFromDate(new Date('2005-05-05T15:15:15.150Z'))),
+  _id: new Types.ObjectId('000000000000000000000005'),
   name: 'Praktikumsplatz',
   isDefaultTemplate: true,
   isActive: true,

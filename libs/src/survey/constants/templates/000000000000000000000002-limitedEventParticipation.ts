@@ -18,10 +18,9 @@
  */
 
 import { Types } from 'mongoose';
-import getBase24HexStringFromDate from '@libs/survey/utils/getBase24HexStringFromDate';
 
 const LimitedEventParticipation = {
-  _id: new Types.ObjectId(getBase24HexStringFromDate(new Date('2002-02-02T12:12:12.120Z'))),
+  _id: new Types.ObjectId('000000000000000000000002'),
   name: 'TeilnahmeVeranstaltungLimitiert',
   isDefaultTemplate: true,
   isActive: false,

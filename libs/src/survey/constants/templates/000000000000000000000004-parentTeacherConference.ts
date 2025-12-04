@@ -18,10 +18,9 @@
  */
 
 import { Types } from 'mongoose';
-import getBase24HexStringFromDate from '@libs/survey/utils/getBase24HexStringFromDate';
 
 const ParentTeacherConference = {
-  _id: new Types.ObjectId(getBase24HexStringFromDate(new Date('2004-04-04T14:14:14.140Z'))),
+  _id: new Types.ObjectId('000000000000000000000004'),
   name: 'Eltern-Abend',
   isDefaultTemplate: true,
   isActive: true,

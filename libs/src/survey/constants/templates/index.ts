@@ -17,8 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export { default as TraineeShip } from './traineeShip';
-export { default as ParentTeacherConference } from './parentTeacherConference';
-export { default as LetterToParents } from './letterToParents';
-export { default as LimitedEventParticipation } from './limitedEventParticipation';
-export { default as PaperSubject } from './paperSubject';
+export { default as TraineeShip } from './000000000000000000000005-traineeShip';
+export { default as ParentTeacherConference } from './000000000000000000000004-parentTeacherConference';
+export { default as LetterToParents } from './000000000000000000000001-letterToParents';
+export { default as LimitedEventParticipation } from './000000000000000000000002-limitedEventParticipation';
+export { default as PaperSubject } from './000000000000000000000003-paperSubject';

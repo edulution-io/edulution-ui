@@ -18,10 +18,9 @@
  */
 
 import { Types } from 'mongoose';
-import getBase24HexStringFromDate from '@libs/survey/utils/getBase24HexStringFromDate';
 
 const LetterToParents = {
-  _id: new Types.ObjectId(getBase24HexStringFromDate(new Date('2001-01-01T11:11:11.110Z'))),
+  _id: new Types.ObjectId('000000000000000000000001'),
   name: 'Elternbrief',
   isDefaultTemplate: true,
   isActive: true,
