@@ -207,7 +207,7 @@ const MenuBar: React.FC = () => {
         <aside className="relative flex h-dvh">
           <div
             className={cn(
-              'h-full overflow-hidden rounded-r-xl bg-foreground transition-all duration-300 dark:bg-foreground',
+              'h-full overflow-hidden rounded-r-xl bg-foreground shadow-xl shadow-slate-500 transition-all duration-300 dark:shadow-black',
               shouldCollapse ? 'w-16' : 'w-64',
             )}
           >
@@ -217,7 +217,7 @@ const MenuBar: React.FC = () => {
       ) : (
         <div
           className={cn(
-            'fixed left-0 top-0 z-50 h-full overflow-x-hidden bg-primary duration-300 ease-in-out dark:bg-foreground',
+            'fixed left-0 top-0 z-50 h-full overflow-x-hidden bg-foreground shadow-xl shadow-slate-500 duration-300 ease-in-out dark:shadow-black',
             isMobileMenuBarOpen ? 'w-64 border-r-[1px] border-muted' : 'w-0',
           )}
         >

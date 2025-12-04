@@ -83,11 +83,12 @@ const UserSettingsDetailsPage: React.FC = () => {
           <Label>
             <p className="font-bold">{t('usersettings.details.schoolSubjects')}</p>
           </Label>
-          <BadgeField
-            value={schoolClasses}
-            readOnly
-            className="mt-2"
-          />
+          <div className="mt-2">
+            <BadgeField
+              value={schoolClasses}
+              readOnly
+            />
+          </div>
         </div>
       </div>
       <Separator className="my-4 bg-muted" />

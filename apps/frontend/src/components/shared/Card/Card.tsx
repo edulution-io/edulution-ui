@@ -22,7 +22,7 @@ import cn from '@libs/common/utils/className';
 import { CardContent as SHCardContent, CardSH as SHCard } from '@/components/ui/CardSH';
 import { cva, type VariantProps } from 'class-variance-authority';
 
-const cardVariants = cva('border-solid', {
+const cardVariants = cva('border-solid shadow-xl', {
   variants: {
     variant: {
       collaboration: 'border-primary border-4',

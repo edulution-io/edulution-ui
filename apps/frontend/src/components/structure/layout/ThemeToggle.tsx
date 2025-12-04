@@ -41,7 +41,7 @@ const ThemeToggle: React.FC = () => {
     <button
       type="button"
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-      className="absolute right-4 top-4 rounded-full bg-muted p-2 text-foreground shadow transition hover:opacity-80"
+      className="absolute right-4 top-4 z-50 rounded-full bg-muted p-2 text-foreground shadow-xl transition hover:opacity-80"
       aria-label="Toggle Theme"
     >
       {theme === 'dark' ? <GoSun className="h-6 w-6" /> : <GoMoon className="h-6 w-6" />}
