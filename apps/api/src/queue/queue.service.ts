@@ -17,22 +17,24 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { Job, Queue, Worker } from 'bullmq';
+import Redis from 'ioredis';
 import JOB_NAMES from '@libs/queue/constants/jobNames';
 import FileOperationQueueJobData from '@libs/queue/constants/fileOperationQueueJobData';
-import Redis from 'ioredis';
 import QUEUE_CONSTANTS from '@libs/queue/constants/queueConstants';
+import NotificationJobData from '@libs/queue/types/notificationJobData';
 import DuplicateFileConsumer from '../filesharing/consumers/duplicateFile.consumer';
 import CollectFileConsumer from '../filesharing/consumers/collectFile.consumer';
 import DeleteFileConsumer from '../filesharing/consumers/deleteFile.consumer';
 import MoveOrRenameConsumer from '../filesharing/consumers/moveOrRename.consumer';
 import CopyFileConsumer from '../filesharing/consumers/copyFile.consumer';
 import CreateFolderConsumer from '../filesharing/consumers/createFolder.consumer';
+import SendNotificationConsumer from '../notifications/consumers/sendNotification.consumer';
 import redisConnection from '../common/redis.connection';
 
 @Injectable()
-class QueueService implements OnModuleInit {
+class QueueService implements OnModuleInit, OnModuleDestroy {
   private workers = new Map<string, Worker>();
 
   private queues = new Map<string, Queue>();
@@ -44,13 +46,12 @@ class QueueService implements OnModuleInit {
     private readonly moveOrRenameFileConsumer: MoveOrRenameConsumer,
     private readonly copyFileConsumer: CopyFileConsumer,
     private readonly createFolderConsumer: CreateFolderConsumer,
+    private readonly sendNotificationConsumer: SendNotificationConsumer,
   ) {}
 
   async onModuleInit() {
     const redis = new Redis(redisConnection);
-
     const userIds = await this.scanUserIds(redis, QUEUE_CONSTANTS.PREFIX);
-
     await redis.quit();
 
     await Promise.all(
@@ -59,31 +60,22 @@ class QueueService implements OnModuleInit {
         return queue.obliterate({ force: true });
       }),
     );
+
+    const notificationQueue = this.getOrCreateQueue(QUEUE_CONSTANTS.NOTIFICATION_QUEUE);
+    await notificationQueue.obliterate({ force: true });
+    this.createNotificationWorker();
   }
 
-  createWorkerForUser(userId: string): Worker {
-    const queueName = QUEUE_CONSTANTS.PREFIX + userId;
-    if (this.workers.has(userId)) {
-      return <Worker<FileOperationQueueJobData>>this.workers.get(userId);
-    }
+  async onModuleDestroy() {
+    await Promise.all(Array.from(this.workers.values()).map((worker) => worker.close()));
+    await Promise.all(Array.from(this.queues.values()).map((queue) => queue.close()));
 
-    const worker = new Worker(
-      queueName,
-      async (job: Job<FileOperationQueueJobData>) => {
-        await this.handleJob(job);
-      },
-      {
-        connection: redisConnection,
-      },
-    );
-
-    this.workers.set(userId, worker);
-    return worker;
+    this.workers.clear();
+    this.queues.clear();
   }
 
-  getQueue(userId: string): Queue | undefined {
-    const queueName = QUEUE_CONSTANTS.PREFIX + userId;
-    if (!this.queues.has(userId)) {
+  private getOrCreateQueue(queueName: string): Queue {
+    if (!this.queues.has(queueName)) {
       const queue = new Queue(queueName, {
         connection: redisConnection,
         defaultJobOptions: {
@@ -91,24 +83,41 @@ class QueueService implements OnModuleInit {
           removeOnFail: true,
         },
       });
-      this.queues.set(userId, queue);
+      this.queues.set(queueName, queue);
     }
-    return this.queues.get(userId);
+    return this.queues.get(queueName) as Queue;
+  }
+
+  createWorkerForUser(userId: string): Worker {
+    const queueName = QUEUE_CONSTANTS.PREFIX + userId;
+    if (this.workers.has(queueName)) {
+      return this.workers.get(queueName) as Worker;
+    }
+
+    const worker = new Worker(
+      queueName,
+      async (job: Job<FileOperationQueueJobData>) => {
+        await this.handleFileJob(job);
+      },
+      { connection: redisConnection },
+    );
+
+    this.workers.set(queueName, worker);
+    return worker;
   }
 
   getOrCreateQueueForUser(userId: string): Queue {
-    const queue = this.getQueue(userId);
-    return queue as Queue;
+    const queueName = QUEUE_CONSTANTS.PREFIX + userId;
+    return this.getOrCreateQueue(queueName);
   }
 
   async addJobForUser(userId: string, jobName: string, data: FileOperationQueueJobData): Promise<void> {
     this.createWorkerForUser(userId);
-
     const queue = this.getOrCreateQueueForUser(userId);
     await queue.add(jobName, data);
   }
 
-  async handleJob(job: Job<FileOperationQueueJobData>): Promise<void> {
+  private async handleFileJob(job: Job<FileOperationQueueJobData>): Promise<void> {
     switch (job.name) {
       case JOB_NAMES.COLLECT_FILE_JOB:
         await this.collectFileConsumer.process(job);
@@ -127,6 +136,42 @@ class QueueService implements OnModuleInit {
         break;
       case JOB_NAMES.CREATE_FOLDER_JOB:
         await this.createFolderConsumer.process(job);
+        break;
+      default:
+    }
+  }
+
+  private createNotificationWorker(): Worker {
+    const queueName = QUEUE_CONSTANTS.NOTIFICATION_QUEUE;
+    if (this.workers.has(queueName)) {
+      return this.workers.get(queueName) as Worker;
+    }
+
+    const worker = new Worker(
+      queueName,
+      async (job: Job<NotificationJobData>) => {
+        await this.handleNotificationJob(job);
+      },
+      { connection: redisConnection, concurrency: 5 },
+    );
+
+    worker.on('failed', (job, err) => {
+      Logger.error(`Notification job ${job?.id} failed:`, err);
+    });
+
+    this.workers.set(queueName, worker);
+    return worker;
+  }
+
+  async addNotificationJob(data: NotificationJobData): Promise<void> {
+    const queue = this.getOrCreateQueue(QUEUE_CONSTANTS.NOTIFICATION_QUEUE);
+    await queue.add(JOB_NAMES.SEND_NOTIFICATION_JOB, data);
+  }
+
+  private async handleNotificationJob(job: Job<NotificationJobData>): Promise<void> {
+    switch (job.name) {
+      case JOB_NAMES.SEND_NOTIFICATION_JOB:
+        await this.sendNotificationConsumer.process(job);
         break;
       default:
     }

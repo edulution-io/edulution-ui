@@ -28,6 +28,7 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import prepareCreator from '@libs/survey/utils/prepareCreator';
 import SseMessageType from '@libs/common/types/sseMessageType';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import notificationsConfig from '@libs/notification/constants/notifications.config';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
@@ -244,20 +245,12 @@ class SurveysService implements OnModuleInit {
           ? SSE_MESSAGE_TYPE.SURVEY_CREATED
           : SSE_MESSAGE_TYPE.SURVEY_UPDATED;
 
-      // TODO: #1152
-      const actionName = action === SSE_MESSAGE_TYPE.SURVEY_CREATED ? 'erstellt' : 'aktualisiert';
+      const notification =
+        action === SSE_MESSAGE_TYPE.SURVEY_CREATED
+          ? notificationsConfig.survey.created(survey.formula.title, String(survey.id))
+          : notificationsConfig.survey.updated(survey.formula.title, String(survey.id));
 
-      const title = `Umfrage ${survey.formula.title}: ${actionName}`;
-      const body = `Die Umfrage "${survey.formula.title}" wurde soeben ${actionName}.`;
-
-      await this.notificationService.notifyUsernames(invitedMembersList, {
-        title,
-        body,
-        data: {
-          surveyId: survey.id,
-          type: eventType,
-        },
-      });
+      await this.notificationService.notifyUsernames(invitedMembersList, notification);
     }
   };
 

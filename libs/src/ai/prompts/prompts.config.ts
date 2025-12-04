@@ -16,12 +16,20 @@
  *
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
-import { Global, Module } from '@nestjs/common';
-import NotificationsService from './notifications.service';
 
-@Global()
-@Module({
-  providers: [NotificationsService],
-  exports: [NotificationsService],
-})
-export default class NotificationsModule {}
+const promptsConfig = {
+  translation: {
+    notification: {
+      system: (targetLanguage: string) =>
+        [
+          'You are a translator.',
+          `Translate the JSON notification to language code "${targetLanguage}".`,
+          'Return only valid JSON with "title" and "body" fields, nothing else.',
+          'Do not add explanations, comments or extra fields.',
+        ].join(' '),
+      temperature: 0.3,
+    },
+  },
+};
+
+export default promptsConfig;

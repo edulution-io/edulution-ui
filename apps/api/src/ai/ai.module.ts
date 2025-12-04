@@ -17,26 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Module } from '@nestjs/common';
-import { HttpModule } from '@nestjs/axios';
-import { BullModule } from '@nestjs/bullmq';
-import APPS from '@libs/appconfig/constants/apps';
-import { MongooseModule } from '@nestjs/mongoose';
-import FilesharingController from './filesharing.controller';
-import FilesharingService from './filesharing.service';
-import OnlyofficeService from './onlyoffice.service';
-import { PublicFileShareSchema, PublicShare } from './publicFileShare.schema';
+import { Global, Module } from '@nestjs/common';
+import AiService from './ai.service';
 
+@Global()
 @Module({
-  imports: [
-    HttpModule,
-    BullModule.registerQueue({
-      name: APPS.FILE_SHARING,
-    }),
-    MongooseModule.forFeature([{ name: PublicShare.name, schema: PublicFileShareSchema }]),
-  ],
-  controllers: [FilesharingController],
-  providers: [FilesharingService, OnlyofficeService],
-  exports: [FilesharingService],
+  providers: [AiService],
+  exports: [AiService],
 })
-export default class FilesharingModule {}
+class AiModule {}
+
+export default AiModule;

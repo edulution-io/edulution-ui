@@ -21,13 +21,13 @@ import { Injectable } from '@nestjs/common';
 import { Expo, ExpoPushMessage } from 'expo-server-sdk';
 import pickDefinedNotificationFields from '@libs/notification/utils/pickDefinedNotificationFields';
 import SendPushNotificationDto from '@libs/notification/types/send-pushNotification.dto';
-import UsersService from '../users/users.service';
+import QueueService from '../queue/queue.service';
 
 @Injectable()
 class NotificationsService {
   private readonly expo = new Expo();
 
-  constructor(private userService: UsersService) {}
+  constructor(private readonly queueService: QueueService) {}
 
   async sendPushNotification(sendPushNotificationDto: SendPushNotificationDto): Promise<void> {
     const tokens = Array.isArray(sendPushNotificationDto.to)
@@ -61,11 +61,18 @@ class NotificationsService {
     await Promise.all(chunks.map((chunk) => this.expo.sendPushNotificationsAsync(chunk)));
   }
 
-  async notifyUsernames(usernames: string[], partialNotification: Omit<SendPushNotificationDto, 'to'>): Promise<void> {
-    const uniqueTokens = await this.userService.getPushTokensByUsersnames(usernames);
-    await this.sendPushNotification({
-      to: uniqueTokens,
-      ...partialNotification,
+  async notifyUsernames(
+    usernames: string[],
+    notification: Omit<SendPushNotificationDto, 'to'> & { translate?: boolean },
+  ): Promise<void> {
+    const { translate, ...rest } = notification;
+
+    await this.queueService.addNotificationJob({
+      usernames,
+      notification: {
+        ...rest,
+        translate,
+      },
     });
   }
 }

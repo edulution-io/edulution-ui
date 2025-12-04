@@ -16,12 +16,12 @@
  *
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
-import { Global, Module } from '@nestjs/common';
-import NotificationsService from './notifications.service';
 
-@Global()
-@Module({
-  providers: [NotificationsService],
-  exports: [NotificationsService],
-})
-export default class NotificationsModule {}
+import SendPushNotificationDto from '@libs/notification/types/send-pushNotification.dto';
+
+interface NotificationJobData {
+  usernames: string[];
+  notification: Omit<SendPushNotificationDto, 'to'> & { translate?: boolean };
+}
+
+export default NotificationJobData;

@@ -58,13 +58,15 @@ import ScriptsModule from '../scripts/scripts.module';
 import WebdavSharesModule from '../webdav/shares/webdav-shares.module';
 import LdapKeycloakSyncModule from '../ldap-keycloak-sync/ldap-keycloak-sync.module';
 import redisConnection from '../common/redis.connection';
-import NotificationsModule from '../notifications/notifications.module';
 import MobileAppModule from '../mobileAppModule/mobileApp.module';
 import UserPreferencesModule from '../user-preferences/user-preferences.module';
 import DevCacheFlushService from '../common/cache/dev-cache-flush.service';
 import MetricsModule from '../metrics/metrics.module';
 import configuration from '../config/configuration';
 import enableSentryForNest from '../sentry/enableSentryForNest';
+import AiModule from '../ai/ai.module';
+import QueueModule from '../queue/queue.module';
+import NotificationModule from '../notifications/notifications.module';
 
 @Module({
   imports: [
@@ -133,8 +135,29 @@ import enableSentryForNest from '../sentry/enableSentryForNest';
     SurveysModule,
     BulletinCategoryModule,
     BulletinBoardModule,
-    NotificationsModule,
+    NotificationModule,
     MobileAppModule,
+    UserPreferencesModule,
+    AiModule,
+    QueueModule,
+    JwtModule.register({
+      global: true,
+    }),
+    MongooseModule.forRoot(process.env.MONGODB_SERVER_URL as string, {
+      dbName: process.env.MONGODB_DATABASE_NAME,
+      auth: { username: process.env.MONGODB_USERNAME, password: process.env.MONGODB_PASSWORD },
+    }),
+
+    ScheduleModule.forRoot(),
+
+    CacheModule.registerAsync({
+      isGlobal: true,
+      useFactory: () => ({
+        stores: [new KeyvRedis(`redis://${redisConnection.host}:${redisConnection.port}`)],
+      }),
+    }),
+
+    EventEmitterModule.forRoot(),
     SseModule,
     TLDrawSyncModule,
     ScriptsModule,

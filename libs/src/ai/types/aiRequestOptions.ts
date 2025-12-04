@@ -16,12 +16,12 @@
  *
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
-import { Global, Module } from '@nestjs/common';
-import NotificationsService from './notifications.service';
 
-@Global()
-@Module({
-  providers: [NotificationsService],
-  exports: [NotificationsService],
-})
-export default class NotificationsModule {}
+interface AiRequestOptions {
+  prompt: string;
+  systemPrompt?: string;
+  model?: string;
+  temperature?: number;
+}
+
+export default AiRequestOptions;

@@ -33,6 +33,7 @@ import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAtt
 import BULLETIN_TEMP_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinTempAttachmentsPath';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import notificationsConfig from '@libs/notification/constants/notifications.config';
 import CustomHttpException from '../common/CustomHttpException';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 import { BulletinCategory, BulletinCategoryDocument } from '../bulletin-category/bulletin-category.schema';
@@ -365,17 +366,10 @@ class BulletinBoardService implements OnModuleInit {
 
     if (isWithinVisibilityPeriod) {
       this.sseService.sendEventToUsers(invitedMembersList, resultingBulletin, SSE_MESSAGE_TYPE.BULLETIN_UPDATED);
-
-      // TODO: #1152
-      const title = `Aushang bereit: ${dto.title}`;
-
-      await this.notificationService.notifyUsernames(invitedMembersList, {
-        title,
-        data: {
-          bulletinId: resultingBulletin.id,
-          type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
-        },
-      });
+      await this.notificationService.notifyUsernames(
+        invitedMembersList,
+        notificationsConfig.bulletin.ready(dto.title, String(resultingBulletin.id)),
+      );
     }
   }
 
