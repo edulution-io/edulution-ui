@@ -139,10 +139,10 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
       >
         <AccordionItem value={section}>
           <AccordionTrigger className="flex text-xl font-bold">
-            <h3 className="text-background">{t(`settings.appconfig.sections.${section}.title`)}</h3>
+            <h3>{t(`settings.appconfig.sections.${section}.title`)}</h3>
           </AccordionTrigger>
           <AccordionContent className="mx-1 flex flex-wrap justify-between gap-4 text-p">
-            <div className="text-base text-background">{t(`settings.appconfig.sections.${section}.description`)}</div>
+            <div className="text-base">{t(`settings.appconfig.sections.${section}.description`)}</div>
             {options?.map((option: AppConfigExtendedOption) => (
               <div
                 key={`key_${section}_${option.name}`}
