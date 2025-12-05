@@ -17,32 +17,38 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { ExceptionFilter, Catch, ArgumentsHost, Logger, HttpException } from '@nestjs/common';
-import { Response, Request } from 'express';
+import { Catch, ArgumentsHost, Logger, HttpException } from '@nestjs/common';
+import { BaseExceptionFilter, HttpAdapterHost } from '@nestjs/core';
+import { Request } from 'express';
+import CustomHttpException from '../common/CustomHttpException';
 
 @Catch(HttpException)
-class HttpExceptionFilter implements ExceptionFilter {
+class HttpExceptionFilter extends BaseExceptionFilter {
   private readonly logger = new Logger(HttpExceptionFilter.name);
 
+  constructor(httpAdapterHost: HttpAdapterHost) {
+    super(httpAdapterHost.httpAdapter);
+  }
+
   catch(exception: HttpException, host: ArgumentsHost) {
-    const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
-    const status = exception.getStatus();
-    const exceptionResponse = exception.getResponse();
+    if (!(exception instanceof CustomHttpException)) {
+      const ctx = host.switchToHttp();
+      const request = ctx.getRequest<Request>();
+      const status = exception.getStatus();
+      const exceptionResponse = exception.getResponse();
+      const message =
+        typeof exceptionResponse === 'string'
+          ? exceptionResponse
+          : (exceptionResponse as { message?: string }).message || exception.message;
 
-    const message =
-      typeof exceptionResponse === 'string'
-        ? exceptionResponse
-        : (exceptionResponse as { message?: string }).message || exception.message;
-
-    if (status >= 500) {
-      this.logger.error(`${exception.name} ${status}: ${request.method} ${request.url.split('?')[0]} - ${message}`);
-    } else {
-      this.logger.warn(`${exception.name} ${status}: ${request.method} ${request.url.split('?')[0]} - ${message}`);
+      if (status >= 500) {
+        this.logger.error(`${exception.name} ${status}: ${request.method} ${request.url.split('?')[0]} - ${message}`);
+      } else {
+        this.logger.warn(`${exception.name} ${status}: ${request.method} ${request.url.split('?')[0]} - ${message}`);
+      }
     }
 
-    response.status(status).json(exceptionResponse);
+    super.catch(exception, host);
   }
 }
 
