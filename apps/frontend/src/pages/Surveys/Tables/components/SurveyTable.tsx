@@ -30,12 +30,14 @@ interface DataTableProps<TData extends SurveyDto, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: Array<TData>;
   isLoading?: boolean;
+  hiddenColumns?: string[];
 }
 
 const SurveyTable = <TData extends SurveyDto, TValue>({
   columns,
   data,
   isLoading = false,
+  hiddenColumns = [],
 }: DataTableProps<TData, TValue>) => {
   const { isMobileView, isTabletView } = useMedia();
   const { selectedRows, setSelectedRows } = useSurveyTablesPageStore();
@@ -51,8 +53,9 @@ const SurveyTable = <TData extends SurveyDto, TValue>({
       [SURVEY_TABLE_COLUMNS.EXPIRES]: !isMobileView,
       [SURVEY_TABLE_COLUMNS.ANSWERS]: !(isMobileView || isTabletView),
       [SURVEY_TABLE_COLUMNS.INVITED_ATTENDEES]: !(isMobileView || isTabletView),
+      ...Object.fromEntries(hiddenColumns.map((column) => [column, false])),
     }),
-    [isMobileView, isTabletView],
+    [isMobileView, isTabletView, hiddenColumns],
   );
 
   return (
