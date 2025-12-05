@@ -28,6 +28,7 @@ type DropdownMenuItemType = {
   onCheckedChange?: (checked: boolean) => void;
   icon?: IconType;
   iconColor?: string;
+  preventClose?: boolean;
 };
 
 export default DropdownMenuItemType;

@@ -341,6 +341,12 @@
     "rowSelected": "{{selected}} von {{total}} Datei ausgewählt",
     "fileWithSameNameAlreadyExists": "Eine Datei mit diesem Namen existiert bereits.",
     "folderWithSameNameAlreadyExists": "Ein Ordner mit diesem Namen existiert bereits.",
+    "currentName": "Aktueller Name",
+    "sameNameAsOriginal": "Bitte geben Sie einen anderen Namen ein",
+    "placeholder": {
+      "filename": "Name",
+      "extension": ".ext"
+    },
     "errors": {
       "FileNotFound": "Datei nicht gefunden",
       "MountPointsNotFound": "Laufwerke nicht gefunden",
@@ -1625,8 +1631,29 @@
       "textFile": "Neue Textdatei",
       "spreadsheetFile": "Neue Tabelle",
       "presentationFile": "Neue Präsentation",
-      "documentFile": "Neues Dokument"
-    }
+      "documentFile": "Neues Dokument",
+      "json": "JSON-Datei (.json)",
+      "yaml": "YAML-Datei (.yaml)",
+      "yml": "YAML-Datei (.yml)",
+      "toml": "TOML-Datei (.toml)",
+      "xml": "XML-Datei (.xml)",
+      "cfg": "Konfigurationsdatei (.cfg)",
+      "ini": "INI-Datei (.ini)",
+      "env": "Umgebungsdatei (.env)",
+      "md": "Markdown-Datei (.md)",
+      "html": "HTML-Datei (.html)",
+      "css": "CSS-Datei (.css)",
+      "csv": "CSV-Datei (.csv)",
+      "sh": "Shell-Skript (.sh)",
+      "bat": "Batch-Datei (.bat)",
+      "ps1": "PowerShell-Skript (.ps1)",
+      "py": "Python-Skript (.py)",
+      "js": "JavaScript-Datei (.js)",
+      "customFile": "Andere Datei"
+    },
+    "customFile": "Erstelle eine neue Datei",
+    "moreFileTypes": "Weitere Dateitypen",
+    "lessFileTypes": "Weniger Dateitypen"
   },
   "fileRenameContent": {
     "placeholder": "Geben Sie den neuen Namen ein",

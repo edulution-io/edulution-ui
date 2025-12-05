@@ -75,7 +75,9 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     action,
     handleItemAction,
     selectedFileType,
+    customExtension,
     setSelectedFileType,
+    setCustomExtension,
     setMoveOrCopyItemToPath,
     isSubmitButtonDisabled,
     setSubmitButtonIsDisabled,
@@ -97,6 +99,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     desktopComponentClassName,
     mobileComponentClassName,
     hideSubmitButton = false,
+    isRenaming = false,
   } = getDialogBodyConfigurations(action);
 
   const form = useForm<FileSharingFormValues>({
@@ -109,6 +112,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     setSubmitButtonIsDisabled(false);
     setMoveOrCopyItemToPath({} as DirectoryFileDTO);
     setSelectedFileType('');
+    setCustomExtension('');
     setSelectedItems([]);
     setSelectedRows({});
     closeDialog();
@@ -160,6 +164,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
       selectedItems,
       moveOrCopyItemToPath,
       selectedFileType,
+      customExtension,
       documentVendor,
     });
 
@@ -196,8 +201,14 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
   const title = action === FileActionType.CREATE_FILE ? t(`fileCreateNewContent.${selectedFileType}`) : t(titleKey);
   const handleFormSubmit = form.handleSubmit(onSubmit);
 
+  const isSubmitDisabled =
+    isLoading ||
+    isSubmitButtonDisabled ||
+    (requiresForm && !form.formState.isValid) ||
+    (action === FileActionType.MOVE_FILE_OR_FOLDER && moveOrCopyItemToPath?.filePath === undefined);
+
   const handleDialogKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && !isSubmitDisabled) {
       void handleFormSubmit();
     }
   };
@@ -217,7 +228,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
         >
           <Component
             form={form}
-            isRenaming
+            isRenaming={isRenaming}
           />
         </div>
       }
@@ -231,12 +242,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
               handleSubmit={hideSubmitButton ? undefined : handleFormSubmit}
               submitButtonText={submitKey}
               submitButtonType="submit"
-              disableSubmit={
-                isLoading ||
-                isSubmitButtonDisabled ||
-                (requiresForm && !form.formState.isValid) ||
-                (action === FileActionType.MOVE_FILE_OR_FOLDER && moveOrCopyItemToPath?.filePath === undefined)
-              }
+              disableSubmit={isSubmitDisabled}
             />
           </form>
         )

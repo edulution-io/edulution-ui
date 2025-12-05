@@ -17,13 +17,27 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AVAILABLE_FILE_TYPES = {
-  drawIoFile: 'drawIoFile',
-  textFile: 'textFile',
-  documentFile: 'documentFile',
-  spreadsheetFile: 'spreadsheetFile',
-  presentationFile: 'presentationFile',
-  customFile: 'customFile',
+const PREDEFINED_EXTENSIONS = {
+  json: { mimeType: 'application/json' },
+  yaml: { mimeType: 'text/yaml' },
+  yml: { mimeType: 'text/yaml' },
+  toml: { mimeType: 'text/plain' },
+  xml: { mimeType: 'application/xml' },
+  cfg: { mimeType: 'text/plain' },
+  ini: { mimeType: 'text/plain' },
+  env: { mimeType: 'text/plain' },
+  md: { mimeType: 'text/markdown' },
+  html: { mimeType: 'text/html' },
+  css: { mimeType: 'text/css' },
+  csv: { mimeType: 'text/csv' },
+  sh: { mimeType: 'application/x-sh' },
+  bat: { mimeType: 'application/x-bat' },
+  ps1: { mimeType: 'text/plain' },
+  py: { mimeType: 'text/x-python' },
+  js: { mimeType: 'text/javascript' },
 } as const;
 
-export default AVAILABLE_FILE_TYPES;
+type PredefinedExtensionKey = keyof typeof PREDEFINED_EXTENSIONS;
+
+export type { PredefinedExtensionKey };
+export default PREDEFINED_EXTENSIONS;

@@ -51,7 +51,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ trigger, items, menuContent
       <DropdownMenuPortal>
         <DropdownMenuContent
           className={cn(
-            'z-50 min-w-[8rem] overflow-hidden rounded-lg border-none bg-overlay p-1 text-background shadow-md',
+            'z-50 max-h-[calc(100vh-300px)] min-w-[8rem] overflow-y-auto rounded-lg border-none bg-overlay p-1 text-background shadow-md',
             menuContentClassName,
           )}
         >
@@ -78,7 +78,12 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ trigger, items, menuContent
             return (
               <DropdownMenuItem
                 key={`item-${item.label}`}
-                onSelect={item.onClick}
+                onSelect={(event) => {
+                  if (item.preventClose) {
+                    event.preventDefault();
+                  }
+                  item.onClick?.();
+                }}
                 className="flex cursor-pointer items-center space-x-2 rounded-lg bg-overlay px-4 py-2 hover:bg-muted-light"
               >
                 {item.icon && (
