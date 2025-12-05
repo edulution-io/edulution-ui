@@ -12,8 +12,8 @@
 
       "options": {
         "outputPath": "./dist/apps/frontend",
-        "configFile": "./apps/frontend/vite.config.ts",
-        "postcssConfig": "./postcss.config.js"
+        "configFile": "./apps/frontend/vite.config.mts",
+        "postcssConfig": "./postcss.config.mjs"
       }
     },
     "serve": {

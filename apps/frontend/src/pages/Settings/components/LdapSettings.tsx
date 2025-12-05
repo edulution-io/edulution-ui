@@ -33,7 +33,7 @@ const LdapSettings = ({ form }: LdapSettingsProps) => {
 
   return (
     <AccordionContent className="space-y-2 px-1">
-      <p className="text-background">{t('settings.globalSettings.ldap.edulution-binduser-description')}</p>
+      <p>{t('settings.globalSettings.ldap.edulution-binduser-description')}</p>
 
       <FormField
         name="general.ldap.binduser.dn"

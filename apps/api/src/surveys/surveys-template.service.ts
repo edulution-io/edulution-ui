@@ -17,34 +17,45 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { join } from 'path';
+import { Model } from 'mongoose';
 import { Response } from 'express';
-import { randomUUID } from 'crypto';
-import { HttpStatus, Injectable } from '@nestjs/common';
-import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
-import getCurrentDateTimeString from '@libs/common/utils/Date/getCurrentDateTimeString';
-import SURVEYS_TEMPLATE_PATH from '@libs/survey/constants/surveysTemplatePath';
+import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import GlobalSettingsService from 'apps/api/src/global-settings/global-settings.service';
+import MigrationService from 'apps/api/src/migration/migration.service';
+import surveyTemplatesMigrationsList from 'apps/api/src/surveys/migrations/surveyTemplatesMigrationsList';
+import { SurveysTemplate, SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
 import CustomHttpException from '../common/CustomHttpException';
-import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
-class SurveysTemplateService {
-  constructor(private fileSystemService: FilesystemService) {}
+class SurveysTemplateService implements OnModuleInit {
+  constructor(
+    @InjectModel(SurveysTemplate.name) private surveyTemplateModel: Model<SurveysTemplateDocument>,
+    private readonly globalSettingsService: GlobalSettingsService,
+  ) {}
 
-  async createTemplate(surveyTemplateDto: SurveyTemplateDto): Promise<void> {
-    let filename = surveyTemplateDto.fileName;
-    if (!filename) {
-      const dateTimeString = getCurrentDateTimeString();
-      filename = `${dateTimeString}_-_${randomUUID()}.json`;
-    }
-    const templatePath = join(SURVEYS_TEMPLATE_PATH, filename);
+  async onModuleInit() {
+    await MigrationService.runMigrations<SurveysTemplateDocument>(
+      this.surveyTemplateModel,
+      surveyTemplatesMigrationsList,
+    );
+  }
+
+  async updateOrCreateTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
+    const { template, name, isActive = true } = surveyTemplate;
     try {
-      await this.fileSystemService.ensureDirectoryExists(SURVEYS_TEMPLATE_PATH);
-      return await FilesystemService.writeFile(templatePath, JSON.stringify(surveyTemplateDto.template, null, 2));
+      const templateName = name || template.formula.title;
+      return await this.surveyTemplateModel.findOneAndUpdate(
+        { name: templateName },
+        { template, isActive, name: templateName },
+        { new: true, upsert: !name },
+      );
     } catch (error) {
       throw new CustomHttpException(
-        CommonErrorMessages.FILE_WRITING_FAILED,
+        CommonErrorMessages.DB_ACCESS_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
         undefined,
         SurveysTemplateService.name,
@@ -52,15 +63,36 @@ class SurveysTemplateService {
     }
   }
 
-  async serveTemplateNames(): Promise<string[]> {
-    return this.fileSystemService.getAllFilenamesInDirectory(SURVEYS_TEMPLATE_PATH);
+  async getTemplates(ldapGroups: string[], res: Response): Promise<Response> {
+    const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
+    const documents = await this.surveyTemplateModel.find(
+      getIsAdmin(ldapGroups, adminGroups) ? {} : { isActive: true },
+    );
+    return res.status(HttpStatus.OK).json(documents);
   }
 
-  async serveTemplate(fileName: string, res: Response): Promise<Response> {
-    const templatePath = join(SURVEYS_TEMPLATE_PATH, fileName);
-    const fileStream = await this.fileSystemService.createReadStream(templatePath);
-    fileStream.pipe(res);
-    return res;
+  async setIsTemplateActive(name: string, isActive: boolean): Promise<SurveysTemplateDocument | null> {
+    return this.surveyTemplateModel.findOneAndUpdate(
+      { name },
+      { isActive },
+      {
+        new: true,
+        upsert: false,
+      },
+    );
+  }
+
+  async deleteTemplate(name: string): Promise<void> {
+    try {
+      await this.surveyTemplateModel.deleteOne({ name });
+    } catch {
+      throw new CustomHttpException(
+        CommonErrorMessages.FILE_DELETION_FAILED,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveysTemplateService.name,
+      );
+    }
   }
 }
 

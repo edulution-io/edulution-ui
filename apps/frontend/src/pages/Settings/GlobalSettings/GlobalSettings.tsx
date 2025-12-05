@@ -114,7 +114,7 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
               <h3>{t('settings.globalSettings.multiFactorAuthentication')}</h3>
             </AccordionTrigger>
             <AccordionContent className="space-y-2 px-1">
-              <p className="text-background">{t('settings.globalSettings.mfaDescription')}</p>
+              <p>{t('settings.globalSettings.mfaDescription')}</p>
               <FormFieldSH
                 control={control}
                 name={`auth.${GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS}`}
@@ -129,7 +129,7 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
                         placeholder={t('search.type-to-search')}
                       />
                     </FormControl>
-                    <p className="text-background">{t('settings.globalSettings.selectUserGroups')}</p>
+                    <p>{t('settings.globalSettings.selectUserGroups')}</p>
                     <FormMessage className="text-p" />
                   </FormItem>
                 )}

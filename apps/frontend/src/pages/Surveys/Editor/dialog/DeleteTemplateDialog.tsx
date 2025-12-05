@@ -47,19 +47,19 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
   const locale = getLocaleDateFormat(language);
 
   const handleRemoveTemplate = async () => {
-    if (template?.fileName) {
-      await deleteTemplate(template?.fileName);
+    if (template?.name) {
+      await deleteTemplate(template?.name);
       void fetchTemplates();
       setIsOpenTemplateConfirmDeletion(false);
     }
   };
 
   const propertyList = [
-    { id: 'title', value: template?.template.formula?.title, translationId: 'common.title' },
-    { id: 'creator', value: template?.template.creator?.username, translationId: 'common.creator' },
+    { id: 'title', value: template?.template?.formula?.title, translationId: 'common.title' },
+    { id: 'creator', value: template?.template?.creator?.username, translationId: 'common.creator' },
     {
       id: 'createdAt',
-      value: template?.template.createdAt ? format(template?.template.createdAt, 'PPP', { locale }) : '',
+      value: template?.template?.createdAt ? format(template?.template?.createdAt, 'PPP', { locale }) : '',
       translationId: 'common.createdAt',
     },
   ];

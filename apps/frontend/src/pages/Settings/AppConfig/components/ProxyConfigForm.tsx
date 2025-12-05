@@ -149,7 +149,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
               checked={expertModeEnabled}
               onCheckedChange={setExpertModeEnabled}
             />
-            <p className="text-background">{t('form.expertMode')}</p>
+            <p>{t('form.expertMode')}</p>
           </div>
 
           <div className="space-y-4 px-1 pt-4">
