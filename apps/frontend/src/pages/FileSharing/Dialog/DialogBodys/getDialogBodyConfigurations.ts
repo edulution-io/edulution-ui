@@ -136,10 +136,12 @@ const createFileConfig: CreateFileDialogBodyConfiguration = {
   httpMethod: HttpMethods.POST,
   type: ContentType.FILE,
   requiresForm: true,
-  getData: async (form, currentPath, { documentVendor, selectedFileType }) => {
+  getData: async (form, currentPath, { documentVendor, selectedFileType, customExtension }) => {
     const filename = form.getValues('filename');
+    const formExtension = form.getValues('extension')?.replace(/^\./, '') || '';
+    const extensionToUse = customExtension || formExtension;
 
-    const { file, extension } = await generateFile(selectedFileType, filename, documentVendor);
+    const { file, extension } = await generateFile(selectedFileType, filename, documentVendor, false, extensionToUse);
 
     return [
       {

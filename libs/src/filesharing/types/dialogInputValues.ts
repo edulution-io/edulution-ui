@@ -25,6 +25,7 @@ interface DialogInputValues {
   selectedItems?: DirectoryFileDTO[];
   moveOrCopyItemToPath?: DirectoryFileDTO;
   selectedFileType: TAvailableFileTypes | '';
+  customExtension?: string;
   filesToUpload?: File[];
   documentVendor: DocumentVendorsType;
 }

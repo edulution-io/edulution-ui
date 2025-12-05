@@ -29,6 +29,7 @@ import DocumentVendors from '@libs/filesharing/constants/documentVendors';
 import DocumentVendorsType from '@libs/filesharing/types/documentVendorsType';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/constants/availableFileTypes';
 import OPEN_DOCUMENT_TEMPLATE_PATH from '@libs/filesharing/constants/openDocumentTemplatePath';
+import PREDEFINED_EXTENSIONS, { PredefinedExtensionKey } from '@libs/filesharing/constants/predefinedExtensions';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 
@@ -37,6 +38,7 @@ const generateFile = async (
   basename: string,
   format: DocumentVendorsType,
   onlyReturnExtension: boolean = false,
+  customExtension?: string,
 ): Promise<{ file?: File; extension: string }> => {
   let file: File;
   let extension: string;
@@ -147,6 +149,21 @@ const generateFile = async (
       const uint8Array = encoder.encode(xml);
       const fileBlob = new Blob([uint8Array], { type: 'application/vnd.jgraph.mxfile' });
       file = new File([fileBlob], `${basename}.${extension}`, { type: fileBlob.type });
+      break;
+    }
+
+    case AVAILABLE_FILE_TYPES.customFile: {
+      if (!customExtension) {
+        toast.error(i18n.t('errors.fileGenerationFailed'));
+        throw new Error('Custom extension is required for custom file type');
+      }
+      const ext = customExtension.startsWith('.') ? customExtension.slice(1) : customExtension;
+      extension = ext;
+      if (onlyReturnExtension) return { extension };
+      const predefined = PREDEFINED_EXTENSIONS[ext as PredefinedExtensionKey];
+      const mimeType = predefined?.mimeType || 'application/octet-stream';
+      const emptyBlob = new Blob([''], { type: mimeType });
+      file = new File([emptyBlob], `${basename}.${extension}`, { type: emptyBlob.type });
       break;
     }
 
