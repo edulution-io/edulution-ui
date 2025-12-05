@@ -52,6 +52,7 @@ const APPS = {
   FRAME: 'frame',
   EMBEDDED: 'embedded',
   APPSTORE: 'appstore',
+  AI_ASSIST: 'aichatbot',
 } as const;
 
 export default APPS;

@@ -17,10 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
 import type AiConfigDto from '@libs/ai/types/aiConfigDto';
-import type AiRequestOptions from '@libs/ai/types/aiRequestOptions';
+import type ChatStreamDto from '@libs/ai/types/chatStreamDto';
 import { AI_EDU_API_ENDPOINT } from '@libs/ai/constants/aiEndpoints';
 import UserDto from '@libs/user/types/user.dto';
 import AvailableAiModel from '@libs/ai/types/availableAiModel';
@@ -30,6 +31,8 @@ import AiConfigService from './ai.config.service';
 import AiService from './ai.service';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
+import UpdateAiChatHistoryDto from '@libs/ai/types/updateAiChatHistoryDto';
+import CreateAiChatHistoryDto from '@libs/ai/types/createAiChatHistoryDto';
 
 @ApiTags(AI_EDU_API_ENDPOINT)
 @ApiBearerAuth()
@@ -41,9 +44,37 @@ class AiController {
   ) {}
 
   @Post('chat')
-  async chat(@Body() options: AiRequestOptions) {
-    const response = await this.aiService.chat(options);
-    return { response };
+  async chat(@Body() options: ChatStreamDto, @Res({ passthrough: false }) res: Response) {
+    try {
+      const result = await this.aiService.chatStream(options);
+      const response = result.toUIMessageStreamResponse();
+
+      // Headers setzen
+      res.setHeader('Content-Type', response.headers.get('Content-Type') || 'text/event-stream');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
+      res.setHeader('X-Accel-Buffering', 'no');
+
+      // Body streamen
+      if (response.body) {
+        const reader = response.body.getReader();
+        const pump = async () => {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+              res.end();
+              break;
+            }
+            res.write(value);
+          }
+        };
+        await pump();
+      } else {
+        res.end();
+      }
+    } catch (error) {
+      res.status(500).json({ error: (error as Error).message || 'Internal server error' });
+    }
   }
 
   @Post('translate')
@@ -58,6 +89,35 @@ class AiController {
     @Body() purposeFilterDto: PurposeFilterDto,
   ): Promise<AvailableAiModel[]> {
     return this.aiConfigService.getAvailableModelsByUserAccess(username, currentUser.ldapGroups, purposeFilterDto);
+  }
+
+  @Get('history')
+  async getChatHistory(@GetCurrentUsername() username: string) {
+    return this.aiService.getChatHistory(username);
+  }
+
+  @Get('history/:id')
+  async getChatById(@Param('id') id: string, @GetCurrentUsername() username: string) {
+    return this.aiService.getChatById(id, username);
+  }
+
+  @Post('history')
+  async createChat(@Body() body: CreateAiChatHistoryDto, @GetCurrentUsername() username: string) {
+    return this.aiService.createChat(username, body.title || 'Neuer Chat', body.messages);
+  }
+
+  @Put('history/:id')
+  async updateChat(
+    @Param('id') id: string,
+    @Body() body: UpdateAiChatHistoryDto,
+    @GetCurrentUsername() username: string,
+  ) {
+    return this.aiService.updateChat(id, username, body.messages);
+  }
+
+  @Delete('history/:id')
+  async deleteChat(@Param('id') id: string, @GetCurrentUsername() username: string) {
+    return this.aiService.deleteChat(id, username);
   }
 
   @Get('configs')

@@ -148,6 +148,11 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
       [AppConfigSectionsKeys.editor]: EMBEDDED_PAGE_EDITOR_CONFIG,
     },
   },
+  {
+    id: APPS.AI_ASSIST,
+    icon: NativeIcon,
+    isNativeApp: true,
+  },
 ];
 
 export default APP_CONFIG_OPTIONS;

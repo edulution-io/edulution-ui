@@ -24,7 +24,7 @@ import type { AiConfigPurposeType } from '@libs/ai/types/aiConfigPurposeType';
 import type AttendeeDto from '@libs/user/types/attendee.dto';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { SupportedAiProviderType } from '@libs/ai/types/supportedAiProviderType';
-import SupportedAiProvider from '@libs/ai/types/SupportedAiProvider';
+import SupportedAiProvider from '@libs/ai/types/supportedAiProvider';
 
 export type AiConfigDocument = AiConfig & Document;
 

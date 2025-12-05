@@ -1,38 +1,47 @@
 /*
  * Copyright (C) [2025] [Netzint GmbH]
  * All rights reserved.
- *
- * This software is dual-licensed under the terms of:
- *
- * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
- *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
- *
- *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
- *
- * OR
- *
- * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
- *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
- *
- * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { Injectable, Logger } from '@nestjs/common';
-import { generateText, LanguageModel, ModelMessage } from 'ai';
+import { convertToModelMessages, generateText, LanguageModel, ModelMessage, streamText } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import AiRequestOptions from '@libs/ai/types/aiRequestOptions';
-import SUPPORTED_AI_PROVIDER from '@libs/ai/types/SupportedAiProvider';
+import ChatStreamDto from '@libs/ai/types/chatStreamDto';
+import SUPPORTED_AI_PROVIDER from '@libs/ai/types/supportedAiProvider';
 import type AiConfigDto from '@libs/ai/types/aiConfigDto';
 import AI_CONFIG_PURPOSES from '@libs/ai/constants/aiConfigPurposes';
 import promptsConfig from '@libs/ai/prompts/prompts.config';
 import AiConfigService from './ai.config.service';
+import { AiChatHistory } from './ai.chatHistory.schema';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 class AiService {
-  constructor(private readonly aiConfigService: AiConfigService) {}
+  constructor(
+    private readonly aiConfigService: AiConfigService,
+    @InjectModel(AiChatHistory.name) private chatHistoryModel: Model<AiChatHistory>,
+  ) {}
+
+  async chatStream(options: ChatStreamDto) {
+    const { messages, configId, systemPrompt, temperature = 0.7 } = options;
+    const config = await this.resolveConfig(configId);
+
+    const languageModel = this.createLanguageModel(config);
+
+    const result = streamText({
+      model: languageModel,
+      messages: convertToModelMessages(messages),
+      system: systemPrompt || 'Du bist ein hilfreicher Assistent.',
+      temperature,
+    });
+
+    return result;
+  }
 
   async chat(options: AiRequestOptions & { configId?: string; purpose?: string }): Promise<string> {
     const { prompt, systemPrompt, model, temperature = 0.7, configId, purpose } = options;
@@ -84,7 +93,35 @@ class AiService {
     }
   }
 
-  private async resolveConfig(configId?: string, purpose?: string): Promise<AiConfigDto> {
+  async getChatHistory(userId: string): Promise<AiChatHistory[]> {
+    return this.chatHistoryModel.find({ userId }).select('id title updatedAt').sort({ updatedAt: -1 }).exec();
+  }
+
+  async getChatById(chatId: string, userId: string): Promise<AiChatHistory | null> {
+    return this.chatHistoryModel.findOne({ _id: chatId, userId }).exec();
+  }
+
+  async createChat(userId: string, title: string, messages: any[]): Promise<AiChatHistory> {
+    const chat = new this.chatHistoryModel({
+      userId,
+      title: title || 'Neuer Chat',
+      messages,
+    });
+    return chat.save();
+  }
+
+  async updateChat(chatId: string, userId: string, messages: any[]): Promise<AiChatHistory | null> {
+    return this.chatHistoryModel
+      .findOneAndUpdate({ _id: chatId, userId }, { messages, updatedAt: new Date() }, { new: true })
+      .exec();
+  }
+
+  async deleteChat(chatId: string, userId: string): Promise<boolean> {
+    const result = await this.chatHistoryModel.deleteOne({ _id: chatId, userId }).exec();
+    return result.deletedCount > 0;
+  }
+
+  async resolveConfig(configId?: string, purpose?: string): Promise<AiConfigDto> {
     let config: AiConfigDto | null;
 
     if (configId) {
@@ -103,7 +140,7 @@ class AiService {
     return config;
   }
 
-  private createLanguageModel(config: AiConfigDto, modelOverride?: string): LanguageModel {
+  public createLanguageModel(config: AiConfigDto, modelOverride?: string): LanguageModel {
     const modelName = modelOverride || config.aiModel;
 
     switch (config.apiStandard) {
@@ -137,6 +174,10 @@ class AiService {
         })(modelName);
       }
     }
+  }
+
+  generateChatTitle(messages: unknown[]) {
+    return Promise.resolve(undefined);
   }
 }
 

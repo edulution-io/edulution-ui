@@ -17,6 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import SUPPORTED_AI_PROVIDER from './SupportedAiProvider';
+import SUPPORTED_AI_PROVIDER from './supportedAiProvider';
 
 export type SupportedAiProviderType = (typeof SUPPORTED_AI_PROVIDER)[keyof typeof SUPPORTED_AI_PROVIDER];

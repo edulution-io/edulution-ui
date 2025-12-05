@@ -23,9 +23,15 @@ import AiController from './ai.controller';
 import AiService from './ai.service';
 import AiConfigService from './ai.config.service';
 import AiConfig, { AiConfigSchema } from './ai.config.schema';
+import { AiChatHistory, AiChatHistorySchema } from './ai.chatHistory.schema';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: AiConfig.name, schema: AiConfigSchema }])],
+  imports: [
+    MongooseModule.forFeature([
+      { name: AiConfig.name, schema: AiConfigSchema },
+      { name: AiChatHistory.name, schema: AiChatHistorySchema },
+    ]),
+  ],
   controllers: [AiController],
   providers: [AiService, AiConfigService],
   exports: [AiService, AiConfigService],

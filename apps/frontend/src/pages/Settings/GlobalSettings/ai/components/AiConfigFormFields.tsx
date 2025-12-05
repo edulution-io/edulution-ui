@@ -33,7 +33,7 @@ import AI_CONFIG_PURPOSES from '@libs/ai/constants/aiConfigPurposes';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import AIConnectionStatus from '@/pages/Settings/GlobalSettings/ai/components/AIConnectionStatus';
-import SupportedAiProvider from '@libs/ai/types/SupportedAiProvider';
+import SupportedAiProvider from '@libs/ai/types/supportedAiProvider';
 
 interface AiConfigFormFieldsProps {
   control: Control<AiConfigDto>;

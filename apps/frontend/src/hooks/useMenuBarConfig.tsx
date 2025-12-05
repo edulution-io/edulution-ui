@@ -32,6 +32,7 @@ import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import MenuItem from '@libs/menubar/menuItem';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import useLdapGroups from './useLdapGroups';
+import useAiAssistMenuConfig from '@/pages/AiAssist/useAiAssistMenuConfig';
 
 const useMenuBarConfig = (): MenuBarEntry => {
   const { pathname } = useLocation();
@@ -43,6 +44,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
   const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
   const SURVEYS_MENUBAR_CONFIG = useSurveysPageMenu();
   const CLASS_MANAGEMENT_MENUBAR_CONFIG = useClassManagementMenu();
+  const AI_ASSISTANT_MENUBAR_CONFIG = useAiAssistMenuConfig();
 
   const menuBarConfigSwitch = (): MenuBarEntry => {
     const rootPathName = getFromPathName(pathname, 1);
@@ -68,6 +70,9 @@ const useMenuBarConfig = (): MenuBarEntry => {
       }
       case APPS.CLASS_MANAGEMENT: {
         return CLASS_MANAGEMENT_MENUBAR_CONFIG;
+      }
+      case APPS.AI_ASSIST: {
+        return AI_ASSISTANT_MENUBAR_CONFIG;
       }
       default: {
         return defaultReturnMenuBarEntry;

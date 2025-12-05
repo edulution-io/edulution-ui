@@ -18,7 +18,7 @@
  */
 
 import AiProviderModelConfig from '@libs/ai/types/aiProviderModelConfig';
-import SUPPORTED_AI_PROVIDER from '@libs/ai/types/SupportedAiProvider';
+import SUPPORTED_AI_PROVIDER from '@libs/ai/types/supportedAiProvider';
 
 const modelFetchConfig: Record<string, AiProviderModelConfig> = {
   [SUPPORTED_AI_PROVIDER.OpenAI]: {

@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import SUPPORTED_AI_PROVIDER from '@libs/ai/types/SupportedAiProvider';
+import SUPPORTED_AI_PROVIDER from '@libs/ai/types/supportedAiProvider';
 
 const aiApiConfigs = {
   [SUPPORTED_AI_PROVIDER.OpenAI]: (url: string, apiKey: string, model: string) => ({

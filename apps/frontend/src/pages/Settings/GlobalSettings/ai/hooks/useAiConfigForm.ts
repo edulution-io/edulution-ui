@@ -24,7 +24,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 import type AiConfigDto from '@libs/ai/types/aiConfigDto';
 import AI_CONFIG_TABLE_COLUMNS from '@libs/ai/constants/aiConfigTableColumns';
-import SUPPORTED_AI_PROVIDER from '@libs/ai/types/SupportedAiProvider';
+import SUPPORTED_AI_PROVIDER from '@libs/ai/types/supportedAiProvider';
 import useAiConfigTableStore from '../useAiConfigTableStore';
 
 const getEmptyFormValues = (): AiConfigDto => ({

@@ -46,6 +46,7 @@ import DefaultLandingPageAfterLogin from '@/components/structure/DefaultLandingP
 import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
 import ProtectedRoute from './ProtectedRoute';
 import getEmbeddedRoutes from './getEmbeddedRoutes';
+import getAiAssistRoutes from '@/router/routes/getAiAssistRoutes';
 
 const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
   <>
@@ -103,6 +104,7 @@ const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
     {getClassManagementRoutes()}
     {getSurveyRoutes()}
     {getFileSharingRoutes()}
+    {getAiAssistRoutes()}
   </>
 );
 
