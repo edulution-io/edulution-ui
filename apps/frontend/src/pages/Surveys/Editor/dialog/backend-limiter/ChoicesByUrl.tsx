@@ -30,11 +30,10 @@ import useTableActions from '@/hooks/useTableActions';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import APPS from '@libs/appconfig/constants/apps';
 import { PUBLIC_SURVEY_CHOICES, SURVEY_CHOICES } from '@libs/survey/constants/surveys-endpoint';
-import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
+import TSurveyElement from '@libs/survey/types/TSurveyElement';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveyElement from '@libs/survey/types/TSurveyElement';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import isQuestionTypeChoiceType from '@libs/survey/utils/isQuestionTypeChoiceType';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
@@ -60,7 +59,6 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     toggleUseBackendLimits,
     isUpdatingBackendLimiters,
     setIsUpdatingBackendLimiters,
-    setSelectedQuestion,
     shouldToggleShowOtherItem,
     toggleShowOtherItem,
     setBackendLimiters,
@@ -68,6 +66,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     addNewChoice,
     updateLimitersChoices,
     formerChoices,
+    setFormerChoices,
   } = useQuestionsContextMenuStore();
 
   useEffect(() => {
@@ -77,11 +76,68 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       setBackendLimiters(initialLimiters);
     }
   }, []);
+
   useEffect(() => {
     const updatedBackendLimits = updateLimitersChoices(currentChoices);
     if (!form) return;
     form.setValue('backendLimiters', updatedBackendLimits);
   }, [currentChoices]);
+
+  const toggleBackendLimiter = (element: TSurveyElement): TSurveyElement => {
+    const isPublic = form.getValues('isPublic') || false;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { choicesByUrl, choices, hideIfChoicesEmpty, ...rest } = element;
+    if (choices && choices.length > 0) {
+      setFormerChoices(choices);
+    }
+    if (choicesByUrl?.url) {
+      return {
+        ...rest,
+        choices: choices || formerChoices || [],
+      };
+    }
+    return {
+      ...rest,
+      choicesByUrl: {
+        url: `${EDU_API_URL}/${isPublic ? PUBLIC_SURVEY_CHOICES : SURVEY_CHOICES}/${TEMPORAL_SURVEY_ID_STRING}/${element.name}`,
+        valueName: 'title',
+        titleName: 'title',
+      },
+      hideIfChoicesEmpty: true,
+    };
+  };
+
+  const toggleBackendLimiters = (elements: TSurveyElement[]): TSurveyElement[] =>
+    elements.map((element) => {
+      if (element.name === selectedQuestion?.name) {
+        return toggleBackendLimiter(element);
+      }
+      const updatedElement = { ...element };
+      if (element.elements && element.elements.length > 0) {
+        updatedElement.elements = toggleBackendLimiters(element.elements);
+      }
+      if (element.templateElements && element.templateElements.length > 0) {
+        updatedElement.templateElements = toggleBackendLimiters(element.templateElements);
+      }
+      return updatedElement;
+    });
+
+  const toggleUseBackendLimiter = (formula: SurveyFormula) => {
+    if (formula.pages && formula.pages.length > 0) {
+      const pages = formula.pages.map((page) => ({
+        ...page,
+        elements: toggleBackendLimiters(page.elements || []),
+      }));
+      return { ...formula, pages };
+    }
+
+    if (formula.elements && formula.elements.length > 0) {
+      const elements = toggleBackendLimiters(formula.elements);
+      return { ...formula, elements };
+    }
+
+    return formula;
+  };
 
   const handleToggleFormula = () => {
     if (!selectedQuestion) return;
@@ -90,45 +146,14 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     setIsUpdatingBackendLimiters(true);
 
     try {
-      const surveyFormula = creator.JSON as SurveyFormula;
-      const isPublic = form.getValues('isPublic') || false;
-      const updatedFormula = JSON.parse(JSON.stringify(surveyFormula)) as SurveyFormula;
+      const formula = creator.JSON as SurveyFormula;
 
-      let correspondingQuestion: SurveyElement | undefined;
-      if (selectedQuestion?.page.name) {
-        const correspondingPage = updatedFormula?.pages?.find((page) => page.name === selectedQuestion.page.name);
-        correspondingQuestion = correspondingPage?.elements?.find(
-          (question) => question.name === selectedQuestion.name,
-        );
-      } else {
-        correspondingQuestion = updatedFormula?.elements?.find((element) => element.name === selectedQuestion.name);
-      }
-
-      if (!correspondingQuestion) {
-        throw new Error('Corresponding Question was not found');
-      }
-
-      if (useBackendLimits) {
-        correspondingQuestion.choicesByUrl = null;
-        correspondingQuestion.choices = formerChoices || [];
-        correspondingQuestion.hideIfChoicesEmpty = false;
-      } else {
-        correspondingQuestion.choices = null;
-        correspondingQuestion.choicesByUrl = {
-          url: `${EDU_API_URL}/${isPublic ? PUBLIC_SURVEY_CHOICES : SURVEY_CHOICES}/${TEMPORAL_SURVEY_ID_STRING}/${selectedQuestion.name}`,
-          valueName: 'title',
-          titleName: 'title',
-        };
-        correspondingQuestion.hideIfChoicesEmpty = true;
-      }
+      const updatedFormula = toggleUseBackendLimiter(formula);
 
       form.setValue('formula', updatedFormula);
       creator.JSON = updatedFormula;
-      toggleUseBackendLimits();
 
-      const questions: TSurveyQuestion[] = creator.survey.getAllQuestions() as TSurveyQuestion[];
-      const question: TSurveyQuestion | undefined = questions.find((q) => q.name === correspondingQuestion.name);
-      setSelectedQuestion(question);
+      toggleUseBackendLimits();
     } catch (error) {
       console.error('Error toggling backend limits:', error);
       toast.error(t('survey.errors.updateOrCreateError'));

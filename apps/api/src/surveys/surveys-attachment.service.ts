@@ -152,31 +152,45 @@ class SurveysAttachmentService implements OnModuleInit {
   ): Promise<TSurveyElement> {
     const processedElement = { ...element };
     switch (element.type) {
+      case SurveyQuestionsType.PANEL:
+      case SurveyQuestionsType.DYNAMIC_PANEL:
+        if (element.elements) {
+          processedElement.elements = await this.processElements(
+            element.elements,
+            username,
+            surveyId,
+            includedFileNames,
+            isPublic,
+          );
+        }
+        if (element.templateElements) {
+          processedElement.templateElements = await this.processElements(
+            element.templateElements,
+            username,
+            surveyId,
+            includedFileNames,
+            isPublic,
+          );
+        }
+        break;
       case SurveyQuestionsType.CHECKBOX:
       case SurveyQuestionsType.DROPDOWN:
-      case SurveyQuestionsType.RADIO_GROUP:
+      case SurveyQuestionsType.RADIO_GROUP: {
         if (!element.choicesByUrl) {
           break;
         }
-        if (element.choicesByUrl?.url.includes(TEMPORAL_SURVEY_ID_STRING)) {
-          processedElement.choicesByUrl = {
-            ...element.choicesByUrl,
-            url: element.choicesByUrl.url.replace(TEMPORAL_SURVEY_ID_STRING, surveyId),
-          };
+        let url = element.choicesByUrl.url.replace(TEMPORAL_SURVEY_ID_STRING, surveyId);
+        if (isPublic) {
+          url = url.replace(`/${SURVEY_CHOICES}/`, `/${PUBLIC_SURVEY_CHOICES}/`);
+        } else {
+          url = url.replace(`/${PUBLIC_SURVEY_CHOICES}/`, `/${SURVEY_CHOICES}/`);
         }
-        if (isPublic && element.choicesByUrl?.url.includes(`/${SURVEY_CHOICES}/`)) {
-          processedElement.choicesByUrl = {
-            ...element.choicesByUrl,
-            url: element.choicesByUrl.url.replace(`/${SURVEY_CHOICES}/`, `/${PUBLIC_SURVEY_CHOICES}/`),
-          };
-        } else if (!isPublic && element.choicesByUrl?.url.includes(`/${PUBLIC_SURVEY_CHOICES}/`)) {
-          processedElement.choicesByUrl = {
-            ...element.choicesByUrl,
-            url: element.choicesByUrl.url.replace(`/${PUBLIC_SURVEY_CHOICES}/`, `/${SURVEY_CHOICES}/`),
-          };
-        }
+        processedElement.choicesByUrl = {
+          ...element.choicesByUrl,
+          url,
+        };
         break;
-
+      }
       case SurveyQuestionsType.IMAGE:
         if (element.imageLink) {
           const { newUrl, filename } = await this.processUrl(

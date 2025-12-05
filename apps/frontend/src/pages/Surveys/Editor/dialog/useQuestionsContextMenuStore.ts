@@ -21,6 +21,7 @@ import { create } from 'zustand';
 import { Question, ChoicesRestful } from 'survey-core';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
+import TSurveyQuestionChoice from '@libs/survey/types/TSurveyQuestionChoice';
 import getRandomUUID from '@/utils/getRandomUUID';
 
 interface QuestionsContextMenuStore {
@@ -56,7 +57,8 @@ interface QuestionsContextMenuStore {
   toggleShowOtherItem: () => void;
   shouldToggleShowOtherItem: boolean;
 
-  formerChoices: string[];
+  formerChoices: TSurveyQuestionChoice[];
+  setFormerChoices: (choices: TSurveyQuestionChoice[]) => void;
   currentChoices: ChoiceDto[];
 
   addChoice: (name: string, title?: string, limit?: number) => void;
@@ -90,6 +92,8 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
   ...QuestionsContextMenuStoreInitialState,
   reset: () => set(QuestionsContextMenuStoreInitialState),
 
+  setFormerChoices: (choices: TSurveyQuestionChoice[]) => set({ formerChoices: choices }),
+
   setIsOpenQuestionContextMenu: (state: boolean) => {
     const { reset } = get();
     if (state === false) {
@@ -107,7 +111,7 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
       questionTitle: question?.title || '',
       questionDescription: question?.description || '',
       useBackendLimits: !!(question?.choicesByUrl as ChoicesRestful)?.url,
-      formerChoices: (question?.choices as string[]) || [],
+      formerChoices: (question?.choices as TSurveyQuestionChoice[]) || [],
       currentChoices: [],
       showOtherItem: !!question?.showOtherItem,
       imageWidth: Number.isNaN(width) ? 0 : width,

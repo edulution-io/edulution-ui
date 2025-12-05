@@ -17,6 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-type TSurveyQuestionChoice = string | { value: string; imageLink: string };
+type TSurveyQuestionChoice = string | { value: string; imageLink: string; title?: string; name?: string };
 
 export default TSurveyQuestionChoice;

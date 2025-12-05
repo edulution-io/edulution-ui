@@ -31,6 +31,7 @@ import SURVEY_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswers
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
+import TSurveyQuestionAnswerTypes from '@libs/survey/types/TSurveyQuestionAnswerTypes';
 import CustomHttpException from '../common/CustomHttpException';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
@@ -115,34 +116,87 @@ class SurveyAnswersService implements OnModuleInit {
     return filteredChoices;
   };
 
-  async countChoiceSelections(surveyId: string, questionName: string, choiceId: string): Promise<number> {
+  static countQuestionAnswerChoiceSelections = (
+    questionAnswer: TSurveyQuestionAnswerTypes,
+    choiceTitle: string,
+  ): number => {
+    if (Array.isArray(questionAnswer)) {
+      let count = 0;
+      questionAnswer.forEach((answerValue) => {
+        if (typeof answerValue === 'string' && answerValue === choiceTitle) {
+          count += 1;
+        } else if (
+          typeof answerValue === 'object' &&
+          answerValue !== null &&
+          (answerValue.value === choiceTitle || answerValue.name === choiceTitle || answerValue.title === choiceTitle)
+        ) {
+          count += 1;
+        }
+      });
+      return count;
+    }
+    if (typeof questionAnswer === 'string' && questionAnswer === choiceTitle) {
+      return 1;
+    }
+    if (
+      typeof questionAnswer === 'object' &&
+      questionAnswer !== null &&
+      (questionAnswer.value === choiceTitle ||
+        questionAnswer.name === choiceTitle ||
+        questionAnswer.title === choiceTitle)
+    ) {
+      return 1;
+    }
+    return 0;
+  };
+
+  static countNestedQuestionAnswerChoiceSelections = (
+    answer: TSurveyAnswer,
+    questionName: string,
+    choiceTitle: string,
+  ): number => {
+    let count = 0;
+    Object.keys(answer).forEach((key) => {
+      if (key === questionName) {
+        const nestedCount = SurveyAnswersService.countQuestionAnswerChoiceSelections(answer[key], choiceTitle);
+        count += nestedCount;
+      } else if (Array.isArray(answer[key])) {
+        answer[key].forEach((entry) => {
+          if (typeof entry === 'object' && entry !== null) {
+            const nestedCount = SurveyAnswersService.countNestedQuestionAnswerChoiceSelections(
+              entry as TSurveyAnswer,
+              questionName,
+              choiceTitle,
+            );
+            count += nestedCount;
+          }
+        });
+      } else if (typeof answer[key] === 'object' && answer[key] !== null) {
+        const nestedCount = SurveyAnswersService.countNestedQuestionAnswerChoiceSelections(
+          answer[key] as TSurveyAnswer,
+          questionName,
+          choiceTitle,
+        );
+        count += nestedCount;
+      }
+    });
+    return count;
+  };
+
+  async countChoiceSelections(surveyId: string, questionName: string, choiceTitle: string): Promise<number> {
     const documents = await this.surveyAnswerModel
       .find<SurveyAnswerDocument>({ surveyId: new Types.ObjectId(surveyId) })
       .exec();
-    const filteredAnswers: string[] = [];
+    let count = 0;
     documents.forEach((document) => {
-      try {
-        const updatedAnswer = structuredClone(document.answer) as unknown as { [key: string]: string | object };
-
-        if (Array.isArray(updatedAnswer[questionName])) {
-          const choices = updatedAnswer[questionName] as string[];
-          const choice = choices.find((c) => c === choiceId);
-          if (choice) {
-            filteredAnswers.push(choice);
-          }
-        } else if (updatedAnswer[questionName] === choiceId) {
-          filteredAnswers.push(choiceId);
-        }
-      } catch (error) {
-        throw new CustomHttpException(
-          SurveyAnswerErrorMessages.NotAbleToCountChoices,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-          error,
-          SurveyAnswersService.name,
-        );
-      }
+      const answerCount = SurveyAnswersService.countNestedQuestionAnswerChoiceSelections(
+        document.answer as unknown as TSurveyAnswer,
+        questionName,
+        choiceTitle,
+      );
+      count += answerCount;
     });
-    return filteredAnswers.length || 0;
+    return count;
   }
 
   async getCreatedSurveys(username: string): Promise<Survey[]> {

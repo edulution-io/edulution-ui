@@ -18,6 +18,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-type TSurveyFileQuestionAnswerType = object & { content?: string };
+type TSurveyFileQuestionAnswerType = object & { value?: string; name?: string; title?: string; content?: string };
 
 export default TSurveyFileQuestionAnswerType;
