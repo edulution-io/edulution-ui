@@ -1,0 +1,111 @@
+/*
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
+ *
+ * This software is dual-licensed under the terms of:
+ *
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
+ *
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
+ */
+
+import { Types } from 'mongoose';
+
+const LimitedEventParticipation = {
+  _id: new Types.ObjectId('000000000000000000000002'),
+  name: 'TeilnahmeVeranstaltungLimitiert',
+  isDefaultTemplate: true,
+  isActive: false,
+  schemaVersion: 1,
+  template: {
+    formula: {
+      title: 'Anmeldung zur Veranstaltung',
+      logo: `/edu-api/files/public/assets/surveys/surveys-default-logo-dark.webp`,
+      description: 'Möchtest du an der Veranstaltung teilnehmen?',
+      pages: [
+        {
+          name: 'Seite1',
+          elements: [
+            {
+              type: 'text',
+              name: 'Frage1',
+              title: 'Dein Name',
+              description: 'Gerne auch ein Spitzname oder Alias, falls gewünscht.',
+              isRequired: true,
+            },
+            {
+              type: 'radiogroup',
+              name: 'Frage2',
+              title: 'Bitte wähle den für dich passenden Termin aus',
+              description:
+                'Die Teilnehmerzahl pro Termin ist auf 20 begrenzt. Ausgebuchte Termine werden nicht mehr angezeigt.',
+              choicesByUrl: {
+                url: `/edu-api/public-surveys/choices/temporalSurveyId/Frage2`,
+                valueName: 'name',
+                titleName: 'title',
+                allowEmptyResponse: true,
+              },
+              choicesOrder: 'asc',
+            },
+            {
+              type: 'text',
+              name: 'Frage3',
+              title: 'Deine E-Mail Adresse (optional)',
+              description:
+                'Bitte nur angeben, wenn Sie benachrichtigt werden möchten, falls ein Platz frei wird oder Sie über zukünftige Veranstaltungen informiert werden möchten.',
+            },
+          ],
+          title: 'Titel des Vortrags',
+          description: 'Bitte gib an, worum es in dem Vortrag geht.',
+        },
+      ],
+    },
+    backendLimiters: [
+      {
+        questionName: 'Frage2',
+        choices: [
+          {
+            name: 'choice0',
+            title: '11:30 Uhr',
+            limit: 20,
+          },
+          {
+            name: 'choice1',
+            title: '13:30 Uhr',
+            limit: 20,
+          },
+          {
+            name: 'choice2',
+            title: '15:00 Uhr',
+            limit: 20,
+          },
+        ],
+      },
+    ],
+    creator: {
+      firstName: 'Global',
+      lastName: 'Admin',
+      username: 'global-admin',
+      value: 'global-admin',
+      label: 'Global Admin',
+    },
+    invitedAttendees: [],
+    invitedGroups: [],
+    participatedAttendees: [],
+    createdAt: '2025-06-20T10:06:21.593Z',
+    isAnonymous: false,
+    canSubmitMultipleAnswers: false,
+    isPublic: false,
+    canUpdateFormerAnswer: true,
+  },
+};
+
+export default LimitedEventParticipation;

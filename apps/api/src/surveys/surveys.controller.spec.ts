@@ -19,7 +19,7 @@
 
 import { Model } from 'mongoose';
 import { HttpStatus } from '@nestjs/common';
-import { getModelToken } from '@nestjs/mongoose';
+import { getConnectionToken, getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
@@ -90,6 +90,10 @@ describe(SurveysController.name, () => {
         SurveysAttachmentService,
         SurveyAnswersService,
         SurveysTemplateService,
+        {
+          provide: getConnectionToken(),
+          useValue: jest.fn(),
+        },
         SurveyAnswerAttachmentsService,
         {
           provide: getModelToken(SurveyAnswer.name),
