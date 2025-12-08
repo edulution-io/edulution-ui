@@ -1,25 +1,32 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { ExecutionContext } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import type { UpdateWriteOpResult } from 'mongoose';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
-import { GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { ConfigService } from '@nestjs/config';
 import GlobalSettingsController from './global-settings.controller';
 import GlobalSettingsService from './global-settings.service';
-import AppConfigGuard from '../appconfig/appconfig.guard';
+import AdminGuard from '../common/guards/admin.guard';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';
 
 const mockedGlobalSettingsDto: GlobalSettingsDto = defaultValues;
@@ -48,6 +55,7 @@ describe('GlobalSettingsController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [GlobalSettingsController],
       providers: [
+        ConfigService,
         {
           provide: GlobalSettingsService,
           useValue: {
@@ -61,7 +69,7 @@ describe('GlobalSettingsController', () => {
         },
       ],
     })
-      .overrideGuard(AppConfigGuard)
+      .overrideGuard(AdminGuard)
       .useValue({
         canActivate: jest.fn((_context: ExecutionContext) => true),
       })
@@ -80,15 +88,14 @@ describe('GlobalSettingsController', () => {
       jest.spyOn(service, 'getGlobalSettings').mockResolvedValue(mockedGlobalSettingsDbResponse);
 
       expect(await controller.getGlobalSettings()).toBe(mockedGlobalSettingsDbResponse);
-      expect(service.getGlobalSettings).toHaveBeenCalledWith(undefined);
+      expect(service.getGlobalSettings).toHaveBeenCalledWith();
     });
 
-    it('should return projected global settings when projection is provided', async () => {
-      const projection = GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH;
+    it('should return projected global settings', async () => {
       jest.spyOn(service, 'getGlobalSettings').mockResolvedValue(mockedGlobalSettingsDbResponse);
 
-      expect(await controller.getGlobalSettings(projection)).toBe(mockedGlobalSettingsDbResponse);
-      expect(service.getGlobalSettings).toHaveBeenCalledWith(projection);
+      expect(await controller.getGlobalSettings()).toBe(mockedGlobalSettingsDbResponse);
+      expect(service.getGlobalSettings).toHaveBeenCalledWith();
     });
   });
 

@@ -1,26 +1,33 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { create } from 'zustand';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import eduApi from '@/api/eduApi';
-import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import ContentType from '@libs/filesharing/types/contentType';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
 import handleApiError from '@/utils/handleApiError';
 import { RowSelectionState } from '@tanstack/react-table';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
+import processWebdavResponse from '@libs/filesharing/utils/processWebdavResponse';
+import useFileSharingStore from './useFileSharingStore';
 
 interface UseFileSharingMoveDialogStore {
   activeCollectionOperation: LmnApiCollectOperationsType;
@@ -30,8 +37,8 @@ interface UseFileSharingMoveDialogStore {
   dialogShownDirs: DirectoryFileDTO[];
   selectedRows: RowSelectionState;
   setSelectedRows: (rows: RowSelectionState) => void;
-  fetchDialogFiles: (path?: string) => Promise<void>;
-  fetchDialogDirs: (path: string) => Promise<void>;
+  fetchDialogFiles: (shareName: string | undefined, path?: string) => Promise<void>;
+  fetchDialogDirs: (shareName: string | undefined, path: string) => Promise<void>;
   setDialogShownFiles: (files: DirectoryFileDTO[]) => void;
   setIsLoading: (isLoading: boolean) => void;
   setSelectedItems: (items: DirectoryFileDTO[]) => void;
@@ -54,14 +61,20 @@ const useFileSharingMoveDialogStore = create<UseFileSharingMoveDialogStore>((set
   setActiveCollectionOperation: (collectionType: LmnApiCollectOperationsType) =>
     set({ activeCollectionOperation: collectionType }),
 
-  fetchDialogFiles: async (path: string = '/') => {
+  fetchDialogFiles: async (shareName, path: string = '/') => {
     try {
       set({ isLoading: true });
-      const directoryFiles = await eduApi.get<DirectoryFileDTO[]>(
-        buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, path),
-      );
+      const { data } = await eduApi.get<DirectoryFileDTO[]>(FileSharingApiEndpoints.BASE, {
+        params: { type: ContentType.FILE, path, share: shareName },
+      });
+      const webdavShareType = useFileSharingStore
+        .getState()
+        .webdavShares.find((s) => s.displayName === shareName)?.type;
+      if (!webdavShareType) return;
+      const dialogShownFiles = processWebdavResponse(data, webdavShareType);
+
       set({
-        dialogShownFiles: directoryFiles.data,
+        dialogShownFiles,
         selectedItems: [],
         selectedRows: {},
       });
@@ -72,13 +85,20 @@ const useFileSharingMoveDialogStore = create<UseFileSharingMoveDialogStore>((set
     }
   },
 
-  fetchDialogDirs: async (path: string) => {
+  fetchDialogDirs: async (shareName, path: string) => {
     try {
       set({ isLoading: true });
-      const directoryFiles = await eduApi.get<DirectoryFileDTO[]>(
-        buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.DIRECTORY, getPathWithoutWebdav(path)),
-      );
-      set({ dialogShownDirs: directoryFiles.data });
+      const { data } = await eduApi.get<DirectoryFileDTO[]>(FileSharingApiEndpoints.BASE, {
+        params: { type: ContentType.DIRECTORY, path, share: shareName },
+      });
+
+      const webdavShareType = useFileSharingStore
+        .getState()
+        .webdavShares.find((s) => s.displayName === shareName)?.type;
+      if (!webdavShareType) return;
+      const dialogShownDirs = processWebdavResponse(data, webdavShareType);
+
+      set({ dialogShownDirs });
     } catch (error) {
       handleApiError(error, set);
     } finally {

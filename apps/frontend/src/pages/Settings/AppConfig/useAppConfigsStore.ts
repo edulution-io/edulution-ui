@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import eduApi from '@/api/eduApi';
@@ -15,15 +22,17 @@ import handleApiError from '@/utils/handleApiError';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import PatchConfigDto from '@libs/common/types/patchConfigDto';
 import APPS from '@libs/appconfig/constants/apps';
+import { decodeBase64 } from '@libs/common/utils/getBase64String';
 
 type UseAppConfigsStore = {
   appConfigs: AppConfigDto[];
+  publicAppConfigs: AppConfigDto[];
   isLoading: boolean;
   isConfigFileLoading: boolean;
   error: Error | null;
@@ -34,7 +43,11 @@ type UseAppConfigsStore = {
   reset: () => void;
   createAppConfig: (appConfig: AppConfigDto) => Promise<void>;
   getAppConfigs: () => Promise<void>;
+  getPublicAppConfigs: () => Promise<void>;
+  getPublicAppConfigByName: (name: string) => Promise<AppConfigDto>;
   isGetAppConfigsLoading: boolean;
+  isGetPublicAppConfigsLoading: boolean;
+  isGetPublicAppConfigByNameLoading: boolean;
   updateAppConfig: (appConfigs: AppConfigDto) => Promise<void>;
   patchSingleFieldInConfig: (name: string, patchConfigDto: PatchConfigDto) => Promise<void>;
   deleteAppConfigEntry: (name: string) => Promise<void>;
@@ -61,8 +74,11 @@ const initialState = {
       position: 0,
     },
   ],
+  publicAppConfigs: [],
   isLoading: false,
   isGetAppConfigsLoading: false,
+  isGetPublicAppConfigsLoading: false,
+  isGetPublicAppConfigByNameLoading: false,
   isConfigFileLoading: false,
   error: null,
 };
@@ -71,8 +87,11 @@ const useAppConfigsStore = create<UseAppConfigsStore>(
   (persist as PersistedAppConfigsStore)(
     (set, get) => ({
       ...initialState,
-      reset: () => set(initialState),
-
+      reset: () =>
+        set((state) => ({
+          ...initialState,
+          publicAppConfigs: state.publicAppConfigs,
+        })),
       setIsAddAppConfigDialogOpen: (isAddAppConfigDialogOpen) => {
         set({ isAddAppConfigDialogOpen });
       },
@@ -104,6 +123,31 @@ const useAppConfigsStore = create<UseAppConfigsStore>(
           handleApiError(e, set);
         } finally {
           set({ isGetAppConfigsLoading: false });
+        }
+      },
+
+      getPublicAppConfigs: async () => {
+        set({ isGetPublicAppConfigsLoading: true, error: null });
+        try {
+          const { data } = await eduApi.get<AppConfigDto[]>(`${EDU_API_CONFIG_ENDPOINTS.ROOT}/public`);
+          set({ publicAppConfigs: data });
+        } catch (e) {
+          handleApiError(e, set);
+        } finally {
+          set({ isGetPublicAppConfigsLoading: false });
+        }
+      },
+
+      getPublicAppConfigByName: async (name: string) => {
+        set({ isGetPublicAppConfigByNameLoading: true, error: null });
+        try {
+          const { data } = await eduApi.get<AppConfigDto>(`${EDU_API_CONFIG_ENDPOINTS.ROOT}/public/${name}`);
+          return data;
+        } catch (e) {
+          handleApiError(e, set);
+          return {} as AppConfigDto;
+        } finally {
+          set({ isGetPublicAppConfigByNameLoading: false });
         }
       },
 
@@ -158,7 +202,7 @@ const useAppConfigsStore = create<UseAppConfigsStore>(
           const { data } = await eduApi.get<string>(
             `${EDU_API_CONFIG_ENDPOINTS.ROOT}/${EDU_API_CONFIG_ENDPOINTS.PROXYCONFIG}?filePath=${filePath}`,
           );
-          return atob(data);
+          return decodeBase64(data);
         } catch (e) {
           handleApiError(e, set);
           return '';
@@ -185,7 +229,7 @@ const useAppConfigsStore = create<UseAppConfigsStore>(
     {
       name: 'appConfig-storage',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ appConfigs: state.appConfigs }),
+      partialize: (state) => ({ appConfigs: state.appConfigs, publicAppConfigs: state.publicAppConfigs }),
     },
   ),
 );

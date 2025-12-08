@@ -1,6 +1,6 @@
 {
   "extends": ["../../.eslintrc.json"],
-  "ignorePatterns": ["jest.config.ts", "webpack.config.js", "vite.config.ts"],
+  "ignorePatterns": ["jest.config.ts", "webpack.config.js", "vite.config.mts"],
   "env": {
     "node": true,
     "browser": false,

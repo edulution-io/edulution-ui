@@ -1,25 +1,35 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { toast } from 'sonner';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { SurveyCreatorModel } from 'survey-creator-core';
-import { IoAdd } from 'react-icons/io5';
 import cn from '@libs/common/utils/className';
+import STANDARD_ACTION_TYPES from '@libs/common/constants/standardActionTypes';
+import { TableActionsConfig } from '@libs/common/types/tableActionsConfig';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
+import useTableActions from '@/hooks/useTableActions';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import APPS from '@libs/appconfig/constants/apps';
-import { SURVEY_CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import { PUBLIC_SURVEY_CHOICES, SURVEY_CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
@@ -80,10 +90,8 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     setIsUpdatingBackendLimiters(true);
 
     try {
-      let surveyFormula = form.watch('formula');
-      if (!surveyFormula) {
-        surveyFormula = creator.JSON as SurveyFormula;
-      }
+      const surveyFormula = creator.JSON as SurveyFormula;
+      const isPublic = form.getValues('isPublic') || false;
       const updatedFormula = JSON.parse(JSON.stringify(surveyFormula)) as SurveyFormula;
 
       let correspondingQuestion: SurveyElement | undefined;
@@ -107,7 +115,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       } else {
         correspondingQuestion.choices = null;
         correspondingQuestion.choicesByUrl = {
-          url: `${EDU_API_URL}/${SURVEY_CHOICES}/${TEMPORAL_SURVEY_ID_STRING}/${selectedQuestion.name}`,
+          url: `${EDU_API_URL}/${isPublic ? PUBLIC_SURVEY_CHOICES : SURVEY_CHOICES}/${TEMPORAL_SURVEY_ID_STRING}/${selectedQuestion.name}`,
           valueName: 'title',
           titleName: 'title',
         };
@@ -131,6 +139,18 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
       toggleShowOtherItem();
     }
   };
+
+  const actionsConfig = useMemo<TableActionsConfig<ChoiceDto>>(
+    () => [
+      {
+        type: STANDARD_ACTION_TYPES.ADD,
+        onClick: () => addNewChoice(),
+      },
+    ],
+    [addNewChoice],
+  );
+
+  const actions = useTableActions(actionsConfig, []);
 
   if (!form) return null;
   if (!isQuestionTypeChoiceType(questionType)) return null;
@@ -163,13 +183,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
               filterKey="choice-title"
               filterPlaceHolderText={t('survey.editor.questionSettings.filterPlaceHolderText')}
               applicationName={APPS.SURVEYS}
-              actions={[
-                {
-                  icon: IoAdd,
-                  translationId: 'common.add',
-                  onClick: () => addNewChoice(),
-                },
-              ]}
+              actions={actions}
               showSelectedCount={false}
               isDialog
               initialSorting={[{ id: 'choice-title', desc: false }]}

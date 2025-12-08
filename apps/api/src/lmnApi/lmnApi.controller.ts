@@ -1,22 +1,31 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   Headers,
   Param,
+  ParseBoolPipe,
   Patch,
   Post,
   Put,
@@ -25,12 +34,14 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { Response } from 'express';
-import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/eduApiEndpoints';
+import LMN_API_EDU_API_ENDPOINTS from '@libs/lmnApi/constants/lmnApiEduApiEndpoints';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
 import GroupForm from '@libs/groups/types/groupForm';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
+import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
+import GroupFormDto from '@libs/groups/types/groupForm.dto';
 import LmnApiService from './lmnApi.service';
 import GetCurrentOrganisationPrefix from '../common/decorators/getCurrentOrganisationPrefix.decorator';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
@@ -44,6 +55,11 @@ const { ROOT, USERS_QUOTA } = LMN_API_EDU_API_ENDPOINTS;
 export class LmnApiController {
   constructor(private readonly lmnApiService: LmnApiService) {}
 
+  @Get('auth')
+  async getLmnApiToken(@GetCurrentUsername() username: string) {
+    return this.lmnApiService.getLmnApiToken(username);
+  }
+
   @Post('passwords')
   async printPasswords(
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
@@ -53,7 +69,7 @@ export class LmnApiController {
     const apiResponse = await this.lmnApiService.printPasswords(lmnApiToken, body.options);
     res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.APPLICATION_PDF as string);
     res.setHeader(HTTP_HEADERS.ContentDisposition, apiResponse.headers['content-disposition'] as string);
-    res.send(Buffer.from(apiResponse.data as ArrayBuffer));
+    res.send(Buffer.from(apiResponse.data));
   }
 
   @Put('exam-mode/:state')
@@ -99,10 +115,11 @@ export class LmnApiController {
 
   @Put('school-classes/:schoolClass/:action')
   async toggleSchoolClassJoined(
-    @Param() params: { schoolClass: string; action: string },
+    @Param() params: { schoolClass: string; action: GroupJoinState },
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @GetCurrentUsername() username: string,
   ) {
-    return this.lmnApiService.toggleSchoolClassJoined(lmnApiToken, params.schoolClass, params.action);
+    return this.lmnApiService.toggleSchoolClassJoined(lmnApiToken, params.schoolClass, params.action, username);
   }
 
   @Get('room')
@@ -113,15 +130,19 @@ export class LmnApiController {
   @Get('sessions/:sessionId')
   async getUserSession(
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
-    @Param() params: { sessionSid: string },
+    @Param() params: { sessionId: string },
     @GetCurrentUsername() username: string,
   ) {
-    return this.lmnApiService.getUserSession(lmnApiToken, params.sessionSid, username);
+    return this.lmnApiService.getUserSession(lmnApiToken, params.sessionId, username);
   }
 
   @Get('sessions')
-  async getUserSessions(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string, @GetCurrentUsername() username: string) {
-    return this.lmnApiService.getUserSessions(lmnApiToken, username);
+  async getUserSessions(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @GetCurrentUsername() username: string,
+    @Query('withMemberDetails', new DefaultValuePipe(false), ParseBoolPipe) withMemberDetails: boolean,
+  ) {
+    return this.lmnApiService.getUserSessions(lmnApiToken, username, withMemberDetails);
   }
 
   @Post('sessions')
@@ -195,7 +216,7 @@ export class LmnApiController {
   @Post('projects')
   async createProject(
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
-    @Body() body: { formValues: GroupForm },
+    @Body() body: { formValues: GroupFormDto },
     @GetCurrentUsername() username: string,
   ) {
     return this.lmnApiService.createProject(lmnApiToken, body.formValues, username);
@@ -204,7 +225,7 @@ export class LmnApiController {
   @Patch('projects')
   async updateProject(
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
-    @Body() body: { formValues: GroupForm },
+    @Body() body: { formValues: GroupFormDto },
     @GetCurrentUsername() username: string,
   ) {
     return this.lmnApiService.updateProject(lmnApiToken, body.formValues, username);
@@ -227,18 +248,20 @@ export class LmnApiController {
 
   @Put('projects/:project/:action')
   async toggleProjectJoined(
-    @Param() params: { project: string; action: string },
+    @Param() params: { project: string; action: GroupJoinState },
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @GetCurrentUsername() username: string,
   ) {
-    return this.lmnApiService.toggleProjectJoined(lmnApiToken, params.project, params.action);
+    return this.lmnApiService.toggleProjectJoined(lmnApiToken, params.project, params.action, username);
   }
 
   @Put('printers/:project/:action')
   async togglePrinterJoined(
-    @Param() params: { project: string; action: string },
+    @Param() params: { project: string; action: GroupJoinState },
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @GetCurrentUsername() username: string,
   ) {
-    return this.lmnApiService.togglePrinterJoined(lmnApiToken, params.project, params.action);
+    return this.lmnApiService.togglePrinterJoined(lmnApiToken, params.project, params.action, username);
   }
 
   @Get('printers')
@@ -269,6 +292,16 @@ export class LmnApiController {
     @Body() body: { password: string; username: string },
   ) {
     return this.lmnApiService.setFirstPassword(lmnApiToken, body.username, body.password);
+  }
+
+  @Get('schools')
+  async getSchools(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string) {
+    return this.lmnApiService.getSchools(lmnApiToken);
+  }
+
+  @Get('server/lmnversion')
+  async getLmnVersion(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string) {
+    return this.lmnApiService.getLmnVersion(lmnApiToken);
   }
 }
 
