@@ -31,7 +31,7 @@ import PageLayout from '@/components/structure/layout/PageLayout';
 
 const SurveyEditorOpeningPage = () => {
   const { user } = useUserStore();
-  const surveyCreator: AttendeeDto | undefined = useMemo(() => getCreatorFromUserDto(user), [user]);
+  const surveyCreator: AttendeeDto = useMemo(() => getCreatorFromUserDto(user), [user]);
 
   const { reset: resetEditorPage, fetchSelectedSurvey, initialSurvey, resetStoredSurvey } = useSurveyEditorPageStore();
   const { reset: resetTemplateStore } = useTemplateMenuStore();
@@ -41,13 +41,9 @@ const SurveyEditorOpeningPage = () => {
 
   useEffect(() => {
     resetEditorPage();
-  }, []);
-
-  useEffect(() => {
     if (!surveyId) {
       return;
     }
-    resetEditorPage();
     resetStoredSurvey();
     resetTemplateStore();
     resetQuestionsContextMenu();
@@ -56,7 +52,11 @@ const SurveyEditorOpeningPage = () => {
 
   return (
     <PageLayout>
-      {!initialSurvey ? <SurveyEditorLoadingPage /> : <SurveyEditorPage initialFormValues={initialSurvey} />}
+      {!initialSurvey ? (
+        <SurveyEditorLoadingPage surveyCreator={surveyCreator} />
+      ) : (
+        <SurveyEditorPage initialFormValues={initialSurvey} />
+      )}
     </PageLayout>
   );
 };
