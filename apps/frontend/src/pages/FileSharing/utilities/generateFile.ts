@@ -30,8 +30,8 @@ import DocumentVendorsType from '@libs/filesharing/types/documentVendorsType';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/constants/availableFileTypes';
 import OPEN_DOCUMENT_TEMPLATE_PATH from '@libs/filesharing/constants/openDocumentTemplatePath';
 import PREDEFINED_EXTENSIONS, { PredefinedExtensionKey } from '@libs/filesharing/constants/predefinedExtensions';
-import { toast } from 'sonner';
-import i18n from '@/i18n';
+import GenerateFileResult from '@libs/filesharing/types/generateFileResult';
+import buildFilenameWithExtension from '@libs/filesharing/utils/buildFilenameWithExtension';
 
 const generateFile = async (
   fileType: TAvailableFileTypes | '',
@@ -39,14 +39,14 @@ const generateFile = async (
   format: DocumentVendorsType,
   onlyReturnExtension: boolean = false,
   customExtension?: string,
-): Promise<{ file?: File; extension: string }> => {
+): Promise<GenerateFileResult> => {
   let file: File;
   let extension: string;
 
   switch (fileType) {
     case AVAILABLE_FILE_TYPES.documentFile: {
       extension = format === DocumentVendors.MSO ? OnlyOfficeDocumentTypes.DOCX : OnlyOfficeDocumentTypes.ODT;
-      if (onlyReturnExtension) return { extension };
+      if (onlyReturnExtension) return { success: true, extension };
       if (format === DocumentVendors.MSO) {
         const doc = new Document({ title: basename, description: '', sections: [] });
         const blob = await Packer.toBlob(doc);
@@ -63,7 +63,7 @@ const generateFile = async (
 
     case AVAILABLE_FILE_TYPES.spreadsheetFile: {
       extension = format === DocumentVendors.MSO ? OnlyOfficeDocumentTypes.XLSX : OnlyOfficeDocumentTypes.ODS;
-      if (onlyReturnExtension) return { extension };
+      if (onlyReturnExtension) return { success: true, extension };
       if (format === DocumentVendors.MSO) {
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet(basename);
@@ -85,7 +85,7 @@ const generateFile = async (
 
     case AVAILABLE_FILE_TYPES.presentationFile: {
       extension = format === DocumentVendors.MSO ? OnlyOfficeDocumentTypes.PPTX : OnlyOfficeDocumentTypes.ODP;
-      if (onlyReturnExtension) return { extension };
+      if (onlyReturnExtension) return { success: true, extension };
       if (format === DocumentVendors.MSO) {
         const pptx = new PptxGenJS();
         pptx.title = basename;
@@ -106,7 +106,7 @@ const generateFile = async (
 
     case AVAILABLE_FILE_TYPES.textFile: {
       extension = OnlyOfficeDocumentTypes.TXT;
-      if (onlyReturnExtension) return { extension };
+      if (onlyReturnExtension) return { success: true, extension };
       const textBlob = new Blob([''], { type: RequestResponseContentType.TEXT_PLAIN });
       file = new File([textBlob], `${basename}.${extension}`, { type: textBlob.type });
       break;
@@ -114,7 +114,7 @@ const generateFile = async (
 
     case AVAILABLE_FILE_TYPES.drawIoFile: {
       extension = 'drawio';
-      if (onlyReturnExtension) return { extension };
+      if (onlyReturnExtension) return { success: true, extension };
       const xml = create({ version: '1.0', encoding: 'UTF-8' })
         .ele('mxfile', { host: 'app.diagrams.net' })
         .ele('diagram', { name: basename })
@@ -153,26 +153,21 @@ const generateFile = async (
     }
 
     case AVAILABLE_FILE_TYPES.customFile: {
-      if (!customExtension) {
-        toast.error(i18n.t('errors.fileGenerationFailed'));
-        throw new Error('Custom extension is required for custom file type');
-      }
-      const ext = customExtension.startsWith('.') ? customExtension.slice(1) : customExtension;
+      const ext = customExtension?.startsWith('.') ? customExtension.slice(1) : customExtension || '';
       extension = ext;
-      if (onlyReturnExtension) return { extension };
-      const predefined = PREDEFINED_EXTENSIONS[ext as PredefinedExtensionKey];
+      if (onlyReturnExtension) return { success: true, extension };
+      const predefined = ext ? PREDEFINED_EXTENSIONS[ext as PredefinedExtensionKey] : undefined;
       const mimeType = predefined?.mimeType || 'application/octet-stream';
       const emptyBlob = new Blob([''], { type: mimeType });
-      file = new File([emptyBlob], `${basename}.${extension}`, { type: emptyBlob.type });
+      file = new File([emptyBlob], buildFilenameWithExtension(basename, ext), { type: emptyBlob.type });
       break;
     }
 
     default:
-      toast.error(i18n.t('errors.fileGenerationFailed'));
-      throw new Error(`Unsupported file type: ${fileType}`);
+      return { success: false, error: `Unsupported file type: ${fileType}` };
   }
 
-  return { file, extension };
+  return { success: true, file, extension };
 };
 
 export default generateFile;

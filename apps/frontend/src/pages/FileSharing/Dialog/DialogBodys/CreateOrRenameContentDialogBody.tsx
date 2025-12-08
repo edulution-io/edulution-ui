@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
 import { FilesharingDialogProps } from '@libs/filesharing/types/filesharingDialogProps';
@@ -29,12 +29,7 @@ import generateFile from '@/pages/FileSharing/utilities/generateFile';
 import getDocumentVendor from '@libs/filesharing/utils/getDocumentVendor';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/constants/availableFileTypes';
-
-const buildFilenameWithExtension = (name: string, ext: string): string => {
-  if (!ext) return name;
-  if (ext.startsWith('.')) return `${name}${ext}`;
-  return `${name}.${ext}`;
-};
+import buildFilenameWithExtension from '@libs/filesharing/utils/buildFilenameWithExtension';
 
 const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ form, isRenaming }) => {
   const { selectedItems, files } = useFileSharingStore();
@@ -70,56 +65,58 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
     (isRenaming && extension && selectedItems.length === 1 && selectedItems[0].type === ContentType.FILE) ||
     isCustomFileWithoutPredefinedExtension;
 
-  const [filenameAlreadyExists, setFilenameAlreadyExists] = React.useState(false);
-  const [isSameAsOriginal, setIsSameAsOriginal] = React.useState(false);
+  const [filenameAlreadyExists, setFilenameAlreadyExists] = useState(false);
+  const [isSameAsOriginal, setIsSameAsOriginal] = useState(false);
   const originalFilename = isRenaming && selectedItems.length === 1 ? selectedItems[0].filename : '';
 
-  useEffect(() => {
-    const checkIfFilenameAlreadyExists = async () => {
-      if (!filename) {
-        setFilenameAlreadyExists(false);
-        setIsSameAsOriginal(false);
-        setSubmitButtonIsDisabled(true);
-        return;
-      }
+  const checkIfFilenameAlreadyExists = useCallback(async () => {
+    if (!filename) {
+      setFilenameAlreadyExists(false);
+      setIsSameAsOriginal(false);
+      setSubmitButtonIsDisabled(true);
+      return;
+    }
 
-      const newFilename = buildFilenameWithExtension(filename, extension);
-      const sameAsOriginal = Boolean(isRenaming && newFilename === originalFilename);
-      setIsSameAsOriginal(sameAsOriginal);
+    const newFilename = buildFilenameWithExtension(filename, extension);
+    const sameAsOriginal = Boolean(isRenaming && newFilename === originalFilename);
+    setIsSameAsOriginal(sameAsOriginal);
 
-      if (sameAsOriginal) {
-        setFilenameAlreadyExists(false);
-        setSubmitButtonIsDisabled(true);
-        return;
-      }
+    if (sameAsOriginal) {
+      setFilenameAlreadyExists(false);
+      setSubmitButtonIsDisabled(true);
+      return;
+    }
 
-      const filesToCheck = isRenaming ? files.filter((file) => file.filename !== originalFilename) : files;
+    const filesToCheck = isRenaming ? files.filter((file) => file.filename !== originalFilename) : files;
 
-      let alreadyExists: boolean;
+    let alreadyExists: boolean;
 
-      if (selectedFileType === AVAILABLE_FILE_TYPES.customFile) {
-        const ext = customExtension || extension?.replace(/^\./, '') || '';
-        if (ext) {
-          alreadyExists = filesToCheck.some((file) => file.filename === `${filename}.${ext}`);
-        } else {
-          alreadyExists = filesToCheck.some((file) => file.filename === filename);
-        }
-        setFilenameAlreadyExists(alreadyExists);
-        setSubmitButtonIsDisabled(alreadyExists || filename.length === 0 || (!customExtension && !extension));
-      } else if (selectedFileType) {
-        const generatedFilename = await generateFile(selectedFileType, filename, documentVendor, true);
-        alreadyExists = filesToCheck.some((file) => file.filename === `${filename}.${generatedFilename.extension}`);
-        setFilenameAlreadyExists(alreadyExists);
-        setSubmitButtonIsDisabled(alreadyExists || filename.length === 0);
+    if (selectedFileType === AVAILABLE_FILE_TYPES.customFile) {
+      const ext = customExtension || extension?.replace(/^\./, '') || '';
+      if (ext) {
+        alreadyExists = filesToCheck.some((file) => file.filename === `${filename}.${ext}`);
       } else {
-        const finalFilename = buildFilenameWithExtension(filename, extension);
-        alreadyExists = filesToCheck.some((file) => file.filename === finalFilename);
-        setFilenameAlreadyExists(alreadyExists);
-        setSubmitButtonIsDisabled(alreadyExists || filename.length === 0);
+        alreadyExists = filesToCheck.some((file) => file.filename === filename);
       }
-    };
-
-    void checkIfFilenameAlreadyExists();
+      setFilenameAlreadyExists(alreadyExists);
+      setSubmitButtonIsDisabled(alreadyExists || filename.length === 0);
+    } else if (selectedFileType) {
+      const result = await generateFile(selectedFileType, filename, documentVendor, true);
+      if (!result.success) {
+        setFilenameAlreadyExists(false);
+        setSubmitButtonIsDisabled(true);
+        return;
+      }
+      const fullFilename = result.extension ? `${filename}.${result.extension}` : filename;
+      alreadyExists = filesToCheck.some((file) => file.filename === fullFilename);
+      setFilenameAlreadyExists(alreadyExists);
+      setSubmitButtonIsDisabled(alreadyExists || filename.length === 0);
+    } else {
+      const finalFilename = buildFilenameWithExtension(filename, extension);
+      alreadyExists = filesToCheck.some((file) => file.filename === finalFilename);
+      setFilenameAlreadyExists(alreadyExists);
+      setSubmitButtonIsDisabled(alreadyExists || filename.length === 0);
+    }
   }, [
     files,
     selectedFileType,
@@ -131,6 +128,10 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
     isRenaming,
     originalFilename,
   ]);
+
+  useEffect(() => {
+    void checkIfFilenameAlreadyExists();
+  }, [checkIfFilenameAlreadyExists]);
 
   return (
     <Form {...form}>
