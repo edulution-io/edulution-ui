@@ -161,6 +161,15 @@ iframe {
   max-width: 620px;
 }
 
+.bg-transparent {
+  background-color: color-mix(in srgb, var(--foreground) 50%, transparent);
+  box-shadow:
+    0 5px 20px -5px rgb(71 85 105 / 0.2),
+    0 8px 10px -6px rgb(71 85 105 / 0.5),
+    inset 0 1px 1px 0 rgba(238, 202, 86, 0.15),
+    inset 0 -1px 1px 0 rgba(0, 0, 0, 0.1);
+}
+
 .black-centered-shadow {
   -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 1);
   -moz-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 1);
