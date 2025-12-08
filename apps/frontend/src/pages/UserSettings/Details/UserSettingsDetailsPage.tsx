@@ -23,12 +23,12 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import { UserDetailsSettingsIcon } from '@/assets/icons';
 import UserSettingsDetailsForm from '@/pages/UserSettings/Details/UserSettingsDetailsForm';
 import Quota from '@/pages/Dashboard/Quota';
-import Separator from '@/components/ui/Separator';
 import Field from '@/components/shared/Field';
 import Label from '@/components/ui/Label';
 import BadgeField from '@/components/shared/BadgeField';
 import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import { SectionAccordion, SettingsAccordionItem } from '@/components/ui/SectionAccordion';
 import UserImageConfig from './UserImageConfig';
 
 const UserSettingsDetailsPage: React.FC = () => {
@@ -64,49 +64,55 @@ const UserSettingsDetailsPage: React.FC = () => {
         iconSrc: UserDetailsSettingsIcon,
       }}
     >
-      <UserImageConfig />
-      <Separator className="my-4 bg-muted" />
+      <SectionAccordion defaultOpenAll>
+        <SettingsAccordionItem
+          id="profileImage"
+          label={t('usersettings.details.userimageconfig')}
+        >
+          <UserImageConfig />
+        </SettingsAccordionItem>
 
-      <div className="md:max-w-[75%]">
-        <h2 className="text-background">{t('usersettings.details.userInformation')}</h2>
-        <div className="py-4 text-background">
-          {userInfo.map((field) => (
-            <Field
-              key={`userInfoField-${field.name}`}
-              value={field.value}
-              labelTranslationId={field.label}
-              className="mb-4 mt-2"
-              disabled
-            />
-          ))}
+        <SettingsAccordionItem
+          id="userInformation"
+          label={t('usersettings.details.userInformation')}
+        >
+          <div className="space-y-4">
+            {userInfo.map((field) => (
+              <Field
+                key={`userInfoField-${field.name}`}
+                value={field.value}
+                labelTranslationId={field.label}
+                disabled
+              />
+            ))}
 
-          <Label>
-            <p className="font-bold">{t('usersettings.details.schoolSubjects')}</p>
-          </Label>
-          <BadgeField
-            value={schoolClasses}
-            readOnly
-            className="mt-2"
-          />
-        </div>
-      </div>
-      <Separator className="my-4 bg-muted" />
+            <div>
+              <Label>
+                <p className="font-bold">{t('usersettings.details.schoolSubjects')}</p>
+              </Label>
+              <BadgeField
+                value={schoolClasses}
+                readOnly
+                className="mt-2"
+              />
+            </div>
+          </div>
+        </SettingsAccordionItem>
 
-      <h2 className="text-background">{t('usersettings.details.title')}</h2>
-      <div className="mb-4 space-y-4 py-4">
-        <UserSettingsDetailsForm />
-      </div>
+        <SettingsAccordionItem
+          id="accountSettings"
+          label={t('usersettings.details.title')}
+        >
+          <UserSettingsDetailsForm />
+        </SettingsAccordionItem>
 
-      <Separator className="my-4 bg-muted" />
-
-      <div className="md:max-w-[75%]">
-        <h2 className="text-background">{t('usersettings.details.quotas')}</h2>
-        <div className="py-4 text-muted">
+        <SettingsAccordionItem
+          id="quotas"
+          label={t('usersettings.details.quotas')}
+        >
           <Quota />
-        </div>
-
-        <div className="h-[50px]" />
-      </div>
+        </SettingsAccordionItem>
+      </SectionAccordion>
     </PageLayout>
   );
 };

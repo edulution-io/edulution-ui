@@ -25,26 +25,29 @@ import AppConfigTable from '@/pages/Settings/AppConfig/components/table/AppConfi
 import cn from '@libs/common/utils/className';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { type AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
-import type AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
 import EmbeddedPageEditorForm from '@libs/appconfig/types/embeddedPageEditorForm';
 import AppConfigDropdownSelect from '@/pages/Settings/AppConfig/components/dropdown/AppConfigDropdownSelect';
-import AppConfigSwitch from './booleanField/AppConfigSwitch';
-import EmbeddedPageEditor from './EmbeddedPageEditor';
-import AppConfigUpdateChecker from './updateChecker/AppConfigUpdateChecker';
+import EmbeddedPageEditor from '@/pages/Settings/AppConfig/components/EmbeddedPageEditor';
+import AppConfigSwitch from '@/pages/Settings/AppConfig/components/booleanField/AppConfigSwitch';
+import AppConfigUpdateChecker from '@/pages/Settings/AppConfig/components/updateChecker/AppConfigUpdateChecker';
 
-type ExtendedOptionsFormProps<T extends FieldValues> = {
-  extendedOptions: AppConfigExtendedOptionsBySections | undefined;
+type ExtendedOptionsSectionContentProps<T extends FieldValues> = {
+  section: string;
+  options: AppConfigExtendedOption[];
   control: Control<T>;
   settingLocation: string;
   form: UseFormReturn<T>;
 };
 
-const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T extends FieldValues>({
-  extendedOptions,
+const ExtendedOptionsSectionContent: React.FC<ExtendedOptionsSectionContentProps<FieldValues>> = <
+  T extends FieldValues,
+>({
+  section,
+  options,
   form,
   control,
   settingLocation,
-}: ExtendedOptionsFormProps<T>) => {
+}: ExtendedOptionsSectionContentProps<T>) => {
   const { t } = useTranslation();
 
   const renderComponent = (option: AppConfigExtendedOption) => {
@@ -71,7 +74,6 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
             type="password"
           />
         );
-
       case ExtendedOptionField.number:
         return (
           <AppConfigFormField
@@ -100,8 +102,6 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
         );
       case ExtendedOptionField.textarea:
         return (
-          // TODO: Rework this component to be a generic textarea for reusablity
-          // https://github.com/edulution-io/edulution-ui/issues/724
           <EmbeddedPageEditor
             name={settingLocation}
             form={form as unknown as UseFormReturn<EmbeddedPageEditorForm>}
@@ -129,34 +129,25 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
   };
 
   return (
-    extendedOptions &&
-    Object.entries(extendedOptions).map(([section, options]) => (
-      <div
-        key={section}
-        className="space-y-4"
-      >
-        <div>
-          <h3 className="text-xl font-bold">{t(`settings.appconfig.sections.${section}.title`)}</h3>
-          <p className="text-base text-muted-foreground">{t(`settings.appconfig.sections.${section}.description`)}</p>
-        </div>
-        <div className="flex flex-wrap justify-between gap-4">
-          {options?.map((option: AppConfigExtendedOption) => (
-            <div
-              key={`key_${section}_${option.name}`}
-              className={cn(
-                { 'w-full': option.width === 'full' },
-                { 'w-[calc(50%-0.75rem)]': option.width === 'half' },
-                { 'w-[calc(33%-1.5rem)]': option.width === 'third' },
-                { 'w-[calc(25%-2.25rem)]': option.width === 'quarter' },
-              )}
-            >
-              {renderComponent(option)}
-            </div>
-          ))}
-        </div>
+    <div className="space-y-4">
+      <p className="text-base text-muted-foreground">{t(`settings.appconfig.sections.${section}.description`)}</p>
+      <div className="flex flex-wrap justify-between gap-4">
+        {options?.map((option: AppConfigExtendedOption) => (
+          <div
+            key={`key_${section}_${option.name}`}
+            className={cn(
+              { 'w-full': option.width === 'full' },
+              { 'w-[calc(50%-0.75rem)]': option.width === 'half' },
+              { 'w-[calc(33%-1.5rem)]': option.width === 'third' },
+              { 'w-[calc(25%-2.25rem)]': option.width === 'quarter' },
+            )}
+          >
+            {renderComponent(option)}
+          </div>
+        ))}
       </div>
-    ))
+    </div>
   );
 };
 
-export default ExtendedOptionsForm;
+export default ExtendedOptionsSectionContent;
