@@ -17,13 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AVAILABLE_FILE_TYPES = {
-  drawIoFile: 'drawIoFile',
-  textFile: 'textFile',
-  documentFile: 'documentFile',
-  spreadsheetFile: 'spreadsheetFile',
-  presentationFile: 'presentationFile',
-  customFile: 'customFile',
-} as const;
+const buildFilenameWithExtension = (name: string, ext: string): string => {
+  if (!ext) return name;
+  if (ext.startsWith('.')) return `${name}${ext}`;
+  return `${name}.${ext}`;
+};
 
-export default AVAILABLE_FILE_TYPES;
+export default buildFilenameWithExtension;

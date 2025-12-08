@@ -342,6 +342,12 @@
     "rowSelected": "{{selected}} of {{total}} file selected",
     "fileWithSameNameAlreadyExists": "A file with the same name already exists.",
     "folderWithSameNameAlreadyExists": "A folder with the same name already exists.",
+    "currentName": "Current name",
+    "sameNameAsOriginal": "Please enter a different name",
+    "placeholder": {
+      "filename": "Name",
+      "extension": ".ext"
+    },
     "errors": {
       "FileNotFound": "File not found",
       "MountPointsNotFound": "Mount points not found",
@@ -1626,8 +1632,29 @@
       "textFile": "New Textfile",
       "spreadsheetFile": "New Table",
       "presentationFile": "New Presentation",
-      "documentFile": "New Document"
-    }
+      "documentFile": "New Document",
+      "json": "JSON File (.json)",
+      "yaml": "YAML File (.yaml)",
+      "yml": "YAML File (.yml)",
+      "toml": "TOML File (.toml)",
+      "xml": "XML File (.xml)",
+      "cfg": "Config File (.cfg)",
+      "ini": "INI File (.ini)",
+      "env": "Environment File (.env)",
+      "md": "Markdown File (.md)",
+      "html": "HTML File (.html)",
+      "css": "CSS File (.css)",
+      "csv": "CSV File (.csv)",
+      "sh": "Shell Script (.sh)",
+      "bat": "Batch File (.bat)",
+      "ps1": "PowerShell Script (.ps1)",
+      "py": "Python Script (.py)",
+      "js": "JavaScript File (.js)",
+      "customFile": "Other file"
+    },
+    "customFile": "Create a new file",
+    "moreFileTypes": "More file types",
+    "lessFileTypes": "Less file types"
   },
   "fileRenameContent": {
     "placeholder": "Enter new name",

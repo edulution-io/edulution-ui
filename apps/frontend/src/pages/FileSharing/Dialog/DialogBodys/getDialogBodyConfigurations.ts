@@ -42,6 +42,7 @@ import FILESHARING_SHARED_FILES_API_ENDPOINT from '@libs/filesharing/constants/f
 import { t } from 'i18next';
 import stripTrailingSlash from '@libs/filesharing/utils/stripTrailingSlash';
 import FileSelectorDialogProps from '@libs/filesharing/types/fileSelectorDialogProps';
+import buildFilenameWithExtension from '@libs/filesharing/utils/buildFilenameWithExtension';
 
 interface DialogBodyConfigurationBase {
   schema?: z.ZodSchema<FileSharingFormValues>;
@@ -136,16 +137,22 @@ const createFileConfig: CreateFileDialogBodyConfiguration = {
   httpMethod: HttpMethods.POST,
   type: ContentType.FILE,
   requiresForm: true,
-  getData: async (form, currentPath, { documentVendor, selectedFileType }) => {
+  getData: async (form, currentPath, { documentVendor, selectedFileType, customExtension }) => {
     const filename = form.getValues('filename');
+    const formExtension = form.getValues('extension')?.replace(/^\./, '') || '';
+    const extensionToUse = customExtension || formExtension;
 
-    const { file, extension } = await generateFile(selectedFileType, filename, documentVendor);
+    const result = await generateFile(selectedFileType, filename, documentVendor, false, extensionToUse);
+
+    if (!result.success) {
+      return [];
+    }
 
     return [
       {
         path: currentPath,
-        name: `${filename}.${extension}`,
-        file,
+        name: buildFilenameWithExtension(filename, result.extension),
+        file: result.file,
       },
     ];
   },
