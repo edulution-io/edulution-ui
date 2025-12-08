@@ -41,13 +41,9 @@ const SurveyEditorOpeningPage = () => {
 
   useEffect(() => {
     resetEditorPage();
-  }, []);
-
-  useEffect(() => {
     if (!surveyId) {
       return;
     }
-    resetEditorPage();
     resetStoredSurvey();
     resetTemplateStore();
     resetQuestionsContextMenu();

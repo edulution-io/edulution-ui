@@ -25,7 +25,6 @@ import { SURVEY_TEMPLATES_ENDPOINT } from '@libs/survey/constants/surveys-endpoi
 import handleApiError from '@/utils/handleApiError';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 
-
 interface TemplateMenuStore {
   reset: () => void;
 
@@ -71,6 +70,8 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
       set({ templates: result.data });
     } catch (error) {
       handleApiError(error, set);
+    } finally {
+      set({ isLoading: false });
     }
   },
 

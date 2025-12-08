@@ -586,6 +586,7 @@
     "noAnswer": "Aucune réponse n'est encore disponible.",
     "canSubmitMultiple": "Autoriser plusieurs réponses.",
     "editor": {
+      "inputFieldTitle": "Champ de saisie",
       "new": "Nouveau (vide)",
       "saveSurveySuccess": "Le sondage a été enregistrée.",
       "surveyPlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
@@ -597,6 +598,7 @@
       "addDescription": "Ajouter une description",
       "expectingUserInput": "Ici, la réponse du participant est attendue ... ",
       "templates": "Modèles",
+      "noTemplates": "Aucun modèle disponible",
       "noSearchResults": "Aucun modèle trouvé",
       "templateMenu": {
         "fetch": "Choisissez l'un des modèles disponibles.",

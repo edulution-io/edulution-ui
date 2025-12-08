@@ -57,17 +57,14 @@ const SurveyEditorLoadingPage = () => {
     return templates.filter((surveyTemplate) => isSubsequence(searchString, surveyTemplate.name?.toLowerCase() || ''));
   }, [templates, language, search]);
 
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent) => {
-      if (event.key !== 'Enter') return;
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    if (event.key !== 'Enter') return;
 
-      const active = document.activeElement;
-      if (active instanceof HTMLInputElement && active.getAttribute('aria-label') === SEARCH_INPUT_LABEL) {
-        event.preventDefault();
-      }
-    },
-    [filteredTemplates],
-  );
+    const active = document.activeElement;
+    if (active instanceof HTMLInputElement && active.getAttribute('aria-label') === SEARCH_INPUT_LABEL) {
+      event.preventDefault();
+    }
+  }, []);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -96,7 +93,6 @@ const SurveyEditorLoadingPage = () => {
           <VscNewFile className="h-10 w-10 md:h-14 md:w-14" />
           <p>{t('survey.editor.new')}</p>
         </Card>
-
         {filteredTemplates.length ? (
           filteredTemplates.map((template) => (
             <div key={template.name}>
@@ -107,7 +103,9 @@ const SurveyEditorLoadingPage = () => {
             </div>
           ))
         ) : (
-          <p className="px-2 py-16">{t('survey.editor.noSearchResults')}</p>
+          <p className="px-2 py-16">
+            {templates.length === 0 ? t('survey.editor.noTemplates') : t('survey.editor.noSearchResults')}
+          </p>
         )}
       </div>
     </>
