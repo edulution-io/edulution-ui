@@ -14,7 +14,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Model, Survey } from 'survey-react-ui';
 import useLanguage from '@/hooks/useLanguage';
-import surveyTheme from '@/pages/Surveys/theme/theme';
+import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
 
@@ -40,6 +40,7 @@ const SurveyEditorLoadingPreview = (): JSX.Element | null => {
       titleTranslationId={t('common.preview')}
       handleClose={() => setIsOpenTemplatePreview(false)}
       openMaximized={false}
+      disableMinimizeWindow
       disableToggleMaximizeWindow
     >
       <div className="h-full w-full pb-10">

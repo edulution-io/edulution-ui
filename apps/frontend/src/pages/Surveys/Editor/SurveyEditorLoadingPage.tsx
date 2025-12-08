@@ -97,7 +97,7 @@ const SurveyEditorLoadingPage = () => {
             GRID_CARD,
             'flex items-center justify-center bg-muted',
             { 'h-[13rem]': !isSuperAdmin },
-            { 'h-[14rem]': isSuperAdmin },
+            { 'h-[14.2rem]': isSuperAdmin },
           )}
           variant="text"
           onClick={() => {

@@ -45,7 +45,7 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
     setIsOpenTemplateConfirmDeletion,
     setIsTemplateActive,
     setIsOpenTemplatePreview,
-    fetchTemplates
+    fetchTemplates,
   } = useTemplateMenuStore();
 
   const { isSuperAdmin } = useLdapGroups();
@@ -74,8 +74,7 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
         { 'bg-muted': active },
         { 'bg-accent': !active },
         { 'h-[13rem]': !isSuperAdmin },
-        { 'h-[14rem] pb-12': isSuperAdmin },
-        // 'flex',
+        { 'h-[14.2rem] pb-12': isSuperAdmin },
       )}
       variant="text"
       onClick={() => {
@@ -94,7 +93,12 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
       >
         <MdOutlineOpenInNew className="h-10 w-10" />
       </Button>
-      <h3 className="line-clamp-2 h-[3.8rem] w-full" aria-label={`Template title: ${title}`}>{title}</h3>
+      <h3
+        className="line-clamp-2 h-[3.8rem] w-full"
+        aria-label={`Template title: ${title}`}
+      >
+        {title}
+      </h3>
       <p className="line-clamp-2 h-[2.8rem] w-full">{description}</p>
       {isSuperAdmin && (
         <div className="absolute bottom-2 flex h-8 w-full flex-row justify-end gap-2 px-2 text-sm italic text-muted-foreground">
