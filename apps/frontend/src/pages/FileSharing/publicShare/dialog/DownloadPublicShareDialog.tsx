@@ -1,14 +1,22 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
+
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
@@ -33,6 +41,8 @@ import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareS
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useUserStore from '@/store/UserStore/useUserStore';
 import { toast } from 'sonner';
+import { LiaFileDownloadSolid } from 'react-icons/lia';
+import { BUTTONS_ICON_WIDTH } from '@libs/ui/constants';
 import PublicShareMetaDetails from '../publicPage/components/PublicShareMetaDetails';
 
 const schema = z.object({ password: z.string().optional() });
@@ -58,7 +68,7 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
 
   const { isAccessRestricted, requiresPassword, publicShare } = fetchedShareByIdResult;
 
-  const share = publicShare && Array.isArray(publicShare) ? publicShare[0] : publicShare;
+  const publicShareDto = publicShare && Array.isArray(publicShare) ? publicShare[0] : publicShare;
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { password: '' },
@@ -69,12 +79,14 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
     void fetchShareById(publicShareId);
   }, [publicShareId]);
 
+  const titleIcon = <LiaFileDownloadSolid size={BUTTONS_ICON_WIDTH} />;
+
   const onDownload = form.handleSubmit(async ({ password }) => {
-    if (!share) return;
+    if (!publicShareDto) return;
 
     try {
       setIsDownloading(true);
-      const { filename } = share;
+      const { filename } = publicShareDto;
       const absoluteUrl = buildAbsolutePublicDownloadUrl(
         `${EDU_API_ROOT}/${FileSharingApiEndpoints.BASE}/${FileSharingApiEndpoints.PUBLIC_SHARE_DOWNLOAD}/${publicShareId}`,
       );
@@ -82,6 +94,7 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
         absoluteUrl,
         filename,
         password,
+        publicShareDto.share,
         () =>
           form.setError('password', {
             type: 'server',
@@ -105,7 +118,7 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
   if (isAccessRestricted) {
     const restrictedBody = (
       <div className="space-y-6 text-center">
-        <h3 className="text-xl font-semibold">{t('filesharing.publicFileSharing.errors.PublicFileIsRestricted')}</h3>
+        <h2 className="text-xl font-semibold">{t('filesharing.publicFileSharing.errors.PublicFileIsRestricted')}</h2>
 
         {!isAuthenticated && (
           <Button
@@ -123,6 +136,7 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
     return (
       <AdaptiveDialog
         isOpen={isAuthenticated ? isPublicShareInfoDialogOpen : true}
+        titleIcon={titleIcon}
         handleOpenChange={isAuthenticated ? closePublicShareDialog : () => {}}
         title={t('filesharing.publicFileSharing.downloadPublicFile')}
         body={restrictedBody}
@@ -131,18 +145,19 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
     );
   }
 
-  if (!share) {
+  if (!publicShareDto) {
     return (
       <AdaptiveDialog
         isOpen={isAuthenticated ? isPublicShareInfoDialogOpen : true}
+        titleIcon={titleIcon}
         handleOpenChange={isAuthenticated ? closePublicShareDialog : () => {}}
         title={t('filesharing.publicFileSharing.downloadPublicFile')}
-        body={<h3 className="text-xl font-semibold">{t('filesharing.publicFileSharing.errors.PublicFileNotFound')}</h3>}
+        body={<h2 className="text-xl font-semibold">{t('filesharing.publicFileSharing.errors.PublicFileNotFound')}</h2>}
       />
     );
   }
 
-  const { filename, creator, expires } = share;
+  const { filename, creator, expires } = publicShareDto;
 
   const accessBody = (
     <div className="space-y-4">
@@ -190,6 +205,7 @@ const DownloadPublicShareDialog: React.FC<DownloadPublicShareDialogProps> = ({ p
 
       <AdaptiveDialog
         isOpen={isAuthenticated ? isPublicShareInfoDialogOpen : true}
+        titleIcon={titleIcon}
         handleOpenChange={isAuthenticated ? closePublicShareDialog : () => {}}
         title={t('filesharing.publicFileSharing.downloadPublicFile')}
         body={accessBody}

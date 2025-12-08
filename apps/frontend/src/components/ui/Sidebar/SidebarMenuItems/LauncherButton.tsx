@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React from 'react';
@@ -17,27 +24,35 @@ import { useTranslation } from 'react-i18next';
 import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
 import useSidebarItems from '@/hooks/useSidebarItems';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
+import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
+import cn from '@libs/common/utils/className';
 
 const LauncherButton: React.FC = () => {
   const { t } = useTranslation();
   const { toggleLauncher } = useLauncherStore();
   const sidebarItems = useSidebarItems();
+  const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
 
   const totalNotifications = sidebarItems.reduce((sum, item) => sum + (item.notificationCounter ?? 0), 0);
+
+  const buttonClassName = isEdulutionApp ? '' : 'lg:block lg:px-3';
+  const titleClassName = isEdulutionApp ? '' : 'lg:hidden';
 
   return (
     <button
       type="button"
       onClick={toggleLauncher}
-      className="group relative z-50 flex max-h-14 w-full items-center justify-end gap-4 bg-black px-4 py-2 md:block md:px-3"
+      className={cn(
+        'group relative z-50 flex max-h-14 w-full items-center justify-end gap-4 bg-black px-4 py-2',
+        buttonClassName,
+      )}
     >
-      <p className="text-md font-bold md:hidden">{t('launcher.title')}</p>
+      <p className={cn('text-md font-bold', titleClassName)}>{t('launcher.title')}</p>
 
-      <img
-        src={MobileLogoIcon}
+      <MobileLogoIcon
         className="g transform rounded-full transition-transform duration-200 group-hover:scale-[1.3]"
         width={SIDEBAR_ICON_WIDTH}
-        alt="edulution-mobile-logo"
+        aria-label="edulution-mobile-logo"
       />
 
       <NotificationCounter count={totalNotifications} />

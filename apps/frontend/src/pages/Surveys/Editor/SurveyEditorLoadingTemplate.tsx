@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React from 'react';
@@ -48,7 +55,7 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
 
   return (
     <Card
-      className={cn(GRID_CARD, { 'bg-accent': isActive }, { 'bg-card': !isActive }, { 'pb-12': isSuperAdmin })}
+      className={cn(GRID_CARD, { 'bg-accent': isActive }, { 'bg-card': !isActive }, { 'h-[13rem]': !isSuperAdmin }, { 'pb-12 h-[15rem]': isSuperAdmin }, 'flex')}
       variant="text"
       onClick={() => {
         setTemplate(surveyTemplate);
@@ -57,17 +64,17 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
     >
       <MdOutlineOpenInNew className="h-10 w-10 md:h-14 md:w-14" />
 
-      <p>{title}</p>
+      <h3 className="line-clamp-2 h-[3.8rem] w-full">{title}</h3>
 
-      <p>{description}</p>
+      <p className="line-clamp-2 h-[2.8rem] w-full">{description}</p>
 
       {isSuperAdmin && (
         <>
           <Button
             onClick={async (e) => {
               e.stopPropagation();
-              if (!surveyTemplate.fileName) return;
-              // await toggleIsTemplateActive(surveyTemplate.fileName);
+              if (!surveyTemplate.name) return;
+              // await toggleIsTemplateActive(surveyTemplate.name);
               await fetchTemplates();
             }}
             variant="btn-outline"
@@ -80,18 +87,20 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
               className="h-6 min-h-6 w-6 min-w-6"
             />
           </Button>
-          <Button
-            onClick={(e) => {
-              e.stopPropagation();
-              setTemplate(surveyTemplate);
-              setIsOpenTemplateConfirmDeletion(true);
-            }}
-            variant="btn-attention"
-            size="sm"
-            className="absolute bottom-2 right-2 p-2"
-          >
-            <HiTrash className="h-4 w-4" />
-          </Button>
+          {/* !template.isDefaultTemplate && */ ( 
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                setTemplate(surveyTemplate);
+                setIsOpenTemplateConfirmDeletion(true);
+              }}
+              variant="btn-attention"
+              size="sm"
+              className="absolute bottom-2 right-2 p-2"
+            >
+              <HiTrash className="h-4 w-4" />
+            </Button>
+          )}
         </>
       )}
     </Card>
