@@ -1,16 +1,24 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React from 'react';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useForm } from 'react-hook-form';
@@ -50,10 +58,12 @@ interface BatchUploadOptions {
     httpMethod: HttpMethods,
     type: ContentType,
     formData: FormData,
+    webdavShare: string | undefined,
   ) => Promise<void>;
 }
 
 const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) => {
+  const { webdavShare } = useParams();
   const { t } = useTranslation();
   const {
     isDialogOpen,
@@ -65,10 +75,8 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     action,
     handleItemAction,
     selectedFileType,
-    filesToUpload,
     setSelectedFileType,
     setMoveOrCopyItemToPath,
-    setFilesToUpload,
     isSubmitButtonDisabled,
     setSubmitButtonIsDisabled,
   } = useFileSharingDialogStore();
@@ -101,7 +109,6 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
     setSubmitButtonIsDisabled(false);
     setMoveOrCopyItemToPath({} as DirectoryFileDTO);
     setSelectedFileType('');
-    setFilesToUpload([]);
     setSelectedItems([]);
     setSelectedRows({});
     closeDialog();
@@ -139,7 +146,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
           formData.append('file', uploadItem.file);
           formData.append('path', uploadItem.path);
 
-          return handleFileUploadAction(actionType, endpointUrl, method, requestContentType, formData);
+          return handleFileUploadAction(actionType, endpointUrl, method, requestContentType, formData, webdavShare);
         });
 
       await Promise.all(uploadPromises);
@@ -153,7 +160,6 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
       selectedItems,
       moveOrCopyItemToPath,
       selectedFileType,
-      filesToUpload,
       documentVendor,
     });
 
@@ -173,7 +179,7 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
       });
     } else {
       setSubmitButtonIsDisabled(false);
-      await handleItemAction(action, endpoint, httpMethod, type, uploadPayload as PathChangeOrCreateProps);
+      await handleItemAction(action, endpoint, httpMethod, type, uploadPayload as PathChangeOrCreateProps, webdavShare);
     }
 
     clearAllSelectedItems();
@@ -219,22 +225,20 @@ const ActionContentDialog: React.FC<CreateContentDialogProps> = ({ trigger }) =>
         error ? (
           <div className="rounded-xl bg-ciLightRed py-3 text-center text-background">{error.message}</div>
         ) : (
-          <div className="mt-4 flex justify-end">
-            <form onSubmit={handleFormSubmit}>
-              <DialogFooterButtons
-                handleClose={handelOpenChange}
-                handleSubmit={hideSubmitButton ? undefined : handleFormSubmit}
-                submitButtonText={submitKey}
-                submitButtonType="submit"
-                disableSubmit={
-                  isLoading ||
-                  isSubmitButtonDisabled ||
-                  (requiresForm && !form.formState.isValid) ||
-                  (action === FileActionType.MOVE_FILE_OR_FOLDER && moveOrCopyItemToPath?.filePath === undefined)
-                }
-              />
-            </form>
-          </div>
+          <form onSubmit={handleFormSubmit}>
+            <DialogFooterButtons
+              handleClose={handelOpenChange}
+              handleSubmit={hideSubmitButton ? undefined : handleFormSubmit}
+              submitButtonText={submitKey}
+              submitButtonType="submit"
+              disableSubmit={
+                isLoading ||
+                isSubmitButtonDisabled ||
+                (requiresForm && !form.formState.isValid) ||
+                (action === FileActionType.MOVE_FILE_OR_FOLDER && moveOrCopyItemToPath?.filePath === undefined)
+              }
+            />
+          </form>
         )
       }
     />

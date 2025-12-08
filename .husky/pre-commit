@@ -1,6 +1,13 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+# Load nvm if available
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# OR load fnm if available
+command -v fnm > /dev/null && eval "$(fnm env)"
+
 npm run check-circular-deps
 npm run check-translations
 npm run check-error-message-translations

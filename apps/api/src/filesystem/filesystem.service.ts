@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 /* eslint-disable @typescript-eslint/class-methods-use-this */
@@ -22,14 +29,15 @@ import {
   readdir,
   readFile,
   rm,
+  remove,
   stat as fsStat,
   unlink,
 } from 'fs-extra';
-import { promisify } from 'util';
 import { createHash } from 'crypto';
 import { firstValueFrom, from } from 'rxjs';
-import { pipeline, Readable } from 'stream';
-import { extname, join } from 'path';
+import { Readable } from 'stream';
+import { pipeline } from 'stream/promises';
+import { extname, join, dirname } from 'path';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
@@ -47,16 +55,16 @@ import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
 import THIRTY_DAYS from '@libs/common/constants/thirtyDays';
-import CustomHttpException from '../common/CustomHttpException';
+import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 import UsersService from '../users/users.service';
-
-const pipelineAsync = promisify(pipeline);
+import CustomHttpException from '../common/CustomHttpException';
 
 @Injectable()
 class FilesystemService {
-  private readonly baseurl = process.env.EDUI_WEBDAV_URL as string;
-
-  constructor(private readonly userService: UsersService) {}
+  constructor(
+    private readonly userService: UsersService,
+    private readonly webdavSharesService: WebdavSharesService,
+  ) {}
 
   @Cron('0 0 4 * * *', {
     name: 'ClearTempFiles',
@@ -102,6 +110,19 @@ class FilesystemService {
     }
   }
 
+  static async readFile(filePath: string): Promise<Buffer> {
+    try {
+      return await readFile(filePath);
+    } catch (error) {
+      throw new CustomHttpException(
+        FileSharingErrorMessage.DownloadFailed,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        filePath,
+        FilesystemService.name,
+      );
+    }
+  }
+
   static async moveFile(oldFilePath: string, newFilePath: string): Promise<void> {
     try {
       await move(oldFilePath, newFilePath, { overwrite: true });
@@ -124,7 +145,7 @@ class FilesystemService {
   static async saveFileStream(stream: AxiosResponse<Readable> | Readable, outputPath: string): Promise<void> {
     const writeStream = createWriteStream(outputPath);
     const actualStream = (stream as AxiosResponse<Readable>).data ? (stream as AxiosResponse<Readable>).data : stream;
-    await pipelineAsync(actualStream as Readable, writeStream);
+    await pipeline(actualStream as Readable, writeStream);
   }
 
   static getOutputFilePath(directory: string, hashedFilename: string): string {
@@ -260,8 +281,10 @@ class FilesystemService {
     filePath: string,
     filename: string,
     client: AxiosInstance,
+    share: string,
   ): Promise<WebdavStatusResponse> {
-    const url = `${this.baseurl}${getPathWithoutWebdav(filePath)}`;
+    const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
+    const url = `${webdavShare.url}${getPathWithoutWebdav(filePath, webdavShare.pathname)}`;
     await this.ensureDirectoryExists(PUBLIC_DOWNLOADS_PATH);
 
     try {
@@ -292,9 +315,40 @@ class FilesystemService {
     return readdir(directory);
   }
 
+  async deleteEmptyFolder(directory: string): Promise<void> {
+    const exists = await pathExists(directory);
+    if (!exists) {
+      return;
+    }
+    const filesNames = await readdir(directory);
+    if (filesNames.length === 0) {
+      await remove(directory);
+    }
+  }
+
+  async deleteFolderAndParentsUpToDepth(folderPath: string, deep: number): Promise<void> {
+    if (deep < 0) return;
+
+    const exists = await pathExists(folderPath);
+    if (!exists) return;
+
+    const files = await readdir(folderPath);
+
+    if (files.length === 0) {
+      await remove(folderPath);
+
+      if (deep > 0) {
+        const parentPath = dirname(folderPath);
+        if (parentPath !== folderPath) {
+          await this.deleteFolderAndParentsUpToDepth(parentPath, deep - 1);
+        }
+      }
+    }
+  }
+
   async createReadStream(filePath: string): Promise<Readable> {
     try {
-      await access(filePath);
+      await FilesystemService.throwErrorIfFileNotExists(filePath);
     } catch (error) {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -333,9 +387,17 @@ class FilesystemService {
     }
   }
 
+  async serveTempFiles(name: string, filename: string, res: Response) {
+    const filePath = join(TEMP_FILES_PATH, name, filename);
+    return this.serve(filePath, res);
+  }
+
   async serveFiles(name: string, filename: string, res: Response) {
     const filePath = join(APPS_FILES_PATH, name, filename);
+    return this.serve(filePath, res);
+  }
 
+  async serve(filePath: string, res: Response) {
     await FilesystemService.throwErrorIfFileNotExists(filePath);
 
     const contentType = lookup(filePath) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
@@ -343,8 +405,15 @@ class FilesystemService {
 
     const fileStream = await this.createReadStream(filePath);
     fileStream.pipe(res);
-
     return res;
+  }
+
+  static async moveFiles(fileNames: string[], oldDirectory: string, newDirectory: string): Promise<void> {
+    await Promise.all(
+      fileNames.map((fileName) =>
+        FilesystemService.moveFile(join(oldDirectory, fileName), join(newDirectory, fileName)),
+      ),
+    );
   }
 
   async removeOldTempFiles(path: string, currentTimeMs?: number): Promise<void> {

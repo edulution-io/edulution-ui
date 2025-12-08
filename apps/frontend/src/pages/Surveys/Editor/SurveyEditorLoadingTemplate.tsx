@@ -1,28 +1,36 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
+import { toast } from 'sonner';
 import { MdOutlineOpenInNew } from 'react-icons/md';
-import { HiTrash } from 'react-icons/hi';
+import i18n from '@/i18n';
 import cn from '@libs/common/utils/className';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import { EyeLightIcon, EyeLightSlashIcon } from '@/assets/icons';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
+import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 
 interface SurveyEditorLoadingTemplateProps {
   creator: AttendeeDto;
@@ -35,10 +43,9 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
   const {
     setTemplate,
     setIsOpenTemplateConfirmDeletion,
+    setIsTemplateActive,
     setIsOpenTemplatePreview,
-    // TODO: activate toggleIsTemplateActive after #1178 was merged
-    // toggleIsTemplateActive,
-    fetchTemplates,
+    fetchTemplates
   } = useTemplateMenuStore();
 
   const { isSuperAdmin } = useLdapGroups();
@@ -47,9 +54,29 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
   const { formula } = template;
   const { title, description } = formula;
 
+  const [active, setActive] = useState<boolean>(isActive);
+
+  const toggleIsTemplateActive = async () => {
+    if (!surveyTemplate.name) return;
+    try {
+      await setIsTemplateActive(surveyTemplate.name, !active);
+      setActive(!active);
+    } catch (error) {
+      toast.error(i18n.t('survey.errors.updateOrCreateError'));
+    }
+    await fetchTemplates();
+  };
+
   return (
     <Card
-      className={cn(GRID_CARD, { 'bg-accent': isActive }, { 'bg-card': !isActive }, { 'pb-12': isSuperAdmin })}
+      className={cn(
+        GRID_CARD,
+        { 'bg-muted': active },
+        { 'bg-accent': !active },
+        { 'h-[13rem]': !isSuperAdmin },
+        { 'h-[14rem] pb-12': isSuperAdmin },
+        // 'flex',
+      )}
       variant="text"
       onClick={() => {
         setTemplate(surveyTemplate);
@@ -67,40 +94,34 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
       >
         <MdOutlineOpenInNew className="h-10 w-10" />
       </Button>
-      <h4 aria-label={`Template title: ${title}`}>{title}</h4>
-      <p>{description}</p>
+      <h3 className="line-clamp-2 h-[3.8rem] w-full" aria-label={`Template title: ${title}`}>{title}</h3>
+      <p className="line-clamp-2 h-[2.8rem] w-full">{description}</p>
       {isSuperAdmin && (
-        <>
+        <div className="absolute bottom-2 flex h-8 w-full flex-row justify-end gap-2 px-2 text-sm italic text-muted-foreground">
           <Button
             onClick={async (e) => {
               e.stopPropagation();
-              if (!surveyTemplate.fileName) return;
-              // await toggleIsTemplateActive(surveyTemplate.fileName);
-              await fetchTemplates();
+              await toggleIsTemplateActive();
             }}
             variant="btn-outline"
             size="sm"
-            className="absolute bottom-2 right-14 h-8 w-10 p-2"
           >
-            <img
-              src={isActive ? EyeLightIcon : EyeLightSlashIcon}
-              alt="eye"
-              className="h-6 min-h-6 w-6 min-w-6"
-            />
+            {i18n.t(active ? 'classmanagement.deactivate' : 'classmanagement.activate')}
           </Button>
-          <Button
-            onClick={(e) => {
-              e.stopPropagation();
-              setTemplate(surveyTemplate);
-              setIsOpenTemplateConfirmDeletion(true);
-            }}
-            variant="btn-attention"
-            size="sm"
-            className="absolute bottom-2 right-2 p-2"
-          >
-            <HiTrash className="h-4 w-4" />
-          </Button>
-        </>
+          {!surveyTemplate.isDefaultTemplate && (
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                setTemplate(surveyTemplate);
+                setIsOpenTemplateConfirmDeletion(true);
+              }}
+              variant="btn-attention"
+              size="sm"
+            >
+              <DeleteIcon className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
       )}
     </Card>
   );

@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
@@ -22,6 +29,10 @@ import { ResponseType } from '@libs/common/types/http-methods';
 import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
 import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
 import { AxiosProgressEvent } from 'axios';
+import ContentType from '@libs/filesharing/types/contentType';
+import formatTransferSpeed from '@libs/filesharing/utils/formatTransferSpeed';
+import formatEstimatedTimeRemaining from '@libs/filesharing/utils/formatEstimatedTimeRemaining';
+import SMOOTHING_ALPHA from '@libs/filesharing/constants/smoothingAlpha';
 
 type FileSharingDownloadStore = {
   isCreatingBlobUrl: boolean;
@@ -32,10 +43,23 @@ type FileSharingDownloadStore = {
   error: Error | null;
   downloadProgress: DownloadFileDto;
   setDownloadProgress: (progress: DownloadFileDto) => void;
-  createDownloadBlobUrl: (filePath: string, signal?: AbortSignal) => Promise<string | undefined>;
-  getPublicDownloadUrl: (filePath: string, filename: string, signal?: AbortSignal) => Promise<string | undefined>;
-  loadDownloadUrl: (file: DirectoryFileDTO | null, signal?: AbortSignal) => Promise<void>;
-  loadDownloadUrlMultipleFiles: (file: DirectoryFileDTO[], signal?: AbortSignal) => Promise<string | undefined>;
+  createDownloadBlobUrl: (
+    filePath: string,
+    share: string | undefined,
+    signal?: AbortSignal,
+  ) => Promise<string | undefined>;
+  getPublicDownloadUrl: (
+    filePath: string,
+    filename: string,
+    share: string | undefined,
+    signal?: AbortSignal,
+  ) => Promise<string | undefined>;
+  loadDownloadUrl: (file: DirectoryFileDTO | null, share: string | undefined, signal?: AbortSignal) => Promise<void>;
+  downloadFile: (
+    file: DirectoryFileDTO,
+    share: string | undefined,
+    signal?: AbortSignal,
+  ) => Promise<string | undefined>;
   setPublicDownloadLink: (publicDownloadLink: string) => void;
   reset: () => void;
 };
@@ -60,17 +84,17 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
     set({ downloadProgress: progress });
   },
 
-  loadDownloadUrl: async (file, signal) => {
+  loadDownloadUrl: async (file, share, signal) => {
     try {
       set({ isCreatingBlobUrl: true, error: null, temporaryDownloadUrl: '', publicDownloadLink: null });
 
       if (!file) return;
 
-      const blobUrl = await get().createDownloadBlobUrl(file.filePath, signal);
+      const blobUrl = await get().createDownloadBlobUrl(file.filePath, share, signal);
       set({ temporaryDownloadUrl: blobUrl });
 
       if (isOnlyOfficeDocument(file.filename)) {
-        const publicUrl = await get().getPublicDownloadUrl(file.filePath, file.filePath, signal);
+        const publicUrl = await get().getPublicDownloadUrl(file.filePath, file.filePath, share, signal);
         if (publicUrl) {
           set({ publicDownloadLink: `${getFrontEndUrl()}/${EDU_API_ROOT}/downloads/${publicUrl}` });
         }
@@ -82,13 +106,13 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
     }
   },
 
-  createDownloadBlobUrl: async (filePath, signal) => {
+  createDownloadBlobUrl: async (filePath, share, signal) => {
     try {
       set({ isCreatingBlobUrl: true });
       const response = await eduApi.get<Blob>(
         `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_STREAM}`,
         {
-          params: { filePath },
+          params: { filePath, share },
           responseType: ResponseType.BLOB,
           signal,
         },
@@ -102,13 +126,13 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
     }
   },
 
-  getPublicDownloadUrl: async (filePath, filename, signal) => {
+  getPublicDownloadUrl: async (filePath, filename, share, signal) => {
     try {
       set({ isFetchingPublicUrl: true });
       const response = await eduApi.get<WebdavStatusResponse>(
         `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_LOCATION}`,
         {
-          params: { filePath, fileName: filename },
+          params: { filePath, fileName: filename, share },
           signal,
         },
       );
@@ -122,31 +146,76 @@ const useFileSharingDownloadStore = create<FileSharingDownloadStore>((set, get) 
     }
   },
 
-  loadDownloadUrlMultipleFiles: async (files: DirectoryFileDTO[], signal?: AbortSignal) => {
+  downloadFile: async (file, share, signal) => {
     try {
-      set({ isFetchingPublicUrl: true });
-      const params = new URLSearchParams();
-      files.forEach((f) => params.append('filePath', f.filename));
+      set({ isFetchingPublicUrl: true, error: null });
 
-      const totalBytes = files.reduce((size, file) => size + (file.size ?? 0), 0);
+      const totalBytesFallback = file.size ?? 0;
+      const processId = Math.floor(Math.random() * 1_000_000);
+      const startedAt = Date.now();
+
+      let lastTs = startedAt;
+      let lastLoaded = 0;
+      let smoothedBps: number | undefined;
+
+      const formatFileName = () => (file.type === ContentType.DIRECTORY ? `${file.filename}.zip` : file.filename);
+
+      get().setDownloadProgress({
+        fileName: formatFileName(),
+        percent: 0,
+        processId,
+        totalBytes: totalBytesFallback,
+        loadedBytes: 0,
+        speedBps: 0,
+        etaSeconds: undefined,
+        lastUpdateAt: startedAt,
+        startedAt,
+        speedFormatted: formatTransferSpeed(0),
+        etaFormatted: formatEstimatedTimeRemaining(undefined),
+      });
+
+      const onProgress = (progressEvent: AxiosProgressEvent) => {
+        const { loaded = 0, total = totalBytesFallback } = progressEvent;
+        if (!total) return;
+
+        const currentTs = Date.now();
+
+        const percent = Math.min(100, Math.round((loaded / total) * 100));
+
+        const dtMs = Math.max(1, currentTs - lastTs);
+        const dBytes = Math.max(0, loaded - lastLoaded);
+        const instBps = (dBytes * 1000) / dtMs;
+
+        smoothedBps = smoothedBps ? SMOOTHING_ALPHA * instBps + (1 - SMOOTHING_ALPHA) * smoothedBps : instBps;
+
+        const remaining = Math.max(0, total - loaded);
+        const etaSec = smoothedBps > 0 ? remaining / smoothedBps : undefined;
+
+        get().setDownloadProgress({
+          fileName: formatFileName(),
+          percent,
+          processId,
+          totalBytes: total,
+          loadedBytes: loaded,
+          speedBps: smoothedBps,
+          etaSeconds: etaSec,
+          lastUpdateAt: currentTs,
+          startedAt,
+          speedFormatted: formatTransferSpeed(smoothedBps),
+          etaFormatted: formatEstimatedTimeRemaining(etaSec),
+        });
+
+        lastTs = currentTs;
+        lastLoaded = loaded;
+      };
 
       const { data } = await eduApi.get<Blob>(
         `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_STREAM}`,
         {
           responseType: ResponseType.BLOB,
           signal,
-          params: { filePath: files.map((file) => file.filePath) },
-          onDownloadProgress: (e: AxiosProgressEvent) => {
-            const total = e.total ?? totalBytes;
-            if (!total) return;
-            let percent = Math.round((e.loaded / total) * 100);
-            if (percent > 100) percent = 100;
-            get().setDownloadProgress({
-              fileName: files.length > 1 ? 'download.zip' : files[0].filename,
-              percent,
-              processId: Math.floor(Math.random() * 1_000_000),
-            });
-          },
+          params: { filePath: file.filePath, share },
+          onDownloadProgress: onProgress,
         },
       );
 

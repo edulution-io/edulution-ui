@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
@@ -16,16 +23,15 @@ import { Response } from 'express';
 import PrintPasswordsRequest from '@libs/classManagement/types/printPasswordsRequest';
 import GroupForm from '@libs/groups/types/groupForm';
 import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
+import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
+import GroupFormDto from '@libs/groups/types/groupForm.dto';
 import { LmnApiController } from './lmnApi.controller';
 import LmnApiService from './lmnApi.service';
 import mockLmnApiService from './lmnApi.service.mock';
+import mockCacheManager from '../common/cache-manager.mock';
 import GlobalSettingsService from '../global-settings/global-settings.service';
 
-const cacheManagerMock = {
-  get: jest.fn(),
-  set: jest.fn(),
-  del: jest.fn(),
-};
+jest.mock('got');
 
 const globalSettingsServiceMock = { updateCache: jest.fn() };
 
@@ -38,7 +44,7 @@ describe('LmnApiController', () => {
       controllers: [LmnApiController],
       providers: [
         { provide: LmnApiService, useValue: mockLmnApiService },
-        { provide: CACHE_MANAGER, useValue: cacheManagerMock },
+        { provide: CACHE_MANAGER, useValue: mockCacheManager },
         { provide: GlobalSettingsService, useValue: globalSettingsServiceMock },
       ],
     }).compile();
@@ -53,7 +59,8 @@ describe('LmnApiController', () => {
 
   describe('printPasswords', () => {
     it('should call printPasswords and send response', async () => {
-      const mockResponse = { headers: { 'content-disposition': 'attachment' }, data: new ArrayBuffer(8) };
+      const mockBuffer = Buffer.from('mock');
+      const mockResponse = { headers: { 'content-disposition': 'attachment' }, data: mockBuffer };
       mockLmnApiService.printPasswords.mockResolvedValue(mockResponse);
       const res = { setHeader: jest.fn(), send: jest.fn() } as unknown as Response;
 
@@ -61,7 +68,7 @@ describe('LmnApiController', () => {
 
       expect(service.printPasswords).toHaveBeenCalledWith('mockToken', {});
       expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'application/pdf');
-      expect(res.send).toHaveBeenCalledWith(expect.any(Buffer));
+      expect(res.send).toHaveBeenCalledWith(mockBuffer);
     });
   });
 
@@ -108,8 +115,12 @@ describe('LmnApiController', () => {
 
   describe('toggleProjectJoined', () => {
     it('should call toggleProjectJoined', async () => {
-      await controller.toggleProjectJoined({ project: 'project1', action: 'join' }, 'mockToken');
-      expect(service.toggleProjectJoined).toHaveBeenCalledWith('mockToken', 'project1', 'join');
+      await controller.toggleProjectJoined(
+        { project: 'project1', action: GroupJoinState.Join },
+        'mockToken',
+        'username',
+      );
+      expect(service.toggleProjectJoined).toHaveBeenCalledWith('mockToken', 'project1', 'join', 'username');
     });
   });
 
@@ -135,8 +146,12 @@ describe('LmnApiController', () => {
 
   describe('toggleSchoolClassJoined', () => {
     it('should call toggleSchoolClassJoined', async () => {
-      await controller.toggleSchoolClassJoined({ schoolClass: 'class1', action: 'join' }, 'mockToken');
-      expect(service.toggleSchoolClassJoined).toHaveBeenCalledWith('mockToken', 'class1', 'join');
+      await controller.toggleSchoolClassJoined(
+        { schoolClass: 'class1', action: GroupJoinState.Join },
+        'mockToken',
+        'username',
+      );
+      expect(service.toggleSchoolClassJoined).toHaveBeenCalledWith('mockToken', 'class1', 'join', 'username');
     });
   });
 
@@ -149,8 +164,8 @@ describe('LmnApiController', () => {
 
   describe('getUserSessions', () => {
     it('should call getUserSessions', async () => {
-      await controller.getUserSessions('mockToken', 'username');
-      expect(service.getUserSessions).toHaveBeenCalledWith('mockToken', 'username');
+      await controller.getUserSessions('mockToken', 'username', true);
+      expect(service.getUserSessions).toHaveBeenCalledWith('mockToken', 'username', true);
     });
   });
 
@@ -177,7 +192,7 @@ describe('LmnApiController', () => {
 
   describe('getUserSession', () => {
     it('should call getUserSession', async () => {
-      await controller.getUserSession('mockToken', { sessionSid: 'session1' }, 'username');
+      await controller.getUserSession('mockToken', { sessionId: 'session1' }, 'username');
       expect(service.getUserSession).toHaveBeenCalledWith('mockToken', 'session1', 'username');
     });
   });
@@ -233,21 +248,25 @@ describe('LmnApiController', () => {
 
   describe('togglePrinterJoined', () => {
     it('should call togglePrinterJoined', async () => {
-      await controller.togglePrinterJoined({ project: 'project1', action: 'join' }, 'mockToken');
-      expect(service.togglePrinterJoined).toHaveBeenCalledWith('mockToken', 'project1', 'join');
+      await controller.togglePrinterJoined(
+        { project: 'project1', action: GroupJoinState.Join },
+        'mockToken',
+        'username',
+      );
+      expect(service.togglePrinterJoined).toHaveBeenCalledWith('mockToken', 'project1', 'join', 'username');
     });
   });
 
   describe('createProject', () => {
     it('should call createProject', async () => {
-      await controller.createProject('mockToken', { formValues: {} as GroupForm }, 'username');
+      await controller.createProject('mockToken', { formValues: {} as GroupFormDto }, 'username');
       expect(service.createProject).toHaveBeenCalledWith('mockToken', {}, 'username');
     });
   });
 
   describe('updateProject', () => {
     it('should call updateProject', async () => {
-      await controller.updateProject('mockToken', { formValues: {} as GroupForm }, 'username');
+      await controller.updateProject('mockToken', { formValues: {} as GroupFormDto }, 'username');
       expect(service.updateProject).toHaveBeenCalledWith('mockToken', {}, 'username');
     });
   });
