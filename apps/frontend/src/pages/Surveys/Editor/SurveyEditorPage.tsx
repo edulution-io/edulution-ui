@@ -29,7 +29,6 @@ import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/getSurveyEditorForm.schema';
 import surveysDefaultValues from '@/pages/Surveys/utils/surveys-default-values';
@@ -153,17 +152,20 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
 
   const handleSaveTemplate = () => {
     const survey = form.getValues();
-
-    const surveyTemplateDto = { name: template?.name } as SurveyTemplateDto;
-    surveyTemplateDto.template = {
-      formula: (creator.JSON as SurveyFormula) || (creator.survey.toJSON() as SurveyFormula),
-      backendLimiters: survey.backendLimiters,
-      invitedAttendees: survey.invitedAttendees,
-      invitedGroups: survey.invitedGroups,
-      isPublic: survey.isPublic,
-      isAnonymous: survey.isAnonymous,
-      canSubmitMultipleAnswers: survey.canSubmitMultipleAnswers,
-      canUpdateFormerAnswer: survey.canUpdateFormerAnswer,
+    const formula = (creator.JSON as SurveyFormula) || (creator.survey.toJSON() as SurveyFormula);
+    const surveyTemplateDto = {
+      id: template?.id,
+      name: formula.title,
+      template: {
+        formula,
+        backendLimiters: survey.backendLimiters,
+        invitedAttendees: survey.invitedAttendees,
+        invitedGroups: survey.invitedGroups,
+        isPublic: survey.isPublic,
+        isAnonymous: survey.isAnonymous,
+        canSubmitMultipleAnswers: survey.canSubmitMultipleAnswers,
+        canUpdateFormerAnswer: survey.canUpdateFormerAnswer,
+      },
     };
 
     void uploadTemplate(surveyTemplateDto);
