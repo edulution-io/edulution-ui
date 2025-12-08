@@ -70,6 +70,7 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
       set({ templates: result.data });
     } catch (error) {
       handleApiError(error, set);
+      set({ templates: [] });
     } finally {
       set({ isLoading: false });
     }
