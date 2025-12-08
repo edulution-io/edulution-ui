@@ -696,7 +696,7 @@
       "reset": "Reset",
       "addDescription": "Add a description",
       "expectingUserInput": "Expecting the user to answer here, ... ",
-      "templates": "Save Templates",
+      "templates": "Save Template",
       "noSearchResults": "No templates found",
       "templateMenu": {
         "submit": "Save Survey as template.",
