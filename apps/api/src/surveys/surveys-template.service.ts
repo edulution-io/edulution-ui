@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Response } from 'express';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
@@ -45,14 +45,16 @@ class SurveysTemplateService implements OnModuleInit {
   }
 
   async updateOrCreateTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
-    const { template, name, isActive = true } = surveyTemplate;
+    const { isActive = true } = surveyTemplate;
     try {
-      const templateName = name || template.formula.title;
-      return await this.surveyTemplateModel.findOneAndUpdate(
-        { name: templateName },
-        { template, isActive, name: templateName },
-        { new: true, upsert: !name },
-      );
+      if (surveyTemplate.id) {
+        return await this.surveyTemplateModel.findOneAndUpdate(
+          { _id: new Types.ObjectId(surveyTemplate.id) },
+          { ...surveyTemplate, isActive },
+          { new: true, upsert: true },
+        );
+      }
+      return await this.surveyTemplateModel.create({ ...surveyTemplate, isActive });
     } catch (error) {
       throw new CustomHttpException(
         CommonErrorMessages.DB_ACCESS_FAILED,
@@ -65,15 +67,15 @@ class SurveysTemplateService implements OnModuleInit {
 
   async getTemplates(ldapGroups: string[], res: Response): Promise<Response> {
     const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
-    const documents = await this.surveyTemplateModel.find(
-      getIsAdmin(ldapGroups, adminGroups) ? {} : { isActive: true },
-    );
+    const documents = await this.surveyTemplateModel
+      .find(getIsAdmin(ldapGroups, adminGroups) ? {} : { isActive: true })
+      .exec();
     return res.status(HttpStatus.OK).json(documents);
   }
 
-  async setIsTemplateActive(name: string, isActive: boolean): Promise<SurveysTemplateDocument | null> {
+  async setIsTemplateActive(id: string, isActive: boolean): Promise<SurveysTemplateDocument | null> {
     return this.surveyTemplateModel.findOneAndUpdate(
-      { name },
+      { _id: new Types.ObjectId(id) },
       { isActive },
       {
         new: true,
@@ -82,9 +84,15 @@ class SurveysTemplateService implements OnModuleInit {
     );
   }
 
-  async deleteTemplate(name: string): Promise<void> {
+  async deleteTemplate(id: string): Promise<void> {
     try {
-      await this.surveyTemplateModel.deleteOne({ name });
+      const mongoId = new Types.ObjectId(id);
+      const defaultTemplate = await this.surveyTemplateModel.findOne({ _id: mongoId, isDefaultTemplate: true });
+      if (defaultTemplate) {
+        await this.surveyTemplateModel.updateOne({ _id: mongoId }, { isActive: false });
+      } else {
+        await this.surveyTemplateModel.deleteOne({ _id: mongoId });
+      }
     } catch {
       throw new CustomHttpException(
         CommonErrorMessages.FILE_DELETION_FAILED,
