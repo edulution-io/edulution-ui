@@ -651,7 +651,8 @@
       "participationErrorAlreadyParticipated": "Vous avez déjà participé.",
       "participationErrorSurveyExpired": "Le sondage a expiré.",
       "idTypeError": "ID de sondage non valide.",
-      "missingAnswerError": "Veuillez remplir le sondage avant d'envoyer votre réponse."
+      "missingAnswerError": "Veuillez remplir le sondage avant d'envoyer votre réponse.",
+      "duplicateNameError": "Ajustez le titre du modèle. Un document de modèle avec ce nom existe déjà dans la base de données."
     }
   },
   "survey-answer": {
@@ -1184,6 +1185,7 @@
     "entry": "Entrée {{index}}",
     "errors": {
       "attachmentUploadFailed": "La pièce jointe n'a pas pu être téléversée",
+      "dbInvalidId": "Invalid database ID",
       "dbAccessFailed": "L'accès à la base de données a échoué",
       "directoryNotCreated": "La création du répertoire a échoué",
       "fileNotCreated": "Échec de la création du fichier",

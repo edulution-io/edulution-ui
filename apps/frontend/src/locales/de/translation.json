@@ -774,7 +774,8 @@
       "participationErrorAlreadyParticipated": "Du hast bereits teilgenommen.",
       "participationErrorSurveyExpired": "Umfrage ist abgelaufen.",
       "missingIdError": "Fehlende Umfrage-ID.",
-      "missingAnswerError": "Bitte fülle die Umfrage aus, bevor du deine Antwort abschickst."
+      "missingAnswerError": "Bitte fülle die Umfrage aus, bevor du deine Antwort abschickst.",
+      "duplicateNameError": "Passe den Titel der Vorlage an. Ein Template mit diesem Namen existiert bereits in der Datenbank."
     }
   },
   "survey-answer": {
@@ -1344,6 +1345,7 @@
     "entry": "Eintrag {{index}}",
     "errors": {
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
+      "dbInvalidId": "Ungültige Datenbank-ID",
       "directoryNotCreated": "Erstellen des Verzeichnisses fehlgeschlagen",
       "fileNotCreated": "Erstellen der Datei fehlgeschlagen",
       "fileUploadFailed": "Die Datei konnte nicht hochgeladen werden",

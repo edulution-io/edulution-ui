@@ -23,6 +23,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import GlobalSettingsService from 'apps/api/src/global-settings/global-settings.service';
 import MigrationService from 'apps/api/src/migration/migration.service';
@@ -45,17 +46,30 @@ class SurveysTemplateService implements OnModuleInit {
   }
 
   async updateOrCreateTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
-    const { isActive = true } = surveyTemplate;
+    const { id, isActive = true, ...templateData } = surveyTemplate;
+    if (id && !Types.ObjectId.isValid(id)) {
+      throw new CustomHttpException(
+        CommonErrorMessages.DB_INVALID_ID,
+        HttpStatus.BAD_REQUEST,
+        undefined,
+        SurveysTemplateService.name,
+      );
+    }
     try {
-      if (surveyTemplate.id) {
-        return await this.surveyTemplateModel.findOneAndUpdate(
-          { _id: new Types.ObjectId(surveyTemplate.id) },
-          { ...surveyTemplate, isActive },
-          { new: true, upsert: true },
+      return await this.surveyTemplateModel.findOneAndUpdate(
+        { _id: new Types.ObjectId(id) },
+        { ...templateData, isActive },
+        { new: true, upsert: true },
+      );
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('E11000')) {
+        throw new CustomHttpException(
+          SurveyErrorMessages.TemplateDouplicateNameError,
+          HttpStatus.CONFLICT,
+          error.message,
+          SurveysTemplateService.name,
         );
       }
-      return await this.surveyTemplateModel.create({ ...surveyTemplate, isActive });
-    } catch (error) {
       throw new CustomHttpException(
         CommonErrorMessages.DB_ACCESS_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -74,6 +88,14 @@ class SurveysTemplateService implements OnModuleInit {
   }
 
   async setIsTemplateActive(id: string, isActive: boolean): Promise<SurveysTemplateDocument | null> {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new CustomHttpException(
+        CommonErrorMessages.DB_INVALID_ID,
+        HttpStatus.BAD_REQUEST,
+        undefined,
+        SurveysTemplateService.name,
+      );
+    }
     return this.surveyTemplateModel.findOneAndUpdate(
       { _id: new Types.ObjectId(id) },
       { isActive },
@@ -85,6 +107,14 @@ class SurveysTemplateService implements OnModuleInit {
   }
 
   async deleteTemplate(id: string): Promise<void> {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new CustomHttpException(
+        CommonErrorMessages.DB_INVALID_ID,
+        HttpStatus.BAD_REQUEST,
+        undefined,
+        SurveysTemplateService.name,
+      );
+    }
     try {
       const mongoId = new Types.ObjectId(id);
       const defaultTemplate = await this.surveyTemplateModel.findOne({ _id: mongoId, isDefaultTemplate: true });

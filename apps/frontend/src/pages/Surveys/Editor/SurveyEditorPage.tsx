@@ -155,9 +155,9 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     const formula = (creator.JSON as SurveyFormula) || (creator.survey.toJSON() as SurveyFormula);
     const surveyTemplateDto = {
       id: template?.id,
-      name: formula.title,
+      name: formula.title || survey.formula.title,
       template: {
-        formula,
+        formula: formula || survey.formula,
         backendLimiters: survey.backendLimiters,
         invitedAttendees: survey.invitedAttendees,
         invitedGroups: survey.invitedGroups,
