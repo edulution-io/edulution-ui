@@ -17,13 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AVAILABLE_FILE_TYPES = {
-  drawIoFile: 'drawIoFile',
-  textFile: 'textFile',
-  documentFile: 'documentFile',
-  spreadsheetFile: 'spreadsheetFile',
-  presentationFile: 'presentationFile',
-  customFile: 'customFile',
-} as const;
+type GenerateFileResult = { success: true; file?: File; extension: string } | { success: false; error: string };
 
-export default AVAILABLE_FILE_TYPES;
+export default GenerateFileResult;
