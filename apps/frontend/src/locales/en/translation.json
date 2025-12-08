@@ -772,7 +772,8 @@
       "participationErrorAlreadyParticipated": "User has already participated in the survey.",
       "participationErrorSurveyExpired": "Survey has already expired.",
       "missingIdError": "Missing survey ID.",
-      "missingAnswerError": "Please provide an answer before submitting."
+      "missingAnswerError": "Please provide an answer before submitting.",
+      "duplicateNameError": "Adjust the title of the template. A template document with this name already exists in the db."
     }
   },
   "survey-answer": {
@@ -1342,6 +1343,7 @@
     "entry": "Entry {{index}}",
     "errors": {
       "dbAccessFailed": "Database access failed",
+      "dbInvalidId": "Invalid database ID",
       "directoryNotCreated": "Failed to create directory",
       "fileNotCreated": "Failed to create file",
       "fileUploadFailed": "Failed to upload the file",
