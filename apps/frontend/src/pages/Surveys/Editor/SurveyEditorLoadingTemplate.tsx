@@ -17,19 +17,20 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
+import { toast } from 'sonner';
 import { MdOutlineOpenInNew } from 'react-icons/md';
-import { HiTrash } from 'react-icons/hi';
+import i18n from '@/i18n';
 import cn from '@libs/common/utils/className';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import { EyeLightIcon, EyeLightSlashIcon } from '@/assets/icons';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
+import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 
 interface SurveyEditorLoadingTemplateProps {
   creator: AttendeeDto;
@@ -39,13 +40,7 @@ interface SurveyEditorLoadingTemplateProps {
 const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLoadingTemplateProps): JSX.Element => {
   const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
 
-  const {
-    setTemplate,
-    setIsOpenTemplateConfirmDeletion,
-    // TODO: activate toggleIsTemplateActive after #1178 was merged
-    // toggleIsTemplateActive,
-    fetchTemplates,
-  } = useTemplateMenuStore();
+  const { setTemplate, setIsOpenTemplateConfirmDeletion, setIsTemplateActive, fetchTemplates } = useTemplateMenuStore();
 
   const { isSuperAdmin } = useLdapGroups();
 
@@ -53,9 +48,29 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
   const { formula } = template;
   const { title, description } = formula;
 
+  const [active, setActive] = useState<boolean>(isActive);
+
+  const toggleIsTemplateActive = async () => {
+    if (!surveyTemplate.name) return;
+    try {
+      await setIsTemplateActive(surveyTemplate.name, !active);
+      setActive(!active);
+    } catch (error) {
+      toast.error(i18n.t('survey.errors.updateOrCreateError'));
+    }
+    await fetchTemplates();
+  };
+
   return (
     <Card
-      className={cn(GRID_CARD, { 'bg-accent': isActive }, { 'bg-card': !isActive }, { 'h-[13rem]': !isSuperAdmin }, { 'pb-12 h-[15rem]': isSuperAdmin }, 'flex')}
+      className={cn(
+        GRID_CARD,
+        { 'bg-muted': active },
+        { 'bg-accent': !active },
+        { 'h-[13rem]': !isSuperAdmin },
+        { 'h-[14rem] pb-12': isSuperAdmin },
+        'flex',
+      )}
       variant="text"
       onClick={() => {
         setTemplate(surveyTemplate);
@@ -69,25 +84,18 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
       <p className="line-clamp-2 h-[2.8rem] w-full">{description}</p>
 
       {isSuperAdmin && (
-        <>
+        <div className="absolute bottom-2 flex h-8 w-full flex-row justify-end gap-2 px-2 text-sm italic text-muted-foreground">
           <Button
             onClick={async (e) => {
               e.stopPropagation();
-              if (!surveyTemplate.name) return;
-              // await toggleIsTemplateActive(surveyTemplate.name);
-              await fetchTemplates();
+              await toggleIsTemplateActive();
             }}
             variant="btn-outline"
             size="sm"
-            className="absolute bottom-2 right-14 h-8 w-10 p-2"
           >
-            <img
-              src={isActive ? EyeLightIcon : EyeLightSlashIcon}
-              alt="eye"
-              className="h-6 min-h-6 w-6 min-w-6"
-            />
+            {i18n.t(active ? 'classmanagement.deactivate' : 'classmanagement.activate')}
           </Button>
-          {/* !template.isDefaultTemplate && */ ( 
+          {!surveyTemplate.isDefaultTemplate && (
             <Button
               onClick={(e) => {
                 e.stopPropagation();
@@ -96,12 +104,11 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
               }}
               variant="btn-attention"
               size="sm"
-              className="absolute bottom-2 right-2 p-2"
             >
-              <HiTrash className="h-4 w-4" />
+              <DeleteIcon className="h-4 w-4" />
             </Button>
           )}
-        </>
+        </div>
       )}
     </Card>
   );
