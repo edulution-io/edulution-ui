@@ -37,7 +37,7 @@ const FileIconComponent: React.FC<FileIconComponentProps> = ({ filename, size })
     return (
       <div style={{ width: size, height: size, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Icon
-          size={size * 0.8}
+          size={size * 0.9}
           color={customIcon.iconColor}
         />
       </div>
