@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
 import { FilesharingDialogProps } from '@libs/filesharing/types/filesharingDialogProps';
@@ -69,54 +69,58 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
   const [isSameAsOriginal, setIsSameAsOriginal] = useState(false);
   const originalFilename = isRenaming && selectedItems.length === 1 ? selectedItems[0].filename : '';
 
-  const checkIfFilenameAlreadyExists = useCallback(async () => {
-    if (!filename) {
-      setFilenameAlreadyExists(false);
-      setIsSameAsOriginal(false);
-      setSubmitButtonIsDisabled(true);
-      return;
-    }
-
-    const newFilename = buildFilenameWithExtension(filename, extension);
-    const sameAsOriginal = Boolean(isRenaming && newFilename === originalFilename);
-    setIsSameAsOriginal(sameAsOriginal);
-
-    if (sameAsOriginal) {
-      setFilenameAlreadyExists(false);
-      setSubmitButtonIsDisabled(true);
-      return;
-    }
-
-    const filesToCheck = isRenaming ? files.filter((file) => file.filename !== originalFilename) : files;
-
-    let alreadyExists: boolean;
-
-    if (selectedFileType === AVAILABLE_FILE_TYPES.customFile) {
-      const ext = customExtension || extension?.replace(/^\./, '') || '';
-      if (ext) {
-        alreadyExists = filesToCheck.some((file) => file.filename === `${filename}.${ext}`);
-      } else {
-        alreadyExists = filesToCheck.some((file) => file.filename === filename);
+  useEffect(() => {
+    const checkIfFilenameAlreadyExists = async () => {
+      if (!filename) {
+        setFilenameAlreadyExists(false);
+        setIsSameAsOriginal(false);
+        setSubmitButtonIsDisabled(true);
+        return;
       }
-      setFilenameAlreadyExists(alreadyExists);
-      setSubmitButtonIsDisabled(alreadyExists || filename.length === 0);
-    } else if (selectedFileType) {
-      const result = await generateFile(selectedFileType, filename, documentVendor, true);
-      if (!result.success) {
+
+      const newFilename = buildFilenameWithExtension(filename, extension);
+      const sameAsOriginal = Boolean(isRenaming && newFilename === originalFilename);
+      setIsSameAsOriginal(sameAsOriginal);
+
+      if (sameAsOriginal) {
         setFilenameAlreadyExists(false);
         setSubmitButtonIsDisabled(true);
         return;
       }
-      const fullFilename = result.extension ? `${filename}.${result.extension}` : filename;
-      alreadyExists = filesToCheck.some((file) => file.filename === fullFilename);
-      setFilenameAlreadyExists(alreadyExists);
-      setSubmitButtonIsDisabled(alreadyExists || filename.length === 0);
-    } else {
-      const finalFilename = buildFilenameWithExtension(filename, extension);
-      alreadyExists = filesToCheck.some((file) => file.filename === finalFilename);
-      setFilenameAlreadyExists(alreadyExists);
-      setSubmitButtonIsDisabled(alreadyExists || filename.length === 0);
-    }
+
+      const filesToCheck = isRenaming ? files.filter((file) => file.filename !== originalFilename) : files;
+
+      let alreadyExists: boolean;
+
+      if (selectedFileType === AVAILABLE_FILE_TYPES.customFile) {
+        const ext = customExtension || extension?.replace(/^\./, '') || '';
+        if (ext) {
+          alreadyExists = filesToCheck.some((file) => file.filename === `${filename}.${ext}`);
+        } else {
+          alreadyExists = filesToCheck.some((file) => file.filename === filename);
+        }
+        setFilenameAlreadyExists(alreadyExists);
+        setSubmitButtonIsDisabled(alreadyExists || filename.length === 0 || (!customExtension && !extension));
+      } else if (selectedFileType) {
+        const result = await generateFile(selectedFileType, filename, documentVendor, true);
+        if (!result.success) {
+          setFilenameAlreadyExists(false);
+          setSubmitButtonIsDisabled(true);
+          return;
+        }
+        const fullFilename = result.extension ? `${filename}.${result.extension}` : filename;
+        alreadyExists = filesToCheck.some((file) => file.filename === fullFilename);
+        setFilenameAlreadyExists(alreadyExists);
+        setSubmitButtonIsDisabled(alreadyExists || filename.length === 0);
+      } else {
+        const finalFilename = buildFilenameWithExtension(filename, extension);
+        alreadyExists = filesToCheck.some((file) => file.filename === finalFilename);
+        setFilenameAlreadyExists(alreadyExists);
+        setSubmitButtonIsDisabled(alreadyExists || filename.length === 0);
+      }
+    };
+
+    void checkIfFilenameAlreadyExists();
   }, [
     files,
     selectedFileType,
@@ -128,10 +132,6 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
     isRenaming,
     originalFilename,
   ]);
-
-  useEffect(() => {
-    void checkIfFilenameAlreadyExists();
-  }, [checkIfFilenameAlreadyExists]);
 
   return (
     <Form {...form}>
