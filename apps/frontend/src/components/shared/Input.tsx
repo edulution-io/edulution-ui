@@ -37,16 +37,9 @@ export const inputVariants = cva(INPUT_BASE, {
       default: INPUT_VARIANT_DEFAULT,
       dialog: INPUT_VARIANT_DIALOG,
     },
-    width: {
-      auto: 'w-auto',
-      half: 'w-1/2',
-      full: 'w-full',
-      dialog: 'w-4/5',
-    },
   },
   defaultVariants: {
     variant: 'default',
-    width: 'full',
   },
 });
 
@@ -57,7 +50,7 @@ type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
   };
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type = 'text', variant, width, shouldTrim = false, onChange, icon, ...props }, ref) => {
+  ({ className, type = 'text', variant, shouldTrim = false, onChange, icon, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,12 +82,27 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const closedIcon = variant === 'login' ? EyeDarkIcon : EyeLightIcon;
     const openedIcon = variant === 'login' ? EyeDarkSlashIcon : EyeLightSlashIcon;
 
+    const inputElement = (
+      <input
+        type={showPassword ? 'text' : type}
+        inputMode={type === 'number' ? 'numeric' : undefined}
+        className={cn(inputVariants({ variant }), className)}
+        ref={ref}
+        onChange={handleChange}
+        {...props}
+      />
+    );
+
+    if (type !== 'password' && !icon) {
+      return inputElement;
+    }
+
     return (
-      <div className="relative">
+      <div className="relative w-full">
         <input
           type={showPassword ? 'text' : type}
           inputMode={type === 'number' ? 'numeric' : undefined}
-          className={cn(inputVariants({ variant, width }), className)}
+          className={cn(inputVariants({ variant }), className)}
           ref={ref}
           onChange={handleChange}
           {...props}

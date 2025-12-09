@@ -291,7 +291,6 @@ const LoginPage: React.FC = () => {
                   disabled={isLoading}
                   placeholder={label}
                   variant="login"
-                  width="full"
                   data-testid={`test-id-login-page-${fieldName}-input`}
                 />
               </FormControl>
