@@ -18,55 +18,28 @@
  */
 
 import React, { useState } from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
+import { type VariantProps } from 'class-variance-authority';
 import cn from '@libs/common/utils/className';
-import { INPUT_VARIANT_DEFAULT, INPUT_VARIANT_DIALOG } from '@libs/ui/constants/commonClassNames';
-import { Input as SHInput } from '@/components/ui/Input';
+import { inputVariants } from '@libs/ui/constants/commonClassNames';
 import { EyeDarkIcon, EyeDarkSlashIcon, EyeLightIcon, EyeLightSlashIcon } from '@/assets/icons';
 
-export const originInputVariants = cva(['rounded'], {
-  variants: {
-    variant: {
-      login:
-        'block w-full border-2 border-gray-300 bg-background px-3 py-2 shadow-md placeholder:text-p focus:border-gray-600 focus:bg-background focus:placeholder-muted focus:outline-none text-foreground',
-      lightGrayDisabled: 'bg-ciDarkGreyDisabled text-secondary placeholder:text-p focus:outline-none',
-      default: INPUT_VARIANT_DEFAULT,
-      dialog: INPUT_VARIANT_DIALOG,
-    },
-  },
-  defaultVariants: {
-    variant: 'default',
-  },
-});
-
-export const inputWidthVariants = cva([], {
-  variants: {
-    widthVariant: {
-      auto: 'w-auto',
-      half: 'w-[50%]',
-      full: 'w-full',
-      dialog: 'w-[80%]',
-    },
-  },
-  defaultVariants: { widthVariant: 'auto' },
-});
-
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
-  VariantProps<typeof originInputVariants> &
-  VariantProps<typeof inputWidthVariants> & {
+  VariantProps<typeof inputVariants> & {
     shouldTrim?: boolean;
     icon?: React.ReactNode;
   };
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type = 'text', variant, widthVariant = 'auto', shouldTrim = false, onChange, icon, ...props }, ref) => {
+  ({ className, type = 'text', variant, shouldTrim = false, onChange, icon, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
+    const isPassword = type === 'password';
+    const needsWrapper = isPassword || icon;
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
 
       if (onChange) {
-        if (type === 'text' || type === 'password') {
+        if (type === 'text' || isPassword) {
           const newValue = shouldTrim ? value.trim() : value;
           onChange({
             ...event,
@@ -91,17 +64,25 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const closedIcon = variant === 'login' ? EyeDarkIcon : EyeLightIcon;
     const openedIcon = variant === 'login' ? EyeDarkSlashIcon : EyeLightSlashIcon;
 
+    const inputElement = (
+      <input
+        type={isPassword && showPassword ? 'text' : type}
+        inputMode={type === 'number' ? 'numeric' : undefined}
+        className={cn(inputVariants({ variant }), className)}
+        ref={ref}
+        onChange={handleChange}
+        {...props}
+      />
+    );
+
+    if (!needsWrapper) {
+      return inputElement;
+    }
+
     return (
-      <div className={cn('relative', inputWidthVariants({ widthVariant }))}>
-        <SHInput
-          type={showPassword ? 'text' : type}
-          inputMode={type === 'number' ? 'numeric' : undefined}
-          className={cn(originInputVariants({ variant }), className, 'w-full')}
-          ref={ref}
-          onChange={handleChange}
-          {...props}
-        />
-        {type === 'password' ? (
+      <div className="relative w-full">
+        {inputElement}
+        {isPassword && (
           <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5">
             <button
               type="button"
@@ -114,7 +95,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               />
             </button>
           </div>
-        ) : null}
+        )}
         {icon && <div className="absolute inset-y-0 right-0 flex items-center pr-3">{icon}</div>}
       </div>
     );

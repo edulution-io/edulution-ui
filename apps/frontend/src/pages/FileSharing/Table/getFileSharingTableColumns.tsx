@@ -129,12 +129,16 @@ const getFileSharingTableColumns = (
             return;
           }
 
-          if (!isValidFileToPreview(row.original) || isMobileView) {
+          if (!isValidFileToPreview(row.original)) {
             row.toggleSelected();
             return;
           }
           const isOnlyOfficeDoc = isOnlyOfficeDocument(row.original.filename);
           if (isOnlyOfficeDoc && !isDocumentServerConfigured && !isPdf) {
+            row.toggleSelected();
+            return;
+          }
+          if (isMobileView && isOnlyOfficeDoc && isDocumentServerConfigured && !isPdf) {
             row.toggleSelected();
             return;
           }
