@@ -54,8 +54,8 @@ export const inputOTPSlotVariants = cva(
   {
     variants: {
       variant: {
-        default: `${VARIANT_COLORS.default} border border-input`,
-        dialog: `${VARIANT_COLORS.dialog} border border-input`,
+        default: VARIANT_COLORS.default,
+        dialog: VARIANT_COLORS.dialog,
         login: VARIANT_COLORS.login,
       },
     },
