@@ -45,7 +45,7 @@ import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVar
 import getDisplayName from '@/utils/getDisplayName';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import AppConfigPositionSelect from '@/pages/Settings/AppConfig/components/dropdown/AppConfigPositionSelect';
-import ExtendedOptionsSectionContent from '@/pages/Settings/ExtendedOptionsSectionContent';
+import ExtendedOptionsForm from '@/pages/Settings/AppConfig/components/ExtendedOptionsForm';
 import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import MailImporterConfig from './mails/MailImporterConfig';
@@ -247,7 +247,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
                     id={section}
                     label={t(`settings.appconfig.sections.${section}.title`)}
                   >
-                    <ExtendedOptionsSectionContent
+                    <ExtendedOptionsForm
                       section={section}
                       options={options}
                       control={control}

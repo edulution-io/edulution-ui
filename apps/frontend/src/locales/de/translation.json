@@ -1502,8 +1502,6 @@
     "urlDescription": "Bitte eine URL zur Applikation eintragen",
     "apiKey": "API-Schlüssel",
     "apiKeyDescription": "Der API-Schlüssel wird für die Authentifizierung verwendet",
-    "proxyConfig": "Proxy-Konfiguration",
-    "proxyConfigDescription": "Hier kann eine eigene Proxy-Konfiguration für Traefik hinterlegt werden. Dabei kann entweder über die Eingabefelder mithilfe einer Vorlage gearbeitet werden, oder direkt im Expertenmodus eine Konfiguration im YAML-Format erstellt werden. <br/><strong>Achtung:</strong> Eine falsche Konfiguration könnte dazu führen, dass die Anwendung nicht mehr erreichbar ist.",
     "expertMode": "Expertenmodus",
     "proxyPath": "Proxy Pfad",
     "proxyPathPlaceholder": "z.B. SOGo",

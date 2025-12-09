@@ -1348,8 +1348,6 @@
     "urlDescription": "Veuillez saisir une URL pour la demande",
     "apiKey": "Clé API",
     "apiKeyDescription": "La clé API est utilisée pour l'authentification",
-    "proxyConfig": "Configuration proxy",
-    "proxyConfigDescription": "Une configuration proxy distincte pour Trafik peut être stockée ici. Vous pouvez soit utiliser un modèle à l'aide des champs d'entrée, soit une configuration au format YAML peut être créée directement en mode expert. <br/><strong>Danger:</strong> Une fausse configuration peut conduire à une application inaccessible.",
     "expertMode": "Mode expert",
     "proxyPath": "Chemin proxy",
     "proxyPathPlaceholder": "par exemple SOGo",

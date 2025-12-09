@@ -17,9 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import * as React from 'react';
-import { useEffect, useRef, useState } from 'react';
-import * as AccordionPrimitive from '@radix-ui/react-accordion';
+import React, { useEffect, useState } from 'react';
+import { Content, Header, Item, Root, Trigger } from '@radix-ui/react-accordion';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 import cn from '@libs/common/utils/className';
 import AnchorSection from '@/components/shared/AnchorSection';
@@ -39,30 +38,28 @@ interface SectionAccordionItemProps {
   variant?: 'default' | 'transparent';
 }
 
+const getChildIds = (children: React.ReactNode): string[] => {
+  const ids: string[] = [];
+  React.Children.forEach(children, (child) => {
+    if (React.isValidElement<SectionAccordionItemProps>(child) && child.props.id) {
+      ids.push(child.props.id);
+    }
+  });
+  return ids;
+};
+
 const SectionAccordion: React.FC<SectionAccordionProps> = ({
   children,
   defaultOpen = [],
   defaultOpenAll = false,
   className,
 }) => {
-  const isInitialized = useRef(false);
-  const [openItems, setOpenItems] = useState<string[]>(defaultOpen);
-
-  useEffect(() => {
-    if (isInitialized.current) return;
-
+  const [openItems, setOpenItems] = useState<string[]>(() => {
     if (defaultOpenAll) {
-      const ids: string[] = [];
-      React.Children.forEach(children, (child) => {
-        if (React.isValidElement<SectionAccordionItemProps>(child) && child.props.id) {
-          ids.push(child.props.id);
-        }
-      });
-      setOpenItems(ids);
+      return getChildIds(children);
     }
-
-    isInitialized.current = true;
-  }, [children, defaultOpenAll]);
+    return defaultOpen;
+  });
 
   useEffect(() => {
     const hash = window.location.hash.replace('#', '');
@@ -87,14 +84,14 @@ const SectionAccordion: React.FC<SectionAccordionProps> = ({
   };
 
   return (
-    <AccordionPrimitive.Root
+    <Root
       type="multiple"
       value={openItems}
       onValueChange={handleValueChange}
       className={cn('space-y-4', className)}
     >
       {children}
-    </AccordionPrimitive.Root>
+    </Root>
   );
 };
 
@@ -105,13 +102,13 @@ const SectionAccordionItem: React.FC<SectionAccordionItemProps> = ({
   className,
   variant = 'default',
 }) => (
-  <AccordionPrimitive.Item
+  <Item
     value={id}
     className={cn('text-card-foreground', variant === 'default' && 'rounded-xl bg-muted-background', className)}
   >
     <AnchorSection id={id}>
-      <AccordionPrimitive.Header className="flex">
-        <AccordionPrimitive.Trigger
+      <Header className="flex">
+        <Trigger
           className={cn(
             'flex flex-1 items-center justify-between py-4 text-base font-semibold leading-none tracking-tight',
             'transition-all [&[data-state=open]>svg]:rotate-180',
@@ -120,9 +117,9 @@ const SectionAccordionItem: React.FC<SectionAccordionItemProps> = ({
         >
           <h3>{label}</h3>
           <ChevronDownIcon className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" />
-        </AccordionPrimitive.Trigger>
-      </AccordionPrimitive.Header>
-      <AccordionPrimitive.Content
+        </Trigger>
+      </Header>
+      <Content
         className={cn(
           'overflow-hidden text-sm',
           'data-[state=closed]:animate-accordion-up',
@@ -130,9 +127,9 @@ const SectionAccordionItem: React.FC<SectionAccordionItemProps> = ({
         )}
       >
         <div className={cn('pb-6 pt-0', variant === 'default' && 'px-6')}>{children}</div>
-      </AccordionPrimitive.Content>
+      </Content>
     </AnchorSection>
-  </AccordionPrimitive.Item>
+  </Item>
 );
 
 export { SectionAccordion, SectionAccordionItem };

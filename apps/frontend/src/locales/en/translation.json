@@ -1500,8 +1500,6 @@
     "urlDescription": "Please insert an URL to the application",
     "apiKey": "API Key",
     "apiKeyDescription": "The API Key will be used for authentication",
-    "proxyConfig": "Proxy Configuration",
-    "proxyConfigDescription": "You can store your own proxy configuration for Traefik here. You can either work via the input fields using a template or create a configuration in YAML format directly in expert mode. <br/><strong>Warning:</strong> A wrong configuration could lead to the application being unreachable.",
     "expertMode": "Expert mode",
     "proxyPath": "Proxy path",
     "proxyPathPlaceholder": "e.g. SOGo",

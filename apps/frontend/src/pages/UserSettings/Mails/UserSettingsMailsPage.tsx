@@ -140,31 +140,31 @@ const UserSettingsMailsPage: React.FC = () => {
               id="mailImporter"
               label={t('mail.importer.title')}
             >
-              <div className="space-y-4">
-                <DropdownSelect
-                  options={externalMailProviderConfig}
-                  selectedVal={t(option)}
-                  handleChange={setOption}
-                  classname="md:w-1/3"
-                  placeholder={t('common.loading')}
-                />
-                <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(handleCreateSyncJob)}
-                    className="space-y-4"
-                  >
-                    {renderFormField('email', t('mail.importer.mailAddress'))}
-                    {renderFormField('password', t('common.password'), 'password')}
-                  </form>
-                </Form>
-              </div>
-            </SectionAccordionItem>
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <DropdownSelect
+                    options={externalMailProviderConfig}
+                    selectedVal={t(option)}
+                    handleChange={setOption}
+                    classname="md:w-1/3"
+                    placeholder={t('common.loading')}
+                  />
+                  <Form {...form}>
+                    <form
+                      onSubmit={form.handleSubmit(handleCreateSyncJob)}
+                      className="space-y-4"
+                    >
+                      {renderFormField('email', t('mail.importer.mailAddress'))}
+                      {renderFormField('password', t('common.password'), 'password')}
+                    </form>
+                  </Form>
+                </div>
 
-            <SectionAccordionItem
-              id="syncJobs"
-              label={t('mail.importer.syncJobsTable')}
-            >
-              <MailImporterTable />
+                <div className="space-y-2">
+                  <h4 className="text-base font-semibold">{t('mail.importer.syncJobsTable')}</h4>
+                  <MailImporterTable />
+                </div>
+              </div>
             </SectionAccordionItem>
           </SectionAccordion>
 
