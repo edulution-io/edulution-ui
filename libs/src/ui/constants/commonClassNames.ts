@@ -18,7 +18,7 @@
  */
 
 export const INPUT_BASE =
-  'h-9 w-full rounded-md px-3 py-1 text-p shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus:outline-none disabled:cursor-not-allowed disabled:opacity-50';
+  'h-9 w-full rounded-lg px-3 py-1 text-p shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus:outline-none disabled:cursor-not-allowed disabled:opacity-50';
 
 export const INPUT_VARIANT_DEFAULT = 'bg-accent text-secondary placeholder:text-p';
 export const INPUT_VARIANT_DIALOG = 'bg-muted text-background placeholder:text-p';
