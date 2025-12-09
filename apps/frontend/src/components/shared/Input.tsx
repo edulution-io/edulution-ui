@@ -32,12 +32,14 @@ type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type = 'text', variant, shouldTrim = false, onChange, icon, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
+    const isPassword = type === 'password';
+    const needsWrapper = isPassword || icon;
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
 
       if (onChange) {
-        if (type === 'text' || type === 'password') {
+        if (type === 'text' || isPassword) {
           const newValue = shouldTrim ? value.trim() : value;
           onChange({
             ...event,
@@ -64,7 +66,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     const inputElement = (
       <input
-        type={showPassword ? 'text' : type}
+        type={isPassword && showPassword ? 'text' : type}
         inputMode={type === 'number' ? 'numeric' : undefined}
         className={cn(inputVariants({ variant }), className)}
         ref={ref}
@@ -73,21 +75,14 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       />
     );
 
-    if (type !== 'password' && !icon) {
+    if (!needsWrapper) {
       return inputElement;
     }
 
     return (
       <div className="relative w-full">
-        <input
-          type={showPassword ? 'text' : type}
-          inputMode={type === 'number' ? 'numeric' : undefined}
-          className={cn(inputVariants({ variant }), className)}
-          ref={ref}
-          onChange={handleChange}
-          {...props}
-        />
-        {type === 'password' ? (
+        {inputElement}
+        {isPassword && (
           <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5">
             <button
               type="button"
@@ -100,7 +95,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               />
             </button>
           </div>
-        ) : null}
+        )}
         {icon && <div className="absolute inset-y-0 right-0 flex items-center pr-3">{icon}</div>}
       </div>
     );
