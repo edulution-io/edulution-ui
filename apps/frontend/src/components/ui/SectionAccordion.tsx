@@ -24,21 +24,22 @@ import { ChevronDownIcon } from '@radix-ui/react-icons';
 import cn from '@libs/common/utils/className';
 import AnchorSection from '@/components/shared/AnchorSection';
 
-interface SettingsAccordionProps {
+interface SectionAccordionProps {
   children: React.ReactNode;
   defaultOpen?: string[];
   defaultOpenAll?: boolean;
   className?: string;
 }
 
-interface SettingsAccordionItemProps {
+interface SectionAccordionItemProps {
   id: string;
   label: string;
   children: React.ReactNode;
   className?: string;
+  variant?: 'default' | 'transparent';
 }
 
-const SectionAccordion: React.FC<SettingsAccordionProps> = ({
+const SectionAccordion: React.FC<SectionAccordionProps> = ({
   children,
   defaultOpen = [],
   defaultOpenAll = false,
@@ -53,7 +54,7 @@ const SectionAccordion: React.FC<SettingsAccordionProps> = ({
     if (defaultOpenAll) {
       const ids: string[] = [];
       React.Children.forEach(children, (child) => {
-        if (React.isValidElement<SettingsAccordionItemProps>(child) && child.props.id) {
+        if (React.isValidElement<SectionAccordionItemProps>(child) && child.props.id) {
           ids.push(child.props.id);
         }
       });
@@ -97,17 +98,24 @@ const SectionAccordion: React.FC<SettingsAccordionProps> = ({
   );
 };
 
-const SettingsAccordionItem: React.FC<SettingsAccordionItemProps> = ({ id, label, children, className }) => (
+const SectionAccordionItem: React.FC<SectionAccordionItemProps> = ({
+  id,
+  label,
+  children,
+  className,
+  variant = 'default',
+}) => (
   <AccordionPrimitive.Item
     value={id}
-    className={cn('rounded-xl bg-muted-background text-card-foreground', className)}
+    className={cn('text-card-foreground', variant === 'default' && 'rounded-xl bg-muted-background', className)}
   >
     <AnchorSection id={id}>
       <AccordionPrimitive.Header className="flex">
         <AccordionPrimitive.Trigger
           className={cn(
-            'flex flex-1 items-center justify-between px-6 py-4 text-base font-semibold leading-none tracking-tight',
+            'flex flex-1 items-center justify-between py-4 text-base font-semibold leading-none tracking-tight',
             'transition-all [&[data-state=open]>svg]:rotate-180',
+            variant === 'default' && 'px-6',
           )}
         >
           <h3>{label}</h3>
@@ -121,10 +129,10 @@ const SettingsAccordionItem: React.FC<SettingsAccordionItemProps> = ({ id, label
           'data-[state=open]:animate-accordion-down',
         )}
       >
-        <div className="px-6 pb-6 pt-0">{children}</div>
+        <div className={cn('pb-6 pt-0', variant === 'default' && 'px-6')}>{children}</div>
       </AccordionPrimitive.Content>
     </AnchorSection>
   </AccordionPrimitive.Item>
 );
 
-export { SectionAccordion, SettingsAccordionItem };
+export { SectionAccordion, SectionAccordionItem };
