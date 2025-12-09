@@ -115,7 +115,7 @@ const SurveyEditorLoadingPage = ({ surveyCreator }: SurveyEditorLoadingPageProps
           ))
         ) : (
           <p className="px-2 py-16">
-            {t(templates.length === 0 ? 'survey.editor.noTemplates' : 'survey.editor.noSearchResults')}
+            {templates.length === 0 ? t('survey.editor.noTemplates') : t('survey.editor.noSearchResults')}
           </p>
         )}
       </div>
