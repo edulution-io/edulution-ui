@@ -34,7 +34,6 @@ interface SettingsAccordionProps {
 interface SettingsAccordionItemProps {
   id: string;
   label: string;
-  order?: number;
   children: React.ReactNode;
   className?: string;
 }
@@ -48,7 +47,6 @@ const SectionAccordion: React.FC<SettingsAccordionProps> = ({
   const isInitialized = useRef(false);
   const [openItems, setOpenItems] = useState<string[]>(defaultOpen);
 
-  // Nur beim ersten Render alle IDs sammeln wenn defaultOpenAll true ist
   useEffect(() => {
     if (isInitialized.current) return;
 
@@ -65,7 +63,6 @@ const SectionAccordion: React.FC<SettingsAccordionProps> = ({
     isInitialized.current = true;
   }, [children, defaultOpenAll]);
 
-  // URL Hash handling
   useEffect(() => {
     const hash = window.location.hash.replace('#', '');
     if (hash) {
@@ -100,38 +97,34 @@ const SectionAccordion: React.FC<SettingsAccordionProps> = ({
   );
 };
 
-const SettingsAccordionItem: React.FC<SettingsAccordionItemProps> = ({ id, label, order, children, className }) => (
-    <AccordionPrimitive.Item
-      value={id}
-      className={cn('rounded-xl bg-muted-background text-card-foreground', className)}
-    >
-      <AnchorSection
-        id={id}
-        label={label}
-        order={order}
-      >
-        <AccordionPrimitive.Header className="flex">
-          <AccordionPrimitive.Trigger
-            className={cn(
-              'flex flex-1 items-center justify-between px-6 py-4 text-base font-semibold leading-none tracking-tight',
-              'transition-all [&[data-state=open]>svg]:rotate-180',
-            )}
-          >
-            <h3>{label}</h3>
-            <ChevronDownIcon className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" />
-          </AccordionPrimitive.Trigger>
-        </AccordionPrimitive.Header>
-        <AccordionPrimitive.Content
+const SettingsAccordionItem: React.FC<SettingsAccordionItemProps> = ({ id, label, children, className }) => (
+  <AccordionPrimitive.Item
+    value={id}
+    className={cn('rounded-xl bg-muted-background text-card-foreground', className)}
+  >
+    <AnchorSection id={id}>
+      <AccordionPrimitive.Header className="flex">
+        <AccordionPrimitive.Trigger
           className={cn(
-            'overflow-hidden text-sm',
-            'data-[state=closed]:animate-accordion-up',
-            'data-[state=open]:animate-accordion-down',
+            'flex flex-1 items-center justify-between px-6 py-4 text-base font-semibold leading-none tracking-tight',
+            'transition-all [&[data-state=open]>svg]:rotate-180',
           )}
         >
-          <div className="px-6 pb-6 pt-0">{children}</div>
-        </AccordionPrimitive.Content>
-      </AnchorSection>
-    </AccordionPrimitive.Item>
-  );
+          <h3>{label}</h3>
+          <ChevronDownIcon className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" />
+        </AccordionPrimitive.Trigger>
+      </AccordionPrimitive.Header>
+      <AccordionPrimitive.Content
+        className={cn(
+          'overflow-hidden text-sm',
+          'data-[state=closed]:animate-accordion-up',
+          'data-[state=open]:animate-accordion-down',
+        )}
+      >
+        <div className="px-6 pb-6 pt-0">{children}</div>
+      </AccordionPrimitive.Content>
+    </AnchorSection>
+  </AccordionPrimitive.Item>
+);
 
 export { SectionAccordion, SettingsAccordionItem };
