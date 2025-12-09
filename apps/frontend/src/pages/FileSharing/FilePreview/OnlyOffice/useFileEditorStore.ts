@@ -21,7 +21,7 @@ import { create, StateCreator } from 'zustand';
 import eduApi from '@/api/eduApi';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
-import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
+import type { IConfig } from '@onlyoffice/document-editor-react';
 import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import getLastPartOfUrl from '@libs/filesharing/utils/getLastPartOfUrl';
@@ -35,7 +35,7 @@ type FileEditorStore = {
   setIsFilePreviewDocked: (isFilePreviewDocked: boolean) => void;
   isFilePreviewVisible: boolean;
   setIsFilePreviewVisible: (isVisible: boolean) => void;
-  getOnlyOfficeJwtToken: (config: OnlyOfficeEditorConfig) => Promise<string>;
+  getOnlyOfficeJwtToken: (config: IConfig) => Promise<string>;
   deleteFileAfterEdit: (url: string) => Promise<void>;
   reset: () => void;
   error: Error | null;

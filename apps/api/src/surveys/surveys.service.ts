@@ -72,21 +72,34 @@ class SurveysService implements OnModuleInit {
   }
 
   async findSurvey(surveyId: string, user: JwtUser): Promise<Survey | null> {
-    const survey = await this.surveyModel
-      .findOne({
-        $and: [
-          {
-            $or: [
-              { isPublic: true },
-              { 'creator.username': user.preferred_username },
-              { 'invitedAttendees.username': user.preferred_username },
-              { 'invitedGroups.path': { $in: user.ldapGroups } },
-            ],
-          },
-          { _id: new Types.ObjectId(surveyId) },
-        ],
-      })
-      .exec();
+    try {
+      return await this.surveyModel
+        .findOne({
+          $and: [
+            {
+              $or: [
+                { isPublic: true },
+                { 'creator.username': user.preferred_username },
+                { 'invitedAttendees.username': user.preferred_username },
+                { 'invitedGroups.path': { $in: user.ldapGroups } },
+              ],
+            },
+            { _id: new Types.ObjectId(surveyId) },
+          ],
+        })
+        .exec();
+    } catch (error) {
+      throw new CustomHttpException(
+        CommonErrorMessages.DB_ACCESS_FAILED,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error,
+        SurveysService.name,
+      );
+    }
+  }
+
+  async throwErrorIfSurveyIsNotAccessible(surveyId: string, user: JwtUser): Promise<void> {
+    const survey = await this.findSurvey(surveyId, user);
     if (!survey) {
       throw new CustomHttpException(
         SurveyErrorMessages.NotFoundError,
@@ -95,7 +108,6 @@ class SurveysService implements OnModuleInit {
         SurveysService.name,
       );
     }
-    return survey;
   }
 
   async findPublicSurvey(surveyId: string): Promise<Survey | null> {
@@ -106,6 +118,35 @@ class SurveysService implements OnModuleInit {
         CommonErrorMessages.DB_ACCESS_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
         error,
+        SurveysService.name,
+      );
+    }
+  }
+
+  async throwErrorIfSurveyIsNotPublic(surveyId: string): Promise<void> {
+    const survey = await this.findPublicSurvey(surveyId);
+    if (!survey) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.NotFoundError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveysService.name,
+      );
+    }
+  }
+
+  async throwErrorIfUserIsNotCreator(surveyId: string, user: JwtUser): Promise<void> {
+    const survey = await this.surveyModel
+      .findOne({
+        $and: [{ _id: new Types.ObjectId(surveyId) }, { 'creator.username': user.preferred_username }],
+      })
+      .exec();
+
+    if (!survey) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.NotFoundError,
+        HttpStatus.NOT_FOUND,
+        undefined,
         SurveysService.name,
       );
     }
@@ -153,6 +194,7 @@ class SurveysService implements OnModuleInit {
       surveyId,
       surveyDto.formula,
       user.preferred_username,
+      surveyDto.isPublic,
     );
     if (processedFormula === null) {
       throw new CustomHttpException(

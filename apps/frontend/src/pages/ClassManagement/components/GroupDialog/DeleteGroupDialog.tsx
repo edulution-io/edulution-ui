@@ -18,11 +18,7 @@
  */
 
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import ItemDialogList from '@/components/shared/ItemDialogList';
-import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
 
 interface DeleteGroupDialogProps {
   isOpen: boolean;
@@ -41,43 +37,21 @@ const DeleteGroupDialog: React.FC<DeleteGroupDialogProps> = ({
   onConfirmDelete,
   isLoading = false,
 }) => {
-  const { t } = useTranslation();
-
-  const handleSubmit = async () => {
+  const handleConfirmDelete = async () => {
     await onConfirmDelete();
     onOpenChange(false);
   };
 
-  const handleClose = () => onOpenChange(false);
-
-  const getDialogBody = () => {
-    if (isLoading) return <CircleLoader className="mx-auto" />;
-
-    return (
-      <div className="text-background">
-        <ItemDialogList
-          deleteWarningTranslationId="classmanagement.confirmDeleteGroup"
-          items={[{ name: groupName, id: groupName }]}
-        />
-      </div>
-    );
-  };
-
-  const getFooter = () => (
-    <DialogFooterButtons
-      handleClose={handleClose}
-      handleSubmit={handleSubmit}
-      submitButtonText="common.delete"
-    />
-  );
-
   return (
-    <AdaptiveDialog
+    <DeleteConfirmationDialog
       isOpen={isOpen}
-      handleOpenChange={handleClose}
-      title={t('classmanagement.deleteGroup', { type: t(groupType) })}
-      body={getDialogBody()}
-      footer={getFooter()}
+      onOpenChange={onOpenChange}
+      items={[{ id: groupName, name: groupName }]}
+      onConfirmDelete={handleConfirmDelete}
+      isLoading={isLoading}
+      titleTranslationKey="classmanagement.deleteGroup"
+      messageTranslationKey="classmanagement.confirmDeleteGroup"
+      translationParams={{ type: groupType }}
     />
   );
 };

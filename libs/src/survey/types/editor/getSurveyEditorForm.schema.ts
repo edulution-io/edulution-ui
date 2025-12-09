@@ -112,6 +112,7 @@ const getSurveyEditorFormSchema = () =>
     isAnonymous: z.boolean().optional(),
     isPublic: z.boolean().optional(),
     canSubmitMultipleAnswers: z.boolean().optional(),
+    canUpdateFormerAnswer: z.boolean().optional(),
   });
 
 export default getSurveyEditorFormSchema;

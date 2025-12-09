@@ -19,7 +19,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
-import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
+import type { IConfig } from '@onlyoffice/document-editor-react';
 import findDocumentsEditorType from '@/pages/FileSharing/FilePreview/OnlyOffice/utilities/documentsEditorType';
 import getCallbackBaseUrl from '@/pages/FileSharing/FilePreview/OnlyOffice/utilities/getCallbackBaseUrl';
 import generateOnlyOfficeConfig from '@/pages/FileSharing/FilePreview/OnlyOffice/utilities/generateOnlyOfficeConfig';
@@ -42,7 +42,7 @@ interface UseOnlyOfficeProps {
 
 const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficeProps) => {
   const { webdavShare } = useParams();
-  const [editorConfig, setEditorConfig] = useState<OnlyOfficeEditorConfig | null>(null);
+  const [editorConfig, setEditorConfig] = useState<IConfig | null>(null);
   const { eduApiToken, user } = useUserStore();
   const { getOnlyOfficeJwtToken } = useFileEditorStore();
   const { language } = useLanguage();

@@ -24,6 +24,7 @@ import SurveyAnswerResponseDto from '@libs/survey/types/api/survey-answer-respon
 import SurveysPageView from '@libs/survey/types/api/page-view';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
+import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 
 interface SubmittedAnswersDialogStore {
   updateSelectedPageView: (pageView: SurveysPageView) => void;
@@ -35,7 +36,7 @@ interface SubmittedAnswersDialogStore {
   getSubmittedSurveyAnswers: (surveyId: string, attendee?: string) => Promise<void>;
   user: string | undefined;
   selectUser: (user: string) => void;
-  answer: JSON;
+  answer: TSurveyAnswer;
   isLoading: boolean;
 
   reset: () => void;
@@ -45,7 +46,7 @@ const SubmittedAnswersDialogStoreInitialState: Partial<SubmittedAnswersDialogSto
   selectedSurvey: undefined,
   isOpenSubmittedAnswersDialog: false,
   user: undefined,
-  answer: {} as JSON,
+  answer: {} as TSurveyAnswer,
   isLoading: false,
 };
 
@@ -67,7 +68,7 @@ const useSubmittedAnswersDialogStore = create<SubmittedAnswersDialogStore>((set)
       const { answer } = surveyAnswer;
       set({ answer });
     } catch (error) {
-      set({ answer: {} as JSON });
+      set({ answer: {} as TSurveyAnswer });
       handleApiError(error, set);
     } finally {
       set({ isLoading: false });

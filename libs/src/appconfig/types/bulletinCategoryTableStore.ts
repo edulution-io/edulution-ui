@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import AppConfigTable from '@libs/bulletinBoard/types/appConfigTable';
+import AppConfigTable from '@libs/appconfig/types/appConfigTable';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 

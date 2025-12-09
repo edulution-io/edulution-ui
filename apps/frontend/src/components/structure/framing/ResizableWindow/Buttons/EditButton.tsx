@@ -18,7 +18,7 @@
  */
 
 import React from 'react';
-import { FiEdit } from 'react-icons/fi';
+import { EditIcon } from '@libs/common/constants/standardActionIcons';
 import WindowControlBaseButton from './WindowControlBaseButton';
 
 interface EditButtonProps {
@@ -30,7 +30,7 @@ const EditButton = ({ onClick }: EditButtonProps) => (
     onClick={onClick}
     tooltipTranslationId="common.edit"
   >
-    <FiEdit />
+    <EditIcon />
   </WindowControlBaseButton>
 );
 

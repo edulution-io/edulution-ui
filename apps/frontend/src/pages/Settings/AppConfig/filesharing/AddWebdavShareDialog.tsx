@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
@@ -25,7 +25,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import useAppConfigTableDialogStore from '@/pages/Settings/AppConfig/components/table/useAppConfigTableDialogStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { Form, FormControl, FormDescription, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
-import { Button } from '@/components/shared/Button';
 import FormField from '@/components/shared/FormField';
 import { type ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
@@ -44,6 +43,7 @@ import WEBDAV_SHARE_AUTHENTICATION_METHODS from '@libs/webdav/constants/webdavSh
 import type MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import MultipleSelectorSH from '@/components/ui/MultipleSelectorSH';
 import WEBDAV_SHARE_STATUS from '@libs/webdav/constants/webdavShareStatus';
+import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
 import useWebdavShareConfigTableStore from './useWebdavShareConfigTableStore';
 import useWebdavServerConfigTableStore from './useWebdavServerConfigTableStore';
 import WebdavSharePathPreviewField from './WebdavSharePathPreviewField';
@@ -54,10 +54,20 @@ interface AddWebdavShareDialogProps {
 
 const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) => {
   const { t } = useTranslation();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { searchGroups } = useGroupStore();
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
-  const { selectedRows, tableContentData, setSelectedRows, updateWebdavShare, createWebdavShare, deleteTableEntry } =
-    useWebdavShareConfigTableStore();
+  const {
+    selectedRows,
+    tableContentData,
+    setSelectedRows,
+    updateWebdavShare,
+    createWebdavShare,
+    deleteTableEntry,
+    itemToDelete,
+    setItemToDelete,
+    fetchTableContent,
+  } = useWebdavShareConfigTableStore();
   const { tableContentData: rootServers } = useWebdavServerConfigTableStore();
   const lmnUser = useLmnApiStore((s) => s.user);
   const getOwnUser = useLmnApiStore((s) => s.getOwnUser);
@@ -150,15 +160,28 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
     closeDialog();
   };
 
-  const handleDeleteWebdavShareConfig = (e: React.FormEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (selectedConfig?.webdavShareId && deleteTableEntry) {
-      void deleteTableEntry('', selectedConfig?.webdavShareId);
+  const handleConfirmDelete = async () => {
+    const configToDelete = itemToDelete || selectedConfig;
+    if (configToDelete?.webdavShareId && deleteTableEntry) {
+      await deleteTableEntry('', configToDelete.webdavShareId);
+      if (setSelectedRows) {
+        setSelectedRows({});
+      }
+      await fetchTableContent();
     }
-    closeDialog();
+    setItemToDelete(null);
+    setIsDeleteDialogOpen(false);
+    setDialogOpen('');
   };
+
+  const handleDeleteDialogClose = (open: boolean) => {
+    if (!open) {
+      setItemToDelete(null);
+      setIsDeleteDialogOpen(false);
+    }
+  };
+
+  const deleteItem = itemToDelete || selectedConfig;
 
   const handleGroupsChange = (newGroups: MultipleSelectorGroup[]) => {
     const uniqueGroups = newGroups.reduce<MultipleSelectorGroup[]>((acc, g) => {
@@ -177,24 +200,11 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
   };
 
   const getFooter = () => (
-    <form
-      onSubmit={handleFormSubmit}
-      className="flex gap-4"
-    >
-      {selectedConfig && (
-        <div className="mt-4">
-          <Button
-            variant="btn-attention"
-            size="lg"
-            onClick={handleDeleteWebdavShareConfig}
-          >
-            {t('bulletinboard.delete')}
-          </Button>
-        </div>
-      )}
+    <form onSubmit={handleFormSubmit}>
       <DialogFooterButtons
         handleClose={closeDialog}
         handleSubmit={() => {}}
+        handleDelete={selectedConfig ? () => setIsDeleteDialogOpen(true) : undefined}
         disableSubmit={!formState.isValid}
         submitButtonText="common.save"
         submitButtonType="submit"
@@ -313,17 +323,29 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
   );
 
   return (
-    <AdaptiveDialog
-      isOpen={isOpen}
-      handleOpenChange={closeDialog}
-      title={
-        selectedConfig
-          ? t('classmanagement.veyonConfigTable.editConfig')
-          : t('classmanagement.veyonConfigTable.createConfig')
-      }
-      body={getDialogBody()}
-      footer={getFooter()}
-    />
+    <>
+      <AdaptiveDialog
+        isOpen={isOpen}
+        handleOpenChange={closeDialog}
+        title={
+          selectedConfig
+            ? t('classmanagement.veyonConfigTable.editConfig')
+            : t('classmanagement.veyonConfigTable.createConfig')
+        }
+        body={getDialogBody()}
+        footer={getFooter()}
+      />
+      {deleteItem && (
+        <DeleteConfirmationDialog
+          isOpen={isDeleteDialogOpen || !!itemToDelete}
+          onOpenChange={handleDeleteDialogClose}
+          items={[{ id: deleteItem.webdavShareId || '', name: deleteItem.displayName || '' }]}
+          onConfirmDelete={handleConfirmDelete}
+          titleTranslationKey="settings.appconfig.sections.webdavShare.deleteWebdavShare"
+          messageTranslationKey="settings.appconfig.sections.webdavShare.confirmDeleteWebdavShare"
+        />
+      )}
+    </>
   );
 };
 

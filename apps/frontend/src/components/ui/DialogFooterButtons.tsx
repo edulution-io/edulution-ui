@@ -24,30 +24,47 @@ import { Button, type ButtonProps } from '../shared/Button';
 interface DialogFooterProps {
   disableSubmit?: boolean;
   disableCancel?: boolean;
+  disableDelete?: boolean;
   cancelButtonText?: string;
   submitButtonText?: string;
+  deleteButtonText?: string;
   submitButtonType?: 'submit' | 'button';
   cancelButtonVariant?: ButtonProps['variant'];
   submitButtonVariant?: ButtonProps['variant'];
   handleSubmit?: () => void;
   handleClose?: () => void;
+  handleDelete?: () => void;
 }
 
 const DialogFooterButtons: React.FC<DialogFooterProps> = ({
   disableSubmit,
   disableCancel,
+  disableDelete,
   cancelButtonText,
   submitButtonText,
+  deleteButtonText,
   submitButtonType = 'button',
   cancelButtonVariant = 'btn-outline',
   submitButtonVariant = 'btn-collaboration',
   handleSubmit,
   handleClose,
+  handleDelete,
 }) => {
   const { t } = useTranslation();
 
   return (
-    <div className="mt-4 flex justify-end gap-4">
+    <div className="flex justify-end gap-4">
+      {handleDelete && (
+        <Button
+          variant="btn-attention"
+          disabled={disableDelete}
+          size="lg"
+          type="button"
+          onClick={handleDelete}
+        >
+          {t(deleteButtonText ?? 'delete')}
+        </Button>
+      )}
       {handleClose && (
         <Button
           variant={cancelButtonVariant}

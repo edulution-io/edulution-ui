@@ -17,11 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { DocumentEditor } from '@onlyoffice/document-editor-react';
+import { DocumentEditor, IConfig } from '@onlyoffice/document-editor-react';
 import React, { FC, useCallback } from 'react';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import { useTranslation } from 'react-i18next';
-import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
 
 interface OnlyOfficeEditorProps {
   editorType: {
@@ -31,7 +30,7 @@ interface OnlyOfficeEditorProps {
   };
   mode: 'view' | 'edit';
   documentServerURL: string;
-  editorConfig: OnlyOfficeEditorConfig;
+  editorConfig: IConfig;
   filePath: string;
   fileName: string;
   isOpenedInNewTab?: boolean;
@@ -50,16 +49,20 @@ const OnlyOfficeEditor: FC<OnlyOfficeEditorProps> = ({
   const { t } = useTranslation();
 
   const handleDocumentReady = useCallback(() => {
-    void deleteFileAfterEdit(editorConfig.document.url);
-  }, [mode, fileName, filePath]);
+    if (editorConfig.document?.url) {
+      void deleteFileAfterEdit(editorConfig.document.url);
+    }
+  }, [mode, fileName, filePath, editorConfig.document?.url, deleteFileAfterEdit]);
 
-  const validateConfig = (config: OnlyOfficeEditorConfig) =>
-    !(!config.document || !config.document.url || !config.editorConfig.callbackUrl);
+  const validateConfig = (config: IConfig) =>
+    !(!config.document || !config.document.url || !config.editorConfig?.callbackUrl);
 
   const handleLoadComponentError = (errorCode: number) => {
     switch (errorCode) {
       default:
-        void deleteFileAfterEdit(editorConfig.document.url);
+        if (editorConfig.document?.url) {
+          void deleteFileAfterEdit(editorConfig.document.url);
+        }
     }
   };
 

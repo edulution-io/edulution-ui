@@ -188,6 +188,7 @@ const AddUserAccountDialog: FC<AddUserAccountDialogProps> = ({ isOpen, isOneRowS
                       setTotp={field.onChange}
                       onComplete={isFirstUserAccount ? () => {} : form.handleSubmit(onSubmit)}
                       type={isFirstUserAccount ? 'default' : 'pin'}
+                      variant="dialog"
                     />
                   </FormControl>
                   <FormMessage className={cn('text-p')} />

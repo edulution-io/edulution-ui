@@ -17,50 +17,81 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import ItemDialogList from '@/components/shared/ItemDialogList';
+import ItemList from '@/components/shared/ItemList';
+import ListItem from '@libs/ui/types/listItem';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
-interface DeleteAppConfigDialogProps {
+interface DeleteConfirmationDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  items: Array<{ name: string; id: string }>;
+  items: ListItem[];
   onConfirmDelete: () => Promise<void>;
   isLoading?: boolean;
-  titleTranslationKey?: string;
+  error?: Error | null;
+  titleTranslationKey: string;
+  messageTranslationKey: string;
   warningTranslationKey?: string;
+  trigger?: React.ReactNode;
+  autoCloseOnSuccess?: boolean;
+  translationParams?: Record<string, string>;
 }
 
-const DeleteAppConfigDialog: React.FC<DeleteAppConfigDialogProps> = ({
+const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
   isOpen,
   onOpenChange,
   items,
   onConfirmDelete,
   isLoading = false,
-  titleTranslationKey = 'settings.appconfig.deleteEntries',
-  warningTranslationKey = 'settings.appconfig.confirmDeleteEntries',
+  error = null,
+  titleTranslationKey,
+  messageTranslationKey,
+  warningTranslationKey,
+  trigger,
+  autoCloseOnSuccess = true,
+  translationParams = {},
 }) => {
   const { t } = useTranslation();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
-    await onConfirmDelete();
-    onOpenChange(false);
+    setIsSubmitting(true);
+    try {
+      await onConfirmDelete();
+      if (autoCloseOnSuccess) {
+        onOpenChange(false);
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleClose = () => onOpenChange(false);
 
+  const isDisabled = isLoading || isSubmitting || items.length === 0;
+
   const getDialogBody = () => {
-    if (isLoading) return <CircleLoader className="mx-auto" />;
+    if (error) {
+      return (
+        <div className="text-background">
+          {t('common.error')}: {error.message}
+        </div>
+      );
+    }
+
+    if (items.length === 0) {
+      return <div className="text-background">{t('common.noItemsSelected')}</div>;
+    }
 
     return (
       <div className="text-background">
-        <ItemDialogList
-          deleteWarningTranslationId={warningTranslationKey}
-          items={items}
-        />
+        <p>{t(messageTranslationKey, { count: items.length, ...translationParams })}</p>
+        <ItemList items={items} />
+        {warningTranslationKey && (
+          <div className="mt-3 rounded-lg border border-red-400 p-3">{t(warningTranslationKey)}</div>
+        )}
       </div>
     );
   };
@@ -69,19 +100,22 @@ const DeleteAppConfigDialog: React.FC<DeleteAppConfigDialogProps> = ({
     <DialogFooterButtons
       handleClose={handleClose}
       handleSubmit={handleSubmit}
-      submitButtonText="common.delete"
+      submitButtonText={isSubmitting ? t('common.deleting') : t('common.delete')}
+      disableCancel={isSubmitting}
+      disableSubmit={isDisabled}
     />
   );
 
   return (
     <AdaptiveDialog
       isOpen={isOpen}
+      trigger={trigger}
       handleOpenChange={handleClose}
-      title={t(titleTranslationKey, { count: items.length })}
+      title={t(titleTranslationKey, { count: items.length, ...translationParams })}
       body={getDialogBody()}
       footer={getFooter()}
     />
   );
 };
 
-export default DeleteAppConfigDialog;
+export default DeleteConfirmationDialog;

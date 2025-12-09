@@ -91,8 +91,8 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
           />
 
           {isActive && (
-            <div className="flex gap-4">
-              <div className="w-1/2">
+            <div className="flex flex-col gap-4 sm:flex-row">
+              <div className="w-full sm:w-1/2">
                 <DateTimePickerField
                   form={form}
                   path="isVisibleStartDate"
@@ -101,7 +101,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
                   placeholder={t('bulletinboard.activeFromPlaceholder')}
                 />
               </div>
-              <div className="w-1/2">
+              <div className="w-full sm:w-1/2">
                 <DateTimePickerField
                   form={form}
                   path="isVisibleEndDate"

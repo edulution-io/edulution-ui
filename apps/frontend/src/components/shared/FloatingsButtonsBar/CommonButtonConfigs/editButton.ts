@@ -18,10 +18,10 @@
  */
 
 import { t } from 'i18next';
-import { FiEdit } from 'react-icons/fi';
+import { EditIcon } from '@libs/common/constants/standardActionIcons';
 
 const EditButton = (onClick: () => void, isVisible?: boolean) => ({
-  icon: FiEdit,
+  icon: EditIcon,
   text: t('common.edit'),
   onClick,
   isVisible,

@@ -105,17 +105,15 @@ const ConferenceDetailsDialog = ({ trigger }: ConferenceDetailsDialogProps) => {
   const handleClose = () => setSelectedConference(null);
 
   const getFooter = () => (
-    <div className="mt-4 flex justify-end">
-      <form onSubmit={handleFormSubmit}>
-        <DialogFooterButtons
-          handleClose={handleClose}
-          handleSubmit={() => {}}
-          submitButtonText="common.save"
-          submitButtonType="submit"
-          disableSubmit={isLoading}
-        />
-      </form>
-    </div>
+    <form onSubmit={handleFormSubmit}>
+      <DialogFooterButtons
+        handleClose={handleClose}
+        handleSubmit={() => {}}
+        submitButtonText="common.save"
+        submitButtonType="submit"
+        disableSubmit={isLoading}
+      />
+    </form>
   );
 
   return (

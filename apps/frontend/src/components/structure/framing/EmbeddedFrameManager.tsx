@@ -22,6 +22,7 @@ import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
 import useUserAccounts from '@/hooks/useUserAccounts';
+import IFRAME_ALLOWED_CONFIG from '@libs/ui/constants/iframeAllowedConfig';
 
 const EmbeddedFrameManager = () => {
   const { appConfigs } = useAppConfigsStore();
@@ -40,6 +41,7 @@ const EmbeddedFrameManager = () => {
           key={appConfig.name}
           title={appConfig.name}
           className={`absolute inset-y-0 left-0 ml-0 w-full ${isOpen ? 'block' : 'hidden'}`}
+          allow={IFRAME_ALLOWED_CONFIG}
           height="100%"
           src={url}
         />

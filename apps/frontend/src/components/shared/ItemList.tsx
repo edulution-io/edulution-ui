@@ -18,33 +18,32 @@
  */
 
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/ScrollArea';
+import ListItem from '@libs/ui/types/listItem';
 
-const ItemDialogList = ({
-  deleteWarningTranslationId,
-  items,
-}: {
-  items: { id: string; name: string }[];
-  deleteWarningTranslationId?: string;
-}) => {
-  const { t } = useTranslation();
+interface ItemListProps {
+  items: ListItem[];
+}
+
+const ItemList: React.FC<ItemListProps> = ({ items }) => {
+  if (items.length === 0) return null;
+
+  if (items.length === 1) {
+    return <p className="mt-4 font-medium">{items[0].name}</p>;
+  }
 
   return (
-    <div className="text-background">
-      {deleteWarningTranslationId && <p>{t(deleteWarningTranslationId)}</p>}
-      <ScrollArea className="mt-2 h-64 w-96 max-w-full overflow-y-auto rounded border p-2">
-        {items.map((item) => (
-          <div
-            key={item.id}
-            className="truncate"
-          >
-            {item.name}
-          </div>
-        ))}
-      </ScrollArea>
-    </div>
+    <ScrollArea className="mt-2 max-h-[218px] w-96 max-w-full overflow-y-auto rounded border p-2">
+      {items.map((item) => (
+        <div
+          key={item.id}
+          className="truncate"
+        >
+          {item.name}
+        </div>
+      ))}
+    </ScrollArea>
   );
 };
 
-export default ItemDialogList;
+export default ItemList;

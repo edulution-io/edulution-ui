@@ -18,6 +18,7 @@
  */
 
 import { Types } from 'mongoose';
+import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 import { Survey, SurveyDocument } from '../../survey.schema';
 import { firstMockUser, secondMockUser } from '../user';
 
@@ -70,7 +71,7 @@ export const idOfPublicSurvey02 = new Types.ObjectId();
 export const saveNoPublicSurvey02: number = 3;
 
 export const idOfTheValidSurveyAnswerForThePublicSurvey02 = new Types.ObjectId();
-export const mockedValidAnswerForPublicSurveys02: JSON = JSON.parse('{"Frage1": "Max", "Frage2": "choice1"}') as JSON;
+export const mockedValidAnswerForPublicSurveys02: TSurveyAnswer = { Frage1: 'Max', Frage2: 'choice1' };
 export const surveyValidAnswerPublicSurvey02: SurveyDocument = {
   _id: idOfTheValidSurveyAnswerForThePublicSurvey02,
   id: idOfTheValidSurveyAnswerForThePublicSurvey02,
@@ -81,7 +82,7 @@ export const surveyValidAnswerPublicSurvey02: SurveyDocument = {
 } as unknown as SurveyDocument;
 
 export const idOfTheInvalidSurveyAnswerForThePublicSurvey02 = new Types.ObjectId();
-export const mockedInvalidAnswerForPublicSurveys02: JSON = JSON.parse('{"Frage1": "Max", "Frage2": "choice0"}') as JSON;
+export const mockedInvalidAnswerForPublicSurveys02: TSurveyAnswer = { Frage1: 'Max', Frage2: 'choice0' };
 export const surveyInvalidAnswerPublicSurvey02: SurveyDocument = {
   _id: idOfTheInvalidSurveyAnswerForThePublicSurvey02,
   id: idOfTheInvalidSurveyAnswerForThePublicSurvey02,

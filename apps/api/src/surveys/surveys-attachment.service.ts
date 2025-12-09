@@ -21,7 +21,9 @@ import { join } from 'path';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import {
   SURVEY_FILE_ATTACHMENT_ENDPOINT,
-  SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT,
+  PUBLIC_SURVEY_FILE_ATTACHMENT_ENDPOINT,
+  SURVEY_CHOICES,
+  PUBLIC_SURVEY_CHOICES,
 } from '@libs/survey/constants/surveys-endpoint';
 import SURVEYS_ATTACHMENT_PATH from '@libs/survey/constants/surveysAttachmentPath';
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
@@ -43,7 +45,12 @@ class SurveysAttachmentService implements OnModuleInit {
     void this.fileSystemService.ensureDirectoryExists(this.attachmentsPath);
   }
 
-  async preProcessFormula(surveyId: string, formula: SurveyFormula, username: string): Promise<SurveyFormula> {
+  async preProcessFormula(
+    surveyId: string,
+    formula: SurveyFormula,
+    username: string,
+    isPublic?: boolean,
+  ): Promise<SurveyFormula> {
     const processedFormula = { ...formula };
     const includedFileNames: Set<string> = new Set();
 
@@ -53,6 +60,7 @@ class SurveysAttachmentService implements OnModuleInit {
         username,
         surveyId,
         SURVEYS_HEADER_IMAGE,
+        isPublic,
       );
       processedFormula.logo = newUrl;
       if (filename) includedFileNames.add(join(SURVEYS_HEADER_IMAGE, filename));
@@ -62,7 +70,7 @@ class SurveysAttachmentService implements OnModuleInit {
       processedFormula.pages = await Promise.all(
         processedFormula.pages.map(async (page) => ({
           ...page,
-          elements: await this.processElements(page.elements, username, surveyId, includedFileNames),
+          elements: await this.processElements(page.elements, username, surveyId, includedFileNames, isPublic),
         })),
       );
     }
@@ -73,6 +81,7 @@ class SurveysAttachmentService implements OnModuleInit {
         username,
         surveyId,
         includedFileNames,
+        isPublic,
       );
     }
 
@@ -126,9 +135,12 @@ class SurveysAttachmentService implements OnModuleInit {
     username: string,
     surveyId: string,
     includedFileNames: Set<string>,
+    isPublic?: boolean,
   ) {
     if (!elements) return [];
-    return Promise.all(elements.map(async (el) => this.processElement(el, username, surveyId, includedFileNames)));
+    return Promise.all(
+      elements.map(async (el) => this.processElement(el, username, surveyId, includedFileNames, isPublic)),
+    );
   }
 
   async processElement(
@@ -136,23 +148,44 @@ class SurveysAttachmentService implements OnModuleInit {
     username: string,
     surveyId: string,
     includedFileNames: Set<string>,
+    isPublic?: boolean,
   ): Promise<TSurveyElement> {
     const processedElement = { ...element };
     switch (element.type) {
       case SurveyQuestionsType.CHECKBOX:
       case SurveyQuestionsType.DROPDOWN:
       case SurveyQuestionsType.RADIO_GROUP:
-        if (element.choicesByUrl && element.choicesByUrl?.url.includes(TEMPORAL_SURVEY_ID_STRING)) {
+        if (!element.choicesByUrl) {
+          break;
+        }
+        if (element.choicesByUrl?.url.includes(TEMPORAL_SURVEY_ID_STRING)) {
           processedElement.choicesByUrl = {
             ...element.choicesByUrl,
             url: element.choicesByUrl.url.replace(TEMPORAL_SURVEY_ID_STRING, surveyId),
+          };
+        }
+        if (isPublic && element.choicesByUrl?.url.includes(`/${SURVEY_CHOICES}/`)) {
+          processedElement.choicesByUrl = {
+            ...element.choicesByUrl,
+            url: element.choicesByUrl.url.replace(`/${SURVEY_CHOICES}/`, `/${PUBLIC_SURVEY_CHOICES}/`),
+          };
+        } else if (!isPublic && element.choicesByUrl?.url.includes(`/${PUBLIC_SURVEY_CHOICES}/`)) {
+          processedElement.choicesByUrl = {
+            ...element.choicesByUrl,
+            url: element.choicesByUrl.url.replace(`/${PUBLIC_SURVEY_CHOICES}/`, `/${SURVEY_CHOICES}/`),
           };
         }
         break;
 
       case SurveyQuestionsType.IMAGE:
         if (element.imageLink) {
-          const { newUrl, filename } = await this.processUrl(element.imageLink, username, surveyId, element.name);
+          const { newUrl, filename } = await this.processUrl(
+            element.imageLink,
+            username,
+            surveyId,
+            element.name,
+            isPublic,
+          );
           processedElement.imageLink = newUrl;
           if (filename) includedFileNames.add(join(element.name, filename));
         }
@@ -163,7 +196,13 @@ class SurveysAttachmentService implements OnModuleInit {
           processedElement.choices = await Promise.all(
             element.choices.map(async (choice) => {
               if (typeof choice !== 'string' && choice.imageLink) {
-                const { newUrl, filename } = await this.processUrl(choice.imageLink, username, surveyId, element.name);
+                const { newUrl, filename } = await this.processUrl(
+                  choice.imageLink,
+                  username,
+                  surveyId,
+                  element.name,
+                  isPublic,
+                );
                 if (filename) includedFileNames.add(join(element.name, filename));
                 return { ...choice, imageLink: newUrl };
               }
@@ -175,7 +214,7 @@ class SurveysAttachmentService implements OnModuleInit {
 
       case SurveyQuestionsType.FILE:
         if (element.value && typeof element.value === 'string') {
-          const { newUrl, filename } = await this.processUrl(element.value, username, surveyId, element.name);
+          const { newUrl, filename } = await this.processUrl(element.value, username, surveyId, element.name, isPublic);
           processedElement.value = newUrl;
           if (filename) includedFileNames.add(join(element.name, filename));
         }
@@ -189,51 +228,41 @@ class SurveysAttachmentService implements OnModuleInit {
     return processedElement;
   }
 
-  static updateLinkForRestfulChoices(surveyId: string, question: TSurveyElement): TSurveyElement {
-    if (question.choicesByUrl && question.choicesByUrl?.url.includes(TEMPORAL_SURVEY_ID_STRING)) {
-      return {
-        ...question,
-        choicesByUrl: {
-          ...question.choicesByUrl,
-          url: question.choicesByUrl.url.replace(TEMPORAL_SURVEY_ID_STRING, surveyId),
-        },
-      };
-    }
-    return question;
-  }
-
   async processUrl(
     url: string,
     username: string,
     surveyId: string,
     subfolder: string,
+    isPublic = false,
   ): Promise<{ newUrl: string; filename: string | null }> {
-    if (!url || !url.includes(`/${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}`)) {
-      const filename = url.split('/').pop() || null;
-      return { newUrl: url, filename };
-    }
-
     const filename = url.split('/').pop();
     if (!filename) {
       return { newUrl: url, filename: null };
     }
 
-    const tempPath = join(SURVEYS_TEMP_FILES_PATH, username, filename);
     const permanentDir = join(SURVEYS_ATTACHMENT_PATH, surveyId, subfolder);
     const permanentPath = join(permanentDir, filename);
-    const pathForUrl = join(surveyId, subfolder, filename);
+    const permanentFileExists = await FilesystemService.checkIfFileExist(permanentPath);
+    if (permanentFileExists) {
+      return { newUrl: url, filename };
+    }
 
+    const tempPath = join(SURVEYS_TEMP_FILES_PATH, username, filename);
+    const tempFileExists = await FilesystemService.checkIfFileExist(tempPath);
+    if (!tempFileExists) {
+      return { newUrl: url, filename: null };
+    }
+
+    const pathForUrl = join(surveyId, subfolder, filename);
     try {
       await this.fileSystemService.ensureDirectoryExists(permanentDir);
       await FilesystemService.moveFile(tempPath, permanentPath);
-      const baseUrl = url.substring(0, url.indexOf(`/${SURVEY_TEMP_FILE_ATTACHMENT_ENDPOINT}`));
+      const baseUrl = url.substring(0, url.indexOf(`/${SURVEY_FILE_ATTACHMENT_ENDPOINT}`));
+      const endpoint = `${isPublic ? PUBLIC_SURVEY_FILE_ATTACHMENT_ENDPOINT : SURVEY_FILE_ATTACHMENT_ENDPOINT}`;
       Logger.log(`Moved temp file ${tempPath} to ${permanentPath}`, SurveysAttachmentService.name);
-      Logger.log(
-        `filename: ${filename}; newUrl: ${baseUrl}/${SURVEY_FILE_ATTACHMENT_ENDPOINT}/${pathForUrl}`,
-        SurveysAttachmentService.name,
-      );
+      Logger.log(`filename: ${filename}; newUrl: ${baseUrl}/${endpoint}/${pathForUrl}`, SurveysAttachmentService.name);
       return {
-        newUrl: `${baseUrl}/${SURVEY_FILE_ATTACHMENT_ENDPOINT}/${pathForUrl}`,
+        newUrl: `${baseUrl}/${endpoint}/${pathForUrl}`,
         filename,
       };
     } catch (error) {

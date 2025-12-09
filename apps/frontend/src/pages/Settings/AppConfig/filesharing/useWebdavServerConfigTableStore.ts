@@ -30,6 +30,7 @@ const initialValues = {
   tableContentData: [],
   selectedConfig: null,
   isDeleteWebdavServerWarningDialogOpen: undefined,
+  itemToDelete: null,
 };
 
 const useWebdavServerConfigTableStore: UseBoundStore<StoreApi<WebdavServerTableStore>> = create<WebdavServerTableStore>(
@@ -39,6 +40,8 @@ const useWebdavServerConfigTableStore: UseBoundStore<StoreApi<WebdavServerTableS
     setSelectedRows: (selectedRows) => set({ selectedRows }),
 
     setSelectedConfig: (config) => set({ selectedConfig: config }),
+
+    setItemToDelete: (item) => set({ itemToDelete: item }),
 
     setIsDeleteWebdavServerWarningDialogOpen: (open) => set({ isDeleteWebdavServerWarningDialogOpen: open }),
 

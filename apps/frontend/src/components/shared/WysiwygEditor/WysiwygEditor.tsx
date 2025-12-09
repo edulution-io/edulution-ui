@@ -53,6 +53,11 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
   };
 
   const uploadImage = async (file: File, index?: number) => {
+    if (!IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.type)) {
+      toast.error(`${t('common.errors.invalidFileType')}: ${file.type}`);
+      return;
+    }
+
     try {
       const uploadedFilename = await onUpload(file);
       const fetchImageUrl = `/${EDU_API_ROOT}/${uploadedFilename}?token=${eduApiToken}`;
@@ -83,8 +88,11 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
   };
 
   useEffect(() => {
-    const quill = quillRef.current?.getEditor();
-    if (!quill) return undefined;
+    const quillInstance = quillRef.current;
+    if (!quillInstance) return undefined;
+
+    const editor = quillInstance.getEditor?.();
+    if (!editor) return undefined;
 
     const handleDrop = (e: DragEvent) => {
       e.preventDefault();
@@ -97,7 +105,7 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
 
       if (imageFiles.length === 0) return;
 
-      const range = quill.getSelection(true);
+      const range = editor.getSelection(true);
       const index = range?.index ?? 0;
 
       imageFiles.forEach((file, i) => {
@@ -105,7 +113,7 @@ const WysiwygEditor: React.FC<WysiwygEditorProps> = ({ value = '', onChange, onU
       });
     };
 
-    const editorElement = quill.root;
+    const editorElement = editor.root;
     editorElement.addEventListener('drop', handleDrop, true);
 
     return () => {

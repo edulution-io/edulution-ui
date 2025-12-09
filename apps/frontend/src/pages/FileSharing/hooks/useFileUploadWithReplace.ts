@@ -17,30 +17,30 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useTranslation } from 'react-i18next';
 import { useCallback } from 'react';
-import useUserStore from '@/store/UserStore/useUserStore';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { UploadItem } from '@libs/filesharing/types/uploadItem';
 import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
+import useUserStore from '@/store/UserStore/useUserStore';
+import useReplaceFilesDialogStore from '@/pages/FileSharing/Dialog/useReplaceFilesDialogStore';
 import getRandomUUID from '@/utils/getRandomUUID';
-import useFileSharingStore from '../useFileSharingStore';
-import usePublicShareStore from '../publicShare/usePublicShareStore';
 
-const useFileUpload = () => {
+const useFileUploadWithReplace = () => {
   const { uploadFiles, updateFilesToUpload } = useHandleUploadFileStore();
-  const { fetchFiles } = useFileSharingStore();
+  const { files, fetchFiles } = useFileSharingStore();
   const { fetchShares } = usePublicShareStore();
   const { eduApiToken } = useUserStore();
+  const { openDialog } = useReplaceFilesDialogStore();
   const { t } = useTranslation();
 
-  const handleFileUpload = useCallback(
-    async (files: File[], webdavShare: string | undefined, currentPath: string) => {
-      if (!webdavShare) return;
-
+  const uploadFilesDirectly = useCallback(
+    async (filesToUpload: File[], webdavShare: string, currentPath: string) => {
       try {
         updateFilesToUpload(() =>
-          files.map((file) =>
+          filesToUpload.map((file) =>
             Object.assign(new File([file], file.name, { type: file.type }), {
               id: getRandomUUID(),
               isZippedFolder: false,
@@ -61,7 +61,31 @@ const useFileUpload = () => {
     [updateFilesToUpload, uploadFiles, eduApiToken, fetchFiles, fetchShares, t],
   );
 
-  return { handleFileUpload };
+  const handleFileUploadWithDuplicateCheck = useCallback(
+    async (droppedFiles: File[], webdavShare: string | undefined, currentPath: string) => {
+      if (!webdavShare) return;
+
+      const existingFileNames = new Set(files.map((f) => f.filename));
+
+      const duplicateFiles = droppedFiles.filter((file) => existingFileNames.has(file.name));
+      const newFiles = droppedFiles.filter((file) => !existingFileNames.has(file.name));
+
+      if (duplicateFiles.length > 0) {
+        openDialog({
+          files: droppedFiles,
+          duplicateFiles,
+          newFiles,
+          webdavShare,
+          currentPath,
+        });
+      } else {
+        await uploadFilesDirectly(droppedFiles, webdavShare, currentPath);
+      }
+    },
+    [files, openDialog, uploadFilesDirectly],
+  );
+
+  return { handleFileUploadWithDuplicateCheck, uploadFilesDirectly };
 };
 
-export default useFileUpload;
+export default useFileUploadWithReplace;

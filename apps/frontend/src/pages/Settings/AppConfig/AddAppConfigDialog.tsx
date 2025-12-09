@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { useDropzone } from 'react-dropzone';
 import { MdOutlineCloudUpload } from 'react-icons/md';
-import { HiTrash } from 'react-icons/hi';
+import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
@@ -137,6 +137,11 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
     isDragActive ? 'bg-foreground' : 'bg-popover-foreground'
   }`;
 
+  const handleClose = () => {
+    form.reset();
+    setIsAddAppConfigDialogOpen(false);
+  };
+
   const getDialogBody = () => {
     if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
     return (
@@ -174,36 +179,28 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
                       onLoad={() => {}}
                     />
                     <Button
+                      type="button"
                       onClick={() => form.setValue('customIcon', '')}
                       className="absolute right-1 top-1 h-8 rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
                     >
-                      <HiTrash className="text-text-ciRed h-4 w-4" />
+                      <DeleteIcon className="text-text-ciRed h-4 w-4" />
                     </Button>
                   </li>
                 </ul>
               </ScrollArea>
             )}
           </div>
+          <DialogFooterButtons
+            handleClose={handleClose}
+            handleSubmit={() => {}}
+            submitButtonText="common.add"
+            submitButtonType="submit"
+            disableSubmit={isLoading}
+          />
         </form>
       </Form>
     );
   };
-
-  const handleClose = () => {
-    form.reset();
-    setIsAddAppConfigDialogOpen(false);
-  };
-
-  const getFooter = () => (
-    <form>
-      <DialogFooterButtons
-        handleClose={handleClose}
-        handleSubmit={form.handleSubmit(onSubmit)}
-        submitButtonText="common.add"
-        disableSubmit={isLoading}
-      />
-    </form>
-  );
 
   return (
     <AdaptiveDialog
@@ -211,7 +208,6 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
       handleOpenChange={handleClose}
       title={t('settings.addApp.title')}
       body={getDialogBody()}
-      footer={getFooter()}
     />
   );
 };

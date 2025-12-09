@@ -18,18 +18,22 @@
  */
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import ItemDialogList from '@/components/shared/ItemDialogList';
+import ItemList from '@/components/shared/ItemList';
 
 const DeleteContentDialogBody: React.FC = () => {
+  const { t } = useTranslation();
   const { selectedItems } = useFileSharingStore();
-  const deleteWarningTranslationId = 'deleteDialog.actionCannotBeUndone';
+
+  const items = selectedItems.map((i) => ({ name: i.filename, id: i.etag }));
 
   return (
-    <ItemDialogList
-      deleteWarningTranslationId={deleteWarningTranslationId}
-      items={selectedItems.map((i) => ({ name: i.filename, id: i.etag }))}
-    />
+    <div className="text-background">
+      <p>{t('deleteDialog.actionCannotBeUndone')}</p>
+      <ItemList items={items} />
+    </div>
   );
 };
+
 export default DeleteContentDialogBody;

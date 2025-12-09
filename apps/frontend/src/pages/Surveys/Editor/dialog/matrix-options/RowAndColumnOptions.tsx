@@ -19,7 +19,8 @@
 
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MdAdd, MdRemove } from 'react-icons/md';
+import { MdRemove } from 'react-icons/md';
+import { AddIcon } from '@libs/common/constants/standardActionIcons';
 import { Base, ItemValue, QuestionMatrixBaseModel } from 'survey-core';
 import isQuestionTypeMatrixType from '@libs/survey/utils/isQuestionTypeMatrixType';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
@@ -136,7 +137,7 @@ const RowAndColumnOptions = () => {
           type="number"
           min="1"
           value={question.rows.length || 1}
-          onChange={(e) => handleRowCountChange(Math.min(1, Number(e.currentTarget.value)))}
+          onChange={(e) => handleRowCountChange(Math.max(1, Number(e.currentTarget.value)))}
           variant="dialog"
           className="ml-2 max-w-[75px] flex-1 text-primary-foreground"
         />
@@ -146,7 +147,7 @@ const RowAndColumnOptions = () => {
           size="sm"
           title={t('survey.editor.questionSettings.addRow')}
         >
-          <MdAdd className="h-4 w-4" />
+          <AddIcon className="h-4 w-4" />
         </Button>
         <Button
           onClick={() => removeRow()}
@@ -163,7 +164,7 @@ const RowAndColumnOptions = () => {
           type="number"
           min="1"
           value={question.columns.length || 1}
-          onChange={(e) => handleColumnCountChange(Math.min(1, Number(e.currentTarget.value)))}
+          onChange={(e) => handleColumnCountChange(Math.max(1, Number(e.currentTarget.value)))}
           variant="dialog"
           className="ml-2 max-w-[75px] flex-1 text-primary-foreground"
         />
@@ -173,7 +174,7 @@ const RowAndColumnOptions = () => {
           size="sm"
           title={t('survey.editor.questionSettings.addColumn')}
         >
-          <MdAdd className="h-4 w-4" />
+          <AddIcon className="h-4 w-4" />
         </Button>
         <Button
           onClick={() => removeColumn()}

@@ -19,6 +19,7 @@
 
 import React from 'react';
 import type TAppFieldType from '@libs/appconfig/types/tAppFieldType';
+import IFRAME_ALLOWED_CONFIG from '@libs/ui/constants/iframeAllowedConfig';
 
 type EmbeddedPageContentProps = {
   pageTitle: string;
@@ -39,6 +40,7 @@ const EmbeddedPageContent: React.FC<EmbeddedPageContentProps> = ({
       title={pageTitle}
       className="h-full w-full border-0"
       sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
+      allow={IFRAME_ALLOWED_CONFIG}
     />
   ) : (
     <div

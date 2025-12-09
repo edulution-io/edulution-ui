@@ -19,12 +19,10 @@
 
 import { extname } from 'path';
 import { Request } from 'express';
-import { diskStorage } from 'multer';
+import { diskStorage, MulterError } from 'multer';
 import { existsSync, mkdirSync } from 'fs';
-import { HttpStatus } from '@nestjs/common';
 import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
-import CustomHttpException from '../common/CustomHttpException';
+import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
 
 /**
  * Generates a disk storage configuration that can dynamically
@@ -62,7 +60,9 @@ export const attachmentFileFilter = (
   if (IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
     callback(null, true);
   } else {
-    callback(new CustomHttpException(CommonErrorMessages.INVALID_FILE_TYPE, HttpStatus.INTERNAL_SERVER_ERROR), false);
+    const err = new MulterError('LIMIT_UNEXPECTED_FILE', file.fieldname);
+    err.message = 'common.errors.invalidFileType';
+    callback(err, false);
   }
 };
 
@@ -70,17 +70,9 @@ export const createAttachmentUploadOptions = (
   getDestinationPath: (req: Request) => string,
   filter: boolean = true,
   fileNameGenerator?: (req: Request, file: Express.Multer.File) => string,
+  maxFileSize?: number,
 ) => ({
   storage: createDiskStorage(getDestinationPath, fileNameGenerator),
   fileFilter: filter ? attachmentFileFilter : undefined,
+  limits: maxFileSize ? { fileSize: maxFileSize } : { fileSize: MAXIMUM_UPLOAD_FILE_SIZE },
 });
-
-export const checkAttachmentFile = (file: Express.Multer.File): string => {
-  if (!file) {
-    throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
-  }
-  if (!IMAGE_UPLOAD_ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-    throw new CustomHttpException(CommonErrorMessages.FILE_UPLOAD_FAILED, HttpStatus.BAD_REQUEST);
-  }
-  return file.filename;
-};

@@ -86,6 +86,12 @@ const FileSharingPreviewFrame = () => {
     setCurrentlyEditingFile(null);
   };
 
+  const { isMobileView } = useMedia();
+
+  useEffect(() => {
+    resetPreview();
+  }, [isMobileView]);
+
   const pathSegments = location.pathname.split('/').filter(Boolean);
   const webdavShare = decodeURIComponent(pathSegments[1]);
 
@@ -120,7 +126,6 @@ const FileSharingPreviewFrame = () => {
     closingRef.current = false;
   };
 
-  const { isMobileView } = useMedia();
   const { appConfigs } = useAppConfigsStore();
 
   const { x, y, width, height } = filePreviewRect || { x: 0, y: 0, width: 0, height: 0 };
@@ -143,10 +148,11 @@ const FileSharingPreviewFrame = () => {
     !!currentlyEditingFile && isOnlyOfficeDocument(currentlyEditingFile.filename ?? currentlyEditingFile.filePath);
 
   const isValidFile = currentlyEditingFile?.type === ContentType.FILE && isValidFileToPreview(currentlyEditingFile);
+  const isPdf = currentlyEditingFile?.filename.endsWith('pdf');
+  const isOnlyOfficeDocOnMobile = isMobileView && isOnlyOfficeDoc && isDocumentServerConfigured && !isPdf;
 
   const isFileReady =
-    (isValidFile && !isMobileView && (isOnlyOfficeDoc ? isDocumentServerConfigured : true)) ||
-    currentlyEditingFile?.filename.endsWith('pdf');
+    (isValidFile && (isOnlyOfficeDoc ? isDocumentServerConfigured : true) && !isOnlyOfficeDocOnMobile) || isPdf;
 
   const hidePreviewOnOtherPages = pathSegments[0] !== APPS.FILE_SHARING && isFilePreviewDocked;
 
@@ -166,7 +172,7 @@ const FileSharingPreviewFrame = () => {
         key={EditButton.name}
       />
     ),
-    isFilePreviewDocked && (
+    !isMobileView && isFilePreviewDocked && (
       <ToggleDockButton
         onClick={() => {
           setIsFilePreviewDocked(!isFilePreviewDocked);
@@ -180,14 +186,14 @@ const FileSharingPreviewFrame = () => {
 
   return (
     <ResizableWindow
-      disableMinimizeWindow={isFilePreviewDocked}
-      disableToggleMaximizeWindow={false}
+      disableMinimizeWindow={isFilePreviewDocked || isMobileView}
+      disableToggleMaximizeWindow={isMobileView}
       titleTranslationId={windowTitle}
       handleClose={handleCloseFile}
-      initialPosition={initialPositionMemo}
-      initialSize={initialSizeMemo}
-      openMaximized={false}
-      stickToInitialSizeAndPositionWhenRestored={isFilePreviewDocked}
+      initialPosition={isMobileView ? undefined : initialPositionMemo}
+      initialSize={isMobileView ? undefined : initialSizeMemo}
+      openMaximized={isMobileView}
+      stickToInitialSizeAndPositionWhenRestored={!isMobileView && isFilePreviewDocked}
       additionalButtons={additionalButtons}
     >
       <FileRenderer

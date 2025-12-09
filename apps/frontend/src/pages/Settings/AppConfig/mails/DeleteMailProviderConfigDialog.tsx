@@ -18,11 +18,7 @@
  */
 
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import ItemDialogList from '@/components/shared/ItemDialogList';
-import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
 
 interface DeleteMailProviderConfigDialogProps {
   isOpen: boolean;
@@ -39,43 +35,20 @@ const DeleteMailProviderConfigDialog: React.FC<DeleteMailProviderConfigDialogPro
   onConfirmDelete,
   isLoading = false,
 }) => {
-  const { t } = useTranslation();
-
-  const handleSubmit = async () => {
+  const handleConfirmDelete = async () => {
     await onConfirmDelete();
     onOpenChange(false);
   };
 
-  const handleClose = () => onOpenChange(false);
-
-  const getDialogBody = () => {
-    if (isLoading) return <CircleLoader className="mx-auto" />;
-
-    return (
-      <div className="text-background">
-        <ItemDialogList
-          deleteWarningTranslationId="mail.importer.confirmDeleteProviderConfig"
-          items={[{ name: providerConfigName, id: providerConfigName }]}
-        />
-      </div>
-    );
-  };
-
-  const getFooter = () => (
-    <DialogFooterButtons
-      handleClose={handleClose}
-      handleSubmit={handleSubmit}
-      submitButtonText="common.delete"
-    />
-  );
-
   return (
-    <AdaptiveDialog
+    <DeleteConfirmationDialog
       isOpen={isOpen}
-      handleOpenChange={handleClose}
-      title={t('mail.importer.deleteProviderConfig')}
-      body={getDialogBody()}
-      footer={getFooter()}
+      onOpenChange={onOpenChange}
+      items={[{ id: providerConfigName, name: providerConfigName }]}
+      onConfirmDelete={handleConfirmDelete}
+      isLoading={isLoading}
+      titleTranslationKey="mail.importer.deleteProviderConfig"
+      messageTranslationKey="mail.importer.confirmDeleteProviderConfig"
     />
   );
 };

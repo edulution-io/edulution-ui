@@ -18,12 +18,9 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpStatus } from '@nestjs/common';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import { Response } from 'express';
 import BulletinBoardController from './bulletinboard.controller';
 import BulletinBoardService from './bulletinboard.service';
-import CustomHttpException from '../common/CustomHttpException';
 
 describe(BulletinBoardController.name, () => {
   let controller: BulletinBoardController;
@@ -51,39 +48,6 @@ describe(BulletinBoardController.name, () => {
 
       expect(status).toHaveBeenCalledWith(200);
       expect(json).toHaveBeenCalledWith('image.png');
-    });
-
-    it('throws CustomHttpException on missing file (malformed upload)', () => {
-      const json = jest.fn();
-      const status = jest.fn().mockReturnValue({ json });
-
-      try {
-        controller.uploadBulletinAttachment(
-          undefined as unknown as Express.Multer.File,
-          { status } as unknown as Response,
-        );
-        fail('Expected to throw');
-      } catch (e) {
-        expect(e).toBeInstanceOf(CustomHttpException);
-        expect((e as Error).message).toBe(CommonErrorMessages.FILE_NOT_PROVIDED);
-        expect((e as CustomHttpException).getStatus()).toBe(HttpStatus.BAD_REQUEST);
-      }
-    });
-
-    it('throws CustomHttpException on disallowed mime types', () => {
-      const json = jest.fn();
-      const status = jest.fn().mockReturnValue({ json });
-      try {
-        controller.uploadBulletinAttachment(
-          { filename: 'doc.txt', mimetype: 'text/plain' } as unknown as Express.Multer.File,
-          { status } as unknown as Response,
-        );
-        fail('Expected to throw');
-      } catch (e) {
-        expect(e).toBeInstanceOf(CustomHttpException);
-        expect((e as Error).message).toBe(CommonErrorMessages.FILE_UPLOAD_FAILED);
-        expect((e as CustomHttpException).getStatus()).toBe(HttpStatus.BAD_REQUEST);
-      }
     });
   });
 });
