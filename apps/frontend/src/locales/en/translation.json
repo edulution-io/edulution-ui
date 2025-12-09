@@ -1622,7 +1622,8 @@
     "presentation": "Presentation",
     "spreadsheet": "Table",
     "vector": "Diagram",
-    "compressed": "Archive"
+    "compressed": "Archive",
+    "code": "Code"
   },
   "fileCreateNewContent": {
     "documentFile": "Create a new document",
