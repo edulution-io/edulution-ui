@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { RouterProvider } from 'react-router-dom';
-import createRouter from '@/router/CreateRouter';
+import createRouter from '@/router/createRouter';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useUserStore from '@/store/UserStore/useUserStore';
 
