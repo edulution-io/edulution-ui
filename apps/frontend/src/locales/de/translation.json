@@ -1295,6 +1295,9 @@
       "notAbleToCompressImage": "Bild konnte nicht komprimiert werden."
     }
   },
+  "globalsettings": {
+    "title": "Global"
+  },
   "forwardingpage": {
     "action": "Über diesen Link gelangen Sie zur externen Seite des Anbieters.",
     "description": "Die Anwendung öffnet sich in einem neuen Fenster.",

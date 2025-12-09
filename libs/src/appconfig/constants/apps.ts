@@ -52,6 +52,7 @@ const APPS = {
   FRAME: 'frame',
   EMBEDDED: 'embedded',
   APPSTORE: 'appstore',
+  GLOBAL_SETTINGS: 'globalsettings',
 } as const;
 
 export default APPS;

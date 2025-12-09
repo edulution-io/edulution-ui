@@ -25,41 +25,44 @@ import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import { APPSTORE_PATH, SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import getDisplayName from '@/utils/getDisplayName';
+import TABS from '@libs/common/constants/tabsElementId';
+import CONTAINER from '@libs/docker/constants/container';
 
 const useAppConfigPageMenu = () => {
   const navigate = useNavigate();
   const { appConfigs } = useAppConfigsStore();
   const { language } = useLanguage();
 
+  const globalSettingsMenuItem = {
+    id: APPS.GLOBAL_SETTINGS,
+    label: `${APPS.GLOBAL_SETTINGS}.title`,
+    icon: SettingsIcon,
+    action: () => navigate(`/${SETTINGS_PATH}/${TABS}/${CONTAINER}`),
+  };
+
+  const appStoreMenuItem = {
+    id: APPS.APPSTORE,
+    label: `${APPS.APPSTORE}.title`,
+    icon: AppStoreIcon,
+    action: () => navigate(APPSTORE_PATH),
+  };
+
+  const appConfigMenuItems = appConfigs.map((item) => ({
+    id: item.name,
+    label: getDisplayName(item, language),
+    icon: item.icon,
+    action: () => navigate(`/${SETTINGS_PATH}/${item.name}`),
+  }));
+
   const settingsMenuBarEntry: MenuBarEntry = {
     appName: APPS.SETTINGS,
     title: 'settings.title',
     icon: SettingsIcon,
     color: 'hover:bg-ciGreenToBlue',
-    menuItems: [
-      {
-        id: APPS.APPSTORE,
-        label: `${APPS.APPSTORE}.title`,
-        icon: AppStoreIcon,
-        action: () => navigate(APPSTORE_PATH),
-      },
-    ],
+    menuItems: [globalSettingsMenuItem, ...appConfigMenuItems, appStoreMenuItem],
   };
 
-  const appConfigPageMenu = (): MenuBarEntry => ({
-    ...settingsMenuBarEntry,
-    menuItems: [
-      ...appConfigs.map((item) => ({
-        id: item.name,
-        label: getDisplayName(item, language),
-        icon: item.icon,
-        action: () => navigate(`/${SETTINGS_PATH}/${item.name}`),
-      })),
-      ...settingsMenuBarEntry.menuItems,
-    ],
-  });
-
-  return appConfigPageMenu();
+  return settingsMenuBarEntry;
 };
 
 export default useAppConfigPageMenu;
