@@ -18,30 +18,10 @@
  */
 
 import React, { useState } from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
+import { type VariantProps } from 'class-variance-authority';
 import cn from '@libs/common/utils/className';
-import {
-  INPUT_BASE,
-  INPUT_VARIANT_DEFAULT,
-  INPUT_VARIANT_DIALOG,
-  INPUT_VARIANT_LIGHT_GRAY_DISABLED,
-  INPUT_VARIANT_LOGIN,
-} from '@libs/ui/constants/commonClassNames';
+import { inputVariants } from '@libs/ui/constants/commonClassNames';
 import { EyeDarkIcon, EyeDarkSlashIcon, EyeLightIcon, EyeLightSlashIcon } from '@/assets/icons';
-
-export const inputVariants = cva(INPUT_BASE, {
-  variants: {
-    variant: {
-      login: INPUT_VARIANT_LOGIN,
-      lightGrayDisabled: INPUT_VARIANT_LIGHT_GRAY_DISABLED,
-      default: INPUT_VARIANT_DEFAULT,
-      dialog: INPUT_VARIANT_DIALOG,
-    },
-  },
-  defaultVariants: {
-    variant: 'default',
-  },
-});
 
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
   VariantProps<typeof inputVariants> & {

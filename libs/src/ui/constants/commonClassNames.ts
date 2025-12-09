@@ -17,11 +17,63 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export const INPUT_BASE =
-  'h-9 w-full rounded-lg px-3 py-1 text-p shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus:outline-none disabled:cursor-not-allowed disabled:opacity-50';
+import { cva } from 'class-variance-authority';
 
-export const INPUT_VARIANT_DEFAULT = 'bg-accent text-secondary placeholder:text-p';
-export const INPUT_VARIANT_DIALOG = 'bg-muted text-background placeholder:text-p';
-export const INPUT_VARIANT_LOGIN =
-  'border-2 border-gray-300 bg-white text-black shadow-md placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-muted';
-export const INPUT_VARIANT_LIGHT_GRAY_DISABLED = 'bg-ciDarkGreyDisabled text-secondary placeholder:text-p';
+const VARIANT_COLORS = {
+  default: 'bg-accent text-secondary',
+  dialog: 'bg-muted text-background',
+  login: 'border-2 border-gray-300 bg-white text-black shadow-md',
+  lightGrayDisabled: 'bg-ciDarkGreyDisabled text-secondary',
+} as const;
+
+const VARIANT_CARET = {
+  default: 'bg-secondary',
+  dialog: 'bg-background',
+  login: 'bg-black',
+} as const;
+
+export const inputVariants = cva(
+  'h-9 w-full rounded-lg px-3 py-1 text-p shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus:outline-none disabled:cursor-not-allowed disabled:opacity-50',
+  {
+    variants: {
+      variant: {
+        default: `${VARIANT_COLORS.default} placeholder:text-p`,
+        dialog: `${VARIANT_COLORS.dialog} placeholder:text-p`,
+        login: `${VARIANT_COLORS.login} placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-muted`,
+        lightGrayDisabled: `${VARIANT_COLORS.lightGrayDisabled} placeholder:text-p`,
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+    },
+  },
+);
+
+export const inputOTPSlotVariants = cva(
+  'relative mx-1 flex h-11 w-11 items-center justify-center rounded-lg shadow-sm transition-all first:ml-0',
+  {
+    variants: {
+      variant: {
+        default: `${VARIANT_COLORS.default} border border-input`,
+        dialog: `${VARIANT_COLORS.dialog} border border-input`,
+        login: VARIANT_COLORS.login,
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+    },
+  },
+);
+
+export const inputOTPCaretVariants = cva('h-4 w-px animate-caret-blink duration-1000', {
+  variants: {
+    variant: {
+      default: VARIANT_CARET.default,
+      dialog: VARIANT_CARET.dialog,
+      login: VARIANT_CARET.login,
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+});

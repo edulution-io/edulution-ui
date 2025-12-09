@@ -22,8 +22,10 @@
 import * as React from 'react';
 import { DashIcon } from '@radix-ui/react-icons';
 import { OTPInput, OTPInputContext } from 'input-otp';
+import { type VariantProps } from 'class-variance-authority';
 
 import cn from '@libs/common/utils/className';
+import { inputOTPSlotVariants, inputOTPCaretVariants } from '@libs/ui/constants/commonClassNames';
 
 const InputOTP = React.forwardRef<React.ElementRef<typeof OTPInput>, React.ComponentPropsWithoutRef<typeof OTPInput>>(
   ({ className, containerClassName, ...props }, ref) => (
@@ -48,46 +50,33 @@ const InputOTPGroup = React.forwardRef<React.ElementRef<'div'>, React.ComponentP
 );
 InputOTPGroup.displayName = 'InputOTPGroup';
 
-const InputOTPSlot = React.forwardRef<
-  React.ElementRef<'div'>,
-  React.ComponentPropsWithoutRef<'div'> & {
+type InputOTPSlotProps = React.ComponentPropsWithoutRef<'div'> &
+  VariantProps<typeof inputOTPSlotVariants> & {
     index: number;
-    variant?: 'default' | 'dialog' | 'login';
     type?: 'default' | 'pin';
-  }
->(({ index, className, variant = 'default', type = 'default', ...props }, ref) => {
-  const inputOTPContext = React.useContext(OTPInputContext);
-  const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index];
+  };
 
-  return (
-    <div
-      ref={ref}
-      className={cn(
-        'relative mx-1 flex h-11 w-11 items-center justify-center rounded-lg border shadow-sm transition-all',
-        'first:ml-0 first:border-l',
-        'last:border-r',
-        variant === 'login' ? 'border-ciDarkGrey text-ciDarkGrey' : 'border-input text-p',
-        isActive && 'z-10 ring-1 ring-ring',
-        className,
-      )}
-      {...props}
-    >
-      {type === 'pin' && char ? '•' : char}
-      {hasFakeCaret && (
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <div
-            className={cn(
-              (variant === 'default' || variant === 'login') && 'bg-foreground',
-              variant === 'dialog' && 'bg-background',
-              variant === 'login' && 'bg-ciDarkGrey',
-              'h-4 w-px animate-caret-blink duration-1000',
-            )}
-          />
-        </div>
-      )}
-    </div>
-  );
-});
+const InputOTPSlot = React.forwardRef<React.ElementRef<'div'>, InputOTPSlotProps>(
+  ({ index, className, variant = 'default', type = 'default', ...props }, ref) => {
+    const inputOTPContext = React.useContext(OTPInputContext);
+    const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index];
+
+    return (
+      <div
+        ref={ref}
+        className={cn(inputOTPSlotVariants({ variant }), isActive && 'z-10 ring-1 ring-ring', className)}
+        {...props}
+      >
+        {type === 'pin' && char ? '•' : char}
+        {hasFakeCaret && (
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+            <div className={cn(inputOTPCaretVariants({ variant }))} />
+          </div>
+        )}
+      </div>
+    );
+  },
+);
 InputOTPSlot.displayName = 'InputOTPSlot';
 
 const InputOTPSeparator = React.forwardRef<React.ElementRef<'div'>, React.ComponentPropsWithoutRef<'div'>>(

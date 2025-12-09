@@ -21,7 +21,8 @@ import React from 'react';
 import { IconType } from 'react-icons';
 import { type VariantProps } from 'class-variance-authority';
 import cn from '@libs/common/utils/className';
-import Input, { inputVariants } from '@/components/shared/Input';
+import { inputVariants } from '@libs/ui/constants/commonClassNames';
+import Input from '@/components/shared/Input';
 
 type ActionIcon = { icon: IconType; onClick: () => void; className?: string };
 

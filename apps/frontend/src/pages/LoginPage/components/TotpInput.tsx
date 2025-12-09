@@ -27,7 +27,7 @@ interface TotpInputProps {
   title: string;
   maxLength?: number;
   type?: 'default' | 'pin';
-  variant?: 'default' | 'login';
+  variant?: 'default' | 'dialog' | 'login';
   setTotp: Dispatch<SetStateAction<string>>;
   onComplete: () => void;
 }
