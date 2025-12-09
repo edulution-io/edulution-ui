@@ -74,6 +74,19 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
 
   const fileExtension = getFileExtension(currentlyEditingFile.filePath);
   const isOnlyOfficeDoc = isOnlyOfficeDocument(currentlyEditingFile.filePath);
+  const usePdfViewerFallback = fileExtension === 'pdf' && (!editMode || !isOnlyOfficeConfigured);
+
+  if (usePdfViewerFallback) {
+    if (isEditorLoading || isCreatingBlobUrl || isFetchingPublicUrl || error || !fileUrl) {
+      return (
+        <div className="flex h-full items-center justify-center">
+          <CircleLoader />
+        </div>
+      );
+    }
+    return <PdfViewer fetchUrl={fileUrl} />;
+  }
+
   if (isOnlyOfficeDoc && isOnlyOfficeConfigured) {
     const isDocReady = !!publicDownloadLink && !!currentlyEditingFile;
     if (isEditorLoading || isCreatingBlobUrl || isFetchingPublicUrl || error || !isDocReady) {
@@ -121,10 +134,6 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
         url={fileUrl}
       />
     );
-  }
-
-  if (fileExtension === 'pdf') {
-    return <PdfViewer fetchUrl={fileUrl} />;
   }
 
   return <p>{t('filesharing.errors.FileFormatNotSupported')}</p>;

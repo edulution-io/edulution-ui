@@ -33,9 +33,7 @@ import {
 } from 'react-icons/fa';
 import { VscJson } from 'react-icons/vsc';
 
-type ExtensionIconConfig = { icon: IconType; iconColor: string };
-
-const EXTENSION_ICON_MAP: Record<string, ExtensionIconConfig> = {
+const EXTENSION_ICON_MAP: Record<string, { icon: IconType; iconColor: string }> = {
   json: { icon: VscJson, iconColor: '#f5a623' },
   yaml: { icon: SiYaml, iconColor: '#cb171e' },
   yml: { icon: SiYaml, iconColor: '#cb171e' },
