@@ -1610,7 +1610,8 @@
     "presentation": "Präsentation",
     "spreadsheet": "Tabelle",
     "vector": "Diagramm",
-    "compressed": "Archive"
+    "compressed": "Archive",
+    "code": "Code"
   },
   "fileCreateNewContent": {
     "documentFile": "Erstelle ein neues Dokument",

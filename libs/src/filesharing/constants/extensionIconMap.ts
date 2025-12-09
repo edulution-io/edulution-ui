@@ -18,12 +18,22 @@
  */
 
 import { IconType } from 'react-icons';
-import { SiMarkdown, SiJavascript, SiPython, SiYaml } from 'react-icons/si';
-import { FaFileAlt, FaFileCode, FaCog, FaHtml5, FaCss3Alt, FaFileCsv, FaTerminal } from 'react-icons/fa';
+import { SiMarkdown, SiJavascript, SiPython, SiYaml, SiDiagramsdotnet } from 'react-icons/si';
+import {
+  FaFileAlt,
+  FaFileCode,
+  FaCog,
+  FaHtml5,
+  FaCss3Alt,
+  FaFileCsv,
+  FaTerminal,
+  FaFileWord,
+  FaFileExcel,
+  FaFilePowerpoint,
+} from 'react-icons/fa';
 import { VscJson } from 'react-icons/vsc';
-import { PredefinedExtensionKey } from '@libs/filesharing/constants/predefinedExtensions';
 
-const EXTENSION_ICON_MAP: Record<PredefinedExtensionKey, { icon: IconType; iconColor: string }> = {
+const EXTENSION_ICON_MAP: Record<string, { icon: IconType; iconColor: string }> = {
   json: { icon: VscJson, iconColor: '#f5a623' },
   yaml: { icon: SiYaml, iconColor: '#cb171e' },
   yml: { icon: SiYaml, iconColor: '#cb171e' },
@@ -37,10 +47,29 @@ const EXTENSION_ICON_MAP: Record<PredefinedExtensionKey, { icon: IconType; iconC
   css: { icon: FaCss3Alt, iconColor: '#1572b6' },
   csv: { icon: FaFileCsv, iconColor: '#217346' },
   sh: { icon: FaTerminal, iconColor: '#4eaa25' },
-  bat: { icon: FaTerminal, iconColor: '#4eaa25' },
+  bat: { icon: FaTerminal, iconColor: '#c1c12a' },
   ps1: { icon: FaTerminal, iconColor: '#5391fe' },
   py: { icon: SiPython, iconColor: '#3776ab' },
   js: { icon: SiJavascript, iconColor: '#f7df1e' },
+  drawio: { icon: SiDiagramsdotnet, iconColor: '#f08705' },
+  txt: { icon: FaFileAlt, iconColor: '#6b7280' },
+  docx: { icon: FaFileWord, iconColor: '#2b579a' },
+  doc: { icon: FaFileWord, iconColor: '#2b579a' },
+  odt: { icon: FaFileWord, iconColor: '#2b579a' },
+  dot: { icon: FaFileWord, iconColor: '#2b579a' },
+  dotx: { icon: FaFileWord, iconColor: '#2b579a' },
+  ott: { icon: FaFileWord, iconColor: '#2b579a' },
+  rtf: { icon: FaFileWord, iconColor: '#2b579a' },
+  xlsx: { icon: FaFileExcel, iconColor: '#217346' },
+  xls: { icon: FaFileExcel, iconColor: '#217346' },
+  ods: { icon: FaFileExcel, iconColor: '#217346' },
+  xlt: { icon: FaFileExcel, iconColor: '#217346' },
+  xltx: { icon: FaFileExcel, iconColor: '#217346' },
+  pptx: { icon: FaFilePowerpoint, iconColor: '#d24726' },
+  ppt: { icon: FaFilePowerpoint, iconColor: '#d24726' },
+  odp: { icon: FaFilePowerpoint, iconColor: '#d24726' },
+  pot: { icon: FaFilePowerpoint, iconColor: '#d24726' },
+  potx: { icon: FaFilePowerpoint, iconColor: '#d24726' },
 };
 
 export default EXTENSION_ICON_MAP;
