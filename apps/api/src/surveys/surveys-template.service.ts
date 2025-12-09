@@ -56,10 +56,10 @@ class SurveysTemplateService implements OnModuleInit {
       );
     }
     try {
-      return await this.surveyTemplateModel.findOneAndUpdate(
-        { _id: new Types.ObjectId(id) },
+      return await this.surveyTemplateModel.findByIdAndUpdate(
+        id,
         { ...templateData, isActive },
-        { new: true, upsert: true },
+        { new: true, upsert: !id },
       );
     } catch (error) {
       if (error instanceof Error && error.message.includes('E11000')) {
@@ -96,8 +96,8 @@ class SurveysTemplateService implements OnModuleInit {
         SurveysTemplateService.name,
       );
     }
-    return this.surveyTemplateModel.findOneAndUpdate(
-      { _id: new Types.ObjectId(id) },
+    return this.surveyTemplateModel.findByIdAndUpdate(
+      id,
       { isActive },
       {
         new: true,
