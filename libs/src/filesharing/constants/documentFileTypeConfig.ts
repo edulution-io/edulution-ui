@@ -18,17 +18,16 @@
  */
 
 import { IconType } from 'react-icons';
-import { SiDiagramsdotnet } from 'react-icons/si';
-import { FaFileAlt, FaFileExcel, FaFilePowerpoint, FaFileWord } from 'react-icons/fa';
 import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/constants/availableFileTypes';
+import EXTENSION_ICON_MAP from '@libs/filesharing/constants/extensionIconMap';
 
 const DOCUMENT_FILE_TYPE_CONFIG: { fileType: TAvailableFileTypes; icon: IconType; iconColor: string }[] = [
-  { fileType: AVAILABLE_FILE_TYPES.drawIoFile, icon: SiDiagramsdotnet, iconColor: 'orange' },
-  { fileType: AVAILABLE_FILE_TYPES.textFile, icon: FaFileAlt, iconColor: 'black' },
-  { fileType: AVAILABLE_FILE_TYPES.documentFile, icon: FaFileWord, iconColor: 'blue' },
-  { fileType: AVAILABLE_FILE_TYPES.spreadsheetFile, icon: FaFileExcel, iconColor: 'green' },
-  { fileType: AVAILABLE_FILE_TYPES.presentationFile, icon: FaFilePowerpoint, iconColor: '#ec4f03' },
+  { fileType: AVAILABLE_FILE_TYPES.drawIoFile, ...EXTENSION_ICON_MAP.drawio },
+  { fileType: AVAILABLE_FILE_TYPES.textFile, ...EXTENSION_ICON_MAP.txt },
+  { fileType: AVAILABLE_FILE_TYPES.documentFile, ...EXTENSION_ICON_MAP.docx },
+  { fileType: AVAILABLE_FILE_TYPES.spreadsheetFile, ...EXTENSION_ICON_MAP.xlsx },
+  { fileType: AVAILABLE_FILE_TYPES.presentationFile, ...EXTENSION_ICON_MAP.pptx },
 ];
 
 export default DOCUMENT_FILE_TYPE_CONFIG;

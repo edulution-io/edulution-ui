@@ -1447,7 +1447,8 @@
     "presentation": "Diaporama",
     "spreadsheet": "Tableur",
     "vector": "Diagramme",
-    "compressed": "Archive"
+    "compressed": "Archive",
+    "code": "Code"
   },
   "fileCreateNewContent": {
     "documentFile": "Créer un nouveau document",

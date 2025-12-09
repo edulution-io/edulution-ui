@@ -21,6 +21,7 @@ import React from 'react';
 import { DefaultExtensionType, defaultStyles, FileIcon } from 'react-file-icon';
 import { getFileCategorie, getFileNameFromPath } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import fileIconColors from '@/theme/fileIconColor';
+import EXTENSION_ICON_MAP from '@libs/filesharing/constants/extensionIconMap';
 
 interface FileIconComponentProps {
   filename: string;
@@ -28,8 +29,22 @@ interface FileIconComponentProps {
 }
 
 const FileIconComponent: React.FC<FileIconComponentProps> = ({ filename, size }) => {
-  const fileType = getFileCategorie(filename);
   const extension = getFileNameFromPath(filename).split('.').pop() || '';
+  const customIcon = EXTENSION_ICON_MAP[extension];
+
+  if (customIcon) {
+    const Icon = customIcon.icon;
+    return (
+      <div style={{ width: size, height: size, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Icon
+          size={size * 0.9}
+          color={customIcon.iconColor}
+        />
+      </div>
+    );
+  }
+
+  const fileType = getFileCategorie(filename);
   const labelColor = fileIconColors[fileType] || fileIconColors.default;
 
   return (
