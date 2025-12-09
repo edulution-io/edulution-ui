@@ -40,7 +40,7 @@ const BulletinList = (props: BulletinListProps) => {
     <ScrollArea className={cn('flex max-h-[470px] flex-col gap-2 overflow-y-auto py-2 pt-0 scrollbar-thin', className)}>
       {bulletinBoardNotifications.map((bulletin) => (
         <NavLink
-          to={`${APPS.BULLETIN_BOARD}/${bulletin.id}`}
+          to={`/${APPS.BULLETIN_BOARD}/${bulletin.id}`}
           key={bulletin.id}
           className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border border-muted-foreground p-2 text-left transition-all hover:bg-ciDarkGrey"
         >

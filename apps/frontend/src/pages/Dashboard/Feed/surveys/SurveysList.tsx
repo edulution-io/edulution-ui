@@ -66,7 +66,7 @@ const SurveysList = (props: SurveysListProps) => {
       <div className="flex flex-col gap-2 py-2 pt-0">
         {items.map((item) => (
           <NavLink
-            to={APPS.SURVEYS}
+            to={`/${APPS.SURVEYS}`}
             onClick={() => selectSurvey(item)}
             key={item.id}
             className="w-min-[300px] flex flex-col items-start gap-2 rounded-lg border border-muted-foreground p-2 text-left transition-all hover:bg-ciDarkGrey"
