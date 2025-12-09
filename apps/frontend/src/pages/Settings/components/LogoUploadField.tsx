@@ -19,8 +19,8 @@
 
 import clsx from 'clsx';
 import React from 'react';
-import { HiTrash } from 'react-icons/hi2';
 import { Theme, ThemeType } from '@libs/common/constants/theme';
+import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import FileSelectButton from '@/components/ui/FileSelectButton';
 
 type LogoUploadFieldProps = {
@@ -81,7 +81,7 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
               await onHandleReset();
             }}
           >
-            <HiTrash className="h-6 w-6 p-1 text-ciRed" />
+            <DeleteIcon className="h-6 w-6 p-1 text-ciRed" />
           </button>
         )}
       </div>
