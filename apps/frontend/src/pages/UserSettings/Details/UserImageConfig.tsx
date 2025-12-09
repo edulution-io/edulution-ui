@@ -56,38 +56,38 @@ const UserImageConfig: React.FC = () => {
 
   return (
     <div className="space-y-4 py-4 text-ciGrey">
-      <Avatar
-        user={{ username: user?.name || '', firstName: user?.givenName, lastName: user?.sn }}
-        imageSrc={base64Image}
-        className="h-20 w-20"
-      />
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleImageUpload}
-        className="mt-4"
-      />
+        <Avatar
+          user={{ username: user?.name || '', firstName: user?.givenName, lastName: user?.sn }}
+          imageSrc={base64Image}
+          className="h-20 w-20"
+        />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          className="mt-4"
+        />
 
-      <div className="mt-4 flex justify-end gap-4">
-        {base64Image ? (
+        <div className="mt-4 flex justify-end gap-4">
+          {base64Image ? (
+            <Button
+              variant="btn-attention"
+              size="lg"
+              onClick={handleImageDelete}
+            >
+              {t('common.delete')}
+            </Button>
+          ) : null}
           <Button
-            variant="btn-attention"
+            variant="btn-security"
             size="lg"
-            onClick={handleImageDelete}
+            onClick={handleSubmitImage}
+            disabled={!base64Image}
           >
-            {t('common.delete')}
+            {t('common.save')}
           </Button>
-        ) : null}
-        <Button
-          variant="btn-security"
-          size="lg"
-          onClick={handleSubmitImage}
-          disabled={!base64Image}
-        >
-          {t('common.save')}
-        </Button>
+        </div>
       </div>
-    </div>
   );
 };
 
