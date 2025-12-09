@@ -696,15 +696,11 @@
       "reset": "Reset",
       "addDescription": "Add a description",
       "expectingUserInput": "Expecting the user to answer here, ... ",
-      "templates": "Save Template",
-      "noTemplates": "No templates available",
-      "noSearchResults": "No templates found",
-      "templateMenu": {
-        "submit": "Save Survey as template.",
-        "title": "Save survey as template",
-        "userMessage": "Here you can load a template that is available to you.",
-        "adminMessage": "Here you can either load a template or update/create the template of the current survey, for later usage.",
-        "emptyMessage": "There are no templates available yet",
+      "template": {
+        "save": "Save Template",
+        "noTemplates": "No templates available",
+        "noSearchResults": "No templates found",
+        "preview": "Preview",
         "upload": {
           "success": "Template saved successfully",
           "error": "Failed to save template"

@@ -26,7 +26,7 @@ import SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import { GRID_CARD, GRID_SEARCH } from '@libs/ui/constants/commonClassNames';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
+import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import Input from '@/components/shared/Input';
 import { Card } from '@/components/shared/Card';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
@@ -42,7 +42,7 @@ const SurveyEditorLoadingPage = ({ surveyCreator }: SurveyEditorLoadingPageProps
 
   const { t } = useTranslation();
 
-  const { templates, fetchTemplates, setTemplate, isOpenTemplatePreview } = useTemplateMenuStore();
+  const { templates, fetchTemplates, setTemplate, isOpenTemplatePreview } = useSurveyTemplateStore();
 
   const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
 
@@ -116,7 +116,9 @@ const SurveyEditorLoadingPage = ({ surveyCreator }: SurveyEditorLoadingPageProps
           ))
         ) : (
           <p className="px-2 py-16">
-            {templates.length === 0 ? t('survey.editor.noTemplates') : t('survey.editor.noSearchResults')}
+            {templates.length === 0
+              ? t('survey.editor.templates.noTemplates')
+              : t('survey.editor.templates.noSearchResults')}
           </p>
         )}
       </div>

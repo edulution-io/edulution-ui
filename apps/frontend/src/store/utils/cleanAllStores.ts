@@ -38,7 +38,7 @@ import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPa
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useDeleteSurveyStore from '@/pages/Surveys/Tables/dialogs/useDeleteSurveyStore';
-import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
+import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import usePublicConferenceStore from '@/pages/ConferencePage/PublicConference/usePublicConferenceStore';
@@ -115,7 +115,7 @@ const cleanAllStores = async () => {
   useSurveyEditorPageStore.getState().reset();
   useSurveysTablesPageStore.getState().reset();
   useTLDRawHistoryStore.getState().reset();
-  useTemplateMenuStore.getState().reset();
+  useSurveyTemplateStore.getState().reset();
   useVeyonApiStore.getState().reset();
   useVeyonConfigTableStore.getState().reset();
   useWebdavShareConfigTableStore.getState().reset();

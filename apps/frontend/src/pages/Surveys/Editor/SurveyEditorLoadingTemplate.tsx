@@ -27,7 +27,7 @@ import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
-import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
+import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
@@ -46,7 +46,7 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
     setIsTemplateActive,
     setIsOpenTemplatePreview,
     fetchTemplates,
-  } = useTemplateMenuStore();
+  } = useSurveyTemplateStore();
 
   const { isSuperAdmin } = useLdapGroups();
 
@@ -86,12 +86,13 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
           setIsOpenTemplatePreview(true);
         }}
         className="h-14 w-14 p-2"
+        aria-label={i18n.t('survey.editor.template.preview')}
       >
         <MdOutlineOpenInNew className="h-10 w-10" />
       </Button>
       <h3
         className="line-clamp-2 h-[3.8rem] w-full"
-        aria-label={`Template title: ${title}`}
+        aria-label={`Template title: ${surveyTemplate.template.formula?.title}`}
       >
         {surveyTemplate.template.formula?.title}
       </h3>

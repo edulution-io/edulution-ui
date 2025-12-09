@@ -25,7 +25,7 @@ import useUserStore from '@/store/UserStore/useUserStore';
 import SurveyEditorPage from '@/pages/Surveys/Editor/SurveyEditorPage';
 import SurveyEditorLoadingPage from '@/pages/Surveys/Editor/SurveyEditorLoadingPage';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
-import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
+import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import DeleteTemplateDialog from '@/pages/Surveys/Editor/dialog/DeleteTemplateDialog';
 import PageLayout from '@/components/structure/layout/PageLayout';
@@ -35,7 +35,7 @@ const SurveyEditorOpeningPage = () => {
   const surveyCreator: AttendeeDto = useMemo(() => getCreatorFromUserDto(user), [user]);
 
   const { reset: resetEditorPage, fetchSelectedSurvey, initialSurvey, resetStoredSurvey } = useSurveyEditorPageStore();
-  const { reset: resetTemplateStore } = useTemplateMenuStore();
+  const { reset: resetTemplateStore } = useSurveyTemplateStore();
   const { reset: resetQuestionsContextMenu } = useQuestionsContextMenuStore();
 
   const { surveyId } = useParams();

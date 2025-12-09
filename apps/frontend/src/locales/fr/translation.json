@@ -597,14 +597,11 @@
       "reset": "Rejeter",
       "addDescription": "Ajouter une description",
       "expectingUserInput": "Ici, la réponse du participant est attendue ... ",
-      "templates": "Enregistrer le modèle",
-      "noTemplates": "Aucun modèle disponible",
-      "noSearchResults": "Aucun modèle trouvé",
-      "templateMenu": {
-        "fetch": "Choisissez l'un des modèles disponibles.",
-        "submit": "Enregistrez le sondage en tant que modèle.",
-        "title": "Enregistrer le sondage en tant que modèle",
-        "emptyMessage": "Il n'y a pas encore de modèles",
+      "template": {
+        "save": "Enregistrer le modèle",
+        "noTemplates": "Aucun modèle disponible",
+        "noSearchResults": "Aucun modèle trouvé",
+        "preview": "Aperçu du modèle",
         "upload": {
           "success": "Modèle enregistré avec succès",
           "error": "Échec de l'enregistrement du modèle"

@@ -40,7 +40,7 @@ import useBeforeUnload from '@/hooks/useBeforeUnload';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import createSurveyCreatorObject from '@/pages/Surveys/Editor/createSurveyCreatorObject';
-import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
+import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import QuestionsContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
@@ -65,7 +65,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     resetStoredSurvey,
     uploadFile,
   } = useSurveyEditorPageStore();
-  const { reset: resetTemplateStore, template, uploadTemplate } = useTemplateMenuStore();
+  const { reset: resetTemplateStore, template, uploadTemplate } = useSurveyTemplateStore();
   const {
     reset: resetQuestionsContextMenu,
     setIsOpenQuestionContextMenu,
@@ -202,7 +202,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
       SaveButton(() => setIsOpenSaveSurveyDialog(true)),
       {
         icon: TbTemplate,
-        text: t('survey.editor.templates'),
+        text: t('survey.editor.template.save'),
         onClick: () => handleSaveTemplate(),
         isVisible: !!isSuperAdmin,
       },

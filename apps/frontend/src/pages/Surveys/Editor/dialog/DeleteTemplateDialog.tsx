@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
+import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
@@ -32,7 +32,7 @@ const DeleteTemplateDialog = () => {
     fetchTemplates,
     isOpenTemplateConfirmDeletion,
     setIsOpenTemplateConfirmDeletion,
-  } = useTemplateMenuStore();
+  } = useSurveyTemplateStore();
 
   const { t } = useTranslation();
 
@@ -46,7 +46,7 @@ const DeleteTemplateDialog = () => {
 
   const getDialogBody = () => {
     if (isSubmitting) return <CircleLoader className="mx-auto mt-5" />;
-    return <p>{t('survey.editor.templateMenu.deletion.message')}</p>;
+    return <p>{t('survey.editor.template.deletion.message')}</p>;
   };
 
   const getFooter = () => (
@@ -61,7 +61,7 @@ const DeleteTemplateDialog = () => {
     <AdaptiveDialog
       isOpen={isOpenTemplateConfirmDeletion}
       handleOpenChange={() => setIsOpenTemplateConfirmDeletion(!isOpenTemplateConfirmDeletion)}
-      title={t('survey.editor.templateMenu.deletion.title')}
+      title={t('survey.editor.template.deletion.title')}
       body={getDialogBody()}
       footer={getFooter()}
       desktopContentClassName="min-h-[100px]"
