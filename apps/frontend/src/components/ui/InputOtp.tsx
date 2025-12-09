@@ -50,7 +50,11 @@ InputOTPGroup.displayName = 'InputOTPGroup';
 
 const InputOTPSlot = React.forwardRef<
   React.ElementRef<'div'>,
-  React.ComponentPropsWithoutRef<'div'> & { index: number; variant?: 'default' | 'dialog'; type?: 'default' | 'pin' }
+  React.ComponentPropsWithoutRef<'div'> & {
+    index: number;
+    variant?: 'default' | 'dialog' | 'login';
+    type?: 'default' | 'pin';
+  }
 >(({ index, className, variant = 'default', type = 'default', ...props }, ref) => {
   const inputOTPContext = React.useContext(OTPInputContext);
   const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index];
@@ -59,9 +63,10 @@ const InputOTPSlot = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        'relative mx-1 flex h-11 w-11 items-center justify-center border border-input text-p shadow-sm transition-all',
+        'relative mx-1 flex h-11 w-11 items-center justify-center border shadow-sm transition-all',
         'first:ml-0 first:rounded-l-md first:border-l',
         'last:rounded-r-md last:border-r',
+        variant === 'login' ? 'border-ciDarkGrey text-ciDarkGrey' : 'border-input text-p',
         isActive && 'z-10 ring-1 ring-ring',
         className,
       )}
@@ -72,8 +77,9 @@ const InputOTPSlot = React.forwardRef<
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <div
             className={cn(
-              variant === 'default' && 'bg-foreground',
+              (variant === 'default' || variant === 'login') && 'bg-foreground',
               variant === 'dialog' && 'bg-background',
+              variant === 'login' && 'bg-ciDarkGrey',
               'h-4 w-px animate-caret-blink duration-1000',
             )}
           />

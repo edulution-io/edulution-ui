@@ -27,11 +27,12 @@ interface TotpInputProps {
   title: string;
   maxLength?: number;
   type?: 'default' | 'pin';
+  variant?: 'default' | 'login';
   setTotp: Dispatch<SetStateAction<string>>;
   onComplete: () => void;
 }
 
-const TotpInput: FC<TotpInputProps> = ({ totp, title, maxLength, type, setTotp, onComplete }) => {
+const TotpInput: FC<TotpInputProps> = ({ totp, title, maxLength, type, variant = 'default', setTotp, onComplete }) => {
   const [showNumPad, setShowNumPad] = useState(false);
 
   const handlePress = (digit: string) => {
@@ -46,7 +47,9 @@ const TotpInput: FC<TotpInputProps> = ({ totp, title, maxLength, type, setTotp, 
 
   return (
     <>
-      {title && <div className="mt-3 text-center font-bold">{title}</div>}
+      {title && (
+        <div className={cn('mt-3 text-center font-bold', variant === 'login' && 'text-ciDarkGrey')}>{title}</div>
+      )}
       <OtpInput
         totp={totp}
         maxLength={maxLength}
@@ -54,6 +57,7 @@ const TotpInput: FC<TotpInputProps> = ({ totp, title, maxLength, type, setTotp, 
         onComplete={onComplete}
         setShowNumPad={setShowNumPad}
         type={type}
+        variant={variant}
       />
       <div
         className={cn(
@@ -64,6 +68,7 @@ const TotpInput: FC<TotpInputProps> = ({ totp, title, maxLength, type, setTotp, 
         <NumberPad
           onPress={handlePress}
           onClear={handleClear}
+          variant={variant}
         />
       </div>
     </>

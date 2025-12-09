@@ -17,8 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export const INPUT_VARIANT_DEFAULT = 'bg-accent text-secondary placeholder:text-p focus:outline-none';
-export const INPUT_VARIANT_DIALOG = 'bg-muted placeholder:text-p focus:outline-none text-background';
+export const INPUT_BASE =
+  'h-9 w-full rounded-md px-3 py-1 text-p shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus:outline-none disabled:cursor-not-allowed disabled:opacity-50';
 
-export const INPUT_DEFAULT =
-  'flex h-9 rounded-md px-3 py-1 text-p text-background shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50';
+export const INPUT_VARIANT_DEFAULT = 'bg-accent text-secondary placeholder:text-p';
+export const INPUT_VARIANT_DIALOG = 'bg-muted text-background placeholder:text-p';
+export const INPUT_VARIANT_LOGIN =
+  'border-2 border-gray-300 bg-white text-black shadow-md placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-muted';
+export const INPUT_VARIANT_LIGHT_GRAY_DISABLED = 'bg-ciDarkGreyDisabled text-secondary placeholder:text-p';

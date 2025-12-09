@@ -21,12 +21,12 @@ import React from 'react';
 import { IconType } from 'react-icons';
 import { type VariantProps } from 'class-variance-authority';
 import cn from '@libs/common/utils/className';
-import Input, { originInputVariants } from '@/components/shared/Input';
+import Input, { inputVariants } from '@/components/shared/Input';
 
 type ActionIcon = { icon: IconType; onClick: () => void; className?: string };
 
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
-  VariantProps<typeof originInputVariants> & { actionIcons?: ActionIcon[] };
+  VariantProps<typeof inputVariants> & { actionIcons?: ActionIcon[] };
 
 const InputWithActionIcons = React.forwardRef<HTMLInputElement, InputProps>(
   ({ actionIcons = [], className, variant, disabled, readOnly, style, ...props }, ref) => {
@@ -38,7 +38,8 @@ const InputWithActionIcons = React.forwardRef<HTMLInputElement, InputProps>(
         <Input
           {...props}
           ref={ref}
-          className={cn(originInputVariants({ variant }), 'overflow-hidden text-ellipsis whitespace-nowrap', {
+          variant={variant}
+          className={cn('overflow-hidden text-ellipsis whitespace-nowrap', {
             'cursor-pointer': props.onMouseDown,
           })}
           style={{ ...style, paddingRight }}

@@ -20,46 +20,44 @@
 import React, { useState } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import cn from '@libs/common/utils/className';
-import { INPUT_VARIANT_DEFAULT, INPUT_VARIANT_DIALOG } from '@libs/ui/constants/commonClassNames';
-import { Input as SHInput } from '@/components/ui/Input';
+import {
+  INPUT_BASE,
+  INPUT_VARIANT_DEFAULT,
+  INPUT_VARIANT_DIALOG,
+  INPUT_VARIANT_LIGHT_GRAY_DISABLED,
+  INPUT_VARIANT_LOGIN,
+} from '@libs/ui/constants/commonClassNames';
 import { EyeDarkIcon, EyeDarkSlashIcon, EyeLightIcon, EyeLightSlashIcon } from '@/assets/icons';
 
-export const originInputVariants = cva(['rounded'], {
+export const inputVariants = cva(INPUT_BASE, {
   variants: {
     variant: {
-      login:
-        'block w-full border-2 border-gray-300 bg-background px-3 py-2 shadow-md placeholder:text-p focus:border-gray-600 focus:bg-background focus:placeholder-muted focus:outline-none text-foreground',
-      lightGrayDisabled: 'bg-ciDarkGreyDisabled text-secondary placeholder:text-p focus:outline-none',
+      login: INPUT_VARIANT_LOGIN,
+      lightGrayDisabled: INPUT_VARIANT_LIGHT_GRAY_DISABLED,
       default: INPUT_VARIANT_DEFAULT,
       dialog: INPUT_VARIANT_DIALOG,
+    },
+    width: {
+      auto: 'w-auto',
+      half: 'w-1/2',
+      full: 'w-full',
+      dialog: 'w-4/5',
     },
   },
   defaultVariants: {
     variant: 'default',
+    width: 'full',
   },
-});
-
-export const inputWidthVariants = cva([], {
-  variants: {
-    widthVariant: {
-      auto: 'w-auto',
-      half: 'w-[50%]',
-      full: 'w-full',
-      dialog: 'w-[80%]',
-    },
-  },
-  defaultVariants: { widthVariant: 'auto' },
 });
 
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
-  VariantProps<typeof originInputVariants> &
-  VariantProps<typeof inputWidthVariants> & {
+  VariantProps<typeof inputVariants> & {
     shouldTrim?: boolean;
     icon?: React.ReactNode;
   };
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type = 'text', variant, widthVariant = 'auto', shouldTrim = false, onChange, icon, ...props }, ref) => {
+  ({ className, type = 'text', variant, width, shouldTrim = false, onChange, icon, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,11 +90,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const openedIcon = variant === 'login' ? EyeDarkSlashIcon : EyeLightSlashIcon;
 
     return (
-      <div className={cn('relative', inputWidthVariants({ widthVariant }))}>
-        <SHInput
+      <div className="relative">
+        <input
           type={showPassword ? 'text' : type}
           inputMode={type === 'number' ? 'numeric' : undefined}
-          className={cn(originInputVariants({ variant }), className, 'w-full')}
+          className={cn(inputVariants({ variant, width }), className)}
           ref={ref}
           onChange={handleChange}
           {...props}

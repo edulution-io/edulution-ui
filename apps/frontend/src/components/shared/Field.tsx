@@ -20,7 +20,7 @@
 import React, { HTMLInputTypeAttribute } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type VariantProps } from 'class-variance-authority';
-import Input, { originInputVariants } from '@/components/shared/Input';
+import Input, { inputVariants } from '@/components/shared/Input';
 import Label from '@/components/ui/Label';
 import cn from '@libs/common/utils/className';
 
@@ -34,7 +34,7 @@ type FormFieldProps = {
   disabled?: boolean;
   isLoading?: boolean;
   className?: string;
-} & VariantProps<typeof originInputVariants>;
+} & VariantProps<typeof inputVariants>;
 
 const Field = ({
   value,
