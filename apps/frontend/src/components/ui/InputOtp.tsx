@@ -63,9 +63,9 @@ const InputOTPSlot = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        'relative mx-1 flex h-11 w-11 items-center justify-center border shadow-sm transition-all',
-        'first:ml-0 first:rounded-l-md first:border-l',
-        'last:rounded-r-md last:border-r',
+        'relative mx-1 flex h-11 w-11 items-center justify-center rounded-lg border shadow-sm transition-all',
+        'first:ml-0 first:border-l',
+        'last:border-r',
         variant === 'login' ? 'border-ciDarkGrey text-ciDarkGrey' : 'border-input text-p',
         isActive && 'z-10 ring-1 ring-ring',
         className,
