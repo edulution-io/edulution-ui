@@ -27,7 +27,7 @@ import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
 import APPLICATION_NAME from '@libs/common/constants/applicationName';
 import { EDU_DOCS_URL } from '@libs/common/constants';
 import { Button } from '@/components/shared/Button';
-import { SectionAccordion, SettingsAccordionItem } from '@/components/ui/SectionAccordion';
+import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 
 const EDU_APP_SETUP_URL = `${EDU_DOCS_URL}/docs/edulution-app/setup`;
 
@@ -52,8 +52,7 @@ const MobileFileAccessSetupBox: React.FC = () => {
       }}
     >
       <SectionAccordion defaultOpenAll>
-        {/* Setup Instructions */}
-        <SettingsAccordionItem
+        <SectionAccordionItem
           id="setup"
           label={t('usersettings.mobileAccess.setup')}
         >
@@ -70,10 +69,9 @@ const MobileFileAccessSetupBox: React.FC = () => {
               </Button>
             </div>
           </div>
-        </SettingsAccordionItem>
+        </SectionAccordionItem>
 
-        {/* QR Code */}
-        <SettingsAccordionItem
+        <SectionAccordionItem
           id="qrCode"
           label={t('usersettings.mobileAccess.qrCode')}
         >
@@ -83,7 +81,7 @@ const MobileFileAccessSetupBox: React.FC = () => {
               <QRCodeDisplay value={webdavAccessJson} />
             </div>
           </div>
-        </SettingsAccordionItem>
+        </SectionAccordionItem>
       </SectionAccordion>
     </PageLayout>
   );

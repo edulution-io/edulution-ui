@@ -20,7 +20,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { FieldValues, SubmitHandler, UseFormReturn } from 'react-hook-form';
-import { SectionAccordion, SettingsAccordionItem } from '@/components/ui/SectionAccordion';
+import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { GLOBAL_SETTINGS_ADMIN_GROUPS } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
@@ -51,14 +51,14 @@ const UserAdministration = ({ form, onSubmit }: UserAdministrationProps<GlobalSe
 
   return (
     <SectionAccordion defaultOpenAll>
-      <SettingsAccordionItem
+      <SectionAccordionItem
         id="reset-mfa"
         label={t('settings.userAdministration.resetMfaForm')}
       >
         <ResetMfaForm />
-      </SettingsAccordionItem>
+      </SectionAccordionItem>
 
-      <SettingsAccordionItem
+      <SectionAccordionItem
         id="setAdminGroup"
         label={t('settings.userAdministration.setAdminGroupTitle')}
       >
@@ -88,7 +88,7 @@ const UserAdministration = ({ form, onSubmit }: UserAdministrationProps<GlobalSe
             </div>
           </form>
         </Form>
-      </SettingsAccordionItem>
+      </SectionAccordionItem>
     </SectionAccordion>
   );
 };

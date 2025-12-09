@@ -28,7 +28,7 @@ import Label from '@/components/ui/Label';
 import BadgeField from '@/components/shared/BadgeField';
 import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
 import PageLayout from '@/components/structure/layout/PageLayout';
-import { SectionAccordion, SettingsAccordionItem } from '@/components/ui/SectionAccordion';
+import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import UserImageConfig from './UserImageConfig';
 
 const UserSettingsDetailsPage: React.FC = () => {
@@ -65,14 +65,14 @@ const UserSettingsDetailsPage: React.FC = () => {
       }}
     >
       <SectionAccordion defaultOpenAll>
-        <SettingsAccordionItem
+        <SectionAccordionItem
           id="profileImage"
           label={t('usersettings.details.userimageconfig')}
         >
           <UserImageConfig />
-        </SettingsAccordionItem>
+        </SectionAccordionItem>
 
-        <SettingsAccordionItem
+        <SectionAccordionItem
           id="userInformation"
           label={t('usersettings.details.userInformation')}
         >
@@ -97,21 +97,21 @@ const UserSettingsDetailsPage: React.FC = () => {
               />
             </div>
           </div>
-        </SettingsAccordionItem>
+        </SectionAccordionItem>
 
-        <SettingsAccordionItem
+        <SectionAccordionItem
           id="accountSettings"
           label={t('usersettings.details.title')}
         >
           <UserSettingsDetailsForm />
-        </SettingsAccordionItem>
+        </SectionAccordionItem>
 
-        <SettingsAccordionItem
+        <SectionAccordionItem
           id="quotas"
           label={t('usersettings.details.quotas')}
         >
           <Quota />
-        </SettingsAccordionItem>
+        </SectionAccordionItem>
       </SectionAccordion>
     </PageLayout>
   );

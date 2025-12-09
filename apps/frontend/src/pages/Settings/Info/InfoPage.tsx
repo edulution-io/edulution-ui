@@ -20,7 +20,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
-import { SectionAccordion, SettingsAccordionItem } from '@/components/ui/SectionAccordion';
+import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import LicenseOverview from '../components/LicenseOverview';
 import LmnVersionInfo from './LmnVersionInfo';
 
@@ -30,20 +30,20 @@ const InfoPage = () => {
 
   return (
     <SectionAccordion defaultOpenAll>
-      <SettingsAccordionItem
+      <SectionAccordionItem
         id="license"
         label={t('settings.license.title')}
       >
         <LicenseOverview />
-      </SettingsAccordionItem>
+      </SectionAccordionItem>
 
       {isLmn && (
-        <SettingsAccordionItem
+        <SectionAccordionItem
           id="lmnVersion"
           label={t('settings.lmnVersion.title')}
         >
           <LmnVersionInfo />
-        </SettingsAccordionItem>
+        </SectionAccordionItem>
       )}
     </SectionAccordion>
   );

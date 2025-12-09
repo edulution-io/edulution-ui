@@ -38,7 +38,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import { replaceGermanUmlauts } from '@libs/common/utils/string/latinize';
-import { SectionAccordion, SettingsAccordionItem } from '@/components/ui/SectionAccordion';
+import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import MailImporterTable from './MailImporterTable';
 import DeleteMailSyncJobsDialog from './DeleteMailSyncJobsDialog';
 
@@ -136,8 +136,7 @@ const UserSettingsMailsPage: React.FC = () => {
       {isMailConfigured ? (
         <>
           <SectionAccordion defaultOpenAll>
-            {/* Mail Importer */}
-            <SettingsAccordionItem
+            <SectionAccordionItem
               id="mailImporter"
               label={t('mail.importer.title')}
             >
@@ -159,14 +158,14 @@ const UserSettingsMailsPage: React.FC = () => {
                   </form>
                 </Form>
               </div>
-            </SettingsAccordionItem>
+            </SectionAccordionItem>
 
-            <SettingsAccordionItem
+            <SectionAccordionItem
               id="syncJobs"
               label={t('mail.importer.syncJobsTable')}
             >
               <MailImporterTable />
-            </SettingsAccordionItem>
+            </SectionAccordionItem>
           </SectionAccordion>
 
           <FloatingButtonsBar config={config} />

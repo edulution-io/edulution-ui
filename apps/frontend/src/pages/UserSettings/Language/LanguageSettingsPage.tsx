@@ -24,7 +24,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import UserLanguage from '@libs/user/constants/userLanguage';
 import useUserStore from '@/store/UserStore/useUserStore';
 import PageLayout from '@/components/structure/layout/PageLayout';
-import { SectionAccordion, SettingsAccordionItem } from '@/components/ui/SectionAccordion';
+import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import LanguageSelector from './components/LanguageSelector';
 
 const LanguageSettingsPage = () => {
@@ -48,12 +48,12 @@ const LanguageSettingsPage = () => {
         }}
       >
         <SectionAccordion defaultOpenAll>
-          <SettingsAccordionItem
+          <SectionAccordionItem
             id="language"
             label={t('usersettings.language.selectLanguage')}
           >
             <LanguageSelector settingLocation="usersettings" />
-          </SettingsAccordionItem>
+          </SectionAccordionItem>
         </SectionAccordion>
       </PageLayout>
     </FormProvider>

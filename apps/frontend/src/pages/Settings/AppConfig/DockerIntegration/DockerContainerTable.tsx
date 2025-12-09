@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import APPS from '@libs/appconfig/constants/apps';
-import { SectionAccordion, SettingsAccordionItem } from '@/components/ui/SectionAccordion';
+import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import useMedia from '@/hooks/useMedia';
 import DOCKER_CONTAINER_TABLE_COLUMNS from '@libs/docker/constants/dockerContainerTableColumns';
 import CONTAINER from '@libs/docker/constants/container';
@@ -60,7 +60,7 @@ const DockerContainerTable: React.FC = () => {
     <>
       <div className="absolute right-10 top-12 md:right-16 md:top-1">{isLoading ? <CircleLoader /> : null}</div>
       <SectionAccordion defaultOpen={[CONTAINER]}>
-        <SettingsAccordionItem
+        <SectionAccordionItem
           id={CONTAINER}
           label={t('dockerOverview.title')}
         >
@@ -75,7 +75,7 @@ const DockerContainerTable: React.FC = () => {
             applicationName={APPS.SETTINGS}
             initialColumnVisibility={initialColumnVisibility}
           />
-        </SettingsAccordionItem>
+        </SectionAccordionItem>
       </SectionAccordion>
       <SelectCreateDockerContainerDialog />
       <DockerContainerFloatingButtons />

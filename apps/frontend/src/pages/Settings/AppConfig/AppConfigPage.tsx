@@ -24,7 +24,7 @@ import { useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Input from '@/components/shared/Input';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
-import { SectionAccordion, SettingsAccordionItem } from '@/components/ui/SectionAccordion';
+import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import APP_CONFIG_OPTIONS from '@/pages/Settings/AppConfig/appConfigOptions';
 import type { AppConfigOptionsType } from '@libs/appconfig/types/appConfigOptionsType';
@@ -184,7 +184,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
         {matchingConfig && (
           <div className="m-5">
             <SectionAccordion defaultOpenAll>
-              <SettingsAccordionItem
+              <SectionAccordionItem
                 id="position-groups"
                 label={t('settings.appconfig.position.title')}
               >
@@ -214,12 +214,12 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
                     )}
                   />
                 </div>
-              </SettingsAccordionItem>
+              </SectionAccordionItem>
 
               {Object.keys(matchingConfig.options)
                 .filter((key) => key === APP_CONFIG_OPTION_KEYS.URL || key === APP_CONFIG_OPTION_KEYS.APIKEY)
                 .map((filteredKey) => (
-                  <SettingsAccordionItem
+                  <SectionAccordionItem
                     key={`${matchingConfig.name}.options.${filteredKey}`}
                     id={filteredKey}
                     label={t(`form.${filteredKey}`)}
@@ -237,12 +237,12 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
                         </FormItem>
                       )}
                     />
-                  </SettingsAccordionItem>
+                  </SectionAccordionItem>
                 ))}
               {matchingConfig.extendedOptions &&
                 extendedOptionsToRender &&
                 Object.entries(extendedOptionsToRender).map(([section, options]) => (
-                  <SettingsAccordionItem
+                  <SectionAccordionItem
                     key={section}
                     id={section}
                     label={t(`settings.appconfig.sections.${section}.title`)}
@@ -254,11 +254,11 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
                       settingLocation={settingLocation}
                       form={form}
                     />
-                  </SettingsAccordionItem>
+                  </SectionAccordionItem>
                 ))}
 
               {APP_CONFIG_OPTION_KEYS.PROXYCONFIG in matchingConfig.options && (
-                <SettingsAccordionItem
+                <SectionAccordionItem
                   id="proxyConfig"
                   label={t('settings.appconfig.sections.proxyConfig.title')}
                 >
@@ -267,16 +267,16 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
                     item={matchingConfig}
                     form={form as UseFormReturn<ProxyConfigFormType>}
                   />
-                </SettingsAccordionItem>
+                </SectionAccordionItem>
               )}
 
               {settingLocation === APPS.MAIL && (
-                <SettingsAccordionItem
+                <SectionAccordionItem
                   id="mailImporter"
                   label={t('settings.appconfig.mailImporter.title')}
                 >
                   <MailImporterConfig form={form as UseFormReturn<MailProviderConfig>} />
-                </SettingsAccordionItem>
+                </SectionAccordionItem>
               )}
             </SectionAccordion>
           </div>

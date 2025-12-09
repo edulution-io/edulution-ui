@@ -21,7 +21,7 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FieldValues, SubmitHandler, UseFormReturn } from 'react-hook-form';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import { SectionAccordion, SettingsAccordionItem } from '@/components/ui/SectionAccordion';
+import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import useGroupStore from '@/store/GroupStore';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
@@ -81,7 +81,7 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <SectionAccordion defaultOpenAll>
-          <SettingsAccordionItem
+          <SectionAccordionItem
             id="general"
             label={t('settings.globalSettings.general')}
           >
@@ -101,9 +101,9 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
                 />
               </div>
             </div>
-          </SettingsAccordionItem>
+          </SectionAccordionItem>
 
-          <SettingsAccordionItem
+          <SectionAccordionItem
             id="security"
             label={t('settings.globalSettings.multiFactorAuthentication')}
           >
@@ -129,17 +129,16 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
                 )}
               />
             </div>
-          </SettingsAccordionItem>
+          </SectionAccordionItem>
 
-          {/* LDAP */}
-          <SettingsAccordionItem
+          <SectionAccordionItem
             id="ldap"
             label={t('settings.globalSettings.ldap.title')}
           >
             <LdapSettings form={form} />
-          </SettingsAccordionItem>
+          </SectionAccordionItem>
 
-          <SettingsAccordionItem
+          <SectionAccordionItem
             id="branding"
             label={t('settings.globalSettings.branding.title')}
           >
@@ -147,21 +146,21 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
               <p className="font-bold">{t('settings.globalSettings.logo.title')}</p>
               <AddOrganisationLogo form={form} />
             </div>
-          </SettingsAccordionItem>
+          </SectionAccordionItem>
 
-          <SettingsAccordionItem
+          <SectionAccordionItem
             id="theme"
             label={t('settings.globalSettings.theme.title')}
           >
             <ThemeSettings form={form} />
-          </SettingsAccordionItem>
+          </SectionAccordionItem>
 
-          <SettingsAccordionItem
+          <SectionAccordionItem
             id="organisationInfo"
             label={t('settings.globalSettings.organisationInfo.title')}
           >
             <AddOrganisationInfo form={form} />
-          </SettingsAccordionItem>
+          </SectionAccordionItem>
         </SectionAccordion>
       </form>
     </Form>
