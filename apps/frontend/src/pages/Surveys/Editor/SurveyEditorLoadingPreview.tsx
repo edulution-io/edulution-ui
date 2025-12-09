@@ -18,7 +18,6 @@
  */
 
 import React, { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Model, Survey } from 'survey-react-ui';
 import useLanguage from '@/hooks/useLanguage';
 import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
@@ -28,7 +27,6 @@ import ResizableWindow from '@/components/structure/framing/ResizableWindow/Resi
 const SurveyEditorLoadingPreview = (): JSX.Element | null => {
   const { template: surveyTemplateDto, setIsOpenTemplatePreview } = useSurveyTemplateStore();
 
-  const { t } = useTranslation();
   const { language } = useLanguage();
 
   if (!surveyTemplateDto || !surveyTemplateDto.template.formula) {
@@ -47,7 +45,7 @@ const SurveyEditorLoadingPreview = (): JSX.Element | null => {
 
   return (
     <ResizableWindow
-      titleTranslationId={t('common.preview')}
+      titleTranslationId="common.preview"
       handleClose={() => setIsOpenTemplatePreview(false)}
       openMaximized={false}
       disableMinimizeWindow

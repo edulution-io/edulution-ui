@@ -102,7 +102,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {type === 'password' ? (
-          <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5">
+          <div className="absolute inset-y-0 right-5 flex items-center pr-3 text-sm leading-5">
             <button
               type="button"
               onClickCapture={() => setShowPassword((prevValue) => !prevValue)}
