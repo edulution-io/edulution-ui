@@ -27,7 +27,7 @@ import { type VariantProps } from 'class-variance-authority';
 import cn from '@libs/common/utils/className';
 import { inputOTPSlotVariants, inputOTPCaretVariants } from '@libs/ui/constants/commonClassNames';
 
-const InputOTP = React.forwardRef<React.ElementRef<typeof OTPInput>, React.ComponentPropsWithoutRef<typeof OTPInput>>(
+const InputOTPSH = React.forwardRef<React.ElementRef<typeof OTPInput>, React.ComponentPropsWithoutRef<typeof OTPInput>>(
   ({ className, containerClassName, ...props }, ref) => (
     <OTPInput
       ref={ref}
@@ -37,9 +37,9 @@ const InputOTP = React.forwardRef<React.ElementRef<typeof OTPInput>, React.Compo
     />
   ),
 );
-InputOTP.displayName = 'InputOTP';
+InputOTPSH.displayName = 'InputOTP';
 
-const InputOTPGroup = React.forwardRef<React.ElementRef<'div'>, React.ComponentPropsWithoutRef<'div'>>(
+const InputOTPGroupSH = React.forwardRef<React.ElementRef<'div'>, React.ComponentPropsWithoutRef<'div'>>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
@@ -48,7 +48,7 @@ const InputOTPGroup = React.forwardRef<React.ElementRef<'div'>, React.ComponentP
     />
   ),
 );
-InputOTPGroup.displayName = 'InputOTPGroup';
+InputOTPGroupSH.displayName = 'InputOTPGroup';
 
 type InputOTPSlotProps = React.ComponentPropsWithoutRef<'div'> &
   VariantProps<typeof inputOTPSlotVariants> & {
@@ -56,7 +56,7 @@ type InputOTPSlotProps = React.ComponentPropsWithoutRef<'div'> &
     type?: 'default' | 'pin';
   };
 
-const InputOTPSlot = React.forwardRef<React.ElementRef<'div'>, InputOTPSlotProps>(
+const InputOTPSlotSH = React.forwardRef<React.ElementRef<'div'>, InputOTPSlotProps>(
   ({ index, className, variant = 'default', type = 'default', ...props }, ref) => {
     const inputOTPContext = React.useContext(OTPInputContext);
     const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index];
@@ -77,9 +77,9 @@ const InputOTPSlot = React.forwardRef<React.ElementRef<'div'>, InputOTPSlotProps
     );
   },
 );
-InputOTPSlot.displayName = 'InputOTPSlot';
+InputOTPSlotSH.displayName = 'InputOTPSlot';
 
-const InputOTPSeparator = React.forwardRef<React.ElementRef<'div'>, React.ComponentPropsWithoutRef<'div'>>(
+const InputOTPSeparatorSH = React.forwardRef<React.ElementRef<'div'>, React.ComponentPropsWithoutRef<'div'>>(
   ({ ...props }, ref) => (
     <div
       ref={ref}
@@ -90,6 +90,6 @@ const InputOTPSeparator = React.forwardRef<React.ElementRef<'div'>, React.Compon
     </div>
   ),
 );
-InputOTPSeparator.displayName = 'InputOTPSeparator';
+InputOTPSeparatorSH.displayName = 'InputOTPSeparator';
 
-export { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator };
+export { InputOTPSH, InputOTPGroupSH, InputOTPSlotSH, InputOTPSeparatorSH };

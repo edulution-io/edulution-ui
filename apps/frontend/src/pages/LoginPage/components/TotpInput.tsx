@@ -18,7 +18,7 @@
  */
 
 import React, { FC, useState, Dispatch, SetStateAction } from 'react';
-import OtpInput from '@/components/shared/OtpInput';
+import OtpInputFieldWithNumPad from '@/components/shared/OtpInputFieldWithNumPad';
 import NumberPad from '@/components/ui/NumberPad';
 import cn from '@libs/common/utils/className';
 
@@ -50,7 +50,7 @@ const TotpInput: FC<TotpInputProps> = ({ totp, title, maxLength, type, variant =
       {title && (
         <div className={cn('mt-3 text-center font-bold', variant === 'login' && 'text-ciDarkGrey')}>{title}</div>
       )}
-      <OtpInput
+      <OtpInputFieldWithNumPad
         totp={totp}
         maxLength={maxLength}
         setTotp={setTotp}
