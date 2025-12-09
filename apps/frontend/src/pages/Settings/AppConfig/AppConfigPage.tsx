@@ -179,107 +179,109 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
     <Form {...form}>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="column max-w-screen-2xl space-y-6"
+        className="w-full space-y-6"
       >
         {matchingConfig && (
-          <div className="m-5">
-            <SectionAccordion defaultOpenAll>
-              <SectionAccordionItem
-                id="position-groups"
-                label={t('settings.appconfig.position.title')}
-              >
-                <div className="space-y-3">
-                  <AppConfigPositionSelect
-                    form={form}
-                    appConfig={matchingConfig}
-                  />
+          <SectionAccordion defaultOpenAll>
+            <SectionAccordionItem
+              id="position"
+              label={t('settings.appconfig.position.title')}
+            >
+              <AppConfigPositionSelect
+                form={form}
+                appConfig={matchingConfig}
+              />
+            </SectionAccordionItem>
+
+            <SectionAccordionItem
+              id="accessGroups"
+              label={t('permission.groups')}
+            >
+              <FormFieldSH
+                key={`${matchingConfig.name}.accessGroups`}
+                control={control}
+                name={`${matchingConfig.name}.accessGroups`}
+                render={() => (
+                  <FormItem>
+                    <FormControl>
+                      <AsyncMultiSelect<MultipleSelectorGroup>
+                        value={getValues(`${matchingConfig.name}.accessGroups`)}
+                        onSearch={searchGroups}
+                        onChange={(groups) => handleGroupsChange(groups, `${matchingConfig.name}`)}
+                        placeholder={t('search.type-to-search')}
+                      />
+                    </FormControl>
+                    <p className="text-background">{t(`permission.selectGroupsDescription`)}</p>
+                    <FormMessage className="text-p" />
+                  </FormItem>
+                )}
+              />
+            </SectionAccordionItem>
+
+            {Object.keys(matchingConfig.options)
+              .filter((key) => key === APP_CONFIG_OPTION_KEYS.URL || key === APP_CONFIG_OPTION_KEYS.APIKEY)
+              .map((filteredKey) => (
+                <SectionAccordionItem
+                  key={`${matchingConfig.name}.options.${filteredKey}`}
+                  id={filteredKey}
+                  label={t(`form.${filteredKey}`)}
+                >
                   <FormFieldSH
-                    key={`${matchingConfig.name}.accessGroups`}
                     control={control}
-                    name={`${matchingConfig.name}.accessGroups`}
-                    render={() => (
+                    name={`${matchingConfig.name}.options.${filteredKey}`}
+                    defaultValue={filteredKey}
+                    render={({ field }) => (
                       <FormItem>
-                        <h3 className="text-background">{t(`permission.groups`)}</h3>
                         <FormControl>
-                          <AsyncMultiSelect<MultipleSelectorGroup>
-                            value={getValues(`${matchingConfig.name}.accessGroups`)}
-                            onSearch={searchGroups}
-                            onChange={(groups) => handleGroupsChange(groups, `${matchingConfig.name}`)}
-                            placeholder={t('search.type-to-search')}
-                          />
+                          <Input {...field} />
                         </FormControl>
-                        <p className="text-background">{t(`permission.selectGroupsDescription`)}</p>
                         <FormMessage className="text-p" />
                       </FormItem>
                     )}
                   />
-                </div>
-              </SectionAccordionItem>
+                </SectionAccordionItem>
+              ))}
 
-              {Object.keys(matchingConfig.options)
-                .filter((key) => key === APP_CONFIG_OPTION_KEYS.URL || key === APP_CONFIG_OPTION_KEYS.APIKEY)
-                .map((filteredKey) => (
-                  <SectionAccordionItem
-                    key={`${matchingConfig.name}.options.${filteredKey}`}
-                    id={filteredKey}
-                    label={t(`form.${filteredKey}`)}
-                  >
-                    <FormFieldSH
-                      control={control}
-                      name={`${matchingConfig.name}.options.${filteredKey}`}
-                      defaultValue={filteredKey}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage className="text-p" />
-                        </FormItem>
-                      )}
-                    />
-                  </SectionAccordionItem>
-                ))}
-              {matchingConfig.extendedOptions &&
-                extendedOptionsToRender &&
-                Object.entries(extendedOptionsToRender).map(([section, options]) => (
-                  <SectionAccordionItem
-                    key={section}
-                    id={section}
-                    label={t(`settings.appconfig.sections.${section}.title`)}
-                  >
-                    <ExtendedOptionsForm
-                      section={section}
-                      options={options}
-                      control={control}
-                      settingLocation={settingLocation}
-                      form={form}
-                    />
-                  </SectionAccordionItem>
-                ))}
-
-              {APP_CONFIG_OPTION_KEYS.PROXYCONFIG in matchingConfig.options && (
+            {matchingConfig.extendedOptions &&
+              extendedOptionsToRender &&
+              Object.entries(extendedOptionsToRender).map(([section, options]) => (
                 <SectionAccordionItem
-                  id="proxyConfig"
-                  label={t('settings.appconfig.sections.proxyConfig.title')}
+                  key={section}
+                  id={section}
+                  label={t(`settings.appconfig.sections.${section}.title`)}
                 >
-                  <ProxyConfigForm
-                    key={`${matchingConfig.name}.options.${APP_CONFIG_OPTION_KEYS.PROXYCONFIG}`}
-                    item={matchingConfig}
-                    form={form as UseFormReturn<ProxyConfigFormType>}
+                  <ExtendedOptionsForm
+                    section={section}
+                    options={options}
+                    control={control}
+                    settingLocation={settingLocation}
+                    form={form}
                   />
                 </SectionAccordionItem>
-              )}
+              ))}
 
-              {settingLocation === APPS.MAIL && (
-                <SectionAccordionItem
-                  id="mailImporter"
-                  label={t('settings.appconfig.mailImporter.title')}
-                >
-                  <MailImporterConfig form={form as UseFormReturn<MailProviderConfig>} />
-                </SectionAccordionItem>
-              )}
-            </SectionAccordion>
-          </div>
+            {APP_CONFIG_OPTION_KEYS.PROXYCONFIG in matchingConfig.options && (
+              <SectionAccordionItem
+                id="proxyConfig"
+                label={t('settings.appconfig.sections.proxyConfig.title')}
+              >
+                <ProxyConfigForm
+                  key={`${matchingConfig.name}.options.${APP_CONFIG_OPTION_KEYS.PROXYCONFIG}`}
+                  item={matchingConfig}
+                  form={form as UseFormReturn<ProxyConfigFormType>}
+                />
+              </SectionAccordionItem>
+            )}
+
+            {settingLocation === APPS.MAIL && (
+              <SectionAccordionItem
+                id="mailImporter"
+                label={t('settings.appconfig.mailImporter.title')}
+              >
+                <MailImporterConfig form={form as UseFormReturn<MailProviderConfig>} />
+              </SectionAccordionItem>
+            )}
+          </SectionAccordion>
         )}
       </form>
     </Form>

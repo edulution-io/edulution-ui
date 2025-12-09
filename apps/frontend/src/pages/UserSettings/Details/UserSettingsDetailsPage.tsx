@@ -76,26 +76,25 @@ const UserSettingsDetailsPage: React.FC = () => {
           id="userInformation"
           label={t('usersettings.details.userInformation')}
         >
-          <div className="space-y-4">
+          <div className="text-background">
             {userInfo.map((field) => (
               <Field
                 key={`userInfoField-${field.name}`}
                 value={field.value}
                 labelTranslationId={field.label}
+                className="mb-4 mt-2"
                 disabled
               />
             ))}
 
-            <div>
-              <Label>
-                <p className="font-bold">{t('usersettings.details.schoolSubjects')}</p>
-              </Label>
-              <BadgeField
-                value={schoolClasses}
-                readOnly
-                className="mt-2"
-              />
-            </div>
+            <Label>
+              <p className="font-bold">{t('usersettings.details.schoolSubjects')}</p>
+            </Label>
+            <BadgeField
+              value={schoolClasses}
+              readOnly
+              className="mt-2"
+            />
           </div>
         </SectionAccordionItem>
 
