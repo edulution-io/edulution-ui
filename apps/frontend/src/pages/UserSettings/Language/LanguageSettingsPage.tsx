@@ -26,6 +26,7 @@ import useUserStore from '@/store/UserStore/useUserStore';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import LanguageSelector from './components/LanguageSelector';
+import ThemeSelector from '../Theme/ThemeSelector';
 
 const LanguageSettingsPage = () => {
   const { t } = useTranslation();
@@ -53,6 +54,12 @@ const LanguageSettingsPage = () => {
             label={t('usersettings.language.selectLanguage')}
           >
             <LanguageSelector settingLocation="usersettings" />
+          </SectionAccordionItem>
+          <SectionAccordionItem
+            id="theme"
+            label={t('usersettings.themeMode.title')}
+          >
+            <ThemeSelector />
           </SectionAccordionItem>
         </SectionAccordion>
       </PageLayout>

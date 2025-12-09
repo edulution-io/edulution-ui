@@ -60,7 +60,7 @@ const PasswordChangeForm: FC = () => {
             htmlFor="currentPassword"
             className="block text-sm font-medium"
           >
-            <p className="font-bold text-secondary">{t('usersettings.security.changePassword.currentPassword')}</p>
+            <p className="font-bold">{t('usersettings.security.changePassword.currentPassword')}</p>
           </Label>
           <Input
             id="currentPassword"
@@ -75,7 +75,7 @@ const PasswordChangeForm: FC = () => {
             htmlFor="newPassword"
             className="block text-sm font-medium"
           >
-            <p className="font-bold text-secondary">{t('usersettings.security.changePassword.newPassword')}</p>
+            <p className="font-bold">{t('usersettings.security.changePassword.newPassword')}</p>
           </Label>
           <Input
             id="newPassword"
@@ -93,7 +93,7 @@ const PasswordChangeForm: FC = () => {
             htmlFor="confirmPassword"
             className="block text-sm font-medium"
           >
-            <p className="font-bold text-secondary">{t('usersettings.security.changePassword.confirmPassword')}</p>
+            <p className="font-bold">{t('usersettings.security.changePassword.confirmPassword')}</p>
           </Label>
           <Input
             id="confirmPassword"

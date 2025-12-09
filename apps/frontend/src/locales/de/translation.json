@@ -1288,6 +1288,13 @@
       "system": "Systemsprache",
       "selectLanguage": "Sprache auswählen"
     },
+    "themeMode": {
+      "title": "Erscheinungsbild",
+      "description": "Wähle das Erscheinungsbild der Benutzeroberfläche.",
+      "system": "System",
+      "dark": "Dunkel",
+      "light": "Hell"
+    },
     "addTotp": {
       "title": "Zwei-Faktor-Authentisierung einrichten",
       "qrCodeInstructions": "Den QR-Code mit einer Authenticator App scannen, die TOTP (Time-based One-Time Password) unterstützt.",

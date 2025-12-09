@@ -18,32 +18,29 @@
  */
 
 import React from 'react';
-import { GoMoon, GoSun } from 'react-icons/go';
+import { DropdownSelect } from '@/components';
 import useThemeStore from '@/store/useThemeStore';
 
-const ThemeToggle: React.FC = () => {
+const themeOptions = [
+  { id: 'system', name: 'usersettings.themeMode.system' },
+  { id: 'dark', name: 'usersettings.themeMode.dark' },
+  { id: 'light', name: 'usersettings.themeMode.light' },
+];
+
+const ThemeSelector: React.FC = () => {
   const theme = useThemeStore((s) => s.theme);
-  const resolvedTheme = useThemeStore((s) => s.getResolvedTheme());
   const setTheme = useThemeStore((s) => s.setTheme);
 
-  const toggleTheme = () => {
-    if (theme === 'system') {
-      setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
-    } else {
-      setTheme(theme === 'dark' ? 'light' : 'dark');
-    }
-  };
-
   return (
-    <button
-      type="button"
-      onClick={toggleTheme}
-      className="absolute right-4 top-4 z-50 rounded-full bg-muted p-2 text-foreground shadow-xl transition hover:opacity-80"
-      aria-label="Toggle Theme"
-    >
-      {resolvedTheme === 'dark' ? <GoSun className="h-6 w-6" /> : <GoMoon className="h-6 w-6" />}
-    </button>
+    <div className="pb-4">
+      <DropdownSelect
+        options={themeOptions}
+        selectedVal={theme}
+        handleChange={(value) => setTheme(value as 'dark' | 'light' | 'system')}
+        classname="w-fit"
+      />
+    </div>
   );
 };
 
-export default ThemeToggle;
+export default ThemeSelector;

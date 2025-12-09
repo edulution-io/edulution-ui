@@ -1285,6 +1285,13 @@
       "system": "System language",
       "selectLanguage": "Select Language"
     },
+    "themeMode": {
+      "title": "Appearance",
+      "description": "Select the appearance of the user interface.",
+      "system": "System",
+      "dark": "Dark",
+      "light": "Light"
+    },
     "addTotp": {
       "title": "Set up Two-Factor Authentication",
       "qrCodeInstructions": "Scan the QR code with an authenticator app that supports TOTP (Time-based One-Time Password).",
