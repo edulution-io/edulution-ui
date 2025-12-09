@@ -17,13 +17,22 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AVAILABLE_FILE_TYPES = {
-  drawIoFile: 'drawIoFile',
-  textFile: 'textFile',
-  documentFile: 'documentFile',
-  spreadsheetFile: 'spreadsheetFile',
-  presentationFile: 'presentationFile',
-  customFile: 'customFile',
-} as const;
+import React, { FC, ReactNode } from 'react';
+import cn from '@libs/common/utils/className';
 
-export default AVAILABLE_FILE_TYPES;
+interface AnchorSectionProps {
+  id: string;
+  className?: string;
+  children: ReactNode;
+}
+
+const AnchorSection: FC<AnchorSectionProps> = ({ id, className, children }) => (
+    <section
+      id={id}
+      className={cn('scroll-mt-20', className)}
+    >
+      {children}
+    </section>
+  );
+
+export default AnchorSection;

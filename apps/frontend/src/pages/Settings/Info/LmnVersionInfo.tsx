@@ -19,13 +19,10 @@
 
 import React, { useEffect } from 'react';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
-import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/shared/Card';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 
 const LmnVersionInfo = () => {
-  const { t } = useTranslation();
   const { lmnVersions, isGetVersionLoading, getLmnVersion } = useLmnApiStore();
 
   useEffect(() => {
@@ -33,30 +30,18 @@ const LmnVersionInfo = () => {
   }, []);
 
   return (
-    <AccordionSH
-      type="multiple"
-      defaultValue={['lmnVersions']}
-    >
-      <AccordionItem value="lmnVersions">
-        <AccordionTrigger>
-          <h3>{t('settings.lmnVersion.title')}</h3>
-        </AccordionTrigger>
-        <AccordionContent>
-          <div className="grid grid-cols-1 gap-2 py-4 pr-4 sm:grid-cols-2 lg:grid-cols-3">
-            {Object.entries(lmnVersions).map(([pkg, version]) => (
-              <Card
-                key={pkg}
-                className="flex items-center justify-between px-3 py-2"
-                variant="text"
-              >
-                <p className="font-bold">{pkg}</p>
-                <BadgeSH className="text-p">{!version && isGetVersionLoading ? '...' : version}</BadgeSH>
-              </Card>
-            ))}
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-    </AccordionSH>
+    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      {Object.entries(lmnVersions).map(([pkg, version]) => (
+        <Card
+          key={pkg}
+          className="flex items-center justify-between px-3 py-2"
+          variant="text"
+        >
+          <p className="font-bold">{pkg}</p>
+          <BadgeSH className="text-p">{!version && isGetVersionLoading ? '...' : version}</BadgeSH>
+        </Card>
+      ))}
+    </div>
   );
 };
 

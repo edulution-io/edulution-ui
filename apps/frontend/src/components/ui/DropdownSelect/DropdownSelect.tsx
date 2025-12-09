@@ -91,7 +91,7 @@ const DropdownSelect = ({
   const arrowPointsDown = (isOpen && !openToTop) || (!isOpen && openToTop);
 
   const inputBaseClasses =
-    'box-border w-full rounded-lg py-2 pl-2.5 pr-[52px] text-start text-base leading-6 text-secondary outline-none transition-all duration-200';
+    'box-border w-full rounded-lg py-2 pl-2.5 pr-[52px] text-start text-base leading-6 text-background placeholder:text-background outline-none transition-all duration-200';
 
   const variantClasses = {
     default: 'bg-accent',
@@ -100,12 +100,12 @@ const DropdownSelect = ({
 
   const optionVariantClasses = {
     default: {
-      base: 'text-secondary hover:bg-muted',
-      selected: 'bg-muted text-secondary',
+      base: 'text-background hover:bg-muted',
+      selected: 'bg-muted text-background',
     },
     dialog: {
-      base: 'text-secondary hover:bg-muted-light',
-      selected: 'bg-muted-light text-secondary',
+      base: 'text-background hover:bg-muted-light',
+      selected: 'bg-muted-light text-background',
     },
   };
 
@@ -146,7 +146,7 @@ const DropdownSelect = ({
       {isOpen && (
         <div
           className={cn(
-            'absolute z-[1000] -mt-px box-border max-h-[125px] w-full overflow-y-auto text-secondary shadow-xl scrollbar-thin',
+            'absolute z-[1000] -mt-px box-border max-h-[125px] w-full overflow-y-auto text-background shadow-xl scrollbar-thin',
             variantClasses[variant],
             {
               'top-full': !openToTop,

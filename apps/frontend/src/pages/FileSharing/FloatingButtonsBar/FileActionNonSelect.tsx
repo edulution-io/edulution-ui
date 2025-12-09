@@ -17,12 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { t } from 'i18next';
 import { MdFilePresent } from 'react-icons/md';
-import { HiOutlineFolderAdd } from 'react-icons/hi';
-import { SiDiagramsdotnet } from 'react-icons/si';
-import { FaFileAlt, FaFileExcel, FaFilePowerpoint, FaFileWord } from 'react-icons/fa';
+import { HiChevronDown, HiChevronUp, HiOutlineFolderAdd } from 'react-icons/hi';
+import { FaFile } from 'react-icons/fa';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import UploadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/uploadButton';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
@@ -32,47 +31,73 @@ import FileActionType from '@libs/filesharing/types/fileActionType';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/constants/availableFileTypes';
 import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
 import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
+import { PredefinedExtensionKey } from '@libs/filesharing/constants/predefinedExtensions';
+import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
+import EXTENSION_ICON_MAP from '@libs/filesharing/constants/extensionIconMap';
+import DOCUMENT_FILE_TYPE_CONFIG from '@libs/filesharing/constants/documentFileTypeConfig';
+import SORTED_PREDEFINED_EXTENSIONS from '@libs/filesharing/constants/sortedPredefinedExtensions';
 
 const FileActionNonSelect: FC<FileActionButtonProps> = ({ openDialog }) => {
-  const { setSelectedFileType } = useFileSharingDialogStore();
+  const { setSelectedFileType, setCustomExtension } = useFileSharingDialogStore();
   const { setIsUploadDialogOpen } = useHandleUploadFileStore();
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleSelectCreateFile = (fileType: TAvailableFileTypes) => {
     setSelectedFileType(fileType);
+    setCustomExtension('');
     openDialog(FileActionType.CREATE_FILE);
   };
 
-  const fileTypesConfiguration = [
-    {
-      label: t(`fileCreateNewContent.newFileFromType.${AVAILABLE_FILE_TYPES.drawIoFile}`),
-      icon: SiDiagramsdotnet,
-      iconColor: 'orange',
-      onClick: () => handleSelectCreateFile(AVAILABLE_FILE_TYPES.drawIoFile),
-    },
-    {
-      label: t(`fileCreateNewContent.newFileFromType.${AVAILABLE_FILE_TYPES.textFile}`),
-      icon: FaFileAlt,
-      iconColor: 'black',
-      onClick: () => handleSelectCreateFile(AVAILABLE_FILE_TYPES.textFile),
-    },
-    {
-      label: t(`fileCreateNewContent.newFileFromType.${AVAILABLE_FILE_TYPES.documentFile}`),
-      icon: FaFileWord,
-      iconColor: 'blue',
-      onClick: () => handleSelectCreateFile(AVAILABLE_FILE_TYPES.documentFile),
-    },
-    {
-      label: t(`fileCreateNewContent.newFileFromType.${AVAILABLE_FILE_TYPES.spreadsheetFile}`),
-      icon: FaFileExcel,
-      iconColor: 'green',
-      onClick: () => handleSelectCreateFile(AVAILABLE_FILE_TYPES.spreadsheetFile),
-    },
-    {
-      label: t(`fileCreateNewContent.newFileFromType.${AVAILABLE_FILE_TYPES.presentationFile}`),
-      icon: FaFilePowerpoint,
-      iconColor: '#ec4f03',
-      onClick: () => handleSelectCreateFile(AVAILABLE_FILE_TYPES.presentationFile),
-    },
+  const handleSelectPredefinedExtension = (extension: PredefinedExtensionKey) => {
+    setSelectedFileType(AVAILABLE_FILE_TYPES.customFile);
+    setCustomExtension(extension);
+    openDialog(FileActionType.CREATE_FILE);
+  };
+
+  const handleSelectCustomExtension = () => {
+    setSelectedFileType(AVAILABLE_FILE_TYPES.customFile);
+    setCustomExtension('');
+    openDialog(FileActionType.CREATE_FILE);
+  };
+
+  const documentFileTypes: DropdownMenuItemType[] = DOCUMENT_FILE_TYPE_CONFIG.map(({ fileType, icon, iconColor }) => ({
+    label: t(`fileCreateNewContent.newFileFromType.${fileType}`),
+    icon,
+    iconColor,
+    onClick: () => handleSelectCreateFile(fileType),
+  }));
+
+  const predefinedExtensionItems: DropdownMenuItemType[] = SORTED_PREDEFINED_EXTENSIONS.map((ext) => {
+    const iconConfig = EXTENSION_ICON_MAP[ext];
+    return {
+      label: t(`fileCreateNewContent.newFileFromType.${ext}`, `.${ext}`),
+      icon: iconConfig.icon,
+      iconColor: iconConfig.iconColor,
+      onClick: () => handleSelectPredefinedExtension(ext),
+    };
+  });
+
+  const customFileItem = {
+    label: t('fileCreateNewContent.newFileFromType.customFile'),
+    icon: FaFile,
+    iconColor: '#848493',
+    onClick: handleSelectCustomExtension,
+  };
+
+  const expandToggleItem = {
+    label: isExpanded ? t('fileCreateNewContent.lessFileTypes') : t('fileCreateNewContent.moreFileTypes'),
+    icon: isExpanded ? HiChevronUp : HiChevronDown,
+    iconColor: '#848493',
+    onClick: () => setIsExpanded(!isExpanded),
+    preventClose: true,
+  };
+
+  const fileTypesConfiguration: DropdownMenuItemType[] = [
+    ...documentFileTypes,
+    customFileItem,
+    ...(isExpanded ? [{ label: 'separator1', isSeparator: true }, ...predefinedExtensionItems] : []),
+    { label: 'separator2', isSeparator: true },
+    expandToggleItem,
   ];
 
   const config: FloatingButtonsBarConfig = {

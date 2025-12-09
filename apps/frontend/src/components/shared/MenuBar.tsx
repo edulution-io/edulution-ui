@@ -124,7 +124,7 @@ const MenuBar: React.FC = () => {
             size="sm"
             onClick={toggleCollapsed}
             className={cn(
-              'absolute right-[-25px] top-2 mx-3 mb-4 border-accent px-2 py-1',
+              'absolute right-[-25px] top-2 mx-3 mb-4 border-accent bg-foreground px-2 py-1',
               shouldCollapse ? 'cursor-e-resize ' : 'cursor-w-resize ',
             )}
           >

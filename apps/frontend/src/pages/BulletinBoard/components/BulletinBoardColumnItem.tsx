@@ -199,7 +199,7 @@ const BulletinBoardColumnItem = ({
       role="button"
       tabIndex={0}
       className={cn(
-        'relative mx-1 flex items-start justify-between break-all rounded-lg bg-muted-background p-4 pb-2',
+        'relative mx-1 flex items-start justify-between break-all rounded-xl bg-muted-background p-4 pb-2',
         {
           ring: isNew,
           'cursor-pointer': isNew,
@@ -250,7 +250,7 @@ const BulletinBoardColumnItem = ({
         trigger={
           <Button
             type="button"
-            className="text-white-500 absolute right-2 top-2 ml-2 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full p-1 hover:bg-blue-600 hover:text-white"
+            className="text-white-500 absolute right-2 top-2 ml-2 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full p-1 hover:bg-primary hover:text-white"
             title={t('common.options')}
           >
             <PiDotsThreeVerticalBold className="h-6 w-6" />

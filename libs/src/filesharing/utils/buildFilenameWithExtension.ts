@@ -17,20 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import * as React from 'react';
-import cn from '@libs/common/utils/className';
-import { INPUT_DEFAULT } from '@libs/ui/constants/commonClassNames';
+const buildFilenameWithExtension = (name: string, ext: string): string => {
+  if (!ext) return name;
+  if (ext.startsWith('.')) return `${name}${ext}`;
+  return `${name}.${ext}`;
+};
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
-
-const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type, ...props }, ref) => (
-  <input
-    type={type}
-    className={cn(INPUT_DEFAULT, 'w-full', className)}
-    ref={ref}
-    {...props}
-  />
-));
-Input.displayName = 'Input';
-
-export { Input };
+export default buildFilenameWithExtension;

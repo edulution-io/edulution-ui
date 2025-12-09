@@ -341,6 +341,12 @@
     "rowSelected": "{{selected}} von {{total}} Datei ausgewählt",
     "fileWithSameNameAlreadyExists": "Eine Datei mit diesem Namen existiert bereits.",
     "folderWithSameNameAlreadyExists": "Ein Ordner mit diesem Namen existiert bereits.",
+    "currentName": "Aktueller Name",
+    "sameNameAsOriginal": "Bitte geben Sie einen anderen Namen ein",
+    "placeholder": {
+      "filename": "Name",
+      "extension": ".ext"
+    },
     "errors": {
       "FileNotFound": "Datei nicht gefunden",
       "MountPointsNotFound": "Laufwerke nicht gefunden",
@@ -1085,6 +1091,12 @@
           "title": "Allgemeine Einstellungen",
           "description": ""
         },
+
+        "proxyConfig": {
+          "title": "Proxy-Konfiguration",
+          "description": "Hier kann eine eigene Proxy-Konfiguration für Traefik hinterlegt werden. Dabei kann entweder über die Eingabefelder mithilfe einer Vorlage gearbeitet werden, oder direkt im Expertenmodus eine Konfiguration im YAML-Format erstellt werden. <br/><strong>Achtung:</strong> Eine falsche Konfiguration könnte dazu führen, dass die Anwendung nicht mehr erreichbar ist."
+        },
+
         "docker": {
           "title": "Docker Anwendungen",
           "description": "Um die erweiterten Dienste nutzen zu können, können hier die benötigten Container-Anwendungen installiert und gestartet werden.",
@@ -1242,7 +1254,9 @@
       "confirmSingleDeleteAccount": "Möchtest du dieses Konto wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
       "deleteUserAccounts": "{{count}} Konten löschen",
       "deleteUserAccount": "Konto löschen",
-      "cryptoNotAvailable": "Verschlüsselung ist nur über HTTPS verfügbar. Bitte verwende eine sichere Verbindung."
+      "cryptoNotAvailable": "Verschlüsselung ist nur über HTTPS verfügbar. Bitte verwende eine sichere Verbindung.",
+      "password": "Passwort ändern",
+      "mfa": "Zwei-Faktor-Authentifizierung"
     },
     "mails": {
       "title": "E-Mail"
@@ -1251,7 +1265,9 @@
       "title": "App-Zugriff",
       "description": "Hier kannst du den mobilen Zugriff für die edulution App einrichten.",
       "docsDescription": "Den Download-Link zur edulution App und wie du sie einrichtest findest in der edulution Doku.",
-      "button": "Doku öffnen"
+      "button": "Doku öffnen",
+      "setup": "Einrichten mit QR-Code",
+      "qrCode": "QR-Code"
     },
     "faq": "FAQ",
     "externalIntegration": "Externe Anbindung",
@@ -1269,7 +1285,8 @@
       "german": "Deutsch",
       "english": "Englisch",
       "french": "Französisch",
-      "system": "Systemsprache"
+      "system": "Systemsprache",
+      "selectLanguage": "Sprache auswählen"
     },
     "addTotp": {
       "title": "Zwei-Faktor-Authentisierung einrichten",
@@ -1485,8 +1502,6 @@
     "urlDescription": "Bitte eine URL zur Applikation eintragen",
     "apiKey": "API-Schlüssel",
     "apiKeyDescription": "Der API-Schlüssel wird für die Authentifizierung verwendet",
-    "proxyConfig": "Proxy-Konfiguration",
-    "proxyConfigDescription": "Hier kann eine eigene Proxy-Konfiguration für Traefik hinterlegt werden. Dabei kann entweder über die Eingabefelder mithilfe einer Vorlage gearbeitet werden, oder direkt im Expertenmodus eine Konfiguration im YAML-Format erstellt werden. <br/><strong>Achtung:</strong> Eine falsche Konfiguration könnte dazu führen, dass die Anwendung nicht mehr erreichbar ist.",
     "expertMode": "Expertenmodus",
     "proxyPath": "Proxy Pfad",
     "proxyPathPlaceholder": "z.B. SOGo",
@@ -1604,7 +1619,8 @@
     "presentation": "Präsentation",
     "spreadsheet": "Tabelle",
     "vector": "Diagramm",
-    "compressed": "Archive"
+    "compressed": "Archive",
+    "code": "Code"
   },
   "fileCreateNewContent": {
     "documentFile": "Erstelle ein neues Dokument",
@@ -1625,8 +1641,29 @@
       "textFile": "Neue Textdatei",
       "spreadsheetFile": "Neue Tabelle",
       "presentationFile": "Neue Präsentation",
-      "documentFile": "Neues Dokument"
-    }
+      "documentFile": "Neues Dokument",
+      "json": "JSON-Datei (.json)",
+      "yaml": "YAML-Datei (.yaml)",
+      "yml": "YAML-Datei (.yml)",
+      "toml": "TOML-Datei (.toml)",
+      "xml": "XML-Datei (.xml)",
+      "cfg": "Konfigurationsdatei (.cfg)",
+      "ini": "INI-Datei (.ini)",
+      "env": "Umgebungsdatei (.env)",
+      "md": "Markdown-Datei (.md)",
+      "html": "HTML-Datei (.html)",
+      "css": "CSS-Datei (.css)",
+      "csv": "CSV-Datei (.csv)",
+      "sh": "Shell-Skript (.sh)",
+      "bat": "Batch-Datei (.bat)",
+      "ps1": "PowerShell-Skript (.ps1)",
+      "py": "Python-Skript (.py)",
+      "js": "JavaScript-Datei (.js)",
+      "customFile": "Andere Datei"
+    },
+    "customFile": "Erstelle eine neue Datei",
+    "moreFileTypes": "Weitere Dateitypen",
+    "lessFileTypes": "Weniger Dateitypen"
   },
   "fileRenameContent": {
     "placeholder": "Geben Sie den neuen Namen ein",

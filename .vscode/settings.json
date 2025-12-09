@@ -1,4 +1,6 @@
 {
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "[svg]": {
@@ -19,7 +21,6 @@
   "typescript.inlayHints.parameterNames.enabled": "all",
   "typescript.inlayHints.parameterTypes.enabled": true,
   "typescript.inlayHints.variableTypes.enabled": true,
-  "CodeGPT.apiKey": "Ollama",
   "i18n-ally.localesPaths": ["apps/frontend/src/locales"],
   "i18n-ally.keystyle": "nested"
 }

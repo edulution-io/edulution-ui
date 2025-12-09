@@ -20,7 +20,6 @@
 import React, { useEffect, useState } from 'react';
 import { DropdownSelect } from '@/components';
 import { Button } from '@/components/shared/Button';
-import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import { MailProviderConfigDto } from '@libs/mail/types';
 import { UseFormReturn } from 'react-hook-form';
@@ -95,34 +94,27 @@ const MailImporterConfig: React.FC<MailsConfigProps> = ({ form }) => {
 
   return (
     <>
-      <AccordionSH type="multiple">
-        <AccordionItem value="mails">
-          <AccordionTrigger>
-            <h3>{t(`mail.importer.title`)}</h3>
-          </AccordionTrigger>
-          <AccordionContent className="space-y-2 px-1">
-            <div className="flex gap-4">
-              <DropdownSelect
-                options={mailProviderDropdownOptions}
-                selectedVal={option}
-                handleChange={setOption}
-                classname="md:w-1/3"
-              />
-              {mailProviderDropdownOptions.find((opt) => opt.id === option)?.name !== t('common.custom') ? (
-                <Button
-                  variant="btn-collaboration"
-                  size="lg"
-                  type="button"
-                  onClick={() => handleDeleteMailProviderConfig(form.getValues('mail.mailProviderId'))}
-                >
-                  {t('common.delete')}
-                </Button>
-              ) : null}
-            </div>
-            <MailImporterConfigForm form={form} />
-          </AccordionContent>
-        </AccordionItem>
-      </AccordionSH>
+      <div className="space-y-4">
+        <div className="flex gap-4">
+          <DropdownSelect
+            options={mailProviderDropdownOptions}
+            selectedVal={option}
+            handleChange={setOption}
+            classname="md:w-1/3"
+          />
+          {mailProviderDropdownOptions.find((opt) => opt.id === option)?.name !== t('common.custom') ? (
+            <Button
+              variant="btn-collaboration"
+              size="lg"
+              type="button"
+              onClick={() => handleDeleteMailProviderConfig(form.getValues('mail.mailProviderId'))}
+            >
+              {t('common.delete')}
+            </Button>
+          ) : null}
+        </div>
+        <MailImporterConfigForm form={form} />
+      </div>
       <DeleteMailProviderConfigDialog
         isOpen={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}

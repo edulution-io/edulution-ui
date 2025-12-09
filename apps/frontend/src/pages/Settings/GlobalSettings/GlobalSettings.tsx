@@ -21,7 +21,7 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FieldValues, SubmitHandler, UseFormReturn } from 'react-hook-form';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
+import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import useGroupStore from '@/store/GroupStore';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
@@ -78,43 +78,37 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
   };
 
   return (
-    <AccordionSH
-      type="multiple"
-      className="mt-5"
-      defaultValue={['general', 'security', 'ldap', 'branding', 'theme', 'organisationInfo']}
-    >
-      <Form {...form}>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-10 [&>*]:rounded-xl [&>*]:bg-muted-background [&>*]:px-2"
-        >
-          <AccordionItem value="general">
-            <AccordionTrigger className="flex">
-              <h3>{t('settings.globalSettings.general')}</h3>
-            </AccordionTrigger>
+    <Form {...form}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <SectionAccordion defaultOpenAll>
+          <SectionAccordionItem
+            id="general"
+            label={t('settings.globalSettings.general')}
+          >
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <p className="text-xl font-bold">{t('settings.globalSettings.deploymentTarget')}</p>
+                <DeploymentTargetDropdownSelectFormField form={form} />
+              </div>
 
-            <AccordionContent className="space-y-2 px-1 text-p">
-              <p className="text-xl font-bold">{t('settings.globalSettings.deploymentTarget')}</p>
-              <DeploymentTargetDropdownSelectFormField form={form} />
-            </AccordionContent>
+              <div className="space-y-2">
+                <p className="text-xl font-bold">{t('settings.globalSettings.defaultLandingPageTitle')}</p>
+                <p>{t('settings.globalSettings.defaultLandingPageDescription')}</p>
+                <AppDropdownSelectFormField
+                  appNamePath="general.defaultLandingPage.appName"
+                  form={form}
+                  variant="default"
+                />
+              </div>
+            </div>
+          </SectionAccordionItem>
 
-            <AccordionContent className="space-y-2 px-1 text-p">
-              <p className="text-xl font-bold">{t('settings.globalSettings.defaultLandingPageTitle')}</p>
-              <p> {t('settings.globalSettings.defaultLandingPageDescription')}</p>
-              <AppDropdownSelectFormField
-                appNamePath="general.defaultLandingPage.appName"
-                form={form}
-                variant="default"
-              />
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="security">
-            <AccordionTrigger className="flex">
-              <h3>{t('settings.globalSettings.multiFactorAuthentication')}</h3>
-            </AccordionTrigger>
-            <AccordionContent className="space-y-2 px-1">
-              <p className="text-background">{t('settings.globalSettings.mfaDescription')}</p>
+          <SectionAccordionItem
+            id="security"
+            label={t('settings.globalSettings.multiFactorAuthentication')}
+          >
+            <div className="space-y-4">
+              <p>{t('settings.globalSettings.mfaDescription')}</p>
               <FormFieldSH
                 control={control}
                 name={`auth.${GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS}`}
@@ -129,57 +123,47 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
                         placeholder={t('search.type-to-search')}
                       />
                     </FormControl>
-                    <p className="text-background">{t('settings.globalSettings.selectUserGroups')}</p>
+                    <p>{t('settings.globalSettings.selectUserGroups')}</p>
                     <FormMessage className="text-p" />
                   </FormItem>
                 )}
               />
-            </AccordionContent>
-          </AccordionItem>
+            </div>
+          </SectionAccordionItem>
 
-          <AccordionItem value="ldap">
-            <AccordionTrigger className="flex">
-              <h3>{t('settings.globalSettings.ldap.title')}</h3>
-            </AccordionTrigger>
+          <SectionAccordionItem
+            id="ldap"
+            label={t('settings.globalSettings.ldap.title')}
+          >
             <LdapSettings form={form} />
-          </AccordionItem>
+          </SectionAccordionItem>
 
-          <AccordionItem value="branding">
-            <AccordionTrigger className="flex">
-              <h3>{t('settings.globalSettings.branding.title')}</h3>
-            </AccordionTrigger>
+          <SectionAccordionItem
+            id="branding"
+            label={t('settings.globalSettings.branding.title')}
+          >
+            <div className="space-y-4">
+              <p className="font-bold">{t('settings.globalSettings.logo.title')}</p>
+              <AddOrganisationLogo form={form} />
+            </div>
+          </SectionAccordionItem>
 
-            <AccordionContent className="space-y-2 px-1">
-              <AccordionSH
-                type="multiple"
-                defaultValue={['organisationLogo']}
-              >
-                <AccordionItem value="organisationLogo">
-                  <AccordionTrigger className="flex">
-                    <p className="font-bold">{t('settings.globalSettings.logo.title')}</p>
-                  </AccordionTrigger>
-                  <AddOrganisationLogo form={form} />
-                </AccordionItem>
-              </AccordionSH>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="theme">
-            <AccordionTrigger className="flex">
-              <h3>{t('settings.globalSettings.theme.title')}</h3>
-            </AccordionTrigger>
+          <SectionAccordionItem
+            id="theme"
+            label={t('settings.globalSettings.theme.title')}
+          >
             <ThemeSettings form={form} />
-          </AccordionItem>
+          </SectionAccordionItem>
 
-          <AccordionItem value="organisationInfo">
-            <AccordionTrigger className="flex">
-              <h3>{t('settings.globalSettings.organisationInfo.title')}</h3>
-            </AccordionTrigger>
+          <SectionAccordionItem
+            id="organisationInfo"
+            label={t('settings.globalSettings.organisationInfo.title')}
+          >
             <AddOrganisationInfo form={form} />
-          </AccordionItem>
-        </form>
-      </Form>
-    </AccordionSH>
+          </SectionAccordionItem>
+        </SectionAccordion>
+      </form>
+    </Form>
   );
 };
 

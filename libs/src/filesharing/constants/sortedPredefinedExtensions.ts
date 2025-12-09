@@ -17,13 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AVAILABLE_FILE_TYPES = {
-  drawIoFile: 'drawIoFile',
-  textFile: 'textFile',
-  documentFile: 'documentFile',
-  spreadsheetFile: 'spreadsheetFile',
-  presentationFile: 'presentationFile',
-  customFile: 'customFile',
-} as const;
+import PREDEFINED_EXTENSIONS, { PredefinedExtensionKey } from '@libs/filesharing/constants/predefinedExtensions';
 
-export default AVAILABLE_FILE_TYPES;
+const SORTED_PREDEFINED_EXTENSIONS = (Object.keys(PREDEFINED_EXTENSIONS) as PredefinedExtensionKey[]).sort((a, b) =>
+  a.localeCompare(b),
+);
+
+export default SORTED_PREDEFINED_EXTENSIONS;
