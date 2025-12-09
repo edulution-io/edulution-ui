@@ -31,8 +31,6 @@ interface ValidationWarningsProps {
 const ValidationWarnings: React.FC<ValidationWarningsProps> = ({ oversizedFiles, duplicateFiles, tooLargeFolders }) => {
   const { t } = useTranslation();
 
-  const hasMultipleOversizedFiles = oversizedFiles.length > 1;
-
   return (
     <>
       {duplicateFiles.length > 0 && (
@@ -50,11 +48,7 @@ const ValidationWarnings: React.FC<ValidationWarningsProps> = ({ oversizedFiles,
       {oversizedFiles.length > 0 && (
         <WarningBox
           icon={<HiExclamationTriangle className="text-ciRed" />}
-          title={
-            hasMultipleOversizedFiles
-              ? t('filesharingUpload.oversizedFilesDetected')
-              : t('filesharingUpload.oversizedFileDetected')
-          }
+          title={t('filesharingUpload.oversizedFileDetected', { count: oversizedFiles.length })}
           description={t('filesharingUpload.cannotUploadOversized')}
           filenames={oversizedFiles.map((file) => file.name)}
           borderColor="border-ciLightRed"
