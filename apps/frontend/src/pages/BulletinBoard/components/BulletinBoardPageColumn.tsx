@@ -65,7 +65,7 @@ const BulletinBoardPageColumn = ({
         category={category}
         canEditCategory={canEditCategory}
       />
-      <div className="mb-2 flex flex-col gap-4 overflow-y-auto pb-20 text-background scrollbar-thin">
+      <div className="mb-2 flex flex-col gap-4 overflow-y-auto pb-20 pt-1 text-background scrollbar-thin">
         {bulletins.map((bulletin) => (
           <BulletinBoardColumnItem
             key={`${bulletin.id}:${category.bulletinVisibility}`}
