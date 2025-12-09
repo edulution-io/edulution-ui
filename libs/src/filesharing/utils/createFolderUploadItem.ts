@@ -17,34 +17,24 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { create } from 'zustand';
 import { UploadItem } from '@libs/filesharing/types/uploadItem';
+import shouldFilterFile from '@libs/filesharing/utils/shouldFilterFile';
 
-interface PendingUpload {
-  files: (File | UploadItem)[];
-  duplicateFiles: (File | UploadItem)[];
-  newFiles: (File | UploadItem)[];
-  webdavShare: string;
-  currentPath: string;
-}
+const createFolderUploadItem = (folderName: string, allFiles: File[], id: string): UploadItem => {
+  const getFileName = (file: File): string => file.webkitRelativePath?.split('/').pop() || file.name;
 
-interface ReplaceFilesDialogStore {
-  isOpen: boolean;
-  pendingUpload: PendingUpload | null;
-  openDialog: (pendingUpload: PendingUpload) => void;
-  closeDialog: () => void;
-  reset: () => void;
-}
+  const visibleFiles = allFiles.filter((file) => !shouldFilterFile(getFileName(file)));
+  const hiddenFiles = allFiles.filter((file) => shouldFilterFile(getFileName(file)));
 
-const useReplaceFilesDialogStore = create<ReplaceFilesDialogStore>((set) => ({
-  isOpen: false,
-  pendingUpload: null,
+  return Object.assign(new File([], folderName, { type: 'application/x-directory' }), {
+    id,
+    isFolder: true,
+    folderName,
+    files: visibleFiles,
+    visibleFiles,
+    hiddenFiles,
+    includeHidden: false,
+  });
+};
 
-  openDialog: (pendingUpload) => set({ isOpen: true, pendingUpload }),
-
-  closeDialog: () => set({ isOpen: false, pendingUpload: null }),
-
-  reset: () => set({ isOpen: false, pendingUpload: null }),
-}));
-
-export default useReplaceFilesDialogStore;
+export default createFolderUploadItem;

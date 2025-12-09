@@ -37,8 +37,8 @@ import getFileUploadLimit from '@libs/ui/utils/getFileUploadLimit';
 import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
 import ActionTooltip from '@/components/shared/ActionTooltip';
 import { BUTTONS_ICON_WIDTH, SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
-import shouldFilterFile from '@libs/filesharing/utils/shouldFilterFile';
 import isFolderUploadItem from '@libs/filesharing/utils/isFolderUploadItem';
+import createFolderUploadItem from '@libs/filesharing/utils/createFolderUploadItem';
 import splitFilesByMaxFileSize from '@libs/filesharing/utils/splitFilesByMaxFileSize';
 import findDuplicateFiles from '@libs/filesharing/utils/findDuplicateFiles';
 import getUploadItemDisplayName from '@libs/filesharing/utils/getUploadItemDisplayName';
@@ -126,20 +126,7 @@ const UploadContentBody = () => {
       const firstFile = selected[0];
       const pathParts = firstFile.webkitRelativePath?.split('/') || [];
       const folderName = pathParts[0] || 'folder';
-
-      const visibleFiles = selected.filter((file) => !shouldFilterFile(file.name));
-      const hiddenAndSystemFiles = selected.filter((file) => shouldFilterFile(file.name));
-
-      const folderEntry: UploadItem = Object.assign(new File([], folderName, { type: 'application/x-directory' }), {
-        id: getRandomUUID(),
-        isFolder: true,
-        folderName,
-        files: visibleFiles,
-        visibleFiles,
-        hiddenFiles: hiddenAndSystemFiles,
-        includeHidden: false,
-      });
-
+      const folderEntry = createFolderUploadItem(folderName, selected, getRandomUUID());
       onDrop([folderEntry]);
     }
     e.target.value = '';
