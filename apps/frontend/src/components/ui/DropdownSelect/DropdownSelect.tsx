@@ -94,18 +94,18 @@ const DropdownSelect = ({
     'box-border w-full rounded-lg py-2 pl-2.5 pr-[52px] text-start text-base leading-6 text-background placeholder:text-background outline-none transition-all duration-200';
 
   const variantClasses = {
-    default: 'bg-accent',
-    dialog: 'bg-muted',
+    default: 'dark:bg-accent bg-white',
+    dialog: 'dark:bg-muted bg-white',
   };
 
   const optionVariantClasses = {
     default: {
       base: 'text-background hover:bg-muted',
-      selected: 'bg-muted text-background',
+      selected: 'dark:bg-muted bg-white text-background',
     },
     dialog: {
       base: 'text-background hover:bg-muted-light',
-      selected: 'bg-muted-light text-background',
+      selected: 'dark:bg-muted-light bg-white text-background',
     },
   };
 

@@ -47,7 +47,7 @@ const SelectColumnsDropdown = <TData,>({ table, isDialog }: SelectColumnsDropdow
       trigger={
         <Button
           variant="btn-small"
-          className={`text-secondary ${isDialog ? 'bg-muted' : 'bg-accent'}`}
+          className={isDialog ? 'dark:bg-muted' : 'dark:bg-accent'}
         >
           {t('common.columns')} <ChevronDown />
         </Button>

@@ -178,7 +178,6 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
       disabled,
       groupBy,
       className,
-      badgeClassName,
       selectFirstItem = true,
       creatable = false,
       triggerSearchOnFocus = false,
@@ -362,7 +361,7 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
         }}
         className={cn(
           'overflow-visible rounded-lg',
-          variant === 'default' ? 'bg-accent text-secondary' : 'bg-muted text-secondary',
+          variant === 'default' ? 'bg-white text-background dark:bg-accent' : 'bg-white text-background dark:bg-muted',
           commandProps?.className,
         )}
         shouldFilter={commandProps?.shouldFilter !== undefined ? commandProps.shouldFilter : !onSearch} // When onSearch is provided, we don't want to filter the options. You can still override it.
@@ -371,7 +370,7 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
         <div
           className={cn(
             'group rounded-lg p-[8px] px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
-            variant === 'default' ? 'bg-muted text-secondary' : '',
+            variant === 'default' ? 'bg-white text-background dark:bg-muted' : '',
             className,
           )}
         >
@@ -379,11 +378,7 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
             {selected.map((option) => (
               <BadgeSH
                 key={option.value}
-                className={cn(
-                  'data-[disabled]:bg-muted-foreground data-[disabled]:text-muted data-[disabled]:hover:bg-muted-foreground',
-                  'data-[fixed]:bg-muted-foreground data-[fixed]:text-muted data-[fixed]:hover:bg-muted-foreground',
-                  badgeClassName,
-                )}
+                variant="default"
                 data-fixed={option.fixed}
                 data-disabled={disabled ? true : undefined}
               >
@@ -408,8 +403,8 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
                     <X
                       className={
                         variant === 'default'
-                          ? 'h-3 w-3 text-secondary hover:bg-muted-foreground hover:text-secondary-foreground'
-                          : 'h-3 w-3 text-secondary '
+                          ? 'bg-white-foreground hover:text-background-foreground h-3 w-3 text-background hover:dark:bg-muted'
+                          : 'h-3 w-3 text-background '
                       }
                     />
                   </button>
@@ -439,8 +434,8 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
               className={cn(
                 'ml-2 flex-1 outline-none placeholder:text-muted-foreground',
                 variant === 'default'
-                  ? 'bg-accent text-secondary placeholder:text-secondary'
-                  : 'bg-muted text-secondary placeholder:text-secondary',
+                  ? 'bg-white text-background placeholder:text-background dark:bg-accent'
+                  : 'bg-white text-background placeholder:text-background dark:bg-muted',
                 inputProps?.className,
               )}
             />
@@ -451,7 +446,7 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
             <CommandList
               className={cn(
                 'absolute top-0 z-50 max-h-28 w-full overflow-y-auto rounded-lg border bg-popover text-popover-foreground shadow-md outline-none animate-in scrollbar-thin',
-                variant === 'default' ? 'bg-accent text-secondary' : 'bg-muted',
+                variant === 'default' ? 'bg-white text-background dark:bg-accent' : 'bg-white dark:bg-muted',
               )}
             >
               {isLoading ? (
@@ -470,7 +465,9 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
                     <CommandGroup
                       key={key}
                       heading={key}
-                      className={variant === 'default' ? 'h-full overflow-auto text-secondary' : 'h-full overflow-auto'}
+                      className={
+                        variant === 'default' ? 'h-full overflow-auto text-background' : 'h-full overflow-auto'
+                      }
                     >
                       <>
                         {dropdowns.map((option) => (
@@ -495,12 +492,12 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
                             className={cn(
                               'cursor-pointer',
                               variant === 'default'
-                                ? 'bg-accent text-secondary hover:bg-accent-light hover:text-secondary'
-                                : 'bg-muted text-secondary hover:bg-muted-light hover:text-secondary',
+                                ? 'bg-white-light bg-white text-background hover:text-background dark:bg-accent hover:dark:bg-accent'
+                                : 'bg-white-light bg-white text-background hover:text-background dark:bg-muted hover:dark:bg-muted',
                               option.disable &&
                                 (variant === 'default'
-                                  ? 'cursor-default text-muted-foreground hover:bg-accent hover:text-muted-foreground'
-                                  : 'cursor-default text-gray-500 hover:bg-muted hover:text-gray-500'),
+                                  ? 'cursor-default bg-white text-muted-foreground hover:text-muted-foreground hover:dark:bg-accent'
+                                  : 'cursor-default bg-white text-gray-500 hover:text-gray-500 hover:dark:bg-muted'),
                             )}
                           >
                             {option.label}

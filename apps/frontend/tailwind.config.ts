@@ -4,7 +4,7 @@ import tailwindScrollbar from 'tailwind-scrollbar';
 
 const TAILWIND_CONFIG = {
   darkMode: ['class'],
-  content: ['./apps/frontend/**/*.{js,ts,jsx,tsx,html}', '!./apps/backend/**', '!./libs/**'],
+  content: ['./apps/frontend/**/*.{js,ts,jsx,tsx,html}', './libs/**/*.{js,ts,jsx,tsx}', '!./apps/backend/**'],
   safelist: [{ pattern: /^ql-indent-[1-8]$/ }],
   prefix: '',
   theme: {

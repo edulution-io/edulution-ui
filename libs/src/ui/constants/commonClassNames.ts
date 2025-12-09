@@ -20,8 +20,8 @@
 import { cva } from 'class-variance-authority';
 
 const VARIANT_COLORS = {
-  default: 'bg-accent text-secondary',
-  dialog: 'bg-muted text-background',
+  default: 'bg-white text-black border border-gray-300 dark:bg-accent dark:text-secondary dark:border-0',
+  dialog: 'dark:bg-muted border-2 dark:border-none border-gray-300 bg-white shadow-md dark:shadow-none text-background',
   login: 'border-2 border-gray-300 bg-white text-black shadow-md',
   lightGrayDisabled: 'bg-ciDarkGreyDisabled text-secondary',
 } as const;

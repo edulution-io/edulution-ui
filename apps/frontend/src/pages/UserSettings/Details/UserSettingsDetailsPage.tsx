@@ -93,7 +93,6 @@ const UserSettingsDetailsPage: React.FC = () => {
             <BadgeField
               value={schoolClasses}
               readOnly
-              className="mt-2"
             />
           </div>
         </SectionAccordionItem>
