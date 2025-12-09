@@ -170,34 +170,30 @@ const GroupPropertiesTable = ({ isCreateMode, disabled, form }: GroupPropertiesT
   };
 
   return (
-    <div className="rounded-xl bg-muted p-2 text-base text-background">
-      <div className="overflow-hidden rounded-lg">
-        <table className="w-full table-fixed">
-          <tbody>
-            <tr>
-              <td className="border-background/20 w-1/2 border p-2 text-left">{t('classmanagement.systemName')}</td>
-              <td className="border-background/20 w-1/2 border p-2">{watch('name')}</td>
-            </tr>
-            {groupProperties
-              .filter((groupProperty) => isCreateMode || watch(groupProperty.name) !== undefined)
-              .map((groupProperty) => (
-                <tr key={groupProperty.name}>
-                  <td className="border-background/20 w-1/2 border p-2 text-left">
-                    {t(groupProperty.labelTranslationId)}
-                  </td>
-                  <td className="border-background/20 w-1/2 border p-2">
-                    {getComponent(groupProperty)}
-                    {formState.errors[groupProperty.name] && (
-                      <FormMessage className="text-[0.8rem] font-medium text-background">
-                        {formState.errors[groupProperty.name]?.message?.toString()}
-                      </FormMessage>
-                    )}
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
+    <div className="flex flex-col text-base text-background">
+      <table className="w-full table-fixed">
+        <tbody>
+          <tr>
+            <td className="w-1/2 border p-2 text-left ">{t('classmanagement.systemName')}</td>
+            <td className="w-1/2 border p-2">{watch('name')}</td>
+          </tr>
+          {groupProperties
+            .filter((groupProperty) => isCreateMode || watch(groupProperty.name) !== undefined)
+            .map((groupProperty) => (
+              <tr key={groupProperty.name}>
+                <td className="w-1/2 border p-2 text-left ">{t(groupProperty.labelTranslationId)}</td>
+                <td className="w-1/2 border p-2">
+                  {getComponent(groupProperty)}
+                  {formState.errors[groupProperty.name] && (
+                    <FormMessage className="text-[0.8rem] font-medium text-background">
+                      {formState.errors[groupProperty.name]?.message?.toString()}
+                    </FormMessage>
+                  )}
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
     </div>
   );
 };
