@@ -34,9 +34,9 @@ import safeGetDate from '@libs/common/utils/Date/safeGetDate';
 import useLanguage from '@/hooks/useLanguage';
 import { Button } from '@/components/shared/Button';
 import { Calendar } from '@/components/ui/Calendar';
-import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
+import { ScrollArea } from '@/components/ui/ScrollArea';
 import MinuteButton from '@/components/ui/DateTimePicker/MinuteButton';
 import HourButton from '@/components/ui/DateTimePicker/HourButton';
 
@@ -189,9 +189,9 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
               </PopoverTrigger>
 
               <PopoverContent
-                className={cn('w-auto p-0', {
+                className={cn('w-auto rounded-xl p-0', {
                   'bg-background text-foreground': variant === 'default',
-                  'border-ring bg-muted text-secondary': variant === 'dialog',
+                  'border-ring bg-white text-background dark:bg-muted dark:text-secondary': variant === 'dialog',
                 })}
               >
                 <div className="sm:flex">
@@ -209,7 +209,7 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
                       {t('form.input.dateTimePicker.timeSlot')}
                     </div>
                     <div className="flex flex-col divide-y sm:h-[300px] sm:flex-row sm:divide-x sm:divide-y-0">
-                      <ScrollArea className="w-64 sm:w-auto">
+                      <ScrollArea className="w-64 sm:h-[300px] sm:w-auto">
                         <div className="flex p-2 sm:flex-col">
                           {Array.from({ length: 24 }, (_, i) => i)
                             .reverse()
@@ -225,7 +225,7 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
                         </div>
                       </ScrollArea>
 
-                      <ScrollArea className="w-64 sm:w-auto">
+                      <ScrollArea className="w-64 sm:h-[300px] sm:w-auto">
                         <div className="flex p-2 sm:flex-col">
                           {Array.from({ length: 12 }, (_, i) => i * 5).map((minute) => (
                             <MinuteButton

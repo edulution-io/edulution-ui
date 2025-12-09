@@ -95,7 +95,8 @@ const DropdownSelect = ({
 
   const variantClasses = {
     default: 'dark:bg-accent bg-white',
-    dialog: 'dark:bg-muted bg-white',
+    dialog:
+      'dark:bg-muted border-2 dark:border-none border-gray-300 bg-white shadow-md dark:shadow-none text-background',
   };
 
   const optionVariantClasses = {
