@@ -43,10 +43,12 @@ import usePublicShareQr from '@/pages/FileSharing/hooks/usePublicShareQr';
 import ReplaceFilesDialog from '@/pages/FileSharing/Dialog/ReplaceFilesDialog';
 import useBreadcrumbNavigation from '@/pages/FileSharing/hooks/useBreadcrumbNavigation';
 import useFileUploadWithReplace from '@/pages/FileSharing/hooks/useFileUploadWithReplace';
+import useMedia from '@/hooks/useMedia';
 import useRefreshOnFileOperationComplete from './hooks/useRefreshOnFileOperationComplete';
 
 const FileSharingPage = () => {
   const { webdavShare } = useParams();
+  const { isMobileView } = useMedia();
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
   const { fileOperationProgress, fetchFiles, webdavShares } = useFileSharingStore();
@@ -75,6 +77,8 @@ const FileSharingPage = () => {
 
   const { handleFileUploadWithDuplicateCheck } = useFileUploadWithReplace();
 
+  const isFilePreviewDockingAreaVisible = isFilePreviewVisible && isFilePreviewDocked && !isMobileView;
+
   return (
     <PageLayout>
       <LoadingIndicatorDialog isOpen={isLoading} />
@@ -90,7 +94,7 @@ const FileSharingPage = () => {
       </div>
 
       <div className="flex h-full w-full flex-row overflow-hidden">
-        <div className={`flex flex-col ${isFilePreviewVisible && isFilePreviewDocked ? 'w-1/2 2xl:w-2/3' : 'w-full'}`}>
+        <div className={`flex flex-col ${isFilePreviewDockingAreaVisible ? 'w-1/2 2xl:w-2/3' : 'w-full'}`}>
           {isFileProcessing ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}
           <div className="flex-1 overflow-hidden pb-6">
             <FileDropZone onFileDrop={(files) => handleFileUploadWithDuplicateCheck(files, webdavShare, currentPath)}>
@@ -102,7 +106,7 @@ const FileSharingPage = () => {
         {isFilePreviewVisible && (
           <div
             id={FILE_PREVIEW_ELEMENT_ID}
-            className={isFilePreviewDocked ? 'h-full w-1/2 2xl:w-1/3' : ''}
+            className={isFilePreviewDockingAreaVisible ? 'h-full w-1/2 2xl:w-1/3' : ''}
           />
         )}
       </div>
