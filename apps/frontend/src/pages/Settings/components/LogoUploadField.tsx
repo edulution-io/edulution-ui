@@ -56,12 +56,12 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
   fallbackSrc,
   className,
   onHandleReset,
-  isLoginPage: invertBGClolor = false,
+  isLoginPage: invertBGColor = false,
 }) => {
   const backdropClass =
     variant === Theme.light
-      ? `${invertBGClolor ? 'bg-neutral-900' : 'bg-white'}`
-      : `${invertBGClolor ? 'bg-white' : 'bg-neutral-900'}`;
+      ? `${invertBGColor ? 'bg-neutral-900' : 'bg-white'}`
+      : `${invertBGColor ? 'bg-white' : 'bg-neutral-900'}`;
   return (
     <div
       className={clsx(

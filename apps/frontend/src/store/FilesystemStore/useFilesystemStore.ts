@@ -32,8 +32,8 @@ interface FilesystemStore {
   darkVersion: number;
   setDarkVersion: (version: number | ((prev: number) => number)) => void;
 
-  deleteImageFile: (appName: string, filename: string) => Promise<void>;
-  uploadImageFile: (destination: string, filename: string, file: File | Blob, appName?: string) => Promise<void>;
+  deleteImageFile: (appName: string, filename: string) => Promise<boolean>;
+  uploadImageFile: (destination: string, filename: string, file: File | Blob, appName?: string) => Promise<boolean>;
 
   uploadingVariant: ThemeType | null;
   uploadVariant: (variant: ThemeType, file: File) => Promise<void>;
@@ -56,16 +56,25 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
       darkVersion: typeof version === 'function' ? version(state.darkVersion) : version,
     })),
 
-  deleteImageFile: async (appName: string, fileName: string) => {
+  deleteImageFile: async (appName: string, fileName: string): Promise<boolean> => {
+    set({ error: null });
     try {
       const url = `${EDU_API_CONFIG_ENDPOINTS.FILES}/public/assets/${appName}/${fileName}`;
       await eduApi.delete<void>(url);
+      return true;
     } catch (e) {
       handleApiError(e, set);
+      return false;
     }
   },
 
-  uploadImageFile: async (destination: string, filename: string, file: File | Blob, appName?: string) => {
+  uploadImageFile: async (
+    destination: string,
+    filename: string,
+    file: File | Blob,
+    appName?: string,
+  ): Promise<boolean> => {
+    set({ error: null });
     try {
       const form = new FormData();
       form.append('destination', destination);
@@ -84,13 +93,15 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
         const wrapped = new File([file], fullName, { type });
         form.append('file', wrapped, fullName);
       } else {
-        return;
+        return false;
       }
 
       const endpoint = appName ? `${EDU_API_CONFIG_ENDPOINTS.FILES}/${appName}` : `${EDU_API_CONFIG_ENDPOINTS.FILES}`;
       await eduApi.post<void>(endpoint, form);
+      return true;
     } catch (e) {
       handleApiError(e, set);
+      return false;
     }
   },
 

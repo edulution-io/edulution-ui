@@ -56,6 +56,7 @@ import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
 import THIRTY_DAYS from '@libs/common/constants/thirtyDays';
 import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
+import sanitizeFileName from '@libs/filesystem/utils/sanitizeFileName';
 import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 import UsersService from '../users/users.service';
 import CustomHttpException from '../common/CustomHttpException';
@@ -368,34 +369,20 @@ class FilesystemService {
     }
   }
 
-  async servePublicAssetWithFallback(
-    res: Response,
-    appName: string,
-    filename: string | string[],
-    fallbackFilename?: string | undefined,
-  ): Promise<Response> {
-    const filePath = join(PUBLIC_ASSET_PATH, appName, FilesystemService.buildPathString(filename));
+  async servePublicAssetWithFallback(res: Response, filePath: string, fallBackPath?: string): Promise<Response> {
     const fileExists = await FilesystemService.checkIfFileExist(filePath);
-    if (!fileExists && fallbackFilename) {
-      if (Array.isArray(filename)) {
-        const path = filename;
-        path.pop();
-        path.push(fallbackFilename);
-        const fallbackPath = join(PUBLIC_ASSET_PATH, appName, FilesystemService.buildPathString(path));
-        return this.serve(fallbackPath, res);
-      }
-      const fallbackPath = join(PUBLIC_ASSET_PATH, appName, fallbackFilename);
-      return this.serve(fallbackPath, res);
+    if (!fileExists && fallBackPath) {
+      return this.serve(fallBackPath, res);
     }
     return this.serve(filePath, res);
   }
 
-  async serveTempFiles(name: string, filename: string, res: Response) {
+  async serveTempFile(name: string, filename: string, res: Response) {
     const filePath = join(TEMP_FILES_PATH, name, filename);
     return this.serve(filePath, res);
   }
 
-  async serveFiles(name: string, filename: string, res: Response) {
+  async serveFile(name: string, filename: string, res: Response) {
     const filePath = join(APPS_FILES_PATH, name, filename);
     return this.serve(filePath, res);
   }
@@ -446,6 +433,31 @@ class FilesystemService {
     } catch (error) {
       Logger.error(`Error removing old temp files: ${error}`);
     }
+  }
+
+  static getFilePathAndFallBackPath(
+    appName: string,
+    filename: string | string[],
+    fallbackFilename?: string,
+  ): { filePath: string; fallBackPath?: string } {
+    let filePath: string | undefined;
+    let fallBackPath: string | undefined;
+    if (Array.isArray(filename)) {
+      const fileName = [...filename];
+      const index = Math.max(0, fileName.length - 1);
+      fileName[index] = sanitizeFileName(fileName[index]);
+      filePath = join(PUBLIC_ASSET_PATH, appName, FilesystemService.buildPathString(fileName));
+      if (fallbackFilename) {
+        fileName[index] = sanitizeFileName(fallbackFilename);
+        fallBackPath = join(PUBLIC_ASSET_PATH, appName, FilesystemService.buildPathString(fileName));
+      }
+    } else {
+      filePath = join(PUBLIC_ASSET_PATH, appName, sanitizeFileName(filename));
+      if (fallbackFilename) {
+        fallBackPath = join(PUBLIC_ASSET_PATH, appName, sanitizeFileName(fallbackFilename));
+      }
+    }
+    return { filePath, fallBackPath };
   }
 }
 

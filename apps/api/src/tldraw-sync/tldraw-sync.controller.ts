@@ -79,7 +79,7 @@ class TLDrawSyncController {
     @Param('filename') filename: string | string[],
     @Res() res: Response,
   ) {
-    return this.filesystemService.serveFiles(APPS.WHITEBOARD, FilesystemService.buildPathString(filename), res);
+    return this.filesystemService.serveFile(APPS.WHITEBOARD, FilesystemService.buildPathString(filename), res);
   }
 
   @Delete(`${TLDRAW_SYNC_ENDPOINTS.ASSETS}/*filename`)

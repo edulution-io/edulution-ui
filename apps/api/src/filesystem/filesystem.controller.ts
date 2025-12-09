@@ -31,11 +31,13 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  Logger,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { type Response } from 'express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import APPS from '@libs/appconfig/constants/apps';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
@@ -81,8 +83,8 @@ class FileSystemController {
   }
 
   @Get(`${FILE_ENDPOINTS.FILE}/:appName/*filename`)
-  serveFiles(@Param('appName') appName: string, @Param('filename') filename: string | string[], @Res() res: Response) {
-    return this.filesystemService.serveFiles(appName, FilesystemService.buildPathString(filename), res);
+  serveFile(@Param('appName') appName: string, @Param('filename') filename: string | string[], @Res() res: Response) {
+    return this.filesystemService.serveFile(appName, FilesystemService.buildPathString(filename), res);
   }
 
   @Public()
@@ -93,28 +95,61 @@ class FileSystemController {
   }
 
   @Get(`public/${FILE_ENDPOINTS.FILE}/:appName/*filename`)
-  servePublicFiles(
+  servePublicFile(
     @Param('appName') appName: string,
     @Param('filename') filename: string | string[],
     @Res() res: Response,
   ) {
-    return this.filesystemService.serveFiles(appName, FilesystemService.buildPathString(filename), res);
+    return this.filesystemService.serveFile(appName, FilesystemService.buildPathString(filename), res);
   }
 
   @Public()
   @Get(`public/assets/:appName/*filename`)
-  async servePublicAsset(
+  servePublicAssetWithFallback(
     @Res() res: Response,
     @Param('appName') appName: string,
     @Param('filename') filename: string | string[],
     @Query('fallback') fallbackFilename: string | undefined,
   ) {
-    return this.filesystemService.servePublicAssetWithFallback(res, appName, filename, fallbackFilename);
+    if (!filename || !appName || !(Object.values(APPS) as string[]).includes(appName)) {
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.BAD_REQUEST,
+        undefined,
+        FileSystemController.name,
+      );
+    }
+    const { filePath, fallBackPath } = FilesystemService.getFilePathAndFallBackPath(
+      appName,
+      filename,
+      fallbackFilename,
+    );
+    if (filePath.includes('..') || filePath.includes('//')) {
+      Logger.warn(`Suspicious path detected: ${filePath}`);
+      throw new CustomHttpException(
+        CommonErrorMessages.INVALID_REQUEST_DATA,
+        HttpStatus.BAD_REQUEST,
+        undefined,
+        FileSystemController.name,
+      );
+    }
+    if (fallBackPath) {
+      if (fallBackPath.includes('..') || fallBackPath.includes('//')) {
+        Logger.warn(`Suspicious fallback path detected: ${fallBackPath}`);
+        throw new CustomHttpException(
+          CommonErrorMessages.INVALID_REQUEST_DATA,
+          HttpStatus.BAD_REQUEST,
+          undefined,
+          FileSystemController.name,
+        );
+      }
+    }
+    return this.filesystemService.servePublicAssetWithFallback(res, filePath, fallBackPath);
   }
 
   @UseGuards(AdminGuard)
   @Delete(`public/assets/:appName/*filename`)
-  async deletePublicFiles(@Param('appName') appName: string, @Param('filename') filename: string | string[]) {
+  async deletePublicFile(@Param('appName') appName: string, @Param('filename') filename: string | string[]) {
     const fileName = FilesystemService.buildPathString(filename);
     const filePath = join(PUBLIC_ASSET_PATH, appName);
     return FilesystemService.deleteFile(filePath, fileName);

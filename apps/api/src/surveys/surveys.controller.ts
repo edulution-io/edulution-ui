@@ -189,7 +189,7 @@ class SurveysController {
       );
     }
     const filePath = join(SURVEYS_ANSWER_FOLDER, ATTACHMENT_FOLDER, surveyId, userName);
-    return this.filesystemService.serveFiles(filePath, filename, res);
+    return this.filesystemService.serveFile(filePath, filename, res);
   }
 
   @Post()
@@ -220,7 +220,7 @@ class SurveysController {
   serveTempFile(@Param() params: { filename: string }, @Res() res: Response, @GetCurrentUsername() username: string) {
     const { filename } = params;
     const filePath = join(APPS.SURVEYS, username);
-    return this.filesystemService.serveTempFiles(filePath, filename, res);
+    return this.filesystemService.serveTempFile(filePath, filename, res);
   }
 }
 

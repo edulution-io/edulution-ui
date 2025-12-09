@@ -11,7 +11,7 @@
  */
 
 import i18n from '@/i18n';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { ThemeType } from '@libs/common/constants/theme';
 import ThemedFile from '@libs/common/types/themedFile';
@@ -35,9 +35,9 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
   option,
   form,
 }) => {
-  const { uploadImageFile, deleteImageFile } = FilesystemStore();
+  const { uploadImageFile, deleteImageFile, error, reset } = FilesystemStore();
 
-  const [keyValue, setKeyValue] = React.useState<number>(0);
+  const [keyValue, setKeyValue] = useState<number>(0);
 
   const path = `${fieldPath}.${variant}` as keyof ThemedFile;
 
@@ -56,17 +56,22 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
       return;
     }
 
-    form.setValue(path, file, { shouldDirty: true });
-
-    if (file && variant) {
-      await uploadImageFile(destination, filename, file);
-      setKeyValue((prev) => prev + 1);
+    if (file) {
+      const success = await uploadImageFile(destination, filename, file);
+      if (success) {
+        form.setValue(path, file, { shouldDirty: true });
+        setKeyValue((prev) => prev + 1);
+      }
     }
   };
 
   const onHandleReset = async () => {
-    await deleteImageFile(appName, filename);
-    setKeyValue((prev) => prev + 1);
+    const success = await deleteImageFile(appName, filename);
+    if (success) {
+      reset();
+      form.setValue(path, null, { shouldDirty: true });
+      setKeyValue((prev) => prev + 1);
+    }
   };
 
   const variantText = i18n.t(`appExtendedOptions.appLogo.${variant}`);
@@ -85,6 +90,7 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
         changeText={i18n.t(`common.changeFile`)}
         onHandleReset={onHandleReset}
       />
+      {error && <p className="text-sm text-red-600">{error.message}</p>}
     </div>
   );
 };

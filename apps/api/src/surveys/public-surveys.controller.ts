@@ -92,7 +92,7 @@ class PublicSurveysController {
   async serveFile(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
     const { surveyId, questionId, filename } = params;
     const filePath = join(APPS.SURVEYS, ATTACHMENT_FOLDER, surveyId, questionId);
-    return this.filesystemService.serveFiles(filePath, filename, res);
+    return this.filesystemService.serveFile(filePath, filename, res);
   }
 
   @Post(`${ANSWER}/${FILES}/:userName/:surveyId`)
@@ -184,7 +184,7 @@ class PublicSurveysController {
       );
     }
     const filePath = join(SURVEYS_ANSWER_FOLDER, userName, surveyId);
-    return this.filesystemService.serveTempFiles(filePath, filename, res);
+    return this.filesystemService.serveTempFile(filePath, filename, res);
   }
 
   @Get(`${CHOICES}/:surveyId/:questionName`)
