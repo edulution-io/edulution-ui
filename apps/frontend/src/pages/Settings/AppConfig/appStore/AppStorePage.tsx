@@ -113,7 +113,10 @@ const AppStorePage: React.FC = () => {
                 <img
                   src={item.icon}
                   alt={item.id}
-                  className={cn('h-12 w-12 md:h-14 md:w-14', getAppIconClassName(item.icon))}
+                  className={cn(
+                    'h-12 w-12 md:h-14 md:w-14',
+                    selectedApp.id !== item.id && getAppIconClassName(item.icon),
+                  )}
                 />
                 <p>{t(`${item.id}.sidebar`)}</p>
               </div>
