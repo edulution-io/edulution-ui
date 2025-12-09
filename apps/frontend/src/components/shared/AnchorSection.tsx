@@ -17,20 +17,22 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import * as React from 'react';
+import React, { FC, ReactNode } from 'react';
 import cn from '@libs/common/utils/className';
-import { INPUT_DEFAULT } from '@libs/ui/constants/commonClassNames';
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+interface AnchorSectionProps {
+  id: string;
+  className?: string;
+  children: ReactNode;
+}
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type, ...props }, ref) => (
-  <input
-    type={type}
-    className={cn(INPUT_DEFAULT, 'w-full', className)}
-    ref={ref}
-    {...props}
-  />
-));
-Input.displayName = 'Input';
+const AnchorSection: FC<AnchorSectionProps> = ({ id, className, children }) => (
+  <section
+    id={id}
+    className={cn('scroll-mt-20', className)}
+  >
+    {children}
+  </section>
+);
 
-export { Input };
+export default AnchorSection;

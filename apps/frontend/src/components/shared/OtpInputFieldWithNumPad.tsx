@@ -21,7 +21,7 @@ import React, { FC, Dispatch, SetStateAction } from 'react';
 import { MdDialpad } from 'react-icons/md';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import cn from '@libs/common/utils/className';
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '../ui/InputOtp';
+import { InputOTPSH, InputOTPGroupSH, InputOTPSlotSH } from '../ui/InputOtpSH';
 import { Button } from './Button';
 
 type OtpInputProps = {
@@ -34,7 +34,7 @@ type OtpInputProps = {
   setShowNumPad?: Dispatch<SetStateAction<boolean>>;
 };
 
-const OtpInput: FC<OtpInputProps> = ({
+const OtpInputFieldWithNumPad: FC<OtpInputProps> = ({
   totp,
   maxLength = 6,
   variant = 'default',
@@ -44,7 +44,7 @@ const OtpInput: FC<OtpInputProps> = ({
   setShowNumPad,
 }) => (
   <div className="mb-3 flex items-center justify-center">
-    <InputOTP
+    <InputOTPSH
       autoFocus
       maxLength={maxLength}
       value={totp}
@@ -55,17 +55,17 @@ const OtpInput: FC<OtpInputProps> = ({
       }}
       onComplete={onComplete ? () => onComplete() : undefined}
     >
-      <InputOTPGroup>
+      <InputOTPGroupSH>
         {Array.from({ length: maxLength }, (_, index) => (
-          <InputOTPSlot
+          <InputOTPSlotSH
             key={index}
             index={index}
             variant={variant}
             type={type}
           />
         ))}
-      </InputOTPGroup>
-    </InputOTP>
+      </InputOTPGroupSH>
+    </InputOTPSH>
     {setShowNumPad && (
       <Button
         variant="btn-outline"
@@ -82,4 +82,4 @@ const OtpInput: FC<OtpInputProps> = ({
   </div>
 );
 
-export default OtpInput;
+export default OtpInputFieldWithNumPad;

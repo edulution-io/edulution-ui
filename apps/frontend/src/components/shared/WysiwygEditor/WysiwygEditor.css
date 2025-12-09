@@ -2,6 +2,20 @@
   position: relative;
 }
 
+.quill-container .ql-toolbar {
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+  border-color: hsl(var(--input));
+  background: hsl(var(--background));
+}
+
+.quill-container .ql-container {
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  border-color: hsl(var(--input));
+  background: hsl(var(--background));
+}
+
 .quill-container .ql-tooltip {
   position: absolute !important;
   top: 0 !important;

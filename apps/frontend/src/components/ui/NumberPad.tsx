@@ -25,7 +25,7 @@ import { Button } from '../shared/Button';
 interface NumberPadProps {
   onPress: (digit: string) => void;
   onClear: () => void;
-  variant?: 'default' | 'login';
+  variant?: 'default' | 'dialog' | 'login';
 }
 
 const NumberPad: React.FC<NumberPadProps> = ({ onPress, onClear, variant = 'default' }) => {
