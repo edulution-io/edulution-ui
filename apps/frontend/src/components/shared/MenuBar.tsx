@@ -181,12 +181,17 @@ const MenuBar: React.FC = () => {
             toggleExpanded(item.id);
           };
 
+          const childrenId = `${item.id}-children`;
+
           const mainButton = (
             <div
               role="button"
               tabIndex={0}
               onClick={handleItemClick}
               onKeyDown={(e) => e.key === 'Enter' && handleItemClick()}
+              aria-expanded={hasChildren ? isExpanded : undefined}
+              aria-controls={hasChildren ? childrenId : undefined}
+              aria-label={item.label}
               className={cn(
                 'flex w-full cursor-pointer items-center gap-3 py-1 pl-3 pr-3 transition-colors',
                 menuBarEntries.color,
@@ -196,7 +201,8 @@ const MenuBar: React.FC = () => {
             >
               <img
                 src={item.icon}
-                alt={item.label}
+                alt=""
+                aria-hidden="true"
                 className="h-12 w-12 object-contain"
               />
               {!shouldCollapse && (
@@ -206,6 +212,7 @@ const MenuBar: React.FC = () => {
                     <button
                       type="button"
                       onClick={handleExpandClick}
+                      aria-label={isExpanded ? 'Collapse' : 'Expand'}
                       className="rounded p-1 hover:bg-accent"
                     >
                       <ChevronDownIcon
@@ -220,6 +227,9 @@ const MenuBar: React.FC = () => {
 
           const childrenContent = hasChildren && !shouldCollapse && (
             <div
+              id={childrenId}
+              role="region"
+              aria-label={`${item.label} sections`}
               className={cn(
                 'grid transition-all duration-200 ease-in-out',
                 isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',

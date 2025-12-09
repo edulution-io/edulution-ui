@@ -1,0 +1,3 @@
+const HIGHLIGHT_DURATION = 3000;
+
+export default HIGHLIGHT_DURATION;

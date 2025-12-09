@@ -23,6 +23,7 @@ import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
 import { TabsTrigger } from '@/components/ui/Tabs';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 import DropdownMenu from '@/components/shared/DropdownMenu';
+import useScrollToSection from '@/hooks/useScrollToSection';
 
 interface TabWithSectionsProps {
   item: { id: string; name: string };
@@ -31,23 +32,14 @@ interface TabWithSectionsProps {
 }
 
 const TabWithSections: React.FC<TabWithSectionsProps> = ({ item, isActive, onClick }) => {
-  const { sections, setActiveSection } = useSubMenuStore();
+  const { sections } = useSubMenuStore();
+  const { scrollToSection } = useScrollToSection();
 
   const hasSections = isActive && sections.length > 0;
 
-  const handleSectionClick = (sectionId: string) => {
-    setActiveSection(sectionId);
-    setTimeout(() => setActiveSection(null), 2000);
-
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-  };
-
   const sectionItems: DropdownMenuItemType[] = sections.map((section) => ({
     label: section.label,
-    onClick: () => handleSectionClick(section.id),
+    onClick: () => scrollToSection(section.id),
   }));
 
   if (!hasSections) {

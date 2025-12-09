@@ -32,6 +32,7 @@ import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import MenuItem from '@libs/menubar/menuItem';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import useSubMenuStore from '@/store/useSubMenuStore';
+import useScrollToSection from '@/hooks/useScrollToSection';
 import useLdapGroups from './useLdapGroups';
 
 const useMenuBarConfig = (): MenuBarEntry => {
@@ -44,7 +45,8 @@ const useMenuBarConfig = (): MenuBarEntry => {
   const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
   const SURVEYS_MENUBAR_CONFIG = useSurveysPageMenu();
   const CLASS_MANAGEMENT_MENUBAR_CONFIG = useClassManagementMenu();
-  const { sections, setActiveSection } = useSubMenuStore();
+  const { sections } = useSubMenuStore();
+  const { scrollToSection } = useScrollToSection();
 
   const menuBarConfigSwitch = (): MenuBarEntry => {
     const rootPathName = getFromPathName(pathname, 1);
@@ -81,15 +83,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
     id: section.id,
     label: section.label,
     icon: '',
-    action: () => {
-      setActiveSection(section.id);
-      setTimeout(() => setActiveSection(null), 3000);
-
-      const element = document.getElementById(section.id);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    },
+    action: () => scrollToSection(section.id),
     disableTranslation: true,
   }));
 

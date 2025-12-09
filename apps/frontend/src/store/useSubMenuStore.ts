@@ -38,7 +38,12 @@ const useSubMenuStore = create<SubMenuStore>((set) => ({
   ...initialState,
   registerSection: (section) =>
     set((state) => {
-      if (state.sections.some((s) => s.id === section.id)) return state;
+      const existingIndex = state.sections.findIndex((subMenuItem) => subMenuItem.id === section.id);
+      if (existingIndex >= 0) {
+        const newSections = [...state.sections];
+        newSections[existingIndex] = section;
+        return { sections: newSections };
+      }
       return { sections: [...state.sections, section] };
     }),
   unregisterSection: (id) =>
