@@ -31,6 +31,7 @@ import type TApps from '@libs/appconfig/types/appsType';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import MenuItem from '@libs/menubar/menuItem';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
+import useSubMenuStore from '@/store/useSubMenuStore';
 import useLdapGroups from './useLdapGroups';
 
 const useMenuBarConfig = (): MenuBarEntry => {
@@ -43,6 +44,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
   const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
   const SURVEYS_MENUBAR_CONFIG = useSurveysPageMenu();
   const CLASS_MANAGEMENT_MENUBAR_CONFIG = useClassManagementMenu();
+  const { sections, setActiveSection } = useSubMenuStore();
 
   const menuBarConfigSwitch = (): MenuBarEntry => {
     const rootPathName = getFromPathName(pathname, 1);
@@ -75,6 +77,22 @@ const useMenuBarConfig = (): MenuBarEntry => {
     }
   };
 
+  const sectionChildren: MenuItem[] = sections.map((section) => ({
+    id: section.id,
+    label: section.label,
+    icon: '',
+    action: () => {
+      setActiveSection(section.id);
+      setTimeout(() => setActiveSection(null), 3000);
+
+      const element = document.getElementById(section.id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    },
+    disableTranslation: true,
+  }));
+
   const configValues = menuBarConfigSwitch();
   const menuItems: MenuItem[] = configValues.menuItems.map((item) => ({
     id: item.id,
@@ -82,6 +100,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
     action: () => item.action(),
     icon: item.icon,
     disableTranslation: item.disableTranslation,
+    children: item.id === getFromPathName(pathname, 2) ? sectionChildren : undefined,
   }));
 
   return {

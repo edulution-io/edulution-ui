@@ -21,7 +21,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { SubmitHandler, useForm, UseFormReturn } from 'react-hook-form';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
+import { Tabs, TabsContent, TabsList } from '@/components/ui/Tabs';
 import Separator from '@/components/ui/Separator';
 import { DropdownSelect } from '@/components';
 import useMedia from '@/hooks/useMedia';
@@ -32,6 +32,7 @@ import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.d
 import GLOBAL_SETTINGS_TABS from '@libs/global-settings/constants/globalSettingsTabs';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import { toast } from 'sonner';
+import TabWithSections from '@/components/ui/TabWithSections';
 import DockerContainerTable from '../AppConfig/DockerIntegration/DockerContainerTable';
 import GlobalSettings from '../GlobalSettings/GlobalSettings';
 import UserAdministration from './UserAdministration';
@@ -159,14 +160,12 @@ const SettingsOverviewPage: React.FC = () => {
               style={{ gridTemplateColumns: `repeat(${TAB_OPTIONS.length}, minmax(0, 1fr))` }}
             >
               {tabOptions.map((item) => (
-                <TabsTrigger
+                <TabWithSections
                   key={item.id}
-                  value={item.id}
+                  item={item}
+                  isActive={tabValue === item.id}
                   onClick={() => goToTab(item.id)}
-                  className="text-[clamp(0.65rem,2vw,0.8rem)] xl:min-w-64"
-                >
-                  {item.name}
-                </TabsTrigger>
+                />
               ))}
             </TabsList>
             <Separator className="my-2 bg-muted" />
@@ -185,7 +184,7 @@ const SettingsOverviewPage: React.FC = () => {
             </TabsContent>
           ))}
         </Tabs>
-        {showFloatingButtons && <GlobalSettingsFloatingButtons handleSave={form.handleSubmit(onSubmit)} />}{' '}
+        {showFloatingButtons && <GlobalSettingsFloatingButtons handleSave={form.handleSubmit(onSubmit)} />}
       </>
     );
 

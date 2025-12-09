@@ -22,6 +22,7 @@ import { Content, Header, Item, Root, Trigger } from '@radix-ui/react-accordion'
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 import cn from '@libs/common/utils/className';
 import AnchorSection from '@/components/shared/AnchorSection';
+import useSubMenuStore from '@/store/useSubMenuStore';
 
 interface SectionAccordionProps {
   children: React.ReactNode;
@@ -68,7 +69,7 @@ const SectionAccordion: React.FC<SectionAccordionProps> = ({
 
       setTimeout(() => {
         const element = document.getElementById(hash);
-        element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        element?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }, 100);
     }
   }, []);
@@ -101,35 +102,50 @@ const SectionAccordionItem: React.FC<SectionAccordionItemProps> = ({
   children,
   className,
   variant = 'default',
-}) => (
-  <Item
-    value={id}
-    className={cn('text-card-foreground', variant === 'default' && 'rounded-xl bg-muted-background', className)}
-  >
-    <AnchorSection id={id}>
-      <Header className="flex">
-        <Trigger
+}) => {
+  const { registerSection, unregisterSection, activeSection } = useSubMenuStore();
+  const isHighlighted = activeSection === id;
+
+  useEffect(() => {
+    registerSection({ id, label });
+    return () => unregisterSection(id);
+  }, [id, label, registerSection, unregisterSection]);
+
+  return (
+    <Item
+      value={id}
+      className={cn(
+        'text-card-foreground transition-all duration-300',
+        variant === 'default' && 'rounded-xl bg-muted-background',
+        isHighlighted && 'blinking',
+        className,
+      )}
+    >
+      <AnchorSection id={id}>
+        <Header className="flex">
+          <Trigger
+            className={cn(
+              'flex flex-1 items-center justify-between py-4 text-base font-semibold leading-none tracking-tight',
+              'transition-all [&[data-state=open]>svg]:rotate-180',
+              variant === 'default' && 'px-6',
+            )}
+          >
+            <h3>{label}</h3>
+            <ChevronDownIcon className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" />
+          </Trigger>
+        </Header>
+        <Content
           className={cn(
-            'flex flex-1 items-center justify-between py-4 text-base font-semibold leading-none tracking-tight',
-            'transition-all [&[data-state=open]>svg]:rotate-180',
-            variant === 'default' && 'px-6',
+            'overflow-hidden text-sm',
+            'data-[state=closed]:animate-accordion-up',
+            'data-[state=open]:animate-accordion-down',
           )}
         >
-          <h3>{label}</h3>
-          <ChevronDownIcon className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" />
-        </Trigger>
-      </Header>
-      <Content
-        className={cn(
-          'overflow-hidden text-sm',
-          'data-[state=closed]:animate-accordion-up',
-          'data-[state=open]:animate-accordion-down',
-        )}
-      >
-        <div className={cn('pb-6 pt-0', variant === 'default' && 'px-6')}>{children}</div>
-      </Content>
-    </AnchorSection>
-  </Item>
-);
+          <div className={cn('pb-6 pt-0', variant === 'default' && 'px-6')}>{children}</div>
+        </Content>
+      </AnchorSection>
+    </Item>
+  );
+};
 
 export { SectionAccordion, SectionAccordionItem };
