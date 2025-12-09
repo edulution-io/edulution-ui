@@ -72,7 +72,7 @@ const AsyncMultiSelect = <T extends MultipleSelectorOptionSH>({
       emptyIndicator={emptyIndicator}
       delay={delay}
       badgeClassName={badgeClassName || 'text-base font-normal '}
-      className={`rounded-lg bg-white p-[8px] ${variant === 'default' ? 'dark:bg-accent' : 'dark:bg-muted'}`}
+      className={`rounded-lg bg-white p-[8px] ${variant === 'default' ? 'dark:bg-accent' : 'border-2 border-gray-300 text-background shadow-md dark:border-none dark:bg-muted dark:shadow-none'}`}
       onChange={handleChange}
       onSearch={onSearch}
       inputProps={{ className: 'text-base m-0' }}
