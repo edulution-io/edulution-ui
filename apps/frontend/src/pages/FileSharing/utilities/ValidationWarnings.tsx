@@ -42,7 +42,7 @@ const ValidationWarnings: React.FC<ValidationWarningsProps> = ({ oversizedFiles,
           description={t('filesharingUpload.overwriteWarningDescription', { count: duplicateFiles.length })}
           filenames={duplicateFiles}
           borderColor="border-ciLightYellow"
-          backgroundColor="bg-background"
+          backgroundColor="bg-ciLightYellow/10"
           textColor="text-ciLightYellow"
         />
       )}
@@ -58,7 +58,7 @@ const ValidationWarnings: React.FC<ValidationWarningsProps> = ({ oversizedFiles,
           description={t('filesharingUpload.cannotUploadOversized')}
           filenames={oversizedFiles.map((file) => file.name)}
           borderColor="border-ciLightRed"
-          backgroundColor="bg-background"
+          backgroundColor="bg-ciLightRed/10"
           textColor="text-ciLightRed"
         />
       )}
@@ -70,7 +70,7 @@ const ValidationWarnings: React.FC<ValidationWarningsProps> = ({ oversizedFiles,
           description={t('filesharingUpload.folderTooLargeDescription')}
           filenames={tooLargeFolders}
           borderColor="border-ciRed"
-          backgroundColor="bg-background"
+          backgroundColor="bg-ciRed/10"
           textColor="text-ciRed"
         />
       )}
