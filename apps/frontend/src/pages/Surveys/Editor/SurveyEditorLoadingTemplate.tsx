@@ -50,7 +50,7 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
 
   const { isSuperAdmin } = useLdapGroups();
 
-  const [active, setActive] = useState<boolean>(surveyTemplate.isActive || true);
+  const [active, setActive] = useState<boolean>(surveyTemplate.isActive ?? true);
 
   const toggleIsTemplateActive = async () => {
     if (!surveyTemplate.id) return;
@@ -106,7 +106,7 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
             variant="btn-outline"
             size="sm"
           >
-            {i18n.t(active ? 'classmanagement.deactivate' : 'classmanagement.activate')}
+            {active ? i18n.t('classmanagement.deactivate') : i18n.t('classmanagement.activate')}
           </Button>
           {!surveyTemplate.isDefaultTemplate && (
             <Button
