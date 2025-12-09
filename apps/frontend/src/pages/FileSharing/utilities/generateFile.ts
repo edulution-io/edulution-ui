@@ -89,11 +89,10 @@ const generateFile = async (
       if (format === DocumentVendors.MSO) {
         const pptx = new PptxGenJS();
         pptx.title = basename;
-        const pptxBlob = await pptx.write();
-        const fileBlob = new Blob([pptxBlob], {
+        const pptxBlob = await pptx.write({ outputType: 'blob' });
+        file = new File([pptxBlob], `${basename}.${extension}`, {
           type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         });
-        file = new File([fileBlob], `${basename}.${extension}`, { type: fileBlob.type });
       } else {
         const response = await axios.get(`${OPEN_DOCUMENT_TEMPLATE_PATH}/odpTemplate.odp`, {
           responseType: 'arraybuffer',
