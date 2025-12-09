@@ -55,9 +55,7 @@ const UserImageConfig: React.FC = () => {
   };
 
   return (
-    <>
-      <h2>{t('usersettings.details.userimageconfig')}</h2>
-      <div className="space-y-4 py-4 text-ciGrey">
+    <div className="space-y-4 py-4 text-ciGrey">
         <Avatar
           user={{ username: user?.name || '', firstName: user?.givenName, lastName: user?.sn }}
           imageSrc={base64Image}
@@ -90,7 +88,6 @@ const UserImageConfig: React.FC = () => {
           </Button>
         </div>
       </div>
-    </>
   );
 };
 
