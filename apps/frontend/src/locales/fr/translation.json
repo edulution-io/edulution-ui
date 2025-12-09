@@ -586,6 +586,7 @@
     "noAnswer": "Aucune réponse n'est encore disponible.",
     "canSubmitMultiple": "Autoriser plusieurs réponses.",
     "editor": {
+      "inputFieldTitle": "Champ de saisie",
       "new": "Nouveau (vide)",
       "saveSurveySuccess": "Le sondage a été enregistrée.",
       "surveyPlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
@@ -597,6 +598,7 @@
       "addDescription": "Ajouter une description",
       "expectingUserInput": "Ici, la réponse du participant est attendue ... ",
       "templates": "Enregistrer le modèle",
+      "noTemplates": "Aucun modèle disponible",
       "noSearchResults": "Aucun modèle trouvé",
       "templateMenu": {
         "fetch": "Choisissez l'un des modèles disponibles.",
@@ -649,7 +651,8 @@
       "participationErrorAlreadyParticipated": "Vous avez déjà participé.",
       "participationErrorSurveyExpired": "Le sondage a expiré.",
       "idTypeError": "ID de sondage non valide.",
-      "missingAnswerError": "Veuillez remplir le sondage avant d'envoyer votre réponse."
+      "missingAnswerError": "Veuillez remplir le sondage avant d'envoyer votre réponse.",
+      "duplicateNameError": "Ajustez le titre du modèle. Un document de modèle avec ce nom existe déjà dans la base de données."
     }
   },
   "survey-answer": {
@@ -1182,6 +1185,7 @@
     "entry": "Entrée {{index}}",
     "errors": {
       "attachmentUploadFailed": "La pièce jointe n'a pas pu être téléversée",
+      "dbInvalidId": "Invalid database ID",
       "dbAccessFailed": "L'accès à la base de données a échoué",
       "directoryNotCreated": "La création du répertoire a échoué",
       "fileNotCreated": "Échec de la création du fichier",

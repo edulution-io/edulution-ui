@@ -37,8 +37,8 @@ const DeleteTemplateDialog = () => {
   const { t } = useTranslation();
 
   const handleRemoveTemplate = async () => {
-    if (template?.name) {
-      await deleteTemplate(template?.name);
+    if (template?.id) {
+      await deleteTemplate(template?.id);
       void fetchTemplates();
       setIsOpenTemplateConfirmDeletion(false);
     }

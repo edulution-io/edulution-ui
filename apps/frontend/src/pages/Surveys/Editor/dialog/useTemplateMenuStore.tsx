@@ -25,7 +25,6 @@ import { SURVEY_TEMPLATES_ENDPOINT } from '@libs/survey/constants/surveys-endpoi
 import handleApiError from '@/utils/handleApiError';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 
-
 interface TemplateMenuStore {
   reset: () => void;
 
@@ -71,6 +70,9 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
       set({ templates: result.data });
     } catch (error) {
       handleApiError(error, set);
+      set({ templates: [] });
+    } finally {
+      set({ isLoading: false });
     }
   },
 
@@ -79,9 +81,8 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
   uploadTemplate: async (surveyTemplateDto: SurveyTemplateDto): Promise<void> => {
     set({ isSubmitting: true });
     try {
-      const result = await eduApi.post<string>(SURVEY_TEMPLATES_ENDPOINT, surveyTemplateDto);
-      const newTemplate = { ...surveyTemplateDto, name: result.data };
-      set({ template: newTemplate });
+      const result = await eduApi.post<SurveyTemplateDto>(SURVEY_TEMPLATES_ENDPOINT, surveyTemplateDto);
+      set({ template: result.data });
       toast.success(t('survey.editor.templateMenu.upload.success'));
     } catch (error) {
       handleApiError(error, set);
@@ -93,13 +94,13 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
 
   setIsOpenTemplateConfirmDeletion: (state: boolean) => set({ isOpenTemplateConfirmDeletion: state }),
 
-  deleteTemplate: async (templateName: string): Promise<void> => {
-    if (!templateName) {
+  deleteTemplate: async (templateId: string): Promise<void> => {
+    if (!templateId) {
       return;
     }
     set({ isSubmitting: true });
     try {
-      await eduApi.delete(`${SURVEY_TEMPLATES_ENDPOINT}/${templateName}`);
+      await eduApi.delete(`${SURVEY_TEMPLATES_ENDPOINT}/${templateId}`);
       toast.success(t('survey.editor.templateMenu.deletion.success'));
     } catch (error) {
       handleApiError(error, set);
@@ -108,13 +109,13 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
     }
   },
 
-  setIsTemplateActive: async (templateName: string, state: boolean): Promise<void> => {
-    if (!templateName) {
+  setIsTemplateActive: async (templateId: string, state: boolean): Promise<void> => {
+    if (!templateId) {
       return;
     }
     set({ isSubmitting: true });
     try {
-      await eduApi.patch<SurveyTemplateDto>(`${SURVEY_TEMPLATES_ENDPOINT}/${templateName}/${state}`);
+      await eduApi.patch<SurveyTemplateDto>(`${SURVEY_TEMPLATES_ENDPOINT}/${templateId}/${state}`);
       toast.success(t('survey.editor.templateMenu.upload.success'));
     } catch (error) {
       handleApiError(error, set);

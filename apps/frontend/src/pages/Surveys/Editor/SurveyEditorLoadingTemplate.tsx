@@ -50,21 +50,17 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
 
   const { isSuperAdmin } = useLdapGroups();
 
-  const { template, isActive = true } = surveyTemplate;
-  const { formula } = template;
-  const { title, description } = formula;
-
-  const [active, setActive] = useState<boolean>(isActive);
+  const [active, setActive] = useState<boolean>(surveyTemplate.isActive || true);
 
   const toggleIsTemplateActive = async () => {
-    if (!surveyTemplate.name) return;
+    if (!surveyTemplate.id) return;
     try {
-      await setIsTemplateActive(surveyTemplate.name, !active);
+      await setIsTemplateActive(surveyTemplate.id, !active);
       setActive(!active);
     } catch (error) {
       toast.error(i18n.t('survey.errors.updateOrCreateError'));
+      await fetchTemplates();
     }
-    await fetchTemplates();
   };
 
   return (
@@ -97,9 +93,9 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
         className="line-clamp-2 h-[3.8rem] w-full"
         aria-label={`Template title: ${title}`}
       >
-        {title}
+        {surveyTemplate.template.formula?.title}
       </h3>
-      <p className="line-clamp-2 h-[2.8rem] w-full">{description}</p>
+      <p className="line-clamp-2 h-[2.8rem] w-full">{surveyTemplate.template.formula?.description}</p>
       {isSuperAdmin && (
         <div className="absolute bottom-2 flex h-8 w-full flex-row justify-end gap-2 px-2 text-sm italic text-muted-foreground">
           <Button
@@ -121,6 +117,7 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
               }}
               variant="btn-attention"
               size="sm"
+              aria-label={i18n.t('common.delete')}
             >
               <DeleteIcon className="h-4 w-4" />
             </Button>

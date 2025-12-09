@@ -23,12 +23,9 @@ import { VscNewFile } from 'react-icons/vsc';
 import cn from '@libs/common/utils/className';
 import isSubsequence from '@libs/common/utils/string/isSubsequence';
 import SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
-import getCreatorFromUserDto from '@libs/survey/utils/getCreatorFromUserDto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import { GRID_CARD, GRID_SEARCH } from '@libs/ui/constants/commonClassNames';
-import useUserStore from '@/store/UserStore/useUserStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import useLanguage from '@/hooks/useLanguage';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import Input from '@/components/shared/Input';
 import { Card } from '@/components/shared/Card';
@@ -36,13 +33,13 @@ import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPage
 import SurveyEditorLoadingTemplate from '@/pages/Surveys/Editor/SurveyEditorLoadingTemplate';
 import SurveyEditorLoadingPreview from '@/pages/Surveys/Editor/SurveyEditorLoadingPreview';
 
-const SurveyEditorLoadingPage = () => {
-  const { user } = useUserStore();
-  const surveyCreator: AttendeeDto | undefined = useMemo(() => getCreatorFromUserDto(user), [user]);
+interface SurveyEditorLoadingPageProps {
+  surveyCreator: AttendeeDto;
+}
 
+const SurveyEditorLoadingPage = ({ surveyCreator }: SurveyEditorLoadingPageProps) => {
   const { isSuperAdmin } = useLdapGroups();
 
-  const { language } = useLanguage();
   const { t } = useTranslation();
 
   const { templates, fetchTemplates, setTemplate, isOpenTemplatePreview } = useTemplateMenuStore();
@@ -59,19 +56,16 @@ const SurveyEditorLoadingPage = () => {
     const searchString = search.trim().toLowerCase();
     if (!searchString) return templates;
     return templates.filter((surveyTemplate) => isSubsequence(searchString, surveyTemplate.name?.toLowerCase() || ''));
-  }, [templates, language, search]);
+  }, [templates, search]);
 
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent) => {
-      if (event.key !== 'Enter') return;
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    if (event.key !== 'Enter') return;
 
-      const active = document.activeElement;
-      if (active instanceof HTMLInputElement && active.getAttribute('aria-label') === SEARCH_INPUT_LABEL) {
-        event.preventDefault();
-      }
-    },
-    [filteredTemplates],
-  );
+    const active = document.activeElement;
+    if (active instanceof HTMLInputElement && active.getAttribute('aria-label') === SEARCH_INPUT_LABEL) {
+      event.preventDefault();
+    }
+  }, []);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -108,7 +102,6 @@ const SurveyEditorLoadingPage = () => {
           <VscNewFile className="h-10 w-10 md:h-14 md:w-14" />
           <p>{t('survey.editor.new')}</p>
         </Card>
-
         {filteredTemplates.length ? (
           filteredTemplates.map((template) => (
             <div
@@ -122,7 +115,9 @@ const SurveyEditorLoadingPage = () => {
             </div>
           ))
         ) : (
-          <p className="px-2 py-16">{t('survey.editor.noSearchResults')}</p>
+          <p className="px-2 py-16">
+            {t(templates.length === 0 ? 'survey.editor.noTemplates' : 'survey.editor.noSearchResults')}
+          </p>
         )}
       </div>
       {isOpenTemplatePreview && <SurveyEditorLoadingPreview />}

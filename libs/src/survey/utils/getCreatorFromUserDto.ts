@@ -25,7 +25,7 @@ const getCreatorFromUserDto = (user: UserDto | null): AttendeeDto => ({
   lastName: user?.lastName || '',
   username: user?.username || '',
   value: user?.username || '',
-  label: `${user?.firstName} ${user?.lastName}` || '',
+  label: user ? `${user.firstName} ${user.lastName}` : '',
 });
 
 export default getCreatorFromUserDto;
