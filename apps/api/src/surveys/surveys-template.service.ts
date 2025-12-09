@@ -48,10 +48,10 @@ class SurveysTemplateService implements OnModuleInit {
     const { id, template, name, isActive = true } = surveyTemplate;
     try {
       const templateName = name || template.formula.title;
-      return await this.surveyTemplateModel.findOneAndUpdate(
-        { _id: new Types.ObjectId(id) },
+      return await this.surveyTemplateModel.findByIdAndUpdate(
+        id,
         { template, isActive, name: templateName },
-        { new: true, upsert: !name },
+        { new: true, upsert: !id },
       );
     } catch (error) {
       throw new CustomHttpException(
@@ -72,8 +72,8 @@ class SurveysTemplateService implements OnModuleInit {
   }
 
   async setIsTemplateActive(id: string, isActive: boolean): Promise<SurveysTemplateDocument | null> {
-    return this.surveyTemplateModel.findOneAndUpdate(
-      { _id: new Types.ObjectId(id) },
+    return this.surveyTemplateModel.findByIdAndUpdate(
+      id,
       { isActive },
       {
         new: true,
