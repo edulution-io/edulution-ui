@@ -252,9 +252,7 @@ class UsersService {
         );
       }
 
-      const userAccounts = await this.getUserAccounts(username);
-
-      return userAccounts;
+      return await this.getUserAccounts(username);
     } catch (error) {
       throw new CustomHttpException(
         UserErrorMessages.UpdateError,
@@ -282,14 +280,12 @@ class UsersService {
         .find({ userId: user._id }, 'appName accountUser accountPassword')
         .exec();
 
-      const userAccountsDto = userAccounts.map((account) => ({
+      return userAccounts.map((account) => ({
         accountId: (account._id as Types.ObjectId).toHexString(),
         appName: account.appName,
         accountUser: account.accountUser,
         accountPassword: account.accountPassword,
       }));
-
-      return userAccountsDto;
     } catch (error) {
       throw new CustomHttpException(
         UserErrorMessages.NotFoundError,
@@ -319,9 +315,7 @@ class UsersService {
         )
         .exec();
 
-      const userAccounts = await this.getUserAccounts(username);
-
-      return userAccounts;
+      return await this.getUserAccounts(username);
     } catch (error) {
       throw new CustomHttpException(
         UserErrorMessages.UpdateError,
@@ -345,9 +339,7 @@ class UsersService {
         );
       }
 
-      const userAccounts = await this.getUserAccounts(username);
-
-      return userAccounts;
+      return await this.getUserAccounts(username);
     } catch (error) {
       throw new CustomHttpException(
         UserErrorMessages.UpdateError,
@@ -391,6 +383,10 @@ class UsersService {
     await this.userModel
       .findOneAndUpdate({ username }, { $pull: { registeredPushTokens: expoPushToken } }, { new: true })
       .exec();
+  }
+
+  async findManyByUsernames(usernames: string[]): Promise<Pick<User, 'username' | 'language'>[]> {
+    return this.userModel.find({ username: { $in: usernames } }, { username: 1, language: 1, _id: 0 }).lean();
   }
 }
 

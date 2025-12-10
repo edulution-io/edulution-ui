@@ -17,18 +17,23 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Module } from '@nestjs/common';
-import { HttpModule } from '@nestjs/axios';
-import { MongooseModule } from '@nestjs/mongoose';
-import FilesharingController from './filesharing.controller';
-import FilesharingService from './filesharing.service';
-import OnlyofficeService from './onlyoffice.service';
-import { PublicFileShareSchema, PublicShare } from './publicFileShare.schema';
+import NotificationTemplate from '@libs/notification/types/notificationTemplate';
+import interpolate from '@libs/notification/utils/interpolate';
 
-@Module({
-  imports: [HttpModule, MongooseModule.forFeature([{ name: PublicShare.name, schema: PublicFileShareSchema }])],
-  controllers: [FilesharingController],
-  providers: [FilesharingService, OnlyofficeService],
-  exports: [FilesharingService],
-})
-export default class FilesharingModule {}
+const createNotification = (
+  template: NotificationTemplate,
+  vars: Record<string, string>,
+  data: Record<string, unknown>,
+) => ({
+  title: interpolate(template.title.EN, vars),
+  body: interpolate(template.body.EN, vars),
+  translate: true,
+  data,
+  fallback: {
+    EN: { title: interpolate(template.title.EN, vars), body: interpolate(template.body.EN, vars) },
+    DE: { title: interpolate(template.title.DE, vars), body: interpolate(template.body.DE, vars) },
+    FR: { title: interpolate(template.title.FR, vars), body: interpolate(template.body.FR, vars) },
+  },
+});
+
+export default createNotification;

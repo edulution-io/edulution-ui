@@ -17,18 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Module } from '@nestjs/common';
-import { HttpModule } from '@nestjs/axios';
-import { MongooseModule } from '@nestjs/mongoose';
-import FilesharingController from './filesharing.controller';
-import FilesharingService from './filesharing.service';
-import OnlyofficeService from './onlyoffice.service';
-import { PublicFileShareSchema, PublicShare } from './publicFileShare.schema';
+import SupportedLanguage from '@libs/notification/types/supportedLanguageType';
 
-@Module({
-  imports: [HttpModule, MongooseModule.forFeature([{ name: PublicShare.name, schema: PublicFileShareSchema }])],
-  controllers: [FilesharingController],
-  providers: [FilesharingService, OnlyofficeService],
-  exports: [FilesharingService],
-})
-export default class FilesharingModule {}
+interface NotificationTemplate {
+  title: Record<SupportedLanguage, string>;
+  body: Record<SupportedLanguage, string>;
+}
+
+export default NotificationTemplate;

@@ -18,10 +18,11 @@
  */
 
 import SendPushNotificationDto from '@libs/notification/types/send-pushNotification.dto';
+import NotificationFallback from '@libs/notification/types/notificationFallback';
 
 interface NotificationJobData {
   usernames: string[];
-  notification: Omit<SendPushNotificationDto, 'to'> & { translate?: boolean };
+  notification: Omit<SendPushNotificationDto, 'to'> & { translate?: boolean; fallback?: NotificationFallback };
 }
 
 export default NotificationJobData;

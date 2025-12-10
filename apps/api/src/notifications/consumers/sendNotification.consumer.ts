@@ -22,6 +22,7 @@ import { Job } from 'bullmq';
 import { Expo, ExpoPushMessage } from 'expo-server-sdk';
 import NotificationJobData from '@libs/queue/types/notificationJobData';
 import pickDefinedNotificationFields from '@libs/notification/utils/pickDefinedNotificationFields';
+import SUPPORTED_LANGUAGES from '@libs/notification/constants/supportedLanguages';
 import UsersService from '../../users/users.service';
 import AiService from '../../ai/ai.service';
 
@@ -36,34 +37,34 @@ class SendNotificationConsumer {
 
   async process(job: Job<NotificationJobData>): Promise<void> {
     const { usernames, notification } = job.data;
-    const { translate, ...partialNotification } = notification;
+    const { translate, fallback, ...partialNotification } = notification;
 
     if (translate) {
-      const usersWithLanguage = await Promise.all(
-        usernames.map(async (username) => {
-          const user = await this.usersService.findOne(username);
-          return { username, language: user?.language || 'DE' };
-        }),
+      const users = await this.usersService.findManyByUsernames(usernames);
+
+      const usersByLanguage = users.reduce(
+        (acc, user) => {
+          const lang = user.language || SUPPORTED_LANGUAGES.DE;
+          (acc[lang] ||= []).push(user.username);
+          return acc;
+        },
+        {} as Record<string, string[]>,
       );
 
-      const usersByLanguage = usersWithLanguage.reduce((acc, { username, language }) => {
-        if (!acc.has(language)) {
-          acc.set(language, []);
-        }
-        acc.get(language)!.push(username);
-        return acc;
-      }, new Map<string, string[]>());
       await Promise.all(
-        Array.from(usersByLanguage.entries()).map(async ([language, users]) => {
-          const translated =
-            language === 'EN'
-              ? { title: partialNotification.title, body: partialNotification.body }
-              : await this.aiService.translateNotification(
-                  { title: partialNotification.title ?? '', body: partialNotification.body ?? '' },
-                  language,
-                );
+        Object.entries(usersByLanguage).map(async ([language, langUsers]) => {
+          let translated: { title: string; body: string };
 
-          const tokens = await this.usersService.getPushTokensByUsersnames(users);
+          if (fallback?.[language as keyof typeof fallback]) {
+            translated = fallback[language as keyof typeof fallback];
+          } else {
+            translated = await this.aiService.translateNotification(
+              { title: partialNotification.title ?? '', body: partialNotification.body ?? '' },
+              language,
+            );
+          }
+
+          const tokens = await this.usersService.getPushTokensByUsersnames(langUsers);
           const uniqueTokens = [...new Set(tokens)];
 
           if (uniqueTokens.length > 0) {

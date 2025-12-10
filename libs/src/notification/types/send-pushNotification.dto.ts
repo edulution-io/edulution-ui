@@ -22,6 +22,7 @@
 
 import { PushNotificationPriority } from '@libs/notification/constants/pushNotificationPriority';
 import { PushNotificationInterruptionLevel } from '@libs/notification/constants/pushNotificationInterruptionLevel';
+import NotificationFallback from '@libs/notification/types/notificationFallback';
 
 class SendPushNotificationDto {
   to: string | string[];
@@ -45,6 +46,8 @@ class SendPushNotificationDto {
   sound?: string | null;
 
   badge?: number;
+
+  fallback?: NotificationFallback;
 
   interruptionLevel?: PushNotificationInterruptionLevel;
 

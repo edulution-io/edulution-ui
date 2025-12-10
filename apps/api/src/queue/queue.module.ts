@@ -29,15 +29,10 @@ import CreateFolderConsumer from '../filesharing/consumers/createFolder.consumer
 import SendNotificationConsumer from '../notifications/consumers/sendNotification.consumer';
 import { PublicFileShareSchema, PublicShare } from '../filesharing/publicFileShare.schema';
 import AiModule from '../ai/ai.module';
-import UsersModule from '../users/users.module';
 
 @Global()
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: PublicShare.name, schema: PublicFileShareSchema }]),
-    AiModule,
-    UsersModule,
-  ],
+  imports: [MongooseModule.forFeature([{ name: PublicShare.name, schema: PublicFileShareSchema }]), AiModule],
   providers: [
     QueueService,
     DuplicateFileConsumer,

@@ -140,24 +140,6 @@ import NotificationModule from '../notifications/notifications.module';
     UserPreferencesModule,
     AiModule,
     QueueModule,
-    JwtModule.register({
-      global: true,
-    }),
-    MongooseModule.forRoot(process.env.MONGODB_SERVER_URL as string, {
-      dbName: process.env.MONGODB_DATABASE_NAME,
-      auth: { username: process.env.MONGODB_USERNAME, password: process.env.MONGODB_PASSWORD },
-    }),
-
-    ScheduleModule.forRoot(),
-
-    CacheModule.registerAsync({
-      isGlobal: true,
-      useFactory: () => ({
-        stores: [new KeyvRedis(`redis://${redisConnection.host}:${redisConnection.port}`)],
-      }),
-    }),
-
-    EventEmitterModule.forRoot(),
     SseModule,
     TLDrawSyncModule,
     ScriptsModule,

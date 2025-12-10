@@ -18,49 +18,39 @@
  */
 
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import notificationTemplates from './notificationTemplates';
+import createNotification from '../utils/createNotification';
 
 const notificationsConfig = {
   conference: {
-    started: (name: string, meetingID: string) => ({
-      title: `Conference started: ${name}`,
-      body: `The conference "${name}" has started.`,
-      translate: true,
-      data: {
-        meetingID,
-        type: 'conference_started' as const,
-      },
-    }),
+    started: (name: string, meetingID: string) =>
+      createNotification(
+        notificationTemplates.conference.started,
+        { name },
+        { meetingID, type: 'conference_started' as const },
+      ),
   },
   bulletin: {
-    ready: (title: string, bulletinId: string) => ({
-      title: `Bulletin ready: ${title}`,
-      body: `The bulletin "${title}" is now available.`,
-      translate: true,
-      data: {
-        bulletinId,
-        type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
-      },
-    }),
+    ready: (title: string, bulletinId: string) =>
+      createNotification(
+        notificationTemplates.bulletin.ready,
+        { title },
+        { bulletinId, type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED },
+      ),
   },
   survey: {
-    created: (title: string, surveyId: string) => ({
-      title: `Survey created: ${title}`,
-      body: `The survey "${title}" has just been created.`,
-      translate: true,
-      data: {
-        surveyId,
-        type: SSE_MESSAGE_TYPE.SURVEY_CREATED,
-      },
-    }),
-    updated: (title: string, surveyId: string) => ({
-      title: `Survey updated: ${title}`,
-      body: `The survey "${title}" has just been updated.`,
-      translate: true,
-      data: {
-        surveyId,
-        type: SSE_MESSAGE_TYPE.SURVEY_UPDATED,
-      },
-    }),
+    created: (title: string, surveyId: string) =>
+      createNotification(
+        notificationTemplates.survey.created,
+        { title },
+        { surveyId, type: SSE_MESSAGE_TYPE.SURVEY_CREATED },
+      ),
+    updated: (title: string, surveyId: string) =>
+      createNotification(
+        notificationTemplates.survey.updated,
+        { title },
+        { surveyId, type: SSE_MESSAGE_TYPE.SURVEY_UPDATED },
+      ),
   },
 };
 
