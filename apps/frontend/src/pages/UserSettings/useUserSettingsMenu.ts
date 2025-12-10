@@ -22,19 +22,21 @@ import {
   MailIcon,
   MobileDevicesIcon,
   SecurityIcon,
-  UserDetailsSettingsIcon,
   SettingsIcon,
+  UserDetailsSettingsIcon,
 } from '@/assets/icons';
 import { useNavigate } from 'react-router-dom';
 import {
   LANGUAGE_PATH,
   MAILS_PATH,
   MOBILE_ACCESS_PATH,
+  NOTIFICATIONS_PATH,
   SECURITY_PATH,
   USER_DETAILS_PATH,
   USER_SETTINGS_LANGUAGE_PATH,
   USER_SETTINGS_MAILS_PATH,
   USER_SETTINGS_MOBILE_ACCESS_PATH,
+  USER_SETTINGS_NOTIFICATIONS_PATH,
   USER_SETTINGS_SECURITY_PATH,
   USER_SETTINGS_USER_DETAILS_PATH,
 } from '@libs/userSettings/constants/user-settings-endpoints';
@@ -79,6 +81,12 @@ const useUserSettingsMenu = () => {
         label: 'usersettings.mobileAccess.title',
         icon: MobileDevicesIcon,
         action: () => navigate(USER_SETTINGS_MOBILE_ACCESS_PATH),
+      },
+      {
+        id: NOTIFICATIONS_PATH,
+        label: 'usersettings.notifications.title',
+        icon: MailIcon,
+        action: () => navigate(USER_SETTINGS_NOTIFICATIONS_PATH),
       },
     ],
   };

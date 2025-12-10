@@ -1285,6 +1285,24 @@
       "system": "System language",
       "selectLanguage": "Select Language"
     },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Manage your notification settings here.",
+      "push": "Push Notifications",
+      "pushInfo": "Push notifications are currently",
+      "enabled": "enabled",
+      "disabled": "disabled",
+      "toggleAll": "Enable all",
+      "enablePushFirst": "Please enable push notifications first.",
+      "savedSuccessfully": "Notification settings saved",
+      "modules": {
+        "title": "Module Notifications",
+        "toggleAll": "Enable all",
+        "conferences": "Conferences",
+        "survey": "Surveys",
+        "bulletinBoard": "Info Board"
+      }
+    },
     "addTotp": {
       "title": "Set up Two-Factor Authentication",
       "qrCodeInstructions": "Scan the QR code with an authenticator app that supports TOTP (Time-based One-Time Password).",

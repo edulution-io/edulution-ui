@@ -23,8 +23,12 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import UserAccountDto from '@libs/user/types/userAccount.dto';
 import { EDU_API_USER_ACCOUNTS_ENDPOINT, EDU_API_USERS_ENDPOINT } from '@libs/user/constants/usersApiEndpoints';
-import { NOTIFICATION_DEVICES_EDU_API_ENDPOINT } from '@libs/notification/constants/apiEndpoints';
+import {
+  NOTIFICATION_DEVICES_EDU_API_ENDPOINT,
+  NOTIFICATION_SETTINGS_EDU_API_ENDPOINT,
+} from '@libs/notification/constants/apiEndpoints';
 import UserDeviceDto from '@libs/notification/types/userDevice.dto';
+import NotificationSettings from '@libs/notification/types/notificationSettings';
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from './users.service';
 import UpdateUserDto from './dto/update-user.dto';
@@ -150,6 +154,22 @@ export class UsersController {
   ) {
     UsersController.throwIfNotCurrentUser(username, currentUsername);
     return this.usersService.clearDeviceByUsername(currentUsername, userDeviceDto);
+  }
+
+  @Get(`:username/${NOTIFICATION_SETTINGS_EDU_API_ENDPOINT}`)
+  getNotificationSettings(@Param('username') username: string, @GetCurrentUsername() currentUsername: string) {
+    UsersController.throwIfNotCurrentUser(username, currentUsername);
+    return this.usersService.getNotificationSettings(currentUsername);
+  }
+
+  @Patch(`:username/${NOTIFICATION_SETTINGS_EDU_API_ENDPOINT}`)
+  updateNotificationSettings(
+    @Param('username') username: string,
+    @GetCurrentUsername() currentUsername: string,
+    @Body() notificationSettings: NotificationSettings,
+  ) {
+    UsersController.throwIfNotCurrentUser(username, currentUsername);
+    return this.usersService.updateNotificationSettings(currentUsername, notificationSettings);
   }
 }
 

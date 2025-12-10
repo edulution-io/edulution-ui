@@ -28,6 +28,7 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import prepareCreator from '@libs/survey/utils/prepareCreator';
 import SseMessageType from '@libs/common/types/sseMessageType';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import APPS from '@libs/appconfig/constants/apps';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
@@ -55,12 +56,11 @@ class SurveysService implements OnModuleInit {
 
   async findSurveyWithCreatorDependency(surveyId: string, creator: JwtUser): Promise<Survey | null> {
     try {
-      const survey = await this.surveyModel
+      return await this.surveyModel
         .findOne({
           $and: [{ 'creator.username': creator.preferred_username }, { _id: new Types.ObjectId(surveyId) }],
         })
         .exec();
-      return survey;
     } catch (error) {
       throw new CustomHttpException(
         CommonErrorMessages.DB_ACCESS_FAILED,
@@ -250,14 +250,18 @@ class SurveysService implements OnModuleInit {
       const title = `Umfrage ${survey.formula.title}: ${actionName}`;
       const body = `Die Umfrage "${survey.formula.title}" wurde soeben ${actionName}.`;
 
-      await this.notificationService.notifyUsernames(invitedMembersList, {
-        title,
-        body,
-        data: {
-          surveyId: survey.id,
-          type: eventType,
+      await this.notificationService.notifyUsernames(
+        invitedMembersList,
+        {
+          title,
+          body,
+          data: {
+            surveyId: survey.id,
+            type: eventType,
+          },
         },
-      });
+        APPS.SURVEYS,
+      );
     }
   };
 

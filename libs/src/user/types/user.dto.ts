@@ -18,6 +18,7 @@
  */
 
 import LdapGroups from '@libs/groups/types/ldapGroups';
+import NotificationSettings from '@libs/notification/types/notificationSettings';
 
 class UserDto {
   _id?: string;
@@ -41,6 +42,8 @@ class UserDto {
   language?: string;
 
   registeredPushTokens?: string[];
+
+  notificationSettings?: NotificationSettings;
 }
 
 export default UserDto;

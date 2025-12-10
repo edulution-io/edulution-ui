@@ -22,6 +22,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import LdapGroups from '@libs/groups/types/ldapGroups';
 import UserLanguage from '@libs/user/constants/userLanguage';
 import UserLanguageType from '@libs/user/types/userLanguageType';
+import NotificationSettings from '@libs/notification/types/notificationSettings';
 
 export type UserDocument = User & Document;
 
@@ -68,6 +69,15 @@ export class User {
     },
   })
   registeredPushTokens: string[];
+
+  @Prop({
+    type: Object,
+    default: {
+      pushEnabled: true,
+      modulePreferences: {},
+    },
+  })
+  notificationSettings: NotificationSettings;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

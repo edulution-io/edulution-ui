@@ -1288,6 +1288,26 @@
       "system": "Systemsprache",
       "selectLanguage": "Sprache auswählen"
     },
+
+    "notifications": {
+      "title": "Benachrichtigungen",
+      "description": "Hier kannst du deine Benachrichtigungseinstellungen verwalten.",
+      "push": "Push-Benachrichtigungen",
+      "pushInfo": "Push-Benachrichtigungen sind aktuell",
+      "enabled": "aktiviert",
+      "disabled": "deaktiviert",
+      "toggleAll": "Alle aktivieren",
+      "enablePushFirst": "Bitte aktiviere zuerst Push-Benachrichtigungen.",
+      "savedSuccessfully": "Benachrichtigungseinstellungen gespeichert",
+      "modules": {
+        "title": "Modul-Benachrichtigungen",
+        "toggleAll": "Alle aktivieren",
+        "conferences": "Konferenzen",
+        "survey": "Umfragen",
+        "bulletinBoard": "Info Board"
+      }
+    },
+
     "addTotp": {
       "title": "Zwei-Faktor-Authentisierung einrichten",
       "qrCodeInstructions": "Den QR-Code mit einer Authenticator App scannen, die TOTP (Time-based One-Time Password) unterstützt.",

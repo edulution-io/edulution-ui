@@ -1143,6 +1143,25 @@
       "mfaSetupRequired": "Les directives globales nécessitent la vue de l'authentification à deux facteurs:",
       "mfaSetupSuccess": "L'authentification à deux facteurs a été établie avec succès."
     },
+
+    "notifications": {
+      "title": "Notifications",
+      "description": "Gérez vos paramètres de notification ici.",
+      "push": "Notifications push",
+      "pushInfo": "Les notifications push sont actuellement",
+      "enabled": "activées",
+      "disabled": "désactivées",
+      "toggleAll": "Tout activer",
+      "enablePushFirst": "Veuillez d'abord activer les notifications push.",
+      "savedSuccessfully": "Paramètres de notification enregistrés",
+      "modules": {
+        "title": "Notifications par module",
+        "toggleAll": "Tout activer",
+        "conferences": "Conférences",
+        "survey": "Sondages",
+        "bulletinBoard": "Tableau d'affichage"
+      }
+    },
     "errors": {
       "currentPasswordRequired": "Le mot de passe actuel est requis",
       "newPasswordRequired": "Un nouveau mot de passe est requis",

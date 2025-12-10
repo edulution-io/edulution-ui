@@ -19,7 +19,7 @@
 
 import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { randomUUID, createHash } from 'crypto';
+import { createHash, randomUUID } from 'crypto';
 import axios from 'axios';
 import { parseString } from 'xml2js';
 import { Model } from 'mongoose';
@@ -225,14 +225,18 @@ class ConferencesService implements OnModuleInit {
 
       // TODO: #1152
 
-      await this.notificationService.notifyUsernames(invitedMembersList, {
-        title: `Konferenz gestartet: ${conference.name}`,
-        body: `Die Konferenz "${conference.name}" wurde gestartet.`,
-        data: {
-          meetingID: conference.meetingID,
-          type: 'conference_started',
+      await this.notificationService.notifyUsernames(
+        invitedMembersList,
+        {
+          title: `Konferenz gestartet: ${conference.name}`,
+          body: `Die Konferenz "${conference.name}" wurde gestartet.`,
+          data: {
+            meetingID: conference.meetingID,
+            type: 'conference_started',
+          },
         },
-      });
+        APPS.CONFERENCES,
+      );
 
       const publicConferencesSubscriber = conference.meetingID;
       this.sseService.sendEventToUsers(
