@@ -17,30 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import LdapGroups from '@libs/groups/types/ldapGroups';
-
-class UserDto {
-  _id?: string;
-
-  username: string;
-
-  firstName?: string;
-
-  lastName?: string;
-
-  email: string;
-
-  ldapGroups: LdapGroups;
-
-  password: string;
-
-  encryptKey: string;
-
-  mfaEnabled?: boolean;
-
-  language?: string;
-
-  registeredPushTokens?: string[];
+enum UserPreferencesErrorMessages {
+  NotificationUpdateError = 'usersettings.notifications.error.updateError',
 }
 
-export default UserDto;
+export default UserPreferencesErrorMessages;

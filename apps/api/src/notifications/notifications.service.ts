@@ -23,12 +23,16 @@ import pickDefinedNotificationFields from '@libs/notification/utils/pickDefinedN
 import SendPushNotificationDto from '@libs/notification/types/send-pushNotification.dto';
 import TApps from '@libs/appconfig/types/appsType';
 import UsersService from '../users/users.service';
+import UserPreferencesService from '../user-preferences/user-preferences.service';
 
 @Injectable()
 class NotificationsService {
   private readonly expo = new Expo();
 
-  constructor(private userService: UsersService) {}
+  constructor(
+    private userService: UsersService,
+    private userPreferencesService: UserPreferencesService,
+  ) {}
 
   async sendPushNotification(sendPushNotificationDto: SendPushNotificationDto): Promise<void> {
     const tokens = Array.isArray(sendPushNotificationDto.to)
@@ -67,7 +71,13 @@ class NotificationsService {
     partialNotification: Omit<SendPushNotificationDto, 'to'>,
     app: TApps,
   ): Promise<void> {
-    const uniqueTokens = await this.userService.getPushTokensByUsersnames(usernames, app);
+    const filteredUsernames = await this.userPreferencesService.filterUsernamesByNotificationSettings(usernames, app);
+
+    if (filteredUsernames.length === 0) return;
+    const uniqueTokens = await this.userService.getPushTokensByUsersnames(filteredUsernames);
+
+    if (uniqueTokens.length === 0) return;
+
     await this.sendPushNotification({
       to: uniqueTokens,
       ...partialNotification,

@@ -20,12 +20,13 @@
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import NotificationSettings from '@libs/notification/types/notificationSettings';
-import { EDU_API_USERS_ENDPOINT } from '@libs/user/constants/usersApiEndpoints';
-import { NOTIFICATION_SETTINGS_EDU_API_ENDPOINT } from '@libs/notification/constants/apiEndpoints';
+import NotificationSettings from '@libs/user-preferences/types/notificationSettings';
 import useUserStore from '@/store/UserStore/useUserStore';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
+import USER_PREFERENCES_ENDPOINT, {
+  USER_PREFERENCES_NOTIFICATION_ENDPOINT,
+} from '@libs/user-preferences/constants/user-preferences-endpoint';
 
 interface NotificationSettingsStore {
   isLoading: boolean;
@@ -52,7 +53,7 @@ const useNotificationSettingsStore = create<NotificationSettingsStore>((set) => 
       if (!user?.username) return;
 
       const response = await eduApi.get<NotificationSettings>(
-        `${EDU_API_USERS_ENDPOINT}/${user.username}/${NOTIFICATION_SETTINGS_EDU_API_ENDPOINT}`,
+        `${USER_PREFERENCES_ENDPOINT}/${USER_PREFERENCES_NOTIFICATION_ENDPOINT}`,
       );
 
       set({ notificationSettings: response.data });
@@ -70,7 +71,7 @@ const useNotificationSettingsStore = create<NotificationSettingsStore>((set) => 
       if (!user?.username) return false;
 
       const response = await eduApi.patch<NotificationSettings>(
-        `${EDU_API_USERS_ENDPOINT}/${user.username}/${NOTIFICATION_SETTINGS_EDU_API_ENDPOINT}`,
+        `${USER_PREFERENCES_ENDPOINT}/${USER_PREFERENCES_NOTIFICATION_ENDPOINT}`,
         settings,
       );
 

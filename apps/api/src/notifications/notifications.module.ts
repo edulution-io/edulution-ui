@@ -19,9 +19,11 @@
 
 import { Global, Module } from '@nestjs/common';
 import NotificationsService from './notifications.service';
+import UserPreferencesModule from '../user-preferences/user-preferences.module';
 
 @Global()
 @Module({
+  imports: [UserPreferencesModule],
   providers: [NotificationsService],
   exports: [NotificationsService],
 })

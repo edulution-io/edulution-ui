@@ -17,5 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export const NOTIFICATION_SETTINGS_EDU_API_ENDPOINT = 'notification-settings';
-export const NOTIFICATION_DEVICES_EDU_API_ENDPOINT = `devices`;
+const NOTIFICATION_DEVICES_EDU_API_ENDPOINT = `devices`;
+
+export default NOTIFICATION_DEVICES_EDU_API_ENDPOINT;

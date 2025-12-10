@@ -17,12 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import USER_PREFERENCES_FIELDS from '@libs/user-preferences/constants/user-preferences-fields';
 import fieldsToProjection from '@libs/common/utils/fieldsToProjection';
 import UpdateBulletinCollapsedDto from '@libs/user-preferences/types/update-bulletin-collapsed.dto';
+import NotificationSettings from '@libs/user-preferences/types/notificationSettings';
+import TApps from '@libs/appconfig/types/appsType';
+import UserPreferencesErrorMessages from '@libs/user-preferences/constants/userPreferencesErrorMessages';
+import CustomHttpException from '../common/CustomHttpException';
 import { UserPreferences, UserPreferencesDocument } from './user-preferences.schema';
 
 @Injectable()
@@ -66,6 +70,52 @@ class UserPreferencesService {
     };
 
     await this.userPreferencesModel.updateMany(filter, { $unset: unsetObj }).exec();
+  }
+
+  async getNotificationSettings(username: string): Promise<NotificationSettings> {
+    const doc = await this.userPreferencesModel.findOne({ username }).select('notificationSettings').lean();
+
+    return doc?.notificationSettings ?? { pushEnabled: true, modulePreferences: {} };
+  }
+
+  async updateNotificationSettings(
+    username: string,
+    notificationSettings: NotificationSettings,
+  ): Promise<NotificationSettings> {
+    const doc = await this.userPreferencesModel
+      .findOneAndUpdate({ username }, { $set: { notificationSettings } }, { new: true, upsert: true })
+      .select('notificationSettings')
+      .lean();
+
+    if (!doc?.notificationSettings) {
+      throw new CustomHttpException(
+        UserPreferencesErrorMessages.NotificationUpdateError,
+        HttpStatus.NOT_MODIFIED,
+        undefined,
+        UserPreferencesService.name,
+      );
+    }
+
+    return doc.notificationSettings;
+  }
+
+  async filterUsernamesByNotificationSettings(usernames: string[], app: TApps): Promise<string[]> {
+    if (usernames.length === 0) return [];
+
+    const preferences = await this.userPreferencesModel
+      .find({ username: { $in: usernames } })
+      .select('username notificationSettings')
+      .lean();
+
+    const preferencesMap = new Map(preferences.map((p) => [p.username, p.notificationSettings]));
+
+    return usernames.filter((username) => {
+      const settings = preferencesMap.get(username);
+
+      if (!settings) return true;
+      if (settings.pushEnabled === false) return false;
+      return settings.modulePreferences?.[app] !== false;
+    });
   }
 }
 

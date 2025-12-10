@@ -19,15 +19,15 @@
 
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import ROOT_ROUTE from '@libs/common/constants/rootRoute';
 
 const ProtectedRoute = ({ redirectTo = ROOT_ROUTE }) => {
-  const { isSuperAdmin } = useLdapGroups();
+  const { isSuperAdmin, isAuthReady } = useLdapGroups();
 
-  if (isSuperAdmin === undefined) {
-    return <CircleLoader />;
+  if (!isAuthReady) {
+    return <LoadingIndicatorDialog isOpen />;
   }
 
   if (!isSuperAdmin) {

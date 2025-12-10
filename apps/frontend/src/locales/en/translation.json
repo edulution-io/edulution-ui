@@ -1301,6 +1301,9 @@
         "conferences": "Conferences",
         "survey": "Surveys",
         "bulletinBoard": "Info Board"
+      },
+      "error": {
+        "updateError": "Settings could not be updated."
       }
     },
     "addTotp": {
