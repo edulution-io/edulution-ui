@@ -17,17 +17,22 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { RouterProvider } from 'react-router-dom';
-import createRouter from '@/router/createRouter';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
-import useUserStore from '@/store/UserStore/useUserStore';
+import React, { FC, ReactNode } from 'react';
+import cn from '@libs/common/utils/className';
 
-const AppRouter: React.FC = () => {
-  const { appConfigs } = useAppConfigsStore();
-  const { isAuthenticated } = useUserStore();
+interface AnchorSectionProps {
+  id: string;
+  className?: string;
+  children: ReactNode;
+}
 
-  return <RouterProvider router={createRouter(isAuthenticated, appConfigs)} />;
-};
+const AnchorSection: FC<AnchorSectionProps> = ({ id, className, children }) => (
+    <section
+      id={id}
+      className={cn('scroll-mt-20', className)}
+    >
+      {children}
+    </section>
+  );
 
-export default AppRouter;
+export default AnchorSection;

@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import APPS from '@libs/appconfig/constants/apps';
-import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
+import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import useMedia from '@/hooks/useMedia';
 import DOCKER_CONTAINER_TABLE_COLUMNS from '@libs/docker/constants/dockerContainerTableColumns';
 import CONTAINER from '@libs/docker/constants/container';
@@ -59,30 +59,24 @@ const DockerContainerTable: React.FC = () => {
   return (
     <>
       <div className="absolute right-10 top-12 md:right-16 md:top-1">{isLoading ? <CircleLoader /> : null}</div>
-      <AccordionSH
-        type="multiple"
-        defaultValue={[CONTAINER]}
-        className="mt-5 space-y-10 [&>*]:rounded-xl [&>*]:bg-muted-background [&>*]:px-2"
-      >
-        <AccordionItem value={CONTAINER}>
-          <AccordionTrigger>
-            <h3>{t('dockerOverview.title')}</h3>
-          </AccordionTrigger>
-          <AccordionContent className="space-y-2 px-1">
-            <ScrollableTable
-              columns={DockerContainerTableColumns}
-              data={containers}
-              filterKey={DOCKER_CONTAINER_TABLE_COLUMNS.NAME}
-              filterPlaceHolderText="dockerOverview.filterPlaceHolderText"
-              onRowSelectionChange={handleRowSelectionChange}
-              selectedRows={selectedRows}
-              getRowId={(originalRow) => originalRow.Id}
-              applicationName={APPS.SETTINGS}
-              initialColumnVisibility={initialColumnVisibility}
-            />
-          </AccordionContent>
-        </AccordionItem>
-      </AccordionSH>
+      <SectionAccordion defaultOpen={[CONTAINER]}>
+        <SectionAccordionItem
+          id={CONTAINER}
+          label={t('dockerOverview.title')}
+        >
+          <ScrollableTable
+            columns={DockerContainerTableColumns}
+            data={containers}
+            filterKey={DOCKER_CONTAINER_TABLE_COLUMNS.NAME}
+            filterPlaceHolderText="dockerOverview.filterPlaceHolderText"
+            onRowSelectionChange={handleRowSelectionChange}
+            selectedRows={selectedRows}
+            getRowId={(originalRow) => originalRow.Id}
+            applicationName={APPS.SETTINGS}
+            initialColumnVisibility={initialColumnVisibility}
+          />
+        </SectionAccordionItem>
+      </SectionAccordion>
       <SelectCreateDockerContainerDialog />
       <DockerContainerFloatingButtons />
     </>
