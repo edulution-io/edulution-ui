@@ -225,7 +225,7 @@ const LessonPage = () => {
             <button
               type="button"
               onClick={onSaveSessionsButtonClick}
-              className="flex h-10 cursor-pointer items-center rounded-lg border-2 border-gray-300 bg-white text-background shadow-md dark:border-none dark:bg-accent dark:shadow-none"
+              className="flex h-10 cursor-pointer items-center rounded-lg bg-white text-background shadow-md dark:border-none dark:bg-accent dark:shadow-none"
             >
               <span className="text-nowrap px-4 text-background">
                 {t(`classmanagement.${currentSelectedSession ? 'editSession' : 'saveSession'}`)}
@@ -235,7 +235,7 @@ const LessonPage = () => {
             <button
               type="button"
               onClick={closeSession}
-              className="flex h-10 cursor-pointer items-center rounded-lg border-2 border-gray-300 bg-white text-background shadow-md dark:border-none dark:bg-accent dark:shadow-none"
+              className="flex h-10 cursor-pointer items-center rounded-lg bg-white text-background shadow-md dark:border-none dark:bg-accent dark:shadow-none"
             >
               <span className="text-nowrap pl-4 text-background">{t('classmanagement.closeSession')}</span>
               <MdClose className="ml-auto inline-block h-8 w-8 px-2" />

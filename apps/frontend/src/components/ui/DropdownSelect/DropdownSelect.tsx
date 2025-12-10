@@ -119,7 +119,7 @@ const DropdownSelect = ({
   const arrowPointsDown = (isOpen && !openToTop) || (!isOpen && openToTop);
 
   const inputBaseClasses =
-    'box-border w-full rounded-lg py-2 pl-2.5 pr-[52px] text-start text-base leading-6 text-background placeholder:text-background outline-none transition-all duration-200';
+    'box-border w-full rounded-lg py-2 pl-2.5 pr-[52px] text-start text-base leading-6 text-background shadow-md dark:shadow-none placeholder:text-background outline-none transition-all duration-200';
 
   const variantClasses = {
     default: 'dark:bg-accent bg-white',

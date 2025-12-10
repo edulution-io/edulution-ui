@@ -39,8 +39,11 @@ import slugify from '@libs/common/utils/slugify';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import { Button } from '@/components/shared/Button';
 import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
+import cn from '@libs/common/utils/className';
+import getAppIconClassName from '@libs/ui/utils/getAppIconClassName';
 import getCustomAppConfigFormSchema from './schemas/getCustomAppConfigFormSchema';
 import SelectIconField from './components/SelectIconField';
+import defaultIconList from './components/defaultIconList';
 
 interface AddAppConfigDialogProps {
   selectedApp: AppConfigOption;
@@ -133,14 +136,16 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
       'image/webp': ['.webp'],
     },
   });
-  const dropzoneStyle = `border-2 border-dashed border-gray-300 rounded-lg ${
-    isDragActive ? 'bg-foreground' : 'bg-popover-foreground'
+  const dropzoneStyle = `border-2 border-dashed border-muted dark:border-muted-foreground rounded-xl ${
+    isDragActive ? 'bg-muted-background' : 'bg-foreground dark:bg-muted'
   }`;
 
   const handleClose = () => {
     form.reset();
     setIsAddAppConfigDialogOpen(false);
   };
+
+  const isDefaultIcon = defaultIconList.includes(form.getValues('customIcon'));
 
   const getDialogBody = () => {
     if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
@@ -165,7 +170,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
                 <p className="text-wrap text-center font-semibold text-secondary">
                   {isDragActive ? t('filesharingUpload.dropHere') : t('appstore.dropIconDescription')}
                 </p>
-                <MdOutlineCloudUpload className="h-12 w-12 text-muted" />
+                <MdOutlineCloudUpload className="h-12 w-12 text-secondary" />
               </div>
             </div>
             {form.getValues('customIcon') && (
@@ -175,15 +180,17 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
                     <img
                       src={form.getValues('customIcon')}
                       alt={t('filesharingUpload.previewAlt')}
-                      className="mb-2 aspect-square h-auto w-full object-cover"
-                      onLoad={() => {}}
+                      className={cn(
+                        'mb-2 aspect-square h-auto w-full object-cover',
+                        isDefaultIcon && getAppIconClassName(form.getValues('customIcon')),
+                      )}
                     />
                     <Button
                       type="button"
                       onClick={() => form.setValue('customIcon', '')}
                       className="absolute right-1 top-1 h-8 rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
                     >
-                      <DeleteIcon className="text-text-ciRed h-4 w-4" />
+                      <DeleteIcon className="h-4 w-4 text-white" />
                     </Button>
                   </li>
                 </ul>
