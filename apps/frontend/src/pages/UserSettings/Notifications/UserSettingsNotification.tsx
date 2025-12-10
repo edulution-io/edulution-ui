@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import EnableNotificationSettings from '@/pages/UserSettings/Notifications/components/EnableNotificationSettings';
 import ModuleNotificationPreferences from '@/pages/UserSettings/Notifications/components/ModuleNotificationPreferences';
+import DndTimeWindowsSettings from '@/pages/UserSettings/Notifications/components/DndTimeWindowsSettings';
 
 const UserSettingsNotification: React.FC = () => {
   const { t } = useTranslation();
@@ -48,6 +49,12 @@ const UserSettingsNotification: React.FC = () => {
           label={t('usersettings.notifications.modules.title')}
         >
           <ModuleNotificationPreferences />
+        </SectionAccordionItem>
+        <SectionAccordionItem
+          id="dndTimeWindows"
+          label={t('usersettings.notifications.modules.title')}
+        >
+          <DndTimeWindowsSettings />
         </SectionAccordionItem>
       </SectionAccordion>
     </PageLayout>

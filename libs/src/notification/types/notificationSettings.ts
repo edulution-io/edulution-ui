@@ -18,10 +18,12 @@
  */
 
 import TApps from '@libs/appconfig/types/appsType';
+import DndTimeWindow from '@libs/notification/types/dndTimeWindow';
 
 interface NotificationSettings {
   pushEnabled: boolean;
   modulePreferences: Partial<Record<TApps, boolean>>;
+  dndTimeWindows?: DndTimeWindow[];
 }
 
 export default NotificationSettings;

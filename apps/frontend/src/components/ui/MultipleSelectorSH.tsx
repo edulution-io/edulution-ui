@@ -416,7 +416,7 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
                 )}
               </BadgeSH>
             ))}
-            {/* Avoid having the "Search" Icon */}
+
             <CommandPrimitive.Input
               {...inputProps}
               ref={inputRef}
