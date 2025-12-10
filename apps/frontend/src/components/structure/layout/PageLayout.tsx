@@ -59,14 +59,15 @@ const PageLayout = ({
       className="relative flex h-full w-full flex-col pt-1 md:pt-1"
     >
       {nativeAppHeader && (
-        <NativeAppHeader
-          title={nativeAppHeader.title}
-          description={nativeAppHeader.description}
-          iconSrc={nativeAppHeader.iconSrc}
-        />
+        <>
+          <NativeAppHeader
+            title={nativeAppHeader.title}
+            description={nativeAppHeader.description}
+            iconSrc={nativeAppHeader.iconSrc}
+          />
+          <ThemeToggle />
+        </>
       )}
-
-      <ThemeToggle />
 
       <main
         style={{ marginBottom: 'var(--floating-bar-h, 0px)' }}

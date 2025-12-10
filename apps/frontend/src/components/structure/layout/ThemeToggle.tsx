@@ -20,11 +20,17 @@
 import React from 'react';
 import { GoMoon, GoSun } from 'react-icons/go';
 import useThemeStore from '@/store/useThemeStore';
+import useMedia from '@/hooks/useMedia';
 
 const ThemeToggle: React.FC = () => {
   const theme = useThemeStore((s) => s.theme);
   const resolvedTheme = useThemeStore((s) => s.getResolvedTheme());
   const setTheme = useThemeStore((s) => s.setTheme);
+  const { isMobileView } = useMedia();
+
+  if (isMobileView) {
+    return null;
+  }
 
   const toggleTheme = () => {
     if (theme === 'system') {
@@ -38,7 +44,7 @@ const ThemeToggle: React.FC = () => {
     <button
       type="button"
       onClick={toggleTheme}
-      className="absolute right-4 top-4 z-50 rounded-full bg-muted p-2 text-foreground shadow-xl transition hover:opacity-80"
+      className="absolute right-6 top-2 z-50 rounded-full bg-accent p-2 text-white shadow-xl transition hover:opacity-80 dark:text-secondary"
       aria-label="Toggle Theme"
     >
       {resolvedTheme === 'dark' ? <GoSun className="h-6 w-6" /> : <GoMoon className="h-6 w-6" />}
