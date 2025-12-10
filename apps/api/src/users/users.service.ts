@@ -43,8 +43,6 @@ import {
   KEYCLOAK_STARTUP_TIMEOUT_MS,
   KEYCLOAK_USERS_SYNC_INTERVAL_MS,
 } from '@libs/ldapKeycloakSync/constants/keycloakSyncValues';
-import NotificationSettings from '@libs/notification/types/notificationSettings';
-import TApps from '@libs/appconfig/types/appsType';
 import CustomHttpException from '../common/CustomHttpException';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
@@ -360,29 +358,17 @@ class UsersService {
     }
   }
 
-  async getPushTokensByUsersnames(usernames: string[], app: TApps): Promise<string[]> {
+  async getPushTokensByUsersnames(usernames: string[]): Promise<string[]> {
     const users = await this.userModel
       .find({ username: { $in: usernames } })
-      .select('username registeredPushTokens notificationSettings')
-      .lean();
+      .select('registeredPushTokens')
+      .exec();
 
-    const eligibleTokens = users
-      .filter((user) => {
-        const settings = user.notificationSettings;
-        if (!settings) return true;
-
-        if (!settings.pushEnabled) return false;
-
-        const modulePrefs = settings.modulePreferences || {};
-
-        if (Object.keys(modulePrefs).length === 0) return true;
-
-        return modulePrefs[app] !== false;
-      })
+    const allTokens = users
       .flatMap((user) => user.registeredPushTokens ?? [])
       .filter((token) => Expo.isExpoPushToken(token));
 
-    return Array.from(new Set(eligibleTokens));
+    return Array.from(new Set(allTokens));
   }
 
   async updateDeviceByUsername(username: string, userDeviceDto: UserDeviceDto): Promise<void> {
@@ -405,51 +391,6 @@ class UsersService {
     await this.userModel
       .findOneAndUpdate({ username }, { $pull: { registeredPushTokens: expoPushToken } }, { new: true })
       .exec();
-  }
-
-  async getNotificationSettings(username: string): Promise<NotificationSettings | null> {
-    const user = await this.userModel.findOne({ username }).select('notificationSettings').lean();
-
-    if (!user) {
-      throw new CustomHttpException(
-        UserErrorMessages.NotFoundError,
-        HttpStatus.NOT_FOUND,
-        undefined,
-        UsersService.name,
-      );
-    }
-
-    return user.notificationSettings ?? { pushEnabled: true, modulePreferences: {} };
-  }
-
-  async updateNotificationSettings(
-    username: string,
-    notificationSettings: NotificationSettings,
-  ): Promise<NotificationSettings> {
-    const user = await this.userModel
-      .findOneAndUpdate({ username }, { $set: { notificationSettings } }, { new: true })
-      .select('notificationSettings')
-      .lean();
-
-    if (!user) {
-      throw new CustomHttpException(
-        UserErrorMessages.NotFoundError,
-        HttpStatus.NOT_FOUND,
-        undefined,
-        UsersService.name,
-      );
-    }
-
-    if (!user.notificationSettings) {
-      throw new CustomHttpException(
-        UserErrorMessages.UpdateError,
-        HttpStatus.NOT_MODIFIED,
-        undefined,
-        UsersService.name,
-      );
-    }
-
-    return user.notificationSettings;
   }
 }
 

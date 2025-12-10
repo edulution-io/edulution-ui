@@ -19,6 +19,7 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import NotificationSettings from '@libs/user-preferences/types/notificationSettings';
 
 export type UserPreferencesDocument = UserPreferences & Document;
 
@@ -33,6 +34,15 @@ export class UserPreferences extends Document {
     default: {},
   })
   collapsedBulletins: Record<string, boolean>;
+
+  @Prop({
+    type: Object,
+    default: {
+      pushEnabled: true,
+      modulePreferences: {},
+    },
+  })
+  notificationSettings: NotificationSettings;
 }
 
 export const UserPreferencesSchema = SchemaFactory.createForClass(UserPreferences);

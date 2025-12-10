@@ -1160,645 +1160,649 @@
         "conferences": "Conférences",
         "survey": "Sondages",
         "bulletinBoard": "Tableau d'affichage"
+      },
+      "error": {
+        "updateError": "Les paramètres de notification n'ont pas pu être enregistrés."
+      },
+
+      "errors": {
+        "currentPasswordRequired": "Le mot de passe actuel est requis",
+        "newPasswordRequired": "Un nouveau mot de passe est requis",
+        "confirmPasswordRequired": "Le renouvellement du mot de passe est nécessaire pour la confirmation",
+        "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
+        "passwordLength": "Le mot de passe doit comporter au moins 8 caractères",
+        "notSupportedFileFormat": "Format de fichier non supporté.",
+        "notAbleToCompressImage": "L'image n'a pas pu être compressée."
       }
     },
-    "errors": {
-      "currentPasswordRequired": "Le mot de passe actuel est requis",
-      "newPasswordRequired": "Un nouveau mot de passe est requis",
-      "confirmPasswordRequired": "Le renouvellement du mot de passe est nécessaire pour la confirmation",
-      "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
-      "passwordLength": "Le mot de passe doit comporter au moins 8 caractères",
-      "notSupportedFileFormat": "Format de fichier non supporté.",
-      "notAbleToCompressImage": "L'image n'a pas pu être compressée."
-    }
-  },
-  "forwardingpage": {
-    "action": "Ce lien peut être atteint du côté extérieur du fournisseur.",
-    "description": "L'application s'ouvre dans une nouvelle fenêtre.",
-    "missing_link": "Le lien est manquant"
-  },
-  "menu": "Menu",
-  "home": "Maison",
-  "projects": "Projets",
-  "iso": "ISO",
-  "program": "Programmes",
-  "share": "Partager",
-  "teacher": "Professeur",
-  "student": "Élève",
-  "students": "Élèves",
-  "parent": "Parent",
-  "staff": "Personnel",
-  "user": "utilisateur",
-  "login": {
-    "pageTitle": "Se connecter",
-    "username_too_long": "Nom d'utilisateur trop long",
-    "password_too_long": "Mot de passe trop long",
-    "forgot_password": "Mot de passe oublié?",
-    "remember_me": "Mémoriser",
-    "enterMultiFactorCode": "Authentification à deux facteurs",
-    "loginWithApp": "Se connecter avec un code QR",
-    "loginWithQrDescription": "Ouvrez l'application edulution.io pour vous identifer simplement avec le code QR.",
-    "infoQrCodeExpired": "Le temps de connexion avec l'application edulution.io a expiré."
-  },
-  "common": {
-    "more": "Plus",
-    "less": "Moins",
-    "refreshPage": "Actualiser la page",
-    "guest": "Invité",
-    "ok": "OK",
-    "next": "Prochain",
-    "back": "Précédent",
-    "confirm": "Confirmer",
+    "forwardingpage": {
+      "action": "Ce lien peut être atteint du côté extérieur du fournisseur.",
+      "description": "L'application s'ouvre dans une nouvelle fenêtre.",
+      "missing_link": "Le lien est manquant"
+    },
+    "menu": "Menu",
+    "home": "Maison",
+    "projects": "Projets",
+    "iso": "ISO",
+    "program": "Programmes",
     "share": "Partager",
-    "savedToClipboard": "Copié dans le presse-papiers.",
-    "savedToClipboardError": "N'a pas pu être copié dans le presse-papiers.",
-    "answers": "Répondre",
-    "error": "Erreur",
-    "entry": "Entrée {{index}}",
-    "errors": {
-      "attachmentUploadFailed": "La pièce jointe n'a pas pu être téléversée",
-      "dbAccessFailed": "L'accès à la base de données a échoué",
-      "directoryNotCreated": "La création du répertoire a échoué",
-      "fileNotCreated": "Échec de la création du fichier",
-      "fileDeletionFailed": "Echec de suppression du fichier",
-      "fileWritingFailed": "Echec d'écriture du fichier",
-      "fileNotFound": "Fichier introuvable",
-      "fileNotProvided": "Le fichier n'a pas été fourni",
-      "invalidFileType": "Type de fichier non valide",
-      "startDateBeforeEndDate": "La date de début ne doit pas être après la date de fin"
-    },
-    "cut": "Couper",
-    "sortOrder": "Tri",
-    "options": "Options",
-    "checking": "Vérifier",
-    "cancel": "Annuler",
-    "columns": "Colonnes",
-    "table": "Tableau",
-    "copy": {
-      "success": "Copié avec succès dans le presse-papiers",
-      "error": "Echec de copie dans le presse-papiers",
-      "doCopy": "Copier",
-      "link": "Copier le lien",
-      "url": "Copier l'URL"
-    },
-    "openInNewTab": "Dans un nouvel onglet",
-    "maximize": "Maximiser",
-    "minimize": "Minimiser",
-    "restore": "Restaurer",
-    "dock": "Ajouter au Dock",
-    "undock": "Supprimer du Dock",
-    "from": "de",
-    "youAreCurrentlyNotLoggedIn": "Vous n'êtes actuellement pas authentifié",
-    "toLogin": "À la page de connexion",
-    "name": "Nom",
-    "join": "Participer",
-    "details": "Détails",
-    "createdAt": "Créé à",
-    "updatedAt": "Édité à",
-    "actions": "Actions",
-    "forward": "Transférer",
-    "showOptions": "Afficher les options",
-    "open": "Ouvrir",
-    "and": "et",
-    "yes": "Oui",
-    "no": "Non",
-    "title": "titre",
-    "add": "Ajouter",
-    "reload": "Recharger",
-    "logout": "Déconnecter",
-    "save": "Sauvegarder",
-    "stop": "Arrêt",
-    "selected": "choisi",
-    "successful": "Réussi",
-    "failed": "Échoué",
-    "login": "Se connecter",
-    "username": "Nom d'utilisateur",
-    "password": "Mot de passe",
-    "load": "Charger",
-    "loading": "Charger...",
-    "overview": "Vue d'ensemble",
-    "create": "Créer",
-    "icon": "Icône",
-    "group": "groupe",
-    "groups": "Groupes",
-    "min_chars": "Au moins {{count}} caractères",
-    "max_chars": "Maximum {{count}} caractères",
-    "groupAdmins": "Administrateurs de groupe",
-    "admins": "Administrateurs",
-    "adminsShort": "Admins",
-    "adminShort": "Admin",
-    "admin": "Administrateur",
     "teacher": "Professeur",
-    "users": "Utilisateur",
-    "groupUsers": "Utilisateur de groupe",
-    "description": "Description",
-    "school": "École",
-    "properties": "Caractéristiques",
-    "type": "Type",
-    "creationDate": "Date de création",
-    "schoolName": "Nom de l'école",
-    "mailList": "Liste de diffusion",
-    "invalid_chars": "Contient des caractères non valides",
-    "clearSelection": "Supprimer la sélection",
-    "start": "Commencer",
-    "close": "Fermer",
-    "delete": "Supprimer",
-    "deleting": "Suppression...",
-    "noItemsSelected": "Aucun élément sélectionné",
-    "connect": "Connecter",
-    "custom": "Défini par l'utilisateur",
-    "select": "Choisir...",
-    "none": "Aucun",
-    "edit": "Modifier",
-    "participate": "Participer",
-    "participated": "Participé",
-    "not-available": "Indisponible",
-    "date": "Date",
-    "time": "temps",
-    "revert": "Rétablir",
-    "restart": "Recommencer",
-    "kill": "Finir",
-    "install": "Installer",
-    "update": "Mise à jour",
-    "progress": "Progrès...",
-    "pressInstall": "Cliquer sur Installer pour démarrer.",
-    "enable": "Activer",
-    "enabled": "Activé",
-    "disable": "Désactiver",
-    "disabled": "Désactivé",
-    "invalid_url": "URL non valide",
-    "invalid_fqdn": "FQDN non valide. Veuillez spécifier uniquement le nom d'hôte.",
-    "required": "Nécessaire",
-    "download": "Télécharger",
-    "template": "Modèle",
-    "application": "Application",
-    "preview": "prévisualisation",
-    "format": "Format",
-    "upload": "Téléverser",
-    "mode": "mode",
-    "file": "Fichier",
-    "chooseFile": "Choisir un fichier",
-    "changeFile": "Changer de fichier",
-    "saveLocal": "Enregistrer sur l’appareil",
-    "openLocal": "Ouvrir depuis l’appareil",
-    "openFileFromEdu": "Ouvrir le fichier",
-    "saveFileToEdu": "Enregistrer dans les fichiers"
-  },
+    "student": "Élève",
+    "students": "Élèves",
+    "parent": "Parent",
+    "staff": "Personnel",
+    "user": "utilisateur",
+    "login": {
+      "pageTitle": "Se connecter",
+      "username_too_long": "Nom d'utilisateur trop long",
+      "password_too_long": "Mot de passe trop long",
+      "forgot_password": "Mot de passe oublié?",
+      "remember_me": "Mémoriser",
+      "enterMultiFactorCode": "Authentification à deux facteurs",
+      "loginWithApp": "Se connecter avec un code QR",
+      "loginWithQrDescription": "Ouvrez l'application edulution.io pour vous identifer simplement avec le code QR.",
+      "infoQrCodeExpired": "Le temps de connexion avec l'application edulution.io a expiré."
+    },
+    "common": {
+      "more": "Plus",
+      "less": "Moins",
+      "refreshPage": "Actualiser la page",
+      "guest": "Invité",
+      "ok": "OK",
+      "next": "Prochain",
+      "back": "Précédent",
+      "confirm": "Confirmer",
+      "share": "Partager",
+      "savedToClipboard": "Copié dans le presse-papiers.",
+      "savedToClipboardError": "N'a pas pu être copié dans le presse-papiers.",
+      "answers": "Répondre",
+      "error": "Erreur",
+      "entry": "Entrée {{index}}",
+      "errors": {
+        "attachmentUploadFailed": "La pièce jointe n'a pas pu être téléversée",
+        "dbAccessFailed": "L'accès à la base de données a échoué",
+        "directoryNotCreated": "La création du répertoire a échoué",
+        "fileNotCreated": "Échec de la création du fichier",
+        "fileDeletionFailed": "Echec de suppression du fichier",
+        "fileWritingFailed": "Echec d'écriture du fichier",
+        "fileNotFound": "Fichier introuvable",
+        "fileNotProvided": "Le fichier n'a pas été fourni",
+        "invalidFileType": "Type de fichier non valide",
+        "startDateBeforeEndDate": "La date de début ne doit pas être après la date de fin"
+      },
+      "cut": "Couper",
+      "sortOrder": "Tri",
+      "options": "Options",
+      "checking": "Vérifier",
+      "cancel": "Annuler",
+      "columns": "Colonnes",
+      "table": "Tableau",
+      "copy": {
+        "success": "Copié avec succès dans le presse-papiers",
+        "error": "Echec de copie dans le presse-papiers",
+        "doCopy": "Copier",
+        "link": "Copier le lien",
+        "url": "Copier l'URL"
+      },
+      "openInNewTab": "Dans un nouvel onglet",
+      "maximize": "Maximiser",
+      "minimize": "Minimiser",
+      "restore": "Restaurer",
+      "dock": "Ajouter au Dock",
+      "undock": "Supprimer du Dock",
+      "from": "de",
+      "youAreCurrentlyNotLoggedIn": "Vous n'êtes actuellement pas authentifié",
+      "toLogin": "À la page de connexion",
+      "name": "Nom",
+      "join": "Participer",
+      "details": "Détails",
+      "createdAt": "Créé à",
+      "updatedAt": "Édité à",
+      "actions": "Actions",
+      "forward": "Transférer",
+      "showOptions": "Afficher les options",
+      "open": "Ouvrir",
+      "and": "et",
+      "yes": "Oui",
+      "no": "Non",
+      "title": "titre",
+      "add": "Ajouter",
+      "reload": "Recharger",
+      "logout": "Déconnecter",
+      "save": "Sauvegarder",
+      "stop": "Arrêt",
+      "selected": "choisi",
+      "successful": "Réussi",
+      "failed": "Échoué",
+      "login": "Se connecter",
+      "username": "Nom d'utilisateur",
+      "password": "Mot de passe",
+      "load": "Charger",
+      "loading": "Charger...",
+      "overview": "Vue d'ensemble",
+      "create": "Créer",
+      "icon": "Icône",
+      "group": "groupe",
+      "groups": "Groupes",
+      "min_chars": "Au moins {{count}} caractères",
+      "max_chars": "Maximum {{count}} caractères",
+      "groupAdmins": "Administrateurs de groupe",
+      "admins": "Administrateurs",
+      "adminsShort": "Admins",
+      "adminShort": "Admin",
+      "admin": "Administrateur",
+      "teacher": "Professeur",
+      "users": "Utilisateur",
+      "groupUsers": "Utilisateur de groupe",
+      "description": "Description",
+      "school": "École",
+      "properties": "Caractéristiques",
+      "type": "Type",
+      "creationDate": "Date de création",
+      "schoolName": "Nom de l'école",
+      "mailList": "Liste de diffusion",
+      "invalid_chars": "Contient des caractères non valides",
+      "clearSelection": "Supprimer la sélection",
+      "start": "Commencer",
+      "close": "Fermer",
+      "delete": "Supprimer",
+      "deleting": "Suppression...",
+      "noItemsSelected": "Aucun élément sélectionné",
+      "connect": "Connecter",
+      "custom": "Défini par l'utilisateur",
+      "select": "Choisir...",
+      "none": "Aucun",
+      "edit": "Modifier",
+      "participate": "Participer",
+      "participated": "Participé",
+      "not-available": "Indisponible",
+      "date": "Date",
+      "time": "temps",
+      "revert": "Rétablir",
+      "restart": "Recommencer",
+      "kill": "Finir",
+      "install": "Installer",
+      "update": "Mise à jour",
+      "progress": "Progrès...",
+      "pressInstall": "Cliquer sur Installer pour démarrer.",
+      "enable": "Activer",
+      "enabled": "Activé",
+      "disable": "Désactiver",
+      "disabled": "Désactivé",
+      "invalid_url": "URL non valide",
+      "invalid_fqdn": "FQDN non valide. Veuillez spécifier uniquement le nom d'hôte.",
+      "required": "Nécessaire",
+      "download": "Télécharger",
+      "template": "Modèle",
+      "application": "Application",
+      "preview": "prévisualisation",
+      "format": "Format",
+      "upload": "Téléverser",
+      "mode": "mode",
+      "file": "Fichier",
+      "chooseFile": "Choisir un fichier",
+      "changeFile": "Changer de fichier",
+      "saveLocal": "Enregistrer sur l’appareil",
+      "openLocal": "Ouvrir depuis l’appareil",
+      "openFileFromEdu": "Ouvrir le fichier",
+      "saveFileToEdu": "Enregistrer dans les fichiers"
+    },
 
-  "saveExternalFileDialogBody": {
-    "saveExternalFile": "Enregistrer un fichier externe",
-    "destinationFolder": "Dossier de destination",
-    "filename": "Nom du fichier",
-    "filenamePlaceholder": "Saisissez le nom du fichier ici",
-    "filenameRequired": "Le nom du fichier ne peut pas être vide",
-    "fileSavedSuccessful": "Fichier enregistré avec succès",
-    "fileSaveFailed": "Le fichier n'a pas pu être enregistré"
-  },
+    "saveExternalFileDialogBody": {
+      "saveExternalFile": "Enregistrer un fichier externe",
+      "destinationFolder": "Dossier de destination",
+      "filename": "Nom du fichier",
+      "filenamePlaceholder": "Saisissez le nom du fichier ici",
+      "filenameRequired": "Le nom du fichier ne peut pas être vide",
+      "fileSavedSuccessful": "Fichier enregistré avec succès",
+      "fileSaveFailed": "Le fichier n'a pas pu être enregistré"
+    },
 
-  "form": {
-    "path": "Lien",
-    "pathDescription": "Veuillez saisir une URL.",
-    "apptype": "Type d'application",
-    "native": "Support natif",
-    "forwarding": "Transfert",
-    "embedded": "Intégré",
-    "saved": "Configuration enregistrée!",
-    "url": "URL",
-    "urlDescription": "Veuillez saisir une URL pour la demande",
-    "apiKey": "Clé API",
-    "apiKeyDescription": "La clé API est utilisée pour l'authentification",
-    "expertMode": "Mode expert",
-    "proxyPath": "Chemin proxy",
-    "proxyPathPlaceholder": "par exemple SOGo",
-    "proxyDestination": "Hôte cible",
-    "proxyDestinationPlaceholder": "Par exemple, http://localhost:1234/",
-    "stripPrefix": "Supprimer le préfixe",
-    "embeddedPageEditor": "Editeur",
-    "embeddedPageEditorModeDescription": "Ici, vous pouvez choisir entre Sandbox et Native. Sandbox est la variante la plus sûre, native du rendu d'origine. Notez qu'aucune précaution de sécurité ne peut être prise dans le rendu natif. En mode sandbox, le fichier HTML est lu à partir de la mémoire. Pour ce faire, téléchargez le fichier.",
-    "sandboxed": "Bac à sable",
-    "pathname": "Chemin d’accès",
-    "input": {
-      "dateTimePicker": {
-        "timeSlot": "Heure",
-        "placeholder": "DD/MM/YYYY HH:mm"
+    "form": {
+      "path": "Lien",
+      "pathDescription": "Veuillez saisir une URL.",
+      "apptype": "Type d'application",
+      "native": "Support natif",
+      "forwarding": "Transfert",
+      "embedded": "Intégré",
+      "saved": "Configuration enregistrée!",
+      "url": "URL",
+      "urlDescription": "Veuillez saisir une URL pour la demande",
+      "apiKey": "Clé API",
+      "apiKeyDescription": "La clé API est utilisée pour l'authentification",
+      "expertMode": "Mode expert",
+      "proxyPath": "Chemin proxy",
+      "proxyPathPlaceholder": "par exemple SOGo",
+      "proxyDestination": "Hôte cible",
+      "proxyDestinationPlaceholder": "Par exemple, http://localhost:1234/",
+      "stripPrefix": "Supprimer le préfixe",
+      "embeddedPageEditor": "Editeur",
+      "embeddedPageEditorModeDescription": "Ici, vous pouvez choisir entre Sandbox et Native. Sandbox est la variante la plus sûre, native du rendu d'origine. Notez qu'aucune précaution de sécurité ne peut être prise dans le rendu natif. En mode sandbox, le fichier HTML est lu à partir de la mémoire. Pour ce faire, téléchargez le fichier.",
+      "sandboxed": "Bac à sable",
+      "pathname": "Chemin d’accès",
+      "input": {
+        "dateTimePicker": {
+          "timeSlot": "Heure",
+          "placeholder": "DD/MM/YYYY HH:mm"
+        }
       }
-    }
-  },
-  "fileOperationSuccessful": "Succès de l'opération sur le fichier",
-  "fileOperationStarted": "Opération sur le fichier démarrée",
-  "unknownErrorOccurred": "Une erreur inconnue s'est produite",
-  "fileSharingTable": {
-    "filename": "Nom de fichier",
-    "size": "Taille",
-    "lastModified": "Modifié récemmen",
-    "type": "Type",
-    "filesOrFoldersSelected": "{{selected}} de {{total}} fichiers/dossiers sélectionnés",
-    "element": "Élément",
-    "elements": "Éléments"
-  },
-  "currentDirectory": "Répertoire actuel",
-  "filesharingUpload": {
-    "title": "Téléverser des fichiers",
-    "dataLimitExceeded": "Limite de données de 50 Mo dépassée",
-    "fileSize": "Taille de fichier",
-    "upload": "Télécverser",
-    "selectFile": "Sélectionnez jusqu'à 5 fichiers en même temps",
-    "uploadItems": "Téléverser: {{count}} fichier(s)",
-    "dragDropClick": "Déposer les fichiers ici ou cliquez pour sélectionner les fichiers",
-    "dropHere": "Lâcher ici",
-    "filesToUpload": "Fichiers pour le téléversement",
-    "overwriteWarningTitle_one": "Avertissement: le fichier existe déjà",
-    "overwriteWarningTitle_other": "Avertissement: les fichiers existent déjà",
-    "overwriteWarningDescription_one": "Le fichier suivant sera écrasé:",
-    "overwriteWarningDescription_other": "Les fichiers suivants seront écrasés:",
-    "oversizedFilesDetected": "Fichiers trop grands découverts",
-    "oversizedFileDetected": "Fichier trop grand découvert!",
-    "cannotUploadOversized": "Aucun fichier de plus de 50 Mo ne peut être téléversé.",
-    "file": "Fichier",
-    "files": "Fichiers",
-    "creatingDirectoryStructure": "Création de la structure des dossiers",
-    "hiddenFiles": "fichiers cachés et système",
-    "replaceFiles": "Remplacer",
-    "uploadNewOnly": "Téléverser uniquement les nouveaux fichiers",
-    "errors": {
-      "directoryCreationFailed": "Échec de la création du répertoire",
-      "fileUploadFailed": "Échec du téléchargement du fichier",
-      "uploadError": "Erreur lors du téléchargement des fichiers"
-    }
-  },
-  "linuxmuster": {
-    "title": "Linuxmuster",
-    "sidebar": "Linuxmuster"
-  },
-  "whiteboard": {
-    "title": "TABLEAU BLANC",
-    "sidebar": "Tableau blanc",
-    "saveAsTlFile": "Enregistrer le tableau blanc sous forme de fichier .tldr",
-    "openTLFileFailed": "Impossible d’ouvrir le fichier",
-    "openTLFileSuccess": "Le fichier a été chargé avec succès",
-    "openTlFile": "Ouvrir",
-    "openLocalTlFile": "Ouvrir un fichier .tldr local",
-    "file": "Fichier"
-  },
-  "whiteboard-collaboration": {
-    "title": "Whiteboard",
-    "sidebar": "Whiteboard collaboratif"
-  },
-  "table": {
-    "noDataAvailable": "Aucune donnée disponible"
-  },
-  "loadingIndicator": {
-    "message": "S'il vous plaît, attendez..."
-  },
-  "search": {
-    "type-to-search": "Cliquer pour rechercher",
-    "loading": "Chargement",
-    "no-results": "Aucun résultat",
-    "usersAdded": "{{ count }} ajouté"
-  },
-  "fileCategory": {
-    "folder": "Dossier",
-    "document": "Document",
-    "image": "Image",
-    "video": "Vidéo",
-    "audio": "Audio",
-    "acrobat": "Pdf",
-    "presentation": "Diaporama",
-    "spreadsheet": "Tableur",
-    "vector": "Diagramme",
-    "compressed": "Archive",
-    "code": "Code"
-  },
-  "fileCreateNewContent": {
-    "documentFile": "Créer un nouveau document",
-    "spreadsheetFile": "Créer un nouvelle tableur",
-    "presentationFile": "Créer une nouveau diaporama",
-    "textFile": "Créer un nouveau fichier texte",
-    "drawIoFile": "Créer un nouveau fichier draw.io",
-    "fileDialogTitle": "Créer un nouveau fichier",
-    "directoryDialogTitle": "Créer un nouveau répertoire",
-    "createButtonText": "Créer",
-    "min_3_chars": "Au moins 3 caractères",
-    "max_30_chars": "Maximum de 30 caractères",
-    "fileOperationSuccessful": "Fichier créé avec succès",
-    "noMessageAvailable": "Aucun message disponible",
-    "unknownErrorOccurred": "Une erreur inconnue s'est produite",
-    "newFileFromType": {
-      "drawIoFile": "Nouveau fichier draw.io",
-      "textFile": "Nouveau fichier texte",
-      "spreadsheetFile": "Nouvelle tableur",
-      "presentationFile": "Nouveau diaporama",
-      "documentFile": "Nouveau document",
-      "json": "Fichier JSON (.json)",
-      "yaml": "Fichier YAML (.yaml)",
-      "yml": "Fichier YAML (.yml)",
-      "toml": "Fichier TOML (.toml)",
-      "xml": "Fichier XML (.xml)",
-      "cfg": "Fichier de configuration (.cfg)",
-      "ini": "Fichier INI (.ini)",
-      "env": "Fichier d'environnement (.env)",
-      "md": "Fichier Markdown (.md)",
-      "html": "Fichier HTML (.html)",
-      "css": "Fichier CSS (.css)",
-      "csv": "Fichier CSV (.csv)",
-      "sh": "Script Shell (.sh)",
-      "bat": "Fichier Batch (.bat)",
-      "ps1": "Script PowerShell (.ps1)",
-      "py": "Script Python (.py)",
-      "js": "Fichier JavaScript (.js)",
-      "customFile": "Autre fichier"
     },
-    "customFile": "Créer un nouveau fichier",
-    "moreFileTypes": "Plus de types de fichiers",
-    "lessFileTypes": "Moins de types de fichiers"
-  },
-  "fileRenameContent": {
-    "placeholder": "Entrez le nouveau nom",
-    "renameYourDirectory": "Nommez votre répertoire",
-    "renameYourFile": "Renommez votre fichier autour",
-    "to": "à",
-    "rename": "Renommer",
-    "unknownErrorOccurred": "Une erreur inconnue s'est produite"
-  },
-  "moveItemDialog": {
-    "changeDirectory": "Changer de répertoire",
+    "fileOperationSuccessful": "Succès de l'opération sur le fichier",
+    "fileOperationStarted": "Opération sur le fichier démarrée",
+    "unknownErrorOccurred": "Une erreur inconnue s'est produite",
+    "fileSharingTable": {
+      "filename": "Nom de fichier",
+      "size": "Taille",
+      "lastModified": "Modifié récemmen",
+      "type": "Type",
+      "filesOrFoldersSelected": "{{selected}} de {{total}} fichiers/dossiers sélectionnés",
+      "element": "Élément",
+      "elements": "Éléments"
+    },
     "currentDirectory": "Répertoire actuel",
-    "folderName": "Nom de répertoire",
-    "movingItems": {
-      "one": "1 élément va être déplacé",
-      "other": "{{count}} éléments seront déplacés"
+    "filesharingUpload": {
+      "title": "Téléverser des fichiers",
+      "dataLimitExceeded": "Limite de données de 50 Mo dépassée",
+      "fileSize": "Taille de fichier",
+      "upload": "Télécverser",
+      "selectFile": "Sélectionnez jusqu'à 5 fichiers en même temps",
+      "uploadItems": "Téléverser: {{count}} fichier(s)",
+      "dragDropClick": "Déposer les fichiers ici ou cliquez pour sélectionner les fichiers",
+      "dropHere": "Lâcher ici",
+      "filesToUpload": "Fichiers pour le téléversement",
+      "overwriteWarningTitle_one": "Avertissement: le fichier existe déjà",
+      "overwriteWarningTitle_other": "Avertissement: les fichiers existent déjà",
+      "overwriteWarningDescription_one": "Le fichier suivant sera écrasé:",
+      "overwriteWarningDescription_other": "Les fichiers suivants seront écrasés:",
+      "oversizedFilesDetected": "Fichiers trop grands découverts",
+      "oversizedFileDetected": "Fichier trop grand découvert!",
+      "cannotUploadOversized": "Aucun fichier de plus de 50 Mo ne peut être téléversé.",
+      "file": "Fichier",
+      "files": "Fichiers",
+      "creatingDirectoryStructure": "Création de la structure des dossiers",
+      "hiddenFiles": "fichiers cachés et système",
+      "replaceFiles": "Remplacer",
+      "uploadNewOnly": "Téléverser uniquement les nouveaux fichiers",
+      "errors": {
+        "directoryCreationFailed": "Échec de la création du répertoire",
+        "fileUploadFailed": "Échec du téléchargement du fichier",
+        "uploadError": "Erreur lors du téléchargement des fichiers"
+      }
     },
-    "moveTo": "Déplacer après",
-    "move": "Déplacer",
-    "unknownErrorOccurred": "Une erreur inconnue s'est produite",
-    "selectedItem": "Élément sélectionné"
-  },
-  "deleteDialog": {
-    "areYouSure": "Êtes-vous absolument sûr?",
-    "actionCannotBeUndone": "Cette action est irréversible. Cela supprimera les fichiers définitivement:",
-    "selectedItems": "Éléments sélectionnés:",
-    "cancel": "Annuler",
-    "continue": "Continuer",
-    "unknownErrorOccurredDuringDeletion": "Une erreur inconnue s'est produite pendant la suppression",
-    "deleteFiles": "Supprimer les fichiers"
-  },
-  "timeAgo": {
-    "justNow": "à l'instant",
-    "minuteAgo": "avant {{count}} minute",
-    "hourAgo": "avant {{count}} heures",
-    "dayAgo": "avant {{count}} jours",
-    "invalidDate": "Date non valide"
-  },
-  "dialog": {
-    "close": "Fermer"
-  },
-  "tooltip": {
-    "upload": "Téléverser",
-    "create": {
-      "file": "Créer un fichier",
-      "folder": "Créer un dossier"
+    "linuxmuster": {
+      "title": "Linuxmuster",
+      "sidebar": "Linuxmuster"
     },
-    "rename": "Renommer",
-    "move": "Déplacer",
-    "delete": "Supprimer",
-    "download": "Télécharger",
-    "back": "Retour"
-  },
-  "response": {
-    "successfully": "L'action a réussi",
-    "error": "Erreur",
-    "move_successful": "Déplacement réussi de {{sourcePath}} vers {{destinationPath}}",
-    "move_failed": "Echec du déplacement",
-    "unexpected_error_occurred": "Des erreurs inattendues se sont produites",
-    "upload_failed_with_status": "Le téléversement a échoué avec le statut {{status}}",
-    "network_error_occurred_during_the_upload": "Les erreurs de réseau se sont produites pendant le téléversement",
-    "file_uploaded_successfully": "Fichier {{fileName}} téléversé avec succès",
-    "file_uploaded_failed": "Le fichier {{nom de fichier} n'a pas pu être téléversé {{status}}",
-    "directory_created_successfully": "Dossier {{directoryName}} créé avec succès",
-    "file_created_successfully": "Fichier {{fileName}} créé avec succès",
-    "file_was_deleted_successfully": "Fichier {{fileName}} supprimé avec succès",
-    "files_deleted_successfully": "Fichiers supprimés avec succès",
-    "all_items_moved_successfully": "Déplacement de tous les fichiers réussi",
-    "destination_path_is_undefined": "Le chemin cible n'est pas défini"
-  },
-  "accountData": {
-    "account_info": "Informations sur le compte",
-    "name": "Nom",
-    "email": "Email",
-    "school": "École",
-    "role": "Rôle",
-    "classes": "Classe",
-    "change_password": "Changer le mot de passe",
-    "my_information": "Mes informations",
-    "mail_alias": "Alias ​​courrier",
-    "change_my_data": "Changer les données",
-    "school_classes": "Classes"
-  },
-  "groups": {
-    "errors": {
-      "CouldNotGetGroupByPath": "Le groupe n'a pas pu être trouvé à partir du chemin",
-      "CouldNotGetUsers": "Les utilisateurs n'ont pas pu être trouvés",
-      "CouldNotGetCurrentUser": "Impossible de trouver l'utilisateur actuel",
-      "CouldNotGetAllGroups": "Échec de la recherche de tous les groupes",
-      "CouldNotFetchGroupMembers": "Les membres du groupe n'ont pas pu être trouvés",
-      "CouldNotFetchUserById": "Les utilisateurs n'ont pas pu être trouvés sur la base de l'ID",
-      "CouldNotSearchGroups": "La recherche de groupes n'était pas possible"
+    "whiteboard": {
+      "title": "TABLEAU BLANC",
+      "sidebar": "Tableau blanc",
+      "saveAsTlFile": "Enregistrer le tableau blanc sous forme de fichier .tldr",
+      "openTLFileFailed": "Impossible d’ouvrir le fichier",
+      "openTLFileSuccess": "Le fichier a été chargé avec succès",
+      "openTlFile": "Ouvrir",
+      "openLocalTlFile": "Ouvrir un fichier .tldr local",
+      "file": "Fichier"
     },
-    "classes": "Classe"
-  },
-  "users": {
-    "errors": {
-      "notFoundError": "L'utilisateur n'existe pas",
-      "updateError": "Les utilisateurs n'ont pas pu être mis à jour"
-    }
-  },
-  "permission": {
-    "groups": "Groupes d'utilisateurs",
-    "selectGroupsDescription": "Sélectionnez les groupes d'utilisateurs qui devraient avoir accès à l'application."
-  },
-  "mails": {
-    "errors": {
-      "NotAbleToGetImapOption": "La lecture de la «configuration IMAP» n'est pas possible",
-      "NotAbleToConnectClientError": "La connexion au serveur IMAP n'est pas possible",
-      "NotAbleToLockMailboxError": "La boîte aux lettres ne pouvait pas être appelée",
-      "NotAbleToFetchMailsError": "Les emails ne pouvaient pas être appelés",
-      "NotValidPortTypeError": "Le port doit être spécifié en tant que nombre",
-      "MailProviderNotFound": "Fournisseur email non trouvé",
-      "MailcowApiGetSyncJobsFailed": "Les tâches de synchronisation ne pouvaient pas être appelés",
-      "MailcowApiCreateSyncJobFailed": "Le tâche de synchronisation n'a pas pu être créé",
-      "MailcowApiDeleteSyncJobsFailed": "Les tâches de synchronisation n'ont pas pu être supprimés"
-    }
-  },
-  "licensing": {
-    "communityLicenseDialog": {
-      "title": "Version communautaire",
-      "description": "Version communautaire gratuite de {{ applicationName }} Ui. <strong>Cette version ne reçoit aucun support du fabricant.</strong>"
-    }
-  },
-  "appExtendedOptions": {
-    "title": "Extensions",
-    "onlyOfficeUrl": "Entrez l'URL d'OnlyOffice ici",
-    "onlyOfficeUrlTitle": "URL OnlyOffice",
-    "onlyOfficeJwtSecretTitle": "JWT OnlyOffice",
-    "onlyOfficeJwtSecretDescription": "Entrez ici la clé secrète JWT OnlyOffice",
-    "overrideDocumentVendorMSWithOOTitle": "Utilisez l'OpenDocument comme format de document standard",
-    "overrideDocumentVendorMSWithOODescription": "Le format OpenDocument (ODT, ODS, ODP) devrait-il être utilisé à la place des formats Microsoft Office (DOCX, PPTX, XLSX)?",
-    "mailImapUrlTitle": "URL",
-    "mailImapUrlDescription": "Entrez le FQDN (par exemple 'imap.example.com') du serveur IMAP ici.",
-    "mailImapPortTitle": "port",
-    "mailImapPortDescription": "Entrez ici le numéro de port du serveur IMAP (par ex. 993)",
-    "mailImapSecureTitle": "Connexion chiffrée",
-    "mailImapSecureDescription": "La connexion via «tls» ou «starttls» doit être établie.",
-    "mailImapRejectUnauthorizedTitle": "Rejeter les connexions non certifiées",
-    "mailImapRejectUnauthorizedDescription": "Une vérification de certificat doit-il être effectué pour cette connexion?",
-    "mailSogoThemeTitle": "Thème",
-    "mailSogoThemeDescription": "Sélectionnez le thème pour l'application Mail. La modification du thème redémarre les conteneurs associés.",
-    "mailSogoTheme": {
-      "light": "Clair",
-      "dark": "Sombre"
+    "whiteboard-collaboration": {
+      "title": "Whiteboard",
+      "sidebar": "Whiteboard collaboratif"
     },
-    "mailSogoThemeDisabled": "Désactivé, car le serveur de messagerie ne fonctionne pas.",
-    "mailSogoThemeUpdateCheckerTitle": "Vérification de version du thème",
-    "mailSogoThemeUpdateCheckerDescription": "Vérifiez si une nouvelle version du thème actuel est disponible et mettez-la à jour si nécessaire.",
-    "updateChecker": {
-      "currentVersion": "Version actuelle",
-      "latestVersion": "Dernière version",
-      "theme": "Thème",
-      "updateAvailable": "Une nouvelle version est disponible !",
-      "checkAgain": "Vérifier à nouveau",
-      "updateNow": "Mettre à jour maintenant",
-      "checkVersionSuccess": "Thème vérifié avec succès !",
-      "noData": "Aucune information de version disponible."
-    }
-  },
-  "preview": {
-    "image": "Aperçu de l'image",
-    "failedToLoadImage": "L'image ne pouvait pas être chargée"
-  },
-  "containerApplication": {
-    "dialogTitle": "Installer le plugin {{applicationName}}-Plugin",
-    "EDU_MANAGER_INSTALL_TOKEN": {
-      "title": "Installer Jeton",
-      "description": "Veuillez saisir le jeton d'installation qui a été créé dans le Edulution Manager."
+    "table": {
+      "noDataAvailable": "Aucune donnée disponible"
     },
-    "EDULUTION_MAIL_HOSTNAME": {
-      "title": "Nom d'hôte",
-      "description": "Nom d'hôte du serveur de messagerie. Cela peut différer du domaine Edulution."
-    }
-  },
-  "edulution-manager": {
-    "sidebar": "Gestionnaire Edulution",
-    "title": "Gestionnaire Edulution"
-  },
-  "dockerOverview": {
-    "title": "Aperçu des conteneurs",
-    "containerName": "Nom de conteneur",
-    "state": "État",
-    "state-badge": "Badge",
-    "status": "Statut",
-    "imageName": "Image",
-    "filterPlaceHolderText": "Rechercher le nom du conteneur",
-    "port": "Port",
-    "created": "Créé à",
-    "container-view": "Conteneur",
-    "selectPluginForInstallationTitle": "Sélectionnez le plugin à installer",
-    "selectPluginForInstallationDescription": "Sélectionnez ici une application pour laquelle un plugin doit être installé."
-  },
-  "docker": {
-    "error": {
-      "dockerConnectionError": "La connexion docker a échoué",
-      "dockerImageNotFound": "L'image docker n'a pas pu être trouvée",
-      "dockerCreationError": "Le conteneur docker n'a pas pu être créé",
-      "dockerCommandExecutionError": "La commande docker n'a pas pu être exécutée",
-      "dockerContainerDeletionError": "Le conteneur docker n'a pas pu être supprimé",
-      "dockerUpdateError": "La mise à jour du conteneur docker a échoué"
+    "loadingIndicator": {
+      "message": "S'il vous plaît, attendez..."
     },
-    "events": {
-      "pullingImage": "Requête de l'image docker ...",
-      "checkingImage": "Vérification si l'image est déjà disponible ...",
-      "creatingContainer": "Création du conteneur docker ...",
-      "containerCreated": "Conteneur créé.",
-      "startContainer": "Conteneur démarré.",
-      "stopContainer": "Conteneur arrêté.",
-      "restartContainer": "Conteneur redémarré.",
-      "killContainer": "Forcer l'arrêt du conteneur.",
-      "containerCreationSuccessful": "Conteneur créé avec succès.",
-      "containerCreationFailed": "Le conteneur n'a pas pu être créé.",
-      "containerUpdateSuccessful": "{{containerName}} mis à jour avec succès.",
-      "containerAlreadyUpToDate": "{{containerName}} est déjà à jour."
+    "search": {
+      "type-to-search": "Cliquer pour rechercher",
+      "loading": "Chargement",
+      "no-results": "Aucun résultat",
+      "usersAdded": "{{ count }} ajouté"
     },
-    "status": {
-      "running": "en cours d'exécution",
-      "created": "créé",
-      "restarting": "redémarré",
-      "paused": "en pause",
-      "exited": "arrêté",
-      "dead": "mort"
-    }
-  },
-  "veyon": {
-    "lockScreen": "Verrouiller l'écran",
-    "unlockScreen": "Déverrouiller l'écran",
-    "lockInputDevices": "Verrouiller la saisie",
-    "unlockInputDevices": "Déverrouiller la saisie",
-    "rebootSystem": "Redémarrer le système",
-    "powerDown": "Système",
-    "errors": {
-      "AppNotProperlyConfigured": "Veyon n'est pas correctement configuré, contactez l'administrateur système",
-      "VeyonAuthFailed": "L'authentification Veyon a échoué",
-      "GetUserFailed": "Les utilisateurs ne pouvaient pas être appelés",
-      "VeyonApiNotReachable": "Le serveur Veyon externe n'est pas disponible"
-    }
-  },
-  "Invalid user credentials": "Nom d'utilisateur ou mot de passe incorrect",
-  "For more on this error consult the server log at the debug level.": "La connexion au serveur AD a échoué. Veuillez réessayer plus tard.",
-  "Failed to fetch": "La connexion au serveur Edulution a échoué. Veuillez réessayer plus tard.",
-  "Invalid client or Invalid client credentials": "Configuration du serveur non valide. Veuillez vérifier l'ID client ou le secret du client.",
-  "Not Found (404)": "La connexion au serveur Edulution a échoué. Veuillez réessayer plus tard.",
-  "NetworkError when attempting to fetch resource.": "Erreurs de réseau lors de l'accès au site Web.",
-  "deploymentTarget": {
-    "title": "Sélection",
-    "description": "Ici, on peut choisir la plateforme à laquelle {{appName }} doit être connecté.",
-    "linuxmuster": "Linuxmuster",
-    "generic": "Générique"
-  },
-
-  "webdavShare": {
-    "displayName": "Nom d'affichage",
-    "accessGroups": {
-      "title": "Groupes d'utilisateurs",
-      "description": "Sélectionnez les groupes d'utilisateurs qui doivent avoir accès au partage WebDAV."
+    "fileCategory": {
+      "folder": "Dossier",
+      "document": "Document",
+      "image": "Image",
+      "video": "Vidéo",
+      "audio": "Audio",
+      "acrobat": "Pdf",
+      "presentation": "Diaporama",
+      "spreadsheet": "Tableur",
+      "vector": "Diagramme",
+      "compressed": "Archive",
+      "code": "Code"
     },
-    "type": {
-      "title": "Schéma du serveur WebDAV",
-      "description": "Ici, vous pouvez sélectionner le type de schéma du serveur WebDAV.",
+    "fileCreateNewContent": {
+      "documentFile": "Créer un nouveau document",
+      "spreadsheetFile": "Créer un nouvelle tableur",
+      "presentationFile": "Créer une nouveau diaporama",
+      "textFile": "Créer un nouveau fichier texte",
+      "drawIoFile": "Créer un nouveau fichier draw.io",
+      "fileDialogTitle": "Créer un nouveau fichier",
+      "directoryDialogTitle": "Créer un nouveau répertoire",
+      "createButtonText": "Créer",
+      "min_3_chars": "Au moins 3 caractères",
+      "max_30_chars": "Maximum de 30 caractères",
+      "fileOperationSuccessful": "Fichier créé avec succès",
+      "noMessageAvailable": "Aucun message disponible",
+      "unknownErrorOccurred": "Une erreur inconnue s'est produite",
+      "newFileFromType": {
+        "drawIoFile": "Nouveau fichier draw.io",
+        "textFile": "Nouveau fichier texte",
+        "spreadsheetFile": "Nouvelle tableur",
+        "presentationFile": "Nouveau diaporama",
+        "documentFile": "Nouveau document",
+        "json": "Fichier JSON (.json)",
+        "yaml": "Fichier YAML (.yaml)",
+        "yml": "Fichier YAML (.yml)",
+        "toml": "Fichier TOML (.toml)",
+        "xml": "Fichier XML (.xml)",
+        "cfg": "Fichier de configuration (.cfg)",
+        "ini": "Fichier INI (.ini)",
+        "env": "Fichier d'environnement (.env)",
+        "md": "Fichier Markdown (.md)",
+        "html": "Fichier HTML (.html)",
+        "css": "Fichier CSS (.css)",
+        "csv": "Fichier CSV (.csv)",
+        "sh": "Script Shell (.sh)",
+        "bat": "Fichier Batch (.bat)",
+        "ps1": "Script PowerShell (.ps1)",
+        "py": "Script Python (.py)",
+        "js": "Fichier JavaScript (.js)",
+        "customFile": "Autre fichier"
+      },
+      "customFile": "Créer un nouveau fichier",
+      "moreFileTypes": "Plus de types de fichiers",
+      "lessFileTypes": "Moins de types de fichiers"
+    },
+    "fileRenameContent": {
+      "placeholder": "Entrez le nouveau nom",
+      "renameYourDirectory": "Nommez votre répertoire",
+      "renameYourFile": "Renommez votre fichier autour",
+      "to": "à",
+      "rename": "Renommer",
+      "unknownErrorOccurred": "Une erreur inconnue s'est produite"
+    },
+    "moveItemDialog": {
+      "changeDirectory": "Changer de répertoire",
+      "currentDirectory": "Répertoire actuel",
+      "folderName": "Nom de répertoire",
+      "movingItems": {
+        "one": "1 élément va être déplacé",
+        "other": "{{count}} éléments seront déplacés"
+      },
+      "moveTo": "Déplacer après",
+      "move": "Déplacer",
+      "unknownErrorOccurred": "Une erreur inconnue s'est produite",
+      "selectedItem": "Élément sélectionné"
+    },
+    "deleteDialog": {
+      "areYouSure": "Êtes-vous absolument sûr?",
+      "actionCannotBeUndone": "Cette action est irréversible. Cela supprimera les fichiers définitivement:",
+      "selectedItems": "Éléments sélectionnés:",
+      "cancel": "Annuler",
+      "continue": "Continuer",
+      "unknownErrorOccurredDuringDeletion": "Une erreur inconnue s'est produite pendant la suppression",
+      "deleteFiles": "Supprimer les fichiers"
+    },
+    "timeAgo": {
+      "justNow": "à l'instant",
+      "minuteAgo": "avant {{count}} minute",
+      "hourAgo": "avant {{count}} heures",
+      "dayAgo": "avant {{count}} jours",
+      "invalidDate": "Date non valide"
+    },
+    "dialog": {
+      "close": "Fermer"
+    },
+    "tooltip": {
+      "upload": "Téléverser",
+      "create": {
+        "file": "Créer un fichier",
+        "folder": "Créer un dossier"
+      },
+      "rename": "Renommer",
+      "move": "Déplacer",
+      "delete": "Supprimer",
+      "download": "Télécharger",
+      "back": "Retour"
+    },
+    "response": {
+      "successfully": "L'action a réussi",
+      "error": "Erreur",
+      "move_successful": "Déplacement réussi de {{sourcePath}} vers {{destinationPath}}",
+      "move_failed": "Echec du déplacement",
+      "unexpected_error_occurred": "Des erreurs inattendues se sont produites",
+      "upload_failed_with_status": "Le téléversement a échoué avec le statut {{status}}",
+      "network_error_occurred_during_the_upload": "Les erreurs de réseau se sont produites pendant le téléversement",
+      "file_uploaded_successfully": "Fichier {{fileName}} téléversé avec succès",
+      "file_uploaded_failed": "Le fichier {{nom de fichier} n'a pas pu être téléversé {{status}}",
+      "directory_created_successfully": "Dossier {{directoryName}} créé avec succès",
+      "file_created_successfully": "Fichier {{fileName}} créé avec succès",
+      "file_was_deleted_successfully": "Fichier {{fileName}} supprimé avec succès",
+      "files_deleted_successfully": "Fichiers supprimés avec succès",
+      "all_items_moved_successfully": "Déplacement de tous les fichiers réussi",
+      "destination_path_is_undefined": "Le chemin cible n'est pas défini"
+    },
+    "accountData": {
+      "account_info": "Informations sur le compte",
+      "name": "Nom",
+      "email": "Email",
+      "school": "École",
+      "role": "Rôle",
+      "classes": "Classe",
+      "change_password": "Changer le mot de passe",
+      "my_information": "Mes informations",
+      "mail_alias": "Alias ​​courrier",
+      "change_my_data": "Changer les données",
+      "school_classes": "Classes"
+    },
+    "groups": {
+      "errors": {
+        "CouldNotGetGroupByPath": "Le groupe n'a pas pu être trouvé à partir du chemin",
+        "CouldNotGetUsers": "Les utilisateurs n'ont pas pu être trouvés",
+        "CouldNotGetCurrentUser": "Impossible de trouver l'utilisateur actuel",
+        "CouldNotGetAllGroups": "Échec de la recherche de tous les groupes",
+        "CouldNotFetchGroupMembers": "Les membres du groupe n'ont pas pu être trouvés",
+        "CouldNotFetchUserById": "Les utilisateurs n'ont pas pu être trouvés sur la base de l'ID",
+        "CouldNotSearchGroups": "La recherche de groupes n'était pas possible"
+      },
+      "classes": "Classe"
+    },
+    "users": {
+      "errors": {
+        "notFoundError": "L'utilisateur n'existe pas",
+        "updateError": "Les utilisateurs n'ont pas pu être mis à jour"
+      }
+    },
+    "permission": {
+      "groups": "Groupes d'utilisateurs",
+      "selectGroupsDescription": "Sélectionnez les groupes d'utilisateurs qui devraient avoir accès à l'application."
+    },
+    "mails": {
+      "errors": {
+        "NotAbleToGetImapOption": "La lecture de la «configuration IMAP» n'est pas possible",
+        "NotAbleToConnectClientError": "La connexion au serveur IMAP n'est pas possible",
+        "NotAbleToLockMailboxError": "La boîte aux lettres ne pouvait pas être appelée",
+        "NotAbleToFetchMailsError": "Les emails ne pouvaient pas être appelés",
+        "NotValidPortTypeError": "Le port doit être spécifié en tant que nombre",
+        "MailProviderNotFound": "Fournisseur email non trouvé",
+        "MailcowApiGetSyncJobsFailed": "Les tâches de synchronisation ne pouvaient pas être appelés",
+        "MailcowApiCreateSyncJobFailed": "Le tâche de synchronisation n'a pas pu être créé",
+        "MailcowApiDeleteSyncJobsFailed": "Les tâches de synchronisation n'ont pas pu être supprimés"
+      }
+    },
+    "licensing": {
+      "communityLicenseDialog": {
+        "title": "Version communautaire",
+        "description": "Version communautaire gratuite de {{ applicationName }} Ui. <strong>Cette version ne reçoit aucun support du fabricant.</strong>"
+      }
+    },
+    "appExtendedOptions": {
+      "title": "Extensions",
+      "onlyOfficeUrl": "Entrez l'URL d'OnlyOffice ici",
+      "onlyOfficeUrlTitle": "URL OnlyOffice",
+      "onlyOfficeJwtSecretTitle": "JWT OnlyOffice",
+      "onlyOfficeJwtSecretDescription": "Entrez ici la clé secrète JWT OnlyOffice",
+      "overrideDocumentVendorMSWithOOTitle": "Utilisez l'OpenDocument comme format de document standard",
+      "overrideDocumentVendorMSWithOODescription": "Le format OpenDocument (ODT, ODS, ODP) devrait-il être utilisé à la place des formats Microsoft Office (DOCX, PPTX, XLSX)?",
+      "mailImapUrlTitle": "URL",
+      "mailImapUrlDescription": "Entrez le FQDN (par exemple 'imap.example.com') du serveur IMAP ici.",
+      "mailImapPortTitle": "port",
+      "mailImapPortDescription": "Entrez ici le numéro de port du serveur IMAP (par ex. 993)",
+      "mailImapSecureTitle": "Connexion chiffrée",
+      "mailImapSecureDescription": "La connexion via «tls» ou «starttls» doit être établie.",
+      "mailImapRejectUnauthorizedTitle": "Rejeter les connexions non certifiées",
+      "mailImapRejectUnauthorizedDescription": "Une vérification de certificat doit-il être effectué pour cette connexion?",
+      "mailSogoThemeTitle": "Thème",
+      "mailSogoThemeDescription": "Sélectionnez le thème pour l'application Mail. La modification du thème redémarre les conteneurs associés.",
+      "mailSogoTheme": {
+        "light": "Clair",
+        "dark": "Sombre"
+      },
+      "mailSogoThemeDisabled": "Désactivé, car le serveur de messagerie ne fonctionne pas.",
+      "mailSogoThemeUpdateCheckerTitle": "Vérification de version du thème",
+      "mailSogoThemeUpdateCheckerDescription": "Vérifiez si une nouvelle version du thème actuel est disponible et mettez-la à jour si nécessaire.",
+      "updateChecker": {
+        "currentVersion": "Version actuelle",
+        "latestVersion": "Dernière version",
+        "theme": "Thème",
+        "updateAvailable": "Une nouvelle version est disponible !",
+        "checkAgain": "Vérifier à nouveau",
+        "updateNow": "Mettre à jour maintenant",
+        "checkVersionSuccess": "Thème vérifié avec succès !",
+        "noData": "Aucune information de version disponible."
+      }
+    },
+    "preview": {
+      "image": "Aperçu de l'image",
+      "failedToLoadImage": "L'image ne pouvait pas être chargée"
+    },
+    "containerApplication": {
+      "dialogTitle": "Installer le plugin {{applicationName}}-Plugin",
+      "EDU_MANAGER_INSTALL_TOKEN": {
+        "title": "Installer Jeton",
+        "description": "Veuillez saisir le jeton d'installation qui a été créé dans le Edulution Manager."
+      },
+      "EDULUTION_MAIL_HOSTNAME": {
+        "title": "Nom d'hôte",
+        "description": "Nom d'hôte du serveur de messagerie. Cela peut différer du domaine Edulution."
+      }
+    },
+    "edulution-manager": {
+      "sidebar": "Gestionnaire Edulution",
+      "title": "Gestionnaire Edulution"
+    },
+    "dockerOverview": {
+      "title": "Aperçu des conteneurs",
+      "containerName": "Nom de conteneur",
+      "state": "État",
+      "state-badge": "Badge",
+      "status": "Statut",
+      "imageName": "Image",
+      "filterPlaceHolderText": "Rechercher le nom du conteneur",
+      "port": "Port",
+      "created": "Créé à",
+      "container-view": "Conteneur",
+      "selectPluginForInstallationTitle": "Sélectionnez le plugin à installer",
+      "selectPluginForInstallationDescription": "Sélectionnez ici une application pour laquelle un plugin doit être installé."
+    },
+    "docker": {
+      "error": {
+        "dockerConnectionError": "La connexion docker a échoué",
+        "dockerImageNotFound": "L'image docker n'a pas pu être trouvée",
+        "dockerCreationError": "Le conteneur docker n'a pas pu être créé",
+        "dockerCommandExecutionError": "La commande docker n'a pas pu être exécutée",
+        "dockerContainerDeletionError": "Le conteneur docker n'a pas pu être supprimé",
+        "dockerUpdateError": "La mise à jour du conteneur docker a échoué"
+      },
+      "events": {
+        "pullingImage": "Requête de l'image docker ...",
+        "checkingImage": "Vérification si l'image est déjà disponible ...",
+        "creatingContainer": "Création du conteneur docker ...",
+        "containerCreated": "Conteneur créé.",
+        "startContainer": "Conteneur démarré.",
+        "stopContainer": "Conteneur arrêté.",
+        "restartContainer": "Conteneur redémarré.",
+        "killContainer": "Forcer l'arrêt du conteneur.",
+        "containerCreationSuccessful": "Conteneur créé avec succès.",
+        "containerCreationFailed": "Le conteneur n'a pas pu être créé.",
+        "containerUpdateSuccessful": "{{containerName}} mis à jour avec succès.",
+        "containerAlreadyUpToDate": "{{containerName}} est déjà à jour."
+      },
+      "status": {
+        "running": "en cours d'exécution",
+        "created": "créé",
+        "restarting": "redémarré",
+        "paused": "en pause",
+        "exited": "arrêté",
+        "dead": "mort"
+      }
+    },
+    "veyon": {
+      "lockScreen": "Verrouiller l'écran",
+      "unlockScreen": "Déverrouiller l'écran",
+      "lockInputDevices": "Verrouiller la saisie",
+      "unlockInputDevices": "Déverrouiller la saisie",
+      "rebootSystem": "Redémarrer le système",
+      "powerDown": "Système",
+      "errors": {
+        "AppNotProperlyConfigured": "Veyon n'est pas correctement configuré, contactez l'administrateur système",
+        "VeyonAuthFailed": "L'authentification Veyon a échoué",
+        "GetUserFailed": "Les utilisateurs ne pouvaient pas être appelés",
+        "VeyonApiNotReachable": "Le serveur Veyon externe n'est pas disponible"
+      }
+    },
+    "Invalid user credentials": "Nom d'utilisateur ou mot de passe incorrect",
+    "For more on this error consult the server log at the debug level.": "La connexion au serveur AD a échoué. Veuillez réessayer plus tard.",
+    "Failed to fetch": "La connexion au serveur Edulution a échoué. Veuillez réessayer plus tard.",
+    "Invalid client or Invalid client credentials": "Configuration du serveur non valide. Veuillez vérifier l'ID client ou le secret du client.",
+    "Not Found (404)": "La connexion au serveur Edulution a échoué. Veuillez réessayer plus tard.",
+    "NetworkError when attempting to fetch resource.": "Erreurs de réseau lors de l'accès au site Web.",
+    "deploymentTarget": {
+      "title": "Sélection",
+      "description": "Ici, on peut choisir la plateforme à laquelle {{appName }} doit être connecté.",
       "linuxmuster": "Linuxmuster",
-      "edu-file-proxy": "Proxy de fichiers edulution",
       "generic": "Générique"
     },
-    "status": "Statut",
-    "offline": "Le serveur est actuellement indisponible.",
-    "pathVariables": {
-      "title": "Variable de chemin ",
-      "description": "Une variable de chemin dynamique peut être sélectionnée ici à partir des attributs utilisateur. "
-    },
-    "isRootServer": {
-      "title": "Chemin racine",
-      "description": "Pour les fonctions scolaires Linuxmuster, au moins un partage WebDAV doit être configuré comme chemin racine.",
-      "short": "Root",
-      "notConfigured": "Aucun chemin racine n'est configuré. Veuillez contacter l'administrateur système."
-    },
-    "selectPlaceholder": "Sélectionner...",
-    "authentication": {
-      "title": "Authentification",
-      "description": "Vous pouvez sélectionner ici la méthode d'authentification pour le serveur WebDAV.",
-      "basic": " Basic (nom d'utilisateur, mot de passe)"
-    },
-    "selectRootServer": {
-      "title": "Sélection du serveur WebDAV",
-      "description": "Sélectionnez le serveur WebDAV qui doit servir de chemin racine."
-    },
-    "sharePath": "Chemin de partage",
-    "pathPreview": "Aperçu du chemin"
+
+    "webdavShare": {
+      "displayName": "Nom d'affichage",
+      "accessGroups": {
+        "title": "Groupes d'utilisateurs",
+        "description": "Sélectionnez les groupes d'utilisateurs qui doivent avoir accès au partage WebDAV."
+      },
+      "type": {
+        "title": "Schéma du serveur WebDAV",
+        "description": "Ici, vous pouvez sélectionner le type de schéma du serveur WebDAV.",
+        "linuxmuster": "Linuxmuster",
+        "edu-file-proxy": "Proxy de fichiers edulution",
+        "generic": "Générique"
+      },
+      "status": "Statut",
+      "offline": "Le serveur est actuellement indisponible.",
+      "pathVariables": {
+        "title": "Variable de chemin ",
+        "description": "Une variable de chemin dynamique peut être sélectionnée ici à partir des attributs utilisateur. "
+      },
+      "isRootServer": {
+        "title": "Chemin racine",
+        "description": "Pour les fonctions scolaires Linuxmuster, au moins un partage WebDAV doit être configuré comme chemin racine.",
+        "short": "Root",
+        "notConfigured": "Aucun chemin racine n'est configuré. Veuillez contacter l'administrateur système."
+      },
+      "selectPlaceholder": "Sélectionner...",
+      "authentication": {
+        "title": "Authentification",
+        "description": "Vous pouvez sélectionner ici la méthode d'authentification pour le serveur WebDAV.",
+        "basic": " Basic (nom d'utilisateur, mot de passe)"
+      },
+      "selectRootServer": {
+        "title": "Sélection du serveur WebDAV",
+        "description": "Sélectionnez le serveur WebDAV qui doit servir de chemin racine."
+      },
+      "sharePath": "Chemin de partage",
+      "pathPreview": "Aperçu du chemin"
+    }
   }
 }

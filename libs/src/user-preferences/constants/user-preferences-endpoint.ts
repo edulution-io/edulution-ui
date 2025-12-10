@@ -17,6 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const USER_PREFERENCES_ENDPOINT = 'user-preferences';
+export const USER_PREFERENCES_ENDPOINT = 'user-preferences';
+
+export const USER_PREFERENCES_NOTIFICATION_ENDPOINT = `notification-settings`;
 
 export default USER_PREFERENCES_ENDPOINT;

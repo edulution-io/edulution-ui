@@ -1305,6 +1305,9 @@
         "conferences": "Konferenzen",
         "survey": "Umfragen",
         "bulletinBoard": "Info Board"
+      },
+      "error": {
+        "updateError": "Benachrichtigungseinstellungen konnten nicht gespeichert werden."
       }
     },
 

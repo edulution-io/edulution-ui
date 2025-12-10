@@ -35,6 +35,7 @@ import VeyonErrorMessages from '@libs/veyon/types/veyonErrorMessages';
 import LicenseErrorMessagesType from '@libs/license/types/licenseErrorMessagesType';
 import TGlobalSettingsErrorMessages from '@libs/global-settings/types/globalSettingsErrorMessagesTypes';
 import TLDrawSyncErrorMessagesType from '@libs/tldraw-sync/types/tLDrawSyncErrorMessagesType';
+import UserPreferencesErrorMessages from '@libs/user-preferences/constants/userPreferencesErrorMessages';
 
 type ErrorMessage =
   | CommonErrorMessages
@@ -54,6 +55,7 @@ type ErrorMessage =
   | VeyonErrorMessages
   | LicenseErrorMessagesType
   | TLDrawSyncErrorMessagesType
-  | TGlobalSettingsErrorMessages;
+  | TGlobalSettingsErrorMessages
+  | UserPreferencesErrorMessages;
 
 export default ErrorMessage;

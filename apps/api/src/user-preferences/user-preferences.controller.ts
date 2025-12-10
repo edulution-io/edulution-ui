@@ -20,7 +20,10 @@
 import { Body, Controller, Get, Patch, Query } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import UpdateBulletinCollapsedDto from '@libs/user-preferences/types/update-bulletin-collapsed.dto';
-import USER_PREFERENCES_ENDPOINT from '@libs/user-preferences/constants/user-preferences-endpoint';
+import USER_PREFERENCES_ENDPOINT, {
+  USER_PREFERENCES_NOTIFICATION_ENDPOINT,
+} from '@libs/user-preferences/constants/user-preferences-endpoint';
+import NotificationSettings from '@libs/user-preferences/types/notificationSettings';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import UserPreferencesService from './user-preferences.service';
 
@@ -40,6 +43,19 @@ class UserPreferencesController {
     @Body() updateBulletinCollapsedDto: UpdateBulletinCollapsedDto,
   ) {
     return this.userPreferencesService.updateBulletinCollapsedState(currentUsername, updateBulletinCollapsedDto);
+  }
+
+  @Get(USER_PREFERENCES_NOTIFICATION_ENDPOINT)
+  async getNotificationSettings(@GetCurrentUsername() currentUsername: string) {
+    return this.userPreferencesService.getNotificationSettings(currentUsername);
+  }
+
+  @Patch(USER_PREFERENCES_NOTIFICATION_ENDPOINT)
+  async updateNotificationSettings(
+    @GetCurrentUsername() currentUsername: string,
+    @Body() notificationSettings: NotificationSettings,
+  ) {
+    return this.userPreferencesService.updateNotificationSettings(currentUsername, notificationSettings);
   }
 }
 

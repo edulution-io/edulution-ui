@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import AvailableNotificationModule from '@libs/notification/types/availableNotificationModule';
+import AvailableNotificationModule from '@libs/user-preferences/types/availableNotificationModule';
 import { BulletinBoardIcon, ConferencesIcon, SurveysMenuIcon } from '@/assets/icons';
 
 const AvailableNotificationModules: AvailableNotificationModule[] = [
