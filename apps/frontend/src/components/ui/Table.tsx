@@ -70,7 +70,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTML
     <tr
       ref={ref}
       className={cn(
-        ' truncate text-foreground transition-colors data-[state=selected]:bg-muted-background hover:bg-muted-background',
+        'truncate text-foreground transition-colors data-[state=selected]:bg-muted hover:bg-muted-background',
         'py-0',
         className,
       )}
