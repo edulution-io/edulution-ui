@@ -23,7 +23,7 @@ import getForwardedAppRoutes from '@/router/routes/getForwardedAppRoutes';
 import getFramedRoutes from '@/router/routes/getFramedRoutes';
 import getNativeAppRoutes from '@/router/routes/getNativeAppRoutes';
 import {
-  LANGUAGE_PATH,
+  USER_INTERFACE_PATH,
   MAILS_PATH,
   MOBILE_ACCESS_PATH,
   SECURITY_PATH,
@@ -33,7 +33,7 @@ import {
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
 import UserSettingsDetailsPage from '@/pages/UserSettings/Details/UserSettingsDetailsPage';
 import UserSettingsMailsPage from '@/pages/UserSettings/Mails/UserSettingsMailsPage';
-import LanguageSettingsPage from '@/pages/UserSettings/Language/LanguageSettingsPage';
+import UserInterfaceSettingsPage from '@/pages/UserSettings/Language/UserInterfaceSettingsPage';
 import UserSettingsMobileAccess from '@/pages/UserSettings/MobileAccess/MobileFileAccessSetupBox';
 import getSettingsRoutes from '@/router/routes/getSettingsRoutes';
 import getClassManagementRoutes from '@/router/routes/getClassManagementRoutes';
@@ -85,8 +85,8 @@ const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
         element={<UserSettingsMailsPage />}
       />
       <Route
-        path={LANGUAGE_PATH}
-        element={<LanguageSettingsPage />}
+        path={USER_INTERFACE_PATH}
+        element={<UserInterfaceSettingsPage />}
       />
       <Route
         path={MOBILE_ACCESS_PATH}

@@ -28,7 +28,7 @@ import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionA
 import LanguageSelector from './components/LanguageSelector';
 import ThemeSelector from '../Theme/ThemeSelector';
 
-const LanguageSettingsPage = () => {
+const UserInterfaceSettingsPage = () => {
   const { t } = useTranslation();
   const { user } = useUserStore();
   const methods = useForm({
@@ -43,8 +43,8 @@ const LanguageSettingsPage = () => {
     <FormProvider {...methods}>
       <PageLayout
         nativeAppHeader={{
-          title: t('usersettings.language.title'),
-          description: t('usersettings.language.description'),
+          title: t('usersettings.userinterface.title'),
+          description: t('usersettings.userinterface.description'),
           iconSrc: LanguageIcon,
         }}
       >
@@ -67,4 +67,4 @@ const LanguageSettingsPage = () => {
   );
 };
 
-export default LanguageSettingsPage;
+export default UserInterfaceSettingsPage;

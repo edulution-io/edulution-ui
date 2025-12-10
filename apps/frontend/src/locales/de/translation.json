@@ -1295,6 +1295,10 @@
       "dark": "Dunkel",
       "light": "Hell"
     },
+    "userinterface": {
+      "title": "Benutzeroberfläche",
+      "description": "Hier kannst du Einstellungen zur Benutzeroberfläche vornehmen."
+    },
     "addTotp": {
       "title": "Zwei-Faktor-Authentisierung einrichten",
       "qrCodeInstructions": "Den QR-Code mit einer Authenticator App scannen, die TOTP (Time-based One-Time Password) unterstützt.",

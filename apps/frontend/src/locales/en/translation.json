@@ -1292,6 +1292,10 @@
       "dark": "Dark",
       "light": "Light"
     },
+    "userinterface": {
+      "title": "User Interface",
+      "description": "Here you can customize the user interface settings according to your preferences."
+    },
     "addTotp": {
       "title": "Set up Two-Factor Authentication",
       "qrCodeInstructions": "Scan the QR code with an authenticator app that supports TOTP (Time-based One-Time Password).",
