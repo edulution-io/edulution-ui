@@ -1292,8 +1292,8 @@
       "notAbleToCompressImage": "Not able to compress the image"
     }
   },
-  "globalsettings": {
-    "title": "Global"
+  "generalsettings": {
+    "title": "General"
   },
   "forwardingpage": {
     "action": "This link will take you to the external site of the provider.",

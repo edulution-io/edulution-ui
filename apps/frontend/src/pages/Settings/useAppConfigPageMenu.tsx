@@ -25,7 +25,6 @@ import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import { APPSTORE_PATH, SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import getDisplayName from '@/utils/getDisplayName';
-import TABS from '@libs/common/constants/tabsElementId';
 import CONTAINER from '@libs/docker/constants/container';
 
 const useAppConfigPageMenu = () => {
@@ -34,10 +33,10 @@ const useAppConfigPageMenu = () => {
   const { language } = useLanguage();
 
   const globalSettingsMenuItem = {
-    id: APPS.GLOBAL_SETTINGS,
-    label: `${APPS.GLOBAL_SETTINGS}.title`,
+    id: APPS.GENERAL_SETTINGS,
+    label: `${APPS.GENERAL_SETTINGS}.title`,
     icon: SettingsIcon,
-    action: () => navigate(`/${SETTINGS_PATH}/${TABS}/${CONTAINER}`),
+    action: () => navigate(`/${SETTINGS_PATH}/${APPS.GENERAL_SETTINGS}/${CONTAINER}`),
   };
 
   const appStoreMenuItem = {
