@@ -129,7 +129,7 @@ const UserCard = ({ user, selectedMember, isTeacherInSameClass, setSelectedMembe
           </div>
 
           <div className="-my-1 ml-2 flex justify-between">
-            <span className="mt-1 h-6 rounded-lg bg-muted-background px-2 py-0 text-sm dark:bg-accent-light">
+            <span className="mt-1 h-6 rounded-lg border-[0.5px] bg-white px-2 py-0 text-sm dark:border-none dark:bg-accent-light">
               {schoolClassName}
             </span>
             <TooltipProvider>
@@ -139,7 +139,7 @@ const UserCard = ({ user, selectedMember, isTeacherInSameClass, setSelectedMembe
                 openOnSide="left"
                 trigger={
                   <div className="flex flex-col">
-                    <span className="mt-1 h-6 rounded-lg bg-muted-background px-2 py-0 text-sm dark:bg-accent-light">
+                    <span className="mt-1 h-6 rounded-lg border-[0.5px] bg-white px-2 py-0 text-sm dark:border-none dark:bg-accent-light">
                       {user.sophomorixCloudQuotaCalculated?.[0]}
                     </span>
                   </div>
@@ -147,7 +147,7 @@ const UserCard = ({ user, selectedMember, isTeacherInSameClass, setSelectedMembe
               />
             </TooltipProvider>
           </div>
-          <div className="m-2 flex max-h-36 w-64 flex-grow items-center justify-center rounded-xl bg-muted-background text-2xl dark:bg-accent-light">
+          <div className="m-2 flex max-h-36 w-64 flex-grow items-center justify-center rounded-xl border-[0.5px] bg-white text-2xl dark:border-none dark:bg-accent-light">
             <UserCardVeyonPreview
               user={user}
               isVeyonEnabled={isVeyonEnabled}
