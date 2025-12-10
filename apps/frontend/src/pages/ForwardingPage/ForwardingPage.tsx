@@ -105,7 +105,7 @@ const ForwardingPage = () => {
           />
         </Button>
       </div>
-      <h2 className="text-center">
+      <h2 className="text-center text-background">
         {hasForwarded || shouldForwardDirectly ? t('forwardingpage.description') : '\u00A0'}
       </h2>
     </div>
