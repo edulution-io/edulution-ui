@@ -43,7 +43,7 @@ const ImageQuestionOptions = () => {
           const inputWidth = e.target.value.replace(/\D/g, '');
           setImageWidth(Number(inputWidth));
         }}
-        className={cn({ 'text-muted-foreground': !imageWidth }, { 'text-primary-foreground': imageWidth })}
+        className={cn({ 'text-muted-foreground': !imageWidth }, { 'text-background': imageWidth })}
       />
     </div>
   );
