@@ -472,7 +472,7 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
               {open && (
                 <CommandList
                   className={cn(
-                    'w-full overflow-y-auto rounded-lg border bg-popover text-popover-foreground shadow-md outline-none animate-in scrollbar-thin',
+                    'w-full overflow-y-auto rounded-lg border bg-popover text-popover-foreground shadow-md outline-none animate-in scrollbar-thin dark:border-none',
                     variant === 'default' ? 'bg-white text-background dark:bg-accent' : 'bg-white dark:bg-muted',
                   )}
                 >
@@ -519,12 +519,12 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
                                 className={cn(
                                   'cursor-pointer',
                                   variant === 'default'
-                                    ? 'bg-white-light bg-white text-background hover:text-background dark:bg-accent hover:dark:bg-accent'
-                                    : 'bg-white-light bg-white text-background hover:text-background dark:bg-muted hover:dark:bg-muted',
+                                    ? 'bg-white text-background hover:bg-muted dark:bg-accent hover:dark:bg-muted'
+                                    : 'bg-white text-background hover:bg-muted-light dark:bg-muted hover:dark:bg-muted-light',
                                   option.disable &&
                                     (variant === 'default'
-                                      ? 'cursor-default bg-white text-muted-foreground hover:text-muted-foreground hover:dark:bg-accent'
-                                      : 'cursor-default bg-white text-gray-500 hover:text-gray-500 hover:dark:bg-muted'),
+                                      ? 'cursor-default text-muted-foreground hover:bg-white hover:dark:bg-accent'
+                                      : 'cursor-default text-muted-foreground hover:bg-white hover:dark:bg-muted'),
                                 )}
                               >
                                 {option.label}
