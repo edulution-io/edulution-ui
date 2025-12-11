@@ -276,7 +276,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
             {settingLocation === APPS.MAIL && (
               <SectionAccordionItem
                 id="mailImporter"
-                label={t('settings.appconfig.mailImporter.title')}
+                label={t('mail.importer.title')}
               >
                 <MailImporterConfig form={form as UseFormReturn<MailProviderConfig>} />
               </SectionAccordionItem>

@@ -27,6 +27,9 @@ import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareS
 import useUserStore from '@/store/UserStore/useUserStore';
 import useReplaceFilesDialogStore from '@/pages/FileSharing/Dialog/useReplaceFilesDialogStore';
 import getRandomUUID from '@/utils/getRandomUUID';
+import isFolderUploadItem from '@libs/filesharing/utils/isFolderUploadItem';
+
+const isUploadItem = (file: File | UploadItem): file is UploadItem => 'id' in file && 'isFolder' in file;
 
 const useFileUploadWithReplace = () => {
   const { uploadFiles, updateFilesToUpload } = useHandleUploadFileStore();
@@ -37,15 +40,18 @@ const useFileUploadWithReplace = () => {
   const { t } = useTranslation();
 
   const uploadFilesDirectly = useCallback(
-    async (filesToUpload: File[], webdavShare: string, currentPath: string) => {
+    async (filesToUpload: (File | UploadItem)[], webdavShare: string, currentPath: string) => {
       try {
         updateFilesToUpload(() =>
-          filesToUpload.map((file) =>
-            Object.assign(new File([file], file.name, { type: file.type }), {
+          filesToUpload.map((file) => {
+            if (isUploadItem(file) && isFolderUploadItem(file)) {
+              return file;
+            }
+            return Object.assign(new File([file], file.name, { type: file.type }), {
               id: getRandomUUID(),
               isZippedFolder: false,
-            } as UploadItem),
-          ),
+            } as UploadItem);
+          }),
         );
 
         const results = await uploadFiles(currentPath, eduApiToken, webdavShare);
@@ -62,13 +68,20 @@ const useFileUploadWithReplace = () => {
   );
 
   const handleFileUploadWithDuplicateCheck = useCallback(
-    async (droppedFiles: File[], webdavShare: string | undefined, currentPath: string) => {
+    async (droppedFiles: (File | UploadItem)[], webdavShare: string | undefined, currentPath: string) => {
       if (!webdavShare) return;
 
       const existingFileNames = new Set(files.map((f) => f.filename));
 
-      const duplicateFiles = droppedFiles.filter((file) => existingFileNames.has(file.name));
-      const newFiles = droppedFiles.filter((file) => !existingFileNames.has(file.name));
+      const getDisplayName = (file: File | UploadItem): string => {
+        if (isUploadItem(file) && isFolderUploadItem(file)) {
+          return file.folderName || file.name;
+        }
+        return file.name;
+      };
+
+      const duplicateFiles = droppedFiles.filter((file) => existingFileNames.has(getDisplayName(file)));
+      const newFiles = droppedFiles.filter((file) => !existingFileNames.has(getDisplayName(file)));
 
       if (duplicateFiles.length > 0) {
         openDialog({
