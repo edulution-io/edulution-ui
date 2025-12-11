@@ -24,7 +24,6 @@ import { de, enUS } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
-import { CalendarIcon, ClockIcon } from '@radix-ui/react-icons';
 import { inputVariants } from '@libs/ui/constants/commonClassNames';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
 import cn from '@libs/common/utils/className';
@@ -41,12 +40,7 @@ import { DayTimePickerModeType } from '@libs/common/types/dayTimePickerModeType'
 import DayTimePickerMode from '@libs/common/constants/dayTimePickerMode';
 import { HOURS, MINUTES } from '@libs/common/constants/timeValues';
 import formatDateByMode from '@libs/common/utils/Date/formatDateByMode';
-
-const TRIGGER_ICONS: Record<DayTimePickerModeType, typeof CalendarIcon> = {
-  [DayTimePickerMode.Date]: CalendarIcon,
-  [DayTimePickerMode.Time]: ClockIcon,
-  [DayTimePickerMode.DateTime]: CalendarIcon,
-};
+import dateTimePickerTriggerIcons from '@/components/ui/DateTimePicker/dateTimePickerTriggerIcons';
 
 interface DateTimePickerFieldProps<T extends FieldValues> {
   form: UseFormReturn<T>;
@@ -75,7 +69,7 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
   const showDate = mode === DayTimePickerMode.DateTime || mode === DayTimePickerMode.Date;
   const showTime = mode === DayTimePickerMode.DateTime || mode === DayTimePickerMode.Time;
 
-  const TriggerIcon = TRIGGER_ICONS[mode];
+  const TriggerIcon = dateTimePickerTriggerIcons[mode];
 
   const handleClear = useCallback(() => {
     form.setValue(path, null as PathValue<T, Path<T>>, {
