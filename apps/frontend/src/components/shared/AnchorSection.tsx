@@ -27,12 +27,12 @@ interface AnchorSectionProps {
 }
 
 const AnchorSection: FC<AnchorSectionProps> = ({ id, className, children }) => (
-    <section
-      id={id}
-      className={cn('scroll-mt-20', className)}
-    >
-      {children}
-    </section>
-  );
+  <section
+    id={id}
+    className={cn('scroll-mt-20', className)}
+  >
+    {children}
+  </section>
+);
 
 export default AnchorSection;
