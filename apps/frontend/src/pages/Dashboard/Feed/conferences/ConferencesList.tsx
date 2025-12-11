@@ -47,6 +47,7 @@ const ConferencesList = (props: ConferencesListProps) => {
         <BadgeSH
           className="max-w-[100px] hover:bg-primary"
           key={`feed-conferences-${item.name}-badge-${name}`}
+          variant="secondary"
         >
           <p className="overflow-hidden text-ellipsis text-sm">{name}</p>
         </BadgeSH>,

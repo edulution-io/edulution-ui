@@ -145,12 +145,26 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
   );
 
   return (
-    <div className="flex flex-col">
+    <div className={cn('flex flex-col', variant === 'default' && 'bg-background', variant === 'dialog' && 'bg-muted')}>
       <div
-        className="flex h-12 flex-col items-center justify-center border-b border-gray-600 pt-2"
+        className={cn(
+          'flex h-12 flex-col items-center justify-center border-b pt-2',
+          variant === 'default' && 'border-border',
+          variant === 'dialog' && 'border-ring',
+        )}
         onWheel={handleWheel}
       >
-        {label && <span className="text-[10px] text-gray-400">{label}</span>}
+        {label && (
+          <span
+            className={cn(
+              'text-[10px]',
+              variant === 'default' && 'text-muted-foreground',
+              variant === 'dialog' && 'text-secondary',
+            )}
+          >
+            {label}
+          </span>
+        )}
         {isEditing ? (
           <Input
             ref={inputRef}
@@ -171,8 +185,8 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
           <span
             className={cn(
               'cursor-pointer rounded px-2 text-lg font-medium transition-colors',
-              variant === 'default' && 'hover:bg-accent',
-              variant === 'dialog' && 'hover:bg-gray-700',
+              variant === 'default' && 'text-foreground hover:bg-accent',
+              variant === 'dialog' && 'text-secondary hover:bg-accent',
             )}
             onDoubleClick={handleDoubleClick}
             title={t('form.input.dateTimePicker.doubleClickToEdit')}
@@ -199,8 +213,8 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
                 data-selected={isSelected}
                 className={cn(
                   'aspect-square max-h-[32px] w-full shrink-0 text-sm font-medium',
-                  variant === 'default' && !isSelected && 'bg-background text-foreground',
-                  variant === 'dialog' && !isSelected && 'bg-muted text-secondary',
+                  variant === 'default' && !isSelected && 'bg-accent text-foreground hover:bg-accent-light',
+                  variant === 'dialog' && !isSelected && 'bg-muted text-secondary hover:bg-accent',
                   isSelected && 'ring-2 ring-primary',
                 )}
                 onClick={() => onChange(val)}

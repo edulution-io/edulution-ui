@@ -64,6 +64,7 @@ const SidebarItemPopover: React.FC<PopoverProps> = ({ anchorRect, color, title, 
 
       <SidebarItemIcon
         isHovered={isHovered}
+        isSelected
         iconSrc={iconSrc}
         title={title}
       />

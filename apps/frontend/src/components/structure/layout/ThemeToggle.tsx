@@ -18,32 +18,38 @@
  */
 
 import React from 'react';
-import { Toaster as Sonner } from 'sonner';
-import { SHOW_TOASTER_DURATION } from '@libs/ui/constants/showToasterDuration';
+import { GoMoon, GoSun } from 'react-icons/go';
 import useThemeStore from '@/store/useThemeStore';
+import useMedia from '@/hooks/useMedia';
 
-type ToasterProps = React.ComponentProps<typeof Sonner>;
+const ThemeToggle: React.FC = () => {
+  const theme = useThemeStore((s) => s.theme);
+  const resolvedTheme = useThemeStore((s) => s.getResolvedTheme());
+  const setTheme = useThemeStore((s) => s.setTheme);
+  const { isMobileView } = useMedia();
 
-const Toaster = ({ ...props }: ToasterProps) => {
-  const theme = useThemeStore((state) => state.theme);
+  if (isMobileView) {
+    return null;
+  }
+
+  const toggleTheme = () => {
+    if (theme === 'system') {
+      setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+    } else {
+      setTheme(theme === 'dark' ? 'light' : 'dark');
+    }
+  };
 
   return (
-    <Sonner
-      theme={theme}
-      className="toaster group"
-      closeButton
-      offset={60}
-      toastOptions={{
-        duration: SHOW_TOASTER_DURATION,
-        classNames: {
-          toast: 'group toast group-[.toaster]:bg-overlay group-[.toaster]:border-border group-[.toaster]:shadow-lg',
-          content: 'whitespace-pre-line group-[.toaster]:text-background',
-        },
-      }}
-      richColors
-      {...props}
-    />
+    <button
+      type="button"
+      onClick={toggleTheme}
+      className="absolute right-6 top-2 z-50 rounded-full bg-accent p-2 text-white shadow-xl transition hover:opacity-80 dark:text-secondary"
+      aria-label="Toggle Theme"
+    >
+      {resolvedTheme === 'dark' ? <GoSun className="h-6 w-6" /> : <GoMoon className="h-6 w-6" />}
+    </button>
   );
 };
 
-export default Toaster;
+export default ThemeToggle;

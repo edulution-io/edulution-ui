@@ -24,28 +24,34 @@ import { de, enUS } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
+import { CalendarIcon, ClockIcon } from '@radix-ui/react-icons';
 import { inputVariants } from '@libs/ui/constants/commonClassNames';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
 import cn from '@libs/common/utils/className';
 import safeGetHours from '@libs/common/utils/Date/safeGetHours';
 import safeGetMinutes from '@libs/common/utils/Date/safeGetMinutes';
 import safeGetDate from '@libs/common/utils/Date/safeGetDate';
+import formatDateByMode from '@libs/common/utils/Date/formatDateByMode';
+import { HOURS, MINUTES } from '@libs/common/constants/timeValues';
+import DayTimePickerMode from '@libs/common/constants/dayTimePickerMode';
+import { DayTimePickerModeType } from '@libs/common/types/dayTimePickerModeType';
 import useLanguage from '@/hooks/useLanguage';
 import { Button } from '@/components/shared/Button';
 import { Calendar } from '@/components/ui/Calendar';
 import { FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 import TimeSelector from '@/components/ui/DateTimePicker/TimeSelector';
-import { DayTimePickerModeType } from '@libs/common/types/dayTimePickerModeType';
-import DayTimePickerMode from '@libs/common/constants/dayTimePickerMode';
-import { HOURS, MINUTES } from '@libs/common/constants/timeValues';
-import formatDateByMode from '@libs/common/utils/Date/formatDateByMode';
-import dateTimePickerTriggerIcons from '@/components/ui/DateTimePicker/dateTimePickerTriggerIcons';
+
+const TRIGGER_ICONS: Record<DayTimePickerModeType, typeof CalendarIcon> = {
+  [DayTimePickerMode.Date]: CalendarIcon,
+  [DayTimePickerMode.Time]: ClockIcon,
+  [DayTimePickerMode.DateTime]: CalendarIcon,
+};
 
 interface DateTimePickerFieldProps<T extends FieldValues> {
   form: UseFormReturn<T>;
   path: Path<T>;
-  mode: DayTimePickerModeType;
+  mode?: DayTimePickerModeType;
   translationId?: string;
   variant?: DropdownVariant;
   allowPast?: boolean;
@@ -54,7 +60,16 @@ interface DateTimePickerFieldProps<T extends FieldValues> {
 }
 
 const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldProps<T>) => {
-  const { form, path, mode, translationId, variant = 'default', isDateRequired, allowPast, placeholder } = props;
+  const {
+    form,
+    path,
+    mode = DayTimePickerMode.DateTime,
+    translationId,
+    variant = 'default',
+    isDateRequired,
+    allowPast,
+    placeholder,
+  } = props;
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -69,7 +84,7 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
   const showDate = mode === DayTimePickerMode.DateTime || mode === DayTimePickerMode.Date;
   const showTime = mode === DayTimePickerMode.DateTime || mode === DayTimePickerMode.Time;
 
-  const TriggerIcon = dateTimePickerTriggerIcons[mode];
+  const TriggerIcon = TRIGGER_ICONS[mode];
 
   const handleClear = useCallback(() => {
     form.setValue(path, null as PathValue<T, Path<T>>, {
@@ -120,13 +135,15 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
     [fieldValue, form, path],
   );
 
-  const isDateDisabled = useCallback((date: Date) => {
-    const newDate = new Date();
-    const yesterday = newDate.getTime() - 24 * 60 * 60 * 1000;
-    newDate.setTime(yesterday);
-
-    return date < newDate;
-  }, []);
+  const isDateDisabled = useCallback(
+    (date: Date) => {
+      if (allowPast) return false;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return date < today;
+    },
+    [allowPast],
+  );
 
   const timeDisplay = useMemo((): string => {
     if (!fieldValue) {
@@ -134,6 +151,8 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
     }
     return formatDateByMode(new Date(fieldValue), mode, language);
   }, [fieldValue, language, mode, placeholder, t]);
+
+  const isDialogVariant = variant === 'dialog';
 
   return (
     <FormFieldSH
@@ -190,10 +209,10 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
             </PopoverTrigger>
 
             <PopoverContent
-              className={cn('w-auto p-0', {
-                'bg-background text-foreground': variant === 'default',
-                'border-ring bg-muted text-secondary': variant === 'dialog',
-              })}
+              className={cn(
+                'w-auto p-0',
+                isDialogVariant ? 'border-ring bg-muted text-secondary' : 'bg-muted-dialog text-secondary',
+              )}
             >
               <div className={cn(showDate && showTime && 'sm:flex')}>
                 {showDate && (
@@ -204,11 +223,18 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
                     initialFocus
                     disabled={isDateDisabled}
                     locale={locale}
+                    variant={variant}
                   />
                 )}
 
                 {showTime && (
-                  <div className={cn('flex', showDate && 'border-t sm:border-l sm:border-t-0')}>
+                  <div
+                    className={cn(
+                      'flex',
+                      showDate && 'border-t sm:border-l sm:border-t-0',
+                      isDialogVariant ? 'border-ring' : 'border-muted',
+                    )}
+                  >
                     <TimeSelector
                       value={hours}
                       values={HOURS}
@@ -217,13 +243,7 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
                       label={t('form.input.dateTimePicker.hours')}
                     />
 
-                    <div
-                      className={cn(
-                        'w-px',
-                        variant === 'default' && 'bg-border',
-                        variant === 'dialog' && 'bg-gray-600',
-                      )}
-                    />
+                    <div className={cn('w-px', isDialogVariant ? 'bg-ring' : 'bg-muted')} />
 
                     <TimeSelector
                       value={minutes}

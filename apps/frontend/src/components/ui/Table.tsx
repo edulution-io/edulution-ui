@@ -70,7 +70,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTML
     <tr
       ref={ref}
       className={cn(
-        ' truncate text-foreground transition-colors data-[state=selected]:bg-muted hover:bg-white/10',
+        'truncate text-foreground transition-colors data-[state=selected]:bg-muted hover:bg-muted-background',
         'py-0',
         className,
       )}
@@ -92,7 +92,7 @@ const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<
       {...props}
     >
       {props.children}
-      <div className="absolute bottom-0 left-0 h-[1px] w-full bg-gray-200" />
+      <div className="absolute bottom-0 left-0 h-[1px] w-full bg-muted" />
     </th>
   ),
 );

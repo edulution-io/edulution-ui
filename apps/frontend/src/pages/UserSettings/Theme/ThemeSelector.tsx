@@ -18,32 +18,29 @@
  */
 
 import React from 'react';
-import { Toaster as Sonner } from 'sonner';
-import { SHOW_TOASTER_DURATION } from '@libs/ui/constants/showToasterDuration';
+import { DropdownSelect } from '@/components';
 import useThemeStore from '@/store/useThemeStore';
 
-type ToasterProps = React.ComponentProps<typeof Sonner>;
+const themeOptions = [
+  { id: 'system', name: 'usersettings.themeMode.system' },
+  { id: 'dark', name: 'usersettings.themeMode.dark' },
+  { id: 'light', name: 'usersettings.themeMode.light' },
+];
 
-const Toaster = ({ ...props }: ToasterProps) => {
-  const theme = useThemeStore((state) => state.theme);
+const ThemeSelector: React.FC = () => {
+  const theme = useThemeStore((s) => s.theme);
+  const setTheme = useThemeStore((s) => s.setTheme);
 
   return (
-    <Sonner
-      theme={theme}
-      className="toaster group"
-      closeButton
-      offset={60}
-      toastOptions={{
-        duration: SHOW_TOASTER_DURATION,
-        classNames: {
-          toast: 'group toast group-[.toaster]:bg-overlay group-[.toaster]:border-border group-[.toaster]:shadow-lg',
-          content: 'whitespace-pre-line group-[.toaster]:text-background',
-        },
-      }}
-      richColors
-      {...props}
-    />
+    <div className="pb-4">
+      <DropdownSelect
+        options={themeOptions}
+        selectedVal={theme}
+        handleChange={(value) => setTheme(value as 'dark' | 'light' | 'system')}
+        classname="w-fit"
+      />
+    </div>
   );
 };
 
-export default Toaster;
+export default ThemeSelector;

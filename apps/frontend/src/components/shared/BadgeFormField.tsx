@@ -86,7 +86,7 @@ const BadgeFormField = <T extends FieldValues>({
         <FormItem>
           {labelTranslationId && (
             <FormLabel>
-              <p className="font-bold text-secondary">{t(labelTranslationId)}</p>
+              <p className="font-bold">{t(labelTranslationId)}</p>
             </FormLabel>
           )}
           <FormControl>
@@ -94,7 +94,7 @@ const BadgeFormField = <T extends FieldValues>({
               {badges?.map((badge) => (
                 <BadgeSH
                   key={`badge-${badge}`}
-                  className="color-white h-[36px] text-background"
+                  className="color-white h-[36px]"
                 >
                   {badge}
                   <button

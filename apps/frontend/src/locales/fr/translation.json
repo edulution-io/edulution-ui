@@ -1136,6 +1136,17 @@
       "system": "Langue du système",
       "selectLanguage": "Sélectionner la langue"
     },
+    "themeMode": {
+      "title": "Apparence",
+      "description": "Sélectionnez l'apparence de l'interface utilisateur.",
+      "system": "Système",
+      "dark": "Sombre",
+      "light": "Clair"
+    },
+    "userinterface": {
+      "title": "Interface utilisateur",
+      "description": "Ici, vous pouvez configurer certains aspects de l'interface utilisateur selon vos préférences."
+    },
     "addTotp": {
       "title": "Configurer l'authentification à deux facteurs",
       "qrCodeInstructions": "Scannez le code QR avec une application Authenticator qui prend en charge TOTP (mot de passe unique basé sur le temps).",

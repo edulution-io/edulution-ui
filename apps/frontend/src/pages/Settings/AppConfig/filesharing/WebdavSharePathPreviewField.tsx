@@ -68,7 +68,7 @@ const WebdavSharePathPreviewField: React.FC<WebdavSharePathPreviewFieldProps> = 
   return (
     <>
       <FormLabel>
-        <p className="mt-4 font-bold text-background">{t(`webdavShare.pathPreview`)}</p>
+        <p className="mt-4 font-bold">{t(`webdavShare.pathPreview`)}</p>
       </FormLabel>
       <Input
         value={sharePathValue}

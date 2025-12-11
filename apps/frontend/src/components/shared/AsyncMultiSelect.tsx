@@ -48,13 +48,17 @@ const AsyncMultiSelect = <T extends MultipleSelectorOptionSH>({
   const { t } = useTranslation();
 
   const loadingIndicator = (
-    <p className={`leading-1 py-2 text-center ${variant === 'default' ? 'text-secondary' : 'text-background'}`}>
+    <p
+      className={`leading-1 py-2 text-center ${variant === 'default' ? 'text-background dark:text-secondary' : 'text-background'}`}
+    >
       {t('search.loading')}...
     </p>
   );
 
   const emptyIndicator = (
-    <p className={`leading-1 w-full py-2 text-center ${variant === 'default' ? 'text-secondary' : 'text-background'}`}>
+    <p
+      className={`leading-1 w-full py-2 text-center ${variant === 'default' ? 'text-background dark:text-secondary' : 'text-background'}`}
+    >
       {t('search.no-results')}
     </p>
   );
@@ -72,7 +76,7 @@ const AsyncMultiSelect = <T extends MultipleSelectorOptionSH>({
       emptyIndicator={emptyIndicator}
       delay={delay}
       badgeClassName={badgeClassName || 'text-base font-normal '}
-      className={`rounded-lg p-[8px] ${variant === 'default' ? 'bg-accent' : 'bg-muted'}`}
+      className={`rounded-lg bg-white p-[8px] shadow-md dark:shadow-none ${variant === 'default' ? 'dark:bg-accent' : 'border-2 border-gray-300 text-background shadow-md dark:border-none dark:bg-muted dark:shadow-none'}`}
       onChange={handleChange}
       onSearch={onSearch}
       inputProps={{ className: 'text-base m-0' }}

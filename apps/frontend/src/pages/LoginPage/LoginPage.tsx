@@ -75,9 +75,8 @@ const LoginPage: React.FC = () => {
   const globalSettings = useGlobalSettingsApiStore((s) => s.globalSettings);
   const appConfigs = useAppConfigsStore((s) => s.appConfigs);
   const { silentLogin } = useSilentLoginWithPassword();
-  const theme = COLOR_SCHEME;
 
-  const logoSrc = getMainLogoUrl(theme);
+  const logoSrc = getMainLogoUrl(COLOR_SCHEME);
 
   const { isLoading } = auth;
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);

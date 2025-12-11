@@ -27,6 +27,7 @@ import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/Notifi
 import PageTitle from '@/components/PageTitle';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import cn from '@libs/common/utils/className';
+import getAppIconClassName from '@libs/ui/utils/getAppIconClassName';
 import useSidebarStore from '../useSidebarStore';
 
 const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({
@@ -42,6 +43,7 @@ const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({
 
   const navLinkClassName = isEdulutionApp ? '' : 'lg:block lg:px-2';
   const titleClassName = isEdulutionApp ? '' : 'lg:hidden';
+  const textClassName = isSelected ? 'text-white' : 'text-background';
 
   return (
     <div
@@ -56,6 +58,7 @@ const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({
           'group relative flex cursor-pointer items-center justify-end gap-4 px-4 py-2',
           menuItemColor,
           navLinkClassName,
+          textClassName,
         )}
       >
         <p className={titleClassName}>{title}</p>
@@ -63,7 +66,7 @@ const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({
         <img
           src={icon}
           width={SIDEBAR_ICON_WIDTH}
-          className="relative"
+          className={cn('relative', !isSelected && getAppIconClassName(icon))}
           alt={`${title}-icon`}
         />
       </NavLink>

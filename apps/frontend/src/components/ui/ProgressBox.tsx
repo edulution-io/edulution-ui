@@ -36,7 +36,7 @@ const ProgressBox: React.FC<{ data: ProgressBoxProps }> = ({ data }) => {
   const { percent, title, description, statusDescription, failed, processed, total } = data;
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 text-background">
       {title && <h1 className="text-sm font-bold">{title}</h1>}
 
       <div className="flex items-center gap-2">

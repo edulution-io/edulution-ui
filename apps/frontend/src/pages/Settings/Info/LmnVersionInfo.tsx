@@ -38,7 +38,7 @@ const LmnVersionInfo = () => {
           variant="text"
         >
           <p className="font-bold">{pkg}</p>
-          <BadgeSH className="text-p">{!version && isGetVersionLoading ? '...' : version}</BadgeSH>
+          <BadgeSH>{!version && isGetVersionLoading ? '...' : version}</BadgeSH>
         </Card>
       ))}
     </div>

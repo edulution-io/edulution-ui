@@ -27,16 +27,16 @@ import {
 } from '@/assets/icons';
 import { useNavigate } from 'react-router-dom';
 import {
-  LANGUAGE_PATH,
+  USER_INTERFACE_PATH,
   MAILS_PATH,
   MOBILE_ACCESS_PATH,
   SECURITY_PATH,
   USER_DETAILS_PATH,
-  USER_SETTINGS_LANGUAGE_PATH,
   USER_SETTINGS_MAILS_PATH,
   USER_SETTINGS_MOBILE_ACCESS_PATH,
   USER_SETTINGS_SECURITY_PATH,
   USER_SETTINGS_USER_DETAILS_PATH,
+  USER_SETTINGS_USER_INTERFACE_PATH,
 } from '@libs/userSettings/constants/user-settings-endpoints';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import APPS from '@libs/appconfig/constants/apps';
@@ -69,10 +69,10 @@ const useUserSettingsMenu = () => {
         action: () => navigate(USER_SETTINGS_MAILS_PATH),
       },
       {
-        id: LANGUAGE_PATH,
-        label: 'usersettings.language.title',
+        id: USER_INTERFACE_PATH,
+        label: 'usersettings.userinterface.title',
         icon: LanguageIcon,
-        action: () => navigate(USER_SETTINGS_LANGUAGE_PATH),
+        action: () => navigate(USER_SETTINGS_USER_INTERFACE_PATH),
       },
       {
         id: MOBILE_ACCESS_PATH,

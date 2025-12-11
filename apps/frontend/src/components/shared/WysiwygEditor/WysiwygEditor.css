@@ -59,10 +59,13 @@
   color: var(--background) !important;
 }
 
-.ql-snow .ql-toolbar button svg *,
-.ql-snow .ql-toolbar .ql-picker-label svg * {
-  fill: var(--background) !important;
+.quill-container .ql-snow .ql-stroke {
   stroke: var(--background) !important;
+}
+
+.quill-container .ql-snow .ql-fill,
+.quill-container .ql-snow .ql-stroke.ql-fill {
+  fill: var(--background) !important;
 }
 
 .ql-editor li[data-list] > span.ql-ui {

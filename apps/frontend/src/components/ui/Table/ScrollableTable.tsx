@@ -152,7 +152,7 @@ const ScrollableTable = <TData, TValue>({
                 placeholder={t(filterPlaceHolderText)}
                 value={filterValue}
                 onChange={(e) => table.getColumn(filterKey)?.setFilterValue(e.target.value)}
-                className={`w-full text-secondary ${isDialog ? 'bg-muted' : 'bg-accent'}`}
+                variant={isDialog ? 'dialog' : 'default'}
               />
             </div>
 

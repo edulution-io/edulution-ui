@@ -53,7 +53,7 @@ const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
     showCloseButton?: boolean;
-    variant?: 'primary' | 'secondary' | 'tertiary' | 'loadingSpinner';
+    variant?: 'primary' | 'secondary' | 'loadingSpinner';
   }
 >(({ className, children, showCloseButton = true, variant, ...props }, ref) => {
   React.useEffect(() => {
@@ -76,9 +76,8 @@ const DialogContent = React.forwardRef<
         className={cn(
           'fixed left-[50%] top-[50%] z-50 grid max-h-[90vh] w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 overflow-auto rounded-xl p-6 shadow-lg duration-200 scrollbar-thin',
           { 'bg-overlay text-background': variant === 'primary' },
-          { 'color-white text-background': variant === 'secondary' || variant === 'tertiary' },
+          { 'color-white text-background': variant === 'secondary' },
           { 'bg-ciGray': variant === 'secondary' },
-          { 'bg-foreground': variant === 'tertiary' },
           { 'w-40 bg-foreground': variant === 'loadingSpinner' },
           className,
         )}

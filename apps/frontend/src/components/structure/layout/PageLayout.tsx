@@ -28,6 +28,7 @@ import { getFromPathName } from '@libs/common/utils';
 import useFloatingBarHeight from '@/hooks/useFloatingBarHeight';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import cn from '@libs/common/utils/className';
+import ThemeToggle from './ThemeToggle';
 
 interface PageLayoutProps {
   nativeAppHeader?: NativeAppHeaderProps;
@@ -58,11 +59,14 @@ const PageLayout = ({
       className="relative flex h-full w-full flex-col pt-1 md:pt-1"
     >
       {nativeAppHeader && (
-        <NativeAppHeader
-          title={nativeAppHeader.title}
-          description={nativeAppHeader.description}
-          iconSrc={nativeAppHeader.iconSrc}
-        />
+        <>
+          <NativeAppHeader
+            title={nativeAppHeader.title}
+            description={nativeAppHeader.description}
+            iconSrc={nativeAppHeader.iconSrc}
+          />
+          <ThemeToggle />
+        </>
       )}
 
       <main
