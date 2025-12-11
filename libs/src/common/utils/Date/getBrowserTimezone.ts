@@ -17,10 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import THIRTY_DAYS from '@libs/common/constants/thirtyDays';
+const getBrowserTimezone = (): string => Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-export const DEFAULT_CACHE_TTL_MS = 3600000;
-export const USERS_CACHE_TTL_MS = THIRTY_DAYS;
-export const GROUPS_CACHE_TTL_MS = THIRTY_DAYS;
-export const AUTH_CACHE_TTL_MS = 3600000;
-export const GUACAMOLE_AUTH_CACHE_TTL_MS = 3300000;
+export default getBrowserTimezone;

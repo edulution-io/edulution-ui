@@ -36,6 +36,7 @@ import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareS
 import TableActionCell from '@/components/ui/Table/TableActionCell';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
+import getBrowserTimezone from '@libs/common/utils/Date/getBrowserTimezone';
 
 const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDto>[] => [
   {
@@ -103,7 +104,7 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
     cell: ({ row }) => {
       const { expires } = row.original;
       const validUntil = new Date(expires)?.toLocaleString('de-DE', {
-        timeZone: 'Europe/Berlin',
+        timeZone: getBrowserTimezone(),
         dateStyle: 'short',
         timeStyle: 'short',
       });

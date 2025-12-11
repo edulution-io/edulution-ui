@@ -17,7 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 import { OnEvent } from '@nestjs/event-emitter';
 import axios, { AxiosInstance } from 'axios';
 import {
@@ -33,12 +35,15 @@ import {
 } from '@libs/desktopdeployment/types';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import APPS from '@libs/appconfig/constants/apps';
+import { GUACAMOLE_AUTH_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
 import AppConfigService from '../appconfig/appconfig.service';
 
 const { LMN_VDI_API_SECRET, LMN_VDI_API_URL, EDULUTION_GUACAMOLE_ADMIN_PASSWORD, EDULUTION_GUACAMOLE_ADMIN_USER } =
   process.env;
+
+const GUACAMOLE_AUTH_CACHE_KEY = 'guacamole:auth';
 
 @Injectable()
 class VdiService implements OnModuleInit {
@@ -49,6 +54,7 @@ class VdiService implements OnModuleInit {
   private vdiId = '';
 
   constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private usersService: UsersService,
     private readonly appConfigService: AppConfigService,
   ) {
@@ -114,7 +120,16 @@ class VdiService implements OnModuleInit {
     return null;
   }
 
-  async authenticateVdi() {
+  async authenticateVdi(forceRefresh = false): Promise<{ authToken: string; dataSource: string }> {
+    if (!forceRefresh) {
+      const cachedAuth = await this.cacheManager.get<{ authToken: string; dataSource: string }>(
+        GUACAMOLE_AUTH_CACHE_KEY,
+      );
+      if (cachedAuth) {
+        return cachedAuth;
+      }
+    }
+
     try {
       const response = await this.guacamoleApi.post<GuacamoleDto>(
         '/tokens',
@@ -125,13 +140,20 @@ class VdiService implements OnModuleInit {
       );
       const { authToken, dataSource } = response.data;
 
-      return { authToken, dataSource };
+      const authData = { authToken, dataSource };
+      await this.cacheManager.set(GUACAMOLE_AUTH_CACHE_KEY, authData, GUACAMOLE_AUTH_CACHE_TTL_MS);
+      return authData;
     } catch (e) {
+      await this.cacheManager.del(GUACAMOLE_AUTH_CACHE_KEY);
       throw new CustomHttpException(VdiErrorMessages.GuacamoleNotResponding, HttpStatus.BAD_GATEWAY);
     }
   }
 
-  async getConnection(guacamoleDto: GuacamoleDto, username: string) {
+  async clearAuthCache() {
+    await this.cacheManager.del(GUACAMOLE_AUTH_CACHE_KEY);
+  }
+
+  async getConnection(guacamoleDto: GuacamoleDto, username: string, isRetry = false): Promise<string | null> {
     try {
       const { dataSource, authToken } = guacamoleDto;
       const response = await this.guacamoleApi.get<GuacamoleConnections>(
@@ -141,6 +163,11 @@ class VdiService implements OnModuleInit {
       if (identifier) this.vdiId = identifier;
       return identifier;
     } catch (e) {
+      if (!isRetry && axios.isAxiosError(e) && (e.response?.status === 401 || e.response?.status === 403)) {
+        await this.clearAuthCache();
+        const newAuth = await this.authenticateVdi(true);
+        return this.getConnection(newAuth, username, true);
+      }
       throw new CustomHttpException(VdiErrorMessages.GuacamoleNotResponding, HttpStatus.BAD_GATEWAY);
     }
   }
@@ -154,7 +181,12 @@ class VdiService implements OnModuleInit {
     return this.createSession(guacamoleDto, username, password);
   }
 
-  async createSession(guacamoleDto: GuacamoleDto, username: string, password: string) {
+  async createSession(
+    guacamoleDto: GuacamoleDto,
+    username: string,
+    password: string,
+    isRetry = false,
+  ): Promise<GuacamoleDto> {
     const { dataSource, authToken, hostname } = guacamoleDto;
     try {
       const rdpConnection = VdiService.createRDPConnection(username, {
@@ -169,11 +201,21 @@ class VdiService implements OnModuleInit {
       );
       return response.data;
     } catch (e) {
+      if (!isRetry && axios.isAxiosError(e) && (e.response?.status === 401 || e.response?.status === 403)) {
+        await this.clearAuthCache();
+        const newAuth = await this.authenticateVdi(true);
+        return this.createSession({ ...newAuth, hostname }, username, password, true);
+      }
       throw new CustomHttpException(VdiErrorMessages.GuacamoleNotResponding, HttpStatus.BAD_GATEWAY);
     }
   }
 
-  async updateSession(guacamoleDto: GuacamoleDto, username: string, password: string) {
+  async updateSession(
+    guacamoleDto: GuacamoleDto,
+    username: string,
+    password: string,
+    isRetry = false,
+  ): Promise<GuacamoleDto> {
     try {
       const { dataSource, authToken, hostname } = guacamoleDto;
       const rdpConnection = VdiService.createRDPConnection(username, {
@@ -189,6 +231,11 @@ class VdiService implements OnModuleInit {
 
       return guacamoleDto;
     } catch (e) {
+      if (!isRetry && axios.isAxiosError(e) && (e.response?.status === 401 || e.response?.status === 403)) {
+        await this.clearAuthCache();
+        const newAuth = await this.authenticateVdi(true);
+        return this.updateSession({ ...newAuth, hostname: guacamoleDto.hostname }, username, password, true);
+      }
       throw new CustomHttpException(VdiErrorMessages.GuacamoleNotResponding, HttpStatus.BAD_GATEWAY);
     }
   }

@@ -28,8 +28,8 @@ export class Parameters {
   cursor: string = '';
   'color-depth': string = '';
   'clipboard-encoding': string = '';
-  'disable-copy': string = '';
-  'disable-paste': string = '';
+  'disable-copy': string = 'false';
+  'disable-paste': string = 'false';
   'dest-port': string = '';
   'recording-exclude-output': string = '';
   'recording-exclude-mouse': string = '';

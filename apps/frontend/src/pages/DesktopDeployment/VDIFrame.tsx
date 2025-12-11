@@ -19,12 +19,14 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Client, WebSocketTunnel, Mouse, Touch, Keyboard, Status } from '@glokon/guacamole-common-js';
+import { useDebounceCallback } from 'usehooks-ts';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import { MAXIMIZED_BAR_HEIGHT } from '@libs/ui/constants/resizableWindowElements';
 import RESIZABLE_WINDOW_DEFAULT_SIZE from '@libs/ui/constants/resizableWindowDefaultSize';
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import GUACAMOLE_WEBSOCKET_URL from '@libs/desktopdeployment/constants/guacamole-websocket-url';
+import getBrowserTimezone from '@libs/common/utils/Date/getBrowserTimezone';
 import useDesktopDeploymentStore from './useDesktopDeploymentStore';
 
 const stateMap = Object.fromEntries(
@@ -32,6 +34,29 @@ const stateMap = Object.fromEntries(
     .filter(([_key, value]) => typeof value === 'number')
     .map(([key, value]) => [value, key]),
 );
+
+const getErrorMessage = (status: Status): string => {
+  const errorMessages: Record<number, string> = {
+    512: status.message || 'Server error occurred',
+    513: 'Server is busy. Please try again later.',
+    514: 'Connection timed out. The remote server is not responding.',
+    515: 'Upstream connection timed out. Check if the target is reachable.',
+    516:
+      status.message?.toLowerCase().includes('ssl') || status.message?.toLowerCase().includes('certificate')
+        ? `SSL/TLS connection failed. ${status.message}`
+        : status.message || 'Upstream connection error',
+    517: 'Connection resource not found',
+    518: 'Resource conflict - connection may already be in use',
+    519: 'Connection was closed by the server',
+    520: 'Remote server not found. Check the hostname and port.',
+    521: 'Remote server is unavailable. Connection refused.',
+    768: 'Invalid connection request',
+    769: 'Authentication failed. Check your credentials.',
+    771: 'Access forbidden. You may not have permission to connect.',
+    776: 'Client connection timed out',
+  };
+  return errorMessages[status.code] || status.message || `Connection error (code: ${status.code})`;
+};
 
 const VDIFrame = () => {
   const displayRef = useRef<HTMLDivElement>(null);
@@ -66,15 +91,13 @@ const VDIFrame = () => {
     if (!hasCurrentFrameSizeLoaded) {
       setHasCurrentFrameSizeLoaded(!!width && !!height);
     }
-  }, [currentWindowedFrameSizes[id]]);
+  }, [hasCurrentFrameSizeLoaded, width, height]);
 
   useEffect(() => {
-    if (displayRef.current) {
-      if (isVdiConnectionOpen && !isMinimized) {
-        displayRef.current.focus();
-      }
+    if (displayRef.current && isVdiConnectionOpen && !isMinimized) {
+      displayRef.current.focus();
     }
-  }, [displayRef.current, isVdiConnectionOpen, isMinimized]);
+  }, [isVdiConnectionOpen, isMinimized]);
 
   useEffect(() => {
     if (guacToken === '' || !displayRef.current || !isVdiConnectionOpen || !hasCurrentFrameSizeLoaded) return () => {};
@@ -93,7 +116,7 @@ const VDIFrame = () => {
       GUAC_WIDTH: width,
       GUAC_HEIGHT: height,
       GUAC_DPI: 96,
-      GUAC_TIMEZONE: 'Europe/Berlin',
+      GUAC_TIMEZONE: getBrowserTimezone(),
       GUAC_AUDIO: ['audio/L16'],
       GUAC_IMAGE: ['image/jpeg', 'image/png', 'image/webp'],
     };
@@ -136,12 +159,19 @@ const VDIFrame = () => {
 
     displayElement.appendChild(guac.getDisplay().getElement());
 
-    const canvasElements = Array.from(displayElement.getElementsByTagName('canvas'));
-    canvasElements.forEach((canvas) => {
-      const newCanvas = canvas;
-      newCanvas.style.position = 'absolute';
-      newCanvas.style.zIndex = '1';
-    });
+    const styleCanvasElements = () => {
+      const canvasElements = Array.from(displayElement.getElementsByTagName('canvas'));
+      canvasElements.forEach((canvas) => {
+        const canvasElement = canvas;
+        canvasElement.style.position = 'absolute';
+        canvasElement.style.zIndex = '1';
+      });
+    };
+
+    styleCanvasElements();
+
+    const mutationObserver = new MutationObserver(styleCanvasElements);
+    mutationObserver.observe(displayElement, { childList: true, subtree: true });
 
     guac.onstatechange = (state) => {
       console.info(`Guacamole changed the state to ${stateMap[state]}`);
@@ -153,28 +183,35 @@ const VDIFrame = () => {
     };
 
     guac.onerror = (status) => {
-      if (status.code === Status.Code.SERVER_ERROR) {
-        console.error(`Server error: ${status.message}`);
-      } else {
-        console.error('Guacamole error:', status);
-      }
+      const errorMessage = getErrorMessage(status);
+      console.error('Guacamole error:', status.code, errorMessage);
     };
 
     tunnel.onerror = (status) => {
-      console.error('WebSocket tunnel error:', status);
+      const errorMessage = getErrorMessage(status);
+      console.error('WebSocket tunnel error:', status.code, errorMessage);
     };
 
     return () => {
+      mutationObserver.disconnect();
       handleDisconnect();
     };
-  }, [guacToken, isVdiConnectionOpen, hasCurrentFrameSizeLoaded]);
+  }, [guacToken, isVdiConnectionOpen, hasCurrentFrameSizeLoaded, handleDisconnect]);
+
+  const debouncedSendSize = useDebounceCallback((w: number, h: number) => {
+    if (guacRef.current) {
+      guacRef.current.sendSize(w, h);
+    }
+  }, 150);
 
   useEffect(() => {
-    if (guacRef.current && !isMinimized && displayRef.current) {
-      guacRef.current.sendSize(width, height);
-      displayRef.current.focus();
+    if (clientState === Client.State.CONNECTED && !isMinimized) {
+      debouncedSendSize(width, height);
+      if (displayRef.current) {
+        displayRef.current.focus();
+      }
     }
-  }, [guacRef.current, width, height, isMinimized]);
+  }, [clientState, width, height, isMinimized, debouncedSendSize]);
 
   if (!isVdiConnectionOpen || error) {
     return null;
