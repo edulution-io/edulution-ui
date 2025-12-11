@@ -22,13 +22,19 @@ import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import isImageExtension from '@libs/filesharing/utils/isImageExtension';
 import isMediaExtension from '@libs/filesharing/utils/isMediaExtension';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
+import isTextExtension from '@libs/filesharing/utils/isTextExtension';
 
 const isValidFileToPreview = (file: DirectoryFileDTO | null): boolean => {
   if (!file) {
     return false;
   }
   const extension = getFileExtension(file.filePath);
-  return isOnlyOfficeDocument(file.filePath) || isImageExtension(extension) || isMediaExtension(extension);
+  return (
+    isOnlyOfficeDocument(file.filePath) ||
+    isImageExtension(extension) ||
+    isMediaExtension(extension) ||
+    isTextExtension(extension)
+  );
 };
 
 export default isValidFileToPreview;

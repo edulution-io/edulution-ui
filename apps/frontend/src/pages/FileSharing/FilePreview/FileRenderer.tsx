@@ -17,13 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { FC, MutableRefObject, useEffect } from 'react';
+import React, { FC, MutableRefObject, useEffect, useState } from 'react';
 import ImageComponent from '@/components/ui/ImageComponent';
 import MediaComponent from '@/components/ui/MediaComponent';
 import OnlyOffice from '@/pages/FileSharing/FilePreview/OnlyOffice/OnlyOffice';
 import { t } from 'i18next';
 import isImageExtension from '@libs/filesharing/utils/isImageExtension';
 import isMediaExtension from '@libs/filesharing/utils/isMediaExtension';
+import isTextExtension from '@libs/filesharing/utils/isTextExtension';
+import TEXT_EXTENSIONS from '@libs/filesharing/types/textExtensions';
 import useMedia from '@/hooks/useMedia';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
@@ -32,6 +34,8 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 import PdfViewer from '@/components/shared/PDFViewer/PdfViewer';
+import TextPreview from '@/components/ui/Renderer/TextPreview';
+import MarkdownRenderer from '@/components/ui/Renderer/MarkdownRenderer';
 
 interface FileRendererProps {
   editMode: boolean;
@@ -55,6 +59,9 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
 
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
 
+  const [textContent, setTextContent] = useState<string | null>(null);
+  const [isLoadingText, setIsLoadingText] = useState(false);
+
   useEffect(() => {
     if (currentlyEditingFile && !isEditorLoading && !isCreatingBlobUrl && !isFetchingPublicUrl) {
       void setFileIsCurrentlyDisabled(currentlyEditingFile.filename, false);
@@ -70,9 +77,30 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
     [currentlyEditingFile?.filename],
   );
 
-  if (!currentlyEditingFile) return null;
+  const fileExtension = currentlyEditingFile ? getFileExtension(currentlyEditingFile.filePath) : undefined;
+  const isText = isTextExtension(fileExtension);
 
-  const fileExtension = getFileExtension(currentlyEditingFile.filePath);
+  useEffect(() => {
+    if (!isText || !fileUrl) {
+      setTextContent(null);
+      return;
+    }
+
+    const fetchTextContent = async () => {
+      setIsLoadingText(true);
+      try {
+        const response = await fetch(fileUrl);
+        const text = await response.text();
+        setTextContent(text);
+      } finally {
+        setIsLoadingText(false);
+      }
+    };
+
+    void fetchTextContent();
+  }, [fileUrl, isText]);
+
+  if (!currentlyEditingFile) return null;
   const isOnlyOfficeDoc = isOnlyOfficeDocument(currentlyEditingFile.filePath);
   const usePdfViewerFallback = fileExtension === 'pdf' && (!editMode || !isOnlyOfficeConfigured);
 
@@ -133,6 +161,24 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
         key={fileUrl}
         url={fileUrl}
       />
+    );
+  }
+
+  if (isText) {
+    if (isLoadingText || textContent === null) {
+      return (
+        <div className="flex h-full items-center justify-center">
+          <CircleLoader />
+        </div>
+      );
+    }
+
+    const isMarkdown = fileExtension === TEXT_EXTENSIONS.MD || fileExtension === TEXT_EXTENSIONS.MARKDOWN;
+
+    return (
+      <div className="h-full overflow-auto bg-foreground p-4">
+        {isMarkdown ? <MarkdownRenderer content={textContent} /> : <TextPreview content={textContent} />}
+      </div>
     );
   }
 

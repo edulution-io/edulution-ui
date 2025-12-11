@@ -18,37 +18,24 @@
  */
 
 import React from 'react';
-import type TAppFieldType from '@libs/appconfig/types/tAppFieldType';
-import IFRAME_ALLOWED_CONFIG from '@libs/ui/constants/iframeAllowedConfig';
-import HtmlRenderer from '@/components/ui/Renderer/HtmlRenderer';
+import DOMPurify from 'dompurify';
+import clsx from 'clsx';
 
-type EmbeddedPageContentProps = {
-  pageTitle: string;
-  isSandboxMode?: TAppFieldType;
-  htmlContentUrl?: string;
-  htmlContent?: string;
+interface HtmlRendererProps {
+  html: string;
+  className?: string;
+}
+
+const HtmlRenderer = ({ html, className }: HtmlRendererProps) => {
+  const safeHtml = DOMPurify.sanitize(html);
+
+  return (
+    <div
+      className={clsx('prose', className)}
+      // eslint-disable-next-line react/no-danger
+      dangerouslySetInnerHTML={{ __html: safeHtml }}
+    />
+  );
 };
 
-const EmbeddedPageContent: React.FC<EmbeddedPageContentProps> = ({
-  pageTitle,
-  isSandboxMode,
-  htmlContentUrl,
-  htmlContent,
-}) =>
-  isSandboxMode ? (
-    <iframe
-      src={htmlContentUrl}
-      title={pageTitle}
-      className="h-full w-full border-0"
-      sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
-      allow={IFRAME_ALLOWED_CONFIG}
-    />
-  ) : (
-    htmlContent && (
-      <HtmlRenderer
-        html={htmlContent}
-        className="h-full w-full"
-      />
-    )
-  );
-export default EmbeddedPageContent;
+export default HtmlRenderer;

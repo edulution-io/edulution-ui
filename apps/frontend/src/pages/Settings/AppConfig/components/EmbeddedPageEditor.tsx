@@ -31,6 +31,7 @@ import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import cn from '@libs/common/utils/className';
 import IFRAME_ALLOWED_CONFIG from '@libs/ui/constants/iframeAllowedConfig';
+import HtmlRenderer from '@/components/ui/Renderer/HtmlRenderer';
 import useFileTableStore from './useFileTableStore';
 
 interface EmbeddedPageEditorProps {
@@ -130,10 +131,9 @@ const EmbeddedPageEditor: React.FC<EmbeddedPageEditorProps> = ({ name, form }) =
               allow={IFRAME_ALLOWED_CONFIG}
             />
           ) : (
-            <div
+            <HtmlRenderer
+              html={htmlContent}
               className="h-full w-full"
-              // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: htmlContent }}
             />
           )}
         </ResizableWindow>
