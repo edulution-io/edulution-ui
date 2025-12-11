@@ -1365,8 +1365,8 @@
       "dateTimePicker": {
         "timeSlot": "Heure",
         "placeholder": "DD/MM/YYYY HH:mm",
-        "hour": "Heure",
-        "minute": "Minute"
+        "hours": "Heures",
+        "minutes": "Minutes"
       }
     }
   },

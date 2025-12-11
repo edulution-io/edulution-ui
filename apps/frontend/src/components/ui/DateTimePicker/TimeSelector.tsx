@@ -66,7 +66,7 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
   const handleDoubleClick = useCallback(() => {
     setEditValue(formatValue(value));
     setIsEditing(true);
-  }, [value, padStart]);
+  }, [value, padStart, formatValue]);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value.replace(/\D/g, '').slice(0, 2);
@@ -161,7 +161,7 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
             className={cn(
               'w-10 rounded px-1 text-center text-lg font-medium outline-none',
               variant === 'default' && 'bg-primary text-primary-foreground',
-              variant === 'dialog' && 'bg-ring text-white',
+              variant === 'dialog' && 'bg-ring text-foreground',
             )}
             maxLength={2}
           />

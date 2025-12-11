@@ -136,7 +136,7 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
 
   const timeDisplay = useMemo((): string => {
     if (!fieldValue) {
-      return placeholder || t(`form.input.dateTimePicker.placeholder.${mode}`);
+      return placeholder || t('form.input.dateTimePicker.placeholder');
     }
     return formatDateByMode(new Date(fieldValue), mode, language);
   }, [fieldValue, language, mode, placeholder, t]);
