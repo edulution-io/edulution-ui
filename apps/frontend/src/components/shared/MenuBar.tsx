@@ -236,20 +236,28 @@ const MenuBar: React.FC = () => {
               )}
             >
               <div className="overflow-hidden">
-                <div className="ml-6 border-l border-muted py-1 pl-4">
-                  {item.children!.map((child) => (
-                    <button
-                      key={child.id}
-                      type="button"
-                      onClick={() => {
-                        if (isMobileView || isTabletView) toggleMobileMenuBar();
-                        child.action();
-                      }}
-                      className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-background transition-colors hover:bg-accent"
-                    >
-                      <span className="truncate">{child.label}</span>
-                    </button>
-                  ))}
+                <div className="border-muted/50 ml-12 border-l py-1">
+                  {item.children!.map((child) => {
+                    const isChildActive = pathname.includes(child.id);
+                    return (
+                      <button
+                        key={child.id}
+                        type="button"
+                        onClick={() => {
+                          if (isMobileView || isTabletView) toggleMobileMenuBar();
+                          child.action();
+                        }}
+                        className={cn(
+                          'flex w-full items-center rounded-r-lg py-2 pl-4 pr-3 text-left text-sm',
+                          'text-background transition-all duration-150',
+                          'hover:bg-accent hover:pl-5',
+                          isChildActive && 'bg-accent/50 font-medium',
+                        )}
+                      >
+                        <span className="truncate">{child.label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
