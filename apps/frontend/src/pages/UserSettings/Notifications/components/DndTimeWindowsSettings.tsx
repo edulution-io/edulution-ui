@@ -32,25 +32,47 @@ import DndTimeWindowsTableColumns from './DndTimeWindowsTableColumns';
 import AddDndTimeWindowDialog from './AddDndTimeWindowDialog';
 import DeleteDndTimeWindowDialog from './DeleteDndTimeWindowDialog';
 
+interface AddDialogState {
+  isOpen: boolean;
+  editingTimeWindow: DndTimeWindow | null;
+}
+
 const DndTimeWindowsSettings: React.FC = () => {
   const { t } = useTranslation();
   const { notificationSettings, isLoading, getNotificationSettings, updateNotificationSettings } =
     useNotificationSettingsStore();
 
   const [selectedRows, setSelectedRows] = useState<RowSelectionState>({});
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [addDialogState, setAddDialogState] = useState<AddDialogState>({
+    isOpen: false,
+    editingTimeWindow: null,
+  });
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const dndTimeWindows = notificationSettings?.dndTimeWindows ?? [];
-  const keys = Object.keys(selectedRows);
-  const isOneRowSelected = keys.length === 1;
 
   useEffect(() => {
     void getNotificationSettings();
   }, []);
 
+  const getSelectedTimeWindow = (): DndTimeWindow | null => {
+    const selectedIds = Object.entries(selectedRows)
+      .filter(([_, isSelected]) => isSelected)
+      .map(([rowId]) => rowId);
+
+    if (selectedIds.length === 1) {
+      return dndTimeWindows.find((w) => w.id === selectedIds[0]) ?? null;
+    }
+    return null;
+  };
+
   const handleAddClick = () => {
-    setIsAddDialogOpen(!isAddDialogOpen);
+    const timeWindow = getSelectedTimeWindow();
+    // Setze beide Werte gleichzeitig in einem State-Update
+    setAddDialogState({
+      isOpen: true,
+      editingTimeWindow: timeWindow,
+    });
   };
 
   const handleRemoveClick = () => {
@@ -62,11 +84,7 @@ const DndTimeWindowsSettings: React.FC = () => {
 
     const idsToDelete = Object.entries(selectedRows)
       .filter(([_, isSelected]) => isSelected)
-      .map(([rowId]) => {
-        const idx = parseInt(rowId, 10);
-        return dndTimeWindows[idx]?.id;
-      })
-      .filter(Boolean);
+      .map(([rowId]) => rowId);
 
     const updatedWindows = dndTimeWindows.filter((w) => !idsToDelete.includes(w.id));
 
@@ -83,8 +101,11 @@ const DndTimeWindowsSettings: React.FC = () => {
     setSelectedRows(newValue);
   };
 
-  const handleClose = () => {
-    setIsAddDialogOpen(false);
+  const handleDialogClose = () => {
+    setAddDialogState({
+      isOpen: false,
+      editingTimeWindow: null,
+    });
     setSelectedRows({});
   };
 
@@ -93,9 +114,10 @@ const DndTimeWindowsSettings: React.FC = () => {
       Object.entries(selectedRows)
         .filter(([_, isSelected]) => isSelected)
         .map(([rowId]) => {
-          const idx = parseInt(rowId, 10);
-          return { original: dndTimeWindows[idx] } as Row<DndTimeWindow>;
-        }),
+          const timeWindow = dndTimeWindows.find((w) => w.id === rowId);
+          return { original: timeWindow } as Row<DndTimeWindow>;
+        })
+        .filter((row) => row.original),
     [selectedRows, dndTimeWindows],
   );
 
@@ -111,17 +133,19 @@ const DndTimeWindowsSettings: React.FC = () => {
         visible: ({ hasSelection }) => hasSelection,
       },
     ],
-    [],
+    [selectedRows, dndTimeWindows],
   );
 
   const tableActions = useTableActions(actionsConfig, selectedRowsArray);
 
-  const selectedTimeWindows = Object.entries(selectedRows)
-    .filter(([_, isSelected]) => isSelected)
-    .map(([rowId]) => {
-      const idx = parseInt(rowId, 10);
-      return dndTimeWindows[idx];
-    });
+  const selectedTimeWindows = useMemo(
+    () =>
+      Object.entries(selectedRows)
+        .filter(([_, isSelected]) => isSelected)
+        .map(([rowId]) => dndTimeWindows.find((w) => w.id === rowId))
+        .filter((w): w is DndTimeWindow => w !== undefined),
+    [selectedRows, dndTimeWindows],
+  );
 
   // Nicht anzeigen wenn Push-Notifications deaktiviert sind
   if (notificationSettings && !notificationSettings.pushEnabled) {
@@ -144,16 +168,17 @@ const DndTimeWindowsSettings: React.FC = () => {
             selectedRows={selectedRows}
             isLoading={isLoading}
             actions={tableActions}
+            getRowId={(row) => row.id}
           />
         </div>
       </div>
-      <AddDndTimeWindowDialog
-        isOpen={isAddDialogOpen}
-        isOneRowSelected={isOneRowSelected}
-        keys={keys}
-        dndTimeWindows={dndTimeWindows}
-        handleOpenChange={handleClose}
-      />
+      {addDialogState.isOpen && (
+        <AddDndTimeWindowDialog
+          isOpen
+          editingTimeWindow={addDialogState.editingTimeWindow}
+          handleOpenChange={handleDialogClose}
+        />
+      )}
       <DeleteDndTimeWindowDialog
         isOpen={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}

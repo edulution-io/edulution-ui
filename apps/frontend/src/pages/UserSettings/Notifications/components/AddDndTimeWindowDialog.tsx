@@ -17,25 +17,25 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
-import FormField from '@/components/shared/FormField';
 import { Form, FormControl, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 import Switch from '@/components/ui/Switch';
+import Input from '@/components/shared/Input';
 import DndTimeWindow from '@libs/notification/types/dndTimeWindow';
 import useNotificationSettingsStore from '@/pages/UserSettings/Notifications/useNotificationSettingsStore';
 import getRandomUUID from '@/utils/getRandomUUID';
+import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
+import DayTimePickerMode from '@libs/common/constants/dayTimePickerMode';
 
 interface AddDndTimeWindowDialogProps {
   isOpen: boolean;
-  isOneRowSelected: boolean;
-  keys: string[];
-  dndTimeWindows: DndTimeWindow[];
+  editingTimeWindow: DndTimeWindow | null;
   handleOpenChange: () => void;
 }
 
@@ -66,52 +66,28 @@ type DndTimeWindowFormValues = {
   bufferNotifications: boolean;
 };
 
-const AddDndTimeWindowDialog: FC<AddDndTimeWindowDialogProps> = ({
-  isOpen,
-  isOneRowSelected,
-  keys,
-  dndTimeWindows,
-  handleOpenChange,
-}) => {
+const AddDndTimeWindowDialog: FC<AddDndTimeWindowDialogProps> = ({ isOpen, editingTimeWindow, handleOpenChange }) => {
   const { t } = useTranslation();
   const { notificationSettings, updateNotificationSettings } = useNotificationSettingsStore();
 
-  const idx = isOneRowSelected ? Number(keys[0]) : undefined;
-  const editingTimeWindow = idx !== undefined ? dndTimeWindows[idx] : null;
-  const isEditing = editingTimeWindow !== null;
-
-  const initialFormValues: DndTimeWindowFormValues =
-    editingTimeWindow !== null
-      ? {
-          label: editingTimeWindow.label,
-          days: editingTimeWindow.days,
-          startTime: editingTimeWindow.startTime,
-          endTime: editingTimeWindow.endTime,
-          bufferNotifications: editingTimeWindow.bufferNotifications,
-        }
-      : {
-          label: '',
-          days: [1, 2, 3, 4, 5], // Mo-Fr default
-          startTime: '22:00',
-          endTime: '07:00',
-          bufferNotifications: true,
-        };
+  const isEditing = Boolean(editingTimeWindow?.id);
 
   const form = useForm<DndTimeWindowFormValues>({
     mode: 'onSubmit',
     resolver: zodResolver(getDndTimeWindowFormSchema(t)),
-    defaultValues: initialFormValues,
+    defaultValues: {
+      label: editingTimeWindow?.label ?? '',
+      days: editingTimeWindow?.days ?? [1, 2, 3, 4, 5],
+      startTime: editingTimeWindow?.startTime ?? '22:00',
+      endTime: editingTimeWindow?.endTime ?? '07:00',
+      bufferNotifications: editingTimeWindow?.bufferNotifications ?? true,
+    },
   });
 
-  useEffect(() => {
-    if (isOpen) {
-      form.reset(initialFormValues);
-    }
-  }, [isOpen, isOneRowSelected, keys]);
+  const watchedDays = form.watch('days');
 
   const handleClose = () => {
     handleOpenChange();
-    form.reset();
   };
 
   const onSubmit = async (data: DndTimeWindowFormValues) => {
@@ -129,7 +105,7 @@ const AddDndTimeWindowDialog: FC<AddDndTimeWindowDialogProps> = ({
     const existingWindows = notificationSettings.dndTimeWindows ?? [];
 
     let updatedWindows: DndTimeWindow[];
-    if (isEditing && editingTimeWindow) {
+    if (isEditing && editingTimeWindow?.id) {
       updatedWindows = existingWindows.map((w) => (w.id === editingTimeWindow.id ? newTimeWindow : w));
     } else {
       updatedWindows = [...existingWindows, newTimeWindow];
@@ -153,63 +129,60 @@ const AddDndTimeWindowDialog: FC<AddDndTimeWindowDialogProps> = ({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-4">
-          <FormField
-            labelTranslationId={t('usersettings.notifications.dnd.table.label')}
-            name="label"
-            defaultValue={initialFormValues.label}
-            form={form}
-            variant="dialog"
-            placeholder={t('usersettings.notifications.dnd.labelPlaceholder')}
-          />
-
           <FormFieldSH
             control={form.control}
-            name="days"
+            name="label"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t('usersettings.notifications.dnd.table.days')}</FormLabel>
+                <FormLabel>{t('usersettings.notifications.dnd.table.label')}</FormLabel>
                 <FormControl>
-                  <div className="flex flex-wrap gap-2">
-                    {DAYS.map((day) => (
-                      <button
-                        key={day.value}
-                        type="button"
-                        onClick={() => handleDayToggle(day.value)}
-                        className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                          field.value.includes(day.value)
-                            ? 'bg-ciLightBlue text-white'
-                            : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                        }`}
-                      >
-                        {t(day.labelKey)}
-                      </button>
-                    ))}
-                  </div>
+                  <Input
+                    {...field}
+                    placeholder={t('usersettings.notifications.dnd.labelPlaceholder')}
+                    className="bg-ciDarkGrey"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <div className="flex flex-col gap-4">
+          <FormItem>
+            <FormLabel>{t('usersettings.notifications.dnd.table.days')}</FormLabel>
+            <div className="flex flex-wrap gap-2">
+              {DAYS.map((day) => (
+                <button
+                  key={day.value}
+                  type="button"
+                  onClick={() => handleDayToggle(day.value)}
+                  className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                    watchedDays.includes(day.value)
+                      ? 'bg-ciLightBlue text-white'
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  }`}
+                >
+                  {t(day.labelKey)}
+                </button>
+              ))}
+            </div>
+            {form.formState.errors.days && <p className="text-sm text-red-500">{form.formState.errors.days.message}</p>}
+          </FormItem>
+
+          <div className="flex gap-4">
             <div className="flex-1">
-              <FormField
-                labelTranslationId={t('usersettings.notifications.dnd.table.startTime')}
-                name="startTime"
-                defaultValue={initialFormValues.startTime}
+              <DateTimePickerField
                 form={form}
-                variant="dialog"
-                type="time"
+                path="startTime"
+                mode={DayTimePickerMode.Time}
+                translationId="usersettings.notifications.dnd.table.startTime"
               />
             </div>
             <div className="flex-1">
-              <FormField
-                labelTranslationId={t('usersettings.notifications.dnd.table.endTime')}
-                name="endTime"
-                defaultValue={initialFormValues.endTime}
+              <DateTimePickerField
                 form={form}
-                variant="dialog"
-                type="time"
+                path="endTime"
+                mode={DayTimePickerMode.Time}
+                translationId="usersettings.notifications.dnd.table.endTime"
               />
             </div>
           </div>

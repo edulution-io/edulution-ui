@@ -19,7 +19,7 @@
 
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
-import USER_PREFERENCES_ENDPOINT from '@libs/user-preferences/constants/user-preferences-endpoint';
+import { USER_PREFERENCES_ENDPOINT } from '@libs/user-preferences/constants/user-preferences-endpoint';
 import UserPreferencesDto from '@libs/user-preferences/types/user-preferences.dto';
 import handleApiError from '@/utils/handleApiError';
 
