@@ -180,7 +180,6 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
         )}
       </div>
 
-      {/* Scrollable List */}
       <div
         ref={scrollRef}
         className="h-[200px] overflow-y-auto overscroll-contain sm:h-[260px]"
