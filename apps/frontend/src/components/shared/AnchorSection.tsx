@@ -17,29 +17,22 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
-import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import useLdapGroups from '@/hooks/useLdapGroups';
-import ROOT_ROUTE from '@libs/common/constants/rootRoute';
+import React, { FC, ReactNode } from 'react';
+import cn from '@libs/common/utils/className';
 
-const ProtectedRoute = ({ redirectTo = ROOT_ROUTE }) => {
-  const { isSuperAdmin, isAuthReady } = useLdapGroups();
+interface AnchorSectionProps {
+  id: string;
+  className?: string;
+  children: ReactNode;
+}
 
-  if (!isAuthReady) {
-    return <LoadingIndicatorDialog isOpen />;
-  }
+const AnchorSection: FC<AnchorSectionProps> = ({ id, className, children }) => (
+    <section
+      id={id}
+      className={cn('scroll-mt-20', className)}
+    >
+      {children}
+    </section>
+  );
 
-  if (!isSuperAdmin) {
-    return (
-      <Navigate
-        to={redirectTo}
-        replace
-      />
-    );
-  }
-
-  return <Outlet />;
-};
-
-export default ProtectedRoute;
+export default AnchorSection;
