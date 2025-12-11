@@ -24,6 +24,8 @@ import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import ItemList from '@/components/shared/ItemList';
 import useReplaceFilesDialogStore from '@/pages/FileSharing/Dialog/useReplaceFilesDialogStore';
 import useFileUploadWithReplace from '@/pages/FileSharing/hooks/useFileUploadWithReplace';
+import isFolderUploadItem from '@libs/filesharing/utils/isFolderUploadItem';
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
 
 const ReplaceFilesDialog = () => {
   const { t } = useTranslation();
@@ -46,22 +48,56 @@ const ReplaceFilesDialog = () => {
     await uploadFilesDirectly(pendingUpload.files, pendingUpload.webdavShare, pendingUpload.currentPath);
   };
 
-  const duplicateCount = pendingUpload?.duplicateFiles.length ?? 0;
   const newFilesCount = pendingUpload?.newFiles.length ?? 0;
   const hasNewFiles = newFilesCount > 0;
 
-  const items =
-    pendingUpload?.duplicateFiles.map((file) => ({
-      id: file.name,
-      name: file.name,
-    })) ?? [];
+  const duplicateFolders = pendingUpload?.duplicateFiles.filter((file) => isFolderUploadItem(file as UploadItem)) ?? [];
+  const duplicateFilesOnly =
+    pendingUpload?.duplicateFiles.filter((file) => !isFolderUploadItem(file as UploadItem)) ?? [];
+
+  const folderItems = duplicateFolders.map((file) => ({
+    id: file.name,
+    name: (file as UploadItem).folderName || file.name,
+  }));
+
+  const fileItems = duplicateFilesOnly.map((file) => ({
+    id: file.name,
+    name: file.name,
+  }));
 
   const getDialogBody = () => (
     <div className="text-background">
-      <p>{t('filesharingUpload.overwriteWarningDescription', { count: duplicateCount })}</p>
-      <ItemList items={items} />
+      {duplicateFilesOnly.length > 0 && (
+        <>
+          <p>{t('filesharingUpload.overwriteWarningDescription', { count: duplicateFilesOnly.length })}</p>
+          <ItemList items={fileItems} />
+        </>
+      )}
+      {duplicateFolders.length > 0 && (
+        <>
+          <p className={duplicateFilesOnly.length > 0 ? 'mt-4' : ''}>
+            {t('filesharingUpload.overwriteFolderWarningDescription', { count: duplicateFolders.length })}
+          </p>
+          <ItemList items={folderItems} />
+        </>
+      )}
     </div>
   );
+
+  const getDialogTitle = () => {
+    const hasFolders = duplicateFolders.length > 0;
+    const hasFiles = duplicateFilesOnly.length > 0;
+
+    if (hasFolders && hasFiles) {
+      return t('filesharingUpload.overwriteWarningTitle', {
+        count: duplicateFilesOnly.length + duplicateFolders.length,
+      });
+    }
+    if (hasFolders) {
+      return t('filesharingUpload.overwriteFolderWarningTitle', { count: duplicateFolders.length });
+    }
+    return t('filesharingUpload.overwriteWarningTitle', { count: duplicateFilesOnly.length });
+  };
 
   const getFooter = () => (
     <div className="flex flex-wrap justify-end gap-2">
@@ -86,7 +122,7 @@ const ReplaceFilesDialog = () => {
     <AdaptiveDialog
       isOpen={isOpen}
       handleOpenChange={handleClose}
-      title={t('filesharingUpload.overwriteWarningTitle', { count: duplicateCount })}
+      title={getDialogTitle()}
       body={getDialogBody()}
       footer={getFooter()}
     />

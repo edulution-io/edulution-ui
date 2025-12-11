@@ -17,14 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useCallback } from 'react';
+import React from 'react';
 import { Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { DropEvent, useDropzone } from 'react-dropzone';
+import { useDropzone } from 'react-dropzone';
 import { UploadItem } from '@libs/filesharing/types/uploadItem';
-import traverseDirectoryEntry from '@libs/filesharing/utils/traverseDirectoryEntry';
-import createFolderUploadItem from '@libs/filesharing/utils/createFolderUploadItem';
-import getRandomUUID from '@/utils/getRandomUUID';
+import extractFilesFromDropEvent from '@/pages/FileSharing/utilities/extractFilesFromDropEvent';
 
 interface FileDropZoneProps {
   onFileDrop: (files: (File | UploadItem)[]) => void;
@@ -37,50 +35,9 @@ interface FileDropZoneProps {
 const FileDropZone: React.FC<FileDropZoneProps> = ({ onFileDrop, children, disabled = false, accept, maxFiles }) => {
   const { t } = useTranslation();
 
-  const getFilesFromEvent = useCallback(async (event: DropEvent): Promise<(File | UploadItem)[]> => {
-    if (!('dataTransfer' in event) || !event.dataTransfer) {
-      return [];
-    }
-
-    const items = Array.from(event.dataTransfer.items);
-    const results: (File | UploadItem)[] = [];
-    const folderMap = new Map<string, File[]>();
-
-    const processItem = async (item: DataTransferItem): Promise<void> => {
-      const entry = item.webkitGetAsEntry();
-
-      if (!entry) {
-        const file = item.getAsFile();
-        if (file) {
-          results.push(file);
-        }
-        return;
-      }
-
-      if (entry.isFile) {
-        const file = item.getAsFile();
-        if (file) {
-          results.push(file);
-        }
-      } else if (entry.isDirectory) {
-        const files = await traverseDirectoryEntry(entry);
-        folderMap.set(entry.name, files);
-      }
-    };
-
-    await Promise.all(items.map(processItem));
-
-    folderMap.forEach((files, folderName) => {
-      const uploadItem = createFolderUploadItem(folderName, files, getRandomUUID());
-      results.push(uploadItem);
-    });
-
-    return results;
-  }, []);
-
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: onFileDrop,
-    getFilesFromEvent,
+    getFilesFromEvent: extractFilesFromDropEvent,
     disabled,
     accept,
     maxFiles,
