@@ -18,22 +18,23 @@
  */
 
 import { UploadItem } from '@libs/filesharing/types/uploadItem';
-import getUploadItemDisplayName from '@libs/filesharing/utils/getUploadItemDisplayName';
-import isFolderUploadItem from '@libs/filesharing/utils/isFolderUploadItem';
+import shouldFilterFile from '@libs/filesharing/utils/shouldFilterFile';
 
-export interface DuplicateItem {
-  name: string;
-  isFolder: boolean;
-}
+const createFolderUploadItem = (folderName: string, allFiles: File[], id: string): UploadItem => {
+  const getFileName = (file: File): string => file.webkitRelativePath?.split('/').pop() || file.name;
 
-const findDuplicateFiles = (incoming: UploadItem[], existing: { filename: string }[]): DuplicateItem[] => {
-  const existingFilenameSet = new Set(
-    existing.map((existingFile) => decodeURIComponent(existingFile.filename).trim().toLowerCase()),
-  );
+  const visibleFiles = allFiles.filter((file) => !shouldFilterFile(getFileName(file)));
+  const hiddenFiles = allFiles.filter((file) => shouldFilterFile(getFileName(file)));
 
-  return incoming
-    .filter((file) => existingFilenameSet.has(decodeURIComponent(file.name).trim().toLowerCase()))
-    .map((file) => ({ name: getUploadItemDisplayName(file), isFolder: isFolderUploadItem(file) }));
+  return Object.assign(new File([], folderName, { type: 'application/x-directory' }), {
+    id,
+    isFolder: true,
+    folderName,
+    files: visibleFiles,
+    visibleFiles,
+    hiddenFiles,
+    includeHidden: false,
+  });
 };
 
-export default findDuplicateFiles;
+export default createFolderUploadItem;
