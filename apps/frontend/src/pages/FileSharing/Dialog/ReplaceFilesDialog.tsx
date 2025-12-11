@@ -65,15 +65,18 @@ const ReplaceFilesDialog = () => {
     name: file.name,
   }));
 
+  const hasFolders = duplicateFolders.length > 0;
+  const hasFiles = duplicateFilesOnly.length > 0;
+
   const getDialogBody = () => (
     <div className="text-background">
-      {duplicateFilesOnly.length > 0 && (
+      {hasFiles && (
         <>
           <p>{t('filesharingUpload.overwriteWarningDescription', { count: duplicateFilesOnly.length })}</p>
           <ItemList items={fileItems} />
         </>
       )}
-      {duplicateFolders.length > 0 && (
+      {hasFolders && (
         <>
           <p className={duplicateFilesOnly.length > 0 ? 'mt-4' : ''}>
             {t('filesharingUpload.overwriteFolderWarningDescription', { count: duplicateFolders.length })}
@@ -85,9 +88,6 @@ const ReplaceFilesDialog = () => {
   );
 
   const getDialogTitle = () => {
-    const hasFolders = duplicateFolders.length > 0;
-    const hasFiles = duplicateFilesOnly.length > 0;
-
     if (hasFolders && hasFiles) {
       return t('filesharingUpload.overwriteWarningTitle', {
         count: duplicateFilesOnly.length + duplicateFolders.length,
