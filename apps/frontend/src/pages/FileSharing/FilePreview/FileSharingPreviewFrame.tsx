@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { ReactElement, useEffect, useMemo, useRef, useState } from 'react';
@@ -23,7 +30,7 @@ import FILE_PREVIEW_ROUTE from '@libs/filesharing/constants/routes';
 import EditButton from '@/components/structure/framing/ResizableWindow/Buttons/EditButton';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 import useMedia from '@/hooks/useMedia';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
@@ -33,19 +40,20 @@ import ToggleDockButton from '@/components/structure/framing/ResizableWindow/But
 import { useLocation } from 'react-router-dom';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import RESIZEABLE_WINDOW_DEFAULT_POSITION from '@libs/ui/constants/resizableWindowDefaultPosition';
+import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 
 const FileSharingPreviewFrame = () => {
   const { t } = useTranslation();
   const {
     addFileToOpenInNewTab,
     currentlyEditingFile,
-    fetchDownloadLinks,
     setCurrentlyEditingFile,
     setIsFilePreviewVisible,
     isFilePreviewVisible,
     isFilePreviewDocked,
     setIsFilePreviewDocked,
   } = useFileEditorStore();
+  const { loadDownloadUrl } = useFileSharingDownloadStore();
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
   const { setCurrentWindowedFrameSize } = useFrameStore();
   const windowSize = useWindowResize();
@@ -78,10 +86,19 @@ const FileSharingPreviewFrame = () => {
     setCurrentlyEditingFile(null);
   };
 
+  const { isMobileView } = useMedia();
+
+  useEffect(() => {
+    resetPreview();
+  }, [isMobileView]);
+
+  const pathSegments = location.pathname.split('/').filter(Boolean);
+  const webdavShare = decodeURIComponent(pathSegments[1]);
+
   const openInNewTab = () => {
     if (currentlyEditingFile) {
       addFileToOpenInNewTab(currentlyEditingFile);
-      window.open(`/${FILE_PREVIEW_ROUTE}?file=${currentlyEditingFile.etag}`, '_blank');
+      window.open(`/${FILE_PREVIEW_ROUTE}?share=${webdavShare}&file=${currentlyEditingFile.etag}`, '_blank');
       resetPreview();
     }
   };
@@ -93,7 +110,7 @@ const FileSharingPreviewFrame = () => {
     abortControllerRef.current = controller;
 
     if (currentlyEditingFile) {
-      void fetchDownloadLinks(currentlyEditingFile, controller.signal);
+      void loadDownloadUrl(currentlyEditingFile, webdavShare, controller.signal);
     }
 
     return () => controller.abort();
@@ -102,14 +119,13 @@ const FileSharingPreviewFrame = () => {
   const handleCloseFile = async () => {
     if (!currentlyEditingFile) return;
     closingRef.current = true;
-    const { basename } = currentlyEditingFile;
+    const { filename } = currentlyEditingFile;
     setIsEditMode(false);
     resetPreview();
-    await setFileIsCurrentlyDisabled(basename, true, 5000);
+    await setFileIsCurrentlyDisabled(filename, true, 5000);
     closingRef.current = false;
   };
 
-  const { isMobileView } = useMedia();
   const { appConfigs } = useAppConfigsStore();
 
   const { x, y, width, height } = filePreviewRect || { x: 0, y: 0, width: 0, height: 0 };
@@ -128,17 +144,23 @@ const FileSharingPreviewFrame = () => {
     APPS.FILE_SHARING,
     ExtendedOptionKeys.ONLY_OFFICE_URL,
   );
-  const isValidFile = currentlyEditingFile?.type === ContentType.FILE && isValidFileToPreview(currentlyEditingFile);
-  const isFileReady = isValidFile && isDocumentServerConfigured && !isMobileView;
+  const isOnlyOfficeDoc =
+    !!currentlyEditingFile && isOnlyOfficeDocument(currentlyEditingFile.filename ?? currentlyEditingFile.filePath);
 
-  const pathSegments = location.pathname.split('/').filter(Boolean);
+  const isValidFile = currentlyEditingFile?.type === ContentType.FILE && isValidFileToPreview(currentlyEditingFile);
+  const isPdf = currentlyEditingFile?.filename.endsWith('pdf');
+  const isOnlyOfficeDocOnMobile = isMobileView && isOnlyOfficeDoc && isDocumentServerConfigured && !isPdf;
+
+  const isFileReady =
+    (isValidFile && (isOnlyOfficeDoc ? isDocumentServerConfigured : true) && !isOnlyOfficeDocOnMobile) || isPdf;
+
   const hidePreviewOnOtherPages = pathSegments[0] !== APPS.FILE_SHARING && isFilePreviewDocked;
 
   if (!isFilePreviewVisible || !isFileReady || !filePreviewRect || hidePreviewOnOtherPages) return null;
 
-  const windowTitle = currentlyEditingFile?.basename || t(`filesharing.filePreview`);
+  const windowTitle = currentlyEditingFile?.filename || t(`filesharing.filePreview`);
 
-  const isEditButtonVisible = !isEditMode && isOnlyOfficeDocument(currentlyEditingFile.filename);
+  const isEditButtonVisible = !isEditMode && isOnlyOfficeDocument(currentlyEditingFile?.filename || '');
   const additionalButtons = [
     <OpenInNewTabButton
       onClick={openInNewTab}
@@ -150,7 +172,7 @@ const FileSharingPreviewFrame = () => {
         key={EditButton.name}
       />
     ),
-    isFilePreviewDocked && (
+    !isMobileView && isFilePreviewDocked && (
       <ToggleDockButton
         onClick={() => {
           setIsFilePreviewDocked(!isFilePreviewDocked);
@@ -164,19 +186,20 @@ const FileSharingPreviewFrame = () => {
 
   return (
     <ResizableWindow
-      disableMinimizeWindow={isFilePreviewDocked}
-      disableToggleMaximizeWindow={false}
+      disableMinimizeWindow={isFilePreviewDocked || isMobileView}
+      disableToggleMaximizeWindow={isMobileView}
       titleTranslationId={windowTitle}
       handleClose={handleCloseFile}
-      initialPosition={initialPositionMemo}
-      initialSize={initialSizeMemo}
-      openMaximized={false}
-      stickToInitialSizeAndPositionWhenRestored={isFilePreviewDocked}
+      initialPosition={isMobileView ? undefined : initialPositionMemo}
+      initialSize={isMobileView ? undefined : initialSizeMemo}
+      openMaximized={isMobileView}
+      stickToInitialSizeAndPositionWhenRestored={!isMobileView && isFilePreviewDocked}
       additionalButtons={additionalButtons}
     >
       <FileRenderer
         editMode={isEditMode}
         closingRef={closingRef}
+        isOnlyOfficeConfigured={isDocumentServerConfigured}
       />
     </ResizableWindow>
   );

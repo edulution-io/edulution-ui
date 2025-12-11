@@ -1,10 +1,11 @@
 name: Auto-Merge Master back into Dev
 
 on:
-  pull_request:
+  pull_request_target:
     types: [closed]
     branches:
       - master
+  workflow_dispatch:
 
 jobs:
   merge-master-into-dev:

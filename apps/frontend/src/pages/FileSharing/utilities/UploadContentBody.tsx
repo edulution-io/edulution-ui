@@ -1,85 +1,220 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { MdOutlineCloudUpload } from 'react-icons/md';
+import { useParams } from 'react-router-dom';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
-import { HiExclamationTriangle, HiTrash } from 'react-icons/hi2';
+import { HiEyeSlash } from 'react-icons/hi2';
+import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
-import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import WarningBox from '@/components/shared/WarningBox';
+import { TiDocumentAdd, TiFolderAdd } from 'react-icons/ti';
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
+import { FcFolder } from 'react-icons/fc';
+import getFileUploadLimit from '@libs/ui/utils/getFileUploadLimit';
+import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
+import ActionTooltip from '@/components/shared/ActionTooltip';
+import { BUTTONS_ICON_WIDTH, SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
+import isFolderUploadItem from '@libs/filesharing/utils/isFolderUploadItem';
+import createFolderUploadItem from '@libs/filesharing/utils/createFolderUploadItem';
+import splitFilesByMaxFileSize from '@libs/filesharing/utils/splitFilesByMaxFileSize';
+import findDuplicateFiles from '@libs/filesharing/utils/findDuplicateFiles';
+import getUploadItemDisplayName from '@libs/filesharing/utils/getUploadItemDisplayName';
+import extractFilesFromDropEvent from '@/pages/FileSharing/utilities/extractFilesFromDropEvent';
+import ValidationWarnings from '@/pages/FileSharing/utilities/ValidationWarnings';
+import getRandomUUID from '@/utils/getRandomUUID';
 
 const UploadContentBody = () => {
+  const { webdavShare } = useParams();
   const { t } = useTranslation();
-  const { files } = useFileSharingStore();
+  const { files, webdavShares } = useFileSharingStore();
   const [oversizedFiles, setOversizedFiles] = useState<File[]>([]);
+  const [tooLargeFolders, setTooLargeFolders] = useState<string[]>([]);
   const { setSubmitButtonIsDisabled } = useFileSharingDialogStore();
+  const [filesThatWillBeOverwritten, setFilesThatWillBeOverwritten] = useState<string[]>([]);
+  const [foldersThatWillBeOverwritten, setFoldersThatWillBeOverwritten] = useState<string[]>([]);
 
-  const [filesThatWillBeOverwritten, setFilesThatWillBeOverwritten] = useState<File[]>([]);
+  const { filesToUpload, updateFilesToUpload } = useHandleUploadFileStore();
 
-  const { filesToUpload, setFilesToUpload } = useFileSharingDialogStore();
-
-  const splitFilesByMaxFileSize = (incomingFiles: File[], maxSizeMB: number): { oversize: File[]; normal: File[] } => {
-    const oversize = incomingFiles.filter((f) => bytesToMegabytes(f.size) > maxSizeMB);
-    const normal = incomingFiles.filter((f) => bytesToMegabytes(f.size) <= maxSizeMB);
-    return { oversize, normal };
-  };
-
-  const findDuplicateFiles = (incomingFiles: File[], existingFiles: { basename: string }[]): File[] =>
-    incomingFiles.filter((file) => existingFiles.some((existing) => existing.basename === file.name));
-
-  const removeFile = (name: string) => {
-    setFilesToUpload((prev) => prev.filter((file) => file.name !== name));
-    setFilesThatWillBeOverwritten((prev) => prev.filter((file) => file.name !== name));
-    setOversizedFiles((prev) => prev.filter((file) => file.name !== name));
-  };
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const folderInputRef = useRef<HTMLInputElement>(null);
 
   const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      const { oversize, normal } = splitFilesByMaxFileSize(acceptedFiles, MAX_FILE_UPLOAD_SIZE);
+    (acceptedFiles: (File | UploadItem)[]) => {
+      const folders = acceptedFiles.filter((file): file is UploadItem => isFolderUploadItem(file as UploadItem));
+      const regularFiles = acceptedFiles.filter((file) => !isFolderUploadItem(file as UploadItem)) as File[];
+      const { oversize, normal } = splitFilesByMaxFileSize(regularFiles, getFileUploadLimit(webdavShares, webdavShare));
+      const duplicates = findDuplicateFiles(
+        [...normal, ...folders].map((file) => Object.assign(file, { id: getRandomUUID() })),
+        files,
+      );
 
-      const duplicates = findDuplicateFiles(normal, files);
+      setOversizedFiles((prev) => [
+        ...prev,
+        ...oversize.filter((file) => !prev.some((prevFile) => prevFile.name === file.name)),
+      ]);
 
-      setOversizedFiles((prev) => [...prev, ...oversize.filter((f) => !prev.some((x) => x.name === f.name))]);
+      const duplicateFolders = duplicates.filter((d) => d.isFolder);
+      const duplicateFiles = duplicates.filter((d) => !d.isFolder);
 
-      setFilesThatWillBeOverwritten((prevDupes) => {
-        const newDupes = duplicates.filter((dup) => !prevDupes.some((existingDup) => existingDup.name === dup.name));
-        return [...prevDupes, ...newDupes];
+      setFilesThatWillBeOverwritten((prev) => {
+        const seen = new Set(prev);
+        const fresh = duplicateFiles.map((d) => d.name).filter((k) => !seen.has(k));
+        return [...prev, ...fresh];
       });
 
-      setFilesToUpload((prevFiles) => {
-        const allNewFiles = acceptedFiles.filter((file) => !prevFiles.some((f) => f.name === file.name));
-        return [...prevFiles, ...allNewFiles];
+      setFoldersThatWillBeOverwritten((prev) => {
+        const seen = new Set(prev);
+        const fresh = duplicateFolders.map((d) => d.name).filter((k) => !seen.has(k));
+        return [...prev, ...fresh];
+      });
+
+      updateFilesToUpload((prevFiles) => {
+        const existingNames = new Set(prevFiles.map((f) => getUploadItemDisplayName(f)));
+        const newUploadFiles = [...normal, ...folders]
+          .filter((file) => !existingNames.has(getUploadItemDisplayName(file)))
+          .map((file) => {
+            if (isFolderUploadItem(file as UploadItem)) {
+              return file as UploadItem;
+            }
+            const uploadFile: UploadItem = Object.assign(new File([file], file.name, { type: file.type }), {
+              id: getRandomUUID(),
+            });
+            return uploadFile;
+          });
+
+        return [...prevFiles, ...newUploadFiles];
       });
     },
-    [files, setOversizedFiles, setFilesThatWillBeOverwritten, setFilesToUpload],
+    [files, webdavShares, webdavShare, updateFilesToUpload],
   );
 
+  const handleFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = Array.from(e.target.files ?? []);
+    onDrop(selected);
+    e.target.value = '';
+  };
+
+  const handleFolderSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = Array.from(e.target.files ?? []);
+
+    if (selected.length > 0) {
+      const firstFile = selected[0];
+      const pathParts = firstFile.webkitRelativePath?.split('/') || [];
+      const folderName = pathParts[0] || 'folder';
+      const folderEntry = createFolderUploadItem(folderName, selected, getRandomUUID());
+      onDrop([folderEntry]);
+    }
+    e.target.value = '';
+  };
+
+  const toggleHiddenFilesForFolder = (folderId: string) => {
+    const maxSizeMB = getFileUploadLimit(webdavShares, webdavShare);
+
+    updateFilesToUpload((prev) =>
+      prev.map((file) => {
+        if (file.id !== folderId || !isFolderUploadItem(file)) {
+          return file;
+        }
+
+        const includeHidden = !file.includeHidden;
+        const baseFiles = file.visibleFiles || [];
+        const hiddenSystemFiles = file.hiddenFiles || [];
+        const newFiles = includeHidden ? [...baseFiles, ...hiddenSystemFiles] : baseFiles;
+
+        const newTotalSize = newFiles.reduce((sum, f) => sum + f.size, 0);
+        const newSizeMB = bytesToMegabytes(newTotalSize);
+
+        if (newSizeMB > maxSizeMB) {
+          setTooLargeFolders((prevFolders) => [...new Set([...prevFolders, file.folderName])]);
+          return file;
+        }
+
+        setTooLargeFolders((prevFolders) => prevFolders.filter((name) => name !== file.folderName));
+
+        return {
+          ...file,
+          includeHidden,
+          files: newFiles,
+        } as UploadItem;
+      }),
+    );
+  };
+
+  const removeFile = (identifier: string) => {
+    updateFilesToUpload((prev) =>
+      prev.filter((file) => {
+        const name = getUploadItemDisplayName(file);
+        return name !== identifier;
+      }),
+    );
+    setOversizedFiles((prev) => prev.filter((f) => f.name !== identifier));
+    setFilesThatWillBeOverwritten((prev) => prev.filter((k) => k !== identifier));
+    setFoldersThatWillBeOverwritten((prev) => prev.filter((k) => k !== identifier));
+    setTooLargeFolders((prev) => prev.filter((k) => k !== identifier));
+  };
+
   useEffect(() => {
-    setSubmitButtonIsDisabled(oversizedFiles.length !== 0);
-  }, [oversizedFiles]);
+    setSubmitButtonIsDisabled(oversizedFiles.length !== 0 || tooLargeFolders.length !== 0);
+  }, [oversizedFiles, tooLargeFolders, setSubmitButtonIsDisabled]);
 
-  const hasMultipleDuplicates = filesThatWillBeOverwritten.length > 1;
-  const hasMultipleOversizedFiles = oversizedFiles.length > 1;
-  const isAnyFileOversized = oversizedFiles.length > 0;
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    getFilesFromEvent: extractFilesFromDropEvent,
+    onDrop,
+  });
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const renderPreview = (file: UploadItem) => {
+    if (isFolderUploadItem(file)) {
+      return (
+        <div className="flex h-20 items-center justify-center">
+          <FcFolder size={SIDEBAR_ICON_WIDTH} />
+        </div>
+      );
+    }
+
+    if (file.type.startsWith('image/')) {
+      return (
+        <img
+          src={URL.createObjectURL(file)}
+          alt={t('filesharingUpload.previewAlt', { filename: file.name })}
+          className="mb-2 aspect-square h-auto w-full object-cover"
+          onLoad={() => URL.revokeObjectURL(file.name)}
+        />
+      );
+    }
+
+    return (
+      <div className="flex h-20 items-center justify-center">
+        <FileIconComponent
+          size={40}
+          filename={file.name}
+        />
+      </div>
+    );
+  };
+
   const dropzoneStyle = `border-2 border-dashed border-gray-300 rounded-md p-10 mb-4 ${
     isDragActive ? 'bg-foreground' : 'bg-popover-foreground'
   }`;
@@ -97,89 +232,127 @@ const UploadContentBody = () => {
         </div>
       </div>
 
-      {filesThatWillBeOverwritten.length > 0 && (
-        <WarningBox
-          icon={<HiExclamationTriangle className="text-ciYellow" />}
-          title={
-            hasMultipleDuplicates
-              ? t('filesharingUpload.overwriteWarningTitleFiles')
-              : t('filesharingUpload.overwriteWarningTitleFile')
-          }
-          description={
-            hasMultipleDuplicates
-              ? t('filesharingUpload.overwriteWarningDescriptionFiles')
-              : t('filesharingUpload.overwriteWarningDescriptionFile')
-          }
-          items={filesThatWillBeOverwritten}
-          borderColor="border-ciLightYellow"
-          backgroundColor="bg-background"
-          textColor="text-ciLightYellow"
-        />
-      )}
+      <input
+        type="file"
+        multiple
+        hidden
+        ref={fileInputRef}
+        onChange={handleFilesSelected}
+      />
 
-      {isAnyFileOversized && (
-        <WarningBox
-          icon={<HiExclamationTriangle className="text-ciRed" />}
-          title={
-            hasMultipleOversizedFiles
-              ? t('filesharingUpload.oversizedFilesDetected')
-              : t('filesharingUpload.oversizedFileDetected')
-          }
-          description={t('filesharingUpload.cannotUploadOversized')}
-          items={oversizedFiles}
-          borderColor="border-ciLightRed"
-          backgroundColor="bg-background"
-          textColor="text-ciLightRed"
-        />
-      )}
+      <input
+        type="file"
+        hidden
+        ref={folderInputRef}
+        webkitdirectory=""
+        onChange={handleFolderSelected}
+      />
 
-      <ScrollArea className="mt-2 max-h-[50vh] overflow-y-auto overflow-x-hidden rounded-xl border border-gray-600 px-2 scrollbar-thin">
-        <ul className="my-3 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {filesToUpload.map((file) => (
-            <li
-              key={file.name}
-              className={`
-                  group relative overflow-hidden rounded-xl border p-2 shadow-lg 
-                  transition-all duration-200 hover:min-h-[80px] hover:overflow-visible
-                  ${bytesToMegabytes(file.size) < MAX_FILE_UPLOAD_SIZE ? 'border-accent' : 'border-ciRed  opacity-50'}
-                `}
-            >
-              {file.type.startsWith('image/') ? (
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt={t('filesharingUpload.previewAlt', { filename: file.name })}
-                  className="mb-2 aspect-square h-auto w-full object-cover"
-                  onLoad={() => URL.revokeObjectURL(file.name)}
-                />
-              ) : (
-                <div className="flex h-20 items-center justify-center">
-                  <FileIconComponent
-                    size={60}
-                    filename={file.name}
-                  />
-                </div>
-              )}
+      <div className="flex w-full gap-2 pb-8">
+        <Button
+          variant="btn-collaboration"
+          className="flex-1"
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <div className="flex flex-col items-center">
+            <TiDocumentAdd size={BUTTONS_ICON_WIDTH} />
+            {t('filesharingUpload.addFiles')}
+          </div>
+        </Button>
 
-              <Button
-                onClick={() => removeFile(file.name)}
-                className="absolute right-1 top-1 h-8 rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
-              >
-                <HiTrash className="text-text-ciRed h-4 w-4" />
-              </Button>
+        <Button
+          variant="btn-collaboration"
+          className="flex-1"
+          type="button"
+          onClick={() => folderInputRef.current?.click()}
+        >
+          <div className="flex flex-col items-center">
+            <div>
+              <TiFolderAdd size={BUTTONS_ICON_WIDTH} />
+            </div>
+            {t('filesharingUpload.addFolder')}
+          </div>
+        </Button>
+      </div>
 
-              <div className="flex items-center justify-center">
-                <div
-                  className="truncate text-center text-xs text-neutral-500 underline transition-all duration-200
-                             group-hover:min-w-full group-hover:overflow-visible group-hover:whitespace-normal
-                             group-hover:break-words group-hover:p-1"
+      <ValidationWarnings
+        oversizedFiles={oversizedFiles}
+        duplicateFiles={filesThatWillBeOverwritten}
+        duplicateFolders={foldersThatWillBeOverwritten}
+        tooLargeFolders={tooLargeFolders}
+      />
+
+      {filesToUpload.length > 0 && (
+        <ScrollArea className="mt-2 max-h-[50vh] overflow-y-auto overflow-x-hidden rounded-xl border border-gray-600 px-2 scrollbar-thin">
+          <ul className="my-3 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {filesToUpload.map((file) => {
+              const isFolder = isFolderUploadItem(file);
+              const fileName = getUploadItemDisplayName(file);
+
+              const totalSize = isFolder && file.files ? file.files.reduce((sum, f) => sum + f.size, 0) : file.size;
+
+              const isOversized = bytesToMegabytes(totalSize) > getFileUploadLimit(webdavShares, webdavShare);
+
+              let baseBorderClass = 'border-accent';
+              if (isOversized) {
+                baseBorderClass = 'border-ciRed opacity-50';
+              }
+
+              return (
+                <li
+                  key={file.id}
+                  className={`group relative overflow-hidden rounded-xl border p-2 shadow-lg transition-all duration-200 hover:min-h-[80px] hover:overflow-visible ${baseBorderClass}`}
                 >
-                  {file.name}
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </ScrollArea>
+                  {renderPreview(file)}
+
+                  <Button
+                    onClick={() => removeFile(fileName)}
+                    className="absolute right-1 top-1 h-8 rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
+                  >
+                    <DeleteIcon className="text-text-ciRed h-4 w-4" />
+                  </Button>
+
+                  <div className="flex flex-col items-center justify-center">
+                    <div className="truncate text-center text-xs text-neutral-500 underline transition-all duration-200 group-hover:min-w-full group-hover:overflow-visible group-hover:whitespace-normal group-hover:break-words group-hover:p-1">
+                      {fileName}
+                    </div>
+                    {isFolder && (
+                      <div className="text-center text-xs text-neutral-400">
+                        {file.files?.length || 0}{' '}
+                        {(file.files?.length || 0) === 1 ? t('filesharingUpload.file') : t('filesharingUpload.files')}
+                      </div>
+                    )}
+                  </div>
+                  {isFolder && file.hiddenFiles && file.hiddenFiles.length > 0 && (
+                    <div className="flex items-center justify-center gap-1 pt-1">
+                      <ActionTooltip
+                        tooltipText={t('filesharingUpload.hiddenFiles')}
+                        trigger={
+                          <label
+                            htmlFor={`hidden-${file.id}`}
+                            className="mt-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-neutral-700 px-2 py-1 text-xs text-neutral-300 hover:bg-neutral-600"
+                          >
+                            <input
+                              type="checkbox"
+                              id={`hidden-${file.id}`}
+                              checked={file.includeHidden || false}
+                              onChange={() => toggleHiddenFilesForFolder(file.id)}
+                              className="h-3 w-3 rounded border-gray-300"
+                            />
+                            <HiEyeSlash className="h-3 w-3" />
+                            <span>+{file.hiddenFiles.length}</span>
+                          </label>
+                        }
+                      />
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </ScrollArea>
+      )}
     </form>
   );
 };

@@ -1,21 +1,29 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Button } from '@/components/shared/Button';
 import { IconContext } from 'react-icons';
 import { useTranslation } from 'react-i18next';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import type FloatingButtonConfig from '@libs/ui/types/FloatingButtons/floatingButtonConfig';
+import { FLOATING_BUTTON_CLASS_NAME } from '@libs/ui/constants/floatingButtonsConfig';
 
 const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
   icon: Icon,
@@ -24,9 +32,9 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
   type = 'button',
   variant = 'button',
   dropdownItems = [],
+  iconContextValue = {},
 }) => {
   const { t } = useTranslation();
-  const iconContextValue = useMemo(() => ({ className: 'h-8 w-8 m-5' }), []);
 
   const renderContent = () => {
     if (variant === 'dropdown' && dropdownItems.length > 0) {
@@ -36,7 +44,6 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
             <Button
               type="button"
               variant="btn-hexagon"
-              className="bg-opacity-90 p-4"
               hexagonIconAltText={t('common.showOptions')}
             >
               <IconContext.Provider value={iconContextValue}>
@@ -53,7 +60,6 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
       <Button
         type={type}
         variant="btn-hexagon"
-        className="bg-opacity-90 p-4"
         onClick={onClick}
         hexagonIconAltText={text}
       >
@@ -65,11 +71,9 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center pr-1 md:pt-1">
       {renderContent()}
-      <span className="max-w-24 justify-center overflow-hidden text-ellipsis whitespace-nowrap text-center text-background hover:max-w-28 hover:overflow-visible">
-        {text}
-      </span>
+      <span className={FLOATING_BUTTON_CLASS_NAME}>{text}</span>
     </div>
   );
 };

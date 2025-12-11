@@ -1,27 +1,36 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Connection, Model } from 'mongoose';
+import { AnyBulkWriteOperation, Connection, Model } from 'mongoose';
 import { readFileSync, writeFileSync } from 'fs';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
-import GroupRoles from '@libs/groups/types/group-roles.enum';
 import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import APPS from '@libs/appconfig/constants/apps';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import CustomHttpException from '../common/CustomHttpException';
 import { AppConfig } from './appconfig.schema';
@@ -29,6 +38,7 @@ import initializeCollection from './initializeCollection';
 import MigrationService from '../migration/migration.service';
 import appConfigMigrationsList from './migrations/appConfigMigrationsList';
 import FilesystemService from '../filesystem/filesystem.service';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 @Injectable()
 class AppConfigService implements OnModuleInit {
@@ -38,6 +48,7 @@ class AppConfigService implements OnModuleInit {
     @InjectConnection() private readonly connection: Connection,
     @InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfig>,
     private eventEmitter: EventEmitter2,
+    private readonly globalSettingsService: GlobalSettingsService,
   ) {}
 
   async updateAppAccessMap() {
@@ -82,25 +93,55 @@ class AppConfigService implements OnModuleInit {
       );
     } finally {
       await AppConfigService.writeProxyConfigFile(appConfigDto);
-      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
+      this.eventEmitter.emit(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${appConfigDto.name}`);
     }
   }
 
-  async updateConfig(name: string, appConfigDto: AppConfigDto, ldapGroups: string[]) {
+  async updateConfig(name: string, appConfigDto: AppConfigDto, ldapGroups: string[]): Promise<AppConfigDto[]> {
     try {
-      await this.appConfigModel.updateOne(
-        { name },
-        {
-          $set: {
-            icon: appConfigDto.icon,
-            appType: appConfigDto.appType,
-            options: appConfigDto.options,
-            accessGroups: appConfigDto.accessGroups,
-            extendedOptions: appConfigDto.extendedOptions,
+      const existingAppConfig = await this.appConfigModel.findOne({ name }).lean();
+      const oldPosition = existingAppConfig?.position;
+      const newPosition = appConfigDto.position;
+
+      const bulkOperations: AnyBulkWriteOperation<AppConfig>[] = [];
+
+      if (existingAppConfig && oldPosition !== newPosition) {
+        if (oldPosition! < newPosition) {
+          bulkOperations.push({
+            updateMany: {
+              filter: { position: { $gt: oldPosition, $lte: newPosition } },
+              update: { $inc: { position: -1 } },
+            },
+          });
+        } else {
+          bulkOperations.push({
+            updateMany: {
+              filter: { position: { $gte: newPosition, $lt: oldPosition } },
+              update: { $inc: { position: 1 } },
+            },
+          });
+        }
+      }
+
+      bulkOperations.push({
+        updateOne: {
+          filter: { name },
+          update: {
+            $set: {
+              icon: appConfigDto.icon,
+              appType: appConfigDto.appType,
+              options: appConfigDto.options,
+              accessGroups: appConfigDto.accessGroups,
+              extendedOptions: appConfigDto.extendedOptions,
+              position: newPosition,
+            },
           },
+          upsert: true,
         },
-        { upsert: true },
-      );
+      });
+
+      await this.appConfigModel.bulkWrite(bulkOperations, { ordered: true });
+
       return await this.getAppConfigs(ldapGroups);
     } catch (error) {
       throw new CustomHttpException(
@@ -114,7 +155,7 @@ class AppConfigService implements OnModuleInit {
 
       await this.updateAppAccessMap();
 
-      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
+      this.eventEmitter.emit(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${appConfigDto.name}`);
     }
   }
 
@@ -130,7 +171,7 @@ class AppConfigService implements OnModuleInit {
         AppConfigService.name,
       );
     } finally {
-      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
+      this.eventEmitter.emit(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${name}`);
     }
   }
 
@@ -156,29 +197,37 @@ class AppConfigService implements OnModuleInit {
   async getAppConfigs(ldapGroups: string[]): Promise<AppConfigDto[]> {
     try {
       let appConfigDto: AppConfigDto[];
-      if (ldapGroups.includes(GroupRoles.SUPER_ADMIN)) {
+      const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
+
+      if (getIsAdmin(ldapGroups, adminGroups)) {
         appConfigDto = await this.appConfigModel
-          .find({}, 'name translations icon appType options accessGroups extendedOptions')
+          .find({}, 'name translations icon appType options accessGroups extendedOptions position')
+          .sort({ position: 1 })
           .lean();
       } else {
         const appConfigObjects = await this.appConfigModel
           .find(
-            {
-              'accessGroups.path': { $in: ldapGroups },
-            },
-            'name translations icon appType options extendedOptions',
+            { 'accessGroups.path': { $in: ldapGroups } },
+            'name translations icon appType options extendedOptions position',
           )
+          .sort({ position: 1 })
           .lean();
 
-        appConfigDto = appConfigObjects.map((config) => ({
-          name: config.name,
-          translations: config.translations,
-          icon: config.icon,
-          appType: config.appType,
-          options: { url: config.options.url ?? '' },
-          accessGroups: [],
-          extendedOptions: config.extendedOptions,
-        }));
+        appConfigDto = appConfigObjects.map((config) => {
+          const extendedOptions = { ...(config.extendedOptions ?? {}) };
+          delete extendedOptions.ONLY_OFFICE_JWT_SECRET;
+
+          return {
+            name: config.name,
+            translations: config.translations,
+            icon: config.icon,
+            appType: config.appType,
+            options: { url: config.options?.url ?? '' },
+            accessGroups: [],
+            extendedOptions,
+            position: config.position,
+          };
+        });
       }
 
       return appConfigDto;
@@ -192,18 +241,75 @@ class AppConfigService implements OnModuleInit {
     }
   }
 
-  async getAppConfigByName(name: string): Promise<AppConfigDto> {
+  async getAppConfigByName(name: string): Promise<AppConfigDto | undefined> {
     const appConfig = await this.appConfigModel.findOne({ name }).lean();
     if (!appConfig) {
-      throw new HttpException(`AppConfig with name ${name} not found`, HttpStatus.NOT_FOUND);
+      Logger.debug(`AppConfig with name ${name} not found`, AppConfigService.name);
+      return undefined;
     }
     return appConfig;
   }
 
-  async deleteConfig(configName: string, ldapGroups: string[]) {
+  async getPublicAppConfigByName(name: string): Promise<AppConfigDto | undefined> {
+    const appConfig = await this.appConfigModel
+      .findOne({ name, [`extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_IS_PUBLIC}`]: true })
+      .lean();
+    if (!appConfig) {
+      return undefined;
+    }
+    return appConfig;
+  }
+
+  async getPublicAppConfigs(): Promise<AppConfigDto[]> {
+    const appConfig = await this.appConfigModel
+      .find({ [`extendedOptions.${ExtendedOptionKeys.EMBEDDED_PAGE_IS_PUBLIC}`]: true })
+      .lean();
+
+    return appConfig;
+  }
+
+  async deleteConfig(configName: string, ldapGroups: string[]): Promise<AppConfigDto[]> {
     try {
-      await this.appConfigModel.deleteOne({ name: configName });
-      return await this.getAppConfigs(ldapGroups);
+      const appConfigToDelete = await this.appConfigModel.findOne({ name: configName }).lean();
+      const deletedPosition = appConfigToDelete?.position;
+
+      const bulkOperations: AnyBulkWriteOperation<AppConfig>[] = [];
+
+      bulkOperations.push({
+        deleteOne: {
+          filter: { name: configName },
+        },
+      });
+
+      if (typeof deletedPosition === 'number') {
+        bulkOperations.push({
+          updateMany: {
+            filter: { position: { $gt: deletedPosition } },
+            update: { $inc: { position: -1 } },
+          },
+        });
+      }
+
+      await this.appConfigModel.bulkWrite(bulkOperations, { ordered: true });
+
+      const appConfigs = await this.getAppConfigs(ldapGroups);
+
+      const globalSettings = await this.globalSettingsService.getGlobalSettings();
+      if (globalSettings?.general?.defaultLandingPage?.appName === configName) {
+        const appConfigAtPosition1 = appConfigs.find((c) => c.position === 1);
+        await this.globalSettingsService.setGlobalSettings({
+          ...globalSettings,
+          general: {
+            ...globalSettings.general,
+            defaultLandingPage: {
+              isCustomLandingPageEnabled: true,
+              appName: appConfigAtPosition1?.name || APPS.DASHBOARD,
+            },
+          },
+        });
+      }
+
+      return appConfigs;
     } catch (error) {
       throw new CustomHttpException(
         AppConfigErrorMessages.DisableAppConfigFailed,
@@ -222,23 +328,7 @@ class AppConfigService implements OnModuleInit {
         await FilesystemService.deleteDirectories([`${APPS_FILES_PATH}/${configName}`]);
       }
 
-      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED);
-    }
-  }
-
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
-  writeConfigFile(appName: string, content: string) {
-    try {
-      const filePath = `${TRAEFIK_CONFIG_FILES_PATH}/${appName}.yml`;
-
-      writeFileSync(filePath, JSON.parse(content) as string);
-    } catch (error) {
-      throw new CustomHttpException(
-        AppConfigErrorMessages.WriteTraefikConfigFailed,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        undefined,
-        AppConfigService.name,
-      );
+      this.eventEmitter.emit(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${configName}`);
     }
   }
 

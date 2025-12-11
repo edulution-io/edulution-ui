@@ -40,7 +40,8 @@
     "jest.preset.cjs",
     "jest.config.ts",
     "dist/**",
-    "scripts/**"
+    "scripts/**",
+    "lint-staged.config.js"
   ],
   "rules": {
     // Allowed console logs for debug purpose
@@ -76,6 +77,12 @@
     {
       "files": ["index.ts"],
       "rules": { "import/prefer-default-export": "off" }
+    },
+    {
+      "files": ["libs/**/*.ts", "libs/**/*.tsx"],
+      "parserOptions": {
+        "project": ["libs/tsconfig.lib.json"]
+      }
     }
   ]
 }

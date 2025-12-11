@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { useEffect, useState } from 'react';
@@ -36,6 +43,9 @@ import SharingFilesFailedDialogBody from '@/pages/ClassManagement/components/Dia
 import PageLayout from '@/components/structure/layout/PageLayout';
 import QuotaLimitInfo from '@/pages/FileSharing/utilities/QuotaLimitInfo';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useLdapGroups from '@/hooks/useLdapGroups';
+import SchoolSelectorDropdown from '../components/SchoolSelectorDropdown';
 
 const LessonPage = () => {
   const {
@@ -47,6 +57,7 @@ const LessonPage = () => {
     fetchSchoolClass,
     fetchUserSessions,
   } = useClassManagementStore();
+  const { isSuperAdmin } = useLdapGroups();
 
   const { percentageUsed } = useQuotaInfo();
 
@@ -65,14 +76,22 @@ const LessonPage = () => {
     setGroupTypeInStore,
     groupNameFromStore,
     groupTypeFromStore,
-    filesharingProgress,
   } = useLessonStore();
+
+  const { fileOperationProgress } = useFileSharingStore();
 
   const { t } = useTranslation();
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [currentSelectedSession, setCurrentSelectedSession] = useState<LmnApiSession | null>(null);
 
-  const [isFileSharingProgessInfoDialogOpen, setIsFileSharingProgessInfoDialogOpen] = useState(false);
+  const [isFileSharingProgressInfoDialogOpen, setIsFileSharingProgressInfoDialogOpen] = useState(false);
+
+  useEffect(
+    () => () => {
+      setMember([]);
+    },
+    [setMember],
+  );
 
   useEffect(() => {
     if (lmnApiToken) {
@@ -84,6 +103,7 @@ const LessonPage = () => {
     if (isPageLoading) return;
 
     setIsPageLoading(true);
+    setCurrentSelectedSession(null);
 
     switch (groupTypeParams) {
       case UserGroups.Projects: {
@@ -94,8 +114,8 @@ const LessonPage = () => {
         break;
       }
       case UserGroups.Sessions: {
-        await fetchUserSessions();
-        const session = userSessions.find((s) => s.name === groupNameParams);
+        const userSessionsWithMembers = await fetchUserSessions(true);
+        const session = userSessionsWithMembers.find((s) => s.name === groupNameParams);
         setCurrentSelectedSession(session || null);
         setMember(session?.members || []);
         break;
@@ -149,17 +169,20 @@ const LessonPage = () => {
     setGroupTypeInStore();
     setGroupNameInStore();
     navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}`);
+    setIsPageLoading(false);
   };
 
   const createSessionAndNavigate = async (form: UseFormReturn<GroupForm>): Promise<void> => {
     setIsPageLoading(true);
     await createSession(form);
     navigate(`/${CLASS_MANAGEMENT_LESSON_PATH}/sessions/${form.getValues().name}`);
+    setIsPageLoading(false);
   };
 
   const updateSessionWithLoading = async (form: UseFormReturn<GroupForm>): Promise<void> => {
     setIsPageLoading(true);
     await updateSession(form);
+    setIsPageLoading(false);
   };
 
   const sessionToSave: GroupColumn = {
@@ -177,10 +200,10 @@ const LessonPage = () => {
   };
 
   useEffect(() => {
-    const hasProgressCompleted = (filesharingProgress?.percent ?? 0) >= 100;
-    const hasFailedPaths = (filesharingProgress?.failedPaths?.length ?? 0) > 0;
-    setIsFileSharingProgessInfoDialogOpen(hasProgressCompleted && hasFailedPaths);
-  }, [filesharingProgress]);
+    const hasProgressCompleted = (fileOperationProgress?.percent ?? 0) >= 100;
+    const hasFailedPaths = (fileOperationProgress?.failedPaths?.length ?? 0) > 0;
+    setIsFileSharingProgressInfoDialogOpen(hasProgressCompleted && hasFailedPaths);
+  }, [fileOperationProgress]);
 
   return (
     <PageLayout>
@@ -196,12 +219,13 @@ const LessonPage = () => {
             classname="md:w-1/3"
           />
         )}
+        {isSuperAdmin && <SchoolSelectorDropdown />}
         {groupNameParams || member.length ? (
           <div className="flex flex-row justify-between gap-2">
             <button
               type="button"
               onClick={onSaveSessionsButtonClick}
-              className="flex h-[42px] cursor-pointer items-center rounded-md bg-accent text-secondary hover:opacity-90"
+              className="flex h-10 cursor-pointer items-center rounded-lg bg-accent text-secondary hover:opacity-90"
             >
               <span className="text-nowrap px-4 text-background">
                 {t(`classmanagement.${currentSelectedSession ? 'editSession' : 'saveSession'}`)}
@@ -211,7 +235,7 @@ const LessonPage = () => {
             <button
               type="button"
               onClick={closeSession}
-              className="flex h-[42px] cursor-pointer items-center rounded-md bg-accent text-secondary hover:opacity-90"
+              className="flex h-10 cursor-pointer items-center rounded-lg bg-accent text-secondary hover:opacity-90"
             >
               <span className="text-nowrap pl-4 text-background">{t('classmanagement.closeSession')}</span>
               <MdClose className="ml-auto inline-block h-8 w-8 px-2" />
@@ -223,18 +247,18 @@ const LessonPage = () => {
       {groupNameParams || member.length ? <UserArea fetchData={fetchData} /> : <QuickAccess />}
       {openDialogType === UserGroups.Sessions && <GroupDialog item={sessionToSave} />}
 
-      {filesharingProgress && filesharingProgress.failedPaths && (
+      {fileOperationProgress && fileOperationProgress.failedPaths && (
         <AdaptiveDialog
-          isOpen={isFileSharingProgessInfoDialogOpen}
-          handleOpenChange={() => setIsFileSharingProgessInfoDialogOpen(!isFileSharingProgessInfoDialogOpen)}
+          isOpen={isFileSharingProgressInfoDialogOpen}
+          handleOpenChange={() => setIsFileSharingProgressInfoDialogOpen(!isFileSharingProgressInfoDialogOpen)}
           title={t('classmanagement.failDialog.title', {
-            file: filesharingProgress.currentFilePath.split('/').pop(),
+            file: fileOperationProgress?.currentFilePath?.split('/').pop(),
           })}
           body={
             <SharingFilesFailedDialogBody
-              failedFilePath={filesharingProgress?.currentFilePath}
-              affectedUsers={filesharingProgress?.failedPaths.map((path) => path.split('/').at(2) || '')}
-              failedPaths={filesharingProgress?.failedPaths}
+              failedFilePath={fileOperationProgress.currentFilePath || ''}
+              affectedUsers={fileOperationProgress?.failedPaths.map((path) => path.split('/').at(2) || '')}
+              failedPaths={fileOperationProgress?.failedPaths}
             />
           }
         />

@@ -1,67 +1,56 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { create, StateCreator } from 'zustand';
 import eduApi from '@/api/eduApi';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
-import { RequestResponseContentType, ResponseType } from '@libs/common/types/http-methods';
-import OnlyOfficeEditorConfig from '@libs/filesharing/types/OnlyOfficeEditorConfig';
+import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import type { IConfig } from '@onlyoffice/document-editor-react';
 import buildApiDeletePathUrl from '@libs/filesharing/utils/buildApiDeletePathUrl';
 import DeleteTargetType from '@libs/filesharing/types/deleteTargetType';
 import getLastPartOfUrl from '@libs/filesharing/utils/getLastPartOfUrl';
 import handleApiError from '@/utils/handleApiError';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
-import getFrontEndUrl from '@libs/common/utils/getFrontEndUrl';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import delay from '@libs/common/utils/delay';
-import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResult';
 
 type FileEditorStore = {
   isFilePreviewDocked: boolean;
   setIsFilePreviewDocked: (isFilePreviewDocked: boolean) => void;
   isFilePreviewVisible: boolean;
   setIsFilePreviewVisible: (isVisible: boolean) => void;
-  getOnlyOfficeJwtToken: (config: OnlyOfficeEditorConfig) => Promise<string>;
+  getOnlyOfficeJwtToken: (config: IConfig) => Promise<string>;
   deleteFileAfterEdit: (url: string) => Promise<void>;
   reset: () => void;
   error: Error | null;
-  downloadFile: (filePath: string, signal?: AbortSignal) => Promise<string | undefined>;
-  getDownloadLinkURL: (filePath: string, filename: string, signal?: AbortSignal) => Promise<string | undefined>;
-  fetchDownloadLinks: (file: DirectoryFileDTO | null, signal?: AbortSignal) => Promise<void>;
   currentlyEditingFile: DirectoryFileDTO | null;
   filesToOpenInNewTab: DirectoryFileDTO[];
   addFileToOpenInNewTab: (fileToPreview: DirectoryFileDTO) => void;
   setCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => void;
   resetCurrentlyEditingFile: (fileToPreview: DirectoryFileDTO | null) => Promise<void>;
-  isEditorLoading: boolean;
-  isDownloadFileLoading: boolean;
-  downloadLinkURL: string;
-  publicDownloadLink: string | null;
-  isGetDownloadLinkUrlLoading: boolean;
-  setPublicDownloadLink: (publicDownloadLink: string) => void;
 };
 
 const initialState = {
   isFilePreviewDocked: true,
   isFilePreviewVisible: false,
-  publicDownloadLink: null,
-  isEditorLoading: false,
-  downloadLinkURL: '',
   currentlyEditingFile: null,
   filesToOpenInNewTab: [],
-  isDownloadFileLoading: false,
-  isGetDownloadLinkUrlLoading: false,
   error: null,
 };
 
@@ -111,32 +100,6 @@ const useFileEditorStore = create<FileEditorStore>(
         return Promise.resolve('');
       },
 
-      setPublicDownloadLink: (publicDownloadLink) => set({ publicDownloadLink }),
-
-      fetchDownloadLinks: async (file, signal) => {
-        try {
-          set({ isEditorLoading: true, error: null, downloadLinkURL: undefined, publicDownloadLink: null });
-
-          if (!file) {
-            return;
-          }
-
-          const downloadLink = await get().downloadFile(file.filename, signal);
-          set({ downloadLinkURL: downloadLink });
-
-          if (isOnlyOfficeDocument(file.filename)) {
-            const publicLink = await get().getDownloadLinkURL(file.filename, file.basename, signal);
-            if (publicLink) {
-              set({ publicDownloadLink: `${getFrontEndUrl()}/${EDU_API_ROOT}/downloads/${publicLink}` });
-            }
-          }
-        } catch (error) {
-          handleApiError(error, set);
-        } finally {
-          set({ isEditorLoading: false });
-        }
-      },
-
       addFileToOpenInNewTab: (file) => {
         const filteredFiles = get().filesToOpenInNewTab.filter((f) => f.etag !== file?.etag);
         set({ filesToOpenInNewTab: [...filteredFiles, file] });
@@ -150,53 +113,6 @@ const useFileEditorStore = create<FileEditorStore>(
         set({ currentlyEditingFile: null });
         await delay(1);
         set({ currentlyEditingFile: file });
-      },
-
-      downloadFile: async (filePath, signal) => {
-        try {
-          set({ isDownloadFileLoading: true });
-          const fileStreamResponse = await eduApi.get<Blob>(
-            `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_STREAM}`,
-            {
-              params: { filePath },
-              responseType: ResponseType.BLOB,
-              signal,
-            },
-          );
-
-          return window.URL.createObjectURL(fileStreamResponse.data);
-        } catch (error) {
-          handleApiError(error, set);
-          return '';
-        } finally {
-          set({ isDownloadFileLoading: false });
-        }
-      },
-
-      getDownloadLinkURL: async (filePath, filename, signal) => {
-        try {
-          set({ isGetDownloadLinkUrlLoading: true });
-          const response = await eduApi.get<WebdavStatusResponse>(
-            `${FileSharingApiEndpoints.FILESHARING_ACTIONS}/${FileSharingApiEndpoints.FILE_LOCATION}`,
-            {
-              params: {
-                filePath,
-                fileName: filename,
-              },
-              signal,
-            },
-          );
-          const { data, success } = response.data;
-          if (success && data) {
-            return data;
-          }
-          return '';
-        } catch (error) {
-          handleApiError(error, set);
-          return '';
-        } finally {
-          set({ isGetDownloadLinkUrlLoading: false });
-        }
       },
     }),
     {

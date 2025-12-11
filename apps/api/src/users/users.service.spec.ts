@@ -1,26 +1,32 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import CryptoJS from 'crypto-js';
-import { LDAPUser } from '@libs/groups/types/ldapUser';
 import UserDto from '@libs/user/types/user.dto';
-import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import LdapGroups from '@libs/groups/types/ldapGroups';
-import USER_DB_PROJECTION from '@libs/user/constants/user-db-projections';
+import USER_DB_PROJECTION from '@libs/user/constants/user-db-projection';
 import { getDecryptedPassword } from '@libs/common/utils';
 import { ALL_USERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import { User, UserDocument } from './user.schema';
@@ -32,7 +38,6 @@ import cacheManagerMock from '../common/mocks/cacheManagerMock';
 import { UserAccounts } from './account.schema';
 
 jest.mock('axios');
-const mockToken = 'token';
 
 const mockUser: UserDocument = {
   username: 'testuser',
@@ -53,75 +58,14 @@ const mockUser: UserDocument = {
   totpSecret: '',
 } as UserDocument;
 
-const cachedUsersBySchool: Record<string, LDAPUser[]> = {
-  agy: [
-    {
-      id: '1',
-      username: 'cacheduser',
-      firstName: 'Cached',
-      lastName: 'User',
-      email: 'cacheduser@example.com',
-      emailVerified: true,
-      attributes: {
-        LDAP_ENTRY_DN: ['dn'],
-        LDAP_ID: ['id'],
-        modifyTimestamp: ['timestamp'],
-        createTimestamp: ['timestamp'],
-        school: ['agy'],
-      },
-      createdTimestamp: Date.now(),
-      enabled: true,
-      totp: false,
-      federationLink: 'link',
-      disableableCredentialTypes: [],
-      requiredActions: [],
-      notBefore: 0,
-      access: {
-        manageGroupMembership: false,
-        view: true,
-        mapRoles: false,
-        impersonate: false,
-        manage: false,
-      },
-    },
-  ],
-};
-
-const fetchedUsers: LDAPUser[] = [
+const cachedUsers = [
   {
-    id: '2',
-    username: 'fetcheduser',
-    firstName: 'Fetched',
+    username: 'testuser',
+    firstName: 'Test',
     lastName: 'User',
-    email: 'fetcheduser@example.com',
-    emailVerified: true,
-    attributes: {
-      LDAP_ENTRY_DN: ['dn'],
-      LDAP_ID: ['id'],
-      modifyTimestamp: ['timestamp'],
-      createTimestamp: ['timestamp'],
-      school: ['agy'],
-    },
-    createdTimestamp: Date.now(),
-    enabled: true,
-    totp: false,
-    federationLink: 'link',
-    disableableCredentialTypes: [],
-    requiredActions: [],
-    notBefore: 0,
-    access: {
-      manageGroupMembership: false,
-      view: true,
-      mapRoles: false,
-      impersonate: false,
-      manage: false,
-    },
+    school: 'agy',
   },
 ];
-
-jest.mock('../groups/groups.service', () => ({
-  fetchAllUsers: jest.fn(() => fetchedUsers),
-}));
 
 const userModelMock = {
   create: jest.fn().mockResolvedValue(mockUser),
@@ -132,6 +76,7 @@ const userModelMock = {
     }),
   }),
   findOne: jest.fn().mockReturnValue({
+    select: jest.fn().mockReturnThis(),
     lean: jest.fn().mockReturnThis(),
     exec: jest.fn().mockResolvedValue(mockUser),
   }),
@@ -175,6 +120,10 @@ describe(UsersService.name, () => {
           provide: CACHE_MANAGER,
           useValue: cacheManagerMock,
         },
+        {
+          provide: EventEmitter2,
+          useValue: { emit: jest.fn() },
+        },
       ],
     }).compile();
 
@@ -212,13 +161,14 @@ describe(UsersService.name, () => {
     it('should return a single user', async () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       jest.spyOn(model, 'findOne').mockReturnValueOnce({
-        lean: jest.fn().mockResolvedValue([mockUser]),
+        select: jest.fn().mockReturnThis(),
+        lean: jest.fn().mockResolvedValue(mockUser),
       } as unknown as any);
 
       const user = await service.findOne('testuser');
 
-      expect(user).toEqual([mockUser]);
-      expect(model.findOne).toHaveBeenCalledWith({ username: 'testuser' }, USER_DB_PROJECTION);
+      expect(user).toEqual(mockUser);
+      expect(model.findOne).toHaveBeenCalledWith({ username: 'testuser' });
     });
   });
 
@@ -258,97 +208,30 @@ describe(UsersService.name, () => {
   describe('findAllCachedUsers', () => {
     it('should return cached users if available', async () => {
       const school = 'agy';
-      cacheManagerMock.get.mockResolvedValue(cachedUsersBySchool);
+      cacheManagerMock.get.mockResolvedValue(cachedUsers);
 
-      const result = await service.findAllCachedUsers(mockToken, school);
-      expect(result).toEqual(cachedUsersBySchool);
+      const result = await service.findAllCachedUsers(school);
+      expect(result).toEqual(cachedUsers);
       expect(cacheManagerMock.get).toHaveBeenCalledWith(ALL_USERS_CACHE_KEY + school);
     });
 
-    it('should fetch users from external API if not cached', async () => {
+    it('should return empty array if not cached', async () => {
       const school = 'agy';
       cacheManagerMock.get.mockResolvedValue(null);
-      mockGroupsService.fetchAllUsers.mockResolvedValue(fetchedUsers);
 
-      const result = await service.findAllCachedUsers(mockToken, school);
-      expect(result).toEqual(fetchedUsers);
-      expect(GroupsService.fetchAllUsers).toHaveBeenCalledWith(mockToken);
-      expect(cacheManagerMock.set).toHaveBeenCalledWith(
-        ALL_USERS_CACHE_KEY + school,
-        fetchedUsers,
-        DEFAULT_CACHE_TTL_MS,
-      );
+      const result = await service.findAllCachedUsers(school);
+      expect(result).toEqual([]);
+      expect(cacheManagerMock.get).toHaveBeenCalledWith(ALL_USERS_CACHE_KEY + school);
     });
   });
 
   describe('searchUsersByName', () => {
     it('should return users matching the search string', async () => {
-      const ldapUsers: LDAPUser[] = [
-        {
-          id: '1',
-          username: 'cacheduser',
-          firstName: 'Cached',
-          lastName: 'User',
-          email: 'cacheduser@example.com',
-          emailVerified: true,
-          attributes: {
-            LDAP_ENTRY_DN: ['dn'],
-            LDAP_ID: ['id'],
-            modifyTimestamp: ['timestamp'],
-            createTimestamp: ['timestamp'],
-            school: ['agy'],
-          },
-          createdTimestamp: Date.now(),
-          enabled: true,
-          totp: false,
-          federationLink: 'link',
-          disableableCredentialTypes: [],
-          requiredActions: [],
-          notBefore: 0,
-          access: {
-            manageGroupMembership: false,
-            view: true,
-            mapRoles: false,
-            impersonate: false,
-            manage: false,
-          },
-        },
-        {
-          id: '3',
-          username: 'john',
-          firstName: 'John',
-          lastName: 'Doe',
-          email: 'john@example.com',
-          emailVerified: true,
-          attributes: {
-            LDAP_ENTRY_DN: ['dn'],
-            LDAP_ID: ['id'],
-            modifyTimestamp: ['timestamp'],
-            createTimestamp: ['timestamp'],
-            school: ['agy'],
-          },
-          createdTimestamp: Date.now(),
-          enabled: true,
-          totp: false,
-          federationLink: 'link',
-          disableableCredentialTypes: [],
-          requiredActions: [],
-          notBefore: 0,
-          access: {
-            manageGroupMembership: false,
-            view: true,
-            mapRoles: false,
-            impersonate: false,
-            manage: false,
-          },
-        },
-      ];
+      jest.spyOn(service, 'findAllCachedUsers').mockResolvedValue(cachedUsers);
 
-      jest.spyOn(service, 'findAllCachedUsers').mockResolvedValue(ldapUsers);
-
-      const result = await service.searchUsersByName(mockToken, 'agy', 'john');
-      expect(result).toEqual([{ username: 'john', firstName: 'John', lastName: 'Doe' }]);
-      expect(service.findAllCachedUsers).toHaveBeenCalledWith(mockToken, 'agy');
+      const result = await service.searchUsersByName('agy', 'test');
+      expect(result).toEqual(cachedUsers);
+      expect(service.findAllCachedUsers).toHaveBeenCalledWith('agy');
     });
   });
 

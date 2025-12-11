@@ -1,60 +1,54 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { FC } from 'react';
 import { t } from 'i18next';
 import { MdDriveFileRenameOutline } from 'react-icons/md';
-import ContentType from '@libs/filesharing/types/contentType';
 import FileActionButtonProps from '@libs/filesharing/types/fileActionButtonProps';
 import FileActionType from '@libs/filesharing/types/fileActionType';
-import MAX_FILE_UPLOAD_SIZE from '@libs/ui/constants/maxFileUploadSize';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
-import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import DownloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/downloadButton';
 import MoveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/moveButton';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
-import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
+import DownloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/downloadButton';
+import useStartWebdavFileDownload from '@/pages/FileSharing/hooks/useStartWebdavFileDownload';
+import CopyButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/copyButton';
+import ShareButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/shareButton';
 
-const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItem }) => {
-  const { downloadFile } = useFileEditorStore();
-
-  const startDownload = async (filePath: string, filename: string) => {
-    const downloadLinkURL = await downloadFile(filePath);
-    if (!downloadLinkURL) return;
-    const link = document.createElement('a');
-    link.href = downloadLinkURL;
-    link.setAttribute('download', filename);
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    window.URL.revokeObjectURL(downloadLinkURL);
-  };
+const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedItems }) => {
+  const startDownload = useStartWebdavFileDownload();
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
-      DeleteButton(() => openDialog(FileActionType.DELETE_FILE_FOLDER)),
-      MoveButton(() => openDialog(FileActionType.MOVE_FILE_FOLDER)),
+      DeleteButton(() => openDialog(FileActionType.DELETE_FILE_OR_FOLDER)),
+      MoveButton(() => openDialog(FileActionType.MOVE_FILE_OR_FOLDER)),
       {
         icon: MdDriveFileRenameOutline,
         text: t('tooltip.rename'),
-        onClick: () => openDialog(FileActionType.RENAME_FILE_FOLDER),
+        onClick: () => openDialog(FileActionType.RENAME_FILE_OR_FOLDER),
       },
-      DownloadButton(
-        selectedItem ? () => startDownload(selectedItem.filename, selectedItem.basename) : () => {},
-        selectedItem?.type === ContentType.FILE && bytesToMegabytes(selectedItem?.size || 0) < MAX_FILE_UPLOAD_SIZE,
-      ),
+      DownloadButton(async () => {
+        if (!selectedItems) return;
+        await startDownload(selectedItems);
+      }),
+      CopyButton(() => openDialog(FileActionType.COPY_FILE_OR_FOLDER)),
+      ShareButton(() => openDialog(FileActionType.SHARE_FILE_OR_FOLDER)),
     ],
     keyPrefix: 'file-sharing-page-floating-button_',
   };

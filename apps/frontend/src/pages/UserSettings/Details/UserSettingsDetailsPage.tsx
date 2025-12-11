@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { useEffect, useMemo } from 'react';
@@ -16,12 +23,12 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import { UserDetailsSettingsIcon } from '@/assets/icons';
 import UserSettingsDetailsForm from '@/pages/UserSettings/Details/UserSettingsDetailsForm';
 import Quota from '@/pages/Dashboard/Quota';
-import Separator from '@/components/ui/Separator';
 import Field from '@/components/shared/Field';
 import Label from '@/components/ui/Label';
 import BadgeField from '@/components/shared/BadgeField';
 import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import UserImageConfig from './UserImageConfig';
 
 const UserSettingsDetailsPage: React.FC = () => {
@@ -47,7 +54,7 @@ const UserSettingsDetailsPage: React.FC = () => {
     [user, t],
   );
 
-  const schoolClasses = user?.schoolclasses.map((item) => removeSchoolPrefix(item, user.school)) || [];
+  const schoolClasses = user?.schoolclasses?.map((item) => removeSchoolPrefix(item, user.school)) || [];
 
   return (
     <PageLayout
@@ -57,49 +64,54 @@ const UserSettingsDetailsPage: React.FC = () => {
         iconSrc: UserDetailsSettingsIcon,
       }}
     >
-      <UserImageConfig />
-      <Separator className="my-4 bg-ciGrey" />
+      <SectionAccordion defaultOpenAll>
+        <SectionAccordionItem
+          id="profileImage"
+          label={t('usersettings.details.userimageconfig')}
+        >
+          <UserImageConfig />
+        </SectionAccordionItem>
 
-      <div className="md:max-w-[75%]">
-        <h3 className="text-background">{t('usersettings.details.userInformation')}</h3>
-        <div className="py-4 text-background">
-          {userInfo.map((field) => (
-            <Field
-              key={`userInfoField-${field.name}`}
-              value={field.value}
-              labelTranslationId={field.label}
-              className="mb-4 mt-2"
-              disabled
+        <SectionAccordionItem
+          id="userInformation"
+          label={t('usersettings.details.userInformation')}
+        >
+          <div className="text-background">
+            {userInfo.map((field) => (
+              <Field
+                key={`userInfoField-${field.name}`}
+                value={field.value}
+                labelTranslationId={field.label}
+                className="mb-4 mt-2"
+                disabled
+              />
+            ))}
+
+            <Label>
+              <p className="font-bold">{t('usersettings.details.schoolSubjects')}</p>
+            </Label>
+            <BadgeField
+              value={schoolClasses}
+              readOnly
+              className="mt-2"
             />
-          ))}
+          </div>
+        </SectionAccordionItem>
 
-          <Label>
-            <p className="font-bold">{t('usersettings.details.schoolSubjects')}</p>
-          </Label>
-          <BadgeField
-            value={schoolClasses}
-            readOnly
-            className="mt-2"
-          />
-        </div>
-      </div>
-      <Separator className="my-4 bg-muted" />
+        <SectionAccordionItem
+          id="accountSettings"
+          label={t('usersettings.details.title')}
+        >
+          <UserSettingsDetailsForm />
+        </SectionAccordionItem>
 
-      <h3 className="text-background">{t('usersettings.details.title')}</h3>
-      <div className="mb-4 space-y-4 py-4">
-        <UserSettingsDetailsForm />
-      </div>
-
-      <Separator className="my-4 bg-muted" />
-
-      <div className="md:max-w-[75%]">
-        <h3 className="text-background">{t('usersettings.details.quotas')}</h3>
-        <div className="py-4 text-muted">
+        <SectionAccordionItem
+          id="quotas"
+          label={t('usersettings.details.quotas')}
+        >
           <Quota />
-        </div>
-
-        <div className="h-[50px]" />
-      </div>
+        </SectionAccordionItem>
+      </SectionAccordion>
     </PageLayout>
   );
 };

@@ -1,21 +1,29 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, UseInterceptors } from '@nestjs/common';
 import { EDU_API_GROUPS_ENDPOINT } from '@libs/groups/constants/eduApiEndpoints';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import GroupsService from './groups.service';
 import GetToken from '../common/decorators/getToken.decorator';
-import GetCurrentSchool from '../common/decorators/getCurrentSchool.decorator';
+import GetCurrentOrganisationPrefix from '../common/decorators/getCurrentOrganisationPrefix.decorator';
+import DeploymentTargetInterceptor from '../common/interceptors/deploymentTarget.interceptor';
 
 @ApiTags(EDU_API_GROUPS_ENDPOINT)
 @ApiBearerAuth()
@@ -23,9 +31,13 @@ import GetCurrentSchool from '../common/decorators/getCurrentSchool.decorator';
 export class GroupsController {
   constructor(private readonly groupsService: GroupsService) {}
 
+  @UseInterceptors(DeploymentTargetInterceptor)
   @Get()
-  async searchGroups(@Query('groupName') groupName: string, @GetCurrentSchool() school: string) {
-    return this.groupsService.searchGroups(school, groupName);
+  async searchGroups(
+    @Query('groupName') groupName: string,
+    @GetCurrentOrganisationPrefix() currentOrganisationPrefix: string,
+  ) {
+    return this.groupsService.searchGroups(currentOrganisationPrefix, groupName);
   }
 
   @Get('user')

@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { readFileSync } from 'fs';
@@ -15,17 +22,15 @@ import { CanActivate, ExecutionContext, HttpStatus, Injectable } from '@nestjs/c
 import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
-import { parse } from 'cookie';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import CustomHttpException from '../common/CustomHttpException';
 import { PUBLIC_ROUTE_KEY } from '../common/decorators/public.decorator';
+import extractToken from '../common/utils/extractToken';
 
 @Injectable()
-class AuthenticationGuard implements CanActivate {
-  private token: string;
-
+class AuthGuard implements CanActivate {
   private readonly pubKey: string;
 
   constructor(
@@ -35,50 +40,37 @@ class AuthenticationGuard implements CanActivate {
     this.pubKey = readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
   }
 
-  private static extractToken(request: Request): string {
-    const tokenFromQuery = request.query.token as string;
-    if (tokenFromQuery) {
-      return tokenFromQuery;
-    }
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const isPublic = this.reflector.get<boolean>(PUBLIC_ROUTE_KEY, context.getHandler());
 
-    const authHeader = request.headers.authorization;
-    if (authHeader) {
-      const [type, token] = authHeader.split(' ');
-      if (type === 'Bearer' && token) {
-        return token;
+    const request: Request = context.switchToHttp().getRequest();
+    const token = extractToken(request);
+
+    if (token) {
+      try {
+        request.user = await this.jwtService.verifyAsync<JWTUser>(token, {
+          publicKey: this.pubKey,
+          algorithms: ['RS256'],
+        });
+        request.token = token;
+      } catch (err) {
+        if (!isPublic) {
+          throw new CustomHttpException(AuthErrorMessages.TokenExpired, HttpStatus.UNAUTHORIZED, err, AuthGuard.name);
+        }
       }
     }
 
-    const cookies = parse(request.headers.cookie || '');
-    return cookies.authToken || '';
-  }
-
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const isPublic = this.reflector.get<boolean>(PUBLIC_ROUTE_KEY, context.getHandler());
-    if (isPublic) {
+    if (isPublic || request.user) {
       return true;
     }
 
-    const request: Request = context.switchToHttp().getRequest();
-    this.token = AuthenticationGuard.extractToken(request);
-
-    try {
-      request.user = await this.jwtService.verifyAsync<JWTUser>(this.token, {
-        publicKey: this.pubKey,
-        algorithms: ['RS256'],
-      });
-      request.token = this.token;
-
-      return true;
-    } catch (error) {
-      throw new CustomHttpException(
-        AuthErrorMessages.TokenExpired,
-        HttpStatus.UNAUTHORIZED,
-        error,
-        AuthenticationGuard.name,
-      );
-    }
+    throw new CustomHttpException(
+      AuthErrorMessages.TokenExpired,
+      HttpStatus.UNAUTHORIZED,
+      'No JWT provided',
+      AuthGuard.name,
+    );
   }
 }
 
-export default AuthenticationGuard;
+export default AuthGuard;

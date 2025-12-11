@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { useEffect, useMemo, useState } from 'react';
@@ -17,7 +24,6 @@ import { parse, stringify } from 'yaml';
 import { FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Switch from '@/components/ui/Switch';
 import YamlEditor from '@/components/shared/YamlEditor';
-import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import FormField from '@/components/shared/FormField';
 import { Button } from '@/components/shared/Button';
 import type YamlDokument from '@libs/appconfig/types/yamlDokument';
@@ -25,7 +31,7 @@ import type ProxyConfigFormType from '@libs/appconfig/types/proxyConfigFormType'
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import getDefaultYaml from '@libs/appconfig/utils/getDefaultYaml';
 import slugify from '@libs/common/utils/slugify';
-import DOCKER_APPLICATIONS from '@libs/docker/constants/dockerApplicationList';
+import DOCKER_APPLICATION_LIST from '@libs/docker/constants/dockerApplicationList';
 import type TApps from '@libs/appconfig/types/appsType';
 import cn from '@libs/common/utils/className';
 import useDockerApplicationStore from '../DockerIntegration/useDockerApplicationStore';
@@ -43,7 +49,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
 
   const isYamlConfigured = form.watch(`${item.name}.proxyConfig`) !== '';
   const defaultYaml = useMemo(() => getDefaultYaml(item.name), [item.name]);
-  const isKnownApp = Object.keys(DOCKER_APPLICATIONS).includes(item.name);
+  const isKnownApp = Object.keys(DOCKER_APPLICATION_LIST).includes(item.name);
   const isProxyActuallyConfigured = item.options.proxyConfig !== '';
 
   const proxyPath = slugify(form.getValues(`${item.name}.proxyPath`) || '');
@@ -60,7 +66,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
 
   useEffect(() => {
     if (isKnownApp) {
-      const containerName = DOCKER_APPLICATIONS[item.name as TApps] || '';
+      const containerName = DOCKER_APPLICATION_LIST[item.name as TApps] || '';
 
       void getTraefikConfig(item.name as TApps, containerName);
     }
@@ -121,126 +127,119 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
   }, [proxyPath]);
 
   return (
-    <AccordionSH type="multiple">
-      <AccordionItem value={item.name}>
-        <AccordionTrigger className="flex text-h4">
-          <h4 className="text-background">{t(`form.proxyConfig`)}</h4>
-        </AccordionTrigger>
-        <AccordionContent>
-          <p>
-            <Trans
-              i18nKey="form.proxyConfigDescription"
-              components={{
-                strong: <strong />,
-                br: <br />,
-              }}
+    <div className="space-y-4">
+      <p className="text-muted-foreground">
+        <Trans
+          i18nKey="settings.appconfig.sections.proxyConfig.description"
+          components={{
+            strong: <strong />,
+            br: <br />,
+          }}
+        />
+      </p>
+
+      <div className="flex items-center space-x-2">
+        <Switch
+          checked={expertModeEnabled}
+          onCheckedChange={setExpertModeEnabled}
+        />
+        <p>{t('form.expertMode')}</p>
+      </div>
+
+      <div className="space-y-4">
+        <div
+          className={cn(
+            'flex-row items-center justify-between gap-2',
+            !expertModeEnabled || isKnownApp ? 'hidden' : 'flex',
+          )}
+        >
+          <div className="flex flex-wrap items-center justify-between gap-10">
+            <FormField
+              key={`${item.name}.proxyPath`}
+              name={`${item.name}.proxyPath`}
+              disabled={!expertModeEnabled}
+              form={form}
+              defaultValue=""
+              labelTranslationId={t('form.proxyPath')}
+              placeholder={t('form.proxyPathPlaceholder')}
+              className="min-w-64"
             />
-          </p>
-
-          <div className="mt-4 flex items-center space-x-2">
-            <Switch
-              checked={expertModeEnabled}
-              onCheckedChange={setExpertModeEnabled}
+            <FormField
+              key={`${item.name}.proxyDestination`}
+              name={`${item.name}.proxyDestination`}
+              disabled={!expertModeEnabled}
+              form={form}
+              defaultValue=""
+              labelTranslationId={t('form.proxyDestination')}
+              placeholder={t('form.proxyDestinationPlaceholder')}
+              className="min-w-96"
             />
-            <p className="text-background">{t('form.expertMode')}</p>
-          </div>
-
-          <div className="space-y-4 px-1 pt-4">
-            <div
-              className={cn(
-                'flex-row items-center justify-between gap-2',
-                !expertModeEnabled || isKnownApp ? 'hidden' : 'flex',
-              )}
-            >
-              <div className="flex flex-wrap items-center justify-between gap-10">
-                <FormField
-                  key={`${item.name}.proxyPath`}
-                  name={`${item.name}.proxyPath`}
-                  disabled={!expertModeEnabled}
-                  form={form}
-                  defaultValue=""
-                  labelTranslationId={t('form.proxyPath')}
-                  placeholder={t('form.proxyPathPlaceholder')}
-                  className="min-w-64"
-                />
-                <FormField
-                  key={`${item.name}.proxyDestination`}
-                  name={`${item.name}.proxyDestination`}
-                  disabled={!expertModeEnabled}
-                  form={form}
-                  defaultValue=""
-                  labelTranslationId={t('form.proxyDestination')}
-                  placeholder={t('form.proxyDestinationPlaceholder')}
-                  className="min-w-96"
-                />
-                <FormFieldSH
-                  key={`${item.name}.stripPrefix`}
-                  control={form.control}
-                  name={`${item.name}.stripPrefix`}
-                  defaultValue={false}
-                  disabled={!expertModeEnabled}
-                  render={({ field }) => (
-                    <FormItem>
-                      <p className="font-bold text-background">{t('form.stripPrefix')}</p>
-                      <FormControl>
-                        <Switch
-                          {...field}
-                          checked={field.value as boolean}
-                          onCheckedChange={(checked) => {
-                            field.onChange(checked);
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage className="text-p" />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
             <FormFieldSH
-              key={`${item.name}.proxyConfig`}
+              key={`${item.name}.stripPrefix`}
               control={form.control}
-              name={`${item.name}.proxyConfig`}
+              name={`${item.name}.stripPrefix`}
+              defaultValue={false}
+              disabled={!expertModeEnabled}
               render={({ field }) => (
                 <FormItem>
-                  <p className="font-bold text-background">{t(`form.proxyConfig`)}</p>
+                  <p className="font-bold text-background">{t('form.stripPrefix')}</p>
                   <FormControl>
-                    <YamlEditor
-                      value={field.value}
-                      onChange={field.onChange}
-                      disabled={!expertModeEnabled}
+                    <Switch
+                      {...field}
+                      checked={field.value as boolean}
+                      onCheckedChange={(checked) => {
+                        field.onChange(checked);
+                      }}
                     />
                   </FormControl>
                   <FormMessage className="text-p" />
                 </FormItem>
               )}
             />
-            <div className="flex flex-row justify-end">
-              <Button
-                className="mr-4"
-                type="button"
-                variant="btn-infrastructure"
-                size="lg"
-                onClick={handleLoadDefaultConfig}
-              >
-                {t('common.template')}
-              </Button>
-              <Button
-                className="mr-4"
-                type="button"
-                variant="btn-collaboration"
-                size="lg"
-                onClick={handleClearProxyConfig}
-                disabled={!isYamlConfigured}
-              >
-                {t('common.delete')}
-              </Button>
-            </div>
           </div>
-        </AccordionContent>
-      </AccordionItem>
-    </AccordionSH>
+        </div>
+
+        <FormFieldSH
+          key={`${item.name}.proxyConfig`}
+          control={form.control}
+          name={`${item.name}.proxyConfig`}
+          render={({ field }) => (
+            <FormItem>
+              <p className="font-bold text-background">{t(`settings.appconfig.sections.proxyConfig.title`)}</p>
+              <FormControl>
+                <YamlEditor
+                  value={field.value}
+                  onChange={field.onChange}
+                  disabled={!expertModeEnabled}
+                />
+              </FormControl>
+              <FormMessage className="text-p" />
+            </FormItem>
+          )}
+        />
+        <div className="flex flex-row justify-end">
+          <Button
+            className="mr-4"
+            type="button"
+            variant="btn-infrastructure"
+            size="lg"
+            onClick={handleLoadDefaultConfig}
+          >
+            {t('common.template')}
+          </Button>
+          <Button
+            className="mr-4"
+            type="button"
+            variant="btn-collaboration"
+            size="lg"
+            onClick={handleClearProxyConfig}
+            disabled={!isYamlConfigured}
+          >
+            {t('common.delete')}
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 };
 

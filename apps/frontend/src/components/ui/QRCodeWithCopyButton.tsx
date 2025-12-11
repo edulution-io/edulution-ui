@@ -1,36 +1,37 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
-import { Button } from '@/components/shared/Button';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import ToasterTranslationIds from '@libs/ui/types/toasterTranslationIds';
-import copyToClipboard from '@/utils/copyToClipboard';
+import { MdFileCopy } from 'react-icons/md';
 import { Sizes } from '@libs/ui/types/sizes';
+import copyToClipboard from '@/utils/copyToClipboard';
+import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
+import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 
 interface QRCodeWithCopyButtonProps {
   url: string;
   titleTranslationId: string;
-  toasterTranslationIds?: ToasterTranslationIds;
   qrCodeSize?: Sizes;
 }
 
-const QRCodeWithCopyButton = ({
-  url,
-  qrCodeSize,
-  titleTranslationId,
-  toasterTranslationIds,
-}: QRCodeWithCopyButtonProps) => {
+const QRCodeWithCopyButton = ({ url, qrCodeSize, titleTranslationId }: QRCodeWithCopyButtonProps) => {
   const { t } = useTranslation();
 
   return (
@@ -42,15 +43,22 @@ const QRCodeWithCopyButton = ({
           size={qrCodeSize}
           className="m-14"
         />
-        <div className="mb-4 mt-4 rounded-xl bg-muted px-2 py-1 text-center">{url}</div>
-        <Button
-          size="lg"
-          type="button"
-          variant="btn-collaboration"
-          onClick={() => copyToClipboard(url, toasterTranslationIds)}
-        >
-          {t('common.copy.doCopy')}
-        </Button>
+        <InputWithActionIcons
+          type="text"
+          value={url}
+          readOnly
+          className="max-w-[620px]"
+          onMouseDown={(e) => {
+            e.preventDefault();
+            copyToClipboard(url);
+          }}
+          actionIcons={[
+            {
+              icon: MdFileCopy,
+              onClick: () => copyToClipboard(url),
+            },
+          ]}
+        />
       </div>
     </>
   );

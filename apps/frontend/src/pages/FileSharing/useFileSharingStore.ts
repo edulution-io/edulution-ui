@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { RowSelectionState } from '@tanstack/react-table';
@@ -18,38 +25,42 @@ import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import handleApiError from '@/utils/handleApiError';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import ContentType from '@libs/filesharing/types/contentType';
-import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
-import buildApiFileTypePathUrl from '@libs/filesharing/utils/buildApiFileTypePathUrl';
 import delay from '@libs/common/utils/delay';
+import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
-import UserRoles from '@libs/user/constants/userRoles';
+import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
+import processWebdavResponse from '@libs/filesharing/utils/processWebdavResponse';
 
 type UseFileSharingStore = {
   files: DirectoryFileDTO[];
   selectedItems: DirectoryFileDTO[];
   currentPath: string;
+  downloadProgressList: DownloadFileDto[];
   pathToRestoreSession: string;
   fileOperationProgress: null | FilesharingProgressDto;
-  setDirectories: (files: DirectoryFileDTO[]) => void;
   directories: DirectoryFileDTO[];
   selectedRows: RowSelectionState;
   setSelectedRows: (rows: RowSelectionState) => void;
   setCurrentPath: (path: string) => void;
   setPathToRestoreSession: (path: string) => void;
-  setFiles: (files: DirectoryFileDTO[]) => void;
   setSelectedItems: (items: DirectoryFileDTO[]) => void;
-  fetchFiles: (path?: string) => Promise<void>;
-  fetchMountPoints: () => Promise<void>;
-  fetchDirs: (path: string) => Promise<void>;
+  fetchFiles: (shareName: string | undefined, path?: string) => Promise<void>;
   reset: () => void;
   mountPoints: DirectoryFileDTO[];
   isLoading: boolean;
+  isWebdavSharesLoading: boolean;
   isError: boolean;
   currentlyDisabledFiles: Record<string, boolean>;
   setFileIsCurrentlyDisabled: (filename: string, isLocked: boolean, durationMs?: number) => Promise<void>;
   setIsLoading: (isLoading: boolean) => void;
-  setMountPoints: (mountPoints: DirectoryFileDTO[]) => void;
   setFileOperationProgress: (progress: FilesharingProgressDto | null) => void;
+  setDownloadProgressList: (progressList: DownloadFileDto[]) => void;
+  updateDownloadProgress: (progress: DownloadFileDto) => void;
+  removeDownloadProgress: (fileName: string) => void;
+  webdavShares: WebdavShareDto[];
+  fetchWebdavShares: () => Promise<WebdavShareDto[]>;
+  selectedWebdavShare: string;
+  setSelectedWebdavShare: (webdavShare: string) => void;
 };
 
 const initialState = {
@@ -61,9 +72,13 @@ const initialState = {
   mountPoints: [],
   directories: [],
   isLoading: false,
+  isWebdavSharesLoading: false,
   isError: false,
   currentlyDisabledFiles: {},
+  downloadProgressList: [],
   fileOperationProgress: null,
+  webdavShares: [],
+  selectedWebdavShare: '',
 };
 
 type PersistedFileManagerStore = (
@@ -81,34 +96,53 @@ const useFileSharingStore = create<UseFileSharingStore>(
 
       setFileOperationProgress: (progress: FilesharingProgressDto | null) => set({ fileOperationProgress: progress }),
 
+      setDownloadProgressList: (progressList) => {
+        set({ downloadProgressList: progressList });
+      },
+
+      removeDownloadProgress: (fileName) => {
+        const { downloadProgressList } = get();
+        set({
+          downloadProgressList: downloadProgressList.filter((d) => d.fileName !== fileName),
+        });
+      },
+
+      updateDownloadProgress: (progress) => {
+        const { downloadProgressList } = get();
+        const existingIndex = downloadProgressList.findIndex((d) => d.fileName === progress.fileName);
+
+        if (existingIndex >= 0) {
+          const updatedList = [...downloadProgressList];
+          updatedList[existingIndex] = progress;
+
+          set({ downloadProgressList: updatedList });
+        } else {
+          set({ downloadProgressList: [...downloadProgressList, progress] });
+        }
+      },
+
       setPathToRestoreSession: (path: string) => {
         set({ pathToRestoreSession: path });
-      },
-      setFiles: (files: DirectoryFileDTO[]) => {
-        set({ files });
-      },
-
-      setMountPoints: (mountPoints: DirectoryFileDTO[]) => {
-        set({ mountPoints });
-      },
-
-      setDirectories: (directories: DirectoryFileDTO[]) => {
-        set({ directories });
       },
 
       setIsLoading: (isLoading: boolean) => {
         set({ isLoading });
       },
 
-      fetchFiles: async (path: string = '/') => {
+      fetchFiles: async (shareName, path: string = '/') => {
         try {
           set({ isLoading: true });
-          const directoryFiles = await eduApi.get<DirectoryFileDTO[]>(
-            `${buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, path)}`,
-          );
+          const { data } = await eduApi.get<DirectoryFileDTO[]>(FileSharingApiEndpoints.BASE, {
+            params: { type: ContentType.FILE, path, share: shareName },
+          });
+
+          const webdavShareType = get().webdavShares.find((s) => s.displayName === shareName)?.type;
+          if (!webdavShareType) return;
+          const files = processWebdavResponse(data, webdavShareType);
+
           set({
             currentPath: path,
-            files: directoryFiles.data,
+            files,
             selectedItems: [],
             selectedRows: {},
           });
@@ -135,49 +169,30 @@ const useFileSharingStore = create<UseFileSharingStore>(
         }
       },
 
-      fetchMountPoints: async () => {
-        try {
-          set({ isLoading: true });
-
-          const defaultMountPointsResponse = await eduApi.get<DirectoryFileDTO[]>(
-            buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.FILE, ''),
-          );
-
-          const additionalMountPointsResponse = await eduApi.get<DirectoryFileDTO[]>(
-            buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.DIRECTORY, '/'),
-          );
-
-          const combinedMountPoints = [...defaultMountPointsResponse.data];
-
-          const examusersItem = additionalMountPointsResponse.data.find(
-            (item) => item.basename === UserRoles.EXAM_USER,
-          );
-
-          if (examusersItem && !defaultMountPointsResponse.data.some((item) => item.basename === UserRoles.EXAM_USER)) {
-            combinedMountPoints.push(examusersItem);
-          }
-
-          set({ mountPoints: combinedMountPoints });
-        } catch (error) {
-          handleApiError(error, set);
-        } finally {
-          set({ isLoading: false });
-        }
-      },
-
-      fetchDirs: async (path: string) => {
-        try {
-          const directoryFiles = await eduApi.get<DirectoryFileDTO[]>(
-            `${buildApiFileTypePathUrl(FileSharingApiEndpoints.BASE, ContentType.DIRECTORY, getPathWithoutWebdav(path))}`,
-          );
-          set({ directories: directoryFiles.data });
-        } catch (error) {
-          handleApiError(error, set);
-        }
-      },
-
       setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
       setSelectedItems: (items: DirectoryFileDTO[]) => set({ selectedItems: items }),
+
+      fetchWebdavShares: async () => {
+        if (get().isWebdavSharesLoading) return get().webdavShares;
+        try {
+          set({ isWebdavSharesLoading: true });
+
+          const { data } = await eduApi.get<WebdavShareDto[]>('/webdav-shares');
+          set({
+            webdavShares: data,
+          });
+          return data;
+        } catch (error) {
+          handleApiError(error, set);
+          return get().webdavShares;
+        } finally {
+          set({ isWebdavSharesLoading: false });
+        }
+      },
+
+      setSelectedWebdavShare: (webdavShare) => {
+        set({ selectedWebdavShare: webdavShare });
+      },
 
       reset: () => set(initialState),
     }),

@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { useEffect } from 'react';
@@ -15,15 +22,16 @@ import { Button } from '@/components/shared/Button';
 import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
 import { toast } from 'sonner';
-import { useLocation, useNavigate } from 'react-router-dom';
-import usePublicConferenceStore from '@/pages/ConferencePage/PublicConference/PublicConferenceStore';
-import useUserStore from '@/store/UserStore/UserStore';
+import usePublicConferenceStore from '@/pages/ConferencePage/PublicConference/usePublicConferenceStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/ConferenceDetailsDialogStore';
+import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/useConferenceDetailsDialogStore';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
+import PublicAccessFormHeader from '@/components/shared/PublicAccessFormHeader';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import { decodeBase64 } from '@libs/common/utils/getBase64String';
 
 interface PublicConferenceJoinFormProps {
   meetingId: string;
@@ -47,8 +55,6 @@ const PublicConferenceJoinForm = ({
   updatePublicConference,
 }: PublicConferenceJoinFormProps) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const location = useLocation();
   const { publicUserFullName, storedPasswordsByMeetingIds, setStoredPasswordByMeetingId, setPublicUserFullName } =
     usePublicConferenceStore();
   const { joinConferenceUrl } = useConferenceDetailsDialogStore();
@@ -68,7 +74,7 @@ const PublicConferenceJoinForm = ({
 
   useEffect(() => {
     form.setValue('name', publicUserFullName || '');
-    form.setValue('password', atob(storedPasswordsByMeetingIds[meetingId] || ''));
+    form.setValue('password', decodeBase64(storedPasswordsByMeetingIds[meetingId] || ''));
   }, [storedPasswordsByMeetingIds, meetingId, publicConference]);
 
   if (!isWaitingForConferenceToStart && publicConference?.isRunning && isPermittedUser && user) {
@@ -87,29 +93,7 @@ const PublicConferenceJoinForm = ({
 
   return (
     <div className="my-10 rounded-xl bg-white bg-opacity-5 p-5">
-      {!user?.username && (
-        <div>
-          <Button
-            className="mx-auto mt-5 w-[200px] justify-center text-background shadow-xl"
-            type="submit"
-            variant="btn-security"
-            size="lg"
-            data-testid="test-id-login-page-submit-button"
-            onClick={() =>
-              navigate(LOGIN_ROUTE, {
-                state: { from: location.pathname },
-              })
-            }
-          >
-            {t('common.toLogin')}
-          </Button>
-          <div className="mb-9 mt-12 flex items-center">
-            <hr className="flex-grow border-t border-gray-300" />
-            <span className="mx-4">{t('conferences.orContinueWithoutAccount')}</span>
-            <hr className="flex-grow border-t border-gray-300" />
-          </div>
-        </div>
-      )}
+      <PublicAccessFormHeader />
       {isWaitingForConferenceToStart && !joinConferenceUrl ? (
         <>
           <div>{t('conferences.conferenceIsNotStartedYet')}</div>
@@ -157,7 +141,7 @@ const PublicConferenceJoinForm = ({
                   type="password"
                   form={form}
                   onChange={(e) => setStoredPasswordByMeetingId(meetingId, e.target.value)}
-                  value={atob(storedPasswordsByMeetingIds[meetingId] || '')}
+                  value={decodeBase64(storedPasswordsByMeetingIds[meetingId] || '')}
                   placeholder={t('conferences.passwordOfConference')}
                   rules={{
                     required: t('common.min_chars', { count: 1 }),
@@ -166,16 +150,11 @@ const PublicConferenceJoinForm = ({
                 />
               </div>
             )}
-
-            <div className="mb-2 mt-4 flex justify-end">
-              <Button
-                variant="btn-collaboration"
-                size="lg"
-                type="submit"
-              >
-                {t('common.join')}
-              </Button>
-            </div>
+            <DialogFooterButtons
+              submitButtonText="common.join"
+              submitButtonType="submit"
+              handleSubmit={form.handleSubmit(joinConferenceManually)}
+            />
           </form>
         </Form>
       )}

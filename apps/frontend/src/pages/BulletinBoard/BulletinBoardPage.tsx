@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { useEffect, useState } from 'react';
@@ -18,8 +25,11 @@ import BulletinBoardEditorialPage from '@/pages/BulletinBoard/BulletinBoardEdito
 import BulletinBoardEditorialFloatingButtonsBar from '@/pages/BulletinBoard/BulletinBoardEditorial/BulletinBoardEditorialFloatingButtonsBar';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import BulletinBoardPageColumn from '@/pages/BulletinBoard/components/BulletinBoardPageColumn';
-import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialPageStore';
+import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialStore';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import CreateOrUpdateBulletinDialog from '@/pages/BulletinBoard/BulletinBoardEditorial/CreateOrUpdateBulletinDialog';
+import useUserPreferencesStore from '@/store/useUserPreferencesStore';
+import USER_PREFERENCES_FIELDS from '@libs/user-preferences/constants/user-preferences-fields';
 
 const BulletinBoardPage = () => {
   const { t } = useTranslation();
@@ -29,19 +39,37 @@ const BulletinBoardPage = () => {
     getBulletinsByCategories,
     isLoading,
     isEditorialModeEnabled,
+    hydrateCollapsed,
   } = useBulletinBoardStore();
+
+  const { getUserPreferences } = useUserPreferencesStore();
   const { getCategoriesWithEditPermission } = useBulletinBoardEditorialStore();
   const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    void getBulletinsByCategories(false);
-    void getCategoriesWithEditPermission();
-    setIsInitialLoading(false);
-  }, [isEditorialModeEnabled, bulletinBoardNotifications]);
+    const fetchData = async () => {
+      const userPreferences = await getUserPreferences([USER_PREFERENCES_FIELDS.collapsedBulletins]);
 
-  if (isLoading && isInitialLoading) {
-    return <LoadingIndicatorDialog isOpen />;
-  }
+      if (userPreferences?.collapsedBulletins) {
+        hydrateCollapsed(userPreferences.collapsedBulletins);
+      } else {
+        hydrateCollapsed({});
+      }
+
+      void getCategoriesWithEditPermission();
+      await getBulletinsByCategories(false);
+      setIsInitialLoading(false);
+    };
+
+    void fetchData();
+  }, [
+    isEditorialModeEnabled,
+    bulletinBoardNotifications,
+    getUserPreferences,
+    hydrateCollapsed,
+    getBulletinsByCategories,
+    getCategoriesWithEditPermission,
+  ]);
 
   const getPageContent = () => {
     if (isEditorialModeEnabled) {
@@ -50,7 +78,9 @@ const BulletinBoardPage = () => {
 
     return (
       <div className="flex h-full max-h-full overflow-x-auto overflow-y-hidden scrollbar-thin">
-        {bulletinsByCategories?.length ? (
+        {(isLoading || isInitialLoading) && <LoadingIndicatorDialog isOpen />}
+
+        {bulletinsByCategories &&
           bulletinsByCategories
             .sort((a, b) => a.category.position - b.category.position)
             .map(({ bulletins, category, canEditCategory }) => (
@@ -61,12 +91,15 @@ const BulletinBoardPage = () => {
                 category={category}
                 bulletins={bulletins}
               />
-            ))
-        ) : (
+            ))}
+
+        {!(isLoading || isInitialLoading) && !bulletinsByCategories?.length && (
           <div className="flex h-full min-h-full w-full items-center justify-center">
             <div>{t('bulletinboard.noBulletinsToShow')}</div>
           </div>
         )}
+
+        <CreateOrUpdateBulletinDialog onSubmit={getBulletinsByCategories} />
       </div>
     );
   };

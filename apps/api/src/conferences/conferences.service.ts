@@ -1,22 +1,28 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID, createHash } from 'crypto';
 import axios from 'axios';
 import { parseString } from 'xml2js';
 import { Model } from 'mongoose';
-import { createHash } from 'crypto';
 import { Interval } from '@nestjs/schedule';
 import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
 import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
@@ -29,25 +35,43 @@ import CONFERENCES_SYNC_INTERVAL_MS from '@libs/conferences/constants/conference
 import stringToBoolean from '@libs/common/utils/stringToBoolean';
 import splitAtLastWhitespace from '@libs/common/utils/splitStringAtLastWhitespace';
 import JoinPublicConferenceDetails from '@libs/conferences/types/joinPublicConferenceDetails';
+import { OnEvent } from '@nestjs/event-emitter';
+import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
+import appendSlashToUrl from '@libs/common/utils/URL/appendSlashToUrl';
 import CustomHttpException from '../common/CustomHttpException';
 import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
 import Attendee from './attendee.schema';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
+import NotificationsService from '../notifications/notifications.service';
 
 @Injectable()
-class ConferencesService {
-  private BBB_API_URL: string;
+class ConferencesService implements OnModuleInit {
+  BBB_API_URL: string;
 
-  private BBB_SECRET: string;
+  BBB_SECRET: string;
 
   constructor(
     @InjectModel(Conference.name) private conferenceModel: Model<ConferenceDocument>,
     private readonly appConfigService: AppConfigService,
     private readonly groupsService: GroupsService,
     private readonly sseService: SseService,
+    private readonly notificationService: NotificationsService,
   ) {}
+
+  onModuleInit() {
+    void this.updateConferenceServiceConfig();
+  }
+
+  @OnEvent(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${APPS.CONFERENCES}`)
+  async updateConferenceServiceConfig() {
+    const appConfig = await this.appConfigService.getAppConfigByName(APPS.CONFERENCES);
+    const url = appConfig?.options.url?.trim() ?? '';
+
+    this.BBB_API_URL = appendSlashToUrl(url);
+    this.BBB_SECRET = appConfig?.options.apiKey || '';
+  }
 
   @Interval(CONFERENCES_SYNC_INTERVAL_MS)
   async syncRunningConferencesStatus() {
@@ -69,7 +93,7 @@ class ConferencesService {
 
   async checkConferenceIsRunningWithBBB(meetingID: string): Promise<boolean> {
     const query = `meetingID=${meetingID}`;
-    const checksum = await this.createChecksum('isMeetingRunning', query);
+    const checksum = this.createChecksum('isMeetingRunning', query);
     const url = `${this.BBB_API_URL}isMeetingRunning?${query}&checksum=${checksum}`;
 
     try {
@@ -122,21 +146,9 @@ class ConferencesService {
     }));
   }
 
-  async loadConfig() {
-    if (this.BBB_API_URL && this.BBB_SECRET) {
-      return;
-    }
-
-    const appConfig = await this.appConfigService.getAppConfigByName(APPS.CONFERENCES);
-    if (!appConfig?.options.url || !appConfig.options.apiKey) {
-      throw new CustomHttpException(ConferencesErrorMessage.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    this.BBB_API_URL = appConfig.options.url;
-    this.BBB_SECRET = appConfig.options.apiKey;
-  }
-
   async create(createConferenceDto: CreateConferenceDto, currentUser: JWTUser): Promise<Conference | undefined> {
+    this.throwIfAppIsNotProperlyConfigured();
+
     const creator = {
       firstName: currentUser.given_name,
       lastName: currentUser.family_name,
@@ -146,7 +158,7 @@ class ConferencesService {
     const newConference = {
       name: createConferenceDto.name,
       creator,
-      meetingID: uuidv4(),
+      meetingID: randomUUID(),
       password: createConferenceDto.password,
       isPublic: createConferenceDto.isPublic,
       invitedAttendees: [...createConferenceDto.invitedAttendees, creator],
@@ -190,7 +202,7 @@ class ConferencesService {
     try {
       if (!shouldUpdateInBBB) {
         const query = `name=${encodeURIComponent(conference.name)}&meetingID=${conference.meetingID}`;
-        const checksum = await this.createChecksum('create', query);
+        const checksum = this.createChecksum('create', query);
         const url = `${this.BBB_API_URL}create?${query}&checksum=${checksum}`;
 
         const response = await axios.get<string>(url);
@@ -210,6 +222,18 @@ class ConferencesService {
         conference.invitedGroups,
         conference.invitedAttendees,
       );
+
+      // TODO: #1152
+
+      await this.notificationService.notifyUsernames(invitedMembersList, {
+        title: `Konferenz gestartet: ${conference.name}`,
+        body: `Die Konferenz "${conference.name}" wurde gestartet.`,
+        data: {
+          meetingID: conference.meetingID,
+          type: 'conference_started',
+        },
+      });
+
       const publicConferencesSubscriber = conference.meetingID;
       this.sseService.sendEventToUsers(
         [...invitedMembersList, publicConferencesSubscriber],
@@ -223,7 +247,7 @@ class ConferencesService {
     try {
       if (shouldUpdateInBBB) {
         const query = `meetingID=${conference.meetingID}`;
-        const checksum = await this.createChecksum('end', query);
+        const checksum = this.createChecksum('end', query);
         const url = `${this.BBB_API_URL}end?${query}&checksum=${checksum}`;
 
         const response = await axios.get<string>(url);
@@ -285,7 +309,7 @@ class ConferencesService {
     try {
       const fullName = `${givenName} ${familyName}`;
       const query = `meetingID=${meetingID}&fullName=${encodeURIComponent(fullName)}&role=${role}&userID=${encodeURIComponent(username)}&redirect=true`;
-      const checksum = await this.createChecksum('join', query);
+      const checksum = this.createChecksum('join', query);
 
       return `${this.BBB_API_URL}join?${query}&checksum=${checksum}`;
     } catch (e) {
@@ -312,7 +336,7 @@ class ConferencesService {
       const role = ConferenceRole.Viewer;
 
       const query = `meetingID=${meetingId}&fullName=${encodeURIComponent(name)}&role=${role}&userID=${encodeURIComponent(userId)}&redirect=true`;
-      const checksum = await this.createChecksum('join', query);
+      const checksum = this.createChecksum('join', query);
 
       return `${this.BBB_API_URL}join?${query}&checksum=${checksum}`;
     } catch (e) {
@@ -408,8 +432,20 @@ class ConferencesService {
     return true;
   }
 
-  async createChecksum(method = '', query = '') {
-    await this.loadConfig();
+  throwIfAppIsNotProperlyConfigured() {
+    if (!this.BBB_API_URL || !this.BBB_SECRET) {
+      throw new CustomHttpException(
+        ConferencesErrorMessage.AppNotProperlyConfigured,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        ConferencesService.name,
+      );
+    }
+  }
+
+  createChecksum(method = '', query = '') {
+    this.throwIfAppIsNotProperlyConfigured();
+
     const string = method + query + this.BBB_SECRET;
 
     return createHash('sha1').update(string).digest('hex');
@@ -419,7 +455,7 @@ class ConferencesService {
     const promises = conferencesToBeSynced.map(async (conference) => {
       const conferenceObject = conference.toObject() as ConferenceDocument;
       const query = `meetingID=${conference.meetingID}`;
-      const checksum = await this.createChecksum('getMeetingInfo', query);
+      const checksum = this.createChecksum('getMeetingInfo', query);
       const url = `${this.BBB_API_URL}getMeetingInfo?${query}&checksum=${checksum}`;
 
       try {

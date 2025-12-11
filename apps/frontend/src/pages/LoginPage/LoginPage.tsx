@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { useEffect, useState } from 'react';
@@ -17,31 +24,39 @@ import { useForm } from 'react-hook-form';
 import CryptoJS from 'crypto-js';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { v4 as uuidv4 } from 'uuid';
 import { MdOutlineQrCode } from 'react-icons/md';
 import { toast } from 'sonner';
-import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Card } from '@/components/shared/Card';
-import useUserStore from '@/store/UserStore/UserStore';
+import useUserStore from '@/store/UserStore/useUserStore';
 import type UserDto from '@libs/user/types/user.dto';
 import processLdapGroups from '@libs/user/utils/processLdapGroups';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import AUTH_PATHS from '@libs/auth/constants/auth-endpoints';
+import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import PageTitle from '@/components/PageTitle';
 import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import delay from '@libs/common/utils/delay';
 import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
-import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import APPS from '@libs/appconfig/constants/apps';
+import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
+import { decodeBase64, encodeBase64 } from '@libs/common/utils/getBase64String';
+import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg?react';
+import getMainLogoUrl from '@libs/assets/getMainLogoUrl';
+import COLOR_SCHEME from '@libs/ui/constants/colorScheme';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import useLmnApiStore from '@/store/useLmnApiStore';
+import getRandomUUID from '@/utils/getRandomUUID';
 import getLoginFormSchema from './getLoginFormSchema';
 import TotpInput from './components/TotpInput';
-import useAppConfigsStore from '../Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '../Settings/AppConfig/useAppConfigsStore';
+import useAuthErrorHandler from './useAuthErrorHandler';
+import useSilentLoginWithPassword from './useSilentLoginWithPassword';
+import useGlobalSettingsApiStore from '../Settings/GlobalSettings/useGlobalSettingsApiStore';
 
 type LocationState = {
   from: string;
@@ -51,10 +66,18 @@ const LoginPage: React.FC = () => {
   const auth = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
+  const { state } = useLocation() as { state: LocationState };
+
   const { eduApiToken, totpIsLoading, isAuthenticated, createOrUpdateUser, setEduApiToken, getTotpStatus } =
     useUserStore();
-  const { appConfigs } = useAppConfigsStore();
+  const { isLmn, isGeneric } = useDeploymentTarget();
+  const { lmnApiToken, user: lmnUser } = useLmnApiStore();
+  const globalSettings = useGlobalSettingsApiStore((s) => s.globalSettings);
+  const appConfigs = useAppConfigsStore((s) => s.appConfigs);
+  const { silentLogin } = useSilentLoginWithPassword();
+  const theme = COLOR_SCHEME;
+
+  const logoSrc = getMainLogoUrl(theme);
 
   const { isLoading } = auth;
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
@@ -62,6 +85,7 @@ const LoginPage: React.FC = () => {
   const [encryptKey, setEncryptKey] = useState('');
   const [showQrCode, setShowQrCode] = useState(false);
   const [sessionID, setSessionID] = useState<string | null>(null);
+  const [useDefaultLogo, setUseDefaultLogo] = useState(false);
 
   const form = useForm({
     mode: 'onSubmit',
@@ -73,19 +97,7 @@ const LoginPage: React.FC = () => {
     },
   });
 
-  useEffect(() => {
-    if (auth.error) {
-      if (auth.error.message.includes('Invalid response Content-Type:')) {
-        form.setError('password', { message: t('auth.errors.EdulutionConnectionFailed') });
-        return;
-      }
-      form.setError('password', { message: t(auth.error.message) });
-
-      if (showQrCode) {
-        toast.error(t(auth.error.message));
-      }
-    }
-  }, [auth.error]);
+  useAuthErrorHandler(auth.error, form, showQrCode);
 
   const onSubmit = async () => {
     try {
@@ -93,7 +105,7 @@ const LoginPage: React.FC = () => {
       const password = form.getValues('password');
       const totpValue = form.getValues('totpValue');
 
-      const passwordHash = btoa(`${password}${isEnterTotpVisible || totpValue ? `:${totpValue}` : ''}`);
+      const passwordHash = encodeBase64(`${password}${isEnterTotpVisible || totpValue ? `:${totpValue}` : ''}`);
       const requestUser = await auth.signinResourceOwnerCredentials({
         username,
         password: passwordHash,
@@ -103,6 +115,8 @@ const LoginPage: React.FC = () => {
         setEncryptKey(newEncryptKey);
         setEduApiToken(requestUser.access_token);
         setWebdavKey(CryptoJS.AES.encrypt(password, newEncryptKey).toString());
+
+        await silentLogin(username, password);
       }
     } catch (e) {
       console.error(e);
@@ -141,18 +155,34 @@ const LoginPage: React.FC = () => {
     void registerUser();
   }, [auth.isAuthenticated, eduApiToken]);
 
-  const isAppConfigReady = appConfigs.some((appConfig) => appConfig.name !== APPS.NONE);
-  const isAuthenticatedAppReady = isAppConfigReady && isAuthenticated;
+  const isAppConfigReady = !appConfigs.find((appConfig) => appConfig.name === APPS.NONE);
+  const isGlobalSettingsReady = globalSettings !== null;
+  const isDeploymentTargetReady = (isGeneric && !isLmn) || !!(isLmn && lmnApiToken && lmnUser);
+  const isAuthenticatedAppReady =
+    isAppConfigReady && isAuthenticated && isGlobalSettingsReady && isDeploymentTargetReady;
 
   useEffect(() => {
-    if (isAuthenticatedAppReady) {
-      const { from } = (location?.state ?? { from: '/' }) as LocationState;
-      const toLocation = from === LOGIN_ROUTE ? '/' : from;
-      navigate(toLocation, {
-        replace: true,
-      });
+    if (!isAuthenticatedAppReady) return;
+
+    const currentUser = auth.user?.profile?.preferred_username;
+    const previousUser = sessionStorage.getItem('username');
+
+    if (previousUser && previousUser !== currentUser) {
+      sessionStorage.setItem('username', currentUser ?? '');
+
+      navigate(LANDING_PAGE_ROUTE, { replace: true });
+      return;
     }
-  }, [isAuthenticatedAppReady]);
+
+    sessionStorage.setItem('username', currentUser ?? '');
+
+    if (state?.from) {
+      navigate(state.from, { replace: true });
+      return;
+    }
+
+    navigate(LANDING_PAGE_ROUTE, { replace: true });
+  }, [isAuthenticatedAppReady, state?.from]);
 
   useEffect(() => {
     if (!showQrCode || !sessionID) {
@@ -168,7 +198,7 @@ const LoginPage: React.FC = () => {
 
     const handleLoginEvent = (e: MessageEvent<string>) => {
       try {
-        const { username, password } = JSON.parse(atob(e.data)) as LoginQrSseDto;
+        const { username, password } = JSON.parse(decodeBase64(e.data)) as LoginQrSseDto;
 
         form.setValue('username', username);
         form.setValue('password', password);
@@ -234,42 +264,47 @@ const LoginPage: React.FC = () => {
     if (isEnterTotpVisible) {
       onTotpCancelButtonClick();
     } else {
-      const newSessionID = uuidv4();
+      const newSessionID = getRandomUUID();
       setSessionID(newSessionID);
       setShowQrCode((prev) => !prev);
     }
   };
 
-  const renderFormField = (fieldName: 'username' | 'password', label: string, type?: string, shouldTrim?: boolean) => (
-    <div className={isEnterTotpVisible ? 'hidden' : ''}>
-      <FormFieldSH
-        control={form.control}
-        name={fieldName}
-        render={({ field }) => (
-          <FormItem>
-            <p className="font-bold text-foreground">{label}</p>
-            <FormControl>
-              <Input
-                {...field}
-                type={type}
-                shouldTrim={shouldTrim}
-                disabled={isLoading}
-                placeholder={label}
-                variant="login"
-                data-testid={`test-id-login-page-${fieldName}-input`}
-              />
-            </FormControl>
-            <FormMessage className="text-foreground" />
-          </FormItem>
-        )}
-      />
-    </div>
-  );
+  useEffect(() => {
+    form.setFocus('username');
+  }, [form.setFocus]);
+
+  const renderFormField = (fieldName: 'username' | 'password', label: string, type?: string, shouldTrim?: boolean) =>
+    !isEnterTotpVisible && (
+      <div>
+        <FormFieldSH
+          control={form.control}
+          name={fieldName}
+          render={({ field }) => (
+            <FormItem>
+              <p className="font-bold text-black">{label}</p>
+              <FormControl>
+                <Input
+                  {...field}
+                  type={type}
+                  shouldTrim={shouldTrim}
+                  disabled={isLoading}
+                  placeholder={label}
+                  variant="login"
+                  data-testid={`test-id-login-page-${fieldName}-input`}
+                />
+              </FormControl>
+              <FormMessage className="text-ciDarkGrey" />
+            </FormItem>
+          )}
+        />
+      </div>
+    );
 
   const renderErrorMessage = () => {
     const passwordError = form.getFieldState('password').error?.message;
     return passwordError ? (
-      <p className="h-5">
+      <p className="h-5 text-ciDarkGrey">
         <span>{t(passwordError)}</span>
       </p>
     ) : null;
@@ -279,18 +314,20 @@ const LoginPage: React.FC = () => {
     if (showQrCode && !isEnterTotpVisible) {
       return (
         <>
-          <QRCodeDisplay
-            value={`${window.location.origin}/${EDU_API_ROOT}/${AUTH_PATHS.AUTH_ENDPOINT}/${AUTH_PATHS.AUTH_VIA_APP}?sessionId=${sessionID}`}
-            size="lg"
-          />
-          <p className="font-bold">{t('login.loginWithQrDescription')}</p>
+          <div className="flex flex-col items-center justify-center">
+            <QRCodeDisplay
+              value={`${window.location.origin}/${EDU_API_ROOT}/${AUTH_PATHS.AUTH_ENDPOINT}/${AUTH_PATHS.AUTH_VIA_APP}?sessionId=${sessionID}`}
+              size="lg"
+            />
+          </div>
+          <p className="font-bold text-black">{t('login.loginWithQrDescription')}</p>
         </>
       );
     }
 
     return (
       <>
-        <div className={isEnterTotpVisible ? '' : 'hidden'}>
+        {isEnterTotpVisible && (
           <FormFieldSH
             control={form.control}
             name="totpValue"
@@ -302,13 +339,14 @@ const LoginPage: React.FC = () => {
                     title={t('login.enterMultiFactorCode')}
                     setTotp={field.onChange}
                     onComplete={onSubmit}
+                    variant="login"
                   />
                 </FormControl>
                 {renderErrorMessage()}
               </FormItem>
             )}
           />
-        </div>
+        )}
         {renderFormField('username', t('common.username'), 'text', true)}
         {renderFormField('password', t('common.password'), 'password')}
       </>
@@ -316,17 +354,22 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <PageLayout>
+    <PageLayout hasFullWidthMain>
       <PageTitle translationId="login.pageTitle" />
       <Card
         variant="modal"
-        className="overflow-y-auto bg-background scrollbar-thin"
+        className="overflow-y-auto bg-white shadow-lg scrollbar-thin"
       >
-        <img
-          src={DesktopLogo}
-          alt="edulution"
-          className="mx-auto w-64"
-        />
+        {useDefaultLogo ? (
+          <DesktopLogo className="mx-auto w-64" />
+        ) : (
+          <img
+            src={logoSrc}
+            alt={t('settings.settings.logo.title')}
+            className="mx-auto w-64"
+            onError={() => setUseDefaultLogo(true)}
+          />
+        )}
         <Form
           {...form}
           data-testid="test-id-login-page-form"
@@ -341,7 +384,7 @@ const LoginPage: React.FC = () => {
 
             {!showQrCode && (
               <Button
-                className="mx-auto w-full justify-center shadow-xl"
+                className="mx-auto w-full justify-center text-white shadow-xl"
                 type="submit"
                 variant="btn-security"
                 size="lg"
@@ -352,7 +395,7 @@ const LoginPage: React.FC = () => {
               </Button>
             )}
             <Button
-              className="mx-auto w-full justify-center shadow-xl hover:bg-ciGrey/10"
+              className="mx-auto w-full justify-center border-none text-black shadow-xl hover:bg-ciGrey/10 hover:text-black"
               type="button"
               variant="btn-outline"
               size="lg"

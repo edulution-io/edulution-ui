@@ -6,7 +6,8 @@
     "moduleResolution": "NodeNext",
     "types": ["node", "jest", "Multer"],
     "composite": true,
-    "declaration": true
+    "declaration": true,
+    "isolatedModules": true
   },
   "include": ["src/**/*.test.ts", "src/**/*.spec.ts", "src/**/*.d.ts", "src/**/*.ts"]
 }

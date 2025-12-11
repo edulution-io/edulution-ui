@@ -1,121 +1,169 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { FieldValues, SubmitHandler, UseFormReturn } from 'react-hook-form';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
+import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import useGroupStore from '@/store/GroupStore';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
-import {
-  GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS,
-  GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH,
-} from '@libs/global-settings/constants/globalSettingsApiEndpoints';
-import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
-import GlobalSettingsFloatingButtons from './GlobalSettingsFloatingButtons';
-import useGlobalSettingsApiStore from './useGlobalSettingsApiStore';
+import AppDropdownSelectFormField from '@/components/ui/DropdownSelect/AppDropdownSelectFormField';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
+import defaultValues from '@libs/global-settings/constants/defaultValues';
+import { GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
+import LdapSettings from '@/pages/Settings/components/LdapSettings';
+import AddOrganisationLogo from '@/pages/Settings/components/AddOrganisationLogo';
+import { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSettings.form';
+import AddOrganisationInfo from '@/pages/Settings/components/AddOrganisationInfo';
+import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
+import ThemeSettings from '@/pages/Settings/components/ThemeSettings';
+import DeploymentTargetDropdownSelectFormField from '../components/DeploymentTargetDropdownSelectFormField';
 
-interface FormData {
-  mfaEnforcedGroups: MultipleSelectorGroup[];
-}
+type GlobalSettingsProps<T extends FieldValues> = {
+  form: UseFormReturn<T>;
+  onSubmit: SubmitHandler<GlobalSettingsDto>;
+};
 
-const GlobalSettings: React.FC = () => {
+const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFormValues>) => {
   const { t } = useTranslation();
   const { searchGroups } = useGroupStore();
-  const { globalSettings, getGlobalSettings, setGlobalSettings } = useGlobalSettingsApiStore();
-  const { mfaEnforcedGroups } = globalSettings.auth;
+  const { appConfigs } = useAppConfigsStore();
 
-  const form = useForm<FormData>({
-    defaultValues: {
-      mfaEnforcedGroups: [],
-    },
-  });
+  const {
+    watch,
+    setValue,
+    control,
+    handleSubmit,
+    formState: { isDirty },
+    getValues,
+  } = form;
+
+  const defaultLandingPageAppName = watch('general.defaultLandingPage.appName');
+  const isCustomLandingPageEnabled = watch('general.defaultLandingPage.isCustomLandingPageEnabled');
 
   useEffect(() => {
-    void getGlobalSettings(GLOBAL_SETTINGS_PROJECTION_PARAM_AUTH);
-  }, []);
+    if (!isDirty || !appConfigs.length) return;
 
-  useEffect(() => {
-    if (mfaEnforcedGroups) {
-      form.setValue(GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS, mfaEnforcedGroups);
+    if (isCustomLandingPageEnabled && !defaultLandingPageAppName) {
+      setValue('general.defaultLandingPage.appName', appConfigs[0].name);
+    } else if (!isCustomLandingPageEnabled) {
+      setValue('general.defaultLandingPage', defaultValues.general.defaultLandingPage);
     }
-  }, [mfaEnforcedGroups]);
+  }, [defaultLandingPageAppName, isCustomLandingPageEnabled, appConfigs, setValue]);
 
   const handleGroupsChange = (newGroups: MultipleSelectorGroup[]) => {
-    const currentGroups = form.getValues(GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS) || [];
-
-    const filteredCurrentGroups = currentGroups.filter((currentGroup) =>
-      newGroups.some((newGroup) => newGroup.value === currentGroup.value),
-    );
-    const combinedGroups = [
-      ...filteredCurrentGroups,
-      ...newGroups.filter(
-        (newGroup) => !filteredCurrentGroups.some((currentGroup) => currentGroup.value === newGroup.value),
-      ),
-    ];
-    form.setValue(GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS, combinedGroups, { shouldValidate: true });
-  };
-
-  const onSubmit: SubmitHandler<FormData> = (data) => {
-    const newGlobalSettingsDto: GlobalSettingsDto = { auth: { mfaEnforcedGroups: data.mfaEnforcedGroups } };
-
-    void setGlobalSettings(newGlobalSettingsDto);
+    const uniqueGroups = newGroups.reduce<MultipleSelectorGroup[]>((acc, g) => {
+      if (!acc.some((x) => x.value === g.value)) acc.push(g);
+      return acc;
+    }, []);
+    setValue(`auth.${GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS}`, uniqueGroups, { shouldValidate: true });
   };
 
   return (
-    <>
-      <AccordionSH
-        type="multiple"
-        defaultValue={['security']}
-      >
-        <AccordionItem value="security">
-          <AccordionTrigger className="flex text-h4">
-            <h4>{t('settings.globalSettings.multiFactorAuthentication')}</h4>
-          </AccordionTrigger>
-          <AccordionContent
-            style={{ overflow: 'visible' }}
-            className="space-y-2 px-1"
+    <Form {...form}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <SectionAccordion defaultOpenAll>
+          <SectionAccordionItem
+            id="general"
+            label={t('settings.globalSettings.general')}
           >
-            <p className="text-background">{t('settings.globalSettings.description')}</p>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)}>
-                <FormFieldSH
-                  control={form.control}
-                  name={GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS}
-                  render={() => (
-                    <FormItem>
-                      <p className="font-bold">{t(`permission.groups`)}</p>
-                      <FormControl>
-                        <AsyncMultiSelect<MultipleSelectorGroup>
-                          value={form.getValues(GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS)}
-                          onSearch={searchGroups}
-                          onChange={(groups) => handleGroupsChange(groups)}
-                          placeholder={t('search.type-to-search')}
-                        />
-                      </FormControl>
-                      <p className="text-background">{t('settings.globalSettings.selectUserGroups')}</p>
-                      <FormMessage className="text-p" />
-                    </FormItem>
-                  )}
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <p className="text-xl font-bold">{t('settings.globalSettings.deploymentTarget')}</p>
+                <DeploymentTargetDropdownSelectFormField form={form} />
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-xl font-bold">{t('settings.globalSettings.defaultLandingPageTitle')}</p>
+                <p>{t('settings.globalSettings.defaultLandingPageDescription')}</p>
+                <AppDropdownSelectFormField
+                  appNamePath="general.defaultLandingPage.appName"
+                  form={form}
+                  variant="default"
                 />
-              </form>
-            </Form>
-          </AccordionContent>
-        </AccordionItem>
-      </AccordionSH>
-      <GlobalSettingsFloatingButtons handleSave={form.handleSubmit(onSubmit)} />
-    </>
+              </div>
+            </div>
+          </SectionAccordionItem>
+
+          <SectionAccordionItem
+            id="security"
+            label={t('settings.globalSettings.multiFactorAuthentication')}
+          >
+            <div className="space-y-4">
+              <p>{t('settings.globalSettings.mfaDescription')}</p>
+              <FormFieldSH
+                control={control}
+                name={`auth.${GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS}`}
+                render={() => (
+                  <FormItem>
+                    <p className="font-bold">{t('permission.groups')}</p>
+                    <FormControl>
+                      <AsyncMultiSelect<MultipleSelectorGroup>
+                        value={getValues(`auth.${GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS}`) ?? []}
+                        onSearch={searchGroups}
+                        onChange={handleGroupsChange}
+                        placeholder={t('search.type-to-search')}
+                      />
+                    </FormControl>
+                    <p>{t('settings.globalSettings.selectUserGroups')}</p>
+                    <FormMessage className="text-p" />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </SectionAccordionItem>
+
+          <SectionAccordionItem
+            id="ldap"
+            label={t('settings.globalSettings.ldap.title')}
+          >
+            <LdapSettings form={form} />
+          </SectionAccordionItem>
+
+          <SectionAccordionItem
+            id="branding"
+            label={t('settings.globalSettings.branding.title')}
+          >
+            <div className="space-y-4">
+              <p className="font-bold">{t('settings.globalSettings.logo.title')}</p>
+              <AddOrganisationLogo form={form} />
+            </div>
+          </SectionAccordionItem>
+
+          <SectionAccordionItem
+            id="theme"
+            label={t('settings.globalSettings.theme.title')}
+          >
+            <ThemeSettings form={form} />
+          </SectionAccordionItem>
+
+          <SectionAccordionItem
+            id="organisationInfo"
+            label={t('settings.globalSettings.organisationInfo.title')}
+          >
+            <AddOrganisationInfo form={form} />
+          </SectionAccordionItem>
+        </SectionAccordion>
+      </form>
+    </Form>
   );
 };
 

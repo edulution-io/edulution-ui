@@ -1,24 +1,31 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 'use client';
 
 import React, { useCallback, useState } from 'react';
-import { enUS, de } from 'date-fns/locale';
+import { de, enUS } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
-import { HiTrash } from 'react-icons/hi2';
+import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { CalendarIcon } from '@radix-ui/react-icons';
-import { INPUT_DEFAULT, INPUT_VARIANT_DEFAULT, INPUT_VARIANT_DIALOG } from '@libs/ui/constants/commonClassNames';
+import { inputVariants } from '@libs/ui/constants/commonClassNames';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
 import cn from '@libs/common/utils/className';
 import safeGetHours from '@libs/common/utils/Date/safeGetHours';
@@ -30,18 +37,21 @@ import { Calendar } from '@/components/ui/Calendar';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
-import MinuteButton from '@/components/ui/DateTimePicker/MinuteButtons';
-import HourButton from '@/components/ui/DateTimePicker/HourButtons';
+import MinuteButton from '@/components/ui/DateTimePicker/MinuteButton';
+import HourButton from '@/components/ui/DateTimePicker/HourButton';
 
 interface DateTimePickerFieldProps<T extends FieldValues> {
   form: UseFormReturn<T>;
   path: Path<T>;
   translationId?: string;
   variant?: DropdownVariant;
+  allowPast?: boolean;
+  isDateRequired?: boolean;
+  placeholder?: string;
 }
 
 const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldProps<T>) => {
-  const { form, path, translationId, variant = 'default' } = props;
+  const { form, path, translationId, variant = 'default', isDateRequired, allowPast, placeholder } = props;
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -54,7 +64,10 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
   const minutes = safeGetMinutes(fieldValue);
 
   const handleClear = useCallback(() => {
-    form.setValue(path, null as PathValue<T, Path<T>>);
+    form.setValue(path, null as PathValue<T, Path<T>>, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
   }, [fieldValue, form, path]);
 
   const handleDateSelect = useCallback(
@@ -67,7 +80,10 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
       newDate.setDate(date.getDate());
       newDate.setMonth(date.getMonth());
       newDate.setFullYear(date.getFullYear());
-      form.setValue(path, newDate as PathValue<T, Path<T>>);
+      form.setValue(path, newDate as PathValue<T, Path<T>>, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
     },
     [fieldValue, form, path],
   );
@@ -76,7 +92,10 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
     (hour: number) => {
       const newDate = safeGetDate(fieldValue);
       newDate.setHours(hour);
-      form.setValue(path, newDate as PathValue<T, Path<T>>);
+      form.setValue(path, newDate as PathValue<T, Path<T>>, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
     },
     [fieldValue, form, path],
   );
@@ -85,7 +104,10 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
     (minute: number) => {
       const newDate = safeGetDate(fieldValue);
       newDate.setMinutes(minute);
-      form.setValue(path, newDate as PathValue<T, Path<T>>);
+      form.setValue(path, newDate as PathValue<T, Path<T>>, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
     },
     [fieldValue, form, path],
   );
@@ -108,17 +130,31 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
         minute: 'numeric',
         hour12: language === 'en',
       })
-    : t('form.input.dateTimePicker.placeholder');
+    : placeholder || t('form.input.dateTimePicker.placeholder');
 
   return (
     <Form {...form}>
       <FormFieldSH
         control={form.control}
         name={path}
+        rules={{
+          required: isDateRequired ? t('form.errors.dateRequired') : false,
+          validate: (value: unknown) => {
+            if (!value) return true;
+            const date = value instanceof Date ? value : null;
+            if (!date || Number.isNaN(date.getTime())) {
+              return t('form.errors.dateInvalid');
+            }
+            if (!allowPast && date.getTime() < Date.now()) {
+              return t('form.errors.datePast');
+            }
+
+            return true;
+          },
+        }}
         render={() => (
           <FormItem className="flex flex-col space-y-0">
             {translationId ? <p className="text-m font-bold text-background">{t(translationId)}</p> : null}
-
             <Popover
               open={isOpen}
               onOpenChange={setIsOpen}
@@ -127,21 +163,19 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
                 <FormControl
                   className={cn(
                     'w-auto p-0',
-                    'rounded-md',
-                    INPUT_DEFAULT,
-                    variant === 'dialog' ? INPUT_VARIANT_DIALOG : INPUT_VARIANT_DEFAULT,
+                    inputVariants({ variant: variant === 'dialog' ? 'dialog' : 'default' }),
                     isOpen ? 'border-ring' : 'border-transparent',
                   )}
                 >
                   <Button
                     variant="btn-outline"
                     className={cn(
-                      'my-0 h-10 w-fit px-3 py-0 pl-3 text-left font-normal',
+                      'my-0 h-10 w-fit rounded-lg px-3 py-0 pl-3 text-left font-normal',
                       !fieldValue && 'text-muted-foreground',
                     )}
                   >
                     {timeDisplay}
-                    <HiTrash
+                    <DeleteIcon
                       className="ml-auto h-4 w-4 opacity-50 hover:opacity-100"
                       onClick={(event) => {
                         event.preventDefault();

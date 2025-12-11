@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectSettingsService">
+    <option name="localesDirectory" value="$PROJECT_DIR$/apps/frontend/src/locales" />
+    <option name="folderStrategy" value="MODULARIZED_LOCALE" />
+    <option name="includeSubDirs" value="true" />
+    <option name="defaultNamespace" value="" />
+  </component>
+</project>

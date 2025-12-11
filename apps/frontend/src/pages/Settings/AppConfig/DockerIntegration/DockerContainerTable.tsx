@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { useEffect, useMemo } from 'react';
@@ -16,10 +23,11 @@ import { useTranslation } from 'react-i18next';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import APPS from '@libs/appconfig/constants/apps';
-import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
+import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import useMedia from '@/hooks/useMedia';
 import DOCKER_CONTAINER_TABLE_COLUMNS from '@libs/docker/constants/dockerContainerTableColumns';
 import CONTAINER from '@libs/docker/constants/container';
+import SelectCreateDockerContainerDialog from '@/pages/Settings/AppConfig/DockerIntegration/SelectCreateDockerContainerDialog/SelectCreateDockerContainerDialog';
 import useDockerApplicationStore from './useDockerApplicationStore';
 import DockerContainerTableColumns from './DockerContainerTableColumns';
 import DockerContainerFloatingButtons from './DockerContainerFloatingButtons';
@@ -51,29 +59,25 @@ const DockerContainerTable: React.FC = () => {
   return (
     <>
       <div className="absolute right-10 top-12 md:right-16 md:top-1">{isLoading ? <CircleLoader /> : null}</div>
-      <AccordionSH
-        type="multiple"
-        defaultValue={[CONTAINER]}
-      >
-        <AccordionItem value={CONTAINER}>
-          <AccordionTrigger className="flex text-h4">
-            <h4>{t('dockerOverview.title')}</h4>
-          </AccordionTrigger>
-          <AccordionContent className="space-y-2 px-1">
-            <ScrollableTable
-              columns={DockerContainerTableColumns}
-              data={containers}
-              filterKey={DOCKER_CONTAINER_TABLE_COLUMNS.NAME}
-              filterPlaceHolderText="dockerOverview.filterPlaceHolderText"
-              onRowSelectionChange={handleRowSelectionChange}
-              selectedRows={selectedRows}
-              getRowId={(originalRow) => originalRow.Id}
-              applicationName={APPS.SETTINGS}
-              initialColumnVisibility={initialColumnVisibility}
-            />
-          </AccordionContent>
-        </AccordionItem>
-      </AccordionSH>
+      <SectionAccordion defaultOpen={[CONTAINER]}>
+        <SectionAccordionItem
+          id={CONTAINER}
+          label={t('dockerOverview.title')}
+        >
+          <ScrollableTable
+            columns={DockerContainerTableColumns}
+            data={containers}
+            filterKey={DOCKER_CONTAINER_TABLE_COLUMNS.NAME}
+            filterPlaceHolderText="dockerOverview.filterPlaceHolderText"
+            onRowSelectionChange={handleRowSelectionChange}
+            selectedRows={selectedRows}
+            getRowId={(originalRow) => originalRow.Id}
+            applicationName={APPS.SETTINGS}
+            initialColumnVisibility={initialColumnVisibility}
+          />
+        </SectionAccordionItem>
+      </SectionAccordion>
+      <SelectCreateDockerContainerDialog />
       <DockerContainerFloatingButtons />
     </>
   );

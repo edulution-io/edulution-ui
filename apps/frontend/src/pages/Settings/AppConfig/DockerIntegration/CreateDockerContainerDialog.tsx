@@ -1,16 +1,23 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,7 +25,6 @@ import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
 import ProgressTextArea from '@/components/shared/ProgressTextArea';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useSseStore from '@/store/useSseStore';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type DockerEvent from '@libs/docker/types/dockerEvents';
@@ -28,6 +34,8 @@ import extractEnvPlaceholders from '@libs/docker/utils/extractEnvPlaceholders';
 import { type ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 import updateContainerConfig from '@libs/docker/utils/updateContainerConfig';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import DOCKER_APPLICATION_LIST from '@libs/docker/constants/dockerApplicationList';
+import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import useDockerApplicationStore from './useDockerApplicationStore';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 import getCreateContainerFormSchema from './getCreateContainerFormSchema';
@@ -43,8 +51,14 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
   const [showInputForm, setShowInputForm] = useState(false);
   const [createContainerConfig, setCreateContainerConfig] = useState([{}]);
   const [combinedEnvPlaceholders, setCombinedEnvPlaceholders] = useState({});
-  const { isLoading, tableContentData, dockerContainerConfig, createAndRunContainer, fetchTableContent } =
-    useDockerApplicationStore();
+  const {
+    isLoading,
+    tableContentData,
+    dockerContainerConfig,
+    dockerComposeFiles,
+    createAndRunContainer,
+    fetchTableContent,
+  } = useDockerApplicationStore();
   const { eventSource } = useSseStore();
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
   const isOpen = isDialogOpen === tableId;
@@ -54,6 +68,7 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
     const dockerProgressHandler = (e: MessageEvent<string>) => {
       const { progress, from } = JSON.parse(e.data) as DockerEvent;
       if (!progress) return;
+
       setDockerProgress((prevDockerProgress) => [...prevDockerProgress, `${from}: ${t(progress) ?? ''}`]);
     };
 
@@ -67,7 +82,7 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
   useEffect(() => {
     if (dockerContainerConfig) {
       const containerConfig = convertComposeToDockerode(dockerContainerConfig);
-      const envPlaceholders = extractEnvPlaceholders(createContainerConfig);
+      const envPlaceholders = extractEnvPlaceholders(containerConfig);
       const showInput = Object.keys(envPlaceholders).length > 0;
 
       setCreateContainerConfig(containerConfig);
@@ -76,20 +91,37 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
     }
   }, [dockerContainerConfig]);
 
+  const formSchema = useMemo(
+    () => getCreateContainerFormSchema(t, combinedEnvPlaceholders),
+    [t, combinedEnvPlaceholders],
+  );
+
   const form = useForm({
     mode: 'onSubmit',
-    resolver: zodResolver(getCreateContainerFormSchema(t, showInputForm)),
+    resolver: zodResolver(formSchema),
   });
 
   useEffect(() => {
     form.reset();
-  }, []);
+  }, [formSchema]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setDockerProgress(['']);
+    }
+  }, [isOpen]);
 
   const handleCreateContainer = async () => {
-    if (createContainerConfig) {
+    if (createContainerConfig && dockerContainerConfig) {
       const formValues = form.getValues();
       const updatedConfig = updateContainerConfig(createContainerConfig, formValues);
-      await createAndRunContainer(updatedConfig);
+      const containerName = DOCKER_APPLICATION_LIST[settingLocation] || '';
+
+      await createAndRunContainer({
+        applicationName: settingLocation,
+        containers: updatedConfig,
+        originalComposeConfig: dockerComposeFiles[containerName] || '',
+      });
       await fetchTableContent(settingLocation);
     }
   };
@@ -118,6 +150,7 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
             ))
           : null}
         <ProgressTextArea text={dockerProgress} />
+        {isLoading && <HorizontalLoader className="m-auto" />}
         <DialogFooterButtons
           handleClose={handleClose}
           handleSubmit={() => {}}
@@ -132,15 +165,12 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
   );
 
   return (
-    <>
-      <div className="absolute right-10 top-12 md:right-24 md:top-1">{isLoading ? <CircleLoader /> : null}</div>
-      <AdaptiveDialog
-        title={t(`containerApplication.dialogTitle`, { applicationName: t(`${settingLocation}.sidebar`) })}
-        isOpen={isOpen}
-        body={getDialogBody()}
-        handleOpenChange={handleClose}
-      />
-    </>
+    <AdaptiveDialog
+      title={t(`containerApplication.dialogTitle`, { applicationName: t(`${settingLocation}.sidebar`) })}
+      isOpen={isOpen}
+      body={getDialogBody()}
+      handleOpenChange={handleClose}
+    />
   );
 };
 

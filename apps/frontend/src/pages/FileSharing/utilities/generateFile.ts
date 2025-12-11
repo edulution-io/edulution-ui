@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import axios from 'axios';
@@ -22,22 +29,24 @@ import DocumentVendors from '@libs/filesharing/constants/documentVendors';
 import DocumentVendorsType from '@libs/filesharing/types/documentVendorsType';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/constants/availableFileTypes';
 import OPEN_DOCUMENT_TEMPLATE_PATH from '@libs/filesharing/constants/openDocumentTemplatePath';
-import { toast } from 'sonner';
-import i18n from '@/i18n';
+import PREDEFINED_EXTENSIONS, { PredefinedExtensionKey } from '@libs/filesharing/constants/predefinedExtensions';
+import GenerateFileResult from '@libs/filesharing/types/generateFileResult';
+import buildFilenameWithExtension from '@libs/filesharing/utils/buildFilenameWithExtension';
 
 const generateFile = async (
   fileType: TAvailableFileTypes | '',
   basename: string,
   format: DocumentVendorsType,
   onlyReturnExtension: boolean = false,
-): Promise<{ file?: File; extension: string }> => {
+  customExtension?: string,
+): Promise<GenerateFileResult> => {
   let file: File;
   let extension: string;
 
   switch (fileType) {
     case AVAILABLE_FILE_TYPES.documentFile: {
       extension = format === DocumentVendors.MSO ? OnlyOfficeDocumentTypes.DOCX : OnlyOfficeDocumentTypes.ODT;
-      if (onlyReturnExtension) return { extension };
+      if (onlyReturnExtension) return { success: true, extension };
       if (format === DocumentVendors.MSO) {
         const doc = new Document({ title: basename, description: '', sections: [] });
         const blob = await Packer.toBlob(doc);
@@ -54,7 +63,7 @@ const generateFile = async (
 
     case AVAILABLE_FILE_TYPES.spreadsheetFile: {
       extension = format === DocumentVendors.MSO ? OnlyOfficeDocumentTypes.XLSX : OnlyOfficeDocumentTypes.ODS;
-      if (onlyReturnExtension) return { extension };
+      if (onlyReturnExtension) return { success: true, extension };
       if (format === DocumentVendors.MSO) {
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet(basename);
@@ -76,15 +85,14 @@ const generateFile = async (
 
     case AVAILABLE_FILE_TYPES.presentationFile: {
       extension = format === DocumentVendors.MSO ? OnlyOfficeDocumentTypes.PPTX : OnlyOfficeDocumentTypes.ODP;
-      if (onlyReturnExtension) return { extension };
+      if (onlyReturnExtension) return { success: true, extension };
       if (format === DocumentVendors.MSO) {
         const pptx = new PptxGenJS();
         pptx.title = basename;
-        const pptxBlob = await pptx.write();
-        const fileBlob = new Blob([pptxBlob], {
+        const pptxBlob = await pptx.write({ outputType: 'blob' });
+        file = new File([pptxBlob], `${basename}.${extension}`, {
           type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         });
-        file = new File([fileBlob], `${basename}.${extension}`, { type: fileBlob.type });
       } else {
         const response = await axios.get(`${OPEN_DOCUMENT_TEMPLATE_PATH}/odpTemplate.odp`, {
           responseType: 'arraybuffer',
@@ -97,7 +105,7 @@ const generateFile = async (
 
     case AVAILABLE_FILE_TYPES.textFile: {
       extension = OnlyOfficeDocumentTypes.TXT;
-      if (onlyReturnExtension) return { extension };
+      if (onlyReturnExtension) return { success: true, extension };
       const textBlob = new Blob([''], { type: RequestResponseContentType.TEXT_PLAIN });
       file = new File([textBlob], `${basename}.${extension}`, { type: textBlob.type });
       break;
@@ -105,7 +113,7 @@ const generateFile = async (
 
     case AVAILABLE_FILE_TYPES.drawIoFile: {
       extension = 'drawio';
-      if (onlyReturnExtension) return { extension };
+      if (onlyReturnExtension) return { success: true, extension };
       const xml = create({ version: '1.0', encoding: 'UTF-8' })
         .ele('mxfile', { host: 'app.diagrams.net' })
         .ele('diagram', { name: basename })
@@ -143,12 +151,22 @@ const generateFile = async (
       break;
     }
 
+    case AVAILABLE_FILE_TYPES.customFile: {
+      const ext = customExtension?.startsWith('.') ? customExtension.slice(1) : customExtension || '';
+      extension = ext;
+      if (onlyReturnExtension) return { success: true, extension };
+      const predefined = ext ? PREDEFINED_EXTENSIONS[ext as PredefinedExtensionKey] : undefined;
+      const mimeType = predefined?.mimeType || 'application/octet-stream';
+      const emptyBlob = new Blob([''], { type: mimeType });
+      file = new File([emptyBlob], buildFilenameWithExtension(basename, ext), { type: emptyBlob.type });
+      break;
+    }
+
     default:
-      toast.error(i18n.t('errors.fileGenerationFailed'));
-      throw new Error(`Unsupported file type: ${fileType}`);
+      return { success: false, error: `Unsupported file type: ${fileType}` };
   }
 
-  return { file, extension };
+  return { success: true, file, extension };
 };
 
 export default generateFile;

@@ -1,39 +1,30 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import React, { useState } from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
+import { type VariantProps } from 'class-variance-authority';
 import cn from '@libs/common/utils/className';
-import { INPUT_VARIANT_DEFAULT, INPUT_VARIANT_DIALOG } from '@libs/ui/constants/commonClassNames';
-import { Input as SHInput } from '@/components/ui/Input';
+import { inputVariants } from '@libs/ui/constants/commonClassNames';
 import { EyeDarkIcon, EyeDarkSlashIcon, EyeLightIcon, EyeLightSlashIcon } from '@/assets/icons';
 
-export const originInputVariants = cva(['rounded'], {
-  variants: {
-    variant: {
-      login:
-        'block w-full border-2 border-gray-300 bg-background px-3 py-2 shadow-md placeholder:text-p focus:border-gray-600 focus:bg-background focus:placeholder-muted focus:outline-none text-foreground',
-      lightGrayDisabled: 'bg-ciDarkGreyDisabled text-secondary placeholder:text-p focus:outline-none',
-      default: INPUT_VARIANT_DEFAULT,
-      dialog: INPUT_VARIANT_DIALOG,
-    },
-  },
-  defaultVariants: {
-    variant: 'default',
-  },
-});
-
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
-  VariantProps<typeof originInputVariants> & {
+  VariantProps<typeof inputVariants> & {
     shouldTrim?: boolean;
     icon?: React.ReactNode;
   };
@@ -41,12 +32,14 @@ type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type = 'text', variant, shouldTrim = false, onChange, icon, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
+    const isPassword = type === 'password';
+    const needsWrapper = isPassword || icon;
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
 
       if (onChange) {
-        if (type === 'text' || type === 'password') {
+        if (type === 'text' || isPassword) {
           const newValue = shouldTrim ? value.trim() : value;
           onChange({
             ...event,
@@ -70,17 +63,26 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     const closedIcon = variant === 'login' ? EyeDarkIcon : EyeLightIcon;
     const openedIcon = variant === 'login' ? EyeDarkSlashIcon : EyeLightSlashIcon;
+
+    const inputElement = (
+      <input
+        type={isPassword && showPassword ? 'text' : type}
+        inputMode={type === 'number' ? 'numeric' : undefined}
+        className={cn(inputVariants({ variant }), className)}
+        ref={ref}
+        onChange={handleChange}
+        {...props}
+      />
+    );
+
+    if (!needsWrapper) {
+      return inputElement;
+    }
+
     return (
-      <div className="relative">
-        <SHInput
-          type={showPassword ? 'text' : type}
-          inputMode={type === 'number' ? 'numeric' : undefined}
-          className={cn(originInputVariants({ variant, className }))}
-          ref={ref}
-          onChange={handleChange}
-          {...props}
-        />
-        {type === 'password' ? (
+      <div className="relative w-full">
+        {inputElement}
+        {isPassword && (
           <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5">
             <button
               type="button"
@@ -93,7 +95,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               />
             </button>
           </div>
-        ) : null}
+        )}
         {icon && <div className="absolute inset-y-0 right-0 flex items-center pr-3">{icon}</div>}
       </div>
     );

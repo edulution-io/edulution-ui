@@ -1,33 +1,46 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { getConnectionToken, getModelToken } from '@nestjs/mongoose';
 import { readFileSync } from 'fs';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariants';
+import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
 import { HttpStatus } from '@nestjs/common';
+import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../common/CustomHttpException';
 import AppConfigService from './appconfig.service';
 import { AppConfig } from './appconfig.schema';
 import { mockAppConfig, mockAppConfigModel, mockLdapGroup } from './appconfig.mock';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
+import GlobalSettingsService from '../global-settings/global-settings.service';
 
 jest.mock('fs');
+
+jest.mock('@libs/user/utils/getIsAdmin', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
 
 const mockConnection = {
   db: {
@@ -36,6 +49,12 @@ const mockConnection = {
     }),
     createCollection: jest.fn().mockResolvedValue({}),
   },
+};
+
+const globalSettingsServiceMock = {
+  setGlobalSettings: jest.fn(),
+  getGlobalSettings: jest.fn(),
+  getAdminGroupsFromCache: jest.fn(),
 };
 
 describe('AppConfigService', () => {
@@ -55,6 +74,7 @@ describe('AppConfigService', () => {
         },
         { provide: EventEmitter2, useValue: { emit: jest.fn() } },
         { provide: FilesystemService, useValue: mockFilesystemService },
+        { provide: GlobalSettingsService, useValue: globalSettingsServiceMock },
       ],
     }).compile();
 
@@ -63,6 +83,7 @@ describe('AppConfigService', () => {
 
   describe('insertConfig', () => {
     it('should successfully insert configs', async () => {
+      jest.spyOn(service, 'getAppConfigs').mockResolvedValue([mockAppConfig]);
       await service.insertConfig(mockAppConfig, mockLdapGroup);
       expect(mockAppConfigModel.create).toHaveBeenCalledWith(mockAppConfig);
     });
@@ -75,18 +96,26 @@ describe('AppConfigService', () => {
 
       const result = await service.updateConfig(mockAppConfig.name, mockAppConfig, mockLdapGroup);
 
-      expect(mockAppConfigModel.updateOne).toHaveBeenCalledWith(
-        { name: mockAppConfig.name },
-        {
-          $set: {
-            icon: mockAppConfig.icon,
-            appType: mockAppConfig.appType,
-            options: mockAppConfig.options,
-            accessGroups: mockAppConfig.accessGroups,
-            extendedOptions: mockAppConfig.extendedOptions,
+      expect(mockAppConfigModel.bulkWrite).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          {
+            updateOne: {
+              filter: { name: mockAppConfig.name },
+              update: {
+                $set: {
+                  icon: mockAppConfig.icon,
+                  appType: mockAppConfig.appType,
+                  options: mockAppConfig.options,
+                  accessGroups: mockAppConfig.accessGroups,
+                  extendedOptions: mockAppConfig.extendedOptions,
+                  position: mockAppConfig.position,
+                },
+              },
+              upsert: true,
+            },
           },
-        },
-        { upsert: true },
+        ]),
+        { ordered: true },
       );
       expect(service.getAppConfigs).toHaveBeenCalledWith(mockLdapGroup);
       expect(result).toEqual([mockAppConfig]);
@@ -129,28 +158,52 @@ describe('AppConfigService', () => {
   });
 
   describe('getAppConfigs', () => {
-    it('should return app configs', async () => {
-      const appConfigs: AppConfigDto[] = [mockAppConfig];
+    it('should return app configs (non-admin strips OnlyOffice secret)', async () => {
+      const ldapGroups = ['group1', 'group2']; // Non-Admin
 
-      const expectedConfigs = appConfigs.map((config) => ({
-        name: config.name,
-        icon: config.icon,
-        appType: config.appType,
-        options: { url: config.options.url },
-        accessGroups: [],
-        extendedOptions: config.extendedOptions,
-      }));
-
-      const ldapGroups = ['group1', 'group2'];
-      jest.spyOn(mockAppConfigModel, 'find').mockReturnValueOnce({
-        lean: jest.fn().mockResolvedValue(appConfigs),
-      });
-
-      mockAppConfigModel.find.mockResolvedValue(appConfigs);
+      const { [ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET]: omit, ...safeExtendedOptions } =
+        (mockAppConfig.extendedOptions ?? {}) as Record<string, unknown>;
+      void omit;
+      const expected = [
+        {
+          name: mockAppConfig.name,
+          icon: mockAppConfig.icon,
+          appType: mockAppConfig.appType,
+          options: { url: mockAppConfig.options.url },
+          accessGroups: [],
+          extendedOptions: safeExtendedOptions,
+          position: mockAppConfig.position,
+        },
+      ];
 
       const configs = await service.getAppConfigs(ldapGroups);
+      expect(configs).toEqual(expected);
+      expect(configs[0].extendedOptions).not.toHaveProperty(ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET);
+    });
+    it('should include OnlyOffice secret for admin', async () => {
+      (getIsAdmin as jest.Mock).mockReturnValue(true);
 
-      expect(configs).toEqual(expectedConfigs);
+      const configs = await service.getAppConfigs(['irrelevant']);
+
+      expect(configs).toHaveLength(1);
+      expect(configs[0]).toMatchObject({
+        name: mockAppConfig.name,
+        icon: mockAppConfig.icon,
+        appType: mockAppConfig.appType,
+        options: mockAppConfig.options,
+        accessGroups: mockAppConfig.accessGroups,
+        position: mockAppConfig.position,
+      });
+      if (mockAppConfig.extendedOptions) {
+        expect(configs[0].extendedOptions).toHaveProperty(
+          ExtendedOptionKeys.ONLY_OFFICE_URL,
+          mockAppConfig.extendedOptions[ExtendedOptionKeys.ONLY_OFFICE_URL],
+        );
+        expect(configs[0].extendedOptions).toHaveProperty(
+          ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET,
+          mockAppConfig.extendedOptions[ExtendedOptionKeys.ONLY_OFFICE_JWT_SECRET],
+        );
+      }
     });
   });
 
@@ -176,8 +229,6 @@ describe('AppConfigService', () => {
         lean: jest.fn().mockResolvedValue(expectedConfig),
       });
 
-      mockAppConfigModel.findOne.mockResolvedValue(expectedConfig);
-
       const config = await service.getAppConfigByName(appConfigName);
 
       expect(config).toEqual(expectedConfig);
@@ -187,15 +238,26 @@ describe('AppConfigService', () => {
 
   describe('deleteConfig', () => {
     it('should delete a config', async () => {
-      mockAppConfigModel.updateOne.mockResolvedValue({});
       const configName = 'Test';
       jest.spyOn(service, 'getAppConfigs').mockResolvedValue([mockAppConfig]);
 
-      FilesystemService.checkIfFileExistAndDelete = jest.fn().mockResolvedValue({});
+      mockAppConfigModel.bulkWrite.mockResolvedValue({});
+
+      jest.spyOn(FilesystemService, 'checkIfFileExist').mockResolvedValueOnce(false).mockResolvedValueOnce(false);
+      jest.spyOn(FilesystemService, 'deleteFile').mockResolvedValue();
+      jest.spyOn(FilesystemService, 'deleteDirectories').mockResolvedValue();
 
       const result = await service.deleteConfig(configName, mockLdapGroup);
 
-      expect(mockAppConfigModel.deleteOne).toHaveBeenCalledWith({ name: configName });
+      expect(mockAppConfigModel.bulkWrite).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          { deleteOne: { filter: { name: configName } } },
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          expect.objectContaining({ updateMany: expect.any(Object) }),
+        ]),
+        { ordered: true },
+      );
+
       expect(result).toEqual([mockAppConfig]);
     });
   });

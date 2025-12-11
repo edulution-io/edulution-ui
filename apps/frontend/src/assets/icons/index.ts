@@ -1,16 +1,23 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export { default as MobileLogoIcon } from '@/assets/logos/edulution-logo-small-colorfull.svg';
+export { default as MobileLogoIcon } from '@/assets/logos/edulution-logo-small-colorfull.svg?react';
 export { default as FirewallIcon } from '@/assets/icons/firewall-light.svg';
 export { default as ConferencesIcon } from '@/assets/icons/edulution/Konferenzen.svg';
 export { default as LearningManagementIcon } from '@/assets/icons/edulution/Lernmanagement.svg';
@@ -25,8 +32,11 @@ export { default as PrinterIcon } from '@/assets/icons/edulution/Drucker.svg';
 export { default as RoomBookingIcon } from '@/assets/icons/edulution/Raumbuchung.svg';
 export { default as ForumsIcon } from '@/assets/icons/edulution/Foren.svg';
 export { default as ChatIcon } from '@/assets/icons/edulution/Chat.svg';
+export { default as CloudIcon } from '@/assets/icons/edulution/Cloud.svg';
 export { default as WlanIcon } from '@/assets/icons/edulution/Wlan.svg';
 export { default as KnowledgeBaseIcon } from '@/assets/icons/edulution/Wissensdatenbank.svg';
+export { default as Home } from '@/assets/icons/edulution/home.svg';
+export { default as Dashboard } from '@/assets/icons/edulution/dashboard.svg';
 export { default as UserIcon } from '@/assets/icons/edulution/Benutzer.svg';
 export { default as UserDetailsSettingsIcon } from '@/assets/icons/edulution/Benutzer_Einstellungen.svg';
 export { default as SettingsIcon } from '@/assets/icons/edulution/Wartung.svg';
@@ -54,7 +64,6 @@ export { default as EyeDarkIcon } from '@/assets/icons/eye-dark.svg';
 export { default as EyeLightSlashIcon } from '@/assets/icons/eye-slash-light.svg';
 export { default as EyeDarkSlashIcon } from '@/assets/icons/eye-slash-dark.svg';
 export { default as SurveysMenuIcon } from '@/assets/icons/survey-menu.svg';
-export { default as SurveysSidebarIcon } from '@/assets/icons/survey-sidebar.svg';
 export { default as SurveysViewAnsweredIcon } from '@/assets/icons/survey-view-answered-surveys.svg';
 export { default as SurveysViewOpenIcon } from '@/assets/icons/survey-view-open-surveys.svg';
 export { default as AiChatIcon } from '@/assets/icons/chat_ai.svg';
@@ -75,3 +84,4 @@ export { default as EnglishIcon } from '@/assets/icons/english.svg';
 export { default as WindowsLogo } from '@/assets/icons/windows.svg';
 export { default as LinuxLogo } from '@/assets/icons/ubuntu.svg';
 export { default as AppStoreIcon } from '@/assets/icons/appstore.svg';
+export { default as FranceIcon } from '@/assets/icons/france.svg';

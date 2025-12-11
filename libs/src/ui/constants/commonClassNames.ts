@@ -1,17 +1,79 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export const INPUT_VARIANT_DEFAULT = 'bg-accent text-secondary placeholder:text-p focus:outline-none';
-export const INPUT_VARIANT_DIALOG = 'bg-muted text-foreground placeholder:text-p focus:outline-none text-background';
+import { cva } from 'class-variance-authority';
 
-export const INPUT_DEFAULT =
-  'flex h-9 rounded-md px-3 py-1 text-p text-background shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50';
+const VARIANT_COLORS = {
+  default: 'bg-accent text-secondary',
+  dialog: 'bg-muted text-background',
+  login: 'border-2 border-gray-300 bg-white text-black shadow-md',
+  lightGrayDisabled: 'bg-ciDarkGreyDisabled text-secondary',
+} as const;
+
+const VARIANT_CARET = {
+  default: 'bg-secondary',
+  dialog: 'bg-background',
+  login: 'bg-black',
+} as const;
+
+export const inputVariants = cva(
+  'h-9 w-full rounded-lg px-3 py-1 text-p shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus:outline-none disabled:cursor-not-allowed disabled:opacity-50',
+  {
+    variants: {
+      variant: {
+        default: `${VARIANT_COLORS.default} placeholder:text-p`,
+        dialog: `${VARIANT_COLORS.dialog} placeholder:text-p`,
+        login: `${VARIANT_COLORS.login} placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-muted`,
+        lightGrayDisabled: `${VARIANT_COLORS.lightGrayDisabled} placeholder:text-p`,
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+    },
+  },
+);
+
+export const inputOTPSlotVariants = cva(
+  'relative mx-1 flex h-11 w-11 items-center justify-center rounded-lg shadow-sm transition-all first:ml-0',
+  {
+    variants: {
+      variant: {
+        default: VARIANT_COLORS.default,
+        dialog: VARIANT_COLORS.dialog,
+        login: VARIANT_COLORS.login,
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+    },
+  },
+);
+
+export const inputOTPCaretVariants = cva('h-4 w-px animate-caret-blink duration-1000', {
+  variants: {
+    variant: {
+      default: VARIANT_CARET.default,
+      dialog: VARIANT_CARET.dialog,
+      login: VARIANT_CARET.login,
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+});

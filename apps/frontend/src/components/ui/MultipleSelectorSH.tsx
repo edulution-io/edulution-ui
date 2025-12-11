@@ -1,13 +1,20 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 'use client';
@@ -48,7 +55,7 @@ interface MultipleSelectorProps {
    * */
   triggerSearchOnFocus?: boolean;
   /** async search */
-  onSearch?: (value: string) => Promise<MultipleSelectorOptionSH[]>;
+  onSearch?: (value: string) => Promise<MultipleSelectorOptionSH[]> | MultipleSelectorOptionSH[];
   onChange?: (options: MultipleSelectorOptionSH[]) => void;
   /** Limit the maximum number of selected options. */
   maxSelected?: number;
@@ -107,7 +114,7 @@ function transToGroupOption(options: MultipleSelectorOptionSH[], groupBy?: strin
 }
 
 function removePickedOption(groupOption: GroupOption, picked: MultipleSelectorOptionSH[]) {
-  const cloneOption = JSON.parse(JSON.stringify(groupOption)) as GroupOption;
+  const cloneOption = structuredClone(groupOption);
 
   // eslint-disable-next-line no-restricted-syntax
   for (const [key, value] of Object.entries(cloneOption)) {
@@ -152,7 +159,7 @@ const CommandEmpty = forwardRef<HTMLDivElement, React.ComponentProps<typeof Comm
 
 CommandEmpty.displayName = 'CommandEmpty';
 
-const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorProps>(
+const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelectorProps>(
   (
     {
       showRemoveIconInBadge = true,
@@ -354,7 +361,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
           commandProps?.onKeyDown?.(e);
         }}
         className={cn(
-          'overflow-visible',
+          'overflow-visible rounded-lg',
           variant === 'default' ? 'bg-accent text-secondary' : 'bg-muted text-secondary',
           commandProps?.className,
         )}
@@ -363,7 +370,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       >
         <div
           className={cn(
-            'group rounded-md p-[8px] px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
+            'group rounded-lg p-[8px] px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
             variant === 'default' ? 'bg-muted text-secondary' : '',
             className,
           )}
@@ -401,7 +408,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                     <X
                       className={
                         variant === 'default'
-                          ? 'h-3 w-3 text-secondary hover:bg-muted-foreground'
+                          ? 'h-3 w-3 text-secondary hover:bg-muted-foreground hover:text-secondary-foreground'
                           : 'h-3 w-3 text-secondary '
                       }
                     />
@@ -443,7 +450,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
           {open && (
             <CommandList
               className={cn(
-                'absolute top-0 z-50 max-h-28 w-full overflow-y-auto rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in scrollbar-thin',
+                'absolute top-0 z-50 max-h-28 w-full overflow-y-auto rounded-lg border bg-popover text-popover-foreground shadow-md outline-none animate-in scrollbar-thin',
                 variant === 'default' ? 'bg-accent text-secondary' : 'bg-muted',
               )}
             >
@@ -512,5 +519,5 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
   },
 );
 
-MultipleSelector.displayName = 'MultipleSelector';
-export default MultipleSelector;
+MultipleSelectorSH.displayName = 'MultipleSelector';
+export default MultipleSelectorSH;

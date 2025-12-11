@@ -1,21 +1,29 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useInterval } from 'usehooks-ts';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import FEED_PULL_TIME_INTERVAL_SLOW from '@libs/dashboard/constants/pull-time-interval';
 import useMailsStore from '@/pages/Mail/useMailsStore';
-import useConferenceStore from '@/pages/ConferencePage/ConferencesStore';
+import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import APPS from '@libs/appconfig/constants/apps';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
@@ -24,13 +32,17 @@ import useIsAppActive from '@/hooks/useIsAppActive';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import UseBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
-import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
-import delay from '@libs/common/utils/delay';
-import useSseStore from '@/store/useSseStore';
-import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useFileOperationProgress from '@/pages/FileSharing/hooks/useFileOperationProgress';
+import useFileOperationToast from '@/pages/FileSharing/hooks/useFileOperationToast';
+import useTLDRawHistoryStore from '@/pages/Whiteboard/TLDrawWithSync/useTLDRawHistoryStore';
+import HistoryEntryDto from '@libs/whiteboard/types/historyEntryDto';
+import useFileDownloadProgressToast from '@/hooks/useDownloadProgressToast';
+import { toast } from 'sonner';
+import useSseEventListener from '@/hooks/useSseEventListener';
+import useSseHeartbeatMonitor from '@/hooks/useSseHeartbeatMonitor';
 
 const useNotifications = () => {
+  const { t } = useTranslation();
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
   const isMailsAppActivated = useIsAppActive(APPS.MAIL);
   const { getMails } = useMailsStore();
@@ -41,23 +53,18 @@ const useNotifications = () => {
   const { updateOpenSurveys } = useSurveyTablesPageStore();
   const isBulletinBoardActive = useIsAppActive(APPS.BULLETIN_BOARD);
   const { addBulletinBoardNotification } = UseBulletinBoardStore();
-  const { setFilesharingProgress } = useLessonStore();
-  const { setFileOperationProgress } = useFileSharingStore();
-  const isClassRoomManagementActive = useIsAppActive(APPS.CLASS_MANAGEMENT);
-  const { eventSource } = useSseStore();
-  const isFileSharingActive = useIsAppActive(APPS.FILE_SHARING);
+  const isWhiteboardActive = useIsAppActive(APPS.WHITEBOARD);
+  const { addRoomHistoryEntry } = useTLDRawHistoryStore();
 
-  const clearProgressIfComplete = async (
-    data: FilesharingProgressDto,
-    clearFn: (value: FilesharingProgressDto | null) => void,
-  ) => {
-    if (data.percent === 100 && (!data.failedPaths || data.failedPaths.length === 0)) {
-      await delay(5000);
-      clearFn(null);
-    }
-  };
+  useFileOperationProgress();
 
   useDockerContainerEvents();
+
+  useFileDownloadProgressToast();
+
+  useFileOperationToast();
+
+  useSseHeartbeatMonitor();
 
   useEffect(() => {
     conferencesRef.current = conferences;
@@ -85,139 +92,95 @@ const useNotifications = () => {
     }
   }, FEED_PULL_TIME_INTERVAL_SLOW);
 
-  useEffect(() => {
-    if (!isConferenceAppActivated || !eventSource) {
-      return undefined;
-    }
-    const controller = new AbortController();
-    const { signal } = controller;
+  const handleMailThemeUpdated = () => {
+    toast.info(t('mail.themeUpdated.generic'), {
+      action: {
+        label: t('common.refreshPage'),
+        onClick: () => window.location.reload(),
+      },
+      duration: undefined,
+    });
+  };
 
-    const createConferenceHandler = (e: MessageEvent<string>) => {
-      const conferenceDto = JSON.parse(e.data) as ConferenceDto;
-      const newConferences = [...conferencesRef.current, conferenceDto];
-      setConferences(newConferences);
-    };
+  const handleMailThemeUpdateFailed = () => toast.error(t('mail.themeUpdated.failed'));
 
-    const updateConferenceHandler = (e: MessageEvent<string>) => {
-      if (conferencesRef.current.length === 0) return;
-      const { type, data } = e;
-      const newConferences = conferencesRef.current.map((conference) => {
-        if (conference.meetingID === data) {
-          return {
-            ...conference,
-            isRunning: type === SSE_MESSAGE_TYPE.CONFERENCE_STARTED,
-          };
-        }
-        return conference;
-      });
-      setConferences(newConferences);
-    };
+  useSseEventListener(SSE_MESSAGE_TYPE.MAIL_THEME_UPDATED, handleMailThemeUpdated, {
+    enabled: isMailsAppActivated,
+  });
 
-    const deleteConferenceHandler = (e: MessageEvent<string[]>) => {
-      const { data } = e;
-      const newConferences = conferencesRef.current.filter((conference) => !data.includes(conference.meetingID));
-      setConferences(newConferences);
-    };
+  useSseEventListener(SSE_MESSAGE_TYPE.MAIL_THEME_UPDATE_FAILED, handleMailThemeUpdateFailed, {
+    enabled: isMailsAppActivated,
+  });
 
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_CREATED, createConferenceHandler, { signal });
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_STARTED, updateConferenceHandler, { signal });
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_STOPPED, updateConferenceHandler, { signal });
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.CONFERENCE_DELETED, deleteConferenceHandler, { signal });
+  const createConferenceHandler = (e: MessageEvent<string>) => {
+    const conferenceDto = JSON.parse(e.data) as ConferenceDto;
+    const newConferences = [...conferencesRef.current, conferenceDto];
+    setConferences(newConferences);
+  };
 
-    return () => {
-      controller.abort();
-    };
-  }, [isConferenceAppActivated]);
+  const updateConferenceHandler = (e: MessageEvent<string>) => {
+    if (conferencesRef.current.length === 0) return;
+    const { type, data } = e;
+    const newConferences = conferencesRef.current.map((conference) => {
+      if (conference.meetingID === data) {
+        return {
+          ...conference,
+          isRunning: type === SSE_MESSAGE_TYPE.CONFERENCE_STARTED,
+        };
+      }
+      return conference;
+    });
+    setConferences(newConferences);
+  };
 
-  const handleFilesharingProgress =
-    (setter: (v: FilesharingProgressDto | null) => void) => async (e: MessageEvent<string>) => {
-      const data: FilesharingProgressDto = JSON.parse(e.data) as FilesharingProgressDto;
-      setter(data);
-      await clearProgressIfComplete(data, setter);
-    };
+  const deleteConferenceHandler = (e: MessageEvent<string[]>) => {
+    const { data } = e;
+    const newConferences = conferencesRef.current.filter((conference) => !data.includes(conference.meetingID));
+    setConferences(newConferences);
+  };
 
-  useEffect(() => {
-    if (!isFileSharingActive || !eventSource) {
-      return undefined;
-    }
+  useSseEventListener(SSE_MESSAGE_TYPE.CONFERENCE_CREATED, createConferenceHandler, {
+    enabled: isConferenceAppActivated,
+  });
 
-    const controller = new AbortController();
-    const { signal } = controller;
+  useSseEventListener(
+    [SSE_MESSAGE_TYPE.CONFERENCE_STARTED, SSE_MESSAGE_TYPE.CONFERENCE_STOPPED],
+    updateConferenceHandler,
+    { enabled: isConferenceAppActivated },
+  );
 
-    const rawDelete = handleFilesharingProgress(setFileOperationProgress);
+  useSseEventListener(SSE_MESSAGE_TYPE.CONFERENCE_DELETED, deleteConferenceHandler, {
+    enabled: isConferenceAppActivated,
+  });
 
-    const handleDelete = (e: MessageEvent<string>) => {
-      void rawDelete(e);
-    };
+  const handleUpdateSurveys = () => {
+    void updateOpenSurveys();
+  };
 
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_DELETE_FILES, handleDelete, { signal });
+  useSseEventListener(
+    [SSE_MESSAGE_TYPE.SURVEY_CREATED, SSE_MESSAGE_TYPE.SURVEY_UPDATED, SSE_MESSAGE_TYPE.SURVEY_DELETED],
+    handleUpdateSurveys,
+    { enabled: isSurveysAppActivated },
+  );
 
-    return () => {
-      controller.abort();
-    };
-  }, [isFileSharingActive]);
+  const handleBulletinNotification = (e: MessageEvent<string>) => {
+    const { data } = e;
+    const bulletin = JSON.parse(data) as BulletinResponseDto;
+    addBulletinBoardNotification(bulletin);
+  };
 
-  useEffect(() => {
-    if (!isClassRoomManagementActive || !eventSource) {
-      return undefined;
-    }
-    const controller = new AbortController();
-    const { signal } = controller;
+  useSseEventListener(SSE_MESSAGE_TYPE.BULLETIN_UPDATED, handleBulletinNotification, {
+    enabled: isBulletinBoardActive,
+  });
 
-    const rawCollectShare = handleFilesharingProgress(setFilesharingProgress);
+  const handleNewHistoryLog = (e: MessageEvent<string>) => {
+    const entry = JSON.parse(e.data) as HistoryEntryDto;
+    addRoomHistoryEntry(entry);
+  };
 
-    const handleCollectOrShare = (e: MessageEvent<string>) => {
-      void rawCollectShare(e);
-    };
-
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_COLLECT_FILES, handleCollectOrShare, { signal });
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.FILESHARING_SHARE_FILES, handleCollectOrShare, { signal });
-
-    return () => {
-      controller.abort();
-    };
-  }, [isClassRoomManagementActive]);
-
-  useEffect(() => {
-    if (!isSurveysAppActivated || !eventSource) {
-      return undefined;
-    }
-
-    const controller = new AbortController();
-    const { signal } = controller;
-
-    const handleUpdateSurveys = () => {
-      void updateOpenSurveys();
-    };
-
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.SURVEY_CREATED, handleUpdateSurveys, { signal });
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.SURVEY_UPDATED, handleUpdateSurveys, { signal });
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.SURVEY_DELETED, handleUpdateSurveys, { signal });
-
-    return () => {
-      controller.abort();
-    };
-  }, [isSurveysAppActivated]);
-
-  useEffect(() => {
-    if (!isBulletinBoardActive || !eventSource) {
-      return undefined;
-    }
-    const controller = new AbortController();
-    const { signal } = controller;
-
-    const handleBulletinNotification = (e: MessageEvent<string>) => {
-      const { data } = e;
-      const bulletin = JSON.parse(data) as BulletinResponseDto;
-      addBulletinBoardNotification(bulletin);
-    };
-
-    eventSource.addEventListener(SSE_MESSAGE_TYPE.BULLETIN_UPDATED, handleBulletinNotification, { signal });
-
-    return () => {
-      controller.abort();
-    };
-  }, [isBulletinBoardActive]);
+  useSseEventListener(SSE_MESSAGE_TYPE.TLDRAW_SYNC_ROOM_LOG_MESSAGE, handleNewHistoryLog, {
+    enabled: isWhiteboardActive,
+  });
 };
 
 export default useNotifications;

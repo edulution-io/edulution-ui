@@ -1,16 +1,23 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
 import { FilesharingDialogProps } from '@libs/filesharing/types/filesharingDialogProps';
@@ -20,27 +27,29 @@ import { useTranslation } from 'react-i18next';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import generateFile from '@/pages/FileSharing/utilities/generateFile';
 import getDocumentVendor from '@libs/filesharing/utils/getDocumentVendor';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/appConfigsStore';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
+import AVAILABLE_FILE_TYPES from '@libs/filesharing/constants/availableFileTypes';
+import buildFilenameWithExtension from '@libs/filesharing/utils/buildFilenameWithExtension';
 
 const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ form, isRenaming }) => {
   const { selectedItems, files } = useFileSharingStore();
-  const { selectedFileType, setSubmitButtonIsDisabled } = useFileSharingDialogStore();
+  const { selectedFileType, customExtension, setSubmitButtonIsDisabled } = useFileSharingDialogStore();
   const { appConfigs } = useAppConfigsStore();
   const documentVendor = getDocumentVendor(appConfigs);
   const { t } = useTranslation();
-  const filename = form.watch('filename');
-  const extension = form.watch('extension');
+  const filename = form.watch('filename')?.trim() || '';
+  const extension = form.watch('extension')?.trim() || '';
 
   useEffect(() => {
     if (isRenaming && selectedItems.length === 1) {
-      const { basename, type } = selectedItems[0];
-
-      if (type === ContentType.FILE) {
-        const dotIndex = basename.lastIndexOf('.');
-        form.setValue('filename', dotIndex > 0 ? basename.substring(0, dotIndex) : basename);
-        form.setValue('extension', dotIndex > 0 ? basename.substring(dotIndex) : '');
+      if (selectedItems[0].type === ContentType.FILE) {
+        const dotIndex = selectedItems[0].filename.lastIndexOf('.');
+        const base = dotIndex > 0 ? selectedItems[0].filename.substring(0, dotIndex) : selectedItems[0].filename;
+        const ext = dotIndex > 0 ? selectedItems[0].filename.substring(dotIndex) : '';
+        form.setValue('filename', base.trim());
+        form.setValue('extension', ext.trim());
       } else {
-        form.setValue('filename', basename);
+        form.setValue('filename', selectedItems[0].filename.trim());
         form.setValue('extension', '');
       }
     } else {
@@ -49,28 +58,80 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
     }
   }, [isRenaming, selectedItems, form]);
 
-  const showExtensionInput =
-    isRenaming && extension && selectedItems.length === 1 && selectedItems[0].type === ContentType.FILE;
+  const isCustomFileWithoutPredefinedExtension =
+    selectedFileType === AVAILABLE_FILE_TYPES.customFile && !customExtension && !isRenaming;
 
-  const [filenameAlreadyExists, setFilenameAlreadyExists] = React.useState(false);
+  const showExtensionInput =
+    (isRenaming && extension && selectedItems.length === 1 && selectedItems[0].type === ContentType.FILE) ||
+    isCustomFileWithoutPredefinedExtension;
+
+  const [filenameAlreadyExists, setFilenameAlreadyExists] = useState(false);
+  const [isSameAsOriginal, setIsSameAsOriginal] = useState(false);
+  const originalFilename = isRenaming && selectedItems.length === 1 ? selectedItems[0].filename : '';
 
   useEffect(() => {
     const checkIfFilenameAlreadyExists = async () => {
-      let alreadyExists: boolean;
-
-      if (selectedFileType) {
-        const generatedFilename = await generateFile(selectedFileType, filename, documentVendor, true);
-        alreadyExists = files.some((file) => file.basename === `${filename}.${generatedFilename.extension}`);
-      } else {
-        alreadyExists = files.some((file) => file.basename === filename + (extension || ''));
+      if (!filename) {
+        setFilenameAlreadyExists(false);
+        setIsSameAsOriginal(false);
+        setSubmitButtonIsDisabled(true);
+        return;
       }
 
-      setFilenameAlreadyExists(alreadyExists);
-      setSubmitButtonIsDisabled(alreadyExists);
+      const newFilename = buildFilenameWithExtension(filename, extension);
+      const sameAsOriginal = Boolean(isRenaming && newFilename === originalFilename);
+      setIsSameAsOriginal(sameAsOriginal);
+
+      if (sameAsOriginal) {
+        setFilenameAlreadyExists(false);
+        setSubmitButtonIsDisabled(true);
+        return;
+      }
+
+      const filesToCheck = isRenaming ? files.filter((file) => file.filename !== originalFilename) : files;
+
+      let alreadyExists: boolean;
+
+      if (selectedFileType === AVAILABLE_FILE_TYPES.customFile) {
+        const ext = customExtension || extension?.replace(/^\./, '') || '';
+        if (ext) {
+          alreadyExists = filesToCheck.some((file) => file.filename === `${filename}.${ext}`);
+        } else {
+          alreadyExists = filesToCheck.some((file) => file.filename === filename);
+        }
+        setFilenameAlreadyExists(alreadyExists);
+        setSubmitButtonIsDisabled(alreadyExists || filename.length === 0 || (!customExtension && !extension));
+      } else if (selectedFileType) {
+        const result = await generateFile(selectedFileType, filename, documentVendor, true);
+        if (!result.success) {
+          setFilenameAlreadyExists(false);
+          setSubmitButtonIsDisabled(true);
+          return;
+        }
+        const fullFilename = result.extension ? `${filename}.${result.extension}` : filename;
+        alreadyExists = filesToCheck.some((file) => file.filename === fullFilename);
+        setFilenameAlreadyExists(alreadyExists);
+        setSubmitButtonIsDisabled(alreadyExists || filename.length === 0);
+      } else {
+        const finalFilename = buildFilenameWithExtension(filename, extension);
+        alreadyExists = filesToCheck.some((file) => file.filename === finalFilename);
+        setFilenameAlreadyExists(alreadyExists);
+        setSubmitButtonIsDisabled(alreadyExists || filename.length === 0);
+      }
     };
 
     void checkIfFilenameAlreadyExists();
-  }, [files, selectedFileType, filename, documentVendor, extension]);
+  }, [
+    files,
+    selectedFileType,
+    customExtension,
+    filename,
+    documentVendor,
+    extension,
+    setSubmitButtonIsDisabled,
+    isRenaming,
+    originalFilename,
+  ]);
 
   return (
     <Form {...form}>
@@ -78,6 +139,11 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
         className="space-y-4"
         onSubmit={(event) => event.preventDefault()}
       >
+        {isRenaming && originalFilename && (
+          <div className="text-sm text-muted-foreground">
+            {t('filesharing.currentName')}: <span className="font-medium">{originalFilename}</span>
+          </div>
+        )}
         <div className={showExtensionInput ? 'flex w-full items-center' : ''}>
           {filename !== undefined && (
             <div className="flex-grow">
@@ -87,21 +153,24 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
                 form={form}
                 labelTranslationId=""
                 variant="dialog"
+                placeholder={t('filesharing.placeholder.filename')}
               />
             </div>
           )}
           {showExtensionInput && (
-            <div className="w-16 pl-2 text-center">
+            <div className="w-20 pl-2 text-center">
               <FormField
                 defaultValue={extension}
                 name="extension"
                 form={form}
                 labelTranslationId=""
                 variant="dialog"
+                placeholder={t('filesharing.placeholder.extension')}
               />
             </div>
           )}
         </div>
+        {isSameAsOriginal && <div className="text-muted-foreground">{t('filesharing.sameNameAsOriginal')}</div>}
         {filenameAlreadyExists && (
           <div>{t(`filesharing.${selectedFileType || extension ? 'file' : 'folder'}WithSameNameAlreadyExists`)}</div>
         )}

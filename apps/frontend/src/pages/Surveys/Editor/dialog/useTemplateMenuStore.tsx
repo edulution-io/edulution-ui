@@ -1,22 +1,29 @@
 /*
- * LICENSE
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This software is dual-licensed under the terms of:
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
- * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
 import { create } from 'zustand';
+import { toast } from 'sonner';
+import { t } from 'i18next';
 import eduApi from '@/api/eduApi';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { SURVEY_TEMPLATES_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import handleApiError from '@/utils/handleApiError';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
-import SurveyTemplateDto from '@libs/survey/types/api/template.dto';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 
 interface TemplateMenuStore {
   reset: () => void;
@@ -27,6 +34,12 @@ interface TemplateMenuStore {
   uploadTemplate: (template: SurveyTemplateDto) => Promise<void>;
   isSubmitting: boolean;
 
+  isOpenTemplateConfirmDeletion: boolean;
+  setIsOpenTemplateConfirmDeletion: (state: boolean) => void;
+  deleteTemplate: (templateName: string) => Promise<void>;
+  setIsTemplateActive: (templateName: string, state: boolean) => Promise<void>;
+  error?: Error;
+
   template?: SurveyTemplateDto;
   setTemplate: (template: SurveyTemplateDto) => void;
   templates: SurveyTemplateDto[];
@@ -36,10 +49,12 @@ interface TemplateMenuStore {
 
 const TemplateMenuStoreInitialState = {
   isOpenTemplateMenu: false,
+  isOpenTemplateConfirmDeletion: false,
   template: undefined,
   templates: [],
   isSubmitting: false,
   isLoading: false,
+  error: undefined,
 };
 
 const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
@@ -50,39 +65,15 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
 
   fetchTemplates: async (): Promise<void> => {
     set({ isLoading: true });
-
-    let templateNames: string[] | undefined;
     try {
-      const result = await eduApi.get<string[]>(SURVEY_TEMPLATES_ENDPOINT);
-      if (result) {
-        templateNames = result.data;
-      }
+      const result = await eduApi.get<SurveyTemplateDto[]>(SURVEY_TEMPLATES_ENDPOINT);
+      set({ templates: result.data });
     } catch (error) {
       handleApiError(error, set);
+      set({ templates: [] });
+    } finally {
+      set({ isLoading: false });
     }
-
-    let templateDocuments: SurveyTemplateDto[] = [];
-    const promises = templateNames?.map(async (fileName) => {
-      try {
-        const result = await eduApi.get<SurveyDto>(`${SURVEY_TEMPLATES_ENDPOINT}/${fileName}`);
-        if (result) {
-          const newTemplate = { fileName, template: result.data };
-          templateDocuments = [...templateDocuments, newTemplate];
-        }
-      } catch (error) {
-        handleApiError(error, set);
-      }
-    });
-    if (promises) {
-      try {
-        await Promise.all(promises);
-        set({ templates: templateDocuments });
-      } catch (error) {
-        set({ templates: [] });
-      }
-    }
-
-    set({ isLoading: false });
   },
 
   setTemplate: (template: SurveyTemplateDto) => set({ template }),
@@ -90,10 +81,42 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
   uploadTemplate: async (template: SurveyTemplateDto): Promise<void> => {
     set({ isSubmitting: true });
     try {
-      const result = await eduApi.post<Partial<SurveyDto>>(SURVEY_TEMPLATES_ENDPOINT, template);
-      if (!result) {
-        throw new Error(CommonErrorMessages.FILE_NOT_PROVIDED);
-      }
+      const result = await eduApi.post<string>(SURVEY_TEMPLATES_ENDPOINT, template);
+      const newTemplate = { ...template, name: result.data };
+      set({ template: newTemplate });
+    } catch (error) {
+      handleApiError(error, set);
+      set({ template: undefined });
+    } finally {
+      set({ isSubmitting: false });
+    }
+  },
+
+  setIsOpenTemplateConfirmDeletion: (state: boolean) => set({ isOpenTemplateConfirmDeletion: state }),
+
+  deleteTemplate: async (templateName: string): Promise<void> => {
+    if (!templateName) {
+      return;
+    }
+    set({ isSubmitting: true });
+    try {
+      await eduApi.delete(`${SURVEY_TEMPLATES_ENDPOINT}/${templateName}`);
+      toast.success(t('survey.editor.templateMenu.deletion.success'));
+    } catch (error) {
+      handleApiError(error, set);
+    } finally {
+      set({ isSubmitting: false });
+    }
+  },
+
+  setIsTemplateActive: async (templateName: string, state: boolean): Promise<void> => {
+    if (!templateName) {
+      return;
+    }
+    set({ isSubmitting: true });
+    try {
+      await eduApi.patch<SurveyTemplateDto>(`${SURVEY_TEMPLATES_ENDPOINT}/${templateName}/${state}`);
+      toast.success(t('survey.editor.templateMenu.upload.success'));
     } catch (error) {
       handleApiError(error, set);
     } finally {
