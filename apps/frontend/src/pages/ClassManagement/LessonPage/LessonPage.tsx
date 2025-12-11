@@ -121,7 +121,7 @@ const LessonPage = () => {
         break;
       }
       case UserGroups.Classes: {
-        const schoolClass = await fetchSchoolClass(groupNameParams!);
+        const schoolClass = await fetchSchoolClass(groupNameParams!, true);
         if (schoolClass?.members) {
           setMember(getUniqueValues([...schoolClass.members]));
         }

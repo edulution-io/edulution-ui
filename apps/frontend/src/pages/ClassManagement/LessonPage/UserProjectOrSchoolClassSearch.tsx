@@ -69,7 +69,7 @@ const UserProjectOrSchoolClassSearch = () => {
 
     switch (type) {
       case SOPHOMORIX_SCHOOL_CLASS_GROUP_TYPES.SCHOOL_CLASS: {
-        const schoolClass = await fetchSchoolClass(value);
+        const schoolClass = await fetchSchoolClass(value, true);
         if (schoolClass) {
           setMember(getUniqueValues([...member, ...schoolClass.members]));
         }
