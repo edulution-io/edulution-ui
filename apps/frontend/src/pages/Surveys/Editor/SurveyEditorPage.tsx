@@ -74,7 +74,6 @@ const SurveyEditorPage = () => {
     setIsOpenQuestionContextMenu,
     isOpenQuestionContextMenu,
     setSelectedQuestion,
-    isUpdatingBackendLimiters,
   } = useQuestionsContextMenuStore();
   const { setIsOpen: setOpenExportPDFDialog } = useExportSurveyToPdfStore();
 
@@ -267,10 +266,8 @@ const SurveyEditorPage = () => {
       />
       <QuestionsContextMenu
         form={form}
-        creator={creator}
         isOpenQuestionContextMenu={isOpenQuestionContextMenu}
         setIsOpenQuestionContextMenu={setIsOpenQuestionContextMenu}
-        isLoading={isUpdatingBackendLimiters}
       />
       <ExportSurveyToPdfDialog formula={creator.JSON as SurveyFormula} />
     </PageLayout>

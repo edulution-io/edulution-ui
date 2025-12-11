@@ -36,18 +36,24 @@ const getSurveyEditorFormSchema = () =>
               description: z.string().optional(),
               isRequired: z.boolean().optional(),
               choices: z
-                .array(
-                  z.object({
-                    value: z.string(),
-                    label: z.string(),
-                  }),
-                )
+                .union([
+                  z.array(z.string()),
+                  z.array(
+                    z.object({
+                      value: z.string().optional(),
+                      imageLink: z.string().optional(),
+                      title: z.string().optional(),
+                      name: z.string().optional(),
+                    }),
+                  ),
+                ])
                 .optional(),
               choicesByUrl: z
                 .object({
                   url: z.string(),
                 })
                 .optional(),
+              showOtherItem: z.boolean().optional(),
             }),
           ),
         }),
