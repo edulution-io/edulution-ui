@@ -699,6 +699,7 @@
       "addDescription": "Beschreibung hinzufügen",
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
       "templates": "Vorlagen",
+      "searchPlaceholder": "Tippen um Vorlagen zu filtern...",
       "noTemplates": "Es sind keine Vorlagen vorhanden",
       "noSearchResults": "Keine Vorlage gefunden",
       "templateMenu": {

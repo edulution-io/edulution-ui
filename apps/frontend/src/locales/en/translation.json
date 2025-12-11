@@ -697,6 +697,7 @@
       "addDescription": "Add a description",
       "expectingUserInput": "Expecting the user to answer here, ... ",
       "templates": "Templates",
+      "searchPlaceholder": "Type to filter templates...",
       "noTemplates": "No templates available",
       "noSearchResults": "No templates found",
       "templateMenu": {
