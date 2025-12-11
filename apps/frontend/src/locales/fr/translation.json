@@ -114,7 +114,9 @@
       "manual": "Instructions",
       "setupWithQrCode": "Configuration via un QR-code",
       "content": "Vous pouvez accéder au serveur scolaire à partir de nombreux appareils mobiles. Appuyez sur les instructions pour commencer.",
-      "scanAccessInfo": "Pour transférer les identifiants, veuillez scanner le QR-code suivant avec l'edulution App."
+      "scanAccessInfo": "Pour transférer les identifiants, veuillez scanner le QR-code suivant avec l'edulution App.",
+      "setup": "Configuration avec code QR",
+      "qrCode": "Code QR"
     },
     "quota": {
       "title": "Quotas",
@@ -940,6 +942,12 @@
           "title": "Paramètres généraux",
           "description": ""
         },
+
+        "proxyConfig": {
+          "title": "Configuration proxy",
+          "description": "Une configuration proxy distincte pour Trafik peut être stockée ici. Vous pouvez soit utiliser un modèle à l'aide des champs d'entrée, soit une configuration au format YAML peut être créée directement en mode expert. <br/><strong>Danger:</strong> Une fausse configuration peut conduire à une application inaccessible."
+        },
+
         "docker": {
           "title": "Applications Docker",
           "description": "Afin de pouvoir utiliser les services étendus, les applications de conteneurs requises peuvent être installées et démarrées ici.",
@@ -1096,7 +1104,9 @@
       "confirmSingleDeleteAccount": "Êtes-vous sûr de vouloir supprimer ce compte ? Cette action ne peut pas être annulée.",
       "deleteUserAccounts": "Supprimer {{count}} comptes",
       "deleteUserAccount": "Supprimer le compte",
-      "cryptoNotAvailable": "Le cryptage n'est disponible que via HTTPS. Veuillez utiliser une connexion sécurisée."
+      "cryptoNotAvailable": "Le cryptage n'est disponible que via HTTPS. Veuillez utiliser une connexion sécurisée.",
+      "password": "Modifier le mot de passe",
+      "mfa": "Authentification à deux facteurs"
     },
     "mails": {
       "title": "Email"
@@ -1123,7 +1133,8 @@
       "german": "Allemand",
       "english": "Anglais",
       "french": "Français",
-      "system": "Langue du système"
+      "system": "Langue du système",
+      "selectLanguage": "Sélectionner la langue"
     },
     "addTotp": {
       "title": "Configurer l'authentification à deux facteurs",
@@ -1141,6 +1152,9 @@
       "notSupportedFileFormat": "Format de fichier non supporté.",
       "notAbleToCompressImage": "L'image n'a pas pu être compressée."
     }
+  },
+  "generalsettings": {
+    "title": "Généralités"
   },
   "forwardingpage": {
     "action": "Ce lien peut être atteint du côté extérieur du fournisseur.",
@@ -1337,8 +1351,6 @@
     "urlDescription": "Veuillez saisir une URL pour la demande",
     "apiKey": "Clé API",
     "apiKeyDescription": "La clé API est utilisée pour l'authentification",
-    "proxyConfig": "Configuration proxy",
-    "proxyConfigDescription": "Une configuration proxy distincte pour Trafik peut être stockée ici. Vous pouvez soit utiliser un modèle à l'aide des champs d'entrée, soit une configuration au format YAML peut être créée directement en mode expert. <br/><strong>Danger:</strong> Une fausse configuration peut conduire à une application inaccessible.",
     "expertMode": "Mode expert",
     "proxyPath": "Chemin proxy",
     "proxyPathPlaceholder": "par exemple SOGo",

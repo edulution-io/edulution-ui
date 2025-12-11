@@ -17,6 +17,22 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const TABS = 'tabs';
+import React, { FC, ReactNode } from 'react';
+import cn from '@libs/common/utils/className';
 
-export default TABS;
+interface AnchorSectionProps {
+  id: string;
+  className?: string;
+  children: ReactNode;
+}
+
+const AnchorSection: FC<AnchorSectionProps> = ({ id, className, children }) => (
+  <section
+    id={id}
+    className={cn('scroll-mt-20', className)}
+  >
+    {children}
+  </section>
+);
+
+export default AnchorSection;

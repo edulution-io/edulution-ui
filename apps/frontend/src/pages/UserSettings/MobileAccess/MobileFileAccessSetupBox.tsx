@@ -22,12 +22,12 @@ import { t } from 'i18next';
 import QRCodeDisplay from '@/components/ui/QRCodeDisplay';
 import useUserStore from '@/store/UserStore/useUserStore';
 import { MobileDevicesIcon } from '@/assets/icons';
-import Separator from '@/components/ui/Separator';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
 import APPLICATION_NAME from '@libs/common/constants/applicationName';
 import { EDU_DOCS_URL } from '@libs/common/constants';
 import { Button } from '@/components/shared/Button';
+import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 
 const EDU_APP_SETUP_URL = `${EDU_DOCS_URL}/docs/edulution-app/setup`;
 
@@ -51,25 +51,38 @@ const MobileFileAccessSetupBox: React.FC = () => {
         iconSrc: MobileDevicesIcon,
       }}
     >
-      <div className="space-y-2">
-        <h2>{t('dashboard.mobileAccess.setupWithQrCode')}</h2>
-        <p>{t('usersettings.mobileAccess.docsDescription')}</p>
-        <Button
-          type="button"
-          variant="btn-infrastructure"
-          size="lg"
-          onClick={() => window.open(EDU_APP_SETUP_URL, '_blank', 'noopener,noreferrer')}
+      <SectionAccordion defaultOpenAll>
+        <SectionAccordionItem
+          id="setup"
+          label={t('usersettings.mobileAccess.setup')}
         >
-          {t('usersettings.mobileAccess.button')}
-        </Button>
-        <Separator className="my-1 bg-muted" />
-        <p>{t('dashboard.mobileAccess.scanAccessInfo')}</p>
-        <div className="space-y-2 p-4 shadow">
-          <div className="mt-2 flex justify-center">
-            <QRCodeDisplay value={webdavAccessJson} />
+          <div className="space-y-4">
+            <p>{t('usersettings.mobileAccess.docsDescription')}</p>
+            <div className="flex justify-end">
+              <Button
+                type="button"
+                variant="btn-infrastructure"
+                size="lg"
+                onClick={() => window.open(EDU_APP_SETUP_URL, '_blank', 'noopener,noreferrer')}
+              >
+                {t('usersettings.mobileAccess.button')}
+              </Button>
+            </div>
           </div>
-        </div>
-      </div>
+        </SectionAccordionItem>
+
+        <SectionAccordionItem
+          id="qrCode"
+          label={t('usersettings.mobileAccess.qrCode')}
+        >
+          <div className="space-y-4">
+            <p>{t('dashboard.mobileAccess.scanAccessInfo')}</p>
+            <div className="flex justify-center">
+              <QRCodeDisplay value={webdavAccessJson} />
+            </div>
+          </div>
+        </SectionAccordionItem>
+      </SectionAccordion>
     </PageLayout>
   );
 };

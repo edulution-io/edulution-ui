@@ -30,6 +30,7 @@ import DOCKER_STATES from '@libs/docker/constants/dockerStates';
 import { useLocation } from 'react-router-dom';
 import APPS from '@libs/appconfig/constants/apps';
 import DOCKER_CONTAINER_TABLE_COLUMNS from '@libs/docker/constants/dockerContainerTableColumns';
+import CONTAINER from '@libs/docker/constants/container';
 
 const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
   {
@@ -37,7 +38,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
     size: 60,
     header: ({ table, column }) => {
       const { pathname } = useLocation();
-      const isDockerOverview = pathname === `/${APPS.SETTINGS}/tabs/container`;
+      const isDockerOverview = pathname === `/${APPS.SETTINGS}/${APPS.GENERAL_SETTINGS}/${CONTAINER}`;
 
       return (
         <SortableHeader<ContainerInfo, unknown>
@@ -56,7 +57,7 @@ const DockerContainerTableColumns: ColumnDef<ContainerInfo>[] = [
     cell: ({ row }) => {
       const badgeClass = row.original.State === DOCKER_STATES.RUNNING ? 'bg-green-500' : 'bg-red-500';
       const { pathname } = useLocation();
-      const isDockerOverview = pathname === `/${APPS.SETTINGS}/tabs/container`;
+      const isDockerOverview = pathname === `/${APPS.SETTINGS}/${APPS.GENERAL_SETTINGS}/${CONTAINER}`;
 
       return (
         <SelectableTextCell
