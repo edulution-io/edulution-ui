@@ -33,7 +33,7 @@ import useDesktopDeploymentStore from './useDesktopDeploymentStore';
 const VDIFrame = () => {
   const displayRef = useRef<HTMLDivElement>(null);
   const guacRef = useRef<Client | null>(null);
-  const { error, guacToken, dataSource, guacId, isVdiConnectionOpen, setIsVdiConnectionOpen } =
+  const { error, guacToken, dataSource, connectionUri, isVdiConnectionOpen, setIsVdiConnectionOpen } =
     useDesktopDeploymentStore();
   const [clientState, setClientState] = useState<Client.State>(Client.State.IDLE);
   const [hasCurrentFrameSizeLoaded, setHasCurrentFrameSizeLoaded] = useState(false);
@@ -80,28 +80,19 @@ const VDIFrame = () => {
     const displayElement = displayRef.current;
     displayElement.tabIndex = 0;
 
-    const guacamoleConfig = {
-      token: guacToken,
-      GUAC_ID: guacId,
-      GUAC_TYPE: 'c',
-      GUAC_DATA_SOURCE: dataSource,
-      GUAC_WIDTH: width,
-      GUAC_HEIGHT: height,
-      GUAC_DPI: 96,
-      GUAC_TIMEZONE: getBrowserTimezone(),
-      GUAC_AUDIO: ['audio/L16'],
-      GUAC_IMAGE: ['image/jpeg', 'image/png', 'image/webp'],
-    };
-
     const params = new URLSearchParams();
-
-    Object.entries(guacamoleConfig).forEach(([key, value]) => {
-      if (Array.isArray(value)) {
-        value.forEach((val) => params.append(key, val));
-      } else {
-        params.append(key, value as string);
-      }
-    });
+    params.set('token', guacToken);
+    params.set('GUAC_ID', connectionUri);
+    params.set('GUAC_TYPE', 'c');
+    params.set('GUAC_DATA_SOURCE', dataSource);
+    params.set('GUAC_WIDTH', String(width));
+    params.set('GUAC_HEIGHT', String(height));
+    params.set('GUAC_DPI', '96');
+    params.set('GUAC_TIMEZONE', getBrowserTimezone());
+    params.append('GUAC_AUDIO', 'audio/L16');
+    params.append('GUAC_IMAGE', 'image/jpeg');
+    params.append('GUAC_IMAGE', 'image/png');
+    params.append('GUAC_IMAGE', 'image/webp');
     try {
       guac.connect(params);
     } catch (e) {

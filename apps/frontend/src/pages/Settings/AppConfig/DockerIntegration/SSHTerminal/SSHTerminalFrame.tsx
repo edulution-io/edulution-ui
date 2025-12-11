@@ -32,7 +32,7 @@ const SSH_TERMINAL_FRAME_ID = 'ssh-terminal.topic';
 const SSHTerminalFrame: React.FC = () => {
   const displayRef = useRef<HTMLDivElement>(null);
   const guacRef = useRef<Client | null>(null);
-  const { guacToken, dataSource, connectionId, isTerminalOpen, setIsTerminalOpen, reset } = useSSHTerminalStore();
+  const { guacToken, dataSource, connectionUri, isTerminalOpen, setIsTerminalOpen, reset } = useSSHTerminalStore();
   const [clientState, setClientState] = useState<Client.State>(Client.State.IDLE);
   const [containerSize, setContainerSize] = useState<{ width: number; height: number } | null>(null);
   const { minimizedWindowedFrames } = useFrameStore();
@@ -179,15 +179,13 @@ const SSHTerminalFrame: React.FC = () => {
 
     const params = new URLSearchParams();
     params.set('token', guacToken);
-    params.set('GUAC_ID', connectionId);
+    params.set('GUAC_ID', connectionUri);
     params.set('GUAC_TYPE', 'c');
     params.set('GUAC_DATA_SOURCE', dataSource);
     params.set('GUAC_WIDTH', String(containerSize.width));
     params.set('GUAC_HEIGHT', String(containerSize.height));
     params.set('GUAC_DPI', '96');
     params.set('GUAC_TIMEZONE', getBrowserTimezone());
-
-    console.info('Connecting to Guacamole SSH with params:', params.toString());
 
     try {
       guac.connect(params.toString());
@@ -227,7 +225,7 @@ const SSHTerminalFrame: React.FC = () => {
         guacDisplayElement.parentNode.removeChild(guacDisplayElement);
       }
     };
-  }, [guacToken, connectionId, dataSource, isTerminalOpen, containerSize, handleDisconnect]);
+  }, [guacToken, connectionUri, dataSource, isTerminalOpen, containerSize, handleDisconnect]);
 
   if (!isTerminalOpen) {
     return null;

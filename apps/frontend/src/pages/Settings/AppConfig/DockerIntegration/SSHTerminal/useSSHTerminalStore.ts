@@ -20,35 +20,36 @@
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
+import { SSHSessionDto } from '@libs/desktopdeployment/types';
 
 type SSHSessionResponse = {
   authToken: string;
   dataSource: string;
-  connectionId: string;
-  websocketUrl: string;
+  connectionUri: string;
 };
 
 type SSHTerminalStore = {
+  isCredentialsDialogOpen: boolean;
   isTerminalOpen: boolean;
   isLoading: boolean;
   error: Error | null;
   guacToken: string;
   dataSource: string;
-  connectionId: string;
-  websocketUrl: string;
+  connectionUri: string;
+  setIsCredentialsDialogOpen: (isOpen: boolean) => void;
   setIsTerminalOpen: (isOpen: boolean) => void;
-  openTerminal: () => Promise<boolean>;
+  openTerminal: (credentials: SSHSessionDto) => Promise<boolean>;
   reset: () => void;
 };
 
 const initialState = {
+  isCredentialsDialogOpen: false,
   isTerminalOpen: false,
   isLoading: false,
   error: null,
   guacToken: '',
   dataSource: '',
-  connectionId: '',
-  websocketUrl: '',
+  connectionUri: '',
 };
 
 const EDU_API_VDI_ENDPOINT = 'vdi';
@@ -56,20 +57,22 @@ const EDU_API_VDI_ENDPOINT = 'vdi';
 const useSSHTerminalStore = create<SSHTerminalStore>((set) => ({
   ...initialState,
 
+  setIsCredentialsDialogOpen: (isCredentialsDialogOpen) => set({ isCredentialsDialogOpen }),
+
   setIsTerminalOpen: (isTerminalOpen) => set({ isTerminalOpen }),
 
-  openTerminal: async () => {
+  openTerminal: async (credentials: SSHSessionDto) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await eduApi.post<SSHSessionResponse>(`${EDU_API_VDI_ENDPOINT}/ssh/sessions`, {});
+      const response = await eduApi.post<SSHSessionResponse>(`${EDU_API_VDI_ENDPOINT}/ssh/sessions`, credentials);
 
-      const { authToken, dataSource, connectionId, websocketUrl } = response.data;
+      const { authToken, dataSource, connectionUri } = response.data;
       set({
         guacToken: authToken,
         dataSource,
-        connectionId,
-        websocketUrl,
+        connectionUri,
         isTerminalOpen: true,
+        isCredentialsDialogOpen: false,
       });
       return true;
     } catch (error) {

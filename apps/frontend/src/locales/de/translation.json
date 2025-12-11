@@ -887,7 +887,8 @@
       "GuacamoleUserNotFound": "Nutzername oder Passwort konnte nicht gefunden.",
       "LmnVdiApiNotResponding": "Linuxmuster VDI-Dienst antwortet nicht.",
       "SessionNotFound": "Session nicht gefunden.",
-      "AppNotProperlyConfigured": "Guacamole ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator."
+      "AppNotProperlyConfigured": "Guacamole ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator.",
+      "QuickconnectFailed": "Verbindung konnte nicht hergestellt werden. Bitte überprüfe die Anmeldedaten."
     }
   },
   "wlan": {
@@ -1996,6 +1997,8 @@
     "terminal": "Terminal"
   },
   "ssh-terminal": {
-    "topic": "SSH Terminal"
+    "topic": "SSH Terminal",
+    "credentials": "SSH Anmeldedaten",
+    "connect": "Verbinden"
   }
 }

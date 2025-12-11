@@ -885,7 +885,8 @@
       "GuacamoleUserNotFound": "Username or password could not be found.",
       "LmnVdiApiNotResponding": "Linuxmuster VDI service does not respond.",
       "SessionNotFound": "Session not found.",
-      "AppNotProperlyConfigured": "Guacamole is not properly configured, contact your system administrator."
+      "AppNotProperlyConfigured": "Guacamole is not properly configured, contact your system administrator.",
+      "QuickconnectFailed": "Connection could not be established. Please check your credentials."
     }
   },
   "wlan": {
@@ -1994,6 +1995,8 @@
     "terminal": "Terminal"
   },
   "ssh-terminal": {
-    "topic": "SSH Terminal"
+    "topic": "SSH Terminal",
+    "credentials": "SSH Credentials",
+    "connect": "Connect"
   }
 }

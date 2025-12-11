@@ -19,7 +19,7 @@
 
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { GuacamoleDto, LmnVdiRequest, SSHSessionDto } from '@libs/desktopdeployment/types';
+import { LmnVdiRequest, SSHSessionDto } from '@libs/desktopdeployment/types';
 import VdiService from './vdi.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 
@@ -28,21 +28,6 @@ import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorato
 @Controller('vdi')
 class VdiController {
   constructor(private readonly vdiService: VdiService) {}
-
-  @Get()
-  authVdi() {
-    return this.vdiService.authenticateVdi();
-  }
-
-  @Post('connections')
-  getConnection(@Body() guacamoleDto: GuacamoleDto, @GetCurrentUsername() username: string) {
-    return this.vdiService.getConnection(guacamoleDto, username);
-  }
-
-  @Post('sessions')
-  createOrUpdateSession(@Body() guacamoleDto: GuacamoleDto, @GetCurrentUsername() username: string) {
-    return this.vdiService.createOrUpdateSession(guacamoleDto, username);
-  }
 
   @Post()
   requestVdi(@Body() lmnVdiRequest: LmnVdiRequest) {
@@ -55,8 +40,13 @@ class VdiController {
   }
 
   @Post('ssh/sessions')
-  createSSHSession(@Body() sshSessionDto: SSHSessionDto, @GetCurrentUsername() username: string) {
-    return this.vdiService.createSSHSession(sshSessionDto, username);
+  createSSHSession(@Body() sshSessionDto: SSHSessionDto) {
+    return this.vdiService.createSSHSession(sshSessionDto);
+  }
+
+  @Post('rdp/sessions')
+  createRDPSession(@Body() body: { hostname: string }, @GetCurrentUsername() username: string) {
+    return this.vdiService.createRDPSession(username, body.hostname);
   }
 }
 

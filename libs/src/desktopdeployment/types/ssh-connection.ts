@@ -17,38 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Attributes } from './rdp-connection';
-
-export type SSHParameters = {
-  hostname: string;
-  port?: string;
+export type SSHSessionDto = {
   username?: string;
   password?: string;
-  'private-key'?: string;
-  passphrase?: string;
-  'host-key'?: string;
-  'color-scheme'?: string;
-  'font-name'?: string;
-  'font-size'?: string;
-  scrollback?: string;
-  'read-only'?: string;
-  'disable-copy'?: string;
-  'disable-paste'?: string;
-  timezone?: string;
-  'server-alive-interval'?: string;
-  backspace?: string;
-  'terminal-type'?: string;
-};
-
-export type SSHConnection = {
-  parentIdentifier: string;
-  name: string;
-  protocol: 'ssh';
-  parameters: SSHParameters;
-  attributes: Partial<Attributes>;
-};
-
-export type SSHSessionDto = {
-  hostname?: string;
-  port?: string;
 };

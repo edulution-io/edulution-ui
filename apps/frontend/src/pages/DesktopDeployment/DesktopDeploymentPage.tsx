@@ -42,43 +42,14 @@ const osConfigs = [
 const DesktopDeploymentPage: React.FC = () => {
   const { t } = useTranslation();
   const { user } = useUserStore();
-  const {
-    guacToken,
-    connectionEnabled,
-    vdiIp,
-    isLoading,
-    virtualMachines,
-    authenticate,
-    setIsVdiConnectionOpen,
-    postRequestVdi,
-    createOrUpdateConnection,
-    getConnection,
-    getVirtualMachines,
-  } = useDesktopDeploymentStore();
-
-  useEffect(() => {
-    if (!guacToken) {
-      void authenticate();
-    }
-  }, [guacToken]);
+  const { vdiIp, isLoading, virtualMachines, postRequestVdi, createRdpSession, getVirtualMachines } =
+    useDesktopDeploymentStore();
 
   useEffect(() => {
     if (user) {
       void postRequestVdi(VirtualMachineOs.WIN11);
     }
   }, [user]);
-
-  useEffect(() => {
-    if (vdiIp) {
-      void createOrUpdateConnection();
-    }
-  }, [vdiIp]);
-
-  useEffect(() => {
-    if (connectionEnabled) {
-      void getConnection();
-    }
-  }, [connectionEnabled]);
 
   useEffect(() => {
     void getVirtualMachines(false);
@@ -97,11 +68,12 @@ const DesktopDeploymentPage: React.FC = () => {
   };
 
   const handleConnect = () => {
-    setIsVdiConnectionOpen(true);
+    if (vdiIp) {
+      void createRdpSession(vdiIp);
+    }
   };
 
   const handleReload = () => {
-    void authenticate();
     void postRequestVdi(VirtualMachineOs.WIN11);
   };
 

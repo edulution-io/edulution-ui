@@ -45,7 +45,7 @@ import useSSHTerminalStore from './SSHTerminal/useSSHTerminalStore';
 const DockerContainerFloatingButtons: React.FC = () => {
   const { t } = useTranslation();
   const { setDialogOpen } = useSelectCreateDockerContainerDialogStore();
-  const { openTerminal } = useSSHTerminalStore();
+  const { setIsCredentialsDialogOpen } = useSSHTerminalStore();
   const { appConfigs } = useAppConfigsStore();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const {
@@ -102,7 +102,7 @@ const DockerContainerFloatingButtons: React.FC = () => {
   };
 
   const handleTerminalClick = () => {
-    void openTerminal();
+    setIsCredentialsDialogOpen(true);
   };
 
   const config: FloatingButtonsBarConfig = {

@@ -32,6 +32,7 @@ import useDockerApplicationStore from './useDockerApplicationStore';
 import DockerContainerTableColumns from './DockerContainerTableColumns';
 import DockerContainerFloatingButtons from './DockerContainerFloatingButtons';
 import SSHTerminalFrame from './SSHTerminal/SSHTerminalFrame';
+import SSHCredentialsDialog from './SSHTerminal/SSHCredentialsDialog';
 
 const DockerContainerTable: React.FC = () => {
   const { isMobileView, isTabletView } = useMedia();
@@ -80,6 +81,7 @@ const DockerContainerTable: React.FC = () => {
       </SectionAccordion>
       <SelectCreateDockerContainerDialog />
       <DockerContainerFloatingButtons />
+      <SSHCredentialsDialog />
       <SSHTerminalFrame />
     </>
   );
