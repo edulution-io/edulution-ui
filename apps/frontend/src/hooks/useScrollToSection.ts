@@ -19,22 +19,23 @@
 
 import { useCallback } from 'react';
 import useSubMenuStore from '@/store/useSubMenuStore';
-import HIGHLIGHT_DURATION from '@libs/common/constants/highlightDuration';
+import HIGHLIGHT_DURATION from '@libs/ui/constants/highlightDuration';
 
 const useScrollToSection = () => {
-  const { setActiveSection } = useSubMenuStore();
+  const { setActiveSection, requestOpenSection } = useSubMenuStore();
 
   const scrollToSection = useCallback(
     (sectionId: string) => {
-      setActiveSection(sectionId);
+      requestOpenSection(sectionId);
       setTimeout(() => setActiveSection(null), HIGHLIGHT_DURATION);
-
-      const element = document.getElementById(sectionId);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }, 50);
     },
-    [setActiveSection],
+    [setActiveSection, requestOpenSection],
   );
 
   return { scrollToSection };

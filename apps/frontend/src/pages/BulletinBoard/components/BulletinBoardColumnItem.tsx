@@ -36,7 +36,7 @@ import BULLETIN_VISIBILITY_STATES from '@libs/bulletinBoard/constants/bulletinVi
 import BulletinVisibilityStatesType from '@libs/bulletinBoard/types/bulletinVisibilityStatesType';
 import { ChevronRightIcon } from '@radix-ui/react-icons';
 import { AnimatePresence, motion } from 'framer-motion';
-import HIGHLIGHT_DURATION from '@libs/common/constants/highlightDuration';
+import HIGHLIGHT_DURATION from '@libs/ui/constants/highlightDuration';
 
 const BulletinBoardColumnItem = ({
   bulletin,

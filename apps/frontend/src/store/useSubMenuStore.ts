@@ -18,27 +18,30 @@
  */
 
 import { create } from 'zustand';
-import SubMenuItem from '@libs/menubar/subMenuItem';
+
+interface SubMenuItem {
+  id: string;
+  label: string;
+}
 
 interface SubMenuStore {
   sections: SubMenuItem[];
   activeSection: string | null;
+  sectionToOpen: string | null;
   registerSection: (section: SubMenuItem) => void;
   unregisterSection: (id: string) => void;
   setActiveSection: (id: string | null) => void;
-  clearSections: () => void;
+  requestOpenSection: (id: string) => void;
+  clearOpenRequest: () => void;
 }
 
-const initialState = {
+const useSubMenuStore = create<SubMenuStore>((set) => ({
   sections: [],
   activeSection: null,
-};
-
-const useSubMenuStore = create<SubMenuStore>((set) => ({
-  ...initialState,
+  sectionToOpen: null,
   registerSection: (section) =>
     set((state) => {
-      const existingIndex = state.sections.findIndex((subMenuItem) => subMenuItem.id === section.id);
+      const existingIndex = state.sections.findIndex((s) => s.id === section.id);
       if (existingIndex >= 0) {
         const newSections = [...state.sections];
         newSections[existingIndex] = section;
@@ -51,7 +54,8 @@ const useSubMenuStore = create<SubMenuStore>((set) => ({
       sections: state.sections.filter((s) => s.id !== id),
     })),
   setActiveSection: (id) => set({ activeSection: id }),
-  clearSections: () => set({ sections: [], activeSection: null }),
+  requestOpenSection: (id) => set({ sectionToOpen: id, activeSection: id }),
+  clearOpenRequest: () => set({ sectionToOpen: null }),
 }));
 
 export default useSubMenuStore;

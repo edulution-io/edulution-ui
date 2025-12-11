@@ -55,6 +55,8 @@ const SectionAccordion: React.FC<SectionAccordionProps> = ({
   defaultOpenAll = false,
   className,
 }) => {
+  const { sectionToOpen, clearOpenRequest } = useSubMenuStore();
+
   const [openItems, setOpenItems] = useState<string[]>(() => {
     if (defaultOpenAll) {
       return getChildIds(children);
@@ -63,15 +65,25 @@ const SectionAccordion: React.FC<SectionAccordionProps> = ({
   });
 
   useEffect(() => {
-    const hash = window.location.hash.replace('#', '');
-    if (hash) {
-      setOpenItems((prev) => (prev.includes(hash) ? prev : [...prev, hash]));
+    if (!sectionToOpen) return;
 
-      setTimeout(() => {
-        const element = document.getElementById(hash);
-        element?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }, 100);
+    if (!openItems.includes(sectionToOpen)) {
+      setOpenItems((prev) => [...prev, sectionToOpen]);
     }
+
+    clearOpenRequest();
+  }, [sectionToOpen, openItems, clearOpenRequest]);
+
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '');
+    if (!hash) return;
+
+    setOpenItems((prev) => (prev.includes(hash) ? prev : [...prev, hash]));
+
+    setTimeout(() => {
+      const element = document.getElementById(hash);
+      element?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
   }, []);
 
   const handleValueChange = (value: string[]) => {

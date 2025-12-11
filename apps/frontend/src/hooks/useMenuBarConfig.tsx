@@ -83,7 +83,9 @@ const useMenuBarConfig = (): MenuBarEntry => {
     id: section.id,
     label: section.label,
     icon: '',
-    action: () => scrollToSection(section.id),
+    action: () => {
+      scrollToSection(section.id);
+    },
     disableTranslation: true,
   }));
 

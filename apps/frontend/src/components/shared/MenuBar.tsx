@@ -139,7 +139,7 @@ const MenuBar: React.FC = () => {
             onClick={toggleCollapsed}
             className={cn(
               'absolute right-[-25px] top-2 mx-3 mb-4 border-accent bg-foreground px-2 py-1',
-              shouldCollapse ? 'cursor-e-resize ' : 'cursor-w-resize ',
+              shouldCollapse ? 'cursor-e-resize' : 'cursor-w-resize',
             )}
           >
             {isCollapsed ? <GoSidebarCollapse size={18} /> : <GoSidebarExpand size={18} />}
@@ -147,7 +147,7 @@ const MenuBar: React.FC = () => {
         )}
 
         <button
-          className="flex flex-col items-center justify-center rounded-xl p-2 hover:bg-accent"
+          className="flex flex-col items-center justify-center rounded-lg p-2 hover:bg-accent"
           type="button"
           onClick={handleHeaderIconClick}
         >
@@ -156,7 +156,7 @@ const MenuBar: React.FC = () => {
             alt={menuBarEntries.title}
             className={cn('object-contain transition-all', shouldCollapse ? 'h-10 w-10' : 'h-20 w-20')}
           />
-          {!shouldCollapse && <h2 className="mb-2 mt-2 text-center font-bold">{menuBarEntries.title}</h2>}
+          {!shouldCollapse && <h2 className="mb-2 mt-2 text-center">{menuBarEntries.title}</h2>}
         </button>
       </div>
 
@@ -193,7 +193,7 @@ const MenuBar: React.FC = () => {
               aria-controls={hasChildren ? childrenId : undefined}
               aria-label={item.label}
               className={cn(
-                'flex w-full cursor-pointer items-center gap-3 py-1 pl-3 pr-3 transition-colors',
+                'flex w-full cursor-pointer items-center gap-3 rounded-lg py-1 pl-3 pr-3 transition-colors hover:bg-accent',
                 menuBarEntries.color,
                 isActive ? menuBarEntries.color.split(':')[1] : '',
                 shouldCollapse && 'justify-center',
@@ -213,7 +213,7 @@ const MenuBar: React.FC = () => {
                       type="button"
                       onClick={handleExpandClick}
                       aria-label={isExpanded ? 'Collapse' : 'Expand'}
-                      className="rounded p-1 hover:bg-accent"
+                      className="rounded-lg p-1 hover:bg-accent"
                     >
                       <ChevronDownIcon
                         className={cn('h-4 w-4 transition-transform duration-200', isExpanded && 'rotate-180')}
@@ -245,7 +245,7 @@ const MenuBar: React.FC = () => {
                         if (isMobileView || isTabletView) toggleMobileMenuBar();
                         child.action();
                       }}
-                      className="flex w-full items-center gap-2 rounded px-2 py-2 text-sm text-background transition-colors hover:bg-muted-light"
+                      className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-background transition-colors hover:bg-accent"
                     >
                       <span className="truncate">{child.label}</span>
                     </button>
@@ -295,7 +295,7 @@ const MenuBar: React.FC = () => {
       ) : (
         <div
           className={cn(
-            'fixed left-0 top-0 z-50 h-full overflow-x-hidden bg-black duration-300 ease-in-out',
+            'fixed left-0 top-0 z-50 h-full overflow-x-hidden bg-foreground duration-300 ease-in-out',
             isMobileMenuBarOpen ? 'w-64 border-r-[1px] border-muted' : 'w-0',
           )}
         >

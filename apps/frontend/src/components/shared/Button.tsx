@@ -36,7 +36,10 @@ const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-xl text-backgrou
         'border border-input shadow-sm hover:bg-muted-light hover:text-accent-foreground text-accent-foreground',
       'btn-hexagon': 'bg-cover bg-center flex items-center justify-center',
       'btn-attention': 'bg-ciRed',
-      'btn-small': 'hover:bg-grey-700 mr-1 rounded bg-white px-4 text-background h-9 shadow-sm font-normal text-base',
+      'btn-small':
+        'hover:bg-grey-700 mr-1 rounded bg-foreground px-4 text-background h-9 shadow-sm font-normal text-base',
+      'btn-ghost':
+        'bg-transparent p-0 rounded-lg border-none shadow-none ring-0 outline-none hover:bg-accent hover:opacity-100 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none',
     },
     size: {
       sm: 'h-8 rounded-md px-3 text-xs',
