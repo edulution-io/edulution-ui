@@ -31,6 +31,7 @@ import CreateOrEditPublicShareDto from '@libs/filesharing/types/createOrEditPubl
 import ShareLinkScopeSelector from '@/pages/FileSharing/utilities/ShareLinkScopeSelector';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import PUBLIC_SHARE_LINK_SCOPE from '@libs/filesharing/constants/publicShareLinkScope';
+import DayTimePickerMode from '@libs/common/constants/dayTimePickerMode';
 
 interface CreateOrEditPublicShareDialogBodyProps {
   form: UseFormReturn<CreateOrEditPublicShareDto>;
@@ -103,6 +104,7 @@ const CreateOrEditPublicShareDialogBody: React.FC<CreateOrEditPublicShareDialogB
           translationId="survey.expirationDate"
           variant="dialog"
           isDateRequired
+          mode={DayTimePickerMode.DateTime}
           allowPast={false}
         />
 

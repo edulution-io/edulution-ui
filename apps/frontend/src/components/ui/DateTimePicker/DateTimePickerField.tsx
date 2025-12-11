@@ -19,12 +19,12 @@
 
 'use client';
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { de, enUS } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
-import { CalendarIcon } from '@radix-ui/react-icons';
+import { CalendarIcon, ClockIcon } from '@radix-ui/react-icons';
 import { inputVariants } from '@libs/ui/constants/commonClassNames';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
 import cn from '@libs/common/utils/className';
@@ -34,15 +34,24 @@ import safeGetDate from '@libs/common/utils/Date/safeGetDate';
 import useLanguage from '@/hooks/useLanguage';
 import { Button } from '@/components/shared/Button';
 import { Calendar } from '@/components/ui/Calendar';
-import { ScrollArea } from '@/components/ui/ScrollArea';
-import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
+import { FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
-import MinuteButton from '@/components/ui/DateTimePicker/MinuteButton';
-import HourButton from '@/components/ui/DateTimePicker/HourButton';
+import TimeSelector from '@/components/ui/DateTimePicker/TimeSelector';
+import { DayTimePickerModeType } from '@libs/common/types/dayTimePickerModeType';
+import DayTimePickerMode from '@libs/common/constants/dayTimePickerMode';
+import { HOURS, MINUTES_IN_5_STEPS } from '@libs/common/constants/timeValues';
+import formatDateByMode from '@libs/common/utils/Date/formatDateByMode';
+
+const TRIGGER_ICONS: Record<DayTimePickerModeType, typeof CalendarIcon> = {
+  [DayTimePickerMode.Date]: CalendarIcon,
+  [DayTimePickerMode.Time]: ClockIcon,
+  [DayTimePickerMode.DateTime]: CalendarIcon,
+};
 
 interface DateTimePickerFieldProps<T extends FieldValues> {
   form: UseFormReturn<T>;
   path: Path<T>;
+  mode: DayTimePickerModeType;
   translationId?: string;
   variant?: DropdownVariant;
   allowPast?: boolean;
@@ -51,9 +60,9 @@ interface DateTimePickerFieldProps<T extends FieldValues> {
 }
 
 const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldProps<T>) => {
-  const { form, path, translationId, variant = 'default', isDateRequired, allowPast, placeholder } = props;
+  const { form, path, mode, translationId, variant = 'default', isDateRequired, allowPast, placeholder } = props;
 
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -63,12 +72,17 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
   const hours = safeGetHours(fieldValue);
   const minutes = safeGetMinutes(fieldValue);
 
+  const showDate = mode === DayTimePickerMode.DateTime || mode === DayTimePickerMode.Date;
+  const showTime = mode === DayTimePickerMode.DateTime || mode === DayTimePickerMode.Time;
+
+  const TriggerIcon = TRIGGER_ICONS[mode];
+
   const handleClear = useCallback(() => {
     form.setValue(path, null as PathValue<T, Path<T>>, {
       shouldDirty: true,
       shouldValidate: true,
     });
-  }, [fieldValue, form, path]);
+  }, [form, path]);
 
   const handleDateSelect = useCallback(
     (date: Date | undefined) => {
@@ -120,81 +134,75 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
     return date < newDate;
   }, []);
 
-  const timeDisplay: string = fieldValue
-    ? new Date(fieldValue).toLocaleString(language, {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-
-        hour: 'numeric',
-        minute: 'numeric',
-        hour12: language === 'en',
-      })
-    : placeholder || t('form.input.dateTimePicker.placeholder');
+  const timeDisplay = useMemo((): string => {
+    if (!fieldValue) {
+      return placeholder || t(`form.input.dateTimePicker.placeholder.${mode}`);
+    }
+    return formatDateByMode(new Date(fieldValue), mode, language);
+  }, [fieldValue, language, mode, placeholder, t]);
 
   return (
-    <Form {...form}>
-      <FormFieldSH
-        control={form.control}
-        name={path}
-        rules={{
-          required: isDateRequired ? t('form.errors.dateRequired') : false,
-          validate: (value: unknown) => {
-            if (!value) return true;
-            const date = value instanceof Date ? value : null;
-            if (!date || Number.isNaN(date.getTime())) {
-              return t('form.errors.dateInvalid');
-            }
-            if (!allowPast && date.getTime() < Date.now()) {
-              return t('form.errors.datePast');
-            }
-
-            return true;
-          },
-        }}
-        render={() => (
-          <FormItem className="flex flex-col space-y-0">
-            {translationId ? <p className="text-m font-bold text-background">{t(translationId)}</p> : null}
-            <Popover
-              open={isOpen}
-              onOpenChange={setIsOpen}
-            >
-              <PopoverTrigger asChild>
-                <FormControl
+    <FormFieldSH
+      control={form.control}
+      name={path}
+      rules={{
+        required: isDateRequired ? t('form.errors.dateRequired') : false,
+        validate: (value: unknown) => {
+          if (!value) return true;
+          const date = value instanceof Date ? value : null;
+          if (!date || Number.isNaN(date.getTime())) {
+            return t('form.errors.dateInvalid');
+          }
+          if (!allowPast && showDate && date.getTime() < Date.now()) {
+            return t('form.errors.datePast');
+          }
+          return true;
+        },
+      }}
+      render={() => (
+        <FormItem className="flex flex-col space-y-0">
+          {translationId ? <p className="text-m font-bold text-background">{t(translationId)}</p> : null}
+          <Popover
+            open={isOpen}
+            onOpenChange={setIsOpen}
+          >
+            <PopoverTrigger asChild>
+              <FormControl
+                className={cn(
+                  'w-auto p-0',
+                  inputVariants({ variant: variant === 'dialog' ? 'dialog' : 'default' }),
+                  isOpen ? 'border-ring' : 'border-transparent',
+                )}
+              >
+                <Button
+                  variant="btn-outline"
                   className={cn(
-                    'w-auto p-0',
-                    inputVariants({ variant: variant === 'dialog' ? 'dialog' : 'default' }),
-                    isOpen ? 'border-ring' : 'border-transparent',
+                    'my-0 h-10 w-fit rounded-lg px-3 py-0 pl-3 text-left font-normal',
+                    !fieldValue && 'text-muted-foreground',
                   )}
                 >
-                  <Button
-                    variant="btn-outline"
-                    className={cn(
-                      'my-0 h-10 w-fit rounded-lg px-3 py-0 pl-3 text-left font-normal',
-                      !fieldValue && 'text-muted-foreground',
-                    )}
-                  >
-                    {timeDisplay}
-                    <DeleteIcon
-                      className="ml-auto h-4 w-4 opacity-50 hover:opacity-100"
-                      onClick={(event) => {
-                        event.preventDefault();
-                        handleClear();
-                      }}
-                      visibility={fieldValue ? 'visible' : 'hidden'}
-                    />
-                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50 hover:opacity-100" />
-                  </Button>
-                </FormControl>
-              </PopoverTrigger>
+                  {timeDisplay}
+                  <DeleteIcon
+                    className="ml-auto h-4 w-4 opacity-50 hover:opacity-100"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      handleClear();
+                    }}
+                    visibility={fieldValue ? 'visible' : 'hidden'}
+                  />
+                  <TriggerIcon className="ml-auto h-4 w-4 opacity-50 hover:opacity-100" />
+                </Button>
+              </FormControl>
+            </PopoverTrigger>
 
-              <PopoverContent
-                className={cn('w-auto p-0', {
-                  'bg-background text-foreground': variant === 'default',
-                  'border-ring bg-muted text-secondary': variant === 'dialog',
-                })}
-              >
-                <div className="sm:flex">
+            <PopoverContent
+              className={cn('w-auto p-0', {
+                'bg-background text-foreground': variant === 'default',
+                'border-ring bg-muted text-secondary': variant === 'dialog',
+              })}
+            >
+              <div className={cn(showDate && showTime && 'sm:flex')}>
+                {showDate && (
                   <Calendar
                     mode="single"
                     selected={fieldValue && (fieldValue as unknown) instanceof Date ? fieldValue : undefined}
@@ -203,51 +211,43 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
                     disabled={isDateDisabled}
                     locale={locale}
                   />
-                  <div>
-                    <div className="m-2 flex h-6 justify-center">
-                      {hours.toString().padStart(2, '0')}:{minutes.toString().padStart(2, '0')}{' '}
-                      {t('form.input.dateTimePicker.timeSlot')}
-                    </div>
-                    <div className="flex flex-col divide-y sm:h-[300px] sm:flex-row sm:divide-x sm:divide-y-0">
-                      <ScrollArea className="w-64 sm:w-auto">
-                        <div className="flex p-2 sm:flex-col">
-                          {Array.from({ length: 24 }, (_, i) => i)
-                            .reverse()
-                            .map((hour) => (
-                              <HourButton
-                                key={hour}
-                                hour={hour}
-                                currentHour={hours}
-                                onChangeHour={onChangeHour}
-                                variant={variant}
-                              />
-                            ))}
-                        </div>
-                      </ScrollArea>
+                )}
 
-                      <ScrollArea className="w-64 sm:w-auto">
-                        <div className="flex p-2 sm:flex-col">
-                          {Array.from({ length: 12 }, (_, i) => i * 5).map((minute) => (
-                            <MinuteButton
-                              key={minute}
-                              minute={minute}
-                              currentMinute={minutes}
-                              onChangeMinute={onChangeMinute}
-                              variant={variant}
-                            />
-                          ))}
-                        </div>
-                      </ScrollArea>
-                    </div>
+                {showTime && (
+                  <div className={cn('flex', showDate && 'border-t sm:border-l sm:border-t-0')}>
+                    <TimeSelector
+                      value={hours}
+                      values={HOURS}
+                      onChange={onChangeHour}
+                      variant={variant}
+                      label={t('form.input.dateTimePicker.hours')}
+                    />
+
+                    <div
+                      className={cn(
+                        'w-px',
+                        variant === 'default' && 'bg-border',
+                        variant === 'dialog' && 'bg-gray-600',
+                      )}
+                    />
+
+                    <TimeSelector
+                      value={minutes}
+                      values={MINUTES_IN_5_STEPS}
+                      onChange={onChangeMinute}
+                      variant={variant}
+                      padStart
+                      label={t('form.input.dateTimePicker.minutes')}
+                    />
                   </div>
-                </div>
-              </PopoverContent>
-            </Popover>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    </Form>
+                )}
+              </div>
+            </PopoverContent>
+          </Popover>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
   );
 };
 

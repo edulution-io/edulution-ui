@@ -28,6 +28,7 @@ import useGroupStore from '@/store/GroupStore';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import Checkbox from '@/components/ui/Checkbox';
 import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
+import DayTimePickerMode from '@libs/common/constants/dayTimePickerMode';
 
 interface SaveSurveyDialogBodyProps {
   form: UseFormReturn<SurveyDto>;
@@ -84,6 +85,7 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
         path="expires"
         translationId="survey.expirationDate"
         variant="dialog"
+        mode={DayTimePickerMode.DateTime}
       />
       <p className="text-m font-bold text-background">{t('surveys.saveDialog.settingsFlags')}</p>
       {checkboxOptions.map(({ name, label, shouldDisable }) => (

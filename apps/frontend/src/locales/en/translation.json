@@ -1516,7 +1516,9 @@
     "input": {
       "dateTimePicker": {
         "timeSlot": "o'clock",
-        "placeholder": "MM/DD/YYYY HH:mm AM/PM"
+        "placeholder": "MM/DD/YYYY HH:mm AM/PM",
+        "hours": "Hours",
+        "minutes": "Minutes"
       }
     },
     "errors": {

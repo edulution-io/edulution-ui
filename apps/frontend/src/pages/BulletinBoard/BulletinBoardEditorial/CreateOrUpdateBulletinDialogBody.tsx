@@ -29,6 +29,7 @@ import { BULLETIN_BOARD_ATTACHMENT_EDU_API_ENDPOINT } from '@libs/bulletinBoard/
 import DialogSwitch from '@/components/shared/DialogSwitch';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
+import DayTimePickerMode from '@libs/common/constants/dayTimePickerMode';
 
 interface CreateOrUpdateBulletinDialogBodyProps {
   form: UseFormReturn<CreateBulletinDto>;
@@ -98,6 +99,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
                   path="isVisibleStartDate"
                   translationId="bulletinboard.activeFrom"
                   variant="dialog"
+                  mode={DayTimePickerMode.DateTime}
                   placeholder={t('bulletinboard.activeFromPlaceholder')}
                 />
               </div>
@@ -107,6 +109,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
                   path="isVisibleEndDate"
                   translationId="bulletinboard.activeUntil"
                   variant="dialog"
+                  mode={DayTimePickerMode.DateTime}
                   placeholder={t('bulletinboard.activeUntilPlaceholder')}
                 />
               </div>
