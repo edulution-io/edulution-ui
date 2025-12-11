@@ -284,13 +284,14 @@ const useClassManagementStore = create<ClassManagementStore>(
         set({ isSchoolClassLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
-          const queryParam = allMembers ? `?${LMN_API_SEARCH_PARAMS.ALL_MEMBERS}=true` : '';
-          const response = await eduApi.get<LmnApiSchoolClassWithMembers>(
-            `${SCHOOL_CLASSES}/${schoolClassName}${queryParam}`,
-            {
-              headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+          const response = await eduApi.get<LmnApiSchoolClassWithMembers>(`${SCHOOL_CLASSES}/${schoolClassName}`, {
+            headers: {
+              [HTTP_HEADERS.XApiKey]: lmnApiToken,
             },
-          );
+            params: {
+              [LMN_API_SEARCH_PARAMS.ALL_MEMBERS]: allMembers || undefined,
+            },
+          });
 
           return response.data;
         } catch (error) {
