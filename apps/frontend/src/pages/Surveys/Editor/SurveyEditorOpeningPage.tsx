@@ -28,12 +28,19 @@ import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPage
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
 const SurveyEditorOpeningPage = () => {
   const { user } = useUserStore();
   const surveyCreator: AttendeeDto = useMemo(() => getCreatorFromUserDto(user), [user]);
 
-  const { reset: resetEditorPage, fetchSelectedSurvey, initialSurvey, resetStoredSurvey } = useSurveyEditorPageStore();
+  const {
+    reset: resetEditorPage,
+    fetchSelectedSurvey,
+    initialSurvey,
+    resetStoredSurvey,
+    isFetching,
+  } = useSurveyEditorPageStore();
   const { reset: resetTemplateStore } = useTemplateMenuStore();
   const { reset: resetQuestionsContextMenu } = useQuestionsContextMenuStore();
 
@@ -49,6 +56,16 @@ const SurveyEditorOpeningPage = () => {
     resetQuestionsContextMenu();
     void fetchSelectedSurvey(surveyCreator, surveyId, false);
   }, [surveyId]);
+
+  if (isFetching) {
+    return (
+      <PageLayout>
+        <div className="flex h-full w-full items-center justify-center">
+          <CircleLoader />
+        </div>
+      </PageLayout>
+    );
+  }
 
   return (
     <PageLayout>
