@@ -13,13 +13,6 @@ module.exports = {
 
   overrides: [
     {
-      files: ['*.ts', '*.tsx', '*.js', '*.jsx'],
-      options: {
-        parser: 'typescript',
-        quoteProps: 'as-needed',
-      },
-    },
-    {
       files: ['*.css', '*.html', '*.json'],
       options: {
         singleQuote: false,
@@ -28,6 +21,5 @@ module.exports = {
   ],
 
   plugins: ['prettier-plugin-tailwindcss'],
-
   tailwindConfig: 'apps/frontend/tailwind.config.ts',
 };
