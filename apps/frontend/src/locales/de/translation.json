@@ -1987,5 +1987,11 @@
     },
     "sharePath": "Pfad",
     "pathPreview": "Pfad-Vorschau"
+  },
+  "ssh": {
+    "terminal": "Terminal"
+  },
+  "ssh-terminal": {
+    "topic": "SSH Terminal"
   }
 }

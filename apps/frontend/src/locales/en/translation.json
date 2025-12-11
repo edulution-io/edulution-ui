@@ -1985,5 +1985,11 @@
     },
     "sharePath": "Path",
     "pathPreview": "Path preview"
+  },
+  "ssh": {
+    "terminal": "Terminal"
+  },
+  "ssh-terminal": {
+    "topic": "SSH Terminal"
   }
 }

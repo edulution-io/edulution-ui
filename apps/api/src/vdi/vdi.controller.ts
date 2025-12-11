@@ -19,7 +19,7 @@
 
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { GuacamoleDto, LmnVdiRequest } from '@libs/desktopdeployment/types';
+import { GuacamoleDto, LmnVdiRequest, SSHSessionDto } from '@libs/desktopdeployment/types';
 import VdiService from './vdi.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 
@@ -52,6 +52,11 @@ class VdiController {
   @Get('virtualmachines')
   getVirtualMachines() {
     return this.vdiService.getVirtualMachines();
+  }
+
+  @Post('ssh/sessions')
+  createSSHSession(@Body() sshSessionDto: SSHSessionDto, @GetCurrentUsername() username: string) {
+    return this.vdiService.createSSHSession(sshSessionDto, username);
   }
 }
 

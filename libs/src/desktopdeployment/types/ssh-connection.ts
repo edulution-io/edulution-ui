@@ -17,14 +17,38 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export { default as Connections } from './connections';
-export { default as VirtualMachines } from './virtual-machines';
-export { default as LmnVdiResponse } from './vdi-connection-request';
-export { default as CloneVms } from './clone-vms';
-export { default as VdiErrorMessages } from './vdiErrorMessages';
-export * from './rdp-connection';
-export * from './ssh-connection';
-export { default as LmnVdiRequest } from './lmn-vdi-request';
-export { default as GuacamoleDto } from './guacamole.dto';
-export { default as GuacamoleConnections } from './guacamole-connections';
-export { default as DesktopDeploymentStore } from './desktop-deployment-store';
+import { Attributes } from './rdp-connection';
+
+export type SSHParameters = {
+  hostname: string;
+  port?: string;
+  username?: string;
+  password?: string;
+  'private-key'?: string;
+  passphrase?: string;
+  'host-key'?: string;
+  'color-scheme'?: string;
+  'font-name'?: string;
+  'font-size'?: string;
+  scrollback?: string;
+  'read-only'?: string;
+  'disable-copy'?: string;
+  'disable-paste'?: string;
+  timezone?: string;
+  'server-alive-interval'?: string;
+  backspace?: string;
+  'terminal-type'?: string;
+};
+
+export type SSHConnection = {
+  parentIdentifier: string;
+  name: string;
+  protocol: 'ssh';
+  parameters: SSHParameters;
+  attributes: Partial<Attributes>;
+};
+
+export type SSHSessionDto = {
+  hostname?: string;
+  port?: string;
+};

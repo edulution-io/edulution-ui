@@ -1784,5 +1784,11 @@
     },
     "sharePath": "Chemin de partage",
     "pathPreview": "Aperçu du chemin"
+  },
+  "ssh": {
+    "terminal": "Terminal"
+  },
+  "ssh-terminal": {
+    "topic": "Terminal SSH"
   }
 }

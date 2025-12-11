@@ -30,6 +30,9 @@ import {
   LmnVdiResponse,
   Parameters,
   RDPConnection,
+  SSHConnection,
+  SSHParameters,
+  SSHSessionDto,
   VdiErrorMessages,
   VirtualMachines,
 } from '@libs/desktopdeployment/types';
@@ -107,6 +110,20 @@ class VdiService implements OnModuleInit {
     rdpConnection.parameters = { ...rdpConnection.parameters, ...customParams };
     rdpConnection.attributes = { ...rdpConnection.attributes, ...customAttributes };
     return rdpConnection;
+  }
+
+  static createSSHConnection(
+    connectionName: string,
+    params: SSHParameters,
+    customAttributes: Partial<Attributes> = {},
+  ): SSHConnection {
+    return {
+      parentIdentifier: 'ROOT',
+      name: connectionName,
+      protocol: 'ssh',
+      parameters: params,
+      attributes: customAttributes,
+    };
   }
 
   static getConnectionIdentifier(connections: GuacamoleConnections, username: string): string | null {
@@ -255,6 +272,121 @@ class VdiService implements OnModuleInit {
       return response.data;
     } catch (e) {
       throw new CustomHttpException(VdiErrorMessages.LmnVdiApiNotResponding, HttpStatus.BAD_GATEWAY);
+    }
+  }
+
+  async getSSHConnection(
+    authToken: string,
+    dataSource: string,
+    connectionName: string,
+    isRetry = false,
+  ): Promise<string | null> {
+    try {
+      const response = await this.guacamoleApi.get<GuacamoleConnections>(
+        `/session/data/${dataSource}/connections?token=${authToken}`,
+      );
+      return VdiService.getConnectionIdentifier(response.data, connectionName);
+    } catch (e) {
+      if (!isRetry && axios.isAxiosError(e) && (e.response?.status === 401 || e.response?.status === 403)) {
+        await this.clearAuthCache();
+        const newAuth = await this.authenticateVdi(true);
+        return this.getSSHConnection(newAuth.authToken, newAuth.dataSource, connectionName, true);
+      }
+      throw new CustomHttpException(VdiErrorMessages.GuacamoleNotResponding, HttpStatus.BAD_GATEWAY);
+    }
+  }
+
+  async createSSHSession(
+    sshSessionDto: SSHSessionDto,
+    username: string,
+  ): Promise<{ authToken: string; dataSource: string; connectionId: string; websocketUrl: string }> {
+    const { authToken, dataSource } = await this.authenticateVdi();
+    const connectionName = `ssh-${username}`;
+
+    const appConfig = await this.appConfigService.getAppConfigByName(APPS.DESKTOP_DEPLOYMENT);
+    const guacamoleUrl = appConfig?.options?.url as string;
+    if (!guacamoleUrl) {
+      throw new CustomHttpException(VdiErrorMessages.AppNotProperlyConfigured, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    const wsProtocol = guacamoleUrl.startsWith('https') ? 'wss' : 'ws';
+    const urlWithoutProtocol = guacamoleUrl.replace(/^https?:\/\//, '');
+    const websocketUrl = `${wsProtocol}://${urlWithoutProtocol}/guacamole/websocket-tunnel`;
+
+    const existingConnectionId = await this.getSSHConnection(authToken, dataSource, connectionName);
+
+    if (existingConnectionId) {
+      await this.updateSSHSession(authToken, dataSource, existingConnectionId, sshSessionDto, connectionName);
+      return { authToken, dataSource, connectionId: existingConnectionId, websocketUrl };
+    }
+
+    const connectionId = await this.createNewSSHSession(authToken, dataSource, sshSessionDto, connectionName);
+    return { authToken, dataSource, connectionId, websocketUrl };
+  }
+
+  private async createNewSSHSession(
+    authToken: string,
+    dataSource: string,
+    sshSessionDto: SSHSessionDto,
+    connectionName: string,
+    isRetry = false,
+  ): Promise<string> {
+    try {
+      const sshConnection = VdiService.createSSHConnection(connectionName, {
+        hostname: sshSessionDto.hostname || 'host.docker.internal',
+        port: sshSessionDto.port || '22',
+      });
+
+      console.info('Creating SSH connection:', JSON.stringify(sshConnection, null, 2));
+
+      const response = await this.guacamoleApi.post<{ identifier: string }>(
+        `/session/data/${dataSource}/connections?token=${authToken}`,
+        sshConnection,
+      );
+      console.info('SSH connection created with identifier:', response.data.identifier);
+      return response.data.identifier;
+    } catch (e) {
+      if (!isRetry && axios.isAxiosError(e) && (e.response?.status === 401 || e.response?.status === 403)) {
+        await this.clearAuthCache();
+        const newAuth = await this.authenticateVdi(true);
+        return this.createNewSSHSession(newAuth.authToken, newAuth.dataSource, sshSessionDto, connectionName, true);
+      }
+      throw new CustomHttpException(VdiErrorMessages.GuacamoleNotResponding, HttpStatus.BAD_GATEWAY);
+    }
+  }
+
+  private async updateSSHSession(
+    authToken: string,
+    dataSource: string,
+    connectionId: string,
+    sshSessionDto: SSHSessionDto,
+    connectionName: string,
+    isRetry = false,
+  ): Promise<void> {
+    try {
+      const sshConnection = VdiService.createSSHConnection(connectionName, {
+        hostname: sshSessionDto.hostname || 'host.docker.internal',
+        port: sshSessionDto.port || '22',
+      });
+
+      await this.guacamoleApi.put(
+        `/session/data/${dataSource}/connections/${connectionId}?token=${authToken}`,
+        sshConnection,
+      );
+    } catch (e) {
+      if (!isRetry && axios.isAxiosError(e) && (e.response?.status === 401 || e.response?.status === 403)) {
+        await this.clearAuthCache();
+        const newAuth = await this.authenticateVdi(true);
+        await this.updateSSHSession(
+          newAuth.authToken,
+          newAuth.dataSource,
+          connectionId,
+          sshSessionDto,
+          connectionName,
+          true,
+        );
+        return;
+      }
+      throw new CustomHttpException(VdiErrorMessages.GuacamoleNotResponding, HttpStatus.BAD_GATEWAY);
     }
   }
 }
