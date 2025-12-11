@@ -1366,7 +1366,8 @@
         "timeSlot": "Heure",
         "placeholder": "DD/MM/YYYY HH:mm",
         "hours": "Heures",
-        "minutes": "Minutes"
+        "minutes": "Minutes",
+        "doubleClickToEdit": "Double-cliquez pour modifier"
       }
     }
   },

@@ -1520,7 +1520,8 @@
         "timeSlot": "Uhr",
         "placeholder": "DD/MM/YYYY HH:mm",
         "hours": "Stunden",
-        "minutes": "Minuten"
+        "minutes": "Minuten",
+        "doubleClickToEdit": "Doppelklick zum Bearbeiten"
       }
     },
     "errors": {

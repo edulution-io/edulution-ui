@@ -22,6 +22,8 @@ import cn from '@libs/common/utils/className';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
 import { Button } from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
+import formatTimeUnit from '@libs/common/utils/Date/formatTimeUnit';
+import { useTranslation } from 'react-i18next';
 
 interface TimeSelectorProps {
   value: number;
@@ -46,7 +48,7 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
   const scrollRef = useRef<HTMLDivElement>(null);
   const selectedRef = useRef<HTMLButtonElement>(null);
 
-  const formatValue = (val: number): string => (padStart ? val.toString().padStart(2, '0') : val.toString());
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!isEditing) {
@@ -64,9 +66,9 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
   }, [isEditing]);
 
   const handleDoubleClick = useCallback(() => {
-    setEditValue(formatValue(value));
+    setEditValue(formatTimeUnit(value, padStart));
     setIsEditing(true);
-  }, [value, padStart, formatValue]);
+  }, [value, padStart]);
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value.replace(/\D/g, '').slice(0, 2);
@@ -173,9 +175,9 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
               variant === 'dialog' && 'hover:bg-gray-700',
             )}
             onDoubleClick={handleDoubleClick}
-            title="Doppelklick zum Bearbeiten"
+            title={t('form.input.dateTimePicker.doubleClickToEdit')}
           >
-            {formatValue(value)}
+            {formatTimeUnit(value)}
           </span>
         )}
       </div>
@@ -204,7 +206,7 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({
                 onClick={() => onChange(val)}
                 onKeyDown={(e) => handleButtonKeyDown(e, val)}
               >
-                {formatValue(val)}
+                {formatTimeUnit(val)}
               </Button>
             );
           })}

@@ -39,7 +39,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover
 import TimeSelector from '@/components/ui/DateTimePicker/TimeSelector';
 import { DayTimePickerModeType } from '@libs/common/types/dayTimePickerModeType';
 import DayTimePickerMode from '@libs/common/constants/dayTimePickerMode';
-import { HOURS, MINUTES_IN_5_STEPS } from '@libs/common/constants/timeValues';
+import { HOURS, MINUTES } from '@libs/common/constants/timeValues';
 import formatDateByMode from '@libs/common/utils/Date/formatDateByMode';
 
 const TRIGGER_ICONS: Record<DayTimePickerModeType, typeof CalendarIcon> = {
@@ -233,7 +233,7 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
 
                     <TimeSelector
                       value={minutes}
-                      values={MINUTES_IN_5_STEPS}
+                      values={MINUTES}
                       onChange={onChangeMinute}
                       variant={variant}
                       padStart

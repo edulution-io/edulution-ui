@@ -1518,7 +1518,8 @@
         "timeSlot": "o'clock",
         "placeholder": "MM/DD/YYYY HH:mm AM/PM",
         "hours": "Hours",
-        "minutes": "Minutes"
+        "minutes": "Minutes",
+        "doubleClickToEdit": "Double-click to edit"
       }
     },
     "errors": {
