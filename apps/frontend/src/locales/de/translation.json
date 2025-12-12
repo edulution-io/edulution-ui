@@ -777,7 +777,7 @@
       "participationErrorSurveyExpired": "Umfrage ist abgelaufen.",
       "missingIdError": "Fehlende Umfrage-ID.",
       "missingAnswerError": "Bitte fülle die Umfrage aus, bevor du deine Antwort abschickst.",
-      "duplicateNameError": "Passe den Titel der Vorlage an. Ein Template mit diesem Namen existiert bereits in der Datenbank."
+      "duplicateNameError": "Passe den Titel der Vorlage an. Ein Template mit diesem Namen existiert bereits."
     }
   },
   "survey-answer": {

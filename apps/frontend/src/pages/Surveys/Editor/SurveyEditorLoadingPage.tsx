@@ -91,7 +91,7 @@ const SurveyEditorLoadingPage = ({ surveyCreator }: SurveyEditorLoadingPageProps
           }}
         >
           <VscNewFile className="h-10 w-10 md:h-14 md:w-14" />
-          <p>{t('survey.editor.new')}</p>
+          <h3 className="mt-4">{t('survey.editor.new')}</h3>
         </Card>
         {filteredTemplates.length ? (
           filteredTemplates.map((template) => (
