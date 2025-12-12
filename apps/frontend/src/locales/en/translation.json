@@ -1302,6 +1302,30 @@
         "survey": "Surveys",
         "bulletinBoard": "Info Board"
       },
+      "dnd": {
+        "addTitle": "Add quiet time",
+        "editTitle": "Edit quiet time",
+        "table": {
+          "label": "Label",
+          "days": "Days",
+          "startTime": "Start time",
+          "endTime": "End time",
+          "title": "Quiet Hours",
+          "description": "Set time periods during which you don't want to receive notifications.",
+          "buffer": "Catch up"
+        },
+        "title": "Quiet Hours",
+        "description": "Set time periods during which you don't want to receive notifications.",
+        "labelPlaceholder": "e.g. Night time, Class, Meeting...",
+        "bufferLabel": "Catch up on notifications",
+        "bufferDescription": "Show missed notifications after quiet time ends",
+        "validation": {
+          "labelRequired": "Label is required",
+          "daysRequired": "At least one day must be selected",
+          "startTimeRequired": "Start time is required",
+          "endTimeRequired": "End time is required"
+        }
+      },
       "error": {
         "updateError": "Settings could not be updated."
       }
@@ -1507,7 +1531,17 @@
     "saveLocal": "Save to device",
     "openLocal": "Open from device",
     "openFileFromEdu": "Open file",
-    "saveFileToEdu": "Save to files"
+    "saveFileToEdu": "Save to files",
+
+    "days": {
+      "mo": "Mon",
+      "tu": "Tue",
+      "we": "Wed",
+      "th": "Thu",
+      "fr": "Fri",
+      "sa": "Sat",
+      "su": "Sun"
+    }
   },
   "form": {
     "path": "Path",

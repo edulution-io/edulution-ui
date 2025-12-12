@@ -52,7 +52,7 @@ const UserSettingsNotification: React.FC = () => {
         </SectionAccordionItem>
         <SectionAccordionItem
           id="dndTimeWindows"
-          label={t('usersettings.notifications.modules.title')}
+          label={t('usersettings.notifications.dnd.title')}
         >
           <DndTimeWindowsSettings />
         </SectionAccordionItem>

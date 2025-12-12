@@ -21,7 +21,6 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import { Form, FormControl, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
@@ -31,40 +30,16 @@ import DndTimeWindow from '@libs/notification/types/dndTimeWindow';
 import useNotificationSettingsStore from '@/pages/UserSettings/Notifications/useNotificationSettingsStore';
 import getRandomUUID from '@/utils/getRandomUUID';
 import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
-import DayTimePickerMode from '@libs/common/constants/dayTimePickerMode';
+import DndTimeWindowFormValues from '@libs/notification/types/dndTimeWindowFormValues';
+import weekDays from '@libs/notification/constants/weekdays';
+import getDndTimeWindowFormSchema from '@/pages/UserSettings/Notifications/getDndTimeWindowFormSchema';
+import { Button } from '@/components/shared/Button';
 
 interface AddDndTimeWindowDialogProps {
   isOpen: boolean;
   editingTimeWindow: DndTimeWindow | null;
   handleOpenChange: () => void;
 }
-
-const DAYS = [
-  { value: 1, labelKey: 'common.days.mo' },
-  { value: 2, labelKey: 'common.days.tu' },
-  { value: 3, labelKey: 'common.days.we' },
-  { value: 4, labelKey: 'common.days.th' },
-  { value: 5, labelKey: 'common.days.fr' },
-  { value: 6, labelKey: 'common.days.sa' },
-  { value: 0, labelKey: 'common.days.su' },
-];
-
-const getDndTimeWindowFormSchema = (t: (key: string) => string) =>
-  z.object({
-    label: z.string().optional(),
-    days: z.array(z.number()).min(1, t('usersettings.notifications.dnd.validation.daysRequired')),
-    startTime: z.string().min(1, t('usersettings.notifications.dnd.validation.startTimeRequired')),
-    endTime: z.string().min(1, t('usersettings.notifications.dnd.validation.endTimeRequired')),
-    bufferNotifications: z.boolean(),
-  });
-
-type DndTimeWindowFormValues = {
-  label: string;
-  days: number[];
-  startTime: string;
-  endTime: string;
-  bufferNotifications: boolean;
-};
 
 const AddDndTimeWindowDialog: FC<AddDndTimeWindowDialogProps> = ({ isOpen, editingTimeWindow, handleOpenChange }) => {
   const { t } = useTranslation();
@@ -150,39 +125,39 @@ const AddDndTimeWindowDialog: FC<AddDndTimeWindowDialogProps> = ({ isOpen, editi
           <FormItem>
             <FormLabel>{t('usersettings.notifications.dnd.table.days')}</FormLabel>
             <div className="flex flex-wrap gap-2">
-              {DAYS.map((day) => (
-                <button
+              {weekDays.map((day) => (
+                <Button
                   key={day.value}
                   type="button"
                   onClick={() => handleDayToggle(day.value)}
                   className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                     watchedDays.includes(day.value)
-                      ? 'bg-ciLightBlue text-white'
+                      ? 'bg-ciLightBlue text-background'
                       : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                   }`}
                 >
                   {t(day.labelKey)}
-                </button>
+                </Button>
               ))}
             </div>
             {form.formState.errors.days && <p className="text-sm text-red-500">{form.formState.errors.days.message}</p>}
           </FormItem>
 
-          <div className="flex gap-4">
+          <div className="flex flex-col gap-4">
             <div className="flex-1">
               <DateTimePickerField
                 form={form}
                 path="startTime"
-                mode={DayTimePickerMode.Time}
                 translationId="usersettings.notifications.dnd.table.startTime"
+                variant="dialog"
               />
             </div>
             <div className="flex-1">
               <DateTimePickerField
                 form={form}
                 path="endTime"
-                mode={DayTimePickerMode.Time}
                 translationId="usersettings.notifications.dnd.table.endTime"
+                variant="dialog"
               />
             </div>
           </div>

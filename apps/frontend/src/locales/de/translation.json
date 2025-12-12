@@ -1308,6 +1308,30 @@
       },
       "error": {
         "updateError": "Benachrichtigungseinstellungen konnten nicht gespeichert werden."
+      },
+      "dnd": {
+        "addTitle": "Ruhezeit hinzufügen",
+        "editTitle": "Ruhezeit bearbeiten",
+        "table": {
+          "label": "Bezeichnung",
+          "days": "Wochentage",
+          "startTime": "Startzeit",
+          "endTime": "Endzeit",
+          "title": "Ruhezeiten",
+          "description": "Lege Zeiträume fest, in denen du keine Benachrichtigungen erhalten möchtest.",
+          "buffer": "Nachholen"
+        },
+        "title": "Ruhezeiten",
+        "description": "Lege Zeiträume fest, in denen du keine Benachrichtigungen erhalten möchtest.",
+        "labelPlaceholder": "z.B. Nachtruhe, Unterricht, Meeting...",
+        "bufferLabel": "Benachrichtigungen nachholen",
+        "bufferDescription": "Verpasste Benachrichtigungen nach Ende der Ruhezeit anzeigen",
+        "validation": {
+          "labelRequired": "Bezeichnung ist erforderlich",
+          "daysRequired": "Mindestens ein Wochentag muss ausgewählt werden",
+          "startTimeRequired": "Startzeit ist erforderlich",
+          "endTimeRequired": "Endzeit ist erforderlich"
+        }
       }
     },
 
@@ -1511,7 +1535,16 @@
     "saveLocal": "Auf dem Gerät speichern",
     "openLocal": "Vom Gerät öffnen",
     "openFileFromEdu": "Datei öffnen",
-    "saveFileToEdu": "In Dateien speichern"
+    "saveFileToEdu": "In Dateien speichern",
+    "days": {
+      "mo": "Mo",
+      "tu": "Di",
+      "we": "Mi",
+      "th": "Do",
+      "fr": "Fr",
+      "sa": "Sa",
+      "su": "So"
+    }
   },
   "form": {
     "path": "Link",

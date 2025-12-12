@@ -1161,6 +1161,32 @@
         "survey": "Sondages",
         "bulletinBoard": "Tableau d'affichage"
       },
+      "notifications": {
+        "dnd": {
+          "addTitle": "Ajouter une période de repos",
+          "editTitle": "Modifier la période de repos",
+          "table": {
+            "label": "Libellé",
+            "days": "Jours",
+            "startTime": "Heure de début",
+            "endTime": "Heure de fin",
+            "title": "Heures calmes",
+            "description": "Définissez les périodes pendant lesquelles vous ne souhaitez pas recevoir de notifications.",
+            "buffer": "Rattrapage"
+          },
+          "title": "Heures calmes",
+          "description": "Définissez les périodes pendant lesquelles vous ne souhaitez pas recevoir de notifications.",
+          "labelPlaceholder": "p.ex. Nuit, Cours, Réunion...",
+          "bufferLabel": "Rattraper les notifications",
+          "bufferDescription": "Afficher les notifications manquées après la fin de la période de repos",
+          "validation": {
+            "labelRequired": "Le libellé est requis",
+            "daysRequired": "Au moins un jour doit être sélectionné",
+            "startTimeRequired": "L'heure de début est requise",
+            "endTimeRequired": "L'heure de fin est requise"
+          }
+        }
+      },
       "error": {
         "updateError": "Les paramètres de notification n'ont pas pu être enregistrés."
       },
@@ -1345,7 +1371,16 @@
       "saveLocal": "Enregistrer sur l’appareil",
       "openLocal": "Ouvrir depuis l’appareil",
       "openFileFromEdu": "Ouvrir le fichier",
-      "saveFileToEdu": "Enregistrer dans les fichiers"
+      "saveFileToEdu": "Enregistrer dans les fichiers",
+      "days": {
+        "mo": "Lun",
+        "tu": "Mar",
+        "we": "Mer",
+        "th": "Jeu",
+        "fr": "Ven",
+        "sa": "Sam",
+        "su": "Dim"
+      }
     },
 
     "saveExternalFileDialogBody": {
