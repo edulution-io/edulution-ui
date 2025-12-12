@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import CreateConferenceDialog from '@/pages/ConferencePage/CreateConference/CreateConferenceDialog';
 import ConferencesTable from '@/pages/ConferencePage/Table/ConferencesTable';
@@ -31,14 +31,27 @@ import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants
 import useSharePublicConferenceStore from '@/pages/ConferencePage/useSharePublicConferenceStore';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
+import { useSearchParams } from 'react-router-dom';
+import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 
 const ConferencePage: React.FC = () => {
   const { t } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { selectedConference } = useConferenceDetailsDialogStore();
   const { publicConferenceId, setSharePublicConferenceDialogId } = useSharePublicConferenceStore();
+  const { joinConference } = useConferenceStore();
   const sharePublicConferenceUrl = publicConferenceId
     ? `${EDU_BASE_URL}/${CONFERENCES_PUBLIC_EDU_API_ENDPOINT}/${publicConferenceId}`
     : '';
+
+  useEffect(() => {
+    const joinMeetingId = searchParams.get('join');
+    if (joinMeetingId) {
+      searchParams.delete('join');
+      setSearchParams(searchParams);
+      void joinConference(joinMeetingId);
+    }
+  }, [searchParams, joinConference]);
 
   return (
     <PageLayout
