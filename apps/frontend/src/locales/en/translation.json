@@ -696,7 +696,9 @@
       "reset": "Reset",
       "addDescription": "Add a description",
       "expectingUserInput": "Expecting the user to answer here, ... ",
+      "isLoadingSurvey": "Survey is loading...",
       "templates": "Save Template",
+      "searchPlaceholder": "Type to filter templates...",
       "noTemplates": "No templates available",
       "noSearchResults": "No templates found",
       "templateMenu": {
@@ -773,7 +775,7 @@
       "participationErrorSurveyExpired": "Survey has already expired.",
       "missingIdError": "Missing survey ID.",
       "missingAnswerError": "Please provide an answer before submitting.",
-      "duplicateNameError": "Adjust the title of the template. A template document with this name already exists in the db."
+      "duplicateNameError": "Adjust the title of the template. A template document with this name already exists."
     }
   },
   "survey-answer": {

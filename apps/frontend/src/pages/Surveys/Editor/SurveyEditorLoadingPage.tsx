@@ -76,19 +76,19 @@ const SurveyEditorLoadingPage = ({ surveyCreator }: SurveyEditorLoadingPageProps
   return (
     <>
       <Input
-        placeholder={t(SEARCH_INPUT_LABEL)}
-        aria-label={SEARCH_INPUT_LABEL}
+        placeholder={t('survey.editor.searchPlaceholder')}
+        aria-label={t('survey.editor.searchPlaceholder')}
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         variant="default"
         width="auto"
-        className={GRID_SEARCH}
+        className={cn(GRID_SEARCH, 'justify-center')}
       />
       <div className="mx-auto grid max-h-full w-full grid-cols-[repeat(auto-fit,minmax(8rem,auto))] justify-center gap-x-3 gap-y-2 overflow-auto px-2 pb-10 scrollbar-thin md:max-h-full md:w-[95%] md:grid-cols-[repeat(auto-fit,minmax(12rem,auto))] md:gap-x-6 md:gap-y-5 md:pb-4">
         <Card
           className={cn(
             GRID_CARD,
-            'flex items-center justify-center bg-muted',
+            'flex cursor-pointer items-center justify-center bg-muted',
             { 'h-[13rem]': !isSuperAdmin },
             { 'h-[14rem]': isSuperAdmin },
           )}
@@ -99,7 +99,7 @@ const SurveyEditorLoadingPage = ({ surveyCreator }: SurveyEditorLoadingPageProps
           }}
         >
           <VscNewFile className="h-10 w-10 md:h-14 md:w-14" />
-          <p>{t('survey.editor.new')}</p>
+          <h3 className="mt-4">{t('survey.editor.new')}</h3>
         </Card>
         {filteredTemplates.length ? (
           filteredTemplates.map((template) => (

@@ -47,19 +47,11 @@ class SurveysTemplateService implements OnModuleInit {
 
   async updateOrCreateTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
     const { id, isActive = true, ...templateData } = surveyTemplate;
-    if (id && !Types.ObjectId.isValid(id)) {
-      throw new CustomHttpException(
-        CommonErrorMessages.DB_INVALID_ID,
-        HttpStatus.BAD_REQUEST,
-        undefined,
-        SurveysTemplateService.name,
-      );
-    }
     try {
-      return await this.surveyTemplateModel.findOneAndUpdate(
-        { _id: new Types.ObjectId(id) },
+      return await this.surveyTemplateModel.findByIdAndUpdate(
+        id,
         { ...templateData, isActive },
-        { new: true, upsert: true },
+        { new: true, upsert: !id },
       );
     } catch (error) {
       if (error instanceof Error && error.message.includes('E11000')) {
@@ -81,23 +73,14 @@ class SurveysTemplateService implements OnModuleInit {
 
   async getTemplates(ldapGroups: string[], res: Response): Promise<Response> {
     const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
-    const documents = await this.surveyTemplateModel
-      .find(getIsAdmin(ldapGroups, adminGroups) ? {} : { isActive: true })
-      .exec();
+    const isAdmin = getIsAdmin(ldapGroups, adminGroups);
+    const documents = await this.surveyTemplateModel.find(isAdmin ? {} : { isActive: true }).exec();
     return res.status(HttpStatus.OK).json(documents);
   }
 
   async setIsTemplateActive(id: string, isActive: boolean): Promise<SurveysTemplateDocument | null> {
-    if (!Types.ObjectId.isValid(id)) {
-      throw new CustomHttpException(
-        CommonErrorMessages.DB_INVALID_ID,
-        HttpStatus.BAD_REQUEST,
-        undefined,
-        SurveysTemplateService.name,
-      );
-    }
-    return this.surveyTemplateModel.findOneAndUpdate(
-      { _id: new Types.ObjectId(id) },
+    return this.surveyTemplateModel.findByIdAndUpdate(
+      id,
       { isActive },
       {
         new: true,

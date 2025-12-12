@@ -597,7 +597,9 @@
       "reset": "Rejeter",
       "addDescription": "Ajouter une description",
       "expectingUserInput": "Ici, la réponse du participant est attendue ... ",
+      "isLoadingSurvey": "Le sondage est en cours de chargement...",
       "templates": "Enregistrer le modèle",
+      "searchPlaceholder": "Tapez pour filtrer les modèles...",
       "noTemplates": "Aucun modèle disponible",
       "noSearchResults": "Aucun modèle trouvé",
       "templateMenu": {
@@ -652,7 +654,7 @@
       "participationErrorSurveyExpired": "Le sondage a expiré.",
       "idTypeError": "ID de sondage non valide.",
       "missingAnswerError": "Veuillez remplir le sondage avant d'envoyer votre réponse.",
-      "duplicateNameError": "Ajustez le titre du modèle. Un document de modèle avec ce nom existe déjà dans la base de données."
+      "duplicateNameError": "Ajustez le titre du modèle. Un document de modèle avec ce nom existe déjà."
     }
   },
   "survey-answer": {
