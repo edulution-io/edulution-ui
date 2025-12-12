@@ -64,7 +64,6 @@ const DeleteTemplateDialog = () => {
       title={t('survey.editor.template.deletion.title')}
       body={getDialogBody()}
       footer={getFooter()}
-      desktopContentClassName="min-h-[100px]"
     />
   );
 };

@@ -698,10 +698,12 @@
       "reset": "Verwerfen",
       "addDescription": "Beschreibung hinzufügen",
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
+      "isLoadingSurvey": "Umfrage wird geladen...",
       "template": {
         "save": "Vorlage speichern",
         "noTemplates": "Es sind keine Vorlagen vorhanden",
         "noSearchResults": "Keine Vorlage gefunden",
+        "searchPlaceholder": "Tippen um Vorlagen zu filtern...",
         "preview": "Vorschau",
         "upload": {
           "success": "Vorlage erfolgreich gespeichert",
@@ -771,7 +773,7 @@
       "participationErrorSurveyExpired": "Umfrage ist abgelaufen.",
       "missingIdError": "Fehlende Umfrage-ID.",
       "missingAnswerError": "Bitte fülle die Umfrage aus, bevor du deine Antwort abschickst.",
-      "duplicateNameError": "Passe den Titel der Vorlage an. Ein Template mit diesem Namen existiert bereits in der Datenbank."
+      "duplicateNameError": "Passe den Titel der Vorlage an. Ein Template mit diesem Namen existiert bereits."
     }
   },
   "survey-answer": {
