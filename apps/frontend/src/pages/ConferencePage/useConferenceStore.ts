@@ -112,7 +112,6 @@ const useConferenceStore = create<UseConferenceStore>((set, get) => ({
       }, 5500);
     }
   },
-
   reset: () => set(initialValues),
 }));
 
