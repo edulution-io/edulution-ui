@@ -32,14 +32,12 @@ import useSharePublicConferenceStore from '@/pages/ConferencePage/useSharePublic
 import PageLayout from '@/components/structure/layout/PageLayout';
 import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
 import { useSearchParams } from 'react-router-dom';
-import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 
 const ConferencePage: React.FC = () => {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { selectedConference } = useConferenceDetailsDialogStore();
+  const { selectedConference, joinConference } = useConferenceDetailsDialogStore();
   const { publicConferenceId, setSharePublicConferenceDialogId } = useSharePublicConferenceStore();
-  const { joinConference } = useConferenceStore();
   const sharePublicConferenceUrl = publicConferenceId
     ? `${EDU_BASE_URL}/${CONFERENCES_PUBLIC_EDU_API_ENDPOINT}/${publicConferenceId}`
     : '';

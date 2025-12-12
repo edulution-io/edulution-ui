@@ -41,7 +41,6 @@ interface UseConferenceStore {
   toggleConferenceRunningState: (meetingId: string, isRunning: boolean) => Promise<boolean>;
   loadingMeetingId: string | null;
   toggleConferenceRunningStateError: Error | null;
-  joinConference: (meetingID: string) => Promise<void>;
   reset: () => void;
 }
 
@@ -111,15 +110,6 @@ const useConferenceStore = create<UseConferenceStore>((set, get) => ({
       setTimeout(() => {
         set({ loadingMeetingId: null });
       }, 5500);
-    }
-  },
-
-  joinConference: async (meetingID: string) => {
-    try {
-      const { data } = await eduApi.get<string>(`${CONFERENCES_EDU_API_ENDPOINT}/join/${meetingID}`);
-      window.location.href = data;
-    } catch (error) {
-      handleApiError(error, set);
     }
   },
 
