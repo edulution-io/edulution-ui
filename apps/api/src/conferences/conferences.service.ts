@@ -233,7 +233,7 @@ class ConferencesService implements OnModuleInit {
           meetingID: conference.meetingID,
           type: 'conference_started',
           route: '/(tabs)/EduUIFrame',
-          webUrl: url,
+          webUrl: `/conferences/${conference.meetingID}/join`,
         },
       });
 
