@@ -23,40 +23,54 @@ import { useTranslation } from 'react-i18next';
 import { LinuxLogo, WindowsLogo } from '@/assets/icons';
 import { Card } from '@/components/shared/Card';
 import VirtualMachineOs from '@libs/desktopdeployment/types/virtual-machines.enum';
+import { MdRefresh } from 'react-icons/md';
 
-interface CardProps {
+interface VdiCardProps {
   title: string;
-  availableClients: number;
-  onClick: () => void;
+  availableCount: number;
   osType: VirtualMachineOs;
-  disabled?: boolean;
+  onSelect: () => void;
+  onReload: () => void;
 }
 
-const VdiCard: FC<CardProps> = ({ title, availableClients = 0, onClick, osType, disabled = false }) => {
+const VdiCard: FC<VdiCardProps> = ({ title, availableCount, osType, onSelect, onReload }) => {
   const { t } = useTranslation();
 
   return (
     <Card
-      className="grid w-72 grid-cols-3 gap-4 border border-gray-200 p-4 shadow"
+      className="relative w-72 p-4 shadow"
       aria-label={title}
+      variant="text"
     >
-      <div className="col-span-1 flex items-center justify-center">
-        <img
-          src={osType === VirtualMachineOs.UBUNTU ? LinuxLogo : WindowsLogo}
-          alt="os_logo"
-          className="h-12 w-12"
-        />
+      <button
+        type="button"
+        onClick={onReload}
+        className="absolute right-2 top-2 rounded-full p-1 text-muted-foreground hover:bg-accent-light hover:text-background"
+        aria-label={t('common.reload')}
+      >
+        <MdRefresh className="h-5 w-5" />
+      </button>
+      <div className="grid grid-cols-3 gap-4">
+        <div className="col-span-1 flex items-center justify-center">
+          <img
+            src={osType === VirtualMachineOs.UBUNTU ? LinuxLogo : WindowsLogo}
+            alt="os_logo"
+            className="h-12 w-12"
+          />
+        </div>
+        <div className="col-span-2">
+          <h3>{title}</h3>
+          <p className="text-sm text-muted-foreground">
+            {availableCount} {t('desktopdeployment.clients')}
+          </p>
+        </div>
       </div>
-      <div className="col-span-2">
-        <h3>{title}</h3>
-        <p>{`${availableClients} ${t('desktopdeployment.clients')}`}</p>
-      </div>
-      <div className="col-span-3 flex justify-end">
+      <div className="mt-4 flex justify-end">
         <Button
           variant="btn-collaboration"
           size="sm"
-          onClick={onClick}
-          disabled={disabled}
+          onClick={onSelect}
+          disabled={availableCount === 0}
         >
           {t('common.start')}
         </Button>

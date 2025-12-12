@@ -19,6 +19,7 @@
 
 import { AxiosError } from 'axios';
 import VirtualMachines from './virtual-machines';
+import VirtualMachineOs from './virtual-machines.enum';
 
 type DesktopDeploymentStore = {
   vdiIp: string;
@@ -33,7 +34,7 @@ type DesktopDeploymentStore = {
   setIsVdiConnectionOpen: (isVdiConnectionOpen: boolean) => void;
   setIsLoading: (isLoading: boolean) => void;
   setVirtualMachines: (virtualMachines: VirtualMachines) => void;
-  postRequestVdi: (group: string) => Promise<void>;
+  postRequestVdi: (group: VirtualMachineOs) => Promise<string | null>;
   getVirtualMachines: (isSilent: boolean) => Promise<void>;
   createRdpSession: (hostname: string) => Promise<boolean>;
   reset: () => void;

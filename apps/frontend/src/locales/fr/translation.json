@@ -757,6 +757,7 @@
     "ubuntu": "Ubuntu",
     "clients": "Clients disponibles",
     "client": "Client disponible",
+    "noClientsFound": "Aucun client trouvé",
     "errors": {
       "GuacamoleNotResponding": "Service RDP non disponible.",
       "GuacamoleUserNotFound": "Le nom d'utilisateur ou le mot de passe n'a pas pu être trouvé.",

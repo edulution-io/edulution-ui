@@ -882,6 +882,7 @@
     "ubuntu": "Ubuntu",
     "clients": "Clients verfügbar",
     "client": "Client verfügbar",
+    "noClientsFound": "Keine Clients gefunden",
     "errors": {
       "GuacamoleNotResponding": "RDP-Dienst nicht verfügbar.",
       "GuacamoleUserNotFound": "Nutzername oder Passwort konnte nicht gefunden.",
