@@ -29,7 +29,7 @@ import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import handleApiError from '@/utils/handleApiError';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
-import fetchSelectedSurvey from '@/pages/Surveys/utils/fetchSelectedSurvey';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import getInitialSurveyFormBySurveys from '@/pages/Surveys/utils/getInitialSurveyFormBySurveys';
 import getInitialSurveyFormByTemplate from '@/pages/Surveys/utils/getInitialSurveyFormByTemplate';
 
@@ -92,8 +92,9 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
         set({ initialSurvey: newSurvey });
       },
 
-      fetchSelectedSurvey: async (creator: AttendeeDto, surveyId?: string, isPublic?: boolean): Promise<void> => {
+      fetchSelectedSurvey: async (creator: AttendeeDto, surveyId?: string, isPublic = false): Promise<void> => {
         set({ isFetching: true, initialSurvey: undefined });
+        const { fetchSelectedSurvey } = useSurveysTablesPageStore.getState();
         try {
           const survey = await fetchSelectedSurvey(surveyId, isPublic);
           const initialValues = getInitialSurveyFormBySurveys(creator, survey);

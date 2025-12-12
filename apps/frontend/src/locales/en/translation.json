@@ -696,7 +696,9 @@
       "reset": "Reset",
       "addDescription": "Add a description",
       "expectingUserInput": "Expecting the user to answer here, ... ",
+      "isLoadingSurvey": "Survey is loading...",
       "templates": "Save Template",
+      "searchPlaceholder": "Type to filter templates...",
       "noTemplates": "No templates available",
       "noSearchResults": "No templates found",
       "templateMenu": {

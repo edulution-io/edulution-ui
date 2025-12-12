@@ -698,7 +698,9 @@
       "reset": "Verwerfen",
       "addDescription": "Beschreibung hinzufügen",
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
+      "isLoadingSurvey": "Umfrage wird geladen...",
       "templates": "Vorlage speichern",
+      "searchPlaceholder": "Tippen um Vorlagen zu filtern...",
       "noTemplates": "Es sind keine Vorlagen vorhanden",
       "noSearchResults": "Keine Vorlage gefunden",
       "templateMenu": {
