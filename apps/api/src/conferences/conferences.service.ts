@@ -38,6 +38,7 @@ import JoinPublicConferenceDetails from '@libs/conferences/types/joinPublicConfe
 import { OnEvent } from '@nestjs/event-emitter';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import appendSlashToUrl from '@libs/common/utils/URL/appendSlashToUrl';
+import MOBILE_APP_TABS from '@libs/mobileApp/mobileAppTabs';
 import CustomHttpException from '../common/CustomHttpException';
 import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
@@ -199,12 +200,11 @@ class ConferencesService implements OnModuleInit {
   }
 
   async startConference(conference: Conference, shouldUpdateInBBB: boolean) {
-    let url;
     try {
       if (!shouldUpdateInBBB) {
         const query = `name=${encodeURIComponent(conference.name)}&meetingID=${conference.meetingID}`;
         const checksum = this.createChecksum('create', query);
-        url = `${this.BBB_API_URL}create?${query}&checksum=${checksum}`;
+        const url = `${this.BBB_API_URL}create?${query}&checksum=${checksum}`;
 
         const response = await axios.get<string>(url);
         const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
@@ -231,9 +231,9 @@ class ConferencesService implements OnModuleInit {
         body: `Die Konferenz "${conference.name}" wurde gestartet.`,
         data: {
           meetingID: conference.meetingID,
-          type: 'conference_started',
-          route: '/(tabs)/EduUIFrame',
-          webUrl: `/conferences?join=${conference.meetingID}`,
+          type: SSE_MESSAGE_TYPE.CONFERENCE_STARTED,
+          route: MOBILE_APP_TABS.EDU_UI_FRAME,
+          webUrl: `/${APPS.CONFERENCES}?join=${conference.meetingID}`,
         },
       });
 
