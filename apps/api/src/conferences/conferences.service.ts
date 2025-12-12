@@ -19,7 +19,7 @@
 
 import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { randomUUID, createHash } from 'crypto';
+import { createHash, randomUUID } from 'crypto';
 import axios from 'axios';
 import { parseString } from 'xml2js';
 import { Model } from 'mongoose';
@@ -199,11 +199,12 @@ class ConferencesService implements OnModuleInit {
   }
 
   async startConference(conference: Conference, shouldUpdateInBBB: boolean) {
+    let url;
     try {
       if (!shouldUpdateInBBB) {
         const query = `name=${encodeURIComponent(conference.name)}&meetingID=${conference.meetingID}`;
         const checksum = this.createChecksum('create', query);
-        const url = `${this.BBB_API_URL}create?${query}&checksum=${checksum}`;
+        url = `${this.BBB_API_URL}create?${query}&checksum=${checksum}`;
 
         const response = await axios.get<string>(url);
         const result = await ConferencesService.parseXml<BbbResponseDto>(response.data);
@@ -231,6 +232,8 @@ class ConferencesService implements OnModuleInit {
         data: {
           meetingID: conference.meetingID,
           type: 'conference_started',
+          route: '/(tabs)/EduUIFrame',
+          webUrl: url,
         },
       });
 

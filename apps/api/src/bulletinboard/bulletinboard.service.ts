@@ -374,6 +374,8 @@ class BulletinBoardService implements OnModuleInit {
         data: {
           bulletinId: resultingBulletin.id,
           type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
+          route: '/(tabs)/EduUIFrame',
+          webPath: `/bulletin-board/${resultingBulletin.id}`,
         },
       });
     }
