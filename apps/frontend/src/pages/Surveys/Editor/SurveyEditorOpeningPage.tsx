@@ -21,6 +21,7 @@ import React, { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import getCreatorFromUserDto from '@libs/survey/utils/getCreatorFromUserDto';
+import i18n from '@/i18n';
 import useUserStore from '@/store/UserStore/useUserStore';
 import SurveyEditorPage from '@/pages/Surveys/Editor/SurveyEditorPage';
 import SurveyEditorLoadingPage from '@/pages/Surveys/Editor/SurveyEditorLoadingPage';
@@ -60,8 +61,9 @@ const SurveyEditorOpeningPage = () => {
   if (isFetching) {
     return (
       <PageLayout>
-        <div className="flex h-full w-full items-center justify-center">
+        <div className="flex h-full w-full flex-col items-center justify-center">
           <CircleLoader />
+          <p className="mt-4">{i18n.t('survey.editor.isLoadingSurvey')}</p>
         </div>
       </PageLayout>
     );

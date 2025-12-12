@@ -25,4 +25,4 @@ export const INPUT_DEFAULT =
 export const GRID_SEARCH =
   'mx-auto my-3 block w-[80%] min-w-[250px] rounded-xl border border-ring px-3 py-2 md:mb-2 md:mt-0 md:w-[400px]';
 export const GRID_CARD =
-  'h-26 relative flex w-full flex-col items-center overflow-hidden border border-muted-light bg-muted-dialog p-5 hover:bg-primary';
+  'h-26 flex w-full flex-col items-center overflow-hidden border border-muted-light bg-muted-dialog p-5 hover:bg-primary';
