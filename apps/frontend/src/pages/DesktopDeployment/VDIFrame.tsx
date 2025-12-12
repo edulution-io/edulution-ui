@@ -17,11 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import GuacamoleFrame from '@/components/shared/GuacamoleFrame/GuacamoleFrame';
-import useFrameStore from '@/components/structure/framing/useFrameStore';
-import { MAXIMIZED_BAR_HEIGHT } from '@libs/ui/constants/resizableWindowElements';
-import RESIZABLE_WINDOW_DEFAULT_SIZE from '@libs/ui/constants/resizableWindowDefaultSize';
 import useDesktopDeploymentStore from './useDesktopDeploymentStore';
 
 const VDI_FRAME_ID = 'desktopdeployment.topic';
@@ -29,19 +26,6 @@ const VDI_FRAME_ID = 'desktopdeployment.topic';
 const VDIFrame = () => {
   const { error, guacToken, dataSource, connectionUri, isVdiConnectionOpen, setIsVdiConnectionOpen } =
     useDesktopDeploymentStore();
-  const { currentWindowedFrameSizes, minimizedWindowedFrames } = useFrameStore();
-  const [hasCurrentFrameSizeLoaded, setHasCurrentFrameSizeLoaded] = useState(false);
-
-  const width = currentWindowedFrameSizes[VDI_FRAME_ID]?.width || RESIZABLE_WINDOW_DEFAULT_SIZE.width;
-  const height =
-    (currentWindowedFrameSizes[VDI_FRAME_ID]?.height || RESIZABLE_WINDOW_DEFAULT_SIZE.height) - MAXIMIZED_BAR_HEIGHT;
-  const isMinimized = minimizedWindowedFrames.includes(VDI_FRAME_ID);
-
-  useEffect(() => {
-    if (!hasCurrentFrameSizeLoaded && width > 0 && height > 0) {
-      setHasCurrentFrameSizeLoaded(true);
-    }
-  }, [hasCurrentFrameSizeLoaded, width, height]);
 
   const handleClose = useCallback(() => {
     setIsVdiConnectionOpen(false);
@@ -49,10 +33,9 @@ const VDIFrame = () => {
 
   const handleDisconnect = useCallback(() => {
     setIsVdiConnectionOpen(false);
-    setHasCurrentFrameSizeLoaded(false);
   }, [setIsVdiConnectionOpen]);
 
-  if (!isVdiConnectionOpen || error || !hasCurrentFrameSizeLoaded) {
+  if (!isVdiConnectionOpen || error) {
     return null;
   }
 
@@ -63,14 +46,10 @@ const VDIFrame = () => {
       dataSource={dataSource}
       connectionUri={connectionUri}
       isOpen={isVdiConnectionOpen}
-      width={width}
-      height={height}
-      isMinimized={isMinimized}
       onClose={handleClose}
       onDisconnect={handleDisconnect}
       enableAudio
       enableTouch
-      disableToggleMaximizeWindow
     />
   );
 };

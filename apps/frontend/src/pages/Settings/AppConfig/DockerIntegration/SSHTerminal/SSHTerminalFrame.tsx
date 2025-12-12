@@ -157,11 +157,96 @@ const SSHTerminalFrame: React.FC = () => {
 
     displayElement.appendChild(guacDisplayElement);
 
-    const mouse = new Mouse(guacDisplayElement);
-    const sendMouseState = guac.sendMouseState.bind(guac);
-    mouse.onmousedown = sendMouseState;
-    mouse.onmouseup = sendMouseState;
-    mouse.onmousemove = sendMouseState;
+    const mouseState = {
+      x: 0,
+      y: 0,
+      left: false,
+      middle: false,
+      right: false,
+      up: false,
+      down: false,
+    };
+
+    const getRelativeCoordinates = (event: MouseEvent) => {
+      const rect = displayElement.getBoundingClientRect();
+      return {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top,
+      };
+    };
+
+    const updateMouseState = (event: MouseEvent) => {
+      const coords = getRelativeCoordinates(event);
+      mouseState.x = coords.x;
+      mouseState.y = coords.y;
+    };
+
+    const handleMouseMove = (event: MouseEvent) => {
+      updateMouseState(event);
+      guac.sendMouseState(mouseState as Mouse.State);
+    };
+
+    const handleMouseDown = (event: MouseEvent) => {
+      updateMouseState(event);
+      switch (event.button) {
+        case 0:
+          mouseState.left = true;
+          break;
+        case 1:
+          mouseState.middle = true;
+          break;
+        case 2:
+          mouseState.right = true;
+          break;
+        default:
+          break;
+      }
+      guac.sendMouseState(mouseState as Mouse.State);
+    };
+
+    const handleMouseUp = (event: MouseEvent) => {
+      updateMouseState(event);
+      switch (event.button) {
+        case 0:
+          mouseState.left = false;
+          break;
+        case 1:
+          mouseState.middle = false;
+          break;
+        case 2:
+          mouseState.right = false;
+          break;
+        default:
+          break;
+      }
+      guac.sendMouseState(mouseState as Mouse.State);
+    };
+
+    const handleWheel = (event: WheelEvent) => {
+      updateMouseState(event);
+      if (event.deltaY < 0) {
+        mouseState.up = true;
+        guac.sendMouseState(mouseState as Mouse.State);
+        mouseState.up = false;
+        guac.sendMouseState(mouseState as Mouse.State);
+      } else if (event.deltaY > 0) {
+        mouseState.down = true;
+        guac.sendMouseState(mouseState as Mouse.State);
+        mouseState.down = false;
+        guac.sendMouseState(mouseState as Mouse.State);
+      }
+    };
+
+    const handleContextMenu = (event: Event) => {
+      event.preventDefault();
+      event.stopPropagation();
+    };
+
+    displayElement.addEventListener('mousemove', handleMouseMove);
+    displayElement.addEventListener('mousedown', handleMouseDown);
+    displayElement.addEventListener('mouseup', handleMouseUp);
+    displayElement.addEventListener('wheel', handleWheel);
+    displayElement.addEventListener('contextmenu', handleContextMenu);
 
     const keyboard = new Keyboard(guacDisplayElement);
     keyboard.onkeydown = (keysym: number) => {
@@ -214,9 +299,11 @@ const SSHTerminalFrame: React.FC = () => {
       if (resizeTimeout) clearTimeout(resizeTimeout);
       resizeObserver.disconnect();
       mutationObserver.disconnect();
-      mouse.onmousedown = undefined;
-      mouse.onmouseup = undefined;
-      mouse.onmousemove = undefined;
+      displayElement.removeEventListener('mousemove', handleMouseMove);
+      displayElement.removeEventListener('mousedown', handleMouseDown);
+      displayElement.removeEventListener('mouseup', handleMouseUp);
+      displayElement.removeEventListener('wheel', handleWheel);
+      displayElement.removeEventListener('contextmenu', handleContextMenu);
       keyboard.onkeydown = null;
       keyboard.onkeyup = null;
       guac.disconnect();

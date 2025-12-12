@@ -67,10 +67,14 @@ const DesktopDeploymentPage: React.FC = () => {
     return 0;
   };
 
-  const handleConnect = () => {
+  const handleCardConnect = () => {
     if (vdiIp) {
       void createRdpSession(vdiIp);
     }
+  };
+
+  const handleDialogConnect = (host: string) => {
+    void createRdpSession(host);
   };
 
   const handleReload = () => {
@@ -91,7 +95,7 @@ const DesktopDeploymentPage: React.FC = () => {
             key={os}
             title={t(title)}
             availableClients={getAvailableClients(os, virtualMachines)}
-            onClick={() => handleConnect()}
+            onClick={handleCardConnect}
             osType={os}
             disabled={getAvailableClients(os, virtualMachines) === 0}
           />
@@ -100,7 +104,7 @@ const DesktopDeploymentPage: React.FC = () => {
       <ConnectionErrorDialog handleReload={handleReload} />
       <LoadingIndicatorDialog isOpen={isLoading} />
       <DesktopDeploymentFloatingButtons
-        handleConnect={handleConnect}
+        handleConnect={handleDialogConnect}
         handleReload={handleReload}
       />
     </PageLayout>

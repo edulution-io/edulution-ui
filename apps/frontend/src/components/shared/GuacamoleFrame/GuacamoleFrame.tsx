@@ -18,12 +18,15 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Client, WebSocketTunnel, Mouse, Touch, Keyboard, Status } from '@glokon/guacamole-common-js';
+import { Client, WebSocketTunnel, Touch, Keyboard, Status, Mouse } from '@glokon/guacamole-common-js';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
 import GUACAMOLE_WEBSOCKET_URL from '@libs/desktopdeployment/constants/guacamole-websocket-url';
 import getBrowserTimezone from '@libs/common/utils/Date/getBrowserTimezone';
 import { guacamoleClientStateMap, getGuacamoleErrorMessage } from '@/pages/DesktopDeployment/utils';
+import useFrameStore from '@/components/structure/framing/useFrameStore';
+import { MAXIMIZED_BAR_HEIGHT } from '@libs/ui/constants/resizableWindowElements';
+import RESIZABLE_WINDOW_DEFAULT_SIZE from '@libs/ui/constants/resizableWindowDefaultSize';
 
 type GuacamoleFrameProps = {
   frameId: string;
@@ -31,9 +34,6 @@ type GuacamoleFrameProps = {
   dataSource: string;
   connectionUri: string;
   isOpen: boolean;
-  width: number;
-  height: number;
-  isMinimized: boolean;
   onClose: () => void;
   onDisconnect: () => void;
   enableAudio?: boolean;
@@ -48,9 +48,6 @@ const GuacamoleFrame: React.FC<GuacamoleFrameProps> = ({
   dataSource,
   connectionUri,
   isOpen,
-  width,
-  height,
-  isMinimized,
   onClose,
   onDisconnect,
   enableAudio = false,
@@ -60,12 +57,19 @@ const GuacamoleFrame: React.FC<GuacamoleFrameProps> = ({
 }) => {
   const displayRef = useRef<HTMLDivElement>(null);
   const guacRef = useRef<Client | null>(null);
-  const widthRef = useRef(width);
-  const heightRef = useRef(height);
   const [clientState, setClientState] = useState<Client.State>(Client.State.IDLE);
+  const [hasFrameSizeLoaded, setHasFrameSizeLoaded] = useState(false);
+  const { currentWindowedFrameSizes, minimizedWindowedFrames } = useFrameStore();
 
-  widthRef.current = width;
-  heightRef.current = height;
+  const width = currentWindowedFrameSizes[frameId]?.width || RESIZABLE_WINDOW_DEFAULT_SIZE.width;
+  const height = (currentWindowedFrameSizes[frameId]?.height || MAXIMIZED_BAR_HEIGHT) - MAXIMIZED_BAR_HEIGHT;
+  const isMinimized = minimizedWindowedFrames.includes(frameId);
+
+  useEffect(() => {
+    if (!hasFrameSizeLoaded && width > 0 && height > 0) {
+      setHasFrameSizeLoaded(true);
+    }
+  }, [width, height, hasFrameSizeLoaded]);
 
   const handleDisconnect = useCallback(() => {
     try {
@@ -88,7 +92,7 @@ const GuacamoleFrame: React.FC<GuacamoleFrameProps> = ({
   }, [isOpen, isMinimized]);
 
   useEffect(() => {
-    if (guacToken === '' || !displayRef.current || !isOpen || widthRef.current <= 0 || heightRef.current <= 0) {
+    if (guacToken === '' || !displayRef.current || !isOpen || !hasFrameSizeLoaded) {
       return undefined;
     }
 
@@ -144,20 +148,99 @@ const GuacamoleFrame: React.FC<GuacamoleFrameProps> = ({
 
     displayElement.appendChild(guacDisplayElement);
 
-    const sendMouseState = guac.sendMouseState.bind(guac);
-    const mouse = new Mouse(displayElement);
-    mouse.onmousedown = sendMouseState;
-    mouse.onmouseup = sendMouseState;
-    mouse.onmousemove = sendMouseState;
+    const mouseState = {
+      x: 0,
+      y: 0,
+      left: false,
+      middle: false,
+      right: false,
+      up: false,
+      down: false,
+    };
 
-    let touchscreen: Mouse.Touchscreen | null = null;
+    const getRelativeCoordinates = (event: MouseEvent) => {
+      const rect = displayElement.getBoundingClientRect();
+      return {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top,
+      };
+    };
+
+    const updateMouseState = (event: MouseEvent) => {
+      const coords = getRelativeCoordinates(event);
+      mouseState.x = coords.x;
+      mouseState.y = coords.y;
+    };
+
+    const handleMouseMove = (event: MouseEvent) => {
+      updateMouseState(event);
+      guac.sendMouseState(mouseState as Mouse.State);
+    };
+
+    const handleMouseDown = (event: MouseEvent) => {
+      updateMouseState(event);
+      switch (event.button) {
+        case 0:
+          mouseState.left = true;
+          break;
+        case 1:
+          mouseState.middle = true;
+          break;
+        case 2:
+          mouseState.right = true;
+          break;
+        default:
+          break;
+      }
+      guac.sendMouseState(mouseState as Mouse.State);
+    };
+
+    const handleMouseUp = (event: MouseEvent) => {
+      updateMouseState(event);
+      switch (event.button) {
+        case 0:
+          mouseState.left = false;
+          break;
+        case 1:
+          mouseState.middle = false;
+          break;
+        case 2:
+          mouseState.right = false;
+          break;
+        default:
+          break;
+      }
+      guac.sendMouseState(mouseState as Mouse.State);
+    };
+
+    const handleWheel = (event: WheelEvent) => {
+      updateMouseState(event);
+      if (event.deltaY < 0) {
+        mouseState.up = true;
+        guac.sendMouseState(mouseState as Mouse.State);
+        mouseState.up = false;
+        guac.sendMouseState(mouseState as Mouse.State);
+      } else if (event.deltaY > 0) {
+        mouseState.down = true;
+        guac.sendMouseState(mouseState as Mouse.State);
+        mouseState.down = false;
+        guac.sendMouseState(mouseState as Mouse.State);
+      }
+    };
+
+    const handleContextMenu = (event: Event) => {
+      event.preventDefault();
+      event.stopPropagation();
+    };
+
+    displayElement.addEventListener('mousemove', handleMouseMove);
+    displayElement.addEventListener('mousedown', handleMouseDown);
+    displayElement.addEventListener('mouseup', handleMouseUp);
+    displayElement.addEventListener('wheel', handleWheel);
+    displayElement.addEventListener('contextmenu', handleContextMenu);
+
     let touch: Touch | null = null;
     if (enableTouch) {
-      touchscreen = new Mouse.Touchscreen(displayElement);
-      touchscreen.onmousedown = sendMouseState;
-      touchscreen.onmouseup = sendMouseState;
-      touchscreen.onmousemove = sendMouseState;
-
       touch = new Touch(displayElement);
       touch.ontouchstart = guac.sendTouchState.bind(guac);
       touch.ontouchend = guac.sendTouchState.bind(guac);
@@ -179,8 +262,8 @@ const GuacamoleFrame: React.FC<GuacamoleFrameProps> = ({
     params.set('GUAC_ID', connectionUri);
     params.set('GUAC_TYPE', 'c');
     params.set('GUAC_DATA_SOURCE', dataSource);
-    params.set('GUAC_WIDTH', String(widthRef.current));
-    params.set('GUAC_HEIGHT', String(heightRef.current));
+    params.set('GUAC_WIDTH', String(width));
+    params.set('GUAC_HEIGHT', String(height));
     params.set('GUAC_DPI', '96');
     params.set('GUAC_TIMEZONE', getBrowserTimezone());
 
@@ -200,14 +283,11 @@ const GuacamoleFrame: React.FC<GuacamoleFrameProps> = ({
     return () => {
       isCleanedUp = true;
       mutationObserver.disconnect();
-      mouse.onmousedown = undefined;
-      mouse.onmouseup = undefined;
-      mouse.onmousemove = undefined;
-      if (touchscreen) {
-        touchscreen.onmousedown = undefined;
-        touchscreen.onmouseup = undefined;
-        touchscreen.onmousemove = undefined;
-      }
+      displayElement.removeEventListener('mousemove', handleMouseMove);
+      displayElement.removeEventListener('mousedown', handleMouseDown);
+      displayElement.removeEventListener('mouseup', handleMouseUp);
+      displayElement.removeEventListener('wheel', handleWheel);
+      displayElement.removeEventListener('contextmenu', handleContextMenu);
       if (touch) {
         touch.ontouchstart = undefined;
         touch.ontouchend = undefined;
@@ -218,7 +298,7 @@ const GuacamoleFrame: React.FC<GuacamoleFrameProps> = ({
       guac.disconnect();
       guacRef.current = null;
     };
-  }, [guacToken, connectionUri, dataSource, isOpen, enableAudio, enableTouch, handleDisconnect]);
+  }, [guacToken, connectionUri, dataSource, isOpen, enableAudio, enableTouch, handleDisconnect, hasFrameSizeLoaded]);
 
   useEffect(() => {
     if (clientState === Client.State.CONNECTED && !isMinimized && guacRef.current) {
@@ -243,7 +323,7 @@ const GuacamoleFrame: React.FC<GuacamoleFrameProps> = ({
       <div
         id={`guac-display-${frameId}`}
         ref={displayRef}
-        className="h-full w-full border-none bg-black outline-none"
+        className="relative h-full w-full border-none bg-black outline-none"
       />
       {clientState < Client.State.CONNECTED && <LoadingIndicatorDialog isOpen />}
     </ResizableWindow>

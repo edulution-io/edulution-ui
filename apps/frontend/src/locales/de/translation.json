@@ -889,6 +889,10 @@
       "SessionNotFound": "Session nicht gefunden.",
       "AppNotProperlyConfigured": "Guacamole ist nicht korrekt konfiguriert, bitte kontaktiere den Systemadministrator.",
       "QuickconnectFailed": "Verbindung konnte nicht hergestellt werden. Bitte überprüfe die Anmeldedaten."
+    },
+    "rdpDialog": {
+      "title": "RDP-Verbindung",
+      "host": "Host"
     }
   },
   "wlan": {

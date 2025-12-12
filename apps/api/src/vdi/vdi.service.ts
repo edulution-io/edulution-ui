@@ -30,6 +30,7 @@ import {
   VdiErrorMessages,
   VirtualMachines,
 } from '@libs/desktopdeployment/types';
+import RDP_DEFAULT_PARAMETERS from '@libs/desktopdeployment/constants/rdpDefaultParameters';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import APPS from '@libs/appconfig/constants/apps';
 import { GUACAMOLE_AUTH_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
@@ -175,6 +176,16 @@ class VdiService implements OnModuleInit {
     }
   }
 
+  private static buildRdpUri(hostname: string, username: string, password: string): string {
+    const { port, ...otherParams } = RDP_DEFAULT_PARAMETERS;
+
+    const queryParams = Object.entries(otherParams)
+      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+      .join('&');
+
+    return `rdp://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${hostname}:${port}/?${queryParams}`;
+  }
+
   async createRDPSession(
     username: string,
     hostname: string,
@@ -182,7 +193,7 @@ class VdiService implements OnModuleInit {
     const { authToken } = await this.authenticateVdi();
     const password = await this.usersService.getPassword(username);
 
-    const uri = `rdp://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${hostname}:3389/?security=nla&ignore-cert=true`;
+    const uri = VdiService.buildRdpUri(hostname, username, password);
 
     const connectionId = await this.createQuickconnect(authToken, uri);
 
