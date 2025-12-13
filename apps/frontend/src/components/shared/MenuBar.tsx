@@ -185,7 +185,7 @@ const MenuBar: React.FC = () => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t('common.search')}
+            placeholder={t('chat.searchPlaceholder')}
           />
         </div>
       )}

@@ -21,7 +21,7 @@ import React from 'react';
 import { Navigate, Route } from 'react-router-dom';
 import APPS from '@libs/appconfig/constants/apps';
 import ChatPage from '@/pages/Chat/ChatPage';
-import ChatConversation from '@/pages/Chat/ChatConversation';
+import ChatConversation from '@/pages/Chat/components/ChatConversation';
 import { CHAT_GROUPS_LOCATION } from '@libs/chat/chatPaths';
 
 const getChatRoutes = () => [

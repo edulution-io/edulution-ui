@@ -237,6 +237,8 @@
     "selectChat": "Select a chat",
     "members": "Members",
     "noMembers": "No members found",
+    "noMessages": "No messages yet",
+    "inputPlaceholder": "Write a message...",
     "teachers": "Teachers",
     "students": "Students",
     "others": "Others",

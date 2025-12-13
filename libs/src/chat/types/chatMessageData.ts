@@ -17,14 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-
-const ChatConversation: React.FC = () => (
-    <div className="flex h-full flex-col p-4">
-      <div className="flex-1" />
-
-      <div className="border-t pt-4" />
-    </div>
-  );
-
-export default ChatConversation;
+interface ChatMessageData {
+  id: string;
+  text: string;
+  sender: {
+    cn: string;
+    displayName?: string;
+    firstName?: string;
+    lastName?: string;
+  };
+  timestamp: string;
+  isOwn?: boolean;
+}
+export default ChatMessageData;

@@ -228,6 +228,8 @@
     "selectChat": "Wähle einen Chat aus",
     "members": "Mitglieder",
     "noMembers": "Keine Mitglieder gefunden",
+    "noMessages": "Noch keine Nachrichten",
+    "inputPlaceholder": "Nachricht schreiben...",
     "teachers": "Lehrer",
     "students": "Schüler",
     "others": "Andere",
