@@ -214,8 +214,21 @@
     }
   },
   "chat": {
-    "title": "Chat",
-    "sidebar": "Chat"
+    "title": "CHAT",
+    "sidebar": "Chat",
+    "groups": "Groupes",
+    "users": "Utilisateurs",
+    "ai": "Chat IA",
+    "searchPlaceholder": "Rechercher un groupe ou un utilisateur...",
+    "selectChat": "Sélectionnez un chat",
+    "members": "Membres",
+    "noMembers": "Aucun membre trouvé",
+    "teachers": "Enseignants",
+    "students": "Élèves",
+    "others": "Autres",
+    "newChat": "Nouveau chat",
+    "noResults": "Aucun résultat trouvé",
+    "loadingMembers": "Chargement des membres..."
   },
   "errors": {
     "unexpectedError": "Une erreur inattendue s'est produite",

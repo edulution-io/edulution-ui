@@ -229,7 +229,20 @@
   },
   "chat": {
     "title": "CHAT",
-    "sidebar": "Chat"
+    "sidebar": "Chat",
+    "groups": "Groups",
+    "users": "Users",
+    "ai": "AI Chat",
+    "searchPlaceholder": "Search for group or user...",
+    "selectChat": "Select a chat",
+    "members": "Members",
+    "noMembers": "No members found",
+    "teachers": "Teachers",
+    "students": "Students",
+    "others": "Others",
+    "newChat": "New Chat",
+    "noResults": "No results found",
+    "loadingMembers": "Loading members..."
   },
   "errors": {
     "automaticLoginFailed": "Automatic login failed",

@@ -220,7 +220,20 @@
   },
   "chat": {
     "title": "CHAT",
-    "sidebar": "Chat"
+    "sidebar": "Chat",
+    "groups": "Gruppen",
+    "users": "Benutzer",
+    "ai": "KI-Chat",
+    "searchPlaceholder": "Suche nach Gruppe oder Benutzer...",
+    "selectChat": "Wähle einen Chat aus",
+    "members": "Mitglieder",
+    "noMembers": "Keine Mitglieder gefunden",
+    "teachers": "Lehrer",
+    "students": "Schüler",
+    "others": "Andere",
+    "newChat": "Neuer Chat",
+    "noResults": "Keine Ergebnisse gefunden",
+    "loadingMembers": "Mitglieder werden geladen..."
   },
   "errors": {
     "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten",
