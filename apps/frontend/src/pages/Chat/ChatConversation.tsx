@@ -18,23 +18,13 @@
  */
 
 import React from 'react';
-import { useParams } from 'react-router-dom';
 
-const ChatConversation: React.FC = () => {
-  const { type, chatId } = useParams<{ type: string; chatId: string }>();
-
-  return (
+const ChatConversation: React.FC = () => (
     <div className="flex h-full flex-col p-4">
-      <div className="mb-4 border-b pb-2">
-        <h2 className="text-lg font-semibold">Chat: {chatId}</h2>
-        <span className="text-sm text-muted-foreground">Typ: {type}</span>
-      </div>
-
       <div className="flex-1" />
 
       <div className="border-t pt-4" />
     </div>
   );
-};
 
 export default ChatConversation;

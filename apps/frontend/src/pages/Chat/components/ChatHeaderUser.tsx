@@ -18,34 +18,32 @@
  */
 
 import React from 'react';
-import MemberInfo from '@libs/chat/types/memberInfo';
-import MemberListItem from '@/pages/Chat/components/MemberListItem';
+import Avatar from '@/components/shared/Avatar';
+import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 
-interface MemberSectionProps {
-  title?: string;
-  members: MemberInfo[];
-  onMemberClick?: (member: MemberInfo) => void;
-  showClass?: boolean;
+interface ChatHeaderUserProps {
+  user: LmnUserInfo;
 }
 
-const MemberSection: React.FC<MemberSectionProps> = ({ title, members, onMemberClick, showClass = true }) => {
-  if (members.length === 0) return null;
-
-  return (
-    <div>
-      {title && <h3 className="mb-2 text-sm font-medium text-gray-400">{title}</h3>}
-      <div className="space-y-1">
-        {members.map((member) => (
-          <MemberListItem
-            key={member.cn}
-            member={member}
-            onClick={onMemberClick}
-            showClass={showClass}
-          />
-        ))}
+const ChatHeaderUser: React.FC<ChatHeaderUserProps> = ({ user }) => (
+  <div className="flex items-center border-b border-muted p-4">
+    <div className="flex items-center gap-3">
+      <Avatar
+        user={{
+          username: user.cn || '',
+          firstName: user.givenName,
+          lastName: user.sn,
+        }}
+        className="h-10 w-10"
+      />
+      <div className="flex flex-col">
+        <h2 className="text-lg font-semibold text-background">{user.displayName || user.cn}</h2>
+        {user.sophomorixAdminClass && (
+          <span className="text-sm text-muted-foreground">{user.sophomorixAdminClass}</span>
+        )}
       </div>
     </div>
-  );
-};
+  </div>
+);
 
-export default MemberSection;
+export default ChatHeaderUser;

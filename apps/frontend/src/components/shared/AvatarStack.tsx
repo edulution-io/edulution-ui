@@ -19,25 +19,40 @@
 
 import React from 'react';
 import cn from '@libs/common/utils/className';
+import Avatar from '@/components/shared/Avatar';
 
-interface MemberAvatarProps {
-  name?: string;
-  className?: string;
+interface AvatarUser {
+  username: string;
+  firstName?: string;
+  lastName?: string;
 }
 
-const MemberAvatar: React.FC<MemberAvatarProps> = ({ name, className }) => {
-  const initials = name
-    ?.split(' ')
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
+interface AvatarStackProps {
+  users: AvatarUser[];
+  max?: number;
+  className?: string;
+  avatarClassName?: string;
+}
+
+const AvatarStack: React.FC<AvatarStackProps> = ({ users, max = 3, className, avatarClassName = 'h-6 w-6' }) => {
+  const displayedUsers = users.slice(0, max);
+  const remainingCount = users.length - max;
 
   return (
-    <div className={cn('flex items-center justify-center rounded-full bg-ciGreenToBlue', className)}>
-      <span className="text-xs font-medium text-background">{initials}</span>
+    <div className={cn('flex items-center', className)}>
+      <div className="flex -space-x-1">
+        {displayedUsers.map((user) => (
+          <Avatar
+            key={user.username}
+            user={user}
+            className={cn(avatarClassName, 'border border-accent')}
+          />
+        ))}
+      </div>
+
+      {remainingCount > 0 && <span className="ml-1 text-xs text-muted-foreground">+{remainingCount}</span>}
     </div>
   );
 };
 
-export default MemberAvatar;
+export default AvatarStack;

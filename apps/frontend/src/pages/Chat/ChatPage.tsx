@@ -17,73 +17,65 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useState } from 'react';
-import { Outlet, useNavigate, useParams } from 'react-router-dom';
+import React from 'react';
+import { Outlet, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { MdInfoOutline } from 'react-icons/md';
-import { CHAT_GROUPS_LOCATION } from '@libs/chat/chatPaths';
-import { Button } from '@/components/shared/Button';
 import { ChatType } from '@libs/chat/types/chatType';
 import { ChatGroupType } from '@libs/chat/types/chatGroupType';
-import ChatMembersPanel from './components/ChatMembersPanel';
+import ChatHeader from '@/pages/Chat/components/ChatHeader';
+import useChatGroups from '@/pages/Chat/hooks/useChatGroups';
+import useChatMembers from '@/pages/Chat/hooks/useChatMembers';
 
 const ChatPage: React.FC = () => {
   const { t } = useTranslation();
   const { type, chatId } = useParams<{ type: ChatType; chatId?: string }>();
-  const navigate = useNavigate();
-  const [isMembersPanelOpen, setIsMembersPanelOpen] = useState(false);
 
-  useEffect(() => {
-    if (!type) {
-      navigate(`/chat/${CHAT_GROUPS_LOCATION}`, { replace: true });
-    }
-  }, [type, navigate]);
-
-  useEffect(() => {
-    setIsMembersPanelOpen(false);
-  }, [chatId]);
-
-  const handleInfoClick = () => {
-    setIsMembersPanelOpen(true);
-  };
+  const { schoolClasses, projects, groupsKey } = useChatGroups();
+  const { members } = useChatMembers({ schoolClasses, projects, groupsKey });
 
   const getGroupType = (): ChatGroupType | undefined => {
     if (type !== 'groups' || !chatId) return undefined;
     return chatId.startsWith('p_') ? 'project' : 'class';
   };
 
+  const groupType = getGroupType();
+  const isGroupChat = type === 'groups' && chatId && groupType;
+  const isUserChat = type === 'users' && chatId;
+
+  const chatUser = isUserChat ? members.find((m) => m.cn === chatId) : undefined;
+
   if (!type) {
     return null;
   }
 
-  const showInfoButton = type === 'groups' && chatId;
-
   return (
-    <div className="relative flex h-full w-full">
-      {showInfoButton && (
-        <Button
-          type="button"
-          onClick={handleInfoClick}
-          className="hover:bg-background/10 absolute right-4 top-4 z-10 rounded-full p-2 text-background"
-        >
-          <MdInfoOutline className="h-6 w-6" />
-        </Button>
+    <div className="flex h-full w-full flex-col">
+      {isGroupChat && (
+        <ChatHeader
+          type="group"
+          groupCn={chatId}
+          groupType={groupType}
+          groupName={chatId}
+          maxMembers={10}
+        />
       )}
 
-      {chatId ? (
-        <Outlet />
-      ) : (
-        <div className="flex h-full w-full items-center justify-center text-muted-foreground">
-          {t('chat.selectChat')}
-        </div>
+      {isUserChat && chatUser && (
+        <ChatHeader
+          type="user"
+          user={chatUser}
+        />
       )}
 
-      <ChatMembersPanel
-        isOpen={isMembersPanelOpen}
-        onClose={() => setIsMembersPanelOpen(false)}
-        groupCn={chatId}
-        groupType={getGroupType()}
-      />
+      <div className="flex-1 overflow-hidden">
+        {chatId ? (
+          <Outlet />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center text-muted-foreground">
+            {t('chat.selectChat')}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

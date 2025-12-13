@@ -62,7 +62,6 @@ const MenuBar: React.FC = () => {
   const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
   const firstMenuBarItem = menuBarEntries?.menuItems[0]?.id || '';
 
-  // Filter-Funktion für Suche
   const filteredMenuItems = useMemo(() => {
     if (!searchQuery.trim()) return menuBarEntries.menuItems;
 
@@ -192,7 +191,6 @@ const MenuBar: React.FC = () => {
       )}
 
       <div className="flex-1 overflow-y-auto pb-10">
-        {/* Keine Ergebnisse */}
         {filteredMenuItems.length === 0 && isSearching && (
           <div className="px-3 py-6 text-center text-sm text-muted-foreground">{t('common.noResults')}</div>
         )}
@@ -241,7 +239,10 @@ const MenuBar: React.FC = () => {
                 src={item.icon}
                 alt=""
                 aria-hidden="true"
-                className={cn('h-12 w-12 object-contain', isSelected !== item.id && getAppIconClassName(item.icon))}
+                className={cn(
+                  'h-12 w-12 object-contain',
+                  isSelected !== item.id && getAppIconClassName(item?.icon || ''),
+                )}
               />
               {!shouldCollapse && (
                 <>
@@ -286,12 +287,21 @@ const MenuBar: React.FC = () => {
                           child.action();
                         }}
                         className={cn(
-                          'flex w-full items-center rounded-r-lg py-2 pl-4 pr-3 text-left text-sm',
+                          'flex w-full items-center gap-2 rounded-r-lg py-2 pl-4 pr-3 text-left text-sm',
                           'text-background transition-all duration-150',
                           'hover:bg-accent hover:pl-5',
                           isChildActive && 'bg-accent/50 font-medium',
                         )}
                       >
+                        {child.iconComponent && <span className="flex-shrink-0">{child.iconComponent}</span>}
+                        {!child.iconComponent && child.icon && (
+                          <img
+                            src={child.icon}
+                            alt=""
+                            aria-hidden="true"
+                            className="h-6 w-6 flex-shrink-0 object-contain"
+                          />
+                        )}
                         <span className="truncate">{child.label}</span>
                       </button>
                     );

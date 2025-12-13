@@ -17,10 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import { ReactNode } from 'react';
+
 interface MenuItem {
   id: string;
   label: string;
-  icon: string;
+  icon?: string;
+  iconComponent?: ReactNode;
   action: () => void;
   path?: string;
   disableTranslation?: boolean;

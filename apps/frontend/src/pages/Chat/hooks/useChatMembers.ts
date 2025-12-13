@@ -29,6 +29,10 @@ import createParticipantsMap from '@libs/chat/utils/createParticipantsMap';
 import getParticipantsArray from '@libs/chat/utils/getParticipantsArray';
 import { ChatGroupType } from '@libs/chat/types/chatGroupType';
 
+interface MembersPerGroup {
+  [groupCn: string]: LmnUserInfo[];
+}
+
 interface UseChatMembersPropsMultiple {
   schoolClasses: LmnApiSchoolClass[];
   projects: LmnApiProject[];
@@ -52,6 +56,7 @@ const useChatMembers = (props: UseChatMembersProps) => {
   const { fetchSchoolClass, fetchProject } = useClassManagementStore();
 
   const [members, setMembers] = useState<LmnUserInfo[]>([]);
+  const [membersPerGroup, setMembersPerGroup] = useState<MembersPerGroup>({});
   const [isLoading, setIsLoading] = useState(false);
   const loadedKeyRef = useRef<string | null>(null);
 
@@ -74,18 +79,25 @@ const useChatMembers = (props: UseChatMembersProps) => {
         collectChatParticipants(participants, result.members, result.admins, currentUserCn);
       }
 
-      return getParticipantsArray(participants);
+      const groupMembers = getParticipantsArray(participants);
+      setMembersPerGroup({ [groupCn]: groupMembers });
+      return groupMembers;
     };
 
     const loadMultipleGroups = async (schoolClasses: LmnApiSchoolClass[], projects: LmnApiProject[]) => {
-      const participants = createParticipantsMap();
+      const allParticipants = createParticipantsMap();
+      const perGroup: MembersPerGroup = {};
 
       await schoolClasses.reduce(async (prevPromise, sc) => {
         await prevPromise;
         await waitForGroupLoadReady(() => useClassManagementStore.getState().isSchoolClassLoading);
         const result = await fetchSchoolClass(sc.cn);
         if (result) {
-          collectChatParticipants(participants, result.members, result.admins, currentUserCn);
+          const groupParticipants = createParticipantsMap();
+          collectChatParticipants(groupParticipants, result.members, result.admins, currentUserCn);
+          perGroup[sc.cn] = getParticipantsArray(groupParticipants);
+
+          collectChatParticipants(allParticipants, result.members, result.admins, currentUserCn);
         }
       }, Promise.resolve());
 
@@ -94,11 +106,15 @@ const useChatMembers = (props: UseChatMembersProps) => {
         await waitForGroupLoadReady(() => useClassManagementStore.getState().isProjectLoading);
         const result = await fetchProject(p.cn);
         if (result) {
-          collectChatParticipants(participants, result.members, result.admins, currentUserCn);
+          const groupParticipants = createParticipantsMap();
+          collectChatParticipants(groupParticipants, result.members, result.admins, currentUserCn);
+          perGroup[p.cn] = getParticipantsArray(groupParticipants);
+          collectChatParticipants(allParticipants, result.members, result.admins, currentUserCn);
         }
       }, Promise.resolve());
 
-      return getParticipantsArray(participants);
+      setMembersPerGroup(perGroup);
+      return getParticipantsArray(allParticipants);
     };
 
     const loadMembers = async () => {
@@ -135,10 +151,11 @@ const useChatMembers = (props: UseChatMembersProps) => {
 
     if (currentKey && loadedKeyRef.current !== currentKey) {
       setMembers([]);
+      setMembersPerGroup({});
     }
   }, [isSingleMode, props]);
 
-  return { members, isLoading };
+  return { members, membersPerGroup, isLoading };
 };
 
 export default useChatMembers;

@@ -17,13 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChatIcon, UserIcon } from '@/assets/icons';
 import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
+import Avatar from '@/components/shared/Avatar';
+import AvatarStack from '@/components/shared/AvatarStack';
 import {
   CHAT_AI_LOCATION,
   CHAT_AI_PATH,
@@ -41,13 +43,10 @@ const useChatMenu = () => {
   const schoolPrefix = user?.sophomorixSchoolPrefix || user?.school;
 
   const { schoolClasses, projects, groupsKey } = useChatGroups();
-
-  const { members } = useChatMembers({ schoolClasses, projects, groupsKey });
+  const { members, membersPerGroup } = useChatMembers({ schoolClasses, projects, groupsKey });
 
   const navigateToGroup = useCallback((groupCn: string) => navigate(`${CHAT_GROUPS_PATH}/${groupCn}`), [navigate]);
-
   const navigateToUser = useCallback((userCn: string) => navigate(`${CHAT_USERS_PATH}/${userCn}`), [navigate]);
-
   const navigateToAiChat = useCallback((chatId: string) => navigate(`${CHAT_AI_PATH}/${chatId}`), [navigate]);
 
   const groupChildren = useMemo(() => {
@@ -55,30 +54,64 @@ const useChatMenu = () => {
 
     if (schoolClasses.length) {
       children.push(
-        ...schoolClasses.map((schoolClass) => ({
-          id: schoolClass.cn,
-          label: removeSchoolPrefix(schoolClass.displayName || schoolClass.cn, schoolPrefix),
-          icon: UserIcon,
-          action: () => navigateToGroup(schoolClass.cn),
-          disableTranslation: true,
-        })),
+        ...schoolClasses.map((schoolClass) => {
+          const groupMembers = membersPerGroup[schoolClass.cn] || [];
+          const avatarUsers = groupMembers.map((m) => ({
+            username: m.cn,
+            firstName: m.givenName,
+            lastName: m.sn,
+          }));
+
+          return {
+            id: schoolClass.cn,
+            label: removeSchoolPrefix(schoolClass.displayName || schoolClass.cn, schoolPrefix),
+            iconComponent:
+              avatarUsers.length > 0
+                ? React.createElement(AvatarStack, {
+                    users: avatarUsers,
+                    max: 3,
+                    avatarClassName: 'h-5 w-5',
+                  })
+                : undefined,
+            icon: avatarUsers.length === 0 ? UserIcon : undefined,
+            action: () => navigateToGroup(schoolClass.cn),
+            disableTranslation: true,
+          };
+        }),
       );
     }
 
     if (projects.length) {
       children.push(
-        ...projects.map((project) => ({
-          id: project.cn,
-          label: removeSchoolPrefix(project.displayName || project.cn, schoolPrefix),
-          icon: UserIcon,
-          action: () => navigateToGroup(project.cn),
-          disableTranslation: true,
-        })),
+        ...projects.map((project) => {
+          const groupMembers = membersPerGroup[project.cn] || [];
+          const avatarUsers = groupMembers.map((m) => ({
+            username: m.cn,
+            firstName: m.givenName,
+            lastName: m.sn,
+          }));
+
+          return {
+            id: project.cn,
+            label: removeSchoolPrefix(project.displayName || project.cn, schoolPrefix),
+            iconComponent:
+              avatarUsers.length > 0
+                ? React.createElement(AvatarStack, {
+                    users: avatarUsers,
+                    max: 3,
+                    avatarClassName: 'h-5 w-5',
+                  })
+                : undefined,
+            icon: avatarUsers.length === 0 ? UserIcon : undefined,
+            action: () => navigateToGroup(project.cn),
+            disableTranslation: true,
+          };
+        }),
       );
     }
 
     return children;
-  }, [schoolClasses, projects, schoolPrefix, navigateToGroup]);
+  }, [schoolClasses, projects, schoolPrefix, navigateToGroup, membersPerGroup]);
 
   const userChildren = useMemo(() => {
     if (!members.length) return [];
@@ -88,7 +121,14 @@ const useChatMenu = () => {
       .map((member) => ({
         id: member.cn,
         label: member.displayName || member.cn,
-        icon: UserIcon,
+        iconComponent: React.createElement(Avatar, {
+          user: {
+            username: member.cn,
+            firstName: member.givenName,
+            lastName: member.sn,
+          },
+          className: 'h-6 w-6',
+        }),
         action: () => navigateToUser(member.cn),
         disableTranslation: true,
       }));
