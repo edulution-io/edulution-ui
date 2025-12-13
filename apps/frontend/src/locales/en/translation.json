@@ -1989,5 +1989,11 @@
     },
     "sharePath": "Path",
     "pathPreview": "Path preview"
+  },
+  "notification": {
+    "errors": {
+      "notFound": "Notification not found",
+      "deleteFailed": "Failed to delete notification"
+    }
   }
 }

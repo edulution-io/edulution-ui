@@ -17,12 +17,32 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PUSH_NOTIFICATION_PRIORITY = {
-  DEFAULT: 'default',
-  NORMAL: 'normal',
-  HIGH: 'high',
-} as const;
+import { PushNotificationPriority } from '@libs/notification/constants/pushNotificationPriority';
+import { NotificationTypeValue } from '@libs/notification/types/notificationType';
+import { NotificationCategoryValue } from '@libs/notification/types/notificationCategory';
 
-export default PUSH_NOTIFICATION_PRIORITY;
+class CreateNotificationDto {
+  type: NotificationTypeValue;
 
-export type PushNotificationPriority = (typeof PUSH_NOTIFICATION_PRIORITY)[keyof typeof PUSH_NOTIFICATION_PRIORITY];
+  category?: NotificationCategoryValue;
+
+  title: string;
+
+  body: string;
+
+  subtitle?: string;
+
+  content?: string;
+
+  data?: Record<string, unknown>;
+
+  sound?: string;
+
+  badge?: number;
+
+  priority?: PushNotificationPriority;
+
+  categoryId?: string;
+}
+
+export default CreateNotificationDto;

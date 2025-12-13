@@ -33,6 +33,7 @@ import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAtt
 import BULLETIN_TEMP_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinTempAttachmentsPath';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import NotificationType from '@libs/notification/types/notificationType';
 import CustomHttpException from '../common/CustomHttpException';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 import { BulletinCategory, BulletinCategoryDocument } from '../bulletin-category/bulletin-category.schema';
@@ -369,8 +370,10 @@ class BulletinBoardService implements OnModuleInit {
       // TODO: #1152
       const title = `Aushang bereit: ${dto.title}`;
 
-      await this.notificationService.notifyUsernames(invitedMembersList, {
+      await this.notificationService.sendToUsernames(invitedMembersList, {
+        type: NotificationType.PUSH,
         title,
+        body: `Neuer Aushang verfügbar`,
         data: {
           bulletinId: resultingBulletin.id,
           type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,

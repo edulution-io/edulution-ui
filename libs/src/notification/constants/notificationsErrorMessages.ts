@@ -17,12 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PUSH_NOTIFICATION_PRIORITY = {
-  DEFAULT: 'default',
-  NORMAL: 'normal',
-  HIGH: 'high',
+const notificationsErrorMessages = {
+  NOT_FOUND: 'notification.errors.notFound',
+  DELETE_FAILED: 'notification.errors.deleteFailed',
 } as const;
 
-export default PUSH_NOTIFICATION_PRIORITY;
-
-export type PushNotificationPriority = (typeof PUSH_NOTIFICATION_PRIORITY)[keyof typeof PUSH_NOTIFICATION_PRIORITY];
+export default notificationsErrorMessages;

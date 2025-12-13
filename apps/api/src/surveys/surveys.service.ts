@@ -28,6 +28,7 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import prepareCreator from '@libs/survey/utils/prepareCreator';
 import SseMessageType from '@libs/common/types/sseMessageType';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import NotificationType from '@libs/notification/types/notificationType';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
@@ -250,7 +251,8 @@ class SurveysService implements OnModuleInit {
       const title = `Umfrage ${survey.formula.title}: ${actionName}`;
       const body = `Die Umfrage "${survey.formula.title}" wurde soeben ${actionName}.`;
 
-      await this.notificationService.notifyUsernames(invitedMembersList, {
+      await this.notificationService.sendToUsernames(invitedMembersList, {
+        type: NotificationType.PUSH,
         title,
         body,
         data: {

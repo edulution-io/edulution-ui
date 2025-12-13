@@ -1788,5 +1788,11 @@
     },
     "sharePath": "Chemin de partage",
     "pathPreview": "Aperçu du chemin"
+  },
+  "notification": {
+    "errors": {
+      "notFound": "Notification not found",
+      "deleteFailed": "Failed to delete notification"
+    }
   }
 }

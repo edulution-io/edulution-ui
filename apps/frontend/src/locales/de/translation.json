@@ -1991,5 +1991,11 @@
     },
     "sharePath": "Pfad",
     "pathPreview": "Pfad-Vorschau"
+  },
+  "notification": {
+    "errors": {
+      "notFound": "Benachrichtigung nicht gefunden",
+      "deleteFailed": "Benachrichtigung konnte nicht gelöscht werden"
+    }
   }
 }
