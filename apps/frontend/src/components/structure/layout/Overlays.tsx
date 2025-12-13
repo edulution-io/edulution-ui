@@ -26,6 +26,7 @@ import SetupMfaDialog from '@/pages/UserSettings/Security/components/SetupMfaDia
 import NativeFrameManager from '@/components/structure/framing/Native/NativeFrameManager';
 import EmbeddedFrameManager from '@/components/structure/framing/EmbeddedFrameManager';
 import Launcher from '@/components/ui/Launcher/Launcher';
+import ChatPopoutWindow from '@/pages/Chat/components/ChatPopoutWindow';
 
 const Overlays = () => (
   <>
@@ -37,6 +38,7 @@ const Overlays = () => (
     <CommunityLicenseDialog />
     <SetupMfaDialog />
     <Launcher />
+    <ChatPopoutWindow />
   </>
 );
 

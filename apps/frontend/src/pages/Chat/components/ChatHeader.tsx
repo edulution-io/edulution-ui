@@ -18,8 +18,11 @@
  */
 
 import React from 'react';
+import { TbLayoutSidebarRightCollapse } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 import { ChatGroupType } from '@libs/chat/types/chatGroupType';
 import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
+import useChatStore from '@/pages/Chat/hooks/useChatStore';
 import ChatHeaderUser from './ChatHeaderUser';
 import ChatHeaderGroup from './ChatHeaderGroup';
 
@@ -40,20 +43,62 @@ type ChatHeaderProps = ChatHeaderGroupProps | ChatHeaderUserProps;
 
 const ChatHeader: React.FC<ChatHeaderProps> = (props) => {
   const { type } = props;
+  const { t } = useTranslation();
+  const { setCurrentlyOpenChat, setIsChatPopoutVisible, setIsChatDocked } = useChatStore();
+
+  const handleUndock = () => {
+    if (type === 'user') {
+      const { user } = props;
+      setCurrentlyOpenChat({
+        chatId: user.cn,
+        type: 'user',
+        user,
+      });
+    } else {
+      const { groupCn, groupType, groupName } = props;
+      setCurrentlyOpenChat({
+        chatId: groupCn,
+        type: 'group',
+        groupType,
+        groupName,
+      });
+    }
+    setIsChatPopoutVisible(true);
+    setIsChatDocked(false);
+  };
+
+  const UndockButton = (
+    <button
+      type="button"
+      onClick={handleUndock}
+      className="mr-2 flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-background"
+      title={t('chat.undock')}
+    >
+      <TbLayoutSidebarRightCollapse className="h-5 w-5" />
+    </button>
+  );
 
   if (type === 'user') {
     const { user } = props;
-    return <ChatHeaderUser user={user} />;
+    return (
+      <div className="flex items-center justify-between border-b border-muted">
+        <ChatHeaderUser user={user} />
+        {UndockButton}
+      </div>
+    );
   }
 
   const { groupCn, groupType, groupName, maxMembers } = props;
   return (
-    <ChatHeaderGroup
-      groupCn={groupCn}
-      groupType={groupType}
-      groupName={groupName}
-      maxMembers={maxMembers}
-    />
+    <div className="flex items-center justify-between border-b border-muted">
+      <ChatHeaderGroup
+        groupCn={groupCn}
+        groupType={groupType}
+        groupName={groupName}
+        maxMembers={maxMembers}
+      />
+      {UndockButton}
+    </div>
   );
 };
 

@@ -17,29 +17,35 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import Avatar from '@/components/shared/Avatar';
+import { create } from 'zustand';
+import { ChatGroupType } from '@libs/chat/types/chatGroupType';
 import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 
-interface ChatHeaderUserProps {
-  user: LmnUserInfo;
+export interface PopoutChatData {
+  chatId: string;
+  type: 'user' | 'group';
+  groupType?: ChatGroupType;
+  user?: LmnUserInfo;
+  groupName?: string;
 }
 
-const ChatHeaderUser: React.FC<ChatHeaderUserProps> = ({ user }) => (
-  <div className="flex items-center gap-3 p-4">
-    <Avatar
-      user={{
-        username: user.cn || '',
-        firstName: user.givenName,
-        lastName: user.sn,
-      }}
-      className="h-10 w-10"
-    />
-    <div className="flex flex-col">
-      <h2 className="text-lg font-semibold text-background">{user.displayName || user.cn}</h2>
-      {user.sophomorixAdminClass && <span className="text-sm text-muted-foreground">{user.sophomorixAdminClass}</span>}
-    </div>
-  </div>
-);
+interface ChatStore {
+  currentlyOpenChat: PopoutChatData | null;
+  setCurrentlyOpenChat: (chat: PopoutChatData | null) => void;
+  isChatPopoutVisible: boolean;
+  setIsChatPopoutVisible: (visible: boolean) => void;
+  isChatDocked: boolean;
+  setIsChatDocked: (docked: boolean) => void;
+}
 
-export default ChatHeaderUser;
+const useChatStore = create<ChatStore>((set) => ({
+  currentlyOpenChat: null,
+  isChatPopoutVisible: false,
+  isChatDocked: true,
+
+  setCurrentlyOpenChat: (chat) => set({ currentlyOpenChat: chat }),
+  setIsChatPopoutVisible: (visible) => set({ isChatPopoutVisible: visible }),
+  setIsChatDocked: (docked) => set({ isChatDocked: docked }),
+}));
+
+export default useChatStore;

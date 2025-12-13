@@ -18,17 +18,21 @@
  */
 
 import React from 'react';
-import { Outlet, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ChatType } from '@libs/chat/types/chatType';
 import { ChatGroupType } from '@libs/chat/types/chatGroupType';
 import ChatHeader from '@/pages/Chat/components/ChatHeader';
+import ChatConversation from '@/pages/Chat/components/ChatConversation';
 import useChatGroups from '@/pages/Chat/hooks/useChatGroups';
 import useChatMembers from '@/pages/Chat/hooks/useChatMembers';
+import useChatStore from '@/pages/Chat/hooks/useChatStore';
 
 const ChatPage: React.FC = () => {
   const { t } = useTranslation();
   const { type, chatId } = useParams<{ type: ChatType; chatId?: string }>();
+
+  const { currentlyOpenChat, isChatPopoutVisible, isChatDocked } = useChatStore();
 
   const { schoolClasses, projects, groupsKey } = useChatGroups();
   const { members } = useChatMembers({ schoolClasses, projects, groupsKey });
@@ -44,13 +48,15 @@ const ChatPage: React.FC = () => {
 
   const chatUser = isUserChat ? members.find((m) => m.cn === chatId) : undefined;
 
+  const isChatUndocked = isChatPopoutVisible && !isChatDocked && currentlyOpenChat?.chatId === chatId;
+
   if (!type) {
     return null;
   }
 
   return (
     <div className="flex h-full w-full flex-col">
-      {isGroupChat && (
+      {!isChatUndocked && isGroupChat && (
         <ChatHeader
           type="group"
           groupCn={chatId}
@@ -60,7 +66,7 @@ const ChatPage: React.FC = () => {
         />
       )}
 
-      {isUserChat && chatUser && (
+      {!isChatUndocked && isUserChat && chatUser && (
         <ChatHeader
           type="user"
           user={chatUser}
@@ -68,9 +74,13 @@ const ChatPage: React.FC = () => {
       )}
 
       <div className="flex-1 overflow-hidden">
-        {chatId ? (
-          <Outlet />
-        ) : (
+        {isChatUndocked && (
+          <div className="flex h-full w-full items-center justify-center text-muted-foreground">
+            {t('chat.openedInWindow')}
+          </div>
+        )}
+        {!isChatUndocked && chatId && <ChatConversation />}
+        {!isChatUndocked && !chatId && (
           <div className="flex h-full w-full items-center justify-center text-muted-foreground">
             {t('chat.selectChat')}
           </div>

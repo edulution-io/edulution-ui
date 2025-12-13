@@ -44,36 +44,34 @@ const ChatHeaderGroup: React.FC<ChatHeaderGroupProps> = ({ groupCn, groupType, g
   }, [displayedMembers]);
 
   return (
-    <div className="flex items-center border-b border-muted p-4">
-      <div className="flex flex-col gap-2">
-        {groupName && <h2 className="text-lg font-semibold text-background">{groupName}</h2>}
+    <div className="flex flex-col gap-2 p-4">
+      {groupName && <h2 className="text-lg font-semibold text-background">{groupName}</h2>}
 
-        <div className="flex items-center gap-2">
-          {isLoading ? (
-            <p className="text-sm text-muted-foreground">{t('common.loading')}</p>
-          ) : (
-            <>
-              <div className="flex -space-x-2">
-                {displayedMembers.map((member) => (
-                  <Avatar
-                    key={member.cn}
-                    user={{
-                      username: member.cn || '',
-                      firstName: member.givenName,
-                      lastName: member.sn,
-                    }}
-                    className="h-6 w-6 border border-accent"
-                  />
-                ))}
-              </div>
+      <div className="flex items-center gap-2">
+        {isLoading ? (
+          <p className="text-sm text-muted-foreground">{t('common.loading')}</p>
+        ) : (
+          <>
+            <div className="flex -space-x-1">
+              {displayedMembers.map((member) => (
+                <Avatar
+                  key={member.cn}
+                  user={{
+                    username: member.cn || '',
+                    firstName: member.givenName,
+                    lastName: member.sn,
+                  }}
+                  className="h-6 w-6 border border-accent"
+                />
+              ))}
+            </div>
 
-              <span className="text-sm text-muted-foreground">
-                {memberNames}
-                {remainingCount > 0 && ` +${remainingCount}`}
-              </span>
-            </>
-          )}
-        </div>
+            <span className="text-sm text-muted-foreground">
+              {memberNames}
+              {remainingCount > 0 && ` +${remainingCount}`}
+            </span>
+          </>
+        )}
       </div>
     </div>
   );

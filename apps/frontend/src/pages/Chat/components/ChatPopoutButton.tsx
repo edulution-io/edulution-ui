@@ -18,28 +18,32 @@
  */
 
 import React from 'react';
-import Avatar from '@/components/shared/Avatar';
-import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
+import { MdOpenInNew } from 'react-icons/md';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
+import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/shared/Button';
 
-interface ChatHeaderUserProps {
-  user: LmnUserInfo;
+interface ChatPopoutButtonProps {
+  onClick: () => void;
 }
 
-const ChatHeaderUser: React.FC<ChatHeaderUserProps> = ({ user }) => (
-  <div className="flex items-center gap-3 p-4">
-    <Avatar
-      user={{
-        username: user.cn || '',
-        firstName: user.givenName,
-        lastName: user.sn,
-      }}
-      className="h-10 w-10"
-    />
-    <div className="flex flex-col">
-      <h2 className="text-lg font-semibold text-background">{user.displayName || user.cn}</h2>
-      {user.sophomorixAdminClass && <span className="text-sm text-muted-foreground">{user.sophomorixAdminClass}</span>}
-    </div>
-  </div>
-);
+const ChatPopoutButton: React.FC<ChatPopoutButtonProps> = ({ onClick }) => {
+  const { t } = useTranslation();
 
-export default ChatHeaderUser;
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          type="button"
+          onClick={onClick}
+          className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-background"
+        >
+          <MdOpenInNew className="h-5 w-5" />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>{t('chat.popout')}</TooltipContent>
+    </Tooltip>
+  );
+};
+
+export default ChatPopoutButton;
