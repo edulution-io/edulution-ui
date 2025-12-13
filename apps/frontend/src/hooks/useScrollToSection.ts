@@ -17,13 +17,28 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import axios from 'axios';
+import { useCallback } from 'react';
+import useSubMenuStore from '@/store/useSubMenuStore';
+import HIGHLIGHT_DURATION from '@libs/ui/constants/highlightDuration';
 
-describe('GET /api', () => {
-  it('should return a message', async () => {
-    const res = await axios.get(`/api`);
+const useScrollToSection = () => {
+  const { setActiveSection, requestOpenSection } = useSubMenuStore();
 
-    expect(res.status).toBe(200);
-    expect(res.data).toEqual({ message: 'Hello API' });
-  });
-});
+  const scrollToSection = useCallback(
+    (sectionId: string) => {
+      requestOpenSection(sectionId);
+      setTimeout(() => setActiveSection(null), HIGHLIGHT_DURATION);
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }, 50);
+    },
+    [setActiveSection, requestOpenSection],
+  );
+
+  return { scrollToSection };
+};
+
+export default useScrollToSection;

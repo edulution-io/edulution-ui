@@ -22,6 +22,7 @@ import { Content, Header, Item, Root, Trigger } from '@radix-ui/react-accordion'
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 import cn from '@libs/common/utils/className';
 import AnchorSection from '@/components/shared/AnchorSection';
+import useSubMenuStore from '@/store/useSubMenuStore';
 
 interface SectionAccordionProps {
   children: React.ReactNode;
@@ -54,6 +55,8 @@ const SectionAccordion: React.FC<SectionAccordionProps> = ({
   defaultOpenAll = false,
   className,
 }) => {
+  const { sectionToOpen, clearOpenRequest } = useSubMenuStore();
+
   const [openItems, setOpenItems] = useState<string[]>(() => {
     if (defaultOpenAll) {
       return getChildIds(children);
@@ -62,15 +65,25 @@ const SectionAccordion: React.FC<SectionAccordionProps> = ({
   });
 
   useEffect(() => {
-    const hash = window.location.hash.replace('#', '');
-    if (hash) {
-      setOpenItems((prev) => (prev.includes(hash) ? prev : [...prev, hash]));
+    if (!sectionToOpen) return;
 
-      setTimeout(() => {
-        const element = document.getElementById(hash);
-        element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
+    if (!openItems.includes(sectionToOpen)) {
+      setOpenItems((prev) => [...prev, sectionToOpen]);
     }
+
+    clearOpenRequest();
+  }, [sectionToOpen, openItems, clearOpenRequest]);
+
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '');
+    if (!hash) return;
+
+    setOpenItems((prev) => (prev.includes(hash) ? prev : [...prev, hash]));
+
+    setTimeout(() => {
+      const element = document.getElementById(hash);
+      element?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
   }, []);
 
   const handleValueChange = (value: string[]) => {
@@ -101,39 +114,50 @@ const SectionAccordionItem: React.FC<SectionAccordionItemProps> = ({
   children,
   className,
   variant = 'default',
-}) => (
-  <Item
-    value={id}
-    className={cn(
-      'text-card-foreground',
-      variant === 'default' && 'rounded-xl bg-transparent dark:bg-muted-background',
-      className,
-    )}
-  >
-    <AnchorSection id={id}>
-      <Header className="flex">
-        <Trigger
+}) => {
+  const { registerSection, unregisterSection, activeSection } = useSubMenuStore();
+  const isHighlighted = activeSection === id;
+
+  useEffect(() => {
+    registerSection({ id, label });
+    return () => unregisterSection(id);
+  }, [id, label, registerSection, unregisterSection]);
+
+  return (
+    <Item
+      value={id}
+      className={cn(
+        'text-card-foreground transition-all duration-300',
+        variant === 'default' && 'rounded-xl bg-muted-background',
+        isHighlighted && 'blinking',
+        className,
+      )}
+    >
+      <AnchorSection id={id}>
+        <Header className="flex">
+          <Trigger
+            className={cn(
+              'flex flex-1 items-center justify-between py-4 text-base font-semibold leading-none tracking-tight',
+              'transition-all [&[data-state=open]>svg]:rotate-180',
+              variant === 'default' && 'px-6',
+            )}
+          >
+            <h3>{label}</h3>
+            <ChevronDownIcon className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" />
+          </Trigger>
+        </Header>
+        <Content
           className={cn(
-            'flex flex-1 items-center justify-between py-4 text-base font-semibold leading-none tracking-tight',
-            'transition-all [&[data-state=open]>svg]:rotate-180',
-            variant === 'default' && 'px-6',
+            'overflow-hidden text-sm',
+            'data-[state=closed]:animate-accordion-up',
+            'data-[state=open]:animate-accordion-down',
           )}
         >
-          <h3>{label}</h3>
-          <ChevronDownIcon className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" />
-        </Trigger>
-      </Header>
-      <Content
-        className={cn(
-          'overflow-hidden text-sm',
-          'data-[state=closed]:animate-accordion-up',
-          'data-[state=open]:animate-accordion-down',
-        )}
-      >
-        <div className={cn('pb-6 pt-0', variant === 'default' && 'px-6')}>{children}</div>
-      </Content>
-    </AnchorSection>
-  </Item>
-);
+          <div className={cn('pb-6 pt-0', variant === 'default' && 'px-6')}>{children}</div>
+        </Content>
+      </AnchorSection>
+    </Item>
+  );
+};
 
 export { SectionAccordion, SectionAccordionItem };

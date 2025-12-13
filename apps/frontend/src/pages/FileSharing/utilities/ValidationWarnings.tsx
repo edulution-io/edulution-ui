@@ -25,31 +25,38 @@ import WarningBox from '@/components/shared/WarningBox';
 interface ValidationWarningsProps {
   oversizedFiles: File[];
   duplicateFiles: string[];
+  duplicateFolders: string[];
   tooLargeFolders: string[];
 }
 
-const ValidationWarnings: React.FC<ValidationWarningsProps> = ({ oversizedFiles, duplicateFiles, tooLargeFolders }) => {
+const ValidationWarnings: React.FC<ValidationWarningsProps> = ({
+  oversizedFiles,
+  duplicateFiles,
+  duplicateFolders,
+  tooLargeFolders,
+}) => {
   const { t } = useTranslation();
-
-  const hasMultipleDuplicates = duplicateFiles.length > 1;
-  const hasMultipleOversizedFiles = oversizedFiles.length > 1;
 
   return (
     <>
       {duplicateFiles.length > 0 && (
         <WarningBox
           icon={<HiExclamationTriangle className="text-ciYellow" />}
-          title={
-            hasMultipleDuplicates
-              ? t('filesharingUpload.overwriteWarningTitleFiles')
-              : t('filesharingUpload.overwriteWarningTitleFile')
-          }
-          description={
-            hasMultipleDuplicates
-              ? t('filesharingUpload.overwriteWarningDescriptionFiles')
-              : t('filesharingUpload.overwriteWarningDescriptionFile')
-          }
+          title={t('filesharingUpload.overwriteWarningTitle', { count: duplicateFiles.length })}
+          description={t('filesharingUpload.overwriteWarningDescription', { count: duplicateFiles.length })}
           filenames={duplicateFiles}
+          borderColor="border-ciLightYellow"
+          backgroundColor="bg-ciLightYellow/10"
+          textColor="text-ciLightYellow"
+        />
+      )}
+
+      {duplicateFolders.length > 0 && (
+        <WarningBox
+          icon={<HiExclamationTriangle className="text-ciYellow" />}
+          title={t('filesharingUpload.overwriteFolderWarningTitle', { count: duplicateFolders.length })}
+          description={t('filesharingUpload.overwriteFolderWarningDescription', { count: duplicateFolders.length })}
+          filenames={duplicateFolders}
           borderColor="border-ciLightYellow"
           backgroundColor="bg-ciLightYellow/10"
           textColor="text-ciLightYellow"
@@ -59,11 +66,7 @@ const ValidationWarnings: React.FC<ValidationWarningsProps> = ({ oversizedFiles,
       {oversizedFiles.length > 0 && (
         <WarningBox
           icon={<HiExclamationTriangle className="text-ciRed" />}
-          title={
-            hasMultipleOversizedFiles
-              ? t('filesharingUpload.oversizedFilesDetected')
-              : t('filesharingUpload.oversizedFileDetected')
-          }
+          title={t('filesharingUpload.oversizedFileDetected', { count: oversizedFiles.length })}
           description={t('filesharingUpload.cannotUploadOversized')}
           filenames={oversizedFiles.map((file) => file.name)}
           borderColor="border-ciLightRed"

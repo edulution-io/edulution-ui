@@ -17,6 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const TABS = 'tabs';
+const HIGHLIGHT_DURATION = 3000;
 
-export default TABS;
+export default HIGHLIGHT_DURATION;

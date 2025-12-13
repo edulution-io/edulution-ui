@@ -36,6 +36,7 @@ import BULLETIN_VISIBILITY_STATES from '@libs/bulletinBoard/constants/bulletinVi
 import BulletinVisibilityStatesType from '@libs/bulletinBoard/types/bulletinVisibilityStatesType';
 import { ChevronRightIcon } from '@radix-ui/react-icons';
 import { AnimatePresence, motion } from 'framer-motion';
+import HIGHLIGHT_DURATION from '@libs/ui/constants/highlightDuration';
 
 const BulletinBoardColumnItem = ({
   bulletin,
@@ -124,7 +125,7 @@ const BulletinBoardColumnItem = ({
 
     const timer = setTimeout(() => {
       element.classList.remove('blinking');
-    }, 3000);
+    }, HIGHLIGHT_DURATION);
 
     return () => clearTimeout(timer);
   }, [bulletinBoardNotifications, bulletin.id, setCollapsed]);

@@ -22,6 +22,7 @@ import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import cn from '@libs/common/utils/className';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { GoSidebarCollapse, GoSidebarExpand } from 'react-icons/go';
+import { ChevronDownIcon } from '@radix-ui/react-icons';
 import { useOnClickOutside } from 'usehooks-ts';
 import useMedia from '@/hooks/useMedia';
 import { getFromPathName } from '@libs/common/utils';
@@ -49,28 +50,29 @@ const MenuBar: React.FC = () => {
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const { isMobileView, isTabletView } = useMedia();
   const isDesktopView = !isMobileView && !isTabletView && !isEdulutionApp;
   const shouldCollapse = isDesktopView && isCollapsed;
   const navigate = useNavigate();
 
+  const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
+  const firstMenuBarItem = menuBarEntries?.menuItems[0]?.id || '';
+
   useOnClickOutside(menubarRef, () => {
     if (isMobileView || isTabletView) toggleMobileMenuBar();
   });
 
-  if (menuBarEntries.disabled) {
-    return null;
-  }
-
-  const firstMenuBarItem = menuBarEntries?.menuItems[0]?.id || '';
-
-  const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
-
   useEffect(() => {
     if (pathParts[1]) {
       setIsSelected(pathParts[1]);
+      setExpandedItems((prev) => new Set(prev).add(pathParts[1]));
     }
   }, [pathParts]);
+
+  if (menuBarEntries.disabled) {
+    return null;
+  }
 
   const handleHeaderIconClick = () => {
     switch (pathParts[0]) {
@@ -107,6 +109,18 @@ const MenuBar: React.FC = () => {
     }
   };
 
+  const toggleExpanded = (itemId: string) => {
+    setExpandedItems((prev) => {
+      const next = new Set(prev);
+      if (next.has(itemId)) {
+        next.delete(itemId);
+      } else {
+        next.add(itemId);
+      }
+      return next;
+    });
+  };
+
   const activeItem = useMemo(
     () => menuBarEntries.menuItems.find((item) => item.id === isSelected),
     [isSelected, menuBarEntries.menuItems],
@@ -118,8 +132,23 @@ const MenuBar: React.FC = () => {
       ref={menubarRef}
     >
       <div className="flex flex-col items-center justify-center py-6">
+        {isDesktopView && (
+          <Button
+            type="button"
+            variant="btn-outline"
+            size="sm"
+            onClick={toggleCollapsed}
+            className={cn(
+              'absolute right-[-25px] top-2 mx-3 mb-4 border-accent bg-foreground px-2 py-1',
+              shouldCollapse ? 'cursor-e-resize' : 'cursor-w-resize',
+            )}
+          >
+            {isCollapsed ? <GoSidebarCollapse size={18} /> : <GoSidebarExpand size={18} />}
+          </Button>
+        )}
+
         <button
-          className="flex flex-col items-center justify-center rounded-xl p-2 hover:bg-muted-background"
+          className="flex flex-col items-center justify-center rounded-lg p-2 hover:bg-muted-background"
           type="button"
           onClick={handleHeaderIconClick}
         >
@@ -132,46 +161,123 @@ const MenuBar: React.FC = () => {
               getAppIconClassName(menuBarEntries.icon),
             )}
           />
-          {!shouldCollapse && (
-            <h2 className="mb-2 mt-2 text-center font-bold text-background">{menuBarEntries.title}</h2>
-          )}
+          {!shouldCollapse && <h2 className="mb-2 mt-2 text-center">{menuBarEntries.title}</h2>}
         </button>
       </div>
 
       <div className="flex-1 overflow-y-auto pb-10">
         {menuBarEntries.menuItems.map((item) => {
-          const content = (
-            <button
-              type="button"
-              onClick={() => {
-                setIsSelected(item.id);
-                toggleMobileMenuBar();
-                item.action();
-              }}
+          const hasChildren = item.children && item.children.length > 0;
+          const isExpanded = expandedItems.has(item.id);
+          const isActive = isSelected === item.id;
+
+          const handleItemClick = () => {
+            setIsSelected(item.id);
+            if (isMobileView || isTabletView) toggleMobileMenuBar();
+            item.action();
+
+            if (hasChildren && !isExpanded) {
+              setExpandedItems((prev) => new Set(prev).add(item.id));
+            }
+          };
+
+          const handleExpandClick = (e: React.MouseEvent) => {
+            e.stopPropagation();
+            toggleExpanded(item.id);
+          };
+
+          const childrenId = `${item.id}-children`;
+
+          const mainButton = (
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={handleItemClick}
+              onKeyDown={(e) => e.key === 'Enter' && handleItemClick()}
+              aria-expanded={hasChildren ? isExpanded : undefined}
+              aria-controls={hasChildren ? childrenId : undefined}
+              aria-label={item.label}
               className={cn(
-                'flex w-full items-center gap-3 py-1 pl-3 pr-3 transition-colors hover:bg-muted-background',
-                isSelected === item.id ? menuBarEntries.color.split(':')[1] : '',
+                'flex w-full cursor-pointer items-center gap-3 rounded-lg py-1 pl-3 pr-3 transition-colors hover:bg-accent',
+                menuBarEntries.color,
+                isActive ? menuBarEntries.color.split(':')[1] : '',
                 shouldCollapse && 'justify-center',
               )}
             >
               <img
                 src={item.icon}
-                alt={item.label}
+                alt=""
+                aria-hidden="true"
                 className={cn('h-12 w-12 object-contain', isSelected !== item.id && getAppIconClassName(item.icon))}
               />
               {!shouldCollapse && (
-                <span className={cn(isSelected === item.id ? 'text-white' : 'text-background')}>{item.label}</span>
+                <>
+                  <p className="flex-1 text-left">{item.label}</p>
+                  {hasChildren && (
+                    <button
+                      type="button"
+                      onClick={handleExpandClick}
+                      aria-label={isExpanded ? 'Collapse' : 'Expand'}
+                      className="rounded-lg p-1 hover:bg-accent"
+                    >
+                      <ChevronDownIcon
+                        className={cn('h-4 w-4 transition-transform duration-200', isExpanded && 'rotate-180')}
+                      />
+                    </button>
+                  )}
+                </>
               )}
-            </button>
+            </div>
+          );
+
+          const childrenContent = hasChildren && !shouldCollapse && (
+            <div
+              id={childrenId}
+              role="region"
+              aria-label={`${item.label} sections`}
+              className={cn(
+                'grid transition-all duration-200 ease-in-out',
+                isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
+              )}
+            >
+              <div className="overflow-hidden">
+                <div className="border-muted/50 ml-12 border-l py-1">
+                  {item.children!.map((child) => {
+                    const isChildActive = pathname.includes(child.id);
+                    return (
+                      <button
+                        key={child.id}
+                        type="button"
+                        onClick={() => {
+                          if (isMobileView || isTabletView) toggleMobileMenuBar();
+                          child.action();
+                        }}
+                        className={cn(
+                          'flex w-full items-center rounded-r-lg py-2 pl-4 pr-3 text-left text-sm',
+                          'text-background transition-all duration-150',
+                          'hover:bg-accent hover:pl-5',
+                          isChildActive && 'bg-accent/50 font-medium',
+                        )}
+                      >
+                        <span className="truncate">{child.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
           );
 
           return shouldCollapse ? (
             <Tooltip key={item.id}>
-              <TooltipTrigger asChild>{content}</TooltipTrigger>
+              <TooltipTrigger asChild>{mainButton}</TooltipTrigger>
               <TooltipContent side="right">{item.label}</TooltipContent>
             </Tooltip>
           ) : (
-            <React.Fragment key={item.id}>{content}</React.Fragment>
+            <div key={item.id}>
+              {mainButton}
+              {childrenContent}
+            </div>
           );
         })}
       </div>
@@ -214,7 +320,7 @@ const MenuBar: React.FC = () => {
       ) : (
         <div
           className={cn(
-            'fixed left-0 top-0 z-50 h-full overflow-x-hidden bg-transparent backdrop-blur-md duration-300 ease-in-out',
+            'fixed left-0 top-0 z-50 h-full overflow-x-hidden bg-foreground duration-300 ease-in-out',
             isMobileMenuBarOpen ? 'w-64 border-r-[1px] border-muted' : 'w-0',
           )}
         >
