@@ -23,11 +23,11 @@ import getForwardedAppRoutes from '@/router/routes/getForwardedAppRoutes';
 import getFramedRoutes from '@/router/routes/getFramedRoutes';
 import getNativeAppRoutes from '@/router/routes/getNativeAppRoutes';
 import {
-  USER_INTERFACE_PATH,
   MAILS_PATH,
   MOBILE_ACCESS_PATH,
   SECURITY_PATH,
   USER_DETAILS_PATH,
+  USER_INTERFACE_PATH,
   USER_SETTINGS_PATH,
 } from '@libs/userSettings/constants/user-settings-endpoints';
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
@@ -44,6 +44,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
 import DefaultLandingPageAfterLogin from '@/components/structure/DefaultLandingPageAfterLogin';
 import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
+import getChatRoutes from '@/router/routes/getChatRoutes';
 import ProtectedRoute from './ProtectedRoute';
 import getEmbeddedRoutes from './getEmbeddedRoutes';
 
@@ -103,6 +104,7 @@ const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
     {getClassManagementRoutes()}
     {getSurveyRoutes()}
     {getFileSharingRoutes()}
+    {getChatRoutes()}
   </>
 );
 

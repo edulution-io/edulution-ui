@@ -33,6 +33,7 @@ import MenuItem from '@libs/menubar/menuItem';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import useSubMenuStore from '@/store/useSubMenuStore';
 import useScrollToSection from '@/hooks/useScrollToSection';
+import useChatMenu from '@/pages/Chat/useChatMenu';
 import useLdapGroups from './useLdapGroups';
 
 const useMenuBarConfig = (): MenuBarEntry => {
@@ -47,6 +48,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
   const CLASS_MANAGEMENT_MENUBAR_CONFIG = useClassManagementMenu();
   const { sections } = useSubMenuStore();
   const { scrollToSection } = useScrollToSection();
+  const CHAT_MENUBAR_CONFIG = useChatMenu();
 
   const menuBarConfigSwitch = (): MenuBarEntry => {
     const rootPathName = getFromPathName(pathname, 1);
@@ -73,6 +75,9 @@ const useMenuBarConfig = (): MenuBarEntry => {
       case APPS.CLASS_MANAGEMENT: {
         return CLASS_MANAGEMENT_MENUBAR_CONFIG;
       }
+      case APPS.CHAT: {
+        return CHAT_MENUBAR_CONFIG;
+      }
       default: {
         return defaultReturnMenuBarEntry;
       }
@@ -96,7 +101,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
     action: () => item.action(),
     icon: item.icon,
     disableTranslation: item.disableTranslation,
-    children: item.id === getFromPathName(pathname, 2) ? sectionChildren : undefined,
+    children: item.id === getFromPathName(pathname, 2) ? [...(item.children || []), ...sectionChildren] : item.children,
   }));
 
   return {

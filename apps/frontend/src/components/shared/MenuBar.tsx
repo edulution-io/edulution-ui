@@ -35,6 +35,8 @@ import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableShare
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
 import getAppIconClassName from '@libs/ui/utils/getAppIconClassName';
+import MenuItem from '@libs/menubar/menuItem';
+import Input from '@/components/shared/Input';
 import useMenuBarStore from './useMenuBarStore';
 import { Button } from './Button';
 
@@ -48,6 +50,7 @@ const MenuBar: React.FC = () => {
   const webdavShares = useFileSharingStore((state) => state.webdavShares);
   const { createVariableSharePathname } = useVariableSharePathname();
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
@@ -58,6 +61,33 @@ const MenuBar: React.FC = () => {
 
   const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
   const firstMenuBarItem = menuBarEntries?.menuItems[0]?.id || '';
+
+  // Filter-Funktion für Suche
+  const filteredMenuItems = useMemo(() => {
+    if (!searchQuery.trim()) return menuBarEntries.menuItems;
+
+    const lowerQuery = searchQuery.toLowerCase();
+
+    return menuBarEntries.menuItems
+      .map((item) => {
+        const itemMatches = item.label.toLowerCase().includes(lowerQuery);
+
+        const filteredChildren = item.children?.filter((child) => child.label.toLowerCase().includes(lowerQuery));
+
+        if (itemMatches) {
+          return item;
+        }
+
+        if (filteredChildren && filteredChildren.length > 0) {
+          return { ...item, children: filteredChildren };
+        }
+
+        return null;
+      })
+      .filter(Boolean) as MenuItem[];
+  }, [menuBarEntries.menuItems, searchQuery]);
+
+  const isSearching = searchQuery.trim().length > 0;
 
   useOnClickOutside(menubarRef, () => {
     if (isMobileView || isTabletView) toggleMobileMenuBar();
@@ -132,21 +162,6 @@ const MenuBar: React.FC = () => {
       ref={menubarRef}
     >
       <div className="flex flex-col items-center justify-center py-6">
-        {isDesktopView && (
-          <Button
-            type="button"
-            variant="btn-outline"
-            size="sm"
-            onClick={toggleCollapsed}
-            className={cn(
-              'absolute right-[-25px] top-2 mx-3 mb-4 border-accent bg-foreground px-2 py-1',
-              shouldCollapse ? 'cursor-e-resize' : 'cursor-w-resize',
-            )}
-          >
-            {isCollapsed ? <GoSidebarCollapse size={18} /> : <GoSidebarExpand size={18} />}
-          </Button>
-        )}
-
         <button
           className="flex flex-col items-center justify-center rounded-lg p-2 hover:bg-muted-background"
           type="button"
@@ -161,14 +176,30 @@ const MenuBar: React.FC = () => {
               getAppIconClassName(menuBarEntries.icon),
             )}
           />
-          {!shouldCollapse && <h2 className="mb-2 mt-2 text-center">{menuBarEntries.title}</h2>}
+          {!shouldCollapse && <h2 className="mb-2 mt-2 text-center text-background">{menuBarEntries.title}</h2>}
         </button>
       </div>
 
+      {!shouldCollapse && (
+        <div className="px-3 pb-3">
+          <Input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={t('common.search')}
+          />
+        </div>
+      )}
+
       <div className="flex-1 overflow-y-auto pb-10">
-        {menuBarEntries.menuItems.map((item) => {
+        {/* Keine Ergebnisse */}
+        {filteredMenuItems.length === 0 && isSearching && (
+          <div className="px-3 py-6 text-center text-sm text-muted-foreground">{t('common.noResults')}</div>
+        )}
+
+        {filteredMenuItems.map((item) => {
           const hasChildren = item.children && item.children.length > 0;
-          const isExpanded = expandedItems.has(item.id);
+          const isExpanded = expandedItems.has(item.id) || isSearching;
           const isActive = isSelected === item.id;
 
           const handleItemClick = () => {
@@ -176,14 +207,16 @@ const MenuBar: React.FC = () => {
             if (isMobileView || isTabletView) toggleMobileMenuBar();
             item.action();
 
-            if (hasChildren && !isExpanded) {
+            if (hasChildren && !isExpanded && !isSearching) {
               setExpandedItems((prev) => new Set(prev).add(item.id));
             }
           };
 
           const handleExpandClick = (e: React.MouseEvent) => {
             e.stopPropagation();
-            toggleExpanded(item.id);
+            if (!isSearching) {
+              toggleExpanded(item.id);
+            }
           };
 
           const childrenId = `${item.id}-children`;
@@ -212,8 +245,8 @@ const MenuBar: React.FC = () => {
               />
               {!shouldCollapse && (
                 <>
-                  <p className="flex-1 text-left">{item.label}</p>
-                  {hasChildren && (
+                  <p className="flex-1 text-left text-background">{item.label}</p>
+                  {hasChildren && !isSearching && (
                     <button
                       type="button"
                       onClick={handleExpandClick}
@@ -310,7 +343,7 @@ const MenuBar: React.FC = () => {
             size="sm"
             onClick={toggleCollapsed}
             className={cn(
-              'absolute right-[-15px] top-2 border-accent bg-transparent px-2 py-1 text-background backdrop-blur-lg hover:bg-muted-background hover:text-background',
+              'absolute right-[-15px] top-2 z-20 border-accent bg-transparent px-2 py-1 text-background backdrop-blur-lg hover:bg-muted-background hover:text-background',
               shouldCollapse ? 'cursor-e-resize' : 'cursor-w-resize',
             )}
           >

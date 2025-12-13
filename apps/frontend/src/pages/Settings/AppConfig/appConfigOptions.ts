@@ -19,6 +19,7 @@
 
 import {
   BulletinBoardIcon,
+  ChatIcon,
   ClassManagementIcon,
   ConferencesIcon,
   Dashboard,
@@ -147,6 +148,12 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     extendedOptions: {
       [AppConfigSectionsKeys.editor]: EMBEDDED_PAGE_EDITOR_CONFIG,
     },
+  },
+  {
+    id: APPS.CHAT,
+    icon: ChatIcon,
+    options: [],
+    isNativeApp: true,
   },
 ];
 
