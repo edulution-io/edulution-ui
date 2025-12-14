@@ -17,37 +17,56 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
+import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import useAIChatStore from '@/pages/Chat/hooks/useAIChatStore';
+import useChatStore from '@/pages/Chat/hooks/useChatStore';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import ChatMessageData from '@libs/chat/types/chatMessageData';
-import ChatMessageList from '@/pages/Chat/components/ChatMessageList';
+import { ChatType } from '@libs/chat/types/chatType';
 import ChatInput from './ChatInput';
+import ChatMessageList from './ChatMessageList';
 
-const ChatConversation = () => {
+interface ChatConversationProps {
+  isPopout?: boolean;
+}
+
+const ChatConversation: React.FC<ChatConversationProps> = ({ isPopout = false }) => {
+  const { t } = useTranslation();
   const { user } = useLmnApiStore();
-  const [messages, setMessages] = useState<ChatMessageData[]>([]);
+  const { type } = useParams<{ type: ChatType }>();
+  const { currentlyOpenChat } = useChatStore();
+
+  const { messages, isLoading, sendMessage, stopGeneration } = useAIChatStore();
+
+  const chatType = isPopout ? currentlyOpenChat?.type : type;
+  const isAIChat = chatType === 'ai';
 
   const handleSend = (text: string) => {
-    const newMessage: ChatMessageData = {
-      id: Date.now().toString(),
-      text,
-      sender: {
-        cn: user?.cn || 'unknown',
-        displayName: user?.displayName,
-        firstName: user?.givenName,
-        lastName: user?.sn,
-      },
-      timestamp: new Date().toISOString(),
-      isOwn: true,
-    };
-
-    setMessages((prev) => [...prev, newMessage]);
+    if (isAIChat && user) {
+      void sendMessage(text, {
+        cn: user.cn,
+        displayName: user.displayName,
+        givenName: user.givenName,
+        sn: user.sn,
+      });
+    }
   };
 
   return (
     <div className="flex h-full flex-col">
-      <ChatMessageList messages={messages} />
-      <ChatInput onSend={handleSend} />
+      <ChatMessageList
+        messages={messages}
+        isLoading={isLoading}
+        isAIChat={isAIChat}
+      />
+      <ChatInput
+        onSend={handleSend}
+        onStop={isAIChat ? stopGeneration : undefined}
+        disabled={isLoading}
+        isStreaming={isLoading && isAIChat}
+        placeholder={isAIChat ? t('chat.aiInputPlaceholder') : undefined}
+      />
     </div>
   );
 };

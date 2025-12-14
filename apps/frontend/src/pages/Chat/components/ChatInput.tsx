@@ -19,18 +19,20 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MdSend } from 'react-icons/md';
+import { MdSend, MdStop } from 'react-icons/md';
 import cn from '@libs/common/utils/className';
 import { Textarea } from '@/components/ui/Textarea';
 import { Button } from '@/components/shared/Button';
 
 interface ChatInputProps {
   onSend: (message: string) => void;
+  onStop?: () => void;
   disabled?: boolean;
+  isStreaming?: boolean;
   placeholder?: string;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled, placeholder }) => {
+const ChatInput: React.FC<ChatInputProps> = ({ onSend, onStop, disabled, isStreaming, placeholder }) => {
   const { t } = useTranslation();
   const [value, setValue] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -62,7 +64,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled, placeholder }) 
 
   return (
     <div className="bg-accent/30 border-t border-muted p-4">
-      <div className="mx-auto flex max-w-4xl items-end gap-3">
+      <div className="flex w-full items-end gap-3">
         <div className="flex-1 rounded-xl border border-muted bg-foreground shadow-sm">
           <Textarea
             ref={textareaRef}
@@ -79,17 +81,30 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled, placeholder }) 
             )}
           />
         </div>
-        <Button
-          type="button"
-          onClick={handleSend}
-          disabled={!canSend}
-          className={cn(
-            'flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl transition-all',
-            canSend ? 'bg-ciGreenToBlue text-background shadow-md hover:opacity-90' : 'bg-muted text-muted-foreground',
-          )}
-        >
-          <MdSend className="h-5 w-5" />
-        </Button>
+
+        {isStreaming && onStop ? (
+          <Button
+            type="button"
+            onClick={onStop}
+            className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-red-500 text-white transition-all hover:bg-red-600"
+          >
+            <MdStop className="h-5 w-5" />
+          </Button>
+        ) : (
+          <Button
+            type="button"
+            onClick={handleSend}
+            disabled={!canSend}
+            className={cn(
+              'flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl transition-all',
+              canSend
+                ? 'bg-ciGreenToBlue text-background shadow-md hover:opacity-90'
+                : 'bg-muted text-muted-foreground',
+            )}
+          >
+            <MdSend className="h-5 w-5" />
+          </Button>
+        )}
       </div>
     </div>
   );

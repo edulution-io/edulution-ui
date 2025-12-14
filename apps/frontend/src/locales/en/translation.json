@@ -239,12 +239,15 @@
     "noMembers": "No members found",
     "noMessages": "No messages yet",
     "inputPlaceholder": "Write a message...",
+    "aiInputPlaceholder": "Ask the AI...",
     "teachers": "Teachers",
     "students": "Students",
     "others": "Others",
     "newChat": "New Chat",
     "noResults": "No results found",
-    "loadingMembers": "Loading members..."
+    "loadingMembers": "Loading members...",
+    "aiWelcomeTitle": "Hello {{name}}!",
+    "aiWelcomeSubtitle": "How can I help you today?"
   },
   "errors": {
     "automaticLoginFailed": "Automatic login failed",

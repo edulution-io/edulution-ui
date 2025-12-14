@@ -17,11 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-/*
- * Copyright (C) [2025] [Netzint GmbH]
- * All rights reserved.
- */
-
 import React, { ReactElement, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
@@ -29,14 +24,17 @@ import ToggleDockButton from '@/components/structure/framing/ResizableWindow/But
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useMedia from '@/hooks/useMedia';
 import useChatStore from '@/pages/Chat/hooks/useChatStore';
+import useAIChatStore from '@/pages/Chat/hooks/useAIChatStore';
 import ChatConversation from '@/pages/Chat/components/ChatConversation';
 import APPS from '@libs/appconfig/constants/apps';
 import RESIZEABLE_WINDOW_DEFAULT_POSITION from '@libs/ui/constants/resizableWindowDefaultPosition';
+import ChatHeaderAI from '@/pages/Chat/components/ChatHeaderAI';
 
 const ChatPopoutWindow = () => {
   const location = useLocation();
   const { isMobileView } = useMedia();
   const { setCurrentWindowedFrameSize } = useFrameStore();
+  const { aiConfig } = useAIChatStore();
 
   const {
     currentlyOpenChat,
@@ -72,17 +70,24 @@ const ChatPopoutWindow = () => {
     return null;
   }
 
-  const windowTitle =
-    currentlyOpenChat.type === 'user'
-      ? currentlyOpenChat.user?.displayName || currentlyOpenChat.chatId
-      : currentlyOpenChat.groupName || currentlyOpenChat.chatId;
+  const getWindowTitle = () => {
+    if (currentlyOpenChat.type === 'ai') {
+      return aiConfig?.label;
+    }
+    if (currentlyOpenChat.type === 'users') {
+      return currentlyOpenChat.user?.displayName || currentlyOpenChat.chatId;
+    }
+    return currentlyOpenChat.groupName || currentlyOpenChat.chatId;
+  };
+
+  const windowTitle = getWindowTitle();
 
   const additionalButtons = [
     !isMobileView && !isChatDocked && (
       <ToggleDockButton
         onClick={() => {
           setIsChatDocked(!isChatDocked);
-          setCurrentWindowedFrameSize(windowTitle, undefined);
+          setCurrentWindowedFrameSize(windowTitle || '', undefined);
         }}
         isDocked={isChatDocked}
         key={ToggleDockButton.name}
@@ -90,11 +95,13 @@ const ChatPopoutWindow = () => {
     ),
   ].filter((b): b is ReactElement => Boolean(b));
 
+  const isAIChat = currentlyOpenChat.type === 'ai';
+
   return (
     <ResizableWindow
       disableMinimizeWindow={isChatDocked || isMobileView}
       disableToggleMaximizeWindow={isMobileView}
-      titleTranslationId={windowTitle}
+      titleTranslationId={windowTitle || ''}
       handleClose={resetChat}
       initialPosition={isMobileView ? undefined : initialPositionMemo}
       initialSize={isMobileView ? undefined : initialSizeMemo}
@@ -102,7 +109,10 @@ const ChatPopoutWindow = () => {
       stickToInitialSizeAndPositionWhenRestored={!isMobileView && isChatDocked}
       additionalButtons={additionalButtons}
     >
-      <ChatConversation />
+      <div className="flex h-full flex-col overflow-hidden">
+        {isAIChat && <ChatHeaderAI isPopout />}
+        <ChatConversation isPopout />
+      </div>
     </ResizableWindow>
   );
 };

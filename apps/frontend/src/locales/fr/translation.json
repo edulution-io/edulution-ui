@@ -220,17 +220,20 @@
     "users": "Utilisateurs",
     "ai": "Chat IA",
     "searchPlaceholder": "Rechercher un groupe ou un utilisateur...",
-    "selectChat": "Sélectionnez un chat",
+    "selectChat": "Sélectionnez une conversation",
     "members": "Membres",
     "noMembers": "Aucun membre trouvé",
     "noMessages": "Pas encore de messages",
     "inputPlaceholder": "Écrire un message...",
+    "aiInputPlaceholder": "Demandez à l'IA...",
     "teachers": "Enseignants",
     "students": "Élèves",
     "others": "Autres",
-    "newChat": "Nouveau chat",
+    "newChat": "Nouvelle conversation",
     "noResults": "Aucun résultat trouvé",
-    "loadingMembers": "Chargement des membres..."
+    "loadingMembers": "Chargement des membres...",
+    "aiWelcomeTitle": "Bonjour {{name}} !",
+    "aiWelcomeSubtitle": "Comment puis-je vous aider aujourd'hui ?"
   },
   "errors": {
     "unexpectedError": "Une erreur inattendue s'est produite",

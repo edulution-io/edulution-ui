@@ -17,16 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ChatMessageSender from '@libs/chat/types/chatMessageSender';
-import { ChatMessageRoleType } from '@libs/chat/types/chatMessageRoleType';
+import { Module } from '@nestjs/common';
+import AIController from './ai.controller';
+import AIService from './ai.service';
 
-interface ChatMessageData {
-  id: string;
-  text: string;
-  sender: ChatMessageSender;
-  timestamp: string;
-  role?: ChatMessageRoleType;
-  isOwn?: boolean;
-  isStreaming?: boolean;
-}
-export default ChatMessageData;
+@Module({
+  controllers: [AIController],
+  providers: [AIService],
+  exports: [AIService],
+})
+class AIModule {}
+
+export default AIModule;

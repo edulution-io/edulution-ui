@@ -17,16 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ChatMessageSender from '@libs/chat/types/chatMessageSender';
-import { ChatMessageRoleType } from '@libs/chat/types/chatMessageRoleType';
+import ChatMessageRole from '@libs/chat/constants/chatMessageRole';
 
-interface ChatMessageData {
-  id: string;
-  text: string;
-  sender: ChatMessageSender;
-  timestamp: string;
-  role?: ChatMessageRoleType;
-  isOwn?: boolean;
-  isStreaming?: boolean;
-}
-export default ChatMessageData;
+export type ChatMessageRoleType = (typeof ChatMessageRole)[keyof typeof ChatMessageRole];

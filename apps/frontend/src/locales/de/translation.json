@@ -230,12 +230,15 @@
     "noMembers": "Keine Mitglieder gefunden",
     "noMessages": "Noch keine Nachrichten",
     "inputPlaceholder": "Nachricht schreiben...",
+    "aiInputPlaceholder": "Frage die KI...",
     "teachers": "Lehrer",
     "students": "Schüler",
     "others": "Andere",
     "newChat": "Neuer Chat",
     "noResults": "Keine Ergebnisse gefunden",
-    "loadingMembers": "Mitglieder werden geladen..."
+    "loadingMembers": "Mitglieder werden geladen...",
+    "aiWelcomeTitle": "Hallo {{name}}!",
+    "aiWelcomeSubtitle": "Wie kann ich dir heute helfen?"
   },
   "errors": {
     "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten",

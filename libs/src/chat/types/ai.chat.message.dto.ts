@@ -17,16 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ChatMessageSender from '@libs/chat/types/chatMessageSender';
+import { IsEnum, IsString } from 'class-validator';
+import ChatMessageRole from '@libs/chat/constants/chatMessageRole';
 import { ChatMessageRoleType } from '@libs/chat/types/chatMessageRoleType';
 
-interface ChatMessageData {
-  id: string;
-  text: string;
-  sender: ChatMessageSender;
-  timestamp: string;
-  role?: ChatMessageRoleType;
-  isOwn?: boolean;
-  isStreaming?: boolean;
+class AIChatMessageDto {
+  @IsEnum(ChatMessageRole)
+  role: ChatMessageRoleType;
+
+  @IsString()
+  content: string;
 }
-export default ChatMessageData;
+
+export default AIChatMessageDto;

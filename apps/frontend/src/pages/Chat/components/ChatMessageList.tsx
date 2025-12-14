@@ -21,13 +21,15 @@ import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import ChatMessageData from '@libs/chat/types/chatMessageData';
 import ChatMessage from './ChatMessage';
+import AIWelcome from './AIWelcome';
 
 interface ChatMessageListProps {
   messages: ChatMessageData[];
   isLoading?: boolean;
+  isAIChat?: boolean;
 }
 
-const ChatMessageList: React.FC<ChatMessageListProps> = ({ messages, isLoading }) => {
+const ChatMessageList: React.FC<ChatMessageListProps> = ({ messages, isLoading, isAIChat }) => {
   const { t } = useTranslation();
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -35,31 +37,26 @@ const ChatMessageList: React.FC<ChatMessageListProps> = ({ messages, isLoading }
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  if (isLoading) {
-    return (
-      <div className="flex flex-1 items-center justify-center">
-        <p className="text-muted-foreground">{t('common.loading')}</p>
-      </div>
-    );
+  if (isAIChat && messages.length === 0 && !isLoading) {
+    return <AIWelcome />;
   }
 
-  if (messages.length === 0) {
+  if (messages.length === 0 && !isLoading) {
     return (
-      <div className="flex flex-1 items-center justify-center">
-        <p className="text-muted-foreground">{t('chat.noMessages')}</p>
-      </div>
+      <div className="flex h-full w-full items-center justify-center text-muted-foreground">{t('chat.noMessages')}</div>
     );
   }
 
   return (
     <div className="flex-1 overflow-y-auto p-4 scrollbar-thin">
-      <div className="flex flex-col gap-4">
+      <div className="flex w-full flex-col gap-4">
         {messages.map((message) => (
           <ChatMessage
             key={message.id}
             message={message}
           />
         ))}
+
         <div ref={bottomRef} />
       </div>
     </div>
