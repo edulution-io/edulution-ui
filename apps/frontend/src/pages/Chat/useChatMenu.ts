@@ -39,6 +39,7 @@ import {
 import useChatMembers from '@/pages/Chat/hooks/useChatMembers';
 import useChatGroups from '@/pages/Chat/hooks/useChatGroups';
 import useAIChatStore from '@/pages/Chat/hooks/useAIChatStore';
+import { t } from 'i18next';
 
 const useChatMenu = () => {
   const navigate = useNavigate();
@@ -165,7 +166,7 @@ const useChatMenu = () => {
     }> = [
       {
         id: 'ai-new',
-        label: 'chat.newChat',
+        label: t('chat.newChat'),
         iconComponent: React.createElement(MdAdd, { className: 'h-5 w-5' }),
         action: () => navigateToAiChat(),
       },
