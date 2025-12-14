@@ -20,11 +20,11 @@
 import { create } from 'zustand';
 import { ChatGroupType } from '@libs/chat/types/chatGroupType';
 import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
-import { ChatType } from '@libs/chat/types/chatType';
+import { ChatTypeValue } from '@libs/chat/types/chatTypeValue';
 
 interface PopoutChatData {
   chatId: string;
-  type: ChatType;
+  type: ChatTypeValue;
   groupType?: ChatGroupType;
   user?: LmnUserInfo;
   groupName?: string;

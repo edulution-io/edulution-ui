@@ -45,7 +45,7 @@ const ChatHeaderAI: React.FC<ChatHeaderAIProps> = ({ isPopout = false }) => {
     void fetchAIConfig();
   }, [fetchAIConfig]);
 
-  const modelLabel = aiConfig?.label || aiConfig?.model || 'KI-Assistent';
+  const modelLabel = aiConfig?.label || aiConfig?.model;
 
   const getProviderIcon = (provider?: AIProviderType) => {
     switch (provider) {

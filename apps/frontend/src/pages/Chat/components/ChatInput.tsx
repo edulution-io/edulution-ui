@@ -86,7 +86,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, onStop, disabled, isStrea
           <Button
             type="button"
             onClick={onStop}
-            className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-red-500 text-white transition-all hover:bg-red-600"
+            className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-red-500 text-background transition-all hover:bg-red-600"
           >
             <MdStop className="h-5 w-5" />
           </Button>

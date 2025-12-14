@@ -17,8 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { MdAdd } from 'react-icons/md';
 import { ChatIcon, UserIcon } from '@/assets/icons';
 import APPS from '@libs/appconfig/constants/apps';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
@@ -26,6 +27,7 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
 import Avatar from '@/components/shared/Avatar';
 import AvatarStack from '@/components/shared/AvatarStack';
+import AILogo from '@/components/shared/AILogo';
 import {
   CHAT_AI_LOCATION,
   CHAT_AI_PATH,
@@ -36,6 +38,7 @@ import {
 } from '@libs/chat/chatPaths';
 import useChatMembers from '@/pages/Chat/hooks/useChatMembers';
 import useChatGroups from '@/pages/Chat/hooks/useChatGroups';
+import useAIChatStore from '@/pages/Chat/hooks/useAIChatStore';
 
 const useChatMenu = () => {
   const navigate = useNavigate();
@@ -45,9 +48,27 @@ const useChatMenu = () => {
   const { schoolClasses, projects, groupsKey } = useChatGroups();
   const { members, membersPerGroup } = useChatMembers({ schoolClasses, projects, groupsKey });
 
+  const { chatList, loadChatList, clearMessages, aiConfig, loadChat } = useAIChatStore();
+
+  useEffect(() => {
+    void loadChatList();
+  }, [loadChatList]);
+
   const navigateToGroup = useCallback((groupCn: string) => navigate(`${CHAT_GROUPS_PATH}/${groupCn}`), [navigate]);
   const navigateToUser = useCallback((userCn: string) => navigate(`${CHAT_USERS_PATH}/${userCn}`), [navigate]);
-  const navigateToAiChat = useCallback((chatId: string) => navigate(`${CHAT_AI_PATH}/${chatId}`), [navigate]);
+
+  const navigateToAiChat = useCallback(
+    (chatId?: string) => {
+      if (chatId) {
+        void loadChat(chatId);
+        navigate(`${CHAT_AI_PATH}/${chatId}`);
+      } else {
+        clearMessages();
+        navigate(CHAT_AI_PATH);
+      }
+    },
+    [navigate, clearMessages],
+  );
 
   const groupChildren = useMemo(() => {
     const children = [];
@@ -134,20 +155,42 @@ const useChatMenu = () => {
       }));
   }, [members, navigateToUser]);
 
-  const aiChildren = useMemo(
-    () => [
+  const aiChildren = useMemo(() => {
+    const children: Array<{
+      id: string;
+      label: string;
+      iconComponent: React.ReactNode;
+      action: () => void;
+      disableTranslation?: boolean;
+    }> = [
       {
         id: 'ai-new',
-        label: 'Neuer Chat',
-        icon: UserIcon,
-        action: () => navigateToAiChat('ai-new'),
-        disableTranslation: true,
+        label: 'chat.newChat',
+        iconComponent: React.createElement(MdAdd, { className: 'h-5 w-5' }),
+        action: () => navigateToAiChat(),
       },
-    ],
-    [navigateToAiChat],
-  );
+    ];
 
-  const menuBar = useMemo(
+    if (chatList.length > 0) {
+      children.push(
+        ...chatList.map((chat) => ({
+          id: chat.id,
+          label: chat.title,
+          iconComponent: React.createElement(AILogo, {
+            provider: aiConfig?.provider,
+            size: 'sm' as const,
+            className: 'h-5 w-5',
+          }),
+          action: () => navigateToAiChat(chat.id),
+          disableTranslation: true,
+        })),
+      );
+    }
+
+    return children;
+  }, [chatList, aiConfig?.provider, navigateToAiChat]);
+
+  return useMemo(
     (): MenuBarEntry => ({
       title: 'chat.title',
       appName: APPS.CHAT,
@@ -179,8 +222,6 @@ const useChatMenu = () => {
     }),
     [navigate, groupChildren, userChildren, aiChildren],
   );
-
-  return menuBar;
 };
 
 export default useChatMenu;

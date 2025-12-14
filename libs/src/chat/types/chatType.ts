@@ -17,4 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export type ChatType = 'groups' | 'users' | 'ai';
+const ChatType = {
+  USER: 'user',
+  GROUP: 'group',
+  AI: 'ai',
+} as const;
+
+export default ChatType;

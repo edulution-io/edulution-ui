@@ -20,7 +20,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ChatType } from '@libs/chat/types/chatType';
 import { ChatGroupType } from '@libs/chat/types/chatGroupType';
 import ChatConversation from '@/pages/Chat/components/ChatConversation';
 import useChatGroups from '@/pages/Chat/hooks/useChatGroups';
@@ -28,10 +27,12 @@ import useChatMembers from '@/pages/Chat/hooks/useChatMembers';
 import useChatStore from '@/pages/Chat/hooks/useChatStore';
 import ChatHeaderAI from '@/pages/Chat/components/ChatHeaderAI';
 import ChatHeader from '@/pages/Chat/components/ChatHeader';
+import { ChatTypeValue } from '@libs/chat/types/chatTypeValue';
+import ChatType from '@libs/chat/types/chatType';
 
 const ChatPage: React.FC = () => {
   const { t } = useTranslation();
-  const { type, chatId } = useParams<{ type: ChatType; chatId?: string }>();
+  const { type, chatId } = useParams<{ type: ChatTypeValue; chatId?: string }>();
 
   const { currentlyOpenChat, isChatPopoutVisible, isChatDocked } = useChatStore();
 
@@ -39,14 +40,14 @@ const ChatPage: React.FC = () => {
   const { members } = useChatMembers({ schoolClasses, projects, groupsKey });
 
   const getGroupType = (): ChatGroupType | undefined => {
-    if (type !== 'groups' || !chatId) return undefined;
+    if (type !== ChatType.GROUP || !chatId) return undefined;
     return chatId.startsWith('p_') ? 'project' : 'class';
   };
 
   const groupType = getGroupType();
-  const isGroupChat = type === 'groups' && chatId && groupType;
-  const isUserChat = type === 'users' && chatId;
-  const isAIChat = type === 'ai';
+  const isGroupChat = type === ChatType.GROUP && chatId && groupType;
+  const isUserChat = type === ChatType.USER && chatId;
+  const isAIChat = type === ChatType.AI;
 
   const chatUser = isUserChat ? members.find((m) => m.cn === chatId) : undefined;
 

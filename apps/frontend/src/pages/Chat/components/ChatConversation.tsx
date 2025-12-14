@@ -21,9 +21,11 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import useAIChatStore from '@/pages/Chat/hooks/useAIChatStore';
+import useAIChatRouting from '@/pages/Chat/hooks/useAIChatRouting';
 import useChatStore from '@/pages/Chat/hooks/useChatStore';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import { ChatType } from '@libs/chat/types/chatType';
+import { ChatTypeValue } from '@libs/chat/types/chatTypeValue';
+import ChatType from '@libs/chat/types/chatType';
 import ChatInput from './ChatInput';
 import ChatMessageList from './ChatMessageList';
 
@@ -34,22 +36,30 @@ interface ChatConversationProps {
 const ChatConversation: React.FC<ChatConversationProps> = ({ isPopout = false }) => {
   const { t } = useTranslation();
   const { user } = useLmnApiStore();
-  const { type } = useParams<{ type: ChatType }>();
+  const { type } = useParams<{ type: ChatTypeValue }>();
   const { currentlyOpenChat } = useChatStore();
 
-  const { messages, isLoading, sendMessage, stopGeneration } = useAIChatStore();
-
   const chatType = isPopout ? currentlyOpenChat?.type : type;
-  const isAIChat = chatType === 'ai';
+  const isAIChat = chatType === ChatType.AI;
+
+  useAIChatRouting({ enabled: isAIChat });
+
+  const { messages, isLoading, isError, sendMessage, stopGeneration } = useAIChatStore();
 
   const handleSend = (text: string) => {
-    if (isAIChat && user) {
-      void sendMessage(text, {
-        cn: user.cn,
-        displayName: user.displayName,
-        givenName: user.givenName,
-        sn: user.sn,
-      });
+    if (!isAIChat || !user) return;
+
+    void sendMessage(text, {
+      cn: user.cn,
+      displayName: user.displayName,
+      givenName: user.givenName,
+      sn: user.sn,
+    });
+  };
+
+  const handleStop = () => {
+    if (isAIChat) {
+      stopGeneration();
     }
   };
 
@@ -62,10 +72,10 @@ const ChatConversation: React.FC<ChatConversationProps> = ({ isPopout = false })
       />
       <ChatInput
         onSend={handleSend}
-        onStop={isAIChat ? stopGeneration : undefined}
-        disabled={isLoading}
+        onStop={isAIChat ? handleStop : undefined}
+        disabled={isAIChat && isError}
         isStreaming={isLoading && isAIChat}
-        placeholder={isAIChat ? t('chat.aiInputPlaceholder') : undefined}
+        placeholder={isAIChat ? t('chat.aiInputPlaceholder') : t('chat.inputPlaceholder')}
       />
     </div>
   );

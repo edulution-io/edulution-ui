@@ -101,10 +101,26 @@ class AIService implements OnModuleInit {
   }
 
   getConfig() {
-    return {
+    const current = {
       provider: this.provider,
       model: this.modelName,
       label: this.configService.get<string>('AI_MODEL_LABEL', this.modelName),
+    };
+
+    const availableRaw = this.configService.get<string>('AI_AVAILABLE_MODELS', this.modelName);
+    const available = availableRaw
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean)
+      .map((model) => ({
+        provider: this.provider,
+        model,
+        label: this.configService.get<string>(`AI_MODEL_LABEL_${model}`, model),
+      }));
+
+    return {
+      current,
+      available: available.length ? available : [current],
     };
   }
 }

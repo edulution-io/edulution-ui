@@ -65,7 +65,7 @@ import DevCacheFlushService from '../common/cache/dev-cache-flush.service';
 import MetricsModule from '../metrics/metrics.module';
 import configuration from '../config/configuration';
 import enableSentryForNest from '../sentry/enableSentryForNest';
-import AIModule from '../chat/ai/ai.module';
+import ChatModule from '../chat/chat.module';
 
 @Module({
   imports: [
@@ -139,7 +139,7 @@ import AIModule from '../chat/ai/ai.module';
     SseModule,
     TLDrawSyncModule,
     ScriptsModule,
-    AIModule,
+    ChatModule,
   ],
   providers: [
     {

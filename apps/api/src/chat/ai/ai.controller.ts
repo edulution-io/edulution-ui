@@ -20,19 +20,29 @@
 import { Body, Controller, Get, HttpStatus, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import AIChatRequestDto from '@libs/chat/types/ai.chat.request.dto';
 import { pipeTextStreamToResponse } from 'ai';
+import AIChatRequestDto from '@libs/chat/types/ai.chat.request.dto';
 import { CHAT_AI_CONFIG_ENDPOINT, CHAT_AI_ENDPOINT, CHAT_AI_STREAM_ENDPOINT } from '@libs/chat/constants/chatEndpoints';
+import JwtUser from '@libs/user/types/jwt/jwtUser';
 import AIService from './ai.service';
+import ChatService from '../chat.service';
+import GetCurrentUser from '../../common/decorators/getCurrentUser.decorator';
 
 @Controller(CHAT_AI_ENDPOINT)
 @ApiBearerAuth()
 class AIController {
-  constructor(private readonly aiService: AIService) {}
+  constructor(
+    private readonly aiService: AIService,
+    private readonly chatService: ChatService,
+  ) {}
 
   @Post(CHAT_AI_STREAM_ENDPOINT)
-  streamChat(@Body() body: AIChatRequestDto, @Res() res: Response) {
-    const { messages } = body;
+  streamChat(
+    @Body() body: AIChatRequestDto & { chatId?: string },
+    @Res() res: Response,
+    @GetCurrentUser() user: JwtUser,
+  ) {
+    const { messages, chatId } = body;
 
     try {
       const result = this.aiService.streamChat(messages);
@@ -41,6 +51,18 @@ class AIController {
         response: res,
         textStream: result.textStream,
       });
+
+      if (chatId) {
+        result.text
+          .then((fullText) => {
+            const allMessages = [...messages, { role: 'assistant' as const, content: fullText }];
+            return this.chatService.saveAIMessages(chatId, allMessages, user.preferred_username);
+          })
+          .catch((err: unknown) => {
+            const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+            console.error('Failed to save AI messages:', errorMessage);
+          });
+      }
     } catch (error) {
       if (!res.headersSent) {
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
