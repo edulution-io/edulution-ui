@@ -29,6 +29,7 @@ import ChatConversation from '@/pages/Chat/components/ChatConversation';
 import APPS from '@libs/appconfig/constants/apps';
 import RESIZEABLE_WINDOW_DEFAULT_POSITION from '@libs/ui/constants/resizableWindowDefaultPosition';
 import ChatHeaderAI from '@/pages/Chat/components/ChatHeaderAI';
+import ChatType from '@libs/chat/types/chatType';
 
 const ChatPopoutWindow = () => {
   const location = useLocation();
@@ -71,10 +72,10 @@ const ChatPopoutWindow = () => {
   }
 
   const getWindowTitle = () => {
-    if (currentlyOpenChat.type === 'ai') {
+    if (currentlyOpenChat.type === ChatType.AI) {
       return aiConfig?.label;
     }
-    if (currentlyOpenChat.type === 'users') {
+    if (currentlyOpenChat.type === ChatType.USER) {
       return currentlyOpenChat.user?.displayName || currentlyOpenChat.chatId;
     }
     return currentlyOpenChat.groupName || currentlyOpenChat.chatId;
@@ -95,7 +96,7 @@ const ChatPopoutWindow = () => {
     ),
   ].filter((b): b is ReactElement => Boolean(b));
 
-  const isAIChat = currentlyOpenChat.type === 'ai';
+  const isAIChat = currentlyOpenChat.type === ChatType.AI;
 
   return (
     <ResizableWindow
