@@ -17,17 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { ChatMessageRoleType } from '@libs/chat/types/chatMessageRoleType';
+import { JSONSchema7 } from 'json-schema';
 
-interface AIChatMessagePart {
-  type: string;
-  text?: string;
+interface McpTool {
+  name: string;
+  description: string;
+  inputSchema: JSONSchema7;
 }
 
-interface AIChatMessage {
-  role: ChatMessageRoleType;
-  content?: string;
-  parts?: AIChatMessagePart[];
-}
-
-export default AIChatMessage;
+export default McpTool;

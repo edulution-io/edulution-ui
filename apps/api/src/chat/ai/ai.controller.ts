@@ -20,11 +20,12 @@
 import { Body, Controller, Get, HttpStatus, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { pipeTextStreamToResponse } from 'ai';
 import AIChatRequestDto from '@libs/chat/types/ai.chat.request.dto';
 import { CHAT_AI_CONFIG_ENDPOINT, CHAT_AI_ENDPOINT, CHAT_AI_STREAM_ENDPOINT } from '@libs/chat/constants/chatEndpoints';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import GetCurrentUser from '@backend-common/decorators/get-current-user.decorator';
+import GetToken from '@backend-common/decorators/get-token.decorator';
+import ChatMessageRole from '@libs/chat/constants/chatMessageRole';
 import AIService from './ai.service';
 import ChatService from '../chat.service';
 
@@ -37,37 +38,30 @@ class AIController {
   ) {}
 
   @Post(CHAT_AI_STREAM_ENDPOINT)
-  streamChat(
-    @Body() body: AIChatRequestDto & { chatId?: string },
+  async streamChat(
+    @Body() body: AIChatRequestDto,
     @Res() res: Response,
     @GetCurrentUser() user: JwtUser,
+    @GetToken() token: string,
   ) {
-    const { messages, chatId } = body;
+    const { messages, chatId, enabledTools = [] } = body;
 
     try {
-      const result = this.aiService.streamChat(messages);
+      const result = await this.aiService.streamChatWithTools(messages, enabledTools, token);
 
-      pipeTextStreamToResponse({
-        response: res,
-        textStream: result.textStream,
-      });
+      result.pipeUIMessageStreamToResponse(res);
 
       if (chatId) {
         result.text
           .then((fullText) => {
-            const allMessages = [...messages, { role: 'assistant' as const, content: fullText }];
+            const allMessages = [...messages, { role: ChatMessageRole.ASSISTANT, content: fullText }];
             return this.chatService.saveAIMessages(chatId, allMessages, user.preferred_username);
           })
-          .catch((err: unknown) => {
-            const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-            console.error('Failed to save AI messages:', errorMessage);
-          });
+          .catch(() => {});
       }
     } catch (error) {
       if (!res.headersSent) {
-        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-          error: error instanceof Error ? error.message : 'AI request failed',
-        });
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
   }

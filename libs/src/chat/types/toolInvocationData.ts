@@ -16,18 +16,17 @@
  *
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
+import { ToolInvocationStatesType } from '@libs/mcp/types/toolInvocationStatesType';
 
-import { ChatMessageRoleType } from '@libs/chat/types/chatMessageRoleType';
-
-interface AIChatMessagePart {
-  type: string;
-  text?: string;
+interface ToolInvocationData {
+  type: 'tool-invocation';
+  toolInvocation: {
+    state: ToolInvocationStatesType;
+    toolCallId: string;
+    toolName: string;
+    args?: unknown;
+    result?: unknown;
+  };
 }
 
-interface AIChatMessage {
-  role: ChatMessageRoleType;
-  content?: string;
-  parts?: AIChatMessagePart[];
-}
-
-export default AIChatMessage;
+export default ToolInvocationData;

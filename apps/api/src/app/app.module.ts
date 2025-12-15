@@ -66,6 +66,7 @@ import MetricsModule from '../metrics/metrics.module';
 import configuration from '../config/configuration';
 import enableSentryForNest from '../sentry/enableSentryForNest';
 import ChatModule from '../chat/chat.module';
+import McpModule from '../mcp/mcp.module';
 
 @Module({
   imports: [
@@ -140,6 +141,7 @@ import ChatModule from '../chat/chat.module';
     TLDrawSyncModule,
     ScriptsModule,
     ChatModule,
+    McpModule,
   ],
   providers: [
     {

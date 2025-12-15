@@ -53,6 +53,7 @@ export enum RequestResponseContentType {
   APPLICATION_OCTET_STREAM = 'application/octet-stream',
   APPLICATION_GITHUB_RAW = 'application/vnd.github.v3.raw',
   TEXT_HTML = 'text/html',
+  TEXT_EVENT_STREAM = 'text/event-stream',
 }
 
 export const HTTP_HEADERS = {

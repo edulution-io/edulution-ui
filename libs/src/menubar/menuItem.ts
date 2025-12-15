@@ -28,6 +28,7 @@ interface MenuItem {
   path?: string;
   disableTranslation?: boolean;
   children?: MenuItem[];
+  onDelete?: () => void;
 }
 
 export default MenuItem;

@@ -17,17 +17,21 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { ChatMessageRoleType } from '@libs/chat/types/chatMessageRoleType';
+import { Controller, Get } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { MCP_ENDPOINT, MCP_TOOLS_ENDPOINT } from '@libs/mcp/constants/mcpEndpoints';
+import GetToken from '@backend-common/decorators/get-token.decorator';
+import McpService from './mcp.service';
 
-interface AIChatMessagePart {
-  type: string;
-  text?: string;
+@Controller(MCP_ENDPOINT)
+@ApiBearerAuth()
+class McpController {
+  constructor(private readonly mcpService: McpService) {}
+
+  @Get(MCP_TOOLS_ENDPOINT)
+  async getTools(@GetToken() token: string) {
+    return this.mcpService.listTools(token);
+  }
 }
 
-interface AIChatMessage {
-  role: ChatMessageRoleType;
-  content?: string;
-  parts?: AIChatMessagePart[];
-}
-
-export default AIChatMessage;
+export default McpController;

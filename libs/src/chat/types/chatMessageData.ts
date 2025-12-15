@@ -19,6 +19,7 @@
 
 import ChatMessageSender from '@libs/chat/types/chatMessageSender';
 import { ChatMessageRoleType } from '@libs/chat/types/chatMessageRoleType';
+import ToolInvocationData from '@libs/chat/types/toolInvocationData';
 
 interface ChatMessageData {
   id: string;
@@ -28,5 +29,6 @@ interface ChatMessageData {
   role?: ChatMessageRoleType;
   isOwn?: boolean;
   isStreaming?: boolean;
+  toolInvocations?: ToolInvocationData[];
 }
 export default ChatMessageData;

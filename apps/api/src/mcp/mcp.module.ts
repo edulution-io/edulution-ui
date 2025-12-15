@@ -17,17 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { ChatMessageRoleType } from '@libs/chat/types/chatMessageRoleType';
+import { Module } from '@nestjs/common';
+import McpService from './mcp.service';
+import McpController from './mcp.controller';
 
-interface AIChatMessagePart {
-  type: string;
-  text?: string;
-}
-
-interface AIChatMessage {
-  role: ChatMessageRoleType;
-  content?: string;
-  parts?: AIChatMessagePart[];
-}
-
-export default AIChatMessage;
+@Module({
+  controllers: [McpController],
+  providers: [McpService],
+  exports: [McpService],
+})
+export default class McpModule {}

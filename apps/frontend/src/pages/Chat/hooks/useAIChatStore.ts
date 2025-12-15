@@ -34,6 +34,7 @@ import ChatMessageRole from '@libs/chat/constants/chatMessageRole';
 import { HTTP_HEADERS, HttpMethods, RequestResponseContentType } from '@libs/common/types/http-methods';
 import processStreamChunks from '@libs/chat/utils/processStreamChunks';
 import ChatSummary from '@libs/chat/types/chatSummary';
+import getRandomUUID from '@/utils/getRandomUUID';
 
 interface UseAIChatStore {
   messages: ChatMessageData[];
@@ -151,7 +152,7 @@ const useAIChatStore = create<UseAIChatStore>((set, get) => ({
     }
 
     const userMessage: ChatMessageData = {
-      id: Date.now().toString(),
+      id: getRandomUUID(),
       text,
       sender: {
         cn: user.cn || 'unknown',
@@ -264,7 +265,7 @@ const useAIChatStore = create<UseAIChatStore>((set, get) => ({
 
       const messages: ChatMessageData[] = data.messages.map((msg, index) => ({
         id: `${chatId}-${index}`,
-        text: msg.content,
+        text: msg.content || '',
         sender: {
           cn: msg.role === ChatMessageRole.USER ? ChatMessageRole.USER : ChatMessageRole.ASSISTANT,
           displayName: msg.role === ChatMessageRole.ASSISTANT ? aiConfig?.label : undefined,

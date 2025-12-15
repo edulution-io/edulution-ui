@@ -37,6 +37,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip
 import getAppIconClassName from '@libs/ui/utils/getAppIconClassName';
 import MenuItem from '@libs/menubar/menuItem';
 import Input from '@/components/shared/Input';
+import { FiTrash2 } from 'react-icons/fi';
 import useMenuBarStore from './useMenuBarStore';
 import { Button } from './Button';
 
@@ -247,6 +248,7 @@ const MenuBar: React.FC = () => {
               {!shouldCollapse && (
                 <>
                   <p className="flex-1 text-left text-background">{item.label}</p>
+
                   {hasChildren && !isSearching && (
                     <button
                       type="button"
@@ -279,31 +281,49 @@ const MenuBar: React.FC = () => {
                   {item.children!.map((child) => {
                     const isChildActive = pathname.includes(child.id);
                     return (
-                      <button
+                      <div
                         key={child.id}
-                        type="button"
-                        onClick={() => {
-                          if (isMobileView || isTabletView) toggleMobileMenuBar();
-                          child.action();
-                        }}
-                        className={cn(
-                          'flex w-full items-center gap-2 rounded-r-lg py-2 pl-4 pr-3 text-left text-sm',
-                          'text-background transition-all duration-150',
-                          'hover:bg-accent hover:pl-5',
-                          isChildActive && 'bg-accent/50 font-medium',
-                        )}
+                        className="group relative" // ← group hinzufügen
                       >
-                        {child.iconComponent && <span className="flex-shrink-0">{child.iconComponent}</span>}
-                        {!child.iconComponent && child.icon && (
-                          <img
-                            src={child.icon}
-                            alt=""
-                            aria-hidden="true"
-                            className="h-6 w-6 flex-shrink-0 object-contain"
-                          />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (isMobileView || isTabletView) toggleMobileMenuBar();
+                            child.action();
+                          }}
+                          className={cn(
+                            'flex w-full items-center gap-2 rounded-r-lg py-2 pl-4 pr-8 text-left text-sm', // ← pr-8 für Platz
+                            'text-background transition-all duration-150',
+                            'hover:bg-accent hover:pl-5',
+                            isChildActive && 'bg-accent/50 font-medium',
+                          )}
+                        >
+                          {child.iconComponent && <span className="flex-shrink-0">{child.iconComponent}</span>}
+                          {!child.iconComponent && child.icon && (
+                            <img
+                              src={child.icon}
+                              alt=""
+                              aria-hidden="true"
+                              className="h-6 w-6 flex-shrink-0 object-contain"
+                            />
+                          )}
+                          <span className="truncate">{child.label}</span>
+                        </button>
+
+                        {child.onDelete && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              child.onDelete!();
+                            }}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-background opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-500/20 hover:text-red-500"
+                            aria-label="Delete"
+                          >
+                            <FiTrash2 className="h-4 w-4" />
+                          </button>
                         )}
-                        <span className="truncate">{child.label}</span>
-                      </button>
+                      </div>
                     );
                   })}
                 </div>

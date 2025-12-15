@@ -25,6 +25,7 @@ import AILogo from '@/components/shared/AILogo';
 import ChatMessageData from '@libs/chat/types/chatMessageData';
 import useAIChatStore from '@/pages/Chat/hooks/useAIChatStore';
 import formatIsoDateToLocaleString from '@libs/common/utils/Date/formatIsoDateToLocaleString';
+import ToolInvocation from './ToolInvocation';
 
 interface ChatMessageProps {
   message: ChatMessageData;
@@ -32,7 +33,9 @@ interface ChatMessageProps {
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   const { aiConfig } = useAIChatStore();
-  const { text, sender, timestamp, isOwn, isStreaming } = message;
+  const { text, sender, timestamp, isOwn, isStreaming, toolInvocations } = message;
+
+  const hasToolInvocations = toolInvocations && toolInvocations.length > 0;
 
   return (
     <div className={cn('flex gap-3', isOwn ? 'flex-row-reverse' : 'flex-row')}>
@@ -55,24 +58,37 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
       <div className={cn('flex max-w-[80%] flex-col gap-1', isOwn ? 'items-end' : 'items-start')}>
         <span className="text-xs font-medium text-muted-foreground">{sender.displayName || sender.cn}</span>
 
-        <div
-          className={cn(
-            'rounded-2xl px-4 py-2',
-            isOwn
-              ? 'bg-accent/50 rounded-br-md border border-muted text-background'
-              : 'rounded-bl-md bg-muted text-background',
-            isStreaming && 'animate-pulse',
-          )}
-        >
-          {sender.isAI ? (
-            <MarkdownRenderer
-              content={text}
-              className="text-sm text-background"
-            />
-          ) : (
-            <p className="whitespace-pre-wrap break-words text-sm">{text}</p>
-          )}
-        </div>
+        {hasToolInvocations && (
+          <div className="w-full">
+            {toolInvocations.map((invocation) => (
+              <ToolInvocation
+                key={invocation.toolInvocation.toolCallId}
+                invocation={invocation}
+              />
+            ))}
+          </div>
+        )}
+
+        {text && (
+          <div
+            className={cn(
+              'rounded-2xl px-4 py-2',
+              isOwn
+                ? 'bg-accent/50 rounded-br-md border border-muted text-background'
+                : 'rounded-bl-md bg-muted text-background',
+              isStreaming && 'animate-pulse',
+            )}
+          >
+            {sender.isAI ? (
+              <MarkdownRenderer
+                content={text}
+                className="text-sm text-background"
+              />
+            ) : (
+              <p className="whitespace-pre-wrap break-words text-sm">{text}</p>
+            )}
+          </div>
+        )}
 
         <span className="text-xs text-muted-foreground">{formatIsoDateToLocaleString(timestamp, true)}</span>
       </div>

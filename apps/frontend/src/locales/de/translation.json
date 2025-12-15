@@ -235,10 +235,14 @@
     "students": "Schüler",
     "others": "Andere",
     "newChat": "Neuer Chat",
+    "untitledChat": "Unbenannter Chat",
     "noResults": "Keine Ergebnisse gefunden",
     "loadingMembers": "Mitglieder werden geladen...",
     "aiWelcomeTitle": "Hallo {{name}}!",
-    "aiWelcomeSubtitle": "Wie kann ich dir heute helfen?"
+    "aiWelcomeSubtitle": "Wie kann ich dir heute helfen?",
+    "tools": "Werkzeuge",
+    "toolComplete": "Fertig",
+    "toolRunning": "Läuft..."
   },
   "errors": {
     "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten",
@@ -1487,6 +1491,7 @@
     "custom": "Benutzerdefiniert",
     "select": "Wählen...",
     "none": "Keine",
+    "all": "Alle",
     "edit": "Bearbeiten",
     "participate": "Teilnehmen",
     "participated": "Teilgenommen",

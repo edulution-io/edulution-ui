@@ -30,6 +30,15 @@ class AIChatRequestDto {
   @IsOptional()
   @IsString()
   conversationId?: string;
+
+  @IsOptional()
+  @IsString()
+  chatId?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  enabledTools?: string[];
 }
 
 export default AIChatRequestDto;

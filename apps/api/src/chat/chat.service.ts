@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import AIChatMessage from '@libs/chat/types/aiChatMessage';
@@ -26,6 +26,8 @@ import Chat, { ChatDocument } from './schemas/chat.schema';
 
 @Injectable()
 class ChatService {
+  private readonly logger = new Logger(ChatService.name);
+
   constructor(@InjectModel(Chat.name) private ChatModel: Model<ChatDocument>) {}
 
   async createAIChat(
@@ -52,18 +54,38 @@ class ChatService {
       .exec();
   }
 
+  private extractMessageContent(msg: AIChatMessage): string {
+    if (msg.content) {
+      return msg.content;
+    }
+    if (msg.parts && Array.isArray(msg.parts)) {
+      const textParts = msg.parts.filter((p) => p.type === 'text' && typeof p.text === 'string');
+      return textParts.map((p) => p.text || '').join('');
+    }
+    return '';
+  }
+
   async saveAIMessages(chatId: string, messages: AIChatMessage[], ownerUsername: string): Promise<ChatDocument | null> {
+    this.logger.debug(`saveAIMessages called with ${messages.length} messages`);
+    this.logger.debug(`First message: ${JSON.stringify(messages[0])}`);
+
     const chatMessages = messages.map((msg) => ({
       senderUsername: msg.role === 'user' ? ownerUsername : 'ai-assistant',
-      content: msg.content,
+      content: this.extractMessageContent(msg),
       role: msg.role,
       isAI: msg.role === 'assistant',
     }));
 
     const firstUserMessage = messages.find((m) => m.role === 'user');
-    const title = firstUserMessage
-      ? `${firstUserMessage.content.slice(0, 50)}${firstUserMessage.content.length > 50 ? '...' : ''}`
+    this.logger.debug(`First user message: ${JSON.stringify(firstUserMessage)}`);
+
+    const firstUserContent = firstUserMessage ? this.extractMessageContent(firstUserMessage) : '';
+    this.logger.debug(`Extracted content: "${firstUserContent}"`);
+
+    const title = firstUserContent
+      ? `${firstUserContent.slice(0, 50)}${firstUserContent.length > 50 ? '...' : ''}`
       : undefined;
+    this.logger.debug(`Generated title: "${title}"`);
 
     return this.ChatModel.findByIdAndUpdate(
       chatId,

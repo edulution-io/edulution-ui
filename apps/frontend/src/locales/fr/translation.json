@@ -230,6 +230,7 @@
     "students": "Élèves",
     "others": "Autres",
     "newChat": "Nouvelle conversation",
+    "untitledChat": "Conversation sans titre",
     "noResults": "Aucun résultat trouvé",
     "loadingMembers": "Chargement des membres...",
     "aiWelcomeTitle": "Bonjour {{name}} !",

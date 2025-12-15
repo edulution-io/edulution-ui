@@ -49,7 +49,7 @@ const useChatMenu = () => {
   const { schoolClasses, projects, groupsKey } = useChatGroups();
   const { members, membersPerGroup } = useChatMembers({ schoolClasses, projects, groupsKey });
 
-  const { chatList, loadChatList, clearMessages, aiConfig, loadChat } = useAIChatStore();
+  const { chatList, loadChatList, clearMessages, aiConfig, loadChat, deleteChat } = useAIChatStore();
 
   useEffect(() => {
     void loadChatList();
@@ -163,6 +163,7 @@ const useChatMenu = () => {
       iconComponent: React.ReactNode;
       action: () => void;
       disableTranslation?: boolean;
+      onDelete?: () => void;
     }> = [
       {
         id: 'ai-new',
@@ -176,7 +177,7 @@ const useChatMenu = () => {
       children.push(
         ...chatList.map((chat) => ({
           id: chat.id,
-          label: chat.title,
+          label: chat.title || t('chat.untitledChat'),
           iconComponent: React.createElement(AILogo, {
             provider: aiConfig?.provider,
             size: 'sm' as const,
@@ -184,6 +185,9 @@ const useChatMenu = () => {
           }),
           action: () => navigateToAiChat(chat.id),
           disableTranslation: true,
+          onDelete: () => {
+            void deleteChat(chat.id);
+          },
         })),
       );
     }

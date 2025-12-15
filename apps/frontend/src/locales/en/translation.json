@@ -244,10 +244,14 @@
     "students": "Students",
     "others": "Others",
     "newChat": "New Chat",
+    "untitledChat": "Untitled Chat",
     "noResults": "No results found",
     "loadingMembers": "Loading members...",
     "aiWelcomeTitle": "Hello {{name}}!",
-    "aiWelcomeSubtitle": "How can I help you today?"
+    "aiWelcomeSubtitle": "How can I help you today?",
+    "tools": "Tools",
+    "toolComplete": "Done",
+    "toolRunning": "Running..."
   },
   "errors": {
     "automaticLoginFailed": "Automatic login failed",
@@ -1485,6 +1489,7 @@
     "custom": "Custom",
     "select": "Select...",
     "none": "None",
+    "all": "All",
     "edit": "Edit",
     "participate": "Participate",
     "participated": "Participated",

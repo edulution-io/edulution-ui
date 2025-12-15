@@ -32,6 +32,7 @@ import { Button } from '@/components/shared/Button';
 import { AIProviderType } from '@libs/chat/types/AIProviderType';
 import AIProvider from '@libs/chat/constants/aiProvider';
 import { Tooltip } from '@/components/ui/Tooltip';
+import ToolSelector from './ToolSelector';
 
 interface ChatHeaderAIProps {
   isPopout?: boolean;
@@ -115,6 +116,8 @@ const ChatHeaderAI: React.FC<ChatHeaderAIProps> = ({ isPopout = false }) => {
         {isConfigLoading && (
           <div className="h-4 w-4 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
         )}
+
+        <ToolSelector />
       </div>
 
       {!isPopout && isChatDocked && (

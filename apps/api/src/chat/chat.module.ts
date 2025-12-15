@@ -24,9 +24,10 @@ import AIService from './ai/ai.service';
 import AIController from './ai/ai.controller';
 import ChatController from './chat.controller';
 import Chat, { ChatSchema } from './schemas/chat.schema';
+import McpModule from '../mcp/mcp.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Chat.name, schema: ChatSchema }])],
+  imports: [MongooseModule.forFeature([{ name: Chat.name, schema: ChatSchema }]), McpModule],
   controllers: [ChatController, AIController],
   providers: [ChatService, AIService],
   exports: [ChatService],

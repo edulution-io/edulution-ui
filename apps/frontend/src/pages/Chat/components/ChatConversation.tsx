@@ -20,10 +20,10 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import useAIChatStore from '@/pages/Chat/hooks/useAIChatStore';
+import useAIChat from '@/pages/Chat/hooks/useAIChat';
 import useAIChatRouting from '@/pages/Chat/hooks/useAIChatRouting';
 import useChatStore from '@/pages/Chat/hooks/useChatStore';
-import useLmnApiStore from '@/store/useLmnApiStore';
+import useMcpTools from '@/pages/Chat/hooks/useMcpTools';
 import { ChatTypeValue } from '@libs/chat/types/chatTypeValue';
 import ChatType from '@libs/chat/types/chatType';
 import ChatInput from './ChatInput';
@@ -35,31 +35,25 @@ interface ChatConversationProps {
 
 const ChatConversation: React.FC<ChatConversationProps> = ({ isPopout = false }) => {
   const { t } = useTranslation();
-  const { user } = useLmnApiStore();
   const { type } = useParams<{ type: ChatTypeValue }>();
   const { currentlyOpenChat } = useChatStore();
+  const { enabledTools } = useMcpTools();
 
   const chatType = isPopout ? currentlyOpenChat?.type : type;
   const isAIChat = chatType === ChatType.AI;
 
   useAIChatRouting({ enabled: isAIChat });
 
-  const { messages, isLoading, isError, sendMessage, stopGeneration } = useAIChatStore();
+  const { messages, isLoading, isError, sendMessage, stopGeneration } = useAIChat({ enabledTools });
 
   const handleSend = (text: string) => {
-    if (!isAIChat || !user) return;
-
-    void sendMessage(text, {
-      cn: user.cn,
-      displayName: user.displayName,
-      givenName: user.givenName,
-      sn: user.sn,
-    });
+    if (!isAIChat) return;
+    void sendMessage(text);
   };
 
   const handleStop = () => {
     if (isAIChat) {
-      stopGeneration();
+      void stopGeneration();
     }
   };
 

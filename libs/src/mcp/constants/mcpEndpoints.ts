@@ -17,17 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { ChatMessageRoleType } from '@libs/chat/types/chatMessageRoleType';
+const MCP_ENDPOINT = 'mcp';
+const MCP_TOOLS_ENDPOINT = 'tools';
 
-interface AIChatMessagePart {
-  type: string;
-  text?: string;
-}
-
-interface AIChatMessage {
-  role: ChatMessageRoleType;
-  content?: string;
-  parts?: AIChatMessagePart[];
-}
-
-export default AIChatMessage;
+export { MCP_ENDPOINT, MCP_TOOLS_ENDPOINT };
