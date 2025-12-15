@@ -17,10 +17,27 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-/* eslint-disable */
+const PREDEFINED_EXTENSIONS = {
+  json: { mimeType: 'application/json' },
+  yaml: { mimeType: 'text/yaml' },
+  yml: { mimeType: 'text/yaml' },
+  toml: { mimeType: 'text/plain' },
+  xml: { mimeType: 'application/xml' },
+  cfg: { mimeType: 'text/plain' },
+  ini: { mimeType: 'text/plain' },
+  env: { mimeType: 'text/plain' },
+  md: { mimeType: 'text/markdown' },
+  html: { mimeType: 'text/html' },
+  css: { mimeType: 'text/css' },
+  csv: { mimeType: 'text/csv' },
+  sh: { mimeType: 'application/x-sh' },
+  bat: { mimeType: 'application/x-bat' },
+  ps1: { mimeType: 'text/plain' },
+  py: { mimeType: 'text/x-python' },
+  js: { mimeType: 'text/javascript' },
+} as const;
 
-module.exports = async function () {
-  // Put clean up logic here (e.g. stopping services, docker-compose, etc.).
-  // Hint: `globalThis` is shared between setup and teardown.
-  console.log(globalThis.__TEARDOWN_MESSAGE__);
-};
+type PredefinedExtensionKey = keyof typeof PREDEFINED_EXTENSIONS;
+
+export type { PredefinedExtensionKey };
+export default PREDEFINED_EXTENSIONS;

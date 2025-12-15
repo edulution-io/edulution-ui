@@ -21,8 +21,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { SecurityIcon } from '@/assets/icons';
 import PasswordChangeForm from '@/pages/UserSettings/Security/components/PasswordChangeForm';
-import Separator from '@/components/ui/Separator';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import AddMfaForm from './components/AddMfaForm';
 import UserAccountsTable from './components/UserAccountsTable';
 
@@ -37,11 +37,28 @@ const UserSettingsSecurityPage: React.FC = () => {
         iconSrc: SecurityIcon,
       }}
     >
-      <PasswordChangeForm />
-      <Separator className="my-1 bg-muted" />
-      <AddMfaForm />
-      <Separator className="my-1 bg-muted" />
-      <UserAccountsTable />
+      <SectionAccordion defaultOpenAll>
+        <SectionAccordionItem
+          id="password"
+          label={t('usersettings.security.password')}
+        >
+          <PasswordChangeForm />
+        </SectionAccordionItem>
+
+        <SectionAccordionItem
+          id="mfa"
+          label={t('usersettings.security.mfa')}
+        >
+          <AddMfaForm />
+        </SectionAccordionItem>
+
+        <SectionAccordionItem
+          id="accounts"
+          label={t('usersettings.security.passwordSafe')}
+        >
+          <UserAccountsTable />
+        </SectionAccordionItem>
+      </SectionAccordion>
     </PageLayout>
   );
 };

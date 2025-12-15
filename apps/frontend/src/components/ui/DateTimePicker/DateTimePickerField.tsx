@@ -25,7 +25,7 @@ import { useTranslation } from 'react-i18next';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { CalendarIcon } from '@radix-ui/react-icons';
-import { INPUT_DEFAULT, INPUT_VARIANT_DEFAULT, INPUT_VARIANT_DIALOG } from '@libs/ui/constants/commonClassNames';
+import { inputVariants } from '@libs/ui/constants/commonClassNames';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
 import cn from '@libs/common/utils/className';
 import safeGetHours from '@libs/common/utils/Date/safeGetHours';
@@ -163,9 +163,7 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
                 <FormControl
                   className={cn(
                     'w-auto p-0',
-                    'rounded-md',
-                    INPUT_DEFAULT,
-                    variant === 'dialog' ? INPUT_VARIANT_DIALOG : INPUT_VARIANT_DEFAULT,
+                    inputVariants({ variant: variant === 'dialog' ? 'dialog' : 'default' }),
                     isOpen ? 'border-ring' : 'border-transparent',
                   )}
                 >

@@ -136,7 +136,7 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
     };
   }, [visibleButtons, portalRoot, debouncedUpdate]);
 
-  const iconContextValue = useMemo(() => ({ className: 'h-6 w-6 m-4 md:h-8 md:w-8 md:m-5' }), []);
+  const iconContextValue = useMemo(() => ({ className: 'h-6 w-6 m-4' }), []);
 
   const renderButton = (buttonConfig: FloatingButtonConfig, key: string) => (
     <div
@@ -149,6 +149,7 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
         text={buttonConfig.text}
         onClick={buttonConfig.onClick}
         dropdownItems={buttonConfig.dropdownItems}
+        iconContextValue={iconContextValue}
       />
     </div>
   );
@@ -173,7 +174,6 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
             type="button"
             variant="btn-hexagon"
             onClick={toggleDropup}
-            className="bg-opacity-90 p-1 md:p-4"
             hexagonIconAltText={isDropupOpen ? t('common.close') : t('common.showMore')}
           >
             <IconContext.Provider value={iconContextValue}>

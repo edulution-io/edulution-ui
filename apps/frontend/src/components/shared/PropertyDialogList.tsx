@@ -46,12 +46,9 @@ const PropertyDialogList = ({ deleteWarningTranslationId, items }: PropertyDialo
                 <Label className="mr-4 inline-block min-w-[80px] font-bold text-background">{t(translationId)}:</Label>
               ) : null}
               <Input
-                type="text"
                 value={value || t('common.not-available')}
                 readOnly
                 disabled
-                widthVariant="dialog"
-                className="min-w-[100px] cursor-pointer"
               />
             </div>
           ))}

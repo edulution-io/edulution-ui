@@ -17,20 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import * as React from 'react';
-import cn from '@libs/common/utils/className';
-import { INPUT_DEFAULT } from '@libs/ui/constants/commonClassNames';
+import PREDEFINED_EXTENSIONS, { PredefinedExtensionKey } from '@libs/filesharing/constants/predefinedExtensions';
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+const SORTED_PREDEFINED_EXTENSIONS = (Object.keys(PREDEFINED_EXTENSIONS) as PredefinedExtensionKey[]).sort((a, b) =>
+  a.localeCompare(b),
+);
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type, ...props }, ref) => (
-  <input
-    type={type}
-    className={cn(INPUT_DEFAULT, 'w-full', className)}
-    ref={ref}
-    {...props}
-  />
-));
-Input.displayName = 'Input';
-
-export { Input };
+export default SORTED_PREDEFINED_EXTENSIONS;
