@@ -21,9 +21,11 @@ import React from 'react';
 import { Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useDropzone } from 'react-dropzone';
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
+import extractFilesFromDropEvent from '@/pages/FileSharing/utilities/extractFilesFromDropEvent';
 
 interface FileDropZoneProps {
-  onFileDrop: (files: File[]) => void;
+  onFileDrop: (files: (File | UploadItem)[]) => void;
   children: React.ReactNode;
   disabled?: boolean;
   accept?: Record<string, string[]>;
@@ -32,8 +34,10 @@ interface FileDropZoneProps {
 
 const FileDropZone: React.FC<FileDropZoneProps> = ({ onFileDrop, children, disabled = false, accept, maxFiles }) => {
   const { t } = useTranslation();
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: onFileDrop,
+    getFilesFromEvent: extractFilesFromDropEvent,
     disabled,
     accept,
     maxFiles,

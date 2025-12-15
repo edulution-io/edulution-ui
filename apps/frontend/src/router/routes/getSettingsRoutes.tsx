@@ -22,7 +22,6 @@ import { Navigate, Outlet, Route } from 'react-router-dom';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import APPS from '@libs/appconfig/constants/apps';
 import CONTAINER from '@libs/docker/constants/container';
-import TABS from '@libs/common/constants/tabsElementId';
 import AppStorePage from '@/pages/Settings/AppConfig/appStore/AppStorePage';
 import SettingsPage from '@/pages/Settings/SettingsPage';
 
@@ -36,7 +35,7 @@ const getSettingsRoutes = () => [
       index
       element={
         <Navigate
-          to={`${TABS}/${CONTAINER}`}
+          to={`${APPS.GENERAL_SETTINGS}/${CONTAINER}`}
           replace
         />
       }
@@ -45,7 +44,7 @@ const getSettingsRoutes = () => [
       path={APPS.APPSTORE}
       element={<AppStorePage />}
     />
-    <Route path={TABS}>
+    <Route path={APPS.GENERAL_SETTINGS}>
       <Route
         path=""
         element={

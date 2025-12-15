@@ -361,7 +361,7 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
           commandProps?.onKeyDown?.(e);
         }}
         className={cn(
-          'overflow-visible',
+          'overflow-visible rounded-lg',
           variant === 'default' ? 'bg-accent text-secondary' : 'bg-muted text-secondary',
           commandProps?.className,
         )}
@@ -370,7 +370,7 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
       >
         <div
           className={cn(
-            'group rounded-md p-[8px] px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
+            'group rounded-lg p-[8px] px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
             variant === 'default' ? 'bg-muted text-secondary' : '',
             className,
           )}
@@ -450,7 +450,7 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
           {open && (
             <CommandList
               className={cn(
-                'absolute top-0 z-50 max-h-28 w-full overflow-y-auto rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in scrollbar-thin',
+                'absolute top-0 z-50 max-h-28 w-full overflow-y-auto rounded-lg border bg-popover text-popover-foreground shadow-md outline-none animate-in scrollbar-thin',
                 variant === 'default' ? 'bg-accent text-secondary' : 'bg-muted',
               )}
             >

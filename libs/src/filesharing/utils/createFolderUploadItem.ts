@@ -17,13 +17,24 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-/* eslint-disable */
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
+import shouldFilterFile from '@libs/filesharing/utils/shouldFilterFile';
 
-import axios from 'axios';
+const createFolderUploadItem = (folderName: string, allFiles: File[], id: string): UploadItem => {
+  const getFileName = (file: File): string => file.webkitRelativePath?.split('/').pop() || file.name;
 
-module.exports = async function () {
-  // Configure axios for tests to use.
-  const host = process.env.EDUI_HOST ?? 'localhost';
-  const port = process.env.EDUI_PORT ?? '3000';
-  axios.defaults.baseURL = `http://${host}:${port}`;
+  const visibleFiles = allFiles.filter((file) => !shouldFilterFile(getFileName(file)));
+  const hiddenFiles = allFiles.filter((file) => shouldFilterFile(getFileName(file)));
+
+  return Object.assign(new File([], folderName, { type: 'application/x-directory' }), {
+    id,
+    isFolder: true,
+    folderName,
+    files: visibleFiles,
+    visibleFiles,
+    hiddenFiles,
+    includeHidden: false,
+  });
 };
+
+export default createFolderUploadItem;

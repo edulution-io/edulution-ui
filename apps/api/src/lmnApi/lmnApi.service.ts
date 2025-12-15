@@ -210,11 +210,16 @@ class LmnApiService {
     }
   }
 
-  public async getSchoolClass(lmnApiToken: string, schoolClassName: string): Promise<LmnApiSchoolClass> {
+  public async getSchoolClass(
+    lmnApiToken: string,
+    schoolClassName: string,
+    allMembers = false,
+  ): Promise<LmnApiSchoolClass> {
     try {
+      const queryParam = allMembers ? '?all_members=true' : '';
       const response = await this.request<LmnApiSchoolClass>(
         HttpMethods.GET,
-        `${SCHOOL_CLASSES_LMN_API_ENDPOINT}/${schoolClassName}`,
+        `${SCHOOL_CLASSES_LMN_API_ENDPOINT}/${schoolClassName}${queryParam}`,
         undefined,
         {
           headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },

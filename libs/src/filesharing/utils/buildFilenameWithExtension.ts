@@ -17,6 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const TABS = 'tabs';
+const buildFilenameWithExtension = (name: string, ext: string): string => {
+  if (!ext) return name;
+  if (ext.startsWith('.')) return `${name}${ext}`;
+  return `${name}.${ext}`;
+};
 
-export default TABS;
+export default buildFilenameWithExtension;
