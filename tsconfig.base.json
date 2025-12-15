@@ -39,6 +39,9 @@
     },
     {
       "path": "./libs/tsconfig.json"
+    },
+    {
+      "path": "./apps/mcp-server/tsconfig.json"
     }
   ]
 }
