@@ -51,14 +51,14 @@ const ChatHeader: React.FC<ChatHeaderProps> = (props) => {
       const { user } = props;
       setCurrentlyOpenChat({
         chatId: user.cn,
-        type: 'user',
+        type: 'users',
         user,
       });
     } else {
       const { groupCn, groupType, groupName } = props;
       setCurrentlyOpenChat({
         chatId: groupCn,
-        type: 'group',
+        type: 'groups',
         groupType,
         groupName,
       });
