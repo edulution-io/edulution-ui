@@ -21,6 +21,7 @@ const SURVEY_TABLE_COLUMNS = {
   SELECT_SURVEY: 'formula',
   CREATED_AT: 'createdAt',
   EXPIRES: 'expires',
+  CREATOR: 'survey-creator',
   IS_PUBLIC: 'survey-isPublic',
   INVITED_ATTENDEES: 'surveys-invited-attendees',
   ANSWERS: 'answers',

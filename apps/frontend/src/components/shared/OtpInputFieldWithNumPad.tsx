@@ -20,20 +20,21 @@
 import React, { FC, Dispatch, SetStateAction } from 'react';
 import { MdDialpad } from 'react-icons/md';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '../ui/InputOtp';
+import cn from '@libs/common/utils/className';
+import { InputOTPSH, InputOTPGroupSH, InputOTPSlotSH } from '../ui/InputOtpSH';
 import { Button } from './Button';
 
 type OtpInputProps = {
   totp: string;
   maxLength?: number;
-  variant?: 'default' | 'dialog';
+  variant?: 'default' | 'dialog' | 'login';
   type?: 'default' | 'pin';
   setTotp: (value: string) => void;
   onComplete?: () => void;
   setShowNumPad?: Dispatch<SetStateAction<boolean>>;
 };
 
-const OtpInput: FC<OtpInputProps> = ({
+const OtpInputFieldWithNumPad: FC<OtpInputProps> = ({
   totp,
   maxLength = 6,
   variant = 'default',
@@ -43,7 +44,7 @@ const OtpInput: FC<OtpInputProps> = ({
   setShowNumPad,
 }) => (
   <div className="mb-3 flex items-center justify-center">
-    <InputOTP
+    <InputOTPSH
       autoFocus
       maxLength={maxLength}
       value={totp}
@@ -54,23 +55,26 @@ const OtpInput: FC<OtpInputProps> = ({
       }}
       onComplete={onComplete ? () => onComplete() : undefined}
     >
-      <InputOTPGroup>
+      <InputOTPGroupSH>
         {Array.from({ length: maxLength }, (_, index) => (
-          <InputOTPSlot
+          <InputOTPSlotSH
             key={index}
             index={index}
             variant={variant}
             type={type}
           />
         ))}
-      </InputOTPGroup>
-    </InputOTP>
+      </InputOTPGroupSH>
+    </InputOTPSH>
     {setShowNumPad && (
       <Button
         variant="btn-outline"
         type="button"
         onClick={() => setShowNumPad((prev) => !prev)}
-        className="ml-4 h-11 w-11 p-0 hover:bg-ciGrey/10"
+        className={cn(
+          'ml-4 h-11 w-11 p-0 hover:bg-ciGrey/10',
+          variant === 'login' && 'border-ciDarkGrey text-ciDarkGrey hover:bg-ciDarkGrey/10',
+        )}
       >
         <MdDialpad style={{ width: '18px', height: '18px' }} />
       </Button>
@@ -78,4 +82,4 @@ const OtpInput: FC<OtpInputProps> = ({
   </div>
 );
 
-export default OtpInput;
+export default OtpInputFieldWithNumPad;

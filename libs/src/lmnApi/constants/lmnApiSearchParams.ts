@@ -17,13 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-/* eslint-disable */
-var __TEARDOWN_MESSAGE__: string;
+const LMN_API_SEARCH_PARAMS = {
+  ALL_MEMBERS: 'allMembers',
+} as const;
 
-module.exports = async function () {
-  // Start services that that the app needs to run (e.g. database, docker-compose, etc.).
-  console.log('\nSetting up...\n');
-
-  // Hint: Use `globalThis` to pass variables to global teardown.
-  globalThis.__TEARDOWN_MESSAGE__ = '\nTearing down...\n';
-};
+export default LMN_API_SEARCH_PARAMS;

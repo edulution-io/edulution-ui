@@ -17,13 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AVAILABLE_FILE_TYPES = {
-  drawIoFile: 'drawIoFile',
-  textFile: 'textFile',
-  documentFile: 'documentFile',
-  spreadsheetFile: 'spreadsheetFile',
-  presentationFile: 'presentationFile',
-  customFile: 'customFile',
-} as const;
+import { IconType } from 'react-icons';
+import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
+import AVAILABLE_FILE_TYPES from '@libs/filesharing/constants/availableFileTypes';
+import EXTENSION_ICON_MAP from '@libs/filesharing/constants/extensionIconMap';
 
-export default AVAILABLE_FILE_TYPES;
+const DOCUMENT_FILE_TYPE_CONFIG: { fileType: TAvailableFileTypes; icon: IconType; iconColor: string }[] = [
+  { fileType: AVAILABLE_FILE_TYPES.textFile, ...EXTENSION_ICON_MAP['txt'] },
+  { fileType: AVAILABLE_FILE_TYPES.documentFile, ...EXTENSION_ICON_MAP['docx'] },
+  { fileType: AVAILABLE_FILE_TYPES.spreadsheetFile, ...EXTENSION_ICON_MAP['xlsx'] },
+  { fileType: AVAILABLE_FILE_TYPES.presentationFile, ...EXTENSION_ICON_MAP['pptx'] },
+];
+
+export default DOCUMENT_FILE_TYPE_CONFIG;
