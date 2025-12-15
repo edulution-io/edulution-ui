@@ -19,7 +19,7 @@
 
 import React, { useState } from 'react';
 import { toast } from 'sonner';
-import { MdOutlineOpenInNew } from 'react-icons/md';
+import { EyeLightIcon } from '@/assets/icons';
 import i18n from '@/i18n';
 import cn from '@libs/common/utils/className';
 import AttendeeDto from '@libs/user/types/attendee.dto';
@@ -88,7 +88,11 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
         className="h-14 w-14 p-2"
         aria-label={i18n.t('survey.editor.template.preview')}
       >
-        <MdOutlineOpenInNew className="h-10 w-10" />
+        <img
+          src={EyeLightIcon}
+          alt="eye"
+          width="w-12"
+        />
       </Button>
       <h3
         className="line-clamp-2 h-[3.8rem] w-full"

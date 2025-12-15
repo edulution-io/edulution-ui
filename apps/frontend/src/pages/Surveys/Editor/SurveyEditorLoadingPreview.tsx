@@ -47,7 +47,7 @@ const SurveyEditorLoadingPreview = (): JSX.Element | null => {
     <ResizableWindow
       titleTranslationId="common.preview"
       handleClose={() => setIsOpenTemplatePreview(false)}
-      openMaximized={false}
+      openMaximized
       disableMinimizeWindow
       disableToggleMaximizeWindow
     >
