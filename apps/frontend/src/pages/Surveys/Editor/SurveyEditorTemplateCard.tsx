@@ -32,12 +32,12 @@ import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 
-interface SurveyEditorLoadingTemplateProps {
+interface SurveyEditorTemplateCardProps {
   creator: AttendeeDto;
   surveyTemplate: SurveyTemplateDto;
 }
 
-const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLoadingTemplateProps): JSX.Element => {
+const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTemplateCardProps): JSX.Element => {
   const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
 
   const {
@@ -133,4 +133,4 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
   );
 };
 
-export default SurveyEditorLoadingTemplate;
+export default SurveyEditorTemplateCard;

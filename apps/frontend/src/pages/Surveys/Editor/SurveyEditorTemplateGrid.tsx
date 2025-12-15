@@ -27,17 +27,17 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import { GRID_CARD, GRID_SEARCH } from '@libs/ui/constants/commonClassNames';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
+import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import SurveyEditorTemplateCard from '@/pages/Surveys/Editor/SurveyEditorTemplateCard';
+import SurveyEditorLoadingPreview from '@/pages/Surveys/Editor/SurveyEditorLoadingPreview';
 import Input from '@/components/shared/Input';
 import { Card } from '@/components/shared/Card';
-import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
-import SurveyEditorLoadingTemplate from '@/pages/Surveys/Editor/SurveyEditorLoadingTemplate';
-import SurveyEditorLoadingPreview from '@/pages/Surveys/Editor/SurveyEditorLoadingPreview';
 
-interface SurveyEditorLoadingPageProps {
+interface SurveyEditorTemplateGridProps {
   surveyCreator: AttendeeDto;
 }
 
-const SurveyEditorLoadingPage = ({ surveyCreator }: SurveyEditorLoadingPageProps) => {
+const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridProps) => {
   const { isSuperAdmin } = useLdapGroups();
 
   const { t } = useTranslation();
@@ -80,9 +80,9 @@ const SurveyEditorLoadingPage = ({ surveyCreator }: SurveyEditorLoadingPageProps
         placeholder={t('survey.editor.searchPlaceholder')}
         aria-label={t('survey.editor.searchPlaceholder')}
         value={search}
-        onChange={(event) => setSearch(event.target.value)}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
         variant="default"
-        widthVariant="auto"
+        width="auto"
         className={cn(GRID_SEARCH, 'justify-center')}
       />
       <div className="mx-auto grid max-h-full w-full grid-cols-[repeat(auto-fit,minmax(8rem,auto))] justify-center gap-x-3 gap-y-2 overflow-auto px-2 pb-10 scrollbar-thin md:max-h-full md:w-[95%] md:grid-cols-[repeat(auto-fit,minmax(12rem,auto))] md:gap-x-6 md:gap-y-5 md:pb-4">
@@ -108,7 +108,7 @@ const SurveyEditorLoadingPage = ({ surveyCreator }: SurveyEditorLoadingPageProps
               key={template.name}
               className="relative"
             >
-              <SurveyEditorLoadingTemplate
+              <SurveyEditorTemplateCard
                 creator={surveyCreator}
                 surveyTemplate={template}
               />
@@ -127,4 +127,4 @@ const SurveyEditorLoadingPage = ({ surveyCreator }: SurveyEditorLoadingPageProps
   );
 };
 
-export default SurveyEditorLoadingPage;
+export default SurveyEditorTemplateGrid;

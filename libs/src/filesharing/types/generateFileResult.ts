@@ -17,13 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import axios from 'axios';
+type GenerateFileResult = { success: true; file?: File; extension: string } | { success: false; error: string };
 
-describe('GET /api', () => {
-  it('should return a message', async () => {
-    const res = await axios.get(`/api`);
-
-    expect(res.status).toBe(200);
-    expect(res.data).toEqual({ message: 'Hello API' });
-  });
-});
+export default GenerateFileResult;

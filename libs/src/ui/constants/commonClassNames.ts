@@ -17,12 +17,67 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export const INPUT_VARIANT_DEFAULT = 'bg-accent text-secondary placeholder:text-p focus:outline-none';
-export const INPUT_VARIANT_DIALOG = 'bg-muted placeholder:text-p focus:outline-none text-background';
-export const INPUT_DEFAULT =
-  'flex h-9 rounded-md px-3 py-1 text-p text-background shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50';
+import { cva } from 'class-variance-authority';
 
 export const GRID_SEARCH =
   'mx-auto my-3 block w-[80%] min-w-[250px] rounded-xl border border-ring px-3 py-2 md:mb-2 md:mt-0 md:w-[400px]';
 export const GRID_CARD =
   'h-26 flex w-full flex-col items-center overflow-hidden border border-muted-light bg-muted-dialog p-5 hover:bg-primary';
+
+const VARIANT_COLORS = {
+  default: 'bg-accent text-secondary',
+  dialog: 'bg-muted text-background',
+  login: 'border-2 border-gray-300 bg-white text-black shadow-md',
+  lightGrayDisabled: 'bg-ciDarkGreyDisabled text-secondary',
+} as const;
+
+const VARIANT_CARET = {
+  default: 'bg-secondary',
+  dialog: 'bg-background',
+  login: 'bg-black',
+} as const;
+export const inputVariants = cva(
+  'h-9 w-full rounded-lg px-3 py-1 text-p shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus:outline-none disabled:cursor-not-allowed disabled:opacity-50',
+  {
+    variants: {
+      variant: {
+        default: `${VARIANT_COLORS.default} placeholder:text-p`,
+        dialog: `${VARIANT_COLORS.dialog} placeholder:text-p`,
+        login: `${VARIANT_COLORS.login} placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-muted`,
+        lightGrayDisabled: `${VARIANT_COLORS.lightGrayDisabled} placeholder:text-p`,
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+    },
+  },
+);
+
+export const inputOTPSlotVariants = cva(
+  'relative mx-1 flex h-11 w-11 items-center justify-center rounded-lg shadow-sm transition-all first:ml-0',
+  {
+    variants: {
+      variant: {
+        default: VARIANT_COLORS.default,
+        dialog: VARIANT_COLORS.dialog,
+        login: VARIANT_COLORS.login,
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+    },
+  },
+);
+
+export const inputOTPCaretVariants = cva('h-4 w-px animate-caret-blink duration-1000', {
+  variants: {
+    variant: {
+      default: VARIANT_CARET.default,
+      dialog: VARIANT_CARET.dialog,
+      login: VARIANT_CARET.login,
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+});

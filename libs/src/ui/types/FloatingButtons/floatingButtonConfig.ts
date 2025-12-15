@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { IconType } from 'react-icons';
+import { IconContext, IconType } from 'react-icons';
 import type DropdownMenuItemType from '../dropdownMenuItemType';
 
 interface FloatingButtonConfig {
@@ -28,6 +28,7 @@ interface FloatingButtonConfig {
   type?: 'button' | 'submit' | 'reset';
   variant?: 'button' | 'dropdown';
   dropdownItems?: DropdownMenuItemType[];
+  iconContextValue?: IconContext;
 }
 
 export default FloatingButtonConfig;

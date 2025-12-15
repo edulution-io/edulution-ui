@@ -39,26 +39,28 @@ const GroupList = ({ row, isEnrolEnabled }: GroupListProps) => {
   const { selectedSchool } = useClassManagementStore();
   const { isSuperAdmin } = useLdapGroups();
 
+  const items = row.groups?.filter(
+    (group) => !isSuperAdmin || (group as LmnApiProject | LmnApiSchoolClass).sophomorixSchoolname === selectedSchool,
+  );
+
+  if (!items.length)
+    return (
+      <div className="flex flex-row flex-wrap">
+        <div className="mt-3">{t('classmanagement.noGroupsToShow')}</div>
+      </div>
+    );
+
   return (
     <div className="flex flex-row flex-wrap">
-      {row.groups.length ? (
-        row.groups
-          .filter(
-            (group) =>
-              !isSuperAdmin || (group as LmnApiProject | LmnApiSchoolClass).sophomorixSchoolname === selectedSchool,
-          )
-          .map((group) => (
-            <GroupListCard
-              key={row.name + (group as LmnApiProject | LmnApiSchoolClass).dn}
-              group={group as LmnApiProject | LmnApiSchoolClass}
-              type={row.name}
-              icon={row.icon}
-              isEnrolEnabled={isEnrolEnabled}
-            />
-          ))
-      ) : (
-        <div className="mt-3">{t('classmanagement.noGroupsToShow')}</div>
-      )}
+      {items.map((group) => (
+        <GroupListCard
+          key={row.name + (group as LmnApiProject | LmnApiSchoolClass).dn}
+          group={group as LmnApiProject | LmnApiSchoolClass}
+          type={row.name}
+          icon={row.icon}
+          isEnrolEnabled={isEnrolEnabled}
+        />
+      ))}
       {openDialogType === row.name && <GroupDialog item={row} />}
     </div>
   );
