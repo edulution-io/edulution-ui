@@ -24,7 +24,7 @@ import getCreatorFromUserDto from '@libs/survey/utils/getCreatorFromUserDto';
 import i18n from '@/i18n';
 import useUserStore from '@/store/UserStore/useUserStore';
 import SurveyEditorPage from '@/pages/Surveys/Editor/SurveyEditorPage';
-import SurveyEditorLoadingPage from '@/pages/Surveys/Editor/SurveyEditorLoadingPage';
+import SurveyEditorTemplateGrid from '@/pages/Surveys/Editor/SurveyEditorTemplateGrid';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
@@ -72,7 +72,7 @@ const SurveyEditorOpeningPage = () => {
   return (
     <PageLayout>
       {!initialSurvey ? (
-        <SurveyEditorLoadingPage surveyCreator={surveyCreator} />
+        <SurveyEditorTemplateGrid surveyCreator={surveyCreator} />
       ) : (
         <SurveyEditorPage initialFormValues={initialSurvey} />
       )}

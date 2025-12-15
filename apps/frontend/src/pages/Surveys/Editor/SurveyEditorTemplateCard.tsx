@@ -27,12 +27,12 @@ import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPage
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import { Card } from '@/components/shared/Card';
 
-interface SurveyEditorLoadingTemplateProps {
+interface SurveyEditorTemplateCardProps {
   creator: AttendeeDto;
   surveyTemplate: SurveyTemplateDto;
 }
 
-const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLoadingTemplateProps): JSX.Element => {
+const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTemplateCardProps): JSX.Element => {
   const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
 
   const { setTemplate } = useTemplateMenuStore();
@@ -59,4 +59,4 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
   );
 };
 
-export default SurveyEditorLoadingTemplate;
+export default SurveyEditorTemplateCard;
