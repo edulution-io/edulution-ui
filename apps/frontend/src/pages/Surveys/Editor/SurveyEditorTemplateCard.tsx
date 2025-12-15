@@ -26,12 +26,12 @@ import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
 import { Card } from '@/components/shared/Card';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 
-interface SurveyEditorLoadingTemplateProps {
+interface SurveyEditorTemplateCardProps {
   creator: AttendeeDto;
   surveyTemplate: SurveyTemplateDto;
 }
 
-const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLoadingTemplateProps): JSX.Element => {
+const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTemplateCardProps): JSX.Element => {
   const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
 
   const { template } = surveyTemplate;
@@ -53,4 +53,4 @@ const SurveyEditorLoadingTemplate = ({ creator, surveyTemplate }: SurveyEditorLo
   );
 };
 
-export default SurveyEditorLoadingTemplate;
+export default SurveyEditorTemplateCard;

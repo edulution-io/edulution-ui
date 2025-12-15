@@ -26,16 +26,16 @@ import SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import { GRID_CARD, GRID_SEARCH } from '@libs/ui/constants/commonClassNames';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
+import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import SurveyEditorTemplateCard from '@/pages/Surveys/Editor/SurveyEditorTemplateCard';
 import Input from '@/components/shared/Input';
 import { Card } from '@/components/shared/Card';
-import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
-import SurveyEditorLoadingTemplate from '@/pages/Surveys/Editor/SurveyEditorLoadingTemplate';
 
-interface SurveyEditorLoadingPageProps {
+interface SurveyEditorTemplateGridProps {
   surveyCreator: AttendeeDto;
 }
 
-const SurveyEditorLoadingPage = ({ surveyCreator }: SurveyEditorLoadingPageProps) => {
+const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridProps) => {
   const { t } = useTranslation();
 
   const { templates, fetchTemplates } = useTemplateMenuStore();
@@ -76,7 +76,7 @@ const SurveyEditorLoadingPage = ({ surveyCreator }: SurveyEditorLoadingPageProps
         placeholder={t('survey.editor.searchPlaceholder')}
         aria-label={t('survey.editor.searchPlaceholder')}
         value={search}
-        onChange={(event) => setSearch(event.target.value)}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
         variant="default"
         width="auto"
         className={cn(GRID_SEARCH, 'justify-center')}
@@ -93,7 +93,7 @@ const SurveyEditorLoadingPage = ({ surveyCreator }: SurveyEditorLoadingPageProps
         {filteredTemplates.length ? (
           filteredTemplates.map((template) => (
             <div key={template.name}>
-              <SurveyEditorLoadingTemplate
+              <SurveyEditorTemplateCard
                 creator={surveyCreator}
                 surveyTemplate={template}
               />
@@ -109,4 +109,4 @@ const SurveyEditorLoadingPage = ({ surveyCreator }: SurveyEditorLoadingPageProps
   );
 };
 
-export default SurveyEditorLoadingPage;
+export default SurveyEditorTemplateGrid;
