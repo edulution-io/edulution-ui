@@ -29,7 +29,7 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import APPS from '@libs/appconfig/constants/apps';
 import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import PUBLIC_DOWNLOADS_PATH from '@libs/common/constants/publicDownloadsPath';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import AppConfigService from '../appconfig/appconfig.service';
 import FilesystemService from '../filesystem/filesystem.service';
 

@@ -25,12 +25,12 @@ import { Request } from 'express';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
-import CustomHttpException from '../common/CustomHttpException';
-import { PUBLIC_ROUTE_KEY } from '../common/decorators/public.decorator';
-import extractToken from '../common/utils/extractToken';
+import { PUBLIC_ROUTE_KEY } from '@backend-common/decorators';
+import CustomHttpException from '../exceptions/custom-http.exception';
+import extractToken from '../utils/extract-token';
 
 @Injectable()
-class AuthGuard implements CanActivate {
+class JwtAuthGuard implements CanActivate {
   private readonly pubKey: string;
 
   constructor(
@@ -55,7 +55,12 @@ class AuthGuard implements CanActivate {
         request.token = token;
       } catch (err) {
         if (!isPublic) {
-          throw new CustomHttpException(AuthErrorMessages.TokenExpired, HttpStatus.UNAUTHORIZED, err, AuthGuard.name);
+          throw new CustomHttpException(
+            AuthErrorMessages.TokenExpired,
+            HttpStatus.UNAUTHORIZED,
+            err,
+            JwtAuthGuard.name,
+          );
         }
       }
     }
@@ -68,9 +73,9 @@ class AuthGuard implements CanActivate {
       AuthErrorMessages.TokenExpired,
       HttpStatus.UNAUTHORIZED,
       'No JWT provided',
-      AuthGuard.name,
+      JwtAuthGuard.name,
     );
   }
 }
 
-export default AuthGuard;
+export default JwtAuthGuard;

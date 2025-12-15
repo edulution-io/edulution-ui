@@ -28,7 +28,7 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import prepareCreator from '@libs/survey/utils/prepareCreator';
 import SseMessageType from '@libs/common/types/sseMessageType';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
 import surveysMigrationsList from './migrations/surveysMigrationsList';

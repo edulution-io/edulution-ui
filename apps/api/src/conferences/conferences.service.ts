@@ -38,7 +38,7 @@ import JoinPublicConferenceDetails from '@libs/conferences/types/joinPublicConfe
 import { OnEvent } from '@nestjs/event-emitter';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import appendSlashToUrl from '@libs/common/utils/URL/appendSlashToUrl';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
 import Attendee from './attendee.schema';

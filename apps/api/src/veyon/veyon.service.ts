@@ -38,7 +38,7 @@ import VEYON_API_AUTH_RESPONSE_KEYS from '@libs/veyon/constants/veyonApiAuthResp
 import { VEYON_API_FEATURE_ENDPOINT, VEYON_API_FRAMEBUFFER_ENDPOINT } from '@libs/veyon/constants/veyonApiEndpoints';
 import { HTTP_HEADERS, ResponseType } from '@libs/common/types/http-methods';
 import type UserConnectionsFeatureStates from '@libs/veyon/types/userConnectionsFeatureState';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import UsersService from '../users/users.service';
 import AppConfigService from '../appconfig/appconfig.service';
 

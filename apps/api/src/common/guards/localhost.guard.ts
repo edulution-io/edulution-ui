@@ -20,7 +20,7 @@
 import { CanActivate, ExecutionContext, HttpStatus, Injectable } from '@nestjs/common';
 import { Request } from 'express';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
-import CustomHttpException from '../CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 
 @Injectable()
 class LocalhostGuard implements CanActivate {

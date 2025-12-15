@@ -32,7 +32,7 @@ import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCateg
 import { BulletinCategoryPermissionType } from '@libs/appconfig/types/bulletinCategoryPermissionType';
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import { BulletinCategory, BulletinCategoryDocument } from './bulletin-category.schema';
 import MigrationService from '../migration/migration.service';
 import bulletinCategoryMigrationsList from './migrations/bulletinCategoryMigrationsList';

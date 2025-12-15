@@ -10,7 +10,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./apps/frontend/src/*"],
-      "@libs/*": ["./libs/src/*"]
+      "@libs/*": ["./libs/src/*"],
+      "@backend-common/*": ["./libs/backend-common/src/*"]
     },
     "module": "ESNext",
     "resolveJsonModule": true,

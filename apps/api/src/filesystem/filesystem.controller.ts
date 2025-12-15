@@ -41,11 +41,11 @@ import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
 import { UploadGlobalAssetDto } from '@libs/filesystem/types/uploadGlobalAssetDto';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
+import Public from '@backend-common/decorators/public.decorator';
 import { createAttachmentUploadOptions, createDiskStorage } from './multer.utilities';
 import AdminGuard from '../common/guards/admin.guard';
 import FilesystemService from './filesystem.service';
-import { Public } from '../common/decorators/public.decorator';
 import IsPublicAppGuard from '../common/guards/isPublicApp.guard';
 
 @ApiTags(EDU_API_CONFIG_ENDPOINTS.FILES)

@@ -17,17 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Controller, Get } from '@nestjs/common';
-import AppService from './app.service';
+import JWTUser from '@libs/user/types/jwt/jwtUser';
 
-@Controller()
-class AppController {
-  constructor(private readonly appService: AppService) {}
-
-  @Get()
-  getData() {
-    return this.appService.getData();
+declare global {
+  namespace Express {
+    interface Request {
+      user?: JWTUser;
+      token?: string;
+    }
   }
 }
 
-export default AppController;
+export {};

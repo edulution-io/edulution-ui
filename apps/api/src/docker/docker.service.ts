@@ -38,7 +38,7 @@ import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import type CreateContainerDto from '@libs/docker/types/create-container.dto';
 import { injectEnvIntoCompose, parseDockerEnv } from '@libs/docker/utils/createComposeFile';
 import { EDULUTION_MANAGER_CONTAINER_NAME } from '@libs/docker/constants/edulution-manager';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import SseService from '../sse/sse.service';
 
 @Injectable()

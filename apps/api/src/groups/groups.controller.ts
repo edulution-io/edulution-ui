@@ -20,8 +20,8 @@
 import { Controller, Get, Query, UseInterceptors } from '@nestjs/common';
 import { EDU_API_GROUPS_ENDPOINT } from '@libs/groups/constants/eduApiEndpoints';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import GetToken from '@backend-common/decorators/get-token.decorator';
 import GroupsService from './groups.service';
-import GetToken from '../common/decorators/getToken.decorator';
 import GetCurrentOrganisationPrefix from '../common/decorators/getCurrentOrganisationPrefix.decorator';
 import DeploymentTargetInterceptor from '../common/interceptors/deploymentTarget.interceptor';
 

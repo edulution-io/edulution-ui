@@ -27,10 +27,10 @@ import APPS from '@libs/appconfig/constants/apps';
 import SSE_EDU_API_ENDPOINTS from '@libs/sse/constants/sseEndpoints';
 import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
 import AUTH_PATHS from '@libs/auth/constants/auth-paths';
-import CustomHttpException from '../common/CustomHttpException';
-import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
+import GetCurrentUsername from '@backend-common/decorators/get-current-username.decorator';
+import Public from '@backend-common/decorators/public.decorator';
 import SseService from './sse.service';
-import { Public } from '../common/decorators/public.decorator';
 import { Conference, ConferenceDocument } from '../conferences/conference.schema';
 
 @ApiTags(SSE_EDU_API_ENDPOINTS.SSE)

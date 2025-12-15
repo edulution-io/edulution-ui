@@ -28,8 +28,8 @@ import {
   MESSAGES_ENDPOINT,
 } from '@libs/chat/constants/chatEndpoints';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
+import GetCurrentUser from '@backend-common/decorators/get-current-user.decorator';
 import ChatService from './chat.service';
-import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 
 @Controller(CHAT_ENDPOINT)
 @ApiTags(CHAT_ENDPOINT)

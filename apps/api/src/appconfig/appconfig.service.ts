@@ -31,7 +31,7 @@ import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import { AppConfig } from './appconfig.schema';
 import initializeCollection from './initializeCollection';
 import MigrationService from '../migration/migration.service';

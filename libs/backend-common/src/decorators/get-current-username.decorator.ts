@@ -19,7 +19,7 @@
 
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { Request } from 'express';
-import getUsernameFromRequest from 'apps/api/src/common/utils/getUsernameFromRequest';
+import getUsernameFromRequest from '../utils/get-username-from-request';
 
 const GetCurrentUsername = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
   const request: Request = ctx.switchToHttp().getRequest();

@@ -44,10 +44,10 @@ import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import { addUuidToFileName } from '@libs/common/utils/uuidAndFileNames';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import FilesystemService from 'apps/api/src/filesystem/filesystem.service';
-import CustomHttpException from 'apps/api/src/common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
+import Public from '@backend-common/decorators/public.decorator';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answers.service';
-import { Public } from '../common/decorators/public.decorator';
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 

@@ -51,7 +51,7 @@ import { decodeBase64Api } from '@libs/common/utils/getBase64StringApi';
 import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
 import GroupFormDto from '@libs/groups/types/groupForm.dto';
 import LmnApiJobResult from '@libs/lmnApi/types/lmn-api-job.result';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import UsersService from '../users/users.service';
 import LdapKeycloakSyncService from '../ldap-keycloak-sync/ldap-keycloak-sync.service';
 import LmnApiRequestQueue from './queue/lmn-api-request.queue';

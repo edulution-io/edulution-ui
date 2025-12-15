@@ -31,7 +31,7 @@ import SURVEY_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswers
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
 import Attendee from '../conferences/attendee.schema';

@@ -22,10 +22,10 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
+import GetCurrentUserGroups from '@backend-common/decorators/get-current-user-groups.decorator';
+import Public from '@backend-common/decorators/public.decorator';
 import AppConfigService from './appconfig.service';
-import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
 import AdminGuard from '../common/guards/admin.guard';
-import { Public } from '../common/decorators/public.decorator';
 
 @ApiTags(EDU_API_CONFIG_ENDPOINTS.ROOT)
 @ApiBearerAuth()

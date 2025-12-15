@@ -24,7 +24,7 @@ import { Model, UpdateWriteOpResult } from 'mongoose';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import GlobalSettingsService from './global-settings.service';
 import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
 import cacheManagerMock from '../common/mocks/cacheManagerMock';

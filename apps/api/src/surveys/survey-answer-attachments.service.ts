@@ -31,7 +31,7 @@ import isAnswerSimpleQuestionAnswer from '@libs/survey/utils/isAnswerSimpleQuest
 import isAnswerFileQuestionAnswer from '@libs/survey/utils/isAnswerFileQuestionAnswer';
 import isAnswerSimpleFileQuestionAnswer from '@libs/survey/utils/isAnswerSimpleFileQuestionAnswer';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
-import CustomHttpException from 'apps/api/src/common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()

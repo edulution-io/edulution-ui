@@ -19,9 +19,9 @@
 
 import { ApiTags } from '@nestjs/swagger';
 import { Controller, Get, Injectable } from '@nestjs/common';
-import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
+import GetCurrentUsername from '@backend-common/decorators/get-current-username.decorator';
+import GetCurrentUserGroups from '@backend-common/decorators/get-current-user-groups.decorator';
 import MobileAppService from './mobileApp.service';
-import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
 
 @ApiTags('mobile-app')
 @Controller('mobile-app')

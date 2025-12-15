@@ -38,11 +38,11 @@ import AuthRequestArgs from '@libs/auth/types/auth-request';
 import { AUTH_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';
-import CustomHttpException from '../common/CustomHttpException';
-import { Public } from '../common/decorators/public.decorator';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
+import Public from '@backend-common/decorators/public.decorator';
+import GetCurrentUsername from '@backend-common/decorators/get-current-username.decorator';
+import GetCurrentUserGroups from '@backend-common/decorators/get-current-user-groups.decorator';
 import AuthService from './auth.service';
-import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
-import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
 
 const { EDUI_OIDC_CONFIG_CACHE_TTL } = process.env;
 const oidcConfigCacheTtl =

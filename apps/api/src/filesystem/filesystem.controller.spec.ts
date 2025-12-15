@@ -21,12 +21,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus } from '@nestjs/common';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import { Response } from 'express';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import FileSystemController from './filesystem.controller';
 import FilesystemService from './filesystem.service';
 import IsPublicAppGuard from '../common/guards/isPublicApp.guard';
 import AdminGuard from '../common/guards/admin.guard';
 import AppConfigService from '../appconfig/appconfig.service';
-import CustomHttpException from '../common/CustomHttpException';
 import GlobalSettingsService from '../global-settings/global-settings.service';
 
 describe(FileSystemController.name, () => {

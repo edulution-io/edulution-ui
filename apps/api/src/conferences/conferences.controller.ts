@@ -23,10 +23,10 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CONFERENCES_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import JoinPublicConferenceDetails from '@libs/conferences/types/joinPublicConferenceDetails';
+import Public from '@backend-common/decorators/public.decorator';
+import GetCurrentUser from '@backend-common/decorators/get-current-user.decorator';
 import ConferencesService from './conferences.service';
 import { Conference } from './conference.schema';
-import { Public } from '../common/decorators/public.decorator';
-import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 
 @ApiTags(CONFERENCES_EDU_API_ENDPOINT)
 @ApiBearerAuth()

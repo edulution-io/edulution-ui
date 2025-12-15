@@ -17,7 +17,5 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { SetMetadata } from '@nestjs/common';
-
-export const PUBLIC_ROUTE_KEY = 'isPublicRoute';
-export const Public = () => SetMetadata(PUBLIC_ROUTE_KEY, true);
+export { default as extractToken } from './extract-token';
+export { default as getUsernameFromRequest } from './get-username-from-request';

@@ -52,7 +52,7 @@ import {
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import GROUPS_CACHE_REFRESH_EVENT from '@libs/groups/constants/groupsCacheRefreshEvent';
 import { GROUPS_CACHE_INITIALIZED_EVENT } from '@libs/groups/constants/cacheInitializedEvents';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import Attendee from '../conferences/attendee.schema';
 import KeycloakRequestQueue from './queue/keycloak-request.queue';
 

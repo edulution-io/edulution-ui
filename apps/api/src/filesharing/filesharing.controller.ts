@@ -50,12 +50,12 @@ import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import { pipeline } from 'stream/promises';
 import { randomUUID } from 'crypto';
-import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
+import GetCurrentUsername from '@backend-common/decorators/get-current-username.decorator';
+import Public from '@backend-common/decorators/public.decorator';
+import GetCurrentUser from '@backend-common/decorators/get-current-user.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
 import FilesharingService from './filesharing.service';
 import WebdavService from '../webdav/webdav.service';
-import { Public } from '../common/decorators/public.decorator';
-import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()

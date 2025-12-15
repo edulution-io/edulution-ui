@@ -41,13 +41,13 @@ import { randomUUID } from 'crypto';
 import PublicShareResponseDto from '@libs/filesharing/types/publicShareResponseDto';
 import PUBLIC_SHARE_LINK_SCOPE from '@libs/filesharing/constants/publicShareLinkScope';
 import CustomFile from '@libs/filesharing/types/customFile';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import { PublicShare, PublicShareDocument } from './publicFileShare.schema';
 import UsersService from '../users/users.service';
 import WebdavService from '../webdav/webdav.service';
 import OnlyofficeService from './onlyoffice.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import QueueService from '../queue/queue.service';
-import CustomHttpException from '../common/CustomHttpException';
 import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 
 @Injectable()

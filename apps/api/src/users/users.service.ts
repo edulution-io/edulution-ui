@@ -43,7 +43,7 @@ import {
   KEYCLOAK_STARTUP_TIMEOUT_MS,
   KEYCLOAK_USERS_SYNC_INTERVAL_MS,
 } from '@libs/ldapKeycloakSync/constants/keycloakSyncValues';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
 import GroupsService from '../groups/groups.service';

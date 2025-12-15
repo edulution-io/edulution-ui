@@ -41,11 +41,11 @@ import HistoryPageDto from '@libs/whiteboard/types/historyPageDto';
 import TLDRAW_MULTI_USER_ROOM_PREFIX from '@libs/whiteboard/constants/tldrawMultiUserRoomPrefix';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import ROOM_ID_PARAM from '@libs/tldraw-sync/constants/roomIdParam';
+import GetCurrentUsername from '@backend-common/decorators/get-current-username.decorator';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import FilesystemService from '../filesystem/filesystem.service';
 import TLDrawSyncService from './tldraw-sync.service';
-import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
-import CustomHttpException from '../common/CustomHttpException';
 
 @ApiTags(TLDRAW_SYNC_ENDPOINTS.BASE)
 @ApiBearerAuth()

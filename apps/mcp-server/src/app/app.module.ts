@@ -17,13 +17,30 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Module } from '@nestjs/common';
-import AppController from './app.controller';
-import AppService from './app.service';
+import { Global, Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { McpModule } from '@rekog/mcp-nest';
+import { JwtModule } from '@nestjs/jwt';
+import JwtAuthGuard from '@backend-common/guards/jwt-auth.guard';
+import GreetingTool from '../tools/greeting.tool';
 
+@Global()
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: ['apps/mcp-server/.env', 'apps/mcp-server/.env.default'],
+      isGlobal: true,
+    }),
+    JwtModule.register({
+      global: true,
+    }),
+    McpModule.forRoot({
+      name: 'edu-mcp-server',
+      version: '1.0.0',
+      guards: [JwtAuthGuard],
+    }),
+  ],
+  providers: [GreetingTool, JwtAuthGuard],
+  exports: [JwtModule],
 })
 export default class AppModule {}

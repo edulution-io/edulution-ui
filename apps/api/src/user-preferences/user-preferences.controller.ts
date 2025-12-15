@@ -21,7 +21,7 @@ import { Body, Controller, Get, Patch, Query } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import UpdateBulletinCollapsedDto from '@libs/user-preferences/types/update-bulletin-collapsed.dto';
 import USER_PREFERENCES_ENDPOINT from '@libs/user-preferences/constants/user-preferences-endpoint';
-import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
+import GetCurrentUsername from '@backend-common/decorators/get-current-username.decorator';
 import UserPreferencesService from './user-preferences.service';
 
 @Controller(USER_PREFERENCES_ENDPOINT)

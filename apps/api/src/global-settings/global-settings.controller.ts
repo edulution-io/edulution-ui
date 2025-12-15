@@ -29,9 +29,9 @@ import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.d
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import { DEFAULT_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import type SentryConfig from '@libs/common/types/sentryConfig';
+import Public from '@backend-common/decorators/public.decorator';
 import AdminGuard from '../common/guards/admin.guard';
 import GlobalSettingsService from './global-settings.service';
-import { Public } from '../common/decorators/public.decorator';
 
 @ApiTags(GLOBAL_SETTINGS_ROOT_ENDPOINT)
 @ApiBearerAuth()

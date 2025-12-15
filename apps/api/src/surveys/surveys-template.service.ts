@@ -28,7 +28,7 @@ import GlobalSettingsService from 'apps/api/src/global-settings/global-settings.
 import MigrationService from 'apps/api/src/migration/migration.service';
 import surveyTemplatesMigrationsList from 'apps/api/src/surveys/migrations/surveyTemplatesMigrationsList';
 import { SurveysTemplate, SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 
 @Injectable()
 class SurveysTemplateService implements OnModuleInit {

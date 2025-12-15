@@ -17,12 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Injectable } from '@nestjs/common';
+import JWTUser from '@libs/user/types/jwt/jwtUser';
 
-@Injectable()
-class AppService {
-  getData(): { message: string } {
-    return { message: 'Hello API' };
+declare global {
+  namespace Express {
+    interface Request {
+      user?: JWTUser;
+      token?: string;
+    }
   }
 }
-export default AppService;
+
+export {};

@@ -32,7 +32,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { ADMIN_GROUPS, DEPLOYMENT_TARGET_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import DEFAULT_THEME from '@libs/global-settings/constants/defaultTheme';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import { GlobalSettings, GlobalSettingsDocument } from './global-settings.schema';
 import MigrationService from '../migration/migration.service';
 import globalSettingsMigrationsList from './migrations/globalSettingsMigrationsList';

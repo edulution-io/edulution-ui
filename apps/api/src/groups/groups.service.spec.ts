@@ -30,7 +30,7 @@ import {
   ALL_SCHOOLS_CACHE_KEY,
   GROUP_WITH_MEMBERS_CACHE_KEY,
 } from '@libs/groups/constants/cacheKeys';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import mockCacheManager from '../common/cache-manager.mock';
 import KeycloakRequestQueue from './queue/keycloak-request.queue';
 import GroupsService from './groups.service';

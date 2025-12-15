@@ -39,7 +39,7 @@ import { decodeBase64Api, encodeBase64Api } from '@libs/common/utils/getBase64St
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import UserRoles from '@libs/user/constants/userRoles';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import { User, UserDocument } from '../users/user.schema';
 import SseService from '../sse/sse.service';
 import GlobalSettingsService from '../global-settings/global-settings.service';

@@ -24,9 +24,9 @@ import { pipeTextStreamToResponse } from 'ai';
 import AIChatRequestDto from '@libs/chat/types/ai.chat.request.dto';
 import { CHAT_AI_CONFIG_ENDPOINT, CHAT_AI_ENDPOINT, CHAT_AI_STREAM_ENDPOINT } from '@libs/chat/constants/chatEndpoints';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
+import GetCurrentUser from '@backend-common/decorators/get-current-user.decorator';
 import AIService from './ai.service';
 import ChatService from '../chat.service';
-import GetCurrentUser from '../../common/decorators/getCurrentUser.decorator';
 
 @Controller(CHAT_AI_ENDPOINT)
 @ApiBearerAuth()

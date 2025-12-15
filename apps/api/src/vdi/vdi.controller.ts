@@ -20,8 +20,8 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { GuacamoleDto, LmnVdiRequest } from '@libs/desktopdeployment/types';
+import GetCurrentUsername from '@backend-common/decorators/get-current-username.decorator';
 import VdiService from './vdi.service';
-import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 
 @ApiTags('vdi')
 @ApiBearerAuth()

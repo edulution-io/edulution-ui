@@ -34,7 +34,7 @@ import LICENSE_ENDPOINT from '@libs/license/constants/license-endpoints';
 import LICENSE_SERVER_URL from '@libs/license/constants/licenseServerUrl';
 import LicenseErrorMessages from '@libs/license/constants/licenseErrorMessages';
 import LICENSE_CHECK_INTERVAL from '@libs/license/constants/licenseCheckInterval';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import { License, LicenseDocument } from './license.schema';
 
 @Injectable()

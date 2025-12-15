@@ -33,7 +33,7 @@ import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAtt
 import BULLETIN_TEMP_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinTempAttachmentsPath';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 import { BulletinCategory, BulletinCategoryDocument } from '../bulletin-category/bulletin-category.schema';
 import BulletinCategoryService from '../bulletin-category/bulletin-category.service';

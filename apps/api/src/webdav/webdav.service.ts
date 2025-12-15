@@ -45,7 +45,7 @@ import { Agent as HttpsAgent } from 'https';
 import { Agent as HttpAgent } from 'http';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getPathWithoutWebdav from '@libs/filesharing/utils/getPathWithoutWebdav';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import WebdavClientFactory from './webdav.client.factory';
 import UsersService from '../users/users.service';
 import WebdavSharesService from './shares/webdav-shares.service';

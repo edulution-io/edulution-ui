@@ -29,8 +29,8 @@ import {
   VEYON_API_FRAMEBUFFER_ENDPOINT,
 } from '@libs/veyon/constants/veyonApiEndpoints';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+import GetCurrentUsername from '@backend-common/decorators/get-current-username.decorator';
 import VeyonService from './veyon.service';
-import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 
 @ApiTags(VEYON_API_ENDPOINT)
 @ApiBearerAuth()

@@ -25,10 +25,10 @@ import UserAccountDto from '@libs/user/types/userAccount.dto';
 import { EDU_API_USER_ACCOUNTS_ENDPOINT, EDU_API_USERS_ENDPOINT } from '@libs/user/constants/usersApiEndpoints';
 import { NOTIFICATION_DEVICES_EDU_API_ENDPOINT } from '@libs/notification/constants/apiEndpoints';
 import UserDeviceDto from '@libs/notification/types/userDevice.dto';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
+import GetCurrentUsername from '@backend-common/decorators/get-current-username.decorator';
 import UsersService from './users.service';
 import UpdateUserDto from './dto/update-user.dto';
-import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import GetCurrentOrganisationPrefix from '../common/decorators/getCurrentOrganisationPrefix.decorator';
 import DeploymentTargetInterceptor from '../common/interceptors/deploymentTarget.interceptor';
 

@@ -23,7 +23,7 @@ import DEPLOYMENT_TARGET from '@libs/common/constants/deployment-target';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
 import type DeploymentTarget from '@libs/common/types/deployment-target';
-import CustomHttpException from '../CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 
 const GetCurrentOrganisationPrefix = createParamDecorator((_data: unknown, ctx: ExecutionContext): string => {
   const request: Request & { deploymentTarget: DeploymentTarget } = ctx.switchToHttp().getRequest();

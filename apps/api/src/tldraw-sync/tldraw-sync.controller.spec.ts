@@ -21,10 +21,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus } from '@nestjs/common';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import { Response } from 'express';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import TLDrawSyncController from './tldraw-sync.controller';
 import FilesystemService from '../filesystem/filesystem.service';
 import TLDrawSyncService from './tldraw-sync.service';
-import CustomHttpException from '../common/CustomHttpException';
 
 jest.mock('./tldraw-sync.service', () => ({ __esModule: true, default: class {} }));
 

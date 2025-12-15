@@ -46,7 +46,7 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import SseMessageType from '@libs/common/types/sseMessageType';
 import DOCKER_STATES from '@libs/docker/constants/dockerStates';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import DockerService from '../docker/docker.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import { MailProvider, MailProviderDocument } from './mail-provider.schema';

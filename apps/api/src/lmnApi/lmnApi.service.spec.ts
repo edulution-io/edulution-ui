@@ -33,7 +33,7 @@ import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import { encodeBase64Api } from '@libs/common/utils/getBase64StringApi';
 import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
 import GroupFormDto from '@libs/groups/types/groupForm.dto';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import LmnApiService from './lmnApi.service';
 import UsersService from '../users/users.service';
 import LdapKeycloakSyncService from '../ldap-keycloak-sync/ldap-keycloak-sync.service';

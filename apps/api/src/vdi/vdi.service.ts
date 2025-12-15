@@ -33,7 +33,7 @@ import {
 } from '@libs/desktopdeployment/types';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import APPS from '@libs/appconfig/constants/apps';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import UsersService from '../users/users.service';
 import AppConfigService from '../appconfig/appconfig.service';
 

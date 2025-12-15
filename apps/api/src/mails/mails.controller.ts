@@ -22,11 +22,11 @@ import MAIL_ENDPOINT from '@libs/mail/constants/mail-endpoint';
 import { CreateSyncJobDto, MailDto, MailProviderConfigDto, SogoThemeVersionDto, SyncJobDto } from '@libs/mail/types';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import SOGO_THEME from '@libs/mail/constants/sogoTheme';
-import GetUsersEmailAddress from '../common/decorators/getUsersEmailAddress.decorator';
+import GetCurrentUsername from '@backend-common/decorators/get-current-username.decorator';
+import GetUsersEmailAddress from '@backend-common/decorators/get-users-email-address.decorator';
 import MailsService from './mails.service';
 import UsersService from '../users/users.service';
 import AdminGuard from '../common/guards/admin.guard';
-import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 
 @ApiTags(MAIL_ENDPOINT)
 @ApiBearerAuth()

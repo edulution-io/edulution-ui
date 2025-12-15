@@ -20,7 +20,7 @@
 import { Catch, ArgumentsHost, Logger, HttpException } from '@nestjs/common';
 import { BaseExceptionFilter, HttpAdapterHost } from '@nestjs/core';
 import { Request } from 'express';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 
 @Catch(HttpException)
 class HttpExceptionFilter extends BaseExceptionFilter {

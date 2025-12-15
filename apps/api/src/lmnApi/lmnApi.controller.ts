@@ -42,9 +42,9 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
 import GroupFormDto from '@libs/groups/types/groupForm.dto';
+import GetCurrentUsername from '@backend-common/decorators/get-current-username.decorator';
 import LmnApiService from './lmnApi.service';
 import GetCurrentOrganisationPrefix from '../common/decorators/getCurrentOrganisationPrefix.decorator';
-import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import DeploymentTargetInterceptor from '../common/interceptors/deploymentTarget.interceptor';
 
 const { ROOT, USERS_QUOTA } = LMN_API_EDU_API_ENDPOINTS;

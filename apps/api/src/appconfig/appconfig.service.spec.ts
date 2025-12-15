@@ -27,7 +27,7 @@ import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
 import { HttpStatus } from '@nestjs/common';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
-import CustomHttpException from '../common/CustomHttpException';
+import CustomHttpException from '@backend-common/exceptions/custom-http.exception';
 import AppConfigService from './appconfig.service';
 import { AppConfig } from './appconfig.schema';
 import { mockAppConfig, mockAppConfigModel, mockLdapGroup } from './appconfig.mock';
