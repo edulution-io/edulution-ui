@@ -11,6 +11,7 @@
  */
 
 import i18n from '@/i18n';
+import { toast } from 'sonner';
 import React, { useRef, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { ThemeType } from '@libs/common/constants/theme';
@@ -35,7 +36,7 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
   option,
   form,
 }) => {
-  const { uploadImageFile, deleteImageFile, error, reset } = FilesystemStore();
+  const { uploadImageFile, deleteImageFile, error } = FilesystemStore();
 
   const [keyValue, setKeyValue] = useState<number>(0);
 
@@ -51,16 +52,20 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
 
   const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] ?? null;
-    if (file && !file.type.startsWith('image/')) {
-      if (inputRef.current) inputRef.current.value = '';
-      return;
-    }
-
     if (file) {
+      if (!file.type.startsWith('image/')) {
+        if (inputRef.current) inputRef.current.value = '';
+        return;
+      }
+
       const success = await uploadImageFile(destination, filename, file);
       if (success) {
+        toast.success(i18n.t('survey.editor.fileUploadSuccess'));
         form.setValue(path, file, { shouldDirty: true });
         setKeyValue((prev) => prev + 1);
+      } else {
+        toast.error(i18n.t('survey.editor.fileUploadError'));
+        form.setValue(path, null, { shouldDirty: true });
       }
     }
   };
@@ -68,9 +73,12 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
   const onHandleReset = async () => {
     const success = await deleteImageFile(appName, filename);
     if (success) {
-      reset();
+      toast.success(i18n.t('survey.editor.fileDeletionSuccess'));
       form.setValue(path, null, { shouldDirty: true });
       setKeyValue((prev) => prev + 1);
+    } else {
+      toast.error(i18n.t('survey.editor.fileDeletionError'));
+      form.setValue(path, null, { shouldDirty: true });
     }
   };
 

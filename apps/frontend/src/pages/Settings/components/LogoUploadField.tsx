@@ -65,7 +65,7 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
   return (
     <div
       className={clsx(
-        'relative flex min-w-[49%] flex-col items-center rounded-2xl border border-dashed border-gray-300 p-6 text-center shadow-sm hover:border-gray-400',
+        'relative flex flex-col items-center rounded-2xl border border-dashed border-gray-300 p-6 text-center shadow-sm hover:border-gray-400',
         backdropClass,
         uploading && 'pointer-events-none opacity-60',
         className,
@@ -74,7 +74,7 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
       aria-live="polite"
     >
       <div className="absolute right-4 top-4">
-        {onHandleReset && (
+        {hasLocalSelection && onHandleReset && (
           <button
             type="button"
             onClick={async () => {
@@ -107,7 +107,7 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
           hasSelection={hasLocalSelection}
           chooseText={chooseText}
           changeText={changeText}
-          labelClassName="w-full"
+          labelClassName="w-full border-none"
           disabled={uploading}
         />
       </div>

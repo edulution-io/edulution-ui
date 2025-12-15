@@ -695,6 +695,7 @@
       "fileUploadSuccess": "Die Datei wurde erfolgreich hochgeladen.",
       "fileUploadError": "Die Datei konnte nicht hochgeladen werden, bitte versuche es später erneut.",
       "fileDeletionSuccess": "Die Datei wurde erfolgreich gelöscht.",
+      "fileDeletionError": "Die Datei konnte nicht gelöscht werden",
       "saveSurveySuccess": "Die Umfrage wurde gespeichert.",
       "surveyPlaceHolder": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
       "surveyPlaceholderDescription": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
@@ -1374,7 +1375,18 @@
       "invalidFileType": "Ungültiger Dateityp",
       "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",
       "invalidRequestData": "Ungültige Anfragedaten",
-      "wrongServerConfig": "Fehlerhafte Serverkonfiguration"
+      "wrongServerConfig": "Fehlerhafte Serverkonfiguration",
+      "path": {
+        "noString": "Pfad muss vom Typ String sein",
+        "isEmpty": "Pfad darf nicht leer sein",
+        "tooLong": "Pfad ist zu lang",
+        "traversal": "Pfad-Traversierung ist nicht erlaubt",
+        "absolutePath": "Absolute Pfade sind nicht erlaubt",
+        "subdirectories": "Unterverzeichnisse sind nicht erlaubt",
+        "invalidCharacters": "Pfad enthält ungültige Zeichen",
+        "outsidePublicDirectory": "Pfad liegt außerhalb des öffentlichen Verzeichnisses",
+        "symlinkOutsidePublicDirectory": "Pfad enthält einen Symlink, der außerhalb des öffentlichen Verzeichnisses verweist"
+      }
     },
     "cut": "Ausschneiden",
     "sortOrder": "Sortierung",

@@ -31,7 +31,6 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
-  Logger,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { type Response } from 'express';
@@ -44,6 +43,7 @@ import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
 import { UploadGlobalAssetDto } from '@libs/filesystem/types/uploadGlobalAssetDto';
+import validatePathNoPathTraversal from 'apps/api/src/common/utils/validatePathNoPathTraversal';
 import CustomHttpException from '../common/CustomHttpException';
 import { createAttachmentUploadOptions, createDiskStorage } from './multer.utilities';
 import AdminGuard from '../common/guards/admin.guard';
@@ -105,7 +105,7 @@ class FileSystemController {
 
   @Public()
   @Get(`public/assets/:appName/*filename`)
-  servePublicAssetWithFallback(
+  async servePublicAssetWithFallback(
     @Res() res: Response,
     @Param('appName') appName: string,
     @Param('filename') filename: string | string[],
@@ -124,25 +124,19 @@ class FileSystemController {
       filename,
       fallbackFilename,
     );
-    if (filePath.includes('..') || filePath.includes('//')) {
-      Logger.warn(`Suspicious path detected: ${filePath}`);
-      throw new CustomHttpException(
-        CommonErrorMessages.INVALID_REQUEST_DATA,
-        HttpStatus.BAD_REQUEST,
-        undefined,
-        FileSystemController.name,
-      );
-    }
+    await validatePathNoPathTraversal(filePath, FileSystemController.name, {
+      mustExist: false,
+      followSymlinks: true,
+      allowSubdirs: true,
+      allowAbsolute: true,
+    });
     if (fallBackPath) {
-      if (fallBackPath.includes('..') || fallBackPath.includes('//')) {
-        Logger.warn(`Suspicious fallback path detected: ${fallBackPath}`);
-        throw new CustomHttpException(
-          CommonErrorMessages.INVALID_REQUEST_DATA,
-          HttpStatus.BAD_REQUEST,
-          undefined,
-          FileSystemController.name,
-        );
-      }
+      await validatePathNoPathTraversal(fallBackPath, FileSystemController.name, {
+        mustExist: false,
+        followSymlinks: true,
+        allowSubdirs: true,
+        allowAbsolute: true,
+      });
     }
     return this.filesystemService.servePublicAssetWithFallback(res, filePath, fallBackPath);
   }
