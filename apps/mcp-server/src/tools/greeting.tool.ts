@@ -36,10 +36,10 @@ class GreetingTool extends BaseTool {
           type: 'text',
           text: JSON.stringify(
             {
-              name: this.user.name,
-              username: this.user.name,
-              email: this.user.email,
-              school: this.user.school,
+              name: this.user?.name,
+              username: this.user?.name,
+              email: this.user?.email,
+              school: this.user?.school,
               isTeacher: this.isTeacher,
               isAdmin: this.isAdmin,
               token: this.token,
