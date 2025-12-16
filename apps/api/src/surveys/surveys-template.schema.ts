@@ -43,6 +43,12 @@ export class SurveysTemplate {
 
   @Prop({ default: 1, required: true, unique: false })
   schemaVersion: number;
+
+  @Prop({ default: [] })
+  UserGroups: string[];
+
+  @Prop({ default: ['Linuxmuster'] })
+  DeploymentTargets: string[];
 }
 
 const SurveysTemplateSchema = SchemaFactory.createForClass(SurveysTemplate);
