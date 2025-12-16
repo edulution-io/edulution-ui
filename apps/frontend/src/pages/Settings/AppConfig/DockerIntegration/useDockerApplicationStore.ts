@@ -201,7 +201,7 @@ const useDockerApplicationStore = create<DockerContainerTableStore>((set, get) =
           const { isImageUpdated } = data;
 
           if (!isImageUpdated) {
-            toast.info(i18n.t('docker.events.containerAlreadyUpdateToDate', { containerName }));
+            toast.info(i18n.t('docker.events.containerAlreadyUpToDate', { containerName }));
             return;
           }
 

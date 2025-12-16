@@ -41,6 +41,7 @@ import type LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
 import type LmnApiPrinterWithMembers from '@libs/lmnApi/types/lmnApiPrinterWithMembers';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import type LmnApiSchools from '@libs/lmnApi/types/lmnApiSchools';
+import LMN_API_SEARCH_PARAMS from '@libs/lmnApi/constants/lmnApiSearchParams';
 
 const { PROJECT, SCHOOL_CLASSES, PRINTERS, ROOM, SEARCH_USERS_OR_GROUPS, USER_SESSIONS } = LMN_API_EDU_API_ENDPOINTS;
 
@@ -278,13 +279,18 @@ const useClassManagementStore = create<ClassManagementStore>(
         }
       },
 
-      fetchSchoolClass: async (schoolClassName: string) => {
+      fetchSchoolClass: async (schoolClassName: string, allMembers = false) => {
         if (get().isSchoolClassLoading) return null;
         set({ isSchoolClassLoading: true, error: null });
         try {
           const { lmnApiToken } = useLmnApiStore.getState();
           const response = await eduApi.get<LmnApiSchoolClassWithMembers>(`${SCHOOL_CLASSES}/${schoolClassName}`, {
-            headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+            headers: {
+              [HTTP_HEADERS.XApiKey]: lmnApiToken,
+            },
+            params: {
+              [LMN_API_SEARCH_PARAMS.ALL_MEMBERS]: allMembers || undefined,
+            },
           });
 
           return response.data;

@@ -17,10 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
-import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
-import { TEMPLATES } from '@libs/survey/constants/surveys-endpoint';
+const LMN_API_SEARCH_PARAMS = {
+  ALL_MEMBERS: 'allMembers',
+} as const;
 
-const SURVEYS_TEMPLATE_PATH = `${APPS_FILES_PATH}/${APPS.SURVEYS}/${TEMPLATES}`;
-
-export default SURVEYS_TEMPLATE_PATH;
+export default LMN_API_SEARCH_PARAMS;

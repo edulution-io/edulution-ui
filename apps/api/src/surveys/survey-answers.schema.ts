@@ -19,6 +19,7 @@
 
 import { Document, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 import Attendee from '../conferences/attendee.schema';
 
 export type SurveyAnswerDocument = SurveyAnswer & Document;
@@ -34,10 +35,10 @@ export class SurveyAnswer {
   @Prop({ required: true })
   attendee: Attendee;
 
-  @Prop({ type: JSON, required: true })
-  answer: JSON;
+  @Prop({ type: Object, required: true })
+  answer: TSurveyAnswer;
 
-  @Prop({ default: 1 })
+  @Prop({ default: 2 })
   schemaVersion: number;
 }
 

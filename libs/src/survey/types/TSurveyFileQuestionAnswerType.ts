@@ -3,6 +3,7 @@
  * All rights reserved.
  *
  * This software is dual-licensed under the terms of:
+
  *
  * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
  *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
@@ -17,13 +18,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import axios from 'axios';
+type TSurveyFileQuestionAnswerType = object & { content?: string };
 
-describe('GET /api', () => {
-  it('should return a message', async () => {
-    const res = await axios.get(`/api`);
-
-    expect(res.status).toBe(200);
-    expect(res.data).toEqual({ message: 'Hello API' });
-  });
-});
+export default TSurveyFileQuestionAnswerType;

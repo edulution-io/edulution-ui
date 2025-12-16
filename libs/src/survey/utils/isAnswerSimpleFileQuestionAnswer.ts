@@ -3,6 +3,7 @@
  * All rights reserved.
  *
  * This software is dual-licensed under the terms of:
+
  *
  * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
  *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
@@ -17,10 +18,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-/* eslint-disable */
+import TSurveyFileQuestionAnswerType from '@libs/survey/types/TSurveyFileQuestionAnswerType';
+import TSurveyQuestionAnswerTypes from '@libs/survey/types/TSurveyQuestionAnswerTypes';
 
-module.exports = async function () {
-  // Put clean up logic here (e.g. stopping services, docker-compose, etc.).
-  // Hint: `globalThis` is shared between setup and teardown.
-  console.log(globalThis.__TEARDOWN_MESSAGE__);
-};
+const isAnswerSimpleFileQuestionAnswer = (questionAnswer: TSurveyQuestionAnswerTypes): boolean =>
+  typeof questionAnswer === 'object' &&
+  questionAnswer !== null &&
+  !!(questionAnswer as TSurveyFileQuestionAnswerType).content &&
+  typeof (questionAnswer as TSurveyFileQuestionAnswerType).content === 'string';
+
+export default isAnswerSimpleFileQuestionAnswer;

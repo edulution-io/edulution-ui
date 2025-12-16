@@ -148,6 +148,8 @@ describe(PublicSurveysController.name, () => {
 
       surveyModel.findByIdAndUpdate = jest.fn().mockReturnValue(publicSurvey02AfterAddingValidAnswer);
 
+      surveysService.throwErrorIfSurveyIsNotPublic = jest.fn().mockResolvedValueOnce(true);
+
       await controller.answerSurvey({
         surveyId: idOfPublicSurvey02.toString(),
         answer: mockedValidAnswerForPublicSurveys02,
@@ -195,9 +197,11 @@ describe(PublicSurveysController.name, () => {
 
       surveyModel.findById = jest.fn().mockResolvedValueOnce(publicSurvey02);
 
+      surveysService.throwErrorIfSurveyIsNotPublic = jest.fn().mockResolvedValueOnce(true);
+
       const result = await controller.getChoices({
         surveyId: idOfPublicSurvey02.toString(),
-        questionName: publicSurvey02QuestionNameWithLimiters,
+        questionId: publicSurvey02QuestionNameWithLimiters,
       });
       expect(result).toEqual(filteredChoices);
 
@@ -220,9 +224,11 @@ describe(PublicSurveysController.name, () => {
 
       surveyModel.findById = jest.fn().mockResolvedValueOnce(publicSurvey02AfterAddingValidAnswer);
 
+      surveysService.throwErrorIfSurveyIsNotPublic = jest.fn().mockResolvedValueOnce(true);
+
       const result = await controller.getChoices({
         surveyId: idOfPublicSurvey02.toString(),
-        questionName: publicSurvey02QuestionNameWithLimiters,
+        questionId: publicSurvey02QuestionNameWithLimiters,
       });
       expect(result).toEqual(filteredChoicesAfterAddingValidAnswer);
 

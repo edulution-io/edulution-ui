@@ -3,6 +3,7 @@
  * All rights reserved.
  *
  * This software is dual-licensed under the terms of:
+
  *
  * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
  *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
@@ -17,13 +18,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-/* eslint-disable */
+import TSurveyQuestionAnswerTypes from '@libs/survey/types/TSurveyQuestionAnswerTypes';
+import isAnswerSimpleQuestionSimpleAnswer from '@libs/survey/utils/isAnswerSimpleQuestionSimpleAnswer';
 
-import axios from 'axios';
+const isAnswerSimpleQuestionAnswer = (questionAnswer: TSurveyQuestionAnswerTypes): boolean =>
+  Array.isArray(questionAnswer)
+    ? questionAnswer.every((answer) => isAnswerSimpleQuestionSimpleAnswer(answer))
+    : isAnswerSimpleQuestionSimpleAnswer(questionAnswer);
 
-module.exports = async function () {
-  // Configure axios for tests to use.
-  const host = process.env.EDUI_HOST ?? 'localhost';
-  const port = process.env.EDUI_PORT ?? '3000';
-  axios.defaults.baseURL = `http://${host}:${port}`;
-};
+export default isAnswerSimpleQuestionAnswer;

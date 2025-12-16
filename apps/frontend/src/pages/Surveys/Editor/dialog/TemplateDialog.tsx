@@ -48,7 +48,7 @@ const TemplateDialog: React.FC<TemplateDialogProps> = ({
   isOpenTemplateMenu,
   setIsOpenTemplateMenu,
 }) => {
-  const { template, uploadTemplate, isOpenTemplateConfirmDeletion, setIsOpenTemplateConfirmDeletion } =
+  const { template, uploadTemplate, fetchTemplates, isOpenTemplateConfirmDeletion, setIsOpenTemplateConfirmDeletion } =
     useTemplateMenuStore();
 
   const { isSuperAdmin } = useLdapGroups();
@@ -74,15 +74,16 @@ const TemplateDialog: React.FC<TemplateDialogProps> = ({
     const processedFormula: SurveyFormula = resetSurveyIdFromFormulasBackendLimiters(rawFormula, id);
 
     await uploadTemplate({
-      fileName: template?.fileName,
+      name: template?.name,
       template: {
         formula: processedFormula,
         createdAt: creationDate,
         ...remainingSurvey,
       },
     });
+    void fetchTemplates();
     handleClose();
-  }, [form, creator, template, uploadTemplate, handleClose]);
+  }, [form, creator, template, uploadTemplate, fetchTemplates, handleClose]);
 
   const body = (
     <>

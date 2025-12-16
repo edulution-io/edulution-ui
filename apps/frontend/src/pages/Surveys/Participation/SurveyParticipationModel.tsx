@@ -22,9 +22,6 @@ import { toast } from 'sonner';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
 import { ClearFilesEvent, DownloadFileEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
-import { FileDownloadDto } from '@libs/survey/types/api/file-download.dto';
-import { removeUuidFromFileName } from '@libs/common/utils/uuidAndFileNames';
-import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import useLanguage from '@/hooks/useLanguage';
@@ -38,6 +35,7 @@ import '../theme/custom.participation.css';
 import 'survey-core/i18n/french';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
+import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 
 interface SurveyFileValue {
   name: string;
@@ -98,8 +96,8 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       const success = await answerSurvey(
         {
           surveyId: selectedSurvey.id,
-          answer: surveyModel.getData() as JSON,
-          isPublic,
+          answer: surveyModel.getData() as TSurveyAnswer,
+          isPublic: selectedSurvey.isPublic || isPublic || false,
         },
         surveyModel,
         completingEvent,
@@ -115,34 +113,23 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
     });
 
     newModel.onUploadFiles.add(async (_: SurveyModel, options: UploadFilesEvent): Promise<void> => {
-      const { files, callback } = options;
-      if (!selectedSurvey.id || !files?.length || files.some((file) => !file.name?.length)) {
-        return callback([]);
+      const { files, callback, question } = options;
+      const { id: surveyId, isPublic: surveyIsPublic } = selectedSurvey;
+
+      if (!surveyId || !files?.length || files.some((file) => !file.name?.length)) {
+        callback([]);
+        return;
       }
       if (files.some((file) => file.size > MAXIMUM_UPLOAD_FILE_SIZE)) {
         toast.error(t('survey.participate.fileSizeExceeded', { size: MAXIMUM_UPLOAD_FILE_SIZE / (1024 * 1024) }));
-        return callback([]);
+        callback([]);
+        return;
       }
-
-      const uploadPromises = files.map(async (file) => {
-        const data = await uploadTempFile(selectedSurvey.id!, file);
-        if (data === null) {
-          return null;
-        }
-
-        const newFile: FileDownloadDto = {
-          ...file,
-          type: file.type || '*/*',
-          originalName: data.name || file.name,
-          name: removeUuidFromFileName(data.name || file.name),
-          url: `${EDU_API_URL}/${data.url}`,
-          content: data.content,
-        };
-        return newFile;
-      });
+      const isSurveyPublic = surveyIsPublic || isPublic || false;
+      const uploadPromises = files.map(async (file) => uploadTempFile(surveyId, question?.name, file, isSurveyPublic));
       const results = await Promise.all(uploadPromises);
       const filteredResults = results.filter((result) => result !== null);
-      return callback(
+      callback(
         filteredResults.map((result) => ({
           file: result,
           content: result.url,
@@ -172,43 +159,63 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
     });
 
     newModel.onClearFiles.add(async (_surveyModel: SurveyModel, options: ClearFilesEvent): Promise<void> => {
-      let filesToDelete: File[] = [];
-      if (Array.isArray(options.value)) {
-        if (options.value.length === 0) {
-          options.callback('success');
-          return;
-        }
-        const files = options.value as File[];
-        filesToDelete = files.filter((item: File) =>
-          options.fileName === null ? true : item.name === options.fileName,
-        );
-      } else {
-        if (!options.value) {
-          options.callback('success');
-          return;
-        }
-        const file = options.value as File;
-        filesToDelete = [file];
-      }
-      if (filesToDelete.length === 0) {
-        toast.error(t('common.errors.fileDeletionFailed'));
-        options.callback('error');
+      const { callback, question, fileName } = options;
+      const { id: surveyId, isPublic: surveyIsPublic } = selectedSurvey;
+
+      if (!surveyId) {
+        callback('success');
         return;
       }
 
-      const result = await Promise.all(
-        filesToDelete.map((file: File) => {
-          if (!selectedSurvey || !selectedSurvey.id) {
-            options.callback('error');
-            return Promise.resolve('error');
-          }
-          return deleteTempFile(selectedSurvey.id, file, options.callback);
-        }),
-      );
-      if (result.every((res: string | undefined) => res === 'success')) {
-        options.callback('success');
+      const isSurveyPublic = surveyIsPublic || isPublic || false;
+      if (fileName === null) {
+        try {
+          await deleteTempFile(surveyId, question?.name, undefined, isSurveyPublic);
+          callback('success');
+          return;
+        } catch (error) {
+          callback('error');
+          return;
+        }
+      }
+
+      let filesToDelete: Array<File & { content?: string }> = [];
+      const value = options.value as undefined | (File & { content?: string }) | Array<File & { content?: string }>;
+      if (!value) {
+        callback('success');
+        return;
+      }
+      if (Array.isArray(value)) {
+        if (value.length === 0) {
+          callback('success');
+          return;
+        }
+        if (fileName) {
+          const file = value.filter((item: File & { content?: string }) => item.name === fileName);
+          filesToDelete.push(...file);
+        } else {
+          filesToDelete = value;
+        }
       } else {
-        options.callback('error');
+        filesToDelete.push(value);
+      }
+
+      if (filesToDelete.length === 0) {
+        console.error(`File with name ${options.fileName} is not found`);
+        callback('error');
+        return;
+      }
+
+      const results = await Promise.all(
+        filesToDelete.map((file: File & { content?: string }) =>
+          deleteTempFile(surveyId, question?.name, file, isSurveyPublic),
+        ),
+      );
+
+      if (results.every((res) => res === 'success')) {
+        callback('success');
+      } else {
+        callback('error');
       }
     });
 

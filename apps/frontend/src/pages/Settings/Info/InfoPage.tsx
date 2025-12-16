@@ -18,18 +18,34 @@
  */
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
+import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import LicenseOverview from '../components/LicenseOverview';
 import LmnVersionInfo from './LmnVersionInfo';
 
 const InfoPage = () => {
+  const { t } = useTranslation();
   const { isLmn } = useDeploymentTarget();
 
   return (
-    <div className="mt-5 space-y-10 [&>*]:rounded-xl [&>*]:bg-muted-background [&>*]:px-2">
-      <LicenseOverview />
-      {isLmn && <LmnVersionInfo />}
-    </div>
+    <SectionAccordion defaultOpenAll>
+      <SectionAccordionItem
+        id="license"
+        label={t('settings.license.title')}
+      >
+        <LicenseOverview />
+      </SectionAccordionItem>
+
+      {isLmn && (
+        <SectionAccordionItem
+          id="lmnVersion"
+          label={t('settings.lmnVersion.title')}
+        >
+          <LmnVersionInfo />
+        </SectionAccordionItem>
+      )}
+    </SectionAccordion>
   );
 };
 

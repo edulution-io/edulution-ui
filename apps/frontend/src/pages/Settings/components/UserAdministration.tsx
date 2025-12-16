@@ -18,9 +18,9 @@
  */
 
 import React from 'react';
-import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
 import { useTranslation } from 'react-i18next';
 import { FieldValues, SubmitHandler, UseFormReturn } from 'react-hook-form';
+import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { GLOBAL_SETTINGS_ADMIN_GROUPS } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
@@ -50,27 +50,22 @@ const UserAdministration = ({ form, onSubmit }: UserAdministrationProps<GlobalSe
   };
 
   return (
-    <AccordionSH
-      type="multiple"
-      defaultValue={['reset-mfa', 'setAdminGroup']}
-      className="mt-5 space-y-10 [&>*]:rounded-xl [&>*]:bg-muted-background [&>*]:px-2"
-    >
-      <AccordionItem value="reset-mfa">
-        <AccordionTrigger className="flex">
-          <h3>{t('settings.userAdministration.resetMfaForm')}</h3>
-        </AccordionTrigger>
-        <AccordionContent>
-          <ResetMfaForm />
-        </AccordionContent>
-      </AccordionItem>
-      <Form {...form}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <AccordionItem value="setAdminGroup">
-            <AccordionTrigger className="flex">
-              <h3>{t('settings.userAdministration.setAdminGroupTitle')}</h3>
-            </AccordionTrigger>
-            <AccordionContent className="space-y-2 px-1">
-              <p className="text-background">{t('settings.userAdministration.setAdminGroupDescription')}</p>
+    <SectionAccordion defaultOpenAll>
+      <SectionAccordionItem
+        id="reset-mfa"
+        label={t('settings.userAdministration.resetMfaForm')}
+      >
+        <ResetMfaForm />
+      </SectionAccordionItem>
+
+      <SectionAccordionItem
+        id="setAdminGroup"
+        label={t('settings.userAdministration.setAdminGroupTitle')}
+      >
+        <Form {...form}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="space-y-4">
+              <p>{t('settings.userAdministration.setAdminGroupDescription')}</p>
               <FormFieldSH
                 control={control}
                 name={`auth.${GLOBAL_SETTINGS_ADMIN_GROUPS}`}
@@ -85,16 +80,16 @@ const UserAdministration = ({ form, onSubmit }: UserAdministrationProps<GlobalSe
                         placeholder={t('search.type-to-search')}
                       />
                     </FormControl>
-                    <p className="text-background">{t('settings.userAdministration.setAdminGroupSelectDescription')}</p>
+                    <p>{t('settings.userAdministration.setAdminGroupSelectDescription')}</p>
                     <FormMessage className="text-p" />
                   </FormItem>
                 )}
               />
-            </AccordionContent>
-          </AccordionItem>
-        </form>
-      </Form>
-    </AccordionSH>
+            </div>
+          </form>
+        </Form>
+      </SectionAccordionItem>
+    </SectionAccordion>
   );
 };
 

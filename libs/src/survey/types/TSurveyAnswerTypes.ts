@@ -3,6 +3,7 @@
  * All rights reserved.
  *
  * This software is dual-licensed under the terms of:
+
  *
  * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
  *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
@@ -17,13 +18,18 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-/* eslint-disable */
-var __TEARDOWN_MESSAGE__: string;
+import TSurveyFileQuestionAnswerType from '@libs/survey/types/TSurveyFileQuestionAnswerType';
 
-module.exports = async function () {
-  // Start services that that the app needs to run (e.g. database, docker-compose, etc.).
-  console.log('\nSetting up...\n');
+type TSurveyAnswerTypes =
+  | string
+  | number
+  | boolean
+  | bigint
+  | string[]
+  | number[]
+  | boolean[]
+  | bigint[]
+  | TSurveyFileQuestionAnswerType
+  | TSurveyFileQuestionAnswerType[];
 
-  // Hint: Use `globalThis` to pass variables to global teardown.
-  globalThis.__TEARDOWN_MESSAGE__ = '\nTearing down...\n';
-};
+export default TSurveyAnswerTypes;

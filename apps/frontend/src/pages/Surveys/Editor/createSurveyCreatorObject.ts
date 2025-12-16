@@ -52,10 +52,9 @@ const createSurveyCreatorObject = (language = 'en') => {
   const creatorOptions = {
     generateValidJSON: true,
     isAutoSave: true,
-    maxNestedPanels: 0,
     showJSONEditorTab: true,
     showPreviewTab: false,
-    showLogicTab: true,
+    showLogicTab: false,
     questionTypes: [
       'radiogroup',
       'rating',
@@ -75,6 +74,11 @@ const createSurveyCreatorObject = (language = 'en') => {
       'image',
       'signaturepad',
     ],
+    forbiddenNestedElements: {
+      panel: ['panel', 'paneldynamic'],
+      paneldynamic: ['panel', 'paneldynamic', 'file'],
+    },
+    maxNestedPanels: 1,
   };
 
   const creator = new SurveyCreator(creatorOptions);

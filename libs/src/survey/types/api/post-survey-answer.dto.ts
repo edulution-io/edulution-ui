@@ -18,9 +18,10 @@
  */
 
 import ParticipantDto from '@libs/survey/types/api/participant.dto';
+import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 
 interface PostSurveyAnswerDto extends ParticipantDto {
-  answer: JSON;
+  answer: TSurveyAnswer;
 }
 
 export default PostSurveyAnswerDto;

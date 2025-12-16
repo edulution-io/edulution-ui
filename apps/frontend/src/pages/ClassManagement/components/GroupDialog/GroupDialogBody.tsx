@@ -121,7 +121,7 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
         <AccordionSH type="multiple">
           {type !== UserGroups.Sessions ? (
             <AccordionItem value="properties">
-              <AccordionTrigger className="w-full text-start text-lg font-bold text-background">
+              <AccordionTrigger className="w-full text-start text-lg font-bold">
                 {t('common.properties')}
               </AccordionTrigger>
               <AccordionContent className="overflow-auto">
@@ -136,7 +136,7 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
 
           {type === UserGroups.Projects ? (
             <AccordionItem value="addAdmins">
-              <AccordionTrigger className="w-full text-start text-lg font-bold text-background">
+              <AccordionTrigger className="w-full text-start text-lg font-bold">
                 {adminsAccordionTitle}
               </AccordionTrigger>
               <AccordionContent className="overflow-auto">
@@ -156,7 +156,7 @@ const GroupDialogBody = ({ form, type, isCreateMode, disabled }: GroupDialogBody
           ) : null}
 
           <AccordionItem value="addUsers">
-            <AccordionTrigger className="w-full text-start text-lg font-bold text-background">
+            <AccordionTrigger className="w-full text-start text-lg font-bold">
               {standardUsersAccordionTitle}
             </AccordionTrigger>
             <AccordionContent className="overflow-auto">
