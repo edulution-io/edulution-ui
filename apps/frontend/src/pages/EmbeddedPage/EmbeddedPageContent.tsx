@@ -20,7 +20,6 @@
 import React from 'react';
 import type TAppFieldType from '@libs/appconfig/types/tAppFieldType';
 import IFRAME_ALLOWED_CONFIG from '@libs/ui/constants/iframeAllowedConfig';
-import HtmlRenderer from '@/components/ui/Renderer/HtmlRenderer';
 
 type EmbeddedPageContentProps = {
   pageTitle: string;
@@ -45,9 +44,10 @@ const EmbeddedPageContent: React.FC<EmbeddedPageContentProps> = ({
     />
   ) : (
     htmlContent && (
-      <HtmlRenderer
-        html={htmlContent}
+      <div
         className="h-full w-full"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: htmlContent }}
       />
     )
   );

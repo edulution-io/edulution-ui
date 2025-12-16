@@ -17,16 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import cn from '@libs/common/utils/className';
+import { FILE_PREVIEW_TYPE } from '@libs/filesharing/types/filePreviewType';
 
-interface TextPreviewProps {
-  content: string;
-  className?: string;
-}
+const isPdfExtension = (extension: string | undefined): boolean => extension?.toLowerCase() === FILE_PREVIEW_TYPE.PDF;
 
-const TextPreview = ({ content, className }: TextPreviewProps) => (
-  <pre className={cn('whitespace-pre-wrap break-words font-mono text-sm', className)}>{content}</pre>
-);
-
-export default TextPreview;
+export default isPdfExtension;

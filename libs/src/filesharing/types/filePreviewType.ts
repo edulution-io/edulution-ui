@@ -5,7 +5,7 @@
  * This software is dual-licensed under the terms of:
  *
  * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
- *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
+ *    You may use, modified and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
  *
  *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
  *
@@ -17,25 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import DOMPurify from 'dompurify';
-import clsx from 'clsx';
+const FILE_PREVIEW_TYPE = {
+  PDF: 'pdf',
+  ONLY_OFFICE: 'onlyoffice',
+  IMAGE: 'image',
+  MEDIA: 'media',
+  TEXT: 'text',
+  UNSUPPORTED: 'unsupported',
+} as const;
 
-interface HtmlRendererProps {
-  html: string;
-  className?: string;
-}
+type FilePreviewType = (typeof FILE_PREVIEW_TYPE)[keyof typeof FILE_PREVIEW_TYPE];
 
-const HtmlRenderer = ({ html, className }: HtmlRendererProps) => {
-  const safeHtml = DOMPurify.sanitize(html);
-
-  return (
-    <div
-      className={clsx('prose', className)}
-      // eslint-disable-next-line react/no-danger
-      dangerouslySetInnerHTML={{ __html: safeHtml }}
-    />
-  );
-};
-
-export default HtmlRenderer;
+export { FILE_PREVIEW_TYPE, FilePreviewType };
