@@ -18,39 +18,35 @@
  */
 
 import React from 'react';
-import { MdOutlineOpenInNew } from 'react-icons/md';
 import cn from '@libs/common/utils/className';
-import AttendeeDto from '@libs/user/types/attendee.dto';
-import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
 import { Card } from '@/components/shared/Card';
-import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import { IconType } from 'react-icons';
 
 interface SurveyEditorTemplateCardProps {
-  creator: AttendeeDto;
-  surveyTemplate: SurveyTemplateDto;
+  icon: IconType;
+  title?: string;
+  description?: string;
+  onClick?: () => void;
 }
 
-const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTemplateCardProps): JSX.Element => {
-  const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
+const SurveyEditorTemplateCard = ({
+  icon: Icon,
+  title,
+  description,
+  onClick,
+}: SurveyEditorTemplateCardProps): JSX.Element => (
+  <Card
+    className={cn(GRID_CARD, 'cursor-pointer bg-muted', 'h-[13rem]', 'flex', { 'pt-8': !description })}
+    variant="text"
+    onClick={onClick}
+  >
+    <Icon className="h-10 w-10 md:h-14 md:w-14" />
 
-  const { template } = surveyTemplate;
-  const { formula } = template;
-  const { title, description } = formula;
+    {title && <h3 className={cn('line-clamp-2 h-[3.8rem] justify-center', { 'mt-4': !description })}>{title}</h3>}
 
-  return (
-    <Card
-      className={cn(GRID_CARD, 'bg-muted', 'h-[13rem]', 'flex')}
-      variant="text"
-      onClick={() => assignTemplateToSelectedSurvey(creator, surveyTemplate)}
-    >
-      <MdOutlineOpenInNew className="h-10 w-10 md:h-14 md:w-14" />
-
-      <h3 className="line-clamp-2 h-[3.8rem] w-full">{title}</h3>
-
-      <p className="line-clamp-2 h-[2.8rem] w-full">{description}</p>
-    </Card>
-  );
-};
+    {description && <p className="line-clamp-2 h-[2.8rem] w-full">{description}</p>}
+  </Card>
+);
 
 export default SurveyEditorTemplateCard;
