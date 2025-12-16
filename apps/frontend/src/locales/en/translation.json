@@ -1217,6 +1217,9 @@
         "signingFailed": "Registration failed",
         "verificationFailed": "Token verification failed"
       }
+    },
+    "ai": {
+      "title": "Smart Assistant"
     }
   },
   "usersettings": {

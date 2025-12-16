@@ -1220,6 +1220,9 @@
         "signingFailed": "Registrierung fehlgeschlagen",
         "verificationFailed": "Tokenverifizierung fehlgeschlagen"
       }
+    },
+    "ai": {
+      "title": "Intelligente Hilfe"
     }
   },
   "usersettings": {

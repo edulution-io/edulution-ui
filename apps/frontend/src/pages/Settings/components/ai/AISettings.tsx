@@ -17,12 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const GLOBAL_SETTINGS_TABS = {
-  CONTAINER: 'container',
-  GENERAL_SETTINGS: 'global-settings',
-  USER_ADMINISTRATION: 'user-administration',
-  INFO: 'info',
-  AI: 'ai',
-} as const;
+import React from 'react';
 
-export default GLOBAL_SETTINGS_TABS;
+const AISettings: React.FC = () => <div className="space-y-6" />;
+
+export default AISettings;

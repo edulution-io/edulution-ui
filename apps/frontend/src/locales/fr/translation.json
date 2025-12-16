@@ -1067,6 +1067,9 @@
         "signingFailed": "L'inscription a échoué",
         "verificationFailed": "La vérification des jetons a échoué"
       }
+    },
+    "ai": {
+      "title": "Assistance intelligente"
     }
   },
   "usersettings": {
