@@ -33,6 +33,7 @@
 - Use the name "delete" over "remove".
 - Always import React hooks at the top of the file, do not use `React.useEffect` syntax.
 - In React use our `cn()` function for clsx classNames.
+- Do not use magic strings. Always use constants.
 
 ## Testing Guidelines
 
