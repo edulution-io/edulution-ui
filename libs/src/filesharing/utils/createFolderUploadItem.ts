@@ -17,13 +17,24 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-/* eslint-disable */
-var __TEARDOWN_MESSAGE__: string;
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
+import shouldFilterFile from '@libs/filesharing/utils/shouldFilterFile';
 
-module.exports = async function () {
-  // Start services that that the app needs to run (e.g. database, docker-compose, etc.).
-  console.log('\nSetting up...\n');
+const createFolderUploadItem = (folderName: string, allFiles: File[], id: string): UploadItem => {
+  const getFileName = (file: File): string => file.webkitRelativePath?.split('/').pop() || file.name;
 
-  // Hint: Use `globalThis` to pass variables to global teardown.
-  globalThis.__TEARDOWN_MESSAGE__ = '\nTearing down...\n';
+  const visibleFiles = allFiles.filter((file) => !shouldFilterFile(getFileName(file)));
+  const hiddenFiles = allFiles.filter((file) => shouldFilterFile(getFileName(file)));
+
+  return Object.assign(new File([], folderName, { type: 'application/x-directory' }), {
+    id,
+    isFolder: true,
+    folderName,
+    files: visibleFiles,
+    visibleFiles,
+    hiddenFiles,
+    includeHidden: false,
+  });
 };
+
+export default createFolderUploadItem;

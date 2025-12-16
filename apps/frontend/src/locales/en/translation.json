@@ -1314,6 +1314,9 @@
       "notAbleToCompressImage": "Not able to compress the image"
     }
   },
+  "generalsettings": {
+    "title": "General"
+  },
   "forwardingpage": {
     "action": "This link will take you to the external site of the provider.",
     "description": "The application opens in a new window.",
@@ -1560,8 +1563,12 @@
     "overwriteWarningTitle_other": "Warning: Files already exist",
     "overwriteWarningDescription_one": "The following file will be overwritten:",
     "overwriteWarningDescription_other": "The following files will be overwritten:",
-    "oversizedFilesDetected": "Oversized files detected",
-    "oversizedFileDetected": "Oversized file detected!",
+    "overwriteFolderWarningTitle_one": "Warning: Folder already exists",
+    "overwriteFolderWarningTitle_other": "Warning: Folders already exist",
+    "overwriteFolderWarningDescription_one": "The following folder will be overwritten:",
+    "overwriteFolderWarningDescription_other": "The following folders will be overwritten:",
+    "oversizedFileDetected_one": "Oversized file detected:",
+    "oversizedFileDetected_other": "Oversized files detected:",
     "folderTooLargeTitle": "Too many files in the folder",
     "folderTooLargeDescription": "The folder contains more then 100 files. Please select another folder or reduce the number of files.",
     "cannotUploadOversized": "Files larger than 50 MB cannot be uploaded.",
