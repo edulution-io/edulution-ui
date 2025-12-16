@@ -192,7 +192,7 @@ const MenuBar: React.FC = () => {
         <aside className="relative flex h-dvh">
           <div
             className={cn(
-              'h-full overflow-hidden rounded-r-xl bg-transparent shadow-lg shadow-slate-400 backdrop-blur-lg transition-all duration-300',
+              'bg-glass h-full overflow-hidden rounded-r-xl  shadow-lg shadow-slate-400 backdrop-blur-lg transition-all duration-300',
               shouldCollapse ? 'w-16' : 'w-64',
             )}
           >
@@ -204,7 +204,7 @@ const MenuBar: React.FC = () => {
             size="sm"
             onClick={toggleCollapsed}
             className={cn(
-              'absolute right-[-15px] top-2 border-accent bg-transparent px-2 py-1 text-background backdrop-blur-lg hover:bg-muted-background hover:text-background',
+              'bg-glass absolute right-[-15px] top-2 border-accent  px-2 py-1 text-background backdrop-blur-lg hover:bg-muted-background hover:text-background',
               shouldCollapse ? 'cursor-e-resize' : 'cursor-w-resize',
             )}
           >
@@ -214,7 +214,7 @@ const MenuBar: React.FC = () => {
       ) : (
         <div
           className={cn(
-            'fixed left-0 top-0 z-50 h-full overflow-x-hidden bg-transparent backdrop-blur-md duration-300 ease-in-out',
+            'bg-glass fixed left-0 top-0 z-50 h-full overflow-x-hidden  backdrop-blur-md duration-300 ease-in-out',
             isMobileMenuBarOpen ? 'w-64 border-r-[1px] border-muted' : 'w-0',
           )}
         >

@@ -31,7 +31,7 @@ const cardVariants = cva('border-solid shadow-lg', {
       security: 'gradient-box',
       modal:
         'border-4 border-white fixed left-[50%] top-[40%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-xl bg-white p-[25px] text-foreground',
-      text: 'border-accent border-3 bg-transparent dark:bg-accent bg-opacity-20 inset-2 overflow-auto scrollbar-none hover:scrollbar-thin',
+      text: 'border-accent border-3 bg-glass  dark:bg-accent bg-opacity-20 inset-2 overflow-auto scrollbar-none hover:scrollbar-thin',
       dialog: 'border-2 border-muted bg-foreground dark:bg-muted',
     },
   },

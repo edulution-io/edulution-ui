@@ -64,7 +64,7 @@ const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
         <div
           ref={sidebarRef}
           className={cn(
-            'fixed right-0 h-full min-w-[260px] border-l-[1px] border-muted bg-transparent text-background shadow-xl shadow-slate-400 backdrop-blur-md',
+            'bg-glass fixed right-0 h-full min-w-[260px] border-l-[1px] border-muted  text-background shadow-xl shadow-slate-400 backdrop-blur-md',
             sidebarClassName,
           )}
         >

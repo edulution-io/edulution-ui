@@ -106,7 +106,7 @@ const SectionAccordionItem: React.FC<SectionAccordionItemProps> = ({
     value={id}
     className={cn(
       'text-card-foreground',
-      variant === 'default' && 'rounded-xl bg-transparent dark:bg-muted-background',
+      variant === 'default' && 'bg-glass rounded-xl dark:bg-muted-background',
       className,
     )}
   >
