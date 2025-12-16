@@ -1,7 +1,27 @@
 .quill-container {
   position: relative;
+  background: #ffffff;
+  border: 2px solid var(--secondary);
+  border-radius: 0.75rem;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  color: var(--background);
 }
 
+.dark .quill-container {
+  background: var(--muted-dialog);
+  box-shadow: none;
+}
+
+.quill-container .ql-toolbar.ql-snow,
+.quill-container .ql-container.ql-snow {
+  border: none !important;
+}
+
+.quill-container .ql-toolbar.ql-snow {
+  border-bottom: 1px solid var(--secondary) !important;
+}
 .quill-container .ql-toolbar {
   border-top-left-radius: 0.75rem;
   border-top-right-radius: 0.75rem;

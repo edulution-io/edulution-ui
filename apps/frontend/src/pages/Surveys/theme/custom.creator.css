@@ -695,14 +695,13 @@
         .svc-list__input {
           margin-left: 0.5rem;
           padding: 0.125rem 0.25rem;
-
           display: flex;
           top: 0.125rem;
           bottom: 0.125rem;
           left: 0.125rem;
           right: 0.125rem;
           max-height: 2rem !important;
-          background-color: var(--accent);
+          background-color: var(--accent-light);
           color: var(--input);
         }
         input:hover {

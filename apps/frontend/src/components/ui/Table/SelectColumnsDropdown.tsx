@@ -23,6 +23,8 @@ import { Button } from '@/components/shared/Button';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import { ChevronDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { inputVariants } from '@libs/ui/constants/commonClassNames';
+import cn from '@libs/common/utils/className';
 
 interface SelectColumnsDropdownProps<TData> {
   table: Table<TData>;
@@ -47,7 +49,7 @@ const SelectColumnsDropdown = <TData,>({ table, isDialog }: SelectColumnsDropdow
       trigger={
         <Button
           variant="btn-small"
-          className={isDialog ? 'dark:bg-muted' : 'dark:bg-accent'}
+          className={cn('max-w-fit', inputVariants({ variant: isDialog ? 'dialog' : 'default' }))}
         >
           {t('common.columns')} <ChevronDown />
         </Button>
