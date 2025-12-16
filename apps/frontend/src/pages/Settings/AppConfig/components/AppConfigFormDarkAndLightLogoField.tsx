@@ -30,7 +30,7 @@ const AppConfigFormDarkAndLightLogoField: React.FC<AppConfigFormDarkAndLightLogo
   option,
   form,
 }) => (
-  <div className="flex min-w-[480px] flex-grow flex-row gap-4">
+  <div className="flex min-w-[480px] flex-grow flex-col gap-4 md:flex-row">
     <AppConfigFormLogoField
       variant={Theme.light}
       appName={settingLocation}

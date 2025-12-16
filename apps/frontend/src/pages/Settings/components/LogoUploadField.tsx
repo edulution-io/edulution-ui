@@ -58,15 +58,13 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
   onHandleReset,
   isLoginPage: invertBGColor = false,
 }) => {
-  const backdropClass =
-    variant === Theme.light
-      ? `${invertBGColor ? 'bg-neutral-900' : 'bg-white'}`
-      : `${invertBGColor ? 'bg-white' : 'bg-neutral-900'}`;
+  const useLightBackground = (variant === Theme.dark && invertBGColor) || (variant === Theme.light && !invertBGColor);
   return (
     <div
       className={clsx(
         'relative flex flex-col items-center rounded-2xl border border-dashed border-gray-300 p-6 text-center shadow-sm hover:border-gray-400',
-        backdropClass,
+        { 'bg-white': useLightBackground },
+        { 'bg-neutral-900': !useLightBackground },
         uploading && 'pointer-events-none opacity-60',
         className,
       )}
@@ -74,7 +72,7 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
       aria-live="polite"
     >
       <div className="absolute right-4 top-4">
-        {hasLocalSelection && onHandleReset && (
+        {onHandleReset && (
           <button
             type="button"
             onClick={async () => {

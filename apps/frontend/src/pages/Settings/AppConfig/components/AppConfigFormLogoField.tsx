@@ -10,9 +10,9 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import i18n from '@/i18n';
 import { toast } from 'sonner';
 import React, { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { ThemeType } from '@libs/common/constants/theme';
 import ThemedFile from '@libs/common/types/themedFile';
@@ -38,6 +38,8 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
 }) => {
   const { uploadImageFile, deleteImageFile, error } = FilesystemStore();
 
+  const { t } = useTranslation();
+
   const [keyValue, setKeyValue] = useState<number>(0);
 
   const path = `${fieldPath}.${variant}` as keyof ThemedFile;
@@ -60,11 +62,11 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
 
       const success = await uploadImageFile(destination, filename, file);
       if (success) {
-        toast.success(i18n.t('survey.editor.fileUploadSuccess'));
+        toast.success(t('survey.editor.fileUploadSuccess'));
         form.setValue(path, file, { shouldDirty: true });
         setKeyValue((prev) => prev + 1);
       } else {
-        toast.error(i18n.t('survey.editor.fileUploadError'));
+        toast.error(t('survey.editor.fileUploadError'));
         form.setValue(path, null, { shouldDirty: true });
       }
     }
@@ -73,20 +75,20 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
   const onHandleReset = async () => {
     const success = await deleteImageFile(appName, filename);
     if (success) {
-      toast.success(i18n.t('survey.editor.fileDeletionSuccess'));
+      toast.success(t('survey.editor.fileDeletionSuccess'));
       form.setValue(path, null, { shouldDirty: true });
       setKeyValue((prev) => prev + 1);
     } else {
-      toast.error(i18n.t('survey.editor.fileDeletionError'));
+      toast.error(t('survey.editor.fileDeletionError'));
       form.setValue(path, null, { shouldDirty: true });
     }
   };
 
-  const variantText = i18n.t(`appExtendedOptions.appLogo.${variant}`);
+  const variantText = t(`appExtendedOptions.appLogo.${variant}`);
   return (
     <div>
-      {option.title && <p className="font-bold">{i18n.t(option.title, { variant: variantText })}</p>}
-      {option.description && <p className="mb-2 text-[0.8rem] text-muted-foreground">{i18n.t(option.description)}</p>}
+      {option.title && <p className="font-bold">{t(option.title, { variant: variantText })}</p>}
+      {option.description && <p className="mb-2 text-[0.8rem] text-muted-foreground">{t(option.description)}</p>}
       <LogoUploadField
         cacheKey={keyValue}
         variant={variant}
@@ -94,8 +96,8 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
         previewSrc={previewSrc}
         hasLocalSelection={hasLocalSelection}
         onFileChange={onFileChange}
-        chooseText={i18n.t(`common.chooseFile`)}
-        changeText={i18n.t(`common.changeFile`)}
+        chooseText={t(`common.chooseFile`)}
+        changeText={t(`common.changeFile`)}
         onHandleReset={onHandleReset}
       />
       {error && <p className="text-sm text-red-600">{error.message}</p>}
