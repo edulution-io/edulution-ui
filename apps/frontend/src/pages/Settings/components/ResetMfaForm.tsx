@@ -63,7 +63,10 @@ const ResetMfaForm: React.FC = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-2"
+      >
         <FormFieldSH
           control={control}
           name="selectedUsers"

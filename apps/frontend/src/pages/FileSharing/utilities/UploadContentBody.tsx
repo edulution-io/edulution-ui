@@ -215,7 +215,7 @@ const UploadContentBody = () => {
     );
   };
 
-  const dropzoneStyle = `border-2 border-dashed border-gray-300 rounded-md p-10 mb-4 ${
+  const dropzoneStyle = `border-2 border-dashed border-muted dark:border-secondary rounded-xl p-10 mb-4 ${
     isDragActive ? 'bg-foreground' : 'bg-popover-foreground'
   }`;
 
@@ -225,10 +225,10 @@ const UploadContentBody = () => {
         <input {...getInputProps()} />
 
         <div className="flex min-h-48 flex-col items-center justify-center space-y-2">
-          <p className="text-center font-semibold text-secondary">
+          <p className="text-center font-semibold text-muted dark:text-secondary">
             {isDragActive ? t('filesharingUpload.dropHere') : t('filesharingUpload.dragDropClick')}
           </p>
-          <MdOutlineCloudUpload className="h-12 w-12 text-muted" />
+          <MdOutlineCloudUpload className="h-12 w-12 text-muted dark:text-secondary" />
         </div>
       </div>
 

@@ -18,21 +18,21 @@
  */
 
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { GoMoon, GoSun } from 'react-icons/go';
 import useThemeStore from '@/store/useThemeStore';
-import useMedia from '@/hooks/useMedia';
+import { Button } from '@/components/shared/Button';
+import isDev from '@libs/common/constants/isDev';
 
 const ThemeToggle: React.FC = () => {
   const theme = useThemeStore((s) => s.theme);
   const resolvedTheme = useThemeStore((s) => s.getResolvedTheme());
   const setTheme = useThemeStore((s) => s.setTheme);
-  const { isMobileView } = useMedia();
 
-  if (isMobileView) {
-    return null;
-  }
+  const toggleTheme = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-  const toggleTheme = () => {
     if (theme === 'system') {
       setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
     } else {
@@ -40,15 +40,21 @@ const ThemeToggle: React.FC = () => {
     }
   };
 
-  return (
-    <button
-      type="button"
+  if (!isDev) {
+    return null;
+  }
+
+  return createPortal(
+    <Button
       onClick={toggleTheme}
-      className="absolute right-6 top-2 z-50 rounded-full bg-accent p-2 text-white shadow-xl transition hover:opacity-80 dark:text-secondary"
       aria-label="Toggle Theme"
+      variant="btn-outline"
+      size="sm"
+      className="fixed right-20 top-2 z-[9999] rounded-full border-none bg-accent p-2 shadow-lg"
     >
-      {resolvedTheme === 'dark' ? <GoSun className="h-6 w-6" /> : <GoMoon className="h-6 w-6" />}
-    </button>
+      {resolvedTheme === 'dark' ? <GoSun className="h-4 w-4" /> : <GoMoon className="h-4 w-4" />}
+    </Button>,
+    document.body,
   );
 };
 

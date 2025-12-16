@@ -17,7 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import defaultIconList from '@/pages/Settings/AppConfig/components/defaultIconList';
+
 const getAppIconClassName = (iconSrc: string): string => {
+  const isSvgIcon = iconSrc.endsWith('.svg') || iconSrc.includes('data:image/svg+xml') || iconSrc.includes('.svg');
+  if (!isSvgIcon) return '';
+  const isDefaultIcon = defaultIconList.includes(iconSrc);
+  if (isDefaultIcon) return 'light:icon-light-mode';
   const supportsTheming = iconSrc.includes('currentColor');
   return supportsTheming ? '' : 'light:icon-light-mode';
 };

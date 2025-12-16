@@ -285,6 +285,7 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
                   placeholder={t('search.type-to-search')}
                   variant="dialog"
                   className="rounded-lg border-2 border-gray-300 bg-white p-[8px] text-background shadow-md dark:border-none dark:bg-muted dark:shadow-none"
+                  inputProps={{ className: 'm-0' }}
                 />
               </FormControl>
               <FormDescription>{t('webdavShare.pathVariables.description')}</FormDescription>

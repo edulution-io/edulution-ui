@@ -33,7 +33,7 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableSharePathname';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
-import getAppIconClassName from '@libs/ui/utils/getAppIconClassName';
+import getAppIconClassName from '@/utils/getAppIconClassName';
 import useMenuBarStore from './useMenuBarStore';
 import { Button } from './Button';
 

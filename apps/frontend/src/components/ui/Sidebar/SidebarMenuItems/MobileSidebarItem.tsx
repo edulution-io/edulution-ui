@@ -27,7 +27,7 @@ import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/Notifi
 import PageTitle from '@/components/PageTitle';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import cn from '@libs/common/utils/className';
-import getAppIconClassName from '@libs/ui/utils/getAppIconClassName';
+import getAppIconClassName from '@/utils/getAppIconClassName';
 import useSidebarStore from '../useSidebarStore';
 
 const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({

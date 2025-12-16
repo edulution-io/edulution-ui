@@ -20,7 +20,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import NativeAppHeaderProps from '@libs/ui/types/NativeAppHeaderProps';
-import getAppIconClassName from '@libs/ui/utils/getAppIconClassName';
+import getAppIconClassName from '@/utils/getAppIconClassName';
 import cn from '@libs/common/utils/className';
 
 const NativeAppHeader = ({ title, iconSrc, description }: NativeAppHeaderProps) => {

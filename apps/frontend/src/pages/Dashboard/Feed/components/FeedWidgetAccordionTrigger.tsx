@@ -21,7 +21,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import cn from '@libs/common/utils/className';
 import { AccordionTrigger } from '@/components/ui/AccordionSH';
-import getAppIconClassName from '@libs/ui/utils/getAppIconClassName';
+import getAppIconClassName from '@/utils/getAppIconClassName';
 
 interface FeedWidgetAccordionTriggerProps {
   src: string;

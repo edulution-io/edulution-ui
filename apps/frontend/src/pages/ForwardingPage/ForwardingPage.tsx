@@ -30,7 +30,7 @@ import { getFromPathName } from '@libs/common/utils';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import getDisplayName from '@/utils/getDisplayName';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import getAppIconClassName from '@libs/ui/utils/getAppIconClassName';
+import getAppIconClassName from '@/utils/getAppIconClassName';
 import cn from '@libs/common/utils/className';
 import RoundArrowIcon from '@/assets/layout/Pfeil.svg?react';
 

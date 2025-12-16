@@ -33,7 +33,7 @@ const VARIANT_CARET = {
 } as const;
 
 export const inputVariants = cva(
-  'h-9 w-full rounded-lg px-3 py-1 text-p shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus:outline-none disabled:cursor-not-allowed disabled:opacity-50',
+  'h-9 w-full rounded-lg px-3 text-p shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus:outline-none disabled:cursor-not-allowed disabled:opacity-50',
   {
     variants: {
       variant: {

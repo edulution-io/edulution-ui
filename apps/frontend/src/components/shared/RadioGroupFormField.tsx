@@ -25,7 +25,7 @@ import { useTranslation } from 'react-i18next';
 import cn from '@libs/common/utils/className';
 import type RadioGroupItem from '@libs/ui/types/radioGroupItem';
 import defaultIconList from '@/pages/Settings/AppConfig/components/defaultIconList';
-import getAppIconClassName from '@libs/ui/utils/getAppIconClassName';
+import getAppIconClassName from '@/utils/getAppIconClassName';
 
 interface RadioGroupProps<T extends FieldValues> {
   control: Control<T>;

@@ -31,7 +31,7 @@ import useMedia from '@/hooks/useMedia';
 import cn from '@libs/common/utils/className';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import LAUNCHER_SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
-import getAppIconClassName from '@libs/ui/utils/getAppIconClassName';
+import getAppIconClassName from '@/utils/getAppIconClassName';
 
 const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
   const { toggleMobileSidebar } = useSidebarStore();

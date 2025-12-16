@@ -108,7 +108,7 @@ const BadgeFormField = <T extends FieldValues>({
               ))}
               {!readOnly && (
                 <InputWithActionIcons
-                  className="h-[36px] w-[250px] rounded-md"
+                  className="h-[36px] w-[250px]"
                   placeholder={placeholder}
                   value={newLabel}
                   onChange={(e) => setNewLabel(e.target.value)}

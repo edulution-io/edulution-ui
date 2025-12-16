@@ -39,9 +39,9 @@ const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-xl text-backgrou
       'btn-small': 'hover:bg-grey-700 mr-1 rounded-lg bg-white px-4 h-9 shadow-md font-normal',
     },
     size: {
-      sm: 'h-8 rounded-md px-3 text-xs',
+      sm: 'h-8 px-3 text-xs',
       md: 'h-9 px-3',
-      lg: 'h-10 rounded-md px-8',
+      lg: 'h-10 px-8',
     },
   },
 });

@@ -31,7 +31,7 @@ import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import APPLICATION_NAME from '@libs/common/constants/applicationName';
-import getAppIconClassName from '@libs/ui/utils/getAppIconClassName';
+import getAppIconClassName from '@/utils/getAppIconClassName';
 import APP_CONFIG_OPTIONS from '../appConfigOptions';
 import AddAppConfigDialog from '../AddAppConfigDialog';
 import AppStoreFloatingButtons from './AppStoreFloatingButtons';
