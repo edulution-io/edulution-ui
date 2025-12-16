@@ -86,17 +86,17 @@ const ToolSelector: React.FC = () => {
   return (
     <DropdownMenu
       trigger={
-        <Button
-          type="button"
-          variant="btn-ghost"
-          size="sm"
-          className={cn('flex items-center gap-1.5', enabledCount > 0 ? 'text-accent' : 'text-muted-foreground')}
+        <div
+          className={cn(
+            'flex cursor-pointer items-center gap-1.5 hover:opacity-80',
+            enabledCount > 0 ? 'text-background' : 'text-muted-foreground',
+          )}
         >
           <MdBuildCircle className="h-4 w-4" />
           <span className="text-xs">
             {enabledCount}/{totalCount}
           </span>
-        </Button>
+        </div>
       }
       items={menuItems}
       menuContentClassName="w-72"

@@ -17,8 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import { IsArray, IsOptional, IsString } from 'class-validator';
 
-const AISettings: React.FC = () => <div className="space-y-6" />;
+class PurposeFilterDto {
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  purposes?: string[];
+}
 
-export default AISettings;
+export default PurposeFilterDto;

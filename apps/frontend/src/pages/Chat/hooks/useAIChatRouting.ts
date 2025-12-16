@@ -26,16 +26,23 @@ import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CHAT_AI_PATH } from '@libs/chat/chatPaths';
 import useAIChatStore from './useAIChatStore';
+import useChatStore from './useChatStore';
 
 interface UseAIChatRoutingOptions {
   enabled?: boolean;
+  isPopout?: boolean;
 }
 
-const useAIChatRouting = ({ enabled = true }: UseAIChatRoutingOptions = {}) => {
-  const { chatId } = useParams<{ chatId?: string }>();
+const useAIChatRouting = ({ enabled = true, isPopout = false }: UseAIChatRoutingOptions = {}) => {
+  const { chatId: urlChatId } = useParams<{ chatId?: string }>();
   const navigate = useNavigate();
 
   const { currentChatId, loadChat, clearMessages, fetchAIConfig, aiConfig, isLoading } = useAIChatStore();
+  const { currentlyOpenChat, isChatPopoutVisible, isChatDocked } = useChatStore();
+
+  const isPopoutActive = isChatPopoutVisible && !isChatDocked;
+
+  const chatId = isPopout ? currentlyOpenChat?.chatId : urlChatId;
 
   useEffect(() => {
     if (enabled && !aiConfig) {
@@ -45,25 +52,26 @@ const useAIChatRouting = ({ enabled = true }: UseAIChatRoutingOptions = {}) => {
 
   useEffect(() => {
     if (!enabled) return;
-
     if (isLoading) return;
 
-    if (chatId && chatId !== currentChatId) {
+    if (chatId && chatId !== 'new' && chatId !== 'ai' && chatId !== currentChatId) {
       void loadChat(chatId);
-    } else if (!chatId && currentChatId) {
+    } else if (!chatId && currentChatId && !isPopout && !isPopoutActive) {
       clearMessages();
     }
-  }, [chatId, currentChatId, loadChat, clearMessages, enabled, isLoading]);
+  }, [chatId, currentChatId, loadChat, clearMessages, enabled, isLoading, isPopout, isPopoutActive]);
 
   useEffect(() => {
-    if (enabled && currentChatId && !chatId && !isLoading) {
+    if (isPopout || isPopoutActive) return;
+
+    if (enabled && currentChatId && !urlChatId && !isLoading) {
       navigate(`${CHAT_AI_PATH}/${currentChatId}`, { replace: true });
     }
-  }, [currentChatId, chatId, navigate, enabled, isLoading]);
+  }, [currentChatId, urlChatId, navigate, enabled, isLoading, isPopout, isPopoutActive]);
 
   return {
     chatId,
-    isNewChat: !chatId,
+    isNewChat: !chatId || chatId === 'ai',
   };
 };
 

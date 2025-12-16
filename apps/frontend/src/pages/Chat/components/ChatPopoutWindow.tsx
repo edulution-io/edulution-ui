@@ -73,7 +73,7 @@ const ChatPopoutWindow = () => {
 
   const getWindowTitle = () => {
     if (currentlyOpenChat.type === ChatType.AI) {
-      return aiConfig?.label;
+      return aiConfig?.name || aiConfig?.aiModel;
     }
     if (currentlyOpenChat.type === ChatType.USER) {
       return currentlyOpenChat.user?.displayName || currentlyOpenChat.chatId;

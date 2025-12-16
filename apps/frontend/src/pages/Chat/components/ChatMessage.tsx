@@ -23,7 +23,6 @@ import Avatar from '@/components/shared/Avatar';
 import MarkdownRenderer from '@/components/shared/MarkdownRenderer';
 import AILogo from '@/components/shared/AILogo';
 import ChatMessageData from '@libs/chat/types/chatMessageData';
-import useAIChatStore from '@/pages/Chat/hooks/useAIChatStore';
 import formatIsoDateToLocaleString from '@libs/common/utils/Date/formatIsoDateToLocaleString';
 import ToolInvocation from './ToolInvocation';
 
@@ -32,7 +31,6 @@ interface ChatMessageProps {
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
-  const { aiConfig } = useAIChatStore();
   const { text, sender, timestamp, isOwn, isStreaming, toolInvocations } = message;
 
   const hasToolInvocations = toolInvocations && toolInvocations.length > 0;
@@ -40,10 +38,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   return (
     <div className={cn('flex gap-3', isOwn ? 'flex-row-reverse' : 'flex-row')}>
       {sender.isAI ? (
-        <AILogo
-          provider={aiConfig?.provider}
-          size="sm"
-        />
+        <AILogo className="h-8 w-8" />
       ) : (
         <Avatar
           user={{

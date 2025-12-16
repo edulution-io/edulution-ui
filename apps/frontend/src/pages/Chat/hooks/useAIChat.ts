@@ -20,7 +20,7 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Chat, useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, UIMessage } from 'ai';
-import { CHAT_AI_ENDPOINT, CHAT_AI_STREAM_ENDPOINT } from '@libs/chat/constants/chatEndpoints';
+import { AI_CHAT_STREAM_ENDPOINT, AI_ENDPOINT } from '@libs/ai/constants/aiEndpoints';
 import CHAT_STATUS from '@libs/chat/constants/chatStatus';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import ChatMessageData from '@libs/chat/types/chatMessageData';
@@ -39,6 +39,10 @@ const useAIChat = (options: UseAIChatOptions = {}) => {
   const { enabledTools = [] } = options;
   const { user } = useUserStore();
   const pendingChatIdRef = useRef<string | null>(null);
+  const prevStatusRef = useRef<string | null>(null);
+  const initializedForChatRef = useRef<string | null>(null);
+  const enabledToolsRef = useRef(enabledTools);
+  enabledToolsRef.current = enabledTools;
 
   const {
     currentChatId,
@@ -54,6 +58,7 @@ const useAIChat = (options: UseAIChatOptions = {}) => {
     setCurrentChatId,
     fetchAIConfig,
     setActiveModel,
+    setMessages: setStoreMessages,
   } = useAIChatStore();
 
   const loadedMessages = useAIChatStore((state) => state.messages);
@@ -74,16 +79,17 @@ const useAIChat = (options: UseAIChatOptions = {}) => {
     const getAuthHeader = () => (eduApi.defaults.headers.Authorization as string) || '';
 
     return new DefaultChatTransport({
-      api: `${EDU_API_URL}/${CHAT_AI_ENDPOINT}/${CHAT_AI_STREAM_ENDPOINT}`,
+      api: `${EDU_API_URL}/${AI_ENDPOINT}/${AI_CHAT_STREAM_ENDPOINT}`,
       headers: () => ({
         Authorization: getAuthHeader(),
       }),
       body: () => ({
         chatId: pendingChatIdRef.current ?? useAIChatStore.getState().currentChatId,
-        enabledTools,
+        configId: useAIChatStore.getState().aiConfig?.configId,
+        enabledTools: enabledToolsRef.current,
       }),
     });
-  }, [enabledTools]);
+  }, []);
 
   const chat = useMemo(() => new Chat({ transport }), [transport]);
 
@@ -93,9 +99,36 @@ const useAIChat = (options: UseAIChatOptions = {}) => {
   const isStreaming = status === CHAT_STATUS.STREAMING;
 
   const chatMessages: ChatMessageData[] = useMemo(
-    () => messages.map((msg) => uiMessageToChatMessage(msg, aiConfig?.label, userInfo)),
-    [messages, aiConfig?.label, userInfo],
+    () => messages.map((msg) => uiMessageToChatMessage(msg, aiConfig?.name, userInfo)),
+    [messages, aiConfig?.name, userInfo],
   );
+
+  useEffect(() => {
+    if (storeCurrentChatId && storeCurrentChatId !== initializedForChatRef.current && loadedMessages.length > 0) {
+      const uiMessages: UIMessage[] = loadedMessages.map(chatMessageToUIMessage);
+      setMessages(uiMessages);
+      initializedForChatRef.current = storeCurrentChatId;
+    }
+  }, [storeCurrentChatId, loadedMessages, setMessages]);
+
+  useEffect(() => {
+    const wasStreaming = prevStatusRef.current === CHAT_STATUS.STREAMING;
+    const isNowReady = status === CHAT_STATUS.READY;
+
+    if (wasStreaming && isNowReady && messages.length > 0) {
+      const storeMessages = messages.map((msg) => uiMessageToChatMessage(msg, aiConfig?.name, userInfo));
+      setStoreMessages(storeMessages);
+    }
+
+    prevStatusRef.current = status;
+  }, [status, messages, aiConfig?.name, userInfo, setStoreMessages]);
+
+  useEffect(() => {
+    if (storeCurrentChatId === null) {
+      initializedForChatRef.current = null;
+      setMessages([]);
+    }
+  }, [storeCurrentChatId, setMessages]);
 
   const handleSendMessage = useCallback(
     async (text: string) => {
@@ -117,6 +150,7 @@ const useAIChat = (options: UseAIChatOptions = {}) => {
 
   const handleLoadChat = useCallback(
     async (chatId: string) => {
+      initializedForChatRef.current = null;
       setCurrentChatId(chatId);
       setMessages([]);
       await loadChat(chatId);
@@ -125,28 +159,11 @@ const useAIChat = (options: UseAIChatOptions = {}) => {
   );
 
   const clearMessages = useCallback(() => {
+    initializedForChatRef.current = null;
     setMessages([]);
+    setStoreMessages([]);
     setCurrentChatId(null);
-  }, [setMessages, setCurrentChatId]);
-
-  useEffect(() => {
-    if (storeCurrentChatId === null) {
-      setMessages([]);
-    }
-  }, [storeCurrentChatId, setMessages]);
-
-  useEffect(() => {
-    if (loadedMessages.length > 0) {
-      const uiMessages: UIMessage[] = loadedMessages.map(chatMessageToUIMessage);
-      setMessages(uiMessages);
-    }
-  }, [loadedMessages, setMessages]);
-
-  useEffect(() => {
-    if (!aiConfig && !isConfigLoading) {
-      void fetchAIConfig();
-    }
-  }, [aiConfig, isConfigLoading, fetchAIConfig]);
+  }, [setMessages, setStoreMessages, setCurrentChatId]);
 
   return {
     messages: chatMessages,

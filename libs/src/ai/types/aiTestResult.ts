@@ -17,17 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { ChatMessageRoleType } from '@libs/chat/types/chatMessageRoleType';
-
-interface AIChatMessagePart {
-  type: string;
-  text?: string;
+interface AiTestResult {
+  success: boolean;
+  message: string;
 }
 
-interface AIChatMessage {
-  role: ChatMessageRoleType;
-  content?: string;
-  parts?: AIChatMessagePart[];
-}
-
-export default AIChatMessage;
+export default AiTestResult;

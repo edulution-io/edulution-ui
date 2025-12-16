@@ -21,7 +21,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MdBuildCircle, MdExpandLess, MdExpandMore } from 'react-icons/md';
 import cn from '@libs/common/utils/className';
-import ToolInvocationData from '@libs/chat/types/toolInvocationData';
+import ToolInvocationData from '@libs/ai/types/toolInvocationData';
 import formatToolResult from '@libs/mcp/utils/formatToolResult';
 import ToolStateIcon from '@/pages/Chat/components/ToolStateIcon';
 import { Button } from '@/components/shared/Button';

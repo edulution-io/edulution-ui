@@ -49,7 +49,7 @@ const useChatMenu = () => {
   const { schoolClasses, projects, groupsKey } = useChatGroups();
   const { members, membersPerGroup } = useChatMembers({ schoolClasses, projects, groupsKey });
 
-  const { chatList, loadChatList, clearMessages, aiConfig, loadChat, deleteChat } = useAIChatStore();
+  const { chatList, loadChatList, clearMessages, loadChat, deleteChat } = useAIChatStore();
 
   useEffect(() => {
     void loadChatList();
@@ -68,7 +68,7 @@ const useChatMenu = () => {
         navigate(CHAT_AI_PATH);
       }
     },
-    [navigate, clearMessages],
+    [navigate, clearMessages, loadChat],
   );
 
   const groupChildren = useMemo(() => {
@@ -178,11 +178,7 @@ const useChatMenu = () => {
         ...chatList.map((chat) => ({
           id: chat.id,
           label: chat.title || t('chat.untitledChat'),
-          iconComponent: React.createElement(AILogo, {
-            provider: aiConfig?.provider,
-            size: 'sm' as const,
-            className: 'h-5 w-5',
-          }),
+          iconComponent: React.createElement(AILogo, { className: 'h-5 w-5' }),
           action: () => navigateToAiChat(chat.id),
           disableTranslation: true,
           onDelete: () => {
@@ -193,7 +189,7 @@ const useChatMenu = () => {
     }
 
     return children;
-  }, [chatList, aiConfig?.provider, navigateToAiChat]);
+  }, [chatList, navigateToAiChat, deleteChat]);
 
   return useMemo(
     (): MenuBarEntry => ({

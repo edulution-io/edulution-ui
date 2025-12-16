@@ -18,17 +18,34 @@
  */
 
 import React from 'react';
-import { RiRobot2Fill } from 'react-icons/ri';
-import cn from '@libs/common/utils/className';
+import { useTranslation } from 'react-i18next';
 
-interface AILogoProps {
-  className?: string;
+interface ConnectionStatusProps {
+  isTesting: boolean;
+  testResult: { success: boolean; message: string } | null;
 }
 
-const AILogo: React.FC<AILogoProps> = ({ className }) => (
-  <div className={cn('flex items-center justify-center rounded-full bg-ciGreenToBlue text-background', className)}>
-    <RiRobot2Fill className="h-full w-full p-2" />
-  </div>
-);
+const AIConnectionStatus: React.FC<ConnectionStatusProps> = ({ isTesting, testResult }) => {
+  const { t } = useTranslation();
 
-export default AILogo;
+  if (isTesting) {
+    return (
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+        {t('aiconfig.settings.testingConnection')}
+      </div>
+    );
+  }
+
+  if (testResult) {
+    return (
+      <div className={`flex items-center gap-2 text-sm ${testResult.success ? 'text-green-500' : 'text-red-500'}`}>
+        {testResult.message}
+      </div>
+    );
+  }
+
+  return null;
+};
+
+export default AIConnectionStatus;

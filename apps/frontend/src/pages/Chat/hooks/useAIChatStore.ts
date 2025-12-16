@@ -19,15 +19,14 @@
 
 import { create } from 'zustand';
 import ChatMessageData from '@libs/chat/types/chatMessageData';
-import AIChatMessage from '@libs/chat/types/aiChatMessage';
-import AIModelConfig from '@libs/chat/types/aiModelConfig';
+import AIChatMessage from '@libs/ai/types/aiChatMessage';
+import AvailableAiModel from '@libs/ai/types/availableAiModel';
 import {
-  CHAT_AI_CHATS_ENDPOINT,
-  CHAT_AI_CONFIG_ENDPOINT,
-  CHAT_AI_ENDPOINT,
-  CHAT_AI_STREAM_ENDPOINT,
-  CHAT_ENDPOINT,
-} from '@libs/chat/constants/chatEndpoints';
+  AI_CHAT_STREAM_ENDPOINT,
+  AI_CHATS_ENDPOINT,
+  AI_CONFIG_ENDPOINT,
+  AI_ENDPOINT,
+} from '@libs/ai/constants/aiEndpoints';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import ChatMessageRole from '@libs/chat/constants/chatMessageRole';
@@ -45,8 +44,8 @@ interface UseAIChatStore {
   isError: boolean;
   error: string | null;
   abortController: AbortController | null;
-  aiConfig: AIModelConfig | null;
-  availableModels: AIModelConfig[];
+  aiConfig: AvailableAiModel | null;
+  availableModels: AvailableAiModel[];
   isConfigLoading: boolean;
   createChat: () => Promise<string>;
   loadChat: (chatId: string) => Promise<void>;
@@ -64,7 +63,7 @@ interface UseAIChatStore {
   stopGeneration: () => void;
   clearMessages: () => void;
   fetchAIConfig: () => Promise<void>;
-  setActiveModel: (model: AIModelConfig) => void;
+  setActiveModel: (model: AvailableAiModel) => void;
   reset: () => void;
 }
 
@@ -112,21 +111,23 @@ const useAIChatStore = create<UseAIChatStore>((set, get) => ({
   reset: () => set(initialState),
 
   fetchAIConfig: async () => {
-    if (get().isConfigLoading) return;
+    if (get().isConfigLoading || get().aiConfig) return;
 
     set({ isConfigLoading: true });
 
     try {
-      const { data } = await eduApi.get<{
-        current: AIModelConfig;
-        available: AIModelConfig[];
-      }>(`${CHAT_AI_ENDPOINT}/${CHAT_AI_CONFIG_ENDPOINT}`);
+      const { data } = await eduApi.get<AvailableAiModel[] | { available: AvailableAiModel[] }>(
+        `${AI_ENDPOINT}/${AI_CONFIG_ENDPOINT}`,
+      );
+
+      const models: AvailableAiModel[] = Array.isArray(data) ? data : data.available;
 
       set({
-        aiConfig: data.current,
-        availableModels: data.available,
+        aiConfig: models.length > 0 ? models[0] : null,
+        availableModels: models,
       });
     } catch (err) {
+      set({ aiConfig: null });
       handleApiError(err, set);
     } finally {
       set({ isConfigLoading: false });
@@ -136,9 +137,9 @@ const useAIChatStore = create<UseAIChatStore>((set, get) => ({
   setActiveModel: (model) => {
     set({
       aiConfig: {
-        provider: model.provider,
-        model: model.model,
-        label: model.label,
+        name: model.name,
+        aiModel: model.aiModel,
+        configId: model.configId,
       },
     });
   },
@@ -172,7 +173,7 @@ const useAIChatStore = create<UseAIChatStore>((set, get) => ({
       text: '',
       sender: {
         cn: ChatMessageRole.ASSISTANT,
-        displayName: aiConfig?.label,
+        displayName: aiConfig?.name,
         isAI: true,
       },
       timestamp: new Date().toISOString(),
@@ -199,7 +200,7 @@ const useAIChatStore = create<UseAIChatStore>((set, get) => ({
           content: msg.text,
         }));
 
-      const response = await fetch(`${eduApi.defaults.baseURL}/${CHAT_AI_ENDPOINT}/${CHAT_AI_STREAM_ENDPOINT}`, {
+      const response = await fetch(`${eduApi.defaults.baseURL}/${AI_ENDPOINT}/${AI_CHAT_STREAM_ENDPOINT}`, {
         method: HttpMethods.POST,
         headers: {
           [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_JSON,
@@ -243,7 +244,7 @@ const useAIChatStore = create<UseAIChatStore>((set, get) => ({
 
   createChat: async () => {
     try {
-      const { data } = await eduApi.post<{ id: string }>(`${CHAT_ENDPOINT}/${CHAT_AI_CHATS_ENDPOINT}`);
+      const { data } = await eduApi.post<{ id: string }>(`${AI_ENDPOINT}/${AI_CHATS_ENDPOINT}`);
       set({ currentChatId: data.id });
       void get().loadChatList();
       return data.id;
@@ -259,7 +260,7 @@ const useAIChatStore = create<UseAIChatStore>((set, get) => ({
         id: string;
         title: string;
         messages: AIChatMessage[];
-      }>(`${CHAT_ENDPOINT}/${CHAT_AI_CHATS_ENDPOINT}/${chatId}`);
+      }>(`${AI_ENDPOINT}/${AI_CHATS_ENDPOINT}/${chatId}`);
 
       const { aiConfig } = get();
 
@@ -268,7 +269,7 @@ const useAIChatStore = create<UseAIChatStore>((set, get) => ({
         text: msg.content || '',
         sender: {
           cn: msg.role === ChatMessageRole.USER ? ChatMessageRole.USER : ChatMessageRole.ASSISTANT,
-          displayName: msg.role === ChatMessageRole.ASSISTANT ? aiConfig?.label : undefined,
+          displayName: msg.role === ChatMessageRole.ASSISTANT ? aiConfig?.name : undefined,
           isAI: msg.role === ChatMessageRole.ASSISTANT,
         },
         timestamp: new Date().toISOString(),
@@ -288,7 +289,7 @@ const useAIChatStore = create<UseAIChatStore>((set, get) => ({
     set({ isChatListLoading: true });
 
     try {
-      const { data } = await eduApi.get<ChatSummary[]>(`${CHAT_ENDPOINT}/${CHAT_AI_CHATS_ENDPOINT}`);
+      const { data } = await eduApi.get<ChatSummary[]>(`${AI_ENDPOINT}/${AI_CHATS_ENDPOINT}`);
       set({ chatList: data });
     } catch (err) {
       handleApiError(err, set);
@@ -299,7 +300,7 @@ const useAIChatStore = create<UseAIChatStore>((set, get) => ({
 
   deleteChat: async (chatId: string) => {
     try {
-      await eduApi.delete(`${CHAT_ENDPOINT}/${CHAT_AI_CHATS_ENDPOINT}/${chatId}`);
+      await eduApi.delete(`${AI_ENDPOINT}/${AI_CHATS_ENDPOINT}/${chatId}`);
       const { currentChatId } = get();
       set((state) => ({
         chatList: state.chatList.filter((c) => c.id !== chatId),

@@ -33,7 +33,7 @@ import GLOBAL_SETTINGS_TABS from '@libs/global-settings/constants/globalSettings
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import { toast } from 'sonner';
 import APPS from '@libs/appconfig/constants/apps';
-import AISettings from '@/pages/Settings/components/ai/AISettings';
+import AISettings from '@/pages/Settings/components/ai/AiConfigSettings';
 import DockerContainerTable from '../AppConfig/DockerIntegration/DockerContainerTable';
 import GlobalSettings from '../GlobalSettings/GlobalSettings';
 import UserAdministration from './UserAdministration';

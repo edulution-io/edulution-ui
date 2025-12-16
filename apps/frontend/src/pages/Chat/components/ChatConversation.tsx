@@ -36,15 +36,23 @@ interface ChatConversationProps {
 const ChatConversation: React.FC<ChatConversationProps> = ({ isPopout = false }) => {
   const { t } = useTranslation();
   const { type } = useParams<{ type: ChatTypeValue }>();
-  const { currentlyOpenChat } = useChatStore();
+  const { currentlyOpenChat, isChatPopoutVisible, isChatDocked } = useChatStore();
   const { enabledTools } = useMcpTools();
 
   const chatType = isPopout ? currentlyOpenChat?.type : type;
   const isAIChat = chatType === ChatType.AI;
 
-  useAIChatRouting({ enabled: isAIChat });
+  useAIChatRouting({ enabled: isAIChat, isPopout });
 
   const { messages, isLoading, isError, sendMessage, stopGeneration } = useAIChat({ enabledTools });
+
+  if (!isPopout && isChatPopoutVisible && !isChatDocked) {
+    return (
+      <div className="flex h-full items-center justify-center text-muted-foreground">
+        <p>{t('chat.openInPopout', 'Chat ist im separaten Fenster geöffnet')}</p>
+      </div>
+    );
+  }
 
   const handleSend = (text: string) => {
     if (!isAIChat) return;

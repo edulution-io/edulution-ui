@@ -20,7 +20,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import AIChatMessage from '@libs/chat/types/aiChatMessage';
+import AIChatMessage from '@libs/ai/types/aiChatMessage';
 import ChatType from '@libs/chat/types/chatType';
 import Chat, { ChatDocument } from './schemas/chat.schema';
 

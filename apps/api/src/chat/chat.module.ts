@@ -20,16 +20,14 @@
 import { MongooseModule } from '@nestjs/mongoose';
 import { Module } from '@nestjs/common';
 import ChatService from './chat.service';
-import AIService from './ai/ai.service';
-import AIController from './ai/ai.controller';
 import ChatController from './chat.controller';
 import Chat, { ChatSchema } from './schemas/chat.schema';
 import McpModule from '../mcp/mcp.module';
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: Chat.name, schema: ChatSchema }]), McpModule],
-  controllers: [ChatController, AIController],
-  providers: [ChatService, AIService],
+  controllers: [ChatController],
+  providers: [ChatService],
   exports: [ChatService],
 })
 export default class ChatModule {}

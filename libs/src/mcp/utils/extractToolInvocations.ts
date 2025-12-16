@@ -18,7 +18,7 @@
  */
 
 import { isToolOrDynamicToolUIPart, UIMessage } from 'ai';
-import ToolInvocationData from '@libs/chat/types/toolInvocationData';
+import ToolInvocationData from '@libs/ai/types/toolInvocationData';
 
 const extractToolInvocations = (msg: UIMessage): ToolInvocationData[] => {
   const toolParts = msg.parts?.filter(isToolOrDynamicToolUIPart) || [];

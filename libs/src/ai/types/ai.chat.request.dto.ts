@@ -17,11 +17,32 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import AIChatMessage from '@libs/chat/types/aiChatMessage';
+import { IsArray, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+import AIChatMessageDto from '@libs/ai/types/ai.chat.message.dto';
 
-interface AIChatRequest {
-  messages: AIChatMessage[];
+class AIChatRequestDto {
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => AIChatMessageDto)
+  messages: AIChatMessageDto[];
+
+  @IsNotEmpty()
+  @IsString()
+  configId: string;
+
+  @IsOptional()
+  @IsString()
   conversationId?: string;
+
+  @IsOptional()
+  @IsString()
+  chatId?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  enabledTools?: string[];
 }
 
-export default AIChatRequest;
+export default AIChatRequestDto;

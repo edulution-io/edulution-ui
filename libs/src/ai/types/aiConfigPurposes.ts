@@ -17,18 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ChatMessageSender from '@libs/chat/types/chatMessageSender';
-import { ChatMessageRoleType } from '@libs/chat/types/chatMessageRoleType';
-import ToolInvocationData from '@libs/ai/types/toolInvocationData';
+const AI_CONFIG_PURPOSES = {
+  TRANSLATION: 'translation',
+  CHAT: 'chat',
+} as const;
 
-interface ChatMessageData {
-  id: string;
-  text: string;
-  sender: ChatMessageSender;
-  timestamp: string;
-  role?: ChatMessageRoleType;
-  isOwn?: boolean;
-  isStreaming?: boolean;
-  toolInvocations?: ToolInvocationData[];
-}
-export default ChatMessageData;
+export default AI_CONFIG_PURPOSES;

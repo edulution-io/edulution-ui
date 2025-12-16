@@ -17,6 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import AIProvider from '@libs/chat/constants/aiProvider';
+interface FetchModelsResult {
+  success: boolean;
+  models: string[];
+  message?: string;
+}
 
-export type AIProviderType = (typeof AIProvider)[keyof typeof AIProvider];
+export default FetchModelsResult;

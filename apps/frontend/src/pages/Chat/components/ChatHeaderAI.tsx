@@ -20,17 +20,12 @@
 import React, { useEffect } from 'react';
 import { MdExpandMore } from 'react-icons/md';
 import { TbLayoutSidebarRightCollapse } from 'react-icons/tb';
-import { SiAnthropic, SiGoogle, SiOpenai } from 'react-icons/si';
 import { RiRobot2Fill } from 'react-icons/ri';
 import useAIChatStore from '@/pages/Chat/hooks/useAIChatStore';
 import useChatStore from '@/pages/Chat/hooks/useChatStore';
-import AILogo from '@/components/shared/AILogo';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
 import cn from '@libs/common/utils/className';
-import { Button } from '@/components/shared/Button';
-import { AIProviderType } from '@libs/chat/types/AIProviderType';
-import AIProvider from '@libs/chat/constants/aiProvider';
 import { Tooltip } from '@/components/ui/Tooltip';
 import ToolSelector from './ToolSelector';
 
@@ -39,44 +34,32 @@ interface ChatHeaderAIProps {
 }
 
 const ChatHeaderAI: React.FC<ChatHeaderAIProps> = ({ isPopout = false }) => {
-  const { aiConfig, availableModels, isConfigLoading, fetchAIConfig, setActiveModel } = useAIChatStore();
+  const { aiConfig, availableModels, currentChatId, isConfigLoading, fetchAIConfig, setActiveModel } = useAIChatStore();
   const { setCurrentlyOpenChat, setIsChatPopoutVisible, setIsChatDocked, isChatDocked } = useChatStore();
-
   useEffect(() => {
     void fetchAIConfig();
   }, [fetchAIConfig]);
 
-  const modelLabel = aiConfig?.label || aiConfig?.model;
-
-  const getProviderIcon = (provider?: AIProviderType) => {
-    switch (provider) {
-      case AIProvider.ANTHROPIC:
-        return SiAnthropic;
-      case AIProvider.OPENAI:
-        return SiOpenai;
-      case AIProvider.GOOGLE:
-        return SiGoogle;
-      default:
-        return RiRobot2Fill;
-    }
-  };
+  const modelLabel = aiConfig?.name || aiConfig?.aiModel;
 
   const hasMultipleModels = (availableModels?.length ?? 0) > 1;
 
   const dropdownItems: DropdownMenuItemType[] = hasMultipleModels
     ? availableModels.map((model) => ({
-        label: model.label,
-        icon: getProviderIcon(model.provider),
+        label: model.name,
+        icon: RiRobot2Fill,
         onClick: () => setActiveModel(model),
-        checked: aiConfig?.model === model.model,
+        checked: aiConfig?.configId === model.configId,
         isCheckbox: true,
         onCheckedChange: () => setActiveModel(model),
       }))
     : [];
 
   const handleUndock = () => {
+    const chatIdToOpen = currentChatId || 'new';
+
     setCurrentlyOpenChat({
-      chatId: 'ai',
+      chatId: chatIdToOpen,
       type: 'ai',
     });
     setIsChatPopoutVisible(true);
@@ -84,30 +67,25 @@ const ChatHeaderAI: React.FC<ChatHeaderAIProps> = ({ isPopout = false }) => {
   };
 
   const trigger = (
-    <Button
-      type="button"
-      variant="btn-ghost"
-      className={cn('flex items-center gap-1 text-background', hasMultipleModels && 'hover:opacity-80')}
+    <div
+      className={cn('flex cursor-pointer items-center gap-1 text-background', hasMultipleModels && 'hover:opacity-80')}
     >
       <span className="text-lg font-semibold">{modelLabel}</span>
       {!isConfigLoading && hasMultipleModels && <MdExpandMore className="h-5 w-5 text-muted-foreground" />}
-    </Button>
+    </div>
   );
-
   return (
     <div className="flex items-center justify-between border-b border-muted p-4">
       <div className="flex items-center gap-3">
-        <AILogo
-          provider={aiConfig?.provider}
-          size="md"
-        />
+        <div className="flex h-10 w-10 items-center justify-center rounded-full">
+          <RiRobot2Fill className="h-6 w-6 text-primary" />
+        </div>
 
         {hasMultipleModels ? (
           <DropdownMenu
             trigger={trigger}
             items={dropdownItems}
             disabled={isConfigLoading}
-            menuContentClassName="min-w-[200px]"
           />
         ) : (
           <span className="text-lg font-semibold text-background">{modelLabel}</span>

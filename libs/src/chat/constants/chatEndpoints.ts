@@ -18,21 +18,11 @@
  */
 
 export const CHAT_ENDPOINT = 'chat';
-export const AI_ENDPOINT = 'ai';
 export const USERS_ENDPOINT = 'users';
 export const GROUPS_ENDPOINT = 'groups';
 export const CHATS_ENDPOINT = 'chats';
 export const MESSAGES_ENDPOINT = 'messages';
-export const STREAM_ENDPOINT = 'stream';
-export const CONFIG_ENDPOINT = 'config';
-
-export const CHAT_AI_ENDPOINT = `${CHAT_ENDPOINT}/${AI_ENDPOINT}`;
-export const CHAT_AI_CHATS_ENDPOINT = `${AI_ENDPOINT}/${CHATS_ENDPOINT}`;
-export const CHAT_AI_STREAM_ENDPOINT = STREAM_ENDPOINT;
-export const CHAT_AI_CONFIG_ENDPOINT = CONFIG_ENDPOINT;
 
 export const CHAT_USERS_ENDPOINT = `${USERS_ENDPOINT}/${CHATS_ENDPOINT}`;
-
 export const CHAT_GROUPS_ENDPOINT = `${GROUPS_ENDPOINT}/${CHATS_ENDPOINT}`;
-
 export const CHAT_MESSAGES_ENDPOINT = MESSAGES_ENDPOINT;

@@ -21,19 +21,15 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import useUserStore from '@/store/UserStore/useUserStore';
 import AILogo from '@/components/shared/AILogo';
-import useAIChatStore from '@/pages/Chat/hooks/useAIChatStore';
 
 const AIWelcome: React.FC = () => {
   const { t } = useTranslation();
   const { user } = useUserStore();
-  const { aiConfig } = useAIChatStore();
+
   return (
     <div className="flex h-full flex-col items-center justify-center gap-6 p-8">
       <div className="flex h-16 w-16 items-center justify-center rounded-full bg-ciGreenToBlue">
-        <AILogo
-          provider={aiConfig?.provider}
-          size="lg"
-        />
+        <AILogo className="h-8 w-8" />
       </div>
 
       <div className="text-center">

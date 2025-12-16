@@ -17,18 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ChatMessageSender from '@libs/chat/types/chatMessageSender';
-import { ChatMessageRoleType } from '@libs/chat/types/chatMessageRoleType';
-import ToolInvocationData from '@libs/ai/types/toolInvocationData';
+import { AIProviderType } from '@libs/ai/types/AIProviderType';
 
-interface ChatMessageData {
-  id: string;
-  text: string;
-  sender: ChatMessageSender;
-  timestamp: string;
-  role?: ChatMessageRoleType;
-  isOwn?: boolean;
-  isStreaming?: boolean;
-  toolInvocations?: ToolInvocationData[];
+interface AIModelConfig {
+  provider: AIProviderType;
+  model: string;
+  label: string;
+  description?: string;
 }
-export default ChatMessageData;
+
+export default AIModelConfig;

@@ -67,6 +67,7 @@ import configuration from '../config/configuration';
 import enableSentryForNest from '../sentry/enableSentryForNest';
 import ChatModule from '../chat/chat.module';
 import McpModule from '../mcp/mcp.module';
+import AiModule from '../ai/ai.module';
 
 @Module({
   imports: [
@@ -142,6 +143,7 @@ import McpModule from '../mcp/mcp.module';
     ScriptsModule,
     ChatModule,
     McpModule,
+    AiModule,
   ],
   providers: [
     {

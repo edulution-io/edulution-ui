@@ -17,28 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { IsArray, IsOptional, IsString, ValidateNested } from 'class-validator';
-import { Type } from 'class-transformer';
-import AIChatMessageDto from '@libs/chat/types/ai.chat.message.dto';
+const AI_CONFIG_DIALOG_KEY = 'AI_CONFIG_DIALOG';
 
-class AIChatRequestDto {
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => AIChatMessageDto)
-  messages: AIChatMessageDto[];
-
-  @IsOptional()
-  @IsString()
-  conversationId?: string;
-
-  @IsOptional()
-  @IsString()
-  chatId?: string;
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  enabledTools?: string[];
-}
-
-export default AIChatRequestDto;
+export default AI_CONFIG_DIALOG_KEY;

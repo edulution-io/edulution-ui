@@ -17,25 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { IsArray, IsEnum, IsOptional, IsString, ValidateNested } from 'class-validator';
-import { Type } from 'class-transformer';
-import ChatMessageRole from '@libs/chat/constants/chatMessageRole';
-import { ChatMessageRoleType } from '@libs/chat/types/chatMessageRoleType';
-import AIChatMessagePartDto from '@libs/chat/types/ai.chat.messagePart.dto';
+import ModelListResponse from '@libs/ai/types/modelListResponse';
 
-class AIChatMessageDto {
-  @IsEnum(ChatMessageRole)
-  role: ChatMessageRoleType;
-
-  @IsOptional()
-  @IsString()
-  content?: string;
-
-  @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => AIChatMessagePartDto)
-  parts?: AIChatMessagePartDto[];
+interface AiProviderModelConfig {
+  getUrl: (baseUrl: string, apiKey: string) => string;
+  getHeaders: (apiKey: string) => Record<string, string> | undefined;
+  extractModels: (data: ModelListResponse) => string[];
 }
 
-export default AIChatMessageDto;
+export default AiProviderModelConfig;
