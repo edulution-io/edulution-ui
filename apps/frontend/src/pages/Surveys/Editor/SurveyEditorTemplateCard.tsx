@@ -19,110 +19,131 @@
 
 import React, { useState } from 'react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
+import { VscNewFile } from 'react-icons/vsc';
 import { EyeLightIcon } from '@/assets/icons';
-import i18n from '@/i18n';
 import cn from '@libs/common/utils/className';
-import AttendeeDto from '@libs/user/types/attendee.dto';
-import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
+import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
-import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 
 interface SurveyEditorTemplateCardProps {
   creator: AttendeeDto;
-  surveyTemplate: SurveyTemplateDto;
+  surveyTemplate?: SurveyTemplateDto;
 }
 
 const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTemplateCardProps): JSX.Element => {
-  const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
-
   const {
-    setTemplate,
     setIsOpenTemplateConfirmDeletion,
-    setIsTemplateActive,
     setIsOpenTemplatePreview,
+    setIsTemplateActive,
     fetchTemplates,
+    setTemplate,
   } = useSurveyTemplateStore();
+
+  const { loadNew, loadTemplate } = useSurveyEditorPageStore();
 
   const { isSuperAdmin } = useLdapGroups();
 
-  const [active, setActive] = useState<boolean>(surveyTemplate.isActive ?? true);
+  const { t } = useTranslation();
 
-  const toggleIsTemplateActive = async () => {
-    if (!surveyTemplate.id) return;
+  const [active, setActive] = useState<boolean>(surveyTemplate?.isActive ?? true);
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setTemplate(surveyTemplate);
+    if (surveyTemplate) {
+      loadTemplate(creator, surveyTemplate);
+    } else {
+      loadNew(creator);
+    }
+  };
+
+  const handleOpenPreview = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setTemplate(surveyTemplate);
+    setIsOpenTemplatePreview(true);
+  };
+
+  const toggleIsTemplateActive = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!surveyTemplate?.id) return;
     try {
       await setIsTemplateActive(surveyTemplate.id, !active);
       setActive(!active);
     } catch (error) {
-      toast.error(i18n.t('survey.errors.updateOrCreateError'));
+      toast.error(t('survey.errors.updateOrCreateError'));
       await fetchTemplates();
     }
   };
+
+  const handleOpenConfirmDeletion = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setTemplate(surveyTemplate);
+    setIsOpenTemplateConfirmDeletion(true);
+  };
+
+  const title = surveyTemplate?.template.formula.title ?? t('survey.editor.new');
+
+  const description = surveyTemplate?.template.formula.description;
 
   return (
     <Card
       className={cn(
         GRID_CARD,
+        'flex cursor-pointer',
         { 'bg-muted': active },
         { 'bg-accent': !active },
         { 'h-[13rem]': !isSuperAdmin },
         { 'h-[14.2rem] pb-12': isSuperAdmin },
+        { 'pt-8': !description },
+        'flex',
       )}
       variant="text"
-      onClick={() => {
-        setTemplate(surveyTemplate);
-        assignTemplateToSelectedSurvey(creator, surveyTemplate);
-      }}
+      onClick={handleCardClick}
     >
-      <Button
-        variant="btn-outline"
-        onClick={(e) => {
-          e.stopPropagation();
-          setTemplate(surveyTemplate);
-          setIsOpenTemplatePreview(true);
-        }}
-        className="h-14 w-14 p-2"
-        aria-label={i18n.t('survey.editor.template.preview')}
-      >
-        <img
-          src={EyeLightIcon}
-          alt="eye"
-          width="w-12"
-        />
-      </Button>
-      <h3
-        className="line-clamp-2 h-[3.8rem] w-full"
-        aria-label={`Template title: ${surveyTemplate.template.formula?.title}`}
-      >
-        {surveyTemplate.template.formula?.title}
-      </h3>
-      <p className="line-clamp-2 h-[2.8rem] w-full">{surveyTemplate.template.formula?.description}</p>
-      {isSuperAdmin && (
+      {surveyTemplate ? (
+        <Button
+          variant="btn-outline"
+          onClick={handleOpenPreview}
+          className="h-14 w-14 p-2"
+          aria-label={t('survey.editor.template.preview')}
+        >
+          <img
+            src={EyeLightIcon}
+            alt="eye"
+            width="w-12"
+          />
+        </Button>
+      ) : (
+        <VscNewFile className="h-10 w-10 md:h-14 md:w-14" />
+      )}
+
+      {title && <h3 className={cn('line-clamp-2 h-[3.8rem] justify-center', { 'mt-4': !description })}>{title}</h3>}
+
+      {description && <p className="line-clamp-2 h-[2.8rem] w-full">{description}</p>}
+
+      {isSuperAdmin && surveyTemplate && (
         <div className="absolute bottom-2 flex h-8 w-full flex-row justify-end gap-2 px-2 text-sm italic text-muted-foreground">
           <Button
-            onClick={async (e) => {
-              e.stopPropagation();
-              await toggleIsTemplateActive();
-            }}
+            onClick={toggleIsTemplateActive}
             variant="btn-outline"
             size="sm"
           >
-            {active ? i18n.t('classmanagement.deactivate') : i18n.t('classmanagement.activate')}
+            {active ? t('classmanagement.deactivate') : t('classmanagement.activate')}
           </Button>
-          {!surveyTemplate.isDefaultTemplate && (
+          {!surveyTemplate?.isDefaultTemplate && (
             <Button
-              onClick={(e) => {
-                e.stopPropagation();
-                setTemplate(surveyTemplate);
-                setIsOpenTemplateConfirmDeletion(true);
-              }}
+              onClick={handleOpenConfirmDeletion}
               variant="btn-attention"
               size="sm"
-              aria-label={i18n.t('common.delete')}
+              aria-label={t('common.delete')}
             >
               <DeleteIcon className="h-4 w-4" />
             </Button>

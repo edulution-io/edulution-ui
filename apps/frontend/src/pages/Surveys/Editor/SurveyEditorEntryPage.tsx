@@ -19,9 +19,9 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import getCreatorFromUserDto from '@libs/survey/utils/getCreatorFromUserDto';
-import i18n from '@/i18n';
 import useUserStore from '@/store/UserStore/useUserStore';
 import SurveyEditorPage from '@/pages/Surveys/Editor/SurveyEditorPage';
 import SurveyEditorTemplateGrid from '@/pages/Surveys/Editor/SurveyEditorTemplateGrid';
@@ -32,7 +32,7 @@ import DeleteTemplateDialog from '@/pages/Surveys/Editor/dialog/DeleteTemplateDi
 import PageLayout from '@/components/structure/layout/PageLayout';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
-const SurveyEditorOpeningPage = () => {
+const SurveyEditorEntryPage = () => {
   const { user } = useUserStore();
   const surveyCreator: AttendeeDto = useMemo(() => getCreatorFromUserDto(user), [user]);
 
@@ -47,6 +47,8 @@ const SurveyEditorOpeningPage = () => {
   const { reset: resetQuestionsContextMenu } = useQuestionsContextMenuStore();
 
   const { surveyId } = useParams();
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     resetEditorPage();
@@ -64,7 +66,7 @@ const SurveyEditorOpeningPage = () => {
       <PageLayout>
         <div className="flex h-full w-full flex-col items-center justify-center">
           <CircleLoader />
-          <p className="mt-4">{i18n.t('survey.editor.isLoadingSurvey')}</p>
+          <p className="mt-4">{t('survey.editor.isLoadingSurvey')}</p>
         </div>
       </PageLayout>
     );
@@ -72,14 +74,14 @@ const SurveyEditorOpeningPage = () => {
 
   return (
     <PageLayout>
-      {!initialSurvey ? (
-        <SurveyEditorTemplateGrid surveyCreator={surveyCreator} />
-      ) : (
+      {initialSurvey ? (
         <SurveyEditorPage initialFormValues={initialSurvey} />
+      ) : (
+        <SurveyEditorTemplateGrid surveyCreator={surveyCreator} />
       )}
       <DeleteTemplateDialog />
     </PageLayout>
   );
 };
 
-export default SurveyEditorOpeningPage;
+export default SurveyEditorEntryPage;

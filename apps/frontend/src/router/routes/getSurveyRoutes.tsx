@@ -24,7 +24,7 @@ import SurveysPageView from '@libs/survey/types/api/surveysPageView';
 import OpenSurveysPage from '@/pages/Surveys/Tables/OpenSurveysPage';
 import AnsweredSurveysPage from '@/pages/Surveys/Tables/AnsweredSurveysPage';
 import CreatedSurveysPage from '@/pages/Surveys/Tables/CreatedSurveysPage';
-import SurveyEditorOpeningPage from '@/pages/Surveys/Editor/SurveyEditorOpeningPage';
+import SurveyEditorEntryPage from '@/pages/Surveys/Editor/SurveyEditorEntryPage';
 import SurveyParticipationPage from '@/pages/Surveys/Participation/SurveyParticipationPage';
 
 const getSurveyRoutes = () => [
@@ -55,11 +55,11 @@ const getSurveyRoutes = () => [
     />
     <Route
       path={SurveysPageView.CREATOR}
-      element={<SurveyEditorOpeningPage />}
+      element={<SurveyEditorEntryPage />}
     />
     <Route
       path={`${SurveysPageView.EDITOR}/:surveyId`}
-      element={<SurveyEditorOpeningPage />}
+      element={<SurveyEditorEntryPage />}
     />
     <Route
       path={`${SurveysPageView.PARTICIPATION}/:surveyId`}

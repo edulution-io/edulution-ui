@@ -24,7 +24,7 @@ import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
 
-const SurveyEditorLoadingPreview = (): JSX.Element | null => {
+const SurveyEditorTemplatePreview = (): JSX.Element | null => {
   const { template: surveyTemplateDto, setIsOpenTemplatePreview } = useSurveyTemplateStore();
 
   const { language } = useLanguage();
@@ -60,4 +60,4 @@ const SurveyEditorLoadingPreview = (): JSX.Element | null => {
   );
 };
 
-export default SurveyEditorLoadingPreview;
+export default SurveyEditorTemplatePreview;
