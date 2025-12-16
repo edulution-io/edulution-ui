@@ -19,41 +19,59 @@
 
 import React, { useState } from 'react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
+import { VscNewFile } from 'react-icons/vsc';
 import { MdOutlineOpenInNew } from 'react-icons/md';
-import i18n from '@/i18n';
 import cn from '@libs/common/utils/className';
-import AttendeeDto from '@libs/user/types/attendee.dto';
-import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
+import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
+import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
-import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 
 interface SurveyEditorTemplateCardProps {
   creator: AttendeeDto;
-  surveyTemplate: SurveyTemplateDto;
+  surveyTemplate?: SurveyTemplateDto;
 }
 
 const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTemplateCardProps): JSX.Element => {
-  const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
+  const { setIsOpenTemplateConfirmDeletion, setIsTemplateActive, fetchTemplates, setTemplate } = useTemplateMenuStore();
 
-  const { setTemplate, setIsOpenTemplateConfirmDeletion, setIsTemplateActive, fetchTemplates } = useTemplateMenuStore();
+  const { loadNew, loadTemplate } = useSurveyEditorPageStore();
 
   const { isSuperAdmin } = useLdapGroups();
 
-  const [active, setActive] = useState<boolean>(surveyTemplate.isActive ?? true);
+  const { t } = useTranslation();
+
+  const [active, setActive] = useState<boolean>(surveyTemplate?.isActive ?? true);
 
   const toggleIsTemplateActive = async () => {
-    if (!surveyTemplate.id) return;
+    if (!surveyTemplate?.id) return;
     try {
       await setIsTemplateActive(surveyTemplate.id, !active);
       setActive(!active);
     } catch (error) {
-      toast.error(i18n.t('survey.errors.updateOrCreateError'));
+      toast.error(t('survey.errors.updateOrCreateError'));
       await fetchTemplates();
+    }
+  };
+
+  const Icon = surveyTemplate ? MdOutlineOpenInNew : VscNewFile;
+
+  const title = surveyTemplate?.template.formula.title ?? t('survey.editor.new');
+
+  const description = surveyTemplate?.template.formula.description;
+
+  const handleClick = () => {
+    setTemplate(surveyTemplate);
+    if (surveyTemplate) {
+      loadTemplate(creator, surveyTemplate);
+    } else {
+      loadNew(creator);
     }
   };
 
@@ -61,25 +79,23 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
     <Card
       className={cn(
         GRID_CARD,
+        'flex cursor-pointer',
         { 'bg-muted': active },
         { 'bg-accent': !active },
         { 'h-[13rem]': !isSuperAdmin },
         { 'h-[14rem] pb-12': isSuperAdmin },
-        'flex',
+        { 'pt-8': !description },
       )}
       variant="text"
-      onClick={() => {
-        setTemplate(surveyTemplate);
-        assignTemplateToSelectedSurvey(creator, surveyTemplate);
-      }}
+      onClick={handleClick}
     >
-      <MdOutlineOpenInNew className="h-10 w-10 md:h-14 md:w-14" />
+      <Icon className="h-10 w-10 md:h-14 md:w-14" />
 
-      <h3 className="line-clamp-2 h-[3.8rem] w-full">{surveyTemplate.template.formula?.title}</h3>
+      {title && <h3 className={cn('line-clamp-2 h-[3.8rem] justify-center', { 'mt-4': !description })}>{title}</h3>}
 
-      <p className="line-clamp-2 h-[2.8rem] w-full">{surveyTemplate.template.formula?.description}</p>
+      {description && <p className="line-clamp-2 h-[2.8rem] w-full">{description}</p>}
 
-      {isSuperAdmin && (
+      {isSuperAdmin && surveyTemplate && (
         <div className="absolute bottom-2 flex h-8 w-full flex-row justify-end gap-2 px-2 text-sm italic text-muted-foreground">
           <Button
             onClick={async (e) => {
@@ -89,9 +105,9 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
             variant="btn-outline"
             size="sm"
           >
-            {active ? i18n.t('classmanagement.deactivate') : i18n.t('classmanagement.activate')}
+            {active ? t('classmanagement.deactivate') : t('classmanagement.activate')}
           </Button>
-          {!surveyTemplate.isDefaultTemplate && (
+          {!surveyTemplate?.isDefaultTemplate && (
             <Button
               onClick={(e) => {
                 e.stopPropagation();
@@ -100,7 +116,7 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
               }}
               variant="btn-attention"
               size="sm"
-              aria-label={i18n.t('common.delete')}
+              aria-label={t('common.delete')}
             >
               <DeleteIcon className="h-4 w-4" />
             </Button>

@@ -34,7 +34,8 @@ import getInitialSurveyFormBySurveys from '@/pages/Surveys/utils/getInitialSurve
 import getInitialSurveyFormByTemplate from '@/pages/Surveys/utils/getInitialSurveyFormByTemplate';
 
 interface SurveyEditorPageStore {
-  assignTemplateToSelectedSurvey: (creator: AttendeeDto, template?: SurveyTemplateDto) => void;
+  loadNew: (creator: AttendeeDto) => void;
+  loadTemplate: (creator: AttendeeDto, template: SurveyTemplateDto) => void;
   fetchSelectedSurvey: (creator: AttendeeDto, surveyId: string, isPublic?: boolean) => Promise<void>;
   isFetching: boolean;
 
@@ -87,7 +88,12 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
       ...initialState,
       reset: () => set(initialState),
 
-      assignTemplateToSelectedSurvey: (creator: AttendeeDto, template?: SurveyTemplateDto): void => {
+      loadNew: (creator: AttendeeDto): void => {
+        const newSurvey = getInitialSurveyFormBySurveys(creator, undefined, undefined);
+        set({ initialSurvey: newSurvey });
+      },
+
+      loadTemplate: (creator: AttendeeDto, template: SurveyTemplateDto): void => {
         const newSurvey = getInitialSurveyFormByTemplate(creator, template);
         set({ initialSurvey: newSurvey });
       },

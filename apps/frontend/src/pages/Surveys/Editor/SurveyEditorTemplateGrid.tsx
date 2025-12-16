@@ -19,31 +19,23 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { VscNewFile } from 'react-icons/vsc';
 import cn from '@libs/common/utils/className';
 import isSubsequence from '@libs/common/utils/string/isSubsequence';
 import SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import { GRID_CARD, GRID_SEARCH } from '@libs/ui/constants/commonClassNames';
-import useLdapGroups from '@/hooks/useLdapGroups';
+import { GRID_SEARCH } from '@libs/ui/constants/commonClassNames';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
-import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import SurveyEditorTemplateCard from '@/pages/Surveys/Editor/SurveyEditorTemplateCard';
 import Input from '@/components/shared/Input';
-import { Card } from '@/components/shared/Card';
 
 interface SurveyEditorTemplateGridProps {
   surveyCreator: AttendeeDto;
 }
 
 const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridProps) => {
-  const { isSuperAdmin } = useLdapGroups();
-
   const { t } = useTranslation();
 
-  const { templates, fetchTemplates, setTemplate } = useTemplateMenuStore();
-
-  const { assignTemplateToSelectedSurvey } = useSurveyEditorPageStore();
+  const { templates, fetchTemplates } = useTemplateMenuStore();
 
   const [search, setSearch] = useState('');
 
@@ -85,36 +77,24 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
         className={cn(GRID_SEARCH, 'justify-center')}
       />
       <div className="mx-auto grid max-h-full w-full grid-cols-[repeat(auto-fit,minmax(8rem,auto))] justify-center gap-x-3 gap-y-2 overflow-auto px-2 pb-10 scrollbar-thin md:max-h-full md:w-[95%] md:grid-cols-[repeat(auto-fit,minmax(12rem,auto))] md:gap-x-6 md:gap-y-5 md:pb-4">
-        <Card
-          className={cn(
-            GRID_CARD,
-            'flex cursor-pointer items-center justify-center bg-muted',
-            { 'h-[13rem]': !isSuperAdmin },
-            { 'h-[14rem]': isSuperAdmin },
-          )}
-          variant="text"
-          onClick={() => {
-            setTemplate(undefined);
-            assignTemplateToSelectedSurvey(surveyCreator, undefined);
-          }}
-        >
-          <VscNewFile className="h-10 w-10 md:h-14 md:w-14" />
-          <h3 className="mt-4">{t('survey.editor.new')}</h3>
-        </Card>
+        <SurveyEditorTemplateCard
+          creator={surveyCreator}
+          surveyTemplate={undefined}
+        />
         {filteredTemplates.length ? (
-          filteredTemplates.map((template) => (
+          filteredTemplates.map((surveyTemplate) => (
             <div
-              key={template.name}
+              key={surveyTemplate.template.formula.title}
               className="relative"
             >
               <SurveyEditorTemplateCard
                 creator={surveyCreator}
-                surveyTemplate={template}
+                surveyTemplate={surveyTemplate}
               />
             </div>
           ))
         ) : (
-          <p className="px-2 py-16">
+          <p className="px-2 py-24">
             {templates.length === 0 ? t('survey.editor.noTemplates') : t('survey.editor.noSearchResults')}
           </p>
         )}
