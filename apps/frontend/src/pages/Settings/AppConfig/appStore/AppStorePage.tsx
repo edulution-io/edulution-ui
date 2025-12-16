@@ -103,7 +103,7 @@ const AppStorePage: React.FC = () => {
             <Card
               key={item.id}
               className={cn(
-                'm-1 flex h-32 w-32 flex-col items-center overflow-hidden ease-in-out md:w-48 lg:transition-transform lg:duration-300 2xl:hover:scale-105',
+                'm-1 flex h-32 w-32 flex-col items-center overflow-hidden ease-in-out md:w-48 2xl:transition-transform 2xl:duration-300 2xl:hover:scale-105',
                 selectedApp.id === item.id ? 'scale-105 bg-ciGreenToBlue text-white' : '',
                 getDisabledState(item) ? 'opacity-50' : '',
               )}
