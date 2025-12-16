@@ -2028,5 +2028,44 @@
     },
     "sharePath": "Pfad",
     "pathPreview": "Pfad-Vorschau"
+  },
+  "aiconfig": {
+    "settings": {
+      "title": "KI-Konfiguration",
+      "createConfig": "Konfiguration erstellen",
+      "editConfig": "Konfiguration bearbeiten",
+      "name": "Name",
+      "serverUrl": "Server URL",
+      "apiKey": "API-Schlüssel",
+      "model": "Modell",
+      "apiStandard": "API-Standard",
+      "purposes": {
+        "title": "Verwendungszwecke",
+        "description": "Wählen Sie die Verwendungszwecke für diese Konfiguration"
+      },
+      "allowedUsers": {
+        "title": "Erlaubte Benutzer",
+        "description": "Benutzer, die diese Konfiguration verwenden dürfen"
+      },
+      "allowedGroups": {
+        "title": "Erlaubte Gruppen",
+        "description": "Gruppen, die diese Konfiguration verwenden dürfen"
+      },
+      "testConnection": "Verbindung testen",
+      "testSuccess": "Verbindung erfolgreich",
+      "testFailed": "Verbindung fehlgeschlagen",
+      "loadModels": "Modelle laden",
+      "noModelsFound": "Keine Modelle gefunden"
+    },
+    "apiStandards": {
+      "anthropic": "Anthropic",
+      "openai": "OpenAI",
+      "google": "Google",
+      "openai-compatible": "OpenAI-kompatibel"
+    },
+    "purposes": {
+      "translation": "Übersetzung",
+      "chat": "Chat"
+    }
   }
 }

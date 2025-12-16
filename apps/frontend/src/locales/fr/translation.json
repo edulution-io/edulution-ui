@@ -1821,5 +1821,65 @@
     },
     "sharePath": "Chemin de partage",
     "pathPreview": "Aperçu du chemin"
+  },
+  "aiconfig": {
+    "settings": {
+      "title": "Configuration IA",
+      "createConfig": "Créer une configuration",
+      "editConfig": "Modifier la configuration",
+      "name": "Nom",
+      "serverUrl": "URL du serveur",
+      "apiKey": "Clé API",
+      "model": "Modèle",
+      "apiStandard": "Standard API",
+      "purposes": {
+        "title": "Utilisations",
+        "description": "Sélectionnez les utilisations pour cette configuration"
+      },
+      "allowedUsers": {
+        "title": "Utilisateurs autorisés",
+        "description": "Utilisateurs autorisés à utiliser cette configuration"
+      },
+      "allowedGroups": {
+        "title": "Groupes autorisés",
+        "description": "Groupes autorisés à utiliser cette configuration"
+      },
+      "testConnection": "Tester la connexion",
+      "testSuccess": "Connexion réussie",
+      "testFailed": "Échec de la connexion",
+      "loadModels": "Charger les modèles",
+      "noModelsFound": "Aucun modèle trouvé"
+    },
+    "apiStandards": {
+      "anthropic": "Anthropic",
+      "openai": "OpenAI",
+      "google": "Google",
+      "openai-compatible": "Compatible OpenAI"
+    },
+    "purposes": {
+      "translation": "Traduction",
+      "chat": "Chat"
+    }
+  },
+  "common": {
+    "select": "Sélectionner",
+    "actions": "Actions",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "save": "Enregistrer",
+    "cancel": "Annuler"
+  },
+  "chat": {
+    "title": "Chat",
+    "groups": "Groupes",
+    "users": "Utilisateurs",
+    "ai": "Assistant IA",
+    "newChat": "Nouvelle conversation",
+    "untitledChat": "Conversation sans titre",
+    "openInPopout": "Le chat est ouvert dans une fenêtre séparée",
+    "aiInputPlaceholder": "Message à l'assistant IA...",
+    "inputPlaceholder": "Écrire un message...",
+    "aiWelcomeTitle": "Bonjour {{name}} !",
+    "aiWelcomeSubtitle": "Comment puis-je vous aider aujourd'hui ?"
   }
 }

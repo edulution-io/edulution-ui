@@ -2026,5 +2026,44 @@
     },
     "sharePath": "Path",
     "pathPreview": "Path preview"
+  },
+  "aiconfig": {
+    "settings": {
+      "title": "AI Configuration",
+      "createConfig": "Create Configuration",
+      "editConfig": "Edit Configuration",
+      "name": "Name",
+      "serverUrl": "Server URL",
+      "apiKey": "API Key",
+      "model": "Model",
+      "apiStandard": "API Standard",
+      "purposes": {
+        "title": "Purposes",
+        "description": "Select the purposes for this configuration"
+      },
+      "allowedUsers": {
+        "title": "Allowed Users",
+        "description": "Users allowed to use this configuration"
+      },
+      "allowedGroups": {
+        "title": "Allowed Groups",
+        "description": "Groups allowed to use this configuration"
+      },
+      "testConnection": "Test Connection",
+      "testSuccess": "Connection successful",
+      "testFailed": "Connection failed",
+      "loadModels": "Load Models",
+      "noModelsFound": "No models found"
+    },
+    "apiStandards": {
+      "anthropic": "Anthropic",
+      "openai": "OpenAI",
+      "google": "Google",
+      "openai-compatible": "OpenAI Compatible"
+    },
+    "purposes": {
+      "translation": "Translation",
+      "chat": "Chat"
+    }
   }
 }
