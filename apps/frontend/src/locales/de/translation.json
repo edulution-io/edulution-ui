@@ -1065,6 +1065,10 @@
         "website": "Website der Organisation",
         "city": "Stadt",
         "postalCityPlaceholder": "Berlin"
+      },
+      "aiconfig": {
+        "title": "KI-Konfiguration",
+        "description": "Verwalten die KI-Modelle und deren Zugriffsberechtigungen"
       }
     },
     "userAdministration": {

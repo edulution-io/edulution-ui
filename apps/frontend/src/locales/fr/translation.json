@@ -929,7 +929,11 @@
         "setAdminGroupSelectDescription": "Les groupes peuvent être sélectionnés via le champ de recherche.",
         "setAdminGroupWarning": "Au moins un groupe d’administrateurs doit être sélectionné."
       },
-      "deploymentTarget": "Plate-forme cible de déploiement"
+      "deploymentTarget": "Plate-forme cible de déploiement",
+      "aiconfig": {
+        "title": "Configuration IA",
+        "description": "Gérer les modèles IA et leurs autorisations d'accès"
+      }
     },
     "info": {
       "title": "Informations"

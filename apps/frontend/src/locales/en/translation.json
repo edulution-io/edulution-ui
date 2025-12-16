@@ -1062,6 +1062,10 @@
         "postalCityPlaceholder": "Berlin",
         "website": "Organization website",
         "city": "City"
+      },
+      "aiconfig": {
+        "title": "AI Configuration",
+        "description": "Manage AI models and their access permissions"
       }
     },
     "userAdministration": {
