@@ -5,6 +5,9 @@ import svgr from 'vite-plugin-svgr';
 import { resolve } from 'path';
 import { readFileSync } from 'fs';
 
+const port = 5173;
+const host = 'localhost';
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const pkg = JSON.parse(readFileSync(resolve(__dirname, '../../package.json'), 'utf-8'));
@@ -42,8 +45,8 @@ export default defineConfig(({ mode }) => {
       mode === 'development'
         ? {
             allowedHosts: ['host.docker.internal'],
-            port: 5173,
-            host: 'localhost',
+            port,
+            host,
             fs: { strict: false },
             proxy: {
               '/auth': {
@@ -80,6 +83,18 @@ export default defineConfig(({ mode }) => {
                   Origin: env.VITE_EDU_API_URL,
                 },
               },
+              '/docservice': {
+                target: env.VITE_ONLYOFFICE_URL,
+                changeOrigin: true,
+                ws: true,
+                secure: false,
+                rewrite: (path) => path.replace(/^\/docservice/, ''),
+                headers: {
+                  'X-Forwarded-Proto': 'http',
+                  'X-Forwarded-Host': `${host}:${port}`,
+                  'X-Forwarded-Prefix': '/docservice',
+                },
+              },
               '/guacamole': {
                 rewrite: (path) => path.replace(/^\/guacamole/, ''),
                 target: `${env.VITE_GUACAMOLE_URL}/guacamole`,
@@ -97,7 +112,7 @@ export default defineConfig(({ mode }) => {
         : undefined,
     preview: {
       port: 4300,
-      host: 'localhost',
+      host,
     },
     plugins: [
       svgr({
