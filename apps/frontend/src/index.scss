@@ -149,7 +149,7 @@
 
 iframe {
   @apply bg-cover bg-center bg-no-repeat;
-  background-image: url('./assets/backgroundDarkMode.webp');
+  background-image: var(--background-image);
 }
 
 .ql-editor,
