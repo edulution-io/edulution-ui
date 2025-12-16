@@ -84,7 +84,7 @@ const AiConfigFormFields: React.FC<AiConfigFormFieldsProps> = ({
         .filter((purpose) => purpose !== 'translation' || !isTranslationUsedByOther)
         .map((purpose) => ({
           value: purpose,
-          label: t(`aiconfig.purposes.${purpose}`),
+          label: t(`aiconfig.settings.purposes.${purpose}`),
         })),
     [t, isTranslationUsedByOther],
   );
@@ -229,7 +229,9 @@ const AiConfigFormFields: React.FC<AiConfigFormFieldsProps> = ({
             <p className="font-bold">{t('aiconfig.settings.purposes.title')}</p>
             <FormControl>
               <MultipleSelectorSH
-                value={field.value?.map((p: string) => ({ value: p, label: t(`aiconfig.purposes.${p}`) })) || []}
+                value={
+                  field.value?.map((p: string) => ({ value: p, label: t(`aiconfig.settings.purposes.${p}`) })) || []
+                }
                 options={purposeOptions}
                 onChange={(selected) => field.onChange(selected.map((s) => s.value))}
                 placeholder={t('aiconfig.settings.purposes.placeholder')}

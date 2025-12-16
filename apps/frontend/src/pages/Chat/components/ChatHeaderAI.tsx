@@ -27,6 +27,7 @@ import DropdownMenu from '@/components/shared/DropdownMenu';
 import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
 import cn from '@libs/common/utils/className';
 import { Tooltip } from '@/components/ui/Tooltip';
+import AiConfigPurposes from '@libs/ai/constants/aiConfigPurposes';
 import ToolSelector from './ToolSelector';
 
 interface ChatHeaderAIProps {
@@ -37,7 +38,7 @@ const ChatHeaderAI: React.FC<ChatHeaderAIProps> = ({ isPopout = false }) => {
   const { aiConfig, availableModels, currentChatId, isConfigLoading, fetchAIConfig, setActiveModel } = useAIChatStore();
   const { setCurrentlyOpenChat, setIsChatPopoutVisible, setIsChatDocked, isChatDocked } = useChatStore();
   useEffect(() => {
-    void fetchAIConfig();
+    void fetchAIConfig(AiConfigPurposes.CHAT);
   }, [fetchAIConfig]);
 
   const modelLabel = aiConfig?.name || aiConfig?.aiModel;

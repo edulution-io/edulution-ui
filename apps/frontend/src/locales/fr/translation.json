@@ -1834,7 +1834,10 @@
       "apiStandard": "Standard API",
       "purposes": {
         "title": "Utilisations",
-        "description": "Sélectionnez les utilisations pour cette configuration"
+        "description": "Sélectionnez les utilisations pour cette configuration",
+        "translation": "Traduction",
+        "chat": "Chat",
+        "placeholder": "Sélectionner une utilisation..."
       },
       "allowedUsers": {
         "title": "Utilisateurs autorisés",
@@ -1855,31 +1858,6 @@
       "openai": "OpenAI",
       "google": "Google",
       "openai-compatible": "Compatible OpenAI"
-    },
-    "purposes": {
-      "translation": "Traduction",
-      "chat": "Chat"
     }
-  },
-  "common": {
-    "select": "Sélectionner",
-    "actions": "Actions",
-    "edit": "Modifier",
-    "delete": "Supprimer",
-    "save": "Enregistrer",
-    "cancel": "Annuler"
-  },
-  "chat": {
-    "title": "Chat",
-    "groups": "Groupes",
-    "users": "Utilisateurs",
-    "ai": "Assistant IA",
-    "newChat": "Nouvelle conversation",
-    "untitledChat": "Conversation sans titre",
-    "openInPopout": "Le chat est ouvert dans une fenêtre séparée",
-    "aiInputPlaceholder": "Message à l'assistant IA...",
-    "inputPlaceholder": "Écrire un message...",
-    "aiWelcomeTitle": "Bonjour {{name}} !",
-    "aiWelcomeSubtitle": "Comment puis-je vous aider aujourd'hui ?"
   }
 }

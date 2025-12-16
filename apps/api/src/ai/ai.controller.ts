@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import {
@@ -53,14 +53,14 @@ class AiController {
     private readonly chatService: ChatService,
   ) {}
 
-  // ============ User Config ============
-
   @Get(AI_CONFIG_ENDPOINT)
   async getUserConfig(
     @GetCurrentUser() currentUser: UserDto,
     @GetCurrentUsername() username: string,
+    @Query('purpose') purpose?: string,
   ): Promise<AvailableAiModel[]> {
-    return this.aiConfigService.getAvailableModelsByUserAccess(username, currentUser.ldapGroups, { purposes: [] });
+    const purposes = purpose ? [purpose] : [];
+    return this.aiConfigService.getAvailableModelsByUserAccess(username, currentUser.ldapGroups, { purposes });
   }
 
   @Post(AI_CHATS_ENDPOINT)
@@ -101,8 +101,6 @@ class AiController {
     const success = await this.chatService.deleteChat(chatId, user.preferred_username);
     return { success };
   }
-
-  // ============ Chat Streaming ============
 
   @Post(AI_CHAT_STREAM_ENDPOINT)
   async streamChat(

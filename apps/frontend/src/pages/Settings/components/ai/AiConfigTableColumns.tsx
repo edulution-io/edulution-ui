@@ -137,7 +137,8 @@ const AiConfigTableColumns: ColumnDef<AiConfigDto>[] = [
     cell: ({ row }) => {
       const { t } = useTranslation();
       const purposes = row.original.purposes || [];
-      const displayText = purposes.length === 0 ? '-' : purposes.map((p) => t(`aiconfig.purposes.${p}`)).join(', ');
+      const displayText =
+        purposes.length === 0 ? '-' : purposes.map((p) => t(`aiconfig.settings.purposes.${p}`)).join(', ');
       return (
         <SelectableTextCell
           onClick={() => row.toggleSelected()}

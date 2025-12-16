@@ -2040,8 +2040,11 @@
       "model": "Modell",
       "apiStandard": "API-Standard",
       "purposes": {
+        "translation": "Übersetzung",
+        "chat": "Chat",
         "title": "Verwendungszwecke",
-        "description": "Wählen Sie die Verwendungszwecke für diese Konfiguration"
+        "description": "Wählen Sie die Verwendungszwecke für diese Konfiguration",
+        "placeholder": "Verwendungszweck auswählen..."
       },
       "allowedUsers": {
         "title": "Erlaubte Benutzer",
@@ -2062,10 +2065,6 @@
       "openai": "OpenAI",
       "google": "Google",
       "openai-compatible": "OpenAI-kompatibel"
-    },
-    "purposes": {
-      "translation": "Übersetzung",
-      "chat": "Chat"
     }
   }
 }

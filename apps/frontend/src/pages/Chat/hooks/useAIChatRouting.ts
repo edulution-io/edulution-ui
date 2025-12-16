@@ -17,14 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-/*
- * Copyright (C) [2025] [Netzint GmbH]
- * All rights reserved.
- */
-
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CHAT_AI_PATH } from '@libs/chat/chatPaths';
+import AiConfigPurposes from '@libs/ai/constants/aiConfigPurposes';
 import useAIChatStore from './useAIChatStore';
 import useChatStore from './useChatStore';
 
@@ -46,7 +42,7 @@ const useAIChatRouting = ({ enabled = true, isPopout = false }: UseAIChatRouting
 
   useEffect(() => {
     if (enabled && !aiConfig) {
-      void fetchAIConfig();
+      void fetchAIConfig(AiConfigPurposes.CHAT);
     }
   }, [enabled, aiConfig, fetchAIConfig]);
 

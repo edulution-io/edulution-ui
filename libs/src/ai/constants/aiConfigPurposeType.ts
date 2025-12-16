@@ -17,6 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import AI_CONFIG_PURPOSES from '@libs/ai/types/aiConfigPurposes';
+import AI_CONFIG_PURPOSES from '@libs/ai/constants/aiConfigPurposes';
 
 export type AiConfigPurposeType = (typeof AI_CONFIG_PURPOSES)[keyof typeof AI_CONFIG_PURPOSES];

@@ -2038,6 +2038,9 @@
       "model": "Model",
       "apiStandard": "API Standard",
       "purposes": {
+        "translation": "Translation",
+        "chat": "Chat",
+        "placeholder": "Select purpose...",
         "title": "Purposes",
         "description": "Select the purposes for this configuration"
       },
@@ -2060,10 +2063,6 @@
       "openai": "OpenAI",
       "google": "Google",
       "openai-compatible": "OpenAI Compatible"
-    },
-    "purposes": {
-      "translation": "Translation",
-      "chat": "Chat"
     }
   }
 }

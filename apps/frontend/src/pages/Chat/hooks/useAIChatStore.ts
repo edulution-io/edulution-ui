@@ -34,6 +34,7 @@ import { HTTP_HEADERS, HttpMethods, RequestResponseContentType } from '@libs/com
 import processStreamChunks from '@libs/chat/utils/processStreamChunks';
 import ChatSummary from '@libs/chat/types/chatSummary';
 import getRandomUUID from '@/utils/getRandomUUID';
+import { AiConfigPurposeType } from '@libs/ai/constants/aiConfigPurposeType';
 
 interface UseAIChatStore {
   messages: ChatMessageData[];
@@ -62,7 +63,7 @@ interface UseAIChatStore {
   ) => Promise<void>;
   stopGeneration: () => void;
   clearMessages: () => void;
-  fetchAIConfig: () => Promise<void>;
+  fetchAIConfig: (purpose?: AiConfigPurposeType) => Promise<void>;
   setActiveModel: (model: AvailableAiModel) => void;
   reset: () => void;
 }
@@ -110,17 +111,16 @@ const useAIChatStore = create<UseAIChatStore>((set, get) => ({
 
   reset: () => set(initialState),
 
-  fetchAIConfig: async () => {
+  fetchAIConfig: async (purpose?: AiConfigPurposeType) => {
     if (get().isConfigLoading || get().aiConfig) return;
 
     set({ isConfigLoading: true });
 
     try {
-      const { data } = await eduApi.get<AvailableAiModel[] | { available: AvailableAiModel[] }>(
-        `${AI_ENDPOINT}/${AI_CONFIG_ENDPOINT}`,
-      );
+      const params = purpose ? `?purpose=${encodeURIComponent(purpose)}` : '';
+      const { data } = await eduApi.get<AvailableAiModel[]>(`${AI_ENDPOINT}/${AI_CONFIG_ENDPOINT}${params}`);
 
-      const models: AvailableAiModel[] = Array.isArray(data) ? data : data.available;
+      const models: AvailableAiModel[] = Array.isArray(data) ? data : [];
 
       set({
         aiConfig: models.length > 0 ? models[0] : null,
