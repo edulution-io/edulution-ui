@@ -71,7 +71,7 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set) => ({
     }
   },
 
-  postRequestVdi: async (group: string) => {
+  postRequestVdi: async (group) => {
     set({ error: null, isLoading: true });
 
     const vdiConnectionRequestBody = {
@@ -80,10 +80,14 @@ const useDesktopDeploymentStore = create<DesktopDeploymentStore>((set) => ({
     };
 
     try {
-      const response = await eduApi.post<LmnVdiResponse>(EDU_API_VDI_ENDPOINT, vdiConnectionRequestBody);
-      set({ vdiIp: response.data.data.ip });
+      const { data } = await eduApi.post<LmnVdiResponse>(EDU_API_VDI_ENDPOINT, vdiConnectionRequestBody);
+      const { ip } = data.data;
+
+      set({ vdiIp: ip });
+      return ip;
     } catch (error) {
       handleApiError(error, set);
+      return null;
     } finally {
       set({ isLoading: false });
     }
