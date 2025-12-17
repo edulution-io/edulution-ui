@@ -43,18 +43,15 @@ import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
 import GroupFormDto from '@libs/groups/types/groupForm.dto';
 import LMN_API_SEARCH_PARAMS from '@libs/lmnApi/constants/lmnApiSearchParams';
-import APPS from '@libs/appconfig/constants/apps';
 import LmnApiService from './lmnApi.service';
 import GetCurrentOrganisationPrefix from '../common/decorators/getCurrentOrganisationPrefix.decorator';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import DeploymentTargetInterceptor from '../common/interceptors/deploymentTarget.interceptor';
-import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
 
 const { ROOT, USERS_QUOTA } = LMN_API_EDU_API_ENDPOINTS;
 
 @ApiTags(ROOT)
 @ApiBearerAuth()
-@RequireAppAccess(APPS.LINUXMUSTER)
 @Controller(ROOT)
 export class LmnApiController {
   constructor(private readonly lmnApiService: LmnApiService) {}

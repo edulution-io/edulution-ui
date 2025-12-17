@@ -27,7 +27,7 @@ import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
 
 @ApiTags('vdi')
 @ApiBearerAuth()
-@RequireAppAccess(APPS.VIRTUALIZATION)
+@RequireAppAccess(APPS.DESKTOP_DEPLOYMENT)
 @Controller('vdi')
 class VdiController {
   constructor(private readonly vdiService: VdiService) {}

@@ -28,7 +28,7 @@ const CACHE_TTL_MS = 60_000;
 const MAX_CACHE_SIZE = 10_000;
 const CLEANUP_THRESHOLD = MAX_CACHE_SIZE * 0.9;
 
-function cleanupExpiredCacheEntries() {
+const cleanupExpiredCacheEntries = () => {
   if (accessCache.size < CLEANUP_THRESHOLD) {
     return;
   }
@@ -38,7 +38,7 @@ function cleanupExpiredCacheEntries() {
       accessCache.delete(key);
     }
   });
-}
+};
 
 @Injectable()
 class AccessGuard implements CanActivate {
