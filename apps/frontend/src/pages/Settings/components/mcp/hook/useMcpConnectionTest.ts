@@ -50,7 +50,6 @@ const useMcpConnectionTest = ({ watch }: UseMcpConnectionTestProps): UseMcpConne
 
   const { fetchTools, isLoading, resetTools } = useFetchMcpTools();
 
-  // Refs für stabile Funktionsreferenzen
   const fetchToolsRef = useRef(fetchTools);
   const resetToolsRef = useRef(resetTools);
 
