@@ -102,7 +102,6 @@
     "dayjs": "^1.11.12",
     "dockerode": "^4.0.3",
     "docx": "^8.5.0",
-    "dompurify": "^3.3.1",
     "exceljs": "^4.4.0",
     "expo-server-sdk": "^3.15.0",
     "fast-xml-parser": "^4.4.1",
