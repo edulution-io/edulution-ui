@@ -29,9 +29,6 @@ const findDocumentsEditorType = (fileType: string): OnlyOfficeConfig => {
     case OnlyOfficeDocumentTypes.DOTX:
     case OnlyOfficeDocumentTypes.OTT:
     case OnlyOfficeDocumentTypes.RTF:
-    case OnlyOfficeDocumentTypes.TXT:
-    case OnlyOfficeDocumentTypes.XML:
-    case OnlyOfficeDocumentTypes.HTML:
       return { id: 'docxEditor', key: `${OnlyOfficeDocumentTypes.DOCX}${Math.random() * 100}`, documentType: 'word' };
 
     case OnlyOfficeDocumentTypes.XLSX:
@@ -40,7 +37,6 @@ const findDocumentsEditorType = (fileType: string): OnlyOfficeConfig => {
     case OnlyOfficeDocumentTypes.XLTX:
     case OnlyOfficeDocumentTypes.ODS:
     case OnlyOfficeDocumentTypes.OTS:
-    case OnlyOfficeDocumentTypes.CSV:
       return { id: 'xlsxEditor', key: `${OnlyOfficeDocumentTypes.XLSX}${Math.random() * 100}`, documentType: 'cell' };
 
     case OnlyOfficeDocumentTypes.PPTX:
@@ -52,9 +48,6 @@ const findDocumentsEditorType = (fileType: string): OnlyOfficeConfig => {
     case OnlyOfficeDocumentTypes.OTP:
     case OnlyOfficeDocumentTypes.ODP:
       return { id: 'pptxEditor', key: `${OnlyOfficeDocumentTypes.PPTX}${Math.random() * 100}`, documentType: 'slide' };
-
-    case OnlyOfficeDocumentTypes.PDF:
-      return { id: 'pdfEditor', key: `${OnlyOfficeDocumentTypes.PDF}${Math.random() * 100}`, documentType: 'word' };
 
     default:
       return { id: 'docxEditor', key: `unknown${Math.random() * 100}`, documentType: 'word' };

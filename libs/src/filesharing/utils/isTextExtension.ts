@@ -17,31 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const OnlyOfficeDocumentTypes = {
-  // Presentation
-  PPTX: 'pptx',
-  PPSX: 'ppsx',
-  POTX: 'potx',
-  PPT: 'ppt',
-  PPS: 'pps',
-  POT: 'pot',
-  OTP: 'otp',
-  ODP: 'odp',
-  // Text
-  DOCX: 'docx',
-  DOC: 'doc',
-  DOT: 'dot',
-  DOTX: 'dotx',
-  ODT: 'odt',
-  OTT: 'ott',
-  RTF: 'rtf',
-  // Spreadsheet
-  XLSX: 'xlsx',
-  XLS: 'xls',
-  XLT: 'xlt',
-  XLTX: 'xltx',
-  ODS: 'ods',
-  OTS: 'ots',
-} as const;
+import TEXT_EXTENSIONS, { TextExtension } from '@libs/filesharing/types/textExtensions';
 
-export default OnlyOfficeDocumentTypes;
+const isTextExtension = (extension: string | undefined): boolean =>
+  Object.values(TEXT_EXTENSIONS).includes(extension as TextExtension);
+
+export default isTextExtension;
