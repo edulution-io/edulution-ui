@@ -20,11 +20,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { MCP_ENDPOINT, MCP_TOOLS_ENDPOINT } from '@libs/mcp/constants/mcpEndpoints';
-import McpTool from '@libs/mcp/types/mcpTool';
 import eduApi from '@/api/eduApi';
+import McpToolWithConfig from '@libs/mcp/types/mcpToolWithConfig';
 
 interface UseMcpToolsStore {
-  tools: McpTool[];
+  tools: McpToolWithConfig[];
   enabledTools: string[];
   isLoading: boolean;
   error: string | null;
@@ -33,6 +33,8 @@ interface UseMcpToolsStore {
   toggleTool: (toolName: string) => void;
   enableAllTools: () => void;
   disableAllTools: () => void;
+  getToolsByConfig: () => Record<string, McpToolWithConfig[]>;
+  getEnabledToolsWithConfig: () => McpToolWithConfig[];
 }
 
 const useMcpTools = create<UseMcpToolsStore>()(
@@ -49,13 +51,14 @@ const useMcpTools = create<UseMcpToolsStore>()(
         set({ isLoading: true, error: null });
 
         try {
-          const { data } = await eduApi.get<McpTool[]>(`${MCP_ENDPOINT}/${MCP_TOOLS_ENDPOINT}`);
+          const { data } = await eduApi.get<McpToolWithConfig[]>(`${MCP_ENDPOINT}/${MCP_TOOLS_ENDPOINT}`);
           const { enabledTools } = get();
+
           const validEnabled = enabledTools.filter((name) => data.some((t) => t.name === name));
 
           set({
             tools: data,
-            enabledTools: validEnabled,
+            enabledTools: validEnabled.length > 0 ? validEnabled : data.map((t) => t.name), // Default: all enabled
             isLoading: false,
           });
         } catch (err) {
@@ -80,6 +83,23 @@ const useMcpTools = create<UseMcpToolsStore>()(
       },
 
       disableAllTools: () => set({ enabledTools: [] }),
+
+      getToolsByConfig: () => {
+        const { tools } = get();
+        return tools.reduce<Record<string, McpToolWithConfig[]>>((acc, tool) => {
+          const key = tool.configName || 'Unknown';
+          if (!acc[key]) {
+            acc[key] = [];
+          }
+          acc[key].push(tool);
+          return acc;
+        }, {});
+      },
+
+      getEnabledToolsWithConfig: () => {
+        const { tools, enabledTools } = get();
+        return tools.filter((tool) => enabledTools.includes(tool.name));
+      },
     }),
     {
       name: 'edulution-ai-enabled-tools',

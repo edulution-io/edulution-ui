@@ -1069,6 +1069,10 @@
       "aiconfig": {
         "title": "KI-Konfiguration",
         "description": "Verwalten die KI-Modelle und deren Zugriffsberechtigungen"
+      },
+      "mcpconfig": {
+        "title": "MCP-Server",
+        "description": "Konfigurieren Sie externe MCP-Server (Model Context Protocol), um KI-Assistenten zusätzliche Tools und Fähigkeiten bereitzustellen."
       }
     },
     "userAdministration": {
@@ -2069,6 +2073,30 @@
       "openai": "OpenAI",
       "google": "Google",
       "openai-compatible": "OpenAI-kompatibel"
+    }
+  },
+  "mcpconfig": {
+    "filterPlaceHolderText": "MCP-Server suchen...",
+    "settings": {
+      "name": "Name",
+      "serverUrl": "Server-URL",
+      "createConfig": "MCP-Server hinzufügen",
+      "editConfig": "MCP-Server bearbeiten",
+      "allowedUsers": {
+        "title": "Benutzer",
+        "description": "Benutzer, die Zugriff auf diesen MCP-Server haben"
+      },
+      "allowedGroups": {
+        "title": "Gruppen",
+        "description": "Gruppen, die Zugriff auf diesen MCP-Server haben"
+      },
+      "connectionStatus": {
+        "testing": "Verbindung wird getestet...",
+        "success": "Verbindung erfolgreich",
+        "failed": "Verbindung fehlgeschlagen",
+        "toolsAvailable": "{{count}} Tool verfügbar",
+        "toolsAvailable_plural": "{{count}} Tools verfügbar"
+      }
     }
   }
 }

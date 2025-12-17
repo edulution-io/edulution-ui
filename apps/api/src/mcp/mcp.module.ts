@@ -18,12 +18,16 @@
  */
 
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
 import McpService from './mcp.service';
 import McpController from './mcp.controller';
+import McpConfig, { McpConfigSchema } from './schemas/mcp-config.schema';
+import McpConfigService from './mcpConfigService';
 
 @Module({
+  imports: [MongooseModule.forFeature([{ name: McpConfig.name, schema: McpConfigSchema }])],
   controllers: [McpController],
-  providers: [McpService],
-  exports: [McpService],
+  providers: [McpService, McpConfigService],
+  exports: [McpService, McpConfigService],
 })
 export default class McpModule {}

@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MdBuildCircle } from 'react-icons/md';
 import { Button } from '@/components/shared/Button';
@@ -27,8 +27,17 @@ import useMcpTools from '@/pages/Chat/hooks/useMcpTools';
 
 const ToolSelector: React.FC = () => {
   const { t } = useTranslation();
-  const { tools, enabledTools, isLoading, error, toggleTool, enableAllTools, disableAllTools, fetchTools } =
-    useMcpTools();
+  const {
+    tools,
+    enabledTools,
+    isLoading,
+    error,
+    toggleTool,
+    enableAllTools,
+    disableAllTools,
+    fetchTools,
+    getToolsByConfig,
+  } = useMcpTools();
 
   const enabledCount = enabledTools.length;
   const totalCount = tools.length;
@@ -36,6 +45,61 @@ const ToolSelector: React.FC = () => {
   useEffect(() => {
     void fetchTools();
   }, [fetchTools]);
+
+  const toolsByConfig = useMemo(() => getToolsByConfig(), [tools]);
+
+  const menuItems = useMemo(() => {
+    const items: Array<{
+      key: string;
+      label: string;
+      onClick?: () => void;
+      preventClose?: boolean;
+      isSeparator?: boolean;
+      isHeader?: boolean;
+      isCheckbox?: boolean;
+      checked?: boolean;
+      onCheckedChange?: () => void;
+    }> = [
+      {
+        key: 'all',
+        label: t('common.all'),
+        onClick: enableAllTools,
+        preventClose: true,
+      },
+      {
+        key: 'none',
+        label: t('common.none'),
+        onClick: disableAllTools,
+        preventClose: true,
+      },
+    ];
+
+    Object.entries(toolsByConfig).forEach(([configName, configTools]) => {
+      items.push({
+        key: `separator-${configName}`,
+        label: '',
+        isSeparator: true,
+      });
+
+      items.push({
+        key: `header-${configName}`,
+        label: configName,
+        isHeader: true,
+      });
+
+      configTools.forEach((tool) => {
+        items.push({
+          key: `${tool.configId}-${tool.name}`,
+          label: tool.description || tool.name,
+          isCheckbox: true,
+          checked: enabledTools.includes(tool.name),
+          onCheckedChange: () => toggleTool(tool.name),
+        });
+      });
+    });
+
+    return items;
+  }, [toolsByConfig, enabledTools, toggleTool, enableAllTools, disableAllTools, t]);
 
   if (isLoading && tools.length === 0) {
     return (
@@ -56,33 +120,6 @@ const ToolSelector: React.FC = () => {
     return null;
   }
 
-  const menuItems = [
-    {
-      key: 'all',
-      label: t('common.all'),
-      onClick: enableAllTools,
-      preventClose: true,
-    },
-    {
-      key: 'none',
-      label: t('common.none'),
-      onClick: disableAllTools,
-      preventClose: true,
-    },
-    {
-      key: 'separator',
-      label: '',
-      isSeparator: true,
-    },
-    ...tools.map((tool) => ({
-      key: tool.name,
-      label: tool.description ? `${tool.name} – ${tool.description}` : tool.name,
-      isCheckbox: true,
-      checked: enabledTools.includes(tool.name),
-      onCheckedChange: () => toggleTool(tool.name),
-    })),
-  ];
-
   return (
     <DropdownMenu
       trigger={
@@ -99,7 +136,7 @@ const ToolSelector: React.FC = () => {
         </div>
       }
       items={menuItems}
-      menuContentClassName="w-72"
+      menuContentClassName="w-80 max-h-96 overflow-y-auto"
     />
   );
 };

@@ -17,20 +17,79 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { MCP_ENDPOINT, MCP_TOOLS_ENDPOINT } from '@libs/mcp/constants/mcpEndpoints';
+import {
+  MCP_CONFIG_ENDPOINT,
+  MCP_ENDPOINT,
+  MCP_TEST_CONNECTION_ENDPOINT,
+  MCP_TOOLS_ENDPOINT,
+} from '@libs/mcp/constants/mcpEndpoints';
 import GetToken from '@backend-common/decorators/get-token.decorator';
+import JWTUser from '@libs/user/types/jwt/jwtUser';
+import McpConfigDto from '@libs/mcp/types/mcpConfigDto';
+import { GetCurrentUser } from '@backend-common/decorators';
+import TestMcpConnectionDto from '@libs/mcp/types/test-mcp-connection.dto';
 import McpService from './mcp.service';
+import AdminGuard from '../common/guards/admin.guard';
+import McpConfigService from './mcpConfigService';
 
 @Controller(MCP_ENDPOINT)
 @ApiBearerAuth()
 class McpController {
-  constructor(private readonly mcpService: McpService) {}
+  constructor(
+    private readonly mcpService: McpService,
+    private readonly mcpConfigService: McpConfigService,
+  ) {}
 
   @Get(MCP_TOOLS_ENDPOINT)
-  async getTools(@GetToken() token: string) {
-    return this.mcpService.listTools(token);
+  async getToolsForUser(@GetCurrentUser() user: JWTUser, @GetToken() token: string) {
+    const configs = await this.mcpConfigService.getByUserAccess(user.preferred_username, user.ldapGroups);
+
+    const allTools = await Promise.all(
+      configs.map(async (config) => {
+        const tools = await this.mcpService.listTools(config.url, token);
+        return tools.map((tool) => ({ ...tool, configId: config.id, configName: config.name }));
+      }),
+    );
+
+    return allTools.flat();
+  }
+
+  @Post(MCP_TEST_CONNECTION_ENDPOINT)
+  @UseGuards(AdminGuard)
+  async testConnection(@Body() dto: TestMcpConnectionDto, @GetToken() token: string) {
+    return this.mcpService.testConnection(dto.url, token);
+  }
+
+  @Get(MCP_CONFIG_ENDPOINT)
+  @UseGuards(AdminGuard)
+  async getAllConfigs() {
+    return this.mcpConfigService.getAll();
+  }
+
+  @Get(`${MCP_CONFIG_ENDPOINT}/:id`)
+  @UseGuards(AdminGuard)
+  async getConfig(@Param('id') id: string) {
+    return this.mcpConfigService.getById(id);
+  }
+
+  @Post(MCP_CONFIG_ENDPOINT)
+  @UseGuards(AdminGuard)
+  async createConfig(@Body() dto: McpConfigDto) {
+    return this.mcpConfigService.create(dto);
+  }
+
+  @Put(`${MCP_CONFIG_ENDPOINT}/:id`)
+  @UseGuards(AdminGuard)
+  async updateConfig(@Param('id') id: string, @Body() dto: McpConfigDto) {
+    return this.mcpConfigService.update(id, dto);
+  }
+
+  @Delete(`${MCP_CONFIG_ENDPOINT}/:id`)
+  @UseGuards(AdminGuard)
+  async deleteConfig(@Param('id') id: string) {
+    return this.mcpConfigService.delete(id);
   }
 }
 

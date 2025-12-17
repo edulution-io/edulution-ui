@@ -933,6 +933,10 @@
       "aiconfig": {
         "title": "Configuration IA",
         "description": "Gérer les modèles IA et leurs autorisations d'accès"
+      },
+      "mcpconfig": {
+        "title": "Serveurs MCP",
+        "description": "Configurez des serveurs MCP externes (Model Context Protocol) pour fournir aux assistants IA des outils et capacités supplémentaires."
       }
     },
     "info": {
@@ -1862,6 +1866,30 @@
       "openai": "OpenAI",
       "google": "Google",
       "openai-compatible": "Compatible OpenAI"
+    }
+  },
+  "mcpconfig": {
+    "filterPlaceHolderText": "Rechercher des serveurs MCP...",
+    "settings": {
+      "name": "Nom",
+      "serverUrl": "URL du serveur",
+      "createConfig": "Ajouter un serveur MCP",
+      "editConfig": "Modifier le serveur MCP",
+      "allowedUsers": {
+        "title": "Utilisateurs",
+        "description": "Utilisateurs ayant accès à ce serveur MCP"
+      },
+      "allowedGroups": {
+        "title": "Groupes",
+        "description": "Groupes ayant accès à ce serveur MCP"
+      },
+      "connectionStatus": {
+        "testing": "Test de connexion...",
+        "success": "Connexion réussie",
+        "failed": "Échec de la connexion",
+        "toolsAvailable": "{{count}} outil disponible",
+        "toolsAvailable_plural": "{{count}} outils disponibles"
+      }
     }
   }
 }
