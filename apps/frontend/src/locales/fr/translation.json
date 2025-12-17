@@ -386,6 +386,14 @@
       "fileInfoDeleting": "Le fichier {{filename}} va être supprimé",
       "errorInfo": "{{failed}} Les fichiers n'ont pas pu être distribués"
     },
+    "textEditor": {
+      "unsavedChanges": "Modifications non enregistrées",
+      "unsavedChangesMessage": "Vous avez des modifications non enregistrées. Que voulez-vous faire?",
+      "discard": "Abandonner",
+      "saving": "Enregistrement...",
+      "saveSuccess": "Fichier enregistré avec succès",
+      "saveError": "Échec de l'enregistrement du fichier"
+    },
     "tooltips": {
       "folderNameRequired": "Un nom de dossier est requis",
       "FileNameRequired": "Le nom du fichier est requis",

@@ -17,16 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import cn from '@libs/common/utils/className';
-
-interface TextPreviewProps {
-  content: string;
-  className?: string;
+html.dark .wmde-markdown,
+html.dark .wmde-markdown img,
+html.dark .w-md-editor-preview {
+  background-color: var(--foreground);
 }
 
-const TextPreview = ({ content, className }: TextPreviewProps) => (
-  <pre className={cn('whitespace-pre-wrap break-words p-2 font-mono text-sm', className)}>{content}</pre>
-);
-
-export default TextPreview;
+.w-md-editor,
+.w-md-editor *,
+.w-md-editor-text,
+.w-md-editor-text-pre,
+.w-md-editor-text-input {
+  letter-spacing: normal;
+}

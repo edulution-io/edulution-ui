@@ -18,15 +18,25 @@
  */
 
 import React from 'react';
-import cn from '@libs/common/utils/className';
+import { MdSave } from 'react-icons/md';
+import WindowControlBaseButton from './WindowControlBaseButton';
 
-interface TextPreviewProps {
-  content: string;
-  className?: string;
+interface SaveButtonProps {
+  onClick: () => Promise<void> | void;
+  disabled?: boolean;
 }
 
-const TextPreview = ({ content, className }: TextPreviewProps) => (
-  <pre className={cn('whitespace-pre-wrap break-words p-2 font-mono text-sm', className)}>{content}</pre>
+const SaveButton = ({ onClick, disabled }: SaveButtonProps) => (
+  <WindowControlBaseButton
+    onClick={onClick}
+    tooltipTranslationId="common.save"
+    disabled={disabled}
+  >
+    <div className="relative">
+      <MdSave />
+      {!disabled && <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-ciLightBlue" />}
+    </div>
+  </WindowControlBaseButton>
 );
 
-export default TextPreview;
+export default SaveButton;

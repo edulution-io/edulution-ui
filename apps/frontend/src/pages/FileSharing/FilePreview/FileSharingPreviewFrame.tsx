@@ -28,7 +28,10 @@ import useWindowResize from '@/hooks/useWindowResize';
 import OpenInNewTabButton from '@/components/structure/framing/ResizableWindow/Buttons/OpenInNewTabButton';
 import FILE_PREVIEW_ROUTE from '@libs/filesharing/constants/routes';
 import EditButton from '@/components/structure/framing/ResizableWindow/Buttons/EditButton';
+import SaveButton from '@/components/structure/framing/ResizableWindow/Buttons/SaveButton';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
+import isTextExtension from '@libs/filesharing/utils/isTextExtension';
+import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import useMedia from '@/hooks/useMedia';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
@@ -41,6 +44,8 @@ import { useLocation } from 'react-router-dom';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import RESIZEABLE_WINDOW_DEFAULT_POSITION from '@libs/ui/constants/resizableWindowDefaultPosition';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
+import useTextEditorStore from '@/pages/FileSharing/FilePreview/useTextEditorStore';
+import UnsavedChangesDialog from '@/pages/FileSharing/FilePreview/TextEditor/UnsavedChangesDialog';
 
 const FileSharingPreviewFrame = () => {
   const { t } = useTranslation();
@@ -56,6 +61,13 @@ const FileSharingPreviewFrame = () => {
   const { loadDownloadUrl } = useFileSharingDownloadStore();
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
   const { setCurrentWindowedFrameSize } = useFrameStore();
+  const {
+    hasUnsavedChanges,
+    openUnsavedChangesDialog,
+    isSaving,
+    saveTextFile,
+    reset: resetTextEditor,
+  } = useTextEditorStore();
   const windowSize = useWindowResize();
   const location = useLocation();
   const closingRef = useRef(false);
@@ -64,6 +76,9 @@ const FileSharingPreviewFrame = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
   const abortControllerRef = useRef<AbortController | null>(null);
+
+  const fileExtension = currentlyEditingFile ? getFileExtension(currentlyEditingFile.filename) : undefined;
+  const isTextFile = isTextExtension(fileExtension);
 
   useEffect(() => {
     const el = document.getElementById(FILE_PREVIEW_ELEMENT_ID);
@@ -84,6 +99,7 @@ const FileSharingPreviewFrame = () => {
     setIsFilePreviewVisible(false);
     setIsFilePreviewDocked(true);
     setCurrentlyEditingFile(null);
+    resetTextEditor();
   };
 
   const { isMobileView } = useMedia();
@@ -91,6 +107,10 @@ const FileSharingPreviewFrame = () => {
   useEffect(() => {
     resetPreview();
   }, [isMobileView]);
+
+  useEffect(() => {
+    setIsEditMode(false);
+  }, [currentlyEditingFile]);
 
   const pathSegments = location.pathname.split('/').filter(Boolean);
   const webdavShare = decodeURIComponent(pathSegments[1]);
@@ -116,7 +136,7 @@ const FileSharingPreviewFrame = () => {
     return () => controller.abort();
   }, [currentlyEditingFile, isEditMode]);
 
-  const handleCloseFile = async () => {
+  const performClose = async () => {
     if (!currentlyEditingFile) return;
     closingRef.current = true;
     const { filename } = currentlyEditingFile;
@@ -125,6 +145,19 @@ const FileSharingPreviewFrame = () => {
     await setFileIsCurrentlyDisabled(filename, true, 5000);
     closingRef.current = false;
   };
+
+  const handleCloseFile = async () => {
+    if (!currentlyEditingFile) return;
+
+    if (isEditMode && isTextFile && hasUnsavedChanges()) {
+      openUnsavedChangesDialog(performClose);
+      return;
+    }
+
+    await performClose();
+  };
+
+  const handleSaveTextFile = () => saveTextFile(webdavShare);
 
   const { appConfigs } = useAppConfigsStore();
 
@@ -160,12 +193,20 @@ const FileSharingPreviewFrame = () => {
 
   const windowTitle = currentlyEditingFile?.filename || t(`filesharing.filePreview`);
 
-  const isEditButtonVisible = !isEditMode && isOnlyOfficeDocument(currentlyEditingFile?.filename || '');
+  const isEditButtonVisible = !isEditMode && (isOnlyOfficeDocument(currentlyEditingFile?.filename || '') || isTextFile);
+  const isTextEditMode = isEditMode && isTextFile;
   const additionalButtons = [
     <OpenInNewTabButton
       onClick={openInNewTab}
       key={OpenInNewTabButton.name}
     />,
+    isTextEditMode && (
+      <SaveButton
+        onClick={handleSaveTextFile}
+        disabled={!hasUnsavedChanges() || isSaving}
+        key={SaveButton.name}
+      />
+    ),
     isEditButtonVisible && (
       <EditButton
         onClick={() => setIsEditMode(true)}
@@ -185,23 +226,26 @@ const FileSharingPreviewFrame = () => {
   ].filter((b): b is ReactElement => Boolean(b));
 
   return (
-    <ResizableWindow
-      disableMinimizeWindow={isFilePreviewDocked || isMobileView}
-      disableToggleMaximizeWindow={isMobileView}
-      titleTranslationId={windowTitle}
-      handleClose={handleCloseFile}
-      initialPosition={isMobileView ? undefined : initialPositionMemo}
-      initialSize={isMobileView ? undefined : initialSizeMemo}
-      openMaximized={isMobileView}
-      stickToInitialSizeAndPositionWhenRestored={!isMobileView && isFilePreviewDocked}
-      additionalButtons={additionalButtons}
-    >
-      <FileRenderer
-        editMode={isEditMode}
-        closingRef={closingRef}
-        isOnlyOfficeConfigured={isDocumentServerConfigured}
-      />
-    </ResizableWindow>
+    <>
+      <ResizableWindow
+        disableMinimizeWindow={isFilePreviewDocked || isMobileView}
+        disableToggleMaximizeWindow={isMobileView}
+        titleTranslationId={windowTitle}
+        handleClose={handleCloseFile}
+        initialPosition={isMobileView ? undefined : initialPositionMemo}
+        initialSize={isMobileView ? undefined : initialSizeMemo}
+        openMaximized={isMobileView}
+        stickToInitialSizeAndPositionWhenRestored={!isMobileView && isFilePreviewDocked}
+        additionalButtons={additionalButtons}
+      >
+        <FileRenderer
+          editMode={isEditMode}
+          closingRef={closingRef}
+          isOnlyOfficeConfigured={isDocumentServerConfigured}
+        />
+      </ResizableWindow>
+      <UnsavedChangesDialog onSave={handleSaveTextFile} />
+    </>
   );
 };
 

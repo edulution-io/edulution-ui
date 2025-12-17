@@ -31,6 +31,11 @@ import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsVal
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import isTextExtension from '@libs/filesharing/utils/isTextExtension';
+import getFileExtension from '@libs/filesharing/utils/getFileExtension';
+import useTextEditorStore from '@/pages/FileSharing/FilePreview/useTextEditorStore';
+import { MdSave } from 'react-icons/md';
+import { Button } from '@/components/shared/Button';
 
 const FullScreenFileViewer = () => {
   const { t } = useTranslation();
@@ -40,10 +45,14 @@ const FullScreenFileViewer = () => {
     useFileSharingDownloadStore();
 
   const { filesToOpenInNewTab, currentlyEditingFile, setCurrentlyEditingFile } = useFileEditorStore();
+  const { hasUnsavedChanges, isSaving, saveTextFile } = useTextEditorStore();
   const appConfigs = useAppConfigsStore((s) => s.appConfigs);
 
   const [isLoading, setIsLoading] = useState(true);
   const fileETag = searchParams.get('file');
+
+  const fileExtension = currentlyEditingFile ? getFileExtension(currentlyEditingFile.filePath) : undefined;
+  const isTextFile = isTextExtension(fileExtension);
 
   const isDocumentServerConfigured = !!getExtendedOptionsValue(
     appConfigs,
@@ -64,12 +73,16 @@ const FullScreenFileViewer = () => {
     void initializeFile();
   }, []);
 
+  const handleSaveTextFile = () => saveTextFile(webdavShare);
+
   useBeforeUnload(t('closeEditingWindow'));
 
   if (isLoading || isEditorLoading || isCreatingBlobUrl || isFetchingPublicUrl)
     return <LoadingIndicatorDialog isOpen />;
 
   if (!temporaryDownloadUrl) return null;
+
+  const showSaveButton = isTextFile && hasUnsavedChanges();
 
   return (
     <PageLayout isFullScreenAppWithoutFloatingButtons>
@@ -82,6 +95,18 @@ const FullScreenFileViewer = () => {
         isOpenedInNewTab
         isOnlyOfficeConfigured={isDocumentServerConfigured}
       />
+      {showSaveButton && (
+        <Button
+          onClick={handleSaveTextFile}
+          disabled={isSaving}
+          size="md"
+          className="absolute bottom-4 right-4 z-50"
+          variant="btn-collaboration"
+        >
+          <MdSave className="mr-2 h-4 w-4" />
+          {isSaving ? t('filesharing.textEditor.saving') : t('common.save')}
+        </Button>
+      )}
     </PageLayout>
   );
 };

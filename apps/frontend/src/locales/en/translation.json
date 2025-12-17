@@ -403,6 +403,14 @@
       "zipFilesAreUploading": "Files are uploading",
       "fileIsUploading": "{{filename}} is uploading"
     },
+    "textEditor": {
+      "unsavedChanges": "Unsaved Changes",
+      "unsavedChangesMessage": "You have unsaved changes. What would you like to do?",
+      "discard": "Discard",
+      "saving": "Saving...",
+      "saveSuccess": "File saved successfully",
+      "saveError": "Failed to save file"
+    },
 
     "publicShareFilesPage": {
       "title": "Shared Files",

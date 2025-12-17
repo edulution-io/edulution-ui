@@ -37,8 +37,10 @@ import PdfViewer from '@/components/shared/PDFViewer/PdfViewer';
 import TextPreview from '@/components/ui/Renderer/TextPreview';
 import MarkdownRenderer from '@/components/ui/Renderer/MarkdownRenderer';
 import useTextPreviewStore from '@/pages/FileSharing/FilePreview/useTextPreviewStore';
+import useTextEditorStore from '@/pages/FileSharing/FilePreview/useTextEditorStore';
 import { FILE_PREVIEW_TYPE, FilePreviewType } from '@libs/filesharing/types/filePreviewType';
 import isPdfExtension from '@libs/filesharing/utils/isPdfExtension';
+import cn from '@libs/common/utils/className';
 
 interface FileRendererProps {
   editMode: boolean;
@@ -61,8 +63,10 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
   const { currentlyEditingFile } = useFileEditorStore();
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
   const { textContent, isLoadingText, fetchTextContent, reset: resetTextPreview } = useTextPreviewStore();
+  const { editedContent, setEditedContent, setOriginalContent } = useTextEditorStore();
 
   const fileExtension = currentlyEditingFile ? getFileExtension(currentlyEditingFile.filePath) : undefined;
+  const isMarkdown = fileExtension === TEXT_EXTENSIONS.MD || fileExtension === TEXT_EXTENSIONS.MARKDOWN;
   const isText = isTextExtension(fileExtension);
   const isBaseLoading = isEditorLoading || isCreatingBlobUrl || isFetchingPublicUrl || !!error;
 
@@ -95,11 +99,16 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
     };
   }, [fileUrl, isText]);
 
+  useEffect(() => {
+    if (editMode && isText && textContent !== null) {
+      setOriginalContent(textContent);
+    }
+  }, [editMode, isText, textContent, setOriginalContent]);
+
   if (!currentlyEditingFile) return null;
 
   const getFileType = (): FilePreviewType => {
-    const usePdfFallback = isPdfExtension(fileExtension) && (!editMode || !isOnlyOfficeConfigured);
-    if (usePdfFallback) return FILE_PREVIEW_TYPE.PDF;
+    if (isPdfExtension(fileExtension)) return FILE_PREVIEW_TYPE.PDF;
 
     const isOnlyOfficeDoc = isOnlyOfficeDocument(currentlyEditingFile.filePath);
     if (isOnlyOfficeDoc && isOnlyOfficeConfigured) return FILE_PREVIEW_TYPE.ONLY_OFFICE;
@@ -117,7 +126,12 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
     switch (fileType) {
       case FILE_PREVIEW_TYPE.PDF:
         if (isBaseLoading || !fileUrl) return <CircleLoader className="mx-auto mt-5" />;
-        return <PdfViewer fetchUrl={fileUrl} />;
+        return (
+          <PdfViewer
+            fetchUrl={fileUrl}
+            containerClassName={isOpenedInNewTab ? 'h-dvh' : 'h-full'}
+          />
+        );
 
       case FILE_PREVIEW_TYPE.ONLY_OFFICE:
         if (isBaseLoading || !publicDownloadLink) return <CircleLoader className="mx-auto mt-5" />;
@@ -148,16 +162,28 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
           <MediaComponent
             key={fileUrl}
             url={fileUrl}
+            height={isOpenedInNewTab ? '100dvh' : '100%'}
           />
         );
 
       case FILE_PREVIEW_TYPE.TEXT: {
         if (isBaseLoading || !fileUrl || isLoadingText || textContent === null)
           return <CircleLoader className="mx-auto mt-5" />;
-        const isMarkdown = fileExtension === TEXT_EXTENSIONS.MD || fileExtension === TEXT_EXTENSIONS.MARKDOWN;
+
         return (
-          <div className="h-full overflow-auto bg-foreground p-4">
-            {isMarkdown ? <MarkdownRenderer content={textContent} /> : <TextPreview content={textContent} />}
+          <div className={isOpenedInNewTab ? 'h-dvh' : 'h-full overflow-auto'}>
+            {isMarkdown || editMode ? (
+              <MarkdownRenderer
+                content={editedContent ?? textContent}
+                editable={editMode}
+                showToolbar={isMarkdown}
+                showPreview={isMarkdown}
+                onChange={setEditedContent}
+                className={cn('h-full bg-foreground', { 'p-4': !editMode })}
+              />
+            ) : (
+              <TextPreview content={textContent} />
+            )}
           </div>
         );
       }
