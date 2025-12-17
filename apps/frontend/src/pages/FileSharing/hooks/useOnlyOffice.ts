@@ -32,6 +32,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import useLanguage from '@/hooks/useLanguage';
 import { useParams } from 'react-router-dom';
 import useThemeStore from '@/store/useThemeStore';
+import THEME from '@libs/common/constants/theme';
 
 interface UseOnlyOfficeProps {
   filePath: string;
@@ -69,7 +70,7 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
 
   const uiTheme = useMemo(() => {
     localStorage.removeItem('ui-theme-id');
-    if (getResolvedTheme() === 'dark') {
+    if (getResolvedTheme() === THEME.dark) {
       return 'theme-night';
     }
     return 'theme-white';

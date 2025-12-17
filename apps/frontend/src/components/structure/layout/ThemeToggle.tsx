@@ -23,6 +23,7 @@ import { GoMoon, GoSun } from 'react-icons/go';
 import useThemeStore from '@/store/useThemeStore';
 import { Button } from '@/components/shared/Button';
 import isDev from '@libs/common/constants/isDev';
+import THEME from '@libs/common/constants/theme';
 
 const ThemeToggle: React.FC = () => {
   const theme = useThemeStore((s) => s.theme);
@@ -33,10 +34,10 @@ const ThemeToggle: React.FC = () => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (theme === 'system') {
-      setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+    if (theme === THEME.system) {
+      setTheme(resolvedTheme === THEME.dark ? THEME.light : THEME.dark);
     } else {
-      setTheme(theme === 'dark' ? 'light' : 'dark');
+      setTheme(theme === THEME.dark ? THEME.light : THEME.dark);
     }
   };
 
@@ -52,7 +53,7 @@ const ThemeToggle: React.FC = () => {
       size="sm"
       className="fixed right-20 top-2 z-[9999] rounded-full border-none bg-accent p-2 shadow-lg"
     >
-      {resolvedTheme === 'dark' ? <GoSun className="h-4 w-4" /> : <GoMoon className="h-4 w-4" />}
+      {resolvedTheme === THEME.dark ? <GoSun className="h-4 w-4" /> : <GoMoon className="h-4 w-4" />}
     </Button>,
     document.body,
   );

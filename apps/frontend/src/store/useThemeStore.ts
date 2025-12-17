@@ -17,15 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import THEME from '@libs/common/constants/theme';
+import ThemeType from '@libs/common/types/themeType';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 
-type ThemeMode = 'dark' | 'light' | 'system';
-
+type ResolvedThemeType = Omit<ThemeType, 'system'>;
 interface ThemeStore {
-  theme: ThemeMode;
-  setTheme: (theme: ThemeMode) => void;
-  getResolvedTheme: () => 'dark' | 'light';
+  theme: ThemeType;
+  setTheme: (theme: ThemeType) => void;
+  getResolvedTheme: () => ResolvedThemeType;
   applyTheme: () => void;
   initTheme: () => void;
 }
@@ -35,34 +36,34 @@ type PersistedThemeStore = (
   options: PersistOptions<Partial<ThemeStore>>,
 ) => StateCreator<ThemeStore>;
 
-const getSystemTheme = (): 'dark' | 'light' =>
-  window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+const getSystemTheme = (): ResolvedThemeType =>
+  window.matchMedia('(prefers-color-scheme: dark)').matches ? THEME.dark : THEME.light;
 
-const applyThemeToDOM = (resolvedTheme: 'dark' | 'light') => {
+const applyThemeToDOM = (resolvedTheme: ResolvedThemeType) => {
   const root = document.documentElement;
-  if (resolvedTheme === 'dark') {
-    root.classList.add('dark');
-    root.classList.remove('light');
+  if (resolvedTheme === THEME.dark) {
+    root.classList.add(THEME.dark);
+    root.classList.remove(THEME.light);
   } else {
-    root.classList.add('light');
-    root.classList.remove('dark');
+    root.classList.add(THEME.light);
+    root.classList.remove(THEME.dark);
   }
 };
 
 const useThemeStore = create<ThemeStore>(
   (persist as PersistedThemeStore)(
     (set, get) => ({
-      theme: 'dark',
+      theme: THEME.dark,
 
       setTheme: (theme) => {
         set({ theme });
-        const resolved = theme === 'system' ? getSystemTheme() : theme;
+        const resolved = theme === THEME.system ? getSystemTheme() : theme;
         applyThemeToDOM(resolved);
       },
 
       getResolvedTheme: () => {
         const { theme } = get();
-        if (theme === 'system') {
+        if (theme === THEME.system) {
           return getSystemTheme();
         }
         return theme;
@@ -79,7 +80,7 @@ const useThemeStore = create<ThemeStore>(
 
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
         mediaQuery.addEventListener('change', () => {
-          if (get().theme === 'system') {
+          if (get().theme === THEME.system) {
             applyTheme();
           }
         });

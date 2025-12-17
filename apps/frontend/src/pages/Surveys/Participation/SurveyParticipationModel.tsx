@@ -37,6 +37,7 @@ import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
 import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 import useThemeStore from '@/store/useThemeStore';
+import THEME from '@libs/common/constants/theme';
 
 interface SurveyFileValue {
   name: string;
@@ -62,7 +63,7 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
   const { getResolvedTheme } = useThemeStore();
 
   Serializer.getProperty('signaturepad', 'penColor').defaultValue =
-    getResolvedTheme() === 'dark' ? 'rgba(255, 255, 255, 1)' : 'rgba(17, 24, 39, 1)';
+    getResolvedTheme() === THEME.dark ? 'rgba(255, 255, 255, 1)' : 'rgba(17, 24, 39, 1)';
 
   const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
 

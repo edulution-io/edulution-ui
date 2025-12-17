@@ -17,9 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export const Theme = {
+const THEME = {
+  system: 'system',
   light: 'light',
   dark: 'dark',
 } as const;
 
-export type ThemeType = (typeof Theme)[keyof typeof Theme];
+export default THEME;

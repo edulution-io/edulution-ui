@@ -22,7 +22,8 @@ import { AccordionContent } from '@/components/ui/AccordionSH';
 import type { UseFormReturn } from 'react-hook-form';
 import type { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSettings.form';
 import { useTranslation } from 'react-i18next';
-import { Theme, ThemeType } from '@libs/common/constants/theme';
+import THEME from '@libs/common/constants/theme';
+import ThemeType from '@libs/common/types/themeType';
 import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
 import getMainLogoUrl from '@libs/assets/getMainLogoUrl';
 import LogoUploadField from '@/pages/Settings/components/LogoUploadField';
@@ -40,7 +41,7 @@ const AddOrganisationLogo: React.FC<AddOrganisationLogoProps> = ({ form }) => {
 
   const setFormFileForVariant = (variant: ThemeType, file: File | null) => {
     const path: 'brandingUploads.logo.light' | 'brandingUploads.logo.dark' =
-      variant === Theme.light ? 'brandingUploads.logo.light' : 'brandingUploads.logo.dark';
+      variant === THEME.light ? 'brandingUploads.logo.light' : 'brandingUploads.logo.dark';
     form.setValue(path, file, { shouldDirty: true });
   };
   const onFileChange =
@@ -48,7 +49,7 @@ const AddOrganisationLogo: React.FC<AddOrganisationLogoProps> = ({ form }) => {
     async (event) => {
       const file = event.target.files?.[0] ?? null;
       if (file && !file.type.startsWith('image/')) {
-        const input = variant === Theme.light ? lightInputRef : darkInputRef;
+        const input = variant === THEME.light ? lightInputRef : darkInputRef;
         if (input.current) input.current.value = '';
         return;
       }
@@ -56,7 +57,7 @@ const AddOrganisationLogo: React.FC<AddOrganisationLogoProps> = ({ form }) => {
       if (file) await uploadVariant(variant, file);
     };
 
-  const darkPreviewSrc = `${getMainLogoUrl(Theme.dark)}?v=${darkVersion}`;
+  const darkPreviewSrc = `${getMainLogoUrl(THEME.dark)}?v=${darkVersion}`;
   const hasDarkSelection = !!form.watch(BRANDING_UPLOADS_LOGO.dark);
   const { isGeneric } = useDeploymentTarget();
 
@@ -71,13 +72,13 @@ const AddOrganisationLogo: React.FC<AddOrganisationLogoProps> = ({ form }) => {
       </p>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-1">
         <LogoUploadField
-          variant={Theme.dark}
+          variant={THEME.dark}
           previewSrc={darkPreviewSrc}
           cacheKey={darkVersion}
           hasLocalSelection={hasDarkSelection}
-          uploading={uploadingVariant === Theme.dark}
+          uploading={uploadingVariant === THEME.dark}
           inputRef={darkInputRef}
-          onFileChange={onFileChange(Theme.dark)}
+          onFileChange={onFileChange(THEME.dark)}
           chooseText={t('common.chooseFile')}
           changeText={t('common.changeFile')}
         />

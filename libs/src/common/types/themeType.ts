@@ -17,6 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const COLOR_SCHEME = 'dark';
+import THEME from '../constants/theme';
 
-export default COLOR_SCHEME;
+type ThemeType = (typeof THEME)[keyof typeof THEME];
+
+export default ThemeType;
