@@ -13,7 +13,10 @@
     .sd-table__cell--row-text:first-of-type,
     .sd-matrix__cell:first-of-type:first-of-type,
     .sd-matrix tr > td:first-of-type:first-of-type {
-      background-color: var(--accent) !important;
+      background-color: var(--overlay) !important;
+    }
+    .sd-table__cell--header {
+      background-color: var(--overlay) !important;
     }
     .sd-matrix.sd-table-wrapper {
       padding: 0 1.5rem 1.5rem 1.5rem !important;
@@ -63,6 +66,9 @@
   }
   .svc-tabbed-menu-item--selected {
     background-color: var(--primary) !important;
+    .svc-tabbed-menu-item__text {
+      color: var(--primary-foreground) !important;
+    }
     :hover {
       background-color: var(--muted-light) !important;
     }
@@ -490,11 +496,11 @@
   }
 
   .svc-matrix-cell .sd-dropdown--empty {
-    background-color: var(--accent);
+    background-color: var(--overlay);
     color: var(--input);
 
     :disabled {
-      background-color: var(--accent);
+      background-color: var(--overlay);
     }
 
     :focus {

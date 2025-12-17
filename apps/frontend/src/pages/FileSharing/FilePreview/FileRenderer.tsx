@@ -157,7 +157,14 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
         const isMarkdown = fileExtension === TEXT_EXTENSIONS.MD || fileExtension === TEXT_EXTENSIONS.MARKDOWN;
         return (
           <div className="h-full overflow-auto bg-foreground p-4">
-            {isMarkdown ? <MarkdownRenderer content={textContent} /> : <TextPreview content={textContent} />}
+            {isMarkdown ? (
+              <MarkdownRenderer
+                content={textContent}
+                className="text-background"
+              />
+            ) : (
+              <TextPreview content={textContent} />
+            )}
           </div>
         );
       }

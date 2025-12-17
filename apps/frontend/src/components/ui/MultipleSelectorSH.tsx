@@ -149,7 +149,7 @@ const CommandEmpty = forwardRef<HTMLDivElement, React.ComponentProps<typeof Comm
     return (
       <div
         ref={forwardedRef}
-        className={cn('py-6 text-center text-sm', className)}
+        className={cn('py-6 text-center text-p', className)}
         cmdk-empty=""
         role="presentation"
         {...props}
@@ -391,12 +391,12 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
             <div
               ref={triggerRef}
               className={cn(
-                'group rounded-lg p-[8px] px-3 py-2 text-sm',
+                'group rounded-lg p-[8px] px-3 py-2 text-p',
                 variant === 'default' ? 'bg-white text-background dark:bg-muted' : '',
                 className,
               )}
             >
-              <div className="flex flex-wrap gap-1">
+              <div className="flex flex-wrap gap-1 px-1">
                 {selected.map((option) => (
                   <BadgeSH
                     key={option.value}
