@@ -42,7 +42,7 @@ import GlobalSettingsService from '../global-settings/global-settings.service';
 
 @Injectable()
 class AppConfigService implements OnModuleInit {
-  public appAccessMap = new Map<string, string[]>();
+  public appAccessMap = new Map<string, Set<string>>();
 
   constructor(
     @InjectConnection() private readonly connection: Connection,
@@ -57,10 +57,11 @@ class AppConfigService implements OnModuleInit {
       this.appAccessMap = new Map(
         appConfigs.map((config) => [
           config.name,
-          config.accessGroups?.map((group: MultipleSelectorGroup) => group.path),
+          new Set(config.accessGroups?.map((group: MultipleSelectorGroup) => group.path) ?? []),
         ]),
       );
 
+      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APP_ACCESS_MAP_UPDATED);
       Logger.verbose(`App access map updated`, AppConfigService.name);
     } catch (error) {
       throw new CustomHttpException(

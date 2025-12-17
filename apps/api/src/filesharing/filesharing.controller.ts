@@ -32,7 +32,6 @@ import {
   Req,
   Res,
   StreamableFile,
-  UseGuards,
 } from '@nestjs/common';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import ContentType from '@libs/filesharing/types/contentType';
@@ -58,11 +57,11 @@ import FilesharingService from './filesharing.service';
 import WebdavService from '../webdav/webdav.service';
 import { Public } from '../common/decorators/public.decorator';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
-import AccessGuard from '../auth/access.guard';
+import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
 
 @ApiTags(FileSharingApiEndpoints.BASE)
 @ApiBearerAuth()
-@UseGuards(AccessGuard(APPS.FILE_SHARING))
+@RequireAppAccess(APPS.FILE_SHARING)
 @Controller(FileSharingApiEndpoints.BASE)
 class FilesharingController {
   constructor(

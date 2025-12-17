@@ -20,11 +20,14 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { GuacamoleDto, LmnVdiRequest } from '@libs/desktopdeployment/types';
+import APPS from '@libs/appconfig/constants/apps';
 import VdiService from './vdi.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
+import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
 
 @ApiTags('vdi')
 @ApiBearerAuth()
+@RequireAppAccess(APPS.VIRTUALIZATION)
 @Controller('vdi')
 class VdiController {
   constructor(private readonly vdiService: VdiService) {}
