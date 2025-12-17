@@ -17,31 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const OnlyOfficeDocumentTypes = {
-  // Presentation
-  PPTX: 'pptx',
-  PPSX: 'ppsx',
-  POTX: 'potx',
-  PPT: 'ppt',
-  PPS: 'pps',
-  POT: 'pot',
-  OTP: 'otp',
-  ODP: 'odp',
-  // Text
-  DOCX: 'docx',
-  DOC: 'doc',
-  DOT: 'dot',
-  DOTX: 'dotx',
-  ODT: 'odt',
-  OTT: 'ott',
-  RTF: 'rtf',
-  // Spreadsheet
-  XLSX: 'xlsx',
-  XLS: 'xls',
-  XLT: 'xlt',
-  XLTX: 'xltx',
-  ODS: 'ods',
-  OTS: 'ots',
+const LMN_API_SEARCH_PARAMS = {
+  ALL_MEMBERS: 'allMembers',
 } as const;
 
-export default OnlyOfficeDocumentTypes;
+export default LMN_API_SEARCH_PARAMS;
