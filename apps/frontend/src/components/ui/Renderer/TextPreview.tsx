@@ -17,31 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const OnlyOfficeDocumentTypes = {
-  // Presentation
-  PPTX: 'pptx',
-  PPSX: 'ppsx',
-  POTX: 'potx',
-  PPT: 'ppt',
-  PPS: 'pps',
-  POT: 'pot',
-  OTP: 'otp',
-  ODP: 'odp',
-  // Text
-  DOCX: 'docx',
-  DOC: 'doc',
-  DOT: 'dot',
-  DOTX: 'dotx',
-  ODT: 'odt',
-  OTT: 'ott',
-  RTF: 'rtf',
-  // Spreadsheet
-  XLSX: 'xlsx',
-  XLS: 'xls',
-  XLT: 'xlt',
-  XLTX: 'xltx',
-  ODS: 'ods',
-  OTS: 'ots',
-} as const;
+import React from 'react';
+import cn from '@libs/common/utils/className';
 
-export default OnlyOfficeDocumentTypes;
+interface TextPreviewProps {
+  content: string;
+  className?: string;
+}
+
+const TextPreview = ({ content, className }: TextPreviewProps) => (
+  <pre className={cn('whitespace-pre-wrap break-words font-mono text-sm', className)}>{content}</pre>
+);
+
+export default TextPreview;
