@@ -17,9 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { SetMetadata } from '@nestjs/common';
-import { APP_ACCESS_KEY } from '@libs/auth/constants/appAccessKeys';
-
-const RequireAppAccess = (domain: string) => SetMetadata(APP_ACCESS_KEY, domain);
-
-export default RequireAppAccess;
+export const PUBLIC_ROUTE_KEY = 'isPublicRoute';
+export const APP_ACCESS_KEY = 'app_access_domain';
+export const DYNAMIC_APP_ACCESS_PARAM_KEY = 'dynamic_app_access_param';

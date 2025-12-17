@@ -26,7 +26,7 @@ import JoinPublicConferenceDetails from '@libs/conferences/types/joinPublicConfe
 import APPS from '@libs/appconfig/constants/apps';
 import ConferencesService from './conferences.service';
 import { Conference } from './conference.schema';
-import { Public } from '../common/decorators/public.decorator';
+import Public from '../common/decorators/public.decorator';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
 

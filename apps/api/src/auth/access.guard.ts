@@ -17,10 +17,9 @@ import { Request } from 'express';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import { APP_ACCESS_KEY, PUBLIC_ROUTE_KEY } from '@libs/auth/constants/appAccessKeys';
 import AppConfigService from '../appconfig/appconfig.service';
 import CustomHttpException from '../common/CustomHttpException';
-import { APP_ACCESS_KEY } from '../common/decorators/requireAppAccess.decorator';
-import { PUBLIC_ROUTE_KEY } from '../common/decorators/public.decorator';
 import GlobalSettingsService from '../global-settings/global-settings.service';
 
 const accessCache = new Map<string, { value: boolean; expiresAt: number }>();

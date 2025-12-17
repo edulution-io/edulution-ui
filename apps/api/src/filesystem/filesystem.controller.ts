@@ -46,7 +46,7 @@ import { createAttachmentUploadOptions, createDiskStorage } from './multer.utili
 import AdminGuard from '../common/guards/admin.guard';
 import DynamicAppAccessGuard from '../common/guards/dynamicAppAccess.guard';
 import FilesystemService from './filesystem.service';
-import { Public } from '../common/decorators/public.decorator';
+import Public from '../common/decorators/public.decorator';
 import IsPublicAppGuard from '../common/guards/isPublicApp.guard';
 
 @ApiTags(EDU_API_CONFIG_ENDPOINTS.FILES)

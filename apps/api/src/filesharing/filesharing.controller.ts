@@ -55,7 +55,7 @@ import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorato
 import FilesystemService from '../filesystem/filesystem.service';
 import FilesharingService from './filesharing.service';
 import WebdavService from '../webdav/webdav.service';
-import { Public } from '../common/decorators/public.decorator';
+import Public from '../common/decorators/public.decorator';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
 

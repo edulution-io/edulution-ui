@@ -15,12 +15,10 @@ import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import { PUBLIC_ROUTE_KEY, DYNAMIC_APP_ACCESS_PARAM_KEY } from '@libs/auth/constants/appAccessKeys';
 import AppConfigService from '../../appconfig/appconfig.service';
 import CustomHttpException from '../CustomHttpException';
-import { PUBLIC_ROUTE_KEY } from '../decorators/public.decorator';
 import GlobalSettingsService from '../../global-settings/global-settings.service';
-
-const DYNAMIC_APP_ACCESS_PARAM_KEY = 'dynamic_app_access_param';
 
 @Injectable()
 class DynamicAppAccessGuard implements CanActivate {
@@ -85,5 +83,4 @@ class DynamicAppAccessGuard implements CanActivate {
   }
 }
 
-export { DYNAMIC_APP_ACCESS_PARAM_KEY };
 export default DynamicAppAccessGuard;
