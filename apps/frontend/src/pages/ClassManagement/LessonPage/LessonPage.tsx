@@ -45,6 +45,7 @@ import QuotaLimitInfo from '@/pages/FileSharing/utilities/QuotaLimitInfo';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
+import { Button } from '@/components/shared/Button';
 import SchoolSelectorDropdown from '../components/SchoolSelectorDropdown';
 
 const LessonPage = () => {
@@ -222,24 +223,22 @@ const LessonPage = () => {
         {isSuperAdmin && <SchoolSelectorDropdown />}
         {groupNameParams || member.length ? (
           <div className="flex flex-row justify-between gap-2">
-            <button
-              type="button"
+            <Button
               onClick={onSaveSessionsButtonClick}
-              className="flex h-10 cursor-pointer items-center rounded-lg bg-white text-background shadow-md dark:border-none dark:bg-accent dark:shadow-none"
+              variant="btn-table"
             >
-              <span className="text-nowrap px-4 text-background">
+              <span className="text-nowrap px-4">
                 {t(`classmanagement.${currentSelectedSession ? 'editSession' : 'saveSession'}`)}
               </span>
               <MdSave className="ml-auto inline-block h-8 w-8 pr-2" />
-            </button>
-            <button
-              type="button"
+            </Button>
+            <Button
               onClick={closeSession}
-              className="flex h-10 cursor-pointer items-center rounded-lg bg-white text-background shadow-md dark:border-none dark:bg-accent dark:shadow-none"
+              variant="btn-table"
             >
-              <span className="text-nowrap pl-4 text-background">{t('classmanagement.closeSession')}</span>
+              <span className="text-nowrap pl-4">{t('classmanagement.closeSession')}</span>
               <MdClose className="ml-auto inline-block h-8 w-8 px-2" />
-            </button>
+            </Button>
           </div>
         ) : null}
       </div>

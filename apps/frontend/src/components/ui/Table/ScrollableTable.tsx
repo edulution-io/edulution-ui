@@ -146,7 +146,7 @@ const ScrollableTable = <TData, TValue>({
 
       <div className="h-full w-full flex-1 overflow-auto scrollbar-thin">
         {!!data.length && showSearchBarAndColumnSelect && (
-          <div className="flex items-center gap-2 py-4 pl-1">
+          <div className="flex items-center gap-2 py-4">
             <div className="min-w-0 flex-1">
               <Input
                 placeholder={t(filterPlaceHolderText)}

@@ -232,6 +232,8 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
     return pathVariableOptions.filter((option) => option.label.toLowerCase().includes(query.toLowerCase()));
   };
 
+  const emptyIndicator = <p className="leading-1 w-full py-2 text-center">{t('search.no-results')}</p>;
+
   const renderFormFields = () => (
     <>
       <FormField
@@ -284,8 +286,8 @@ const AddWebdavShareDialog: React.FC<AddWebdavShareDialogProps> = ({ tableId }) 
                   onChange={handleVariableChange}
                   placeholder={t('search.type-to-search')}
                   variant="dialog"
-                  className="rounded-lg border-2 border-gray-300 bg-white p-[8px] text-background shadow-md dark:border-none dark:bg-muted dark:shadow-none"
                   inputProps={{ className: 'm-0' }}
+                  emptyIndicator={emptyIndicator}
                 />
               </FormControl>
               <FormDescription>{t('webdavShare.pathVariables.description')}</FormDescription>

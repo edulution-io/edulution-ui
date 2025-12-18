@@ -35,13 +35,25 @@ type DropdownMenuProps = {
   items: DropdownMenuItemType[];
   menuContentClassName?: string;
   disabled?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
-const DropdownMenu: React.FC<DropdownMenuProps> = ({ trigger, items, menuContentClassName, disabled = false }) => {
+const DropdownMenu: React.FC<DropdownMenuProps> = ({
+  trigger,
+  items,
+  menuContentClassName,
+  disabled = false,
+  open,
+  onOpenChange,
+}) => {
   if (!items || !items.length) return null;
 
   return (
-    <DropdownMenuSH>
+    <DropdownMenuSH
+      open={open}
+      onOpenChange={onOpenChange}
+    >
       <DropdownMenuTrigger
         disabled={disabled}
         asChild

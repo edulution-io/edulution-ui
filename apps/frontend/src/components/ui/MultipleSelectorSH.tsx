@@ -32,6 +32,26 @@ import { BadgeSH } from '@/components/ui/BadgeSH';
 import { CommandGroup, CommandItem, CommandList, CommandSH } from '@/components/ui/CommandSH';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import { useDebounceValue } from 'usehooks-ts';
+import { VARIANT_COLORS } from '@libs/ui/constants/commonClassNames';
+
+const MULTIPLE_SELECTOR_BASE_CLASSES =
+  'w-full rounded-lg px-3 text-p transition-colors focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 flex flex-wrap items-center gap-1';
+
+const variantClasses = {
+  default: VARIANT_COLORS.default,
+  dialog: VARIANT_COLORS.dialog,
+} as const;
+
+const optionVariantClasses = {
+  default: {
+    base: 'text-background hover:bg-muted',
+    disabled: 'cursor-default text-muted-foreground hover:bg-white hover:dark:bg-accent',
+  },
+  dialog: {
+    base: 'text-background hover:bg-muted-light',
+    disabled: 'cursor-default text-muted-foreground hover:bg-white hover:dark:bg-muted',
+  },
+} as const;
 
 interface GroupOption {
   [key: string]: MultipleSelectorOptionSH[];
@@ -77,7 +97,7 @@ interface MultipleSelectorProps {
    * @reference: https://github.com/pacocoursey/cmdk/issues/171
    */
   selectFirstItem?: boolean;
-  /** Allow user to create option when there is no option matched. */
+  /** Allow user to create option when there is no o0ption matched. */
   creatable?: boolean;
   /** Props of `Command` */
   commandProps?: React.ComponentPropsWithoutRef<typeof CommandSH>;
@@ -377,13 +397,7 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
             handleKeyDown(e);
             commandProps?.onKeyDown?.(e);
           }}
-          className={cn(
-            'overflow-visible rounded-lg',
-            variant === 'default'
-              ? 'bg-white text-background dark:bg-accent'
-              : 'bg-white text-background dark:bg-muted',
-            commandProps?.className,
-          )}
+          className={cn('overflow-visible rounded-lg border-0 bg-transparent', commandProps?.className)}
           shouldFilter={commandProps?.shouldFilter !== undefined ? commandProps.shouldFilter : !onSearch}
           filter={commandFilter()}
         >
@@ -391,73 +405,63 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
             <div
               ref={triggerRef}
               className={cn(
-                'group rounded-lg p-[8px] px-3 py-2 text-p',
-                variant === 'default' ? 'bg-white text-background dark:bg-muted' : '',
+                MULTIPLE_SELECTOR_BASE_CLASSES,
+                variantClasses[variant],
+                selected.length === 0 ? 'h-10' : 'py-1',
                 className,
               )}
             >
-              <div className="flex flex-wrap gap-1 px-1">
-                {selected.map((option) => (
-                  <BadgeSH
-                    key={option.value}
-                    variant="default"
-                    data-fixed={option.fixed}
-                    data-disabled={disabled ? true : undefined}
-                  >
-                    {option.label}
-                    {showRemoveIconInBadge && (
-                      <button
-                        className={cn('ml-1 rounded-full outline-none', (disabled || option.fixed) && 'hidden')}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            handleUnselect(option);
-                          }
-                        }}
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                        }}
-                        onClick={() => handleUnselect(option)}
-                      >
-                        <X
-                          className={
-                            variant === 'default'
-                              ? 'bg-white-foreground hover:text-background-foreground h-3 w-3 text-background hover:dark:bg-muted'
-                              : 'h-3 w-3 text-background '
-                          }
-                        />
-                      </button>
-                    )}
-                  </BadgeSH>
-                ))}
-                <CommandPrimitive.Input
-                  {...inputProps}
-                  ref={inputRef}
-                  value={inputValue}
-                  disabled={disabled}
-                  onValueChange={(value) => {
-                    setInputValue(value);
-                    inputProps?.onValueChange?.(value);
-                  }}
-                  onBlur={(event) => {
-                    setOpen(false);
-                    inputProps?.onBlur?.(event);
-                  }}
-                  onFocus={async (event) => {
-                    setOpen(true);
-                    triggerSearchOnFocus && (await onSearch?.(debouncedSearchTerm));
-                    inputProps?.onFocus?.(event);
-                  }}
-                  placeholder={hidePlaceholderWhenSelected && selected.length !== 0 ? '' : placeholder}
-                  className={cn(
-                    'ml-2 flex-1 outline-none placeholder:text-muted-foreground',
-                    variant === 'default'
-                      ? 'bg-white text-background placeholder:text-background dark:bg-accent'
-                      : 'bg-white text-background placeholder:text-background dark:bg-muted',
-                    inputProps?.className,
+              {selected.map((option) => (
+                <BadgeSH
+                  key={option.value}
+                  variant="default"
+                  data-fixed={option.fixed}
+                  data-disabled={disabled ? true : undefined}
+                >
+                  {option.label}
+                  {showRemoveIconInBadge && (
+                    <button
+                      className={cn('ml-1 rounded-full outline-none', (disabled || option.fixed) && 'hidden')}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleUnselect(option);
+                        }
+                      }}
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      onClick={() => handleUnselect(option)}
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
                   )}
-                />
-              </div>
+                </BadgeSH>
+              ))}
+              <CommandPrimitive.Input
+                {...inputProps}
+                ref={inputRef}
+                value={inputValue}
+                disabled={disabled}
+                onValueChange={(value) => {
+                  setInputValue(value);
+                  inputProps?.onValueChange?.(value);
+                }}
+                onBlur={(event) => {
+                  setOpen(false);
+                  inputProps?.onBlur?.(event);
+                }}
+                onFocus={async (event) => {
+                  setOpen(true);
+                  triggerSearchOnFocus && (await onSearch?.(debouncedSearchTerm));
+                  inputProps?.onFocus?.(event);
+                }}
+                placeholder={hidePlaceholderWhenSelected && selected.length !== 0 ? '' : placeholder}
+                className={cn(
+                  'flex-1 bg-transparent outline-none placeholder:text-muted-foreground',
+                  inputProps?.className,
+                )}
+              />
             </div>
           </PopoverPrimitive.Anchor>
           <PopoverPrimitive.Portal>
@@ -472,8 +476,8 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
               {open && (
                 <CommandList
                   className={cn(
-                    'w-full overflow-y-auto rounded-lg border bg-popover text-popover-foreground shadow-md outline-none animate-in scrollbar-thin dark:border-none',
-                    variant === 'default' ? 'bg-white text-background dark:bg-accent' : 'bg-white dark:bg-muted',
+                    'w-full overflow-y-auto rounded-lg text-p outline-none animate-in scrollbar-thin',
+                    variantClasses[variant],
                   )}
                 >
                   {isLoading ? (
@@ -492,9 +496,7 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
                         <CommandGroup
                           key={key}
                           heading={key}
-                          className={
-                            variant === 'default' ? 'h-full overflow-auto text-background' : 'h-full overflow-auto'
-                          }
+                          className="h-full overflow-auto"
                         >
                           <>
                             {dropdowns.map((option) => (
@@ -518,13 +520,9 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
                                 }}
                                 className={cn(
                                   'cursor-pointer',
-                                  variant === 'default'
-                                    ? 'bg-white text-background hover:bg-muted dark:bg-accent hover:dark:bg-muted'
-                                    : 'bg-white text-background hover:bg-muted-light dark:bg-muted hover:dark:bg-muted-light',
-                                  option.disable &&
-                                    (variant === 'default'
-                                      ? 'cursor-default text-muted-foreground hover:bg-white hover:dark:bg-accent'
-                                      : 'cursor-default text-muted-foreground hover:bg-white hover:dark:bg-muted'),
+                                  option.disable
+                                    ? optionVariantClasses[variant].disabled
+                                    : optionVariantClasses[variant].base,
                                 )}
                               >
                                 {option.label}

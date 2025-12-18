@@ -21,7 +21,6 @@ import React from 'react';
 import MultipleSelectorSH from '@/components/ui/MultipleSelectorSH';
 import { useTranslation } from 'react-i18next';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
-import cn from '@libs/common/utils/className';
 
 export interface AsyncMultiSelectProps<T> {
   value?: T[];
@@ -77,12 +76,6 @@ const AsyncMultiSelect = <T extends MultipleSelectorOptionSH>({
       emptyIndicator={emptyIndicator}
       delay={delay}
       badgeClassName={badgeClassName || 'font-normal '}
-      className={cn(
-        'rounded-lg bg-white p-[8px] shadow-md dark:shadow-none',
-        variant === 'default'
-          ? 'dark:bg-accent'
-          : 'border-2 border-gray-300 text-background shadow-md dark:border-none dark:bg-muted dark:shadow-none',
-      )}
       onChange={handleChange}
       onSearch={onSearch}
       inputProps={{ className: 'm-0' }}
