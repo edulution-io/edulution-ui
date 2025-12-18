@@ -22,9 +22,10 @@ import defaultIconList from '@/pages/Settings/AppConfig/components/defaultIconLi
 const getAppIconClassName = (iconSrc: string): string => {
   const isSvgIcon = iconSrc.endsWith('.svg') || iconSrc.includes('data:image/svg+xml') || iconSrc.includes('.svg');
   if (!isSvgIcon) return '';
-  const isDefaultIcon = defaultIconList.includes(iconSrc);
+  const decodedIconSrc = decodeURIComponent(iconSrc);
+  const isDefaultIcon = defaultIconList.includes(decodedIconSrc.replace('data:image/svg+xml,', ''));
   if (isDefaultIcon) return 'light:icon-light-mode';
-  const supportsTheming = iconSrc.includes('currentColor');
+  const supportsTheming = decodedIconSrc.includes('currentColor');
   return supportsTheming ? '' : 'light:icon-light-mode';
 };
 
