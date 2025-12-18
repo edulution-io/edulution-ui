@@ -18,7 +18,7 @@
  */
 
 import clsx from 'clsx';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Theme, ThemeType } from '@libs/common/constants/theme';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import FileSelectButton from '@/components/ui/FileSelectButton';
@@ -38,6 +38,7 @@ type LogoUploadFieldProps = {
   fallbackSrc?: string;
   className?: string;
   onHandleReset?: () => Promise<void>;
+  hasCustomLogo?: boolean;
   isLoginPage?: boolean;
 };
 
@@ -56,9 +57,29 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
   fallbackSrc,
   className,
   onHandleReset,
+  hasCustomLogo = false,
   isLoginPage: invertBGColor = false,
 }) => {
   const useLightBackground = (variant === Theme.dark && invertBGColor) || (variant === Theme.light && !invertBGColor);
+
+  const memorizedImage = useMemo(
+    () =>
+      (previewSrc || fallbackSrc) && (
+        <img
+          key={cacheKey}
+          src={previewSrc || fallbackSrc}
+          alt={alt}
+          className="h-20 w-auto object-contain"
+          onError={(e) => {
+            if (fallbackSrc) {
+              (e.currentTarget as HTMLImageElement).src = fallbackSrc;
+            }
+          }}
+        />
+      ),
+    [previewSrc, fallbackSrc, alt, cacheKey],
+  );
+
   return (
     <div
       className={clsx(
@@ -72,7 +93,7 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
       aria-live="polite"
     >
       <div className="absolute right-4 top-4">
-        {onHandleReset && (
+        {hasCustomLogo && onHandleReset && (
           <button
             type="button"
             onClick={async () => {
@@ -83,19 +104,8 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
           </button>
         )}
       </div>
-      {(previewSrc || fallbackSrc) && (
-        <img
-          key={cacheKey}
-          src={previewSrc || fallbackSrc}
-          alt={alt}
-          className="h-20 w-auto object-contain"
-          onError={(e) => {
-            if (fallbackSrc) {
-              (e.currentTarget as HTMLImageElement).src = fallbackSrc;
-            }
-          }}
-        />
-      )}
+
+      {memorizedImage}
 
       <div className="mt-3 grid w-full grid-cols-1 gap-2">
         <FileSelectButton

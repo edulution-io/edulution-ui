@@ -391,10 +391,13 @@ class FilesystemService {
 
   async servePublicAssetWithFallback(res: Response, filePath: string, fallBackPath?: string): Promise<Response> {
     const fileExists = await FilesystemService.checkIfFileExist(filePath);
-    if (!fileExists && fallBackPath) {
+    if (fileExists) {
+      return this.serve(filePath, res);
+    }
+    if (fallBackPath) {
       return this.serve(fallBackPath, res);
     }
-    return this.serve(filePath, res);
+    return Promise.resolve(res.status(HttpStatus.NOT_FOUND).send());
   }
 
   async serveTempFile(name: string, filename: string, res: Response) {

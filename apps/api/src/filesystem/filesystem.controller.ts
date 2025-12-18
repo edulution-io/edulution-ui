@@ -132,7 +132,7 @@ class FileSystemController {
     });
     if (fallBackPath) {
       await validatePathNoPathTraversal(fallBackPath, FileSystemController.name, {
-        mustExist: false,
+        mustExist: true,
         followSymlinks: true,
         allowSubdirs: true,
         allowAbsolute: true,

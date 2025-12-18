@@ -17,6 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import { pathExists } from 'fs-extra';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import { HttpStatus, Logger } from '@nestjs/common';
@@ -42,15 +43,6 @@ const validatePathNoPathTraversal = async (
     allowSubdirs = true,
     allowAbsolute = false,
   } = opts ?? {};
-  if (typeof filePath !== 'string') {
-    Logger.warn(`Suspicious path detected: ${String(filePath)} is not a string.`);
-    throw new CustomHttpException(
-      PathValidationErrorMessages.NoString,
-      HttpStatus.BAD_REQUEST,
-      String(filePath),
-      domain,
-    );
-  }
   const raw = filePath.trim();
   if (!raw) {
     Logger.warn(`Suspicious path detected: FilePath is an empty string.`);
@@ -106,7 +98,7 @@ const validatePathNoPathTraversal = async (
   }
 
   const publicBaseAbsolutePath = path.resolve(PUBLIC_ASSET_PATH);
-  const fileAbsolutePath = path.resolve(publicBaseAbsolutePath, normalized);
+  const fileAbsolutePath = path.resolve(normalized);
   const baseWithSep = publicBaseAbsolutePath.endsWith(path.sep)
     ? publicBaseAbsolutePath
     : publicBaseAbsolutePath + path.sep;
@@ -148,7 +140,7 @@ const validatePathNoPathTraversal = async (
       }
     }
   } else if (mustExist) {
-    await fs.stat(fileAbsolutePath);
+    await pathExists(fileAbsolutePath);
   }
 };
 
