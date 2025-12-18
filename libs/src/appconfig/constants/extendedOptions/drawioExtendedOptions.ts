@@ -20,6 +20,7 @@
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+import DEFAULT_DRAWIO_URL from '@libs/filesharing/constants/defaultDrawioUrl';
 
 const DRAWIO_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
   {
@@ -27,7 +28,7 @@ const DRAWIO_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
     description: 'appExtendedOptions.drawioUrlDescription',
     title: 'appExtendedOptions.drawioUrlTitle',
     type: ExtendedOptionField.input,
-    value: 'https://embed.diagrams.net',
+    value: DEFAULT_DRAWIO_URL,
     width: 'full',
   },
 ];

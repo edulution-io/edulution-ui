@@ -33,6 +33,7 @@ import useThemeStore from '@/store/useThemeStore';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import { Theme } from '@libs/common/constants/theme';
 import UserLanguage from '@libs/user/constants/userLanguage';
+import IFRAME_ALLOWED_CONFIG from '@libs/ui/constants/iframeAllowedConfig';
 
 interface DrawioViewerProps {
   xmlContent: string;
@@ -135,6 +136,7 @@ const DrawioViewer = ({ xmlContent, editMode = false, isFullscreen = false, webd
       spin: '1',
       ui: drawioUiTheme,
       lang: document.documentElement.lang || UserLanguage.GERMAN,
+      offline: drawioBaseUrl !== DEFAULT_DRAWIO_URL ? '0' : '1',
     });
 
     if (!editMode) {
@@ -162,7 +164,7 @@ const DrawioViewer = ({ xmlContent, editMode = false, isFullscreen = false, webd
         src={buildDrawioUrl()}
         title="Draw.io Viewer"
         className="h-full w-full border-none"
-        allow="fullscreen"
+        allow={IFRAME_ALLOWED_CONFIG}
       />
     </div>
   );
