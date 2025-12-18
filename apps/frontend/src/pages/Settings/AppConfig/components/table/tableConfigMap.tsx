@@ -37,6 +37,12 @@ import VEYON_PROXY_TABLE_COLUMNS from '@libs/classManagement/constants/veyonProx
 import type WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import { WebdavServerTableStore, type WebdavShareTableStore } from '@libs/appconfig/types/webdavShareTableStore';
 import WEBDAV_SHARE_TABLE_COLUMNS from '@libs/filesharing/constants/webdavShareTableColumns';
+import AllowedSenderDto from '@libs/notification-center/types/allowedSenderDto';
+import AllowedSenderTableColumns from '@/pages/Settings/AppConfig/notificationcenter/AllowedSenderTableColumns';
+import ALLOWED_ANNOUNCEMENT_SENDER_TABLE_COLUMNS from '@libs/notification-center/constants/allowedAnnouncementSenderTableColumns';
+import AllowedAnnouncementSenderTableStore from '@libs/appconfig/types/allowedAnnouncementSenderTableStore';
+import useAllowedSenderTableStore from '@/pages/Settings/AppConfig/notificationcenter/useAllowedSenderTableStore';
+import AddAllowedSenderDialog from '@/pages/Settings/AppConfig/notificationcenter/AddAllowedSenderDialog';
 import DockerContainerTableColumns from '../../DockerIntegration/DockerContainerTableColumns';
 import CreateDockerContainerDialog from '../../DockerIntegration/CreateDockerContainerDialog';
 import useDockerApplicationStore from '../../DockerIntegration/useDockerApplicationStore';
@@ -189,6 +195,20 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
         WEBDAV_SHARE_TABLE_COLUMNS.ACCESSGROUPS,
       ],
       hideColumnsInTabletView: [WEBDAV_SHARE_TABLE_COLUMNS.URL],
+    }),
+  ],
+  [APPS.NOTIFICATION_CENTER]: [
+    createAppConfigTableEntry<AllowedSenderDto, AllowedAnnouncementSenderTableStore>({
+      columns: AllowedSenderTableColumns,
+      useStore: useAllowedSenderTableStore,
+      dialogBody: <AddAllowedSenderDialog tableId={ExtendedOptionKeys.NOTIFICATION_CENTER_ALLOWED_CREATORS} />,
+      showAddButton: true,
+      showRemoveButton: true,
+      filterKey: ALLOWED_ANNOUNCEMENT_SENDER_TABLE_COLUMNS.ALLOWED_GROUPS,
+      filterPlaceHolderText: 'notificationcenter.filterPlaceHolderText',
+      type: ExtendedOptionKeys.NOTIFICATION_CENTER_ALLOWED_CREATORS,
+      hideColumnsInMobileView: [],
+      hideColumnsInTabletView: [],
     }),
   ],
 };

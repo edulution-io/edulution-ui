@@ -36,12 +36,23 @@ interface SectionAccordionItemProps {
   children: React.ReactNode;
   className?: string;
   variant?: 'default' | 'transparent';
+  collapsible?: boolean;
 }
 
 const getChildIds = (children: React.ReactNode): string[] => {
   const ids: string[] = [];
   React.Children.forEach(children, (child) => {
     if (React.isValidElement<SectionAccordionItemProps>(child) && child.props.id) {
+      ids.push(child.props.id);
+    }
+  });
+  return ids;
+};
+
+const getNonCollapsibleIds = (children: React.ReactNode): string[] => {
+  const ids: string[] = [];
+  React.Children.forEach(children, (child) => {
+    if (React.isValidElement<SectionAccordionItemProps>(child) && child.props.id && child.props.collapsible === false) {
       ids.push(child.props.id);
     }
   });
@@ -58,8 +69,12 @@ const SectionAccordion: React.FC<SectionAccordionProps> = ({
     if (defaultOpenAll) {
       return getChildIds(children);
     }
-    return defaultOpen;
+
+    const nonCollapsible = getNonCollapsibleIds(children);
+    return [...new Set([...defaultOpen, ...nonCollapsible])];
   });
+
+  const nonCollapsibleIds = getNonCollapsibleIds(children);
 
   useEffect(() => {
     const hash = window.location.hash.replace('#', '');
@@ -74,11 +89,14 @@ const SectionAccordion: React.FC<SectionAccordionProps> = ({
   }, []);
 
   const handleValueChange = (value: string[]) => {
-    setOpenItems(value);
+    // Ensure non-collapsible items stay open
+    const newValue = [...new Set([...value, ...nonCollapsibleIds])];
+    setOpenItems(newValue);
 
-    if (value.length === 1) {
-      window.history.replaceState(null, '', `#${value[0]}`);
-    } else if (value.length === 0) {
+    const collapsibleOpenItems = newValue.filter((id) => !nonCollapsibleIds.includes(id));
+    if (collapsibleOpenItems.length === 1) {
+      window.history.replaceState(null, '', `#${collapsibleOpenItems[0]}`);
+    } else if (collapsibleOpenItems.length === 0) {
       window.history.replaceState(null, '', window.location.pathname);
     }
   };
@@ -101,6 +119,7 @@ const SectionAccordionItem: React.FC<SectionAccordionItemProps> = ({
   children,
   className,
   variant = 'default',
+  collapsible = true,
 }) => (
   <Item
     value={id}
@@ -108,16 +127,27 @@ const SectionAccordionItem: React.FC<SectionAccordionItemProps> = ({
   >
     <AnchorSection id={id}>
       <Header className="flex">
-        <Trigger
-          className={cn(
-            'flex flex-1 items-center justify-between py-4 text-base font-semibold leading-none tracking-tight',
-            'transition-all [&[data-state=open]>svg]:rotate-180',
-            variant === 'default' && 'px-6',
-          )}
-        >
-          <h3>{label}</h3>
-          <ChevronDownIcon className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" />
-        </Trigger>
+        {collapsible ? (
+          <Trigger
+            className={cn(
+              'flex flex-1 items-center justify-between py-4 text-base font-semibold leading-none tracking-tight',
+              'transition-all [&[data-state=open]>svg]:rotate-180',
+              variant === 'default' && 'px-6',
+            )}
+          >
+            <h3>{label}</h3>
+            <ChevronDownIcon className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" />
+          </Trigger>
+        ) : (
+          <div
+            className={cn(
+              'flex flex-1 items-center justify-between py-4 text-base font-semibold leading-none tracking-tight',
+              variant === 'default' && 'px-6',
+            )}
+          >
+            <h3>{label}</h3>
+          </div>
+        )}
       </Header>
       <Content
         className={cn(

@@ -1,0 +1,7 @@
+const ALLOWED_ANNOUNCEMENT_SENDER_TABLE_COLUMNS = {
+  NAME: 'name',
+  ALLOWED_GROUPS: 'allowedGroups',
+  ALLOWED_USERS: 'allowedUsers',
+} as const;
+
+export default ALLOWED_ANNOUNCEMENT_SENDER_TABLE_COLUMNS;

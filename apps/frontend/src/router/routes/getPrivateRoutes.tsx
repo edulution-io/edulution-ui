@@ -44,6 +44,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
 import DefaultLandingPageAfterLogin from '@/components/structure/DefaultLandingPageAfterLogin';
 import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
+import NotificationCenterPage from '@/pages/NotificationCenter/NotificationCenterPage';
 import ProtectedRoute from './ProtectedRoute';
 import getEmbeddedRoutes from './getEmbeddedRoutes';
 
@@ -97,6 +98,11 @@ const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
     <Route
       path={`${APPS.BULLETIN_BOARD}/:bulletinId`}
       element={<BulletinBoardPage />}
+    />
+
+    <Route
+      path={`${APPS.NOTIFICATION_CENTER}/`}
+      element={<NotificationCenterPage />}
     />
 
     <Route element={<ProtectedRoute />}>{getSettingsRoutes()}</Route>

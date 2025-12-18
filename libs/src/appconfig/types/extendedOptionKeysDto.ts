@@ -20,11 +20,14 @@
 import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
 import TAppFieldType from '@libs/appconfig/types/tAppFieldType';
 import type VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import AllowedSenderDto from '@libs/notification-center/types/allowedSenderDto';
 
 type ExtendedOptionKeysDto = {
   [key in ExtendedOptionKeysType]?: TAppFieldType;
 } & {
-  VEYON_PROXYS?: VeyonProxyItem[];
+  [ExtendedOptionKeys.VEYON_PROXYS]?: VeyonProxyItem[];
+  [ExtendedOptionKeys.NOTIFICATION_CENTER_ALLOWED_CREATORS]?: AllowedSenderDto[];
 };
 
 export default ExtendedOptionKeysDto;

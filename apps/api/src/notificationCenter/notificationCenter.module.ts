@@ -17,19 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AppConfigSectionsKeys = {
-  general: 'general',
-  fileSharing: 'fileSharing',
-  onlyOffice: 'onlyOffice',
-  drawio: 'drawio',
-  imapMailFeed: 'imapMailFeed',
-  bulletinBoard: 'bulletinBoard',
-  veyon: 'veyon',
-  docker: 'docker',
-  files: 'files',
-  editor: 'editor',
-  webdavShare: 'webdavShare',
-  notificationCenter: 'notificationCenter',
-} as const;
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import NotificationCenterController from './notificationCenter.controller';
+import NotificationCenterService from './notificationCenter.service';
+import GroupsModule from '../groups/groups.module';
+import { Announcement, AnnouncementSchema } from './schemas/announcement.schema';
 
-export default AppConfigSectionsKeys;
+@Module({
+  imports: [MongooseModule.forFeature([{ name: Announcement.name, schema: AnnouncementSchema }]), GroupsModule],
+  controllers: [NotificationCenterController],
+  providers: [NotificationCenterService],
+  exports: [NotificationCenterService],
+})
+export default class NotificationCenterModule {}

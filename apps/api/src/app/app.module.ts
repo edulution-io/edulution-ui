@@ -65,6 +65,7 @@ import DevCacheFlushService from '../common/cache/dev-cache-flush.service';
 import MetricsModule from '../metrics/metrics.module';
 import configuration from '../config/configuration';
 import enableSentryForNest from '../sentry/enableSentryForNest';
+import NotificationCenterModule from '../notificationCenter/notificationCenter.module';
 
 @Module({
   imports: [
@@ -138,6 +139,7 @@ import enableSentryForNest from '../sentry/enableSentryForNest';
     SseModule,
     TLDrawSyncModule,
     ScriptsModule,
+    NotificationCenterModule,
   ],
   providers: [
     {
