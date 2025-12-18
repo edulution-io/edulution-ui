@@ -33,14 +33,11 @@ type TextEditorStore = {
   editedContent: string | null;
   originalContent: string | null;
   isSaving: boolean;
-  saveError: Error | null;
   isUnsavedChangesDialogOpen: boolean;
   pendingCloseAction: (() => void | Promise<void>) | null;
 
   setEditedContent: (content: string) => void;
   setOriginalContent: (content: string) => void;
-  setIsSaving: (isSaving: boolean) => void;
-  setSaveError: (error: Error | null) => void;
   openUnsavedChangesDialog: (onClose: () => void | Promise<void>) => void;
   closeUnsavedChangesDialog: () => void;
   executePendingCloseAction: () => void;
@@ -53,7 +50,6 @@ const initialState = {
   editedContent: null,
   originalContent: null,
   isSaving: false,
-  saveError: null,
   isUnsavedChangesDialogOpen: false,
   pendingCloseAction: null,
 };
@@ -64,10 +60,6 @@ const useTextEditorStore = create<TextEditorStore>((set, get) => ({
   setEditedContent: (content) => set({ editedContent: content }),
 
   setOriginalContent: (content) => set({ originalContent: content, editedContent: content }),
-
-  setIsSaving: (isSaving) => set({ isSaving }),
-
-  setSaveError: (error) => set({ saveError: error }),
 
   openUnsavedChangesDialog: (onClose) => set({ isUnsavedChangesDialogOpen: true, pendingCloseAction: onClose }),
 
@@ -116,7 +108,6 @@ const useTextEditorStore = create<TextEditorStore>((set, get) => ({
       toast.success(i18n.t('filesharing.textEditor.saveSuccess'));
     } catch {
       toast.error(i18n.t('filesharing.textEditor.saveError'));
-      throw new Error('Save failed');
     } finally {
       set({ isSaving: false });
     }

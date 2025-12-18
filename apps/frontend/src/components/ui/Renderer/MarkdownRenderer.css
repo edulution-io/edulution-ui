@@ -30,3 +30,18 @@ html.dark .w-md-editor-preview {
 .w-md-editor-text-input {
   letter-spacing: normal;
 }
+
+.w-md-editor-toolbar {
+  min-height: 40px;
+  padding: 6px 10px;
+}
+
+.w-md-editor-toolbar li > button {
+  height: 28px;
+  width: 24px;
+}
+
+.w-md-editor-toolbar li > button svg {
+  height: 18px;
+  width: 18px;
+}
