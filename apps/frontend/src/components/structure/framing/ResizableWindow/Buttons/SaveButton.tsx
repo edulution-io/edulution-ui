@@ -17,21 +17,26 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
+import React from 'react';
+import { MdSave } from 'react-icons/md';
+import WindowControlBaseButton from './WindowControlBaseButton';
 
-const getExtendedOptionsValue = <T = string>(
-  appConfigs: AppConfigDto[],
-  settingLocation: string,
-  key: ExtendedOptionKeysType,
-): T | undefined => {
-  const appConfig = appConfigs.find((config) => config.name === settingLocation);
+interface SaveButtonProps {
+  onClick: () => Promise<void> | void;
+  disabled?: boolean;
+}
 
-  if (!appConfig || typeof appConfig.extendedOptions !== 'object') {
-    return undefined;
-  }
+const SaveButton = ({ onClick, disabled }: SaveButtonProps) => (
+  <WindowControlBaseButton
+    onClick={onClick}
+    tooltipTranslationId="common.save"
+    disabled={disabled}
+  >
+    <div className="relative">
+      <MdSave />
+      {!disabled && <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-ciLightBlue" />}
+    </div>
+  </WindowControlBaseButton>
+);
 
-  return appConfig.extendedOptions[key] as T | undefined;
-};
-
-export default getExtendedOptionsValue;
+export default SaveButton;

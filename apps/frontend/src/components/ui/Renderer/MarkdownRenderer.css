@@ -17,21 +17,32 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
+html.dark .wmde-markdown,
+html.dark .wmde-markdown img,
+html.dark .w-md-editor-preview {
+  background-color: var(--foreground);
+  color: var(--background);
+}
 
-const getExtendedOptionsValue = <T = string>(
-  appConfigs: AppConfigDto[],
-  settingLocation: string,
-  key: ExtendedOptionKeysType,
-): T | undefined => {
-  const appConfig = appConfigs.find((config) => config.name === settingLocation);
+.w-md-editor,
+.w-md-editor *,
+.w-md-editor-text,
+.w-md-editor-text-pre,
+.w-md-editor-text-input {
+  letter-spacing: normal;
+}
 
-  if (!appConfig || typeof appConfig.extendedOptions !== 'object') {
-    return undefined;
-  }
+.w-md-editor-toolbar {
+  min-height: 40px;
+  padding: 6px 10px;
+}
 
-  return appConfig.extendedOptions[key] as T | undefined;
-};
+.w-md-editor-toolbar li > button {
+  height: 28px;
+  width: 24px;
+}
 
-export default getExtendedOptionsValue;
+.w-md-editor-toolbar li > button svg {
+  height: 18px;
+  width: 18px;
+}

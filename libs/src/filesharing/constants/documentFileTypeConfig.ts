@@ -23,6 +23,7 @@ import AVAILABLE_FILE_TYPES from '@libs/filesharing/constants/availableFileTypes
 import EXTENSION_ICON_MAP from '@libs/filesharing/constants/extensionIconMap';
 
 const DOCUMENT_FILE_TYPE_CONFIG: { fileType: TAvailableFileTypes; icon: IconType; iconColor: string }[] = [
+  { fileType: AVAILABLE_FILE_TYPES.drawIoFile, ...EXTENSION_ICON_MAP['drawio'] },
   { fileType: AVAILABLE_FILE_TYPES.textFile, ...EXTENSION_ICON_MAP['txt'] },
   { fileType: AVAILABLE_FILE_TYPES.documentFile, ...EXTENSION_ICON_MAP['docx'] },
   { fileType: AVAILABLE_FILE_TYPES.spreadsheetFile, ...EXTENSION_ICON_MAP['xlsx'] },

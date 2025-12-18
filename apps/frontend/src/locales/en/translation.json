@@ -403,6 +403,14 @@
       "zipFilesAreUploading": "Files are uploading",
       "fileIsUploading": "{{filename}} is uploading"
     },
+    "textEditor": {
+      "unsavedChanges": "Unsaved Changes",
+      "unsavedChangesMessage": "You have unsaved changes. What would you like to do?",
+      "discard": "Discard",
+      "saving": "Saving...",
+      "saveSuccess": "File saved successfully",
+      "saveError": "Failed to save file"
+    },
 
     "publicShareFilesPage": {
       "title": "Shared Files",
@@ -1088,7 +1096,10 @@
           "title": "General settings",
           "description": ""
         },
-
+        "drawio": {
+          "title": "Draw.io Integration",
+          "description": "Configure Draw.io for creating diagrams and flowcharts."
+        },
         "proxyConfig": {
           "title": "Proxy Configuration",
           "description": "You can store your own proxy configuration for Traefik here. You can either work via the input fields using a template or create a configuration in YAML format directly in expert mode. <br/><strong>Warning:</strong> A wrong configuration could lead to the application being unreachable."
@@ -1819,6 +1830,8 @@
     "onlyOfficeUrlTitle": "OnlyOffice URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
     "onlyOfficeJwtSecretDescription": "Enter the OnlyOffice JWT Secret",
+    "drawioUrlTitle": "Draw.io URL",
+    "drawioUrlDescription": "Enter the URL of your self-hosted Draw.io instance",
     "overrideDocumentVendorMSWithOOTitle": "Use OpenDocument as the standard document format",
     "overrideDocumentVendorMSWithOODescription": "Should the format used by OpenOffice (odt, ods, odp) be used instead of Microsoft Office (docx, pptx, xlsx) formats?",
     "mailImapUrlTitle": "URL",
