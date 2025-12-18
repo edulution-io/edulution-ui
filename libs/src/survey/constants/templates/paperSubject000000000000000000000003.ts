@@ -68,7 +68,7 @@ const PaperSubject000000000000000000000003 = {
     canUpdateFormerAnswer: true,
   },
   accessibleByRoles: [],
-  deploymentTargets: ['Linuxmuster'],
+  deploymentTargets: ['linuxmuster'],
 };
 
 export default PaperSubject000000000000000000000003;

@@ -274,7 +274,7 @@ const ParentTeacherConference000000000000000000000004 = {
     canUpdateFormerAnswer: true,
   },
   accessibleByRoles: [],
-  deploymentTargets: ['Linuxmuster'],
+  deploymentTargets: ['linuxmuster'],
 };
 
 export default ParentTeacherConference000000000000000000000004;

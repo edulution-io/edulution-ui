@@ -107,7 +107,7 @@ const LimitedEventParticipation000000000000000000000002 = {
     canUpdateFormerAnswer: true,
   },
   accessibleByRoles: [],
-  deploymentTargets: ['Linuxmuster'],
+  deploymentTargets: ['linuxmuster'],
 };
 
 export default LimitedEventParticipation000000000000000000000002;

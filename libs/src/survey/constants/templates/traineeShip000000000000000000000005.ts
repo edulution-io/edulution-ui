@@ -69,7 +69,7 @@ const TraineeShip000000000000000000000005 = {
     canUpdateFormerAnswer: true,
   },
   accessibleByRoles: [],
-  deploymentTargets: ['Linuxmuster'],
+  deploymentTargets: ['linuxmuster'],
 };
 
 export default TraineeShip000000000000000000000005;

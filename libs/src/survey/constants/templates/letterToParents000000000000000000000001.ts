@@ -98,7 +98,7 @@ const LetterToParents000000000000000000000001 = {
     canUpdateFormerAnswer: false,
   },
   accessibleByRoles: [],
-  deploymentTargets: ['Linuxmuster'],
+  deploymentTargets: ['linuxmuster'],
 };
 
 export default LetterToParents000000000000000000000001;

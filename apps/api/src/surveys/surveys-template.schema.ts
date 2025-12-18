@@ -49,7 +49,7 @@ export class SurveysTemplate {
   @Prop({ default: [] })
   accessibleByRoles: MultipleSelectorGroup[] | Group[];
 
-  @Prop({ default: ['Linuxmuster'] })
+  @Prop({ default: ['linuxmuster'] })
   deploymentTargets: string[];
 }
 

@@ -38,7 +38,7 @@ const surveyTemplatesMigration001LoadDefaultTemplates: Migration<SurveysTemplate
   name,
   version: 1,
   execute: async (model: Model<SurveysTemplateDocument>) => {
-    const deploymentTarget = process.env.DEPLOYMENT_TARGET || 'NotFound';
+    const deploymentTarget = process.env.DEPLOYMENT_TARGET || 'linuxmuster';
     Logger.log(`Migration "${name}": Found ${list.length} documents to process...`, MigrationService.name);
     await Promise.all(
       list.map(async (surveyTemplate) => {
