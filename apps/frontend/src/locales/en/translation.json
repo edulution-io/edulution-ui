@@ -1154,6 +1154,10 @@
           "sandboxModeDescription": "In “Separate layout” mode, the content is displayed as a separate page, similar to a window within the application. In addition to the actual content, additional design elements or functions can also be loaded from other sources. This means that the design is independent of the application and could therefore look or behave differently. Here, the content must be uploaded as an HTML file.",
           "nativeModeDescription": "In “Integrated layout” mode, on the other hand, the content is inserted directly into the user interface of the application. This means that the content looks exactly like the application itself and fits in seamlessly. However, no additional external design elements or functions can be added dynamically here. However, static elements such as images can be uploaded and used here.",
           "visibilityDescription": "Here you can specify whether the app should be publicly accessible. Active means public, inactive means that only configured user groups have access. Making the app publicly accessible creates a link in the footer. To make the app visible to registered users in the sidebar, their access must be configured via the user groups."
+        },
+        "notificationCenter": {
+          "title": "Permissions",
+          "description": "Define which groups and users are allowed to create and send notifications."
         }
       },
       "update": {
@@ -1860,7 +1864,9 @@
       "updateNow": "Update Now",
       "checkVersionSuccess": "Theme successfully checked!",
       "noData": "No version information available."
-    }
+    },
+    "notificationCenterAllowedCreatorsTitle": "Allowed Creators",
+    "notificationCenterAllowedCreatorsDescription": "Groups and users that are allowed to create notifications"
   },
   "mails": {
     "errors": {
@@ -2013,5 +2019,55 @@
     },
     "sharePath": "Path",
     "pathPreview": "Path preview"
+  },
+  "notificationcenter": {
+    "sidebar": "Notification Center",
+    "description": "Create a notification for selected users",
+    "newAnnouncement": "New Notification",
+    "searchByTitle": "Search by title...",
+    "createAnnouncement": "Create Notification",
+    "duplicateAnnouncement": "Copy Notification",
+    "deleteAnnouncements": "Delete Notifications",
+    "confirmDeleteAnnouncements": "Do you really want to delete {{count}} notification(s)?",
+    "title": "Title",
+    "titlePlaceholder": "Subject of the notification...",
+    "message": "Message",
+    "messageContent": "Content",
+    "messagePlaceholder": "Write your notification here...",
+    "pushMessage": "Short Message",
+    "pushMessageHint": "This message will be displayed as push notification (max. 150 characters)",
+    "recipients": "Recipients",
+    "recipientsDescription": "Select the groups or users that should receive this notification.",
+    "selectRecipients": "Search for groups or users",
+    "recipientsCount": "Recipient Count",
+    "users": "Users",
+    "userGroups": "User Groups",
+    "deliveryMethod": "Delivery Method",
+    "deliveryDescription": "Choose how the notification should be delivered.",
+    "channels": "Channels",
+    "channelsDescription": "Select the channels through which the notification should be sent.",
+    "status": "Status",
+    "scheduledAt": "Scheduled for",
+    "sentAt": "Sent at",
+    "send": "Send Notification",
+    "resend": "Resend",
+    "pushNotification": "Push Notification",
+    "pushDescription": "Instant notification on the device",
+    "announcementCreated": "Notification sent successfully",
+    "pushMessagePlaceholder": "Short message for the push notification...",
+    "statusType": {
+      "draft": "Draft",
+      "scheduled": "Scheduled",
+      "sent": "Sent"
+    },
+    "channel": {
+      "push": "Push Notification"
+    },
+    "validation": {
+      "titleRequired": "Title is required",
+      "messageRequired": "Message is required",
+      "recipientsRequired": "At least one recipient is required",
+      "deliveryMethodRequired": "At least one delivery method is required"
+    }
   }
 }

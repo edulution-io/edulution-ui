@@ -1157,6 +1157,10 @@
           "sandboxModeDescription": "Im Modus „Separates Layout“ wird der Inhalt als eigenständige Seite angezeigt, ähnlich wie ein Fenster innerhalb der Anwendung. Dabei können neben dem eigentlichen Inhalt auch zusätzliche Designelemente oder Funktionen aus anderen Quellen geladen werden. Dadurch ist die Gestaltung unabhängig von der Anwendung, könnte also anders aussehen oder sich anders verhalten. Hier muss der Inhalt als HTML-Datei hochgeladen werden.",
           "nativeModeDescription": "Im Modus „Integriertes Layout“ dagegen wird der Inhalt direkt in die Oberfläche der Anwendung eingefügt. Dadurch sieht der Inhalt genauso aus wie die Anwendung selbst und fügt sich optisch nahtlos ein. Allerdings können hier keine zusätzlichen externen Designelemente oder Funktionen dynamisch hinzugefügt werden. Es können jedoch statische Elemente wie Bilder hochgeladen und hier eingesetzt werden.",
           "visibilityDescription": "Hier können Sie festlegen, ob die App öffentlich zugänglich sein soll. Aktiv bedeutet öffentlich, inaktiv bedeutet, dass nur konfigurierte Nutzergruppen Zugriff haben. Die App öffentlich zugänglich zu machen erzeugt einen Link im Footer. Um die App in der Sidebar für registrierte Nutzer sichtbar zu machen, muss deren Zugriff über die Nutzergruppen konfiguriert werden"
+        },
+        "notificationCenter": {
+          "title": "Berechtigungen",
+          "description": "Legen Sie fest, welche Gruppen und Nutzer Mitteilungen erstellen und versenden dürfen."
         }
       },
       "update": {
@@ -1881,7 +1885,9 @@
       "updateNow": "Jetzt aktualisieren",
       "checkVersionSuccess": "Theme erfolgreich überprüft!",
       "noData": "Keine Versionsinformationen verfügbar."
-    }
+    },
+    "notificationCenterAllowedCreatorsTitle": "Berechtigte Ersteller",
+    "notificationCenterAllowedCreatorsDescription": "Gruppen und Nutzer, die Mitteilungen erstellen dürfen"
   },
   "preview": {
     "image": "Bildvorschau",
@@ -2015,5 +2021,55 @@
     },
     "sharePath": "Pfad",
     "pathPreview": "Pfad-Vorschau"
+  },
+  "notificationcenter": {
+    "sidebar": "Mitteilungscenter",
+    "description": "Erstelle eine Mitteilung für ausgewählte Nutzer",
+    "newAnnouncement": "Neue Mitteilung",
+    "searchByTitle": "Nach Titel suchen...",
+    "createAnnouncement": "Mitteilung erstellen",
+    "duplicateAnnouncement": "Mitteilung kopieren",
+    "deleteAnnouncements": "Mitteilungen löschen",
+    "confirmDeleteAnnouncements": "Möchten Sie {{count}} Mitteilung(en) wirklich löschen?",
+    "title": "Titel",
+    "titlePlaceholder": "Betreff der Mitteilung...",
+    "message": "Nachricht",
+    "messageContent": "Inhalt",
+    "messagePlaceholder": "Schreiben Sie hier Ihre Mitteilung...",
+    "pushMessage": "Kurznachricht",
+    "pushMessageHint": "Diese Nachricht wird als Push-Benachrichtigung angezeigt (max. 150 Zeichen)",
+    "recipients": "Empfänger",
+    "recipientsDescription": "Wählen Sie die Gruppen oder Nutzer aus, die diese Mitteilung erhalten sollen.",
+    "selectRecipients": "Suchen Sie nach Gruppen oder Nutzern",
+    "recipientsCount": "Empfängeranzahl",
+    "users": "Benutzer",
+    "userGroups": "Nutzergruppen",
+    "deliveryMethod": "Zustellungsart",
+    "deliveryDescription": "Wählen Sie aus, wie die Mitteilung zugestellt werden soll.",
+    "channels": "Kanäle",
+    "channelsDescription": "Wählen Sie aus, über welche Kanäle die Mitteilung versendet werden soll.",
+    "status": "Status",
+    "scheduledAt": "Geplant für",
+    "sentAt": "Gesendet am",
+    "send": "Mitteilung senden",
+    "resend": "Erneut senden",
+    "pushNotification": "Push-Benachrichtigung",
+    "pushDescription": "Sofortige Benachrichtigung auf dem Gerät",
+    "announcementCreated": "Mitteilung erfolgreich gesendet",
+    "pushMessagePlaceholder": "Kurze Nachricht für die Push-Benachrichtigung...",
+    "statusType": {
+      "draft": "Entwurf",
+      "scheduled": "Geplant",
+      "sent": "Gesendet"
+    },
+    "channel": {
+      "push": "Push-Benachrichtigung"
+    },
+    "validation": {
+      "titleRequired": "Titel ist erforderlich",
+      "messageRequired": "Nachricht ist erforderlich",
+      "recipientsRequired": "Mindestens ein Empfänger ist erforderlich",
+      "deliveryMethodRequired": "Mindestens eine Zustellungsart ist erforderlich"
+    }
   }
 }

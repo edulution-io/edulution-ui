@@ -34,28 +34,32 @@ class NotificationsService {
       ? sendPushNotificationDto.to
       : [sendPushNotificationDto.to];
 
-    const messages: ExpoPushMessage[] = tokens.map((token: string) => ({
-      to: token,
-      ...pickDefinedNotificationFields({
-        _contentAvailable: sendPushNotificationDto.contentAvailable,
-        data: sendPushNotificationDto.data,
-        title: sendPushNotificationDto.title,
-        body: sendPushNotificationDto.body,
-        ttl: sendPushNotificationDto.ttl,
-        expiration: sendPushNotificationDto.expiration,
-        priority: sendPushNotificationDto.priority,
-        subtitle: sendPushNotificationDto.subtitle,
-        sound: sendPushNotificationDto.sound,
-        badge: sendPushNotificationDto.badge,
-        interruptionLevel: sendPushNotificationDto.interruptionLevel,
-        channelId: sendPushNotificationDto.channelId,
-        icon: sendPushNotificationDto.icon,
-        richContent: sendPushNotificationDto.richContent,
-        categoryId: sendPushNotificationDto.categoryId,
-        mutableContent: sendPushNotificationDto.mutableContent,
-        accessToken: sendPushNotificationDto.accessToken,
-      }),
-    }));
+    const notificationFields = pickDefinedNotificationFields({
+      _contentAvailable: sendPushNotificationDto.contentAvailable,
+      data: sendPushNotificationDto.data,
+      title: sendPushNotificationDto.title,
+      body: sendPushNotificationDto.body,
+      ttl: sendPushNotificationDto.ttl,
+      expiration: sendPushNotificationDto.expiration,
+      priority: sendPushNotificationDto.priority,
+      subtitle: sendPushNotificationDto.subtitle,
+      sound: sendPushNotificationDto.sound,
+      badge: sendPushNotificationDto.badge,
+      interruptionLevel: sendPushNotificationDto.interruptionLevel,
+      channelId: sendPushNotificationDto.channelId,
+      icon: sendPushNotificationDto.icon,
+      richContent: sendPushNotificationDto.richContent,
+      categoryId: sendPushNotificationDto.categoryId,
+      mutableContent: sendPushNotificationDto.mutableContent,
+      accessToken: sendPushNotificationDto.accessToken,
+    });
+
+    const messages: ExpoPushMessage[] = [
+      {
+        to: tokens,
+        ...notificationFields,
+      },
+    ];
 
     const chunks = this.expo.chunkPushNotifications(messages);
     await Promise.all(chunks.map((chunk) => this.expo.sendPushNotificationsAsync(chunk)));

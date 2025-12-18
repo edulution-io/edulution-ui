@@ -992,6 +992,10 @@
             "description": "Le serveur WebDAV « {{serverName}} » est utilisé par {{count}} partage(s) : {{shares}}. Veuillez d'abord supprimer les partages dépendants."
           }
         },
+        "notificationCenter": {
+          "title": "Berechtigungen",
+          "description": "Legen Sie fest, welche Gruppen und Nutzer Mitteilungen erstellen und versenden dürfen."
+        },
         "files": {
           "title": "Fichiers",
           "description": "Ici, les fichiers affichés dans l'application peuvent être gérés.",
@@ -1681,6 +1685,10 @@
       "updateNow": "Mettre à jour maintenant",
       "checkVersionSuccess": "Thème vérifié avec succès !",
       "noData": "Aucune information de version disponible."
+    },
+    "appExtendedOptions": {
+      "notificationCenterAllowedCreatorsTitle": "Créateurs autorisés",
+      "notificationCenterAllowedCreatorsDescription": "Groupes et utilisateurs autorisés à créer des notifications"
     }
   },
   "preview": {
@@ -1812,5 +1820,55 @@
     },
     "sharePath": "Chemin de partage",
     "pathPreview": "Aperçu du chemin"
+  },
+  "notificationcenter": {
+    "sidebar": "Centre de notifications",
+    "description": "Créez une notification pour les utilisateurs sélectionnés",
+    "newAnnouncement": "Nouvelle notification",
+    "createAnnouncement": "Créer une notification",
+    "searchByTitle": "Rechercher par titre...",
+    "duplicateAnnouncement": "Copier la notification",
+    "deleteAnnouncements": "Supprimer les notifications",
+    "confirmDeleteAnnouncements": "Voulez-vous vraiment supprimer {{count}} notification(s)?",
+    "title": "Titre",
+    "titlePlaceholder": "Objet de la notification...",
+    "message": "Message",
+    "messageContent": "Contenu",
+    "messagePlaceholder": "Rédigez votre notification ici...",
+    "pushMessage": "Message court",
+    "pushMessageHint": "Ce message sera affiché comme notification push (max. 150 caractères)",
+    "recipients": "Destinataires",
+    "recipientsDescription": "Sélectionnez les groupes ou utilisateurs qui doivent recevoir cette notification.",
+    "selectRecipients": "Rechercher des groupes ou des utilisateurs",
+    "recipientsCount": "Nombre de destinataires",
+    "users": "Utilisateurs",
+    "userGroups": "Groupes d'utilisateurs",
+    "deliveryMethod": "Mode de livraison",
+    "deliveryDescription": "Choisissez comment la notification doit être envoyée.",
+    "channels": "Canaux",
+    "channelsDescription": "Sélectionnez les canaux par lesquels la notification doit être envoyée.",
+    "status": "Statut",
+    "scheduledAt": "Prévu pour",
+    "sentAt": "Envoyé le",
+    "send": "Envoyer la notification",
+    "resend": "Renvoyer",
+    "pushNotification": "Notification push",
+    "pushDescription": "Notification instantanée sur l'appareil",
+    "announcementCreated": "Notification envoyée avec succès",
+    "pushMessagePlaceholder": "Court message pour la notification push...",
+    "statusType": {
+      "draft": "Brouillon",
+      "scheduled": "Planifié",
+      "sent": "Envoyé"
+    },
+    "channel": {
+      "push": "Notification push"
+    },
+    "validation": {
+      "titleRequired": "Le titre est requis",
+      "messageRequired": "Le message est requis",
+      "recipientsRequired": "Au moins un destinataire est requis",
+      "deliveryMethodRequired": "Au moins un mode de livraison est requis"
+    }
   }
 }

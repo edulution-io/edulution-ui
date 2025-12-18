@@ -17,19 +17,32 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AppConfigSectionsKeys = {
-  general: 'general',
-  fileSharing: 'fileSharing',
-  onlyOffice: 'onlyOffice',
-  drawio: 'drawio',
-  imapMailFeed: 'imapMailFeed',
-  bulletinBoard: 'bulletinBoard',
-  veyon: 'veyon',
-  docker: 'docker',
-  files: 'files',
-  editor: 'editor',
-  webdavShare: 'webdavShare',
-  notificationCenter: 'notificationCenter',
-} as const;
+import { IsArray, IsOptional, IsString } from 'class-validator';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import AttendeeDto from '@libs/user/types/attendee.dto';
+import { ChannelsType } from './channelsType';
 
-export default AppConfigSectionsKeys;
+class CreateAnnouncementDto {
+  @IsString()
+  title: string;
+
+  @IsString()
+  pushMessage: string;
+
+  @IsString()
+  @IsOptional()
+  extendedMessage?: string;
+
+  @IsArray()
+  @IsOptional()
+  recipientGroups?: MultipleSelectorGroup[];
+
+  @IsArray()
+  @IsOptional()
+  recipientUsers?: AttendeeDto[];
+
+  @IsArray()
+  channels: ChannelsType[];
+}
+
+export default CreateAnnouncementDto;

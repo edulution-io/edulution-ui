@@ -37,6 +37,7 @@ import useTableActions from '@/hooks/useTableActions';
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+import AllowedSenderDto from '@libs/notification-center/types/allowedSenderDto';
 import DeleteAppConfigTableDialog from './DeleteAppConfigTableDialog';
 
 interface AppConfigTableProps {
@@ -109,6 +110,10 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
         if (row && 'webdavShareId' in row && row.webdavShareId) {
           return { name: row.displayName, id: String(index) };
         }
+        if (row && 'allowedSenderId' in row && 'name' in row) {
+          return { name: row.name, id: String(index) };
+        }
+
         return { name: t('common.entry', { index: index + 1 }), id: String(index) };
       });
 
@@ -131,6 +136,10 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
 
         if (row && 'webdavShareId' in row && row.webdavShareId && deleteTableEntry) {
           return deleteTableEntry(applicationName, row.webdavShareId);
+        }
+
+        if (row && 'allowedSenderId' in row && 'allowedGroups' in row && deleteTableEntry) {
+          return deleteTableEntry(applicationName, row.allowedSenderId);
         }
 
         return Promise.resolve();
@@ -160,7 +169,13 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
       return visibility;
     }, [isMobileView, isTabletView, hideColumnsInMobileView, hideColumnsInTabletView]);
 
-    type TableDataType = BulletinCategoryResponseDto | ContainerInfo | FileInfoDto | VeyonProxyItem | WebdavShareDto;
+    type TableDataType =
+      | BulletinCategoryResponseDto
+      | ContainerInfo
+      | FileInfoDto
+      | VeyonProxyItem
+      | WebdavShareDto
+      | AllowedSenderDto;
 
     const selectedRowsArray = useMemo(
       () =>
@@ -284,6 +299,22 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
               selectedRows={selectedRows}
               onRowSelectionChange={handleRowSelectionChange}
               actions={tableActions as TableAction<WebdavShareDto>[]}
+            />
+          );
+        }
+        case ExtendedOptionKeys.NOTIFICATION_CENTER_ALLOWED_CREATORS: {
+          return (
+            <ScrollableTable
+              columns={columns}
+              data={tableContentData as AllowedSenderDto[]}
+              filterKey={filterKey}
+              filterPlaceHolderText={filterPlaceHolderText}
+              applicationName={applicationName}
+              enableRowSelection
+              initialColumnVisibility={initialColumnVisibility}
+              selectedRows={selectedRows}
+              onRowSelectionChange={handleRowSelectionChange}
+              actions={tableActions as TableAction<AllowedSenderDto>[]}
             />
           );
         }

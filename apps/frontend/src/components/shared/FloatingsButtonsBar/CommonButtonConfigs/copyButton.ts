@@ -20,10 +20,11 @@
 import { t } from 'i18next';
 import { MdContentCopy } from 'react-icons/md';
 
-const CopyButton = (onClick: () => void) => ({
+const CopyButton = (onClick: () => void, isVisible?: boolean) => ({
   icon: MdContentCopy,
   text: t('tooltip.copy'),
   onClick,
+  isVisible,
 });
 
 export default CopyButton;

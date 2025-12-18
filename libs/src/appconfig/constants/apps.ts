@@ -53,6 +53,7 @@ const APPS = {
   EMBEDDED: 'embedded',
   APPSTORE: 'appstore',
   GENERAL_SETTINGS: 'generalsettings',
+  NOTIFICATION_CENTER: 'notificationcenter',
 } as const;
 
 export default APPS;

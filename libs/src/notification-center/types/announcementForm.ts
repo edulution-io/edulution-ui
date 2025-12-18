@@ -17,19 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AppConfigSectionsKeys = {
-  general: 'general',
-  fileSharing: 'fileSharing',
-  onlyOffice: 'onlyOffice',
-  drawio: 'drawio',
-  imapMailFeed: 'imapMailFeed',
-  bulletinBoard: 'bulletinBoard',
-  veyon: 'veyon',
-  docker: 'docker',
-  files: 'files',
-  editor: 'editor',
-  webdavShare: 'webdavShare',
-  notificationCenter: 'notificationCenter',
-} as const;
+import { ChannelsType } from '@libs/notification-center/types/channelsType';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 
-export default AppConfigSectionsKeys;
+interface AnnouncementForm {
+  title: string;
+  pushMessage: string;
+  extendedMessage?: string;
+  recipientGroups: MultipleSelectorGroup[];
+  recipientUsers: AttendeeDto[];
+  channels: ChannelsType[];
+}
+
+export default AnnouncementForm;

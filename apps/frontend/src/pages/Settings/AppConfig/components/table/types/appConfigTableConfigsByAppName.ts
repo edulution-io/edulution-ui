@@ -28,6 +28,8 @@ import { type FileTableStore } from '@libs/appconfig/types/fileTableStore';
 import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import type WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import { type WebdavServerTableStore, type WebdavShareTableStore } from '@libs/appconfig/types/webdavShareTableStore';
+import AllowedSenderDto from '@libs/notification-center/types/allowedSenderDto';
+import AllowedAnnouncementSenderTableStore from '@libs/appconfig/types/allowedAnnouncementSenderTableStore';
 import type AppConfigTableEntry from './appConfigTableEntry';
 
 type AllowedTableEntry =
@@ -36,7 +38,8 @@ type AllowedTableEntry =
   | AppConfigTableEntry<VeyonProxyItem, VeyonConfigTableStore>
   | AppConfigTableEntry<FileInfoDto, FileTableStore>
   | AppConfigTableEntry<WebdavShareDto, WebdavServerTableStore>
-  | AppConfigTableEntry<WebdavShareDto, WebdavShareTableStore>;
+  | AppConfigTableEntry<WebdavShareDto, WebdavShareTableStore>
+  | AppConfigTableEntry<AllowedSenderDto, AllowedAnnouncementSenderTableStore>;
 
 type AppConfigTableConfigsByAppName = {
   [APPS.BULLETIN_BOARD]: AppConfigTableEntry<BulletinCategoryResponseDto, BulletinCategoryTableStore>[];
@@ -51,6 +54,7 @@ type AppConfigTableConfigsByAppName = {
     | AppConfigTableEntry<WebdavShareDto, WebdavServerTableStore>
     | AppConfigTableEntry<WebdavShareDto, WebdavShareTableStore>
   )[];
+  [APPS.NOTIFICATION_CENTER]: AppConfigTableEntry<AllowedSenderDto, AllowedAnnouncementSenderTableStore>[];
 } & {
   [key: string]: AllowedTableEntry[];
 };

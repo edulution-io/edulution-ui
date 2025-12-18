@@ -47,6 +47,7 @@ import WEBDAV_SHARE_TABLE_EXTENDED_OPTIONS from '@libs/appconfig/constants/exten
 import MAIL_GENERAL_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/mailGeneralExtendedOptions';
 import FORWARDING_PAGE_OPTIONS from '@libs/appconfig/constants/extendedOptions/forwardingPageOptions';
 import DRAWIO_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/drawioExtendedOptions';
+import NOTIFICATION_CENTER_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/notificationCenterExtendedOptions';
 
 const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -148,6 +149,15 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     isNativeApp: false,
     extendedOptions: {
       [AppConfigSectionsKeys.editor]: EMBEDDED_PAGE_EDITOR_CONFIG,
+    },
+  },
+  {
+    id: APPS.NOTIFICATION_CENTER,
+    icon: NativeIcon,
+    options: [],
+    isNativeApp: true,
+    extendedOptions: {
+      [AppConfigSectionsKeys.notificationCenter]: NOTIFICATION_CENTER_EXTENDED_OPTIONS,
     },
   },
 ];

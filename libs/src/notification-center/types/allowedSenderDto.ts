@@ -17,19 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AppConfigSectionsKeys = {
-  general: 'general',
-  fileSharing: 'fileSharing',
-  onlyOffice: 'onlyOffice',
-  drawio: 'drawio',
-  imapMailFeed: 'imapMailFeed',
-  bulletinBoard: 'bulletinBoard',
-  veyon: 'veyon',
-  docker: 'docker',
-  files: 'files',
-  editor: 'editor',
-  webdavShare: 'webdavShare',
-  notificationCenter: 'notificationCenter',
-} as const;
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import AttendeeDto from '@libs/user/types/attendee.dto';
 
-export default AppConfigSectionsKeys;
+interface AllowedSenderDto {
+  allowedSenderId: string;
+  name: string;
+  allowedGroups: MultipleSelectorGroup[];
+  allowedUsers: AttendeeDto[];
+}
+
+export default AllowedSenderDto;

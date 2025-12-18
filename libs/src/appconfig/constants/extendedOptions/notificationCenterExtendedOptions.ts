@@ -17,19 +17,18 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AppConfigSectionsKeys = {
-  general: 'general',
-  fileSharing: 'fileSharing',
-  onlyOffice: 'onlyOffice',
-  drawio: 'drawio',
-  imapMailFeed: 'imapMailFeed',
-  bulletinBoard: 'bulletinBoard',
-  veyon: 'veyon',
-  docker: 'docker',
-  files: 'files',
-  editor: 'editor',
-  webdavShare: 'webdavShare',
-  notificationCenter: 'notificationCenter',
-} as const;
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
+import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 
-export default AppConfigSectionsKeys;
+const NOTIFICATION_CENTER_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
+  {
+    name: ExtendedOptionKeys.NOTIFICATION_CENTER_ALLOWED_CREATORS,
+    title: 'appExtendedOptions.notificationCenterAllowedCreatorsTitle',
+    description: 'appExtendedOptions.notificationCenterAllowedCreatorsDescription',
+    type: ExtendedOptionField.table,
+    width: 'full',
+  },
+];
+
+export default NOTIFICATION_CENTER_EXTENDED_OPTIONS;
