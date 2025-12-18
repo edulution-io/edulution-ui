@@ -399,6 +399,14 @@
       "zipFilesAreUploading": "Dateien werden in Ordnerstruktur hochgeladen",
       "fileIsUploading": "{{filename}} wird hochgeladen"
     },
+    "textEditor": {
+      "unsavedChanges": "Ungespeicherte Änderungen",
+      "unsavedChangesMessage": "Sie haben ungespeicherte Änderungen. Was möchten Sie tun?",
+      "discard": "Verwerfen",
+      "saving": "Speichern...",
+      "saveSuccess": "Datei erfolgreich gespeichert",
+      "saveError": "Datei konnte nicht gespeichert werden"
+    },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
       "FileNameRequired": "Dateiname ist erforderlich",
