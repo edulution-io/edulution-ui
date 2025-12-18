@@ -19,37 +19,36 @@
 
 import { Types } from 'mongoose';
 
-const TraineeShip = {
-  _id: new Types.ObjectId('000000000000000000000005'),
-  name: 'Praktikumsplatz',
+const PaperSubject000000000000000000000003 = {
+  _id: new Types.ObjectId('000000000000000000000003'),
+  name: 'Vortragsthema',
   isDefaultTemplate: true,
   isActive: true,
   schemaVersion: 1,
   template: {
     formula: {
-      title: 'Praktikumsplatz Wunschliste',
+      title: 'Vortragsthema Wunschliste',
       logo: `/edu-api/files/public/assets/surveys/surveys-default-logo-dark.webp`,
       elements: [
         {
           type: 'paneldynamic',
           name: 'Frage1',
-          title: 'Prioritätenliste möglicher Praktikumsplätze',
+          title: 'Prioritätenliste möglicher Vortragsthemen',
           description:
-            'Bitte gib eine Prioritätenliste mit Unternehmen an, die für dich als Praktikumsplatz in Frage kommen. Beginne mit deiner höchsten Priorität.',
+            'Bitte gib eine Prioritätenliste mit Themen an, die für dich als Vortragsthema in Frage kommen. Beginne mit deiner höchsten Priorität.',
           templateElements: [
             {
               type: 'text',
               name: 'Frage2',
-              title: 'Name des Unternehmens',
+              title: 'Thema',
               isRequired: true,
             },
           ],
-          minPanelCount: 3,
+          minPanelCount: 1,
           maxPanelCount: 10,
-          panelAddText: 'Weiteres Unternehmen hinzufügen',
+          panelAddText: 'Weiteres Thema hinzufügen',
         },
       ],
-      calculatedValues: [],
     },
     backendLimiters: [],
     creator: {
@@ -68,6 +67,8 @@ const TraineeShip = {
     isPublic: false,
     canUpdateFormerAnswer: true,
   },
+  accessibleByRoles: [],
+  deploymentTargets: ['Linuxmuster'],
 };
 
-export default TraineeShip;
+export default PaperSubject000000000000000000000003;

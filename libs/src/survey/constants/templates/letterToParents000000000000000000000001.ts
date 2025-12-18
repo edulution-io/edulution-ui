@@ -19,7 +19,7 @@
 
 import { Types } from 'mongoose';
 
-const LetterToParents = {
+const LetterToParents000000000000000000000001 = {
   _id: new Types.ObjectId('000000000000000000000001'),
   name: 'Elternbrief',
   isDefaultTemplate: true,
@@ -97,6 +97,8 @@ const LetterToParents = {
     isPublic: false,
     canUpdateFormerAnswer: false,
   },
+  accessibleByRoles: [],
+  deploymentTargets: ['Linuxmuster'],
 };
 
-export default LetterToParents;
+export default LetterToParents000000000000000000000001;

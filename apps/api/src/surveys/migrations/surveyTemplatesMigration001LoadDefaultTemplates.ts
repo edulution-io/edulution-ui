@@ -38,9 +38,16 @@ const surveyTemplatesMigration001LoadDefaultTemplates: Migration<SurveysTemplate
   name,
   version: 1,
   execute: async (model: Model<SurveysTemplateDocument>) => {
+    const deploymentTarget = process.env.DEPLOYMENT_TARGET || 'NotFound';
     Logger.log(`Migration "${name}": Found ${list.length} documents to process...`, MigrationService.name);
     await Promise.all(
       list.map(async (surveyTemplate) => {
+        if (
+          surveyTemplate.deploymentTargets.length > 0 &&
+          !surveyTemplate.deploymentTargets.includes(deploymentTarget)
+        ) {
+          return;
+        }
         // eslint-disable-next-line no-underscore-dangle
         const existingTemplate = await model.findOne({ _id: surveyTemplate._id }).lean();
         if (existingTemplate && existingTemplate.schemaVersion >= surveyTemplate.schemaVersion) {

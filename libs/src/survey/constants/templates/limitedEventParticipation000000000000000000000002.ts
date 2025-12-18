@@ -19,7 +19,7 @@
 
 import { Types } from 'mongoose';
 
-const LimitedEventParticipation = {
+const LimitedEventParticipation000000000000000000000002 = {
   _id: new Types.ObjectId('000000000000000000000002'),
   name: 'TeilnahmeVeranstaltungLimitiert',
   isDefaultTemplate: true,
@@ -106,6 +106,8 @@ const LimitedEventParticipation = {
     isPublic: false,
     canUpdateFormerAnswer: true,
   },
+  accessibleByRoles: [],
+  deploymentTargets: ['Linuxmuster'],
 };
 
-export default LimitedEventParticipation;
+export default LimitedEventParticipation000000000000000000000002;
