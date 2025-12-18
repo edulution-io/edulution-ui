@@ -17,18 +17,19 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AppConfigSectionsKeys = {
-  general: 'general',
-  fileSharing: 'fileSharing',
-  onlyOffice: 'onlyOffice',
-  drawio: 'drawio',
-  imapMailFeed: 'imapMailFeed',
-  bulletinBoard: 'bulletinBoard',
-  veyon: 'veyon',
-  docker: 'docker',
-  files: 'files',
-  editor: 'editor',
-  webdavShare: 'webdavShare',
-} as const;
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
+import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 
-export default AppConfigSectionsKeys;
+const DRAWIO_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
+  {
+    name: ExtendedOptionKeys.DRAWIO_URL,
+    description: 'appExtendedOptions.drawioUrlDescription',
+    title: 'appExtendedOptions.drawioUrlTitle',
+    type: ExtendedOptionField.input,
+    value: 'https://embed.diagrams.net',
+    width: 'full',
+  },
+];
+
+export default DRAWIO_EXTENDED_OPTIONS;

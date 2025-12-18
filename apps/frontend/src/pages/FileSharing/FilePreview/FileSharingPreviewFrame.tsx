@@ -44,8 +44,9 @@ import { useLocation } from 'react-router-dom';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import RESIZEABLE_WINDOW_DEFAULT_POSITION from '@libs/ui/constants/resizableWindowDefaultPosition';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
-import useTextEditorStore from '@/pages/FileSharing/FilePreview/useTextEditorStore';
+import useFileEditorContentStore from '@/pages/FileSharing/FilePreview/useFileEditorContentStore';
 import UnsavedChangesDialog from '@/pages/FileSharing/FilePreview/TextEditor/UnsavedChangesDialog';
+import isDrawioExtension from '@libs/filesharing/utils/isDrawioExtension';
 
 const FileSharingPreviewFrame = () => {
   const { t } = useTranslation();
@@ -63,11 +64,12 @@ const FileSharingPreviewFrame = () => {
   const { setCurrentWindowedFrameSize } = useFrameStore();
   const {
     hasUnsavedChanges,
+    hasDrawioUnsavedChanges,
     openUnsavedChangesDialog,
     isSaving,
-    saveTextFile,
-    reset: resetTextEditor,
-  } = useTextEditorStore();
+    saveFile,
+    reset: resetFileEditorContent,
+  } = useFileEditorContentStore();
   const windowSize = useWindowResize();
   const location = useLocation();
   const closingRef = useRef(false);
@@ -79,6 +81,7 @@ const FileSharingPreviewFrame = () => {
 
   const fileExtension = currentlyEditingFile ? getFileExtension(currentlyEditingFile.filename) : undefined;
   const isTextFile = isTextExtension(fileExtension);
+  const isDrawioFile = isDrawioExtension(fileExtension);
 
   useEffect(() => {
     const el = document.getElementById(FILE_PREVIEW_ELEMENT_ID);
@@ -99,7 +102,7 @@ const FileSharingPreviewFrame = () => {
     setIsFilePreviewVisible(false);
     setIsFilePreviewDocked(true);
     setCurrentlyEditingFile(null);
-    resetTextEditor();
+    resetFileEditorContent();
   };
 
   const { isMobileView } = useMedia();
@@ -149,7 +152,10 @@ const FileSharingPreviewFrame = () => {
   const handleCloseFile = async () => {
     if (!currentlyEditingFile) return;
 
-    if (isEditMode && isTextFile && hasUnsavedChanges()) {
+    const hasTextChanges = isTextFile && hasUnsavedChanges();
+    const hasDrawioChanges = isDrawioFile && hasDrawioUnsavedChanges();
+
+    if (isEditMode && (hasTextChanges || hasDrawioChanges)) {
       openUnsavedChangesDialog(performClose);
       return;
     }
@@ -157,7 +163,7 @@ const FileSharingPreviewFrame = () => {
     await performClose();
   };
 
-  const handleSaveTextFile = () => saveTextFile(webdavShare);
+  const handleSaveFile = () => saveFile(webdavShare);
 
   const { appConfigs } = useAppConfigsStore();
 
@@ -177,6 +183,7 @@ const FileSharingPreviewFrame = () => {
     APPS.FILE_SHARING,
     ExtendedOptionKeys.ONLY_OFFICE_URL,
   );
+
   const isOnlyOfficeDoc =
     !!currentlyEditingFile && isOnlyOfficeDocument(currentlyEditingFile.filename ?? currentlyEditingFile.filePath);
 
@@ -193,17 +200,21 @@ const FileSharingPreviewFrame = () => {
 
   const windowTitle = currentlyEditingFile?.filename || t(`filesharing.filePreview`);
 
-  const isEditButtonVisible = !isEditMode && (isOnlyOfficeDocument(currentlyEditingFile?.filename || '') || isTextFile);
+  const isEditButtonVisible =
+    !isEditMode && (isOnlyOfficeDocument(currentlyEditingFile?.filename || '') || isTextFile || isDrawioFile);
   const isTextEditMode = isEditMode && isTextFile;
+  const isDrawioEditMode = isEditMode && isDrawioFile;
+  const showSaveButton = isTextEditMode || isDrawioEditMode;
+  const hasPendingChanges = isTextEditMode ? hasUnsavedChanges() : hasDrawioUnsavedChanges();
   const additionalButtons = [
     <OpenInNewTabButton
       onClick={openInNewTab}
       key={OpenInNewTabButton.name}
     />,
-    isTextEditMode && (
+    showSaveButton && (
       <SaveButton
-        onClick={handleSaveTextFile}
-        disabled={!hasUnsavedChanges() || isSaving}
+        onClick={handleSaveFile}
+        disabled={!hasPendingChanges || isSaving}
         key={SaveButton.name}
       />
     ),
@@ -242,9 +253,10 @@ const FileSharingPreviewFrame = () => {
           editMode={isEditMode}
           closingRef={closingRef}
           isOnlyOfficeConfigured={isDocumentServerConfigured}
+          webdavShare={webdavShare}
         />
       </ResizableWindow>
-      <UnsavedChangesDialog onSave={handleSaveTextFile} />
+      <UnsavedChangesDialog onSave={handleSaveFile} />
     </>
   );
 };

@@ -17,18 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AppConfigSectionsKeys = {
-  general: 'general',
-  fileSharing: 'fileSharing',
-  onlyOffice: 'onlyOffice',
-  drawio: 'drawio',
-  imapMailFeed: 'imapMailFeed',
-  bulletinBoard: 'bulletinBoard',
-  veyon: 'veyon',
-  docker: 'docker',
-  files: 'files',
-  editor: 'editor',
-  webdavShare: 'webdavShare',
-} as const;
+interface DrawioMessage {
+  event: string;
+  xml?: string;
+  data?: string;
+  exit?: boolean;
+}
 
-export default AppConfigSectionsKeys;
+export default DrawioMessage;

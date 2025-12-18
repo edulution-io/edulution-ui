@@ -21,7 +21,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
-import useTextEditorStore from '@/pages/FileSharing/FilePreview/useTextEditorStore';
+import useFileEditorContentStore from '@/pages/FileSharing/FilePreview/useFileEditorContentStore';
 
 interface UnsavedChangesDialogProps {
   onSave: () => Promise<void>;
@@ -30,7 +30,8 @@ interface UnsavedChangesDialogProps {
 const UnsavedChangesDialog = ({ onSave }: UnsavedChangesDialogProps) => {
   const { t } = useTranslation();
   const [isSaving, setIsSaving] = useState(false);
-  const { isUnsavedChangesDialogOpen, closeUnsavedChangesDialog, executePendingCloseAction } = useTextEditorStore();
+  const { isUnsavedChangesDialogOpen, closeUnsavedChangesDialog, executePendingCloseAction } =
+    useFileEditorContentStore();
 
   const handleSave = async () => {
     setIsSaving(true);

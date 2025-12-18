@@ -17,18 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AppConfigSectionsKeys = {
-  general: 'general',
-  fileSharing: 'fileSharing',
-  onlyOffice: 'onlyOffice',
-  drawio: 'drawio',
-  imapMailFeed: 'imapMailFeed',
-  bulletinBoard: 'bulletinBoard',
-  veyon: 'veyon',
-  docker: 'docker',
-  files: 'files',
-  editor: 'editor',
-  webdavShare: 'webdavShare',
-} as const;
+import DRAWIO_EXTENSIONS from '@libs/filesharing/constants/drawioExtensions';
 
-export default AppConfigSectionsKeys;
+const isDrawioExtension = (extension: string | undefined): boolean => {
+  if (!extension) return false;
+  const extensions: string[] = Object.values(DRAWIO_EXTENSIONS);
+  return extensions.includes(extension.toLowerCase());
+};
+
+export default isDrawioExtension;
