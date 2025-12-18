@@ -26,7 +26,7 @@ interface TextPreviewProps {
 }
 
 const TextPreview = ({ content, className }: TextPreviewProps) => (
-  <pre className={cn('whitespace-pre-wrap break-words p-2 font-mono text-sm', className)}>{content}</pre>
+  <pre className={cn('whitespace-pre-wrap break-words p-2 font-mono text-background', className)}>{content}</pre>
 );
 
 export default TextPreview;

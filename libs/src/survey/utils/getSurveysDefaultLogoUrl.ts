@@ -17,13 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Theme, ThemeType } from '@libs/common/constants/theme';
 import APPS from '@libs/appconfig/constants/apps';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import THEME from '@libs/common/constants/theme';
+import ThemeType from '@libs/common/types/themeType';
 import getSurveysDefaultLogoFilename from '@libs/survey/utils/getSurveysDefaultLogoFilename';
 
 const getSurveysDefaultLogoUrl = (theme?: ThemeType) => {
-  const fileName = getSurveysDefaultLogoFilename(theme || Theme.dark);
+  const fileName = getSurveysDefaultLogoFilename(theme || THEME.dark);
   return `/${EDU_API_ROOT}/public/assets/${APPS.SURVEYS}/${fileName}`;
 };
 

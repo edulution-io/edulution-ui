@@ -35,13 +35,25 @@ type DropdownMenuProps = {
   items: DropdownMenuItemType[];
   menuContentClassName?: string;
   disabled?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
-const DropdownMenu: React.FC<DropdownMenuProps> = ({ trigger, items, menuContentClassName, disabled = false }) => {
+const DropdownMenu: React.FC<DropdownMenuProps> = ({
+  trigger,
+  items,
+  menuContentClassName,
+  disabled = false,
+  open,
+  onOpenChange,
+}) => {
   if (!items || !items.length) return null;
 
   return (
-    <DropdownMenuSH>
+    <DropdownMenuSH
+      open={open}
+      onOpenChange={onOpenChange}
+    >
       <DropdownMenuTrigger
         disabled={disabled}
         asChild
@@ -87,7 +99,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ trigger, items, menuContent
                 className="flex cursor-pointer items-center space-x-2 rounded-lg bg-overlay px-4 py-2 hover:bg-muted-light"
               >
                 {item.icon && (
-                  <div className="flex items-center justify-center rounded-lg bg-background p-1">
+                  <div className="flex  items-center justify-center rounded-lg border-2 bg-white p-1 dark:border-none">
                     <item.icon
                       style={{ color: item.iconColor || 'black' }}
                       className="h-5 w-5"

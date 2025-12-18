@@ -37,7 +37,7 @@ const CircleLoader = ({
   <div className={cn('relative box-border', height, width, className)}>
     <motion.span
       className={cn(
-        'absolute left-0 top-0 z-30 box-border block rounded-full border-4 border-t-4 border-muted-foreground border-t-primary',
+        'absolute left-0 top-0 z-30 box-border block rounded-full border-4 border-t-4 border-accent border-t-primary',
         height,
         width,
       )}

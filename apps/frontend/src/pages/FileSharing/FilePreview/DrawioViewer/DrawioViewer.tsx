@@ -31,7 +31,7 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import useFileEditorContentStore from '@/pages/FileSharing/FilePreview/useFileEditorContentStore';
 import useThemeStore from '@/store/useThemeStore';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
-import { Theme } from '@libs/common/constants/theme';
+import THEME from '@libs/common/constants/theme';
 import UserLanguage from '@libs/user/constants/userLanguage';
 import IFRAME_ALLOWED_CONFIG from '@libs/ui/constants/iframeAllowedConfig';
 
@@ -129,7 +129,7 @@ const DrawioViewer = ({ xmlContent, editMode = false, isFullscreen = false, webd
   }, [isDrawioReady, xmlContent, editMode]);
 
   const buildDrawioUrl = (): string => {
-    const drawioUiTheme = theme === Theme.dark ? DRAWIO_UI_THEME.DARK : DRAWIO_UI_THEME.LIGHT;
+    const drawioUiTheme = theme === THEME.dark ? DRAWIO_UI_THEME.DARK : DRAWIO_UI_THEME.LIGHT;
     const params = new URLSearchParams({
       embed: '1',
       proto: 'json',

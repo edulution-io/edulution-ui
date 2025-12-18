@@ -88,7 +88,7 @@ const FormItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
       <FormItemContext.Provider value={contextValue}>
         <div
           ref={ref}
-          className={cn('space-y-2', className)}
+          className={cn('space-y-2 text-background', className)}
           {...props}
         />
       </FormItemContext.Provider>

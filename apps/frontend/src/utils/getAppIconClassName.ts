@@ -17,7 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ThemeType from '@libs/common/types/themeType';
+const getAppIconClassName = (iconSrc: string): string => {
+  const isSvgIcon = iconSrc.endsWith('.svg') || iconSrc.includes('data:image/svg+xml') || iconSrc.includes('.svg');
+  if (!isSvgIcon) return '';
+  const decodedIconSrc = decodeURIComponent(iconSrc);
+  const hasWhiteColor = decodedIconSrc.includes('#fff');
+  if (hasWhiteColor) return 'light:icon-light-mode';
+  const supportsTheming = decodedIconSrc.includes('currentColor');
+  return supportsTheming ? '' : 'light:icon-light-mode';
+};
 
-const getSurveysDefaultLogoFilename = (theme: ThemeType) => `surveys-default-logo-${theme}.webp`;
-export default getSurveysDefaultLogoFilename;
+export default getAppIconClassName;

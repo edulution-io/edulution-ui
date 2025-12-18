@@ -24,6 +24,8 @@ import { Control, FieldValues, Path } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import cn from '@libs/common/utils/className';
 import type RadioGroupItem from '@libs/ui/types/radioGroupItem';
+import defaultIconList from '@/pages/Settings/AppConfig/components/defaultIconList';
+import getAppIconClassName from '@/utils/getAppIconClassName';
 
 interface RadioGroupProps<T extends FieldValues> {
   control: Control<T>;
@@ -94,7 +96,10 @@ const RadioGroupFormField = <T extends FieldValues>({
                             <img
                               src={item.icon}
                               width={imagePixelWidth}
-                              className={fixedImageSize ? 'h-24 w-24 object-contain' : ''}
+                              className={cn(
+                                defaultIconList.includes(item.icon) && getAppIconClassName(item.icon),
+                                fixedImageSize ? 'h-24 w-24 object-contain' : '',
+                              )}
                               aria-label={item.value}
                               alt={item.value}
                             />
