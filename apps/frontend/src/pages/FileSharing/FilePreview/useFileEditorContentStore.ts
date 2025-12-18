@@ -29,37 +29,43 @@ import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpo
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 
-type TextEditorStore = {
+type FileEditorContentStore = {
   editedContent: string | null;
   originalContent: string | null;
+  isDrawioModified: boolean;
   isSaving: boolean;
   isUnsavedChangesDialogOpen: boolean;
   pendingCloseAction: (() => void | Promise<void>) | null;
 
   setEditedContent: (content: string) => void;
   setOriginalContent: (content: string) => void;
+  setIsDrawioModified: (isModified: boolean) => void;
   openUnsavedChangesDialog: (onClose: () => void | Promise<void>) => void;
   closeUnsavedChangesDialog: () => void;
   executePendingCloseAction: () => void;
   hasUnsavedChanges: () => boolean;
-  saveTextFile: (webdavShare: string | undefined) => Promise<void>;
+  hasDrawioUnsavedChanges: () => boolean;
+  saveFile: (webdavShare: string | undefined, contentType?: string) => Promise<void>;
   reset: () => void;
 };
 
 const initialState = {
   editedContent: null,
   originalContent: null,
+  isDrawioModified: false,
   isSaving: false,
   isUnsavedChangesDialogOpen: false,
   pendingCloseAction: null,
 };
 
-const useTextEditorStore = create<TextEditorStore>((set, get) => ({
+const useFileEditorContentStore = create<FileEditorContentStore>((set, get) => ({
   ...initialState,
 
   setEditedContent: (content) => set({ editedContent: content }),
 
-  setOriginalContent: (content) => set({ originalContent: content, editedContent: content }),
+  setOriginalContent: (content) => set({ originalContent: content, editedContent: content, isDrawioModified: false }),
+
+  setIsDrawioModified: (isModified) => set({ isDrawioModified: isModified }),
 
   openUnsavedChangesDialog: (onClose) => set({ isUnsavedChangesDialogOpen: true, pendingCloseAction: onClose }),
 
@@ -79,7 +85,12 @@ const useTextEditorStore = create<TextEditorStore>((set, get) => ({
     return editedContent !== originalContent;
   },
 
-  saveTextFile: async (webdavShare) => {
+  hasDrawioUnsavedChanges: () => {
+    const { isDrawioModified } = get();
+    return isDrawioModified;
+  },
+
+  saveFile: async (webdavShare, contentType = RequestResponseContentType.TEXT_PLAIN) => {
     const { currentlyEditingFile } = useFileEditorStore.getState();
     const { eduApiToken } = useUserStore.getState();
     const { editedContent } = get();
@@ -95,7 +106,7 @@ const useTextEditorStore = create<TextEditorStore>((set, get) => ({
       const fileName = currentlyEditingFile.filename;
       const parentPath = filePath.substring(0, filePath.lastIndexOf('/') + 1);
 
-      const blob = new Blob([editedContent], { type: RequestResponseContentType.TEXT_PLAIN });
+      const blob = new Blob([editedContent], { type: contentType });
       const query = new URLSearchParams();
       query.set(URL_SEARCH_PARAMS.PATH, parentPath);
       query.set('name', fileName);
@@ -104,7 +115,7 @@ const useTextEditorStore = create<TextEditorStore>((set, get) => ({
 
       await uploadOctetStream(uploadClient, url, blob);
 
-      set({ originalContent: editedContent });
+      set({ originalContent: editedContent, isDrawioModified: false });
       toast.success(i18n.t('filesharing.textEditor.saveSuccess'));
     } catch {
       toast.error(i18n.t('filesharing.textEditor.saveError'));
@@ -116,4 +127,4 @@ const useTextEditorStore = create<TextEditorStore>((set, get) => ({
   reset: () => set(initialState),
 }));
 
-export default useTextEditorStore;
+export default useFileEditorContentStore;

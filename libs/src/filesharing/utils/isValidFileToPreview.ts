@@ -24,6 +24,7 @@ import isMediaExtension from '@libs/filesharing/utils/isMediaExtension';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 import isTextExtension from '@libs/filesharing/utils/isTextExtension';
 import isPdfExtension from '@libs/filesharing/utils/isPdfExtension';
+import isDrawioExtension from '@libs/filesharing/utils/isDrawioExtension';
 
 const isValidFileToPreview = (file: DirectoryFileDTO | null): boolean => {
   if (!file) {
@@ -32,6 +33,7 @@ const isValidFileToPreview = (file: DirectoryFileDTO | null): boolean => {
   const extension = getFileExtension(file.filePath);
   return (
     isOnlyOfficeDocument(file.filePath) ||
+    isDrawioExtension(extension) ||
     isImageExtension(extension) ||
     isPdfExtension(extension) ||
     isMediaExtension(extension) ||

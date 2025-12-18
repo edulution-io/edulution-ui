@@ -17,21 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
+const DRAWIO_EXTENSIONS = {
+  DRAWIO: 'drawio',
+  DIO: 'dio',
+} as const;
 
-const getExtendedOptionsValue = <T = string>(
-  appConfigs: AppConfigDto[],
-  settingLocation: string,
-  key: ExtendedOptionKeysType,
-): T | undefined => {
-  const appConfig = appConfigs.find((config) => config.name === settingLocation);
-
-  if (!appConfig || typeof appConfig.extendedOptions !== 'object') {
-    return undefined;
-  }
-
-  return appConfig.extendedOptions[key] as T | undefined;
-};
-
-export default getExtendedOptionsValue;
+export default DRAWIO_EXTENSIONS;

@@ -17,21 +17,20 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
+import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+import DEFAULT_DRAWIO_URL from '@libs/filesharing/constants/defaultDrawioUrl';
 
-const getExtendedOptionsValue = <T = string>(
-  appConfigs: AppConfigDto[],
-  settingLocation: string,
-  key: ExtendedOptionKeysType,
-): T | undefined => {
-  const appConfig = appConfigs.find((config) => config.name === settingLocation);
+const DRAWIO_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
+  {
+    name: ExtendedOptionKeys.DRAWIO_URL,
+    description: 'appExtendedOptions.drawioUrlDescription',
+    title: 'appExtendedOptions.drawioUrlTitle',
+    type: ExtendedOptionField.input,
+    value: DEFAULT_DRAWIO_URL,
+    width: 'full',
+  },
+];
 
-  if (!appConfig || typeof appConfig.extendedOptions !== 'object') {
-    return undefined;
-  }
-
-  return appConfig.extendedOptions[key] as T | undefined;
-};
-
-export default getExtendedOptionsValue;
+export default DRAWIO_EXTENDED_OPTIONS;

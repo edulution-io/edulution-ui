@@ -33,7 +33,8 @@ import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import isTextExtension from '@libs/filesharing/utils/isTextExtension';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
-import useTextEditorStore from '@/pages/FileSharing/FilePreview/useTextEditorStore';
+import useFileEditorContentStore from '@/pages/FileSharing/FilePreview/useFileEditorContentStore';
+import isDrawioExtension from '@libs/filesharing/utils/isDrawioExtension';
 import { MdSave } from 'react-icons/md';
 import { Button } from '@/components/shared/Button';
 
@@ -45,7 +46,7 @@ const FullScreenFileViewer = () => {
     useFileSharingDownloadStore();
 
   const { filesToOpenInNewTab, currentlyEditingFile, setCurrentlyEditingFile } = useFileEditorStore();
-  const { hasUnsavedChanges, isSaving, saveTextFile } = useTextEditorStore();
+  const { hasUnsavedChanges, hasDrawioUnsavedChanges, isSaving, saveFile } = useFileEditorContentStore();
   const appConfigs = useAppConfigsStore((s) => s.appConfigs);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -53,6 +54,7 @@ const FullScreenFileViewer = () => {
 
   const fileExtension = currentlyEditingFile ? getFileExtension(currentlyEditingFile.filePath) : undefined;
   const isTextFile = isTextExtension(fileExtension);
+  const isDrawioFile = isDrawioExtension(fileExtension);
 
   const isDocumentServerConfigured = !!getExtendedOptionsValue(
     appConfigs,
@@ -73,7 +75,7 @@ const FullScreenFileViewer = () => {
     void initializeFile();
   }, []);
 
-  const handleSaveTextFile = () => saveTextFile(webdavShare);
+  const handleSaveFile = () => saveFile(webdavShare);
 
   useBeforeUnload(t('closeEditingWindow'));
 
@@ -82,7 +84,9 @@ const FullScreenFileViewer = () => {
 
   if (!temporaryDownloadUrl) return null;
 
-  const showSaveButton = isTextFile && hasUnsavedChanges();
+  const hasTextChanges = isTextFile && hasUnsavedChanges();
+  const hasDrawioChanges = isDrawioFile && hasDrawioUnsavedChanges();
+  const showSaveButton = hasTextChanges || hasDrawioChanges;
 
   return (
     <PageLayout isFullScreenAppWithoutFloatingButtons>
@@ -94,10 +98,11 @@ const FullScreenFileViewer = () => {
         editMode
         isOpenedInNewTab
         isOnlyOfficeConfigured={isDocumentServerConfigured}
+        webdavShare={webdavShare}
       />
       {showSaveButton && (
         <Button
-          onClick={handleSaveTextFile}
+          onClick={handleSaveFile}
           disabled={isSaving}
           size="md"
           className="absolute bottom-4 right-4 z-50"
