@@ -97,7 +97,7 @@ interface MultipleSelectorProps {
    * @reference: https://github.com/pacocoursey/cmdk/issues/171
    */
   selectFirstItem?: boolean;
-  /** Allow user to create option when there is no o0ption matched. */
+  /** Allow user to create option when there is no option matched. */
   creatable?: boolean;
   /** Props of `Command` */
   commandProps?: React.ComponentPropsWithoutRef<typeof CommandSH>;

@@ -53,11 +53,7 @@ const Field = ({
 
   return (
     <>
-      {labelTranslationId && (
-        <Label>
-          <p className="font-bold">{t(labelTranslationId)}</p>
-        </Label>
-      )}
+      {labelTranslationId && <Label>{t(labelTranslationId)}</Label>}
       <Input
         type={type}
         disabled={disabled || isLoading}

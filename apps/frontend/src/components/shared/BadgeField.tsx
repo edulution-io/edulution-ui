@@ -62,12 +62,8 @@ const BadgeField = (props: BadgeFieldProps) => {
 
   const isEmpty = badges.length === 0;
   return (
-    <>
-      {labelTranslationId && (
-        <Label>
-          <p className="font-bold text-background">{t(labelTranslationId)}</p>
-        </Label>
-      )}
+    <div className="space-y-2">
+      {labelTranslationId && <Label>{t(labelTranslationId)}</Label>}
       <div className="flex flex-row flex-wrap gap-2">
         {isEmpty && (
           <BadgeSH
@@ -112,7 +108,7 @@ const BadgeField = (props: BadgeFieldProps) => {
           />
         )}
       </div>
-    </>
+    </div>
   );
 };
 
