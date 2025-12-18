@@ -21,42 +21,42 @@ import axios from 'axios';
 import { create } from 'zustand';
 import { ResponseType } from '@libs/common/types/http-methods';
 
-type TextPreviewStore = {
-  textContent: string | null;
-  isLoadingText: boolean;
+type FileContentPreviewStore = {
+  fileContent: string | null;
+  isLoadingContent: boolean;
   error: Error | null;
-  fetchTextContent: (fileUrl: string, signal?: AbortSignal) => Promise<void>;
+  fetchFileContent: (fileUrl: string, signal?: AbortSignal) => Promise<void>;
   reset: () => void;
 };
 
 const initialState = {
-  textContent: null,
-  isLoadingText: false,
+  fileContent: null,
+  isLoadingContent: false,
   error: null,
 };
 
-const useTextPreviewStore = create<TextPreviewStore>((set) => ({
+const useFileContentPreviewStore = create<FileContentPreviewStore>((set) => ({
   ...initialState,
 
   reset: () => set(initialState),
 
-  fetchTextContent: async (fileUrl, signal) => {
-    set({ isLoadingText: true, error: null });
+  fetchFileContent: async (fileUrl, signal) => {
+    set({ isLoadingContent: true, error: null });
     try {
       const response = await axios.get<string>(fileUrl, {
         responseType: ResponseType.TEXT,
         signal,
       });
-      set({ textContent: response.data });
+      set({ fileContent: response.data });
     } catch (err) {
       if (axios.isCancel(err)) {
         return;
       }
-      set({ textContent: null, error: err as Error });
+      set({ fileContent: null, error: err as Error });
     } finally {
-      set({ isLoadingText: false });
+      set({ isLoadingContent: false });
     }
   },
 }));
 
-export default useTextPreviewStore;
+export default useFileContentPreviewStore;

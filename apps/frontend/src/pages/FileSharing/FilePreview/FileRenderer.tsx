@@ -38,7 +38,7 @@ import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownl
 import PdfViewer from '@/components/shared/PDFViewer/PdfViewer';
 import TextPreview from '@/components/ui/Renderer/TextPreview';
 import MarkdownRenderer from '@/components/ui/Renderer/MarkdownRenderer';
-import useTextPreviewStore from '@/pages/FileSharing/FilePreview/useTextPreviewStore';
+import useFileContentPreviewStore from '@/pages/FileSharing/FilePreview/useFileContentPreviewStore';
 import useFileEditorContentStore from '@/pages/FileSharing/FilePreview/useFileEditorContentStore';
 import { FILE_PREVIEW_TYPE, FilePreviewType } from '@libs/filesharing/types/filePreviewType';
 import isPdfExtension from '@libs/filesharing/utils/isPdfExtension';
@@ -71,12 +71,14 @@ const FileRenderer: FC<FileRendererProps> = ({
 
   const { currentlyEditingFile } = useFileEditorStore();
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
-  const { textContent, isLoadingText, fetchTextContent, reset: resetTextPreview } = useTextPreviewStore();
+  const { fileContent, isLoadingContent, fetchFileContent, reset: resetContentPreview } = useFileContentPreviewStore();
   const { editedContent, setEditedContent, setOriginalContent } = useFileEditorContentStore();
 
   const fileExtension = currentlyEditingFile ? getFileExtension(currentlyEditingFile.filePath) : undefined;
   const isMarkdown = fileExtension === TEXT_EXTENSIONS.MD || fileExtension === TEXT_EXTENSIONS.MARKDOWN;
   const isText = isTextExtension(fileExtension);
+  const isDrawio = isDrawioExtension(fileExtension);
+  const isTextBasedFile = isText || isDrawio;
   const isBaseLoading = isEditorLoading || isCreatingBlobUrl || isFetchingPublicUrl || !!error;
 
   useEffect(() => {
@@ -95,24 +97,24 @@ const FileRenderer: FC<FileRendererProps> = ({
   );
 
   useEffect(() => {
-    if (!isText || !fileUrl) {
-      resetTextPreview();
+    if (!isTextBasedFile || !fileUrl) {
+      resetContentPreview();
       return undefined;
     }
 
     const abortController = new AbortController();
-    void fetchTextContent(fileUrl, abortController.signal);
+    void fetchFileContent(fileUrl, abortController.signal);
 
     return () => {
       abortController.abort();
     };
-  }, [fileUrl, isText]);
+  }, [fileUrl, isTextBasedFile]);
 
   useEffect(() => {
-    if (editMode && isText && textContent !== null) {
-      setOriginalContent(textContent);
+    if (editMode && isTextBasedFile && fileContent !== null) {
+      setOriginalContent(fileContent);
     }
-  }, [editMode, isText, textContent, setOriginalContent]);
+  }, [editMode, isTextBasedFile, fileContent, setOriginalContent]);
 
   if (!currentlyEditingFile) return null;
 
@@ -157,10 +159,10 @@ const FileRenderer: FC<FileRendererProps> = ({
         );
 
       case FILE_PREVIEW_TYPE.DRAWIO:
-        if (isBaseLoading || !fileUrl) return <CircleLoader className="mx-auto mt-5" />;
+        if (isBaseLoading || isLoadingContent || fileContent === null) return <CircleLoader className="mx-auto mt-5" />;
         return (
           <DrawioViewer
-            fileUrl={fileUrl}
+            xmlContent={fileContent}
             editMode={editMode}
             isFullscreen={isOpenedInNewTab}
             webdavShare={webdavShare}
@@ -188,14 +190,14 @@ const FileRenderer: FC<FileRendererProps> = ({
         );
 
       case FILE_PREVIEW_TYPE.TEXT: {
-        if (isBaseLoading || !fileUrl || isLoadingText || textContent === null)
+        if (isBaseLoading || !fileUrl || isLoadingContent || fileContent === null)
           return <CircleLoader className="mx-auto mt-5" />;
 
         return (
           <div className={isOpenedInNewTab ? 'h-dvh' : 'h-full overflow-auto'}>
             {isMarkdown || editMode ? (
               <MarkdownRenderer
-                content={editedContent ?? textContent}
+                content={editedContent ?? fileContent}
                 editable={editMode}
                 showToolbar={isMarkdown}
                 showPreview={isMarkdown}
@@ -203,7 +205,7 @@ const FileRenderer: FC<FileRendererProps> = ({
                 className={cn('h-full bg-foreground', { 'p-4': !editMode })}
               />
             ) : (
-              <TextPreview content={textContent} />
+              <TextPreview content={fileContent} />
             )}
           </div>
         );

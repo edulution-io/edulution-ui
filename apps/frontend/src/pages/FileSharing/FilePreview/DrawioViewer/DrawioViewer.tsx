@@ -31,45 +31,29 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import useFileEditorContentStore from '@/pages/FileSharing/FilePreview/useFileEditorContentStore';
 import useThemeStore from '@/store/useThemeStore';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import { Theme } from '@libs/common/constants/theme';
+import UserLanguage from '@libs/user/constants/userLanguage';
 
 interface DrawioViewerProps {
-  fileUrl: string;
+  xmlContent: string;
   editMode?: boolean;
   isFullscreen?: boolean;
   webdavShare?: string;
 }
 
-const DrawioViewer = ({ fileUrl, editMode = false, isFullscreen = false, webdavShare }: DrawioViewerProps) => {
+const DrawioViewer = ({ xmlContent, editMode = false, isFullscreen = false, webdavShare }: DrawioViewerProps) => {
   const appConfigs = useAppConfigsStore((s) => s.appConfigs);
   const theme = useThemeStore((s) => s.theme);
 
   const drawioBaseUrl =
     getExtendedOptionsValue(appConfigs, APPS.FILE_SHARING, ExtendedOptionKeys.DRAWIO_URL) || DEFAULT_DRAWIO_URL;
 
-  const { setOriginalContent, setEditedContent, setIsDrawioModified, saveFile, isSaving } = useFileEditorContentStore();
+  const { setEditedContent, setIsDrawioModified, saveFile, isSaving } = useFileEditorContentStore();
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [xmlContent, setXmlContent] = useState<string | null>(null);
   const [isDrawioReady, setIsDrawioReady] = useState(false);
   const pendingSaveRef = useRef(false);
-
-  useEffect(() => {
-    const fetchXmlContent = async () => {
-      try {
-        const response = await fetch(fileUrl);
-        const text = await response.text();
-        setXmlContent(text);
-        if (editMode) {
-          setOriginalContent(text);
-        }
-      } catch {
-        setXmlContent('');
-      }
-    };
-
-    void fetchXmlContent();
-  }, [fileUrl, editMode, setOriginalContent]);
 
   const handleSaveComplete = useCallback(() => {
     iframeRef.current?.contentWindow?.postMessage(JSON.stringify({ action: 'status', modified: false }), '*');
@@ -133,7 +117,7 @@ const DrawioViewer = ({ fileUrl, editMode = false, isFullscreen = false, webdavS
   }, [handleMessage]);
 
   useEffect(() => {
-    if (isDrawioReady && xmlContent !== null && iframeRef.current?.contentWindow) {
+    if (isDrawioReady && iframeRef.current?.contentWindow) {
       const loadMessage = {
         action: DRAWIO_MESSAGE_EVENT.LOAD,
         xml: xmlContent,
@@ -144,13 +128,13 @@ const DrawioViewer = ({ fileUrl, editMode = false, isFullscreen = false, webdavS
   }, [isDrawioReady, xmlContent, editMode]);
 
   const buildDrawioUrl = (): string => {
-    const drawioUiTheme = theme === 'dark' ? DRAWIO_UI_THEME.DARK : DRAWIO_UI_THEME.KENNEDY;
+    const drawioUiTheme = theme === Theme.dark ? DRAWIO_UI_THEME.DARK : DRAWIO_UI_THEME.LIGHT;
     const params = new URLSearchParams({
       embed: '1',
       proto: 'json',
       spin: '1',
       ui: drawioUiTheme,
-      lang: document.documentElement.lang || 'en',
+      lang: document.documentElement.lang || UserLanguage.GERMAN,
     });
 
     if (!editMode) {
@@ -165,10 +149,6 @@ const DrawioViewer = ({ fileUrl, editMode = false, isFullscreen = false, webdavS
 
     return `${drawioBaseUrl}/?${params.toString()}`;
   };
-
-  if (xmlContent === null) {
-    return <CircleLoader className="mx-auto mt-5" />;
-  }
 
   return (
     <div className={cn('relative h-full w-full', { 'h-dvh': isFullscreen })}>

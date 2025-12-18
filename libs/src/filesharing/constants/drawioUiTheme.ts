@@ -19,7 +19,7 @@
 
 const DRAWIO_UI_THEME = {
   DARK: 'dark',
-  KENNEDY: 'kennedy',
+  LIGHT: 'kennedy',
 } as const;
 
 export default DRAWIO_UI_THEME;
