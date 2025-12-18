@@ -147,6 +147,7 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
               void handleCopyPassword();
             }}
             icon={getCopyButton()}
+            variant="dialog"
           />
         ) : (
           <SelectableTextCell
