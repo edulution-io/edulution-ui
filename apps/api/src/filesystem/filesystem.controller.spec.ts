@@ -32,6 +32,11 @@ import AppConfigService from '../appconfig/appconfig.service';
 import CustomHttpException from '../common/CustomHttpException';
 import GlobalSettingsService from '../global-settings/global-settings.service';
 
+jest.mock('../common/utils/validatePathNoPathTraversal', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
+
 describe(FileSystemController.name, () => {
   let controller: FileSystemController;
   let service: FilesystemService;
