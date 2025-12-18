@@ -35,6 +35,7 @@ import EDULUTION_APP_AGENT_IDENTIFIER from '@libs/common/constants/edulutionAppA
 import GlobalHooksWrapper from './components/GlobalHooksWrapper';
 import LazyErrorBoundary from './components/LazyErrorBoundary';
 import usePlatformStore from './store/EduApiStore/usePlatformStore';
+import SilentLoginWrapper from './components/SilentLoginWrapper';
 
 const App = () => {
   const { eduApiToken } = useUserStore();
@@ -75,14 +76,16 @@ const App = () => {
     <LazyErrorBoundary>
       <AuthProvider {...oidcConfig}>
         <CookiesProvider>
-          <GlobalHooksWrapper>
-            <HelmetProvider>
-              <TooltipProvider>
-                <AppRouter />
-              </TooltipProvider>
-            </HelmetProvider>
-            <Toaster />
-          </GlobalHooksWrapper>
+          <SilentLoginWrapper>
+            <GlobalHooksWrapper>
+              <HelmetProvider>
+                <TooltipProvider>
+                  <AppRouter />
+                </TooltipProvider>
+              </HelmetProvider>
+              <Toaster />
+            </GlobalHooksWrapper>
+          </SilentLoginWrapper>
         </CookiesProvider>
       </AuthProvider>
     </LazyErrorBoundary>
