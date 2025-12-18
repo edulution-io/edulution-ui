@@ -17,13 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-/* eslint-disable */
-var __TEARDOWN_MESSAGE__: string;
+import TEXT_EXTENSIONS, { TextExtension } from '@libs/filesharing/types/textExtensions';
 
-module.exports = async function () {
-  // Start services that that the app needs to run (e.g. database, docker-compose, etc.).
-  console.log('\nSetting up...\n');
+const isTextExtension = (extension: string | undefined): boolean =>
+  Object.values(TEXT_EXTENSIONS).includes(extension as TextExtension);
 
-  // Hint: Use `globalThis` to pass variables to global teardown.
-  globalThis.__TEARDOWN_MESSAGE__ = '\nTearing down...\n';
-};
+export default isTextExtension;

@@ -17,6 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const TABS = 'tabs';
+const LMN_API_SEARCH_PARAMS = {
+  ALL_MEMBERS: 'allMembers',
+} as const;
 
-export default TABS;
+export default LMN_API_SEARCH_PARAMS;

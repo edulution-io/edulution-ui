@@ -17,3 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import React from 'react';
+import cn from '@libs/common/utils/className';
+
+interface TextPreviewProps {
+  content: string;
+  className?: string;
+}
+
+const TextPreview = ({ content, className }: TextPreviewProps) => (
+  <pre className={cn('whitespace-pre-wrap break-words font-mono text-sm', className)}>{content}</pre>
+);
+
+export default TextPreview;

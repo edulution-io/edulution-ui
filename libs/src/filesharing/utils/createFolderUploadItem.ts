@@ -17,13 +17,24 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import axios from 'axios';
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
+import shouldFilterFile from '@libs/filesharing/utils/shouldFilterFile';
 
-describe('GET /api', () => {
-  it('should return a message', async () => {
-    const res = await axios.get(`/api`);
+const createFolderUploadItem = (folderName: string, allFiles: File[], id: string): UploadItem => {
+  const getFileName = (file: File): string => file.webkitRelativePath?.split('/').pop() || file.name;
 
-    expect(res.status).toBe(200);
-    expect(res.data).toEqual({ message: 'Hello API' });
+  const visibleFiles = allFiles.filter((file) => !shouldFilterFile(getFileName(file)));
+  const hiddenFiles = allFiles.filter((file) => shouldFilterFile(getFileName(file)));
+
+  return Object.assign(new File([], folderName, { type: 'application/x-directory' }), {
+    id,
+    isFolder: true,
+    folderName,
+    files: visibleFiles,
+    visibleFiles,
+    hiddenFiles,
+    includeHidden: false,
   });
-});
+};
+
+export default createFolderUploadItem;

@@ -54,7 +54,7 @@ const createSurveyCreatorObject = (language = 'en') => {
     isAutoSave: true,
     showJSONEditorTab: true,
     showPreviewTab: false,
-    showLogicTab: true,
+    showLogicTab: false,
     questionTypes: [
       'radiogroup',
       'rating',

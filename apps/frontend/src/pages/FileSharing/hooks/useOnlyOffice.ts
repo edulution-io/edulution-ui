@@ -20,7 +20,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import type { IConfig } from '@onlyoffice/document-editor-react';
-import findDocumentsEditorType from '@/pages/FileSharing/FilePreview/OnlyOffice/utilities/documentsEditorType';
+import findDocumentsEditorType from '@/pages/FileSharing/FilePreview/OnlyOffice/utilities/findDocumentsEditorType';
 import getCallbackBaseUrl from '@/pages/FileSharing/FilePreview/OnlyOffice/utilities/getCallbackBaseUrl';
 import generateOnlyOfficeConfig from '@/pages/FileSharing/FilePreview/OnlyOffice/utilities/generateOnlyOfficeConfig';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';

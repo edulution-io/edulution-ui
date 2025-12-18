@@ -1311,6 +1311,9 @@
       "notAbleToCompressImage": "Bild konnte nicht komprimiert werden."
     }
   },
+  "generalsettings": {
+    "title": "Allgemein"
+  },
   "forwardingpage": {
     "action": "Über diesen Link gelangen Sie zur externen Seite des Anbieters.",
     "description": "Die Anwendung öffnet sich in einem neuen Fenster.",
@@ -1568,10 +1571,14 @@
     "overwriteWarningTitle_other": "Warnung: Dateien existieren bereits",
     "overwriteWarningDescription_one": "Die folgende Datei wird überschrieben:",
     "overwriteWarningDescription_other": "Die folgenden Dateien werden überschrieben:",
-    "oversizedFilesDetected": "Zu große Dateien entdeckt",
+    "overwriteFolderWarningTitle_one": "Warnung: Ordner existiert bereits",
+    "overwriteFolderWarningTitle_other": "Warnung: Ordner existieren bereits",
+    "overwriteFolderWarningDescription_one": "Der folgende Ordner wird überschrieben:",
+    "overwriteFolderWarningDescription_other": "Die folgenden Ordner werden überschrieben:",
+    "oversizedFileDetected_one": "Zu große Datei entdeckt:",
+    "oversizedFileDetected_other": "Zu große Dateien entdeckt:",
     "folderTooLargeTitle": "Zu viele Dateien im Ordner",
     "folderTooLargeDescription": "Der Ordner enthält mehr als 100 Dateien. Bitte wähle einen anderen Ordner oder reduziere die Anzahl der Dateien.",
-    "oversizedFileDetected": "Zu große Datei entdeckt!",
     "cannotUploadOversized": "Dateien, die größer als 50 MB sind, können nicht hochgeladen werden.",
     "addFiles": "Dateien hinzufügen",
     "addFolder": "Ordner hinzufügen",

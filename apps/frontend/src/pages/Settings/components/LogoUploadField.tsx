@@ -17,11 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import clsx from 'clsx';
 import React, { useMemo } from 'react';
 import { Theme, ThemeType } from '@libs/common/constants/theme';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import FileSelectButton from '@/components/ui/FileSelectButton';
+import cn from '@libs/common/utils/className';
 
 type LogoUploadFieldProps = {
   variant: ThemeType;
@@ -60,7 +60,8 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
   hasCustomLogo = false,
   isLoginPage: invertBGColor = false,
 }) => {
-  const useLightBackground = (variant === Theme.dark && invertBGColor) || (variant === Theme.light && !invertBGColor);
+  const useLightBackDropClass =
+    (variant === Theme.light && !invertBGColor) || (variant === Theme.dark && invertBGColor);
 
   const memorizedImage = useMemo(
     () =>
@@ -79,13 +80,12 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
       ),
     [previewSrc, fallbackSrc, alt, cacheKey],
   );
-
   return (
     <div
-      className={clsx(
+      className={cn(
         'relative flex flex-col items-center rounded-2xl border border-dashed border-gray-300 p-6 text-center shadow-sm hover:border-gray-400',
-        { 'bg-white': useLightBackground },
-        { 'bg-neutral-900': !useLightBackground },
+        { 'bg-white': useLightBackDropClass },
+        { 'bg-neutral-900': !useLightBackDropClass },
         uploading && 'pointer-events-none opacity-60',
         className,
       )}

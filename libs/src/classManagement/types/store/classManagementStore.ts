@@ -68,7 +68,7 @@ interface ClassManagementActions {
   createProject: (form: UseFormReturn<GroupForm>) => Promise<void>;
   updateProject: (form: UseFormReturn<GroupForm>) => Promise<void>;
   deleteProject: (id: string) => Promise<void>;
-  fetchSchoolClass: (name: string) => Promise<LmnApiSchoolClassWithMembers | null>;
+  fetchSchoolClass: (name: string, allMembers?: boolean) => Promise<LmnApiSchoolClassWithMembers | null>;
   fetchUserSchoolClasses: () => Promise<void>;
   fetchProject: (name: string) => Promise<LmnApiProjectWithMembers | null>;
   fetchUserProjects: () => Promise<void>;

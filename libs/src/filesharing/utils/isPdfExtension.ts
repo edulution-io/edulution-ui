@@ -17,10 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-/* eslint-disable */
+import { FILE_PREVIEW_TYPE } from '@libs/filesharing/types/filePreviewType';
 
-module.exports = async function () {
-  // Put clean up logic here (e.g. stopping services, docker-compose, etc.).
-  // Hint: `globalThis` is shared between setup and teardown.
-  console.log(globalThis.__TEARDOWN_MESSAGE__);
-};
+const isPdfExtension = (extension: string | undefined): boolean => extension?.toLowerCase() === FILE_PREVIEW_TYPE.PDF;
+
+export default isPdfExtension;

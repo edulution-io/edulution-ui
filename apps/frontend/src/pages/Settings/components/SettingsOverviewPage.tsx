@@ -32,6 +32,7 @@ import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.d
 import GLOBAL_SETTINGS_TABS from '@libs/global-settings/constants/globalSettingsTabs';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import { toast } from 'sonner';
+import APPS from '@libs/appconfig/constants/apps';
 import DockerContainerTable from '../AppConfig/DockerIntegration/DockerContainerTable';
 import GlobalSettings from '../GlobalSettings/GlobalSettings';
 import UserAdministration from './UserAdministration';
@@ -55,7 +56,7 @@ const TAB_OPTIONS: TabOption[] = [
     component: () => <DockerContainerTable />,
   },
   {
-    id: GLOBAL_SETTINGS_TABS.GLOBAL_SETTINGS,
+    id: GLOBAL_SETTINGS_TABS.GENERAL_SETTINGS,
     nameKey: 'settings.globalSettings.title',
     component: ({ form, onSubmit }) => (
       <GlobalSettings
@@ -78,7 +79,7 @@ const TAB_OPTIONS: TabOption[] = [
 ];
 
 const showFloatingButtonsTabList: Set<string> = new Set([
-  GLOBAL_SETTINGS_TABS.GLOBAL_SETTINGS,
+  GLOBAL_SETTINGS_TABS.GENERAL_SETTINGS,
   GLOBAL_SETTINGS_TABS.USER_ADMINISTRATION,
 ]);
 
@@ -144,7 +145,7 @@ const SettingsOverviewPage: React.FC = () => {
     void setGlobalSettings(newGlobalSettings);
   };
 
-  const goToTab = (id: string) => navigate(`/settings/tabs/${id}`);
+  const goToTab = (id: string) => navigate(`/${APPS.SETTINGS}/${APPS.GENERAL_SETTINGS}/${id}`);
 
   if (!isMobileView && !isTabletView)
     return (

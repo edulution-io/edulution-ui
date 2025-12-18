@@ -130,7 +130,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
     <div className="space-y-4">
       <p className="text-muted-foreground">
         <Trans
-          i18nKey="form.proxyConfigDescription"
+          i18nKey="settings.appconfig.sections.proxyConfig.description"
           components={{
             strong: <strong />,
             br: <br />,
@@ -205,7 +205,7 @@ const ProxyConfigForm: React.FC<ProxyConfigFormProps> = ({ item, form }) => {
           name={`${item.name}.proxyConfig`}
           render={({ field }) => (
             <FormItem>
-              <p className="font-bold text-background">{t(`form.proxyConfig`)}</p>
+              <p className="font-bold text-background">{t(`settings.appconfig.sections.proxyConfig.title`)}</p>
               <FormControl>
                 <YamlEditor
                   value={field.value}
