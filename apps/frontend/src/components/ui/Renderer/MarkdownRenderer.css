@@ -20,7 +20,8 @@
 html.dark .wmde-markdown,
 html.dark .wmde-markdown img,
 html.dark .w-md-editor-preview {
-  background-color: var(--muted-background);
+  background-color: var(--foreground);
+  color: var(--background);
 }
 
 .w-md-editor,
