@@ -179,7 +179,7 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
                 showToolbar={isMarkdown}
                 showPreview={isMarkdown}
                 onChange={setEditedContent}
-                className={cn('h-full bg-foreground', { 'p-4': !editMode })}
+                className={cn('h-full bg-muted-background', { 'p-4': !editMode })}
               />
             ) : (
               <TextPreview content={textContent} />
