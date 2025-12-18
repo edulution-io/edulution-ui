@@ -78,6 +78,8 @@ const UnsavedChangesDialog = ({ onSave }: UnsavedChangesDialogProps) => {
       title={t('filesharing.textEditor.unsavedChanges')}
       body={getDialogBody()}
       footer={getFooter()}
+      desktopContentClassName="z-[1000]"
+      mobileContentClassName="z-[1000]"
     />
   );
 };

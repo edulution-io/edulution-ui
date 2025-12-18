@@ -34,15 +34,12 @@ type FileEditorContentStore = {
   originalContent: string | null;
   isDrawioModified: boolean;
   isSaving: boolean;
-  saveError: Error | null;
   isUnsavedChangesDialogOpen: boolean;
   pendingCloseAction: (() => void | Promise<void>) | null;
 
   setEditedContent: (content: string) => void;
   setOriginalContent: (content: string) => void;
   setIsDrawioModified: (isModified: boolean) => void;
-  setIsSaving: (isSaving: boolean) => void;
-  setSaveError: (error: Error | null) => void;
   openUnsavedChangesDialog: (onClose: () => void | Promise<void>) => void;
   closeUnsavedChangesDialog: () => void;
   executePendingCloseAction: () => void;
@@ -57,7 +54,6 @@ const initialState = {
   originalContent: null,
   isDrawioModified: false,
   isSaving: false,
-  saveError: null,
   isUnsavedChangesDialogOpen: false,
   pendingCloseAction: null,
 };
@@ -70,10 +66,6 @@ const useFileEditorContentStore = create<FileEditorContentStore>((set, get) => (
   setOriginalContent: (content) => set({ originalContent: content, editedContent: content, isDrawioModified: false }),
 
   setIsDrawioModified: (isModified) => set({ isDrawioModified: isModified }),
-
-  setIsSaving: (isSaving) => set({ isSaving }),
-
-  setSaveError: (error) => set({ saveError: error }),
 
   openUnsavedChangesDialog: (onClose) => set({ isUnsavedChangesDialogOpen: true, pendingCloseAction: onClose }),
 
