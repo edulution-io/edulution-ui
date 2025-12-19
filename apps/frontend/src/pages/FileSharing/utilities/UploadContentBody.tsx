@@ -18,7 +18,7 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { DropEvent, useDropzone } from 'react-dropzone';
+import { useDropzone } from 'react-dropzone';
 import { MdOutlineCloudUpload } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
 import { Button } from '@/components/shared/Button';
@@ -37,11 +37,12 @@ import getFileUploadLimit from '@libs/ui/utils/getFileUploadLimit';
 import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
 import ActionTooltip from '@/components/shared/ActionTooltip';
 import { BUTTONS_ICON_WIDTH, SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
-import shouldFilterFile from '@libs/filesharing/utils/shouldFilterFile';
 import isFolderUploadItem from '@libs/filesharing/utils/isFolderUploadItem';
+import createFolderUploadItem from '@libs/filesharing/utils/createFolderUploadItem';
 import splitFilesByMaxFileSize from '@libs/filesharing/utils/splitFilesByMaxFileSize';
 import findDuplicateFiles from '@libs/filesharing/utils/findDuplicateFiles';
 import getUploadItemDisplayName from '@libs/filesharing/utils/getUploadItemDisplayName';
+import extractFilesFromDropEvent from '@/pages/FileSharing/utilities/extractFilesFromDropEvent';
 import ValidationWarnings from '@/pages/FileSharing/utilities/ValidationWarnings';
 import getRandomUUID from '@/utils/getRandomUUID';
 
@@ -53,6 +54,7 @@ const UploadContentBody = () => {
   const [tooLargeFolders, setTooLargeFolders] = useState<string[]>([]);
   const { setSubmitButtonIsDisabled } = useFileSharingDialogStore();
   const [filesThatWillBeOverwritten, setFilesThatWillBeOverwritten] = useState<string[]>([]);
+  const [foldersThatWillBeOverwritten, setFoldersThatWillBeOverwritten] = useState<string[]>([]);
 
   const { filesToUpload, updateFilesToUpload } = useHandleUploadFileStore();
 
@@ -60,9 +62,9 @@ const UploadContentBody = () => {
   const folderInputRef = useRef<HTMLInputElement>(null);
 
   const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
+    (acceptedFiles: (File | UploadItem)[]) => {
       const folders = acceptedFiles.filter((file): file is UploadItem => isFolderUploadItem(file as UploadItem));
-      const regularFiles = acceptedFiles.filter((file) => !isFolderUploadItem(file as UploadItem));
+      const regularFiles = acceptedFiles.filter((file) => !isFolderUploadItem(file as UploadItem)) as File[];
       const { oversize, normal } = splitFilesByMaxFileSize(regularFiles, getFileUploadLimit(webdavShares, webdavShare));
       const duplicates = findDuplicateFiles(
         [...normal, ...folders].map((file) => Object.assign(file, { id: getRandomUUID() })),
@@ -74,9 +76,18 @@ const UploadContentBody = () => {
         ...oversize.filter((file) => !prev.some((prevFile) => prevFile.name === file.name)),
       ]);
 
+      const duplicateFolders = duplicates.filter((d) => d.isFolder);
+      const duplicateFiles = duplicates.filter((d) => !d.isFolder);
+
       setFilesThatWillBeOverwritten((prev) => {
         const seen = new Set(prev);
-        const fresh = duplicates.map((d) => d.name).filter((k) => !seen.has(k));
+        const fresh = duplicateFiles.map((d) => d.name).filter((k) => !seen.has(k));
+        return [...prev, ...fresh];
+      });
+
+      setFoldersThatWillBeOverwritten((prev) => {
+        const seen = new Set(prev);
+        const fresh = duplicateFolders.map((d) => d.name).filter((k) => !seen.has(k));
         return [...prev, ...fresh];
       });
 
@@ -100,19 +111,6 @@ const UploadContentBody = () => {
     [files, webdavShares, webdavShare, updateFilesToUpload],
   );
 
-  const extractFilesFromEvent = (event: DropEvent): Promise<File[]> => {
-    if ('dataTransfer' in event && event.dataTransfer) {
-      const items = Array.from(event.dataTransfer.items ?? []);
-      return Promise.resolve(items.map((item) => item.getAsFile()).filter((file): file is File => file !== null));
-    }
-
-    if ('target' in event && (event.target as HTMLInputElement).files) {
-      return Promise.resolve(Array.from((event.target as HTMLInputElement).files!));
-    }
-
-    return Promise.resolve([]);
-  };
-
   const handleFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = Array.from(e.target.files ?? []);
     onDrop(selected);
@@ -126,20 +124,7 @@ const UploadContentBody = () => {
       const firstFile = selected[0];
       const pathParts = firstFile.webkitRelativePath?.split('/') || [];
       const folderName = pathParts[0] || 'folder';
-
-      const visibleFiles = selected.filter((file) => !shouldFilterFile(file.name));
-      const hiddenAndSystemFiles = selected.filter((file) => shouldFilterFile(file.name));
-
-      const folderEntry: UploadItem = Object.assign(new File([], folderName, { type: 'application/x-directory' }), {
-        id: getRandomUUID(),
-        isFolder: true,
-        folderName,
-        files: visibleFiles,
-        visibleFiles,
-        hiddenFiles: hiddenAndSystemFiles,
-        includeHidden: false,
-      });
-
+      const folderEntry = createFolderUploadItem(folderName, selected, getRandomUUID());
       onDrop([folderEntry]);
     }
     e.target.value = '';
@@ -187,6 +172,7 @@ const UploadContentBody = () => {
     );
     setOversizedFiles((prev) => prev.filter((f) => f.name !== identifier));
     setFilesThatWillBeOverwritten((prev) => prev.filter((k) => k !== identifier));
+    setFoldersThatWillBeOverwritten((prev) => prev.filter((k) => k !== identifier));
     setTooLargeFolders((prev) => prev.filter((k) => k !== identifier));
   };
 
@@ -195,7 +181,7 @@ const UploadContentBody = () => {
   }, [oversizedFiles, tooLargeFolders, setSubmitButtonIsDisabled]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    getFilesFromEvent: (event) => extractFilesFromEvent(event),
+    getFilesFromEvent: extractFilesFromDropEvent,
     onDrop,
   });
 
@@ -229,8 +215,8 @@ const UploadContentBody = () => {
     );
   };
 
-  const dropzoneStyle = `border-2 border-dashed border-gray-300 rounded-md p-10 mb-4 ${
-    isDragActive ? 'bg-foreground' : 'bg-popover-foreground'
+  const dropzoneStyle = `border-2 border-dashed border-muted dark:border-secondary rounded-xl p-10 mb-4 ${
+    isDragActive ? 'bg-black/30' : 'bg-black/20'
   }`;
 
   return (
@@ -239,10 +225,10 @@ const UploadContentBody = () => {
         <input {...getInputProps()} />
 
         <div className="flex min-h-48 flex-col items-center justify-center space-y-2">
-          <p className="text-center font-semibold text-secondary">
+          <p className="text-center font-semibold">
             {isDragActive ? t('filesharingUpload.dropHere') : t('filesharingUpload.dragDropClick')}
           </p>
-          <MdOutlineCloudUpload className="h-12 w-12 text-muted" />
+          <MdOutlineCloudUpload className="h-12 w-12" />
         </div>
       </div>
 
@@ -293,6 +279,7 @@ const UploadContentBody = () => {
       <ValidationWarnings
         oversizedFiles={oversizedFiles}
         duplicateFiles={filesThatWillBeOverwritten}
+        duplicateFolders={foldersThatWillBeOverwritten}
         tooLargeFolders={tooLargeFolders}
       />
 

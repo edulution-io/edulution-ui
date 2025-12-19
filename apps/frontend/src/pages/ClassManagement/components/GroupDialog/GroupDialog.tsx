@@ -188,7 +188,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
           fetchedGroup = userSessions.find((session) => session.name === userGroupToEdit.name);
           break;
         case UserGroups.Classes:
-          fetchedGroup = await fetchSchoolClass(userGroupToEdit.name);
+          fetchedGroup = await fetchSchoolClass(userGroupToEdit.name, true);
           break;
         default:
       }

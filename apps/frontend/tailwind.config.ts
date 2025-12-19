@@ -1,9 +1,10 @@
-/** @type {import('tailwindcss').Config} */
 import plugin from 'tailwindcss/plugin';
+import tailwindcssAnimate from 'tailwindcss-animate';
+import tailwindScrollbar from 'tailwind-scrollbar';
 
-module.exports = {
+const TAILWIND_CONFIG = {
   darkMode: ['class'],
-  content: ['./apps/frontend/**/*.{js,ts,jsx,tsx,html}', '!./apps/backend/**', '!./libs/**'],
+  content: ['./apps/frontend/**/*.{js,ts,jsx,tsx,html}', './libs/**/*.{js,ts,jsx,tsx}', '!./apps/backend/**'],
   safelist: [{ pattern: /^ql-indent-[1-8]$/ }],
   prefix: '',
   theme: {
@@ -124,8 +125,11 @@ module.exports = {
     },
   },
   plugins: [
-    require('tailwindcss-animate'),
-    require('tailwind-scrollbar')({ nocompatible: true }),
+    tailwindcssAnimate,
+    tailwindScrollbar({ nocompatible: true }),
+    plugin(function ({ addVariant }) {
+      addVariant('light', '.light &');
+    }),
     plugin(function ({ addBase, theme }) {
       addBase({
         h1: { fontSize: theme('fontSize.h1'), fontWeight: '700' },
@@ -145,7 +149,10 @@ module.exports = {
       for (let i = 1; i <= 8; i++) {
         utils[`.ql-indent-${i}`] = { 'margin-left': `${i * 2}rem` };
       }
+      utils['.icon-light-mode'] = { filter: 'brightness(0) saturate(100%) invert(15%)' };
       addUtilities(utils);
     }),
   ],
 };
+
+export default TAILWIND_CONFIG;

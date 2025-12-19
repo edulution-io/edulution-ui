@@ -114,7 +114,9 @@
       "manual": "Instructions",
       "setupWithQrCode": "Configuration via un QR-code",
       "content": "Vous pouvez accéder au serveur scolaire à partir de nombreux appareils mobiles. Appuyez sur les instructions pour commencer.",
-      "scanAccessInfo": "Pour transférer les identifiants, veuillez scanner le QR-code suivant avec l'edulution App."
+      "scanAccessInfo": "Pour transférer les identifiants, veuillez scanner le QR-code suivant avec l'edulution App.",
+      "setup": "Configuration avec code QR",
+      "qrCode": "Code QR"
     },
     "quota": {
       "title": "Quotas",
@@ -336,6 +338,12 @@
     "rowSelected": "{{selected}} de {{total}} fichier sélectionné",
     "fileWithSameNameAlreadyExists": "Un fichier avec ce nom existe déjà.",
     "folderWithSameNameAlreadyExists": "Un dossier avec ce nom existe déjà.",
+    "currentName": "Nom actuel",
+    "sameNameAsOriginal": "Veuillez entrer un nom différent",
+    "placeholder": {
+      "filename": "Nom",
+      "extension": ".ext"
+    },
     "errors": {
       "FileNotFound": "Fichier introuvable",
       "MountPointsNotFound": "Partage non trouvé",
@@ -377,6 +385,14 @@
       "fileInfoCollecting": "Le fichier {{filename}} va être collecté de {{studentName}}",
       "fileInfoDeleting": "Le fichier {{filename}} va être supprimé",
       "errorInfo": "{{failed}} Les fichiers n'ont pas pu être distribués"
+    },
+    "textEditor": {
+      "unsavedChanges": "Modifications non enregistrées",
+      "unsavedChangesMessage": "Vous avez des modifications non enregistrées. Que voulez-vous faire?",
+      "discard": "Abandonner",
+      "saving": "Enregistrement...",
+      "saveSuccess": "Fichier enregistré avec succès",
+      "saveError": "Échec de l'enregistrement du fichier"
     },
     "tooltips": {
       "folderNameRequired": "Un nom de dossier est requis",
@@ -942,6 +958,15 @@
           "title": "Paramètres généraux",
           "description": ""
         },
+        "drawio": {
+          "title": "Intégration Draw.io",
+          "description": "Configurez Draw.io pour créer des diagrammes et des organigrammes."
+        },
+        "proxyConfig": {
+          "title": "Configuration proxy",
+          "description": "Une configuration proxy distincte pour Trafik peut être stockée ici. Vous pouvez soit utiliser un modèle à l'aide des champs d'entrée, soit une configuration au format YAML peut être créée directement en mode expert. <br/><strong>Danger:</strong> Une fausse configuration peut conduire à une application inaccessible."
+        },
+
         "docker": {
           "title": "Applications Docker",
           "description": "Afin de pouvoir utiliser les services étendus, les applications de conteneurs requises peuvent être installées et démarrées ici.",
@@ -1098,7 +1123,9 @@
       "confirmSingleDeleteAccount": "Êtes-vous sûr de vouloir supprimer ce compte ? Cette action ne peut pas être annulée.",
       "deleteUserAccounts": "Supprimer {{count}} comptes",
       "deleteUserAccount": "Supprimer le compte",
-      "cryptoNotAvailable": "Le cryptage n'est disponible que via HTTPS. Veuillez utiliser une connexion sécurisée."
+      "cryptoNotAvailable": "Le cryptage n'est disponible que via HTTPS. Veuillez utiliser une connexion sécurisée.",
+      "password": "Modifier le mot de passe",
+      "mfa": "Authentification à deux facteurs"
     },
     "mails": {
       "title": "Email"
@@ -1125,7 +1152,19 @@
       "german": "Allemand",
       "english": "Anglais",
       "french": "Français",
-      "system": "Langue du système"
+      "system": "Langue du système",
+      "selectLanguage": "Sélectionner la langue"
+    },
+    "themeMode": {
+      "title": "Apparence",
+      "description": "Sélectionnez l'apparence de l'interface utilisateur.",
+      "system": "Système",
+      "dark": "Sombre",
+      "light": "Clair"
+    },
+    "userinterface": {
+      "title": "Interface utilisateur",
+      "description": "Ici, vous pouvez configurer certains aspects de l'interface utilisateur selon vos préférences."
     },
     "addTotp": {
       "title": "Configurer l'authentification à deux facteurs",
@@ -1143,6 +1182,9 @@
       "notSupportedFileFormat": "Format de fichier non supporté.",
       "notAbleToCompressImage": "L'image n'a pas pu être compressée."
     }
+  },
+  "generalsettings": {
+    "title": "Généralités"
   },
   "forwardingpage": {
     "action": "Ce lien peut être atteint du côté extérieur du fournisseur.",
@@ -1339,8 +1381,6 @@
     "urlDescription": "Veuillez saisir une URL pour la demande",
     "apiKey": "Clé API",
     "apiKeyDescription": "La clé API est utilisée pour l'authentification",
-    "proxyConfig": "Configuration proxy",
-    "proxyConfigDescription": "Une configuration proxy distincte pour Trafik peut être stockée ici. Vous pouvez soit utiliser un modèle à l'aide des champs d'entrée, soit une configuration au format YAML peut être créée directement en mode expert. <br/><strong>Danger:</strong> Une fausse configuration peut conduire à une application inaccessible.",
     "expertMode": "Mode expert",
     "proxyPath": "Chemin proxy",
     "proxyPathPlaceholder": "par exemple SOGo",
@@ -1385,8 +1425,12 @@
     "overwriteWarningTitle_other": "Avertissement: les fichiers existent déjà",
     "overwriteWarningDescription_one": "Le fichier suivant sera écrasé:",
     "overwriteWarningDescription_other": "Les fichiers suivants seront écrasés:",
-    "oversizedFilesDetected": "Fichiers trop grands découverts",
-    "oversizedFileDetected": "Fichier trop grand découvert!",
+    "overwriteFolderWarningTitle_one": "Avertissement: le dossier existe déjà",
+    "overwriteFolderWarningTitle_other": "Avertissement: les dossiers existent déjà",
+    "overwriteFolderWarningDescription_one": "Le dossier suivant sera écrasé:",
+    "overwriteFolderWarningDescription_other": "Les dossiers suivants seront écrasés:",
+    "oversizedFileDetected_one": "Fichier trop grand découvert:",
+    "oversizedFileDetected_other": "Fichiers trop grands découverts:",
     "cannotUploadOversized": "Aucun fichier de plus de 50 Mo ne peut être téléversé.",
     "file": "Fichier",
     "files": "Fichiers",
@@ -1440,7 +1484,8 @@
     "presentation": "Diaporama",
     "spreadsheet": "Tableur",
     "vector": "Diagramme",
-    "compressed": "Archive"
+    "compressed": "Archive",
+    "code": "Code"
   },
   "fileCreateNewContent": {
     "documentFile": "Créer un nouveau document",
@@ -1461,8 +1506,29 @@
       "textFile": "Nouveau fichier texte",
       "spreadsheetFile": "Nouvelle tableur",
       "presentationFile": "Nouveau diaporama",
-      "documentFile": "Nouveau document"
-    }
+      "documentFile": "Nouveau document",
+      "json": "Fichier JSON (.json)",
+      "yaml": "Fichier YAML (.yaml)",
+      "yml": "Fichier YAML (.yml)",
+      "toml": "Fichier TOML (.toml)",
+      "xml": "Fichier XML (.xml)",
+      "cfg": "Fichier de configuration (.cfg)",
+      "ini": "Fichier INI (.ini)",
+      "env": "Fichier d'environnement (.env)",
+      "md": "Fichier Markdown (.md)",
+      "html": "Fichier HTML (.html)",
+      "css": "Fichier CSS (.css)",
+      "csv": "Fichier CSV (.csv)",
+      "sh": "Script Shell (.sh)",
+      "bat": "Fichier Batch (.bat)",
+      "ps1": "Script PowerShell (.ps1)",
+      "py": "Script Python (.py)",
+      "js": "Fichier JavaScript (.js)",
+      "customFile": "Autre fichier"
+    },
+    "customFile": "Créer un nouveau fichier",
+    "moreFileTypes": "Plus de types de fichiers",
+    "lessFileTypes": "Moins de types de fichiers"
   },
   "fileRenameContent": {
     "placeholder": "Entrez le nouveau nom",
@@ -1593,6 +1659,8 @@
     "onlyOfficeUrlTitle": "URL OnlyOffice",
     "onlyOfficeJwtSecretTitle": "JWT OnlyOffice",
     "onlyOfficeJwtSecretDescription": "Entrez ici la clé secrète JWT OnlyOffice",
+    "drawioUrlTitle": "URL Draw.io",
+    "drawioUrlDescription": "Entrez l'URL de votre instance Draw.io auto-hébergée",
     "overrideDocumentVendorMSWithOOTitle": "Utilisez l'OpenDocument comme format de document standard",
     "overrideDocumentVendorMSWithOODescription": "Le format OpenDocument (ODT, ODS, ODP) devrait-il être utilisé à la place des formats Microsoft Office (DOCX, PPTX, XLSX)?",
     "mailImapUrlTitle": "URL",

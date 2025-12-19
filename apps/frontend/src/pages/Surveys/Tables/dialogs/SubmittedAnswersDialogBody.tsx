@@ -20,9 +20,9 @@
 import React from 'react';
 import { Survey } from 'survey-react-ui';
 import { Model } from 'survey-core';
-import { FlatDark } from 'survey-core/themes';
 import { useTranslation } from 'react-i18next';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
+import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
 import '@/pages/Surveys/theme/creator.min.css';
 import '@/pages/Surveys/theme/default2.min.css';
 import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
@@ -38,7 +38,7 @@ const SubmittedAnswersDialogBody = (props: SurveySubmissionProps) => {
   const { t } = useTranslation();
 
   if (!formula || !answer) {
-    return <div className="bg-gray-600 p-4 text-center">{t('survey.noAnswer')}</div>;
+    return <div className="bg-accent p-4 text-center">{t('survey.noAnswer')}</div>;
   }
   const surveyModel = new Model(formula);
 
@@ -46,10 +46,10 @@ const SubmittedAnswersDialogBody = (props: SurveySubmissionProps) => {
 
   surveyModel.mode = 'display';
 
-  surveyModel.applyTheme(FlatDark);
+  surveyModel.applyTheme(surveyTheme);
 
   return (
-    <div className="participated-survey max-h-[75vh] overflow-y-scroll rounded bg-gray-600 p-4">
+    <div className="participated-survey max-h-[75vh] overflow-y-scroll rounded bg-accent p-4">
       <Survey model={surveyModel} />
     </div>
   );

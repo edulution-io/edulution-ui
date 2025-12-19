@@ -23,6 +23,7 @@ const AVAILABLE_FILE_TYPES = {
   documentFile: 'documentFile',
   spreadsheetFile: 'spreadsheetFile',
   presentationFile: 'presentationFile',
+  customFile: 'customFile',
 } as const;
 
 export default AVAILABLE_FILE_TYPES;

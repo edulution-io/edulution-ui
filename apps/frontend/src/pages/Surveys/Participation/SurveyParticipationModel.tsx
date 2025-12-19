@@ -36,6 +36,8 @@ import 'survey-core/i18n/french';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
 import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
+import useThemeStore from '@/store/useThemeStore';
+import THEME from '@libs/common/constants/theme';
 
 interface SurveyFileValue {
   name: string;
@@ -54,11 +56,14 @@ Serializer.getProperty('file', 'waitForUpload').defaultValue = true;
 Serializer.getProperty('file', 'showPreview').defaultValue = true;
 Serializer.getProperty('file', 'allowMultiple').defaultValue = false;
 Serializer.getProperty('text', 'textUpdateMode').defaultValue = 'onTyping';
-Serializer.getProperty('signaturepad', 'penColor').defaultValue = 'rgba(255, 255, 255, 1)';
 Serializer.getProperty('signaturepad', 'signatureWidth').defaultValue = '800';
 
 const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.ReactNode => {
   const { isPublic } = props;
+  const { getResolvedTheme } = useThemeStore();
+
+  Serializer.getProperty('signaturepad', 'penColor').defaultValue =
+    getResolvedTheme() === THEME.dark ? 'rgba(255, 255, 255, 1)' : 'rgba(17, 24, 39, 1)';
 
   const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
 

@@ -32,7 +32,7 @@ import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiPrinter from '@libs/lmnApi/types/lmnApiPrinter';
 import PageLayout from '@/components/structure/layout/PageLayout';
-import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
+import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import SchoolSelectorDropdown from '../components/SchoolSelectorDropdown';
 
@@ -99,30 +99,24 @@ const EnrolPage: React.FC = () => {
         {isSuperAdmin && <SchoolSelectorDropdown />}
       </div>
       <div className="flex max-h-full max-w-full flex-row flex-wrap overflow-y-auto scrollbar-thin">
-        <p className="mt-2 min-w-full">{t('classmanagement.enrolPageDescription')}</p>
-        {groupRows.map((row) => (
-          <div
-            key={row.name}
-            className="mt-4 min-w-full"
-          >
-            <AccordionSH
-              type="multiple"
-              defaultValue={[row.name]}
-            >
-              <AccordionItem value={row.name}>
-                <AccordionTrigger>
-                  <h3>{t(`classmanagement.${row.name}`)}</h3>
-                </AccordionTrigger>
-                <AccordionContent className="space-y-2 px-1">
-                  <GroupList
-                    row={row}
-                    isEnrolEnabled
-                  />
-                </AccordionContent>
-              </AccordionItem>
-            </AccordionSH>
-          </div>
-        ))}
+        <p className="mt-2 min-w-full text-background">{t('classmanagement.enrolPageDescription')}</p>
+        <div className="mt-4 min-w-full">
+          <SectionAccordion defaultOpenAll>
+            {groupRows.map((row) => (
+              <SectionAccordionItem
+                key={row.name}
+                id={row.name}
+                label={t(`classmanagement.${row.name}`)}
+                variant="transparent"
+              >
+                <GroupList
+                  row={row}
+                  isEnrolEnabled
+                />
+              </SectionAccordionItem>
+            ))}
+          </SectionAccordion>
+        </div>
       </div>
       <LoadingIndicatorDialog isOpen={isLoading} />
     </PageLayout>

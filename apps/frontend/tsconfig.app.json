@@ -9,7 +9,7 @@
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "../../libs/src/**/*", "../../libs/**/*"],
   "exclude": [
-    "vite.config.ts",
+    "vite.config.mts",
     "vitest.config.ts",
     "src/**/*.test.ts",
     "src/**/*.spec.ts",

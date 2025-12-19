@@ -19,6 +19,7 @@
 
 import React, { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import SURVEY_TABLE_COLUMNS from '@libs/survey/constants/surveyTableColumns';
 import SurveyTablePage from '@/pages/Surveys/Tables/SurveyTablePage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
@@ -63,6 +64,7 @@ const CreatedSurveysPage = () => {
         canShowResults={hasAnswers}
         canParticipate={canParticipate}
         canShowSubmittedAnswers={hasAnswers}
+        hiddenColumns={[SURVEY_TABLE_COLUMNS.CREATOR]}
       />
     </>
   );

@@ -18,11 +18,12 @@
  */
 
 import { create } from 'zustand';
+import { UploadItem } from '@libs/filesharing/types/uploadItem';
 
 interface PendingUpload {
-  files: File[];
-  duplicateFiles: File[];
-  newFiles: File[];
+  files: (File | UploadItem)[];
+  duplicateFiles: (File | UploadItem)[];
+  newFiles: (File | UploadItem)[];
   webdavShare: string;
   currentPath: string;
 }

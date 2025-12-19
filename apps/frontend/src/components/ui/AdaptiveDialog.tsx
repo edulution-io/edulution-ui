@@ -45,7 +45,7 @@ interface AdaptiveDialogProps {
   trigger?: React.ReactNode;
   body: React.ReactNode;
   footer?: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'tertiary';
+  variant?: 'primary' | 'secondary';
   mobileContentClassName?: string;
   desktopContentClassName?: string;
   titleIcon?: React.ReactNode;
