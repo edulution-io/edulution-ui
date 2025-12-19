@@ -17,6 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const COLOR_SCHEME = 'dark';
+interface DrawioMessage {
+  event: string;
+  xml?: string;
+  data?: string;
+  exit?: boolean;
+}
 
-export default COLOR_SCHEME;
+export default DrawioMessage;

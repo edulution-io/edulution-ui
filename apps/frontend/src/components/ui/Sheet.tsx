@@ -63,7 +63,6 @@ const sheetVariants = cva(
       variant: {
         primary: 'bg-overlay',
         secondary: 'bg-ciGray',
-        tertiary: 'bg-black',
       },
     },
     defaultVariants: {
@@ -86,7 +85,7 @@ const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Con
         ref={ref}
         className={cn(
           { 'bg-overlay text-background': variant === 'primary' },
-          { 'bg-overlay text-foreground': variant === 'secondary' || variant === 'tertiary' },
+          { 'bg-overlay text-foreground': variant === 'secondary' },
           sheetVariants({ side, variant }),
           'max-h-[90vh] overflow-auto',
           className,
@@ -98,7 +97,7 @@ const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Con
           <SheetPrimitive.Close
             className={cn(
               { 'text-card-foreground': variant === 'primary' },
-              { 'text-background': variant === 'secondary' || variant === 'tertiary' },
+              { 'text-background': variant === 'secondary' },
               'absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity data-[state=open]:bg-secondary hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none',
             )}
           >
@@ -117,7 +116,7 @@ const SheetHeader = ({ className, variant, ...props }: SheetHeaderProps) => (
   <div
     className={cn(
       { 'color-black text-background': variant === 'primary' },
-      { 'color-white text-foreground': variant === 'secondary' || variant === 'tertiary' },
+      { 'color-white text-foreground': variant === 'secondary' },
       'flex flex-col space-y-2 text-center sm:text-left',
       className,
     )}

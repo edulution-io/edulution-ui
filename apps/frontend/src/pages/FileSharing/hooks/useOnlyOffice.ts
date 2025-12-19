@@ -31,6 +31,8 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import APPS from '@libs/appconfig/constants/apps';
 import useLanguage from '@/hooks/useLanguage';
 import { useParams } from 'react-router-dom';
+import useThemeStore from '@/store/useThemeStore';
+import THEME from '@libs/common/constants/theme';
 
 interface UseOnlyOfficeProps {
   filePath: string;
@@ -46,17 +48,14 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
   const { eduApiToken, user } = useUserStore();
   const { getOnlyOfficeJwtToken } = useFileEditorStore();
   const { language } = useLanguage();
+  const { theme, getResolvedTheme } = useThemeStore();
 
   const token = useMemo(() => eduApiToken, [filePath, fileName]);
 
   const fileExtension = getFileExtension(fileName);
   const editorType = useMemo(() => findDocumentsEditorType(fileExtension), [fileExtension]);
   const { appConfigs } = useAppConfigsStore();
-  const documentServerURL = getExtendedOptionsValue(
-    appConfigs,
-    APPS.FILE_SHARING,
-    ExtendedOptionKeys.ONLY_OFFICE_URL,
-  ) as string;
+  const documentServerURL = getExtendedOptionsValue(appConfigs, APPS.FILE_SHARING, ExtendedOptionKeys.ONLY_OFFICE_URL);
 
   const callbackUrl = getCallbackBaseUrl({
     fileName,
@@ -64,6 +63,14 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
     token,
     share: webdavShare,
   });
+
+  const uiTheme = useMemo(() => {
+    localStorage.removeItem('ui-theme-id');
+    if (getResolvedTheme() === THEME.dark) {
+      return 'theme-night';
+    }
+    return 'theme-white';
+  }, [theme, getResolvedTheme]);
 
   useEffect(() => {
     const fetchFileUrlAndToken = async () => {
@@ -77,6 +84,7 @@ const useOnlyOffice = ({ filePath, fileName, url, type, mode }: UseOnlyOfficePro
         mode,
         username: user?.username || '',
         lang: language,
+        uiTheme,
       });
       onlyOfficeConfig.token = await getOnlyOfficeJwtToken(onlyOfficeConfig);
       setEditorConfig(onlyOfficeConfig);

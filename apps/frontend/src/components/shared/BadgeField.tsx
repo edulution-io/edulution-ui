@@ -20,7 +20,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { MdRemoveCircleOutline, MdAddCircleOutline } from 'react-icons/md';
-import cn from '@libs/common/utils/className';
 import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import Label from '@/components/ui/Label';
@@ -32,7 +31,6 @@ interface BadgeFieldProps {
   placeholder?: string;
   disabled?: boolean;
   readOnly?: boolean;
-  className?: string;
 }
 
 const BadgeField = (props: BadgeFieldProps) => {
@@ -43,7 +41,6 @@ const BadgeField = (props: BadgeFieldProps) => {
     placeholder,
     disabled,
     readOnly,
-    className,
   } = props;
 
   const [newLabel, setNewLabel] = React.useState<string>('');
@@ -65,27 +62,23 @@ const BadgeField = (props: BadgeFieldProps) => {
 
   const isEmpty = badges.length === 0;
   return (
-    <>
-      {labelTranslationId && (
-        <Label>
-          <p className="font-bold text-background">{t(labelTranslationId)}</p>
-        </Label>
-      )}
+    <div className="space-y-2">
+      {labelTranslationId && <Label>{t(labelTranslationId)}</Label>}
       <div className="flex flex-row flex-wrap gap-2">
         {isEmpty && (
-          <BadgeSH className={cn('bg-ciDarkGreyDisabled px-4 text-ciGrey', className)}>{t('common.none')}</BadgeSH>
+          <BadgeSH
+            className="cursor-default opacity-75"
+            variant="secondary"
+          >
+            {t('common.none')}
+          </BadgeSH>
         )}
         {!isEmpty &&
           badges.map((listItem, index) => (
             <BadgeSH
               // eslint-disable-next-line react/no-array-index-key
               key={`badge${index}_-_${listItem}`}
-              className={cn(
-                'h-[36px] py-0',
-                { 'bg-ciDarkGreyDisabled text-ciGrey': readOnly },
-                { 'color-background text-background': !readOnly },
-                className,
-              )}
+              variant="secondary"
             >
               {listItem}
               {!readOnly && (
@@ -115,7 +108,7 @@ const BadgeField = (props: BadgeFieldProps) => {
           />
         )}
       </div>
-    </>
+    </div>
   );
 };
 

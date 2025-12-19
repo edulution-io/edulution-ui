@@ -18,10 +18,11 @@
  */
 
 import React from 'react';
-import { Theme, ThemeType } from '@libs/common/constants/theme';
+import cn from '@libs/common/utils/className';
+import THEME from '@libs/common/constants/theme';
+import ThemeType from '@libs/common/types/themeType';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import FileSelectButton from '@/components/ui/FileSelectButton';
-import cn from '@libs/common/utils/className';
 
 type LogoUploadFieldProps = {
   variant: ThemeType;
@@ -59,7 +60,7 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
   isLoginPage: invertBGColor = false,
 }) => {
   const useLightBackDropClass =
-    (variant === Theme.light && !invertBGColor) || (variant === Theme.dark && invertBGColor);
+    (variant === THEME.light && !invertBGColor) || (variant === THEME.dark && invertBGColor);
 
   return (
     <div

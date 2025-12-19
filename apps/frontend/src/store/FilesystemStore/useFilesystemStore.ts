@@ -21,12 +21,13 @@ import mime from 'mime';
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import { Theme, ThemeType } from '@libs/common/constants/theme';
-import convertImageFileToWebp from '@libs/common/utils/convertImageFileToWebp';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
+import THEME from '@libs/common/constants/theme';
+import ThemeType from '@libs/common/types/themeType';
+import convertImageFileToWebp from '@libs/common/utils/convertImageFileToWebp';
 import getMainLogoFilename from '@libs/filesharing/utils/getMainLogoFilename';
 import { GLOBAL_SETTINGS_BRANDING_LOGO } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
-import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 
 interface FilesystemStore {
   darkVersion: number;
@@ -75,7 +76,7 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
       darkVersion: typeof version === 'function' ? version(state.darkVersion) : version,
     })),
 
-  deleteImageFile: async (appName: string, fileName: string, variant: ThemeType = Theme.dark): Promise<boolean> => {
+  deleteImageFile: async (appName: string, fileName: string, variant: ThemeType = THEME.dark): Promise<boolean> => {
     const { setError, setCustomLogoExists } = get();
     setError(variant, null);
     try {
@@ -96,7 +97,7 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
     filename: string,
     file: File | Blob,
     appName?: string,
-    variant: ThemeType = Theme.dark,
+    variant: ThemeType = THEME.dark,
   ): Promise<boolean> => {
     const { setError, setCustomLogoExists } = get();
     setError(variant, null);
@@ -146,14 +147,14 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
   },
 
   setCustomLogoExists: (variant: ThemeType, exists: boolean) => {
-    if (variant === Theme.dark) {
+    if (variant === THEME.dark) {
       set({ customLogoDarkThemedExists: exists });
     } else {
       set({ customLogoLightThemedExists: exists });
     }
   },
 
-  doesCustomImageExist: async (appName: string, fileName: string, variant: ThemeType = Theme.dark): Promise<void> => {
+  doesCustomImageExist: async (appName: string, fileName: string, variant: ThemeType = THEME.dark): Promise<void> => {
     const { setError, setCustomLogoExists } = get();
     setError(variant, null);
     try {
@@ -167,7 +168,7 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
   },
 
   setError: (variant: ThemeType, error: Error | null) => {
-    if (variant === Theme.dark) {
+    if (variant === THEME.dark) {
       set({ errorDarkThemed: error });
     } else {
       set({ errorLightThemed: error });

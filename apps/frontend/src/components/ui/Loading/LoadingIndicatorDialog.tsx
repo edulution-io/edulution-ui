@@ -18,7 +18,7 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/Dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader } from '@/components/ui/Dialog';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import { useOnClickOutside } from 'usehooks-ts';
 import { useLocation } from 'react-router-dom';
@@ -47,7 +47,6 @@ const LoadingIndicatorDialog: React.FC<LoadingIndicatorDialogProps> = ({ isOpen 
         showCloseButton={false}
         variant="loadingSpinner"
       >
-        <DialogTitle aria-disabled />
         <DialogHeader>
           <div
             className="flex flex-col items-center justify-center space-y-4"

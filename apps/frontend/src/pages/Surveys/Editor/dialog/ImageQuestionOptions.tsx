@@ -31,9 +31,7 @@ const ImageQuestionOptions = () => {
 
   return (
     <div className="my-2 flex flex-col gap-2">
-      <Label>
-        <p className="font-bold">{t('survey.editor.questionSettings.imageWidth')}</p>
-      </Label>
+      <Label>{t('survey.editor.questionSettings.imageWidth')}</Label>
       <Input
         type="number"
         placeholder={t('survey.editor.questionSettings.imageWidthPlaceholder')}
@@ -43,7 +41,7 @@ const ImageQuestionOptions = () => {
           const inputWidth = e.target.value.replace(/\D/g, '');
           setImageWidth(Number(inputWidth));
         }}
-        className={cn({ 'text-muted-foreground': !imageWidth }, { 'text-primary-foreground': imageWidth })}
+        className={cn({ 'text-muted-foreground': !imageWidth }, { 'text-background': imageWidth })}
       />
     </div>
   );
