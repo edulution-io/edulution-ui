@@ -38,7 +38,7 @@ const NotificationCounter = (props: SidebarItemNotificationProps) => {
     <span
       className={
         `absolute right-[10px] top-[2px] inline-flex items-center justify-center ` +
-        `rounded-full bg-ciRed text-xs font-bold text-background ` +
+        `rounded-full bg-ciRed text-xs font-bold text-white ` +
         `h-5 min-w-[1.25rem] transform px-0 ${className}`
       }
       aria-label={`${displayCount} new notifications`}

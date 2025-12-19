@@ -37,7 +37,7 @@ const PublicAccessFormHeader = () => {
   return (
     <div>
       <Button
-        className="mx-auto mt-5 w-[200px] justify-center text-background shadow-xl"
+        className="mx-auto mt-5 w-[200px] justify-center text-white shadow-xl"
         type="submit"
         variant="btn-security"
         size="lg"

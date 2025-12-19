@@ -33,7 +33,7 @@ const PropertyDialogList = ({ deleteWarningTranslationId, items }: PropertyDialo
   const { t } = useTranslation();
 
   return (
-    <div className="text-background">
+    <>
       {deleteWarningTranslationId && <p>{t(deleteWarningTranslationId)}</p>}
       <ScrollArea className="mt-2 h-fit max-h-[calc(100dvh-400px)] min-h-[100px] w-96 max-w-full overflow-y-auto rounded">
         <div className="flex flex-col gap-2">
@@ -43,18 +43,19 @@ const PropertyDialogList = ({ deleteWarningTranslationId, items }: PropertyDialo
               className="inline-flex w-full items-center p-0"
             >
               {translationId ? (
-                <Label className="mr-4 inline-block min-w-[80px] font-bold text-background">{t(translationId)}:</Label>
+                <Label className="mr-4 inline-block min-w-[80px] font-bold">{t(translationId)}:</Label>
               ) : null}
               <Input
                 value={value || t('common.not-available')}
                 readOnly
                 disabled
+                variant="dialog"
               />
             </div>
           ))}
         </div>
       </ScrollArea>
-    </div>
+    </>
   );
 };
 
