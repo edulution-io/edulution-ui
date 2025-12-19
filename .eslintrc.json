@@ -81,7 +81,7 @@
     {
       "files": ["libs/**/*.ts", "libs/**/*.tsx"],
       "parserOptions": {
-        "project": ["libs/tsconfig.lib.json"]
+        "project": ["libs/tsconfig.json"]
       }
     }
   ]

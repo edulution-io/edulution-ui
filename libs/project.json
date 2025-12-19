@@ -10,7 +10,7 @@
       "executor": "@nx/eslint:lint",
       "options": {
         "lintFilePatterns": ["libs/**/*.{ts,tsx}"],
-        "tsConfig": ["libs/tsconfig.lib.json"]
+        "tsConfig": ["libs/tsconfig.json"]
       }
     }
   }
