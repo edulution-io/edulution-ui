@@ -39,7 +39,9 @@ const SurveysLogoSettings = ({ form, surveyCreator }: SurveysLogoSettingsProps) 
   useEffect(() => {
     const formula = form.watch('formula');
     if (!formula) return;
-    setSurveyLogoWidth(Number(formula.logoWidth?.replace('px', '').replace(/\D/g, '') || '0'));
+    const widthString = formula.logoWidth || '0px';
+    const widthNumber = Number(widthString.replace('px', '').replace(/\D/g, ''));
+    setSurveyLogoWidth(widthNumber);
   }, []);
 
   useEffect(() => {

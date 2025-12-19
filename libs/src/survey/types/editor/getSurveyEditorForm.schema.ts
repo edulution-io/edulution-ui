@@ -23,6 +23,8 @@ const getSurveyEditorFormSchema = () =>
   z.object({
     id: z.number(),
     formula: z.object({
+      logo: z.string().nullable().optional(),
+      logoWidth: z.number().optional(),
       title: z.string(),
       description: z.string().optional(),
       pages: z.array(

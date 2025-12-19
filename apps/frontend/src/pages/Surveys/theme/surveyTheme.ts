@@ -111,12 +111,11 @@ const surveyTheme: ITheme = {
     '--sjs-special-red-light': 'transparent',
     '--sjs-header-backcolor': 'transparent',
     '--page-title-font-size2': '24pt',
-
     '--sjs-font-editorfont-size': '10pt',
     '--sjs-font-editorfont-weight': '500',
   },
   header: {
-    height: 100,
+    height: 150,
     inheritWidthFrom: 'survey',
   } as IHeader,
   headerView: 'basic',
