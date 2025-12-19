@@ -17,20 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-enum FileSharingApiEndpoints {
-  FILESHARING_ACTIONS = '/filesharing',
-  BASE = 'filesharing',
-  FILE_STREAM = 'file-stream',
-  FILE_LOCATION = 'file-location',
-  ONLY_OFFICE_TOKEN = 'only-office',
-  DUPLICATE = 'duplicate',
-  COLLECT = 'collect',
-  COPY = 'copy',
-  FILE_SHARE = 'file-share',
-  PUBLIC_SHARE = 'public-share',
-  PUBLIC_SHARE_DOWNLOAD = 'public-share/download',
-  UPLOAD = 'upload',
-  THUMBNAIL = 'thumbnail',
-}
+import { tmpdir } from 'os';
+import { join } from 'path';
+import THUMBNAIL_CONFIG from './thumbnailConfig';
 
-export default FileSharingApiEndpoints;
+const THUMBNAIL_CACHE_PATH = join(tmpdir(), THUMBNAIL_CONFIG.CACHE_DIR_NAME);
+
+export default THUMBNAIL_CACHE_PATH;

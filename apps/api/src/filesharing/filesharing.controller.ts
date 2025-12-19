@@ -53,6 +53,7 @@ import { randomUUID } from 'crypto';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import FilesystemService from '../filesystem/filesystem.service';
 import FilesharingService from './filesharing.service';
+import ThumbnailService from './thumbnail.service';
 import WebdavService from '../webdav/webdav.service';
 import { Public } from '../common/decorators/public.decorator';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
@@ -64,6 +65,7 @@ class FilesharingController {
   constructor(
     private readonly filesharingService: FilesharingService,
     private readonly webdavService: WebdavService,
+    private readonly thumbnailService: ThumbnailService,
   ) {}
 
   @Get()
@@ -151,6 +153,21 @@ class FilesharingController {
         res.end();
       }
     }
+  }
+
+  @Get(FileSharingApiEndpoints.THUMBNAIL)
+  async getThumbnail(
+    @Query('filePath') filePath: string,
+    @Query('etag') etag: string,
+    @Query('share') share: string,
+    @Res() res: Response,
+    @GetCurrentUsername() username: string,
+  ) {
+    const thumbnail = await this.thumbnailService.getThumbnail(username, filePath, etag, share);
+
+    res.setHeader(HTTP_HEADERS.ContentType, RequestResponseContentType.IMAGE_WEBP);
+    res.setHeader(HTTP_HEADERS.CacheControl, 'public, max-age=31536000, immutable');
+    res.send(thumbnail);
   }
 
   @Get(FileSharingApiEndpoints.FILE_LOCATION)
