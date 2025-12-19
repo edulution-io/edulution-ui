@@ -65,6 +65,7 @@ const AccountInformation = () => {
             value={field.value}
             labelTranslationId={field.label}
             readOnly={field.readOnly}
+            className="cursor-default"
           />
         ))}
         <Button

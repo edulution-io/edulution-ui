@@ -4718,6 +4718,9 @@ svc-question .sv-action-bar,
   cursor: pointer;
   max-width: 50%;
 }
+.sd-logo__image {
+  color: var(--background);
+}
 .svc-logo-image .sd-logo__image {
   max-width: 100%;
 }

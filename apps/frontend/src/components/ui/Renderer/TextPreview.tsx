@@ -17,22 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { FC, ReactNode } from 'react';
-import { Button } from '@/components/shared/Button';
+import React from 'react';
+import cn from '@libs/common/utils/className';
 
-interface FilePreviewButtonsProps {
-  onClick: () => void;
-  icon?: ReactNode;
+interface TextPreviewProps {
+  content: string;
+  className?: string;
 }
 
-const FilePreviewOptionsButton: FC<FilePreviewButtonsProps> = ({ onClick, icon }) => (
-  <Button
-    variant="btn-small"
-    className="hover:bg-grey-700 rounded bg-secondary p-1 text-background"
-    onClick={onClick}
-  >
-    {icon && <span className="inline text-foreground">{icon}</span>}
-  </Button>
+const TextPreview = ({ content, className }: TextPreviewProps) => (
+  <pre className={cn('whitespace-pre-wrap break-words p-2 font-mono text-background', className)}>{content}</pre>
 );
 
-export default FilePreviewOptionsButton;
+export default TextPreview;

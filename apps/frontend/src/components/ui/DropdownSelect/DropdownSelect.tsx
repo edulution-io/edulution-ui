@@ -22,6 +22,9 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import cn from '@libs/common/utils/className';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
+import { INPUT_BASE_CLASSES, VARIANT_COLORS } from '@libs/ui/constants/commonClassNames';
+
+const DROPDOWN_SELECT_CLASSES = `${INPUT_BASE_CLASSES} box-border pl-2.5 pr-[52px] text-start placeholder:text-background`;
 
 export type DropdownOptions = {
   id: string;
@@ -118,23 +121,19 @@ const DropdownSelect = ({
 
   const arrowPointsDown = (isOpen && !openToTop) || (!isOpen && openToTop);
 
-  const inputBaseClasses =
-    'box-border w-full rounded-lg py-2 pl-2.5 pr-[52px] text-start text-base leading-6 text-background shadow-md dark:shadow-none placeholder:text-background outline-none transition-all duration-200';
-
   const variantClasses = {
-    default: 'dark:bg-accent bg-white',
-    dialog:
-      'dark:bg-muted border-2 dark:border-none border-gray-300 bg-white shadow-md dark:shadow-none text-background',
+    default: VARIANT_COLORS.default,
+    dialog: VARIANT_COLORS.dialog,
   };
 
   const optionVariantClasses = {
     default: {
       base: 'text-background hover:bg-muted',
-      selected: 'dark:bg-muted bg-white text-background',
+      selected: 'bg-muted text-background',
     },
     dialog: {
       base: 'text-background hover:bg-muted-light',
-      selected: 'dark:bg-muted-light bg-white text-background',
+      selected: 'bg-muted-light text-background',
     },
   };
 
@@ -157,7 +156,7 @@ const DropdownSelect = ({
         onFocus={searchEnabled ? openMenu : undefined}
         readOnly={!searchEnabled}
         disabled={options.length === 0}
-        className={cn(inputBaseClasses, variantClasses[variant], {
+        className={cn(DROPDOWN_SELECT_CLASSES, variantClasses[variant], {
           'cursor-text': searchEnabled,
           'cursor-pointer': !searchEnabled,
         })}
@@ -177,7 +176,7 @@ const DropdownSelect = ({
           <div
             ref={menuRef}
             className={cn(
-              'fixed z-[1000] box-border max-h-[125px] overflow-y-auto text-background shadow-xl scrollbar-thin',
+              'fixed z-[1000] mt-1 box-border max-h-[125px] overflow-y-auto rounded-lg text-p text-background scrollbar-thin',
               variantClasses[variant],
             )}
             style={{

@@ -20,11 +20,13 @@
 import React from 'react';
 import { DropdownSelect } from '@/components';
 import useThemeStore from '@/store/useThemeStore';
+import THEME from '@libs/common/constants/theme';
+import ThemeType from '@libs/common/types/themeType';
 
 const themeOptions = [
-  { id: 'system', name: 'usersettings.themeMode.system' },
-  { id: 'dark', name: 'usersettings.themeMode.dark' },
-  { id: 'light', name: 'usersettings.themeMode.light' },
+  { id: THEME.system, name: 'usersettings.themeMode.system' },
+  { id: THEME.dark, name: 'usersettings.themeMode.dark' },
+  { id: THEME.light, name: 'usersettings.themeMode.light' },
 ];
 
 const ThemeSelector: React.FC = () => {
@@ -36,7 +38,7 @@ const ThemeSelector: React.FC = () => {
       <DropdownSelect
         options={themeOptions}
         selectedVal={theme}
-        handleChange={(value) => setTheme(value as 'dark' | 'light' | 'system')}
+        handleChange={(value) => setTheme(value as ThemeType)}
         classname="w-fit"
       />
     </div>

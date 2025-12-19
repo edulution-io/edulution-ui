@@ -24,7 +24,6 @@ import { UserDetailsSettingsIcon } from '@/assets/icons';
 import UserSettingsDetailsForm from '@/pages/UserSettings/Details/UserSettingsDetailsForm';
 import Quota from '@/pages/Dashboard/Quota';
 import Field from '@/components/shared/Field';
-import Label from '@/components/ui/Label';
 import BadgeField from '@/components/shared/BadgeField';
 import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
 import PageLayout from '@/components/structure/layout/PageLayout';
@@ -76,25 +75,21 @@ const UserSettingsDetailsPage: React.FC = () => {
           id="userInformation"
           label={t('usersettings.details.userInformation')}
         >
-          <div className="text-background">
-            {userInfo.map((field) => (
-              <Field
-                key={`userInfoField-${field.name}`}
-                value={field.value}
-                labelTranslationId={field.label}
-                className="mb-4 mt-2"
-                disabled
-              />
-            ))}
-
-            <Label>
-              <p className="font-bold">{t('usersettings.details.schoolSubjects')}</p>
-            </Label>
-            <BadgeField
-              value={schoolClasses}
-              readOnly
+          {userInfo.map((field) => (
+            <Field
+              key={`userInfoField-${field.name}`}
+              value={field.value}
+              labelTranslationId={field.label}
+              className="mb-4 mt-2"
+              disabled
             />
-          </div>
+          ))}
+
+          <BadgeField
+            value={schoolClasses}
+            readOnly
+            labelTranslationId={t('usersettings.details.schoolSubjects')}
+          />
         </SectionAccordionItem>
 
         <SectionAccordionItem

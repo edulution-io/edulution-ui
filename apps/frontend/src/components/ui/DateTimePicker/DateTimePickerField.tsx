@@ -161,11 +161,7 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
             >
               <PopoverTrigger asChild>
                 <FormControl
-                  className={cn(
-                    'w-auto p-0',
-                    inputVariants({ variant: variant === 'dialog' ? 'dialog' : 'default' }),
-                    isOpen ? 'border-ring' : 'border-transparent',
-                  )}
+                  className={cn('w-auto p-0', inputVariants({ variant: variant === 'dialog' ? 'dialog' : 'default' }))}
                 >
                   <Button
                     variant="btn-outline"

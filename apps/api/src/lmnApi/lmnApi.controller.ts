@@ -43,6 +43,7 @@ import UpdateUserDetailsDto from '@libs/userSettings/update-user-details.dto';
 import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
 import GroupFormDto from '@libs/groups/types/groupForm.dto';
 import GetCurrentUsername from '@backend-common/decorators/get-current-username.decorator';
+import LMN_API_SEARCH_PARAMS from '@libs/lmnApi/constants/lmnApiSearchParams';
 import LmnApiService from './lmnApi.service';
 import GetCurrentOrganisationPrefix from '../common/decorators/getCurrentOrganisationPrefix.decorator';
 import DeploymentTargetInterceptor from '../common/interceptors/deploymentTarget.interceptor';
@@ -103,9 +104,10 @@ export class LmnApiController {
   @Get('school-classes/:schoolClassName')
   async getSchoolClass(
     @Param() params: { schoolClassName: string },
+    @Query(LMN_API_SEARCH_PARAMS.ALL_MEMBERS) allMembers: string,
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
   ) {
-    return this.lmnApiService.getSchoolClass(lmnApiToken, params.schoolClassName);
+    return this.lmnApiService.getSchoolClass(lmnApiToken, params.schoolClassName, allMembers === 'true');
   }
 
   @Get('school-classes')

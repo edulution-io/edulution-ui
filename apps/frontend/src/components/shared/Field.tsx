@@ -53,11 +53,7 @@ const Field = ({
 
   return (
     <>
-      {labelTranslationId && (
-        <Label>
-          <p className="font-bold">{t(labelTranslationId)}</p>
-        </Label>
-      )}
+      {labelTranslationId && <Label>{t(labelTranslationId)}</Label>}
       <Input
         type={type}
         disabled={disabled || isLoading}
@@ -66,7 +62,7 @@ const Field = ({
         value={value || t('common.not-available')}
         placeholder={placeholder}
         onChange={onChange}
-        className={cn(className, { 'italic text-muted': !value })}
+        className={cn(className, { 'text-muted': !value })}
       />
     </>
   );

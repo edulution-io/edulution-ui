@@ -33,17 +33,19 @@ const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-xl text-backgrou
       'btn-infrastructure': 'bg-ciLightGreen text-white',
       'btn-security': 'bg-ciGreenToBlue text-white',
       'btn-outline':
-        'border border-input shadow-sm hover:bg-muted-light hover:text-accent-foreground text-accent-foreground',
+        'border-[1px] border-gray-300 shadow-sm hover:bg-muted-light hover:text-accent-foreground text-accent-foreground',
       'btn-hexagon': 'bg-cover bg-center flex items-center justify-center hover:scale-105',
       'btn-attention': 'bg-ciRed text-white',
+      'btn-small': 'hover:bg-grey-700 mr-1 rounded-lg bg-white px-4 h-9 shadow-md font-normal',
+      'btn-table': 'h-10 items-center rounded-lg bg-white dark:border-none dark:bg-accent border-[1px] border-gray-300',
       'btn-small': 'hover:bg-grey-700 mr-1 rounded-lg bg-foreground px-4 h-9 shadow-md font-normal',
       'btn-ghost':
         'bg-transparent p-0 rounded-lg border-none shadow-none ring-0 outline-none hover:bg-accent hover:opacity-100 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none',
     },
     size: {
-      sm: 'h-8 rounded-md px-3 text-xs',
+      sm: 'h-8 px-3 text-xs',
       md: 'h-9 px-3',
-      lg: 'h-10 rounded-md px-8',
+      lg: 'h-10 px-8',
     },
   },
 });

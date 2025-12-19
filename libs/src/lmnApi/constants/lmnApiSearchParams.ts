@@ -17,6 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const COLOR_SCHEME = 'dark';
+const LMN_API_SEARCH_PARAMS = {
+  ALL_MEMBERS: 'allMembers',
+} as const;
 
-export default COLOR_SCHEME;
+export default LMN_API_SEARCH_PARAMS;

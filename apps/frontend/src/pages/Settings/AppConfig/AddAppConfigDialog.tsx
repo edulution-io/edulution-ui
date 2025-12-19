@@ -40,7 +40,7 @@ import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import { Button } from '@/components/shared/Button';
 import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
 import cn from '@libs/common/utils/className';
-import getAppIconClassName from '@libs/ui/utils/getAppIconClassName';
+import getAppIconClassName from '@/utils/getAppIconClassName';
 import getCustomAppConfigFormSchema from './schemas/getCustomAppConfigFormSchema';
 import SelectIconField from './components/SelectIconField';
 import defaultIconList from './components/defaultIconList';
@@ -145,6 +145,10 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
     setIsAddAppConfigDialogOpen(false);
   };
 
+  const handleDeleteIcon = () => {
+    form.setValue('customIcon', '', { shouldValidate: true });
+  };
+
   const isDefaultIcon = defaultIconList.includes(form.getValues('customIcon'));
 
   const getDialogBody = () => {
@@ -187,7 +191,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
                     />
                     <Button
                       type="button"
-                      onClick={() => form.setValue('customIcon', '')}
+                      onClick={handleDeleteIcon}
                       className="absolute right-1 top-1 h-8 rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
                     >
                       <DeleteIcon className="h-4 w-4 text-white" />

@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { SIDEBAR_ICON_HEIGHT, SIDEBAR_ICON_WIDTH } from '@libs/ui/constants/sidebar';
-import getAppIconClassName from '@libs/ui/utils/getAppIconClassName';
+import getAppIconClassName from '@/utils/getAppIconClassName';
 import cn from '@libs/common/utils/className';
 
 const SidebarItemIcon = ({

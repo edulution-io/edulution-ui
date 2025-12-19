@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "1.6.157",
+  "version": "1.6.165",
   "scripts": {
     "test": "nx run-many --target=test --projects=api",
     "test:api": "nx run api:test --detectOpenHandles",
@@ -98,6 +98,7 @@
     "@types/json-schema": "^7.0.15",
     "@types/mailparser": "^3.4.4",
     "@types/mime": "^3.0.4",
+    "@uiw/react-md-editor": "^4.0.11",
     "ai": "^5.0.113",
     "autoprefixer": "^10.4.17",
     "axios": "^1.7.4",

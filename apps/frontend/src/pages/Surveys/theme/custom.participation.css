@@ -82,6 +82,10 @@
       color: var(--primary-foreground);
     }
   }
+
+  .sd-matrix__table thead tr td:first-child:empty {
+    background-color: transparent;
+  }
 }
 
 .participated-survey,

@@ -17,9 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const getAppIconClassName = (iconSrc: string): string => {
-  const supportsTheming = iconSrc.includes('currentColor');
-  return supportsTheming ? '' : 'light:icon-light-mode';
-};
+interface DrawioMessage {
+  event: string;
+  xml?: string;
+  data?: string;
+  exit?: boolean;
+}
 
-export default getAppIconClassName;
+export default DrawioMessage;

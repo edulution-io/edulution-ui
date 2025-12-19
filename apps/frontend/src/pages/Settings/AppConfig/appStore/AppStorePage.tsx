@@ -31,7 +31,7 @@ import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import APPLICATION_NAME from '@libs/common/constants/applicationName';
-import getAppIconClassName from '@libs/ui/utils/getAppIconClassName';
+import getAppIconClassName from '@/utils/getAppIconClassName';
 import APP_CONFIG_OPTIONS from '../appConfigOptions';
 import AddAppConfigDialog from '../AddAppConfigDialog';
 import AppStoreFloatingButtons from './AppStoreFloatingButtons';
@@ -103,7 +103,7 @@ const AppStorePage: React.FC = () => {
             <Card
               key={item.id}
               className={cn(
-                'm-1 flex h-32 w-32 flex-col items-center overflow-hidden ease-in-out md:w-48 lg:transition-transform lg:duration-300 2xl:hover:scale-105',
+                'm-1 flex h-32 w-32 flex-col items-center overflow-hidden ease-in-out md:w-48 2xl:transition-transform 2xl:duration-300 2xl:hover:scale-105',
                 selectedApp.id === item.id ? 'scale-105 bg-ciGreenToBlue text-white' : '',
                 getDisabledState(item) ? 'opacity-50' : '',
               )}
