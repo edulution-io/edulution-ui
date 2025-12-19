@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
-import { ThemeType } from '@libs/common/constants/theme';
+import ThemeType from '@libs/common/types/themeType';
 import ThemedFile from '@libs/common/types/themedFile';
 import { getLogoName, getLogoUrl } from '@libs/appconfig/utils/getAppLogo';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';

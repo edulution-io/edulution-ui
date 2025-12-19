@@ -12,7 +12,7 @@
 
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { Theme } from '@libs/common/constants/theme';
+import THEME from '@libs/common/constants/theme';
 import ThemedFile from '@libs/common/types/themedFile';
 import AppConfigFormLogoField from '@/pages/Settings/AppConfig/components/AppConfigFormLogoField';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
@@ -36,7 +36,7 @@ const AppConfigFormDarkAndLightLogoField: React.FC<AppConfigFormDarkAndLightLogo
   return (
     <div className="flex flex-grow flex-col gap-4 lg:flex-row">
       <AppConfigFormLogoField
-        variant={Theme.light}
+        variant={THEME.light}
         appName={settingLocation}
         fieldPath={fieldPath}
         option={option}
@@ -45,7 +45,7 @@ const AppConfigFormDarkAndLightLogoField: React.FC<AppConfigFormDarkAndLightLogo
         error={errorLightThemed}
       />
       <AppConfigFormLogoField
-        variant={Theme.dark}
+        variant={THEME.dark}
         appName={settingLocation}
         fieldPath={fieldPath}
         option={option}

@@ -27,6 +27,7 @@ import FileSelectButton from '@/components/ui/FileSelectButton';
 type LogoUploadFieldProps = {
   variant: ThemeType;
   previewSrc?: string | null;
+  cacheKey?: number;
   hasLocalSelection?: boolean;
   uploading?: boolean;
   inputRef: React.RefObject<HTMLInputElement>;
@@ -45,6 +46,7 @@ type LogoUploadFieldProps = {
 const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
   variant,
   previewSrc,
+  cacheKey,
   hasLocalSelection = false,
   uploading = false,
   inputRef,
@@ -87,6 +89,7 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
         )}
       </div>
       <img
+        key={cacheKey}
         src={previewSrc || fallbackSrc}
         alt={alt}
         className="h-20 w-auto object-contain"

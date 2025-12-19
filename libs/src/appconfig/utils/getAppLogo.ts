@@ -10,13 +10,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Theme, ThemeType } from '@libs/common/constants/theme';
+import THEME from '@libs/common/constants/theme';
+import ThemeType from '@libs/common/types/themeType';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 
-export const getLogoName = (appName: string, theme: ThemeType = Theme.dark) => `${appName}-custom-logo-${theme}.webp`;
+export const getLogoName = (appName: string, theme: ThemeType = THEME.dark) => `${appName}-custom-logo-${theme}.webp`;
 
-export const getFallbackName = (appName: string, theme: ThemeType = Theme.dark) =>
+export const getFallbackName = (appName: string, theme: ThemeType = THEME.dark) =>
   `${appName}-default-logo-${theme}.webp`;
 
 export const getLogoUrl = (appName: string, theme?: ThemeType) =>
