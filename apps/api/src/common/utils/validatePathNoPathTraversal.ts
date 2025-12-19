@@ -23,10 +23,10 @@ import fs from 'node:fs/promises';
 import { HttpStatus, Logger } from '@nestjs/common';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import PathValidationErrorMessages from '@libs/common/constants/path-validation-error-messages';
-import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
 
 const validatePathNoPathTraversal = async (
   filePath: string,
+  basePath: string,
   domain?: string,
   opts?: {
     maxLength?: number;
@@ -38,10 +38,10 @@ const validatePathNoPathTraversal = async (
 ): Promise<void> => {
   const {
     maxLength = 300,
-    mustExist = false,
-    followSymlinks = false,
+    mustExist = true,
+    followSymlinks = true,
     allowSubdirs = true,
-    allowAbsolute = false,
+    allowAbsolute = true,
   } = opts ?? {};
   const raw = filePath.trim();
   if (!raw) {
@@ -97,7 +97,7 @@ const validatePathNoPathTraversal = async (
     );
   }
 
-  const publicBaseAbsolutePath = path.resolve(PUBLIC_ASSET_PATH);
+  const publicBaseAbsolutePath = path.resolve(basePath);
   const fileAbsolutePath = path.resolve(normalized);
   const baseWithSep = publicBaseAbsolutePath.endsWith(path.sep)
     ? publicBaseAbsolutePath

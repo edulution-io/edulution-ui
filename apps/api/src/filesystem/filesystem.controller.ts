@@ -124,19 +124,9 @@ class FileSystemController {
       filename,
       fallbackFilename,
     );
-    await validatePathNoPathTraversal(filePath, FileSystemController.name, {
-      mustExist: false,
-      followSymlinks: true,
-      allowSubdirs: true,
-      allowAbsolute: true,
-    });
+    await validatePathNoPathTraversal(filePath, PUBLIC_ASSET_PATH, FileSystemController.name, { mustExist: false });
     if (fallBackPath) {
-      await validatePathNoPathTraversal(fallBackPath, FileSystemController.name, {
-        mustExist: true,
-        followSymlinks: true,
-        allowSubdirs: true,
-        allowAbsolute: true,
-      });
+      await validatePathNoPathTraversal(fallBackPath, PUBLIC_ASSET_PATH, FileSystemController.name);
     }
     return this.filesystemService.servePublicAssetWithFallback(res, filePath, fallBackPath);
   }

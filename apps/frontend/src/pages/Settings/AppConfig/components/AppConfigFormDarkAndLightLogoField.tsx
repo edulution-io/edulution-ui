@@ -34,7 +34,7 @@ const AppConfigFormDarkAndLightLogoField: React.FC<AppConfigFormDarkAndLightLogo
   const { customLogoLightThemedExists, customLogoDarkThemedExists, errorLightThemed, errorDarkThemed } =
     FilesystemStore();
   return (
-    <div className="flex min-w-[480px] flex-grow flex-col gap-4 lg:flex-row">
+    <div className="flex flex-grow flex-col gap-4 lg:flex-row">
       <AppConfigFormLogoField
         variant={Theme.light}
         appName={settingLocation}

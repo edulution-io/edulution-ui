@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Theme, ThemeType } from '@libs/common/constants/theme';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import FileSelectButton from '@/components/ui/FileSelectButton';
@@ -26,7 +26,6 @@ import cn from '@libs/common/utils/className';
 type LogoUploadFieldProps = {
   variant: ThemeType;
   previewSrc?: string | null;
-  cacheKey?: number;
   hasLocalSelection?: boolean;
   uploading?: boolean;
   inputRef: React.RefObject<HTMLInputElement>;
@@ -45,7 +44,6 @@ type LogoUploadFieldProps = {
 const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
   variant,
   previewSrc,
-  cacheKey,
   hasLocalSelection = false,
   uploading = false,
   inputRef,
@@ -63,23 +61,6 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
   const useLightBackDropClass =
     (variant === Theme.light && !invertBGColor) || (variant === Theme.dark && invertBGColor);
 
-  const memorizedImage = useMemo(
-    () =>
-      (previewSrc || fallbackSrc) && (
-        <img
-          key={cacheKey}
-          src={previewSrc || fallbackSrc}
-          alt={alt}
-          className="h-20 w-auto object-contain"
-          onError={(e) => {
-            if (fallbackSrc) {
-              (e.currentTarget as HTMLImageElement).src = fallbackSrc;
-            }
-          }}
-        />
-      ),
-    [previewSrc, fallbackSrc, alt, cacheKey],
-  );
   return (
     <div
       className={cn(
@@ -104,9 +85,16 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
           </button>
         )}
       </div>
-
-      {memorizedImage}
-
+      <img
+        src={previewSrc || fallbackSrc}
+        alt={alt}
+        className="h-20 w-auto object-contain"
+        onError={(e) => {
+          if (fallbackSrc) {
+            (e.currentTarget as HTMLImageElement).src = fallbackSrc;
+          }
+        }}
+      />
       <div className="mt-3 grid w-full grid-cols-1 gap-2">
         <FileSelectButton
           ref={inputRef}
