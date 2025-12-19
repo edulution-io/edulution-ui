@@ -19,7 +19,7 @@
 
 import { Types } from 'mongoose';
 
-const PaperSubject000000000000000000000003 = {
+const paperSubject000000000000000000000003 = {
   _id: new Types.ObjectId('000000000000000000000003'),
   name: 'Vortragsthema',
   isDefaultTemplate: true,
@@ -71,4 +71,4 @@ const PaperSubject000000000000000000000003 = {
   deploymentTargets: ['linuxmuster'],
 };
 
-export default PaperSubject000000000000000000000003;
+export default paperSubject000000000000000000000003;

@@ -19,7 +19,7 @@
 
 import { Types } from 'mongoose';
 
-const ParentTeacherConference000000000000000000000004 = {
+const parentTeacherConference000000000000000000000004 = {
   _id: new Types.ObjectId('000000000000000000000004'),
   name: 'Eltern-Abend',
   isDefaultTemplate: true,
@@ -277,4 +277,4 @@ const ParentTeacherConference000000000000000000000004 = {
   deploymentTargets: ['linuxmuster'],
 };
 
-export default ParentTeacherConference000000000000000000000004;
+export default parentTeacherConference000000000000000000000004;

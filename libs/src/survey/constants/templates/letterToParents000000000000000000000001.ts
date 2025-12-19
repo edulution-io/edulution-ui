@@ -19,7 +19,7 @@
 
 import { Types } from 'mongoose';
 
-const LetterToParents000000000000000000000001 = {
+const letterToParents000000000000000000000001 = {
   _id: new Types.ObjectId('000000000000000000000001'),
   name: 'Elternbrief',
   isDefaultTemplate: true,
@@ -66,17 +66,52 @@ const LetterToParents000000000000000000000001 = {
           {
             name: 'choice0',
             title: '11:30 Uhr',
-            limit: 20,
+            limit: 1,
           },
           {
             name: 'choice1',
             title: '13:30 Uhr',
-            limit: 20,
+            limit: 1,
           },
           {
             name: 'choice2',
             title: '15:00 Uhr',
-            limit: 20,
+            limit: 1,
+          },
+          {
+            name: 'choice3',
+            title: '16:30 Uhr',
+            limit: 1,
+          },
+          {
+            name: 'choice4',
+            title: '16:45 Uhr',
+            limit: 1,
+          },
+          {
+            name: 'choice5',
+            title: '17:00 Uhr',
+            limit: 1,
+          },
+          {
+            name: 'choice6',
+            title: '17:15 Uhr',
+            limit: 1,
+          },
+          {
+            name: 'choice7',
+            title: '17:30 Uhr',
+            limit: 1,
+          },
+          {
+            name: 'choice8',
+            title: '17:45 Uhr',
+            limit: 1,
+          },
+          {
+            name: 'choice9',
+            title: '18:00 Uhr',
+            limit: 1,
           },
         ],
       },
@@ -101,4 +136,4 @@ const LetterToParents000000000000000000000001 = {
   deploymentTargets: ['linuxmuster'],
 };
 
-export default LetterToParents000000000000000000000001;
+export default letterToParents000000000000000000000001;

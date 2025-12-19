@@ -20,17 +20,17 @@
 import { Model } from 'mongoose';
 import { Logger } from '@nestjs/common';
 import {
-  ParentTeacherConference,
-  LetterToParents,
-  PaperSubject,
-  LimitedEventParticipation,
-  TraineeShip,
+  parentTeacherConference,
+  letterToParents,
+  paperSubject,
+  limitedEventParticipation,
+  traineeShip,
 } from '@libs/survey/constants/templates/index';
 import { SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
 import MigrationService from 'apps/api/src/migration/migration.service';
 import { Migration } from '../../migration/migration.type';
 
-const list = [ParentTeacherConference, LetterToParents, PaperSubject, LimitedEventParticipation, TraineeShip];
+const list = [parentTeacherConference, letterToParents, paperSubject, limitedEventParticipation, traineeShip];
 
 const name = '001-load-the-default-survey-templates';
 

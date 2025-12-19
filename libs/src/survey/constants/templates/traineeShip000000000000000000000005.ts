@@ -19,7 +19,7 @@
 
 import { Types } from 'mongoose';
 
-const TraineeShip000000000000000000000005 = {
+const traineeShip000000000000000000000005 = {
   _id: new Types.ObjectId('000000000000000000000005'),
   name: 'Praktikumsplatz',
   isDefaultTemplate: true,
@@ -72,4 +72,4 @@ const TraineeShip000000000000000000000005 = {
   deploymentTargets: ['linuxmuster'],
 };
 
-export default TraineeShip000000000000000000000005;
+export default traineeShip000000000000000000000005;
