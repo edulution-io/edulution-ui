@@ -28,8 +28,14 @@ import McpTool from '@libs/mcp/types/mcpTool';
 import AiConfigDto from '@libs/ai/types/aiConfigDto';
 import AIProvider from '@libs/ai/constants/aiProvider';
 import AIChatMessagePart from '@libs/ai/types/aiChatMessagePart';
+import JwtUser from '@libs/user/types/jwt/jwtUser';
 import McpService from '../mcp/mcp.service';
 import AiConfigService from './ai.config.service';
+import McpConfigService from '../mcp/mcpConfigService';
+
+interface McpToolWithUrl extends McpTool {
+  mcpUrl: string;
+}
 
 @Injectable()
 class AIService {
@@ -38,6 +44,7 @@ class AIService {
   constructor(
     private mcpService: McpService,
     private aiConfigService: AiConfigService,
+    private mcpConfigService: McpConfigService,
   ) {}
 
   private normalizeBaseUrl(url: string): string {
@@ -104,30 +111,77 @@ class AIService {
     return '';
   }
 
-  private createMcpTool(mcpTool: McpTool, token: string) {
+  private createMcpTool(mcpTool: McpToolWithUrl, token: string) {
     return dynamicTool({
       description: mcpTool.description,
       inputSchema: jsonSchema(mcpTool.inputSchema),
       execute: async (args) => {
-        this.logger.log(`Executing tool: ${mcpTool.name}`);
-        const result = await this.mcpService.callTool(token, mcpTool.name, args as Record<string, unknown>);
+        this.logger.log(`[TOOL CALL] ${mcpTool.name}`);
+        this.logger.log(`[TOOL ARGS] ${JSON.stringify(args)}`);
+
+        const result = await this.mcpService.callTool(
+          mcpTool.mcpUrl,
+          mcpTool.name,
+          args as Record<string, unknown>,
+          token,
+        );
+
         const textContent = result.content.find((c) => c.type === 'text');
-        return textContent?.text || JSON.stringify(result.content);
+        const resultText = textContent?.text || JSON.stringify(result.content);
+
+        this.logger.log(`[TOOL RESULT] isError=${result.isError ?? false}`);
+        this.logger.log(`[TOOL RESULT] ${resultText.substring(0, 500)}`);
+
+        if (result.isError) {
+          return `ERROR: ${resultText}`;
+        }
+
+        return resultText;
       },
     });
   }
 
-  async streamChatWithTools(configId: string, messages: AIChatMessage[], enabledTools: string[], token: string) {
+  async streamChatWithTools(
+    configId: string,
+    messages: AIChatMessage[],
+    enabledTools: string[],
+    token: string,
+    user: JwtUser,
+  ) {
+    this.logger.log('=== AI CHAT START ===');
+    this.logger.log(`[AI] User: ${user.preferred_username}`);
+    this.logger.log(`[AI] Messages: ${messages.length}`);
+    this.logger.log(`[AI] Enabled tools: ${enabledTools.join(', ')}`);
+
     const config = await this.aiConfigService.getById(configId);
     if (!config) {
       throw new Error(`AI Config not found: ${configId}`);
     }
 
-    this.logger.log(`Using AI config: ${config.name} (${config.apiStandard}/${config.aiModel})`);
+    this.logger.log(`[AI] Config: ${config.name} (${config.apiStandard}/${config.aiModel})`);
 
     const model = this.createModel(config);
-    const mcpTools = await this.mcpService.listTools(token);
-    const filteredTools = mcpTools.filter((t) => enabledTools.includes(t.name));
+
+    const mcpConfigs = await this.mcpConfigService.getByUserAccess(user.preferred_username, user.ldapGroups);
+    this.logger.log(`Found ${mcpConfigs.length} MCP configs for user ${user.preferred_username}`);
+
+    const toolResults = await Promise.all(
+      mcpConfigs.map(async (mcpConfig) => {
+        try {
+          const tools = await this.mcpService.listTools(mcpConfig.url, token);
+          this.logger.log(`Found ${tools.length} tools from MCP config: ${mcpConfig.name} (${mcpConfig.url})`);
+          return tools.map((tool) => ({ ...tool, mcpUrl: mcpConfig.url }));
+        } catch (error) {
+          this.logger.error(`Failed to list tools from ${mcpConfig.name}: ${error}`);
+          return [];
+        }
+      }),
+    );
+    const allToolsWithUrl: McpToolWithUrl[] = toolResults.flat();
+
+    const filteredTools = allToolsWithUrl.filter((t) => enabledTools.includes(t.name));
+    this.logger.log(`Enabled tools: ${filteredTools.map((t) => t.name).join(', ')}`);
+
     const modelMessages: ModelMessage[] = messages.map((msg) => ({
       role: msg.role,
       content: this.extractContent(msg),
@@ -144,12 +198,29 @@ class AIService {
       filteredTools.map((mcpTool) => [mcpTool.name, this.createMcpTool(mcpTool, token)]),
     );
 
+    this.logger.log(`[AI] Starting streamText with ${Object.keys(tools).length} tools`);
+
     return streamText({
       model,
       messages: modelMessages,
       tools,
       toolChoice: 'auto',
-      stopWhen: stepCountIs(5),
+      stopWhen: stepCountIs(10),
+      onStepFinish: (step) => {
+        this.logger.log(`[AI STEP] finishReason=${step.finishReason}`);
+        if (step.toolCalls?.length) {
+          this.logger.log(`[AI STEP] toolCalls: ${step.toolCalls.map((t) => t.toolName).join(', ')}`);
+        }
+        if (step.toolResults?.length) {
+          this.logger.log(`[AI STEP] toolResults: ${step.toolResults.length} results`);
+          step.toolResults.forEach((r: { toolName: string }, i: number) => {
+            this.logger.log(`[AI STEP] result[${i}]: ${r.toolName}`);
+          });
+        }
+        if (step.text) {
+          this.logger.log(`[AI STEP] text: ${step.text.substring(0, 200)}`);
+        }
+      },
     });
   }
 }

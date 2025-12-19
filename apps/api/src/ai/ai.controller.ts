@@ -112,7 +112,7 @@ class AiController {
     const { messages, chatId, configId, enabledTools = [] } = body;
 
     try {
-      const result = await this.aiService.streamChatWithTools(configId, messages, enabledTools, token);
+      const result = await this.aiService.streamChatWithTools(configId, messages, enabledTools, token, user);
       result.pipeUIMessageStreamToResponse(res);
 
       if (chatId) {

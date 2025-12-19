@@ -23,6 +23,23 @@ import { McpModule } from '@rekog/mcp-nest';
 import { JwtModule } from '@nestjs/jwt';
 import JwtAuthGuard from '@backend-common/guards/jwt-auth.guard';
 import GreetingTool from '../tools/greeting.tool';
+import UsersTool from '../tools/users.tool';
+import GroupsTool from '../tools/groups.tool';
+import FilesharingTool from '../tools/filesharing.tool';
+import MailTool from '../tools/mail.tool';
+import ChatTool from '../tools/chat.tool';
+import BulletinTool from '../tools/bulletin.tool';
+import SurveyTool from '../tools/survey.tool';
+import ConferenceTool from '../tools/conference.tool';
+import LmnTool from '../tools/lmn.tool';
+import SettingsTool from '../tools/settings.tool';
+import AiTool from '../tools/ai.tool';
+import DockerTool from '../tools/docker.tool';
+import VdiTool from '../tools/vdi.tool';
+import VeyonTool from '../tools/veyon.tool';
+import WebdavSharesTool from '../tools/webdav-shares.tool';
+import UserPreferencesTool from '../tools/user-preferences.tool';
+import AppTool from '../tools/app.tool';
 
 @Global()
 @Module({
@@ -40,7 +57,27 @@ import GreetingTool from '../tools/greeting.tool';
       guards: [JwtAuthGuard],
     }),
   ],
-  providers: [GreetingTool, JwtAuthGuard],
+  providers: [
+    GreetingTool,
+    UsersTool,
+    GroupsTool,
+    FilesharingTool,
+    MailTool,
+    ChatTool,
+    BulletinTool,
+    SurveyTool,
+    ConferenceTool,
+    LmnTool,
+    SettingsTool,
+    AiTool,
+    DockerTool,
+    VdiTool,
+    VeyonTool,
+    WebdavSharesTool,
+    UserPreferencesTool,
+    AppTool,
+    JwtAuthGuard,
+  ],
   exports: [JwtModule],
 })
 export default class AppModule {}
