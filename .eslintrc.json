@@ -41,7 +41,8 @@
     "jest.config.ts",
     "dist/**",
     "scripts/**",
-    "lint-staged.config.js"
+    "lint-staged.config.js",
+    "data/**"
   ],
   "rules": {
     // Allowed console logs for debug purpose
