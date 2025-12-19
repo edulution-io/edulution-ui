@@ -45,6 +45,7 @@ interface FileSharingDialogStore {
   userInput: string;
   moveOrCopyItemToPath: DirectoryFileDTO;
   selectedFileType: TAvailableFileTypes | '';
+  customExtension: string;
   setMoveOrCopyItemToPath: (item: DirectoryFileDTO) => void;
   setIsLoading: (isLoading: boolean) => void;
   error: AxiosError | null;
@@ -53,6 +54,7 @@ interface FileSharingDialogStore {
   setError: (error: AxiosError) => void;
   reset: () => void;
   setSelectedFileType: (fileType: TAvailableFileTypes | '') => void;
+  setCustomExtension: (extension: string) => void;
   handleItemAction: (
     action: FileActionType,
     endpoint: string,
@@ -80,6 +82,7 @@ const initialState: Partial<FileSharingDialogStore> = {
   userInput: '',
   moveOrCopyItemToPath: {} as DirectoryFileDTO,
   selectedFileType: '',
+  customExtension: '',
   isSubmitButtonDisabled: false,
 };
 
@@ -100,6 +103,7 @@ const useFileSharingDialogStore = create<FileSharingDialogStore>((set, get) => (
   setMoveOrCopyItemToPath: (path) => set({ moveOrCopyItemToPath: path }),
   setSubmitButtonIsDisabled: (isSubmitButtonDisabled) => set({ isSubmitButtonDisabled }),
   setSelectedFileType: (fileType) => set({ selectedFileType: fileType }),
+  setCustomExtension: (extension) => set({ customExtension: extension }),
   setFileOperationResult: (success, message = t('unknownErrorOccurred'), status = 500) => {
     const result: WebDavActionResult = { success, message, status };
     set({ fileOperationResult: result });

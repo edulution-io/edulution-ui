@@ -18,7 +18,6 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { Button } from '@/components/shared/Button';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
@@ -26,7 +25,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialStore';
 import getBulletinFormSchema from '@libs/bulletinBoard/constants/bulletinDialogFormSchema';
 import CreateOrUpdateBulletinDialogBody from '@/pages/BulletinBoard/BulletinBoardEditorial/CreateOrUpdateBulletinDialogBody';
-import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
@@ -140,26 +138,14 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
 
   const getFooter = () => (
     <form onSubmit={handleFormSubmit}>
-      <div className="flex gap-4">
-        {!isDialogLoading && selectedBulletinToEdit?.id && (
-          <Button
-            className="mt-4"
-            variant="btn-attention"
-            size="lg"
-            type="button"
-            onClick={() => setIsDeleteDialogOpen(true)}
-          >
-            <DeleteIcon size={20} />
-            {t('common.delete')}
-          </Button>
-        )}
-        <DialogFooterButtons
-          handleClose={handleClose}
-          handleSubmit={handleFormSubmit}
-          submitButtonText="common.save"
-          disableSubmit={isDialogLoading}
-        />
-      </div>
+      <DialogFooterButtons
+        handleClose={handleClose}
+        handleSubmit={handleFormSubmit}
+        handleDelete={selectedBulletinToEdit?.id ? () => setIsDeleteDialogOpen(true) : undefined}
+        submitButtonText="common.save"
+        disableSubmit={isDialogLoading}
+        disableDelete={isDialogLoading}
+      />
     </form>
   );
 

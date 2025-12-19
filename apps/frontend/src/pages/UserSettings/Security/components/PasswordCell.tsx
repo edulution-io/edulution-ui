@@ -22,7 +22,7 @@ import { MdFileCopy } from 'react-icons/md';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
-import { EyeLightIcon, EyeLightSlashIcon } from '@/assets/icons';
+import { EyeDarkIcon, EyeDarkSlashIcon, EyeLightIcon, EyeLightSlashIcon } from '@/assets/icons';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import { decryptPassword } from '@libs/common/utils/encryptPassword';
 import copyToClipboard from '@/utils/copyToClipboard';
@@ -32,6 +32,8 @@ import { decodeBase64 } from '@libs/common/utils/getBase64String';
 import type EncryptedPasswordObject from '@libs/common/types/encryptPasswordObject';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import useThemeStore from '@/store/useThemeStore';
+import THEME from '@libs/common/constants/theme';
 import EnterSafePinDialog from './EnterSafePinDialog';
 
 interface PasswordCellProps {
@@ -44,6 +46,8 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
   const placeholder = '********';
   const [password, setPassword] = useState(placeholder);
   const isVisible = password !== placeholder;
+  const resolvedTheme = useThemeStore((state) => state.getResolvedTheme());
+  const isDarkMode = resolvedTheme === THEME.dark;
 
   const [isOpen, setIsOpen] = useState('');
 
@@ -132,6 +136,13 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
     </button>
   );
 
+  const getEyeIcons = () =>
+    isDarkMode
+      ? { closed: EyeLightIcon, opened: EyeLightSlashIcon }
+      : { closed: EyeDarkIcon, opened: EyeDarkSlashIcon };
+
+  const { closed: closedIcon, opened: openedIcon } = getEyeIcons();
+
   return (
     <>
       <div className={cn('flex flex-row items-center gap-4', { 'justify-between': !isInput })}>
@@ -147,6 +158,7 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
               void handleCopyPassword();
             }}
             icon={getCopyButton()}
+            variant="dialog"
           />
         ) : (
           <SelectableTextCell
@@ -162,7 +174,7 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
             onClick={() => handleShowPassword()}
           >
             <img
-              src={isVisible ? EyeLightIcon : EyeLightSlashIcon}
+              src={isVisible ? closedIcon : openedIcon}
               alt="eye"
               className="h-6 min-h-6 w-6 min-w-6"
             />

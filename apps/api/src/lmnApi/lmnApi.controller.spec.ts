@@ -101,8 +101,8 @@ describe('LmnApiController', () => {
 
   describe('getSchoolClass', () => {
     it('should call getSchoolClass', async () => {
-      await controller.getSchoolClass({ schoolClassName: 'class1' }, 'mockToken');
-      expect(service.getSchoolClass).toHaveBeenCalledWith('mockToken', 'class1');
+      await controller.getSchoolClass({ schoolClassName: 'class1' }, 'true', 'mockToken');
+      expect(service.getSchoolClass).toHaveBeenCalledWith('mockToken', 'class1', true);
     });
   });
 

@@ -17,13 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { FC, MutableRefObject, useEffect } from 'react';
+import React, { FC, MutableRefObject, ReactNode, useEffect } from 'react';
 import ImageComponent from '@/components/ui/ImageComponent';
 import MediaComponent from '@/components/ui/MediaComponent';
 import OnlyOffice from '@/pages/FileSharing/FilePreview/OnlyOffice/OnlyOffice';
+import DrawioViewer from '@/pages/FileSharing/FilePreview/DrawioViewer/DrawioViewer';
 import { t } from 'i18next';
 import isImageExtension from '@libs/filesharing/utils/isImageExtension';
 import isMediaExtension from '@libs/filesharing/utils/isMediaExtension';
+import isTextExtension from '@libs/filesharing/utils/isTextExtension';
+import isDrawioExtension from '@libs/filesharing/utils/isDrawioExtension';
+import TEXT_EXTENSIONS from '@libs/filesharing/types/textExtensions';
 import useMedia from '@/hooks/useMedia';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
@@ -32,15 +36,29 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 import PdfViewer from '@/components/shared/PDFViewer/PdfViewer';
+import TextPreview from '@/components/ui/Renderer/TextPreview';
+import MarkdownRenderer from '@/components/ui/Renderer/MarkdownRenderer';
+import useFileContentPreviewStore from '@/pages/FileSharing/FilePreview/useFileContentPreviewStore';
+import useFileEditorContentStore from '@/pages/FileSharing/FilePreview/useFileEditorContentStore';
+import { FILE_PREVIEW_TYPE, FilePreviewType } from '@libs/filesharing/types/filePreviewType';
+import isPdfExtension from '@libs/filesharing/utils/isPdfExtension';
+import cn from '@libs/common/utils/className';
 
 interface FileRendererProps {
   editMode: boolean;
   isOpenedInNewTab?: boolean;
   closingRef?: MutableRefObject<boolean>;
   isOnlyOfficeConfigured?: boolean;
+  webdavShare?: string;
 }
 
-const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closingRef, isOnlyOfficeConfigured }) => {
+const FileRenderer: FC<FileRendererProps> = ({
+  editMode,
+  isOpenedInNewTab,
+  closingRef,
+  isOnlyOfficeConfigured,
+  webdavShare,
+}) => {
   const { isMobileView } = useMedia();
   const {
     temporaryDownloadUrl: fileUrl,
@@ -52,8 +70,16 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
   } = useFileSharingDownloadStore();
 
   const { currentlyEditingFile } = useFileEditorStore();
-
   const { setFileIsCurrentlyDisabled } = useFileSharingStore();
+  const { fileContent, isLoadingContent, fetchFileContent, reset: resetContentPreview } = useFileContentPreviewStore();
+  const { editedContent, setEditedContent, setOriginalContent } = useFileEditorContentStore();
+
+  const fileExtension = currentlyEditingFile ? getFileExtension(currentlyEditingFile.filePath) : undefined;
+  const isMarkdown = fileExtension === TEXT_EXTENSIONS.MD || fileExtension === TEXT_EXTENSIONS.MARKDOWN;
+  const isText = isTextExtension(fileExtension);
+  const isDrawio = isDrawioExtension(fileExtension);
+  const isTextBasedFile = isText || isDrawio;
+  const isBaseLoading = isEditorLoading || isCreatingBlobUrl || isFetchingPublicUrl || !!error;
 
   useEffect(() => {
     if (currentlyEditingFile && !isEditorLoading && !isCreatingBlobUrl && !isFetchingPublicUrl) {
@@ -70,64 +96,127 @@ const FileRenderer: FC<FileRendererProps> = ({ editMode, isOpenedInNewTab, closi
     [currentlyEditingFile?.filename],
   );
 
-  if (!currentlyEditingFile) return null;
-
-  const fileExtension = getFileExtension(currentlyEditingFile.filePath);
-  const isOnlyOfficeDoc = isOnlyOfficeDocument(currentlyEditingFile.filePath);
-  if (isOnlyOfficeDoc && isOnlyOfficeConfigured) {
-    const isDocReady = !!publicDownloadLink && !!currentlyEditingFile;
-    if (isEditorLoading || isCreatingBlobUrl || isFetchingPublicUrl || error || !isDocReady) {
-      return (
-        <div className="flex h-full items-center justify-center">
-          <CircleLoader />
-        </div>
-      );
+  useEffect(() => {
+    if (!isTextBasedFile || !fileUrl) {
+      resetContentPreview();
+      return undefined;
     }
 
-    return (
-      <OnlyOffice
-        url={publicDownloadLink}
-        fileName={currentlyEditingFile.filename}
-        filePath={currentlyEditingFile.filePath}
-        mode={editMode ? 'edit' : 'view'}
-        type={isMobileView ? 'mobile' : 'desktop'}
-        isOpenedInNewTab={isOpenedInNewTab}
-      />
-    );
-  }
+    const abortController = new AbortController();
+    void fetchFileContent(fileUrl, abortController.signal);
 
-  if (isEditorLoading || isCreatingBlobUrl || isFetchingPublicUrl || error || !fileUrl) {
-    return (
-      <div className="flex h-full items-center justify-center">
-        <CircleLoader />
-      </div>
-    );
-  }
+    return () => {
+      abortController.abort();
+    };
+  }, [fileUrl, isTextBasedFile]);
 
-  if (isImageExtension(fileExtension)) {
-    return (
-      <ImageComponent
-        key={fileUrl}
-        downloadLink={fileUrl}
-        altText="Image"
-      />
-    );
-  }
+  useEffect(() => {
+    if (editMode && isTextBasedFile && fileContent !== null) {
+      setOriginalContent(fileContent);
+    }
+  }, [editMode, isTextBasedFile, fileContent, setOriginalContent]);
 
-  if (isMediaExtension(fileExtension)) {
-    return (
-      <MediaComponent
-        key={fileUrl}
-        url={fileUrl}
-      />
-    );
-  }
+  if (!currentlyEditingFile) return null;
 
-  if (fileExtension === 'pdf') {
-    return <PdfViewer fetchUrl={fileUrl} />;
-  }
+  const getFileType = (): FilePreviewType => {
+    if (isPdfExtension(fileExtension)) return FILE_PREVIEW_TYPE.PDF;
 
-  return <p>{t('filesharing.errors.FileFormatNotSupported')}</p>;
+    const isOnlyOfficeDoc = isOnlyOfficeDocument(currentlyEditingFile.filePath);
+    if (isOnlyOfficeDoc && isOnlyOfficeConfigured) return FILE_PREVIEW_TYPE.ONLY_OFFICE;
+
+    if (isDrawioExtension(fileExtension)) return FILE_PREVIEW_TYPE.DRAWIO;
+    if (isImageExtension(fileExtension)) return FILE_PREVIEW_TYPE.IMAGE;
+    if (isMediaExtension(fileExtension)) return FILE_PREVIEW_TYPE.MEDIA;
+    if (isText) return FILE_PREVIEW_TYPE.TEXT;
+
+    return FILE_PREVIEW_TYPE.UNSUPPORTED;
+  };
+
+  const renderContent = (): ReactNode => {
+    const fileType = getFileType();
+
+    switch (fileType) {
+      case FILE_PREVIEW_TYPE.PDF:
+        if (isBaseLoading || !fileUrl) return <CircleLoader className="mx-auto mt-5" />;
+        return (
+          <PdfViewer
+            fetchUrl={fileUrl}
+            containerClassName={isOpenedInNewTab ? 'h-dvh' : 'h-full'}
+          />
+        );
+
+      case FILE_PREVIEW_TYPE.ONLY_OFFICE:
+        if (isBaseLoading || !publicDownloadLink) return <CircleLoader className="mx-auto mt-5" />;
+        return (
+          <OnlyOffice
+            url={publicDownloadLink}
+            fileName={currentlyEditingFile.filename}
+            filePath={currentlyEditingFile.filePath}
+            mode={editMode ? 'edit' : 'view'}
+            type={isMobileView ? 'mobile' : 'desktop'}
+            isOpenedInNewTab={isOpenedInNewTab}
+          />
+        );
+
+      case FILE_PREVIEW_TYPE.DRAWIO:
+        if (isBaseLoading || isLoadingContent || fileContent === null) return <CircleLoader className="mx-auto mt-5" />;
+        return (
+          <DrawioViewer
+            xmlContent={fileContent}
+            editMode={editMode}
+            isFullscreen={isOpenedInNewTab}
+            webdavShare={webdavShare}
+          />
+        );
+
+      case FILE_PREVIEW_TYPE.IMAGE:
+        if (isBaseLoading || !fileUrl) return <CircleLoader className="mx-auto mt-5" />;
+        return (
+          <ImageComponent
+            key={fileUrl}
+            downloadLink={fileUrl}
+            altText="Image"
+          />
+        );
+
+      case FILE_PREVIEW_TYPE.MEDIA:
+        if (isBaseLoading || !fileUrl) return <CircleLoader className="mx-auto mt-5" />;
+        return (
+          <MediaComponent
+            key={fileUrl}
+            url={fileUrl}
+            height={isOpenedInNewTab ? '100dvh' : '100%'}
+          />
+        );
+
+      case FILE_PREVIEW_TYPE.TEXT: {
+        if (isBaseLoading || !fileUrl || isLoadingContent || fileContent === null)
+          return <CircleLoader className="mx-auto mt-5" />;
+
+        return (
+          <div className={isOpenedInNewTab ? 'h-dvh' : 'h-full overflow-auto'}>
+            {isMarkdown || editMode ? (
+              <MarkdownRenderer
+                content={editedContent ?? fileContent}
+                editable={editMode}
+                showToolbar={isMarkdown}
+                showPreview={isMarkdown}
+                onChange={setEditedContent}
+                className={cn('h-full bg-foreground', { 'p-4': !editMode })}
+              />
+            ) : (
+              <TextPreview content={fileContent} />
+            )}
+          </div>
+        );
+      }
+
+      default:
+        return <p>{t('filesharing.errors.FileFormatNotSupported')}</p>;
+    }
+  };
+
+  return renderContent();
 };
 
 export default FileRenderer;

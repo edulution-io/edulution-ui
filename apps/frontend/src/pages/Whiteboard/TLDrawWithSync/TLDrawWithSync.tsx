@@ -21,7 +21,6 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { Editor, TLAssetStore, Tldraw, TLImageShapeProps } from 'tldraw';
 import { useSync } from '@tldraw/sync';
 import 'tldraw/tldraw.css';
-import COLOR_SCHEME from '@libs/ui/constants/colorScheme';
 import eduApi from '@/api/eduApi';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import useUserStore from '@/store/UserStore/useUserStore';
@@ -37,11 +36,13 @@ import { useTranslation } from 'react-i18next';
 import TLDrawHistory from '@/pages/Whiteboard/TLDrawWithSync/TLDrawHistory';
 import tlDrawComponents from '@/pages/Whiteboard/components/tlDrawComponents';
 import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
+import useThemeStore from '@/store/useThemeStore';
 
 const TLDrawWithSync = ({ uri }: { uri: string }) => {
   const { t } = useTranslation();
   const user = useUserStore((s) => s.user);
   const usernameRef = useRef(user?.username ?? 'guest');
+  const theme = useThemeStore((s) => s.theme);
 
   useEffect(() => {
     usernameRef.current = user?.username ?? 'guest';
@@ -151,7 +152,7 @@ const TLDrawWithSync = ({ uri }: { uri: string }) => {
 
   const applyUserPreferences = (editor: Editor) => {
     editor.user.updateUserPreferences({
-      colorScheme: COLOR_SCHEME,
+      colorScheme: theme,
       locale: language,
       name: `${user.firstName} ${user.lastName}(${user.username})`,
     });

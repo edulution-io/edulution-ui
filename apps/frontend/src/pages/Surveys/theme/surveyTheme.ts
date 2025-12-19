@@ -18,14 +18,12 @@
  */
 
 import { IHeader, ImageFit, ITheme } from 'survey-core';
-import COLOR_SCHEME from '@libs/ui/constants/colorScheme';
 
 const surveyTheme: ITheme = {
   backgroundImage: '',
   backgroundImageAttachment: 'fixed',
   backgroundImageFit: 'auto' as ImageFit,
   backgroundOpacity: 0,
-  colorPalette: COLOR_SCHEME,
   cssVariables: {
     '--sjs-corner-radius': '3px',
     '--sjs-base-unit': '8px',
@@ -33,7 +31,7 @@ const surveyTheme: ITheme = {
     '--sjs-shadow-inner': 'inset 0px 1px 2px 0px rgba(0, 0, 0, 0.2)',
     '--sjs-border-default': 'var(--ring)',
     '--sjs-border-light': 'var(--ring)',
-    '--sjs-general-backcolor': 'rgba(0, 0, 0, 0.4)',
+    '--sjs-general-backcolor': 'var(--overlay-transparent)',
     '--sjs-general-backcolor-dark': 'var(--accent)',
     '--sjs-general-backcolor-dim-light': 'var(--accent)',
     '--sjs-general-backcolor-dim-dark': 'var(--muted)',
@@ -43,7 +41,7 @@ const surveyTheme: ITheme = {
     '--sjs-general-dim-forecolor-light': 'var(--muted-light)',
     '--sjs-secondary-backcolor': 'var(--overlay)',
     '--sjs-secondary-backcolor-light': 'var(--muted-dialog)',
-    '--sjs-secondary-backcolor-semi-light': 'var(--overlay-foreground)',
+    '--sjs-secondary-backcolor-semi-light': 'var(--muted-light)',
     '--sjs-secondary-forecolor': 'var(--secondary-foreground)',
     '--sjs-secondary-forecolor-light': 'var(--secondary-foreground)',
     '--sjs-shadow-small-reset': '0px 0px 0px 0px rgba(0, 0, 0, 0.35)',

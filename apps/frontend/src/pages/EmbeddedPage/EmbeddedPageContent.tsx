@@ -43,10 +43,12 @@ const EmbeddedPageContent: React.FC<EmbeddedPageContentProps> = ({
       allow={IFRAME_ALLOWED_CONFIG}
     />
   ) : (
-    <div
-      className="h-full w-full"
-      // eslint-disable-next-line react/no-danger
-      dangerouslySetInnerHTML={{ __html: htmlContent || '' }}
-    />
+    htmlContent && (
+      <div
+        className="h-full w-full"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: htmlContent }}
+      />
+    )
   );
 export default EmbeddedPageContent;

@@ -38,6 +38,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import { replaceGermanUmlauts } from '@libs/common/utils/string/latinize';
+import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import MailImporterTable from './MailImporterTable';
 import DeleteMailSyncJobsDialog from './DeleteMailSyncJobsDialog';
 
@@ -121,7 +122,6 @@ const UserSettingsMailsPage: React.FC = () => {
       labelTranslationId={label}
       type={type}
       defaultValue=""
-      className="mb-4 mt-2 "
     />
   );
 
@@ -135,30 +135,39 @@ const UserSettingsMailsPage: React.FC = () => {
       <StateLoader isLoading={isEditSyncJobLoading} />
       {isMailConfigured ? (
         <>
-          <h2 className="text-background">{t('mail.importer.title')}</h2>
-          <div className="space-y-4">
-            <DropdownSelect
-              options={externalMailProviderConfig}
-              selectedVal={t(option)}
-              handleChange={setOption}
-              classname="md:w-1/3"
-              placeholder={t('common.loading')}
-            />
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(handleCreateSyncJob)}
-                className="md:max-w-[75%]"
-              >
-                {renderFormField('email', t('mail.importer.mailAddress'))}
-                {renderFormField('password', t('common.password'), 'password')}
-              </form>
-            </Form>
+          <SectionAccordion defaultOpenAll>
+            <SectionAccordionItem
+              id="mailImporter"
+              label={t('mail.importer.title')}
+            >
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <DropdownSelect
+                    options={externalMailProviderConfig}
+                    selectedVal={t(option)}
+                    handleChange={setOption}
+                    classname="md:w-1/3"
+                    placeholder={t('common.loading')}
+                  />
+                  <Form {...form}>
+                    <form
+                      onSubmit={form.handleSubmit(handleCreateSyncJob)}
+                      className="space-y-4"
+                    >
+                      {renderFormField('email', t('mail.importer.mailAddress'))}
+                      {renderFormField('password', t('common.password'), 'password')}
+                    </form>
+                  </Form>
+                </div>
 
-            <div className="px-4">
-              <h2 className="pt-5 text-background">{t('mail.importer.syncJobsTable')}</h2>
-              <MailImporterTable />
-            </div>
-          </div>
+                <div className="space-y-2">
+                  <h4 className="text-base font-semibold">{t('mail.importer.syncJobsTable')}</h4>
+                  <MailImporterTable />
+                </div>
+              </div>
+            </SectionAccordionItem>
+          </SectionAccordion>
+
           <FloatingButtonsBar config={config} />
           <DeleteMailSyncJobsDialog
             isOpen={isDeleteDialogOpen}
@@ -169,7 +178,7 @@ const UserSettingsMailsPage: React.FC = () => {
           />
         </>
       ) : (
-        <p>{t('mail.importer.noMailConfigured')}</p>
+        <p className="text-background">{t('mail.importer.noMailConfigured')}</p>
       )}
     </PageLayout>
   );
