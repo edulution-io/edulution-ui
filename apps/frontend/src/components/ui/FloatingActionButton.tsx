@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Button } from '@/components/shared/Button';
 import { IconContext } from 'react-icons';
 import { useTranslation } from 'react-i18next';
@@ -32,9 +32,9 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
   type = 'button',
   variant = 'button',
   dropdownItems = [],
+  iconContextValue = {},
 }) => {
   const { t } = useTranslation();
-  const iconContextValue = useMemo(() => ({ className: 'h-6 w-6 m-4 md:h-8 md:w-8 md:m-5' }), []);
 
   const renderContent = () => {
     if (variant === 'dropdown' && dropdownItems.length > 0) {
@@ -44,7 +44,6 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
             <Button
               type="button"
               variant="btn-hexagon"
-              className="bg-opacity-90 p-1"
               hexagonIconAltText={t('common.showOptions')}
             >
               <IconContext.Provider value={iconContextValue}>
@@ -61,7 +60,6 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
       <Button
         type={type}
         variant="btn-hexagon"
-        className="bg-opacity-90 p-1 md:p-4"
         onClick={onClick}
         hexagonIconAltText={text}
       >

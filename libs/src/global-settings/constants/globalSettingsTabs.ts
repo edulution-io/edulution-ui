@@ -19,7 +19,7 @@
 
 const GLOBAL_SETTINGS_TABS = {
   CONTAINER: 'container',
-  GLOBAL_SETTINGS: 'global-settings',
+  GENERAL_SETTINGS: 'global-settings',
   USER_ADMINISTRATION: 'user-administration',
   INFO: 'info',
 } as const;

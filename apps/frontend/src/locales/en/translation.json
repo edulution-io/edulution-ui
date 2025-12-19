@@ -342,6 +342,12 @@
     "rowSelected": "{{selected}} of {{total}} file selected",
     "fileWithSameNameAlreadyExists": "A file with the same name already exists.",
     "folderWithSameNameAlreadyExists": "A folder with the same name already exists.",
+    "currentName": "Current name",
+    "sameNameAsOriginal": "Please enter a different name",
+    "placeholder": {
+      "filename": "Name",
+      "extension": ".ext"
+    },
     "errors": {
       "FileNotFound": "File not found",
       "MountPointsNotFound": "Mount points not found",
@@ -396,6 +402,14 @@
       "fileStructureIsCreating": "File structure is being creating",
       "zipFilesAreUploading": "Files are uploading",
       "fileIsUploading": "{{filename}} is uploading"
+    },
+    "textEditor": {
+      "unsavedChanges": "Unsaved Changes",
+      "unsavedChangesMessage": "You have unsaved changes. What would you like to do?",
+      "discard": "Discard",
+      "saving": "Saving...",
+      "saveSuccess": "File saved successfully",
+      "saveError": "Failed to save file"
     },
 
     "publicShareFilesPage": {
@@ -1082,6 +1096,15 @@
           "title": "General settings",
           "description": ""
         },
+        "drawio": {
+          "title": "Draw.io Integration",
+          "description": "Configure Draw.io for creating diagrams and flowcharts."
+        },
+        "proxyConfig": {
+          "title": "Proxy Configuration",
+          "description": "You can store your own proxy configuration for Traefik here. You can either work via the input fields using a template or create a configuration in YAML format directly in expert mode. <br/><strong>Warning:</strong> A wrong configuration could lead to the application being unreachable."
+        },
+
         "docker": {
           "title": "Docker Applications",
           "description": "To be able to use the extended services, the required container applications must be started here.",
@@ -1239,7 +1262,9 @@
       "confirmSingleDeleteAccount": "Are you sure you want to delete this account? This action cannot be undone.",
       "deleteUserAccounts": "Delete {{count}} Accounts",
       "deleteUserAccount": "Delete Account",
-      "cryptoNotAvailable": "Encryption is only available over HTTPS. Please use a secure connection."
+      "cryptoNotAvailable": "Encryption is only available over HTTPS. Please use a secure connection.",
+      "password": "Change Password",
+      "mfa": "Two-Factor Authentication"
     },
     "mails": {
       "title": "E-Mail"
@@ -1248,7 +1273,9 @@
       "title": "Mobile Access",
       "description": "Here you can set up the edulution app for mobile access.",
       "docsDescription": "You can find the download link for the edulution app and instructions on how to set it up in the edulution documentation.",
-      "button": "Open Docs"
+      "button": "Open Docs",
+      "setup": "Setup with QR Code",
+      "qrCode": "QR Code"
     },
     "faq": "FAQ",
     "externalIntegration": "External Integration",
@@ -1266,7 +1293,19 @@
       "german": "German",
       "english": "English",
       "french": "French",
-      "system": "System language"
+      "system": "System language",
+      "selectLanguage": "Select Language"
+    },
+    "themeMode": {
+      "title": "Appearance",
+      "description": "Select the appearance of the user interface.",
+      "system": "System",
+      "dark": "Dark",
+      "light": "Light"
+    },
+    "userinterface": {
+      "title": "User Interface",
+      "description": "Here you can customize the user interface settings according to your preferences."
     },
     "addTotp": {
       "title": "Set up Two-Factor Authentication",
@@ -1285,6 +1324,9 @@
       "notSupportedFileFormat": "Not supported file format",
       "notAbleToCompressImage": "Not able to compress the image"
     }
+  },
+  "generalsettings": {
+    "title": "General"
   },
   "forwardingpage": {
     "action": "This link will take you to the external site of the provider.",
@@ -1483,8 +1525,6 @@
     "urlDescription": "Please insert an URL to the application",
     "apiKey": "API Key",
     "apiKeyDescription": "The API Key will be used for authentication",
-    "proxyConfig": "Proxy Configuration",
-    "proxyConfigDescription": "You can store your own proxy configuration for Traefik here. You can either work via the input fields using a template or create a configuration in YAML format directly in expert mode. <br/><strong>Warning:</strong> A wrong configuration could lead to the application being unreachable.",
     "expertMode": "Expert mode",
     "proxyPath": "Proxy path",
     "proxyPathPlaceholder": "e.g. SOGo",
@@ -1534,8 +1574,12 @@
     "overwriteWarningTitle_other": "Warning: Files already exist",
     "overwriteWarningDescription_one": "The following file will be overwritten:",
     "overwriteWarningDescription_other": "The following files will be overwritten:",
-    "oversizedFilesDetected": "Oversized files detected",
-    "oversizedFileDetected": "Oversized file detected!",
+    "overwriteFolderWarningTitle_one": "Warning: Folder already exists",
+    "overwriteFolderWarningTitle_other": "Warning: Folders already exist",
+    "overwriteFolderWarningDescription_one": "The following folder will be overwritten:",
+    "overwriteFolderWarningDescription_other": "The following folders will be overwritten:",
+    "oversizedFileDetected_one": "Oversized file detected:",
+    "oversizedFileDetected_other": "Oversized files detected:",
     "folderTooLargeTitle": "Too many files in the folder",
     "folderTooLargeDescription": "The folder contains more then 100 files. Please select another folder or reduce the number of files.",
     "cannotUploadOversized": "Files larger than 50 MB cannot be uploaded.",
@@ -1605,7 +1649,8 @@
     "presentation": "Presentation",
     "spreadsheet": "Table",
     "vector": "Diagram",
-    "compressed": "Archive"
+    "compressed": "Archive",
+    "code": "Code"
   },
   "fileCreateNewContent": {
     "documentFile": "Create a new document",
@@ -1626,8 +1671,29 @@
       "textFile": "New Textfile",
       "spreadsheetFile": "New Table",
       "presentationFile": "New Presentation",
-      "documentFile": "New Document"
-    }
+      "documentFile": "New Document",
+      "json": "JSON File (.json)",
+      "yaml": "YAML File (.yaml)",
+      "yml": "YAML File (.yml)",
+      "toml": "TOML File (.toml)",
+      "xml": "XML File (.xml)",
+      "cfg": "Config File (.cfg)",
+      "ini": "INI File (.ini)",
+      "env": "Environment File (.env)",
+      "md": "Markdown File (.md)",
+      "html": "HTML File (.html)",
+      "css": "CSS File (.css)",
+      "csv": "CSV File (.csv)",
+      "sh": "Shell Script (.sh)",
+      "bat": "Batch File (.bat)",
+      "ps1": "PowerShell Script (.ps1)",
+      "py": "Python Script (.py)",
+      "js": "JavaScript File (.js)",
+      "customFile": "Other file"
+    },
+    "customFile": "Create a new file",
+    "moreFileTypes": "More file types",
+    "lessFileTypes": "Less file types"
   },
   "fileRenameContent": {
     "placeholder": "Enter new name",
@@ -1764,6 +1830,8 @@
     "onlyOfficeUrlTitle": "OnlyOffice URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
     "onlyOfficeJwtSecretDescription": "Enter the OnlyOffice JWT Secret",
+    "drawioUrlTitle": "Draw.io URL",
+    "drawioUrlDescription": "Enter the URL of your self-hosted Draw.io instance",
     "overrideDocumentVendorMSWithOOTitle": "Use OpenDocument as the standard document format",
     "overrideDocumentVendorMSWithOODescription": "Should the format used by OpenOffice (odt, ods, odp) be used instead of Microsoft Office (docx, pptx, xlsx) formats?",
     "mailImapUrlTitle": "URL",

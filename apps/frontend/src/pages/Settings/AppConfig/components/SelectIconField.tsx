@@ -18,73 +18,11 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import {
-  AiChatIcon,
-  AntiMalwareIcon,
-  BackupIcon,
-  BulletinBoardIcon,
-  ChatIcon,
-  ClassManagementIcon,
-  ConferencesIcon,
-  DesktopDeploymentIcon,
-  EmbeddedIcon,
-  FileSharingIcon,
-  FirewallIcon,
-  ForumsIcon,
-  ForwardIcon,
-  KnowledgeBaseIcon,
-  LearningManagementIcon,
-  LinuxmusterIcon,
-  LocationServicesIcon,
-  MailIcon,
-  MobileDevicesIcon,
-  NativeIcon,
-  NetworkIcon,
-  PrinterIcon,
-  RoomBookingIcon,
-  SchoolInformationIcon,
-  SurveysMenuIcon,
-  TicketSystemIcon,
-  VirtualizationIcon,
-  WhiteBoardIcon,
-  WlanIcon,
-} from '@/assets/icons';
 import { Card } from '@/components/shared/Card';
 import { useTranslation } from 'react-i18next';
 import cn from '@libs/common/utils/className';
 import { UseFormReturn } from 'react-hook-form';
-
-const iconsList = [
-  AiChatIcon,
-  AntiMalwareIcon,
-  BackupIcon,
-  BulletinBoardIcon,
-  ChatIcon,
-  ClassManagementIcon,
-  ConferencesIcon,
-  DesktopDeploymentIcon,
-  EmbeddedIcon,
-  FileSharingIcon,
-  FirewallIcon,
-  ForumsIcon,
-  ForwardIcon,
-  KnowledgeBaseIcon,
-  LearningManagementIcon,
-  LinuxmusterIcon,
-  LocationServicesIcon,
-  MailIcon,
-  MobileDevicesIcon,
-  NativeIcon,
-  NetworkIcon,
-  PrinterIcon,
-  RoomBookingIcon,
-  SchoolInformationIcon,
-  SurveysMenuIcon,
-  TicketSystemIcon,
-  VirtualizationIcon,
-  WhiteBoardIcon,
-  WlanIcon,
-];
+import defaultIconList from './defaultIconList';
 
 const SelectIconField = ({ form }: { form: UseFormReturn<{ customAppName: string; customIcon: string }> }) => {
   const { t } = useTranslation();
@@ -100,10 +38,10 @@ const SelectIconField = ({ form }: { form: UseFormReturn<{ customAppName: string
     <div>
       <p className="mb-1 font-bold">{t('appstore.chooseIcon')}</p>
       <Card
-        className="flex flex-wrap gap-4 bg-muted p-3"
-        variant="text"
+        className="grid grid-cols-5 gap-4 p-3"
+        variant="dialog"
       >
-        {iconsList.map((icon) => {
+        {defaultIconList.map((icon) => {
           const iconName = icon.split('/').at(-1);
           return (
             <button
@@ -118,7 +56,7 @@ const SelectIconField = ({ form }: { form: UseFormReturn<{ customAppName: string
               <img
                 src={icon}
                 alt={iconName}
-                className="h-14 w-14"
+                className="h-14 w-14 light:icon-light-mode"
               />
             </button>
           );

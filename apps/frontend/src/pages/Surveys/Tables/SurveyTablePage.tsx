@@ -45,6 +45,7 @@ interface SurveysTablePageProps {
   canShowSubmittedAnswers?: boolean;
   canParticipate?: boolean;
   canShowResults?: boolean;
+  hiddenColumns?: string[];
 }
 
 const SurveyTablePage = (props: SurveysTablePageProps) => {
@@ -60,6 +61,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
     canShowSubmittedAnswers = false,
     canParticipate = false,
     canShowResults = false,
+    hiddenColumns = [],
   } = props;
   const { isOpenSharePublicSurveyDialog, closeSharePublicSurveyDialog, publicSurveyId } = useSurveyEditorPageStore();
   const sharePublicSurveyUrl = publicSurveyId ? `${EDU_BASE_URL}/${PUBLIC_SURVEYS}/${publicSurveyId}` : '';
@@ -76,6 +78,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
         columns={SurveyTableColumns}
         data={surveys || []}
         isLoading={isLoading}
+        hiddenColumns={hiddenColumns}
       />
 
       <SurveysTablesFloatingButtons

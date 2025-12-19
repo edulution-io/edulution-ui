@@ -37,8 +37,9 @@ const VdiCard: FC<CardProps> = ({ title, availableClients = 0, onClick, osType, 
 
   return (
     <Card
-      className="grid w-72 grid-cols-3 gap-4 border border-gray-200 p-4 shadow"
+      className="grid w-72 grid-cols-3 gap-4 p-4 shadow"
       aria-label={title}
+      variant="text"
     >
       <div className="col-span-1 flex items-center justify-center">
         <img

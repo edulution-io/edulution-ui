@@ -51,6 +51,7 @@ const EnterSafePinDialog: FC<EnterMasterPwDialogProps> = ({ isOpen, form, handle
                   setTotp={field.onChange}
                   onComplete={form.handleSubmit(handleConfirm)}
                   type="pin"
+                  variant="dialog"
                 />
               </FormControl>
               <FormMessage className="text-p" />

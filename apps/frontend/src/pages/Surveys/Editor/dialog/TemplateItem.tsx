@@ -99,10 +99,10 @@ const TemplateItem = (props: TemplateItemProps) => {
           value={JSON.stringify(template.template, null, 2)}
           onChange={() => {}}
           className={cn(
-            'overflow-y-auto bg-accent text-secondary transition-[max-height,opacity] duration-300 ease-in-out scrollbar-thin placeholder:text-p focus:outline-none',
+            'overflow-y-auto bg-accent text-background transition-[max-height,opacity] duration-300 ease-in-out scrollbar-thin placeholder:text-p focus:outline-none',
             'max-h-80 overflow-visible opacity-100',
-            { 'bg-accent': active },
-            { 'bg-card-muted': !active },
+            { 'bg-white dark:bg-accent': active },
+            { 'dark:bg-card-muted bg-muted-background': !active },
             { 'border border-solid border-primary': template.isDefaultTemplate },
             { 'border border-solid border-ring': !template.isDefaultTemplate },
           )}
