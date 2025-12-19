@@ -26,6 +26,8 @@ const surveysDefaultValues: Partial<SurveyDto> & { formula: SurveyFormula } = {
   formula: {
     title: i18n.t('survey.newTitle'),
     logo: getSurveysDefaultLogoUrl(),
+    logoWidth: '320px',
+    logoPosition: 'right',
   },
   isAnonymous: false,
   canSubmitMultipleAnswers: false,

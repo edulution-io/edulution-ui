@@ -34,6 +34,8 @@ class SurveyFormula {
   elements?: TSurveyElement[];
 
   logoWidth?: string;
+
+  logoPosition?: 'left' | 'right';
 }
 
 export default SurveyFormula;

@@ -113,8 +113,8 @@ const surveyTheme: ITheme = {
     '--sjs-font-editorfont-weight': '500',
   },
   header: {
-    height: 150,
     inheritWidthFrom: 'survey',
+    inheritHeightFrom: 'auto',
   } as IHeader,
   headerView: 'basic',
   isPanelless: false,
