@@ -63,7 +63,7 @@ const SurveyContextMenuBody = ({ form, surveyCreator }: SurveyContextMenuBodyPro
     >
       <AccordionItem value="logoSettings">
         <AccordionTrigger>
-          <h3>{i18n.t('survey.editor.surveySettings.surveyLogo')}</h3>
+          <h3>{i18n.t('survey.editor.surveySettings.surveyLogo.title')}</h3>
         </AccordionTrigger>
         <AccordionContent className="space-y-2 px-1">
           <SurveysLogoSettings

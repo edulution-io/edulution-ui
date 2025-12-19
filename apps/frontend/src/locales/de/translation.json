@@ -762,9 +762,19 @@
       "surveySettings": {
         "settings": "Einstellungen",
         "title": "Einstellungen zur Umfrage",
-        "surveyLogo": "Logo der Umfrage",
-        "surveyLogoWidth": "Breite des Logos in Pixel [px]",
-        "surveyLogoWidthPlaceholder": "0 bedeutet, dass die Breite nur von dem vorhandenen Platz beschränkt wird.",
+        "surveyLogo": {
+          "title": "Logo der Umfrage",
+          "width": {
+            "label": "Breite des Logos in Pixel [px]",
+            "placeholder": "0 bedeutet, dass die Breite nur von dem vorhandenen Platz beschränkt wird."
+          },
+          "position": {
+            "label": "Position des Logos",
+            "placeholder": "Wähle die Position des Logos",
+            "left": "Links vom Titel",
+            "right": "Rechts vom Titel"
+          }
+        },
         "invitees": "Teilnehmer"
       }
     },

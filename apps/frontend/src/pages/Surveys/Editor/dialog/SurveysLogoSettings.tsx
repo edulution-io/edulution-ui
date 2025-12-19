@@ -17,14 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
+import { SurveyCreatorModel } from 'survey-creator-core';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import cn from '@libs/common/utils/className';
+import DropdownSelect from '@/components/ui/DropdownSelect/DropdownSelect';
 import Label from '@/components/ui/Label';
 import Input from '@/components/shared/Input';
-import { SurveyCreatorModel } from 'survey-creator-core';
 
 interface SurveysLogoSettingsProps {
   form: UseFormReturn<SurveyDto>;
@@ -34,7 +35,8 @@ interface SurveysLogoSettingsProps {
 const SurveysLogoSettings = ({ form, surveyCreator }: SurveysLogoSettingsProps) => {
   const { t } = useTranslation();
 
-  const [surveyLogoWidth, setSurveyLogoWidth] = React.useState<number>(0);
+  const [surveyLogoWidth, setSurveyLogoWidth] = useState<number>(0);
+  const [surveyLogoPosition, setSurveyLogoPosition] = useState<'left' | 'right'>('right');
 
   useEffect(() => {
     const formula = form.watch('formula');
@@ -42,6 +44,7 @@ const SurveysLogoSettings = ({ form, surveyCreator }: SurveysLogoSettingsProps) 
     const widthString = formula.logoWidth || '0px';
     const widthNumber = Number(widthString.replace('px', '').replace(/\D/g, ''));
     setSurveyLogoWidth(widthNumber);
+    setSurveyLogoPosition(formula.logoPosition || 'right');
   }, []);
 
   useEffect(() => {
@@ -56,15 +59,27 @@ const SurveysLogoSettings = ({ form, surveyCreator }: SurveysLogoSettingsProps) 
   return (
     <div className="my-2 flex flex-col gap-2">
       <Label>
-        <p className="font-bold">{t('survey.editor.surveySettings.surveyLogoWidth')}</p>
+        <p className="font-bold">{t('survey.editor.surveySettings.surveyLogo.width.label')}</p>
       </Label>
       <Input
         type="number"
-        placeholder={t('survey.editor.surveySettings.surveyLogoWidthPlaceholder')}
+        placeholder={t('survey.editor.surveySettings.surveyLogo.width.placeholder')}
         variant="dialog"
         value={surveyLogoWidth === 0 ? '' : surveyLogoWidth}
         onChange={(e) => setSurveyLogoWidth(Number(e.target.value) || 0)}
-        className={cn({ 'text-muted-foreground': !surveyLogoWidth }, { 'text-primary-foreground': !!surveyLogoWidth })}
+        className={cn({ 'text-muted-foreground': !surveyLogoWidth }, { 'text-background': !!surveyLogoWidth })}
+      />
+      <Label>
+        <p className="font-bold">{t('survey.editor.surveySettings.surveyLogo.position.label')}</p>
+      </Label>
+      <DropdownSelect
+        placeholder={t('survey.editor.surveySettings.surveyLogo.position.placeholder')}
+        options={[
+          { id: 'left', name: t('survey.editor.surveySettings.surveyLogo.position.left') },
+          { id: 'right', name: t('survey.editor.surveySettings.surveyLogo.position.right') },
+        ]}
+        selectedVal={surveyLogoPosition}
+        handleChange={(value) => setSurveyLogoPosition(value as 'left' | 'right')}
       />
     </div>
   );

@@ -649,9 +649,19 @@
       "surveySettings": {
         "settings": "Paramètres",
         "title": "Paramètres de l'enquête",
-        "surveyLogo": "Logo de l'enquête",
-        "surveyLogoWidth": "Largeur du logo en pixels [px]",
-        "surveyLogoWidthPlaceholder": "0 signifie que la largeur est uniquement limitée par l'espace disponible.",
+        "surveyLogo": {
+          "title": "Logo de l'enquête",
+          "width": {
+            "label": "Largeur du logo en pixels [px]",
+            "placeholder": "0 signifie que la largeur est uniquement limitée par l'espace disponible."
+          },
+          "position": {
+            "label": "Position du logo",
+            "placeholder": "Choisissez la position du logo",
+            "left": "À gauche du titre",
+            "right": "À droite du titre"
+          }
+        },
         "invitees": "Invités"
       }
     },
