@@ -4,10 +4,10 @@
   "sourceRoot": "libs/src",
   "projectType": "library",
   "tags": [],
-  "// targets": "to see all targets run: nx show project libs --web",
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint",
+      "cache": true,
       "options": {
         "lintFilePatterns": ["libs/**/*.{ts,tsx}"],
         "tsConfig": ["libs/tsconfig.json"]
