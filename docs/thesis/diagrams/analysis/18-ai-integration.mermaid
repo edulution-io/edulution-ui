@@ -1,0 +1,63 @@
+%%{init: {'theme': 'neutral'}}%%
+flowchart TB
+    subgraph Input["Eingabe fuer LLM"]
+        I1["DailySummary<br/>activity_level, by_source<br/>communications, meetings"]
+        I2["Recommendations[]<br/>candidate_id, class<br/>title, rationale, evidence"]
+        I3["Sprache<br/>de | en | fr"]
+    end
+
+    subgraph Sanitize["Daten-Sanitisierung"]
+        S1["Keine rohen Event-Daten"]
+        S2["Nur aggregierte Werte<br/>(has_active_threads, etc.)"]
+        S3["Evidence nur als Summary<br/>(state, event, correlation)"]
+    end
+
+    subgraph Prompt["Prompt Engineering"]
+        P1["10 Strikte Regeln:<br/>A: Source of Truth<br/>B: No Numerals<br/>C: Priority Limits (3-6)<br/>D: Candidate Linking<br/>E: No Absolute Claims"]
+        P2["F: Strict JSON Output<br/>G: Evidence-Based Wording<br/>H: Schedule References<br/>I: No Absolute Time<br/>J: Evidence-Based Why"]
+        P3["Beispiel-Output<br/>in Zielsprache"]
+    end
+
+    subgraph LLM["LLM Generation"]
+        L1["AI Service"]
+        L2["Multi-Provider Support:<br/>- Anthropic<br/>- OpenAI<br/>- Google<br/>- OpenAI-Compatible"]
+        L3["generateText() API"]
+    end
+
+    subgraph Validation["Post-LLM Guardrails"]
+        V1["checkNoNumerals()<br/>Keine Ziffern im Text"]
+        V2["checkCandidateIdIntegrity()<br/>Nur bekannte IDs"]
+        V3["checkNoForbiddenClaims()<br/>'no meetings' verboten"]
+        V4["checkNoForbiddenTimeClaims()<br/>'soon', 'immediately' verboten"]
+        V5["checkActivityLevelClaims()<br/>Muss mit Summary uebereinstimmen"]
+    end
+
+    subgraph Fallback["Fallback-Strategie"]
+        F1["Bei Guardrail-Verletzung"]
+        F2["generateDeterministicPlan()"]
+        F3["Template-basiert<br/>aus Recommendations"]
+        F4["Keine LLM-Abhaengigkeit"]
+    end
+
+    subgraph Output["Finaler Daily Plan"]
+        O1["plan_title: string"]
+        O2["priorities: PriorityItem[]<br/>- rank, title, why<br/>- linked_candidate_ids<br/>- action_proposal?"]
+        O3["schedule_suggestion:<br/>- time_window<br/>- focus, items"]
+        O4["recap: string"]
+        O5["safety: { no_new_facts,<br/>numerals_allowed, checked }"]
+    end
+
+    Input --> Sanitize
+    Sanitize --> Prompt
+    I3 --> Prompt
+    Prompt --> L1
+    L1 --> L2 --> L3
+    L3 --> Validation
+    Validation -->|"valid"| Output
+    Validation -->|"invalid"| F1 --> F2 --> F3 --> Output
+    F3 --> F4
+
+    style L1 fill:#ffa,stroke:#333
+    style V1 fill:#afa,stroke:#333
+    style V2 fill:#afa,stroke:#333
+    style F2 fill:#aff,stroke:#333

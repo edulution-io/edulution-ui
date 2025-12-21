@@ -1,0 +1,39 @@
+%%{init: {'theme': 'neutral'}}%%
+flowchart TB
+    subgraph Input["Eingabe"]
+        E1["Event empfangen"]
+        E2["Rule evaluiert"]
+        E3["Candidate erzeugt"]
+    end
+
+    subgraph KeyGen["Dedup Key Generation"]
+        K1["ruleId extrahieren<br/>z.B. 'reco.cross.mail_attachment:abc123'"]
+        K2["Base Rule ID<br/>'reco.cross.mail_attachment'"]
+        K3["Input String<br/>'baseRuleId|contextId|userId'"]
+        K4["SHA-256 Hash<br/>→ 16 Zeichen"]
+        K5["Dedup Key<br/>'dedup:reco.cross.mail_attachment:a1b2c3d4'"]
+    end
+
+    subgraph Check["Redis Check"]
+        R1["EXISTS dedupKey"]
+        R2{{"Existiert?"}}
+        R3["SKIP<br/>Duplikat!"]
+        R4["PROCESS<br/>Weiter"]
+    end
+
+    subgraph Store["Speicherung"]
+        S1["Recommendation<br/>speichern"]
+        S2["SETEX dedupKey<br/>TTL: 30 Tage"]
+        S3["Fertig"]
+    end
+
+    E1 --> E2 --> E3
+    E3 --> K1 --> K2 --> K3 --> K4 --> K5
+    K5 --> R1 --> R2
+    R2 -->|"= 1"| R3
+    R2 -->|"= 0"| R4
+    R4 --> S1 --> S2 --> S3
+
+    style R3 fill:#faa,stroke:#333
+    style R4 fill:#afa,stroke:#333
+    style S3 fill:#afa,stroke:#333

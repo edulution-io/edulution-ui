@@ -1,0 +1,46 @@
+%%{init: {'theme': 'neutral'}}%%
+flowchart TB
+    subgraph Timeline["Evaluations-Timeline"]
+        T1["Event 1: conference.created<br/>t=08:00"]
+        T2["Event 2: mail.received<br/>t=09:00"]
+        T3["Event 3: session.started<br/>t=10:00"]
+    end
+
+    subgraph Labels["Expected Labels"]
+        L1["organization<br/>08:00 - 12:00"]
+        L2["cleanup<br/>09:00 - 11:00"]
+        L3["organization<br/>10:00 - 14:00"]
+    end
+
+    subgraph Checkpoint["Checkpoint: t=10:30"]
+        C1["Top 3 Recommendations:"]
+        C2["#1: organization (score: 0.92)"]
+        C3["#2: cleanup (score: 0.78)"]
+        C4["#3: focus (score: 0.65)"]
+    end
+
+    subgraph Matching["Relevanz-Check"]
+        M1["#1 organization:<br/>Window 08:00-12:00 ✓<br/>Class match ✓"]
+        M2["#2 cleanup:<br/>Window 09:00-11:00 ✓<br/>Class match ✓"]
+        M3["#3 focus:<br/>Keine passende Label ✗"]
+    end
+
+    subgraph Metrics["Metriken"]
+        MET1["Relevant: 2 von 3"]
+        MET2["Precision@3 = 2/3 = 66.7%"]
+        MET3["Coverage = true<br/>(mindestens 1 relevant)"]
+        MET4["Redundancy = 0%<br/>(alle Klassen unterschiedlich)"]
+    end
+
+    Timeline --> Labels
+    Labels --> Checkpoint
+    Checkpoint --> Matching
+    C2 --> M1
+    C3 --> M2
+    C4 --> M3
+    Matching --> Metrics
+
+    style M1 fill:#afa,stroke:#333
+    style M2 fill:#afa,stroke:#333
+    style M3 fill:#faa,stroke:#333
+    style MET2 fill:#ffa,stroke:#333

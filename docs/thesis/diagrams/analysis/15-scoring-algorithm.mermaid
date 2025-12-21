@@ -1,0 +1,65 @@
+%%{init: {'theme': 'neutral'}}%%
+flowchart TB
+    subgraph Input["Kandidat aus Rule"]
+        I1["class: 'meeting'"]
+        I2["ruleScore: 0.8"]
+        I3["metadata: meeting_time"]
+    end
+
+    subgraph ClassPriority["CLASS Weight (40%)"]
+        CP1["meeting → 1.0"]
+        CP2["communication → 0.85"]
+        CP3["focus → 0.70"]
+        CP4["planning → 0.55"]
+        CP5["cleanup → 0.40"]
+        CP6["Gewicht: 0.4 × priority"]
+    end
+
+    subgraph Urgency["URGENCY Weight (30%)"]
+        U1["Meeting in < 30 min → 1.0"]
+        U2["Meeting in < 1h → 0.9"]
+        U3["Meeting in < 2h → 0.8"]
+        U4["Meeting in < 4h → 0.6"]
+        U5["sonst → 0.4"]
+        U6["Gewicht: 0.3 × urgency"]
+    end
+
+    subgraph CommUrgency["URGENCY (Communication)"]
+        CU1["Warten > 48h → 1.0"]
+        CU2["Warten > 24h → 0.8"]
+        CU3["Warten > 8h → 0.6"]
+        CU4["Warten > 4h → 0.5"]
+        CU5["sonst → 0.3"]
+    end
+
+    subgraph Confidence["CONFIDENCE (30%)"]
+        C1["Original Rule Score"]
+        C2["Gewicht: 0.3 × score"]
+    end
+
+    subgraph Formula["Scoring Formel"]
+        F1["score = 0.4 × CLASS<br/>+ 0.3 × URGENCY<br/>+ 0.3 × CONFIDENCE"]
+        F2["Beispiel: meeting, 30min, score=0.8"]
+        F3["= 0.4 × 1.0 + 0.3 × 1.0 + 0.3 × 0.8"]
+        F4["= 0.40 + 0.30 + 0.24 = 0.94"]
+    end
+
+    subgraph Output["Sortierte Liste"]
+        O1["#1: meeting (0.94)"]
+        O2["#2: communication (0.82)"]
+        O3["#3: focus (0.68)"]
+        O4["#4: planning (0.55)"]
+        O5["#5: cleanup (0.43)"]
+    end
+
+    Input --> ClassPriority & Urgency & Confidence
+    ClassPriority --> CP6
+    Urgency --> U6
+    Confidence --> C2
+    CP6 & U6 & C2 --> F1
+    F1 --> F2 --> F3 --> F4
+    F4 --> Output
+
+    style F4 fill:#afa,stroke:#333
+    style O1 fill:#faa,stroke:#333
+    style O5 fill:#aff,stroke:#333

@@ -1,0 +1,377 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://edulution.io/schemas/event/v1.0.0/event.schema.json",
+  "title": "Edulution Event",
+  "description": "Canonical event schema for the Event Logging System",
+  "type": "object",
+  "required": [
+    "event_id",
+    "schema_version",
+    "occurred_at",
+    "received_at",
+    "user_id",
+    "source",
+    "type",
+    "object",
+    "correlation_id",
+    "sensitivity"
+  ],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the event (UUID v4)"
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$",
+      "description": "Semantic version of the event schema",
+      "examples": ["1.0.0", "1.1.0", "2.0.0"]
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the event occurred in the source system"
+    },
+    "received_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the event was received by the ingestion layer"
+    },
+    "tenant_id": {
+      "type": ["string", "null"],
+      "description": "Tenant identifier for multi-tenant deployments",
+      "default": null
+    },
+    "user_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255,
+      "description": "Identifier of the user associated with this event"
+    },
+    "source": {
+      "type": "string",
+      "enum": ["files", "conferences", "mail", "caldav", "chat", "http", "system"],
+      "description": "Module or system that generated the event"
+    },
+    "type": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$",
+      "description": "Event type in format 'domain.action'",
+      "examples": [
+        "file.created",
+        "file.moved",
+        "file.deleted",
+        "file.accessed",
+        "mail.received",
+        "mail.sent",
+        "mail.replied",
+        "mail.thread_closed",
+        "chat.message_sent",
+        "chat.message_received",
+        "chat.channel_joined",
+        "conference.started",
+        "conference.ended",
+        "conference.participant_joined",
+        "conference.participant_left",
+        "calendar.event_created",
+        "calendar.event_updated",
+        "calendar.event_deleted",
+        "calendar.event_started",
+        "calendar.event_ended",
+        "request.started",
+        "request.completed",
+        "request.failed",
+        "system.health_check",
+        "system.config_changed"
+      ]
+    },
+    "actor_id": {
+      "type": ["string", "null"],
+      "description": "Identifier of the actor who triggered the event (may differ from user_id for system actions)",
+      "default": null
+    },
+    "object": {
+      "type": "object",
+      "required": ["object_type", "object_id"],
+      "properties": {
+        "object_type": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Type of the object involved in the event",
+          "examples": ["file", "folder", "email", "thread", "message", "channel", "meeting", "appointment", "user"]
+        },
+        "object_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "description": "Unique identifier of the object"
+        },
+        "object_ref": {
+          "type": ["string", "null"],
+          "maxLength": 2000,
+          "description": "Human-readable reference to the object (e.g., file path, email subject hash)",
+          "default": null
+        }
+      },
+      "additionalProperties": false,
+      "description": "The primary object involved in this event"
+    },
+    "context": {
+      "type": "object",
+      "properties": {
+        "context_id": {
+          "type": ["string", "null"],
+          "description": "Primary context identifier for correlation",
+          "default": null
+        },
+        "project_id": {
+          "type": ["string", "null"],
+          "description": "Project or workspace identifier",
+          "default": null
+        },
+        "thread_id": {
+          "type": ["string", "null"],
+          "description": "Conversation thread identifier (for mail/chat)",
+          "default": null
+        },
+        "meeting_id": {
+          "type": ["string", "null"],
+          "description": "Meeting or conference identifier",
+          "default": null
+        },
+        "session_id": {
+          "type": ["string", "null"],
+          "description": "User session identifier",
+          "default": null
+        },
+        "request_id": {
+          "type": ["string", "null"],
+          "description": "HTTP request identifier",
+          "default": null
+        }
+      },
+      "additionalProperties": false,
+      "default": {},
+      "description": "Contextual identifiers for grouping and correlation"
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255,
+      "description": "Identifier for tracing related events across the system"
+    },
+    "causation_id": {
+      "type": ["string", "null"],
+      "description": "Event ID that caused this event (for event chains)",
+      "default": null
+    },
+    "sensitivity": {
+      "type": "string",
+      "enum": ["low", "medium", "high"],
+      "description": "Data sensitivity classification for access control and retention",
+      "default": "low"
+    },
+    "metadata": {
+      "type": "object",
+      "maxProperties": 50,
+      "additionalProperties": {
+        "oneOf": [
+          { "type": "string", "maxLength": 1000 },
+          { "type": "number" },
+          { "type": "boolean" },
+          { "type": "null" }
+        ]
+      },
+      "default": {},
+      "description": "Additional metadata as key-value pairs (bounded size, no nested objects)"
+    },
+    "payload": {
+      "type": "object",
+      "maxProperties": 20,
+      "default": {},
+      "description": "Optional event-specific payload (must pass redaction policy, no raw PII)"
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "eventTypes": {
+      "files": {
+        "description": "File system events",
+        "types": [
+          "file.created",
+          "file.moved",
+          "file.copied",
+          "file.deleted",
+          "file.accessed",
+          "file.modified",
+          "folder.created",
+          "folder.deleted"
+        ]
+      },
+      "conferences": {
+        "description": "Conference/meeting events",
+        "types": [
+          "conference.created",
+          "conference.started",
+          "conference.ended",
+          "conference.participant_joined",
+          "conference.participant_left",
+          "conference.recording_started",
+          "conference.recording_stopped"
+        ]
+      },
+      "mail": {
+        "description": "Email events (metadata only, no content)",
+        "types": [
+          "mail.received",
+          "mail.sent",
+          "mail.replied",
+          "mail.forwarded",
+          "mail.thread_created",
+          "mail.thread_closed"
+        ]
+      },
+      "caldav": {
+        "description": "Calendar events",
+        "types": [
+          "calendar.event_created",
+          "calendar.event_updated",
+          "calendar.event_deleted",
+          "calendar.event_started",
+          "calendar.event_ended",
+          "calendar.reminder_triggered"
+        ]
+      },
+      "chat": {
+        "description": "Chat events (metadata only, no content)",
+        "types": [
+          "chat.message_sent",
+          "chat.message_received",
+          "chat.message_edited",
+          "chat.message_deleted",
+          "chat.channel_created",
+          "chat.channel_joined",
+          "chat.channel_left"
+        ]
+      },
+      "http": {
+        "description": "HTTP request events",
+        "types": [
+          "request.started",
+          "request.completed",
+          "request.failed"
+        ]
+      },
+      "system": {
+        "description": "System-level events",
+        "types": [
+          "system.health_check",
+          "system.config_changed",
+          "system.error",
+          "system.startup",
+          "system.shutdown"
+        ]
+      }
+    },
+    "piiClassification": {
+      "description": "PII field classification for redaction",
+      "fields": {
+        "user_id": "identifier",
+        "actor_id": "identifier",
+        "tenant_id": "identifier",
+        "object.object_ref": "potentially_sensitive",
+        "metadata.*": "review_required",
+        "payload.*": "must_be_redacted"
+      }
+    }
+  },
+  "examples": [
+    {
+      "event_id": "550e8400-e29b-41d4-a716-446655440000",
+      "schema_version": "1.0.0",
+      "occurred_at": "2024-01-15T10:30:00.000Z",
+      "received_at": "2024-01-15T10:30:00.050Z",
+      "tenant_id": null,
+      "user_id": "user-123",
+      "source": "files",
+      "type": "file.moved",
+      "actor_id": null,
+      "object": {
+        "object_type": "file",
+        "object_id": "file-456",
+        "object_ref": "/docs/report.pdf"
+      },
+      "context": {
+        "context_id": "project-789",
+        "project_id": "project-789"
+      },
+      "correlation_id": "corr-abc-123",
+      "causation_id": null,
+      "sensitivity": "low",
+      "metadata": {
+        "old_path": "/inbox/report.pdf",
+        "new_path": "/docs/report.pdf",
+        "file_size": 1048576
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "660e8400-e29b-41d4-a716-446655440001",
+      "schema_version": "1.0.0",
+      "occurred_at": "2024-01-15T11:00:00.000Z",
+      "received_at": "2024-01-15T11:00:00.025Z",
+      "tenant_id": null,
+      "user_id": "user-123",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": "user-456",
+      "object": {
+        "object_type": "email",
+        "object_id": "mail-789",
+        "object_ref": null
+      },
+      "context": {
+        "thread_id": "thread-001"
+      },
+      "correlation_id": "corr-def-456",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "has_attachments": true,
+        "attachment_count": 2,
+        "is_reply": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "770e8400-e29b-41d4-a716-446655440002",
+      "schema_version": "1.0.0",
+      "occurred_at": "2024-01-15T14:00:00.000Z",
+      "received_at": "2024-01-15T14:00:00.010Z",
+      "tenant_id": null,
+      "user_id": "user-123",
+      "source": "conferences",
+      "type": "conference.started",
+      "actor_id": "user-123",
+      "object": {
+        "object_type": "meeting",
+        "object_id": "conf-001",
+        "object_ref": "Weekly Team Sync"
+      },
+      "context": {
+        "meeting_id": "conf-001",
+        "project_id": "project-789"
+      },
+      "correlation_id": "corr-ghi-789",
+      "causation_id": null,
+      "sensitivity": "low",
+      "metadata": {
+        "participant_count": 5,
+        "scheduled_duration_minutes": 60
+      },
+      "payload": {}
+    }
+  ]
+}

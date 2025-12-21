@@ -21,7 +21,7 @@ import { join } from 'path';
 import { Model, Types } from 'mongoose';
 import { randomUUID } from 'crypto';
 import { InjectModel } from '@nestjs/mongoose';
-import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
@@ -40,14 +40,19 @@ import surveyAnswersMigrationsList from './migrations/surveyAnswersMigrationsLis
 import GroupsService from '../groups/groups.service';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 import FilesystemService from '../filesystem/filesystem.service';
+import EventsService from '../events/events.service';
+import { createSurveyAnswerSubmittedEvent } from '../events/event-factories';
 
 @Injectable()
 class SurveyAnswersService implements OnModuleInit {
+  private readonly logger = new Logger(SurveyAnswersService.name);
+
   constructor(
     @InjectModel(SurveyAnswer.name) private surveyAnswerModel: Model<SurveyAnswerDocument>,
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
     private readonly groupsService: GroupsService,
     private readonly surveyAnswerAttachmentsService: SurveyAnswerAttachmentsService,
+    private readonly eventsService: EventsService,
   ) {}
 
   async onModuleInit() {
@@ -288,12 +293,21 @@ class SurveyAnswersService implements OnModuleInit {
           .exec()
       : undefined;
 
-    return this.selectStrategy(
+    const result = await this.selectStrategy(
       survey,
       attendee,
       answer,
       existingUsersAnswer?.id ? String(existingUsersAnswer?.id) : undefined,
     );
+
+    if (result) {
+      this.publishSurveyAnswerSubmittedEvent(
+        result.attendee?.username || attendee.username || 'anonymous',
+        surveyId,
+      );
+    }
+
+    return result;
   }
 
   selectStrategy = (
@@ -560,6 +574,16 @@ class SurveyAnswersService implements OnModuleInit {
       );
     }
     return newSurveyAnswer;
+  }
+
+  private publishSurveyAnswerSubmittedEvent(userId: string, surveyId: string): void {
+    const event = createSurveyAnswerSubmittedEvent({
+      userId,
+      surveyId,
+    });
+    this.eventsService.publish(event).catch((err) => {
+      this.logger.warn(`Failed to publish survey.answer_submitted event: ${err.message}`);
+    });
   }
 }
 

@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { randomUUID, createHash } from 'crypto';
 import axios from 'axios';
@@ -45,9 +45,17 @@ import Attendee from './attendee.schema';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
 import NotificationsService from '../notifications/notifications.service';
+import EventsService from '../events/events.service';
+import {
+  createConferenceCreatedEvent,
+  createConferenceStartedEvent,
+  createConferenceEndedEvent,
+} from '../events/event-factories';
 
 @Injectable()
 class ConferencesService implements OnModuleInit {
+  private readonly logger = new Logger(ConferencesService.name);
+
   BBB_API_URL: string;
 
   BBB_SECRET: string;
@@ -58,6 +66,7 @@ class ConferencesService implements OnModuleInit {
     private readonly groupsService: GroupsService,
     private readonly sseService: SseService,
     private readonly notificationService: NotificationsService,
+    private readonly eventsService: EventsService,
   ) {}
 
   onModuleInit() {
@@ -180,8 +189,36 @@ class ConferencesService implements OnModuleInit {
         .lean();
       if (conference) {
         this.sseService.sendEventToUsers(invitedMembersList, conference, SSE_MESSAGE_TYPE.CONFERENCE_CREATED);
+
+        this.publishConferenceCreatedEvent(
+          currentUser.preferred_username,
+          newConference.meetingID,
+          newConference.name,
+          newConference.isPublic,
+          invitedMembersList.length,
+        );
       }
     }
+  }
+
+  private publishConferenceCreatedEvent(
+    userId: string,
+    meetingId: string,
+    name: string,
+    isPublic: boolean,
+    participantCount: number,
+  ): void {
+    const event = createConferenceCreatedEvent({
+      userId,
+      meetingId,
+      name,
+      isPublic,
+      participantCount,
+    });
+
+    this.eventsService.publish(event).catch((err) => {
+      this.logger.warn(`Failed to publish conference.created event: ${err.message}`);
+    });
   }
 
   async toggleConferenceIsRunning(meetingID: string, isRunning: boolean, username: string) {
@@ -240,7 +277,32 @@ class ConferencesService implements OnModuleInit {
         conference.meetingID,
         SSE_MESSAGE_TYPE.CONFERENCE_STARTED,
       );
+
+      this.publishConferenceStartedEvent(
+        conference.creator.username,
+        conference.meetingID,
+        conference.name,
+        invitedMembersList.length,
+      );
     }
+  }
+
+  private publishConferenceStartedEvent(
+    userId: string,
+    meetingId: string,
+    name: string,
+    participantCount: number,
+  ): void {
+    const event = createConferenceStartedEvent({
+      userId,
+      meetingId,
+      name,
+      participantCount,
+    });
+
+    this.eventsService.publish(event).catch((err) => {
+      this.logger.warn(`Failed to publish conference.started event: ${err.message}`);
+    });
   }
 
   async stopConference(conference: Conference, shouldUpdateInBBB: boolean) {
@@ -273,7 +335,21 @@ class ConferencesService implements OnModuleInit {
         conference.meetingID,
         SSE_MESSAGE_TYPE.CONFERENCE_STOPPED,
       );
+
+      this.publishConferenceEndedEvent(conference.creator.username, conference.meetingID, conference.name);
     }
+  }
+
+  private publishConferenceEndedEvent(userId: string, meetingId: string, name: string): void {
+    const event = createConferenceEndedEvent({
+      userId,
+      meetingId,
+      name,
+    });
+
+    this.eventsService.publish(event).catch((err) => {
+      this.logger.warn(`Failed to publish conference.ended event: ${err.message}`);
+    });
   }
 
   public async isCurrentUserTheCreator(

@@ -1,0 +1,47 @@
+%%{init: {'theme': 'neutral'}}%%
+flowchart TB
+    subgraph PromptRules["10 Prompt-Regeln"]
+        direction TB
+        R_A["A: Source of Truth<br/>NUR Fakten aus JSON-Input<br/>Keine erfundenen Zahlen/Zeiten"]
+        R_B["B: No Numerals<br/>Keine Ziffern in Textfeldern<br/>Ausnahme: rank (Integer)"]
+        R_C["C: Priority Limits<br/>3-6 Priorities (MAX 6)<br/>rank 1-6, nie hoeher"]
+        R_D["D: Candidate Linking<br/>MUSS linked_candidate_ids haben<br/>Nur existierende IDs"]
+        R_E["E: No Absolute Claims<br/>VERBOTEN: 'no meetings'<br/>'high/medium/low activity'"]
+        R_F["F: Strict JSON<br/>Nur valides JSON<br/>Kein Markdown"]
+        R_G["G: Evidence-Based Why<br/>Paraphrasiere Rationale<br/>Keine erfundenen Details"]
+        R_H["H: Schedule References<br/>Items MUESSEN aus Priorities<br/>Fokus MUSS spezifisch sein"]
+        R_I["I: No Absolute Time<br/>VERBOTEN: 'soon', 'shortly'<br/>ERLAUBT: 'later today'"]
+        R_J["J: Evidence-Based Wording<br/>Templates je nach evidence_kind<br/>state/event/correlation/heuristic"]
+    end
+
+    subgraph EvidenceTemplates["Evidence-basierte Formulierungen"]
+        ET1["state evidence:<br/>'Based on [source] activity...'"]
+        ET2["event evidence:<br/>'A [source] event indicates...'"]
+        ET3["correlation evidence:<br/>'Cross-source analysis suggests...'"]
+        ET4["heuristic evidence:<br/>'Activity patterns indicate...'"]
+    end
+
+    subgraph ForbiddenExamples["Verbotene Formulierungen"]
+        FE1["'Meeting starts soon' ✗"]
+        FE2["'You have 3 emails' ✗"]
+        FE3["'No meetings scheduled' ✗"]
+        FE4["'High activity detected' ✗"]
+        FE5["'Respond immediately' ✗"]
+    end
+
+    subgraph AllowedExamples["Erlaubte Formulierungen"]
+        AE1["'An upcoming event may require preparation' ✓"]
+        AE2["'Several messages await your response' ✓"]
+        AE3["'If you have meetings later today...' ✓"]
+        AE4["'Based on mail activity...' ✓"]
+        AE5["'When ready, review communications' ✓"]
+    end
+
+    R_A & R_B & R_C & R_D & R_E --> PromptRules
+    R_F & R_G & R_H & R_I & R_J --> PromptRules
+    R_J --> EvidenceTemplates
+    R_E & R_I --> ForbiddenExamples
+    R_E & R_I --> AllowedExamples
+
+    style ForbiddenExamples fill:#faa,stroke:#333
+    style AllowedExamples fill:#afa,stroke:#333

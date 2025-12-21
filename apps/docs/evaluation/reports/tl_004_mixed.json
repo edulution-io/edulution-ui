@@ -1,0 +1,145 @@
+{
+  "timeline_id": "tl_004_mixed",
+  "timeline_name": "Mixed Activity Day",
+  "scenario": "mixed",
+  "checkpoints": [
+    {
+      "timestamp": "2025-12-20T08:30:00.000Z",
+      "generated": [
+        {
+          "candidate_id": "a5dbae4b-518b-47a1-ae8d-5ace7ad8cba8",
+          "score": 0.55,
+          "created_at": "2025-12-20T12:24:03.027Z",
+          "class": "cleanup",
+          "title": "Achieve inbox zero",
+          "rationale": "Only 0 pending replies and 1 open threads - close to inbox zero"
+        }
+      ],
+      "relevant_count": 0,
+      "precision_at_3": 0
+    },
+    {
+      "timestamp": "2025-12-20T09:30:00.000Z",
+      "generated": [
+        {
+          "candidate_id": "a5dbae4b-518b-47a1-ae8d-5ace7ad8cba8",
+          "score": 0.55,
+          "created_at": "2025-12-20T12:24:03.027Z",
+          "class": "cleanup",
+          "title": "Achieve inbox zero",
+          "rationale": "Only 0 pending replies and 1 open threads - close to inbox zero"
+        },
+        {
+          "candidate_id": "b8ef6f0e-eed7-4433-bc66-93eb4e16261a",
+          "score": 0.55,
+          "created_at": "2025-12-20T12:24:03.548Z",
+          "class": "cleanup",
+          "title": "Achieve inbox zero",
+          "rationale": "Only 0 pending replies and 1 open threads - close to inbox zero"
+        }
+      ],
+      "relevant_count": 0,
+      "precision_at_3": 0
+    },
+    {
+      "timestamp": "2025-12-20T11:30:00.000Z",
+      "generated": [
+        {
+          "candidate_id": "a5dbae4b-518b-47a1-ae8d-5ace7ad8cba8",
+          "score": 0.55,
+          "created_at": "2025-12-20T12:24:03.027Z",
+          "class": "cleanup",
+          "title": "Achieve inbox zero",
+          "rationale": "Only 0 pending replies and 1 open threads - close to inbox zero"
+        },
+        {
+          "candidate_id": "b8ef6f0e-eed7-4433-bc66-93eb4e16261a",
+          "score": 0.55,
+          "created_at": "2025-12-20T12:24:03.548Z",
+          "class": "cleanup",
+          "title": "Achieve inbox zero",
+          "rationale": "Only 0 pending replies and 1 open threads - close to inbox zero"
+        },
+        {
+          "candidate_id": "0a4c2210-a37e-41af-aa08-7ace9c5b632a",
+          "score": 0.55,
+          "created_at": "2025-12-20T12:24:04.065Z",
+          "class": "cleanup",
+          "title": "Achieve inbox zero",
+          "rationale": "Only 0 pending replies and 1 open threads - close to inbox zero"
+        }
+      ],
+      "relevant_count": 0,
+      "precision_at_3": 0
+    },
+    {
+      "timestamp": "2025-12-20T14:00:00.000Z",
+      "generated": [
+        {
+          "candidate_id": "a5dbae4b-518b-47a1-ae8d-5ace7ad8cba8",
+          "score": 0.55,
+          "created_at": "2025-12-20T12:24:03.027Z",
+          "class": "cleanup",
+          "title": "Achieve inbox zero",
+          "rationale": "Only 0 pending replies and 1 open threads - close to inbox zero"
+        },
+        {
+          "candidate_id": "b8ef6f0e-eed7-4433-bc66-93eb4e16261a",
+          "score": 0.55,
+          "created_at": "2025-12-20T12:24:03.548Z",
+          "class": "cleanup",
+          "title": "Achieve inbox zero",
+          "rationale": "Only 0 pending replies and 1 open threads - close to inbox zero"
+        },
+        {
+          "candidate_id": "6bc2cb84-9395-42b5-b462-6e88c94ae5e1",
+          "score": 0.55,
+          "created_at": "2025-12-20T12:24:04.585Z",
+          "class": "cleanup",
+          "title": "Achieve inbox zero",
+          "rationale": "Only 0 pending replies and 1 open threads - close to inbox zero"
+        }
+      ],
+      "relevant_count": 0,
+      "precision_at_3": 0
+    },
+    {
+      "timestamp": "2025-12-20T16:00:00.000Z",
+      "generated": [
+        {
+          "candidate_id": "a5dbae4b-518b-47a1-ae8d-5ace7ad8cba8",
+          "score": 0.55,
+          "created_at": "2025-12-20T12:24:03.027Z",
+          "class": "cleanup",
+          "title": "Achieve inbox zero",
+          "rationale": "Only 0 pending replies and 1 open threads - close to inbox zero"
+        },
+        {
+          "candidate_id": "b8ef6f0e-eed7-4433-bc66-93eb4e16261a",
+          "score": 0.55,
+          "created_at": "2025-12-20T12:24:03.548Z",
+          "class": "cleanup",
+          "title": "Achieve inbox zero",
+          "rationale": "Only 0 pending replies and 1 open threads - close to inbox zero"
+        },
+        {
+          "candidate_id": "6bc2cb84-9395-42b5-b462-6e88c94ae5e1",
+          "score": 0.55,
+          "created_at": "2025-12-20T12:24:04.585Z",
+          "class": "cleanup",
+          "title": "Achieve inbox zero",
+          "rationale": "Only 0 pending replies and 1 open threads - close to inbox zero"
+        }
+      ],
+      "relevant_count": 0,
+      "precision_at_3": 0
+    }
+  ],
+  "metrics": {
+    "precision_at_3_avg": 0,
+    "coverage": false,
+    "redundancy_rate": 0.9166666666666666,
+    "latency_to_first_relevant": null
+  },
+  "evaluated_at": "2025-12-20T12:24:05.677Z"
+}

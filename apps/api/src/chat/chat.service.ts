@@ -23,12 +23,17 @@ import { Model } from 'mongoose';
 import AIChatMessage from '@libs/ai/types/aiChatMessage';
 import ChatType from '@libs/chat/types/chatType';
 import Chat, { ChatDocument } from './schemas/chat.schema';
+import EventsService from '../events/events.service';
+import { createChatChannelCreatedEvent, createChatMessageSentEvent } from '../events/event-factories';
 
 @Injectable()
 class ChatService {
   private readonly logger = new Logger(ChatService.name);
 
-  constructor(@InjectModel(Chat.name) private ChatModel: Model<ChatDocument>) {}
+  constructor(
+    @InjectModel(Chat.name) private ChatModel: Model<ChatDocument>,
+    private readonly eventsService: EventsService,
+  ) {}
 
   async createAIChat(
     ownerUsername: string,
@@ -43,7 +48,28 @@ class ChatService {
       aiProvider,
       aiModel,
     });
-    return chat.save();
+    const savedChat = await chat.save();
+
+    this.publishChatChannelCreatedEvent(ownerUsername, savedChat._id.toString(), 'ai', 2);
+
+    return savedChat;
+  }
+
+  private publishChatChannelCreatedEvent(
+    userId: string,
+    chatId: string,
+    chatType: 'user' | 'group' | 'ai',
+    participantCount: number,
+  ): void {
+    const event = createChatChannelCreatedEvent({
+      userId,
+      chatId,
+      chatType,
+      participantCount,
+    });
+    this.eventsService.publish(event).catch((err) => {
+      this.logger.warn(`Failed to publish chat.channel_created event: ${err.message}`);
+    });
   }
 
   async getAIChats(ownerUsername: string): Promise<ChatDocument[]> {
@@ -123,7 +149,11 @@ class ChatService {
         { username: username2, ...user2Info },
       ],
     });
-    return chat.save();
+    const savedChat = await chat.save();
+
+    this.publishChatChannelCreatedEvent(username1, savedChat._id.toString(), 'user', 2);
+
+    return savedChat;
   }
 
   async getUserChats(username: string): Promise<ChatDocument[]> {
@@ -150,7 +180,11 @@ class ChatService {
       groupName,
       participants: [{ username: ownerUsername }],
     });
-    return chat.save();
+    const savedChat = await chat.save();
+
+    this.publishChatChannelCreatedEvent(ownerUsername, savedChat._id.toString(), 'group', 1);
+
+    return savedChat;
   }
 
   async getGroupChats(username: string): Promise<ChatDocument[]> {
@@ -191,13 +225,51 @@ class ChatService {
       isAI?: boolean;
     },
   ): Promise<ChatDocument | null> {
-    return this.ChatModel.findByIdAndUpdate(
+    const updatedChat = await this.ChatModel.findByIdAndUpdate(
       chatId,
       {
         $push: { messages: message },
       },
       { new: true },
     ).exec();
+
+    if (updatedChat) {
+      const chatType = this.getChatTypeString(updatedChat.type);
+      this.publishChatMessageSentEvent(
+        message.senderUsername,
+        chatId,
+        chatType,
+        message.content.length,
+        message.isAI || false,
+      );
+    }
+
+    return updatedChat;
+  }
+
+  private getChatTypeString(type: string): 'user' | 'group' | 'ai' {
+    if (type === ChatType.AI) return 'ai';
+    if (type === ChatType.GROUP) return 'group';
+    return 'user';
+  }
+
+  private publishChatMessageSentEvent(
+    userId: string,
+    chatId: string,
+    chatType: 'user' | 'group' | 'ai',
+    messageLength: number,
+    isAI: boolean,
+  ): void {
+    const event = createChatMessageSentEvent({
+      userId,
+      chatId,
+      chatType,
+      messageLength,
+      isAI,
+    });
+    this.eventsService.publish(event).catch((err) => {
+      this.logger.warn(`Failed to publish chat.message_sent event: ${err.message}`);
+    });
   }
 
   async deleteChat(chatId: string, username: string): Promise<boolean> {

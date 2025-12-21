@@ -33,6 +33,7 @@ import MoveOrRenameConsumer from './consumers/moveOrRename.consumer';
 import CopyFileConsumer from './consumers/copyFile.consumer';
 import CreateFolderConsumer from './consumers/createFolder.consumer';
 import { PublicFileShareSchema, PublicShare } from './publicFileShare.schema';
+import EventsModule from '../events/events.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { PublicFileShareSchema, PublicShare } from './publicFileShare.schema';
       name: APPS.FILE_SHARING,
     }),
     MongooseModule.forFeature([{ name: PublicShare.name, schema: PublicFileShareSchema }]),
+    EventsModule,
   ],
   controllers: [FilesharingController],
   providers: [

@@ -1,0 +1,496 @@
+{
+  "timeline_id": "tl_002_busy_meeting",
+  "name": "Busy Meeting Day",
+  "description": "5+ meetings, should trigger meeting/planning recommendations",
+  "user_id": "eval-user-2",
+  "scenario": "busy_meeting",
+  "events": [
+    {
+      "event_id": "6408efac-3eaf-4483-b584-640b0b2d4649",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-19T09:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.834Z",
+      "tenant_id": null,
+      "user_id": "eval-user-2",
+      "source": "caldav",
+      "type": "calendar.event_created",
+      "actor_id": null,
+      "object": {
+        "object_type": "calendar_event",
+        "object_id": "a4d738b9-9d3a-43a8-b49c-26f01bff115c"
+      },
+      "context": {},
+      "correlation_id": "corr-c4d0eb63-99a4-4409-b927-b337b8ad88cc",
+      "causation_id": null,
+      "sensitivity": "low",
+      "metadata": {
+        "title": "Meeting 1",
+        "scheduled_at": "2025-12-20T09:00:00.000Z",
+        "scheduled_end": "2025-12-20T10:00:00.000Z",
+        "participant_count": 5
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "7fe2c5fc-2771-4716-ae35-7b3284a6e41a",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-19T11:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.834Z",
+      "tenant_id": null,
+      "user_id": "eval-user-2",
+      "source": "caldav",
+      "type": "calendar.event_created",
+      "actor_id": null,
+      "object": {
+        "object_type": "calendar_event",
+        "object_id": "65fd4a32-6d8f-44a5-b322-494d1cd263a2"
+      },
+      "context": {},
+      "correlation_id": "corr-11792644-64b0-465c-93f3-97713806b290",
+      "causation_id": null,
+      "sensitivity": "low",
+      "metadata": {
+        "title": "Meeting 2",
+        "scheduled_at": "2025-12-20T11:00:00.000Z",
+        "scheduled_end": "2025-12-20T12:00:00.000Z",
+        "participant_count": 5
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "329a4f99-c456-40a4-8860-c887cb560794",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-19T13:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.834Z",
+      "tenant_id": null,
+      "user_id": "eval-user-2",
+      "source": "caldav",
+      "type": "calendar.event_created",
+      "actor_id": null,
+      "object": {
+        "object_type": "calendar_event",
+        "object_id": "c7ce77d6-e72a-40c0-bc7c-921573ae3da1"
+      },
+      "context": {},
+      "correlation_id": "corr-6c9ad84b-4154-4137-a053-45296bce6b74",
+      "causation_id": null,
+      "sensitivity": "low",
+      "metadata": {
+        "title": "Meeting 3",
+        "scheduled_at": "2025-12-20T13:00:00.000Z",
+        "scheduled_end": "2025-12-20T14:00:00.000Z",
+        "participant_count": 5
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "38a4e363-b8a5-4f4a-ad77-058c8924a82e",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-19T15:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.834Z",
+      "tenant_id": null,
+      "user_id": "eval-user-2",
+      "source": "caldav",
+      "type": "calendar.event_created",
+      "actor_id": null,
+      "object": {
+        "object_type": "calendar_event",
+        "object_id": "7f1bc040-0154-4cf6-b4e3-289070150a11"
+      },
+      "context": {},
+      "correlation_id": "corr-c907b827-2263-418d-bfee-312ba541c102",
+      "causation_id": null,
+      "sensitivity": "low",
+      "metadata": {
+        "title": "Meeting 4",
+        "scheduled_at": "2025-12-20T15:00:00.000Z",
+        "scheduled_end": "2025-12-20T16:00:00.000Z",
+        "participant_count": 5
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "0030ddd4-d081-45ef-afee-c913920433a2",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-19T16:30:00.000Z",
+      "received_at": "2025-12-20T14:55:40.835Z",
+      "tenant_id": null,
+      "user_id": "eval-user-2",
+      "source": "caldav",
+      "type": "calendar.event_created",
+      "actor_id": null,
+      "object": {
+        "object_type": "calendar_event",
+        "object_id": "75879d34-dd92-4eb6-bbc7-1be363d1d969"
+      },
+      "context": {},
+      "correlation_id": "corr-7038c189-0e8b-4311-a523-b13a1b81f4f4",
+      "causation_id": null,
+      "sensitivity": "low",
+      "metadata": {
+        "title": "Meeting 5",
+        "scheduled_at": "2025-12-20T16:30:00.000Z",
+        "scheduled_end": "2025-12-20T17:30:00.000Z",
+        "participant_count": 5
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "2ce480d0-11e6-41a3-97dc-ffbd5a3a61c8",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T08:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.835Z",
+      "tenant_id": null,
+      "user_id": "eval-user-2",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "96565ce3-4ccf-4bdd-9318-fa5048648a08"
+      },
+      "context": {
+        "thread_id": "5289427f-79f6-4f85-8892-81c288305997"
+      },
+      "correlation_id": "corr-f0a24870-67dd-41f4-9050-df71e145bf46",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 30,
+        "is_new_thread": true,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "8e1bc892-c8a6-429c-86d4-60c71d58f4de",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T08:30:00.000Z",
+      "received_at": "2025-12-20T14:55:40.835Z",
+      "tenant_id": null,
+      "user_id": "eval-user-2",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "a5378590-c350-4710-886d-fb783f6f2ce7"
+      },
+      "context": {
+        "thread_id": "43d00f9a-4a19-45e0-bfcf-480072129205"
+      },
+      "correlation_id": "corr-890766b1-9283-4645-b8ea-3c6634cd6854",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 30,
+        "is_new_thread": true,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "2346b95e-d9f2-4d40-96a4-a302ebfcc667",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T09:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.835Z",
+      "tenant_id": null,
+      "user_id": "eval-user-2",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "164df859-f633-48ec-9429-b8f39be5ab7d"
+      },
+      "context": {
+        "thread_id": "ec4ad43c-5307-4f09-a652-ba2deda224c9"
+      },
+      "correlation_id": "corr-d51302a5-ac7a-43c1-aebd-e6cb4a3fe543",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 30,
+        "is_new_thread": true,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "fd389874-33c7-4f7e-8733-78ee1f75d047",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T09:30:00.000Z",
+      "received_at": "2025-12-20T14:55:40.835Z",
+      "tenant_id": null,
+      "user_id": "eval-user-2",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "91d252c8-5b4c-4c44-82dc-0d2f7be00c1a"
+      },
+      "context": {
+        "thread_id": "91d7e625-8d2b-4202-be54-c7775936641e"
+      },
+      "correlation_id": "corr-3c00be1b-2673-4a7e-89ee-cdbffa8b8a3b",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 30,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "9f66f4ba-30cb-43d4-bb7d-670249e38a27",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T10:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.835Z",
+      "tenant_id": null,
+      "user_id": "eval-user-2",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "fafccdd8-86de-4ab3-9380-5bd9d16e8c8b"
+      },
+      "context": {
+        "thread_id": "82375ac2-fc26-4748-a354-c9a4a6bf6cbf"
+      },
+      "correlation_id": "corr-fd27abfb-cd86-4942-87ce-6f4219dbee35",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 30,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "70a70295-3604-4ba6-ae8b-26b45361e3fc",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T10:30:00.000Z",
+      "received_at": "2025-12-20T14:55:40.835Z",
+      "tenant_id": null,
+      "user_id": "eval-user-2",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "ed36388a-d4b0-4451-a5e9-b211739faaf2"
+      },
+      "context": {
+        "thread_id": "4264f888-932b-4bd1-8279-7946ffc45f41"
+      },
+      "correlation_id": "corr-1bba6576-2188-4fd1-b3b0-5aabaf9f13f4",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 30,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "05124f74-5a3e-462d-bc9f-dfe57baedbea",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T11:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.835Z",
+      "tenant_id": null,
+      "user_id": "eval-user-2",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "14a899c1-07a3-4f1e-82d4-5cb2fcb413a4"
+      },
+      "context": {
+        "thread_id": "8dd50966-a00d-4d92-bd46-60aeef75cccd"
+      },
+      "correlation_id": "corr-16440264-a740-47bc-9daf-ba0843245f58",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 30,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "559013e9-7a31-4c99-af18-c98fdc451bbd",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T11:30:00.000Z",
+      "received_at": "2025-12-20T14:55:40.835Z",
+      "tenant_id": null,
+      "user_id": "eval-user-2",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "88c31556-9e05-42bc-a11b-33b93f7029fb"
+      },
+      "context": {
+        "thread_id": "372ac8d7-5e58-48fe-af2e-8e1ce9632063"
+      },
+      "correlation_id": "corr-8d9ebc09-8700-4fac-9845-27d05effa98c",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 30,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    }
+  ],
+  "checkpoints": [
+    "2025-12-20T08:30:00.000Z",
+    "2025-12-20T10:30:00.000Z",
+    "2025-12-20T14:00:00.000Z",
+    "2025-12-20T17:00:00.000Z"
+  ],
+  "expected_labels": [
+    {
+      "class": "meeting",
+      "window_start": "2025-12-20T08:30:00.000Z",
+      "window_end": "2025-12-20T08:30:00.001Z",
+      "rule_id": "calendar:meeting-prep",
+      "rationale": "Meeting in 30 minutes triggers prep recommendation"
+    },
+    {
+      "class": "meeting",
+      "window_start": "2025-12-20T08:30:00.000Z",
+      "window_end": "2025-12-20T08:30:00.001Z",
+      "rule_id": "calendar:busy-day",
+      "rationale": "5 meetings triggers busy day detection"
+    },
+    {
+      "class": "communication",
+      "window_start": "2025-12-20T08:30:00.000Z",
+      "window_end": "2025-12-20T08:30:00.001Z",
+      "rule_id": "communication:awaiting-reply",
+      "rationale": "2 thread(s) awaiting reply"
+    },
+    {
+      "class": "planning",
+      "window_start": "2025-12-20T08:30:00.000Z",
+      "window_end": "2025-12-20T08:30:00.001Z",
+      "rule_id": "planning:workload-review",
+      "rationale": "2 threads and 5 meetings triggers workload review"
+    },
+    {
+      "class": "focus",
+      "window_start": "2025-12-20T08:30:00.000Z",
+      "window_end": "2025-12-20T08:30:00.001Z",
+      "rule_id": "focus:low-activity",
+      "rationale": "Low activity with pending items - good time to catch up"
+    },
+    {
+      "class": "cleanup",
+      "window_start": "2025-12-20T08:30:00.000Z",
+      "window_end": "2025-12-20T08:30:00.001Z",
+      "rule_id": "cleanup:inbox-zero",
+      "rationale": "Only 2 pending, 2 open - near inbox zero"
+    },
+    {
+      "class": "meeting",
+      "window_start": "2025-12-20T10:30:00.000Z",
+      "window_end": "2025-12-20T10:30:00.001Z",
+      "rule_id": "calendar:meeting-prep",
+      "rationale": "Meeting in 30 minutes triggers prep recommendation"
+    },
+    {
+      "class": "meeting",
+      "window_start": "2025-12-20T10:30:00.000Z",
+      "window_end": "2025-12-20T10:30:00.001Z",
+      "rule_id": "calendar:busy-day",
+      "rationale": "4 meetings triggers busy day detection"
+    },
+    {
+      "class": "communication",
+      "window_start": "2025-12-20T10:30:00.000Z",
+      "window_end": "2025-12-20T10:30:00.001Z",
+      "rule_id": "communication:awaiting-reply",
+      "rationale": "6 thread(s) awaiting reply"
+    },
+    {
+      "class": "communication",
+      "window_start": "2025-12-20T10:30:00.000Z",
+      "window_end": "2025-12-20T10:30:00.001Z",
+      "rule_id": "communication:high-volume",
+      "rationale": "6 threads exceeds high volume threshold"
+    },
+    {
+      "class": "planning",
+      "window_start": "2025-12-20T10:30:00.000Z",
+      "window_end": "2025-12-20T10:30:00.001Z",
+      "rule_id": "planning:workload-review",
+      "rationale": "6 threads and 4 meetings triggers workload review"
+    },
+    {
+      "class": "focus",
+      "window_start": "2025-12-20T10:30:00.000Z",
+      "window_end": "2025-12-20T10:30:00.001Z",
+      "rule_id": "focus:low-activity",
+      "rationale": "Low activity with pending items - good time to catch up"
+    },
+    {
+      "class": "meeting",
+      "window_start": "2025-12-20T14:00:00.000Z",
+      "window_end": "2025-12-20T14:00:00.001Z",
+      "rule_id": "calendar:meeting-prep",
+      "rationale": "Meeting in 60 minutes triggers prep recommendation"
+    },
+    {
+      "class": "communication",
+      "window_start": "2025-12-20T14:00:00.000Z",
+      "window_end": "2025-12-20T14:00:00.001Z",
+      "rule_id": "communication:awaiting-reply",
+      "rationale": "8 thread(s) awaiting reply"
+    },
+    {
+      "class": "communication",
+      "window_start": "2025-12-20T14:00:00.000Z",
+      "window_end": "2025-12-20T14:00:00.001Z",
+      "rule_id": "communication:high-volume",
+      "rationale": "8 threads exceeds high volume threshold"
+    },
+    {
+      "class": "focus",
+      "window_start": "2025-12-20T14:00:00.000Z",
+      "window_end": "2025-12-20T14:00:00.001Z",
+      "rule_id": "focus:low-activity",
+      "rationale": "Low activity with pending items - good time to catch up"
+    },
+    {
+      "class": "communication",
+      "window_start": "2025-12-20T17:00:00.000Z",
+      "window_end": "2025-12-20T17:00:00.001Z",
+      "rule_id": "communication:awaiting-reply",
+      "rationale": "8 thread(s) awaiting reply"
+    },
+    {
+      "class": "communication",
+      "window_start": "2025-12-20T17:00:00.000Z",
+      "window_end": "2025-12-20T17:00:00.001Z",
+      "rule_id": "communication:high-volume",
+      "rationale": "8 threads exceeds high volume threshold"
+    },
+    {
+      "class": "focus",
+      "window_start": "2025-12-20T17:00:00.000Z",
+      "window_end": "2025-12-20T17:00:00.001Z",
+      "rule_id": "focus:low-activity",
+      "rationale": "Low activity with pending items - good time to catch up"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+%%{init: {'theme': 'neutral'}}%%
+sequenceDiagram
+    autonumber
+    participant User as Lehrer
+    participant Mail as SOGo Mail
+    participant API as Events API
+    participant Rule as Mail Rule
+    participant Reco as Recommendations
+    participant Plan as Daily Plan
+    participant Push as Push Service
+
+    Note over Mail: Lehrer erhaelt E-Mail<br/>Betreff: "Unterrichtsmaterial Mathe"<br/>Anhaenge: Arbeitsblatt.pdf, Loesungen.docx
+
+    Mail->>API: POST /events/ingest
+    Note right of API: {<br/>  type: "mail.received",<br/>  source: "mail",<br/>  metadata: {<br/>    subject: "Unterrichtsmaterial",<br/>    attachment_count: 2<br/>  },<br/>  payload: {<br/>    attachments: [<br/>      {filename: "Arbeitsblatt.pdf"},<br/>      {filename: "Loesungen.docx"}<br/>    ]<br/>  }<br/>}
+
+    API->>Rule: Event an Rule Engine
+    activate Rule
+
+    Rule->>Rule: Pruefe: attachment_count > 0?
+    Note right of Rule: Bedingung erfuellt
+
+    Rule->>Rule: Generiere ActionProposal
+    Note right of Rule: Steps:<br/>1. files.copy_file → Arbeitsblatt.pdf<br/>2. files.copy_file → Loesungen.docx<br/>Ziel: /Unterricht/Mathe/
+
+    Rule->>Reco: Speichere Empfehlung
+    deactivate Rule
+    Note right of Reco: {<br/>  candidate_id: "cand-123",<br/>  title: "E-Mail-Anhaenge speichern",<br/>  class: "cleanup",<br/>  score: 0.8,<br/>  push_title: "2 Anhaenge speichern",<br/>  push_content: "Speichere Anhaenge aus...",<br/>  action_proposal: {...}<br/>}
+
+    Note over Plan: Morgens 8:00 (PROD)<br/>oder sofort (DEV)
+
+    Reco->>Plan: Hole Empfehlungen fuer Nutzer
+    Plan->>Plan: LLM generiert Tagesplan
+    Plan->>Push: Sende Benachrichtigung
+
+    Push->>User: Push: "2 Anhaenge speichern"<br/>"Speichere Anhaenge aus 'Unterrichtsmaterial'..."
+
+    Note over User: Nutzer oeffnet App
+    User->>Plan: Klickt "Ausfuehren"
+    Plan->>Reco: Execute action_proposal
+    Reco-->>User: Erfolgsmeldung

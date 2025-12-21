@@ -18,7 +18,7 @@
  */
 
 import { Injectable, Logger } from '@nestjs/common';
-import { dynamicTool, jsonSchema, LanguageModel, ModelMessage, stepCountIs, streamText } from 'ai';
+import { dynamicTool, generateText, jsonSchema, LanguageModel, ModelMessage, stepCountIs, streamText } from 'ai';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
@@ -222,6 +222,39 @@ class AIService {
         }
       },
     });
+  }
+
+  async generateTextFromPrompt(configId: string, prompt: string): Promise<string> {
+    this.logger.log('=== AI GENERATE TEXT START ===');
+
+    const config = await this.aiConfigService.getById(configId);
+    if (!config) {
+      throw new Error(`AI Config not found: ${configId}`);
+    }
+
+    this.logger.log(`[AI] Config: ${config.name} (${config.apiStandard}/${config.aiModel})`);
+
+    const model = this.createModel(config);
+
+    const result = await generateText({
+      model,
+      prompt,
+    });
+
+    this.logger.log(`[AI] Generated ${result.text.length} chars, finishReason=${result.finishReason}`);
+
+    return result.text;
+  }
+
+  async generateTextByPurpose(purpose: string, prompt: string): Promise<string> {
+    this.logger.log(`=== AI GENERATE TEXT BY PURPOSE: ${purpose} ===`);
+
+    const config = await this.aiConfigService.getByPurpose(purpose);
+    if (!config) {
+      throw new Error(`No AI Config found for purpose: ${purpose}`);
+    }
+
+    return this.generateTextFromPrompt(config.id, prompt);
   }
 }
 

@@ -35,6 +35,7 @@ import mockCacheManager from '../common/cache-manager.mock';
 import SurveysAttachmentService from './surveys-attachment.service';
 import NotificationsService from '../notifications/notifications.service';
 import GlobalSettingsService from '../global-settings/global-settings.service';
+import EventsService from '../events/events.service';
 
 describe('SurveyService', () => {
   let service: SurveysService;
@@ -59,6 +60,7 @@ describe('SurveyService', () => {
         { provide: NotificationsService, useValue: notificationMock },
         { provide: GlobalSettingsService, useValue: { getAdminGroupsFromCache: jest.fn() } },
         { provide: CACHE_MANAGER, useValue: mockCacheManager },
+        { provide: EventsService, useValue: { publish: jest.fn().mockResolvedValue(undefined) } },
       ],
     }).compile();
 

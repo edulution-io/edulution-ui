@@ -1,0 +1,68 @@
+%%{init: {'theme': 'neutral'}}%%
+flowchart TB
+    subgraph CrossApp["7 Cross-App Rules"]
+        direction TB
+        CA1["mail-attachment<br/>mail.received → files"]
+        CA2["conference-setup<br/>conferences → files, chat"]
+        CA3["project-setup<br/>system → files, chat"]
+        CA4["class-setup<br/>system → files, chat, bulletin"]
+        CA5["session-exam<br/>system → files, lmn"]
+        CA6["survey-announce<br/>surveys → bulletin"]
+        CA7["bulletin-notify<br/>bulletin → chat"]
+    end
+
+    subgraph Standard["14 Standard Rules"]
+        direction TB
+        subgraph Communication["Communication (2)"]
+            ST1["awaiting-reply"]
+            ST2["high-volume"]
+        end
+        subgraph Calendar["Calendar/Meeting (2)"]
+            ST3["busy-day"]
+            ST4["meeting-prep"]
+        end
+        subgraph Focus["Focus (3)"]
+            ST5["focus-time"]
+            ST6["break-suggestion"]
+            ST7["low-activity"]
+        end
+        subgraph Planning["Planning (3)"]
+            ST8["workload-review"]
+            ST9["eod-review"]
+            ST10["weekly"]
+        end
+        subgraph Cleanup["Cleanup (3)"]
+            ST11["stale-threads"]
+            ST12["inbox-zero"]
+            ST13["organize-files"]
+        end
+        subgraph Organization["Organization (1)"]
+            ST14["conference-folder"]
+        end
+    end
+
+    subgraph Classes["6 Recommendation Classes"]
+        CL1["meeting<br/>Priority: 1.0"]
+        CL2["communication<br/>Priority: 0.85"]
+        CL3["focus<br/>Priority: 0.70"]
+        CL4["planning<br/>Priority: 0.55"]
+        CL5["cleanup<br/>Priority: 0.40"]
+        CL6["organization<br/>Priority: 0.50"]
+    end
+
+    CA1 & CA2 & CA3 & CA4 & CA5 --> CL6
+    CA6 & CA7 --> CL2
+    ST1 & ST2 --> CL2
+    ST3 & ST4 --> CL1
+    ST5 & ST6 & ST7 --> CL3
+    ST8 & ST9 & ST10 --> CL4
+    ST11 & ST12 & ST13 --> CL5
+    ST14 --> CL6
+
+    style CrossApp fill:#e6f3ff,stroke:#333
+    style CL1 fill:#faa,stroke:#333
+    style CL2 fill:#fca,stroke:#333
+    style CL3 fill:#ffa,stroke:#333
+    style CL4 fill:#afa,stroke:#333
+    style CL5 fill:#aff,stroke:#333
+    style CL6 fill:#caf,stroke:#333

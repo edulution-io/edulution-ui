@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Readable } from 'stream';
 import { Request, Response } from 'express';
 import FileSharingErrorMessage from '@libs/filesharing/types/fileSharingErrorMessage';
@@ -49,9 +49,19 @@ import OnlyofficeService from './onlyoffice.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import QueueService from '../queue/queue.service';
 import WebdavSharesService from '../webdav/shares/webdav-shares.service';
+import EventsService from '../events/events.service';
+import {
+  createFileUploadedEvent,
+  createFileCopiedEvent,
+  createFileMovedEvent,
+  createFileDeletedEvent,
+  createFileSharedEvent,
+} from '../events/event-factories';
 
 @Injectable()
 class FilesharingService {
+  private readonly logger = new Logger(FilesharingService.name);
+
   constructor(
     @InjectModel(PublicShare.name)
     private readonly shareModel: Model<PublicShareDocument>,
@@ -61,6 +71,7 @@ class FilesharingService {
     private readonly webDavService: WebdavService,
     private readonly userService: UsersService,
     private readonly webdavSharesService: WebdavSharesService,
+    private readonly eventsService: EventsService,
   ) {}
 
   private static resolveFileSize(req: Request, fileSize: number): number | undefined {
@@ -80,7 +91,30 @@ class FilesharingService {
 
     const totalSize = FilesharingService.resolveFileSize(req, fileSize);
 
-    return this.webDavService.uploadFile(username, fullPath, req, share, contentType, totalSize);
+    const result = await this.webDavService.uploadFile(username, fullPath, req, share, contentType, totalSize);
+
+    this.publishFileUploadedEvent(username, fullPath, name, totalSize, contentType);
+
+    return result;
+  }
+
+  private publishFileUploadedEvent(
+    userId: string,
+    path: string,
+    filename: string,
+    size?: number,
+    mimeType?: string,
+  ): void {
+    const event = createFileUploadedEvent({
+      userId,
+      path,
+      filename,
+      size,
+      mimeType,
+    });
+    this.eventsService.publish(event).catch((err) => {
+      this.logger.warn(`Failed to publish file.uploaded event: ${err.message}`);
+    });
   }
 
   async duplicateFile(username: string, duplicateFile: DuplicateFileRequestDto, share: string) {
@@ -108,18 +142,34 @@ class FilesharingService {
     return Promise.all(
       copyFileRequestDTOs.map(async (copyFileRequest) => {
         const { path, newPath } = copyFileRequest;
+        const sourcePath = getPathWithoutWebdav(path, webdavShare.pathname);
         const trimmedNewPath = getPathWithoutWebdav(newPath.trim(), webdavShare.pathname);
 
         await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.COPY_FILE_JOB, {
           username,
-          originFilePath: getPathWithoutWebdav(path, webdavShare.pathname),
+          originFilePath: sourcePath,
           destinationFilePath: trimmedNewPath,
           total: copyFileRequestDTOs.length,
           processed: (processedItems += 1),
           share,
         });
+
+        const filename = trimmedNewPath.split('/').pop() || '';
+        this.publishFileCopiedEvent(username, sourcePath, trimmedNewPath, filename);
       }),
     );
+  }
+
+  private publishFileCopiedEvent(userId: string, sourcePath: string, targetPath: string, filename: string): void {
+    const event = createFileCopiedEvent({
+      userId,
+      sourcePath,
+      targetPath,
+      filename,
+    });
+    this.eventsService.publish(event).catch((err) => {
+      this.logger.warn(`Failed to publish file.copied event: ${err.message}`);
+    });
   }
 
   async collectFiles(
@@ -152,18 +202,34 @@ class FilesharingService {
     return Promise.all(
       pathChangeOrCreateDtos.map(async (pathChange) => {
         const { path, newPath } = pathChange;
+        const sourcePath = getPathWithoutWebdav(path, webdavShare.pathname);
         const trimmedNewPath = getPathWithoutWebdav(newPath.trim(), webdavShare.pathname);
 
         await this.dynamicQueueService.addJobForUser(username, JOB_NAMES.MOVE_OR_RENAME_JOB, {
           username,
-          path: getPathWithoutWebdav(path, webdavShare.pathname),
+          path: sourcePath,
           newPath: trimmedNewPath,
           total: pathChangeOrCreateDtos.length,
           processed: (processedItems += 1),
           share,
         });
+
+        const filename = trimmedNewPath.split('/').pop() || '';
+        this.publishFileMovedEvent(username, sourcePath, trimmedNewPath, filename);
       }),
     );
+  }
+
+  private publishFileMovedEvent(userId: string, sourcePath: string, targetPath: string, filename: string): void {
+    const event = createFileMovedEvent({
+      userId,
+      sourcePath,
+      targetPath,
+      filename,
+    });
+    this.eventsService.publish(event).catch((err) => {
+      this.logger.warn(`Failed to publish file.moved event: ${err.message}`);
+    });
   }
 
   async deleteFileAtPath(username: string, paths: string[], share: string) {
@@ -182,8 +248,22 @@ class FilesharingService {
           processed: (processedItems += 1),
           share,
         });
+
+        const filename = pathWithoutWebdav.split('/').pop() || '';
+        this.publishFileDeletedEvent(username, pathWithoutWebdav, filename);
       }),
     );
+  }
+
+  private publishFileDeletedEvent(userId: string, path: string, filename: string): void {
+    const event = createFileDeletedEvent({
+      userId,
+      path,
+      filename,
+    });
+    this.eventsService.publish(event).catch((err) => {
+      this.logger.warn(`Failed to publish file.deleted event: ${err.message}`);
+    });
   }
 
   async getWebDavFileStream(username: string, filePath: string, share: string): Promise<Readable> {
@@ -276,6 +356,9 @@ class FilesharingService {
         scope,
       };
 
+      const isPublic = scope === PUBLIC_SHARE_LINK_SCOPE.PUBLIC;
+      this.publishFileSharedEvent(currentUser.preferred_username, filePath, filename, publicShareId, isPublic);
+
       return {
         success: true,
         status: HttpStatus.OK,
@@ -284,6 +367,25 @@ class FilesharingService {
     } catch (error) {
       throw new CustomHttpException(FileSharingErrorMessage.SharingFailed, HttpStatus.INTERNAL_SERVER_ERROR, error);
     }
+  }
+
+  private publishFileSharedEvent(
+    userId: string,
+    path: string,
+    filename: string,
+    shareId: string,
+    isPublic: boolean,
+  ): void {
+    const event = createFileSharedEvent({
+      userId,
+      path,
+      filename,
+      shareId,
+      isPublic,
+    });
+    this.eventsService.publish(event).catch((err) => {
+      this.logger.warn(`Failed to publish file.shared event: ${err.message}`);
+    });
   }
 
   async listOwnPublicShares(username: string): Promise<PublicShareResponseDto> {

@@ -1,0 +1,141 @@
+{
+  "timeline_id": "tl_003_communication",
+  "timeline_name": "Communication Heavy Day",
+  "scenario": "communication_heavy",
+  "checkpoints": [
+    {
+      "timestamp": "2025-12-20T09:00:00.000Z",
+      "generated": [
+        {
+          "candidate_id": "83b98909-280d-42ce-8b23-f22b7cdab285",
+          "score": 0.9,
+          "created_at": "2025-12-20T12:23:59.832Z",
+          "class": "communication",
+          "title": "Review communication backlog",
+          "rationale": "8 threads awaiting your response"
+        },
+        {
+          "candidate_id": "f0d8082c-c2fa-4911-809d-8cf0f61b8e8a",
+          "score": 0.6,
+          "created_at": "2025-12-20T12:23:59.832Z",
+          "class": "communication",
+          "title": "Follow up on pending thread",
+          "rationale": "Thread is awaiting your reply",
+          "context_id": "06bdffc5-f4e1-4c8a-a45a-6a3216864b7e"
+        },
+        {
+          "candidate_id": "f5c0ff34-8c93-4866-afce-f68712c80d62",
+          "score": 0.6,
+          "created_at": "2025-12-20T12:23:59.832Z",
+          "class": "communication",
+          "title": "Follow up on pending thread",
+          "rationale": "Thread is awaiting your reply",
+          "context_id": "01ddf358-3d1e-465f-b231-5fc3f5b0cce8"
+        }
+      ],
+      "relevant_count": 3,
+      "precision_at_3": 1
+    },
+    {
+      "timestamp": "2025-12-20T12:00:00.000Z",
+      "generated": [
+        {
+          "candidate_id": "83b98909-280d-42ce-8b23-f22b7cdab285",
+          "score": 0.9,
+          "created_at": "2025-12-20T12:23:59.832Z",
+          "class": "communication",
+          "title": "Review communication backlog",
+          "rationale": "8 threads awaiting your response"
+        },
+        {
+          "candidate_id": "7c3d7370-d914-4671-9277-74a5ac9eb74e",
+          "score": 0.9,
+          "created_at": "2025-12-20T12:24:00.378Z",
+          "class": "communication",
+          "title": "Review communication backlog",
+          "rationale": "8 threads awaiting your response"
+        },
+        {
+          "candidate_id": "fab5bf8b-bb49-4330-9347-3f26b8c1ec38",
+          "score": 0.6,
+          "created_at": "2025-12-20T12:24:00.378Z",
+          "class": "communication",
+          "title": "Follow up on pending thread",
+          "rationale": "Thread is awaiting your reply",
+          "context_id": "7820d570-9031-4b0a-b600-9edb259fef95"
+        }
+      ],
+      "relevant_count": 3,
+      "precision_at_3": 1
+    },
+    {
+      "timestamp": "2025-12-20T15:00:00.000Z",
+      "generated": [
+        {
+          "candidate_id": "83b98909-280d-42ce-8b23-f22b7cdab285",
+          "score": 0.9,
+          "created_at": "2025-12-20T12:23:59.832Z",
+          "class": "communication",
+          "title": "Review communication backlog",
+          "rationale": "8 threads awaiting your response"
+        },
+        {
+          "candidate_id": "7c3d7370-d914-4671-9277-74a5ac9eb74e",
+          "score": 0.9,
+          "created_at": "2025-12-20T12:24:00.378Z",
+          "class": "communication",
+          "title": "Review communication backlog",
+          "rationale": "8 threads awaiting your response"
+        },
+        {
+          "candidate_id": "a44b2366-b55f-4391-b735-67d75f05c868",
+          "score": 0.9,
+          "created_at": "2025-12-20T12:24:00.900Z",
+          "class": "communication",
+          "title": "Review communication backlog",
+          "rationale": "8 threads awaiting your response"
+        }
+      ],
+      "relevant_count": 3,
+      "precision_at_3": 1
+    },
+    {
+      "timestamp": "2025-12-20T17:00:00.000Z",
+      "generated": [
+        {
+          "candidate_id": "83b98909-280d-42ce-8b23-f22b7cdab285",
+          "score": 0.9,
+          "created_at": "2025-12-20T12:23:59.832Z",
+          "class": "communication",
+          "title": "Review communication backlog",
+          "rationale": "8 threads awaiting your response"
+        },
+        {
+          "candidate_id": "a44b2366-b55f-4391-b735-67d75f05c868",
+          "score": 0.9,
+          "created_at": "2025-12-20T12:24:00.900Z",
+          "class": "communication",
+          "title": "Review communication backlog",
+          "rationale": "8 threads awaiting your response"
+        },
+        {
+          "candidate_id": "b6feff8a-2e97-4745-95fa-ce0a087823d7",
+          "score": 0.9,
+          "created_at": "2025-12-20T12:24:01.415Z",
+          "class": "communication",
+          "title": "Review communication backlog",
+          "rationale": "8 threads awaiting your response"
+        }
+      ],
+      "relevant_count": 3,
+      "precision_at_3": 1
+    }
+  ],
+  "metrics": {
+    "precision_at_3_avg": 1,
+    "coverage": true,
+    "redundancy_rate": 0.9166666666666666,
+    "latency_to_first_relevant": 0
+  },
+  "evaluated_at": "2025-12-20T12:24:01.923Z"
+}

@@ -10,6 +10,6 @@
     "composite": true,
     "declaration": true
   },
-  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"],
-  "include": ["./**/*", "../../libs/**/*", "../../package.json"]
+  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts", "src/**/cli/**"],
+  "include": ["./**/*", "../../libs/**/*", "../../packages/**/*", "../../package.json"]
 }

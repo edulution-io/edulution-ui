@@ -1,0 +1,46 @@
+%%{init: {'theme': 'neutral'}}%%
+flowchart TB
+    subgraph Morning["Vormittag: Events 8:00-12:00"]
+        E1["08:15 mail.received\n'Elternbrief' + 2 Anhaenge\nSource: SOGo"]
+        E2["09:30 conference.created\n'Mathematik 10b'\nSource: BBB"]
+        E3["10:00 calendar.event_upcoming\nBesprechung in 2h\nSource: CalDAV"]
+        E4["11:15 chat.mention\nDringende Frage\nSource: Rocket.Chat"]
+    end
+
+    subgraph Rules["Rule Processing"]
+        R1["mail-attachment.rule\nScore: 0.75\nClass: cleanup"]
+        R2["conference-workspace.rule\nScore: 0.85\nClass: organization"]
+        R3["meeting-prep.rule\nScore: 0.90\nClass: preparation"]
+        R4["chat-response.rule\nScore: 0.80\nClass: communication"]
+    end
+
+    subgraph Candidates["Generierte Kandidaten"]
+        C1["Kandidat 1\nAnhaenge speichern\ncleanup | 0.75"]
+        C2["Kandidat 2\nWorkspace einrichten\norganization | 0.85"]
+        C3["Kandidat 3\nBesprechung vorbereiten\npreparation | 0.90"]
+        C4["Kandidat 4\nChat beantworten\ncommunication | 0.80"]
+    end
+
+    subgraph Ranking["Aggregation & Ranking"]
+        Agg["Sortierung nach:\n1. Klassen-Prioritaet\n2. Score\n3. Zeitliche Dringlichkeit"]
+        Priority["Klassen-Reihenfolge:\n1. preparation\n2. communication\n3. organization\n4. cleanup"]
+    end
+
+    subgraph Plan["Finaler Daily Plan"]
+        P1["Prioritaet 1\nBesprechung vorbereiten\nZeitkritisch!"]
+        P2["Prioritaet 2\nChat beantworten\nSoziale Interaktion"]
+        P3["Prioritaet 3\nWorkspace einrichten\nOrganisation"]
+        P4["Prioritaet 4\nAnhaenge speichern\nAufraeum-Aufgabe"]
+    end
+
+    E1 --> R1 --> C1
+    E2 --> R2 --> C2
+    E3 --> R3 --> C3
+    E4 --> R4 --> C4
+
+    C1 & C2 & C3 & C4 --> Agg
+    Agg --> Priority
+    Priority --> P1 & P2 & P3 & P4
+
+    style P1 fill:#f9f,stroke:#333
+    style P3 fill:#bbf,stroke:#333

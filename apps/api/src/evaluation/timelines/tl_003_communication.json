@@ -1,0 +1,1221 @@
+{
+  "timeline_id": "tl_003_communication",
+  "name": "Communication Heavy Day",
+  "description": "Many messages, threads awaiting reply",
+  "user_id": "eval-user-3",
+  "scenario": "communication_heavy",
+  "events": [
+    {
+      "event_id": "29a25838-b6e3-48a6-a12b-3de4f6b98083",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T08:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.836Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "30481def-185c-4df3-aaab-e832b768b922"
+      },
+      "context": {
+        "thread_id": "266b1394-e2b0-443a-999d-ee721c2bc683"
+      },
+      "correlation_id": "corr-4b4a4a83-70cf-4d58-91e2-2f5ffd15b257",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": true,
+        "has_attachments": true
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "25dd4790-ea6e-4121-ad55-2384df648d5a",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T09:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "d763bc58-72cf-4fc4-bc06-ba8cc058c040"
+      },
+      "context": {
+        "thread_id": "266b1394-e2b0-443a-999d-ee721c2bc683"
+      },
+      "correlation_id": "corr-4c940280-8cdf-4d0a-8349-5cdb23a33ca2",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "36b54d38-326d-450e-9680-a6a095e3325f",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T09:12:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "5f2ea41b-423a-4998-97d6-fa43a3c74c2c"
+      },
+      "context": {
+        "thread_id": "266b1394-e2b0-443a-999d-ee721c2bc683"
+      },
+      "correlation_id": "corr-aea27db7-6028-4174-970b-2cee4cd01b62",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "54fd5e6e-7831-4f56-a1e9-abf00cc5771e",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T09:24:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "ac65d4c5-5c4e-4da8-bb77-446cb634006a"
+      },
+      "context": {
+        "thread_id": "266b1394-e2b0-443a-999d-ee721c2bc683"
+      },
+      "correlation_id": "corr-02cb150b-a6ee-4fa2-844f-7a5f48db5241",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "f4207008-50c9-4264-a793-a6c3b69379c9",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T08:30:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "b392251d-d3f7-41f2-8b29-dd0a7018a4fd"
+      },
+      "context": {
+        "thread_id": "a1458731-b7f0-4ef9-af65-a38814f38caa"
+      },
+      "correlation_id": "corr-bbe1791f-56c0-498b-aa4a-280f7b90a65c",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": true,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "5aa3ffdb-986b-44d8-8574-2805d45a39aa",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T09:30:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "3eda3069-31cd-43dd-bcdb-0b02653f2020"
+      },
+      "context": {
+        "thread_id": "a1458731-b7f0-4ef9-af65-a38814f38caa"
+      },
+      "correlation_id": "corr-f3e4036b-e28f-45c8-a2b8-a4e7c25d471f",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "b62b5248-c0ba-4ca3-8012-9c9e6c85f89a",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T09:42:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "517e17fd-6da9-49d6-bcab-d29d76a60de8"
+      },
+      "context": {
+        "thread_id": "a1458731-b7f0-4ef9-af65-a38814f38caa"
+      },
+      "correlation_id": "corr-9b552974-341c-482d-9f3f-5dcc9c248d3e",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "cad43718-5de8-41f1-966c-20f2b12e437b",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T09:54:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "bc58556d-ea7b-46c4-9c1d-837ced06aa86"
+      },
+      "context": {
+        "thread_id": "a1458731-b7f0-4ef9-af65-a38814f38caa"
+      },
+      "correlation_id": "corr-5cac15d9-d7ce-4088-8069-bce5418d7de6",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "8582730b-38bb-4593-b21f-293ed80dc513",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T09:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "4db226c7-20b6-4d67-badc-1958ea1d5a21"
+      },
+      "context": {
+        "thread_id": "63bd4d6c-fb56-4c3e-a5bc-da364937ec05"
+      },
+      "correlation_id": "corr-4b09919a-81d4-4a72-9c45-2a1d76ea309d",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": true,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "e2c9ab5a-1b96-4ff2-b68b-9aaef8d0a198",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T10:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "6b059ef5-80a2-48d0-850b-2b465ef72e91"
+      },
+      "context": {
+        "thread_id": "63bd4d6c-fb56-4c3e-a5bc-da364937ec05"
+      },
+      "correlation_id": "corr-02ea65c4-73c5-4a26-b784-84dbab4cbc36",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "16c0f176-fe6b-4888-9e1f-a87abf849f25",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T10:12:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "7837f763-2dbb-4831-8924-023334de5987"
+      },
+      "context": {
+        "thread_id": "63bd4d6c-fb56-4c3e-a5bc-da364937ec05"
+      },
+      "correlation_id": "corr-bb55cf36-f27e-418d-871a-29de2be5f8ba",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "e686a9d5-f8b2-4fff-a980-22e755eaae4b",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T10:24:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "1cb3e9f4-3b40-40b9-a2c5-6b26ebea9056"
+      },
+      "context": {
+        "thread_id": "63bd4d6c-fb56-4c3e-a5bc-da364937ec05"
+      },
+      "correlation_id": "corr-df20072e-5450-475c-8d3c-39bf9121d81a",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "30271379-aaef-4dd4-9a88-3285d973c520",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T09:30:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "2552a5e4-cbfb-454d-8bc0-6d08a0533a37"
+      },
+      "context": {
+        "thread_id": "cfba50c1-3077-47e0-a249-e64962c7a9e4"
+      },
+      "correlation_id": "corr-22f763b4-2cc1-4e00-8e36-494d6cd7fe53",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": true,
+        "has_attachments": true
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "695e2474-2135-4079-bef9-792a98942e35",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T10:30:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "42a6413a-2fa0-4a7a-a40c-c2b3566a3a3f"
+      },
+      "context": {
+        "thread_id": "cfba50c1-3077-47e0-a249-e64962c7a9e4"
+      },
+      "correlation_id": "corr-3a2c7829-3df4-4086-8d98-42764ecc0883",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "c6c35848-6f09-4f84-86b8-99f107b69db0",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T10:42:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "fe40ee4f-b8b7-4faf-b172-4c762d686a58"
+      },
+      "context": {
+        "thread_id": "cfba50c1-3077-47e0-a249-e64962c7a9e4"
+      },
+      "correlation_id": "corr-9aadc7c2-7ea9-41d8-8970-2c356b924e67",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "1c5c23e0-782e-47f9-a592-15ac18cc1603",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T10:54:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "6c1969b3-c149-4d6f-9cf6-f32b835da40c"
+      },
+      "context": {
+        "thread_id": "cfba50c1-3077-47e0-a249-e64962c7a9e4"
+      },
+      "correlation_id": "corr-2a208365-fd31-4b34-9581-3eb917f41bac",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "a7cd635d-08de-4f3a-be1f-81f921316737",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T10:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "76ee6043-983c-4ad5-813c-5a62fedb1871"
+      },
+      "context": {
+        "thread_id": "d19cd820-54b0-4ef8-ac1f-bd8e47a227c5"
+      },
+      "correlation_id": "corr-bbeb18c4-ef96-484a-96b5-ec41a95ea9fd",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": true,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "3692f975-ec00-4ff0-b2f2-fae00af15f6c",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T11:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "7fd316f5-5964-4948-8cf9-651fca564216"
+      },
+      "context": {
+        "thread_id": "d19cd820-54b0-4ef8-ac1f-bd8e47a227c5"
+      },
+      "correlation_id": "corr-8cf249a7-1921-4017-bbc8-38e9e86a9854",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "e0fe591b-8112-45e1-993b-c31aedd51a35",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T11:12:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "986968f5-53c6-493a-9e03-f790fd097b8b"
+      },
+      "context": {
+        "thread_id": "d19cd820-54b0-4ef8-ac1f-bd8e47a227c5"
+      },
+      "correlation_id": "corr-9fc8554d-338c-432e-aab2-8dccfdb4405d",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "17f40056-e157-4a1e-9dce-fe8c044682a7",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T11:24:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "c8b93412-b9d4-4ca6-8614-793c3fac7b73"
+      },
+      "context": {
+        "thread_id": "d19cd820-54b0-4ef8-ac1f-bd8e47a227c5"
+      },
+      "correlation_id": "corr-1088b54e-bf3e-4eb9-91ab-870762e0c4e3",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "35ad5738-629d-4b98-b0d3-187fe5f41365",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T10:30:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "d0edd28c-1eae-46bf-9cd1-2217f7a2ffc8"
+      },
+      "context": {
+        "thread_id": "b8935396-5e55-4b26-b97b-8c44ce01fafa"
+      },
+      "correlation_id": "corr-adbbdf87-63a3-49c4-9f1f-c56234611489",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": true,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "ec9d7ccb-2cb0-487c-99b2-29a9ea4d45a7",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T11:30:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "53419c34-0bd7-4d5b-b45d-cd0747af7a5d"
+      },
+      "context": {
+        "thread_id": "b8935396-5e55-4b26-b97b-8c44ce01fafa"
+      },
+      "correlation_id": "corr-1a0d4e1e-08d8-400f-be42-b94020afa298",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "da896b25-3c2a-4e65-b2e4-4a16b7bd8f73",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T11:42:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "1a49b962-ee21-44a2-9dbf-09199bfc7c26"
+      },
+      "context": {
+        "thread_id": "b8935396-5e55-4b26-b97b-8c44ce01fafa"
+      },
+      "correlation_id": "corr-655a7ae7-d06c-46f0-a892-09ab16c5b092",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "61c5357c-34c0-4d25-b6e8-09a92dfeb17c",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T11:54:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "79d7d1b4-eaa5-4dfb-9b57-5b48868c1023"
+      },
+      "context": {
+        "thread_id": "b8935396-5e55-4b26-b97b-8c44ce01fafa"
+      },
+      "correlation_id": "corr-1f6e0a7c-2c56-4056-aac3-9ae05e40e488",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "93e52a53-de6d-401d-877a-f9469d20f4ad",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T11:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "c0cd7f9c-8f6e-4ce4-b84f-f03332b9cc6d"
+      },
+      "context": {
+        "thread_id": "41933db8-b2cf-4b8d-9eef-b8744f967289"
+      },
+      "correlation_id": "corr-bb258666-64ac-46db-9b75-c295149b297e",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": true,
+        "has_attachments": true
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "d1a87a48-6837-484f-b8b1-7c57ab5ebf99",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T12:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "ab23723d-fc6c-4d33-938a-df7bfa6ca896"
+      },
+      "context": {
+        "thread_id": "41933db8-b2cf-4b8d-9eef-b8744f967289"
+      },
+      "correlation_id": "corr-9226c4ef-2749-4f7b-915b-41612121d099",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "a393c8bf-b47c-4ed0-8bba-6ba7fbc2bce5",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T12:12:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "47c2a740-25fc-4504-81b9-43cc7ba63e9a"
+      },
+      "context": {
+        "thread_id": "41933db8-b2cf-4b8d-9eef-b8744f967289"
+      },
+      "correlation_id": "corr-66d683c2-b0f7-4502-bec6-d0728178e6c3",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "d49ba1d6-de76-44cb-b5ab-647d428cd92d",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T12:24:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "e1cfc1b8-1157-45be-bae6-84f80c18c31f"
+      },
+      "context": {
+        "thread_id": "41933db8-b2cf-4b8d-9eef-b8744f967289"
+      },
+      "correlation_id": "corr-ce90e6de-0dd5-43b2-bee7-03c07946f435",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "abb45a18-f8ef-4d2c-8bd6-cc5a814360fa",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T11:30:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "56c363fb-1bbc-4329-b711-98df2fe79c46"
+      },
+      "context": {
+        "thread_id": "a4fe5c9a-e942-4b2a-99bb-79739704a168"
+      },
+      "correlation_id": "corr-5ee489ef-78d8-4871-ba46-94fc974e9ccb",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": true,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "72bd3183-fc34-4e6b-ac34-ce6d580cee55",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T12:30:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "454f516b-face-41b0-9a2e-3d6dd7474751"
+      },
+      "context": {
+        "thread_id": "a4fe5c9a-e942-4b2a-99bb-79739704a168"
+      },
+      "correlation_id": "corr-7db1939b-3eff-4146-974e-978f5e8c3e4d",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "58852240-86f3-43e3-b89d-cba7603c7060",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T12:42:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "a7f9bfba-3c71-46ae-9728-f55cafdbe2e0"
+      },
+      "context": {
+        "thread_id": "a4fe5c9a-e942-4b2a-99bb-79739704a168"
+      },
+      "correlation_id": "corr-508f8e24-1cf8-4f70-ae6d-40b27f54865a",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "4ddb5b1b-49cb-408c-bb0e-f17fdde3bd03",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T12:54:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "f6d4d93e-4fc4-4e3e-a872-02d6f7369ce9"
+      },
+      "context": {
+        "thread_id": "a4fe5c9a-e942-4b2a-99bb-79739704a168"
+      },
+      "correlation_id": "corr-a45782de-a8e2-44a3-9f45-c11d88823d93",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 40,
+        "is_new_thread": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "3ee78022-9574-423e-94f0-ab0f7a965985",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T08:30:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "chat",
+      "type": "chat.message_received",
+      "actor_id": null,
+      "object": {
+        "object_type": "message",
+        "object_id": "ad4e5ae7-94cd-4f25-b120-1976c5aa8950"
+      },
+      "context": {
+        "context_id": "team-channel"
+      },
+      "correlation_id": "corr-d8a75a33-2051-4b87-9799-e4a982d71771",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "channel_id": "team-channel",
+        "has_mentions": true,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "ae0860f2-e850-4cdd-a59c-52be3bb8e9cf",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T08:48:00.000Z",
+      "received_at": "2025-12-20T14:55:40.837Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "chat",
+      "type": "chat.message_received",
+      "actor_id": null,
+      "object": {
+        "object_type": "message",
+        "object_id": "9365ae10-6b25-471f-8eb4-ac5f9a323962"
+      },
+      "context": {
+        "context_id": "team-channel"
+      },
+      "correlation_id": "corr-4eac7955-2e36-49d0-9ae8-5d7a1f234ed4",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "channel_id": "team-channel",
+        "has_mentions": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "452eb8a0-bf7f-4eaa-927f-fd37882eaca7",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T09:06:00.000Z",
+      "received_at": "2025-12-20T14:55:40.838Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "chat",
+      "type": "chat.message_received",
+      "actor_id": null,
+      "object": {
+        "object_type": "message",
+        "object_id": "13fbd9fa-4114-437c-a140-6c7e847fa2da"
+      },
+      "context": {
+        "context_id": "team-channel"
+      },
+      "correlation_id": "corr-777156c2-5171-4d61-bfd1-d903bb6ae90e",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "channel_id": "team-channel",
+        "has_mentions": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "aa24fdb5-f81a-4633-8634-cc6f0d717599",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T09:24:00.000Z",
+      "received_at": "2025-12-20T14:55:40.838Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "chat",
+      "type": "chat.message_received",
+      "actor_id": null,
+      "object": {
+        "object_type": "message",
+        "object_id": "61aa36f8-3133-4444-af0e-8fcd20fa4823"
+      },
+      "context": {
+        "context_id": "team-channel"
+      },
+      "correlation_id": "corr-1bbde928-2d2c-4dae-a5df-30b5b56413e3",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "channel_id": "team-channel",
+        "has_mentions": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "ec8633cd-3f24-4e7a-94e0-dd43c44e8fe3",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T09:42:00.000Z",
+      "received_at": "2025-12-20T14:55:40.838Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "chat",
+      "type": "chat.message_received",
+      "actor_id": null,
+      "object": {
+        "object_type": "message",
+        "object_id": "54c93da2-ccb4-4fe1-a915-553c5a4b091b"
+      },
+      "context": {
+        "context_id": "team-channel"
+      },
+      "correlation_id": "corr-407c94df-87e2-4281-bbae-c59faf0de024",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "channel_id": "team-channel",
+        "has_mentions": true,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "e01e4be8-59bb-42a3-ba3b-198f4a3c2073",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T10:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.838Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "chat",
+      "type": "chat.message_received",
+      "actor_id": null,
+      "object": {
+        "object_type": "message",
+        "object_id": "874d2861-14bc-4830-848f-eb066915218d"
+      },
+      "context": {
+        "context_id": "team-channel"
+      },
+      "correlation_id": "corr-7f83fd18-4fcc-4dc7-9a43-b205cadebf89",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "channel_id": "team-channel",
+        "has_mentions": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "dc5aff2c-ba07-4e26-bfcb-eeab6a85ce9e",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T10:18:00.000Z",
+      "received_at": "2025-12-20T14:55:40.838Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "chat",
+      "type": "chat.message_received",
+      "actor_id": null,
+      "object": {
+        "object_type": "message",
+        "object_id": "caac5101-6028-48ce-90de-07878e09289d"
+      },
+      "context": {
+        "context_id": "team-channel"
+      },
+      "correlation_id": "corr-85e78ad2-6933-4e8b-94cd-35ade0f5d5e4",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "channel_id": "team-channel",
+        "has_mentions": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "a2fd475e-75e3-44c4-8484-fe18abcb852f",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T10:36:00.000Z",
+      "received_at": "2025-12-20T14:55:40.838Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "chat",
+      "type": "chat.message_received",
+      "actor_id": null,
+      "object": {
+        "object_type": "message",
+        "object_id": "d15c1d0a-5e42-4c0a-9c43-839825f16a57"
+      },
+      "context": {
+        "context_id": "team-channel"
+      },
+      "correlation_id": "corr-812f1e21-4f49-442a-ae93-2d18d429651f",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "channel_id": "team-channel",
+        "has_mentions": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "33cfc6fd-2a52-4022-bb7f-5dd91251b56e",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T10:54:00.000Z",
+      "received_at": "2025-12-20T14:55:40.838Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "chat",
+      "type": "chat.message_received",
+      "actor_id": null,
+      "object": {
+        "object_type": "message",
+        "object_id": "ca990694-a8fe-452d-bc09-16b387a2ea7d"
+      },
+      "context": {
+        "context_id": "team-channel"
+      },
+      "correlation_id": "corr-9a38fde2-a1d9-4753-8093-c53e18e2213f",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "channel_id": "team-channel",
+        "has_mentions": true,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "363b39c7-45a7-4a6c-9ee8-7cd94836ec10",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T11:12:00.000Z",
+      "received_at": "2025-12-20T14:55:40.838Z",
+      "tenant_id": null,
+      "user_id": "eval-user-3",
+      "source": "chat",
+      "type": "chat.message_received",
+      "actor_id": null,
+      "object": {
+        "object_type": "message",
+        "object_id": "c9cd59b2-fcf5-4248-8f9b-c03e5167f762"
+      },
+      "context": {
+        "context_id": "team-channel"
+      },
+      "correlation_id": "corr-b537177e-1809-49b6-b7ff-8a142afec00b",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "channel_id": "team-channel",
+        "has_mentions": false,
+        "has_attachments": false
+      },
+      "payload": {}
+    }
+  ],
+  "checkpoints": [
+    "2025-12-20T09:00:00.000Z",
+    "2025-12-20T12:00:00.000Z",
+    "2025-12-20T15:00:00.000Z",
+    "2025-12-20T17:00:00.000Z"
+  ],
+  "expected_labels": [
+    {
+      "class": "communication",
+      "window_start": "2025-12-20T09:00:00.000Z",
+      "window_end": "2025-12-20T09:00:00.001Z",
+      "rule_id": "communication:awaiting-reply",
+      "rationale": "3 thread(s) awaiting reply"
+    },
+    {
+      "class": "cleanup",
+      "window_start": "2025-12-20T09:00:00.000Z",
+      "window_end": "2025-12-20T09:00:00.001Z",
+      "rule_id": "cleanup:inbox-zero",
+      "rationale": "Only 3 pending, 3 open - near inbox zero"
+    },
+    {
+      "class": "communication",
+      "window_start": "2025-12-20T12:00:00.000Z",
+      "window_end": "2025-12-20T12:00:00.001Z",
+      "rule_id": "communication:awaiting-reply",
+      "rationale": "8 thread(s) awaiting reply"
+    },
+    {
+      "class": "communication",
+      "window_start": "2025-12-20T12:00:00.000Z",
+      "window_end": "2025-12-20T12:00:00.001Z",
+      "rule_id": "communication:high-volume",
+      "rationale": "8 threads exceeds high volume threshold"
+    },
+    {
+      "class": "communication",
+      "window_start": "2025-12-20T15:00:00.000Z",
+      "window_end": "2025-12-20T15:00:00.001Z",
+      "rule_id": "communication:awaiting-reply",
+      "rationale": "8 thread(s) awaiting reply"
+    },
+    {
+      "class": "communication",
+      "window_start": "2025-12-20T15:00:00.000Z",
+      "window_end": "2025-12-20T15:00:00.001Z",
+      "rule_id": "communication:high-volume",
+      "rationale": "8 threads exceeds high volume threshold"
+    },
+    {
+      "class": "focus",
+      "window_start": "2025-12-20T15:00:00.000Z",
+      "window_end": "2025-12-20T15:00:00.001Z",
+      "rule_id": "focus:low-activity",
+      "rationale": "Low activity with pending items - good time to catch up"
+    },
+    {
+      "class": "communication",
+      "window_start": "2025-12-20T17:00:00.000Z",
+      "window_end": "2025-12-20T17:00:00.001Z",
+      "rule_id": "communication:awaiting-reply",
+      "rationale": "8 thread(s) awaiting reply"
+    },
+    {
+      "class": "communication",
+      "window_start": "2025-12-20T17:00:00.000Z",
+      "window_end": "2025-12-20T17:00:00.001Z",
+      "rule_id": "communication:high-volume",
+      "rationale": "8 threads exceeds high volume threshold"
+    },
+    {
+      "class": "focus",
+      "window_start": "2025-12-20T17:00:00.000Z",
+      "window_end": "2025-12-20T17:00:00.001Z",
+      "rule_id": "focus:low-activity",
+      "rationale": "Low activity with pending items - good time to catch up"
+    }
+  ]
+}

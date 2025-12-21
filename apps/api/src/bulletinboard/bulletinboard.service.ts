@@ -45,9 +45,17 @@ import UserPreferencesService from '../user-preferences/user-preferences.service
 import MigrationService from '../migration/migration.service';
 import bulletinsMigrationList from './migrations/bulletinsMigrationList';
 import GlobalSettingsService from '../global-settings/global-settings.service';
+import EventsService from '../events/events.service';
+import {
+  createBulletinCreatedEvent,
+  createBulletinUpdatedEvent,
+  createBulletinDeletedEvent,
+} from '../events/event-factories';
 
 @Injectable()
 class BulletinBoardService implements OnModuleInit {
+  private readonly logger = new Logger(BulletinBoardService.name);
+
   constructor(
     @InjectModel(Bulletin.name) private bulletinModel: Model<BulletinDocument>,
     @InjectModel(BulletinCategory.name) private bulletinCategoryModel: Model<BulletinCategoryDocument>,
@@ -58,6 +66,7 @@ class BulletinBoardService implements OnModuleInit {
     private readonly notificationService: NotificationsService,
     private readonly userPreferencesService: UserPreferencesService,
     private readonly globalSettingsService: GlobalSettingsService,
+    private readonly eventsService: EventsService,
   ) {}
 
   private readonly attachmentsPath = BULLETIN_ATTACHMENTS_PATH;
@@ -264,7 +273,31 @@ class BulletinBoardService implements OnModuleInit {
 
     await this.notifyUsers(dto, createdBulletin, currentUser);
 
+    this.publishBulletinCreatedEvent(
+      currentUser.preferred_username,
+      String(createdBulletin._id),
+      dto.category.id,
+      attachmentFileNames.length > 0,
+    );
+
     return createdBulletin;
+  }
+
+  private publishBulletinCreatedEvent(
+    userId: string,
+    bulletinId: string,
+    categoryId: string,
+    hasAttachments: boolean,
+  ): void {
+    const event = createBulletinCreatedEvent({
+      userId,
+      bulletinId,
+      categoryId,
+      hasAttachments,
+    });
+    this.eventsService.publish(event).catch((err) => {
+      this.logger.warn(`Failed to publish bulletin.created event: ${err.message}`);
+    });
   }
 
   private static replaceContentTokenWithPlaceholder(content: string): string {
@@ -345,7 +378,30 @@ class BulletinBoardService implements OnModuleInit {
 
     await this.notifyUsers(dto, updatedBulletin, currentUser);
 
+    this.publishBulletinUpdatedEvent(currentUser.preferred_username, id, dto.category.id);
+
     return updatedBulletin;
+  }
+
+  private publishBulletinUpdatedEvent(userId: string, bulletinId: string, categoryId: string): void {
+    const event = createBulletinUpdatedEvent({
+      userId,
+      bulletinId,
+      categoryId,
+    });
+    this.eventsService.publish(event).catch((err) => {
+      this.logger.warn(`Failed to publish bulletin.updated event: ${err.message}`);
+    });
+  }
+
+  private publishBulletinDeletedEvent(userId: string, bulletinId: string): void {
+    const event = createBulletinDeletedEvent({
+      userId,
+      bulletinIds: [bulletinId],
+    });
+    this.eventsService.publish(event).catch((err) => {
+      this.logger.warn(`Failed to publish bulletin.deleted event: ${err.message}`);
+    });
   }
 
   async notifyUsers(dto: CreateBulletinDto, resultingBulletin: BulletinDocument, currentUser?: JwtUser) {
@@ -424,6 +480,10 @@ class BulletinBoardService implements OnModuleInit {
       );
 
       await this.bulletinModel.deleteMany({ _id: { $in: ids } }).exec();
+
+      bulletins.forEach((bulletin) => {
+        this.publishBulletinDeletedEvent(currentUser.preferred_username, String(bulletin._id));
+      });
 
       try {
         await this.userPreferencesService.unsetCollapsedForBulletins(ids);

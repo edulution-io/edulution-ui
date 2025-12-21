@@ -26,6 +26,7 @@ import { BulletinCategory, BulletinCategorySchema } from '../bulletin-category/b
 import BulletinCategoryModule from '../bulletin-category/bulletin-category.module';
 import GroupsModule from '../groups/groups.module';
 import UserPreferencesModule from '../user-preferences/user-preferences.module';
+import EventsModule from '../events/events.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import UserPreferencesModule from '../user-preferences/user-preferences.module';
     BulletinCategoryModule,
     GroupsModule,
     UserPreferencesModule,
+    EventsModule,
   ],
   controllers: [BulletinBoardController],
   providers: [BulletinBoardService],

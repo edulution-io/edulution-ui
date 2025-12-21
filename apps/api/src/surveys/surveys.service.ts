@@ -37,9 +37,17 @@ import { Survey, SurveyDocument } from './survey.schema';
 import SurveysAttachmentService from './surveys-attachment.service';
 import NotificationsService from '../notifications/notifications.service';
 import GlobalSettingsService from '../global-settings/global-settings.service';
+import EventsService from '../events/events.service';
+import {
+  createSurveyCreatedEvent,
+  createSurveyUpdatedEvent,
+  createSurveyDeletedEvent,
+} from '../events/event-factories';
 
 @Injectable()
 class SurveysService implements OnModuleInit {
+  private readonly logger = new Logger(SurveysService.name);
+
   constructor(
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
     private surveysAttachmentService: SurveysAttachmentService,
@@ -47,6 +55,7 @@ class SurveysService implements OnModuleInit {
     private readonly sseService: SseService,
     private readonly notificationService: NotificationsService,
     private readonly globalSettingsService: GlobalSettingsService,
+    private readonly eventsService: EventsService,
   ) {}
 
   async onModuleInit() {
@@ -152,11 +161,15 @@ class SurveysService implements OnModuleInit {
     }
   }
 
-  async deleteSurveys(surveyIds: string[]): Promise<void> {
+  async deleteSurveys(surveyIds: string[], userId: string): Promise<void> {
     try {
       const surveyObjectIds = surveyIds.map((s) => new Types.ObjectId(s));
       await this.surveyModel.deleteMany({ _id: { $in: surveyObjectIds } });
       Logger.log(`Deleted the surveys ${JSON.stringify(surveyIds)}`, SurveysService.name);
+
+      surveyIds.forEach((surveyId) => {
+        this.publishSurveyDeletedEvent(userId, surveyId);
+      });
     } catch (error) {
       throw new CustomHttpException(
         SurveyErrorMessages.DeleteError,
@@ -226,6 +239,12 @@ class SurveysService implements OnModuleInit {
 
     this.surveysAttachmentService.cleanupTemporaryFiles(user.preferred_username);
 
+    if (isCreating) {
+      this.publishSurveyCreatedEvent(user.preferred_username, String(savedSurvey._id), savedSurvey.isPublic ?? false);
+    } else {
+      this.publishSurveyUpdatedEvent(user.preferred_username, String(savedSurvey._id));
+    }
+
     return savedSurvey as SurveyDocument;
   }
 
@@ -269,6 +288,37 @@ class SurveysService implements OnModuleInit {
       throw new CustomHttpException(CommonErrorMessages.DB_ACCESS_FAILED, HttpStatus.UNAUTHORIZED);
     }
   };
+
+  private publishSurveyCreatedEvent(userId: string, surveyId: string, isPublic: boolean): void {
+    const event = createSurveyCreatedEvent({
+      userId,
+      surveyId,
+      isPublic,
+    });
+    this.eventsService.publish(event).catch((err) => {
+      this.logger.warn(`Failed to publish survey.created event: ${err.message}`);
+    });
+  }
+
+  private publishSurveyUpdatedEvent(userId: string, surveyId: string): void {
+    const event = createSurveyUpdatedEvent({
+      userId,
+      surveyId,
+    });
+    this.eventsService.publish(event).catch((err) => {
+      this.logger.warn(`Failed to publish survey.updated event: ${err.message}`);
+    });
+  }
+
+  private publishSurveyDeletedEvent(userId: string, surveyId: string): void {
+    const event = createSurveyDeletedEvent({
+      userId,
+      surveyIds: [surveyId],
+    });
+    this.eventsService.publish(event).catch((err) => {
+      this.logger.warn(`Failed to publish survey.deleted event: ${err.message}`);
+    });
+  }
 }
 
 export default SurveysService;

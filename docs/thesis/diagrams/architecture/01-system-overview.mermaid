@@ -1,0 +1,52 @@
+%%{init: {'theme': 'neutral'}}%%
+flowchart TB
+    subgraph Sources["Event Sources"]
+        Mail[("Mail\nSOGo")]
+        Cal[("Calendar\nSOGo")]
+        Files[("Files\nWebDAV")]
+        Conf[("Conferences\nBBB")]
+        Chat[("Chat\nRocket.Chat")]
+    end
+
+    subgraph Ingestion["Event Ingestion Layer"]
+        API[["Events API\n/events/ingest"]]
+        Norm["Event Normalizer\n+ Validation"]
+        Store[("Redis Streams\nEvent Store")]
+    end
+
+    subgraph Processing["Cross-App Processing"]
+        Eval["Cross-App\nEvaluator"]
+        Rules["Rule Engine"]
+        Dedup["Content-Based\nDeduplication"]
+    end
+
+    subgraph RulesDetail["Implemented Rules"]
+        R1["mail-attachment.rule"]
+        R2["conference-workspace.rule"]
+        R3["project-setup.rule"]
+        R4["session-exam.rule"]
+        R5["survey-announce.rule"]
+        R6["bulletin-notify.rule"]
+        R7["class-setup.rule"]
+    end
+
+    subgraph Output["Output Layer"]
+        Recos[("Recommendations\nRedis + MongoDB")]
+        Plan["Daily Plan\nLLM Generated"]
+        Push["Push\nNotification"]
+    end
+
+    Mail --> API
+    Cal --> API
+    Files --> API
+    Conf --> API
+    Chat --> API
+
+    API --> Norm --> Store
+    Store --> Eval
+    Eval --> Rules
+    Rules --> RulesDetail
+    RulesDetail --> Dedup
+    Dedup --> Recos
+    Recos --> Plan
+    Plan --> Push

@@ -1,0 +1,24 @@
+%%{init: {'theme': 'neutral'}}%%
+gantt
+    title PROD-Modus: Batch-Verarbeitung
+    dateFormat HH:mm
+    axisFormat %H:%M
+
+    section Vortag
+    Events treffen ein      :e1, 14:00, 6h
+    Empfehlungen gesammelt  :e2, 14:00, 6h
+
+    section Nacht
+    Events laufen weiter    :n1, 20:00, 10h
+    Keine Planverarbeitung  :n2, 20:00, 10h
+
+    section Morgen
+    Cron-Job 8:00 Uhr       :crit, m1, 08:00, 1m
+    Cache invalidiert       :m2, after m1, 1m
+    Plaene generiert        :crit, m3, after m2, 5m
+    Push gesendet           :m4, after m3, 2m
+
+    section Nutzer
+    Push empfangen          :u1, after m4, 1m
+    App geoeffnet           :u2, after u1, 5m
+    Tagesplan angezeigt     :u3, after u2, 1m

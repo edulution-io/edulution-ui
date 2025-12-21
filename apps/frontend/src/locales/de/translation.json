@@ -131,6 +131,27 @@
       "remainingVeryLow": "Verbleibendes Quota sehr gering – {{free}} %"
     }
   },
+  "dailyPlan": {
+    "loading": "Tagesplan wird erstellt...",
+    "error": "Tagesplan konnte nicht geladen werden",
+    "retry": "Erneut versuchen",
+    "priorities": "Prioritäten",
+    "schedule": "Zeitplan",
+    "actions": "Aktionen",
+    "steps": "Schritte",
+    "moreSteps": "weitere Schritte",
+    "executeAction": "Ausführen",
+    "executing": "Wird ausgeführt...",
+    "actionSuccess": "Aktion erfolgreich ausgeführt",
+    "actionFailed": "Aktion fehlgeschlagen",
+    "stepsFailed": "Schritte fehlgeschlagen",
+    "timeWindows": {
+      "morning": "Vormittag",
+      "midday": "Mittag",
+      "afternoon": "Nachmittag",
+      "evening": "Abend"
+    }
+  },
   "auth": {
     "errors": {
       "TokenExpired": "Sitzung abgelaufen.",

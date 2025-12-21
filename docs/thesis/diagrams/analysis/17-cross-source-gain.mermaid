@@ -1,0 +1,44 @@
+%%{init: {'theme': 'neutral'}}%%
+flowchart TB
+    subgraph Event["Trigger Event"]
+        E1["conference.created<br/>Source: conferences"]
+    end
+
+    subgraph SingleSource["single_source_only Variante"]
+        SS1["Nur conferences Rules<br/>ausgewertet"]
+        SS2["conference-folder Rule<br/>→ organization"]
+        SS3["Generiert: 1 Recommendation<br/>'Ordner fuer Konferenz'"]
+    end
+
+    subgraph Full["full Variante"]
+        F1["Alle Rules<br/>ausgewertet"]
+        F2["conference-folder Rule<br/>→ organization"]
+        F3["conference-setup Rule<br/>→ organization<br/>(CROSS-APP!)"]
+        F4["Generiert: 2 Recommendations<br/>'Ordner + Chat erstellen'"]
+    end
+
+    subgraph Comparison["Cross-Source Gain"]
+        C1["full: 2 relevante"]
+        C2["single_source: 1 relevante"]
+        C3["Gain: 1 Recommendation<br/>nur durch Cross-App!"]
+        C4["Cross-Source Gain Rate:<br/>1/2 = 50%"]
+    end
+
+    subgraph Interpretation["Interpretation"]
+        I1["50% der relevanten<br/>Recommendations"]
+        I2["kommen NUR durch<br/>Cross-App Reasoning"]
+        I3["Dies rechtfertigt<br/>die Komplexitaet"]
+    end
+
+    Event --> SingleSource & Full
+    SingleSource --> SS1 --> SS2 --> SS3
+    Full --> F1 --> F2 & F3 --> F4
+    SS3 & F4 --> Comparison
+    C1 --> C3
+    C2 --> C3
+    C3 --> C4
+    C4 --> Interpretation
+
+    style F3 fill:#afa,stroke:#333
+    style C4 fill:#ffa,stroke:#333
+    style I3 fill:#afa,stroke:#333

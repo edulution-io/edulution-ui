@@ -1,0 +1,45 @@
+%%{init: {'theme': 'neutral'}}%%
+flowchart LR
+    subgraph Event["Raw Event"]
+        E1["type: mail.received"]
+        E2["source: mail"]
+        E3["metadata:\n  subject: 'Unterricht'\n  attachments: 2"]
+        E4["payload:\n  filenames: [...]"]
+    end
+
+    subgraph Rule["Rule Evaluation"]
+        R1["mail-attachment.rule.ts"]
+        R2["Condition Check:\nhas_attachments > 0?"]
+        R3["Action Proposal\nGeneration"]
+    end
+
+    subgraph Candidate["Recommendation Candidate"]
+        C1["candidate_id: uuid"]
+        C2["title: 'Anhaenge speichern'"]
+        C3["class: cleanup"]
+        C4["score: 0.8"]
+        C5["action_proposal:\n  steps: [copy_file x2]"]
+        C6["push_title:\n'2 Anhaenge speichern'"]
+    end
+
+    subgraph Dedup["Deduplication"]
+        D1["Generate content hash\nSHA-256(rule+object+user)"]
+        D2["Check Redis:\nexists(dedup_key)?"]
+        D3["Store if new\nTTL: 30 days"]
+    end
+
+    subgraph Storage["Dual Storage"]
+        S1[("Redis\nFast Access\n24h TTL")]
+        S2[("MongoDB\nPersistent\nMetrics")]
+    end
+
+    E1 & E2 & E3 & E4 --> R1
+    R1 --> R2
+    R2 -->|"Yes"| R3
+    R2 -->|"No"| Skip["Skip: No action"]
+    R3 --> C1 & C2 & C3 & C4 & C5 & C6
+    C1 & C2 & C3 & C4 & C5 & C6 --> D1
+    D1 --> D2
+    D2 -->|"New"| D3
+    D2 -->|"Exists"| Dup["Skip: Duplicate"]
+    D3 --> S1 & S2

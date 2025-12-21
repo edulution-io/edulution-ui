@@ -1,0 +1,21 @@
+%%{init: {'theme': 'neutral'}}%%
+gantt
+    title DEV-Modus: Sofortige Verarbeitung
+    dateFormat HH:mm
+    axisFormat %H:%M
+
+    section Events
+    Demo-Daten generiert    :e1, 09:00, 1m
+    Events aufgenommen      :e2, after e1, 1m
+
+    section Verarbeitung
+    Rules ausgewertet       :p1, after e2, 1m
+    Empfehlungen gespeichert:p2, after p1, 1m
+    Cache invalidiert       :p3, after p2, 1m
+
+    section Ausgabe
+    Plan neu generiert      :crit, o1, after p3, 2m
+    UI zeigt neue Daten     :o2, after o1, 1m
+
+    section Nutzer
+    Sieht Aenderungen       :u1, after o2, 1m

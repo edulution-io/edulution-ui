@@ -1,0 +1,88 @@
+%%{init: {'theme': 'neutral'}}%%
+flowchart TB
+    subgraph Sources["10 Event Sources"]
+        direction TB
+        S1["files"]
+        S2["conferences"]
+        S3["mail"]
+        S4["caldav"]
+        S5["chat"]
+        S6["http"]
+        S7["system"]
+        S8["bulletin"]
+        S9["surveys"]
+        S10["whiteboard"]
+    end
+
+    subgraph Files["files (10 types)"]
+        F1["file.created"]
+        F2["file.uploaded"]
+        F3["file.moved"]
+        F4["file.copied"]
+        F5["file.deleted"]
+        F6["file.accessed"]
+        F7["file.modified"]
+        F8["file.shared"]
+        F9["folder.created"]
+        F10["folder.deleted"]
+    end
+
+    subgraph Conferences["conferences (7 types)"]
+        C1["conference.created"]
+        C2["conference.started"]
+        C3["conference.ended"]
+        C4["conference.participant_joined"]
+        C5["conference.participant_left"]
+        C6["conference.recording_started"]
+        C7["conference.recording_stopped"]
+    end
+
+    subgraph Mail["mail (6 types)"]
+        M1["mail.received"]
+        M2["mail.sent"]
+        M3["mail.replied"]
+        M4["mail.forwarded"]
+        M5["mail.thread_created"]
+        M6["mail.thread_closed"]
+    end
+
+    subgraph Calendar["caldav (6 types)"]
+        CAL1["calendar.event_created"]
+        CAL2["calendar.event_updated"]
+        CAL3["calendar.event_deleted"]
+        CAL4["calendar.event_started"]
+        CAL5["calendar.event_ended"]
+        CAL6["calendar.reminder_triggered"]
+    end
+
+    subgraph Chat["chat (7 types)"]
+        CH1["chat.message_sent"]
+        CH2["chat.message_received"]
+        CH3["chat.message_edited"]
+        CH4["chat.message_deleted"]
+        CH5["chat.channel_created"]
+        CH6["chat.channel_joined"]
+        CH7["chat.channel_left"]
+    end
+
+    subgraph Other["Other Sources (13 types)"]
+        O1["request.started/completed/failed"]
+        O2["system.health_check/config_changed"]
+        O3["system.error/startup/shutdown"]
+        O4["bulletin.created/updated/deleted"]
+        O5["survey.created/updated/deleted"]
+        O6["survey.answer_submitted"]
+        O7["whiteboard.session_started/ended"]
+    end
+
+    S1 --> Files
+    S2 --> Conferences
+    S3 --> Mail
+    S4 --> Calendar
+    S5 --> Chat
+    S6 & S7 & S8 & S9 & S10 --> Other
+
+    style C1 fill:#afa,stroke:#333
+    style M1 fill:#afa,stroke:#333
+    style O4 fill:#afa,stroke:#333
+    style O5 fill:#afa,stroke:#333

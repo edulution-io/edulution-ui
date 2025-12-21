@@ -23,9 +23,10 @@ import ChatService from './chat.service';
 import ChatController from './chat.controller';
 import Chat, { ChatSchema } from './schemas/chat.schema';
 import McpModule from '../mcp/mcp.module';
+import EventsModule from '../events/events.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Chat.name, schema: ChatSchema }]), McpModule],
+  imports: [MongooseModule.forFeature([{ name: Chat.name, schema: ChatSchema }]), McpModule, EventsModule],
   controllers: [ChatController],
   providers: [ChatService],
   exports: [ChatService],

@@ -31,3 +31,7 @@ export const AI_AVAILABLE_ENDPOINT = 'available';
 export const AI_CONFIGS_ENDPOINT = 'configs';
 export const AI_CONFIGS_TEST_ENDPOINT = 'configs/test';
 export const AI_CONFIGS_MODELS_ENDPOINT = 'configs/models';
+
+export const AI_DAILY_PLAN_TODAY_ENDPOINT = 'daily-plan/today';
+
+export const RECOMMENDATIONS_ENDPOINT = 'recommendations';

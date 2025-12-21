@@ -39,6 +39,12 @@ import SseService from '../sse/sse.service';
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
 import NotificationsService from '../notifications/notifications.service';
+import EventsService from '../events/events.service';
+
+const mockEventsService = {
+  publish: jest.fn().mockResolvedValue({ success: true }),
+  isReady: jest.fn().mockReturnValue(true),
+};
 
 const mockConference: CreateConferenceDto = {
   name: 'Testconference',
@@ -142,6 +148,7 @@ describe(ConferencesService.name, () => {
         },
         { provide: FilesystemService, useValue: mockFilesystemService },
         { provide: NotificationsService, useValue: notificationMock },
+        { provide: EventsService, useValue: mockEventsService },
       ],
     }).compile();
 

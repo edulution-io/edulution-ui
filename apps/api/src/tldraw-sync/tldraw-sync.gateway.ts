@@ -32,6 +32,8 @@ import TLDRAW_SINGLE_USER_ROOM_PREFIX from '@libs/whiteboard/constants/tldrawSin
 import GroupMemberDto from '@libs/groups/types/groupMember.dto';
 import Attendee from '../conferences/attendee.schema';
 import TLDrawSyncService from './tldraw-sync.service';
+import EventsService from '../events/events.service';
+import { createWhiteboardSessionStartedEvent, createWhiteboardSessionEndedEvent } from '../events/event-factories';
 
 @WebSocketGateway({
   path: `${EDU_API_ROOT}/${TLDRAW_SYNC_ENDPOINTS.BASE}`,
@@ -45,6 +47,7 @@ class TLDrawSyncGateway implements OnGatewayConnection, OnModuleInit {
   constructor(
     private readonly tldrawSyncService: TLDrawSyncService,
     private readonly jwtService: JwtService,
+    private readonly eventsService: EventsService,
   ) {}
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
@@ -129,6 +132,12 @@ class TLDrawSyncGateway implements OnGatewayConnection, OnModuleInit {
 
     client.off('message', collectMessagesListener);
     caughtMessages.forEach((message) => client.emit('message', message));
+
+    this.publishWhiteboardSessionStartedEvent(attendee.username, roomId, isMultiUserRoom ?? false);
+
+    client.on('close', () => {
+      this.publishWhiteboardSessionEndedEvent(attendee.username, roomId);
+    });
   }
 
   private async authenticate(
@@ -204,6 +213,27 @@ class TLDrawSyncGateway implements OnGatewayConnection, OnModuleInit {
     } catch {
       return null;
     }
+  }
+
+  private publishWhiteboardSessionStartedEvent(userId: string, roomId: string, isMultiUser: boolean): void {
+    const event = createWhiteboardSessionStartedEvent({
+      userId,
+      roomId,
+      isMultiUserRoom: isMultiUser,
+    });
+    this.eventsService.publish(event).catch((err) => {
+      Logger.warn(`Failed to publish whiteboard.session_started event: ${err.message}`, TLDrawSyncGateway.name);
+    });
+  }
+
+  private publishWhiteboardSessionEndedEvent(userId: string, roomId: string): void {
+    const event = createWhiteboardSessionEndedEvent({
+      userId,
+      roomId,
+    });
+    this.eventsService.publish(event).catch((err) => {
+      Logger.warn(`Failed to publish whiteboard.session_ended event: ${err.message}`, TLDrawSyncGateway.name);
+    });
   }
 }
 

@@ -1,0 +1,64 @@
+%%{init: {'theme': 'neutral'}}%%
+flowchart TB
+    subgraph Request["Anfrage"]
+        Req["GET /ai/daily-plan/:userId/:date"]
+    end
+
+    subgraph Hash["Input-Hash Berechnung"]
+        H1["Sammle Inputs:\n- Empfehlungen\n- Zusammenfassung\n- Spracheinstellung"]
+        H2["Normalisiere\nund sortiere"]
+        H3["SHA-256 Hash\nberechnen"]
+    end
+
+    subgraph Redis["Layer 1: Redis"]
+        R1[("Redis Cache\nTTL: 7 Tage")]
+        R2{"Hash\nvorhanden?"}
+        R3["Treffer!\n~5ms"]
+    end
+
+    subgraph Mongo["Layer 2: MongoDB"]
+        M1[("MongoDB\nPersistent")]
+        M2{"Dokument\nvorhanden?"}
+        M3["Treffer!\n~20ms"]
+        M4["cache_hits++"]
+    end
+
+    subgraph LLM["Layer 3: LLM Generation"]
+        L1["AI Service\naufrufen"]
+        L2["Plan generieren\n~5000ms"]
+        L3["Validierung\n+ Guardrails"]
+        L4["Fallback bei\nFehler"]
+    end
+
+    subgraph Store["Speicherung"]
+        S1["In Redis\nspeichern"]
+        S2["In MongoDB\npersistieren"]
+        S3["Metriken\nerfassen"]
+    end
+
+    subgraph Response["Antwort"]
+        Fast["Schnelle Antwort\nCached: < 50ms"]
+        Slow["Langsame Antwort\nFresh: ~5000ms"]
+    end
+
+    Req --> H1 --> H2 --> H3
+    H3 --> R2
+    R2 -->|"Ja"| R3 --> Fast
+    R2 -->|"Nein"| M2
+    M2 -->|"Ja"| M3 --> M4 --> S1 --> Fast
+    M2 -->|"Nein"| L1
+    L1 --> L2 --> L3
+    L3 -->|"Erfolg"| S1 & S2 & S3 --> Slow
+    L3 -->|"Fehler"| L4 --> S1 & S2 --> Slow
+
+    subgraph Stats["Erwartete Verteilung"]
+        ST1["Redis Hit: 70%"]
+        ST2["MongoDB Hit: 20%"]
+        ST3["Fresh Gen: 10%"]
+    end
+
+    style R3 fill:#afa
+    style M3 fill:#bfb
+    style Fast fill:#afa
+    style L2 fill:#faa
+    style Slow fill:#ffa

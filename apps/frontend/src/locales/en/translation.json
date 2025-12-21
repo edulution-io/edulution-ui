@@ -140,6 +140,27 @@
       "remainingVeryLow": "Remaining quota very low – {{free}} %"
     }
   },
+  "dailyPlan": {
+    "loading": "Creating your daily plan...",
+    "error": "Could not load daily plan",
+    "retry": "Try again",
+    "priorities": "Priorities",
+    "schedule": "Schedule",
+    "actions": "Actions",
+    "steps": "steps",
+    "moreSteps": "more steps",
+    "executeAction": "Execute",
+    "executing": "Executing...",
+    "actionSuccess": "Action executed successfully",
+    "actionFailed": "Action failed",
+    "stepsFailed": "steps failed",
+    "timeWindows": {
+      "morning": "Morning",
+      "midday": "Midday",
+      "afternoon": "Afternoon",
+      "evening": "Evening"
+    }
+  },
   "auth": {
     "errors": {
       "TokenExpired": "Session expired.",

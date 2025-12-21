@@ -30,7 +30,7 @@
     "import/resolver": {
       "typescript": {
         "alwaysTryTypes": true,
-        "project": ["apps/frontend/tsconfig.json", "apps/api/tsconfig.json", "libs/tsconfig.json"]
+        "project": ["apps/frontend/tsconfig.json", "apps/api/tsconfig.json", "libs/tsconfig.json", "packages/events/tsconfig.json"]
       }
     }
   },
@@ -82,6 +82,12 @@
       "files": ["libs/**/*.ts", "libs/**/*.tsx"],
       "parserOptions": {
         "project": ["libs/tsconfig.lib.json"]
+      }
+    },
+    {
+      "files": ["packages/events/**/*.ts"],
+      "parserOptions": {
+        "project": ["packages/events/tsconfig.json"]
       }
     }
   ]

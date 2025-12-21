@@ -1,0 +1,33 @@
+{
+  "evaluated_at": "2025-12-20T12:24:09.543Z",
+  "total_timelines": 5,
+  "avg_precision": 0.36111111111111105,
+  "coverage_rate": 0.6,
+  "results": [
+    {
+      "timeline_id": "tl_001_low_activity",
+      "precision": 0.5555555555555555,
+      "coverage": true
+    },
+    {
+      "timeline_id": "tl_002_busy_meeting",
+      "precision": 0.25,
+      "coverage": true
+    },
+    {
+      "timeline_id": "tl_003_communication",
+      "precision": 1,
+      "coverage": true
+    },
+    {
+      "timeline_id": "tl_004_mixed",
+      "precision": 0,
+      "coverage": false
+    },
+    {
+      "timeline_id": "tl_005_noisy",
+      "precision": 0,
+      "coverage": false
+    }
+  ]
+}

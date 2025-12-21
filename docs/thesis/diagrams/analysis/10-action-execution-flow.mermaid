@@ -1,0 +1,65 @@
+%%{init: {'theme': 'neutral'}}%%
+stateDiagram-v2
+    [*] --> Pending: Empfehlung erstellt
+
+    state Pending {
+        [*] --> Waiting
+        Waiting: Wartet auf Nutzer
+        Waiting: TTL: 24 Stunden
+    }
+
+    Pending --> Reviewing: Nutzer sieht im Daily Plan
+
+    state Reviewing {
+        [*] --> Displayed
+        Displayed: Angezeigt mit Play-Button
+        Displayed: ActionProposal sichtbar
+    }
+
+    Reviewing --> Executing: Nutzer klickt Play
+    Reviewing --> Dismissed: Nutzer verwirft
+
+    state Executing {
+        [*] --> Step1
+        Step1: Schritt 1 ausfuehren
+        Step1 --> Step2: Erfolg
+        Step1 --> StepFailed: Fehler
+        Step2: Schritt 2 ausfuehren
+        Step2 --> StepN: Erfolg
+        Step2 --> StepFailed: Fehler
+        StepN: Weitere Schritte...
+        StepN --> AllDone: Alle fertig
+        StepN --> StepFailed: Fehler
+
+        state StepFailed {
+            [*] --> CheckOptional
+            CheckOptional: Ist Schritt optional?
+            CheckOptional --> ContinueNext: Ja
+            CheckOptional --> AbortAll: Nein
+        }
+    }
+
+    Executing --> Completed: AllDone
+    Executing --> Failed: AbortAll
+
+    state Completed {
+        [*] --> Success
+        Success: executed: true
+        Success: Metriken erfasst
+    }
+
+    state Failed {
+        [*] --> Error
+        Error: Fehlerdetails gespeichert
+        Error: Retry moeglich
+    }
+
+    state Dismissed {
+        [*] --> Discarded
+        Discarded: dismissed: true
+        Discarded: Kein Retry
+    }
+
+    Completed --> [*]: Abgeschlossen
+    Failed --> Pending: Retry verfuegbar
+    Dismissed --> [*]: Verworfen

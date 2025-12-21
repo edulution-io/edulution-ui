@@ -24,11 +24,13 @@ import TLDrawSyncService from './tldraw-sync.service';
 import TLDrawSyncGateway from './tldraw-sync.gateway';
 import TLDrawSyncController from './tldraw-sync.controller';
 import { TLDrawSyncLog, TLDrawSyncLogSchema } from './tldraw-sync-log.schema';
+import EventsModule from '../events/events.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: TldrawSyncRoom.name, schema: TldrawSyncRoomSchema }]),
     MongooseModule.forFeature([{ name: TLDrawSyncLog.name, schema: TLDrawSyncLogSchema }]),
+    EventsModule,
   ],
   providers: [TLDrawSyncService, TLDrawSyncGateway],
   controllers: [TLDrawSyncController],

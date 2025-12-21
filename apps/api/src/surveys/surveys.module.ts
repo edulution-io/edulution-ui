@@ -30,6 +30,7 @@ import GroupsModule from '../groups/groups.module';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 import SurveysTemplateService from './surveys-template.service';
+import EventsModule from '../events/events.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import SurveysTemplateService from './surveys-template.service';
     MongooseModule.forFeature([{ name: SurveyAnswer.name, schema: SurveyAnswersSchema }]),
     MongooseModule.forFeature([{ name: SurveysTemplate.name, schema: SurveysTemplateSchema }]),
     GroupsModule,
+    EventsModule,
   ],
   controllers: [SurveysController, PublicSurveysController],
   providers: [

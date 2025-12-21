@@ -1,0 +1,46 @@
+%%{init: {'theme': 'neutral'}}%%
+sequenceDiagram
+    autonumber
+    participant Teacher as Lehrer
+    participant BBB as BigBlueButton
+    participant API as Events API
+    participant Rule as Conference Rule
+    participant Reco as Recommendations
+    participant MCP as MCP Server
+    participant Files as Dateiserver
+    participant Chat as Rocket.Chat
+
+    Note over BBB: Lehrer erstellt Konferenz<br/>Fach: "Mathematik 10b"<br/>Teilnehmer: 25 Schueler
+
+    BBB->>API: POST /events/ingest
+    Note right of API: {<br/>  type: "conference.created",<br/>  source: "conferences",<br/>  metadata: {<br/>    conference_id: "conf-456",<br/>    subject_name: "Mathematik",<br/>    participant_count: 25<br/>  },<br/>  payload: {<br/>    participants: ["schueler1", ...]<br/>  }<br/>}
+
+    API->>Rule: Event an Rule Engine
+    activate Rule
+
+    Rule->>Rule: Generiere Workspace-Setup
+    Note right of Rule: ActionProposal:<br/>Step 1: files.create_folder<br/>  → /Kurse/Mathematik_2025<br/>Step 2: chat.create_group<br/>  → "Mathematik - Diskussion"
+
+    Rule->>Reco: Speichere Empfehlung
+    deactivate Rule
+    Note right of Reco: {<br/>  title: "Workspace einrichten",<br/>  class: "organization",<br/>  push_title: "Konferenz vorbereiten",<br/>  action_proposal: {<br/>    proposal_id: "prop-789",<br/>    requires_approval: true,<br/>    reversible: "full",<br/>    risk: "low"<br/>  }<br/>}
+
+    Note over Teacher: Nutzer sieht Empfehlung im Daily Plan
+
+    Teacher->>Reco: Klickt "Ausfuehren" Button
+    activate MCP
+
+    Reco->>MCP: Execute Step 1: files.create_folder
+    MCP->>Files: WebDAV MKCOL /Kurse/Mathematik_2025
+    Files-->>MCP: 201 Created
+    MCP-->>Reco: Step 1 Success
+
+    Reco->>MCP: Execute Step 2: chat.create_group
+    MCP->>Chat: POST /api/v1/groups.create
+    Chat-->>MCP: Group created
+    MCP-->>Reco: Step 2 Success
+
+    deactivate MCP
+    Reco-->>Teacher: Alle Schritte erfolgreich
+
+    Note over Teacher: Workspace bereit:<br/>- Ordner fuer Materialien<br/>- Gruppenchat fuer Diskussion

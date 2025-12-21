@@ -371,6 +371,21 @@ class UsersService {
     return Array.from(new Set(allTokens));
   }
 
+  async findUsersWithPushTokens(): Promise<Array<{ username: string; language: string }>> {
+    const users = await this.userModel
+      .find({
+        registeredPushTokens: { $exists: true, $not: { $size: 0 } },
+      })
+      .select('username language')
+      .lean()
+      .exec();
+
+    return users.map((u) => ({
+      username: u.username,
+      language: u.language || 'de',
+    }));
+  }
+
   async updateDeviceByUsername(username: string, userDeviceDto: UserDeviceDto): Promise<void> {
     const { expoPushToken } = userDeviceDto;
 

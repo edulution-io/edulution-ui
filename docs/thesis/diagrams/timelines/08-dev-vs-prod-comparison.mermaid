@@ -1,0 +1,45 @@
+%%{init: {'theme': 'neutral'}}%%
+flowchart TB
+    subgraph DEV["DEV-Modus"]
+        direction TB
+        D1["Event trifft ein"]
+        D2["Sofortige Verarbeitung\n~30 Sekunden Intervall"]
+        D3["Cache-Check alle 30s"]
+        D4["Push bei Aenderung\nDebounce: 5 Minuten"]
+        D5["UI aktualisiert sofort"]
+
+        D1 --> D2 --> D3 --> D4 --> D5
+    end
+
+    subgraph PROD["PROD-Modus"]
+        direction TB
+        P1["Events sammeln\nden ganzen Tag"]
+        P2["Cron-Job 8:00 Uhr\nEurope/Berlin"]
+        P3["Alle Caches invalidieren"]
+        P4["Plaene fuer alle Nutzer\ngenerieren"]
+        P5["Push-Benachrichtigungen\nversenden"]
+
+        P1 --> P2 --> P3 --> P4 --> P5
+    end
+
+    subgraph Comparison["Vergleich"]
+        direction LR
+        C1["Latenz"]
+        C2["Cache-Hit-Rate"]
+        C3["LLM-Aufrufe"]
+        C4["Push-Frequenz"]
+    end
+
+    DEV ~~~ PROD
+
+    subgraph Metrics["Metriken"]
+        M1["DEV: ~5s | PROD: ~5s\nBei Cache-Miss"]
+        M2["DEV: 60-70% | PROD: 80-90%\nHoeher durch Batch"]
+        M3["DEV: Haeufig | PROD: 1x taeglich\nKostenoptimiert"]
+        M4["DEV: Bei Aenderung | PROD: 8:00 Uhr\nVorhersehbar"]
+    end
+
+    C1 --- M1
+    C2 --- M2
+    C3 --- M3
+    C4 --- M4

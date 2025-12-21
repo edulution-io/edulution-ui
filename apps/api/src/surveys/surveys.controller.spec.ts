@@ -67,6 +67,7 @@ import SurveyAnswerAttachmentsService from './survey-answer-attachments.service'
 import NotificationsService from '../notifications/notifications.service';
 import GlobalSettingsService from '../global-settings/global-settings.service';
 import { SurveysTemplate } from './surveys-template.schema';
+import EventsService from '../events/events.service';
 
 describe(SurveysController.name, () => {
   let controller: SurveysController;
@@ -114,6 +115,7 @@ describe(SurveysController.name, () => {
         { provide: NotificationsService, useValue: pushMock },
         { provide: GlobalSettingsService, useValue: { getAdminGroupsFromCache: jest.fn() } },
         { provide: CACHE_MANAGER, useValue: mockCacheManager },
+        { provide: EventsService, useValue: { publish: jest.fn().mockResolvedValue(undefined) } },
       ],
     }).compile();
 

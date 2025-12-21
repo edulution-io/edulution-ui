@@ -1,0 +1,55 @@
+%%{init: {'theme': 'neutral'}}%%
+flowchart TB
+    subgraph Input["Eingabe: Unsortierte Kandidaten"]
+        I1["cleanup\nScore: 0.90\nHoechster Score!"]
+        I2["preparation\nScore: 0.70\nNiedrigster Score"]
+        I3["organization\nScore: 0.80"]
+        I4["communication\nScore: 0.85"]
+    end
+
+    subgraph ScoreSort["Variante A: Nur Score-Sortierung"]
+        S1["#1 cleanup (0.90)"]
+        S2["#2 communication (0.85)"]
+        S3["#3 organization (0.80)"]
+        S4["#4 preparation (0.70)"]
+        SResult["Precision@3: 25%\nZeitkritisches zuletzt!"]
+    end
+
+    subgraph ClassSort["Variante B: Klassen-Prioritaet"]
+        C1["#1 preparation (0.70)\nZeitkritisch!"]
+        C2["#2 communication (0.85)\nSozial wichtig"]
+        C3["#3 organization (0.80)\nStruktur"]
+        C4["#4 cleanup (0.90)\nWarten kann"]
+        CResult["Precision@3: 67%\nRelevantes zuerst!"]
+    end
+
+    subgraph Priority["Klassen-Hierarchie"]
+        P1["1. preparation\nZeitgebunden"]
+        P2["2. communication\nSoziale Pflicht"]
+        P3["3. organization\nStrukturaufbau"]
+        P4["4. cleanup\nKann warten"]
+    end
+
+    subgraph Finding["Ablation Study Ergebnis"]
+        F1["Klassen-Prioritaet\nuebertrifft Score!"]
+        F2["Static > Score-based\nin allen Szenarien"]
+        F3["Besonders bei\nzeitkritischen Events"]
+    end
+
+    Input --> ScoreSort
+    Input --> ClassSort
+    Priority --> ClassSort
+
+    ScoreSort --> SResult
+    ClassSort --> CResult
+
+    CResult --> Finding
+
+    style I1 fill:#faa,stroke:#333
+    style I2 fill:#afa,stroke:#333
+    style S1 fill:#faa,stroke:#333
+    style S4 fill:#afa,stroke:#333
+    style C1 fill:#afa,stroke:#333
+    style C4 fill:#faa,stroke:#333
+    style CResult fill:#afa,stroke:#333
+    style F1 fill:#ffa,stroke:#333

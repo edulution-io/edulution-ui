@@ -68,6 +68,11 @@ import enableSentryForNest from '../sentry/enableSentryForNest';
 import ChatModule from '../chat/chat.module';
 import McpModule from '../mcp/mcp.module';
 import AiModule from '../ai/ai.module';
+import EventsModule from '../events/events.module';
+import SummaryModule from '../summaries/summary.module';
+import RecommendationsModule from '../recommendations/recommendations.module';
+import DemoModule from '../demo/demo.module';
+import RequestInstrumentationInterceptor from '../events/interceptors/request-instrumentation.interceptor';
 
 @Module({
   imports: [
@@ -144,11 +149,19 @@ import AiModule from '../ai/ai.module';
     ChatModule,
     McpModule,
     AiModule,
+    EventsModule,
+    SummaryModule,
+    RecommendationsModule,
+    DemoModule,
   ],
   providers: [
     {
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: RequestInstrumentationInterceptor,
     },
     ...(process.env.NODE_ENV === 'development' ? [DevCacheFlushService] : []),
   ],

@@ -29,6 +29,7 @@ import MobileFileAccessCard from './MobileFileAccess/MobileFileAccessCard';
 import AccountInformation from './AccountInformation';
 import QuotaCard from './QuotaCard';
 import Groups from './Groups';
+import DailyPlanCard from './DailyPlan/DailyPlanCard';
 
 const DashboardPage: React.FC = () => {
   const { t } = useTranslation();
@@ -40,26 +41,31 @@ const DashboardPage: React.FC = () => {
   );
 
   const column2 = (
-    <div className="flex basis-1/2 flex-col gap-8">
-      <div className="flex flex-col justify-between gap-8 md:flex-row">
-        <div
-          id={GROUPS_ID}
-          className="flex-1"
-        >
-          <Groups />
-        </div>
-        <div className="flex-1">
-          <MobileFileAccessCard />
-        </div>
+    <div className="flex basis-1/2 flex-col gap-4">
+      <DailyPlanCard />
+      <div
+        id={GROUPS_ID}
+        className="flex-1 overflow-hidden"
+      >
+        <Groups />
       </div>
-
-      <QuotaCard />
     </div>
   );
 
   const column3 = (
-    <div className="basis-1/4">
+    <div className="basis-1/4 overflow-hidden">
       <Feed />
+    </div>
+  );
+
+  const bottomRow = (
+    <div className="flex flex-shrink-0 gap-4">
+      <div className="flex-1">
+        <MobileFileAccessCard />
+      </div>
+      <div className="flex-1">
+        <QuotaCard />
+      </div>
     </div>
   );
 
@@ -73,10 +79,16 @@ const DashboardPage: React.FC = () => {
     >
       <PageTitle translationId="dashboard.pageTitle" />
 
-      <div className="mt-3 flex flex-col-reverse gap-8 md:flex-row">
-        {column1}
-        {column2}
-        {column3}
+      <div className="mt-3 flex h-[calc(100vh-120px)] flex-col gap-4 overflow-hidden">
+        {/* Top Row: 3 Columns */}
+        <div className="flex flex-1 flex-col-reverse gap-4 overflow-hidden md:flex-row">
+          {column1}
+          {column2}
+          {column3}
+        </div>
+
+        {/* Bottom Row */}
+        {bottomRow}
       </div>
     </PageLayout>
   );

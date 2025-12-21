@@ -203,7 +203,7 @@ class SurveysController {
         await this.surveyService.throwErrorIfUserIsNotCreator(surveyId, currentUser);
       }),
     );
-    await this.surveyService.deleteSurveys(surveyIds);
+    await this.surveyService.deleteSurveys(surveyIds, currentUser.preferred_username);
     await this.surveyAnswerService.onSurveyRemoval(surveyIds);
     await SurveysAttachmentService.onSurveyRemoval(surveyIds);
   }

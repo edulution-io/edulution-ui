@@ -11,7 +11,8 @@
     "paths": {
       "@/*": ["./apps/frontend/src/*"],
       "@libs/*": ["./libs/src/*"],
-      "@backend-common/*": ["./libs/backend-common/src/*"]
+      "@backend-common/*": ["./libs/backend-common/src/*"],
+      "@edulution/events": ["./packages/events/src/index.ts"]
     },
     "module": "ESNext",
     "resolveJsonModule": true,

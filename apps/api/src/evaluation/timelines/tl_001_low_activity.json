@@ -1,0 +1,144 @@
+{
+  "timeline_id": "tl_001_low_activity",
+  "name": "Low Activity Day",
+  "description": "Minimal events, should trigger focus/cleanup recommendations",
+  "user_id": "eval-user-1",
+  "scenario": "low_activity",
+  "events": [
+    {
+      "event_id": "e6721014-70e1-4f31-b5f6-df459c085a25",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T09:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.827Z",
+      "tenant_id": null,
+      "user_id": "eval-user-1",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "6040ae78-e565-4fd7-9e30-2afe37651cf6"
+      },
+      "context": {
+        "thread_id": "5820125f-a9f7-4a7c-a91a-df2e931a3d92"
+      },
+      "correlation_id": "corr-91dd91b5-2614-48eb-8dea-3aecb6522c7e",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 20,
+        "is_new_thread": true,
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "9f24e2fa-6d4f-41f0-80c4-8086b6cbeab0",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T11:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.830Z",
+      "tenant_id": null,
+      "user_id": "eval-user-1",
+      "source": "files",
+      "type": "file.created",
+      "actor_id": null,
+      "object": {
+        "object_type": "file",
+        "object_id": "5b8516f1-75c3-4c49-9763-54d24380eb46"
+      },
+      "context": {},
+      "correlation_id": "corr-d449ceb4-8d62-4983-80f1-ef8a817efdf9",
+      "causation_id": null,
+      "sensitivity": "low",
+      "metadata": {
+        "path": "/documents/notes.md",
+        "filename": "notes.md",
+        "size_bytes": 1024
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "0b35ab5c-8f7e-44b7-b272-557d9ac38860",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T14:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.831Z",
+      "tenant_id": null,
+      "user_id": "eval-user-1",
+      "source": "mail",
+      "type": "mail.sent",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "dd4e9dc7-8af1-4448-91d7-86b4a1aec04b"
+      },
+      "context": {
+        "thread_id": "5820125f-a9f7-4a7c-a91a-df2e931a3d92"
+      },
+      "correlation_id": "corr-70b5418a-55f7-4a89-ab75-f9f15d4b2c52",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 20,
+        "recipient_count": 1,
+        "has_attachments": false
+      },
+      "payload": {}
+    }
+  ],
+  "checkpoints": [
+    "2025-12-20T10:00:00.000Z",
+    "2025-12-20T13:00:00.000Z",
+    "2025-12-20T16:00:00.000Z"
+  ],
+  "expected_labels": [
+    {
+      "class": "communication",
+      "window_start": "2025-12-20T10:00:00.000Z",
+      "window_end": "2025-12-20T10:00:00.001Z",
+      "rule_id": "communication:awaiting-reply",
+      "rationale": "1 thread(s) awaiting reply"
+    },
+    {
+      "class": "focus",
+      "window_start": "2025-12-20T10:00:00.000Z",
+      "window_end": "2025-12-20T10:00:00.001Z",
+      "rule_id": "focus:low-activity",
+      "rationale": "Low activity with pending items - good time to catch up"
+    },
+    {
+      "class": "cleanup",
+      "window_start": "2025-12-20T10:00:00.000Z",
+      "window_end": "2025-12-20T10:00:00.001Z",
+      "rule_id": "cleanup:inbox-zero",
+      "rationale": "Only 1 pending, 1 open - near inbox zero"
+    },
+    {
+      "class": "communication",
+      "window_start": "2025-12-20T13:00:00.000Z",
+      "window_end": "2025-12-20T13:00:00.001Z",
+      "rule_id": "communication:awaiting-reply",
+      "rationale": "1 thread(s) awaiting reply"
+    },
+    {
+      "class": "focus",
+      "window_start": "2025-12-20T13:00:00.000Z",
+      "window_end": "2025-12-20T13:00:00.001Z",
+      "rule_id": "focus:low-activity",
+      "rationale": "Low activity with pending items - good time to catch up"
+    },
+    {
+      "class": "cleanup",
+      "window_start": "2025-12-20T13:00:00.000Z",
+      "window_end": "2025-12-20T13:00:00.001Z",
+      "rule_id": "cleanup:inbox-zero",
+      "rationale": "Only 1 pending, 1 open - near inbox zero"
+    },
+    {
+      "class": "cleanup",
+      "window_start": "2025-12-20T16:00:00.000Z",
+      "window_end": "2025-12-20T16:00:00.001Z",
+      "rule_id": "cleanup:inbox-zero",
+      "rationale": "Only 0 pending, 1 open - near inbox zero"
+    }
+  ]
+}

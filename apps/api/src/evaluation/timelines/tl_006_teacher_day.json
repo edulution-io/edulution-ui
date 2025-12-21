@@ -1,0 +1,499 @@
+{
+  "timeline_id": "tl_006_teacher_day",
+  "name": "Teacher Day",
+  "description": "Teacher day with bulletin, surveys, conferences, whiteboard",
+  "user_id": "eval-user-6",
+  "scenario": "teacher_day",
+  "events": [
+    {
+      "event_id": "43d755c5-2f2d-48fb-9512-b97b38468412",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T08:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.842Z",
+      "tenant_id": null,
+      "user_id": "eval-user-6",
+      "source": "bulletin",
+      "type": "bulletin.created",
+      "actor_id": null,
+      "object": {
+        "object_type": "bulletin",
+        "object_id": "fac0364b-0ef3-4f81-988b-1fae1ad301ae"
+      },
+      "context": {},
+      "correlation_id": "corr-a9f244a5-907d-4834-a1bc-97941740a577",
+      "causation_id": null,
+      "sensitivity": "low",
+      "metadata": {
+        "category_id": "announcements",
+        "has_attachments": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "c21984e8-0dfd-4c68-a109-1c68103a79c8",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T08:30:00.000Z",
+      "received_at": "2025-12-20T14:55:40.842Z",
+      "tenant_id": null,
+      "user_id": "eval-user-6",
+      "source": "surveys",
+      "type": "survey.created",
+      "actor_id": null,
+      "object": {
+        "object_type": "survey",
+        "object_id": "265520ca-0a54-4cfd-bdb5-2020b5c67804"
+      },
+      "context": {},
+      "correlation_id": "corr-48dd0434-70a4-4e1d-863e-c2ee0723846c",
+      "causation_id": null,
+      "sensitivity": "low",
+      "metadata": {
+        "is_public": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "1e1b6c38-fe83-40fc-8024-a08d3fc9154a",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T09:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.842Z",
+      "tenant_id": null,
+      "user_id": "student-1",
+      "source": "surveys",
+      "type": "survey.answer_submitted",
+      "actor_id": null,
+      "object": {
+        "object_type": "survey_answer",
+        "object_id": "e0cd189d-13c1-4baa-94fa-4382cee8f3c4"
+      },
+      "context": {},
+      "correlation_id": "corr-30e5e339-009e-48bf-9605-cfeab4d0c1e4",
+      "causation_id": null,
+      "sensitivity": "low",
+      "metadata": {
+        "survey_id": "265520ca-0a54-4cfd-bdb5-2020b5c67804",
+        "is_anonymous": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "114163fd-89f4-4c21-b4d1-dcd9b9b6b0a7",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T09:30:00.000Z",
+      "received_at": "2025-12-20T14:55:40.842Z",
+      "tenant_id": null,
+      "user_id": "student-2",
+      "source": "surveys",
+      "type": "survey.answer_submitted",
+      "actor_id": null,
+      "object": {
+        "object_type": "survey_answer",
+        "object_id": "66cfbc83-0a33-4f59-9bb7-ff0624f386dd"
+      },
+      "context": {},
+      "correlation_id": "corr-b1215880-ed34-4c96-b55a-3374ffb76911",
+      "causation_id": null,
+      "sensitivity": "low",
+      "metadata": {
+        "survey_id": "265520ca-0a54-4cfd-bdb5-2020b5c67804",
+        "is_anonymous": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "76c6bbe4-9083-4875-b327-a37c18a6d15f",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T10:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.842Z",
+      "tenant_id": null,
+      "user_id": "student-3",
+      "source": "surveys",
+      "type": "survey.answer_submitted",
+      "actor_id": null,
+      "object": {
+        "object_type": "survey_answer",
+        "object_id": "f22168a8-8ceb-41f9-9cca-8caed059b735"
+      },
+      "context": {},
+      "correlation_id": "corr-9a34d2a2-7856-4225-808d-a12690b87aa6",
+      "causation_id": null,
+      "sensitivity": "low",
+      "metadata": {
+        "survey_id": "265520ca-0a54-4cfd-bdb5-2020b5c67804",
+        "is_anonymous": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "e630a804-c117-4f5a-a146-27933dbce8ca",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T10:30:00.000Z",
+      "received_at": "2025-12-20T14:55:40.842Z",
+      "tenant_id": null,
+      "user_id": "student-4",
+      "source": "surveys",
+      "type": "survey.answer_submitted",
+      "actor_id": null,
+      "object": {
+        "object_type": "survey_answer",
+        "object_id": "d7c33fc1-0c6c-4f35-956c-2c0161b52582"
+      },
+      "context": {},
+      "correlation_id": "corr-80c3697f-3706-44d2-a55d-29c0f81522b5",
+      "causation_id": null,
+      "sensitivity": "low",
+      "metadata": {
+        "survey_id": "265520ca-0a54-4cfd-bdb5-2020b5c67804",
+        "is_anonymous": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "f8f6d044-2292-4c34-a38f-2727ad103966",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T11:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.842Z",
+      "tenant_id": null,
+      "user_id": "student-5",
+      "source": "surveys",
+      "type": "survey.answer_submitted",
+      "actor_id": null,
+      "object": {
+        "object_type": "survey_answer",
+        "object_id": "2dc5df33-a5dd-412e-a659-141b80451096"
+      },
+      "context": {},
+      "correlation_id": "corr-afafdbd8-b8e4-4945-8bfe-1988a656e76e",
+      "causation_id": null,
+      "sensitivity": "low",
+      "metadata": {
+        "survey_id": "265520ca-0a54-4cfd-bdb5-2020b5c67804",
+        "is_anonymous": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "a591fc2c-1ce4-44e2-b5da-8d2e6414aa72",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T07:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.842Z",
+      "tenant_id": null,
+      "user_id": "eval-user-6",
+      "source": "caldav",
+      "type": "calendar.event_created",
+      "actor_id": null,
+      "object": {
+        "object_type": "calendar_event",
+        "object_id": "b5044aa5-24dd-4d98-8567-3dfb433dd673"
+      },
+      "context": {},
+      "correlation_id": "corr-cb34b382-7813-4463-b15c-9a175f37afde",
+      "causation_id": null,
+      "sensitivity": "low",
+      "metadata": {
+        "title": "Parent Meeting",
+        "scheduled_at": "2025-12-20T10:00:00.000Z",
+        "scheduled_end": "2025-12-20T11:00:00.000Z",
+        "participant_count": 3
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "4c878356-94f4-4cb3-86e6-8dbc9e6b2eee",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T09:30:00.000Z",
+      "received_at": "2025-12-20T14:55:40.843Z",
+      "tenant_id": null,
+      "user_id": "eval-user-6",
+      "source": "conferences",
+      "type": "conference.created",
+      "actor_id": null,
+      "object": {
+        "object_type": "meeting",
+        "object_id": "b5044aa5-24dd-4d98-8567-3dfb433dd673"
+      },
+      "context": {},
+      "correlation_id": "corr-a5172967-bbc1-4b86-9bef-7c15d1c24dff",
+      "causation_id": null,
+      "sensitivity": "low",
+      "metadata": {
+        "name": "Parent Meeting",
+        "is_public": false,
+        "participant_count": 3
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "3ff329b2-c69f-461b-b5b2-d823426bd92b",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T10:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.843Z",
+      "tenant_id": null,
+      "user_id": "eval-user-6",
+      "source": "conferences",
+      "type": "conference.started",
+      "actor_id": null,
+      "object": {
+        "object_type": "meeting",
+        "object_id": "b5044aa5-24dd-4d98-8567-3dfb433dd673"
+      },
+      "context": {},
+      "correlation_id": "corr-4caf71d0-5afa-40bf-8ba1-dac798a6cd92",
+      "causation_id": null,
+      "sensitivity": "low",
+      "metadata": {
+        "name": "Parent Meeting",
+        "participant_count": 3
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "976fd264-68dd-482a-ab99-e64a04dfa007",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T11:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.843Z",
+      "tenant_id": null,
+      "user_id": "eval-user-6",
+      "source": "conferences",
+      "type": "conference.ended",
+      "actor_id": null,
+      "object": {
+        "object_type": "meeting",
+        "object_id": "b5044aa5-24dd-4d98-8567-3dfb433dd673"
+      },
+      "context": {},
+      "correlation_id": "corr-937c0618-fdf3-46f3-b202-f3f42df959ef",
+      "causation_id": null,
+      "sensitivity": "low",
+      "metadata": {
+        "name": "Parent Meeting"
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "7770f3ef-0392-49a6-a21d-6a3399210c67",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T14:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.843Z",
+      "tenant_id": null,
+      "user_id": "eval-user-6",
+      "source": "whiteboard",
+      "type": "whiteboard.session_started",
+      "actor_id": null,
+      "object": {
+        "object_type": "whiteboard_session",
+        "object_id": "ec05804b-574c-4374-ac85-686d4f9f665e"
+      },
+      "context": {},
+      "correlation_id": "corr-4c730274-29e5-4f82-a86b-0cf1123a3611",
+      "causation_id": null,
+      "sensitivity": "low",
+      "metadata": {
+        "room_id": "7a0279e9-e85f-4b7a-a3b6-08fa85a98ec6",
+        "is_multi_user": true
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "3b1eddf1-813e-4c72-8d7b-16d612d699b4",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T15:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.843Z",
+      "tenant_id": null,
+      "user_id": "eval-user-6",
+      "source": "whiteboard",
+      "type": "whiteboard.session_ended",
+      "actor_id": null,
+      "object": {
+        "object_type": "whiteboard_session",
+        "object_id": "a94b7c17-4622-40c7-9475-bbb2fec54d83"
+      },
+      "context": {},
+      "correlation_id": "corr-5610414a-830c-44e6-9502-9796fecec7dc",
+      "causation_id": null,
+      "sensitivity": "low",
+      "metadata": {
+        "room_id": "7a0279e9-e85f-4b7a-a3b6-08fa85a98ec6"
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "d4a75465-f7e0-434c-a777-3b3adaf43694",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T15:30:00.000Z",
+      "received_at": "2025-12-20T14:55:40.843Z",
+      "tenant_id": null,
+      "user_id": "eval-user-6",
+      "source": "files",
+      "type": "file.uploaded",
+      "actor_id": null,
+      "object": {
+        "object_type": "file",
+        "object_id": "3fb4080d-701f-432e-8f74-d7e622bc7924"
+      },
+      "context": {},
+      "correlation_id": "corr-eb21e128-688f-41bc-a4e3-6b4091627bdd",
+      "causation_id": null,
+      "sensitivity": "low",
+      "metadata": {
+        "path": "/class-10a/materials/chapter5.pdf",
+        "filename": "chapter5.pdf",
+        "size_bytes": 2500000,
+        "mime_type": "application/pdf"
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "8b55a8b3-8ce5-4f3b-ab88-74c3c7fe8ffb",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T15:36:00.000Z",
+      "received_at": "2025-12-20T14:55:40.843Z",
+      "tenant_id": null,
+      "user_id": "eval-user-6",
+      "source": "files",
+      "type": "file.shared",
+      "actor_id": null,
+      "object": {
+        "object_type": "file",
+        "object_id": "722572f0-166b-4daf-9046-6af01675a646"
+      },
+      "context": {},
+      "correlation_id": "corr-193f3729-81ca-443c-8ae9-59a8cb493f85",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "path": "/class-10a/materials/chapter5.pdf",
+        "filename": "chapter5.pdf",
+        "share_id": "7c2a50f8-f0fe-4e94-8ed7-7f6091b466aa",
+        "is_public": false
+      },
+      "payload": {}
+    },
+    {
+      "event_id": "87e3d760-f41f-4509-95fe-513940dbb64d",
+      "schema_version": "1.0.0",
+      "occurred_at": "2025-12-20T08:00:00.000Z",
+      "received_at": "2025-12-20T14:55:40.843Z",
+      "tenant_id": null,
+      "user_id": "eval-user-6",
+      "source": "mail",
+      "type": "mail.received",
+      "actor_id": null,
+      "object": {
+        "object_type": "email",
+        "object_id": "e3f89ef2-6515-41ca-9ce9-6253bb6dbbf0"
+      },
+      "context": {
+        "thread_id": "fc559be7-96f7-4534-899e-f61d737288bf"
+      },
+      "correlation_id": "corr-a0ba885c-b681-4998-82d9-3e6b4e7564f9",
+      "causation_id": null,
+      "sensitivity": "medium",
+      "metadata": {
+        "subject_length": 30,
+        "is_new_thread": true,
+        "has_attachments": false
+      },
+      "payload": {}
+    }
+  ],
+  "checkpoints": [
+    "2025-12-20T09:00:00.000Z",
+    "2025-12-20T12:00:00.000Z",
+    "2025-12-20T15:00:00.000Z",
+    "2025-12-20T17:00:00.000Z"
+  ],
+  "expected_labels": [
+    {
+      "class": "meeting",
+      "window_start": "2025-12-20T09:00:00.000Z",
+      "window_end": "2025-12-20T09:00:00.001Z",
+      "rule_id": "calendar:meeting-prep",
+      "rationale": "Meeting in 60 minutes triggers prep recommendation"
+    },
+    {
+      "class": "communication",
+      "window_start": "2025-12-20T09:00:00.000Z",
+      "window_end": "2025-12-20T09:00:00.001Z",
+      "rule_id": "communication:awaiting-reply",
+      "rationale": "1 thread(s) awaiting reply"
+    },
+    {
+      "class": "focus",
+      "window_start": "2025-12-20T09:00:00.000Z",
+      "window_end": "2025-12-20T09:00:00.001Z",
+      "rule_id": "focus:low-activity",
+      "rationale": "Low activity with pending items - good time to catch up"
+    },
+    {
+      "class": "cleanup",
+      "window_start": "2025-12-20T09:00:00.000Z",
+      "window_end": "2025-12-20T09:00:00.001Z",
+      "rule_id": "cleanup:inbox-zero",
+      "rationale": "Only 1 pending, 1 open - near inbox zero"
+    },
+    {
+      "class": "communication",
+      "window_start": "2025-12-20T12:00:00.000Z",
+      "window_end": "2025-12-20T12:00:00.001Z",
+      "rule_id": "communication:awaiting-reply",
+      "rationale": "1 thread(s) awaiting reply"
+    },
+    {
+      "class": "focus",
+      "window_start": "2025-12-20T12:00:00.000Z",
+      "window_end": "2025-12-20T12:00:00.001Z",
+      "rule_id": "focus:low-activity",
+      "rationale": "Low activity with pending items - good time to catch up"
+    },
+    {
+      "class": "cleanup",
+      "window_start": "2025-12-20T12:00:00.000Z",
+      "window_end": "2025-12-20T12:00:00.001Z",
+      "rule_id": "cleanup:inbox-zero",
+      "rationale": "Only 1 pending, 1 open - near inbox zero"
+    },
+    {
+      "class": "communication",
+      "window_start": "2025-12-20T15:00:00.000Z",
+      "window_end": "2025-12-20T15:00:00.001Z",
+      "rule_id": "communication:awaiting-reply",
+      "rationale": "1 thread(s) awaiting reply"
+    },
+    {
+      "class": "focus",
+      "window_start": "2025-12-20T15:00:00.000Z",
+      "window_end": "2025-12-20T15:00:00.001Z",
+      "rule_id": "focus:low-activity",
+      "rationale": "Low activity with pending items - good time to catch up"
+    },
+    {
+      "class": "cleanup",
+      "window_start": "2025-12-20T15:00:00.000Z",
+      "window_end": "2025-12-20T15:00:00.001Z",
+      "rule_id": "cleanup:inbox-zero",
+      "rationale": "Only 1 pending, 1 open - near inbox zero"
+    },
+    {
+      "class": "communication",
+      "window_start": "2025-12-20T17:00:00.000Z",
+      "window_end": "2025-12-20T17:00:00.001Z",
+      "rule_id": "communication:awaiting-reply",
+      "rationale": "1 thread(s) awaiting reply"
+    },
+    {
+      "class": "focus",
+      "window_start": "2025-12-20T17:00:00.000Z",
+      "window_end": "2025-12-20T17:00:00.001Z",
+      "rule_id": "focus:low-activity",
+      "rationale": "Low activity with pending items - good time to catch up"
+    },
+    {
+      "class": "cleanup",
+      "window_start": "2025-12-20T17:00:00.000Z",
+      "window_end": "2025-12-20T17:00:00.001Z",
+      "rule_id": "cleanup:inbox-zero",
+      "rationale": "Only 1 pending, 1 open - near inbox zero"
+    }
+  ]
+}
