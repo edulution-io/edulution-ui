@@ -21,7 +21,7 @@ import { Controller, Get, UseGuards } from '@nestjs/common';
 import { HealthCheck } from '@nestjs/terminus';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import LocalhostGuard from '../common/guards/localhost.guard';
-import { Public } from '../common/decorators/public.decorator';
+import Public from '../common/decorators/public.decorator';
 import HealthService from './health.service';
 
 @Controller(EDU_API_CONFIG_ENDPOINTS.HEALTH_CHECK)

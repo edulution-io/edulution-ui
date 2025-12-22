@@ -75,8 +75,8 @@ const DialogContent = React.forwardRef<
         ref={ref}
         className={cn(
           'fixed left-[50%] top-[50%] z-50 grid max-h-[90vh] w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 overflow-auto rounded-xl p-6 shadow-lg duration-200 scrollbar-thin',
-          { 'bg-overlay text-background': variant === 'primary' },
-          { 'color-white text-background': variant === 'secondary' },
+          { 'bg-overlay': variant === 'primary' },
+          { 'color-white': variant === 'secondary' },
           { 'bg-ciGray': variant === 'secondary' },
           { 'w-40 bg-foreground': variant === 'loadingSpinner' },
           className,
@@ -86,7 +86,7 @@ const DialogContent = React.forwardRef<
         {children}
         {showCloseButton && (
           <DialogPrimitive.Close className="absolute right-5 top-5">
-            <Cross2Icon className="h-4 w-4 text-background" />
+            <Cross2Icon className="h-4 w-4" />
             <span className="sr-only">${i18n.t('dialog.close')}</span>
           </DialogPrimitive.Close>
         )}

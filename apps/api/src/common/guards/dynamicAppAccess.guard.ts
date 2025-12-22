@@ -22,15 +22,18 @@ import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
-import { PUBLIC_ROUTE_KEY } from '@libs/auth/constants/appAccessKeys';
+import { PUBLIC_ROUTE_KEY, DYNAMIC_APP_ACCESS_PARAM_KEY } from '@libs/auth/constants/appAccessKeys';
+import AppConfigService from '../../appconfig/appconfig.service';
 import CustomHttpException from '../CustomHttpException';
 import GlobalSettingsService from '../../global-settings/global-settings.service';
+import { getCachedAccess, setCachedAccess } from './accessCache';
 
 @Injectable()
-class AdminGuard implements CanActivate {
+class DynamicAppAccessGuard implements CanActivate {
   constructor(
-    private readonly globalSettingsService: GlobalSettingsService,
     private readonly reflector: Reflector,
+    private readonly appConfigService: AppConfigService,
+    private readonly globalSettingsService: GlobalSettingsService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -43,22 +46,67 @@ class AdminGuard implements CanActivate {
       return true;
     }
 
-    const request: Request = context.switchToHttp().getRequest();
-    const { user } = request;
+    const paramName =
+      this.reflector.get<string>(DYNAMIC_APP_ACCESS_PARAM_KEY, context.getHandler()) ??
+      this.reflector.get<string>(DYNAMIC_APP_ACCESS_PARAM_KEY, context.getClass()) ??
+      'appName';
 
-    if (!user) {
-      throw new CustomHttpException(AuthErrorMessages.Unknown, HttpStatus.NOT_FOUND, undefined, AdminGuard.name);
+    const request: Request = context.switchToHttp().getRequest();
+    const { user, params } = request;
+    const domain = params[paramName];
+
+    if (!domain) {
+      return true;
     }
 
-    const ldapGroups = user.ldapGroups || [];
+    if (!user) {
+      throw new CustomHttpException(
+        AuthErrorMessages.Unauthorized,
+        HttpStatus.UNAUTHORIZED,
+        domain,
+        DynamicAppAccessGuard.name,
+      );
+    }
 
+    const username = user.preferred_username;
+    const cachedAccess = getCachedAccess(username, domain);
+
+    if (cachedAccess !== null) {
+      if (!cachedAccess) {
+        throw new CustomHttpException(
+          AuthErrorMessages.Unauthorized,
+          HttpStatus.FORBIDDEN,
+          username,
+          DynamicAppAccessGuard.name,
+        );
+      }
+      return true;
+    }
+
+    const ldapGroups: string[] = user.ldapGroups || [];
     const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
 
     if (getIsAdmin(ldapGroups, adminGroups)) {
+      setCachedAccess(username, domain, true);
       return true;
     }
-    throw new CustomHttpException(AuthErrorMessages.Unauthorized, HttpStatus.UNAUTHORIZED, undefined, AdminGuard.name);
+
+    const allowedGroups = this.appConfigService.appAccessMap.get(domain);
+    const hasAccess = allowedGroups ? ldapGroups.some((group) => allowedGroups.has(group)) : false;
+
+    setCachedAccess(username, domain, hasAccess);
+
+    if (!hasAccess) {
+      throw new CustomHttpException(
+        AuthErrorMessages.Unauthorized,
+        HttpStatus.FORBIDDEN,
+        username,
+        DynamicAppAccessGuard.name,
+      );
+    }
+
+    return true;
   }
 }
 
-export default AdminGuard;
+export default DynamicAppAccessGuard;
