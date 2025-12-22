@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useRef, memo } from 'react';
+import React, { useEffect, useRef, memo, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import FileIconComponent from './FileIconComponent';
 import useThumbnailCache from './useThumbnailCache';
@@ -30,12 +30,13 @@ interface FileThumbnailProps {
 
 const FileThumbnail = memo(({ filePath, etag, size }: FileThumbnailProps) => {
   const { webdavShare } = useParams();
-  const { getThumbnail, hasFailed, isPending, fetchThumbnail } = useThumbnailCache();
 
-  const cacheKey = `${filePath}:${etag}`;
-  const cachedUrl = getThumbnail(cacheKey);
-  const failed = hasFailed(cacheKey);
-  const pending = isPending(cacheKey);
+  const cacheKey = useMemo(() => `${filePath}:${etag}`, [filePath, etag]);
+
+  const cachedUrl = useThumbnailCache((s) => s.cache.get(cacheKey));
+  const failed = useThumbnailCache((s) => s.failedRequests.has(cacheKey));
+  const pending = useThumbnailCache((s) => s.pendingRequests.has(cacheKey));
+  const fetchThumbnail = useThumbnailCache((s) => s.fetchThumbnail);
 
   const imgRef = useRef<HTMLDivElement>(null);
 

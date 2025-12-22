@@ -20,7 +20,7 @@
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { createHash } from 'crypto';
-import { ensureDir, pathExists, readdir, stat, unlink } from 'fs-extra';
+import { pathExists, readdir, stat, unlink } from 'fs-extra';
 import { join } from 'path';
 import { Readable } from 'stream';
 import sharp from 'sharp';
@@ -47,26 +47,24 @@ class ThumbnailService implements OnModuleInit {
     private readonly webdavSharesService: WebdavSharesService,
   ) {}
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async onModuleInit(): Promise<void> {
-    await ThumbnailService.ensureCacheDirectory();
+    try {
+      await FilesystemService.ensureDirectoryExists(THUMBNAIL_CACHE_PATH);
+      Logger.debug(`Thumbnail cache directory ensured at: ${THUMBNAIL_CACHE_PATH}`, ThumbnailService.name);
+    } catch (error) {
+      Logger.error(`Failed to create thumbnail cache directory: ${error}`, ThumbnailService.name);
+    }
   }
 
   @Cron('0 30 3 * * *', {
     name: 'CleanupThumbnailCache',
     timeZone: 'UTC',
   })
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   async handleCacheCleanup(): Promise<void> {
     Logger.debug('CronJob: CleanupThumbnailCache (running once every morning at 03:30 UTC)', ThumbnailService.name);
     await ThumbnailService.enforceMaxCacheSize();
-  }
-
-  private static async ensureCacheDirectory(): Promise<void> {
-    try {
-      await ensureDir(THUMBNAIL_CACHE_PATH);
-      Logger.debug(`Thumbnail cache directory ensured at: ${THUMBNAIL_CACHE_PATH}`, ThumbnailService.name);
-    } catch (error) {
-      Logger.error(`Failed to create thumbnail cache directory: ${error}`, ThumbnailService.name);
-    }
   }
 
   private static generateCacheKey(filePath: string, etag: string): string {
