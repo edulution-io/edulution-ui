@@ -28,10 +28,11 @@ import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 interface QRCodeWithCopyButtonProps {
   url: string;
   titleTranslationId: string;
+  variant: 'default' | 'dialog';
   qrCodeSize?: Sizes;
 }
 
-const QRCodeWithCopyButton = ({ url, qrCodeSize, titleTranslationId }: QRCodeWithCopyButtonProps) => {
+const QRCodeWithCopyButton = ({ url, qrCodeSize, variant, titleTranslationId }: QRCodeWithCopyButtonProps) => {
   const { t } = useTranslation();
 
   return (
@@ -45,6 +46,7 @@ const QRCodeWithCopyButton = ({ url, qrCodeSize, titleTranslationId }: QRCodeWit
         />
         <InputWithActionIcons
           type="text"
+          variant={variant}
           value={url}
           readOnly
           className="max-w-[620px]"

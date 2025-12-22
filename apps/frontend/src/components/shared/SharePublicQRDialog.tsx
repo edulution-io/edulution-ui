@@ -43,6 +43,7 @@ const SharePublicQRDialog = ({
     <QRCodeWithCopyButton
       url={url}
       titleTranslationId={t(descriptionTranslationId)}
+      variant="dialog"
     />
   );
 

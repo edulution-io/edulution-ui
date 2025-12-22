@@ -28,7 +28,7 @@ import {
 import type CreateContainerDto from '@libs/docker/types/create-container.dto';
 import DockerService from './docker.service';
 import AdminGuard from '../common/guards/admin.guard';
-import { Public } from '../common/decorators/public.decorator';
+import Public from '../common/decorators/public.decorator';
 
 @Controller(EDU_API_DOCKER_ENDPOINT)
 @UseGuards(AdminGuard)

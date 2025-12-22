@@ -128,12 +128,12 @@ const DropdownSelect = ({
 
   const optionVariantClasses = {
     default: {
-      base: 'text-background hover:bg-muted',
-      selected: 'bg-muted text-background',
+      base: 'hover:bg-muted',
+      selected: 'bg-muted',
     },
     dialog: {
-      base: 'text-background hover:bg-muted-light',
-      selected: 'bg-muted-light text-background',
+      base: 'hover:bg-muted-light',
+      selected: 'bg-muted-light',
     },
   };
 
@@ -176,7 +176,7 @@ const DropdownSelect = ({
           <div
             ref={menuRef}
             className={cn(
-              'fixed z-[1000] mt-1 box-border max-h-[125px] overflow-y-auto rounded-lg text-p text-background scrollbar-thin',
+              'fixed z-[1000] mt-1 box-border max-h-[125px] overflow-y-auto rounded-lg text-p scrollbar-thin',
               variantClasses[variant],
             )}
             style={{
