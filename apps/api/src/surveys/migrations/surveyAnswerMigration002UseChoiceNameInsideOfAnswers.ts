@@ -21,6 +21,7 @@
 import { Types } from 'mongoose';
 import { Logger } from '@nestjs/common';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { Migration } from '../../migration/migration.type';
 import { SurveyAnswerDocument } from '../survey-answers.schema';
 
@@ -28,12 +29,14 @@ const name = '001-add-question-id-to-survey-answer-attachments-path';
 
 const updateSurveyQuestionAnswer = async (
   surveyAnswer: Record<string, string | string[] | object | object[]>,
-  choices: ChoiceDto[] = [],
+  backendLimiters: { questionName: string; choices: ChoiceDto[] }[],
 ): Promise<Record<string, string | string[] | object | object[]>> => {
-  const choiceTitles = choices.map((choice) => choice.title);
   const answer: Record<string, string | string[] | object | object[]> = { ...surveyAnswer };
   await Promise.all(
     Object.keys(surveyAnswer).map((questionId) => {
+      const questionLimiter = backendLimiters.find((limiter) => limiter.questionName === questionId);
+      const choices = questionLimiter?.choices ?? [];
+      const choiceTitles = choices.map((choice) => choice.title);
       const questionAnswer = surveyAnswer[questionId];
       if (Array.isArray(questionAnswer)) {
         answer[questionId] = questionAnswer.map((entry) => {
@@ -64,10 +67,11 @@ const surveyAnswerMigration002UseChoiceNameInsideOfAnswers: Migration<SurveyAnsw
   version: 2,
   execute: async (model) => {
     const previousSchemaVersion = 2;
-    const newSchemaVersion = 3;
+    const newSchemaVersion = 2;
 
     const unprocessedDocuments = await model
       .find<SurveyAnswerDocument>({ schemaVersion: previousSchemaVersion })
+      .populate('surveyId')
       .sort({ _id: 1 })
       .exec();
 
@@ -91,12 +95,15 @@ const surveyAnswerMigration002UseChoiceNameInsideOfAnswers: Migration<SurveyAnsw
           currentId = new Types.ObjectId(id);
         }
 
-        // const surveyId = String(doc.surveyId);
+        const { backendLimiters } = doc.surveyId as unknown as SurveyDto;
 
         const answer = doc.answer as unknown as Record<string, string | string[] | object | object[]>;
 
+        if (!backendLimiters) {
+          return;
+        }
         try {
-          const updatedAnswer = await updateSurveyQuestionAnswer(answer);
+          const updatedAnswer = await updateSurveyQuestionAnswer(answer, backendLimiters);
           await model.updateOne(
             { _id: currentId },
             { $set: { answer: updatedAnswer, schemaVersion: newSchemaVersion } },

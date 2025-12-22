@@ -19,8 +19,9 @@
 
 import migration000 from './surveyAnswersMigration000SurveyIds';
 import migration001 from './surveyAnswerMigration001AddQuestionIdToSurveyAnswerAttachments';
+import migration002 from './surveyAnswerMigration002UseChoiceNameInsideOfAnswers';
 
 // Add new migrations here
-const surveyAnswersMigrationsList = [migration000, migration001];
+const surveyAnswersMigrationsList = [migration000, migration001, migration002];
 
 export default surveyAnswersMigrationsList;
