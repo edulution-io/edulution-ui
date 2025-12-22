@@ -94,6 +94,9 @@ class AppConfigService implements OnModuleInit {
       );
     } finally {
       await AppConfigService.writeProxyConfigFile(appConfigDto);
+
+      await this.updateAppAccessMap();
+
       this.eventEmitter.emit(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${appConfigDto.name}`);
     }
   }
@@ -328,6 +331,8 @@ class AppConfigService implements OnModuleInit {
       if (doesFolderExist) {
         await FilesystemService.deleteDirectories([`${APPS_FILES_PATH}/${configName}`]);
       }
+
+      await this.updateAppAccessMap();
 
       this.eventEmitter.emit(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${configName}`);
     }

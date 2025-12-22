@@ -21,23 +21,7 @@ import { APP_ACCESS_KEY, PUBLIC_ROUTE_KEY } from '@libs/auth/constants/appAccess
 import AppConfigService from '../appconfig/appconfig.service';
 import CustomHttpException from '../common/CustomHttpException';
 import GlobalSettingsService from '../global-settings/global-settings.service';
-
-const accessCache = new Map<string, { value: boolean; expiresAt: number }>();
-const CACHE_TTL_MS = 60_000;
-const MAX_CACHE_SIZE = 10_000;
-const CLEANUP_THRESHOLD = MAX_CACHE_SIZE * 0.9;
-
-const cleanupExpiredCacheEntries = () => {
-  if (accessCache.size < CLEANUP_THRESHOLD) {
-    return;
-  }
-  const now = Date.now();
-  accessCache.forEach((entry, key) => {
-    if (entry.expiresAt <= now) {
-      accessCache.delete(key);
-    }
-  });
-};
+import { getCachedAccess, setCachedAccess, clearAccessCache } from '../common/guards/accessCache';
 
 @Injectable()
 class AccessGuard implements CanActivate {
@@ -50,7 +34,7 @@ class AccessGuard implements CanActivate {
   @OnEvent(EVENT_EMITTER_EVENTS.APP_ACCESS_MAP_UPDATED as string)
   // eslint-disable-next-line class-methods-use-this, @typescript-eslint/class-methods-use-this
   handleAppAccessMapUpdated() {
-    accessCache.clear();
+    clearAccessCache();
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -75,28 +59,15 @@ class AccessGuard implements CanActivate {
     const { user } = request;
 
     if (!user) {
-      throw new CustomHttpException(
-        AuthErrorMessages.Unauthorized,
-        HttpStatus.UNAUTHORIZED,
-        undefined,
-        AccessGuard.name,
-      );
+      throw new CustomHttpException(AuthErrorMessages.Unauthorized, HttpStatus.UNAUTHORIZED, domain, AccessGuard.name);
     }
 
-    cleanupExpiredCacheEntries();
-
     const username = user.preferred_username;
-    const cacheKey = `${username}::${domain}`;
-    const cached = accessCache.get(cacheKey);
+    const cachedAccess = getCachedAccess(username, domain);
 
-    if (cached && cached.expiresAt > Date.now()) {
-      if (!cached.value) {
-        throw new CustomHttpException(
-          AuthErrorMessages.Unauthorized,
-          HttpStatus.FORBIDDEN,
-          undefined,
-          AccessGuard.name,
-        );
+    if (cachedAccess !== null) {
+      if (!cachedAccess) {
+        throw new CustomHttpException(AuthErrorMessages.Unauthorized, HttpStatus.FORBIDDEN, username, AccessGuard.name);
       }
       return true;
     }
@@ -105,17 +76,17 @@ class AccessGuard implements CanActivate {
     const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
 
     if (getIsAdmin(ldapGroups, adminGroups)) {
-      accessCache.set(cacheKey, { value: true, expiresAt: Date.now() + CACHE_TTL_MS });
+      setCachedAccess(username, domain, true);
       return true;
     }
 
     const allowedGroups = this.appConfigService.appAccessMap.get(domain);
     const hasAccess = allowedGroups ? ldapGroups.some((group) => allowedGroups.has(group)) : false;
 
-    accessCache.set(cacheKey, { value: hasAccess, expiresAt: Date.now() + CACHE_TTL_MS });
+    setCachedAccess(username, domain, hasAccess);
 
     if (!hasAccess) {
-      throw new CustomHttpException(AuthErrorMessages.Unauthorized, HttpStatus.FORBIDDEN, undefined, AccessGuard.name);
+      throw new CustomHttpException(AuthErrorMessages.Unauthorized, HttpStatus.FORBIDDEN, username, AccessGuard.name);
     }
 
     return true;

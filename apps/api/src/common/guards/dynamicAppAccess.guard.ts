@@ -19,6 +19,7 @@ import { PUBLIC_ROUTE_KEY, DYNAMIC_APP_ACCESS_PARAM_KEY } from '@libs/auth/const
 import AppConfigService from '../../appconfig/appconfig.service';
 import CustomHttpException from '../CustomHttpException';
 import GlobalSettingsService from '../../global-settings/global-settings.service';
+import { getCachedAccess, setCachedAccess } from './accessCache';
 
 @Injectable()
 class DynamicAppAccessGuard implements CanActivate {
@@ -55,26 +56,44 @@ class DynamicAppAccessGuard implements CanActivate {
       throw new CustomHttpException(
         AuthErrorMessages.Unauthorized,
         HttpStatus.UNAUTHORIZED,
-        undefined,
+        domain,
         DynamicAppAccessGuard.name,
       );
+    }
+
+    const username = user.preferred_username;
+    const cachedAccess = getCachedAccess(username, domain);
+
+    if (cachedAccess !== null) {
+      if (!cachedAccess) {
+        throw new CustomHttpException(
+          AuthErrorMessages.Unauthorized,
+          HttpStatus.FORBIDDEN,
+          username,
+          DynamicAppAccessGuard.name,
+        );
+      }
+      return true;
     }
 
     const ldapGroups: string[] = user.ldapGroups || [];
     const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
 
     if (getIsAdmin(ldapGroups, adminGroups)) {
+      setCachedAccess(username, domain, true);
       return true;
     }
 
     const allowedGroups = this.appConfigService.appAccessMap.get(domain);
     const hasAccess = allowedGroups ? ldapGroups.some((group) => allowedGroups.has(group)) : false;
 
+    setCachedAccess(username, domain, hasAccess);
+
     if (!hasAccess) {
       throw new CustomHttpException(
         AuthErrorMessages.Unauthorized,
         HttpStatus.FORBIDDEN,
-        undefined,
+        username,
         DynamicAppAccessGuard.name,
       );
     }
