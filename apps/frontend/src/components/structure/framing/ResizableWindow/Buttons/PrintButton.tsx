@@ -18,20 +18,22 @@
  */
 
 import React from 'react';
-import { EditIcon } from '@libs/common/constants/standardActionIcons';
+import { MdPrint } from 'react-icons/md';
 import WindowControlBaseButton from './WindowControlBaseButton';
 
-interface EditButtonProps {
-  onClick: () => Promise<void> | void;
+interface PrintButtonProps {
+  onClick: () => void;
+  disabled?: boolean;
 }
 
-const EditButton = ({ onClick }: EditButtonProps) => (
+const PrintButton = ({ onClick, disabled }: PrintButtonProps) => (
   <WindowControlBaseButton
     onClick={onClick}
-    tooltipTranslationId="common.edit"
+    tooltipTranslationId="filesharing.print"
+    disabled={disabled}
   >
-    <EditIcon />
+    <MdPrint />
   </WindowControlBaseButton>
 );
 
-export default EditButton;
+export default PrintButton;
