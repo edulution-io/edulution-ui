@@ -75,18 +75,18 @@ const DeleteConfirmationDialog: React.FC<DeleteConfirmationDialogProps> = ({
   const getDialogBody = () => {
     if (error) {
       return (
-        <div className="text-background">
+        <div className="text-destructive">
           {t('common.error')}: {error.message}
         </div>
       );
     }
 
     if (items.length === 0) {
-      return <div className="text-background">{t('common.noItemsSelected')}</div>;
+      return t('common.noItemsSelected');
     }
 
     return (
-      <div className="text-background">
+      <div>
         <p>{t(messageTranslationKey, { count: items.length, ...translationParams })}</p>
         <ItemList items={items} />
         {warningTranslationKey && (

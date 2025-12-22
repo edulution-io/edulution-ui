@@ -23,7 +23,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import cn from '@libs/common/utils/className';
 import HexagonIcon from '@/assets/layout/Hexagon.svg?react';
 
-const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-xl text-background justify-center'], {
+const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-xl justify-center'], {
   variants: {
     variant: {
       'btn-transparent':
@@ -32,8 +32,7 @@ const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-xl text-backgrou
       'btn-organisation': 'bg-primary text-white',
       'btn-infrastructure': 'bg-ciLightGreen text-white',
       'btn-security': 'bg-ciGreenToBlue text-white',
-      'btn-outline':
-        'border-[1px] border-gray-300 shadow-sm hover:bg-muted-light hover:text-accent-foreground text-accent-foreground',
+      'btn-outline': 'border-[1px] border-gray-300 shadow-sm hover:bg-muted-light',
       'btn-hexagon': 'bg-cover bg-center flex items-center justify-center hover:scale-105',
       'btn-attention': 'bg-ciRed text-white',
       'btn-small': 'hover:bg-grey-700 mr-1 rounded-lg bg-white px-4 h-9 shadow-md font-normal',
