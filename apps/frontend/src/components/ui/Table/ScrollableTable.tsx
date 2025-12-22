@@ -168,7 +168,10 @@ const ScrollableTable = <TData, TValue>({
           {showHeader && (
             <TableHeader className={`text-foreground ${textColorClassname}`}>
               {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
+                <TableRow
+                  key={headerGroup.id}
+                  variant={isDialog ? 'dialog' : 'default'}
+                >
                   {headerGroup.headers.map((header) => (
                     <TableHead
                       key={header.id}
@@ -199,6 +202,7 @@ const ScrollableTable = <TData, TValue>({
                     enableDragAndDrop={enableDragAndDrop}
                     canDropOnRow={canDropOnRow}
                     textColorClassname={textColorClassname}
+                    variant={isDialog ? 'dialog' : 'default'}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
@@ -212,7 +216,7 @@ const ScrollableTable = <TData, TValue>({
                 );
               })
             ) : (
-              <TableRow>
+              <TableRow variant={isDialog ? 'dialog' : 'default'}>
                 <TableCell
                   colSpan={columns?.length}
                   className={`h-24 text-center ${textColorClassname}`}

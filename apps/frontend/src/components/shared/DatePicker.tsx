@@ -43,20 +43,17 @@ const DatePicker = (props: DatePickerProps) => {
   const locale = getLocaleDateFormat(language);
 
   return (
-    <span className="min-w-[150px] max-w-[150px] flex-shrink-0 flex-grow-0 overflow-auto text-background">
+    <span className="min-w-[150px] max-w-[150px] flex-shrink-0 flex-grow-0 overflow-auto">
       <Popover>
         <PopoverTrigger asChild>
           <Button
-            className={cn(
-              'h-9 justify-start rounded bg-accent py-0 text-left font-normal text-background',
-              !selected && 'opacity-80',
-            )}
+            className={cn('h-9 justify-start rounded bg-accent py-0 text-left font-normal', !selected && 'opacity-80')}
           >
-            <CalendarIcon className="mr-2 h-6 w-6 text-background" />
+            <CalendarIcon className="mr-2 h-6 w-6" />
             {selected ? format(selected, 'PPP', { locale }) : t(`common.select`)}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto bg-accent p-0 font-normal text-background shadow-lg">
+        <PopoverContent className="w-auto bg-accent p-0 font-normal shadow-lg">
           <Calendar
             mode="single"
             selected={selected}

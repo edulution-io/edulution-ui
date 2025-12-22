@@ -46,9 +46,11 @@ import FilesystemService from '../filesystem/filesystem.service';
 import TLDrawSyncService from './tldraw-sync.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import CustomHttpException from '../common/CustomHttpException';
+import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
 
 @ApiTags(TLDRAW_SYNC_ENDPOINTS.BASE)
 @ApiBearerAuth()
+@RequireAppAccess(APPS.WHITEBOARD)
 @Controller(TLDRAW_SYNC_ENDPOINTS.BASE)
 class TLDrawSyncController {
   constructor(
