@@ -512,6 +512,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   private async searchWithPagedFallback(ldapClient: Client, searchBase: string, options: SearchOptions) {
     const pagedOptions: SearchOptions = { ...options, paged: { pageSize: 500 } };
 
