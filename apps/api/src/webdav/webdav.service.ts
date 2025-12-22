@@ -197,19 +197,23 @@ class WebdavService {
     const pathWithoutWebdav = getPathWithoutWebdav(path, webdavShare.pathname);
     const url = WebdavService.safeJoinUrl(webdavShare.url, pathWithoutWebdav);
 
-    return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
-      client,
-      {
-        method: HttpMethodsWebDav.PROPFIND,
-        url,
-        data: DEFAULT_PROPFIND_XML,
-        headers: {
-          [HTTP_HEADERS.Depth]: WebdavRequestDepth.ONE_LEVEL,
+    try {
+      return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
+        client,
+        {
+          method: HttpMethodsWebDav.PROPFIND,
+          url,
+          data: DEFAULT_PROPFIND_XML,
+          headers: {
+            [HTTP_HEADERS.Depth]: WebdavRequestDepth.ONE_LEVEL,
+          },
         },
-      },
-      FileSharingErrorMessage.FolderNotFound,
-      mapToDirectories,
-    )) as DirectoryFileDTO[];
+        FileSharingErrorMessage.FolderNotFound,
+        mapToDirectories,
+      )) as DirectoryFileDTO[];
+    } catch (error) {
+      return [];
+    }
   }
 
   async createFolder(username: string, path: string, folderName: string, share: string): Promise<WebdavStatusResponse> {
@@ -330,6 +334,7 @@ class WebdavService {
         url: encodeURI(originFullPath),
         headers: {
           Destination: encodeURI(destinationUrl),
+          Overwrite: 'T',
           [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
         },
       },

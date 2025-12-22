@@ -23,10 +23,11 @@ import FILE_PATHS from '../constants/file-paths';
 import normalizeLdapHomeDirectory from './normalizeLdapHomeDirectory';
 
 const buildSharePath = (userName: string, fileName: string, student: LmnUserInfo): string => {
-  const file = fileName.split('/').pop();
+  const file = fileName.split('/').filter(Boolean).pop();
+  const studentName = student.examMode ? `${student.cn}-exam` : student.cn;
 
   const studentPath = student.examMode
-    ? `/${UserRoles.EXAM_USER}/${student.cn}-exam`
+    ? `/${student.school}/${UserRoles.EXAM_USER}/${studentName}`
     : normalizeLdapHomeDirectory(student?.homeDirectory);
 
   return `${studentPath}/${FILE_PATHS.TRANSFER}/${userName}/${file}`;
