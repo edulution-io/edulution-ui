@@ -95,7 +95,7 @@ class ThumbnailService implements OnModuleInit {
         return await FilesystemService.readFile(cachePath);
       }
     } catch (error) {
-      Logger.warn(`Failed to read cached thumbnail: ${error}`, ThumbnailService.name);
+      Logger.warn(`Failed to read cached thumbnail: ${cachePath} ${(error as Error).message}`, ThumbnailService.name);
     }
     return null;
   }
@@ -124,7 +124,7 @@ class ThumbnailService implements OnModuleInit {
       throw new CustomHttpException(
         FileSharingErrorMessage.DownloadFailed,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        `Failed to generate thumbnail for ${filePath}: ${error}`,
+        `Failed to generate thumbnail for ${filePath}`,
         ThumbnailService.name,
       );
     }
@@ -157,7 +157,7 @@ class ThumbnailService implements OnModuleInit {
       await sharp(thumbnail).toFile(cachePath);
       Logger.debug(`Thumbnail cached at: ${cachePath}`, ThumbnailService.name);
     } catch (error) {
-      Logger.warn(`Failed to cache thumbnail: ${error}`, ThumbnailService.name);
+      Logger.warn(`Failed to cache thumbnail: ${cachePath} ${(error as Error).message}`, ThumbnailService.name);
     }
   }
 
