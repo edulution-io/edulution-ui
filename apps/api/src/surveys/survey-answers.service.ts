@@ -104,7 +104,7 @@ class SurveyAnswersService implements OnModuleInit {
 
     const filteredChoices: ChoiceDto[] = [];
     const filteringPromises = possibleChoices.map(async (choice) => {
-      const counter = await this.countChoiceSelections(surveyId, questionName, choice.title);
+      const counter = await this.countChoiceSelections(surveyId, questionName, choice.name);
       if (choice.limit === 0 || !counter || counter < choice.limit) {
         filteredChoices.push(choice);
       }
