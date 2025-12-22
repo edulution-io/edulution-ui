@@ -66,7 +66,7 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
             onClick={refreshPage}
             className="absolute left-1/2 -translate-x-1/2"
           >
-            <MdRefresh className="h-6 w-6 text-muted hover:text-muted-foreground" />
+            <MdRefresh className="h-6 w-6" />
           </button>
         )}
 

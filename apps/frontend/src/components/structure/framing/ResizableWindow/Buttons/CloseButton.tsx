@@ -28,7 +28,7 @@ interface CloseButtonProps {
 }
 
 const CloseButton = ({ handleClose, className }: CloseButtonProps) => {
-  const closeClasses = cn('bg-red-800 hover:bg-red-700', className);
+  const closeClasses = cn('bg-ciRed hover:bg-ciRed/75 text-white', className);
 
   return (
     <WindowControlBaseButton

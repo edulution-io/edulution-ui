@@ -18,6 +18,8 @@
  */
 
 import { SetMetadata } from '@nestjs/common';
+import { PUBLIC_ROUTE_KEY } from '@libs/auth/constants/appAccessKeys';
 
-export const PUBLIC_ROUTE_KEY = 'isPublicRoute';
-export const Public = () => SetMetadata(PUBLIC_ROUTE_KEY, true);
+const Public = () => SetMetadata(PUBLIC_ROUTE_KEY, true);
+
+export default Public;

@@ -19,7 +19,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Card } from '@/components/shared/Card';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { GRID_CARD, GRID_SEARCH } from '@libs/ui/constants/commonClassNames';
 import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
 import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
@@ -32,6 +32,7 @@ import useMedia from '@/hooks/useMedia';
 import cn from '@libs/common/utils/className';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import LAUNCHER_SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
+import getAppIconClassName from '@/utils/getAppIconClassName';
 
 const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
   const { toggleMobileSidebar } = useSidebarStore();
@@ -41,7 +42,13 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
   const [search, setSearch] = useState('');
   const sidebarItems = useSidebarItems();
   const navigate = useNavigate();
+  const location = useLocation();
   const { isMobileView, isTabletView } = useMedia();
+
+  const currentAppPath = useMemo(() => {
+    const segments = location.pathname.split('/').filter(Boolean);
+    return segments.length > 0 ? `/${segments[0]}` : '';
+  }, [location.pathname]);
 
   const filteredApps = useMemo(() => {
     const searchString = search.trim().toLowerCase();
@@ -94,30 +101,33 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
         className={GRID_SEARCH}
       />
 
-      <div className="mx-auto grid max-h-full w-full grid-cols-[repeat(auto-fit,minmax(8rem,auto))] justify-center gap-x-3 gap-y-2 overflow-auto pb-10 scrollbar-thin md:max-h-full md:w-[95%] md:grid-cols-[repeat(auto-fit,minmax(12rem,auto))] md:gap-x-6 md:gap-y-5 md:pb-4">
+      <div className="mx-auto flex max-h-full w-full flex-wrap justify-center gap-2 overflow-y-auto pb-10 scrollbar-thin md:pb-4">
         {filteredApps.length ? (
-          filteredApps.map((app, index) => (
+          filteredApps.map((app) => (
             <NavLink
               key={app.link}
               to={app.link}
               onClick={onClose}
             >
               <Card
-                className={cn(GRID_CARD, { 'bg-muted': index === 0 })}
-                variant="text"
+                className={cn(GRID_CARD, { 'bg-ciGreenToBlue text-white': app.link === currentAppPath })}
+                variant="dialog"
               >
-                <img
-                  src={app.icon}
-                  alt={app.title}
-                  className="h-10 w-10 md:h-14 md:w-14"
-                />
-
-                <p>{app.title}</p>
-
-                <NotificationCounter
-                  count={app.notificationCounter || 0}
-                  className="top-[10px]"
-                />
+                <div className="relative m-4 flex flex-col items-center">
+                  <img
+                    src={app.icon}
+                    alt={app.title}
+                    className={cn(
+                      'h-12 w-12 md:h-14 md:w-14',
+                      app.link !== currentAppPath && getAppIconClassName(app.icon),
+                    )}
+                  />
+                  <p>{app.title}</p>
+                  <NotificationCounter
+                    count={app.notificationCounter || 0}
+                    className="top-[-8px]"
+                  />
+                </div>
               </Card>
             </NavLink>
           ))

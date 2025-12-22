@@ -182,7 +182,7 @@ const UserCardButtonBar = ({
           />
           <div
             className={cn(
-              'absolute -right-[5px] top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-l-[8px] bg-ciGreenToBlue px-2 text-background ',
+              'absolute -right-[5px] top-0 hidden h-full items-center justify-center whitespace-nowrap rounded-l-[8px] bg-ciGreenToBlue px-2 text-white ',
               !button.disabled && 'group-hover:flex',
             )}
           >

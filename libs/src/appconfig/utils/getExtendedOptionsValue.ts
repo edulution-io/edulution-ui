@@ -19,20 +19,19 @@
 
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';
-import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 
-const getExtendedOptionsValue = (
+const getExtendedOptionsValue = <T = string>(
   appConfigs: AppConfigDto[],
   settingLocation: string,
   key: ExtendedOptionKeysType,
-): VeyonProxyItem[] | string => {
+): T | undefined => {
   const appConfig = appConfigs.find((config) => config.name === settingLocation);
 
   if (!appConfig || typeof appConfig.extendedOptions !== 'object') {
-    return '';
+    return undefined;
   }
 
-  return (appConfig.extendedOptions[key] as string) || '';
+  return appConfig.extendedOptions[key] as T | undefined;
 };
 
 export default getExtendedOptionsValue;

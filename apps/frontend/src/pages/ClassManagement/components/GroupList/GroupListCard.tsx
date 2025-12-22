@@ -179,7 +179,7 @@ const GroupListCard: React.FC<GroupListCardProps> = ({ group, type, icon, isEnro
             <div
               className={cn(
                 'absolute bottom-2 right-2 mt-1 h-[26px] flex-col items-center justify-around rounded-lg px-2 py-0 text-sm',
-                isActive ? 'bg-gray-400' : 'bg-gray-700',
+                isActive ? 'bg-black/40 text-white' : 'bg-black/10',
               )}
             >
               {sophomorixSchoolname}

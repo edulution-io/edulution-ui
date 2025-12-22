@@ -399,6 +399,14 @@
       "zipFilesAreUploading": "Dateien werden in Ordnerstruktur hochgeladen",
       "fileIsUploading": "{{filename}} wird hochgeladen"
     },
+    "textEditor": {
+      "unsavedChanges": "Ungespeicherte Änderungen",
+      "unsavedChangesMessage": "Sie haben ungespeicherte Änderungen. Was möchten Sie tun?",
+      "discard": "Verwerfen",
+      "saving": "Speichern...",
+      "saveSuccess": "Datei erfolgreich gespeichert",
+      "saveError": "Datei konnte nicht gespeichert werden"
+    },
     "tooltips": {
       "folderNameRequired": "Ordnername ist erforderlich",
       "FileNameRequired": "Dateiname ist erforderlich",
@@ -1095,7 +1103,10 @@
           "title": "Allgemeine Einstellungen",
           "description": ""
         },
-
+        "drawio": {
+          "title": "Draw.io Integration",
+          "description": "Konfiguriere Draw.io zum Erstellen von Diagrammen und Flussdiagrammen."
+        },
         "proxyConfig": {
           "title": "Proxy-Konfiguration",
           "description": "Hier kann eine eigene Proxy-Konfiguration für Traefik hinterlegt werden. Dabei kann entweder über die Eingabefelder mithilfe einer Vorlage gearbeitet werden, oder direkt im Expertenmodus eine Konfiguration im YAML-Format erstellt werden. <br/><strong>Achtung:</strong> Eine falsche Konfiguration könnte dazu führen, dass die Anwendung nicht mehr erreichbar ist."
@@ -1291,6 +1302,17 @@
       "french": "Französisch",
       "system": "Systemsprache",
       "selectLanguage": "Sprache auswählen"
+    },
+    "themeMode": {
+      "title": "Erscheinungsbild",
+      "description": "Wähle das Erscheinungsbild der Benutzeroberfläche.",
+      "system": "System",
+      "dark": "Dunkel",
+      "light": "Hell"
+    },
+    "userinterface": {
+      "title": "Benutzeroberfläche",
+      "description": "Hier kannst du Einstellungen zur Benutzeroberfläche vornehmen."
     },
     "addTotp": {
       "title": "Zwei-Faktor-Authentisierung einrichten",
@@ -1833,6 +1855,8 @@
     "onlyOfficeUrlTitle": "OnlyOffice-URL",
     "onlyOfficeJwtSecretTitle": "OnlyOffice JWT Secret",
     "onlyOfficeJwtSecretDescription": "Gib hier den OnlyOffice JWT Secret Key an",
+    "drawioUrlTitle": "Draw.io URL",
+    "drawioUrlDescription": "Gib die URL der selbst gehosteten Draw.io-Instanz ein",
     "overrideDocumentVendorMSWithOOTitle": "OpenDocument als Standard-Dokumentenformat verwenden",
     "overrideDocumentVendorMSWithOODescription": "Soll anstatt der Microsoft Office Formate (docx, pptx, xlsx) das OpenDocument Format (odt, ods, odp) verwendet werden?",
     "mailImapUrlTitle": "URL",

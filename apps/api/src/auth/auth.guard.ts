@@ -24,9 +24,9 @@ import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
+import { PUBLIC_ROUTE_KEY } from '@libs/auth/constants/appAccessKeys';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import CustomHttpException from '../common/CustomHttpException';
-import { PUBLIC_ROUTE_KEY } from '../common/decorators/public.decorator';
 import extractToken from '../common/utils/extractToken';
 
 @Injectable()
