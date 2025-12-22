@@ -18,16 +18,17 @@
  */
 
 import React from 'react';
+import { IconType } from 'react-icons';
 import cn from '@libs/common/utils/className';
 import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
 import { Card } from '@/components/shared/Card';
-import { IconType } from 'react-icons';
 
 interface SurveyEditorTemplateCardProps {
-  icon: IconType;
+  icon: string | IconType;
   title?: string;
   description?: string;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 const SurveyEditorTemplateCard = ({
@@ -35,17 +36,26 @@ const SurveyEditorTemplateCard = ({
   title,
   description,
   onClick,
+  disabled = false,
 }: SurveyEditorTemplateCardProps): JSX.Element => (
   <Card
-    className={cn(GRID_CARD, 'cursor-pointer bg-muted', 'h-[13rem]', 'flex', { 'pt-8': !description })}
+    className={cn(GRID_CARD, { 'bg-ciGreenToBlue text-white': disabled })}
     variant="text"
     onClick={onClick}
   >
-    <Icon className="h-10 w-10 md:h-14 md:w-14" />
-
-    {title && <h3 className={cn('line-clamp-2 h-[3.8rem] justify-center', { 'mt-4': !description })}>{title}</h3>}
-
-    {description && <p className="line-clamp-2 h-[2.8rem] w-full">{description}</p>}
+    <div className="relative m-4 flex flex-col items-center">
+      {typeof Icon === 'string' ? (
+        <img
+          src={Icon}
+          alt={title}
+          className="h-12 w-12 md:h-14 md:w-14"
+        />
+      ) : (
+        <Icon className="h-12 w-12 md:h-14 md:w-14" />
+      )}
+      <p className="line-clamp-2">{title}</p>
+      {description && <p className="line-clamp-2">{description}</p>}
+    </div>
   </Card>
 );
 

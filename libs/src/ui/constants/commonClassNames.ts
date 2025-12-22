@@ -19,9 +19,6 @@
 
 import { cva } from 'class-variance-authority';
 
-export const GRID_SEARCH =
-  'mx-auto my-3 block w-[80%] min-w-[250px] rounded-xl border border-ring px-3 py-2 md:mb-2 md:mt-0 md:w-[400px]';
-
 export const GRID_CARD =
   'm-1 flex h-32 w-32 flex-col items-center overflow-hidden md:w-48 2xl:transition-transform 2xl:duration-300 2xl:hover:scale-105';
 
@@ -40,6 +37,7 @@ const VARIANT_CARET = {
   dialog: 'bg-background',
   login: 'bg-black',
 } as const;
+
 export const inputVariants = cva(INPUT_BASE_CLASSES, {
   variants: {
     variant: {

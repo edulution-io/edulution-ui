@@ -58,7 +58,7 @@ const SurveyEditorEntryPage = () => {
     resetTemplateStore();
     resetQuestionsContextMenu();
     void fetchSelectedSurvey(surveyCreator, surveyId, false);
-  }, [surveyId]);
+  }, [surveyCreator, surveyId]);
 
   if (isFetching) {
     return (

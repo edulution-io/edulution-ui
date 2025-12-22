@@ -20,7 +20,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Card } from '@/components/shared/Card';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { GRID_CARD, GRID_SEARCH } from '@libs/ui/constants/commonClassNames';
+import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
 import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
 import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
 import useLanguage from '@/hooks/useLanguage';
@@ -98,7 +98,6 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         variant="dialog"
-        className={GRID_SEARCH}
       />
 
       <div className="mx-auto flex max-h-full w-full flex-wrap justify-center gap-2 overflow-y-auto pb-10 scrollbar-thin md:pb-4">
