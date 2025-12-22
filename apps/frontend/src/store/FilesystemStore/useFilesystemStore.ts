@@ -155,15 +155,13 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
   },
 
   doesCustomImageExist: async (appName: string, fileName: string, variant: ThemeType = THEME.dark): Promise<void> => {
-    const { setError, setCustomLogoExists } = get();
-    setError(variant, null);
+    const { setCustomLogoExists } = get();
     try {
       const url = `${EDU_API_CONFIG_ENDPOINTS.FILES}/public/assets/${appName}/${fileName}`;
       await eduApi.get<File>(url);
       setCustomLogoExists(variant, true);
     } catch (e) {
       setCustomLogoExists(variant, false);
-      handleApiError(e, set);
     }
   },
 
