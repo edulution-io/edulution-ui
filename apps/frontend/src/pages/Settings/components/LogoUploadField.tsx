@@ -18,9 +18,10 @@
  */
 
 import React from 'react';
-import { Theme, ThemeType } from '@libs/common/constants/theme';
+import THEME from '@libs/common/constants/theme';
 import FileSelectButton from '@/components/ui/FileSelectButton';
 import cn from '@libs/common/utils/className';
+import ThemeType from '@libs/common/types/themeType';
 
 type LogoUploadFieldProps = {
   variant: ThemeType;
@@ -53,7 +54,7 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
   fallbackSrc,
   className,
 }) => {
-  const backdropClass = variant === Theme.light ? 'bg-neutral-900' : 'bg-white';
+  const backdropClass = variant === THEME.light ? 'bg-neutral-900' : 'bg-white';
 
   return (
     <div

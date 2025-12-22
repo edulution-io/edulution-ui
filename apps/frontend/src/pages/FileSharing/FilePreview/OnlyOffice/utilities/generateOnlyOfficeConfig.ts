@@ -30,6 +30,7 @@ interface OnlyOfficeConfigProps {
   mode: 'view' | 'edit';
   username: string;
   lang: string;
+  uiTheme: 'theme-white' | 'theme-night';
 }
 
 const generateOnlyOfficeConfig = ({
@@ -41,6 +42,7 @@ const generateOnlyOfficeConfig = ({
   callbackUrl,
   mode,
   lang,
+  uiTheme,
 }: OnlyOfficeConfigProps): IConfig => ({
   document: {
     fileType,
@@ -81,7 +83,7 @@ const generateOnlyOfficeConfig = ({
       plugins: true,
       toolbarHideFileName: false,
       toolbarNoTabs: false,
-      uiTheme: 'theme-dark',
+      uiTheme,
       unit: 'cm',
       zoom: mode === 'view' ? 50 : 100,
     },

@@ -219,9 +219,9 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
         });
         setCurrentPosition(position);
       }}
-      className={cn('bg-global overflow-hidden rounded-lg rounded-t-none shadow-lg', {
-        'rounded-t-lg border border-slate-500 bg-gray-800': !isMaximized && !isMinimized && !isCurrentlySticky,
-        'rounded-none transition-transform active:transition-none': isMinimized,
+      className={cn('bg-global overflow-hidden shadow-lg', {
+        'rounded-xl': !isMaximized && !isMinimized && !isCurrentlySticky,
+        'rounded-lg transition-transform active:transition-none': isMinimized,
       })}
       bounds={`#${APP_LAYOUT_ID}`}
       disableDragging={disableDragging}
@@ -251,9 +251,9 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
         role="button"
         tabIndex={0}
         style={{ height: isMinimized ? DEFAULT_MINIMIZED_BAR_HEIGHT : MAXIMIZED_BAR_HEIGHT }}
-        className={cn('sticky top-0 flex items-center justify-between bg-gray-900 text-background', {
+        className={cn('sticky top-0 flex items-center justify-between bg-overlay text-background', {
           'cursor-default': disableDragging,
-          'cursor-move hover:bg-gray-800': isMinimized && !isMobileView,
+          'cursor-move hover:bg-accent': isMinimized && !isMobileView,
         })}
       >
         <div className="drag-handle h-full w-[calc(100%-40px)] overflow-hidden truncate text-ellipsis">

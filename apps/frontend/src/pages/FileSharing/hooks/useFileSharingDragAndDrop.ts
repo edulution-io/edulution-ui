@@ -26,7 +26,8 @@ import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpo
 import { HttpMethods } from '@libs/common/types/http-methods';
 import ContentType from '@libs/filesharing/types/contentType';
 import PathChangeOrCreateDto from '@libs/filesharing/types/pathChangeOrCreateProps';
-import { DragEndEvent, DragStartEvent, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { DragEndEvent, DragStartEvent, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
+import DND_SENSOR_CONFIG from '@libs/ui/constants/dndSensorConfig';
 import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
 
 interface UseFileSharingDragAndDropProps {
@@ -41,15 +42,15 @@ const useFileSharingDragAndDrop = ({ webdavShare, currentPath }: UseFileSharingD
   const { setSelectedRows, setSelectedItems, fetchFiles, selectedRows, files } = useFileSharingStore();
 
   const sensors = useSensors(
-    useSensor(PointerSensor, {
+    useSensor(MouseSensor, {
       activationConstraint: {
-        distance: 8,
+        distance: DND_SENSOR_CONFIG.MOUSE.ACTIVATION_DISTANCE,
       },
     }),
     useSensor(TouchSensor, {
       activationConstraint: {
-        delay: 250,
-        tolerance: 5,
+        delay: DND_SENSOR_CONFIG.TOUCH.ACTIVATION_DELAY,
+        tolerance: DND_SENSOR_CONFIG.TOUCH.ACTIVATION_TOLERANCE,
       },
     }),
   );

@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "1.6.161",
+  "version": "1.6.166",
   "scripts": {
     "test": "nx run-many --target=test --projects=api",
     "test:api": "nx run api:test --detectOpenHandles",
@@ -87,6 +87,7 @@
     "@types/imapflow": "^1.0.19",
     "@types/mailparser": "^3.4.4",
     "@types/mime": "^3.0.4",
+    "@uiw/react-md-editor": "^4.0.11",
     "autoprefixer": "^10.4.17",
     "axios": "^1.7.4",
     "bullmq": "^5.58.2",
@@ -141,7 +142,6 @@
     "react-hook-form": "^7.51.1",
     "react-i18next": "^14.0.3",
     "react-icons": "^5.0.1",
-    "react-markdown": "^10.1.0",
     "react-oidc-context": "^3.2.0",
     "react-player": "^2.15.0",
     "react-quill-new": "^3.3.3",

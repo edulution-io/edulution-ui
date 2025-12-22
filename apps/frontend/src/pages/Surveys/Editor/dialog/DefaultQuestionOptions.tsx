@@ -32,30 +32,23 @@ const DefaultQuestionOptions = () => {
 
   return (
     <div className="my-2 flex flex-col gap-2">
-      <Label>
-        <p className="font-bold">{t('survey.editor.questionSettings.questionTitle')}</p>
-      </Label>
+      <Label>{t('survey.editor.questionSettings.questionTitle')}</Label>
       <Input
         placeholder={t('survey.editor.questionSettings.addQuestionTitle')}
         type="text"
         variant="dialog"
         value={questionTitle}
         onChange={(e) => setQuestionTitle(e.target.value)}
-        className={cn({ 'text-muted-foreground': !questionTitle }, { 'text-primary-foreground': questionTitle })}
+        className={cn({ 'text-muted-foreground': !questionTitle }, { 'text-background': questionTitle })}
       />
-      <Label>
-        <p className="font-bold">{t('survey.editor.questionSettings.questionDescription')}</p>
-      </Label>
+      <Label>{t('survey.editor.questionSettings.questionDescription')}</Label>
       <Input
         placeholder={t('survey.editor.questionSettings.addQuestionDescription')}
         type="text"
         variant="dialog"
         value={questionDescription}
         onChange={(e) => setQuestionDescription(e.target.value)}
-        className={cn(
-          { 'text-muted-foreground': !questionDescription },
-          { 'text-primary-foreground': questionDescription },
-        )}
+        className={cn({ 'text-muted-foreground': !questionDescription }, { 'text-background': questionDescription })}
       />
     </div>
   );

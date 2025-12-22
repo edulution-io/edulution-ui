@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { ThemeType } from '@libs/common/constants/theme';
+import ThemeType from '@libs/common/types/themeType';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import { GLOBAL_SETTINGS_BRANDING_LOGO } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import getMainLogoFilename from '@libs/filesharing/utils/getMainLogoFilename';

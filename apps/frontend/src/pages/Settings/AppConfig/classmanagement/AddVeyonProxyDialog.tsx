@@ -50,12 +50,8 @@ const AddVeyonProxyDialog: React.FC<AddVeyonProxyDialogProps> = ({ tableId }) =>
   const { selectedConfig, setSelectedConfig } = useVeyonConfigTableStore();
   const isOpen = isDialogOpen === tableId;
 
-  const veyonProxyConfig = getExtendedOptionsValue(
-    appConfigs,
-    APPS.CLASS_MANAGEMENT,
-    ExtendedOptionKeys.VEYON_PROXYS,
-  ) as VeyonProxyItem[];
-
+  const veyonProxyConfig =
+    getExtendedOptionsValue<VeyonProxyItem[]>(appConfigs, APPS.CLASS_MANAGEMENT, ExtendedOptionKeys.VEYON_PROXYS) ?? [];
   const initialFormValues = selectedConfig || {
     veyonProxyId: '',
     subnet: '',
