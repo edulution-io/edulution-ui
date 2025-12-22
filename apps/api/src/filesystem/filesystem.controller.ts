@@ -47,8 +47,9 @@ import validatePathNoPathTraversal from 'apps/api/src/common/utils/validatePathN
 import CustomHttpException from '../common/CustomHttpException';
 import { createAttachmentUploadOptions, createDiskStorage } from './multer.utilities';
 import AdminGuard from '../common/guards/admin.guard';
+import DynamicAppAccessGuard from '../common/guards/dynamicAppAccess.guard';
 import FilesystemService from './filesystem.service';
-import { Public } from '../common/decorators/public.decorator';
+import Public from '../common/decorators/public.decorator';
 import IsPublicAppGuard from '../common/guards/isPublicApp.guard';
 
 @ApiTags(EDU_API_CONFIG_ENDPOINTS.FILES)
@@ -83,6 +84,7 @@ class FileSystemController {
   }
 
   @Get(`${FILE_ENDPOINTS.FILE}/:appName/*filename`)
+  @UseGuards(DynamicAppAccessGuard)
   serveFile(@Param('appName') appName: string, @Param('filename') filename: string | string[], @Res() res: Response) {
     return this.filesystemService.serveFile(appName, FilesystemService.buildPathString(filename), res);
   }

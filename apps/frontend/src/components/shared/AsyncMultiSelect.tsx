@@ -48,17 +48,13 @@ const AsyncMultiSelect = <T extends MultipleSelectorOptionSH>({
   const { t } = useTranslation();
 
   const loadingIndicator = (
-    <p
-      className={`leading-1 py-2 text-center ${variant === 'default' ? 'text-background dark:text-secondary' : 'text-background'}`}
-    >
+    <p className={`leading-1 py-2 text-center ${variant === 'default' ? 'dark:text-secondary' : ''}`}>
       {t('search.loading')}...
     </p>
   );
 
   const emptyIndicator = (
-    <p
-      className={`leading-1 w-full py-2 text-center ${variant === 'default' ? 'text-background dark:text-secondary' : 'text-background'}`}
-    >
+    <p className={`leading-1 w-full py-2 text-center ${variant === 'default' ? 'dark:text-secondary' : ''}`}>
       {t('search.no-results')}
     </p>
   );

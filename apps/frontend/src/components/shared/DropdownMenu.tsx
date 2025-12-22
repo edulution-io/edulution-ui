@@ -63,7 +63,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
       <DropdownMenuPortal>
         <DropdownMenuContent
           className={cn(
-            'z-50 max-h-[calc(100vh-300px)] min-w-[8rem] overflow-y-auto rounded-lg border-none bg-overlay p-1 text-background shadow-md',
+            'z-50 max-h-[calc(100vh-300px)] min-w-[8rem] overflow-y-auto rounded-lg border-none bg-overlay p-1 shadow-md',
             menuContentClassName,
           )}
         >
