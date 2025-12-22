@@ -17,10 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const EVENT_EMITTER_EVENTS = {
-  APPCONFIG_UPDATED: 'appconfig.updated',
-  APP_ACCESS_MAP_UPDATED: 'appconfig.accessMapUpdated',
-  WEBDAV_BASEURL_CHANGED: 'webdav.baseUrlChanged',
-} as const;
+import { SetMetadata } from '@nestjs/common';
+import { APP_ACCESS_KEY } from '@libs/auth/constants/appAccessKeys';
 
-export default EVENT_EMITTER_EVENTS;
+const RequireAppAccess = (domain: string) => SetMetadata(APP_ACCESS_KEY, domain);
+
+export default RequireAppAccess;
