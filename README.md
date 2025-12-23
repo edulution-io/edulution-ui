@@ -1,6 +1,6 @@
 # edulution UI
 
-[![Node](https://img.shields.io/badge/node-20.x-brightgreen?style=for-the-badge)](https://nodejs.org)
+[![Node](https://img.shields.io/badge/node-22.x-brightgreen?style=for-the-badge)](https://nodejs.org)
 [![React](https://img.shields.io/badge/react-18.x-blue?style=for-the-badge)](https://reactjs.org/)
 [![NestJS](https://img.shields.io/badge/nestjs-%E2%9D%A4-red?style=for-the-badge)](https://nestjs.com)
 [![NX Monorepo](https://img.shields.io/badge/nx-monorepo-blue?style=for-the-badge)](https://nx.dev)
@@ -31,7 +31,7 @@ A Full Stack Application build with Vite+React (frontend) and Nest.js for the AP
 
 #### Prerequisites
 
-- Node.js 20 LTS
+- Node.js 22 LTS
 - Running MongoDB
 - Running Redis
 
@@ -109,33 +109,3 @@ docker compose up -d
 ```bash
 bash <(curl -s https://get.edulution.io/installer)
 ```
-
----
-
-### OnlyOffice in development
-
-1. Start the OnlyOffice container from the settings (http://localhost:5173/settings/filesharing), make sure the port `8088` is available.
-
-2. Enter the Only Office Integration values in the settings (http://localhost:5173/settings/filesharing):
-
-- OnlyOffice-URL: `http://host.docker.internal:8088/`
-- OnlyOffice JWT Secret: `<your-secret`
-
-3. On some systems `host.docker.internal` is not natively available without additional configuration. How to set up in Linux:
-
-- Find the host machine's IP address
-  ```bash
-  ip addr show docker0
-  ```
-- Add the mapping to `/etc/hosts`
-  ```bash
-  sudo nano /etc/hosts
-  ```
-- Add the following line (replace the IP with the actual one)
-  ```bash
-  172.17.0.1 host.docker.internal
-  ```
-- You are done. Test it with
-  ```bash
-  wget http://host.docker.internal:5173
-  ```
