@@ -53,6 +53,8 @@
     "confirmDelete_other": "Ces {{count}} messages devraient-ils vraiment être supprimés?",
     "rowsSelected": "{{selected}} depuis {{total}} messages sélectionnés",
     "rowSelected": "{{selected}} depuis {{total}} notification sélectionnée",
+    "item": "{{count}} message",
+    "items": "{{count}} messages",
     "cancel": "Annuler",
     "title": "titre",
     "content": "Contenu",
@@ -190,6 +192,8 @@
     "encryption": "Chiffrement",
     "rowSelected": "{{selected}} de {{total}} tâche sélectionnée",
     "rowsSelected": "{{selected}} de {{total}} tâches sélectionnées",
+    "item": "{{count}} tâche",
+    "items": "{{count}} tâches",
     "themeUpdated": {
       "generic": "Le thème du courrier électronique a été mis à jour. Veuillez actualiser la page pour que les modifications soient prises en compte.",
       "failed": "Le thème du courrier électronique n'a pas pu être mis à jour."
@@ -292,6 +296,8 @@
     "private": "Privé",
     "rowsSelected": "{{selected}} de {{total}} conférences sélectionnées",
     "rowSelected": "{{selected}} de {{total}} conférence sélectionnée",
+    "item": "{{count}} conférence",
+    "items": "{{count}} conférences",
     "cancel": "Annuler",
     "password_required": "Aucun mot de passe saisi",
     "error": "Erreur",
@@ -336,6 +342,8 @@
     "loadingDocument": "Chargement du document ...",
     "rowsSelected": "{{selected}} de {{total}} fichiers sélectionnés",
     "rowSelected": "{{selected}} de {{total}} fichier sélectionné",
+    "item": "{{count}} élément",
+    "items": "{{count}} éléments",
     "fileWithSameNameAlreadyExists": "Un fichier avec ce nom existe déjà.",
     "folderWithSameNameAlreadyExists": "Un dossier avec ce nom existe déjà.",
     "currentName": "Nom actuel",
@@ -679,6 +687,8 @@
   "surveys": {
     "rowsSelected": "{{selected}} de {{total}} sondages sélectionnés",
     "rowSelected": "{{selected}} de {{total}} sondages sélectionné",
+    "item": "{{count}} sondage",
+    "items": "{{count}} sondages",
     "confirmDelete": "Le sondage devrait-il vraiment être supprimé?",
     "confirmDelete_other": "Ces {{count}} sondages devraient-ils vraiment être supprimés?",
     "deleteSurveys": "Supprimer sondage",
@@ -998,7 +1008,9 @@
           "uploadSuccess": "Fichiers téléversés avec succès",
           "uploadFailed": "Le téléversement a échoué",
           "rowSelected": "{{selected}} de {{total}} fichier sélectionné",
-          "rowsSelected": "{{selected}} de {{total}} fichiers sélectionnés"
+          "rowsSelected": "{{selected}} de {{total}} fichiers sélectionnés",
+          "item": "{{count}} élément",
+          "items": "{{count}} éléments"
         },
         "editor": {
           "title": "Editeur",
@@ -1041,6 +1053,8 @@
     },
     "rowsSelected": "{{selected}} de {{total}} conteneurs sélectionnés",
     "rowSelected": "{{selected}} de {{total}} conteneur sélectionné",
+    "item": "{{count}} conteneur",
+    "items": "{{count}} conteneurs",
     "license": {
       "title": "Licence",
       "customerId": "Numéro de client",
@@ -1066,6 +1080,8 @@
     "sidebar": "Mon profil",
     "rowSelected": "{{selected}} de {{total}} compte sélectionné",
     "rowsSelected": "{{selected}} de {{total}} comptes sélectionnés",
+    "item": "{{count}} compte",
+    "items": "{{count}} comptes",
     "details": {
       "title": "Coordonnées",
       "description": "Ici, vous pouvez afficher vos données utilisateur et les modifier en partie.",
