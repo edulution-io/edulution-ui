@@ -22,6 +22,7 @@ import cn from '@libs/common/utils/className';
 import THEME from '@libs/common/constants/theme';
 import ThemeType from '@libs/common/types/themeType';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import FileSelectButton from '@/components/ui/FileSelectButton';
 
 type LogoUploadFieldProps = {
@@ -88,17 +89,21 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
           </button>
         )}
       </div>
-      <img
-        key={cacheKey}
-        src={previewSrc || fallbackSrc}
-        alt={alt}
-        className="h-20 w-auto object-contain"
-        onError={(e) => {
-          if (fallbackSrc) {
-            (e.currentTarget as HTMLImageElement).src = fallbackSrc;
-          }
-        }}
-      />
+      {uploading ? (
+        <CircleLoader className="mx-auto h-20" />
+      ) : (
+        <img
+          key={cacheKey}
+          src={previewSrc || fallbackSrc}
+          alt={alt}
+          className="h-20 w-auto object-contain"
+          onError={(e) => {
+            if (fallbackSrc) {
+              (e.currentTarget as HTMLImageElement).src = fallbackSrc;
+            }
+          }}
+        />
+      )}
       <div className="mt-3 grid w-full grid-cols-1 gap-2">
         <FileSelectButton
           ref={inputRef}
@@ -111,12 +116,6 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
           disabled={uploading}
         />
       </div>
-
-      {uploading && (
-        <div className="pointer-events-none absolute inset-0 grid place-items-center">
-          <div className="h-6 w-6 animate-spin rounded-full border-2 border-current border-t-transparent" />
-        </div>
-      )}
     </div>
   );
 };

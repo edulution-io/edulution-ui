@@ -41,6 +41,9 @@ interface FilesystemStore {
     appName?: string,
     variant?: ThemeType,
   ) => Promise<boolean>;
+  processingLogoLightTheme: boolean;
+  processingLogoDarkTheme: boolean;
+  setProcessingLogo: (variant: ThemeType, exists: boolean) => void;
 
   uploadingVariant: ThemeType | null;
   uploadVariant: (variant: ThemeType, file: File) => Promise<void>;
@@ -61,6 +64,8 @@ interface FilesystemStore {
 const initialState = {
   darkVersion: 0,
   uploadingVariant: null,
+  processingLogoLightTheme: false,
+  processingLogoDarkTheme: false,
   customLogoLightThemedExists: false,
   customLogoDarkThemedExists: false,
   errorLightThemed: null,
@@ -77,8 +82,9 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
     })),
 
   deleteImageFile: async (appName: string, fileName: string, variant: ThemeType = THEME.dark): Promise<boolean> => {
-    const { setError, setCustomLogoExists } = get();
+    const { setError, setCustomLogoExists, setProcessingLogo } = get();
     setError(variant, null);
+    setProcessingLogo(variant, true);
     try {
       const url = `${EDU_API_CONFIG_ENDPOINTS.FILES}/public/assets/${appName}/${fileName}`;
       await eduApi.delete<void>(url);
@@ -89,6 +95,8 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
       setError(variant, e as Error);
       handleApiError(e, set);
       return false;
+    } finally {
+      setProcessingLogo(variant, false);
     }
   },
 
@@ -99,8 +107,9 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
     appName?: string,
     variant: ThemeType = THEME.dark,
   ): Promise<boolean> => {
-    const { setError, setCustomLogoExists } = get();
+    const { setError, setCustomLogoExists, setProcessingLogo } = get();
     setError(variant, null);
+    setProcessingLogo(variant, true);
     try {
       const form = new FormData();
       form.append('destination', destination);
@@ -131,6 +140,8 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
       setError(variant, e as Error);
       handleApiError(e, set);
       return false;
+    } finally {
+      setProcessingLogo(variant, false);
     }
   },
 
@@ -162,6 +173,14 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
       setCustomLogoExists(variant, true);
     } catch (e) {
       setCustomLogoExists(variant, false);
+    }
+  },
+
+  setProcessingLogo: (variant: ThemeType, state: boolean) => {
+    if (variant === THEME.dark) {
+      set({ processingLogoDarkTheme: state });
+    } else {
+      set({ processingLogoLightTheme: state });
     }
   },
 

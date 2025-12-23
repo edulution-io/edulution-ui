@@ -28,6 +28,7 @@ export type AppConfigFormLogoFieldProps = {
   option: AppConfigExtendedOption;
   form: UseFormReturn<ThemedFile>;
   error?: Error | null;
+  isLoading?: boolean;
   customLogoExists?: boolean;
 };
 
@@ -38,6 +39,7 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
   option,
   form,
   error,
+  isLoading,
   customLogoExists = false,
 }) => {
   const { uploadImageFile, deleteImageFile, doesCustomImageExist } = FilesystemStore();
@@ -46,17 +48,16 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [keyValue, setKeyValue] = useState<number>(0);
+  const [keyValue, setKeyValue] = useState<number>(Math.floor(Math.random() * 10000));
 
   const path = `${fieldPath}.${variant}` as keyof ThemedFile;
-  const hasLocalSelection = !!form.watch(path);
 
   const destination = appName;
   const filename = getLogoName(appName, variant);
   const logoImageUrl = getLogoUrl(appName, variant);
   const previewSrc = useMemo(
     () => (logoImageUrl?.includes('?') ? `${logoImageUrl}&t=${keyValue}` : `${logoImageUrl}?t=${keyValue}`),
-    [logoImageUrl, keyValue],
+    [appName, variant, logoImageUrl, keyValue],
   );
 
   useEffect(() => {
@@ -75,11 +76,11 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
       if (success) {
         form.setValue(path, file, { shouldDirty: true });
         toast.success(t('survey.editor.fileUploadSuccess'));
-        setKeyValue((prev) => prev + 1);
       } else {
         form.setValue(path, null, { shouldDirty: true });
         toast.error(t('survey.editor.fileUploadError'));
       }
+      setKeyValue((prev) => prev + 1);
     }
   };
 
@@ -87,11 +88,11 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
     const success = await deleteImageFile(appName, filename, variant);
     if (success) {
       form.setValue(path, null, { shouldDirty: true });
-      setKeyValue((prev) => prev + 1);
       toast.success(t('survey.editor.fileDeletionSuccess'));
     } else {
       toast.error(t('survey.editor.fileDeletionError'));
     }
+    setKeyValue((prev) => prev + 1);
   };
 
   const variantText = t(`appExtendedOptions.appLogo.${variant}`);
@@ -103,12 +104,13 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
         variant={variant}
         inputRef={inputRef}
         previewSrc={previewSrc}
-        hasLocalSelection={hasLocalSelection}
+        hasLocalSelection={customLogoExists}
         onFileChange={onFileChange}
         chooseText={t(`common.chooseFile`)}
         changeText={t(`common.changeFile`)}
         onHandleReset={onHandleReset}
         hasCustomLogo={customLogoExists}
+        uploading={isLoading}
       />
       {error && <p className="text-sm text-red-600">{error.message}</p>}
     </div>

@@ -31,8 +31,15 @@ const AppConfigFormDarkAndLightLogoField: React.FC<AppConfigFormDarkAndLightLogo
   option,
   form,
 }) => {
-  const { customLogoLightThemedExists, customLogoDarkThemedExists, errorLightThemed, errorDarkThemed } =
-    FilesystemStore();
+  const {
+    customLogoLightThemedExists,
+    customLogoDarkThemedExists,
+    errorLightThemed,
+    errorDarkThemed,
+    processingLogoLightTheme,
+    processingLogoDarkTheme,
+  } = FilesystemStore();
+
   return (
     <div className="flex flex-grow flex-col gap-4 lg:flex-row">
       <AppConfigFormLogoField
@@ -43,6 +50,7 @@ const AppConfigFormDarkAndLightLogoField: React.FC<AppConfigFormDarkAndLightLogo
         form={form}
         customLogoExists={customLogoLightThemedExists}
         error={errorLightThemed}
+        isLoading={processingLogoLightTheme}
       />
       <AppConfigFormLogoField
         variant={THEME.dark}
@@ -52,6 +60,7 @@ const AppConfigFormDarkAndLightLogoField: React.FC<AppConfigFormDarkAndLightLogo
         form={form}
         customLogoExists={customLogoDarkThemedExists}
         error={errorDarkThemed}
+        isLoading={processingLogoDarkTheme}
       />
     </div>
   );
