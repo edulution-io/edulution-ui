@@ -17,31 +17,33 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-'use client';
-
 import React from 'react';
 import { Toaster as Sonner } from 'sonner';
 import { SHOW_TOASTER_DURATION } from '@libs/ui/constants/showToasterDuration';
-import COLOR_SCHEME from '@libs/ui/constants/colorScheme';
+import useThemeStore from '@/store/useThemeStore';
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 
-const Toaster = ({ ...props }: ToasterProps) => (
-  <Sonner
-    theme={COLOR_SCHEME}
-    className="toaster group"
-    closeButton
-    offset={60}
-    toastOptions={{
-      duration: SHOW_TOASTER_DURATION,
-      classNames: {
-        toast: 'group toast group-[.toaster]:bg-overlay group-[.toaster]:border-border group-[.toaster]:shadow-lg',
-        content: 'whitespace-pre-line group-[.toaster]:text-background',
-      },
-    }}
-    richColors
-    {...props}
-  />
-);
+const Toaster = ({ ...props }: ToasterProps) => {
+  const theme = useThemeStore((state) => state.theme);
+
+  return (
+    <Sonner
+      theme={theme}
+      className="toaster group"
+      closeButton
+      offset={60}
+      toastOptions={{
+        duration: SHOW_TOASTER_DURATION,
+        classNames: {
+          toast: 'group toast group-[.toaster]:bg-overlay group-[.toaster]:border-border group-[.toaster]:shadow-lg',
+          content: 'whitespace-pre-line group-[.toaster]:text-background',
+        },
+      }}
+      richColors
+      {...props}
+    />
+  );
+};
 
 export default Toaster;

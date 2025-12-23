@@ -23,7 +23,7 @@ import handleApiError from '@/utils/handleApiError';
 import mime from 'mime';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
-import { ThemeType } from '@libs/common/constants/theme';
+import ThemeType from '@libs/common/types/themeType';
 import convertImageFileToWebp from '@libs/common/utils/convertImageFileToWebp';
 import getMainLogoFilename from '@libs/filesharing/utils/getMainLogoFilename';
 import { UploadGlobalAssetDto } from '@libs/filesystem/types/uploadGlobalAssetDto';

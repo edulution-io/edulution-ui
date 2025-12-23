@@ -19,15 +19,16 @@
 
 import { cva } from 'class-variance-authority';
 
-export const GRID_SEARCH =
-  'mx-auto my-3 block w-[80%] min-w-[250px] rounded-xl border border-ring px-3 py-2 md:mb-2 md:mt-0 md:w-[400px]';
 export const GRID_CARD =
-  'h-26 flex w-full flex-col items-center overflow-hidden border border-muted-light bg-muted-dialog p-5 hover:bg-primary';
+  'm-1 flex h-32 w-32 flex-col items-center overflow-hidden md:w-48 2xl:transition-transform 2xl:duration-300 2xl:hover:scale-105';
 
-const VARIANT_COLORS = {
-  default: 'bg-accent text-secondary',
-  dialog: 'bg-muted text-background',
-  login: 'border-2 border-gray-300 bg-white text-black shadow-md',
+export const INPUT_BASE_CLASSES =
+  'h-10 w-full rounded-lg px-3 text-p transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus:outline-none disabled:cursor-not-allowed disabled:opacity-50';
+
+export const VARIANT_COLORS = {
+  default: 'bg-white text-black border-[1px] border-gray-300 dark:bg-accent dark:text-secondary dark:border-none',
+  dialog: 'dark:bg-muted border-[1px] dark:border-none border-gray-300 bg-white text-background',
+  login: 'border-[1px] border-gray-300 bg-white text-black shadow-md',
   lightGrayDisabled: 'bg-ciDarkGreyDisabled text-secondary',
 } as const;
 
@@ -36,22 +37,20 @@ const VARIANT_CARET = {
   dialog: 'bg-background',
   login: 'bg-black',
 } as const;
-export const inputVariants = cva(
-  'h-9 w-full rounded-lg px-3 py-1 text-p shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus:outline-none disabled:cursor-not-allowed disabled:opacity-50',
-  {
-    variants: {
-      variant: {
-        default: `${VARIANT_COLORS.default} placeholder:text-p`,
-        dialog: `${VARIANT_COLORS.dialog} placeholder:text-p`,
-        login: `${VARIANT_COLORS.login} placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-muted`,
-        lightGrayDisabled: `${VARIANT_COLORS.lightGrayDisabled} placeholder:text-p`,
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
+
+export const inputVariants = cva(INPUT_BASE_CLASSES, {
+  variants: {
+    variant: {
+      default: `${VARIANT_COLORS.default} placeholder:text-p`,
+      dialog: `${VARIANT_COLORS.dialog} placeholder:text-p`,
+      login: `${VARIANT_COLORS.login} placeholder:text-p focus:border-gray-600 focus:bg-white focus:placeholder-muted`,
+      lightGrayDisabled: `${VARIANT_COLORS.lightGrayDisabled} placeholder:text-p`,
     },
   },
-);
+  defaultVariants: {
+    variant: 'default',
+  },
+});
 
 export const inputOTPSlotVariants = cva(
   'relative mx-1 flex h-11 w-11 items-center justify-center rounded-lg shadow-sm transition-all first:ml-0',

@@ -41,13 +41,13 @@ const ProgressBox: React.FC<{ data: ProgressBoxProps }> = ({ data }) => {
 
       <div className="flex items-center gap-2">
         <Progress value={percent} />
-        <span className="whitespace-nowrap text-sm text-background">{percent}%</span>
+        <span className="whitespace-nowrap text-sm">{percent}%</span>
       </div>
 
-      {description && <p className="text-sm text-background">{description}</p>}
+      {description && <p className="text-sm">{description}</p>}
 
       {statusDescription && (
-        <p className="text-sm text-background">
+        <p className="text-sm">
           {t(statusDescription, {
             processed: (processed || 0) - (failed || 0),
             total,

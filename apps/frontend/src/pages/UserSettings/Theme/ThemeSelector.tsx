@@ -17,22 +17,32 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { FC, ReactNode } from 'react';
-import { Button } from '@/components/shared/Button';
+import React from 'react';
+import { DropdownSelect } from '@/components';
+import useThemeStore from '@/store/useThemeStore';
+import THEME from '@libs/common/constants/theme';
+import ThemeType from '@libs/common/types/themeType';
 
-interface FilePreviewButtonsProps {
-  onClick: () => void;
-  icon?: ReactNode;
-}
+const themeOptions = [
+  { id: THEME.system, name: 'usersettings.themeMode.system' },
+  { id: THEME.dark, name: 'usersettings.themeMode.dark' },
+  { id: THEME.light, name: 'usersettings.themeMode.light' },
+];
 
-const FilePreviewOptionsButton: FC<FilePreviewButtonsProps> = ({ onClick, icon }) => (
-  <Button
-    variant="btn-small"
-    className="hover:bg-grey-700 rounded bg-secondary p-1 text-background"
-    onClick={onClick}
-  >
-    {icon && <span className="inline text-foreground">{icon}</span>}
-  </Button>
-);
+const ThemeSelector: React.FC = () => {
+  const theme = useThemeStore((s) => s.theme);
+  const setTheme = useThemeStore((s) => s.setTheme);
 
-export default FilePreviewOptionsButton;
+  return (
+    <div className="pb-4">
+      <DropdownSelect
+        options={themeOptions}
+        selectedVal={theme}
+        handleChange={(value) => setTheme(value as ThemeType)}
+        classname="w-fit"
+      />
+    </div>
+  );
+};
+
+export default ThemeSelector;

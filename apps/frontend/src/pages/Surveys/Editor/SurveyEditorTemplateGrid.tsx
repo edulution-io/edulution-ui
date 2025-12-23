@@ -17,15 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { VscNewFile } from 'react-icons/vsc';
-import { MdOutlineOpenInNew } from 'react-icons/md';
-import cn from '@libs/common/utils/className';
+import { EyeDarkIcon } from '@/assets/icons';
 import isSubsequence from '@libs/common/utils/string/isSubsequence';
-import SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import { GRID_SEARCH } from '@libs/ui/constants/commonClassNames';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import SurveyEditorTemplateCard from '@/pages/Surveys/Editor/SurveyEditorTemplateCard';
@@ -40,7 +37,7 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
 
   const { templates, fetchTemplates, setTemplate } = useTemplateMenuStore();
 
-  const { loadNew, loadTemplate } = useSurveyEditorPageStore();
+  const { loadNewSurvey, loadSurveyTemplate } = useSurveyEditorPageStore();
 
   const [search, setSearch] = useState('');
 
@@ -54,21 +51,11 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
     return templates.filter((surveyTemplate) => isSubsequence(searchString, surveyTemplate.name?.toLowerCase() || ''));
   }, [templates, search]);
 
-  const handleKeyDown = useCallback((event: KeyboardEvent) => {
-    if (event.key !== 'Enter') return;
-
-    const active = document.activeElement;
-    if (active instanceof HTMLInputElement && active.getAttribute('aria-label') === SEARCH_INPUT_LABEL) {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
       event.preventDefault();
     }
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [handleKeyDown]);
+  };
 
   return (
     <>
@@ -77,9 +64,9 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
         aria-label={t('survey.editor.searchPlaceholder')}
         value={search}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
+        onKeyDown={handleKeyDown}
         variant="default"
         width="auto"
-        className={cn(GRID_SEARCH, 'justify-center')}
       />
       <div className="mx-auto grid max-h-full w-full grid-cols-[repeat(auto-fit,minmax(8rem,auto))] justify-center gap-x-3 gap-y-2 overflow-auto px-2 pb-10 scrollbar-thin md:max-h-full md:w-[95%] md:grid-cols-[repeat(auto-fit,minmax(12rem,auto))] md:gap-x-6 md:gap-y-5 md:pb-4">
         <SurveyEditorTemplateCard
@@ -88,19 +75,19 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
           title={t('survey.editor.new')}
           onClick={() => {
             setTemplate(undefined);
-            loadNew(surveyCreator);
+            loadNewSurvey(surveyCreator);
           }}
         />
         {filteredTemplates.length ? (
           filteredTemplates.map((surveyTemplate) => (
             <SurveyEditorTemplateCard
               key={surveyTemplate.template.formula.title}
-              icon={MdOutlineOpenInNew}
+              icon={EyeDarkIcon}
               title={surveyTemplate.template.formula.title}
               description={surveyTemplate.template.formula.description}
               onClick={() => {
                 setTemplate(surveyTemplate);
-                loadTemplate(surveyCreator, surveyTemplate);
+                loadSurveyTemplate(surveyCreator, surveyTemplate);
               }}
             />
           ))

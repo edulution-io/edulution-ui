@@ -140,56 +140,50 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
       ? `${t('moveItemDialog.selectedItem')}: ${decodeURIComponent(moveOrCopyItemToPath.filename)}`
       : t('filesharing.selectFile');
 
-  const footer = (
-    <Input
-      title={t('moveItemDialog.selectedItem')}
-      value={selectedInputValue}
-      variant="dialog"
-      className="h-10"
-    />
-  );
-
   const visibleColumns = [FILESHARING_TABLE_COLUM_NAMES.SELECT_FILENAME];
   const columns: ColumnDef<DirectoryFileDTO>[] = getFileSharingTableColumns(visibleColumns, onFilenameClick);
 
   return (
-    <>
+    <div className="space-y-2">
       <WebdavShareSelectDropdown
         webdavShare={webdavShare}
         showRootOnly={showRootOnly}
       />
-      <div className="text-background">
-        <div className="pb-2">
-          <DirectoryBreadcrumb
-            path={currentPath}
-            onNavigate={handleBreadcrumbNavigate}
-            showHome={showHome}
-            hiddenSegments={getHiddenSegments()}
-            showTitle={false}
-          />
-        </div>
-        <div className="w-full">{isLoading ? <HorizontalLoader className="w-[99%]" /> : <div className="h-1" />}</div>
-        <div className="h-[45vh] max-h-[45vh] overflow-auto scrollbar-thin">
-          <ScrollableTable
-            columns={columns}
-            data={files}
-            selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filePath]: true } : {}}
-            onRowSelectionChange={handleRowSelectionChange}
-            applicationName={APPS.FILE_SHARING}
-            getRowId={(row) => row.filePath}
-            showHeader={false}
-            textColorClassname="text-background"
-            showSelectedCount={false}
-            filterKey="select-filename"
-            filterPlaceHolderText="filesharing.filterPlaceHolderText"
-            enableRowSelection={enableRowSelection}
-            getRowDisabled={getRowDisabled}
-            isDialog
-          />
-        </div>
+
+      <DirectoryBreadcrumb
+        path={currentPath}
+        onNavigate={handleBreadcrumbNavigate}
+        showHome={showHome}
+        hiddenSegments={getHiddenSegments()}
+        showTitle={false}
+      />
+      <div className="w-full">{isLoading ? <HorizontalLoader /> : <div className="h-1" />}</div>
+      <div className="h-[45vh] max-h-[45vh]">
+        <ScrollableTable
+          columns={columns}
+          data={files}
+          selectedRows={moveOrCopyItemToPath ? { [moveOrCopyItemToPath.filePath]: true } : {}}
+          onRowSelectionChange={handleRowSelectionChange}
+          applicationName={APPS.FILE_SHARING}
+          getRowId={(row) => row.filePath}
+          showHeader={false}
+          textColorClassname="text-background"
+          showSelectedCount={false}
+          filterKey="select-filename"
+          filterPlaceHolderText="filesharing.filterPlaceHolderText"
+          enableRowSelection={enableRowSelection}
+          getRowDisabled={getRowDisabled}
+          isDialog
+        />
       </div>
-      <div className="pt-2">{footer}</div>
-    </>
+      <Input
+        title={t('moveItemDialog.selectedItem')}
+        value={selectedInputValue}
+        variant="dialog"
+        readOnly
+        disabled
+      />
+    </div>
   );
 };
 

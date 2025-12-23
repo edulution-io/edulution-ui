@@ -34,13 +34,11 @@ import getInitialSurveyFormBySurveys from '@/pages/Surveys/utils/getInitialSurve
 import getInitialSurveyFormByTemplate from '@/pages/Surveys/utils/getInitialSurveyFormByTemplate';
 
 interface SurveyEditorPageStore {
-  loadNew: (creator: AttendeeDto) => void;
-  loadTemplate: (creator: AttendeeDto, template: SurveyTemplateDto) => void;
+  loadNewSurvey: (creator: AttendeeDto) => void;
+  loadSurveyTemplate: (creator: AttendeeDto, template: SurveyTemplateDto) => void;
   fetchSelectedSurvey: (creator: AttendeeDto, surveyId: string, isPublic?: boolean) => Promise<void>;
-  isFetching: boolean;
-
   initialSurvey: SurveyDto | undefined;
-  setInitialSurvey: (survey: SurveyDto | undefined) => void;
+  isFetching: boolean;
 
   storedSurvey: SurveyDto | undefined;
   updateStoredSurvey: (survey: SurveyDto) => void;
@@ -88,12 +86,12 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
       ...initialState,
       reset: () => set(initialState),
 
-      loadNew: (creator: AttendeeDto): void => {
+      loadNewSurvey: (creator: AttendeeDto): void => {
         const newSurvey = getInitialSurveyFormBySurveys(creator, undefined, undefined);
         set({ initialSurvey: newSurvey });
       },
 
-      loadTemplate: (creator: AttendeeDto, template: SurveyTemplateDto): void => {
+      loadSurveyTemplate: (creator: AttendeeDto, template: SurveyTemplateDto): void => {
         const newSurvey = getInitialSurveyFormByTemplate(creator, template);
         set({ initialSurvey: newSurvey });
       },
@@ -112,8 +110,6 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
           set({ isFetching: false });
         }
       },
-
-      setInitialSurvey: (survey: SurveyDto | undefined) => set({ initialSurvey: survey }),
 
       updateStoredSurvey: (survey: SurveyDto) => set({ storedSurvey: survey }),
       resetStoredSurvey: () => set({ storedSurvey: undefined }),

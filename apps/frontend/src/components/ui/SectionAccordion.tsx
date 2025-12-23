@@ -104,7 +104,11 @@ const SectionAccordionItem: React.FC<SectionAccordionItemProps> = ({
 }) => (
   <Item
     value={id}
-    className={cn('text-card-foreground', variant === 'default' && 'rounded-xl bg-muted-background', className)}
+    className={cn(
+      'text-card-foreground',
+      variant === 'default' && 'bg-glass rounded-xl dark:bg-muted-background',
+      className,
+    )}
   >
     <AnchorSection id={id}>
       <Header className="flex">

@@ -20,15 +20,17 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import NativeAppHeaderProps from '@libs/ui/types/NativeAppHeaderProps';
+import getAppIconClassName from '@/utils/getAppIconClassName';
+import cn from '@libs/common/utils/className';
 
 const NativeAppHeader = ({ title, iconSrc, description }: NativeAppHeaderProps) => {
   const { t } = useTranslation();
   return (
-    <div className="mr-2 flex min-h-[6.25rem] pl-2 text-background md:pl-4 xl:max-h-[6.25rem]">
+    <div className="mr-2 flex min-h-[6.25rem] pl-2 md:pl-4 xl:max-h-[6.25rem]">
       <img
         src={iconSrc}
         alt={`${title} ${t('common.icon')}`}
-        className="hidden h-20 w-20 object-contain md:block"
+        className={cn('hidden h-20 w-20 object-contain md:block', getAppIconClassName(iconSrc))}
       />
       <div className="ml-4">
         <h1>{title}</h1>
