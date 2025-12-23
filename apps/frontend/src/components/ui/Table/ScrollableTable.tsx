@@ -146,13 +146,13 @@ const ScrollableTable = <TData, TValue>({
 
       <div className="h-full w-full flex-1 overflow-auto scrollbar-thin">
         {!!data.length && showSearchBarAndColumnSelect && (
-          <div className="flex items-center gap-2 py-4 pl-1">
+          <div className="flex items-center gap-2 py-4">
             <div className="min-w-0 flex-1">
               <Input
                 placeholder={t(filterPlaceHolderText)}
                 value={filterValue}
                 onChange={(e) => table.getColumn(filterKey)?.setFilterValue(e.target.value)}
-                className={`w-full text-secondary ${isDialog ? 'bg-muted' : 'bg-accent'}`}
+                variant={isDialog ? 'dialog' : 'default'}
               />
             </div>
 
@@ -168,7 +168,10 @@ const ScrollableTable = <TData, TValue>({
           {showHeader && (
             <TableHeader className={`text-foreground ${textColorClassname}`}>
               {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
+                <TableRow
+                  key={headerGroup.id}
+                  variant={isDialog ? 'dialog' : 'default'}
+                >
                   {headerGroup.headers.map((header) => (
                     <TableHead
                       key={header.id}
@@ -199,6 +202,7 @@ const ScrollableTable = <TData, TValue>({
                     enableDragAndDrop={enableDragAndDrop}
                     canDropOnRow={canDropOnRow}
                     textColorClassname={textColorClassname}
+                    variant={isDialog ? 'dialog' : 'default'}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
@@ -212,7 +216,7 @@ const ScrollableTable = <TData, TValue>({
                 );
               })
             ) : (
-              <TableRow>
+              <TableRow variant={isDialog ? 'dialog' : 'default'}>
                 <TableCell
                   colSpan={columns?.length}
                   className={`h-24 text-center ${textColorClassname}`}

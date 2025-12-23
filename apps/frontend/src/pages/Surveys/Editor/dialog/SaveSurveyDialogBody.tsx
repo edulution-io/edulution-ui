@@ -25,6 +25,7 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useGroupStore from '@/store/GroupStore';
+import useLdapGroups from '@/hooks/useLdapGroups';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import Checkbox from '@/components/ui/Checkbox';
 import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
@@ -39,6 +40,8 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
   const { searchAttendees } = useUserStore();
   const { searchGroups } = useGroupStore();
   const { t } = useTranslation();
+
+  const { isSuperAdmin } = useLdapGroups();
 
   const handleAttendeesChange = (attendees: AttendeeDto[]) => {
     setValue('invitedAttendees', attendees, { shouldValidate: true });
@@ -70,6 +73,18 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
 
   return (
     <>
+      {isSuperAdmin && (
+        <>
+          <p className="text-m font-bold text-background">{t('survey.editor.templates.title')}</p>
+          <Checkbox
+            key="should-save-as-template"
+            label={t('survey.editor.templates.label')}
+            checked={watch('saveAsTemplate')}
+            onCheckedChange={(value: boolean) => setValue('saveAsTemplate', value, { shouldValidate: true })}
+            aria-label={t('survey.saveAsTemplate')}
+          />
+        </>
+      )}
       <SearchUsersOrGroups
         users={watch('invitedAttendees')}
         onSearch={onAttendeesSearch}
@@ -94,7 +109,6 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
           onCheckedChange={(value: boolean) => setValue(name, value, { shouldValidate: true })}
           disabled={shouldDisable}
           aria-label={t(`survey.${name}`)}
-          className="text-background"
         />
       ))}
     </>

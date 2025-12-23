@@ -94,7 +94,7 @@ class SurveysTemplateService implements OnModuleInit {
       throw new CustomHttpException(
         CommonErrorMessages.DB_INVALID_ID,
         HttpStatus.BAD_REQUEST,
-        undefined,
+        id,
         SurveysTemplateService.name,
       );
     }

@@ -21,6 +21,7 @@ const AppConfigSectionsKeys = {
   general: 'general',
   fileSharing: 'fileSharing',
   onlyOffice: 'onlyOffice',
+  drawio: 'drawio',
   imapMailFeed: 'imapMailFeed',
   bulletinBoard: 'bulletinBoard',
   veyon: 'veyon',

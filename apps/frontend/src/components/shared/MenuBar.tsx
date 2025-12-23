@@ -33,6 +33,7 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableSharePathname';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
+import getAppIconClassName from '@/utils/getAppIconClassName';
 import useMenuBarStore from './useMenuBarStore';
 import { Button } from './Button';
 
@@ -117,30 +118,19 @@ const MenuBar: React.FC = () => {
       ref={menubarRef}
     >
       <div className="flex flex-col items-center justify-center py-6">
-        {isDesktopView && (
-          <Button
-            type="button"
-            variant="btn-outline"
-            size="sm"
-            onClick={toggleCollapsed}
-            className={cn(
-              'absolute right-[-25px] top-2 mx-3 mb-4 border-accent bg-foreground px-2 py-1',
-              shouldCollapse ? 'cursor-e-resize ' : 'cursor-w-resize ',
-            )}
-          >
-            {isCollapsed ? <GoSidebarCollapse size={18} /> : <GoSidebarExpand size={18} />}
-          </Button>
-        )}
-
         <button
-          className="flex flex-col items-center justify-center rounded-xl p-2 hover:bg-accent"
+          className="flex flex-col items-center justify-center rounded-xl p-2 hover:bg-muted-background"
           type="button"
           onClick={handleHeaderIconClick}
         >
           <img
             src={menuBarEntries.icon}
             alt={menuBarEntries.title}
-            className={cn('object-contain transition-all', shouldCollapse ? 'h-10 w-10' : 'h-20 w-20')}
+            className={cn(
+              'object-contain transition-all',
+              shouldCollapse ? 'h-10 w-10' : 'h-20 w-20',
+              getAppIconClassName(menuBarEntries.icon),
+            )}
           />
           {!shouldCollapse && <h2 className="mb-2 mt-2 text-center font-bold">{menuBarEntries.title}</h2>}
         </button>
@@ -157,8 +147,7 @@ const MenuBar: React.FC = () => {
                 item.action();
               }}
               className={cn(
-                'flex w-full items-center gap-3 py-1 pl-3 pr-3 transition-colors',
-                menuBarEntries.color,
+                'flex w-full items-center gap-3 py-1 pl-3 pr-3 transition-colors hover:bg-muted-background',
                 isSelected === item.id ? menuBarEntries.color.split(':')[1] : '',
                 shouldCollapse && 'justify-center',
               )}
@@ -166,9 +155,9 @@ const MenuBar: React.FC = () => {
               <img
                 src={item.icon}
                 alt={item.label}
-                className="h-12 w-12 object-contain"
+                className={cn('h-12 w-12 object-contain', isSelected !== item.id && getAppIconClassName(item.icon))}
               />
-              {!shouldCollapse && <p>{item.label}</p>}
+              {!shouldCollapse && <span className={cn(isSelected === item.id ? 'text-white' : '')}>{item.label}</span>}
             </button>
           );
 
@@ -199,28 +188,33 @@ const MenuBar: React.FC = () => {
         <aside className="relative flex h-dvh">
           <div
             className={cn(
-              'h-full overflow-hidden bg-foreground bg-opacity-40 transition-all duration-300',
+              'bg-glass h-full overflow-hidden rounded-r-xl shadow-lg shadow-slate-400 backdrop-blur-lg transition-all duration-300',
               shouldCollapse ? 'w-16' : 'w-64',
             )}
           >
             {renderMenuBarContent()}
           </div>
+          <Button
+            type="button"
+            variant="btn-outline"
+            size="sm"
+            onClick={toggleCollapsed}
+            className={cn(
+              'bg-glass absolute right-[-15px] top-2 border-accent px-2 py-1 backdrop-blur-lg hover:bg-muted-background',
+              shouldCollapse ? 'cursor-e-resize' : 'cursor-w-resize',
+            )}
+          >
+            {isCollapsed ? <GoSidebarCollapse size={18} /> : <GoSidebarExpand size={18} />}
+          </Button>
         </aside>
       ) : (
         <div
           className={cn(
-            'fixed left-0 top-0 z-50 h-full overflow-x-hidden bg-black duration-300 ease-in-out',
+            'bg-glass fixed left-0 top-0 z-50 h-full overflow-x-hidden backdrop-blur-md duration-300 ease-in-out',
             isMobileMenuBarOpen ? 'w-64 border-r-[1px] border-muted' : 'w-0',
           )}
         >
-          <div
-            className={cn(
-              'h-full w-64 transition-opacity duration-300',
-              isMobileMenuBarOpen ? 'opacity-100' : 'opacity-0',
-            )}
-          >
-            {isMobileMenuBarOpen && renderMenuBarContent()}
-          </div>
+          {isMobileMenuBarOpen && renderMenuBarContent()}
         </div>
       )}
     </>

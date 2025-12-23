@@ -47,7 +47,7 @@ import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
 import { decodeBase64, encodeBase64 } from '@libs/common/utils/getBase64String';
 import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg?react';
 import getMainLogoUrl from '@libs/assets/getMainLogoUrl';
-import COLOR_SCHEME from '@libs/ui/constants/colorScheme';
+import THEME from '@libs/common/constants/theme';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import getRandomUUID from '@/utils/getRandomUUID';
@@ -75,9 +75,8 @@ const LoginPage: React.FC = () => {
   const globalSettings = useGlobalSettingsApiStore((s) => s.globalSettings);
   const appConfigs = useAppConfigsStore((s) => s.appConfigs);
   const { silentLogin } = useSilentLoginWithPassword();
-  const theme = COLOR_SCHEME;
 
-  const logoSrc = getMainLogoUrl(theme);
+  const logoSrc = getMainLogoUrl(THEME.dark);
 
   const { isLoading } = auth;
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);

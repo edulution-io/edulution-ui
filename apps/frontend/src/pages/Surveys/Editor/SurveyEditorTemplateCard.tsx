@@ -17,11 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useState } from 'react';
 import { toast } from 'sonner';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { VscNewFile } from 'react-icons/vsc';
-import { MdOutlineOpenInNew } from 'react-icons/md';
+import { IconType } from 'react-icons';
 import cn from '@libs/common/utils/className';
 import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
@@ -32,16 +31,22 @@ import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuS
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
+import surveysDefaultValues from '@/pages/Surveys/utils/surveys-default-values';
 
 interface SurveyEditorTemplateCardProps {
+  icon: string | IconType;
   creator: AttendeeDto;
   surveyTemplate?: SurveyTemplateDto;
 }
 
-const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTemplateCardProps): JSX.Element => {
+const SurveyEditorTemplateCard = ({
+  icon: Icon,
+  creator,
+  surveyTemplate,
+}: SurveyEditorTemplateCardProps): JSX.Element => {
   const { setIsOpenTemplateConfirmDeletion, setIsTemplateActive, fetchTemplates, setTemplate } = useTemplateMenuStore();
 
-  const { loadNew, loadTemplate } = useSurveyEditorPageStore();
+  const { loadNewSurvey, loadSurveyTemplate } = useSurveyEditorPageStore();
 
   const { isSuperAdmin } = useLdapGroups();
 
@@ -60,18 +65,16 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
     }
   };
 
-  const Icon = surveyTemplate ? MdOutlineOpenInNew : VscNewFile;
-
-  const title = surveyTemplate?.template.formula.title ?? t('survey.editor.new');
+  const title = surveyTemplate?.name ?? surveyTemplate?.template.formula.title ?? surveysDefaultValues.formula.title;
 
   const description = surveyTemplate?.template.formula.description;
 
   const handleClick = () => {
     setTemplate(surveyTemplate);
     if (surveyTemplate) {
-      loadTemplate(creator, surveyTemplate);
+      loadSurveyTemplate(creator, surveyTemplate);
     } else {
-      loadNew(creator);
+      loadNewSurvey(creator);
     }
   };
 
@@ -80,8 +83,7 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
       className={cn(
         GRID_CARD,
         'flex cursor-pointer',
-        { 'bg-muted': active },
-        { 'bg-accent': !active },
+        { 'bg-ciGreenToBlue text-white': !active },
         { 'h-[13rem]': !isSuperAdmin },
         { 'h-[14rem] pb-12': isSuperAdmin },
         { 'pt-8': !description },
@@ -89,7 +91,15 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
       variant="text"
       onClick={handleClick}
     >
-      <Icon className="h-10 w-10 md:h-14 md:w-14" />
+      {typeof Icon === 'string' ? (
+        <img
+          src={Icon}
+          alt={title}
+          className="h-12 w-12 md:h-14 md:w-14"
+        />
+      ) : (
+        <Icon className="h-12 w-12 md:h-14 md:w-14" />
+      )}
 
       {title && <h3 className={cn('line-clamp-2 h-[3.8rem] justify-center', { 'mt-4': !description })}>{title}</h3>}
 

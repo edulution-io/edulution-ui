@@ -80,7 +80,7 @@ const YamlEditor: React.FC<YamlEditorProps> = ({ value, onChange, disabled = fal
         placeholder={t('settings.yamleditor.placeholder')}
         style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '12pt' }}
         className={cn(
-          'overflow-y-auto bg-accent text-p text-secondary scrollbar-thin placeholder:text-p focus:outline-none',
+          'overflow-y-auto bg-white text-p scrollbar-thin placeholder:text-p focus:outline-none dark:bg-accent',
           error ? 'border border-ciLightRed' : 'border border-accent',
           className,
         )}

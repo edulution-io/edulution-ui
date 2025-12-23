@@ -22,12 +22,15 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import CreateBulletinCategoryDto from '@libs/bulletinBoard/types/createBulletinCategoryDto';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import { BulletinCategoryPermissionType } from '@libs/appconfig/types/bulletinCategoryPermissionType';
+import APPS from '@libs/appconfig/constants/apps';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import BulletinCategoryService from './bulletin-category.service';
 import AdminGuard from '../common/guards/admin.guard';
+import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
 
 @ApiTags('bulletin-category')
 @ApiBearerAuth()
+@RequireAppAccess(APPS.BULLETIN_BOARD)
 @Controller('bulletin-category')
 class BulletinCategoryController {
   constructor(private readonly bulletinBoardService: BulletinCategoryService) {}
