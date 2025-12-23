@@ -25,7 +25,7 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { Migration } from '../../migration/migration.type';
 import { SurveyAnswerDocument } from '../survey-answers.schema';
 
-const name = '001-add-question-id-to-survey-answer-attachments-path';
+const name = '002-enforce-the-choice-title-usage-inside-of-survey-answers';
 
 const updateSurveyQuestionAnswer = async (
   surveyAnswer: Record<string, string | string[] | object | object[]>,
@@ -36,14 +36,14 @@ const updateSurveyQuestionAnswer = async (
     Object.keys(surveyAnswer).map((questionId) => {
       const questionLimiter = backendLimiters.find((limiter) => limiter.questionName === questionId);
       const choices = questionLimiter?.choices ?? [];
-      const choiceTitles = choices.map((choice) => choice.title);
+      const choiceNames = choices.map((choice) => choice.name);
       const questionAnswer = surveyAnswer[questionId];
       if (Array.isArray(questionAnswer)) {
         answer[questionId] = questionAnswer.map((entry) => {
           if (typeof entry === 'string') {
-            const isUsingTitle = choiceTitles.includes(entry);
-            if (isUsingTitle) {
-              return choices.find((choice) => choice.title === entry)?.name || entry;
+            const isUsingName = choiceNames.includes(entry);
+            if (isUsingName) {
+              return choices.find((choice) => choice.name === entry)?.title || entry;
             }
           }
           // eslint-disable-next-line @typescript-eslint/no-unsafe-return
@@ -51,9 +51,9 @@ const updateSurveyQuestionAnswer = async (
         });
       }
       if (typeof questionAnswer === 'string') {
-        const isUsingTitle = choiceTitles.includes(questionAnswer);
-        if (isUsingTitle) {
-          answer[questionId] = choices.find((choice) => choice.title === questionAnswer)?.name || questionAnswer;
+        const isUsingName = choiceNames.includes(questionAnswer);
+        if (isUsingName) {
+          answer[questionId] = choices.find((choice) => choice.name === questionAnswer)?.title || questionAnswer;
         }
       }
       return answer;
@@ -62,12 +62,12 @@ const updateSurveyQuestionAnswer = async (
   return answer;
 };
 
-const surveyAnswerMigration002UseChoiceNameInsideOfAnswers: Migration<SurveyAnswerDocument> = {
+const surveyAnswerMigration002UseChoiceTitleInsideOfAnswers: Migration<SurveyAnswerDocument> = {
   name,
   version: 2,
   execute: async (model) => {
     const previousSchemaVersion = 2;
-    const newSchemaVersion = 2;
+    const newSchemaVersion = 3;
 
     const unprocessedDocuments = await model
       .find<SurveyAnswerDocument>({ schemaVersion: previousSchemaVersion })
@@ -121,4 +121,4 @@ const surveyAnswerMigration002UseChoiceNameInsideOfAnswers: Migration<SurveyAnsw
   },
 };
 
-export default surveyAnswerMigration002UseChoiceNameInsideOfAnswers;
+export default surveyAnswerMigration002UseChoiceTitleInsideOfAnswers;

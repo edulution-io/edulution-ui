@@ -104,7 +104,7 @@ class SurveyAnswersService implements OnModuleInit {
 
     const filteredChoices: ChoiceDto[] = [];
     const filteringPromises = possibleChoices.map(async (choice) => {
-      const counter = await this.countChoiceSelections(surveyId, questionName, choice.name);
+      const counter = await this.countChoiceSelections(surveyId, questionName, choice.title);
       if (choice.limit === 0 || !counter || counter < choice.limit) {
         filteredChoices.push(choice);
       }
@@ -118,30 +118,32 @@ class SurveyAnswersService implements OnModuleInit {
 
   static countQuestionAnswerChoiceSelections = (
     questionAnswer: TSurveyQuestionAnswerTypes,
-    choiceName: string,
+    choiceTitle: string,
   ): number => {
     if (Array.isArray(questionAnswer)) {
       let count = 0;
       questionAnswer.forEach((answerValue) => {
-        if (typeof answerValue === 'string' && answerValue === choiceName) {
+        if (typeof answerValue === 'string' && answerValue === choiceTitle) {
           count += 1;
         } else if (
           typeof answerValue === 'object' &&
           answerValue !== null &&
-          (answerValue.value === choiceName || answerValue.name === choiceName || answerValue.title === choiceName)
+          (answerValue.value === choiceTitle || answerValue.name === choiceTitle || answerValue.title === choiceTitle)
         ) {
           count += 1;
         }
       });
       return count;
     }
-    if (typeof questionAnswer === 'string' && questionAnswer === choiceName) {
+    if (typeof questionAnswer === 'string' && questionAnswer === choiceTitle) {
       return 1;
     }
     if (
       typeof questionAnswer === 'object' &&
       questionAnswer !== null &&
-      (questionAnswer.value === choiceName || questionAnswer.name === choiceName || questionAnswer.title === choiceName)
+      (questionAnswer.value === choiceTitle ||
+        questionAnswer.name === choiceTitle ||
+        questionAnswer.title === choiceTitle)
     ) {
       return 1;
     }
@@ -151,12 +153,12 @@ class SurveyAnswersService implements OnModuleInit {
   static countNestedQuestionAnswerChoiceSelections = (
     answer: TSurveyAnswer,
     questionName: string,
-    choiceName: string,
+    choiceTitle: string,
   ): number => {
     let count = 0;
     Object.keys(answer).forEach((key) => {
       if (key === questionName) {
-        const nestedCount = SurveyAnswersService.countQuestionAnswerChoiceSelections(answer[key], choiceName);
+        const nestedCount = SurveyAnswersService.countQuestionAnswerChoiceSelections(answer[key], choiceTitle);
         count += nestedCount;
       } else if (Array.isArray(answer[key])) {
         answer[key].forEach((entry) => {
@@ -164,7 +166,7 @@ class SurveyAnswersService implements OnModuleInit {
             const nestedCount = SurveyAnswersService.countNestedQuestionAnswerChoiceSelections(
               entry as TSurveyAnswer,
               questionName,
-              choiceName,
+              choiceTitle,
             );
             count += nestedCount;
           }
@@ -173,7 +175,7 @@ class SurveyAnswersService implements OnModuleInit {
         const nestedCount = SurveyAnswersService.countNestedQuestionAnswerChoiceSelections(
           answer[key] as TSurveyAnswer,
           questionName,
-          choiceName,
+          choiceTitle,
         );
         count += nestedCount;
       }

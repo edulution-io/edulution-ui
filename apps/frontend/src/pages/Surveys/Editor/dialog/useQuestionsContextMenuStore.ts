@@ -135,6 +135,8 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
       const backendLimitAdress = `${EDU_API_URL}/${isPublic ? PUBLIC_SURVEY_CHOICES : SURVEY_CHOICES}/${TEMPORAL_SURVEY_ID_STRING}/${selectedQuestion.name}`;
       selectedQuestion.choicesByUrl = new ChoicesRestful();
       (selectedQuestion.choicesByUrl as ChoicesRestful).url = backendLimitAdress;
+      (selectedQuestion.choicesByUrl as ChoicesRestful).valueName = 'title';
+      (selectedQuestion.choicesByUrl as ChoicesRestful).titleName = 'title';
       set({ useBackendLimits: true });
     } else {
       (selectedQuestion.choicesByUrl as ChoicesRestful).url = '';
