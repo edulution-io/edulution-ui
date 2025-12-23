@@ -91,7 +91,7 @@ const generateFile = async (
         const pptx = new PptxGenJS();
         pptx.title = basename;
         const pptxBlob = await pptx.write({ outputType: 'blob' });
-        file = new File([pptxBlob], `${basename}.${extension}`, {
+        file = new File([pptxBlob as Blob], `${basename}.${extension}`, {
           type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         });
       } else {
