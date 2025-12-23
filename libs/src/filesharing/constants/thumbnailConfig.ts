@@ -17,20 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-enum FileSharingApiEndpoints {
-  FILESHARING_ACTIONS = '/filesharing',
-  BASE = 'filesharing',
-  FILE_STREAM = 'file-stream',
-  FILE_LOCATION = 'file-location',
-  ONLY_OFFICE_TOKEN = 'only-office',
-  DUPLICATE = 'duplicate',
-  COLLECT = 'collect',
-  COPY = 'copy',
-  FILE_SHARE = 'file-share',
-  PUBLIC_SHARE = 'public-share',
-  PUBLIC_SHARE_DOWNLOAD = 'public-share/download',
-  UPLOAD = 'upload',
-  THUMBNAIL = 'thumbnail',
-}
+import ImageExtensions from '@libs/filesharing/types/imageExtensions';
 
-export default FileSharingApiEndpoints;
+const THUMBNAIL_CONFIG = {
+  SIZE: 100,
+  FORMAT: ImageExtensions.WEBP,
+  QUALITY: 10,
+  MAX_CACHE_SIZE_MB: 500,
+  CACHE_DIR_NAME: 'edulution-thumbnails',
+};
+
+export default THUMBNAIL_CONFIG;

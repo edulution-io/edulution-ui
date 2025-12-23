@@ -76,7 +76,6 @@ class MailsService implements OnModuleInit {
     @InjectModel(MailProvider.name) private mailProviderModel: Model<MailProviderDocument>,
     private readonly appConfigService: AppConfigService,
     private readonly dockerService: DockerService,
-    private readonly filesystemService: FilesystemService,
     private readonly groupsService: GroupsService,
     private readonly sseService: SseService,
     private readonly globalSettingsService: GlobalSettingsService,
@@ -174,7 +173,7 @@ class MailsService implements OnModuleInit {
         return;
       }
 
-      await this.filesystemService.ensureDirectoryExists(SOGO_THEME.TARGET_DIR);
+      await FilesystemService.ensureDirectoryExists(SOGO_THEME.TARGET_DIR);
       await FilesystemService.writeFile(targetPath, newCss);
       Logger.debug(`SOGo theme updated to '${theme}' at ${targetPath}`, MailsService.name);
 
