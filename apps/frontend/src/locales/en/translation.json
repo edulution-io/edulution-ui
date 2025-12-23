@@ -711,7 +711,11 @@
       "addDescription": "Add a description",
       "expectingUserInput": "Expecting the user to answer here, ... ",
       "isLoadingSurvey": "Survey is loading...",
-      "templates": "Save Template",
+      "templates": {
+        "title": "Templates",
+        "label": "Save as template",
+        "save": "Save template"
+      },
       "searchPlaceholder": "Type to filter templates...",
       "noTemplates": "No templates available",
       "noSearchResults": "No templates found",

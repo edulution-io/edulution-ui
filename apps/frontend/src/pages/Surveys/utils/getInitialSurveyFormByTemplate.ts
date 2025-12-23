@@ -39,6 +39,7 @@ const getInitialSurveyFormByTemplate = (creator: AttendeeDto, template: SurveyTe
     template?.template.canSubmitMultipleAnswers ?? surveysDefaultValues.canSubmitMultipleAnswers,
   isPublic: template?.template.isPublic ?? surveysDefaultValues.isPublic,
   canUpdateFormerAnswer: template?.template.canUpdateFormerAnswer ?? surveysDefaultValues.canUpdateFormerAnswer,
+  saveAsTemplate: true,
 });
 
 export default getInitialSurveyFormByTemplate;
