@@ -18,7 +18,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Types } from 'mongoose';
+import { AnyBulkWriteOperation } from 'mongoose';
 import { Logger } from '@nestjs/common';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -29,8 +29,6 @@ const name = '002-enforce-the-choice-title-usage-inside-of-survey-answers';
 
 type AnswerValue = string | string[] | object | object[];
 type AnswerRecord = Record<string, AnswerValue>;
-
-const toObjectId = (id: string | Types.ObjectId) => (id instanceof Types.ObjectId ? id : new Types.ObjectId(id));
 
 const applyChoiceTitle = (value: unknown, nameToTitle: Map<string, string>): unknown => {
   if (typeof value === 'string') return nameToTitle.get(value) ?? value;
@@ -71,51 +69,46 @@ const surveyAnswerMigration002UseChoiceTitleInsideOfAnswers: Migration<SurveyAns
   version: 2,
   execute: async (model) => {
     const previousSchemaVersion = 2;
-    const newSchemaVersion = 2;
+    const newSchemaVersion = 3;
 
-    const unprocessedDocuments = await model
+    const cursor = model
       .find<SurveyAnswerDocument>({ schemaVersion: previousSchemaVersion })
-      .populate('surveyId')
+      .populate({ path: 'surveyId', select: 'backendLimiters' })
       .sort({ _id: 1 })
-      .exec();
+      .cursor();
 
-    if (unprocessedDocuments.length === 0) {
-      return;
+    let counter = 0;
+    let ops: AnyBulkWriteOperation[] = [];
+    // eslint-disable-next-line no-restricted-syntax
+    for await (const doc of cursor) {
+      const { backendLimiters } = doc.surveyId as unknown as SurveyDto;
+      if (!backendLimiters) return;
+
+      const answer = doc.answer as AnswerRecord;
+      const updatedAnswer = updateSurveyQuestionAnswer(answer, backendLimiters);
+
+      ops.push({
+        updateOne: {
+          // eslint-disable-next-line no-underscore-dangle
+          filter: { _id: doc._id },
+          update: { $set: { answer: updatedAnswer, schemaVersion: newSchemaVersion } },
+        },
+      });
+
+      if (ops.length >= 500) {
+        await model.bulkWrite(ops, { ordered: false });
+        ops = [];
+        counter += 500;
+      }
     }
 
-    Logger.log(`Found ${unprocessedDocuments.length} documents to process...`);
+    if (ops.length > 0) {
+      await model.bulkWrite(ops, { ordered: false });
+      counter += ops.length;
+    }
 
-    let processedCount = 0;
-
-    await Promise.all(
-      unprocessedDocuments.map(async (doc: SurveyAnswerDocument) => {
-        // eslint-disable-next-line no-underscore-dangle
-        const id = doc._id as string | Types.ObjectId;
-
-        const currentId = toObjectId(id);
-
-        const { backendLimiters } = doc.surveyId as unknown as SurveyDto;
-
-        const answer = doc.answer as unknown as AnswerRecord;
-
-        if (!backendLimiters) {
-          return;
-        }
-        try {
-          const updatedAnswer = updateSurveyQuestionAnswer(answer, backendLimiters);
-          await model.updateOne(
-            { _id: currentId },
-            { $set: { answer: updatedAnswer, schemaVersion: newSchemaVersion } },
-          );
-          processedCount += 1;
-        } catch (error) {
-          Logger.error(`Failed to migrate document ${doc.id}:`, error);
-        }
-      }),
-    );
-
-    if (processedCount > 0) {
-      Logger.log(`Migration ${name} completed: ${processedCount} documents migrated`);
+    if (counter > 0) {
+      Logger.log(`Migration ${name} completed: ${counter} documents migrated`);
     }
   },
 };
