@@ -19,9 +19,11 @@
 
 import { create } from 'zustand';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import { SURVEY_RESULT_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import ResultDialogStoreInitialState from '@libs/survey/types/tables/dialogs/resultDialogStoreInitialState';
 import ResultDialogStore from '@libs/survey/types/tables/dialogs/resultDialogStore';
+import resetToOriginalChoicesByUrlForSurveyFormula from '@libs/survey/utils/resetToOriginalChoicesByUrlForSurveyFormula';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
@@ -29,7 +31,18 @@ const useResultDialogStore = create<ResultDialogStore>((set) => ({
   ...(ResultDialogStoreInitialState as ResultDialogStore),
   reset: () => set(ResultDialogStoreInitialState),
 
-  selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
+  selectSurvey: (survey: SurveyDto | undefined) => {
+    set({ selectedSurvey: undefined });
+    if (!survey) {
+      return;
+    }
+    const { formula: rawFormula, ...surveyData } = survey;
+    if (!rawFormula) {
+      return;
+    }
+    const processedFormula: SurveyFormula = resetToOriginalChoicesByUrlForSurveyFormula(rawFormula);
+    set({ selectedSurvey: { ...surveyData, formula: processedFormula } });
+  },
 
   setIsOpenPublicResultsTableDialog: (state: boolean) => set({ isOpenPublicResultsTableDialog: state }),
   setIsOpenPublicResultsVisualisationDialog: (state: boolean) => set({ isOpenPublicResultsVisualisationDialog: state }),

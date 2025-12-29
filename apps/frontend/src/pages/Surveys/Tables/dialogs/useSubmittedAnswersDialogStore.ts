@@ -20,11 +20,13 @@
 import { create } from 'zustand';
 import { SURVEY_ANSWER_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 import SurveyAnswerResponseDto from '@libs/survey/types/api/survey-answer-response.dto';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
+import resetToOriginalChoicesByUrlForSurveyFormula from '@libs/survey/utils/resetToOriginalChoicesByUrlForSurveyFormula';
 import SurveysPageView from '@libs/survey/types/api/page-view';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 
 interface SubmittedAnswersDialogStore {
   updateSelectedPageView: (pageView: SurveysPageView) => void;
@@ -54,7 +56,18 @@ const useSubmittedAnswersDialogStore = create<SubmittedAnswersDialogStore>((set)
   ...(SubmittedAnswersDialogStoreInitialState as SubmittedAnswersDialogStore),
   reset: () => set(SubmittedAnswersDialogStoreInitialState),
 
-  selectSurvey: (survey: SurveyDto | undefined) => set({ selectedSurvey: survey }),
+  selectSurvey: (survey: SurveyDto | undefined) => {
+    set({ selectedSurvey: undefined });
+    if (!survey) {
+      return;
+    }
+    const { formula: rawFormula, ...surveyData } = survey;
+    if (!rawFormula) {
+      return;
+    }
+    const processedFormula: SurveyFormula = resetToOriginalChoicesByUrlForSurveyFormula(rawFormula);
+    set({ selectedSurvey: { ...surveyData, formula: processedFormula } });
+  },
 
   setIsOpenSubmittedAnswersDialog: (state: boolean) => set({ isOpenSubmittedAnswersDialog: state }),
   selectUser: (userName: string) => set({ user: userName }),

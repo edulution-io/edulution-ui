@@ -18,35 +18,27 @@
  */
 
 import React, { useEffect } from 'react';
-import { toast } from 'sonner';
-import { useTranslation } from 'react-i18next';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import getSurveyFormulaWithIdentificationPlaceholderQuestion from '@libs/survey/utils/getSurveyFormulaWithIdentificationPlaceholderQuestion';
 import ResultVisualization from '@/pages/Surveys/Tables/components/ResultVisualization';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
 const ResultVisualizationDialogBody = () => {
-  const { selectedSurvey } = useSurveyTablesPageStore();
-  const { setIsOpenPublicResultsVisualisationDialog, getSurveyResult, result } = useResultDialogStore();
-
-  const { t } = useTranslation();
+  const { selectedSurvey: selectedSurveyFromPage } = useSurveyTablesPageStore();
+  const { isLoading, selectedSurvey, selectSurvey, getSurveyResult, result, isOpenPublicResultsVisualisationDialog } =
+    useResultDialogStore();
 
   useEffect((): void => {
-    if (selectedSurvey?.id) {
+    selectSurvey(selectedSurveyFromPage);
+  }, [selectedSurveyFromPage]);
+
+  useEffect((): void => {
+    if (isOpenPublicResultsVisualisationDialog && selectedSurvey?.id) {
       void getSurveyResult(selectedSurvey.id);
     }
-  }, [selectedSurvey]);
-
-  useEffect(() => {
-    if (!selectedSurvey?.formula) {
-      toast.error(t(SurveyErrorMessages.NoFormula));
-      setIsOpenPublicResultsVisualisationDialog(false);
-    } else if (result && result.length === 0) {
-      setIsOpenPublicResultsVisualisationDialog(false);
-    }
-  }, [selectedSurvey, result]);
+  }, [isOpenPublicResultsVisualisationDialog, selectedSurvey]);
 
   if (!selectedSurvey?.formula || !result || result.length === 0) {
     return null;
@@ -60,10 +52,13 @@ const ResultVisualizationDialogBody = () => {
   }
 
   return (
-    <ResultVisualization
-      formula={formula}
-      result={result}
-    />
+    <>
+      {isLoading && <CircleLoader />}
+      <ResultVisualization
+        formula={formula}
+        result={result}
+      />
+    </>
   );
 };
 

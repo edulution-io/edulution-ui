@@ -27,39 +27,43 @@ import { SurveyAnswerDocument } from '../survey-answers.schema';
 
 const name = '002-enforce-the-choice-title-usage-inside-of-survey-answers';
 
-const updateSurveyQuestionAnswer = async (
-  surveyAnswer: Record<string, string | string[] | object | object[]>,
+type AnswerValue = string | string[] | object | object[];
+type AnswerRecord = Record<string, AnswerValue>;
+
+const toObjectId = (id: string | Types.ObjectId) => (id instanceof Types.ObjectId ? id : new Types.ObjectId(id));
+
+const applyChoiceTitle = (value: unknown, nameToTitle: Map<string, string>): unknown => {
+  if (typeof value === 'string') return nameToTitle.get(value) ?? value;
+  return value;
+};
+
+const updateSurveyQuestionAnswer = (
+  surveyAnswer: AnswerRecord,
   backendLimiters: { questionName: string; choices: ChoiceDto[] }[],
-): Promise<Record<string, string | string[] | object | object[]>> => {
-  const answer: Record<string, string | string[] | object | object[]> = { ...surveyAnswer };
-  await Promise.all(
-    Object.keys(surveyAnswer).map((questionId) => {
-      const questionLimiter = backendLimiters.find((limiter) => limiter.questionName === questionId);
-      const choices = questionLimiter?.choices ?? [];
-      const choiceNames = choices.map((choice) => choice.name);
-      const questionAnswer = surveyAnswer[questionId];
-      if (Array.isArray(questionAnswer)) {
-        answer[questionId] = questionAnswer.map((entry) => {
-          if (typeof entry === 'string') {
-            const isUsingName = choiceNames.includes(entry);
-            if (isUsingName) {
-              return choices.find((choice) => choice.name === entry)?.title || entry;
-            }
-          }
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-          return entry;
-        });
-      }
-      if (typeof questionAnswer === 'string') {
-        const isUsingName = choiceNames.includes(questionAnswer);
-        if (isUsingName) {
-          answer[questionId] = choices.find((choice) => choice.name === questionAnswer)?.title || questionAnswer;
-        }
-      }
-      return answer;
-    }),
-  );
-  return answer;
+): AnswerRecord => {
+  const limiterMap = new Map<string, Map<string, string>>();
+
+  backendLimiters.forEach((limiter) => {
+    const nameToTitle = new Map(limiter.choices.map((c) => [c.name, c.title]));
+    limiterMap.set(limiter.questionName, nameToTitle);
+  });
+
+  const result: AnswerRecord = { ...surveyAnswer };
+
+  Object.keys(surveyAnswer).forEach((questionId) => {
+    const nameToTitle = limiterMap.get(questionId);
+    if (!nameToTitle) return;
+
+    const questionAnswer = surveyAnswer[questionId];
+    if (Array.isArray(questionAnswer)) {
+      result[questionId] = questionAnswer.map((entry) => applyChoiceTitle(entry, nameToTitle)) as AnswerValue;
+      return;
+    }
+    if (typeof questionAnswer === 'string') {
+      result[questionId] = nameToTitle.get(questionAnswer) ?? questionAnswer;
+    }
+  });
+  return result;
 };
 
 const surveyAnswerMigration002UseChoiceTitleInsideOfAnswers: Migration<SurveyAnswerDocument> = {
@@ -67,7 +71,7 @@ const surveyAnswerMigration002UseChoiceTitleInsideOfAnswers: Migration<SurveyAns
   version: 2,
   execute: async (model) => {
     const previousSchemaVersion = 2;
-    const newSchemaVersion = 3;
+    const newSchemaVersion = 2;
 
     const unprocessedDocuments = await model
       .find<SurveyAnswerDocument>({ schemaVersion: previousSchemaVersion })
@@ -88,22 +92,17 @@ const surveyAnswerMigration002UseChoiceTitleInsideOfAnswers: Migration<SurveyAns
         // eslint-disable-next-line no-underscore-dangle
         const id = doc._id as string | Types.ObjectId;
 
-        let currentId;
-        if (id instanceof Types.ObjectId) {
-          currentId = id;
-        } else {
-          currentId = new Types.ObjectId(id);
-        }
+        const currentId = toObjectId(id);
 
         const { backendLimiters } = doc.surveyId as unknown as SurveyDto;
 
-        const answer = doc.answer as unknown as Record<string, string | string[] | object | object[]>;
+        const answer = doc.answer as unknown as AnswerRecord;
 
         if (!backendLimiters) {
           return;
         }
         try {
-          const updatedAnswer = await updateSurveyQuestionAnswer(answer, backendLimiters);
+          const updatedAnswer = updateSurveyQuestionAnswer(answer, backendLimiters);
           await model.updateOne(
             { _id: currentId },
             { $set: { answer: updatedAnswer, schemaVersion: newSchemaVersion } },

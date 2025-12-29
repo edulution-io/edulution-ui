@@ -18,35 +18,27 @@
  */
 
 import React, { useEffect } from 'react';
-import { toast } from 'sonner';
-import { useTranslation } from 'react-i18next';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import getSurveyFormulaWithIdentificationPlaceholderQuestion from '@libs/survey/utils/getSurveyFormulaWithIdentificationPlaceholderQuestion';
 import ResultTable from '@/pages/Surveys/Tables/components/ResultTable';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
 const ResultTableDialogBody = () => {
-  const { selectedSurvey } = useSurveyTablesPageStore();
-  const { setIsOpenPublicResultsTableDialog, getSurveyResult, result } = useResultDialogStore();
-
-  const { t } = useTranslation();
+  const { selectedSurvey: selectedSurveyFromPage } = useSurveyTablesPageStore();
+  const { isLoading, selectedSurvey, selectSurvey, getSurveyResult, result, isOpenPublicResultsTableDialog } =
+    useResultDialogStore();
 
   useEffect((): void => {
-    if (selectedSurvey?.id) {
+    selectSurvey(selectedSurveyFromPage);
+  }, [selectedSurveyFromPage]);
+
+  useEffect((): void => {
+    if (isOpenPublicResultsTableDialog && selectedSurvey?.id) {
       void getSurveyResult(selectedSurvey.id);
     }
-  }, [selectedSurvey]);
-
-  useEffect(() => {
-    if (!selectedSurvey?.formula) {
-      toast.error(t(SurveyErrorMessages.NoFormula));
-      setIsOpenPublicResultsTableDialog(false);
-    } else if (result && result.length === 0) {
-      setIsOpenPublicResultsTableDialog(false);
-    }
-  }, [selectedSurvey, result]);
+  }, [isOpenPublicResultsTableDialog, selectedSurvey]);
 
   if (!selectedSurvey?.formula || !result || result.length === 0) {
     return null;
@@ -58,11 +50,15 @@ const ResultTableDialogBody = () => {
   } else {
     formula = selectedSurvey.formula;
   }
+
   return (
-    <ResultTable
-      formula={formula}
-      result={result}
-    />
+    <>
+      {isLoading && <CircleLoader />}
+      <ResultTable
+        formula={formula}
+        result={result}
+      />
+    </>
   );
 };
 

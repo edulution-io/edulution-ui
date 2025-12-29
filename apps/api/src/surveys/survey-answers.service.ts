@@ -79,7 +79,11 @@ class SurveyAnswersService implements OnModuleInit {
     return answers.length !== 0;
   };
 
-  public getSelectableChoices = async (surveyId: string, questionName: string): Promise<ChoiceDto[]> => {
+  public getSelectableChoices = async (
+    surveyId: string,
+    questionName: string,
+    returnOriginal?: boolean,
+  ): Promise<ChoiceDto[]> => {
     const survey = await this.surveyModel.findById(surveyId);
     if (!survey) {
       throw new CustomHttpException(
@@ -101,6 +105,12 @@ class SurveyAnswersService implements OnModuleInit {
     }
 
     const possibleChoices = limiter.choices;
+
+    if (returnOriginal) {
+      possibleChoices.sort((a, b) => a.title.localeCompare(b.title));
+
+      return possibleChoices;
+    }
 
     const filteredChoices: ChoiceDto[] = [];
     const filteringPromises = possibleChoices.map(async (choice) => {
