@@ -82,10 +82,9 @@ const SurveyEditorTemplateCard = ({
     <Card
       className={cn(
         GRID_CARD,
-        'flex cursor-pointer',
-        { 'bg-ciGreenToBlue text-white': !active },
-        { 'h-[13rem]': !isSuperAdmin },
-        { 'h-[14rem] pb-12': isSuperAdmin },
+        'relative flex h-[10rem] cursor-pointer pt-2',
+        { 'bg-muted text-white': !active },
+        { 'h-[12.2rem] pb-12': isSuperAdmin },
         { 'pt-8': !description },
       )}
       variant="text"
@@ -100,13 +99,12 @@ const SurveyEditorTemplateCard = ({
       ) : (
         <Icon className="h-12 w-12 md:h-14 md:w-14" />
       )}
+      {title && <h3 className={cn('mt-1 line-clamp-2 w-full truncate px-4', { 'mt-2': !description })}>{title}</h3>}
 
-      {title && <h3 className={cn('line-clamp-2 h-[3.8rem] justify-center', { 'mt-4': !description })}>{title}</h3>}
-
-      {description && <p className="line-clamp-2 h-[2.8rem] w-full">{description}</p>}
+      {description && <p className="mt-2 line-clamp-2 w-full px-4">{description}</p>}
 
       {isSuperAdmin && surveyTemplate && (
-        <div className="absolute bottom-2 flex h-8 w-full flex-row justify-end gap-2 px-2 text-sm italic text-muted-foreground">
+        <div className="absolute bottom-2 flex h-8 w-full flex-row justify-end gap-2 px-2 text-sm italic">
           <Button
             onClick={async (e) => {
               e.stopPropagation();
