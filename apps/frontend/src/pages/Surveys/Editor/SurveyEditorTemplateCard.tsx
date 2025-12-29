@@ -17,11 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useState } from 'react';
 import { toast } from 'sonner';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { VscNewFile } from 'react-icons/vsc';
-import { EyeLightIcon } from '@/assets/icons';
+import { IconType } from 'react-icons';
 import cn from '@libs/common/utils/className';
 import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
@@ -32,13 +31,19 @@ import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPage
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
+import surveysDefaultValues from '@/pages/Surveys/utils/surveys-default-values';
 
 interface SurveyEditorTemplateCardProps {
+  icon: string | IconType;
   creator: AttendeeDto;
   surveyTemplate?: SurveyTemplateDto;
 }
 
-const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTemplateCardProps): JSX.Element => {
+const SurveyEditorTemplateCard = ({
+  icon: Icon,
+  creator,
+  surveyTemplate,
+}: SurveyEditorTemplateCardProps): JSX.Element => {
   const {
     setIsOpenTemplateConfirmDeletion,
     setIsOpenTemplatePreview,
@@ -47,7 +52,7 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
     setTemplate,
   } = useSurveyTemplateStore();
 
-  const { loadNew, loadTemplate } = useSurveyEditorPageStore();
+  const { loadNewSurvey, loadSurveyTemplate } = useSurveyEditorPageStore();
 
   const { isSuperAdmin } = useLdapGroups();
 
@@ -59,9 +64,9 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
     e.stopPropagation();
     setTemplate(surveyTemplate);
     if (surveyTemplate) {
-      loadTemplate(creator, surveyTemplate);
+      loadSurveyTemplate(creator, surveyTemplate);
     } else {
-      loadNew(creator);
+      loadNewSurvey(creator);
     }
   };
 
@@ -89,7 +94,7 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
     setIsOpenTemplateConfirmDeletion(true);
   };
 
-  const title = surveyTemplate?.template.formula.title ?? t('survey.editor.new');
+  const title = surveyTemplate?.name ?? surveyTemplate?.template.formula.title ?? surveysDefaultValues.formula.title;
 
   const description = surveyTemplate?.template.formula.description;
 
@@ -97,40 +102,36 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
     <Card
       className={cn(
         GRID_CARD,
-        'flex cursor-pointer',
-        { 'bg-muted': active },
-        { 'bg-accent': !active },
-        { 'h-[13rem]': !isSuperAdmin },
-        { 'h-[14.2rem] pb-12': isSuperAdmin },
+        'relative flex h-[10rem] cursor-pointer pt-2',
+        { 'bg-muted text-white': !active },
+        { 'h-[12.2.2rem] pb-12': isSuperAdmin },
         { 'pt-8': !description },
         'flex',
       )}
       variant="text"
       onClick={handleCardClick}
     >
-      {surveyTemplate ? (
-        <Button
-          variant="btn-outline"
-          onClick={handleOpenPreview}
-          className="h-14 w-14 p-2"
-          aria-label={t('survey.editor.template.preview')}
-        >
+      <Button
+        onClick={handleOpenPreview}
+        className="cursor-pointer"
+        type="button"
+      >
+        {typeof Icon === 'string' ? (
           <img
-            src={EyeLightIcon}
-            alt="eye"
-            width="w-12"
+            src={Icon}
+            alt={title}
+            className="h-12 w-12 md:h-14 md:w-14"
           />
-        </Button>
-      ) : (
-        <VscNewFile className="h-10 w-10 md:h-14 md:w-14" />
-      )}
+        ) : (
+          <Icon className="h-12 w-12 md:h-14 md:w-14" />
+        )}
+      </Button>
+      {title && <h3 className={cn('mt-1 line-clamp-2 w-full truncate px-4', { 'mt-2': !description })}>{title}</h3>}
 
-      {title && <h3 className={cn('line-clamp-2 h-[3.8rem] justify-center', { 'mt-4': !description })}>{title}</h3>}
-
-      {description && <p className="line-clamp-2 h-[2.8rem] w-full">{description}</p>}
+      {description && <p className="mt-2 line-clamp-2 w-full px-4">{description}</p>}
 
       {isSuperAdmin && surveyTemplate && (
-        <div className="absolute bottom-2 flex h-8 w-full flex-row justify-end gap-2 px-2 text-sm italic text-muted-foreground">
+        <div className="absolute bottom-2 flex h-8 w-full flex-row justify-end gap-2 px-2 text-sm italic">
           <Button
             onClick={toggleIsTemplateActive}
             variant="btn-outline"

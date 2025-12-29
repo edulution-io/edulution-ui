@@ -25,7 +25,7 @@ import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoi
 import AppConfigService from './appconfig.service';
 import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
 import AdminGuard from '../common/guards/admin.guard';
-import { Public } from '../common/decorators/public.decorator';
+import Public from '../common/decorators/public.decorator';
 
 @ApiTags(EDU_API_CONFIG_ENDPOINTS.ROOT)
 @ApiBearerAuth()

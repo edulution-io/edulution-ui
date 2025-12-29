@@ -31,11 +31,20 @@ interface SaveSurveyDialogProps {
   setIsOpenSaveSurveyDialog: (state: boolean) => void;
   submitSurvey: () => void;
   isSubmitting: boolean;
+  handleSaveTemplate: () => void;
   trigger?: React.ReactNode;
 }
 
 const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
-  const { trigger, form, submitSurvey, isSubmitting, isOpenSaveSurveyDialog, setIsOpenSaveSurveyDialog } = props;
+  const {
+    trigger,
+    form,
+    submitSurvey,
+    isSubmitting,
+    handleSaveTemplate,
+    isOpenSaveSurveyDialog,
+    setIsOpenSaveSurveyDialog,
+  } = props;
 
   const { t } = useTranslation();
 
@@ -47,14 +56,18 @@ const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        submitSurvey();
+        if (form.watch('saveAsTemplate')) {
+          handleSaveTemplate();
+        } else {
+          submitSurvey();
+        }
       }}
     >
       <DialogFooterButtons
         handleClose={handleClose}
         handleSubmit={() => {}}
         disableSubmit={isSubmitting}
-        submitButtonText="common.save"
+        submitButtonText={form.watch('saveAsTemplate') ? 'survey.editor.templates.save' : 'common.save'}
         submitButtonType="submit"
       />
     </form>

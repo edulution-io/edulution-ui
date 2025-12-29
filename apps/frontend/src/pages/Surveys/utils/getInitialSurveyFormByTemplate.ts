@@ -23,7 +23,7 @@ import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import surveysDefaultValues from '@/pages/Surveys/utils/surveys-default-values';
 
 const getInitialSurveyFormByTemplate = (creator: AttendeeDto, template: SurveyTemplateDto): SurveyDto => ({
-  id: undefined,
+  id: template?.template.id || undefined,
   formula: template?.template.formula || surveysDefaultValues.formula,
   backendLimiters: template?.template.backendLimiters || [],
   creator,
@@ -39,6 +39,7 @@ const getInitialSurveyFormByTemplate = (creator: AttendeeDto, template: SurveyTe
     template?.template.canSubmitMultipleAnswers ?? surveysDefaultValues.canSubmitMultipleAnswers,
   isPublic: template?.template.isPublic ?? surveysDefaultValues.isPublic,
   canUpdateFormerAnswer: template?.template.canUpdateFormerAnswer ?? surveysDefaultValues.canUpdateFormerAnswer,
+  saveAsTemplate: true,
 });
 
 export default getInitialSurveyFormByTemplate;

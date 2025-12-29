@@ -29,11 +29,14 @@ import {
   VEYON_API_FRAMEBUFFER_ENDPOINT,
 } from '@libs/veyon/constants/veyonApiEndpoints';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
+import APPS from '@libs/appconfig/constants/apps';
 import VeyonService from './veyon.service';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
+import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
 
 @ApiTags(VEYON_API_ENDPOINT)
 @ApiBearerAuth()
+@RequireAppAccess(APPS.CLASS_MANAGEMENT)
 @Controller(VEYON_API_ENDPOINT)
 class VeyonController {
   constructor(private readonly veyonService: VeyonService) {}

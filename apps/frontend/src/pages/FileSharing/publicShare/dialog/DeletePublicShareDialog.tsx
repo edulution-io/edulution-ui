@@ -46,7 +46,7 @@ const DeletePublicShareDialog: React.FC<DeletePublicFileDialogProps> = ({ trigge
       items={sharesToDelete.map(({ publicShareId, filename }) => ({ id: publicShareId, name: filename }))}
       onConfirmDelete={handleConfirmDelete}
       isLoading={isLoading}
-      titleTranslationKey="filesharing.publicFileSharing.deleteFileLinks"
+      titleTranslationKey="filesharing.publicFileSharing.deleteFileLink"
       messageTranslationKey="filesharing.publicFileSharing.confirmDelete"
       trigger={trigger}
       autoCloseOnSuccess={false}

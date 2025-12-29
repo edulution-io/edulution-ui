@@ -17,20 +17,21 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { VscNewFile } from 'react-icons/vsc';
 import { RiResetLeftLine } from 'react-icons/ri';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { TbFileTypePdf, TbTemplate } from 'react-icons/tb';
+import { TbFileTypePdf } from 'react-icons/tb';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/getSurveyEditorForm.schema';
+import resetSurveyIdFromFormulasBackendLimiters from '@libs/survey/utils/resetSurveyIdFromFormulasBackendLimiters';
 import surveysDefaultValues from '@/pages/Surveys/utils/surveys-default-values';
 import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
@@ -150,26 +151,26 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     });
   }, [creator, form, language]);
 
-  const handleSaveTemplate = () => {
+  const handleSaveTemplate = useCallback(async () => {
+    if (!isSuperAdmin) {
+      return;
+    }
     const survey = form.getValues();
-    const formula = (creator.JSON as SurveyFormula) || (creator.survey.toJSON() as SurveyFormula);
-    const surveyTemplateDto = {
-      id: template?.id,
-      name: formula.title || survey.formula.title,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, formula, createdAt, saveNo, expires, answers, saveAsTemplate, ...remainingSurvey } = survey;
+    const creationDate = template?.template.createdAt ?? new Date();
+    const rawFormula = creator.JSON as SurveyFormula;
+    const processedFormula: SurveyFormula = resetSurveyIdFromFormulasBackendLimiters(rawFormula, id);
+    await uploadTemplate({
+      id: template?.template.id,
       template: {
-        formula: formula || survey.formula,
-        backendLimiters: survey.backendLimiters,
-        invitedAttendees: survey.invitedAttendees,
-        invitedGroups: survey.invitedGroups,
-        isPublic: survey.isPublic,
-        isAnonymous: survey.isAnonymous,
-        canSubmitMultipleAnswers: survey.canSubmitMultipleAnswers,
-        canUpdateFormerAnswer: survey.canUpdateFormerAnswer,
+        formula: processedFormula,
+        createdAt: creationDate,
+        ...remainingSurvey,
       },
-    };
-
-    void uploadTemplate(surveyTemplateDto);
-  };
+    });
+    setIsOpenSaveSurveyDialog(false);
+  }, [form, creator, template, uploadTemplate, isSuperAdmin, setIsOpenSaveSurveyDialog]);
 
   const handleNavigateToCreatedSurveys = () => {
     window.history.pushState(null, '', `/${CREATED_SURVEYS_PAGE}`);
@@ -200,12 +201,6 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
   const config: FloatingButtonsBarConfig = {
     buttons: [
       SaveButton(() => setIsOpenSaveSurveyDialog(true)),
-      {
-        icon: TbTemplate,
-        text: t('survey.editor.template.save'),
-        onClick: () => handleSaveTemplate(),
-        isVisible: !!isSuperAdmin,
-      },
       {
         icon: VscNewFile,
         text: t('survey.editor.new'),
@@ -257,6 +252,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
         isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}
         setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
         submitSurvey={handleSaveSurvey}
+        handleSaveTemplate={handleSaveTemplate}
         isSubmitting={isLoading}
       />
       <QuestionsContextMenu

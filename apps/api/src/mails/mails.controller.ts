@@ -22,14 +22,17 @@ import MAIL_ENDPOINT from '@libs/mail/constants/mail-endpoint';
 import { CreateSyncJobDto, MailDto, MailProviderConfigDto, SogoThemeVersionDto, SyncJobDto } from '@libs/mail/types';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import SOGO_THEME from '@libs/mail/constants/sogoTheme';
+import APPS from '@libs/appconfig/constants/apps';
 import GetUsersEmailAddress from '../common/decorators/getUsersEmailAddress.decorator';
 import MailsService from './mails.service';
 import UsersService from '../users/users.service';
 import AdminGuard from '../common/guards/admin.guard';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
+import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
 
 @ApiTags(MAIL_ENDPOINT)
 @ApiBearerAuth()
+@RequireAppAccess(APPS.MAIL)
 @Controller(MAIL_ENDPOINT)
 class MailsController {
   constructor(

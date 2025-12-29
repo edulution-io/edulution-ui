@@ -43,7 +43,7 @@ const AppConfigFormField = <T extends FieldValues>({
     <FormFieldSH
       control={control}
       name={fieldPath}
-      defaultValue={'' as PathValue<T, Path<T>>}
+      defaultValue={(option.value ?? '') as PathValue<T, Path<T>>}
       render={({ field }) => (
         <FormItem>
           {option.title && <p className="font-bold">{t(option.title)}</p>}

@@ -61,6 +61,7 @@ const UserAccountsToastContent: React.FC<UserAccountsToastContentProps> = ({
             <InputWithActionIcons
               type="text"
               value={userAccount.accountUser}
+              variant="dialog"
               readOnly
               className="cursor-pointer"
               onMouseDown={(e) => {

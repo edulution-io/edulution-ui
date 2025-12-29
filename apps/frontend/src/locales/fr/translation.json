@@ -386,6 +386,14 @@
       "fileInfoDeleting": "Le fichier {{filename}} va être supprimé",
       "errorInfo": "{{failed}} Les fichiers n'ont pas pu être distribués"
     },
+    "textEditor": {
+      "unsavedChanges": "Modifications non enregistrées",
+      "unsavedChangesMessage": "Vous avez des modifications non enregistrées. Que voulez-vous faire?",
+      "discard": "Abandonner",
+      "saving": "Enregistrement...",
+      "saveSuccess": "Fichier enregistré avec succès",
+      "saveError": "Échec de l'enregistrement du fichier"
+    },
     "tooltips": {
       "folderNameRequired": "Un nom de dossier est requis",
       "FileNameRequired": "Le nom du fichier est requis",
@@ -607,6 +615,8 @@
       "expectingUserInput": "Ici, la réponse du participant est attendue ... ",
       "isLoadingSurvey": "Le sondage est en cours de chargement...",
       "template": {
+        "title": "Modèle",
+        "label": "Enregistrer le modèle",
         "save": "Enregistrer le modèle",
         "noTemplates": "Aucun modèle disponible",
         "noSearchResults": "Aucun modèle trouvé",
@@ -945,7 +955,10 @@
           "title": "Paramètres généraux",
           "description": ""
         },
-
+        "drawio": {
+          "title": "Intégration Draw.io",
+          "description": "Configurez Draw.io pour créer des diagrammes et des organigrammes."
+        },
         "proxyConfig": {
           "title": "Configuration proxy",
           "description": "Une configuration proxy distincte pour Trafik peut être stockée ici. Vous pouvez soit utiliser un modèle à l'aide des champs d'entrée, soit une configuration au format YAML peut être créée directement en mode expert. <br/><strong>Danger:</strong> Une fausse configuration peut conduire à une application inaccessible."
@@ -1138,6 +1151,17 @@
       "french": "Français",
       "system": "Langue du système",
       "selectLanguage": "Sélectionner la langue"
+    },
+    "themeMode": {
+      "title": "Apparence",
+      "description": "Sélectionnez l'apparence de l'interface utilisateur.",
+      "system": "Système",
+      "dark": "Sombre",
+      "light": "Clair"
+    },
+    "userinterface": {
+      "title": "Interface utilisateur",
+      "description": "Ici, vous pouvez configurer certains aspects de l'interface utilisateur selon vos préférences."
     },
     "addTotp": {
       "title": "Configurer l'authentification à deux facteurs",
@@ -1633,6 +1657,8 @@
     "onlyOfficeUrlTitle": "URL OnlyOffice",
     "onlyOfficeJwtSecretTitle": "JWT OnlyOffice",
     "onlyOfficeJwtSecretDescription": "Entrez ici la clé secrète JWT OnlyOffice",
+    "drawioUrlTitle": "URL Draw.io",
+    "drawioUrlDescription": "Entrez l'URL de votre instance Draw.io auto-hébergée",
     "overrideDocumentVendorMSWithOOTitle": "Utilisez l'OpenDocument comme format de document standard",
     "overrideDocumentVendorMSWithOODescription": "Le format OpenDocument (ODT, ODS, ODP) devrait-il être utilisé à la place des formats Microsoft Office (DOCX, PPTX, XLSX)?",
     "mailImapUrlTitle": "URL",
