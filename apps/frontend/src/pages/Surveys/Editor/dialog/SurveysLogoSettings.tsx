@@ -37,12 +37,12 @@ const SurveysLogoSettings = ({ surveyCreator }: SurveysLogoSettingsProps) => {
   useEffect(() => {
     // eslint-disable-next-line no-param-reassign
     surveyCreator.survey.logoWidth = logoWidth !== 0 ? `${logoWidth}px` : 'auto';
-  }, [logoWidth]);
+  }, [logoWidth, surveyCreator]);
 
   useEffect(() => {
     // eslint-disable-next-line no-param-reassign
     surveyCreator.survey.logoPosition = logoPosition;
-  }, [logoPosition]);
+  }, [logoPosition, surveyCreator]);
 
   return (
     <div className="my-2 flex flex-col gap-2">
@@ -55,7 +55,7 @@ const SurveysLogoSettings = ({ surveyCreator }: SurveysLogoSettingsProps) => {
         variant="dialog"
         value={logoWidth === 0 ? '' : logoWidth}
         onChange={(e) => {
-          setLogoWidth(Number(e.target.value) ?? 0);
+          setLogoWidth(Number(e.target.value) || 0);
         }}
       />
       <Label>

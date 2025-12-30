@@ -39,7 +39,7 @@ const SurveyContextMenu = (props: SurveyContextMenuProps) => {
 
   const { t } = useTranslation();
 
-  const handleClose = () => setIsOpenSurveyContextMenu(!isOpenSurveyContextMenu);
+  const handleClose = () => setIsOpenSurveyContextMenu(false);
 
   const body = (
     <SurveyContextMenuBody
@@ -55,7 +55,7 @@ const SurveyContextMenu = (props: SurveyContextMenuProps) => {
       isOpen={isOpenSurveyContextMenu}
       trigger={trigger}
       handleOpenChange={handleClose}
-      title={t('surveys.saveDialog.title')}
+      title={t('survey.editor.surveySettings.title')}
       body={body}
       footer={footer}
       desktopContentClassName="max-w-[50%] min-h-[500px] max-h-[90%] overflow-auto"
