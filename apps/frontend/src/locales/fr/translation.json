@@ -659,7 +659,8 @@
             "label": "Position du logo",
             "placeholder": "Choisissez la position du logo",
             "left": "À gauche du titre",
-            "right": "À droite du titre"
+            "right": "À droite du titre",
+            "description": "La position du logo par rapport au titre de l'enquête est visible dans l'onglet 'Tester le sondage'."
           }
         },
         "invitees": "Invités"

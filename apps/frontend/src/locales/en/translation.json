@@ -770,7 +770,8 @@
             "label": "Position of the logo",
             "placeholder": "Choose the position of the logo",
             "left": "Left of the title",
-            "right": "Right of the title"
+            "right": "Right of the title",
+            "description": "The Position for the logo relative to the title of the survey is visible in the 'Preview' tab."
           }
         },
         "invitees": "Invitees"

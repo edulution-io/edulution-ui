@@ -1,4 +1,17 @@
 .survey-editor {
+  div.sd-header__text {
+    h3.sd-title {
+      span.sv-string-viewer {
+        font-size: 2rem !important;
+      }
+    }
+    div.sd-description {
+      span.sv-string-viewer {
+        font-size: 1.5rem !important;
+      }
+    }
+  }
+
   .svc-question__content .sd-question.sd-question--table {
     margin: 0 !important;
     padding: 0 !important;

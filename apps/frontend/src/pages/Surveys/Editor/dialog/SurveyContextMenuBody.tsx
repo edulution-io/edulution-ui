@@ -66,10 +66,7 @@ const SurveyContextMenuBody = ({ form, surveyCreator }: SurveyContextMenuBodyPro
           <h3>{i18n.t('survey.editor.surveySettings.surveyLogo.title')}</h3>
         </AccordionTrigger>
         <AccordionContent className="space-y-2 px-1">
-          <SurveysLogoSettings
-            form={form}
-            surveyCreator={surveyCreator}
-          />
+          <SurveysLogoSettings surveyCreator={surveyCreator} />
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="expirationDate">

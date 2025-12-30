@@ -772,7 +772,8 @@
             "label": "Position des Logos",
             "placeholder": "Wähle die Position des Logos",
             "left": "Links vom Titel",
-            "right": "Rechts vom Titel"
+            "right": "Rechts vom Titel",
+            "description": "Die Position des Logos relativ zum Titel der Umfrage ist im Tab 'Test' einzusehen."
           }
         },
         "invitees": "Teilnehmer"

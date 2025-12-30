@@ -17,44 +17,32 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UseFormReturn } from 'react-hook-form';
 import { SurveyCreatorModel } from 'survey-creator-core';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
-import cn from '@libs/common/utils/className';
 import DropdownSelect from '@/components/ui/DropdownSelect/DropdownSelect';
 import Label from '@/components/ui/Label';
 import Input from '@/components/shared/Input';
 
 interface SurveysLogoSettingsProps {
-  form: UseFormReturn<SurveyDto>;
   surveyCreator: SurveyCreatorModel;
 }
 
-const SurveysLogoSettings = ({ form, surveyCreator }: SurveysLogoSettingsProps) => {
+const SurveysLogoSettings = ({ surveyCreator }: SurveysLogoSettingsProps) => {
   const { t } = useTranslation();
 
-  const [surveyLogoWidth, setSurveyLogoWidth] = useState<number>(0);
-  const [surveyLogoPosition, setSurveyLogoPosition] = useState<'left' | 'right'>('right');
+  const [logoWidth, setLogoWidth] = React.useState<number>(surveyCreator.survey.renderedLogoWidth);
+  const [logoPosition, setLogoPosition] = React.useState<string>(surveyCreator.survey.logoPosition ?? 'left');
 
   useEffect(() => {
-    const formula = form.watch('formula');
-    if (!formula) return;
-    const widthString = formula.logoWidth || '0px';
-    const widthNumber = Number(widthString.replace('px', '').replace(/\D/g, ''));
-    setSurveyLogoWidth(widthNumber);
-    setSurveyLogoPosition(formula.logoPosition || 'right');
-  }, []);
-
-  useEffect(() => {
-    const formula = form.watch('formula');
-    if (!formula) return;
-    formula.logoWidth = surveyLogoWidth ? `${Math.max(100, surveyLogoWidth)}px` : 'auto';
-    form.setValue('formula', formula);
     // eslint-disable-next-line no-param-reassign
-    surveyCreator.JSON = formula;
-  }, [surveyLogoWidth]);
+    surveyCreator.survey.logoWidth = logoWidth !== 0 ? `${logoWidth}px` : 'auto';
+  }, [logoWidth]);
+
+  useEffect(() => {
+    // eslint-disable-next-line no-param-reassign
+    surveyCreator.survey.logoPosition = logoPosition;
+  }, [logoPosition]);
 
   return (
     <div className="my-2 flex flex-col gap-2">
@@ -65,9 +53,10 @@ const SurveysLogoSettings = ({ form, surveyCreator }: SurveysLogoSettingsProps) 
         type="number"
         placeholder={t('survey.editor.surveySettings.surveyLogo.width.placeholder')}
         variant="dialog"
-        value={surveyLogoWidth === 0 ? '' : surveyLogoWidth}
-        onChange={(e) => setSurveyLogoWidth(Number(e.target.value) || 0)}
-        className={cn({ 'text-muted-foreground': !surveyLogoWidth }, { 'text-background': !!surveyLogoWidth })}
+        value={logoWidth === 0 ? '' : logoWidth}
+        onChange={(e) => {
+          setLogoWidth(Number(e.target.value) ?? 0);
+        }}
       />
       <Label>
         <p className="font-bold">{t('survey.editor.surveySettings.surveyLogo.position.label')}</p>
@@ -78,9 +67,15 @@ const SurveysLogoSettings = ({ form, surveyCreator }: SurveysLogoSettingsProps) 
           { id: 'left', name: t('survey.editor.surveySettings.surveyLogo.position.left') },
           { id: 'right', name: t('survey.editor.surveySettings.surveyLogo.position.right') },
         ]}
-        selectedVal={surveyLogoPosition}
-        handleChange={(value) => setSurveyLogoPosition(value as 'left' | 'right')}
+        selectedVal={surveyCreator.survey.logoPosition ?? 'left'}
+        handleChange={(value) => {
+          setLogoPosition(value as 'left' | 'right');
+        }}
+        variant="dialog"
       />
+      <p className="text-sm text-muted-foreground">
+        {t('survey.editor.surveySettings.surveyLogo.position.description')}
+      </p>
     </div>
   );
 };
