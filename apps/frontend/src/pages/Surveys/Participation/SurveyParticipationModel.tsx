@@ -21,9 +21,18 @@ import React, { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
-import { ClearFilesEvent, DownloadFileEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
+import {
+  CalculatedValue,
+  ClearFilesEvent,
+  DownloadFileEvent,
+  Model,
+  Serializer,
+  SurveyModel,
+  UploadFilesEvent,
+} from 'survey-core';
 import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import { SURVEY_DEFAULT_LOGO_PATH } from '@libs/survey/constants/surveys-endpoint';
 import useLanguage from '@/hooks/useLanguage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
@@ -60,10 +69,15 @@ Serializer.getProperty('signaturepad', 'signatureWidth').defaultValue = '800';
 
 const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.ReactNode => {
   const { isPublic } = props;
-  const { getResolvedTheme } = useThemeStore();
+  const { theme } = useThemeStore();
 
   Serializer.getProperty('signaturepad', 'penColor').defaultValue =
-    getResolvedTheme() === THEME.dark ? 'rgba(255, 255, 255, 1)' : 'rgba(17, 24, 39, 1)';
+    theme === THEME.dark ? 'rgba(255, 255, 255, 1)' : 'rgba(17, 24, 39, 1)';
+
+  Serializer.getProperty('survey', 'logo').defaultValue =
+    theme === THEME.dark
+      ? `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-dark.webp`
+      : `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-light.webp`;
 
   const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
 
@@ -242,6 +256,19 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       surveyParticipationModel.data = previousAnswer.answer;
     }
   }, [surveyParticipationModel, previousAnswer]);
+
+  useEffect(() => {
+    if (!surveyParticipationModel) return;
+    if (surveyParticipationModel.logo !== `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-{theme}.webp`) return;
+
+    surveyParticipationModel.calculatedValues.splice(0, surveyParticipationModel.calculatedValues.length);
+
+    const newVariable = new CalculatedValue();
+    newVariable.name = 'theme';
+    newVariable.expression = `${theme}`;
+    newVariable.includeIntoResult = true;
+    surveyParticipationModel.calculatedValues?.push(newVariable);
+  }, [theme, selectedSurvey]);
 
   if (isFetching) {
     return <LoadingIndicatorDialog isOpen />;

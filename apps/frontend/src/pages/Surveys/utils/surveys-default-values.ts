@@ -20,12 +20,14 @@
 import i18n from '@/i18n';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import getSurveysDefaultLogoUrl from '@libs/survey/utils/getSurveysDefaultLogoUrl';
+import getSurveysDefaultLogoFilename from '@libs/survey/utils/getSurveysDefaultLogoFilename';
+import { SURVEY_DEFAULT_LOGO_PATH } from '@libs/survey/constants/surveys-endpoint';
+import THEME from '@libs/common/constants/theme';
 
 const surveysDefaultValues: Partial<SurveyDto> & { formula: SurveyFormula } = {
   formula: {
     title: i18n.t('survey.newTitle'),
-    logo: getSurveysDefaultLogoUrl(),
+    logo: `${SURVEY_DEFAULT_LOGO_PATH}/${getSurveysDefaultLogoFilename(THEME.dark)}`,
   },
   isAnonymous: false,
   canSubmitMultipleAnswers: false,

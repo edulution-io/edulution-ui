@@ -26,16 +26,19 @@ import { RiResetLeftLine } from 'react-icons/ri';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { TbFileTypePdf, TbTemplate } from 'react-icons/tb';
+import { CalculatedValue } from 'survey-core';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
+import { CREATED_SURVEYS_PAGE, SURVEY_DEFAULT_LOGO_PATH } from '@libs/survey/constants/surveys-endpoint';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/getSurveyEditorForm.schema';
+import getSurveysDefaultLogoFilename from '@libs/survey/utils/getSurveysDefaultLogoFilename';
 import surveysDefaultValues from '@/pages/Surveys/utils/surveys-default-values';
 import getInitialSurveyFormValues from '@/pages/Surveys/utils/getInitialSurveyFormValues';
 import useUserStore from '@/store/UserStore/useUserStore';
+import useThemeStore from '@/store/useThemeStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useLanguage from '@/hooks/useLanguage';
@@ -82,6 +85,7 @@ const SurveyEditorPage = () => {
   const { user } = useUserStore();
   const { surveyId } = useParams();
   const { language } = useLanguage();
+  const { theme } = useThemeStore();
 
   const handleReset = () => {
     resetStoredSurvey();
@@ -172,6 +176,13 @@ const SurveyEditorPage = () => {
     });
   }, [creator, form, language]);
 
+  useEffect(() => {
+    if (!creator) return;
+    if (!creator.survey.logo) return;
+    if (!creator.survey.logo?.startsWith(SURVEY_DEFAULT_LOGO_PATH)) return;
+    creator.survey.logo = `${SURVEY_DEFAULT_LOGO_PATH}/${getSurveysDefaultLogoFilename(theme)}`;
+  }, [theme, creator]);
+
   const handleNavigateToCreatedSurveys = () => {
     window.history.pushState(null, '', `/${CREATED_SURVEYS_PAGE}`);
     window.dispatchEvent(new PopStateEvent('popstate'));
@@ -179,6 +190,16 @@ const SurveyEditorPage = () => {
 
   const handleSaveSurvey = async () => {
     if (!creator) return;
+
+    if (creator.survey.logo?.startsWith(SURVEY_DEFAULT_LOGO_PATH)) {
+      creator.survey.logo = `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-{theme}.webp`;
+
+      const newVariable = new CalculatedValue();
+      newVariable.name = 'theme';
+      newVariable.expression = `${theme}`;
+      newVariable.includeIntoResult = true;
+      creator?.survey.calculatedValues?.push(newVariable);
+    }
 
     const formula = creator.JSON as SurveyFormula;
     const saveNo = creator.saveNo || 0;

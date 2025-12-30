@@ -52,6 +52,37 @@ const getSurveyEditorFormSchema = () =>
           ),
         }),
       ),
+      elements: z.array(
+        z.object({
+          type: z.string(),
+          name: z.string(),
+          description: z.string().optional(),
+          isRequired: z.boolean().optional(),
+          choices: z
+            .array(
+              z.object({
+                value: z.string(),
+                label: z.string(),
+              }),
+            )
+            .optional(),
+          choicesByUrl: z
+            .object({
+              url: z.string(),
+            })
+            .optional(),
+        }),
+      ),
+      calculatedValues: z
+        .array(
+          z.object({
+            name: z.string(),
+            value: z.string().optional(),
+            expression: z.string().optional(),
+            includeIntoResult: z.boolean().optional(),
+          }),
+        )
+        .optional(),
     }),
     backendLimiters: z
       .array(
