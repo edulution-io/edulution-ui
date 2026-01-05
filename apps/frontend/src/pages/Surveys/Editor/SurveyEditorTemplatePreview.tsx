@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Serializer } from 'survey-core';
 import { Model, Survey } from 'survey-react-ui';
 import useLanguage from '@/hooks/useLanguage';
@@ -33,25 +33,37 @@ const SurveyEditorTemplatePreview = (): JSX.Element | null => {
   const { language } = useLanguage();
 
   const { getResolvedTheme } = useThemeStore();
+
   const currentTheme = getResolvedTheme();
 
   if (!surveyTemplateDto || !surveyTemplateDto.template.formula) {
     return null;
   }
 
-  const surveyParticipationModel = useMemo(() => {
-    Serializer.getProperty('signaturepad', 'penColor').defaultValue =
-      currentTheme === THEME.dark ? 'rgba(255, 255, 255, 1)' : 'rgba(17, 24, 39, 1)';
+  const modelRef = useRef<Model | null>(null);
+  if (!modelRef.current) {
+    modelRef.current = new Model(surveyTemplateDto.template.formula);
+  }
+  const model = modelRef.current;
 
-    const model = new Model(surveyTemplateDto.template.formula);
+  useEffect(() => {
+    if (!model) return;
     model.applyTheme(surveyTheme);
-    model.locale = language;
     if (model.pages.length > 3) {
       model.showProgressBar = 'top';
     }
-    model.mode = 'preview';
-    return model;
-  }, [surveyTemplateDto.template.formula, language, currentTheme]);
+  }, [model]);
+
+  useEffect(() => {
+    if (!model) return;
+    model.locale = language;
+  }, [model, language]);
+
+  useEffect(() => {
+    if (!model) return;
+    Serializer.getProperty('signaturepad', 'penColor').defaultValue =
+      currentTheme === THEME.dark ? 'rgba(255, 255, 255, 1)' : 'rgba(17, 24, 39, 1)';
+  }, [model, currentTheme]);
 
   return (
     <ResizableWindow
@@ -60,7 +72,7 @@ const SurveyEditorTemplatePreview = (): JSX.Element | null => {
       openMaximized
     >
       <div className="survey-participation h-full w-full">
-        <Survey model={surveyParticipationModel} />
+        <Survey model={model} />
       </div>
     </ResizableWindow>
   );
