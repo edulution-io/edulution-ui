@@ -99,9 +99,11 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
       className={cn(
         GRID_CARD,
         'relative flex h-36 cursor-pointer pt-2',
-        { 'bg-muted text-white': !active },
+        { 'bg-muted-background text-muted-foreground': !active },
         { 'pt-8': !description },
-        { 'min-w-[14rem] md:min-w-[16rem]': isSuperAdmin },
+        {
+          ' sd:min-w-[14rem] w-[calc(100%-2rem)] min-w-[calc(100%-2rem)] max-w-[24rem] md:min-w-[18rem]': isSuperAdmin,
+        },
       )}
       variant="text"
       onClick={handleCardClick}
@@ -116,7 +118,6 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
             { 'mt-2 flex justify-center': !surveyTemplate },
           )}
         >
-          {' '}
           {title}
         </h3>
       )}
@@ -127,7 +128,7 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
         <div className="absolute bottom-2 flex h-8 w-full flex-row justify-end gap-2 px-2 text-sm italic">
           {isSuperAdmin && (
             <Button
-              className="cursor-pointer"
+              className="cursor-pointer hover:bg-transparent"
               onClick={toggleIsTemplateActive}
               variant="btn-outline"
               size="sm"

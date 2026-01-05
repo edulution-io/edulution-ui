@@ -697,7 +697,6 @@
     },
     "editor": {
       "inputFieldTitle": "Input field",
-      "new": "New (blank)",
       "fileUploadSuccess": "Saved the file successfully.",
       "fileUploadError": "Error on file upload, please retry later.",
       "fileDeletionSuccess": "Deleted the file successfully.",

@@ -603,7 +603,6 @@
     "canSubmitMultiple": "Autoriser plusieurs réponses.",
     "editor": {
       "inputFieldTitle": "Champ de saisie",
-      "new": "Nouveau (vide)",
       "saveSurveySuccess": "Le sondage a été enregistrée.",
       "surveyPlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
       "surveyPlaceholderDescription": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",

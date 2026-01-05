@@ -699,7 +699,6 @@
     },
     "editor": {
       "inputFieldTitle": "Eingabefeld",
-      "new": "Neu (Leer)",
       "fileUploadSuccess": "Die Datei wurde erfolgreich hochgeladen.",
       "fileUploadError": "Die Datei konnte nicht hochgeladen werden, bitte versuche es später erneut.",
       "fileDeletionSuccess": "Die Datei wurde erfolgreich gelöscht.",

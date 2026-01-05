@@ -200,10 +200,9 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
-      SaveButton(() => setIsOpenSaveSurveyDialog(true)),
       {
         icon: VscNewFile,
-        text: t('survey.editor.new'),
+        text: t('common.back'),
         onClick: () => {
           handleReset();
           form.reset(initialFormValues);
@@ -213,6 +212,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
           }
         },
       },
+      SaveButton(() => setIsOpenSaveSurveyDialog(true)),
       {
         icon: RiResetLeftLine,
         text: t('survey.editor.reset'),
