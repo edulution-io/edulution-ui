@@ -72,8 +72,12 @@ const SurveyEditorTemplateCard = ({
 
   const handleOpenPreview = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setTemplate(surveyTemplate);
-    setIsOpenTemplatePreview(true);
+    if (surveyTemplate) {
+      setTemplate(surveyTemplate);
+      setIsOpenTemplatePreview(true);
+    } else {
+      loadNewSurvey(creator);
+    }
   };
 
   const toggleIsTemplateActive = async (e: React.MouseEvent) => {
