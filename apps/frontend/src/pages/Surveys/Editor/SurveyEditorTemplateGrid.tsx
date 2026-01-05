@@ -19,14 +19,14 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { VscNewFile } from 'react-icons/vsc';
-import { EyeDarkIcon } from '@/assets/icons';
-import isSubsequence from '@libs/common/utils/string/isSubsequence';
+import cn from '@libs/common/utils/className';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import isSubsequence from '@libs/common/utils/string/isSubsequence';
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import SurveyEditorTemplateCard from '@/pages/Surveys/Editor/SurveyEditorTemplateCard';
 import SurveyEditorTemplatePreview from '@/pages/Surveys/Editor/SurveyEditorTemplatePreview';
 import Input from '@/components/shared/Input';
+import useLdapGroups from '@/hooks/useLdapGroups';
 
 interface SurveyEditorTemplateGridProps {
   surveyCreator: AttendeeDto;
@@ -38,6 +38,8 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
   const { templates, fetchTemplates, isOpenTemplatePreview } = useSurveyTemplateStore();
 
   const [search, setSearch] = useState('');
+
+  const { isSuperAdmin } = useLdapGroups();
 
   useEffect(() => {
     void fetchTemplates();
@@ -66,10 +68,17 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
         variant="default"
         width="auto"
       />
-      <div className="mx-auto grid max-h-full w-full grid-cols-[repeat(auto-fit,minmax(8rem,auto))] justify-center gap-x-3 gap-y-2 overflow-auto px-2 pb-10 scrollbar-thin md:max-h-full md:w-[95%] md:grid-cols-[repeat(auto-fit,minmax(12rem,auto))] md:gap-x-6 md:gap-y-5 md:pb-4">
+      <div
+        className={cn(
+          'mx-auto grid max-h-full w-full grid-cols-[repeat(auto-fit,minmax(8rem,auto))] justify-center gap-x-3 gap-y-2 overflow-auto px-2 pb-10 scrollbar-thin md:max-h-full md:w-[95%] md:grid-cols-[repeat(auto-fit,minmax(12rem,auto))] md:gap-x-6 md:gap-y-5 md:pb-4',
+          {
+            'grid-cols-[repeat(auto-fit,minmax(14rem,auto))] md:grid-cols-[repeat(auto-fit,minmax(16rem,auto))]':
+              isSuperAdmin,
+          },
+        )}
+      >
         <SurveyEditorTemplateCard
           key="create-new-card"
-          icon={VscNewFile}
           creator={surveyCreator}
           surveyTemplate={undefined}
         />
@@ -77,7 +86,6 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
           filteredTemplates.map((surveyTemplate) => (
             <SurveyEditorTemplateCard
               key={surveyTemplate.template.formula.title}
-              icon={EyeDarkIcon}
               creator={surveyCreator}
               surveyTemplate={surveyTemplate}
             />

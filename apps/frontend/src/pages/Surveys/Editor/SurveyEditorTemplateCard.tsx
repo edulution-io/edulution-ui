@@ -20,30 +20,26 @@
 import { toast } from 'sonner';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IconType } from 'react-icons';
+import { VscNewFile } from 'react-icons/vsc';
 import cn from '@libs/common/utils/className';
 import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import { EyeLightIcon } from '@/assets/icons';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
+import surveysDefaultValues from '@/pages/Surveys/utils/surveys-default-values';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
-import surveysDefaultValues from '@/pages/Surveys/utils/surveys-default-values';
 
 interface SurveyEditorTemplateCardProps {
-  icon: string | IconType;
   creator: AttendeeDto;
   surveyTemplate?: SurveyTemplateDto;
 }
 
-const SurveyEditorTemplateCard = ({
-  icon: Icon,
-  creator,
-  surveyTemplate,
-}: SurveyEditorTemplateCardProps): JSX.Element => {
+const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTemplateCardProps): JSX.Element => {
   const {
     setIsOpenTemplateConfirmDeletion,
     setIsOpenTemplatePreview,
@@ -72,12 +68,8 @@ const SurveyEditorTemplateCard = ({
 
   const handleOpenPreview = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (surveyTemplate) {
-      setTemplate(surveyTemplate);
-      setIsOpenTemplatePreview(true);
-    } else {
-      loadNewSurvey(creator);
-    }
+    setTemplate(surveyTemplate);
+    setIsOpenTemplatePreview(true);
   };
 
   const toggleIsTemplateActive = async (e: React.MouseEvent) => {
@@ -106,44 +98,61 @@ const SurveyEditorTemplateCard = ({
     <Card
       className={cn(
         GRID_CARD,
-        'relative flex h-full cursor-pointer pt-2',
+        'relative flex h-36 cursor-pointer pt-2',
         { 'bg-muted text-white': !active },
         { 'pt-8': !description },
-        { 'pb-12': isSuperAdmin },
+        { 'min-w-[14rem] md:min-w-[16rem]': isSuperAdmin },
       )}
       variant="text"
       onClick={handleCardClick}
     >
-      <Button
-        onClick={handleOpenPreview}
-        className="cursor-pointer"
-        type="button"
-      >
-        {typeof Icon === 'string' ? (
-          <img
-            src={Icon}
-            alt={title}
-            className="h-12 w-12 md:h-14 md:w-14"
-          />
-        ) : (
-          <Icon className="h-12 w-12 md:h-14 md:w-14" />
-        )}
-      </Button>
-      {title && <h3 className={cn('mt-1 line-clamp-2 w-full truncate px-4', { 'mt-2': !description })}>{title}</h3>}
+      {!surveyTemplate && <VscNewFile className="h-12 w-12 md:h-14 md:w-14" />}
+
+      {title && (
+        <h3
+          className={cn(
+            'mt-1 line-clamp-2 w-full truncate px-4',
+            { 'mt-4': !description },
+            { 'mt-2 flex justify-center': !surveyTemplate },
+          )}
+        >
+          {' '}
+          {title}
+        </h3>
+      )}
 
       {description && <p className="mt-2 line-clamp-2 w-full px-4">{description}</p>}
 
-      {isSuperAdmin && surveyTemplate && (
+      {surveyTemplate && (
         <div className="absolute bottom-2 flex h-8 w-full flex-row justify-end gap-2 px-2 text-sm italic">
-          <Button
-            onClick={toggleIsTemplateActive}
-            variant="btn-outline"
-            size="sm"
-          >
-            {active ? t('classmanagement.deactivate') : t('classmanagement.activate')}
-          </Button>
-          {!surveyTemplate?.isDefaultTemplate && (
+          {isSuperAdmin && (
             <Button
+              className="cursor-pointer"
+              onClick={toggleIsTemplateActive}
+              variant="btn-outline"
+              size="sm"
+            >
+              {active ? t('classmanagement.deactivate') : t('classmanagement.activate')}
+            </Button>
+          )}
+          {surveyTemplate && (
+            <Button
+              className="m-0 cursor-pointer"
+              onClick={handleOpenPreview}
+              variant="btn-attention"
+              size="sm"
+              aria-label={t('common.delete')}
+            >
+              <img
+                src={EyeLightIcon}
+                alt={title}
+                className="h-5 w-5"
+              />
+            </Button>
+          )}
+          {isSuperAdmin && !surveyTemplate?.isDefaultTemplate && (
+            <Button
+              className="cursor-pointer"
               onClick={handleOpenConfirmDeletion}
               variant="btn-attention"
               size="sm"
