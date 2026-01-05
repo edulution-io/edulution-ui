@@ -26,7 +26,7 @@ import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import { EyeLightIcon } from '@/assets/icons';
+import { EyeDarkIcon } from '@/assets/icons';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
@@ -138,14 +138,14 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
           )}
           {surveyTemplate && (
             <Button
-              className="m-0 cursor-pointer"
+              className="cursor-pointer"
               onClick={handleOpenPreview}
-              variant="btn-attention"
+              variant="btn-outline"
               size="sm"
               aria-label={t('common.delete')}
             >
               <img
-                src={EyeLightIcon}
+                src={EyeDarkIcon}
                 alt={title}
                 className="h-5 w-5"
               />
