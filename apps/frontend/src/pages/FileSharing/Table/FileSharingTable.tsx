@@ -35,11 +35,38 @@ import { useParams } from 'react-router-dom';
 import ContentType from '@libs/filesharing/types/contentType';
 import { FcFolder } from 'react-icons/fc';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
+import FileThumbnail from '@/pages/FileSharing/utilities/FileThumbnail';
 import { TABLE_ICON_SIZE } from '@libs/ui/constants';
 import useFileSharingDragAndDrop from '@/pages/FileSharing/hooks/useFileSharingDragAndDrop';
 import { useTranslation } from 'react-i18next';
 import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
+import isImageExtension from '@libs/filesharing/utils/isImageExtension';
+import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import useVariableSharePathname from '../hooks/useVariableSharePathname';
+
+const renderDragIcon = (file: DirectoryFileDTO) => {
+  if (file.type === ContentType.DIRECTORY) {
+    return <FcFolder className="size-5 shrink-0" />;
+  }
+
+  const extension = getFileExtension(file.filePath);
+  if (isImageExtension(extension) && file.etag) {
+    return (
+      <FileThumbnail
+        filePath={file.filePath}
+        etag={file.etag}
+        size={Number(TABLE_ICON_SIZE)}
+      />
+    );
+  }
+
+  return (
+    <FileIconComponent
+      filename={file.filePath}
+      size={Number(TABLE_ICON_SIZE)}
+    />
+  );
+};
 
 const FileSharingTable = () => {
   const { webdavShare } = useParams();
@@ -157,27 +184,13 @@ const FileSharingTable = () => {
           <div className="flex w-fit items-center gap-2 rounded bg-accent p-2 shadow-lg">
             {draggedFiles.length === 1 ? (
               <>
-                {draggedFiles[0].type === ContentType.DIRECTORY ? (
-                  <FcFolder className="size-5 shrink-0" />
-                ) : (
-                  <FileIconComponent
-                    filename={draggedFiles[0].filePath}
-                    size={Number(TABLE_ICON_SIZE)}
-                  />
-                )}
+                {renderDragIcon(draggedFiles[0])}
                 <span className="truncate">{draggedFiles[0].filename}</span>
               </>
             ) : (
               <>
                 <div className="relative">
-                  {draggedFiles[0].type === ContentType.DIRECTORY ? (
-                    <FcFolder className="size-5 shrink-0" />
-                  ) : (
-                    <FileIconComponent
-                      filename={draggedFiles[0].filePath}
-                      size={Number(TABLE_ICON_SIZE)}
-                    />
-                  )}
+                  {renderDragIcon(draggedFiles[0])}
                   <div className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
                     {draggedFiles.length}
                   </div>

@@ -59,7 +59,7 @@ const RadioGroupFormField = <T extends FieldValues>({
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className={cn('space-y-3 text-background', formClassname)}>
+        <FormItem className={cn('space-y-3', formClassname)}>
           <h3 className={labelClassname}>{titleTranslationId && t(titleTranslationId)}</h3>
           <FormControl>
             <RadioGroupSH
@@ -72,7 +72,7 @@ const RadioGroupFormField = <T extends FieldValues>({
                   <FormLabel
                     htmlFor={`${name}-${titleTranslationId}-${item.value}`}
                     className={cn(
-                      'flex flex-col items-center space-x-3 space-y-0 text-base text-background',
+                      'flex flex-col items-center space-x-3 space-y-0 text-base',
                       disabled || item.disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
                     )}
                   >

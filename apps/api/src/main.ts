@@ -18,18 +18,16 @@
  */
 
 import { ConsoleLogger, Logger } from '@nestjs/common';
-import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { copyFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
 import helmet from 'helmet';
-import { JwtService } from '@nestjs/jwt';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import folderPaths from '@libs/common/constants/folderPaths';
 import { WsAdapter } from '@nestjs/platform-ws';
 import AppModule from './app/app.module';
-import AuthGuard from './auth/auth.guard';
 import getLogLevels from './logging/getLogLevels';
 import PayloadTooLargeFilter from './filters/payload-too-large.filter';
 import ExpressHttpErrorFilter from './filters/express-http-error.filter';
@@ -71,9 +69,6 @@ async function bootstrap() {
   );
 
   app.useWebSocketAdapter(new WsAdapter(app));
-
-  const reflector = new Reflector();
-  app.useGlobalGuards(new AuthGuard(new JwtService(), reflector));
 
   folderPaths.forEach((path) => {
     if (!existsSync(path)) {

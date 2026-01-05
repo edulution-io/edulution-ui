@@ -21,6 +21,8 @@ import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { TableRow } from '@/components/ui/Table';
 import { Row } from '@tanstack/react-table';
 
+type TableRowVariant = 'default' | 'dialog';
+
 interface DraggableRowProps<TData> {
   row: Row<TData>;
   children: ReactNode;
@@ -28,6 +30,7 @@ interface DraggableRowProps<TData> {
   enableDragAndDrop: boolean;
   canDropOnRow?: (row: TData) => boolean;
   textColorClassname: string;
+  variant?: TableRowVariant;
 }
 
 const DraggableTableRow = <TData,>({
@@ -36,6 +39,7 @@ const DraggableTableRow = <TData,>({
   isRowDisabled,
   enableDragAndDrop,
   canDropOnRow,
+  variant = 'default',
 }: DraggableRowProps<TData>) => {
   const {
     attributes,
@@ -69,6 +73,7 @@ const DraggableTableRow = <TData,>({
   return (
     <TableRow
       ref={combinedRef}
+      variant={variant}
       data-state={isSelected ? 'selected' : undefined}
       data-disabled={isRowDisabled ? 'true' : undefined}
       className={`

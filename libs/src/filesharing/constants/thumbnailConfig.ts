@@ -17,10 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const EVENT_EMITTER_EVENTS = {
-  APPCONFIG_UPDATED: 'appconfig.updated',
-  APP_ACCESS_MAP_UPDATED: 'appconfig.accessMapUpdated',
-  WEBDAV_BASEURL_CHANGED: 'webdav.baseUrlChanged',
-} as const;
+import ImageExtensions from '@libs/filesharing/types/imageExtensions';
 
-export default EVENT_EMITTER_EVENTS;
+const THUMBNAIL_CONFIG = {
+  SIZE: 100,
+  FORMAT: ImageExtensions.WEBP,
+  QUALITY: 10,
+  MAX_CACHE_SIZE_MB: 500,
+  CACHE_DIR_NAME: 'edulution-thumbnails',
+};
+
+export default THUMBNAIL_CONFIG;

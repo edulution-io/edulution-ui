@@ -360,7 +360,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-.nx/cache
+.nx/**
 
 # Certificates
 *.crt

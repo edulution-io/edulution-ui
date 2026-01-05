@@ -58,9 +58,9 @@ const SidebarItemPopover: React.FC<PopoverProps> = ({ anchorRect, color, title, 
   return createPortal(
     <div
       style={style}
-      className={`${color} flex items-center gap-4 rounded-l-[8px] pl-4 pr-[13px]`}
+      className={`${color} flex items-center gap-4 rounded-l-xl pl-4 pr-[13px]`}
     >
-      <p className="whitespace-nowrap font-bold">{title}</p>
+      <p className="whitespace-nowrap font-bold text-white">{title}</p>
 
       <SidebarItemIcon
         isHovered={isHovered}
