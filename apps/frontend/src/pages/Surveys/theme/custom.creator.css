@@ -8,7 +8,7 @@
     .sd-question__content {
       min-width: 100% !important;
     }
-    .sd-table__cell--actions:not(.sd-table__cell--vertical):first-of-type,
+    /* .sd-table__cell--actions:not(.sd-table__cell--vertical):first-of-type,
     .sd-table__cell--empty:first-of-type,
     .sd-table__cell--row-text:first-of-type,
     .sd-matrix__cell:first-of-type:first-of-type,
@@ -17,7 +17,7 @@
     }
     .sd-table__cell--header {
       background-color: var(--overlay) !important;
-    }
+    } */
     .sd-matrix.sd-table-wrapper {
       padding: 0 1.5rem 1.5rem 1.5rem !important;
     }
@@ -42,13 +42,13 @@
     fill: var(--primary);
   }
 
-  .svc-top-bar,
+  /* .svc-top-bar,
   .svc-tabbed-menu,
   .svc-tabbed-menu-wrapper,
   .svc-toolbar-wrapper,
   .sv-action-bar--default-size-mode {
     background-color: var(--overlay) !important;
-  }
+  } */
   .svc-top-bar,
   .svc-tabbed-menu,
   .svc-tabbed-menu-wrapper,
@@ -58,7 +58,7 @@
     height: 2.5rem;
     padding: 0;
   }
-  .svc-tabbed-menu-item:hover {
+  /* .svc-tabbed-menu-item:hover {
     background-color: var(--muted) !important;
   }
   .sv-action-bar-item:hover {
@@ -72,7 +72,7 @@
     :hover {
       background-color: var(--muted-light) !important;
     }
-  }
+  } */
   .svc-tabbed-menu-item__text {
     padding: 0.2rem 0.5rem;
     display: flex;
@@ -95,11 +95,11 @@
     font-size: 12pt;
     line-height: 12pt;
   }
-  .svc-add-new-item-button__text:hover,
+  /* .svc-add-new-item-button__text:hover,
   .svc-panel__add-new-question-icon:hover {
     color: var(--primary);
     background-color: unset;
-  }
+  } */
 
   /* width of the content / creator / survey */
   .sd-container-modern,
@@ -128,7 +128,7 @@
     height: 50rem;
   }
 
-  .svc-flex-row,
+  /* .svc-flex-row,
   .svc-flex-column,
   .svc-side-bar,
   .svc-side-bar__wrapper,
@@ -137,7 +137,7 @@
   .svc-side-bar__shadow,
   .svc-flyout-side-bar {
     background-color: unset !important;
-  }
+  } */
 
   .sv-string-editor {
     line-break: normal;
@@ -147,13 +147,13 @@
     .sd-title .sv-string-editor {
       font-size: 20pt;
       line-height: 20pt;
-      color: var(--primary);
+      /* color: var(--primary); */
     }
 
     .sd-description .sv-string-editor {
       font-size: 16pt;
       line-height: 16pt;
-      color: var(--muted-foreground);
+      /* color: var(--muted-foreground); */
     }
   }
 
@@ -162,9 +162,9 @@
       font-size: 16pt;
       line-height: 16pt;
     }
-    .sd-page__title .sv-string-editor {
+    /* .sd-page__title .sv-string-editor {
       color: var(--ring) !important;
-    }
+    } */
     .sd-page__description .sv-string-editor {
       font-size: 12pt;
       line-height: 12pt;
@@ -210,12 +210,12 @@
       padding: 0 !important;
     }
 
-    .sd-item__control-label,
+    /* .sd-item__control-label,
     .sd-item__control-label .sv-string-viewer,
     .sd-item__control-label .sv-string-editor,
     .svc-item-value__item .sv-string-editor {
       color: var(--input) !important;
-    }
+    } */
 
     .svc-question__drag-area {
       .sv-svg-icon {
@@ -308,10 +308,10 @@
     align-items: center;
     justify-content: center;
   }
-  .svc-survey-element-toolbar-item__title,
+  /* .svc-survey-element-toolbar-item__title,
   .svc-survey-element-toolbar-item__title--with-icon {
     color: var(--input) !important;
-  }
+  } */
   .svc-dropdown-action--convertTo-last {
     margin-right: 3rem;
   }
