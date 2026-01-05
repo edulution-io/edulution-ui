@@ -18,7 +18,7 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader } from '@/components/ui/Dialog';
+import { createPortal } from 'react-dom';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import { useOnClickOutside } from 'usehooks-ts';
 import { useLocation } from 'react-router-dom';
@@ -28,36 +28,30 @@ interface LoadingIndicatorDialogProps {
 }
 
 const LoadingIndicatorDialog: React.FC<LoadingIndicatorDialogProps> = ({ isOpen }) => {
-  const dialogRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(isOpen);
   const location = useLocation();
 
-  useOnClickOutside(dialogRef, () => setOpen(false));
+  useOnClickOutside(containerRef, () => setOpen(false));
 
   useEffect(() => {
     setOpen(isOpen);
   }, [isOpen, location]);
 
-  return (
-    <Dialog
-      open={open}
-      onOpenChange={setOpen}
-    >
-      <DialogContent
-        showCloseButton={false}
-        variant="loadingSpinner"
+  if (!open) {
+    return null;
+  }
+
+  return createPortal(
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div
+        className="flex w-40 flex-col items-center justify-center rounded-xl bg-overlay-transparent p-6 shadow-lg"
+        ref={containerRef}
       >
-        <DialogHeader>
-          <div
-            className="flex flex-col items-center justify-center space-y-4"
-            ref={dialogRef}
-          >
-            <CircleLoader />
-          </div>
-        </DialogHeader>
-        <DialogDescription aria-disabled />
-      </DialogContent>
-    </Dialog>
+        <CircleLoader />
+      </div>
+    </div>,
+    document.body,
   );
 };
 

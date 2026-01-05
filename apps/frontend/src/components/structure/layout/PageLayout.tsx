@@ -78,7 +78,7 @@ const PageLayout = ({
         id={FLOATING_BUTTONS_BAR_ID}
         ref={barRef}
         className={cn(
-          'pointer-events-none absolute left-1 right-0 overflow-visible text-background md:left-4',
+          'pointer-events-none absolute left-1 right-0 overflow-visible md:left-4',
           isEdulutionApp ? 'bottom-1' : 'bottom-6',
         )}
       />

@@ -154,7 +154,7 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
         }}
         render={() => (
           <FormItem className="flex flex-col space-y-0">
-            {translationId ? <p className="text-m font-bold text-background">{t(translationId)}</p> : null}
+            {translationId ? <p className="text-m font-bold">{t(translationId)}</p> : null}
             <Popover
               open={isOpen}
               onOpenChange={setIsOpen}

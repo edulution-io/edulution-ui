@@ -62,6 +62,7 @@ import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/sur
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import APPS from '@libs/appconfig/constants/apps';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import getUsernameFromRequest from 'apps/api/src/common/utils/getUsernameFromRequest';
 import SurveysService from './surveys.service';
@@ -75,9 +76,11 @@ import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.deco
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import AdminGuard from '../common/guards/admin.guard';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
+import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
+@RequireAppAccess(APPS.SURVEYS)
 @Controller(SURVEYS)
 class SurveysController {
   constructor(

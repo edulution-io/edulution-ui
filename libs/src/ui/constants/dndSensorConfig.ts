@@ -17,10 +17,19 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const EVENT_EMITTER_EVENTS = {
-  APPCONFIG_UPDATED: 'appconfig.updated',
-  APP_ACCESS_MAP_UPDATED: 'appconfig.accessMapUpdated',
-  WEBDAV_BASEURL_CHANGED: 'webdav.baseUrlChanged',
+const MOUSE_SENSOR_ACTIVATION_DISTANCE_PX = 8;
+
+const TOUCH_SENSOR_ACTIVATION_DELAY_MS = 250;
+const TOUCH_SENSOR_ACTIVATION_TOLERANCE_PX = 5;
+
+const DND_SENSOR_CONFIG = {
+  MOUSE: {
+    ACTIVATION_DISTANCE: MOUSE_SENSOR_ACTIVATION_DISTANCE_PX,
+  },
+  TOUCH: {
+    ACTIVATION_DELAY: TOUCH_SENSOR_ACTIVATION_DELAY_MS,
+    ACTIVATION_TOLERANCE: TOUCH_SENSOR_ACTIVATION_TOLERANCE_PX,
+  },
 } as const;
 
-export default EVENT_EMITTER_EVENTS;
+export default DND_SENSOR_CONFIG;
