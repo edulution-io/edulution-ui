@@ -35,14 +35,19 @@ const SurveysLogoSettings = ({ surveyCreator }: SurveysLogoSettingsProps) => {
   const [logoPosition, setLogoPosition] = React.useState<string>(surveyCreator.survey.logoPosition ?? 'left');
 
   useEffect(() => {
+    setLogoWidth(surveyCreator.survey.renderedLogoWidth);
+    setLogoPosition(surveyCreator.survey.logoPosition ?? 'left');
+  }, [surveyCreator]);
+
+  useEffect(() => {
     // eslint-disable-next-line no-param-reassign
     surveyCreator.survey.logoWidth = logoWidth !== 0 ? `${logoWidth}px` : 'auto';
-  }, [logoWidth, surveyCreator]);
+  }, [logoWidth]);
 
   useEffect(() => {
     // eslint-disable-next-line no-param-reassign
     surveyCreator.survey.logoPosition = logoPosition;
-  }, [logoPosition, surveyCreator]);
+  }, [logoPosition]);
 
   return (
     <div className="my-2 flex flex-col gap-2">
@@ -67,7 +72,7 @@ const SurveysLogoSettings = ({ surveyCreator }: SurveysLogoSettingsProps) => {
           { id: 'left', name: t('survey.editor.surveySettings.surveyLogo.position.left') },
           { id: 'right', name: t('survey.editor.surveySettings.surveyLogo.position.right') },
         ]}
-        selectedVal={surveyCreator.survey.logoPosition ?? 'left'}
+        selectedVal={logoPosition}
         handleChange={(value) => {
           setLogoPosition(value as 'left' | 'right');
         }}
