@@ -58,8 +58,8 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
   return (
     <>
       <Input
-        placeholder={t('survey.editor.searchPlaceholder')}
-        aria-label={t('survey.editor.searchPlaceholder')}
+        placeholder={t('survey.editor.template.searchPlaceholder')}
+        aria-label={t('survey.editor.template.searchPlaceholder')}
         value={search}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
         onKeyDown={handleKeyDown}
