@@ -32,6 +32,7 @@ interface MarkdownRendererProps {
   showToolbar?: boolean;
   showPreview?: boolean;
   onChange?: (value: string) => void;
+  contentId?: string;
 }
 
 const MarkdownRenderer = ({
@@ -41,6 +42,7 @@ const MarkdownRenderer = ({
   showToolbar = true,
   showPreview = true,
   onChange,
+  contentId,
 }: MarkdownRendererProps) => {
   const theme = useThemeStore((state) => state.theme);
 
@@ -62,6 +64,7 @@ const MarkdownRenderer = ({
   if (!editable) {
     return (
       <div
+        id={contentId}
         className={className}
         data-color-mode={theme}
       >
