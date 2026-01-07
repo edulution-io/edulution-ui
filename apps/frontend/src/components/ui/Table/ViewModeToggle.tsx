@@ -36,7 +36,7 @@ const ViewModeToggle = ({ viewMode, onViewModeChange, isDialog = false }: ViewMo
   const { t } = useTranslation();
 
   return (
-    <div className="flex items-center rounded-md border border-accent">
+    <div className="flex items-center rounded-lg border border-accent">
       <Tooltip>
         <TooltipTrigger asChild>
           <ButtonSH
