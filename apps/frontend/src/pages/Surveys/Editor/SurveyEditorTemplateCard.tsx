@@ -39,7 +39,7 @@ const SurveyEditorTemplateCard = ({
   disabled = false,
 }: SurveyEditorTemplateCardProps): JSX.Element => (
   <Card
-    className={cn(GRID_CARD, { 'bg-ciGreenToBlue text-white': disabled })}
+    className={cn(GRID_CARD, 'min-h-[11rem]', { 'opacity-50': disabled })}
     variant="text"
     onClick={onClick}
   >
