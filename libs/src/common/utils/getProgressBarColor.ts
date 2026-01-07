@@ -17,22 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import cn from '@libs/common/utils/className';
+import QuotaThresholdPercent from '@libs/filesharing/constants/quotaThresholdPercent';
 
-interface TextPreviewProps {
-  content: string;
-  className?: string;
-  contentId?: string;
-}
+const getProgressBarColor = (percentageUsed: number): string => {
+  if (percentageUsed <= QuotaThresholdPercent.WARNING) {
+    return 'bg-ciLightGreen';
+  }
+  if (percentageUsed <= QuotaThresholdPercent.CRITICAL) {
+    return 'bg-yellow-500';
+  }
+  return 'bg-ciRed';
+};
 
-const TextPreview = ({ content, className, contentId }: TextPreviewProps) => (
-  <pre
-    id={contentId}
-    className={cn('whitespace-pre-wrap break-words p-2 font-mono', className)}
-  >
-    {content}
-  </pre>
-);
-
-export default TextPreview;
+export default getProgressBarColor;

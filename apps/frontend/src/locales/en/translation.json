@@ -136,6 +136,7 @@
       "globalQuota": "Cloud quota calculated",
       "mailQuota": "E-Mail quota calculated",
       "mibibyte": "MiB",
+      "gbUsed": "{{used}} / {{total}} GB used",
       "remainingLow": "Remaining quota low – {{free}} %",
       "remainingVeryLow": "Remaining quota very low – {{free}} %"
     }
@@ -336,6 +337,7 @@
     "selectFile": "Select file",
     "filePreview": "File preview",
     "saveFile": "Save file",
+    "print": "Print",
     "loadingDocument": "Loading document...",
     "closeEditor": "Close editor",
     "rowsSelected": "{{selected}} of {{total}} files selected",
@@ -1479,6 +1481,7 @@
     "select": "Select...",
     "none": "None",
     "edit": "Edit",
+    "view": "View",
     "participate": "Participate",
     "participated": "Participated",
     "not-available": "Not available",

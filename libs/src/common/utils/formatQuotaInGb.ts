@@ -17,22 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import cn from '@libs/common/utils/className';
+import MIB_TO_GB from '@libs/common/constants/mibToGb';
 
-interface TextPreviewProps {
-  content: string;
-  className?: string;
-  contentId?: string;
-}
+const formatQuotaInGb = (value: number | string): string => {
+  if (typeof value !== 'number') return '--';
+  return (value / MIB_TO_GB).toFixed(1);
+};
 
-const TextPreview = ({ content, className, contentId }: TextPreviewProps) => (
-  <pre
-    id={contentId}
-    className={cn('whitespace-pre-wrap break-words p-2 font-mono', className)}
-  >
-    {content}
-  </pre>
-);
-
-export default TextPreview;
+export default formatQuotaInGb;

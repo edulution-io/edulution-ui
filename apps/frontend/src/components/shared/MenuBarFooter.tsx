@@ -17,22 +17,33 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import cn from '@libs/common/utils/className';
+import React, { type ComponentType } from 'react';
+import APPS from '@libs/appconfig/constants/apps';
+import MenuBarQuota from '@/pages/FileSharing/MenuBarQuota';
 
-interface TextPreviewProps {
-  content: string;
-  className?: string;
-  contentId?: string;
+interface MenuBarFooterProps {
+  isCollapsed: boolean;
 }
 
-const TextPreview = ({ content, className, contentId }: TextPreviewProps) => (
-  <pre
-    id={contentId}
-    className={cn('whitespace-pre-wrap break-words p-2 font-mono', className)}
-  >
-    {content}
-  </pre>
-);
+type FooterComponent = ComponentType<MenuBarFooterProps>;
 
-export default TextPreview;
+const MENU_BAR_FOOTER_REGISTRY: Partial<Record<string, FooterComponent>> = {
+  [APPS.FILE_SHARING]: MenuBarQuota,
+};
+
+interface Props {
+  appName: string;
+  isCollapsed: boolean;
+}
+
+const MenuBarFooter: React.FC<Props> = ({ appName, isCollapsed }) => {
+  const FooterComponent = MENU_BAR_FOOTER_REGISTRY[appName];
+
+  if (!FooterComponent) {
+    return null;
+  }
+
+  return <FooterComponent isCollapsed={isCollapsed} />;
+};
+
+export default MenuBarFooter;
