@@ -136,6 +136,7 @@
       "globalQuota": "Cloud quota calculated",
       "mailQuota": "E-Mail quota calculated",
       "mibibyte": "MiB",
+      "gbUsed": "{{used}} / {{total}} GB used",
       "remainingLow": "Remaining quota low – {{free}} %",
       "remainingVeryLow": "Remaining quota very low – {{free}} %"
     }
