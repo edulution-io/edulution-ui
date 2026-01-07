@@ -127,6 +127,7 @@
       "globalQuota": "Cloudquota berechnet ",
       "mailQuota": "E-Mailquota berechnet",
       "mibibyte": "MiB",
+      "gbUsed": "{{used}} / {{total}} GB belegt",
       "remainingLow": "Verbleibendes Quota gering – {{free}} %",
       "remainingVeryLow": "Verbleibendes Quota sehr gering – {{free}} %"
     }
@@ -333,6 +334,7 @@
     "sidebar": "Dateien",
     "previewTitle": "Dateivorschau",
     "saveFile": "Datei speichern",
+    "print": "Drucken",
     "fileEditor": "Datei Editor",
     "filePreview": "Dateivorschau",
     "closeEditor": "Editor schließen",
@@ -1481,6 +1483,7 @@
     "select": "Wählen...",
     "none": "Keine",
     "edit": "Bearbeiten",
+    "view": "Ansehen",
     "participate": "Teilnehmen",
     "participated": "Teilgenommen",
     "not-available": "Nicht verfügbar",

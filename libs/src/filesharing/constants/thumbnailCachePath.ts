@@ -17,21 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { EditIcon } from '@libs/common/constants/standardActionIcons';
-import WindowControlBaseButton from './WindowControlBaseButton';
+import { tmpdir } from 'os';
+import { join } from 'path';
+import THUMBNAIL_CONFIG from './thumbnailConfig';
 
-interface EditButtonProps {
-  onClick: () => Promise<void> | void;
-}
+const THUMBNAIL_CACHE_PATH = join(tmpdir(), THUMBNAIL_CONFIG.CACHE_DIR_NAME);
 
-const EditButton = ({ onClick }: EditButtonProps) => (
-  <WindowControlBaseButton
-    onClick={onClick}
-    tooltipTranslationId="common.edit"
-  >
-    <EditIcon />
-  </WindowControlBaseButton>
-);
-
-export default EditButton;
+export default THUMBNAIL_CACHE_PATH;

@@ -97,7 +97,7 @@ const CreateConferenceDialogBody = ({ form }: CreateConferenceDialogBodyProps) =
         <RadioGroupFormField
           control={control}
           name="isPublic"
-          labelClassname="text-base font-bold text-background"
+          labelClassname="text-base font-bold"
           titleTranslationId={t('conferences.isPublic')}
           items={CONFERENCES_IS_PUBLIC_FORM_VALUES}
           disabled={searchGroupsIsLoading}

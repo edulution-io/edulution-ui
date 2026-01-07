@@ -32,9 +32,11 @@ import BulletinBoardService from './bulletinboard.service';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import GetToken from '../common/decorators/getToken.decorator';
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
+import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
 
 @ApiTags(APPS.BULLETIN_BOARD)
 @ApiBearerAuth()
+@RequireAppAccess(APPS.BULLETIN_BOARD)
 @Controller(APPS.BULLETIN_BOARD)
 class BulletinBoardController {
   constructor(private readonly bulletinBoardService: BulletinBoardService) {}
