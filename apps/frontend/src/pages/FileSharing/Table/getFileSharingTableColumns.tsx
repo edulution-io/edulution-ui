@@ -31,6 +31,7 @@ import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
+import FileThumbnail from '@/pages/FileSharing/utilities/FileThumbnail';
 import { BUTTONS_ICON_WIDTH, TABLE_ICON_SIZE } from '@libs/ui/constants';
 import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
@@ -39,6 +40,8 @@ import { useTranslation } from 'react-i18next';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
 import isValidFileToPreview from '@libs/filesharing/utils/isValidFileToPreview';
+import isImageExtension from '@libs/filesharing/utils/isImageExtension';
+import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import useMedia from '@/hooks/useMedia';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 import { MdOutlineCloudDone } from 'react-icons/md';
@@ -63,6 +66,16 @@ const renderFileIcon = (item: DirectoryFileDTO, isCurrentlyDisabled: boolean) =>
     );
   }
   if (item.type === ContentType.FILE) {
+    const extension = getFileExtension(item.filePath);
+    if (isImageExtension(extension) && item.etag) {
+      return (
+        <FileThumbnail
+          filePath={item.filePath}
+          etag={item.etag}
+          size={Number(TABLE_ICON_SIZE)}
+        />
+      );
+    }
     return (
       <FileIconComponent
         filename={item.filePath}

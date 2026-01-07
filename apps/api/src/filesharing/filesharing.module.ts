@@ -24,6 +24,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import { MongooseModule } from '@nestjs/mongoose';
 import FilesharingController from './filesharing.controller';
 import FilesharingService from './filesharing.service';
+import ThumbnailService from './thumbnail.service';
 import OnlyofficeService from './onlyoffice.service';
 import DuplicateFileConsumer from './consumers/duplicateFile.consumer';
 import QueueService from '../queue/queue.service';
@@ -45,6 +46,7 @@ import { PublicFileShareSchema, PublicShare } from './publicFileShare.schema';
   controllers: [FilesharingController],
   providers: [
     FilesharingService,
+    ThumbnailService,
     OnlyofficeService,
     QueueService,
     DuplicateFileConsumer,
