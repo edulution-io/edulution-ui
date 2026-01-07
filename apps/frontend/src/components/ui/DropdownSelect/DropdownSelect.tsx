@@ -42,11 +42,14 @@ interface DropdownProps {
   translate?: boolean;
 }
 
+const MENU_MAX_HEIGHT = 125;
+const MENU_MARGIN = 8;
+
 const DropdownSelect = ({
   options,
   selectedVal,
   handleChange,
-  openToTop = false,
+  openToTop: openToTopProp = false,
   classname,
   variant = 'default',
   placeholder = '',
@@ -57,6 +60,7 @@ const DropdownSelect = ({
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0, width: 0 });
+  const [openToTop, setOpenToTop] = useState(openToTopProp);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -65,13 +69,18 @@ const DropdownSelect = ({
   useEffect(() => {
     if (isOpen && dropdownRef.current) {
       const rect = dropdownRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const spaceAbove = rect.top;
+      const shouldOpenToTop = openToTopProp || (spaceBelow < MENU_MAX_HEIGHT + MENU_MARGIN && spaceAbove > spaceBelow);
+
+      setOpenToTop(shouldOpenToTop);
       setMenuPosition({
-        top: openToTop ? rect.top : rect.bottom,
+        top: shouldOpenToTop ? rect.top : rect.bottom,
         left: rect.left,
         width: rect.width,
       });
     }
-  }, [isOpen, openToTop]);
+  }, [isOpen, openToTopProp]);
 
   useEffect(() => {
     if (!isOpen) return undefined;
