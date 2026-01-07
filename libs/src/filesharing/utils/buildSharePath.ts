@@ -24,6 +24,10 @@ import normalizeLdapHomeDirectory from './normalizeLdapHomeDirectory';
 
 const buildSharePath = (userName: string, fileName: string, student: LmnUserInfo): string => {
   const file = fileName.split('/').filter(Boolean).pop();
+  if (!file) {
+    console.error('Invalid fileName: cannot extract file name from path');
+    return '';
+  }
   const studentName = student.examMode ? `${student.cn}-exam` : student.cn;
 
   const studentPath = student.examMode

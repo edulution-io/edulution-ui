@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { randomUUID, createHash } from 'crypto';
 import axios from 'axios';
@@ -116,7 +116,7 @@ class ConferencesService implements OnModuleInit {
     return new Promise((resolve, reject) => {
       parseString(xml, { explicitArray: false }, (err, result) => {
         if (err) {
-          console.error(err);
+          Logger.error(err, ConferencesService.name);
           reject(err);
         } else {
           resolve(result as T);
