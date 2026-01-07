@@ -17,22 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import cn from '@libs/common/utils/className';
+const TEXT_PREVIEW_ELEMENT_ID = 'text-preview-content';
 
-interface TextPreviewProps {
-  content: string;
-  className?: string;
-  contentId?: string;
-}
-
-const TextPreview = ({ content, className, contentId }: TextPreviewProps) => (
-  <pre
-    id={contentId}
-    className={cn('whitespace-pre-wrap break-words p-2 font-mono', className)}
-  >
-    {content}
-  </pre>
-);
-
-export default TextPreview;
+export default TEXT_PREVIEW_ELEMENT_ID;

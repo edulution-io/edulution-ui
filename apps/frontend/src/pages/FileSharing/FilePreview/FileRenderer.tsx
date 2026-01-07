@@ -43,6 +43,7 @@ import useFileEditorContentStore from '@/pages/FileSharing/FilePreview/useFileEd
 import { FILE_PREVIEW_TYPE, FilePreviewType } from '@libs/filesharing/types/filePreviewType';
 import isPdfExtension from '@libs/filesharing/utils/isPdfExtension';
 import cn from '@libs/common/utils/className';
+import TEXT_PREVIEW_ELEMENT_ID from '@libs/filesharing/constants/textPreviewElementId';
 
 interface FileRendererProps {
   editMode: boolean;
@@ -203,9 +204,13 @@ const FileRenderer: FC<FileRendererProps> = ({
                 showPreview={isMarkdown}
                 onChange={setEditedContent}
                 className={cn('h-full bg-foreground', { 'p-4': !editMode })}
+                contentId={TEXT_PREVIEW_ELEMENT_ID}
               />
             ) : (
-              <TextPreview content={fileContent} />
+              <TextPreview
+                content={fileContent}
+                contentId={TEXT_PREVIEW_ELEMENT_ID}
+              />
             )}
           </div>
         );
