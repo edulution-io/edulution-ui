@@ -18,21 +18,22 @@
  */
 
 import React from 'react';
-import cn from '@libs/common/utils/className';
+import { IoEyeSharp } from 'react-icons/io5';
+import { EditIcon } from '@libs/common/constants/standardActionIcons';
+import WindowControlBaseButton from './WindowControlBaseButton';
 
-interface TextPreviewProps {
-  content: string;
-  className?: string;
-  contentId?: string;
+interface ToggleEditModeButtonProps {
+  onClick: () => void;
+  isEditMode: boolean;
 }
 
-const TextPreview = ({ content, className, contentId }: TextPreviewProps) => (
-  <pre
-    id={contentId}
-    className={cn('whitespace-pre-wrap break-words p-2 font-mono', className)}
+const ToggleEditModeButton = ({ onClick, isEditMode }: ToggleEditModeButtonProps) => (
+  <WindowControlBaseButton
+    onClick={onClick}
+    tooltipTranslationId={isEditMode ? 'common.view' : 'common.edit'}
   >
-    {content}
-  </pre>
+    {isEditMode ? <IoEyeSharp /> : <EditIcon />}
+  </WindowControlBaseButton>
 );
 
-export default TextPreview;
+export default ToggleEditModeButton;
