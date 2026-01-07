@@ -17,10 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Types } from 'mongoose';
+import TEMPLATE_IDS from './templateIds';
 
-const parentTeacherConference000000000000000000000004 = {
-  _id: new Types.ObjectId('000000000000000000000004'),
+const parentTeacherConference = {
+  _id: TEMPLATE_IDS.PARENT_TEACHER_CONFERENCE,
   name: 'Eltern-Abend',
   isDefaultTemplate: true,
   isActive: true,
@@ -277,4 +277,4 @@ const parentTeacherConference000000000000000000000004 = {
   deploymentTargets: ['linuxmuster'],
 };
 
-export default parentTeacherConference000000000000000000000004;
+export default parentTeacherConference;

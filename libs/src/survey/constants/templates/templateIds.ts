@@ -17,9 +17,20 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export { default as TEMPLATE_IDS } from './templateIds';
-export { default as traineeShip } from './traineeShip';
-export { default as parentTeacherConference } from './parentTeacherConference';
-export { default as letterToParents } from './letterToParents';
-export { default as limitedEventParticipation } from './limitedEventParticipation';
-export { default as paperSubject } from './paperSubject';
+import { Types } from 'mongoose';
+
+const TEMPLATE_NAMES = [
+  'LETTER_TO_PARENTS',
+  'LIMITED_EVENT_PARTICIPATION',
+  'PAPER_SUBJECT',
+  'PARENT_TEACHER_CONFERENCE',
+  'TRAINEE_SHIP',
+] as const;
+
+type TemplateName = (typeof TEMPLATE_NAMES)[number];
+
+const TEMPLATE_IDS = Object.fromEntries(
+  TEMPLATE_NAMES.map((name, index) => [name, new Types.ObjectId(String(index + 1).padStart(24, '0'))]),
+) as Record<TemplateName, Types.ObjectId>;
+
+export default TEMPLATE_IDS;

@@ -17,10 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Types } from 'mongoose';
+import TEMPLATE_IDS from './templateIds';
 
-const letterToParents000000000000000000000001 = {
-  _id: new Types.ObjectId('000000000000000000000001'),
+const letterToParents = {
+  _id: TEMPLATE_IDS.LETTER_TO_PARENTS,
   name: 'Elternbrief',
   isDefaultTemplate: true,
   isActive: true,
@@ -136,4 +136,4 @@ const letterToParents000000000000000000000001 = {
   deploymentTargets: ['linuxmuster'],
 };
 
-export default letterToParents000000000000000000000001;
+export default letterToParents;

@@ -17,39 +17,38 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Types } from 'mongoose';
+import TEMPLATE_IDS from './templateIds';
 
-const traineeShip000000000000000000000005 = {
-  _id: new Types.ObjectId('000000000000000000000005'),
-  name: 'Praktikumsplatz',
+const paperSubject = {
+  _id: TEMPLATE_IDS.PAPER_SUBJECT,
+  name: 'Vortragsthema',
   isDefaultTemplate: true,
   isActive: true,
   schemaVersion: 1,
   template: {
     formula: {
-      title: 'Praktikumsplatz Wunschliste',
+      title: 'Vortragsthema Wunschliste',
       logo: `/edu-api/files/public/assets/surveys/surveys-default-logo-dark.webp`,
       elements: [
         {
           type: 'paneldynamic',
           name: 'Frage1',
-          title: 'Prioritätenliste möglicher Praktikumsplätze',
+          title: 'Prioritätenliste möglicher Vortragsthemen',
           description:
-            'Bitte gib eine Prioritätenliste mit Unternehmen an, die für dich als Praktikumsplatz in Frage kommen. Beginne mit deiner höchsten Priorität.',
+            'Bitte gib eine Prioritätenliste mit Themen an, die für dich als Vortragsthema in Frage kommen. Beginne mit deiner höchsten Priorität.',
           templateElements: [
             {
               type: 'text',
               name: 'Frage2',
-              title: 'Name des Unternehmens',
+              title: 'Thema',
               isRequired: true,
             },
           ],
-          minPanelCount: 3,
+          minPanelCount: 1,
           maxPanelCount: 10,
-          panelAddText: 'Weiteres Unternehmen hinzufügen',
+          panelAddText: 'Weiteres Thema hinzufügen',
         },
       ],
-      calculatedValues: [],
     },
     backendLimiters: [],
     creator: {
@@ -72,4 +71,4 @@ const traineeShip000000000000000000000005 = {
   deploymentTargets: ['linuxmuster'],
 };
 
-export default traineeShip000000000000000000000005;
+export default paperSubject;

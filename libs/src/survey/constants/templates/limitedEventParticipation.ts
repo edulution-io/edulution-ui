@@ -17,10 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Types } from 'mongoose';
+import TEMPLATE_IDS from './templateIds';
 
-const limitedEventParticipation000000000000000000000002 = {
-  _id: new Types.ObjectId('000000000000000000000002'),
+const limitedEventParticipation = {
+  _id: TEMPLATE_IDS.LIMITED_EVENT_PARTICIPATION,
   name: 'TeilnahmeVeranstaltungLimitiert',
   isDefaultTemplate: true,
   isActive: false,
@@ -110,4 +110,4 @@ const limitedEventParticipation000000000000000000000002 = {
   deploymentTargets: ['linuxmuster'],
 };
 
-export default limitedEventParticipation000000000000000000000002;
+export default limitedEventParticipation;
