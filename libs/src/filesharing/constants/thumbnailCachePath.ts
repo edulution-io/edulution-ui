@@ -17,20 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import os from 'os';
-import path from 'path';
-import { promises as fs } from 'fs';
-import { randomUUID } from 'crypto';
+import { tmpdir } from 'os';
+import { join } from 'path';
+import THUMBNAIL_CONFIG from './thumbnailConfig';
 
-const createTempFile = async (postfix = '') => {
-  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'tmp-'));
-  const fileName = randomUUID() + postfix;
-  const filePath = path.join(tmpDir, fileName);
-  await fs.writeFile(filePath, '');
-  const cleanup = async () => {
-    await fs.rm(tmpDir, { recursive: true, force: true });
-  };
-  return { path: filePath, cleanup };
-};
+const THUMBNAIL_CACHE_PATH = join(tmpdir(), THUMBNAIL_CONFIG.CACHE_DIR_NAME);
 
-export default createTempFile;
+export default THUMBNAIL_CACHE_PATH;
