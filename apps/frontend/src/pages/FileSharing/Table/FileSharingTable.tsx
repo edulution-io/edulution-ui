@@ -21,7 +21,6 @@ import React, { useEffect, useMemo } from 'react';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import { DndContext, DragOverlay, rectIntersection } from '@dnd-kit/core';
 import { useParams } from 'react-router-dom';
-import { FcFolder } from 'react-icons/fc';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import TableGridView from '@/components/ui/Table/TableGridView';
 import { GridItemConfig } from '@/components/ui/Table/GridView/GridView';
@@ -35,41 +34,14 @@ import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsVal
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import ContentType from '@libs/filesharing/types/contentType';
-import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
-import FileThumbnail from '@/pages/FileSharing/utilities/FileThumbnail';
-import { TABLE_ICON_SIZE, GRID_ICON_SIZE } from '@libs/ui/constants';
+import { GRID_ICON_SIZE, TABLE_ICON_SIZE } from '@libs/ui/constants';
 import useFileSharingDragAndDrop from '@/pages/FileSharing/hooks/useFileSharingDragAndDrop';
 import { useTranslation } from 'react-i18next';
 import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
 import { getElapsedTime } from '@/pages/FileSharing/utilities/filesharingUtilities';
-import isImageExtension from '@libs/filesharing/utils/isImageExtension';
-import getFileExtension from '@libs/filesharing/utils/getFileExtension';
+import FileSharingIcon from '@/pages/FileSharing/utilities/FileSharingIcon';
 import useVariableSharePathname from '../hooks/useVariableSharePathname';
 import useFileOpen from '../hooks/useFileOpen';
-
-const renderDragIcon = (file: DirectoryFileDTO) => {
-  if (file.type === ContentType.DIRECTORY) {
-    return <FcFolder className="size-5 shrink-0" />;
-  }
-
-  const extension = getFileExtension(file.filePath);
-  if (isImageExtension(extension) && file.etag) {
-    return (
-      <FileThumbnail
-        filePath={file.filePath}
-        etag={file.etag}
-        size={Number(TABLE_ICON_SIZE)}
-      />
-    );
-  }
-
-  return (
-    <FileIconComponent
-      filename={file.filePath}
-      size={Number(TABLE_ICON_SIZE)}
-    />
-  );
-};
 
 const FileSharingTable = () => {
   const { webdavShare } = useParams();
@@ -135,15 +107,12 @@ const FileSharingTable = () => {
 
   const gridItemConfig: GridItemConfig<DirectoryFileDTO> = useMemo(
     () => ({
-      renderIcon: (item) =>
-        item.type === ContentType.DIRECTORY ? (
-          <FcFolder size={GRID_ICON_SIZE} />
-        ) : (
-          <FileIconComponent
-            filename={item.filePath}
-            size={GRID_ICON_SIZE}
-          />
-        ),
+      renderIcon: (item) => (
+        <FileSharingIcon
+          file={item}
+          size={GRID_ICON_SIZE}
+        />
+      ),
       renderTitle: (item) => item.filename,
       renderSubtitle: (item) => {
         if (item.filePath === PARENT_FOLDER_PATH || !item.lastmod) return undefined;
@@ -212,13 +181,19 @@ const FileSharingTable = () => {
           <div className="flex w-fit items-center gap-2 rounded bg-accent p-2 shadow-lg">
             {draggedFiles.length === 1 ? (
               <>
-                {renderDragIcon(draggedFiles[0])}
+                <FileSharingIcon
+                  file={draggedFiles[0]}
+                  size={TABLE_ICON_SIZE}
+                />
                 <span className="truncate">{draggedFiles[0].filename}</span>
               </>
             ) : (
               <>
                 <div className="relative">
-                  {renderDragIcon(draggedFiles[0])}
+                  <FileSharingIcon
+                    file={draggedFiles[0]}
+                    size={TABLE_ICON_SIZE}
+                  />
                   <div className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
                     {draggedFiles.length}
                   </div>
