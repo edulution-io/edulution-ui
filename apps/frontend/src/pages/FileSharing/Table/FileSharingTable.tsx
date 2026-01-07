@@ -20,8 +20,11 @@
 import React, { useEffect, useMemo } from 'react';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import { DndContext, DragOverlay, rectIntersection } from '@dnd-kit/core';
+import { useParams } from 'react-router-dom';
+import { FcFolder } from 'react-icons/fc';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import ScrollableTable from '@/components/ui/Table/ScrollableTable';
+import TableGridView from '@/components/ui/Table/TableGridView';
+import { GridItemConfig } from '@/components/ui/Table/GridView/GridView';
 import useMedia from '@/hooks/useMedia';
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/getFileSharingTableColumns';
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
@@ -31,15 +34,15 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import getExtendedOptionsValue from '@libs/appconfig/utils/getExtendedOptionsValue';
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import { useParams } from 'react-router-dom';
 import ContentType from '@libs/filesharing/types/contentType';
-import { FcFolder } from 'react-icons/fc';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
-import { TABLE_ICON_SIZE } from '@libs/ui/constants';
+import { TABLE_ICON_SIZE, GRID_ICON_SIZE } from '@libs/ui/constants';
 import useFileSharingDragAndDrop from '@/pages/FileSharing/hooks/useFileSharingDragAndDrop';
 import { useTranslation } from 'react-i18next';
 import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
+import { getElapsedTime } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import useVariableSharePathname from '../hooks/useVariableSharePathname';
+import useFileOpen from '../hooks/useFileOpen';
 
 const FileSharingTable = () => {
   const { webdavShare } = useParams();
@@ -57,6 +60,14 @@ const FileSharingTable = () => {
       currentPath,
     });
   const { createVariableSharePathname } = useVariableSharePathname();
+
+  const isDocumentServerConfigured = !!getExtendedOptionsValue(
+    appConfigs,
+    APPS.FILE_SHARING,
+    ExtendedOptionKeys.ONLY_OFFICE_URL,
+  );
+
+  const { handleFileOpen } = useFileOpen({ isDocumentServerConfigured });
 
   useEffect(() => {
     if (currentPath !== '/') void fetchFiles(webdavShare, currentPath);
@@ -95,10 +106,25 @@ const FileSharingTable = () => {
     [shouldHideColumns],
   );
 
-  const isDocumentServerConfigured = !!getExtendedOptionsValue(
-    appConfigs,
-    APPS.FILE_SHARING,
-    ExtendedOptionKeys.ONLY_OFFICE_URL,
+  const gridItemConfig: GridItemConfig<DirectoryFileDTO> = useMemo(
+    () => ({
+      renderIcon: (item) =>
+        item.type === ContentType.DIRECTORY ? (
+          <FcFolder size={GRID_ICON_SIZE} />
+        ) : (
+          <FileIconComponent
+            filename={item.filePath}
+            size={GRID_ICON_SIZE}
+          />
+        ),
+      renderTitle: (item) => item.filename,
+      renderSubtitle: (item) => {
+        if (item.filePath === PARENT_FOLDER_PATH || !item.lastmod) return undefined;
+        return getElapsedTime(new Date(item.lastmod));
+      },
+      onItemClick: handleFileOpen,
+    }),
+    [handleFileOpen],
   );
 
   const filesWithParentNav = useMemo(() => {
@@ -132,7 +158,7 @@ const FileSharingTable = () => {
       onDragCancel={handleDragCancel}
       collisionDetection={rectIntersection}
     >
-      <ScrollableTable
+      <TableGridView
         columns={getFileSharingTableColumns(undefined, undefined, isDocumentServerConfigured)}
         data={filesWithParentNav}
         filterKey={FILE_SHARING_TABLE_COLUMNS.SELECT_FILENAME}
@@ -151,6 +177,8 @@ const FileSharingTable = () => {
         initialColumnVisibility={initialColumnVisibility}
         enableDragAndDrop
         canDropOnRow={canDropOnRow}
+        gridItemConfig={gridItemConfig}
+        viewModeStorageKey={APPS.FILE_SHARING}
       />
       <DragOverlay>
         {draggedFiles.length > 0 ? (
@@ -162,7 +190,7 @@ const FileSharingTable = () => {
                 ) : (
                   <FileIconComponent
                     filename={draggedFiles[0].filePath}
-                    size={Number(TABLE_ICON_SIZE)}
+                    size={TABLE_ICON_SIZE}
                   />
                 )}
                 <span className="truncate">{draggedFiles[0].filename}</span>
@@ -175,7 +203,7 @@ const FileSharingTable = () => {
                   ) : (
                     <FileIconComponent
                       filename={draggedFiles[0].filePath}
-                      size={Number(TABLE_ICON_SIZE)}
+                      size={TABLE_ICON_SIZE}
                     />
                   )}
                   <div className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">

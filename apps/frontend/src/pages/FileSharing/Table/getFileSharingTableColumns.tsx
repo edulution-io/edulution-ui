@@ -66,7 +66,7 @@ const renderFileIcon = (item: DirectoryFileDTO, isCurrentlyDisabled: boolean) =>
     return (
       <FileIconComponent
         filename={item.filePath}
-        size={Number(TABLE_ICON_SIZE)}
+        size={TABLE_ICON_SIZE}
       />
     );
   }

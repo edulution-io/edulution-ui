@@ -1256,6 +1256,10 @@
     "cancel": "Annuler",
     "columns": "Colonnes",
     "table": "Tableau",
+    "tableView": "Vue tableau",
+    "gridView": "Vue grille",
+    "sort": "Trier",
+    "selectAll": "Tout sélectionner",
     "copy": {
       "success": "Copié avec succès dans le presse-papiers",
       "error": "Echec de copie dans le presse-papiers",

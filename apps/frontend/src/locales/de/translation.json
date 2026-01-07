@@ -1420,6 +1420,10 @@
     "cancel": "Abbrechen",
     "columns": "Spalten",
     "table": "Tabelle",
+    "tableView": "Tabellenansicht",
+    "gridView": "Kachelansicht",
+    "sort": "Sortieren",
+    "selectAll": "Alle auswählen",
     "copy": {
       "success": "Erfolgreich in die Zwischenablage kopiert",
       "error": "In Zwischenablage kopieren fehlgeschlagen",

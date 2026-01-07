@@ -40,7 +40,7 @@ const renderFileIcon = (item: FileInfoDto) => {
     return (
       <FileIconComponent
         filename={item.filename}
-        size={Number(TABLE_ICON_SIZE)}
+        size={TABLE_ICON_SIZE}
       />
     );
   }
