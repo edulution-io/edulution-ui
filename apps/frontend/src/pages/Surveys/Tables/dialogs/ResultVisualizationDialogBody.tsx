@@ -27,8 +27,14 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
 const ResultVisualizationDialogBody = () => {
   const { selectedSurvey: selectedSurveyFromPage } = useSurveyTablesPageStore();
-  const { isLoading, selectedSurvey, selectSurvey, getSurveyResult, result, isOpenPublicResultsVisualisationDialog } =
-    useResultDialogStore();
+  const {
+    isLoading,
+    selectedSurvey,
+    selectSurvey,
+    getSurveyResult,
+    surveyResult,
+    isOpenPublicResultsVisualisationDialog,
+  } = useResultDialogStore();
 
   useEffect((): void => {
     selectSurvey(selectedSurveyFromPage);
@@ -40,7 +46,7 @@ const ResultVisualizationDialogBody = () => {
     }
   }, [isOpenPublicResultsVisualisationDialog, selectedSurvey]);
 
-  if (!selectedSurvey?.formula || !result || result.length === 0) {
+  if (!selectedSurvey?.formula || !surveyResult || surveyResult.length === 0) {
     return null;
   }
 
@@ -56,7 +62,7 @@ const ResultVisualizationDialogBody = () => {
       {isLoading && <CircleLoader />}
       <ResultVisualization
         formula={formula}
-        result={result}
+        result={surveyResult}
       />
     </>
   );

@@ -114,7 +114,7 @@ class SurveyAnswersService implements OnModuleInit {
 
     const filteredChoices: ChoiceDto[] = [];
     const filteringPromises = possibleChoices.map(async (choice) => {
-      const counter = await this.countChoiceSelections(surveyId, questionName, choice.title);
+      const counter = await this.countTotalChoiceSelectionsInSurveyAnswers(surveyId, questionName, choice.title);
       if (choice.limit === 0 || !counter || counter < choice.limit) {
         filteredChoices.push(choice);
       }
@@ -126,20 +126,13 @@ class SurveyAnswersService implements OnModuleInit {
     return filteredChoices;
   };
 
-  static countQuestionAnswerChoiceSelections = (
-    questionAnswer: TSurveyQuestionAnswerTypes,
-    choiceTitle: string,
-  ): number => {
+  static countChoiceMatchesInValue = (questionAnswer: TSurveyQuestionAnswerTypes, choiceTitle: string): number => {
     if (Array.isArray(questionAnswer)) {
       let count = 0;
       questionAnswer.forEach((answerValue) => {
         if (typeof answerValue === 'string' && answerValue === choiceTitle) {
           count += 1;
-        } else if (
-          typeof answerValue === 'object' &&
-          answerValue !== null &&
-          (answerValue.value === choiceTitle || answerValue.name === choiceTitle || answerValue.title === choiceTitle)
-        ) {
+        } else if (typeof answerValue === 'object' && answerValue !== null && answerValue.value === choiceTitle) {
           count += 1;
         }
       });
@@ -148,32 +141,22 @@ class SurveyAnswersService implements OnModuleInit {
     if (typeof questionAnswer === 'string' && questionAnswer === choiceTitle) {
       return 1;
     }
-    if (
-      typeof questionAnswer === 'object' &&
-      questionAnswer !== null &&
-      (questionAnswer.value === choiceTitle ||
-        questionAnswer.name === choiceTitle ||
-        questionAnswer.title === choiceTitle)
-    ) {
+    if (typeof questionAnswer === 'object' && questionAnswer !== null && questionAnswer.value === choiceTitle) {
       return 1;
     }
     return 0;
   };
 
-  static countNestedQuestionAnswerChoiceSelections = (
-    answer: TSurveyAnswer,
-    questionName: string,
-    choiceTitle: string,
-  ): number => {
+  static countChoiceMatchesInAnswer = (answer: TSurveyAnswer, questionName: string, choiceTitle: string): number => {
     let count = 0;
     Object.keys(answer).forEach((key) => {
       if (key === questionName) {
-        const nestedCount = SurveyAnswersService.countQuestionAnswerChoiceSelections(answer[key], choiceTitle);
+        const nestedCount = SurveyAnswersService.countChoiceMatchesInValue(answer[key], choiceTitle);
         count += nestedCount;
       } else if (Array.isArray(answer[key])) {
         answer[key].forEach((entry) => {
           if (typeof entry === 'object' && entry !== null) {
-            const nestedCount = SurveyAnswersService.countNestedQuestionAnswerChoiceSelections(
+            const nestedCount = SurveyAnswersService.countChoiceMatchesInAnswer(
               entry as TSurveyAnswer,
               questionName,
               choiceTitle,
@@ -182,7 +165,7 @@ class SurveyAnswersService implements OnModuleInit {
           }
         });
       } else if (typeof answer[key] === 'object' && answer[key] !== null) {
-        const nestedCount = SurveyAnswersService.countNestedQuestionAnswerChoiceSelections(
+        const nestedCount = SurveyAnswersService.countChoiceMatchesInAnswer(
           answer[key] as TSurveyAnswer,
           questionName,
           choiceTitle,
@@ -193,13 +176,17 @@ class SurveyAnswersService implements OnModuleInit {
     return count;
   };
 
-  async countChoiceSelections(surveyId: string, questionName: string, choiceName: string): Promise<number> {
+  async countTotalChoiceSelectionsInSurveyAnswers(
+    surveyId: string,
+    questionName: string,
+    choiceName: string,
+  ): Promise<number> {
     const documents = await this.surveyAnswerModel
       .find<SurveyAnswerDocument>({ surveyId: new Types.ObjectId(surveyId) })
       .exec();
     let count = 0;
     documents.forEach((document) => {
-      const answerCount = SurveyAnswersService.countNestedQuestionAnswerChoiceSelections(
+      const answerCount = SurveyAnswersService.countChoiceMatchesInAnswer(
         document.answer as unknown as TSurveyAnswer,
         questionName,
         choiceName,

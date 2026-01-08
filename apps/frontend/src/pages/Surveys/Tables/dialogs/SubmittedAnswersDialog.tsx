@@ -24,21 +24,21 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import SubmittedAnswersDialogBody from '@/pages/Surveys/Tables/dialogs/SubmittedAnswersDialogBody';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
-import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 
 const SubmittedAnswersDialog = () => {
   const { selectedSurvey: selectedSurveyFromPage } = useSurveyTablesPageStore();
   const {
-    selectedSurvey,
     selectSurvey,
+    selectedSurvey,
     isOpenSubmittedAnswersDialog,
     setIsOpenSubmittedAnswersDialog,
-    getSubmittedSurveyAnswers,
-    answer,
+    getSubmittedAnswer,
+    submittedAnswer,
     isLoading,
-  } = useSubmittedAnswersDialogStore();
+  } = useResultDialogStore();
 
   useEffect((): void => {
     selectSurvey(selectedSurveyFromPage);
@@ -48,7 +48,7 @@ const SubmittedAnswersDialog = () => {
 
   useEffect((): void => {
     if (isOpenSubmittedAnswersDialog && selectedSurvey?.id) {
-      void getSubmittedSurveyAnswers(selectedSurvey?.id);
+      void getSubmittedAnswer(selectedSurvey?.id);
     }
   }, [isOpenSubmittedAnswersDialog, selectedSurvey?.id]);
 
@@ -64,7 +64,7 @@ const SubmittedAnswersDialog = () => {
       <ScrollArea>
         <SubmittedAnswersDialogBody
           formula={selectedSurvey?.formula}
-          answer={answer}
+          answer={submittedAnswer}
         />
       </ScrollArea>
     );

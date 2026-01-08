@@ -81,10 +81,17 @@ const surveyAnswerMigration002UseChoiceTitleInsideOfAnswers: Migration<SurveyAns
     let ops: AnyBulkWriteOperation[] = [];
     // eslint-disable-next-line no-restricted-syntax
     for await (const doc of cursor) {
+      // eslint-disable-next-line no-continue
+      if (!doc.surveyId) continue;
+
       const { backendLimiters } = doc.surveyId as unknown as SurveyDto;
-      if (!backendLimiters) return;
+      // eslint-disable-next-line no-continue
+      if (!backendLimiters || backendLimiters.length === 0) continue;
 
       const answer = doc.answer as AnswerRecord;
+      // eslint-disable-next-line no-continue
+      if (!answer || Object.keys(answer).length === 0) continue;
+
       const updatedAnswer = updateSurveyQuestionAnswer(answer, backendLimiters);
 
       ops.push({
