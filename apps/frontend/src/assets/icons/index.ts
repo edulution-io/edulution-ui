@@ -47,7 +47,7 @@ export { default as CreateProjectIcon } from '@/assets/icons/create-project.svg'
 export { default as FrameIcon } from '@/assets/icons/edulution/edu_Frame.svg';
 export { default as ForwardIcon } from '@/assets/icons/edulution/edu_Weiterleitung.svg';
 export { default as EmbeddedIcon } from '@/assets/icons/edulution/edu_Eingebettet.svg';
-export { default as LanguageIcon } from '@/assets/icons/language.svg';
+export { default as LanguageIcon } from '@/assets/icons/edulution/edu_Oberflaeche.svg';
 export { default as GermanIcon } from '@/assets/icons/german.svg';
 export { default as EnglishIcon } from '@/assets/icons/english.svg';
 export { default as WindowsLogo } from '@/assets/icons/windows.svg';
