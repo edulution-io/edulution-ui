@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "1.6.170",
+  "version": "1.6.177",
   "scripts": {
     "test": "nx run-many --target=test --projects=api",
     "test:api": "nx run api:test --detectOpenHandles",
@@ -153,6 +153,7 @@
     "rxjs": "^7.8.0",
     "sass": "^1.70.0",
     "shadcn": "^2.9.3",
+    "sharp": "^0.34.5",
     "sonner": "^1.4.3",
     "survey-analytics": "^1.12.51",
     "survey-core": "^1.12.51",
@@ -201,6 +202,7 @@
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@types/react-file-icon": "^1.0.4",
+    "@types/sharp": "^0.31.1",
     "@types/xml2js": "^0.4.14",
     "@typescript-eslint/eslint-plugin": "^7.14.1",
     "@typescript-eslint/parser": "^7.14.1",

@@ -17,20 +17,23 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-enum FileSharingApiEndpoints {
-  FILESHARING_ACTIONS = '/filesharing',
-  BASE = 'filesharing',
-  FILE_STREAM = 'file-stream',
-  FILE_LOCATION = 'file-location',
-  ONLY_OFFICE_TOKEN = 'only-office',
-  DUPLICATE = 'duplicate',
-  COLLECT = 'collect',
-  COPY = 'copy',
-  FILE_SHARE = 'file-share',
-  PUBLIC_SHARE = 'public-share',
-  PUBLIC_SHARE_DOWNLOAD = 'public-share/download',
-  UPLOAD = 'upload',
-  THUMBNAIL = 'thumbnail',
+import React from 'react';
+import { IoEyeSharp } from 'react-icons/io5';
+import { EditIcon } from '@libs/common/constants/standardActionIcons';
+import WindowControlBaseButton from './WindowControlBaseButton';
+
+interface ToggleEditModeButtonProps {
+  onClick: () => void;
+  isEditMode: boolean;
 }
 
-export default FileSharingApiEndpoints;
+const ToggleEditModeButton = ({ onClick, isEditMode }: ToggleEditModeButtonProps) => (
+  <WindowControlBaseButton
+    onClick={onClick}
+    tooltipTranslationId={isEditMode ? 'common.view' : 'common.edit'}
+  >
+    {isEditMode ? <IoEyeSharp /> : <EditIcon />}
+  </WindowControlBaseButton>
+);
+
+export default ToggleEditModeButton;

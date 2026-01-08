@@ -18,6 +18,7 @@
  */
 
 import React, { ComponentType, ReactNode } from 'react';
+import MARKDOWN_STYLES from '@libs/common/constants/markdownStyles';
 
 type MarkdownComponentProps = {
   children?: ReactNode;
@@ -29,19 +30,19 @@ type MarkdownComponentProps = {
 type MarkdownComponents = Record<string, ComponentType<MarkdownComponentProps>>;
 
 const markdownComponents: MarkdownComponents = {
-  h1: ({ children }) => <h1 className="mb-4 text-2xl font-bold">{children}</h1>,
-  h2: ({ children }) => <h2 className="mb-3 mt-6 text-xl font-bold">{children}</h2>,
-  h3: ({ children }) => <h3 className="mb-2 mt-4 text-lg font-semibold">{children}</h3>,
-  p: ({ children }) => <p className="mb-4 leading-relaxed">{children}</p>,
-  ul: ({ children }) => <ul className="mb-4 ml-6 list-disc space-y-1">{children}</ul>,
-  ol: ({ children }) => <ol className="mb-4 ml-6 list-decimal space-y-1">{children}</ol>,
-  li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+  h1: ({ children }) => <h1 className={MARKDOWN_STYLES.h1.tailwind}>{children}</h1>,
+  h2: ({ children }) => <h2 className={MARKDOWN_STYLES.h2.tailwind}>{children}</h2>,
+  h3: ({ children }) => <h3 className={MARKDOWN_STYLES.h3.tailwind}>{children}</h3>,
+  p: ({ children }) => <p className={MARKDOWN_STYLES.p.tailwind}>{children}</p>,
+  ul: ({ children }) => <ul className={MARKDOWN_STYLES.ul.tailwind}>{children}</ul>,
+  ol: ({ children }) => <ol className={MARKDOWN_STYLES.ol.tailwind}>{children}</ol>,
+  li: ({ children }) => <li className={MARKDOWN_STYLES.li.tailwind}>{children}</li>,
   code: ({ className: codeClassName, children, ...props }) => {
     const isInline = !codeClassName;
     if (isInline) {
       return (
         <code
-          className="bg-background/20 rounded px-1.5 py-0.5 font-mono text-sm"
+          className={MARKDOWN_STYLES.codeInline.tailwind}
           {...props}
         >
           {children}
@@ -50,39 +51,37 @@ const markdownComponents: MarkdownComponents = {
     }
     return (
       <code
-        className={`${codeClassName} bg-background/20 block overflow-x-auto rounded-lg p-4 font-mono text-sm`}
+        className={`${codeClassName} ${MARKDOWN_STYLES.codeBlock.tailwind}`}
         {...props}
       >
         {children}
       </code>
     );
   },
-  pre: ({ children }) => <pre className="bg-background/20 mb-4 overflow-x-auto rounded-lg p-4">{children}</pre>,
+  pre: ({ children }) => <pre className={MARKDOWN_STYLES.pre.tailwind}>{children}</pre>,
   table: ({ children }) => (
-    <div className="mb-4 overflow-x-auto">
-      <table className="min-w-full border-collapse">{children}</table>
+    <div className={MARKDOWN_STYLES.tableWrapper.tailwind}>
+      <table className={MARKDOWN_STYLES.table.tailwind}>{children}</table>
     </div>
   ),
-  thead: ({ children }) => <thead className="bg-background/10">{children}</thead>,
-  tr: ({ children }) => <tr className="border-background/20 border-b">{children}</tr>,
-  th: ({ children }) => <th className="border-background/30 border px-4 py-2 text-left font-semibold">{children}</th>,
-  td: ({ children }) => <td className="border-background/30 border px-4 py-2">{children}</td>,
+  thead: ({ children }) => <thead className={MARKDOWN_STYLES.thead.tailwind}>{children}</thead>,
+  tr: ({ children }) => <tr className={MARKDOWN_STYLES.tr.tailwind}>{children}</tr>,
+  th: ({ children }) => <th className={MARKDOWN_STYLES.th.tailwind}>{children}</th>,
+  td: ({ children }) => <td className={MARKDOWN_STYLES.td.tailwind}>{children}</td>,
   a: ({ href, children }) => (
     <a
       href={href}
-      className="text-primary underline hover:no-underline"
+      className={MARKDOWN_STYLES.a.tailwind}
       target="_blank"
       rel="noopener noreferrer"
     >
       {children}
     </a>
   ),
-  blockquote: ({ children }) => (
-    <blockquote className="mb-4 border-l-4 border-primary pl-4 italic">{children}</blockquote>
-  ),
-  hr: () => <hr className="border-background/30 my-6" />,
-  strong: ({ children }) => <strong className="font-bold">{children}</strong>,
-  em: ({ children }) => <em className="italic">{children}</em>,
+  blockquote: ({ children }) => <blockquote className={MARKDOWN_STYLES.blockquote.tailwind}>{children}</blockquote>,
+  hr: () => <hr className={MARKDOWN_STYLES.hr.tailwind} />,
+  strong: ({ children }) => <strong className={MARKDOWN_STYLES.strong.tailwind}>{children}</strong>,
+  em: ({ children }) => <em className={MARKDOWN_STYLES.em.tailwind}>{children}</em>,
 };
 
 export default markdownComponents;

@@ -42,7 +42,7 @@ class SurveysAttachmentService implements OnModuleInit {
   private readonly attachmentsPath = SURVEYS_ATTACHMENT_PATH;
 
   onModuleInit() {
-    void this.fileSystemService.ensureDirectoryExists(this.attachmentsPath);
+    void FilesystemService.ensureDirectoryExists(this.attachmentsPath);
   }
 
   async preProcessFormula(
@@ -269,7 +269,7 @@ class SurveysAttachmentService implements OnModuleInit {
 
     const pathForUrl = join(surveyId, subfolder, filename);
     try {
-      await this.fileSystemService.ensureDirectoryExists(permanentDir);
+      await FilesystemService.ensureDirectoryExists(permanentDir);
       await FilesystemService.moveFile(tempPath, permanentPath);
       const baseUrl = url.substring(0, url.indexOf(`/${SURVEY_FILE_ATTACHMENT_ENDPOINT}`));
       const endpoint = `${isPublic ? PUBLIC_SURVEY_FILE_ATTACHMENT_ENDPOINT : SURVEY_FILE_ATTACHMENT_ENDPOINT}`;

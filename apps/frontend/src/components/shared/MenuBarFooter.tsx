@@ -17,20 +17,33 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-enum FileSharingApiEndpoints {
-  FILESHARING_ACTIONS = '/filesharing',
-  BASE = 'filesharing',
-  FILE_STREAM = 'file-stream',
-  FILE_LOCATION = 'file-location',
-  ONLY_OFFICE_TOKEN = 'only-office',
-  DUPLICATE = 'duplicate',
-  COLLECT = 'collect',
-  COPY = 'copy',
-  FILE_SHARE = 'file-share',
-  PUBLIC_SHARE = 'public-share',
-  PUBLIC_SHARE_DOWNLOAD = 'public-share/download',
-  UPLOAD = 'upload',
-  THUMBNAIL = 'thumbnail',
+import React, { type ComponentType } from 'react';
+import APPS from '@libs/appconfig/constants/apps';
+import MenuBarQuota from '@/pages/FileSharing/MenuBarQuota';
+
+interface MenuBarFooterProps {
+  isCollapsed: boolean;
 }
 
-export default FileSharingApiEndpoints;
+type FooterComponent = ComponentType<MenuBarFooterProps>;
+
+const MENU_BAR_FOOTER_REGISTRY: Partial<Record<string, FooterComponent>> = {
+  [APPS.FILE_SHARING]: MenuBarQuota,
+};
+
+interface Props {
+  appName: string;
+  isCollapsed: boolean;
+}
+
+const MenuBarFooter: React.FC<Props> = ({ appName, isCollapsed }) => {
+  const FooterComponent = MENU_BAR_FOOTER_REGISTRY[appName];
+
+  if (!FooterComponent) {
+    return null;
+  }
+
+  return <FooterComponent isCollapsed={isCollapsed} />;
+};
+
+export default MenuBarFooter;

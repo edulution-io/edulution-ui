@@ -19,41 +19,44 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { TbChartPieFilled } from 'react-icons/tb';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
+import cn from '@libs/common/utils/className';
 
-const Quota: React.FC = () => {
+interface MenuBarQuotaProps {
+  isCollapsed: boolean;
+}
+
+const MenuBarQuota: React.FC<MenuBarQuotaProps> = ({ isCollapsed }) => {
   const { t } = useTranslation();
   const { user: lmnUser } = useLmnApiStore();
-  const { quotaUsedInGb, quotaHardLimitInGb, mailQuota, percentageUsed, progressBarColor } = useQuotaInfo();
+  const { quotaUsedInGb, quotaHardLimitInGb, percentageUsed, progressBarColor } = useQuotaInfo();
+
+  if (isCollapsed) {
+    return null;
+  }
 
   return (
-    <>
-      <p className="text-background">{lmnUser?.school}</p>
-      <div className="relative my-1 h-1 w-full bg-gray-300">
+    <div className="border-t border-muted px-3 py-4">
+      <div className="mb-1 flex items-center gap-2">
+        <TbChartPieFilled className="h-3 w-3" />
+        <p className="text-sm">{lmnUser?.school}</p>
+      </div>
+      <div className="relative h-1 w-full overflow-hidden rounded-full bg-gray-300">
         <div
-          className={`absolute left-0 top-0 h-1 ${progressBarColor}`}
-          style={{ width: `${percentageUsed}%` }}
+          className={cn('absolute left-0 top-0 h-full rounded-full transition-all', progressBarColor)}
+          style={{ width: `${Math.min(percentageUsed, 100)}%` }}
         />
       </div>
-      <div color="white">
-        <p className="text-background">
-          {t('dashboard.quota.gbUsed', {
-            used: quotaUsedInGb,
-            total: quotaHardLimitInGb,
-          })}
-        </p>
-      </div>
-      <div color="background">
-        <p className="font-bold text-background">
-          {t('dashboard.quota.globalQuota')}: {quotaHardLimitInGb} GB
-        </p>
-        <p className="font-bold text-background">
-          {t('dashboard.quota.mailQuota')}: {mailQuota} {t('dashboard.quota.mibibyte')}
-        </p>
-      </div>
-    </>
+      <p className="mt-1 text-xs">
+        {t('dashboard.quota.gbUsed', {
+          used: quotaUsedInGb,
+          total: quotaHardLimitInGb,
+        })}
+      </p>
+    </div>
   );
 };
 
-export default Quota;
+export default MenuBarQuota;
