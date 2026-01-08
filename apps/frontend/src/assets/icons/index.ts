@@ -49,8 +49,6 @@ export { default as EmbeddedIcon } from '@/assets/icons/edulution/edu_Eingebette
 export { default as LanguageIcon } from '@/assets/icons/edulution/edu_Oberflaeche.svg';
 export { default as GermanIcon } from '@/assets/icons/german.svg';
 export { default as EnglishIcon } from '@/assets/icons/english.svg';
-export { default as WindowsLogo } from '@/assets/icons/windows.svg';
-export { default as LinuxLogo } from '@/assets/icons/ubuntu.svg';
 export { default as AppStoreIcon } from '@/assets/icons/edulution/edu_App-Store.svg';
 export { default as FranceIcon } from '@/assets/icons/france.svg';
 export { default as QrCodeIcon } from '@/assets/icons/edulution/edu_QR-Code.svg?react';
