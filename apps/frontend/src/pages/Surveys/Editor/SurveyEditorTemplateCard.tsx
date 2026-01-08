@@ -82,8 +82,8 @@ const SurveyEditorTemplateCard = ({
     <Card
       className={cn(
         GRID_CARD,
-        'relative flex h-[10rem] cursor-pointer pt-2',
-        { 'bg-muted text-white': !active },
+        'relative flex min-h-[11rem] cursor-pointer pt-2',
+        { 'opacity-50': !active },
         { 'h-[12.2rem] pb-12': isSuperAdmin },
         { 'pt-8': !description },
       )}
