@@ -133,14 +133,14 @@ const ScrollableTable = <TData, TValue>({
 
       {showSelectedCount && (
         <div className="text-sm text-muted-foreground">
-          {selectedRowsCount > 0 ? (
-            t(`${applicationName}.${filteredRowCount === 1 ? 'rowSelected' : 'rowsSelected'}`, {
-              selected: selectedRowsCount,
-              total: filteredRowCount,
-            })
-          ) : (
-            <>&nbsp;</>
-          )}
+          {selectedRowsCount > 0
+            ? t(`${applicationName}.${filteredRowCount === 1 ? 'rowSelected' : 'rowsSelected'}`, {
+                selected: selectedRowsCount,
+                total: filteredRowCount,
+              })
+            : t(`${applicationName}.${filteredRowCount === 1 ? 'item' : 'items'}`, {
+                count: filteredRowCount,
+              })}
         </div>
       )}
 
