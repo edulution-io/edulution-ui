@@ -17,10 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { BiSolidDockRight } from 'react-icons/bi';
-import { IconContext } from 'react-icons';
-import { VscEmptyWindow } from 'react-icons/vsc';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faWindowRestore } from '@fortawesome/free-solid-svg-icons';
 import WindowControlBaseButton from './WindowControlBaseButton';
 
 interface ToggleDockButtonProps {
@@ -28,19 +28,13 @@ interface ToggleDockButtonProps {
   isDocked: boolean;
 }
 
-const ToggleDockButton = ({ onClick, isDocked }: ToggleDockButtonProps) => {
-  const iconContextValue = useMemo(() => ({ className: 'h-4 w-4' }), []);
-
-  return (
-    <IconContext.Provider value={iconContextValue}>
-      <WindowControlBaseButton
-        onClick={onClick}
-        tooltipTranslationId={isDocked ? 'common.undock' : 'common.dock'}
-      >
-        {isDocked ? <VscEmptyWindow /> : <BiSolidDockRight />}
-      </WindowControlBaseButton>
-    </IconContext.Provider>
-  );
-};
+const ToggleDockButton = ({ onClick, isDocked }: ToggleDockButtonProps) => (
+  <WindowControlBaseButton
+    onClick={onClick}
+    tooltipTranslationId={isDocked ? 'common.undock' : 'common.dock'}
+  >
+    {isDocked ? <FontAwesomeIcon icon={faWindowRestore} /> : <BiSolidDockRight size={16} />}
+  </WindowControlBaseButton>
+);
 
 export default ToggleDockButton;

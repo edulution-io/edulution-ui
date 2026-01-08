@@ -32,8 +32,8 @@ import copyToClipboard from '@/utils/copyToClipboard';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import ActionTooltip from '@/components/shared/ActionTooltip';
-import { FcFolder } from 'react-icons/fc';
-import { IoLink } from 'react-icons/io5';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFolder, faLink } from '@fortawesome/free-solid-svg-icons';
 
 const renderFileIcon = (item: FileInfoDto) => {
   if (item.type !== 'directory') {
@@ -44,7 +44,7 @@ const renderFileIcon = (item: FileInfoDto) => {
       />
     );
   }
-  return <FcFolder size={TABLE_ICON_SIZE} />;
+  return <FontAwesomeIcon icon={faFolder} />;
 };
 
 const FileTableColumns: ColumnDef<FileInfoDto>[] = [
@@ -152,7 +152,7 @@ const FileTableColumns: ColumnDef<FileInfoDto>[] = [
             tooltipText={i18n.t('common.copy.url')}
             trigger={
               <SelectableTextCell
-                text={<IoLink size={TABLE_ICON_SIZE} />}
+                text={<FontAwesomeIcon icon={faLink} />}
                 onClick={() => copyToClipboard(fileUrl, toasterTranslationIds)}
               />
             }

@@ -32,7 +32,7 @@ import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 import FileThumbnail from '@/pages/FileSharing/utilities/FileThumbnail';
-import { BUTTONS_ICON_WIDTH, TABLE_ICON_SIZE } from '@libs/ui/constants';
+import { TABLE_ICON_SIZE } from '@libs/ui/constants';
 import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
@@ -44,7 +44,7 @@ import isImageExtension from '@libs/filesharing/utils/isImageExtension';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import useMedia from '@/hooks/useMedia';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
-import { MdOutlineCloudDone } from 'react-icons/md';
+import { faCloud } from '@fortawesome/free-solid-svg-icons';
 import IconWithCount from '@/components/shared/IconWithCount';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
@@ -204,8 +204,7 @@ const getFileSharingTableColumns = (
           <div className="flex items-center justify-center">
             {isShared && (
               <IconWithCount
-                Icon={MdOutlineCloudDone}
-                size={BUTTONS_ICON_WIDTH}
+                icon={faCloud}
                 className="text-background"
                 count={matchCount}
                 onClick={() => {

@@ -18,7 +18,8 @@
  */
 
 import React from 'react';
-import { BiWindowOpen } from 'react-icons/bi';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
 import WindowControlBaseButton from './WindowControlBaseButton';
 
 interface OpenInNewTabButtonProps {
@@ -30,7 +31,7 @@ const OpenInNewTabButton = ({ onClick }: OpenInNewTabButtonProps) => (
     onClick={onClick}
     tooltipTranslationId="common.openInNewTab"
   >
-    <BiWindowOpen size={16} />
+    <FontAwesomeIcon icon={faUpRightFromSquare} />
   </WindowControlBaseButton>
 );
 
