@@ -44,7 +44,6 @@ const createSurveyCreatorObject = (language = 'en') => {
   locale.ed.surveyPlaceHolder = t('survey.editor.customTranslations.surveyPlaceHolder');
   locale.ed.surveyPlaceholderDescription = t('survey.editor.customTranslations.surveyPlaceholderDescription');
   locale.ed.surveyPlaceholderDescriptionMobile = t('survey.editor.customTranslations.surveyPlaceholderDescription');
-  locale.ed.surveyPlaceHolder = t('survey.editor.customTranslations.surveyPlaceHolder');
   locale.ed.pagePlaceHolder = t('survey.editor.customTranslations.pagePlaceHolder');
   locale.ed.panelPlaceHolder = t('survey.editor.customTranslations.panelPlaceHolder');
   locale.pe.pageTitlePlaceholder = t('survey.editor.customTranslations.pageTitlePlaceHolder');
