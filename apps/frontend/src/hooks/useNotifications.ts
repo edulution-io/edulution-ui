@@ -98,7 +98,7 @@ const useNotifications = () => {
         label: t('common.refreshPage'),
         onClick: () => window.location.reload(),
       },
-      duration: undefined,
+      duration: Infinity,
     });
   };
 
