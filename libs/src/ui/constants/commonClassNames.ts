@@ -24,7 +24,7 @@ export const INPUT_BASE_CLASSES =
 
 export const VARIANT_COLORS = {
   default: 'bg-white text-black border-[1px] border-gray-300 dark:bg-accent dark:text-secondary dark:border-none',
-  dialog: 'dark:bg-muted border-[1px] dark:border-none border-gray-300 bg-white text-background',
+  dialog: 'dark:bg-muted border-[1px] border-gray-600 bg-white text-background',
   login: 'border-[1px] border-gray-300 bg-white text-black shadow-md',
   lightGrayDisabled: 'bg-ciDarkGreyDisabled text-secondary',
 } as const;
