@@ -25,7 +25,6 @@ export { default as DesktopDeploymentIcon } from '@/assets/icons/edulution/edu_D
 export { default as MailIcon } from '@/assets/icons/edulution/edu_E-Mail.svg';
 export { default as CloudIcon } from '@/assets/icons/fontawsome/cloud.svg';
 export { default as Dashboard } from '@/assets/icons/edulution/edu_Dashboard.svg';
-export { default as UserIcon } from '@/assets/icons/fontawsome/user.svg';
 export { default as UserDetailsSettingsIcon } from '@/assets/icons/edulution/edu_Benutzeroberfläche.svg';
 export { default as SettingsIcon } from '@/assets/icons/edulution/edu_Einstellungen.svg';
 export { default as PlusIcon } from '@/assets/icons/fontawsome/plus.svg';

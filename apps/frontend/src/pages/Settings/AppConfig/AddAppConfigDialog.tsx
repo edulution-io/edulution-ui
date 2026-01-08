@@ -24,6 +24,7 @@ import { useForm } from 'react-hook-form';
 import { useDropzone } from 'react-dropzone';
 import { MdOutlineCloudUpload } from 'react-icons/md';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
@@ -194,7 +195,10 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
                       onClick={handleDeleteIcon}
                       className="absolute right-1 top-1 h-8 rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
                     >
-                      <DeleteIcon className="h-4 w-4 text-white" />
+                      <FontAwesomeIcon
+                        icon={DeleteIcon}
+                        className="h-4 w-4 text-white"
+                      />
                     </Button>
                   </li>
                 </ul>

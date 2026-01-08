@@ -25,6 +25,7 @@ import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
 import { HiEyeSlash } from 'react-icons/hi2';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -310,7 +311,10 @@ const UploadContentBody = () => {
                     onClick={() => removeFile(fileName)}
                     className="absolute right-1 top-1 h-8 rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
                   >
-                    <DeleteIcon className="text-text-ciRed h-4 w-4" />
+                    <FontAwesomeIcon
+                      icon={DeleteIcon}
+                      className="text-text-ciRed h-4 w-4"
+                    />
                   </Button>
 
                   <div className="flex flex-col items-center justify-center">

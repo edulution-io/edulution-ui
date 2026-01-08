@@ -19,6 +19,7 @@
 
 import React from 'react';
 import cn from '@libs/common/utils/className';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
@@ -100,7 +101,8 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
               >
                 {item.icon && (
                   <div className="flex  items-center justify-center rounded-lg border-2 bg-white p-1 dark:border-none">
-                    <item.icon
+                    <FontAwesomeIcon
+                      icon={item.icon}
                       style={{ color: item.iconColor || 'black' }}
                       className="h-5 w-5"
                     />

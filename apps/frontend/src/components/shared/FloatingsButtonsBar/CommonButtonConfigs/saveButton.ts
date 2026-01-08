@@ -18,10 +18,10 @@
  */
 
 import { t } from 'i18next';
-import { MdOutlineSave } from 'react-icons/md';
+import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 
 const SaveButton = (onClick: () => void, isVisible?: boolean) => ({
-  icon: MdOutlineSave,
+  icon: faFloppyDisk,
   text: t('common.save'),
   onClick,
   isVisible,

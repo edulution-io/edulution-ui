@@ -19,20 +19,19 @@
 
 import React from 'react';
 import { Button } from '@/components/shared/Button';
-import { IconContext } from 'react-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import type FloatingButtonConfig from '@libs/ui/types/FloatingButtons/floatingButtonConfig';
 import { FLOATING_BUTTON_CLASS_NAME } from '@libs/ui/constants/floatingButtonsConfig';
 
 const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
-  icon: Icon,
+  icon,
   text,
   onClick,
   type = 'button',
   variant = 'button',
   dropdownItems = [],
-  iconContextValue = {},
 }) => {
   const { t } = useTranslation();
 
@@ -46,9 +45,10 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
               variant="btn-hexagon"
               hexagonIconAltText={t('common.showOptions')}
             >
-              <IconContext.Provider value={iconContextValue}>
-                <Icon />
-              </IconContext.Provider>
+              <FontAwesomeIcon
+                icon={icon}
+                className="m-4 h-6 w-6"
+              />
             </Button>
           }
           items={dropdownItems}
@@ -63,9 +63,10 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
         onClick={onClick}
         hexagonIconAltText={text}
       >
-        <IconContext.Provider value={iconContextValue}>
-          <Icon />
-        </IconContext.Provider>
+        <FontAwesomeIcon
+          icon={icon}
+          className="m-4 h-6 w-6"
+        />
       </Button>
     );
   };

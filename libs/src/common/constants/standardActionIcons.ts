@@ -17,12 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { IoAdd, IoPencil, IoTrash } from 'react-icons/io5';
+import { faPlus, faPencil, faTrash } from '@fortawesome/free-solid-svg-icons';
 import STANDARD_ACTION_TYPES from './standardActionTypes';
 
-export const AddIcon = IoAdd;
-export const EditIcon = IoPencil;
-export const DeleteIcon = IoTrash;
+export const AddIcon = faPlus;
+export const EditIcon = faPencil;
+export const DeleteIcon = faTrash;
 
 const STANDARD_ACTION_ICONS = {
   [STANDARD_ACTION_TYPES.ADD]: AddIcon,

@@ -21,6 +21,7 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MdRemove } from 'react-icons/md';
 import { AddIcon } from '@libs/common/constants/standardActionIcons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Base, ItemValue, QuestionMatrixBaseModel } from 'survey-core';
 import isQuestionTypeMatrixType from '@libs/survey/utils/isQuestionTypeMatrixType';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
@@ -147,7 +148,10 @@ const RowAndColumnOptions = () => {
           size="sm"
           title={t('survey.editor.questionSettings.addRow')}
         >
-          <AddIcon className="h-4 w-4" />
+          <FontAwesomeIcon
+            icon={AddIcon}
+            className="h-4 w-4"
+          />
         </Button>
         <Button
           onClick={() => removeRow()}
@@ -174,7 +178,10 @@ const RowAndColumnOptions = () => {
           size="sm"
           title={t('survey.editor.questionSettings.addColumn')}
         >
-          <AddIcon className="h-4 w-4" />
+          <FontAwesomeIcon
+            icon={AddIcon}
+            className="h-4 w-4"
+          />
         </Button>
         <Button
           onClick={() => removeColumn()}

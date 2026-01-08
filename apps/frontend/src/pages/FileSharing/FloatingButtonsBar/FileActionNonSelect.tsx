@@ -19,9 +19,7 @@
 
 import React, { FC, useState } from 'react';
 import { t } from 'i18next';
-import { MdFilePresent } from 'react-icons/md';
-import { HiChevronDown, HiChevronUp, HiOutlineFolderAdd } from 'react-icons/hi';
-import { FaFile } from 'react-icons/fa';
+import { faFile, faChevronDown, faChevronUp, faFolderPlus } from '@fortawesome/free-solid-svg-icons';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import UploadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/uploadButton';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
@@ -79,14 +77,14 @@ const FileActionNonSelect: FC<FileActionButtonProps> = ({ openDialog }) => {
 
   const customFileItem = {
     label: t('fileCreateNewContent.newFileFromType.customFile'),
-    icon: FaFile,
+    icon: faFile,
     iconColor: '#848493',
     onClick: handleSelectCustomExtension,
   };
 
   const expandToggleItem = {
     label: isExpanded ? t('fileCreateNewContent.lessFileTypes') : t('fileCreateNewContent.moreFileTypes'),
-    icon: isExpanded ? HiChevronUp : HiChevronDown,
+    icon: isExpanded ? faChevronUp : faChevronDown,
     iconColor: '#848493',
     onClick: () => setIsExpanded(!isExpanded),
     preventClose: true,
@@ -104,12 +102,12 @@ const FileActionNonSelect: FC<FileActionButtonProps> = ({ openDialog }) => {
     buttons: [
       {
         variant: 'dropdown',
-        icon: MdFilePresent,
+        icon: faFile,
         text: t('tooltip.create.file'),
         dropdownItems: fileTypesConfiguration,
       },
       {
-        icon: HiOutlineFolderAdd,
+        icon: faFolderPlus,
         text: t('tooltip.create.folder'),
         onClick: () => openDialog(FileActionType.CREATE_FOLDER),
       },

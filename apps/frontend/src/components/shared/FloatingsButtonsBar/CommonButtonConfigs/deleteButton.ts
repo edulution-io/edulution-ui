@@ -18,10 +18,10 @@
  */
 
 import { t } from 'i18next';
-import { MdOutlineDeleteOutline } from 'react-icons/md';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const DeleteButton = (onClick: () => void, isVisible?: boolean) => ({
-  icon: MdOutlineDeleteOutline,
+  icon: faTrash,
   text: t('common.delete'),
   onClick,
   isVisible,
