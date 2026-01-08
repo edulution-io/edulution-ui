@@ -1261,6 +1261,8 @@
     "tableView": "Vue tableau",
     "gridView": "Vue grille",
     "sort": "Trier",
+    "ascending": "croissant",
+    "descending": "décroissant",
     "selectAll": "Tout sélectionner",
     "copy": {
       "success": "Copié avec succès dans le presse-papiers",

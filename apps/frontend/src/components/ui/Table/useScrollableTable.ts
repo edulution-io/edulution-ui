@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ColumnDef,
   getCoreRowModel,
@@ -63,10 +63,14 @@ const useScrollableTable = <TData, TValue>({
     });
   }, [initialColumnVisibility]);
 
-  const defaultSorting = columns.some((c) => c.id === DEFAULT_TABLE_SORT_PROPERTY_KEY)
-    ? [{ id: 'position', desc: false }]
-    : [];
+  const defaultSorting = useMemo(
+    () => (columns.some((c) => c.id === DEFAULT_TABLE_SORT_PROPERTY_KEY) ? [{ id: 'position', desc: false }] : []),
+    [columns],
+  );
   const [sorting, setSorting] = useState(() => (initialSorting?.length ? initialSorting : defaultSorting));
+
+  const fallbackGetRowId = useCallback((originalRow: TData) => (originalRow as { id: string }).id, []);
+  const rowIdGetter = getRowId || fallbackGetRowId;
 
   const table = useReactTable({
     data,
@@ -75,7 +79,7 @@ const useScrollableTable = <TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onSortingChange: setSorting,
     getFilteredRowModel: getFilteredRowModel(),
-    getRowId: getRowId || ((originalRow: TData) => (originalRow as { id: string }).id),
+    getRowId: rowIdGetter,
     onRowSelectionChange,
     enableRowSelection,
     onColumnVisibilityChange: setColumnVisibility,

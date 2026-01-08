@@ -112,7 +112,7 @@ const DraggableGridItem = <TData,>({
       tabIndex={isDisabled ? -1 : 0}
       variant={isSelected ? 'gridSelected' : 'grid'}
       className={cn(
-        'group relative transition-all duration-200 ease-in-out',
+        'group relative',
         isDisabled && 'opacity-50',
         isDragging && 'opacity-30',
         isDragging && isSelected && 'ring-2 ring-primary ring-offset-2',

@@ -29,7 +29,7 @@ import { useSearchParams } from 'react-router-dom';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import FileSharingIcon from '@/pages/FileSharing/utilities/FileSharingIcon';
+import FileEntryIcon from '@/pages/FileSharing/utilities/FileEntryIcon';
 import { BUTTONS_ICON_WIDTH, TABLE_ICON_SIZE } from '@libs/ui/constants';
 import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
@@ -134,7 +134,7 @@ const getFileSharingTableColumns = (
           <div className={`w-full ${isSaving ? 'pointer-events-none opacity-50' : ''}`}>
             <SelectableTextCell
               icon={
-                <FileSharingIcon
+                <FileEntryIcon
                   file={row.original}
                   size={TABLE_ICON_SIZE}
                   isLoading={isCurrentlyDisabled}

@@ -25,7 +25,7 @@ import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import { formatBytes, getElapsedTime } from '@/pages/FileSharing/utilities/filesharingUtilities';
-import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
+import FileTypeIcon from '@/pages/FileSharing/utilities/FileTypeIcon';
 import { TABLE_ICON_SIZE } from '@libs/ui/constants';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import copyToClipboard from '@/utils/copyToClipboard';
@@ -38,7 +38,7 @@ import { IoLink } from 'react-icons/io5';
 const renderFileIcon = (item: FileInfoDto) => {
   if (item.type !== 'directory') {
     return (
-      <FileIconComponent
+      <FileTypeIcon
         filename={item.filename}
         size={TABLE_ICON_SIZE}
       />

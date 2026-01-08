@@ -53,6 +53,7 @@ interface TableGridViewProps<TData, TValue> {
   actions?: TableAction<TData>[];
   showSearchBar?: boolean;
   getRowDisabled?: (row: Row<TData>) => boolean;
+  getRowExcludedFromCount?: (row: Row<TData>) => boolean;
   enableDragAndDrop?: boolean;
   canDropOnRow?: (row: TData) => boolean;
   gridItemConfig: GridItemConfig<TData>;
@@ -78,6 +79,7 @@ const TableGridView = <TData, TValue>({
   actions,
   showSearchBar = true,
   getRowDisabled,
+  getRowExcludedFromCount,
   enableDragAndDrop = false,
   canDropOnRow,
   gridItemConfig,
@@ -138,6 +140,7 @@ const TableGridView = <TData, TValue>({
         actions={actions}
         showSearchBarAndColumnSelect={showSearchBar}
         getRowDisabled={getRowDisabled}
+        getRowExcludedFromCount={getRowExcludedFromCount}
         enableDragAndDrop={enableDragAndDrop}
         canDropOnRow={canDropOnRow}
         searchBarAdditionalComponent={viewModeToggle}
@@ -145,8 +148,12 @@ const TableGridView = <TData, TValue>({
     );
   }
 
+  const filteredRows = table.getFilteredRowModel().rows;
+  const countableRows = getRowExcludedFromCount
+    ? filteredRows.filter((row) => !getRowExcludedFromCount(row))
+    : filteredRows;
   const selectedRowsCount = table.getFilteredSelectedRowModel().rows.length;
-  const filteredRowCount = table.getFilteredRowModel().rows.length;
+  const filteredRowCount = countableRows.length;
   const filterValue = String(table.getColumn(filterKey)?.getFilterValue() || '');
 
   return (

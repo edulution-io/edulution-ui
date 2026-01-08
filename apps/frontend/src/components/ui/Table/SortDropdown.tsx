@@ -46,7 +46,7 @@ const SortDropdown = <TData,>({ table, isDialog }: SortDropdownProps<TData>) => 
 
     return [
       {
-        label,
+        label: `${label} (${t('common.ascending')})`,
         icon: ArrowDownAZ,
         onClick: () => {
           column.toggleSorting(false);
@@ -55,7 +55,7 @@ const SortDropdown = <TData,>({ table, isDialog }: SortDropdownProps<TData>) => 
         checked: isCurrentAsc,
       },
       {
-        label,
+        label: `${label} (${t('common.descending')})`,
         icon: ArrowUpAZ,
         onClick: () => {
           column.toggleSorting(true);

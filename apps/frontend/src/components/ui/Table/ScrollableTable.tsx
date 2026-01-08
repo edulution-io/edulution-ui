@@ -50,6 +50,7 @@ interface DataTableProps<TData, TValue> {
   actions?: TableAction<TData>[];
   showSearchBarAndColumnSelect?: boolean;
   getRowDisabled?: (row: Row<TData>) => boolean;
+  getRowExcludedFromCount?: (row: Row<TData>) => boolean;
   enableDragAndDrop?: boolean;
   canDropOnRow?: (row: TData) => boolean;
   searchBarAdditionalComponent?: ReactNode;
@@ -74,6 +75,7 @@ const ScrollableTable = <TData, TValue>({
   actions,
   showSearchBarAndColumnSelect = true,
   getRowDisabled,
+  getRowExcludedFromCount,
   enableDragAndDrop = false,
   canDropOnRow,
   searchBarAdditionalComponent,
@@ -91,8 +93,12 @@ const ScrollableTable = <TData, TValue>({
     initialColumnVisibility,
   });
 
+  const filteredRows = table.getFilteredRowModel().rows;
+  const countableRows = getRowExcludedFromCount
+    ? filteredRows.filter((row) => !getRowExcludedFromCount(row))
+    : filteredRows;
   const selectedRowsCount = table.getFilteredSelectedRowModel().rows.length;
-  const filteredRowCount = table.getFilteredRowModel().rows.length;
+  const filteredRowCount = countableRows.length;
   const filterValue = String(table.getColumn(filterKey)?.getFilterValue() || '');
 
   return (

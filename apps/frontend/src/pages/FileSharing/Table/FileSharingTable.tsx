@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import { DndContext, DragOverlay, rectIntersection } from '@dnd-kit/core';
 import { useParams } from 'react-router-dom';
@@ -39,7 +39,7 @@ import useFileSharingDragAndDrop from '@/pages/FileSharing/hooks/useFileSharingD
 import { useTranslation } from 'react-i18next';
 import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
 import { getElapsedTime } from '@/pages/FileSharing/utilities/filesharingUtilities';
-import FileSharingIcon from '@/pages/FileSharing/utilities/FileSharingIcon';
+import FileEntryIcon from '@/pages/FileSharing/utilities/FileEntryIcon';
 import useVariableSharePathname from '../hooks/useVariableSharePathname';
 import useFileOpen from '../hooks/useFileOpen';
 
@@ -72,26 +72,42 @@ const FileSharingTable = () => {
     if (currentPath !== '/') void fetchFiles(webdavShare, currentPath);
   }, []);
 
-  const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
-    const newValue =
-      typeof updaterOrValue === 'function'
-        ? updaterOrValue(useFileSharingStore.getState().selectedRows)
-        : updaterOrValue;
+  const columns = useMemo(
+    () => getFileSharingTableColumns(undefined, undefined, isDocumentServerConfigured),
+    [isDocumentServerConfigured],
+  );
 
-    const filteredValue = Object.keys(newValue).reduce((acc, key) => {
-      if (key !== PARENT_FOLDER_PATH && newValue[key]) {
-        acc[key] = newValue[key];
-      }
-      return acc;
-    }, {} as RowSelectionState);
+  const filesByPath = useMemo(() => {
+    const map = new Map<string, DirectoryFileDTO>();
+    files.forEach((file) => map.set(file.filePath, file));
+    return map;
+  }, [files]);
 
-    setSelectedRows(filteredValue);
-    const selectedItemData = Object.keys(filteredValue)
-      .filter((key) => filteredValue[key])
-      .map((rowId) => files.find((file) => file.filePath === rowId))
-      .filter(Boolean) as DirectoryFileDTO[];
-    setSelectedItems(selectedItemData);
-  };
+  const handleRowSelectionChange: OnChangeFn<RowSelectionState> = useCallback(
+    (updaterOrValue) => {
+      const newValue =
+        typeof updaterOrValue === 'function'
+          ? updaterOrValue(useFileSharingStore.getState().selectedRows)
+          : updaterOrValue;
+
+      const filteredValue = Object.keys(newValue).reduce((acc, key) => {
+        if (key !== PARENT_FOLDER_PATH && newValue[key]) {
+          acc[key] = newValue[key];
+        }
+        return acc;
+      }, {} as RowSelectionState);
+
+      setSelectedRows(filteredValue);
+
+      const selectedItemData = Object.keys(filteredValue)
+        .filter((key) => filteredValue[key])
+        .map((rowId) => filesByPath.get(rowId))
+        .filter(Boolean) as DirectoryFileDTO[];
+
+      setSelectedItems(selectedItemData);
+    },
+    [filesByPath, setSelectedRows, setSelectedItems],
+  );
 
   const shouldHideColumns = !(isMobileView || isTabletView || (isFilePreviewVisible && isFilePreviewDocked));
 
@@ -108,7 +124,7 @@ const FileSharingTable = () => {
   const gridItemConfig: GridItemConfig<DirectoryFileDTO> = useMemo(
     () => ({
       renderIcon: (item) => (
-        <FileSharingIcon
+        <FileEntryIcon
           file={item}
           size={GRID_ICON_SIZE}
         />
@@ -155,7 +171,7 @@ const FileSharingTable = () => {
       collisionDetection={rectIntersection}
     >
       <TableGridView
-        columns={getFileSharingTableColumns(undefined, undefined, isDocumentServerConfigured)}
+        columns={columns}
         data={filesWithParentNav}
         filterKey={FILE_SHARING_TABLE_COLUMNS.SELECT_FILENAME}
         filterPlaceHolderText="filesharing.filterPlaceHolderText"
@@ -164,6 +180,7 @@ const FileSharingTable = () => {
         selectedRows={selectedRows}
         getRowId={(row) => row.filePath}
         getRowDisabled={(row) => row.original.filePath === PARENT_FOLDER_PATH}
+        getRowExcludedFromCount={(row) => row.original.filePath === PARENT_FOLDER_PATH}
         enableRowSelection={(row) => row.original.filePath !== PARENT_FOLDER_PATH}
         applicationName={APPS.FILE_SHARING}
         initialSorting={[
@@ -181,7 +198,7 @@ const FileSharingTable = () => {
           <div className="flex w-fit items-center gap-2 rounded bg-accent p-2 shadow-lg">
             {draggedFiles.length === 1 ? (
               <>
-                <FileSharingIcon
+                <FileEntryIcon
                   file={draggedFiles[0]}
                   size={TABLE_ICON_SIZE}
                 />
@@ -190,7 +207,7 @@ const FileSharingTable = () => {
             ) : (
               <>
                 <div className="relative">
-                  <FileSharingIcon
+                  <FileEntryIcon
                     file={draggedFiles[0]}
                     size={TABLE_ICON_SIZE}
                   />

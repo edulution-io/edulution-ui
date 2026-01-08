@@ -24,16 +24,16 @@ import ContentType from '@libs/filesharing/types/contentType';
 import isImageExtension from '@libs/filesharing/utils/isImageExtension';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import FileIconComponent from './FileIconComponent';
+import FileTypeIcon from './FileTypeIcon';
 import FileThumbnail from './FileThumbnail';
 
-interface FileSharingIconProps {
+interface FileEntryIconProps {
   file: DirectoryFileDTO;
   size: number;
   isLoading?: boolean;
 }
 
-const FileSharingIcon = ({ file, size, isLoading = false }: FileSharingIconProps) => {
+const FileEntryIcon = ({ file, size, isLoading = false }: FileEntryIconProps) => {
   if (isLoading) {
     return (
       <CircleLoader
@@ -59,11 +59,11 @@ const FileSharingIcon = ({ file, size, isLoading = false }: FileSharingIconProps
   }
 
   return (
-    <FileIconComponent
+    <FileTypeIcon
       filename={file.filePath}
       size={size}
     />
   );
 };
 
-export default FileSharingIcon;
+export default FileEntryIcon;
