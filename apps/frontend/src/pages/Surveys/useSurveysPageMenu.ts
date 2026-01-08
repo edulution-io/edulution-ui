@@ -24,7 +24,13 @@ import {
   CREATOR_SURVEYS_PAGE,
   OPEN_SURVEYS_PAGE,
 } from '@libs/survey/constants/surveys-endpoint';
-import { PlusIcon, SurveysMenuIcon, SurveysViewAnsweredIcon, SurveysViewOpenIcon, UserIcon } from '@/assets/icons';
+import {
+  PlusIcon,
+  SurveysMenuIcon,
+  SurveysViewAnsweredIcon,
+  SurveysViewOpenIcon,
+  SurveysViewOwnIcon,
+} from '@/assets/icons';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import APPS from '@libs/appconfig/constants/apps';
 import SurveysPageView from '@libs/survey/types/api/page-view';
@@ -57,7 +63,7 @@ const useSurveysPageMenu = () => {
       {
         id: SurveysPageView.CREATED,
         label: 'surveys.view.created.menu',
-        icon: UserIcon,
+        icon: SurveysViewOwnIcon,
         action: () => {
           navigate(CREATED_SURVEYS_PAGE);
         },

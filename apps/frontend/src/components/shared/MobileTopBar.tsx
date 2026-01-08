@@ -18,7 +18,8 @@
  */
 
 import React, { useMemo } from 'react';
-import { MdClose, MdMenu, MdRefresh } from 'react-icons/md';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faArrowsRotate, faClose } from '@fortawesome/free-solid-svg-icons';
 import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
 import useMenuBarStore from '@/components/shared/useMenuBarStore';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
@@ -35,7 +36,7 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
   const { toggleMobileSidebar: onRightButtonClick, isMobileSidebarOpen: isRightMenuOpen } = useSidebarStore();
   const { toggleMobileMenuBar: onLeftButtonClick, isMobileMenuBarOpen: isLeftMenuOpen } = useMenuBarStore();
   const { isEdulutionApp } = usePlatformStore();
-  const iconClassName = useMemo(() => 'h-8 w-8', []);
+  const iconClassName = useMemo(() => 'h-6 w-6', []);
 
   if (!showLeftButton && !showRightButton) {
     return null;
@@ -44,68 +45,75 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
   const isAnyMenuOpen = isLeftMenuOpen || isRightMenuOpen;
 
   return (
-    <>
-      <div
-        className="relative flex items-center justify-between border-b-[1px] border-muted bg-foreground px-4"
-        style={{ height: MOBILE_TOP_BAR_HEIGHT_PX }}
-      >
-        {!isAnyMenuOpen && showLeftButton ? (
-          <button
-            type="button"
-            onClick={onLeftButtonClick}
-          >
-            <MdMenu className={iconClassName} />
-          </button>
-        ) : (
-          <div />
-        )}
+    <div
+      className="relative flex items-center justify-between border-b-[1px] border-muted bg-foreground px-4"
+      style={{ height: MOBILE_TOP_BAR_HEIGHT_PX }}
+    >
+      {!isAnyMenuOpen && showLeftButton ? (
+        <button
+          type="button"
+          onClick={onLeftButtonClick}
+          className="top-2"
+        >
+          <FontAwesomeIcon
+            icon={faBars}
+            className={iconClassName}
+          />
+        </button>
+      ) : (
+        <div />
+      )}
 
-        {!isAnyMenuOpen && isEdulutionApp && (
-          <button
-            type="button"
-            onClick={refreshPage}
-            className="absolute left-1/2 -translate-x-1/2"
-          >
-            <MdRefresh className="h-6 w-6" />
-          </button>
-        )}
+      {!isAnyMenuOpen && isEdulutionApp && (
+        <button
+          type="button"
+          onClick={refreshPage}
+          className="absolute left-1/2 -translate-x-1/2"
+        >
+          <FontAwesomeIcon
+            icon={faArrowsRotate}
+            className={iconClassName}
+          />{' '}
+        </button>
+      )}
 
-        {!isAnyMenuOpen && showRightButton ? (
-          <button
-            type="button"
-            onClick={onRightButtonClick}
-          >
-            <MobileLogoIcon
-              className={iconClassName}
-              width={SIDEBAR_ICON_WIDTH}
-              aria-label="edulution-mobile-logo"
-            />
-          </button>
-        ) : (
-          <div />
-        )}
-      </div>
-
+      {!isAnyMenuOpen && showRightButton ? (
+        <button
+          type="button"
+          onClick={onRightButtonClick}
+        >
+          <MobileLogoIcon
+            className="h-8 w-8"
+            width={SIDEBAR_ICON_WIDTH}
+            aria-label="edulution-mobile-logo"
+          />
+        </button>
+      ) : (
+        <div />
+      )}
       {isLeftMenuOpen && (
         <button
           type="button"
           onClick={onLeftButtonClick}
-          className="fixed right-4 top-1"
         >
-          <MdClose className={iconClassName} />
+          <FontAwesomeIcon
+            icon={faClose}
+            className={iconClassName}
+          />
         </button>
       )}
-
       {isRightMenuOpen && (
         <button
           type="button"
           onClick={onRightButtonClick}
-          className="fixed left-4 top-1"
         >
-          <MdClose className={iconClassName} />
+          <FontAwesomeIcon
+            icon={faClose}
+            className={iconClassName}
+          />
         </button>
       )}
-    </>
+    </div>
   );
 };
 

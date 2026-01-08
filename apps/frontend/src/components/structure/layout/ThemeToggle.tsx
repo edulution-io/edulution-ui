@@ -19,11 +19,12 @@
 
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { GoMoon, GoSun } from 'react-icons/go';
 import useThemeStore from '@/store/useThemeStore';
 import { Button } from '@/components/shared/Button';
 import isDev from '@libs/common/constants/isDev';
 import THEME from '@libs/common/constants/theme';
+import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const ThemeToggle: React.FC = () => {
   const theme = useThemeStore((s) => s.theme);
@@ -53,7 +54,17 @@ const ThemeToggle: React.FC = () => {
       size="sm"
       className="fixed right-20 top-2 z-[9999] rounded-full border-none bg-accent p-2 shadow-lg"
     >
-      {resolvedTheme === THEME.dark ? <GoSun className="h-4 w-4" /> : <GoMoon className="h-4 w-4" />}
+      {resolvedTheme === THEME.dark ? (
+        <FontAwesomeIcon
+          icon={faSun}
+          className="h-5 w-5"
+        />
+      ) : (
+        <FontAwesomeIcon
+          icon={faMoon}
+          className="h-5 w-5"
+        />
+      )}
     </Button>,
     document.body,
   );

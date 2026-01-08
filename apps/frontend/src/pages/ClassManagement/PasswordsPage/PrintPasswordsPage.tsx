@@ -90,14 +90,14 @@ const PrintPasswordsPage: React.FC = () => {
         {isSuperAdmin && <SchoolSelectorDropdown />}
       </div>
 
-      <div className="flex max-h-full max-w-full flex-row flex-wrap overflow-y-auto scrollbar-thin">
+      <div className="flex max-h-full max-w-full flex-row flex-wrap overflow-y-auto text-background scrollbar-thin">
         <p className="mt-2 min-w-full">{t('classmanagement.printPasswordsPageDescription')}</p>
         {groupRows.map((row) => (
           <div
             key={row.name}
             className="mt-4 min-w-full"
           >
-            <h3 className="text-background">{t(`classmanagement.printPasswords`)}</h3>
+            <h3>{t(`classmanagement.printPasswords`)}</h3>
             <ClassList
               row={row}
               selectedClasses={selectedClasses}

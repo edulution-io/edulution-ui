@@ -21,7 +21,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import cn from '@libs/common/utils/className';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { GoSidebarCollapse, GoSidebarExpand } from 'react-icons/go';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRightToBracket, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { useOnClickOutside } from 'usehooks-ts';
 import useMedia from '@/hooks/useMedia';
 import { getFromPathName } from '@libs/common/utils';
@@ -210,7 +211,14 @@ const MenuBar: React.FC = () => {
               shouldCollapse ? 'cursor-e-resize' : 'cursor-w-resize',
             )}
           >
-            {isCollapsed ? <GoSidebarCollapse size={18} /> : <GoSidebarExpand size={18} />}
+            {isCollapsed ? (
+              <FontAwesomeIcon icon={faArrowRightToBracket} />
+            ) : (
+              <FontAwesomeIcon
+                icon={faArrowRightFromBracket}
+                className="rotate-180"
+              />
+            )}
           </Button>
         </aside>
       ) : (

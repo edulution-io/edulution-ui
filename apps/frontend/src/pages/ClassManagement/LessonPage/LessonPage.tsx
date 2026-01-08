@@ -26,7 +26,8 @@ import UserArea from '@/pages/ClassManagement/LessonPage/UserArea/UserArea';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import UserGroups from '@libs/groups/types/userGroups.enum';
-import { MdClose, MdSave } from 'react-icons/md';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClose, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 import { DropdownSelect } from '@/components';
 import { CLASS_MANAGEMENT_LESSON_PATH } from '@libs/classManagement/constants/classManagementPaths';
 import { useTranslation } from 'react-i18next';
@@ -230,14 +231,20 @@ const LessonPage = () => {
               <span className="text-nowrap px-4">
                 {t(`classmanagement.${currentSelectedSession ? 'editSession' : 'saveSession'}`)}
               </span>
-              <MdSave className="ml-auto inline-block h-8 w-8 pr-2" />
+              <FontAwesomeIcon
+                icon={faFloppyDisk}
+                className="ml-auto inline-block h-5 w-5 pr-2"
+              />
             </Button>
             <Button
               onClick={closeSession}
               variant="btn-table"
             >
               <span className="text-nowrap pl-4">{t('classmanagement.closeSession')}</span>
-              <MdClose className="ml-auto inline-block h-8 w-8 px-2" />
+              <FontAwesomeIcon
+                icon={faClose}
+                className="ml-auto inline-block h-4 w-4 pr-2"
+              />
             </Button>
           </div>
         ) : null}

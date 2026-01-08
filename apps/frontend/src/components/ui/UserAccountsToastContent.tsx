@@ -20,7 +20,7 @@
 import React from 'react';
 import type UserAccountDto from '@libs/user/types/userAccount.dto';
 import { useTranslation } from 'react-i18next';
-import { MdFileCopy } from 'react-icons/md';
+import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import copyToClipboard from '@/utils/copyToClipboard';
 import cn from '@libs/common/utils/className';
 import { IoChevronDown } from 'react-icons/io5';
@@ -70,7 +70,7 @@ const UserAccountsToastContent: React.FC<UserAccountsToastContentProps> = ({
               }}
               actionIcons={[
                 {
-                  icon: MdFileCopy,
+                  icon: faCopy,
                   onClick: () => copyToClipboard(userAccount.accountUser),
                 },
               ]}

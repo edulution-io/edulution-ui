@@ -30,7 +30,7 @@ import { useTranslation } from 'react-i18next';
 import { Globe, QrCodeIcon } from 'lucide-react';
 import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 import copyToClipboard from '@/utils/copyToClipboard';
-import { MdFileCopy } from 'react-icons/md';
+import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import { DeleteIcon, EditIcon } from '@libs/common/constants/standardActionIcons';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
@@ -210,7 +210,7 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
             className="min-w-0 flex-1 cursor-pointer truncate"
             actionIcons={[
               {
-                icon: MdFileCopy,
+                icon: faCopy,
                 onClick: () => copyToClipboard(url),
               },
               {
