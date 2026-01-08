@@ -22,9 +22,9 @@ import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import { PUBLIC_ROUTE_KEY } from '@libs/auth/constants/appAccessKeys';
 import CustomHttpException from '../CustomHttpException';
 import GlobalSettingsService from '../../global-settings/global-settings.service';
-import { PUBLIC_ROUTE_KEY } from '../decorators/public.decorator';
 
 @Injectable()
 class AdminGuard implements CanActivate {

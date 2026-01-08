@@ -46,7 +46,11 @@ class CollectFileConsumer extends WorkerHost {
       await this.webDavService.createFolder(username, item.destinationPath, item.userName, share);
 
       if (operationType === LMN_API_COLLECT_OPERATIONS.CUT) {
-        await this.webDavService.cutCollectedItems(username, item.originPath, item.destinationPath, share);
+        const parentPath = item.destinationPath.substring(0, item.destinationPath.lastIndexOf(item.userName));
+        const sessionParent = parentPath.substring(0, parentPath.lastIndexOf(item.newFolderName));
+        await this.webDavService.ensureFolderExists(username, sessionParent, item.newFolderName, share);
+        await this.webDavService.ensureFolderExists(username, parentPath, item.userName, share);
+        await this.webDavService.cutCollectedItems(username, item.originPath, `${item.destinationPath}/`, share);
       } else {
         await this.webDavService.copyCollectedItems(
           username,

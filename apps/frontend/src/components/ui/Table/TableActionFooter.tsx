@@ -48,19 +48,22 @@ const TableActionFooter = <TData,>(props: TableActionFooterProps<TData>) => {
           variant="btn-outline"
           disabled={disabled}
         >
-          <Icon className="h-[18px] w-[18px] text-xl text-background" />
+          <Icon className="h-[18px] w-[18px] text-xl" />
         </Button>
       );
     });
 
     return (
       <TableFooter>
-        <TableRow className="m-0 p-0 hover:bg-black/0">
+        <TableRow
+          variant="none"
+          className="m-0 p-0"
+        >
           <TableCell
             colSpan={columnLength}
-            className="m-0 p-0 hover:bg-black/0"
+            className="m-0 p-0 hover:bg-transparent"
           >
-            <div className="mx-0 my-1 flex w-full items-center justify-end gap-2 hover:bg-black/0">{actionButtons}</div>
+            <div className="mx-0 my-1 flex w-full items-center justify-end gap-2">{actionButtons}</div>
           </TableCell>
         </TableRow>
       </TableFooter>
@@ -69,12 +72,15 @@ const TableActionFooter = <TData,>(props: TableActionFooterProps<TData>) => {
 
   return (
     <TableFooter>
-      <TableRow className="m-0 p-0 hover:bg-black/0">
+      <TableRow
+        variant="none"
+        className="m-0 p-0"
+      >
         <TableCell
           colSpan={columnLength}
-          className="m-0 p-0 hover:bg-black/0"
+          className="m-0 p-0 hover:bg-transparent"
         >
-          <div className="mx-0 my-1 flex w-full items-center justify-end gap-2 hover:bg-black/0">
+          <div className="mx-0 my-1 flex w-full items-center justify-end gap-2">
             <TableActionMenu
               actions={actions}
               trigger={

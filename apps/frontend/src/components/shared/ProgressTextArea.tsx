@@ -43,7 +43,7 @@ const ProgressTextArea: React.FC<ProgressTextAreaProps> = ({ text }) => {
         value={progressText}
         readOnly
         placeholder={t('common.progress')}
-        className="w-full overflow-y-auto whitespace-pre-wrap border bg-foreground p-2 text-p text-background scrollbar-thin placeholder:text-p focus:outline-none"
+        className="w-full overflow-y-auto whitespace-pre-wrap border bg-foreground p-2 text-p scrollbar-thin placeholder:text-p focus:outline-none"
       />
     </div>
   );

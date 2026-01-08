@@ -36,6 +36,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip
 import getAppIconClassName from '@/utils/getAppIconClassName';
 import useMenuBarStore from './useMenuBarStore';
 import { Button } from './Button';
+import MenuBarFooter from './MenuBarFooter';
 
 const MenuBar: React.FC = () => {
   const { t } = useTranslation();
@@ -132,9 +133,7 @@ const MenuBar: React.FC = () => {
               getAppIconClassName(menuBarEntries.icon),
             )}
           />
-          {!shouldCollapse && (
-            <h2 className="mb-2 mt-2 text-center font-bold text-background">{menuBarEntries.title}</h2>
-          )}
+          {!shouldCollapse && <h2 className="mb-2 mt-2 text-center font-bold">{menuBarEntries.title}</h2>}
         </button>
       </div>
 
@@ -159,9 +158,7 @@ const MenuBar: React.FC = () => {
                 alt={item.label}
                 className={cn('h-12 w-12 object-contain', isSelected !== item.id && getAppIconClassName(item.icon))}
               />
-              {!shouldCollapse && (
-                <span className={cn(isSelected === item.id ? 'text-white' : 'text-background')}>{item.label}</span>
-              )}
+              {!shouldCollapse && <span className={cn(isSelected === item.id ? 'text-white' : '')}>{item.label}</span>}
             </button>
           );
 
@@ -175,6 +172,11 @@ const MenuBar: React.FC = () => {
           );
         })}
       </div>
+
+      <MenuBarFooter
+        appName={pathParts[0]}
+        isCollapsed={shouldCollapse}
+      />
     </div>
   );
 
@@ -192,7 +194,7 @@ const MenuBar: React.FC = () => {
         <aside className="relative flex h-dvh">
           <div
             className={cn(
-              'bg-glass h-full overflow-hidden rounded-r-xl  shadow-lg shadow-slate-400 backdrop-blur-lg transition-all duration-300',
+              'bg-glass h-full overflow-hidden rounded-r-xl shadow-lg shadow-slate-400 backdrop-blur-lg transition-all duration-300',
               shouldCollapse ? 'w-16' : 'w-64',
             )}
           >
@@ -204,7 +206,7 @@ const MenuBar: React.FC = () => {
             size="sm"
             onClick={toggleCollapsed}
             className={cn(
-              'bg-glass absolute right-[-15px] top-2 border-accent  px-2 py-1 text-background backdrop-blur-lg hover:bg-muted-background hover:text-background',
+              'bg-glass absolute right-[-15px] top-2 border-accent px-2 py-1 backdrop-blur-lg hover:bg-muted-background',
               shouldCollapse ? 'cursor-e-resize' : 'cursor-w-resize',
             )}
           >
@@ -214,7 +216,7 @@ const MenuBar: React.FC = () => {
       ) : (
         <div
           className={cn(
-            'bg-glass fixed left-0 top-0 z-50 h-full overflow-x-hidden  backdrop-blur-md duration-300 ease-in-out',
+            'bg-glass fixed left-0 top-0 z-50 h-full overflow-x-hidden backdrop-blur-md duration-300 ease-in-out',
             isMobileMenuBarOpen ? 'w-64 border-r-[1px] border-muted' : 'w-0',
           )}
         >
