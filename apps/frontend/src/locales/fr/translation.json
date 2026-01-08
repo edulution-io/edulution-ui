@@ -125,6 +125,7 @@
       "globalQuota": "Cloudquota calculé ",
       "mailQuota": "MailQuota calculé",
       "mibibyte": "Mib",
+      "gbUsed": "{{used}} / {{total}} Go utilisé",
       "remainingLow": "Quota restant bas - {{free}} %",
       "remainingVeryLow": "Quota restant très bas - {{free}} %"
     }

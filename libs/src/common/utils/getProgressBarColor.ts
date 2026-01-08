@@ -17,20 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { z } from 'zod';
-import { TFunction } from 'i18next';
+import QuotaThresholdPercent from '@libs/filesharing/constants/quotaThresholdPercent';
 
-const getLoginFormSchema = (t: TFunction<'translation', undefined>) =>
-  z.object({
-    username: z
-      .string({ required_error: t('username.required') })
-      .min(1, { message: t('common.required') })
-      .max(320, { message: t('login.username_too_long') }),
-    password: z
-      .string({ required_error: t('common.required') })
-      .min(1, { message: t('common.required') })
-      .max(256, { message: t('login.password_too_long') }),
-    totpValue: z.string().optional(),
-  });
+const getProgressBarColor = (percentageUsed: number): string => {
+  if (percentageUsed <= QuotaThresholdPercent.WARNING) {
+    return 'bg-ciLightGreen';
+  }
+  if (percentageUsed <= QuotaThresholdPercent.CRITICAL) {
+    return 'bg-yellow-500';
+  }
+  return 'bg-ciRed';
+};
 
-export default getLoginFormSchema;
+export default getProgressBarColor;

@@ -17,20 +17,33 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { z } from 'zod';
-import { TFunction } from 'i18next';
+import React, { type ComponentType } from 'react';
+import APPS from '@libs/appconfig/constants/apps';
+import MenuBarQuota from '@/pages/FileSharing/MenuBarQuota';
 
-const getLoginFormSchema = (t: TFunction<'translation', undefined>) =>
-  z.object({
-    username: z
-      .string({ required_error: t('username.required') })
-      .min(1, { message: t('common.required') })
-      .max(320, { message: t('login.username_too_long') }),
-    password: z
-      .string({ required_error: t('common.required') })
-      .min(1, { message: t('common.required') })
-      .max(256, { message: t('login.password_too_long') }),
-    totpValue: z.string().optional(),
-  });
+interface MenuBarFooterProps {
+  isCollapsed: boolean;
+}
 
-export default getLoginFormSchema;
+type FooterComponent = ComponentType<MenuBarFooterProps>;
+
+const MENU_BAR_FOOTER_REGISTRY: Partial<Record<string, FooterComponent>> = {
+  [APPS.FILE_SHARING]: MenuBarQuota,
+};
+
+interface Props {
+  appName: string;
+  isCollapsed: boolean;
+}
+
+const MenuBarFooter: React.FC<Props> = ({ appName, isCollapsed }) => {
+  const FooterComponent = MENU_BAR_FOOTER_REGISTRY[appName];
+
+  if (!FooterComponent) {
+    return null;
+  }
+
+  return <FooterComponent isCollapsed={isCollapsed} />;
+};
+
+export default MenuBarFooter;
