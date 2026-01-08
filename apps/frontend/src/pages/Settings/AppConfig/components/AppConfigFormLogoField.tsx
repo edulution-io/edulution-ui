@@ -11,7 +11,7 @@
  */
 
 import { toast } from 'sonner';
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useRef, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import ThemeType from '@libs/common/types/themeType';
@@ -27,9 +27,6 @@ export type AppConfigFormLogoFieldProps = {
   fieldPath: string;
   option: AppConfigExtendedOption;
   form: UseFormReturn<ThemedFile>;
-  error?: Error | null;
-  isLoading?: boolean;
-  customLogoExists?: boolean;
 };
 
 const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
@@ -38,11 +35,8 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
   fieldPath,
   option,
   form,
-  error,
-  isLoading,
-  customLogoExists = false,
 }) => {
-  const { uploadImageFile, deleteImageFile, doesCustomImageExist } = FilesystemStore();
+  const { uploadImageFile, deleteImageFile, uploadingVariant } = FilesystemStore();
 
   const { t } = useTranslation();
 
@@ -59,10 +53,6 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
     () => (logoImageUrl?.includes('?') ? `${logoImageUrl}&t=${keyValue}` : `${logoImageUrl}?t=${keyValue}`),
     [appName, variant, logoImageUrl, keyValue],
   );
-
-  useEffect(() => {
-    void doesCustomImageExist(appName, filename, variant);
-  }, []);
 
   const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] ?? null;
@@ -104,15 +94,12 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
         variant={variant}
         inputRef={inputRef}
         previewSrc={previewSrc}
-        hasLocalSelection={customLogoExists}
         onFileChange={onFileChange}
         chooseText={t(`common.chooseFile`)}
         changeText={t(`common.changeFile`)}
         onHandleReset={onHandleReset}
-        hasCustomLogo={customLogoExists}
-        uploading={isLoading}
+        uploading={uploadingVariant === variant}
       />
-      {error && <p className="text-sm text-red-600">{error.message}</p>}
     </div>
   );
 };

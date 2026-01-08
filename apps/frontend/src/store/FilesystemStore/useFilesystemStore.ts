@@ -23,7 +23,6 @@ import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
-import THEME from '@libs/common/constants/theme';
 import ThemeType from '@libs/common/types/themeType';
 import convertImageFileToWebp from '@libs/common/utils/convertImageFileToWebp';
 import getMainLogoFilename from '@libs/filesharing/utils/getMainLogoFilename';
@@ -41,21 +40,9 @@ interface FilesystemStore {
     appName?: string,
     variant?: ThemeType,
   ) => Promise<boolean>;
-  processingLogoLightTheme: boolean;
-  processingLogoDarkTheme: boolean;
-  setProcessingLogo: (variant: ThemeType, exists: boolean) => void;
 
   uploadingVariant: ThemeType | null;
   uploadVariant: (variant: ThemeType, file: File) => Promise<void>;
-
-  customLogoLightThemedExists: boolean;
-  customLogoDarkThemedExists: boolean;
-  setCustomLogoExists: (variant: ThemeType, exists: boolean) => void;
-  doesCustomImageExist: (appName: string, fileName: string, variant: ThemeType) => Promise<void>;
-
-  errorLightThemed: Error | null;
-  errorDarkThemed: Error | null;
-  setError: (variant: ThemeType, error: Error | null) => void;
 
   error: Error | null;
   reset: () => void;
@@ -64,12 +51,6 @@ interface FilesystemStore {
 const initialState = {
   darkVersion: 0,
   uploadingVariant: null,
-  processingLogoLightTheme: false,
-  processingLogoDarkTheme: false,
-  customLogoLightThemedExists: false,
-  customLogoDarkThemedExists: false,
-  errorLightThemed: null,
-  errorDarkThemed: null,
   error: null,
 };
 
@@ -81,22 +62,15 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
       darkVersion: typeof version === 'function' ? version(state.darkVersion) : version,
     })),
 
-  deleteImageFile: async (appName: string, fileName: string, variant: ThemeType = THEME.dark): Promise<boolean> => {
-    const { setError, setCustomLogoExists, setProcessingLogo } = get();
-    setError(variant, null);
-    setProcessingLogo(variant, true);
+  deleteImageFile: async (appName: string, fileName: string): Promise<boolean> => {
+    set({ error: null });
     try {
       const url = `${EDU_API_CONFIG_ENDPOINTS.FILES}/public/assets/${appName}/${fileName}`;
       await eduApi.delete<void>(url);
-      setCustomLogoExists(variant, false);
       return true;
     } catch (e) {
-      setCustomLogoExists(variant, true);
-      setError(variant, e as Error);
       handleApiError(e, set);
       return false;
-    } finally {
-      setProcessingLogo(variant, false);
     }
   },
 
@@ -105,11 +79,9 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
     filename: string,
     file: File | Blob,
     appName?: string,
-    variant: ThemeType = THEME.dark,
+    variant?: ThemeType,
   ): Promise<boolean> => {
-    const { setError, setCustomLogoExists, setProcessingLogo } = get();
-    setError(variant, null);
-    setProcessingLogo(variant, true);
+    set({ uploadingVariant: variant, error: null });
     try {
       const form = new FormData();
       form.append('destination', destination);
@@ -133,15 +105,12 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
 
       const endpoint = appName ? `${EDU_API_CONFIG_ENDPOINTS.FILES}/${appName}` : `${EDU_API_CONFIG_ENDPOINTS.FILES}`;
       await eduApi.post<void>(endpoint, form);
-      setCustomLogoExists(variant, true);
       return true;
     } catch (e) {
-      setCustomLogoExists(variant, false);
-      setError(variant, e as Error);
       handleApiError(e, set);
       return false;
     } finally {
-      setProcessingLogo(variant, false);
+      set({ uploadingVariant: null });
     }
   },
 
@@ -154,41 +123,6 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
       handleApiError(e, set);
     } finally {
       set({ uploadingVariant: null });
-    }
-  },
-
-  setCustomLogoExists: (variant: ThemeType, exists: boolean) => {
-    if (variant === THEME.dark) {
-      set({ customLogoDarkThemedExists: exists });
-    } else {
-      set({ customLogoLightThemedExists: exists });
-    }
-  },
-
-  doesCustomImageExist: async (appName: string, fileName: string, variant: ThemeType = THEME.dark): Promise<void> => {
-    const { setCustomLogoExists } = get();
-    try {
-      const url = `${EDU_API_CONFIG_ENDPOINTS.FILES}/public/assets/${appName}/${fileName}`;
-      await eduApi.get<File>(url);
-      setCustomLogoExists(variant, true);
-    } catch (e) {
-      setCustomLogoExists(variant, false);
-    }
-  },
-
-  setProcessingLogo: (variant: ThemeType, state: boolean) => {
-    if (variant === THEME.dark) {
-      set({ processingLogoDarkTheme: state });
-    } else {
-      set({ processingLogoLightTheme: state });
-    }
-  },
-
-  setError: (variant: ThemeType, error: Error | null) => {
-    if (variant === THEME.dark) {
-      set({ errorDarkThemed: error });
-    } else {
-      set({ errorLightThemed: error });
     }
   },
 

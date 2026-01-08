@@ -16,7 +16,6 @@ import THEME from '@libs/common/constants/theme';
 import ThemedFile from '@libs/common/types/themedFile';
 import AppConfigFormLogoField from '@/pages/Settings/AppConfig/components/AppConfigFormLogoField';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
-import FilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
 
 export type AppConfigFormDarkAndLightLogoFieldProps = {
   settingLocation: string;
@@ -30,40 +29,23 @@ const AppConfigFormDarkAndLightLogoField: React.FC<AppConfigFormDarkAndLightLogo
   fieldPath,
   option,
   form,
-}) => {
-  const {
-    customLogoLightThemedExists,
-    customLogoDarkThemedExists,
-    errorLightThemed,
-    errorDarkThemed,
-    processingLogoLightTheme,
-    processingLogoDarkTheme,
-  } = FilesystemStore();
-
-  return (
-    <div className="flex flex-grow flex-col gap-4 lg:flex-row">
-      <AppConfigFormLogoField
-        variant={THEME.light}
-        appName={settingLocation}
-        fieldPath={fieldPath}
-        option={option}
-        form={form}
-        customLogoExists={customLogoLightThemedExists}
-        error={errorLightThemed}
-        isLoading={processingLogoLightTheme}
-      />
-      <AppConfigFormLogoField
-        variant={THEME.dark}
-        appName={settingLocation}
-        fieldPath={fieldPath}
-        option={option}
-        form={form}
-        customLogoExists={customLogoDarkThemedExists}
-        error={errorDarkThemed}
-        isLoading={processingLogoDarkTheme}
-      />
-    </div>
-  );
-};
+}) => (
+  <div className="flex flex-grow flex-col gap-4 lg:flex-row">
+    <AppConfigFormLogoField
+      variant={THEME.light}
+      appName={settingLocation}
+      fieldPath={fieldPath}
+      option={option}
+      form={form}
+    />
+    <AppConfigFormLogoField
+      variant={THEME.dark}
+      appName={settingLocation}
+      fieldPath={fieldPath}
+      option={option}
+      form={form}
+    />
+  </div>
+);
 
 export default AppConfigFormDarkAndLightLogoField;
