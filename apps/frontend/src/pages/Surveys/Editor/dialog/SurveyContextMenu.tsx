@@ -48,7 +48,12 @@ const SurveyContextMenu = (props: SurveyContextMenuProps) => {
     />
   );
 
-  const footer = <DialogFooterButtons handleClose={handleClose} />;
+  const footer = (
+    <DialogFooterButtons
+      handleClose={handleClose}
+      cancelButtonText={t('common.close')}
+    />
+  );
 
   return (
     <AdaptiveDialog
