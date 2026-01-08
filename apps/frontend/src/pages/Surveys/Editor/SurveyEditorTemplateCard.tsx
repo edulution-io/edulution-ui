@@ -99,10 +99,10 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
       className={cn(
         GRID_CARD,
         'relative flex h-36 cursor-pointer pt-2',
-        { 'bg-muted-background text-muted-foreground': !active },
+        { 'opacity-50': !active },
         { 'pt-8': !description },
         {
-          ' sd:min-w-[14rem] w-[calc(100%-2rem)] min-w-[calc(100%-2rem)] max-w-[24rem] md:min-w-[18rem]': isSuperAdmin,
+          'sd:min-w-[14rem] w-[calc(100%-2rem)] min-w-[calc(100%-2rem)] max-w-[24rem] md:min-w-[18rem]': isSuperAdmin,
         },
       )}
       variant="text"
