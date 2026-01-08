@@ -17,21 +17,46 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { isValidElement } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import NativeAppHeaderProps from '@libs/ui/types/NativeAppHeaderProps';
 import getAppIconClassName from '@/utils/getAppIconClassName';
 import cn from '@libs/common/utils/className';
 
 const NativeAppHeader = ({ title, iconSrc, description }: NativeAppHeaderProps) => {
   const { t } = useTranslation();
+
+  const renderIcon = () => {
+    if (isValidElement(iconSrc)) {
+      return iconSrc;
+    }
+
+    if (typeof iconSrc === 'string') {
+      const iconClassName = getAppIconClassName(iconSrc);
+      const baseClassName = cn('hidden h-20 w-20 object-contain md:block', iconClassName);
+      return (
+        <img
+          src={iconSrc}
+          alt={`${title} ${t('common.icon')}`}
+          className={baseClassName}
+        />
+      );
+    }
+
+    const iconClassName = getAppIconClassName(iconSrc);
+    const baseClassName = cn('hidden h-20 w-20 object-contain md:block', iconClassName);
+    return (
+      <FontAwesomeIcon
+        icon={iconSrc}
+        className={cn(baseClassName, 'scale-75')}
+      />
+    );
+  };
+
   return (
     <div className="mr-2 flex min-h-[6.25rem] pl-2 md:pl-4 xl:max-h-[6.25rem]">
-      <img
-        src={iconSrc}
-        alt={`${title} ${t('common.icon')}`}
-        className={cn('hidden h-20 w-20 object-contain md:block', getAppIconClassName(iconSrc))}
-      />
+      {renderIcon()}
       <div className="ml-4">
         <h1>{title}</h1>
         <div className="pt-5 sm:pt-0">{description && <p className="pb-4">{description}</p>}</div>

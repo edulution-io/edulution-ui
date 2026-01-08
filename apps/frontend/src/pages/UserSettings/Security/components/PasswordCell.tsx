@@ -18,12 +18,11 @@
  */
 
 import React, { useState } from 'react';
-import { MdFileCopy } from 'react-icons/md';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faCopy, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import { decryptPassword } from '@libs/common/utils/encryptPassword';
 import copyToClipboard from '@/utils/copyToClipboard';
@@ -129,7 +128,7 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
       type="button"
       onClickCapture={() => handleCopyPassword()}
     >
-      <MdFileCopy />
+      <FontAwesomeIcon icon={faCopy} />
     </button>
   );
 

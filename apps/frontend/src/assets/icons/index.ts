@@ -23,11 +23,9 @@ export { default as LearningManagementIcon } from '@/assets/icons/edulution/edu_
 export { default as FileSharingIcon } from '@/assets/icons/edulution/edu_Dateien.svg';
 export { default as DesktopDeploymentIcon } from '@/assets/icons/edulution/edu_Desktop.svg';
 export { default as MailIcon } from '@/assets/icons/edulution/edu_E-Mail.svg';
-export { default as CloudIcon } from '@/assets/icons/fontawsome/cloud.svg';
 export { default as Dashboard } from '@/assets/icons/edulution/edu_Dashboard.svg';
 export { default as UserDetailsSettingsIcon } from '@/assets/icons/edulution/edu_Benutzeroberfläche.svg';
 export { default as SettingsIcon } from '@/assets/icons/edulution/edu_Einstellungen.svg';
-export { default as PlusIcon } from '@/assets/icons/fontawsome/plus.svg';
 export { default as TicketSystemIcon } from '@/assets/icons/edulution/edu_Ticketsystem.svg';
 export { default as ClassManagementIcon } from '@/assets/icons/edulution/edu_Klassenraum.svg';
 export { default as MobileDevicesIcon } from '@/assets/icons/edulution/edu_Phone.svg';
