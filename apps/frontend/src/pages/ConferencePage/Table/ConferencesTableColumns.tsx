@@ -21,7 +21,7 @@ import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { LockClosedIcon } from '@radix-ui/react-icons';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
 import { MdLogin, MdPending, MdPlayArrow, MdStop } from 'react-icons/md';
 import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
@@ -93,7 +93,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
           }
         : () => row.toggleSelected();
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={onClick}
           icon={isRunning ? <MdLogin /> : undefined}
           text={name}
@@ -119,7 +119,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
       const isUserTheCreator = user?.username === username;
       const { setSelectedConference } = useConferenceDetailsDialogStore();
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={
             isUserTheCreator
               ? () => {
@@ -174,7 +174,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
       const { username } = row.original.creator;
       const isUserTheCreator = user?.username === username;
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={
             isUserTheCreator
               ? () => {
@@ -214,7 +214,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
       const groupsCount = row.original.invitedGroups?.length;
       const groupsText = `${groupsCount ? `, ${groupsCount} ${t(groupsCount === 1 ? 'common.group' : 'common.groups')}` : ''}`;
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={
             isUserTheCreator
               ? () => {
@@ -236,7 +236,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
       translationId: 'conferences.joinedAttendees',
     },
     accessorFn: (row) => row.joinedAttendees.length,
-    cell: ({ row }) => <SelectableTextCell text={`${row.original.joinedAttendees.length || '-'}`} />,
+    cell: ({ row }) => <SelectableCell text={`${row.original.joinedAttendees.length || '-'}`} />,
   },
   {
     id: CONFERENCES_TABLE_COLUMNS.CONFERENCE_ACTION_BUTTON,
@@ -282,7 +282,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
             await getConferences();
           };
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={isUserTheCreator || isRunning ? onClick : undefined}
           icon={icon}
           text={text}

@@ -23,7 +23,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { EyeDarkIcon, EyeDarkSlashIcon, EyeLightIcon, EyeLightSlashIcon } from '@/assets/icons';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import { decryptPassword } from '@libs/common/utils/encryptPassword';
 import copyToClipboard from '@/utils/copyToClipboard';
 import Input from '@/components/shared/Input';
@@ -161,7 +161,7 @@ const PasswordCell: React.FC<PasswordCellProps> = ({ accountPassword, isInput = 
             variant="dialog"
           />
         ) : (
-          <SelectableTextCell
+          <SelectableCell
             onClick={() => handleCopyPassword()}
             text={isVisible ? password : placeholder}
             className="min-w-28 cursor-pointer"

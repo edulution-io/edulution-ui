@@ -18,7 +18,7 @@
  */
 
 import React from 'react';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import { PiEyeLight, PiEyeSlash } from 'react-icons/pi';
 import { useTranslation } from 'react-i18next';
 
@@ -38,7 +38,7 @@ const OpenShareQRDialogTextCell = ({
   const { t } = useTranslation();
 
   return (
-    <SelectableTextCell
+    <SelectableCell
       className={className}
       onClick={isPublic ? () => openDialog() : undefined}
       text={t(`${textTranslationId}.${isPublic ? 'isPublicTrue' : 'isPublicFalse'}`)}

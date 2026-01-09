@@ -21,6 +21,7 @@ import React, { useEffect, useRef, memo, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import FileIconComponent from './FileIconComponent';
 import useThumbnailCache from './useThumbnailCache';
+import useFileSharingStore from '../useFileSharingStore';
 
 interface FileThumbnailProps {
   filePath: string;
@@ -29,7 +30,9 @@ interface FileThumbnailProps {
 }
 
 const FileThumbnail = memo(({ filePath, etag, size }: FileThumbnailProps) => {
-  const { webdavShare } = useParams();
+  const { webdavShare: webdavShareParam } = useParams();
+  const selectedWebdavShare = useFileSharingStore((s) => s.selectedWebdavShare);
+  const webdavShare = webdavShareParam || selectedWebdavShare;
 
   const cacheKey = useMemo(() => `${filePath}:${etag}`, [filePath, etag]);
 

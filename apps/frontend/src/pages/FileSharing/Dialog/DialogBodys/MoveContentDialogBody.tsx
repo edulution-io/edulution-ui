@@ -144,7 +144,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   const columns: ColumnDef<DirectoryFileDTO>[] = getFileSharingTableColumns(visibleColumns, onFilenameClick);
 
   return (
-    <div className="space-y-2">
+    <div className="w-full min-w-0 space-y-2 overflow-hidden">
       <WebdavShareSelectDropdown
         webdavShare={webdavShare}
         showRootOnly={showRootOnly}
@@ -158,7 +158,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
         showTitle={false}
       />
       <div className="w-full">{isLoading ? <HorizontalLoader /> : <div className="h-1" />}</div>
-      <div className="h-[45vh] max-h-[45vh]">
+      <div className="h-[45vh] max-h-[45vh] min-w-0 overflow-y-auto overflow-x-hidden">
         <ScrollableTable
           columns={columns}
           data={files}

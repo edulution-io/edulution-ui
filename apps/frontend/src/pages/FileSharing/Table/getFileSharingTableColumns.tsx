@@ -28,7 +28,7 @@ import {
 } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import { useSearchParams } from 'react-router-dom';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 import FileThumbnail from '@/pages/FileSharing/utilities/FileThumbnail';
@@ -166,8 +166,8 @@ const getFileSharingTableColumns = (
         const isSaving = currentlyDisabledFiles[row.original.filename];
 
         return (
-          <div className={`w-full ${isSaving ? 'pointer-events-none opacity-50' : ''}`}>
-            <SelectableTextCell
+          <div className={`min-w-0 max-w-full overflow-hidden ${isSaving ? 'pointer-events-none opacity-50' : ''}`}>
+            <SelectableCell
               icon={renderFileIcon(row.original, isCurrentlyDisabled)}
               row={row}
               text={row.original.filename}

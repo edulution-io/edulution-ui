@@ -20,7 +20,7 @@
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import { FaEyeSlash } from 'react-icons/fa';
 import { IoEyeSharp } from 'react-icons/io5';
 import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
@@ -87,7 +87,7 @@ const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDt
       };
 
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={handleRowClick}
           text={row.original.name}
         />
@@ -111,7 +111,7 @@ const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDt
         setDialogOpen(ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE);
       };
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={handleRowClick}
           text={t(
             `bulletinboard.categories.${BULLETIN_VISIBILITY_STATES[row.original.bulletinVisibility || BULLETIN_VISIBILITY_STATES.FULLY_VISIBLE]}-short`,
@@ -136,7 +136,7 @@ const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDt
         setDialogOpen(ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE);
       };
       return (
-        <SelectableTextCell
+        <SelectableCell
           icon={
             row.original.isActive ? <IoEyeSharp className="text-green-500" /> : <FaEyeSlash className="text-red-500" />
           }
@@ -161,7 +161,7 @@ const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDt
         setDialogOpen(ExtendedOptionKeys.BULLETIN_BOARD_CATEGORY_TABLE);
       };
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={handleRowClick}
           text={new Date(row.original.createdAt).toLocaleDateString()}
         />

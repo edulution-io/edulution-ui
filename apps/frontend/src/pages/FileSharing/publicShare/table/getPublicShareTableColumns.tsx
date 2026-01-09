@@ -21,7 +21,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import PUBLIC_SHARED_FILES_TABLE_COLUMN from '@libs/filesharing/constants/publicSharedFilesTableColumn';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import React from 'react';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import formatIsoDateToLocaleString from '@libs/common/utils/Date/formatIsoDateToLocaleString';
 import { LockClosedIcon } from '@radix-ui/react-icons';
@@ -54,7 +54,7 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
     cell: ({ row }) => {
       const { filename } = row.original;
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={() => {}}
           text={filename}
           row={row}
@@ -80,7 +80,7 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
     cell: ({ row }) => {
       const { createdAt } = row.original;
       return (
-        <SelectableTextCell
+        <SelectableCell
           text={formatIsoDateToLocaleString(createdAt?.toLocaleString())}
           className="min-w-32"
         />
@@ -108,7 +108,7 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
         timeStyle: 'short',
       });
       return (
-        <SelectableTextCell
+        <SelectableCell
           text={validUntil}
           className="min-w-32"
         />
@@ -130,7 +130,7 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
     cell: ({ row }) => {
       const { password } = row.original;
       return (
-        <SelectableTextCell
+        <SelectableCell
           className="min-w-20"
           text={'*'.repeat(password?.length || 0)}
           icon={
@@ -161,7 +161,7 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
 
       if (attendeeCount === 0 && groupsCount === 0) {
         return (
-          <SelectableTextCell
+          <SelectableCell
             icon={<Globe size={BUTTONS_ICON_WIDTH} />}
             text={t('filesharing.publicFileSharing.publiclyAccessible')}
             onClick={() => {}}
@@ -177,7 +177,7 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
         groupsCount > 0 ? `, ${groupsCount} ${t(groupsCount === 1 ? 'common.group' : 'common.groups')}` : '';
 
       return (
-        <SelectableTextCell
+        <SelectableCell
           text={`${attendeeText}${groupsText}`}
           onClick={() => {}}
         />

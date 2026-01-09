@@ -22,7 +22,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { useLocation } from 'react-router-dom';
 import i18n from '@/i18n';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import { formatBytes, getElapsedTime } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
@@ -55,7 +55,7 @@ const FileTableColumns: ColumnDef<FileInfoDto>[] = [
       translationId: 'common.select',
     },
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         row={row}
         className="max-w-0"
       />
@@ -71,7 +71,7 @@ const FileTableColumns: ColumnDef<FileInfoDto>[] = [
 
     accessorFn: (row) => row.filename,
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         icon={renderFileIcon(row.original)}
         text={row.original.filename}
         onClick={() => row.toggleSelected()}
@@ -90,7 +90,7 @@ const FileTableColumns: ColumnDef<FileInfoDto>[] = [
         fileSize = row.original.size;
       }
       return (
-        <SelectableTextCell
+        <SelectableCell
           text={formatBytes(fileSize)}
           onClick={() => row.toggleSelected()}
         />
@@ -107,7 +107,7 @@ const FileTableColumns: ColumnDef<FileInfoDto>[] = [
 
     accessorFn: (row) => row.type,
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         text={row.original.type}
         onClick={() => row.toggleSelected()}
       />
@@ -125,7 +125,7 @@ const FileTableColumns: ColumnDef<FileInfoDto>[] = [
       const formattedDate = getElapsedTime(date);
 
       return (
-        <SelectableTextCell
+        <SelectableCell
           text={formattedDate}
           onClick={() => row.toggleSelected()}
         />
@@ -151,7 +151,7 @@ const FileTableColumns: ColumnDef<FileInfoDto>[] = [
           <ActionTooltip
             tooltipText={i18n.t('common.copy.url')}
             trigger={
-              <SelectableTextCell
+              <SelectableCell
                 text={<IoLink size={TABLE_ICON_SIZE} />}
                 onClick={() => copyToClipboard(fileUrl, toasterTranslationIds)}
               />
