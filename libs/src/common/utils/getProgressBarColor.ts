@@ -17,21 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { EditIcon } from '@libs/common/constants/standardActionIcons';
-import WindowControlBaseButton from './WindowControlBaseButton';
+import QuotaThresholdPercent from '@libs/filesharing/constants/quotaThresholdPercent';
 
-interface EditButtonProps {
-  onClick: () => Promise<void> | void;
-}
+const getProgressBarColor = (percentageUsed: number): string => {
+  if (percentageUsed <= QuotaThresholdPercent.WARNING) {
+    return 'bg-ciLightGreen';
+  }
+  if (percentageUsed <= QuotaThresholdPercent.CRITICAL) {
+    return 'bg-yellow-500';
+  }
+  return 'bg-ciRed';
+};
 
-const EditButton = ({ onClick }: EditButtonProps) => (
-  <WindowControlBaseButton
-    onClick={onClick}
-    tooltipTranslationId="common.edit"
-  >
-    <EditIcon />
-  </WindowControlBaseButton>
-);
-
-export default EditButton;
+export default getProgressBarColor;

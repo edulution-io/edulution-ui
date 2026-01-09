@@ -23,10 +23,16 @@ import cn from '@libs/common/utils/className';
 interface TextPreviewProps {
   content: string;
   className?: string;
+  contentId?: string;
 }
 
-const TextPreview = ({ content, className }: TextPreviewProps) => (
-  <pre className={cn('whitespace-pre-wrap break-words p-2 font-mono text-background', className)}>{content}</pre>
+const TextPreview = ({ content, className, contentId }: TextPreviewProps) => (
+  <pre
+    id={contentId}
+    className={cn('whitespace-pre-wrap break-words p-2 font-mono', className)}
+  >
+    {content}
+  </pre>
 );
 
 export default TextPreview;

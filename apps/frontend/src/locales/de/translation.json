@@ -53,6 +53,8 @@
     "confirmDelete_other": "Sollen diese {{count}} Mitteilungen wirklich gelöscht werden?",
     "rowsSelected": "{{selected}} von {{total}} Mitteilungen ausgewählt",
     "rowSelected": "{{selected}} von {{total}} Mitteilung ausgewählt",
+    "item": "{{count}} Mitteilung",
+    "items": "{{count}} Mitteilungen",
     "cancel": "Abbrechen",
     "title": "Titel",
     "content": "Inhalt",
@@ -127,6 +129,7 @@
       "globalQuota": "Cloudquota berechnet ",
       "mailQuota": "E-Mailquota berechnet",
       "mibibyte": "MiB",
+      "gbUsed": "{{used}} / {{total}} GB belegt",
       "remainingLow": "Verbleibendes Quota gering – {{free}} %",
       "remainingVeryLow": "Verbleibendes Quota sehr gering – {{free}} %"
     }
@@ -195,6 +198,8 @@
     "encryption": "Verschlüsselung",
     "rowSelected": "{{selected}} von {{total}} Job ausgewählt",
     "rowsSelected": "{{selected}} von {{total}} Jobs ausgewählt",
+    "item": "{{count}} Job",
+    "items": "{{count}} Jobs",
     "themeUpdated": {
       "generic": "Das Mail-Theme wurde aktualisiert. Bitte lade die Seite neu, um die Änderungen zu übernehmen.",
       "failed": "Das Mail-Theme konnte nicht aktualisiert werden."
@@ -295,6 +300,8 @@
     "private": "Privat",
     "rowsSelected": "{{selected}} von {{total}} Konferenzen ausgewählt",
     "rowSelected": "{{selected}} von {{total}} Konferenz ausgewählt",
+    "item": "{{count}} Konferenz",
+    "items": "{{count}} Konferenzen",
     "cancel": "Abbrechen",
     "password_required": "Kein Passwort eingegeben",
     "error": "Fehler",
@@ -333,12 +340,15 @@
     "sidebar": "Dateien",
     "previewTitle": "Dateivorschau",
     "saveFile": "Datei speichern",
+    "print": "Drucken",
     "fileEditor": "Datei Editor",
     "filePreview": "Dateivorschau",
     "closeEditor": "Editor schließen",
     "loadingDocument": "Dokument wird geladen...",
     "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt",
     "rowSelected": "{{selected}} von {{total}} Datei ausgewählt",
+    "item": "{{count}} Element",
+    "items": "{{count}} Elemente",
     "fileWithSameNameAlreadyExists": "Eine Datei mit diesem Namen existiert bereits.",
     "folderWithSameNameAlreadyExists": "Ein Ordner mit diesem Namen existiert bereits.",
     "currentName": "Aktueller Name",
@@ -805,6 +815,8 @@
   "surveys": {
     "rowsSelected": "{{selected}} von {{total}} Umfragen ausgewählt",
     "rowSelected": "{{selected}} von {{total}} Umfrage ausgewählt",
+    "item": "{{count}} Umfrage",
+    "items": "{{count}} Umfragen",
     "confirmDelete": "Soll diese Umfrage wirklich gelöscht werden?",
     "confirmDelete_other": "Sollen diese {{count}} Umfragen wirklich gelöscht werden?",
     "deleteSurveys_other": "Lösche {{count}} Umfragen",
@@ -1150,7 +1162,9 @@
           "uploadSuccess": "Dateien erfolgreich hochgeladen",
           "uploadFailed": "Hochladen fehlgeschlagen",
           "rowSelected": "{{selected}} von {{total}} Dateien ausgewählt",
-          "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt"
+          "rowsSelected": "{{selected}} von {{total}} Dateien ausgewählt",
+          "item": "{{count}} Element",
+          "items": "{{count}} Elemente"
         },
         "editor": {
           "title": "Editor",
@@ -1194,6 +1208,8 @@
     },
     "rowsSelected": "{{selected}} von {{total}} Container ausgewählt",
     "rowSelected": "{{selected}} von {{total}} Container ausgewählt",
+    "item": "{{count}} Container",
+    "items": "{{count}} Container",
     "license": {
       "title": "Lizenzübersicht",
       "customerId": "Kunden-Nr",
@@ -1219,6 +1235,8 @@
     "sidebar": "Mein Profil",
     "rowSelected": "{{selected}} von {{total}} Konten ausgewählt",
     "rowsSelected": "{{selected}} von {{total}} Konten ausgewählt",
+    "item": "{{count}} Konto",
+    "items": "{{count}} Konten",
     "details": {
       "title": "Benutzerdetails",
       "description": "Hier kannst du Benutzerdaten einsehen und teilweise bearbeiten.",
@@ -1484,6 +1502,7 @@
     "select": "Wählen...",
     "none": "Keine",
     "edit": "Bearbeiten",
+    "view": "Ansehen",
     "participate": "Teilnehmen",
     "participated": "Teilgenommen",
     "not-available": "Nicht verfügbar",
