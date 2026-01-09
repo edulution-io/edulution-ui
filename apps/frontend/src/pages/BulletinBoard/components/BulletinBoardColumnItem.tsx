@@ -22,7 +22,7 @@ import React, { useEffect } from 'react';
 import { Button } from '@/components/shared/Button';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
+import { faChevronRight, faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
 import { useTranslation } from 'react-i18next';
@@ -35,7 +35,6 @@ import cn from '@libs/common/utils/className';
 import BulletinContent from '@/pages/BulletinBoard/components/BulletinContent/BulletinContent';
 import BULLETIN_VISIBILITY_STATES from '@libs/bulletinBoard/constants/bulletinVisibilityStates';
 import BulletinVisibilityStatesType from '@libs/bulletinBoard/types/bulletinVisibilityStatesType';
-import { ChevronRightIcon } from '@radix-ui/react-icons';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const BulletinBoardColumnItem = ({
@@ -218,7 +217,8 @@ const BulletinBoardColumnItem = ({
             className="flex items-start space-x-2 text-left hover:opacity-75"
             onClick={() => toggleCollapsed(bulletin.id)}
           >
-            <ChevronRightIcon
+            <FontAwesomeIcon
+              icon={faChevronRight}
               className={cn('mt-1 h-3 w-3 flex-shrink-0 transition-transform duration-200', {
                 'rotate-90': !isCollapsed,
               })}

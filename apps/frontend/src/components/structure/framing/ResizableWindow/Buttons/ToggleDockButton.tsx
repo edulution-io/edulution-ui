@@ -18,9 +18,8 @@
  */
 
 import React from 'react';
-import { BiSolidDockRight } from 'react-icons/bi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faWindowRestore } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRightToBracket, faWindowRestore } from '@fortawesome/free-solid-svg-icons';
 import WindowControlBaseButton from './WindowControlBaseButton';
 
 interface ToggleDockButtonProps {
@@ -33,7 +32,7 @@ const ToggleDockButton = ({ onClick, isDocked }: ToggleDockButtonProps) => (
     onClick={onClick}
     tooltipTranslationId={isDocked ? 'common.undock' : 'common.dock'}
   >
-    {isDocked ? <FontAwesomeIcon icon={faWindowRestore} /> : <BiSolidDockRight size={16} />}
+    {isDocked ? <FontAwesomeIcon icon={faWindowRestore} /> : <FontAwesomeIcon icon={faArrowRightToBracket} />}
   </WindowControlBaseButton>
 );
 

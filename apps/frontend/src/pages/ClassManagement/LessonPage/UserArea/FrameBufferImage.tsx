@@ -20,8 +20,7 @@
 import React, { useEffect, useState } from 'react';
 import { useInterval } from 'usehooks-ts';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBorderNone } from '@fortawesome/free-solid-svg-icons';
-import { TbKeyboardOff } from 'react-icons/tb';
+import { faBorderNone, faKeyboard } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
@@ -89,7 +88,10 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ areInputDevicesLock
 
           {areInputDevicesLocked && (
             <div className="group absolute left-1 top-1">
-              <TbKeyboardOff className="h-5 w-5 text-ciRed" />
+              <FontAwesomeIcon
+                icon={faKeyboard}
+                className="h-5 w-5 text-ciRed"
+              />
             </div>
           )}
 

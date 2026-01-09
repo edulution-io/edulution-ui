@@ -25,7 +25,7 @@ import { useTranslation } from 'react-i18next';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { CalendarIcon } from '@radix-ui/react-icons';
+import { faCalendarDays } from '@fortawesome/free-solid-svg-icons';
 import { inputVariants } from '@libs/ui/constants/commonClassNames';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
 import cn from '@libs/common/utils/className';
@@ -181,7 +181,10 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
                       }}
                       visibility={fieldValue ? 'visible' : 'hidden'}
                     />
-                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50 hover:opacity-100" />
+                    <FontAwesomeIcon
+                      icon={faCalendarDays}
+                      className="ml-auto h-4 w-4 opacity-50 hover:opacity-100"
+                    />
                   </Button>
                 </FormControl>
               </PopoverTrigger>
