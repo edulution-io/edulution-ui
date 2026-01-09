@@ -19,7 +19,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { useInterval } from 'usehooks-ts';
-import { MdCropFree } from 'react-icons/md';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBorderNone } from '@fortawesome/free-solid-svg-icons';
 import { TbKeyboardOff } from 'react-icons/tb';
 import { useTranslation } from 'react-i18next';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
@@ -104,7 +105,7 @@ const FrameBufferImage: React.FC<FrameBufferImageProps> = ({ areInputDevicesLock
                   width="w-6"
                 />
               ) : (
-                <MdCropFree />
+                <FontAwesomeIcon icon={faBorderNone} />
               )}
             </button>
           </div>

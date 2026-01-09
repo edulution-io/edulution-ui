@@ -19,7 +19,6 @@
 
 import React from 'react';
 import { ColumnDef, Row } from '@tanstack/react-table';
-import { FcFolder } from 'react-icons/fc';
 import {
   formatBytes,
   getElapsedTime,
@@ -44,7 +43,8 @@ import isImageExtension from '@libs/filesharing/utils/isImageExtension';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import useMedia from '@/hooks/useMedia';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
-import { faCloud } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCloud, faFolder } from '@fortawesome/free-solid-svg-icons';
 import IconWithCount from '@/components/shared/IconWithCount';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
@@ -83,7 +83,13 @@ const renderFileIcon = (item: DirectoryFileDTO, isCurrentlyDisabled: boolean) =>
       />
     );
   }
-  return <FcFolder size={TABLE_ICON_SIZE} />;
+  return (
+    <FontAwesomeIcon
+      icon={faFolder}
+      size="lg"
+      className="text-yellow-500"
+    />
+  );
 };
 
 const getFileSharingTableColumns = (

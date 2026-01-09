@@ -33,7 +33,8 @@ import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import { useParams } from 'react-router-dom';
 import ContentType from '@libs/filesharing/types/contentType';
-import { FcFolder } from 'react-icons/fc';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFolder } from '@fortawesome/free-solid-svg-icons';
 import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
 import FileThumbnail from '@/pages/FileSharing/utilities/FileThumbnail';
 import { TABLE_ICON_SIZE } from '@libs/ui/constants';
@@ -46,7 +47,12 @@ import useVariableSharePathname from '../hooks/useVariableSharePathname';
 
 const renderDragIcon = (file: DirectoryFileDTO) => {
   if (file.type === ContentType.DIRECTORY) {
-    return <FcFolder className="size-5 shrink-0" />;
+    return (
+      <FontAwesomeIcon
+        icon={faFolder}
+        className="size-5 shrink-0"
+      />
+    );
   }
 
   const extension = getFileExtension(file.filePath);

@@ -23,7 +23,6 @@ import { useTranslation } from 'react-i18next';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import GroupColumn from '@libs/groups/types/groupColumn';
 import UserGroups from '@libs/groups/types/userGroups.enum';
-import { MdGroups } from 'react-icons/md';
 import ClassList from '@/pages/ClassManagement/PasswordsPage/ClassList/ClassList';
 import getUserRegex from '@libs/lmnApi/constants/userRegex';
 import Input from '@/components/shared/Input';
@@ -64,11 +63,10 @@ const PrintPasswordsPage: React.FC = () => {
     schoolClass.member?.find((member) => (isSuperAdmin ? true : userRegex.test(member))) &&
     (schoolClass.cn.includes(filterKeyWord) || schoolClass.displayName.includes(filterKeyWord));
 
-  const groupRows: GroupColumn[] = [
+  const groupRows: Omit<GroupColumn, 'icon'>[] = [
     {
       name: UserGroups.Classes,
       translationId: 'myClasses',
-      icon: <MdGroups className="h-7 w-7" />,
       groups: userSchoolClasses.filter(filterSchoolClasses),
     },
   ];

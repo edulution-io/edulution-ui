@@ -25,7 +25,8 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import GroupColumn from '@libs/groups/types/groupColumn';
 import UserGroups from '@libs/groups/types/userGroups.enum';
-import { FaUsersGear } from 'react-icons/fa6';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUsersGear } from '@fortawesome/free-solid-svg-icons';
 import ProjectsFloatingButtonsBar from '@/pages/ClassManagement/ProjectsPage/ProjectsFloatingButtonsBar';
 import Input from '@/components/shared/Input';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
@@ -67,7 +68,12 @@ const ProjectsPage = () => {
       createFunction: createProject,
       updateFunction: updateProject,
       removeFunction: deleteProject,
-      icon: <FaUsersGear className="h-5 w-7" />,
+      icon: (
+        <FontAwesomeIcon
+          icon={faUsersGear}
+          className="h-7 w-7"
+        />
+      ),
       groups: userProjects.filter(filterProjects),
     },
   ];

@@ -28,13 +28,13 @@ import { BUTTONS_ICON_WIDTH } from '@libs/ui/constants';
 import { useTranslation } from 'react-i18next';
 import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 import copyToClipboard from '@/utils/copyToClipboard';
-import { faCopy, faLock } from '@fortawesome/free-solid-svg-icons';
+import { faCopy, faLock, faQrcode } from '@fortawesome/free-solid-svg-icons';
 import { DeleteIcon, EditIcon } from '@libs/common/constants/standardActionIcons';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
-import { LanguageIcon, QrCodeIcon } from '@/assets/icons';
+import { LanguageIcon } from '@/assets/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDto>[] => [
@@ -222,7 +222,7 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
                 onClick: () => copyToClipboard(url),
               },
               {
-                icon: QrCodeIcon,
+                icon: faQrcode,
                 onClick: () => {
                   setShare(row.original);
                   openDialog(PUBLIC_SHARE_DIALOG_NAMES.QR_CODE);

@@ -22,7 +22,7 @@ import { toast } from 'sonner';
 import useSseStore from '@/store/useSseStore';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { faUpload } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import APPLICATION_NAME from '@libs/common/constants/applicationName';
 
@@ -68,7 +68,7 @@ const useVersionChecker = () => {
         position: 'top-right',
         icon: (
           <FontAwesomeIcon
-            icon={faArrowUpFromBracket}
+            icon={faUpload}
             color="green"
           />
         ),
