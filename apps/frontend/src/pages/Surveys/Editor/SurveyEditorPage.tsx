@@ -23,7 +23,7 @@ import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { faFile, faRotateLeft, faFilePdf, faFileLines } from '@fortawesome/free-solid-svg-icons';
+import { faRotateLeft, faFilePdf, faFileLines, faFileCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -205,7 +205,7 @@ const SurveyEditorPage = () => {
         onClick: () => setIsOpenTemplateMenu(!isOpenTemplateMenu),
       },
       {
-        icon: faFile,
+        icon: faFileCirclePlus,
         text: t('survey.editor.new'),
         onClick: () => {
           handleReset();

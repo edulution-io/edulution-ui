@@ -18,10 +18,10 @@
  */
 
 import { t } from 'i18next';
-import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
+import { SaveIcon } from '@libs/common/constants/standardActionIcons';
 
 const SaveButton = (onClick: () => void, isVisible?: boolean) => ({
-  icon: faFloppyDisk,
+  icon: SaveIcon,
   text: t('common.save'),
   onClick,
   isVisible,

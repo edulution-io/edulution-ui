@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
+import { SaveIcon } from '@libs/common/constants/standardActionIcons';
 import WindowControlBaseButton from './WindowControlBaseButton';
 
 interface SaveButtonProps {
@@ -34,7 +34,7 @@ const SaveButton = ({ onClick, disabled }: SaveButtonProps) => (
     disabled={disabled}
   >
     <div className="relative">
-      <FontAwesomeIcon icon={faFloppyDisk} />
+      <FontAwesomeIcon icon={SaveIcon} />
       {!disabled && <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-ciLightBlue" />}
     </div>
   </WindowControlBaseButton>

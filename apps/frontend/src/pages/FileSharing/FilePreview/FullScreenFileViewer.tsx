@@ -36,7 +36,7 @@ import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import useFileEditorContentStore from '@/pages/FileSharing/FilePreview/useFileEditorContentStore';
 import isDrawioExtension from '@libs/filesharing/utils/isDrawioExtension';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
+import { SaveIcon } from '@libs/common/constants/standardActionIcons';
 import { Button } from '@/components/shared/Button';
 
 const FullScreenFileViewer = () => {
@@ -109,7 +109,7 @@ const FullScreenFileViewer = () => {
           className="absolute bottom-4 right-4 z-50"
           variant="btn-collaboration"
         >
-          <FontAwesomeIcon icon={faFloppyDisk} />
+          <FontAwesomeIcon icon={SaveIcon} />
           {isSaving ? t('filesharing.textEditor.saving') : t('common.save')}
         </Button>
       )}

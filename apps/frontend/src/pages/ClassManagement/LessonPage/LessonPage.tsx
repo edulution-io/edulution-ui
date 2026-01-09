@@ -27,7 +27,8 @@ import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDial
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import UserGroups from '@libs/groups/types/userGroups.enum';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClose, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
+import { SaveIcon } from '@libs/common/constants/standardActionIcons';
 import { DropdownSelect } from '@/components';
 import { CLASS_MANAGEMENT_LESSON_PATH } from '@libs/classManagement/constants/classManagementPaths';
 import { useTranslation } from 'react-i18next';
@@ -230,7 +231,7 @@ const LessonPage = () => {
                 {t(`classmanagement.${currentSelectedSession ? 'editSession' : 'saveSession'}`)}
               </span>
               <FontAwesomeIcon
-                icon={faFloppyDisk}
+                icon={SaveIcon}
                 className="ml-auto inline-block h-5 w-5 pr-2"
               />
             </Button>

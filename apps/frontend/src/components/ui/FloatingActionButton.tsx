@@ -47,7 +47,7 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
             >
               <FontAwesomeIcon
                 icon={icon}
-                className="m-4 h-6 w-6"
+                className="m-5 h-5 w-5"
               />
             </Button>
           }
@@ -65,7 +65,7 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
       >
         <FontAwesomeIcon
           icon={icon}
-          className="m-4 h-6 w-6"
+          className="m-5 h-5 w-5"
         />
       </Button>
     );

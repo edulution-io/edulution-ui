@@ -19,7 +19,7 @@
 
 import React, { FC, useState } from 'react';
 import { t } from 'i18next';
-import { faFile, faChevronDown, faChevronUp, faFolderPlus } from '@fortawesome/free-solid-svg-icons';
+import { faFile, faFileCirclePlus, faChevronDown, faChevronUp, faFolderPlus } from '@fortawesome/free-solid-svg-icons';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import UploadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/uploadButton';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
@@ -102,7 +102,7 @@ const FileActionNonSelect: FC<FileActionButtonProps> = ({ openDialog }) => {
     buttons: [
       {
         variant: 'dropdown',
-        icon: faFile,
+        icon: faFileCirclePlus,
         text: t('tooltip.create.file'),
         dropdownItems: fileTypesConfiguration,
       },

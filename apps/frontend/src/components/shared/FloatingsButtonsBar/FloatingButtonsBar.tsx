@@ -175,7 +175,7 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
           >
             <FontAwesomeIcon
               icon={isDropupOpen ? faChevronDown : faChevronUp}
-              className="m-4 h-6 w-6"
+              className="m-5 h-5 w-5"
             />
           </Button>
           <span className={FLOATING_BUTTON_CLASS_NAME}>{isDropupOpen ? t('common.less') : t('common.more')}</span>

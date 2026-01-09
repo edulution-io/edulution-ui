@@ -17,18 +17,20 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { faPlus, faPencil, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faPencil, faTrash, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 import STANDARD_ACTION_TYPES from './standardActionTypes';
 
 export const AddIcon = faPlus;
 export const EditIcon = faPencil;
 export const DeleteIcon = faTrash;
+export const SaveIcon = faFloppyDisk;
 
 const STANDARD_ACTION_ICONS = {
   [STANDARD_ACTION_TYPES.ADD]: AddIcon,
   [STANDARD_ACTION_TYPES.EDIT]: EditIcon,
   [STANDARD_ACTION_TYPES.ADD_OR_EDIT]: AddIcon,
   [STANDARD_ACTION_TYPES.DELETE]: DeleteIcon,
+  [STANDARD_ACTION_TYPES.SAVE]: SaveIcon,
 } as const;
 
 export default STANDARD_ACTION_ICONS;
