@@ -17,9 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useRef, memo, useMemo } from 'react';
+import React, { memo, useEffect, useMemo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import FileIconComponent from './FileIconComponent';
+import FileTypeIcon from './FileTypeIcon';
 import useThumbnailCache from './useThumbnailCache';
 import useFileSharingStore from '../useFileSharingStore';
 
@@ -65,7 +65,7 @@ const FileThumbnail = memo(({ filePath, etag, size }: FileThumbnailProps) => {
 
   if (failed) {
     return (
-      <FileIconComponent
+      <FileTypeIcon
         filename={filePath}
         size={size}
       />

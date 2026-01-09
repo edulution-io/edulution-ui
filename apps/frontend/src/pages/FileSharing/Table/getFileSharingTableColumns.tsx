@@ -19,7 +19,6 @@
 
 import React from 'react';
 import { ColumnDef, Row } from '@tanstack/react-table';
-import { FcFolder } from 'react-icons/fc';
 import {
   formatBytes,
   getElapsedTime,
@@ -30,18 +29,14 @@ import { useSearchParams } from 'react-router-dom';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableCell from '@/components/ui/Table/SelectableCell';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
-import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
-import FileThumbnail from '@/pages/FileSharing/utilities/FileThumbnail';
+import FileEntryIcon from '@/pages/FileSharing/utilities/FileEntryIcon';
 import { BUTTONS_ICON_WIDTH, TABLE_ICON_SIZE } from '@libs/ui/constants';
 import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 import { useTranslation } from 'react-i18next';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
 import isValidFileToPreview from '@libs/filesharing/utils/isValidFileToPreview';
-import isImageExtension from '@libs/filesharing/utils/isImageExtension';
-import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import useMedia from '@/hooks/useMedia';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
 import { MdOutlineCloudDone } from 'react-icons/md';
@@ -55,36 +50,6 @@ import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
-
-const renderFileIcon = (item: DirectoryFileDTO, isCurrentlyDisabled: boolean) => {
-  if (isCurrentlyDisabled) {
-    return (
-      <CircleLoader
-        height="h-6"
-        width="w-6"
-      />
-    );
-  }
-  if (item.type === ContentType.FILE) {
-    const extension = getFileExtension(item.filePath);
-    if (isImageExtension(extension) && item.etag) {
-      return (
-        <FileThumbnail
-          filePath={item.filePath}
-          etag={item.etag}
-          size={Number(TABLE_ICON_SIZE)}
-        />
-      );
-    }
-    return (
-      <FileIconComponent
-        filename={item.filePath}
-        size={Number(TABLE_ICON_SIZE)}
-      />
-    );
-  }
-  return <FcFolder size={TABLE_ICON_SIZE} />;
-};
 
 const getFileSharingTableColumns = (
   visibleColumns?: string[],
@@ -168,7 +133,13 @@ const getFileSharingTableColumns = (
         return (
           <div className={`min-w-0 max-w-full overflow-hidden ${isSaving ? 'pointer-events-none opacity-50' : ''}`}>
             <SelectableCell
-              icon={renderFileIcon(row.original, isCurrentlyDisabled)}
+              icon={
+                <FileEntryIcon
+                  file={row.original}
+                  size={TABLE_ICON_SIZE}
+                  isLoading={isCurrentlyDisabled}
+                />
+              }
               row={row}
               text={row.original.filename}
               onClick={handleFilenameClick}
