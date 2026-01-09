@@ -19,7 +19,7 @@
 
 import TSurveyElement from '@libs/survey/types/TSurveyElement';
 
-const resetToOriginalChoicesByUrl = (elements: TSurveyElement[] | undefined) =>
+const resetToOriginalChoicesByUrl = (elements: TSurveyElement[] | undefined): TSurveyElement[] | undefined =>
   (elements || []).map((el) => {
     if (el.choicesByUrl) {
       return {
@@ -27,11 +27,23 @@ const resetToOriginalChoicesByUrl = (elements: TSurveyElement[] | undefined) =>
         choicesByUrl: {
           ...el.choicesByUrl,
           url: el.choicesByUrl.url?.includes('?')
-            ? `${el.choicesByUrl.url}&original=true}`
-            : `${el.choicesByUrl.url}?original=true}`,
-          valueName: 'title',
+            ? `${el.choicesByUrl.url}&original=true`
+            : `${el.choicesByUrl.url}?original=true`,
+          valueName: 'name',
           titleName: 'title',
         },
+      };
+    }
+    if (el.templateElements) {
+      return {
+        ...el,
+        templateElements: resetToOriginalChoicesByUrl(el.templateElements),
+      };
+    }
+    if (el.elements) {
+      return {
+        ...el,
+        elements: resetToOriginalChoicesByUrl(el.elements),
       };
     }
     return el;
