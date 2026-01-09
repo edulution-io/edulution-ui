@@ -45,56 +45,61 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
   const isAnyMenuOpen = isLeftMenuOpen || isRightMenuOpen;
 
   return (
-    <div
-      className="relative flex items-center justify-between border-b-[1px] border-muted bg-foreground px-4"
-      style={{ height: MOBILE_TOP_BAR_HEIGHT_PX }}
-    >
-      {!isAnyMenuOpen && showLeftButton ? (
-        <button
-          type="button"
-          onClick={onLeftButtonClick}
-          className="top-2"
-        >
-          <FontAwesomeIcon
-            icon={faBars}
-            className={iconClassName}
-          />
-        </button>
-      ) : (
-        <div />
-      )}
+    <>
+      <div
+        className="relative flex items-center justify-between border-b-[1px] border-muted bg-foreground px-4"
+        style={{ height: MOBILE_TOP_BAR_HEIGHT_PX }}
+      >
+        {!isAnyMenuOpen && showLeftButton ? (
+          <button
+            type="button"
+            onClick={onLeftButtonClick}
+            className="flex items-center justify-center"
+          >
+            <FontAwesomeIcon
+              icon={faBars}
+              className={iconClassName}
+            />
+          </button>
+        ) : (
+          <div />
+        )}
 
-      {!isAnyMenuOpen && isEdulutionApp && (
-        <button
-          type="button"
-          onClick={refreshPage}
-          className="absolute left-1/2 -translate-x-1/2"
-        >
-          <FontAwesomeIcon
-            icon={faArrowsRotate}
-            className={iconClassName}
-          />{' '}
-        </button>
-      )}
+        {!isAnyMenuOpen && isEdulutionApp && (
+          <button
+            type="button"
+            onClick={refreshPage}
+            className="absolute left-1/2 flex -translate-x-1/2 items-center justify-center"
+          >
+            <FontAwesomeIcon
+              icon={faArrowsRotate}
+              className="h-5 w-5"
+            />
+          </button>
+        )}
 
-      {!isAnyMenuOpen && showRightButton ? (
-        <button
-          type="button"
-          onClick={onRightButtonClick}
-        >
-          <MobileLogoIcon
-            className="h-8 w-8"
-            width={SIDEBAR_ICON_WIDTH}
-            aria-label="edulution-mobile-logo"
-          />
-        </button>
-      ) : (
-        <div />
-      )}
+        {!isAnyMenuOpen && showRightButton ? (
+          <button
+            type="button"
+            onClick={onRightButtonClick}
+          >
+            <MobileLogoIcon
+              className="h-8 w-8"
+              width={SIDEBAR_ICON_WIDTH}
+              aria-label="edulution-mobile-logo"
+            />
+          </button>
+        ) : (
+          <div />
+        )}
+      </div>
+
       {isLeftMenuOpen && (
         <button
           type="button"
           onClick={onLeftButtonClick}
+          className="fixed right-4 flex items-center justify-center"
+          style={{ top: 0, height: MOBILE_TOP_BAR_HEIGHT_PX }}
         >
           <FontAwesomeIcon
             icon={faClose}
@@ -102,10 +107,13 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
           />
         </button>
       )}
+
       {isRightMenuOpen && (
         <button
           type="button"
           onClick={onRightButtonClick}
+          className="fixed left-4 flex items-center justify-center"
+          style={{ top: 0, height: MOBILE_TOP_BAR_HEIGHT_PX }}
         >
           <FontAwesomeIcon
             icon={faClose}
@@ -113,7 +121,7 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
           />
         </button>
       )}
-    </div>
+    </>
   );
 };
 
