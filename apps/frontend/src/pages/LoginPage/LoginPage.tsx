@@ -406,7 +406,7 @@ const LoginPage: React.FC = () => {
               ) : (
                 <>
                   {t('login.loginWithApp')}
-                  <QrCodeIcon className="h-5 w-5" />
+                  <QrCodeIcon className="h-6 w-6 text-black" />
                 </>
               )}
             </Button>
