@@ -184,7 +184,7 @@ const SurveyEditorPage = () => {
     creator.theme = surveyTheme;
     if (!creator.survey.logo) return;
     if (!creator.survey.logo?.startsWith(SURVEY_DEFAULT_LOGO_PATH)) return;
-    creator.survey.logo = `${SURVEY_DEFAULT_LOGO_PATH}/${getSurveysDefaultLogoFilename(getResolvedTheme() as 'light' | 'dark')}`;
+    creator.survey.logo = `${SURVEY_DEFAULT_LOGO_PATH}/${getSurveysDefaultLogoFilename(getResolvedTheme().toString())}`;
   }, [theme, getResolvedTheme, creator]);
 
   const handleNavigateToCreatedSurveys = () => {
@@ -200,9 +200,15 @@ const SurveyEditorPage = () => {
 
       const newVariable = new CalculatedValue();
       newVariable.name = 'theme';
-      newVariable.expression = getResolvedTheme() as 'light' | 'dark';
+      newVariable.expression = getResolvedTheme().toString();
       newVariable.includeIntoResult = true;
-      creator.survey.calculatedValues?.push(newVariable);
+
+      if (!creator.survey.calculatedValues) {
+        creator.survey.calculatedValues = [];
+      } else {
+        creator.survey.calculatedValues = creator.survey.calculatedValues.filter((value) => value.name !== 'theme');
+      }
+      creator.survey.calculatedValues.push(newVariable);
     }
 
     const formula = creator.JSON as SurveyFormula;
