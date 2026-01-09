@@ -65,7 +65,7 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
           <div />
         )}
 
-        {!isAnyMenuOpen && !isEdulutionApp && (
+        {!isAnyMenuOpen && isEdulutionApp && (
           <button
             type="button"
             onClick={refreshPage}
