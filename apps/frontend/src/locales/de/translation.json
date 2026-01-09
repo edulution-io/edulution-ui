@@ -1350,8 +1350,8 @@
     "title": "Allgemein"
   },
   "forwardingpage": {
-    "action": "Über diesen Link gelangen Sie zur externen Seite des Anbieters.",
-    "description": "Die Anwendung öffnet sich in einem neuen Fenster.",
+    "action": "Über diesen Button gelangen Sie zur externen Seite des Anbieters.",
+    "description": "Die Anwendung öffnet sich in einem neuen Tab.",
     "missing_link": "Link fehlt"
   },
   "menu": "MENÜ",
