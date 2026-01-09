@@ -1,0 +1,59 @@
+/*
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
+ *
+ * This software is dual-licensed under the terms of:
+ *
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
+ *
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
+ */
+
+import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
+
+const FRAME_SCRIPT_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
+  {
+    name: ExtendedOptionKeys.FRAME_SCRIPT_ON_LOAD_ENABLED,
+    title: 'settings.appconfig.sections.scripts.onLoadEnabled',
+    description: 'settings.appconfig.sections.scripts.onLoadDescription',
+    type: ExtendedOptionField.switch,
+    value: false,
+    width: 'full',
+  },
+  {
+    name: ExtendedOptionKeys.FRAME_SCRIPT_ON_LOAD_CONTENT,
+    description: '',
+    type: ExtendedOptionField.scriptEditor,
+    value: '',
+    width: 'full',
+    linkedTo: ExtendedOptionKeys.FRAME_SCRIPT_ON_LOAD_ENABLED,
+  },
+  {
+    name: ExtendedOptionKeys.FRAME_SCRIPT_ON_LOGOUT_ENABLED,
+    title: 'settings.appconfig.sections.scripts.onLogoutEnabled',
+    description: 'settings.appconfig.sections.scripts.onLogoutDescription',
+    type: ExtendedOptionField.switch,
+    value: false,
+    width: 'full',
+  },
+  {
+    name: ExtendedOptionKeys.FRAME_SCRIPT_ON_LOGOUT_CONTENT,
+    description: '',
+    type: ExtendedOptionField.scriptEditor,
+    value: '',
+    width: 'full',
+    linkedTo: ExtendedOptionKeys.FRAME_SCRIPT_ON_LOGOUT_ENABLED,
+  },
+];
+
+export default FRAME_SCRIPT_EXTENDED_OPTIONS;
