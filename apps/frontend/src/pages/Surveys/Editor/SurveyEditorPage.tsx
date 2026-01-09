@@ -88,7 +88,7 @@ const SurveyEditorPage = () => {
   const { user } = useUserStore();
   const { surveyId } = useParams();
   const { language } = useLanguage();
-  const { theme } = useThemeStore();
+  const { theme, getResolvedTheme } = useThemeStore();
 
   const handleReset = () => {
     resetStoredSurvey();
@@ -184,8 +184,8 @@ const SurveyEditorPage = () => {
     creator.theme = surveyTheme;
     if (!creator.survey.logo) return;
     if (!creator.survey.logo?.startsWith(SURVEY_DEFAULT_LOGO_PATH)) return;
-    creator.survey.logo = `${SURVEY_DEFAULT_LOGO_PATH}/${getSurveysDefaultLogoFilename(theme)}`;
-  }, [theme, surveyTheme, creator]);
+    creator.survey.logo = `${SURVEY_DEFAULT_LOGO_PATH}/${getSurveysDefaultLogoFilename(getResolvedTheme() as 'light' | 'dark')}`;
+  }, [theme, getResolvedTheme, creator]);
 
   const handleNavigateToCreatedSurveys = () => {
     window.history.pushState(null, '', `/${CREATED_SURVEYS_PAGE}`);
@@ -200,9 +200,9 @@ const SurveyEditorPage = () => {
 
       const newVariable = new CalculatedValue();
       newVariable.name = 'theme';
-      newVariable.expression = `${theme}`;
+      newVariable.expression = getResolvedTheme() as 'light' | 'dark';
       newVariable.includeIntoResult = true;
-      creator?.survey.calculatedValues?.push(newVariable);
+      creator.survey.calculatedValues?.push(newVariable);
     }
 
     const formula = creator.JSON as SurveyFormula;

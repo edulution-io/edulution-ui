@@ -17,7 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ThemeType from '@libs/common/types/themeType';
+const getSurveysDefaultLogoFilename = (theme: string) => `surveys-default-logo-${theme}.webp`;
 
-const getSurveysDefaultLogoFilename = (theme: ThemeType) => `surveys-default-logo-${theme}.webp`;
 export default getSurveysDefaultLogoFilename;

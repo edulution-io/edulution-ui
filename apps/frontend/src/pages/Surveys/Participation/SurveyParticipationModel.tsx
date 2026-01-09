@@ -70,15 +70,17 @@ Serializer.getProperty('signaturepad', 'signatureWidth').defaultValue = '800';
 
 const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.ReactNode => {
   const { isPublic } = props;
-  const { theme } = useThemeStore();
+  const { theme, getResolvedTheme } = useThemeStore();
 
-  Serializer.getProperty('signaturepad', 'penColor').defaultValue =
-    theme === THEME.dark ? 'rgba(255, 255, 255, 1)' : 'rgba(17, 24, 39, 1)';
+  useEffect(() => {
+    Serializer.getProperty('signaturepad', 'penColor').defaultValue =
+      getResolvedTheme() === THEME.dark ? 'rgba(255, 255, 255, 1)' : 'rgba(17, 24, 39, 1)';
 
-  Serializer.getProperty('survey', 'logo').defaultValue =
-    theme === THEME.dark
-      ? `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-dark.webp`
-      : `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-light.webp`;
+    Serializer.getProperty('survey', 'logo').defaultValue =
+      getResolvedTheme() === THEME.dark
+        ? `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-dark.webp`
+        : `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-light.webp`;
+  }, [theme, getResolvedTheme]);
 
   const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
 
@@ -266,10 +268,10 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
     const newVariable = new CalculatedValue();
     newVariable.name = 'theme';
-    newVariable.expression = `${theme}`;
+    newVariable.expression = getResolvedTheme() as 'light' | 'dark';
     newVariable.includeIntoResult = true;
-    surveyParticipationModel.calculatedValues?.push(newVariable);
-  }, [theme, selectedSurvey]);
+    surveyParticipationModel.calculatedValues.push(newVariable);
+  }, [theme, getResolvedTheme, surveyParticipationModel]);
 
   if (isFetching) {
     return <LoadingIndicatorDialog isOpen />;

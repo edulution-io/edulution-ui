@@ -29,27 +29,29 @@ const getSurveyEditorFormSchema = () =>
         z.object({
           name: z.string(),
           description: z.string().optional(),
-          elements: z.array(
-            z.object({
-              type: z.string(),
-              name: z.string(),
-              description: z.string().optional(),
-              isRequired: z.boolean().optional(),
-              choices: z
-                .array(
-                  z.object({
-                    value: z.string(),
-                    label: z.string(),
-                  }),
-                )
-                .optional(),
-              choicesByUrl: z
-                .object({
-                  url: z.string(),
-                })
-                .optional(),
-            }),
-          ),
+          elements: z
+            .array(
+              z.object({
+                type: z.string(),
+                name: z.string(),
+                description: z.string().optional(),
+                isRequired: z.boolean().optional(),
+                choices: z
+                  .array(
+                    z.object({
+                      value: z.string(),
+                      label: z.string(),
+                    }),
+                  )
+                  .optional(),
+                choicesByUrl: z
+                  .object({
+                    url: z.string(),
+                  })
+                  .optional(),
+              }),
+            )
+            .optional(),
         }),
       ),
       elements: z.array(
