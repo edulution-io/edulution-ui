@@ -21,7 +21,8 @@
 import React, { useEffect } from 'react';
 import { Button } from '@/components/shared/Button';
 import DropdownMenu from '@/components/shared/DropdownMenu';
-import { PiDotsThreeVerticalBold } from 'react-icons/pi';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
 import { useTranslation } from 'react-i18next';
@@ -253,7 +254,10 @@ const BulletinBoardColumnItem = ({
             className="text-white-500 absolute right-2 top-2 ml-2 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full p-1 hover:bg-primary hover:text-white"
             title={t('common.options')}
           >
-            <PiDotsThreeVerticalBold className="h-6 w-6" />
+            <FontAwesomeIcon
+              icon={faEllipsisVertical}
+              className="h-5 w-5"
+            />
           </Button>
         }
         items={getBulletinDropdownItems()}

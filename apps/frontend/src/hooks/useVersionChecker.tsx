@@ -21,7 +21,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import useSseStore from '@/store/useSseStore';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import { GrUpgrade } from 'react-icons/gr';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import APPLICATION_NAME from '@libs/common/constants/applicationName';
 
@@ -65,7 +66,12 @@ const useVersionChecker = () => {
         id: `version-${currentVersion.current}`,
         duration: Infinity,
         position: 'top-right',
-        icon: <GrUpgrade color="green" />,
+        icon: (
+          <FontAwesomeIcon
+            icon={faArrowUpFromBracket}
+            color="green"
+          />
+        ),
         action: {
           label: t('version.update'),
           onClick: () => window.location.reload(),
