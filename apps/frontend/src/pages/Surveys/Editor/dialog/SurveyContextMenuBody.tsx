@@ -18,6 +18,7 @@
  */
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { SurveyCreatorModel } from 'survey-creator-core';
 import AttendeeDto from '@libs/user/types/attendee.dto';
@@ -27,9 +28,9 @@ import i18n from '@/i18n';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useGroupStore from '@/store/GroupStore';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
-import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
 import SurveysLogoSettings from '@/pages/Surveys/Editor/dialog/SurveysLogoSettings';
-import { AccordionContent, AccordionItem, AccordionSH, AccordionTrigger } from '@/components/ui/AccordionSH';
+import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
+import Checkbox from '@/components/ui/Checkbox';
 
 interface SurveyContextMenuBodyProps {
   form: UseFormReturn<SurveyDto>;
@@ -41,6 +42,7 @@ const SurveyContextMenuBody = ({ form, surveyCreator }: SurveyContextMenuBodyPro
   const { user } = useUserStore();
   const { searchAttendees } = useUserStore();
   const { searchGroups } = useGroupStore();
+  const { t } = useTranslation();
 
   const handleAttendeesChange = (attendees: AttendeeDto[]) => {
     setValue('invitedAttendees', attendees, { shouldValidate: true });
@@ -55,49 +57,54 @@ const SurveyContextMenuBody = ({ form, surveyCreator }: SurveyContextMenuBodyPro
     setValue('invitedGroups', groups, { shouldValidate: true });
   };
 
+  const checkboxOptions: { name: keyof SurveyDto; label: string; shouldDisable?: boolean }[] = [
+    { name: 'isAnonymous', label: 'surveys.saveDialog.isAnonymous' },
+    { name: 'isPublic', label: 'surveys.saveDialog.isPublic' },
+    {
+      name: 'canSubmitMultipleAnswers',
+      label: 'surveys.saveDialog.canSubmitMultipleAnswers',
+      shouldDisable: !!watch('canUpdateFormerAnswer'),
+    },
+    {
+      name: 'canUpdateFormerAnswer',
+      label: 'surveys.saveDialog.canUpdateFormerAnswer',
+      shouldDisable: !!watch('canSubmitMultipleAnswers'),
+    },
+  ];
+
   return (
-    <AccordionSH
-      type="multiple"
-      defaultValue={['logoSettings']}
-      className="mt-5 space-y-2 [&>*]:rounded-xl [&>*]:px-2"
-    >
-      <AccordionItem value="logoSettings">
-        <AccordionTrigger>
-          <h3>{i18n.t('survey.editor.surveySettings.surveyLogo.title')}</h3>
-        </AccordionTrigger>
-        <AccordionContent className="space-y-2 px-1">
-          <SurveysLogoSettings surveyCreator={surveyCreator} />
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="expirationDate">
-        <AccordionTrigger>
-          <h3>{i18n.t('survey.expirationDate')}</h3>
-        </AccordionTrigger>
-        <AccordionContent className="space-y-2 px-1">
-          <DateTimePickerField
-            form={form}
-            path="expires"
-            variant="dialog"
-          />
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="invitees">
-        <AccordionTrigger>
-          <h3>{i18n.t('survey.editor.surveySettings.invitees')}</h3>
-        </AccordionTrigger>
-        <AccordionContent className="space-y-2 px-1">
-          <SearchUsersOrGroups
-            users={watch('invitedAttendees')}
-            onSearch={onAttendeesSearch}
-            onUserChange={handleAttendeesChange}
-            groups={watch('invitedGroups')}
-            onGroupSearch={searchGroups}
-            onGroupsChange={handleGroupsChange}
-            variant="dialog"
-          />
-        </AccordionContent>
-      </AccordionItem>
-    </AccordionSH>
+    <>
+      <h3>{i18n.t('survey.editor.surveySettings.surveyLogo.title')}</h3>
+      <SurveysLogoSettings surveyCreator={surveyCreator} />
+      <h3>{i18n.t('survey.expirationDate')}</h3>
+      <DateTimePickerField
+        form={form}
+        path="expires"
+        variant="dialog"
+      />
+      <h3>{i18n.t('survey.editor.surveySettings.invitees')}</h3>
+      <SearchUsersOrGroups
+        users={watch('invitedAttendees')}
+        onSearch={onAttendeesSearch}
+        onUserChange={handleAttendeesChange}
+        groups={watch('invitedGroups')}
+        onGroupSearch={searchGroups}
+        onGroupsChange={handleGroupsChange}
+        variant="dialog"
+      />
+      <h3>{i18n.t('surveys.saveDialog.settingsFlags')}</h3>
+      {checkboxOptions.map(({ name, label, shouldDisable }) => (
+        <Checkbox
+          key={name}
+          label={t(label)}
+          checked={Boolean(watch(name))}
+          onCheckedChange={(value: boolean) => setValue(name, value, { shouldValidate: true })}
+          disabled={shouldDisable}
+          aria-label={t(`survey.${name}`)}
+          className="text-background"
+        />
+      ))}
+    </>
   );
 };
 
