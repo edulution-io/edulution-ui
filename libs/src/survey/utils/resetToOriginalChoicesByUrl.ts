@@ -29,7 +29,7 @@ const resetToOriginalChoicesByUrl = (elements: TSurveyElement[] | undefined): TS
           url: el.choicesByUrl.url?.includes('?')
             ? `${el.choicesByUrl.url}&original=true`
             : `${el.choicesByUrl.url}?original=true`,
-          valueName: 'name',
+          valueName: 'title',
           titleName: 'title',
         },
       };

@@ -114,7 +114,7 @@ class SurveyAnswersService implements OnModuleInit {
     const filteredChoices: ChoiceDto[] = [];
     await Promise.all(
       possibleChoices.map(async (choice) => {
-        const counter = await this.countTotalChoiceSelectionsInSurveyAnswers(surveyId, questionName, choice.name);
+        const counter = await this.countTotalChoiceSelectionsInSurveyAnswers(surveyId, questionName, choice.title);
         if (choice.limit === 0 || !counter || counter < choice.limit) {
           filteredChoices.push(choice);
         }
@@ -126,32 +126,32 @@ class SurveyAnswersService implements OnModuleInit {
     return filteredChoices;
   };
 
-  static countChoiceMatchesInValue = (questionAnswer: TSurveyQuestionAnswerTypes, choiceName: string): number => {
+  static countChoiceMatchesInValue = (questionAnswer: TSurveyQuestionAnswerTypes, choiceTitle: string): number => {
     if (Array.isArray(questionAnswer)) {
       let count = 0;
       questionAnswer.forEach((answerValue) => {
-        if (typeof answerValue === 'string' && answerValue === choiceName) {
+        if (typeof answerValue === 'string' && answerValue === choiceTitle) {
           count += 1;
-        } else if (typeof answerValue === 'object' && answerValue !== null && answerValue.name === choiceName) {
+        } else if (typeof answerValue === 'object' && answerValue !== null && answerValue.name === choiceTitle) {
           count += 1;
         }
       });
       return count;
     }
-    if (typeof questionAnswer === 'string' && questionAnswer === choiceName) {
+    if (typeof questionAnswer === 'string' && questionAnswer === choiceTitle) {
       return 1;
     }
-    if (typeof questionAnswer === 'object' && questionAnswer !== null && questionAnswer.name === choiceName) {
+    if (typeof questionAnswer === 'object' && questionAnswer !== null && questionAnswer.name === choiceTitle) {
       return 1;
     }
     return 0;
   };
 
-  static countChoiceMatchesInAnswer = (answer: TSurveyAnswer, questionName: string, choiceName: string): number => {
+  static countChoiceMatchesInAnswer = (answer: TSurveyAnswer, questionName: string, choiceTitle: string): number => {
     let count = 0;
     Object.keys(answer).forEach((key) => {
       if (key === questionName) {
-        const nestedCount = SurveyAnswersService.countChoiceMatchesInValue(answer[key], choiceName);
+        const nestedCount = SurveyAnswersService.countChoiceMatchesInValue(answer[key], choiceTitle);
         count += nestedCount;
       } else if (Array.isArray(answer[key])) {
         answer[key].forEach((entry) => {
@@ -159,7 +159,7 @@ class SurveyAnswersService implements OnModuleInit {
             const nestedCount = SurveyAnswersService.countChoiceMatchesInAnswer(
               entry as TSurveyAnswer,
               questionName,
-              choiceName,
+              choiceTitle,
             );
             count += nestedCount;
           }
@@ -168,7 +168,7 @@ class SurveyAnswersService implements OnModuleInit {
         const nestedCount = SurveyAnswersService.countChoiceMatchesInAnswer(
           answer[key] as TSurveyAnswer,
           questionName,
-          choiceName,
+          choiceTitle,
         );
         count += nestedCount;
       }
@@ -179,7 +179,7 @@ class SurveyAnswersService implements OnModuleInit {
   async countTotalChoiceSelectionsInSurveyAnswers(
     surveyId: string,
     questionName: string,
-    choiceName: string,
+    choiceTitle: string,
   ): Promise<number> {
     const documents = await this.surveyAnswerModel
       .find<SurveyAnswerDocument>({ surveyId: new Types.ObjectId(surveyId) })
@@ -189,7 +189,7 @@ class SurveyAnswersService implements OnModuleInit {
       const answerCount = SurveyAnswersService.countChoiceMatchesInAnswer(
         document.answer as unknown as TSurveyAnswer,
         questionName,
-        choiceName,
+        choiceTitle,
       );
       count += answerCount;
     });

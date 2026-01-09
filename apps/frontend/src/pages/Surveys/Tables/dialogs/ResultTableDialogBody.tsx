@@ -30,6 +30,8 @@ const ResultTableDialogBody = () => {
   const { isLoading, selectedSurvey, selectSurvey, getSurveyResult, surveyResult, isOpenPublicResultsTableDialog } =
     useResultDialogStore();
 
+  const [formula, setFormula] = React.useState<SurveyFormula | undefined>(undefined);
+
   useEffect((): void => {
     selectSurvey(selectedSurveyFromPage);
   }, [selectedSurveyFromPage]);
@@ -40,25 +42,29 @@ const ResultTableDialogBody = () => {
     }
   }, [isOpenPublicResultsTableDialog, selectedSurvey]);
 
-  if (!selectedSurvey?.formula || !surveyResult || surveyResult.length === 0) {
+  useEffect(() => {
+    if (!selectedSurvey) {
+      return;
+    }
+    if (!selectedSurvey?.isAnonymous) {
+      const formulaWithPlaceholder = getSurveyFormulaWithIdentificationPlaceholderQuestion(selectedSurvey?.formula);
+      setFormula(formulaWithPlaceholder);
+      return;
+    }
+    setFormula(selectedSurvey.formula);
+  }, [selectedSurvey?.formula]);
+
+  if (isLoading) {
+    return <CircleLoader />;
+  }
+  if (!formula) {
     return null;
   }
-
-  let formula: SurveyFormula;
-  if (!selectedSurvey?.isAnonymous) {
-    formula = getSurveyFormulaWithIdentificationPlaceholderQuestion(selectedSurvey.formula);
-  } else {
-    formula = selectedSurvey.formula;
-  }
-
   return (
-    <>
-      {isLoading && <CircleLoader />}
-      <ResultTable
-        formula={formula}
-        result={surveyResult}
-      />
-    </>
+    <ResultTable
+      formula={formula}
+      result={surveyResult}
+    />
   );
 };
 

@@ -36,7 +36,7 @@ interface ResultDialogStore {
   isOpenPublicResultsVisualisationDialog: boolean;
   setIsOpenPublicResultsVisualisationDialog: (state: boolean) => void;
   getSurveyResult: (surveyId: string) => Promise<void>;
-  surveyResult: JSON[] | undefined;
+  surveyResult: JSON[];
 
   isOpenSubmittedAnswersDialog: boolean;
   setIsOpenSubmittedAnswersDialog: (state: boolean) => void;
@@ -54,7 +54,7 @@ const ResultDialogStoreInitialState: Partial<ResultDialogStore> = {
   selectedSurvey: undefined,
   isOpenPublicResultsTableDialog: false,
   isOpenPublicResultsVisualisationDialog: false,
-  surveyResult: undefined,
+  surveyResult: [],
   isOpenSubmittedAnswersDialog: false,
   selectedUser: undefined,
   submittedAnswer: {} as TSurveyAnswer,
