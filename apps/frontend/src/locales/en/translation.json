@@ -804,7 +804,8 @@
       "notAbleToUpdateSurveyAnswerError": "Unable to update the submitted survey answer.",
       "notAbleToCreateSurveyAnswerError": "Unable to create the user's survey answer.",
       "notAbleToDeleteSurveyAnswerError": "Unable to delete the user's survey answer.",
-      "notAbleToCountChoices": "Unable to count the choices."
+      "notAbleToCountChoices": "Unable to count the choices.",
+      "alreadyParticipated": "You have already participated."
     }
   },
   "surveys": {

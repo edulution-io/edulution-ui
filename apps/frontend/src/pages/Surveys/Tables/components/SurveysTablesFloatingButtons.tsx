@@ -26,7 +26,6 @@ import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingBut
 import { EDIT_SURVEY_PAGE, PARTICIPATE_SURVEY_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
-import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import EditButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/editButton';
@@ -63,8 +62,11 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
     createdSurveys,
   } = useSurveyTablesPageStore();
   const { user } = useUserStore();
-  const { setIsOpenPublicResultsTableDialog, setIsOpenPublicResultsVisualisationDialog } = useResultDialogStore();
-  const { setIsOpenSubmittedAnswersDialog } = useSubmittedAnswersDialogStore();
+  const {
+    setIsOpenPublicResultsTableDialog,
+    setIsOpenPublicResultsVisualisationDialog,
+    setIsOpenSubmittedAnswersDialog,
+  } = useResultDialogStore();
   const { setIsDeleteSurveysDialogOpen } = useDeleteSurveyStore();
   const { t } = useTranslation();
   const navigate = useNavigate();

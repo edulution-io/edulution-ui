@@ -806,7 +806,8 @@
       "notAbleToUpdateSurveyAnswerError": "Antwort konnte nicht aktualisiert werden.",
       "notAbleToCreateSurveyAnswerError": "Antwort konnte nicht erstellt werden.",
       "notAbleToDeleteSurveyAnswerError": "Antwort konnte nicht gelöscht werden.",
-      "notAbleToCountChoices": "Die Anzahl der Auswahlmöglichkeiten konnte nicht ermittelt werden."
+      "notAbleToCountChoices": "Die Anzahl der Auswahlmöglichkeiten konnte nicht ermittelt werden.",
+      "alreadyParticipated": "Du hast bereits teilgenommen."
     }
   },
   "surveys": {
