@@ -19,7 +19,7 @@
 
 import React, { useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faArrowsRotate, faClose } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faClose, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
 import useMenuBarStore from '@/components/shared/useMenuBarStore';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
@@ -72,8 +72,8 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
             className="absolute left-1/2 flex -translate-x-1/2 items-center justify-center"
           >
             <FontAwesomeIcon
-              icon={faArrowsRotate}
-              className="h-5 w-5"
+              icon={faRotateRight}
+              className="h-5 w-5 text-muted hover:text-muted-foreground"
             />
           </button>
         )}
