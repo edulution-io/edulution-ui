@@ -17,25 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type RadioGroupItem from '@libs/ui/types/radioGroupItem';
-import { GlobeIcon, UserIcon } from '@libs/assets';
-import PUBLIC_SHARE_LINK_SCOPE from '@libs/filesharing/constants/publicShareLinkScope';
+const getImageUrl = (src: string) => `data:image/svg+xml,${encodeURIComponent(src)}`;
 
-const PUBLIC_SHARE_SCOPE_FORM_VALUES: RadioGroupItem[] = [
-  {
-    value: PUBLIC_SHARE_LINK_SCOPE.PUBLIC,
-    translationId: 'filesharing.publicFileSharing.scope.public',
-    descriptionTranslationId: 'filesharing.publicFileSharing.scope.publicHint',
-    disabled: false,
-    icon: UserIcon,
-  },
-  {
-    value: PUBLIC_SHARE_LINK_SCOPE.RESTRICTED,
-    translationId: 'filesharing.publicFileSharing.scope.restricted',
-    descriptionTranslationId: 'filesharing.publicFileSharing.scope.restrictedHint',
-    disabled: false,
-    icon: GlobeIcon,
-  },
-];
-
-export default PUBLIC_SHARE_SCOPE_FORM_VALUES;
+export default getImageUrl;
