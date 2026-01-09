@@ -167,7 +167,6 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
           applicationName={APPS.FILE_SHARING}
           getRowId={(row) => row.filePath}
           showHeader={false}
-          textColorClassname="text-background"
           showSelectedCount={false}
           filterKey="select-filename"
           filterPlaceHolderText="filesharing.filterPlaceHolderText"

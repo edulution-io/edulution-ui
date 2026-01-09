@@ -17,8 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export { SIDEBAR_TRANSLATE_AMOUNT } from './sidebar';
-export { SIDEBAR_ICON_WIDTH } from './sidebar';
-export { BUTTONS_ICON_WIDTH } from './button';
-export { TABLE_ICON_SIZE, GRID_ICON_SIZE } from './tableGridSizes';
-export { SIDEBAR_WIDTH } from './sidebar';
+import VIEW_MODE from '../constants/viewMode';
+
+type ViewModeType = (typeof VIEW_MODE)[keyof typeof VIEW_MODE];
+
+export default ViewModeType;
