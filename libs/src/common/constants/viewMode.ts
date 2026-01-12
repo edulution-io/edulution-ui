@@ -17,21 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { EditIcon } from '@libs/common/constants/standardActionIcons';
-import WindowControlBaseButton from './WindowControlBaseButton';
+const VIEW_MODE = {
+  table: 'table',
+  grid: 'grid',
+} as const;
 
-interface EditButtonProps {
-  onClick: () => Promise<void> | void;
-}
-
-const EditButton = ({ onClick }: EditButtonProps) => (
-  <WindowControlBaseButton
-    onClick={onClick}
-    tooltipTranslationId="common.edit"
-  >
-    <EditIcon />
-  </WindowControlBaseButton>
-);
-
-export default EditButton;
+export default VIEW_MODE;

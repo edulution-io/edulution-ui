@@ -36,6 +36,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip
 import getAppIconClassName from '@/utils/getAppIconClassName';
 import useMenuBarStore from './useMenuBarStore';
 import { Button } from './Button';
+import MenuBarFooter from './MenuBarFooter';
 
 const MenuBar: React.FC = () => {
   const { t } = useTranslation();
@@ -171,6 +172,11 @@ const MenuBar: React.FC = () => {
           );
         })}
       </div>
+
+      <MenuBarFooter
+        appName={pathParts[0]}
+        isCollapsed={shouldCollapse}
+      />
     </div>
   );
 

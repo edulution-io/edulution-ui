@@ -110,7 +110,7 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
             >
               <Card
                 className={cn(
-                  'm-1 flex h-32 w-32 flex-col items-center overflow-hidden md:w-48 2xl:transition-transform 2xl:duration-300 2xl:hover:scale-105',
+                  'm-1 flex h-32 w-32 flex-col items-center overflow-hidden md:w-48',
                   app.link === currentAppPath ? 'bg-ciGreenToBlue text-white' : '',
                 )}
                 variant="dialog"

@@ -17,25 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type RadioGroupItem from '@libs/ui/types/radioGroupItem';
-import { GlobeIcon, UserIcon } from '@libs/assets';
-import PUBLIC_SHARE_LINK_SCOPE from '@libs/filesharing/constants/publicShareLinkScope';
+import { tmpdir } from 'os';
+import { join } from 'path';
+import THUMBNAIL_CONFIG from './thumbnailConfig';
 
-const PUBLIC_SHARE_SCOPE_FORM_VALUES: RadioGroupItem[] = [
-  {
-    value: PUBLIC_SHARE_LINK_SCOPE.PUBLIC,
-    translationId: 'filesharing.publicFileSharing.scope.public',
-    descriptionTranslationId: 'filesharing.publicFileSharing.scope.publicHint',
-    disabled: false,
-    icon: UserIcon,
-  },
-  {
-    value: PUBLIC_SHARE_LINK_SCOPE.RESTRICTED,
-    translationId: 'filesharing.publicFileSharing.scope.restricted',
-    descriptionTranslationId: 'filesharing.publicFileSharing.scope.restrictedHint',
-    disabled: false,
-    icon: GlobeIcon,
-  },
-];
+const THUMBNAIL_CACHE_PATH = join(tmpdir(), THUMBNAIL_CONFIG.CACHE_DIR_NAME);
 
-export default PUBLIC_SHARE_SCOPE_FORM_VALUES;
+export default THUMBNAIL_CACHE_PATH;

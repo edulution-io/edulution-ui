@@ -35,12 +35,11 @@ const UnsavedChangesDialog = ({ onSave }: UnsavedChangesDialogProps) => {
 
   const handleSave = async () => {
     setIsSaving(true);
-    try {
-      await onSave();
-      executePendingCloseAction();
-    } catch {
-      setIsSaving(false);
-    }
+
+    await onSave();
+    executePendingCloseAction();
+
+    setIsSaving(false);
   };
 
   const handleDiscard = () => {

@@ -270,7 +270,7 @@ class FilesystemService {
     return path;
   }
 
-  async ensureDirectoryExists(directory: string): Promise<void> {
+  static async ensureDirectoryExists(directory: string): Promise<void> {
     try {
       await ensureDir(directory);
     } catch (error) {
@@ -287,7 +287,7 @@ class FilesystemService {
   ): Promise<WebdavStatusResponse> {
     const webdavShare = await this.webdavSharesService.getWebdavShareFromCache(share);
     const url = `${webdavShare.url}${getPathWithoutWebdav(filePath, webdavShare.pathname)}`;
-    await this.ensureDirectoryExists(PUBLIC_DOWNLOADS_PATH);
+    await FilesystemService.ensureDirectoryExists(PUBLIC_DOWNLOADS_PATH);
 
     try {
       const user = await this.userService.findOne(username);

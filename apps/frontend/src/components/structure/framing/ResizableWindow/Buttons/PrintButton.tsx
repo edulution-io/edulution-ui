@@ -17,20 +17,23 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import os from 'os';
-import path from 'path';
-import { promises as fs } from 'fs';
-import { randomUUID } from 'crypto';
+import React from 'react';
+import { MdPrint } from 'react-icons/md';
+import WindowControlBaseButton from './WindowControlBaseButton';
 
-const createTempFile = async (postfix = '') => {
-  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'tmp-'));
-  const fileName = randomUUID() + postfix;
-  const filePath = path.join(tmpDir, fileName);
-  await fs.writeFile(filePath, '');
-  const cleanup = async () => {
-    await fs.rm(tmpDir, { recursive: true, force: true });
-  };
-  return { path: filePath, cleanup };
-};
+interface PrintButtonProps {
+  onClick: () => void;
+  disabled?: boolean;
+}
 
-export default createTempFile;
+const PrintButton = ({ onClick, disabled }: PrintButtonProps) => (
+  <WindowControlBaseButton
+    onClick={onClick}
+    tooltipTranslationId="filesharing.print"
+    disabled={disabled}
+  >
+    <MdPrint />
+  </WindowControlBaseButton>
+);
+
+export default PrintButton;

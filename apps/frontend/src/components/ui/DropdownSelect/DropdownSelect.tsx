@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import cn from '@libs/common/utils/className';
@@ -42,11 +42,14 @@ interface DropdownProps {
   translate?: boolean;
 }
 
+const MENU_MAX_HEIGHT = 125;
+const MENU_MARGIN = 8;
+
 const DropdownSelect = ({
   options,
   selectedVal,
   handleChange,
-  openToTop = false,
+  openToTop: openToTopProp = false,
   classname,
   variant = 'default',
   placeholder = '',
@@ -57,21 +60,44 @@ const DropdownSelect = ({
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0, width: 0 });
+  const [openToTop, setOpenToTop] = useState(openToTopProp);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const closeMenu = () => setIsOpen(false);
 
+  const calculatePosition = useCallback(() => {
+    if (!dropdownRef.current) return;
+
+    const rect = dropdownRef.current.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    const shouldOpenToTop = openToTopProp || (spaceBelow < MENU_MAX_HEIGHT + MENU_MARGIN && spaceAbove > spaceBelow);
+
+    setOpenToTop(shouldOpenToTop);
+    setMenuPosition({
+      top: shouldOpenToTop ? rect.top : rect.bottom,
+      left: rect.left,
+      width: rect.width,
+    });
+  }, [openToTopProp]);
+
   useEffect(() => {
-    if (isOpen && dropdownRef.current) {
-      const rect = dropdownRef.current.getBoundingClientRect();
-      setMenuPosition({
-        top: openToTop ? rect.top : rect.bottom,
-        left: rect.left,
-        width: rect.width,
-      });
-    }
-  }, [isOpen, openToTop]);
+    if (!isOpen) return undefined;
+
+    let requestAnimationFrameId: number;
+
+    const updatePosition = () => {
+      calculatePosition();
+      requestAnimationFrameId = requestAnimationFrame(updatePosition);
+    };
+
+    updatePosition();
+
+    return () => {
+      cancelAnimationFrame(requestAnimationFrameId);
+    };
+  }, [isOpen, calculatePosition]);
 
   useEffect(() => {
     if (!isOpen) return undefined;
@@ -176,10 +202,11 @@ const DropdownSelect = ({
           <div
             ref={menuRef}
             className={cn(
-              'fixed z-[1000] mt-1 box-border max-h-[125px] overflow-y-auto rounded-lg text-p scrollbar-thin',
+              'pointer-events-auto fixed z-[1000] mt-1 box-border overflow-y-auto rounded-lg text-p scrollbar-thin',
               variantClasses[variant],
             )}
             style={{
+              maxHeight: MENU_MAX_HEIGHT,
               top: openToTop ? 'auto' : menuPosition.top,
               bottom: openToTop ? window.innerHeight - menuPosition.top : 'auto',
               left: menuPosition.left,
