@@ -1197,8 +1197,8 @@
     "title": "Généralités"
   },
   "forwardingpage": {
-    "action": "Ce lien peut être atteint du côté extérieur du fournisseur.",
-    "description": "L'application s'ouvre dans une nouvelle fenêtre.",
+    "action": "Ce bouton vous mènera au site externe du fournisseur.",
+    "description": "L'application s'ouvre dans un nouvel onglet.",
     "missing_link": "Le lien est manquant"
   },
   "menu": "Menu",
@@ -1258,6 +1258,12 @@
     "cancel": "Annuler",
     "columns": "Colonnes",
     "table": "Tableau",
+    "tableView": "Vue tableau",
+    "gridView": "Vue grille",
+    "sort": "Trier",
+    "ascending": "croissant",
+    "descending": "décroissant",
+    "selectAll": "Tout sélectionner",
     "copy": {
       "success": "Copié avec succès dans le presse-papiers",
       "error": "Echec de copie dans le presse-papiers",

@@ -26,7 +26,7 @@ import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
-import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
+import FileTypeIcon from '@/pages/FileSharing/utilities/FileTypeIcon';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { UploadItem } from '@libs/filesharing/types/uploadItem';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -208,7 +208,7 @@ const UploadContentBody = () => {
 
     return (
       <div className="flex h-20 items-center justify-center">
-        <FileIconComponent
+        <FileTypeIcon
           size={40}
           filename={file.name}
         />

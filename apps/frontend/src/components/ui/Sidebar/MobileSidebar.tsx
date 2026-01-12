@@ -45,7 +45,7 @@ const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
 
   useOnClickOutside(sidebarRef, handleClickOutside);
 
-  const sidebarHeightWithoutSpecialButtons = 'h-[calc(100%-121px)]';
+  const sidebarHeightWithoutSpecialButtons = 'h-[calc(100%-116px)]';
 
   return (
     <>

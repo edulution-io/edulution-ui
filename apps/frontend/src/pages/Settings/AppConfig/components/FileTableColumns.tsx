@@ -25,7 +25,7 @@ import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import { formatBytes, getElapsedTime } from '@/pages/FileSharing/utilities/filesharingUtilities';
-import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
+import FileTypeIcon from '@/pages/FileSharing/utilities/FileTypeIcon';
 import { TABLE_ICON_SIZE } from '@libs/ui/constants';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import copyToClipboard from '@/utils/copyToClipboard';
@@ -38,13 +38,19 @@ import { faFolder, faLink } from '@fortawesome/free-solid-svg-icons';
 const renderFileIcon = (item: FileInfoDto) => {
   if (item.type !== 'directory') {
     return (
-      <FileIconComponent
+      <FileTypeIcon
         filename={item.filename}
-        size={Number(TABLE_ICON_SIZE)}
+        size={TABLE_ICON_SIZE}
       />
     );
   }
-  return <FontAwesomeIcon icon={faFolder} />;
+  return (
+    <FontAwesomeIcon
+      icon={faFolder}
+      className="text-yellow-500"
+      size="lg"
+    />
+  );
 };
 
 const FileTableColumns: ColumnDef<FileInfoDto>[] = [

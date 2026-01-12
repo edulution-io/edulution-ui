@@ -97,10 +97,13 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
                   }
                   item.onClick?.();
                 }}
-                className="flex cursor-pointer items-center space-x-2 rounded-lg bg-overlay px-4 py-2 hover:bg-muted-light"
+                className={cn(
+                  'flex cursor-pointer items-center space-x-2 rounded-lg px-4 py-2 hover:bg-muted-light',
+                  item.checked ? 'bg-muted' : 'bg-overlay',
+                )}
               >
                 {item.icon && (
-                  <div className="flex  items-center justify-center rounded-lg border-2 bg-white p-1 dark:border-none">
+                  <div className="flex items-center justify-center rounded-lg border-2 bg-white p-1 dark:border-none">
                     <FontAwesomeIcon
                       icon={item.icon}
                       style={{ color: item.iconColor || 'black' }}

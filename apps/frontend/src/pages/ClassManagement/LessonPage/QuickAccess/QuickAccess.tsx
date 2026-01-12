@@ -89,11 +89,11 @@ const QuickAccess = () => {
       createFunction: undefined,
       icon: <FontAwesomeIcon icon={faDesktop} />,
       isLoading: isRoomLoading,
-      groups: userRoom
+      groups: userRoom?.name
         ? [
             {
               ...userRoom,
-              sid: userRoom?.name,
+              sid: userRoom.name,
               member: userRoom.usersList,
               membersCount: userRoom.usersList.length,
             } as unknown as LmnApiSchoolClass,

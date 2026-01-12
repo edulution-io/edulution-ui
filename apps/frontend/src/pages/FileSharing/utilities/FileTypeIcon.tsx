@@ -24,12 +24,12 @@ import { getFileCategorie, getFileNameFromPath } from '@/pages/FileSharing/utili
 import fileIconColors from '@/theme/fileIconColor';
 import EXTENSION_ICON_MAP from '@libs/filesharing/constants/extensionIconMap';
 
-interface FileIconComponentProps {
+interface FileTypeIconProps {
   filename: string;
   size: number;
 }
 
-const FileIconComponent: React.FC<FileIconComponentProps> = ({ filename, size }) => {
+const FileTypeIcon: React.FC<FileTypeIconProps> = ({ filename, size }) => {
   const extension = getFileNameFromPath(filename).split('.').pop() || '';
   const customIcon = EXTENSION_ICON_MAP[extension];
 
@@ -59,4 +59,4 @@ const FileIconComponent: React.FC<FileIconComponentProps> = ({ filename, size })
   );
 };
 
-export default FileIconComponent;
+export default FileTypeIcon;
