@@ -22,16 +22,34 @@ import { useTranslation } from 'react-i18next';
 import NativeAppHeaderProps from '@libs/ui/types/NativeAppHeaderProps';
 import getAppIconClassName from '@/utils/getAppIconClassName';
 import cn from '@libs/common/utils/className';
+import { Button } from '@/components/shared/Button';
+import { EditIcon } from '@libs/common/constants/standardActionIcons';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 
-const NativeAppHeader = ({ title, iconSrc, description }: NativeAppHeaderProps) => {
+const NativeAppHeader = ({ title, iconSrc, description, isAppIconeditable = false }: NativeAppHeaderProps) => {
   const { t } = useTranslation();
+  const setIsEditIconDialogOpen = useAppConfigsStore((state) => state.setIsEditIconDialogOpen);
+
   return (
     <div className="mr-2 flex min-h-[6.25rem] pl-2 md:pl-4 xl:max-h-[6.25rem]">
-      <img
-        src={iconSrc}
-        alt={`${title} ${t('common.icon')}`}
-        className={cn('hidden h-20 w-20 object-contain md:block', getAppIconClassName(iconSrc))}
-      />
+      <div className="group relative hidden md:block">
+        <img
+          src={iconSrc}
+          alt={`${title} ${t('common.icon')}`}
+          className={cn('h-20 w-20 object-contain', getAppIconClassName(iconSrc))}
+        />
+
+        {isAppIconeditable && (
+          <Button
+            variant="btn-small"
+            onClick={() => setIsEditIconDialogOpen(true)}
+            className="absolute -right-1 top-1 h-8 w-8 rounded-full bg-gray-700 bg-opacity-70 p-2 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-gray-500 hover:bg-opacity-90"
+          >
+            <EditIcon className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
+
       <div className="ml-4">
         <h1>{title}</h1>
         <div className="pt-5 sm:pt-0">{description && <p className="pb-4">{description}</p>}</div>

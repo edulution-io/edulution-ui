@@ -34,6 +34,7 @@ interface PageLayoutProps {
   children: React.ReactNode;
   isFullScreenAppWithoutFloatingButtons?: boolean;
   hasFullWidthMain?: boolean;
+  isAppIconeditable?: boolean;
 }
 
 const PageLayout = ({
@@ -41,6 +42,7 @@ const PageLayout = ({
   children,
   isFullScreenAppWithoutFloatingButtons,
   hasFullWidthMain,
+  isAppIconeditable,
 }: PageLayoutProps) => {
   const { pathname } = useLocation();
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
@@ -62,6 +64,7 @@ const PageLayout = ({
           title={nativeAppHeader.title}
           description={nativeAppHeader.description}
           iconSrc={nativeAppHeader.iconSrc}
+          isAppIconeditable={isAppIconeditable}
         />
       )}
 

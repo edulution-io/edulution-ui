@@ -1177,6 +1177,10 @@
         "success": "App erfolgreich gespeichert",
         "failed": "Aktualisierung fehlgeschlagen"
       },
+      "editIcon": {
+        "title": "Icon bearbeiten",
+        "description": "Wähle ein Icon aus der Liste oder lade ein eigenes hoch."
+      },
       "delete": {
         "success": "App wurde gelöscht",
         "failed": "Löschen fehlgeschlagen"
