@@ -20,7 +20,7 @@
 import React from 'react';
 import cn from '@libs/common/utils/className';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faWindowClose, faWindowMaximize } from '@fortawesome/free-solid-svg-icons';
+import { faWindowMaximize, faWindowRestore } from '@fortawesome/free-solid-svg-icons';
 import WindowControlBaseButton from './WindowControlBaseButton';
 
 interface ToggleMaximizeButtonProps {
@@ -40,7 +40,7 @@ const ToggleMaximizeButton = ({ handleMaximizeToggle, isMinimized, isMaximized }
       onClick={handleMaximizeToggle}
       className={extraClasses}
     >
-      {isMaximized ? <FontAwesomeIcon icon={faWindowClose} /> : <FontAwesomeIcon icon={faWindowMaximize} />}
+      {isMaximized ? <FontAwesomeIcon icon={faWindowRestore} /> : <FontAwesomeIcon icon={faWindowMaximize} />}
     </WindowControlBaseButton>
   );
 };

@@ -18,7 +18,7 @@
  */
 
 import React, { useState } from 'react';
-import { faRotateRight, faArrowsRotate, faBan } from '@fortawesome/free-solid-svg-icons';
+import { faRotateRight, faBan, faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
@@ -90,7 +90,7 @@ const DockerContainerFloatingButtons: React.FC = () => {
       StartButton(() => handleActionClick(DOCKER_COMMANDS.START), isButtonVisible && !areSelectedContainersRunning),
       StopButton(() => handleActionClick(DOCKER_COMMANDS.STOP), isButtonVisible && areSelectedContainersNotRunning),
       {
-        icon: faArrowsRotate,
+        icon: faRotateRight,
         text: t(`common.${DOCKER_COMMANDS.RESTART}`),
         onClick: () => handleActionClick(DOCKER_COMMANDS.RESTART),
         isVisible: isButtonVisible,
@@ -106,7 +106,7 @@ const DockerContainerFloatingButtons: React.FC = () => {
         void getContainers();
       }),
       {
-        icon: faRotateRight,
+        icon: faArrowUpFromBracket,
         text: t(`common.update`),
         onClick: () => handleUpdateClick(),
         isVisible: isButtonVisible,

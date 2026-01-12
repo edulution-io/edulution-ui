@@ -88,7 +88,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             >
               <FontAwesomeIcon
                 icon={showPassword ? faEyeSlash : faEye}
-                className={cn('h-5 w-5', variant === 'login' && 'text-black')}
+                className="h-5 w-5 text-ciGrey"
               />
             </button>
           </div>

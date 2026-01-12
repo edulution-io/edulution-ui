@@ -180,7 +180,7 @@ const UserCardButtonBar = ({
           <FontAwesomeIcon
             icon={button.icon}
             className={cn(
-              button.disabled && 'text-ciDarkGrey',
+              button.disabled && 'text-ciGrey dark:text-ciDarkGrey',
               !button.disabled && button.value !== null && 'text-ciGreen',
               !button.disabled && button.value === false && 'text-ciRed',
             )}
@@ -207,7 +207,9 @@ const UserCardButtonBar = ({
             <div className={cn('relative', !isVeyonButtonEnabled && 'cursor-not-allowed')}>
               <FontAwesomeIcon
                 icon={button.icon}
-                className={cn(veyonIsActive && !button.disabled ? button.defaultColor : 'text-ciDarkGrey')}
+                className={cn(
+                  veyonIsActive && !button.disabled ? button.defaultColor : 'text-ciGrey dark:text-ciDarkGrey',
+                )}
               />
 
               {isVeyonButtonEnabled && (
