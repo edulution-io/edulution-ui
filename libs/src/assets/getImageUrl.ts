@@ -17,8 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export { default as DownButton } from './SidebarArrowButton';
-export { default as HomeButton } from './LauncherButton';
-export { default as MobileSidebarItem } from './MobileSidebarItem';
-export { default as SidebarItem } from './SidebarItem';
-export { default as UserMenuButton } from './UserMenuButton';
+const getImageUrl = (src: string) => `data:image/svg+xml,${encodeURIComponent(src)}`;
+
+export default getImageUrl;
