@@ -1420,6 +1420,12 @@
     "cancel": "Cancel",
     "columns": "Columns",
     "table": "Table",
+    "tableView": "Table view",
+    "gridView": "Grid view",
+    "sort": "Sort",
+    "ascending": "ascending",
+    "descending": "descending",
+    "selectAll": "Select all",
     "copy": {
       "success": "Successfully copied to clipboard",
       "error": "Copy to clipboard failed",
