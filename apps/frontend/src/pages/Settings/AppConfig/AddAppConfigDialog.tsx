@@ -22,7 +22,8 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { useDropzone } from 'react-dropzone';
-import { MdOutlineCloudUpload } from 'react-icons/md';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -174,7 +175,10 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
                 <p className="text-wrap text-center font-semibold text-secondary">
                   {isDragActive ? t('filesharingUpload.dropHere') : t('appstore.dropIconDescription')}
                 </p>
-                <MdOutlineCloudUpload className="h-12 w-12 text-secondary" />
+                <FontAwesomeIcon
+                  icon={faCloudArrowUp}
+                  className="h-10 w-10 text-secondary"
+                />
               </div>
             </div>
             {form.getValues('customIcon') && (
@@ -194,7 +198,10 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
                       onClick={handleDeleteIcon}
                       className="absolute right-1 top-1 h-8 rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
                     >
-                      <DeleteIcon className="h-4 w-4 text-white" />
+                      <FontAwesomeIcon
+                        icon={DeleteIcon}
+                        className="h-4 w-4 text-white"
+                      />
                     </Button>
                   </li>
                 </ul>

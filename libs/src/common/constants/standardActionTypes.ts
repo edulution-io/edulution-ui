@@ -22,6 +22,7 @@ const STANDARD_ACTION_TYPES = {
   EDIT: 'edit',
   ADD_OR_EDIT: 'addOrEdit',
   DELETE: 'delete',
+  SAVE: 'save',
 } as const;
 
 export default STANDARD_ACTION_TYPES;

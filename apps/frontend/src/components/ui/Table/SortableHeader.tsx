@@ -18,7 +18,8 @@
  */
 
 import React from 'react';
-import { ArrowUpDown } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUpDown } from '@fortawesome/free-solid-svg-icons';
 import { Column, Table } from '@tanstack/react-table';
 import Checkbox from '@/components/ui/Checkbox';
 import cn from '@libs/common/utils/className';
@@ -47,7 +48,12 @@ const SortableHeader = <TData, TValue>({ table, column, className, hidden }: Sor
       >
         <div className="flex items-center">
           {i18n.t(String(column.columnDef.meta?.translationId || column.id))}
-          {column.getIsSorted() && <ArrowUpDown className="ml-2 h-4 w-4" />}
+          {column.getIsSorted() && (
+            <FontAwesomeIcon
+              icon={faUpDown}
+              className="ml-2 h-3 w-3"
+            />
+          )}
         </div>
       </button>
     ) : null}

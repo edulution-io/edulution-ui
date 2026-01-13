@@ -51,7 +51,7 @@ export class AppConfig extends Document {
   @Prop({ type: Number, required: true })
   position: number;
 
-  @Prop({ default: 8 })
+  @Prop({ default: 9 })
   schemaVersion: number;
 }
 

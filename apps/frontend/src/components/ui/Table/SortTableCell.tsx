@@ -19,7 +19,8 @@
 
 import React from 'react';
 import SelectableCell from '@/components/ui/Table/SelectableCell';
-import { IoArrowDownOutline, IoArrowUpOutline } from 'react-icons/io5';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 
 interface SortTableCellProps {
   moveUp: () => Promise<void>;
@@ -41,7 +42,7 @@ const SortTableCell = ({ moveUp, moveDown, position, lastPosition }: SortTableCe
         disabled={isDisabledUp}
         className={`ml-4 ${isDisabledUp ? 'text-foreground' : 'text-muted-foreground'}`}
       >
-        <IoArrowUpOutline />
+        <FontAwesomeIcon icon={faArrowUp} />
       </button>
       <button
         type="button"
@@ -49,7 +50,7 @@ const SortTableCell = ({ moveUp, moveDown, position, lastPosition }: SortTableCe
         disabled={isDisabledDown}
         className={`${isDisabledDown ? 'text-foreground' : 'text-muted-foreground'} ml-4`}
       >
-        <IoArrowDownOutline />
+        <FontAwesomeIcon icon={faArrowDown} />
       </button>
     </SelectableCell>
   );

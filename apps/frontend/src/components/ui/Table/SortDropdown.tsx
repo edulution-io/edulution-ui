@@ -19,7 +19,8 @@
 
 import React, { useState } from 'react';
 import { Table } from '@tanstack/react-table';
-import { ArrowDownAZ, ArrowUpAZ, ChevronDown } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowDownAZ, faArrowUpAZ, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import cn from '@libs/common/utils/className';
 import { inputVariants } from '@libs/ui/constants/commonClassNames';
@@ -47,7 +48,7 @@ const SortDropdown = <TData,>({ table, isDialog }: SortDropdownProps<TData>) => 
     return [
       {
         label: `${label} (${t('common.ascending')})`,
-        icon: ArrowDownAZ,
+        icon: faArrowDownAZ,
         onClick: () => {
           column.toggleSorting(false);
           setIsOpen(false);
@@ -56,7 +57,7 @@ const SortDropdown = <TData,>({ table, isDialog }: SortDropdownProps<TData>) => 
       },
       {
         label: `${label} (${t('common.descending')})`,
-        icon: ArrowUpAZ,
+        icon: faArrowUpAZ,
         onClick: () => {
           column.toggleSorting(true);
           setIsOpen(false);
@@ -79,7 +80,11 @@ const SortDropdown = <TData,>({ table, isDialog }: SortDropdownProps<TData>) => 
           variant="btn-table"
           className={cn('max-w-fit', inputVariants({ variant: isDialog ? 'dialog' : 'default' }))}
         >
-          {t('common.sort')} <ChevronDown className={cn('h-4 w-4 transition-transform', isOpen && 'rotate-180')} />
+          {t('common.sort')}
+          <FontAwesomeIcon
+            icon={faChevronDown}
+            className={cn('h-3 w-3 transition-transform', isOpen && 'rotate-180')}
+          />
         </Button>
       }
       items={dropdownItems}
