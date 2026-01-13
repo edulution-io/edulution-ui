@@ -21,6 +21,8 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import { DndContext, DragOverlay, rectIntersection } from '@dnd-kit/core';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { HiOutlineDotsVertical } from 'react-icons/hi';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import TableGridView from '@/components/ui/Table/TableGridView';
 import { GridItemConfig } from '@/components/ui/Table/GridView/GridView';
@@ -36,12 +38,15 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import ContentType from '@libs/filesharing/types/contentType';
 import { GRID_ICON_SIZE, TABLE_ICON_SIZE } from '@libs/ui/constants';
 import useFileSharingDragAndDrop from '@/pages/FileSharing/hooks/useFileSharingDragAndDrop';
-import { useTranslation } from 'react-i18next';
 import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
 import { getElapsedTime } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import FileEntryIcon from '@/pages/FileSharing/utilities/FileEntryIcon';
-import useVariableSharePathname from '../hooks/useVariableSharePathname';
+import TableActionMenu from '@/components/ui/Table/TableActionMenu';
+import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
+import useStartWebdavFileDownload from '@/pages/FileSharing/hooks/useStartWebdavFileDownload';
+import getFileSharingActions from '@/pages/FileSharing/Table/getFileSharingActions';
 import useFileOpen from '../hooks/useFileOpen';
+import useVariableSharePathname from '../hooks/useVariableSharePathname';
 
 const FileSharingTable = () => {
   const { webdavShare } = useParams();
@@ -67,6 +72,8 @@ const FileSharingTable = () => {
   );
 
   const { handleFileOpen } = useFileOpen({ isDocumentServerConfigured });
+  const { openDialog } = useFileSharingDialogStore();
+  const startDownload = useStartWebdavFileDownload();
 
   useEffect(() => {
     if (currentPath !== '/') void fetchFiles(webdavShare, currentPath);
@@ -121,6 +128,15 @@ const FileSharingTable = () => {
     [shouldHideColumns],
   );
 
+  const actionCallbacks = useMemo(
+    () => ({
+      openDialog,
+      setSelectedItems,
+      startDownload,
+    }),
+    [openDialog, setSelectedItems, startDownload],
+  );
+
   const gridItemConfig: GridItemConfig<DirectoryFileDTO> = useMemo(
     () => ({
       renderIcon: (item) => (
@@ -135,8 +151,25 @@ const FileSharingTable = () => {
         return getElapsedTime(new Date(item.lastmod));
       },
       onItemClick: handleFileOpen,
+      renderContextMenu: (item) => {
+        if (item.filePath === PARENT_FOLDER_PATH) return null;
+        const actions = getFileSharingActions(item, actionCallbacks);
+        return (
+          <TableActionMenu
+            actions={actions}
+            trigger={
+              <button
+                type="button"
+                className="rounded p-1 hover:bg-muted"
+              >
+                <HiOutlineDotsVertical className="h-5 w-5" />
+              </button>
+            }
+          />
+        );
+      },
     }),
-    [handleFileOpen],
+    [handleFileOpen, actionCallbacks],
   );
 
   const filesWithParentNav = useMemo(() => {

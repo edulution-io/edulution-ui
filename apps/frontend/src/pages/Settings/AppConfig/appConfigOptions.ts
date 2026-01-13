@@ -47,6 +47,7 @@ import WEBDAV_SHARE_TABLE_EXTENDED_OPTIONS from '@libs/appconfig/constants/exten
 import MAIL_GENERAL_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/mailGeneralExtendedOptions';
 import FORWARDING_PAGE_OPTIONS from '@libs/appconfig/constants/extendedOptions/forwardingPageOptions';
 import DRAWIO_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/drawioExtendedOptions';
+import FRAME_SCRIPT_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/frameScriptExtendedOptions';
 
 const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -140,6 +141,9 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     icon: FrameIcon,
     options: [APP_CONFIG_OPTION_KEYS.URL, APP_CONFIG_OPTION_KEYS.PROXYCONFIG],
     isNativeApp: false,
+    extendedOptions: {
+      [AppConfigSectionsKeys.scripts]: FRAME_SCRIPT_EXTENDED_OPTIONS,
+    },
   },
   {
     id: APPS.EMBEDDED,
