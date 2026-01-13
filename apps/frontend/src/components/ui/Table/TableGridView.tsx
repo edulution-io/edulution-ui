@@ -17,21 +17,24 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { ReactNode } from 'react';
-import { ColumnDef, flexRender, OnChangeFn, Row, RowSelectionState, VisibilityState } from '@tanstack/react-table';
+import React, { useCallback, useMemo } from 'react';
+import { ColumnDef, OnChangeFn, Row, RowSelectionState, VisibilityState } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 import TableAction from '@libs/common/types/tableAction';
+import VIEW_MODE from '@libs/common/constants/viewMode';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import Input from '@/components/shared/Input';
-import SelectColumnsDropdown from '@/components/ui/Table/SelectColumnsDropdown';
-import TABLE_DEFAULT_COLUMN_WIDTH from '@libs/ui/constants/tableDefaultColumnWidth';
 import TableActionFooter from '@/components/ui/Table/TableActionFooter';
-import DraggableTableRow from '@/components/ui/DraggableTableRow';
-import useScrollableTable from '@/components/ui/Table/useScrollableTable';
-import SelectedRowsCount from '@/components/ui/Table/SelectedRowsCount';
+import useViewModeStore from '@/store/useViewModeStore';
+import Checkbox from '@/components/ui/Checkbox';
+import ScrollableTable from './ScrollableTable';
+import ViewModeToggle from './ViewModeToggle';
+import SortDropdown from './SortDropdown';
+import GridView, { GridItemConfig } from './GridView/GridView';
+import useScrollableTable from './useScrollableTable';
+import SelectedRowsCount from './SelectedRowsCount';
 
-interface DataTableProps<TData, TValue> {
+interface TableGridViewProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   filterKey: string;
@@ -48,15 +51,16 @@ interface DataTableProps<TData, TValue> {
   showSelectedCount?: boolean;
   isDialog?: boolean;
   actions?: TableAction<TData>[];
-  showSearchBarAndColumnSelect?: boolean;
+  showSearchBar?: boolean;
   getRowDisabled?: (row: Row<TData>) => boolean;
   getRowExcludedFromCount?: (row: Row<TData>) => boolean;
   enableDragAndDrop?: boolean;
   canDropOnRow?: (row: TData) => boolean;
-  searchBarAdditionalComponent?: ReactNode;
+  gridItemConfig: GridItemConfig<TData>;
+  viewModeStorageKey: string;
 }
 
-const ScrollableTable = <TData, TValue>({
+const TableGridView = <TData, TValue>({
   columns,
   data,
   filterKey,
@@ -73,14 +77,36 @@ const ScrollableTable = <TData, TValue>({
   isDialog = false,
   initialColumnVisibility = {},
   actions,
-  showSearchBarAndColumnSelect = true,
+  showSearchBar = true,
   getRowDisabled,
   getRowExcludedFromCount,
   enableDragAndDrop = false,
   canDropOnRow,
-  searchBarAdditionalComponent,
-}: DataTableProps<TData, TValue>) => {
+  gridItemConfig,
+  viewModeStorageKey,
+}: TableGridViewProps<TData, TValue>) => {
   const { t } = useTranslation();
+  const { getViewMode, setViewMode } = useViewModeStore();
+  const viewMode = getViewMode(viewModeStorageKey);
+  const isTableView = viewMode === VIEW_MODE.table;
+
+  const handleViewModeChange = useCallback(
+    (mode: typeof VIEW_MODE.table | typeof VIEW_MODE.grid) => {
+      setViewMode(viewModeStorageKey, mode);
+    },
+    [setViewMode, viewModeStorageKey],
+  );
+
+  const viewModeToggle = useMemo(
+    () => (
+      <ViewModeToggle
+        viewMode={viewMode}
+        onViewModeChange={handleViewModeChange}
+        isDialog={isDialog}
+      />
+    ),
+    [viewMode, handleViewModeChange, isDialog],
+  );
 
   const { table } = useScrollableTable({
     columns,
@@ -92,6 +118,35 @@ const ScrollableTable = <TData, TValue>({
     initialSorting,
     initialColumnVisibility,
   });
+
+  if (isTableView) {
+    return (
+      <ScrollableTable
+        columns={columns}
+        data={data}
+        filterKey={filterKey}
+        filterPlaceHolderText={filterPlaceHolderText}
+        onRowSelectionChange={onRowSelectionChange}
+        isLoading={isLoading}
+        selectedRows={selectedRows}
+        getRowId={getRowId}
+        applicationName={applicationName}
+        enableRowSelection={enableRowSelection}
+        initialSorting={initialSorting}
+        showHeader={showHeader}
+        showSelectedCount={showSelectedCount}
+        isDialog={isDialog}
+        initialColumnVisibility={initialColumnVisibility}
+        actions={actions}
+        showSearchBarAndColumnSelect={showSearchBar}
+        getRowDisabled={getRowDisabled}
+        getRowExcludedFromCount={getRowExcludedFromCount}
+        enableDragAndDrop={enableDragAndDrop}
+        canDropOnRow={canDropOnRow}
+        searchBarAdditionalComponent={viewModeToggle}
+      />
+    );
+  }
 
   const filteredRows = table.getFilteredRowModel().rows;
   const countableRows = getRowExcludedFromCount
@@ -114,7 +169,7 @@ const ScrollableTable = <TData, TValue>({
       )}
 
       <div className="h-full w-full flex-1 overflow-auto pr-1 scrollbar-thin">
-        {!!data.length && showSearchBarAndColumnSelect && (
+        {!!data.length && showSearchBar && (
           <div className="flex items-center gap-2 pb-4 pt-2">
             <div className="min-w-0 flex-1">
               <Input
@@ -125,85 +180,40 @@ const ScrollableTable = <TData, TValue>({
               />
             </div>
 
-            {table.getAllColumns().length > 1 && (
-              <SelectColumnsDropdown
-                table={table}
-                isDialog={isDialog}
-              />
-            )}
+            <SortDropdown
+              table={table}
+              isDialog={isDialog}
+            />
 
-            {searchBarAdditionalComponent}
+            {viewModeToggle}
           </div>
         )}
-        <Table>
-          {showHeader && (
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  key={headerGroup.id}
-                  variant={isDialog ? 'dialog' : 'default'}
-                >
-                  {headerGroup.headers.map((header) => (
-                    <TableHead
-                      key={header.id}
-                      style={{
-                        width:
-                          header.column.columnDef.size !== TABLE_DEFAULT_COLUMN_WIDTH
-                            ? `${header.column.columnDef.size}px`
-                            : '',
-                      }}
-                    >
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-          )}
-          <TableBody className="container">
-            {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => {
-                const isRowDisabled = getRowDisabled?.(row);
 
-                return (
-                  <DraggableTableRow
-                    key={row.id}
-                    row={row}
-                    isRowDisabled={isRowDisabled}
-                    enableDragAndDrop={enableDragAndDrop}
-                    canDropOnRow={canDropOnRow}
-                    variant={isDialog ? 'dialog' : 'default'}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={`${row.id}-${cell.column.id}`}
-                        className={`${isRowDisabled ? 'opacity-70' : ''}`}
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </DraggableTableRow>
-                );
-              })
-            ) : (
-              <TableRow variant={isDialog ? 'dialog' : 'default'}>
-                <TableCell
-                  colSpan={columns?.length}
-                  className="h-24 text-center"
-                >
-                  {t('table.noDataAvailable')}
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-          <TableActionFooter
-            actions={actions}
-            columnLength={table.getAllColumns().length}
-          />
-        </Table>
+        {showHeader && enableRowSelection !== false && (
+          <div className="mb-4">
+            <Checkbox
+              checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
+              onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(value)}
+              label={t('common.selectAll')}
+            />
+          </div>
+        )}
+
+        <GridView
+          rows={table.getRowModel().rows}
+          gridItemConfig={gridItemConfig}
+          enableRowSelection={enableRowSelection}
+          getRowDisabled={getRowDisabled}
+          enableDragAndDrop={enableDragAndDrop}
+          canDropOnRow={canDropOnRow}
+        />
+        <TableActionFooter
+          actions={actions}
+          columnLength={1}
+        />
       </div>
     </>
   );
 };
 
-export default ScrollableTable;
+export default TableGridView;

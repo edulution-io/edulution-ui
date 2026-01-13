@@ -17,13 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const FILE_SHARING_TABLE_COLUMNS = {
-  SELECT_FILENAME: 'select-filename',
-  LAST_MODIFIED: 'lastmod',
-  SIZE: 'size',
-  TYPE: 'type',
-  IS_SHARED: 'is-shared',
-  ACTIONS: 'actions',
+const VIEW_MODE = {
+  table: 'table',
+  grid: 'grid',
 } as const;
 
-export default FILE_SHARING_TABLE_COLUMNS;
+export default VIEW_MODE;

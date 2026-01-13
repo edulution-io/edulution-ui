@@ -17,13 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const FILE_SHARING_TABLE_COLUMNS = {
-  SELECT_FILENAME: 'select-filename',
-  LAST_MODIFIED: 'lastmod',
-  SIZE: 'size',
-  TYPE: 'type',
-  IS_SHARED: 'is-shared',
-  ACTIONS: 'actions',
-} as const;
+import VIEW_MODE from '../constants/viewMode';
 
-export default FILE_SHARING_TABLE_COLUMNS;
+type ViewModeType = (typeof VIEW_MODE)[keyof typeof VIEW_MODE];
+
+export default ViewModeType;

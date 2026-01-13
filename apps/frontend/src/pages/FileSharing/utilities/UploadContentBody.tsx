@@ -28,7 +28,7 @@ import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
-import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
+import FileTypeIcon from '@/pages/FileSharing/utilities/FileTypeIcon';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { TiDocumentAdd, TiFolderAdd } from 'react-icons/ti';
 import { UploadItem } from '@libs/filesharing/types/uploadItem';
@@ -207,7 +207,7 @@ const UploadContentBody = () => {
 
     return (
       <div className="flex h-20 items-center justify-center">
-        <FileIconComponent
+        <FileTypeIcon
           size={40}
           filename={file.name}
         />

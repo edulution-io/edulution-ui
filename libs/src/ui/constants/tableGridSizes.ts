@@ -17,5 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-/* eslint-disable import/prefer-default-export */
-export const TABLE_ICON_SIZE = '22';
+export const TABLE_ICON_SIZE = 22;
+export const GRID_ICON_SIZE = 48;
+export const GRID_ITEM_WIDTH = 160;
