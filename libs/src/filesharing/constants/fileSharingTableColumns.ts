@@ -23,6 +23,7 @@ const FILE_SHARING_TABLE_COLUMNS = {
   SIZE: 'size',
   TYPE: 'type',
   IS_SHARED: 'is-shared',
+  ACTIONS: 'actions',
 } as const;
 
 export default FILE_SHARING_TABLE_COLUMNS;

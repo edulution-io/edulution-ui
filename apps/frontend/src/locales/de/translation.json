@@ -230,6 +230,7 @@
   "errors": {
     "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten",
     "automaticLoginFailed": "Automatischer Login fehlgeschlagen",
+    "scriptInjectionFailed": "Skript konnte nicht in den iframe eingefügt werden",
     "uploadOrFetchAttachmentFailed": "Fehler beim Hochladen des Anhangs",
     "fileGenerationFailed": "Datei konnte nicht generiert werden",
     "requestTooLarge": "Deine Anfrage ist größer als {{limit}} KB. Falls du Medien angehängt hast, versuche diese zu komprimieren oder zu entfernen.",
@@ -1168,9 +1169,20 @@
           "description": "Hier im Editor kannst du eigene Webanwendungen gestalten oder bestehende Inhalte integrieren. Du kannst dabei Webseiten erstellen, Inhalte formatieren und individuell anpassen. Auch bereits vorhandene Anwendungen oder externe Inhalte lassen sich einfügen und komfortabel mit deinen eigenen Inhalten verbinden. So entsteht ein flexibler Bereich, in dem du auf einfache Weise Inhalte darstellen oder interaktive Anwendungen anbieten kannst. Starte mit der Wahl des Modus, in welchem die Webanwendung gestartet werden soll.",
           "sandboxMode": "Separates Layout",
           "nativeMode": "Integriertes Layout",
-          "sandboxModeDescription": "Im Modus „Separates Layout“ wird der Inhalt als eigenständige Seite angezeigt, ähnlich wie ein Fenster innerhalb der Anwendung. Dabei können neben dem eigentlichen Inhalt auch zusätzliche Designelemente oder Funktionen aus anderen Quellen geladen werden. Dadurch ist die Gestaltung unabhängig von der Anwendung, könnte also anders aussehen oder sich anders verhalten. Hier muss der Inhalt als HTML-Datei hochgeladen werden.",
-          "nativeModeDescription": "Im Modus „Integriertes Layout“ dagegen wird der Inhalt direkt in die Oberfläche der Anwendung eingefügt. Dadurch sieht der Inhalt genauso aus wie die Anwendung selbst und fügt sich optisch nahtlos ein. Allerdings können hier keine zusätzlichen externen Designelemente oder Funktionen dynamisch hinzugefügt werden. Es können jedoch statische Elemente wie Bilder hochgeladen und hier eingesetzt werden.",
+          "sandboxModeDescription": "Im Modus \"Separates Layout\" wird der Inhalt als eigenständige Seite angezeigt, ähnlich wie ein Fenster innerhalb der Anwendung. Dabei können neben dem eigentlichen Inhalt auch zusätzliche Designelemente oder Funktionen aus anderen Quellen geladen werden. Dadurch ist die Gestaltung unabhängig von der Anwendung, könnte also anders aussehen oder sich anders verhalten. Hier muss der Inhalt als HTML-Datei hochgeladen werden.",
+          "nativeModeDescription": "Im Modus \"Integriertes Layout\" dagegen wird der Inhalt direkt in die Oberfläche der Anwendung eingefügt. Dadurch sieht der Inhalt genauso aus wie die Anwendung selbst und fügt sich optisch nahtlos ein. Allerdings können hier keine zusätzlichen externen Designelemente oder Funktionen dynamisch hinzugefügt werden. Es können jedoch statische Elemente wie Bilder hochgeladen und hier eingesetzt werden.",
           "visibilityDescription": "Hier können Sie festlegen, ob die App öffentlich zugänglich sein soll. Aktiv bedeutet öffentlich, inaktiv bedeutet, dass nur konfigurierte Nutzergruppen Zugriff haben. Die App öffentlich zugänglich zu machen erzeugt einen Link im Footer. Um die App in der Sidebar für registrierte Nutzer sichtbar zu machen, muss deren Zugriff über die Nutzergruppen konfiguriert werden"
+        },
+        "scripts": {
+          "title": "Skripte",
+          "description": "Konfiguriere JavaScript-Skripte, die beim Laden des iframes oder beim Abmelden ausgeführt werden.",
+          "onLoadEnabled": "Skript beim Laden aktivieren",
+          "onLoadDescription": "Führe ein JavaScript-Skript aus, wenn der iframe-Inhalt fertig geladen ist",
+          "onLogoutEnabled": "Skript beim Abmelden aktivieren",
+          "onLogoutDescription": "Führe ein JavaScript-Skript aus, bevor sich der Benutzer abmeldet",
+          "syntaxValid": "Skript-Syntax ist gültig",
+          "syntaxInvalid": "Skript hat Syntaxfehler",
+          "placeholder": "JavaScript-Code hier eingeben"
         }
       },
       "update": {
@@ -1397,6 +1409,7 @@
     "of": "von",
     "back": "Zurück",
     "confirm": "Bestätigen",
+    "validate": "Validieren",
     "chooseFile": "Datei auswählen",
     "changeFile": "Datei ändern",
     "creator": "Ersteller",

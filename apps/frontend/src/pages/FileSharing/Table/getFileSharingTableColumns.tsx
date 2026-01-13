@@ -27,7 +27,7 @@ import {
 } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import { useSearchParams } from 'react-router-dom';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileEntryIcon from '@/pages/FileSharing/utilities/FileEntryIcon';
 import { TABLE_ICON_SIZE } from '@libs/ui/constants';
@@ -47,6 +47,9 @@ import FileActionType from '@libs/filesharing/types/fileActionType';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
+import TableActionCell from '@/components/ui/Table/TableActionCell';
+import useStartWebdavFileDownload from '@/pages/FileSharing/hooks/useStartWebdavFileDownload';
+import getFileSharingActions from '@/pages/FileSharing/Table/getFileSharingActions';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
@@ -131,8 +134,8 @@ const getFileSharingTableColumns = (
         const isSaving = currentlyDisabledFiles[row.original.filename];
 
         return (
-          <div className={`w-full ${isSaving ? 'pointer-events-none opacity-50' : ''}`}>
-            <SelectableTextCell
+          <div className={`min-w-0 max-w-full overflow-hidden ${isSaving ? 'pointer-events-none opacity-50' : ''}`}>
+            <SelectableCell
               icon={
                 <FileEntryIcon
                   file={row.original}
@@ -276,6 +279,33 @@ const getFileSharingTableColumns = (
           <div className={`hidden lg:flex ${typeColumnWidth}`}>
             <span className="text-right text-base font-medium">{renderFileCategorize(row.original)}</span>
           </div>
+        );
+      },
+    },
+    {
+      id: FILE_SHARING_TABLE_COLUMNS.ACTIONS,
+      size: 50,
+      header: () => null,
+      cell: ({ row }) => {
+        if (row.original.filePath === PARENT_FOLDER_PATH) {
+          return null;
+        }
+
+        const { openDialog } = useFileSharingDialogStore();
+        const { setSelectedItems } = useFileSharingStore();
+        const startDownload = useStartWebdavFileDownload();
+
+        const actions = getFileSharingActions(row.original, {
+          openDialog,
+          setSelectedItems,
+          startDownload,
+        });
+
+        return (
+          <TableActionCell
+            actions={actions}
+            row={row}
+          />
         );
       },
     },

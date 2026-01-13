@@ -20,7 +20,7 @@
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import VEYON_PROXY_TABLE_COLUMNS from '@libs/classManagement/constants/veyonProxyTableColumns';
@@ -46,7 +46,7 @@ const VeyonConfigTableColumns: ColumnDef<VeyonProxyItem>[] = [
       };
 
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={handleRowClick}
           text={row.id}
         />
@@ -70,7 +70,7 @@ const VeyonConfigTableColumns: ColumnDef<VeyonProxyItem>[] = [
       };
 
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={handleRowClick}
           text={row.original.subnet}
         />
@@ -92,7 +92,7 @@ const VeyonConfigTableColumns: ColumnDef<VeyonProxyItem>[] = [
         setDialogOpen(ExtendedOptionKeys.VEYON_PROXYS);
       };
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={handleRowClick}
           text={row.original.proxyAdress}
         />

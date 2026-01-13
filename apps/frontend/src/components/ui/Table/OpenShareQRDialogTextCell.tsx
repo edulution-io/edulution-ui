@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 
@@ -39,7 +39,7 @@ const OpenShareQRDialogTextCell = ({
   const { t } = useTranslation();
 
   return (
-    <SelectableTextCell
+    <SelectableCell
       className={className}
       onClick={isPublic ? () => openDialog() : undefined}
       text={t(`${textTranslationId}.${isPublic ? 'isPublicTrue' : 'isPublicFalse'}`)}
