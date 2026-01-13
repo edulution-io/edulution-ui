@@ -27,6 +27,7 @@ export interface GridItemConfig<TData> {
   renderTitle: (item: TData) => string;
   renderSubtitle?: (item: TData) => string | undefined;
   onItemClick?: (item: TData) => void;
+  renderContextMenu?: (item: TData) => ReactNode;
 }
 
 interface GridViewProps<TData> {
@@ -76,6 +77,7 @@ const GridView = <TData,>({
             renderTitle={gridItemConfig.renderTitle}
             renderSubtitle={gridItemConfig.renderSubtitle}
             onItemClick={gridItemConfig.onItemClick}
+            renderContextMenu={gridItemConfig.renderContextMenu}
             enableRowSelection={canSelect}
             enableDragAndDrop={enableDragAndDrop}
             canDropOnRow={canDropOnRow}

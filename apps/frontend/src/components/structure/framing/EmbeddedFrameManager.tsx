@@ -22,31 +22,22 @@ import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
 import useUserAccounts from '@/hooks/useUserAccounts';
-import IFRAME_ALLOWED_CONFIG from '@libs/ui/constants/iframeAllowedConfig';
+import NativeFrame from '@/components/structure/framing/Native/NativeFrame';
 
 const EmbeddedFrameManager = () => {
   const { appConfigs } = useAppConfigsStore();
-  const { loadedEmbeddedFrames, activeEmbeddedFrame } = useFrameStore();
+  const { activeEmbeddedFrame } = useFrameStore();
 
   useUserAccounts(activeEmbeddedFrame);
 
   return appConfigs
     .filter((appConfig) => appConfig.appType === APP_INTEGRATION_VARIANT.FRAME)
-    .map((appConfig) => {
-      const isOpen = activeEmbeddedFrame === appConfig.name;
-      const url = loadedEmbeddedFrames.includes(appConfig.name) ? appConfig.options.url : undefined;
-
-      return (
-        <iframe
-          key={appConfig.name}
-          title={appConfig.name}
-          className={`absolute inset-y-0 left-0 ml-0 w-full ${isOpen ? 'block' : 'hidden'}`}
-          allow={IFRAME_ALLOWED_CONFIG}
-          height="100%"
-          src={url}
-        />
-      );
-    });
+    .map((appConfig) => (
+      <NativeFrame
+        key={appConfig.name}
+        appName={appConfig.name}
+      />
+    ));
 };
 
 export default EmbeddedFrameManager;
