@@ -63,6 +63,7 @@ const ShareFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, on
       title={t(`classmanagement.${title}`)}
       body={getDialogBody()}
       footer={getFooter()}
+      desktopContentClassName="max-w-[60%] max-h-[75%] min-h-fit-content"
     />
   );
 };

@@ -20,7 +20,7 @@
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
@@ -46,7 +46,7 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
     cell: ({ row }) => {
       const { setIsCreateBulletinDialogOpen, setSelectedBulletinToEdit } = useBulletinBoardEditorialStore();
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={() => {
             setIsCreateBulletinDialogOpen(true);
             setSelectedBulletinToEdit(row.original);
@@ -69,7 +69,7 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
     cell: ({ row }) => {
       const { setIsCreateBulletinDialogOpen, setSelectedBulletinToEdit } = useBulletinBoardEditorialStore();
       return (
-        <SelectableTextCell
+        <SelectableCell
           text={row.original.category?.name}
           onClick={() => {
             setIsCreateBulletinDialogOpen(true);
@@ -120,7 +120,7 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
       );
 
       return (
-        <SelectableTextCell
+        <SelectableCell
           icon={
             isExpired ? (
               <FontAwesomeIcon
@@ -150,7 +150,7 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
     cell: ({ row: { original } }) => {
       const { setIsCreateBulletinDialogOpen, setSelectedBulletinToEdit } = useBulletinBoardEditorialStore();
       return (
-        <SelectableTextCell
+        <SelectableCell
           text={original.isVisibleStartDate ? new Date(original.isVisibleStartDate).toLocaleString() : ''}
           onClick={() => {
             setIsCreateBulletinDialogOpen(true);
@@ -171,7 +171,7 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
     cell: ({ row: { original } }) => {
       const { setIsCreateBulletinDialogOpen, setSelectedBulletinToEdit } = useBulletinBoardEditorialStore();
       return (
-        <SelectableTextCell
+        <SelectableCell
           text={original.isVisibleEndDate ? new Date(original.isVisibleEndDate).toLocaleString() : ''}
           onClick={() => {
             setIsCreateBulletinDialogOpen(true);
