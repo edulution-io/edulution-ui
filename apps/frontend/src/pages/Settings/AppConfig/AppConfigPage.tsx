@@ -316,7 +316,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
 
   return (
     <PageLayout
-      isAppIconeditable
+      isAppIconEditable
       nativeAppHeader={
         matchingConfig
           ? {

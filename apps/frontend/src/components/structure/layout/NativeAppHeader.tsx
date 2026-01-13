@@ -26,7 +26,7 @@ import { Button } from '@/components/shared/Button';
 import { EditIcon } from '@libs/common/constants/standardActionIcons';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 
-const NativeAppHeader = ({ title, iconSrc, description, isAppIconeditable = false }: NativeAppHeaderProps) => {
+const NativeAppHeader = ({ title, iconSrc, description, isAppIconEditable = false }: NativeAppHeaderProps) => {
   const { t } = useTranslation();
   const setIsEditIconDialogOpen = useAppConfigsStore((state) => state.setIsEditIconDialogOpen);
 
@@ -39,7 +39,7 @@ const NativeAppHeader = ({ title, iconSrc, description, isAppIconeditable = fals
           className={cn('h-20 w-20 object-contain', getAppIconClassName(iconSrc))}
         />
 
-        {isAppIconeditable && (
+        {isAppIconEditable && (
           <Button
             variant="btn-small"
             onClick={() => setIsEditIconDialogOpen(true)}
