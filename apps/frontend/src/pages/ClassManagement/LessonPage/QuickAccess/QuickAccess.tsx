@@ -90,11 +90,11 @@ const QuickAccess = () => {
       createFunction: undefined,
       icon: <LuMonitor className="h-7 w-7" />,
       isLoading: isRoomLoading,
-      groups: userRoom
+      groups: userRoom?.name
         ? [
             {
               ...userRoom,
-              sid: userRoom?.name,
+              sid: userRoom.name,
               member: userRoom.usersList,
               membersCount: userRoom.usersList.length,
             } as unknown as LmnApiSchoolClass,

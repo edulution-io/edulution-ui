@@ -17,19 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AppConfigSectionsKeys = {
-  general: 'general',
-  fileSharing: 'fileSharing',
-  onlyOffice: 'onlyOffice',
-  drawio: 'drawio',
-  imapMailFeed: 'imapMailFeed',
-  bulletinBoard: 'bulletinBoard',
-  veyon: 'veyon',
-  docker: 'docker',
-  files: 'files',
-  editor: 'editor',
-  webdavShare: 'webdavShare',
-  scripts: 'scripts',
-} as const;
+import VIEW_MODE from '../constants/viewMode';
 
-export default AppConfigSectionsKeys;
+type ViewModeType = (typeof VIEW_MODE)[keyof typeof VIEW_MODE];
+
+export default ViewModeType;

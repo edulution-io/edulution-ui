@@ -18,26 +18,35 @@
  */
 
 import React from 'react';
-import useFrameStore from '@/components/structure/framing/useFrameStore';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
-import useUserAccounts from '@/hooks/useUserAccounts';
-import NativeFrame from '@/components/structure/framing/Native/NativeFrame';
+import { useTranslation } from 'react-i18next';
 
-const EmbeddedFrameManager = () => {
-  const { appConfigs } = useAppConfigsStore();
-  const { activeEmbeddedFrame } = useFrameStore();
+interface SelectedRowsCountProps {
+  applicationName: string;
+  selectedRowsCount: number;
+  filteredRowCount: number;
+}
 
-  useUserAccounts(activeEmbeddedFrame);
+const SelectedRowsCount = ({ applicationName, selectedRowsCount, filteredRowCount }: SelectedRowsCountProps) => {
+  const { t } = useTranslation();
 
-  return appConfigs
-    .filter((appConfig) => appConfig.appType === APP_INTEGRATION_VARIANT.FRAME)
-    .map((appConfig) => (
-      <NativeFrame
-        key={appConfig.name}
-        appName={appConfig.name}
-      />
-    ));
+  if (selectedRowsCount > 0) {
+    return (
+      <div className="text-sm text-muted-foreground">
+        {t(`${applicationName}.${filteredRowCount === 1 ? 'rowSelected' : 'rowsSelected'}`, {
+          selected: selectedRowsCount,
+          total: filteredRowCount,
+        })}
+      </div>
+    );
+  }
+
+  return (
+    <div className="text-sm text-muted-foreground">
+      {t(`${applicationName}.${filteredRowCount === 1 ? 'item' : 'items'}`, {
+        count: filteredRowCount,
+      })}
+    </div>
+  );
 };
 
-export default EmbeddedFrameManager;
+export default SelectedRowsCount;
