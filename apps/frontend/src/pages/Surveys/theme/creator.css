@@ -415,6 +415,11 @@
     box-shadow: 0 0 0 0.063rem var(--ring) !important;
   }
 
+  /* json tab background color */
+  .svc-json-editor-tab__content-area {
+    background-color: var(--sjs-general-backcolor, var(--background, #fff));
+  }
+
   /* width of the content / creator / survey */
   .sd-container-modern,
   .sd-container-modern--static,

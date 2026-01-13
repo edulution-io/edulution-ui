@@ -21,15 +21,7 @@ import React, { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
-import {
-  CalculatedValue,
-  ClearFilesEvent,
-  DownloadFileEvent,
-  Model,
-  Serializer,
-  SurveyModel,
-  UploadFilesEvent,
-} from 'survey-core';
+import { ClearFilesEvent, DownloadFileEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
 import THEME from '@libs/common/constants/theme';
 import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
@@ -263,23 +255,11 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
   useEffect(() => {
     if (!surveyParticipationModel) return;
     if (surveyParticipationModel.logo !== `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-{theme}.webp`) return;
-
-    surveyParticipationModel.calculatedValues.splice(0, surveyParticipationModel.calculatedValues.length);
-
-    const newVariable = new CalculatedValue();
-    newVariable.name = 'theme';
-    newVariable.expression = getResolvedTheme().toString();
-    newVariable.includeIntoResult = true;
-
     if (!surveyParticipationModel.calculatedValues) {
       surveyParticipationModel.calculatedValues = [];
-    } else {
-      surveyParticipationModel.calculatedValues = surveyParticipationModel.calculatedValues.filter(
-        (value) => value.name !== 'theme',
-      );
     }
-    surveyParticipationModel.calculatedValues.push(newVariable);
-  }, [theme, getResolvedTheme, surveyParticipationModel]);
+    surveyParticipationModel.setVariable('theme', getResolvedTheme().toString());
+  }, [surveyParticipationModel, theme, getResolvedTheme]);
 
   if (isFetching) {
     return <LoadingIndicatorDialog isOpen />;

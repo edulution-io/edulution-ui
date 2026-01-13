@@ -26,7 +26,6 @@ import { RiResetLeftLine } from 'react-icons/ri';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { TbFileTypePdf, TbTemplate } from 'react-icons/tb';
-import { CalculatedValue } from 'survey-core';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -198,17 +197,11 @@ const SurveyEditorPage = () => {
     if (creator.survey.logo?.startsWith(SURVEY_DEFAULT_LOGO_PATH)) {
       creator.survey.logo = `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-{theme}.webp`;
 
-      const newVariable = new CalculatedValue();
-      newVariable.name = 'theme';
-      newVariable.expression = getResolvedTheme().toString();
-      newVariable.includeIntoResult = true;
-
       if (!creator.survey.calculatedValues) {
         creator.survey.calculatedValues = [];
-      } else {
-        creator.survey.calculatedValues = creator.survey.calculatedValues.filter((value) => value.name !== 'theme');
       }
-      creator.survey.calculatedValues.push(newVariable);
+
+      creator.survey.setVariable('theme', getResolvedTheme().toString());
     }
 
     const formula = creator.JSON as SurveyFormula;
