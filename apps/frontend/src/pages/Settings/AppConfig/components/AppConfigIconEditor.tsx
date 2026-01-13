@@ -125,11 +125,11 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
 
       {selectedIcon && (
         <div>
-          <p className="mb-2 text-sm font-medium">{t('filesharingUpload.preview')}</p>
+          <p className="mb-2 text-sm font-medium">{t('preview.image')}</p>
           <div className="relative inline-block rounded-xl border border-accent p-3 shadow-sm">
             <img
               src={selectedIcon}
-              alt={t('filesharingUpload.previewAlt')}
+              alt={t('preview.image')}
               className={cn('h-16 w-16 object-contain', isDefaultIcon && getAppIconClassName(selectedIcon))}
             />
             {hasCustomIcon && (
