@@ -75,22 +75,6 @@ const SurveyContextMenuBody = ({ form, surveyCreator }: SurveyContextMenuBodyPro
     <>
       <h3>{t('survey.editor.surveySettings.surveyLogo.title')}</h3>
       <SurveysLogoSettings surveyCreator={surveyCreator} />
-      <h3>{t('survey.expirationDate')}</h3>
-      <DateTimePickerField
-        form={form}
-        path="expires"
-        variant="dialog"
-      />
-      <h3>{t('survey.editor.surveySettings.invitees')}</h3>
-      <SearchUsersOrGroups
-        users={watch('invitedAttendees')}
-        onSearch={onAttendeesSearch}
-        onUserChange={handleAttendeesChange}
-        groups={watch('invitedGroups')}
-        onGroupSearch={searchGroups}
-        onGroupsChange={handleGroupsChange}
-        variant="dialog"
-      />
       <h3>{t('surveys.saveDialog.settingsFlags')}</h3>
       {checkboxOptions.map(({ name, label, shouldDisable }) => (
         <Checkbox
@@ -103,6 +87,21 @@ const SurveyContextMenuBody = ({ form, surveyCreator }: SurveyContextMenuBodyPro
           className="text-background"
         />
       ))}
+      <SearchUsersOrGroups
+        users={watch('invitedAttendees')}
+        onSearch={onAttendeesSearch}
+        onUserChange={handleAttendeesChange}
+        groups={watch('invitedGroups')}
+        onGroupSearch={searchGroups}
+        onGroupsChange={handleGroupsChange}
+        variant="dialog"
+      />
+      <DateTimePickerField
+        form={form}
+        path="expires"
+        translationId="survey.expirationDate"
+        variant="dialog"
+      />
     </>
   );
 };
