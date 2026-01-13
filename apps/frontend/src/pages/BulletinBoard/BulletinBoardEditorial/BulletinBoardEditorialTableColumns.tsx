@@ -21,11 +21,10 @@ import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableCell from '@/components/ui/Table/SelectableCell';
-import { IoEyeSharp } from 'react-icons/io5';
-import { FaEyeSlash } from 'react-icons/fa';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClock, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialStore';
-import { FaClock } from 'react-icons/fa6';
 import BULLETIN_BOARD_EDITORIAL_TABLE_COLUMNS from '@libs/bulletinBoard/constants/bulletinBoardEditorialTableColumns';
 import hideOnMobileClassName from '@libs/ui/constants/hideOnMobileClassName';
 
@@ -109,14 +108,29 @@ const bulletinBoardEditorialTableColumns: ColumnDef<BulletinResponseDto>[] = [
       const isExpired = (startDate && currentDate < startDate) || (endDate && currentDate > endDate);
 
       const isActiveIcon = original.isActive ? (
-        <IoEyeSharp className="text-green-500" />
+        <FontAwesomeIcon
+          icon={faEye}
+          className="text-green-500"
+        />
       ) : (
-        <FaEyeSlash className="text-red-500" />
+        <FontAwesomeIcon
+          icon={faEyeSlash}
+          className="text-ciRed"
+        />
       );
 
       return (
         <SelectableCell
-          icon={isExpired ? <FaClock className="text-red-500" /> : isActiveIcon}
+          icon={
+            isExpired ? (
+              <FontAwesomeIcon
+                icon={faClock}
+                className="text-ciRed"
+              />
+            ) : (
+              isActiveIcon
+            )
+          }
           onClick={() => {
             setIsCreateBulletinDialogOpen(true);
             setSelectedBulletinToEdit(original);

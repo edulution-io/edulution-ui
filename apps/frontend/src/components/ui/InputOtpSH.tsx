@@ -20,7 +20,8 @@
 'use client';
 
 import * as React from 'react';
-import { DashIcon } from '@radix-ui/react-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMinus } from '@fortawesome/free-solid-svg-icons';
 import { OTPInput, OTPInputContext } from 'input-otp';
 import { type VariantProps } from 'class-variance-authority';
 
@@ -86,7 +87,10 @@ const InputOTPSeparatorSH = React.forwardRef<React.ElementRef<'div'>, React.Comp
       role="separator"
       {...props}
     >
-      <DashIcon />
+      <FontAwesomeIcon
+        icon={faMinus}
+        className="w-1"
+      />
     </div>
   ),
 );

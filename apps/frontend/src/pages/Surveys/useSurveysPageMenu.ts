@@ -24,10 +24,11 @@ import {
   CREATOR_SURVEYS_PAGE,
   OPEN_SURVEYS_PAGE,
 } from '@libs/survey/constants/surveys-endpoint';
-import { PlusIcon, SurveysMenuIcon, SurveysViewAnsweredIcon, SurveysViewOpenIcon, UserIcon } from '@/assets/icons';
+import { SurveysMenuIcon, SurveysViewAnsweredIcon, SurveysViewOpenIcon, SurveysViewOwnIcon } from '@/assets/icons';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import APPS from '@libs/appconfig/constants/apps';
 import SurveysPageView from '@libs/survey/types/api/page-view';
+import { faAdd } from '@fortawesome/free-solid-svg-icons';
 
 const useSurveysPageMenu = () => {
   const navigate = useNavigate();
@@ -57,7 +58,7 @@ const useSurveysPageMenu = () => {
       {
         id: SurveysPageView.CREATED,
         label: 'surveys.view.created.menu',
-        icon: UserIcon,
+        icon: SurveysViewOwnIcon,
         action: () => {
           navigate(CREATED_SURVEYS_PAGE);
         },
@@ -65,7 +66,7 @@ const useSurveysPageMenu = () => {
       {
         id: SurveysPageView.CREATOR,
         label: 'surveys.view.editor.menu',
-        icon: PlusIcon,
+        icon: faAdd,
         action: () => {
           navigate(CREATOR_SURVEYS_PAGE);
         },

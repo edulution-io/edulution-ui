@@ -18,10 +18,10 @@
  */
 
 import { t } from 'i18next';
-import { MdLogin } from 'react-icons/md';
+import { faRightToBracket } from '@fortawesome/free-solid-svg-icons';
 
 const JoinButton = (onClick: () => void, isVisible?: boolean) => ({
-  icon: MdLogin,
+  icon: faRightToBracket,
   text: t('common.join'),
   onClick,
   isVisible,

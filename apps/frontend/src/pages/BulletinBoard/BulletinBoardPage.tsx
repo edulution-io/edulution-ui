@@ -19,7 +19,7 @@
 
 import React, { useEffect, useState } from 'react';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
-import { BulletinBoardIcon } from '@/assets/icons';
+import { InfoBoardIcon } from '@/assets/icons';
 import { useTranslation } from 'react-i18next';
 import BulletinBoardEditorialPage from '@/pages/BulletinBoard/BulletinBoardEditorial/BulletinBoardEditorialPage';
 import BulletinBoardEditorialFloatingButtonsBar from '@/pages/BulletinBoard/BulletinBoardEditorial/BulletinBoardEditorialFloatingButtonsBar';
@@ -109,7 +109,7 @@ const BulletinBoardPage = () => {
       nativeAppHeader={{
         title: t('bulletinboard.appTitle'),
         description: t('bulletinboard.description'),
-        iconSrc: BulletinBoardIcon,
+        iconSrc: InfoBoardIcon,
       }}
     >
       {getPageContent()}

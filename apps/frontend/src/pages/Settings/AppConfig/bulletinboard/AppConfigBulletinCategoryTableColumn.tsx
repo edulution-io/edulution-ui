@@ -21,8 +21,8 @@ import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableCell from '@/components/ui/Table/SelectableCell';
-import { FaEyeSlash } from 'react-icons/fa';
-import { IoEyeSharp } from 'react-icons/io5';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
 import SortTableCell from '@/components/ui/Table/SortTableCell';
@@ -138,7 +138,10 @@ const AppConfigBulletinCategoryTableColumn: ColumnDef<BulletinCategoryResponseDt
       return (
         <SelectableCell
           icon={
-            row.original.isActive ? <IoEyeSharp className="text-green-500" /> : <FaEyeSlash className="text-red-500" />
+            <FontAwesomeIcon
+              icon={row.original.isActive ? faEye : faEyeSlash}
+              className="text-green-500"
+            />
           }
           onClick={handleRowClick}
         />

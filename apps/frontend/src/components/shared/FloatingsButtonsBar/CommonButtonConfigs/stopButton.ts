@@ -18,10 +18,10 @@
  */
 
 import { t } from 'i18next';
-import { MdStop } from 'react-icons/md';
+import { faStop } from '@fortawesome/free-solid-svg-icons';
 
 const StopButton = (onClick: () => void | Promise<void>, isVisible?: boolean) => ({
-  icon: MdStop,
+  icon: faStop,
   text: t('common.stop'),
   onClick,
   isVisible,

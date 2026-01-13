@@ -17,11 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { VscShare } from 'react-icons/vsc';
+import { faShareNodes } from '@fortawesome/free-solid-svg-icons';
 import { t } from 'i18next';
 
 const ShareButton = (onClick: () => void, isVisible?: boolean) => ({
-  icon: VscShare,
+  icon: faShareNodes,
   text: t('tooltip.share'),
   onClick,
   isVisible,

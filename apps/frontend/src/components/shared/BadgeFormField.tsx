@@ -21,7 +21,8 @@ import React from 'react';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { MdAddCircleOutline, MdRemoveCircleOutline } from 'react-icons/md';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCirclePlus, faCircleMinus } from '@fortawesome/free-solid-svg-icons';
 import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 import { FormControl, FormFieldSH, FormItem, FormLabel } from '@/components/ui/Form';
 import { BadgeSH } from '@/components/ui/BadgeSH';
@@ -102,7 +103,10 @@ const BadgeFormField = <T extends FieldValues>({
                     className="ml-2"
                     onClick={() => handleRemoveBadge(badges, badge, field.onChange)}
                   >
-                    <MdRemoveCircleOutline className="h-[24px] w-[24px]" />
+                    <FontAwesomeIcon
+                      icon={faCircleMinus}
+                      className="h-[24px] w-[24px]"
+                    />
                   </button>
                 </BadgeSH>
               ))}
@@ -115,7 +119,7 @@ const BadgeFormField = <T extends FieldValues>({
                   disabled={disabled || !newLabel}
                   actionIcons={[
                     {
-                      icon: MdAddCircleOutline,
+                      icon: faCirclePlus,
                       onClick: () => handleAddBadge(badges, newLabel, field.onChange),
                     },
                   ]}

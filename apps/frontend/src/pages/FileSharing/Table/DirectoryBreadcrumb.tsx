@@ -26,7 +26,8 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/Breadcrumb';
 import { useTranslation } from 'react-i18next';
-import { HiChevronDown } from 'react-icons/hi';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import useMedia from '@/hooks/useMedia';
 
@@ -94,7 +95,10 @@ const DirectoryBreadcrumb: React.FC<DirectoryBreadcrumbProps> = ({
                 trigger={
                   <span className="flex cursor-pointer items-center gap-1">
                     ...
-                    <HiChevronDown />
+                    <FontAwesomeIcon
+                      icon={faChevronDown}
+                      className="h-2 w-2"
+                    />
                   </span>
                 }
                 items={clearSegments.slice(0, -1).map((segment, index) => {

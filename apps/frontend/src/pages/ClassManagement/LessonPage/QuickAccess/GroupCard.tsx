@@ -23,7 +23,8 @@ import { Card, CardContent } from '@/components/shared/Card';
 import ActionTooltip from '@/components/shared/ActionTooltip';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import UserGroups from '@libs/groups/types/userGroups.enum';
-import { MdPlayArrow } from 'react-icons/md';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import { CLASS_MANAGEMENT_LESSON_PATH } from '@libs/classManagement/constants/classManagementPaths';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
@@ -81,7 +82,7 @@ const GroupCard = ({ icon, type, group }: GroupCardProps) => {
             />
           </TooltipProvider>
           <div className="flex flex-row items-center">
-            {isHovered ? <MdPlayArrow className="h-7 w-7" /> : icon}
+            {isHovered ? <FontAwesomeIcon icon={faPlay} /> : icon}
             <div className="ml-2 flex-grow">
               <p className="text-sm">
                 {isHovered ? (

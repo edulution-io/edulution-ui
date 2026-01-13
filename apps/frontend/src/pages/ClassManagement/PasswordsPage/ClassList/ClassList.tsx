@@ -27,7 +27,7 @@ import useLdapGroups from '@/hooks/useLdapGroups';
 import useClassManagementStore from '../../useClassManagementStore';
 
 interface EnrolGroupListProps {
-  row: GroupColumn;
+  row: Omit<GroupColumn, 'icon'>;
   selectedClasses: LmnApiSchoolClass[];
   setSelectedClasses: React.Dispatch<React.SetStateAction<LmnApiSchoolClass[]>>;
   activeSchool: string | null;
