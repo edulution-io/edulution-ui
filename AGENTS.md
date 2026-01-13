@@ -36,6 +36,7 @@
 - Do not use magic strings. Always use constants.
 - In NestJS services, use static Logger calls with the service name as context: `Logger.log('message', ServiceName.name)`, `Logger.error('message', ServiceName.name)`. Do not create instance logger with `private readonly logger = new Logger()`.
 - In React, use `eduApi` (axios) from `@/api/eduApi` for API calls instead of native `fetch`. API calls should be placed in Zustand stores, not in components. Use `ResponseType.BLOB` for blob responses and `handleApiError` for error handling.
+- Only use @fortawesome/free-solid-svg-icons for icons
 
 ## Testing Guidelines
 

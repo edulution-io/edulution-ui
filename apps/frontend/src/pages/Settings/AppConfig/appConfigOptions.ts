@@ -128,6 +128,14 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     isNativeApp: true,
   },
   {
+    id: APPS.WIREGUARD,
+    icon: DesktopDeploymentIcon,
+    isNativeApp: true,
+    extendedOptions: {
+      [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
+    },
+  },
+  {
     id: APPS.FORWARDING,
     icon: ForwardIcon,
     options: [APP_CONFIG_OPTION_KEYS.URL, APP_CONFIG_OPTION_KEYS.PROXYCONFIG],

@@ -191,6 +191,23 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
       hideColumnsInTabletView: [WEBDAV_SHARE_TABLE_COLUMNS.URL],
     }),
   ],
+  [APPS.WIREGUARD]: [
+    createAppConfigTableEntry<ContainerInfo, DockerContainerTableStore>({
+      columns: DockerContainerTableColumns,
+      useStore: useDockerApplicationStore,
+      dialogBody: (
+        <CreateDockerContainerDialog
+          settingLocation={APPS.WIREGUARD}
+          tableId={ExtendedOptionKeys.DOCKER_CONTAINER_TABLE}
+        />
+      ),
+      showAddButton: true,
+      filterKey: DOCKER_CONTAINER_TABLE_COLUMNS.NAME,
+      filterPlaceHolderText: 'dockerOverview.filterPlaceHolderText',
+      type: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
+      ...DOCKER_CONTAINER_TABLE_COLUMS,
+    }),
+  ],
 };
 
 export default TABLE_CONFIG_MAP;

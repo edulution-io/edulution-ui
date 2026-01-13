@@ -17,21 +17,50 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type TApps from '@libs/appconfig/types/appsType';
-import {
-  EDULUTION_MANAGER_APPLICATION_NAME,
-  EDULUTION_MANAGER_CONTAINER_NAME,
-} from '@libs/docker/constants/edulution-manager';
+export interface Peer {
+  name: string;
+  private_key: string;
+  public_key: string;
+  ip: string;
+  routes: string[];
+}
 
-type DockerApplicationList = { [EDULUTION_MANAGER_APPLICATION_NAME]: string } & { [key in TApps]: string };
+export interface PeerRequest {
+  name: string;
+  routes?: string[];
+}
 
-const DOCKER_APPLICATION_LIST: Partial<DockerApplicationList> = {
-  mail: 'edulution-mail',
-  classmanagement: 'edulution-veyon',
-  desktopdeployment: 'edulution-guacamole',
-  filesharing: 'edulution-onlyoffice',
-  [EDULUTION_MANAGER_APPLICATION_NAME]: EDULUTION_MANAGER_CONTAINER_NAME,
-  wireguard: 'edulution-wireguard',
-} as const;
+export interface Site {
+  name: string;
+  private_key: string;
+  public_key: string;
+  ip: string;
+  routes: string[];
+  type: 'site';
+  allowed_ips: string[];
+  endpoint?: string;
+}
 
-export default DOCKER_APPLICATION_LIST;
+export interface SiteRequest {
+  name: string;
+  allowed_ips: string[];
+  endpoint?: string;
+  routes?: string[];
+}
+
+export interface PeerStatus {
+  peer: string;
+  endpoint?: string;
+  allowed_ips: string;
+  last_handshake?: string;
+  latest_handshake_difference?: number;
+  transfer?: {
+    received: number;
+    send: number;
+  };
+  status: 'connected' | 'disconnected';
+}
+
+export interface PeerConfig {
+  data: string;
+}

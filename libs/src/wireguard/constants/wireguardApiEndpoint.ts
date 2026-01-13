@@ -17,21 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type TApps from '@libs/appconfig/types/appsType';
-import {
-  EDULUTION_MANAGER_APPLICATION_NAME,
-  EDULUTION_MANAGER_CONTAINER_NAME,
-} from '@libs/docker/constants/edulution-manager';
+const WIREGUARD_API_ENDPOINT = 'wireguard';
 
-type DockerApplicationList = { [EDULUTION_MANAGER_APPLICATION_NAME]: string } & { [key in TApps]: string };
-
-const DOCKER_APPLICATION_LIST: Partial<DockerApplicationList> = {
-  mail: 'edulution-mail',
-  classmanagement: 'edulution-veyon',
-  desktopdeployment: 'edulution-guacamole',
-  filesharing: 'edulution-onlyoffice',
-  [EDULUTION_MANAGER_APPLICATION_NAME]: EDULUTION_MANAGER_CONTAINER_NAME,
-  wireguard: 'edulution-wireguard',
-} as const;
-
-export default DOCKER_APPLICATION_LIST;
+export default WIREGUARD_API_ENDPOINT;

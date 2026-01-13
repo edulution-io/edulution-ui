@@ -17,21 +17,19 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type TApps from '@libs/appconfig/types/appsType';
-import {
-  EDULUTION_MANAGER_APPLICATION_NAME,
-  EDULUTION_MANAGER_CONTAINER_NAME,
-} from '@libs/docker/constants/edulution-manager';
-
-type DockerApplicationList = { [EDULUTION_MANAGER_APPLICATION_NAME]: string } & { [key in TApps]: string };
-
-const DOCKER_APPLICATION_LIST: Partial<DockerApplicationList> = {
-  mail: 'edulution-mail',
-  classmanagement: 'edulution-veyon',
-  desktopdeployment: 'edulution-guacamole',
-  filesharing: 'edulution-onlyoffice',
-  [EDULUTION_MANAGER_APPLICATION_NAME]: EDULUTION_MANAGER_CONTAINER_NAME,
-  wireguard: 'edulution-wireguard',
+const WIREGUARD_ERROR_MESSAGES = {
+  GET_PEERS_FAILED: 'wireguard.errors.getPeersFailed',
+  CREATE_PEER_FAILED: 'wireguard.errors.createPeerFailed',
+  DELETE_PEER_FAILED: 'wireguard.errors.deletePeerFailed',
+  GET_PEER_CONFIG_FAILED: 'wireguard.errors.getPeerConfigFailed',
+  GET_PEER_QR_FAILED: 'wireguard.errors.getPeerQrFailed',
+  GET_PEER_STATUS_FAILED: 'wireguard.errors.getPeerStatusFailed',
+  GET_PEERS_STATUS_FAILED: 'wireguard.errors.getPeersStatusFailed',
+  RESTART_FAILED: 'wireguard.errors.restartFailed',
+  GET_SITES_FAILED: 'wireguard.errors.getSitesFailed',
+  CREATE_SITE_FAILED: 'wireguard.errors.createSiteFailed',
+  DELETE_SITE_FAILED: 'wireguard.errors.deleteSiteFailed',
+  GET_SITE_CONFIG_FAILED: 'wireguard.errors.getSiteConfigFailed',
 } as const;
 
-export default DOCKER_APPLICATION_LIST;
+export default WIREGUARD_ERROR_MESSAGES;

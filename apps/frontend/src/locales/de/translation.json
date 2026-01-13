@@ -1668,6 +1668,41 @@
     "historyTitle": "Verlauf",
     "historyNoMore": "Keine weiteren Einträge"
   },
+  "wireguard": {
+    "title": "WIREGUARD",
+    "sidebar": "WireGuard",
+    "description": "WireGuard VPN-Peers und Site-to-Site-Verbindungen verwalten",
+    "name": "Name",
+    "type": "Typ",
+    "ip": "IP-Adresse",
+    "publicKey": "Öffentlicher Schlüssel",
+    "routes": "Routen",
+    "allowedIps": "Erlaubte IPs",
+    "endpoint": "Endpunkt",
+    "clientPeer": "Client-Peer",
+    "siteToSite": "Site-to-Site",
+    "addPeer": "Peer hinzufügen",
+    "delete": "Löschen",
+    "searchPlaceholder": "Nach Name suchen...",
+    "namePlaceholder": "Peer-Name eingeben",
+    "routesDescription": "Kommagetrennte Liste von Routen (z.B. 0.0.0.0/0, 10.0.0.0/8)",
+    "allowedIpsDescription": "Kommagetrennte Liste erlaubter IP-Bereiche für Site-to-Site-Verbindung",
+    "endpointDescription": "Remote-Endpunkt-Adresse und Port (z.B. vpn.example.com:51820)",
+    "noSelection": "Bitte wähle mindestens einen Peer zum Löschen aus",
+    "deleteSuccess": "Peers erfolgreich gelöscht",
+    "deleteFailed": "Löschen der Peers fehlgeschlagen",
+    "peerCreated": "Client-Peer erfolgreich erstellt",
+    "siteCreated": "Site-to-Site-Verbindung erfolgreich erstellt",
+    "createFailed": "Erstellen des Peers fehlgeschlagen",
+    "qrCode": "QR-Code für {{name}}",
+    "qrCodeAlt": "WireGuard-Konfigurations-QR-Code",
+    "qrCodeFailed": "QR-Code konnte nicht geladen werden",
+    "noQrCode": "Kein QR-Code verfügbar",
+    "validation": {
+      "nameRequired": "Name ist erforderlich",
+      "allowedIpsRequired": "Erlaubte IPs sind für Site-to-Site-Verbindungen erforderlich"
+    }
+  },
   "table": {
     "noDataAvailable": "Keine Daten verfügbar"
   },

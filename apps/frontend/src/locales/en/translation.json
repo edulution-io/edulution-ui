@@ -1665,6 +1665,41 @@
     "historyTitle": "History",
     "historyNoMore": "No more entries"
   },
+  "wireguard": {
+    "title": "WIREGUARD",
+    "sidebar": "WireGuard",
+    "description": "Manage WireGuard VPN peers and site-to-site connections",
+    "name": "Name",
+    "type": "Type",
+    "ip": "IP Address",
+    "publicKey": "Public Key",
+    "routes": "Routes",
+    "allowedIps": "Allowed IPs",
+    "endpoint": "Endpoint",
+    "clientPeer": "Client Peer",
+    "siteToSite": "Site-to-Site",
+    "addPeer": "Add Peer",
+    "delete": "Delete",
+    "searchPlaceholder": "Search by name...",
+    "namePlaceholder": "Enter peer name",
+    "routesDescription": "Comma-separated list of routes (e.g. 0.0.0.0/0, 10.0.0.0/8)",
+    "allowedIpsDescription": "Comma-separated list of allowed IP ranges for site-to-site connection",
+    "endpointDescription": "Remote endpoint address and port (e.g. vpn.example.com:51820)",
+    "noSelection": "Please select at least one peer to delete",
+    "deleteSuccess": "Peers deleted successfully",
+    "deleteFailed": "Failed to delete peers",
+    "peerCreated": "Client peer created successfully",
+    "siteCreated": "Site-to-site connection created successfully",
+    "createFailed": "Failed to create peer",
+    "qrCode": "QR Code for {{name}}",
+    "qrCodeAlt": "WireGuard configuration QR code",
+    "qrCodeFailed": "Failed to load QR code",
+    "noQrCode": "No QR code available",
+    "validation": {
+      "nameRequired": "Name is required",
+      "allowedIpsRequired": "Allowed IPs are required for site-to-site connections"
+    }
+  },
   "table": {
     "noDataAvailable": "No data available"
   },

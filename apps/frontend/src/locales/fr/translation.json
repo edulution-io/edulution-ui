@@ -1496,6 +1496,41 @@
     "title": "Whiteboard",
     "sidebar": "Whiteboard collaboratif"
   },
+  "wireguard": {
+    "title": "WIREGUARD",
+    "sidebar": "WireGuard",
+    "description": "Gérer les pairs VPN WireGuard et les connexions site-à-site",
+    "name": "Nom",
+    "type": "Type",
+    "ip": "Adresse IP",
+    "publicKey": "Clé publique",
+    "routes": "Routes",
+    "allowedIps": "IPs autorisées",
+    "endpoint": "Point de terminaison",
+    "clientPeer": "Pair client",
+    "siteToSite": "Site-à-site",
+    "addPeer": "Ajouter un pair",
+    "delete": "Supprimer",
+    "searchPlaceholder": "Rechercher par nom...",
+    "namePlaceholder": "Entrer le nom du pair",
+    "routesDescription": "Liste des routes séparées par des virgules (par ex. 0.0.0.0/0, 10.0.0.0/8)",
+    "allowedIpsDescription": "Liste des plages IP autorisées séparées par des virgules pour la connexion site-à-site",
+    "endpointDescription": "Adresse et port du point de terminaison distant (par ex. vpn.example.com:51820)",
+    "noSelection": "Veuillez sélectionner au moins un pair à supprimer",
+    "deleteSuccess": "Pairs supprimés avec succès",
+    "deleteFailed": "Échec de la suppression des pairs",
+    "peerCreated": "Pair client créé avec succès",
+    "siteCreated": "Connexion site-à-site créée avec succès",
+    "createFailed": "Échec de la création du pair",
+    "qrCode": "Code QR pour {{name}}",
+    "qrCodeAlt": "Code QR de configuration WireGuard",
+    "qrCodeFailed": "Échec du chargement du code QR",
+    "noQrCode": "Aucun code QR disponible",
+    "validation": {
+      "nameRequired": "Le nom est requis",
+      "allowedIpsRequired": "Les IPs autorisées sont requises pour les connexions site-à-site"
+    }
+  },
   "table": {
     "noDataAvailable": "Aucune donnée disponible"
   },
