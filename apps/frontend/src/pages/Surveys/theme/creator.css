@@ -94,12 +94,37 @@
     border-radius: var(--radius);
     border: 0.063rem solid var(--ring);
   }
-  .sd-text,
-  .sd-text__content,
-  .sd-comment {
-    cursor: not-allowed;
-    max-height: 2rem;
-    height: 2rem;
+  /* fix input color for labels in the multiple text question */
+  .sd-multipletext__item-container.sd-input {
+    .svc-string-editor__content {
+      /* text was still in black */
+      color: var(--sjs-general-forecolor, var(--input));
+    }
+  }
+
+  /* Fix dropdown value color when selecting a new value */
+  .sv-dropdown_select-wrapper {
+    .sd-dropdown__filter-string-input {
+      color: var(--input);
+    }
+  }
+
+  /* fix checkbox svg icon color */
+  .sd-selectbase {
+    .sd-checkbox__svg use {
+      fill: transparent;
+    }
+    .sd-item--checked,
+    .sd-checkbox--checked {
+      .sd-checkbox__svg use {
+        fill: var(--input);
+      }
+      :focus {
+        .sd-checkbox__svg use {
+          fill: var(--primary);
+        }
+      }
+    }
   }
 
   .svc-question__content {
@@ -226,6 +251,12 @@
     margin-left: 1rem;
   }
 
+  /* Fix dialog component (background-colors) */
+  .sv-popup__body-header,
+  .sv-popup__body-footer {
+    background-color: var(--overlay);
+  }
+
   /* Fix popup component */
   .sv-popup--dropdown {
     .sv-popup__container {
@@ -332,6 +363,11 @@
               fill: var(--primary);
             }
           }
+          .svc-list__item-body:focus {
+            .sv-string-viewer:focus {
+              color: var(--primary);
+            }
+          }
           .svc-list-item__marker-icon {
             justify-self: end;
           }
@@ -413,11 +449,6 @@
   .svc-page__content--selected:focus:hover:not(.svc-page__content--new) {
     background-color: var(--overlay-transparent) !important;
     box-shadow: 0 0 0 0.063rem var(--ring) !important;
-  }
-
-  /* json tab background color */
-  .svc-json-editor-tab__content-area {
-    background-color: var(--sjs-general-backcolor, var(--background, #fff));
   }
 
   /* width of the content / creator / survey */
@@ -508,5 +539,33 @@
         }
       }
     }
+  }
+
+  /* editor tab inputs */
+  .svc-tab-designer {
+    .sd-text,
+    .sd-text__content,
+    .sd-comment,
+    .sd-multipletext__item-container.sd-input {
+      cursor: not-allowed;
+    }
+    .svc-question__content--dropdown {
+      .sv-dropdown_select-wrapper {
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  /* test tab inputs */
+  .svc-test-tab__content {
+    .sd-input,
+    .sd-text {
+      color: var(--input);
+    }
+  }
+
+  /* json tab background color */
+  .svc-json-editor-tab__content-area {
+    background-color: var(--sjs-general-backcolor, var(--background, #fff));
   }
 }
