@@ -17,22 +17,24 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import { SizeProp } from '@fortawesome/fontawesome-svg-core';
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { HTMLAttributes } from 'react';
 import React, { FC } from 'react';
-import type { IconType } from 'react-icons';
 
 interface IconWithCountProps extends HTMLAttributes<HTMLSpanElement> {
-  Icon: IconType;
+  icon: IconDefinition;
   count?: number;
-  size?: string;
+  size?: SizeProp;
   badgeSize?: number;
   className?: string;
 }
 
 const IconWithCount: FC<IconWithCountProps> = ({
-  Icon,
+  icon,
   count = 0,
-  size = 24,
+  size = 'lg',
   badgeSize = 16,
   className = '',
   ...rest
@@ -46,7 +48,10 @@ const IconWithCount: FC<IconWithCountProps> = ({
       style={{ cursor: rest.onClick ? 'pointer' : undefined }}
       {...rest}
     >
-      <Icon size={size} />
+      <FontAwesomeIcon
+        icon={icon}
+        size={size}
+      />
 
       {count > 0 && (
         <span

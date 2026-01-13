@@ -19,11 +19,11 @@
 
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import { LockClosedIcon } from '@radix-ui/react-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRightToBracket, faLock, faPlay, faStop, faHourglassHalf } from '@fortawesome/free-solid-svg-icons';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
-import { MdLogin, MdPending, MdPlayArrow, MdStop } from 'react-icons/md';
 import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import { useTranslation } from 'react-i18next';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/useConferenceDetailsDialogStore';
@@ -39,25 +39,35 @@ import hideOnMobileClassName from '@libs/ui/constants/hideOnMobileClassName';
 function getRowAction(isRunning: boolean, isLoading: boolean, isUserTheCreator: boolean) {
   if (isLoading) {
     return {
-      icon: <MdPending />,
+      icon: <FontAwesomeIcon icon={faHourglassHalf} />,
       text: i18n.t('common.loading'),
     };
   }
   if (isUserTheCreator) {
     if (isRunning) {
       return {
-        icon: <MdStop />,
+        icon: (
+          <FontAwesomeIcon
+            icon={faStop}
+            size="xs"
+          />
+        ),
         text: i18n.t('conferences.stop'),
       };
     }
     return {
-      icon: <MdPlayArrow />,
+      icon: (
+        <FontAwesomeIcon
+          icon={faPlay}
+          size="xs"
+        />
+      ),
       text: i18n.t('conferences.start'),
     };
   }
-  if (isRunning) {
+  if (!isRunning) {
     return {
-      icon: <MdLogin />,
+      icon: <FontAwesomeIcon icon={faArrowRightToBracket} />,
       text: i18n.t('conferences.join'),
     };
   }
@@ -95,7 +105,7 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
       return (
         <SelectableTextCell
           onClick={onClick}
-          icon={isRunning ? <MdLogin /> : undefined}
+          icon={isRunning ? <FontAwesomeIcon icon={faArrowRightToBracket} /> : undefined}
           text={name}
           textOnHover={isRunning ? t('common.join') : ''}
           row={user?.username === creator?.username ? row : undefined}
@@ -186,7 +196,8 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
           textOnHover={isUserTheCreator ? t('common.details') : ''}
           icon={
             row.original.password ? (
-              <LockClosedIcon
+              <FontAwesomeIcon
+                icon={faLock}
                 width={iconSize}
                 height={iconSize}
               />

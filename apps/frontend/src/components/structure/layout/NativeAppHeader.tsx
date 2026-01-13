@@ -17,8 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { isValidElement } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import NativeAppHeaderProps from '@libs/ui/types/NativeAppHeaderProps';
 import getAppIconClassName from '@/utils/getAppIconClassName';
 import cn from '@libs/common/utils/className';
@@ -30,14 +31,37 @@ const NativeAppHeader = ({ title, iconSrc, description, isAppIconEditable = fals
   const { t } = useTranslation();
   const setIsEditIconDialogOpen = useAppConfigsStore((state) => state.setIsEditIconDialogOpen);
 
-  return (
-    <div className="mr-2 flex min-h-[6.25rem] pl-2 md:pl-4 xl:max-h-[6.25rem]">
-      <div className="group relative hidden md:block">
+  const renderIcon = () => {
+    if (isValidElement(iconSrc)) {
+      return iconSrc;
+    }
+
+    if (typeof iconSrc === 'string') {
+      const iconClassName = getAppIconClassName(iconSrc);
+      const baseClassName = cn('h-20 w-20 object-contain', iconClassName);
+      return (
         <img
           src={iconSrc}
           alt={`${title} ${t('common.icon')}`}
-          className={cn('h-20 w-20 object-contain', getAppIconClassName(iconSrc))}
+          className={baseClassName}
         />
+      );
+    }
+
+    const iconClassName = getAppIconClassName(iconSrc);
+    const baseClassName = cn('h-20 w-20 object-contain', iconClassName);
+    return (
+      <FontAwesomeIcon
+        icon={iconSrc}
+        className={cn(baseClassName, 'scale-75')}
+      />
+    );
+  };
+
+  return (
+    <div className="mr-2 flex min-h-[6.25rem] pl-2 md:pl-4 xl:max-h-[6.25rem]">
+      <div className="group relative hidden md:block">
+        {renderIcon()}
 
         {isAppIconEditable && (
           <Button
@@ -45,7 +69,10 @@ const NativeAppHeader = ({ title, iconSrc, description, isAppIconEditable = fals
             onClick={() => setIsEditIconDialogOpen(true)}
             className="absolute -right-1 top-1 h-8 w-8 rounded-full bg-gray-700 bg-opacity-70 p-2 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-gray-500 hover:bg-opacity-90"
           >
-            <EditIcon className="h-4 w-4" />
+            <FontAwesomeIcon
+              icon={EditIcon}
+              className="h-4 w-4"
+            />
           </Button>
         )}
       </div>

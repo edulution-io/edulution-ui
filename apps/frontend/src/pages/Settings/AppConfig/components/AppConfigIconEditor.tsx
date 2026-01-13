@@ -20,7 +20,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDropzone } from 'react-dropzone';
-import { MdOutlineCloudUpload } from 'react-icons/md';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
@@ -122,7 +123,10 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
             <p className="text-wrap text-center text-sm text-secondary">
               {isDragActive ? t('filesharingUpload.dropHere') : t('appstore.dropIconDescription')}
             </p>
-            <MdOutlineCloudUpload className="h-10 w-10 text-secondary" />
+            <FontAwesomeIcon
+              icon={faCloudArrowUp}
+              className="h-10 w-10 text-secondary"
+            />
           </div>
         </div>
       </div>
@@ -142,7 +146,10 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
                 onClick={handleDeleteIcon}
                 className="absolute -right-2 -top-2 h-6 w-6 rounded-full bg-ciRed p-1 hover:bg-ciRed/80"
               >
-                <DeleteIcon className="h-4 w-4 text-white" />
+                <FontAwesomeIcon
+                  icon={DeleteIcon}
+                  className="h-4 w-4 text-white"
+                />
               </Button>
             )}
           </div>

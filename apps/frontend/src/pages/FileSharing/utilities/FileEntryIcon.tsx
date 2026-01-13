@@ -18,12 +18,14 @@
  */
 
 import React from 'react';
-import { FcFolder } from 'react-icons/fc';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFolder } from '@fortawesome/free-solid-svg-icons';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import ContentType from '@libs/filesharing/types/contentType';
 import isImageExtension from '@libs/filesharing/utils/isImageExtension';
 import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import { GRID_ICON_SIZE } from '@libs/ui/constants';
 import FileTypeIcon from './FileTypeIcon';
 import FileThumbnail from './FileThumbnail';
 
@@ -44,7 +46,13 @@ const FileEntryIcon = ({ file, size, isLoading = false }: FileEntryIconProps) =>
   }
 
   if (file.type === ContentType.DIRECTORY) {
-    return <FcFolder size={size} />;
+    return (
+      <FontAwesomeIcon
+        icon={faFolder}
+        className="text-yellow-500"
+        size={size === GRID_ICON_SIZE ? '3x' : 'lg'}
+      />
+    );
   }
 
   const extension = getFileExtension(file.filePath);

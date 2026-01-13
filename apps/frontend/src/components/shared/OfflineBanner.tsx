@@ -19,7 +19,8 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { CiWifiOff } from 'react-icons/ci';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import useMedia from '@/hooks/useMedia';
 import cn from '@libs/common/utils/className';
 
@@ -35,7 +36,11 @@ const OfflineBanner = () => {
         { 'left-[calc(50%-var(--sidebar-width)/2)]': !isMobileView },
       )}
     >
-      <span>{t('common.offline')}</span> <CiWifiOff size={18} />
+      <span>{t('common.offline')}</span>{' '}
+      <FontAwesomeIcon
+        icon={faTriangleExclamation}
+        size="sm"
+      />
     </div>
   );
 };

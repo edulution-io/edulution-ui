@@ -18,10 +18,10 @@
  */
 
 import { t } from 'i18next';
-import { FiUpload } from 'react-icons/fi';
+import { faUpload } from '@fortawesome/free-solid-svg-icons';
 
 const UploadButton = (onClick: () => void) => ({
-  icon: FiUpload,
+  icon: faUpload,
   text: t('tooltip.upload'),
   onClick,
 });

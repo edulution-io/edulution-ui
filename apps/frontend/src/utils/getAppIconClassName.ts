@@ -17,7 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const getAppIconClassName = (iconSrc: string): string => {
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
+
+const getAppIconClassName = (iconSrc: string | IconDefinition): string => {
+  if (typeof iconSrc !== 'string') return '';
   const isSvgIcon = iconSrc.endsWith('.svg') || iconSrc.includes('data:image/svg+xml') || iconSrc.includes('.svg');
   if (!isSvgIcon) return '';
   const decodedIconSrc = decodeURIComponent(iconSrc);
