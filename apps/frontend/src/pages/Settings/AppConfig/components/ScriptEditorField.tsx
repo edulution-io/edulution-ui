@@ -22,6 +22,7 @@ import { Control, FieldValues, Path, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { js as beautifyJs } from 'js-beautify';
+import { parse } from 'acorn';
 import { FormControl, FormFieldSH, FormItem } from '@/components/ui/Form';
 import { Textarea } from '@/components/ui/Textarea';
 import { Button } from '@/components/shared/Button';
@@ -50,8 +51,7 @@ const ScriptEditorField = <T extends FieldValues>({
       return true;
     }
     try {
-      // eslint-disable-next-line no-new, @typescript-eslint/no-implied-eval
-      new Function(script);
+      parse(script, { ecmaVersion: 'latest' });
       setValidationError(null);
       return true;
     } catch (e) {
@@ -69,7 +69,7 @@ const ScriptEditorField = <T extends FieldValues>({
   return (
     <div
       className={cn(
-        'overflow-hidden transition-all duration-300 ease-in-out',
+        'transition-[max-height,opacity] duration-300 ease-in-out',
         isEnabled ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0',
       )}
     >
@@ -92,7 +92,7 @@ const ScriptEditorField = <T extends FieldValues>({
                     field.onChange(e.target.value);
                     validateScript(e.target.value);
                   }}
-                  className="h-48 overflow-y-auto bg-white text-background scrollbar-thin placeholder:text-p focus:outline-none dark:border-none dark:bg-accent"
+                  className="overflow-y-auto bg-white text-background transition-[max-height,opacity] duration-300 ease-in-out scrollbar-thin placeholder:text-p focus:outline-none dark:border-none dark:bg-accent"
                   style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '12pt' }}
                   placeholder={t('settings.appconfig.sections.scripts.placeholder')}
                 />

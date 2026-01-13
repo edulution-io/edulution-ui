@@ -92,6 +92,7 @@
     "@types/mailparser": "^3.4.4",
     "@types/mime": "^3.0.4",
     "@uiw/react-md-editor": "^4.0.11",
+    "acorn": "^8.15.0",
     "autoprefixer": "^10.4.17",
     "axios": "^1.7.4",
     "bullmq": "^5.58.2",
