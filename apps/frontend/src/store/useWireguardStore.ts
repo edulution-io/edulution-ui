@@ -59,9 +59,6 @@ const useWireguardStore = create<WireguardStore>((set, get) => ({
           .catch(() => ({ data: {} as Record<string, Site> })),
       ]);
 
-      console.info('Peers API Response:', peersResponse.data);
-      console.info('Sites API Response:', sitesResponse.data);
-
       const clientPeers: WireguardPeer[] = Object.values(peersResponse.data).map((peer) => ({
         ...peer,
         type: 'client' as const,
@@ -71,10 +68,6 @@ const useWireguardStore = create<WireguardStore>((set, get) => ({
         ...site,
         type: 'site' as const,
       }));
-
-      console.info('Transformed Client Peers:', clientPeers);
-      console.info('Transformed Site Peers:', sitePeers);
-      console.info('Combined Peers:', [...clientPeers, ...sitePeers]);
 
       set({ peers: [...clientPeers, ...sitePeers], isLoading: false });
     } catch (error) {

@@ -25,6 +25,7 @@ import { SettingsIcon } from '@/assets/icons';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import useWireguardStore from '@/store/useWireguardStore';
+import APPS from '@libs/appconfig/constants/apps';
 import getWireguardTableColumns from './getWireguardTableColumns';
 import AddPeerDialog from './components/AddPeerDialog';
 import QRCodeDialog from './components/QRCodeDialog';
@@ -39,10 +40,6 @@ const WireguardPage: React.FC = () => {
   useEffect(() => {
     void fetchPeers();
   }, [fetchPeers]);
-
-  useEffect(() => {
-    console.info('WireGuard Peers:', peers);
-  }, [peers]);
 
   const handlePublicKeyClick = (name: string) => {
     setSelectedPeerForQR(name);
@@ -105,7 +102,7 @@ const WireguardPage: React.FC = () => {
           onRowSelectionChange={setSelectedRows}
           filterKey="name"
           filterPlaceHolderText={t('wireguard.searchPlaceholder')}
-          applicationName="wireguard"
+          applicationName={APPS.WIREGUARD}
         />
       </div>
 
