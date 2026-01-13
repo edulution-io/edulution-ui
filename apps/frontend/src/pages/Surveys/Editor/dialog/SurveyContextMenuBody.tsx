@@ -24,7 +24,6 @@ import { SurveyCreatorModel } from 'survey-creator-core';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import i18n from '@/i18n';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useGroupStore from '@/store/GroupStore';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
@@ -74,15 +73,15 @@ const SurveyContextMenuBody = ({ form, surveyCreator }: SurveyContextMenuBodyPro
 
   return (
     <>
-      <h3>{i18n.t('survey.editor.surveySettings.surveyLogo.title')}</h3>
+      <h3>{t('survey.editor.surveySettings.surveyLogo.title')}</h3>
       <SurveysLogoSettings surveyCreator={surveyCreator} />
-      <h3>{i18n.t('survey.expirationDate')}</h3>
+      <h3>{t('survey.expirationDate')}</h3>
       <DateTimePickerField
         form={form}
         path="expires"
         variant="dialog"
       />
-      <h3>{i18n.t('survey.editor.surveySettings.invitees')}</h3>
+      <h3>{t('survey.editor.surveySettings.invitees')}</h3>
       <SearchUsersOrGroups
         users={watch('invitedAttendees')}
         onSearch={onAttendeesSearch}
@@ -92,7 +91,7 @@ const SurveyContextMenuBody = ({ form, surveyCreator }: SurveyContextMenuBodyPro
         onGroupsChange={handleGroupsChange}
         variant="dialog"
       />
-      <h3>{i18n.t('surveys.saveDialog.settingsFlags')}</h3>
+      <h3>{t('surveys.saveDialog.settingsFlags')}</h3>
       {checkboxOptions.map(({ name, label, shouldDisable }) => (
         <Checkbox
           key={name}
