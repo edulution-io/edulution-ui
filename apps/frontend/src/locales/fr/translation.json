@@ -1517,6 +1517,9 @@
     "allowedIpsDescription": "Liste des plages IP autorisées séparées par des virgules pour la connexion site-à-site",
     "endpointDescription": "Adresse et port du point de terminaison distant (par ex. vpn.example.com:51820)",
     "noSelection": "Veuillez sélectionner au moins un pair à supprimer",
+    "deletePeers": "Supprimer les pairs",
+    "confirmDelete": "Voulez-vous vraiment supprimer ce pair?",
+    "confirmDelete_other": "Voulez-vous vraiment supprimer ces {{count}} pairs?",
     "deleteSuccess": "Pairs supprimés avec succès",
     "deleteFailed": "Échec de la suppression des pairs",
     "peerCreated": "Pair client créé avec succès",
@@ -1529,7 +1532,25 @@
     "validation": {
       "nameRequired": "Le nom est requis",
       "allowedIpsRequired": "Les IPs autorisées sont requises pour les connexions site-à-site"
-    }
+    },
+    "errors": {
+      "getPeersFailed": "Échec du chargement des pairs",
+      "createPeerFailed": "Échec de la création du pair client",
+      "deletePeerFailed": "Échec de la suppression du pair client",
+      "getPeerConfigFailed": "Échec du chargement de la configuration du pair",
+      "getPeerQrFailed": "Échec du chargement du code QR",
+      "getPeerStatusFailed": "Échec du chargement du statut du pair",
+      "getPeersStatusFailed": "Échec du chargement du statut des pairs",
+      "restartFailed": "Échec du redémarrage",
+      "getSitesFailed": "Échec du chargement des sites",
+      "createSiteFailed": "Échec de la création de la connexion site-à-site",
+      "deleteSiteFailed": "Échec de la suppression de la connexion site-à-site",
+      "getSiteConfigFailed": "Échec du chargement de la configuration du site"
+    },
+    "rowSelected": "{{selected}} sur {{total}} pair sélectionné",
+    "rowsSelected": "{{selected}} sur {{total}} pairs sélectionnés",
+    "item": "{{count}} pair",
+    "items": "{{count}} pairs"
   },
   "table": {
     "noDataAvailable": "Aucune donnée disponible"

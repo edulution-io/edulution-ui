@@ -20,7 +20,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { SettingsIcon } from '@/assets/icons';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
@@ -29,11 +28,14 @@ import APPS from '@libs/appconfig/constants/apps';
 import getWireguardTableColumns from './getWireguardTableColumns';
 import AddPeerDialog from './components/AddPeerDialog';
 import QRCodeDialog from './components/QRCodeDialog';
+import DeletePeersDialog from './components/DeletePeersDialog';
+import WireguardFloatingButtons from './components/WireguardFloatingButtons';
 
 const WireguardPage: React.FC = () => {
   const { t } = useTranslation();
   const { peers, isLoading, fetchPeers, deletePeer } = useWireguardStore();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedPeerForQR, setSelectedPeerForQR] = useState<string | null>(null);
   const [selectedRows, setSelectedRows] = useState<Record<string, boolean>>({});
 
@@ -45,49 +47,42 @@ const WireguardPage: React.FC = () => {
     setSelectedPeerForQR(name);
   };
 
-  const handleDelete = async () => {
+  const getSelectedPeers = () => {
     const selectedIndices = Object.keys(selectedRows).filter((key) => selectedRows[key]);
+    return selectedIndices.map((idx) => peers[Number(idx)]);
+  };
 
-    if (selectedIndices.length === 0) {
+  const handleDeleteClick = () => {
+    const selectedPeers = getSelectedPeers();
+    if (selectedPeers.length === 0) {
       toast.error(t('wireguard.noSelection'));
       return;
     }
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    const selectedPeers = getSelectedPeers();
 
     try {
-      await Promise.all(
-        selectedIndices.map((idx) => {
-          const peer = peers[Number(idx)];
-          return deletePeer(peer.name, peer.type);
-        }),
-      );
+      await Promise.all(selectedPeers.map((peer) => deletePeer(peer.name, peer.type)));
       toast.success(t('wireguard.deleteSuccess'));
       setSelectedRows({});
+      await fetchPeers();
     } catch (error) {
       toast.error(t('wireguard.deleteFailed'));
+      throw error;
     }
   };
 
   const columns = getWireguardTableColumns({ onPublicKeyClick: handlePublicKeyClick });
 
-  const tableActions = [
-    {
-      icon: faPlus,
-      onClick: () => setIsAddDialogOpen(true),
-      translationId: 'wireguard.addPeer',
-      disabled: false,
-    },
-    {
-      icon: faTrash,
-      onClick: handleDelete,
-      translationId: 'wireguard.delete',
-      disabled: Object.values(selectedRows).filter(Boolean).length === 0,
-    },
-  ];
+  const selectedCount = Object.values(selectedRows).filter(Boolean).length;
 
   return (
     <PageLayout
       nativeAppHeader={{
-        title: t('wireguard.title'),
+        title: t('wireguard.sidebar'),
         description: t('wireguard.description'),
         iconSrc: SettingsIcon,
       }}
@@ -96,7 +91,6 @@ const WireguardPage: React.FC = () => {
         <ScrollableTable
           data={peers}
           columns={columns}
-          actions={tableActions}
           isLoading={isLoading}
           selectedRows={selectedRows}
           onRowSelectionChange={setSelectedRows}
@@ -106,9 +100,24 @@ const WireguardPage: React.FC = () => {
         />
       </div>
 
+      <WireguardFloatingButtons
+        onAdd={() => setIsAddDialogOpen(true)}
+        onDelete={handleDeleteClick}
+        onReload={() => fetchPeers()}
+        selectedCount={selectedCount}
+      />
+
       <AddPeerDialog
         isOpen={isAddDialogOpen}
         handleOpenChange={() => setIsAddDialogOpen(false)}
+      />
+
+      <DeletePeersDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        peerNames={getSelectedPeers().map((peer) => peer.name)}
+        onConfirmDelete={handleConfirmDelete}
+        isLoading={isLoading}
       />
 
       <QRCodeDialog

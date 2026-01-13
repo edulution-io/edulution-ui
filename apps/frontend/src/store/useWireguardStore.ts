@@ -35,7 +35,7 @@ type WireguardStore = {
   createPeer: (data: PeerRequest) => Promise<void>;
   createSite: (data: SiteRequest) => Promise<void>;
   deletePeer: (name: string, type: 'client' | 'site') => Promise<void>;
-  getPeerQRCode: (name: string) => Promise<string>;
+  getPeerQRCode: (name: string) => Promise<string | null>;
 };
 
 const initialState = {
@@ -81,10 +81,10 @@ const useWireguardStore = create<WireguardStore>((set, get) => ({
     try {
       await eduApi.post(`${WIREGUARD_API_ENDPOINT}/peers`, data);
       await get().fetchPeers();
+      set({ isLoading: false });
     } catch (error) {
       handleApiError(error, set, 'error');
       set({ isLoading: false });
-      throw error;
     }
   },
 
@@ -93,10 +93,10 @@ const useWireguardStore = create<WireguardStore>((set, get) => ({
     try {
       await eduApi.post(`${WIREGUARD_API_ENDPOINT}/sites`, data);
       await get().fetchPeers();
+      set({ isLoading: false });
     } catch (error) {
       handleApiError(error, set, 'error');
       set({ isLoading: false });
-      throw error;
     }
   },
 
@@ -107,20 +107,23 @@ const useWireguardStore = create<WireguardStore>((set, get) => ({
         type === 'site' ? `${WIREGUARD_API_ENDPOINT}/sites/${name}` : `${WIREGUARD_API_ENDPOINT}/peers/${name}`;
       await eduApi.delete(endpoint);
       await get().fetchPeers();
+      set({ isLoading: false });
     } catch (error) {
       handleApiError(error, set, 'error');
       set({ isLoading: false });
-      throw error;
     }
   },
 
   getPeerQRCode: async (name: string) => {
+    set({ isLoading: true, error: null });
     try {
       const response = await eduApi.get<string>(`${WIREGUARD_API_ENDPOINT}/peers/${name}/qr/b64`);
+      set({ isLoading: false });
       return response.data;
     } catch (error) {
       handleApiError(error, set, 'error');
-      throw error;
+      set({ isLoading: false });
+      return null;
     }
   },
 }));

@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -62,8 +62,7 @@ type FormValues = z.infer<ReturnType<typeof getFormSchema>>;
 
 const AddPeerDialog: FC<AddPeerDialogProps> = ({ isOpen, handleOpenChange }) => {
   const { t } = useTranslation();
-  const { createPeer, createSite } = useWireguardStore();
-  const [isLoading, setIsLoading] = useState(false);
+  const { createPeer, createSite, isLoading } = useWireguardStore();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(getFormSchema(t)),
@@ -96,33 +95,26 @@ const AddPeerDialog: FC<AddPeerDialogProps> = ({ isOpen, handleOpenChange }) => 
   };
 
   const onSubmit = async (data: FormValues) => {
-    setIsLoading(true);
-    try {
-      const routes = data.routes ? data.routes.split(',').map((r) => r.trim()) : ['0.0.0.0/0'];
+    const routes = data.routes ? data.routes.split(',').map((r) => r.trim()) : ['0.0.0.0/0'];
 
-      if (data.type === 'site') {
-        const allowedIps = data.allowed_ips ? data.allowed_ips.split(',').map((ip) => ip.trim()) : [];
-        await createSite({
-          name: data.name,
-          allowed_ips: allowedIps,
-          routes,
-          endpoint: data.endpoint || undefined,
-        });
-        toast.success(t('wireguard.siteCreated'));
-      } else {
-        await createPeer({
-          name: data.name,
-          routes,
-        });
-        toast.success(t('wireguard.peerCreated'));
-      }
-
-      handleClose();
-    } catch (error) {
-      toast.error(t('wireguard.createFailed'));
-    } finally {
-      setIsLoading(false);
+    if (data.type === 'site') {
+      const allowedIps = data.allowed_ips ? data.allowed_ips.split(',').map((ip) => ip.trim()) : [];
+      await createSite({
+        name: data.name,
+        allowed_ips: allowedIps,
+        routes,
+        endpoint: data.endpoint || undefined,
+      });
+      toast.success(t('wireguard.siteCreated'));
+    } else {
+      await createPeer({
+        name: data.name,
+        routes,
+      });
+      toast.success(t('wireguard.peerCreated'));
     }
+
+    handleClose();
   };
 
   return (
@@ -174,6 +166,7 @@ const AddPeerDialog: FC<AddPeerDialogProps> = ({ isOpen, handleOpenChange }) => 
               name="name"
               labelTranslationId="wireguard.name"
               placeholder={t('wireguard.namePlaceholder')}
+              variant="dialog"
             />
 
             <FormField
@@ -182,6 +175,7 @@ const AddPeerDialog: FC<AddPeerDialogProps> = ({ isOpen, handleOpenChange }) => 
               labelTranslationId="wireguard.routes"
               placeholder="0.0.0.0/0, 10.0.0.0/8"
               description={t('wireguard.routesDescription')}
+              variant="dialog"
             />
 
             {peerType === 'site' && (
@@ -192,6 +186,7 @@ const AddPeerDialog: FC<AddPeerDialogProps> = ({ isOpen, handleOpenChange }) => 
                   labelTranslationId="wireguard.allowedIps"
                   placeholder="192.168.1.0/24, 192.168.2.0/24"
                   description={t('wireguard.allowedIpsDescription')}
+                  variant="dialog"
                 />
 
                 <FormField
@@ -200,6 +195,7 @@ const AddPeerDialog: FC<AddPeerDialogProps> = ({ isOpen, handleOpenChange }) => 
                   labelTranslationId="wireguard.endpoint"
                   placeholder="vpn.example.com:51820"
                   description={t('wireguard.endpointDescription')}
+                  variant="dialog"
                 />
               </>
             )}

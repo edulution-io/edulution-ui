@@ -45,7 +45,14 @@ const getWireguardTableColumns = ({ onPublicKeyClick }: WireguardTableColumnsPro
       translationId: 'wireguard.name',
     },
     accessorFn: (row) => row.name,
-    cell: ({ row }) => <SelectableCell text={row.original.name} />,
+    cell: ({ row }) => (
+      <SelectableCell
+        text={row.original.name}
+        row={row}
+        isFirstColumn
+        onClick={() => row.toggleSelected()}
+      />
+    ),
   },
   {
     id: 'type',
@@ -61,6 +68,7 @@ const getWireguardTableColumns = ({ onPublicKeyClick }: WireguardTableColumnsPro
             {row.original.type === 'site' ? 'Site-to-Site' : 'Client'}
           </BadgeSH>
         }
+        onClick={() => row.toggleSelected()}
       />
     ),
   },
@@ -71,7 +79,12 @@ const getWireguardTableColumns = ({ onPublicKeyClick }: WireguardTableColumnsPro
       translationId: 'wireguard.ip',
     },
     accessorFn: (row) => row.ip,
-    cell: ({ row }) => <SelectableCell text={row.original.ip} />,
+    cell: ({ row }) => (
+      <SelectableCell
+        text={row.original.ip}
+        onClick={() => row.toggleSelected()}
+      />
+    ),
   },
   {
     id: 'public_key',
@@ -95,7 +108,12 @@ const getWireguardTableColumns = ({ onPublicKeyClick }: WireguardTableColumnsPro
       translationId: 'wireguard.routes',
     },
     accessorFn: (row) => row.routes.join(', '),
-    cell: ({ row }) => <SelectableCell text={row.original.routes.join(', ')} />,
+    cell: ({ row }) => (
+      <SelectableCell
+        text={row.original.routes.join(', ')}
+        onClick={() => row.toggleSelected()}
+      />
+    ),
   },
   {
     id: 'allowed_ips',
@@ -104,7 +122,12 @@ const getWireguardTableColumns = ({ onPublicKeyClick }: WireguardTableColumnsPro
       translationId: 'wireguard.allowedIps',
     },
     accessorFn: (row) => row.allowed_ips?.join(', ') || '-',
-    cell: ({ row }) => <SelectableCell text={row.original.allowed_ips?.join(', ') || '-'} />,
+    cell: ({ row }) => (
+      <SelectableCell
+        text={row.original.allowed_ips?.join(', ') || '-'}
+        onClick={() => row.toggleSelected()}
+      />
+    ),
   },
 ];
 

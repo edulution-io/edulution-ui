@@ -1686,6 +1686,9 @@
     "allowedIpsDescription": "Comma-separated list of allowed IP ranges for site-to-site connection",
     "endpointDescription": "Remote endpoint address and port (e.g. vpn.example.com:51820)",
     "noSelection": "Please select at least one peer to delete",
+    "deletePeers": "Delete Peers",
+    "confirmDelete": "Do you really want to delete this peer?",
+    "confirmDelete_other": "Do you really want to delete these {{count}} peers?",
     "deleteSuccess": "Peers deleted successfully",
     "deleteFailed": "Failed to delete peers",
     "peerCreated": "Client peer created successfully",
@@ -1698,7 +1701,25 @@
     "validation": {
       "nameRequired": "Name is required",
       "allowedIpsRequired": "Allowed IPs are required for site-to-site connections"
-    }
+    },
+    "errors": {
+      "getPeersFailed": "Failed to load peers",
+      "createPeerFailed": "Failed to create client peer",
+      "deletePeerFailed": "Failed to delete client peer",
+      "getPeerConfigFailed": "Failed to load peer configuration",
+      "getPeerQrFailed": "Failed to load QR code",
+      "getPeerStatusFailed": "Failed to load peer status",
+      "getPeersStatusFailed": "Failed to load peers status",
+      "restartFailed": "Restart failed",
+      "getSitesFailed": "Failed to load sites",
+      "createSiteFailed": "Failed to create site-to-site connection",
+      "deleteSiteFailed": "Failed to delete site-to-site connection",
+      "getSiteConfigFailed": "Failed to load site configuration"
+    },
+    "rowSelected": "{{selected}} of {{total}} peer selected",
+    "rowsSelected": "{{selected}} of {{total}} peers selected",
+    "item": "{{count}} peer",
+    "items": "{{count}} peers"
   },
   "table": {
     "noDataAvailable": "No data available"

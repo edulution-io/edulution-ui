@@ -19,7 +19,6 @@
 
 import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useWireguardStore from '@/store/useWireguardStore';
@@ -32,32 +31,30 @@ interface QRCodeDialogProps {
 
 const QRCodeDialog: FC<QRCodeDialogProps> = ({ isOpen, handleOpenChange, peerName }) => {
   const { t } = useTranslation();
-  const { getPeerQRCode } = useWireguardStore();
+  const { getPeerQRCode, isLoading } = useWireguardStore();
   const [qrCode, setQrCode] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (isOpen && peerName) {
-      setIsLoading(true);
       setQrCode(null);
 
-      getPeerQRCode(peerName)
-        .then((base64) => {
+      void getPeerQRCode(peerName).then((base64) => {
+        if (base64) {
           setQrCode(base64);
-        })
-        .catch(() => {
-          toast.error(t('wireguard.qrCodeFailed'));
+        } else {
           handleOpenChange();
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+        }
+      });
     }
-  }, [isOpen, peerName, getPeerQRCode, handleOpenChange, t]);
+  }, [isOpen, peerName, getPeerQRCode, handleOpenChange]);
 
   const renderContent = () => {
     if (isLoading) {
-      return <CircleLoader />;
+      return (
+        <div className="flex h-64 w-64 items-center justify-center">
+          <CircleLoader />
+        </div>
+      );
     }
 
     if (qrCode) {
@@ -65,12 +62,16 @@ const QRCodeDialog: FC<QRCodeDialogProps> = ({ isOpen, handleOpenChange, peerNam
         <img
           src={`data:image/png;base64,${qrCode}`}
           alt={t('wireguard.qrCodeAlt')}
-          className="max-w-full"
+          className="h-64 w-64 object-contain"
         />
       );
     }
 
-    return <p className="text-muted-foreground">{t('wireguard.noQrCode')}</p>;
+    return (
+      <div className="flex h-64 w-64 items-center justify-center">
+        <p className="text-muted-foreground">{t('wireguard.noQrCode')}</p>
+      </div>
+    );
   };
 
   return (
