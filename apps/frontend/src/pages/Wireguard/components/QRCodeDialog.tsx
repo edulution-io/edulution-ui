@@ -46,7 +46,7 @@ const QRCodeDialog: FC<QRCodeDialogProps> = ({ isOpen, handleOpenChange, peerNam
         }
       });
     }
-  }, [isOpen, peerName, getPeerQRCode, handleOpenChange]);
+  }, [isOpen, peerName]);
 
   const renderContent = () => {
     if (isLoading) {

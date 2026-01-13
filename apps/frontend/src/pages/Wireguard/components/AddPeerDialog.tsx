@@ -20,7 +20,6 @@
 import React, { FC, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
@@ -105,13 +104,11 @@ const AddPeerDialog: FC<AddPeerDialogProps> = ({ isOpen, handleOpenChange }) => 
         routes,
         endpoint: data.endpoint || undefined,
       });
-      toast.success(t('wireguard.siteCreated'));
     } else {
       await createPeer({
         name: data.name,
         routes,
       });
-      toast.success(t('wireguard.peerCreated'));
     }
 
     handleClose();

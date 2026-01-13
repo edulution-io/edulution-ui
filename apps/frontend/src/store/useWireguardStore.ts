@@ -22,6 +22,8 @@ import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import type { Peer, PeerRequest, Site, SiteRequest } from '@libs/wireguard/types/wireguard';
 import WIREGUARD_API_ENDPOINT from '@libs/wireguard/constants/wireguardApiEndpoint';
+import { toast } from 'sonner';
+import i18n from '@/i18n';
 
 type WireguardPeer = (Peer | Site) & {
   type: 'client' | 'site';
@@ -82,6 +84,7 @@ const useWireguardStore = create<WireguardStore>((set, get) => ({
       await eduApi.post(`${WIREGUARD_API_ENDPOINT}/peers`, data);
       await get().fetchPeers();
       set({ isLoading: false });
+      toast.success(i18n.t('wireguard.peerCreated'));
     } catch (error) {
       handleApiError(error, set, 'error');
       set({ isLoading: false });
@@ -94,6 +97,7 @@ const useWireguardStore = create<WireguardStore>((set, get) => ({
       await eduApi.post(`${WIREGUARD_API_ENDPOINT}/sites`, data);
       await get().fetchPeers();
       set({ isLoading: false });
+      toast.success(i18n.t('wireguard.siteCreated'));
     } catch (error) {
       handleApiError(error, set, 'error');
       set({ isLoading: false });
