@@ -214,10 +214,9 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
 
       if (!creator.survey.calculatedValues) {
         creator.survey.calculatedValues = [];
-      } else {
-        creator.survey.calculatedValues = creator.survey.calculatedValues.filter((value) => value.name !== 'theme');
       }
-      creator.survey.calculatedValues.push(newVariable);
+
+      creator.survey.setVariable('theme', getResolvedTheme().toString());
     }
 
     const formula = creator.JSON as SurveyFormula;
