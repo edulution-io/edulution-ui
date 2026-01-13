@@ -40,7 +40,6 @@ type LogoUploadFieldProps = {
   fallbackSrc?: string;
   className?: string;
   onHandleReset?: () => Promise<void>;
-  hasCustomLogo?: boolean;
   isLoginPage?: boolean;
 };
 
@@ -59,7 +58,6 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
   fallbackSrc,
   className,
   onHandleReset,
-  hasCustomLogo = false,
   isLoginPage: invertBGColor = false,
 }) => {
   const useLightBackDropClass =
@@ -78,7 +76,7 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
       aria-live="polite"
     >
       <div className="absolute right-4 top-4">
-        {hasCustomLogo && onHandleReset && (
+        {onHandleReset && (
           <button
             type="button"
             onClick={async () => {
