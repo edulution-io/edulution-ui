@@ -18,8 +18,9 @@
  */
 
 import React from 'react';
-import { IoEyeSharp } from 'react-icons/io5';
 import { EditIcon } from '@libs/common/constants/standardActionIcons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye } from '@fortawesome/free-solid-svg-icons';
 import WindowControlBaseButton from './WindowControlBaseButton';
 
 interface ToggleEditModeButtonProps {
@@ -32,7 +33,7 @@ const ToggleEditModeButton = ({ onClick, isEditMode }: ToggleEditModeButtonProps
     onClick={onClick}
     tooltipTranslationId={isEditMode ? 'common.view' : 'common.edit'}
   >
-    {isEditMode ? <IoEyeSharp /> : <EditIcon />}
+    {isEditMode ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={EditIcon} />}
   </WindowControlBaseButton>
 );
 

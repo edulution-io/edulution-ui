@@ -17,17 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import {
-  MdOutlineDriveFileMove,
-  MdDriveFileRenameOutline,
-  MdContentCopy,
-  MdDownload,
-  MdOutlineDeleteOutline,
-} from 'react-icons/md';
-import { VscShare } from 'react-icons/vsc';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import TableAction from '@libs/common/types/tableAction';
+import { faCopy, faDownload, faFileExport, faPenToSquare, faShareNodes } from '@fortawesome/free-solid-svg-icons';
+import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 
 interface FileSharingActionCallbacks {
   openDialog: (action: FileActionType) => void;
@@ -48,34 +42,34 @@ const getFileSharingActions = (
 
   return [
     {
-      icon: MdOutlineDriveFileMove,
+      icon: faFileExport,
       translationId: 'tooltip.move',
       onClick: () => handleAction(FileActionType.MOVE_FILE_OR_FOLDER),
     },
     {
-      icon: MdDriveFileRenameOutline,
+      icon: faPenToSquare,
       translationId: 'tooltip.rename',
       onClick: () => handleAction(FileActionType.RENAME_FILE_OR_FOLDER),
     },
     {
-      icon: MdContentCopy,
+      icon: faCopy,
       translationId: 'tooltip.copy',
       onClick: () => handleAction(FileActionType.COPY_FILE_OR_FOLDER),
     },
     {
-      icon: MdDownload,
+      icon: faDownload,
       translationId: 'tooltip.download',
       onClick: () => {
         void startDownload([item]);
       },
     },
     {
-      icon: VscShare,
+      icon: faShareNodes,
       translationId: 'tooltip.share',
       onClick: () => handleAction(FileActionType.SHARE_FILE_OR_FOLDER),
     },
     {
-      icon: MdOutlineDeleteOutline,
+      icon: DeleteIcon,
       translationId: 'common.delete',
       onClick: () => handleAction(FileActionType.DELETE_FILE_OR_FOLDER),
     },

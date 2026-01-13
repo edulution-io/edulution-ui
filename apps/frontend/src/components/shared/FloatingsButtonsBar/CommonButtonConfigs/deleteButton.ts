@@ -18,10 +18,10 @@
  */
 
 import { t } from 'i18next';
-import { MdOutlineDeleteOutline } from 'react-icons/md';
+import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 
 const DeleteButton = (onClick: () => void, isVisible?: boolean) => ({
-  icon: MdOutlineDeleteOutline,
+  icon: DeleteIcon,
   text: t('common.delete'),
   onClick,
   isVisible,

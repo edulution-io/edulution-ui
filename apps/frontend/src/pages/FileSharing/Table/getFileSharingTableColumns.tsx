@@ -27,10 +27,10 @@ import {
 } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import { useSearchParams } from 'react-router-dom';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileEntryIcon from '@/pages/FileSharing/utilities/FileEntryIcon';
-import { BUTTONS_ICON_WIDTH, TABLE_ICON_SIZE } from '@libs/ui/constants';
+import { TABLE_ICON_SIZE } from '@libs/ui/constants';
 import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
@@ -39,7 +39,7 @@ import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingT
 import isValidFileToPreview from '@libs/filesharing/utils/isValidFileToPreview';
 import useMedia from '@/hooks/useMedia';
 import useFileSharingDownloadStore from '@/pages/FileSharing/useFileSharingDownloadStore';
-import { MdOutlineCloudDone } from 'react-icons/md';
+import { faCloud } from '@fortawesome/free-solid-svg-icons';
 import IconWithCount from '@/components/shared/IconWithCount';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
@@ -134,8 +134,8 @@ const getFileSharingTableColumns = (
         const isSaving = currentlyDisabledFiles[row.original.filename];
 
         return (
-          <div className={`w-full ${isSaving ? 'pointer-events-none opacity-50' : ''}`}>
-            <SelectableTextCell
+          <div className={`min-w-0 max-w-full overflow-hidden ${isSaving ? 'pointer-events-none opacity-50' : ''}`}>
+            <SelectableCell
               icon={
                 <FileEntryIcon
                   file={row.original}
@@ -178,8 +178,7 @@ const getFileSharingTableColumns = (
           <div className="flex items-center justify-center">
             {isShared && (
               <IconWithCount
-                Icon={MdOutlineCloudDone}
-                size={BUTTONS_ICON_WIDTH}
+                icon={faCloud}
                 className="text-background"
                 count={matchCount}
                 onClick={() => {

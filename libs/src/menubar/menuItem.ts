@@ -17,10 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
+
 interface MenuItem {
   id: string;
   label: string;
-  icon: string;
+  icon: string | IconDefinition;
   action: () => void;
   path?: string;
   disableTranslation?: boolean;

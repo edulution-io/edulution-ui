@@ -24,7 +24,7 @@ import { useForm } from 'react-hook-form';
 import CryptoJS from 'crypto-js';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { MdOutlineQrCode } from 'react-icons/md';
+import { QrCodeIcon } from '@/assets/icons';
 import { toast } from 'sonner';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
@@ -406,7 +406,7 @@ const LoginPage: React.FC = () => {
               ) : (
                 <>
                   {t('login.loginWithApp')}
-                  <MdOutlineQrCode size={20} />
+                  <QrCodeIcon className="h-6 w-6 text-black" />
                 </>
               )}
             </Button>
