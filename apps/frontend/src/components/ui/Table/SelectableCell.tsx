@@ -91,7 +91,7 @@ const SelectableCellInner = <TData,>(
       tabIndex={0}
       role="button"
       className={cn(
-        `flex min-w-0 items-center justify-start overflow-hidden ${isFirstColumn ? 'space-x-2' : ''} ${isTextMode ? 'min-w-4' : ''} py-0`,
+        `flex min-w-4 items-center justify-start overflow-hidden ${isFirstColumn ? 'space-x-2' : ''} py-0`,
         onClick ? 'cursor-pointer' : 'cursor-default',
         className,
       )}
