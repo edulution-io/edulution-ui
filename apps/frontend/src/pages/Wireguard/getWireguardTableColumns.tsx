@@ -22,6 +22,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableCell from '@/components/ui/Table/SelectableCell';
 import { BadgeSH } from '@/components/ui/BadgeSH';
+import Checkbox from '@/components/ui/Checkbox';
 
 type WireguardPeer = {
   name: string;
@@ -39,6 +40,26 @@ type WireguardTableColumnsProps = {
 
 const getWireguardTableColumns = ({ onPublicKeyClick }: WireguardTableColumnsProps): ColumnDef<WireguardPeer>[] => [
   {
+    id: 'select',
+    size: 50,
+    header: ({ table }) => (
+      <Checkbox
+        checked={table.getIsAllPageRowsSelected()}
+        onCheckedChange={(checked) => table.toggleAllPageRowsSelected(!!checked)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        disabled={!row.getCanSelect()}
+        onCheckedChange={(checked) => row.toggleSelected(!!checked)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+  },
+  {
     id: 'name',
     header: ({ column }) => <SortableHeader<WireguardPeer, unknown> column={column} />,
     meta: {
@@ -48,8 +69,6 @@ const getWireguardTableColumns = ({ onPublicKeyClick }: WireguardTableColumnsPro
     cell: ({ row }) => (
       <SelectableCell
         text={row.original.name}
-        row={row}
-        isFirstColumn
         onClick={() => row.toggleSelected()}
       />
     ),
