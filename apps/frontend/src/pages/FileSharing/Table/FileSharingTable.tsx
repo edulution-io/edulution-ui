@@ -22,7 +22,8 @@ import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import { DndContext, DragOverlay, rectIntersection } from '@dnd-kit/core';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HiOutlineDotsVertical } from 'react-icons/hi';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import TableGridView from '@/components/ui/Table/TableGridView';
 import { GridItemConfig } from '@/components/ui/Table/GridView/GridView';
@@ -162,7 +163,10 @@ const FileSharingTable = () => {
                 type="button"
                 className="rounded p-1 hover:bg-muted"
               >
-                <HiOutlineDotsVertical className="h-5 w-5" />
+                <FontAwesomeIcon
+                  icon={faEllipsisVertical}
+                  className="h-5 w-5"
+                />
               </button>
             }
           />

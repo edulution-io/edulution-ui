@@ -18,10 +18,10 @@
  */
 
 import { t } from 'i18next';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 
 const DeleteButton = (onClick: () => void, isVisible?: boolean) => ({
-  icon: faTrash,
+  icon: DeleteIcon,
   text: t('common.delete'),
   onClick,
   isVisible,
