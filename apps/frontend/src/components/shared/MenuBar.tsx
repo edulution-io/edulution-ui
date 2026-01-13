@@ -229,7 +229,7 @@ const MenuBar: React.FC = () => {
             size="sm"
             onClick={toggleCollapsed}
             className={cn(
-              'bg-glass absolute right-[-15px] top-2 border-accent px-2 py-1 backdrop-blur-lg hover:bg-muted-background',
+              'bg-glass absolute right-[-15px] top-2 z-10 border-accent px-2 py-1 backdrop-blur-lg hover:bg-muted-background',
               shouldCollapse ? 'cursor-e-resize' : 'cursor-w-resize',
             )}
           >
