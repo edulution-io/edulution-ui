@@ -47,6 +47,9 @@ import FileActionType from '@libs/filesharing/types/fileActionType';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import isOnlyOfficeDocument from '@libs/filesharing/utils/isOnlyOfficeDocument';
 import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
+import TableActionCell from '@/components/ui/Table/TableActionCell';
+import useStartWebdavFileDownload from '@/pages/FileSharing/hooks/useStartWebdavFileDownload';
+import getFileSharingActions from '@/pages/FileSharing/Table/getFileSharingActions';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
@@ -277,6 +280,33 @@ const getFileSharingTableColumns = (
           <div className={`hidden lg:flex ${typeColumnWidth}`}>
             <span className="text-right text-base font-medium">{renderFileCategorize(row.original)}</span>
           </div>
+        );
+      },
+    },
+    {
+      id: FILE_SHARING_TABLE_COLUMNS.ACTIONS,
+      size: 50,
+      header: () => null,
+      cell: ({ row }) => {
+        if (row.original.filePath === PARENT_FOLDER_PATH) {
+          return null;
+        }
+
+        const { openDialog } = useFileSharingDialogStore();
+        const { setSelectedItems } = useFileSharingStore();
+        const startDownload = useStartWebdavFileDownload();
+
+        const actions = getFileSharingActions(row.original, {
+          openDialog,
+          setSelectedItems,
+          startDownload,
+        });
+
+        return (
+          <TableActionCell
+            actions={actions}
+            row={row}
+          />
         );
       },
     },
