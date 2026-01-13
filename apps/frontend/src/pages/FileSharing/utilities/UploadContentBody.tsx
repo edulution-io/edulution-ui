@@ -18,7 +18,6 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
 import { useParams } from 'react-router-dom';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
@@ -30,7 +29,7 @@ import FileTypeIcon from '@/pages/FileSharing/utilities/FileTypeIcon';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { UploadItem } from '@libs/filesharing/types/uploadItem';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCloudArrowUp, faEye, faFileCirclePlus, faFolder, faFolderPlus } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faFileCirclePlus, faFolder, faFolderPlus } from '@fortawesome/free-solid-svg-icons';
 import getFileUploadLimit from '@libs/ui/utils/getFileUploadLimit';
 import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
 import ActionTooltip from '@/components/shared/ActionTooltip';
@@ -42,6 +41,7 @@ import getUploadItemDisplayName from '@libs/filesharing/utils/getUploadItemDispl
 import extractFilesFromDropEvent from '@/pages/FileSharing/utilities/extractFilesFromDropEvent';
 import ValidationWarnings from '@/pages/FileSharing/utilities/ValidationWarnings';
 import getRandomUUID from '@/utils/getRandomUUID';
+import DropZone from '@/components/ui/DropZone';
 
 const UploadContentBody = () => {
   const { webdavShare } = useParams();
@@ -177,11 +177,6 @@ const UploadContentBody = () => {
     setSubmitButtonIsDisabled(oversizedFiles.length !== 0 || tooLargeFolders.length !== 0);
   }, [oversizedFiles, tooLargeFolders, setSubmitButtonIsDisabled]);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    getFilesFromEvent: extractFilesFromDropEvent,
-    onDrop,
-  });
-
   const renderPreview = (file: UploadItem) => {
     if (isFolderUploadItem(file)) {
       return (
@@ -216,25 +211,18 @@ const UploadContentBody = () => {
     );
   };
 
-  const dropzoneStyle = `border-2 border-dashed border-muted dark:border-secondary rounded-xl p-10 mb-4 ${
-    isDragActive ? 'bg-black/30' : 'bg-black/20'
-  }`;
-
   return (
     <form className="overflow-auto">
-      <div {...getRootProps({ className: dropzoneStyle })}>
-        <input {...getInputProps()} />
-
-        <div className="flex min-h-48 flex-col items-center justify-center space-y-2">
-          <p className="text-center font-semibold">
-            {isDragActive ? t('filesharingUpload.dropHere') : t('filesharingUpload.dragDropClick')}
-          </p>
-          <FontAwesomeIcon
-            icon={faCloudArrowUp}
-            className="h-10 w-10"
-          />
-        </div>
-      </div>
+      <DropZone
+        onDrop={onDrop}
+        getFilesFromEvent={extractFilesFromDropEvent}
+        dragActiveText={t('filesharingUpload.dropHere')}
+        inactiveText={t('filesharingUpload.dragDropClick')}
+        className="mb-4 p-10"
+        minHeight="min-h-48"
+        activeClassName="bg-black/30"
+        inactiveClassName="bg-black/20"
+      />
 
       <input
         type="file"

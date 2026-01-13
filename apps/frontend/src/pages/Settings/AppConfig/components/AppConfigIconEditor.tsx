@@ -19,14 +19,13 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDropzone } from 'react-dropzone';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 import cn from '@libs/common/utils/className';
 import getAppIconClassName from '@/utils/getAppIconClassName';
+import DropZone from '@/components/ui/DropZone';
 import defaultIconList from './defaultIconList';
 
 interface AppConfigIconEditorProps {
@@ -47,7 +46,7 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
     onIconChange(icon);
   };
 
-  const onDrop = useCallback(
+  const handleDrop = useCallback(
     (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
       if (file) {
@@ -63,14 +62,6 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
     [onIconChange],
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: {
-      'image/svg+xml': ['.svg'],
-      'image/webp': ['.webp'],
-    },
-  });
-
   const handleDeleteIcon = () => {
     setSelectedIcon('');
     onIconChange('');
@@ -78,11 +69,6 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
 
   const isDefaultIcon = defaultIconList.includes(selectedIcon);
   const hasCustomIcon = selectedIcon && !isDefaultIcon;
-
-  const dropzoneStyle = cn(
-    'border-2 border-dashed border-muted dark:border-muted-foreground rounded-xl',
-    isDragActive ? 'bg-muted-background' : 'bg-foreground dark:bg-muted',
-  );
 
   return (
     <div className="space-y-4">
@@ -117,18 +103,15 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
 
       <div>
         <p className="mb-2 text-sm font-medium">{t('appstore.uploadIcon')}</p>
-        <div {...getRootProps({ className: dropzoneStyle })}>
-          <input {...getInputProps()} />
-          <div className="flex min-h-32 flex-col items-center justify-center space-y-2 p-4">
-            <p className="text-wrap text-center text-sm text-secondary">
-              {isDragActive ? t('filesharingUpload.dropHere') : t('appstore.dropIconDescription')}
-            </p>
-            <FontAwesomeIcon
-              icon={faCloudArrowUp}
-              className="h-10 w-10 text-secondary"
-            />
-          </div>
-        </div>
+        <DropZone
+          onDrop={handleDrop}
+          accept={{
+            'image/svg+xml': ['.svg'],
+            'image/webp': ['.webp'],
+          }}
+          dragActiveText={t('filesharingUpload.dropHere')}
+          inactiveText={t('appstore.dropIconDescription')}
+        />
       </div>
 
       {selectedIcon && (
