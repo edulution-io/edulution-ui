@@ -207,6 +207,7 @@ const AddPeerDialog: FC<AddPeerDialogProps> = ({ isOpen, handleOpenChange }) => 
             <DialogFooterButtons
               cancelButtonText={t('common.cancel')}
               submitButtonText={t('common.create')}
+              handleSubmit={form.handleSubmit(onSubmit)}
               handleClose={handleClose}
               submitButtonType="submit"
               disableSubmit={isLoading}
