@@ -38,6 +38,7 @@ import FilesystemService from '../filesystem/filesystem.service';
 class SurveyAnswerAttachmentsService implements OnModuleInit {
   constructor(private fileSystemService: FilesystemService) {}
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   onModuleInit() {
     void FilesystemService.ensureDirectoryExists(SURVEY_ANSWERS_ATTACHMENT_PATH);
   }

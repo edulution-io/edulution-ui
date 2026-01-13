@@ -33,6 +33,7 @@ interface DraggableGridItemProps<TData> {
   renderTitle: (item: TData) => string;
   renderSubtitle?: (item: TData) => string | undefined;
   onItemClick?: (item: TData) => void;
+  renderContextMenu?: (item: TData) => ReactNode;
   enableRowSelection?: boolean;
   enableDragAndDrop?: boolean;
   canDropOnRow?: (row: TData) => boolean;
@@ -45,6 +46,7 @@ const DraggableGridItem = <TData,>({
   renderTitle,
   renderSubtitle,
   onItemClick,
+  renderContextMenu,
   enableRowSelection = true,
   enableDragAndDrop = false,
   canDropOnRow,
@@ -130,6 +132,17 @@ const DraggableGridItem = <TData,>({
               onCheckboxClick={handleCheckboxClick}
               disabled={isDisabled}
             />
+          </div>
+        )}
+
+        {renderContextMenu && (
+          <div
+            className="absolute right-2 top-2 opacity-0 transition-opacity group-hover:opacity-100"
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
+            role="presentation"
+          >
+            {renderContextMenu(item)}
           </div>
         )}
 

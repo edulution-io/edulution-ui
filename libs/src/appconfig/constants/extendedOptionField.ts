@@ -26,6 +26,7 @@ const ExtendedOptionField = {
   textarea: 'textarea',
   dropdown: 'dropdown',
   updateChecker: 'updateChecker',
+  scriptEditor: 'scriptEditor',
   appLogo: 'appLogo',
 } as const;
 

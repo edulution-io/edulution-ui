@@ -32,6 +32,7 @@ import AppConfigDropdownSelect from '@/pages/Settings/AppConfig/components/dropd
 import EmbeddedPageEditor from '@/pages/Settings/AppConfig/components/EmbeddedPageEditor';
 import AppConfigSwitch from '@/pages/Settings/AppConfig/components/booleanField/AppConfigSwitch';
 import AppConfigUpdateChecker from '@/pages/Settings/AppConfig/components/updateChecker/AppConfigUpdateChecker';
+import ScriptEditorField from '@/pages/Settings/AppConfig/components/ScriptEditorField';
 
 type ExtendedOptionsFormProps<T extends FieldValues> = {
   section: string;
@@ -136,6 +137,19 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
             option={option}
           />
         );
+      case ExtendedOptionField.scriptEditor: {
+        const enabledFieldPath = option.linkedTo
+          ? ((settingLocation ? `${settingLocation}.extendedOptions.${option.linkedTo}` : option.linkedTo) as Path<T>)
+          : fieldPath;
+        return (
+          <ScriptEditorField
+            key={fieldPath}
+            fieldPath={fieldPath}
+            enabledFieldPath={enabledFieldPath}
+            control={control}
+          />
+        );
+      }
       default:
         return null;
     }
