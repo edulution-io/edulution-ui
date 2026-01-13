@@ -132,8 +132,12 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
     }
   };
 
-  const getHiddenSegments = () =>
-    webdavShares.find((s) => s.displayName === (selectedWebdavShare || webdavShare))?.pathname;
+  const getHiddenSegments = () => {
+    const currentShare = webdavShares.find((s) => s.displayName === (selectedWebdavShare || webdavShare));
+    if (!currentShare) return undefined;
+    const shareRootPath = createVariableSharePathname(currentShare.pathname, currentShare.pathVariables);
+    return shareRootPath.endsWith('/') ? shareRootPath.slice(0, -1) : shareRootPath;
+  };
 
   const selectedInputValue =
     moveOrCopyItemToPath?.filename && showSelectedFile
