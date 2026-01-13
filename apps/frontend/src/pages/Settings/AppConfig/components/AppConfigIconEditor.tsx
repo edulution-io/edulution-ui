@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDropzone } from 'react-dropzone';
 import { MdOutlineCloudUpload } from 'react-icons/md';
@@ -36,6 +36,10 @@ interface AppConfigIconEditorProps {
 const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, onIconChange }) => {
   const { t } = useTranslation();
   const [selectedIcon, setSelectedIcon] = useState<string>(currentIcon);
+
+  useEffect(() => {
+    setSelectedIcon(currentIcon);
+  }, [currentIcon]);
 
   const handleSelectDefaultIcon = (icon: string) => {
     setSelectedIcon(icon);
@@ -84,7 +88,7 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
       <div>
         <p className="mb-2 text-sm font-medium">{t('appstore.chooseIcon')}</p>
         <Card
-          className="grid grid-cols-5 gap-4 p-3"
+          className="grid grid-cols-6 gap-4 p-3 transition-none hover:scale-100"
           variant="dialog"
         >
           {defaultIconList.map((icon) => {
