@@ -17,11 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { IconType } from 'react-icons';
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { Row } from '@tanstack/react-table';
 
 interface TableAction<TData> {
-  icon: IconType;
+  icon: IconDefinition;
   translationId: string;
   onClick: (row?: Row<TData>) => void | Promise<void>;
   className?: string;

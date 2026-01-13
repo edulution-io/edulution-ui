@@ -18,7 +18,8 @@
  */
 
 import React from 'react';
-import { MdPrint } from 'react-icons/md';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPrint } from '@fortawesome/free-solid-svg-icons';
 import WindowControlBaseButton from './WindowControlBaseButton';
 
 interface PrintButtonProps {
@@ -32,7 +33,7 @@ const PrintButton = ({ onClick, disabled }: PrintButtonProps) => (
     tooltipTranslationId="filesharing.print"
     disabled={disabled}
   >
-    <MdPrint />
+    <FontAwesomeIcon icon={faPrint} />
   </WindowControlBaseButton>
 );
 
