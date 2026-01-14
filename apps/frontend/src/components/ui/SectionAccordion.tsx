@@ -19,9 +19,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { Content, Header, Item, Root, Trigger } from '@radix-ui/react-accordion';
-import { ChevronDownIcon } from '@radix-ui/react-icons';
 import cn from '@libs/common/utils/className';
 import AnchorSection from '@/components/shared/AnchorSection';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
 interface SectionAccordionProps {
   children: React.ReactNode;
@@ -120,7 +121,10 @@ const SectionAccordionItem: React.FC<SectionAccordionItemProps> = ({
           )}
         >
           <h3>{label}</h3>
-          <ChevronDownIcon className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" />
+          <FontAwesomeIcon
+            icon={faChevronDown}
+            className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200"
+          />
         </Trigger>
       </Header>
       <Content

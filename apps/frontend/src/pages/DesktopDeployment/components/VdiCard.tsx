@@ -20,9 +20,10 @@
 import React, { FC } from 'react';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
-import { LinuxLogo, WindowsLogo } from '@/assets/icons';
+import { faWindows, faUbuntu } from '@fortawesome/free-brands-svg-icons';
 import { Card } from '@/components/shared/Card';
 import VirtualMachineOs from '@libs/desktopdeployment/types/virtual-machines.enum';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface CardProps {
   title: string;
@@ -42,9 +43,8 @@ const VdiCard: FC<CardProps> = ({ title, availableClients = 0, onClick, osType, 
       variant="text"
     >
       <div className="col-span-1 flex items-center justify-center">
-        <img
-          src={osType === VirtualMachineOs.UBUNTU ? LinuxLogo : WindowsLogo}
-          alt="os_logo"
+        <FontAwesomeIcon
+          icon={osType === VirtualMachineOs.UBUNTU ? faUbuntu : faWindows}
           className="h-12 w-12"
         />
       </div>

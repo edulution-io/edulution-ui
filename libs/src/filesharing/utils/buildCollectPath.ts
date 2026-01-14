@@ -35,10 +35,10 @@ const buildCollectPath = (
   const studentName = student.examMode ? `${student.cn}-exam` : student.cn;
 
   const studentOriginPath = student.examMode
-    ? `/${UserRoles.EXAM_USER}/${studentName}`
+    ? `${student.school}/${UserRoles.EXAM_USER}/${studentName}`
     : normalizeLdapHomeDirectory(student?.homeDirectory);
 
-  const destinationPath = `${homePath}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}/${newFolderName}/${studentName}/${FILE_PATHS.COLLECT}/`;
+  const destinationPath = `${homePath.slice(1)}/${FILE_PATHS.TRANSFER}/${FILE_PATHS.COLLECTED}/${newFolderName}/${studentName}`;
   const originPath = `${studentOriginPath}/${FILE_PATHS.TRANSFER}/${username}/${FILE_PATHS.COLLECT}/`;
 
   return {
@@ -48,5 +48,4 @@ const buildCollectPath = (
     newFolderName,
   };
 };
-
 export default buildCollectPath;

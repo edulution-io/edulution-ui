@@ -17,11 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { HttpException, HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { randomUUID, createHash } from 'crypto';
 import axios from 'axios';
-import { parseString } from 'xml2js';
+import { parseStringPromise } from 'xml2js';
 import { Model } from 'mongoose';
 import { Interval } from '@nestjs/schedule';
 import ConferencesErrorMessage from '@libs/conferences/types/conferencesErrorMessage';
@@ -112,17 +112,15 @@ class ConferencesService implements OnModuleInit {
     }
   }
 
-  static parseXml<T>(xml: string): Promise<T> {
-    return new Promise((resolve, reject) => {
-      parseString(xml, { explicitArray: false }, (err, result) => {
-        if (err) {
-          console.error(err);
-          reject(err);
-        } else {
-          resolve(result as T);
-        }
-      });
-    });
+  static async parseXml<T>(xml: string): Promise<T> {
+    try {
+      return (await parseStringPromise(xml, {
+        explicitArray: false,
+      })) as T;
+    } catch (err) {
+      Logger.error(err, ConferencesService.name);
+      throw err;
+    }
   }
 
   static getJoinedAttendees(bbbMeetingDto: BbbResponseDto): Attendee[] {
