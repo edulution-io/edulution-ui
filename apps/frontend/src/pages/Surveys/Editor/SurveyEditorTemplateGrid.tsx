@@ -19,8 +19,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { VscNewFile } from 'react-icons/vsc';
-import { EyeDarkIcon } from '@/assets/icons';
+import { faFileCirclePlus, faEye } from '@fortawesome/free-solid-svg-icons';
 import isSubsequence from '@libs/common/utils/string/isSubsequence';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
@@ -71,7 +70,7 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
       <div className="mx-auto mt-4 grid max-h-full w-full grid-cols-[repeat(auto-fit,minmax(8rem,auto))] gap-x-3 gap-y-2 overflow-auto px-2 pb-10 scrollbar-thin md:max-h-full md:w-[95%] md:grid-cols-[repeat(auto-fit,minmax(12rem,auto))] md:gap-x-6 md:gap-y-5 md:pb-4">
         <SurveyEditorTemplateCard
           key="create-new-card"
-          icon={VscNewFile}
+          icon={faFileCirclePlus}
           title={t('survey.editor.new')}
           onClick={() => {
             setTemplate(undefined);
@@ -82,7 +81,7 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
           filteredTemplates.map((surveyTemplate) => (
             <SurveyEditorTemplateCard
               key={surveyTemplate.template.formula.title}
-              icon={EyeDarkIcon}
+              icon={faEye}
               title={surveyTemplate.template.formula.title}
               description={surveyTemplate.template.formula.description}
               onClick={() => {

@@ -18,10 +18,10 @@
  */
 
 import { t } from 'i18next';
-import { MdOutlinePlayArrow } from 'react-icons/md';
+import { faPlay } from '@fortawesome/free-solid-svg-icons';
 
 const StartButton = (onClick: () => void | Promise<void>, isVisible?: boolean) => ({
-  icon: MdOutlinePlayArrow,
+  icon: faPlay,
   text: t('common.start'),
   onClick,
   isVisible,

@@ -38,8 +38,9 @@ import FilesystemService from '../filesystem/filesystem.service';
 class SurveyAnswerAttachmentsService implements OnModuleInit {
   constructor(private fileSystemService: FilesystemService) {}
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   onModuleInit() {
-    void this.fileSystemService.ensureDirectoryExists(SURVEY_ANSWERS_ATTACHMENT_PATH);
+    void FilesystemService.ensureDirectoryExists(SURVEY_ANSWERS_ATTACHMENT_PATH);
   }
 
   async serveFileFromAnswer(
@@ -142,7 +143,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     keepOldFiles = false,
   ): Promise<TSurveyQuestionAnswerTypes> {
     const directory = join(SURVEY_ANSWERS_ATTACHMENT_PATH, surveyId, questionId, userName);
-    await this.fileSystemService.ensureDirectoryExists(directory);
+    await FilesystemService.ensureDirectoryExists(directory);
 
     const tempDirectory = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId);
 

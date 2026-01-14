@@ -21,21 +21,21 @@ import { ColumnDef } from '@tanstack/react-table';
 import PUBLIC_SHARED_FILES_TABLE_COLUMN from '@libs/filesharing/constants/publicSharedFilesTableColumn';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import React from 'react';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import formatIsoDateToLocaleString from '@libs/common/utils/Date/formatIsoDateToLocaleString';
-import { LockClosedIcon } from '@radix-ui/react-icons';
 import { BUTTONS_ICON_WIDTH } from '@libs/ui/constants';
 import { useTranslation } from 'react-i18next';
-import { Globe, QrCodeIcon } from 'lucide-react';
 import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 import copyToClipboard from '@/utils/copyToClipboard';
-import { MdFileCopy } from 'react-icons/md';
+import { faCopy, faLock, faQrcode } from '@fortawesome/free-solid-svg-icons';
 import { DeleteIcon, EditIcon } from '@libs/common/constants/standardActionIcons';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
+import { LanguageIcon } from '@/assets/icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDto>[] => [
   {
@@ -54,7 +54,7 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
     cell: ({ row }) => {
       const { filename } = row.original;
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={() => {}}
           text={filename}
           row={row}
@@ -80,7 +80,7 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
     cell: ({ row }) => {
       const { createdAt } = row.original;
       return (
-        <SelectableTextCell
+        <SelectableCell
           text={formatIsoDateToLocaleString(createdAt?.toLocaleString())}
           className="min-w-32"
         />
@@ -108,7 +108,7 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
         timeStyle: 'short',
       });
       return (
-        <SelectableTextCell
+        <SelectableCell
           text={validUntil}
           className="min-w-32"
         />
@@ -130,12 +130,13 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
     cell: ({ row }) => {
       const { password } = row.original;
       return (
-        <SelectableTextCell
+        <SelectableCell
           className="min-w-20"
           text={'*'.repeat(password?.length || 0)}
           icon={
             password ? (
-              <LockClosedIcon
+              <FontAwesomeIcon
+                icon={faLock}
                 width={BUTTONS_ICON_WIDTH}
                 height={BUTTONS_ICON_WIDTH}
               />
@@ -161,8 +162,15 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
 
       if (attendeeCount === 0 && groupsCount === 0) {
         return (
-          <SelectableTextCell
-            icon={<Globe size={BUTTONS_ICON_WIDTH} />}
+          <SelectableCell
+            icon={
+              <img
+                src={LanguageIcon}
+                alt="publicly accessible"
+                width={BUTTONS_ICON_WIDTH}
+                height={BUTTONS_ICON_WIDTH}
+              />
+            }
             text={t('filesharing.publicFileSharing.publiclyAccessible')}
             onClick={() => {}}
           />
@@ -177,7 +185,7 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
         groupsCount > 0 ? `, ${groupsCount} ${t(groupsCount === 1 ? 'common.group' : 'common.groups')}` : '';
 
       return (
-        <SelectableTextCell
+        <SelectableCell
           text={`${attendeeText}${groupsText}`}
           onClick={() => {}}
         />
@@ -210,15 +218,16 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
             className="min-w-0 flex-1 cursor-pointer truncate"
             actionIcons={[
               {
-                icon: MdFileCopy,
+                icon: faCopy,
                 onClick: () => copyToClipboard(url),
               },
               {
-                icon: QrCodeIcon,
+                icon: faQrcode,
                 onClick: () => {
                   setShare(row.original);
                   openDialog(PUBLIC_SHARE_DIALOG_NAMES.QR_CODE);
                 },
+                className: 'h-5 w-5',
               },
             ]}
           />
