@@ -18,8 +18,9 @@
  */
 
 import React from 'react';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
-import { PiEyeLight, PiEyeSlash } from 'react-icons/pi';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 
 const OpenShareQRDialogTextCell = ({
@@ -38,19 +39,21 @@ const OpenShareQRDialogTextCell = ({
   const { t } = useTranslation();
 
   return (
-    <SelectableTextCell
+    <SelectableCell
       className={className}
       onClick={isPublic ? () => openDialog() : undefined}
       text={t(`${textTranslationId}.${isPublic ? 'isPublicTrue' : 'isPublicFalse'}`)}
       textOnHover={isPublic ? t('common.share') : ''}
       icon={
         isPublic ? (
-          <PiEyeLight
+          <FontAwesomeIcon
+            icon={faEye}
             width={iconSize}
             height={iconSize}
           />
         ) : (
-          <PiEyeSlash
+          <FontAwesomeIcon
+            icon={faEyeSlash}
             width={iconSize}
             height={iconSize}
           />

@@ -17,9 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import { SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
+import { Migration } from 'apps/api/src/migration/migration.type';
+import surveyTemplatesMigration001LoadDefaultTemplates from './surveyTemplatesMigration001LoadDefaultTemplates';
 import surveyTemplatesMigration000MigrateTemplateFilesToDB from './surveyTemplatesMigration000MigrateTemplateFilesToDB';
 
 // Add new migrations here
-const surveyTemplatesMigrationsList = [surveyTemplatesMigration000MigrateTemplateFilesToDB];
+const surveyTemplatesMigrationsList: Migration<SurveysTemplateDocument>[] = [
+  surveyTemplatesMigration000MigrateTemplateFilesToDB,
+  surveyTemplatesMigration001LoadDefaultTemplates,
+];
 
 export default surveyTemplatesMigrationsList;

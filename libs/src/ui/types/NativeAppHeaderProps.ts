@@ -17,10 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
+
 interface NativeAppHeaderProps {
   title: string;
   description?: string;
-  iconSrc: string;
+  iconSrc: string | IconDefinition;
+  isAppIconEditable?: boolean;
 }
 
 export default NativeAppHeaderProps;

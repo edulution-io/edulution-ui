@@ -1191,6 +1191,10 @@
         "success": "App saved successfully",
         "failed": "Update failed"
       },
+      "editIcon": {
+        "title": "Edit icon",
+        "description": "Choose an icon from the list or upload your own."
+      },
       "delete": {
         "success": "App removed",
         "failed": "App deletion failed"

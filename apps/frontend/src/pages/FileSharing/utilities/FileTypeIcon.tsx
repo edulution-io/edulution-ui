@@ -19,6 +19,7 @@
 
 import React from 'react';
 import { DefaultExtensionType, defaultStyles, FileIcon } from 'react-file-icon';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getFileCategorie, getFileNameFromPath } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import fileIconColors from '@/theme/fileIconColor';
 import EXTENSION_ICON_MAP from '@libs/filesharing/constants/extensionIconMap';
@@ -33,12 +34,11 @@ const FileTypeIcon: React.FC<FileTypeIconProps> = ({ filename, size }) => {
   const customIcon = EXTENSION_ICON_MAP[extension];
 
   if (customIcon) {
-    const Icon = customIcon.icon;
     return (
       <div style={{ width: size, height: size, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Icon
-          size={size * 0.9}
-          color={customIcon.iconColor}
+        <FontAwesomeIcon
+          icon={customIcon.icon}
+          style={{ fontSize: size * 0.9, color: customIcon.iconColor }}
         />
       </div>
     );

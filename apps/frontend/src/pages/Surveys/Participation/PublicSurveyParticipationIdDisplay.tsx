@@ -19,7 +19,8 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { MdFileCopy } from 'react-icons/md';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import copyToClipboard from '@/utils/copyToClipboard';
 import { Card } from '@/components/shared/Card';
 import Input from '@/components/shared/Input';
@@ -55,7 +56,7 @@ const PublicSurveyParticipationIdDisplay = ({ publicUserId }: PublicSurveyPartic
               readOnly
               className="w-[560px] cursor-pointer"
               onClick={() => copyToClipboard(publicUserId)}
-              icon={<MdFileCopy />}
+              icon={<FontAwesomeIcon icon={faCopy} />}
             />
           </div>
         </div>

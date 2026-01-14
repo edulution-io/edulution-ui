@@ -31,7 +31,7 @@ import SURVEY_TABLE_COLUMNS from '@libs/survey/constants/surveyTableColumns';
 import useLanguage from '@/hooks/useLanguage';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import OpenShareQRDialogTextCell from '@/components/ui/Table/OpenShareQRDialogTextCell';
 
 const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
@@ -51,7 +51,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       translationId: 'common.title',
     },
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         row={row}
         text={row.original.formula?.title || i18n.t('common.not-available')}
         className="h-full w-full min-w-32"
@@ -79,7 +79,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
         ? format(row.original.createdAt, 'P', { locale: localDateFormat })
         : i18n.t('common.not-available');
       return (
-        <SelectableTextCell
+        <SelectableCell
           text={text}
           onClick={() => row.toggleSelected()}
         />
@@ -102,7 +102,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       const localDateFormat = getLocaleDateFormat(language);
       const text = row.original?.expires ? format(row.original.expires, 'P', { locale: localDateFormat }) : '-';
       return (
-        <SelectableTextCell
+        <SelectableCell
           text={text}
           onClick={() => row.toggleSelected()}
         />
@@ -126,7 +126,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
     cell: ({ row }) => {
       const { firstName, username, lastName } = row.original.creator;
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={() => row.toggleSelected()}
           text={firstName && lastName ? `${firstName} ${lastName}` : username}
         />
@@ -179,7 +179,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       const groupsCount = row.original.invitedGroups?.length;
       const groupsText = `${groupsCount ? `, ${groupsCount} ${i18n.t(groupsCount === 1 ? 'common.group' : 'common.groups')}` : ''}`;
       return (
-        <SelectableTextCell
+        <SelectableCell
           text={`${attendeeText}${groupsText}`}
           onClick={() => row.toggleSelected()}
         />
@@ -197,7 +197,7 @@ const SurveyTableColumns: ColumnDef<SurveyDto>[] = [
       translationId: 'common.answers',
     },
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         text={`${row.original?.answers.length || 0}`}
         onClick={() => row.toggleSelected()}
       />

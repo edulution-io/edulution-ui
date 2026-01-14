@@ -18,15 +18,19 @@
  */
 
 import React from 'react';
-import { Button } from '@/components/shared/Button';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
+import { Button } from '@/components/shared/Button';
 
 const DeleteButton: React.FC<{ onDelete: () => void }> = ({ onDelete }) => (
   <Button
     onClick={onDelete}
     className="absolute right-1 top-1 h-8 rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
   >
-    <DeleteIcon className="text-text-ciRed h-4 w-4" />
+    <FontAwesomeIcon
+      icon={DeleteIcon}
+      className="h-4 w-4 text-white"
+    />
   </Button>
 );
 

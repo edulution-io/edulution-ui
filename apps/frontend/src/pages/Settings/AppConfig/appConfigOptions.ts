@@ -18,17 +18,17 @@
  */
 
 import {
-  BulletinBoardIcon,
+  InfoBoardIcon,
   ClassManagementIcon,
   ConferencesIcon,
   Dashboard,
   DesktopDeploymentIcon,
-  EmbeddedIcon,
+  FrameIcon,
   FileSharingIcon,
   ForwardIcon,
   LinuxmusterIcon,
   MailIcon,
-  NativeIcon,
+  EmbeddedIcon,
   SurveysMenuIcon,
   WhiteBoardIcon,
 } from '@/assets/icons';
@@ -58,7 +58,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   },
   {
     id: APPS.BULLETIN_BOARD,
-    icon: BulletinBoardIcon,
+    icon: InfoBoardIcon,
     isNativeApp: true,
     extendedOptions: {
       [AppConfigSectionsKeys.bulletinBoard]: BULLETIN_BOARD_EXTENDED_OPTIONS,
@@ -142,7 +142,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   },
   {
     id: APPS.FRAME,
-    icon: EmbeddedIcon,
+    icon: FrameIcon,
     options: [APP_CONFIG_OPTION_KEYS.URL, APP_CONFIG_OPTION_KEYS.PROXYCONFIG],
     isNativeApp: false,
     extendedOptions: {
@@ -151,7 +151,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   },
   {
     id: APPS.EMBEDDED,
-    icon: NativeIcon,
+    icon: EmbeddedIcon,
     options: [],
     isNativeApp: false,
     extendedOptions: {

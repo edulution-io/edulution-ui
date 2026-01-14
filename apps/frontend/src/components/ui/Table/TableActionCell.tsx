@@ -18,7 +18,8 @@
  */
 
 import React from 'react';
-import { HiOutlineDotsHorizontal } from 'react-icons/hi';
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Row } from '@tanstack/react-table';
 import TableAction from '@libs/common/types/tableAction';
 import TableActionMenu from './TableActionMenu';
@@ -37,14 +38,17 @@ const TableActionCell = <TData,>(props: TableActionCellProps<TData>) => {
 
   if (actions.length === 1) {
     const singleAction = actions[0];
-    const { icon: Icon, onClick } = singleAction;
+    const { icon, onClick } = singleAction;
     return (
       <button
         type="button"
         className="m-0 flex w-full items-center justify-center p-0"
         onClick={() => onClick(row)}
       >
-        <Icon className="m-0 h-5 w-5 p-0" />
+        <FontAwesomeIcon
+          icon={icon}
+          className="m-0 h-5 w-5 p-0"
+        />
       </button>
     );
   }
@@ -60,7 +64,10 @@ const TableActionCell = <TData,>(props: TableActionCellProps<TData>) => {
               type="button"
               className="flex w-full justify-center"
             >
-              <HiOutlineDotsHorizontal className="h-5 w-5" />
+              <FontAwesomeIcon
+                icon={faEllipsis}
+                className="h-5 w-5"
+              />
             </button>
           </div>
         }
