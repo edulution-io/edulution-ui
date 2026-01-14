@@ -117,6 +117,7 @@ const SurveyEditorTemplateCard = ({ icon, creator, surveyTemplate }: SurveyEdito
               variant="btn-attention"
               size="sm"
               aria-label={t('common.delete')}
+              className="rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
             >
               <FontAwesomeIcon
                 icon={DeleteIcon}
