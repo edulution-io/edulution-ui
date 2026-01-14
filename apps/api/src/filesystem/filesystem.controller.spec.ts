@@ -18,7 +18,7 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpStatus } from '@nestjs/common';
+import { BadRequestException, HttpStatus } from '@nestjs/common';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import { Response } from 'express';
 import { join } from 'path';
@@ -31,11 +31,7 @@ import AdminGuard from '../common/guards/admin.guard';
 import AppConfigService from '../appconfig/appconfig.service';
 import CustomHttpException from '../common/CustomHttpException';
 import GlobalSettingsService from '../global-settings/global-settings.service';
-
-jest.mock('../common/utils/validatePathNoPathTraversal', () => ({
-  __esModule: true,
-  default: jest.fn(),
-}));
+import ValidatePathPipe from '../common/pipes/validatePath.pipe';
 
 describe(FileSystemController.name, () => {
   let controller: FileSystemController;
@@ -97,10 +93,6 @@ describe(FileSystemController.name, () => {
         status: jest.fn().mockReturnThis(),
         json: jest.fn().mockReturnThis(),
       };
-      jest.spyOn(FilesystemService, 'getFilePathAndFallBackPath').mockReturnValue({
-        filePath: '/test/path/file.png',
-        fallBackPath: '/test/path/fallback.png',
-      });
     });
 
     afterEach(() => {
@@ -114,11 +106,10 @@ describe(FileSystemController.name, () => {
 
         await controller.servePublicAssetWithFallback(mockResponse as Response, appName, filename, undefined);
 
-        expect(FilesystemService.getFilePathAndFallBackPath).toHaveBeenCalledWith(appName, filename, undefined);
         expect(service.servePublicAssetWithFallback).toHaveBeenCalledWith(
           mockResponse,
-          '/test/path/file.png',
-          '/test/path/fallback.png',
+          join(PUBLIC_ASSET_PATH, appName, filename),
+          undefined,
         );
       });
 
@@ -129,137 +120,22 @@ describe(FileSystemController.name, () => {
 
         await controller.servePublicAssetWithFallback(mockResponse as Response, appName, filename, fallbackFilename);
 
-        expect(FilesystemService.getFilePathAndFallBackPath).toHaveBeenCalledWith(appName, filename, fallbackFilename);
         expect(service.servePublicAssetWithFallback).toHaveBeenCalledWith(
           mockResponse,
-          '/test/path/file.png',
-          '/test/path/fallback.png',
+          join(PUBLIC_ASSET_PATH, appName, filename),
+          join(PUBLIC_ASSET_PATH, appName, fallbackFilename),
         );
-      });
-
-      it('should handle array filename parameter', async () => {
-        const appName = Object.values(APPS)[0];
-        const filename = ['assets', 'images', 'logo.png'];
-
-        await controller.servePublicAssetWithFallback(mockResponse as Response, appName, filename, undefined);
-
-        expect(FilesystemService.getFilePathAndFallBackPath).toHaveBeenCalledWith(appName, filename, undefined);
-        expect(service.servePublicAssetWithFallback).toHaveBeenCalled();
       });
     });
 
     describe('Invalid app name handling', () => {
-      it('should throw error for non-existent app name', async () => {
+      it('should throw error for non-existent app name', () => {
         const invalidAppName = 'non-existent-app';
         const filename = 'logo.png';
 
-        try {
-          await controller.servePublicAssetWithFallback(mockResponse as Response, invalidAppName, filename, undefined);
-        } catch (e) {
-          expect(e).toBeInstanceOf(Error);
-          expect(e instanceof Error && e.message).toBe(CommonErrorMessages.INVALID_REQUEST_DATA);
-        }
-      });
-    });
-
-    describe('Path traversal attack attempts', () => {
-      it('should detect and reject path traversal in main file path', async () => {
-        const appName = Object.values(APPS)[0];
-        const filename = '../../../etc/passwd';
-
-        jest.spyOn(FilesystemService, 'getFilePathAndFallBackPath').mockReturnValue({
-          filePath: '/unsafe/path/../../../etc/passwd',
-        });
-
-        try {
-          await controller.servePublicAssetWithFallback(mockResponse as Response, appName, filename, undefined);
-        } catch (e) {
-          expect(e).toBeInstanceOf(Error);
-          expect(e instanceof Error && e.message).toBe(CommonErrorMessages.INVALID_REQUEST_DATA);
-        }
-      });
-
-      it('should detect and reject path traversal in fallback path', async () => {
-        const appName = Object.values(APPS)[0];
-        const filename = 'logo.png';
-        const fallbackFilename = '../../../etc/shadow';
-
-        try {
-          await controller.servePublicAssetWithFallback(mockResponse as Response, appName, filename, fallbackFilename);
-        } catch (e) {
-          expect(e).toBeInstanceOf(Error);
-          expect(e instanceof Error && e.message).toBe(CommonErrorMessages.INVALID_REQUEST_DATA);
-        }
-      });
-
-      it('should handle double slash attempts', async () => {
-        const appName = Object.values(APPS)[0];
-        const filename = 'assets//sensitive//file.txt';
-
-        jest.spyOn(FilesystemService, 'getFilePathAndFallBackPath').mockReturnValue({
-          filePath: '/path//with//double//slashes',
-        });
-
-        try {
-          await controller.servePublicAssetWithFallback(mockResponse as Response, appName, filename, undefined);
-        } catch (e) {
-          expect(e).toBeInstanceOf(Error);
-          expect(e instanceof Error && e.message).toBe(CommonErrorMessages.INVALID_REQUEST_DATA);
-        }
-      });
-
-      it('should handle complex path traversal with array filename', async () => {
-        const appName = Object.values(APPS)[0];
-        const filename = ['..', '..', '..', 'etc', 'passwd'];
-
-        jest.spyOn(FilesystemService, 'getFilePathAndFallBackPath').mockReturnValue({
-          filePath: '/complex/../../../etc/passwd',
-        });
-
-        try {
-          await controller.servePublicAssetWithFallback(mockResponse as Response, appName, filename, undefined);
-        } catch (e) {
-          expect(e).toBeInstanceOf(Error);
-          expect(e instanceof Error && e.message).toBe(CommonErrorMessages.INVALID_REQUEST_DATA);
-        }
-      });
-    });
-
-    describe('Edge cases and validation', () => {
-      it('should handle empty filename', async () => {
-        const appName = Object.values(APPS)[0];
-        const filename = '';
-
-        jest.spyOn(FilesystemService, 'getFilePathAndFallBackPath').mockReturnValue({
-          filePath: '/empty/path/',
-        });
-
-        try {
-          await controller.servePublicAssetWithFallback(mockResponse as Response, appName, filename, undefined);
-        } catch (e) {
-          expect(e).toBeInstanceOf(Error);
-          expect(e instanceof Error && e.message).toBe(CommonErrorMessages.INVALID_REQUEST_DATA);
-        }
-      });
-
-      it('should handle special characters in filename', async () => {
-        const appName = Object.values(APPS)[0];
-        const filename = 'file with spaces & symbols.png';
-
-        await controller.servePublicAssetWithFallback(mockResponse as Response, appName, filename, undefined);
-
-        expect(FilesystemService.getFilePathAndFallBackPath).toHaveBeenCalledWith(appName, filename, undefined);
-      });
-
-      it('should handle null fallback filename', async () => {
-        const appName = Object.values(APPS)[0];
-        const filename = 'logo.png';
-
-        jest.spyOn(FilesystemService, 'getFilePathAndFallBackPath').mockReturnValue({
-          filePath: '/path/logo.png',
-        });
-
-        await controller.servePublicAssetWithFallback(mockResponse as Response, appName, filename, undefined);
+        expect(() =>
+          controller.servePublicAssetWithFallback(mockResponse as Response, invalidAppName, filename, undefined),
+        ).toThrow(CustomHttpException);
       });
     });
   });
@@ -350,6 +226,49 @@ describe(FileSystemController.name, () => {
           expect(e instanceof Error && e.message).toBe('EACCES: permission denied');
         }
       });
+    });
+  });
+});
+
+describe(ValidatePathPipe.name, () => {
+  const basePath = '/test/base';
+
+  describe('Valid paths', () => {
+    it('should return sanitized filename for valid input', () => {
+      const pipe = new ValidatePathPipe(basePath);
+      const result = pipe.transform('valid-file.png');
+      expect(result).toBe('valid-file.png');
+    });
+
+    it('should handle undefined input', () => {
+      const pipe = new ValidatePathPipe(basePath);
+      const result = pipe.transform(undefined);
+      expect(result).toBeUndefined();
+    });
+
+    it('should handle array input', () => {
+      const pipe = new ValidatePathPipe(basePath);
+      const result = pipe.transform(['subfolder', 'file.png']);
+      expect(result).toBe('subfolder/file.png');
+    });
+  });
+
+  describe('Invalid paths', () => {
+    it('should throw for empty string', () => {
+      const pipe = new ValidatePathPipe(basePath);
+      expect(() => pipe.transform('')).toThrow(BadRequestException);
+    });
+
+    it('should throw for path too long', () => {
+      const pipe = new ValidatePathPipe(basePath);
+      const longPath = 'a'.repeat(301);
+      expect(() => pipe.transform(longPath)).toThrow(BadRequestException);
+    });
+
+    it('should sanitize path traversal attempts', () => {
+      const pipe = new ValidatePathPipe(basePath);
+      const result = pipe.transform('../etc/passwd');
+      expect(result).not.toContain('..');
     });
   });
 });

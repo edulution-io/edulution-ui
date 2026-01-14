@@ -43,7 +43,6 @@ import FILE_ENDPOINTS from '@libs/filesystem/constants/endpoints';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
 import { UploadGlobalAssetDto } from '@libs/filesystem/types/uploadGlobalAssetDto';
-import validatePathNoPathTraversal from 'apps/api/src/common/utils/validatePathNoPathTraversal';
 import CustomHttpException from '../common/CustomHttpException';
 import { createAttachmentUploadOptions, createDiskStorage } from './multer.utilities';
 import AdminGuard from '../common/guards/admin.guard';
@@ -51,6 +50,7 @@ import DynamicAppAccessGuard from '../common/guards/dynamicAppAccess.guard';
 import FilesystemService from './filesystem.service';
 import Public from '../common/decorators/public.decorator';
 import IsPublicAppGuard from '../common/guards/isPublicApp.guard';
+import ValidatePathPipe from '../common/pipes/validatePath.pipe';
 
 @ApiTags(EDU_API_CONFIG_ENDPOINTS.FILES)
 @ApiBearerAuth()
@@ -107,13 +107,13 @@ class FileSystemController {
 
   @Public()
   @Get(`public/assets/:appName/*filename`)
-  async servePublicAssetWithFallback(
+  servePublicAssetWithFallback(
     @Res() res: Response,
     @Param('appName') appName: string,
-    @Param('filename') filename: string | string[],
-    @Query('fallback') fallbackFilename: string | undefined,
+    @Param('filename', new ValidatePathPipe(PUBLIC_ASSET_PATH)) filename: string,
+    @Query('fallback', new ValidatePathPipe(PUBLIC_ASSET_PATH)) fallbackFilename: string | undefined,
   ) {
-    if (!filename || !appName || !(Object.values(APPS) as string[]).includes(appName)) {
+    if (!appName || !(Object.values(APPS) as string[]).includes(appName)) {
       throw new CustomHttpException(
         CommonErrorMessages.INVALID_REQUEST_DATA,
         HttpStatus.BAD_REQUEST,
@@ -121,15 +121,8 @@ class FileSystemController {
         FileSystemController.name,
       );
     }
-    const { filePath, fallBackPath } = FilesystemService.getFilePathAndFallBackPath(
-      appName,
-      filename,
-      fallbackFilename,
-    );
-    await validatePathNoPathTraversal(filePath, PUBLIC_ASSET_PATH, FileSystemController.name, { mustExist: false });
-    if (fallBackPath) {
-      await validatePathNoPathTraversal(fallBackPath, PUBLIC_ASSET_PATH, FileSystemController.name);
-    }
+    const filePath = join(PUBLIC_ASSET_PATH, appName, filename);
+    const fallBackPath = fallbackFilename ? join(PUBLIC_ASSET_PATH, appName, fallbackFilename) : undefined;
     return this.filesystemService.servePublicAssetWithFallback(res, filePath, fallBackPath);
   }
 
