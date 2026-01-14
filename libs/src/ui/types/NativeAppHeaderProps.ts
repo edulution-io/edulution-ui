@@ -23,6 +23,7 @@ interface NativeAppHeaderProps {
   title: string;
   description?: string;
   iconSrc: string | IconDefinition;
+  isAppIconEditable?: boolean;
 }
 
 export default NativeAppHeaderProps;

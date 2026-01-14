@@ -1040,6 +1040,10 @@
         "success": "Application enregistrée avec succès",
         "failed": "La mise à jour a échoué"
       },
+      "editIcon": {
+        "title": "Modifier l'icône",
+        "description": "Choisissez une icône dans la liste ou téléchargez la vôtre."
+      },
       "delete": {
         "success": "L'application a été supprimée",
         "failed": "Echec de la suppression"

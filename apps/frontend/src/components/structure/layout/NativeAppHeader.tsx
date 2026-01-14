@@ -23,9 +23,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import NativeAppHeaderProps from '@libs/ui/types/NativeAppHeaderProps';
 import getAppIconClassName from '@/utils/getAppIconClassName';
 import cn from '@libs/common/utils/className';
+import { Button } from '@/components/shared/Button';
+import { EditIcon } from '@libs/common/constants/standardActionIcons';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 
-const NativeAppHeader = ({ title, iconSrc, description }: NativeAppHeaderProps) => {
+const NativeAppHeader = ({ title, iconSrc, description, isAppIconEditable = false }: NativeAppHeaderProps) => {
   const { t } = useTranslation();
+  const setIsEditIconDialogOpen = useAppConfigsStore((state) => state.setIsEditIconDialogOpen);
 
   const renderIcon = () => {
     if (isValidElement(iconSrc)) {
@@ -34,7 +38,7 @@ const NativeAppHeader = ({ title, iconSrc, description }: NativeAppHeaderProps) 
 
     if (typeof iconSrc === 'string') {
       const iconClassName = getAppIconClassName(iconSrc);
-      const baseClassName = cn('hidden h-20 w-20 object-contain md:block', iconClassName);
+      const baseClassName = cn('h-20 w-20 object-contain', iconClassName);
       return (
         <img
           src={iconSrc}
@@ -45,7 +49,7 @@ const NativeAppHeader = ({ title, iconSrc, description }: NativeAppHeaderProps) 
     }
 
     const iconClassName = getAppIconClassName(iconSrc);
-    const baseClassName = cn('hidden h-20 w-20 object-contain md:block', iconClassName);
+    const baseClassName = cn('h-20 w-20 object-contain', iconClassName);
     return (
       <FontAwesomeIcon
         icon={iconSrc}
@@ -56,7 +60,23 @@ const NativeAppHeader = ({ title, iconSrc, description }: NativeAppHeaderProps) 
 
   return (
     <div className="mr-2 flex min-h-[6.25rem] pl-2 md:pl-4 xl:max-h-[6.25rem]">
-      {renderIcon()}
+      <div className="group relative hidden md:block">
+        {renderIcon()}
+
+        {isAppIconEditable && (
+          <Button
+            variant="btn-small"
+            onClick={() => setIsEditIconDialogOpen(true)}
+            className="absolute -right-1 top-1 h-8 w-8 rounded-full bg-gray-700 bg-opacity-70 p-2 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-gray-500 hover:bg-opacity-90"
+          >
+            <FontAwesomeIcon
+              icon={EditIcon}
+              className="h-4 w-4"
+            />
+          </Button>
+        )}
+      </div>
+
       <div className="ml-4">
         <h1>{title}</h1>
         <div className="pt-5 sm:pt-0">{description && <p className="pb-4">{description}</p>}</div>
