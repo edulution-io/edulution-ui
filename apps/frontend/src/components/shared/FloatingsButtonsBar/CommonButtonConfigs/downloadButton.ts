@@ -18,10 +18,10 @@
  */
 
 import { t } from 'i18next';
-import { MdDownload } from 'react-icons/md';
+import { faDownload } from '@fortawesome/free-solid-svg-icons';
 
 const DownloadButton = (onClick: () => Promise<void>, isVisible?: boolean) => ({
-  icon: MdDownload,
+  icon: faDownload,
   text: t('tooltip.download'),
   onClick,
   isVisible,

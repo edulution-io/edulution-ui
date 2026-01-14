@@ -21,7 +21,8 @@ import React, { useState } from 'react';
 import { Table } from '@tanstack/react-table';
 import { Button } from '@/components/shared/Button';
 import DropdownMenu from '@/components/shared/DropdownMenu';
-import { ChevronDown } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { inputVariants } from '@libs/ui/constants/commonClassNames';
 import cn from '@libs/common/utils/className';
@@ -54,7 +55,11 @@ const SelectColumnsDropdown = <TData,>({ table, isDialog }: SelectColumnsDropdow
           variant="btn-table"
           className={cn('max-w-fit', inputVariants({ variant: isDialog ? 'dialog' : 'default' }))}
         >
-          {t('common.columns')} <ChevronDown className={cn('h-4 w-4 transition-transform', isOpen && 'rotate-180')} />
+          {t('common.columns')}{' '}
+          <FontAwesomeIcon
+            icon={faChevronDown}
+            className={cn('h-3 w-3 transition-transform', isOpen && 'rotate-180')}
+          />
         </Button>
       }
       items={dropdownItems}

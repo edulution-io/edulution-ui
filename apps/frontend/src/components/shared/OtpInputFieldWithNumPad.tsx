@@ -18,7 +18,8 @@
  */
 
 import React, { FC, Dispatch, SetStateAction } from 'react';
-import { MdDialpad } from 'react-icons/md';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTableCells } from '@fortawesome/free-solid-svg-icons';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import cn from '@libs/common/utils/className';
 import { InputOTPSH, InputOTPGroupSH, InputOTPSlotSH } from '../ui/InputOtpSH';
@@ -76,7 +77,7 @@ const OtpInputFieldWithNumPad: FC<OtpInputProps> = ({
           variant === 'login' && 'border-ciDarkGrey text-ciDarkGrey hover:bg-ciDarkGrey/10',
         )}
       >
-        <MdDialpad style={{ width: '18px', height: '18px' }} />
+        <FontAwesomeIcon icon={faTableCells} />
       </Button>
     )}
   </div>

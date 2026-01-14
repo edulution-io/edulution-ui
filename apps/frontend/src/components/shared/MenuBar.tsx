@@ -17,11 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { isValidElement, useEffect, useMemo, useRef, useState } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import cn from '@libs/common/utils/className';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { GoSidebarCollapse, GoSidebarExpand } from 'react-icons/go';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRightToBracket, faArrowRightFromBracket, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { useOnClickOutside } from 'usehooks-ts';
 import useMedia from '@/hooks/useMedia';
 import { getFromPathName } from '@libs/common/utils';
@@ -36,6 +37,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip
 import getAppIconClassName from '@/utils/getAppIconClassName';
 import useMenuBarStore from './useMenuBarStore';
 import { Button } from './Button';
+import MenuBarFooter from './MenuBarFooter';
 
 const MenuBar: React.FC = () => {
   const { t } = useTranslation();
@@ -57,6 +59,35 @@ const MenuBar: React.FC = () => {
   useOnClickOutside(menubarRef, () => {
     if (isMobileView || isTabletView) toggleMobileMenuBar();
   });
+
+  const renderIcon = (
+    icon: string | IconDefinition | React.ReactElement,
+    alt: string,
+    baseClassName?: string,
+    applyIconClassName = true,
+  ) => {
+    if (isValidElement(icon)) {
+      return icon;
+    }
+
+    const iconClassName = applyIconClassName ? getAppIconClassName(icon as string | IconDefinition) : '';
+
+    if (typeof icon === 'string') {
+      return (
+        <img
+          src={icon}
+          alt={alt}
+          className={cn(baseClassName, iconClassName)}
+        />
+      );
+    }
+    return (
+      <FontAwesomeIcon
+        icon={icon as IconDefinition}
+        className={cn(baseClassName, 'scale-75', applyIconClassName ? 'text-background dark:text-white' : 'text-white')}
+      />
+    );
+  };
 
   if (menuBarEntries.disabled) {
     return null;
@@ -123,15 +154,12 @@ const MenuBar: React.FC = () => {
           type="button"
           onClick={handleHeaderIconClick}
         >
-          <img
-            src={menuBarEntries.icon}
-            alt={menuBarEntries.title}
-            className={cn(
-              'object-contain transition-all',
-              shouldCollapse ? 'h-10 w-10' : 'h-20 w-20',
-              getAppIconClassName(menuBarEntries.icon),
-            )}
-          />
+          {renderIcon(
+            menuBarEntries.icon,
+            menuBarEntries.title,
+            cn('object-contain transition-all', shouldCollapse ? 'h-10 w-10' : 'h-20 w-20'),
+            true,
+          )}
           {!shouldCollapse && <h2 className="mb-2 mt-2 text-center font-bold">{menuBarEntries.title}</h2>}
         </button>
       </div>
@@ -152,11 +180,7 @@ const MenuBar: React.FC = () => {
                 shouldCollapse && 'justify-center',
               )}
             >
-              <img
-                src={item.icon}
-                alt={item.label}
-                className={cn('h-12 w-12 object-contain', isSelected !== item.id && getAppIconClassName(item.icon))}
-              />
+              {renderIcon(item.icon, item.label, 'h-12 w-12 object-contain', isSelected !== item.id)}
               {!shouldCollapse && <span className={cn(isSelected === item.id ? 'text-white' : '')}>{item.label}</span>}
             </button>
           );
@@ -171,6 +195,11 @@ const MenuBar: React.FC = () => {
           );
         })}
       </div>
+
+      <MenuBarFooter
+        appName={pathParts[0]}
+        isCollapsed={shouldCollapse}
+      />
     </div>
   );
 
@@ -200,11 +229,18 @@ const MenuBar: React.FC = () => {
             size="sm"
             onClick={toggleCollapsed}
             className={cn(
-              'bg-glass absolute right-[-15px] top-2 border-accent px-2 py-1 backdrop-blur-lg hover:bg-muted-background',
+              'bg-glass absolute right-[-15px] top-2 z-10 border-accent px-2 py-1 backdrop-blur-lg hover:bg-muted-background',
               shouldCollapse ? 'cursor-e-resize' : 'cursor-w-resize',
             )}
           >
-            {isCollapsed ? <GoSidebarCollapse size={18} /> : <GoSidebarExpand size={18} />}
+            {isCollapsed ? (
+              <FontAwesomeIcon icon={faArrowRightToBracket} />
+            ) : (
+              <FontAwesomeIcon
+                icon={faArrowRightFromBracket}
+                className="rotate-180"
+              />
+            )}
           </Button>
         </aside>
       ) : (

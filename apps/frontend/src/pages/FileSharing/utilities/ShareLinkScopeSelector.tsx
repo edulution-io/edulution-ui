@@ -18,7 +18,8 @@
  */
 
 import React, { FC } from 'react';
-import { Globe, User } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGlobe, faUser } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import cn from '@libs/common/utils/className';
 import { RadioGroupItemSH, RadioGroupSH } from '@/components/ui/RadioGroupSH';
@@ -46,7 +47,10 @@ const ShareLinkScopeSelector: FC<ShareLinkScopeSelectorProps> = ({ value, onValu
         htmlFor="public"
       >
         <div className="flex cursor-pointer items-start gap-3">
-          <Globe className="h-8 w-8 text-ciLightBlue" />
+          <FontAwesomeIcon
+            icon={faGlobe}
+            className="h-5 w-5 text-ciLightBlue"
+          />
           <div>
             <p className="font-semibold">{t('filesharing.publicFileSharing.scope.public')}</p>
             <p className="text-sm text-muted-foreground">{t('filesharing.publicFileSharing.scope.publicHint')}</p>
@@ -64,7 +68,10 @@ const ShareLinkScopeSelector: FC<ShareLinkScopeSelectorProps> = ({ value, onValu
         htmlFor="restricted"
       >
         <div className="flex cursor-pointer items-start gap-3">
-          <User className="h-8 w-8 text-ciLightYellow" />
+          <FontAwesomeIcon
+            icon={faUser}
+            className="h-5 w-5 text-ciLightYellow"
+          />
           <div>
             <p className="font-semibold">{t('filesharing.publicFileSharing.scope.restricted')}</p>
             <p className="text-sm text-muted-foreground">{t('filesharing.publicFileSharing.scope.restrictedHint')}</p>

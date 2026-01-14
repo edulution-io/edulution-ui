@@ -18,10 +18,10 @@
  */
 
 import { t } from 'i18next';
-import { RiShareForward2Line } from 'react-icons/ri';
+import { faShareFromSquare } from '@fortawesome/free-solid-svg-icons';
 
 const ConnectButton = (onClick: () => void) => ({
-  icon: RiShareForward2Line,
+  icon: faShareFromSquare,
   text: t('desktopdeployment.connect'),
   onClick,
 });

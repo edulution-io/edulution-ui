@@ -53,6 +53,8 @@
     "confirmDelete_other": "Ces {{count}} messages devraient-ils vraiment être supprimés?",
     "rowsSelected": "{{selected}} depuis {{total}} messages sélectionnés",
     "rowSelected": "{{selected}} depuis {{total}} notification sélectionnée",
+    "item": "{{count}} message",
+    "items": "{{count}} messages",
     "cancel": "Annuler",
     "title": "titre",
     "content": "Contenu",
@@ -123,6 +125,7 @@
       "globalQuota": "Cloudquota calculé ",
       "mailQuota": "MailQuota calculé",
       "mibibyte": "Mib",
+      "gbUsed": "{{used}} / {{total}} Go utilisé",
       "remainingLow": "Quota restant bas - {{free}} %",
       "remainingVeryLow": "Quota restant très bas - {{free}} %"
     }
@@ -190,6 +193,8 @@
     "encryption": "Chiffrement",
     "rowSelected": "{{selected}} de {{total}} tâche sélectionnée",
     "rowsSelected": "{{selected}} de {{total}} tâches sélectionnées",
+    "item": "{{count}} tâche",
+    "items": "{{count}} tâches",
     "themeUpdated": {
       "generic": "Le thème du courrier électronique a été mis à jour. Veuillez actualiser la page pour que les modifications soient prises en compte.",
       "failed": "Le thème du courrier électronique n'a pas pu être mis à jour."
@@ -220,6 +225,7 @@
   "errors": {
     "unexpectedError": "Une erreur inattendue s'est produite",
     "automaticLoginFailed": "La connexion automatique a échoué",
+    "scriptInjectionFailed": "Échec de l'injection du script dans l'iframe",
     "uploadOrFetchAttachmentFailed": "Erreur lors du téléchargement de la pièce jointe",
     "fileGenerationFailed": "Le fichier n'a pas pu être généré",
     "requestTooLarge": "Votre demande dépasse la limite de {{limit}} Ko. Si vous avez joint des fichiers multimédias, essayez de les compresser ou de les supprimer.",
@@ -292,6 +298,8 @@
     "private": "Privé",
     "rowsSelected": "{{selected}} de {{total}} conférences sélectionnées",
     "rowSelected": "{{selected}} de {{total}} conférence sélectionnée",
+    "item": "{{count}} conférence",
+    "items": "{{count}} conférences",
     "cancel": "Annuler",
     "password_required": "Aucun mot de passe saisi",
     "error": "Erreur",
@@ -330,12 +338,15 @@
     "sidebar": "Partage de fichiers",
     "previewTitle": "Aperçu des fichiers",
     "saveFile": "Enregistrer le fichier",
+    "print": "Imprimer",
     "fileEditor": "Editeur de fichier",
     "filePreview": "Aperçu des fichiers",
     "closeEditor": "Ferme l'éditeur",
     "loadingDocument": "Chargement du document ...",
     "rowsSelected": "{{selected}} de {{total}} fichiers sélectionnés",
     "rowSelected": "{{selected}} de {{total}} fichier sélectionné",
+    "item": "{{count}} élément",
+    "items": "{{count}} éléments",
     "fileWithSameNameAlreadyExists": "Un fichier avec ce nom existe déjà.",
     "folderWithSameNameAlreadyExists": "Un dossier avec ce nom existe déjà.",
     "currentName": "Nom actuel",
@@ -689,6 +700,8 @@
   "surveys": {
     "rowsSelected": "{{selected}} de {{total}} sondages sélectionnés",
     "rowSelected": "{{selected}} de {{total}} sondages sélectionné",
+    "item": "{{count}} sondage",
+    "items": "{{count}} sondages",
     "confirmDelete": "Le sondage devrait-il vraiment être supprimé?",
     "confirmDelete_other": "Ces {{count}} sondages devraient-ils vraiment être supprimés?",
     "deleteSurveys": "Supprimer sondage",
@@ -1008,7 +1021,9 @@
           "uploadSuccess": "Fichiers téléversés avec succès",
           "uploadFailed": "Le téléversement a échoué",
           "rowSelected": "{{selected}} de {{total}} fichier sélectionné",
-          "rowsSelected": "{{selected}} de {{total}} fichiers sélectionnés"
+          "rowsSelected": "{{selected}} de {{total}} fichiers sélectionnés",
+          "item": "{{count}} élément",
+          "items": "{{count}} éléments"
         },
         "editor": {
           "title": "Editeur",
@@ -1018,11 +1033,26 @@
           "sandboxModeDescription": "Dans le mode \"disposition séparée\", le contenu s'affiche comme une page indépendante, similaire à une fenêtre dans l'application. En plus du contenu réel, des éléments de conception ou des fonctions supplémentaires provenant d'autres sources peuvent également être chargés. En conséquence, la conception est indépendante de l'application, il pourrait donc être différent ou se comporter différemment. Ici, le contenu doit être téléchargé en fichier HTML.",
           "nativeModeDescription": "Dans le mode \"Disposition intégrée\", en revanche, le contenu est inséré directement dans la surface de l'application. En conséquence, le contenu semble autant que l'application elle-même et s'adapte de manière optiquement. Cependant, aucun éléments ou fonctions de conception externes supplémentaires ne peut être ajouté dynamiquement ici. Cependant, des éléments statiques tels que des images peuvent être téléchargés et utilisés ici.",
           "visibilityDescription": "Vous pouvez ici déterminer si l'application doit être accessible au public. Actif signifie public, inactif signifie que seuls les groupes d'utilisateurs configurés y ont accès. Rendre l'application accessible au public crée un lien dans le pied de page. Pour rendre l'application visible dans la barre latérale pour les utilisateurs enregistrés, leur accès doit être configuré via les groupes d'utilisateurs."
+        },
+        "scripts": {
+          "title": "Scripts",
+          "description": "Configurez les scripts JavaScript à exécuter lors du chargement de l'iframe ou lors de la déconnexion.",
+          "onLoadEnabled": "Activer le script au chargement",
+          "onLoadDescription": "Exécuter un script JavaScript lorsque le contenu de l'iframe est chargé",
+          "onLogoutEnabled": "Activer le script à la déconnexion",
+          "onLogoutDescription": "Exécuter un script JavaScript avant que l'utilisateur ne se déconnecte",
+          "syntaxValid": "La syntaxe du script est valide",
+          "syntaxInvalid": "Le script contient des erreurs de syntaxe",
+          "placeholder": "Entrez le code JavaScript ici"
         }
       },
       "update": {
         "success": "Application enregistrée avec succès",
         "failed": "La mise à jour a échoué"
+      },
+      "editIcon": {
+        "title": "Modifier l'icône",
+        "description": "Choisissez une icône dans la liste ou téléchargez la vôtre."
       },
       "delete": {
         "success": "L'application a été supprimée",
@@ -1051,6 +1081,8 @@
     },
     "rowsSelected": "{{selected}} de {{total}} conteneurs sélectionnés",
     "rowSelected": "{{selected}} de {{total}} conteneur sélectionné",
+    "item": "{{count}} conteneur",
+    "items": "{{count}} conteneurs",
     "license": {
       "title": "Licence",
       "customerId": "Numéro de client",
@@ -1076,6 +1108,8 @@
     "sidebar": "Mon profil",
     "rowSelected": "{{selected}} de {{total}} compte sélectionné",
     "rowsSelected": "{{selected}} de {{total}} comptes sélectionnés",
+    "item": "{{count}} compte",
+    "items": "{{count}} comptes",
     "details": {
       "title": "Coordonnées",
       "description": "Ici, vous pouvez afficher vos données utilisateur et les modifier en partie.",
@@ -1189,8 +1223,8 @@
     "title": "Généralités"
   },
   "forwardingpage": {
-    "action": "Ce lien peut être atteint du côté extérieur du fournisseur.",
-    "description": "L'application s'ouvre dans une nouvelle fenêtre.",
+    "action": "Ce bouton vous mènera au site externe du fournisseur.",
+    "description": "L'application s'ouvre dans un nouvel onglet.",
     "missing_link": "Le lien est manquant"
   },
   "menu": "Menu",
@@ -1225,6 +1259,7 @@
     "next": "Prochain",
     "back": "Précédent",
     "confirm": "Confirmer",
+    "validate": "Valider",
     "share": "Partager",
     "savedToClipboard": "Copié dans le presse-papiers.",
     "savedToClipboardError": "N'a pas pu être copié dans le presse-papiers.",
@@ -1251,6 +1286,12 @@
     "cancel": "Annuler",
     "columns": "Colonnes",
     "table": "Tableau",
+    "tableView": "Vue tableau",
+    "gridView": "Vue grille",
+    "sort": "Trier",
+    "ascending": "croissant",
+    "descending": "décroissant",
+    "selectAll": "Tout sélectionner",
     "copy": {
       "success": "Copié avec succès dans le presse-papiers",
       "error": "Echec de copie dans le presse-papiers",
@@ -1327,6 +1368,7 @@
     "select": "Choisir...",
     "none": "Aucun",
     "edit": "Modifier",
+    "view": "Afficher",
     "participate": "Participer",
     "participated": "Participé",
     "not-available": "Indisponible",

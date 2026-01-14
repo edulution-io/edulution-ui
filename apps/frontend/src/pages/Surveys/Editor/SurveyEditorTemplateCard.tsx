@@ -20,7 +20,8 @@
 import { toast } from 'sonner';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IconType } from 'react-icons';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import cn from '@libs/common/utils/className';
 import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
@@ -34,16 +35,12 @@ import { Button } from '@/components/shared/Button';
 import surveysDefaultValues from '@/pages/Surveys/utils/surveys-default-values';
 
 interface SurveyEditorTemplateCardProps {
-  icon: string | IconType;
+  icon: IconProp;
   creator: AttendeeDto;
   surveyTemplate?: SurveyTemplateDto;
 }
 
-const SurveyEditorTemplateCard = ({
-  icon: Icon,
-  creator,
-  surveyTemplate,
-}: SurveyEditorTemplateCardProps): JSX.Element => {
+const SurveyEditorTemplateCard = ({ icon, creator, surveyTemplate }: SurveyEditorTemplateCardProps): JSX.Element => {
   const { setIsOpenTemplateConfirmDeletion, setIsTemplateActive, fetchTemplates, setTemplate } = useTemplateMenuStore();
 
   const { loadNewSurvey, loadSurveyTemplate } = useSurveyEditorPageStore();
@@ -90,15 +87,10 @@ const SurveyEditorTemplateCard = ({
       variant="text"
       onClick={handleClick}
     >
-      {typeof Icon === 'string' ? (
-        <img
-          src={Icon}
-          alt={title}
-          className="h-12 w-12 md:h-14 md:w-14"
-        />
-      ) : (
-        <Icon className="h-12 w-12 md:h-14 md:w-14" />
-      )}
+      <FontAwesomeIcon
+        icon={icon}
+        className="h-12 w-12 md:h-14 md:w-14"
+      />
       {title && <h3 className={cn('mt-1 line-clamp-2 w-full truncate px-4', { 'mt-2': !description })}>{title}</h3>}
 
       {description && <p className="mt-2 line-clamp-2 w-full px-4">{description}</p>}
@@ -126,7 +118,10 @@ const SurveyEditorTemplateCard = ({
               size="sm"
               aria-label={t('common.delete')}
             >
-              <DeleteIcon className="h-4 w-4" />
+              <FontAwesomeIcon
+                icon={DeleteIcon}
+                className="h-4 w-4"
+              />
             </Button>
           )}
         </div>

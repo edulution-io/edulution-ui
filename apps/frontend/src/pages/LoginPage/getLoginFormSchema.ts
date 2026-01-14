@@ -25,11 +25,11 @@ const getLoginFormSchema = (t: TFunction<'translation', undefined>) =>
     username: z
       .string({ required_error: t('username.required') })
       .min(1, { message: t('common.required') })
-      .max(32, { message: t('login.username_too_long') }),
+      .max(320, { message: t('login.username_too_long') }),
     password: z
       .string({ required_error: t('common.required') })
       .min(1, { message: t('common.required') })
-      .max(32, { message: t('login.password_too_long') }),
+      .max(256, { message: t('login.password_too_long') }),
     totpValue: z.string().optional(),
   });
 

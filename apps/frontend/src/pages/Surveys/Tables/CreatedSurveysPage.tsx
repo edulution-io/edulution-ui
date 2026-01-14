@@ -23,7 +23,7 @@ import SURVEY_TABLE_COLUMNS from '@libs/survey/constants/surveyTableColumns';
 import SurveyTablePage from '@/pages/Surveys/Tables/SurveyTablePage';
 import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import { UserIcon } from '@/assets/icons';
+import { SurveysViewOwnIcon } from '@/assets/icons';
 
 const CreatedSurveysPage = () => {
   const {
@@ -56,7 +56,7 @@ const CreatedSurveysPage = () => {
       <SurveyTablePage
         title={t('surveys.view.created.title')}
         description={t('surveys.view.created.description')}
-        icon={UserIcon}
+        icon={SurveysViewOwnIcon}
         surveys={createdSurveys}
         isLoading={isFetchingCreatedSurveys}
         canDelete
