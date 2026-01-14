@@ -21,9 +21,9 @@ import React from 'react';
 import cn from '@libs/common/utils/className';
 import THEME from '@libs/common/constants/theme';
 import ThemeType from '@libs/common/types/themeType';
-import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import FileSelectButton from '@/components/ui/FileSelectButton';
+import DeleteButton from '@/components/shared/Card/DeleteButton';
 
 type LogoUploadFieldProps = {
   variant: ThemeType;
@@ -75,18 +75,7 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
       aria-busy={uploading}
       aria-live="polite"
     >
-      <div className="absolute right-4 top-4">
-        {onHandleReset && (
-          <button
-            type="button"
-            onClick={async () => {
-              await onHandleReset();
-            }}
-          >
-            <DeleteIcon className="h-6 w-6 p-1 text-ciRed" />
-          </button>
-        )}
-      </div>
+      <div className="absolute right-4 top-4">{onHandleReset && <DeleteButton onDelete={onHandleReset} />}</div>
       {uploading ? (
         <CircleLoader className="mx-auto h-20" />
       ) : (

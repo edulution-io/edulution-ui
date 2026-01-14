@@ -1092,7 +1092,7 @@
       "sections": {
         "appLogo": {
           "title": "Logo",
-          "description": "Upload your app logo here to override the default image."
+          "description": "Upload your own image here to override the default logo of {{ applicationName }}; Or restore the default logo of {{ applicationName }}."
         },
         "onlyOffice": {
           "title": "Only Office Integration",
@@ -1918,8 +1918,7 @@
     "appLogo": {
       "light": "light",
       "dark": "dark",
-      "title": "Logo for the {{variant}} color scheme",
-      "description": "Upload or reset your custom themed app logo."
+      "title": "Logo for the {{variant}} color scheme"
     }
   },
   "mails": {

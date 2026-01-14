@@ -155,9 +155,12 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
     }
   };
 
+  const sectionText = t(`${settingLocation}.sidebar`);
   return (
     <div className="space-y-4">
-      <p className="text-base text-muted-foreground">{t(`settings.appconfig.sections.${section}.description`)}</p>
+      <p className="text-base text-muted-foreground">
+        {t(`settings.appconfig.sections.${section}.description`, { applicationName: sectionText })}
+      </p>
       <div className="flex flex-wrap justify-between gap-4">
         {options?.map((option: AppConfigExtendedOption) => (
           <div

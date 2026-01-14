@@ -17,22 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
-import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
-import ThemedFile from '@libs/common/types/themedFile';
+import React from 'react';
+import { Button } from '@/components/shared/Button';
+import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 
-const ThemedValue: ThemedFile = { dark: null, light: null };
+const DeleteButton: React.FC<{ onDelete: () => void }> = ({ onDelete }) => (
+  <Button
+    onClick={onDelete}
+    className="absolute right-1 top-1 h-8 rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
+  >
+    <DeleteIcon className="text-text-ciRed h-4 w-4" />
+  </Button>
+);
 
-const APP_LOGO_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
-  {
-    name: ExtendedOptionKeys.APP_LOGO,
-    title: 'appExtendedOptions.appLogo.title',
-    description: '',
-    type: ExtendedOptionField.appLogo,
-    value: ThemedValue,
-    width: 'full',
-  },
-];
-
-export default APP_LOGO_EXTENDED_OPTIONS;
+export default DeleteButton;

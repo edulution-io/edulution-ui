@@ -950,7 +950,7 @@
       "sections": {
         "appLogo": {
           "title": "Logo",
-          "description": "Téléchargez votre logo d'application ici pour remplacer l'image par défaut."
+          "description": "Téléversez votre propre image ici pour remplacer le logo par défaut de {{ applicationName }}; Ou restaurez le logo par défaut de {{ applicationName }}."
         },
         "onlyOffice": {
           "title": "Intégration OnlyOffice",
@@ -1743,8 +1743,7 @@
     "appLogo": {
       "light": "clair",
       "dark": "sombre",
-      "title": "Logo thématique {{variant}}",
-      "description": "Téléversez ou réinitialisez votre logo personnalisé."
+      "title": "Logo thématique {{variant}}"
     }
   },
   "preview": {

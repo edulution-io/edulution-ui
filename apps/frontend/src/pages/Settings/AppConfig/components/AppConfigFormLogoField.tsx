@@ -19,9 +19,9 @@ import ThemedFile from '@libs/common/types/themedFile';
 import { getLogoName, getLogoUrl } from '@libs/appconfig/utils/getAppLogo';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import LogoUploadField from '@/pages/Settings/components/LogoUploadField';
-import FilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
+import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
 
-export type AppConfigFormLogoFieldProps = {
+type AppConfigFormLogoFieldProps = {
   variant: ThemeType;
   appName: string;
   fieldPath: string;
@@ -36,7 +36,7 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
   option,
   form,
 }) => {
-  const { uploadImageFile, deleteImageFile, uploadingVariant } = FilesystemStore();
+  const { uploadImageFile, deleteImageFile, uploadingVariant } = useFilesystemStore();
 
   const { t } = useTranslation();
 
@@ -88,8 +88,7 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
   const variantText = t(`appExtendedOptions.appLogo.${variant}`);
   return (
     <div>
-      {option.title && <p className="font-bold">{t(option.title, { variant: variantText })}</p>}
-      {option.description && <p className="mb-2 text-[0.8rem] text-muted-foreground">{t(option.description)}</p>}
+      {option.title && <p className="mb-2 font-bold">{t(option.title, { variant: variantText })}</p>}
       <LogoUploadField
         variant={variant}
         inputRef={inputRef}

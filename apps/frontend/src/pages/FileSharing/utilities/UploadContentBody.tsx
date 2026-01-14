@@ -24,7 +24,6 @@ import { useParams } from 'react-router-dom';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
 import { HiEyeSlash } from 'react-icons/hi2';
-import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -45,6 +44,7 @@ import getUploadItemDisplayName from '@libs/filesharing/utils/getUploadItemDispl
 import extractFilesFromDropEvent from '@/pages/FileSharing/utilities/extractFilesFromDropEvent';
 import ValidationWarnings from '@/pages/FileSharing/utilities/ValidationWarnings';
 import getRandomUUID from '@/utils/getRandomUUID';
+import DeleteButton from '@/components/shared/Card/DeleteButton';
 
 const UploadContentBody = () => {
   const { webdavShare } = useParams();
@@ -306,12 +306,7 @@ const UploadContentBody = () => {
                 >
                   {renderPreview(file)}
 
-                  <Button
-                    onClick={() => removeFile(fileName)}
-                    className="absolute right-1 top-1 h-8 rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
-                  >
-                    <DeleteIcon className="text-text-ciRed h-4 w-4" />
-                  </Button>
+                  <DeleteButton onDelete={() => removeFile(fileName)} />
 
                   <div className="flex flex-col items-center justify-center">
                     <div className="truncate text-center text-xs text-neutral-500 underline transition-all duration-200 group-hover:min-w-full group-hover:overflow-visible group-hover:whitespace-normal group-hover:break-words group-hover:p-1">

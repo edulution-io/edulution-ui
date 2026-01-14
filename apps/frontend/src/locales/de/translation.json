@@ -1095,7 +1095,7 @@
       "sections": {
         "appLogo": {
           "title": "Logo",
-          "description": "Lade hier das App Logo hoch, um das vorgegebene Bild zu überschreiben."
+          "description": "Lade hier dein eigenes Bild hoch, um das Standartlogo der {{ applicationName }} zu überschreiben; Oder setze das Standard Logo für {{ applicationName }} wieder her."
         },
         "onlyOffice": {
           "title": "Only Office Integration",
@@ -1939,8 +1939,7 @@
     "appLogo": {
       "light": "helle",
       "dark": "dunkle",
-      "title": "Logo für das {{variant}} Farbschema",
-      "description": "Lade hier dein eigenes App-Logo hoch oder setze das Standard-Logo wieder her."
+      "title": "Logo für das {{variant}} Farbschema"
     }
   },
   "preview": {
