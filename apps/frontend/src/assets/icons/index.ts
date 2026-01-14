@@ -50,3 +50,4 @@ export { default as EnglishIcon } from '@/assets/icons/english.svg';
 export { default as AppStoreIcon } from '@/assets/icons/edulution/edu_App-Store.svg';
 export { default as FranceIcon } from '@/assets/icons/france.svg';
 export { default as QrCodeIcon } from '@/assets/icons/edulution/edu_QR-Code.svg?react';
+export { default as VPNIcon } from '@/assets/icons/edulution/edu_VPN.svg';

@@ -20,7 +20,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { SettingsIcon } from '@/assets/icons';
+import { VPNIcon } from '@/assets/icons';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import useWireguardStore from '@/store/useWireguardStore';
@@ -84,7 +84,7 @@ const WireguardPage: React.FC = () => {
       nativeAppHeader={{
         title: t('wireguard.sidebar'),
         description: t('wireguard.description'),
-        iconSrc: SettingsIcon,
+        iconSrc: VPNIcon,
       }}
     >
       <div className="flex w-full flex-1 flex-col">

@@ -31,6 +31,7 @@ import {
   EmbeddedIcon,
   SurveysMenuIcon,
   WhiteBoardIcon,
+  VPNIcon,
 } from '@/assets/icons';
 import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
 import APPS from '@libs/appconfig/constants/apps';
@@ -129,7 +130,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   },
   {
     id: APPS.WIREGUARD,
-    icon: DesktopDeploymentIcon,
+    icon: VPNIcon,
     isNativeApp: true,
     extendedOptions: {
       [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
