@@ -17,29 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import migration000 from './migration000';
-import migration001 from './migration001';
-import migration002 from './migration002';
-import migration003 from './migration003';
-import migration004 from './migration004';
-import migration005 from './migration005';
-import migration006 from './migration006';
-import migration007 from './migration007';
-import migration008 from './migration008';
-import migration009 from './migration009';
+import APP_DISPLAY_LOCATIONS from '../constants/appDisplayLocations';
 
-// Add new migrations here
-const appConfigMigrationsList = [
-  migration000,
-  migration001,
-  migration002,
-  migration003,
-  migration004,
-  migration005,
-  migration006,
-  migration007,
-  migration008,
-  migration009,
-];
+type AppDisplayLocationType = (typeof APP_DISPLAY_LOCATIONS)[keyof typeof APP_DISPLAY_LOCATIONS];
 
-export default appConfigMigrationsList;
+export default AppDisplayLocationType;
