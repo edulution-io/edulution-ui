@@ -18,6 +18,8 @@
  */
 
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faWindowMinimize } from '@fortawesome/free-solid-svg-icons';
 import WindowControlBaseButton from './WindowControlBaseButton';
 
 interface MinimizeButtonProps {
@@ -29,7 +31,7 @@ const MinimizeButton = ({ minimizeWindow }: MinimizeButtonProps) => (
     onClick={minimizeWindow}
     tooltipTranslationId="common.minimize"
   >
-    <div className="mt-[-8px]">__</div>
+    <FontAwesomeIcon icon={faWindowMinimize} />
   </WindowControlBaseButton>
 );
 

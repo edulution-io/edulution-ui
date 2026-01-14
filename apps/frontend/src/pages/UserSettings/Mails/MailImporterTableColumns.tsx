@@ -18,7 +18,7 @@
  */
 
 import React from 'react';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import { SyncJobDto } from '@libs/mail/types';
 import { ColumnDef } from '@tanstack/react-table';
@@ -42,7 +42,7 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
     },
     accessorFn: (row) => row.host1,
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         text={row.original.host1}
         row={row}
       />
@@ -57,7 +57,7 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
     },
     accessorFn: (row) => row.port1,
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         onClick={() => {}}
         text={`${row.original.port1}`}
       />
@@ -72,7 +72,7 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
     },
     accessorFn: (row) => row.enc1,
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         onClick={() => {}}
         text={`${row.original.enc1}`}
       />
@@ -86,7 +86,7 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
     },
     accessorFn: (row) => row.user1,
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         onClick={() => {}}
         text={`${row.original.user1}`}
       />
@@ -101,7 +101,7 @@ const MailImporterTableColumns: ColumnDef<SyncJobDto>[] = [
     },
     accessorFn: (row) => row.mins_interval,
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         onClick={() => {}}
         text={`${row.original.mins_interval} min`}
       />

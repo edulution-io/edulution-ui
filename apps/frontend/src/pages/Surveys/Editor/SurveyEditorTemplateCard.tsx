@@ -18,13 +18,14 @@
  */
 
 import React from 'react';
-import { IconType } from 'react-icons';
 import cn from '@libs/common/utils/className';
 import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
 import { Card } from '@/components/shared/Card';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface SurveyEditorTemplateCardProps {
-  icon: string | IconType;
+  icon: IconProp;
   title?: string;
   description?: string;
   onClick?: () => void;
@@ -32,7 +33,7 @@ interface SurveyEditorTemplateCardProps {
 }
 
 const SurveyEditorTemplateCard = ({
-  icon: Icon,
+  icon,
   title,
   description,
   onClick,
@@ -44,15 +45,10 @@ const SurveyEditorTemplateCard = ({
     onClick={onClick}
   >
     <div className="relative m-4 flex flex-col items-center">
-      {typeof Icon === 'string' ? (
-        <img
-          src={Icon}
-          alt={title}
-          className="h-12 w-12 md:h-14 md:w-14"
-        />
-      ) : (
-        <Icon className="h-12 w-12 md:h-14 md:w-14" />
-      )}
+      <FontAwesomeIcon
+        icon={icon}
+        className="h-12 w-12 md:h-14 md:w-14"
+      />
       <p className="line-clamp-2">{title}</p>
       {description && <p className="line-clamp-2">{description}</p>}
     </div>

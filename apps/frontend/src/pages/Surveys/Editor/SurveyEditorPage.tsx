@@ -20,11 +20,9 @@
 import React, { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
-import { VscNewFile } from 'react-icons/vsc';
-import { RiResetLeftLine } from 'react-icons/ri';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { TbFileTypePdf, TbTemplate } from 'react-icons/tb';
+import { faRotateLeft, faFilePdf, faFileLines, faFileCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -179,12 +177,12 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     buttons: [
       SaveButton(() => setIsOpenSaveSurveyDialog(true)),
       {
-        icon: TbTemplate,
+        icon: faFileLines,
         text: t('survey.editor.templates'),
         onClick: () => setIsOpenTemplateMenu(!isOpenTemplateMenu),
       },
       {
-        icon: VscNewFile,
+        icon: faFileCirclePlus,
         text: t('survey.editor.new'),
         onClick: () => {
           handleReset();
@@ -196,7 +194,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
         },
       },
       {
-        icon: RiResetLeftLine,
+        icon: faRotateLeft,
         text: t('survey.editor.reset'),
         onClick: () => {
           handleReset();
@@ -208,7 +206,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
         },
       },
       {
-        icon: TbFileTypePdf,
+        icon: faFilePdf,
         text: t('survey.export.exportToPDF'),
         onClick: () => setOpenExportPDFDialog(true),
       },

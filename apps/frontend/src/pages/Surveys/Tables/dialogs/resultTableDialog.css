@@ -36,7 +36,7 @@
   border-color: var(--background) !important;
 }
 .sa-table input:focus {
-  border-color: none !important;
+  border-color: unset !important;
 }
 
 .sa-visualizer__content {

@@ -24,7 +24,8 @@
 import * as React from 'react';
 import { forwardRef, useCallback, useEffect, useRef } from 'react';
 import { Command as CommandPrimitive, useCommandState } from 'cmdk';
-import { X } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 
 import cn from '@libs/common/utils/className';
@@ -433,7 +434,10 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
                       }}
                       onClick={() => handleUnselect(option)}
                     >
-                      <X className="h-3 w-3" />
+                      <FontAwesomeIcon
+                        icon={faClose}
+                        className="h-3 w-3"
+                      />
                     </button>
                   )}
                 </BadgeSH>

@@ -22,14 +22,13 @@ import useClassManagementStore from '@/pages/ClassManagement/useClassManagementS
 import GroupsColumn from '@/pages/ClassManagement/LessonPage/QuickAccess/GroupsColumn';
 import UserGroups from '@libs/groups/types/userGroups.enum';
 import GroupColumn from '@libs/groups/types/groupColumn';
-import { MdGroups } from 'react-icons/md';
-import { FaUsersGear } from 'react-icons/fa6';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDesktop, faUserGear, faUsers } from '@fortawesome/free-solid-svg-icons';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import getUserRegex from '@libs/lmnApi/constants/userRegex';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import { useTranslation } from 'react-i18next';
-import { LuMonitor } from 'react-icons/lu';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import useLdapGroups from '@/hooks/useLdapGroups';
 
@@ -88,13 +87,13 @@ const QuickAccess = () => {
       name: UserGroups.Room,
       translationId: 'myRoom',
       createFunction: undefined,
-      icon: <LuMonitor className="h-7 w-7" />,
+      icon: <FontAwesomeIcon icon={faDesktop} />,
       isLoading: isRoomLoading,
-      groups: userRoom
+      groups: userRoom?.name
         ? [
             {
               ...userRoom,
-              sid: userRoom?.name,
+              sid: userRoom.name,
               member: userRoom.usersList,
               membersCount: userRoom.usersList.length,
             } as unknown as LmnApiSchoolClass,
@@ -105,7 +104,7 @@ const QuickAccess = () => {
       name: UserGroups.Classes,
       translationId: 'myClasses',
       createFunction: undefined,
-      icon: <MdGroups className="h-7 w-7" />,
+      icon: <FontAwesomeIcon icon={faUsers} />,
       isLoading: areSchoolClassesLoading,
       groups: getGroupsWhereUserIsMember(userSchoolClasses),
     },
@@ -115,7 +114,7 @@ const QuickAccess = () => {
       createFunction: createProject,
       updateFunction: updateProject,
       removeFunction: deleteProject,
-      icon: <FaUsersGear className="h-7 w-7" />,
+      icon: <FontAwesomeIcon icon={faUserGear} />,
       isLoading: areProjectsLoading,
       groups: getGroupsWhereUserIsMember(userProjects),
     },

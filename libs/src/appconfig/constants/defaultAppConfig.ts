@@ -18,21 +18,20 @@
  */
 
 import {
-  BulletinBoardIcon,
   DashboardIcon,
   ClassManagementIcon,
   FilesharingIcon,
+  InfoBoardIcon,
   SurveysIcon,
   WhiteboardIcon,
 } from '@libs/assets';
+import getImageUrl from '@libs/assets/getImageUrl';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import APPS from './apps';
 import APP_INTEGRATION_VARIANT from './appIntegrationVariant';
 
 const { BULLETIN_BOARD, DASHBOARD, FILE_SHARING, SURVEYS, CLASS_MANAGEMENT, WHITEBOARD } = APPS;
 const { NATIVE } = APP_INTEGRATION_VARIANT;
-
-const getImageUrl = (src: string) => `data:image/svg+xml,${encodeURIComponent(src)}`;
 
 const defaultAppConfig: AppConfigDto[] = [
   {
@@ -46,7 +45,7 @@ const defaultAppConfig: AppConfigDto[] = [
   },
   {
     name: BULLETIN_BOARD,
-    icon: getImageUrl(BulletinBoardIcon),
+    icon: getImageUrl(InfoBoardIcon),
     appType: NATIVE,
     options: {},
     accessGroups: [],

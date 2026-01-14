@@ -27,12 +27,17 @@ const checkFileAccessRights = (
   invitedAttendees: AttendeeDto[] = [],
   invitedGroups: MultipleSelectorGroup[] = [],
   jwtUser?: JwtUser | null,
+  creatorUsername?: string,
 ): FileAccessResultType => {
   if (invitedAttendees.length === 0 && invitedGroups.length === 0) {
     return FILE_ACCESS_RESULT.PUBLIC;
   }
 
   if (!jwtUser) return FILE_ACCESS_RESULT.NO_TOKEN;
+
+  if (creatorUsername && creatorUsername === jwtUser.preferred_username) {
+    return FILE_ACCESS_RESULT.CREATOR_MATCH;
+  }
 
   const userMatch = invitedAttendees.some((user) => user.username === jwtUser.preferred_username);
   if (userMatch) return FILE_ACCESS_RESULT.USER_MATCH;

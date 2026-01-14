@@ -19,15 +19,14 @@
 
 import { cva } from 'class-variance-authority';
 
-export const GRID_CARD =
-  'm-1 flex h-32 w-32 flex-col items-center overflow-hidden md:w-48 2xl:transition-transform 2xl:duration-300 2xl:hover:scale-105';
+export const GRID_CARD = 'm-1 flex h-32 w-32 flex-col items-center overflow-hidden md:w-48';
 
 export const INPUT_BASE_CLASSES =
   'h-10 w-full rounded-lg px-3 text-p transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus:outline-none disabled:cursor-not-allowed disabled:opacity-50';
 
 export const VARIANT_COLORS = {
   default: 'bg-white text-black border-[1px] border-gray-300 dark:bg-accent dark:text-secondary dark:border-none',
-  dialog: 'dark:bg-muted border-[1px] dark:border-none border-gray-300 bg-white text-background',
+  dialog: 'dark:bg-muted border-[1px] border-gray-600 bg-white text-background',
   login: 'border-[1px] border-gray-300 bg-white text-black shadow-md',
   lightGrayDisabled: 'bg-ciDarkGreyDisabled text-secondary',
 } as const;

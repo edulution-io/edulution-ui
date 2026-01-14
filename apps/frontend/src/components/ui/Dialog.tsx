@@ -21,7 +21,8 @@
 
 import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { Cross2Icon } from '@radix-ui/react-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
 import cn from '@libs/common/utils/className';
 import i18n from '@/i18n';
 
@@ -86,7 +87,10 @@ const DialogContent = React.forwardRef<
         {children}
         {showCloseButton && (
           <DialogPrimitive.Close className="absolute right-5 top-5">
-            <Cross2Icon className="h-4 w-4" />
+            <FontAwesomeIcon
+              icon={faClose}
+              className="h-4 w-4"
+            />
             <span className="sr-only">${i18n.t('dialog.close')}</span>
           </DialogPrimitive.Close>
         )}
