@@ -17,29 +17,20 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import TSurveyQuestionChoice from '@libs/survey/types/TSurveyQuestionChoice';
-import TSurveyQuestionTypes from '@libs/survey/types/TSurveyQuestionTypes';
+import { Types } from 'mongoose';
 
-interface TSurveyElement {
-  type: TSurveyQuestionTypes;
-  name: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any;
-  title?: string;
-  description?: string;
-  choicesOrder?: string;
-  choices?: TSurveyQuestionChoice[] | null;
-  choicesByUrl?: {
-    url: string;
-    valueName?: string;
-    titleName?: string;
-    imageLink?: string;
-    allowEmptyResponse?: boolean;
-  } | null;
-  hideIfChoicesEmpty?: boolean;
-  imageLink?: string;
-  showOtherItem?: boolean | null;
-  showNoneItem?: boolean;
-}
+const TEMPLATE_NAMES = [
+  'LETTER_TO_PARENTS',
+  'LIMITED_EVENT_PARTICIPATION',
+  'PAPER_SUBJECT',
+  'PARENT_TEACHER_CONFERENCE',
+  'TRAINEE_SHIP',
+] as const;
 
-export default TSurveyElement;
+type TemplateName = (typeof TEMPLATE_NAMES)[number];
+
+const TEMPLATE_IDS = Object.fromEntries(
+  TEMPLATE_NAMES.map((name, index) => [name, new Types.ObjectId(String(index + 1).padStart(24, '0'))]),
+) as Record<TemplateName, Types.ObjectId>;
+
+export default TEMPLATE_IDS;

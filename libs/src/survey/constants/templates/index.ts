@@ -17,29 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import TSurveyQuestionChoice from '@libs/survey/types/TSurveyQuestionChoice';
-import TSurveyQuestionTypes from '@libs/survey/types/TSurveyQuestionTypes';
-
-interface TSurveyElement {
-  type: TSurveyQuestionTypes;
-  name: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any;
-  title?: string;
-  description?: string;
-  choicesOrder?: string;
-  choices?: TSurveyQuestionChoice[] | null;
-  choicesByUrl?: {
-    url: string;
-    valueName?: string;
-    titleName?: string;
-    imageLink?: string;
-    allowEmptyResponse?: boolean;
-  } | null;
-  hideIfChoicesEmpty?: boolean;
-  imageLink?: string;
-  showOtherItem?: boolean | null;
-  showNoneItem?: boolean;
-}
-
-export default TSurveyElement;
+export { default as TEMPLATE_IDS } from './templateIds';
+export { default as traineeShip } from './traineeShip';
+export { default as parentTeacherConference } from './parentTeacherConference';
+export { default as letterToParents } from './letterToParents';
+export { default as limitedEventParticipation } from './limitedEventParticipation';
+export { default as paperSubject } from './paperSubject';
