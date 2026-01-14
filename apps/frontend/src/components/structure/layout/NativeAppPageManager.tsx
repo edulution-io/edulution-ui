@@ -26,7 +26,6 @@ import DesktopDeploymentPage from '@/pages/DesktopDeployment/DesktopDeploymentPa
 import BulletinBoardPage from '@/pages/BulletinBoard/BulletinBoardPage';
 import Whiteboard from '@/pages/Whiteboard/Whiteboard';
 import { DashboardPage } from '@/pages/Dashboard';
-import WireguardPage from '@/pages/Wireguard/WireguardPage';
 
 const nativeAppPages: Partial<Record<TApps, JSX.Element>> = {
   [APPS.DASHBOARD]: <DashboardPage />,
@@ -35,7 +34,6 @@ const nativeAppPages: Partial<Record<TApps, JSX.Element>> = {
   [APPS.DESKTOP_DEPLOYMENT]: <DesktopDeploymentPage />,
   [APPS.CLASS_MANAGEMENT]: <Outlet />,
   [APPS.BULLETIN_BOARD]: <BulletinBoardPage />,
-  [APPS.WIREGUARD]: <WireguardPage />,
 };
 
 type NativeAppPageManagerProps = {

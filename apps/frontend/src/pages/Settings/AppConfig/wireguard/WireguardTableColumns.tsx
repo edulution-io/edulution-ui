@@ -23,24 +23,12 @@ import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableCell from '@/components/ui/Table/SelectableCell';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import Checkbox from '@/components/ui/Checkbox';
+import type WireguardPeer from '@libs/wireguard/types/wireguardPeer';
+import WIREGUARD_TABLE_COLUMNS from '@libs/wireguard/constants/wireguardTableColumns';
 
-type WireguardPeer = {
-  name: string;
-  public_key: string;
-  ip: string;
-  routes: string[];
-  type: 'client' | 'site';
-  allowed_ips?: string[];
-  endpoint?: string;
-};
-
-type WireguardTableColumnsProps = {
-  onPublicKeyClick: (name: string) => void;
-};
-
-const getWireguardTableColumns = ({ onPublicKeyClick }: WireguardTableColumnsProps): ColumnDef<WireguardPeer>[] => [
+const WireguardTableColumns: ColumnDef<WireguardPeer>[] = [
   {
-    id: 'select',
+    id: WIREGUARD_TABLE_COLUMNS.SELECT,
     size: 50,
     header: ({ table }) => (
       <Checkbox
@@ -60,7 +48,7 @@ const getWireguardTableColumns = ({ onPublicKeyClick }: WireguardTableColumnsPro
     enableSorting: false,
   },
   {
-    id: 'name',
+    id: WIREGUARD_TABLE_COLUMNS.NAME,
     header: ({ column }) => <SortableHeader<WireguardPeer, unknown> column={column} />,
     meta: {
       translationId: 'wireguard.name',
@@ -74,7 +62,7 @@ const getWireguardTableColumns = ({ onPublicKeyClick }: WireguardTableColumnsPro
     ),
   },
   {
-    id: 'type',
+    id: WIREGUARD_TABLE_COLUMNS.TYPE,
     header: ({ column }) => <SortableHeader<WireguardPeer, unknown> column={column} />,
     meta: {
       translationId: 'wireguard.type',
@@ -92,7 +80,7 @@ const getWireguardTableColumns = ({ onPublicKeyClick }: WireguardTableColumnsPro
     ),
   },
   {
-    id: 'ip',
+    id: WIREGUARD_TABLE_COLUMNS.IP,
     header: ({ column }) => <SortableHeader<WireguardPeer, unknown> column={column} />,
     meta: {
       translationId: 'wireguard.ip',
@@ -106,22 +94,7 @@ const getWireguardTableColumns = ({ onPublicKeyClick }: WireguardTableColumnsPro
     ),
   },
   {
-    id: 'public_key',
-    header: ({ column }) => <SortableHeader<WireguardPeer, unknown> column={column} />,
-    meta: {
-      translationId: 'wireguard.publicKey',
-    },
-    accessorFn: (row) => row.public_key,
-    cell: ({ row }) => (
-      <SelectableCell
-        onClick={() => onPublicKeyClick(row.original.name)}
-        text={`${row.original.public_key.substring(0, 20)}...`}
-        className="cursor-pointer text-primary hover:underline"
-      />
-    ),
-  },
-  {
-    id: 'routes',
+    id: WIREGUARD_TABLE_COLUMNS.ROUTES,
     header: ({ column }) => <SortableHeader<WireguardPeer, unknown> column={column} />,
     meta: {
       translationId: 'wireguard.routes',
@@ -135,19 +108,19 @@ const getWireguardTableColumns = ({ onPublicKeyClick }: WireguardTableColumnsPro
     ),
   },
   {
-    id: 'allowed_ips',
+    id: WIREGUARD_TABLE_COLUMNS.ALLOWED_IPS,
     header: ({ column }) => <SortableHeader<WireguardPeer, unknown> column={column} />,
     meta: {
       translationId: 'wireguard.allowedIps',
     },
-    accessorFn: (row) => row.allowed_ips?.join(', ') || '-',
+    accessorFn: (row) => ('allowed_ips' in row ? row.allowed_ips?.join(', ') : '-'),
     cell: ({ row }) => (
       <SelectableCell
-        text={row.original.allowed_ips?.join(', ') || '-'}
+        text={'allowed_ips' in row.original ? row.original.allowed_ips?.join(', ') || '-' : '-'}
         onClick={() => row.toggleSelected()}
       />
     ),
   },
 ];
 
-export default getWireguardTableColumns;
+export default WireguardTableColumns;

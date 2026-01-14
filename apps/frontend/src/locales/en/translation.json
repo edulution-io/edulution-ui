@@ -999,7 +999,8 @@
       "bulletinboard": "Configure the user groups that have access to the Info Board app here. The categories can be used to control which messages are displayed to users.",
       "forwarding": "Forwarding: Simply enter the link to the web application under URL.",
       "frame": "Frame: Simply enter the link to the web application under URL.",
-      "embedded": "Embedded: Here you can create your own web application in the editor."
+      "embedded": "Embedded: Here you can create your own web application in the editor.",
+      "wireguard": "Setup and manage WireGuard VPN connections for secure remote access to your network."
     },
     "globalSettings": {
       "title": "Global Settings",
@@ -1150,6 +1151,10 @@
             "title": "Deletion not possible",
             "description": "The WebDAV server '{{serverName}}' is used by {{count}} share(s): {{shares}}. Please delete the dependent shares first."
           }
+        },
+        "wireguard": {
+          "title": "WireGuard Peers",
+          "description": "Manage WireGuard VPN peers and site-to-site connections here."
         },
         "files": {
           "title": "Files",
@@ -1698,6 +1703,8 @@
     "qrCodeAlt": "WireGuard configuration QR code",
     "qrCodeFailed": "Failed to load QR code",
     "noQrCode": "No QR code available",
+    "peerDetails": "Peer Details",
+    "showQRCode": "Show QR Code",
     "validation": {
       "nameRequired": "Name is required",
       "allowedIpsRequired": "Allowed IPs are required for site-to-site connections"

@@ -49,6 +49,7 @@ import MAIL_GENERAL_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOpt
 import FORWARDING_PAGE_OPTIONS from '@libs/appconfig/constants/extendedOptions/forwardingPageOptions';
 import DRAWIO_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/drawioExtendedOptions';
 import FRAME_SCRIPT_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/frameScriptExtendedOptions';
+import WIREGUARD_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/wireguardExtendedOptions';
 
 const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -134,6 +135,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     isNativeApp: true,
     extendedOptions: {
       [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
+      [AppConfigSectionsKeys.wireguard]: WIREGUARD_EXTENDED_OPTIONS,
     },
   },
   {

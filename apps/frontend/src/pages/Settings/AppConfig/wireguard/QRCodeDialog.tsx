@@ -21,7 +21,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import useWireguardStore from '@/store/useWireguardStore';
+import useWireguardConfigTableStore from './useWireguardConfigTableStore';
 
 interface QRCodeDialogProps {
   isOpen: boolean;
@@ -31,7 +31,7 @@ interface QRCodeDialogProps {
 
 const QRCodeDialog: FC<QRCodeDialogProps> = ({ isOpen, handleOpenChange, peerName }) => {
   const { t } = useTranslation();
-  const { getPeerQRCode, isLoading } = useWireguardStore();
+  const { getPeerQRCode, isLoading } = useWireguardConfigTableStore();
   const [qrCode, setQrCode] = useState<string | null>(null);
 
   useEffect(() => {

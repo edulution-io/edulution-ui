@@ -17,20 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AppConfigSectionsKeys = {
-  general: 'general',
-  fileSharing: 'fileSharing',
-  onlyOffice: 'onlyOffice',
-  drawio: 'drawio',
-  imapMailFeed: 'imapMailFeed',
-  bulletinBoard: 'bulletinBoard',
-  veyon: 'veyon',
-  docker: 'docker',
-  files: 'files',
-  editor: 'editor',
-  webdavShare: 'webdavShare',
-  scripts: 'scripts',
-  wireguard: 'wireguard',
+const WIREGUARD_TABLE_COLUMNS = {
+  SELECT: 'select',
+  NAME: 'name',
+  TYPE: 'type',
+  IP: 'ip',
+  PUBLIC_KEY: 'public_key',
+  ROUTES: 'routes',
+  ALLOWED_IPS: 'allowed_ips',
 } as const;
 
-export default AppConfigSectionsKeys;
+export default WIREGUARD_TABLE_COLUMNS;

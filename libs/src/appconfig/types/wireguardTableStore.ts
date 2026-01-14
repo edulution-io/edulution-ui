@@ -17,20 +17,19 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AppConfigSectionsKeys = {
-  general: 'general',
-  fileSharing: 'fileSharing',
-  onlyOffice: 'onlyOffice',
-  drawio: 'drawio',
-  imapMailFeed: 'imapMailFeed',
-  bulletinBoard: 'bulletinBoard',
-  veyon: 'veyon',
-  docker: 'docker',
-  files: 'files',
-  editor: 'editor',
-  webdavShare: 'webdavShare',
-  scripts: 'scripts',
-  wireguard: 'wireguard',
-} as const;
+import type { PeerRequest, SiteRequest } from '@libs/wireguard/types/wireguard';
+import WireguardPeer from '@libs/wireguard/types/wireguardPeer';
+import AppConfigTable from './appConfigTable';
 
-export default AppConfigSectionsKeys;
+export interface WireguardTableStore extends AppConfigTable<WireguardPeer> {
+  isLoading: boolean;
+  error: string | null;
+  selectedConfig: WireguardPeer | null;
+  setSelectedConfig: (config: WireguardPeer | null) => void;
+  itemToDelete: WireguardPeer | null;
+  setItemToDelete: (item: WireguardPeer | null) => void;
+  createPeer: (data: PeerRequest) => Promise<void>;
+  createSite: (data: SiteRequest) => Promise<void>;
+  getPeerQRCode: (name: string) => Promise<string | null>;
+  reset: () => void;
+}

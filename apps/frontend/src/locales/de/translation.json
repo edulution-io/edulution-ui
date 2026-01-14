@@ -1002,7 +1002,8 @@
       "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Info Board haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden.",
       "forwarding": "Weiterleitung: Einfach den Link zur Webanwendung unter URL eintragen.",
       "frame": "Frame: Einfach den Link zur Webanwendung unter URL eintragen.",
-      "embedded": "Eingebettet: Hier kann eine eigene Webanwendung im Editor erstellt werden."
+      "embedded": "Eingebettet: Hier kann eine eigene Webanwendung im Editor erstellt werden.",
+      "wireguard": "Einrichten und verwalten von Wireguard VPN Verbindungen."
     },
     "globalSettings": {
       "title": "Globale Einstellungen",
@@ -1153,6 +1154,10 @@
             "title": "Löschen nicht möglich",
             "description": "Der WebDAV-Server '{{serverName}}' wird von {{count}} Share(s) verwendet: {{shares}}. Bitte lösche die abhängigen Shares zuerst."
           }
+        },
+        "wireguard": {
+          "title": "WireGuard Peers",
+          "description": "Hier können WireGuard VPN-Peers und Site-to-Site-Verbindungen verwaltet werden."
         },
         "files": {
           "title": "Dateien",
@@ -1701,6 +1706,8 @@
     "qrCodeAlt": "WireGuard-Konfigurations-QR-Code",
     "qrCodeFailed": "QR-Code konnte nicht geladen werden",
     "noQrCode": "Kein QR-Code verfügbar",
+    "peerDetails": "Peer-Details",
+    "showQRCode": "QR-Code anzeigen",
     "validation": {
       "nameRequired": "Name ist erforderlich",
       "allowedIpsRequired": "Erlaubte IPs sind für Site-to-Site-Verbindungen erforderlich"

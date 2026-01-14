@@ -17,20 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AppConfigSectionsKeys = {
-  general: 'general',
-  fileSharing: 'fileSharing',
-  onlyOffice: 'onlyOffice',
-  drawio: 'drawio',
-  imapMailFeed: 'imapMailFeed',
-  bulletinBoard: 'bulletinBoard',
-  veyon: 'veyon',
-  docker: 'docker',
-  files: 'files',
-  editor: 'editor',
-  webdavShare: 'webdavShare',
-  scripts: 'scripts',
-  wireguard: 'wireguard',
-} as const;
+import { Peer, Site } from './wireguard';
 
-export default AppConfigSectionsKeys;
+type WireguardPeer = (Peer | Site) & {
+  type: 'client' | 'site';
+};
+
+export default WireguardPeer;

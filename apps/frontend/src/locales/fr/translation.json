@@ -867,7 +867,8 @@
       "bulletinboard": "Configurez les groupes d'utilisateurs qui ont accès à l'application Schwarzes Brett. Il est possible de configurer dans les catégories pour contrôler les messages affichés chez les utilisateurs.",
       "forwarding": "Redirection: entrez simplement le lien vers l'application Web sous URL.",
       "frame": "Frame: Entrez simplement le lien vers l'application Web sous URL.",
-      "embedded": "Embedded: Ici, votre propre application Web peut être créée dans l'éditeur."
+      "embedded": "Embedded: Ici, votre propre application Web peut être créée dans l'éditeur.",
+      "wireguard": "Ici, vous pouvez configurer l'accès VPN Wireguard pour les utilisateurs."
     },
     "globalSettings": {
       "title": "Paramètres globaux",
@@ -1004,6 +1005,10 @@
             "title": "Suppression impossible",
             "description": "Le serveur WebDAV « {{serverName}} » est utilisé par {{count}} partage(s) : {{shares}}. Veuillez d'abord supprimer les partages dépendants."
           }
+        },
+        "wireguard": {
+          "title": "Pairs WireGuard",
+          "description": "Gérez ici les pairs VPN WireGuard et les connexions site-à-site."
         },
         "files": {
           "title": "Fichiers",
@@ -1529,6 +1534,8 @@
     "qrCodeAlt": "Code QR de configuration WireGuard",
     "qrCodeFailed": "Échec du chargement du code QR",
     "noQrCode": "Aucun code QR disponible",
+    "peerDetails": "Détails du pair",
+    "showQRCode": "Afficher le code QR",
     "validation": {
       "nameRequired": "Le nom est requis",
       "allowedIpsRequired": "Les IPs autorisées sont requises pour les connexions site-à-site"
