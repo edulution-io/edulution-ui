@@ -46,15 +46,19 @@ class SurveysTemplateService implements OnModuleInit {
   }
 
   async updateOrCreateTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
-    const { id, template, name, isActive = true, isDefaultTemplate = false } = surveyTemplate;
+    const { id, template, name: templateName, isActive = true, isDefaultTemplate = false } = surveyTemplate;
+    const name = templateName || template.formula.title.trim();
+    if (!name) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.NoTemplateName,
+        HttpStatus.BAD_REQUEST,
+        undefined,
+        SurveysTemplateService.name,
+      );
+    }
     try {
       if (!id || id === null) {
-        return await this.surveyTemplateModel.create({
-          template,
-          name: name || template.formula.title.trim(),
-          isActive,
-          isDefaultTemplate,
-        });
+        return await this.surveyTemplateModel.create({ template, name, isActive, isDefaultTemplate });
       }
       return await this.surveyTemplateModel.findByIdAndUpdate(id, { template, name, isActive }, { new: true });
     } catch (error) {

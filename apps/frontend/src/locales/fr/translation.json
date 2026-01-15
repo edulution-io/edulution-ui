@@ -669,6 +669,7 @@
       "updateOrCreateError": "L'enquête ne pouvait ni être mise à jour ni créée.",
       "deleteError": "Les enquêtes n'ont pas pu être supprimées.",
       "imageDeletionFailed": "Pas toutes les images des enquêtes n'ont pu être supprimées.",
+      "noTemplateNameError": "Le nom du modèle est requis.",
       "noAnswerError": "Aucune réponse n'a encore été donnée.",
       "noFormulaError": "Le formulaire du sondage ne peut pas être lue.",
       "noBackendLimitersError": "Afin de pouvoir utiliser cette fonction, les valeurs limites doivent être définies dans l'éditeur.",

@@ -787,6 +787,7 @@
       "submitAnswerError": "The answer could not be submitted.",
       "updateOrCreateError": "Unable to update or create the survey.",
       "deleteError": "The surveys could not be deleted.",
+      "noTemplateNameError": "The template name is required.",
       "noAnswerError": "No answers available jet.",
       "noFormulaError": "The formula of the survey is not readable.",
       "noBackendLimitersError": "In order to use this functionality you have to define limiters inside of the editor.",

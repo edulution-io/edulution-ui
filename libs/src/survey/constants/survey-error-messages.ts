@@ -20,6 +20,7 @@
 enum SurveyErrorMessages {
   UpdateOrCreateError = 'survey.errors.updateOrCreateError',
   DeleteError = 'survey.errors.deleteError',
+  NoTemplateName = 'survey.errors.noTemplateNameError',
   NoAnswers = 'survey.errors.noAnswerError',
   NoFormula = 'survey.errors.noFormulaError',
   NoBackendLimiters = 'survey.errors.noBackendLimitersError',
