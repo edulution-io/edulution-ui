@@ -20,13 +20,13 @@
 import { toast } from 'sonner';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { VscNewFile } from 'react-icons/vsc';
+import { faFileCirclePlus, faEye } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import cn from '@libs/common/utils/className';
 import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import { EyeDarkIcon } from '@/assets/icons';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
@@ -108,7 +108,12 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
       variant="text"
       onClick={handleCardClick}
     >
-      {!surveyTemplate && <VscNewFile className="h-12 w-12 md:h-14 md:w-14" />}
+      {!surveyTemplate && (
+        <FontAwesomeIcon
+          icon={faFileCirclePlus}
+          className="h-12 w-12 md:h-14 md:w-14"
+        />
+      )}
 
       {title && (
         <h3
@@ -136,30 +141,30 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
               {active ? t('classmanagement.deactivate') : t('classmanagement.activate')}
             </Button>
           )}
-          {surveyTemplate && (
-            <Button
-              className="cursor-pointer"
-              onClick={handleOpenPreview}
-              variant="btn-outline"
-              size="sm"
-              aria-label={t('common.delete')}
-            >
-              <img
-                src={EyeDarkIcon}
-                alt={title}
-                className="h-5 w-5"
-              />
-            </Button>
-          )}
+          <Button
+            className="cursor-pointer"
+            onClick={handleOpenPreview}
+            variant="btn-outline"
+            size="sm"
+            aria-label={t('common.delete')}
+          >
+            <FontAwesomeIcon
+              icon={faEye}
+              className="h-4 w-4"
+            />
+          </Button>
           {isSuperAdmin && !surveyTemplate?.isDefaultTemplate && (
             <Button
-              className="cursor-pointer"
+              className="cursor-pointer rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
               onClick={handleOpenConfirmDeletion}
               variant="btn-attention"
               size="sm"
               aria-label={t('common.delete')}
             >
-              <DeleteIcon className="h-4 w-4" />
+              <FontAwesomeIcon
+                icon={DeleteIcon}
+                className="h-4 w-4"
+              />
             </Button>
           )}
         </div>

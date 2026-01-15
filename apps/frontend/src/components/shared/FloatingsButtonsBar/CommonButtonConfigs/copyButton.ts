@@ -18,10 +18,10 @@
  */
 
 import { t } from 'i18next';
-import { MdContentCopy } from 'react-icons/md';
+import { faCopy } from '@fortawesome/free-solid-svg-icons';
 
 const CopyButton = (onClick: () => void) => ({
-  icon: MdContentCopy,
+  icon: faCopy,
   text: t('tooltip.copy'),
   onClick,
 });

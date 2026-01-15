@@ -18,10 +18,10 @@
  */
 
 import { t } from 'i18next';
-import { MdOutlineSave } from 'react-icons/md';
+import { SaveIcon } from '@libs/common/constants/standardActionIcons';
 
 const SaveButton = (onClick: () => void, isVisible?: boolean) => ({
-  icon: MdOutlineSave,
+  icon: SaveIcon,
   text: t('common.save'),
   onClick,
   isVisible,

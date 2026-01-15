@@ -328,12 +328,14 @@ class SurveysController {
     return choices.filter((choice) => choice.name !== SHOW_OTHER_ITEM);
   }
 
+  @UseGuards(AdminGuard)
   @Delete(`${TEMPLATES}/:id`)
   async deleteTemplate(@Param() params: { id: string }) {
     const { id } = params;
     return this.surveysTemplateService.deleteTemplate(id);
   }
 
+  @UseGuards(AdminGuard)
   @Patch(`${TEMPLATES}/:id/:isActive`)
   async setIsTemplateActive(@Param() params: { id: string; isActive: boolean }) {
     const { id, isActive } = params;

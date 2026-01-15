@@ -22,9 +22,10 @@ import useTLDRawHistoryStore from '@/pages/Whiteboard/TLDrawWithSync/useTLDRawHi
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import { useTranslation } from 'react-i18next';
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
-import TLDrawHistoryInfiniteList from '@/pages/Whiteboard/TLDrawWithSync/TLDrawHistoryInfiniteList';
-import { GoHistory } from 'react-icons/go';
 import useMedia from '@/hooks/useMedia';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHistory } from '@fortawesome/free-solid-svg-icons';
+import TLDrawHistoryInfiniteList from '@/pages/Whiteboard/TLDrawWithSync/TLDrawHistoryInfiniteList';
 
 const TLDrawHistory = () => {
   const { t } = useTranslation();
@@ -53,7 +54,7 @@ const TLDrawHistory = () => {
         className="m-[4px] flex flex-row items-center space-x-2 rounded-lg p-[6px] hover:bg-secondary-foreground"
         onClick={() => setIsOpen(true)}
       >
-        <GoHistory /> <span>{t('whiteboard-collaboration.historyTitle')}</span>
+        <FontAwesomeIcon icon={faHistory} /> <span>{t('whiteboard-collaboration.historyTitle')}</span>
       </button>
 
       {isOpen && (

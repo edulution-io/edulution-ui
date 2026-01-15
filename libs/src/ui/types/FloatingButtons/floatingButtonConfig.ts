@@ -17,18 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { IconContext, IconType } from 'react-icons';
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import type DropdownMenuItemType from '../dropdownMenuItemType';
 
 interface FloatingButtonConfig {
-  icon: IconType;
+  icon: IconDefinition;
   text: string;
   onClick?: () => void;
   isVisible?: boolean;
   type?: 'button' | 'submit' | 'reset';
   variant?: 'button' | 'dropdown';
   dropdownItems?: DropdownMenuItemType[];
-  iconContextValue?: IconContext;
 }
 
 export default FloatingButtonConfig;

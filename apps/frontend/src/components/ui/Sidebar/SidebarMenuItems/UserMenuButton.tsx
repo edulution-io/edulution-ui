@@ -55,7 +55,7 @@ const UserMenuButton: React.FC = () => {
     >
       <div
         className={cn(
-          'flex max-h-14 cursor-pointer items-center justify-end gap-4 px-4 py-2',
+          'flex max-h-14 cursor-pointer items-center justify-end gap-4 px-4 py-2 hover:bg-muted-background',
           dropdownWrapperClassName,
         )}
       >

@@ -47,7 +47,7 @@ import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import DeleteGroupDialog from './DeleteGroupDialog';
 
 interface GroupDialogProps {
-  item: GroupColumn;
+  item: Omit<GroupColumn, 'icon'>;
   trigger?: React.ReactNode;
 }
 

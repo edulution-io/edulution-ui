@@ -18,25 +18,21 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
-import { MdOutlineCloudUpload } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
-import { HiEyeSlash } from 'react-icons/hi2';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import { ScrollArea } from '@/components/ui/ScrollArea';
-import FileIconComponent from '@/pages/FileSharing/utilities/FileIconComponent';
+import FileTypeIcon from '@/pages/FileSharing/utilities/FileTypeIcon';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import { TiDocumentAdd, TiFolderAdd } from 'react-icons/ti';
 import { UploadItem } from '@libs/filesharing/types/uploadItem';
-import { FcFolder } from 'react-icons/fc';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faFileCirclePlus, faFolder, faFolderPlus } from '@fortawesome/free-solid-svg-icons';
 import getFileUploadLimit from '@libs/ui/utils/getFileUploadLimit';
 import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
 import ActionTooltip from '@/components/shared/ActionTooltip';
-import { BUTTONS_ICON_WIDTH, SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
 import isFolderUploadItem from '@libs/filesharing/utils/isFolderUploadItem';
 import createFolderUploadItem from '@libs/filesharing/utils/createFolderUploadItem';
 import splitFilesByMaxFileSize from '@libs/filesharing/utils/splitFilesByMaxFileSize';
@@ -45,6 +41,7 @@ import getUploadItemDisplayName from '@libs/filesharing/utils/getUploadItemDispl
 import extractFilesFromDropEvent from '@/pages/FileSharing/utilities/extractFilesFromDropEvent';
 import ValidationWarnings from '@/pages/FileSharing/utilities/ValidationWarnings';
 import getRandomUUID from '@/utils/getRandomUUID';
+import DropZone from '@/components/ui/DropZone';
 
 const UploadContentBody = () => {
   const { webdavShare } = useParams();
@@ -180,16 +177,15 @@ const UploadContentBody = () => {
     setSubmitButtonIsDisabled(oversizedFiles.length !== 0 || tooLargeFolders.length !== 0);
   }, [oversizedFiles, tooLargeFolders, setSubmitButtonIsDisabled]);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    getFilesFromEvent: extractFilesFromDropEvent,
-    onDrop,
-  });
-
   const renderPreview = (file: UploadItem) => {
     if (isFolderUploadItem(file)) {
       return (
         <div className="flex h-20 items-center justify-center">
-          <FcFolder size={SIDEBAR_ICON_WIDTH} />
+          <FontAwesomeIcon
+            icon={faFolder}
+            size="2xl"
+            className="text-yellow-500"
+          />
         </div>
       );
     }
@@ -207,7 +203,7 @@ const UploadContentBody = () => {
 
     return (
       <div className="flex h-20 items-center justify-center">
-        <FileIconComponent
+        <FileTypeIcon
           size={40}
           filename={file.name}
         />
@@ -215,22 +211,18 @@ const UploadContentBody = () => {
     );
   };
 
-  const dropzoneStyle = `border-2 border-dashed border-muted dark:border-secondary rounded-xl p-10 mb-4 ${
-    isDragActive ? 'bg-black/30' : 'bg-black/20'
-  }`;
-
   return (
     <form className="overflow-auto">
-      <div {...getRootProps({ className: dropzoneStyle })}>
-        <input {...getInputProps()} />
-
-        <div className="flex min-h-48 flex-col items-center justify-center space-y-2">
-          <p className="text-center font-semibold">
-            {isDragActive ? t('filesharingUpload.dropHere') : t('filesharingUpload.dragDropClick')}
-          </p>
-          <MdOutlineCloudUpload className="h-12 w-12" />
-        </div>
-      </div>
+      <DropZone
+        onDrop={onDrop}
+        getFilesFromEvent={extractFilesFromDropEvent}
+        dragActiveText={t('filesharingUpload.dropHere')}
+        inactiveText={t('filesharingUpload.dragDropClick')}
+        className="mb-4 p-10"
+        minHeight="min-h-48"
+        activeClassName="bg-black/30"
+        inactiveClassName="bg-black/20"
+      />
 
       <input
         type="file"
@@ -256,7 +248,7 @@ const UploadContentBody = () => {
           onClick={() => fileInputRef.current?.click()}
         >
           <div className="flex flex-col items-center">
-            <TiDocumentAdd size={BUTTONS_ICON_WIDTH} />
+            <FontAwesomeIcon icon={faFileCirclePlus} />
             {t('filesharingUpload.addFiles')}
           </div>
         </Button>
@@ -269,7 +261,7 @@ const UploadContentBody = () => {
         >
           <div className="flex flex-col items-center">
             <div>
-              <TiFolderAdd size={BUTTONS_ICON_WIDTH} />
+              <FontAwesomeIcon icon={faFolderPlus} />
             </div>
             {t('filesharingUpload.addFolder')}
           </div>
@@ -310,7 +302,10 @@ const UploadContentBody = () => {
                     onClick={() => removeFile(fileName)}
                     className="absolute right-1 top-1 h-8 rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
                   >
-                    <DeleteIcon className="text-text-ciRed h-4 w-4" />
+                    <FontAwesomeIcon
+                      icon={DeleteIcon}
+                      className="h-4 w-4 text-white"
+                    />
                   </Button>
 
                   <div className="flex flex-col items-center justify-center">
@@ -340,7 +335,10 @@ const UploadContentBody = () => {
                               onChange={() => toggleHiddenFilesForFolder(file.id)}
                               className="h-3 w-3 rounded border-gray-300"
                             />
-                            <HiEyeSlash className="h-3 w-3" />
+                            <FontAwesomeIcon
+                              icon={faEye}
+                              className="h-3 w-3"
+                            />
                             <span>+{file.hiddenFiles.length}</span>
                           </label>
                         }

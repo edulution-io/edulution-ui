@@ -18,7 +18,8 @@
  */
 
 import React from 'react';
-import { AlertTriangle } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import cn from '@libs/common/utils/className';
 import QuotaThresholdPercent from '@libs/filesharing/constants/quotaThresholdPercent';
 import { useTranslation } from 'react-i18next';
@@ -43,7 +44,8 @@ const QuotaLimitInfo: React.FC<QuotaLimitBadgeProps> = ({ percentageUsed }) => {
 
   return (
     <div className={cn('flex items-center gap-2', wrapperClasses)}>
-      <AlertTriangle
+      <FontAwesomeIcon
+        icon={faTriangleExclamation}
         className={cn('h-4 w-4', iconColor)}
         aria-hidden
       />

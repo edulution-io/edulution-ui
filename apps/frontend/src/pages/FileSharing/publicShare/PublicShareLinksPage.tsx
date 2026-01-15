@@ -23,7 +23,7 @@ import React from 'react';
 import PublicShareTable from '@/pages/FileSharing/publicShare/table/PublicShareTable';
 import PublicShareFilesFloatingButtonsBar from '@/pages/FileSharing/FloatingButtonsBar/PublicShareFilesFloatingButtonsBar';
 import DeletePublicShareDialog from '@/pages/FileSharing/publicShare/dialog/DeletePublicShareDialog';
-import { CloudIcon } from '@/assets/icons';
+import { faCloud } from '@fortawesome/free-solid-svg-icons';
 import CreateOrEditPublicShareDialog from '@/pages/FileSharing/publicShare/dialog/CreateOrEditPublicShareDialog';
 import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
@@ -47,7 +47,7 @@ const PublicShareLinksPage = () => {
       nativeAppHeader={{
         title: t('filesharing.publicShareFilesPage.title'),
         description: t('filesharing.publicShareFilesPage.description'),
-        iconSrc: CloudIcon,
+        iconSrc: faCloud,
       }}
     >
       <PublicShareTable />

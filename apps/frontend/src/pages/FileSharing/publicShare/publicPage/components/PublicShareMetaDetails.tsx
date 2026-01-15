@@ -20,7 +20,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Creator from '@libs/common/types/creator';
-import { CalendarClock } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 import formatIsoDateToLocaleString from '@libs/common/utils/Date/formatIsoDateToLocaleString';
 
 interface PublicShareMetaDetailsProps {
@@ -45,7 +46,10 @@ const PublicShareMetaDetails: React.FC<PublicShareMetaDetailsProps> = ({ filenam
 
       <ul className="mt-6 space-y-1 text-sm text-white/80">
         <li className="flex items-center gap-2">
-          <CalendarClock className="h-4 w-4" />
+          <FontAwesomeIcon
+            icon={faCalendar}
+            className="h-4 w-4"
+          />
           <span>
             <strong>{t('filesharing.publicFileSharing.validUntil')}:</strong>{' '}
             {formatIsoDateToLocaleString(expires.toLocaleString())}

@@ -27,8 +27,8 @@ import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import GlobalSettingsService from 'apps/api/src/global-settings/global-settings.service';
 import MigrationService from 'apps/api/src/migration/migration.service';
-import surveyTemplatesMigrationsList from 'apps/api/src/surveys/migrations/surveyTemplatesMigrationsList';
 import { SurveysTemplate, SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
+import surveyTemplatesMigrationsList from './migrations/surveyTemplatesMigrationsList';
 import CustomHttpException from '../common/CustomHttpException';
 
 @Injectable()
