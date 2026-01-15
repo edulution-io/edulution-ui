@@ -17,12 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import { Model, Types } from 'mongoose';
 import { Response } from 'express';
-import { Types, Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import GlobalSettingsService from 'apps/api/src/global-settings/global-settings.service';
 import MigrationService from 'apps/api/src/migration/migration.service';
@@ -45,15 +46,26 @@ class SurveysTemplateService implements OnModuleInit {
   }
 
   async updateOrCreateTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
-    const { id, template, name, isActive = true } = surveyTemplate;
+    const { id, template, name, isActive = true, isDefaultTemplate = false } = surveyTemplate;
     try {
-      const templateName = name || template.formula.title;
-      return await this.surveyTemplateModel.findByIdAndUpdate(
-        id,
-        { template, isActive, name: templateName },
-        { new: true, upsert: !id },
-      );
+      if (!id || id === null) {
+        return await this.surveyTemplateModel.create({
+          template,
+          name: name || template.formula.title.trim(),
+          isActive,
+          isDefaultTemplate,
+        });
+      }
+      return await this.surveyTemplateModel.findByIdAndUpdate(id, { template, name, isActive }, { new: true });
     } catch (error) {
+      if (error instanceof Error && error.message.includes('E11000')) {
+        throw new CustomHttpException(
+          SurveyErrorMessages.TemplateDouplicateNameError,
+          HttpStatus.CONFLICT,
+          error.message,
+          SurveysTemplateService.name,
+        );
+      }
       throw new CustomHttpException(
         CommonErrorMessages.DB_ACCESS_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -65,9 +77,8 @@ class SurveysTemplateService implements OnModuleInit {
 
   async getTemplates(ldapGroups: string[], res: Response): Promise<Response> {
     const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
-    const documents = await this.surveyTemplateModel
-      .find(getIsAdmin(ldapGroups, adminGroups) ? {} : { isActive: true })
-      .exec();
+    const isAdmin = getIsAdmin(ldapGroups, adminGroups);
+    const documents = await this.surveyTemplateModel.find(isAdmin ? {} : { isActive: true }).exec();
     return res.status(HttpStatus.OK).json(documents);
   }
 
@@ -83,6 +94,14 @@ class SurveysTemplateService implements OnModuleInit {
   }
 
   async deleteTemplate(id: string): Promise<void> {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new CustomHttpException(
+        CommonErrorMessages.DB_INVALID_ID,
+        HttpStatus.BAD_REQUEST,
+        id,
+        SurveysTemplateService.name,
+      );
+    }
     try {
       const mongoId = new Types.ObjectId(id);
       const defaultTemplate = await this.surveyTemplateModel.findOne({ _id: mongoId, isDefaultTemplate: true });

@@ -614,7 +614,6 @@
     "canSubmitMultiple": "Autoriser plusieurs réponses.",
     "editor": {
       "inputFieldTitle": "Champ de saisie",
-      "new": "Nouveau (vide)",
       "saveSurveySuccess": "Le sondage a été enregistrée.",
       "surveyPlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
       "surveyPlaceholderDescription": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
@@ -625,15 +624,14 @@
       "addDescription": "Ajouter une description",
       "expectingUserInput": "Ici, la réponse du participant est attendue ... ",
       "isLoadingSurvey": "Le sondage est en cours de chargement...",
-      "templates": "Modèles",
-      "searchPlaceholder": "Tapez pour filtrer les modèles...",
-      "noTemplates": "Aucun modèle disponible",
-      "noSearchResults": "Aucun modèle trouvé",
-      "templateMenu": {
-        "fetch": "Choisissez l'un des modèles disponibles.",
-        "submit": "Enregistrez le sondage en tant que modèle.",
-        "title": "Modèles d'enregistrement / charge",
-        "emptyMessage": "Il n'y a pas encore de modèles",
+      "template": {
+        "title": "Modèle",
+        "label": "Enregistrer le modèle",
+        "save": "Enregistrer le modèle",
+        "noTemplates": "Aucun modèle disponible",
+        "noSearchResults": "Aucun modèle trouvé",
+        "searchPlaceholder": "Tapez pour filtrer les modèles...",
+        "preview": "Aperçu du modèle",
         "upload": {
           "success": "Modèle enregistré avec succès",
           "error": "Échec de l'enregistrement du modèle"
@@ -680,7 +678,8 @@
       "participationErrorAlreadyParticipated": "Vous avez déjà participé.",
       "participationErrorSurveyExpired": "Le sondage a expiré.",
       "idTypeError": "ID de sondage non valide.",
-      "missingAnswerError": "Veuillez remplir le sondage avant d'envoyer votre réponse."
+      "missingAnswerError": "Veuillez remplir le sondage avant d'envoyer votre réponse.",
+      "duplicateNameError": "Ajustez le titre du modèle. Un document de modèle avec ce nom existe déjà."
     }
   },
   "survey-answer": {
@@ -1263,6 +1262,7 @@
     "entry": "Entrée {{index}}",
     "errors": {
       "attachmentUploadFailed": "La pièce jointe n'a pas pu être téléversée",
+      "dbInvalidId": "Invalid database ID",
       "dbAccessFailed": "L'accès à la base de données a échoué",
       "directoryNotCreated": "La création du répertoire a échoué",
       "fileNotCreated": "Échec de la création du fichier",

@@ -51,6 +51,7 @@ const getInitialSurveyFormBySurveys = (
       storedSurvey?.canUpdateFormerAnswer ??
       selectedSurvey?.canUpdateFormerAnswer ??
       surveysDefaultValues.canUpdateFormerAnswer,
+    saveAsTemplate: false,
   };
 };
 

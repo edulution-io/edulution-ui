@@ -26,8 +26,9 @@ import useUserStore from '@/store/UserStore/useUserStore';
 import SurveyEditorPage from '@/pages/Surveys/Editor/SurveyEditorPage';
 import SurveyEditorTemplateGrid from '@/pages/Surveys/Editor/SurveyEditorTemplateGrid';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
-import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
+import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
+import DeleteTemplateDialog from '@/pages/Surveys/Editor/dialog/DeleteTemplateDialog';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
@@ -42,7 +43,7 @@ const SurveyEditorEntryPage = () => {
     resetStoredSurvey,
     isFetching,
   } = useSurveyEditorPageStore();
-  const { reset: resetTemplateStore } = useTemplateMenuStore();
+  const { reset: resetTemplateStore } = useSurveyTemplateStore();
   const { reset: resetQuestionsContextMenu } = useQuestionsContextMenuStore();
 
   const { surveyId } = useParams();
@@ -78,6 +79,7 @@ const SurveyEditorEntryPage = () => {
       ) : (
         <SurveyEditorTemplateGrid surveyCreator={surveyCreator} />
       )}
+      <DeleteTemplateDialog />
     </PageLayout>
   );
 };
