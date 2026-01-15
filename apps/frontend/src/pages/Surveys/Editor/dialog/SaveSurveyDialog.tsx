@@ -67,7 +67,7 @@ const SaveSurveyDialog = (props: SaveSurveyDialogProps) => {
         handleClose={handleClose}
         handleSubmit={() => {}}
         disableSubmit={isSubmitting}
-        submitButtonText={form.watch('saveAsTemplate') ? 'survey.editor.templates.save' : 'common.save'}
+        submitButtonText={form.watch('saveAsTemplate') ? 'survey.editor.template.save' : 'common.save'}
         submitButtonType="submit"
       />
     </form>

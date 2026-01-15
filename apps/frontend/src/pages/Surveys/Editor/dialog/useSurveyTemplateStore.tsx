@@ -25,8 +25,11 @@ import { SURVEY_TEMPLATES_ENDPOINT } from '@libs/survey/constants/surveys-endpoi
 import handleApiError from '@/utils/handleApiError';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 
-interface TemplateMenuStore {
+interface SurveyTemplateStore {
   reset: () => void;
+
+  isOpenTemplatePreview: boolean;
+  setIsOpenTemplatePreview: (state: boolean) => void;
 
   uploadTemplate: (template: SurveyTemplateDto) => Promise<void>;
   isSubmitting: boolean;
@@ -44,7 +47,8 @@ interface TemplateMenuStore {
   isLoading: boolean;
 }
 
-const TemplateMenuStoreInitialState = {
+const SurveyTemplateStoreInitialState = {
+  isOpenTemplatePreview: false,
   isOpenTemplateConfirmDeletion: false,
   template: undefined,
   templates: [],
@@ -53,9 +57,11 @@ const TemplateMenuStoreInitialState = {
   error: undefined,
 };
 
-const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
-  ...TemplateMenuStoreInitialState,
-  reset: () => set(TemplateMenuStoreInitialState),
+const useSurveyTemplateStore = create<SurveyTemplateStore>((set) => ({
+  ...SurveyTemplateStoreInitialState,
+  reset: () => set(SurveyTemplateStoreInitialState),
+
+  setIsOpenTemplatePreview: (state: boolean) => set({ isOpenTemplatePreview: state }),
 
   fetchTemplates: async (): Promise<void> => {
     set({ isLoading: true });
@@ -77,7 +83,7 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
     try {
       const result = await eduApi.post<SurveyTemplateDto>(SURVEY_TEMPLATES_ENDPOINT, surveyTemplateDto);
       set({ template: result.data });
-      toast.success(t('survey.editor.templateMenu.upload.success'));
+      toast.success(t('survey.editor.template.upload.success'));
     } catch (error) {
       handleApiError(error, set);
       set({ template: undefined });
@@ -95,7 +101,7 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
     set({ isSubmitting: true });
     try {
       await eduApi.delete(`${SURVEY_TEMPLATES_ENDPOINT}/${templateId}`);
-      toast.success(t('survey.editor.templateMenu.deletion.success'));
+      toast.success(t('survey.editor.template.deletion.success'));
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -110,7 +116,7 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
     set({ isSubmitting: true });
     try {
       await eduApi.patch<SurveyTemplateDto>(`${SURVEY_TEMPLATES_ENDPOINT}/${templateId}/${state}`);
-      toast.success(t('survey.editor.templateMenu.upload.success'));
+      toast.success(t('survey.editor.template.upload.success'));
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -119,4 +125,4 @@ const useTemplateMenuStore = create<TemplateMenuStore>((set) => ({
   },
 }));
 
-export default useTemplateMenuStore;
+export default useSurveyTemplateStore;

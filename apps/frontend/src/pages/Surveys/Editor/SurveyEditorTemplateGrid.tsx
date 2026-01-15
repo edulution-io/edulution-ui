@@ -19,12 +19,14 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { faFileCirclePlus, faEye } from '@fortawesome/free-solid-svg-icons';
-import isSubsequence from '@libs/common/utils/string/isSubsequence';
+import cn from '@libs/common/utils/className';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
+import isSubsequence from '@libs/common/utils/string/isSubsequence';
+import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import SurveyEditorTemplateCard from '@/pages/Surveys/Editor/SurveyEditorTemplateCard';
+import SurveyEditorTemplatePreview from '@/pages/Surveys/Editor/SurveyEditorTemplatePreview';
 import Input from '@/components/shared/Input';
+import useLdapGroups from '@/hooks/useLdapGroups';
 
 interface SurveyEditorTemplateGridProps {
   surveyCreator: AttendeeDto;
@@ -33,9 +35,11 @@ interface SurveyEditorTemplateGridProps {
 const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridProps) => {
   const { t } = useTranslation();
 
-  const { templates, fetchTemplates } = useTemplateMenuStore();
+  const { templates, fetchTemplates, isOpenTemplatePreview } = useSurveyTemplateStore();
 
   const [search, setSearch] = useState('');
+
+  const { isSuperAdmin } = useLdapGroups();
 
   useEffect(() => {
     void fetchTemplates();
@@ -56,18 +60,25 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
   return (
     <>
       <Input
-        placeholder={t('survey.editor.searchPlaceholder')}
-        aria-label={t('survey.editor.searchPlaceholder')}
+        placeholder={t('survey.editor.template.searchPlaceholder')}
+        aria-label={t('survey.editor.template.searchPlaceholder')}
         value={search}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
         onKeyDown={handleKeyDown}
         variant="default"
         width="auto"
       />
-      <div className="mx-auto mt-4 grid max-h-full w-full grid-cols-[repeat(auto-fit,minmax(8rem,auto))] gap-x-3 gap-y-2 overflow-auto px-2 pb-10 scrollbar-thin md:max-h-full md:w-[95%] md:grid-cols-[repeat(auto-fit,minmax(12rem,auto))] md:gap-x-6 md:gap-y-5 md:pb-4">
+      <div
+        className={cn(
+          'mx-auto mt-4 grid max-h-full w-full grid-cols-[repeat(auto-fit,minmax(8rem,auto))] gap-x-3 gap-y-2 overflow-auto px-2 pb-10 scrollbar-thin md:max-h-full md:w-[95%] md:grid-cols-[repeat(auto-fit,minmax(12rem,auto))] md:gap-x-6 md:gap-y-5 md:pb-4',
+          {
+            'sd:grid-cols-[repeat(auto-fit,minmax(14rem,auto))] grid-cols-[repeat(auto-fit,minmax(20rem,auto))] md:grid-cols-[repeat(auto-fit,minmax(18rem,auto))]':
+              isSuperAdmin,
+          },
+        )}
+      >
         <SurveyEditorTemplateCard
           key="create-new-card"
-          icon={faFileCirclePlus}
           creator={surveyCreator}
           surveyTemplate={undefined}
         />
@@ -75,17 +86,19 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
           filteredTemplates.map((surveyTemplate) => (
             <SurveyEditorTemplateCard
               key={surveyTemplate.template.formula.title}
-              icon={faEye}
               creator={surveyCreator}
               surveyTemplate={surveyTemplate}
             />
           ))
         ) : (
           <p className="px-2 py-24">
-            {templates.length === 0 ? t('survey.editor.noTemplates') : t('survey.editor.noSearchResults')}
+            {templates.length === 0
+              ? t('survey.editor.template.noTemplates')
+              : t('survey.editor.template.noSearchResults')}
           </p>
         )}
       </div>
+      {isOpenTemplatePreview && <SurveyEditorTemplatePreview />}
     </>
   );
 };

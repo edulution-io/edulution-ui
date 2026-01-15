@@ -20,7 +20,7 @@
 import { toast } from 'sonner';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { faFileCirclePlus, faEye } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import cn from '@libs/common/utils/className';
 import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
@@ -28,20 +28,25 @@ import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
+import surveysDefaultValues from '@/pages/Surveys/utils/surveys-default-values';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
-import surveysDefaultValues from '@/pages/Surveys/utils/surveys-default-values';
 
 interface SurveyEditorTemplateCardProps {
-  icon: IconProp;
   creator: AttendeeDto;
   surveyTemplate?: SurveyTemplateDto;
 }
 
-const SurveyEditorTemplateCard = ({ icon, creator, surveyTemplate }: SurveyEditorTemplateCardProps): JSX.Element => {
-  const { setIsOpenTemplateConfirmDeletion, setIsTemplateActive, fetchTemplates, setTemplate } = useTemplateMenuStore();
+const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTemplateCardProps): JSX.Element => {
+  const {
+    setIsOpenTemplateConfirmDeletion,
+    setIsOpenTemplatePreview,
+    setIsTemplateActive,
+    fetchTemplates,
+    setTemplate,
+  } = useSurveyTemplateStore();
 
   const { loadNewSurvey, loadSurveyTemplate } = useSurveyEditorPageStore();
 
@@ -51,7 +56,24 @@ const SurveyEditorTemplateCard = ({ icon, creator, surveyTemplate }: SurveyEdito
 
   const [active, setActive] = useState<boolean>(surveyTemplate?.isActive ?? true);
 
-  const toggleIsTemplateActive = async () => {
+  const handleCardClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setTemplate(surveyTemplate);
+    if (surveyTemplate) {
+      loadSurveyTemplate(creator, surveyTemplate);
+    } else {
+      loadNewSurvey(creator);
+    }
+  };
+
+  const handleOpenPreview = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setTemplate(surveyTemplate);
+    setIsOpenTemplatePreview(true);
+  };
+
+  const toggleIsTemplateActive = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (!surveyTemplate?.id) return;
     try {
       await setIsTemplateActive(surveyTemplate.id, !active);
@@ -62,62 +84,82 @@ const SurveyEditorTemplateCard = ({ icon, creator, surveyTemplate }: SurveyEdito
     }
   };
 
+  const handleOpenConfirmDeletion = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setTemplate(surveyTemplate);
+    setIsOpenTemplateConfirmDeletion(true);
+  };
+
   const title = surveyTemplate?.name ?? surveyTemplate?.template.formula.title ?? surveysDefaultValues.formula.title;
 
   const description = surveyTemplate?.template.formula.description;
-
-  const handleClick = () => {
-    setTemplate(surveyTemplate);
-    if (surveyTemplate) {
-      loadSurveyTemplate(creator, surveyTemplate);
-    } else {
-      loadNewSurvey(creator);
-    }
-  };
 
   return (
     <Card
       className={cn(
         GRID_CARD,
-        'relative flex min-h-[11rem] cursor-pointer pt-2',
+        'relative flex h-36 cursor-pointer pt-2',
         { 'opacity-50': !active },
-        { 'h-[12.2rem] pb-12': isSuperAdmin },
         { 'pt-8': !description },
+        {
+          'sd:min-w-[14rem] w-[calc(100%-2rem)] min-w-[calc(100%-2rem)] max-w-[24rem] md:min-w-[18rem]': isSuperAdmin,
+        },
       )}
       variant="text"
-      onClick={handleClick}
+      onClick={handleCardClick}
     >
-      <FontAwesomeIcon
-        icon={icon}
-        className="h-12 w-12 md:h-14 md:w-14"
-      />
-      {title && <h3 className={cn('mt-1 line-clamp-2 w-full truncate px-4', { 'mt-2': !description })}>{title}</h3>}
+      {!surveyTemplate && (
+        <FontAwesomeIcon
+          icon={faFileCirclePlus}
+          className="h-12 w-12 md:h-14 md:w-14"
+        />
+      )}
+
+      {title && (
+        <h3
+          className={cn(
+            'mt-1 line-clamp-2 w-full truncate px-4',
+            { 'mt-4': !description },
+            { 'mt-2 flex justify-center': !surveyTemplate },
+          )}
+        >
+          {title}
+        </h3>
+      )}
 
       {description && <p className="mt-2 line-clamp-2 w-full px-4">{description}</p>}
 
-      {isSuperAdmin && surveyTemplate && (
+      {surveyTemplate && (
         <div className="absolute bottom-2 flex h-8 w-full flex-row justify-end gap-2 px-2 text-sm italic">
+          {isSuperAdmin && (
+            <Button
+              className="cursor-pointer hover:bg-transparent"
+              onClick={toggleIsTemplateActive}
+              variant="btn-outline"
+              size="sm"
+            >
+              {active ? t('classmanagement.deactivate') : t('classmanagement.activate')}
+            </Button>
+          )}
           <Button
-            onClick={async (e) => {
-              e.stopPropagation();
-              await toggleIsTemplateActive();
-            }}
+            className="cursor-pointer"
+            onClick={handleOpenPreview}
             variant="btn-outline"
             size="sm"
+            aria-label={t('common.delete')}
           >
-            {active ? t('classmanagement.deactivate') : t('classmanagement.activate')}
+            <FontAwesomeIcon
+              icon={faEye}
+              className="h-4 w-4"
+            />
           </Button>
-          {!surveyTemplate?.isDefaultTemplate && (
+          {isSuperAdmin && !surveyTemplate?.isDefaultTemplate && (
             <Button
-              onClick={(e) => {
-                e.stopPropagation();
-                setTemplate(surveyTemplate);
-                setIsOpenTemplateConfirmDeletion(true);
-              }}
+              className="cursor-pointer rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
+              onClick={handleOpenConfirmDeletion}
               variant="btn-attention"
               size="sm"
               aria-label={t('common.delete')}
-              className="rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
             >
               <FontAwesomeIcon
                 icon={DeleteIcon}
