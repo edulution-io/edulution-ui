@@ -68,7 +68,7 @@ const EmbeddedPageContent: React.FC<EmbeddedPageContentProps> = ({
     appName,
     proxyPrefix,
     iframeRef,
-    enabled: urlSyncEnabled && !!isSandboxMode,
+    enabled: urlSyncEnabled && !!isSandboxMode && !!proxyPrefix,
   });
 
   if (isSandboxMode) {

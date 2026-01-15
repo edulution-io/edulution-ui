@@ -27,8 +27,15 @@ const getSubPathFromIframe = (iframe: HTMLIFrameElement, proxyPrefix?: string): 
     const iframeSearch = iframe.contentWindow?.location.search || EMPTY_STRING;
     const iframeHash = iframe.contentWindow?.location.hash || EMPTY_STRING;
     if (!iframePath) return null;
-    if (proxyPrefix && iframePath.startsWith(proxyPrefix)) {
-      return { subPath: iframePath.slice(proxyPrefix.length) || EMPTY_STRING, search: iframeSearch, hash: iframeHash };
+    if (proxyPrefix) {
+      if (iframePath.startsWith(proxyPrefix)) {
+        return {
+          subPath: iframePath.slice(proxyPrefix.length) || EMPTY_STRING,
+          search: iframeSearch,
+          hash: iframeHash,
+        };
+      }
+      return null;
     }
     return { subPath: iframePath, search: iframeSearch, hash: iframeHash };
   } catch {
