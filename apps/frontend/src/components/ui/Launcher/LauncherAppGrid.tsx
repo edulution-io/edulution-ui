@@ -20,6 +20,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Card } from '@/components/shared/Card';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
 import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
 import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
 import useLanguage from '@/hooks/useLanguage';
@@ -97,7 +98,6 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         variant="dialog"
-        className="mx-auto my-3 block w-[80%] min-w-[250px] rounded-xl border border-ring px-3 py-2 md:mb-2 md:mt-0 md:w-[400px]"
       />
 
       <div className="mx-auto flex max-h-full w-full flex-wrap justify-center gap-2 overflow-y-auto pb-10 scrollbar-thin md:pb-4">
@@ -109,10 +109,7 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
               onClick={onClose}
             >
               <Card
-                className={cn(
-                  'm-1 flex h-32 w-32 flex-col items-center overflow-hidden md:w-48',
-                  app.link === currentAppPath ? 'bg-ciGreenToBlue text-white' : '',
-                )}
+                className={cn(GRID_CARD, { 'bg-ciGreenToBlue text-white': app.link === currentAppPath })}
                 variant="dialog"
               >
                 <div className="relative m-4 flex flex-col items-center">

@@ -19,6 +19,8 @@
 
 import { cva } from 'class-variance-authority';
 
+export const GRID_CARD = 'm-1 flex h-32 w-32 flex-col items-center overflow-hidden md:w-48';
+
 export const INPUT_BASE_CLASSES =
   'h-10 w-full rounded-lg px-3 text-p transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus:outline-none disabled:cursor-not-allowed disabled:opacity-50';
 

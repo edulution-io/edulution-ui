@@ -17,19 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-enum SurveyErrorMessages {
-  UpdateOrCreateError = 'survey.errors.updateOrCreateError',
-  DeleteError = 'survey.errors.deleteError',
-  NoAnswers = 'survey.errors.noAnswerError',
-  NoFormula = 'survey.errors.noFormulaError',
-  NoBackendLimiters = 'survey.errors.noBackendLimitersError',
-  NotFoundError = 'survey.errors.notFoundError',
-  MISSING_ID_ERROR = 'survey.errors.missingIdError',
-  SurveyFormulaStructuralError = 'survey.errors.surveyFormulaStructuralError',
-  ParticipationErrorUserNotAssigned = 'survey.errors.participationErrorUserNotAssigned',
-  ParticipationErrorSurveyExpired = 'survey.errors.participationErrorSurveyExpired',
-  ParticipationErrorAlreadyParticipated = 'survey.errors.participationErrorAlreadyParticipated',
-  TemplateDouplicateNameError = 'survey.errors.duplicateNameError',
-}
+import AttendeeDto from '@libs/user/types/attendee.dto';
+import UserDto from '@libs/user/types/user.dto';
 
-export default SurveyErrorMessages;
+const getCreatorFromUserDto = (user: UserDto | null): AttendeeDto => ({
+  firstName: user?.firstName || '',
+  lastName: user?.lastName || '',
+  username: user?.username || '',
+  value: user?.username || '',
+  label: user ? `${user.firstName} ${user.lastName}` : '',
+});
+
+export default getCreatorFromUserDto;

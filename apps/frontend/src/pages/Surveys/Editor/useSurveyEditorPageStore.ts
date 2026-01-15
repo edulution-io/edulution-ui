@@ -27,8 +27,19 @@ import { SURVEY_FILE_ATTACHMENT_ENDPOINT, SURVEYS } from '@libs/survey/constants
 import eduApi from '@/api/eduApi';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import handleApiError from '@/utils/handleApiError';
+import AttendeeDto from '@libs/user/types/attendee.dto';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
+import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
+import getInitialSurveyFormBySurveys from '@/pages/Surveys/utils/getInitialSurveyFormBySurveys';
+import getInitialSurveyFormByTemplate from '@/pages/Surveys/utils/getInitialSurveyFormByTemplate';
 
 interface SurveyEditorPageStore {
+  loadNewSurvey: (creator: AttendeeDto) => void;
+  loadSurveyTemplate: (creator: AttendeeDto, template: SurveyTemplateDto) => void;
+  fetchSelectedSurvey: (creator: AttendeeDto, surveyId: string, isPublic?: boolean) => Promise<void>;
+  initialSurvey: SurveyDto | undefined;
+  isFetching: boolean;
+
   storedSurvey: SurveyDto | undefined;
   updateStoredSurvey: (survey: SurveyDto) => void;
   resetStoredSurvey: () => void;
@@ -55,6 +66,9 @@ type PersistedSurveyEditorPageStore = (
 ) => StateCreator<SurveyEditorPageStore>;
 
 const initialState = {
+  isFetching: false,
+  initialSurvey: undefined,
+
   storedSurvey: undefined,
 
   isUploadingFile: false,
@@ -71,6 +85,31 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
     (set) => ({
       ...initialState,
       reset: () => set(initialState),
+
+      loadNewSurvey: (creator: AttendeeDto): void => {
+        const newSurvey = getInitialSurveyFormBySurveys(creator, undefined, undefined);
+        set({ initialSurvey: newSurvey });
+      },
+
+      loadSurveyTemplate: (creator: AttendeeDto, template: SurveyTemplateDto): void => {
+        const newSurvey = getInitialSurveyFormByTemplate(creator, template);
+        set({ initialSurvey: newSurvey });
+      },
+
+      fetchSelectedSurvey: async (creator: AttendeeDto, surveyId?: string, isPublic = false): Promise<void> => {
+        set({ isFetching: true, initialSurvey: undefined });
+        const { fetchSelectedSurvey } = useSurveysTablesPageStore.getState();
+        try {
+          const survey = await fetchSelectedSurvey(surveyId, isPublic);
+          const initialValues = getInitialSurveyFormBySurveys(creator, survey);
+          set({ initialSurvey: initialValues });
+        } catch (error) {
+          set({ initialSurvey: undefined });
+          handleApiError(error, set);
+        } finally {
+          set({ isFetching: false });
+        }
+      },
 
       updateStoredSurvey: (survey: SurveyDto) => set({ storedSurvey: survey }),
       resetStoredSurvey: () => set({ storedSurvey: undefined }),
