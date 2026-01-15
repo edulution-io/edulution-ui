@@ -47,7 +47,7 @@ export class SurveysTemplate {
   schemaVersion: number;
 
   @Prop({ default: [] })
-  accessibleByRoles: MultipleSelectorGroup[] | Group[];
+  accessGroups: MultipleSelectorGroup[] | Group[];
 
   @Prop({ default: ['linuxmuster'] })
   deploymentTargets: string[];

@@ -68,7 +68,7 @@ const traineeShip = {
     isPublic: false,
     canUpdateFormerAnswer: true,
   },
-  accessibleByRoles: [],
+  accessGroups: [],
   deploymentTargets: ['linuxmuster'],
 };
 

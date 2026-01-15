@@ -43,6 +43,7 @@ import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import createSurveyCreatorObject from '@/pages/Surveys/Editor/createSurveyCreatorObject';
 import TemplateDialog from '@/pages/Surveys/Editor/dialog/TemplateDialog';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
+import useSaveTemplateDialogStore from '@/pages/Surveys/Editor/dialog/useSaveTemplateDialogStore';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import PageLayout from '@/components/structure/layout/PageLayout';
@@ -67,6 +68,8 @@ const SurveyEditorPage = () => {
     uploadFile,
   } = useSurveyEditorPageStore();
   const { reset: resetTemplateStore, isOpenTemplateMenu, setIsOpenTemplateMenu } = useTemplateMenuStore();
+  const { setIsOpenSaveTemplateDialog: setIsOpenSaveTemplateMenu, isOpenSaveTemplateDialog: isOpenSaveTemplateMenu } =
+    useSaveTemplateDialogStore();
   const {
     reset: resetQuestionsContextMenu,
     setIsOpenQuestionContextMenu,
@@ -202,7 +205,7 @@ const SurveyEditorPage = () => {
       {
         icon: faFileLines,
         text: t('survey.editor.templates'),
-        onClick: () => setIsOpenTemplateMenu(!isOpenTemplateMenu),
+        onClick: () => setIsOpenSaveTemplateMenu(!isOpenSaveTemplateMenu),
       },
       {
         icon: faFileCirclePlus,
