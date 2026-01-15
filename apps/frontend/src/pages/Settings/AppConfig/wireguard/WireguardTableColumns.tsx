@@ -23,7 +23,7 @@ import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableCell from '@/components/ui/Table/SelectableCell';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import Checkbox from '@/components/ui/Checkbox';
-import type WireguardPeer from '@libs/wireguard/types/wireguardPeer';
+import { type WireguardPeer } from '@libs/wireguard/types/wireguard';
 import WIREGUARD_TABLE_COLUMNS from '@libs/wireguard/constants/wireguardTableColumns';
 
 const WireguardTableColumns: ColumnDef<WireguardPeer>[] = [
@@ -62,47 +62,19 @@ const WireguardTableColumns: ColumnDef<WireguardPeer>[] = [
     ),
   },
   {
-    id: WIREGUARD_TABLE_COLUMNS.TYPE,
+    id: WIREGUARD_TABLE_COLUMNS.STATUS,
     header: ({ column }) => <SortableHeader<WireguardPeer, unknown> column={column} />,
     meta: {
-      translationId: 'wireguard.type',
+      translationId: 'wireguard.status',
     },
-    accessorFn: (row) => row.type,
+    accessorFn: (row) => row.status,
     cell: ({ row }) => (
       <SelectableCell
         text={
-          <BadgeSH variant={row.original.type === 'site' ? 'default' : 'secondary'}>
-            {row.original.type === 'site' ? 'Site-to-Site' : 'Client'}
+          <BadgeSH variant={row.original.status === 'connected' ? 'default' : 'secondary'}>
+            {row.original.status === 'connected' ? 'Connected' : 'Disconnected'}
           </BadgeSH>
         }
-        onClick={() => row.toggleSelected()}
-      />
-    ),
-  },
-  {
-    id: WIREGUARD_TABLE_COLUMNS.IP,
-    header: ({ column }) => <SortableHeader<WireguardPeer, unknown> column={column} />,
-    meta: {
-      translationId: 'wireguard.ip',
-    },
-    accessorFn: (row) => row.ip,
-    cell: ({ row }) => (
-      <SelectableCell
-        text={row.original.ip}
-        onClick={() => row.toggleSelected()}
-      />
-    ),
-  },
-  {
-    id: WIREGUARD_TABLE_COLUMNS.ROUTES,
-    header: ({ column }) => <SortableHeader<WireguardPeer, unknown> column={column} />,
-    meta: {
-      translationId: 'wireguard.routes',
-    },
-    accessorFn: (row) => row.routes.join(', '),
-    cell: ({ row }) => (
-      <SelectableCell
-        text={row.original.routes.join(', ')}
         onClick={() => row.toggleSelected()}
       />
     ),
@@ -113,10 +85,38 @@ const WireguardTableColumns: ColumnDef<WireguardPeer>[] = [
     meta: {
       translationId: 'wireguard.allowedIps',
     },
-    accessorFn: (row) => ('allowed_ips' in row ? row.allowed_ips?.join(', ') : '-'),
+    accessorFn: (row) => row.allowed_ips,
     cell: ({ row }) => (
       <SelectableCell
-        text={'allowed_ips' in row.original ? row.original.allowed_ips?.join(', ') || '-' : '-'}
+        text={row.original.allowed_ips || '-'}
+        onClick={() => row.toggleSelected()}
+      />
+    ),
+  },
+  {
+    id: WIREGUARD_TABLE_COLUMNS.ENDPOINT,
+    header: ({ column }) => <SortableHeader<WireguardPeer, unknown> column={column} />,
+    meta: {
+      translationId: 'wireguard.endpoint',
+    },
+    accessorFn: (row) => row.endpoint || '-',
+    cell: ({ row }) => (
+      <SelectableCell
+        text={row.original.endpoint || '-'}
+        onClick={() => row.toggleSelected()}
+      />
+    ),
+  },
+  {
+    id: WIREGUARD_TABLE_COLUMNS.LAST_HANDSHAKE,
+    header: ({ column }) => <SortableHeader<WireguardPeer, unknown> column={column} />,
+    meta: {
+      translationId: 'wireguard.lastHandshake',
+    },
+    accessorFn: (row) => row.last_handshake || '-',
+    cell: ({ row }) => (
+      <SelectableCell
+        text={row.original.last_handshake || '-'}
         onClick={() => row.toggleSelected()}
       />
     ),

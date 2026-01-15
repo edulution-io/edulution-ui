@@ -20,11 +20,10 @@
 const WIREGUARD_TABLE_COLUMNS = {
   SELECT: 'select',
   NAME: 'name',
-  TYPE: 'type',
-  IP: 'ip',
-  PUBLIC_KEY: 'public_key',
-  ROUTES: 'routes',
+  STATUS: 'status',
   ALLOWED_IPS: 'allowed_ips',
+  ENDPOINT: 'endpoint',
+  LAST_HANDSHAKE: 'last_handshake',
 } as const;
 
 export default WIREGUARD_TABLE_COLUMNS;

@@ -37,7 +37,7 @@ import VEYON_PROXY_TABLE_COLUMNS from '@libs/classManagement/constants/veyonProx
 import type WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import { WebdavServerTableStore, type WebdavShareTableStore } from '@libs/appconfig/types/webdavShareTableStore';
 import WEBDAV_SHARE_TABLE_COLUMNS from '@libs/filesharing/constants/webdavShareTableColumns';
-import type WireguardPeer from '@libs/wireguard/types/wireguardPeer';
+import { type WireguardPeer } from '@libs/wireguard/types/wireguard';
 import { WireguardTableStore } from '@libs/appconfig/types/wireguardTableStore';
 import WIREGUARD_TABLE_COLUMNS from '@libs/wireguard/constants/wireguardTableColumns';
 import DockerContainerTableColumns from '../../DockerIntegration/DockerContainerTableColumns';
@@ -223,9 +223,9 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
       filterPlaceHolderText: 'wireguard.searchPlaceholder',
       type: ExtendedOptionKeys.WIREGUARD_PEERS_TABLE,
       hideColumnsInMobileView: [
-        WIREGUARD_TABLE_COLUMNS.IP,
-        WIREGUARD_TABLE_COLUMNS.ROUTES,
         WIREGUARD_TABLE_COLUMNS.ALLOWED_IPS,
+        WIREGUARD_TABLE_COLUMNS.ENDPOINT,
+        WIREGUARD_TABLE_COLUMNS.LAST_HANDSHAKE,
       ],
       hideColumnsInTabletView: [WIREGUARD_TABLE_COLUMNS.ALLOWED_IPS],
     }),

@@ -25,7 +25,7 @@ import type {
   Peer,
   PeerConfig,
   PeerRequest,
-  PeerStatus,
+  WireguardPeer,
   Site,
   SiteRequest,
 } from '@libs/wireguard/types/wireguard';
@@ -162,9 +162,9 @@ class WireguardService {
     }
   }
 
-  async getPeerStatus(peer: string): Promise<PeerStatus | false> {
+  async getPeerStatus(peer: string): Promise<WireguardPeer | false> {
     try {
-      const response = await this.wireguardApi.get<PeerStatus | false>(`/peers/${peer}/status`);
+      const response = await this.wireguardApi.get<WireguardPeer | false>(`/peers/${peer}/status`);
       return response.data;
     } catch (error) {
       Logger.error(
@@ -180,9 +180,9 @@ class WireguardService {
     }
   }
 
-  async getAllPeersStatus(): Promise<Record<string, PeerStatus>> {
+  async getAllPeersStatus(): Promise<Record<string, WireguardPeer>> {
     try {
-      const response = await this.wireguardApi.get<Record<string, PeerStatus>>('/peers/status');
+      const response = await this.wireguardApi.get<Record<string, WireguardPeer>>('/peers/status');
       return response.data;
     } catch (error) {
       Logger.error(

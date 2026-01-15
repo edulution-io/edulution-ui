@@ -27,12 +27,10 @@ import WIREGUARD_API_ENDPOINT from '@libs/wireguard/constants/wireguardApiEndpoi
 import type {
   BatchPeersRequest,
   BatchPeersResult,
-  Peer,
   PeerRequest,
-  Site,
+  WireguardPeer,
   SiteRequest,
 } from '@libs/wireguard/types/wireguard';
-import type WireguardPeer from '@libs/wireguard/types/wireguardPeer';
 
 const initialValues = {
   selectedRows: {},
@@ -56,26 +54,14 @@ const useWireguardConfigTableStore: UseBoundStore<StoreApi<WireguardTableStore>>
     fetchTableContent: async () => {
       set({ isLoading: true, error: null });
       try {
-        const [peersResponse, sitesResponse] = await Promise.all([
-          eduApi
-            .get<Record<string, Peer>>(`${WIREGUARD_API_ENDPOINT}/peers`)
-            .catch(() => ({ data: {} as Record<string, Peer> })),
-          eduApi
-            .get<Record<string, Site>>(`${WIREGUARD_API_ENDPOINT}/sites`)
-            .catch(() => ({ data: {} as Record<string, Site> })),
-        ]);
-
-        const clientPeers: WireguardPeer[] = Object.values(peersResponse.data).map((peer) => ({
-          ...peer,
-          type: 'client' as const,
+        const response = await eduApi.get<Record<string, Omit<WireguardPeer, 'name'>>>(
+          `${WIREGUARD_API_ENDPOINT}/peers/status`,
+        );
+        const peers: WireguardPeer[] = Object.entries(response.data).map(([name, peerData]) => ({
+          ...peerData,
+          name,
         }));
-
-        const sitePeers: WireguardPeer[] = Object.values(sitesResponse.data).map((site) => ({
-          ...site,
-          type: 'site' as const,
-        }));
-
-        set({ tableContentData: [...clientPeers, ...sitePeers], isLoading: false });
+        set({ tableContentData: peers, isLoading: false });
       } catch (error) {
         handleApiError(error, set, 'error');
         set({ isLoading: false });
@@ -139,12 +125,7 @@ const useWireguardConfigTableStore: UseBoundStore<StoreApi<WireguardTableStore>>
           return;
         }
 
-        const endpoint =
-          peer.type === 'site'
-            ? `${WIREGUARD_API_ENDPOINT}/sites/${peerIdentifier}`
-            : `${WIREGUARD_API_ENDPOINT}/peers/${peerIdentifier}`;
-
-        await eduApi.delete(endpoint);
+        await eduApi.delete(`${WIREGUARD_API_ENDPOINT}/peers/${peerIdentifier}`);
         await get().fetchTableContent();
         set({ isLoading: false });
         toast.success(i18n.t('wireguard.deleteSuccess'));

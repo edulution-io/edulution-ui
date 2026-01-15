@@ -37,6 +37,7 @@ import useUserStore from '@/store/UserStore/useUserStore';
 import useGroupStore from '@/store/GroupStore';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import { BadgeSH } from '@/components/ui/BadgeSH';
 import useWireguardConfigTableStore from './useWireguardConfigTableStore';
 import QRCodeDialog from './QRCodeDialog';
 
@@ -107,7 +108,7 @@ const AddWireguardPeerDialog: React.FC<AddWireguardPeerDialogProps> = ({ tableId
   const isOpen = isDialogOpen === tableId;
   const keys = Object.keys(selectedRows as RowSelectionState);
   const isOneRowSelected = keys.length === 1;
-  const selectedConfig = selectedRows && isOneRowSelected ? tableContentData[Number(keys[0])] : null;
+  const selectedPeerStatus = selectedRows && isOneRowSelected ? tableContentData[Number(keys[0])] : null;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(getFormSchema(t)),
@@ -123,21 +124,7 @@ const AddWireguardPeerDialog: React.FC<AddWireguardPeerDialogProps> = ({ tableId
   const peerType = form.watch('type');
 
   useEffect(() => {
-    if (isOpen && selectedConfig) {
-      const allowedIps =
-        selectedConfig.type === 'site' && 'allowed_ips' in selectedConfig
-          ? (selectedConfig.allowed_ips as string[])?.join(', ')
-          : '';
-      const endpoint =
-        selectedConfig.type === 'site' && 'endpoint' in selectedConfig ? (selectedConfig.endpoint as string) : '';
-      form.reset({
-        type: selectedConfig.type,
-        routes: selectedConfig.routes?.join(', ') || '0.0.0.0/0',
-        allowed_ips: allowedIps,
-        endpoint,
-        name: selectedConfig.name,
-      });
-    } else if (isOpen) {
+    if (isOpen && !selectedPeerStatus) {
       form.reset({
         type: 'client',
         routes: '0.0.0.0/0',
@@ -148,7 +135,7 @@ const AddWireguardPeerDialog: React.FC<AddWireguardPeerDialogProps> = ({ tableId
       setSelectedUsers([]);
       setSelectedGroups([]);
     }
-  }, [isOpen, selectedConfig, form]);
+  }, [isOpen, selectedPeerStatus, form]);
 
   const closeDialog = () => {
     setDialogOpen('');
@@ -188,9 +175,9 @@ const AddWireguardPeerDialog: React.FC<AddWireguardPeerDialogProps> = ({ tableId
   };
 
   const handleConfirmDelete = async () => {
-    const configToDelete = itemToDelete || selectedConfig;
-    if (configToDelete?.name && deleteTableEntry) {
-      await deleteTableEntry('', configToDelete.name);
+    const peerToDelete = itemToDelete || selectedPeerStatus;
+    if (peerToDelete?.peer && deleteTableEntry) {
+      await deleteTableEntry('', peerToDelete.peer);
       if (setSelectedRows) {
         setSelectedRows({});
       }
@@ -209,8 +196,8 @@ const AddWireguardPeerDialog: React.FC<AddWireguardPeerDialogProps> = ({ tableId
   };
 
   const handleShowQRCode = () => {
-    if (selectedConfig && selectedConfig.type === 'client') {
-      setQrCodePeerName(selectedConfig.name);
+    if (selectedPeerStatus) {
+      setQrCodePeerName(selectedPeerStatus.peer);
     }
   };
 
@@ -224,7 +211,7 @@ const AddWireguardPeerDialog: React.FC<AddWireguardPeerDialogProps> = ({ tableId
 
   const onUsersSearch = async (value: string): Promise<AttendeeDto[]> => searchAttendees(value);
 
-  const deleteItem = itemToDelete || selectedConfig;
+  const deleteItem = itemToDelete || selectedPeerStatus;
 
   const isSubmitDisabled = () => {
     if (isLoading) return true;
@@ -235,13 +222,13 @@ const AddWireguardPeerDialog: React.FC<AddWireguardPeerDialogProps> = ({ tableId
   };
 
   const getFooter = () => {
-    if (selectedConfig) {
+    if (selectedPeerStatus) {
       return (
         <DialogFooterButtons
           handleClose={closeDialog}
-          handleSubmit={selectedConfig.type === 'client' ? handleShowQRCode : undefined}
+          handleSubmit={handleShowQRCode}
           handleDelete={() => setIsDeleteDialogOpen(true)}
-          submitButtonText={selectedConfig.type === 'client' ? 'wireguard.showQRCode' : undefined}
+          submitButtonText="wireguard.showQRCode"
         />
       );
     }
@@ -262,7 +249,7 @@ const AddWireguardPeerDialog: React.FC<AddWireguardPeerDialogProps> = ({ tableId
   const getDialogBody = () => (
     <Form {...form}>
       <div className="space-y-4">
-        {!selectedConfig && (
+        {!selectedPeerStatus && (
           <FormFieldSH
             control={form.control}
             name="type"
@@ -296,7 +283,7 @@ const AddWireguardPeerDialog: React.FC<AddWireguardPeerDialogProps> = ({ tableId
           />
         )}
 
-        {!selectedConfig && peerType === 'client' && (
+        {!selectedPeerStatus && peerType === 'client' && (
           <>
             <SearchUsersOrGroups
               users={selectedUsers}
@@ -319,7 +306,7 @@ const AddWireguardPeerDialog: React.FC<AddWireguardPeerDialogProps> = ({ tableId
           </>
         )}
 
-        {!selectedConfig && peerType === 'site' && (
+        {!selectedPeerStatus && peerType === 'site' && (
           <>
             <FormField
               form={form}
@@ -358,32 +345,36 @@ const AddWireguardPeerDialog: React.FC<AddWireguardPeerDialogProps> = ({ tableId
           </>
         )}
 
-        {selectedConfig && (
+        {selectedPeerStatus && (
           <div className="space-y-2 text-sm">
             <div>
               <span className="font-bold">{t('wireguard.name')}: </span>
-              {selectedConfig.name}
+              {selectedPeerStatus.peer}
             </div>
             <div>
-              <span className="font-bold">{t('wireguard.type')}: </span>
-              {selectedConfig.type === 'site' ? t('wireguard.siteToSite') : t('wireguard.clientPeer')}
+              <span className="font-bold">{t('wireguard.status')}: </span>
+              <BadgeSH variant={selectedPeerStatus.status === 'connected' ? 'default' : 'secondary'}>
+                {selectedPeerStatus.status === 'connected'
+                  ? t('usersettings.wireguard.connected')
+                  : t('usersettings.wireguard.disconnected')}
+              </BadgeSH>
             </div>
             <div>
-              <span className="font-bold">{t('wireguard.ip')}: </span>
-              {selectedConfig.ip}
+              <span className="font-bold">{t('wireguard.allowedIps')}: </span>
+              {selectedPeerStatus.allowed_ips || '-'}
             </div>
-            <div>
-              <span className="font-bold">{t('wireguard.routes')}: </span>
-              {selectedConfig.routes?.join(', ')}
-            </div>
-            {selectedConfig.type === 'site' &&
-              'allowed_ips' in selectedConfig &&
-              Array.isArray(selectedConfig.allowed_ips) && (
-                <div>
-                  <span className="font-bold">{t('wireguard.allowedIps')}: </span>
-                  {selectedConfig.allowed_ips.join(', ')}
-                </div>
-              )}
+            {selectedPeerStatus.endpoint && (
+              <div>
+                <span className="font-bold">{t('wireguard.endpoint')}: </span>
+                {selectedPeerStatus.endpoint}
+              </div>
+            )}
+            {selectedPeerStatus.last_handshake && (
+              <div>
+                <span className="font-bold">{t('wireguard.lastHandshake')}: </span>
+                {selectedPeerStatus.last_handshake}
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -395,7 +386,7 @@ const AddWireguardPeerDialog: React.FC<AddWireguardPeerDialogProps> = ({ tableId
       <AdaptiveDialog
         isOpen={isOpen}
         handleOpenChange={closeDialog}
-        title={selectedConfig ? t('wireguard.peerDetails') : t('wireguard.addPeer')}
+        title={selectedPeerStatus ? t('wireguard.peerDetails') : t('wireguard.addPeer')}
         body={getDialogBody()}
         footer={getFooter()}
         desktopContentClassName="max-w-2xl"
@@ -404,7 +395,7 @@ const AddWireguardPeerDialog: React.FC<AddWireguardPeerDialogProps> = ({ tableId
         <DeleteConfirmationDialog
           isOpen={isDeleteDialogOpen || !!itemToDelete}
           onOpenChange={handleDeleteDialogClose}
-          items={[{ id: deleteItem.name, name: deleteItem.name }]}
+          items={[{ id: deleteItem.peer, name: deleteItem.peer }]}
           onConfirmDelete={handleConfirmDelete}
           titleTranslationKey="wireguard.deletePeers"
           messageTranslationKey="wireguard.confirmDelete"

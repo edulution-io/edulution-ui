@@ -48,7 +48,8 @@ export interface SiteRequest {
   routes?: string[];
 }
 
-export interface PeerStatus {
+export interface WireguardPeer {
+  name: string;
   peer: string;
   endpoint?: string;
   allowed_ips: string;

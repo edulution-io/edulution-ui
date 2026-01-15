@@ -37,7 +37,7 @@ import useTableActions from '@/hooks/useTableActions';
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
-import type WireguardPeer from '@libs/wireguard/types/wireguardPeer';
+import { type WireguardPeer } from '@libs/wireguard/types/wireguard';
 import DeleteAppConfigTableDialog from './DeleteAppConfigTableDialog';
 
 interface AppConfigTableProps {

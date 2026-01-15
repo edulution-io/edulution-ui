@@ -28,7 +28,7 @@ import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import { FileTableStore } from '@libs/appconfig/types/fileTableStore';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import type { WebdavServerTableStore, WebdavShareTableStore } from '@libs/appconfig/types/webdavShareTableStore';
-import type WireguardPeer from '@libs/wireguard/types/wireguardPeer';
+import { type WireguardPeer } from '@libs/wireguard/types/wireguard';
 import { type WireguardTableStore } from '@libs/appconfig/types/wireguardTableStore';
 import AppConfigTableEntry from './appConfigTableEntry';
 

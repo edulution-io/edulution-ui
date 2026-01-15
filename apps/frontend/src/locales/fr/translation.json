@@ -1532,6 +1532,8 @@
     "routes": "Routes",
     "allowedIps": "IPs autorisées",
     "endpoint": "Point de terminaison",
+    "status": "Statut",
+    "lastHandshake": "Dernier handshake",
     "clientPeer": "Pair client",
     "siteToSite": "Site-à-site",
     "addPeer": "Ajouter un pair",

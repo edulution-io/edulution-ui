@@ -21,11 +21,11 @@ import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import WIREGUARD_API_ENDPOINT from '@libs/wireguard/constants/wireguardApiEndpoint';
-import type { Peer, PeerConfig, PeerStatus } from '@libs/wireguard/types/wireguard';
+import type { Peer, PeerConfig, WireguardPeer } from '@libs/wireguard/types/wireguard';
 
 interface UserWireguardStore {
   peer: Peer | null;
-  peerStatus: PeerStatus | null;
+  peerStatus: WireguardPeer | null;
   qrCode: string | null;
   config: string | null;
   isLoading: boolean;
@@ -69,7 +69,7 @@ const useUserWireguardStore = create<UserWireguardStore>((set) => ({
 
   fetchPeerStatus: async () => {
     try {
-      const response = await eduApi.get<PeerStatus | false>(`${WIREGUARD_API_ENDPOINT}/user/peer/status`);
+      const response = await eduApi.get<WireguardPeer | false>(`${WIREGUARD_API_ENDPOINT}/user/peer/status`);
       if (response.data !== false) {
         set({ peerStatus: response.data });
       } else {

@@ -1704,6 +1704,8 @@
     "routes": "Routen",
     "allowedIps": "Erlaubte IPs",
     "endpoint": "Endpunkt",
+    "status": "Status",
+    "lastHandshake": "Letzter Handshake",
     "clientPeer": "Client-Peer",
     "siteToSite": "Site-to-Site",
     "addPeer": "Peer hinzufügen",
