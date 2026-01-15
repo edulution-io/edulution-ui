@@ -1034,6 +1034,15 @@
           "syntaxValid": "La syntaxe du script est valide",
           "syntaxInvalid": "Le script contient des erreurs de syntaxe",
           "placeholder": "Entrez le code JavaScript ici"
+        },
+        "urlHandling": {
+          "title": "Gestion des URL",
+          "description": "Synchronise l'URL du navigateur avec la navigation dans le contenu intégré.",
+          "enabled": "Activer la synchronisation d'URL",
+          "enabledDescription": "Met à jour la barre d'adresse du navigateur lors de la navigation dans le contenu intégré. Cela permet les signets et l'historique du navigateur. Remarque : Cette fonctionnalité ne fonctionne que lorsque le contenu intégré est hébergé sur le même domaine que cette application.",
+          "embeddedEnabledDescription": "Met à jour la barre d'adresse du navigateur lors de la navigation dans le contenu intégré. Cela permet les signets et l'historique du navigateur. Remarque : Cette fonctionnalité ne fonctionne qu'en mode \"Disposition séparée\" et lorsque le contenu intégré est hébergé sur le même domaine que cette application.",
+          "preloadBasePage": "Précharger la page de base",
+          "preloadBasePageDescription": "Lorsque cette option est activée, l'URL configurée est toujours chargée en premier avant de naviguer vers les liens profonds. Activez cette option pour les applications nécessitant une authentification ou exécutant des scripts d'initialisation sur l'URL configurée."
         }
       },
       "update": {

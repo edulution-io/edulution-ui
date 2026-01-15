@@ -353,7 +353,7 @@
     "fileWithSameNameAlreadyExists": "Eine Datei mit diesem Namen existiert bereits.",
     "folderWithSameNameAlreadyExists": "Ein Ordner mit diesem Namen existiert bereits.",
     "currentName": "Aktueller Name",
-    "sameNameAsOriginal": "Bitte geben Sie einen anderen Namen ein",
+    "sameNameAsOriginal": "Bitte gib einen anderen Namen ein",
     "placeholder": {
       "filename": "Name",
       "extension": ".ext"
@@ -412,7 +412,7 @@
     },
     "textEditor": {
       "unsavedChanges": "Ungespeicherte Änderungen",
-      "unsavedChangesMessage": "Sie haben ungespeicherte Änderungen. Was möchten Sie tun?",
+      "unsavedChangesMessage": "Du hast ungespeicherte Änderungen. Was möchtest du tun?",
       "discard": "Verwerfen",
       "saving": "Speichern...",
       "saveSuccess": "Datei erfolgreich gespeichert",
@@ -579,7 +579,7 @@
     "hide": "Anderen Nutzern nicht anzeigen",
     "typeToSearchUsersGroupsProjects": "Tippen um Schüler, Klassen oder Projekte hinzuzufügen",
     "typeToSearchUsersGroupsProjectsToNewSession": "Tippen um Schüler, Klassen oder Projekte zu einer neuen Sitzung hinzuzufügen",
-    "itsNotPossibleToEditExternalStudents": "Es ist nicht möglich Schüler anderer Klassen zu steuern. Bitte treten Sie der Klasse des Schülers bei.",
+    "itsNotPossibleToEditExternalStudents": "Es ist nicht möglich Schüler anderer Klassen zu steuern. Bitte tritt der Klasse des Schülers bei.",
     "itsNotPossibleToEditOtherSchoolStudents": "Im Moment ist es nicht möglich, das Verzeichnis für das Teilen im Home-Verzeichnis eines Schülers einer anderen Schule zu erstellen oder, die Verwaltungsgruppen zu ändern.",
     "usersInThisSession": "Nutzer in dieser Sitzung",
     "webfilter": "Web Filter",
@@ -600,7 +600,7 @@
     "firstPasswordChangedSuccessfully": "Initiales Passwort erfolgreich geändert",
     "firstPasswordIsCurrentlySet": "Das initiale Passwort ist als aktuelles Passwort gesetzt.",
     "firstPasswordIsCurrentlyNotSet": "Das initiale Passwort ist nicht als aktuelles Passwort gesetzt.",
-    "passwordRequirements": "Verwenden Sie Großbuchstaben, Kleinbuchstaben und Sonderzeichen oder Zahlen.",
+    "passwordRequirements": "Verwende Großbuchstaben, Kleinbuchstaben und Sonderzeichen oder Zahlen.",
     "projectsPageDescription": "Hier findest du eine Übersicht über alle Projekte, in denen du Admin bist.",
     "typeToFilter": "Tippen um zu filtern...",
     "systemName": "Systemname",
@@ -965,7 +965,7 @@
     "sidebar": "Einstellungen",
     "addApp": {
       "title": "App hinzufügen",
-      "description": "Bitte wählen Sie eine App aus:"
+      "description": "Bitte wähle eine App aus:"
     },
     "deleteApp": {
       "title": "App löschen",
@@ -1171,7 +1171,7 @@
           "nativeMode": "Integriertes Layout",
           "sandboxModeDescription": "Im Modus \"Separates Layout\" wird der Inhalt als eigenständige Seite angezeigt, ähnlich wie ein Fenster innerhalb der Anwendung. Dabei können neben dem eigentlichen Inhalt auch zusätzliche Designelemente oder Funktionen aus anderen Quellen geladen werden. Dadurch ist die Gestaltung unabhängig von der Anwendung, könnte also anders aussehen oder sich anders verhalten. Hier muss der Inhalt als HTML-Datei hochgeladen werden.",
           "nativeModeDescription": "Im Modus \"Integriertes Layout\" dagegen wird der Inhalt direkt in die Oberfläche der Anwendung eingefügt. Dadurch sieht der Inhalt genauso aus wie die Anwendung selbst und fügt sich optisch nahtlos ein. Allerdings können hier keine zusätzlichen externen Designelemente oder Funktionen dynamisch hinzugefügt werden. Es können jedoch statische Elemente wie Bilder hochgeladen und hier eingesetzt werden.",
-          "visibilityDescription": "Hier können Sie festlegen, ob die App öffentlich zugänglich sein soll. Aktiv bedeutet öffentlich, inaktiv bedeutet, dass nur konfigurierte Nutzergruppen Zugriff haben. Die App öffentlich zugänglich zu machen erzeugt einen Link im Footer. Um die App in der Sidebar für registrierte Nutzer sichtbar zu machen, muss deren Zugriff über die Nutzergruppen konfiguriert werden"
+          "visibilityDescription": "Hier kannst du festlegen, ob die App öffentlich zugänglich sein soll. Aktiv bedeutet öffentlich, inaktiv bedeutet, dass nur konfigurierte Nutzergruppen Zugriff haben. Die App öffentlich zugänglich zu machen erzeugt einen Link im Footer. Um die App in der Sidebar für registrierte Nutzer sichtbar zu machen, muss deren Zugriff über die Nutzergruppen konfiguriert werden"
         },
         "scripts": {
           "title": "Skripte",
@@ -1183,6 +1183,15 @@
           "syntaxValid": "Skript-Syntax ist gültig",
           "syntaxInvalid": "Skript hat Syntaxfehler",
           "placeholder": "JavaScript-Code hier eingeben"
+        },
+        "urlHandling": {
+          "title": "URL-Verarbeitung",
+          "description": "Synchronisiert die Browser-URL mit der Navigation im eingebetteten Inhalt.",
+          "enabled": "URL-Synchronisierung aktivieren",
+          "enabledDescription": "Aktualisiert die Adresszeile des Browsers bei der Navigation im eingebetteten Inhalt. Dies ermöglicht Lesezeichen und Browser-Verlauf. Hinweis: Diese Funktion funktioniert nur, wenn der eingebettete Inhalt auf derselben Domain wie diese Anwendung gehostet wird.",
+          "embeddedEnabledDescription": "Aktualisiert die Adresszeile des Browsers bei der Navigation im eingebetteten Inhalt. Dies ermöglicht Lesezeichen und Browser-Verlauf. Hinweis: Diese Funktion funktioniert nur im \"Separates Layout\"-Modus und wenn der eingebettete Inhalt auf derselben Domain wie diese Anwendung gehostet wird.",
+          "preloadBasePage": "Basisseite vorladen",
+          "preloadBasePageDescription": "Wenn aktiviert, wird die konfigurierte URL immer zuerst geladen, bevor zu Deep-Links navigiert wird. Aktiviere dies für Anwendungen, die eine Authentifizierung erfordern oder Initialisierungsskripte auf der konfigurierten URL ausführen."
         }
       },
       "update": {
@@ -1274,7 +1283,7 @@
     "security": {
       "title": "Sicherheit",
       "sidebar": "Sicherheit",
-      "description": "Konfigurieren Sie hier die Sicherheitseinstellungen des Accounts",
+      "description": "Konfiguriere hier die Sicherheitseinstellungen des Accounts",
       "changePassword": {
         "title": "Passwort ändern",
         "currentPassword": "Aktuelles Passwort",
@@ -1366,7 +1375,7 @@
     "title": "Allgemein"
   },
   "forwardingpage": {
-    "action": "Über diesen Button gelangen Sie zur externen Seite des Anbieters.",
+    "action": "Über diesen Button gelangst du zur externen Seite des Anbieters.",
     "description": "Die Anwendung öffnet sich in einem neuen Tab.",
     "missing_link": "Link fehlt"
   },
@@ -1610,9 +1619,9 @@
     "dataLimitExceeded": "Datenlimit von 50MB überschritten",
     "fileSize": "Dateigröße",
     "upload": "Hochladen",
-    "selectFile": "Wählen Sie bis zu 5 Dateien gleichzeitig",
+    "selectFile": "Wähle bis zu 5 Dateien gleichzeitig",
     "uploadItems": "Hochladen: {{count}} Datei/en",
-    "dragDropClick": "Ziehen Sie Dateien hierher oder klicken Sie, um Dateien auszuwählen",
+    "dragDropClick": "Ziehe Dateien hierher oder klicke, um Dateien auszuwählen",
     "dropHere": "Hier loslassen",
     "filesToUpload": "Dateien zum Hochladen",
     "overwriteWarningTitle_one": "Warnung: Datei existiert bereits",
@@ -1737,7 +1746,7 @@
     "lessFileTypes": "Weniger Dateitypen"
   },
   "fileRenameContent": {
-    "placeholder": "Geben Sie den neuen Namen ein",
+    "placeholder": "Gib den neuen Namen ein",
     "renameYourDirectory": "Benenne das Verzeichnis um",
     "renameYourFile": "Benenne die Datei um",
     "to": "zu",
@@ -1784,7 +1793,7 @@
   },
 
   "deleteDialog": {
-    "areYouSure": "Sind Sie sich absolut sicher?",
+    "areYouSure": "Bist du dir absolut sicher?",
     "actionCannotBeUndone": "Diese Aktion kann nicht rückgängig gemacht werden. Dies wird die Dateien dauerhaft löschen:",
     "selectedItems": "Ausgewählte Elemente:",
     "cancel": "Abbrechen",

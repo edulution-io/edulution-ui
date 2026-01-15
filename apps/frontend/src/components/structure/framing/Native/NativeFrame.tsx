@@ -18,14 +18,17 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useUserStore from '@/store/UserStore/useUserStore';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
+import { combineUrlParts, getExternalUrlForDeepLink, getSubPathFromBrowserUrl } from '@libs/common/utils';
 import IFRAME_ALLOWED_CONFIG from '@libs/ui/constants/iframeAllowedConfig';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import useFrameUrlSync from '@/hooks/useFrameUrlSync';
 
 interface NativeFrameProps {
   scriptOnStartUp?: string;
@@ -39,12 +42,14 @@ const NativeFrame: React.FC<NativeFrameProps> = ({
   appName,
 }) => {
   const { t } = useTranslation();
+  const { pathname, hash } = useLocation();
   const { appConfigs } = useAppConfigsStore();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { isAuthenticated, isPreparingLogout, eduApiToken } = useUserStore();
   const { loadedEmbeddedFrames, activeEmbeddedFrame } = useFrameStore();
 
   const currentAppConfig = findAppConfigByName(appConfigs, appName);
+  const isFrameLoaded = loadedEmbeddedFrames.includes(appName);
 
   const onLoadEnabled = currentAppConfig?.extendedOptions?.[ExtendedOptionKeys.FRAME_SCRIPT_ON_LOAD_ENABLED];
   const scriptOnStartUp =
@@ -59,6 +64,57 @@ const NativeFrame: React.FC<NativeFrameProps> = ({
     (onLogoutEnabled
       ? (currentAppConfig?.extendedOptions?.[ExtendedOptionKeys.FRAME_SCRIPT_ON_LOGOUT_CONTENT] as string)
       : undefined);
+
+  const urlSyncEnabled = !!currentAppConfig?.extendedOptions?.[ExtendedOptionKeys.FRAME_URL_SYNC_ENABLED];
+  const preloadBasePage =
+    currentAppConfig?.extendedOptions?.[ExtendedOptionKeys.FRAME_URL_SYNC_PRELOAD_BASE_PAGE] !== false;
+  const externalBaseUrl = currentAppConfig?.options?.url || '';
+
+  const isActiveFrame = activeEmbeddedFrame === appName;
+
+  const browserSubPath = combineUrlParts(getSubPathFromBrowserUrl(pathname, hash, appName));
+  const deepLinkUrl =
+    !preloadBasePage && browserSubPath ? getExternalUrlForDeepLink(externalBaseUrl, browserSubPath) : null;
+
+  const initialBrowserSubPathRef = useRef<string | null>(browserSubPath);
+  const hasNavigatedToDeepLinkRef = useRef(false);
+  const currentSrcRef = useRef<string | undefined>(undefined);
+
+  const hasPendingDeepLink = preloadBasePage && initialBrowserSubPathRef.current && !hasNavigatedToDeepLinkRef.current;
+
+  useEffect(() => {
+    if (!preloadBasePage || !isFrameLoaded || !isActiveFrame || hasNavigatedToDeepLinkRef.current) {
+      return undefined;
+    }
+
+    const targetSubPath = initialBrowserSubPathRef.current;
+    if (!targetSubPath) return undefined;
+
+    const iframe = iframeRef.current;
+    if (!iframe) return undefined;
+
+    const navigateToDeepLink = () => {
+      const targetUrl = getExternalUrlForDeepLink(externalBaseUrl, targetSubPath);
+      iframe.src = targetUrl;
+      currentSrcRef.current = targetUrl;
+      hasNavigatedToDeepLinkRef.current = true;
+    };
+
+    const handleLoad = () => {
+      setTimeout(navigateToDeepLink, 100);
+    };
+
+    iframe.addEventListener('load', handleLoad, { once: true });
+    return () => iframe.removeEventListener('load', handleLoad);
+  }, [preloadBasePage, isFrameLoaded, isActiveFrame, externalBaseUrl]);
+
+  const urlSyncShouldBeEnabled = urlSyncEnabled && isFrameLoaded && isActiveFrame && !hasPendingDeepLink;
+
+  useFrameUrlSync({
+    appName,
+    iframeRef,
+    enabled: urlSyncShouldBeEnabled,
+  });
 
   const injectScript = (iframe: HTMLIFrameElement, script: string) => {
     const attemptInject = () => {
@@ -82,7 +138,6 @@ const NativeFrame: React.FC<NativeFrameProps> = ({
     attemptInject();
   };
 
-  const isFrameLoaded = loadedEmbeddedFrames.includes(appName);
   const [reloadKey, setReloadKey] = useState(0);
   const prevScriptRef = useRef(scriptOnStartUp);
 
@@ -119,6 +174,22 @@ const NativeFrame: React.FC<NativeFrameProps> = ({
 
   if (!currentAppConfig) return null;
 
+  const getIframeSrc = () => {
+    if (!isFrameLoaded) return undefined;
+
+    if (deepLinkUrl) {
+      currentSrcRef.current = deepLinkUrl;
+      return deepLinkUrl;
+    }
+
+    if (currentSrcRef.current) {
+      return currentSrcRef.current;
+    }
+
+    currentSrcRef.current = initialUrlRef.current;
+    return initialUrlRef.current;
+  };
+
   return (
     <iframe
       key={reloadKey}
@@ -127,8 +198,8 @@ const NativeFrame: React.FC<NativeFrameProps> = ({
       className="absolute inset-y-0 left-0 ml-0 w-full"
       height="100%"
       allow={IFRAME_ALLOWED_CONFIG}
-      src={loadedEmbeddedFrames.includes(currentAppConfig.name) ? initialUrlRef.current : undefined}
-      style={activeEmbeddedFrame === appName ? { display: 'block' } : { display: 'none' }}
+      src={getIframeSrc()}
+      style={isActiveFrame ? { display: 'block' } : { display: 'none' }}
     />
   );
 };

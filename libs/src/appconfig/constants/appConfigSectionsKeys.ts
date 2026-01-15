@@ -30,6 +30,7 @@ const AppConfigSectionsKeys = {
   editor: 'editor',
   webdavShare: 'webdavShare',
   scripts: 'scripts',
+  urlHandling: 'urlHandling',
 } as const;
 
 export default AppConfigSectionsKeys;

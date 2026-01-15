@@ -75,10 +75,24 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
     };
 
     const getExtendedOptions = () => {
-      if (selectedApp.id === APPS.EMBEDDED) {
-        return { EMBEDDED_PAGE_HTML_CONTENT: '', EMBEDDED_PAGE_HTML_MODE: false };
+      const defaults: Record<string, unknown> = {};
+
+      if (selectedApp.extendedOptions) {
+        Object.values(selectedApp.extendedOptions).forEach((sectionOptions) => {
+          sectionOptions.forEach((option) => {
+            if (option.value !== undefined) {
+              defaults[option.name] = option.value;
+            }
+          });
+        });
       }
-      return {};
+
+      if (selectedApp.id === APPS.EMBEDDED) {
+        defaults.EMBEDDED_PAGE_HTML_CONTENT = '';
+        defaults.EMBEDDED_PAGE_HTML_MODE = false;
+      }
+
+      return defaults;
     };
 
     const newConfig: AppConfigDto = {
