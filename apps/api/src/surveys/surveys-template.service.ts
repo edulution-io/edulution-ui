@@ -46,13 +46,14 @@ class SurveysTemplateService implements OnModuleInit {
   }
 
   async updateOrCreateTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
-    const { id, template, name, isActive = true } = surveyTemplate;
+    const { id, template, name, isActive = true, isDefaultTemplate = false } = surveyTemplate;
     try {
       if (!id || id === null) {
         return await this.surveyTemplateModel.create({
           template,
           name: name || template.formula.title.trim(),
           isActive,
+          isDefaultTemplate,
         });
       }
       return await this.surveyTemplateModel.findByIdAndUpdate(id, { template, name, isActive }, { new: true });

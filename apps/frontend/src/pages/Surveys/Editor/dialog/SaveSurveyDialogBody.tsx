@@ -74,16 +74,13 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
   return (
     <>
       {isSuperAdmin && (
-        <>
-          <p className="text-m font-bold text-background">{t('survey.editor.templates.title')}</p>
-          <Checkbox
-            key="should-save-as-template"
-            label={t('survey.editor.templates.label')}
-            checked={watch('saveAsTemplate')}
-            onCheckedChange={(value: boolean) => setValue('saveAsTemplate', value, { shouldValidate: true })}
-            aria-label={t('survey.saveAsTemplate')}
-          />
-        </>
+        <Checkbox
+          key="should-save-as-template"
+          label={t('survey.editor.template.label')}
+          checked={watch('saveAsTemplate')}
+          onCheckedChange={(value: boolean) => setValue('saveAsTemplate', value, { shouldValidate: true })}
+          aria-label={t('survey.saveAsTemplate')}
+        />
       )}
       <SearchUsersOrGroups
         users={watch('invitedAttendees')}

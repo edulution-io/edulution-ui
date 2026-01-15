@@ -17,42 +17,160 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { toast } from 'sonner';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { faFileCirclePlus, faEye } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import cn from '@libs/common/utils/className';
 import { GRID_CARD } from '@libs/ui/constants/commonClassNames';
+import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
+import AttendeeDto from '@libs/user/types/attendee.dto';
+import useLdapGroups from '@/hooks/useLdapGroups';
+import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
+import surveysDefaultValues from '@/pages/Surveys/utils/surveys-default-values';
 import { Card } from '@/components/shared/Card';
+import { Button } from '@/components/shared/Button';
 
 interface SurveyEditorTemplateCardProps {
-  icon: IconProp;
-  title?: string;
-  description?: string;
-  onClick?: () => void;
-  disabled?: boolean;
+  creator: AttendeeDto;
+  surveyTemplate?: SurveyTemplateDto;
 }
 
-const SurveyEditorTemplateCard = ({
-  icon,
-  title,
-  description,
-  onClick,
-  disabled = false,
-}: SurveyEditorTemplateCardProps): JSX.Element => (
-  <Card
-    className={cn(GRID_CARD, 'min-h-[11rem]', { 'opacity-50': disabled })}
-    variant="text"
-    onClick={onClick}
-  >
-    <div className="relative m-4 flex flex-col items-center">
-      <FontAwesomeIcon
-        icon={icon}
-        className="h-12 w-12 md:h-14 md:w-14"
-      />
-      <p className="line-clamp-2">{title}</p>
-      {description && <p className="line-clamp-2">{description}</p>}
-    </div>
-  </Card>
-);
+const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTemplateCardProps): JSX.Element => {
+  const {
+    setIsOpenTemplateConfirmDeletion,
+    setIsOpenTemplatePreview,
+    setIsTemplateActive,
+    fetchTemplates,
+    setTemplate,
+  } = useSurveyTemplateStore();
+
+  const { loadNewSurvey, loadSurveyTemplate } = useSurveyEditorPageStore();
+
+  const { isSuperAdmin } = useLdapGroups();
+
+  const { t } = useTranslation();
+
+  const [active, setActive] = useState<boolean>(surveyTemplate?.isActive ?? true);
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setTemplate(surveyTemplate);
+    if (surveyTemplate) {
+      loadSurveyTemplate(creator, surveyTemplate);
+    } else {
+      loadNewSurvey(creator);
+    }
+  };
+
+  const handleOpenPreview = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setTemplate(surveyTemplate);
+    setIsOpenTemplatePreview(true);
+  };
+
+  const toggleIsTemplateActive = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!surveyTemplate?.id) return;
+    try {
+      await setIsTemplateActive(surveyTemplate.id, !active);
+      setActive(!active);
+    } catch (error) {
+      toast.error(t('survey.errors.updateOrCreateError'));
+      await fetchTemplates();
+    }
+  };
+
+  const handleOpenConfirmDeletion = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setTemplate(surveyTemplate);
+    setIsOpenTemplateConfirmDeletion(true);
+  };
+
+  const title = surveyTemplate?.name ?? surveyTemplate?.template.formula.title ?? surveysDefaultValues.formula.title;
+
+  const description = surveyTemplate?.template.formula.description;
+
+  return (
+    <Card
+      className={cn(
+        GRID_CARD,
+        'relative flex h-36 cursor-pointer pt-2',
+        { 'opacity-50': !active },
+        { 'pt-8': !description },
+        {
+          'sd:min-w-[14rem] w-[calc(100%-2rem)] min-w-[calc(100%-2rem)] max-w-[24rem] md:min-w-[18rem]': isSuperAdmin,
+        },
+      )}
+      variant="text"
+      onClick={handleCardClick}
+    >
+      {!surveyTemplate && (
+        <FontAwesomeIcon
+          icon={faFileCirclePlus}
+          className="h-12 w-12 md:h-14 md:w-14"
+        />
+      )}
+
+      {title && (
+        <h3
+          className={cn(
+            'mt-1 line-clamp-2 w-full truncate px-4',
+            { 'mt-4': !description },
+            { 'mt-2 flex justify-center': !surveyTemplate },
+          )}
+        >
+          {title}
+        </h3>
+      )}
+
+      {description && <p className="mt-2 line-clamp-2 w-full px-4">{description}</p>}
+
+      {surveyTemplate && (
+        <div className="absolute bottom-2 flex h-8 w-full flex-row justify-end gap-2 px-2 text-sm italic">
+          {isSuperAdmin && (
+            <Button
+              className="cursor-pointer hover:bg-transparent"
+              onClick={toggleIsTemplateActive}
+              variant="btn-outline"
+              size="sm"
+            >
+              {active ? t('classmanagement.deactivate') : t('classmanagement.activate')}
+            </Button>
+          )}
+          <Button
+            className="cursor-pointer"
+            onClick={handleOpenPreview}
+            variant="btn-outline"
+            size="sm"
+            aria-label={t('common.delete')}
+          >
+            <FontAwesomeIcon
+              icon={faEye}
+              className="h-4 w-4"
+            />
+          </Button>
+          {isSuperAdmin && !surveyTemplate?.isDefaultTemplate && (
+            <Button
+              className="cursor-pointer rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
+              onClick={handleOpenConfirmDeletion}
+              variant="btn-attention"
+              size="sm"
+              aria-label={t('common.delete')}
+            >
+              <FontAwesomeIcon
+                icon={DeleteIcon}
+                className="h-4 w-4"
+              />
+            </Button>
+          )}
+        </div>
+      )}
+    </Card>
+  );
+};
 
 export default SurveyEditorTemplateCard;

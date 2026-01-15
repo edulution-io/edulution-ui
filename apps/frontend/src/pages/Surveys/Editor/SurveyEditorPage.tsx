@@ -39,7 +39,7 @@ import useBeforeUnload from '@/hooks/useBeforeUnload';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import createSurveyCreatorObject from '@/pages/Surveys/Editor/createSurveyCreatorObject';
-import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
+import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import QuestionsContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
@@ -64,7 +64,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     resetStoredSurvey,
     uploadFile,
   } = useSurveyEditorPageStore();
-  const { reset: resetTemplateStore, template, uploadTemplate } = useTemplateMenuStore();
+  const { reset: resetTemplateStore, template, uploadTemplate } = useSurveyTemplateStore();
   const {
     reset: resetQuestionsContextMenu,
     setIsOpenQuestionContextMenu,
@@ -156,7 +156,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     const survey = form.getValues();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, formula, createdAt, saveNo, expires, answers, saveAsTemplate, ...remainingSurvey } = survey;
-    const creationDate = template?.template.createdAt || new Date();
+    const creationDate = template?.template.createdAt ?? new Date();
     const rawFormula = creator.JSON as SurveyFormula;
     const processedFormula: SurveyFormula = resetSurveyIdFromFormulasBackendLimiters(rawFormula, id);
     await uploadTemplate({
@@ -198,10 +198,9 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
-      SaveButton(() => setIsOpenSaveSurveyDialog(true)),
       {
         icon: faFileCirclePlus,
-        text: t('survey.editor.new'),
+        text: t('common.back'),
         onClick: () => {
           handleReset();
           form.reset(initialFormValues);
@@ -211,6 +210,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
           }
         },
       },
+      SaveButton(() => setIsOpenSaveSurveyDialog(true)),
       {
         icon: faRotateLeft,
         text: t('survey.editor.reset'),
