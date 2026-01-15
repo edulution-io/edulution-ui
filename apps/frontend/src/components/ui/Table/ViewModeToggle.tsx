@@ -25,15 +25,23 @@ import cn from '@libs/common/utils/className';
 import { ButtonSH } from '@/components/ui/ButtonSH';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGrip, faList } from '@fortawesome/free-solid-svg-icons';
+import { faFilter, faGrip, faList } from '@fortawesome/free-solid-svg-icons';
 
 interface ViewModeToggleProps {
   viewMode: ViewModeType;
   onViewModeChange: (mode: ViewModeType) => void;
   isDialog?: boolean;
+  isSystemFileFilterEnabled?: boolean;
+  onSystemFileFilterChange?: (enabled: boolean) => void;
 }
 
-const ViewModeToggle = ({ viewMode, onViewModeChange, isDialog = false }: ViewModeToggleProps) => {
+const ViewModeToggle = ({
+  viewMode,
+  onViewModeChange,
+  isDialog = false,
+  isSystemFileFilterEnabled = true,
+  onSystemFileFilterChange,
+}: ViewModeToggleProps) => {
   const { t } = useTranslation();
 
   return (
@@ -67,7 +75,7 @@ const ViewModeToggle = ({ viewMode, onViewModeChange, isDialog = false }: ViewMo
             size="icon"
             onClick={() => onViewModeChange(VIEW_MODE.grid)}
             className={cn(
-              'h-[38px] w-[38px] rounded-l-none',
+              'h-[38px] w-[38px] rounded-none',
               viewMode === VIEW_MODE.grid && (isDialog ? 'bg-ciLightGrey' : 'bg-accent'),
             )}
           >
@@ -79,6 +87,28 @@ const ViewModeToggle = ({ viewMode, onViewModeChange, isDialog = false }: ViewMo
         </TooltipTrigger>
         <TooltipContent>
           <p>{t('common.gridView')}</p>
+        </TooltipContent>
+      </Tooltip>
+
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <ButtonSH
+            variant="ghost"
+            size="icon"
+            onClick={() => onSystemFileFilterChange?.(!isSystemFileFilterEnabled)}
+            className={cn(
+              'h-[38px] w-[38px] rounded-l-none',
+              isSystemFileFilterEnabled && (isDialog ? 'bg-ciLightGrey' : 'bg-accent'),
+            )}
+          >
+            <FontAwesomeIcon
+              icon={faFilter}
+              className="h-4 w-4"
+            />
+          </ButtonSH>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{t('common.filter')}</p>
         </TooltipContent>
       </Tooltip>
     </div>

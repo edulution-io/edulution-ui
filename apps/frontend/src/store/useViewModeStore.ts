@@ -24,7 +24,9 @@ import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 
 interface ViewModeStore {
   viewModes: Record<string, ViewModeType>;
+  systemFileFilters: Record<string, boolean>;
   setViewMode: (key: string, mode: ViewModeType) => void;
+  setSystemFileFilter: (key: string, enabled: boolean) => void;
   getViewMode: (key: string) => ViewModeType;
 }
 
@@ -37,6 +39,7 @@ const useViewModeStore = create<ViewModeStore>(
   (persist as PersistedViewModeStore)(
     (set, get) => ({
       viewModes: {},
+      systemFileFilters: {},
 
       setViewMode: (key, mode) => {
         set((state) => ({
@@ -51,11 +54,20 @@ const useViewModeStore = create<ViewModeStore>(
         const { viewModes } = get();
         return viewModes[key] || VIEW_MODE.table;
       },
+
+      setSystemFileFilter: (key, enabled) => {
+        set((state) => ({
+          systemFileFilters: {
+            ...state.systemFileFilters,
+            [key]: enabled,
+          },
+        }));
+      },
     }),
     {
       name: 'view-mode',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ viewModes: state.viewModes }),
+      partialize: (state) => ({ viewModes: state.viewModes, systemFileFilters: state.systemFileFilters }),
     },
   ),
 );

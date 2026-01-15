@@ -46,6 +46,8 @@ import TableActionMenu from '@/components/ui/Table/TableActionMenu';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import useStartWebdavFileDownload from '@/pages/FileSharing/hooks/useStartWebdavFileDownload';
 import getFileSharingActions from '@/pages/FileSharing/Table/getFileSharingActions';
+import systemFiles from '@libs/filesharing/constants/systemFiles';
+import useViewModeStore from '@/store/useViewModeStore';
 import useFileOpen from '../hooks/useFileOpen';
 import useVariableSharePathname from '../hooks/useVariableSharePathname';
 
@@ -65,6 +67,7 @@ const FileSharingTable = () => {
       currentPath,
     });
   const { createVariableSharePathname } = useVariableSharePathname();
+  const isSystemFileFilterEnabled = useViewModeStore((state) => state.systemFileFilters[APPS.FILE_SHARING]) ?? true;
 
   const isDocumentServerConfigured = !!getExtendedOptionsValue(
     appConfigs,
@@ -176,9 +179,14 @@ const FileSharingTable = () => {
     [handleFileOpen, actionCallbacks],
   );
 
+  const filteredFiles = useMemo(() => {
+    if (!isSystemFileFilterEnabled) return files;
+    return files.filter((file) => !systemFiles.includes(file.filename));
+  }, [files, isSystemFileFilterEnabled]);
+
   const filesWithParentNav = useMemo(() => {
     if (!webdavShare || currentPath === '/') {
-      return files;
+      return filteredFiles;
     }
 
     const currentShare = webdavShares.find((s) => s.displayName === webdavShare);
@@ -186,7 +194,7 @@ const FileSharingTable = () => {
     const shareRootPath = createVariableSharePathname(baseSharePath, currentShare?.pathVariables);
 
     if (currentPath === shareRootPath || currentPath === `/${shareRootPath}`) {
-      return files;
+      return filteredFiles;
     }
 
     const parentEntry: DirectoryFileDTO = {
@@ -196,8 +204,8 @@ const FileSharingTable = () => {
       etag: '',
     };
 
-    return [parentEntry, ...files];
-  }, [files, currentPath, webdavShare, webdavShares, createVariableSharePathname]);
+    return [parentEntry, ...filteredFiles];
+  }, [filteredFiles, currentPath, webdavShare, webdavShares, createVariableSharePathname]);
 
   return (
     <DndContext
