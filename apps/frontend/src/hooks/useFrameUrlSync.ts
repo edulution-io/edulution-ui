@@ -30,16 +30,18 @@ interface UseFrameUrlSyncOptions {
 }
 
 const useFrameUrlSync = ({ appName, proxyPrefix, iframeRef, enabled }: UseFrameUrlSyncOptions) => {
-  const { pathname, hash } = useLocation();
+  const { pathname, search, hash } = useLocation();
   const navigate = useNavigate();
 
   const isOnAppRoute = pathname.startsWith(`/${appName}`);
 
   const pathnameRef = useRef(pathname);
+  const searchRef = useRef(search);
   const hashRef = useRef(hash);
   const navigateRef = useRef(navigate);
 
   pathnameRef.current = pathname;
+  searchRef.current = search;
   hashRef.current = hash;
   navigateRef.current = navigate;
 
@@ -54,10 +56,19 @@ const useFrameUrlSync = ({ appName, proxyPrefix, iframeRef, enabled }: UseFrameU
       const iframeUrlParts = getSubPathFromIframe(iframe, proxyPrefix);
       if (iframeUrlParts === null) return;
 
-      const browserUrlParts = getSubPathFromBrowserUrl(pathnameRef.current, hashRef.current, appName);
+      const browserUrlParts = getSubPathFromBrowserUrl(
+        pathnameRef.current,
+        searchRef.current,
+        hashRef.current,
+        appName,
+      );
 
-      if (iframeUrlParts.subPath !== browserUrlParts.subPath || iframeUrlParts.hash !== browserUrlParts.hash) {
-        const newBrowserPath = `/${appName}${iframeUrlParts.subPath}${iframeUrlParts.hash}`;
+      const isDifferent =
+        iframeUrlParts.subPath !== browserUrlParts.subPath ||
+        iframeUrlParts.search !== browserUrlParts.search ||
+        iframeUrlParts.hash !== browserUrlParts.hash;
+      if (isDifferent) {
+        const newBrowserPath = `/${appName}${iframeUrlParts.subPath}${iframeUrlParts.search}${iframeUrlParts.hash}`;
         navigateRef.current(newBrowserPath, { replace: true });
       }
     };

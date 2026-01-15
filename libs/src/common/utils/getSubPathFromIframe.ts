@@ -19,15 +19,18 @@
 
 import { UrlParts } from './getSubPathFromBrowserUrl';
 
+const EMPTY_STRING = '';
+
 const getSubPathFromIframe = (iframe: HTMLIFrameElement, proxyPrefix?: string): UrlParts | null => {
   try {
     const iframePath = iframe.contentWindow?.location.pathname;
-    const iframeHash = iframe.contentWindow?.location.hash || '';
+    const iframeSearch = iframe.contentWindow?.location.search || EMPTY_STRING;
+    const iframeHash = iframe.contentWindow?.location.hash || EMPTY_STRING;
     if (!iframePath) return null;
     if (proxyPrefix && iframePath.startsWith(proxyPrefix)) {
-      return { subPath: iframePath.slice(proxyPrefix.length) || '', hash: iframeHash };
+      return { subPath: iframePath.slice(proxyPrefix.length) || EMPTY_STRING, search: iframeSearch, hash: iframeHash };
     }
-    return { subPath: iframePath, hash: iframeHash };
+    return { subPath: iframePath, search: iframeSearch, hash: iframeHash };
   } catch {
     return null;
   }

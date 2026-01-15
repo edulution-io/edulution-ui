@@ -19,15 +19,18 @@
 
 export interface UrlParts {
   subPath: string;
+  search: string;
   hash: string;
 }
 
-const getSubPathFromBrowserUrl = (pathname: string, hash: string, appName: string): UrlParts => {
+const EMPTY_STRING = '';
+
+const getSubPathFromBrowserUrl = (pathname: string, search: string, hash: string, appName: string): UrlParts => {
   const prefix = `/${appName}`;
   if (pathname.startsWith(prefix)) {
-    return { subPath: pathname.slice(prefix.length) || '', hash };
+    return { subPath: pathname.slice(prefix.length) || EMPTY_STRING, search, hash };
   }
-  return { subPath: '', hash };
+  return { subPath: EMPTY_STRING, search, hash };
 };
 
 export default getSubPathFromBrowserUrl;

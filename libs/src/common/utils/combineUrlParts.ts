@@ -21,9 +21,12 @@ import { UrlParts } from './getSubPathFromBrowserUrl';
 
 const combineUrlParts = (urlParts: UrlParts): string | null => {
   if (urlParts.subPath) {
-    return `${urlParts.subPath}${urlParts.hash}`;
+    return `${urlParts.subPath}${urlParts.search}${urlParts.hash}`;
   }
-  return urlParts.hash || null;
+  if (urlParts.search || urlParts.hash) {
+    return `${urlParts.search}${urlParts.hash}`;
+  }
+  return null;
 };
 
 export default combineUrlParts;

@@ -42,7 +42,7 @@ const NativeFrame: React.FC<NativeFrameProps> = ({
   appName,
 }) => {
   const { t } = useTranslation();
-  const { pathname, hash } = useLocation();
+  const { pathname, search, hash } = useLocation();
   const { appConfigs } = useAppConfigsStore();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { isAuthenticated, isPreparingLogout, eduApiToken } = useUserStore();
@@ -72,7 +72,7 @@ const NativeFrame: React.FC<NativeFrameProps> = ({
 
   const isActiveFrame = activeEmbeddedFrame === appName;
 
-  const browserSubPath = combineUrlParts(getSubPathFromBrowserUrl(pathname, hash, appName));
+  const browserSubPath = combineUrlParts(getSubPathFromBrowserUrl(pathname, search, hash, appName));
   const deepLinkUrl =
     !preloadBasePage && browserSubPath ? getExternalUrlForDeepLink(externalBaseUrl, browserSubPath) : null;
 
@@ -80,7 +80,18 @@ const NativeFrame: React.FC<NativeFrameProps> = ({
   const hasNavigatedToDeepLinkRef = useRef(false);
   const currentSrcRef = useRef<string | undefined>(undefined);
 
-  const hasPendingDeepLink = preloadBasePage && initialBrowserSubPathRef.current && !hasNavigatedToDeepLinkRef.current;
+  const [hasPendingDeepLink, setHasPendingDeepLink] = useState(preloadBasePage && !!initialBrowserSubPathRef.current);
+
+  useEffect(() => {
+    if (!preloadBasePage) {
+      setHasPendingDeepLink(false);
+      return;
+    }
+
+    if (initialBrowserSubPathRef.current && !hasNavigatedToDeepLinkRef.current) {
+      setHasPendingDeepLink(true);
+    }
+  }, [preloadBasePage]);
 
   useEffect(() => {
     if (!preloadBasePage || !isFrameLoaded || !isActiveFrame || hasNavigatedToDeepLinkRef.current) {
@@ -98,6 +109,7 @@ const NativeFrame: React.FC<NativeFrameProps> = ({
       iframe.src = targetUrl;
       currentSrcRef.current = targetUrl;
       hasNavigatedToDeepLinkRef.current = true;
+      setHasPendingDeepLink(false);
     };
 
     const handleLoad = () => {
