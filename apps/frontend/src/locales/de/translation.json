@@ -1417,6 +1417,7 @@
     "answers": "Antworten",
     "error": "Fehler",
     "entry": "Eintrag {{index}}",
+    "filter": "Filter",
     "errors": {
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "directoryNotCreated": "Erstellen des Verzeichnisses fehlgeschlagen",

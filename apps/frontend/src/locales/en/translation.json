@@ -1415,6 +1415,7 @@
     "answers": "Answers",
     "error": "Error",
     "entry": "Entry {{index}}",
+    "filter": "Filter",
     "errors": {
       "dbAccessFailed": "Database access failed",
       "directoryNotCreated": "Failed to create directory",

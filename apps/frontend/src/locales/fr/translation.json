@@ -1256,6 +1256,7 @@
     "answers": "Répondre",
     "error": "Erreur",
     "entry": "Entrée {{index}}",
+    "filter": "Filtrer",
     "errors": {
       "attachmentUploadFailed": "La pièce jointe n'a pas pu être téléversée",
       "dbAccessFailed": "L'accès à la base de données a échoué",
