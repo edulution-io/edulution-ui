@@ -39,7 +39,6 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import useWireguardConfigTableStore from './useWireguardConfigTableStore';
-import QRCodeDialog from './QRCodeDialog';
 
 interface AddWireguardPeerDialogProps {
   tableId: ExtendedOptionKeysType;
@@ -85,7 +84,6 @@ const AddWireguardPeerDialog: React.FC<AddWireguardPeerDialogProps> = ({ tableId
   const { t } = useTranslation();
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [qrCodePeerName, setQrCodePeerName] = useState<string | null>(null);
   const [selectedUsers, setSelectedUsers] = useState<AttendeeDto[]>([]);
   const [selectedGroups, setSelectedGroups] = useState<MultipleSelectorGroup[]>([]);
 
@@ -195,12 +193,6 @@ const AddWireguardPeerDialog: React.FC<AddWireguardPeerDialogProps> = ({ tableId
     }
   };
 
-  const handleShowQRCode = () => {
-    if (selectedPeerStatus) {
-      setQrCodePeerName(selectedPeerStatus.peer);
-    }
-  };
-
   const handleUsersChange = (users: AttendeeDto[]) => {
     setSelectedUsers(users);
   };
@@ -226,9 +218,7 @@ const AddWireguardPeerDialog: React.FC<AddWireguardPeerDialogProps> = ({ tableId
       return (
         <DialogFooterButtons
           handleClose={closeDialog}
-          handleSubmit={handleShowQRCode}
           handleDelete={() => setIsDeleteDialogOpen(true)}
-          submitButtonText="wireguard.showQRCode"
         />
       );
     }
@@ -401,11 +391,6 @@ const AddWireguardPeerDialog: React.FC<AddWireguardPeerDialogProps> = ({ tableId
           messageTranslationKey="wireguard.confirmDelete"
         />
       )}
-      <QRCodeDialog
-        isOpen={qrCodePeerName !== null}
-        handleOpenChange={() => setQrCodePeerName(null)}
-        peerName={qrCodePeerName}
-      />
     </>
   );
 };

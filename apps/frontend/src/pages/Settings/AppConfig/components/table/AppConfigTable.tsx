@@ -104,6 +104,9 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
 
       const items = selectedIndices.map((index) => {
         const row = tableContentData[index];
+        if (type === ExtendedOptionKeys.WIREGUARD_PEERS_TABLE && row && 'name' in row) {
+          return { name: row.name, id: String(index) };
+        }
         if (row && 'filename' in row && row.filename) {
           return { name: row.filename, id: String(index) };
         }
@@ -129,6 +132,9 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
 
       const deletePromises = selectedIndices.map((index) => {
         const row = tableContentData[index];
+        if (type === ExtendedOptionKeys.WIREGUARD_PEERS_TABLE && row && 'name' in row && deleteTableEntry) {
+          return deleteTableEntry(applicationName, row.name);
+        }
         if (row && 'filename' in row && row.filename && deleteTableEntry) {
           return deleteTableEntry(applicationName, row.filename);
         }

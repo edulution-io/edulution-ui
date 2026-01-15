@@ -29,14 +29,6 @@ import cn from '@libs/common/utils/className';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useUserWireguardStore from './useUserWireguardStore';
 
-const formatBytes = (bytes: number): string => {
-  if (bytes === 0) return '0 B';
-  const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
-};
-
 const UserSettingsWireguardPage: React.FC = () => {
   const { t } = useTranslation();
   const {
@@ -123,10 +115,10 @@ const UserSettingsWireguardPage: React.FC = () => {
               {peerStatus?.transfer && (
                 <div className="text-sm text-muted-foreground">
                   <p>
-                    {t('usersettings.wireguard.received')}: {formatBytes(peerStatus.transfer.received)}
+                    {t('usersettings.wireguard.received')}: {peerStatus.transfer.received.toFixed(2)} MB
                   </p>
                   <p>
-                    {t('usersettings.wireguard.sent')}: {formatBytes(peerStatus.transfer.send)}
+                    {t('usersettings.wireguard.sent')}: {peerStatus.transfer.send.toFixed(2)} MB
                   </p>
                 </div>
               )}
