@@ -43,7 +43,7 @@ const EmbeddedPageContent: React.FC<EmbeddedPageContentProps> = ({
   urlSyncEnabled = false,
   preloadBasePage = false,
 }) => {
-  const { pathname, hash } = useLocation();
+  const { pathname, search, hash } = useLocation();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const proxyPrefix = getProxyPrefixFromUrl(htmlContentUrl || '');
 
@@ -51,8 +51,12 @@ const EmbeddedPageContent: React.FC<EmbeddedPageContentProps> = ({
     const prefix = `/${appName}`;
     if (pathname.startsWith(prefix)) {
       const subPath = pathname.slice(prefix.length);
-      if (subPath || hash) {
-        return `${proxyPrefix}${subPath}${hash}`;
+      const combinedSuffix = `${subPath}${search}${hash}`;
+      if (combinedSuffix) {
+        if (proxyPrefix && subPath.startsWith(proxyPrefix)) {
+          return `${subPath}${search}${hash}`;
+        }
+        return `${proxyPrefix}${subPath}${search}${hash}`;
       }
     }
     return null;
