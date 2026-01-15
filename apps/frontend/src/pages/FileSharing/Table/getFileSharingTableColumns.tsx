@@ -50,7 +50,6 @@ import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
 import useStartWebdavFileDownload from '@/pages/FileSharing/hooks/useStartWebdavFileDownload';
 import getFileSharingActions from '@/pages/FileSharing/Table/getFileSharingActions';
-import i18n from '@/i18n';
 
 const sizeColumnWidth = 'w-1/12 lg:w-3/12 md:w-1/12';
 const typeColumnWidth = 'w-1/12 lg:w-1/12 md:w-1/12';
@@ -260,22 +259,6 @@ const getFileSharingTableColumns = (
 
       meta: {
         translationId: 'fileSharingTable.type',
-      },
-
-      sortingFn: (rowA, rowB) => {
-        const isDirectoryA = rowA.original.type === ContentType.DIRECTORY;
-        const isDirectoryB = rowB.original.type === ContentType.DIRECTORY;
-
-        const categoryA = isDirectoryA ? 'folder' : getFileCategorie(rowA.original.filePath);
-        const categoryB = isDirectoryB ? 'folder' : getFileCategorie(rowB.original.filePath);
-
-        const translatedCategoryA = i18n.t(`fileCategory.${categoryA}`);
-        const translatedCategoryB = i18n.t(`fileCategory.${categoryB}`);
-
-        const categoryCompare = translatedCategoryA.localeCompare(translatedCategoryB);
-        if (categoryCompare !== 0) return categoryCompare;
-
-        return rowA.original.filename.localeCompare(rowB.original.filename);
       },
 
       cell: ({ row }) => {
