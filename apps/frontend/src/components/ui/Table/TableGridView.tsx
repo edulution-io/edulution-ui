@@ -86,10 +86,10 @@ const TableGridView = <TData, TValue>({
   viewModeStorageKey,
 }: TableGridViewProps<TData, TValue>) => {
   const { t } = useTranslation();
-  const { getViewMode, setViewMode, setSystemFileFilter } = useViewModeStore();
+  const { getViewMode, setViewMode, setFileFilter } = useViewModeStore();
   const viewMode = getViewMode(viewModeStorageKey);
   const isTableView = viewMode === VIEW_MODE.table;
-  const isSystemFileFilterEnabled = useViewModeStore((state) => state.systemFileFilters[viewModeStorageKey]) ?? true;
+  const isFilterEnabled = useViewModeStore((state) => state.fileFilter[viewModeStorageKey]) ?? true;
 
   const handleViewModeChange = useCallback(
     (mode: typeof VIEW_MODE.table | typeof VIEW_MODE.grid) => {
@@ -104,11 +104,11 @@ const TableGridView = <TData, TValue>({
         viewMode={viewMode}
         onViewModeChange={handleViewModeChange}
         isDialog={isDialog}
-        isSystemFileFilterEnabled={isSystemFileFilterEnabled}
-        onSystemFileFilterChange={(enabled) => setSystemFileFilter(viewModeStorageKey, enabled)}
+        isFilterEnabled={isFilterEnabled}
+        onSystemFileFilterChange={(enabled) => setFileFilter(viewModeStorageKey, enabled)}
       />
     ),
-    [viewMode, handleViewModeChange, isDialog, isSystemFileFilterEnabled, setSystemFileFilter, viewModeStorageKey],
+    [viewMode, handleViewModeChange, isDialog, isFilterEnabled, setFileFilter, viewModeStorageKey],
   );
 
   const { table } = useScrollableTable({

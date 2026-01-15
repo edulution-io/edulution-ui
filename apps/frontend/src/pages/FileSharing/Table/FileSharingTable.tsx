@@ -67,7 +67,7 @@ const FileSharingTable = () => {
       currentPath,
     });
   const { createVariableSharePathname } = useVariableSharePathname();
-  const isSystemFileFilterEnabled = useViewModeStore((state) => state.systemFileFilters[APPS.FILE_SHARING]) ?? true;
+  const isFilterEnabled = useViewModeStore((state) => state.fileFilter[APPS.FILE_SHARING]) ?? true;
 
   const isDocumentServerConfigured = !!getExtendedOptionsValue(
     appConfigs,
@@ -180,9 +180,9 @@ const FileSharingTable = () => {
   );
 
   const filteredFiles = useMemo(() => {
-    if (!isSystemFileFilterEnabled) return files;
+    if (isFilterEnabled) return files;
     return files.filter((file) => !systemFiles.includes(file.filename));
-  }, [files, isSystemFileFilterEnabled]);
+  }, [files, isFilterEnabled]);
 
   const filesWithParentNav = useMemo(() => {
     if (!webdavShare || currentPath === '/') {

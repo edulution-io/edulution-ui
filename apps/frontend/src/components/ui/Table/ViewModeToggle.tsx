@@ -31,7 +31,7 @@ interface ViewModeToggleProps {
   viewMode: ViewModeType;
   onViewModeChange: (mode: ViewModeType) => void;
   isDialog?: boolean;
-  isSystemFileFilterEnabled?: boolean;
+  isFilterEnabled?: boolean;
   onSystemFileFilterChange?: (enabled: boolean) => void;
 }
 
@@ -39,7 +39,7 @@ const ViewModeToggle = ({
   viewMode,
   onViewModeChange,
   isDialog = false,
-  isSystemFileFilterEnabled = true,
+  isFilterEnabled = true,
   onSystemFileFilterChange,
 }: ViewModeToggleProps) => {
   const { t } = useTranslation();
@@ -95,10 +95,10 @@ const ViewModeToggle = ({
           <ButtonSH
             variant="ghost"
             size="icon"
-            onClick={() => onSystemFileFilterChange?.(!isSystemFileFilterEnabled)}
+            onClick={() => onSystemFileFilterChange?.(!isFilterEnabled)}
             className={cn(
               'h-[38px] w-[38px] rounded-l-none',
-              isSystemFileFilterEnabled && (isDialog ? 'bg-ciLightGrey' : 'bg-accent'),
+              isFilterEnabled && (isDialog ? 'bg-ciLightGrey' : 'bg-accent'),
             )}
           >
             <FontAwesomeIcon

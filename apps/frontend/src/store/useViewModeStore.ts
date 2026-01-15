@@ -17,6 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import APPS from '@libs/appconfig/constants/apps';
 import VIEW_MODE from '@libs/common/constants/viewMode';
 import ViewModeType from '@libs/common/types/viewModeType';
 import { create, StateCreator } from 'zustand';
@@ -24,9 +25,9 @@ import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 
 interface ViewModeStore {
   viewModes: Record<string, ViewModeType>;
-  systemFileFilters: Record<string, boolean>;
+  fileFilter: Record<string, boolean>;
   setViewMode: (key: string, mode: ViewModeType) => void;
-  setSystemFileFilter: (key: string, enabled: boolean) => void;
+  setFileFilter: (key: string, enabled: boolean) => void;
   getViewMode: (key: string) => ViewModeType;
 }
 
@@ -39,7 +40,7 @@ const useViewModeStore = create<ViewModeStore>(
   (persist as PersistedViewModeStore)(
     (set, get) => ({
       viewModes: {},
-      systemFileFilters: {},
+      fileFilter: { [APPS.FILE_SHARING]: true },
 
       setViewMode: (key, mode) => {
         set((state) => ({
@@ -55,10 +56,10 @@ const useViewModeStore = create<ViewModeStore>(
         return viewModes[key] || VIEW_MODE.table;
       },
 
-      setSystemFileFilter: (key, enabled) => {
+      setFileFilter: (key, enabled) => {
         set((state) => ({
-          systemFileFilters: {
-            ...state.systemFileFilters,
+          fileFilter: {
+            ...state.fileFilter,
             [key]: enabled,
           },
         }));
@@ -67,7 +68,7 @@ const useViewModeStore = create<ViewModeStore>(
     {
       name: 'view-mode',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ viewModes: state.viewModes, systemFileFilters: state.systemFileFilters }),
+      partialize: (state) => ({ viewModes: state.viewModes, fileFilter: state.fileFilter }),
     },
   ),
 );
