@@ -24,6 +24,7 @@ import {
   SecurityIcon,
   UserDetailsSettingsIcon,
   SettingsIcon,
+  VPNIcon,
 } from '@/assets/icons';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -37,6 +38,8 @@ import {
   USER_SETTINGS_SECURITY_PATH,
   USER_SETTINGS_USER_DETAILS_PATH,
   USER_SETTINGS_USER_INTERFACE_PATH,
+  WIREGUARD_ACCESS_PATH,
+  USER_SETTINGS_WIREGUARD_ACCESS_PATH,
 } from '@libs/userSettings/constants/user-settings-endpoints';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import APPS from '@libs/appconfig/constants/apps';
@@ -79,6 +82,12 @@ const useUserSettingsMenu = () => {
         label: 'usersettings.mobileAccess.title',
         icon: MobileDevicesIcon,
         action: () => navigate(USER_SETTINGS_MOBILE_ACCESS_PATH),
+      },
+      {
+        id: WIREGUARD_ACCESS_PATH,
+        label: 'usersettings.wireguard.title',
+        icon: VPNIcon,
+        action: () => navigate(USER_SETTINGS_WIREGUARD_ACCESS_PATH),
       },
     ],
   };

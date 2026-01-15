@@ -1349,6 +1349,26 @@
       "title": "Benutzeroberfläche",
       "description": "Hier kannst du Einstellungen zur Benutzeroberfläche vornehmen."
     },
+    "wireguard": {
+      "title": "VPN-Zugang",
+      "description": "Hier kannst du deinen WireGuard VPN-Zugang einsehen und konfigurieren.",
+      "noPeer": "Für deinen Benutzer wurde noch kein WireGuard VPN-Zugang eingerichtet. Bitte wende dich an einen Administrator.",
+      "connectionStatus": "Verbindungsstatus",
+      "connected": "Verbunden",
+      "disconnected": "Nicht verbunden",
+      "lastHandshake": "Letzter Handshake",
+      "received": "Empfangen",
+      "sent": "Gesendet",
+      "connectionDetails": "Verbindungsdetails",
+      "peerName": "Name",
+      "ipAddress": "IP-Adresse",
+      "routes": "Routen",
+      "qrCode": "QR-Code",
+      "qrCodeDescription": "Scanne diesen QR-Code mit der WireGuard App auf deinem Mobilgerät, um die VPN-Verbindung einzurichten.",
+      "configDownload": "Konfigurationsdatei",
+      "configDownloadDescription": "Lade die WireGuard-Konfigurationsdatei herunter, um sie in der WireGuard App auf deinem Computer zu importieren.",
+      "downloadButton": "Konfiguration herunterladen"
+    },
     "addTotp": {
       "title": "Zwei-Faktor-Authentisierung einrichten",
       "qrCodeInstructions": "Den QR-Code mit einer Authenticator App scannen, die TOTP (Time-based One-Time Password) unterstützt.",

@@ -30,6 +30,7 @@ const WIREGUARD_ERROR_MESSAGES = {
   CREATE_SITE_FAILED: 'wireguard.errors.createSiteFailed',
   DELETE_SITE_FAILED: 'wireguard.errors.deleteSiteFailed',
   GET_SITE_CONFIG_FAILED: 'wireguard.errors.getSiteConfigFailed',
+  USER_PEER_NOT_FOUND: 'wireguard.errors.userPeerNotFound',
 } as const;
 
 export default WIREGUARD_ERROR_MESSAGES;
