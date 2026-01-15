@@ -57,7 +57,7 @@ class SurveysTemplateService implements OnModuleInit {
       );
     }
     try {
-      if (!id || id === null) {
+      if (!id) {
         return await this.surveyTemplateModel.create({ template, name, isActive, isDefaultTemplate });
       }
       return await this.surveyTemplateModel.findByIdAndUpdate(id, { template, name, isActive }, { new: true });

@@ -59,7 +59,7 @@ const SurveyEditorEntryPage = () => {
     resetTemplateStore();
     resetQuestionsContextMenu();
     void fetchSelectedSurvey(surveyCreator, surveyId, false);
-  }, [surveyCreator, surveyId]);
+  }, [user, surveyId]);
 
   if (isFetching) {
     return (

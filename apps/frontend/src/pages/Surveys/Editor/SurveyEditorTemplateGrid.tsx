@@ -43,7 +43,7 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
 
   useEffect(() => {
     void fetchTemplates();
-  }, []);
+  }, [fetchTemplates]);
 
   const filteredTemplates = useMemo(() => {
     const searchString = search.trim().toLowerCase();

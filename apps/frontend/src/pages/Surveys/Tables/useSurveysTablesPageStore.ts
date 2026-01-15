@@ -105,8 +105,8 @@ const useSurveysTablesPageStore = create<SurveysTablesPageStore>((set, get) => (
       set({ selectedSurvey: response.data });
       return response.data;
     } catch (error) {
-      handleApiError(error, set);
       set({ selectedSurvey: undefined });
+      handleApiError(error, set);
       return undefined;
     } finally {
       set({ isFetching: false });

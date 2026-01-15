@@ -79,7 +79,7 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
           label={t('survey.editor.template.label')}
           checked={watch('saveAsTemplate')}
           onCheckedChange={(value: boolean) => setValue('saveAsTemplate', value, { shouldValidate: true })}
-          aria-label={t('survey.saveAsTemplate')}
+          aria-label={t('survey.editor.template.label')}
         />
       )}
       <SearchUsersOrGroups

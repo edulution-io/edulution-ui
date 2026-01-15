@@ -146,7 +146,7 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
             onClick={handleOpenPreview}
             variant="btn-outline"
             size="sm"
-            aria-label={t('common.delete')}
+            aria-label={t('common.preview')}
           >
             <FontAwesomeIcon
               icon={faEye}

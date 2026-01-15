@@ -149,6 +149,15 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     });
   }, [creator, form, language]);
 
+  const resetSurveyEditorPage = useCallback(() => {
+    handleReset();
+    form.reset(initialFormValues);
+    if (creator) {
+      creator.saveNo = 0;
+      creator.JSON = surveysDefaultValues.formula;
+    }
+  }, [form, initialFormValues, creator]);
+
   const handleSaveTemplate = useCallback(async () => {
     if (!isSuperAdmin) {
       return;
@@ -168,6 +177,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
       },
     });
     setIsOpenSaveSurveyDialog(false);
+    resetSurveyEditorPage();
   }, [form, creator, template, uploadTemplate, isSuperAdmin, setIsOpenSaveSurveyDialog]);
 
   const handleNavigateToCreatedSurveys = () => {
@@ -201,14 +211,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
       {
         icon: faFileCirclePlus,
         text: t('common.back'),
-        onClick: () => {
-          handleReset();
-          form.reset(initialFormValues);
-          if (creator) {
-            creator.saveNo = 0;
-            creator.JSON = surveysDefaultValues.formula;
-          }
-        },
+        onClick: () => resetSurveyEditorPage(),
       },
       SaveButton(() => setIsOpenSaveSurveyDialog(true)),
       {

@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Document, Types } from 'mongoose';
+import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
@@ -28,9 +28,6 @@ export type SurveysTemplateDocument = SurveysTemplate & Document;
 
 @Schema({ timestamps: true, strict: true })
 export class SurveysTemplate {
-  @Prop({ required: true, unique: true })
-  _id: Types.ObjectId;
-
   @Prop({ type: Object, required: true })
   template: Partial<Survey> & { formula: SurveyFormula };
 
@@ -40,7 +37,7 @@ export class SurveysTemplate {
   @Prop({ default: true, required: true })
   isActive: boolean;
 
-  @Prop({ default: false, required: true })
+  @Prop({ default: false, required: true, immutable: true })
   isDefaultTemplate: boolean;
 
   @Prop({ default: 1, required: true, unique: false })
