@@ -24,7 +24,14 @@ import { WireguardTableStore } from '@libs/appconfig/types/wireguardTableStore';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import WIREGUARD_API_ENDPOINT from '@libs/wireguard/constants/wireguardApiEndpoint';
-import type { Peer, PeerRequest, Site, SiteRequest } from '@libs/wireguard/types/wireguard';
+import type {
+  BatchPeersRequest,
+  BatchPeersResult,
+  Peer,
+  PeerRequest,
+  Site,
+  SiteRequest,
+} from '@libs/wireguard/types/wireguard';
 import type WireguardPeer from '@libs/wireguard/types/wireguardPeer';
 
 const initialValues = {
@@ -82,6 +89,26 @@ const useWireguardConfigTableStore: UseBoundStore<StoreApi<WireguardTableStore>>
         await get().fetchTableContent();
         set({ isLoading: false });
         toast.success(i18n.t('wireguard.peerCreated'));
+      } catch (error) {
+        handleApiError(error, set, 'error');
+        set({ isLoading: false });
+      }
+    },
+
+    createPeers: async (request: BatchPeersRequest) => {
+      set({ isLoading: true, error: null });
+      try {
+        const response = await eduApi.post<BatchPeersResult>(`${WIREGUARD_API_ENDPOINT}/peers/batch`, request);
+        const { successful, failed } = response.data;
+
+        await get().fetchTableContent();
+        set({ isLoading: false });
+
+        if (failed > 0) {
+          toast.warning(i18n.t('wireguard.peersCreatedPartial', { successful, failed }));
+        } else {
+          toast.success(i18n.t('wireguard.peersCreated', { count: successful }));
+        }
       } catch (error) {
         handleApiError(error, set, 'error');
         set({ isLoading: false });

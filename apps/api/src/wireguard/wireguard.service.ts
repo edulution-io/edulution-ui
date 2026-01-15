@@ -19,8 +19,18 @@
 
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import axios, { AxiosInstance } from 'axios';
-import type { Peer, PeerConfig, PeerRequest, PeerStatus, Site, SiteRequest } from '@libs/wireguard/types/wireguard';
+import type {
+  BatchPeersRequest,
+  BatchPeersResult,
+  Peer,
+  PeerConfig,
+  PeerRequest,
+  PeerStatus,
+  Site,
+  SiteRequest,
+} from '@libs/wireguard/types/wireguard';
 import WIREGUARD_ERROR_MESSAGES from '@libs/wireguard/constants/wireguardErrorMessages';
+import GroupsService from '../groups/groups.service';
 import CustomHttpException from '../common/CustomHttpException';
 
 const { EDU_EG_API_URL, EDU_WG_API_KEY } = process.env;
@@ -29,7 +39,7 @@ const { EDU_EG_API_URL, EDU_WG_API_KEY } = process.env;
 class WireguardService {
   private readonly wireguardApi: AxiosInstance;
 
-  constructor() {
+  constructor(private readonly groupsService: GroupsService) {
     if (!EDU_WG_API_KEY) {
       Logger.warn('EDU_WG_API_KEY not set in environment', WireguardService.name);
     }
@@ -276,6 +286,45 @@ class WireguardService {
         WireguardService.name,
       );
     }
+  }
+
+  async createPeersBatch(request: BatchPeersRequest): Promise<BatchPeersResult> {
+    const attendees = request.attendees.map((a) => ({ username: a.username }));
+    const usernames = await this.groupsService.getInvitedMembers(request.groups, attendees);
+    const uniqueUsernames = [...new Set(usernames)];
+
+    Logger.log(`Creating ${uniqueUsernames.length} peers in batch`, WireguardService.name);
+
+    const results = await Promise.allSettled(
+      uniqueUsernames.map((username) =>
+        this.wireguardApi
+          .post<boolean>('/peers', {
+            name: username,
+            routes: request.routes || ['0.0.0.0/0'],
+          })
+          .then(() => username),
+      ),
+    );
+
+    const errors: string[] = [];
+    let successful = 0;
+    let failed = 0;
+
+    results.forEach((result, index) => {
+      if (result.status === 'fulfilled') {
+        successful += 1;
+      } else {
+        failed += 1;
+        const username = uniqueUsernames[index];
+        const errorMessage = result.reason instanceof Error ? result.reason.message : String(result.reason);
+        errors.push(`${username}: ${errorMessage}`);
+        Logger.warn(`Failed to create peer for ${username}: ${errorMessage}`, WireguardService.name);
+      }
+    });
+
+    Logger.log(`Batch peer creation completed: ${successful} successful, ${failed} failed`, WireguardService.name);
+
+    return { successful, failed, errors };
   }
 }
 

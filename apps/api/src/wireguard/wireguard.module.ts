@@ -18,10 +18,12 @@
  */
 
 import { Module } from '@nestjs/common';
+import GroupsModule from '../groups/groups.module';
 import WireguardController from './wireguard.controller';
 import WireguardService from './wireguard.service';
 
 @Module({
+  imports: [GroupsModule],
   controllers: [WireguardController],
   providers: [WireguardService],
 })

@@ -64,3 +64,15 @@ export interface PeerStatus {
 export interface PeerConfig {
   data: string;
 }
+
+export interface BatchPeersRequest {
+  attendees: { username: string }[];
+  groups: { path: string }[];
+  routes?: string[];
+}
+
+export interface BatchPeersResult {
+  successful: number;
+  failed: number;
+  errors: string[];
+}

@@ -1697,6 +1697,8 @@
     "deleteSuccess": "Peers deleted successfully",
     "deleteFailed": "Failed to delete peers",
     "peerCreated": "Client peer created successfully",
+    "peersCreated": "{{count}} client peers created successfully",
+    "peersCreatedPartial": "{{successful}} client peers created, {{failed}} failed",
     "siteCreated": "Site-to-site connection created successfully",
     "createFailed": "Failed to create peer",
     "qrCode": "QR Code for {{name}}",

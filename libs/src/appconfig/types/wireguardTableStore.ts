@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type { PeerRequest, SiteRequest } from '@libs/wireguard/types/wireguard';
+import type { BatchPeersRequest, PeerRequest, SiteRequest } from '@libs/wireguard/types/wireguard';
 import WireguardPeer from '@libs/wireguard/types/wireguardPeer';
 import AppConfigTable from './appConfigTable';
 
@@ -29,6 +29,7 @@ export interface WireguardTableStore extends AppConfigTable<WireguardPeer> {
   itemToDelete: WireguardPeer | null;
   setItemToDelete: (item: WireguardPeer | null) => void;
   createPeer: (data: PeerRequest) => Promise<void>;
+  createPeers: (request: BatchPeersRequest) => Promise<void>;
   createSite: (data: SiteRequest) => Promise<void>;
   getPeerQRCode: (name: string) => Promise<string | null>;
   reset: () => void;

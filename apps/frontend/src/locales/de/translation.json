@@ -1700,6 +1700,8 @@
     "deleteSuccess": "Peers erfolgreich gelöscht",
     "deleteFailed": "Löschen der Peers fehlgeschlagen",
     "peerCreated": "Client-Peer erfolgreich erstellt",
+    "peersCreated": "{{count}} Client-Peers erfolgreich erstellt",
+    "peersCreatedPartial": "{{successful}} Client-Peers erstellt, {{failed}} fehlgeschlagen",
     "siteCreated": "Site-to-Site-Verbindung erfolgreich erstellt",
     "createFailed": "Erstellen des Peers fehlgeschlagen",
     "qrCode": "QR-Code für {{name}}",

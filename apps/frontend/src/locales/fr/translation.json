@@ -1528,6 +1528,8 @@
     "deleteSuccess": "Pairs supprimés avec succès",
     "deleteFailed": "Échec de la suppression des pairs",
     "peerCreated": "Pair client créé avec succès",
+    "peersCreated": "{{count}} pairs clients créés avec succès",
+    "peersCreatedPartial": "{{successful}} pairs clients créés, {{failed}} échoués",
     "siteCreated": "Connexion site-à-site créée avec succès",
     "createFailed": "Échec de la création du pair",
     "qrCode": "Code QR pour {{name}}",

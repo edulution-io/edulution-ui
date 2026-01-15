@@ -19,7 +19,7 @@
 
 import { Body, Controller, Delete, Get, Param, Post, Res, UseGuards } from '@nestjs/common';
 import type { Response } from 'express';
-import type { PeerRequest, SiteRequest } from '@libs/wireguard/types/wireguard';
+import type { BatchPeersRequest, PeerRequest, SiteRequest } from '@libs/wireguard/types/wireguard';
 import WIREGUARD_API_ENDPOINT from '@libs/wireguard/constants/wireguardApiEndpoint';
 import WireguardService from './wireguard.service';
 import AdminGuard from '../common/guards/admin.guard';
@@ -37,6 +37,11 @@ class WireguardController {
   @Post('peers')
   async createPeer(@Body() peerRequest: PeerRequest) {
     return this.wireguardService.createPeer(peerRequest);
+  }
+
+  @Post('peers/batch')
+  async createPeersBatch(@Body() request: BatchPeersRequest) {
+    return this.wireguardService.createPeersBatch(request);
   }
 
   @Delete('peers/:peer')
