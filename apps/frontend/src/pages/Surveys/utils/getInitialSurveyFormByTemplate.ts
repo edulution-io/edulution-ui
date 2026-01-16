@@ -20,26 +20,35 @@
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
-import surveysDefaultValues from '@/pages/Surveys/utils/surveys-default-values';
+import ThemeType from '@libs/common/types/themeType';
+import THEME from '@libs/common/constants/theme';
+import getSurveysDefaultValues from '@/pages/Surveys/utils/getSurveysDefaultValues';
 
-const getInitialSurveyFormByTemplate = (creator: AttendeeDto, template: SurveyTemplateDto): SurveyDto => ({
-  id: template?.id || undefined,
-  formula: template?.template.formula || surveysDefaultValues.formula,
-  backendLimiters: template?.template.backendLimiters || [],
-  creator,
-  invitedAttendees: template?.template.invitedAttendees || [],
-  invitedGroups: template?.template.invitedGroups || [],
-  participatedAttendees: template?.template.participatedAttendees || [],
-  saveNo: 0,
-  answers: [],
-  createdAt: new Date(),
-  expires: null,
-  isAnonymous: template?.template.isAnonymous ?? surveysDefaultValues.isAnonymous,
-  canSubmitMultipleAnswers:
-    template?.template.canSubmitMultipleAnswers ?? surveysDefaultValues.canSubmitMultipleAnswers,
-  isPublic: template?.template.isPublic ?? surveysDefaultValues.isPublic,
-  canUpdateFormerAnswer: template?.template.canUpdateFormerAnswer ?? surveysDefaultValues.canUpdateFormerAnswer,
-  saveAsTemplate: false,
-});
+const getInitialSurveyFormByTemplate = (
+  creator: AttendeeDto,
+  template: SurveyTemplateDto,
+  theme: ThemeType = THEME.dark,
+): SurveyDto => {
+  const surveysDefaultValues = getSurveysDefaultValues(theme);
+  return {
+    id: template?.id || undefined,
+    formula: template?.template.formula || surveysDefaultValues.formula,
+    backendLimiters: template?.template.backendLimiters || [],
+    creator,
+    invitedAttendees: template?.template.invitedAttendees || [],
+    invitedGroups: template?.template.invitedGroups || [],
+    participatedAttendees: template?.template.participatedAttendees || [],
+    saveNo: 0,
+    answers: [],
+    createdAt: new Date(),
+    expires: null,
+    isAnonymous: template?.template.isAnonymous ?? surveysDefaultValues.isAnonymous,
+    canSubmitMultipleAnswers:
+      template?.template.canSubmitMultipleAnswers ?? surveysDefaultValues.canSubmitMultipleAnswers,
+    isPublic: template?.template.isPublic ?? surveysDefaultValues.isPublic,
+    canUpdateFormerAnswer: template?.template.canUpdateFormerAnswer ?? surveysDefaultValues.canUpdateFormerAnswer,
+    saveAsTemplate: false,
+  };
+};
 
 export default getInitialSurveyFormByTemplate;

@@ -28,9 +28,10 @@ import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import useLdapGroups from '@/hooks/useLdapGroups';
+import useThemeStore from '@/store/useThemeStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
-import surveysDefaultValues from '@/pages/Surveys/utils/surveys-default-values';
+import getSurveysDefaultValues from '@/pages/Surveys/utils/getSurveysDefaultValues';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 
@@ -51,6 +52,8 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
   const { loadNewSurvey, loadSurveyTemplate } = useSurveyEditorPageStore();
 
   const { isSuperAdmin } = useLdapGroups();
+
+  const { theme } = useThemeStore();
 
   const { t } = useTranslation();
 
@@ -90,7 +93,9 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
     setIsOpenTemplateConfirmDeletion(true);
   };
 
-  const title = surveyTemplate?.name ?? surveyTemplate?.template.formula.title ?? surveysDefaultValues.formula.title;
+  const defaultValues = getSurveysDefaultValues(theme);
+
+  const title = surveyTemplate?.name ?? surveyTemplate?.template.formula.title ?? defaultValues.formula.title;
 
   const description = surveyTemplate?.template.formula.description;
 
