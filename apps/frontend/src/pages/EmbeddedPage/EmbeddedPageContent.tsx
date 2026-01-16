@@ -49,13 +49,12 @@ const EmbeddedPageContent: React.FC<EmbeddedPageContentProps> = ({
 
   const getDeepLinkUrl = useCallback(
     (browserUrlSuffix: string) => {
-      if (!pathname.startsWith(`/${appName}`)) return '';
       if (proxyPrefix && browserUrlSuffix.startsWith(proxyPrefix)) {
         return browserUrlSuffix;
       }
       return `${proxyPrefix}${browserUrlSuffix}`;
     },
-    [appName, pathname, proxyPrefix],
+    [proxyPrefix],
   );
 
   const { deepLinkUrl } = useFrameDeepLinkSync({

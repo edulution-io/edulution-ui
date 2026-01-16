@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import URL_SYNC_POLLING_INTERVAL_MS from '@libs/common/constants/urlSyncPollingIntervalMs';
 import { getSubPathFromBrowserUrl, getSubPathFromIframe, isSameOrigin } from '@libs/common/utils';
@@ -35,16 +35,6 @@ const useFrameUrlSync = ({ appName, proxyPrefix, iframeRef, enabled }: UseFrameU
 
   const isOnAppRoute = pathname.startsWith(`/${appName}`);
 
-  const pathnameRef = useRef(pathname);
-  const searchRef = useRef(search);
-  const hashRef = useRef(hash);
-  const navigateRef = useRef(navigate);
-
-  pathnameRef.current = pathname;
-  searchRef.current = search;
-  hashRef.current = hash;
-  navigateRef.current = navigate;
-
   useEffect(() => {
     if (!enabled || !isOnAppRoute || !iframeRef.current) return undefined;
 
@@ -56,12 +46,7 @@ const useFrameUrlSync = ({ appName, proxyPrefix, iframeRef, enabled }: UseFrameU
       const iframeUrlParts = getSubPathFromIframe(iframe, proxyPrefix);
       if (iframeUrlParts === null) return;
 
-      const browserUrlParts = getSubPathFromBrowserUrl(
-        pathnameRef.current,
-        searchRef.current,
-        hashRef.current,
-        appName,
-      );
+      const browserUrlParts = getSubPathFromBrowserUrl(pathname, search, hash, appName);
 
       const isDifferent =
         iframeUrlParts.subPath !== browserUrlParts.subPath ||
@@ -69,7 +54,7 @@ const useFrameUrlSync = ({ appName, proxyPrefix, iframeRef, enabled }: UseFrameU
         iframeUrlParts.hash !== browserUrlParts.hash;
       if (isDifferent) {
         const newBrowserPath = `/${appName}${iframeUrlParts.subPath}${iframeUrlParts.search}${iframeUrlParts.hash}`;
-        navigateRef.current(newBrowserPath, { replace: true });
+        navigate(newBrowserPath, { replace: true });
       }
     };
 
@@ -80,7 +65,7 @@ const useFrameUrlSync = ({ appName, proxyPrefix, iframeRef, enabled }: UseFrameU
     return () => {
       clearInterval(intervalId);
     };
-  }, [enabled, isOnAppRoute, iframeRef, proxyPrefix, appName]);
+  }, [enabled, isOnAppRoute, iframeRef, proxyPrefix, appName, navigate, pathname, search, hash]);
 };
 
 export default useFrameUrlSync;

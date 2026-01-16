@@ -147,7 +147,7 @@ const NativeFrame: React.FC<NativeFrameProps> = ({
 
   if (!currentAppConfig) return null;
 
-  const getIframeSrc = () => {
+  const iframeSrc = (() => {
     if (!isFrameLoaded) return undefined;
 
     if (deepLinkUrl) {
@@ -161,7 +161,7 @@ const NativeFrame: React.FC<NativeFrameProps> = ({
 
     deepLinkRefs.current.iframeSrc = initialUrlRef.current;
     return initialUrlRef.current;
-  };
+  })();
 
   return (
     <iframe
@@ -171,7 +171,7 @@ const NativeFrame: React.FC<NativeFrameProps> = ({
       className="absolute inset-y-0 left-0 ml-0 w-full"
       height="100%"
       allow={IFRAME_ALLOWED_CONFIG}
-      src={getIframeSrc()}
+      src={iframeSrc}
       style={isActiveFrame ? { display: 'block' } : { display: 'none' }}
     />
   );
