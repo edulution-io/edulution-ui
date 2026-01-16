@@ -163,12 +163,12 @@ iframe {
 
 .bg-glass {
   background-color: color-mix(in srgb, var(--foreground) 50%, transparent);
-  box-shadow: 0 0 12px 0px rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 12px 0px rgba(0, 0, 0, 0.15);
 }
 
 .bg-glass .dark {
   background-color: color-mix(in srgb, var(--foreground) 50%, transparent);
-  box-shadow: 0 0 10px 0px rgba(253, 253, 253, 0.25);
+  box-shadow: 0 0 10px 0px rgba(255, 255, 255, 0.15);
 }
 
 .black-centered-shadow {
