@@ -18,10 +18,12 @@
  */
 
 import React from 'react';
-import THEME from '@libs/common/constants/theme';
-import FileSelectButton from '@/components/ui/FileSelectButton';
 import cn from '@libs/common/utils/className';
+import THEME from '@libs/common/constants/theme';
 import ThemeType from '@libs/common/types/themeType';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
+import FileSelectButton from '@/components/ui/FileSelectButton';
+import DeleteButton from '@/components/shared/Card/DeleteButton';
 
 type LogoUploadFieldProps = {
   variant: ThemeType;
@@ -37,6 +39,8 @@ type LogoUploadFieldProps = {
   alt?: string;
   fallbackSrc?: string;
   className?: string;
+  onHandleReset?: () => Promise<void>;
+  isLoginPage?: boolean;
 };
 
 const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
@@ -53,21 +57,28 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
   alt = 'Logo preview',
   fallbackSrc,
   className,
+  onHandleReset,
+  isLoginPage: invertBGColor = false,
 }) => {
-  const backdropClass = variant === THEME.light ? 'bg-neutral-900' : 'bg-white';
+  const useLightBackDropClass =
+    (variant === THEME.light && !invertBGColor) || (variant === THEME.dark && invertBGColor);
 
   return (
     <div
       className={cn(
         'relative flex flex-col items-center rounded-2xl border border-dashed border-gray-300 p-6 text-center shadow-sm hover:border-gray-400',
-        backdropClass,
+        { 'bg-white': useLightBackDropClass },
+        { 'bg-neutral-900': !useLightBackDropClass },
         uploading && 'pointer-events-none opacity-60',
         className,
       )}
       aria-busy={uploading}
       aria-live="polite"
     >
-      {(previewSrc || fallbackSrc) && (
+      <div className="absolute right-4 top-4">{onHandleReset && <DeleteButton onDelete={onHandleReset} />}</div>
+      {uploading ? (
+        <CircleLoader className="mx-auto h-20" />
+      ) : (
         <img
           key={cacheKey}
           src={previewSrc || fallbackSrc}
@@ -80,7 +91,6 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
           }}
         />
       )}
-
       <div className="mt-3 grid w-full grid-cols-1 gap-2">
         <FileSelectButton
           ref={inputRef}
@@ -89,16 +99,10 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
           hasSelection={hasLocalSelection}
           chooseText={chooseText}
           changeText={changeText}
-          labelClassName="w-full"
+          labelClassName="w-full border-none"
           disabled={uploading}
         />
       </div>
-
-      {uploading && (
-        <div className="pointer-events-none absolute inset-0 grid place-items-center">
-          <div className="h-6 w-6 animate-spin rounded-full border-2 border-current border-t-transparent" />
-        </div>
-      )}
     </div>
   );
 };

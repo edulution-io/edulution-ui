@@ -31,7 +31,8 @@ import MinimizeButton from '@/components/structure/framing/ResizableWindow/Butto
 import ToggleMaximizeButton from '@/components/structure/framing/ResizableWindow/Buttons/ToggleMaximizeButton';
 import CloseButton from '@/components/structure/framing/ResizableWindow/Buttons/CloseButton';
 import RectangleSize from '@libs/ui/types/rectangleSize';
-import { HiOutlineCursorArrowRipple } from 'react-icons/hi2';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMaximize } from '@fortawesome/free-solid-svg-icons';
 import RESIZEABLE_WINDOW_DEFAULT_POSITION from '@libs/ui/constants/resizableWindowDefaultPosition';
 import RESIZABLE_WINDOW_DEFAULT_SIZE from '@libs/ui/constants/resizableWindowDefaultSize';
 import { MOBILE_TOP_BAR_HEIGHT_PX } from '@libs/ui/constants/sidebar';
@@ -243,7 +244,7 @@ const ResizableWindow: React.FC<ResizableWindowProps> = ({
             style={{ marginTop: MAXIMIZED_BAR_HEIGHT }}
             className="h-14 w-14 rounded-full bg-foreground p-2 opacity-0 group-hover:opacity-100"
           >
-            <HiOutlineCursorArrowRipple size={40} />
+            <FontAwesomeIcon icon={faMaximize} />
           </div>
         </div>
       )}

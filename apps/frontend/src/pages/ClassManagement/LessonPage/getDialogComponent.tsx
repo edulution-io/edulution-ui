@@ -18,7 +18,7 @@
  */
 
 import React from 'react';
-import { IconType } from 'react-icons';
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import ShareFilesDialog from '@/pages/ClassManagement/components/Dialogs/ShareFilesDialog';
 import CLASSMGMT_OPTIONS from '@libs/classManagement/constants/classmgmtOptions';
 import LessonConfirmationDialog from '@/pages/ClassManagement/LessonPage/LessonConfirmationDialog';
@@ -31,7 +31,7 @@ type ButtonType = Pick<
   ClassmanagementButtonConfigProps,
   'enableAction' | 'disableAction' | 'enableText' | 'disableText'
 > & {
-  icon: IconType;
+  icon: IconDefinition;
   text: string;
 };
 

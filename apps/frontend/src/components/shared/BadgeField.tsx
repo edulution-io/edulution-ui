@@ -19,7 +19,8 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { MdRemoveCircleOutline, MdAddCircleOutline } from 'react-icons/md';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCirclePlus, faCircleMinus } from '@fortawesome/free-solid-svg-icons';
 import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import Label from '@/components/ui/Label';
@@ -87,7 +88,10 @@ const BadgeField = (props: BadgeFieldProps) => {
                   className="ml-2"
                   onClick={() => handleRemoveBadge(listItem)}
                 >
-                  <MdRemoveCircleOutline className="h-[24px] w-[24px]" />
+                  <FontAwesomeIcon
+                    icon={faCircleMinus}
+                    className="h-[24px] w-[24px]"
+                  />
                 </button>
               )}
             </BadgeSH>
@@ -101,7 +105,7 @@ const BadgeField = (props: BadgeFieldProps) => {
             disabled={disabled || !newLabel}
             actionIcons={[
               {
-                icon: MdAddCircleOutline,
+                icon: faCirclePlus,
                 onClick: handleAddBadge,
               },
             ]}

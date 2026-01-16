@@ -28,6 +28,7 @@ const STANDARD_TRANSLATION_IDS: Record<StandardActionType, string> = {
   [STANDARD_ACTION_TYPES.EDIT]: 'common.edit',
   [STANDARD_ACTION_TYPES.ADD_OR_EDIT]: 'common.add',
   [STANDARD_ACTION_TYPES.DELETE]: 'common.delete',
+  [STANDARD_ACTION_TYPES.SAVE]: 'common.save',
 };
 
 const resolveCondition = <TData>(
