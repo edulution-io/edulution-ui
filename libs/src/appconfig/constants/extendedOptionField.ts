@@ -27,6 +27,7 @@ const ExtendedOptionField = {
   dropdown: 'dropdown',
   updateChecker: 'updateChecker',
   scriptEditor: 'scriptEditor',
+  appLogo: 'appLogo',
 } as const;
 
 export default ExtendedOptionField;

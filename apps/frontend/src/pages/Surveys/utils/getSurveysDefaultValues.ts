@@ -17,20 +17,22 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AppConfigSectionsKeys = {
-  general: 'general',
-  fileSharing: 'fileSharing',
-  onlyOffice: 'onlyOffice',
-  drawio: 'drawio',
-  imapMailFeed: 'imapMailFeed',
-  bulletinBoard: 'bulletinBoard',
-  veyon: 'veyon',
-  docker: 'docker',
-  files: 'files',
-  editor: 'editor',
-  webdavShare: 'webdavShare',
-  scripts: 'scripts',
-  appLogo: 'appLogo',
-} as const;
+import i18n from '@/i18n';
+import APPS from '@libs/appconfig/constants/apps';
+import { getLogoUrl } from '@libs/appconfig/utils/getAppLogo';
+import ThemeType from '@libs/common/types/themeType';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
 
-export default AppConfigSectionsKeys;
+const getSurveysDefaultValues = (theme: ThemeType): Partial<SurveyDto> & { formula: SurveyFormula } => ({
+  formula: {
+    title: i18n.t('survey.newTitle'),
+    logo: getLogoUrl(APPS.SURVEYS, theme),
+  },
+  isAnonymous: false,
+  canSubmitMultipleAnswers: false,
+  isPublic: false,
+  canUpdateFormerAnswer: false,
+});
+
+export default getSurveysDefaultValues;
