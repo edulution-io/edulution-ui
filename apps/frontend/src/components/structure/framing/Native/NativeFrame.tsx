@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
@@ -25,10 +25,10 @@ import useUserStore from '@/store/UserStore/useUserStore';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
-import { combineUrlParts, getExternalUrlForDeepLink, getSubPathFromBrowserUrl } from '@libs/common/utils';
+import { getExternalUrlForDeepLink } from '@libs/common/utils';
 import IFRAME_ALLOWED_CONFIG from '@libs/ui/constants/iframeAllowedConfig';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import useFrameUrlSync from '@/hooks/useFrameUrlSync';
+import useFrameDeepLinkSync from '@/hooks/useFrameDeepLinkSync';
 
 interface NativeFrameProps {
   scriptOnStartUp?: string;
@@ -49,8 +49,6 @@ const NativeFrame: React.FC<NativeFrameProps> = ({
   const { loadedEmbeddedFrames, activeEmbeddedFrame } = useFrameStore();
 
   const currentAppConfig = findAppConfigByName(appConfigs, appName);
-  const isFrameLoaded = loadedEmbeddedFrames.includes(appName);
-
   const onLoadEnabled = currentAppConfig?.extendedOptions?.[ExtendedOptionKeys.FRAME_SCRIPT_ON_LOAD_ENABLED];
   const scriptOnStartUp =
     scriptOnStartUpProp ||
@@ -65,67 +63,30 @@ const NativeFrame: React.FC<NativeFrameProps> = ({
       ? (currentAppConfig?.extendedOptions?.[ExtendedOptionKeys.FRAME_SCRIPT_ON_LOGOUT_CONTENT] as string)
       : undefined);
 
+  const isFrameLoaded = loadedEmbeddedFrames.includes(appName);
+  const isActiveFrame = activeEmbeddedFrame === appName;
+
   const urlSyncEnabled = !!currentAppConfig?.extendedOptions?.[ExtendedOptionKeys.FRAME_URL_SYNC_ENABLED];
   const preloadBasePage =
     currentAppConfig?.extendedOptions?.[ExtendedOptionKeys.FRAME_URL_SYNC_PRELOAD_BASE_PAGE] !== false;
   const externalBaseUrl = currentAppConfig?.options?.url || '';
 
-  const isActiveFrame = activeEmbeddedFrame === appName;
+  const getDeepLinkUrl = useCallback(
+    (browserUrlSuffix: string) => getExternalUrlForDeepLink(externalBaseUrl, browserUrlSuffix),
+    [externalBaseUrl],
+  );
 
-  const browserSubPath = combineUrlParts(getSubPathFromBrowserUrl(pathname, search, hash, appName));
-  const deepLinkUrl =
-    !preloadBasePage && browserSubPath ? getExternalUrlForDeepLink(externalBaseUrl, browserSubPath) : null;
-
-  const initialBrowserSubPathRef = useRef<string | null>(browserSubPath);
-  const hasNavigatedToDeepLinkRef = useRef(false);
-  const currentSrcRef = useRef<string | undefined>(undefined);
-
-  const [hasPendingDeepLink, setHasPendingDeepLink] = useState(preloadBasePage && !!initialBrowserSubPathRef.current);
-
-  useEffect(() => {
-    if (!preloadBasePage) {
-      setHasPendingDeepLink(false);
-      return;
-    }
-
-    if (initialBrowserSubPathRef.current && !hasNavigatedToDeepLinkRef.current) {
-      setHasPendingDeepLink(true);
-    }
-  }, [preloadBasePage]);
-
-  useEffect(() => {
-    if (!preloadBasePage || !isFrameLoaded || !isActiveFrame || hasNavigatedToDeepLinkRef.current) {
-      return undefined;
-    }
-
-    const targetSubPath = initialBrowserSubPathRef.current;
-    if (!targetSubPath) return undefined;
-
-    const iframe = iframeRef.current;
-    if (!iframe) return undefined;
-
-    const navigateToDeepLink = () => {
-      const targetUrl = getExternalUrlForDeepLink(externalBaseUrl, targetSubPath);
-      iframe.src = targetUrl;
-      currentSrcRef.current = targetUrl;
-      hasNavigatedToDeepLinkRef.current = true;
-      setHasPendingDeepLink(false);
-    };
-
-    const handleLoad = () => {
-      setTimeout(navigateToDeepLink, 100);
-    };
-
-    iframe.addEventListener('load', handleLoad, { once: true });
-    return () => iframe.removeEventListener('load', handleLoad);
-  }, [preloadBasePage, isFrameLoaded, isActiveFrame, externalBaseUrl]);
-
-  const urlSyncShouldBeEnabled = urlSyncEnabled && isFrameLoaded && isActiveFrame && !hasPendingDeepLink;
-
-  useFrameUrlSync({
+  const { deepLinkRefs, deepLinkUrl } = useFrameDeepLinkSync({
     appName,
     iframeRef,
-    enabled: urlSyncShouldBeEnabled,
+    isFrameLoaded,
+    isActiveFrame,
+    urlSyncEnabled,
+    preloadBasePage,
+    pathname,
+    search,
+    hash,
+    getDeepLinkUrl,
   });
 
   const injectScript = (iframe: HTMLIFrameElement, script: string) => {
@@ -190,15 +151,15 @@ const NativeFrame: React.FC<NativeFrameProps> = ({
     if (!isFrameLoaded) return undefined;
 
     if (deepLinkUrl) {
-      currentSrcRef.current = deepLinkUrl;
+      deepLinkRefs.current.iframeSrc = deepLinkUrl;
       return deepLinkUrl;
     }
 
-    if (currentSrcRef.current) {
-      return currentSrcRef.current;
+    if (deepLinkRefs.current.iframeSrc) {
+      return deepLinkRefs.current.iframeSrc;
     }
 
-    currentSrcRef.current = initialUrlRef.current;
+    deepLinkRefs.current.iframeSrc = initialUrlRef.current;
     return initialUrlRef.current;
   };
 

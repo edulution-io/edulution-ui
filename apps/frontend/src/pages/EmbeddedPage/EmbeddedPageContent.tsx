@@ -17,12 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import type TAppFieldType from '@libs/appconfig/types/tAppFieldType';
 import { getProxyPrefixFromUrl } from '@libs/common/utils';
 import IFRAME_ALLOWED_CONFIG from '@libs/ui/constants/iframeAllowedConfig';
-import useFrameUrlSync from '@/hooks/useFrameUrlSync';
+import useFrameDeepLinkSync from '@/hooks/useFrameDeepLinkSync';
 
 type EmbeddedPageContentProps = {
   appName: string;
@@ -47,28 +47,28 @@ const EmbeddedPageContent: React.FC<EmbeddedPageContentProps> = ({
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const proxyPrefix = getProxyPrefixFromUrl(htmlContentUrl || '');
 
-  const getDeepLinkUrl = (): string | null => {
-    const prefix = `/${appName}`;
-    if (pathname.startsWith(prefix)) {
-      const subPath = pathname.slice(prefix.length);
-      const combinedSuffix = `${subPath}${search}${hash}`;
-      if (combinedSuffix) {
-        if (proxyPrefix && subPath.startsWith(proxyPrefix)) {
-          return `${subPath}${search}${hash}`;
-        }
-        return `${proxyPrefix}${subPath}${search}${hash}`;
+  const getDeepLinkUrl = useCallback(
+    (browserUrlSuffix: string) => {
+      if (!pathname.startsWith(`/${appName}`)) return '';
+      if (proxyPrefix && browserUrlSuffix.startsWith(proxyPrefix)) {
+        return browserUrlSuffix;
       }
-    }
-    return null;
-  };
+      return `${proxyPrefix}${browserUrlSuffix}`;
+    },
+    [appName, pathname, proxyPrefix],
+  );
 
-  const deepLinkUrl = !preloadBasePage ? getDeepLinkUrl() : null;
-
-  useFrameUrlSync({
+  const { deepLinkUrl } = useFrameDeepLinkSync({
     appName,
-    proxyPrefix,
     iframeRef,
-    enabled: urlSyncEnabled && !!isSandboxMode && !!proxyPrefix,
+    isFrameLoaded: !!isSandboxMode,
+    isActiveFrame: true,
+    urlSyncEnabled: urlSyncEnabled && !!isSandboxMode && !!proxyPrefix,
+    preloadBasePage,
+    pathname,
+    search,
+    hash,
+    getDeepLinkUrl,
   });
 
   if (isSandboxMode) {
