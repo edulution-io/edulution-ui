@@ -30,7 +30,8 @@ import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/getSurveyEditorForm.schema';
 import resetSurveyIdFromFormulasBackendLimiters from '@libs/survey/utils/resetSurveyIdFromFormulasBackendLimiters';
-import surveysDefaultValues from '@/pages/Surveys/utils/surveys-default-values';
+import getSurveysDefaultValues from '@/pages/Surveys/utils/getSurveysDefaultValues';
+import useThemeStore from '@/store/useThemeStore';
 import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
@@ -77,6 +78,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
   const { t } = useTranslation();
   const { language } = useLanguage();
   const { isSuperAdmin } = useLdapGroups();
+  const { theme } = useThemeStore();
 
   const handleReset = () => {
     resetStoredSurvey();
@@ -154,7 +156,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     form.reset(initialFormValues);
     if (creator) {
       creator.saveNo = 0;
-      creator.JSON = surveysDefaultValues.formula;
+      creator.JSON = getSurveysDefaultValues(theme).formula;
     }
   }, [form, initialFormValues, creator]);
 

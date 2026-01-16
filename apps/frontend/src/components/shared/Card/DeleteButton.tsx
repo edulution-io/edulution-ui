@@ -17,20 +17,21 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const AppConfigSectionsKeys = {
-  general: 'general',
-  fileSharing: 'fileSharing',
-  onlyOffice: 'onlyOffice',
-  drawio: 'drawio',
-  imapMailFeed: 'imapMailFeed',
-  bulletinBoard: 'bulletinBoard',
-  veyon: 'veyon',
-  docker: 'docker',
-  files: 'files',
-  editor: 'editor',
-  webdavShare: 'webdavShare',
-  scripts: 'scripts',
-  appLogo: 'appLogo',
-} as const;
+import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
+import { Button } from '@/components/shared/Button';
 
-export default AppConfigSectionsKeys;
+const DeleteButton: React.FC<{ onDelete: () => void }> = ({ onDelete }) => (
+  <Button
+    onClick={onDelete}
+    className="absolute right-1 top-1 h-8 rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
+  >
+    <FontAwesomeIcon
+      icon={DeleteIcon}
+      className="h-4 w-4 text-white"
+    />
+  </Button>
+);
+
+export default DeleteButton;

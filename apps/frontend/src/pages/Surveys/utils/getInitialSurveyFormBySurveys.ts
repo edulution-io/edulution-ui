@@ -19,16 +19,19 @@
 
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import THEME from '@libs/common/constants/theme';
+import ThemeType from '@libs/common/types/themeType';
 import getFirstValidDateOfArray from '@libs/common/utils/Date/getFirstValidDateOfArray';
-import surveysDefaultValues from './surveys-default-values';
+import getSurveysDefaultValues from './getSurveysDefaultValues';
 
 const getInitialSurveyFormBySurveys = (
   creator: AttendeeDto,
   selectedSurvey?: SurveyDto,
   storedSurvey?: SurveyDto,
+  theme: ThemeType = THEME.dark,
 ): SurveyDto => {
   const expiresDate = getFirstValidDateOfArray(storedSurvey?.expires, selectedSurvey?.expires);
-
+  const surveysDefaultValues = getSurveysDefaultValues(theme);
   return {
     id: storedSurvey?.id || selectedSurvey?.id,
     formula: storedSurvey?.formula || selectedSurvey?.formula || surveysDefaultValues.formula,

@@ -376,3 +376,5 @@ $RECYCLE.BIN/
 !/data/public/
 /data/public/*
 !/data/public/assets/
+/data/public/assets/surveys/surveys-custom-logo-light.webp
+/data/public/assets/surveys/surveys-custom-logo-dark.webp
