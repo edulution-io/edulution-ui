@@ -17,13 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import {
-  ClassManagementIcon,
-  CreateProjectIcon,
-  EnrolIcon,
-  FirstPasswordIcon,
-  LearningManagementIcon,
-} from '@/assets/icons';
+import { ClassManagementIcon, CreateProjectIcon, EnrolIcon, PrintIcon, LearningManagementIcon } from '@/assets/icons';
 import { useNavigate } from 'react-router-dom';
 import {
   CLASS_MANAGEMENT_ENROL_LOCATION,
@@ -65,7 +59,7 @@ const useClassManagementMenu = () => {
       {
         id: CLASS_MANAGEMENT_PRINT_PASSWORDS_LOCATION,
         label: 'classmanagement.printPasswords',
-        icon: FirstPasswordIcon,
+        icon: PrintIcon,
         action: () => {
           navigate(CLASS_MANAGEMENT_PRINT_PASSWORDS_PATH);
         },
