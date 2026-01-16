@@ -71,12 +71,12 @@ const DialogContent = React.forwardRef<
 
   return (
     <DialogPortal>
-      <DialogOverlay className={cn({ 'bg-black/50': variant === 'primary' })} />{' '}
+      <DialogOverlay className={cn({ 'bg-white/50 backdrop-blur-sm dark:bg-black/50': variant === 'primary' })} />{' '}
       <DialogPrimitive.Content
         ref={ref}
         className={cn(
           'fixed left-[50%] top-[50%] z-50 grid max-h-[90vh] w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 overflow-auto rounded-xl p-6 shadow-lg duration-200 scrollbar-thin',
-          { 'bg-overlay': variant === 'primary' },
+          { 'bg-glass  backdrop-blur-lg': variant === 'primary' },
           { 'color-white': variant === 'secondary' },
           { 'bg-ciGray': variant === 'secondary' },
           { 'w-40 bg-foreground': variant === 'loadingSpinner' },
