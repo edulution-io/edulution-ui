@@ -174,8 +174,8 @@ const AddWireguardPeerDialog: React.FC<AddWireguardPeerDialogProps> = ({ tableId
 
   const handleConfirmDelete = async () => {
     const peerToDelete = itemToDelete || selectedPeerStatus;
-    if (peerToDelete?.peer && deleteTableEntry) {
-      await deleteTableEntry('', peerToDelete.peer);
+    if (peerToDelete?.name && deleteTableEntry) {
+      await deleteTableEntry('', peerToDelete.name);
       if (setSelectedRows) {
         setSelectedRows({});
       }
@@ -385,7 +385,7 @@ const AddWireguardPeerDialog: React.FC<AddWireguardPeerDialogProps> = ({ tableId
         <DeleteConfirmationDialog
           isOpen={isDeleteDialogOpen || !!itemToDelete}
           onOpenChange={handleDeleteDialogClose}
-          items={[{ id: deleteItem.peer, name: deleteItem.peer }]}
+          items={[{ id: deleteItem.name, name: deleteItem.name }]}
           onConfirmDelete={handleConfirmDelete}
           titleTranslationKey="wireguard.deletePeers"
           messageTranslationKey="wireguard.confirmDelete"
