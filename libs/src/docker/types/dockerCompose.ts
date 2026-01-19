@@ -30,6 +30,8 @@ type DockerCompose = {
       depends_on?: string[];
       stdin_open?: boolean;
       stop_grace_period?: string;
+      cap_add?: string[];
+      sysctls?: string[];
     };
   };
   volumes?: {

@@ -24,6 +24,9 @@ import { WireguardTableStore } from '@libs/appconfig/types/wireguardTableStore';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import WIREGUARD_API_ENDPOINT from '@libs/wireguard/constants/wireguardApiEndpoint';
+import DOCKER_APPLICATION_LIST from '@libs/docker/constants/dockerApplicationList';
+import DOCKER_STATES from '@libs/docker/constants/dockerStates';
+import useDockerApplicationStore from '@/pages/Settings/AppConfig/DockerIntegration/useDockerApplicationStore';
 import type {
   BatchPeersRequest,
   BatchPeersResult,
@@ -54,6 +57,15 @@ const useWireguardConfigTableStore: UseBoundStore<StoreApi<WireguardTableStore>>
     fetchTableContent: async () => {
       set({ isLoading: true, error: null });
       try {
+        const containerStatus = await useDockerApplicationStore
+          .getState()
+          .getContainerStatus(DOCKER_APPLICATION_LIST.wireguard!);
+
+        if (containerStatus !== DOCKER_STATES.RUNNING) {
+          set({ tableContentData: [], isLoading: false });
+          return;
+        }
+
         const response = await eduApi.get<Record<string, Omit<WireguardPeer, 'name'>>>(
           `${WIREGUARD_API_ENDPOINT}/peers/status`,
         );

@@ -17,8 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
 import axios, { AxiosInstance } from 'axios';
+import { randomBytes } from 'crypto';
 import type {
   BatchPeersRequest,
   BatchPeersResult,
@@ -30,26 +32,114 @@ import type {
   SiteRequest,
 } from '@libs/wireguard/types/wireguard';
 import WIREGUARD_ERROR_MESSAGES from '@libs/wireguard/constants/wireguardErrorMessages';
+import APPS from '@libs/appconfig/constants/apps';
+import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import GroupsService from '../groups/groups.service';
 import CustomHttpException from '../common/CustomHttpException';
+import AppConfigService from '../appconfig/appconfig.service';
 
-const { EDU_EG_API_URL, EDU_WG_API_KEY } = process.env;
+const { EDU_WG_API_URL, EDU_WG_API_KEY } = process.env;
+
+const DEFAULT_WIREGUARD_URL = 'http://edulution-wireguard:8000/api/wireguard';
+
+const generateApiKey = (): string => randomBytes(16).toString('hex');
 
 @Injectable()
-class WireguardService {
-  private readonly wireguardApi: AxiosInstance;
+class WireguardService implements OnModuleInit {
+  private wireguardApi: AxiosInstance;
 
-  constructor(private readonly groupsService: GroupsService) {
-    if (!EDU_WG_API_KEY) {
-      Logger.warn('EDU_WG_API_KEY not set in environment', WireguardService.name);
-    }
-
+  constructor(
+    private readonly groupsService: GroupsService,
+    private readonly appConfigService: AppConfigService,
+  ) {
     this.wireguardApi = axios.create({
-      baseURL: EDU_EG_API_URL || 'http://edulution-wireguard:8000/api/wireguard',
+      baseURL: EDU_WG_API_URL || DEFAULT_WIREGUARD_URL,
       headers: {
         EDU_WG_API_KEY: EDU_WG_API_KEY || '',
       },
     });
+  }
+
+  async onModuleInit() {
+    await this.initializeApiConfiguration();
+  }
+
+  @OnEvent(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${APPS.WIREGUARD}`)
+  async handleWireguardConfigUpdate() {
+    await this.ensureWireguardConfigDefaultsOnCreate();
+    await this.initializeApiConfiguration();
+  }
+
+  private async ensureWireguardConfigDefaultsOnCreate() {
+    try {
+      const wireguardConfig = await this.appConfigService.getAppConfigByName(APPS.WIREGUARD);
+
+      if (!wireguardConfig) {
+        Logger.log('WireGuard app config not found, skipping defaults generation', WireguardService.name);
+        return;
+      }
+
+      const currentUrl = wireguardConfig.options?.url;
+      const currentApiKey = wireguardConfig.options?.apiKey;
+
+      if (currentUrl && currentApiKey) {
+        return;
+      }
+
+      let needsUpdate = false;
+      const updatedOptions = { ...wireguardConfig.options };
+
+      if (!currentUrl) {
+        updatedOptions.url = EDU_WG_API_URL || DEFAULT_WIREGUARD_URL;
+        needsUpdate = true;
+        Logger.log(`Setting WireGuard URL to: ${updatedOptions.url}`, WireguardService.name);
+      }
+
+      if (!currentApiKey) {
+        updatedOptions.apiKey = EDU_WG_API_KEY || generateApiKey();
+        needsUpdate = true;
+        Logger.log('Setting WireGuard API key', WireguardService.name);
+      }
+
+      if (needsUpdate) {
+        await this.appConfigService.patchSingleFieldInConfig(
+          APPS.WIREGUARD,
+          { field: 'options', value: updatedOptions },
+          [],
+        );
+        Logger.log('Initialized WireGuard AppConfig with URL and API key', WireguardService.name);
+      }
+    } catch (error) {
+      Logger.warn('Failed to ensure WireGuard config defaults', WireguardService.name);
+    }
+  }
+
+  private async initializeApiConfiguration() {
+    try {
+      const wireguardConfig = await this.appConfigService.getAppConfigByName(APPS.WIREGUARD);
+
+      if (!wireguardConfig) {
+        Logger.log('WireGuard app config not found', WireguardService.name);
+        return;
+      }
+
+      const configUrl = wireguardConfig.options?.url;
+      const configApiKey = wireguardConfig.options?.apiKey;
+
+      const url = EDU_WG_API_URL || configUrl || DEFAULT_WIREGUARD_URL;
+      const apiKey = EDU_WG_API_KEY || configApiKey || '';
+
+      this.wireguardApi = axios.create({
+        baseURL: url,
+        headers: {
+          EDU_WG_API_KEY: apiKey,
+        },
+      });
+
+      Logger.log(`WireGuard API configured with URL: ${url}`, WireguardService.name);
+    } catch (error) {
+      Logger.warn('Failed to initialize WireGuard API configuration from AppConfig', WireguardService.name);
+    }
   }
 
   async getPeers(): Promise<Record<string, Peer>> {
@@ -57,10 +147,6 @@ class WireguardService {
       const response = await this.wireguardApi.get<Record<string, Peer>>('/peers');
       return response.data;
     } catch (error) {
-      Logger.error(
-        `Failed to get peers: ${error instanceof Error ? error.message : String(error)}`,
-        WireguardService.name,
-      );
       throw new CustomHttpException(
         WIREGUARD_ERROR_MESSAGES.GET_PEERS_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -75,10 +161,6 @@ class WireguardService {
       const response = await this.wireguardApi.post<boolean>('/peers', peerRequest);
       return response.data;
     } catch (error) {
-      Logger.error(
-        `Failed to create peer: ${error instanceof Error ? error.message : String(error)}`,
-        WireguardService.name,
-      );
       throw new CustomHttpException(
         WIREGUARD_ERROR_MESSAGES.CREATE_PEER_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -93,10 +175,6 @@ class WireguardService {
       const response = await this.wireguardApi.delete<boolean>(`/peers/${peer}`);
       return response.data;
     } catch (error) {
-      Logger.error(
-        `Failed to delete peer: ${error instanceof Error ? error.message : String(error)}`,
-        WireguardService.name,
-      );
       throw new CustomHttpException(
         WIREGUARD_ERROR_MESSAGES.DELETE_PEER_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -111,10 +189,6 @@ class WireguardService {
       const response = await this.wireguardApi.get<PeerConfig>(`/peers/${peer}/config`);
       return response.data;
     } catch (error) {
-      Logger.error(
-        `Failed to get peer config: ${error instanceof Error ? error.message : String(error)}`,
-        WireguardService.name,
-      );
       throw new CustomHttpException(
         WIREGUARD_ERROR_MESSAGES.GET_PEER_CONFIG_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -131,10 +205,6 @@ class WireguardService {
       });
       return Buffer.from(response.data);
     } catch (error) {
-      Logger.error(
-        `Failed to get peer QR: ${error instanceof Error ? error.message : String(error)}`,
-        WireguardService.name,
-      );
       throw new CustomHttpException(
         WIREGUARD_ERROR_MESSAGES.GET_PEER_QR_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -149,10 +219,6 @@ class WireguardService {
       const response = await this.wireguardApi.get<string>(`/peers/${peer}/qr/b64`);
       return response.data;
     } catch (error) {
-      Logger.error(
-        `Failed to get peer QR base64: ${error instanceof Error ? error.message : String(error)}`,
-        WireguardService.name,
-      );
       throw new CustomHttpException(
         WIREGUARD_ERROR_MESSAGES.GET_PEER_QR_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -167,10 +233,6 @@ class WireguardService {
       const response = await this.wireguardApi.get<WireguardPeer | false>(`/peers/${peer}/status`);
       return response.data;
     } catch (error) {
-      Logger.error(
-        `Failed to get peer status: ${error instanceof Error ? error.message : String(error)}`,
-        WireguardService.name,
-      );
       throw new CustomHttpException(
         WIREGUARD_ERROR_MESSAGES.GET_PEER_STATUS_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -185,10 +247,6 @@ class WireguardService {
       const response = await this.wireguardApi.get<Record<string, WireguardPeer>>('/peers/status');
       return response.data;
     } catch (error) {
-      Logger.error(
-        `Failed to get all peers status: ${error instanceof Error ? error.message : String(error)}`,
-        WireguardService.name,
-      );
       throw new CustomHttpException(
         WIREGUARD_ERROR_MESSAGES.GET_PEERS_STATUS_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -203,10 +261,6 @@ class WireguardService {
       const response = await this.wireguardApi.get<boolean>('/restart');
       return response.data;
     } catch (error) {
-      Logger.error(
-        `Failed to restart WireGuard: ${error instanceof Error ? error.message : String(error)}`,
-        WireguardService.name,
-      );
       throw new CustomHttpException(
         WIREGUARD_ERROR_MESSAGES.RESTART_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -221,10 +275,6 @@ class WireguardService {
       const response = await this.wireguardApi.get<Record<string, Site>>('/sites');
       return response.data;
     } catch (error) {
-      Logger.error(
-        `Failed to get sites: ${error instanceof Error ? error.message : String(error)}`,
-        WireguardService.name,
-      );
       throw new CustomHttpException(
         WIREGUARD_ERROR_MESSAGES.GET_SITES_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -239,10 +289,6 @@ class WireguardService {
       const response = await this.wireguardApi.post<boolean>('/sites', siteRequest);
       return response.data;
     } catch (error) {
-      Logger.error(
-        `Failed to create site: ${error instanceof Error ? error.message : String(error)}`,
-        WireguardService.name,
-      );
       throw new CustomHttpException(
         WIREGUARD_ERROR_MESSAGES.CREATE_SITE_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -257,10 +303,6 @@ class WireguardService {
       const response = await this.wireguardApi.delete<boolean>(`/sites/${site}`);
       return response.data;
     } catch (error) {
-      Logger.error(
-        `Failed to delete site: ${error instanceof Error ? error.message : String(error)}`,
-        WireguardService.name,
-      );
       throw new CustomHttpException(
         WIREGUARD_ERROR_MESSAGES.DELETE_SITE_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -275,10 +317,6 @@ class WireguardService {
       const response = await this.wireguardApi.get<PeerConfig>(`/sites/${site}/config`);
       return response.data;
     } catch (error) {
-      Logger.error(
-        `Failed to get site config: ${error instanceof Error ? error.message : String(error)}`,
-        WireguardService.name,
-      );
       throw new CustomHttpException(
         WIREGUARD_ERROR_MESSAGES.GET_SITE_CONFIG_FAILED,
         HttpStatus.INTERNAL_SERVER_ERROR,

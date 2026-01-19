@@ -136,6 +136,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.WIREGUARD,
     icon: VPNIcon,
+    options: [APP_CONFIG_OPTION_KEYS.URL, APP_CONFIG_OPTION_KEYS.APIKEY, APP_CONFIG_OPTION_KEYS.PROXYCONFIG],
     isNativeApp: true,
     extendedOptions: {
       [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,

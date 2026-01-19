@@ -1850,6 +1850,18 @@
     "EDULUTION_MAIL_HOSTNAME": {
       "title": "Nom d'hôte",
       "description": "Nom d'hôte du serveur de messagerie. Cela peut différer du domaine Edulution."
+    },
+    "EDU_WG_IPNETWORK": {
+      "title": "Réseau IP",
+      "description": "Le réseau IP pour la connexion VPN (par ex. 10.8.0.0/24)."
+    },
+    "EDU_WG_ADDRESS": {
+      "title": "Adresse",
+      "description": "L'adresse IP du serveur VPN."
+    },
+    "EDU_WG_DNS": {
+      "title": "Serveur DNS",
+      "description": "L'adresse du serveur DNS pour la connexion VPN."
     }
   },
   "edulution-manager": {

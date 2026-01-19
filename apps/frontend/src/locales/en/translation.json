@@ -2044,6 +2044,18 @@
     "EDULUTION_MAIL_HOSTNAME": {
       "title": "Hostname",
       "description": "Hostname of the mail server. This could be different from the edulution domain name."
+    },
+    "EDU_WG_IPNETWORK": {
+      "title": "IP Network",
+      "description": "The IP network for the VPN connection (e.g. 10.8.0.0/24)."
+    },
+    "EDU_WG_ADDRESS": {
+      "title": "Address",
+      "description": "The IP address of the VPN server."
+    },
+    "EDU_WG_DNS": {
+      "title": "DNS Server",
+      "description": "The DNS server address for the VPN connection."
     }
   },
   "edulution-manager": {
