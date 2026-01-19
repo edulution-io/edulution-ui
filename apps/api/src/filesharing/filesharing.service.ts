@@ -286,10 +286,19 @@ class FilesharingService {
     }
   }
 
-  async listOwnPublicShares(username: string): Promise<PublicShareResponseDto> {
+  async listPublicShares(currentUser: JwtUser): Promise<PublicShareResponseDto> {
+    const username = currentUser.preferred_username;
+    const userGroups = currentUser.ldapGroups ?? [];
+
     const publicShares = await this.shareModel
-      .find({ 'creator.username': username })
-      .sort({ validUntil: 1 })
+      .find({
+        $or: [
+          { 'creator.username': username },
+          { 'invitedAttendees.username': username },
+          { 'invitedGroups.path': { $in: userGroups } },
+        ],
+      })
+      .sort({ createdAt: -1 })
       .lean()
       .exec();
 
@@ -299,9 +308,12 @@ class FilesharingService {
           ? PUBLIC_SHARE_LINK_SCOPE.RESTRICTED
           : PUBLIC_SHARE_LINK_SCOPE.PUBLIC;
 
+      const isOwner = share.creator.username === username;
+
       return {
-        ...(share as Omit<PublicShareDto, 'scope'>),
+        ...(share as Omit<PublicShareDto, 'scope' | 'isOwner'>),
         scope,
+        isOwner,
       };
     });
 

@@ -380,6 +380,7 @@
       "FileFormatNotSupported": "Le format de fichier n'est pas pris en charge."
     },
     "publicFileSharing": {
+      "sharedBy": "Partagé par",
       "errors": {
         "PublicFileDownloadFailed": "Le téléchargement du fichier a échoué. Veuillez réessayer plus tard."
       }
@@ -1254,6 +1255,7 @@
     "less": "Moins",
     "refreshPage": "Actualiser la page",
     "guest": "Invité",
+    "me": "Moi",
     "ok": "OK",
     "next": "Prochain",
     "back": "Précédent",
