@@ -27,7 +27,7 @@ import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { type AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import EmbeddedPageEditorForm from '@libs/appconfig/types/embeddedPageEditorForm';
 import ThemedFile from '@libs/common/types/themedFile';
-import AppConfigFormDarkAndLightLogoField from '@/pages/Settings/AppConfig/components/AppConfigFormDarkAndLightLogoField';
+import AppConfigFormDarkAndLightAssetField from '@/pages/Settings/AppConfig/components/AppConfigFormDarkAndLightAssetField';
 import AppConfigDropdownSelect from '@/pages/Settings/AppConfig/components/dropdown/AppConfigDropdownSelect';
 import EmbeddedPageEditor from '@/pages/Settings/AppConfig/components/EmbeddedPageEditor';
 import AppConfigSwitch from '@/pages/Settings/AppConfig/components/booleanField/AppConfigSwitch';
@@ -57,7 +57,7 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
     switch (option.type) {
       case ExtendedOptionField.appLogo:
         return (
-          <AppConfigFormDarkAndLightLogoField
+          <AppConfigFormDarkAndLightAssetField
             key={fieldPath}
             fieldPath={fieldPath}
             settingLocation={settingLocation}

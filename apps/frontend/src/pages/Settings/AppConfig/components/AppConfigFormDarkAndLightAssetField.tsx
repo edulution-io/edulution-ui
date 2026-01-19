@@ -13,39 +13,50 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import THEME from '@libs/common/constants/theme';
+import ThemeType from '@libs/common/types/themeType';
 import ThemedFile from '@libs/common/types/themedFile';
-import AppConfigFormLogoField from '@/pages/Settings/AppConfig/components/AppConfigFormLogoField';
+import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
+import AssetType from '@libs/appconfig/types/assetType';
+import AppConfigFormAssetField from '@/pages/Settings/AppConfig/components/AppConfigFormAssetField';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 
-export type AppConfigFormDarkAndLightLogoFieldProps = {
+export type AppConfigFormDarkAndLightAssetFieldProps = {
   settingLocation: string;
   fieldPath: string;
   option: AppConfigExtendedOption;
   form: UseFormReturn<ThemedFile>;
+  assetType?: AssetType;
+  onUploadSuccess?: (variant: ThemeType) => void;
 };
 
-const AppConfigFormDarkAndLightLogoField: React.FC<AppConfigFormDarkAndLightLogoFieldProps> = ({
+const AppConfigFormDarkAndLightAssetField: React.FC<AppConfigFormDarkAndLightAssetFieldProps> = ({
   settingLocation,
   fieldPath,
   option,
   form,
+  assetType = ASSET_TYPES.logo,
+  onUploadSuccess,
 }) => (
   <div className="flex flex-grow flex-col gap-4 lg:flex-row">
-    <AppConfigFormLogoField
+    <AppConfigFormAssetField
       variant={THEME.light}
       appName={settingLocation}
       fieldPath={fieldPath}
       option={option}
       form={form}
+      assetType={assetType}
+      onUploadSuccess={onUploadSuccess}
     />
-    <AppConfigFormLogoField
+    <AppConfigFormAssetField
       variant={THEME.dark}
       appName={settingLocation}
       fieldPath={fieldPath}
       option={option}
       form={form}
+      assetType={assetType}
+      onUploadSuccess={onUploadSuccess}
     />
   </div>
 );
 
-export default AppConfigFormDarkAndLightLogoField;
+export default AppConfigFormDarkAndLightAssetField;

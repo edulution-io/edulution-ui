@@ -43,9 +43,10 @@ interface FilesystemStore {
     filename: string,
     file: File | Blob,
     appName?: string,
-    variant?: ThemeType,
+    uploadKey?: string,
   ) => Promise<boolean>;
 
+  uploadingKey: string | null;
   uploadingVariant: ThemeType | null;
   uploadVariant: (variant: ThemeType, file: File) => Promise<void>;
 
@@ -56,6 +57,7 @@ interface FilesystemStore {
 const initialState = {
   darkVersion: 0,
   fetchingImageVariant: null,
+  uploadingKey: null,
   uploadingVariant: null,
   error: null,
 };
@@ -110,9 +112,9 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
     filename: string,
     file: File | Blob,
     appName?: string,
-    variant?: ThemeType,
+    uploadKey?: string,
   ): Promise<boolean> => {
-    set({ uploadingVariant: variant, error: null });
+    set({ uploadingKey: uploadKey ?? null, error: null });
     try {
       const form = new FormData();
       form.append('destination', destination);
@@ -141,7 +143,7 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
       handleApiError(e, set);
       return false;
     } finally {
-      set({ uploadingVariant: null });
+      set({ uploadingKey: null });
     }
   },
 

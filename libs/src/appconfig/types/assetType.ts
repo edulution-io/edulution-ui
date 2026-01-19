@@ -17,29 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useEffect } from 'react';
-import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
-import useThemeStore from '@/store/useThemeStore';
-import applyThemeColors from '@/utils/applyThemeColors';
-import applyBackgroundImage from '@/utils/applyBackgroundImage';
-import getThemeWithDefaults from '@/utils/getThemeWithDefaults';
+import ASSET_TYPES from '../constants/assetTypes';
 
-const useThemeColors = () => {
-  const { publicTheme, getPublicTheme } = useGlobalSettingsApiStore();
-  const resolvedTheme = useThemeStore((s) => s.getResolvedTheme());
+type AssetType = (typeof ASSET_TYPES)[keyof typeof ASSET_TYPES];
 
-  useEffect(() => {
-    void getPublicTheme();
-  }, [getPublicTheme]);
-
-  useEffect(() => {
-    const theme = getThemeWithDefaults(publicTheme);
-    applyThemeColors(theme);
-  }, [publicTheme]);
-
-  useEffect(() => {
-    applyBackgroundImage(resolvedTheme);
-  }, [resolvedTheme]);
-};
-
-export default useThemeColors;
+export default AssetType;

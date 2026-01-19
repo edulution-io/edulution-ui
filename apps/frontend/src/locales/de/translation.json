@@ -1040,6 +1040,11 @@
         "uploadDarkLogo": "Dunkles Logo hochladen",
         "deleteSuccessful": "Logo wurde erfolgreich gelöscht"
       },
+      "background": {
+        "title": "Hintergrundbild",
+        "description": "Lade benutzerdefinierte Hintergrundbilder für den hellen und dunklen Modus hoch. Sie werden in der gesamten Anwendung angezeigt.",
+        "variant": "Hintergrund ({{variant}}r Modus)"
+      },
       "theme": {
         "title": "Design-Anpassung",
         "primaryColor": "Primärfarbe",
@@ -1095,7 +1100,7 @@
       "sections": {
         "appLogo": {
           "title": "Logo",
-          "description": "Lade hier dein eigenes Bild hoch, um das Standartlogo der {{ applicationName }} zu überschreiben; Oder setze das Standard Logo für {{ applicationName }} wieder her."
+          "description": "Lade hier dein eigenes Bild hoch, um das Standartlogo der {{ applicationName }} zu überschreiben. Oder setze das Standard Logo für {{ applicationName }} wieder her."
         },
         "onlyOffice": {
           "title": "Only Office Integration",

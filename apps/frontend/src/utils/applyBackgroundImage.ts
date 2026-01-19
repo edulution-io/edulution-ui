@@ -17,6 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const SURVEYS_HEADER_IMAGE = 'logo';
+import { getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
+import APPS from '@libs/appconfig/constants/apps';
+import { ResolvedThemeType } from '@libs/common/types/themeType';
 
-export default SURVEYS_HEADER_IMAGE;
+const ASSET_TYPE_BACKGROUND = 'background';
+
+const applyBackgroundImage = (theme: ResolvedThemeType, timestamp?: number) => {
+  const baseUrl = getAssetUrl(APPS.GENERAL_SETTINGS, theme, ASSET_TYPE_BACKGROUND);
+  const url = timestamp ? `${baseUrl}&t=${timestamp}` : baseUrl;
+  document.documentElement.style.setProperty('--background-image', `url(${url})`);
+};
+
+export default applyBackgroundImage;

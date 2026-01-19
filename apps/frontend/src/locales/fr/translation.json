@@ -898,6 +898,11 @@
         "uploadDarkLogo": "Téléverser le logo sombre",
         "deleteSuccessful": "Logo supprimé avec succès."
       },
+      "background": {
+        "title": "Image de fond",
+        "description": "Téléversez des images de fond personnalisées pour les modes clair et sombre. Elles seront affichées dans toute l'application.",
+        "variant": "Arrière-plan (mode {{variant}})"
+      },
       "theme": {
         "title": "Personnalisation du thème",
         "primaryColor": "Couleur primaire",
@@ -950,7 +955,7 @@
       "sections": {
         "appLogo": {
           "title": "Logo",
-          "description": "Téléversez votre propre image ici pour remplacer le logo par défaut de {{ applicationName }}; Ou restaurez le logo par défaut de {{ applicationName }}."
+          "description": "Téléversez votre propre image ici pour remplacer le logo par défaut de {{ applicationName }}. Ou restaurez le logo par défaut de {{ applicationName }}."
         },
         "onlyOffice": {
           "title": "Intégration OnlyOffice",
