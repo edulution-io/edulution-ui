@@ -61,7 +61,7 @@ const CustomLogoImageComponent = ({ data }: CustomLogoImageProps) => {
 
   const renderChooseButton = () => (
     <span
-      className="svc-context-button background-white"
+      className="svc-context-button"
       onClick={handleChooseFile}
       role="button"
       tabIndex={0}
@@ -77,7 +77,7 @@ const CustomLogoImageComponent = ({ data }: CustomLogoImageProps) => {
 
   const renderClearButton = () => (
     <span
-      className="svc-context-button svc-context-button--danger bg-white"
+      className="svc-context-button svc-context-button--danger"
       onClick={handleRemove}
       role="button"
       tabIndex={0}
@@ -93,7 +93,7 @@ const CustomLogoImageComponent = ({ data }: CustomLogoImageProps) => {
 
   const renderSettingsButton = () => (
     <span
-      className="svc-context-button svc-context-button--settings bg-white"
+      className="svc-context-button svc-context-button--settings"
       onClick={handleOpenSettings}
       role="button"
       tabIndex={0}
