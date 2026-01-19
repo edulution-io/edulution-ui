@@ -17,12 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ThemedFile from '@libs/common/types/themedFile';
-import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
+const ASSET_TYPES = {
+  logo: 'logo',
+  background: 'background',
+} as const;
 
-export type GlobalSettingsFormValues = Omit<GlobalSettingsDto, 'brandingUploadFile'> & {
-  brandingUploads: {
-    logo: ThemedFile;
-    background: ThemedFile;
-  };
-};
+export default ASSET_TYPES;

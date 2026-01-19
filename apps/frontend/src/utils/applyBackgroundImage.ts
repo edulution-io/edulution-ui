@@ -17,29 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useEffect } from 'react';
-import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
-import useThemeStore from '@/store/useThemeStore';
-import applyThemeColors from '@/utils/applyThemeColors';
-import applyBackgroundImage from '@/utils/applyBackgroundImage';
-import getThemeWithDefaults from '@/utils/getThemeWithDefaults';
+import { getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
+import APPS from '@libs/appconfig/constants/apps';
+import { ResolvedThemeType } from '@libs/common/types/themeType';
+import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
 
-const useThemeColors = () => {
-  const { publicTheme, getPublicTheme } = useGlobalSettingsApiStore();
-  const resolvedTheme = useThemeStore((s) => s.getResolvedTheme());
-
-  useEffect(() => {
-    void getPublicTheme();
-  }, [getPublicTheme]);
-
-  useEffect(() => {
-    const theme = getThemeWithDefaults(publicTheme);
-    applyThemeColors(theme);
-  }, [publicTheme]);
-
-  useEffect(() => {
-    applyBackgroundImage(resolvedTheme);
-  }, [resolvedTheme]);
+const applyBackgroundImage = (theme: ResolvedThemeType, timestamp?: number) => {
+  const baseUrl = getAssetUrl(APPS.GENERAL_SETTINGS, theme, ASSET_TYPES.background);
+  const url = timestamp ? `${baseUrl}&t=${timestamp}` : baseUrl;
+  document.documentElement.style.setProperty('--background-image', `url(${url})`);
 };
 
-export default useThemeColors;
+export default applyBackgroundImage;

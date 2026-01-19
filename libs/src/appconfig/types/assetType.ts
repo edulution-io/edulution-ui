@@ -17,6 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const SURVEYS_HEADER_IMAGE = 'logo';
+import ASSET_TYPES from '../constants/assetTypes';
 
-export default SURVEYS_HEADER_IMAGE;
+type AssetType = (typeof ASSET_TYPES)[keyof typeof ASSET_TYPES];
+
+export default AssetType;
