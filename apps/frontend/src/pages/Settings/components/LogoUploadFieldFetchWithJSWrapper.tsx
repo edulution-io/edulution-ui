@@ -71,10 +71,10 @@ const LogoUploadFieldFetchWithJSWrapper: React.FC<LogoUploadFieldFetchWithJSWrap
         if (result) {
           setBlobUrl(result.content);
           setAssetSource(result.source);
-        } else {
-          reset();
+          return;
         }
       }
+      reset();
     } catch (error) {
       reset();
     }
