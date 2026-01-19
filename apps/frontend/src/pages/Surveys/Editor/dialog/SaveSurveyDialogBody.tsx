@@ -17,17 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useMemo } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
+import { UseFormReturn } from 'react-hook-form';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useGroupStore from '@/store/GroupStore';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
-import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
 import Checkbox from '@/components/ui/Checkbox';
+import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
 
 interface SaveSurveyDialogBodyProps {
   form: UseFormReturn<SurveyDto>;
@@ -53,24 +53,6 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
     setValue('invitedGroups', groups, { shouldValidate: true });
   };
 
-  const isPublic = watch('isPublic');
-  const invitedAttendees = watch('invitedAttendees');
-  const invitedGroups = watch('invitedGroups');
-  const hasParticipants = useMemo(() => {
-    if (isPublic) {
-      return true;
-    }
-    if (invitedAttendees && invitedAttendees.length >= 1) {
-      return true;
-    }
-    if (invitedGroups && invitedGroups.length >= 1) {
-      return true;
-    }
-    return false;
-  }, [isPublic, invitedAttendees, invitedGroups]);
-
-  const hasExpirationDate = Boolean(watch('expires'));
-
   const checkboxOptions: { name: keyof SurveyDto; label: string; shouldDisable?: boolean }[] = [
     { name: 'isAnonymous', label: 'surveys.saveDialog.isAnonymous' },
     { name: 'isPublic', label: 'surveys.saveDialog.isPublic' },
@@ -88,7 +70,22 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
 
   return (
     <>
-      <h3>{t('surveys.saveDialog.settingsFlags')}</h3>
+      <SearchUsersOrGroups
+        users={watch('invitedAttendees')}
+        onSearch={onAttendeesSearch}
+        onUserChange={handleAttendeesChange}
+        groups={watch('invitedGroups')}
+        onGroupSearch={searchGroups}
+        onGroupsChange={handleGroupsChange}
+        variant="dialog"
+      />
+      <DateTimePickerField
+        form={form}
+        path="expires"
+        translationId="survey.expirationDate"
+        variant="dialog"
+      />
+      <p className="text-m font-bold text-background">{t('surveys.saveDialog.settingsFlags')}</p>
       {checkboxOptions.map(({ name, label, shouldDisable }) => (
         <Checkbox
           key={name}
@@ -100,25 +97,6 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
           className="text-background"
         />
       ))}
-      {!hasParticipants && (
-        <SearchUsersOrGroups
-          users={watch('invitedAttendees')}
-          onSearch={onAttendeesSearch}
-          onUserChange={handleAttendeesChange}
-          groups={watch('invitedGroups')}
-          onGroupSearch={searchGroups}
-          onGroupsChange={handleGroupsChange}
-          variant="dialog"
-        />
-      )}
-      {!hasExpirationDate && (
-        <DateTimePickerField
-          form={form}
-          path="expires"
-          translationId="survey.expirationDate"
-          variant="dialog"
-        />
-      )}
     </>
   );
 };

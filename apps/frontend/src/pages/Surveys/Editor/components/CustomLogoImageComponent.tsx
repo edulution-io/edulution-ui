@@ -56,7 +56,7 @@ const CustomLogoImageComponent = ({ data }: CustomLogoImageProps) => {
   };
 
   const handleOpenSettings = () => {
-    useSurveyEditorPageStore.getState().setIsOpenSurveyContextMenu(true);
+    useSurveyEditorPageStore.getState().setIsOpenSurveysLogoDialog(true);
   };
 
   const renderChooseButton = () => (

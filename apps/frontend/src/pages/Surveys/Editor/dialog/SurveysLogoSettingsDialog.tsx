@@ -26,17 +26,17 @@ import SurveysLogoSettings from '@/pages/Surveys/Editor/dialog/SurveysLogoSettin
 
 interface SurveysLogoSettingsDialogProps {
   surveyCreator: SurveyCreatorModel;
-  isOpenSurveyContextMenu: boolean;
-  setIsOpenSurveyContextMenu: (state: boolean) => void;
+  isOpenSurveysLogoDialog: boolean;
+  setIsOpenSurveysLogoDialog: (state: boolean) => void;
   trigger?: React.ReactNode;
 }
 
 const SurveysLogoSettingsDialog = (props: SurveysLogoSettingsDialogProps) => {
-  const { trigger, surveyCreator, isOpenSurveyContextMenu, setIsOpenSurveyContextMenu } = props;
+  const { trigger, surveyCreator, isOpenSurveysLogoDialog, setIsOpenSurveysLogoDialog } = props;
 
   const { t } = useTranslation();
 
-  const handleClose = () => setIsOpenSurveyContextMenu(false);
+  const handleClose = () => setIsOpenSurveysLogoDialog(false);
 
   const body = <SurveysLogoSettings surveyCreator={surveyCreator} />;
 
@@ -49,7 +49,7 @@ const SurveysLogoSettingsDialog = (props: SurveysLogoSettingsDialogProps) => {
 
   return (
     <AdaptiveDialog
-      isOpen={isOpenSurveyContextMenu}
+      isOpen={isOpenSurveysLogoDialog}
       trigger={trigger}
       handleOpenChange={handleClose}
       title={t('survey.editor.surveyLogo.title')}
