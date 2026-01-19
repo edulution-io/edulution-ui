@@ -11,18 +11,18 @@
  */
 
 import { toast } from 'sonner';
-import React, { useRef, useState, useMemo } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
-import ThemeType from '@libs/common/types/themeType';
+import THEME from '@libs/common/constants/theme';
 import ThemedFile from '@libs/common/types/themedFile';
 import { getLogoName, getLogoUrl } from '@libs/appconfig/utils/getAppLogo';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
-import LogoUploadField from '@/pages/Settings/components/LogoUploadField';
 import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
+import LogoUploadFieldFetchWithJSWrapper from '@/pages/Settings/components/LogoUploadFieldFetchWithJSWrapper';
 
 type AppConfigFormLogoFieldProps = {
-  variant: ThemeType;
+  variant: typeof THEME.light | typeof THEME.dark;
   appName: string;
   fieldPath: string;
   option: AppConfigExtendedOption;
@@ -87,16 +87,17 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
 
   const variantText = t(`appExtendedOptions.appLogo.${variant}`);
   return (
-    <div>
+    <div className="min-w-[49%]">
       {option.title && <p className="mb-2 font-bold">{t(option.title, { variant: variantText })}</p>}
-      <LogoUploadField
+      <LogoUploadFieldFetchWithJSWrapper
+        assetUrl={previewSrc}
+        alt={t(`appExtendedOptions.appLogo.${variant}`)}
+        onDelete={onHandleReset}
         variant={variant}
         inputRef={inputRef}
-        previewSrc={previewSrc}
         onFileChange={onFileChange}
         chooseText={t(`common.chooseFile`)}
         changeText={t(`common.changeFile`)}
-        onHandleReset={onHandleReset}
         uploading={uploadingVariant === variant}
       />
     </div>
