@@ -37,7 +37,6 @@ const AppConfigFormDarkAndLightLogoField: React.FC<AppConfigFormDarkAndLightLogo
       fieldPath={fieldPath}
       option={option}
       form={form}
-      className="w-full min-w-[50%] max-w-[50%]"
     />
     <AppConfigFormLogoField
       variant={THEME.dark}
@@ -45,7 +44,6 @@ const AppConfigFormDarkAndLightLogoField: React.FC<AppConfigFormDarkAndLightLogo
       fieldPath={fieldPath}
       option={option}
       form={form}
-      className="w-full min-w-[50%] max-w-[50%]"
     />
   </div>
 );

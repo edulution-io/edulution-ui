@@ -11,7 +11,7 @@
  */
 
 import { toast } from 'sonner';
-import React, { useRef, useState, useMemo } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import THEME from '@libs/common/constants/theme';
@@ -27,7 +27,6 @@ type AppConfigFormLogoFieldProps = {
   fieldPath: string;
   option: AppConfigExtendedOption;
   form: UseFormReturn<ThemedFile>;
-  className?: string;
 };
 
 const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
@@ -36,7 +35,6 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
   fieldPath,
   option,
   form,
-  className,
 }) => {
   const { uploadImageFile, deleteImageFile, uploadingVariant } = useFilesystemStore();
 
@@ -89,7 +87,7 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
 
   const variantText = t(`appExtendedOptions.appLogo.${variant}`);
   return (
-    <div className={className}>
+    <div className="min-w-[49%]">
       {option.title && <p className="mb-2 font-bold">{t(option.title, { variant: variantText })}</p>}
       <LogoUploadFieldFetchWithJSWrapper
         assetUrl={previewSrc}
