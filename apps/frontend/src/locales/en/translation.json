@@ -772,24 +772,19 @@
         "imageWidth": "Width of one image in pixel [px]",
         "imageWidthPlaceholder": "0 means that the width is only limited by the available space."
       },
-      "surveySettings": {
-        "settings": "Settings",
-        "title": "Survey Settings",
-        "surveyLogo": {
-          "title": "Survey Logo",
-          "width": {
-            "label": "Width of the logo in pixels [px]",
-            "placeholder": "0 means that the width is only limited by the available space."
-          },
-          "position": {
-            "label": "Position of the logo",
-            "placeholder": "Choose the position of the logo",
-            "left": "Left of the title",
-            "right": "Right of the title",
-            "description": "The Position for the logo relative to the title of the survey is visible in the 'Preview' tab."
-          }
+      "surveyLogo": {
+        "title": "Survey Logo",
+        "width": {
+          "label": "Width of the logo in pixels [px]",
+          "placeholder": "0 means that the width is only limited by the available space."
         },
-        "invitees": "Invitees"
+        "position": {
+          "label": "Position of the logo",
+          "placeholder": "Choose the position of the logo",
+          "left": "Left of the title",
+          "right": "Right of the title",
+          "description": "The Position for the logo relative to the title of the survey is visible in the 'Preview' tab."
+        }
       }
     },
     "participate": {

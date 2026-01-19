@@ -18,35 +18,27 @@
  */
 
 import React from 'react';
-import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { SurveyCreatorModel } from 'survey-creator-core';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import SurveyContextMenuBody from '@/pages/Surveys/Editor/dialog/SurveyContextMenuBody';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import SurveysLogoSettings from '@/pages/Surveys/Editor/dialog/SurveysLogoSettings';
 
-interface SurveyContextMenuProps {
-  form: UseFormReturn<SurveyDto>;
+interface SurveysLogoSettingsDialogProps {
   surveyCreator: SurveyCreatorModel;
   isOpenSurveyContextMenu: boolean;
   setIsOpenSurveyContextMenu: (state: boolean) => void;
   trigger?: React.ReactNode;
 }
 
-const SurveyContextMenu = (props: SurveyContextMenuProps) => {
-  const { trigger, form, surveyCreator, isOpenSurveyContextMenu, setIsOpenSurveyContextMenu } = props;
+const SurveysLogoSettingsDialog = (props: SurveysLogoSettingsDialogProps) => {
+  const { trigger, surveyCreator, isOpenSurveyContextMenu, setIsOpenSurveyContextMenu } = props;
 
   const { t } = useTranslation();
 
   const handleClose = () => setIsOpenSurveyContextMenu(false);
 
-  const body = (
-    <SurveyContextMenuBody
-      form={form}
-      surveyCreator={surveyCreator}
-    />
-  );
+  const body = <SurveysLogoSettings surveyCreator={surveyCreator} />;
 
   const footer = (
     <DialogFooterButtons
@@ -60,12 +52,12 @@ const SurveyContextMenu = (props: SurveyContextMenuProps) => {
       isOpen={isOpenSurveyContextMenu}
       trigger={trigger}
       handleOpenChange={handleClose}
-      title={t('survey.editor.surveySettings.title')}
+      title={t('survey.editor.surveyLogo.title')}
       body={body}
       footer={footer}
-      desktopContentClassName="max-w-[50%] min-h-[500px] max-h-[90%] overflow-auto"
+      desktopContentClassName="max-w-[50%] min-h-[200px] max-h-[90%] overflow-auto"
     />
   );
 };
 
-export default SurveyContextMenu;
+export default SurveysLogoSettingsDialog;

@@ -49,10 +49,24 @@
     opacity: 0.8;
     stroke: var(--muted-foreground);
   }
-  .svc-logo-image:hover,
   .svc-logo-image-placeholder:hover {
     stroke: var(--primary);
     fill: var(--primary);
+  }
+  .svc-logo-image .svc-logo-image-controls {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  .svc-logo-image:hover .svc-logo-image-controls {
+    opacity: 1;
+  }
+  .svc-logo-image .svc-context-button:hover {
+    stroke: var(--primary);
+    fill: var(--primary);
+  }
+  .svc-logo-image .svc-context-button--danger:hover {
+    stroke: var(--destructive);
+    fill: var(--destructive);
   }
 
   .svc-top-bar,

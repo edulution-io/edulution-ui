@@ -774,24 +774,19 @@
         "imageWidth": "Breite eines Bildes in Pixel [px]",
         "imageWidthPlaceholder": "0 bedeutet, dass die Breite nur von dem vorhandenen Platz beschränkt wird."
       },
-      "surveySettings": {
-        "settings": "Einstellungen",
-        "title": "Einstellungen zur Umfrage",
-        "surveyLogo": {
-          "title": "Logo der Umfrage",
-          "width": {
-            "label": "Breite des Logos in Pixel [px]",
-            "placeholder": "0 bedeutet, dass die Breite nur von dem vorhandenen Platz beschränkt wird."
-          },
-          "position": {
-            "label": "Position des Logos",
-            "placeholder": "Wähle die Position des Logos",
-            "left": "Links vom Titel",
-            "right": "Rechts vom Titel",
-            "description": "Die Position des Logos relativ zum Titel der Umfrage ist im Tab 'Test' einzusehen."
-          }
+      "surveyLogo": {
+        "title": "Logo der Umfrage",
+        "width": {
+          "label": "Breite des Logos in Pixel [px]",
+          "placeholder": "0 bedeutet, dass die Breite nur von dem vorhandenen Platz beschränkt wird."
         },
-        "invitees": "Teilnehmer"
+        "position": {
+          "label": "Position des Logos",
+          "placeholder": "Wähle die Position des Logos",
+          "left": "Links vom Titel",
+          "right": "Rechts vom Titel",
+          "description": "Die Position des Logos relativ zum Titel der Umfrage ist im Tab 'Test' einzusehen."
+        }
       }
     },
     "participate": {

@@ -52,11 +52,11 @@ const SurveysLogoSettings = ({ surveyCreator }: SurveysLogoSettingsProps) => {
   return (
     <div className="my-2 flex flex-col gap-2">
       <Label>
-        <p className="font-bold">{t('survey.editor.surveySettings.surveyLogo.width.label')}</p>
+        <p className="font-bold">{t('survey.editor.surveyLogo.width.label')}</p>
       </Label>
       <Input
         type="number"
-        placeholder={t('survey.editor.surveySettings.surveyLogo.width.placeholder')}
+        placeholder={t('survey.editor.surveyLogo.width.placeholder')}
         variant="dialog"
         value={logoWidth === 0 ? '' : logoWidth}
         onChange={(e) => {
@@ -64,13 +64,13 @@ const SurveysLogoSettings = ({ surveyCreator }: SurveysLogoSettingsProps) => {
         }}
       />
       <Label>
-        <p className="font-bold">{t('survey.editor.surveySettings.surveyLogo.position.label')}</p>
+        <p className="font-bold">{t('survey.editor.surveyLogo.position.label')}</p>
       </Label>
       <DropdownSelect
-        placeholder={t('survey.editor.surveySettings.surveyLogo.position.placeholder')}
+        placeholder={t('survey.editor.surveyLogo.position.placeholder')}
         options={[
-          { id: 'left', name: t('survey.editor.surveySettings.surveyLogo.position.left') },
-          { id: 'right', name: t('survey.editor.surveySettings.surveyLogo.position.right') },
+          { id: 'left', name: t('survey.editor.surveyLogo.position.left') },
+          { id: 'right', name: t('survey.editor.surveyLogo.position.right') },
         ]}
         selectedVal={logoPosition}
         handleChange={(value) => {
@@ -78,9 +78,7 @@ const SurveysLogoSettings = ({ surveyCreator }: SurveysLogoSettingsProps) => {
         }}
         variant="dialog"
       />
-      <p className="text-sm text-muted-foreground">
-        {t('survey.editor.surveySettings.surveyLogo.position.description')}
-      </p>
+      <p className="text-sm text-muted-foreground">{t('survey.editor.surveyLogo.position.description')}</p>
     </div>
   );
 };
