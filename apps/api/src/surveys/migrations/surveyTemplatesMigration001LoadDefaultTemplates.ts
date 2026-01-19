@@ -49,17 +49,30 @@ const surveyTemplatesMigration001LoadDefaultTemplates: Migration<SurveysTemplate
           return;
         }
         // eslint-disable-next-line no-underscore-dangle
-        const existingTemplate = await model.findOne({ _id: surveyTemplate._id }).lean();
-        if (existingTemplate && existingTemplate.schemaVersion >= surveyTemplate.schemaVersion) {
+        const existingTemplateById = await model.findOne({ _id: surveyTemplate._id }).lean();
+        if (existingTemplateById && existingTemplateById.schemaVersion >= surveyTemplate.schemaVersion) {
           return;
         }
+
+        const existingTemplateByName = await model.findOne({ name: surveyTemplate.name }).lean();
+        if (existingTemplateByName) {
+          // eslint-disable-next-line no-underscore-dangle
+          if (String(existingTemplateByName._id) !== String(surveyTemplate._id)) {
+            // eslint-disable-next-line no-underscore-dangle
+            await model.deleteOne({ _id: existingTemplateByName._id });
+            Logger.log(
+              `Migration "${name}": Deleted existing template with name "${surveyTemplate.name}" and different ID`,
+            );
+          }
+        }
+
         await model.updateOne(
           // eslint-disable-next-line no-underscore-dangle
           { _id: surveyTemplate._id },
           {
             ...surveyTemplate,
             isDefaultTemplate: true,
-            isActive: existingTemplate?.isActive ?? true,
+            isActive: existingTemplateById?.isActive ?? existingTemplateByName?.isActive ?? true,
           },
           { new: true, upsert: true },
         );

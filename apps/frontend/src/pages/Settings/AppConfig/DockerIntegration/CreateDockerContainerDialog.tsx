@@ -21,6 +21,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { stringify } from 'yaml';
 import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
 import ProgressTextArea from '@/components/shared/ProgressTextArea';
@@ -36,9 +37,11 @@ import updateContainerConfig from '@libs/docker/utils/updateContainerConfig';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import DOCKER_APPLICATION_LIST from '@libs/docker/constants/dockerApplicationList';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
+import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import useDockerApplicationStore from './useDockerApplicationStore';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 import getCreateContainerFormSchema from './getCreateContainerFormSchema';
+import useAppConfigsStore from '../useAppConfigsStore';
 
 interface CreateDockerContainerDialogProps {
   settingLocation: TApps;
@@ -58,7 +61,10 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
     dockerComposeFiles,
     createAndRunContainer,
     fetchTableContent,
+    traefikConfig,
+    getTraefikConfig,
   } = useDockerApplicationStore();
+  const { appConfigs, updateAppConfig } = useAppConfigsStore();
   const { eventSource } = useSseStore();
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
   const isOpen = isDialogOpen === tableId;
@@ -123,8 +129,30 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
         originalComposeConfig: dockerComposeFiles[containerName] || '',
       });
       await fetchTableContent(settingLocation);
+
+      await getTraefikConfig(settingLocation, containerName);
     }
   };
+
+  useEffect(() => {
+    const updateProxyConfig = async () => {
+      if (traefikConfig) {
+        const currentAppConfig = findAppConfigByName(appConfigs, settingLocation);
+        if (currentAppConfig && currentAppConfig.options.proxyConfig === '""') {
+          const updatedAppConfig = {
+            ...currentAppConfig,
+            options: {
+              ...currentAppConfig.options,
+              proxyConfig: stringify(traefikConfig),
+            },
+          };
+          await updateAppConfig(updatedAppConfig);
+        }
+      }
+    };
+
+    void updateProxyConfig();
+  }, [traefikConfig]);
 
   const handleClose = () => setDialogOpen('');
 
