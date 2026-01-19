@@ -48,6 +48,7 @@ import MAIL_GENERAL_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOpt
 import FORWARDING_PAGE_OPTIONS from '@libs/appconfig/constants/extendedOptions/forwardingPageOptions';
 import DRAWIO_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/drawioExtendedOptions';
 import FRAME_SCRIPT_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/frameScriptExtendedOptions';
+import APP_LOGO_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/appLogoExtendedOptions';
 
 const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -84,6 +85,9 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     id: APPS.SURVEYS,
     icon: SurveysMenuIcon,
     isNativeApp: true,
+    extendedOptions: {
+      [AppConfigSectionsKeys.appLogo]: APP_LOGO_EXTENDED_OPTIONS,
+    },
   },
   {
     id: APPS.FILE_SHARING,

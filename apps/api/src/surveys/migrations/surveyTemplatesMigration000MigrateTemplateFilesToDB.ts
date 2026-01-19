@@ -29,7 +29,7 @@ import { SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.s
 import MigrationService from 'apps/api/src/migration/migration.service';
 import { Migration } from '../../migration/migration.type';
 
-const name = '000-migrate-templates-from-exchange-folder-to-db';
+const name = '000-migrate-templates-files-to-db';
 
 const schemaVersion = 1;
 
@@ -54,8 +54,7 @@ const surveyTemplatesMigration000MigrateTemplateFilesToDB: Migration<SurveysTemp
           const filePath = join(path, fileName);
           const fileContent = await readFile(filePath, 'utf-8');
           if (!fileContent) {
-            Logger.error(`Failed to read file content from ${filePath}`, MigrationService.name);
-            return;
+            throw new Error(`Failed to read file content from ${filePath}`);
           }
           const newTemplate = JSON.parse(fileContent) as TemplateDto;
           const templateName = newTemplate?.formula?.title || fileName.replace('.json', '');
@@ -67,11 +66,11 @@ const surveyTemplatesMigration000MigrateTemplateFilesToDB: Migration<SurveysTemp
           if (newDocument !== null) {
             filesToDelete.push(fileName);
           } else {
-            Logger.error(`Failed to create or update mongo document for file ${fileName}`, MigrationService.name);
+            throw new Error(`Failed to create or update mongo document for file ${fileName}`);
           }
         } catch (error) {
           Logger.error(
-            `Error processing file ${fileName}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            `Migration "${name}": Error processing file ${fileName}: ${error instanceof Error ? error.message : 'Unknown error'}`,
             MigrationService.name,
           );
         }
@@ -84,7 +83,7 @@ const surveyTemplatesMigration000MigrateTemplateFilesToDB: Migration<SurveysTemp
           await unlink(join(path, fileName));
         } catch (error) {
           Logger.error(
-            `Error deleting file ${fileName}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            `Migration "${name}": Error deleting file ${fileName}: ${error instanceof Error ? error.message : 'Unknown error'}`,
             MigrationService.name,
           );
         }
