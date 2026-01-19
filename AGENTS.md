@@ -37,6 +37,7 @@
 - In NestJS services, use static Logger calls with the service name as context: `Logger.log('message', ServiceName.name)`, `Logger.error('message', ServiceName.name)`. Do not create instance logger with `private readonly logger = new Logger()`.
 - In React, use `eduApi` (axios) from `@/api/eduApi` for API calls instead of native `fetch`. API calls should be placed in Zustand stores, not in components. Use `ResponseType.BLOB` for blob responses and `handleApiError` for error handling.
 - Always search the code for existing patterns, functions, classes, types, and constants before creating new ones.
+- Use generic types over unsafe type casting.
 
 ## Testing Guidelines
 

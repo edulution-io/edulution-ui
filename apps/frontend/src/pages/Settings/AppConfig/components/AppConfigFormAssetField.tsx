@@ -13,10 +13,9 @@
 import { toast } from 'sonner';
 import React, { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UseFormReturn } from 'react-hook-form';
+import { FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import THEME from '@libs/common/constants/theme';
 import ThemeType from '@libs/common/types/themeType';
-import ThemedFile from '@libs/common/types/themedFile';
 import { getAssetName, getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
@@ -24,17 +23,17 @@ import AssetType from '@libs/appconfig/types/assetType';
 import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
 import AssetUploadFieldWithFetch from '@/pages/Settings/components/AssetUploadFieldWithFetch';
 
-type AppConfigFormAssetFieldProps = {
+type AppConfigFormAssetFieldProps<T extends FieldValues = FieldValues> = {
   variant: typeof THEME.light | typeof THEME.dark;
   appName: string;
   fieldPath: string;
   option: AppConfigExtendedOption;
-  form: UseFormReturn<ThemedFile>;
+  form: UseFormReturn<T>;
   assetType?: AssetType;
   onUploadSuccess?: (variant: ThemeType) => void;
 };
 
-const AppConfigFormAssetField: React.FC<AppConfigFormAssetFieldProps> = ({
+const AppConfigFormAssetField = <T extends FieldValues = FieldValues>({
   variant,
   appName,
   fieldPath,
@@ -42,7 +41,7 @@ const AppConfigFormAssetField: React.FC<AppConfigFormAssetFieldProps> = ({
   form,
   assetType = ASSET_TYPES.logo,
   onUploadSuccess,
-}) => {
+}: AppConfigFormAssetFieldProps<T>) => {
   const { uploadImageFile, deleteImageFile, uploadingKey } = useFilesystemStore();
   const currentUploadKey = `${assetType}-${variant}`;
 
@@ -52,7 +51,7 @@ const AppConfigFormAssetField: React.FC<AppConfigFormAssetFieldProps> = ({
 
   const [keyValue, setKeyValue] = useState<number>(Math.floor(Math.random() * 10000));
 
-  const path = `${fieldPath}.${variant}` as keyof ThemedFile;
+  const path = `${fieldPath}.${variant}` as Path<T>;
 
   const destination = appName;
   const filename = getAssetName(appName, variant, assetType);
@@ -72,11 +71,11 @@ const AppConfigFormAssetField: React.FC<AppConfigFormAssetFieldProps> = ({
 
       const success = await uploadImageFile(destination, filename, file, undefined, currentUploadKey);
       if (success) {
-        form.setValue(path, file, { shouldDirty: true });
+        form.setValue(path, file as File & T[Path<T>], { shouldDirty: true });
         toast.success(t('survey.editor.fileUploadSuccess'));
         onUploadSuccess?.(variant);
       } else {
-        form.setValue(path, null, { shouldDirty: true });
+        form.setValue(path, null as null & T[Path<T>], { shouldDirty: true });
         toast.error(t('survey.editor.fileUploadError'));
       }
       setKeyValue((prev) => prev + 1);
@@ -86,7 +85,7 @@ const AppConfigFormAssetField: React.FC<AppConfigFormAssetFieldProps> = ({
   const onHandleReset = async () => {
     const success = await deleteImageFile(appName, filename, variant);
     if (success) {
-      form.setValue(path, null, { shouldDirty: true });
+      form.setValue(path, null as null & T[Path<T>], { shouldDirty: true });
       toast.success(t('survey.editor.fileDeletionSuccess'));
       onUploadSuccess?.(variant);
     } else {

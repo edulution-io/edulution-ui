@@ -11,32 +11,31 @@
  */
 
 import React from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { FieldValues, UseFormReturn } from 'react-hook-form';
 import THEME from '@libs/common/constants/theme';
 import ThemeType from '@libs/common/types/themeType';
-import ThemedFile from '@libs/common/types/themedFile';
 import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
 import AssetType from '@libs/appconfig/types/assetType';
 import AppConfigFormAssetField from '@/pages/Settings/AppConfig/components/AppConfigFormAssetField';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 
-export type AppConfigFormDarkAndLightAssetFieldProps = {
+type AppConfigFormDarkAndLightAssetFieldProps<T extends FieldValues = FieldValues> = {
   settingLocation: string;
   fieldPath: string;
   option: AppConfigExtendedOption;
-  form: UseFormReturn<ThemedFile>;
+  form: UseFormReturn<T>;
   assetType?: AssetType;
   onUploadSuccess?: (variant: ThemeType) => void;
 };
 
-const AppConfigFormDarkAndLightAssetField: React.FC<AppConfigFormDarkAndLightAssetFieldProps> = ({
+const AppConfigFormDarkAndLightAssetField = <T extends FieldValues = FieldValues>({
   settingLocation,
   fieldPath,
   option,
   form,
   assetType = ASSET_TYPES.logo,
   onUploadSuccess,
-}) => (
+}: AppConfigFormDarkAndLightAssetFieldProps<T>) => (
   <div className="flex flex-grow flex-col gap-4 lg:flex-row">
     <AppConfigFormAssetField
       variant={THEME.light}

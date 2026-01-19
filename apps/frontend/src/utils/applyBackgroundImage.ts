@@ -20,11 +20,10 @@
 import { getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
 import APPS from '@libs/appconfig/constants/apps';
 import { ResolvedThemeType } from '@libs/common/types/themeType';
-
-const ASSET_TYPE_BACKGROUND = 'background';
+import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
 
 const applyBackgroundImage = (theme: ResolvedThemeType, timestamp?: number) => {
-  const baseUrl = getAssetUrl(APPS.GENERAL_SETTINGS, theme, ASSET_TYPE_BACKGROUND);
+  const baseUrl = getAssetUrl(APPS.GENERAL_SETTINGS, theme, ASSET_TYPES.background);
   const url = timestamp ? `${baseUrl}&t=${timestamp}` : baseUrl;
   document.documentElement.style.setProperty('--background-image', `url(${url})`);
 };

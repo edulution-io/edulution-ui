@@ -21,7 +21,6 @@ import React, { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FieldValues, SubmitHandler, UseFormReturn } from 'react-hook-form';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import type ThemedFile from '@libs/common/types/themedFile';
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
@@ -172,7 +171,7 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
                     description: '',
                     type: ExtendedOptionField.appLogo,
                   }}
-                  form={form as unknown as UseFormReturn<ThemedFile>}
+                  form={form}
                   assetType={ASSET_TYPES.background}
                   onUploadSuccess={handleBackgroundUploadSuccess}
                 />
