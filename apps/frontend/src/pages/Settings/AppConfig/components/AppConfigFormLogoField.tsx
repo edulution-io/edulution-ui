@@ -19,7 +19,7 @@ import ThemedFile from '@libs/common/types/themedFile';
 import { getLogoName, getLogoUrl } from '@libs/appconfig/utils/getAppLogo';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
-import AssetWithConditionalDelete from '@/components/AssetWithConditionalDelete';
+import LogoUploadFieldFetchWithJSWrapper from '@/pages/Settings/components/LogoUploadFieldFetchWithJSWrapper';
 
 type AppConfigFormLogoFieldProps = {
   variant: typeof THEME.light | typeof THEME.dark;
@@ -27,6 +27,7 @@ type AppConfigFormLogoFieldProps = {
   fieldPath: string;
   option: AppConfigExtendedOption;
   form: UseFormReturn<ThemedFile>;
+  className?: string;
 };
 
 const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
@@ -35,6 +36,7 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
   fieldPath,
   option,
   form,
+  className,
 }) => {
   const { uploadImageFile, deleteImageFile, uploadingVariant } = useFilesystemStore();
 
@@ -87,9 +89,9 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
 
   const variantText = t(`appExtendedOptions.appLogo.${variant}`);
   return (
-    <div>
+    <div className={className}>
       {option.title && <p className="mb-2 font-bold">{t(option.title, { variant: variantText })}</p>}
-      <AssetWithConditionalDelete
+      <LogoUploadFieldFetchWithJSWrapper
         assetUrl={previewSrc}
         alt={t(`appExtendedOptions.appLogo.${variant}`)}
         onDelete={onHandleReset}
