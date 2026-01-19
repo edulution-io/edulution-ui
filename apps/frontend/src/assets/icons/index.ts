@@ -38,9 +38,9 @@ export { default as LinuxmusterIcon } from '@/assets/icons/edulution/edu_Linuxmu
 export { default as InfoBoardIcon } from '@/assets/icons/edulution/edu_Infoboard.svg';
 export { default as SecurityIcon } from '@/assets/icons/edulution/edu_Sicherheit.svg';
 export { default as WhiteBoardIcon } from '@/assets/icons/edulution/edu_Whiteboard.svg';
-export { default as EnrolIcon } from '@/assets/icons/enrol.svg';
-export { default as FirstPasswordIcon } from '@/assets/icons/first-Password.svg';
-export { default as CreateProjectIcon } from '@/assets/icons/create-project.svg';
+export { default as EnrolIcon } from '@/assets/icons/edulution/edu_Klassenraum-Einschreiben.svg';
+export { default as PrintIcon } from '@/assets/icons/edulution/edu_Klassenraum-Drucken.svg';
+export { default as CreateProjectIcon } from '@/assets/icons/edulution/edu_Klassenraum-Projekte.svg';
 export { default as FrameIcon } from '@/assets/icons/edulution/edu_Frame.svg';
 export { default as ForwardIcon } from '@/assets/icons/edulution/edu_Weiterleitung.svg';
 export { default as EmbeddedIcon } from '@/assets/icons/edulution/edu_Eingebettet.svg';

@@ -17,20 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import i18n from '@/i18n';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import getSurveysDefaultLogoUrl from '@libs/survey/utils/getSurveysDefaultLogoUrl';
-
-const surveysDefaultValues: Partial<SurveyDto> & { formula: SurveyFormula } = {
-  formula: {
-    title: i18n.t('survey.newTitle'),
-    logo: getSurveysDefaultLogoUrl(),
-  },
-  isAnonymous: false,
-  canSubmitMultipleAnswers: false,
-  isPublic: false,
-  canUpdateFormerAnswer: false,
-};
-
-export default surveysDefaultValues;
+export { default as TEMPLATE_IDS } from './templateIds';
+export { default as traineeShip } from './traineeShip';
+export { default as parentTeacherConference } from './parentTeacherConference';
+export { default as letterToParents } from './letterToParents';
+export { default as limitedEventParticipation } from './limitedEventParticipation';
+export { default as paperSubject } from './paperSubject';

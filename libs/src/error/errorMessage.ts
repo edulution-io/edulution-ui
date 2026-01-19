@@ -35,6 +35,7 @@ import VeyonErrorMessages from '@libs/veyon/types/veyonErrorMessages';
 import LicenseErrorMessagesType from '@libs/license/types/licenseErrorMessagesType';
 import TGlobalSettingsErrorMessages from '@libs/global-settings/types/globalSettingsErrorMessagesTypes';
 import TLDrawSyncErrorMessagesType from '@libs/tldraw-sync/types/tLDrawSyncErrorMessagesType';
+import PathValidationErrorMessages from '@libs/common/constants/path-validation-error-messages';
 import WireguardErrorMessages from '@libs/wireguard/types/wireguardErrorMessages';
 
 type ErrorMessage =
@@ -56,6 +57,7 @@ type ErrorMessage =
   | LicenseErrorMessagesType
   | TLDrawSyncErrorMessagesType
   | TGlobalSettingsErrorMessages
+  | PathValidationErrorMessages
   | WireguardErrorMessages;
 
 export default ErrorMessage;

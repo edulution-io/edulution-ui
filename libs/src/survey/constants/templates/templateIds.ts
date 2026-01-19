@@ -17,15 +17,20 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import THEME from '@libs/common/constants/theme';
-import ThemeType from '@libs/common/types/themeType';
-import getSurveysDefaultLogoFilename from '@libs/survey/utils/getSurveysDefaultLogoFilename';
+import { Types } from 'mongoose';
 
-const getSurveysDefaultLogoUrl = (theme?: ThemeType) => {
-  const fileName = getSurveysDefaultLogoFilename(theme || THEME.dark);
-  return `/${EDU_API_ROOT}/public/assets/${APPS.SURVEYS}/${fileName}`;
-};
+const TEMPLATE_NAMES = [
+  'LETTER_TO_PARENTS',
+  'LIMITED_EVENT_PARTICIPATION',
+  'PAPER_SUBJECT',
+  'PARENT_TEACHER_CONFERENCE',
+  'TRAINEE_SHIP',
+] as const;
 
-export default getSurveysDefaultLogoUrl;
+type TemplateName = (typeof TEMPLATE_NAMES)[number];
+
+const TEMPLATE_IDS = Object.fromEntries(
+  TEMPLATE_NAMES.map((name, index) => [name, new Types.ObjectId(String(index + 1).padStart(24, '0'))]),
+) as Record<TemplateName, Types.ObjectId>;
+
+export default TEMPLATE_IDS;

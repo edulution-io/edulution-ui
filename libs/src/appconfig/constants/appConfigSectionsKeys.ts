@@ -30,6 +30,7 @@ const AppConfigSectionsKeys = {
   editor: 'editor',
   webdavShare: 'webdavShare',
   scripts: 'scripts',
+  appLogo: 'appLogo',
   wireguard: 'wireguard',
 } as const;
 
