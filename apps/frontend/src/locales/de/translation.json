@@ -99,6 +99,10 @@
     "title": "App-Store",
     "description": "Hier kannst du {{ applicationName }} Apps hinzufügen.",
     "chooseIcon": "Icon auswählen",
+    "fontAwesomeIcons": "FontAwesome Icons",
+    "searchIcons": "Icons durchsuchen...",
+    "noIconsFound": "Keine Icons gefunden",
+    "iconsAvailable": "Icons verfügbar",
     "uploadIcon": "Icon hochladen",
     "dropIconDescription": "Ziehe ein Bild hierher oder klicke, um ein Bild auszuwählen. Unterstützte Formate: SVG, WEBP"
   },

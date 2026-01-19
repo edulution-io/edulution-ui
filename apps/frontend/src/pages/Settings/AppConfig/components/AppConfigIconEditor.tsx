@@ -24,9 +24,11 @@ import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 import cn from '@libs/common/utils/className';
-import getAppIconClassName from '@/utils/getAppIconClassName';
 import DropZone from '@/components/ui/DropZone';
+import { loadFontAwesomeIcon } from '@/utils/fontAwesomeIcons';
+import IconWrapper from '@/components/shared/IconWrapper';
 import defaultIconList from './defaultIconList';
+import FontAwesomeIconGrid from './FontAwesomeIconGrid';
 
 interface AppConfigIconEditorProps {
   currentIcon: string;
@@ -36,14 +38,44 @@ interface AppConfigIconEditorProps {
 const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, onIconChange }) => {
   const { t } = useTranslation();
   const [selectedIcon, setSelectedIcon] = useState<string>(currentIcon);
+  const [displayIconUrl, setDisplayIconUrl] = useState<string>(currentIcon);
 
   useEffect(() => {
     setSelectedIcon(currentIcon);
+    const loadIcon = async () => {
+      if (currentIcon && currentIcon.startsWith('@/assets/icons/fontawsome-')) {
+        try {
+          const category = currentIcon.includes('fontawsome-brands') ? 'brands' : 'solid';
+          const name = currentIcon.split('/').pop()?.replace('.svg', '') || '';
+          const url = await loadFontAwesomeIcon({ name, category, path: currentIcon });
+          setDisplayIconUrl(url);
+        } catch {
+          setDisplayIconUrl(currentIcon);
+        }
+      } else {
+        setDisplayIconUrl(currentIcon);
+      }
+    };
+    void loadIcon();
   }, [currentIcon]);
 
   const handleSelectDefaultIcon = (icon: string) => {
     setSelectedIcon(icon);
+    setDisplayIconUrl(icon);
     onIconChange(icon);
+  };
+
+  const handleSelectFontAwesomeIcon = async (iconPath: string) => {
+    setSelectedIcon(iconPath);
+    try {
+      const category = iconPath.includes('fontawsome-brands') ? 'brands' : 'solid';
+      const name = iconPath.split('/').pop()?.replace('.svg', '') || '';
+      const url = await loadFontAwesomeIcon({ name, category, path: iconPath });
+      setDisplayIconUrl(url);
+      onIconChange(iconPath);
+    } catch (error) {
+      console.error('Failed to load FontAwesome icon', error);
+    }
   };
 
   const handleDrop = useCallback(
@@ -54,6 +86,7 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
         reader.onloadend = () => {
           const dataUrl = reader.result as string;
           setSelectedIcon(dataUrl);
+          setDisplayIconUrl(dataUrl);
           onIconChange(dataUrl);
         };
         reader.readAsDataURL(file);
@@ -64,11 +97,14 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
 
   const handleDeleteIcon = () => {
     setSelectedIcon('');
+    setDisplayIconUrl('');
     onIconChange('');
   };
 
   const isDefaultIcon = defaultIconList.includes(selectedIcon);
-  const hasCustomIcon = selectedIcon && !isDefaultIcon;
+  const isFontAwesomeIcon = selectedIcon && selectedIcon.includes('fontawsome-');
+  const isEdulutionIcon = selectedIcon && selectedIcon.includes('/edulution/edu_');
+  const hasCustomIcon = selectedIcon && !isDefaultIcon && !isFontAwesomeIcon && !isEdulutionIcon;
 
   return (
     <div className="space-y-4">
@@ -102,6 +138,14 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
       </div>
 
       <div>
+        <p className="mb-2 text-sm font-medium">{t('appstore.fontAwesomeIcons')}</p>
+        <FontAwesomeIconGrid
+          selectedIcon={selectedIcon}
+          onIconSelect={handleSelectFontAwesomeIcon}
+        />
+      </div>
+
+      <div>
         <p className="mb-2 text-sm font-medium">{t('appstore.uploadIcon')}</p>
         <DropZone
           onDrop={handleDrop}
@@ -118,10 +162,13 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
         <div>
           <p className="mb-2 text-sm font-medium">{t('preview.image')}</p>
           <div className="relative inline-block rounded-xl border border-accent p-3 shadow-sm">
-            <img
-              src={selectedIcon}
+            <IconWrapper
+              iconSrc={displayIconUrl}
               alt={t('preview.image')}
-              className={cn('h-16 w-16 object-contain', isDefaultIcon && getAppIconClassName(selectedIcon))}
+              className="h-16 w-16 object-contain"
+              width={64}
+              height={64}
+              applyLegacyFilter={isDefaultIcon}
             />
             {hasCustomIcon && (
               <Button
