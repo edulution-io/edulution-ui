@@ -18,10 +18,10 @@
  */
 
 import {
-  BulletinBoardIcon,
   DashboardIcon,
   ClassManagementIcon,
   FilesharingIcon,
+  InfoBoardIcon,
   SurveysIcon,
   WhiteboardIcon,
 } from '@libs/assets';
@@ -45,7 +45,7 @@ const defaultAppConfig: AppConfigDto[] = [
   },
   {
     name: BULLETIN_BOARD,
-    icon: getImageUrl(BulletinBoardIcon),
+    icon: getImageUrl(InfoBoardIcon),
     appType: NATIVE,
     options: {},
     accessGroups: [],

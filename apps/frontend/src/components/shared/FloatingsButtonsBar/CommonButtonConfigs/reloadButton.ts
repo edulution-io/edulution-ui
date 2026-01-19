@@ -18,10 +18,10 @@
  */
 
 import { t } from 'i18next';
-import { TfiReload } from 'react-icons/tfi';
+import { faRotate } from '@fortawesome/free-solid-svg-icons';
 
 const ReloadButton = (onClick: () => void) => ({
-  icon: TfiReload,
+  icon: faRotate,
   text: t('common.reload'),
   onClick,
 });

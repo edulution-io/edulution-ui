@@ -17,30 +17,47 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import axios from 'axios';
+import mime from 'mime';
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import mime from 'mime';
-import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import { RequestResponseContentType, ResponseType } from '@libs/common/types/http-methods';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import ThemeType from '@libs/common/types/themeType';
 import convertImageFileToWebp from '@libs/common/utils/convertImageFileToWebp';
 import getMainLogoFilename from '@libs/filesharing/utils/getMainLogoFilename';
-import { UploadGlobalAssetDto } from '@libs/filesystem/types/uploadGlobalAssetDto';
 import { GLOBAL_SETTINGS_BRANDING_LOGO } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
+import AssetSource from '@libs/filesystem/types/AssetSource';
 
 interface FilesystemStore {
   darkVersion: number;
   setDarkVersion: (version: number | ((prev: number) => number)) => void;
+
+  fetchImage: (url: string, variant?: ThemeType) => Promise<{ source: AssetSource; content: string } | null>;
+  fetchingImageVariant: ThemeType | null;
+
+  deleteImageFile: (appName: string, filename: string, variant?: ThemeType) => Promise<boolean>;
+  uploadImageFile: (
+    destination: string,
+    filename: string,
+    file: File | Blob,
+    appName?: string,
+    variant?: ThemeType,
+  ) => Promise<boolean>;
+
   uploadingVariant: ThemeType | null;
-  uploadGlobalAsset: (options: UploadGlobalAssetDto) => Promise<void>;
   uploadVariant: (variant: ThemeType, file: File) => Promise<void>;
+
+  error: Error | null;
   reset: () => void;
 }
 
 const initialState = {
   darkVersion: 0,
+  fetchingImageVariant: null,
   uploadingVariant: null,
+  error: null,
 };
 
 const useFilesystemStore = create<FilesystemStore>((set, get) => ({
@@ -51,47 +68,90 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
       darkVersion: typeof version === 'function' ? version(state.darkVersion) : version,
     })),
 
-  uploadGlobalAsset: async ({ variant, file }: { variant: ThemeType; file: File | Blob }) => {
+  fetchImage: async (url: string, variant?: ThemeType): Promise<{ source: AssetSource; content: string } | null> => {
+    if (variant) {
+      set({ fetchingImageVariant: variant, error: null });
+    }
     try {
-      const name = getMainLogoFilename(variant);
+      const response = await axios.get(url, {
+        responseType: ResponseType.BLOB,
+      });
+      if (!response) {
+        throw new Error('No response from server');
+      }
+      const source = (response.headers['x-asset-source'] as AssetSource) || 'none';
+
+      const blob = response.data as Blob;
+      const content = URL.createObjectURL(blob);
+
+      return { source, content };
+    } catch (e) {
+      handleApiError(e, set);
+      return { source: 'none', content: '' };
+    } finally {
+      set({ fetchingImageVariant: null, error: null });
+    }
+  },
+
+  deleteImageFile: async (appName: string, fileName: string): Promise<boolean> => {
+    set({ error: null });
+    try {
+      const url = `${EDU_API_CONFIG_ENDPOINTS.FILES}/public/assets/${appName}/${fileName}`;
+      await eduApi.delete<void>(url);
+      return true;
+    } catch (e) {
+      handleApiError(e, set);
+      return false;
+    }
+  },
+
+  uploadImageFile: async (
+    destination: string,
+    filename: string,
+    file: File | Blob,
+    appName?: string,
+    variant?: ThemeType,
+  ): Promise<boolean> => {
+    set({ uploadingVariant: variant, error: null });
+    try {
       const form = new FormData();
-      form.append('destination', GLOBAL_SETTINGS_BRANDING_LOGO as string);
-      form.append('filename', name);
+      form.append('destination', destination);
+      form.append('filename', filename);
 
       if (file instanceof File) {
-        form.append('file', file, name);
+        const webpFile = await convertImageFileToWebp(file);
+        form.append('file', webpFile, filename);
       } else if (file instanceof Blob) {
         const type = file.type || RequestResponseContentType.APPLICATION_OCTET_STREAM;
+
         const ext = mime.getExtension(type);
-        const fullName = ext && !name.toLowerCase().endsWith(`.${ext.toLowerCase()}`) ? `${name}.${ext}` : name;
+        const fullName =
+          ext && !filename.toLowerCase().endsWith(`.${ext.toLowerCase()}`) ? `${filename}.${ext}` : filename;
 
         const wrapped = new File([file], fullName, { type });
         form.append('file', wrapped, fullName);
       } else {
-        return;
+        return false;
       }
 
-      await eduApi.post<void>(`${EDU_API_CONFIG_ENDPOINTS.FILES}`, form);
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        handleApiError(err, set);
-      } else {
-        handleApiError(new Error('Unknown upload error'), set);
-      }
+      const endpoint = appName ? `${EDU_API_CONFIG_ENDPOINTS.FILES}/${appName}` : `${EDU_API_CONFIG_ENDPOINTS.FILES}`;
+      await eduApi.post<void>(endpoint, form);
+      return true;
+    } catch (e) {
+      handleApiError(e, set);
+      return false;
+    } finally {
+      set({ uploadingVariant: null });
     }
   },
 
   uploadVariant: async (variant: ThemeType, file: File) => {
     try {
       set({ uploadingVariant: variant });
-      const webpFile = await convertImageFileToWebp(file);
-      await get().uploadGlobalAsset({
-        file: webpFile,
-        variant,
-      });
+      await get().uploadImageFile(GLOBAL_SETTINGS_BRANDING_LOGO as string, getMainLogoFilename(variant), file);
       get().setDarkVersion((v) => v + 1);
-    } catch (error) {
-      handleApiError(error, set);
+    } catch (e) {
+      handleApiError(e, set);
     } finally {
       set({ uploadingVariant: null });
     }

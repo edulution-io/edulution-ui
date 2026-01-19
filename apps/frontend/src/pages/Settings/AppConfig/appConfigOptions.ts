@@ -18,17 +18,17 @@
  */
 
 import {
-  BulletinBoardIcon,
+  InfoBoardIcon,
   ClassManagementIcon,
   ConferencesIcon,
   Dashboard,
   DesktopDeploymentIcon,
-  EmbeddedIcon,
+  FrameIcon,
   FileSharingIcon,
   ForwardIcon,
   LinuxmusterIcon,
   MailIcon,
-  NativeIcon,
+  EmbeddedIcon,
   SurveysMenuIcon,
   WhiteBoardIcon,
 } from '@/assets/icons';
@@ -47,6 +47,8 @@ import WEBDAV_SHARE_TABLE_EXTENDED_OPTIONS from '@libs/appconfig/constants/exten
 import MAIL_GENERAL_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/mailGeneralExtendedOptions';
 import FORWARDING_PAGE_OPTIONS from '@libs/appconfig/constants/extendedOptions/forwardingPageOptions';
 import DRAWIO_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/drawioExtendedOptions';
+import FRAME_SCRIPT_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/frameScriptExtendedOptions';
+import APP_LOGO_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/appLogoExtendedOptions';
 
 const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -56,7 +58,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   },
   {
     id: APPS.BULLETIN_BOARD,
-    icon: BulletinBoardIcon,
+    icon: InfoBoardIcon,
     isNativeApp: true,
     extendedOptions: {
       [AppConfigSectionsKeys.bulletinBoard]: BULLETIN_BOARD_EXTENDED_OPTIONS,
@@ -83,6 +85,9 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     id: APPS.SURVEYS,
     icon: SurveysMenuIcon,
     isNativeApp: true,
+    extendedOptions: {
+      [AppConfigSectionsKeys.appLogo]: APP_LOGO_EXTENDED_OPTIONS,
+    },
   },
   {
     id: APPS.FILE_SHARING,
@@ -137,13 +142,16 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   },
   {
     id: APPS.FRAME,
-    icon: EmbeddedIcon,
+    icon: FrameIcon,
     options: [APP_CONFIG_OPTION_KEYS.URL, APP_CONFIG_OPTION_KEYS.PROXYCONFIG],
     isNativeApp: false,
+    extendedOptions: {
+      [AppConfigSectionsKeys.scripts]: FRAME_SCRIPT_EXTENDED_OPTIONS,
+    },
   },
   {
     id: APPS.EMBEDDED,
-    icon: NativeIcon,
+    icon: EmbeddedIcon,
     options: [],
     isNativeApp: false,
     extendedOptions: {
