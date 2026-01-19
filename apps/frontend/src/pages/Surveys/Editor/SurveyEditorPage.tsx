@@ -141,6 +141,23 @@ const SurveyEditorPage = () => {
 
   useEffect(() => {
     if (!creator) return;
+
+    creator.survey.addNavigationItem({
+      id: 'add-navigation-itme',
+      title: 'Logo_Settings',
+      visibleIndex: 19,
+      action: () => setIsOpenSurveyContextMenu(true),
+      visible: true,
+      iconName: 'icon-settings',
+      css: 'icon-24px',
+    });
+
+    creator.survey.addLayoutElement({
+      id: 'add-LayoutElement',
+      container: 'header',
+      component: 'logo',
+    });
+
     creator.locale = language;
     creator.saveNo = form.getValues('saveNo');
     creator.JSON = form.getValues('formula');
