@@ -30,7 +30,7 @@ import useLdapGroups from '@/hooks/useLdapGroups';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import LOGIN_ROUTE from '@libs/auth/constants/loginRoute';
 import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
-import { MdFileCopy } from 'react-icons/md';
+import { faCopy } from '@fortawesome/free-solid-svg-icons';
 import copyToClipboard from '@/utils/copyToClipboard';
 
 const SetupMfaDialog: React.FC = () => {
@@ -121,7 +121,7 @@ const SetupMfaDialog: React.FC = () => {
         }}
         actionIcons={[
           {
-            icon: MdFileCopy,
+            icon: faCopy,
             onClick: () => copyToClipboard(getTotpSecret()),
           },
         ]}

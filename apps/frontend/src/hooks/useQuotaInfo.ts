@@ -17,29 +17,34 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useUserStore from '@/store/UserStore/useUserStore';
+import formatQuotaInGb from '@libs/common/utils/formatQuotaInGb';
+import getProgressBarColor from '@libs/common/utils/getProgressBarColor';
 import type { QuotaInfo } from '@libs/lmnApi/types/lmnApiQuotas';
 
-const useQuotaInfo = (): {
+interface UseQuotaInfoResult {
   quotaUsed: number | string;
   quotaHardLimit: number | string;
+  quotaUsedInGb: string;
+  quotaHardLimitInGb: string;
   mailQuota: string;
   percentageUsed: number;
+  progressBarColor: string;
   isLoading: boolean;
-  refetchUsersQuota: () => void;
-} => {
-  const { user: lmnUser, lmnApiToken, usersQuota, fetchUsersQuota } = useLmnApiStore();
+}
 
+const useQuotaInfo = (): UseQuotaInfoResult => {
+  const { user: lmnUser, lmnApiToken, usersQuota, fetchUsersQuota } = useLmnApiStore();
   const { user } = useUserStore();
   const school = lmnUser?.school ?? 'default-school';
 
-  const refetch = () => {
+  useEffect(() => {
     if (lmnApiToken && user?.username) {
       void fetchUsersQuota(user.username);
     }
-  };
+  }, [lmnApiToken, user?.username]);
 
   return useMemo(() => {
     const quota = usersQuota?.[lmnUser?.school || 'default-school'] as QuotaInfo | undefined;
@@ -53,10 +58,12 @@ const useQuotaInfo = (): {
     return {
       quotaUsed,
       quotaHardLimit,
+      quotaUsedInGb: formatQuotaInGb(quotaUsed),
+      quotaHardLimitInGb: formatQuotaInGb(quotaHardLimit),
       mailQuota,
       percentageUsed,
+      progressBarColor: getProgressBarColor(percentageUsed),
       isLoading: !quota,
-      refetchUsersQuota: refetch,
     };
   }, [usersQuota, school, lmnUser, lmnApiToken]);
 };

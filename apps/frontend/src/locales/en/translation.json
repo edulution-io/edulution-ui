@@ -61,6 +61,8 @@
     "confirmDelete_other": "Do you really want to delete these {{count}} bulletins?",
     "rowsSelected": "{{selected}} out of {{total}} bulletins selected",
     "rowSelected": "{{selected}} out of {{total}} bulletin selected",
+    "item": "{{count}} bulletin",
+    "items": "{{count}} bulletins",
     "cancel": "Cancel",
     "title": "Title",
     "content": "Content",
@@ -136,6 +138,7 @@
       "globalQuota": "Cloud quota calculated",
       "mailQuota": "E-Mail quota calculated",
       "mibibyte": "MiB",
+      "gbUsed": "{{used}} / {{total}} GB used",
       "remainingLow": "Remaining quota low – {{free}} %",
       "remainingVeryLow": "Remaining quota very low – {{free}} %"
     }
@@ -204,6 +207,8 @@
     "encryption": "Encryption",
     "rowsSelected": "{{selected}} of {{total}} jobs selected",
     "rowSelected": "{{selected}} of {{total}} job selected",
+    "item": "{{count}} job",
+    "items": "{{count}} jobs",
     "themeUpdated": {
       "generic": "The mail theme has been updated. Please reload the page to apply the changes.",
       "failed": "The mail theme could not be updated."
@@ -233,6 +238,7 @@
   },
   "errors": {
     "automaticLoginFailed": "Automatic login failed",
+    "scriptInjectionFailed": "Failed to inject script into iframe",
     "unexpectedError": "An unexpected error occurred",
     "uploadOrFetchAttachmentFailed": "Error uploading or fetching attachment",
     "fileGenerationFailed": "File generation failed",
@@ -304,6 +310,8 @@
     "private": "Private",
     "rowsSelected": "{{selected}} of {{total}} conferences selected",
     "rowSelected": "{{selected}} of {{total}} conference selected",
+    "item": "{{count}} conference",
+    "items": "{{count}} conferences",
     "cancel": "Cancel",
     "password_required": "No password entered",
     "error": "Error",
@@ -336,10 +344,13 @@
     "selectFile": "Select file",
     "filePreview": "File preview",
     "saveFile": "Save file",
+    "print": "Print",
     "loadingDocument": "Loading document...",
     "closeEditor": "Close editor",
     "rowsSelected": "{{selected}} of {{total}} files selected",
     "rowSelected": "{{selected}} of {{total}} file selected",
+    "item": "{{count}} element",
+    "items": "{{count}} elements",
     "fileWithSameNameAlreadyExists": "A file with the same name already exists.",
     "folderWithSameNameAlreadyExists": "A folder with the same name already exists.",
     "currentName": "Current name",
@@ -701,6 +712,7 @@
       "fileUploadSuccess": "Saved the file successfully.",
       "fileUploadError": "Error on file upload, please retry later.",
       "fileDeletionSuccess": "Deleted the file successfully.",
+      "fileDeletionError": "The file could not be deleted.",
       "saveSurveySuccess": "Saved the survey.",
       "reset": "Reset",
       "addDescription": "Add a description",
@@ -822,6 +834,8 @@
   "surveys": {
     "rowsSelected": "{{selected}} of {{total}} surveys selected",
     "rowSelected": "{{selected}} of {{total}} survey selected",
+    "item": "{{count}} survey",
+    "items": "{{count}} surveys",
     "confirmDelete": "Should this survey really be deleted?",
     "confirmDelete_other": "Should these {{count}} surveys really be deleted?",
     "deleteSurveys": "Delete survey",
@@ -1098,6 +1112,10 @@
       "confirmDeleteEntries": "Are you sure you want to delete this entry? This action cannot be undone.",
       "confirmDeleteEntries_other": "Are you sure you want to delete these {{count}} entries? This action cannot be undone.",
       "sections": {
+        "appLogo": {
+          "title": "Logo",
+          "description": "Upload your own image here to override the default logo of {{ applicationName }}; Or restore the default logo of {{ applicationName }}."
+        },
         "onlyOffice": {
           "title": "Only Office Integration",
           "description": ""
@@ -1166,21 +1184,38 @@
           "uploadSuccess": "Upload successful",
           "uploadFailed": "Upload failed",
           "rowSelected": "{{selected}} of {{total}} files selected",
-          "rowsSelected": "{{selected}} of {{total}} files selected"
+          "rowsSelected": "{{selected}} of {{total}} files selected",
+          "item": "{{count}} element",
+          "items": "{{count}} elements"
         },
         "editor": {
           "title": "Editor",
           "description": "Here in the editor you can design your own web applications or integrate existing content. You can create websites, format and customize content. Existing applications or external content can also be inserted and conveniently linked to your own content. This creates a flexible area in which you can easily display content or offer interactive applications. Start by selecting the mode in which the web application is to be launched.",
           "sandboxMode": "Separate Layout",
           "nativeMode": "Integrated Layout",
-          "sandboxModeDescription": "In “Separate layout” mode, the content is displayed as a separate page, similar to a window within the application. In addition to the actual content, additional design elements or functions can also be loaded from other sources. This means that the design is independent of the application and could therefore look or behave differently. Here, the content must be uploaded as an HTML file.",
-          "nativeModeDescription": "In “Integrated layout” mode, on the other hand, the content is inserted directly into the user interface of the application. This means that the content looks exactly like the application itself and fits in seamlessly. However, no additional external design elements or functions can be added dynamically here. However, static elements such as images can be uploaded and used here.",
+          "sandboxModeDescription": "In \"Separate layout\" mode, the content is displayed as a separate page, similar to a window within the application. In addition to the actual content, additional design elements or functions can also be loaded from other sources. This means that the design is independent of the application and could therefore look or behave differently. Here, the content must be uploaded as an HTML file.",
+          "nativeModeDescription": "In \"Integrated layout\" mode, on the other hand, the content is inserted directly into the user interface of the application. This means that the content looks exactly like the application itself and fits in seamlessly. However, no additional external design elements or functions can be added dynamically here. However, static elements such as images can be uploaded and used here.",
           "visibilityDescription": "Here you can specify whether the app should be publicly accessible. Active means public, inactive means that only configured user groups have access. Making the app publicly accessible creates a link in the footer. To make the app visible to registered users in the sidebar, their access must be configured via the user groups."
+        },
+        "scripts": {
+          "title": "Scripts",
+          "description": "Configure JavaScript scripts to be executed in the iframe on load or logout.",
+          "onLoadEnabled": "Enable script on load",
+          "onLoadDescription": "Execute a JavaScript script when the iframe content finishes loading",
+          "onLogoutEnabled": "Enable script on logout",
+          "onLogoutDescription": "Execute a JavaScript script before the user logs out",
+          "syntaxValid": "Script syntax is valid",
+          "syntaxInvalid": "Script has syntax errors",
+          "placeholder": "Enter JavaScript code here"
         }
       },
       "update": {
         "success": "App saved successfully",
         "failed": "Update failed"
+      },
+      "editIcon": {
+        "title": "Edit icon",
+        "description": "Choose an icon from the list or upload your own."
       },
       "delete": {
         "success": "App removed",
@@ -1210,6 +1245,8 @@
     },
     "rowsSelected": "{{selected}} of {{total}} Container selected",
     "rowSelected": "{{selected}} of {{total}} Container selected",
+    "item": "{{count}} container",
+    "items": "{{count}} containers",
     "license": {
       "title": "License Overview",
       "customerId": "Customer No",
@@ -1235,6 +1272,8 @@
     "sidebar": "My Profile",
     "rowSelected": "{{selected}} of {{total}} accounts selected",
     "rowsSelected": "{{selected}} of {{total}} accounts selected",
+    "item": "{{count}} account",
+    "items": "{{count}} accounts",
     "details": {
       "title": "User details",
       "description": "Here you see and edit some of your personal information.",
@@ -1351,8 +1390,8 @@
     "title": "General"
   },
   "forwardingpage": {
-    "action": "This link will take you to the external site of the provider.",
-    "description": "The application opens in a new window.",
+    "action": "This button will take you to the external site of the provider.",
+    "description": "The application opens in a new tab.",
     "missing_link": "Missing link"
   },
   "menu": "Menu",
@@ -1395,6 +1434,7 @@
     "back": "Back",
     "of": "of",
     "confirm": "Confirm",
+    "validate": "Validate",
     "creator": "Creator",
     "chooseFile": "Choose file",
     "changeFile": "Change file",
@@ -1415,7 +1455,18 @@
       "invalidFileType": "Invalid file type",
       "startDateBeforeEndDate": "The start date must be before the end date",
       "invalidRequestData": "Invalid request data",
-      "wrongServerConfig": "Incorrect server configuration"
+      "wrongServerConfig": "Incorrect server configuration",
+      "path": {
+        "noString": "Path must be a string",
+        "isEmpty": "Path cannot be empty",
+        "tooLong": "Path is too long",
+        "traversal": "Path traversal is not allowed",
+        "absolutePath": "Absolute paths are not allowed",
+        "subdirectories": "Subdirectories are not allowed",
+        "invalidCharacters": "Path contains invalid characters",
+        "outsidePublicDirectory": "Path is outside the public directory",
+        "symlinkOutsidePublicDirectory": "Path includes a symlink that links outside the public directory"
+      }
     },
     "cut": "Cut",
     "sortOrder": "Sort order",
@@ -1424,6 +1475,12 @@
     "cancel": "Cancel",
     "columns": "Columns",
     "table": "Table",
+    "tableView": "Table view",
+    "gridView": "Grid view",
+    "sort": "Sort",
+    "ascending": "ascending",
+    "descending": "descending",
+    "selectAll": "Select all",
     "copy": {
       "success": "Successfully copied to clipboard",
       "error": "Copy to clipboard failed",
@@ -1501,6 +1558,7 @@
     "select": "Select...",
     "none": "None",
     "edit": "Edit",
+    "view": "View",
     "participate": "Participate",
     "participated": "Participated",
     "not-available": "Not available",
@@ -1882,6 +1940,11 @@
       "updateNow": "Update Now",
       "checkVersionSuccess": "Theme successfully checked!",
       "noData": "No version information available."
+    },
+    "appLogo": {
+      "light": "light",
+      "dark": "dark",
+      "title": "Logo for the {{variant}} color scheme"
     }
   },
   "mails": {

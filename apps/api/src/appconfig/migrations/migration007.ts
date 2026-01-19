@@ -20,10 +20,9 @@
 import { Logger } from '@nestjs/common';
 import APPS from '@libs/appconfig/constants/apps';
 import { DashboardIcon } from '@libs/assets';
+import getImageUrl from '@libs/assets/getImageUrl';
 import { Migration } from '../../migration/migration.type';
 import { AppConfig } from '../appconfig.schema';
-
-const getImageUrl = (src: string) => `data:image/svg+xml,${encodeURIComponent(src)}`;
 
 const migration007: Migration<AppConfig> = {
   name: '007-fix-dashboard-icon',

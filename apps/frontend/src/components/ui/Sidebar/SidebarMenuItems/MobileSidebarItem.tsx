@@ -55,7 +55,7 @@ const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({
         to={link}
         onClick={toggleMobileSidebar}
         className={cn(
-          'group relative flex cursor-pointer items-center justify-end gap-4 px-4 py-2',
+          'group relative flex cursor-pointer items-center justify-end gap-4 px-4 py-2 hover:bg-muted-background',
           menuItemColor,
           navLinkClassName,
           textClassName,
