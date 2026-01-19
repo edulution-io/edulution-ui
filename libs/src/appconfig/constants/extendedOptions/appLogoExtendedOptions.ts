@@ -17,15 +17,22 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import THEME from '@libs/common/constants/theme';
-import ThemeType from '@libs/common/types/themeType';
-import getSurveysDefaultLogoFilename from '@libs/survey/utils/getSurveysDefaultLogoFilename';
+import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+import ThemedFile from '@libs/common/types/themedFile';
 
-const getSurveysDefaultLogoUrl = (theme?: ThemeType) => {
-  const fileName = getSurveysDefaultLogoFilename(theme || THEME.dark);
-  return `/${EDU_API_ROOT}/public/assets/${APPS.SURVEYS}/${fileName}`;
-};
+const ThemedValue: ThemedFile = { dark: null, light: null };
 
-export default getSurveysDefaultLogoUrl;
+const APP_LOGO_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
+  {
+    name: ExtendedOptionKeys.APP_LOGO,
+    title: 'appExtendedOptions.appLogo.title',
+    description: '',
+    type: ExtendedOptionField.appLogo,
+    value: ThemedValue,
+    width: 'full',
+  },
+];
+
+export default APP_LOGO_EXTENDED_OPTIONS;
