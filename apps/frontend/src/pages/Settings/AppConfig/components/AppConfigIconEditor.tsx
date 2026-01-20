@@ -115,29 +115,36 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
       <div>
         <p className="mb-2 text-sm font-medium">{t('appstore.chooseIcon')}</p>
         <Card
-          className="grid grid-cols-6 gap-4 p-3 transition-none hover:scale-100"
+          className="overflow-hidden p-0 transition-none hover:scale-100"
           variant="dialog"
         >
-          {defaultIconList.map((icon) => {
-            const iconName = icon.split('/').at(-1);
-            return (
-              <button
-                key={iconName}
-                type="button"
-                onClick={() => handleSelectDefaultIcon(icon)}
-                className={cn(
-                  'rounded-xl border-2 transition-colors hover:border-secondary',
-                  selectedIcon === icon ? 'border-primary' : 'border-transparent',
-                )}
-              >
-                <img
-                  src={icon}
-                  alt={iconName}
-                  className="h-14 w-14 light:icon-light-mode"
-                />
-              </button>
-            );
-          })}
+          <div
+            className="overflow-y-auto scrollbar-thin"
+            style={{ maxHeight: 168 }}
+          >
+            <div className="grid grid-cols-8 gap-2 p-2">
+              {defaultIconList.map((icon) => {
+                const iconName = icon.split('/').at(-1);
+                return (
+                  <button
+                    key={iconName}
+                    type="button"
+                    onClick={() => handleSelectDefaultIcon(icon)}
+                    className={cn(
+                      'rounded-lg border-2 transition-colors hover:border-secondary',
+                      selectedIcon === icon ? 'border-primary' : 'border-transparent',
+                    )}
+                  >
+                    <img
+                      src={icon}
+                      alt={iconName}
+                      className="h-11 w-11 light:icon-light-mode"
+                    />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </Card>
       </div>
 

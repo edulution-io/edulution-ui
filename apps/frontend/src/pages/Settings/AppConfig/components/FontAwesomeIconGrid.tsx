@@ -29,8 +29,8 @@ interface FontAwesomeIconGridProps {
   onIconSelect: (iconPath: string) => void;
 }
 
-const COLUMN_COUNT = 6;
-const ICON_SIZE = 80;
+const COLUMN_COUNT = 8;
+const ICON_SIZE = 56;
 const VISIBLE_ROWS = 3;
 const OVERSCAN_ROWS = 2;
 
@@ -104,14 +104,14 @@ const FontAwesomeIconGrid: React.FC<FontAwesomeIconGridProps> = ({ selectedIcon,
         type="button"
         onClick={() => onIconSelect(icon.path)}
         className={cn(
-          'flex h-16 w-16 items-center justify-center rounded-lg border-2 transition-all hover:border-secondary hover:shadow-md',
+          'flex h-11 w-11 items-center justify-center rounded-lg border-2 transition-all hover:border-secondary hover:shadow-md',
           isSelected ? 'bg-primary/10 border-primary' : 'border-transparent',
         )}
         title={`${icon.category}: ${icon.name}`}
       >
         {iconUrl ? (
           <div
-            className="h-10 w-10 text-background"
+            className="h-7 w-7 text-background"
             style={{
               WebkitMaskImage: `url(${iconUrl})`,
               maskImage: `url(${iconUrl})`,
@@ -125,7 +125,7 @@ const FontAwesomeIconGrid: React.FC<FontAwesomeIconGridProps> = ({ selectedIcon,
             }}
           />
         ) : (
-          <div className="h-10 w-10 animate-pulse rounded bg-muted" />
+          <div className="h-7 w-7 animate-pulse rounded bg-muted" />
         )}
       </button>
     );
@@ -155,7 +155,7 @@ const FontAwesomeIconGrid: React.FC<FontAwesomeIconGridProps> = ({ selectedIcon,
           >
             <div style={{ height: totalRows * ICON_SIZE, position: 'relative' }}>
               <div
-                className="grid grid-cols-6 gap-4 p-3"
+                className="grid grid-cols-8 gap-2 p-2"
                 style={{
                   position: 'absolute',
                   top: visibleRange.start * ICON_SIZE,
