@@ -840,7 +840,7 @@
         "description": "Here you can find the surveys that you have already participated in."
       },
       "editor": {
-        "menu": "Create new"
+        "menu": "Editor"
       }
     },
     "actions": {
