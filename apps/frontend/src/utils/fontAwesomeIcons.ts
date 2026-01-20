@@ -23,42 +23,52 @@ export interface FontAwesomeIcon {
   path: string;
 }
 
-const brandIcons = import.meta.glob('@/assets/icons/fontawsome-brands/*.svg', {
-  eager: false,
+const brandIconsGlob = import.meta.glob('@/assets/icons/fontawsome-brands/*.svg', {
+  eager: true,
   query: '?url',
   import: 'default',
 });
 
-const solidIcons = import.meta.glob('@/assets/icons/fontawsome-solid/*.svg', {
-  eager: false,
+const solidIconsGlob = import.meta.glob('@/assets/icons/fontawsome-solid/*.svg', {
+  eager: true,
   query: '?url',
   import: 'default',
 });
 
-const parseIconPath = (path: string, category: 'brands' | 'solid'): FontAwesomeIcon => {
-  const name = path.split('/').pop()?.replace('.svg', '') || '';
+const getIconUrl = (fileName: string, category: 'brands' | 'solid'): string => {
+  const iconGlob = category === 'brands' ? brandIconsGlob : solidIconsGlob;
+  const globKey = Object.keys(iconGlob).find((key) => key.endsWith(`/${fileName}.svg`));
+  const globUrl = globKey ? (iconGlob[globKey] as string) : '';
+
+  if (globUrl && globUrl.startsWith('/src/')) {
+    return globUrl;
+  }
+
+  return `/assets/fontawsome-${category}/${fileName}.svg`;
+};
+
+const parseIconFromPath = (sourcePath: string, category: 'brands' | 'solid'): FontAwesomeIcon => {
+  const fileName = sourcePath.split('/').pop()?.replace('.svg', '') || '';
+  const path = getIconUrl(fileName, category);
+
   return {
-    name,
+    name: fileName,
     category,
     path,
   };
 };
 
 export const getFontAwesomeIconList = (): FontAwesomeIcon[] => {
-  const brands = Object.keys(brandIcons).map((path) => parseIconPath(path, 'brands'));
-  const solid = Object.keys(solidIcons).map((path) => parseIconPath(path, 'solid'));
+  const brands = Object.keys(brandIconsGlob).map((path) => parseIconFromPath(path, 'brands'));
+  const solid = Object.keys(solidIconsGlob).map((path) => parseIconFromPath(path, 'solid'));
 
   return [...brands, ...solid].sort((a, b) => a.name.localeCompare(b.name));
 };
 
-export const loadFontAwesomeIcon = async (icon: FontAwesomeIcon): Promise<string> => {
-  const iconModules = icon.category === 'brands' ? brandIcons : solidIcons;
-  const loader = iconModules[icon.path];
+export const loadFontAwesomeIcon = (icon: FontAwesomeIcon): Promise<string> => Promise.resolve(icon.path);
 
-  if (!loader) {
-    throw new Error(`Icon not found: ${icon.path}`);
-  }
-
-  const module = await loader();
-  return module as string;
+export const resolveFontAwesomeIconUrl = (storedPath: string): string => {
+  const category = storedPath.includes('fontawsome-brands') ? 'brands' : 'solid';
+  const fileName = storedPath.split('/').pop()?.replace('.svg', '') || '';
+  return getIconUrl(fileName, category);
 };

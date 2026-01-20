@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, useMemo } from 'react';
 import cn from '@libs/common/utils/className';
 import getAppIconClassName from '@/utils/getAppIconClassName';
 import {
@@ -26,6 +26,7 @@ import {
   DEFAULT_ICON_MASK_SIZE,
   DEFAULT_ICON_WEBP_SIZE,
 } from '@libs/ui/constants/icon';
+import { resolveFontAwesomeIconUrl } from '@/utils/fontAwesomeIcons';
 
 interface IconWrapperProps {
   iconSrc: string;
@@ -53,6 +54,13 @@ const IconWrapper: React.FC<IconWrapperProps> = ({
   const isUploadedSvg = iconSrc.includes(CUSTOM_UPLOAD_IDENTIFIER);
   const useMaskTechnique = isFontAwesomeIcon || isUploadedSvg;
 
+  const resolvedIconSrc = useMemo(() => {
+    if (isFontAwesomeIcon) {
+      return resolveFontAwesomeIconUrl(iconSrc);
+    }
+    return iconSrc;
+  }, [iconSrc, isFontAwesomeIcon]);
+
   if (useMaskTechnique) {
     return (
       <div
@@ -60,8 +68,8 @@ const IconWrapper: React.FC<IconWrapperProps> = ({
         style={{
           width,
           height,
-          WebkitMaskImage: `url(${iconSrc})`,
-          maskImage: `url(${iconSrc})`,
+          WebkitMaskImage: `url(${resolvedIconSrc})`,
+          maskImage: `url(${resolvedIconSrc})`,
           WebkitMaskRepeat: 'no-repeat',
           maskRepeat: 'no-repeat',
           WebkitMaskSize: fontAwesomeMaskSize,
