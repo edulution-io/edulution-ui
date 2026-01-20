@@ -748,7 +748,7 @@
         "description": "Ici, vous trouverez les sondages auxquels vous avez déjà participés."
       },
       "editor": {
-        "menu": "Créer un nouveau"
+        "menu": "Éditeur"
       }
     },
     "actions": {

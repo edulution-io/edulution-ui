@@ -28,6 +28,7 @@ import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialog
 import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
+import CreateButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/createButton';
 import EditButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/editButton';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
 import useUserStore from '@/store/UserStore/useUserStore';
@@ -96,6 +97,10 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
+      CreateButton(() => {
+        navigate(`/${EDIT_SURVEY_PAGE}`);
+      }),
+
       EditButton(() => {
         navigate(`/${EDIT_SURVEY_PAGE}/${selectedSurvey?.id}`);
       }, isOnlyOneSurveySelected && canEdit),

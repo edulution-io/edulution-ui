@@ -867,7 +867,7 @@
         "description": "Hier findest du die Umfragen, an denen du bereits teilgenommen hast."
       },
       "editor": {
-        "menu": "Neue erstellen"
+        "menu": "Editor"
       }
     },
     "actions": {
