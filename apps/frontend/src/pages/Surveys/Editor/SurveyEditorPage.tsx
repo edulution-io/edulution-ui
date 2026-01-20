@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { toast } from 'sonner';
 import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -66,6 +66,8 @@ const SurveyEditorPage = () => {
     updateStoredSurvey,
     resetStoredSurvey,
     uploadFile,
+    lastEditedSurveyId,
+    setLastEditedSurveyId,
   } = useSurveyEditorPageStore();
   const { reset: resetTemplateStore, isOpenTemplateMenu, setIsOpenTemplateMenu } = useTemplateMenuStore();
   const {
@@ -83,18 +85,27 @@ const SurveyEditorPage = () => {
   const { language } = useLanguage();
   const { theme } = useThemeStore();
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     resetStoredSurvey();
     resetEditorPage();
     resetTemplateStore();
     resetQuestionsContextMenu();
     selectSurvey(undefined);
-  };
+  }, [resetStoredSurvey, resetEditorPage, resetTemplateStore, resetQuestionsContextMenu, selectSurvey]);
 
   useEffect(() => {
-    handleReset();
-    void fetchSelectedSurvey(surveyId, false);
-  }, [surveyId]);
+    const isSwitchingToNewSurvey = lastEditedSurveyId !== surveyId;
+
+    if (isSwitchingToNewSurvey) {
+      handleReset();
+      setLastEditedSurveyId(surveyId);
+    }
+
+    const shouldFetch = isSwitchingToNewSurvey || !selectedSurvey;
+    if (shouldFetch) {
+      void fetchSelectedSurvey(surveyId, false);
+    }
+  }, [surveyId, lastEditedSurveyId, handleReset, setLastEditedSurveyId, fetchSelectedSurvey, selectedSurvey]);
 
   const initialFormValues: SurveyDto | undefined = useMemo(() => {
     if (!user || !user.username) return undefined;

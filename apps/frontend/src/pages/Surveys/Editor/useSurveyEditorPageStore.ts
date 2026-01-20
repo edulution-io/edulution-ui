@@ -33,6 +33,9 @@ interface SurveyEditorPageStore {
   updateStoredSurvey: (survey: SurveyDto) => void;
   resetStoredSurvey: () => void;
 
+  lastEditedSurveyId: string | undefined;
+  setLastEditedSurveyId: (surveyId: string | undefined) => void;
+
   uploadFile: (file: File, callback: CallableFunction) => Promise<void>;
   isUploadingFile: boolean;
 
@@ -56,6 +59,7 @@ type PersistedSurveyEditorPageStore = (
 
 const initialState = {
   storedSurvey: undefined,
+  lastEditedSurveyId: undefined,
 
   isUploadingFile: false,
 
@@ -73,7 +77,9 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
       reset: () => set(initialState),
 
       updateStoredSurvey: (survey: SurveyDto) => set({ storedSurvey: survey }),
-      resetStoredSurvey: () => set({ storedSurvey: undefined }),
+      resetStoredSurvey: () => set({ storedSurvey: undefined, lastEditedSurveyId: undefined }),
+
+      setLastEditedSurveyId: (surveyId: string | undefined) => set({ lastEditedSurveyId: surveyId }),
 
       setIsOpenSaveSurveyDialog: (state: boolean) => set({ isOpenSaveSurveyDialog: state }),
 
@@ -126,7 +132,7 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
     {
       name: 'survey-editor-storage',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ storedSurvey: state.storedSurvey }),
+      partialize: (state) => ({ storedSurvey: state.storedSurvey, lastEditedSurveyId: state.lastEditedSurveyId }),
     },
   ),
 );
