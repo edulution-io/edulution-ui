@@ -84,7 +84,10 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
       if (file) {
         const reader = new FileReader();
         reader.onloadend = () => {
-          const dataUrl = reader.result as string;
+          let dataUrl = reader.result as string;
+          if (dataUrl.startsWith('data:image/svg+xml;')) {
+            dataUrl = dataUrl.replace('data:image/svg+xml;', 'data:image/svg+xml;custom-upload;');
+          }
           setSelectedIcon(dataUrl);
           setDisplayIconUrl(dataUrl);
           onIconChange(dataUrl);

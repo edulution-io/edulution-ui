@@ -44,8 +44,9 @@ const IconWrapper: React.FC<IconWrapperProps> = ({
 }) => {
   const isFontAwesomeIcon = iconSrc.includes('fontawsome-');
   const isWebp = iconSrc.endsWith('.webp') || iconSrc.includes('data:image/webp');
+  const isUploadedSvg = iconSrc.includes('custom-upload');
 
-  if (isFontAwesomeIcon) {
+  if (isFontAwesomeIcon || isUploadedSvg) {
     return (
       <div
         className={cn(applyLegacyFilter ? 'text-background dark:text-white' : 'text-white', className)}
