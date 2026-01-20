@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -80,12 +80,12 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
   const { isSuperAdmin } = useLdapGroups();
   const { theme } = useThemeStore();
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     resetStoredSurvey();
     resetEditorPage();
     resetTemplateStore();
     resetQuestionsContextMenu();
-  };
+  }, [resetStoredSurvey, resetEditorPage, resetTemplateStore, resetQuestionsContextMenu]);
 
   const form = useForm<SurveyDto>({
     mode: 'onChange',
