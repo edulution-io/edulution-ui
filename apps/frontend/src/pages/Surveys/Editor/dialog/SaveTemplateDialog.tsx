@@ -38,8 +38,15 @@ interface TemplateDialogProps {
 }
 
 const SaveTemplateDialog: React.FC<TemplateDialogProps> = ({ form, creator, trigger }) => {
-  const { name, accessGroups, uploadTemplate, setIsOpenSaveTemplateDialog, isOpenSaveTemplateDialog, setInitialData } =
-    useSaveTemplateDialogStore();
+  const {
+    name,
+    accessGroups,
+    uploadTemplate,
+    setIsOpenSaveTemplateDialog,
+    isOpenSaveTemplateDialog,
+    setInitialData,
+    reset,
+  } = useSaveTemplateDialogStore();
 
   const { template } = useSurveyTemplateStore();
 
@@ -80,7 +87,7 @@ const SaveTemplateDialog: React.FC<TemplateDialogProps> = ({ form, creator, trig
         createdAt: creationDate,
       },
     });
-    handleClose();
+    reset();
   }, [form, creator, template, name, accessGroups, uploadTemplate, handleClose]);
 
   const body = <SaveTemplateDialogBody />;
