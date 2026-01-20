@@ -139,6 +139,7 @@ const FontAwesomeIconGrid: React.FC<FontAwesomeIconGridProps> = ({ selectedIcon,
         value={searchTerm}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
         className="w-full"
+        variant="dialog"
       />
 
       <Card

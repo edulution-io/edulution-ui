@@ -43,7 +43,6 @@ const SidebarItemIcon = ({
       className={cn(
         'max-h-full max-w-full origin-top transform transition-all duration-200',
         isHovered ? 'scale-[1.17] brightness-125' : 'scale-100',
-        !isHovered && !isSelected && 'opacity-70',
       )}
       width={SIDEBAR_ICON_WIDTH}
       height={SIDEBAR_ICON_HEIGHT}
