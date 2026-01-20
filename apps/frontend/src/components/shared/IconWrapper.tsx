@@ -70,14 +70,27 @@ const IconWrapper: React.FC<IconWrapperProps> = ({
 
   if (isWebp) {
     return (
-      <img
-        src={iconSrc}
-        alt={alt}
-        width={width}
-        height={height}
+      <div
         className={className}
-        style={style}
-      />
+        style={{
+          width,
+          height,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          ...style,
+        }}
+      >
+        <img
+          src={iconSrc}
+          alt={alt}
+          style={{
+            width: '80%',
+            height: '80%',
+            objectFit: 'contain',
+          }}
+        />
+      </div>
     );
   }
 
