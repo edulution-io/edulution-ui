@@ -39,7 +39,7 @@ import AddOrganisationInfo from '@/pages/Settings/components/AddOrganisationInfo
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import ThemeSettings from '@/pages/Settings/components/ThemeSettings';
 import AppConfigFormDarkAndLightAssetField from '@/pages/Settings/AppConfig/components/AppConfigFormDarkAndLightAssetField';
-import AppConfigFormSingleAssetField from '@/pages/Settings/AppConfig/components/AppConfigFormSingleAssetField';
+import AppConfigFormAssetField from '@/pages/Settings/AppConfig/components/AppConfigFormAssetField';
 import applyBackgroundImage from '@/utils/applyBackgroundImage';
 import useThemeStore from '@/store/useThemeStore';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
@@ -166,15 +166,9 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
                       : 'settings.globalSettings.logo.descriptionSchool',
                   )}
                 </p>
-                <AppConfigFormSingleAssetField
+                <AppConfigFormAssetField
                   settingLocation={APPS.GENERAL_SETTINGS}
                   fieldPath="brandingUploads.logo"
-                  option={{
-                    name: ExtendedOptionKeys.APP_LOGO,
-                    title: '',
-                    description: '',
-                    type: ExtendedOptionField.appLogo,
-                  }}
                   form={form}
                   assetType={ASSET_TYPES.logo}
                 />

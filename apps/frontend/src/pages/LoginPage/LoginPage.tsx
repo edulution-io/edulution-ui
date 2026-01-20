@@ -46,7 +46,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
 import { decodeBase64, encodeBase64 } from '@libs/common/utils/getBase64String';
 import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg?react';
-import { getSingleAssetUrl } from '@libs/appconfig/utils/getAppAsset';
+import { getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
 import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useLmnApiStore from '@/store/useLmnApiStore';
@@ -76,7 +76,7 @@ const LoginPage: React.FC = () => {
   const appConfigs = useAppConfigsStore((s) => s.appConfigs);
   const { silentLogin } = useSilentLoginWithPassword();
 
-  const logoSrc = getSingleAssetUrl(APPS.GENERAL_SETTINGS, ASSET_TYPES.logo);
+  const logoSrc = getAssetUrl(APPS.GENERAL_SETTINGS, ASSET_TYPES.logo);
 
   const { isLoading } = auth;
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);

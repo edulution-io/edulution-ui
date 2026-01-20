@@ -10,29 +10,16 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import THEME from '@libs/common/constants/theme';
 import ThemeType from '@libs/common/types/themeType';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
-import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
 import AssetType from '@libs/appconfig/types/assetType';
 
-export const getAssetName = (appName: string, theme: ThemeType = THEME.dark, assetType: AssetType = ASSET_TYPES.logo) =>
-  `${appName}-custom-${assetType}-${theme}.webp`;
+export const getAssetName = (appName: string, assetType: AssetType, theme?: ThemeType) =>
+  theme ? `${appName}-custom-${assetType}-${theme}.webp` : `${appName}-custom-${assetType}.webp`;
 
-export const getFallbackAssetName = (
-  appName: string,
-  theme: ThemeType = THEME.dark,
-  assetType: AssetType = ASSET_TYPES.logo,
-) => `${appName}-default-${assetType}-${theme}.webp`;
+export const getFallbackAssetName = (appName: string, assetType: AssetType, theme?: ThemeType) =>
+  theme ? `${appName}-default-${assetType}-${theme}.webp` : `${appName}-default-${assetType}.webp`;
 
-export const getAssetUrl = (appName: string, theme: ThemeType = THEME.dark, assetType: AssetType = ASSET_TYPES.logo) =>
-  `/${EDU_API_ROOT}/${EDU_API_CONFIG_ENDPOINTS.FILES}/public/assets/${appName}/${getAssetName(appName, theme, assetType)}?fallback=${getFallbackAssetName(appName, theme, assetType)}`;
-
-export const getSingleAssetName = (appName: string, assetType: AssetType) => `${appName}-custom-${assetType}.webp`;
-
-export const getSingleFallbackAssetName = (appName: string, assetType: AssetType) =>
-  `${appName}-default-${assetType}.webp`;
-
-export const getSingleAssetUrl = (appName: string, assetType: AssetType) =>
-  `/${EDU_API_ROOT}/${EDU_API_CONFIG_ENDPOINTS.FILES}/public/assets/${appName}/${getSingleAssetName(appName, assetType)}?fallback=${getSingleFallbackAssetName(appName, assetType)}`;
+export const getAssetUrl = (appName: string, assetType: AssetType, theme?: ThemeType) =>
+  `/${EDU_API_ROOT}/${EDU_API_CONFIG_ENDPOINTS.FILES}/public/assets/${appName}/${getAssetName(appName, assetType, theme)}?fallback=${getFallbackAssetName(appName, assetType, theme)}`;
