@@ -25,9 +25,11 @@ import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 
 interface ViewModeStore {
   viewModes: Record<string, ViewModeType>;
-  fileFilter: Record<string, boolean>;
+  showSystemFiles: Record<string, boolean>;
+  showHiddenFiles: Record<string, boolean>;
   setViewMode: (key: string, mode: ViewModeType) => void;
-  setFileFilter: (key: string, enabled: boolean) => void;
+  setShowSystemFiles: (key: string, enabled: boolean) => void;
+  setShowHiddenFiles: (key: string, enabled: boolean) => void;
   getViewMode: (key: string) => ViewModeType;
 }
 
@@ -36,11 +38,16 @@ type PersistedViewModeStore = (
   options: PersistOptions<Partial<ViewModeStore>>,
 ) => StateCreator<ViewModeStore>;
 
+const initialValues = {
+  viewModes: {},
+  showSystemFiles: { [APPS.FILE_SHARING]: false },
+  showHiddenFiles: { [APPS.FILE_SHARING]: false },
+};
+
 const useViewModeStore = create<ViewModeStore>(
   (persist as PersistedViewModeStore)(
     (set, get) => ({
-      viewModes: {},
-      fileFilter: { [APPS.FILE_SHARING]: true },
+      ...initialValues,
 
       setViewMode: (key, mode) => {
         set((state) => ({
@@ -56,10 +63,19 @@ const useViewModeStore = create<ViewModeStore>(
         return viewModes[key] || VIEW_MODE.table;
       },
 
-      setFileFilter: (key, enabled) => {
+      setShowSystemFiles: (key, enabled) => {
         set((state) => ({
-          fileFilter: {
-            ...state.fileFilter,
+          showSystemFiles: {
+            ...state.showSystemFiles,
+            [key]: enabled,
+          },
+        }));
+      },
+
+      setShowHiddenFiles: (key, enabled) => {
+        set((state) => ({
+          showHiddenFiles: {
+            ...state.showHiddenFiles,
             [key]: enabled,
           },
         }));
@@ -68,7 +84,11 @@ const useViewModeStore = create<ViewModeStore>(
     {
       name: 'view-mode',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ viewModes: state.viewModes, fileFilter: state.fileFilter }),
+      partialize: (state) => ({
+        viewModes: state.viewModes,
+        showSystemFiles: state.showSystemFiles,
+        showHiddenFiles: state.showHiddenFiles,
+      }),
     },
   ),
 );

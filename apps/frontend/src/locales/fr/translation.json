@@ -1274,6 +1274,7 @@
     "entry": "Entrée {{index}}",
     "filter": "Filtrer",
     "showHiddenFiles": "Afficher les fichiers cachés",
+    "showSystemFiles": "Afficher les fichiers système",
     "errors": {
       "attachmentUploadFailed": "La pièce jointe n'a pas pu être téléversée",
       "dbAccessFailed": "L'accès à la base de données a échoué",

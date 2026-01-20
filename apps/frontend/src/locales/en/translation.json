@@ -1428,6 +1428,7 @@
     "entry": "Entry {{index}}",
     "filter": "Filter",
     "showHiddenFiles": "Show hidden files",
+    "showSystemFiles": "Show system files",
     "errors": {
       "dbAccessFailed": "Database access failed",
       "directoryNotCreated": "Failed to create directory",

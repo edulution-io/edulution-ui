@@ -26,24 +26,28 @@ import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { inputVariants } from '@libs/ui/constants/commonClassNames';
 import cn from '@libs/common/utils/className';
 
-interface FileFilterDropdownProps {
-  showHiddenFiles: boolean;
-  onShowHiddenFilesChange: (enabled: boolean) => void;
+export interface FilterOption {
+  key: string;
+  translationKey: string;
+  checked: boolean;
+  onChange: (enabled: boolean) => void;
+}
+
+interface TableFilterDropdownProps {
+  filterOptions: FilterOption[];
   isDialog?: boolean;
 }
 
-const FileFilterDropdown = ({ showHiddenFiles, onShowHiddenFilesChange, isDialog }: FileFilterDropdownProps) => {
+const TableFilterDropdown = ({ filterOptions, isDialog }: TableFilterDropdownProps) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
-  const dropdownItems = [
-    {
-      label: t('common.showHiddenFiles'),
-      isCheckbox: true,
-      checked: showHiddenFiles,
-      onCheckedChange: (checked: boolean) => onShowHiddenFilesChange(checked),
-    },
-  ];
+  const dropdownItems = filterOptions.map((option) => ({
+    label: t(option.translationKey),
+    isCheckbox: true,
+    checked: option.checked,
+    onCheckedChange: (checked: boolean) => option.onChange(checked),
+  }));
 
   return (
     <DropdownMenu
@@ -54,7 +58,7 @@ const FileFilterDropdown = ({ showHiddenFiles, onShowHiddenFilesChange, isDialog
           variant="btn-table"
           className={cn('max-w-fit', inputVariants({ variant: isDialog ? 'dialog' : 'default' }))}
         >
-          {t('common.filter')}{' '}
+          {t('common.filter')}
           <FontAwesomeIcon
             icon={faChevronDown}
             className={cn('h-3 w-3 transition-transform', isOpen && 'rotate-180')}
@@ -66,4 +70,4 @@ const FileFilterDropdown = ({ showHiddenFiles, onShowHiddenFilesChange, isDialog
   );
 };
 
-export default FileFilterDropdown;
+export default TableFilterDropdown;

@@ -33,7 +33,7 @@ import SortDropdown from './SortDropdown';
 import GridView, { GridItemConfig } from './GridView/GridView';
 import useScrollableTable from './useScrollableTable';
 import SelectedRowsCount from './SelectedRowsCount';
-import FileFilterDropdown from './FileFilterDropdown';
+import TableFilterDropdown, { FilterOption } from './TableFilterDropdown';
 
 interface TableGridViewProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -59,6 +59,7 @@ interface TableGridViewProps<TData, TValue> {
   canDropOnRow?: (row: TData) => boolean;
   gridItemConfig: GridItemConfig<TData>;
   viewModeStorageKey: string;
+  filterOptions?: FilterOption[];
 }
 
 const TableGridView = <TData, TValue>({
@@ -85,12 +86,12 @@ const TableGridView = <TData, TValue>({
   canDropOnRow,
   gridItemConfig,
   viewModeStorageKey,
+  filterOptions,
 }: TableGridViewProps<TData, TValue>) => {
   const { t } = useTranslation();
-  const { getViewMode, setViewMode, setFileFilter } = useViewModeStore();
+  const { getViewMode, setViewMode } = useViewModeStore();
   const viewMode = getViewMode(viewModeStorageKey);
   const isTableView = viewMode === VIEW_MODE.table;
-  const showHiddenFiles = useViewModeStore((state) => state.fileFilter[viewModeStorageKey]) ?? false;
 
   const handleViewModeChange = useCallback(
     (mode: typeof VIEW_MODE.table | typeof VIEW_MODE.grid) => {
@@ -110,16 +111,16 @@ const TableGridView = <TData, TValue>({
     [viewMode, handleViewModeChange, isDialog],
   );
 
-  const fileFilterDropdown = useMemo(
-    () => (
-      <FileFilterDropdown
-        showHiddenFiles={showHiddenFiles}
-        onShowHiddenFilesChange={(enabled) => setFileFilter(viewModeStorageKey, enabled)}
+  const fileFilterDropdown = useMemo(() => {
+    if (!filterOptions || filterOptions.length === 0) return null;
+
+    return (
+      <TableFilterDropdown
+        filterOptions={filterOptions}
         isDialog={isDialog}
       />
-    ),
-    [showHiddenFiles, setFileFilter, viewModeStorageKey, isDialog],
-  );
+    );
+  }, [filterOptions, isDialog]);
 
   const { table } = useScrollableTable({
     columns,
