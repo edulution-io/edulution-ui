@@ -45,7 +45,6 @@ import PageLayout from '@/components/structure/layout/PageLayout';
 import APPS from '@libs/appconfig/constants/apps';
 import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
 import { decodeBase64, encodeBase64 } from '@libs/common/utils/getBase64String';
-import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg?react';
 import { getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
 import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
@@ -84,7 +83,6 @@ const LoginPage: React.FC = () => {
   const [encryptKey, setEncryptKey] = useState('');
   const [showQrCode, setShowQrCode] = useState(false);
   const [sessionID, setSessionID] = useState<string | null>(null);
-  const [useDefaultLogo, setUseDefaultLogo] = useState(false);
 
   const form = useForm({
     mode: 'onSubmit',
@@ -359,16 +357,11 @@ const LoginPage: React.FC = () => {
         variant="modal"
         className="overflow-y-auto bg-white shadow-lg scrollbar-thin"
       >
-        {useDefaultLogo ? (
-          <DesktopLogo className="mx-auto w-64" />
-        ) : (
-          <img
-            src={logoSrc}
-            alt={t('settings.settings.logo.title')}
-            className="mx-auto w-64"
-            onError={() => setUseDefaultLogo(true)}
-          />
-        )}
+        <img
+          src={logoSrc}
+          alt={t('settings.settings.logo.title')}
+          className="mx-auto w-64"
+        />
         <Form
           {...form}
           data-testid="test-id-login-page-form"
