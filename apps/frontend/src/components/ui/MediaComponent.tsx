@@ -18,10 +18,10 @@
  */
 
 import React, { useEffect, useRef } from 'react';
-import VIDEO_EXTENSIONS from '@libs/filesharing/types/videoExtensions';
 
 interface MediaComponentProps {
   url: string;
+  isVideo?: boolean;
   playing?: boolean;
   loop?: boolean;
   controls?: boolean;
@@ -33,15 +33,9 @@ interface MediaComponentProps {
   style?: React.CSSProperties;
 }
 
-const VIDEO_EXTENSION_VALUES = Object.values(VIDEO_EXTENSIONS);
-
-const isVideoUrl = (url: string): boolean => {
-  const extension = url.split('.').pop()?.toLowerCase();
-  return VIDEO_EXTENSION_VALUES.includes(extension as (typeof VIDEO_EXTENSION_VALUES)[number]);
-};
-
 const MediaComponent: React.FC<MediaComponentProps> = ({
   url,
+  isVideo = true,
   playing = true,
   loop = false,
   controls = true,
@@ -53,7 +47,6 @@ const MediaComponent: React.FC<MediaComponentProps> = ({
   style = {},
 }) => {
   const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null);
-  const isVideo = isVideoUrl(url);
 
   useEffect(() => {
     const media = mediaRef.current;
