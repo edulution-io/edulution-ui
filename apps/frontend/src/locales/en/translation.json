@@ -107,8 +107,8 @@
   "appstore": {
     "title": "App Store",
     "description": "Here you can add {{ applicationName }} apps.",
-    "chooseIcon": "Choose icon",
-    "fontAwesomeIcons": "FontAwesome Icons",
+    "edulutionIcons": "edulution Icons",
+    "moreIcons": "More icons",
     "searchIcons": "Search icons...",
     "noIconsFound": "No icons found",
     "iconsAvailable": "icons available",

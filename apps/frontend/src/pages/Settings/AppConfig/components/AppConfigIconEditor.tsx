@@ -113,7 +113,7 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
   return (
     <div className="space-y-4">
       <div>
-        <p className="mb-2 text-sm font-medium">{t('appstore.chooseIcon')}</p>
+        <p className="mb-2 text-sm font-medium">{t('appstore.edulutionIcons')}</p>
         <Card
           className="overflow-hidden p-0 transition-none hover:scale-100"
           variant="dialog"
@@ -149,7 +149,7 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
       </div>
 
       <div>
-        <p className="mb-2 text-sm font-medium">{t('appstore.fontAwesomeIcons')}</p>
+        <p className="mb-2 text-sm font-medium">{t('appstore.moreIcons')}</p>
         <FontAwesomeIconGrid
           selectedIcon={selectedIcon}
           onIconSelect={handleSelectFontAwesomeIcon}

@@ -98,8 +98,8 @@
   "appstore": {
     "title": "App-Store",
     "description": "Hier kannst du {{ applicationName }} Apps hinzufügen.",
-    "chooseIcon": "Icon auswählen",
-    "fontAwesomeIcons": "FontAwesome Icons",
+    "edulutionIcons": "edulution Icons",
+    "moreIcons": "Weitere Icons",
     "searchIcons": "Icons durchsuchen...",
     "noIconsFound": "Keine Icons gefunden",
     "iconsAvailable": "Icons verfügbar",
