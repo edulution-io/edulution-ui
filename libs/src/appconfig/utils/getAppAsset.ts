@@ -28,3 +28,11 @@ export const getFallbackAssetName = (
 
 export const getAssetUrl = (appName: string, theme: ThemeType = THEME.dark, assetType: AssetType = ASSET_TYPES.logo) =>
   `/${EDU_API_ROOT}/${EDU_API_CONFIG_ENDPOINTS.FILES}/public/assets/${appName}/${getAssetName(appName, theme, assetType)}?fallback=${getFallbackAssetName(appName, theme, assetType)}`;
+
+export const getSingleAssetName = (appName: string, assetType: AssetType) => `${appName}-custom-${assetType}.webp`;
+
+export const getSingleFallbackAssetName = (appName: string, assetType: AssetType) =>
+  `${appName}-default-${assetType}.webp`;
+
+export const getSingleAssetUrl = (appName: string, assetType: AssetType) =>
+  `/${EDU_API_ROOT}/${EDU_API_CONFIG_ENDPOINTS.FILES}/public/assets/${appName}/${getSingleAssetName(appName, assetType)}?fallback=${getSingleFallbackAssetName(appName, assetType)}`;

@@ -8,6 +8,7 @@
   "not-set": "Not set",
   "imprint": "Imprint",
   "public": "Public",
+  "actions": "Actions",
   "bulletinboard": {
     "settings": "Settings",
     "noBulletinsToShow": "There are currently no messages to display, so check back later!",

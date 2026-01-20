@@ -26,18 +26,13 @@ import { RequestResponseContentType, ResponseType } from '@libs/common/types/htt
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import ThemeType from '@libs/common/types/themeType';
 import convertImageFileToWebp from '@libs/common/utils/convertImageFileToWebp';
-import getMainLogoFilename from '@libs/filesharing/utils/getMainLogoFilename';
-import { GLOBAL_SETTINGS_BRANDING_LOGO } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import AssetSource from '@libs/filesystem/types/AssetSource';
 
 interface FilesystemStore {
-  darkVersion: number;
-  setDarkVersion: (version: number | ((prev: number) => number)) => void;
-
   fetchImage: (url: string, variant?: ThemeType) => Promise<{ source: AssetSource; content: string } | null>;
   fetchingImageVariant: ThemeType | null;
 
-  deleteImageFile: (appName: string, filename: string, variant?: ThemeType) => Promise<boolean>;
+  deleteImageFile: (appName: string, filename: string) => Promise<boolean>;
   uploadImageFile: (
     destination: string,
     filename: string,
@@ -47,28 +42,19 @@ interface FilesystemStore {
   ) => Promise<boolean>;
 
   uploadingKey: string | null;
-  uploadingVariant: ThemeType | null;
-  uploadVariant: (variant: ThemeType, file: File) => Promise<void>;
 
   error: Error | null;
   reset: () => void;
 }
 
 const initialState = {
-  darkVersion: 0,
   fetchingImageVariant: null,
   uploadingKey: null,
-  uploadingVariant: null,
   error: null,
 };
 
-const useFilesystemStore = create<FilesystemStore>((set, get) => ({
+const useFilesystemStore = create<FilesystemStore>((set) => ({
   ...initialState,
-
-  setDarkVersion: (version) =>
-    set((state) => ({
-      darkVersion: typeof version === 'function' ? version(state.darkVersion) : version,
-    })),
 
   fetchImage: async (url: string, variant?: ThemeType): Promise<{ source: AssetSource; content: string } | null> => {
     if (variant) {
@@ -144,18 +130,6 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
       return false;
     } finally {
       set({ uploadingKey: null });
-    }
-  },
-
-  uploadVariant: async (variant: ThemeType, file: File) => {
-    try {
-      set({ uploadingVariant: variant });
-      await get().uploadImageFile(GLOBAL_SETTINGS_BRANDING_LOGO as string, getMainLogoFilename(variant), file);
-      get().setDarkVersion((v) => v + 1);
-    } catch (e) {
-      handleApiError(e, set);
-    } finally {
-      set({ uploadingVariant: null });
     }
   },
 
