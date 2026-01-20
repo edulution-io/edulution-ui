@@ -27,7 +27,13 @@ import cn from '@libs/common/utils/className';
 import DropZone from '@/components/ui/DropZone';
 import { loadFontAwesomeIcon } from '@/utils/fontAwesomeIcons';
 import IconWrapper from '@/components/shared/IconWrapper';
-import { CUSTOM_UPLOAD_IDENTIFIER } from '@libs/ui/constants/icon';
+import {
+  CUSTOM_UPLOAD_IDENTIFIER,
+  FONT_AWESOME_IDENTIFIER,
+  FONT_AWESOME_BRANDS_IDENTIFIER,
+  ICON_CATEGORY_SOLID,
+  ICON_CATEGORY_BRANDS,
+} from '@libs/ui/constants/icon';
 import defaultIconList from './defaultIconList';
 import FontAwesomeIconGrid from './FontAwesomeIconGrid';
 
@@ -44,9 +50,11 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
   useEffect(() => {
     setSelectedIcon(currentIcon);
     const loadIcon = async () => {
-      if (currentIcon && currentIcon.startsWith('@/assets/icons/fontawsome-')) {
+      if (currentIcon && currentIcon.includes(FONT_AWESOME_IDENTIFIER)) {
         try {
-          const category = currentIcon.includes('fontawsome-brands') ? 'brands' : 'solid';
+          const category = currentIcon.includes(FONT_AWESOME_BRANDS_IDENTIFIER)
+            ? ICON_CATEGORY_BRANDS
+            : ICON_CATEGORY_SOLID;
           const name = currentIcon.split('/').pop()?.replace('.svg', '') || '';
           const url = await loadFontAwesomeIcon({ name, category, path: currentIcon });
           setDisplayIconUrl(url);
@@ -69,7 +77,7 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
   const handleSelectFontAwesomeIcon = async (iconPath: string) => {
     setSelectedIcon(iconPath);
     try {
-      const category = iconPath.includes('fontawsome-brands') ? 'brands' : 'solid';
+      const category = iconPath.includes(FONT_AWESOME_BRANDS_IDENTIFIER) ? ICON_CATEGORY_BRANDS : ICON_CATEGORY_SOLID;
       const name = iconPath.split('/').pop()?.replace('.svg', '') || '';
       const url = await loadFontAwesomeIcon({ name, category, path: iconPath });
       setDisplayIconUrl(url);
@@ -106,7 +114,7 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
   };
 
   const isDefaultIcon = defaultIconList.includes(selectedIcon);
-  const isFontAwesomeIcon = selectedIcon && selectedIcon.includes('fontawsome-');
+  const isFontAwesomeIcon = selectedIcon && selectedIcon.includes(FONT_AWESOME_IDENTIFIER);
   const isEdulutionIcon = selectedIcon && selectedIcon.includes('/edulution/edu_');
   const hasCustomIcon = selectedIcon && !isDefaultIcon && !isFontAwesomeIcon && !isEdulutionIcon;
 

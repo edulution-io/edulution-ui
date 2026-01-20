@@ -17,37 +17,46 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import {
+  FONT_AWESOME_BRANDS_IDENTIFIER,
+  FONT_AWESOME_SOLID_IDENTIFIER,
+  ICON_CATEGORY_BRANDS,
+  ICON_CATEGORY_SOLID,
+} from '@libs/ui/constants/icon';
+import type { IconCategory } from '@libs/ui/constants/icon';
+
 export interface FontAwesomeIcon {
   name: string;
-  category: 'brands' | 'solid';
+  category: IconCategory;
   path: string;
 }
 
-const brandIconsGlob = import.meta.glob('@/assets/icons/fontawsome-brands/*.svg', {
+const brandIconsGlob = import.meta.glob<string>('@/assets/icons/fontawsome-brands/*.svg', {
   eager: true,
   query: '?url',
   import: 'default',
 });
 
-const solidIconsGlob = import.meta.glob('@/assets/icons/fontawsome-solid/*.svg', {
+const solidIconsGlob = import.meta.glob<string>('@/assets/icons/fontawsome-solid/*.svg', {
   eager: true,
   query: '?url',
   import: 'default',
 });
 
-const getIconUrl = (fileName: string, category: 'brands' | 'solid'): string => {
-  const iconGlob = category === 'brands' ? brandIconsGlob : solidIconsGlob;
+const getIconUrl = (fileName: string, category: IconCategory): string => {
+  const iconGlob = category === ICON_CATEGORY_BRANDS ? brandIconsGlob : solidIconsGlob;
+  const identifier = category === ICON_CATEGORY_BRANDS ? FONT_AWESOME_BRANDS_IDENTIFIER : FONT_AWESOME_SOLID_IDENTIFIER;
   const globKey = Object.keys(iconGlob).find((key) => key.endsWith(`/${fileName}.svg`));
-  const globUrl = globKey ? (iconGlob[globKey] as string) : '';
+  const globUrl = globKey ? iconGlob[globKey] : '';
 
   if (globUrl && globUrl.startsWith('/src/')) {
     return globUrl;
   }
 
-  return `/assets/fontawsome-${category}/${fileName}.svg`;
+  return `/assets/${identifier}/${fileName}.svg`;
 };
 
-const parseIconFromPath = (sourcePath: string, category: 'brands' | 'solid'): FontAwesomeIcon => {
+const parseIconFromPath = (sourcePath: string, category: IconCategory): FontAwesomeIcon => {
   const fileName = sourcePath.split('/').pop()?.replace('.svg', '') || '';
   const path = getIconUrl(fileName, category);
 
@@ -59,8 +68,8 @@ const parseIconFromPath = (sourcePath: string, category: 'brands' | 'solid'): Fo
 };
 
 export const getFontAwesomeIconList = (): FontAwesomeIcon[] => {
-  const brands = Object.keys(brandIconsGlob).map((path) => parseIconFromPath(path, 'brands'));
-  const solid = Object.keys(solidIconsGlob).map((path) => parseIconFromPath(path, 'solid'));
+  const brands = Object.keys(brandIconsGlob).map((path) => parseIconFromPath(path, ICON_CATEGORY_BRANDS));
+  const solid = Object.keys(solidIconsGlob).map((path) => parseIconFromPath(path, ICON_CATEGORY_SOLID));
 
   return [...brands, ...solid].sort((a, b) => a.name.localeCompare(b.name));
 };
@@ -68,7 +77,9 @@ export const getFontAwesomeIconList = (): FontAwesomeIcon[] => {
 export const loadFontAwesomeIcon = (icon: FontAwesomeIcon): Promise<string> => Promise.resolve(icon.path);
 
 export const resolveFontAwesomeIconUrl = (storedPath: string): string => {
-  const category = storedPath.includes('fontawsome-brands') ? 'brands' : 'solid';
+  const category: IconCategory = storedPath.includes(FONT_AWESOME_BRANDS_IDENTIFIER)
+    ? ICON_CATEGORY_BRANDS
+    : ICON_CATEGORY_SOLID;
   const fileName = storedPath.split('/').pop()?.replace('.svg', '') || '';
   return getIconUrl(fileName, category);
 };
