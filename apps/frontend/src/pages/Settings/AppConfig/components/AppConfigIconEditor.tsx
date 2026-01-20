@@ -168,7 +168,6 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
               className="h-16 w-16 object-contain"
               width={64}
               height={64}
-              applyLegacyFilter={isDefaultIcon}
             />
             {hasCustomIcon && (
               <Button

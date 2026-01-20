@@ -29,6 +29,7 @@ interface IconWrapperProps {
   height?: number | string;
   style?: CSSProperties;
   applyLegacyFilter?: boolean;
+  fontAwesomeMaskSize?: string;
 }
 
 const IconWrapper: React.FC<IconWrapperProps> = ({
@@ -39,6 +40,7 @@ const IconWrapper: React.FC<IconWrapperProps> = ({
   height,
   style = {},
   applyLegacyFilter = true,
+  fontAwesomeMaskSize = '75%',
 }) => {
   const isFontAwesomeIcon = iconSrc.includes('fontawsome-');
   const isWebp = iconSrc.endsWith('.webp') || iconSrc.includes('data:image/webp');
@@ -54,8 +56,8 @@ const IconWrapper: React.FC<IconWrapperProps> = ({
           maskImage: `url(${iconSrc})`,
           WebkitMaskRepeat: 'no-repeat',
           maskRepeat: 'no-repeat',
-          WebkitMaskSize: 'contain',
-          maskSize: 'contain',
+          WebkitMaskSize: fontAwesomeMaskSize,
+          maskSize: fontAwesomeMaskSize,
           WebkitMaskPosition: 'center',
           maskPosition: 'center',
           backgroundColor: 'currentColor',
