@@ -745,7 +745,7 @@
         "submit": "Save template",
         "name": {
           "label": "Template name",
-          "placeholder": "Enter a name for the template"
+          "placeholder": "The survey title will be used as template name if this field is left empty."
         },
         "accessGroups": {
           "label": "Access groups",

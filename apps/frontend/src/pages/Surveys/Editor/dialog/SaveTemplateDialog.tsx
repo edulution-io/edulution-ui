@@ -38,7 +38,7 @@ interface TemplateDialogProps {
 }
 
 const SaveTemplateDialog: React.FC<TemplateDialogProps> = ({ form, creator, trigger }) => {
-  const { uploadTemplate, setIsOpenSaveTemplateDialog, isOpenSaveTemplateDialog, setInitialData, name, accessGroups } =
+  const { name, accessGroups, uploadTemplate, setIsOpenSaveTemplateDialog, isOpenSaveTemplateDialog, setInitialData } =
     useSaveTemplateDialogStore();
 
   const { template } = useTemplateMenuStore();
@@ -66,20 +66,22 @@ const SaveTemplateDialog: React.FC<TemplateDialogProps> = ({ form, creator, trig
     const { id, formula, createdAt, saveNo, expires, answers, ...remainingSurvey } = values;
 
     const creationDate = template?.template.createdAt || new Date();
-    const rawFormula = creator.JSON as SurveyFormula;
 
+    const rawFormula = creator.JSON as SurveyFormula;
     const processedFormula: SurveyFormula = resetSurveyIdFromFormulasBackendLimiters(rawFormula, id);
 
     await uploadTemplate({
+      ...template,
+      name,
+      accessGroups,
       template: {
         ...remainingSurvey,
         formula: processedFormula,
         createdAt: creationDate,
       },
-      name,
-      accessGroups,
     });
-  }, [form, creator, template, uploadTemplate, name, accessGroups]);
+    handleClose();
+  }, [form, creator, template, name, accessGroups, uploadTemplate, handleClose]);
 
   const body = <SaveTemplateDialogBody />;
 
