@@ -45,13 +45,29 @@ class SurveysTemplateService implements OnModuleInit {
   }
 
   async updateOrCreateTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
-    const { id, template, name, isActive = true } = surveyTemplate;
+    const {
+      id,
+      template,
+      name: templateName,
+      isActive = true,
+      isDefaultTemplate = false,
+      ...remainingTemplate
+    } = surveyTemplate;
+    const name = templateName || template.formula.title.trim();
     try {
-      const templateName = name || template.formula.title;
+      if (!id) {
+        return await this.surveyTemplateModel.create({
+          template,
+          name,
+          isActive,
+          isDefaultTemplate,
+          ...remainingTemplate,
+        });
+      }
       return await this.surveyTemplateModel.findByIdAndUpdate(
         id,
-        { template, isActive, name: templateName },
-        { new: true, upsert: !id },
+        { template, name, isActive, isDefaultTemplate, ...remainingTemplate },
+        { new: true },
       );
     } catch (error) {
       throw new CustomHttpException(
@@ -66,7 +82,8 @@ class SurveysTemplateService implements OnModuleInit {
   async getTemplates(ldapGroups: string[], res: Response): Promise<Response> {
     const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
     const documents = await this.surveyTemplateModel
-      .find(getIsAdmin(ldapGroups, adminGroups) ? {} : { isActive: true })
+      .find(getIsAdmin(ldapGroups, adminGroups) ? {} : { isActive: true, 'accessGroups.path': { $in: ldapGroups } })
+      .sort({ name: 1 })
       .exec();
     return res.status(HttpStatus.OK).json(documents);
   }

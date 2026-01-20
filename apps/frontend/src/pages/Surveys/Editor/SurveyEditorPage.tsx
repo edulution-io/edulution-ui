@@ -31,15 +31,16 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/getSurveyEditorForm.schema';
+import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import getSurveysDefaultValues from '@/pages/Surveys/utils/getSurveysDefaultValues';
 import getInitialSurveyFormValues from '@/pages/Surveys/utils/getInitialSurveyFormValues';
+import useLdapGroups from '@/hooks/useLdapGroups';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useThemeStore from '@/store/useThemeStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useLanguage from '@/hooks/useLanguage';
 import useBeforeUnload from '@/hooks/useBeforeUnload';
-import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import createSurveyCreatorObject from '@/pages/Surveys/Editor/createSurveyCreatorObject';
 import TemplateDialog from '@/pages/Surveys/Editor/dialog/TemplateDialog';
@@ -52,6 +53,7 @@ import QuestionsContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContext
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
 import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/ExportSurveyToPdfDialog';
+import SaveTemplateDialog from '@/pages/Surveys/Editor/dialog/SaveTemplateDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 
 const SurveyEditorPage = () => {
@@ -69,8 +71,8 @@ const SurveyEditorPage = () => {
     uploadFile,
   } = useSurveyEditorPageStore();
   const { reset: resetTemplateStore, isOpenTemplateMenu, setIsOpenTemplateMenu } = useTemplateMenuStore();
-  const { setIsOpenSaveTemplateDialog: setIsOpenSaveTemplateMenu, isOpenSaveTemplateDialog: isOpenSaveTemplateMenu } =
-    useSaveTemplateDialogStore();
+  const { setIsOpenSaveTemplateDialog, isOpenSaveTemplateDialog } = useSaveTemplateDialogStore();
+  const { isSuperAdmin } = useLdapGroups();
   const {
     reset: resetQuestionsContextMenu,
     setIsOpenQuestionContextMenu,
@@ -207,7 +209,13 @@ const SurveyEditorPage = () => {
       {
         icon: faFileLines,
         text: t('survey.editor.templates'),
-        onClick: () => setIsOpenSaveTemplateMenu(!isOpenSaveTemplateMenu),
+        onClick: () => setIsOpenSaveTemplateDialog(!isOpenSaveTemplateDialog),
+        isVisible: isSuperAdmin,
+      },
+      {
+        icon: faFileLines,
+        text: t('survey.editor.templates'),
+        onClick: () => setIsOpenTemplateMenu(!isOpenTemplateMenu),
       },
       {
         icon: faFileCirclePlus,
@@ -255,6 +263,10 @@ const SurveyEditorPage = () => {
         )}
       </div>
       <FloatingButtonsBar config={config} />
+      <SaveTemplateDialog
+        form={form}
+        creator={creator}
+      />
       <TemplateDialog
         form={form}
         creator={creator}

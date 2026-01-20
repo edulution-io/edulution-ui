@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { SurveyCreator } from 'survey-creator-react';
@@ -38,13 +38,18 @@ interface TemplateDialogProps {
 }
 
 const SaveTemplateDialog: React.FC<TemplateDialogProps> = ({ form, creator, trigger }) => {
-  const { uploadTemplate, setIsOpenSaveTemplateDialog, isOpenSaveTemplateDialog } = useSaveTemplateDialogStore();
+  const { uploadTemplate, setIsOpenSaveTemplateDialog, isOpenSaveTemplateDialog, setInitialData, name, accessGroups } =
+    useSaveTemplateDialogStore();
 
   const { template } = useTemplateMenuStore();
 
   const { isSuperAdmin } = useLdapGroups();
 
   const { t } = useTranslation();
+
+  useEffect(() => {
+    setInitialData(template);
+  }, [template, setInitialData]);
 
   const handleOpenChange = useCallback(() => {
     setIsOpenSaveTemplateDialog(!isOpenSaveTemplateDialog);
@@ -67,12 +72,14 @@ const SaveTemplateDialog: React.FC<TemplateDialogProps> = ({ form, creator, trig
 
     await uploadTemplate({
       template: {
+        ...remainingSurvey,
         formula: processedFormula,
         createdAt: creationDate,
-        ...remainingSurvey,
       },
+      name,
+      accessGroups,
     });
-  }, [form, creator, template, uploadTemplate, handleClose]);
+  }, [form, creator, template, uploadTemplate, name, accessGroups]);
 
   const body = <SaveTemplateDialogBody />;
 
@@ -80,6 +87,7 @@ const SaveTemplateDialog: React.FC<TemplateDialogProps> = ({ form, creator, trig
     <DialogFooterButtons
       handleClose={handleClose}
       handleSubmit={isSuperAdmin ? handleSaveTemplate : undefined}
+      submitButtonText={t('survey.editor.saveTemplate.submit')}
     />
   );
 
@@ -88,7 +96,7 @@ const SaveTemplateDialog: React.FC<TemplateDialogProps> = ({ form, creator, trig
       isOpen={isOpenSaveTemplateDialog}
       trigger={trigger}
       handleOpenChange={handleOpenChange}
-      title={t('survey.editor.templateMenu.title')}
+      title={t('survey.editor.saveTemplate.title')}
       body={body}
       footer={footer}
       desktopContentClassName="max-w-[50%] min-h-[200px] max-h-[90%] overflow-auto"

@@ -645,6 +645,18 @@
           "error": "Échec de la suppression du modèle"
         }
       },
+      "saveTemplate": {
+        "title": "Enregistrer le modèle de sondage",
+        "submit": "Enregistrer le modèle de sondage",
+        "name": {
+          "label": "Nom du modèle",
+          "placeholder": "Entrez un nom pour le modèle"
+        },
+        "accessGroups": {
+          "label": "Groupes d'accès",
+          "placeholder": "Sélectionnez les groupes qui peuvent accéder à ce modèle"
+        }
+      },
       "questionSettings": {
         "settings": "Paramètres",
         "title": "Paramètres de la question",

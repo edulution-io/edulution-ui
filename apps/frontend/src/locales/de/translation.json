@@ -724,7 +724,7 @@
       "reset": "Verwerfen",
       "addDescription": "Beschreibung hinzufügen",
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
-      "templates": "Vorlagen",
+      "templates": "Vorlage speichern",
       "templateMenu": {
         "submit": "Die Umfrage als Vorlage speichern.",
         "title": "Vorlagen:",
@@ -740,6 +740,18 @@
           "message": "Soll die Vorlage wirklich gelöscht werden?",
           "success": "Vorlage erfolgreich gelöscht",
           "error": "Die Vorlage konnte nicht gelöscht werden"
+        }
+      },
+      "saveTemplate": {
+        "title": "Vorlage speichern",
+        "submit": "Vorlage speichern",
+        "name": {
+          "label": "Name der Vorlage",
+          "placeholder": "Gib einen Namen für die Vorlage ein"
+        },
+        "accessGroups": {
+          "label": "Zugriffsgruppen",
+          "placeholder": "Wähle die Gruppen aus, die auf diese Vorlage zugreifen können"
         }
       },
       "questionSettings": {

@@ -88,8 +88,10 @@ const getSurveyTemplateFormSchema = () =>
         canUpdateFormerAnswer: z.boolean().optional(),
       })
       .optional(),
-    fileName: z.string().optional(),
+    name: z.string().optional(),
     isActive: z.boolean().optional(),
+    isDefaultTemplate: z.boolean().optional(),
+    accessGroups: z.array(z.object({})).optional(),
   });
 
 export default getSurveyTemplateFormSchema;
