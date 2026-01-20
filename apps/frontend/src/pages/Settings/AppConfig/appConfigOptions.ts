@@ -48,12 +48,14 @@ import MAIL_GENERAL_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOpt
 import FORWARDING_PAGE_OPTIONS from '@libs/appconfig/constants/extendedOptions/forwardingPageOptions';
 import DRAWIO_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/drawioExtendedOptions';
 import FRAME_SCRIPT_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/frameScriptExtendedOptions';
+import { ALL_DISPLAY_LOCATIONS } from '@libs/appconfig/constants/appDisplayLocations';
 
 const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.DASHBOARD,
     icon: Dashboard,
     isNativeApp: true,
+    defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
   {
     id: APPS.BULLETIN_BOARD,
@@ -62,6 +64,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     extendedOptions: {
       [AppConfigSectionsKeys.bulletinBoard]: BULLETIN_BOARD_EXTENDED_OPTIONS,
     },
+    defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
   {
     id: APPS.MAIL,
@@ -73,17 +76,20 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
       [AppConfigSectionsKeys.imapMailFeed]: MAIL_IMAP_EXTENDED_OPTIONS,
       [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
     },
+    defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
   {
     id: APPS.CONFERENCES,
     icon: ConferencesIcon,
     options: [APP_CONFIG_OPTION_KEYS.URL, APP_CONFIG_OPTION_KEYS.APIKEY, APP_CONFIG_OPTION_KEYS.PROXYCONFIG],
     isNativeApp: true,
+    defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
   {
     id: APPS.SURVEYS,
     icon: SurveysMenuIcon,
     isNativeApp: true,
+    defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
   {
     id: APPS.FILE_SHARING,
@@ -97,6 +103,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
       [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
       [AppConfigSectionsKeys.webdavShare]: WEBDAV_SHARE_TABLE_EXTENDED_OPTIONS,
     },
+    defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
   {
     id: APPS.CLASS_MANAGEMENT,
@@ -106,6 +113,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
       [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
       [AppConfigSectionsKeys.veyon]: CLASS_MANAGEMENT_EXTENDED_OPTIONS,
     },
+    defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
   {
     id: APPS.DESKTOP_DEPLOYMENT,
@@ -115,17 +123,20 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     extendedOptions: {
       [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
     },
+    defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
   {
     id: APPS.LINUXMUSTER,
     icon: LinuxmusterIcon,
     options: [APP_CONFIG_OPTION_KEYS.URL, APP_CONFIG_OPTION_KEYS.PROXYCONFIG],
     isNativeApp: true,
+    defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
   {
     id: APPS.WHITEBOARD,
     icon: WhiteBoardIcon,
     isNativeApp: true,
+    defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
   {
     id: APPS.FORWARDING,
@@ -135,6 +146,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     extendedOptions: {
       [AppConfigSectionsKeys.general]: FORWARDING_PAGE_OPTIONS,
     },
+    defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
   {
     id: APPS.FRAME,
@@ -144,6 +156,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     extendedOptions: {
       [AppConfigSectionsKeys.scripts]: FRAME_SCRIPT_EXTENDED_OPTIONS,
     },
+    defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
   {
     id: APPS.EMBEDDED,
@@ -153,6 +166,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     extendedOptions: {
       [AppConfigSectionsKeys.editor]: EMBEDDED_PAGE_EDITOR_CONFIG,
     },
+    defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
 ];
 
