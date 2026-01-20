@@ -17,19 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
-import { type AppConfigOptionsType } from './appConfigOptionsType';
-import type TApps from './appsType';
-import type AppDisplayLocationType from './appDisplayLocationType';
+const APP_DISPLAY_LOCATIONS = {
+  EDU_APP: 'eduApp',
+  SIDEBAR: 'sidebar',
+  LAUNCHER: 'launcher',
+} as const;
 
-type AppConfigOption = {
-  id: TApps;
-  icon: string;
-  color?: string;
-  options?: AppConfigOptionsType[];
-  isNativeApp: boolean;
-  extendedOptions?: AppConfigExtendedOptionsBySections;
-  defaultDisplayLocations?: AppDisplayLocationType[];
-};
+export const ALL_DISPLAY_LOCATIONS = Object.values(APP_DISPLAY_LOCATIONS);
 
-export default AppConfigOption;
+export default APP_DISPLAY_LOCATIONS;

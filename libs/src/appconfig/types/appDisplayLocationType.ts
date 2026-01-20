@@ -17,19 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import type AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
-import { type AppConfigOptionsType } from './appConfigOptionsType';
-import type TApps from './appsType';
-import type AppDisplayLocationType from './appDisplayLocationType';
+import APP_DISPLAY_LOCATIONS from '../constants/appDisplayLocations';
 
-type AppConfigOption = {
-  id: TApps;
-  icon: string;
-  color?: string;
-  options?: AppConfigOptionsType[];
-  isNativeApp: boolean;
-  extendedOptions?: AppConfigExtendedOptionsBySections;
-  defaultDisplayLocations?: AppDisplayLocationType[];
-};
+type AppDisplayLocationType = (typeof APP_DISPLAY_LOCATIONS)[keyof typeof APP_DISPLAY_LOCATIONS];
 
-export default AppConfigOption;
+export default AppDisplayLocationType;
