@@ -14,4 +14,4 @@ COPY ./data/public/assets /opt/edulution/api/assets
 
 EXPOSE 3000
 
-CMD ["/bin/sh", "-c", "cp -rn /opt/edulution/api/assets /opt/edulution/api/data/public/assets && node ./main.js"]
+CMD ["/bin/sh", "-c", "mkdir -p /opt/edulution/api/data/public/assets && cp -rn /opt/edulution/api/assets/* /opt/edulution/api/data/public/assets/ && node ./main.js"]
