@@ -27,6 +27,7 @@ import cn from '@libs/common/utils/className';
 import DropZone from '@/components/ui/DropZone';
 import { loadFontAwesomeIcon } from '@/utils/fontAwesomeIcons';
 import IconWrapper from '@/components/shared/IconWrapper';
+import { CUSTOM_UPLOAD_IDENTIFIER } from '@libs/ui/constants/icon';
 import defaultIconList from './defaultIconList';
 import FontAwesomeIconGrid from './FontAwesomeIconGrid';
 
@@ -86,7 +87,7 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
         reader.onloadend = () => {
           let dataUrl = reader.result as string;
           if (dataUrl.startsWith('data:image/svg+xml;')) {
-            dataUrl = dataUrl.replace('data:image/svg+xml;', 'data:image/svg+xml;custom-upload;');
+            dataUrl = dataUrl.replace('data:image/svg+xml;', `data:image/svg+xml;${CUSTOM_UPLOAD_IDENTIFIER};`);
           }
           setSelectedIcon(dataUrl);
           setDisplayIconUrl(dataUrl);

@@ -20,6 +20,12 @@
 import React, { CSSProperties } from 'react';
 import cn from '@libs/common/utils/className';
 import getAppIconClassName from '@/utils/getAppIconClassName';
+import {
+  CUSTOM_UPLOAD_IDENTIFIER,
+  FONT_AWESOME_IDENTIFIER,
+  DEFAULT_ICON_MASK_SIZE,
+  DEFAULT_ICON_WEBP_SIZE,
+} from '@libs/ui/constants/icon';
 
 interface IconWrapperProps {
   iconSrc: string;
@@ -40,13 +46,14 @@ const IconWrapper: React.FC<IconWrapperProps> = ({
   height,
   style = {},
   applyLegacyFilter = true,
-  fontAwesomeMaskSize = '75%',
+  fontAwesomeMaskSize = DEFAULT_ICON_MASK_SIZE,
 }) => {
-  const isFontAwesomeIcon = iconSrc.includes('fontawsome-');
+  const isFontAwesomeIcon = iconSrc.includes(FONT_AWESOME_IDENTIFIER);
   const isWebp = iconSrc.endsWith('.webp') || iconSrc.includes('data:image/webp');
-  const isUploadedSvg = iconSrc.includes('custom-upload');
+  const isUploadedSvg = iconSrc.includes(CUSTOM_UPLOAD_IDENTIFIER);
+  const useMaskTechnique = isFontAwesomeIcon || isUploadedSvg;
 
-  if (isFontAwesomeIcon || isUploadedSvg) {
+  if (useMaskTechnique) {
     return (
       <div
         className={cn(applyLegacyFilter ? 'text-background dark:text-white' : 'text-white', className)}
@@ -85,8 +92,8 @@ const IconWrapper: React.FC<IconWrapperProps> = ({
           src={iconSrc}
           alt={alt}
           style={{
-            width: '80%',
-            height: '80%',
+            width: DEFAULT_ICON_WEBP_SIZE,
+            height: DEFAULT_ICON_WEBP_SIZE,
             objectFit: 'contain',
           }}
         />
