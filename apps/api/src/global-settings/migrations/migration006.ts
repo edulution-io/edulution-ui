@@ -20,15 +20,14 @@
 /* eslint-disable no-underscore-dangle */
 import { Logger } from '@nestjs/common';
 import { move, pathExists, remove, readdir } from 'fs-extra';
-import { join } from 'path';
-import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
 import type { Migration } from '../../migration/migration.type';
 import type { GlobalSettings, GlobalSettingsDocument } from '../global-settings.schema';
 
-const OLD_LOGO_DIR = join(PUBLIC_ASSET_PATH, 'branding', 'logo');
-const BUGGY_NESTED_LOGO_DIR = join(PUBLIC_ASSET_PATH, 'assets', 'branding', 'logo');
+const PUBLIC_ASSET_PATH = './data/public/assets';
+const OLD_LOGO_DIR = `${PUBLIC_ASSET_PATH}/branding/logo`;
+const BUGGY_NESTED_ASSETS_DIR = `${PUBLIC_ASSET_PATH}/assets`;
 const OLD_LOGO_FILE = 'main-logo-dark.webp';
-const NEW_LOGO_DIR = join(PUBLIC_ASSET_PATH, 'generalsettings');
+const NEW_LOGO_DIR = `${PUBLIC_ASSET_PATH}/generalsettings`;
 const NEW_LOGO_FILE = 'generalsettings-custom-logo.webp';
 
 const migration006: Migration<GlobalSettingsDocument> = {
@@ -51,9 +50,9 @@ const migration006: Migration<GlobalSettingsDocument> = {
       return;
     }
 
-    const oldLogoPath = join(OLD_LOGO_DIR, OLD_LOGO_FILE);
-    const buggyNestedLogoPath = join(BUGGY_NESTED_LOGO_DIR, OLD_LOGO_FILE);
-    const newLogoPath = join(NEW_LOGO_DIR, NEW_LOGO_FILE);
+    const oldLogoPath = `${OLD_LOGO_DIR}/${OLD_LOGO_FILE}`;
+    const buggyNestedLogoPath = `${BUGGY_NESTED_ASSETS_DIR}/branding/logo/${OLD_LOGO_FILE}`;
+    const newLogoPath = `${NEW_LOGO_DIR}/${NEW_LOGO_FILE}`;
 
     if (await pathExists(newLogoPath)) {
       Logger.log('Custom logo already exists at new location, skipping move', migration006.name);
@@ -76,11 +75,12 @@ const migration006: Migration<GlobalSettingsDocument> = {
     };
 
     await cleanupEmptyDir(OLD_LOGO_DIR, 'branding/logo');
-    await cleanupEmptyDir(join(PUBLIC_ASSET_PATH, 'branding'), 'branding');
+    await cleanupEmptyDir(`${PUBLIC_ASSET_PATH}/branding`, 'branding');
 
-    await cleanupEmptyDir(BUGGY_NESTED_LOGO_DIR, 'assets/branding/logo');
-    await cleanupEmptyDir(join(PUBLIC_ASSET_PATH, 'assets', 'branding'), 'assets/branding');
-    await cleanupEmptyDir(join(PUBLIC_ASSET_PATH, 'assets'), 'nested assets');
+    if (await pathExists(BUGGY_NESTED_ASSETS_DIR)) {
+      await remove(BUGGY_NESTED_ASSETS_DIR);
+      Logger.log('Removed buggy nested assets/assets directory (leftover from Dockerfile cp bug)', migration006.name);
+    }
 
     const result = await model.updateOne({ _id: globalSettings._id }, { $set: { schemaVersion: newSchemaVersion } });
 
