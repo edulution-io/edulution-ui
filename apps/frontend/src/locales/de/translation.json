@@ -449,7 +449,7 @@
       "editPublicShareFile": "Freigabe-Link bearbeiten",
       "sharePublicFile": "Öffentliche Freigabe-Links",
       "searchSharedFiles": "Suche nach geteilten Freigabe-Links",
-      "sharedBy": "Geteilt von: ",
+      "sharedBy": "Geteilt von",
       "getFileAccess": "Bitte gib das Passwort für diese Freigabe ein, um Zugriff auf die Inhalte zu erhalten.",
       "downloadPublicFile": "Inhalt herunterladen",
       "nameOfContent": "Name des Inhalts:",
@@ -714,6 +714,7 @@
       "fileUploadSuccess": "Die Datei wurde erfolgreich hochgeladen.",
       "fileUploadError": "Die Datei konnte nicht hochgeladen werden, bitte versuche es später erneut.",
       "fileDeletionSuccess": "Die Datei wurde erfolgreich gelöscht.",
+      "fileDeletionError": "Die Datei konnte nicht gelöscht werden",
       "saveSurveySuccess": "Die Umfrage wurde gespeichert.",
       "surveyPlaceHolder": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
       "surveyPlaceholderDescription": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
@@ -1039,6 +1040,11 @@
         "uploadDarkLogo": "Dunkles Logo hochladen",
         "deleteSuccessful": "Logo wurde erfolgreich gelöscht"
       },
+      "background": {
+        "title": "Hintergrundbild",
+        "description": "Lade benutzerdefinierte Hintergrundbilder für den hellen und dunklen Modus hoch. Sie werden in der gesamten Anwendung angezeigt.",
+        "variant": "Hintergrund ({{variant}}r Modus)"
+      },
       "theme": {
         "title": "Design-Anpassung",
         "primaryColor": "Primärfarbe",
@@ -1092,6 +1098,10 @@
       "confirmDeleteEntries": "Möchtest du diesen Eintrag wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
       "confirmDeleteEntries_other": "Möchtest du diese {{count}} Einträge wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
       "sections": {
+        "appLogo": {
+          "title": "Logo",
+          "description": "Lade hier dein eigenes Bild hoch, um das Standartlogo der {{ applicationName }} zu überschreiben. Oder setze das Standard Logo für {{ applicationName }} wieder her."
+        },
         "onlyOffice": {
           "title": "Only Office Integration",
           "description": ""
@@ -1404,6 +1414,7 @@
     "visibility": "Sichtbarkeit",
     "offline": "Offline",
     "guest": "Gast",
+    "me": "Mir",
     "ok": "OK",
     "next": "Weiter",
     "of": "von",
@@ -1430,7 +1441,18 @@
       "invalidFileType": "Ungültiger Dateityp",
       "startDateBeforeEndDate": "Das Startdatum darf nicht nach dem Enddatum liegen",
       "invalidRequestData": "Ungültige Anfragedaten",
-      "wrongServerConfig": "Fehlerhafte Serverkonfiguration"
+      "wrongServerConfig": "Fehlerhafte Serverkonfiguration",
+      "path": {
+        "noString": "Pfad muss vom Typ String sein",
+        "isEmpty": "Pfad darf nicht leer sein",
+        "tooLong": "Pfad ist zu lang",
+        "traversal": "Pfad-Traversierung ist nicht erlaubt",
+        "absolutePath": "Absolute Pfade sind nicht erlaubt",
+        "subdirectories": "Unterverzeichnisse sind nicht erlaubt",
+        "invalidCharacters": "Pfad enthält ungültige Zeichen",
+        "outsidePublicDirectory": "Pfad liegt außerhalb des öffentlichen Verzeichnisses",
+        "symlinkOutsidePublicDirectory": "Pfad enthält einen Symlink, der außerhalb des öffentlichen Verzeichnisses verweist"
+      }
     },
     "cut": "Ausschneiden",
     "sortOrder": "Sortierung",
@@ -1923,6 +1945,11 @@
       "updateNow": "Jetzt aktualisieren",
       "checkVersionSuccess": "Theme erfolgreich überprüft!",
       "noData": "Keine Versionsinformationen verfügbar."
+    },
+    "appLogo": {
+      "light": "helle",
+      "dark": "dunkle",
+      "title": "Logo für das {{variant}} Farbschema"
     }
   },
   "preview": {

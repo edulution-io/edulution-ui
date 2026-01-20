@@ -387,12 +387,25 @@ class FilesystemService {
     }
   }
 
-  async serveTempFiles(name: string, filename: string, res: Response) {
+  async servePublicAssetWithFallback(res: Response, filePath: string, fallBackPath?: string): Promise<Response> {
+    const fileExists = await FilesystemService.checkIfFileExist(filePath);
+    if (fileExists) {
+      res.setHeader(HTTP_HEADERS.AssetSource, 'custom');
+      return this.serve(filePath, res);
+    }
+    if (fallBackPath) {
+      res.setHeader(HTTP_HEADERS.AssetSource, 'fallback');
+      return this.serve(fallBackPath, res);
+    }
+    return Promise.resolve(res.status(HttpStatus.NOT_FOUND).send());
+  }
+
+  async serveTempFile(name: string, filename: string, res: Response) {
     const filePath = join(TEMP_FILES_PATH, name, filename);
     return this.serve(filePath, res);
   }
 
-  async serveFiles(name: string, filename: string, res: Response) {
+  async serveFile(name: string, filename: string, res: Response) {
     const filePath = join(APPS_FILES_PATH, name, filename);
     return this.serve(filePath, res);
   }

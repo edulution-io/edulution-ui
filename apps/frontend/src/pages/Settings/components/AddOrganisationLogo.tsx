@@ -26,7 +26,7 @@ import THEME from '@libs/common/constants/theme';
 import ThemeType from '@libs/common/types/themeType';
 import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
 import getMainLogoUrl from '@libs/assets/getMainLogoUrl';
-import LogoUploadField from '@/pages/Settings/components/LogoUploadField';
+import AssetUploadField from '@/pages/Settings/components/AssetUploadField';
 import BRANDING_UPLOADS_LOGO from '@libs/global-settings/constants/brandingUploadsLogo';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 
@@ -71,7 +71,7 @@ const AddOrganisationLogo: React.FC<AddOrganisationLogoProps> = ({ form }) => {
         )}
       </p>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-1">
-        <LogoUploadField
+        <AssetUploadField
           variant={THEME.dark}
           previewSrc={darkPreviewSrc}
           cacheKey={darkVersion}
@@ -81,6 +81,7 @@ const AddOrganisationLogo: React.FC<AddOrganisationLogoProps> = ({ form }) => {
           onFileChange={onFileChange(THEME.dark)}
           chooseText={t('common.chooseFile')}
           changeText={t('common.changeFile')}
+          isLoginPage
         />
       </div>
     </AccordionContent>

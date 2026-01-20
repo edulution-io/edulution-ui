@@ -233,7 +233,7 @@ class SurveysController {
     const { surveyId, questionId, filename } = params;
     await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
     const path = join(SURVEYS, ATTACHMENT_FOLDER, surveyId, questionId);
-    return this.filesystemService.serveFiles(path, filename, res);
+    return this.filesystemService.serveFile(path, filename, res);
   }
 
   @Get(`${FILES}/:filename`)
@@ -244,7 +244,7 @@ class SurveysController {
   ) {
     const { filename } = params;
     const path = join(SURVEYS, username);
-    return this.filesystemService.serveTempFiles(path, filename, res);
+    return this.filesystemService.serveTempFile(path, filename, res);
   }
 
   @Post(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId`)

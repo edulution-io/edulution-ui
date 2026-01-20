@@ -17,6 +17,22 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const SURVEYS_HEADER_IMAGE = 'logo';
+import i18n from '@/i18n';
+import APPS from '@libs/appconfig/constants/apps';
+import { getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
+import ThemeType from '@libs/common/types/themeType';
+import SurveyDto from '@libs/survey/types/api/survey.dto';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
 
-export default SURVEYS_HEADER_IMAGE;
+const getSurveysDefaultValues = (theme: ThemeType): Partial<SurveyDto> & { formula: SurveyFormula } => ({
+  formula: {
+    title: i18n.t('survey.newTitle'),
+    logo: getAssetUrl(APPS.SURVEYS, theme),
+  },
+  isAnonymous: false,
+  canSubmitMultipleAnswers: false,
+  isPublic: false,
+  canUpdateFormerAnswer: false,
+});
+
+export default getSurveysDefaultValues;

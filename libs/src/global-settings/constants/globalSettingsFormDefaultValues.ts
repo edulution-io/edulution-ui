@@ -27,6 +27,10 @@ const globalSettingsFormDefaultValues: GlobalSettingsFormValues = {
       light: null,
       dark: null,
     },
+    background: {
+      light: null,
+      dark: null,
+    },
   },
 };
 

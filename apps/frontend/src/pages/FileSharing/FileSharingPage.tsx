@@ -66,9 +66,7 @@ const FileSharingPage = () => {
 
   const { dialog, url, handleClose } = usePublicShareQr();
 
-  const getHiddenSegments = () => webdavShares.find((s) => s.displayName === webdavShare)?.pathname;
-
-  const { handleBreadcrumbNavigate } = useBreadcrumbNavigation(
+  const { handleBreadcrumbNavigate, hiddenSegments } = useBreadcrumbNavigation(
     webdavShare,
     webdavShares,
     searchParams,
@@ -88,7 +86,7 @@ const FileSharingPage = () => {
           path={currentPath}
           onNavigate={handleBreadcrumbNavigate}
           style={{ color: 'white' }}
-          hiddenSegments={getHiddenSegments()}
+          hiddenSegments={hiddenSegments}
         />
         <QuotaLimitInfo percentageUsed={percentageUsed} />
       </div>
