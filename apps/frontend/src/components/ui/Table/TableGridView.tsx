@@ -33,6 +33,7 @@ import SortDropdown from './SortDropdown';
 import GridView, { GridItemConfig } from './GridView/GridView';
 import useScrollableTable from './useScrollableTable';
 import SelectedRowsCount from './SelectedRowsCount';
+import FileFilterDropdown from './FileFilterDropdown';
 
 interface TableGridViewProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -89,7 +90,7 @@ const TableGridView = <TData, TValue>({
   const { getViewMode, setViewMode, setFileFilter } = useViewModeStore();
   const viewMode = getViewMode(viewModeStorageKey);
   const isTableView = viewMode === VIEW_MODE.table;
-  const isFilterEnabled = useViewModeStore((state) => state.fileFilter[viewModeStorageKey]) ?? true;
+  const showHiddenFiles = useViewModeStore((state) => state.fileFilter[viewModeStorageKey]) ?? false;
 
   const handleViewModeChange = useCallback(
     (mode: typeof VIEW_MODE.table | typeof VIEW_MODE.grid) => {
@@ -104,11 +105,20 @@ const TableGridView = <TData, TValue>({
         viewMode={viewMode}
         onViewModeChange={handleViewModeChange}
         isDialog={isDialog}
-        isFilterEnabled={isFilterEnabled}
-        onSystemFileFilterChange={(enabled) => setFileFilter(viewModeStorageKey, enabled)}
       />
     ),
-    [viewMode, handleViewModeChange, isDialog, isFilterEnabled, setFileFilter, viewModeStorageKey],
+    [viewMode, handleViewModeChange, isDialog],
+  );
+
+  const fileFilterDropdown = useMemo(
+    () => (
+      <FileFilterDropdown
+        showHiddenFiles={showHiddenFiles}
+        onShowHiddenFilesChange={(enabled) => setFileFilter(viewModeStorageKey, enabled)}
+        isDialog={isDialog}
+      />
+    ),
+    [showHiddenFiles, setFileFilter, viewModeStorageKey, isDialog],
   );
 
   const { table } = useScrollableTable({
@@ -146,7 +156,12 @@ const TableGridView = <TData, TValue>({
         getRowExcludedFromCount={getRowExcludedFromCount}
         enableDragAndDrop={enableDragAndDrop}
         canDropOnRow={canDropOnRow}
-        searchBarAdditionalComponent={viewModeToggle}
+        searchBarAdditionalComponent={
+          <>
+            {fileFilterDropdown}
+            {viewModeToggle}
+          </>
+        }
       />
     );
   }
@@ -187,6 +202,8 @@ const TableGridView = <TData, TValue>({
               table={table}
               isDialog={isDialog}
             />
+
+            {fileFilterDropdown}
 
             {viewModeToggle}
           </div>

@@ -1427,6 +1427,7 @@
     "error": "Error",
     "entry": "Entry {{index}}",
     "filter": "Filter",
+    "showHiddenFiles": "Show hidden files",
     "errors": {
       "dbAccessFailed": "Database access failed",
       "directoryNotCreated": "Failed to create directory",

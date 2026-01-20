@@ -1429,6 +1429,7 @@
     "error": "Fehler",
     "entry": "Eintrag {{index}}",
     "filter": "Filter",
+    "showHiddenFiles": "Versteckte Dateien anzeigen",
     "errors": {
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "directoryNotCreated": "Erstellen des Verzeichnisses fehlgeschlagen",

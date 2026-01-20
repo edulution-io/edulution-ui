@@ -25,23 +25,15 @@ import cn from '@libs/common/utils/className';
 import { ButtonSH } from '@/components/ui/ButtonSH';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilter, faGrip, faList } from '@fortawesome/free-solid-svg-icons';
+import { faGrip, faList } from '@fortawesome/free-solid-svg-icons';
 
 interface ViewModeToggleProps {
   viewMode: ViewModeType;
   onViewModeChange: (mode: ViewModeType) => void;
   isDialog?: boolean;
-  isFilterEnabled?: boolean;
-  onSystemFileFilterChange?: (enabled: boolean) => void;
 }
 
-const ViewModeToggle = ({
-  viewMode,
-  onViewModeChange,
-  isDialog = false,
-  isFilterEnabled = true,
-  onSystemFileFilterChange,
-}: ViewModeToggleProps) => {
+const ViewModeToggle = ({ viewMode, onViewModeChange, isDialog = false }: ViewModeToggleProps) => {
   const { t } = useTranslation();
 
   return (
@@ -75,7 +67,7 @@ const ViewModeToggle = ({
             size="icon"
             onClick={() => onViewModeChange(VIEW_MODE.grid)}
             className={cn(
-              'h-[38px] w-[38px] rounded-none',
+              'h-[38px] w-[38px] rounded-l-none',
               viewMode === VIEW_MODE.grid && (isDialog ? 'bg-ciLightGrey' : 'bg-accent'),
             )}
           >
@@ -87,28 +79,6 @@ const ViewModeToggle = ({
         </TooltipTrigger>
         <TooltipContent>
           <p>{t('common.gridView')}</p>
-        </TooltipContent>
-      </Tooltip>
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <ButtonSH
-            variant="ghost"
-            size="icon"
-            onClick={() => onSystemFileFilterChange?.(!isFilterEnabled)}
-            className={cn(
-              'h-[38px] w-[38px] rounded-l-none',
-              isFilterEnabled && (isDialog ? 'bg-ciLightGrey' : 'bg-accent'),
-            )}
-          >
-            <FontAwesomeIcon
-              icon={faFilter}
-              className="h-4 w-4"
-            />
-          </ButtonSH>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>{t('common.filter')}</p>
         </TooltipContent>
       </Tooltip>
     </div>
