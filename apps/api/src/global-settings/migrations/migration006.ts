@@ -26,6 +26,7 @@ import type { Migration } from '../../migration/migration.type';
 import type { GlobalSettings, GlobalSettingsDocument } from '../global-settings.schema';
 
 const OLD_LOGO_DIR = join(PUBLIC_ASSET_PATH, 'branding', 'logo');
+const BUGGY_NESTED_LOGO_DIR = join(PUBLIC_ASSET_PATH, 'assets', 'branding', 'logo');
 const OLD_LOGO_FILE = 'main-logo-dark.webp';
 const NEW_LOGO_DIR = join(PUBLIC_ASSET_PATH, 'generalsettings');
 const NEW_LOGO_FILE = 'generalsettings-custom-logo.webp';
@@ -51,33 +52,35 @@ const migration006: Migration<GlobalSettingsDocument> = {
     }
 
     const oldLogoPath = join(OLD_LOGO_DIR, OLD_LOGO_FILE);
+    const buggyNestedLogoPath = join(BUGGY_NESTED_LOGO_DIR, OLD_LOGO_FILE);
     const newLogoPath = join(NEW_LOGO_DIR, NEW_LOGO_FILE);
 
-    if (await pathExists(oldLogoPath)) {
-      if (await pathExists(newLogoPath)) {
-        Logger.log('Custom logo already exists at new location, skipping move', migration006.name);
-      } else {
-        await move(oldLogoPath, newLogoPath);
-        Logger.log(`Moved logo from ${oldLogoPath} to ${newLogoPath}`, migration006.name);
-      }
+    if (await pathExists(newLogoPath)) {
+      Logger.log('Custom logo already exists at new location, skipping move', migration006.name);
+    } else if (await pathExists(oldLogoPath)) {
+      await move(oldLogoPath, newLogoPath);
+      Logger.log(`Moved logo from ${oldLogoPath} to ${newLogoPath}`, migration006.name);
+    } else if (await pathExists(buggyNestedLogoPath)) {
+      await move(buggyNestedLogoPath, newLogoPath);
+      Logger.log(`Moved logo from buggy nested path ${buggyNestedLogoPath} to ${newLogoPath}`, migration006.name);
     }
 
-    if (await pathExists(OLD_LOGO_DIR)) {
-      const files = await readdir(OLD_LOGO_DIR);
-      if (files.length === 0) {
-        await remove(OLD_LOGO_DIR);
-        Logger.log('Removed empty branding/logo directory', migration006.name);
-      }
-
-      const brandingDir = join(PUBLIC_ASSET_PATH, 'branding');
-      if (await pathExists(brandingDir)) {
-        const brandingFiles = await readdir(brandingDir);
-        if (brandingFiles.length === 0) {
-          await remove(brandingDir);
-          Logger.log('Removed empty branding directory', migration006.name);
+    const cleanupEmptyDir = async (dir: string, description: string) => {
+      if (await pathExists(dir)) {
+        const files = await readdir(dir);
+        if (files.length === 0) {
+          await remove(dir);
+          Logger.log(`Removed empty ${description} directory`, migration006.name);
         }
       }
-    }
+    };
+
+    await cleanupEmptyDir(OLD_LOGO_DIR, 'branding/logo');
+    await cleanupEmptyDir(join(PUBLIC_ASSET_PATH, 'branding'), 'branding');
+
+    await cleanupEmptyDir(BUGGY_NESTED_LOGO_DIR, 'assets/branding/logo');
+    await cleanupEmptyDir(join(PUBLIC_ASSET_PATH, 'assets', 'branding'), 'assets/branding');
+    await cleanupEmptyDir(join(PUBLIC_ASSET_PATH, 'assets'), 'nested assets');
 
     const result = await model.updateOne({ _id: globalSettings._id }, { $set: { schemaVersion: newSchemaVersion } });
 
