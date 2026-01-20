@@ -19,7 +19,7 @@
 
 import React, { useState } from 'react';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
-import { FaFileCsv, FaRegFilePdf } from 'react-icons/fa6';
+import { faFileCsv, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import PrintPasswordsFormat from '@libs/classManagement/types/printPasswordsFormat';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
@@ -41,12 +41,12 @@ const PasswordsFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ select
   const config: FloatingButtonsBarConfig = {
     buttons: [
       {
-        icon: FaRegFilePdf,
+        icon: faFilePdf,
         text: t(`classmanagement.${PrintPasswordsFormat.PDF}`),
         onClick: () => setIsDialogOpen(PrintPasswordsFormat.PDF),
       },
       {
-        icon: FaFileCsv,
+        icon: faFileCsv,
         text: t(`classmanagement.${PrintPasswordsFormat.CSV}`),
         onClick: () => setIsDialogOpen(PrintPasswordsFormat.CSV),
       },

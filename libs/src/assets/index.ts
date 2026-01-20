@@ -17,11 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export { default as FilesharingIcon } from './filesharing.svg';
-export { default as SurveysIcon } from './surveys.svg';
-export { default as WhiteboardIcon } from './whiteboard.svg';
-export { default as ClassManagementIcon } from './classmgmt.svg';
-export { default as BulletinBoardIcon } from './kanban.svg';
-export { default as GlobeIcon } from './globe.svg';
-export { default as UserIcon } from './users.svg';
-export { default as DashboardIcon } from './dashboard.svg';
+export { default as DashboardIcon } from './edu_Dashboard.svg';
+export { default as InfoBoardIcon } from './edu_Infoboard.svg';
+export { default as MailIcon } from './edu_E-Mail.svg';
+export { default as ConferenceIcon } from './edu_Konferenzen.svg';
+export { default as SurveysIcon } from './edu_Umfragen.svg';
+export { default as FilesharingIcon } from './edu_Dateien.svg';
+export { default as ClassManagementIcon } from './edu_Klassenraum.svg';
+export { default as DesktopDeploymentIcon } from './edu_Desktop.svg';
+export { default as LinuxmusterIcon } from './edu_Linuxmuster.svg';
+export { default as WhiteboardIcon } from './edu_Whiteboard.svg';

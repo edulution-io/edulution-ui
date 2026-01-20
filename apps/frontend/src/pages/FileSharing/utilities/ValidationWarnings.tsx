@@ -19,7 +19,8 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { HiExclamationTriangle } from 'react-icons/hi2';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import WarningBox from '@/components/shared/WarningBox';
 
 interface ValidationWarningsProps {
@@ -41,7 +42,12 @@ const ValidationWarnings: React.FC<ValidationWarningsProps> = ({
     <>
       {duplicateFiles.length > 0 && (
         <WarningBox
-          icon={<HiExclamationTriangle className="text-ciYellow" />}
+          icon={
+            <FontAwesomeIcon
+              icon={faTriangleExclamation}
+              className="text-ciYellow"
+            />
+          }
           title={t('filesharingUpload.overwriteWarningTitle', { count: duplicateFiles.length })}
           description={t('filesharingUpload.overwriteWarningDescription', { count: duplicateFiles.length })}
           filenames={duplicateFiles}
@@ -53,7 +59,12 @@ const ValidationWarnings: React.FC<ValidationWarningsProps> = ({
 
       {duplicateFolders.length > 0 && (
         <WarningBox
-          icon={<HiExclamationTriangle className="text-ciYellow" />}
+          icon={
+            <FontAwesomeIcon
+              icon={faTriangleExclamation}
+              className="text-ciYellow"
+            />
+          }
           title={t('filesharingUpload.overwriteFolderWarningTitle', { count: duplicateFolders.length })}
           description={t('filesharingUpload.overwriteFolderWarningDescription', { count: duplicateFolders.length })}
           filenames={duplicateFolders}
@@ -65,7 +76,12 @@ const ValidationWarnings: React.FC<ValidationWarningsProps> = ({
 
       {oversizedFiles.length > 0 && (
         <WarningBox
-          icon={<HiExclamationTriangle className="text-ciRed" />}
+          icon={
+            <FontAwesomeIcon
+              icon={faTriangleExclamation}
+              className="text-ciRed"
+            />
+          }
           title={t('filesharingUpload.oversizedFileDetected', { count: oversizedFiles.length })}
           description={t('filesharingUpload.cannotUploadOversized')}
           filenames={oversizedFiles.map((file) => file.name)}
@@ -77,7 +93,12 @@ const ValidationWarnings: React.FC<ValidationWarningsProps> = ({
 
       {tooLargeFolders.length > 0 && (
         <WarningBox
-          icon={<HiExclamationTriangle className="text-ciRed" />}
+          icon={
+            <FontAwesomeIcon
+              icon={faTriangleExclamation}
+              className="text-ciRed"
+            />
+          }
           title={t('filesharingUpload.folderTooLargeTitle')}
           description={t('filesharingUpload.folderTooLargeDescription')}
           filenames={tooLargeFolders}

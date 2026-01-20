@@ -19,7 +19,8 @@
 
 import React from 'react';
 import cn from '@libs/common/utils/className';
-import { MdClose } from 'react-icons/md';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
 import WindowControlBaseButton from './WindowControlBaseButton';
 
 interface CloseButtonProps {
@@ -36,7 +37,7 @@ const CloseButton = ({ handleClose, className }: CloseButtonProps) => {
       onClick={handleClose}
       className={closeClasses}
     >
-      <MdClose />
+      <FontAwesomeIcon icon={faClose} />
     </WindowControlBaseButton>
   );
 };

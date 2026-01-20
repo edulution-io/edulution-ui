@@ -18,10 +18,10 @@
  */
 
 import { t } from 'i18next';
-import { MdArrowBack } from 'react-icons/md';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 const BackButton = (onClick: () => void) => ({
-  icon: MdArrowBack,
+  icon: faArrowLeft,
   text: t('tooltip.back'),
   onClick,
 });

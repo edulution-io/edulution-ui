@@ -34,6 +34,7 @@ interface TSurveyElement {
     valueName?: string;
     titleName?: string;
     imageLink?: string;
+    allowEmptyResponse?: boolean;
   } | null;
   hideIfChoicesEmpty?: boolean;
   imageLink?: string;

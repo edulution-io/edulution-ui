@@ -19,6 +19,7 @@
 
 import { useTranslation } from 'react-i18next';
 import APPS from '@libs/appconfig/constants/apps';
+import APP_DISPLAY_LOCATIONS from '@libs/appconfig/constants/appDisplayLocations';
 import { SettingsIcon } from '@/assets/icons';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useLanguage from '@/hooks/useLanguage';
@@ -53,13 +54,15 @@ const useSidebarItems = (): SidebarMenuItem[] => {
     }
   };
 
-  const sidebarItems: SidebarMenuItem[] = appConfigs.map((cfg) => ({
-    title: getDisplayName(cfg, language),
-    link: `/${cfg.name}`,
-    icon: cfg.icon,
-    color: 'bg-ciGreenToBlue',
-    notificationCounter: getNotificationCounter(cfg.name),
-  }));
+  const sidebarItems: SidebarMenuItem[] = appConfigs
+    .filter((cfg) => cfg.displayLocations?.includes(APP_DISPLAY_LOCATIONS.SIDEBAR))
+    .map((cfg) => ({
+      title: getDisplayName(cfg, language),
+      link: `/${cfg.name}`,
+      icon: cfg.icon,
+      color: 'bg-ciGreenToBlue',
+      notificationCounter: getNotificationCounter(cfg.name),
+    }));
 
   return [
     ...sidebarItems,

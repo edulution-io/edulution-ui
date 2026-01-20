@@ -19,7 +19,8 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { TbChartPieFilled } from 'react-icons/tb';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChartPie } from '@fortawesome/free-solid-svg-icons';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
 import cn from '@libs/common/utils/className';
@@ -40,7 +41,10 @@ const MenuBarQuota: React.FC<MenuBarQuotaProps> = ({ isCollapsed }) => {
   return (
     <div className="border-t border-muted px-3 py-4">
       <div className="mb-1 flex items-center gap-2">
-        <TbChartPieFilled className="h-3 w-3" />
+        <FontAwesomeIcon
+          icon={faChartPie}
+          className="h-3 w-3"
+        />
         <p className="text-sm">{lmnUser?.school}</p>
       </div>
       <div className="relative h-1 w-full overflow-hidden rounded-full bg-gray-300">

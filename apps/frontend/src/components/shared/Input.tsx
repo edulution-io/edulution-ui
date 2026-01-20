@@ -21,9 +21,8 @@ import React, { useState } from 'react';
 import { type VariantProps } from 'class-variance-authority';
 import cn from '@libs/common/utils/className';
 import { inputVariants } from '@libs/ui/constants/commonClassNames';
-import { EyeDarkIcon, EyeDarkSlashIcon, EyeLightIcon, EyeLightSlashIcon } from '@/assets/icons';
-import useThemeStore from '@/store/useThemeStore';
-import THEME from '@libs/common/constants/theme';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> &
   VariantProps<typeof inputVariants> & {
@@ -36,8 +35,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const [showPassword, setShowPassword] = useState(false);
     const isPassword = type === 'password';
     const needsWrapper = isPassword || icon;
-    const resolvedTheme = useThemeStore((state) => state.getResolvedTheme());
-    const isDarkMode = resolvedTheme === THEME.dark;
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
@@ -65,17 +62,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       }
     };
 
-    const getEyeIcons = () => {
-      if (variant === 'login') {
-        return { closed: EyeDarkIcon, opened: EyeDarkSlashIcon };
-      }
-      return isDarkMode
-        ? { closed: EyeLightIcon, opened: EyeLightSlashIcon }
-        : { closed: EyeDarkIcon, opened: EyeDarkSlashIcon };
-    };
-
-    const { closed: closedIcon, opened: openedIcon } = getEyeIcons();
-
     const inputElement = (
       <input
         type={isPassword && showPassword ? 'text' : type}
@@ -100,10 +86,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               type="button"
               onClickCapture={() => setShowPassword((prevValue) => !prevValue)}
             >
-              <img
-                src={showPassword ? closedIcon : openedIcon}
-                alt="eye"
-                width="25px"
+              <FontAwesomeIcon
+                icon={showPassword ? faEyeSlash : faEye}
+                className="h-5 w-5 text-ciGrey"
               />
             </button>
           </div>

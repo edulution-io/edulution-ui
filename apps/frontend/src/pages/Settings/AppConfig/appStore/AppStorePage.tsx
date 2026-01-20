@@ -55,7 +55,7 @@ const AppStorePage: React.FC = () => {
 
   const handleCreateApp = () => {
     if (selectedApp.isNativeApp) {
-      const { options = [], extendedOptions = {} } = selectedApp;
+      const { options = [], extendedOptions = {}, defaultDisplayLocations = [] } = selectedApp;
       const newExtendedOptions = Object.values(extendedOptions).reduce<Record<string, string>>((acc, item) => {
         acc[item[0].name] = '';
         return acc;
@@ -73,6 +73,7 @@ const AppStorePage: React.FC = () => {
         accessGroups: [],
         extendedOptions: newExtendedOptions,
         position: 0,
+        displayLocations: defaultDisplayLocations,
       };
 
       void createAppConfig(newConfig);

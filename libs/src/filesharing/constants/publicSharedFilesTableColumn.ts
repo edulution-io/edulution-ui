@@ -24,6 +24,7 @@ const PUBLIC_SHARED_FILES_TABLE_COLUMN = {
   FILE_LINK: 'public-shared-file-link',
   IS_PASSWORD_PROTECTED: 'public-shared-file-is-password-protected',
   FILE_IS_ACCESSIBLE_BY: 'public-shared-file-is-accessible-by',
+  FILE_SHARED_BY: 'public-shared-file-shared-by',
   FILE_ACTIONS: 'public-shared-file-actions',
 };
 

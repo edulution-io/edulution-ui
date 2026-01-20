@@ -21,11 +21,9 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { toast } from 'sonner';
 import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { VscNewFile } from 'react-icons/vsc';
-import { RiResetLeftLine } from 'react-icons/ri';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { TbFileTypePdf, TbTemplate } from 'react-icons/tb';
+import { faRotateLeft, faFilePdf, faFileLines, faFileCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -33,9 +31,10 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/getSurveyEditorForm.schema';
-import surveysDefaultValues from '@/pages/Surveys/utils/surveys-default-values';
+import getSurveysDefaultValues from '@/pages/Surveys/utils/getSurveysDefaultValues';
 import getInitialSurveyFormValues from '@/pages/Surveys/utils/getInitialSurveyFormValues';
 import useUserStore from '@/store/UserStore/useUserStore';
+import useThemeStore from '@/store/useThemeStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useLanguage from '@/hooks/useLanguage';
@@ -82,6 +81,7 @@ const SurveyEditorPage = () => {
   const { user } = useUserStore();
   const { surveyId } = useParams();
   const { language } = useLanguage();
+  const { theme } = useThemeStore();
 
   const handleReset = () => {
     resetStoredSurvey();
@@ -105,8 +105,8 @@ const SurveyEditorPage = () => {
       value: user.username,
       label: `${user.firstName} ${user.lastName}`,
     };
-    return getInitialSurveyFormValues(surveyCreator, selectedSurvey, storedSurvey);
-  }, [storedSurvey, selectedSurvey]);
+    return getInitialSurveyFormValues(surveyCreator, selectedSurvey, storedSurvey, theme);
+  }, [storedSurvey, selectedSurvey, theme]);
 
   const form = useForm<SurveyDto>({
     mode: 'onChange',
@@ -202,24 +202,24 @@ const SurveyEditorPage = () => {
     buttons: [
       SaveButton(() => setIsOpenSaveSurveyDialog(true)),
       {
-        icon: TbTemplate,
+        icon: faFileLines,
         text: t('survey.editor.templates'),
         onClick: () => setIsOpenTemplateMenu(!isOpenTemplateMenu),
       },
       {
-        icon: VscNewFile,
+        icon: faFileCirclePlus,
         text: t('survey.editor.new'),
         onClick: () => {
           handleReset();
           form.reset(initialFormValues);
           if (creator) {
             creator.saveNo = 0;
-            creator.JSON = surveysDefaultValues.formula;
+            creator.JSON = getSurveysDefaultValues(theme).formula;
           }
         },
       },
       {
-        icon: RiResetLeftLine,
+        icon: faRotateLeft,
         text: t('survey.editor.reset'),
         onClick: () => {
           handleReset();
@@ -231,7 +231,7 @@ const SurveyEditorPage = () => {
         },
       },
       {
-        icon: TbFileTypePdf,
+        icon: faFilePdf,
         text: t('survey.export.exportToPDF'),
         onClick: () => setOpenExportPDFDialog(true),
       },

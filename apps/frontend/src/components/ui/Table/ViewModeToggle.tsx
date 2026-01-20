@@ -19,12 +19,13 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { LayoutGrid, LayoutList } from 'lucide-react';
 import VIEW_MODE from '@libs/common/constants/viewMode';
 import ViewModeType from '@libs/common/types/viewModeType';
 import cn from '@libs/common/utils/className';
 import { ButtonSH } from '@/components/ui/ButtonSH';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGrip, faList } from '@fortawesome/free-solid-svg-icons';
 
 interface ViewModeToggleProps {
   viewMode: ViewModeType;
@@ -48,7 +49,10 @@ const ViewModeToggle = ({ viewMode, onViewModeChange, isDialog = false }: ViewMo
               viewMode === VIEW_MODE.table && (isDialog ? 'bg-ciLightGrey' : 'bg-accent'),
             )}
           >
-            <LayoutList className="h-4 w-4" />
+            <FontAwesomeIcon
+              icon={faList}
+              className="h-4 w-4"
+            />
           </ButtonSH>
         </TooltipTrigger>
         <TooltipContent>
@@ -67,7 +71,10 @@ const ViewModeToggle = ({ viewMode, onViewModeChange, isDialog = false }: ViewMo
               viewMode === VIEW_MODE.grid && (isDialog ? 'bg-ciLightGrey' : 'bg-accent'),
             )}
           >
-            <LayoutGrid className="h-4 w-4" />
+            <FontAwesomeIcon
+              icon={faGrip}
+              className="h-4 w-4"
+            />
           </ButtonSH>
         </TooltipTrigger>
         <TooltipContent>
