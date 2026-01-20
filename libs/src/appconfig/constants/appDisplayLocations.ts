@@ -17,12 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ThemedFile from '@libs/common/types/themedFile';
-import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
+const APP_DISPLAY_LOCATIONS = {
+  EDU_APP: 'eduApp',
+  SIDEBAR: 'sidebar',
+  LAUNCHER: 'launcher',
+} as const;
 
-export type GlobalSettingsFormValues = Omit<GlobalSettingsDto, 'brandingUploadFile'> & {
-  brandingUploads: {
-    logo: ThemedFile;
-    background: ThemedFile;
-  };
-};
+export const ALL_DISPLAY_LOCATIONS = Object.values(APP_DISPLAY_LOCATIONS);
+
+export default APP_DISPLAY_LOCATIONS;

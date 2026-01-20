@@ -11,41 +11,51 @@
  */
 
 import React from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { FieldValues, UseFormReturn } from 'react-hook-form';
 import THEME from '@libs/common/constants/theme';
-import ThemedFile from '@libs/common/types/themedFile';
-import AppConfigFormLogoField from '@/pages/Settings/AppConfig/components/AppConfigFormLogoField';
+import ThemeType from '@libs/common/types/themeType';
+import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
+import AssetType from '@libs/appconfig/types/assetType';
+import AppConfigFormAssetField from '@/pages/Settings/AppConfig/components/AppConfigFormAssetField';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 
-export type AppConfigFormDarkAndLightLogoFieldProps = {
+type AppConfigFormDarkAndLightAssetFieldProps<T extends FieldValues = FieldValues> = {
   settingLocation: string;
   fieldPath: string;
   option: AppConfigExtendedOption;
-  form: UseFormReturn<ThemedFile>;
+  form: UseFormReturn<T>;
+  assetType?: AssetType;
+  onUploadSuccess?: (variant: ThemeType) => void;
 };
 
-const AppConfigFormDarkAndLightLogoField: React.FC<AppConfigFormDarkAndLightLogoFieldProps> = ({
+const AppConfigFormDarkAndLightAssetField = <T extends FieldValues = FieldValues>({
   settingLocation,
   fieldPath,
   option,
   form,
-}) => (
+  assetType = ASSET_TYPES.logo,
+  onUploadSuccess,
+}: AppConfigFormDarkAndLightAssetFieldProps<T>) => (
   <div className="flex flex-grow flex-col gap-4 lg:flex-row">
-    <AppConfigFormLogoField
+    <AppConfigFormAssetField
       variant={THEME.light}
       appName={settingLocation}
       fieldPath={fieldPath}
       option={option}
       form={form}
+      assetType={assetType}
+      onUploadSuccess={onUploadSuccess}
     />
-    <AppConfigFormLogoField
+    <AppConfigFormAssetField
       variant={THEME.dark}
       appName={settingLocation}
       fieldPath={fieldPath}
       option={option}
       form={form}
+      assetType={assetType}
+      onUploadSuccess={onUploadSuccess}
     />
   </div>
 );
 
-export default AppConfigFormDarkAndLightLogoField;
+export default AppConfigFormDarkAndLightAssetField;

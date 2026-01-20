@@ -1037,6 +1037,11 @@
         "uploadDarkLogo": "Upload dark logo",
         "deleteSuccessful": "Logo deleted successfully."
       },
+      "background": {
+        "title": "Background Image",
+        "description": "Upload custom background images for light and dark mode. They will be shown across the entire application.",
+        "variant": "Background ({{variant}} mode)"
+      },
       "theme": {
         "title": "Theme Customization",
         "primaryColor": "Primary Color",
@@ -1092,7 +1097,7 @@
       "sections": {
         "appLogo": {
           "title": "Logo",
-          "description": "Upload your own image here to override the default logo of {{ applicationName }}; Or restore the default logo of {{ applicationName }}."
+          "description": "Upload your own image here to override the default logo of {{ applicationName }}. Or restore the default logo of {{ applicationName }}."
         },
         "onlyOffice": {
           "title": "Only Office Integration",
