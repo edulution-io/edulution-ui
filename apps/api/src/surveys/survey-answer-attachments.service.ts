@@ -55,12 +55,12 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     const tempFileExists = await FilesystemService.checkIfFileExist(tempFilePath);
     if (tempFileExists) {
       const path = join(SURVEYS_ANSWER_FOLDER, userName, surveyId, questionId);
-      return this.fileSystemService.serveTempFiles(path, fileName, res);
+      return this.fileSystemService.serveTempFile(path, fileName, res);
     }
     const permanentFileExists = await FilesystemService.checkIfFileExist(permanentFilePath);
     if (permanentFileExists) {
       const path = join(SURVEYS_ANSWER_FOLDER, ATTACHMENT_FOLDER, surveyId, questionId, userName);
-      return this.fileSystemService.serveFiles(path, fileName, res);
+      return this.fileSystemService.serveFile(path, fileName, res);
     }
     throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
   }

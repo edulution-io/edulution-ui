@@ -17,7 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ThemeType from '@libs/common/types/themeType';
+enum PathValidationErrorMessages {
+  NoString = 'common.errors.path.noString',
+  IsEmpty = 'common.errors.path.isEmpty',
+  PathTooLong = 'common.errors.path.tooLong',
+  PathTraversal = 'common.errors.path.traversal',
+  AbsolutePathNotAllowed = 'common.errors.path.absolutePath',
+  SubdirectoriesNotAllowed = 'common.errors.path.subdirectories',
+  InvalidCharacters = 'common.errors.path.invalidCharacters',
+  OutsidePublicDirectory = 'common.errors.path.outsidePublicDirectory',
+  SymlinkOutsidePublicDirectory = 'common.errors.path.symlinkOutsidePublicDirectory',
+}
 
-const getSurveysDefaultLogoFilename = (theme: ThemeType) => `surveys-default-logo-${theme}.webp`;
-export default getSurveysDefaultLogoFilename;
+export default PathValidationErrorMessages;

@@ -380,6 +380,7 @@
       "FileFormatNotSupported": "Le format de fichier n'est pas pris en charge."
     },
     "publicFileSharing": {
+      "sharedBy": "Partagé par",
       "errors": {
         "PublicFileDownloadFailed": "Le téléchargement du fichier a échoué. Veuillez réessayer plus tard."
       }
@@ -613,7 +614,12 @@
     "noAnswer": "Aucune réponse n'est encore disponible.",
     "canSubmitMultiple": "Autoriser plusieurs réponses.",
     "editor": {
+      "inputFieldTitle": "Champ de saisie",
       "new": "Nouveau (vide)",
+      "fileUploadSuccess": "Le fichier a été enregistré avec succès.",
+      "fileUploadError": "Erreur lors du téléchargement du fichier, veuillez réessayer plus tard.",
+      "fileDeletionSuccess": "Le fichier a été supprimé avec succès.",
+      "fileDeletionError": "Le fichier n'a pas pu être supprimé.",
       "saveSurveySuccess": "Le sondage a été enregistrée.",
       "surveyPlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
       "surveyPlaceholderDescription": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
@@ -893,6 +899,11 @@
         "uploadDarkLogo": "Téléverser le logo sombre",
         "deleteSuccessful": "Logo supprimé avec succès."
       },
+      "background": {
+        "title": "Image de fond",
+        "description": "Téléversez des images de fond personnalisées pour les modes clair et sombre. Elles seront affichées dans toute l'application.",
+        "variant": "Arrière-plan (mode {{variant}})"
+      },
       "theme": {
         "title": "Personnalisation du thème",
         "primaryColor": "Couleur primaire",
@@ -943,6 +954,10 @@
       "confirmDeleteEntries": "Êtes-vous sûr de vouloir supprimer cette entrée? Cette action ne peut pas être annulée.",
       "confirmDeleteEntries_other": "Êtes-vous sûr de vouloir supprimer ces {{count}} entrées? Cette action ne peut pas être annulée.",
       "sections": {
+        "appLogo": {
+          "title": "Logo",
+          "description": "Téléversez votre propre image ici pour remplacer le logo par défaut de {{ applicationName }}. Ou restaurez le logo par défaut de {{ applicationName }}."
+        },
         "onlyOffice": {
           "title": "Intégration OnlyOffice",
           "description": ""
@@ -1245,6 +1260,7 @@
     "less": "Moins",
     "refreshPage": "Actualiser la page",
     "guest": "Invité",
+    "me": "Moi",
     "ok": "OK",
     "next": "Prochain",
     "back": "Précédent",
@@ -1267,7 +1283,18 @@
       "fileNotFound": "Fichier introuvable",
       "fileNotProvided": "Le fichier n'a pas été fourni",
       "invalidFileType": "Type de fichier non valide",
-      "startDateBeforeEndDate": "La date de début ne doit pas être après la date de fin"
+      "startDateBeforeEndDate": "La date de début ne doit pas être après la date de fin",
+      "path": {
+        "noString": "Le chemin doit être une chaîne de caractères",
+        "isEmpty": "Le chemin ne peut pas être vide",
+        "tooLong": "Le chemin est trop long",
+        "traversal": "La traversée de chemin n'est pas autorisée",
+        "absolutePath": "Les chemins absolus ne sont pas autorisés",
+        "subdirectories": "Les sous-répertoires ne sont pas autorisés",
+        "invalidCharacters": "Le chemin contient des caractères non valides",
+        "outsidePublicDirectory": "Le chemin est en dehors du répertoire public",
+        "symlinkOutsidePublicDirectory": "Le chemin inclut un lien symbolique qui pointe en dehors du répertoire public"
+      }
     },
     "cut": "Couper",
     "sortOrder": "Tri",
@@ -1724,6 +1751,11 @@
       "updateNow": "Mettre à jour maintenant",
       "checkVersionSuccess": "Thème vérifié avec succès !",
       "noData": "Aucune information de version disponible."
+    },
+    "appLogo": {
+      "light": "clair",
+      "dark": "sombre",
+      "title": "Logo thématique {{variant}}"
     }
   },
   "preview": {

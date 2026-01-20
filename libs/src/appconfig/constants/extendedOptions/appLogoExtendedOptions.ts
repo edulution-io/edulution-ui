@@ -17,20 +17,22 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import i18n from '@/i18n';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import getSurveysDefaultLogoUrl from '@libs/survey/utils/getSurveysDefaultLogoUrl';
+import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+import ThemedFile from '@libs/common/types/themedFile';
 
-const surveysDefaultValues: Partial<SurveyDto> & { formula: SurveyFormula } = {
-  formula: {
-    title: i18n.t('survey.newTitle'),
-    logo: getSurveysDefaultLogoUrl(),
+const ThemedValue: ThemedFile = { dark: null, light: null };
+
+const APP_LOGO_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
+  {
+    name: ExtendedOptionKeys.APP_LOGO,
+    title: 'appExtendedOptions.appLogo.title',
+    description: '',
+    type: ExtendedOptionField.appLogo,
+    value: ThemedValue,
+    width: 'full',
   },
-  isAnonymous: false,
-  canSubmitMultipleAnswers: false,
-  isPublic: false,
-  canUpdateFormerAnswer: false,
-};
+];
 
-export default surveysDefaultValues;
+export default APP_LOGO_EXTENDED_OPTIONS;
