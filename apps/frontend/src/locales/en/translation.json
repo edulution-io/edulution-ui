@@ -1190,6 +1190,15 @@
           "syntaxValid": "Script syntax is valid",
           "syntaxInvalid": "Script has syntax errors",
           "placeholder": "Enter JavaScript code here"
+        },
+        "urlHandling": {
+          "title": "URL Handling",
+          "description": "Synchronize the browser URL with the embedded content navigation.",
+          "enabled": "Enable URL synchronization",
+          "enabledDescription": "Updates the browser address bar when navigating within the embedded content. This enables bookmarking and browser history. Note: This feature only works when the embedded content is hosted on the same domain as this application.",
+          "embeddedEnabledDescription": "Updates the browser address bar when navigating within the embedded content. This enables bookmarking and browser history. Note: This feature only works with \"Separate Layout\" mode and when the embedded content is hosted on the same domain as this application.",
+          "preloadBasePage": "Preload base page",
+          "preloadBasePageDescription": "When enabled, the configured URL is always loaded first before navigating to deep links. Enable this for applications that require authentication or run initialization scripts on the configured URL."
         }
       },
       "update": {

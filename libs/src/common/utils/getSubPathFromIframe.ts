@@ -17,25 +17,30 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { Route } from 'react-router-dom';
-import PublicEmbeddedPage from '@/pages/EmbeddedPage/PublicEmbeddedPage';
-import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
-import publicEmbeddedRoutes from '@libs/common/constants/publicEmbeddedRoutes';
+import { UrlParts } from './getSubPathFromBrowserUrl';
 
-const getPublicEmbeddedRoutes = () => {
-  const { publicAppConfigs } = useAppConfigsStore();
+const EMPTY_STRING = '';
 
-  const publicAppConfigNames = publicAppConfigs.map((cfg) => cfg.name);
-  const mergedRoutes = Array.from(new Set([...publicEmbeddedRoutes, ...publicAppConfigNames]));
-
-  return mergedRoutes.map((route) => (
-    <Route
-      key={route}
-      path={`${route}/*`}
-      element={<PublicEmbeddedPage />}
-    />
-  ));
+const getSubPathFromIframe = (iframe: HTMLIFrameElement, proxyPrefix?: string): UrlParts | null => {
+  try {
+    const iframePath = iframe.contentWindow?.location.pathname;
+    const iframeSearch = iframe.contentWindow?.location.search || EMPTY_STRING;
+    const iframeHash = iframe.contentWindow?.location.hash || EMPTY_STRING;
+    if (!iframePath) return null;
+    if (proxyPrefix) {
+      if (iframePath.startsWith(proxyPrefix)) {
+        return {
+          subPath: iframePath.slice(proxyPrefix.length) || EMPTY_STRING,
+          search: iframeSearch,
+          hash: iframeHash,
+        };
+      }
+      return null;
+    }
+    return { subPath: iframePath, search: iframeSearch, hash: iframeHash };
+  } catch {
+    return null;
+  }
 };
 
-export default getPublicEmbeddedRoutes;
+export default getSubPathFromIframe;

@@ -17,20 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { Route } from 'react-router-dom';
-import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
-import EmbeddedPage from '@/pages/EmbeddedPage/EmbeddedPage';
+const getExternalUrlForDeepLink = (baseUrl: string, subPath: string): string => {
+  if (!baseUrl || !subPath) return '';
+  try {
+    const url = new URL(baseUrl);
+    const normalizedSubPath = subPath.startsWith('/') ? subPath : `/${subPath}`;
+    return `${url.origin}${normalizedSubPath}`;
+  } catch {
+    return '';
+  }
+};
 
-const getEmbeddedRoutes = (appConfigs: AppConfigDto[]) =>
-  appConfigs
-    .filter((item) => item.appType === APP_INTEGRATION_VARIANT.EMBEDDED)
-    .map((item) => (
-      <Route
-        key={item.name}
-        path={`${item.name}/*`}
-        element={<EmbeddedPage />}
-      />
-    ));
-export default getEmbeddedRoutes;
+export default getExternalUrlForDeepLink;

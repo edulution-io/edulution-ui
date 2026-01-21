@@ -69,8 +69,8 @@ const ScriptEditorField = <T extends FieldValues>({
   return (
     <div
       className={cn(
-        'transition-[max-height,opacity] duration-300 ease-in-out',
-        isEnabled ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0',
+        'transition-[max-height,opacity,overflow] duration-300 ease-in-out',
+        isEnabled ? 'max-h-96 opacity-100' : 'max-h-0 overflow-hidden opacity-0',
       )}
     >
       <FormFieldSH
