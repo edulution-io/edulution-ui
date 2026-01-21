@@ -29,7 +29,7 @@ const getNativeAppRoutes = (appConfigs: AppConfigDto[]) =>
     .map((item) => (
       <Route
         key={item.name}
-        path={item.name}
+        path={`${item.name}/*`}
         element={<NativeAppPageManager page={item.name} />}
       />
     ));

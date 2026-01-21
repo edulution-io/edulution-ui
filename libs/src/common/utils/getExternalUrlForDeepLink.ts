@@ -17,6 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const SURVEYS_HEADER_IMAGE = 'logo';
+const getExternalUrlForDeepLink = (baseUrl: string, subPath: string): string => {
+  if (!baseUrl || !subPath) return '';
+  try {
+    const url = new URL(baseUrl);
+    const normalizedSubPath = subPath.startsWith('/') ? subPath : `/${subPath}`;
+    return `${url.origin}${normalizedSubPath}`;
+  } catch {
+    return '';
+  }
+};
 
-export default SURVEYS_HEADER_IMAGE;
+export default getExternalUrlForDeepLink;

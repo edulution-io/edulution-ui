@@ -23,5 +23,6 @@ import GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 export type GlobalSettingsFormValues = Omit<GlobalSettingsDto, 'brandingUploadFile'> & {
   brandingUploads: {
     logo: ThemedFile;
+    background: ThemedFile;
   };
 };

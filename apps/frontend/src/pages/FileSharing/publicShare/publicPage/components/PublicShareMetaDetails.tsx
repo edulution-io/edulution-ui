@@ -40,7 +40,7 @@ const PublicShareMetaDetails: React.FC<PublicShareMetaDetailsProps> = ({ filenam
       </header>
 
       <div className="mt-4 flex items-center gap-2 text-background">
-        <p>{t('filesharing.publicFileSharing.sharedBy')} </p>
+        <p>{t('filesharing.publicFileSharing.sharedBy')}: </p>
         <p className="truncate">{`${creator?.firstName} ${creator?.lastName}`}</p>
       </div>
 
