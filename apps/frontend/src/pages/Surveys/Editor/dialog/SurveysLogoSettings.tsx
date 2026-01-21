@@ -41,7 +41,7 @@ const SurveysLogoSettings = ({ surveyCreator }: SurveysLogoSettingsProps) => {
 
   useEffect(() => {
     // eslint-disable-next-line no-param-reassign
-    surveyCreator.survey.logoWidth = logoWidth !== 0 ? `${logoWidth}px` : 'auto';
+    surveyCreator.survey.logoWidth = logoWidth >= 150 ? `${logoWidth}px` : 'auto';
   }, [logoWidth]);
 
   useEffect(() => {

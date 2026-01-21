@@ -17,6 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const IMAGE_UPLOAD_ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const SVG_UPLOAD_ALLOWED_MIME_TYPES = ['image/svg+xml'];
 
-export default IMAGE_UPLOAD_ALLOWED_MIME_TYPES;
+export default SVG_UPLOAD_ALLOWED_MIME_TYPES;

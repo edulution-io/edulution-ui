@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useReducer, useCallback } from 'react';
 import { LogoImage, SvgIcon, LoadingIndicatorComponent } from 'survey-react-ui';
 import { LogoImageViewModel, SurveyCreatorModel } from 'survey-creator-core';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
@@ -26,127 +26,129 @@ interface CustomLogoImageProps {
   data: SurveyCreatorModel;
 }
 
+type IconButtonProps = {
+  className?: string;
+  iconName: string;
+  iconClassName?: string;
+  onClick: () => void;
+};
+
+const IconButton = ({ className, iconName, iconClassName, onClick }: IconButtonProps) => (
+  <span
+    className={className ?? 'svc-context-button'}
+    onClick={onClick}
+    role="button"
+    tabIndex={0}
+    onKeyDown={(e) => e.key === 'Enter' && onClick()}
+  >
+    <SvgIcon
+      size="auto"
+      iconName={iconName}
+      className={iconClassName}
+    />
+  </span>
+);
+
 const CustomLogoImageComponent = ({ data }: CustomLogoImageProps) => {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [, forceUpdate] = useState({});
-
   const modelRef = useRef<LogoImageViewModel | null>(null);
+
+  const [, tick] = useReducer((x: number) => x + 1, 0);
+
   if (!modelRef.current) {
     modelRef.current = new LogoImageViewModel(data, rootRef.current!);
   }
-  const logoModel = modelRef.current;
 
   useEffect(() => {
+    if (!modelRef.current) return undefined;
+    const logoModel = modelRef.current;
     if (rootRef.current) {
       logoModel.root = rootRef.current;
     }
-    logoModel.registerPropertyChangedHandlers(['isUploading'], () => {
-      forceUpdate({});
-    });
-  }, [logoModel]);
+
+    const keyHandlerName = 'survey-creator-logo-image-key-handler';
+    logoModel.registerPropertyChangedHandlers(['isUploading'], () => tick(), keyHandlerName);
+
+    return () => {
+      logoModel.unregisterPropertyChangedHandlers(['isUploading'], keyHandlerName);
+      logoModel.dispose();
+    };
+  }, [modelRef]);
 
   const { survey } = data;
 
-  const handleChooseFile = () => {
+  const handleChooseFile = useCallback(() => {
+    const logoModel = modelRef.current;
+    if (!logoModel) return;
     logoModel.chooseFile(logoModel);
-  };
+  }, []);
 
-  const handleRemove = () => {
+  const handleRemove = useCallback(() => {
+    const logoModel = modelRef.current;
+    if (!logoModel) return;
     logoModel.remove(logoModel);
-  };
+  }, []);
 
-  const handleOpenSettings = () => {
+  const handleOpenSettings = useCallback(() => {
     useSurveyEditorPageStore.getState().setIsOpenSurveysLogoDialog(true);
+  }, []);
+
+  const renderInput = () => {
+    const logoModel = modelRef.current;
+    if (!logoModel) return null;
+    return (
+      <input
+        aria-hidden="true"
+        type="file"
+        tabIndex={-1}
+        accept={logoModel.acceptedTypes}
+        className="svc-choose-file-input"
+      />
+    );
   };
-
-  const renderChooseButton = () => (
-    <span
-      className="svc-context-button"
-      onClick={handleChooseFile}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => e.key === 'Enter' && handleChooseFile()}
-    >
-      <SvgIcon
-        size="auto"
-        iconName="icon-choosefile"
-        className="icon-choosefile hover:svc-icon-choosefile--hover"
-      />
-    </span>
-  );
-
-  const renderClearButton = () => (
-    <span
-      className="svc-context-button svc-context-button--danger"
-      onClick={handleRemove}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => e.key === 'Enter' && handleRemove()}
-    >
-      <SvgIcon
-        size="auto"
-        iconName="icon-clear"
-        className="icon-clear hover:svc-icon-clear--hover"
-      />
-    </span>
-  );
-
-  const renderSettingsButton = () => (
-    <span
-      className="svc-context-button svc-context-button--settings"
-      onClick={handleOpenSettings}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => e.key === 'Enter' && handleOpenSettings()}
-    >
-      <SvgIcon
-        size="auto"
-        iconName="icon-settings"
-        className="icon-settings hover:svc-icon-settings--hover"
-      />
-    </span>
-  );
 
   const renderButtons = () => (
     <div className="svc-context-container svc-logo-image-controls">
-      {renderChooseButton()}
-      {renderClearButton()}
-      {renderSettingsButton()}
+      <IconButton
+        className="svc-context-button"
+        iconName="icon-choosefile"
+        iconClassName="icon-choosefile hover:svc-icon-choosefile--hover"
+        onClick={handleChooseFile}
+      />
+      <IconButton
+        className="svc-context-button svc-context-button--danger"
+        iconName="icon-clear"
+        iconClassName="icon-clear hover:svc-icon-clear--hover"
+        onClick={handleRemove}
+      />
+      <IconButton
+        className="svc-context-button svc-context-button--settings"
+        iconName="icon-settings"
+        iconClassName="icon-settings hover:svc-icon-settings--hover"
+        onClick={handleOpenSettings}
+      />
     </div>
   );
 
-  const renderImage = () => (
+  const renderImage = (logoModel: LogoImageViewModel) => (
     <div className={logoModel.containerCss}>
       {renderButtons()}
       <LogoImage data={survey} />
     </div>
   );
 
-  const renderPlaceholder = () => {
-    if (!logoModel.allowEdit || logoModel.isUploading) return null;
-    return (
-      <div
-        className="svc-logo-image-placeholder"
-        onClick={handleChooseFile}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => e.key === 'Enter' && handleChooseFile()}
-      >
-        <svg>
-          <use xlinkHref="#icon-image-48x48" />
-        </svg>
-      </div>
-    );
-  };
-
-  const renderInput = () => (
-    <input
-      aria-hidden="true"
-      type="file"
-      tabIndex={-1}
-      accept={logoModel.acceptedTypes}
-      className="svc-choose-file-input"
-    />
+  const renderPlaceholder = () => (
+    <div
+      className="svc-logo-image-placeholder"
+      onClick={handleChooseFile}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => e.key === 'Enter' && handleChooseFile()}
+    >
+      <svg>
+        <use xlinkHref="#icon-image-48x48" />
+      </svg>
+    </div>
   );
 
   const renderLoadingIndicator = () => (
@@ -155,14 +157,20 @@ const CustomLogoImageComponent = ({ data }: CustomLogoImageProps) => {
     </div>
   );
 
-  let content = null;
-  if (survey.locLogo.renderedHtml && !logoModel.isUploading) {
-    content = renderImage();
-  } else if (logoModel.isUploading) {
-    content = renderLoadingIndicator();
-  } else {
-    content = renderPlaceholder();
-  }
+  const renderContent = () => {
+    const logoModel = modelRef.current;
+    if (!logoModel) return null;
+    if (logoModel.isUploading) {
+      return renderLoadingIndicator();
+    }
+    if (survey.locLogo.renderedHtml) {
+      return renderImage(logoModel);
+    }
+    if (logoModel.allowEdit) {
+      return renderPlaceholder();
+    }
+    return null;
+  };
 
   return (
     <div
@@ -170,7 +178,7 @@ const CustomLogoImageComponent = ({ data }: CustomLogoImageProps) => {
       className="svc-logo-image"
     >
       {renderInput()}
-      {content}
+      {renderContent()}
     </div>
   );
 };

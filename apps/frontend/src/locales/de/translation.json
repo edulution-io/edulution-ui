@@ -777,7 +777,7 @@
       "surveyLogo": {
         "title": "Logo der Umfrage",
         "width": {
-          "label": "Breite des Logos in Pixel [px]",
+          "label": "Breite des Logos in Pixel [min 150px]",
           "placeholder": "0 bedeutet, dass die Breite nur von dem vorhandenen Platz beschränkt wird."
         },
         "position": {
@@ -785,7 +785,7 @@
           "placeholder": "Wähle die Position des Logos",
           "left": "Links vom Titel",
           "right": "Rechts vom Titel",
-          "description": "Die Position des Logos relativ zum Titel der Umfrage ist im Tab 'Test' einzusehen."
+          "description": "Die Position des Logos relativ zum Titel der Umfrage ist im Tab 'Vorschau' einzusehen."
         }
       }
     },
