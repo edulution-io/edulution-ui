@@ -9,6 +9,7 @@
   "imprint": "Imprint",
   "public": "Public",
   "actions": "Actions",
+  "logo": "Logo",
   "bulletinboard": {
     "settings": "Settings",
     "noBulletinsToShow": "There are currently no messages to display, so check back later!",

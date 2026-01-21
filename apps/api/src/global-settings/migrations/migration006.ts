@@ -19,15 +19,15 @@
 
 /* eslint-disable no-underscore-dangle */
 import { Logger } from '@nestjs/common';
-import { move, pathExists, remove, readdir } from 'fs-extra';
+import { move, pathExists, readdir, remove } from 'fs-extra';
 import type { Migration } from '../../migration/migration.type';
 import type { GlobalSettings, GlobalSettingsDocument } from '../global-settings.schema';
 
-const PUBLIC_ASSET_PATH = './data/public/assets';
-const OLD_LOGO_DIR = `${PUBLIC_ASSET_PATH}/branding/logo`;
-const BUGGY_NESTED_ASSETS_DIR = `${PUBLIC_ASSET_PATH}/assets`;
+const MIGRATION_PUBLIC_ASSET_PATH = './data/public/assets';
+const OLD_LOGO_DIR = `${MIGRATION_PUBLIC_ASSET_PATH}/branding/logo`;
+const BUGGY_NESTED_ASSETS_DIR = `${MIGRATION_PUBLIC_ASSET_PATH}/assets`;
 const OLD_LOGO_FILE = 'main-logo-dark.webp';
-const NEW_LOGO_DIR = `${PUBLIC_ASSET_PATH}/generalsettings`;
+const NEW_LOGO_DIR = `${MIGRATION_PUBLIC_ASSET_PATH}/generalsettings`;
 const NEW_LOGO_FILE = 'generalsettings-custom-logo.webp';
 
 const migration006: Migration<GlobalSettingsDocument> = {
@@ -75,7 +75,7 @@ const migration006: Migration<GlobalSettingsDocument> = {
     };
 
     await cleanupEmptyDir(OLD_LOGO_DIR, 'branding/logo');
-    await cleanupEmptyDir(`${PUBLIC_ASSET_PATH}/branding`, 'branding');
+    await cleanupEmptyDir(`${MIGRATION_PUBLIC_ASSET_PATH}/branding`, 'branding');
 
     if (await pathExists(BUGGY_NESTED_ASSETS_DIR)) {
       await remove(BUGGY_NESTED_ASSETS_DIR);

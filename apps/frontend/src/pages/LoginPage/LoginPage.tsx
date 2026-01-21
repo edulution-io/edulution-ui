@@ -359,7 +359,7 @@ const LoginPage: React.FC = () => {
       >
         <img
           src={logoSrc}
-          alt={t('settings.settings.logo.title')}
+          alt={t('logo')}
           className="mx-auto w-64"
         />
         <Form
