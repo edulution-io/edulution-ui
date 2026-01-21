@@ -52,8 +52,10 @@ const migration001: Migration<AppConfig> = {
         const oldExtendedOptions = doc.extendedOptions as ExtendedOption[];
         if (!isOldExtendedOptionsValid(oldExtendedOptions)) {
           if (!isExtendedOptionsAValidObject(oldExtendedOptions)) {
-            Logger.warn(`Skipping document ${id} due to invalid extendedOptions format`);
+            Logger.warn(`Document ${id} has invalid extendedOptions format, updating schema version only`);
           }
+          await model.updateOne({ _id: doc._id }, { $set: { schemaVersion: newSchemaVersion } });
+          processedDocumentsCount += 1;
           return;
         }
 
