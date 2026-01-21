@@ -17,9 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const BRANDING_UPLOADS_LOGO = {
-  light: 'brandingUploads.logo.light',
-  dark: 'brandingUploads.logo.dark',
-} as const;
+import { UrlParts } from './getSubPathFromBrowserUrl';
 
-export default BRANDING_UPLOADS_LOGO;
+const combineUrlParts = (urlParts: UrlParts): string | null => {
+  if (urlParts.subPath) {
+    return `${urlParts.subPath}${urlParts.search}${urlParts.hash}`;
+  }
+  if (urlParts.search || urlParts.hash) {
+    return `${urlParts.search}${urlParts.hash}`;
+  }
+  return null;
+};
+
+export default combineUrlParts;

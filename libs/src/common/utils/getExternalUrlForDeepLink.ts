@@ -17,14 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ThemeType from '@libs/common/types/themeType';
-import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import { GLOBAL_SETTINGS_BRANDING_LOGO } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
-import getMainLogoFilename from '@libs/filesharing/utils/getMainLogoFilename';
-
-const getMainLogoUrl = (theme: ThemeType) => {
-  const base = getMainLogoFilename(theme);
-  return `/${EDU_API_ROOT}/public/assets/${GLOBAL_SETTINGS_BRANDING_LOGO}/${base}`;
+const getExternalUrlForDeepLink = (baseUrl: string, subPath: string): string => {
+  if (!baseUrl || !subPath) return '';
+  try {
+    const url = new URL(baseUrl);
+    const normalizedSubPath = subPath.startsWith('/') ? subPath : `/${subPath}`;
+    return `${url.origin}${normalizedSubPath}`;
+  } catch {
+    return '';
+  }
 };
 
-export default getMainLogoUrl;
+export default getExternalUrlForDeepLink;
