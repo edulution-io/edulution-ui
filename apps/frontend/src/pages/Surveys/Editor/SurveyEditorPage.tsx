@@ -32,7 +32,9 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import { CREATED_SURVEYS_PAGE, SURVEY_DEFAULT_LOGO_PATH } from '@libs/survey/constants/surveys-endpoint';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/getSurveyEditorForm.schema';
-import { getLogoUrl, getLogoUrlWithSurveyJSVariableTheme } from '@libs/appconfig/utils/getAppLogo';
+import { getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
+import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
+import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
 import getSurveysDefaultValues from '@/pages/Surveys/utils/getSurveysDefaultValues';
 import getInitialSurveyFormValues from '@/pages/Surveys/utils/getInitialSurveyFormValues';
@@ -55,6 +57,8 @@ import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuest
 import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
 import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/ExportSurveyToPdfDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+
+const LOGO_URL_WITH_SURVEYJS_VARIABLE_THEME = `/${EDU_API_ROOT}/${EDU_API_CONFIG_ENDPOINTS.FILES}/public/assets/${APPS.SURVEYS}/${APPS.SURVEYS}-custom-logo-{theme}.webp?fallback=${APPS.SURVEYS}-default-logo-{theme}.webp`;
 
 const SurveyEditorPage = () => {
   const { fetchSelectedSurvey, isFetching, selectedSurvey, selectSurvey, updateUsersSurveys } =
@@ -180,7 +184,7 @@ const SurveyEditorPage = () => {
     creator.theme = surveyTheme;
     if (!creator.survey.logo) return;
     if (!creator.survey.logo?.startsWith(SURVEY_DEFAULT_LOGO_PATH)) return;
-    creator.survey.logo = getLogoUrl(APPS.SURVEYS, theme);
+    creator.survey.logo = getAssetUrl(APPS.SURVEYS, theme);
   }, [theme, getResolvedTheme, creator]);
 
   const handleNavigateToCreatedSurveys = () => {
@@ -192,7 +196,7 @@ const SurveyEditorPage = () => {
     if (!creator) return;
 
     if (creator.survey.logo?.startsWith(SURVEY_DEFAULT_LOGO_PATH)) {
-      creator.survey.logo = getLogoUrlWithSurveyJSVariableTheme();
+      creator.survey.logo = LOGO_URL_WITH_SURVEYJS_VARIABLE_THEME;
 
       if (!creator.survey.calculatedValues) {
         creator.survey.calculatedValues = [];

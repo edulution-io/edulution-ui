@@ -27,7 +27,7 @@ import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { type AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import EmbeddedPageEditorForm from '@libs/appconfig/types/embeddedPageEditorForm';
 import ThemedFile from '@libs/common/types/themedFile';
-import AppConfigFormDarkAndLightLogoField from '@/pages/Settings/AppConfig/components/AppConfigFormDarkAndLightLogoField';
+import AppConfigFormDarkAndLightAssetField from '@/pages/Settings/AppConfig/components/AppConfigFormDarkAndLightAssetField';
 import AppConfigDropdownSelect from '@/pages/Settings/AppConfig/components/dropdown/AppConfigDropdownSelect';
 import EmbeddedPageEditor from '@/pages/Settings/AppConfig/components/EmbeddedPageEditor';
 import AppConfigSwitch from '@/pages/Settings/AppConfig/components/booleanField/AppConfigSwitch';
@@ -57,7 +57,7 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
     switch (option.type) {
       case ExtendedOptionField.appLogo:
         return (
-          <AppConfigFormDarkAndLightLogoField
+          <AppConfigFormDarkAndLightAssetField
             key={fieldPath}
             fieldPath={fieldPath}
             settingLocation={settingLocation}
@@ -104,14 +104,19 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
             option={option}
           />
         );
-      case ExtendedOptionField.switch:
+      case ExtendedOptionField.switch: {
+        const linkedToFieldPath = option.linkedTo
+          ? ((settingLocation ? `${settingLocation}.extendedOptions.${option.linkedTo}` : option.linkedTo) as Path<T>)
+          : undefined;
         return (
           <AppConfigSwitch
             fieldPath={fieldPath}
             control={control}
             option={option}
+            linkedToFieldPath={linkedToFieldPath}
           />
         );
+      }
       case ExtendedOptionField.textarea:
         return (
           // TODO: Rework this component to be a generic textarea for reusablity

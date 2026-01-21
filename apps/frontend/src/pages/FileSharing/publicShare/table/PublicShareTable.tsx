@@ -50,6 +50,7 @@ const PublicShareTable = () => {
     () => ({
       [PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_VALID_UNTIL]: !isMobileView,
       [PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_IS_ACCESSIBLE_BY]: !isMobileView,
+      [PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_SHARED_BY]: !isMobileView,
       [PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_CREATED_AT]: !(isMobileView || isTabletView),
       [PUBLIC_SHARED_FILES_TABLE_COLUMN.IS_PASSWORD_PROTECTED]: !(isMobileView || isTabletView),
     }),

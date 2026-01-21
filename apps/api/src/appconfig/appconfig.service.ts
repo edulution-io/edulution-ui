@@ -138,6 +138,7 @@ class AppConfigService implements OnModuleInit {
               accessGroups: appConfigDto.accessGroups,
               extendedOptions: appConfigDto.extendedOptions,
               position: newPosition,
+              displayLocations: appConfigDto.displayLocations,
             },
           },
           upsert: true,
@@ -205,14 +206,14 @@ class AppConfigService implements OnModuleInit {
 
       if (getIsAdmin(ldapGroups, adminGroups)) {
         appConfigDto = await this.appConfigModel
-          .find({}, 'name translations icon appType options accessGroups extendedOptions position')
+          .find({}, 'name translations icon appType options accessGroups extendedOptions position displayLocations')
           .sort({ position: 1 })
           .lean();
       } else {
         const appConfigObjects = await this.appConfigModel
           .find(
             { 'accessGroups.path': { $in: ldapGroups } },
-            'name translations icon appType options extendedOptions position',
+            'name translations icon appType options extendedOptions position displayLocations',
           )
           .sort({ position: 1 })
           .lean();
@@ -230,6 +231,7 @@ class AppConfigService implements OnModuleInit {
             accessGroups: [],
             extendedOptions,
             position: config.position,
+            displayLocations: config.displayLocations,
           };
         });
       }

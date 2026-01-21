@@ -378,3 +378,6 @@ $RECYCLE.BIN/
 !/data/public/assets/
 /data/public/assets/surveys/surveys-custom-logo-light.webp
 /data/public/assets/surveys/surveys-custom-logo-dark.webp
+/data/public/assets/generalsettings/*
+!/data/public/assets/generalsettings/generalsettings-default-background-dark.webp
+!/data/public/assets/generalsettings/generalsettings-default-background-light.webp

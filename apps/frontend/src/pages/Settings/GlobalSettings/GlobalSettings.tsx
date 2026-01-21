@@ -17,10 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FieldValues, SubmitHandler, UseFormReturn } from 'react-hook-form';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import APPS from '@libs/appconfig/constants/apps';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
+import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
 import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import useGroupStore from '@/store/GroupStore';
@@ -35,6 +39,9 @@ import { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSett
 import AddOrganisationInfo from '@/pages/Settings/components/AddOrganisationInfo';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import ThemeSettings from '@/pages/Settings/components/ThemeSettings';
+import AppConfigFormDarkAndLightAssetField from '@/pages/Settings/AppConfig/components/AppConfigFormDarkAndLightAssetField';
+import applyBackgroundImage from '@/utils/applyBackgroundImage';
+import useThemeStore from '@/store/useThemeStore';
 import DeploymentTargetDropdownSelectFormField from '../components/DeploymentTargetDropdownSelectFormField';
 
 type GlobalSettingsProps<T extends FieldValues> = {
@@ -46,6 +53,7 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
   const { t } = useTranslation();
   const { searchGroups } = useGroupStore();
   const { appConfigs } = useAppConfigsStore();
+  const resolvedTheme = useThemeStore((s) => s.getResolvedTheme());
 
   const {
     watch,
@@ -76,6 +84,10 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
     }, []);
     setValue(`auth.${GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS}`, uniqueGroups, { shouldValidate: true });
   };
+
+  const handleBackgroundUploadSuccess = useCallback(() => {
+    applyBackgroundImage(resolvedTheme, Date.now());
+  }, [resolvedTheme]);
 
   return (
     <Form {...form}>
@@ -142,9 +154,28 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
             id="branding"
             label={t('settings.globalSettings.branding.title')}
           >
-            <div className="space-y-4">
-              <p className="font-bold">{t('settings.globalSettings.logo.title')}</p>
-              <AddOrganisationLogo form={form} />
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <p className="font-bold">{t('settings.globalSettings.logo.title')}</p>
+                <AddOrganisationLogo form={form} />
+              </div>
+              <div className="space-y-4">
+                <p className="font-bold">{t('settings.globalSettings.background.title')}</p>
+                <p>{t('settings.globalSettings.background.description')}</p>
+                <AppConfigFormDarkAndLightAssetField
+                  settingLocation={APPS.GENERAL_SETTINGS}
+                  fieldPath="brandingUploads.background"
+                  option={{
+                    name: ExtendedOptionKeys.BACKGROUND,
+                    title: 'settings.globalSettings.background.variant',
+                    description: '',
+                    type: ExtendedOptionField.appLogo,
+                  }}
+                  form={form}
+                  assetType={ASSET_TYPES.background}
+                  onUploadSuccess={handleBackgroundUploadSuccess}
+                />
+              </div>
             </div>
           </SectionAccordionItem>
 
