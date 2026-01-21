@@ -364,7 +364,10 @@ const MultipleSelectorSH = React.forwardRef<MultipleSelectorRef, MultipleSelecto
 
     const selectables = React.useMemo<GroupOption>(() => removePickedOption(options, selected), [options, selected]);
 
-    const totalItemCount = React.useMemo(() => Object.values(selectables).reduce((total, items) => total + items.length, 0), [selectables]);
+    const totalItemCount = React.useMemo(
+      () => Object.values(selectables).reduce((total, items) => total + items.length, 0),
+      [selectables],
+    );
 
     /** Avoid Creatable Selector freezing or lagging when paste a long string. */
     const commandFilter = useCallback(() => {
