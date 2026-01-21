@@ -21,4 +21,6 @@ import THEME from '../constants/theme';
 
 type ThemeType = (typeof THEME)[keyof typeof THEME];
 
+export type ResolvedThemeType = Exclude<ThemeType, typeof THEME.system>;
+
 export default ThemeType;

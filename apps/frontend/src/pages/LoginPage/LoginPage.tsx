@@ -24,7 +24,7 @@ import { useForm } from 'react-hook-form';
 import CryptoJS from 'crypto-js';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { MdOutlineQrCode } from 'react-icons/md';
+import { QrCodeIcon } from '@/assets/icons';
 import { toast } from 'sonner';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Input from '@/components/shared/Input';
@@ -45,9 +45,8 @@ import PageLayout from '@/components/structure/layout/PageLayout';
 import APPS from '@libs/appconfig/constants/apps';
 import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
 import { decodeBase64, encodeBase64 } from '@libs/common/utils/getBase64String';
-import DesktopLogo from '@/assets/logos/edulution.io_USER INTERFACE.svg?react';
-import getMainLogoUrl from '@libs/assets/getMainLogoUrl';
-import THEME from '@libs/common/constants/theme';
+import { getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
+import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import getRandomUUID from '@/utils/getRandomUUID';
@@ -76,7 +75,7 @@ const LoginPage: React.FC = () => {
   const appConfigs = useAppConfigsStore((s) => s.appConfigs);
   const { silentLogin } = useSilentLoginWithPassword();
 
-  const logoSrc = getMainLogoUrl(THEME.dark);
+  const logoSrc = getAssetUrl(APPS.GENERAL_SETTINGS, ASSET_TYPES.logo);
 
   const { isLoading } = auth;
   const [isEnterTotpVisible, setIsEnterTotpVisible] = useState(false);
@@ -84,7 +83,6 @@ const LoginPage: React.FC = () => {
   const [encryptKey, setEncryptKey] = useState('');
   const [showQrCode, setShowQrCode] = useState(false);
   const [sessionID, setSessionID] = useState<string | null>(null);
-  const [useDefaultLogo, setUseDefaultLogo] = useState(false);
 
   const form = useForm({
     mode: 'onSubmit',
@@ -166,17 +164,15 @@ const LoginPage: React.FC = () => {
     const currentUser = auth.user?.profile?.preferred_username;
     const previousUser = sessionStorage.getItem('username');
 
-    if (previousUser && previousUser !== currentUser) {
-      sessionStorage.setItem('username', currentUser ?? '');
-
-      navigate(LANDING_PAGE_ROUTE, { replace: true });
-      return;
-    }
-
     sessionStorage.setItem('username', currentUser ?? '');
 
     if (state?.from) {
       navigate(state.from, { replace: true });
+      return;
+    }
+
+    if (previousUser && previousUser !== currentUser) {
+      navigate(LANDING_PAGE_ROUTE, { replace: true });
       return;
     }
 
@@ -359,16 +355,11 @@ const LoginPage: React.FC = () => {
         variant="modal"
         className="overflow-y-auto bg-white shadow-lg scrollbar-thin"
       >
-        {useDefaultLogo ? (
-          <DesktopLogo className="mx-auto w-64" />
-        ) : (
-          <img
-            src={logoSrc}
-            alt={t('settings.settings.logo.title')}
-            className="mx-auto w-64"
-            onError={() => setUseDefaultLogo(true)}
-          />
-        )}
+        <img
+          src={logoSrc}
+          alt={t('logo')}
+          className="mx-auto w-64"
+        />
         <Form
           {...form}
           data-testid="test-id-login-page-form"
@@ -406,7 +397,7 @@ const LoginPage: React.FC = () => {
               ) : (
                 <>
                   {t('login.loginWithApp')}
-                  <MdOutlineQrCode size={20} />
+                  <QrCodeIcon className="h-6 w-6 text-black" />
                 </>
               )}
             </Button>

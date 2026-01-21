@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -40,7 +40,6 @@ const ForwardingPage = () => {
   const { language } = useLanguage();
   const { appConfigs } = useAppConfigsStore();
 
-  const [hasForwarded, setHasForwarded] = useState(false);
   const hasAutoForwardedRef = useRef(false);
 
   const rootPathName = getFromPathName(pathname, 1);
@@ -56,7 +55,6 @@ const ForwardingPage = () => {
     }
 
     window.open(currentAppConfig.options.url, '_blank');
-    setHasForwarded(true);
   };
 
   useEffect(() => {
@@ -73,19 +71,18 @@ const ForwardingPage = () => {
   if (!currentAppConfig) return null;
 
   const pageTitle = getDisplayName(currentAppConfig, language);
-  const shouldForwardDirectly = !!currentAppConfig.extendedOptions?.[ExtendedOptionKeys.FORWARDING_FORWARD_DIRECTLY];
 
   const targetUrl = currentAppConfig?.options?.url;
 
   return (
     <div
-      className="m-auto grid h-[80%] items-center justify-center"
+      className="m-auto grid h-[80%] w-[80%] items-center justify-center"
       data-forwarding-page="true"
       data-target-url={targetUrl}
     >
       <PageTitle translationId={pageTitle} />
-      <h1 className="text-center text-background">{t('forwardingpage.action')}</h1>
-      <div className="mt-20 flex justify-center">
+      <h3 className="text-center">{pageTitle}</h3>
+      <div className="my-10 flex justify-center">
         <RoundArrowIcon
           className="hidden md:flex"
           aria-label={t('forwardingpage.action')}
@@ -105,9 +102,11 @@ const ForwardingPage = () => {
           />
         </Button>
       </div>
-      <h2 className="text-center text-background">
-        {hasForwarded || shouldForwardDirectly ? t('forwardingpage.description') : '\u00A0'}
-      </h2>
+      <div className="text-center">
+        {t('forwardingpage.action')}
+        <br />
+        {t('forwardingpage.description')}
+      </div>
     </div>
   );
 };

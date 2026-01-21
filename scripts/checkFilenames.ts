@@ -57,7 +57,9 @@ function checkFile(filePath: string): boolean {
   }
 
   const content = fs.readFileSync(filePath, 'utf-8');
-  const match = content.match(/export default\s+(?:abstract\s+)?(?:function|class|const|let|var|interface)?\s*(\w+)/);
+  const match = content.match(
+    /export default\s+(?:abstract\s+)?(?:(?:function|class|const|let|var|interface)\s+)?(\w+)/,
+  );
   if (!match) {
     return true;
   }

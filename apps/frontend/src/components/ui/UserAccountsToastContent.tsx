@@ -20,10 +20,10 @@
 import React from 'react';
 import type UserAccountDto from '@libs/user/types/userAccount.dto';
 import { useTranslation } from 'react-i18next';
-import { MdFileCopy } from 'react-icons/md';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCopy, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import copyToClipboard from '@/utils/copyToClipboard';
 import cn from '@libs/common/utils/className';
-import { IoChevronDown } from 'react-icons/io5';
 import PasswordCell from '@/pages/UserSettings/Security/components/PasswordCell';
 import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 
@@ -48,8 +48,9 @@ const UserAccountsToastContent: React.FC<UserAccountsToastContentProps> = ({
         className="flex flex-row justify-center hover:underline"
       >
         <p className="mb-2">{t('usersettings.security.accountData')}</p>
-        <IoChevronDown
-          className={cn(isCollapsed ? '' : 'rotate-180', 'm-1 h-4 w-4 transition-transform duration-300')}
+        <FontAwesomeIcon
+          icon={faChevronDown}
+          className={cn(isCollapsed ? '' : 'rotate-180', 'm-1 h-3 w-3 transition-transform duration-300')}
         />
       </button>
       <div className={cn('flex flex-col justify-center space-y-4 overflow-hidden', isCollapsed ? 'max-h-0' : '')}>
@@ -70,7 +71,7 @@ const UserAccountsToastContent: React.FC<UserAccountsToastContentProps> = ({
               }}
               actionIcons={[
                 {
-                  icon: MdFileCopy,
+                  icon: faCopy,
                   onClick: () => copyToClipboard(userAccount.accountUser),
                 },
               ]}

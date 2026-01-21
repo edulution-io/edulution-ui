@@ -23,6 +23,7 @@ import migration002 from './migration002';
 import migration003 from './migration003';
 import migration004 from './migration004';
 import migration005 from './migration005';
+import migration006 from './migration006';
 
 // Add new migrations here
 const globalSettingsMigrationsList = [
@@ -32,6 +33,7 @@ const globalSettingsMigrationsList = [
   migration003,
   migration004,
   migration005,
+  migration006,
 ];
 
 export default globalSettingsMigrationsList;

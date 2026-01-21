@@ -20,6 +20,7 @@
 import type AppConfigExtendedOptionsBySections from '@libs/appconfig/types/appConfigExtendedOptionsBySections';
 import { type AppConfigOptionsType } from './appConfigOptionsType';
 import type TApps from './appsType';
+import type AppDisplayLocationType from './appDisplayLocationType';
 
 type AppConfigOption = {
   id: TApps;
@@ -28,6 +29,7 @@ type AppConfigOption = {
   options?: AppConfigOptionsType[];
   isNativeApp: boolean;
   extendedOptions?: AppConfigExtendedOptionsBySections;
+  defaultDisplayLocations?: AppDisplayLocationType[];
 };
 
 export default AppConfigOption;

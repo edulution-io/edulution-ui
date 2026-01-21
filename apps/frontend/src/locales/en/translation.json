@@ -8,6 +8,8 @@
   "not-set": "Not set",
   "imprint": "Imprint",
   "public": "Public",
+  "actions": "Actions",
+  "logo": "Logo",
   "bulletinboard": {
     "settings": "Settings",
     "noBulletinsToShow": "There are currently no messages to display, so check back later!",
@@ -238,6 +240,7 @@
   },
   "errors": {
     "automaticLoginFailed": "Automatic login failed",
+    "scriptInjectionFailed": "Failed to inject script into iframe",
     "unexpectedError": "An unexpected error occurred",
     "uploadOrFetchAttachmentFailed": "Error uploading or fetching attachment",
     "fileGenerationFailed": "File generation failed",
@@ -449,7 +452,7 @@
       "createNewFileLink": "Create new share link",
       "editPublicShareFile": "Edit share link",
       "sharePublicFile": "Share public content",
-      "sharedBy": "Shared by: ",
+      "sharedBy": "Shared by",
       "getFileAccess": "Please enter the password for this share to access the contents.",
       "downloadPublicFile": "Download content",
       "nameOfContent": "Content name:",
@@ -711,6 +714,7 @@
       "fileUploadSuccess": "Saved the file successfully.",
       "fileUploadError": "Error on file upload, please retry later.",
       "fileDeletionSuccess": "Deleted the file successfully.",
+      "fileDeletionError": "The file could not be deleted.",
       "saveSurveySuccess": "Saved the survey.",
       "surveyPlaceHolder": "Click the \"Add Question\" button below to start creating your form.",
       "surveyPlaceholderDescription": "Click the \"Add Question\" button below to start creating your form.",
@@ -1036,6 +1040,11 @@
         "uploadDarkLogo": "Upload dark logo",
         "deleteSuccessful": "Logo deleted successfully."
       },
+      "background": {
+        "title": "Background Image",
+        "description": "Upload custom background images for light and dark mode. They will be shown across the entire application.",
+        "variant": "Background ({{variant}} mode)"
+      },
       "theme": {
         "title": "Theme Customization",
         "primaryColor": "Primary Color",
@@ -1089,6 +1098,10 @@
       "confirmDeleteEntries": "Are you sure you want to delete this entry? This action cannot be undone.",
       "confirmDeleteEntries_other": "Are you sure you want to delete these {{count}} entries? This action cannot be undone.",
       "sections": {
+        "appLogo": {
+          "title": "Logo",
+          "description": "Upload your own image here to override the default logo of {{ applicationName }}. Or restore the default logo of {{ applicationName }}."
+        },
         "onlyOffice": {
           "title": "Only Office Integration",
           "description": ""
@@ -1166,14 +1179,38 @@
           "description": "Here in the editor you can design your own web applications or integrate existing content. You can create websites, format and customize content. Existing applications or external content can also be inserted and conveniently linked to your own content. This creates a flexible area in which you can easily display content or offer interactive applications. Start by selecting the mode in which the web application is to be launched.",
           "sandboxMode": "Separate Layout",
           "nativeMode": "Integrated Layout",
-          "sandboxModeDescription": "In “Separate layout” mode, the content is displayed as a separate page, similar to a window within the application. In addition to the actual content, additional design elements or functions can also be loaded from other sources. This means that the design is independent of the application and could therefore look or behave differently. Here, the content must be uploaded as an HTML file.",
-          "nativeModeDescription": "In “Integrated layout” mode, on the other hand, the content is inserted directly into the user interface of the application. This means that the content looks exactly like the application itself and fits in seamlessly. However, no additional external design elements or functions can be added dynamically here. However, static elements such as images can be uploaded and used here.",
+          "sandboxModeDescription": "In \"Separate layout\" mode, the content is displayed as a separate page, similar to a window within the application. In addition to the actual content, additional design elements or functions can also be loaded from other sources. This means that the design is independent of the application and could therefore look or behave differently. Here, the content must be uploaded as an HTML file.",
+          "nativeModeDescription": "In \"Integrated layout\" mode, on the other hand, the content is inserted directly into the user interface of the application. This means that the content looks exactly like the application itself and fits in seamlessly. However, no additional external design elements or functions can be added dynamically here. However, static elements such as images can be uploaded and used here.",
           "visibilityDescription": "Here you can specify whether the app should be publicly accessible. Active means public, inactive means that only configured user groups have access. Making the app publicly accessible creates a link in the footer. To make the app visible to registered users in the sidebar, their access must be configured via the user groups."
+        },
+        "scripts": {
+          "title": "Scripts",
+          "description": "Configure JavaScript scripts to be executed in the iframe on load or logout.",
+          "onLoadEnabled": "Enable script on load",
+          "onLoadDescription": "Execute a JavaScript script when the iframe content finishes loading",
+          "onLogoutEnabled": "Enable script on logout",
+          "onLogoutDescription": "Execute a JavaScript script before the user logs out",
+          "syntaxValid": "Script syntax is valid",
+          "syntaxInvalid": "Script has syntax errors",
+          "placeholder": "Enter JavaScript code here"
+        },
+        "urlHandling": {
+          "title": "URL Handling",
+          "description": "Synchronize the browser URL with the embedded content navigation.",
+          "enabled": "Enable URL synchronization",
+          "enabledDescription": "Updates the browser address bar when navigating within the embedded content. This enables bookmarking and browser history. Note: This feature only works when the embedded content is hosted on the same domain as this application.",
+          "embeddedEnabledDescription": "Updates the browser address bar when navigating within the embedded content. This enables bookmarking and browser history. Note: This feature only works with \"Separate Layout\" mode and when the embedded content is hosted on the same domain as this application.",
+          "preloadBasePage": "Preload base page",
+          "preloadBasePageDescription": "When enabled, the configured URL is always loaded first before navigating to deep links. Enable this for applications that require authentication or run initialization scripts on the configured URL."
         }
       },
       "update": {
         "success": "App saved successfully",
         "failed": "Update failed"
+      },
+      "editIcon": {
+        "title": "Edit icon",
+        "description": "Choose an icon from the list or upload your own."
       },
       "delete": {
         "success": "App removed",
@@ -1348,8 +1385,8 @@
     "title": "General"
   },
   "forwardingpage": {
-    "action": "This link will take you to the external site of the provider.",
-    "description": "The application opens in a new window.",
+    "action": "This button will take you to the external site of the provider.",
+    "description": "The application opens in a new tab.",
     "missing_link": "Missing link"
   },
   "menu": "Menu",
@@ -1387,11 +1424,13 @@
     "visibility": "Visibility",
     "offline": "Offline",
     "guest": "Guest",
+    "me": "Me",
     "ok": "OK",
     "next": "Next",
     "back": "Back",
     "of": "of",
     "confirm": "Confirm",
+    "validate": "Validate",
     "creator": "Creator",
     "chooseFile": "Choose file",
     "changeFile": "Change file",
@@ -1412,7 +1451,18 @@
       "invalidFileType": "Invalid file type",
       "startDateBeforeEndDate": "The start date must be before the end date",
       "invalidRequestData": "Invalid request data",
-      "wrongServerConfig": "Incorrect server configuration"
+      "wrongServerConfig": "Incorrect server configuration",
+      "path": {
+        "noString": "Path must be a string",
+        "isEmpty": "Path cannot be empty",
+        "tooLong": "Path is too long",
+        "traversal": "Path traversal is not allowed",
+        "absolutePath": "Absolute paths are not allowed",
+        "subdirectories": "Subdirectories are not allowed",
+        "invalidCharacters": "Path contains invalid characters",
+        "outsidePublicDirectory": "Path is outside the public directory",
+        "symlinkOutsidePublicDirectory": "Path includes a symlink that links outside the public directory"
+      }
     },
     "cut": "Cut",
     "sortOrder": "Sort order",
@@ -1421,6 +1471,12 @@
     "cancel": "Cancel",
     "columns": "Columns",
     "table": "Table",
+    "tableView": "Table view",
+    "gridView": "Grid view",
+    "sort": "Sort",
+    "ascending": "ascending",
+    "descending": "descending",
+    "selectAll": "Select all",
     "copy": {
       "success": "Successfully copied to clipboard",
       "error": "Copy to clipboard failed",
@@ -1880,6 +1936,11 @@
       "updateNow": "Update Now",
       "checkVersionSuccess": "Theme successfully checked!",
       "noData": "No version information available."
+    },
+    "appLogo": {
+      "light": "light",
+      "dark": "dark",
+      "title": "Logo for the {{variant}} color scheme"
     }
   },
   "mails": {

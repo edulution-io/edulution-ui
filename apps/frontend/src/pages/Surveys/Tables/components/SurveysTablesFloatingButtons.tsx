@@ -20,8 +20,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { AiOutlineUpSquare } from 'react-icons/ai';
-import { HiOutlineArrowDownOnSquare, HiOutlineArrowDownOnSquareStack } from 'react-icons/hi2';
+import { faSquareArrowUpRight, faFileArrowDown, faTableCells } from '@fortawesome/free-solid-svg-icons';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import { EDIT_SURVEY_PAGE, PARTICIPATE_SURVEY_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
@@ -105,25 +104,25 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
 
       DeleteButton(handleDeleteSurvey, canDelete),
       {
-        icon: HiOutlineArrowDownOnSquare,
+        icon: faFileArrowDown,
         text: t('surveys.actions.showSubmittedAnswers'),
         onClick: () => setIsOpenSubmittedAnswersDialog(true),
         isVisible: isOnlyOneSurveySelected && canShowSubmittedAnswers && hasCurrentUserAnsweredSurvey,
       },
       {
-        icon: HiOutlineArrowDownOnSquareStack,
+        icon: faTableCells,
         text: t('surveys.actions.showResultsTable'),
         onClick: () => setIsOpenPublicResultsTableDialog(true),
         isVisible: shouldShowResults,
       },
       {
-        icon: HiOutlineArrowDownOnSquareStack,
+        icon: faTableCells,
         text: t('surveys.actions.showResultsChart'),
         onClick: () => setIsOpenPublicResultsVisualisationDialog(true),
         isVisible: shouldShowResults,
       },
       {
-        icon: AiOutlineUpSquare,
+        icon: faSquareArrowUpRight,
         text: t('common.participate'),
         onClick: () => {
           navigate(`/${PARTICIPATE_SURVEY_PAGE}/${selectedSurvey?.id}`);
