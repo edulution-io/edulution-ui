@@ -31,9 +31,10 @@ import AttendeeDto from '@libs/user/types/attendee.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import { CREATED_SURVEYS_PAGE } from '@libs/survey/constants/surveys-endpoint';
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/getSurveyEditorForm.schema';
-import surveysDefaultValues from '@/pages/Surveys/utils/surveys-default-values';
+import getSurveysDefaultValues from '@/pages/Surveys/utils/getSurveysDefaultValues';
 import getInitialSurveyFormValues from '@/pages/Surveys/utils/getInitialSurveyFormValues';
 import useUserStore from '@/store/UserStore/useUserStore';
+import useThemeStore from '@/store/useThemeStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useLanguage from '@/hooks/useLanguage';
@@ -80,6 +81,7 @@ const SurveyEditorPage = () => {
   const { user } = useUserStore();
   const { surveyId } = useParams();
   const { language } = useLanguage();
+  const { theme } = useThemeStore();
 
   const handleReset = () => {
     resetStoredSurvey();
@@ -103,8 +105,8 @@ const SurveyEditorPage = () => {
       value: user.username,
       label: `${user.firstName} ${user.lastName}`,
     };
-    return getInitialSurveyFormValues(surveyCreator, selectedSurvey, storedSurvey);
-  }, [storedSurvey, selectedSurvey]);
+    return getInitialSurveyFormValues(surveyCreator, selectedSurvey, storedSurvey, theme);
+  }, [storedSurvey, selectedSurvey, theme]);
 
   const form = useForm<SurveyDto>({
     mode: 'onChange',
@@ -212,7 +214,7 @@ const SurveyEditorPage = () => {
           form.reset(initialFormValues);
           if (creator) {
             creator.saveNo = 0;
-            creator.JSON = surveysDefaultValues.formula;
+            creator.JSON = getSurveysDefaultValues(theme).formula;
           }
         },
       },

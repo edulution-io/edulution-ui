@@ -34,6 +34,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import slugify from '@libs/common/utils/slugify';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import AppIntegrationType from '@libs/appconfig/types/appIntegrationType';
+import type AppDisplayLocationType from '@libs/appconfig/types/appDisplayLocationType';
 import getCustomAppConfigFormSchema from './schemas/getCustomAppConfigFormSchema';
 import AppConfigIconEditor from './components/AppConfigIconEditor';
 
@@ -108,6 +109,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
       accessGroups: [],
       extendedOptions: getExtendedOptions(),
       position: 0,
+      displayLocations: selectedApp.defaultDisplayLocations as AppDisplayLocationType[],
     };
 
     await createAppConfig(newConfig);

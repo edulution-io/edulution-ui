@@ -17,6 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const SURVEYS_HEADER_IMAGE = 'logo';
+const sanitizeFilename = (filename: string): string =>
+  filename
+    .replace(/\.\./g, '')
+    .replace(/\/+/g, '/')
+    .replace(/^\//, '')
+    .replace(/[^a-zA-Z0-9._\-/]/g, '');
 
-export default SURVEYS_HEADER_IMAGE;
+export default sanitizeFilename;

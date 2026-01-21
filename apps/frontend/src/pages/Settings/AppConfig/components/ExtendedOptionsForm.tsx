@@ -26,6 +26,8 @@ import cn from '@libs/common/utils/className';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { type AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import EmbeddedPageEditorForm from '@libs/appconfig/types/embeddedPageEditorForm';
+import ThemedFile from '@libs/common/types/themedFile';
+import AppConfigFormDarkAndLightAssetField from '@/pages/Settings/AppConfig/components/AppConfigFormDarkAndLightAssetField';
 import AppConfigDropdownSelect from '@/pages/Settings/AppConfig/components/dropdown/AppConfigDropdownSelect';
 import EmbeddedPageEditor from '@/pages/Settings/AppConfig/components/EmbeddedPageEditor';
 import AppConfigSwitch from '@/pages/Settings/AppConfig/components/booleanField/AppConfigSwitch';
@@ -53,6 +55,16 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
     const fieldPath = (settingLocation ? `${settingLocation}.extendedOptions.${option.name}` : option.name) as Path<T>;
 
     switch (option.type) {
+      case ExtendedOptionField.appLogo:
+        return (
+          <AppConfigFormDarkAndLightAssetField
+            key={fieldPath}
+            fieldPath={fieldPath}
+            settingLocation={settingLocation}
+            option={option}
+            form={form as unknown as UseFormReturn<ThemedFile>}
+          />
+        );
       case ExtendedOptionField.input:
         return (
           <AppConfigFormField
@@ -148,9 +160,12 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
     }
   };
 
+  const sectionText = t(`${settingLocation}.sidebar`);
   return (
     <div className="space-y-4">
-      <p className="text-base text-muted-foreground">{t(`settings.appconfig.sections.${section}.description`)}</p>
+      <p className="text-base text-muted-foreground">
+        {t(`settings.appconfig.sections.${section}.description`, { applicationName: sectionText })}
+      </p>
       <div className="flex flex-wrap justify-between gap-4">
         {options?.map((option: AppConfigExtendedOption) => (
           <div

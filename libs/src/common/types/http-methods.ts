@@ -67,6 +67,7 @@ export const HTTP_HEADERS = {
   UserAgent: 'User-Agent',
   Depth: 'Depth',
   CacheControl: 'Cache-Control',
+  AssetSource: 'X-Asset-Source',
 } as const;
 
 export enum WebdavRequestDepth {
