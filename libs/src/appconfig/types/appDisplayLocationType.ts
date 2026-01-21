@@ -17,6 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const SURVEYS_HEADER_IMAGE = 'logo';
+import APP_DISPLAY_LOCATIONS from '../constants/appDisplayLocations';
 
-export default SURVEYS_HEADER_IMAGE;
+type AppDisplayLocationType = (typeof APP_DISPLAY_LOCATIONS)[keyof typeof APP_DISPLAY_LOCATIONS];
+
+export default AppDisplayLocationType;

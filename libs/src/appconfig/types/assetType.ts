@@ -17,25 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import AttendeeDto from '@libs/user/types/attendee.dto';
-import Creator from '@libs/common/types/creator';
-import { PublicShareLinkScopeType } from '@libs/filesharing/types/publicShareLinkScopeType';
+import ASSET_TYPES from '../constants/assetTypes';
 
-interface PublicShareDto {
-  publicShareId: string;
-  expires: Date;
-  share: string;
-  filename: string;
-  filePath: string;
-  createdAt: Date;
-  creator: Creator;
-  etag: string;
-  password: string;
-  invitedAttendees: AttendeeDto[];
-  invitedGroups: MultipleSelectorGroup[];
-  scope: PublicShareLinkScopeType;
-  isOwner?: boolean;
-}
+type AssetType = (typeof ASSET_TYPES)[keyof typeof ASSET_TYPES];
 
-export default PublicShareDto;
+export default AssetType;

@@ -48,6 +48,7 @@ const surveyTemplatesMigration001LoadDefaultTemplates: Migration<SurveysTemplate
         ) {
           return;
         }
+
         // eslint-disable-next-line no-underscore-dangle
         const existingTemplateById = await model.findOne({ _id: surveyTemplate._id }).lean();
         if (existingTemplateById && existingTemplateById.schemaVersion >= surveyTemplate.schemaVersion) {
@@ -64,6 +65,14 @@ const surveyTemplatesMigration001LoadDefaultTemplates: Migration<SurveysTemplate
               `Migration "${name}": Deleted existing template with name "${surveyTemplate.name}" and different ID`,
             );
           }
+        }
+
+        if (existingTemplateByName && existingTemplateByName.isDefaultTemplate === false) {
+          await model.updateOne(
+            // eslint-disable-next-line no-underscore-dangle
+            { _id: existingTemplateByName._id },
+            { name: `${existingTemplateByName.name} (Custom)` },
+          );
         }
 
         await model.updateOne(

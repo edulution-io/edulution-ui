@@ -17,25 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import AttendeeDto from '@libs/user/types/attendee.dto';
-import Creator from '@libs/common/types/creator';
-import { PublicShareLinkScopeType } from '@libs/filesharing/types/publicShareLinkScopeType';
+const APP_DISPLAY_LOCATIONS = {
+  EDU_APP: 'eduApp',
+  SIDEBAR: 'sidebar',
+  LAUNCHER: 'launcher',
+} as const;
 
-interface PublicShareDto {
-  publicShareId: string;
-  expires: Date;
-  share: string;
-  filename: string;
-  filePath: string;
-  createdAt: Date;
-  creator: Creator;
-  etag: string;
-  password: string;
-  invitedAttendees: AttendeeDto[];
-  invitedGroups: MultipleSelectorGroup[];
-  scope: PublicShareLinkScopeType;
-  isOwner?: boolean;
-}
+export const ALL_DISPLAY_LOCATIONS = Object.values(APP_DISPLAY_LOCATIONS);
 
-export default PublicShareDto;
+export default APP_DISPLAY_LOCATIONS;

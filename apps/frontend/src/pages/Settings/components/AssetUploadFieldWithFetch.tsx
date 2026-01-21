@@ -20,10 +20,10 @@
 import React, { useState, useEffect } from 'react';
 import THEME from '@libs/common/constants/theme';
 import AssetSource from '@libs/filesystem/types/AssetSource';
-import LogoUploadField from '@/pages/Settings/components/LogoUploadField';
+import AssetUploadField from '@/pages/Settings/components/AssetUploadField';
 import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
 
-interface LogoUploadFieldFetchWithJSWrapperProps {
+interface AssetUploadFieldWithFetchProps {
   assetUrl: string;
   alt?: string;
   onDelete?: () => Promise<void>;
@@ -39,7 +39,7 @@ interface LogoUploadFieldFetchWithJSWrapperProps {
   variant?: typeof THEME.light | typeof THEME.dark;
 }
 
-const LogoUploadFieldFetchWithJSWrapper: React.FC<LogoUploadFieldFetchWithJSWrapperProps> = ({
+const AssetUploadFieldWithFetch: React.FC<AssetUploadFieldWithFetchProps> = ({
   assetUrl,
   alt = 'Update Image Asset',
   onDelete,
@@ -89,7 +89,7 @@ const LogoUploadFieldFetchWithJSWrapper: React.FC<LogoUploadFieldFetchWithJSWrap
   const loading = fetchingImageVariant === variant || uploading;
 
   return (
-    <LogoUploadField
+    <AssetUploadField
       variant={variant}
       previewSrc={blobUrl || undefined}
       cacheKey={cacheKey}
@@ -109,4 +109,4 @@ const LogoUploadFieldFetchWithJSWrapper: React.FC<LogoUploadFieldFetchWithJSWrap
   );
 };
 
-export default LogoUploadFieldFetchWithJSWrapper;
+export default AssetUploadFieldWithFetch;

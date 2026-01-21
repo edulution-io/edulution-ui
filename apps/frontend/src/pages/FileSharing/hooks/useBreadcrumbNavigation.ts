@@ -38,7 +38,11 @@ const useBreadcrumbNavigation = (
     [webdavShare, webdavShares],
   );
 
-  const hiddenSegments = currentShare?.pathname;
+  const hiddenSegments = useMemo(() => {
+    if (!currentShare) return undefined;
+    const shareRootPath = createVariableSharePathname(currentShare.pathname, currentShare.pathVariables);
+    return shareRootPath.endsWith('/') ? shareRootPath.slice(0, -1) : shareRootPath;
+  }, [currentShare, createVariableSharePathname]);
 
   const handleBreadcrumbNavigate = (filenamePath: string) => {
     if (!currentShare) return;

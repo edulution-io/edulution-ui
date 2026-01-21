@@ -17,25 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
-import AttendeeDto from '@libs/user/types/attendee.dto';
-import Creator from '@libs/common/types/creator';
-import { PublicShareLinkScopeType } from '@libs/filesharing/types/publicShareLinkScopeType';
+import { getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
+import APPS from '@libs/appconfig/constants/apps';
+import { ResolvedThemeType } from '@libs/common/types/themeType';
+import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
 
-interface PublicShareDto {
-  publicShareId: string;
-  expires: Date;
-  share: string;
-  filename: string;
-  filePath: string;
-  createdAt: Date;
-  creator: Creator;
-  etag: string;
-  password: string;
-  invitedAttendees: AttendeeDto[];
-  invitedGroups: MultipleSelectorGroup[];
-  scope: PublicShareLinkScopeType;
-  isOwner?: boolean;
-}
+const applyBackgroundImage = (theme: ResolvedThemeType, timestamp?: number) => {
+  const baseUrl = getAssetUrl(APPS.GENERAL_SETTINGS, theme, ASSET_TYPES.background);
+  const url = timestamp ? `${baseUrl}&t=${timestamp}` : baseUrl;
+  document.documentElement.style.setProperty('--background-image', `url(${url})`);
+};
 
-export default PublicShareDto;
+export default applyBackgroundImage;
