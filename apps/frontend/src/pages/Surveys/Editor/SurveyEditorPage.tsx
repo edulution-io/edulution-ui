@@ -184,7 +184,7 @@ const SurveyEditorPage = () => {
     creator.theme = surveyTheme;
     if (!creator.survey.logo) return;
     if (!creator.survey.logo?.startsWith(SURVEY_DEFAULT_LOGO_PATH)) return;
-    creator.survey.logo = getAssetUrl(APPS.SURVEYS, theme);
+    creator.survey.logo = getAssetUrl(APPS.SURVEYS, getResolvedTheme());
   }, [theme, getResolvedTheme, creator]);
 
   const handleNavigateToCreatedSurveys = () => {
