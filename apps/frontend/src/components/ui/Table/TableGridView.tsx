@@ -25,15 +25,16 @@ import VIEW_MODE from '@libs/common/constants/viewMode';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import Input from '@/components/shared/Input';
 import TableActionFooter from '@/components/ui/Table/TableActionFooter';
-import useViewModeStore from '@/store/useViewModeStore';
+import useTableViewSettingsStore from '@/store/useTableViewSettingsStore';
 import Checkbox from '@/components/ui/Checkbox';
+import type FilterOption from '@libs/ui/types/filterOption';
 import ScrollableTable from './ScrollableTable';
 import ViewModeToggle from './ViewModeToggle';
 import SortDropdown from './SortDropdown';
 import GridView, { GridItemConfig } from './GridView/GridView';
 import useScrollableTable from './useScrollableTable';
 import SelectedRowsCount from './SelectedRowsCount';
-import TableFilterDropdown, { FilterOption } from './TableFilterDropdown';
+import TableFilterDropdown from './TableFilterDropdown';
 
 interface TableGridViewProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -89,7 +90,7 @@ const TableGridView = <TData, TValue>({
   filterOptions,
 }: TableGridViewProps<TData, TValue>) => {
   const { t } = useTranslation();
-  const { getViewMode, setViewMode } = useViewModeStore();
+  const { getViewMode, setViewMode } = useTableViewSettingsStore();
   const viewMode = getViewMode(viewModeStorageKey);
   const isTableView = viewMode === VIEW_MODE.table;
 

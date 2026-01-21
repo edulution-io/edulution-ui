@@ -27,7 +27,6 @@ import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import TableGridView from '@/components/ui/Table/TableGridView';
 import { GridItemConfig } from '@/components/ui/Table/GridView/GridView';
-import { FilterOption } from '@/components/ui/Table/TableFilterDropdown';
 import useMedia from '@/hooks/useMedia';
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/getFileSharingTableColumns';
 import FILE_SHARING_TABLE_COLUMNS from '@libs/filesharing/constants/fileSharingTableColumns';
@@ -47,8 +46,10 @@ import TableActionMenu from '@/components/ui/Table/TableActionMenu';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import useStartWebdavFileDownload from '@/pages/FileSharing/hooks/useStartWebdavFileDownload';
 import getFileSharingActions from '@/pages/FileSharing/Table/getFileSharingActions';
-import systemFiles from '@libs/filesharing/constants/systemFiles';
-import useViewModeStore from '@/store/useViewModeStore';
+import isHiddenFile from '@libs/filesharing/utils/isHiddenFile';
+import isSystemFile from '@libs/filesharing/utils/isSystemFile';
+import useTableViewSettingsStore from '@/store/useTableViewSettingsStore';
+import type FilterOption from '@libs/ui/types/filterOption';
 import useFileOpen from '../hooks/useFileOpen';
 import useVariableSharePathname from '../hooks/useVariableSharePathname';
 
@@ -68,12 +69,14 @@ const FileSharingTable = () => {
       currentPath,
     });
   const { createVariableSharePathname } = useVariableSharePathname();
-  const { showSystemFiles, showHiddenFiles, setShowSystemFiles, setShowHiddenFiles } = useViewModeStore((state) => ({
-    showSystemFiles: state.showSystemFiles?.[APPS.FILE_SHARING] ?? false,
-    showHiddenFiles: state.showHiddenFiles?.[APPS.FILE_SHARING] ?? false,
-    setShowSystemFiles: state.setShowSystemFiles,
-    setShowHiddenFiles: state.setShowHiddenFiles,
-  }));
+  const { showSystemFiles, showHiddenFiles, setShowSystemFiles, setShowHiddenFiles } = useTableViewSettingsStore(
+    (state) => ({
+      showSystemFiles: state.showSystemFiles?.[APPS.FILE_SHARING] ?? false,
+      showHiddenFiles: state.showHiddenFiles?.[APPS.FILE_SHARING] ?? false,
+      setShowSystemFiles: state.setShowSystemFiles,
+      setShowHiddenFiles: state.setShowHiddenFiles,
+    }),
+  );
 
   const isDocumentServerConfigured = !!getExtendedOptionsValue(
     appConfigs,
@@ -188,12 +191,8 @@ const FileSharingTable = () => {
   const filteredFiles = useMemo(
     () =>
       files.filter((file) => {
-        const isSystemFile = systemFiles.includes(file.filename);
-        const isHiddenFile = file.filename.startsWith('.');
-
-        if (isSystemFile && !showSystemFiles) return false;
-        if (isHiddenFile && !showHiddenFiles) return false;
-
+        if (isSystemFile(file.filename) && !showSystemFiles) return false;
+        if (isHiddenFile(file.filename) && !showHiddenFiles) return false;
         return true;
       }),
     [files, showSystemFiles, showHiddenFiles],

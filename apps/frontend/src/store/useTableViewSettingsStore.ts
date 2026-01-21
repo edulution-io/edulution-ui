@@ -23,7 +23,7 @@ import ViewModeType from '@libs/common/types/viewModeType';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 
-interface ViewModeStore {
+interface TableViewSettingsStore {
   viewModes: Record<string, ViewModeType>;
   showSystemFiles: Record<string, boolean>;
   showHiddenFiles: Record<string, boolean>;
@@ -33,10 +33,10 @@ interface ViewModeStore {
   getViewMode: (key: string) => ViewModeType;
 }
 
-type PersistedViewModeStore = (
-  config: StateCreator<ViewModeStore>,
-  options: PersistOptions<Partial<ViewModeStore>>,
-) => StateCreator<ViewModeStore>;
+type PersistedTableViewSettingsStore = (
+  config: StateCreator<TableViewSettingsStore>,
+  options: PersistOptions<Partial<TableViewSettingsStore>>,
+) => StateCreator<TableViewSettingsStore>;
 
 const initialValues = {
   viewModes: {},
@@ -44,8 +44,8 @@ const initialValues = {
   showHiddenFiles: { [APPS.FILE_SHARING]: false },
 };
 
-const useViewModeStore = create<ViewModeStore>(
-  (persist as PersistedViewModeStore)(
+const useTableViewSettingsStore = create<TableViewSettingsStore>(
+  (persist as PersistedTableViewSettingsStore)(
     (set, get) => ({
       ...initialValues,
 
@@ -93,4 +93,4 @@ const useViewModeStore = create<ViewModeStore>(
   ),
 );
 
-export default useViewModeStore;
+export default useTableViewSettingsStore;

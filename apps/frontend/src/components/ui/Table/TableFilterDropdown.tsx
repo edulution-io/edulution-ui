@@ -25,13 +25,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { inputVariants } from '@libs/ui/constants/commonClassNames';
 import cn from '@libs/common/utils/className';
-
-export interface FilterOption {
-  key: string;
-  translationKey: string;
-  checked: boolean;
-  onChange: (enabled: boolean) => void;
-}
+import type FilterOption from '@libs/ui/types/filterOption';
 
 interface TableFilterDropdownProps {
   filterOptions: FilterOption[];
