@@ -18,15 +18,16 @@
  */
 
 import i18n from '@/i18n';
+import APPS from '@libs/appconfig/constants/apps';
+import { getLogoUrl } from '@libs/appconfig/utils/getAppLogo';
 import ThemeType from '@libs/common/types/themeType';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import { getLogoUrl } from '@libs/appconfig/utils/getAppLogo';
 
 const getSurveysDefaultValues = (theme: ThemeType): Partial<SurveyDto> & { formula: SurveyFormula } => ({
   formula: {
     title: i18n.t('survey.newTitle'),
-    logo: getLogoUrl(theme),
+    logo: getLogoUrl(APPS.SURVEYS, theme),
   },
   isAnonymous: false,
   canSubmitMultipleAnswers: false,

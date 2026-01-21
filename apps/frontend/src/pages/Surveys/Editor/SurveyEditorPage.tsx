@@ -25,6 +25,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { faRotateLeft, faFilePdf, faFileLines, faFileCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
+import APPS from '@libs/appconfig/constants/apps';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
@@ -54,8 +55,6 @@ import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuest
 import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
 import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/ExportSurveyToPdfDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import '@/pages/Surveys/theme/creator.min.css';
-import '@/pages/Surveys/theme/default2.min.css';
 
 const SurveyEditorPage = () => {
   const { fetchSelectedSurvey, isFetching, selectedSurvey, selectSurvey, updateUsersSurveys } =
@@ -181,7 +180,7 @@ const SurveyEditorPage = () => {
     creator.theme = surveyTheme;
     if (!creator.survey.logo) return;
     if (!creator.survey.logo?.startsWith(SURVEY_DEFAULT_LOGO_PATH)) return;
-    creator.survey.logo = getLogoUrl(theme);
+    creator.survey.logo = getLogoUrl(APPS.SURVEYS, theme);
   }, [theme, getResolvedTheme, creator]);
 
   const handleNavigateToCreatedSurveys = () => {
