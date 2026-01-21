@@ -17,20 +17,20 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { Route } from 'react-router-dom';
-import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
-import EmbeddedPage from '@/pages/EmbeddedPage/EmbeddedPage';
+export interface UrlParts {
+  subPath: string;
+  search: string;
+  hash: string;
+}
 
-const getEmbeddedRoutes = (appConfigs: AppConfigDto[]) =>
-  appConfigs
-    .filter((item) => item.appType === APP_INTEGRATION_VARIANT.EMBEDDED)
-    .map((item) => (
-      <Route
-        key={item.name}
-        path={`${item.name}/*`}
-        element={<EmbeddedPage />}
-      />
-    ));
-export default getEmbeddedRoutes;
+const EMPTY_STRING = '';
+
+const getSubPathFromBrowserUrl = (pathname: string, search: string, hash: string, appName: string): UrlParts => {
+  const prefix = `/${appName}`;
+  if (pathname.startsWith(prefix)) {
+    return { subPath: pathname.slice(prefix.length) || EMPTY_STRING, search, hash };
+  }
+  return { subPath: EMPTY_STRING, search, hash };
+};
+
+export default getSubPathFromBrowserUrl;

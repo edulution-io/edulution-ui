@@ -27,6 +27,7 @@ import useLanguage from '@/hooks/useLanguage';
 import TApps from '@libs/appconfig/types/appsType';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import useUserAccounts from '@/hooks/useUserAccounts';
 import useFileTableStore from '../Settings/AppConfig/components/useFileTableStore';
@@ -54,14 +55,20 @@ const EmbeddedPage: React.FC = () => {
   const isSandboxMode = currentAppConfig.extendedOptions?.EMBEDDED_PAGE_HTML_MODE;
   const htmlContentUrl = `${EDU_API_URL}/${EDU_API_CONFIG_ENDPOINTS.FILES}/file/${rootPathName}/${tableContentData.find((item) => item.type === 'html')?.filename}`;
   const htmlContent = (currentAppConfig.extendedOptions?.EMBEDDED_PAGE_HTML_CONTENT as string) || '';
+  const urlSyncEnabled = !!currentAppConfig.extendedOptions?.[ExtendedOptionKeys.FRAME_URL_SYNC_ENABLED];
+  const preloadBasePage =
+    currentAppConfig.extendedOptions?.[ExtendedOptionKeys.FRAME_URL_SYNC_PRELOAD_BASE_PAGE] === true;
 
   return (
     <PageLayout hasFullWidthMain>
       <EmbeddedPageContent
+        appName={rootPathName}
         pageTitle={pageTitle}
         isSandboxMode={isSandboxMode}
         htmlContentUrl={htmlContentUrl}
         htmlContent={htmlContent}
+        urlSyncEnabled={urlSyncEnabled}
+        preloadBasePage={preloadBasePage}
       />
     </PageLayout>
   );
