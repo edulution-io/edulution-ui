@@ -11,13 +11,14 @@
  */
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 import THEME from '@libs/common/constants/theme';
-import ThemeType from '@libs/common/types/themeType';
+import { ResolvedThemeType } from '@libs/common/types/themeType';
 import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
 import AssetType from '@libs/appconfig/types/assetType';
-import AppConfigFormAssetField from '@/pages/Settings/AppConfig/components/AppConfigFormAssetField';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+import AppConfigFormAssetField from '@/pages/Settings/AppConfig/components/AppConfigFormAssetField';
 
 type AppConfigFormDarkAndLightAssetFieldProps<T extends FieldValues = FieldValues> = {
   settingLocation: string;
@@ -25,7 +26,7 @@ type AppConfigFormDarkAndLightAssetFieldProps<T extends FieldValues = FieldValue
   option: AppConfigExtendedOption;
   form: UseFormReturn<T>;
   assetType?: AssetType;
-  onUploadSuccess?: (variant: ThemeType) => void;
+  onUploadSuccess?: (variant?: ResolvedThemeType) => void;
 };
 
 const AppConfigFormDarkAndLightAssetField = <T extends FieldValues = FieldValues>({
@@ -35,27 +36,37 @@ const AppConfigFormDarkAndLightAssetField = <T extends FieldValues = FieldValues
   form,
   assetType = ASSET_TYPES.logo,
   onUploadSuccess,
-}: AppConfigFormDarkAndLightAssetFieldProps<T>) => (
-  <div className="flex flex-grow flex-col gap-4 lg:flex-row">
-    <AppConfigFormAssetField
-      variant={THEME.light}
-      appName={settingLocation}
-      fieldPath={fieldPath}
-      option={option}
-      form={form}
-      assetType={assetType}
-      onUploadSuccess={onUploadSuccess}
-    />
-    <AppConfigFormAssetField
-      variant={THEME.dark}
-      appName={settingLocation}
-      fieldPath={fieldPath}
-      option={option}
-      form={form}
-      assetType={assetType}
-      onUploadSuccess={onUploadSuccess}
-    />
-  </div>
-);
+}: AppConfigFormDarkAndLightAssetFieldProps<T>) => {
+  const { t } = useTranslation();
+
+  const getTitle = (variant: ResolvedThemeType) => {
+    if (!option.title) return undefined;
+    const variantText = t(`appExtendedOptions.appLogo.${variant}`);
+    return t(option.title, { variant: variantText });
+  };
+
+  return (
+    <div className="flex flex-grow flex-col gap-4 lg:flex-row">
+      <AppConfigFormAssetField
+        variant={THEME.light}
+        settingLocation={settingLocation}
+        fieldPath={fieldPath}
+        form={form}
+        assetType={assetType}
+        title={getTitle(THEME.light)}
+        onUploadSuccess={onUploadSuccess}
+      />
+      <AppConfigFormAssetField
+        variant={THEME.dark}
+        settingLocation={settingLocation}
+        fieldPath={fieldPath}
+        form={form}
+        assetType={assetType}
+        title={getTitle(THEME.dark)}
+        onUploadSuccess={onUploadSuccess}
+      />
+    </div>
+  );
+};
 
 export default AppConfigFormDarkAndLightAssetField;

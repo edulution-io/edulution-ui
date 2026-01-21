@@ -34,14 +34,15 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import defaultValues from '@libs/global-settings/constants/defaultValues';
 import { GLOBAL_SETTINGS_AUTH_MFA_ENFORCED_GROUPS } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
 import LdapSettings from '@/pages/Settings/components/LdapSettings';
-import AddOrganisationLogo from '@/pages/Settings/components/AddOrganisationLogo';
 import { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSettings.form';
 import AddOrganisationInfo from '@/pages/Settings/components/AddOrganisationInfo';
 import type GlobalSettingsDto from '@libs/global-settings/types/globalSettings.dto';
 import ThemeSettings from '@/pages/Settings/components/ThemeSettings';
 import AppConfigFormDarkAndLightAssetField from '@/pages/Settings/AppConfig/components/AppConfigFormDarkAndLightAssetField';
+import AppConfigFormAssetField from '@/pages/Settings/AppConfig/components/AppConfigFormAssetField';
 import applyBackgroundImage from '@/utils/applyBackgroundImage';
 import useThemeStore from '@/store/useThemeStore';
+import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import DeploymentTargetDropdownSelectFormField from '../components/DeploymentTargetDropdownSelectFormField';
 
 type GlobalSettingsProps<T extends FieldValues> = {
@@ -54,6 +55,7 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
   const { searchGroups } = useGroupStore();
   const { appConfigs } = useAppConfigsStore();
   const resolvedTheme = useThemeStore((s) => s.getResolvedTheme());
+  const { isGeneric } = useDeploymentTarget();
 
   const {
     watch,
@@ -157,7 +159,19 @@ const GlobalSettings = ({ form, onSubmit }: GlobalSettingsProps<GlobalSettingsFo
             <div className="space-y-6">
               <div className="space-y-4">
                 <p className="font-bold">{t('settings.globalSettings.logo.title')}</p>
-                <AddOrganisationLogo form={form} />
+                <p>
+                  {t(
+                    isGeneric
+                      ? 'settings.globalSettings.logo.descriptionGeneric'
+                      : 'settings.globalSettings.logo.descriptionSchool',
+                  )}
+                </p>
+                <AppConfigFormAssetField
+                  settingLocation={APPS.GENERAL_SETTINGS}
+                  fieldPath="brandingUploads.logo"
+                  form={form}
+                  assetType={ASSET_TYPES.logo}
+                />
               </div>
               <div className="space-y-4">
                 <p className="font-bold">{t('settings.globalSettings.background.title')}</p>
