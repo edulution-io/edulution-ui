@@ -26,6 +26,7 @@ import useLanguage from '@/hooks/useLanguage';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
@@ -66,6 +67,9 @@ const PublicEmbeddedPage: React.FC = () => {
   const isSandboxMode = currentAppConfig.extendedOptions?.EMBEDDED_PAGE_HTML_MODE;
   const htmlContentUrl = `${EDU_API_URL}/${EDU_API_CONFIG_ENDPOINTS.FILES}/public/file/${rootPathName}/${publicFilesInfo.find((item) => item.type === 'html')?.filename}`;
   const htmlContent = (currentAppConfig.extendedOptions?.EMBEDDED_PAGE_HTML_CONTENT as string) || '';
+  const urlSyncEnabled = !!currentAppConfig.extendedOptions?.[ExtendedOptionKeys.FRAME_URL_SYNC_ENABLED];
+  const preloadBasePage =
+    currentAppConfig.extendedOptions?.[ExtendedOptionKeys.FRAME_URL_SYNC_PRELOAD_BASE_PAGE] === true;
 
   const config: FloatingButtonsBarConfig = {
     buttons: [BackButton(() => navigate('/'))],
@@ -79,10 +83,13 @@ const PublicEmbeddedPage: React.FC = () => {
         translationId="public"
       />
       <EmbeddedPageContent
+        appName={rootPathName}
         pageTitle={pageTitle}
         isSandboxMode={isSandboxMode}
         htmlContentUrl={htmlContentUrl}
         htmlContent={htmlContent}
+        urlSyncEnabled={urlSyncEnabled}
+        preloadBasePage={preloadBasePage}
       />
       {!isAuthenticated && <FloatingButtonsBar config={config} />}
     </PageLayout>

@@ -28,11 +28,11 @@ import {
 import SURVEYS_ATTACHMENT_PATH from '@libs/survey/constants/surveysAttachmentPath';
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
-import SURVEYS_HEADER_IMAGE from '@libs/survey/constants/surveys-header-image';
 import TSurveyElement from '@libs/survey/types/TSurveyElement';
 import SurveyQuestionsType from '@libs/survey/constants/surveyQuestionsType';
 import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
+import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
 import FilesystemService from '../filesystem/filesystem.service';
 
 @Injectable()
@@ -59,11 +59,11 @@ class SurveysAttachmentService implements OnModuleInit {
         processedFormula.logo,
         username,
         surveyId,
-        SURVEYS_HEADER_IMAGE,
+        ASSET_TYPES.logo,
         isPublic,
       );
       processedFormula.logo = newUrl;
-      if (filename) includedFileNames.add(join(SURVEYS_HEADER_IMAGE, filename));
+      if (filename) includedFileNames.add(join(ASSET_TYPES.logo, filename));
     }
 
     if (processedFormula.pages) {

@@ -17,20 +17,25 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import axios from 'axios';
 import mime from 'mime';
 import { create } from 'zustand';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
-import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import { RequestResponseContentType, ResponseType } from '@libs/common/types/http-methods';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
 import ThemeType from '@libs/common/types/themeType';
 import convertImageFileToWebp from '@libs/common/utils/convertImageFileToWebp';
 import getMainLogoFilename from '@libs/filesharing/utils/getMainLogoFilename';
 import { GLOBAL_SETTINGS_BRANDING_LOGO } from '@libs/global-settings/constants/globalSettingsApiEndpoints';
+import AssetSource from '@libs/filesystem/types/AssetSource';
 
 interface FilesystemStore {
   darkVersion: number;
   setDarkVersion: (version: number | ((prev: number) => number)) => void;
+
+  fetchImage: (url: string, variant?: ThemeType) => Promise<{ source: AssetSource; content: string } | null>;
+  fetchingImageVariant: ThemeType | null;
 
   deleteImageFile: (appName: string, filename: string, variant?: ThemeType) => Promise<boolean>;
   uploadImageFile: (
@@ -38,9 +43,10 @@ interface FilesystemStore {
     filename: string,
     file: File | Blob,
     appName?: string,
-    variant?: ThemeType,
+    uploadKey?: string,
   ) => Promise<boolean>;
 
+  uploadingKey: string | null;
   uploadingVariant: ThemeType | null;
   uploadVariant: (variant: ThemeType, file: File) => Promise<void>;
 
@@ -50,6 +56,8 @@ interface FilesystemStore {
 
 const initialState = {
   darkVersion: 0,
+  fetchingImageVariant: null,
+  uploadingKey: null,
   uploadingVariant: null,
   error: null,
 };
@@ -61,6 +69,31 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
     set((state) => ({
       darkVersion: typeof version === 'function' ? version(state.darkVersion) : version,
     })),
+
+  fetchImage: async (url: string, variant?: ThemeType): Promise<{ source: AssetSource; content: string } | null> => {
+    if (variant) {
+      set({ fetchingImageVariant: variant, error: null });
+    }
+    try {
+      const response = await axios.get(url, {
+        responseType: ResponseType.BLOB,
+      });
+      if (!response) {
+        throw new Error('No response from server');
+      }
+      const source = (response.headers['x-asset-source'] as AssetSource) || 'none';
+
+      const blob = response.data as Blob;
+      const content = URL.createObjectURL(blob);
+
+      return { source, content };
+    } catch (e) {
+      handleApiError(e, set);
+      return { source: 'none', content: '' };
+    } finally {
+      set({ fetchingImageVariant: null, error: null });
+    }
+  },
 
   deleteImageFile: async (appName: string, fileName: string): Promise<boolean> => {
     set({ error: null });
@@ -79,9 +112,9 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
     filename: string,
     file: File | Blob,
     appName?: string,
-    variant?: ThemeType,
+    uploadKey?: string,
   ): Promise<boolean> => {
-    set({ uploadingVariant: variant, error: null });
+    set({ uploadingKey: uploadKey ?? null, error: null });
     try {
       const form = new FormData();
       form.append('destination', destination);
@@ -110,7 +143,7 @@ const useFilesystemStore = create<FilesystemStore>((set, get) => ({
       handleApiError(e, set);
       return false;
     } finally {
-      set({ uploadingVariant: null });
+      set({ uploadingKey: null });
     }
   },
 

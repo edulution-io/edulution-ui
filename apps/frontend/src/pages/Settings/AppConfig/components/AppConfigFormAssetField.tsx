@@ -11,32 +11,39 @@
  */
 
 import { toast } from 'sonner';
-import React, { useRef, useState, useMemo } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UseFormReturn } from 'react-hook-form';
+import { FieldValues, Path, UseFormReturn } from 'react-hook-form';
+import THEME from '@libs/common/constants/theme';
 import ThemeType from '@libs/common/types/themeType';
-import ThemedFile from '@libs/common/types/themedFile';
-import { getLogoName, getLogoUrl } from '@libs/appconfig/utils/getAppLogo';
+import { getAssetName, getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
-import LogoUploadField from '@/pages/Settings/components/LogoUploadField';
+import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
+import AssetType from '@libs/appconfig/types/assetType';
 import useFilesystemStore from '@/store/FilesystemStore/useFilesystemStore';
+import AssetUploadFieldWithFetch from '@/pages/Settings/components/AssetUploadFieldWithFetch';
 
-type AppConfigFormLogoFieldProps = {
-  variant: ThemeType;
+type AppConfigFormAssetFieldProps<T extends FieldValues = FieldValues> = {
+  variant: typeof THEME.light | typeof THEME.dark;
   appName: string;
   fieldPath: string;
   option: AppConfigExtendedOption;
-  form: UseFormReturn<ThemedFile>;
+  form: UseFormReturn<T>;
+  assetType?: AssetType;
+  onUploadSuccess?: (variant: ThemeType) => void;
 };
 
-const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
+const AppConfigFormAssetField = <T extends FieldValues = FieldValues>({
   variant,
   appName,
   fieldPath,
   option,
   form,
-}) => {
-  const { uploadImageFile, deleteImageFile, uploadingVariant } = useFilesystemStore();
+  assetType = ASSET_TYPES.logo,
+  onUploadSuccess,
+}: AppConfigFormAssetFieldProps<T>) => {
+  const { uploadImageFile, deleteImageFile, uploadingKey } = useFilesystemStore();
+  const currentUploadKey = `${assetType}-${variant}`;
 
   const { t } = useTranslation();
 
@@ -44,14 +51,14 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
 
   const [keyValue, setKeyValue] = useState<number>(Math.floor(Math.random() * 10000));
 
-  const path = `${fieldPath}.${variant}` as keyof ThemedFile;
+  const path = `${fieldPath}.${variant}` as Path<T>;
 
   const destination = appName;
-  const filename = getLogoName(appName, variant);
-  const logoImageUrl = getLogoUrl(appName, variant);
+  const filename = getAssetName(appName, variant, assetType);
+  const imageUrl = getAssetUrl(appName, variant, assetType);
   const previewSrc = useMemo(
-    () => (logoImageUrl?.includes('?') ? `${logoImageUrl}&t=${keyValue}` : `${logoImageUrl}?t=${keyValue}`),
-    [appName, variant, logoImageUrl, keyValue],
+    () => (imageUrl?.includes('?') ? `${imageUrl}&t=${keyValue}` : `${imageUrl}?t=${keyValue}`),
+    [appName, variant, imageUrl, keyValue],
   );
 
   const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,12 +69,13 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
         return;
       }
 
-      const success = await uploadImageFile(destination, filename, file, undefined, variant);
+      const success = await uploadImageFile(destination, filename, file, undefined, currentUploadKey);
       if (success) {
-        form.setValue(path, file, { shouldDirty: true });
+        form.setValue(path, file as File & T[Path<T>], { shouldDirty: true });
         toast.success(t('survey.editor.fileUploadSuccess'));
+        onUploadSuccess?.(variant);
       } else {
-        form.setValue(path, null, { shouldDirty: true });
+        form.setValue(path, null as null & T[Path<T>], { shouldDirty: true });
         toast.error(t('survey.editor.fileUploadError'));
       }
       setKeyValue((prev) => prev + 1);
@@ -77,8 +85,9 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
   const onHandleReset = async () => {
     const success = await deleteImageFile(appName, filename, variant);
     if (success) {
-      form.setValue(path, null, { shouldDirty: true });
+      form.setValue(path, null as null & T[Path<T>], { shouldDirty: true });
       toast.success(t('survey.editor.fileDeletionSuccess'));
+      onUploadSuccess?.(variant);
     } else {
       toast.error(t('survey.editor.fileDeletionError'));
     }
@@ -87,20 +96,21 @@ const AppConfigFormLogoField: React.FC<AppConfigFormLogoFieldProps> = ({
 
   const variantText = t(`appExtendedOptions.appLogo.${variant}`);
   return (
-    <div>
+    <div className="min-w-[49%]">
       {option.title && <p className="mb-2 font-bold">{t(option.title, { variant: variantText })}</p>}
-      <LogoUploadField
+      <AssetUploadFieldWithFetch
+        assetUrl={previewSrc}
+        alt={t(`appExtendedOptions.appLogo.${variant}`)}
+        onDelete={onHandleReset}
         variant={variant}
         inputRef={inputRef}
-        previewSrc={previewSrc}
         onFileChange={onFileChange}
         chooseText={t(`common.chooseFile`)}
         changeText={t(`common.changeFile`)}
-        onHandleReset={onHandleReset}
-        uploading={uploadingVariant === variant}
+        uploading={uploadingKey === currentUploadKey}
       />
     </div>
   );
 };
 
-export default AppConfigFormLogoField;
+export default AppConfigFormAssetField;

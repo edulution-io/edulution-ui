@@ -55,7 +55,7 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
       const { filename } = row.original;
       return (
         <SelectableCell
-          onClick={() => {}}
+          onClick={() => row.toggleSelected()}
           text={filename}
           row={row}
           className="min-w-32"
@@ -81,6 +81,7 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
       const { createdAt } = row.original;
       return (
         <SelectableCell
+          onClick={() => row.toggleSelected()}
           text={formatIsoDateToLocaleString(createdAt?.toLocaleString())}
           className="min-w-32"
         />
@@ -109,6 +110,7 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
       });
       return (
         <SelectableCell
+          onClick={() => row.toggleSelected()}
           text={validUntil}
           className="min-w-32"
         />
@@ -131,6 +133,7 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
       const { password } = row.original;
       return (
         <SelectableCell
+          onClick={() => row.toggleSelected()}
           className="min-w-20"
           text={'*'.repeat(password?.length || 0)}
           icon={
@@ -172,7 +175,7 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
               />
             }
             text={t('filesharing.publicFileSharing.publiclyAccessible')}
-            onClick={() => {}}
+            onClick={() => row.toggleSelected()}
           />
         );
       }
@@ -187,7 +190,33 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
       return (
         <SelectableCell
           text={`${attendeeText}${groupsText}`}
-          onClick={() => {}}
+          onClick={() => row.toggleSelected()}
+        />
+      );
+    },
+  },
+  {
+    id: PUBLIC_SHARED_FILES_TABLE_COLUMN.FILE_SHARED_BY,
+    header: ({ column }) => (
+      <SortableHeader<PublicShareDto, unknown>
+        className="min-w-32"
+        column={column}
+      />
+    ),
+    meta: {
+      translationId: 'filesharing.publicFileSharing.sharedBy',
+    },
+    accessorFn: (row) => `${row.creator.firstName} ${row.creator.lastName}`.trim() || row.creator.username,
+    cell: ({ row }) => {
+      const { t } = useTranslation();
+      const { creator, isOwner } = row.original;
+      const displayName = `${creator.firstName} ${creator.lastName}`.trim() || creator.username;
+
+      return (
+        <SelectableCell
+          text={isOwner ? t('common.me') : displayName}
+          className="min-w-32"
+          onClick={() => row.toggleSelected()}
         />
       );
     },
@@ -250,6 +279,11 @@ const getPublicShareTableColumns = (isDialog?: boolean): ColumnDef<PublicShareDt
     cell: ({ row }) => {
       const { setShare, openDialog, setSelectedRows } = usePublicShareStore();
       const { original } = row;
+      const { isOwner } = original;
+
+      if (!isOwner) {
+        return <SelectableCell onClick={() => row.toggleSelected()} />;
+      }
 
       return (
         <TableActionCell

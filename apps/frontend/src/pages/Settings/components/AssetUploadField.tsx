@@ -25,7 +25,7 @@ import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import FileSelectButton from '@/components/ui/FileSelectButton';
 import DeleteButton from '@/components/shared/Card/DeleteButton';
 
-type LogoUploadFieldProps = {
+type AssetUploadFieldProps = {
   variant: ThemeType;
   previewSrc?: string | null;
   cacheKey?: number;
@@ -43,7 +43,7 @@ type LogoUploadFieldProps = {
   isLoginPage?: boolean;
 };
 
-const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
+const AssetUploadField: React.FC<AssetUploadFieldProps> = ({
   variant,
   previewSrc,
   cacheKey,
@@ -54,7 +54,7 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
   chooseText = 'Choose file',
   changeText = 'Change file',
   accept = 'image/*',
-  alt = 'Logo preview',
+  alt = 'Asset preview',
   fallbackSrc,
   className,
   onHandleReset,
@@ -107,4 +107,4 @@ const LogoUploadField: React.FC<LogoUploadFieldProps> = ({
   );
 };
 
-export default LogoUploadField;
+export default AssetUploadField;
