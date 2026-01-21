@@ -381,3 +381,4 @@ $RECYCLE.BIN/
 /data/public/assets/generalsettings/*
 !/data/public/assets/generalsettings/generalsettings-default-background-dark.webp
 !/data/public/assets/generalsettings/generalsettings-default-background-light.webp
+!/data/public/assets/generalsettings/generalsettings-default-logo.webp
