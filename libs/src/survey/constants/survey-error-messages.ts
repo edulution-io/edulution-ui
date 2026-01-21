@@ -30,7 +30,7 @@ enum SurveyErrorMessages {
   ParticipationErrorUserNotAssigned = 'survey.errors.participationErrorUserNotAssigned',
   ParticipationErrorSurveyExpired = 'survey.errors.participationErrorSurveyExpired',
   ParticipationErrorAlreadyParticipated = 'survey.errors.participationErrorAlreadyParticipated',
-  TemplateDouplicateNameError = 'survey.errors.duplicateNameError',
+  TemplateDuplicateNameError = 'survey.errors.duplicateNameError',
 }
 
 export default SurveyErrorMessages;

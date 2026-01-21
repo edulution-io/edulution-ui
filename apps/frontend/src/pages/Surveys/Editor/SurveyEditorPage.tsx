@@ -22,7 +22,7 @@ import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { faRotateLeft, faFilePdf, faFileCirclePlus } from '@fortawesome/free-solid-svg-icons';
+import { faRotateLeft, faFilePdf, faBackward } from '@fortawesome/free-solid-svg-icons';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -187,15 +187,21 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     window.dispatchEvent(new PopStateEvent('popstate'));
   };
 
-  const handleSaveSurvey = async () => {
+  const handleSaveSurvey = useCallback(async () => {
     if (!creator) return;
 
     const formula = creator.JSON as SurveyFormula;
     const saveNo = creator.saveNo || 0;
+
+    const survey = form.getValues();
+    const { id, ...remainingSurvey } = survey;
+    const isSavingFromTemplate = template?.id && id === template.id;
+
     const success = await updateOrCreateSurvey({
-      ...form.getValues(),
+      ...remainingSurvey,
       formula,
       saveNo,
+      id: isSavingFromTemplate ? undefined : id,
     });
     if (success) {
       void updateUsersSurveys();
@@ -206,25 +212,24 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
       toast.success(t('survey.editor.saveSurveySuccess'));
       handleNavigateToCreatedSurveys();
     }
-  };
+  }, [creator, form, updateUsersSurveys, template]);
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
       {
-        icon: faFileCirclePlus,
+        icon: faRotateLeft,
         text: t('common.back'),
         onClick: () => resetSurveyEditorPage(),
       },
       SaveButton(() => setIsOpenSaveSurveyDialog(true)),
       {
-        icon: faRotateLeft,
+        icon: faBackward,
         text: t('survey.editor.reset'),
         onClick: () => {
-          handleReset();
           form.reset(initialFormValues);
           if (creator) {
-            creator.saveNo = form.getValues('saveNo');
-            creator.JSON = form.getValues('formula');
+            creator.saveNo = initialFormValues.saveNo || 0;
+            creator.JSON = initialFormValues.formula;
           }
         },
       },

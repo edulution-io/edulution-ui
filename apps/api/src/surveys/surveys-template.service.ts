@@ -64,7 +64,7 @@ class SurveysTemplateService implements OnModuleInit {
     } catch (error) {
       if (error instanceof Error && error.message.includes('E11000')) {
         throw new CustomHttpException(
-          SurveyErrorMessages.TemplateDouplicateNameError,
+          SurveyErrorMessages.TemplateDuplicateNameError,
           HttpStatus.CONFLICT,
           error.message,
           SurveysTemplateService.name,

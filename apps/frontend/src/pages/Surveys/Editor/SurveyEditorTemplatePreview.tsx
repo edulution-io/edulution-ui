@@ -36,13 +36,9 @@ const SurveyEditorTemplatePreview = (): JSX.Element | null => {
 
   const currentTheme = getResolvedTheme();
 
-  if (!surveyTemplateDto || !surveyTemplateDto.template.formula) {
-    return null;
-  }
-
   const modelRef = useRef<Model | null>(null);
   if (!modelRef.current) {
-    modelRef.current = new Model(surveyTemplateDto.template.formula);
+    modelRef.current = new Model(surveyTemplateDto?.template.formula);
   }
   const model = modelRef.current;
 
@@ -64,6 +60,10 @@ const SurveyEditorTemplatePreview = (): JSX.Element | null => {
     Serializer.getProperty('signaturepad', 'penColor').defaultValue =
       currentTheme === THEME.dark ? 'rgba(255, 255, 255, 1)' : 'rgba(17, 24, 39, 1)';
   }, [model, currentTheme]);
+
+  if (!surveyTemplateDto || !surveyTemplateDto.template.formula) {
+    return null;
+  }
 
   return (
     <ResizableWindow
