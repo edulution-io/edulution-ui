@@ -17,15 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import ReactPlayer from 'react-player';
+import React, { useEffect, useRef } from 'react';
 
-interface VideoComponentProps {
+interface MediaComponentProps {
   url: string;
+  isVideo?: boolean;
   playing?: boolean;
   loop?: boolean;
   controls?: boolean;
-  light?: boolean | string;
   volume?: number;
   muted?: boolean;
   playbackRate?: number;
@@ -34,34 +33,68 @@ interface VideoComponentProps {
   style?: React.CSSProperties;
 }
 
-const MediaComponent: React.FC<VideoComponentProps> = ({
+const MediaComponent: React.FC<MediaComponentProps> = ({
   url,
+  isVideo = true,
   playing = true,
   loop = false,
   controls = true,
-  light = false,
   volume = 0.8,
   muted = false,
   playbackRate = 1.0,
   width = '100%',
   height = '100%',
   style = {},
-}) => (
-  <div style={{ position: 'relative', width, height, ...style }}>
-    <ReactPlayer
-      url={url}
-      playing={playing}
-      loop={loop}
-      controls={controls}
-      light={light}
-      volume={volume}
-      muted={muted}
-      playbackRate={playbackRate}
-      width={width}
-      height={height}
-      style={{ position: 'absolute', top: 0, left: 0 }}
-    />
-  </div>
-);
+}) => {
+  const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null);
+
+  useEffect(() => {
+    const media = mediaRef.current;
+    if (!media) return;
+
+    media.volume = volume;
+    media.playbackRate = playbackRate;
+
+    if (playing) {
+      media.play().catch(() => {});
+    } else {
+      media.pause();
+    }
+  }, [playing, volume, playbackRate]);
+
+  const commonProps = {
+    src: url,
+    loop,
+    controls,
+    muted,
+    autoPlay: playing,
+  };
+
+  if (isVideo) {
+    return (
+      <div style={{ position: 'relative', width, height, ...style }}>
+        <video
+          ref={mediaRef as React.RefObject<HTMLVideoElement>}
+          {...commonProps}
+          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain' }}
+        >
+          <track kind="captions" />
+        </video>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width, height, ...style }}>
+      <audio
+        ref={mediaRef as React.RefObject<HTMLAudioElement>}
+        {...commonProps}
+        style={{ width: '100%', maxWidth: '500px' }}
+      >
+        <track kind="captions" />
+      </audio>
+    </div>
+  );
+};
 
 export default MediaComponent;
