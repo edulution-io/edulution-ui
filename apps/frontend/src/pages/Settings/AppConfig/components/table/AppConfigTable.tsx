@@ -222,6 +222,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
               enableRowSelection={false}
               initialColumnVisibility={initialColumnVisibility}
               actions={tableActions as TableAction<ContainerInfo>[]}
+              showSelectedCount={false}
             />
           );
         }
@@ -252,6 +253,7 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
               enableRowSelection={false}
               initialColumnVisibility={initialColumnVisibility}
               actions={tableActions as TableAction<VeyonProxyItem>[]}
+              showSelectedCount={false}
             />
           );
         }

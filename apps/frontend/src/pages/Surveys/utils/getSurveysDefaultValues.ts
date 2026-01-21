@@ -20,6 +20,7 @@
 import i18n from '@/i18n';
 import APPS from '@libs/appconfig/constants/apps';
 import { getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
+import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
 import ThemeType from '@libs/common/types/themeType';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
@@ -27,7 +28,7 @@ import SurveyFormula from '@libs/survey/types/SurveyFormula';
 const getSurveysDefaultValues = (theme: ThemeType): Partial<SurveyDto> & { formula: SurveyFormula } => ({
   formula: {
     title: i18n.t('survey.newTitle'),
-    logo: getAssetUrl(APPS.SURVEYS, theme),
+    logo: getAssetUrl(APPS.SURVEYS, ASSET_TYPES.logo, theme),
     logoWidth: '320px',
     logoPosition: 'right',
   },

@@ -42,6 +42,7 @@ import useFileContentPreviewStore from '@/pages/FileSharing/FilePreview/useFileC
 import useFileEditorContentStore from '@/pages/FileSharing/FilePreview/useFileEditorContentStore';
 import { FILE_PREVIEW_TYPE, FilePreviewType } from '@libs/filesharing/types/filePreviewType';
 import isPdfExtension from '@libs/filesharing/utils/isPdfExtension';
+import isVideoExtension from '@libs/filesharing/utils/isVideoExtension';
 import cn from '@libs/common/utils/className';
 import TEXT_PREVIEW_ELEMENT_ID from '@libs/filesharing/constants/textPreviewElementId';
 
@@ -186,6 +187,7 @@ const FileRenderer: FC<FileRendererProps> = ({
           <MediaComponent
             key={fileUrl}
             url={fileUrl}
+            isVideo={isVideoExtension(fileExtension)}
             height={isOpenedInNewTab ? '100dvh' : '100%'}
           />
         );
