@@ -37,6 +37,9 @@ import VEYON_PROXY_TABLE_COLUMNS from '@libs/classManagement/constants/veyonProx
 import type WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import { WebdavServerTableStore, type WebdavShareTableStore } from '@libs/appconfig/types/webdavShareTableStore';
 import WEBDAV_SHARE_TABLE_COLUMNS from '@libs/filesharing/constants/webdavShareTableColumns';
+import { type WireguardPeer } from '@libs/wireguard/types/wireguard';
+import { WireguardTableStore } from '@libs/appconfig/types/wireguardTableStore';
+import WIREGUARD_TABLE_COLUMNS from '@libs/wireguard/constants/wireguardTableColumns';
 import DockerContainerTableColumns from '../../DockerIntegration/DockerContainerTableColumns';
 import CreateDockerContainerDialog from '../../DockerIntegration/CreateDockerContainerDialog';
 import useDockerApplicationStore from '../../DockerIntegration/useDockerApplicationStore';
@@ -49,6 +52,9 @@ import AddWebdavShareDialog from '../../filesharing/AddWebdavShareDialog';
 import WebdavServerTableColumns from '../../filesharing/WebdavServerTableColumns';
 import useWebdavServerConfigTableStore from '../../filesharing/useWebdavServerConfigTableStore';
 import AddWebdavServerDialog from '../../filesharing/AddWebdavServerDialog';
+import WireguardTableColumns from '../../wireguard/WireguardTableColumns';
+import useWireguardConfigTableStore from '../../wireguard/useWireguardConfigTableStore';
+import AddWireguardPeerDialog from '../../wireguard/AddWireguardPeerDialog';
 
 const DOCKER_CONTAINER_TABLE_COLUMS = {
   hideColumnsInMobileView: [
@@ -189,6 +195,39 @@ const TABLE_CONFIG_MAP: AppConfigTableConfigsByAppName = {
         WEBDAV_SHARE_TABLE_COLUMNS.ACCESSGROUPS,
       ],
       hideColumnsInTabletView: [WEBDAV_SHARE_TABLE_COLUMNS.URL],
+    }),
+  ],
+  [APPS.WIREGUARD]: [
+    createAppConfigTableEntry<ContainerInfo, DockerContainerTableStore>({
+      columns: DockerContainerTableColumns,
+      useStore: useDockerApplicationStore,
+      dialogBody: (
+        <CreateDockerContainerDialog
+          settingLocation={APPS.WIREGUARD}
+          tableId={ExtendedOptionKeys.DOCKER_CONTAINER_TABLE}
+        />
+      ),
+      showAddButton: true,
+      filterKey: DOCKER_CONTAINER_TABLE_COLUMNS.NAME,
+      filterPlaceHolderText: 'dockerOverview.filterPlaceHolderText',
+      type: ExtendedOptionKeys.DOCKER_CONTAINER_TABLE,
+      ...DOCKER_CONTAINER_TABLE_COLUMS,
+    }),
+    createAppConfigTableEntry<WireguardPeer, WireguardTableStore>({
+      columns: WireguardTableColumns,
+      useStore: useWireguardConfigTableStore,
+      dialogBody: <AddWireguardPeerDialog tableId={ExtendedOptionKeys.WIREGUARD_PEERS_TABLE} />,
+      showAddButton: true,
+      showRemoveButton: true,
+      filterKey: WIREGUARD_TABLE_COLUMNS.NAME,
+      filterPlaceHolderText: 'wireguard.searchPlaceholder',
+      type: ExtendedOptionKeys.WIREGUARD_PEERS_TABLE,
+      hideColumnsInMobileView: [
+        WIREGUARD_TABLE_COLUMNS.ALLOWED_IPS,
+        WIREGUARD_TABLE_COLUMNS.ENDPOINT,
+        WIREGUARD_TABLE_COLUMNS.LAST_HANDSHAKE,
+      ],
+      hideColumnsInTabletView: [WIREGUARD_TABLE_COLUMNS.ALLOWED_IPS],
     }),
   ],
 };

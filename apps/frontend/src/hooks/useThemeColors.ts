@@ -19,11 +19,14 @@
 
 import { useEffect } from 'react';
 import useGlobalSettingsApiStore from '@/pages/Settings/GlobalSettings/useGlobalSettingsApiStore';
+import useThemeStore from '@/store/useThemeStore';
 import applyThemeColors from '@/utils/applyThemeColors';
+import applyBackgroundImage from '@/utils/applyBackgroundImage';
 import getThemeWithDefaults from '@/utils/getThemeWithDefaults';
 
 const useThemeColors = () => {
   const { publicTheme, getPublicTheme } = useGlobalSettingsApiStore();
+  const resolvedTheme = useThemeStore((s) => s.getResolvedTheme());
 
   useEffect(() => {
     void getPublicTheme();
@@ -33,6 +36,10 @@ const useThemeColors = () => {
     const theme = getThemeWithDefaults(publicTheme);
     applyThemeColors(theme);
   }, [publicTheme]);
+
+  useEffect(() => {
+    applyBackgroundImage(resolvedTheme);
+  }, [resolvedTheme]);
 };
 
 export default useThemeColors;

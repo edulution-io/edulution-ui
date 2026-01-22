@@ -31,7 +31,7 @@ import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import APP_CONFIG_OPTION_KEYS from '@libs/appconfig/constants/appConfigOptionKeys';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import APPLICATION_NAME from '@libs/common/constants/applicationName';
-import getAppIconClassName from '@/utils/getAppIconClassName';
+import IconWrapper from '@/components/shared/IconWrapper';
 import APP_CONFIG_OPTIONS from '../appConfigOptions';
 import AddAppConfigDialog from '../AddAppConfigDialog';
 import AppStoreFloatingButtons from './AppStoreFloatingButtons';
@@ -55,7 +55,7 @@ const AppStorePage: React.FC = () => {
 
   const handleCreateApp = () => {
     if (selectedApp.isNativeApp) {
-      const { options = [], extendedOptions = {} } = selectedApp;
+      const { options = [], extendedOptions = {}, defaultDisplayLocations = [] } = selectedApp;
       const newExtendedOptions = Object.values(extendedOptions).reduce<Record<string, string>>((acc, item) => {
         acc[item[0].name] = '';
         return acc;
@@ -73,6 +73,7 @@ const AppStorePage: React.FC = () => {
         accessGroups: [],
         extendedOptions: newExtendedOptions,
         position: 0,
+        displayLocations: defaultDisplayLocations,
       };
 
       void createAppConfig(newConfig);
@@ -110,13 +111,13 @@ const AppStorePage: React.FC = () => {
               variant="text"
             >
               <div className="m-4 flex flex-col items-center">
-                <img
-                  src={item.icon}
+                <IconWrapper
+                  iconSrc={item.icon}
                   alt={item.id}
-                  className={cn(
-                    'h-12 w-12 md:h-14 md:w-14',
-                    selectedApp.id !== item.id && getAppIconClassName(item.icon),
-                  )}
+                  className="h-12 w-12 md:h-14 md:w-14"
+                  width={48}
+                  height={48}
+                  applyLegacyFilter={selectedApp.id !== item.id}
                 />
                 <p>{t(`${item.id}.sidebar`)}</p>
               </div>

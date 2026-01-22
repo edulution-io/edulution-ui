@@ -8,6 +8,8 @@
   "previewImage": "Aperçu de l'image",
   "imprint": "Mentions légales",
   "public": "Publique",
+  "actions": "Actions",
+  "logo": "Logo",
   "bulletinboard": {
     "settings": "Paramètres",
     "noBulletinsToShow": "Il n'y a actuellement aucun message à afficher, il est préférable de passer à nouveau plus tard!",
@@ -93,7 +95,12 @@
   "appstore": {
     "title": "App Store",
     "description": "Ici tu peux ajouter des applications {{ applicationName }}.",
-    "chooseIcon": "Sélectionner l'icône",
+    "edulutionIcons": "edulution Icons",
+    "moreIcons": "Plus d'icônes",
+    "searchIcons": "Rechercher des icônes...",
+    "searchIconsHint": "Astuce: Utilisez des termes de recherche en anglais (p.ex. \"house\" au lieu de \"maison\")",
+    "noIconsFound": "Aucune icône trouvée",
+    "iconsAvailable": "icônes disponibles",
     "uploadIcon": "Icône de téléchargement",
     "dropIconDescription": "Glissez une image ici ou cliquez pour sélectionner une image. Formats pris en charge: SVG, webp"
   },
@@ -380,6 +387,7 @@
       "FileFormatNotSupported": "Le format de fichier n'est pas pris en charge."
     },
     "publicFileSharing": {
+      "sharedBy": "Partagé par",
       "errors": {
         "PublicFileDownloadFailed": "Le téléchargement du fichier a échoué. Veuillez réessayer plus tard."
       }
@@ -613,7 +621,12 @@
     "noAnswer": "Aucune réponse n'est encore disponible.",
     "canSubmitMultiple": "Autoriser plusieurs réponses.",
     "editor": {
+      "inputFieldTitle": "Champ de saisie",
       "new": "Nouveau (vide)",
+      "fileUploadSuccess": "Le fichier a été enregistré avec succès.",
+      "fileUploadError": "Erreur lors du téléchargement du fichier, veuillez réessayer plus tard.",
+      "fileDeletionSuccess": "Le fichier a été supprimé avec succès.",
+      "fileDeletionError": "Le fichier n'a pas pu être supprimé.",
       "saveSurveySuccess": "Le sondage a été enregistrée.",
       "surveyPlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
       "surveyPlaceholderDescription": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
@@ -867,7 +880,8 @@
       "bulletinboard": "Configurez les groupes d'utilisateurs qui ont accès à l'application Schwarzes Brett. Il est possible de configurer dans les catégories pour contrôler les messages affichés chez les utilisateurs.",
       "forwarding": "Redirection: entrez simplement le lien vers l'application Web sous URL.",
       "frame": "Frame: Entrez simplement le lien vers l'application Web sous URL.",
-      "embedded": "Embedded: Ici, votre propre application Web peut être créée dans l'éditeur."
+      "embedded": "Embedded: Ici, votre propre application Web peut être créée dans l'éditeur.",
+      "wireguard": "Ici, vous pouvez configurer l'accès VPN WireGuard pour les utilisateurs."
     },
     "globalSettings": {
       "title": "Paramètres globaux",
@@ -892,6 +906,11 @@
         "uploadLightLogo": "Téléverser le logo clair",
         "uploadDarkLogo": "Téléverser le logo sombre",
         "deleteSuccessful": "Logo supprimé avec succès."
+      },
+      "background": {
+        "title": "Image de fond",
+        "description": "Téléversez des images de fond personnalisées pour les modes clair et sombre. Elles seront affichées dans toute l'application.",
+        "variant": "Arrière-plan (mode {{variant}})"
       },
       "theme": {
         "title": "Personnalisation du thème",
@@ -943,6 +962,10 @@
       "confirmDeleteEntries": "Êtes-vous sûr de vouloir supprimer cette entrée? Cette action ne peut pas être annulée.",
       "confirmDeleteEntries_other": "Êtes-vous sûr de vouloir supprimer ces {{count}} entrées? Cette action ne peut pas être annulée.",
       "sections": {
+        "appLogo": {
+          "title": "Logo",
+          "description": "Téléversez votre propre image ici pour remplacer le logo par défaut de {{ applicationName }}. Ou restaurez le logo par défaut de {{ applicationName }}."
+        },
         "onlyOffice": {
           "title": "Intégration OnlyOffice",
           "description": ""
@@ -1005,6 +1028,10 @@
             "description": "Le serveur WebDAV « {{serverName}} » est utilisé par {{count}} partage(s) : {{shares}}. Veuillez d'abord supprimer les partages dépendants."
           }
         },
+        "wireguard": {
+          "title": "Pairs WireGuard",
+          "description": "Gérez ici les pairs VPN WireGuard et les connexions site-à-site."
+        },
         "files": {
           "title": "Fichiers",
           "description": "Ici, les fichiers affichés dans l'application peuvent être gérés.",
@@ -1034,6 +1061,15 @@
           "syntaxValid": "La syntaxe du script est valide",
           "syntaxInvalid": "Le script contient des erreurs de syntaxe",
           "placeholder": "Entrez le code JavaScript ici"
+        },
+        "urlHandling": {
+          "title": "Gestion des URL",
+          "description": "Synchronise l'URL du navigateur avec la navigation dans le contenu intégré.",
+          "enabled": "Activer la synchronisation d'URL",
+          "enabledDescription": "Met à jour la barre d'adresse du navigateur lors de la navigation dans le contenu intégré. Cela permet les signets et l'historique du navigateur. Remarque : Cette fonctionnalité ne fonctionne que lorsque le contenu intégré est hébergé sur le même domaine que cette application.",
+          "embeddedEnabledDescription": "Met à jour la barre d'adresse du navigateur lors de la navigation dans le contenu intégré. Cela permet les signets et l'historique du navigateur. Remarque : Cette fonctionnalité ne fonctionne qu'en mode \"Disposition séparée\" et lorsque le contenu intégré est hébergé sur le même domaine que cette application.",
+          "preloadBasePage": "Précharger la page de base",
+          "preloadBasePageDescription": "Lorsque cette option est activée, l'URL configurée est toujours chargée en premier avant de naviguer vers les liens profonds. Activez cette option pour les applications nécessitant une authentification ou exécutant des scripts d'initialisation sur l'URL configurée."
         }
       },
       "update": {
@@ -1192,6 +1228,26 @@
       "title": "Interface utilisateur",
       "description": "Ici, vous pouvez configurer certains aspects de l'interface utilisateur selon vos préférences."
     },
+    "wireguard": {
+      "title": "Accès VPN",
+      "description": "Ici, vous pouvez consulter et configurer votre accès VPN WireGuard.",
+      "noPeer": "Aucun accès VPN WireGuard n'a encore été configuré pour votre utilisateur. Veuillez contacter un administrateur.",
+      "connectionStatus": "État de la connexion",
+      "connected": "Connecté",
+      "disconnected": "Déconnecté",
+      "lastHandshake": "Dernier handshake",
+      "received": "Reçu",
+      "sent": "Envoyé",
+      "connectionDetails": "Détails de la connexion",
+      "peerName": "Nom",
+      "ipAddress": "Adresse IP",
+      "routes": "Routes",
+      "qrCode": "Code QR",
+      "qrCodeDescription": "Scannez ce code QR avec l'application WireGuard sur votre appareil mobile pour configurer la connexion VPN.",
+      "configDownload": "Fichier de configuration",
+      "configDownloadDescription": "Téléchargez le fichier de configuration WireGuard pour l'importer dans l'application WireGuard sur votre ordinateur.",
+      "downloadButton": "Télécharger la configuration"
+    },
     "addTotp": {
       "title": "Configurer l'authentification à deux facteurs",
       "qrCodeInstructions": "Scannez le code QR avec une application Authenticator qui prend en charge TOTP (mot de passe unique basé sur le temps).",
@@ -1245,6 +1301,7 @@
     "less": "Moins",
     "refreshPage": "Actualiser la page",
     "guest": "Invité",
+    "me": "Moi",
     "ok": "OK",
     "next": "Prochain",
     "back": "Précédent",
@@ -1256,6 +1313,9 @@
     "answers": "Répondre",
     "error": "Erreur",
     "entry": "Entrée {{index}}",
+    "filter": "Filtrer",
+    "showHiddenFiles": "Afficher les fichiers cachés",
+    "showSystemFiles": "Afficher les fichiers système",
     "errors": {
       "attachmentUploadFailed": "La pièce jointe n'a pas pu être téléversée",
       "dbAccessFailed": "L'accès à la base de données a échoué",
@@ -1266,7 +1326,18 @@
       "fileNotFound": "Fichier introuvable",
       "fileNotProvided": "Le fichier n'a pas été fourni",
       "invalidFileType": "Type de fichier non valide",
-      "startDateBeforeEndDate": "La date de début ne doit pas être après la date de fin"
+      "startDateBeforeEndDate": "La date de début ne doit pas être après la date de fin",
+      "path": {
+        "noString": "Le chemin doit être une chaîne de caractères",
+        "isEmpty": "Le chemin ne peut pas être vide",
+        "tooLong": "Le chemin est trop long",
+        "traversal": "La traversée de chemin n'est pas autorisée",
+        "absolutePath": "Les chemins absolus ne sont pas autorisés",
+        "subdirectories": "Les sous-répertoires ne sont pas autorisés",
+        "invalidCharacters": "Le chemin contient des caractères non valides",
+        "outsidePublicDirectory": "Le chemin est en dehors du répertoire public",
+        "symlinkOutsidePublicDirectory": "Le chemin inclut un lien symbolique qui pointe en dehors du répertoire public"
+      }
     },
     "cut": "Couper",
     "sortOrder": "Tri",
@@ -1496,6 +1567,68 @@
     "title": "Whiteboard",
     "sidebar": "Whiteboard collaboratif"
   },
+  "wireguard": {
+    "title": "WIREGUARD",
+    "sidebar": "WireGuard",
+    "description": "Gérer les pairs VPN WireGuard et les connexions site-à-site",
+    "name": "Nom",
+    "type": "Type",
+    "ip": "Adresse IP",
+    "publicKey": "Clé publique",
+    "routes": "Routes",
+    "allowedIps": "IPs autorisées",
+    "endpoint": "Point de terminaison",
+    "status": "Statut",
+    "lastHandshake": "Dernier handshake",
+    "clientPeer": "Pair client",
+    "siteToSite": "Site-à-site",
+    "addPeer": "Ajouter un pair",
+    "delete": "Supprimer",
+    "searchPlaceholder": "Rechercher par nom...",
+    "namePlaceholder": "Entrer le nom du pair",
+    "routesDescription": "Liste des routes séparées par des virgules (par ex. 0.0.0.0/0, 10.0.0.0/8)",
+    "allowedIpsDescription": "Liste des plages IP autorisées séparées par des virgules pour la connexion site-à-site",
+    "endpointDescription": "Adresse et port du point de terminaison distant (par ex. vpn.example.com:51820)",
+    "noSelection": "Veuillez sélectionner au moins un pair à supprimer",
+    "deletePeers": "Supprimer les pairs",
+    "confirmDelete": "Voulez-vous vraiment supprimer ce pair?",
+    "confirmDelete_other": "Voulez-vous vraiment supprimer ces {{count}} pairs?",
+    "deleteSuccess": "Pairs supprimés avec succès",
+    "deleteFailed": "Échec de la suppression des pairs",
+    "peerCreated": "Pair client créé avec succès",
+    "peersCreated": "{{count}} pairs clients créés avec succès",
+    "peersCreatedPartial": "{{successful}} pairs clients créés, {{failed}} échoués",
+    "siteCreated": "Connexion site-à-site créée avec succès",
+    "createFailed": "Échec de la création du pair",
+    "qrCode": "Code QR pour {{name}}",
+    "qrCodeAlt": "Code QR de configuration WireGuard",
+    "qrCodeFailed": "Échec du chargement du code QR",
+    "noQrCode": "Aucun code QR disponible",
+    "peerDetails": "Détails du pair",
+    "showQRCode": "Afficher le code QR",
+    "validation": {
+      "nameRequired": "Le nom est requis",
+      "allowedIpsRequired": "Les IPs autorisées sont requises pour les connexions site-à-site"
+    },
+    "errors": {
+      "getPeersFailed": "Échec du chargement des pairs",
+      "createPeerFailed": "Échec de la création du pair client",
+      "deletePeerFailed": "Échec de la suppression du pair client",
+      "getPeerConfigFailed": "Échec du chargement de la configuration du pair",
+      "getPeerQrFailed": "Échec du chargement du code QR",
+      "getPeerStatusFailed": "Échec du chargement du statut du pair",
+      "getPeersStatusFailed": "Échec du chargement du statut des pairs",
+      "restartFailed": "Échec du redémarrage",
+      "getSitesFailed": "Échec du chargement des sites",
+      "createSiteFailed": "Échec de la création de la connexion site-à-site",
+      "deleteSiteFailed": "Échec de la suppression de la connexion site-à-site",
+      "getSiteConfigFailed": "Échec du chargement de la configuration du site"
+    },
+    "rowSelected": "{{selected}} sur {{total}} pair sélectionné",
+    "rowsSelected": "{{selected}} sur {{total}} pairs sélectionnés",
+    "item": "{{count}} pair",
+    "items": "{{count}} pairs"
+  },
   "table": {
     "noDataAvailable": "Aucune donnée disponible"
   },
@@ -1723,6 +1856,11 @@
       "updateNow": "Mettre à jour maintenant",
       "checkVersionSuccess": "Thème vérifié avec succès !",
       "noData": "Aucune information de version disponible."
+    },
+    "appLogo": {
+      "light": "clair",
+      "dark": "sombre",
+      "title": "Logo thématique {{variant}}"
     }
   },
   "preview": {
@@ -1738,6 +1876,18 @@
     "EDULUTION_MAIL_HOSTNAME": {
       "title": "Nom d'hôte",
       "description": "Nom d'hôte du serveur de messagerie. Cela peut différer du domaine Edulution."
+    },
+    "EDU_WG_IPNETWORK": {
+      "title": "Réseau IP",
+      "description": "Le réseau IP pour la connexion VPN (par ex. 10.8.0.0/24)."
+    },
+    "EDU_WG_ADDRESS": {
+      "title": "Adresse",
+      "description": "L'adresse IP du serveur VPN."
+    },
+    "EDU_WG_DNS": {
+      "title": "Serveur DNS",
+      "description": "L'adresse du serveur DNS pour la connexion VPN."
     }
   },
   "edulution-manager": {

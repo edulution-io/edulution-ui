@@ -18,7 +18,7 @@
  */
 
 import React from 'react';
-import { Control, FieldValues, Path } from 'react-hook-form';
+import { Control, FieldValues, Path, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { FormControl, FormDescription, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import Switch from '@/components/ui/Switch';
@@ -30,10 +30,23 @@ type AppConfigSwitchProps<T extends FieldValues> = {
     title?: string;
     description: string;
   };
+  linkedToFieldPath?: Path<T>;
 };
 
-const AppConfigSwitch = <T extends FieldValues>({ fieldPath, control, option }: AppConfigSwitchProps<T>) => {
+const AppConfigSwitch = <T extends FieldValues>({
+  fieldPath,
+  control,
+  option,
+  linkedToFieldPath,
+}: AppConfigSwitchProps<T>) => {
   const { t } = useTranslation();
+
+  const linkedValue = useWatch({
+    control,
+    name: linkedToFieldPath as Path<T>,
+  });
+
+  const isDisabledByLinkedField = linkedToFieldPath !== undefined && !linkedValue;
 
   return (
     <FormFieldSH
@@ -48,7 +61,7 @@ const AppConfigSwitch = <T extends FieldValues>({ fieldPath, control, option }: 
                 {...field}
                 checked={field.value as boolean}
                 onCheckedChange={() => field.onChange(!(field.value as boolean))}
-                disabled={field.disabled}
+                disabled={field.disabled || isDisabledByLinkedField}
               />
             </div>
           </FormControl>

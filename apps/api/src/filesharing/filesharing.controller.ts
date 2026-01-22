@@ -227,8 +227,8 @@ class FilesharingController {
   }
 
   @Get(FileSharingApiEndpoints.PUBLIC_SHARE)
-  async listOwnPublicShares(@GetCurrentUsername() username: string) {
-    return this.filesharingService.listOwnPublicShares(username);
+  async listPublicShares(@GetCurrentUser() currentUser: JWTUser) {
+    return this.filesharingService.listPublicShares(currentUser);
   }
 
   @Post('callback')
