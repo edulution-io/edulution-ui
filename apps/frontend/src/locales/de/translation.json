@@ -100,7 +100,12 @@
   "appstore": {
     "title": "App-Store",
     "description": "Hier kannst du {{ applicationName }} Apps hinzufügen.",
-    "chooseIcon": "Icon auswählen",
+    "edulutionIcons": "edulution Icons",
+    "moreIcons": "Weitere Icons",
+    "searchIcons": "Icons durchsuchen...",
+    "searchIconsHint": "Tipp: Verwende englische Suchbegriffe (z.B. \"house\" statt \"Haus\")",
+    "noIconsFound": "Keine Icons gefunden",
+    "iconsAvailable": "Icons verfügbar",
     "uploadIcon": "Icon hochladen",
     "dropIconDescription": "Ziehe ein Bild hierher oder klicke, um ein Bild auszuwählen. Unterstützte Formate: SVG, WEBP"
   },

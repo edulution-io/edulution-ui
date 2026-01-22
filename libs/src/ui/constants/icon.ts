@@ -17,23 +17,26 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
+const CUSTOM_UPLOAD_IDENTIFIER = 'custom-upload';
+const FONT_AWESOME_IDENTIFIER = 'fontawsome-';
+const FONT_AWESOME_BRANDS_IDENTIFIER = 'fontawsome-brands';
+const FONT_AWESOME_SOLID_IDENTIFIER = 'fontawsome-solid';
+const ICON_CATEGORY_BRANDS = 'brands';
+const ICON_CATEGORY_SOLID = 'solid';
+const DEFAULT_ICON_MASK_SIZE = '75%';
+const DEFAULT_ICON_WEBP_SIZE = '80%';
 
-const getAppIconClassName = (iconSrc: string | IconDefinition): string => {
-  if (typeof iconSrc !== 'string') return '';
+type IconCategory = typeof ICON_CATEGORY_BRANDS | typeof ICON_CATEGORY_SOLID;
 
-  const isWebp = iconSrc.endsWith('.webp') || iconSrc.includes('data:image/webp');
-  if (isWebp) return '';
-
-  const isSvgIcon = iconSrc.endsWith('.svg') || iconSrc.includes('data:image/svg+xml') || iconSrc.includes('.svg');
-  if (!isSvgIcon) return '';
-
-  const isEdulutionIcon = iconSrc.includes('/edulution/edu_');
-  if (isEdulutionIcon) return 'light:icon-light-mode';
-
-  const decodedIconSrc = decodeURIComponent(iconSrc);
-  const hasWhiteColor = decodedIconSrc.includes('#fff') || decodedIconSrc.includes('#FFF');
-  return hasWhiteColor ? 'light:icon-light-mode' : '';
+export {
+  CUSTOM_UPLOAD_IDENTIFIER,
+  FONT_AWESOME_IDENTIFIER,
+  FONT_AWESOME_BRANDS_IDENTIFIER,
+  FONT_AWESOME_SOLID_IDENTIFIER,
+  ICON_CATEGORY_BRANDS,
+  ICON_CATEGORY_SOLID,
+  DEFAULT_ICON_MASK_SIZE,
+  DEFAULT_ICON_WEBP_SIZE,
 };
 
-export default getAppIconClassName;
+export type { IconCategory };
