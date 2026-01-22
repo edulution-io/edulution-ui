@@ -25,14 +25,16 @@ import VIEW_MODE from '@libs/common/constants/viewMode';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import Input from '@/components/shared/Input';
 import TableActionFooter from '@/components/ui/Table/TableActionFooter';
-import useViewModeStore from '@/store/useViewModeStore';
+import useTableViewSettingsStore from '@/store/useTableViewSettingsStore';
 import Checkbox from '@/components/ui/Checkbox';
+import type FilterOption from '@libs/ui/types/filterOption';
 import ScrollableTable from './ScrollableTable';
 import ViewModeToggle from './ViewModeToggle';
 import SortDropdown from './SortDropdown';
 import GridView, { GridItemConfig } from './GridView/GridView';
 import useScrollableTable from './useScrollableTable';
 import SelectedRowsCount from './SelectedRowsCount';
+import TableFilterDropdown from './TableFilterDropdown';
 
 interface TableGridViewProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -58,6 +60,7 @@ interface TableGridViewProps<TData, TValue> {
   canDropOnRow?: (row: TData) => boolean;
   gridItemConfig: GridItemConfig<TData>;
   viewModeStorageKey: string;
+  filterOptions?: FilterOption[];
 }
 
 const TableGridView = <TData, TValue>({
@@ -84,9 +87,10 @@ const TableGridView = <TData, TValue>({
   canDropOnRow,
   gridItemConfig,
   viewModeStorageKey,
+  filterOptions,
 }: TableGridViewProps<TData, TValue>) => {
   const { t } = useTranslation();
-  const { getViewMode, setViewMode } = useViewModeStore();
+  const { getViewMode, setViewMode } = useTableViewSettingsStore();
   const viewMode = getViewMode(viewModeStorageKey);
   const isTableView = viewMode === VIEW_MODE.table;
 
@@ -107,6 +111,17 @@ const TableGridView = <TData, TValue>({
     ),
     [viewMode, handleViewModeChange, isDialog],
   );
+
+  const fileFilterDropdown = useMemo(() => {
+    if (!filterOptions || filterOptions.length === 0) return null;
+
+    return (
+      <TableFilterDropdown
+        filterOptions={filterOptions}
+        isDialog={isDialog}
+      />
+    );
+  }, [filterOptions, isDialog]);
 
   const { table } = useScrollableTable({
     columns,
@@ -143,7 +158,12 @@ const TableGridView = <TData, TValue>({
         getRowExcludedFromCount={getRowExcludedFromCount}
         enableDragAndDrop={enableDragAndDrop}
         canDropOnRow={canDropOnRow}
-        searchBarAdditionalComponent={viewModeToggle}
+        searchBarAdditionalComponent={
+          <>
+            {fileFilterDropdown}
+            {viewModeToggle}
+          </>
+        }
       />
     );
   }
@@ -184,6 +204,8 @@ const TableGridView = <TData, TValue>({
               table={table}
               isDialog={isDialog}
             />
+
+            {fileFilterDropdown}
 
             {viewModeToggle}
           </div>

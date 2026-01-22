@@ -17,26 +17,37 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import APPS from '@libs/appconfig/constants/apps';
 import VIEW_MODE from '@libs/common/constants/viewMode';
 import ViewModeType from '@libs/common/types/viewModeType';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 
-interface ViewModeStore {
+interface TableViewSettingsStore {
   viewModes: Record<string, ViewModeType>;
+  showSystemFiles: Record<string, boolean>;
+  showHiddenFiles: Record<string, boolean>;
   setViewMode: (key: string, mode: ViewModeType) => void;
+  setShowSystemFiles: (key: string, enabled: boolean) => void;
+  setShowHiddenFiles: (key: string, enabled: boolean) => void;
   getViewMode: (key: string) => ViewModeType;
 }
 
-type PersistedViewModeStore = (
-  config: StateCreator<ViewModeStore>,
-  options: PersistOptions<Partial<ViewModeStore>>,
-) => StateCreator<ViewModeStore>;
+type PersistedTableViewSettingsStore = (
+  config: StateCreator<TableViewSettingsStore>,
+  options: PersistOptions<Partial<TableViewSettingsStore>>,
+) => StateCreator<TableViewSettingsStore>;
 
-const useViewModeStore = create<ViewModeStore>(
-  (persist as PersistedViewModeStore)(
+const initialValues = {
+  viewModes: {},
+  showSystemFiles: { [APPS.FILE_SHARING]: false },
+  showHiddenFiles: { [APPS.FILE_SHARING]: false },
+};
+
+const useTableViewSettingsStore = create<TableViewSettingsStore>(
+  (persist as PersistedTableViewSettingsStore)(
     (set, get) => ({
-      viewModes: {},
+      ...initialValues,
 
       setViewMode: (key, mode) => {
         set((state) => ({
@@ -51,13 +62,35 @@ const useViewModeStore = create<ViewModeStore>(
         const { viewModes } = get();
         return viewModes[key] || VIEW_MODE.table;
       },
+
+      setShowSystemFiles: (key, enabled) => {
+        set((state) => ({
+          showSystemFiles: {
+            ...state.showSystemFiles,
+            [key]: enabled,
+          },
+        }));
+      },
+
+      setShowHiddenFiles: (key, enabled) => {
+        set((state) => ({
+          showHiddenFiles: {
+            ...state.showHiddenFiles,
+            [key]: enabled,
+          },
+        }));
+      },
     }),
     {
       name: 'view-mode',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ viewModes: state.viewModes }),
+      partialize: (state) => ({
+        viewModes: state.viewModes,
+        showSystemFiles: state.showSystemFiles,
+        showHiddenFiles: state.showHiddenFiles,
+      }),
     },
   ),
 );
 
-export default useViewModeStore;
+export default useTableViewSettingsStore;
