@@ -144,7 +144,9 @@ const TAILWIND_CONFIG = {
         },
       });
     }),
-    plugin(function ({ addUtilities }) {
+    plugin(function ({ addUtilities, addVariant }) {
+      addVariant('light', 'html:not(.dark) &');
+
       const utils = {};
       for (let i = 1; i <= 8; i++) {
         utils[`.ql-indent-${i}`] = { 'margin-left': `${i * 2}rem` };

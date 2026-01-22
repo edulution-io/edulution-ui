@@ -26,6 +26,7 @@ import cn from '@libs/common/utils/className';
 import { Button } from '@/components/shared/Button';
 import { EditIcon } from '@libs/common/constants/standardActionIcons';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
+import IconWrapper from '@/components/shared/IconWrapper';
 
 const NativeAppHeader = ({ title, iconSrc, description, isAppIconEditable = false }: NativeAppHeaderProps) => {
   const { t } = useTranslation();
@@ -37,19 +38,19 @@ const NativeAppHeader = ({ title, iconSrc, description, isAppIconEditable = fals
     }
 
     if (typeof iconSrc === 'string') {
-      const iconClassName = getAppIconClassName(iconSrc);
-      const baseClassName = cn('h-20 w-20 object-contain', iconClassName);
       return (
-        <img
-          src={iconSrc}
+        <IconWrapper
+          iconSrc={iconSrc}
           alt={`${title} ${t('common.icon')}`}
-          className={baseClassName}
+          className="h-20 w-20 object-contain"
+          width={80}
+          height={80}
         />
       );
     }
 
     const iconClassName = getAppIconClassName(iconSrc);
-    const baseClassName = cn('h-20 w-20 object-contain', iconClassName);
+    const baseClassName = cn('h-20 w-20 object-contain text-foreground dark:text-white', iconClassName);
     return (
       <FontAwesomeIcon
         icon={iconSrc}

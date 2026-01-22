@@ -19,8 +19,8 @@
 
 import React from 'react';
 import { SIDEBAR_ICON_HEIGHT, SIDEBAR_ICON_WIDTH } from '@libs/ui/constants/sidebar';
-import getAppIconClassName from '@/utils/getAppIconClassName';
 import cn from '@libs/common/utils/className';
+import IconWrapper from '@/components/shared/IconWrapper';
 
 const SidebarItemIcon = ({
   isHovered,
@@ -37,16 +37,16 @@ const SidebarItemIcon = ({
     style={{ height: SIDEBAR_ICON_HEIGHT, width: SIDEBAR_ICON_WIDTH }}
     className="relative z-0 -mt-2 ml-[0.8rem] flex items-center justify-center"
   >
-    <img
-      src={iconSrc}
-      height={SIDEBAR_ICON_HEIGHT}
-      width={SIDEBAR_ICON_WIDTH}
-      className={cn(
-        'max-h-full max-w-full origin-top transform transition-transform duration-200',
-        isHovered ? 'scale-[1.17]' : 'scale-100',
-        !isHovered && !isSelected && getAppIconClassName(iconSrc),
-      )}
+    <IconWrapper
+      iconSrc={iconSrc}
       alt={`${title}-icon`}
+      className={cn(
+        'max-h-full max-w-full origin-top transform transition-all duration-200',
+        isHovered ? 'scale-[1.17] brightness-125' : 'scale-100',
+      )}
+      width={SIDEBAR_ICON_WIDTH}
+      height={SIDEBAR_ICON_HEIGHT}
+      applyLegacyFilter={!isSelected}
     />
   </div>
 );

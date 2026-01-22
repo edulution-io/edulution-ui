@@ -109,7 +109,12 @@
   "appstore": {
     "title": "App Store",
     "description": "Here you can add {{ applicationName }} apps.",
-    "chooseIcon": "Choose icon",
+    "edulutionIcons": "edulution Icons",
+    "moreIcons": "More icons",
+    "searchIcons": "Search icons...",
+    "searchIconsHint": "Tip: Use English search terms",
+    "noIconsFound": "No icons found",
+    "iconsAvailable": "icons available",
     "uploadIcon": "Upload icon",
     "dropIconDescription": "Drag an image here or click to select an image. Supported formats: SVG, WEBP"
   },
