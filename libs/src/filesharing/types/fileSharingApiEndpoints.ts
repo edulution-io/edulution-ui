@@ -30,6 +30,7 @@ enum FileSharingApiEndpoints {
   PUBLIC_SHARE = 'public-share',
   PUBLIC_SHARE_DOWNLOAD = 'public-share/download',
   UPLOAD = 'upload',
+  THUMBNAIL = 'thumbnail',
 }
 
 export default FileSharingApiEndpoints;

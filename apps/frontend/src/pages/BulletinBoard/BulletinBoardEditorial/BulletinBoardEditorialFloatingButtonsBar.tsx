@@ -26,7 +26,7 @@ import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardE
 import EditButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/editButton';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import { t } from 'i18next';
-import { MdOutlineTableChart, MdOutlineViewColumn } from 'react-icons/md';
+import { faTable, faColumns } from '@fortawesome/free-solid-svg-icons';
 
 const BulletinBoardEditorialFloatingButtonsBar: React.FC = () => {
   const {
@@ -57,7 +57,7 @@ const BulletinBoardEditorialFloatingButtonsBar: React.FC = () => {
   const config: FloatingButtonsBarConfig = {
     buttons: [
       {
-        icon: isEditorialModeEnabled ? MdOutlineViewColumn : MdOutlineTableChart,
+        icon: isEditorialModeEnabled ? faColumns : faTable,
         text: t(`common.${isEditorialModeEnabled ? 'columns' : 'table'}`),
         onClick: onSwitchEditorialModeButtonClick,
       },

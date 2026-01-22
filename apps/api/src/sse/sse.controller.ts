@@ -30,7 +30,7 @@ import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 import CustomHttpException from '../common/CustomHttpException';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
 import SseService from './sse.service';
-import { Public } from '../common/decorators/public.decorator';
+import Public from '../common/decorators/public.decorator';
 import { Conference, ConferenceDocument } from '../conferences/conference.schema';
 
 @ApiTags(SSE_EDU_API_ENDPOINTS.SSE)

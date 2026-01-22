@@ -31,6 +31,7 @@ import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import CustomHttpException from '../common/CustomHttpException';
 import { AppConfig } from './appconfig.schema';
 import initializeCollection from './initializeCollection';
@@ -41,6 +42,8 @@ import GlobalSettingsService from '../global-settings/global-settings.service';
 
 @Injectable()
 class AppConfigService implements OnModuleInit {
+  public appAccessMap = new Map<string, Set<string>>();
+
   constructor(
     @InjectConnection() private readonly connection: Connection,
     @InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfig>,
@@ -48,10 +51,34 @@ class AppConfigService implements OnModuleInit {
     private readonly globalSettingsService: GlobalSettingsService,
   ) {}
 
+  async updateAppAccessMap() {
+    try {
+      const appConfigs = await this.appConfigModel.find({}).lean();
+      this.appAccessMap = new Map(
+        appConfigs.map((config) => [
+          config.name,
+          new Set(config.accessGroups?.map((group: MultipleSelectorGroup) => group.path) ?? []),
+        ]),
+      );
+
+      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.APP_ACCESS_MAP_UPDATED);
+      Logger.verbose(`App access map updated`, AppConfigService.name);
+    } catch (error) {
+      throw new CustomHttpException(
+        AppConfigErrorMessages.ReadAppConfigFailed,
+        HttpStatus.SERVICE_UNAVAILABLE,
+        undefined,
+        AppConfigService.name,
+      );
+    }
+  }
+
   async onModuleInit() {
     await initializeCollection(this.connection, this.appConfigModel);
 
     await MigrationService.runMigrations<AppConfig>(this.appConfigModel, appConfigMigrationsList);
+
+    await this.updateAppAccessMap();
   }
 
   async insertConfig(appConfigDto: AppConfigDto, ldapGroups: string[]) {
@@ -67,6 +94,9 @@ class AppConfigService implements OnModuleInit {
       );
     } finally {
       await AppConfigService.writeProxyConfigFile(appConfigDto);
+
+      await this.updateAppAccessMap();
+
       this.eventEmitter.emit(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${appConfigDto.name}`);
     }
   }
@@ -108,6 +138,7 @@ class AppConfigService implements OnModuleInit {
               accessGroups: appConfigDto.accessGroups,
               extendedOptions: appConfigDto.extendedOptions,
               position: newPosition,
+              displayLocations: appConfigDto.displayLocations,
             },
           },
           upsert: true,
@@ -126,6 +157,9 @@ class AppConfigService implements OnModuleInit {
       );
     } finally {
       await AppConfigService.writeProxyConfigFile(appConfigDto);
+
+      await this.updateAppAccessMap();
+
       this.eventEmitter.emit(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${appConfigDto.name}`);
     }
   }
@@ -172,14 +206,14 @@ class AppConfigService implements OnModuleInit {
 
       if (getIsAdmin(ldapGroups, adminGroups)) {
         appConfigDto = await this.appConfigModel
-          .find({}, 'name translations icon appType options accessGroups extendedOptions position')
+          .find({}, 'name translations icon appType options accessGroups extendedOptions position displayLocations')
           .sort({ position: 1 })
           .lean();
       } else {
         const appConfigObjects = await this.appConfigModel
           .find(
             { 'accessGroups.path': { $in: ldapGroups } },
-            'name translations icon appType options extendedOptions position',
+            'name translations icon appType options extendedOptions position displayLocations',
           )
           .sort({ position: 1 })
           .lean();
@@ -197,6 +231,7 @@ class AppConfigService implements OnModuleInit {
             accessGroups: [],
             extendedOptions,
             position: config.position,
+            displayLocations: config.displayLocations,
           };
         });
       }
@@ -298,6 +333,8 @@ class AppConfigService implements OnModuleInit {
       if (doesFolderExist) {
         await FilesystemService.deleteDirectories([`${APPS_FILES_PATH}/${configName}`]);
       }
+
+      await this.updateAppAccessMap();
 
       this.eventEmitter.emit(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${configName}`);
     }

@@ -19,10 +19,11 @@
 
 import React from 'react';
 import TableAction from '@libs/common/types/tableAction';
-import { ButtonSH } from '@/components/ui/ButtonSH';
+import { Button } from '@/components/shared/Button';
 import { TableCell, TableFooter, TableRow } from '@/components/ui/Table';
 import TableActionMenu from '@/components/ui/Table/TableActionMenu';
-import { HiOutlineDotsHorizontal } from 'react-icons/hi';
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface TableActionFooterProps<TData> {
   actions?: TableAction<TData>[];
@@ -38,28 +39,35 @@ const TableActionFooter = <TData,>(props: TableActionFooterProps<TData>) => {
 
   if (actions.length < 3) {
     const actionButtons = actions.map((action) => {
-      const { icon: Icon, onClick, translationId, disabled = false } = action;
+      const { icon, onClick, translationId, disabled = false } = action;
       return (
-        <ButtonSH
+        <Button
           key={translationId}
-          className="flex h-2 max-h-[2.25rem] min-h-[32px] w-full items-center justify-center rounded-md border border-gray-500"
+          className="flex h-2 w-full items-center justify-center"
           onClick={() => onClick()}
           type="button"
+          variant="btn-outline"
           disabled={disabled}
         >
-          <Icon className="h-[18px] w-[18px] text-xl text-background" />
-        </ButtonSH>
+          <FontAwesomeIcon
+            icon={icon}
+            className="h-[18px] w-[18px] text-xl"
+          />
+        </Button>
       );
     });
 
     return (
       <TableFooter>
-        <TableRow className="m-0 p-0 hover:bg-black/0">
+        <TableRow
+          variant="none"
+          className="m-0 p-0"
+        >
           <TableCell
             colSpan={columnLength}
-            className="m-0 p-0 hover:bg-black/0"
+            className="m-0 p-0 hover:bg-transparent"
           >
-            <div className="mx-0 my-1 flex w-full items-center justify-end gap-2 hover:bg-black/0">{actionButtons}</div>
+            <div className="mx-0 my-1 flex w-full items-center justify-end gap-2">{actionButtons}</div>
           </TableCell>
         </TableRow>
       </TableFooter>
@@ -68,22 +76,29 @@ const TableActionFooter = <TData,>(props: TableActionFooterProps<TData>) => {
 
   return (
     <TableFooter>
-      <TableRow className="m-0 p-0 hover:bg-black/0">
+      <TableRow
+        variant="none"
+        className="m-0 p-0"
+      >
         <TableCell
           colSpan={columnLength}
-          className="m-0 p-0 hover:bg-black/0"
+          className="m-0 p-0 hover:bg-transparent"
         >
-          <div className="mx-0 my-1 flex w-full items-center justify-end gap-2 hover:bg-black/0">
+          <div className="mx-0 my-1 flex w-full items-center justify-end gap-2">
             <TableActionMenu
               actions={actions}
               trigger={
                 <div className="relative flex w-full items-center justify-end">
-                  <ButtonSH
-                    className="flex h-2 max-h-[2.25rem] min-h-[32px] w-[200px] items-center justify-center rounded-md border border-gray-500"
+                  <Button
+                    className="flex h-2 w-full items-center justify-center"
                     type="button"
+                    variant="btn-outline"
                   >
-                    <HiOutlineDotsHorizontal className="h-[18px] w-[18px] text-xl text-background" />
-                  </ButtonSH>
+                    <FontAwesomeIcon
+                      icon={faEllipsis}
+                      className="h-[18px] w-[18px] text-xl text-background"
+                    />
+                  </Button>
                 </div>
               }
             />

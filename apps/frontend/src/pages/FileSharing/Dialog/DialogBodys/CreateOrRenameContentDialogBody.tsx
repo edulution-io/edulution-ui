@@ -140,9 +140,7 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
         onSubmit={(event) => event.preventDefault()}
       >
         {isRenaming && originalFilename && (
-          <div className="text-sm text-muted-foreground">
-            {t('filesharing.currentName')}: <span className="font-medium">{originalFilename}</span>
-          </div>
+          <p className="text-muted-foreground">{`${t('filesharing.currentName')}: ${originalFilename}`}</p>
         )}
         <div className={showExtensionInput ? 'flex w-full items-center' : ''}>
           {filename !== undefined && (
@@ -170,9 +168,9 @@ const CreateOrRenameContentDialogBody: React.FC<FilesharingDialogProps> = ({ for
             </div>
           )}
         </div>
-        {isSameAsOriginal && <div className="text-muted-foreground">{t('filesharing.sameNameAsOriginal')}</div>}
+        {isSameAsOriginal && <p className="text-muted-foreground">{t('filesharing.sameNameAsOriginal')}</p>}
         {filenameAlreadyExists && (
-          <div>{t(`filesharing.${selectedFileType || extension ? 'file' : 'folder'}WithSameNameAlreadyExists`)}</div>
+          <p>{t(`filesharing.${selectedFileType || extension ? 'file' : 'folder'}WithSameNameAlreadyExists`)}</p>
         )}
       </form>
     </Form>

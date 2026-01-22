@@ -19,9 +19,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { Content, Header, Item, Root, Trigger } from '@radix-ui/react-accordion';
-import { ChevronDownIcon } from '@radix-ui/react-icons';
 import cn from '@libs/common/utils/className';
 import AnchorSection from '@/components/shared/AnchorSection';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import useSubMenuStore from '@/store/useSubMenuStore';
 
 interface SectionAccordionProps {
@@ -76,14 +77,14 @@ const SectionAccordion: React.FC<SectionAccordionProps> = ({
 
   useEffect(() => {
     const hash = window.location.hash.replace('#', '');
-    if (!hash) return;
+    if (hash) {
+      setOpenItems((prev) => (prev.includes(hash) ? prev : [...prev, hash]));
 
-    setOpenItems((prev) => (prev.includes(hash) ? prev : [...prev, hash]));
-
-    setTimeout(() => {
-      const element = document.getElementById(hash);
-      element?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }, 100);
+      setTimeout(() => {
+        const element = document.getElementById(hash);
+        element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
   }, []);
 
   const handleValueChange = (value: string[]) => {
@@ -101,7 +102,7 @@ const SectionAccordion: React.FC<SectionAccordionProps> = ({
       type="multiple"
       value={openItems}
       onValueChange={handleValueChange}
-      className={cn('w-full space-y-4', className)}
+      className={cn('w-full space-y-4 pb-4', className)}
     >
       {children}
     </Root>
@@ -128,7 +129,7 @@ const SectionAccordionItem: React.FC<SectionAccordionItemProps> = ({
       value={id}
       className={cn(
         'text-card-foreground transition-all duration-300',
-        variant === 'default' && 'rounded-xl bg-muted-background',
+        variant === 'default' && 'bg-glass rounded-xl dark:bg-muted-background',
         isHighlighted && 'blinking',
         className,
       )}
@@ -143,7 +144,10 @@ const SectionAccordionItem: React.FC<SectionAccordionItemProps> = ({
             )}
           >
             <h3>{label}</h3>
-            <ChevronDownIcon className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" />
+            <FontAwesomeIcon
+              icon={faChevronDown}
+              className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200"
+            />
           </Trigger>
         </Header>
         <Content

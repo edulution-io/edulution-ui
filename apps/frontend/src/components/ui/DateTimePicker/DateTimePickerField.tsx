@@ -24,7 +24,8 @@ import { de, enUS } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import { FieldValues, Path, PathValue, UseFormReturn } from 'react-hook-form';
 import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
-import { CalendarIcon } from '@radix-ui/react-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCalendarDays } from '@fortawesome/free-solid-svg-icons';
 import { inputVariants } from '@libs/ui/constants/commonClassNames';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
 import cn from '@libs/common/utils/className';
@@ -34,9 +35,9 @@ import safeGetDate from '@libs/common/utils/Date/safeGetDate';
 import useLanguage from '@/hooks/useLanguage';
 import { Button } from '@/components/shared/Button';
 import { Calendar } from '@/components/ui/Calendar';
-import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
+import { ScrollArea } from '@/components/ui/ScrollArea';
 import MinuteButton from '@/components/ui/DateTimePicker/MinuteButton';
 import HourButton from '@/components/ui/DateTimePicker/HourButton';
 
@@ -154,18 +155,14 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
         }}
         render={() => (
           <FormItem className="flex flex-col space-y-0">
-            {translationId ? <p className="text-m font-bold text-background">{t(translationId)}</p> : null}
+            {translationId ? <p className="text-m font-bold">{t(translationId)}</p> : null}
             <Popover
               open={isOpen}
               onOpenChange={setIsOpen}
             >
               <PopoverTrigger asChild>
                 <FormControl
-                  className={cn(
-                    'w-auto p-0',
-                    inputVariants({ variant: variant === 'dialog' ? 'dialog' : 'default' }),
-                    isOpen ? 'border-ring' : 'border-transparent',
-                  )}
+                  className={cn('w-auto p-0', inputVariants({ variant: variant === 'dialog' ? 'dialog' : 'default' }))}
                 >
                   <Button
                     variant="btn-outline"
@@ -175,7 +172,8 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
                     )}
                   >
                     {timeDisplay}
-                    <DeleteIcon
+                    <FontAwesomeIcon
+                      icon={DeleteIcon}
                       className="ml-auto h-4 w-4 opacity-50 hover:opacity-100"
                       onClick={(event) => {
                         event.preventDefault();
@@ -183,15 +181,18 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
                       }}
                       visibility={fieldValue ? 'visible' : 'hidden'}
                     />
-                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50 hover:opacity-100" />
+                    <FontAwesomeIcon
+                      icon={faCalendarDays}
+                      className="ml-auto h-4 w-4 opacity-50 hover:opacity-100"
+                    />
                   </Button>
                 </FormControl>
               </PopoverTrigger>
 
               <PopoverContent
-                className={cn('w-auto p-0', {
+                className={cn('w-auto rounded-xl p-0', {
                   'bg-background text-foreground': variant === 'default',
-                  'border-ring bg-muted text-secondary': variant === 'dialog',
+                  'border-ring bg-white text-background dark:bg-muted dark:text-secondary': variant === 'dialog',
                 })}
               >
                 <div className="sm:flex">
@@ -209,7 +210,7 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
                       {t('form.input.dateTimePicker.timeSlot')}
                     </div>
                     <div className="flex flex-col divide-y sm:h-[300px] sm:flex-row sm:divide-x sm:divide-y-0">
-                      <ScrollArea className="w-64 sm:w-auto">
+                      <ScrollArea className="w-64 sm:h-[300px] sm:w-auto">
                         <div className="flex p-2 sm:flex-col">
                           {Array.from({ length: 24 }, (_, i) => i)
                             .reverse()
@@ -225,7 +226,7 @@ const DateTimePickerField = <T extends FieldValues>(props: DateTimePickerFieldPr
                         </div>
                       </ScrollArea>
 
-                      <ScrollArea className="w-64 sm:w-auto">
+                      <ScrollArea className="w-64 sm:h-[300px] sm:w-auto">
                         <div className="flex p-2 sm:flex-col">
                           {Array.from({ length: 12 }, (_, i) => i * 5).map((minute) => (
                             <MinuteButton

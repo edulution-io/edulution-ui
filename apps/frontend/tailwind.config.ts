@@ -4,7 +4,7 @@ import tailwindScrollbar from 'tailwind-scrollbar';
 
 const TAILWIND_CONFIG = {
   darkMode: ['class'],
-  content: ['./apps/frontend/**/*.{js,ts,jsx,tsx,html}', '!./apps/backend/**', '!./libs/**'],
+  content: ['./apps/frontend/**/*.{js,ts,jsx,tsx,html}', './libs/**/*.{js,ts,jsx,tsx}', '!./apps/backend/**'],
   safelist: [{ pattern: /^ql-indent-[1-8]$/ }],
   prefix: '',
   theme: {
@@ -127,6 +127,9 @@ const TAILWIND_CONFIG = {
   plugins: [
     tailwindcssAnimate,
     tailwindScrollbar({ nocompatible: true }),
+    plugin(function ({ addVariant }) {
+      addVariant('light', '.light &');
+    }),
     plugin(function ({ addBase, theme }) {
       addBase({
         h1: { fontSize: theme('fontSize.h1'), fontWeight: '700' },
@@ -141,11 +144,14 @@ const TAILWIND_CONFIG = {
         },
       });
     }),
-    plugin(function ({ addUtilities }) {
+    plugin(function ({ addUtilities, addVariant }) {
+      addVariant('light', 'html:not(.dark) &');
+
       const utils = {};
       for (let i = 1; i <= 8; i++) {
         utils[`.ql-indent-${i}`] = { 'margin-left': `${i * 2}rem` };
       }
+      utils['.icon-light-mode'] = { filter: 'brightness(0) saturate(100%) invert(15%)' };
       addUtilities(utils);
     }),
   ],

@@ -47,7 +47,7 @@ import FilesystemService from 'apps/api/src/filesystem/filesystem.service';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import SurveysService from './surveys.service';
 import SurveyAnswerService from './survey-answers.service';
-import { Public } from '../common/decorators/public.decorator';
+import Public from '../common/decorators/public.decorator';
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 
@@ -104,7 +104,7 @@ class PublicSurveysController {
     const { surveyId, questionId, filename } = params;
     await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
     const filePath = join(SURVEYS, ATTACHMENT_FOLDER, surveyId, questionId);
-    return this.filesystemService.serveFiles(filePath, filename, res);
+    return this.filesystemService.serveFile(filePath, filename, res);
   }
 
   @Post(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId`)

@@ -21,13 +21,14 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import { t } from 'i18next';
 import React from 'react';
 import ShareCollectDialogProps from '@libs/classManagement/types/shareCollectDialogProps';
-import { FaCopy, FaCut } from 'react-icons/fa';
 import { LmnApiCollectOperationsType } from '@libs/lmnApi/types/lmnApiCollectOperationsType';
 import { RadioGroupItemSH, RadioGroupSH } from '@/components/ui/RadioGroupSH';
 import LMN_API_COLLECT_OPERATIONS from '@libs/lmnApi/constants/lmnApiCollectOperations';
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import WebdavShareSelectDropdown from '@/pages/FileSharing/Dialog/DialogBodys/WebdavShareSelectDropdown';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCopy, faCut } from '@fortawesome/free-solid-svg-icons';
 
 const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, onClose, action }) => {
   const { activeCollectionOperation, setActiveCollectionOperation } = useFileSharingMoveDialogStore();
@@ -35,11 +36,11 @@ const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, 
   const options: Record<LmnApiCollectOperationsType, { label: string; icon: JSX.Element }> = {
     [LMN_API_COLLECT_OPERATIONS.CUT]: {
       label: t('common.cut'),
-      icon: <FaCut />,
+      icon: <FontAwesomeIcon icon={faCut} />,
     },
     [LMN_API_COLLECT_OPERATIONS.COPY]: {
       label: t('common.copy.doCopy'),
-      icon: <FaCopy />,
+      icon: <FontAwesomeIcon icon={faCopy} />,
     },
   };
 

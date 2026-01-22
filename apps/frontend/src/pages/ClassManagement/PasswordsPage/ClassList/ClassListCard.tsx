@@ -26,7 +26,8 @@ import cn from '@libs/common/utils/className';
 import Checkbox from '@/components/ui/Checkbox';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import ActionTooltip from '@/components/shared/ActionTooltip';
-import { FaFileCsv, FaRegFilePdf } from 'react-icons/fa6';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileCsv, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import PrintPasswordsDialog from '@/pages/ClassManagement/PasswordsPage/PrintPasswordsDialog';
 import removeSchoolPrefix from '@libs/classManagement/utils/removeSchoolPrefix';
 
@@ -113,16 +114,22 @@ const ClassListCard = ({ selectedClasses, setSelectedClasses, group, disabled }:
           <button
             type="button"
             onClick={(event) => onButtonClick(event, PrintPasswordsFormat.PDF)}
-            className="absolute -top-[1px] right-9 h-[42px] bg-primary px-2 py-3 text-xl hover:bg-opacity-90"
+            className="absolute -top-[1px] right-9 h-[42px] bg-primary px-2 text-xl hover:bg-opacity-90"
           >
-            <FaRegFilePdf />
+            <FontAwesomeIcon
+              icon={faFilePdf}
+              className="text-white"
+            />
           </button>
           <button
             type="button"
             onClick={(event) => onButtonClick(event, PrintPasswordsFormat.CSV)}
-            className="absolute -right-0 -top-[1px] h-[42px] rounded-r-lg bg-primary px-2 py-3 text-lg hover:bg-opacity-90"
+            className="absolute -right-0 -top-[1px] h-[42px] rounded-r-lg bg-primary px-2 text-lg hover:bg-opacity-90"
           >
-            <FaFileCsv />
+            <FontAwesomeIcon
+              icon={faFileCsv}
+              className="text-white"
+            />
           </button>
         </CardContent>
       </Card>

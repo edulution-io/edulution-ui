@@ -20,7 +20,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import { CloudIcon, FileSharingIcon } from '@/assets/icons';
+import { FileSharingIcon } from '@/assets/icons';
+import { faCloud } from '@fortawesome/free-solid-svg-icons';
 import userStore from '@/store/UserStore/useUserStore';
 import MenuItem from '@libs/menubar/menuItem';
 import APPS from '@libs/appconfig/constants/apps';
@@ -90,7 +91,7 @@ const useFileSharingMenuConfig = () => {
     const sharedItem: MenuItem = {
       id: SHARED,
       label: t('mountpoints.shared', { defaultValue: 'Geteilte Dateien' }),
-      icon: CloudIcon,
+      icon: faCloud,
       action: () => navigate(`/${APPS.FILE_SHARING}/${SHARED}`, { replace: true }),
     };
 

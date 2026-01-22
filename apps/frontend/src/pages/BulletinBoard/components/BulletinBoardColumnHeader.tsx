@@ -19,7 +19,8 @@
 
 import React, { useMemo } from 'react';
 import { Button } from '@/components/shared/Button';
-import { PiDotsThreeVerticalBold } from 'react-icons/pi';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import { useTranslation } from 'react-i18next';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
@@ -79,7 +80,10 @@ const BulletinBoardColumnHeader = ({
             className="text-white-500 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full p-0 hover:bg-primary hover:text-white"
             title={t('common.options')}
           >
-            <PiDotsThreeVerticalBold className="h-6 w-6" />
+            <FontAwesomeIcon
+              icon={faEllipsisVertical}
+              className="h-6 w-6"
+            />
           </Button>
         }
         items={categoryDropdownItems}

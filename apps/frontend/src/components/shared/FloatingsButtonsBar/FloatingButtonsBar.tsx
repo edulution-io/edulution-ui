@@ -20,8 +20,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { HiOutlineChevronDoubleDown, HiOutlineChevronDoubleUp } from 'react-icons/hi';
-import { IconContext } from 'react-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { useDebounceCallback, useEventListener, useOnClickOutside } from 'usehooks-ts';
 
 import FloatingButtonsBarProps from '@libs/ui/types/FloatingButtons/floatingButtonsBarProps';
@@ -136,8 +136,6 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
     };
   }, [visibleButtons, portalRoot, debouncedUpdate]);
 
-  const iconContextValue = useMemo(() => ({ className: 'h-6 w-6 m-4' }), []);
-
   const renderButton = (buttonConfig: FloatingButtonConfig, key: string) => (
     <div
       key={key}
@@ -149,7 +147,6 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
         text={buttonConfig.text}
         onClick={buttonConfig.onClick}
         dropdownItems={buttonConfig.dropdownItems}
-        iconContextValue={iconContextValue}
       />
     </div>
   );
@@ -176,9 +173,10 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
             onClick={toggleDropup}
             hexagonIconAltText={isDropupOpen ? t('common.close') : t('common.showMore')}
           >
-            <IconContext.Provider value={iconContextValue}>
-              {isDropupOpen ? <HiOutlineChevronDoubleDown /> : <HiOutlineChevronDoubleUp />}
-            </IconContext.Provider>
+            <FontAwesomeIcon
+              icon={isDropupOpen ? faChevronDown : faChevronUp}
+              className="m-5 h-5 w-5"
+            />
           </Button>
           <span className={FLOATING_BUTTON_CLASS_NAME}>{isDropupOpen ? t('common.less') : t('common.more')}</span>
 
@@ -186,7 +184,7 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
             <div
               ref={dropupRef}
               className={cn(
-                'absolute bottom-full left-1/2 mb-2 flex -translate-x-1/2 transform flex-col gap-2 rounded-xl bg-black bg-opacity-90 p-4 shadow-lg backdrop-blur',
+                'absolute bottom-full left-1/2 mb-2 flex -translate-x-1/2 transform flex-col gap-2 rounded-xl bg-overlay bg-opacity-90 p-4 shadow-lg backdrop-blur',
                 'z-[9999]',
                 isDropupAnimatingOut
                   ? 'duration-200 animate-out fade-out slide-out-to-bottom-0'

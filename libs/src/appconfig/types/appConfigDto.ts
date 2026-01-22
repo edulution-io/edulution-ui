@@ -23,6 +23,7 @@ import type ExtendedOptionKeysDto from '@libs/appconfig/types/extendedOptionKeys
 import { type AppConfigOptions } from './appConfigOptionsType';
 import type AppIntegrationType from './appIntegrationType';
 import type AppNameTranslations from './appNameTranslations';
+import type AppDisplayLocationType from './appDisplayLocationType';
 
 class AppConfigDto {
   @IsString()
@@ -48,6 +49,9 @@ class AppConfigDto {
 
   @IsNumber()
   position: number;
+
+  @ValidateNested()
+  displayLocations?: AppDisplayLocationType[];
 }
 
 export default AppConfigDto;

@@ -36,8 +36,8 @@ interface TemplateMenuStore {
 
   isOpenTemplateConfirmDeletion: boolean;
   setIsOpenTemplateConfirmDeletion: (state: boolean) => void;
-  deleteTemplate: (templateName: string) => Promise<void>;
-  setIsTemplateActive: (templateName: string, state: boolean) => Promise<void>;
+  deleteTemplate: (templateId: string) => Promise<void>;
+  setIsTemplateActive: (templateId: string, state: boolean) => Promise<void>;
   error?: Error;
 
   template?: SurveyTemplateDto;

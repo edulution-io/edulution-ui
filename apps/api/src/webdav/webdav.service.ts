@@ -151,8 +151,10 @@ class WebdavService {
   }
 
   async ensureFolderExists(username: string, basePath: string, folderName: string, share: string) {
-    const exists = await this.checkIfFolderExists(username, basePath, folderName, share);
+    const directories = await this.getDirectoryAtPath(username, `${basePath}/`, share);
+    const exists = directories.some((item) => item.type === ContentType.DIRECTORY && item.filename === folderName);
     if (!exists) {
+      Logger.verbose(`Creating folder '${folderName}' at '${basePath}'`, WebdavService.name);
       await this.createFolder(username, basePath, folderName, share);
     }
   }
@@ -197,19 +199,23 @@ class WebdavService {
     const pathWithoutWebdav = getPathWithoutWebdav(path, webdavShare.pathname);
     const url = WebdavService.safeJoinUrl(webdavShare.url, pathWithoutWebdav);
 
-    return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
-      client,
-      {
-        method: HttpMethodsWebDav.PROPFIND,
-        url,
-        data: DEFAULT_PROPFIND_XML,
-        headers: {
-          [HTTP_HEADERS.Depth]: WebdavRequestDepth.ONE_LEVEL,
+    try {
+      return (await WebdavService.executeWebdavRequest<string, DirectoryFileDTO[]>(
+        client,
+        {
+          method: HttpMethodsWebDav.PROPFIND,
+          url,
+          data: DEFAULT_PROPFIND_XML,
+          headers: {
+            [HTTP_HEADERS.Depth]: WebdavRequestDepth.ONE_LEVEL,
+          },
         },
-      },
-      FileSharingErrorMessage.FolderNotFound,
-      mapToDirectories,
-    )) as DirectoryFileDTO[];
+        FileSharingErrorMessage.FolderNotFound,
+        mapToDirectories,
+      )) as DirectoryFileDTO[];
+    } catch (error) {
+      return [];
+    }
   }
 
   async createFolder(username: string, path: string, folderName: string, share: string): Promise<WebdavStatusResponse> {
@@ -330,6 +336,7 @@ class WebdavService {
         url: encodeURI(originFullPath),
         headers: {
           Destination: encodeURI(destinationUrl),
+          Overwrite: 'T',
           [HTTP_HEADERS.ContentType]: RequestResponseContentType.APPLICATION_X_WWW_FORM_URLENCODED,
         },
       },
@@ -371,26 +378,12 @@ class WebdavService {
     );
   }
 
-  async checkIfFolderExists(username: string, parentPath: string, name: string, share: string): Promise<boolean> {
-    const directories = await this.getDirectoryAtPath(username, `${parentPath}/`, share);
-    return directories.some((item) => item.type === ContentType.DIRECTORY && item.filename === name);
-  }
-
   async createCollectFolderIfNotExists(username: string, destinationPath: string, share: string) {
     const sanitizedDestinationPath = destinationPath.replace(`${FILE_PATHS.COLLECT}/`, '');
     const pathWithoutFilename = sanitizedDestinationPath.slice(0, sanitizedDestinationPath.lastIndexOf('/'));
 
-    const folderAlreadyExistis = await this.checkIfFolderExists(
-      username,
-      `${pathWithoutFilename}/`,
-      FILE_PATHS.COLLECT,
-      share,
-    );
-
-    if (folderAlreadyExistis) return;
-
     try {
-      await this.createFolder(username, pathWithoutFilename, FILE_PATHS.COLLECT, share);
+      await this.ensureFolderExists(username, `${pathWithoutFilename}/`, FILE_PATHS.COLLECT, share);
     } catch (error) {
       throw new CustomHttpException(
         FileSharingErrorMessage.CreationFailed,

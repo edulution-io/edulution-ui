@@ -189,7 +189,7 @@ const VDIFrame = () => {
       <div
         id="display"
         ref={displayRef}
-        className="h-full w-full border-none bg-black"
+        className="h-full w-full border-none bg-cover"
       />
       {clientState < Client.State.CONNECTED && <LoadingIndicatorDialog isOpen />}
     </ResizableWindow>

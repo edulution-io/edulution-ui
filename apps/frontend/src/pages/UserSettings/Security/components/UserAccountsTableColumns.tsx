@@ -18,7 +18,7 @@
  */
 
 import React from 'react';
-import SelectableTextCell from '@/components/ui/Table/SelectableTextCell';
+import SelectableCell from '@/components/ui/Table/SelectableCell';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import { ColumnDef } from '@tanstack/react-table';
 import type UserAccountDto from '@libs/user/types/userAccount.dto';
@@ -37,7 +37,7 @@ const UserAccountsTableColumns: ColumnDef<UserAccountDto>[] = [
     },
     accessorFn: (row) => row.accountId,
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         isFirstColumn
         row={row}
         className="max-w-0"
@@ -62,7 +62,7 @@ const UserAccountsTableColumns: ColumnDef<UserAccountDto>[] = [
       };
 
       return (
-        <SelectableTextCell
+        <SelectableCell
           onClick={() => row.toggleSelected()}
           text={displayName()}
         />
@@ -77,7 +77,7 @@ const UserAccountsTableColumns: ColumnDef<UserAccountDto>[] = [
     },
     accessorFn: (row) => row.accountUser,
     cell: ({ row }) => (
-      <SelectableTextCell
+      <SelectableCell
         onClick={() => copyToClipboard(row.original.accountUser)}
         text={row.original.accountUser}
       />

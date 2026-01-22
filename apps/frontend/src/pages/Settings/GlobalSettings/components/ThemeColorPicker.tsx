@@ -45,7 +45,7 @@ const ThemeColorPicker = ({ label, value, onChange, description }: ThemeColorPic
           type="color"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="h-10 w-16 cursor-pointer rounded border-2 border-border"
+          className="border-grey-300 h-10 w-16 cursor-pointer rounded-lg border-[1px] bg-white dark:border-none"
         />
         <Input
           type="text"

@@ -26,12 +26,13 @@ import UserArea from '@/pages/ClassManagement/LessonPage/UserArea/UserArea';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import UserGroups from '@libs/groups/types/userGroups.enum';
-import { MdClose, MdSave } from 'react-icons/md';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
+import { SaveIcon } from '@libs/common/constants/standardActionIcons';
 import { DropdownSelect } from '@/components';
 import { CLASS_MANAGEMENT_LESSON_PATH } from '@libs/classManagement/constants/classManagementPaths';
 import { useTranslation } from 'react-i18next';
 import GroupDialog from '@/pages/ClassManagement/components/GroupDialog/GroupDialog';
-import { FaAddressCard } from 'react-icons/fa';
 import getUniqueValues from '@libs/lmnApi/utils/getUniqueValues';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import { UseFormReturn } from 'react-hook-form';
@@ -45,6 +46,7 @@ import QuotaLimitInfo from '@/pages/FileSharing/utilities/QuotaLimitInfo';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
+import { Button } from '@/components/shared/Button';
 import SchoolSelectorDropdown from '../components/SchoolSelectorDropdown';
 
 const LessonPage = () => {
@@ -121,7 +123,7 @@ const LessonPage = () => {
         break;
       }
       case UserGroups.Classes: {
-        const schoolClass = await fetchSchoolClass(groupNameParams!);
+        const schoolClass = await fetchSchoolClass(groupNameParams!, true);
         if (schoolClass?.members) {
           setMember(getUniqueValues([...schoolClass.members]));
         }
@@ -185,7 +187,7 @@ const LessonPage = () => {
     setIsPageLoading(false);
   };
 
-  const sessionToSave: GroupColumn = {
+  const sessionToSave: Omit<GroupColumn, 'icon'> = {
     name: UserGroups.Sessions,
     translationId: 'mySessions',
     createFunction: createSessionAndNavigate,
@@ -195,7 +197,6 @@ const LessonPage = () => {
       setOpenDialogType(null);
       closeSession();
     },
-    icon: <FaAddressCard className="h-6 w-6" />,
     groups: userSessions,
   };
 
@@ -222,24 +223,28 @@ const LessonPage = () => {
         {isSuperAdmin && <SchoolSelectorDropdown />}
         {groupNameParams || member.length ? (
           <div className="flex flex-row justify-between gap-2">
-            <button
-              type="button"
+            <Button
               onClick={onSaveSessionsButtonClick}
-              className="flex h-10 cursor-pointer items-center rounded-lg bg-accent text-secondary hover:opacity-90"
+              variant="btn-table"
             >
-              <span className="text-nowrap px-4 text-background">
+              <span className="text-nowrap px-4">
                 {t(`classmanagement.${currentSelectedSession ? 'editSession' : 'saveSession'}`)}
               </span>
-              <MdSave className="ml-auto inline-block h-8 w-8 pr-2" />
-            </button>
-            <button
-              type="button"
+              <FontAwesomeIcon
+                icon={SaveIcon}
+                className="ml-auto inline-block h-5 w-5 pr-2"
+              />
+            </Button>
+            <Button
               onClick={closeSession}
-              className="flex h-10 cursor-pointer items-center rounded-lg bg-accent text-secondary hover:opacity-90"
+              variant="btn-table"
             >
-              <span className="text-nowrap pl-4 text-background">{t('classmanagement.closeSession')}</span>
-              <MdClose className="ml-auto inline-block h-8 w-8 px-2" />
-            </button>
+              <span className="text-nowrap pl-4">{t('classmanagement.closeSession')}</span>
+              <FontAwesomeIcon
+                icon={faClose}
+                className="ml-auto inline-block h-4 w-4 pr-2"
+              />
+            </Button>
           </div>
         ) : null}
       </div>

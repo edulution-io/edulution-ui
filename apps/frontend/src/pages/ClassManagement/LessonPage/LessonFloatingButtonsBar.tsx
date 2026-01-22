@@ -18,16 +18,21 @@
  */
 
 import React, { useState } from 'react';
-import { MdSchool } from 'react-icons/md';
+import {
+  faGraduationCap,
+  faRightFromBracket,
+  faRightToBracket,
+  faEarthAmericas,
+  faFile,
+  faWifi,
+  faFilter,
+  faPrint,
+  faEye,
+  IconDefinition,
+} from '@fortawesome/free-solid-svg-icons';
 import { t } from 'i18next';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
-import { FaArrowRightFromBracket, FaArrowRightToBracket, FaEarthAmericas } from 'react-icons/fa6';
 import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
-import { FaFileAlt, FaWifi } from 'react-icons/fa';
-import { TbFilterCode } from 'react-icons/tb';
-import { FiPrinter } from 'react-icons/fi';
-import { IconType } from 'react-icons';
-import { PiEyeFill } from 'react-icons/pi';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import ReloadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/reloadButton';
@@ -95,7 +100,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
     .filter((uid): uid is string => Boolean(uid));
 
   const rawButtons: {
-    icon: IconType;
+    icon: IconDefinition;
     text: string;
     enableAction: () => Promise<void>;
     disableAction: () => Promise<void>;
@@ -103,7 +108,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
     disableText?: string;
   }[] = [
     {
-      icon: FaArrowRightFromBracket,
+      icon: faRightFromBracket,
       text: CLASSMGMT_OPTIONS.SHARE,
       enableAction: async () => {
         const shareDTO = buildShareDTO(user?.cn, students, moveOrCopyItemToPath);
@@ -113,7 +118,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
       disableAction: async () => {},
     },
     {
-      icon: FaArrowRightToBracket,
+      icon: faRightToBracket,
       text: CLASSMGMT_OPTIONS.COLLECT,
       enableAction: async () => {
         const collectDTO = buildCollectDTO(students, user, groupNameFromStore || '', homePath);
@@ -123,13 +128,13 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
       disableAction: async () => {},
     },
     {
-      icon: FaFileAlt,
+      icon: faFile,
       text: CLASSMGMT_OPTIONS.SHOWCOLLECTEDFILES,
       enableAction: async () => {},
       disableAction: async () => {},
     },
     {
-      icon: FaWifi,
+      icon: faWifi,
       text: CLASSMGMT_OPTIONS.WIFI,
       enableAction: async () => {
         await addManagementGroup(`${schoolPrefix}${CLASSMGMT_OPTIONS.WIFI}`, selectedStudents);
@@ -140,7 +145,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
       },
     },
     {
-      icon: TbFilterCode,
+      icon: faFilter,
       text: CLASSMGMT_OPTIONS.WEBFILTER,
       enableAction: async () => {
         await addManagementGroup(`${schoolPrefix}${CLASSMGMT_OPTIONS.WEBFILTER}`, selectedStudents);
@@ -150,7 +155,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
       },
     },
     {
-      icon: FaEarthAmericas,
+      icon: faEarthAmericas,
       text: CLASSMGMT_OPTIONS.INTERNET,
       enableAction: async () => {
         await addManagementGroup(`${schoolPrefix}${CLASSMGMT_OPTIONS.INTERNET}`, selectedStudents);
@@ -160,7 +165,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
       },
     },
     {
-      icon: FiPrinter,
+      icon: faPrint,
       text: CLASSMGMT_OPTIONS.PRINTING,
       enableAction: async () => {
         await addManagementGroup(`${schoolPrefix}${CLASSMGMT_OPTIONS.PRINTING}`, selectedStudents);
@@ -170,7 +175,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
       },
     },
     {
-      icon: MdSchool,
+      icon: faGraduationCap,
       text: CLASSMGMT_OPTIONS.EXAMMODE,
       enableAction: async () => {
         await startExamMode(selectedStudents);
@@ -200,7 +205,7 @@ const LessonFloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({
       })),
       {
         variant: 'dropdown',
-        icon: PiEyeFill,
+        icon: faEye,
         text: t(`classmanagement.${CLASSMGMT_OPTIONS.VEYON}`),
         isVisible: isMemberSelected && isVeyonEnabled && connectionUids.length > 0,
         dropdownItems: [

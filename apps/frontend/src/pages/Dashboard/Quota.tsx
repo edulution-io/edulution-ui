@@ -17,49 +17,36 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect } from 'react';
-import useLmnApiStore from '@/store/useLmnApiStore';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import useLmnApiStore from '@/store/useLmnApiStore';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
-import QuotaThresholdPercent from '@libs/filesharing/constants/quotaThresholdPercent';
 
 const Quota: React.FC = () => {
   const { t } = useTranslation();
-  const { user: lmnUser, lmnApiToken } = useLmnApiStore();
-
-  const { quotaUsed, quotaHardLimit, mailQuota, percentageUsed, refetchUsersQuota } = useQuotaInfo();
-
-  useEffect(() => {
-    refetchUsersQuota();
-  }, [lmnApiToken]);
-
-  const getSeparatorColor = () => {
-    if (percentageUsed <= QuotaThresholdPercent.WARNING) {
-      return 'bg-ciLightGreen';
-    }
-    if (percentageUsed <= QuotaThresholdPercent.CRITICAL) {
-      return 'bg-yellow-500';
-    }
-    return 'bg-ciRed';
-  };
+  const { user: lmnUser } = useLmnApiStore();
+  const { quotaUsedInGb, quotaHardLimitInGb, mailQuota, percentageUsed, progressBarColor } = useQuotaInfo();
 
   return (
     <>
       <p className="text-background">{lmnUser?.school}</p>
       <div className="relative my-1 h-1 w-full bg-gray-300">
         <div
-          className={`absolute left-0 top-0 h-1 ${getSeparatorColor()}`}
+          className={`absolute left-0 top-0 h-1 ${progressBarColor}`}
           style={{ width: `${percentageUsed}%` }}
         />
       </div>
       <div color="white">
         <p className="text-background">
-          {quotaUsed} / {quotaHardLimit} {t('dashboard.quota.mibibyte')}
+          {t('dashboard.quota.gbUsed', {
+            used: quotaUsedInGb,
+            total: quotaHardLimitInGb,
+          })}
         </p>
       </div>
       <div color="background">
-        <p className=" font-bold text-background">
-          {t('dashboard.quota.globalQuota')}: {quotaHardLimit} {t('dashboard.quota.mibibyte')}
+        <p className="font-bold text-background">
+          {t('dashboard.quota.globalQuota')}: {quotaHardLimitInGb} GB
         </p>
         <p className="font-bold text-background">
           {t('dashboard.quota.mailQuota')}: {mailQuota} {t('dashboard.quota.mibibyte')}

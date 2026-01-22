@@ -17,12 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { isValidElement, useEffect, useMemo, useRef, useState } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import cn from '@libs/common/utils/className';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { GoSidebarCollapse, GoSidebarExpand } from 'react-icons/go';
-import { ChevronDownIcon } from '@radix-ui/react-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faArrowRightToBracket,
+  faArrowRightFromBracket,
+  IconDefinition,
+  faChevronDown,
+} from '@fortawesome/free-solid-svg-icons';
 import { useOnClickOutside } from 'usehooks-ts';
 import useMedia from '@/hooks/useMedia';
 import { getFromPathName } from '@libs/common/utils';
@@ -36,6 +41,8 @@ import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
 import useMenuBarStore from './useMenuBarStore';
 import { Button } from './Button';
+import MenuBarFooter from './MenuBarFooter';
+import IconWrapper from './IconWrapper';
 
 const MenuBar: React.FC = () => {
   const { t } = useTranslation();
@@ -55,12 +62,45 @@ const MenuBar: React.FC = () => {
   const shouldCollapse = isDesktopView && isCollapsed;
   const navigate = useNavigate();
 
-  const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
-  const firstMenuBarItem = menuBarEntries?.menuItems[0]?.id || '';
-
   useOnClickOutside(menubarRef, () => {
     if (isMobileView || isTabletView) toggleMobileMenuBar();
   });
+
+  const renderIcon = (
+    icon: string | IconDefinition | React.ReactElement,
+    alt: string,
+    baseClassName?: string,
+    applyIconClassName = true,
+  ) => {
+    if (isValidElement(icon)) {
+      return icon;
+    }
+
+    if (typeof icon === 'string') {
+      return (
+        <IconWrapper
+          iconSrc={icon}
+          alt={alt}
+          className={cn(baseClassName, 'object-contain')}
+          applyLegacyFilter={applyIconClassName}
+        />
+      );
+    }
+    return (
+      <FontAwesomeIcon
+        icon={icon as IconDefinition}
+        className={cn(baseClassName, 'scale-75', applyIconClassName ? 'text-background dark:text-white' : 'text-white')}
+      />
+    );
+  };
+
+  if (menuBarEntries.disabled) {
+    return null;
+  }
+
+  const firstMenuBarItem = menuBarEntries?.menuItems[0]?.id || '';
+
+  const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
 
   useEffect(() => {
     if (pathParts[1]) {
@@ -68,10 +108,6 @@ const MenuBar: React.FC = () => {
       setExpandedItems((prev) => new Set(prev).add(pathParts[1]));
     }
   }, [pathParts]);
-
-  if (menuBarEntries.disabled) {
-    return null;
-  }
 
   const handleHeaderIconClick = () => {
     switch (pathParts[0]) {
@@ -131,32 +167,18 @@ const MenuBar: React.FC = () => {
       ref={menubarRef}
     >
       <div className="flex flex-col items-center justify-center py-6">
-        {isDesktopView && (
-          <Button
-            type="button"
-            variant="btn-outline"
-            size="sm"
-            onClick={toggleCollapsed}
-            className={cn(
-              'absolute right-[-25px] top-2 mx-3 mb-4 border-accent bg-foreground px-2 py-1',
-              shouldCollapse ? 'cursor-e-resize' : 'cursor-w-resize',
-            )}
-          >
-            {isCollapsed ? <GoSidebarCollapse size={18} /> : <GoSidebarExpand size={18} />}
-          </Button>
-        )}
-
         <button
-          className="flex flex-col items-center justify-center rounded-lg p-2 hover:bg-accent"
+          className="flex flex-col items-center justify-center rounded-xl p-2 hover:bg-muted-background"
           type="button"
           onClick={handleHeaderIconClick}
         >
-          <img
-            src={menuBarEntries.icon}
-            alt={menuBarEntries.title}
-            className={cn('object-contain transition-all', shouldCollapse ? 'h-10 w-10' : 'h-20 w-20')}
-          />
-          {!shouldCollapse && <h2 className="mb-2 mt-2 text-center">{menuBarEntries.title}</h2>}
+          {renderIcon(
+            menuBarEntries.icon,
+            menuBarEntries.title,
+            cn('object-contain transition-all', shouldCollapse ? 'h-10 w-10' : 'h-20 w-20'),
+            true,
+          )}
+          {!shouldCollapse && <h2 className="mb-2 mt-2 text-center font-bold">{menuBarEntries.title}</h2>}
         </button>
       </div>
 
@@ -193,32 +215,31 @@ const MenuBar: React.FC = () => {
               aria-controls={hasChildren ? childrenId : undefined}
               aria-label={item.label}
               className={cn(
-                'flex w-full cursor-pointer items-center gap-3 rounded-lg py-1 pl-3 pr-3 transition-colors hover:bg-accent',
-                menuBarEntries.color,
+                'flex w-full cursor-pointer items-center gap-3 py-1 pl-3 pr-3 transition-colors hover:bg-muted-background',
                 isActive ? menuBarEntries.color.split(':')[1] : '',
                 shouldCollapse && 'justify-center',
               )}
             >
-              <img
-                src={item.icon}
-                alt=""
-                aria-hidden="true"
-                className="h-12 w-12 object-contain"
-              />
+              {renderIcon(item.icon, item.label, 'h-12 w-12 object-contain', !isActive)}
               {!shouldCollapse && (
                 <>
-                  <p className="flex-1 text-left">{item.label}</p>
+                  <span className={cn('flex-1 text-left', isActive ? 'text-white' : '')}>{item.label}</span>
                   {hasChildren && (
-                    <button
+                    <Button
                       type="button"
+                      variant="btn-ghost"
                       onClick={handleExpandClick}
                       aria-label={isExpanded ? 'Collapse' : 'Expand'}
-                      className="rounded-lg p-1 hover:bg-accent"
+                      className="p-1"
                     >
-                      <ChevronDownIcon
-                        className={cn('h-4 w-4 transition-transform duration-200', isExpanded && 'rotate-180')}
+                      <FontAwesomeIcon
+                        icon={faChevronDown}
+                        className={cn(
+                          'h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200',
+                          isExpanded && 'rotate-180',
+                        )}
                       />
-                    </button>
+                    </Button>
                   )}
                 </>
               )}
@@ -236,26 +257,27 @@ const MenuBar: React.FC = () => {
               )}
             >
               <div className="overflow-hidden">
-                <div className="py-1">
+                <div className="border-muted-foreground/30 ml-4 border-l-2 py-1">
                   {item.children!.map((child) => {
                     const isChildActive = pathname.includes(child.id);
                     return (
-                      <button
+                      <Button
                         key={child.id}
                         type="button"
+                        variant="btn-ghost"
                         onClick={() => {
                           if (isMobileView || isTabletView) toggleMobileMenuBar();
                           child.action();
                         }}
                         className={cn(
-                          'flex w-full items-center rounded-r-lg py-2 pl-4 pr-3 text-left text-sm',
-                          'text-background transition-all duration-150',
-                          'hover:bg-accent hover:pl-5',
+                          'flex w-full items-center justify-start py-2 pl-4 pr-3',
+                          'transition-all duration-150',
+                          'hover:pl-5',
                           isChildActive && 'bg-accent/50 font-medium',
                         )}
                       >
                         <span className="truncate">{child.label}</span>
-                      </button>
+                      </Button>
                     );
                   })}
                 </div>
@@ -276,6 +298,11 @@ const MenuBar: React.FC = () => {
           );
         })}
       </div>
+
+      <MenuBarFooter
+        appName={pathParts[0]}
+        isCollapsed={shouldCollapse}
+      />
     </div>
   );
 
@@ -293,28 +320,40 @@ const MenuBar: React.FC = () => {
         <aside className="relative flex h-dvh">
           <div
             className={cn(
-              'h-full overflow-hidden bg-foreground bg-opacity-40 transition-all duration-300',
+              'bg-glass h-full overflow-hidden rounded-r-xl shadow-lg shadow-slate-400 backdrop-blur-lg transition-all duration-300',
               shouldCollapse ? 'w-16' : 'w-64',
             )}
           >
             {renderMenuBarContent()}
           </div>
+          <Button
+            type="button"
+            variant="btn-outline"
+            size="sm"
+            onClick={toggleCollapsed}
+            className={cn(
+              'bg-glass absolute right-[-15px] top-2 z-10 border-accent px-2 py-1 backdrop-blur-lg hover:bg-muted-background',
+              shouldCollapse ? 'cursor-e-resize' : 'cursor-w-resize',
+            )}
+          >
+            {isCollapsed ? (
+              <FontAwesomeIcon icon={faArrowRightToBracket} />
+            ) : (
+              <FontAwesomeIcon
+                icon={faArrowRightFromBracket}
+                className="rotate-180"
+              />
+            )}
+          </Button>
         </aside>
       ) : (
         <div
           className={cn(
-            'fixed left-0 top-0 z-50 h-full overflow-x-hidden bg-foreground duration-300 ease-in-out',
+            'bg-glass fixed left-0 top-0 z-50 h-full overflow-x-hidden backdrop-blur-md duration-300 ease-in-out',
             isMobileMenuBarOpen ? 'w-64 border-r-[1px] border-muted' : 'w-0',
           )}
         >
-          <div
-            className={cn(
-              'h-full w-64 transition-opacity duration-300',
-              isMobileMenuBarOpen ? 'opacity-100' : 'opacity-0',
-            )}
-          >
-            {isMobileMenuBarOpen && renderMenuBarContent()}
-          </div>
+          {isMobileMenuBarOpen && renderMenuBarContent()}
         </div>
       )}
     </>

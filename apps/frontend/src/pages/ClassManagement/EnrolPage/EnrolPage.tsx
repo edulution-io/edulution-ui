@@ -24,8 +24,8 @@ import useClassManagementStore from '@/pages/ClassManagement/useClassManagementS
 import GroupList from '@/pages/ClassManagement/components/GroupList/GroupList';
 import GroupColumn from '@libs/groups/types/groupColumn';
 import UserGroups from '@libs/groups/types/userGroups.enum';
-import { MdGroups } from 'react-icons/md';
-import { FaPrint, FaUsersGear } from 'react-icons/fa6';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPrint, faUsers, faUsersGear } from '@fortawesome/free-solid-svg-icons';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import Input from '@/components/shared/Input';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
@@ -67,19 +67,34 @@ const EnrolPage: React.FC = () => {
     {
       name: UserGroups.Classes,
       translationId: 'myClasses',
-      icon: <MdGroups className="h-7 w-7" />,
+      icon: (
+        <FontAwesomeIcon
+          icon={faUsers}
+          className="h-7 w-7"
+        />
+      ),
       groups: userSchoolClasses?.filter(filterGroups),
     },
     {
       name: UserGroups.Printers,
       translationId: 'printers',
-      icon: <FaPrint className="h-5 w-7" />,
+      icon: (
+        <FontAwesomeIcon
+          icon={faPrint}
+          className="h-5 w-7"
+        />
+      ),
       groups: Array.isArray(printers) ? printers.filter(filterGroups) : [],
     },
     {
       name: UserGroups.Projects,
       translationId: 'myProjects',
-      icon: <FaUsersGear className="h-5 w-7" />,
+      icon: (
+        <FontAwesomeIcon
+          icon={faUsersGear}
+          className="h-7 w-7"
+        />
+      ),
       groups: userProjects?.filter(filterGroups),
     },
   ];
@@ -99,7 +114,7 @@ const EnrolPage: React.FC = () => {
         {isSuperAdmin && <SchoolSelectorDropdown />}
       </div>
       <div className="flex max-h-full max-w-full flex-row flex-wrap overflow-y-auto scrollbar-thin">
-        <p className="mt-2 min-w-full">{t('classmanagement.enrolPageDescription')}</p>
+        <p className="mt-2 min-w-full text-background">{t('classmanagement.enrolPageDescription')}</p>
         <div className="mt-4 min-w-full">
           <SectionAccordion defaultOpenAll>
             {groupRows.map((row) => (

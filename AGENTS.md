@@ -25,13 +25,21 @@
 - Linting: ESLint (Airbnb + TypeScript, a11y, import rules). Run `npm run lint`.
 - Formatting: Prettier (2 spaces, 120 cols, single quotes, trailing commas). Run `npm run format`.
 - React: Function components as arrow functions; allow prop spreading; avoid `console` except `info|warn|error`.
-- Shared code lives under `libs/`, move utility functions, types and constants always there.
+- Shared code lives under `libs/`, move utility functions, types, and constants always there. Do not move UI components there.
 - File names: The file name should match the default export name.
 - Never comment in the code.
 - Prefer default exports over named exports. Default export at the end of the file.
 - Use const objects and derived types instead of enums.
 - Use the name "delete" over "remove".
 - Always import React hooks at the top of the file, do not use `React.useEffect` syntax.
+- In React use our `cn()` function for clsx classNames.
+- Do not use magic strings. Always use constants.
+- In NestJS services, use static Logger calls with the service name as context: `Logger.log('message', ServiceName.name)`, `Logger.error('message', ServiceName.name)`. Do not create instance logger with `private readonly logger = new Logger()`.
+- In React, use `eduApi` (axios) from `@/api/eduApi` for API calls instead of native `fetch`. API calls should be placed in Zustand stores, not in components. Use `ResponseType.BLOB` for blob responses and `handleApiError` for error handling.
+- Always search the code for existing patterns, functions, classes, types, and constants before creating new ones.
+- Use generic types over unsafe type casting.
+- Migrations MUST always increase the schema version number so later migrations are triggered.
+- Only use @fortawesome/free-solid-svg-icons for icons
 
 ## Testing Guidelines
 
