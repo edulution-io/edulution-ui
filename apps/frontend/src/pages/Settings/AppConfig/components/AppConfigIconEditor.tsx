@@ -128,9 +128,9 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
         >
           <div
             className="overflow-y-auto scrollbar-thin"
-            style={{ maxHeight: 168 }}
+            style={{ maxHeight: 140 }}
           >
-            <div className="grid grid-cols-8 gap-2 p-2">
+            <div className="grid grid-cols-8 gap-2 p-2 sm:grid-cols-10">
               {defaultIconList.map((icon) => {
                 const iconName = icon.split('/').at(-1);
                 return (

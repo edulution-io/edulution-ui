@@ -29,9 +29,9 @@ interface FontAwesomeIconGridProps {
   onIconSelect: (iconPath: string) => void;
 }
 
-const COLUMN_COUNT = 8;
+const COLUMN_COUNT = 10;
 const ICON_SIZE = 56;
-const VISIBLE_ROWS = 3;
+const VISIBLE_ROWS = 2.5;
 const OVERSCAN_ROWS = 2;
 
 const FontAwesomeIconGrid: React.FC<FontAwesomeIconGridProps> = ({ selectedIcon, onIconSelect }) => {
@@ -133,14 +133,17 @@ const FontAwesomeIconGrid: React.FC<FontAwesomeIconGridProps> = ({ selectedIcon,
 
   return (
     <div className="space-y-3">
-      <Input
-        type="text"
-        placeholder={t('appstore.searchIcons')}
-        value={searchTerm}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
-        className="w-full"
-        variant="dialog"
-      />
+      <div>
+        <Input
+          type="text"
+          placeholder={t('appstore.searchIcons')}
+          value={searchTerm}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
+          className="w-full"
+          variant="dialog"
+        />
+        <p className="mt-1 text-xs text-muted-foreground">{t('appstore.searchIconsHint')}</p>
+      </div>
 
       <Card
         className="overflow-hidden p-0 transition-none hover:scale-100"
@@ -155,7 +158,7 @@ const FontAwesomeIconGrid: React.FC<FontAwesomeIconGridProps> = ({ selectedIcon,
           >
             <div style={{ height: totalRows * ICON_SIZE, position: 'relative' }}>
               <div
-                className="grid grid-cols-8 gap-2 p-2"
+                className="grid grid-cols-8 gap-2 p-2 sm:grid-cols-10"
                 style={{
                   position: 'absolute',
                   top: visibleRange.start * ICON_SIZE,

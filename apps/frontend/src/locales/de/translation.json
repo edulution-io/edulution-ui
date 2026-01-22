@@ -101,6 +101,7 @@
     "edulutionIcons": "edulution Icons",
     "moreIcons": "Weitere Icons",
     "searchIcons": "Icons durchsuchen...",
+    "searchIconsHint": "Tipp: Verwende englische Suchbegriffe (z.B. \"house\" statt \"Haus\")",
     "noIconsFound": "Keine Icons gefunden",
     "iconsAvailable": "Icons verfügbar",
     "uploadIcon": "Icon hochladen",

@@ -96,6 +96,7 @@
     "edulutionIcons": "edulution Icons",
     "moreIcons": "Plus d'icônes",
     "searchIcons": "Rechercher des icônes...",
+    "searchIconsHint": "Astuce: Utilisez des termes de recherche en anglais (p.ex. \"house\" au lieu de \"maison\")",
     "noIconsFound": "Aucune icône trouvée",
     "iconsAvailable": "icônes disponibles",
     "uploadIcon": "Icône de téléchargement",
