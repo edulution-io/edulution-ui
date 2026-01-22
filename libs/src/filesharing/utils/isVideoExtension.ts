@@ -17,20 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { Route } from 'react-router-dom';
-import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
-import EmbeddedPage from '@/pages/EmbeddedPage/EmbeddedPage';
+import VIDEO_EXTENSIONS from '@libs/filesharing/types/videoExtensions';
+import VideoExtensionType from '@libs/filesharing/types/videoExtensionType';
 
-const getEmbeddedRoutes = (appConfigs: AppConfigDto[]) =>
-  appConfigs
-    .filter((item) => item.appType === APP_INTEGRATION_VARIANT.EMBEDDED)
-    .map((item) => (
-      <Route
-        key={item.name}
-        path={`${item.name}/*`}
-        element={<EmbeddedPage />}
-      />
-    ));
-export default getEmbeddedRoutes;
+const isVideoExtension = (extension: string | undefined): boolean =>
+  Object.values(VIDEO_EXTENSIONS).includes(extension as VideoExtensionType);
+
+export default isVideoExtension;

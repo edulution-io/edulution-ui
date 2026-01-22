@@ -17,7 +17,20 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ThemeType from '@libs/common/types/themeType';
+export interface UrlParts {
+  subPath: string;
+  search: string;
+  hash: string;
+}
 
-const getMainLogoFilename = (theme: ThemeType) => `main-logo-${theme}.webp`;
-export default getMainLogoFilename;
+const EMPTY_STRING = '';
+
+const getSubPathFromBrowserUrl = (pathname: string, search: string, hash: string, appName: string): UrlParts => {
+  const prefix = `/${appName}`;
+  if (pathname.startsWith(prefix)) {
+    return { subPath: pathname.slice(prefix.length) || EMPTY_STRING, search, hash };
+  }
+  return { subPath: EMPTY_STRING, search, hash };
+};
+
+export default getSubPathFromBrowserUrl;

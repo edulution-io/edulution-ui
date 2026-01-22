@@ -17,23 +17,30 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import i18n from '@/i18n';
-import APPS from '@libs/appconfig/constants/apps';
-import { getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
-import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
-import ThemeType from '@libs/common/types/themeType';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
-import SurveyFormula from '@libs/survey/types/SurveyFormula';
+import { UrlParts } from './getSubPathFromBrowserUrl';
 
-const getSurveysDefaultValues = (theme: ThemeType): Partial<SurveyDto> & { formula: SurveyFormula } => ({
-  formula: {
-    title: i18n.t('survey.newTitle'),
-    logo: getAssetUrl(APPS.SURVEYS, ASSET_TYPES.logo, theme),
-  },
-  isAnonymous: false,
-  canSubmitMultipleAnswers: false,
-  isPublic: false,
-  canUpdateFormerAnswer: false,
-});
+const EMPTY_STRING = '';
 
-export default getSurveysDefaultValues;
+const getSubPathFromIframe = (iframe: HTMLIFrameElement, proxyPrefix?: string): UrlParts | null => {
+  try {
+    const iframePath = iframe.contentWindow?.location.pathname;
+    const iframeSearch = iframe.contentWindow?.location.search || EMPTY_STRING;
+    const iframeHash = iframe.contentWindow?.location.hash || EMPTY_STRING;
+    if (!iframePath) return null;
+    if (proxyPrefix) {
+      if (iframePath.startsWith(proxyPrefix)) {
+        return {
+          subPath: iframePath.slice(proxyPrefix.length) || EMPTY_STRING,
+          search: iframeSearch,
+          hash: iframeHash,
+        };
+      }
+      return null;
+    }
+    return { subPath: iframePath, search: iframeSearch, hash: iframeHash };
+  } catch {
+    return null;
+  }
+};
+
+export default getSubPathFromIframe;
