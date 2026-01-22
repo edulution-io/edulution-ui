@@ -84,8 +84,8 @@ const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Con
       <SheetPrimitive.Content
         ref={ref}
         className={cn(
-          { 'bg-overlay text-background': variant === 'primary' },
-          { 'bg-overlay text-foreground': variant === 'secondary' },
+          { 'bg-accent text-background': variant === 'primary' },
+          { 'bg-accent text-foreground': variant === 'secondary' },
           sheetVariants({ side, variant }),
           'max-h-[90vh] overflow-auto',
           className,
