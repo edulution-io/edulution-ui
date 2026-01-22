@@ -145,6 +145,22 @@ const DropdownSelect = ({
     }
   };
 
+  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    e.currentTarget.scrollTop += e.deltaY;
+  };
+
+  const touchStartY = useRef(0);
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    const deltaY = touchStartY.current - e.touches[0].clientY;
+    e.currentTarget.scrollTop += deltaY;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
   const arrowPointsDown = (isOpen && !openToTop) || (!isOpen && openToTop);
 
   const variantClasses = {
@@ -214,6 +230,9 @@ const DropdownSelect = ({
             }}
             role="listbox"
             id="dropdown-listbox"
+            onWheel={handleWheel}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
           >
             {filteredOptions.map((option) => {
               const label = translateLabel(option.name);
