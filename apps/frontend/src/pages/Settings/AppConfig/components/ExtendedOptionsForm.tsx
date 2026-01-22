@@ -104,14 +104,19 @@ const ExtendedOptionsForm: React.FC<ExtendedOptionsFormProps<FieldValues>> = <T 
             option={option}
           />
         );
-      case ExtendedOptionField.switch:
+      case ExtendedOptionField.switch: {
+        const linkedToFieldPath = option.linkedTo
+          ? ((settingLocation ? `${settingLocation}.extendedOptions.${option.linkedTo}` : option.linkedTo) as Path<T>)
+          : undefined;
         return (
           <AppConfigSwitch
             fieldPath={fieldPath}
             control={control}
             option={option}
+            linkedToFieldPath={linkedToFieldPath}
           />
         );
+      }
       case ExtendedOptionField.textarea:
         return (
           // TODO: Rework this component to be a generic textarea for reusablity

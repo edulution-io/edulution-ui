@@ -32,7 +32,7 @@ const getPublicEmbeddedRoutes = () => {
   return mergedRoutes.map((route) => (
     <Route
       key={route}
-      path={route}
+      path={`${route}/*`}
       element={<PublicEmbeddedPage />}
     />
   ));

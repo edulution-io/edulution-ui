@@ -49,6 +49,9 @@ import MAIL_GENERAL_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOpt
 import FORWARDING_PAGE_OPTIONS from '@libs/appconfig/constants/extendedOptions/forwardingPageOptions';
 import DRAWIO_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/drawioExtendedOptions';
 import FRAME_SCRIPT_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/frameScriptExtendedOptions';
+import URL_SYNC_EXTENDED_OPTIONS, {
+  EMBEDDED_URL_SYNC_EXTENDED_OPTIONS,
+} from '@libs/appconfig/constants/extendedOptions/urlSyncExtendedOptions';
 import APP_LOGO_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/appLogoExtendedOptions';
 import { ALL_DISPLAY_LOCATIONS } from '@libs/appconfig/constants/appDisplayLocations';
 import WIREGUARD_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/wireguardExtendedOptions';
@@ -78,6 +81,8 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
       [AppConfigSectionsKeys.general]: MAIL_GENERAL_EXTENDED_OPTIONS,
       [AppConfigSectionsKeys.imapMailFeed]: MAIL_IMAP_EXTENDED_OPTIONS,
       [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
+      [AppConfigSectionsKeys.scripts]: FRAME_SCRIPT_EXTENDED_OPTIONS,
+      [AppConfigSectionsKeys.urlHandling]: URL_SYNC_EXTENDED_OPTIONS,
     },
     defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
@@ -172,6 +177,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     isNativeApp: false,
     extendedOptions: {
       [AppConfigSectionsKeys.scripts]: FRAME_SCRIPT_EXTENDED_OPTIONS,
+      [AppConfigSectionsKeys.urlHandling]: URL_SYNC_EXTENDED_OPTIONS,
     },
     defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
@@ -182,6 +188,7 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     isNativeApp: false,
     extendedOptions: {
       [AppConfigSectionsKeys.editor]: EMBEDDED_PAGE_EDITOR_CONFIG,
+      [AppConfigSectionsKeys.urlHandling]: EMBEDDED_URL_SYNC_EXTENDED_OPTIONS,
     },
     defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },

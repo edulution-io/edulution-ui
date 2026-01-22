@@ -44,8 +44,10 @@ const migration004: Migration<GlobalSettingsDocument> = {
       );
       return;
     }
+
     if (globalSettings.auth.adminGroups) {
-      Logger.debug('adminGroups still defined.', migration004.name);
+      Logger.debug('adminGroups already defined, updating schema version only.', migration004.name);
+      await model.updateOne({ _id: globalSettings._id }, { $set: { schemaVersion: newSchemaVersion } });
       return;
     }
 

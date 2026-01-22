@@ -38,6 +38,7 @@
 - In React, use `eduApi` (axios) from `@/api/eduApi` for API calls instead of native `fetch`. API calls should be placed in Zustand stores, not in components. Use `ResponseType.BLOB` for blob responses and `handleApiError` for error handling.
 - Always search the code for existing patterns, functions, classes, types, and constants before creating new ones.
 - Use generic types over unsafe type casting.
+- Migrations MUST always increase the schema version number so later migrations are triggered.
 - Only use @fortawesome/free-solid-svg-icons for icons
 
 ## Testing Guidelines
