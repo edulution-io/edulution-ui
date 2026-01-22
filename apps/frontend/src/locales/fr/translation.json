@@ -874,7 +874,7 @@
       "forwarding": "Redirection: entrez simplement le lien vers l'application Web sous URL.",
       "frame": "Frame: Entrez simplement le lien vers l'application Web sous URL.",
       "embedded": "Embedded: Ici, votre propre application Web peut être créée dans l'éditeur.",
-      "wireguard": "Ici, vous pouvez configurer l'accès VPN Wireguard pour les utilisateurs."
+      "wireguard": "Ici, vous pouvez configurer l'accès VPN WireGuard pour les utilisateurs."
     },
     "globalSettings": {
       "title": "Paramètres globaux",

@@ -32,6 +32,7 @@ import type {
   SiteRequest,
 } from '@libs/wireguard/types/wireguard';
 import WIREGUARD_ERROR_MESSAGES from '@libs/wireguard/constants/wireguardErrorMessages';
+import type WireguardErrorMessages from '@libs/wireguard/types/wireguardErrorMessages';
 import APPS from '@libs/appconfig/constants/apps';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import GroupsService from '../groups/groups.service';
@@ -41,6 +42,7 @@ import AppConfigService from '../appconfig/appconfig.service';
 const { EDU_WG_API_URL, EDU_WG_API_KEY } = process.env;
 
 const DEFAULT_WIREGUARD_URL = 'http://edulution-wireguard:8000/api/wireguard';
+const WIREGUARD_API_KEY_HEADER = 'EDU_WG_API_KEY';
 
 const generateApiKey = (): string => randomBytes(16).toString('hex');
 
@@ -55,7 +57,7 @@ class WireguardService implements OnModuleInit {
     this.wireguardApi = axios.create({
       baseURL: EDU_WG_API_URL || DEFAULT_WIREGUARD_URL,
       headers: {
-        EDU_WG_API_KEY: EDU_WG_API_KEY || '',
+        [WIREGUARD_API_KEY_HEADER]: EDU_WG_API_KEY || '',
       },
     });
   }
@@ -142,188 +144,105 @@ class WireguardService implements OnModuleInit {
     }
   }
 
-  async getPeers(): Promise<Record<string, Peer>> {
+  private static async request<T>(fn: () => Promise<{ data: T }>, errorMessage: WireguardErrorMessages): Promise<T> {
     try {
-      const response = await this.wireguardApi.get<Record<string, Peer>>('/peers');
+      const response = await fn();
       return response.data;
     } catch (error) {
-      throw new CustomHttpException(
-        WIREGUARD_ERROR_MESSAGES.GET_PEERS_FAILED,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
-        WireguardService.name,
-      );
+      throw new CustomHttpException(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR, error, WireguardService.name);
     }
+  }
+
+  async getPeers(): Promise<Record<string, Peer>> {
+    return WireguardService.request(
+      () => this.wireguardApi.get<Record<string, Peer>>('/peers'),
+      WIREGUARD_ERROR_MESSAGES.GET_PEERS_FAILED,
+    );
   }
 
   async createPeer(peerRequest: PeerRequest): Promise<boolean> {
-    try {
-      const response = await this.wireguardApi.post<boolean>('/peers', peerRequest);
-      return response.data;
-    } catch (error) {
-      throw new CustomHttpException(
-        WIREGUARD_ERROR_MESSAGES.CREATE_PEER_FAILED,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
-        WireguardService.name,
-      );
-    }
+    return WireguardService.request(
+      () => this.wireguardApi.post<boolean>('/peers', peerRequest),
+      WIREGUARD_ERROR_MESSAGES.CREATE_PEER_FAILED,
+    );
   }
 
   async deletePeer(peer: string): Promise<boolean> {
-    try {
-      const response = await this.wireguardApi.delete<boolean>(`/peers/${peer}`);
-      return response.data;
-    } catch (error) {
-      throw new CustomHttpException(
-        WIREGUARD_ERROR_MESSAGES.DELETE_PEER_FAILED,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
-        WireguardService.name,
-      );
-    }
+    return WireguardService.request(
+      () => this.wireguardApi.delete<boolean>(`/peers/${peer}`),
+      WIREGUARD_ERROR_MESSAGES.DELETE_PEER_FAILED,
+    );
   }
 
   async getPeerConfig(peer: string): Promise<PeerConfig> {
-    try {
-      const response = await this.wireguardApi.get<PeerConfig>(`/peers/${peer}/config`);
-      return response.data;
-    } catch (error) {
-      throw new CustomHttpException(
-        WIREGUARD_ERROR_MESSAGES.GET_PEER_CONFIG_FAILED,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
-        WireguardService.name,
-      );
-    }
+    return WireguardService.request(
+      () => this.wireguardApi.get<PeerConfig>(`/peers/${peer}/config`),
+      WIREGUARD_ERROR_MESSAGES.GET_PEER_CONFIG_FAILED,
+    );
   }
 
   async getPeerQR(peer: string): Promise<Buffer> {
-    try {
-      const response = await this.wireguardApi.get<ArrayBuffer>(`/peers/${peer}/qr`, {
-        responseType: 'arraybuffer',
-      });
-      return Buffer.from(response.data);
-    } catch (error) {
-      throw new CustomHttpException(
-        WIREGUARD_ERROR_MESSAGES.GET_PEER_QR_FAILED,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
-        WireguardService.name,
-      );
-    }
+    const data = await WireguardService.request(
+      () => this.wireguardApi.get<ArrayBuffer>(`/peers/${peer}/qr`, { responseType: 'arraybuffer' }),
+      WIREGUARD_ERROR_MESSAGES.GET_PEER_QR_FAILED,
+    );
+    return Buffer.from(data);
   }
 
   async getPeerQRBase64(peer: string): Promise<string> {
-    try {
-      const response = await this.wireguardApi.get<string>(`/peers/${peer}/qr/b64`);
-      return response.data;
-    } catch (error) {
-      throw new CustomHttpException(
-        WIREGUARD_ERROR_MESSAGES.GET_PEER_QR_FAILED,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
-        WireguardService.name,
-      );
-    }
+    return WireguardService.request(
+      () => this.wireguardApi.get<string>(`/peers/${peer}/qr/b64`),
+      WIREGUARD_ERROR_MESSAGES.GET_PEER_QR_FAILED,
+    );
   }
 
   async getPeerStatus(peer: string): Promise<WireguardPeer | false> {
-    try {
-      const response = await this.wireguardApi.get<WireguardPeer | false>(`/peers/${peer}/status`);
-      return response.data;
-    } catch (error) {
-      throw new CustomHttpException(
-        WIREGUARD_ERROR_MESSAGES.GET_PEER_STATUS_FAILED,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
-        WireguardService.name,
-      );
-    }
+    return WireguardService.request(
+      () => this.wireguardApi.get<WireguardPeer | false>(`/peers/${peer}/status`),
+      WIREGUARD_ERROR_MESSAGES.GET_PEER_STATUS_FAILED,
+    );
   }
 
   async getAllPeersStatus(): Promise<Record<string, WireguardPeer>> {
-    try {
-      const response = await this.wireguardApi.get<Record<string, WireguardPeer>>('/peers/status');
-      return response.data;
-    } catch (error) {
-      throw new CustomHttpException(
-        WIREGUARD_ERROR_MESSAGES.GET_PEERS_STATUS_FAILED,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
-        WireguardService.name,
-      );
-    }
+    return WireguardService.request(
+      () => this.wireguardApi.get<Record<string, WireguardPeer>>('/peers/status'),
+      WIREGUARD_ERROR_MESSAGES.GET_PEERS_STATUS_FAILED,
+    );
   }
 
   async restartWireGuard(): Promise<boolean> {
-    try {
-      const response = await this.wireguardApi.get<boolean>('/restart');
-      return response.data;
-    } catch (error) {
-      throw new CustomHttpException(
-        WIREGUARD_ERROR_MESSAGES.RESTART_FAILED,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
-        WireguardService.name,
-      );
-    }
+    return WireguardService.request(
+      () => this.wireguardApi.get<boolean>('/restart'),
+      WIREGUARD_ERROR_MESSAGES.RESTART_FAILED,
+    );
   }
 
   async getSites(): Promise<Record<string, Site>> {
-    try {
-      const response = await this.wireguardApi.get<Record<string, Site>>('/sites');
-      return response.data;
-    } catch (error) {
-      throw new CustomHttpException(
-        WIREGUARD_ERROR_MESSAGES.GET_SITES_FAILED,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
-        WireguardService.name,
-      );
-    }
+    return WireguardService.request(
+      () => this.wireguardApi.get<Record<string, Site>>('/sites'),
+      WIREGUARD_ERROR_MESSAGES.GET_SITES_FAILED,
+    );
   }
 
   async createSite(siteRequest: SiteRequest): Promise<boolean> {
-    try {
-      const response = await this.wireguardApi.post<boolean>('/sites', siteRequest);
-      return response.data;
-    } catch (error) {
-      throw new CustomHttpException(
-        WIREGUARD_ERROR_MESSAGES.CREATE_SITE_FAILED,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
-        WireguardService.name,
-      );
-    }
+    return WireguardService.request(
+      () => this.wireguardApi.post<boolean>('/sites', siteRequest),
+      WIREGUARD_ERROR_MESSAGES.CREATE_SITE_FAILED,
+    );
   }
 
   async deleteSite(site: string): Promise<boolean> {
-    try {
-      const response = await this.wireguardApi.delete<boolean>(`/sites/${site}`);
-      return response.data;
-    } catch (error) {
-      throw new CustomHttpException(
-        WIREGUARD_ERROR_MESSAGES.DELETE_SITE_FAILED,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
-        WireguardService.name,
-      );
-    }
+    return WireguardService.request(
+      () => this.wireguardApi.delete<boolean>(`/sites/${site}`),
+      WIREGUARD_ERROR_MESSAGES.DELETE_SITE_FAILED,
+    );
   }
 
   async getSiteConfig(site: string): Promise<PeerConfig> {
-    try {
-      const response = await this.wireguardApi.get<PeerConfig>(`/sites/${site}/config`);
-      return response.data;
-    } catch (error) {
-      throw new CustomHttpException(
-        WIREGUARD_ERROR_MESSAGES.GET_SITE_CONFIG_FAILED,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        error,
-        WireguardService.name,
-      );
-    }
+    return WireguardService.request(
+      () => this.wireguardApi.get<PeerConfig>(`/sites/${site}/config`),
+      WIREGUARD_ERROR_MESSAGES.GET_SITE_CONFIG_FAILED,
+    );
   }
 
   async createPeersBatch(request: BatchPeersRequest): Promise<BatchPeersResult> {

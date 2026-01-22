@@ -1004,7 +1004,7 @@
       "forwarding": "Weiterleitung: Einfach den Link zur Webanwendung unter URL eintragen.",
       "frame": "Frame: Einfach den Link zur Webanwendung unter URL eintragen.",
       "embedded": "Eingebettet: Hier kann eine eigene Webanwendung im Editor erstellt werden.",
-      "wireguard": "Einrichten und verwalten von Wireguard VPN Verbindungen."
+      "wireguard": "Einrichten und verwalten von WireGuard VPN Verbindungen."
     },
     "globalSettings": {
       "title": "Globale Einstellungen",
