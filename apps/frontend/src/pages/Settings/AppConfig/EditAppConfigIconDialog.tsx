@@ -74,6 +74,7 @@ const EditAppConfigIconDialog: React.FC<EditAppConfigIconDialogProps> = ({ curre
       handleOpenChange={handleClose}
       title={t('settings.appconfig.editIcon.title')}
       body={getDialogBody()}
+      desktopContentClassName="max-w-2xl max-h-[95vh]"
     />
   );
 };

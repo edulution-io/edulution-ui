@@ -21,13 +21,19 @@ import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 const getAppIconClassName = (iconSrc: string | IconDefinition): string => {
   if (typeof iconSrc !== 'string') return '';
+
+  const isWebp = iconSrc.endsWith('.webp') || iconSrc.includes('data:image/webp');
+  if (isWebp) return '';
+
   const isSvgIcon = iconSrc.endsWith('.svg') || iconSrc.includes('data:image/svg+xml') || iconSrc.includes('.svg');
   if (!isSvgIcon) return '';
+
+  const isEdulutionIcon = iconSrc.includes('/edulution/edu_');
+  if (isEdulutionIcon) return 'light:icon-light-mode';
+
   const decodedIconSrc = decodeURIComponent(iconSrc);
-  const hasWhiteColor = decodedIconSrc.includes('#fff');
-  if (hasWhiteColor) return 'light:icon-light-mode';
-  const supportsTheming = decodedIconSrc.includes('currentColor');
-  return supportsTheming ? '' : 'light:icon-light-mode';
+  const hasWhiteColor = decodedIconSrc.includes('#fff') || decodedIconSrc.includes('#FFF');
+  return hasWhiteColor ? 'light:icon-light-mode' : '';
 };
 
 export default getAppIconClassName;

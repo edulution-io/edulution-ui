@@ -27,7 +27,7 @@ import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/Notifi
 import PageTitle from '@/components/PageTitle';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import cn from '@libs/common/utils/className';
-import getAppIconClassName from '@/utils/getAppIconClassName';
+import IconWrapper from '@/components/shared/IconWrapper';
 import useSidebarStore from '../useSidebarStore';
 
 const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({
@@ -63,11 +63,13 @@ const MobileSidebarItem: React.FC<SidebarMenuItemProps> = ({
       >
         <p className={titleClassName}>{title}</p>
 
-        <img
-          src={icon}
-          width={SIDEBAR_ICON_WIDTH}
-          className={cn('relative', !isSelected && getAppIconClassName(icon))}
+        <IconWrapper
+          iconSrc={icon}
           alt={`${title}-icon`}
+          className="relative"
+          width={SIDEBAR_ICON_WIDTH}
+          height={SIDEBAR_ICON_WIDTH}
+          applyLegacyFilter={!isSelected}
         />
       </NavLink>
 

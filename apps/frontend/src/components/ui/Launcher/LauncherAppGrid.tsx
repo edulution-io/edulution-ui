@@ -31,7 +31,7 @@ import useMedia from '@/hooks/useMedia';
 import cn from '@libs/common/utils/className';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import LAUNCHER_SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
-import getAppIconClassName from '@/utils/getAppIconClassName';
+import IconWrapper from '@/components/shared/IconWrapper';
 
 const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
   const { toggleMobileSidebar } = useSidebarStore();
@@ -116,13 +116,13 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
                 variant="dialog"
               >
                 <div className="relative m-4 flex flex-col items-center">
-                  <img
-                    src={app.icon}
+                  <IconWrapper
+                    iconSrc={app.icon}
                     alt={app.title}
-                    className={cn(
-                      'h-12 w-12 md:h-14 md:w-14',
-                      app.link !== currentAppPath && getAppIconClassName(app.icon),
-                    )}
+                    className="h-12 w-12 md:h-14 md:w-14"
+                    width={48}
+                    height={48}
+                    applyLegacyFilter={app.link !== currentAppPath}
                   />
                   <p>{app.title}</p>
                   <NotificationCounter

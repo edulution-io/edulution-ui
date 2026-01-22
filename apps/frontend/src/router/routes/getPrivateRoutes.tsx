@@ -29,12 +29,14 @@ import {
   SECURITY_PATH,
   USER_DETAILS_PATH,
   USER_SETTINGS_PATH,
+  WIREGUARD_ACCESS_PATH,
 } from '@libs/userSettings/constants/user-settings-endpoints';
 import UserSettingsSecurityPage from '@/pages/UserSettings/Security/UserSettingsSecurityPage';
 import UserSettingsDetailsPage from '@/pages/UserSettings/Details/UserSettingsDetailsPage';
 import UserSettingsMailsPage from '@/pages/UserSettings/Mails/UserSettingsMailsPage';
 import UserInterfaceSettingsPage from '@/pages/UserSettings/Language/UserInterfaceSettingsPage';
 import UserSettingsMobileAccess from '@/pages/UserSettings/MobileAccess/MobileFileAccessSetupBox';
+import UserSettingsWireguardPage from '@/pages/UserSettings/WireguardAccess/UserSettingsWireguardPage';
 import getSettingsRoutes from '@/router/routes/getSettingsRoutes';
 import getClassManagementRoutes from '@/router/routes/getClassManagementRoutes';
 import getSurveyRoutes from '@/router/routes/getSurveyRoutes';
@@ -91,6 +93,10 @@ const getPrivateRoutes = (appConfigs: AppConfigDto[]) => (
       <Route
         path={MOBILE_ACCESS_PATH}
         element={<UserSettingsMobileAccess />}
+      />
+      <Route
+        path={WIREGUARD_ACCESS_PATH}
+        element={<UserSettingsWireguardPage />}
       />
     </Route>
 
