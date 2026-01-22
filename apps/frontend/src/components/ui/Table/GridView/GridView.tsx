@@ -37,6 +37,8 @@ interface GridViewProps<TData> {
   getRowDisabled?: (row: Row<TData>) => boolean;
   enableDragAndDrop?: boolean;
   canDropOnRow?: (row: TData) => boolean;
+  focusedRowId?: string | null;
+  onItemClick?: (item: TData) => void;
 }
 
 const GridView = <TData,>({
@@ -46,6 +48,8 @@ const GridView = <TData,>({
   getRowDisabled,
   enableDragAndDrop = false,
   canDropOnRow,
+  focusedRowId,
+  onItemClick,
 }: GridViewProps<TData>) => {
   const { t } = useTranslation();
 
@@ -81,6 +85,8 @@ const GridView = <TData,>({
             enableRowSelection={canSelect}
             enableDragAndDrop={enableDragAndDrop}
             canDropOnRow={canDropOnRow}
+            isKeyboardFocused={focusedRowId === row.id}
+            onItemClickCallback={onItemClick}
           />
         );
       })}

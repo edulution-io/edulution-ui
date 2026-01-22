@@ -1,0 +1,203 @@
+/*
+ * Copyright (C) [2025] [Netzint GmbH]
+ * All rights reserved.
+ *
+ * This software is dual-licensed under the terms of:
+ *
+ * 1. The GNU Affero General Public License (AGPL-3.0-or-later), as published by the Free Software Foundation.
+ *    You may use, modify and distribute this software under the terms of the AGPL, provided that you comply with its conditions.
+ *
+ *    A copy of the license can be found at: https://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * OR
+ *
+ * 2. A commercial license agreement with Netzint GmbH. Licensees holding a valid commercial license from Netzint GmbH
+ *    may use this software in accordance with the terms contained in such written agreement, without the obligations imposed by the AGPL.
+ *
+ * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
+ */
+
+import { useCallback, useEffect, useState } from 'react';
+import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
+import isValidFileToPreview from '@libs/filesharing/utils/isValidFileToPreview';
+import useMedia from '@/hooks/useMedia';
+import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
+
+interface UseKeyboardNavigationOptions {
+  files: DirectoryFileDTO[];
+  onFileOpen: (file: DirectoryFileDTO) => void;
+  isEnabled?: boolean;
+  isGridView?: boolean;
+  gridItemsPerRow?: number;
+}
+
+const useKeyboardNavigation = ({
+  files,
+  onFileOpen,
+  isEnabled = true,
+  isGridView = false,
+  gridItemsPerRow = 1,
+}: UseKeyboardNavigationOptions) => {
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+  const [isKeyboardNavActive, setIsKeyboardNavActive] = useState(false);
+  const { isMobileView, isTabletView } = useMedia();
+  const { isFilePreviewVisible, setIsFilePreviewVisible, currentlyEditingFile, resetCurrentlyEditingFile } =
+    useFileEditorStore();
+
+  const isDesktop = !isMobileView && !isTabletView;
+  const isActive = isEnabled && isDesktop;
+
+  const focusedFile =
+    focusedIndex !== null && focusedIndex >= 0 && focusedIndex < files.length ? files[focusedIndex] : null;
+
+  const resetNavigation = useCallback(() => {
+    setFocusedIndex(null);
+    setIsKeyboardNavActive(false);
+  }, []);
+
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (!isActive || files.length === 0) return;
+
+      const target = event.target as HTMLElement;
+      const isInputElement = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
+
+      if (isInputElement) return;
+
+      const findCurrentFileIndex = () => {
+        if (currentlyEditingFile) {
+          const index = files.findIndex((f) => f.filePath === currentlyEditingFile.filePath);
+          if (index !== -1) return index;
+        }
+        return null;
+      };
+
+      const navigateByStep = (step: number) => {
+        if (document.activeElement instanceof HTMLElement) {
+          document.activeElement.blur();
+        }
+        setIsKeyboardNavActive(true);
+        setFocusedIndex((prev) => {
+          if (prev === null) {
+            const currentIndex = findCurrentFileIndex();
+            if (currentIndex !== null) {
+              const newIndex = currentIndex + step;
+              return Math.max(0, Math.min(newIndex, files.length - 1));
+            }
+            return step > 0 ? 0 : files.length - 1;
+          }
+          const newIndex = prev + step;
+          return Math.max(0, Math.min(newIndex, files.length - 1));
+        });
+      };
+
+      switch (event.key) {
+        case 'ArrowDown': {
+          event.preventDefault();
+          navigateByStep(isGridView ? gridItemsPerRow : 1);
+          break;
+        }
+        case 'ArrowUp': {
+          event.preventDefault();
+          navigateByStep(isGridView ? -gridItemsPerRow : -1);
+          break;
+        }
+        case 'ArrowRight': {
+          if (isGridView) {
+            event.preventDefault();
+            navigateByStep(1);
+          }
+          break;
+        }
+        case 'ArrowLeft': {
+          if (isGridView) {
+            event.preventDefault();
+            navigateByStep(-1);
+          }
+          break;
+        }
+        case 'Enter': {
+          if (focusedFile) {
+            event.preventDefault();
+            onFileOpen(focusedFile);
+          } else if (!isFilePreviewVisible && currentlyEditingFile) {
+            event.preventDefault();
+            setIsFilePreviewVisible(true);
+          }
+          break;
+        }
+        case 'Escape': {
+          if (isFilePreviewVisible) {
+            event.preventDefault();
+            setIsFilePreviewVisible(false);
+          } else if (isKeyboardNavActive) {
+            event.preventDefault();
+            resetNavigation();
+          }
+          break;
+        }
+        default:
+          break;
+      }
+    },
+    [
+      isActive,
+      files,
+      focusedFile,
+      onFileOpen,
+      isFilePreviewVisible,
+      currentlyEditingFile,
+      setIsFilePreviewVisible,
+      isKeyboardNavActive,
+      resetNavigation,
+      isGridView,
+      gridItemsPerRow,
+    ],
+  );
+
+  useEffect(() => {
+    if (!isActive) return undefined;
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isActive, handleKeyDown]);
+
+  useEffect(() => {
+    if (!isActive || !isKeyboardNavActive || focusedIndex === null) return;
+
+    const file = files[focusedIndex];
+    if (!file) return;
+
+    if (isFilePreviewVisible && isValidFileToPreview(file)) {
+      void resetCurrentlyEditingFile(file);
+    }
+  }, [focusedIndex, files, isActive, isKeyboardNavActive, isFilePreviewVisible, resetCurrentlyEditingFile]);
+
+  useEffect(() => {
+    setFocusedIndex(null);
+    setIsKeyboardNavActive(false);
+  }, [files]);
+
+  const handleItemClick = useCallback(
+    (file: DirectoryFileDTO) => {
+      const index = files.findIndex((f) => f.filePath === file.filePath);
+      if (index !== -1) {
+        setFocusedIndex(index);
+      }
+      setIsKeyboardNavActive(false);
+    },
+    [files],
+  );
+
+  return {
+    focusedIndex,
+    focusedFile,
+    isKeyboardNavActive,
+    resetNavigation,
+    handleItemClick,
+  };
+};
+
+export default useKeyboardNavigation;

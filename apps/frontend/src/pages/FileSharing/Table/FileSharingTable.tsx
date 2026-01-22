@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import { DndContext, DragOverlay, rectIntersection } from '@dnd-kit/core';
 import { useParams } from 'react-router-dom';
@@ -38,6 +38,8 @@ import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import ContentType from '@libs/filesharing/types/contentType';
 import { GRID_ICON_SIZE, TABLE_ICON_SIZE } from '@libs/ui/constants';
+import { GRID_ITEM_WIDTH } from '@libs/ui/constants/tableGridSizes';
+import VIEW_MODE from '@libs/common/constants/viewMode';
 import useFileSharingDragAndDrop from '@/pages/FileSharing/hooks/useFileSharingDragAndDrop';
 import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
 import { getElapsedTime } from '@/pages/FileSharing/utilities/filesharingUtilities';
@@ -52,6 +54,7 @@ import useTableViewSettingsStore from '@/store/useTableViewSettingsStore';
 import type FilterOption from '@libs/ui/types/filterOption';
 import useFileOpen from '../hooks/useFileOpen';
 import useVariableSharePathname from '../hooks/useVariableSharePathname';
+import useKeyboardNavigation from '../hooks/useKeyboardNavigation';
 
 const FileSharingTable = () => {
   const { webdavShare } = useParams();
@@ -69,14 +72,17 @@ const FileSharingTable = () => {
       currentPath,
     });
   const { createVariableSharePathname } = useVariableSharePathname();
-  const { showSystemFiles, showHiddenFiles, setShowSystemFiles, setShowHiddenFiles } = useTableViewSettingsStore(
-    (state) => ({
+  const { showSystemFiles, showHiddenFiles, setShowSystemFiles, setShowHiddenFiles, getViewMode } =
+    useTableViewSettingsStore((state) => ({
       showSystemFiles: state.showSystemFiles?.[APPS.FILE_SHARING] ?? false,
       showHiddenFiles: state.showHiddenFiles?.[APPS.FILE_SHARING] ?? false,
       setShowSystemFiles: state.setShowSystemFiles,
       setShowHiddenFiles: state.setShowHiddenFiles,
-    }),
-  );
+      getViewMode: state.getViewMode,
+    }));
+
+  const viewMode = getViewMode(APPS.FILE_SHARING);
+  const isGridView = viewMode === VIEW_MODE.grid;
 
   const isDocumentServerConfigured = !!getExtendedOptionsValue(
     appConfigs,
@@ -221,6 +227,41 @@ const FileSharingTable = () => {
     return [parentEntry, ...filteredFiles];
   }, [filteredFiles, currentPath, webdavShare, webdavShares, createVariableSharePathname]);
 
+  const [sortedFiles, setSortedFiles] = useState<DirectoryFileDTO[]>([]);
+  const [gridItemsPerRow, setGridItemsPerRow] = useState(1);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleSortedRowsChange = useCallback((rows: DirectoryFileDTO[]) => {
+    setSortedFiles(rows);
+  }, []);
+
+  const GRID_GAP = 16;
+
+  useEffect(() => {
+    if (!isGridView || !containerRef.current) return undefined;
+
+    const calculateItemsPerRow = () => {
+      if (!containerRef.current) return;
+      const containerWidth = containerRef.current.offsetWidth;
+      const itemsPerRow = Math.max(1, Math.floor((containerWidth + GRID_GAP) / (GRID_ITEM_WIDTH + GRID_GAP)));
+      setGridItemsPerRow(itemsPerRow);
+    };
+
+    calculateItemsPerRow();
+
+    const resizeObserver = new ResizeObserver(calculateItemsPerRow);
+    resizeObserver.observe(containerRef.current);
+
+    return () => resizeObserver.disconnect();
+  }, [isGridView]);
+
+  const { focusedFile, handleItemClick } = useKeyboardNavigation({
+    files: sortedFiles,
+    onFileOpen: handleFileOpen,
+    isGridView,
+    gridItemsPerRow,
+  });
+
   const filterOptions: FilterOption[] = useMemo(
     () => [
       {
@@ -240,69 +281,77 @@ const FileSharingTable = () => {
   );
 
   return (
-    <DndContext
-      sensors={sensors}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-      onDragCancel={handleDragCancel}
-      collisionDetection={rectIntersection}
+    <div
+      ref={containerRef}
+      className="flex h-full flex-col"
     >
-      <TableGridView
-        columns={columns}
-        data={filesWithParentNav}
-        filterKey={FILE_SHARING_TABLE_COLUMNS.SELECT_FILENAME}
-        filterPlaceHolderText="filesharing.filterPlaceHolderText"
-        onRowSelectionChange={handleRowSelectionChange}
-        isLoading={isLoading}
-        selectedRows={selectedRows}
-        getRowId={(row) => row.filePath}
-        getRowDisabled={(row) => row.original.filePath === PARENT_FOLDER_PATH}
-        getRowExcludedFromCount={(row) => row.original.filePath === PARENT_FOLDER_PATH}
-        enableRowSelection={(row) => row.original.filePath !== PARENT_FOLDER_PATH}
-        applicationName={APPS.FILE_SHARING}
-        initialSorting={[
-          { id: 'type', desc: false },
-          { id: 'select-filename', desc: false },
-        ]}
-        initialColumnVisibility={initialColumnVisibility}
-        enableDragAndDrop
-        canDropOnRow={canDropOnRow}
-        gridItemConfig={gridItemConfig}
-        viewModeStorageKey={APPS.FILE_SHARING}
-        filterOptions={filterOptions}
-      />
-      <DragOverlay>
-        {draggedFiles.length > 0 ? (
-          <div className="flex w-fit items-center gap-2 rounded bg-accent p-2 shadow-lg">
-            {draggedFiles.length === 1 ? (
-              <>
-                <FileEntryIcon
-                  file={draggedFiles[0]}
-                  size={TABLE_ICON_SIZE}
-                />
-                <span className="truncate">{draggedFiles[0].filename}</span>
-              </>
-            ) : (
-              <>
-                <div className="relative">
+      <DndContext
+        sensors={sensors}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragCancel={handleDragCancel}
+        collisionDetection={rectIntersection}
+      >
+        <TableGridView
+          columns={columns}
+          data={filesWithParentNav}
+          filterKey={FILE_SHARING_TABLE_COLUMNS.SELECT_FILENAME}
+          filterPlaceHolderText="filesharing.filterPlaceHolderText"
+          onRowSelectionChange={handleRowSelectionChange}
+          isLoading={isLoading}
+          selectedRows={selectedRows}
+          getRowId={(row) => row.filePath}
+          getRowDisabled={(row) => row.original.filePath === PARENT_FOLDER_PATH}
+          getRowExcludedFromCount={(row) => row.original.filePath === PARENT_FOLDER_PATH}
+          enableRowSelection={(row) => row.original.filePath !== PARENT_FOLDER_PATH}
+          applicationName={APPS.FILE_SHARING}
+          initialSorting={[
+            { id: 'type', desc: false },
+            { id: 'select-filename', desc: false },
+          ]}
+          initialColumnVisibility={initialColumnVisibility}
+          enableDragAndDrop
+          canDropOnRow={canDropOnRow}
+          gridItemConfig={gridItemConfig}
+          viewModeStorageKey={APPS.FILE_SHARING}
+          filterOptions={filterOptions}
+          focusedRowId={focusedFile?.filePath ?? null}
+          onGridItemClick={handleItemClick}
+          onSortedRowsChange={handleSortedRowsChange}
+        />
+        <DragOverlay>
+          {draggedFiles.length > 0 ? (
+            <div className="flex w-fit items-center gap-2 rounded bg-accent p-2 shadow-lg">
+              {draggedFiles.length === 1 ? (
+                <>
                   <FileEntryIcon
                     file={draggedFiles[0]}
                     size={TABLE_ICON_SIZE}
                   />
-                  <div className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
-                    {draggedFiles.length}
+                  <span className="truncate">{draggedFiles[0].filename}</span>
+                </>
+              ) : (
+                <>
+                  <div className="relative">
+                    <FileEntryIcon
+                      file={draggedFiles[0]}
+                      size={TABLE_ICON_SIZE}
+                    />
+                    <div className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                      {draggedFiles.length}
+                    </div>
                   </div>
-                </div>
-                <span className="truncate">
-                  {draggedFiles.length}{' '}
-                  {draggedFiles.length === 1 ? t('fileSharingTable.element') : t('fileSharingTable.elements')}
-                </span>
-              </>
-            )}
-          </div>
-        ) : null}
-      </DragOverlay>
-    </DndContext>
+                  <span className="truncate">
+                    {draggedFiles.length}{' '}
+                    {draggedFiles.length === 1 ? t('fileSharingTable.element') : t('fileSharingTable.elements')}
+                  </span>
+                </>
+              )}
+            </div>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
+    </div>
   );
 };
 

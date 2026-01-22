@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { ColumnDef, OnChangeFn, Row, RowSelectionState, VisibilityState } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 import TableAction from '@libs/common/types/tableAction';
@@ -61,6 +61,9 @@ interface TableGridViewProps<TData, TValue> {
   gridItemConfig: GridItemConfig<TData>;
   viewModeStorageKey: string;
   filterOptions?: FilterOption[];
+  focusedRowId?: string | null;
+  onGridItemClick?: (item: TData) => void;
+  onSortedRowsChange?: (sortedData: TData[]) => void;
 }
 
 const TableGridView = <TData, TValue>({
@@ -88,6 +91,9 @@ const TableGridView = <TData, TValue>({
   gridItemConfig,
   viewModeStorageKey,
   filterOptions,
+  focusedRowId,
+  onGridItemClick,
+  onSortedRowsChange,
 }: TableGridViewProps<TData, TValue>) => {
   const { t } = useTranslation();
   const { getViewMode, setViewMode } = useTableViewSettingsStore();
@@ -134,6 +140,14 @@ const TableGridView = <TData, TValue>({
     initialColumnVisibility,
   });
 
+  const sortedRows = table.getRowModel().rows;
+
+  useEffect(() => {
+    if (onSortedRowsChange) {
+      onSortedRowsChange(sortedRows.map((row) => row.original));
+    }
+  }, [sortedRows, onSortedRowsChange]);
+
   if (isTableView) {
     return (
       <ScrollableTable
@@ -164,6 +178,9 @@ const TableGridView = <TData, TValue>({
             {viewModeToggle}
           </>
         }
+        focusedRowId={focusedRowId}
+        onSortedRowsChange={onSortedRowsChange}
+        onRowClick={onGridItemClick}
       />
     );
   }
@@ -228,6 +245,8 @@ const TableGridView = <TData, TValue>({
           getRowDisabled={getRowDisabled}
           enableDragAndDrop={enableDragAndDrop}
           canDropOnRow={canDropOnRow}
+          focusedRowId={focusedRowId}
+          onItemClick={onGridItemClick}
         />
         <TableActionFooter
           actions={actions}
