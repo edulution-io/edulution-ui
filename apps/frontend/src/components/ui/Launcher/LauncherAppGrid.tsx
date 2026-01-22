@@ -141,12 +141,12 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
       {!isMobileView && !isTabletView && (
         <div className="text-center text-sm text-muted-foreground">
           <span>{t('launcher.pressShortKey')} </span>
-          <span className="ml-0.5 rounded border-2 border-muted-light bg-muted px-1 py-0.5 text-xs">
+          <span className="ml-0.5 rounded border-2 border-accent-light bg-accent px-1 py-0.5 text-xs">
             {modKeyLabel}
           </span>{' '}
-          +<span className="ml-0.5 rounded border-2 border-muted-light bg-muted px-1 py-0.5 text-xs">K</span>
+          +<span className="ml-0.5 rounded border-2 border-accent-light bg-accent px-1 py-0.5 text-xs">K</span>
           <span className="ml-8">{t('launcher.pressEnterToStartApp')} </span>
-          <span className="ml-0.5 rounded border-2 border-muted-light bg-muted px-1 py-0.5 text-xs">
+          <span className="ml-0.5 rounded border-2 border-accent-light bg-accent px-1 py-0.5 text-xs">
             {t('enterKey')}
           </span>
         </div>

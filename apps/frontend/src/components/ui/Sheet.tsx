@@ -61,7 +61,7 @@ const sheetVariants = cva(
           'inset-y-0 right-0 h-full w-3/4 data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm',
       },
       variant: {
-        primary: 'bg-overlay',
+        primary: 'bg-glass backdrop-blur-sm',
         secondary: 'bg-ciGray',
       },
     },

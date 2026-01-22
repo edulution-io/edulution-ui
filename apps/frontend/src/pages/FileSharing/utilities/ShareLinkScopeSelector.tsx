@@ -31,7 +31,7 @@ interface ShareLinkScopeSelectorProps {
 }
 
 const optionStyle =
-  'flex w-full items-center justify-between gap-4 rounded-lg border p-4 hover:bg-muted data-[state=checked]:border-primary';
+  'flex w-full items-center justify-between gap-4 rounded-lg border p-4 hover:bg-accent data-[state=checked]:border-primary';
 
 const ShareLinkScopeSelector: FC<ShareLinkScopeSelectorProps> = ({ value, onValueChange }) => {
   const { t } = useTranslation();

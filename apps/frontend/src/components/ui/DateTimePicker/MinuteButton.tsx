@@ -38,7 +38,7 @@ const MinuteButton = ({ minute, currentMinute, onChangeMinute, variant }: Minute
       variant={currentMinute === minute ? 'btn-outline' : 'btn-small'}
       className={cn('aspect-square max-h-[25px] max-w-[64px] shrink-0 sm:w-full', {
         'bg-background text-foreground': variant === 'default',
-        'bg-white text-background dark:bg-muted dark:text-secondary': variant === 'dialog',
+        'bg-white text-background dark:bg-accent dark:text-secondary': variant === 'dialog',
       })}
       onClick={handleClick}
     >
