@@ -2034,7 +2034,7 @@
     "mailImapRejectUnauthorizedTitle": "Nicht zertifizierte Verbindungen ablehnen",
     "mailImapRejectUnauthorizedDescription": "Soll eine Zertifikatsprüfung für diese Verbindung durchgeführt werden?",
     "mailSogoThemeTitle": "Theme",
-    "mailSogoThemeDescription": "Wähle das Theme für die Mail-App. Das Ändern des Themes startet die zugehörigen Container neu.",
+    "mailSogoThemeDescription": "Wähle das Theme für die Mail-App. Das Ändern des Themes startet die zugehörigen Container neu. Die App bietet keine individuelle Theme-Umschaltung. Das Theme wird systemweit für alle Nutzer gesetzt.",
     "mailSogoTheme": {
       "light": "Hell",
       "dark": "Dunkel"
