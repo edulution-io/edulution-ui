@@ -1007,7 +1007,8 @@
       "bulletinboard": "Configure the user groups that have access to the Info Board app here. The categories can be used to control which messages are displayed to users.",
       "forwarding": "Forwarding: Simply enter the link to the web application under URL.",
       "frame": "Frame: Simply enter the link to the web application under URL.",
-      "embedded": "Embedded: Here you can create your own web application in the editor."
+      "embedded": "Embedded: Here you can create your own web application in the editor.",
+      "wireguard": "Setup and manage WireGuard VPN connections for secure remote access to your network."
     },
     "globalSettings": {
       "title": "Global Settings",
@@ -1167,6 +1168,10 @@
             "title": "Deletion not possible",
             "description": "The WebDAV server '{{serverName}}' is used by {{count}} share(s): {{shares}}. Please delete the dependent shares first."
           }
+        },
+        "wireguard": {
+          "title": "WireGuard Peers",
+          "description": "Manage WireGuard VPN peers and site-to-site connections here."
         },
         "files": {
           "title": "Files",
@@ -1366,6 +1371,26 @@
     "userinterface": {
       "title": "User Interface",
       "description": "Here you can customize the user interface settings according to your preferences."
+    },
+    "wireguard": {
+      "title": "VPN Access",
+      "description": "Here you can view and configure your WireGuard VPN access.",
+      "noPeer": "No WireGuard VPN access has been set up for your user yet. Please contact an administrator.",
+      "connectionStatus": "Connection Status",
+      "connected": "Connected",
+      "disconnected": "Disconnected",
+      "lastHandshake": "Last Handshake",
+      "received": "Received",
+      "sent": "Sent",
+      "connectionDetails": "Connection Details",
+      "peerName": "Name",
+      "ipAddress": "IP Address",
+      "routes": "Routes",
+      "qrCode": "QR Code",
+      "qrCodeDescription": "Scan this QR code with the WireGuard app on your mobile device to set up the VPN connection.",
+      "configDownload": "Configuration File",
+      "configDownloadDescription": "Download the WireGuard configuration file to import it into the WireGuard app on your computer.",
+      "downloadButton": "Download Configuration"
     },
     "addTotp": {
       "title": "Set up Two-Factor Authentication",
@@ -1706,6 +1731,68 @@
     "historyTitle": "History",
     "historyNoMore": "No more entries"
   },
+  "wireguard": {
+    "title": "WIREGUARD",
+    "sidebar": "WireGuard",
+    "description": "Manage WireGuard VPN peers and site-to-site connections",
+    "name": "Name",
+    "type": "Type",
+    "ip": "IP Address",
+    "publicKey": "Public Key",
+    "routes": "Routes",
+    "allowedIps": "Allowed IPs",
+    "endpoint": "Endpoint",
+    "status": "Status",
+    "lastHandshake": "Last Handshake",
+    "clientPeer": "Client Peer",
+    "siteToSite": "Site-to-Site",
+    "addPeer": "Add Peer",
+    "delete": "Delete",
+    "searchPlaceholder": "Search by name...",
+    "namePlaceholder": "Enter peer name",
+    "routesDescription": "Comma-separated list of routes (e.g. 0.0.0.0/0, 10.0.0.0/8)",
+    "allowedIpsDescription": "Comma-separated list of allowed IP ranges for site-to-site connection",
+    "endpointDescription": "Remote endpoint address and port (e.g. vpn.example.com:51820)",
+    "noSelection": "Please select at least one peer to delete",
+    "deletePeers": "Delete Peers",
+    "confirmDelete": "Do you really want to delete this peer?",
+    "confirmDelete_other": "Do you really want to delete these {{count}} peers?",
+    "deleteSuccess": "Peers deleted successfully",
+    "deleteFailed": "Failed to delete peers",
+    "peerCreated": "Client peer created successfully",
+    "peersCreated": "{{count}} client peers created successfully",
+    "peersCreatedPartial": "{{successful}} client peers created, {{failed}} failed",
+    "siteCreated": "Site-to-site connection created successfully",
+    "createFailed": "Failed to create peer",
+    "qrCode": "QR Code for {{name}}",
+    "qrCodeAlt": "WireGuard configuration QR code",
+    "qrCodeFailed": "Failed to load QR code",
+    "noQrCode": "No QR code available",
+    "peerDetails": "Peer Details",
+    "showQRCode": "Show QR Code",
+    "validation": {
+      "nameRequired": "Name is required",
+      "allowedIpsRequired": "Allowed IPs are required for site-to-site connections"
+    },
+    "errors": {
+      "getPeersFailed": "Failed to load peers",
+      "createPeerFailed": "Failed to create client peer",
+      "deletePeerFailed": "Failed to delete client peer",
+      "getPeerConfigFailed": "Failed to load peer configuration",
+      "getPeerQrFailed": "Failed to load QR code",
+      "getPeerStatusFailed": "Failed to load peer status",
+      "getPeersStatusFailed": "Failed to load peers status",
+      "restartFailed": "Restart failed",
+      "getSitesFailed": "Failed to load sites",
+      "createSiteFailed": "Failed to create site-to-site connection",
+      "deleteSiteFailed": "Failed to delete site-to-site connection",
+      "getSiteConfigFailed": "Failed to load site configuration"
+    },
+    "rowSelected": "{{selected}} of {{total}} peer selected",
+    "rowsSelected": "{{selected}} of {{total}} peers selected",
+    "item": "{{count}} peer",
+    "items": "{{count}} peers"
+  },
   "table": {
     "noDataAvailable": "No data available"
   },
@@ -1982,6 +2069,18 @@
     "EDULUTION_MAIL_HOSTNAME": {
       "title": "Hostname",
       "description": "Hostname of the mail server. This could be different from the edulution domain name."
+    },
+    "EDU_WG_IPNETWORK": {
+      "title": "IP Network",
+      "description": "The IP network for the VPN connection (e.g. 10.8.0.0/24)."
+    },
+    "EDU_WG_ADDRESS": {
+      "title": "Address",
+      "description": "The IP address of the VPN server."
+    },
+    "EDU_WG_DNS": {
+      "title": "DNS Server",
+      "description": "The DNS server address for the VPN connection."
     }
   },
   "edulution-manager": {

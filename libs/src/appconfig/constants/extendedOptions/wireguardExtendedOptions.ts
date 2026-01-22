@@ -17,36 +17,18 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-type DockerCompose = {
-  services: {
-    [key: string]: {
-      image: string;
-      container_name?: string;
-      volumes?: string[];
-      environment?: string[];
-      restart?: string;
-      ports?: string[];
-      command?: string;
-      depends_on?: string[];
-      stdin_open?: boolean;
-      stop_grace_period?: string;
-      cap_add?: string[];
-      sysctls?: string[];
-    };
-  };
-  volumes?: {
-    [key: string]: {
-      driver?: string;
-      driver_opts?: {
-        [key: string]: string;
-      };
-    };
-  };
-  networks?: {
-    [key: string]: {
-      external?: boolean;
-    };
-  };
-};
+import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
+import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
+import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 
-export default DockerCompose;
+const WIREGUARD_EXTENDED_OPTIONS: AppConfigExtendedOption[] = [
+  {
+    name: ExtendedOptionKeys.WIREGUARD_PEERS_TABLE,
+    description: 'wireguardApplication.description',
+    type: ExtendedOptionField.table,
+    value: '',
+    width: 'full',
+  },
+];
+
+export default WIREGUARD_EXTENDED_OPTIONS;

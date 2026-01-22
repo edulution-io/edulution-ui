@@ -17,36 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-type DockerCompose = {
-  services: {
-    [key: string]: {
-      image: string;
-      container_name?: string;
-      volumes?: string[];
-      environment?: string[];
-      restart?: string;
-      ports?: string[];
-      command?: string;
-      depends_on?: string[];
-      stdin_open?: boolean;
-      stop_grace_period?: string;
-      cap_add?: string[];
-      sysctls?: string[];
-    };
-  };
-  volumes?: {
-    [key: string]: {
-      driver?: string;
-      driver_opts?: {
-        [key: string]: string;
-      };
-    };
-  };
-  networks?: {
-    [key: string]: {
-      external?: boolean;
-    };
-  };
-};
+import WIREGUARD_ERROR_MESSAGES from '../constants/wireguardErrorMessages';
 
-export default DockerCompose;
+type WireguardErrorMessages = (typeof WIREGUARD_ERROR_MESSAGES)[keyof typeof WIREGUARD_ERROR_MESSAGES];
+
+export default WireguardErrorMessages;

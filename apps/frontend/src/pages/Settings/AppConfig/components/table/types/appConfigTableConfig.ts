@@ -28,6 +28,8 @@ import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import { FileTableStore } from '@libs/appconfig/types/fileTableStore';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import type { WebdavServerTableStore, WebdavShareTableStore } from '@libs/appconfig/types/webdavShareTableStore';
+import { type WireguardPeer } from '@libs/wireguard/types/wireguard';
+import { type WireguardTableStore } from '@libs/appconfig/types/wireguardTableStore';
 import AppConfigTableEntry from './appConfigTableEntry';
 
 export type AppConfigTableConfig =
@@ -48,4 +50,7 @@ export type AppConfigTableConfig =
     })
   | (AppConfigTableEntry<WebdavShareDto, WebdavShareTableStore> & {
       type: typeof ExtendedOptionKeys.WEBDAV_SHARE_TABLE;
+    })
+  | (AppConfigTableEntry<WireguardPeer, WireguardTableStore> & {
+      type: typeof ExtendedOptionKeys.WIREGUARD_PEERS_TABLE;
     });
