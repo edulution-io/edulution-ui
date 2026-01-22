@@ -46,6 +46,7 @@ const ExtendedOptionKeys = {
   FRAME_URL_SYNC_PRELOAD_BASE_PAGE: 'FRAME_URL_SYNC_PRELOAD_BASE_PAGE',
   APP_LOGO: 'APP_LOGO',
   BACKGROUND: 'BACKGROUND',
+  WIREGUARD_PEERS_TABLE: 'WIREGUARD_PEERS_TABLE',
 } as const;
 
 export default ExtendedOptionKeys;

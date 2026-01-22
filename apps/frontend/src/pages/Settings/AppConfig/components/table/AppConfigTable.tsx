@@ -37,6 +37,7 @@ import useTableActions from '@/hooks/useTableActions';
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
+import { type WireguardPeer } from '@libs/wireguard/types/wireguard';
 import DeleteAppConfigTableDialog from './DeleteAppConfigTableDialog';
 
 interface AppConfigTableProps {
@@ -103,11 +104,17 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
 
       const items = selectedIndices.map((index) => {
         const row = tableContentData[index];
+        if (type === ExtendedOptionKeys.WIREGUARD_PEERS_TABLE && row && 'name' in row) {
+          return { name: row.name, id: String(index) };
+        }
         if (row && 'filename' in row && row.filename) {
           return { name: row.filename, id: String(index) };
         }
         if (row && 'webdavShareId' in row && row.webdavShareId) {
           return { name: row.displayName, id: String(index) };
+        }
+        if (row && 'name' in row && 'type' in row && (row.type === 'client' || row.type === 'site')) {
+          return { name: row.name, id: String(index) };
         }
         return { name: t('common.entry', { index: index + 1 }), id: String(index) };
       });
@@ -125,12 +132,25 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
 
       const deletePromises = selectedIndices.map((index) => {
         const row = tableContentData[index];
+        if (type === ExtendedOptionKeys.WIREGUARD_PEERS_TABLE && row && 'name' in row && deleteTableEntry) {
+          return deleteTableEntry(applicationName, row.name);
+        }
         if (row && 'filename' in row && row.filename && deleteTableEntry) {
           return deleteTableEntry(applicationName, row.filename);
         }
 
         if (row && 'webdavShareId' in row && row.webdavShareId && deleteTableEntry) {
           return deleteTableEntry(applicationName, row.webdavShareId);
+        }
+
+        if (
+          row &&
+          'name' in row &&
+          'type' in row &&
+          (row.type === 'client' || row.type === 'site') &&
+          deleteTableEntry
+        ) {
+          return deleteTableEntry(applicationName, row.name);
         }
 
         return Promise.resolve();
@@ -160,7 +180,13 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
       return visibility;
     }, [isMobileView, isTabletView, hideColumnsInMobileView, hideColumnsInTabletView]);
 
-    type TableDataType = BulletinCategoryResponseDto | ContainerInfo | FileInfoDto | VeyonProxyItem | WebdavShareDto;
+    type TableDataType =
+      | BulletinCategoryResponseDto
+      | ContainerInfo
+      | FileInfoDto
+      | VeyonProxyItem
+      | WebdavShareDto
+      | WireguardPeer;
 
     const selectedRowsArray = useMemo(
       () =>
@@ -286,6 +312,22 @@ const AppConfigTable: React.FC<AppConfigTableProps> = ({ applicationName, option
               selectedRows={selectedRows}
               onRowSelectionChange={handleRowSelectionChange}
               actions={tableActions as TableAction<WebdavShareDto>[]}
+            />
+          );
+        }
+        case ExtendedOptionKeys.WIREGUARD_PEERS_TABLE: {
+          return (
+            <ScrollableTable
+              columns={columns}
+              data={tableContentData as WireguardPeer[]}
+              filterKey={filterKey}
+              filterPlaceHolderText={filterPlaceHolderText}
+              applicationName={applicationName}
+              enableRowSelection
+              initialColumnVisibility={initialColumnVisibility}
+              selectedRows={selectedRows}
+              onRowSelectionChange={handleRowSelectionChange}
+              actions={tableActions as TableAction<WireguardPeer>[]}
             />
           );
         }

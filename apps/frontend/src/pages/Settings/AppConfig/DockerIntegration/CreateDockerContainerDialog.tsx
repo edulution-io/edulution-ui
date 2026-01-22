@@ -58,6 +58,7 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
     dockerComposeFiles,
     createAndRunContainer,
     fetchTableContent,
+    getTraefikConfig,
   } = useDockerApplicationStore();
   const { eventSource } = useSseStore();
   const { isDialogOpen, setDialogOpen } = useAppConfigTableDialogStore();
@@ -123,6 +124,8 @@ const CreateDockerContainerDialog: React.FC<CreateDockerContainerDialogProps> = 
         originalComposeConfig: dockerComposeFiles[containerName] || '',
       });
       await fetchTableContent(settingLocation);
+
+      await getTraefikConfig(settingLocation, containerName);
     }
   };
 

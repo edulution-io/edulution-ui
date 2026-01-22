@@ -31,6 +31,7 @@ import {
   EmbeddedIcon,
   SurveysMenuIcon,
   WhiteBoardIcon,
+  VPNIcon,
 } from '@/assets/icons';
 import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
 import APPS from '@libs/appconfig/constants/apps';
@@ -53,6 +54,7 @@ import URL_SYNC_EXTENDED_OPTIONS, {
 } from '@libs/appconfig/constants/extendedOptions/urlSyncExtendedOptions';
 import APP_LOGO_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/appLogoExtendedOptions';
 import { ALL_DISPLAY_LOCATIONS } from '@libs/appconfig/constants/appDisplayLocations';
+import WIREGUARD_EXTENDED_OPTIONS from '@libs/appconfig/constants/extendedOptions/wireguardExtendedOptions';
 
 const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
@@ -146,6 +148,17 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     icon: WhiteBoardIcon,
     isNativeApp: true,
     defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
+  },
+  {
+    id: APPS.WIREGUARD,
+    icon: VPNIcon,
+    options: [APP_CONFIG_OPTION_KEYS.URL, APP_CONFIG_OPTION_KEYS.APIKEY, APP_CONFIG_OPTION_KEYS.PROXYCONFIG],
+    isNativeApp: true,
+    extendedOptions: {
+      [AppConfigSectionsKeys.docker]: DOCKER_CONTAINER_EXTENDED_OPTIONS,
+      [AppConfigSectionsKeys.wireguard]: WIREGUARD_EXTENDED_OPTIONS,
+    },
+    defaultDisplayLocations: [],
   },
   {
     id: APPS.FORWARDING,

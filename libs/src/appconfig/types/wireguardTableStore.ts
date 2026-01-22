@@ -17,36 +17,19 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-type DockerCompose = {
-  services: {
-    [key: string]: {
-      image: string;
-      container_name?: string;
-      volumes?: string[];
-      environment?: string[];
-      restart?: string;
-      ports?: string[];
-      command?: string;
-      depends_on?: string[];
-      stdin_open?: boolean;
-      stop_grace_period?: string;
-      cap_add?: string[];
-      sysctls?: string[];
-    };
-  };
-  volumes?: {
-    [key: string]: {
-      driver?: string;
-      driver_opts?: {
-        [key: string]: string;
-      };
-    };
-  };
-  networks?: {
-    [key: string]: {
-      external?: boolean;
-    };
-  };
-};
+import type { BatchPeersRequest, PeerRequest, SiteRequest, WireguardPeer } from '@libs/wireguard/types/wireguard';
+import AppConfigTable from './appConfigTable';
 
-export default DockerCompose;
+export interface WireguardTableStore extends AppConfigTable<WireguardPeer> {
+  isLoading: boolean;
+  error: string | null;
+  selectedConfig: WireguardPeer | null;
+  setSelectedConfig: (config: WireguardPeer | null) => void;
+  itemToDelete: WireguardPeer | null;
+  setItemToDelete: (item: WireguardPeer | null) => void;
+  createPeer: (data: PeerRequest) => Promise<void>;
+  createPeers: (request: BatchPeersRequest) => Promise<void>;
+  createSite: (data: SiteRequest) => Promise<void>;
+  getPeerQRCode: (name: string) => Promise<string | null>;
+  reset: () => void;
+}

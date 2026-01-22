@@ -17,36 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-type DockerCompose = {
-  services: {
-    [key: string]: {
-      image: string;
-      container_name?: string;
-      volumes?: string[];
-      environment?: string[];
-      restart?: string;
-      ports?: string[];
-      command?: string;
-      depends_on?: string[];
-      stdin_open?: boolean;
-      stop_grace_period?: string;
-      cap_add?: string[];
-      sysctls?: string[];
-    };
-  };
-  volumes?: {
-    [key: string]: {
-      driver?: string;
-      driver_opts?: {
-        [key: string]: string;
-      };
-    };
-  };
-  networks?: {
-    [key: string]: {
-      external?: boolean;
-    };
-  };
-};
+const WIREGUARD_TABLE_COLUMNS = {
+  SELECT: 'select',
+  NAME: 'name',
+  STATUS: 'status',
+  ALLOWED_IPS: 'allowed_ips',
+  ENDPOINT: 'endpoint',
+  LAST_HANDSHAKE: 'last_handshake',
+} as const;
 
-export default DockerCompose;
+export default WIREGUARD_TABLE_COLUMNS;
