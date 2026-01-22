@@ -57,7 +57,7 @@ const PageLayout = ({
   return (
     <div
       id="page"
-      className="relative flex h-full w-full flex-col pt-1 md:pt-1"
+      className="relative flex h-full w-full flex-col"
     >
       {nativeAppHeader && (
         <NativeAppHeader

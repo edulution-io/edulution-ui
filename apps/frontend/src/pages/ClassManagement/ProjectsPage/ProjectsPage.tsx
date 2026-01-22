@@ -80,7 +80,7 @@ const ProjectsPage = () => {
 
   return (
     <PageLayout>
-      <div className="mb-2 flex w-full flex-col gap-2 md:flex-row md:items-center md:gap-4">
+      <div className="mb-2 flex w-full flex-col gap-2 pt-1 md:flex-row md:items-center md:gap-4">
         <div className="min-w-0 flex-1">
           <Input
             className="h-10 w-full"
