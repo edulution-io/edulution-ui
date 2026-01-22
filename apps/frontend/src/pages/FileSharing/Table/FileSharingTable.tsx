@@ -46,6 +46,10 @@ import TableActionMenu from '@/components/ui/Table/TableActionMenu';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import useStartWebdavFileDownload from '@/pages/FileSharing/hooks/useStartWebdavFileDownload';
 import getFileSharingActions from '@/pages/FileSharing/Table/getFileSharingActions';
+import isHiddenFile from '@libs/filesharing/utils/isHiddenFile';
+import isSystemFile from '@libs/filesharing/utils/isSystemFile';
+import useTableViewSettingsStore from '@/store/useTableViewSettingsStore';
+import type FilterOption from '@libs/ui/types/filterOption';
 import useFileOpen from '../hooks/useFileOpen';
 import useVariableSharePathname from '../hooks/useVariableSharePathname';
 
@@ -65,6 +69,14 @@ const FileSharingTable = () => {
       currentPath,
     });
   const { createVariableSharePathname } = useVariableSharePathname();
+  const { showSystemFiles, showHiddenFiles, setShowSystemFiles, setShowHiddenFiles } = useTableViewSettingsStore(
+    (state) => ({
+      showSystemFiles: state.showSystemFiles?.[APPS.FILE_SHARING] ?? false,
+      showHiddenFiles: state.showHiddenFiles?.[APPS.FILE_SHARING] ?? false,
+      setShowSystemFiles: state.setShowSystemFiles,
+      setShowHiddenFiles: state.setShowHiddenFiles,
+    }),
+  );
 
   const isDocumentServerConfigured = !!getExtendedOptionsValue(
     appConfigs,
@@ -176,9 +188,19 @@ const FileSharingTable = () => {
     [handleFileOpen, actionCallbacks],
   );
 
+  const filteredFiles = useMemo(
+    () =>
+      files.filter((file) => {
+        if (isSystemFile(file.filename) && !showSystemFiles) return false;
+        if (isHiddenFile(file.filename) && !showHiddenFiles) return false;
+        return true;
+      }),
+    [files, showSystemFiles, showHiddenFiles],
+  );
+
   const filesWithParentNav = useMemo(() => {
     if (!webdavShare || currentPath === '/') {
-      return files;
+      return filteredFiles;
     }
 
     const currentShare = webdavShares.find((s) => s.displayName === webdavShare);
@@ -186,7 +208,7 @@ const FileSharingTable = () => {
     const shareRootPath = createVariableSharePathname(baseSharePath, currentShare?.pathVariables);
 
     if (currentPath === shareRootPath || currentPath === `/${shareRootPath}`) {
-      return files;
+      return filteredFiles;
     }
 
     const parentEntry: DirectoryFileDTO = {
@@ -196,8 +218,26 @@ const FileSharingTable = () => {
       etag: '',
     };
 
-    return [parentEntry, ...files];
-  }, [files, currentPath, webdavShare, webdavShares, createVariableSharePathname]);
+    return [parentEntry, ...filteredFiles];
+  }, [filteredFiles, currentPath, webdavShare, webdavShares, createVariableSharePathname]);
+
+  const filterOptions: FilterOption[] = useMemo(
+    () => [
+      {
+        key: 'showSystemFiles',
+        translationKey: 'common.showSystemFiles',
+        checked: showSystemFiles,
+        onChange: (enabled: boolean) => setShowSystemFiles(APPS.FILE_SHARING, enabled),
+      },
+      {
+        key: 'showHiddenFiles',
+        translationKey: 'common.showHiddenFiles',
+        checked: showHiddenFiles,
+        onChange: (enabled: boolean) => setShowHiddenFiles(APPS.FILE_SHARING, enabled),
+      },
+    ],
+    [showSystemFiles, showHiddenFiles, setShowSystemFiles, setShowHiddenFiles],
+  );
 
   return (
     <DndContext
@@ -229,6 +269,7 @@ const FileSharingTable = () => {
         canDropOnRow={canDropOnRow}
         gridItemConfig={gridItemConfig}
         viewModeStorageKey={APPS.FILE_SHARING}
+        filterOptions={filterOptions}
       />
       <DragOverlay>
         {draggedFiles.length > 0 ? (

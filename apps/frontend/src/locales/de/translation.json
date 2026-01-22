@@ -1444,6 +1444,9 @@
     "answers": "Antworten",
     "error": "Fehler",
     "entry": "Eintrag {{index}}",
+    "filter": "Filter",
+    "showHiddenFiles": "Versteckte Dateien anzeigen",
+    "showSystemFiles": "Systemdateien anzeigen",
     "errors": {
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "directoryNotCreated": "Erstellen des Verzeichnisses fehlgeschlagen",
