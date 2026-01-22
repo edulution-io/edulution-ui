@@ -1921,7 +1921,7 @@
     "mailImapRejectUnauthorizedTitle": "Reject Unauthorized",
     "mailImapRejectUnauthorizedDescription": "Should a certificate check be carried out for this connection?",
     "mailSogoThemeTitle": "Theme",
-    "mailSogoThemeDescription": "Select the theme for the Mail app. Changing the theme restarts related containers.",
+    "mailSogoThemeDescription": "Select the theme for the Mail app. Changing the theme restarts related containers. The app does not offer individual theme switching. The theme is set system-wide for all users.",
     "mailSogoTheme": {
       "light": "Light",
       "dark": "Dark"
