@@ -70,13 +70,20 @@ const DropdownSelect = ({
     if (!dropdownRef.current) return;
 
     const rect = dropdownRef.current.getBoundingClientRect();
-    const spaceBelow = window.innerHeight - rect.bottom;
+    const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+    const spaceBelow = viewportHeight - rect.bottom;
     const spaceAbove = rect.top;
     const shouldOpenToTop = openToTopProp || (spaceBelow < MENU_MAX_HEIGHT + MENU_MARGIN && spaceAbove > spaceBelow);
+    const menuHeight = Math.min(menuRef.current?.scrollHeight ?? MENU_MAX_HEIGHT, MENU_MAX_HEIGHT);
+
+    const viewportOffsetTop = window.visualViewport?.offsetTop ?? 0;
+    const calculatedTop = shouldOpenToTop
+      ? rect.top - menuHeight - MENU_MARGIN + viewportOffsetTop
+      : rect.bottom + MENU_MARGIN + viewportOffsetTop;
 
     setOpenToTop(shouldOpenToTop);
     setMenuPosition({
-      top: shouldOpenToTop ? rect.top : rect.bottom,
+      top: calculatedTop,
       left: rect.left,
       width: rect.width,
     });
@@ -223,8 +230,7 @@ const DropdownSelect = ({
             )}
             style={{
               maxHeight: MENU_MAX_HEIGHT,
-              top: openToTop ? 'auto' : menuPosition.top,
-              bottom: openToTop ? window.innerHeight - menuPosition.top : 'auto',
+              top: menuPosition.top,
               left: menuPosition.left,
               width: menuPosition.width,
             }}
