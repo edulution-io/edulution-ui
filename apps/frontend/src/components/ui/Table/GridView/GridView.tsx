@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { Row } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 import DraggableGridItem from './DraggableGridItem';
@@ -39,6 +39,7 @@ interface GridViewProps<TData> {
   canDropOnRow?: (row: TData) => boolean;
   focusedRowId?: string | null;
   onItemClick?: (item: TData) => void;
+  onRowsChange?: (data: TData[]) => void;
 }
 
 const GridView = <TData,>({
@@ -50,8 +51,15 @@ const GridView = <TData,>({
   canDropOnRow,
   focusedRowId,
   onItemClick,
+  onRowsChange,
 }: GridViewProps<TData>) => {
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (onRowsChange) {
+      onRowsChange(rows.map((row) => row.original));
+    }
+  }, [rows, onRowsChange]);
 
   const isRowSelectionEnabled = (row: Row<TData>): boolean => {
     if (typeof enableRowSelection === 'function') {

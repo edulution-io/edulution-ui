@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { ColumnDef, OnChangeFn, Row, RowSelectionState, VisibilityState } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 import TableAction from '@libs/common/types/tableAction';
@@ -140,14 +140,6 @@ const TableGridView = <TData, TValue>({
     initialColumnVisibility,
   });
 
-  const sortedRows = table.getRowModel().rows;
-
-  useEffect(() => {
-    if (onSortedRowsChange) {
-      onSortedRowsChange(sortedRows.map((row) => row.original));
-    }
-  }, [sortedRows, onSortedRowsChange]);
-
   if (isTableView) {
     return (
       <ScrollableTable
@@ -180,6 +172,7 @@ const TableGridView = <TData, TValue>({
         }
         focusedRowId={focusedRowId}
         onRowClick={onGridItemClick}
+        onSortedRowsChange={onSortedRowsChange}
       />
     );
   }
@@ -246,6 +239,7 @@ const TableGridView = <TData, TValue>({
           canDropOnRow={canDropOnRow}
           focusedRowId={focusedRowId}
           onItemClick={onGridItemClick}
+          onRowsChange={onSortedRowsChange}
         />
         <TableActionFooter
           actions={actions}
