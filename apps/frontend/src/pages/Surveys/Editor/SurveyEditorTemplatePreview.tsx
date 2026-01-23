@@ -37,8 +37,8 @@ const SurveyEditorTemplatePreview = (): JSX.Element | null => {
   const currentTheme = getResolvedTheme();
 
   const modelRef = useRef<Model | null>(null);
-  if (!modelRef.current) {
-    modelRef.current = new Model(surveyTemplateDto?.template.formula);
+  if (!modelRef.current && surveyTemplateDto?.template.formula) {
+    modelRef.current = new Model(surveyTemplateDto.template.formula);
   }
   const model = modelRef.current;
 
@@ -61,7 +61,7 @@ const SurveyEditorTemplatePreview = (): JSX.Element | null => {
       currentTheme === THEME.dark ? 'rgba(255, 255, 255, 1)' : 'rgba(17, 24, 39, 1)';
   }, [model, currentTheme]);
 
-  if (!surveyTemplateDto || !surveyTemplateDto.template.formula) {
+  if (!surveyTemplateDto || !surveyTemplateDto.template.formula || !model) {
     return null;
   }
 

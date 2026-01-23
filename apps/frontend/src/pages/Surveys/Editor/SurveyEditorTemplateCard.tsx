@@ -107,7 +107,7 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
         { 'opacity-50': !active },
         { 'pt-8': !description },
         {
-          'sd:min-w-[14rem] w-[calc(100%-2rem)] min-w-[calc(100%-2rem)] max-w-[24rem] md:min-w-[18rem]': isSuperAdmin,
+          'w-[calc(100%-2rem)] min-w-[calc(100%-2rem)] max-w-[24rem] sm:min-w-[14rem] md:min-w-[18rem]': isSuperAdmin,
         },
       )}
       variant="text"
