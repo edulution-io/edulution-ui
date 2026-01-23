@@ -418,6 +418,21 @@
       "FileNameRequired": "Le nom du fichier est requis",
       "NewFileNameRequired": "Un nouveau nom de fichier est requis",
       "NameRequired": "Nom requis"
+    },
+
+    "webdavInfo": {
+      "title": "Accès WebDAV",
+      "description": "Utilisez cette URL pour vous connecter à vos fichiers via des clients WebDAV",
+      "url": "URL WebDAV",
+      "username": "Nom d'utilisateur",
+      "passwordHint": "Utilisez votre mot de passe de connexion pour vous authentifier",
+      "tutorialsTitle": "Tutoriels de configuration",
+      "tutorials": {
+        "nextcloud": "Client de bureau Nextcloud",
+        "windows": "Explorateur de fichiers Windows",
+        "macos": "Finder macOS",
+        "linux": "Gestionnaire de fichiers Linux"
+      }
     }
   },
   "forums": {
