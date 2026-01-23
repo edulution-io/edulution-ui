@@ -1854,7 +1854,7 @@
     "mailImapRejectUnauthorizedTitle": "Rejeter les connexions non certifiées",
     "mailImapRejectUnauthorizedDescription": "Une vérification de certificat doit-il être effectué pour cette connexion?",
     "mailSogoThemeTitle": "Thème",
-    "mailSogoThemeDescription": "Sélectionnez le thème pour l'application Mail. La modification du thème redémarre les conteneurs associés.",
+    "mailSogoThemeDescription": "Sélectionnez le thème pour l'application Mail. La modification du thème redémarre les conteneurs associés. L'application ne propose pas de changement de thème individuel. Le thème est défini à l'échelle du système pour tous les utilisateurs.",
     "mailSogoTheme": {
       "light": "Clair",
       "dark": "Sombre"
