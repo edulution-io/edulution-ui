@@ -20,7 +20,7 @@
 const WEBDAV_TUTORIAL_LINKS = [
   {
     key: 'windows',
-    url: 'https://learn.microsoft.com/en-us/iis/publish/using-webdav/using-the-webdav-redirector',
+    url: 'https://learn.microsoft.com/en-us/iis/publish/using-webdav/using-the-webdav-redirector#method-1-mapping-drives-using-the-map-network-drive-wizard',
   },
   {
     key: 'macos',
@@ -28,7 +28,7 @@ const WEBDAV_TUTORIAL_LINKS = [
   },
   {
     key: 'linux',
-    url: 'https://wiki.gnome.org/Apps/Files/Webdav',
+    url: 'https://help.gnome.org/users/gnome-help/stable/nautilus-connect.html.en',
   },
 ] as const;
 
