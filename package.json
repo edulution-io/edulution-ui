@@ -135,7 +135,6 @@
     "otpauth": "^9.3.3",
     "pptxgenjs": "^3.12.0",
     "qrcode.react": "^3.1.0",
-    "quill": "^2.0.3",
     "react": "^18.2.0",
     "react-cookie": "^8.0.1",
     "react-day-picker": "^8.10.1",

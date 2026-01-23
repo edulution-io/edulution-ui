@@ -19,7 +19,7 @@
 
 import React, { useEffect, useMemo, useRef } from 'react';
 import ReactQuill from 'react-quill-new';
-import 'quill/dist/quill.snow.css';
+import 'react-quill-new/node_modules/quill/dist/quill.snow.css';
 import './WysiwygEditor.css';
 import BULLETIN_EDITOR_FORMATS from '@libs/bulletinBoard/constants/bulletinEditorFormats';
 import useUserStore from '@/store/UserStore/useUserStore';
