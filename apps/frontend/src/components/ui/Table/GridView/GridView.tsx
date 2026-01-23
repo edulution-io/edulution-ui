@@ -80,13 +80,12 @@ const GridView = <TData,>({
             renderIcon={gridItemConfig.renderIcon}
             renderTitle={gridItemConfig.renderTitle}
             renderSubtitle={gridItemConfig.renderSubtitle}
-            onItemClick={gridItemConfig.onItemClick}
+            onItemClick={onItemClick ?? gridItemConfig.onItemClick}
             renderContextMenu={gridItemConfig.renderContextMenu}
             enableRowSelection={canSelect}
             enableDragAndDrop={enableDragAndDrop}
             canDropOnRow={canDropOnRow}
             isKeyboardFocused={focusedRowId === row.id}
-            onItemClickCallback={onItemClick}
           />
         );
       })}

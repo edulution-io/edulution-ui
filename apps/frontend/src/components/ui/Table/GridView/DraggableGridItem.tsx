@@ -38,7 +38,6 @@ interface DraggableGridItemProps<TData> {
   enableDragAndDrop?: boolean;
   canDropOnRow?: (row: TData) => boolean;
   isKeyboardFocused?: boolean;
-  onItemClickCallback?: (item: TData) => void;
 }
 
 const DraggableGridItem = <TData,>({
@@ -53,7 +52,6 @@ const DraggableGridItem = <TData,>({
   enableDragAndDrop = false,
   canDropOnRow,
   isKeyboardFocused = false,
-  onItemClickCallback,
 }: DraggableGridItemProps<TData>) => {
   const item = row.original;
   const isSelected = row.getIsSelected();
@@ -88,10 +86,7 @@ const DraggableGridItem = <TData,>({
   );
 
   const handleClick = () => {
-    onItemClickCallback?.(item);
-    if (onItemClick) {
-      onItemClick(item);
-    }
+    onItemClick?.(item);
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -117,6 +112,7 @@ const DraggableGridItem = <TData,>({
       {...attributes}
       role="button"
       tabIndex={isDisabled ? -1 : 0}
+      data-row-id={row.id}
       variant={isSelected ? 'gridSelected' : 'grid'}
       className={cn(
         'group relative',

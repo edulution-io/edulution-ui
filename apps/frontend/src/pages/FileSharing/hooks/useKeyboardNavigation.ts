@@ -17,18 +17,20 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useCallback, useEffect, useState } from 'react';
+import { RefObject, useCallback, useEffect, useState } from 'react';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import isValidFileToPreview from '@libs/filesharing/utils/isValidFileToPreview';
 import useMedia from '@/hooks/useMedia';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
+
+const RESIZE_DEBOUNCE_MS = 100;
 
 interface UseKeyboardNavigationOptions {
   files: DirectoryFileDTO[];
   onFileOpen: (file: DirectoryFileDTO) => void;
   isEnabled?: boolean;
   isGridView?: boolean;
-  gridItemsPerRow?: number;
+  containerRef?: RefObject<HTMLDivElement | null>;
 }
 
 const useKeyboardNavigation = ({
@@ -36,11 +38,13 @@ const useKeyboardNavigation = ({
   onFileOpen,
   isEnabled = true,
   isGridView = false,
-  gridItemsPerRow = 1,
+  containerRef,
 }: UseKeyboardNavigationOptions) => {
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
   const [isKeyboardNavActive, setIsKeyboardNavActive] = useState(false);
+  const [gridItemsPerRow, setGridItemsPerRow] = useState(1);
   const { isMobileView, isTabletView } = useMedia();
+
   const { isFilePreviewVisible, setIsFilePreviewVisible, currentlyEditingFile, resetCurrentlyEditingFile } =
     useFileEditorStore();
 
@@ -176,6 +180,53 @@ const useKeyboardNavigation = ({
   }, [focusedIndex, files, isActive, isKeyboardNavActive, isFilePreviewVisible, resetCurrentlyEditingFile]);
 
   useEffect(() => {
+    if (!isKeyboardNavActive || !focusedFile || !containerRef?.current) return;
+
+    const selector = `[data-row-id="${focusedFile.filePath}"]`;
+    const element = containerRef.current.querySelector(selector);
+    element?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }, [focusedFile, isKeyboardNavActive, containerRef]);
+
+  useEffect(() => {
+    if (!containerRef?.current) return undefined;
+
+    let debounceTimeout: ReturnType<typeof setTimeout> | null = null;
+
+    const handleResize = () => {
+      if (debounceTimeout) clearTimeout(debounceTimeout);
+
+      debounceTimeout = setTimeout(() => {
+        if (isGridView && containerRef.current) {
+          const gridItems = containerRef.current.querySelectorAll('[data-row-id]');
+          if (gridItems.length > 0) {
+            const firstItemTop = (gridItems[0] as HTMLElement).offsetTop;
+            const itemsInFirstRow = Array.from(gridItems).findIndex(
+              (item) => (item as HTMLElement).offsetTop !== firstItemTop,
+            );
+            setGridItemsPerRow(Math.max(1, itemsInFirstRow === -1 ? gridItems.length : itemsInFirstRow));
+          }
+        }
+
+        if (focusedFile && containerRef.current) {
+          const selector = `[data-row-id="${focusedFile.filePath}"]`;
+          const element = containerRef.current.querySelector(selector);
+          element?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+      }, RESIZE_DEBOUNCE_MS);
+    };
+
+    handleResize();
+
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(containerRef.current);
+
+    return () => {
+      if (debounceTimeout) clearTimeout(debounceTimeout);
+      resizeObserver.disconnect();
+    };
+  }, [containerRef, isGridView, focusedFile, files.length]);
+
+  useEffect(() => {
     setFocusedIndex(null);
     setIsKeyboardNavActive(false);
   }, [files]);
@@ -187,8 +238,9 @@ const useKeyboardNavigation = ({
         setFocusedIndex(index);
       }
       setIsKeyboardNavActive(false);
+      onFileOpen(file);
     },
-    [files],
+    [files, onFileOpen],
   );
 
   return {

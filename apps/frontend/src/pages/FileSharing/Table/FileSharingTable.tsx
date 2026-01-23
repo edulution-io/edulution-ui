@@ -38,7 +38,6 @@ import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import ContentType from '@libs/filesharing/types/contentType';
 import { GRID_ICON_SIZE, TABLE_ICON_SIZE } from '@libs/ui/constants';
-import { GRID_ITEM_WIDTH } from '@libs/ui/constants/tableGridSizes';
 import VIEW_MODE from '@libs/common/constants/viewMode';
 import useFileSharingDragAndDrop from '@/pages/FileSharing/hooks/useFileSharingDragAndDrop';
 import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
@@ -169,7 +168,6 @@ const FileSharingTable = () => {
         if (item.filePath === PARENT_FOLDER_PATH || !item.lastmod) return undefined;
         return getElapsedTime(new Date(item.lastmod));
       },
-      onItemClick: handleFileOpen,
       renderContextMenu: (item) => {
         if (item.filePath === PARENT_FOLDER_PATH) return null;
         const actions = getFileSharingActions(item, actionCallbacks);
@@ -191,7 +189,7 @@ const FileSharingTable = () => {
         );
       },
     }),
-    [handleFileOpen, actionCallbacks],
+    [actionCallbacks],
   );
 
   const filteredFiles = useMemo(
@@ -228,38 +226,17 @@ const FileSharingTable = () => {
   }, [filteredFiles, currentPath, webdavShare, webdavShares, createVariableSharePathname]);
 
   const [sortedFiles, setSortedFiles] = useState<DirectoryFileDTO[]>([]);
-  const [gridItemsPerRow, setGridItemsPerRow] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleSortedRowsChange = useCallback((rows: DirectoryFileDTO[]) => {
     setSortedFiles(rows);
   }, []);
 
-  const GRID_GAP = 16;
-
-  useEffect(() => {
-    if (!isGridView || !containerRef.current) return undefined;
-
-    const calculateItemsPerRow = () => {
-      if (!containerRef.current) return;
-      const containerWidth = containerRef.current.offsetWidth;
-      const itemsPerRow = Math.max(1, Math.floor((containerWidth + GRID_GAP) / (GRID_ITEM_WIDTH + GRID_GAP)));
-      setGridItemsPerRow(itemsPerRow);
-    };
-
-    calculateItemsPerRow();
-
-    const resizeObserver = new ResizeObserver(calculateItemsPerRow);
-    resizeObserver.observe(containerRef.current);
-
-    return () => resizeObserver.disconnect();
-  }, [isGridView]);
-
   const { focusedFile, handleItemClick } = useKeyboardNavigation({
     files: sortedFiles,
     onFileOpen: handleFileOpen,
     isGridView,
-    gridItemsPerRow,
+    containerRef,
   });
 
   const filterOptions: FilterOption[] = useMemo(

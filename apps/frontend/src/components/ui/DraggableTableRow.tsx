@@ -82,6 +82,7 @@ const DraggableTableRow = <TData,>({
     <TableRow
       ref={combinedRef}
       variant={variant}
+      data-row-id={row.id}
       data-state={isSelected ? 'selected' : undefined}
       data-disabled={isRowDisabled ? 'true' : undefined}
       className={cn(
