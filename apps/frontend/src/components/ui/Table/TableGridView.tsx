@@ -179,7 +179,6 @@ const TableGridView = <TData, TValue>({
           </>
         }
         focusedRowId={focusedRowId}
-        onSortedRowsChange={onSortedRowsChange}
         onRowClick={onGridItemClick}
       />
     );
