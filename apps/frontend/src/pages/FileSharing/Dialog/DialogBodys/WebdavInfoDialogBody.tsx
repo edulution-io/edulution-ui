@@ -22,19 +22,27 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy, faExternalLink, faUser } from '@fortawesome/free-solid-svg-icons';
 import WEBDAV_TUTORIAL_LINKS from '@libs/filesharing/constants/webdavTutorialLinks';
+import convertToWebdavUrl from '@libs/filesharing/utils/convertToWebdavUrl';
 import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 import copyToClipboard from '@/utils/copyToClipboard';
 
 interface WebdavInfoDialogBodyProps {
-  webdavUrl: string;
+  baseUrl: string;
   username: string;
 }
 
-const WebdavInfoDialogBody: React.FC<WebdavInfoDialogBodyProps> = ({ webdavUrl, username }) => {
+const WebdavInfoDialogBody: React.FC<WebdavInfoDialogBodyProps> = ({ baseUrl, username }) => {
   const { t } = useTranslation();
 
-  const handleCopyUrl = () => {
-    copyToClipboard(webdavUrl);
+  const davsUrl = convertToWebdavUrl(baseUrl);
+  const httpsUrl = baseUrl;
+
+  const handleCopyDavsUrl = () => {
+    copyToClipboard(davsUrl);
+  };
+
+  const handleCopyHttpsUrl = () => {
+    copyToClipboard(httpsUrl);
   };
 
   const handleCopyUsername = () => {
@@ -46,23 +54,77 @@ const WebdavInfoDialogBody: React.FC<WebdavInfoDialogBodyProps> = ({ webdavUrl, 
       <p className="text-muted-foreground">{t('filesharing.webdavInfo.description')}</p>
 
       <div>
-        <p className="mb-2 font-bold">{t('filesharing.webdavInfo.url')}</p>
+        <p className="mb-2 font-bold">{t('filesharing.webdavInfo.urlWindowsMac')}</p>
         <InputWithActionIcons
           type="text"
           variant="dialog"
-          value={webdavUrl}
+          value={httpsUrl}
           readOnly
           onMouseDown={(e) => {
             e.preventDefault();
-            handleCopyUrl();
+            handleCopyHttpsUrl();
           }}
           actionIcons={[
             {
               icon: faCopy,
-              onClick: handleCopyUrl,
+              onClick: handleCopyHttpsUrl,
             },
           ]}
         />
+        <div className="mt-2 flex flex-col gap-1">
+          {WEBDAV_TUTORIAL_LINKS.filter((link) => link.key === 'windows' || link.key === 'macos').map((link) => (
+            <a
+              key={link.key}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-sm text-ciLightBlue hover:underline"
+            >
+              <FontAwesomeIcon
+                icon={faExternalLink}
+                className="h-3 w-3"
+              />
+              {t(`filesharing.webdavInfo.tutorials.${link.key}`)}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <p className="mb-2 font-bold">{t('filesharing.webdavInfo.urlLinux')}</p>
+        <InputWithActionIcons
+          type="text"
+          variant="dialog"
+          value={davsUrl}
+          readOnly
+          onMouseDown={(e) => {
+            e.preventDefault();
+            handleCopyDavsUrl();
+          }}
+          actionIcons={[
+            {
+              icon: faCopy,
+              onClick: handleCopyDavsUrl,
+            },
+          ]}
+        />
+        <div className="mt-2">
+          {WEBDAV_TUTORIAL_LINKS.filter((link) => link.key === 'linux').map((link) => (
+            <a
+              key={link.key}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-sm text-ciLightBlue hover:underline"
+            >
+              <FontAwesomeIcon
+                icon={faExternalLink}
+                className="h-3 w-3"
+              />
+              {t(`filesharing.webdavInfo.tutorials.${link.key}`)}
+            </a>
+          ))}
+        </div>
       </div>
 
       <div>
@@ -91,28 +153,6 @@ const WebdavInfoDialogBody: React.FC<WebdavInfoDialogBodyProps> = ({ webdavUrl, 
           className="h-4 w-4"
         />
         <span>{t('filesharing.webdavInfo.passwordHint')}</span>
-      </div>
-
-      <div>
-        <p className="mb-2 font-bold">{t('filesharing.webdavInfo.tutorialsTitle')}</p>
-        <ul className="space-y-2">
-          {WEBDAV_TUTORIAL_LINKS.map((link) => (
-            <li key={link.key}>
-              <a
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-ciLightBlue hover:underline"
-              >
-                <FontAwesomeIcon
-                  icon={faExternalLink}
-                  className="h-3 w-3"
-                />
-                {t(`filesharing.webdavInfo.tutorials.${link.key}`)}
-              </a>
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );

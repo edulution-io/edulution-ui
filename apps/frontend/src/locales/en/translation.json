@@ -510,7 +510,8 @@
     "webdavInfo": {
       "title": "WebDAV Access",
       "description": "Use this URL to connect to your files via WebDAV clients",
-      "url": "WebDAV URL",
+      "urlWindowsMac": "WebDAV URL (Windows / macOS)",
+      "urlLinux": "WebDAV URL (Linux)",
       "username": "Username",
       "passwordHint": "Use your login password to authenticate",
       "tutorialsTitle": "Setup Tutorials",
