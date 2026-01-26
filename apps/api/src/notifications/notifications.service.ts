@@ -23,11 +23,11 @@ import { Model, Types } from 'mongoose';
 import { Expo, ExpoPushMessage } from 'expo-server-sdk';
 import pickDefinedNotificationFields from '@libs/notification/utils/pickDefinedNotificationFields';
 import SendPushNotificationDto from '@libs/notification/types/send-pushNotification.dto';
-import CreateMessageDto from '@libs/notification/types/createMessage.dto';
-import USER_MESSAGE_STATUS from '@libs/notification/constants/userMessageStatus';
+import CreateNotificationDto from '@libs/notification/types/createNotification.dto';
+import USER_NOTIFICATION_STATUS from '@libs/notification/constants/userNotificationStatus';
 import UsersService from '../users/users.service';
-import { Message, MessageDocument } from './message.schema';
-import { UserMessage, UserMessageDocument } from './userMessage.schema';
+import { Notification, NotificationDocument } from './notification.schema';
+import { UserNotification, UserNotificationDocument } from './userNotification.schema';
 
 @Injectable()
 class NotificationsService {
@@ -35,8 +35,8 @@ class NotificationsService {
 
   constructor(
     private userService: UsersService,
-    @InjectModel(Message.name) private messageModel: Model<MessageDocument>,
-    @InjectModel(UserMessage.name) private userMessageModel: Model<UserMessageDocument>,
+    @InjectModel(Notification.name) private notificationModel: Model<NotificationDocument>,
+    @InjectModel(UserNotification.name) private userNotificationModel: Model<UserNotificationDocument>,
   ) {}
 
   async sendPushNotification(sendPushNotificationDto: SendPushNotificationDto): Promise<void> {
@@ -74,14 +74,14 @@ class NotificationsService {
   async notifyUsernames(
     usernames: string[],
     partialNotification: Omit<SendPushNotificationDto, 'to'>,
-    persistOptions?: CreateMessageDto,
+    persistOptions?: CreateNotificationDto,
   ): Promise<void> {
-    let messageId: Types.ObjectId | null = null;
+    let notificationId: Types.ObjectId | null = null;
 
     if (persistOptions) {
-      const message = await this.createMessage(persistOptions);
-      messageId = new Types.ObjectId(String(message.id));
-      await this.createUserMessages(messageId, usernames);
+      const notification = await this.createNotification(persistOptions);
+      notificationId = new Types.ObjectId(String(notification.id));
+      await this.createUserNotifications(notificationId, usernames);
     }
 
     const uniqueTokens = await this.userService.getPushTokensByUsersnames(usernames);
@@ -91,97 +91,102 @@ class NotificationsService {
         to: uniqueTokens,
         ...partialNotification,
       });
-      if (messageId) {
-        await this.updateUserMessageStatus(messageId, usernames, USER_MESSAGE_STATUS.SENT);
+      if (notificationId) {
+        await this.updateUserNotificationStatus(notificationId, usernames, USER_NOTIFICATION_STATUS.SENT);
       }
     } catch (error) {
       Logger.error(`Failed to send push notification: ${error}`, NotificationsService.name);
-      if (messageId) {
-        await this.updateUserMessageStatus(messageId, usernames, USER_MESSAGE_STATUS.FAILED);
+      if (notificationId) {
+        await this.updateUserNotificationStatus(notificationId, usernames, USER_NOTIFICATION_STATUS.FAILED);
       }
       throw error;
     }
   }
 
-  async createMessage(createMessageDto: CreateMessageDto): Promise<MessageDocument> {
-    const message = await this.messageModel.create(createMessageDto);
-    return message;
+  async createNotification(createNotificationDto: CreateNotificationDto): Promise<NotificationDocument> {
+    const notification = await this.notificationModel.create(createNotificationDto);
+    return notification;
   }
 
-  async createUserMessages(messageId: Types.ObjectId, recipients: string[]): Promise<UserMessageDocument[]> {
-    const userMessages = recipients.map((recipient) => ({
-      messageId,
-      recipient,
+  async createUserNotifications(
+    notificationId: Types.ObjectId,
+    usernames: string[],
+  ): Promise<UserNotificationDocument[]> {
+    const userNotifications = usernames.map((username) => ({
+      notificationId,
+      username,
       readAt: null,
       deletedAt: null,
-      status: USER_MESSAGE_STATUS.PENDING,
+      status: USER_NOTIFICATION_STATUS.PENDING,
     }));
-    return this.userMessageModel.insertMany(userMessages);
+    return this.userNotificationModel.insertMany(userNotifications);
   }
 
-  async updateUserMessageStatus(
-    messageId: Types.ObjectId,
-    recipients: string[],
-    status: (typeof USER_MESSAGE_STATUS)[keyof typeof USER_MESSAGE_STATUS],
+  async updateUserNotificationStatus(
+    notificationId: Types.ObjectId,
+    usernames: string[],
+    status: (typeof USER_NOTIFICATION_STATUS)[keyof typeof USER_NOTIFICATION_STATUS],
   ): Promise<void> {
-    await this.userMessageModel.updateMany({ messageId, recipient: { $in: recipients } }, { $set: { status } });
+    await this.userNotificationModel.updateMany({ notificationId, username: { $in: usernames } }, { $set: { status } });
   }
 
-  async getInboxMessages(
-    recipient: string,
+  async getInboxNotifications(
+    username: string,
     limit = 20,
     offset = 0,
-  ): Promise<{ messages: MessageDocument[]; total: number }> {
-    const userMessages = await this.userMessageModel
-      .find({ recipient, deletedAt: null })
+  ): Promise<{ notifications: NotificationDocument[]; total: number }> {
+    const userNotifications = await this.userNotificationModel
+      .find({ username, deletedAt: null })
       .sort({ createdAt: -1 })
       .skip(offset)
       .limit(limit)
-      .populate<{ messageId: MessageDocument }>('messageId')
+      .populate<{ notificationId: NotificationDocument }>('notificationId')
       .exec();
 
-    const total = await this.userMessageModel.countDocuments({ recipient, deletedAt: null });
+    const total = await this.userNotificationModel.countDocuments({ username, deletedAt: null });
 
-    const messages = userMessages.map((um) => um.messageId).filter((m): m is MessageDocument => m !== null);
+    const notifications = userNotifications
+      .map((un) => un.notificationId)
+      .filter((n): n is NotificationDocument => n !== null);
 
-    return { messages, total };
+    return { notifications, total };
   }
 
-  async getUnreadCount(recipient: string): Promise<number> {
-    return this.userMessageModel.countDocuments({ recipient, readAt: null, deletedAt: null });
+  async getUnreadCount(username: string): Promise<number> {
+    return this.userNotificationModel.countDocuments({ username, readAt: null, deletedAt: null });
   }
 
-  async markAsRead(messageId: string, recipient: string): Promise<void> {
-    await this.userMessageModel.updateOne(
-      { messageId: new Types.ObjectId(messageId), recipient },
+  async markAsRead(notificationId: string, username: string): Promise<void> {
+    await this.userNotificationModel.updateOne(
+      { notificationId: new Types.ObjectId(notificationId), username },
       { $set: { readAt: new Date() } },
     );
   }
 
-  async markAllAsRead(recipient: string): Promise<void> {
-    await this.userMessageModel.updateMany(
-      { recipient, readAt: null, deletedAt: null },
+  async markAllAsRead(username: string): Promise<void> {
+    await this.userNotificationModel.updateMany(
+      { username, readAt: null, deletedAt: null },
       { $set: { readAt: new Date() } },
     );
   }
 
-  async deleteUserMessage(messageId: string, recipient: string): Promise<void> {
-    await this.userMessageModel.updateOne(
-      { messageId: new Types.ObjectId(messageId), recipient },
+  async deleteUserNotification(notificationId: string, username: string): Promise<void> {
+    await this.userNotificationModel.updateOne(
+      { notificationId: new Types.ObjectId(notificationId), username },
       { $set: { deletedAt: new Date() } },
     );
   }
 
-  async deleteMessagesBySource(sourceType: string, sourceId: string): Promise<void> {
-    const messages = await this.messageModel.find({
+  async deleteNotificationsBySource(sourceType: string, sourceId: string): Promise<void> {
+    const notifications = await this.notificationModel.find({
       sourceType,
       sourceId,
     });
 
-    const messageIds = messages.map((m) => new Types.ObjectId(String(m.id)));
+    const notificationIds = notifications.map((n) => new Types.ObjectId(String(n.id)));
 
-    await this.userMessageModel.deleteMany({ messageId: { $in: messageIds } });
-    await this.messageModel.deleteMany({ _id: { $in: messageIds } });
+    await this.userNotificationModel.deleteMany({ notificationId: { $in: notificationIds } });
+    await this.notificationModel.deleteMany({ _id: { $in: notificationIds } });
   }
 }
 

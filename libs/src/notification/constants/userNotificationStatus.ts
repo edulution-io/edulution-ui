@@ -17,34 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { MessageSourceType } from '@libs/notification/constants/messageSourceType';
-import { PushNotificationPriority } from '@libs/notification/constants/pushNotificationPriority';
-import { PushNotificationInterruptionLevel } from '@libs/notification/constants/pushNotificationInterruptionLevel';
+const USER_NOTIFICATION_STATUS = {
+  PENDING: 'pending',
+  SENT: 'sent',
+  FAILED: 'failed',
+} as const;
 
-class MessageDto {
-  id: string;
+export type UserNotificationStatus = (typeof USER_NOTIFICATION_STATUS)[keyof typeof USER_NOTIFICATION_STATUS];
 
-  sourceType: MessageSourceType;
-
-  sourceId: string;
-
-  title: string;
-
-  summary: string;
-
-  body?: string;
-
-  priority?: PushNotificationPriority;
-
-  interruptionLevel?: PushNotificationInterruptionLevel;
-
-  channelId?: string;
-
-  data?: Record<string, unknown>;
-
-  createdAt: Date;
-
-  createdBy: string;
-}
-
-export default MessageDto;
+export default USER_NOTIFICATION_STATUS;

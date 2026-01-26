@@ -17,22 +17,30 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { UserMessageStatus } from '@libs/notification/constants/userMessageStatus';
+import { NotificationSourceType } from '@libs/notification/constants/notificationSourceType';
+import { PushNotificationPriority } from '@libs/notification/constants/pushNotificationPriority';
+import { PushNotificationInterruptionLevel } from '@libs/notification/constants/pushNotificationInterruptionLevel';
 
-class UserMessageDto {
-  id: string;
+class CreateNotificationDto {
+  sourceType: NotificationSourceType;
 
-  messageId: string;
+  sourceId: string;
 
-  recipient: string;
+  title: string;
 
-  readAt: Date | null;
+  pushNotification: string;
 
-  deletedAt: Date | null;
+  content?: string;
 
-  status: UserMessageStatus;
+  priority?: PushNotificationPriority;
 
-  createdAt: Date;
+  interruptionLevel?: PushNotificationInterruptionLevel;
+
+  channelId?: string;
+
+  data?: Record<string, unknown>;
+
+  createdBy: string;
 }
 
-export default UserMessageDto;
+export default CreateNotificationDto;

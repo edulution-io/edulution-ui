@@ -20,15 +20,15 @@
 import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import NotificationsService from './notifications.service';
-import { Message, MessageSchema } from './message.schema';
-import { UserMessage, UserMessageSchema } from './userMessage.schema';
+import { Notification, NotificationSchema } from './notification.schema';
+import { UserNotification, UserNotificationSchema } from './userNotification.schema';
 
 @Global()
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: Message.name, schema: MessageSchema },
-      { name: UserMessage.name, schema: UserMessageSchema },
+      { name: Notification.name, schema: NotificationSchema },
+      { name: UserNotification.name, schema: UserNotificationSchema },
     ]),
   ],
   providers: [NotificationsService],

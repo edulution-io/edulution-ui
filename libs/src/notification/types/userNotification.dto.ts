@@ -17,12 +17,22 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const USER_MESSAGE_STATUS = {
-  PENDING: 'pending',
-  SENT: 'sent',
-  FAILED: 'failed',
-} as const;
+import { UserNotificationStatus } from '@libs/notification/constants/userNotificationStatus';
 
-export type UserMessageStatus = (typeof USER_MESSAGE_STATUS)[keyof typeof USER_MESSAGE_STATUS];
+class UserNotificationDto {
+  id: string;
 
-export default USER_MESSAGE_STATUS;
+  notificationId: string;
+
+  username: string;
+
+  readAt: Date | null;
+
+  deletedAt: Date | null;
+
+  status: UserNotificationStatus;
+
+  createdAt: Date;
+}
+
+export default UserNotificationDto;

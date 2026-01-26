@@ -19,17 +19,17 @@
 
 import { Document, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import USER_MESSAGE_STATUS, { UserMessageStatus } from '@libs/notification/constants/userMessageStatus';
+import USER_NOTIFICATION_STATUS, { UserNotificationStatus } from '@libs/notification/constants/userNotificationStatus';
 
-export type UserMessageDocument = UserMessage & Document;
+export type UserNotificationDocument = UserNotification & Document;
 
-@Schema({ timestamps: true, strict: true })
-export class UserMessage {
-  @Prop({ type: Types.ObjectId, ref: 'Message', required: true })
-  messageId: Types.ObjectId;
+@Schema({ timestamps: true, strict: true, collection: 'user_notifications' })
+export class UserNotification {
+  @Prop({ type: Types.ObjectId, ref: 'Notification', required: true })
+  notificationId: Types.ObjectId;
 
   @Prop({ required: true })
-  recipient: string;
+  username: string;
 
   @Prop({ type: Date, default: null })
   readAt: Date | null;
@@ -37,19 +37,19 @@ export class UserMessage {
   @Prop({ type: Date, default: null })
   deletedAt: Date | null;
 
-  @Prop({ type: String, required: true, default: USER_MESSAGE_STATUS.PENDING })
-  status: UserMessageStatus;
+  @Prop({ type: String, required: true, default: USER_NOTIFICATION_STATUS.PENDING })
+  status: UserNotificationStatus;
 
   @Prop({ default: 1 })
   schemaVersion: number;
 }
 
-export const UserMessageSchema = SchemaFactory.createForClass(UserMessage);
+export const UserNotificationSchema = SchemaFactory.createForClass(UserNotification);
 
-UserMessageSchema.index({ recipient: 1, createdAt: -1 });
-UserMessageSchema.index({ recipient: 1, readAt: 1 });
-UserMessageSchema.index({ messageId: 1 });
+UserNotificationSchema.index({ username: 1, createdAt: -1 });
+UserNotificationSchema.index({ username: 1, readAt: 1 });
+UserNotificationSchema.index({ notificationId: 1 });
 
-UserMessageSchema.set('toJSON', {
+UserNotificationSchema.set('toJSON', {
   virtuals: true,
 });

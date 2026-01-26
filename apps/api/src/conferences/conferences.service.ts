@@ -29,7 +29,7 @@ import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import BbbResponseDto from '@libs/conferences/types/bbb-api/bbb-response.dto';
 import ConferenceRole from '@libs/conferences/types/conference-role.enum';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import MESSAGE_SOURCE_TYPE from '@libs/notification/constants/messageSourceType';
+import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
 import APPS from '@libs/appconfig/constants/apps';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import CONFERENCES_SYNC_INTERVAL_MS from '@libs/conferences/constants/conferencesSyncInterval';
@@ -223,23 +223,23 @@ class ConferencesService implements OnModuleInit {
       );
 
       const title = `Konferenz gestartet: ${conference.name}`;
-      const summary = `Die Konferenz "${conference.name}" wurde gestartet.`;
+      const pushNotification = `Die Konferenz "${conference.name}" wurde gestartet.`;
 
       await this.notificationService.notifyUsernames(
         invitedMembersList,
         {
           title,
-          body: summary,
+          body: pushNotification,
           data: {
             meetingID: conference.meetingID,
             type: 'conference_started',
           },
         },
         {
-          sourceType: MESSAGE_SOURCE_TYPE.CONFERENCE,
+          sourceType: NOTIFICATION_SOURCE_TYPE.CONFERENCE,
           sourceId: conference.meetingID,
           title,
-          summary,
+          pushNotification,
           createdBy: conference.creator.username,
         },
       );

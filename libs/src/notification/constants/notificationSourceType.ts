@@ -17,12 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const MESSAGE_SOURCE_TYPE = {
+const NOTIFICATION_SOURCE_TYPE = {
   BULLETIN: 'bulletin',
   SURVEY: 'survey',
   CONFERENCE: 'conference',
+  CHAT: 'chat',
 } as const;
 
-export type MessageSourceType = (typeof MESSAGE_SOURCE_TYPE)[keyof typeof MESSAGE_SOURCE_TYPE];
+export type NotificationSourceType = (typeof NOTIFICATION_SOURCE_TYPE)[keyof typeof NOTIFICATION_SOURCE_TYPE];
 
-export default MESSAGE_SOURCE_TYPE;
+export default NOTIFICATION_SOURCE_TYPE;

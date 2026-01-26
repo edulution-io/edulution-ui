@@ -17,30 +17,56 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { MessageSourceType } from '@libs/notification/constants/messageSourceType';
+import { Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { NotificationSourceType } from '@libs/notification/constants/notificationSourceType';
 import { PushNotificationPriority } from '@libs/notification/constants/pushNotificationPriority';
 import { PushNotificationInterruptionLevel } from '@libs/notification/constants/pushNotificationInterruptionLevel';
 
-class CreateMessageDto {
-  sourceType: MessageSourceType;
+export type NotificationDocument = Notification & Document;
 
+@Schema({ timestamps: true, strict: true, collection: 'notifications' })
+export class Notification {
+  @Prop({ type: String, required: true })
+  sourceType: NotificationSourceType;
+
+  @Prop({ type: String, required: true })
   sourceId: string;
 
+  @Prop({ required: true, maxlength: 50 })
   title: string;
 
-  summary: string;
+  @Prop({ required: true, maxlength: 150 })
+  pushNotification: string;
 
-  body?: string;
+  @Prop({ required: false })
+  content?: string;
 
+  @Prop({ type: String, required: false })
   priority?: PushNotificationPriority;
 
+  @Prop({ type: String, required: false })
   interruptionLevel?: PushNotificationInterruptionLevel;
 
+  @Prop({ required: false })
   channelId?: string;
 
+  @Prop({ type: Object, required: false })
   data?: Record<string, unknown>;
 
+  @Prop({ required: true })
   createdBy: string;
+
+  createdAt: Date;
+
+  @Prop({ default: 1 })
+  schemaVersion: number;
 }
 
-export default CreateMessageDto;
+export const NotificationSchema = SchemaFactory.createForClass(Notification);
+
+NotificationSchema.index({ sourceType: 1, sourceId: 1 });
+
+NotificationSchema.set('toJSON', {
+  virtuals: true,
+});

@@ -32,7 +32,7 @@ import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCatego
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPath';
 import BULLETIN_TEMP_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinTempAttachmentsPath';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
-import MESSAGE_SOURCE_TYPE from '@libs/notification/constants/messageSourceType';
+import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../common/CustomHttpException';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
@@ -368,7 +368,7 @@ class BulletinBoardService implements OnModuleInit {
       this.sseService.sendEventToUsers(invitedMembersList, resultingBulletin, SSE_MESSAGE_TYPE.BULLETIN_UPDATED);
 
       const title = `Aushang bereit: ${dto.title}`;
-      const summary = `Neuer Aushang in ${dto.category.name}`;
+      const pushNotification = `Neuer Aushang in ${dto.category.name}`;
 
       const bulletinId = String(resultingBulletin.id);
 
@@ -376,7 +376,7 @@ class BulletinBoardService implements OnModuleInit {
         invitedMembersList,
         {
           title,
-          body: summary,
+          body: pushNotification,
           data: {
             bulletinId,
             type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
@@ -384,10 +384,10 @@ class BulletinBoardService implements OnModuleInit {
         },
         currentUser
           ? {
-              sourceType: MESSAGE_SOURCE_TYPE.BULLETIN,
+              sourceType: NOTIFICATION_SOURCE_TYPE.BULLETIN,
               sourceId: bulletinId,
               title,
-              summary,
+              pushNotification,
               createdBy: currentUser.preferred_username,
             }
           : undefined,
