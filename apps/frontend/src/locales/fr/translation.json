@@ -634,11 +634,22 @@
       "template": {
         "title": "Modèle",
         "label": "Enregistrer le modèle",
-        "save": "Enregistrer le modèle",
         "noTemplates": "Aucun modèle disponible",
         "noSearchResults": "Aucun modèle trouvé",
         "searchPlaceholder": "Tapez pour filtrer les modèles...",
         "preview": "Aperçu du modèle",
+        "save": {
+          "title": "Enregistrer le modèle",
+          "submit": "Enregistrer le modèle de sondage",
+          "name": {
+            "label": "Nom du modèle",
+            "placeholder": "Le titre du sondage sera utilisé comme nom de modèle si ce champ est laissé vide."
+          },
+          "accessGroups": {
+            "label": "Groupes d'accès",
+            "description": "Sélectionnez les groupes qui peuvent accéder à ce modèle. Si aucun groupe n'est sélectionné, le modèle est accessible à tous les utilisateurs."
+          }
+        },
         "upload": {
           "success": "Modèle enregistré avec succès",
           "error": "Échec de l'enregistrement du modèle"
@@ -648,18 +659,6 @@
           "message": "Êtes-vous sûr de vouloir supprimer ce modèle ?",
           "success": "Modèle supprimé avec succès",
           "error": "Échec de la suppression du modèle"
-        }
-      },
-      "saveTemplate": {
-        "title": "Enregistrer le modèle de sondage",
-        "submit": "Enregistrer le modèle de sondage",
-        "name": {
-          "label": "Nom du modèle",
-          "placeholder": "Le titre du sondage sera utilisé comme nom de modèle si ce champ est laissé vide."
-        },
-        "accessGroups": {
-          "label": "Groupes d'accès",
-          "placeholder": "Sélectionnez les groupes qui peuvent accéder à ce modèle"
         }
       },
       "questionSettings": {

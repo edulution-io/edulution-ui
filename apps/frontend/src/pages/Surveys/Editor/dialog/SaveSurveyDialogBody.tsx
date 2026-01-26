@@ -29,6 +29,7 @@ import useLdapGroups from '@/hooks/useLdapGroups';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import Checkbox from '@/components/ui/Checkbox';
 import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
+import SaveAsTemplate from '@/pages/Surveys/Editor/dialog/SaveAsTemplate';
 
 interface SaveSurveyDialogBodyProps {
   form: UseFormReturn<SurveyDto>;
@@ -36,6 +37,7 @@ interface SaveSurveyDialogBodyProps {
 
 const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
   const { setValue, watch } = form;
+
   const { user } = useUserStore();
   const { searchAttendees } = useUserStore();
   const { searchGroups } = useGroupStore();
@@ -71,17 +73,20 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
     },
   ];
 
+  const saveAsTemplate = watch('saveAsTemplate');
+
   return (
     <>
       {isSuperAdmin && (
         <Checkbox
           key="should-save-as-template"
           label={t('survey.editor.template.label')}
-          checked={watch('saveAsTemplate')}
+          checked={saveAsTemplate || false}
           onCheckedChange={(value: boolean) => setValue('saveAsTemplate', value, { shouldValidate: true })}
           aria-label={t('survey.editor.template.label')}
         />
       )}
+      {saveAsTemplate && <SaveAsTemplate />}
       <SearchUsersOrGroups
         users={watch('invitedAttendees')}
         onSearch={onAttendeesSearch}

@@ -728,12 +728,23 @@
       "isLoadingSurvey": "Umfrage wird geladen...",
       "template": {
         "title": "Vorlagen",
-        "save": "Vorlage speichern",
         "label": "Als Vorlage speichern",
         "noTemplates": "Es sind keine Vorlagen vorhanden",
         "noSearchResults": "Keine Vorlage gefunden",
         "searchPlaceholder": "Tippen um Vorlagen zu filtern...",
         "preview": "Vorschau",
+        "save": {
+          "title": "Vorlage speichern",
+          "submit": "Vorlage speichern",
+          "name": {
+            "label": "Name der Vorlage",
+            "placeholder": "Der Umfragentitel wird als Vorlagenname verwendet, sollte dieses Feld leer bleiben."
+          },
+          "accessGroups": {
+            "label": "Zugriffsgruppen",
+            "description": "Wähle die Gruppen aus, die auf diese Vorlage zugreifen können. Sollte keine Gruppe ausgewählt werden, ist die Vorlage für alle Benutzer zugänglich."
+          }
+        },
         "upload": {
           "success": "Vorlage erfolgreich gespeichert",
           "error": "Die Vorlage konnte nicht gespeichert werden"
@@ -743,18 +754,6 @@
           "message": "Soll die Vorlage wirklich gelöscht werden?",
           "success": "Vorlage erfolgreich gelöscht",
           "error": "Die Vorlage konnte nicht gelöscht werden"
-        }
-      },
-      "saveTemplate": {
-        "title": "Vorlage speichern",
-        "submit": "Vorlage speichern",
-        "name": {
-          "label": "Name der Vorlage",
-          "placeholder": "Der Umfragentitel wird als Vorlagenname verwendet, sollte dieses Feld leer bleiben."
-        },
-        "accessGroups": {
-          "label": "Zugriffsgruppen",
-          "placeholder": "Wähle die Gruppen aus, die auf diese Vorlage zugreifen können"
         }
       },
       "questionSettings": {

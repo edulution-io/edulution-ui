@@ -21,47 +21,43 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useGroupStore from '@/store/GroupStore';
-import useSaveTemplateDialogStore from '@/pages/Surveys/Editor/dialog/useSaveTemplateDialogStore';
+import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import Input from '@/components/shared/Input';
 import Label from '@/components/ui/Label';
 
-const SaveTemplateDialogBody = () => {
-  const { t } = useTranslation();
+const SaveAsTemplate = () => {
+  const { templateName, setTemplateName, accessGroups, setAccessGroups } = useSurveyTemplateStore();
 
   const { searchGroups } = useGroupStore();
 
-  const { isSubmitting, name, setName, accessGroups, setAccessGroups } = useSaveTemplateDialogStore();
-
-  if (isSubmitting) {
-    return (
-      <div className="flex flex-col items-center ">
-        <CircleLoader />
-      </div>
-    );
-  }
+  const { t } = useTranslation();
 
   return (
-    <>
-      <Label>{t('survey.editor.saveTemplate.name.label')}</Label>
-      <Input
-        placeholder={t('survey.editor.saveTemplate.name.placeholder')}
-        type="text"
-        variant="dialog"
-        value={name || ''}
-        onChange={(e) => setName(e.target.value)}
-        className="mb-2"
-      />
-      <Label>{t('survey.editor.saveTemplate.accessGroups.label')}</Label>
-      <AsyncMultiSelect<MultipleSelectorGroup>
-        value={accessGroups}
-        onSearch={searchGroups}
-        onChange={(groups) => setAccessGroups(groups)}
-        placeholder={t('search.type-to-search')}
-      />
-    </>
+    <div className="flex w-full flex-col">
+      <span>
+        <Label>{t('survey.editor.template.save.accessGroups.label')}</Label>
+        <p className="text-sm text-muted-foreground">{t('survey.editor.template.save.accessGroups.description')}</p>
+        <AsyncMultiSelect<MultipleSelectorGroup>
+          value={accessGroups}
+          onSearch={searchGroups}
+          onChange={(groups) => setAccessGroups(groups)}
+          placeholder={t('search.type-to-search')}
+          variant="dialog"
+        />
+      </span>
+      <span>
+        <Label>{t('survey.editor.template.save.name.label')}</Label>
+        <Input
+          placeholder={t('survey.editor.template.save.name.placeholder')}
+          type="text"
+          variant="dialog"
+          value={templateName || ''}
+          onChange={(e) => setTemplateName(e.target.value)}
+        />
+      </span>
+    </div>
   );
 };
 
-export default SaveTemplateDialogBody;
+export default SaveAsTemplate;

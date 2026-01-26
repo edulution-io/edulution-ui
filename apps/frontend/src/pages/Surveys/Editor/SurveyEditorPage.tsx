@@ -22,7 +22,7 @@ import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { faFileLines, faFilePdf, faBackward } from '@fortawesome/free-solid-svg-icons';
+import { faFilePdf, faBackward } from '@fortawesome/free-solid-svg-icons';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -41,14 +41,12 @@ import useBeforeUnload from '@/hooks/useBeforeUnload';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import createSurveyCreatorObject from '@/pages/Surveys/Editor/createSurveyCreatorObject';
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
-import useSaveTemplateDialogStore from '@/pages/Surveys/Editor/dialog/useSaveTemplateDialogStore';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import QuestionsContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
 import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuestionsContextMenuStore';
 import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
 import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/ExportSurveyToPdfDialog';
-import SaveTemplateDialog from '@/pages/Surveys/Editor/dialog/SaveTemplateDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 
 interface SurveyEditorPageProps {
@@ -67,13 +65,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     resetStoredSurvey,
     uploadFile,
   } = useSurveyEditorPageStore();
-  const { reset: resetTemplateStore, template } = useSurveyTemplateStore();
-  const {
-    reset: resetSaveTemplateDialogStore,
-    isOpenSaveTemplateDialog,
-    setIsOpenSaveTemplateDialog,
-    uploadTemplate,
-  } = useSaveTemplateDialogStore();
+  const { reset: resetTemplateStore, selectedTemplate, uploadTemplate } = useSurveyTemplateStore();
   const {
     reset: resetQuestionsContextMenu,
     setIsOpenQuestionContextMenu,
@@ -92,7 +84,6 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     resetStoredSurvey();
     resetEditorPage();
     resetTemplateStore();
-    resetSaveTemplateDialogStore();
     resetQuestionsContextMenu();
   };
 
@@ -176,11 +167,11 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     const survey = form.getValues();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, formula, createdAt, saveNo, expires, answers, saveAsTemplate, ...remainingSurvey } = survey;
-    const creationDate = template?.template.createdAt ?? new Date();
+    const creationDate = selectedTemplate?.template.createdAt ?? new Date();
     const rawFormula = creator.JSON as SurveyFormula;
     const processedFormula: SurveyFormula = resetSurveyIdFromFormulasBackendLimiters(rawFormula, id);
     await uploadTemplate({
-      id: template?.id,
+      id: selectedTemplate?.id,
       template: {
         ...remainingSurvey,
         formula: processedFormula,
@@ -189,7 +180,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     });
     setIsOpenSaveSurveyDialog(false);
     resetSurveyEditorPage();
-  }, [form, creator, template, uploadTemplate, isSuperAdmin, setIsOpenSaveSurveyDialog]);
+  }, [form, creator, selectedTemplate, uploadTemplate, isSuperAdmin, setIsOpenSaveSurveyDialog]);
 
   const handleNavigateToCreatedSurveys = () => {
     window.history.pushState(null, '', `/${CREATED_SURVEYS_PAGE}`);
@@ -204,7 +195,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
 
     const survey = form.getValues();
     const { id, ...remainingSurvey } = survey;
-    const isSavingFromTemplate = template?.id && id === template.id;
+    const isSavingFromTemplate = selectedTemplate?.id && id === selectedTemplate.id;
 
     const success = await updateOrCreateSurvey({
       ...remainingSurvey,
@@ -221,16 +212,10 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
       toast.success(t('survey.editor.saveSurveySuccess'));
       handleNavigateToCreatedSurveys();
     }
-  }, [creator, form, updateUsersSurveys, template]);
+  }, [creator, form, updateUsersSurveys, selectedTemplate]);
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
-      {
-        icon: faFileLines,
-        text: t('survey.editor.templates'),
-        onClick: () => setIsOpenSaveTemplateDialog(!isOpenSaveTemplateDialog),
-        isVisible: isSuperAdmin,
-      },
       SaveButton(() => setIsOpenSaveSurveyDialog(true)),
       {
         icon: faBackward,
@@ -265,10 +250,6 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
         )}
       </div>
       <FloatingButtonsBar config={config} />
-      <SaveTemplateDialog
-        form={form}
-        creator={creator}
-      />
       <SaveSurveyDialog
         form={form}
         isOpenSaveSurveyDialog={isOpenSaveSurveyDialog}

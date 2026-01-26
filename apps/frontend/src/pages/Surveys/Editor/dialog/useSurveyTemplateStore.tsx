@@ -22,8 +22,9 @@ import { toast } from 'sonner';
 import { t } from 'i18next';
 import eduApi from '@/api/eduApi';
 import { SURVEY_TEMPLATES_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
-import handleApiError from '@/utils/handleApiError';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import handleApiError from '@/utils/handleApiError';
 
 interface SurveyTemplateStore {
   reset: () => void;
@@ -37,18 +38,31 @@ interface SurveyTemplateStore {
   setIsTemplateActive: (templateId: string, state: boolean) => Promise<void>;
   error?: Error;
 
-  template?: SurveyTemplateDto;
-  setTemplate: (template?: SurveyTemplateDto) => void;
   templates: SurveyTemplateDto[];
   fetchTemplates: () => Promise<void>;
+
+  selectedTemplate?: SurveyTemplateDto;
+  setSelectedTemplate: (template?: SurveyTemplateDto) => void;
+
+  templateName?: string;
+  setTemplateName: (name?: string) => void;
+  accessGroups: MultipleSelectorGroup[];
+  setAccessGroups: (groups: MultipleSelectorGroup[]) => void;
+
+  setInitialData: (template?: SurveyTemplateDto) => void;
+
+  uploadTemplate: (template: SurveyTemplateDto) => Promise<SurveyTemplateDto | null>;
+
   isLoading: boolean;
 }
 
 const SurveyTemplateStoreInitialState = {
   isOpenTemplatePreview: false,
   isOpenTemplateConfirmDeletion: false,
-  template: undefined,
+  selectedTemplate: undefined,
   templates: [],
+  templateName: undefined,
+  accessGroups: [],
   isLoading: false,
   error: undefined,
 };
@@ -72,7 +86,7 @@ const useSurveyTemplateStore = create<SurveyTemplateStore>((set) => ({
     }
   },
 
-  setTemplate: (template?: SurveyTemplateDto) => set({ template }),
+  setSelectedTemplate: (template?: SurveyTemplateDto) => set({ selectedTemplate: template }),
 
   setIsOpenTemplateConfirmDeletion: (state: boolean) => set({ isOpenTemplateConfirmDeletion: state }),
 
@@ -101,6 +115,35 @@ const useSurveyTemplateStore = create<SurveyTemplateStore>((set) => ({
       toast.success(t('survey.editor.template.upload.success'));
     } catch (error) {
       handleApiError(error, set);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  setTemplateName: (name?: string) => set({ templateName: name }),
+
+  setAccessGroups: (accessGroups: MultipleSelectorGroup[]) => set({ accessGroups }),
+
+  setInitialData: (template?: SurveyTemplateDto) => {
+    set({
+      templateName: template?.name || undefined,
+      accessGroups: template?.accessGroups || [],
+    });
+  },
+
+  uploadTemplate: async (template: SurveyTemplateDto): Promise<SurveyTemplateDto | null> => {
+    set({ isLoading: true });
+    try {
+      const result = await eduApi.post<SurveyTemplateDto>(SURVEY_TEMPLATES_ENDPOINT, template);
+      const { data } = result || {};
+      if (data) {
+        toast.success(t('survey.editor.template.upload.success'));
+        return data;
+      }
+      return null;
+    } catch (error) {
+      handleApiError(error, set);
+      return null;
     } finally {
       set({ isLoading: false });
     }

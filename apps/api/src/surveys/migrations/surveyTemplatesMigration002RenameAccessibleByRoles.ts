@@ -34,7 +34,9 @@ const surveyTemplatesMigration002RenameAccessibleByRoles: Migration<SurveysTempl
   name,
   version: 2,
   execute: async (model: Model<SurveysTemplateDocument>) => {
-    const unprocessedDocuments = await model.find({ accessibleByRoles: { $exists: true } }).lean();
+    const previousSchemaVersion = 1;
+    const newSchemaVersion = 2;
+    const unprocessedDocuments = await model.find({ schemaVersion: previousSchemaVersion }).lean();
 
     Logger.log(
       `Migration "${name}": Found ${unprocessedDocuments.length} documents to process...`,
@@ -49,7 +51,7 @@ const surveyTemplatesMigration002RenameAccessibleByRoles: Migration<SurveysTempl
           // eslint-disable-next-line no-underscore-dangle
           filter: { _id: document._id },
           update: {
-            $set: { accessGroups: previousValue },
+            $set: { accessGroups: previousValue, schemaVersion: newSchemaVersion },
             $unset: { accessibleByRoles: '' },
           },
           upsert: true,

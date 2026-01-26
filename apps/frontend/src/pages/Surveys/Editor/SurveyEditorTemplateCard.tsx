@@ -46,7 +46,7 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
     setIsOpenTemplatePreview,
     setIsTemplateActive,
     fetchTemplates,
-    setTemplate,
+    setSelectedTemplate,
   } = useSurveyTemplateStore();
 
   const { loadNewSurvey, loadSurveyTemplate } = useSurveyEditorPageStore();
@@ -61,7 +61,7 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
 
   const handleCardClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setTemplate(surveyTemplate);
+    setSelectedTemplate(surveyTemplate);
     if (surveyTemplate) {
       loadSurveyTemplate(creator, surveyTemplate);
     } else {
@@ -71,7 +71,7 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
 
   const handleOpenPreview = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setTemplate(surveyTemplate);
+    setSelectedTemplate(surveyTemplate);
     setIsOpenTemplatePreview(true);
   };
 
@@ -89,7 +89,7 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
 
   const handleOpenConfirmDeletion = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setTemplate(surveyTemplate);
+    setSelectedTemplate(surveyTemplate);
     setIsOpenTemplateConfirmDeletion(true);
   };
 
