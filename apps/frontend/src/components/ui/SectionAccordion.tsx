@@ -129,7 +129,7 @@ const SectionAccordionItem: React.FC<SectionAccordionItemProps> = ({
       value={id}
       className={cn(
         'text-card-foreground transition-all duration-300',
-        variant === 'default' && 'bg-glass rounded-xl dark:bg-muted-background',
+        variant === 'default' && 'bg-glass rounded-xl backdrop-blur-lg dark:bg-muted-background',
         isHighlighted && 'blinking',
         className,
       )}

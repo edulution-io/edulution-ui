@@ -61,7 +61,7 @@ const sheetVariants = cva(
           'inset-y-0 right-0 h-full w-3/4 data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm',
       },
       variant: {
-        primary: 'bg-overlay',
+        primary: 'bg-glass backdrop-blur-sm',
         secondary: 'bg-ciGray',
       },
     },
@@ -72,7 +72,8 @@ const sheetVariants = cva(
   },
 );
 interface SheetContentProps
-  extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>, VariantProps<typeof sheetVariants> {
+  extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
+    VariantProps<typeof sheetVariants> {
   showCloseButton?: boolean;
 }
 
@@ -83,8 +84,8 @@ const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Con
       <SheetPrimitive.Content
         ref={ref}
         className={cn(
-          { 'bg-overlay text-background': variant === 'primary' },
-          { 'bg-overlay text-foreground': variant === 'secondary' },
+          { 'bg-accent text-background': variant === 'primary' },
+          { 'bg-accent text-foreground': variant === 'secondary' },
           sheetVariants({ side, variant }),
           'max-h-[90vh] overflow-auto',
           className,

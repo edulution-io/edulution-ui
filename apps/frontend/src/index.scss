@@ -41,8 +41,8 @@
     --secondary-foreground: #c8c8c3;
     --muted: #b1b1ac;
     --muted-transparent: #b1b1ac50;
-    --accent: #d2d2cf;
-    --accent-light: #e3e3e3;
+    --accent: #c9ccd2;
+    --accent-light: #d1d5db;
     --input: #1d170f;
     --card: #00000000;
     --card-foreground: #000000;
@@ -163,11 +163,12 @@ iframe {
 
 .bg-glass {
   background-color: color-mix(in srgb, var(--foreground) 50%, transparent);
-  box-shadow:
-    5px 5px 10px -5px rgb(71 85 105 / 0.2),
-    0 8px 10px -6px rgb(71 85 105 / 0.05),
-    inset 0 1px 1px 0 rgba(148, 163, 184, 0.1),
-    inset 0 -1px 1px 0 rgba(0, 0, 0, 0.06);
+  box-shadow: 0 0 12px 0px rgba(0, 0, 0, 0.15);
+}
+
+.dark .bg-glass {
+  background-color: color-mix(in srgb, var(--foreground) 50%, transparent);
+  box-shadow: 0 0 8px 0px rgba(255, 255, 255, 0.1);
 }
 
 .black-centered-shadow {

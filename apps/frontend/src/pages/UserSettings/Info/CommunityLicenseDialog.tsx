@@ -67,7 +67,7 @@ const CommunityLicenseDialog: React.FC = () => {
 
   return (
     <AdaptiveDialog
-      desktopContentClassName="z-50 shadow-2xl border-[1px] border-muted"
+      desktopContentClassName="z-50"
       title={t('licensing.communityLicenseDialog.title')}
       isOpen={isOpen}
       handleOpenChange={() => close()}
