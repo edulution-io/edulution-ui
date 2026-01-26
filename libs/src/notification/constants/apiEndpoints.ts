@@ -17,5 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import NOTIFICATION_PAGE_VIEW from './notificationPageView';
+
 export const NOTIFICATIONS_EDU_API_ENDPOINT = 'notifications';
 export const NOTIFICATION_DEVICES_EDU_API_ENDPOINT = `devices`;
+
+export const NOTIFICATIONSCENTER = 'notificationscenter';
+export const NOTIFICATIONSCENTER_ALL_PAGE = `${NOTIFICATIONSCENTER}/${NOTIFICATION_PAGE_VIEW.ALL}`;
+export const NOTIFICATIONSCENTER_MESSAGES_PAGE = `${NOTIFICATIONSCENTER}/${NOTIFICATION_PAGE_VIEW.MESSAGES}`;
+export const NOTIFICATIONSCENTER_SYSTEM_PAGE = `${NOTIFICATIONSCENTER}/${NOTIFICATION_PAGE_VIEW.SYSTEM}`;

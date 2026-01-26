@@ -27,6 +27,7 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import useBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
+import useNotificationStore from '@/store/useNotificationStore';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import getDisplayName from '@/utils/getDisplayName';
 import { SidebarMenuItem } from '@libs/ui/types/sidebar';
@@ -40,6 +41,7 @@ const useSidebarItems = (): SidebarMenuItem[] => {
   const { mails } = useMailsStore();
   const { runningConferences } = useConferenceStore();
   const { bulletinBoardNotifications } = useBulletinBoardStore();
+  const { unreadCount } = useNotificationStore();
 
   const getNotificationCounter = (app: string): number | undefined => {
     switch (app) {
@@ -49,6 +51,8 @@ const useSidebarItems = (): SidebarMenuItem[] => {
         return runningConferences.length;
       case APPS.BULLETIN_BOARD:
         return bulletinBoardNotifications.length;
+      case APPS.NOTIFICATIONSCENTER:
+        return unreadCount > 0 ? unreadCount : undefined;
       default:
         return undefined;
     }

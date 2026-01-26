@@ -23,7 +23,7 @@ import USER_NOTIFICATION_STATUS, { UserNotificationStatus } from '@libs/notifica
 
 export type UserNotificationDocument = UserNotification & Document;
 
-@Schema({ timestamps: true, strict: true, collection: 'user_notifications' })
+@Schema({ timestamps: true, strict: true, collection: 'usernotifications' })
 export class UserNotification {
   @Prop({ type: Types.ObjectId, ref: 'Notification', required: true })
   notificationId: Types.ObjectId;
@@ -33,9 +33,6 @@ export class UserNotification {
 
   @Prop({ type: Date, default: null })
   readAt: Date | null;
-
-  @Prop({ type: Date, default: null })
-  deletedAt: Date | null;
 
   @Prop({ type: String, required: true, default: USER_NOTIFICATION_STATUS.PENDING })
   status: UserNotificationStatus;

@@ -28,8 +28,6 @@ class UserNotificationDto {
 
   readAt: Date | null;
 
-  deletedAt: Date | null;
-
   status: UserNotificationStatus;
 
   createdAt: Date;

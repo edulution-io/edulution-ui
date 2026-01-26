@@ -17,14 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import { NotificationType } from '@libs/notification/constants/notificationType';
 import { NotificationSourceType } from '@libs/notification/constants/notificationSourceType';
 import { PushNotificationPriority } from '@libs/notification/constants/pushNotificationPriority';
 import { PushNotificationInterruptionLevel } from '@libs/notification/constants/pushNotificationInterruptionLevel';
 
 class CreateNotificationDto {
-  sourceType: NotificationSourceType;
+  type: NotificationType;
 
-  sourceId: string;
+  sourceType?: NotificationSourceType;
+
+  sourceId?: string;
 
   title: string;
 

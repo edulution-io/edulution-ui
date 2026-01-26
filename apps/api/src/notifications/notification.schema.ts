@@ -19,6 +19,7 @@
 
 import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { NotificationType } from '@libs/notification/constants/notificationType';
 import { NotificationSourceType } from '@libs/notification/constants/notificationSourceType';
 import { PushNotificationPriority } from '@libs/notification/constants/pushNotificationPriority';
 import { PushNotificationInterruptionLevel } from '@libs/notification/constants/pushNotificationInterruptionLevel';
@@ -28,10 +29,13 @@ export type NotificationDocument = Notification & Document;
 @Schema({ timestamps: true, strict: true, collection: 'notifications' })
 export class Notification {
   @Prop({ type: String, required: true })
-  sourceType: NotificationSourceType;
+  type: NotificationType;
 
-  @Prop({ type: String, required: true })
-  sourceId: string;
+  @Prop({ type: String, required: false })
+  sourceType?: NotificationSourceType;
+
+  @Prop({ type: String, required: false })
+  sourceId?: string;
 
   @Prop({ required: true, maxlength: 50 })
   title: string;
@@ -65,6 +69,7 @@ export class Notification {
 
 export const NotificationSchema = SchemaFactory.createForClass(Notification);
 
+NotificationSchema.index({ type: 1 });
 NotificationSchema.index({ sourceType: 1, sourceId: 1 });
 
 NotificationSchema.set('toJSON', {

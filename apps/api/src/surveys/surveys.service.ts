@@ -26,6 +26,8 @@ import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
+import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
+import NOTIFICATION_CREATOR_SYSTEM from '@libs/notification/constants/notificationCreator';
 import prepareCreator from '@libs/survey/utils/prepareCreator';
 import SseMessageType from '@libs/common/types/sseMessageType';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
@@ -262,11 +264,12 @@ class SurveysService implements OnModuleInit {
           },
         },
         {
+          type: NOTIFICATION_TYPE.SYSTEM,
           sourceType: NOTIFICATION_SOURCE_TYPE.SURVEY,
           sourceId: surveyId,
           title,
           pushNotification,
-          createdBy: survey.creator.username,
+          createdBy: NOTIFICATION_CREATOR_SYSTEM,
         },
       );
     }

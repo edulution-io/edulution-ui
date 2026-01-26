@@ -29,6 +29,7 @@ import {
   LinuxmusterIcon,
   MailIcon,
   EmbeddedIcon,
+  NotificationIcon,
   SurveysMenuIcon,
   WhiteBoardIcon,
   VPNIcon,
@@ -70,6 +71,12 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
     extendedOptions: {
       [AppConfigSectionsKeys.bulletinBoard]: BULLETIN_BOARD_EXTENDED_OPTIONS,
     },
+    defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
+  },
+  {
+    id: APPS.NOTIFICATIONSCENTER,
+    icon: NotificationIcon,
+    isNativeApp: true,
     defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
   {

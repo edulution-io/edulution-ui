@@ -24,10 +24,15 @@ import { Expo, ExpoPushMessage } from 'expo-server-sdk';
 import pickDefinedNotificationFields from '@libs/notification/utils/pickDefinedNotificationFields';
 import SendPushNotificationDto from '@libs/notification/types/send-pushNotification.dto';
 import CreateNotificationDto from '@libs/notification/types/createNotification.dto';
+import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto';
 import USER_NOTIFICATION_STATUS from '@libs/notification/constants/userNotificationStatus';
+import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
+import { NOTIFICATION_FILTER_TYPE, NotificationFilterType } from '@libs/notification/types/notificationFilterType';
 import UsersService from '../users/users.service';
 import { Notification, NotificationDocument } from './notification.schema';
 import { UserNotification, UserNotificationDocument } from './userNotification.schema';
+
+type InboxNotification = InboxNotificationDto;
 
 @Injectable()
 class NotificationsService {
@@ -116,7 +121,6 @@ class NotificationsService {
       notificationId,
       username,
       readAt: null,
-      deletedAt: null,
       status: USER_NOTIFICATION_STATUS.PENDING,
     }));
     return this.userNotificationModel.insertMany(userNotifications);
@@ -134,29 +138,71 @@ class NotificationsService {
     username: string,
     limit = 20,
     offset = 0,
-  ): Promise<{ notifications: NotificationDocument[]; total: number }> {
+  ): Promise<{ notifications: InboxNotification[]; total: number }> {
     const userNotifications = await this.userNotificationModel
-      .find({ username, deletedAt: null })
+      .find({ username })
       .sort({ createdAt: -1 })
-      .skip(offset)
-      .limit(limit)
       .populate<{ notificationId: NotificationDocument }>('notificationId')
       .exec();
 
-    const total = await this.userNotificationModel.countDocuments({ username, deletedAt: null });
+    const filteredNotifications = userNotifications.filter(
+      (un) => un.notificationId !== null && un.notificationId.createdBy !== username,
+    );
 
-    const notifications = userNotifications
-      .map((un) => un.notificationId)
-      .filter((n): n is NotificationDocument => n !== null);
+    const total = filteredNotifications.length;
+    const paginatedNotifications = filteredNotifications.slice(offset, offset + limit);
+
+    const notifications: InboxNotification[] = paginatedNotifications.map((un) => {
+      const notification = un.notificationId;
+      return {
+        id: String(un.id),
+        notificationId: String(notification.id),
+        type: notification.type,
+        sourceType: notification.sourceType,
+        sourceId: notification.sourceId,
+        title: notification.title,
+        pushNotification: notification.pushNotification,
+        content: notification.content,
+        data: notification.data,
+        createdAt: notification.createdAt,
+        createdBy: notification.createdBy,
+        readAt: un.readAt,
+      };
+    });
 
     return { notifications, total };
   }
 
   async getUnreadCount(username: string): Promise<number> {
-    return this.userNotificationModel.countDocuments({ username, readAt: null, deletedAt: null });
+    const result = await this.userNotificationModel.aggregate<{ total: number }>([
+      { $match: { username, readAt: null } },
+      {
+        $lookup: {
+          from: 'notifications',
+          localField: 'notificationId',
+          foreignField: '_id',
+          as: 'notification',
+        },
+      },
+      { $unwind: '$notification' },
+      {
+        $match: {
+          'notification.type': NOTIFICATION_TYPE.USER,
+          'notification.createdBy': { $ne: username },
+        },
+      },
+      { $count: 'total' },
+    ]);
+
+    return result[0]?.total ?? 0;
   }
 
   async markAsRead(notificationId: string, username: string): Promise<void> {
+    const notification = await this.notificationModel.findById(notificationId).exec();
+    if (!notification || notification.type !== NOTIFICATION_TYPE.USER) {
+      return;
+    }
+
     await this.userNotificationModel.updateOne(
       { notificationId: new Types.ObjectId(notificationId), username },
       { $set: { readAt: new Date() } },
@@ -164,29 +210,65 @@ class NotificationsService {
   }
 
   async markAllAsRead(username: string): Promise<void> {
-    await this.userNotificationModel.updateMany(
-      { username, readAt: null, deletedAt: null },
-      { $set: { readAt: new Date() } },
-    );
+    const userTypeNotificationIds = await this.userNotificationModel.aggregate<{ id: Types.ObjectId }>([
+      { $match: { username, readAt: null } },
+      {
+        $lookup: {
+          from: 'notifications',
+          localField: 'notificationId',
+          foreignField: '_id',
+          as: 'notification',
+        },
+      },
+      { $unwind: '$notification' },
+      { $match: { 'notification.type': NOTIFICATION_TYPE.USER } },
+      { $project: { id: '$_id' } },
+    ]);
+
+    const ids = userTypeNotificationIds.map((doc) => doc.id);
+    if (ids.length > 0) {
+      await this.userNotificationModel.updateMany({ _id: { $in: ids } }, { $set: { readAt: new Date() } });
+    }
   }
 
   async deleteUserNotification(notificationId: string, username: string): Promise<void> {
-    await this.userNotificationModel.updateOne(
-      { notificationId: new Types.ObjectId(notificationId), username },
-      { $set: { deletedAt: new Date() } },
-    );
+    await this.userNotificationModel.deleteOne({
+      notificationId: new Types.ObjectId(notificationId),
+      username,
+    });
   }
 
-  async deleteNotificationsBySource(sourceType: string, sourceId: string): Promise<void> {
-    const notifications = await this.notificationModel.find({
-      sourceType,
-      sourceId,
+  async deleteAllUserNotifications(username: string, type: NotificationFilterType): Promise<number> {
+    if (type === NOTIFICATION_FILTER_TYPE.ALL) {
+      const result = await this.userNotificationModel.deleteMany({ username });
+      return result.deletedCount;
+    }
+
+    const notificationIds = await this.userNotificationModel.aggregate<{ notificationId: Types.ObjectId }>([
+      { $match: { username } },
+      {
+        $lookup: {
+          from: 'notifications',
+          localField: 'notificationId',
+          foreignField: '_id',
+          as: 'notification',
+        },
+      },
+      { $unwind: '$notification' },
+      { $match: { 'notification.type': type } },
+      { $project: { notificationId: 1 } },
+    ]);
+
+    const ids = notificationIds.map((doc) => doc.notificationId);
+    if (ids.length === 0) {
+      return 0;
+    }
+
+    const result = await this.userNotificationModel.deleteMany({
+      username,
+      notificationId: { $in: ids },
     });
-
-    const notificationIds = notifications.map((n) => new Types.ObjectId(String(n.id)));
-
-    await this.userNotificationModel.deleteMany({ notificationId: { $in: notificationIds } });
-    await this.notificationModel.deleteMany({ _id: { $in: notificationIds } });
+    return result.deletedCount;
   }
 }
 

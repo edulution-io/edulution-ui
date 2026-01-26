@@ -20,6 +20,7 @@
 const APPS = {
   DASHBOARD: 'dashboard',
   BULLETIN_BOARD: 'bulletinboard',
+  NOTIFICATIONSCENTER: 'notificationscenter',
   TICKET_SYSTEM: 'ticketsystem',
   MAIL: 'mail',
   CHAT: 'chat',

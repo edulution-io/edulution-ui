@@ -33,6 +33,8 @@ import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAtt
 import BULLETIN_TEMP_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinTempAttachmentsPath';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
+import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
+import NOTIFICATION_CREATOR_SYSTEM from '@libs/notification/constants/notificationCreator';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../common/CustomHttpException';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
@@ -382,15 +384,14 @@ class BulletinBoardService implements OnModuleInit {
             type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
           },
         },
-        currentUser
-          ? {
-              sourceType: NOTIFICATION_SOURCE_TYPE.BULLETIN,
-              sourceId: bulletinId,
-              title,
-              pushNotification,
-              createdBy: currentUser.preferred_username,
-            }
-          : undefined,
+        {
+          type: NOTIFICATION_TYPE.SYSTEM,
+          sourceType: NOTIFICATION_SOURCE_TYPE.BULLETIN,
+          sourceId: bulletinId,
+          title,
+          pushNotification,
+          createdBy: NOTIFICATION_CREATOR_SYSTEM,
+        },
       );
     }
   }

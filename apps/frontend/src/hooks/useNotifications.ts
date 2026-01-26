@@ -40,6 +40,7 @@ import useFileDownloadProgressToast from '@/hooks/useDownloadProgressToast';
 import { toast } from 'sonner';
 import useSseEventListener from '@/hooks/useSseEventListener';
 import useSseHeartbeatMonitor from '@/hooks/useSseHeartbeatMonitor';
+import useNotificationStore from '@/store/useNotificationStore';
 
 const useNotifications = () => {
   const { t } = useTranslation();
@@ -55,6 +56,8 @@ const useNotifications = () => {
   const { addBulletinBoardNotification } = UseBulletinBoardStore();
   const isWhiteboardActive = useIsAppActive(APPS.WHITEBOARD);
   const { addRoomHistoryEntry } = useTLDRawHistoryStore();
+  const isNotificationscenterActive = useIsAppActive(APPS.NOTIFICATIONSCENTER);
+  const { fetchUnreadCount } = useNotificationStore();
 
   useFileOperationProgress();
 
@@ -83,8 +86,19 @@ const useNotifications = () => {
       if (isConferenceAppActivated) {
         void getConferences();
       }
+
+      if (isNotificationscenterActive) {
+        void fetchUnreadCount();
+      }
     }
-  }, [isAuthReady, isMailsAppActivated, isSuperAdmin, isSurveysAppActivated, isConferenceAppActivated]);
+  }, [
+    isAuthReady,
+    isMailsAppActivated,
+    isSuperAdmin,
+    isSurveysAppActivated,
+    isConferenceAppActivated,
+    isNotificationscenterActive,
+  ]);
 
   useInterval(() => {
     if (isAuthReady && isMailsAppActivated && !isSuperAdmin) {
