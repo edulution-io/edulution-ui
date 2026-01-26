@@ -22,68 +22,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpException } from '@nestjs/common';
 import axios, { AxiosInstance } from 'axios';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
-import type { BatchPeersRequest, Peer, PeerConfig, Site, WireguardPeer } from '@libs/wireguard/types/wireguard';
+import type { BatchPeersRequest, PeerConfig, WireguardPeer } from '@libs/wireguard/types/wireguard';
 import WIREGUARD_ERROR_MESSAGES from '@libs/wireguard/constants/wireguardErrorMessages';
 import WireguardService from './wireguard.service';
 import GroupsService from '../groups/groups.service';
 import AppConfigService from '../appconfig/appconfig.service';
-
-const mockPeer: Peer = {
-  name: 'testuser',
-  private_key: 'mock-private-key',
-  public_key: 'mock-public-key',
-  ip: '10.0.0.2',
-  routes: ['0.0.0.0/0'],
-};
-
-const mockPeers: Record<string, Peer> = {
-  testuser: mockPeer,
-  anotheruser: {
-    name: 'anotheruser',
-    private_key: 'another-private-key',
-    public_key: 'another-public-key',
-    ip: '10.0.0.3',
-    routes: ['0.0.0.0/0'],
-  },
-};
-
-const mockPeerConfig: PeerConfig = {
-  data: '[Interface]\nPrivateKey = mock-private-key\nAddress = 10.0.0.2/32\n\n[Peer]\nPublicKey = server-public-key\nEndpoint = vpn.example.com:51820\nAllowedIPs = 0.0.0.0/0',
-};
-
-const mockWireguardPeer: WireguardPeer = {
-  name: 'testuser',
-  peer: 'mock-public-key',
-  endpoint: '192.168.1.100:51820',
-  allowed_ips: '10.0.0.2/32',
-  last_handshake: '2025-01-26T12:00:00Z',
-  latest_handshake_difference: 30,
-  transfer: { received: 1024, send: 2048 },
-  status: 'connected',
-};
-
-const mockSite: Site = {
-  name: 'branch-office',
-  private_key: 'site-private-key',
-  public_key: 'site-public-key',
-  ip: '10.0.1.1',
-  routes: ['192.168.0.0/24'],
-  type: 'site',
-  allowed_ips: ['192.168.0.0/24'],
-  endpoint: 'branch.example.com:51820',
-};
-
-const mockSites: Record<string, Site> = {
-  'branch-office': mockSite,
-};
-
-const mockWireguardConfig: Partial<AppConfigDto> = {
-  name: 'wireguard',
-  options: {
-    url: 'http://test-wireguard:8000/api/wireguard',
-    apiKey: 'test-api-key',
-  },
-};
+import { mockPeers, mockPeerConfig, mockWireguardPeer, mockSites, mockWireguardConfig } from './wireguard.mock';
 
 jest.mock('axios');
 

@@ -20,53 +20,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus } from '@nestjs/common';
 import type { Response } from 'express';
-import type { BatchPeersRequest, BatchPeersResult, Peer, PeerConfig } from '@libs/wireguard/types/wireguard';
+import type { BatchPeersRequest, BatchPeersResult } from '@libs/wireguard/types/wireguard';
 import WIREGUARD_ERROR_MESSAGES from '@libs/wireguard/constants/wireguardErrorMessages';
 import WireguardController from './wireguard.controller';
 import WireguardService from './wireguard.service';
 import CustomHttpException from '../common/CustomHttpException';
 import AdminGuard from '../common/guards/admin.guard';
 import GlobalSettingsService from '../global-settings/global-settings.service';
-
-const mockPeer: Peer = {
-  name: 'testuser',
-  private_key: 'mock-private-key',
-  public_key: 'mock-public-key',
-  ip: '10.0.0.2',
-  routes: ['0.0.0.0/0'],
-};
-
-const mockPeers: Record<string, Peer> = {
-  testuser: mockPeer,
-  anotheruser: {
-    name: 'anotheruser',
-    private_key: 'another-private-key',
-    public_key: 'another-public-key',
-    ip: '10.0.0.3',
-    routes: ['0.0.0.0/0'],
-  },
-};
-
-const mockPeerConfig: PeerConfig = {
-  data: '[Interface]\nPrivateKey = mock-private-key\nAddress = 10.0.0.2/32',
-};
-
-const mockWireguardService = {
-  getPeers: jest.fn(),
-  createPeer: jest.fn(),
-  deletePeer: jest.fn(),
-  getPeerConfig: jest.fn(),
-  getPeerQR: jest.fn(),
-  getPeerQRBase64: jest.fn(),
-  getPeerStatus: jest.fn(),
-  getAllPeersStatus: jest.fn(),
-  createPeersBatch: jest.fn(),
-  restartWireGuard: jest.fn(),
-  getSites: jest.fn(),
-  createSite: jest.fn(),
-  deleteSite: jest.fn(),
-  getSiteConfig: jest.fn(),
-};
+import { mockPeer, mockPeers, mockPeerConfig, mockWireguardService } from './wireguard.mock';
 
 describe(WireguardController.name, () => {
   let controller: WireguardController;
