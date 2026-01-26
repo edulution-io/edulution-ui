@@ -743,6 +743,18 @@
           "error": "Failed to delete template"
         }
       },
+      "saveTemplate": {
+        "title": "Save template",
+        "submit": "Save template",
+        "name": {
+          "label": "Template name",
+          "placeholder": "Enter a name for the template"
+        },
+        "accessGroups": {
+          "label": "Access groups",
+          "placeholder": "Select the groups that can access this template"
+        }
+      },
       "questionSettings": {
         "settings": "Settings",
         "title": "Question settings",

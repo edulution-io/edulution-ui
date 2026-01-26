@@ -745,6 +745,18 @@
           "error": "Die Vorlage konnte nicht gelöscht werden"
         }
       },
+      "saveTemplate": {
+        "title": "Vorlage speichern",
+        "submit": "Vorlage speichern",
+        "name": {
+          "label": "Name der Vorlage",
+          "placeholder": "Gib einen Namen für die Vorlage ein"
+        },
+        "accessGroups": {
+          "label": "Zugriffsgruppen",
+          "placeholder": "Wähle die Gruppen aus, die auf diese Vorlage zugreifen können"
+        }
+      },
       "questionSettings": {
         "settings": "Einstellungen",
         "title": "Einstellungen zur Frage",

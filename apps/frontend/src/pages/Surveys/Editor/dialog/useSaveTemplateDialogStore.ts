@@ -38,7 +38,7 @@ interface SaveTemplateDialogStore {
   accessGroups: MultipleSelectorGroup[];
   setAccessGroups: (groups: MultipleSelectorGroup[]) => void;
 
-  setInitialData: (template: SurveyTemplateDto) => void;
+  setInitialData: (template?: SurveyTemplateDto) => void;
 
   uploadTemplate: (template: SurveyTemplateDto) => Promise<SurveyTemplateDto | null>;
   isSubmitting: boolean;
@@ -63,10 +63,10 @@ const useSaveTemplateDialogStore = create<SaveTemplateDialogStore>((set) => ({
 
   setAccessGroups: (accessGroups: MultipleSelectorGroup[]) => set({ accessGroups }),
 
-  setInitialData: (template: SurveyTemplateDto) => {
+  setInitialData: (template?: SurveyTemplateDto) => {
     set({
-      name: template.name,
-      accessGroups: template.accessGroups || [],
+      name: template?.name || undefined,
+      accessGroups: template?.accessGroups || [],
     });
   },
 

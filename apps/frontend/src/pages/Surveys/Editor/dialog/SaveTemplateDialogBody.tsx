@@ -57,14 +57,16 @@ const SaveTemplateDialogBody = () => {
 
   return (
     <>
-      <Label>{t('survey.editor.saveTemplate.templateName')}</Label>
+      <Label>{t('survey.editor.saveTemplate.name.label')}</Label>
       <Input
-        placeholder={t('survey.editor.saveTemplate.addTemplateName')}
+        placeholder={t('survey.editor.saveTemplate.name.placeholder')}
         type="text"
         variant="dialog"
         value={name || ''}
         onChange={(e) => setName(e.target.value)}
+        className="mb-2"
       />
+      <Label>{t('survey.editor.saveTemplate.accessGroups.label')}</Label>
       <AsyncMultiSelect<MultipleSelectorGroup>
         value={accessGroups || []}
         onSearch={searchGroups}

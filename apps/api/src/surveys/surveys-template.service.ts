@@ -46,7 +46,14 @@ class SurveysTemplateService implements OnModuleInit {
   }
 
   async updateOrCreateTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
-    const { id, template, name: templateName, isActive = true, isDefaultTemplate = false } = surveyTemplate;
+    const {
+      id,
+      template,
+      name: templateName,
+      isActive = true,
+      isDefaultTemplate = false,
+      ...remainingTemplate
+    } = surveyTemplate;
     const name = templateName || template.formula.title.trim();
     if (!name) {
       throw new CustomHttpException(
@@ -58,9 +65,19 @@ class SurveysTemplateService implements OnModuleInit {
     }
     try {
       if (!id) {
-        return await this.surveyTemplateModel.create({ template, name, isActive, isDefaultTemplate });
+        return await this.surveyTemplateModel.create({
+          ...remainingTemplate,
+          template,
+          name,
+          isActive,
+          isDefaultTemplate,
+        });
       }
-      return await this.surveyTemplateModel.findByIdAndUpdate(id, { template, name, isActive }, { new: true });
+      return await this.surveyTemplateModel.findByIdAndUpdate(
+        id,
+        { ...remainingTemplate, template, name, isActive, isDefaultTemplate },
+        { new: true },
+      );
     } catch (error) {
       if (error instanceof Error && error.message.includes('E11000')) {
         throw new CustomHttpException(
@@ -82,7 +99,10 @@ class SurveysTemplateService implements OnModuleInit {
   async getTemplates(ldapGroups: string[], res: Response): Promise<Response> {
     const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
     const isAdmin = getIsAdmin(ldapGroups, adminGroups);
-    const documents = await this.surveyTemplateModel.find(isAdmin ? {} : { isActive: true }).exec();
+    const documents = await this.surveyTemplateModel
+      .find(isAdmin ? {} : { isActive: true, 'accessGroups.path': { $in: ldapGroups } })
+      .sort({ name: 1 })
+      .exec();
     return res.status(HttpStatus.OK).json(documents);
   }
 
