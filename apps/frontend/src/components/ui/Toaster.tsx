@@ -36,7 +36,8 @@ const Toaster = ({ ...props }: ToasterProps) => {
       toastOptions={{
         duration: SHOW_TOASTER_DURATION,
         classNames: {
-          toast: 'group toast group-[.toaster]:bg-overlay group-[.toaster]:border-border group-[.toaster]:shadow-lg',
+          toast:
+            'group toast group-[.toaster]:bg-accent-light group-[.toaster]:border-border group-[.toaster]:shadow-lg',
           content: 'whitespace-pre-line group-[.toaster]:text-background',
         },
       }}

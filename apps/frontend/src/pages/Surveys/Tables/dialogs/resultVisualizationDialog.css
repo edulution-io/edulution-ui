@@ -15,7 +15,7 @@
 }
 .sa-question__select {
   color: var(--secondary) !important;
-  background-color: var(--muted) !important;
+  background-color: var(--accent) !important;
 }
 .sa-question__select:hover,
 .sa-question__select:focus {
@@ -45,7 +45,7 @@
 }
 .sa-toolbar__button {
   color: var(--muted-foreground);
-  background-color: var(--muted);
+  background-color: var(--accent);
 }
 .sa-toolbar__button:hover {
   color: var(--primary);

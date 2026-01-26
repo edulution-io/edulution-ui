@@ -184,7 +184,7 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
             <div
               ref={dropupRef}
               className={cn(
-                'absolute bottom-full left-1/2 mb-2 flex -translate-x-1/2 transform flex-col gap-2 rounded-xl bg-overlay bg-opacity-90 p-4 shadow-lg backdrop-blur',
+                'absolute bottom-full left-1/2 mb-2 flex -translate-x-1/2 transform flex-col gap-2 rounded-xl bg-accent bg-opacity-90 p-4 shadow-lg backdrop-blur',
                 'z-[9999]',
                 isDropupAnimatingOut
                   ? 'duration-200 animate-out fade-out slide-out-to-bottom-0'
