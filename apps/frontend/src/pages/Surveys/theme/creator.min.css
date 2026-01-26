@@ -5735,7 +5735,7 @@ button.spg-action-button--large {
   pointer-events: none;
   cursor: default;
 }
-.spg-action-button--muted {
+.spg-action-button--accent {
   opacity: 0.5;
 }
 .spg-action-button:active {
