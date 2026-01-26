@@ -34,7 +34,7 @@ import BULLETIN_TEMP_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bullet
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
 import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
-import NOTIFICATION_CREATOR_SYSTEM from '@libs/notification/constants/notificationCreator';
+import NOTIFICATION_CREATOR_SYSTEM from '@libs/notification/constants/notificationCreatorSystem';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../common/CustomHttpException';
 import { Bulletin, BulletinDocument } from './bulletin.schema';

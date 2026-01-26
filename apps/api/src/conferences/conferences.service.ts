@@ -31,7 +31,7 @@ import ConferenceRole from '@libs/conferences/types/conference-role.enum';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
 import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
-import NOTIFICATION_CREATOR_SYSTEM from '@libs/notification/constants/notificationCreator';
+import NOTIFICATION_CREATOR_SYSTEM from '@libs/notification/constants/notificationCreatorSystem';
 import APPS from '@libs/appconfig/constants/apps';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import CONFERENCES_SYNC_INTERVAL_MS from '@libs/conferences/constants/conferencesSyncInterval';
