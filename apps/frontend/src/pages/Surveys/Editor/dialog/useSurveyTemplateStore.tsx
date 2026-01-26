@@ -49,8 +49,6 @@ interface SurveyTemplateStore {
   accessGroups: MultipleSelectorGroup[];
   setAccessGroups: (groups: MultipleSelectorGroup[]) => void;
 
-  setInitialData: (template?: SurveyTemplateDto) => void;
-
   uploadTemplate: (template: SurveyTemplateDto) => Promise<SurveyTemplateDto | null>;
 
   isLoading: boolean;
@@ -86,7 +84,12 @@ const useSurveyTemplateStore = create<SurveyTemplateStore>((set) => ({
     }
   },
 
-  setSelectedTemplate: (template?: SurveyTemplateDto) => set({ selectedTemplate: template }),
+  setSelectedTemplate: (template?: SurveyTemplateDto) =>
+    set({
+      selectedTemplate: template,
+      accessGroups: template?.accessGroups || [],
+      templateName: template?.name || undefined,
+    }),
 
   setIsOpenTemplateConfirmDeletion: (state: boolean) => set({ isOpenTemplateConfirmDeletion: state }),
 
@@ -123,13 +126,6 @@ const useSurveyTemplateStore = create<SurveyTemplateStore>((set) => ({
   setTemplateName: (name?: string) => set({ templateName: name }),
 
   setAccessGroups: (accessGroups: MultipleSelectorGroup[]) => set({ accessGroups }),
-
-  setInitialData: (template?: SurveyTemplateDto) => {
-    set({
-      templateName: template?.name || undefined,
-      accessGroups: template?.accessGroups || [],
-    });
-  },
 
   uploadTemplate: async (template: SurveyTemplateDto): Promise<SurveyTemplateDto | null> => {
     set({ isLoading: true });

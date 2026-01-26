@@ -65,7 +65,13 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     resetStoredSurvey,
     uploadFile,
   } = useSurveyEditorPageStore();
-  const { reset: resetTemplateStore, selectedTemplate, uploadTemplate } = useSurveyTemplateStore();
+  const {
+    reset: resetTemplateStore,
+    selectedTemplate,
+    uploadTemplate,
+    templateName,
+    accessGroups,
+  } = useSurveyTemplateStore();
   const {
     reset: resetQuestionsContextMenu,
     setIsOpenQuestionContextMenu,
@@ -172,6 +178,8 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     const processedFormula: SurveyFormula = resetSurveyIdFromFormulasBackendLimiters(rawFormula, id);
     await uploadTemplate({
       id: selectedTemplate?.id,
+      name: templateName,
+      accessGroups,
       template: {
         ...remainingSurvey,
         formula: processedFormula,
@@ -180,7 +188,16 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     });
     setIsOpenSaveSurveyDialog(false);
     resetSurveyEditorPage();
-  }, [form, creator, selectedTemplate, uploadTemplate, isSuperAdmin, setIsOpenSaveSurveyDialog]);
+  }, [
+    form,
+    creator,
+    selectedTemplate,
+    uploadTemplate,
+    isSuperAdmin,
+    setIsOpenSaveSurveyDialog,
+    templateName,
+    accessGroups,
+  ]);
 
   const handleNavigateToCreatedSurveys = () => {
     window.history.pushState(null, '', `/${CREATED_SURVEYS_PAGE}`);
