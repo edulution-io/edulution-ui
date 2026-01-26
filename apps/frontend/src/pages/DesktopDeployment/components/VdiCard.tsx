@@ -46,7 +46,7 @@ const VdiCard: FC<VdiCardProps> = ({ title, availableCount, osType, onSelect, on
       <button
         type="button"
         onClick={onReload}
-        className="absolute right-2 top-2 rounded-full p-1 text-muted-foreground hover:bg-accent-light hover:text-background"
+        className="absolute right-2 top-2 rounded-full p-2 hover:bg-accent-light hover:text-background"
         aria-label={t('common.reload')}
       >
         <FontAwesomeIcon
