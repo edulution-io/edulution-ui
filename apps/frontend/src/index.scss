@@ -1,7 +1,7 @@
 @tailwind base;
 @layer base {
   html {
-    @apply text-white;
+    @apply text-background;
     font-family: 'Lato', sans-serif;
   }
 
@@ -38,25 +38,25 @@
     --primary: #0081c6;
     --primary-foreground: #ffffff;
     --secondary: #2e2a24;
-    --secondary-foreground: #f2f2f2;
+    --secondary-foreground: #c8c8c3;
     --muted: #b1b1ac;
     --muted-transparent: #b1b1ac50;
-    --accent: #d2d2cf;
-    --accent-light: #e3e3e3;
+    --accent: #c9ccd2;
+    --accent-light: #d1d5db;
     --input: #1d170f;
-    --card: #00000000; /* bleibt transparent */
-    --card-foreground: #000000; /* Invertiert von #FFFFFF */
-    --popover: #000000; /* Invertiert von #FFFFFF */
-    --popover-foreground: #f0e8d5; /* Invertiert von #0F172A */
-    --border: #342b1b;
-    --destructive: #00ffff;
+    --card: #00000000;
+    --card-foreground: #000000;
+    --popover: #000000;
+    --popover-foreground: #f0e8d5;
+    --border: #333333;
+    --destructive: #ff0000; /* 0 100% 50%         */
     --destructive-foreground: #130800;
     --ring: #735b49;
     --ring-transparent: #735b4950;
     --overlay: #ffffff;
     --overlay-transparent: #ffffff50;
     --overlay-foreground: #ffffff;
-    --muted-dialog: #eaeaea;
+    --muted-dialog: #ffffff;
     --scrollbar-thumb: #b1b1ac;
   }
   .dark {
@@ -149,7 +149,7 @@
 
 iframe {
   @apply bg-cover bg-center bg-no-repeat;
-  background-image: url('./assets/backgroundDarkMode.webp');
+  background-image: var(--background-image);
 }
 
 .ql-editor,
@@ -159,6 +159,16 @@ iframe {
   overflow: auto;
   max-height: 70vh;
   max-width: 620px;
+}
+
+.bg-glass {
+  background-color: color-mix(in srgb, var(--foreground) 50%, transparent);
+  box-shadow: 0 0 12px 0px rgba(0, 0, 0, 0.15);
+}
+
+.dark .bg-glass {
+  background-color: color-mix(in srgb, var(--foreground) 50%, transparent);
+  box-shadow: 0 0 8px 0px rgba(255, 255, 255, 0.1);
 }
 
 .black-centered-shadow {

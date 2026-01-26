@@ -21,10 +21,11 @@
 
 import * as React from 'react';
 import cn from '@libs/common/utils/className';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { DayPicker } from 'react-day-picker';
 
 import { buttonVariants } from '@/components/ui/ButtonSH';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
@@ -60,9 +61,19 @@ const Calendar = ({ className, classNames, showOutsideDays = true, ...props }: C
     }}
     components={{
       // eslint-disable-next-line
-      IconLeft: () => <ChevronLeft className="h-4 w-4" />,
+      IconLeft: () => (
+        <FontAwesomeIcon
+          icon={faChevronLeft}
+          className="h-4 w-4"
+        />
+      ),
       // eslint-disable-next-line
-      IconRight: () => <ChevronRight className="h-4 w-4" />,
+      IconRight: () => (
+        <FontAwesomeIcon
+          icon={faChevronRight}
+          className="h-4 w-4"
+        />
+      ),
     }}
     {...props}
   />

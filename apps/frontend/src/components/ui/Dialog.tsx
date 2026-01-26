@@ -21,7 +21,8 @@
 
 import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { Cross2Icon } from '@radix-ui/react-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
 import cn from '@libs/common/utils/className';
 import i18n from '@/i18n';
 
@@ -53,7 +54,7 @@ const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
     showCloseButton?: boolean;
-    variant?: 'primary' | 'secondary' | 'tertiary' | 'loadingSpinner';
+    variant?: 'primary' | 'secondary' | 'loadingSpinner';
   }
 >(({ className, children, showCloseButton = true, variant, ...props }, ref) => {
   React.useEffect(() => {
@@ -70,15 +71,14 @@ const DialogContent = React.forwardRef<
 
   return (
     <DialogPortal>
-      <DialogOverlay className={cn({ 'bg-black/50': variant === 'primary' })} />{' '}
+      <DialogOverlay className={cn({ 'bg-white/50 backdrop-blur-sm dark:bg-black/50': variant === 'primary' })} />
       <DialogPrimitive.Content
         ref={ref}
         className={cn(
           'fixed left-[50%] top-[50%] z-50 grid max-h-[90vh] w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 overflow-auto rounded-xl p-6 shadow-lg duration-200 scrollbar-thin',
-          { 'bg-overlay text-background': variant === 'primary' },
-          { 'color-white text-background': variant === 'secondary' || variant === 'tertiary' },
+          { 'bg-glass  backdrop-blur-lg': variant === 'primary' },
+          { 'color-white': variant === 'secondary' },
           { 'bg-ciGray': variant === 'secondary' },
-          { 'bg-foreground': variant === 'tertiary' },
           { 'w-40 bg-foreground': variant === 'loadingSpinner' },
           className,
         )}
@@ -87,7 +87,10 @@ const DialogContent = React.forwardRef<
         {children}
         {showCloseButton && (
           <DialogPrimitive.Close className="absolute right-5 top-5">
-            <Cross2Icon className="h-4 w-4 text-background" />
+            <FontAwesomeIcon
+              icon={faClose}
+              className="h-4 w-4"
+            />
             <span className="sr-only">${i18n.t('dialog.close')}</span>
           </DialogPrimitive.Close>
         )}

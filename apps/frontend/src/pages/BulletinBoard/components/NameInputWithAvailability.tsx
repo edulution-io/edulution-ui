@@ -18,7 +18,8 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
-import { MdCheckCircle, MdError } from 'react-icons/md';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheckCircle, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { useDebounceValue } from 'usehooks-ts';
@@ -79,16 +80,16 @@ const NameInputWithAvailability = ({
     if (isNameChecked) {
       if (!nameExistsAlready) {
         return (
-          <MdCheckCircle
+          <FontAwesomeIcon
+            icon={faCheckCircle}
             className="text-ciGreen"
-            size={20}
           />
         );
       }
       return (
-        <MdError
+        <FontAwesomeIcon
+          icon={faCircleExclamation}
           className="text-ciRed"
-          size={20}
         />
       );
     }

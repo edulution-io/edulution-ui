@@ -178,7 +178,7 @@ const UserSettingsMailsPage: React.FC = () => {
           />
         </>
       ) : (
-        <p>{t('mail.importer.noMailConfigured')}</p>
+        <p className="text-background">{t('mail.importer.noMailConfigured')}</p>
       )}
     </PageLayout>
   );

@@ -18,9 +18,7 @@
  */
 
 import React, { useState } from 'react';
-import { AiOutlineStop } from 'react-icons/ai';
-import { MdOutlineRestartAlt, MdOutlineUpdate } from 'react-icons/md';
-import { LuTerminal } from 'react-icons/lu';
+import { faRotateRight, faBan, faArrowUpFromBracket, faTerminal } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
@@ -111,13 +109,13 @@ const DockerContainerFloatingButtons: React.FC = () => {
       StartButton(() => handleActionClick(DOCKER_COMMANDS.START), isButtonVisible && !areSelectedContainersRunning),
       StopButton(() => handleActionClick(DOCKER_COMMANDS.STOP), isButtonVisible && areSelectedContainersNotRunning),
       {
-        icon: MdOutlineRestartAlt,
+        icon: faRotateRight,
         text: t(`common.${DOCKER_COMMANDS.RESTART}`),
         onClick: () => handleActionClick(DOCKER_COMMANDS.RESTART),
         isVisible: isButtonVisible,
       },
       {
-        icon: AiOutlineStop,
+        icon: faBan,
         text: t(`common.${DOCKER_COMMANDS.KILL}`),
         onClick: () => handleActionClick(DOCKER_COMMANDS.KILL),
         isVisible: isButtonVisible && areSelectedContainersNotRunning,
@@ -127,13 +125,13 @@ const DockerContainerFloatingButtons: React.FC = () => {
         void getContainers();
       }),
       {
-        icon: MdOutlineUpdate,
+        icon: faArrowUpFromBracket,
         text: t(`common.update`),
         onClick: () => handleUpdateClick(),
         isVisible: isButtonVisible,
       },
       {
-        icon: LuTerminal,
+        icon: faTerminal,
         text: t('ssh.terminal'),
         onClick: handleTerminalClick,
         isVisible: isGuacamoleConfigured,

@@ -47,7 +47,7 @@ import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import DeleteGroupDialog from './DeleteGroupDialog';
 
 interface GroupDialogProps {
-  item: GroupColumn;
+  item: Omit<GroupColumn, 'icon'>;
   trigger?: React.ReactNode;
 }
 
@@ -188,7 +188,7 @@ const GroupDialog = ({ item, trigger }: GroupDialogProps) => {
           fetchedGroup = userSessions.find((session) => session.name === userGroupToEdit.name);
           break;
         case UserGroups.Classes:
-          fetchedGroup = await fetchSchoolClass(userGroupToEdit.name);
+          fetchedGroup = await fetchSchoolClass(userGroupToEdit.name, true);
           break;
         default:
       }

@@ -19,7 +19,8 @@
 
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefreshCw } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRotateRight } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@/components/shared/Button';
 import { AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import UPDATE_CHECKER_ENDPOINTS from '@libs/appconfig/constants/updateCheckerEndpoints';
@@ -80,7 +81,10 @@ const AppConfigUpdateChecker: React.FC<AppConfigUpdateCheckerProps> = ({ option 
             variant="btn-outline"
             size="sm"
           >
-            <RefreshCw className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+            <FontAwesomeIcon
+              icon={faRotateRight}
+              className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`}
+            />
             {t('appExtendedOptions.updateChecker.checkAgain')}
           </Button>
 
@@ -90,7 +94,12 @@ const AppConfigUpdateChecker: React.FC<AppConfigUpdateCheckerProps> = ({ option 
             variant={versionInfo.isUpdateAvailable ? 'btn-collaboration' : 'btn-outline'}
             size="sm"
           >
-            {isUpdating && <RefreshCw className="mr-2 h-4 w-4 animate-spin" />}
+            {isUpdating && (
+              <FontAwesomeIcon
+                icon={faRotateRight}
+                className="mr-2 h-4 w-4 animate-spin"
+              />
+            )}
             {t('appExtendedOptions.updateChecker.updateNow')}
           </Button>
         </div>

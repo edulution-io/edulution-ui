@@ -29,7 +29,7 @@ const getEmbeddedRoutes = (appConfigs: AppConfigDto[]) =>
     .map((item) => (
       <Route
         key={item.name}
-        path={item.name}
+        path={`${item.name}/*`}
         element={<EmbeddedPage />}
       />
     ));

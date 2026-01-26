@@ -17,12 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Table } from '@tanstack/react-table';
 import { Button } from '@/components/shared/Button';
 import DropdownMenu from '@/components/shared/DropdownMenu';
-import { ChevronDown } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
+import { inputVariants } from '@libs/ui/constants/commonClassNames';
+import cn from '@libs/common/utils/className';
 
 interface SelectColumnsDropdownProps<TData> {
   table: Table<TData>;
@@ -31,6 +34,7 @@ interface SelectColumnsDropdownProps<TData> {
 
 const SelectColumnsDropdown = <TData,>({ table, isDialog }: SelectColumnsDropdownProps<TData>) => {
   const { t } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
 
   const dropdownItems = table
     .getAllColumns()
@@ -44,12 +48,18 @@ const SelectColumnsDropdown = <TData,>({ table, isDialog }: SelectColumnsDropdow
 
   return (
     <DropdownMenu
+      open={isOpen}
+      onOpenChange={setIsOpen}
       trigger={
         <Button
-          variant="btn-small"
-          className={`text-secondary ${isDialog ? 'bg-muted' : 'bg-accent'}`}
+          variant="btn-table"
+          className={cn('max-w-fit', inputVariants({ variant: isDialog ? 'dialog' : 'default' }))}
         >
-          {t('common.columns')} <ChevronDown />
+          {t('common.columns')}{' '}
+          <FontAwesomeIcon
+            icon={faChevronDown}
+            className={cn('h-3 w-3 transition-transform', isOpen && 'rotate-180')}
+          />
         </Button>
       }
       items={dropdownItems}

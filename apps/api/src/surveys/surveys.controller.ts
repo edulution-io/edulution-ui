@@ -62,6 +62,7 @@ import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/sur
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import APPS from '@libs/appconfig/constants/apps';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import getUsernameFromRequest from 'apps/api/src/common/utils/getUsernameFromRequest';
 import SurveysService from './surveys.service';
@@ -75,9 +76,11 @@ import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.deco
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import AdminGuard from '../common/guards/admin.guard';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
+import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
 
 @ApiTags(SURVEYS)
 @ApiBearerAuth()
+@RequireAppAccess(APPS.SURVEYS)
 @Controller(SURVEYS)
 class SurveysController {
   constructor(
@@ -230,7 +233,7 @@ class SurveysController {
     const { surveyId, questionId, filename } = params;
     await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
     const path = join(SURVEYS, ATTACHMENT_FOLDER, surveyId, questionId);
-    return this.filesystemService.serveFiles(path, filename, res);
+    return this.filesystemService.serveFile(path, filename, res);
   }
 
   @Get(`${FILES}/:filename`)
@@ -241,7 +244,7 @@ class SurveysController {
   ) {
     const { filename } = params;
     const path = join(SURVEYS, username);
-    return this.filesystemService.serveTempFiles(path, filename, res);
+    return this.filesystemService.serveTempFile(path, filename, res);
   }
 
   @Post(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId`)
@@ -325,12 +328,14 @@ class SurveysController {
     return choices.filter((choice) => choice.name !== SHOW_OTHER_ITEM);
   }
 
+  @UseGuards(AdminGuard)
   @Delete(`${TEMPLATES}/:name`)
   async deleteTemplate(@Param() params: { name: string }) {
     const { name } = params;
     return this.surveysTemplateService.deleteTemplate(name);
   }
 
+  @UseGuards(AdminGuard)
   @Patch(`${TEMPLATES}/:name/:isActive`)
   async setIsTemplateActive(@Param() params: { name: string; isActive: boolean }) {
     const { name, isActive } = params;

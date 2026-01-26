@@ -51,11 +51,11 @@ const UserMenuButton: React.FC = () => {
   return (
     <div
       key="usermenu"
-      className={cn('min-w-[260px] bg-black', userMenuClassName)}
+      className={cn('min-w-[260px]', userMenuClassName)}
     >
       <div
         className={cn(
-          'flex max-h-14 cursor-pointer items-center justify-end gap-4 px-4 py-2',
+          'flex max-h-14 cursor-pointer items-center justify-end gap-4 px-4 py-2 hover:bg-muted-background',
           dropdownWrapperClassName,
         )}
       >
@@ -69,6 +69,7 @@ const UserMenuButton: React.FC = () => {
               <Avatar
                 user={{ username: user?.username || '', firstName: user?.firstName, lastName: user?.lastName }}
                 imageSrc={thumbnailPhoto}
+                className="hover:scale-110"
               />
             </div>
           }

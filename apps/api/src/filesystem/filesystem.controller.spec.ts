@@ -18,9 +18,12 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpStatus } from '@nestjs/common';
+import { BadRequestException, HttpStatus } from '@nestjs/common';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import { Response } from 'express';
+import { join } from 'path';
+import APPS from '@libs/appconfig/constants/apps';
+import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
 import FileSystemController from './filesystem.controller';
 import FilesystemService from './filesystem.service';
 import IsPublicAppGuard from '../common/guards/isPublicApp.guard';
@@ -28,15 +31,17 @@ import AdminGuard from '../common/guards/admin.guard';
 import AppConfigService from '../appconfig/appconfig.service';
 import CustomHttpException from '../common/CustomHttpException';
 import GlobalSettingsService from '../global-settings/global-settings.service';
+import ValidatePathPipe from '../common/pipes/validatePath.pipe';
 
 describe(FileSystemController.name, () => {
   let controller: FileSystemController;
+  let service: FilesystemService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [FileSystemController],
       providers: [
-        { provide: FilesystemService, useValue: {} },
+        { provide: FilesystemService, useValue: { servePublicAssetWithFallback: jest.fn().mockResolvedValue({}) } },
         AdminGuard,
         IsPublicAppGuard,
         { provide: AppConfigService, useValue: { getPublicAppConfigByName: jest.fn().mockResolvedValue(true) } },
@@ -45,6 +50,7 @@ describe(FileSystemController.name, () => {
     }).compile();
 
     controller = module.get<FileSystemController>(FileSystemController);
+    service = module.get<FilesystemService>(FilesystemService);
   });
 
   it('should be defined', () => {
@@ -75,6 +81,194 @@ describe(FileSystemController.name, () => {
         expect((e as Error).message).toBe(CommonErrorMessages.FILE_NOT_PROVIDED);
         expect((e as CustomHttpException).getStatus()).toBe(HttpStatus.BAD_REQUEST);
       }
+    });
+  });
+
+  describe('servePublicAssetWithFallback', () => {
+    let mockResponse: Partial<Response>;
+
+    beforeEach(() => {
+      mockResponse = {
+        setHeader: jest.fn(),
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockReturnThis(),
+      };
+    });
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    describe('Successful file serving', () => {
+      it('should successfully serve a file without fallback', async () => {
+        const appName = Object.values(APPS)[0];
+        const filename = 'logo.png';
+
+        await controller.servePublicAssetWithFallback(mockResponse as Response, appName, filename, undefined);
+
+        expect(service.servePublicAssetWithFallback).toHaveBeenCalledWith(
+          mockResponse,
+          join(PUBLIC_ASSET_PATH, appName, filename),
+          undefined,
+        );
+      });
+
+      it('should successfully serve a file with fallback', async () => {
+        const appName = Object.values(APPS)[0];
+        const filename = 'missing-logo.png';
+        const fallbackFilename = 'default-logo.png';
+
+        await controller.servePublicAssetWithFallback(mockResponse as Response, appName, filename, fallbackFilename);
+
+        expect(service.servePublicAssetWithFallback).toHaveBeenCalledWith(
+          mockResponse,
+          join(PUBLIC_ASSET_PATH, appName, filename),
+          join(PUBLIC_ASSET_PATH, appName, fallbackFilename),
+        );
+      });
+    });
+
+    describe('Invalid app name handling', () => {
+      it('should throw error for non-existent app name', () => {
+        const invalidAppName = 'non-existent-app';
+        const filename = 'logo.png';
+
+        expect(() =>
+          controller.servePublicAssetWithFallback(mockResponse as Response, invalidAppName, filename, undefined),
+        ).toThrow(CustomHttpException);
+      });
+    });
+  });
+
+  describe('deletePublicFile', () => {
+    beforeEach(() => {
+      jest.spyOn(FilesystemService, 'deleteFile').mockResolvedValue();
+      jest.spyOn(FilesystemService, 'buildPathString').mockImplementation((path) => {
+        if (Array.isArray(path)) {
+          return join(...path);
+        }
+        return path;
+      });
+    });
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    describe('Successful file deletion by admin', () => {
+      it('should successfully delete a single file', async () => {
+        const appName = Object.values(APPS)[0];
+        const filename = 'test-image.png';
+
+        await controller.deletePublicFile(appName, filename);
+
+        expect(FilesystemService.deleteFile).toHaveBeenCalledWith(join(PUBLIC_ASSET_PATH, appName), filename);
+      });
+
+      it('should successfully delete a file with array filename', async () => {
+        const appName = Object.values(APPS)[0];
+        const filename = ['assets', 'images', 'logo.png'];
+
+        await controller.deletePublicFile(appName, filename);
+
+        expect(FilesystemService.buildPathString).toHaveBeenCalledWith(filename);
+        expect(FilesystemService.deleteFile).toHaveBeenCalledWith(
+          join(PUBLIC_ASSET_PATH, appName),
+          'assets/images/logo.png',
+        );
+      });
+
+      it('should successfully delete a nested file', async () => {
+        const appName = Object.values(APPS)[0];
+        const filename = 'subfolder/nested-file.jpg';
+
+        await controller.deletePublicFile(appName, filename);
+
+        expect(FilesystemService.deleteFile).toHaveBeenCalledWith(join(PUBLIC_ASSET_PATH, appName), filename);
+      });
+    });
+
+    describe('Attempts to delete non-existent files', () => {
+      it('should handle file deletion error gracefully', async () => {
+        const appName = Object.values(APPS)[0];
+        const filename = 'non-existent-file.png';
+
+        jest
+          .spyOn(FilesystemService, 'deleteFile')
+          .mockRejectedValue(
+            new CustomHttpException(
+              CommonErrorMessages.FILE_DELETION_FAILED,
+              HttpStatus.INTERNAL_SERVER_ERROR,
+              join(PUBLIC_ASSET_PATH, appName, filename),
+            ),
+          );
+
+        try {
+          await controller.deletePublicFile(appName, filename);
+        } catch (e) {
+          expect(e).toBeInstanceOf(Error);
+          expect(e instanceof Error && e.message).toBe(CommonErrorMessages.FILE_DELETION_FAILED);
+        }
+
+        expect(FilesystemService.deleteFile).toHaveBeenCalledWith(join(PUBLIC_ASSET_PATH, appName), filename);
+      });
+
+      it('should propagate file system errors', async () => {
+        const appName = Object.values(APPS)[0];
+        const filename = 'locked-file.png';
+
+        jest.spyOn(FilesystemService, 'deleteFile').mockRejectedValue(new Error('EACCES: permission denied'));
+
+        try {
+          await controller.deletePublicFile(appName, filename);
+        } catch (e) {
+          expect(e).toBeInstanceOf(Error);
+          expect(e instanceof Error && e.message).toBe('EACCES: permission denied');
+        }
+      });
+    });
+  });
+});
+
+describe(ValidatePathPipe.name, () => {
+  const basePath = '/test/base';
+
+  describe('Valid paths', () => {
+    it('should return sanitized filename for valid input', () => {
+      const pipe = new ValidatePathPipe(basePath);
+      const result = pipe.transform('valid-file.png');
+      expect(result).toBe('valid-file.png');
+    });
+
+    it('should handle undefined input', () => {
+      const pipe = new ValidatePathPipe(basePath);
+      const result = pipe.transform(undefined);
+      expect(result).toBeUndefined();
+    });
+
+    it('should handle array input', () => {
+      const pipe = new ValidatePathPipe(basePath);
+      const result = pipe.transform(['subfolder', 'file.png']);
+      expect(result).toBe('subfolder/file.png');
+    });
+  });
+
+  describe('Invalid paths', () => {
+    it('should throw for empty string', () => {
+      const pipe = new ValidatePathPipe(basePath);
+      expect(() => pipe.transform('')).toThrow(BadRequestException);
+    });
+
+    it('should throw for path too long', () => {
+      const pipe = new ValidatePathPipe(basePath);
+      const longPath = 'a'.repeat(301);
+      expect(() => pipe.transform(longPath)).toThrow(BadRequestException);
+    });
+
+    it('should sanitize path traversal attempts', () => {
+      const pipe = new ValidatePathPipe(basePath);
+      const result = pipe.transform('../etc/passwd');
+      expect(result).not.toContain('..');
     });
   });
 });

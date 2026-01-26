@@ -19,7 +19,7 @@
 
 import React, { FC } from 'react';
 import { t } from 'i18next';
-import { MdDriveFileRenameOutline } from 'react-icons/md';
+import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import FileActionButtonProps from '@libs/filesharing/types/fileActionButtonProps';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
@@ -39,7 +39,7 @@ const FileActionOneSelect: FC<FileActionButtonProps> = ({ openDialog, selectedIt
       DeleteButton(() => openDialog(FileActionType.DELETE_FILE_OR_FOLDER)),
       MoveButton(() => openDialog(FileActionType.MOVE_FILE_OR_FOLDER)),
       {
-        icon: MdDriveFileRenameOutline,
+        icon: faPenToSquare,
         text: t('tooltip.rename'),
         onClick: () => openDialog(FileActionType.RENAME_FILE_OR_FOLDER),
       },

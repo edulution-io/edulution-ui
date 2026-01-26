@@ -76,7 +76,7 @@ const TLDrawHistoryInfiniteList: React.FC = () => {
     <div className="flex h-full flex-col">
       <div
         ref={scrollContainerRef}
-        className="divide-y divide-slate-500 overflow-y-auto"
+        className="divide-y divide-slate-500 overflow-y-auto text-background"
         style={{ height }}
       >
         <ul>
@@ -86,11 +86,11 @@ const TLDrawHistoryInfiniteList: React.FC = () => {
               className="flex cursor-default flex-row items-center justify-between px-2 py-1 hover:bg-muted"
             >
               <div className="flex flex-1 space-x-2">
-                <span className="font-medium">
+                <span className="">
                   {entry.attendee.firstName} {entry.attendee.lastName}
                 </span>
               </div>
-              <div className="group relative text-xs text-muted-foreground">
+              <div className="group relative text-xs">
                 <span className="group-hover:hidden">{new Date(entry.createdAt).toLocaleTimeString()}</span>
                 <span className="hidden group-hover:inline">{new Date(entry.createdAt).toLocaleDateString()}</span>
               </div>

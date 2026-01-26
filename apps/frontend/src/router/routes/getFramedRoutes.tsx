@@ -28,7 +28,7 @@ const getFramedRoutes = (appConfigs: AppConfigDto[]) =>
     .map((item) => (
       <Route
         key={item.name}
-        path={item.name}
+        path={`${item.name}/*`}
         element={<div id={item.name} />}
       />
     ));

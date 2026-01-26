@@ -512,6 +512,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
   private async searchWithPagedFallback(ldapClient: Client, searchBase: string, options: SearchOptions) {
     const pagedOptions: SearchOptions = { ...options, paged: { pageSize: 500 } };
 
@@ -802,6 +803,14 @@ class LdapKeycloakSyncService implements OnModuleInit {
 
     const cnMiss = missKeyExact(nameFromLdap);
     if (this.notFoundUserKeys.has(cnMiss)) return null;
+
+    const exactMatch = await this.groupsService.searchUsersByUsername(nameFromLdap, true);
+    if (exactMatch?.length) {
+      const user = LdapKeycloakSyncService.convertToGroupMemberDto(exactMatch[0]);
+      this.userCache.set(nameFromLdap, user);
+      this.userCache.set(user.username, user);
+      return user.username;
+    }
 
     const bases = cnToKeycloakCandidates(nameFromLdap);
     const hit = await probeCandidatesWithNegativeCache<GroupMemberDto>(

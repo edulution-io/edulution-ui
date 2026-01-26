@@ -23,13 +23,16 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CONFERENCES_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import JoinPublicConferenceDetails from '@libs/conferences/types/joinPublicConferenceDetails';
+import APPS from '@libs/appconfig/constants/apps';
 import ConferencesService from './conferences.service';
 import { Conference } from './conference.schema';
-import { Public } from '../common/decorators/public.decorator';
+import Public from '../common/decorators/public.decorator';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
+import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
 
 @ApiTags(CONFERENCES_EDU_API_ENDPOINT)
 @ApiBearerAuth()
+@RequireAppAccess(APPS.CONFERENCES)
 @Controller(CONFERENCES_EDU_API_ENDPOINT)
 class ConferencesController {
   constructor(private readonly conferencesService: ConferencesService) {}

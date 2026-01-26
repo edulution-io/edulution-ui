@@ -18,8 +18,11 @@
  */
 import React, { ReactNode, useCallback } from 'react';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
-import { TableRow } from '@/components/ui/Table';
 import { Row } from '@tanstack/react-table';
+import cn from '@libs/common/utils/className';
+import { TableRow } from '@/components/ui/Table';
+
+type TableRowVariant = 'default' | 'dialog';
 
 interface DraggableRowProps<TData> {
   row: Row<TData>;
@@ -27,7 +30,7 @@ interface DraggableRowProps<TData> {
   isRowDisabled?: boolean;
   enableDragAndDrop: boolean;
   canDropOnRow?: (row: TData) => boolean;
-  textColorClassname: string;
+  variant?: TableRowVariant;
 }
 
 const DraggableTableRow = <TData,>({
@@ -36,6 +39,7 @@ const DraggableTableRow = <TData,>({
   isRowDisabled,
   enableDragAndDrop,
   canDropOnRow,
+  variant = 'default',
 }: DraggableRowProps<TData>) => {
   const {
     attributes,
@@ -69,15 +73,15 @@ const DraggableTableRow = <TData,>({
   return (
     <TableRow
       ref={combinedRef}
+      variant={variant}
       data-state={isSelected ? 'selected' : undefined}
       data-disabled={isRowDisabled ? 'true' : undefined}
-      className={`
-        ${enableDragAndDrop && !isRowDisabled ? 'cursor-move' : ''}
-        ${isDragging ? 'opacity-30' : ''}
-        ${isDragging && isSelected ? 'ring-2 ring-primary ring-offset-2' : ''}
-        ${isOver && canDrop ? 'bg-primary/10 ring-2 ring-inset ring-primary' : ''}
-      `}
-      style={{ transition: 'all 0.2s ease' }}
+      className={cn(
+        enableDragAndDrop && !isRowDisabled && 'cursor-move',
+        isDragging && 'opacity-30',
+        isDragging && isSelected && 'ring-2 ring-primary ring-offset-2',
+        isOver && canDrop && 'bg-primary/10 ring-2 ring-inset ring-primary',
+      )}
       {...listeners}
       {...attributes}
     >

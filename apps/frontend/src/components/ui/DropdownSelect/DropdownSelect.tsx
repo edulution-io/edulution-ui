@@ -17,11 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { useOnClickOutside } from 'usehooks-ts';
 import cn from '@libs/common/utils/className';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
+import { INPUT_BASE_CLASSES, VARIANT_COLORS } from '@libs/ui/constants/commonClassNames';
+
+const DROPDOWN_SELECT_CLASSES = `${INPUT_BASE_CLASSES} box-border pl-2.5 pr-8 text-start placeholder:text-background`;
 
 export type DropdownOptions = {
   id: string;
@@ -39,11 +42,14 @@ interface DropdownProps {
   translate?: boolean;
 }
 
+const MENU_MAX_HEIGHT = 125;
+const MENU_MARGIN = 8;
+
 const DropdownSelect = ({
   options,
   selectedVal,
   handleChange,
-  openToTop = false,
+  openToTop: openToTopProp = false,
   classname,
   variant = 'default',
   placeholder = '',
@@ -53,7 +59,69 @@ const DropdownSelect = ({
   const searchEnabled = options.length > 3;
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0, width: 0 });
+  const [openToTop, setOpenToTop] = useState(openToTopProp);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const closeMenu = () => setIsOpen(false);
+
+  const calculatePosition = useCallback(() => {
+    if (!dropdownRef.current) return;
+
+    const rect = dropdownRef.current.getBoundingClientRect();
+    const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+    const spaceBelow = viewportHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    const shouldOpenToTop = openToTopProp || (spaceBelow < MENU_MAX_HEIGHT + MENU_MARGIN && spaceAbove > spaceBelow);
+    const menuHeight = Math.min(menuRef.current?.scrollHeight ?? MENU_MAX_HEIGHT, MENU_MAX_HEIGHT);
+
+    const viewportOffsetTop = window.visualViewport?.offsetTop ?? 0;
+    const calculatedTop = shouldOpenToTop
+      ? rect.top - menuHeight - MENU_MARGIN + viewportOffsetTop
+      : rect.bottom + MENU_MARGIN + viewportOffsetTop;
+
+    setOpenToTop(shouldOpenToTop);
+    setMenuPosition({
+      top: calculatedTop,
+      left: rect.left,
+      width: rect.width,
+    });
+  }, [openToTopProp]);
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    let requestAnimationFrameId: number;
+
+    const updatePosition = () => {
+      calculatePosition();
+      requestAnimationFrameId = requestAnimationFrame(updatePosition);
+    };
+
+    updatePosition();
+
+    return () => {
+      cancelAnimationFrame(requestAnimationFrameId);
+    };
+  }, [isOpen, calculatePosition]);
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      const isOutsideDropdown = dropdownRef.current && !dropdownRef.current.contains(target);
+      const isOutsideMenu = menuRef.current && !menuRef.current.contains(target);
+
+      if (isOutsideDropdown && isOutsideMenu) {
+        closeMenu();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen]);
 
   const translateLabel = (label: string) => (translate ? t(label) : label);
 
@@ -71,8 +139,6 @@ const DropdownSelect = ({
     if (searchEnabled) setQuery('');
   };
 
-  const closeMenu = () => setIsOpen(false);
-
   const selectOption = (option: DropdownOptions) => {
     setQuery('');
     handleChange(option.id);
@@ -86,26 +152,37 @@ const DropdownSelect = ({
     }
   };
 
-  useOnClickOutside(dropdownRef, closeMenu);
+  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    e.currentTarget.scrollTop += e.deltaY;
+  };
+
+  const touchStartY = useRef(0);
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    const deltaY = touchStartY.current - e.touches[0].clientY;
+    e.currentTarget.scrollTop += deltaY;
+    touchStartY.current = e.touches[0].clientY;
+  };
 
   const arrowPointsDown = (isOpen && !openToTop) || (!isOpen && openToTop);
 
-  const inputBaseClasses =
-    'box-border w-full rounded-lg py-2 pl-2.5 pr-[52px] text-start text-base leading-6 text-background placeholder:text-background outline-none transition-all duration-200';
-
   const variantClasses = {
-    default: 'bg-accent',
-    dialog: 'bg-muted',
+    default: VARIANT_COLORS.default,
+    dialog: VARIANT_COLORS.dialog,
   };
 
   const optionVariantClasses = {
     default: {
-      base: 'text-background hover:bg-muted',
-      selected: 'bg-muted text-background',
+      base: 'hover:bg-muted',
+      selected: 'bg-muted',
     },
     dialog: {
-      base: 'text-background hover:bg-muted-light',
-      selected: 'bg-muted-light text-background',
+      base: 'hover:bg-muted-light',
+      selected: 'bg-muted-light',
     },
   };
 
@@ -128,7 +205,7 @@ const DropdownSelect = ({
         onFocus={searchEnabled ? openMenu : undefined}
         readOnly={!searchEnabled}
         disabled={options.length === 0}
-        className={cn(inputBaseClasses, variantClasses[variant], {
+        className={cn(DROPDOWN_SELECT_CLASSES, variantClasses[variant], {
           'cursor-text': searchEnabled,
           'cursor-pointer': !searchEnabled,
         })}
@@ -143,52 +220,60 @@ const DropdownSelect = ({
         })}
       />
 
-      {isOpen && (
-        <div
-          className={cn(
-            'absolute z-[1000] -mt-px box-border max-h-[125px] w-full overflow-y-auto text-background shadow-xl scrollbar-thin',
-            variantClasses[variant],
-            {
-              'top-full': !openToTop,
-              'bottom-full -mb-px': openToTop,
-            },
-          )}
-          role="listbox"
-          id="dropdown-listbox"
-        >
-          {filteredOptions.map((option) => {
-            const label = translateLabel(option.name);
-            const selected = option.id === selectedVal;
-            const classes = optionVariantClasses[variant];
+      {isOpen &&
+        createPortal(
+          <div
+            ref={menuRef}
+            className={cn(
+              'pointer-events-auto fixed z-[1000] mt-1 box-border overflow-y-auto rounded-lg text-p scrollbar-thin',
+              variantClasses[variant],
+            )}
+            style={{
+              maxHeight: MENU_MAX_HEIGHT,
+              top: menuPosition.top,
+              left: menuPosition.left,
+              width: menuPosition.width,
+            }}
+            role="listbox"
+            id="dropdown-listbox"
+            onWheel={handleWheel}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+          >
+            {filteredOptions.map((option) => {
+              const label = translateLabel(option.name);
+              const selected = option.id === selectedVal;
+              const classes = optionVariantClasses[variant];
 
-            return (
+              return (
+                <div
+                  key={option.id}
+                  role="option"
+                  aria-selected={selected}
+                  tabIndex={0}
+                  onClick={() => selectOption(option)}
+                  onKeyDown={(e) => handleKeyDown(e, option)}
+                  className={cn(
+                    'box-border block cursor-pointer px-2.5 py-2',
+                    selected ? classes.selected : classes.base,
+                  )}
+                  title={label}
+                >
+                  {label}
+                </div>
+              );
+            })}
+            {filteredOptions.length === 0 && (
               <div
-                key={option.id}
-                role="option"
-                aria-selected={selected}
-                tabIndex={0}
-                onClick={() => selectOption(option)}
-                onKeyDown={(e) => handleKeyDown(e, option)}
-                className={cn(
-                  'box-border block cursor-pointer px-2.5 py-2',
-                  selected ? classes.selected : classes.base,
-                )}
-                title={label}
+                className="box-border block cursor-default px-2.5 py-2"
+                aria-disabled="true"
               >
-                {label}
+                {t('search.no-results')}
               </div>
-            );
-          })}
-          {filteredOptions.length === 0 && (
-            <div
-              className="box-border block cursor-default px-2.5 py-2"
-              aria-disabled="true"
-            >
-              {t('search.no-results')}
-            </div>
-          )}
-        </div>
-      )}
+            )}
+          </div>,
+          document.body,
+        )}
     </div>
   );
 };

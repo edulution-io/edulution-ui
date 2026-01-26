@@ -323,7 +323,7 @@ const GuacamoleFrame: React.FC<GuacamoleFrameProps> = ({
       <div
         id={`guac-display-${frameId}`}
         ref={displayRef}
-        className="relative h-full w-full border-none bg-black outline-none"
+        className="relative h-full w-full border-none bg-cover outline-none"
       />
       {clientState < Client.State.CONNECTED && <LoadingIndicatorDialog isOpen />}
     </ResizableWindow>

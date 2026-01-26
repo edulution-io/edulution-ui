@@ -20,10 +20,11 @@
 import React, { FC } from 'react';
 import { Button } from '@/components/shared/Button';
 import { useTranslation } from 'react-i18next';
-import { LinuxLogo, WindowsLogo } from '@/assets/icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faWindows, faUbuntu } from '@fortawesome/free-brands-svg-icons';
+import { faArrowRotateBackward } from '@fortawesome/free-solid-svg-icons';
 import { Card } from '@/components/shared/Card';
 import VirtualMachineOs from '@libs/desktopdeployment/types/virtual-machines.enum';
-import { MdRefresh } from 'react-icons/md';
 
 interface VdiCardProps {
   title: string;
@@ -48,13 +49,15 @@ const VdiCard: FC<VdiCardProps> = ({ title, availableCount, osType, onSelect, on
         className="absolute right-2 top-2 rounded-full p-1 text-muted-foreground hover:bg-accent-light hover:text-background"
         aria-label={t('common.reload')}
       >
-        <MdRefresh className="h-5 w-5" />
+        <FontAwesomeIcon
+          icon={faArrowRotateBackward}
+          className="h-5 w-5"
+        />
       </button>
       <div className="grid grid-cols-3 gap-4">
         <div className="col-span-1 flex items-center justify-center">
-          <img
-            src={osType === VirtualMachineOs.UBUNTU ? LinuxLogo : WindowsLogo}
-            alt="os_logo"
+          <FontAwesomeIcon
+            icon={osType === VirtualMachineOs.UBUNTU ? faUbuntu : faWindows}
             className="h-12 w-12"
           />
         </div>

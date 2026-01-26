@@ -157,7 +157,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
 
   return (
     <>
-      <p className="text-m font-bold text-primary-foreground">{t('survey.editor.questionSettings.backendLimiters')}</p>
+      <p className="text-m font-bold">{t('survey.editor.questionSettings.backendLimiters')}</p>
       {useBackendLimits ? (
         <p className="b-0 text-sm font-bold text-muted-foreground">{t('survey.editor.questionSettings.nullLimit')}</p>
       ) : (
@@ -167,16 +167,13 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
         <Switch
           checked={!!useBackendLimits}
           onCheckedChange={handleToggleFormula}
-          className={cn(
-            { 'text-muted-foreground': !useBackendLimits },
-            { 'text-primary-foreground': useBackendLimits },
-          )}
+          className={cn({ 'text-muted-foreground': !useBackendLimits })}
         />
         <p className="ml-2 text-sm">{t(`common.${useBackendLimits ? 'enabled' : 'disabled'}`)}</p>
       </div>
       {useBackendLimits ? (
         <>
-          <div className="ml-4 items-center text-foreground">
+          <div className="ml-4 items-center">
             <ScrollableTable
               columns={ChoicesWithBackendLimitTableColumns}
               data={currentChoices.filter((choice) => choice.name !== SHOW_OTHER_ITEM)}
