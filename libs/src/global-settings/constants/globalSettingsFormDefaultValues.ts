@@ -23,10 +23,7 @@ import { GlobalSettingsFormValues } from '@libs/global-settings/types/globalSett
 const globalSettingsFormDefaultValues: GlobalSettingsFormValues = {
   ...defaultValues,
   brandingUploads: {
-    logo: {
-      light: null,
-      dark: null,
-    },
+    logo: null,
     background: {
       light: null,
       dark: null,

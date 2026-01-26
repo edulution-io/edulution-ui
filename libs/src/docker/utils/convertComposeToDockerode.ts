@@ -56,6 +56,15 @@ const convertComposeToDockerode = (compose: DockerCompose): ContainerCreateOptio
 
     const stopTimeOut = service.stop_grace_period ? Number(service.stop_grace_period.split('s')[0]) : undefined;
 
+    const sysctls = service.sysctls?.reduce(
+      (acc, sysctl) => {
+        const [key, value] = sysctl.split('=');
+        acc[key] = value;
+        return acc;
+      },
+      {} as { [key: string]: string },
+    );
+
     const containerOptions: ContainerCreateOptions = {
       name: service.container_name,
       Image: service.image,
@@ -68,6 +77,8 @@ const convertComposeToDockerode = (compose: DockerCompose): ContainerCreateOptio
         PortBindings: portBindings,
         RestartPolicy: service.restart ? { Name: service.restart } : undefined,
         NetworkMode: 'edulution-ui_default',
+        CapAdd: service.cap_add,
+        Sysctls: sysctls,
       },
       ExposedPorts: exposedPorts,
       Labels: {
