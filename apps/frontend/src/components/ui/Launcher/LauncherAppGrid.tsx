@@ -97,7 +97,7 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         variant="dialog"
-        className="mx-auto my-3 block w-[80%] min-w-[250px] rounded-xl border border-ring px-3 py-2 md:mb-2 md:mt-0 md:w-[400px]"
+        className="mx-auto min-w-[250px] focus:border-ring md:w-[400px]"
       />
 
       <div className="mx-auto flex max-h-full w-full flex-wrap justify-center gap-2 overflow-y-auto pb-10 scrollbar-thin md:pb-4">

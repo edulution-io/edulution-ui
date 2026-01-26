@@ -3,12 +3,12 @@
   <head>
     <script>
       (function () {
-        var theme = "dark";
+        var theme = "system";
         try {
           var stored = localStorage.getItem("theme");
           if (stored) {
             var parsed = JSON.parse(stored);
-            theme = parsed.state && parsed.state.theme ? parsed.state.theme : "dark";
+            theme = parsed.state && parsed.state.theme ? parsed.state.theme : "system";
           }
         } catch (e) {}
         if (theme === "system") {
