@@ -32,6 +32,7 @@ import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCatego
 import BULLETIN_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinAttachmentsPath';
 import BULLETIN_TEMP_ATTACHMENTS_PATH from '@libs/bulletinBoard/constants/bulletinTempAttachmentsPath';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import MESSAGE_SOURCE_TYPE from '@libs/notification/constants/messageSourceType';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../common/CustomHttpException';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
@@ -366,16 +367,31 @@ class BulletinBoardService implements OnModuleInit {
     if (isWithinVisibilityPeriod) {
       this.sseService.sendEventToUsers(invitedMembersList, resultingBulletin, SSE_MESSAGE_TYPE.BULLETIN_UPDATED);
 
-      // TODO: #1152
       const title = `Aushang bereit: ${dto.title}`;
+      const summary = `Neuer Aushang in ${dto.category.name}`;
 
-      await this.notificationService.notifyUsernames(invitedMembersList, {
-        title,
-        data: {
-          bulletinId: resultingBulletin.id,
-          type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
+      const bulletinId = String(resultingBulletin.id);
+
+      await this.notificationService.notifyUsernames(
+        invitedMembersList,
+        {
+          title,
+          body: summary,
+          data: {
+            bulletinId,
+            type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
+          },
         },
-      });
+        currentUser
+          ? {
+              sourceType: MESSAGE_SOURCE_TYPE.BULLETIN,
+              sourceId: bulletinId,
+              title,
+              summary,
+              createdBy: currentUser.preferred_username,
+            }
+          : undefined,
+      );
     }
   }
 

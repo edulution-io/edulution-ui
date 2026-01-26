@@ -25,6 +25,7 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import MESSAGE_SOURCE_TYPE from '@libs/notification/constants/messageSourceType';
 import prepareCreator from '@libs/survey/utils/prepareCreator';
 import SseMessageType from '@libs/common/types/sseMessageType';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
@@ -244,20 +245,30 @@ class SurveysService implements OnModuleInit {
           ? SSE_MESSAGE_TYPE.SURVEY_CREATED
           : SSE_MESSAGE_TYPE.SURVEY_UPDATED;
 
-      // TODO: #1152
       const actionName = action === SSE_MESSAGE_TYPE.SURVEY_CREATED ? 'erstellt' : 'aktualisiert';
 
       const title = `Umfrage ${survey.formula.title}: ${actionName}`;
-      const body = `Die Umfrage "${survey.formula.title}" wurde soeben ${actionName}.`;
+      const summary = `Die Umfrage "${survey.formula.title}" wurde soeben ${actionName}.`;
+      const surveyId = String(survey.id);
 
-      await this.notificationService.notifyUsernames(invitedMembersList, {
-        title,
-        body,
-        data: {
-          surveyId: survey.id,
-          type: eventType,
+      await this.notificationService.notifyUsernames(
+        invitedMembersList,
+        {
+          title,
+          body: summary,
+          data: {
+            surveyId,
+            type: eventType,
+          },
         },
-      });
+        {
+          sourceType: MESSAGE_SOURCE_TYPE.SURVEY,
+          sourceId: surveyId,
+          title,
+          summary,
+          createdBy: survey.creator.username,
+        },
+      );
     }
   };
 

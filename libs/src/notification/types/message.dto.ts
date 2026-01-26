@@ -17,21 +17,34 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Global, Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import NotificationsService from './notifications.service';
-import { Message, MessageSchema } from './message.schema';
-import { UserMessage, UserMessageSchema } from './userMessage.schema';
+import { MessageSourceType } from '@libs/notification/constants/messageSourceType';
+import { PushNotificationPriority } from '@libs/notification/constants/pushNotificationPriority';
+import { PushNotificationInterruptionLevel } from '@libs/notification/constants/pushNotificationInterruptionLevel';
 
-@Global()
-@Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: Message.name, schema: MessageSchema },
-      { name: UserMessage.name, schema: UserMessageSchema },
-    ]),
-  ],
-  providers: [NotificationsService],
-  exports: [NotificationsService],
-})
-export default class NotificationsModule {}
+class MessageDto {
+  id: string;
+
+  sourceType: MessageSourceType;
+
+  sourceId: string;
+
+  title: string;
+
+  summary: string;
+
+  body?: string;
+
+  priority?: PushNotificationPriority;
+
+  interruptionLevel?: PushNotificationInterruptionLevel;
+
+  channelId?: string;
+
+  data?: Record<string, unknown>;
+
+  createdAt: Date;
+
+  createdBy: string;
+}
+
+export default MessageDto;

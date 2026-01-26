@@ -17,21 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Global, Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import NotificationsService from './notifications.service';
-import { Message, MessageSchema } from './message.schema';
-import { UserMessage, UserMessageSchema } from './userMessage.schema';
+const MESSAGE_SOURCE_TYPE = {
+  BULLETIN: 'bulletin',
+  SURVEY: 'survey',
+  CONFERENCE: 'conference',
+} as const;
 
-@Global()
-@Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: Message.name, schema: MessageSchema },
-      { name: UserMessage.name, schema: UserMessageSchema },
-    ]),
-  ],
-  providers: [NotificationsService],
-  exports: [NotificationsService],
-})
-export default class NotificationsModule {}
+export type MessageSourceType = (typeof MESSAGE_SOURCE_TYPE)[keyof typeof MESSAGE_SOURCE_TYPE];
+
+export default MESSAGE_SOURCE_TYPE;

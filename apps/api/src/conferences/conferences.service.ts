@@ -29,6 +29,7 @@ import CreateConferenceDto from '@libs/conferences/types/create-conference.dto';
 import BbbResponseDto from '@libs/conferences/types/bbb-api/bbb-response.dto';
 import ConferenceRole from '@libs/conferences/types/conference-role.enum';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import MESSAGE_SOURCE_TYPE from '@libs/notification/constants/messageSourceType';
 import APPS from '@libs/appconfig/constants/apps';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import CONFERENCES_SYNC_INTERVAL_MS from '@libs/conferences/constants/conferencesSyncInterval';
@@ -221,16 +222,27 @@ class ConferencesService implements OnModuleInit {
         conference.invitedAttendees,
       );
 
-      // TODO: #1152
+      const title = `Konferenz gestartet: ${conference.name}`;
+      const summary = `Die Konferenz "${conference.name}" wurde gestartet.`;
 
-      await this.notificationService.notifyUsernames(invitedMembersList, {
-        title: `Konferenz gestartet: ${conference.name}`,
-        body: `Die Konferenz "${conference.name}" wurde gestartet.`,
-        data: {
-          meetingID: conference.meetingID,
-          type: 'conference_started',
+      await this.notificationService.notifyUsernames(
+        invitedMembersList,
+        {
+          title,
+          body: summary,
+          data: {
+            meetingID: conference.meetingID,
+            type: 'conference_started',
+          },
         },
-      });
+        {
+          sourceType: MESSAGE_SOURCE_TYPE.CONFERENCE,
+          sourceId: conference.meetingID,
+          title,
+          summary,
+          createdBy: conference.creator.username,
+        },
+      );
 
       const publicConferencesSubscriber = conference.meetingID;
       this.sseService.sendEventToUsers(
