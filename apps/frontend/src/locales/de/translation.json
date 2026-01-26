@@ -504,6 +504,21 @@
       "aboutDays_other": "etwa {{count}} Tage verbleibend",
       "moreThanDays_one": "mehr als {{count}} Tag verbleibend",
       "moreThanDays_other": "mehr als {{count}} Tage verbleibend"
+    },
+
+    "webdavInfo": {
+      "title": "WebDAV-Zugang",
+      "description": "Verwende diese URL, um dich mit deinen Dateien über WebDAV-Clients zu verbinden",
+      "url": "WebDAV-URL",
+      "username": "Benutzername",
+      "passwordHint": "Verwende dein Anmeldepasswort zur Authentifizierung",
+      "tutorialsTitle": "Anleitungen",
+      "tutorials": {
+        "nextcloud": "Nextcloud Desktop-Client",
+        "windows": "Windows Datei-Explorer",
+        "macos": "macOS Finder",
+        "linux": "Linux Dateimanager"
+      }
     }
   },
   "forums": {
