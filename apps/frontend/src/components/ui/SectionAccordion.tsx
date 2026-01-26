@@ -40,14 +40,14 @@ interface SectionAccordionItemProps {
   variant?: 'default' | 'transparent';
 }
 
-const getChildIds = (children: React.ReactNode): string[] => {
-  const ids: string[] = [];
+const getSections = (children: React.ReactNode): { id: string; label: string }[] => {
+  const sections: { id: string; label: string }[] = [];
   React.Children.forEach(children, (child) => {
     if (React.isValidElement<SectionAccordionItemProps>(child) && child.props.id) {
-      ids.push(child.props.id);
+      sections.push({ id: child.props.id, label: child.props.label });
     }
   });
-  return ids;
+  return sections;
 };
 
 const SectionAccordion: React.FC<SectionAccordionProps> = ({
@@ -56,14 +56,20 @@ const SectionAccordion: React.FC<SectionAccordionProps> = ({
   defaultOpenAll = false,
   className,
 }) => {
-  const { sectionToOpen, clearOpenRequest } = useSubMenuStore();
+  const { sectionToOpen, clearOpenRequest, setSections } = useSubMenuStore();
+  const sections = getSections(children);
 
   const [openItems, setOpenItems] = useState<string[]>(() => {
     if (defaultOpenAll) {
-      return getChildIds(children);
+      return sections.map((s) => s.id);
     }
     return defaultOpen;
   });
+
+  useEffect(() => {
+    setSections(sections);
+    return () => setSections([]);
+  }, [JSON.stringify(sections), setSections]);
 
   useEffect(() => {
     if (!sectionToOpen) return;
@@ -116,13 +122,8 @@ const SectionAccordionItem: React.FC<SectionAccordionItemProps> = ({
   className,
   variant = 'default',
 }) => {
-  const { registerSection, unregisterSection, activeSection } = useSubMenuStore();
+  const activeSection = useSubMenuStore((state) => state.activeSection);
   const isHighlighted = activeSection === id;
-
-  useEffect(() => {
-    registerSection({ id, label });
-    return () => unregisterSection(id);
-  }, [id, label, registerSection, unregisterSection]);
 
   return (
     <Item

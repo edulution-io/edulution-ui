@@ -28,8 +28,7 @@ interface SubMenuStore {
   sections: SubMenuItem[];
   activeSection: string | null;
   sectionToOpen: string | null;
-  registerSection: (section: SubMenuItem) => void;
-  unregisterSection: (id: string) => void;
+  setSections: (sections: SubMenuItem[]) => void;
   setActiveSection: (id: string | null) => void;
   requestOpenSection: (id: string) => void;
   clearOpenRequest: () => void;
@@ -39,20 +38,7 @@ const useSubMenuStore = create<SubMenuStore>((set) => ({
   sections: [],
   activeSection: null,
   sectionToOpen: null,
-  registerSection: (section) =>
-    set((state) => {
-      const existingIndex = state.sections.findIndex((s) => s.id === section.id);
-      if (existingIndex >= 0) {
-        const newSections = [...state.sections];
-        newSections[existingIndex] = section;
-        return { sections: newSections };
-      }
-      return { sections: [...state.sections, section] };
-    }),
-  unregisterSection: (id) =>
-    set((state) => ({
-      sections: state.sections.filter((s) => s.id !== id),
-    })),
+  setSections: (sections) => set({ sections }),
   setActiveSection: (id) => set({ activeSection: id }),
   requestOpenSection: (id) => set({ sectionToOpen: id, activeSection: id }),
   clearOpenRequest: () => set({ sectionToOpen: null }),

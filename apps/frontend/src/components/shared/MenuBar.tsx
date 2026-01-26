@@ -235,7 +235,7 @@ const MenuBar: React.FC = () => {
                       <FontAwesomeIcon
                         icon={faChevronDown}
                         className={cn(
-                          'h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200',
+                          'h-4 w-4 shrink-0 text-white transition-transform duration-200',
                           isExpanded && 'rotate-180',
                         )}
                       />
