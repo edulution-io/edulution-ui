@@ -22,7 +22,7 @@ import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { faFilePdf, faBackward } from '@fortawesome/free-solid-svg-icons';
+import { faRotateLeft, faFilePdf, faBackward } from '@fortawesome/free-solid-svg-icons';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -167,7 +167,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     const survey = form.getValues();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, formula, createdAt, saveNo, expires, answers, saveAsTemplate, ...remainingSurvey } = survey;
-    const creationDate = selectedTemplate?.template.createdAt ?? new Date();
+    const creationDate = selectedTemplate?.createdAt ?? new Date();
     const rawFormula = creator.JSON as SurveyFormula;
     const processedFormula: SurveyFormula = resetSurveyIdFromFormulasBackendLimiters(rawFormula, id);
     await uploadTemplate({
@@ -216,6 +216,11 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
 
   const config: FloatingButtonsBarConfig = {
     buttons: [
+      {
+        icon: faRotateLeft,
+        text: t('common.back'),
+        onClick: () => resetSurveyEditorPage(),
+      },
       SaveButton(() => setIsOpenSaveSurveyDialog(true)),
       {
         icon: faBackward,

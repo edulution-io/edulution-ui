@@ -48,6 +48,9 @@ export class SurveysTemplate {
 
   @Prop({ default: ['linuxmuster'] })
   deploymentTargets: string[];
+
+  @Prop({ default: Date.now, required: false })
+  createdAt?: Date;
 }
 
 const SurveysTemplateSchema = SchemaFactory.createForClass(SurveysTemplate);

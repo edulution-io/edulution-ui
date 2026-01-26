@@ -30,4 +30,5 @@ export interface SurveyTemplateDto {
   isActive?: boolean;
   isDefaultTemplate?: boolean;
   accessGroups?: MultipleSelectorGroup[];
+  createdAt?: Date;
 }
