@@ -91,7 +91,15 @@ const getSurveyTemplateFormSchema = () =>
     name: z.string().optional(),
     isActive: z.boolean().optional(),
     isDefaultTemplate: z.boolean().optional(),
-    accessGroups: z.array(z.object({})).optional(),
+    accessGroups: z
+      .array(
+        z.object({
+          value: z.string(),
+          label: z.string(),
+          path: z.string(),
+        }),
+      )
+      .optional(),
   });
 
 export default getSurveyTemplateFormSchema;

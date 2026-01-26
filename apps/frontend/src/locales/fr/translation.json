@@ -655,7 +655,7 @@
         "submit": "Enregistrer le modèle de sondage",
         "name": {
           "label": "Nom du modèle",
-          "placeholder": "Entrez un nom pour le modèle"
+          "placeholder": "Le titre du sondage sera utilisé comme nom de modèle si ce champ est laissé vide."
         },
         "accessGroups": {
           "label": "Groupes d'accès",

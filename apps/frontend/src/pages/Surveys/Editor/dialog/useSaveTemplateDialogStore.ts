@@ -73,16 +73,11 @@ const useSaveTemplateDialogStore = create<SaveTemplateDialogStore>((set) => ({
   uploadTemplate: async (template: SurveyTemplateDto): Promise<SurveyTemplateDto | null> => {
     set({ isSubmitting: true });
     try {
-      const surveyTemplate = {
-        ...template,
-        name: template.name,
-        accessGroups: template.accessGroups,
-      };
-      const result = await eduApi.post<string>(SURVEY_TEMPLATES_ENDPOINT, surveyTemplate);
-      const newTemplate = { ...surveyTemplate, name: result.data };
-      if (newTemplate) {
+      const result = await eduApi.post<SurveyTemplateDto>(SURVEY_TEMPLATES_ENDPOINT, template);
+      const { data } = result || {};
+      if (data) {
         toast.success(t('survey.template.uploadSuccess'));
-        return newTemplate;
+        return data;
       }
       return null;
     } catch (error) {

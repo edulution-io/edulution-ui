@@ -750,7 +750,7 @@
         "submit": "Vorlage speichern",
         "name": {
           "label": "Name der Vorlage",
-          "placeholder": "Gib einen Namen für die Vorlage ein"
+          "placeholder": "Der Umfragentitel wird als Vorlagenname verwendet, sollte dieses Feld leer bleiben."
         },
         "accessGroups": {
           "label": "Zugriffsgruppen",

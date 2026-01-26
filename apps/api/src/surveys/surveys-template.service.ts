@@ -100,7 +100,18 @@ class SurveysTemplateService implements OnModuleInit {
     const adminGroups = await this.globalSettingsService.getAdminGroupsFromCache();
     const isAdmin = getIsAdmin(ldapGroups, adminGroups);
     const documents = await this.surveyTemplateModel
-      .find(isAdmin ? {} : { isActive: true, 'accessGroups.path': { $in: ldapGroups } })
+      .find(
+        isAdmin
+          ? {}
+          : {
+              isActive: true,
+              $or: [
+                { accessGroups: { $size: 0 } },
+                { accessGroups: { $exists: false } },
+                { 'accessGroups.path': { $in: ldapGroups } },
+              ],
+            },
+      )
       .sort({ name: 1 })
       .exec();
     return res.status(HttpStatus.OK).json(documents);

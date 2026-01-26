@@ -32,20 +32,7 @@ const SaveTemplateDialogBody = () => {
 
   const { searchGroups } = useGroupStore();
 
-  const { isSubmitting, accessGroups, setAccessGroups, name, setName } = useSaveTemplateDialogStore();
-
-  const handleGroupsChange = (newGroups: MultipleSelectorGroup[]) => {
-    const filteredCurrentGroups = accessGroups.filter((currentGroup) =>
-      newGroups.some((newGroup) => newGroup.value === currentGroup.value),
-    );
-    const combinedGroups = [
-      ...filteredCurrentGroups,
-      ...newGroups.filter(
-        (newGroup) => !filteredCurrentGroups.some((currentGroup) => currentGroup.value === newGroup.value),
-      ),
-    ];
-    setAccessGroups(combinedGroups);
-  };
+  const { isSubmitting, name, setName, accessGroups, setAccessGroups } = useSaveTemplateDialogStore();
 
   if (isSubmitting) {
     return (
@@ -68,9 +55,9 @@ const SaveTemplateDialogBody = () => {
       />
       <Label>{t('survey.editor.saveTemplate.accessGroups.label')}</Label>
       <AsyncMultiSelect<MultipleSelectorGroup>
-        value={accessGroups || []}
+        value={accessGroups}
         onSearch={searchGroups}
-        onChange={(groups) => handleGroupsChange(groups)}
+        onChange={(groups) => setAccessGroups(groups)}
         placeholder={t('search.type-to-search')}
       />
     </>
