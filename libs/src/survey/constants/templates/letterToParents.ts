@@ -132,7 +132,7 @@ const letterToParents = {
     isPublic: false,
     canUpdateFormerAnswer: false,
   },
-  accessibleByRoles: [],
+  accessGroups: [],
   deploymentTargets: ['linuxmuster'],
 };
 

@@ -273,7 +273,7 @@ const parentTeacherConference = {
     isPublic: false,
     canUpdateFormerAnswer: true,
   },
-  accessibleByRoles: [],
+  accessGroups: [],
   deploymentTargets: ['linuxmuster'],
 };
 

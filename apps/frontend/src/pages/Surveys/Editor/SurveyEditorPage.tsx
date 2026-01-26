@@ -22,7 +22,7 @@ import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { faRotateLeft, faFilePdf, faBackward } from '@fortawesome/free-solid-svg-icons';
+import { faFileLines, faFilePdf, faBackward } from '@fortawesome/free-solid-svg-icons';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
@@ -41,6 +41,7 @@ import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingBut
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
 import createSurveyCreatorObject from '@/pages/Surveys/Editor/createSurveyCreatorObject';
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
+import useSaveTemplateDialogStore from '@/pages/Surveys/Editor/dialog/useSaveTemplateDialogStore';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
 import QuestionsContextMenu from '@/pages/Surveys/Editor/dialog/QuestionsContextMenu';
@@ -65,7 +66,13 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     resetStoredSurvey,
     uploadFile,
   } = useSurveyEditorPageStore();
-  const { reset: resetTemplateStore, template, uploadTemplate } = useSurveyTemplateStore();
+  const { reset: resetTemplateStore, template } = useSurveyTemplateStore();
+  const {
+    reset: resetSaveTemplateDialogStore,
+    isOpenSaveTemplateDialog,
+    setIsOpenSaveTemplateDialog,
+    uploadTemplate,
+  } = useSaveTemplateDialogStore();
   const {
     reset: resetQuestionsContextMenu,
     setIsOpenQuestionContextMenu,
@@ -84,6 +91,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     resetStoredSurvey();
     resetEditorPage();
     resetTemplateStore();
+    resetSaveTemplateDialogStore();
     resetQuestionsContextMenu();
   };
 
@@ -171,11 +179,11 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     const rawFormula = creator.JSON as SurveyFormula;
     const processedFormula: SurveyFormula = resetSurveyIdFromFormulasBackendLimiters(rawFormula, id);
     await uploadTemplate({
-      id: template?.template.id,
+      id: template?.id,
       template: {
+        ...remainingSurvey,
         formula: processedFormula,
         createdAt: creationDate,
-        ...remainingSurvey,
       },
     });
     setIsOpenSaveSurveyDialog(false);
@@ -217,9 +225,9 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
   const config: FloatingButtonsBarConfig = {
     buttons: [
       {
-        icon: faRotateLeft,
-        text: t('common.back'),
-        onClick: () => resetSurveyEditorPage(),
+        icon: faFileLines,
+        text: t('survey.editor.templates'),
+        onClick: () => setIsOpenSaveTemplateDialog(!isOpenSaveTemplateDialog),
       },
       SaveButton(() => setIsOpenSaveSurveyDialog(true)),
       {

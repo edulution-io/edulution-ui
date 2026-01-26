@@ -31,9 +31,6 @@ interface SurveyTemplateStore {
   isOpenTemplatePreview: boolean;
   setIsOpenTemplatePreview: (state: boolean) => void;
 
-  uploadTemplate: (template: SurveyTemplateDto) => Promise<void>;
-  isSubmitting: boolean;
-
   isOpenTemplateConfirmDeletion: boolean;
   setIsOpenTemplateConfirmDeletion: (state: boolean) => void;
   deleteTemplate: (templateId: string) => Promise<void>;
@@ -52,7 +49,6 @@ const SurveyTemplateStoreInitialState = {
   isOpenTemplateConfirmDeletion: false,
   template: undefined,
   templates: [],
-  isSubmitting: false,
   isLoading: false,
   error: undefined,
 };
@@ -78,34 +74,20 @@ const useSurveyTemplateStore = create<SurveyTemplateStore>((set) => ({
 
   setTemplate: (template?: SurveyTemplateDto) => set({ template }),
 
-  uploadTemplate: async (surveyTemplateDto: SurveyTemplateDto): Promise<void> => {
-    set({ isSubmitting: true });
-    try {
-      const result = await eduApi.post<SurveyTemplateDto>(SURVEY_TEMPLATES_ENDPOINT, surveyTemplateDto);
-      set({ template: result.data });
-      toast.success(t('survey.editor.template.upload.success'));
-    } catch (error) {
-      handleApiError(error, set);
-      set({ template: undefined });
-    } finally {
-      set({ isSubmitting: false });
-    }
-  },
-
   setIsOpenTemplateConfirmDeletion: (state: boolean) => set({ isOpenTemplateConfirmDeletion: state }),
 
   deleteTemplate: async (templateId: string): Promise<void> => {
     if (!templateId) {
       return;
     }
-    set({ isSubmitting: true });
+    set({ isLoading: true });
     try {
       await eduApi.delete(`${SURVEY_TEMPLATES_ENDPOINT}/${templateId}`);
       toast.success(t('survey.editor.template.deletion.success'));
     } catch (error) {
       handleApiError(error, set);
     } finally {
-      set({ isSubmitting: false });
+      set({ isLoading: false });
     }
   },
 
@@ -113,14 +95,14 @@ const useSurveyTemplateStore = create<SurveyTemplateStore>((set) => ({
     if (!templateId) {
       return;
     }
-    set({ isSubmitting: true });
+    set({ isLoading: true });
     try {
       await eduApi.patch<SurveyTemplateDto>(`${SURVEY_TEMPLATES_ENDPOINT}/${templateId}/${state}`);
       toast.success(t('survey.editor.template.upload.success'));
     } catch (error) {
       handleApiError(error, set);
     } finally {
-      set({ isSubmitting: false });
+      set({ isLoading: false });
     }
   },
 }));
