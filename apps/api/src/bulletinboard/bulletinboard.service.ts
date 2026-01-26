@@ -369,13 +369,17 @@ class BulletinBoardService implements OnModuleInit {
       // TODO: #1152
       const title = `Aushang bereit: ${dto.title}`;
 
-      await this.notificationService.notifyUsernames(invitedMembersList, {
-        title,
-        data: {
-          bulletinId: resultingBulletin.id,
-          type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
+      await this.notificationService.notifyUsernames(
+        invitedMembersList,
+        {
+          title,
+          data: {
+            bulletinId: resultingBulletin.id,
+            type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
+          },
         },
-      });
+        currentUser?.preferred_username,
+      );
     }
   }
 
