@@ -27,7 +27,6 @@ import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTempl
 import SurveyEditorTemplateCard from '@/pages/Surveys/Editor/SurveyEditorTemplateCard';
 import SurveyEditorTemplatePreview from '@/pages/Surveys/Editor/SurveyEditorTemplatePreview';
 import Input from '@/components/shared/Input';
-import useLdapGroups from '@/hooks/useLdapGroups';
 
 interface SurveyEditorTemplateGridProps {
   surveyCreator: AttendeeDto;
@@ -39,8 +38,6 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
   const { templates, fetchTemplates, isOpenTemplatePreview } = useSurveyTemplateStore();
 
   const [search, setSearch] = useState('');
-
-  const { isSuperAdmin } = useLdapGroups();
 
   useEffect(() => {
     void fetchTemplates();
@@ -76,12 +73,6 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
     return filtered;
   }, [templates, search]);
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-    }
-  };
-
   return (
     <>
       <Input
@@ -89,19 +80,10 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
         aria-label={t('survey.editor.template.searchPlaceholder')}
         value={search}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
-        onKeyDown={handleKeyDown}
         variant="default"
         width="auto"
       />
-      <div
-        className={cn(
-          'space-2 flex w-full grid-cols-[repeat(auto-fit,minmax(8rem,auto))] flex-wrap gap-2 overflow-y-auto scrollbar-thin md:grid-cols-[repeat(auto-fit,minmax(12rem,auto))]',
-          {
-            'grid-cols-[repeat(auto-fit,minmax(20rem,auto))] sm:grid-cols-[repeat(auto-fit,minmax(14rem,auto))] md:grid-cols-[repeat(auto-fit,minmax(18rem,auto))]':
-              isSuperAdmin,
-          },
-        )}
-      >
+      <div className={cn('space-2 flex w-full flex-wrap gap-2 overflow-y-auto scrollbar-thin')}>
         <SurveyEditorTemplateCard
           key="create-new-card"
           creator={surveyCreator}

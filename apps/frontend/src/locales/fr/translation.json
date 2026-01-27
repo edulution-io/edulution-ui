@@ -637,7 +637,7 @@
         "save": "Enregistrer le modèle",
         "noTemplates": "Aucun modèle disponible",
         "noSearchResults": "Aucun modèle trouvé",
-        "searchPlaceholder": "Tapez pour filtrer les modèles...",
+        "searchPlaceholder": "Tapez pour filtrer les modèles par nom ...",
         "preview": "Aperçu du modèle",
         "upload": {
           "success": "Modèle enregistré avec succès",

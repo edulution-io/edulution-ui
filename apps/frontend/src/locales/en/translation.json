@@ -730,7 +730,7 @@
         "save": "Save template",
         "noTemplates": "No templates available",
         "noSearchResults": "No templates found",
-        "searchPlaceholder": "Type to filter templates...",
+        "searchPlaceholder": "Type to filter templates by name ...",
         "preview": "Preview",
         "upload": {
           "success": "Template saved successfully",

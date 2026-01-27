@@ -115,7 +115,7 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
       {!surveyTemplate && (
         <FontAwesomeIcon
           icon={faFileCirclePlus}
-          className="h-12 w-12 md:h-14 md:w-14"
+          className="my-2 h-12 w-12 md:h-14 md:w-14"
         />
       )}
 
@@ -137,7 +137,7 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
             </Button>
           )}
           <Button
-            className="cursor-pointer"
+            className="rounded-full border-none px-1 py-2"
             onClick={handleOpenPreview}
             variant="btn-outline"
             size="sm"
@@ -145,20 +145,20 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
           >
             <FontAwesomeIcon
               icon={faEye}
-              className="h-4 w-4"
+              className="h-6 w-6"
             />
           </Button>
           {isSuperAdmin && !surveyTemplate?.isDefaultTemplate && (
             <Button
-              className="cursor-pointer rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
+              className="rounded-full border-none px-1 py-2"
               onClick={handleOpenConfirmDeletion}
-              variant="btn-attention"
+              variant="btn-outline"
               size="sm"
               aria-label={t('common.delete')}
             >
               <FontAwesomeIcon
                 icon={DeleteIcon}
-                className="h-4 w-4"
+                className="h-5 w-5"
               />
             </Button>
           )}
