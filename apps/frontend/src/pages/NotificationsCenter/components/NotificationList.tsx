@@ -22,13 +22,15 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInbox } from '@fortawesome/free-solid-svg-icons';
 import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto';
+import cn from '@libs/common/utils/className';
 import NotificationItem from '@/pages/NotificationsCenter/components/NotificationItem';
 
 interface NotificationListProps {
   notifications: InboxNotificationDto[];
+  className?: string;
 }
 
-const NotificationList = ({ notifications }: NotificationListProps) => {
+const NotificationList = ({ notifications, className }: NotificationListProps) => {
   const { t } = useTranslation();
 
   if (notifications.length === 0) {
@@ -46,7 +48,7 @@ const NotificationList = ({ notifications }: NotificationListProps) => {
   }
 
   return (
-    <div className="flex h-full flex-col gap-3 overflow-y-auto pb-20 scrollbar-thin">
+    <div className={cn('flex h-full flex-col gap-3 overflow-y-auto pb-20 scrollbar-thin', className)}>
       {notifications.map((notification) => (
         <NotificationItem
           key={notification.id}

@@ -27,7 +27,6 @@ import useUserSettingsMenuConfig from '@/pages/UserSettings/useUserSettingsMenu'
 import useSurveysPageMenu from '@/pages/Surveys/useSurveysPageMenu';
 import useFileSharingMenuConfig from '@/pages/FileSharing/useFileSharingMenuConfig';
 import useClassManagementMenu from '@/pages/ClassManagement/useClassManagementMenu';
-import useNotificationsCenterMenuConfig from '@/pages/NotificationsCenter/useNotificationsCenterMenuConfig';
 import type TApps from '@libs/appconfig/types/appsType';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import MenuItem from '@libs/menubar/menuItem';
@@ -44,7 +43,6 @@ const useMenuBarConfig = (): MenuBarEntry => {
   const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
   const SURVEYS_MENUBAR_CONFIG = useSurveysPageMenu();
   const CLASS_MANAGEMENT_MENUBAR_CONFIG = useClassManagementMenu();
-  const NOTIFICATIONSCENTER_MENUBAR_CONFIG = useNotificationsCenterMenuConfig();
 
   const menuBarConfigSwitch = (): MenuBarEntry => {
     const rootPathName = getFromPathName(pathname, 1);
@@ -70,9 +68,6 @@ const useMenuBarConfig = (): MenuBarEntry => {
       }
       case APPS.CLASS_MANAGEMENT: {
         return CLASS_MANAGEMENT_MENUBAR_CONFIG;
-      }
-      case APPS.NOTIFICATIONSCENTER: {
-        return NOTIFICATIONSCENTER_MENUBAR_CONFIG;
       }
       default: {
         return defaultReturnMenuBarEntry;

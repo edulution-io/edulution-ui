@@ -36,6 +36,7 @@ interface NotificationStore {
   isUnreadCountLoading: boolean;
   isDeleting: boolean;
   isDeleteDialogOpen: boolean;
+  isSheetOpen: boolean;
   error: string | null;
 
   fetchNotifications: (limit?: number, offset?: number) => Promise<void>;
@@ -45,6 +46,7 @@ interface NotificationStore {
   deleteNotification: (notificationId: string) => Promise<void>;
   deleteAllByType: (type: NotificationFilterType) => Promise<void>;
   setIsDeleteDialogOpen: (isOpen: boolean) => void;
+  setIsSheetOpen: (isOpen: boolean) => void;
   reset: () => void;
 }
 
@@ -56,6 +58,7 @@ const initialState = {
   isUnreadCountLoading: false,
   isDeleting: false,
   isDeleteDialogOpen: false,
+  isSheetOpen: false,
   error: null,
 };
 
@@ -175,6 +178,8 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
   },
 
   setIsDeleteDialogOpen: (isOpen: boolean) => set({ isDeleteDialogOpen: isOpen }),
+
+  setIsSheetOpen: (isOpen: boolean) => set({ isSheetOpen: isOpen }),
 
   reset: () => set(initialState),
 }));
