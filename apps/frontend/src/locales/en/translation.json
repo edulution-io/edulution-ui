@@ -777,8 +777,8 @@
       "surveyLogo": {
         "title": "Survey Logo",
         "width": {
-          "label": "Width of the logo in pixels [min 150px]",
-          "placeholder": "0 means that the width is only limited by the available space."
+          "label": "Width of the logo in pixels (min. 150 px)",
+          "placeholder": "Enter the width of the logo in pixels"
         },
         "position": {
           "label": "Position of the logo",

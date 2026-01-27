@@ -671,8 +671,8 @@
       "surveyLogo": {
         "title": "Logo de l'enquête",
         "width": {
-          "label": "Largeur du logo en pixels [min 150px]",
-          "placeholder": "0 signifie que la largeur est uniquement limitée par l'espace disponible."
+          "label": "Largeur du logo en pixels (min. 150 px)",
+          "placeholder": "Entrez la largeur du logo en pixels"
         },
         "position": {
           "label": "Position du logo",

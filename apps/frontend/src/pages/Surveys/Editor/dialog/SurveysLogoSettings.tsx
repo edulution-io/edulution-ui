@@ -41,7 +41,7 @@ const SurveysLogoSettings = ({ surveyCreator }: SurveysLogoSettingsProps) => {
 
   useEffect(() => {
     // eslint-disable-next-line no-param-reassign
-    surveyCreator.survey.logoWidth = logoWidth >= 150 ? `${logoWidth}px` : 'auto';
+    surveyCreator.survey.logoWidth = `${Math.max(logoWidth, 150)}px`;
   }, [logoWidth]);
 
   useEffect(() => {
@@ -58,10 +58,11 @@ const SurveysLogoSettings = ({ surveyCreator }: SurveysLogoSettingsProps) => {
         type="number"
         placeholder={t('survey.editor.surveyLogo.width.placeholder')}
         variant="dialog"
-        value={logoWidth === 0 ? '' : logoWidth}
+        value={logoWidth}
         onChange={(e) => {
-          setLogoWidth(Number(e.target.value) || 0);
+          setLogoWidth(Number(e.target.value) || 150);
         }}
+        min={150}
       />
       <Label>
         <p className="font-bold">{t('survey.editor.surveyLogo.position.label')}</p>

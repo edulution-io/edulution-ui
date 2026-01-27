@@ -779,8 +779,8 @@
       "surveyLogo": {
         "title": "Logo der Umfrage",
         "width": {
-          "label": "Breite des Logos in Pixel [min 150px]",
-          "placeholder": "0 bedeutet, dass die Breite nur von dem vorhandenen Platz beschränkt wird."
+          "label": "Breite des Logos in Pixel (mind. 150 px)",
+          "placeholder": "Gib die Breite des Logos in Pixel an"
         },
         "position": {
           "label": "Position des Logos",
