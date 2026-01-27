@@ -7,7 +7,7 @@
 }
 
 .dark .quill-container {
-  background: var(--muted-dialog);
+  background: var(--accent);
   box-shadow: none;
 }
 
@@ -39,7 +39,7 @@
   left: 50% !important;
   transform: translateX(-50%) !important;
   max-width: 80%;
-  background: var(--muted-dialog) !important;
+  background: var(--accent) !important;
   color: var(--background) !important;
   padding: 8px 12px !important;
   border-radius: 4px !important;
@@ -48,7 +48,7 @@
 }
 
 .ql-snow .ql-tooltip input {
-  background: var(--muted) !important;
+  background: var(--accent) !important;
   color: var(--background) !important;
   padding: 6px 8px !important;
   border: 1px solid rgba(255, 255, 255, 0.3) !important;
@@ -59,12 +59,12 @@
 }
 
 .ql-snow .ql-picker-label {
-  background: var(--muted-dialog) !important;
+  background: var(--accent) !important;
   color: var(--background) !important;
   border: 1px solid #555 !important;
 }
 .ql-snow .ql-picker.ql-expanded .ql-picker-options {
-  background: var(--muted-dialog) !important;
+  background: var(--accent) !important;
   border: 1px solid #555 !important;
 }
 .ql-snow .ql-picker-item {
@@ -72,7 +72,7 @@
 }
 .ql-snow .ql-picker-item:hover,
 .ql-snow .ql-picker .ql-selected {
-  background: var(--muted-dialog) !important;
+  background: var(--accent) !important;
   color: var(--background) !important;
 }
 

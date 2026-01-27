@@ -64,7 +64,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
       <DropdownMenuPortal>
         <DropdownMenuContent
           className={cn(
-            'z-50 max-h-[calc(100vh-300px)] min-w-[8rem] overflow-y-auto rounded-lg border-none bg-overlay p-1 shadow-md',
+            'z-50 max-h-[calc(100vh-300px)] min-w-[8rem] overflow-y-auto rounded-lg border-none bg-accent-light p-1 shadow-md',
             menuContentClassName,
           )}
         >
@@ -98,8 +98,8 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
                   item.onClick?.();
                 }}
                 className={cn(
-                  'flex cursor-pointer items-center space-x-2 rounded-lg px-4 py-2 hover:bg-muted-light',
-                  item.checked ? 'bg-muted' : 'bg-overlay',
+                  'flex cursor-pointer items-center space-x-2 rounded-lg bg-accent-light px-4 py-2 data-[highlighted]:bg-accent',
+                  item.checked && 'bg-accent',
                 )}
               >
                 {item.icon && (
