@@ -24,9 +24,18 @@ import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 import cn from '@libs/common/utils/className';
-import getAppIconClassName from '@/utils/getAppIconClassName';
 import DropZone from '@/components/ui/DropZone';
+import { loadFontAwesomeIcon } from '@/utils/fontAwesomeIcons';
+import IconWrapper from '@/components/shared/IconWrapper';
+import {
+  CUSTOM_UPLOAD_IDENTIFIER,
+  FONT_AWESOME_IDENTIFIER,
+  FONT_AWESOME_BRANDS_IDENTIFIER,
+  ICON_CATEGORY_SOLID,
+  ICON_CATEGORY_BRANDS,
+} from '@libs/ui/constants/icon';
 import defaultIconList from './defaultIconList';
+import FontAwesomeIconGrid from './FontAwesomeIconGrid';
 
 interface AppConfigIconEditorProps {
   currentIcon: string;
@@ -36,14 +45,46 @@ interface AppConfigIconEditorProps {
 const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, onIconChange }) => {
   const { t } = useTranslation();
   const [selectedIcon, setSelectedIcon] = useState<string>(currentIcon);
+  const [displayIconUrl, setDisplayIconUrl] = useState<string>(currentIcon);
 
   useEffect(() => {
     setSelectedIcon(currentIcon);
+    const loadIcon = async () => {
+      if (currentIcon && currentIcon.includes(FONT_AWESOME_IDENTIFIER)) {
+        try {
+          const category = currentIcon.includes(FONT_AWESOME_BRANDS_IDENTIFIER)
+            ? ICON_CATEGORY_BRANDS
+            : ICON_CATEGORY_SOLID;
+          const name = currentIcon.split('/').pop()?.replace('.svg', '') || '';
+          const url = await loadFontAwesomeIcon({ name, category, path: currentIcon });
+          setDisplayIconUrl(url);
+        } catch {
+          setDisplayIconUrl(currentIcon);
+        }
+      } else {
+        setDisplayIconUrl(currentIcon);
+      }
+    };
+    void loadIcon();
   }, [currentIcon]);
 
   const handleSelectDefaultIcon = (icon: string) => {
     setSelectedIcon(icon);
+    setDisplayIconUrl(icon);
     onIconChange(icon);
+  };
+
+  const handleSelectFontAwesomeIcon = async (iconPath: string) => {
+    setSelectedIcon(iconPath);
+    try {
+      const category = iconPath.includes(FONT_AWESOME_BRANDS_IDENTIFIER) ? ICON_CATEGORY_BRANDS : ICON_CATEGORY_SOLID;
+      const name = iconPath.split('/').pop()?.replace('.svg', '') || '';
+      const url = await loadFontAwesomeIcon({ name, category, path: iconPath });
+      setDisplayIconUrl(url);
+      onIconChange(iconPath);
+    } catch (error) {
+      console.error('Failed to load FontAwesome icon', error);
+    }
   };
 
   const handleDrop = useCallback(
@@ -52,8 +93,12 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
       if (file) {
         const reader = new FileReader();
         reader.onloadend = () => {
-          const dataUrl = reader.result as string;
+          let dataUrl = reader.result as string;
+          if (dataUrl.startsWith('data:image/svg+xml;')) {
+            dataUrl = dataUrl.replace('data:image/svg+xml;', `data:image/svg+xml;${CUSTOM_UPLOAD_IDENTIFIER};`);
+          }
           setSelectedIcon(dataUrl);
+          setDisplayIconUrl(dataUrl);
           onIconChange(dataUrl);
         };
         reader.readAsDataURL(file);
@@ -64,41 +109,59 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
 
   const handleDeleteIcon = () => {
     setSelectedIcon('');
+    setDisplayIconUrl('');
     onIconChange('');
   };
 
   const isDefaultIcon = defaultIconList.includes(selectedIcon);
-  const hasCustomIcon = selectedIcon && !isDefaultIcon;
+  const isFontAwesomeIcon = selectedIcon && selectedIcon.includes(FONT_AWESOME_IDENTIFIER);
+  const isEdulutionIcon = selectedIcon && selectedIcon.includes('/edulution/edu_');
+  const hasCustomIcon = selectedIcon && !isDefaultIcon && !isFontAwesomeIcon && !isEdulutionIcon;
 
   return (
     <div className="space-y-4">
       <div>
-        <p className="mb-2 text-sm font-medium">{t('appstore.chooseIcon')}</p>
+        <p className="mb-2 text-sm font-medium">{t('appstore.edulutionIcons')}</p>
         <Card
-          className="grid grid-cols-6 gap-4 p-3 transition-none hover:scale-100"
+          className="overflow-hidden p-0 transition-none hover:scale-100"
           variant="dialog"
         >
-          {defaultIconList.map((icon) => {
-            const iconName = icon.split('/').at(-1);
-            return (
-              <button
-                key={iconName}
-                type="button"
-                onClick={() => handleSelectDefaultIcon(icon)}
-                className={cn(
-                  'rounded-xl border-2 transition-colors hover:border-secondary',
-                  selectedIcon === icon ? 'border-primary' : 'border-transparent',
-                )}
-              >
-                <img
-                  src={icon}
-                  alt={iconName}
-                  className="h-14 w-14 light:icon-light-mode"
-                />
-              </button>
-            );
-          })}
+          <div
+            className="overflow-y-auto scrollbar-thin"
+            style={{ maxHeight: 140 }}
+          >
+            <div className="grid grid-cols-8 gap-2 p-2 sm:grid-cols-10">
+              {defaultIconList.map((icon) => {
+                const iconName = icon.split('/').at(-1);
+                return (
+                  <button
+                    key={iconName}
+                    type="button"
+                    onClick={() => handleSelectDefaultIcon(icon)}
+                    className={cn(
+                      'rounded-lg border-2 transition-colors hover:border-secondary',
+                      selectedIcon === icon ? 'border-primary' : 'border-transparent',
+                    )}
+                  >
+                    <img
+                      src={icon}
+                      alt={iconName}
+                      className="h-11 w-11 light:icon-light-mode"
+                    />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </Card>
+      </div>
+
+      <div>
+        <p className="mb-2 text-sm font-medium">{t('appstore.moreIcons')}</p>
+        <FontAwesomeIconGrid
+          selectedIcon={selectedIcon}
+          onIconSelect={handleSelectFontAwesomeIcon}
+        />
       </div>
 
       <div>
@@ -118,10 +181,12 @@ const AppConfigIconEditor: React.FC<AppConfigIconEditorProps> = ({ currentIcon, 
         <div>
           <p className="mb-2 text-sm font-medium">{t('preview.image')}</p>
           <div className="relative inline-block rounded-xl border border-accent p-3 shadow-sm">
-            <img
-              src={selectedIcon}
+            <IconWrapper
+              iconSrc={displayIconUrl}
               alt={t('preview.image')}
-              className={cn('h-16 w-16 object-contain', isDefaultIcon && getAppIconClassName(selectedIcon))}
+              className="h-16 w-16 object-contain"
+              width={64}
+              height={64}
             />
             {hasCustomIcon && (
               <Button

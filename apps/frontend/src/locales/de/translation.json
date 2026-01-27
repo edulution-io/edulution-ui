@@ -100,7 +100,12 @@
   "appstore": {
     "title": "App-Store",
     "description": "Hier kannst du {{ applicationName }} Apps hinzufügen.",
-    "chooseIcon": "Icon auswählen",
+    "edulutionIcons": "edulution Icons",
+    "moreIcons": "Weitere Icons",
+    "searchIcons": "Icons durchsuchen...",
+    "searchIconsHint": "Tipp: Verwende englische Suchbegriffe (z.B. \"house\" statt \"Haus\")",
+    "noIconsFound": "Keine Icons gefunden",
+    "iconsAvailable": "Icons verfügbar",
     "uploadIcon": "Icon hochladen",
     "dropIconDescription": "Ziehe ein Bild hierher oder klicke, um ein Bild auszuwählen. Unterstützte Formate: SVG, WEBP"
   },
@@ -499,6 +504,21 @@
       "aboutDays_other": "etwa {{count}} Tage verbleibend",
       "moreThanDays_one": "mehr als {{count}} Tag verbleibend",
       "moreThanDays_other": "mehr als {{count}} Tage verbleibend"
+    },
+
+    "webdavInfo": {
+      "title": "WebDAV-Zugang",
+      "description": "Verwende diese URL, um dich mit deinen Dateien über WebDAV-Clients zu verbinden",
+      "url": "WebDAV-URL",
+      "username": "Benutzername",
+      "passwordHint": "Verwende dein Anmeldepasswort zur Authentifizierung",
+      "tutorialsTitle": "Anleitungen",
+      "tutorials": {
+        "nextcloud": "Nextcloud Desktop-Client",
+        "windows": "Windows Datei-Explorer",
+        "macos": "macOS Finder",
+        "linux": "Linux Dateimanager"
+      }
     }
   },
   "forums": {
@@ -1022,7 +1042,8 @@
       "bulletinboard": "Konfiguriere hier die Nutzergruppen, die Zugriff auf die App Info Board haben. Über die Kategorieren kann gesteuert werden, welche Mitteilungen Nutzern angezeigt werden.",
       "forwarding": "Weiterleitung: Einfach den Link zur Webanwendung unter URL eintragen.",
       "frame": "Frame: Einfach den Link zur Webanwendung unter URL eintragen.",
-      "embedded": "Eingebettet: Hier kann eine eigene Webanwendung im Editor erstellt werden."
+      "embedded": "Eingebettet: Hier kann eine eigene Webanwendung im Editor erstellt werden.",
+      "wireguard": "Einrichten und verwalten von WireGuard VPN Verbindungen."
     },
     "globalSettings": {
       "title": "Globale Einstellungen",
@@ -1182,6 +1203,10 @@
             "title": "Löschen nicht möglich",
             "description": "Der WebDAV-Server '{{serverName}}' wird von {{count}} Share(s) verwendet: {{shares}}. Bitte lösche die abhängigen Shares zuerst."
           }
+        },
+        "wireguard": {
+          "title": "WireGuard Peers",
+          "description": "Hier können WireGuard VPN-Peers und Site-to-Site-Verbindungen verwaltet werden."
         },
         "files": {
           "title": "Dateien",
@@ -1382,6 +1407,26 @@
       "title": "Benutzeroberfläche",
       "description": "Hier kannst du Einstellungen zur Benutzeroberfläche vornehmen."
     },
+    "wireguard": {
+      "title": "VPN-Zugang",
+      "description": "Hier kannst du deinen WireGuard VPN-Zugang einsehen und konfigurieren.",
+      "noPeer": "Für deinen Benutzer wurde noch kein WireGuard VPN-Zugang eingerichtet. Bitte wende dich an einen Administrator.",
+      "connectionStatus": "Verbindungsstatus",
+      "connected": "Verbunden",
+      "disconnected": "Nicht verbunden",
+      "lastHandshake": "Letzter Handshake",
+      "received": "Empfangen",
+      "sent": "Gesendet",
+      "connectionDetails": "Verbindungsdetails",
+      "peerName": "Name",
+      "ipAddress": "IP-Adresse",
+      "routes": "Routen",
+      "qrCode": "QR-Code",
+      "qrCodeDescription": "Scanne diesen QR-Code mit der WireGuard App auf deinem Mobilgerät, um die VPN-Verbindung einzurichten.",
+      "configDownload": "Konfigurationsdatei",
+      "configDownloadDescription": "Lade die WireGuard-Konfigurationsdatei herunter, um sie in der WireGuard App auf deinem Computer zu importieren.",
+      "downloadButton": "Konfiguration herunterladen"
+    },
     "addTotp": {
       "title": "Zwei-Faktor-Authentisierung einrichten",
       "qrCodeInstructions": "Den QR-Code mit einer Authenticator App scannen, die TOTP (Time-based One-Time Password) unterstützt.",
@@ -1456,6 +1501,9 @@
     "answers": "Antworten",
     "error": "Fehler",
     "entry": "Eintrag {{index}}",
+    "filter": "Filter",
+    "showHiddenFiles": "Versteckte Dateien anzeigen",
+    "showSystemFiles": "Systemdateien anzeigen",
     "errors": {
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "directoryNotCreated": "Erstellen des Verzeichnisses fehlgeschlagen",
@@ -1718,6 +1766,68 @@
     "historyTitle": "Verlauf",
     "historyNoMore": "Keine weiteren Einträge"
   },
+  "wireguard": {
+    "title": "WIREGUARD",
+    "sidebar": "WireGuard",
+    "description": "WireGuard VPN-Peers und Site-to-Site-Verbindungen verwalten",
+    "name": "Name",
+    "type": "Typ",
+    "ip": "IP-Adresse",
+    "publicKey": "Öffentlicher Schlüssel",
+    "routes": "Routen",
+    "allowedIps": "Erlaubte IPs",
+    "endpoint": "Endpunkt",
+    "status": "Status",
+    "lastHandshake": "Letzter Handshake",
+    "clientPeer": "Client-Peer",
+    "siteToSite": "Site-to-Site",
+    "addPeer": "Peer hinzufügen",
+    "delete": "Löschen",
+    "searchPlaceholder": "Nach Name suchen...",
+    "namePlaceholder": "Peer-Name eingeben",
+    "routesDescription": "Kommagetrennte Liste von Routen (z.B. 0.0.0.0/0, 10.0.0.0/8)",
+    "allowedIpsDescription": "Kommagetrennte Liste erlaubter IP-Bereiche für Site-to-Site-Verbindung",
+    "endpointDescription": "Remote-Endpunkt-Adresse und Port (z.B. vpn.example.com:51820)",
+    "noSelection": "Bitte wähle mindestens einen Peer zum Löschen aus",
+    "deletePeers": "Peers löschen",
+    "confirmDelete": "Soll dieser Peer wirklich gelöscht werden?",
+    "confirmDelete_other": "Sollen diese {{count}} Peers wirklich gelöscht werden?",
+    "deleteSuccess": "Peers erfolgreich gelöscht",
+    "deleteFailed": "Löschen der Peers fehlgeschlagen",
+    "peerCreated": "Client-Peer erfolgreich erstellt",
+    "peersCreated": "{{count}} Client-Peers erfolgreich erstellt",
+    "peersCreatedPartial": "{{successful}} Client-Peers erstellt, {{failed}} fehlgeschlagen",
+    "siteCreated": "Site-to-Site-Verbindung erfolgreich erstellt",
+    "createFailed": "Erstellen des Peers fehlgeschlagen",
+    "qrCode": "QR-Code für {{name}}",
+    "qrCodeAlt": "WireGuard-Konfigurations-QR-Code",
+    "qrCodeFailed": "QR-Code konnte nicht geladen werden",
+    "noQrCode": "Kein QR-Code verfügbar",
+    "peerDetails": "Peer-Details",
+    "showQRCode": "QR-Code anzeigen",
+    "validation": {
+      "nameRequired": "Name ist erforderlich",
+      "allowedIpsRequired": "Erlaubte IPs sind für Site-to-Site-Verbindungen erforderlich"
+    },
+    "errors": {
+      "getPeersFailed": "Peers konnten nicht geladen werden",
+      "createPeerFailed": "Client-Peer konnte nicht erstellt werden",
+      "deletePeerFailed": "Client-Peer konnte nicht gelöscht werden",
+      "getPeerConfigFailed": "Peer-Konfiguration konnte nicht geladen werden",
+      "getPeerQrFailed": "QR-Code konnte nicht geladen werden",
+      "getPeerStatusFailed": "Peer-Status konnte nicht geladen werden",
+      "getPeersStatusFailed": "Peer-Status konnte nicht geladen werden",
+      "restartFailed": "Neustart fehlgeschlagen",
+      "getSitesFailed": "Sites konnten nicht geladen werden",
+      "createSiteFailed": "Site-to-Site-Verbindung konnte nicht erstellt werden",
+      "deleteSiteFailed": "Site-to-Site-Verbindung konnte nicht gelöscht werden",
+      "getSiteConfigFailed": "Site-Konfiguration konnte nicht geladen werden"
+    },
+    "rowSelected": "{{selected}} von {{total}} Peer ausgewählt",
+    "rowsSelected": "{{selected}} von {{total}} Peers ausgewählt",
+    "item": "{{count}} Peer",
+    "items": "{{count}} Peers"
+  },
   "table": {
     "noDataAvailable": "Keine Daten verfügbar"
   },
@@ -1956,7 +2066,7 @@
     "mailImapRejectUnauthorizedTitle": "Nicht zertifizierte Verbindungen ablehnen",
     "mailImapRejectUnauthorizedDescription": "Soll eine Zertifikatsprüfung für diese Verbindung durchgeführt werden?",
     "mailSogoThemeTitle": "Theme",
-    "mailSogoThemeDescription": "Wähle das Theme für die Mail-App. Das Ändern des Themes startet die zugehörigen Container neu.",
+    "mailSogoThemeDescription": "Wähle das Theme für die Mail-App. Das Ändern des Themes startet die zugehörigen Container neu. Die App bietet keine individuelle Theme-Umschaltung. Das Theme wird systemweit für alle Nutzer gesetzt.",
     "mailSogoTheme": {
       "light": "Hell",
       "dark": "Dunkel"
@@ -1993,6 +2103,18 @@
     "EDULUTION_MAIL_HOSTNAME": {
       "title": "Hostname",
       "description": "Hostname des Mailservers. Dieser kann von der edulution Domain abweichen."
+    },
+    "EDU_WG_IPNETWORK": {
+      "title": "IP-Netzwerk",
+      "description": "Das IP-Netzwerk für die VPN-Verbindung (z.B. 10.8.0.0/24)."
+    },
+    "EDU_WG_ADDRESS": {
+      "title": "Adresse",
+      "description": "Die IP-Adresse des VPN-Servers."
+    },
+    "EDU_WG_DNS": {
+      "title": "DNS-Server",
+      "description": "Die DNS-Server-Adresse für die VPN-Verbindung."
     }
   },
   "edulution-manager": {

@@ -220,8 +220,6 @@ const UploadContentBody = () => {
         inactiveText={t('filesharingUpload.dragDropClick')}
         className="mb-4 p-10"
         minHeight="min-h-48"
-        activeClassName="bg-black/30"
-        inactiveClassName="bg-black/20"
       />
 
       <input

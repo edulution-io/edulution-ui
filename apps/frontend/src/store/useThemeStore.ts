@@ -52,7 +52,7 @@ const applyThemeToDOM = (resolvedTheme: ResolvedThemeType) => {
 const useThemeStore = create<ThemeStore>(
   (persist as PersistedThemeStore)(
     (set, get) => ({
-      theme: THEME.dark,
+      theme: THEME.system,
 
       setTheme: (theme) => {
         set({ theme });

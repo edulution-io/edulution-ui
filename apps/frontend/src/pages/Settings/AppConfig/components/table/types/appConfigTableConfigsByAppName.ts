@@ -28,6 +28,8 @@ import { type FileTableStore } from '@libs/appconfig/types/fileTableStore';
 import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import type WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import { type WebdavServerTableStore, type WebdavShareTableStore } from '@libs/appconfig/types/webdavShareTableStore';
+import { type WireguardPeer } from '@libs/wireguard/types/wireguard';
+import { type WireguardTableStore } from '@libs/appconfig/types/wireguardTableStore';
 import type AppConfigTableEntry from './appConfigTableEntry';
 
 type AllowedTableEntry =
@@ -36,7 +38,8 @@ type AllowedTableEntry =
   | AppConfigTableEntry<VeyonProxyItem, VeyonConfigTableStore>
   | AppConfigTableEntry<FileInfoDto, FileTableStore>
   | AppConfigTableEntry<WebdavShareDto, WebdavServerTableStore>
-  | AppConfigTableEntry<WebdavShareDto, WebdavShareTableStore>;
+  | AppConfigTableEntry<WebdavShareDto, WebdavShareTableStore>
+  | AppConfigTableEntry<WireguardPeer, WireguardTableStore>;
 
 type AppConfigTableConfigsByAppName = {
   [APPS.BULLETIN_BOARD]: AppConfigTableEntry<BulletinCategoryResponseDto, BulletinCategoryTableStore>[];
@@ -50,6 +53,10 @@ type AppConfigTableConfigsByAppName = {
     | AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>
     | AppConfigTableEntry<WebdavShareDto, WebdavServerTableStore>
     | AppConfigTableEntry<WebdavShareDto, WebdavShareTableStore>
+  )[];
+  [APPS.WIREGUARD]: (
+    | AppConfigTableEntry<ContainerInfo, DockerContainerTableStore>
+    | AppConfigTableEntry<WireguardPeer, WireguardTableStore>
   )[];
 } & {
   [key: string]: AllowedTableEntry[];

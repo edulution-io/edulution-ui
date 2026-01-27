@@ -95,7 +95,12 @@
   "appstore": {
     "title": "App Store",
     "description": "Ici tu peux ajouter des applications {{ applicationName }}.",
-    "chooseIcon": "Sélectionner l'icône",
+    "edulutionIcons": "edulution Icons",
+    "moreIcons": "Plus d'icônes",
+    "searchIcons": "Rechercher des icônes...",
+    "searchIconsHint": "Astuce: Utilisez des termes de recherche en anglais (p.ex. \"house\" au lieu de \"maison\")",
+    "noIconsFound": "Aucune icône trouvée",
+    "iconsAvailable": "icônes disponibles",
     "uploadIcon": "Icône de téléchargement",
     "dropIconDescription": "Glissez une image ici ou cliquez pour sélectionner une image. Formats pris en charge: SVG, webp"
   },
@@ -413,6 +418,21 @@
       "FileNameRequired": "Le nom du fichier est requis",
       "NewFileNameRequired": "Un nouveau nom de fichier est requis",
       "NameRequired": "Nom requis"
+    },
+
+    "webdavInfo": {
+      "title": "Accès WebDAV",
+      "description": "Utilisez cette URL pour vous connecter à vos fichiers via des clients WebDAV",
+      "url": "URL WebDAV",
+      "username": "Nom d'utilisateur",
+      "passwordHint": "Utilisez votre mot de passe de connexion pour vous authentifier",
+      "tutorialsTitle": "Tutoriels de configuration",
+      "tutorials": {
+        "nextcloud": "Client de bureau Nextcloud",
+        "windows": "Explorateur de fichiers Windows",
+        "macos": "Finder macOS",
+        "linux": "Gestionnaire de fichiers Linux"
+      }
     }
   },
   "forums": {
@@ -892,7 +912,8 @@
       "bulletinboard": "Configurez les groupes d'utilisateurs qui ont accès à l'application Schwarzes Brett. Il est possible de configurer dans les catégories pour contrôler les messages affichés chez les utilisateurs.",
       "forwarding": "Redirection: entrez simplement le lien vers l'application Web sous URL.",
       "frame": "Frame: Entrez simplement le lien vers l'application Web sous URL.",
-      "embedded": "Embedded: Ici, votre propre application Web peut être créée dans l'éditeur."
+      "embedded": "Embedded: Ici, votre propre application Web peut être créée dans l'éditeur.",
+      "wireguard": "Ici, vous pouvez configurer l'accès VPN WireGuard pour les utilisateurs."
     },
     "globalSettings": {
       "title": "Paramètres globaux",
@@ -1038,6 +1059,10 @@
             "title": "Suppression impossible",
             "description": "Le serveur WebDAV « {{serverName}} » est utilisé par {{count}} partage(s) : {{shares}}. Veuillez d'abord supprimer les partages dépendants."
           }
+        },
+        "wireguard": {
+          "title": "Pairs WireGuard",
+          "description": "Gérez ici les pairs VPN WireGuard et les connexions site-à-site."
         },
         "files": {
           "title": "Fichiers",
@@ -1235,6 +1260,26 @@
       "title": "Interface utilisateur",
       "description": "Ici, vous pouvez configurer certains aspects de l'interface utilisateur selon vos préférences."
     },
+    "wireguard": {
+      "title": "Accès VPN",
+      "description": "Ici, vous pouvez consulter et configurer votre accès VPN WireGuard.",
+      "noPeer": "Aucun accès VPN WireGuard n'a encore été configuré pour votre utilisateur. Veuillez contacter un administrateur.",
+      "connectionStatus": "État de la connexion",
+      "connected": "Connecté",
+      "disconnected": "Déconnecté",
+      "lastHandshake": "Dernier handshake",
+      "received": "Reçu",
+      "sent": "Envoyé",
+      "connectionDetails": "Détails de la connexion",
+      "peerName": "Nom",
+      "ipAddress": "Adresse IP",
+      "routes": "Routes",
+      "qrCode": "Code QR",
+      "qrCodeDescription": "Scannez ce code QR avec l'application WireGuard sur votre appareil mobile pour configurer la connexion VPN.",
+      "configDownload": "Fichier de configuration",
+      "configDownloadDescription": "Téléchargez le fichier de configuration WireGuard pour l'importer dans l'application WireGuard sur votre ordinateur.",
+      "downloadButton": "Télécharger la configuration"
+    },
     "addTotp": {
       "title": "Configurer l'authentification à deux facteurs",
       "qrCodeInstructions": "Scannez le code QR avec une application Authenticator qui prend en charge TOTP (mot de passe unique basé sur le temps).",
@@ -1300,6 +1345,9 @@
     "answers": "Répondre",
     "error": "Erreur",
     "entry": "Entrée {{index}}",
+    "filter": "Filtrer",
+    "showHiddenFiles": "Afficher les fichiers cachés",
+    "showSystemFiles": "Afficher les fichiers système",
     "errors": {
       "attachmentUploadFailed": "La pièce jointe n'a pas pu être téléversée",
       "dbAccessFailed": "L'accès à la base de données a échoué",
@@ -1551,6 +1599,68 @@
     "title": "Whiteboard",
     "sidebar": "Whiteboard collaboratif"
   },
+  "wireguard": {
+    "title": "WIREGUARD",
+    "sidebar": "WireGuard",
+    "description": "Gérer les pairs VPN WireGuard et les connexions site-à-site",
+    "name": "Nom",
+    "type": "Type",
+    "ip": "Adresse IP",
+    "publicKey": "Clé publique",
+    "routes": "Routes",
+    "allowedIps": "IPs autorisées",
+    "endpoint": "Point de terminaison",
+    "status": "Statut",
+    "lastHandshake": "Dernier handshake",
+    "clientPeer": "Pair client",
+    "siteToSite": "Site-à-site",
+    "addPeer": "Ajouter un pair",
+    "delete": "Supprimer",
+    "searchPlaceholder": "Rechercher par nom...",
+    "namePlaceholder": "Entrer le nom du pair",
+    "routesDescription": "Liste des routes séparées par des virgules (par ex. 0.0.0.0/0, 10.0.0.0/8)",
+    "allowedIpsDescription": "Liste des plages IP autorisées séparées par des virgules pour la connexion site-à-site",
+    "endpointDescription": "Adresse et port du point de terminaison distant (par ex. vpn.example.com:51820)",
+    "noSelection": "Veuillez sélectionner au moins un pair à supprimer",
+    "deletePeers": "Supprimer les pairs",
+    "confirmDelete": "Voulez-vous vraiment supprimer ce pair?",
+    "confirmDelete_other": "Voulez-vous vraiment supprimer ces {{count}} pairs?",
+    "deleteSuccess": "Pairs supprimés avec succès",
+    "deleteFailed": "Échec de la suppression des pairs",
+    "peerCreated": "Pair client créé avec succès",
+    "peersCreated": "{{count}} pairs clients créés avec succès",
+    "peersCreatedPartial": "{{successful}} pairs clients créés, {{failed}} échoués",
+    "siteCreated": "Connexion site-à-site créée avec succès",
+    "createFailed": "Échec de la création du pair",
+    "qrCode": "Code QR pour {{name}}",
+    "qrCodeAlt": "Code QR de configuration WireGuard",
+    "qrCodeFailed": "Échec du chargement du code QR",
+    "noQrCode": "Aucun code QR disponible",
+    "peerDetails": "Détails du pair",
+    "showQRCode": "Afficher le code QR",
+    "validation": {
+      "nameRequired": "Le nom est requis",
+      "allowedIpsRequired": "Les IPs autorisées sont requises pour les connexions site-à-site"
+    },
+    "errors": {
+      "getPeersFailed": "Échec du chargement des pairs",
+      "createPeerFailed": "Échec de la création du pair client",
+      "deletePeerFailed": "Échec de la suppression du pair client",
+      "getPeerConfigFailed": "Échec du chargement de la configuration du pair",
+      "getPeerQrFailed": "Échec du chargement du code QR",
+      "getPeerStatusFailed": "Échec du chargement du statut du pair",
+      "getPeersStatusFailed": "Échec du chargement du statut des pairs",
+      "restartFailed": "Échec du redémarrage",
+      "getSitesFailed": "Échec du chargement des sites",
+      "createSiteFailed": "Échec de la création de la connexion site-à-site",
+      "deleteSiteFailed": "Échec de la suppression de la connexion site-à-site",
+      "getSiteConfigFailed": "Échec du chargement de la configuration du site"
+    },
+    "rowSelected": "{{selected}} sur {{total}} pair sélectionné",
+    "rowsSelected": "{{selected}} sur {{total}} pairs sélectionnés",
+    "item": "{{count}} pair",
+    "items": "{{count}} pairs"
+  },
   "table": {
     "noDataAvailable": "Aucune donnée disponible"
   },
@@ -1761,7 +1871,7 @@
     "mailImapRejectUnauthorizedTitle": "Rejeter les connexions non certifiées",
     "mailImapRejectUnauthorizedDescription": "Une vérification de certificat doit-il être effectué pour cette connexion?",
     "mailSogoThemeTitle": "Thème",
-    "mailSogoThemeDescription": "Sélectionnez le thème pour l'application Mail. La modification du thème redémarre les conteneurs associés.",
+    "mailSogoThemeDescription": "Sélectionnez le thème pour l'application Mail. La modification du thème redémarre les conteneurs associés. L'application ne propose pas de changement de thème individuel. Le thème est défini à l'échelle du système pour tous les utilisateurs.",
     "mailSogoTheme": {
       "light": "Clair",
       "dark": "Sombre"
@@ -1798,6 +1908,18 @@
     "EDULUTION_MAIL_HOSTNAME": {
       "title": "Nom d'hôte",
       "description": "Nom d'hôte du serveur de messagerie. Cela peut différer du domaine Edulution."
+    },
+    "EDU_WG_IPNETWORK": {
+      "title": "Réseau IP",
+      "description": "Le réseau IP pour la connexion VPN (par ex. 10.8.0.0/24)."
+    },
+    "EDU_WG_ADDRESS": {
+      "title": "Adresse",
+      "description": "L'adresse IP du serveur VPN."
+    },
+    "EDU_WG_DNS": {
+      "title": "Serveur DNS",
+      "description": "L'adresse du serveur DNS pour la connexion VPN."
     }
   },
   "edulution-manager": {

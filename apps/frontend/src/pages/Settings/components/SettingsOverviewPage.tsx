@@ -152,7 +152,7 @@ const SettingsOverviewPage: React.FC = () => {
       <>
         <Tabs
           value={tabValue}
-          className="flex h-full flex-col"
+          className="flex h-full flex-col pt-1"
         >
           <div className="sticky top-0 z-20 backdrop-blur-xl">
             <TabsList

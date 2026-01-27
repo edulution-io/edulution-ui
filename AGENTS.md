@@ -39,6 +39,7 @@
 - Always search the code for existing patterns, functions, classes, types, and constants before creating new ones.
 - Use generic types over unsafe type casting.
 - Migrations MUST always increase the schema version number so later migrations are triggered.
+- Only use @fortawesome/free-solid-svg-icons for icons
 
 ## Testing Guidelines
 

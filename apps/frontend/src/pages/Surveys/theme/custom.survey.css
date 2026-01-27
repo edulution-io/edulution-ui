@@ -18,8 +18,8 @@
 
 .sv-list__item,
 .sv-list__item-body {
-  fill: var(--overlay) !important;
-  background-color: var(--overlay) !important;
+  fill: var(--accent) !important;
+  background-color: var(--accent) !important;
   color: var(--input) !important;
 }
 
@@ -38,8 +38,8 @@
 .sv-list__item-body--hovered,
 .sv-list__item-body--focused,
 .sv-list__item-body--pressed {
-  fill: var(--muted) !important;
-  background-color: var(--muted) !important;
+  fill: var(--accent) !important;
+  background-color: var(--accent) !important;
 }
 
 .sd-title,
@@ -72,7 +72,7 @@
 .sd-comment,
 .sd-dropdown {
   color: var(--input) !important;
-  background-color: var(--overlay) !important;
+  background-color: var(--accent) !important;
 }
 
 .sd-dropdown__value,
@@ -98,7 +98,7 @@
 }
 
 .spg-panel__title--expanded {
-  background-color: var(--muted) !important;
+  background-color: var(--accent) !important;
 }
 
 .spg-checkbox__svg {
@@ -109,7 +109,7 @@
 .spg-search-editor_container {
   height: 56px;
   width: 100%;
-  background: var(--muted) !important;
+  background: var(--accent) !important;
 }
 
 .sv-popup--dropdown-overlay .sv-list__filter {
@@ -162,7 +162,7 @@
 :root.dark .sa-question__select,
 :root.dark .sa-tabulator select,
 :root.dark .sa-tabulator input {
-  background-color: var(--muted) !important;
+  background-color: var(--accent) !important;
   border: none !important;
   box-shadow: none !important;
 }
@@ -170,7 +170,7 @@
 .sa-table__global-filter option,
 .sa-question__select option,
 .sa-tabulator select option {
-  background-color: var(--overlay) !important;
+  background-color: var(--accent) !important;
   color: var(--input) !important;
 }
 
@@ -180,7 +180,7 @@
 :root:not(.dark) .sa-table__global-filter option:checked,
 :root:not(.dark) .sa-question__select option:checked,
 :root:not(.dark) .sa-tabulator select option:checked {
-  background-color: var(--muted) !important;
+  background-color: var(--accent) !important;
   color: var(--input) !important;
 }
 
@@ -203,17 +203,17 @@ span.sa-table__entries-label.sa-table__entries-label--left,
 .tabulator-header,
 .tabulator-row {
   color: var(--input) !important;
-  background-color: var(--overlay) !important;
+  background-color: var(--accent) !important;
 }
 
 .tabulator-row:hover {
-  background-color: var(--muted) !important;
+  background-color: var(--accent) !important;
 }
 
 .tabulator-page,
 .sa-table__btn {
   color: var(--input) !important;
-  background-color: var(--overlay) !important;
+  background-color: var(--accent) !important;
   border-radius: 0.5rem;
   padding: 0.25rem 0.75rem;
 }
@@ -225,13 +225,13 @@ span.sa-table__entries-label.sa-table__entries-label--left,
 
 :root.dark .tabulator-page,
 :root.dark .sa-table__btn {
-  background-color: var(--muted) !important;
+  background-color: var(--accent) !important;
   border: none !important;
 }
 
 .tabulator-page:hover,
 .sa-table__btn:hover {
-  background-color: var(--muted) !important;
+  background-color: var(--accent) !important;
 }
 
 .tabulator-page.active {
