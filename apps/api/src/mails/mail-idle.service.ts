@@ -36,7 +36,9 @@ interface IdleConnection {
   password: string;
   previousMailCount: number;
   idleRestartTimer?: NodeJS.Timeout;
+  reconnectTimer?: NodeJS.Timeout;
   reconnectAttempts: number;
+  isErrorHandled: boolean;
 }
 
 interface ImapConfig {
@@ -52,9 +54,15 @@ const maxConnections = EDUI_MAIL_IDLE_MAX_CONNECTIONS
   ? parseInt(EDUI_MAIL_IDLE_MAX_CONNECTIONS, 10)
   : MAIL_IDLE_CONFIG.DEFAULT_MAX_CONCURRENT_CONNECTIONS;
 
+interface PendingReconnect {
+  timer: NodeJS.Timeout;
+}
+
 @Injectable()
 class MailIdleService implements OnModuleInit, OnModuleDestroy {
   private idleConnections = new Map<string, IdleConnection>();
+
+  private pendingReconnects = new Map<string, PendingReconnect>();
 
   private imapConfig: ImapConfig = {
     host: '',
@@ -133,6 +141,8 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
   }
 
   private async createIdleConnection(username: string, email: string, password: string): Promise<void> {
+    this.pendingReconnects.delete(username);
+
     const client = new ImapFlow({
       host: this.imapConfig.host,
       port: this.imapConfig.port,
@@ -155,16 +165,23 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
       password,
       previousMailCount: 0,
       reconnectAttempts: 0,
+      isErrorHandled: false,
     };
 
     client.on('error', (err: Error) => {
       Logger.error(`IMAP IDLE error for ${username}: ${err.message}`, MailIdleService.name);
-      void this.handleConnectionError(username);
+      if (!connection.isErrorHandled) {
+        connection.isErrorHandled = true;
+        void this.handleConnectionError(username);
+      }
     });
 
     client.on('close', () => {
       Logger.debug(`IMAP connection closed for ${username}`, MailIdleService.name);
-      void this.handleConnectionError(username);
+      if (!connection.isErrorHandled) {
+        connection.isErrorHandled = true;
+        void this.handleConnectionError(username);
+      }
     });
 
     client.on('exists', (data: { path: string; count: number; prevCount: number }) => {
@@ -274,12 +291,14 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
     const { email, password } = connection;
     await this.stopIdle(username);
 
-    setTimeout(() => {
+    const reconnectTimer = setTimeout(() => {
       void this.createIdleConnection(username, email, password).catch((error) => {
         const errorMessage = error instanceof Error ? error.message : String(error);
         Logger.error(`Reconnect failed for ${username}: ${errorMessage}`, MailIdleService.name);
       });
     }, delay);
+
+    this.pendingReconnects.set(username, { timer: reconnectTimer });
   }
 
   async stopIdle(username: string): Promise<void> {
@@ -298,8 +317,19 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
     Logger.log(`IDLE stopped for user: ${username}`, MailIdleService.name);
   }
 
+  private cancelPendingReconnect(username: string): void {
+    const pending = this.pendingReconnects.get(username);
+    if (pending) {
+      clearTimeout(pending.timer);
+      this.pendingReconnects.delete(username);
+      Logger.debug(`Cancelled pending reconnect for ${username}`, MailIdleService.name);
+    }
+  }
+
   @OnEvent(EVENT_EMITTER_EVENTS.SSE_USER_DISCONNECTED)
   async handleUserDisconnected(username: string): Promise<void> {
+    this.cancelPendingReconnect(username);
+
     if (this.idleConnections.has(username)) {
       Logger.debug(`User ${username} disconnected from SSE, stopping IDLE`, MailIdleService.name);
       await this.stopIdle(username);
