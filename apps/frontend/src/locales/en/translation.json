@@ -94,7 +94,26 @@
       "unauthorizedDeleteCategory": "No permission to delete this category",
       "unauthorizedUpdateCategory": "No permission to update this category",
       "attachmentNotFound": "Attachment not found",
-      "attachmentDeletionFailed": "Failed to delete an attachment"
+      "attachmentDeletionFailed": "Failed to delete an attachment",
+      "pushOnlyMissingFields": "Push title and push message are required for 'Push Only' mode"
+    },
+    "pushNotification": "Push Notification",
+    "saveMode": "Save Mode",
+    "saveModes": {
+      "pushAndBulletin": "Push & Bulletin",
+      "bulletinOnly": "Bulletin Only",
+      "pushOnly": "Push Only"
+    },
+    "customPushTitle": "Push Title",
+    "customPushTitlePlaceholder": "Bulletin ready: {{title}}",
+    "customPushBody": "Push Message",
+    "customPushBodyPlaceholder": "New bulletin in {{category}}",
+    "interruptionLevel": "Interruption Level",
+    "interruptionLevels": {
+      "active": "Active",
+      "passive": "Passive",
+      "timeSensitive": "Time-Sensitive",
+      "critical": "Critical"
     }
   },
   "notificationscenter": {

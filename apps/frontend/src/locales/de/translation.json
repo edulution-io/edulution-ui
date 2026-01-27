@@ -94,7 +94,26 @@
       "unauthorizedDeleteCategory": "Keine Berechtigung, um diese Kategorie zu löschen",
       "unauthorizedUpdateCategory": "Keine Berechtigung, um diese Kategorie zu aktualisieren",
       "attachmentNotFound": "Anhang nicht gefunden",
-      "attachmentDeletionFailed": "Löschen eines Anhangs ist fehlgeschlagen"
+      "attachmentDeletionFailed": "Löschen eines Anhangs ist fehlgeschlagen",
+      "pushOnlyMissingFields": "Push-Titel und Push-Nachricht sind für den Modus 'Nur Push' erforderlich"
+    },
+    "pushNotification": "Push-Benachrichtigung",
+    "saveMode": "Speichermodus",
+    "saveModes": {
+      "pushAndBulletin": "Push & Aushang",
+      "bulletinOnly": "Nur Aushang",
+      "pushOnly": "Nur Push"
+    },
+    "customPushTitle": "Push-Titel",
+    "customPushTitlePlaceholder": "Aushang bereit: {{title}}",
+    "customPushBody": "Push-Nachricht",
+    "customPushBodyPlaceholder": "Neuer Aushang in {{category}}",
+    "interruptionLevel": "Unterbrechungsstufe",
+    "interruptionLevels": {
+      "active": "Aktiv",
+      "passive": "Passiv",
+      "timeSensitive": "Zeitkritisch",
+      "critical": "Kritisch"
     }
   },
   "notificationscenter": {

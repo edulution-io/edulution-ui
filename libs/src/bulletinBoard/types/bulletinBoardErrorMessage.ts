@@ -30,6 +30,7 @@ enum BulletinBoardErrorMessage {
   UNAUTHORIZED_UPDATE_CATEGORY = 'bulletinboard.errors.unauthorizedUpdateCategory',
   ATTACHMENT_NOT_FOUND = 'bulletinboard.errors.attachmentNotFound',
   ATTACHMENT_DELETION_FAILED = 'bulletinboard.errors.attachmentDeletionFailed',
+  PUSH_ONLY_MISSING_FIELDS = 'bulletinboard.errors.pushOnlyMissingFields',
 }
 
 export default BulletinBoardErrorMessage;

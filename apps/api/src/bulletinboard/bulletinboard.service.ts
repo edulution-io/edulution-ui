@@ -35,6 +35,7 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
 import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
 import NOTIFICATION_CREATOR_SYSTEM from '@libs/notification/constants/notificationCreatorSystem';
+import BULLETIN_SAVE_MODE from '@libs/bulletinBoard/constants/bulletinSaveMode';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
 import CustomHttpException from '../common/CustomHttpException';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
@@ -220,6 +221,22 @@ class BulletinBoardService implements OnModuleInit {
   }
 
   async createBulletin(currentUser: JwtUser, dto: CreateBulletinDto) {
+    const isPushOnly = dto.saveMode === BULLETIN_SAVE_MODE.PUSH_ONLY;
+
+    if (isPushOnly) {
+      if (!dto.customPushTitle || !dto.customPushBody) {
+        throw new CustomHttpException(
+          BulletinBoardErrorMessage.PUSH_ONLY_MISSING_FIELDS,
+          HttpStatus.BAD_REQUEST,
+          undefined,
+          BulletinBoardService.name,
+        );
+      }
+
+      await this.notifyPushOnly(dto, currentUser);
+      return null;
+    }
+
     const category = await this.bulletinCategoryModel.findById(dto.category.id).exec();
     if (!category) {
       throw new CustomHttpException(
@@ -252,7 +269,7 @@ class BulletinBoardService implements OnModuleInit {
       lastName: currentUser.family_name,
       username: currentUser.preferred_username,
     };
-    const content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content);
+    const content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content || '');
     const attachmentFileNames = await this.updateBulletinAttachments(content, dto.attachmentFileNames, []);
 
     const createdBulletin = await this.bulletinModel.create({
@@ -328,14 +345,14 @@ class BulletinBoardService implements OnModuleInit {
       username: currentUser.preferred_username,
     };
 
-    const content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content);
+    const content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content || '');
     const attachmentFileNames = await this.updateBulletinAttachments(
       content,
       dto.attachmentFileNames,
       bulletin.attachmentFileNames,
     );
 
-    bulletin.title = dto.title;
+    bulletin.title = dto.title || '';
     bulletin.isActive = dto.isActive;
     bulletin.content = content;
     bulletin.category = new Types.ObjectId(dto.category.id);
@@ -349,6 +366,23 @@ class BulletinBoardService implements OnModuleInit {
     await this.notifyUsers(dto, updatedBulletin, currentUser);
 
     return updatedBulletin;
+  }
+
+  private async notifyPushOnly(dto: CreateBulletinDto, currentUser: JwtUser) {
+    let invitedMembersList = await this.groupsService.getInvitedMembers(
+      [...dto.category.visibleForGroups, ...dto.category.editableByGroups],
+      [...dto.category.visibleForUsers, ...dto.category.editableByUsers],
+    );
+
+    invitedMembersList = invitedMembersList.filter((username) => username !== currentUser.preferred_username);
+
+    await this.notificationService.notifyUsernames(invitedMembersList, {
+      title: dto.customPushTitle || '',
+      body: dto.customPushBody || '',
+      data: {
+        type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
+      },
+    });
   }
 
   async notifyUsers(dto: CreateBulletinDto, resultingBulletin: BulletinDocument, currentUser?: JwtUser) {
@@ -369,30 +403,40 @@ class BulletinBoardService implements OnModuleInit {
     if (isWithinVisibilityPeriod) {
       this.sseService.sendEventToUsers(invitedMembersList, resultingBulletin, SSE_MESSAGE_TYPE.BULLETIN_UPDATED);
 
-      const title = `Aushang bereit: ${dto.title}`;
-      const pushNotification = `Neuer Aushang in ${dto.category.name}`;
+      const saveMode = dto.saveMode || BULLETIN_SAVE_MODE.PUSH_AND_BULLETIN;
 
-      const bulletinId = String(resultingBulletin.id);
+      if (saveMode !== BULLETIN_SAVE_MODE.BULLETIN_ONLY) {
+        const title = dto.customPushTitle || `Aushang bereit: ${dto.title}`;
+        const pushNotification = dto.customPushBody || `Neuer Aushang in ${dto.category.name}`;
+        const bulletinId = String(resultingBulletin.id);
 
-      await this.notificationService.notifyUsernames(
-        invitedMembersList,
-        {
-          title,
-          body: pushNotification,
-          data: {
-            bulletinId,
-            type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
+        const isCustomPush = Boolean(dto.customPushTitle || dto.customPushBody);
+
+        const persistOptions =
+          saveMode === BULLETIN_SAVE_MODE.PUSH_ONLY
+            ? undefined
+            : {
+                type: isCustomPush ? NOTIFICATION_TYPE.USER : NOTIFICATION_TYPE.SYSTEM,
+                sourceType: NOTIFICATION_SOURCE_TYPE.BULLETIN,
+                sourceId: bulletinId,
+                title,
+                pushNotification,
+                createdBy: isCustomPush && currentUser ? currentUser.preferred_username : NOTIFICATION_CREATOR_SYSTEM,
+              };
+
+        await this.notificationService.notifyUsernames(
+          invitedMembersList,
+          {
+            title,
+            body: pushNotification,
+            data: {
+              bulletinId,
+              type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
+            },
           },
-        },
-        {
-          type: NOTIFICATION_TYPE.SYSTEM,
-          sourceType: NOTIFICATION_SOURCE_TYPE.BULLETIN,
-          sourceId: bulletinId,
-          title,
-          pushNotification,
-          createdBy: NOTIFICATION_CREATOR_SYSTEM,
-        },
-      );
+          persistOptions,
+        );
+      }
     }
   }
 

@@ -119,9 +119,11 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
   createBulletin: async (bulletin) => {
     set({ isDialogLoading: true, error: null });
     try {
-      const { data } = await eduApi.post<BulletinResponseDto>(BULLETIN_BOARD_EDU_API_ENDPOINT, bulletin);
+      const { data } = await eduApi.post<BulletinResponseDto | null>(BULLETIN_BOARD_EDU_API_ENDPOINT, bulletin);
 
-      set({ bulletins: [...get().bulletins, data], selectedRows: {} });
+      if (data) {
+        set({ bulletins: [...get().bulletins, data], selectedRows: {} });
+      }
       toast.success(i18n.t('bulletinboard.bulletinCreatedSuccessfully'));
       return true;
     } catch (error) {

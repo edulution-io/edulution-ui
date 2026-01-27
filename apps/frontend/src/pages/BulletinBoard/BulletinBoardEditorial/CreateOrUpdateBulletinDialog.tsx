@@ -23,9 +23,10 @@ import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useBulletinBoardEditorialStore from '@/pages/BulletinBoard/BulletinBoardEditorial/useBulletinBoardEditorialStore';
-import getBulletinFormSchema from '@libs/bulletinBoard/constants/bulletinDialogFormSchema';
+import getBulletinFormSchema from '@libs/bulletinBoard/constants/getBulletinFormSchema';
 import CreateOrUpdateBulletinDialogBody from '@/pages/BulletinBoard/BulletinBoardEditorial/CreateOrUpdateBulletinDialogBody';
 import CreateBulletinDto from '@libs/bulletinBoard/types/createBulletinDto';
+import BULLETIN_SAVE_MODE from '@libs/bulletinBoard/constants/bulletinSaveMode';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
 
@@ -84,6 +85,9 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
     isVisibleStartDate: selectedBulletinToEdit?.isVisibleStartDate
       ? new Date(selectedBulletinToEdit.isVisibleStartDate)
       : null,
+    customPushTitle: selectedBulletinToEdit?.customPushTitle || '',
+    customPushBody: selectedBulletinToEdit?.customPushBody || '',
+    saveMode: selectedBulletinToEdit?.saveMode || BULLETIN_SAVE_MODE.PUSH_AND_BULLETIN,
   };
 
   const form = useForm<CreateBulletinDto>({
