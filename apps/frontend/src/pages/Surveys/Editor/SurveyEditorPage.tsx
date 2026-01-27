@@ -246,7 +246,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
 
   return (
     <>
-      <div className="survey-editor h-full">
+      <div className="survey-editor h-full pt-1">
         {creator && (
           <SurveyCreatorComponent
             creator={creator}

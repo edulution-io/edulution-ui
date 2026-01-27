@@ -32,7 +32,7 @@ import useMedia from '@/hooks/useMedia';
 import cn from '@libs/common/utils/className';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import LAUNCHER_SEARCH_INPUT_LABEL from '@libs/ui/constants/launcherSearchInputLabel';
-import getAppIconClassName from '@/utils/getAppIconClassName';
+import IconWrapper from '@/components/shared/IconWrapper';
 
 const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
   const { toggleMobileSidebar } = useSidebarStore();
@@ -98,6 +98,7 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         variant="dialog"
+        className="mx-auto min-w-[250px] focus:border-ring md:w-[400px]"
       />
 
       <div className="mx-auto flex max-h-full w-full flex-wrap justify-center gap-2 overflow-y-auto pb-10 scrollbar-thin md:pb-4">
@@ -113,13 +114,13 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
                 variant="dialog"
               >
                 <div className="relative m-4 flex flex-col items-center">
-                  <img
-                    src={app.icon}
+                  <IconWrapper
+                    iconSrc={app.icon}
                     alt={app.title}
-                    className={cn(
-                      'h-12 w-12 md:h-14 md:w-14',
-                      app.link !== currentAppPath && getAppIconClassName(app.icon),
-                    )}
+                    className="h-12 w-12 md:h-14 md:w-14"
+                    width={48}
+                    height={48}
+                    applyLegacyFilter={app.link !== currentAppPath}
                   />
                   <p>{app.title}</p>
                   <NotificationCounter
@@ -138,12 +139,12 @@ const LauncherAppGrid = ({ modKeyLabel }: { modKeyLabel: string }) => {
       {!isMobileView && !isTabletView && (
         <div className="text-center text-sm text-muted-foreground">
           <span>{t('launcher.pressShortKey')} </span>
-          <span className="ml-0.5 rounded border-2 border-muted-light bg-muted px-1 py-0.5 text-xs">
+          <span className="ml-0.5 rounded border-2 border-accent-light bg-accent px-1 py-0.5 text-xs">
             {modKeyLabel}
           </span>{' '}
-          +<span className="ml-0.5 rounded border-2 border-muted-light bg-muted px-1 py-0.5 text-xs">K</span>
+          +<span className="ml-0.5 rounded border-2 border-accent-light bg-accent px-1 py-0.5 text-xs">K</span>
           <span className="ml-8">{t('launcher.pressEnterToStartApp')} </span>
-          <span className="ml-0.5 rounded border-2 border-muted-light bg-muted px-1 py-0.5 text-xs">
+          <span className="ml-0.5 rounded border-2 border-accent-light bg-accent px-1 py-0.5 text-xs">
             {t('enterKey')}
           </span>
         </div>

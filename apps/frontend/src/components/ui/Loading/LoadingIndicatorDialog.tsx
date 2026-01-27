@@ -45,7 +45,7 @@ const LoadingIndicatorDialog: React.FC<LoadingIndicatorDialogProps> = ({ isOpen 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div
-        className="flex w-40 flex-col items-center justify-center rounded-xl bg-overlay-transparent p-6 shadow-lg"
+        className="bg-glass flex w-40 flex-col items-center justify-center rounded-xl p-6 shadow-lg"
         ref={containerRef}
       >
         <CircleLoader />

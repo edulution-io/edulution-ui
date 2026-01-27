@@ -34,10 +34,10 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableSharePathname';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
-import getAppIconClassName from '@/utils/getAppIconClassName';
 import useMenuBarStore from './useMenuBarStore';
 import { Button } from './Button';
 import MenuBarFooter from './MenuBarFooter';
+import IconWrapper from './IconWrapper';
 
 const MenuBar: React.FC = () => {
   const { t } = useTranslation();
@@ -70,14 +70,13 @@ const MenuBar: React.FC = () => {
       return icon;
     }
 
-    const iconClassName = applyIconClassName ? getAppIconClassName(icon as string | IconDefinition) : '';
-
     if (typeof icon === 'string') {
       return (
-        <img
-          src={icon}
+        <IconWrapper
+          iconSrc={icon}
           alt={alt}
-          className={cn(baseClassName, iconClassName)}
+          className={cn(baseClassName, 'object-contain')}
+          applyLegacyFilter={applyIconClassName}
         />
       );
     }

@@ -167,6 +167,7 @@ const AddAppConfigDialog: React.FC<AddAppConfigDialogProps> = ({ selectedApp }) 
       handleOpenChange={handleClose}
       title={t('settings.addApp.title')}
       body={getDialogBody()}
+      desktopContentClassName="max-w-2xl max-h-[95vh]"
     />
   );
 };

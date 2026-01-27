@@ -208,7 +208,7 @@ const LessonPage = () => {
 
   return (
     <PageLayout>
-      <div className="mb-2 flex flex-none flex-col gap-2 md:flex-row">
+      <div className="mb-2 flex flex-none flex-col gap-2 pt-1 md:flex-row">
         <LoadingIndicatorDialog isOpen={isPageLoading || isLoading} />
         <UserProjectOrSchoolClassSearch />
         {sessionOptions && (
