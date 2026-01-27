@@ -25,6 +25,7 @@ import SOGO_THEME from '@libs/mail/constants/sogoTheme';
 import APPS from '@libs/appconfig/constants/apps';
 import GetUsersEmailAddress from '../common/decorators/getUsersEmailAddress.decorator';
 import MailsService from './mails.service';
+import MailIdleService from './mail-idle.service';
 import UsersService from '../users/users.service';
 import AdminGuard from '../common/guards/admin.guard';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
@@ -38,6 +39,7 @@ class MailsController {
   constructor(
     private readonly userService: UsersService,
     private readonly mailsService: MailsService,
+    private readonly mailIdleService: MailIdleService,
   ) {}
 
   @Get()
@@ -46,7 +48,11 @@ class MailsController {
     @GetUsersEmailAddress() emailAddress: string,
   ): Promise<MailDto[]> {
     const password = await this.userService.getPassword(username);
-    return this.mailsService.getMails(emailAddress, password);
+    const mails = await this.mailsService.getMails(emailAddress, password);
+
+    void this.mailIdleService.startIdle(username, emailAddress, password);
+
+    return mails;
   }
 
   @Get('provider-config')

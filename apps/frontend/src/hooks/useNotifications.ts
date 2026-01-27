@@ -19,10 +19,9 @@
 
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useInterval } from 'usehooks-ts';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import FEED_PULL_TIME_INTERVAL_SLOW from '@libs/dashboard/constants/pull-time-interval';
 import useMailsStore from '@/pages/Mail/useMailsStore';
+import type MailNewMailNotificationDto from '@libs/mail/types/mailNewMailNotification.dto';
 import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import APPS from '@libs/appconfig/constants/apps';
@@ -86,11 +85,15 @@ const useNotifications = () => {
     }
   }, [isAuthReady, isMailsAppActivated, isSuperAdmin, isSurveysAppActivated, isConferenceAppActivated]);
 
-  useInterval(() => {
-    if (isAuthReady && isMailsAppActivated && !isSuperAdmin) {
-      void getMails();
-    }
-  }, FEED_PULL_TIME_INTERVAL_SLOW);
+  const handleNewMail = (e: MessageEvent<string>) => {
+    const notification = JSON.parse(e.data) as MailNewMailNotificationDto;
+    void getMails();
+    toast.info(t('mail.newMail', { count: notification.newMailCount }));
+  };
+
+  useSseEventListener(SSE_MESSAGE_TYPE.MAIL_NEW_MAIL, handleNewMail, {
+    enabled: isMailsAppActivated && !isSuperAdmin,
+  });
 
   const handleMailThemeUpdated = () => {
     toast.info(t('mail.themeUpdated.generic'), {

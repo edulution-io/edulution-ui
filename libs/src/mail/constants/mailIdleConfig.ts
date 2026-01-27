@@ -17,23 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import MailsController from './mails.controller';
-import MailsService from './mails.service';
-import MailIdleService from './mail-idle.service';
-import { MailProvider, MailProviderSchema } from './mail-provider.schema';
-import DockerModule from '../docker/docker.module';
-import GroupsModule from '../groups/groups.module';
+const MAIL_IDLE_CONFIG = {
+  IDLE_TIMEOUT_MS: 25 * 60 * 1000,
+  RECONNECT_DELAY_MS: 5000,
+  MAX_RECONNECT_ATTEMPTS: 3,
+  DEFAULT_MAX_CONCURRENT_CONNECTIONS: 500,
+} as const;
 
-@Module({
-  imports: [
-    MongooseModule.forFeature([{ name: MailProvider.name, schema: MailProviderSchema }]),
-    DockerModule,
-    GroupsModule,
-  ],
-  controllers: [MailsController],
-  providers: [MailsService, MailIdleService],
-  exports: [MailIdleService],
-})
-export default class MailsModule {}
+export default MAIL_IDLE_CONFIG;
