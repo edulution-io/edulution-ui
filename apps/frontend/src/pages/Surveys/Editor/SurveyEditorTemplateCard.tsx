@@ -103,9 +103,8 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
     <Card
       className={cn(
         GRID_CARD,
-        'relative flex h-36 cursor-pointer pt-2',
+        'relative flex h-36 cursor-pointer p-4',
         { 'opacity-50': !active },
-        { 'pt-8': !description },
         {
           'w-[calc(100%-2rem)] min-w-[calc(100%-2rem)] max-w-[24rem] sm:min-w-[14rem] md:min-w-[18rem]': isSuperAdmin,
         },
@@ -116,29 +115,20 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
       {!surveyTemplate && (
         <FontAwesomeIcon
           icon={faFileCirclePlus}
-          className="h-12 w-12 md:h-14 md:w-14"
+          className="my-2 h-12 w-12 md:h-14 md:w-14"
         />
       )}
 
       {title && (
-        <h3
-          className={cn(
-            'mt-1 line-clamp-2 w-full truncate px-4',
-            { 'mt-4': !description },
-            { 'mt-2 flex justify-center': !surveyTemplate },
-          )}
-        >
-          {title}
-        </h3>
+        <h3 className={cn('line-clamp-2 w-full truncate', { 'flex justify-center': !surveyTemplate })}>{title}</h3>
       )}
 
-      {description && <p className="mt-2 line-clamp-2 w-full px-4">{description}</p>}
+      {description && <p className="line-clamp-2 w-full text-sm">{description}</p>}
 
       {surveyTemplate && (
-        <div className="absolute bottom-2 flex h-8 w-full flex-row justify-end gap-2 px-2 text-sm italic">
+        <div className="w-inherit absolute bottom-0 right-0 m-4 flex flex-row justify-end gap-2 text-sm italic">
           {isSuperAdmin && (
             <Button
-              className="cursor-pointer hover:bg-transparent"
               onClick={toggleIsTemplateActive}
               variant="btn-outline"
               size="sm"
@@ -147,7 +137,7 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
             </Button>
           )}
           <Button
-            className="cursor-pointer"
+            className="rounded-full border-none px-1 py-2"
             onClick={handleOpenPreview}
             variant="btn-outline"
             size="sm"
@@ -155,20 +145,20 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
           >
             <FontAwesomeIcon
               icon={faEye}
-              className="h-4 w-4"
+              className="h-6 w-6"
             />
           </Button>
           {isSuperAdmin && !surveyTemplate?.isDefaultTemplate && (
             <Button
-              className="cursor-pointer rounded-full bg-ciRed bg-opacity-70 p-2 hover:bg-ciRed"
+              className="rounded-full border-none px-1 py-2"
               onClick={handleOpenConfirmDeletion}
-              variant="btn-attention"
+              variant="btn-outline"
               size="sm"
               aria-label={t('common.delete')}
             >
               <FontAwesomeIcon
                 icon={DeleteIcon}
-                className="h-4 w-4"
+                className="h-5 w-5"
               />
             </Button>
           )}

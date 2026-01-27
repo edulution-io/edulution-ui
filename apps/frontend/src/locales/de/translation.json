@@ -731,7 +731,7 @@
         "label": "Als Vorlage speichern",
         "noTemplates": "Es sind keine Vorlagen vorhanden",
         "noSearchResults": "Keine Vorlage gefunden",
-        "searchPlaceholder": "Tippen um Vorlagen zu filtern...",
+        "searchPlaceholder": "Tippen um Vorlagen nach dem Namen zu filtern...",
         "preview": "Vorschau",
         "save": {
           "title": "Vorlage speichern",

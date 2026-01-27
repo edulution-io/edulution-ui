@@ -22,11 +22,11 @@ import { useTranslation } from 'react-i18next';
 import cn from '@libs/common/utils/className';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import isSubsequence from '@libs/common/utils/string/isSubsequence';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import SurveyEditorTemplateCard from '@/pages/Surveys/Editor/SurveyEditorTemplateCard';
 import SurveyEditorTemplatePreview from '@/pages/Surveys/Editor/SurveyEditorTemplatePreview';
 import Input from '@/components/shared/Input';
-import useLdapGroups from '@/hooks/useLdapGroups';
 
 interface SurveyEditorTemplateGridProps {
   surveyCreator: AttendeeDto;
@@ -39,23 +39,39 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
 
   const [search, setSearch] = useState('');
 
-  const { isSuperAdmin } = useLdapGroups();
-
   useEffect(() => {
     void fetchTemplates();
   }, [fetchTemplates]);
 
   const filteredTemplates = useMemo(() => {
-    const searchString = search.trim().toLowerCase();
-    if (!searchString) return templates;
-    return templates.filter((surveyTemplate) => isSubsequence(searchString, surveyTemplate.name?.toLowerCase() || ''));
-  }, [templates, search]);
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
+    if (!templates || templates.length === 0) {
+      return [];
     }
-  };
+    let filtered: SurveyTemplateDto[] = [];
+    const searchString = search.trim().toLowerCase();
+    if (!searchString) {
+      filtered = templates;
+    } else {
+      filtered = templates.filter((surveyTemplate) =>
+        isSubsequence(
+          searchString,
+          surveyTemplate.name?.toLowerCase() || surveyTemplate.template.formula.title.toLowerCase() || '',
+        ),
+      );
+    }
+    filtered.sort((a, b) => {
+      if (a.isActive && !b.isActive) {
+        return -1;
+      }
+      if (!a.isActive && b.isActive) {
+        return 1;
+      }
+      const aName = a.name?.toLowerCase() || a.template.formula.title.toLowerCase() || '';
+      const bName = b.name?.toLowerCase() || b.template.formula.title.toLowerCase() || '';
+      return aName.localeCompare(bName);
+    });
+    return filtered;
+  }, [templates, search]);
 
   return (
     <>
@@ -64,19 +80,10 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
         aria-label={t('survey.editor.template.searchPlaceholder')}
         value={search}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
-        onKeyDown={handleKeyDown}
         variant="default"
         width="auto"
       />
-      <div
-        className={cn(
-          'space-2 flex w-full grid-cols-[repeat(auto-fit,minmax(8rem,auto))] flex-wrap gap-2 overflow-y-auto scrollbar-thin md:grid-cols-[repeat(auto-fit,minmax(12rem,auto))]',
-          {
-            'grid-cols-[repeat(auto-fit,minmax(20rem,auto))] sm:grid-cols-[repeat(auto-fit,minmax(14rem,auto))] md:grid-cols-[repeat(auto-fit,minmax(18rem,auto))]':
-              isSuperAdmin,
-          },
-        )}
-      >
+      <div className={cn('space-2 flex w-full flex-wrap gap-2 overflow-y-auto scrollbar-thin')}>
         <SurveyEditorTemplateCard
           key="create-new-card"
           creator={surveyCreator}
@@ -85,7 +92,7 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
         {filteredTemplates.length ? (
           filteredTemplates.map((surveyTemplate) => (
             <SurveyEditorTemplateCard
-              key={surveyTemplate.template.formula.title}
+              key={`survey-template-card_${surveyTemplate.name || surveyTemplate.template.formula.title}`}
               creator={surveyCreator}
               surveyTemplate={surveyTemplate}
             />

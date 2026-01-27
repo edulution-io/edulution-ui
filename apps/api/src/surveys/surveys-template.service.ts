@@ -112,7 +112,6 @@ class SurveysTemplateService implements OnModuleInit {
               ],
             },
       )
-      .sort({ name: 1 })
       .exec();
     return res.status(HttpStatus.OK).json(documents);
   }

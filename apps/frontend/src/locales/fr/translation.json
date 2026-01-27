@@ -636,7 +636,7 @@
         "label": "Enregistrer le modèle",
         "noTemplates": "Aucun modèle disponible",
         "noSearchResults": "Aucun modèle trouvé",
-        "searchPlaceholder": "Tapez pour filtrer les modèles...",
+        "searchPlaceholder": "Tapez pour filtrer les modèles par nom ...",
         "preview": "Aperçu du modèle",
         "save": {
           "title": "Enregistrer le modèle",
