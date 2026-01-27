@@ -22,6 +22,7 @@ import { useTranslation } from 'react-i18next';
 import cn from '@libs/common/utils/className';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import isSubsequence from '@libs/common/utils/string/isSubsequence';
+import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import SurveyEditorTemplateCard from '@/pages/Surveys/Editor/SurveyEditorTemplateCard';
 import SurveyEditorTemplatePreview from '@/pages/Surveys/Editor/SurveyEditorTemplatePreview';
@@ -46,9 +47,33 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
   }, [fetchTemplates]);
 
   const filteredTemplates = useMemo(() => {
+    if (!templates || templates.length === 0) {
+      return [];
+    }
+    let filtered: SurveyTemplateDto[] = [];
     const searchString = search.trim().toLowerCase();
-    if (!searchString) return templates;
-    return templates.filter((surveyTemplate) => isSubsequence(searchString, surveyTemplate.name?.toLowerCase() || ''));
+    if (!searchString) {
+      filtered = templates;
+    } else {
+      filtered = templates.filter((surveyTemplate) =>
+        isSubsequence(
+          searchString,
+          surveyTemplate.name?.toLowerCase() || surveyTemplate.template.formula.title.toLowerCase() || '',
+        ),
+      );
+    }
+    filtered.sort((a, b) => {
+      if (a.isActive && !b.isActive) {
+        return -1;
+      }
+      if (!a.isActive && b.isActive) {
+        return 1;
+      }
+      const aName = a.name?.toLowerCase() || a.template.formula.title.toLowerCase() || '';
+      const bName = b.name?.toLowerCase() || b.template.formula.title.toLowerCase() || '';
+      return aName.localeCompare(bName);
+    });
+    return filtered;
   }, [templates, search]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -85,7 +110,7 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
         {filteredTemplates.length ? (
           filteredTemplates.map((surveyTemplate) => (
             <SurveyEditorTemplateCard
-              key={surveyTemplate.template.formula.title}
+              key={`survey-template-card_${surveyTemplate.name || surveyTemplate.template.formula.title}`}
               creator={surveyCreator}
               surveyTemplate={surveyTemplate}
             />
