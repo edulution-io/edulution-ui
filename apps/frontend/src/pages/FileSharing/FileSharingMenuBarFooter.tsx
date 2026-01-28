@@ -26,11 +26,11 @@ import useQuotaInfo from '@/hooks/useQuotaInfo';
 import cn from '@libs/common/utils/className';
 import WebdavInfoDialog from '@/pages/FileSharing/Dialog/WebdavInfoDialog';
 
-interface MenuBarQuotaProps {
+interface FileSharingMenuBarFooterProps {
   isCollapsed: boolean;
 }
 
-const MenuBarQuota: React.FC<MenuBarQuotaProps> = ({ isCollapsed }) => {
+const FileSharingMenuBarFooter: React.FC<FileSharingMenuBarFooterProps> = ({ isCollapsed }) => {
   const { t } = useTranslation();
   const { user: lmnUser } = useLmnApiStore();
   const { quotaUsedInGb, quotaHardLimitInGb, percentageUsed, progressBarColor } = useQuotaInfo();
@@ -86,4 +86,4 @@ const MenuBarQuota: React.FC<MenuBarQuotaProps> = ({ isCollapsed }) => {
   );
 };
 
-export default MenuBarQuota;
+export default FileSharingMenuBarFooter;
