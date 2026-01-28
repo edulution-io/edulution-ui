@@ -8,6 +8,23 @@
     fill: var(--input);
   }
 
+  .svc-top-bar,
+  .svc-tabbed-menu,
+  .svc-tabbed-menu-wrapper,
+  .svc-tabbed-menu-item {
+    background-color: var(--accent);
+    max-height: 2.5rem;
+    height: 2.5rem;
+  }
+  .svc-tabbed-menu-item:hover,
+  .sv-action-bar-item:hover,
+  .svc-tabbed-menu-item--selected {
+    background-color: var(--accent-light) !important;
+  }
+  .svc-tabbed-menu-item__text {
+    display: flex;
+    transform: translateY(-40%);
+  }
   @media only screen and (max-width: 59.5rem) {
     .svc-top-bar {
       display: none !important;
@@ -86,7 +103,10 @@
   .svc-question__content {
     border-radius: var(--radius);
     /* question background-color = inverted default background-color */
-    background-color: var(--foreground);
+    background-color: var(--accent);
+  }
+  .svc-question__content--selected {
+    background-color: var(--accent-light);
   }
 
   /* question input */
@@ -254,7 +274,7 @@
   /* Fix dialog component (background-colors) */
   .sv-popup__body-header,
   .sv-popup__body-footer {
-    background-color: var(--overlay);
+    background-color: var(--accent);
   }
 
   /* Fix popup component */
@@ -271,7 +291,7 @@
     .sv-popup__body-content.sd-element__content.sd-question__content {
       padding: 0;
       margin: 0;
-      background-color: var(--overlay) !important;
+      background-color: var(--accent) !important;
     }
     .sv-popup__content {
       .svc-list__container {
@@ -507,7 +527,7 @@
         .svc-question__content--in-popup.svc-question__content {
           margin: 0;
           padding: 0 1.5rem 0 1.5rem;
-          background-color: var(--overlay) !important;
+          background-color: var(--accent) !important;
         }
 
         .sv-popup__body-footer {

@@ -35,6 +35,7 @@ import getSurveyEditorFormSchema from '@libs/survey/types/editor/getSurveyEditor
 import { getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoints';
+import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
 import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
 import getSurveysDefaultValues from '@/pages/Surveys/utils/getSurveysDefaultValues';
 import getInitialSurveyFormValues from '@/pages/Surveys/utils/getInitialSurveyFormValues';
@@ -184,7 +185,7 @@ const SurveyEditorPage = () => {
     creator.theme = surveyTheme;
     if (!creator.survey.logo) return;
     if (!creator.survey.logo?.startsWith(SURVEY_DEFAULT_LOGO_PATH)) return;
-    creator.survey.logo = getAssetUrl(APPS.SURVEYS, getResolvedTheme());
+    creator.survey.logo = getAssetUrl(APPS.SURVEYS, ASSET_TYPES.logo, getResolvedTheme());
   }, [theme, getResolvedTheme, creator]);
 
   const handleNavigateToCreatedSurveys = () => {
