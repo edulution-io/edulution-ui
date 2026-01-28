@@ -32,7 +32,7 @@ const surveyTheme: ITheme = {
     '--sjs-general-forecolor-dark': 'var(--background)',
     '--sjs-general-dim-forecolor': 'var(--accent)',
     '--sjs-general-dim-forecolor-light': 'var(--accent-light)',
-    '--sjs-general-backcolor': 'var(--foreground)',
+    '--sjs-general-backcolor': 'var(--accent)',
     '--sjs-general-backcolor-dark': 'var(--accent)',
     '--sjs-general-backcolor-dim': 'transparent',
     '--sjs-general-backcolor-dim-light': 'var(--accent)',
