@@ -18,7 +18,7 @@
  */
 
 import * as React from 'react';
-import { ButtonSH as SHButton } from '@/components/ui/ButtonSH';
+import { ButtonSH } from '@/components/ui/ButtonSH';
 import { cva, type VariantProps } from 'class-variance-authority';
 import cn from '@libs/common/utils/className';
 import HexagonIcon from '@/assets/layout/Hexagon.svg?react';
@@ -37,11 +37,14 @@ const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-xl justify-cente
       'btn-attention': 'bg-ciRed text-white',
       'btn-small': 'hover:bg-grey-700 mr-1 rounded-lg bg-white px-4 h-9 shadow-md font-normal',
       'btn-table': 'h-10 items-center rounded-lg bg-white dark:border-none dark:bg-accent border-[1px] border-gray-300',
+      'btn-ghost':
+        'bg-transparent rounded-lg border-none shadow-none ring-0 outline-none hover:bg-accent hover:opacity-100 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none',
     },
     size: {
       sm: 'h-8 px-3 text-xs',
       md: 'h-9 px-3',
       lg: 'h-10 px-8',
+      icon: 'h-[38px] w-[38px] p-0',
     },
   },
 });
@@ -57,13 +60,16 @@ const defaultProps: Partial<ButtonProps> = {
 };
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, hexagonIconAltText, children, ...props }, ref) => {
+  ({ className, variant, size, hexagonIconAltText, children, ...props }, ref) => {
     Button.displayName = 'Button';
 
+    const isUnsizedBaseButton = variant === 'btn-ghost';
+
     return (
-      <SHButton
+      <ButtonSH
         {...props}
-        className={cn(originButtonVariants({ variant, className }))}
+        size={isUnsizedBaseButton ? 'none' : 'default'}
+        className={cn(originButtonVariants({ variant, size, className }))}
         ref={ref}
       >
         {variant === 'btn-hexagon' ? (
@@ -77,11 +83,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ) : (
           children
         )}
-      </SHButton>
+      </ButtonSH>
     );
   },
 );
 
 Button.defaultProps = defaultProps;
 
-export { Button };
+export { Button, originButtonVariants };
