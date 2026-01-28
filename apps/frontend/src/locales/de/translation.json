@@ -1488,6 +1488,8 @@
     "filter": "Filter",
     "showHiddenFiles": "Versteckte Dateien anzeigen",
     "showSystemFiles": "Systemdateien anzeigen",
+    "expand": "Aufklappen",
+    "collapse": "Zuklappen",
     "errors": {
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "directoryNotCreated": "Erstellen des Verzeichnisses fehlgeschlagen",
