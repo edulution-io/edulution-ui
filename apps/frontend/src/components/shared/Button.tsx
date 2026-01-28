@@ -18,7 +18,7 @@
  */
 
 import * as React from 'react';
-import { ButtonSH as SHButton } from '@/components/ui/ButtonSH';
+import { ButtonSH } from '@/components/ui/ButtonSH';
 import { cva, type VariantProps } from 'class-variance-authority';
 import cn from '@libs/common/utils/className';
 import HexagonIcon from '@/assets/layout/Hexagon.svg?react';
@@ -63,12 +63,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, hexagonIconAltText, children, ...props }, ref) => {
     Button.displayName = 'Button';
 
-    const isUnsized = variant === 'btn-ghost';
+    const isUnsizedBaseButton = variant === 'btn-ghost';
 
     return (
-      <SHButton
+      <ButtonSH
         {...props}
-        size={isUnsized ? 'none' : 'default'}
+        size={isUnsizedBaseButton ? 'none' : 'default'}
         className={cn(originButtonVariants({ variant, size, className }))}
         ref={ref}
       >
@@ -83,7 +83,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ) : (
           children
         )}
-      </SHButton>
+      </ButtonSH>
     );
   },
 );
