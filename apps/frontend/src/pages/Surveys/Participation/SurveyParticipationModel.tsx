@@ -38,8 +38,6 @@ import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDial
 import 'survey-core/i18n/french';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
-import '@/pages/Surveys/theme/creator.min.css';
-import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/participation.css';
 
 interface SurveyFileValue {
