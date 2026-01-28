@@ -23,7 +23,7 @@ import { RawData, Server, WebSocket } from 'ws';
 import TLDRAW_SYNC_ENDPOINTS from '@libs/tldraw-sync/constants/tLDrawSyncEndpoints';
 import ROOM_ID_PARAM from '@libs/tldraw-sync/constants/roomIdParam';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
-import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
+import pubKeyFilePath from '@libs/common/constants/pubKeyFilePath';
 import { readFileSync } from 'fs';
 import { JwtService } from '@nestjs/jwt';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
@@ -40,7 +40,7 @@ import TLDrawSyncService from './tldraw-sync.service';
 class TLDrawSyncGateway implements OnGatewayConnection, OnModuleInit {
   @WebSocketServer() server: Server;
 
-  private readonly pubKey = readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
+  private readonly pubKey = readFileSync(pubKeyFilePath, 'utf8');
 
   constructor(
     private readonly tldrawSyncService: TLDrawSyncService,

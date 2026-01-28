@@ -17,6 +17,21 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const pubKeyFilePath = process.env['EDUI_CERT_PATH'] || './data/edulution.pem';
+import { existsSync, copyFileSync, mkdirSync } from 'fs';
+import path from 'path';
 
-export default pubKeyFilePath;
+const certSourceFile = process.env.EDUI_CERT_PATH ? path.basename(process.env.EDUI_CERT_PATH) : 'edulution.pem';
+const certTargetPath = process.env.EDUI_CERT_PATH || './data/edulution.pem';
+
+if (!existsSync('./data')) {
+  mkdirSync('./data', { recursive: true });
+}
+
+if (!existsSync(certTargetPath)) {
+  if (existsSync(certSourceFile)) {
+    copyFileSync(certSourceFile, certTargetPath);
+  } else {
+    console.error(`❌ PEM missing: ${certSourceFile}`);
+    process.exit(1);
+  }
+}

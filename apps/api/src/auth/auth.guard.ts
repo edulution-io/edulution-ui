@@ -23,7 +23,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
-import PUBLIC_KEY_FILE_PATH from '@libs/common/constants/pubKeyFilePath';
+import pubKeyFilePath from '@libs/common/constants/pubKeyFilePath';
 import { PUBLIC_ROUTE_KEY } from '@libs/auth/constants/appAccessKeys';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
 import CustomHttpException from '../common/CustomHttpException';
@@ -37,7 +37,7 @@ class AuthGuard implements CanActivate {
     private jwtService: JwtService,
     private reflector: Reflector,
   ) {
-    this.pubKey = readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
+    this.pubKey = readFileSync(pubKeyFilePath, 'utf8');
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {

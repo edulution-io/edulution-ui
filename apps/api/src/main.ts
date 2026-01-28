@@ -17,12 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import './setup-cert';
+
 import { ConsoleLogger, Logger } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
-import { copyFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import helmet from 'helmet';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import folderPaths from '@libs/common/constants/folderPaths';
@@ -77,9 +79,6 @@ async function bootstrap() {
   });
 
   if (process.env.NODE_ENV === 'development') {
-    if (existsSync('edulution.pem')) {
-      copyFileSync('edulution.pem', 'data/edulution.pem');
-    }
     const swaggerConfig = new DocumentBuilder()
       .setTitle('edulution-api')
       .setDescription('Test API for edulution-io')
