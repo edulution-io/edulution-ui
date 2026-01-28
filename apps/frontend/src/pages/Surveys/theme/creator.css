@@ -3,6 +3,13 @@
 @tailwind utilities;
 
 .survey-editor {
+  .svc-creator__content-wrapper.svc-flex-row,
+  .svc-creator__content-holder.svc-flex-column {
+    width: calc(100vw - var(--sidebar-width) - var(--menubar-max-width));
+    max-width: calc(100vw - var(--sidebar-width) - var(--menubar-max-width));
+    min-width: calc(100vw - var(--sidebar-width) - var(--menubar-max-width));
+  }
+
   .svc-string-editor .sv-string-editor[aria-placeholder]:empty:before {
     color: var(--input);
     fill: var(--input);
@@ -280,6 +287,10 @@
 
   /* Fix popup component */
   .sv-popup--dropdown {
+    .sv-popup__container {
+      box-shadow: none;
+    }
+
     .sv-popup__body-header {
       padding: 1.875rem 1.875rem 0 1.875rem;
     }

@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.sd-page.sd-body__page {
+  width: 100%;
+}
+
 .sd-container-modern__title {
   background-color: transparent !important;
   .sd-title .sv-string-viewer {
