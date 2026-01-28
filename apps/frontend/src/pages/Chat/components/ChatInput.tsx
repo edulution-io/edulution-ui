@@ -25,6 +25,7 @@ import { Textarea } from '@/components/ui/Textarea';
 import { Button, cn } from '@edulution-io/ui-kit';
 import chatMessageMaxLength from '@libs/chat/constants/chatMessageMaxLength';
 
+
 const TEXTAREA_MAX_HEIGHT_PX = 120;
 
 interface ChatInputProps {
