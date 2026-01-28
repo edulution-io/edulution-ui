@@ -21,6 +21,7 @@ import {
   InfoBoardIcon,
   ClassManagementIcon,
   ConferencesIcon,
+  ContactIcon,
   Dashboard,
   DesktopDeploymentIcon,
   FrameIcon,
@@ -146,6 +147,12 @@ const APP_CONFIG_OPTIONS: AppConfigOption[] = [
   {
     id: APPS.WHITEBOARD,
     icon: WhiteBoardIcon,
+    isNativeApp: true,
+    defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
+  },
+  {
+    id: APPS.CHAT,
+    icon: ContactIcon,
     isNativeApp: true,
     defaultDisplayLocations: [...ALL_DISPLAY_LOCATIONS],
   },
