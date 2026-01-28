@@ -209,9 +209,9 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
       creator.survey.logo = `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-{theme}.webp`;
       const newVariable = new CalculatedValue();
       newVariable.name = 'theme';
-      newVariable.expression = `${theme}`;
+      newVariable.expression = getResolvedTheme() as 'light' | 'dark';
       newVariable.includeIntoResult = true;
-      creator?.survey.calculatedValues?.push(newVariable);
+      creator.survey.calculatedValues?.push(newVariable);
     }
 
     const formula = creator.JSON as SurveyFormula;
