@@ -268,8 +268,16 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
     const newVariable = new CalculatedValue();
     newVariable.name = 'theme';
-    newVariable.expression = getResolvedTheme() as 'light' | 'dark';
+    newVariable.expression = getResolvedTheme().toString();
     newVariable.includeIntoResult = true;
+
+    if (!surveyParticipationModel.calculatedValues) {
+      surveyParticipationModel.calculatedValues = [];
+    } else {
+      surveyParticipationModel.calculatedValues = surveyParticipationModel.calculatedValues.filter(
+        (value) => value.name !== 'theme',
+      );
+    }
     surveyParticipationModel.calculatedValues.push(newVariable);
   }, [theme, getResolvedTheme, surveyParticipationModel]);
 

@@ -209,9 +209,15 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
       creator.survey.logo = `${SURVEY_DEFAULT_LOGO_PATH}/surveys-default-logo-{theme}.webp`;
       const newVariable = new CalculatedValue();
       newVariable.name = 'theme';
-      newVariable.expression = getResolvedTheme() as 'light' | 'dark';
+      newVariable.expression = getResolvedTheme().toString();
       newVariable.includeIntoResult = true;
-      creator.survey.calculatedValues?.push(newVariable);
+
+      if (!creator.survey.calculatedValues) {
+        creator.survey.calculatedValues = [];
+      } else {
+        creator.survey.calculatedValues = creator.survey.calculatedValues.filter((value) => value.name !== 'theme');
+      }
+      creator.survey.calculatedValues.push(newVariable);
     }
 
     const formula = creator.JSON as SurveyFormula;

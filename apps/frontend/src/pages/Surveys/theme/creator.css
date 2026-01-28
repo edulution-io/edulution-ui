@@ -312,6 +312,7 @@
             .sv-string-viewer {
               max-height: 1.75rem;
               margin-left: 0.5rem;
+              color: var(--input);
             }
             .sv-svg-icon {
               height: 1.5rem;
