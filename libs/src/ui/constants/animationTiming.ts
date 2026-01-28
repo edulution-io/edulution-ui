@@ -17,27 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { create } from 'zustand';
-import Section from '@libs/menubar/section';
+const HIGHLIGHT_DURATION_MS = 3000;
+const SCROLL_DELAY_MS = 50;
+const HASH_SCROLL_DELAY_MS = 100;
 
-interface SubMenuStore {
-  sections: Section[];
-  activeSection: string | null;
-  sectionToOpen: string | null;
-  setSections: (sections: Section[]) => void;
-  setActiveSection: (id: string | null) => void;
-  requestOpenSection: (id: string) => void;
-  clearOpenRequest: () => void;
-}
-
-const useSubMenuStore = create<SubMenuStore>((set) => ({
-  sections: [],
-  activeSection: null,
-  sectionToOpen: null,
-  setSections: (sections) => set({ sections }),
-  setActiveSection: (id) => set({ activeSection: id }),
-  requestOpenSection: (id) => set({ sectionToOpen: id, activeSection: id }),
-  clearOpenRequest: () => set({ sectionToOpen: null }),
-}));
-
-export default useSubMenuStore;
+export { HIGHLIGHT_DURATION_MS, SCROLL_DELAY_MS, HASH_SCROLL_DELAY_MS };

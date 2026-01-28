@@ -36,7 +36,7 @@ import BulletinContent from '@/pages/BulletinBoard/components/BulletinContent/Bu
 import BULLETIN_VISIBILITY_STATES from '@libs/bulletinBoard/constants/bulletinVisibilityStates';
 import BulletinVisibilityStatesType from '@libs/bulletinBoard/types/bulletinVisibilityStatesType';
 import { AnimatePresence, motion } from 'framer-motion';
-import HIGHLIGHT_DURATION from '@libs/ui/constants/highlightDuration';
+import { HIGHLIGHT_DURATION_MS } from '@libs/ui/constants/animationTiming';
 
 const BulletinBoardColumnItem = ({
   bulletin,
@@ -125,7 +125,7 @@ const BulletinBoardColumnItem = ({
 
     const timer = setTimeout(() => {
       element.classList.remove('blinking');
-    }, HIGHLIGHT_DURATION);
+    }, HIGHLIGHT_DURATION_MS);
 
     return () => clearTimeout(timer);
   }, [bulletinBoardNotifications, bulletin.id, setCollapsed]);

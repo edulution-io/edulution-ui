@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next';
 import VIEW_MODE from '@libs/common/constants/viewMode';
 import ViewModeType from '@libs/common/types/viewModeType';
 import cn from '@libs/common/utils/className';
-import { ButtonSH } from '@/components/ui/ButtonSH';
+import { Button } from '@/components/shared/Button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGrip, faList } from '@fortawesome/free-solid-svg-icons';
@@ -40,12 +40,12 @@ const ViewModeToggle = ({ viewMode, onViewModeChange, isDialog = false }: ViewMo
     <div className="flex items-center rounded-lg border border-accent">
       <Tooltip>
         <TooltipTrigger asChild>
-          <ButtonSH
-            variant="ghost"
+          <Button
+            variant="btn-ghost"
             size="icon"
             onClick={() => onViewModeChange(VIEW_MODE.table)}
             className={cn(
-              'h-[38px] w-[38px] rounded-r-none',
+              'rounded-r-none',
               viewMode === VIEW_MODE.table && (isDialog ? 'bg-ciLightGrey' : 'bg-accent'),
             )}
           >
@@ -53,7 +53,7 @@ const ViewModeToggle = ({ viewMode, onViewModeChange, isDialog = false }: ViewMo
               icon={faList}
               className="h-4 w-4"
             />
-          </ButtonSH>
+          </Button>
         </TooltipTrigger>
         <TooltipContent>
           <p>{t('common.tableView')}</p>
@@ -62,8 +62,8 @@ const ViewModeToggle = ({ viewMode, onViewModeChange, isDialog = false }: ViewMo
 
       <Tooltip>
         <TooltipTrigger asChild>
-          <ButtonSH
-            variant="ghost"
+          <Button
+            variant="btn-ghost"
             size="icon"
             onClick={() => onViewModeChange(VIEW_MODE.grid)}
             className={cn(
@@ -75,7 +75,7 @@ const ViewModeToggle = ({ viewMode, onViewModeChange, isDialog = false }: ViewMo
               icon={faGrip}
               className="h-4 w-4"
             />
-          </ButtonSH>
+          </Button>
         </TooltipTrigger>
         <TooltipContent>
           <p>{t('common.gridView')}</p>

@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { isValidElement, useEffect, useMemo, useRef, useState } from 'react';
+import React, { isValidElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import cn from '@libs/common/utils/className';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -66,33 +66,54 @@ const MenuBar: React.FC = () => {
     if (isMobileView || isTabletView) toggleMobileMenuBar();
   });
 
-  const renderIcon = (
-    icon: string | IconDefinition | React.ReactElement,
-    alt: string,
-    baseClassName?: string,
-    applyIconClassName = true,
-  ) => {
-    if (isValidElement(icon)) {
-      return icon;
-    }
+  const renderIcon = useCallback(
+    (
+      icon: string | IconDefinition | React.ReactElement,
+      alt: string,
+      baseClassName?: string,
+      applyIconClassName = true,
+    ) => {
+      if (isValidElement(icon)) {
+        return icon;
+      }
 
-    if (typeof icon === 'string') {
+      if (typeof icon === 'string') {
+        return (
+          <IconWrapper
+            iconSrc={icon}
+            alt={alt}
+            className={cn(baseClassName, 'object-contain')}
+            applyLegacyFilter={applyIconClassName}
+          />
+        );
+      }
       return (
-        <IconWrapper
-          iconSrc={icon}
-          alt={alt}
-          className={cn(baseClassName, 'object-contain')}
-          applyLegacyFilter={applyIconClassName}
+        <FontAwesomeIcon
+          icon={icon as IconDefinition}
+          className={cn(
+            baseClassName,
+            'scale-75',
+            applyIconClassName ? 'text-background dark:text-white' : 'text-white',
+          )}
         />
       );
-    }
-    return (
-      <FontAwesomeIcon
-        icon={icon as IconDefinition}
-        className={cn(baseClassName, 'scale-75', applyIconClassName ? 'text-background dark:text-white' : 'text-white')}
-      />
-    );
-  };
+    },
+    [],
+  );
+
+  const toggleExpanded = useCallback((itemId: string) => {
+    setExpandedItems((prev) => {
+      const next = new Set(prev);
+      if (next.has(itemId)) {
+        next.delete(itemId);
+      } else {
+        next.add(itemId);
+      }
+      return next;
+    });
+  }, []);
+
+  const getActiveColorClass = useCallback((color: string) => color.split(':')[1] ?? color, []);
 
   if (menuBarEntries.disabled) {
     return null;
@@ -142,18 +163,6 @@ const MenuBar: React.FC = () => {
         navigate(pathParts[0]);
         setIsSelected(firstMenuBarItem);
     }
-  };
-
-  const toggleExpanded = (itemId: string) => {
-    setExpandedItems((prev) => {
-      const next = new Set(prev);
-      if (next.has(itemId)) {
-        next.delete(itemId);
-      } else {
-        next.add(itemId);
-      }
-      return next;
-    });
   };
 
   const activeItem = useMemo(
@@ -216,7 +225,7 @@ const MenuBar: React.FC = () => {
               aria-label={item.label}
               className={cn(
                 'flex w-full cursor-pointer items-center gap-3 py-1 pl-3 pr-3 transition-colors hover:bg-muted-background',
-                isActive ? menuBarEntries.color.split(':')[1] : '',
+                isActive ? getActiveColorClass(menuBarEntries.color) : '',
                 shouldCollapse && 'justify-center',
               )}
             >
@@ -229,7 +238,7 @@ const MenuBar: React.FC = () => {
                       type="button"
                       variant="btn-ghost"
                       onClick={handleExpandClick}
-                      aria-label={isExpanded ? 'Collapse' : 'Expand'}
+                      aria-label={isExpanded ? t('common.collapse') : t('common.expand')}
                       className="p-1"
                     >
                       <FontAwesomeIcon

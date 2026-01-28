@@ -17,13 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Content, Header, Item, Root, Trigger } from '@radix-ui/react-accordion';
 import cn from '@libs/common/utils/className';
 import AnchorSection from '@/components/shared/AnchorSection';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import useSubMenuStore from '@/store/useSubMenuStore';
+import Section from '@libs/menubar/section';
+import { HASH_SCROLL_DELAY_MS } from '@libs/ui/constants/animationTiming';
 
 interface SectionAccordionProps {
   children: React.ReactNode;
@@ -40,8 +42,8 @@ interface SectionAccordionItemProps {
   variant?: 'default' | 'transparent';
 }
 
-const getSections = (children: React.ReactNode): { id: string; label: string }[] => {
-  const sections: { id: string; label: string }[] = [];
+const getSections = (children: React.ReactNode): Section[] => {
+  const sections: Section[] = [];
   React.Children.forEach(children, (child) => {
     if (React.isValidElement<SectionAccordionItemProps>(child) && child.props.id) {
       sections.push({ id: child.props.id, label: child.props.label });
@@ -57,11 +59,12 @@ const SectionAccordion: React.FC<SectionAccordionProps> = ({
   className,
 }) => {
   const { sectionToOpen, clearOpenRequest, setSections } = useSubMenuStore();
-  const sections = getSections(children);
+  const sections = useMemo(() => getSections(children), [children]);
+  const sectionIds = useMemo(() => sections.map((s) => s.id), [sections]);
 
   const [openItems, setOpenItems] = useState<string[]>(() => {
     if (defaultOpenAll) {
-      return sections.map((s) => s.id);
+      return sectionIds;
     }
     return defaultOpen;
   });
@@ -69,7 +72,7 @@ const SectionAccordion: React.FC<SectionAccordionProps> = ({
   useEffect(() => {
     setSections(sections);
     return () => setSections([]);
-  }, [JSON.stringify(sections), setSections]);
+  }, [sections, setSections]);
 
   useEffect(() => {
     if (!sectionToOpen) return;
@@ -86,11 +89,14 @@ const SectionAccordion: React.FC<SectionAccordionProps> = ({
     if (hash) {
       setOpenItems((prev) => (prev.includes(hash) ? prev : [...prev, hash]));
 
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         const element = document.getElementById(hash);
         element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
+      }, HASH_SCROLL_DELAY_MS);
+
+      return () => clearTimeout(timeoutId);
     }
+    return undefined;
   }, []);
 
   const handleValueChange = (value: string[]) => {

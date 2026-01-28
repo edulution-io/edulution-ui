@@ -17,23 +17,38 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useCallback } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
 import useSubMenuStore from '@/store/useSubMenuStore';
-import HIGHLIGHT_DURATION from '@libs/ui/constants/highlightDuration';
+import { HIGHLIGHT_DURATION_MS, SCROLL_DELAY_MS } from '@libs/ui/constants/animationTiming';
 
 const useScrollToSection = () => {
   const { setActiveSection, requestOpenSection } = useSubMenuStore();
+  const timeoutRefs = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  useEffect(
+    () => () => {
+      timeoutRefs.current.forEach(clearTimeout);
+    },
+    [],
+  );
 
   const scrollToSection = useCallback(
     (sectionId: string) => {
+      timeoutRefs.current.forEach(clearTimeout);
+      timeoutRefs.current = [];
+
       requestOpenSection(sectionId);
-      setTimeout(() => setActiveSection(null), HIGHLIGHT_DURATION);
-      setTimeout(() => {
+
+      const highlightTimeout = setTimeout(() => setActiveSection(null), HIGHLIGHT_DURATION_MS);
+      timeoutRefs.current.push(highlightTimeout);
+
+      const scrollTimeout = setTimeout(() => {
         const element = document.getElementById(sectionId);
         if (element) {
           element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
-      }, 50);
+      }, SCROLL_DELAY_MS);
+      timeoutRefs.current.push(scrollTimeout);
     },
     [setActiveSection, requestOpenSection],
   );

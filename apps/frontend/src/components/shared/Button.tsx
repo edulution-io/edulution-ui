@@ -44,6 +44,7 @@ const originButtonVariants = cva(['p-4 hover:opacity-90 rounded-xl justify-cente
       sm: 'h-8 px-3 text-xs',
       md: 'h-9 px-3',
       lg: 'h-10 px-8',
+      icon: 'h-[38px] w-[38px] p-0',
     },
   },
 });
@@ -62,13 +63,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, hexagonIconAltText, children, ...props }, ref) => {
     Button.displayName = 'Button';
 
-    const isUnstyled = variant === 'btn-ghost';
+    const isUnsized = variant === 'btn-ghost';
 
     return (
       <SHButton
         {...props}
-        variant={undefined}
-        size={isUnstyled ? 'none' : undefined}
+        size={isUnsized ? 'none' : 'default'}
         className={cn(originButtonVariants({ variant, size, className }))}
         ref={ref}
       >
@@ -90,4 +90,4 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
 Button.defaultProps = defaultProps;
 
-export { Button };
+export { Button, originButtonVariants };

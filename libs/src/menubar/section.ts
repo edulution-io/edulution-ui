@@ -17,6 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const HIGHLIGHT_DURATION = 3000;
+import MenuItem from './menuItem';
 
-export default HIGHLIGHT_DURATION;
+type Section = Pick<MenuItem, 'id' | 'label'>;
+
+export default Section;
