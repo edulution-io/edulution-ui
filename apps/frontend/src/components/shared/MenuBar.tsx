@@ -171,10 +171,7 @@ const MenuBar: React.FC = () => {
   );
 
   const renderMenuBarContent = () => (
-    <div
-      className="flex h-full max-w-[var(--menubar-max-width)] flex-col"
-      ref={menubarRef}
-    >
+    <div className="flex h-full max-w-[var(--menubar-max-width)] flex-col">
       <div className="flex flex-col items-center justify-center py-6">
         <button
           className="flex flex-col items-center justify-center rounded-xl p-2 hover:bg-muted-background"
@@ -357,6 +354,7 @@ const MenuBar: React.FC = () => {
         </aside>
       ) : (
         <div
+          ref={menubarRef}
           className={cn(
             'bg-glass fixed left-0 top-0 z-50 h-full overflow-x-hidden backdrop-blur-md duration-300 ease-in-out',
             isMobileMenuBarOpen ? 'w-64 border-r-[1px] border-muted' : 'w-0',
