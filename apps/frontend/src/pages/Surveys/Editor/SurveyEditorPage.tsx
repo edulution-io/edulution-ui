@@ -25,6 +25,7 @@ import { useTranslation } from 'react-i18next';
 import { faRotateLeft, faFilePdf, faBackward } from '@fortawesome/free-solid-svg-icons';
 import { CalculatedValue } from 'survey-core';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
+import APPS from '@libs/appconfig/constants/apps';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
@@ -32,7 +33,6 @@ import { CREATED_SURVEYS_PAGE, SURVEY_DEFAULT_LOGO_PATH } from '@libs/survey/con
 import getSurveyEditorFormSchema from '@libs/survey/types/editor/getSurveyEditorForm.schema';
 import resetSurveyIdFromFormulasBackendLimiters from '@libs/survey/utils/resetSurveyIdFromFormulasBackendLimiters';
 import { getAssetUrl } from '@libs/appconfig/utils/getAppAsset';
-import APPS from '@libs/appconfig/constants/apps';
 import ASSET_TYPES from '@libs/appconfig/constants/assetTypes';
 import getSurveysDefaultValues from '@/pages/Surveys/utils/getSurveysDefaultValues';
 import useThemeStore from '@/store/useThemeStore';
