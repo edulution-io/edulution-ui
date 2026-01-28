@@ -44,8 +44,8 @@ const DropZone: React.FC<DropZoneProps> = ({
   className,
   minHeight = 'min-h-32',
   getFilesFromEvent,
-  activeClassName = 'bg-muted-background',
-  inactiveClassName = 'bg-foreground dark:bg-muted',
+  activeClassName = 'bg-accent-light',
+  inactiveClassName = 'bg-foreground dark:bg-accent',
 }) => {
   const { t } = useTranslation();
 
@@ -70,14 +70,14 @@ const DropZone: React.FC<DropZoneProps> = ({
     <div {...getRootProps({ className: dropzoneStyle })}>
       <input {...getInputProps()} />
       <div className={cn('flex flex-col items-center justify-center space-y-2 p-4', minHeight)}>
-        <p className="text-wrap text-center text-sm text-secondary">
+        <p className="text-wrap text-center text-sm text-gray-400">
           {isDragActive
             ? dragActiveText || t('filesharingUpload.dropHere')
             : inactiveText || t('filesharingUpload.dragDropClick')}
         </p>
         <FontAwesomeIcon
           icon={faCloudArrowUp}
-          className="h-10 w-10 text-secondary"
+          className="h-10 w-10 text-gray-400"
         />
       </div>
     </div>
