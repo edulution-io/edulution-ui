@@ -20,35 +20,56 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faComments } from '@fortawesome/free-solid-svg-icons';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import ChatView from './components/ChatView';
+import useGroupChat from './hooks/useGroupChat';
+
+type GroupType = 'classes' | 'projects';
+
+interface ChatContentProps {
+  groupName: string;
+  groupType: GroupType;
+}
+
+const ChatContent: React.FC<ChatContentProps> = ({ groupName, groupType }) => {
+  const { t } = useTranslation();
+  const adapter = useGroupChat(groupName, groupType);
+  const title = `${groupType === 'classes' ? t('chat.schoolClass') : t('chat.project')}: ${groupName}`;
+
+  return (
+    <ChatView
+      adapter={adapter}
+      title={title}
+    />
+  );
+};
 
 const ChatPage = () => {
   const { t } = useTranslation();
-  const { groupType, groupName } = useParams();
+  const { groupType, groupName } = useParams<{ groupType: string; groupName: string }>();
+
+  const isValidGroupType = groupType === 'classes' || groupType === 'projects';
 
   return (
     <PageLayout>
       <div className="flex h-full flex-col">
-        <div className="mb-4 pt-2">
-          <h1 className="text-xl font-bold text-background">
-            {groupName ? `${t('chat.conversationWith')} ${groupName}` : t('chat.selectConversation')}
-          </h1>
-        </div>
-
-        <div className="bg-glass flex flex-1 items-center justify-center rounded-xl p-6 backdrop-blur-lg">
-          {groupName ? (
-            <div className="text-center text-background">
-              <p className="text-lg">
-                {t('chat.chatWith')} <span className="font-bold">{groupName}</span>
-              </p>
-              <p className="mt-2 text-sm opacity-70">
-                {groupType === 'classes' ? t('chat.schoolClass') : t('chat.project')}
-              </p>
-            </div>
-          ) : (
-            <p className="text-background opacity-70">{t('chat.selectFromSidebar')}</p>
-          )}
-        </div>
+        {groupName && isValidGroupType ? (
+          <ChatContent
+            groupName={groupName}
+            groupType={groupType}
+          />
+        ) : (
+          <div className="bg-glass flex flex-1 flex-col items-center justify-center rounded-xl p-6 backdrop-blur-lg">
+            <FontAwesomeIcon
+              icon={faComments}
+              className="mb-4 h-16 w-16 text-muted-foreground opacity-30"
+            />
+            <p className="text-lg text-muted-foreground">{t('chat.selectConversation')}</p>
+            <p className="mt-2 text-sm text-muted-foreground opacity-70">{t('chat.selectFromSidebar')}</p>
+          </div>
+        )}
       </div>
     </PageLayout>
   );

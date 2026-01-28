@@ -19,6 +19,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { faUsers, faUserGear } from '@fortawesome/free-solid-svg-icons';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import useLmnApiStore from '@/store/useLmnApiStore';
@@ -31,6 +32,7 @@ import type LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import type LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 
 const useChatMenuConfig = () => {
+  const { t } = useTranslation();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { user, lmnApiToken } = useLmnApiStore();
@@ -66,29 +68,53 @@ const useChatMenuConfig = () => {
     const userClasses = getGroupsWhereUserIsMember(userSchoolClasses);
     const userProjectsList = getGroupsWhereUserIsMember(userProjects);
 
-    const classItems: MenuItem[] = userClasses.map((cls) => ({
-      id: `class-${cls.cn}`,
+    const classChildren: MenuItem[] = userClasses.map((cls) => ({
+      id: cls.cn,
       label: cls.displayName || cls.cn,
       icon: faUsers,
       action: () => navigate(`/${CHAT_CLASSES_PATH}/${cls.cn}`),
       disableTranslation: true,
     }));
 
-    const projectItems: MenuItem[] = userProjectsList.map((proj) => ({
-      id: `project-${proj.cn}`,
+    const projectChildren: MenuItem[] = userProjectsList.map((proj) => ({
+      id: proj.cn,
       label: proj.displayName || proj.cn,
       icon: faUserGear,
       action: () => navigate(`/${CHAT_PROJECTS_PATH}/${proj.cn}`),
       disableTranslation: true,
     }));
 
-    setMenuItems([...classItems, ...projectItems]);
-  }, [user, userSchoolClasses, userProjects, navigate]);
+    const items: MenuItem[] = [];
+
+    if (classChildren.length > 0) {
+      items.push({
+        id: 'classes',
+        label: t('chat.schoolClasses'),
+        icon: faUsers,
+        action: () => {},
+        disableTranslation: true,
+        children: classChildren,
+      });
+    }
+
+    if (projectChildren.length > 0) {
+      items.push({
+        id: 'projects',
+        label: t('chat.projects'),
+        icon: faUserGear,
+        action: () => {},
+        disableTranslation: true,
+        children: projectChildren,
+      });
+    }
+
+    setMenuItems(items);
+  }, [user, userSchoolClasses, userProjects, navigate, t]);
 
   return {
     title: 'chat.title',
     icon: ContactIcon,
-    color: 'hover:bg-primary',
+    color: 'hover:bg-ciGreenToBlue',
     appName: APPS.CHAT,
     menuItems,
   };

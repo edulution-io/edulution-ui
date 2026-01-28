@@ -267,28 +267,24 @@ const MenuBar: React.FC = () => {
             >
               <div className="overflow-hidden">
                 <div className="border-muted-foreground/30 ml-4 border-l-2 py-1">
-                  {item.children!.map((child) => {
-                    const isChildActive = pathname.includes(child.id);
-                    return (
-                      <Button
-                        key={child.id}
-                        type="button"
-                        variant="btn-ghost"
-                        onClick={() => {
-                          if (isMobileView || isTabletView) toggleMobileMenuBar();
-                          child.action();
-                        }}
-                        className={cn(
-                          'flex w-full items-center justify-start py-2 pl-4 pr-3',
-                          'transition-all duration-150',
-                          'hover:pl-5',
-                          isChildActive && 'bg-accent/50 font-medium',
-                        )}
-                      >
-                        <span className="truncate">{child.label}</span>
-                      </Button>
-                    );
-                  })}
+                  {item.children!.map((child) => (
+                    <Button
+                      key={child.id}
+                      type="button"
+                      variant="btn-ghost"
+                      onClick={() => {
+                        if (isMobileView || isTabletView) toggleMobileMenuBar();
+                        child.action();
+                      }}
+                      className={cn(
+                        'flex w-full items-center justify-start py-2 pl-4 pr-3',
+                        'transition-all duration-150',
+                        'hover:pl-5',
+                      )}
+                    >
+                      <span className="truncate">{child.label}</span>
+                    </Button>
+                  ))}
                 </div>
               </div>
             </div>
