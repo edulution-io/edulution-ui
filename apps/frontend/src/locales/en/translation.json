@@ -10,6 +10,16 @@
   "public": "Public",
   "actions": "Actions",
   "logo": "Logo",
+  "chat": {
+    "title": "Chat",
+    "sidebar": "Chat",
+    "conversationWith": "Conversation with",
+    "selectConversation": "Select conversation",
+    "chatWith": "Chat with",
+    "schoolClass": "School class",
+    "project": "Project",
+    "selectFromSidebar": "Select a class or project from the sidebar"
+  },
   "bulletinboard": {
     "settings": "Settings",
     "noBulletinsToShow": "There are currently no messages to display, so check back later!",

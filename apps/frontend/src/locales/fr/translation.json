@@ -10,6 +10,16 @@
   "public": "Publique",
   "actions": "Actions",
   "logo": "Logo",
+  "chat": {
+    "title": "Chat",
+    "sidebar": "Chat",
+    "conversationWith": "Conversation avec",
+    "selectConversation": "Sélectionner une conversation",
+    "chatWith": "Chat avec",
+    "schoolClass": "Classe",
+    "project": "Projet",
+    "selectFromSidebar": "Sélectionnez une classe ou un projet dans la barre latérale"
+  },
   "bulletinboard": {
     "settings": "Paramètres",
     "noBulletinsToShow": "Il n'y a actuellement aucun message à afficher, il est préférable de passer à nouveau plus tard!",
