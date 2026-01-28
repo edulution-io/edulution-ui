@@ -17,16 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import MenuItem from './menuItem';
 
-interface MenuItem {
-  id: string;
-  label: string;
-  icon: string | IconDefinition;
-  action: () => void;
-  path?: string;
-  disableTranslation?: boolean;
-  children?: MenuItem[];
-}
+type Section = Pick<MenuItem, 'id' | 'label'>;
 
-export default MenuItem;
+export default Section;

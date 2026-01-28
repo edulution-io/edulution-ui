@@ -17,16 +17,27 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { create } from 'zustand';
+import Section from '@libs/menubar/section';
 
-interface MenuItem {
-  id: string;
-  label: string;
-  icon: string | IconDefinition;
-  action: () => void;
-  path?: string;
-  disableTranslation?: boolean;
-  children?: MenuItem[];
+interface SubMenuStore {
+  sections: Section[];
+  activeSection: string | null;
+  sectionToOpen: string | null;
+  setSections: (sections: Section[]) => void;
+  setActiveSection: (id: string | null) => void;
+  requestOpenSection: (id: string) => void;
+  clearOpenRequest: () => void;
 }
 
-export default MenuItem;
+const useSubMenuStore = create<SubMenuStore>((set) => ({
+  sections: [],
+  activeSection: null,
+  sectionToOpen: null,
+  setSections: (sections) => set({ sections }),
+  setActiveSection: (id) => set({ activeSection: id }),
+  requestOpenSection: (id) => set({ sectionToOpen: id, activeSection: id }),
+  clearOpenRequest: () => set({ sectionToOpen: null }),
+}));
+
+export default useSubMenuStore;
