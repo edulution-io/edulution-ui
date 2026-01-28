@@ -20,7 +20,6 @@
 import { RefObject, useCallback, useEffect, useState } from 'react';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import isValidFileToPreview from '@libs/filesharing/utils/isValidFileToPreview';
-import useMedia from '@/hooks/useMedia';
 import useFileEditorStore from '@/pages/FileSharing/FilePreview/OnlyOffice/useFileEditorStore';
 
 const RESIZE_DEBOUNCE_MS = 100;
@@ -43,13 +42,9 @@ const useKeyboardNavigation = ({
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
   const [isKeyboardNavActive, setIsKeyboardNavActive] = useState(false);
   const [gridItemsPerRow, setGridItemsPerRow] = useState(1);
-  const { isMobileView, isTabletView } = useMedia();
 
   const { isFilePreviewVisible, setIsFilePreviewVisible, currentlyEditingFile, resetCurrentlyEditingFile } =
     useFileEditorStore();
-
-  const isDesktop = !isMobileView && !isTabletView;
-  const isActive = isEnabled && isDesktop;
 
   const focusedFile =
     focusedIndex !== null && focusedIndex >= 0 && focusedIndex < files.length ? files[focusedIndex] : null;
@@ -61,7 +56,7 @@ const useKeyboardNavigation = ({
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
-      if (!isActive || files.length === 0) return;
+      if (!isEnabled || files.length === 0) return;
 
       const target = event.target as HTMLElement;
       const isInputElement = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
@@ -145,7 +140,7 @@ const useKeyboardNavigation = ({
       }
     },
     [
-      isActive,
+      isEnabled,
       files,
       focusedFile,
       onFileOpen,
@@ -160,16 +155,16 @@ const useKeyboardNavigation = ({
   );
 
   useEffect(() => {
-    if (!isActive) return undefined;
+    if (!isEnabled) return undefined;
 
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isActive, handleKeyDown]);
+  }, [isEnabled, handleKeyDown]);
 
   useEffect(() => {
-    if (!isActive || !isKeyboardNavActive || focusedIndex === null) return;
+    if (!isEnabled || !isKeyboardNavActive || focusedIndex === null) return;
 
     const file = files[focusedIndex];
     if (!file) return;
@@ -177,7 +172,7 @@ const useKeyboardNavigation = ({
     if (isFilePreviewVisible && isValidFileToPreview(file)) {
       void resetCurrentlyEditingFile(file);
     }
-  }, [focusedIndex, files, isActive, isKeyboardNavActive, isFilePreviewVisible, resetCurrentlyEditingFile]);
+  }, [focusedIndex, files, isEnabled, isKeyboardNavActive, isFilePreviewVisible, resetCurrentlyEditingFile]);
 
   useEffect(() => {
     if (!isKeyboardNavActive || !focusedFile || !containerRef?.current) return;
