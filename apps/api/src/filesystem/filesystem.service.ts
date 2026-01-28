@@ -410,8 +410,19 @@ class FilesystemService {
     return this.serve(filePath, res);
   }
 
-  async serve(filePath: string, res: Response) {
+  async serve(filePath: string, res: Response): Promise<Response> {
     await FilesystemService.throwErrorIfFileNotExists(filePath);
+
+    const stat = await fsStat(filePath);
+    const etag = `"${stat.mtimeMs.toString(36)}-${stat.size.toString(36)}"`;
+
+    res.setHeader(HTTP_HEADERS.CacheControl, 'public, max-age=0, must-revalidate');
+    res.setHeader(HTTP_HEADERS.ETag, etag);
+
+    const clientEtag = res.req?.headers['if-none-match'];
+    if (clientEtag === etag) {
+      return res.status(HttpStatus.NOT_MODIFIED).end();
+    }
 
     const contentType = lookup(filePath) || RequestResponseContentType.APPLICATION_OCTET_STREAM;
     res.setHeader(HTTP_HEADERS.ContentType, contentType);
