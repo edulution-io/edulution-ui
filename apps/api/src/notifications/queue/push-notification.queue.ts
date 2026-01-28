@@ -40,7 +40,7 @@ export default class PushNotificationQueue implements OnModuleInit, OnModuleDest
       connection: redisConnection,
       defaultJobOptions: {
         removeOnComplete: true,
-        removeOnFail: true,
+        removeOnFail: 100,
         attempts: 3,
         backoff: { type: 'exponential', delay: 3000 },
       },
@@ -52,44 +52,86 @@ export default class PushNotificationQueue implements OnModuleInit, OnModuleDest
       { connection: redisConnection, concurrency: WORKER_CONFIG.PUSH_NOTIFICATION_CONCURRENCY },
     );
 
+    this.worker.on('completed', (job) => {
+      Logger.debug(`Job ${job.id} completed`, PushNotificationQueue.name);
+    });
+
+    this.worker.on('failed', (job, error) => {
+      Logger.error(`Job ${job?.id} failed: ${error.message}`, error.stack, PushNotificationQueue.name);
+    });
+
     Logger.log('Push notification queue initialized', PushNotificationQueue.name);
   }
 
-  private async handleJob(job: Job<PushNotificationJobData>): Promise<void> {
-    const { username, ...notificationData } = job.data;
-
-    const tokens = Array.isArray(notificationData.to) ? notificationData.to : [notificationData.to];
-
-    const messages: ExpoPushMessage[] = tokens.map((token: string) => ({
+  private static mapToExpoMessage(
+    token: string,
+    data: Omit<PushNotificationJobData, 'username' | 'to'>,
+  ): ExpoPushMessage {
+    return {
       to: token,
       ...pickDefinedNotificationFields({
-        _contentAvailable: notificationData.contentAvailable,
-        data: notificationData.data,
-        title: notificationData.title,
-        body: notificationData.body,
-        ttl: notificationData.ttl,
-        expiration: notificationData.expiration,
-        priority: notificationData.priority,
-        subtitle: notificationData.subtitle,
-        sound: notificationData.sound,
-        badge: notificationData.badge,
-        interruptionLevel: notificationData.interruptionLevel,
-        channelId: notificationData.channelId,
-        icon: notificationData.icon,
-        richContent: notificationData.richContent,
-        categoryId: notificationData.categoryId,
-        mutableContent: notificationData.mutableContent,
-        accessToken: notificationData.accessToken,
+        _contentAvailable: data.contentAvailable,
+        data: data.data,
+        title: data.title,
+        body: data.body,
+        ttl: data.ttl,
+        expiration: data.expiration,
+        priority: data.priority,
+        subtitle: data.subtitle,
+        sound: data.sound,
+        badge: data.badge,
+        interruptionLevel: data.interruptionLevel,
+        channelId: data.channelId,
+        icon: data.icon,
+        richContent: data.richContent,
+        categoryId: data.categoryId,
+        mutableContent: data.mutableContent,
+        accessToken: data.accessToken,
       }),
-    }));
+    };
+  }
 
-    const chunks = this.expo.chunkPushNotifications(messages);
-    await Promise.all(chunks.map((chunk) => this.expo.sendPushNotificationsAsync(chunk)));
+  private async handleJob(job: Job<PushNotificationJobData>): Promise<void> {
+    const { username, to, ...notificationData } = job.data;
+    const tokens = Array.isArray(to) ? to : [to];
 
-    Logger.verbose(
-      `Push notification sent to ${tokens.length} recipients (triggered by ${username})`,
+    const validTokens = tokens.filter((token) => Expo.isExpoPushToken(token));
+
+    if (validTokens.length !== tokens.length) {
+      Logger.warn(`Filtered ${tokens.length - validTokens.length} invalid tokens`, PushNotificationQueue.name);
+    }
+
+    if (validTokens.length === 0) {
+      Logger.warn(`No valid tokens for job ${job.id}, skipping`, PushNotificationQueue.name);
+      return;
+    }
+
+    Logger.log(
+      `Sending push | devices: ${validTokens.length} | title: "${notificationData.title}" | user: ${username}`,
       PushNotificationQueue.name,
     );
+
+    const messages = validTokens.map((token) => PushNotificationQueue.mapToExpoMessage(token, notificationData));
+
+    const chunks = this.expo.chunkPushNotifications(messages);
+
+    const results = await Promise.allSettled(
+      chunks.map((chunk, index) =>
+        this.expo.sendPushNotificationsAsync(chunk).catch((error) => {
+          Logger.error(
+            `Chunk ${index + 1}/${chunks.length} failed`,
+            error instanceof Error ? error.stack : undefined,
+            PushNotificationQueue.name,
+          );
+          throw error;
+        }),
+      ),
+    );
+
+    const failedCount = results.filter((r) => r.status === 'rejected').length;
+    if (failedCount > 0) {
+      throw new Error(`${failedCount}/${chunks.length} chunks failed`);
+    }
   }
 
   public async enqueue(data: PushNotificationJobData): Promise<void> {
