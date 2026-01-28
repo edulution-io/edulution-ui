@@ -509,7 +509,8 @@
     "webdavInfo": {
       "title": "WebDAV-Zugang",
       "description": "Verwende diese URL, um dich mit deinen Dateien über WebDAV-Clients zu verbinden",
-      "url": "WebDAV-URL",
+      "urlWindowsMac": "WebDAV-URL (Windows / macOS)",
+      "urlLinux": "WebDAV-URL (Linux)",
       "username": "Benutzername",
       "passwordHint": "Verwende dein Anmeldepasswort zur Authentifizierung",
       "tutorialsTitle": "Anleitungen",
@@ -1487,6 +1488,8 @@
     "filter": "Filter",
     "showHiddenFiles": "Versteckte Dateien anzeigen",
     "showSystemFiles": "Systemdateien anzeigen",
+    "expand": "Aufklappen",
+    "collapse": "Zuklappen",
     "errors": {
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "directoryNotCreated": "Erstellen des Verzeichnisses fehlgeschlagen",

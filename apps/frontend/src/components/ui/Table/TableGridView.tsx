@@ -61,6 +61,9 @@ interface TableGridViewProps<TData, TValue> {
   gridItemConfig: GridItemConfig<TData>;
   viewModeStorageKey: string;
   filterOptions?: FilterOption[];
+  focusedRowId?: string | null;
+  onGridItemClick?: (item: TData) => void;
+  onSortedRowsChange?: (sortedData: TData[]) => void;
 }
 
 const TableGridView = <TData, TValue>({
@@ -88,6 +91,9 @@ const TableGridView = <TData, TValue>({
   gridItemConfig,
   viewModeStorageKey,
   filterOptions,
+  focusedRowId,
+  onGridItemClick,
+  onSortedRowsChange,
 }: TableGridViewProps<TData, TValue>) => {
   const { t } = useTranslation();
   const { getViewMode, setViewMode } = useTableViewSettingsStore();
@@ -164,6 +170,9 @@ const TableGridView = <TData, TValue>({
             {viewModeToggle}
           </>
         }
+        focusedRowId={focusedRowId}
+        onRowClick={onGridItemClick}
+        onSortedRowsChange={onSortedRowsChange}
       />
     );
   }
@@ -228,6 +237,9 @@ const TableGridView = <TData, TValue>({
           getRowDisabled={getRowDisabled}
           enableDragAndDrop={enableDragAndDrop}
           canDropOnRow={canDropOnRow}
+          focusedRowId={focusedRowId}
+          onItemClick={onGridItemClick}
+          onRowsChange={onSortedRowsChange}
         />
         <TableActionFooter
           actions={actions}
