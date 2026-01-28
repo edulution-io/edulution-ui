@@ -10,6 +10,16 @@
   "public": "Öffentlich",
   "actions": "Aktionen",
   "logo": "Logo",
+  "chat": {
+    "title": "Chat",
+    "sidebar": "Chat",
+    "conversationWith": "Unterhaltung mit",
+    "selectConversation": "Unterhaltung auswählen",
+    "chatWith": "Chat mit",
+    "schoolClass": "Schulklasse",
+    "project": "Projekt",
+    "selectFromSidebar": "Wähle eine Klasse oder ein Projekt aus der Seitenleiste"
+  },
   "bulletinboard": {
     "settings": "Einstellungen",
     "noBulletinsToShow": "Aktuell gibt es keine Mitteilungen anzuzeigen, schaue am besten später noch mal vorbei!",
