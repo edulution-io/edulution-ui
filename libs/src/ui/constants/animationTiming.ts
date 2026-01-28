@@ -17,16 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
+const HIGHLIGHT_DURATION_MS = 3000;
+const SCROLL_DELAY_MS = 50;
+const HASH_SCROLL_DELAY_MS = 100;
 
-interface MenuItem {
-  id: string;
-  label: string;
-  icon: string | IconDefinition;
-  action: () => void;
-  path?: string;
-  disableTranslation?: boolean;
-  children?: MenuItem[];
-}
-
-export default MenuItem;
+export { HIGHLIGHT_DURATION_MS, SCROLL_DELAY_MS, HASH_SCROLL_DELAY_MS };

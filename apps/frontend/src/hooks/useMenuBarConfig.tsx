@@ -17,6 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import APPS from '@libs/appconfig/constants/apps';
@@ -31,6 +32,8 @@ import type TApps from '@libs/appconfig/types/appsType';
 import MenuBarEntry from '@libs/menubar/menuBarEntry';
 import MenuItem from '@libs/menubar/menuItem';
 import { SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
+import useSubMenuStore from '@/store/useSubMenuStore';
+import useScrollToSection from '@/hooks/useScrollToSection';
 import useLdapGroups from './useLdapGroups';
 
 const useMenuBarConfig = (): MenuBarEntry => {
@@ -43,6 +46,8 @@ const useMenuBarConfig = (): MenuBarEntry => {
   const FILE_SHARING_MENUBAR_CONFIG = useFileSharingMenuConfig();
   const SURVEYS_MENUBAR_CONFIG = useSurveysPageMenu();
   const CLASS_MANAGEMENT_MENUBAR_CONFIG = useClassManagementMenu();
+  const { sections } = useSubMenuStore();
+  const { scrollToSection } = useScrollToSection();
 
   const menuBarConfigSwitch = (): MenuBarEntry => {
     const rootPathName = getFromPathName(pathname, 1);
@@ -75,23 +80,55 @@ const useMenuBarConfig = (): MenuBarEntry => {
     }
   };
 
-  const configValues = menuBarConfigSwitch();
-  const menuItems: MenuItem[] = configValues.menuItems.map((item) => ({
-    id: item.id,
-    label: item.disableTranslation ? item.label : t(item.label),
-    action: () => item.action(),
-    icon: item.icon,
-    disableTranslation: item.disableTranslation,
-  }));
+  const sectionChildren: MenuItem[] = useMemo(
+    () =>
+      sections.map((section) => ({
+        id: section.id,
+        label: section.label,
+        icon: '',
+        action: () => {
+          scrollToSection(section.id);
+        },
+        disableTranslation: true,
+      })),
+    [sections, scrollToSection],
+  );
 
-  return {
-    menuItems,
-    title: t(configValues.title),
-    disabled: configValues.disabled,
-    icon: configValues.icon,
-    color: configValues.color,
-    appName: configValues.appName,
-  };
+  const configValues = menuBarConfigSwitch();
+  const activeMenuItemId = getFromPathName(pathname, 2);
+
+  const menuItems: MenuItem[] = useMemo(
+    () =>
+      configValues.menuItems.map((item) => ({
+        id: item.id,
+        label: item.disableTranslation ? item.label : t(item.label),
+        action: () => item.action(),
+        icon: item.icon,
+        disableTranslation: item.disableTranslation,
+        children: item.id === activeMenuItemId ? sectionChildren : undefined,
+      })),
+    [configValues.menuItems, t, activeMenuItemId, sectionChildren],
+  );
+
+  return useMemo(
+    () => ({
+      menuItems,
+      title: t(configValues.title),
+      disabled: configValues.disabled,
+      icon: configValues.icon,
+      color: configValues.color,
+      appName: configValues.appName,
+    }),
+    [
+      menuItems,
+      t,
+      configValues.title,
+      configValues.disabled,
+      configValues.icon,
+      configValues.color,
+      configValues.appName,
+    ],
+  );
 };
 
 export default useMenuBarConfig;
