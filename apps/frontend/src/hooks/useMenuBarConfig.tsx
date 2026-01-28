@@ -104,14 +104,17 @@ const useMenuBarConfig = (): MenuBarEntry => {
 
   const menuItems: MenuItem[] = useMemo(
     () =>
-      configValues.menuItems.map((item) => ({
-        id: item.id,
-        label: item.disableTranslation ? item.label : t(item.label),
-        action: () => item.action(),
-        icon: item.icon,
-        disableTranslation: item.disableTranslation,
-        children: item.id === activeMenuItemId ? sectionChildren : undefined,
-      })),
+      configValues.menuItems.map((item) => {
+        const itemChildren = item.children ?? (item.id === activeMenuItemId ? sectionChildren : undefined);
+        return {
+          id: item.id,
+          label: item.disableTranslation ? item.label : t(item.label),
+          action: () => item.action(),
+          icon: item.icon,
+          disableTranslation: item.disableTranslation,
+          children: itemChildren,
+        };
+      }),
     [configValues.menuItems, t, activeMenuItemId, sectionChildren],
   );
 
