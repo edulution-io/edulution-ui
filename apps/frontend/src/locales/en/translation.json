@@ -735,14 +735,17 @@
       "fileDeletionSuccess": "Deleted the file successfully.",
       "fileDeletionError": "The file could not be deleted.",
       "saveSurveySuccess": "Saved the survey.",
-      "surveyPlaceHolder": "Click the \"Add Question\" button below to start creating your form.",
-      "surveyPlaceholderDescription": "Click the \"Add Question\" button below to start creating your form.",
-      "surveyPlaceholderDescriptionMobile": "Click the \"Add Question\" button below to start creating your form.",
-      "pagePlaceHolder": "Click the \"Add Question\" button below to add a new element to the page.",
-      "panelPlaceHolder": "Click on the \"Add Question\" below to add a new element to the panel.",
       "reset": "Reset",
       "addDescription": "Add a description",
       "expectingUserInput": "Expecting the user to answer here, ... ",
+      "customTranslations": {
+        "surveyPlaceHolder": "Click the \"Add Question\" button below to start creating your form.",
+        "surveyPlaceholderDescription": "Click the \"Add Question\" button below to start creating your form.",
+        "surveyPlaceholderDescriptionMobile": "Click the \"Add Question\" button below to start creating your form.",
+        "pagePlaceHolder": "Click the \"Add Question\" button below to add a new element to the page.",
+        "panelPlaceHolder": "Click on the \"Add Question\" below to add a new element to the panel.",
+        "pageTitlePlaceHolder": "Enter page title"
+      },
       "isLoadingSurvey": "Survey is loading...",
       "template": {
         "title": "Templates",

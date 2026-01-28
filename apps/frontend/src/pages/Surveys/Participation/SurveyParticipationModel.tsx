@@ -30,23 +30,25 @@ import {
   SurveyModel,
   UploadFilesEvent,
 } from 'survey-core';
+import THEME from '@libs/common/constants/theme';
 import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
+import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 import { SURVEY_DEFAULT_LOGO_PATH } from '@libs/survey/constants/surveys-endpoint';
 import useLanguage from '@/hooks/useLanguage';
+import useThemeStore from '@/store/useThemeStore';
 import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
 import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/ExportSurveyToPdfDialog';
 import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import '../theme/custom.participation.css';
 import 'survey-core/i18n/french';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
-import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
-import useThemeStore from '@/store/useThemeStore';
-import THEME from '@libs/common/constants/theme';
+import '@/pages/Surveys/theme/creator.min.css';
+import '@/pages/Surveys/theme/default2.min.css';
+import '@/pages/Surveys/theme/participation.css';
 
 interface SurveyFileValue {
   name: string;
@@ -64,7 +66,6 @@ Serializer.getProperty('file', 'storeDataAsText').defaultValue = false;
 Serializer.getProperty('file', 'waitForUpload').defaultValue = true;
 Serializer.getProperty('file', 'showPreview').defaultValue = true;
 Serializer.getProperty('file', 'allowMultiple').defaultValue = false;
-Serializer.getProperty('text', 'textUpdateMode').defaultValue = 'onTyping';
 Serializer.getProperty('signaturepad', 'signatureWidth').defaultValue = '800';
 
 const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.ReactNode => {

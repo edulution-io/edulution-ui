@@ -642,14 +642,17 @@
       "fileDeletionSuccess": "Le fichier a été supprimé avec succès.",
       "fileDeletionError": "Le fichier n'a pas pu être supprimé.",
       "saveSurveySuccess": "Le sondage a été enregistrée.",
-      "surveyPlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
-      "surveyPlaceholderDescription": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
-      "surveyPlaceholderDescriptionMobile": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
-      "pagePlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour ajouter un nouvel élément à la page.",
-      "panelPlaceHolder": "Cliquez sur « Ajouter une question » ci-dessous pour ajouter un nouvel élément au panneau.",
       "reset": "Rejeter",
       "addDescription": "Ajouter une description",
       "expectingUserInput": "Ici, la réponse du participant est attendue ... ",
+      "customTranslations": {
+        "surveyPlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
+        "surveyPlaceholderDescription": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
+        "surveyPlaceholderDescriptionMobile": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
+        "pagePlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour ajouter un nouvel élément à la page.",
+        "panelPlaceHolder": "Cliquez sur « Ajouter une question » ci-dessous pour ajouter un nouvel élément au panneau.",
+        "pageTitlePlaceHolder": "Entrez le titre de la page"
+      },
       "isLoadingSurvey": "Le sondage est en cours de chargement...",
       "template": {
         "title": "Modèle",

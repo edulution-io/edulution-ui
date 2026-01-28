@@ -23,8 +23,6 @@ import { Model } from 'survey-core';
 import { useTranslation } from 'react-i18next';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
-import '@/pages/Surveys/theme/creator.min.css';
-import '@/pages/Surveys/theme/default2.min.css';
 import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 
 interface SurveySubmissionProps {

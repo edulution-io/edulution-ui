@@ -53,6 +53,8 @@ import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuest
 import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
 import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/ExportSurveyToPdfDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import '@/pages/Surveys/theme/creator.min.css';
+import '@/pages/Surveys/theme/default2.min.css';
 
 interface SurveyEditorPageProps {
   initialFormValues: SurveyDto;
@@ -272,7 +274,11 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
         {creator && (
           <SurveyCreatorComponent
             creator={creator}
-            style={{ height: '100%', width: '100%' }}
+            style={{
+              height: '100%',
+              width: '100%',
+              ...surveyTheme.cssVariables,
+            }}
           />
         )}
       </div>

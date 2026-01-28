@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.sd-container-modern__title {
+  background-color: transparent !important;
+  .sd-title .sv-string-viewer {
+    font-size: 2rem;
+    line-height: 2rem;
+  }
+  .sd-description .sv-string-viewer {
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+  }
+}
+
+.sd-page {
+  .sd-page__title .sv-string-viewer {
+    font-size: 1.5rem !important;
+    line-height: 1.5rem;
+  }
+  .sd-page__description .sv-string-viewer {
+    font-size: 1.25rem;
+    line-height: 1.25rem;
+  }
+}
+
+.svc-btn {
+  display: flex;
+  justify-content: center;
+}
+
+.sd-dropdown__value {
+  color: var(--background);
+  font-weight: 600;
+}
+
+.sd-rating__item--selected {
+  background-color: var(--primary) !important;
+  .sv-string-viewer {
+    color: var(--foreground);
+  }
+}

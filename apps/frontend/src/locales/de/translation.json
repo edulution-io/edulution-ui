@@ -737,14 +737,17 @@
       "fileDeletionSuccess": "Die Datei wurde erfolgreich gelöscht.",
       "fileDeletionError": "Die Datei konnte nicht gelöscht werden",
       "saveSurveySuccess": "Die Umfrage wurde gespeichert.",
-      "surveyPlaceHolder": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
-      "surveyPlaceholderDescription": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
-      "surveyPlaceholderDescriptionMobile": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
-      "pagePlaceHolder": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um der Seite ein neues Element hinzuzufügen.",
-      "panelPlaceHolder": "Klicke unten auf \"Frage hinzufügen\", um dem Bedienfeld ein neues Element hinzuzufügen.",
       "reset": "Verwerfen",
       "addDescription": "Beschreibung hinzufügen",
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
+      "customTranslations": {
+        "surveyPlaceHolder": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
+        "surveyPlaceholderDescription": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
+        "surveyPlaceholderDescriptionMobile": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
+        "pagePlaceHolder": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um der Seite ein neues Element hinzuzufügen.",
+        "panelPlaceHolder": "Klicke unten auf \"Frage hinzufügen\", um dem Bedienfeld ein neues Element hinzuzufügen.",
+        "pageTitlePlaceHolder": "Seitentitel eingeben"
+      },
       "isLoadingSurvey": "Umfrage wird geladen...",
       "template": {
         "title": "Vorlagen",
