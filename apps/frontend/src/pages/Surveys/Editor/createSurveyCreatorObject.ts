@@ -53,7 +53,7 @@ const createSurveyCreatorObject = (language = 'en') => {
     generateValidJSON: true,
     isAutoSave: true,
     showJSONEditorTab: true,
-    showPreviewTab: false,
+    showPreviewTab: true,
     showLogicTab: false,
     questionTypes: [
       'radiogroup',

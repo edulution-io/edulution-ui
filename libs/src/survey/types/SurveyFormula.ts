@@ -32,6 +32,8 @@ class SurveyFormula {
 
   // only defined in page-less mode
   elements?: TSurveyElement[];
+
+  calculatedValues?: { name: string; value?: string; expression?: string; includeIntoResult?: boolean }[];
 }
 
 export default SurveyFormula;
