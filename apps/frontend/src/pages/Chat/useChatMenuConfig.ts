@@ -19,6 +19,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { faUsers, faUserGear } from '@fortawesome/free-solid-svg-icons';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import useLmnApiStore from '@/store/useLmnApiStore';
@@ -31,6 +32,7 @@ import type LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import type LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 
 const useChatMenuConfig = () => {
+  const { t } = useTranslation();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { user, lmnApiToken } = useLmnApiStore();
@@ -66,7 +68,7 @@ const useChatMenuConfig = () => {
     const userClasses = getGroupsWhereUserIsMember(userSchoolClasses);
     const userProjectsList = getGroupsWhereUserIsMember(userProjects);
 
-    const classItems: MenuItem[] = userClasses.map((cls) => ({
+    const classChildren: MenuItem[] = userClasses.map((cls) => ({
       id: `class-${cls.cn}`,
       label: cls.displayName || cls.cn,
       icon: faUsers,
@@ -74,7 +76,7 @@ const useChatMenuConfig = () => {
       disableTranslation: true,
     }));
 
-    const projectItems: MenuItem[] = userProjectsList.map((proj) => ({
+    const projectChildren: MenuItem[] = userProjectsList.map((proj) => ({
       id: `project-${proj.cn}`,
       label: proj.displayName || proj.cn,
       icon: faUserGear,
@@ -82,8 +84,30 @@ const useChatMenuConfig = () => {
       disableTranslation: true,
     }));
 
-    setMenuItems([...classItems, ...projectItems]);
-  }, [user, userSchoolClasses, userProjects, navigate]);
+    const items: MenuItem[] = [];
+
+    if (classChildren.length > 0) {
+      items.push({
+        id: 'schoolClasses',
+        label: t('chat.schoolClasses'),
+        icon: faUsers,
+        action: () => {},
+        children: classChildren,
+      });
+    }
+
+    if (projectChildren.length > 0) {
+      items.push({
+        id: 'projects',
+        label: t('chat.projects'),
+        icon: faUserGear,
+        action: () => {},
+        children: projectChildren,
+      });
+    }
+
+    setMenuItems(items);
+  }, [user, userSchoolClasses, userProjects, navigate, t]);
 
   return {
     title: 'chat.title',
