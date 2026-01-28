@@ -279,6 +279,29 @@
     margin-left: 1rem;
   }
 
+  .svc-question__adorner {
+    .sd-table-wrapper,
+    .sd-table-wrapper::before,
+    .sd-table-wrapper::after,
+    .sd-table,
+    .sd-table__cell,
+    .sd-matrix__cell,
+    .sd-matrix tr > td {
+      background-color: var(--accent);
+    }
+  }
+  .svc-question__adorner--selected {
+    .sd-table-wrapper,
+    .sd-table-wrapper::before,
+    .sd-table-wrapper::after,
+    .sd-table,
+    .sd-table__cell,
+    .sd-matrix__cell,
+    .sd-matrix tr > td {
+      background-color: var(--accent-light);
+    }
+  }
+
   /* Fix dialog component (background-colors) */
   .sv-popup__body-header,
   .sv-popup__body-footer {
@@ -286,6 +309,9 @@
   }
 
   /* Fix popup component */
+  .sv-popup--modal.sv-popup__container {
+    box-shadow: none;
+  }
   .sv-popup--dropdown {
     .sv-popup__container {
       box-shadow: none;
@@ -595,5 +621,13 @@
   /* json tab background color */
   .svc-json-editor-tab__content-area {
     background-color: transparent;
+  }
+
+  /* empty survey placeholder */
+  .svc-designer__placeholder-container {
+    height: 100%;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
   }
 }
