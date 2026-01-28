@@ -119,6 +119,7 @@
     "actionCannotBeUndone": "Diese Aktion kann nicht rückgängig gemacht werden.",
     "deletedNotifications": "{{count}} Benachrichtigung gelöscht",
     "deletedNotifications_other": "{{count}} Benachrichtigungen gelöscht",
+    "loadMore": "Mehr laden",
     "menu": {
       "all": "Alle",
       "messages": "Nachrichten",

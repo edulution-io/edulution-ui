@@ -119,6 +119,7 @@
     "actionCannotBeUndone": "This action cannot be undone.",
     "deletedNotifications": "{{count}} notification deleted",
     "deletedNotifications_other": "{{count}} notifications deleted",
+    "loadMore": "Load more",
     "menu": {
       "all": "All",
       "messages": "Messages",

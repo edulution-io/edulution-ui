@@ -99,7 +99,12 @@ const NotificationItem = ({ notification }: NotificationItemProps) => {
       )}
       onClick={handleExpand}
       onKeyDown={(event) => {
-        if (event.key === 'Enter' || event.key === ' ') handleExpand();
+        if (event.key === 'Enter') {
+          handleExpand();
+        } else if (event.key === ' ') {
+          event.preventDefault();
+          handleExpand();
+        }
       }}
     >
       <div className="flex items-start gap-3">

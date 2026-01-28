@@ -38,8 +38,10 @@ class NotificationsController {
     @Query('limit') limitParam = '20',
     @Query('offset') offsetParam = '0',
   ) {
-    const limit = Math.min(50, Math.max(1, parseInt(limitParam, 10)));
-    const offset = Math.max(0, parseInt(offsetParam, 10));
+    const parsedLimit = parseInt(limitParam, 10);
+    const limit = Math.min(50, Math.max(1, Number.isNaN(parsedLimit) ? 20 : parsedLimit));
+    const parsedOffset = parseInt(offsetParam, 10);
+    const offset = Math.max(0, Number.isNaN(parsedOffset) ? 0 : parsedOffset);
     return this.notificationsService.getInboxNotifications(username, limit, offset);
   }
 

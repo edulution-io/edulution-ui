@@ -54,6 +54,7 @@ const NotificationBellButton = () => {
   return (
     <>
       <Button
+        aria-label={t('notificationscenter.sidebar')}
         onPointerDown={handlePointerDown}
         onClick={handleClick}
         className={cn(

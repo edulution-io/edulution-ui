@@ -98,6 +98,10 @@ const useNotifications = () => {
     isSurveysAppActivated,
     isConferenceAppActivated,
     isNotificationscenterActive,
+    getMails,
+    updateOpenSurveys,
+    getConferences,
+    fetchUnreadCount,
   ]);
 
   useInterval(() => {

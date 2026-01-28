@@ -114,6 +114,7 @@
     "actionCannotBeUndone": "Cette action ne peut pas être annulée.",
     "deletedNotifications": "{{count}} notification supprimée",
     "deletedNotifications_other": "{{count}} notifications supprimées",
+    "loadMore": "Charger plus",
     "menu": {
       "all": "Tout",
       "messages": "Messages",

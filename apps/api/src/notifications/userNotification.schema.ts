@@ -17,16 +17,20 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Document, Types } from 'mongoose';
+import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import USER_NOTIFICATION_STATUS, { UserNotificationStatus } from '@libs/notification/constants/userNotificationStatus';
+import { randomUUID } from 'crypto';
 
 export type UserNotificationDocument = UserNotification & Document;
 
 @Schema({ timestamps: true, strict: true, collection: 'usernotifications' })
 export class UserNotification {
-  @Prop({ type: Types.ObjectId, ref: 'Notification', required: true })
-  notificationId: Types.ObjectId;
+  @Prop({ type: String, required: true, unique: true, default: randomUUID() })
+  userNotificationId: string;
+
+  @Prop({ type: String, required: true })
+  notificationId: string;
 
   @Prop({ required: true })
   username: string;
@@ -43,6 +47,7 @@ export class UserNotification {
 
 export const UserNotificationSchema = SchemaFactory.createForClass(UserNotification);
 
+UserNotificationSchema.index({ userNotificationId: 1 }, { unique: true });
 UserNotificationSchema.index({ username: 1, createdAt: -1 });
 UserNotificationSchema.index({ username: 1, readAt: 1 });
 UserNotificationSchema.index({ notificationId: 1 });

@@ -20,10 +20,12 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInbox } from '@fortawesome/free-solid-svg-icons';
+import { faInbox, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto';
 import cn from '@libs/common/utils/className';
 import NotificationItem from '@/pages/NotificationsCenter/components/NotificationItem';
+import useNotificationStore from '@/store/useNotificationStore';
+import { Button } from '@/components/shared/Button';
 
 interface NotificationListProps {
   notifications: InboxNotificationDto[];
@@ -32,6 +34,11 @@ interface NotificationListProps {
 
 const NotificationList = ({ notifications, className }: NotificationListProps) => {
   const { t } = useTranslation();
+  const { hasMore, isLoadingMore, fetchNotifications } = useNotificationStore();
+
+  const handleLoadMore = () => {
+    void fetchNotifications(true);
+  };
 
   if (notifications.length === 0) {
     return (
@@ -55,6 +62,26 @@ const NotificationList = ({ notifications, className }: NotificationListProps) =
           notification={notification}
         />
       ))}
+      {hasMore && (
+        <Button
+          onClick={handleLoadMore}
+          disabled={isLoadingMore}
+          variant="outline"
+          className="mt-2 w-full"
+        >
+          {isLoadingMore ? (
+            <>
+              <FontAwesomeIcon
+                icon={faSpinner}
+                className="mr-2 h-4 w-4 animate-spin"
+              />
+              {t('common.loading')}
+            </>
+          ) : (
+            t('notificationscenter.loadMore')
+          )}
+        </Button>
+      )}
     </div>
   );
 };

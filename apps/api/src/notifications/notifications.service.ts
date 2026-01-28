@@ -19,7 +19,7 @@
 
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { Expo, ExpoPushMessage } from 'expo-server-sdk';
 import pickDefinedNotificationFields from '@libs/notification/utils/pickDefinedNotificationFields';
 import SendPushNotificationDto from '@libs/notification/types/send-pushNotification.dto';
@@ -28,6 +28,7 @@ import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto
 import USER_NOTIFICATION_STATUS from '@libs/notification/constants/userNotificationStatus';
 import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
 import { NOTIFICATION_FILTER_TYPE, NotificationFilterType } from '@libs/notification/types/notificationFilterType';
+import { randomUUID } from 'crypto';
 import UsersService from '../users/users.service';
 import { Notification, NotificationDocument } from './notification.schema';
 import { UserNotification, UserNotificationDocument } from './userNotification.schema';
@@ -81,11 +82,11 @@ class NotificationsService {
     partialNotification: Omit<SendPushNotificationDto, 'to'>,
     persistOptions?: CreateNotificationDto,
   ): Promise<void> {
-    let notificationId: Types.ObjectId | null = null;
+    let notificationId: string | null = null;
 
     if (persistOptions) {
       const notification = await this.createNotification(persistOptions);
-      notificationId = new Types.ObjectId(String(notification.id));
+      notificationId = notification.notificationId;
       await this.createUserNotifications(notificationId, usernames);
     }
 
@@ -109,15 +110,15 @@ class NotificationsService {
   }
 
   async createNotification(createNotificationDto: CreateNotificationDto): Promise<NotificationDocument> {
-    const notification = await this.notificationModel.create(createNotificationDto);
-    return notification;
+    return this.notificationModel.create({
+      ...createNotificationDto,
+      notificationId: randomUUID(),
+    });
   }
 
-  async createUserNotifications(
-    notificationId: Types.ObjectId,
-    usernames: string[],
-  ): Promise<UserNotificationDocument[]> {
+  async createUserNotifications(notificationId: string, usernames: string[]): Promise<UserNotificationDocument[]> {
     const userNotifications = usernames.map((username) => ({
+      userNotificationId: randomUUID(),
       notificationId,
       username,
       readAt: null,
@@ -127,7 +128,7 @@ class NotificationsService {
   }
 
   async updateUserNotificationStatus(
-    notificationId: Types.ObjectId,
+    notificationId: string,
     usernames: string[],
     status: (typeof USER_NOTIFICATION_STATUS)[keyof typeof USER_NOTIFICATION_STATUS],
   ): Promise<void> {
@@ -139,36 +140,52 @@ class NotificationsService {
     limit = 20,
     offset = 0,
   ): Promise<{ notifications: InboxNotification[]; total: number }> {
-    const userNotifications = await this.userNotificationModel
-      .find({ username })
-      .sort({ createdAt: -1 })
-      .populate<{ notificationId: NotificationDocument }>('notificationId')
-      .exec();
+    const result = await this.userNotificationModel.aggregate<{
+      data: Array<{
+        userNotificationId: string;
+        notificationId: string;
+        readAt: Date | null;
+        notification: Notification;
+      }>;
+      total: Array<{ count: number }>;
+    }>([
+      { $match: { username } },
+      { $sort: { createdAt: -1 } },
+      {
+        $lookup: {
+          from: 'notifications',
+          localField: 'notificationId',
+          foreignField: 'notificationId',
+          as: 'notification',
+        },
+      },
+      { $unwind: '$notification' },
+      { $match: { 'notification.createdBy': { $ne: username } } },
+      {
+        $facet: {
+          data: [{ $skip: offset }, { $limit: limit }],
+          total: [{ $count: 'count' }],
+        },
+      },
+    ]);
 
-    const filteredNotifications = userNotifications.filter(
-      (un) => un.notificationId !== null && un.notificationId.createdBy !== username,
-    );
+    const data = result[0]?.data ?? [];
+    const total = result[0]?.total[0]?.count ?? 0;
 
-    const total = filteredNotifications.length;
-    const paginatedNotifications = filteredNotifications.slice(offset, offset + limit);
-
-    const notifications: InboxNotification[] = paginatedNotifications.map((un) => {
-      const notification = un.notificationId;
-      return {
-        id: String(un.id),
-        notificationId: String(notification.id),
-        type: notification.type,
-        sourceType: notification.sourceType,
-        sourceId: notification.sourceId,
-        title: notification.title,
-        pushNotification: notification.pushNotification,
-        content: notification.content,
-        data: notification.data,
-        createdAt: notification.createdAt,
-        createdBy: notification.createdBy,
-        readAt: un.readAt,
-      };
-    });
+    const notifications: InboxNotification[] = data.map((item) => ({
+      id: item.userNotificationId,
+      notificationId: item.notification.notificationId,
+      type: item.notification.type,
+      sourceType: item.notification.sourceType,
+      sourceId: item.notification.sourceId,
+      title: item.notification.title,
+      pushNotification: item.notification.pushNotification,
+      content: item.notification.content,
+      data: item.notification.data,
+      createdAt: item.notification.createdAt,
+      createdBy: item.notification.createdBy,
+      readAt: item.readAt,
+    }));
 
     return { notifications, total };
   }
@@ -180,7 +197,7 @@ class NotificationsService {
         $lookup: {
           from: 'notifications',
           localField: 'notificationId',
-          foreignField: '_id',
+          foreignField: 'notificationId',
           as: 'notification',
         },
       },
@@ -198,44 +215,41 @@ class NotificationsService {
   }
 
   async markAsRead(notificationId: string, username: string): Promise<void> {
-    const notification = await this.notificationModel.findById(notificationId).exec();
+    const notification = await this.notificationModel.findOne({ notificationId }).exec();
     if (!notification || notification.type !== NOTIFICATION_TYPE.USER) {
       return;
     }
 
-    await this.userNotificationModel.updateOne(
-      { notificationId: new Types.ObjectId(notificationId), username },
-      { $set: { readAt: new Date() } },
-    );
+    await this.userNotificationModel.updateOne({ notificationId, username }, { $set: { readAt: new Date() } });
   }
 
   async markAllAsRead(username: string): Promise<void> {
-    const userTypeNotificationIds = await this.userNotificationModel.aggregate<{ id: Types.ObjectId }>([
+    const userTypeNotificationIds = await this.userNotificationModel.aggregate<{ userNotificationId: string }>([
       { $match: { username, readAt: null } },
       {
         $lookup: {
           from: 'notifications',
           localField: 'notificationId',
-          foreignField: '_id',
+          foreignField: 'notificationId',
           as: 'notification',
         },
       },
       { $unwind: '$notification' },
       { $match: { 'notification.type': NOTIFICATION_TYPE.USER } },
-      { $project: { id: '$_id' } },
+      { $project: { userNotificationId: 1 } },
     ]);
 
-    const ids = userTypeNotificationIds.map((doc) => doc.id);
+    const ids = userTypeNotificationIds.map((doc) => doc.userNotificationId);
     if (ids.length > 0) {
-      await this.userNotificationModel.updateMany({ _id: { $in: ids } }, { $set: { readAt: new Date() } });
+      await this.userNotificationModel.updateMany(
+        { userNotificationId: { $in: ids } },
+        { $set: { readAt: new Date() } },
+      );
     }
   }
 
   async deleteUserNotification(notificationId: string, username: string): Promise<void> {
-    await this.userNotificationModel.deleteOne({
-      notificationId: new Types.ObjectId(notificationId),
-      username,
-    });
+    await this.userNotificationModel.deleteOne({ notificationId, username });
   }
 
   async deleteAllUserNotifications(username: string, type: NotificationFilterType): Promise<number> {
@@ -244,13 +258,13 @@ class NotificationsService {
       return result.deletedCount;
     }
 
-    const notificationIds = await this.userNotificationModel.aggregate<{ notificationId: Types.ObjectId }>([
+    const notificationIds = await this.userNotificationModel.aggregate<{ notificationId: string }>([
       { $match: { username } },
       {
         $lookup: {
           from: 'notifications',
           localField: 'notificationId',
-          foreignField: '_id',
+          foreignField: 'notificationId',
           as: 'notification',
         },
       },

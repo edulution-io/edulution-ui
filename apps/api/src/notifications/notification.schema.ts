@@ -23,11 +23,16 @@ import { NotificationType } from '@libs/notification/constants/notificationType'
 import { NotificationSourceType } from '@libs/notification/constants/notificationSourceType';
 import { PushNotificationPriority } from '@libs/notification/constants/pushNotificationPriority';
 import { PushNotificationInterruptionLevel } from '@libs/notification/constants/pushNotificationInterruptionLevel';
+import PUSH_NOTIFICATION_LIMITS from '@libs/notification/constants/pushNotificationLimits';
+import { randomUUID } from 'crypto';
 
 export type NotificationDocument = Notification & Document;
 
 @Schema({ timestamps: true, strict: true, collection: 'notifications' })
 export class Notification {
+  @Prop({ type: String, required: true, unique: true, default: randomUUID() })
+  notificationId: string;
+
   @Prop({ type: String, required: true })
   type: NotificationType;
 
@@ -37,10 +42,10 @@ export class Notification {
   @Prop({ type: String, required: false })
   sourceId?: string;
 
-  @Prop({ required: true, maxlength: 50 })
+  @Prop({ required: true, set: (v: string) => v.slice(0, PUSH_NOTIFICATION_LIMITS.TITLE_MAX_LENGTH) })
   title: string;
 
-  @Prop({ required: true, maxlength: 150 })
+  @Prop({ required: true, set: (v: string) => v.slice(0, PUSH_NOTIFICATION_LIMITS.BODY_MAX_LENGTH) })
   pushNotification: string;
 
   @Prop({ required: false })
@@ -61,6 +66,7 @@ export class Notification {
   @Prop({ required: true })
   createdBy: string;
 
+  @Prop()
   createdAt: Date;
 
   @Prop({ default: 1 })
@@ -69,6 +75,7 @@ export class Notification {
 
 export const NotificationSchema = SchemaFactory.createForClass(Notification);
 
+NotificationSchema.index({ notificationId: 1 }, { unique: true });
 NotificationSchema.index({ type: 1 });
 NotificationSchema.index({ sourceType: 1, sourceId: 1 });
 
