@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { ColumnDef, flexRender, OnChangeFn, Row, RowSelectionState, VisibilityState } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 import TableAction from '@libs/common/types/tableAction';
@@ -54,6 +54,9 @@ interface DataTableProps<TData, TValue> {
   enableDragAndDrop?: boolean;
   canDropOnRow?: (row: TData) => boolean;
   searchBarAdditionalComponent?: ReactNode;
+  focusedRowId?: string | null;
+  onSortedRowsChange?: (sortedData: TData[]) => void;
+  onRowClick?: (item: TData) => void;
 }
 
 const ScrollableTable = <TData, TValue>({
@@ -79,6 +82,9 @@ const ScrollableTable = <TData, TValue>({
   enableDragAndDrop = false,
   canDropOnRow,
   searchBarAdditionalComponent,
+  focusedRowId,
+  onSortedRowsChange,
+  onRowClick,
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
 
@@ -92,6 +98,14 @@ const ScrollableTable = <TData, TValue>({
     initialSorting,
     initialColumnVisibility,
   });
+
+  const sortedRows = table.getRowModel().rows;
+
+  useEffect(() => {
+    if (onSortedRowsChange) {
+      onSortedRowsChange(sortedRows.map((row) => row.original));
+    }
+  }, [sortedRows, onSortedRowsChange]);
 
   const filteredRows = table.getFilteredRowModel().rows;
   const countableRows = getRowExcludedFromCount
@@ -173,6 +187,8 @@ const ScrollableTable = <TData, TValue>({
                     enableDragAndDrop={enableDragAndDrop}
                     canDropOnRow={canDropOnRow}
                     variant={isDialog ? 'dialog' : 'default'}
+                    isKeyboardFocused={focusedRowId === row.id}
+                    onRowClick={onRowClick}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
