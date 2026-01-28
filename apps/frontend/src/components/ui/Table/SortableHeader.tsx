@@ -32,32 +32,40 @@ interface SortableHeaderProps<TData, TValue> {
   hidden?: boolean;
 }
 
-const SortableHeader = <TData, TValue>({ table, column, className, hidden }: SortableHeaderProps<TData, TValue>) => (
-  <div className={cn('flex items-center space-x-2', className)}>
-    {table ? (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
-        onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(value)}
-        aria-label="Select all"
-      />
-    ) : null}
-    {!hidden ? (
-      <button
-        type="button"
-        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-      >
-        <div className="flex items-center">
-          {i18n.t(String(column.columnDef.meta?.translationId || column.id))}
-          {column.getIsSorted() && (
-            <FontAwesomeIcon
-              icon={faUpDown}
-              className="ml-2 h-3 w-3"
-            />
-          )}
-        </div>
-      </button>
-    ) : null}
-  </div>
-);
+const SortableHeader = <TData, TValue>({ table, column, className, hidden }: SortableHeaderProps<TData, TValue>) => {
+  const canSort = column.getCanSort();
+  const label = i18n.t(String(column.columnDef.meta?.translationId || column.id));
+
+  return (
+    <div className={cn('flex items-center space-x-2', className)}>
+      {table ? (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
+          onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(value)}
+          aria-label="Select all"
+        />
+      ) : null}
+      {!hidden &&
+        (canSort ? (
+          <button
+            type="button"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            <div className="flex items-center">
+              {label}
+              {column.getIsSorted() && (
+                <FontAwesomeIcon
+                  icon={faUpDown}
+                  className="ml-2 h-3 w-3"
+                />
+              )}
+            </div>
+          </button>
+        ) : (
+          <span>{label}</span>
+        ))}
+    </div>
+  );
+};
 
 export default SortableHeader;

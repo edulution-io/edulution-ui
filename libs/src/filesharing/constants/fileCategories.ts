@@ -17,12 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface FilterOption {
-  key: string;
-  translationKey: string;
-  checked: boolean;
-  onChange: (enabled: boolean) => void;
-  isSeparator?: boolean;
-}
+import CONTENT_FILE_TYPES from './contentFileTypes';
 
-export default FilterOption;
+type ContentCategory = (typeof CONTENT_FILE_TYPES)[keyof typeof CONTENT_FILE_TYPES];
+type AllCategories = 'folder' | ContentCategory;
+type FileCategoriesType = { readonly [K in Uppercase<AllCategories>]: Extract<AllCategories, Lowercase<K>> };
+
+const uniqueCategories = [...new Set(Object.values(CONTENT_FILE_TYPES))] as ContentCategory[];
+
+const FILE_CATEGORIES = {
+  FOLDER: 'folder',
+  ...Object.fromEntries(uniqueCategories.map((cat) => [cat.toUpperCase(), cat])),
+} as FileCategoriesType;
+
+export default FILE_CATEGORIES;

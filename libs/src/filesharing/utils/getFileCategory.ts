@@ -17,12 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface FilterOption {
-  key: string;
-  translationKey: string;
-  checked: boolean;
-  onChange: (enabled: boolean) => void;
-  isSeparator?: boolean;
-}
+import { IconType } from 'react-file-icon';
+import CONTENT_FILE_TYPES from '@libs/filesharing/constants/contentFileTypes';
+import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 
-export default FilterOption;
+const getFileCategory = (filename: string): IconType => {
+  const extension = getFileExtension(filename);
+  const key = `.${extension}`;
+  if (key in CONTENT_FILE_TYPES) {
+    return CONTENT_FILE_TYPES[key as keyof typeof CONTENT_FILE_TYPES];
+  }
+  return 'document';
+};
+
+export default getFileCategory;

@@ -21,7 +21,7 @@ import React, { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import ProgressBox from '@/components/ui/ProgressBox';
-import { t } from 'i18next';
+import i18n from '@/i18n';
 import {
   DONE_TOAST_DURATION_MS,
   ERROR_TOAST_DURATION_MS,
@@ -46,9 +46,9 @@ const useFileOperationProgressToast = (progress: FilesharingProgressDto | null |
 
     const toasterData = {
       percent: pct,
-      title: t(progress.title ?? ''),
+      title: i18n.t(progress.title ?? ''),
       id: progress.title ?? progress.processID,
-      description: t(progress.description ?? '', {
+      description: i18n.t(progress.description ?? '', {
         filename,
         username: progress.username,
       }),
@@ -58,9 +58,9 @@ const useFileOperationProgressToast = (progress: FilesharingProgressDto | null |
       total: progress.total,
     };
 
-    const getToastDuration = (failedOperations: number, precent: number): number | undefined => {
+    const getToastDuration = (failedOperations: number, percent: number): number | undefined => {
       if (failedOperations > 0) return ERROR_TOAST_DURATION_MS;
-      if (precent >= 100) return DONE_TOAST_DURATION_MS;
+      if (percent >= 100) return DONE_TOAST_DURATION_MS;
       return LIVE_TOAST_DURATION_MS;
     };
 
