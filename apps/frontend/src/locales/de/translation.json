@@ -1409,7 +1409,8 @@
       "qrCodeDescription": "Scanne diesen QR-Code mit der WireGuard App auf deinem Mobilgerät, um die VPN-Verbindung einzurichten.",
       "configDownload": "Konfigurationsdatei",
       "configDownloadDescription": "Lade die WireGuard-Konfigurationsdatei herunter, um sie in der WireGuard App auf deinem Computer zu importieren.",
-      "downloadButton": "Konfiguration herunterladen"
+      "downloadButton": "Konfiguration herunterladen",
+      "error": "Der VPN-Dienst ist derzeit nicht erreichbar. Bitte versuche es später erneut oder wende dich an einen Administrator."
     },
     "addTotp": {
       "title": "Zwei-Faktor-Authentisierung einrichten",

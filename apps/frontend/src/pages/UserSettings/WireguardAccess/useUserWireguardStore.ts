@@ -62,6 +62,7 @@ const useUserWireguardStore = create<UserWireguardStore>((set) => ({
       if ((error as { response?: { status?: number } })?.response?.status === 404) {
         set({ peer: null, hasPeer: false, isLoading: false });
       } else {
+        set({ isLoading: false });
         handleApiError(error, set);
       }
     }
