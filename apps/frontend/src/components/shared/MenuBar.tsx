@@ -57,16 +57,19 @@ const MenuBar: React.FC = () => {
   const { createVariableSharePathname } = useVariableSharePathname();
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
 
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
+  const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
+  const [, secondPathPartEncoded] = pathParts;
+  const isSelected = secondPathPartEncoded ? decodeURIComponent(secondPathPartEncoded) : '';
+
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(() =>
+    isSelected ? new Set([isSelected]) : new Set(),
+  );
+  const previousPathPart = useRef<string | null>(isSelected || null);
+
   const { isMobileView, isTabletView } = useMedia();
   const isDesktopView = !isMobileView && !isTabletView && !isEdulutionApp;
   const shouldCollapse = isDesktopView && isCollapsed;
   const navigate = useNavigate();
-
-  const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
-  const [, secondPathPartEncoded] = pathParts;
-  const isSelected = secondPathPartEncoded ? decodeURIComponent(secondPathPartEncoded) : '';
-  const previousPathPart = useRef<string | null>(null);
 
   useOnClickOutside(menubarRef, () => {
     if (isMobileView || isTabletView) toggleMobileMenuBar();
