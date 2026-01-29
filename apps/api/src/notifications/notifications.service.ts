@@ -32,8 +32,6 @@ import PushNotificationQueue from './queue/push-notification.queue';
 import { Notification, NotificationDocument } from './notification.schema';
 import { UserNotification, UserNotificationDocument } from './userNotification.schema';
 
-type InboxNotification = InboxNotificationDto;
-
 @Injectable()
 class NotificationsService {
   constructor(
@@ -112,7 +110,7 @@ class NotificationsService {
     username: string,
     limit = 20,
     offset = 0,
-  ): Promise<{ notifications: InboxNotification[]; total: number }> {
+  ): Promise<{ notifications: InboxNotificationDto[]; total: number }> {
     const result = await this.userNotificationModel.aggregate<{
       data: Array<{
         userNotificationId: string;
@@ -145,7 +143,7 @@ class NotificationsService {
     const data = result[0]?.data ?? [];
     const total = result[0]?.total[0]?.count ?? 0;
 
-    const notifications: InboxNotification[] = data.map((item) => ({
+    const notifications: InboxNotificationDto[] = data.map((item) => ({
       id: item.userNotificationId,
       notificationId: item.notification.notificationId,
       type: item.notification.type,
