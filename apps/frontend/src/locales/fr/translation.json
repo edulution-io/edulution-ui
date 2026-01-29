@@ -172,6 +172,7 @@
       "GetUserSchoolClassFailed": "Echecc d'appel de la classe de l'utilisateur",
       "GetUserProjectsFailed": "L'appel des projets de l'utilisateur a échoué",
       "GetUserFailed": "Échec de l'appel",
+      "GetUsersFailed": "L'appel des utilisateurs a échoué",
       "UpdateUserFailed": "La mise à jour a échoué",
       "GetCurrentUserRoomFailed": "Echec d'appel de la salle actuelle",
       "CreateProjectFailed": "La création du projet a échoué",
