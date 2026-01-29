@@ -24,6 +24,8 @@ import { useTranslation } from 'react-i18next';
 import delay from '@libs/common/utils/delay';
 import useLogout from './useLogout';
 
+const EXPIRY_THRESHOLD_SECONDS = 60;
+
 const useTokenEventListeners = () => {
   const { t } = useTranslation();
   const auth = useAuth();
@@ -46,12 +48,21 @@ const useTokenEventListeners = () => {
       console.info(message);
 
       if (!auth.user?.expired) {
-        await delay(2000);
-        const response = await auth.signinSilent();
+        try {
+          await delay(2000);
+          const response = await auth.signinSilent();
 
-        if (!response) {
+          if (!response) {
+            renewInProgressRef.current = false;
+            await handleRenew('Retry token renew');
+            return;
+          }
+        } catch (error) {
+          console.error('Silent renew failed:', error);
           renewInProgressRef.current = false;
-          await handleRenew('Retry token renew');
+          alreadyLoggedOutRef.current = true;
+          toast.error(t('auth.errors.TokenExpired'));
+          await handleLogout();
           return;
         }
       } else {
@@ -99,6 +110,30 @@ const useTokenEventListeners = () => {
       removeTokenExpired();
     };
   }, [auth.events, handleRenew, handleTokenExpired]);
+
+  const handleVisibilityChange = useCallback(() => {
+    if (document.visibilityState !== 'visible' || !auth.user) return;
+
+    const { expires_at: expiresAt } = auth.user;
+    if (!expiresAt) return;
+
+    const now = Math.floor(Date.now() / 1000);
+    const timeUntilExpiry = expiresAt - now;
+
+    if (timeUntilExpiry <= 0) {
+      handleTokenExpired();
+    } else if (timeUntilExpiry <= EXPIRY_THRESHOLD_SECONDS) {
+      void handleRenew('Tab became visible, token expiring soon. Try renew.');
+    }
+  }, [auth.user, handleRenew, handleTokenExpired]);
+
+  useEffect(() => {
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [handleVisibilityChange]);
 };
 
 export default useTokenEventListeners;

@@ -35,6 +35,7 @@ enum LmnApiErrorMessage {
   GetUserSchoolClassFailed = 'lmnApi.errors.GetUserSchoolClassFailed',
   GetUserProjectsFailed = 'lmnApi.errors.GetUserProjectsFailed',
   GetUserFailed = 'lmnApi.errors.GetUserFailed',
+  GetUsersFailed = 'lmnApi.errors.GetUsersFailed',
   UpdateUserFailed = 'lmnApi.errors.UpdateUserFailed',
   GetCurrentUserRoomFailed = 'lmnApi.errors.GetCurrentUserRoomFailed',
   CreateProjectFailed = 'lmnApi.errors.CreateProjectFailed',

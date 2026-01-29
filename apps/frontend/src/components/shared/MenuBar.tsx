@@ -39,6 +39,7 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableSharePathname';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
+import useSubMenuStore from '@/store/useSubMenuStore';
 import useMenuBarStore from './useMenuBarStore';
 import { Button } from './Button';
 import MenuBarFooter from './MenuBarFooter';
@@ -47,6 +48,7 @@ import IconWrapper from './IconWrapper';
 const MenuBar: React.FC = () => {
   const { t } = useTranslation();
   const { isMobileMenuBarOpen, toggleMobileMenuBar, isCollapsed, toggleCollapsed } = useMenuBarStore();
+  const { activeSection } = useSubMenuStore();
   const menubarRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
   const menuBarEntries = useMenuBarConfig();
@@ -171,10 +173,7 @@ const MenuBar: React.FC = () => {
   );
 
   const renderMenuBarContent = () => (
-    <div
-      className="flex h-full max-w-[var(--menubar-max-width)] flex-col"
-      ref={menubarRef}
-    >
+    <div className="flex h-full max-w-[var(--menubar-max-width)] flex-col">
       <div className="flex flex-col items-center justify-center py-6">
         <button
           className="flex flex-col items-center justify-center rounded-xl p-2 hover:bg-muted-background"
@@ -266,9 +265,9 @@ const MenuBar: React.FC = () => {
               )}
             >
               <div className="overflow-hidden">
-                <div className="border-muted-foreground/30 ml-4 border-l-2 py-1">
+                <div className="ml-2">
                   {item.children!.map((child) => {
-                    const isChildActive = pathname.includes(child.id);
+                    const isChildActive = activeSection === child.id;
                     return (
                       <Button
                         key={child.id}
@@ -279,10 +278,10 @@ const MenuBar: React.FC = () => {
                           child.action();
                         }}
                         className={cn(
-                          'flex w-full items-center justify-start py-2 pl-4 pr-3',
+                          'flex w-full items-center justify-start py-2 pl-4 pr-3 font-normal',
                           'transition-all duration-150',
                           'hover:pl-5',
-                          isChildActive && 'bg-accent/50 font-medium',
+                          isChildActive && 'bg-accent font-bold',
                         )}
                       >
                         <span className="truncate">{child.label}</span>
@@ -357,6 +356,7 @@ const MenuBar: React.FC = () => {
         </aside>
       ) : (
         <div
+          ref={menubarRef}
           className={cn(
             'bg-glass fixed left-0 top-0 z-50 h-full overflow-x-hidden backdrop-blur-md duration-300 ease-in-out',
             isMobileMenuBarOpen ? 'w-64 border-r-[1px] border-muted' : 'w-0',

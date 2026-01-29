@@ -17,15 +17,25 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { ReactNode, useEffect } from 'react';
-import { ColumnDef, flexRender, OnChangeFn, Row, RowSelectionState, VisibilityState } from '@tanstack/react-table';
+import React, { ReactNode, useEffect, useMemo } from 'react';
+import {
+  ColumnDef,
+  flexRender,
+  OnChangeFn,
+  Row,
+  RowSelectionState,
+  Table as TanstackTable,
+  VisibilityState,
+} from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 import TableAction from '@libs/common/types/tableAction';
+import cn from '@libs/common/utils/className';
+import TABLE_DEFAULT_COLUMN_WIDTH from '@libs/ui/constants/tableDefaultColumnWidth';
+import pinRowToTop from '@libs/ui/utils/pinRowToTop';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import Input from '@/components/shared/Input';
 import SelectColumnsDropdown from '@/components/ui/Table/SelectColumnsDropdown';
-import TABLE_DEFAULT_COLUMN_WIDTH from '@libs/ui/constants/tableDefaultColumnWidth';
 import TableActionFooter from '@/components/ui/Table/TableActionFooter';
 import DraggableTableRow from '@/components/ui/DraggableTableRow';
 import useScrollableTable from '@/components/ui/Table/useScrollableTable';
@@ -57,6 +67,9 @@ interface DataTableProps<TData, TValue> {
   focusedRowId?: string | null;
   onSortedRowsChange?: (sortedData: TData[]) => void;
   onRowClick?: (item: TData) => void;
+  pinnedToTopRowId?: string;
+  externalTable?: TanstackTable<TData>;
+  externalSortedRows?: Row<TData>[];
 }
 
 const ScrollableTable = <TData, TValue>({
@@ -85,10 +98,13 @@ const ScrollableTable = <TData, TValue>({
   focusedRowId,
   onSortedRowsChange,
   onRowClick,
+  pinnedToTopRowId,
+  externalTable,
+  externalSortedRows,
 }: DataTableProps<TData, TValue>) => {
   const { t } = useTranslation();
 
-  const { table } = useScrollableTable({
+  const { table: internalTable } = useScrollableTable({
     columns,
     data,
     onRowSelectionChange,
@@ -99,7 +115,13 @@ const ScrollableTable = <TData, TValue>({
     initialColumnVisibility,
   });
 
-  const sortedRows = table.getRowModel().rows;
+  const table = externalTable ?? internalTable;
+
+  const { rows } = table.getRowModel();
+  const sortedRows = useMemo(() => {
+    if (externalSortedRows) return externalSortedRows;
+    return pinRowToTop(rows, pinnedToTopRowId);
+  }, [externalSortedRows, rows, pinnedToTopRowId]);
 
   useEffect(() => {
     if (onSortedRowsChange) {
@@ -117,7 +139,7 @@ const ScrollableTable = <TData, TValue>({
 
   return (
     <>
-      {isLoading && data?.length === 0 ? <LoadingIndicatorDialog isOpen={isLoading} /> : null}
+      {isLoading && data?.length === 0 && <LoadingIndicatorDialog isOpen={isLoading} />}
 
       {showSelectedCount && (
         <SelectedRowsCount
@@ -175,8 +197,8 @@ const ScrollableTable = <TData, TValue>({
             </TableHeader>
           )}
           <TableBody className="container">
-            {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => {
+            {sortedRows.length ? (
+              sortedRows.map((row) => {
                 const isRowDisabled = getRowDisabled?.(row);
 
                 return (
@@ -193,7 +215,7 @@ const ScrollableTable = <TData, TValue>({
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={`${row.id}-${cell.column.id}`}
-                        className={`${isRowDisabled ? 'opacity-70' : ''}`}
+                        className={cn(isRowDisabled && 'opacity-70')}
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>

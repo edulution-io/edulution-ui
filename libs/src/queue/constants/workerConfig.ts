@@ -17,12 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface FilterOption {
-  key: string;
-  translationKey: string;
-  checked: boolean;
-  onChange: (enabled: boolean) => void;
-  isSeparator?: boolean;
-}
+const WORKER_CONFIG = {
+  PUSH_NOTIFICATION_CONCURRENCY: 5,
+} as const;
 
-export default FilterOption;
+export default WORKER_CONFIG;

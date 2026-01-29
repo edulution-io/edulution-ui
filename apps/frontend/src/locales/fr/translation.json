@@ -172,6 +172,7 @@
       "GetUserSchoolClassFailed": "Echecc d'appel de la classe de l'utilisateur",
       "GetUserProjectsFailed": "L'appel des projets de l'utilisateur a échoué",
       "GetUserFailed": "Échec de l'appel",
+      "GetUsersFailed": "L'appel des utilisateurs a échoué",
       "UpdateUserFailed": "La mise à jour a échoué",
       "GetCurrentUserRoomFailed": "Echec d'appel de la salle actuelle",
       "CreateProjectFailed": "La création du projet a échoué",
@@ -1262,7 +1263,8 @@
       "qrCodeDescription": "Scannez ce code QR avec l'application WireGuard sur votre appareil mobile pour configurer la connexion VPN.",
       "configDownload": "Fichier de configuration",
       "configDownloadDescription": "Téléchargez le fichier de configuration WireGuard pour l'importer dans l'application WireGuard sur votre ordinateur.",
-      "downloadButton": "Télécharger la configuration"
+      "downloadButton": "Télécharger la configuration",
+      "error": "Le service VPN est actuellement indisponible. Veuillez réessayer plus tard ou contacter un administrateur."
     },
     "addTotp": {
       "title": "Configurer l'authentification à deux facteurs",

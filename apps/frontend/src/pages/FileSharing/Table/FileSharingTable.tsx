@@ -42,6 +42,7 @@ import VIEW_MODE from '@libs/common/constants/viewMode';
 import useFileSharingDragAndDrop from '@/pages/FileSharing/hooks/useFileSharingDragAndDrop';
 import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
 import { getElapsedTime } from '@/pages/FileSharing/utilities/filesharingUtilities';
+import getFileCategory from '@libs/filesharing/utils/getFileCategory';
 import FileEntryIcon from '@/pages/FileSharing/utilities/FileEntryIcon';
 import TableActionMenu from '@/components/ui/Table/TableActionMenu';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
@@ -50,6 +51,8 @@ import getFileSharingActions from '@/pages/FileSharing/Table/getFileSharingActio
 import isHiddenFile from '@libs/filesharing/utils/isHiddenFile';
 import isSystemFile from '@libs/filesharing/utils/isSystemFile';
 import useTableViewSettingsStore from '@/store/useTableViewSettingsStore';
+import FILE_CATEGORIES from '@libs/filesharing/constants/fileCategories';
+import type { FileCategory } from '@libs/filesharing/types/fileCategory';
 import type FilterOption from '@libs/ui/types/filterOption';
 import useFileOpen from '../hooks/useFileOpen';
 import useVariableSharePathname from '../hooks/useVariableSharePathname';
@@ -71,14 +74,23 @@ const FileSharingTable = () => {
       currentPath,
     });
   const { createVariableSharePathname } = useVariableSharePathname();
-  const { showSystemFiles, showHiddenFiles, setShowSystemFiles, setShowHiddenFiles, getViewMode } =
-    useTableViewSettingsStore((state) => ({
-      showSystemFiles: state.showSystemFiles?.[APPS.FILE_SHARING] ?? false,
-      showHiddenFiles: state.showHiddenFiles?.[APPS.FILE_SHARING] ?? false,
-      setShowSystemFiles: state.setShowSystemFiles,
-      setShowHiddenFiles: state.setShowHiddenFiles,
-      getViewMode: state.getViewMode,
-    }));
+  const {
+    showSystemFiles,
+    showHiddenFiles,
+    setShowSystemFiles,
+    setShowHiddenFiles,
+    getViewMode,
+    fileCategoryFilters,
+    setFileCategoryFilter,
+  } = useTableViewSettingsStore((state) => ({
+    showSystemFiles: state.showSystemFiles?.[APPS.FILE_SHARING] ?? false,
+    showHiddenFiles: state.showHiddenFiles?.[APPS.FILE_SHARING] ?? false,
+    setShowSystemFiles: state.setShowSystemFiles,
+    setShowHiddenFiles: state.setShowHiddenFiles,
+    getViewMode: state.getViewMode,
+    fileCategoryFilters: state.getFileCategoryFilters(APPS.FILE_SHARING),
+    setFileCategoryFilter: state.setFileCategoryFilter,
+  }));
 
   const viewMode = getViewMode(APPS.FILE_SHARING);
   const isGridView = viewMode === VIEW_MODE.grid;
@@ -134,16 +146,16 @@ const FileSharingTable = () => {
     [filesByPath, setSelectedRows, setSelectedItems],
   );
 
-  const shouldHideColumns = !(isMobileView || isTabletView || (isFilePreviewVisible && isFilePreviewDocked));
+  const shouldShowExtraColumns = !(isMobileView || isTabletView || (isFilePreviewVisible && isFilePreviewDocked));
 
   const initialColumnVisibility = useMemo(
     () => ({
-      [FILE_SHARING_TABLE_COLUMNS.LAST_MODIFIED]: shouldHideColumns,
-      [FILE_SHARING_TABLE_COLUMNS.SIZE]: shouldHideColumns,
-      [FILE_SHARING_TABLE_COLUMNS.TYPE]: shouldHideColumns,
-      [FILE_SHARING_TABLE_COLUMNS.IS_SHARED]: shouldHideColumns,
+      [FILE_SHARING_TABLE_COLUMNS.LAST_MODIFIED]: shouldShowExtraColumns,
+      [FILE_SHARING_TABLE_COLUMNS.SIZE]: shouldShowExtraColumns,
+      [FILE_SHARING_TABLE_COLUMNS.TYPE]: shouldShowExtraColumns,
+      [FILE_SHARING_TABLE_COLUMNS.IS_SHARED]: shouldShowExtraColumns,
     }),
-    [shouldHideColumns],
+    [shouldShowExtraColumns],
   );
 
   const actionCallbacks = useMemo(
@@ -197,9 +209,11 @@ const FileSharingTable = () => {
       files.filter((file) => {
         if (isSystemFile(file.filename) && !showSystemFiles) return false;
         if (isHiddenFile(file.filename) && !showHiddenFiles) return false;
-        return true;
+
+        const category = file.type === ContentType.DIRECTORY ? FILE_CATEGORIES.FOLDER : getFileCategory(file.filename);
+        return fileCategoryFilters[category as FileCategory];
       }),
-    [files, showSystemFiles, showHiddenFiles],
+    [files, showSystemFiles, showHiddenFiles, fileCategoryFilters],
   );
 
   const filesWithParentNav = useMemo(() => {
@@ -239,6 +253,17 @@ const FileSharingTable = () => {
     containerRef,
   });
 
+  const categoryFilterOptions: FilterOption[] = useMemo(
+    () =>
+      Object.values(FILE_CATEGORIES).map((category) => ({
+        key: `category-${category}`,
+        translationKey: `fileCategory.${category}`,
+        checked: fileCategoryFilters[category],
+        onChange: (enabled: boolean) => setFileCategoryFilter(APPS.FILE_SHARING, category, enabled),
+      })),
+    [fileCategoryFilters, setFileCategoryFilter],
+  );
+
   const filterOptions: FilterOption[] = useMemo(
     () => [
       {
@@ -253,8 +278,16 @@ const FileSharingTable = () => {
         checked: showHiddenFiles,
         onChange: (enabled: boolean) => setShowHiddenFiles(APPS.FILE_SHARING, enabled),
       },
+      {
+        key: 'separator',
+        translationKey: '',
+        checked: false,
+        onChange: () => {},
+        isSeparator: true,
+      },
+      ...categoryFilterOptions,
     ],
-    [showSystemFiles, showHiddenFiles, setShowSystemFiles, setShowHiddenFiles],
+    [showSystemFiles, showHiddenFiles, setShowSystemFiles, setShowHiddenFiles, categoryFilterOptions],
   );
 
   return (
@@ -282,10 +315,7 @@ const FileSharingTable = () => {
           getRowExcludedFromCount={(row) => row.original.filePath === PARENT_FOLDER_PATH}
           enableRowSelection={(row) => row.original.filePath !== PARENT_FOLDER_PATH}
           applicationName={APPS.FILE_SHARING}
-          initialSorting={[
-            { id: 'type', desc: false },
-            { id: 'select-filename', desc: false },
-          ]}
+          initialSorting={[{ id: 'select-filename', desc: false }]}
           initialColumnVisibility={initialColumnVisibility}
           enableDragAndDrop
           canDropOnRow={canDropOnRow}
@@ -295,9 +325,10 @@ const FileSharingTable = () => {
           focusedRowId={focusedFile?.filePath ?? null}
           onGridItemClick={handleItemClick}
           onSortedRowsChange={handleSortedRowsChange}
+          pinnedToTopRowId={PARENT_FOLDER_PATH}
         />
         <DragOverlay>
-          {draggedFiles.length > 0 ? (
+          {draggedFiles.length > 0 && (
             <div className="flex w-fit items-center gap-2 rounded bg-accent p-2 shadow-lg">
               {draggedFiles.length === 1 ? (
                 <>
@@ -319,13 +350,12 @@ const FileSharingTable = () => {
                     </div>
                   </div>
                   <span className="truncate">
-                    {draggedFiles.length}{' '}
-                    {draggedFiles.length === 1 ? t('fileSharingTable.element') : t('fileSharingTable.elements')}
+                    {draggedFiles.length} {t('fileSharingTable.elements')}
                   </span>
                 </>
               )}
             </div>
-          ) : null}
+          )}
         </DragOverlay>
       </DndContext>
     </div>
