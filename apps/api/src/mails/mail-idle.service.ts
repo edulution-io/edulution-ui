@@ -26,6 +26,7 @@ import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import MAIL_IDLE_CONFIG from '@libs/mail/constants/mailIdleConfig';
 import type MailNewMailNotificationDto from '@libs/mail/types/mailNewMailNotification.dto';
+import type MailFlagsChangedNotificationDto from '@libs/mail/types/mailFlagsChangedNotification.dto';
 import AppConfigService from '../appconfig/appconfig.service';
 import SseService from '../sse/sse.service';
 
@@ -188,6 +189,13 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
       this.handleExistsEvent(username, data.count, data.prevCount);
     });
 
+    (client as NodeJS.EventEmitter).on(
+      'flags',
+      (data: { path: string; seq: number; uid: number; flags: Set<string> }) => {
+        this.handleFlagsEvent(username, data.uid, data.flags);
+      },
+    );
+
     try {
       await client.connect();
       await client.mailboxOpen('INBOX');
@@ -232,6 +240,17 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
     }
 
     connection.previousMailCount = count;
+  }
+
+  private handleFlagsEvent(username: string, uid: number, flags: Set<string>): void {
+    Logger.debug(`Flags changed for ${username}, mail ${uid}: ${Array.from(flags).join(', ')}`, MailIdleService.name);
+
+    const notification: MailFlagsChangedNotificationDto = {
+      uid,
+      flags: Array.from(flags),
+    };
+
+    this.sseService.sendEventToUser(username, notification, SSE_MESSAGE_TYPE.MAIL_FLAGS_CHANGED);
   }
 
   private scheduleIdleRestart(username: string): void {

@@ -17,12 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const MAIL_IDLE_CONFIG = {
-  IDLE_TIMEOUT_MS: 25 * 60 * 1000,
-  RECONNECT_DELAY_MS: 5000,
-  MAX_RECONNECT_ATTEMPTS: 3,
-  DEFAULT_MAX_CONCURRENT_CONNECTIONS: 100,
-  MAX_FEED_MAILS: 10,
-} as const;
+type MailFlagsChangedNotificationDto = {
+  uid: number;
+  flags: string[];
+};
 
-export default MAIL_IDLE_CONFIG;
+export default MailFlagsChangedNotificationDto;

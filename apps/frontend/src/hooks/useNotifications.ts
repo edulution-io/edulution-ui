@@ -95,6 +95,14 @@ const useNotifications = () => {
     enabled: isMailsAppActivated && !isSuperAdmin,
   });
 
+  const handleMailFlagsChanged = () => {
+    void getMails();
+  };
+
+  useSseEventListener(SSE_MESSAGE_TYPE.MAIL_FLAGS_CHANGED, handleMailFlagsChanged, {
+    enabled: isMailsAppActivated && !isSuperAdmin,
+  });
+
   const handleMailThemeUpdated = () => {
     toast.info(t('mail.themeUpdated.generic'), {
       action: {

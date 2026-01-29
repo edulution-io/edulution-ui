@@ -26,6 +26,7 @@ import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import type PullEvent from '@libs/docker/types/pullEvent';
 import type MailNewMailNotificationDto from '@libs/mail/types/mailNewMailNotification.dto';
+import type MailFlagsChangedNotificationDto from '@libs/mail/types/mailFlagsChangedNotification.dto';
 import { type Survey } from '../surveys/survey.schema';
 import { type Conference } from '../conferences/conference.schema';
 import { BulletinDocument } from '../bulletinboard/bulletin.schema';
@@ -46,6 +47,7 @@ type SseEventData =
   | BulletinDocument
   | TLDrawSyncLog
   | PullEvent
-  | MailNewMailNotificationDto;
+  | MailNewMailNotificationDto
+  | MailFlagsChangedNotificationDto;
 
 export default SseEventData;

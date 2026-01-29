@@ -46,6 +46,7 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import SseMessageType from '@libs/common/types/sseMessageType';
 import DOCKER_STATES from '@libs/docker/constants/dockerStates';
+import MAIL_IDLE_CONFIG from '@libs/mail/constants/mailIdleConfig';
 import CustomHttpException from '../common/CustomHttpException';
 import DockerService from '../docker/docker.service';
 import FilesystemService from '../filesystem/filesystem.service';
@@ -359,17 +360,29 @@ class MailsService implements OnModuleInit {
     try {
       mailboxLock = await imapClient.getMailboxLock('INBOX');
 
-      const fetchMail = imapClient.fetch({ recent: true }, { envelope: true, labels: true });
+      const unseenUids = await imapClient.search({ seen: false }, { uid: true });
+
+      if (!unseenUids || unseenUids.length === 0) {
+        return [];
+      }
+
+      const newestUids = [...unseenUids]
+        .sort((a: number, b: number) => b - a)
+        .slice(0, MAIL_IDLE_CONFIG.MAX_FEED_MAILS);
+
+      const fetchMail = imapClient.fetch(newestUids, { envelope: true, flags: true, uid: true });
 
       // eslint-disable-next-line no-restricted-syntax
       for await (const mail of fetchMail) {
         const mailDto: MailDto = {
           id: mail.uid,
           subject: mail.envelope?.subject,
-          labels: mail.labels,
+          flags: mail.flags,
         };
         mails.push(mailDto);
       }
+
+      mails.sort((a, b) => b.id - a.id);
     } catch (e) {
       Logger.error(`Get mails error: ${e instanceof Error && e.message}`, MailsService.name);
       return [];
@@ -380,7 +393,7 @@ class MailsService implements OnModuleInit {
       await MailsService.cleanupImapClient(imapClient);
     }
 
-    Logger.verbose(`Feed: ${mails.length} new mails were fetched (imap)`, MailsService.name);
+    Logger.verbose(`Feed: ${mails.length} unseen mails were fetched (imap)`, MailsService.name);
     return mails;
   }
 
