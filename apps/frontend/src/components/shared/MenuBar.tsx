@@ -20,7 +20,7 @@
 import React, { isValidElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import cn from '@libs/common/utils/className';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowRightToBracket,
@@ -51,6 +51,7 @@ const MenuBar: React.FC = () => {
   const { activeSection } = useSubMenuStore();
   const menubarRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
+  const [searchParams] = useSearchParams();
   const menuBarEntries = useMenuBarConfig();
   const { setCurrentPath, setPathToRestoreSession } = useFileSharingStore();
   const webdavShares = useFileSharingStore((state) => state.webdavShares);
@@ -124,18 +125,21 @@ const MenuBar: React.FC = () => {
   const firstMenuBarItem = menuBarEntries?.menuItems[0]?.id || '';
 
   const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
+  const [, secondPathPart] = pathParts;
+  const previousPathPart = useRef<string | null>(null);
 
   useEffect(() => {
-    if (pathParts[1]) {
-      setIsSelected(pathParts[1]);
-      setExpandedItems((prev) => new Set(prev).add(pathParts[1]));
+    if (secondPathPart && secondPathPart !== previousPathPart.current) {
+      previousPathPart.current = secondPathPart;
+      setIsSelected(secondPathPart);
+      setExpandedItems(new Set([secondPathPart]));
 
-      const activeItem = menuBarEntries.menuItems.find((item) => item.id === pathParts[1]);
+      const activeItem = menuBarEntries.menuItems.find((item) => item.id === secondPathPart);
       if (activeItem?.onExpand && (!activeItem.children || activeItem.children.length === 0)) {
         activeItem.onExpand();
       }
     }
-  }, [pathParts, menuBarEntries.menuItems]);
+  }, [secondPathPart, menuBarEntries.menuItems]);
 
   const handleHeaderIconClick = () => {
     switch (pathParts[0]) {
@@ -207,13 +211,17 @@ const MenuBar: React.FC = () => {
             if (isMobileView || isTabletView) toggleMobileMenuBar();
             item.action();
 
-            if (canExpand && !isExpanded) {
-              setExpandedItems((prev) => new Set(prev).add(item.id));
-              if (item.onExpand) {
+            if (canExpand) {
+              if (!isExpanded) {
+                setExpandedItems(new Set([item.id]));
+                if (item.onExpand) {
+                  item.onExpand();
+                }
+              } else if (!hasLoadedChildren && item.onExpand) {
                 item.onExpand();
               }
-            } else if (isExpanded && !hasLoadedChildren && item.onExpand) {
-              item.onExpand();
+            } else {
+              setExpandedItems(new Set());
             }
           };
 
@@ -281,7 +289,9 @@ const MenuBar: React.FC = () => {
               <div className="overflow-hidden">
                 <div className="ml-2">
                   {item.children!.map((child) => {
-                    const isChildActive = activeSection === child.id;
+                    const isChildActive = child.isActive
+                      ? child.isActive(pathname, searchParams)
+                      : activeSection === child.id;
                     return (
                       <Button
                         key={child.id}

@@ -28,6 +28,7 @@ interface MenuItem {
   disableTranslation?: boolean;
   children?: MenuItem[];
   onExpand?: () => void;
+  isActive?: (pathname: string, searchParams: URLSearchParams) => boolean;
 }
 
 export default MenuItem;

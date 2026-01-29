@@ -71,16 +71,22 @@ const useFileSharingMenuConfig = () => {
   const createFolderChildren = useCallback(
     (shareName: string, sharePath: string): MenuItem[] => {
       const folders = shareFirstLevelFolders[shareName] || [];
-      return folders.map((folder) => ({
-        id: `${shareName}-${folder.filename}`,
-        label: folder.filename,
-        icon: FileSharingIcon,
-        action: () => {
-          const folderPath = `${sharePath}${folder.filename}/`;
-          handlePathChange(shareName, folderPath);
-        },
-        disableTranslation: true,
-      }));
+      return folders.map((folder) => {
+        const folderPath = `${sharePath}${folder.filename}/`;
+        return {
+          id: `${shareName}-${folder.filename}`,
+          label: folder.filename,
+          icon: FileSharingIcon,
+          action: () => {
+            handlePathChange(shareName, folderPath);
+          },
+          disableTranslation: true,
+          isActive: (_pathname: string, searchParams: URLSearchParams) => {
+            const currentPath = searchParams.get(URL_SEARCH_PARAMS.PATH) || '';
+            return currentPath.startsWith(folderPath);
+          },
+        };
+      });
     },
     [shareFirstLevelFolders, handlePathChange],
   );
