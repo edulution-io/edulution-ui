@@ -225,6 +225,7 @@ class SurveysService implements OnModuleInit {
     await this.notifySurveyChange(
       savedSurvey,
       isCreating ? SSE_MESSAGE_TYPE.SURVEY_CREATED : SSE_MESSAGE_TYPE.SURVEY_UPDATED,
+      user.preferred_username,
     );
 
     this.surveysAttachmentService.cleanupTemporaryFiles(user.preferred_username);
@@ -232,7 +233,11 @@ class SurveysService implements OnModuleInit {
     return savedSurvey as SurveyDocument;
   }
 
-  notifySurveyChange = async (survey: SurveyDocument, eventType: SseMessageType): Promise<void> => {
+  notifySurveyChange = async (
+    survey: SurveyDocument,
+    eventType: SseMessageType,
+    triggeredBy: string,
+  ): Promise<void> => {
     if (survey.isPublic) {
       this.sseService.informAllUsers(survey, eventType);
     } else {
@@ -263,6 +268,7 @@ class SurveysService implements OnModuleInit {
             type: eventType,
           },
         },
+        triggeredBy,
         {
           type: NOTIFICATION_TYPE.SYSTEM,
           sourceType: NOTIFICATION_SOURCE_TYPE.SURVEY,

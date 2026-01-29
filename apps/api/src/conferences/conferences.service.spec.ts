@@ -233,7 +233,7 @@ describe(ConferencesService.name, () => {
 
       await service.toggleConferenceIsRunning('mockMeetingId', false, mockCreator.username);
 
-      expect(service.startConference).toHaveBeenCalledWith(mockConferenceDocument, false);
+      expect(service.startConference).toHaveBeenCalledWith(mockConferenceDocument, false, mockCreator.username);
       expect(service.stopConference).not.toHaveBeenCalled();
     });
 
@@ -296,7 +296,7 @@ describe(ConferencesService.name, () => {
       });
       jest.spyOn(service, 'update').mockResolvedValue(mockConferenceDocument);
 
-      await service.startConference(mockConferenceDocument, false);
+      await service.startConference(mockConferenceDocument, false, mockCreator.username);
       expect(axios.get).toHaveBeenCalled();
       expect(service.update).toHaveBeenCalledWith(expect.objectContaining({ isRunning: true }));
     });

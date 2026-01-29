@@ -365,6 +365,8 @@ $RECYCLE.BIN/
 
 .nx/**
 
+.playwright-mcp
+
 # Certificates
 *.crt
 *.key

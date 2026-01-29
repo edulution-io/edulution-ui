@@ -195,11 +195,11 @@ class ConferencesService implements OnModuleInit {
     if (isRunning) {
       await this.stopConference(conference, isConferenceRunningInBBB);
     } else {
-      await this.startConference(conference, isConferenceRunningInBBB);
+      await this.startConference(conference, isConferenceRunningInBBB, username);
     }
   }
 
-  async startConference(conference: Conference, shouldUpdateInBBB: boolean) {
+  async startConference(conference: Conference, shouldUpdateInBBB: boolean, triggeredBy: string) {
     try {
       if (!shouldUpdateInBBB) {
         const query = `name=${encodeURIComponent(conference.name)}&meetingID=${conference.meetingID}`;
@@ -237,6 +237,7 @@ class ConferencesService implements OnModuleInit {
             type: 'conference_started',
           },
         },
+        triggeredBy,
         {
           type: NOTIFICATION_TYPE.SYSTEM,
           sourceType: NOTIFICATION_SOURCE_TYPE.CONFERENCE,

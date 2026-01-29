@@ -17,11 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Expo, ExpoPushMessage } from 'expo-server-sdk';
-import pickDefinedNotificationFields from '@libs/notification/utils/pickDefinedNotificationFields';
 import SendPushNotificationDto from '@libs/notification/types/send-pushNotification.dto';
 import CreateNotificationDto from '@libs/notification/types/createNotification.dto';
 import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto';
@@ -30,6 +28,7 @@ import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
 import { NOTIFICATION_FILTER_TYPE, NotificationFilterType } from '@libs/notification/types/notificationFilterType';
 import { randomUUID } from 'crypto';
 import UsersService from '../users/users.service';
+import PushNotificationQueue from './queue/push-notification.queue';
 import { Notification, NotificationDocument } from './notification.schema';
 import { UserNotification, UserNotificationDocument } from './userNotification.schema';
 
@@ -37,49 +36,27 @@ type InboxNotification = InboxNotificationDto;
 
 @Injectable()
 class NotificationsService {
-  private readonly expo = new Expo();
-
   constructor(
     private userService: UsersService,
+    private pushNotificationQueue: PushNotificationQueue,
     @InjectModel(Notification.name) private notificationModel: Model<NotificationDocument>,
     @InjectModel(UserNotification.name) private userNotificationModel: Model<UserNotificationDocument>,
   ) {}
 
-  async sendPushNotification(sendPushNotificationDto: SendPushNotificationDto): Promise<void> {
-    const tokens = Array.isArray(sendPushNotificationDto.to)
-      ? sendPushNotificationDto.to
-      : [sendPushNotificationDto.to];
-
-    const messages: ExpoPushMessage[] = tokens.map((token: string) => ({
-      to: token,
-      ...pickDefinedNotificationFields({
-        _contentAvailable: sendPushNotificationDto.contentAvailable,
-        data: sendPushNotificationDto.data,
-        title: sendPushNotificationDto.title,
-        body: sendPushNotificationDto.body,
-        ttl: sendPushNotificationDto.ttl,
-        expiration: sendPushNotificationDto.expiration,
-        priority: sendPushNotificationDto.priority,
-        subtitle: sendPushNotificationDto.subtitle,
-        sound: sendPushNotificationDto.sound,
-        badge: sendPushNotificationDto.badge,
-        interruptionLevel: sendPushNotificationDto.interruptionLevel,
-        channelId: sendPushNotificationDto.channelId,
-        icon: sendPushNotificationDto.icon,
-        richContent: sendPushNotificationDto.richContent,
-        categoryId: sendPushNotificationDto.categoryId,
-        mutableContent: sendPushNotificationDto.mutableContent,
-        accessToken: sendPushNotificationDto.accessToken,
-      }),
-    }));
-
-    const chunks = this.expo.chunkPushNotifications(messages);
-    await Promise.all(chunks.map((chunk) => this.expo.sendPushNotificationsAsync(chunk)));
+  async sendPushNotification(
+    sendPushNotificationDto: SendPushNotificationDto,
+    triggeredBy: string = NOTIFICATION_TYPE.USER,
+  ): Promise<void> {
+    await this.pushNotificationQueue.enqueue({
+      username: triggeredBy,
+      ...sendPushNotificationDto,
+    });
   }
 
   async notifyUsernames(
     usernames: string[],
     partialNotification: Omit<SendPushNotificationDto, 'to'>,
+    triggeredBy: string = NOTIFICATION_TYPE.USER,
     persistOptions?: CreateNotificationDto,
   ): Promise<void> {
     let notificationId: string | null = null;
@@ -92,20 +69,16 @@ class NotificationsService {
 
     const uniqueTokens = await this.userService.getPushTokensByUsersnames(usernames);
 
-    try {
-      await this.sendPushNotification({
+    await this.sendPushNotification(
+      {
         to: uniqueTokens,
         ...partialNotification,
-      });
-      if (notificationId) {
-        await this.updateUserNotificationStatus(notificationId, usernames, USER_NOTIFICATION_STATUS.SENT);
-      }
-    } catch (error) {
-      Logger.error(`Failed to send push notification: ${error}`, NotificationsService.name);
-      if (notificationId) {
-        await this.updateUserNotificationStatus(notificationId, usernames, USER_NOTIFICATION_STATUS.FAILED);
-      }
-      throw error;
+      },
+      triggeredBy,
+    );
+
+    if (notificationId) {
+      await this.updateUserNotificationStatus(notificationId, usernames, USER_NOTIFICATION_STATUS.SENT);
     }
   }
 

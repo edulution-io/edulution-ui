@@ -23,6 +23,7 @@ import NotificationsService from './notifications.service';
 import NotificationsController from './notifications.controller';
 import { Notification, NotificationSchema } from './notification.schema';
 import { UserNotification, UserNotificationSchema } from './userNotification.schema';
+import PushNotificationQueue from './queue/push-notification.queue';
 
 @Global()
 @Module({
@@ -33,7 +34,7 @@ import { UserNotification, UserNotificationSchema } from './userNotification.sch
     ]),
   ],
   controllers: [NotificationsController],
-  providers: [NotificationsService],
-  exports: [NotificationsService],
+  providers: [NotificationsService, PushNotificationQueue],
+  exports: [NotificationsService, PushNotificationQueue],
 })
 export default class NotificationsModule {}

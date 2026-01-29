@@ -17,33 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { type ComponentType } from 'react';
-import APPS from '@libs/appconfig/constants/apps';
-import FileSharingMenuBarFooter from '@/pages/FileSharing/FileSharingMenuBarFooter';
+const WORKER_CONFIG = {
+  PUSH_NOTIFICATION_CONCURRENCY: 5,
+} as const;
 
-interface MenuBarFooterProps {
-  isCollapsed: boolean;
-}
-
-type FooterComponent = ComponentType<MenuBarFooterProps>;
-
-const MENU_BAR_FOOTER_REGISTRY: Partial<Record<string, FooterComponent>> = {
-  [APPS.FILE_SHARING]: FileSharingMenuBarFooter,
-};
-
-interface Props {
-  appName: string;
-  isCollapsed: boolean;
-}
-
-const MenuBarFooter: React.FC<Props> = ({ appName, isCollapsed }) => {
-  const FooterComponent = MENU_BAR_FOOTER_REGISTRY[appName];
-
-  if (!FooterComponent) {
-    return null;
-  }
-
-  return <FooterComponent isCollapsed={isCollapsed} />;
-};
-
-export default MenuBarFooter;
+export default WORKER_CONFIG;
