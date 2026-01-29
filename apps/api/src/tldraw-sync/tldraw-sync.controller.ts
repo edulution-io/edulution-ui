@@ -26,12 +26,13 @@ import {
   Param,
   Post,
   Query,
+  Req,
   Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { type Response } from 'express';
+import { type Request, type Response } from 'express';
 import { ApiBearerAuth, ApiConsumes, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
@@ -77,11 +78,9 @@ class TLDrawSyncController {
     return res.status(200).json(file.filename);
   }
 
-  @Get(`${TLDRAW_SYNC_ENDPOINTS.ASSETS}/*filename`) serveFiles(
-    @Param('filename') filename: string | string[],
-    @Res() res: Response,
-  ) {
-    return this.filesystemService.serveFile(APPS.WHITEBOARD, FilesystemService.buildPathString(filename), res);
+  @Get(`${TLDRAW_SYNC_ENDPOINTS.ASSETS}/*filename`)
+  serveFiles(@Param('filename') filename: string | string[], @Req() req: Request, @Res() res: Response) {
+    return this.filesystemService.serveFile(APPS.WHITEBOARD, FilesystemService.buildPathString(filename), req, res);
   }
 
   @Delete(`${TLDRAW_SYNC_ENDPOINTS.ASSETS}/*filename`)
