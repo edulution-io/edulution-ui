@@ -23,7 +23,7 @@ import { faUpDown } from '@fortawesome/free-solid-svg-icons';
 import { Column, Table } from '@tanstack/react-table';
 import Checkbox from '@/components/ui/Checkbox';
 import cn from '@libs/common/utils/className';
-import i18n from '@/i18n';
+import { useTranslation } from 'react-i18next';
 
 interface SortableHeaderProps<TData, TValue> {
   table?: Table<TData>;
@@ -34,17 +34,18 @@ interface SortableHeaderProps<TData, TValue> {
 
 const SortableHeader = <TData, TValue>({ table, column, className, hidden }: SortableHeaderProps<TData, TValue>) => {
   const canSort = column.getCanSort();
-  const label = i18n.t(String(column.columnDef.meta?.translationId || column.id));
+  const { t } = useTranslation();
+  const label = t(String(column.columnDef.meta?.translationId || column.id));
 
   return (
     <div className={cn('flex items-center space-x-2', className)}>
-      {table ? (
+      {table && (
         <Checkbox
           checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
           onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(value)}
           aria-label="Select all"
         />
-      ) : null}
+      )}
       {!hidden &&
         (canSort ? (
           <button
