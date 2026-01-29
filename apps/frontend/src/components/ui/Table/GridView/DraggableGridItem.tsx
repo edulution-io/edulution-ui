@@ -37,6 +37,7 @@ interface DraggableGridItemProps<TData> {
   enableRowSelection?: boolean;
   enableDragAndDrop?: boolean;
   canDropOnRow?: (row: TData) => boolean;
+  isKeyboardFocused?: boolean;
 }
 
 const DraggableGridItem = <TData,>({
@@ -50,6 +51,7 @@ const DraggableGridItem = <TData,>({
   enableRowSelection = true,
   enableDragAndDrop = false,
   canDropOnRow,
+  isKeyboardFocused = false,
 }: DraggableGridItemProps<TData>) => {
   const item = row.original;
   const isSelected = row.getIsSelected();
@@ -84,9 +86,7 @@ const DraggableGridItem = <TData,>({
   );
 
   const handleClick = () => {
-    if (onItemClick) {
-      onItemClick(item);
-    }
+    onItemClick?.(item);
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -112,6 +112,7 @@ const DraggableGridItem = <TData,>({
       {...attributes}
       role="button"
       tabIndex={isDisabled ? -1 : 0}
+      data-row-id={row.id}
       variant={isSelected ? 'gridSelected' : 'grid'}
       className={cn(
         'group relative',
@@ -119,6 +120,7 @@ const DraggableGridItem = <TData,>({
         isDragging && 'opacity-30',
         isDragging && isSelected && 'ring-2 ring-primary ring-offset-2',
         isOver && canDrop && 'bg-primary/10 ring-2 ring-inset ring-primary',
+        isKeyboardFocused && 'z-10 ring-2 ring-inset ring-primary',
       )}
       style={{ width: GRID_ITEM_WIDTH }}
       onClick={handleClick}

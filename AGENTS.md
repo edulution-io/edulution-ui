@@ -39,6 +39,8 @@
 - Always search the code for existing patterns, functions, classes, types, and constants before creating new ones.
 - Use generic types over unsafe type casting.
 - Migrations MUST always increase the schema version number so later migrations are triggered.
+- Only use @fortawesome/free-solid-svg-icons for icons
+- Many UI components are wrappers for shadcn/@radix-ui components (component/filename postfix with "SH"). We use our custom wrappers instead.
 
 ## Testing Guidelines
 

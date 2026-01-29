@@ -242,7 +242,7 @@ const SurveyEditorPage = () => {
 
   return (
     <PageLayout>
-      <div className="survey-editor h-full">
+      <div className="survey-editor h-full pt-1">
         {creator && (
           <SurveyCreatorComponent
             creator={creator}

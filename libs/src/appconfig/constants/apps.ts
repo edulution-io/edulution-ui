@@ -53,6 +53,7 @@ const APPS = {
   EMBEDDED: 'embedded',
   APPSTORE: 'appstore',
   GENERAL_SETTINGS: 'generalsettings',
+  WIREGUARD: 'wireguard',
 } as const;
 
 export default APPS;

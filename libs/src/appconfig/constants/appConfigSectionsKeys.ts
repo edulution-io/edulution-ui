@@ -32,6 +32,7 @@ const AppConfigSectionsKeys = {
   scripts: 'scripts',
   urlHandling: 'urlHandling',
   appLogo: 'appLogo',
+  wireguard: 'wireguard',
 } as const;
 
 export default AppConfigSectionsKeys;
