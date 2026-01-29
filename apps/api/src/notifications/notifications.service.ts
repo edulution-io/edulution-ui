@@ -18,55 +18,42 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { Expo, ExpoPushMessage } from 'expo-server-sdk';
-import pickDefinedNotificationFields from '@libs/notification/utils/pickDefinedNotificationFields';
 import SendPushNotificationDto from '@libs/notification/types/send-pushNotification.dto';
 import UsersService from '../users/users.service';
+import PushNotificationQueue from './queue/push-notification.queue';
+
+const SYSTEM_USER = 'system';
 
 @Injectable()
 class NotificationsService {
-  private readonly expo = new Expo();
+  constructor(
+    private userService: UsersService,
+    private pushNotificationQueue: PushNotificationQueue,
+  ) {}
 
-  constructor(private userService: UsersService) {}
-
-  async sendPushNotification(sendPushNotificationDto: SendPushNotificationDto): Promise<void> {
-    const tokens = Array.isArray(sendPushNotificationDto.to)
-      ? sendPushNotificationDto.to
-      : [sendPushNotificationDto.to];
-
-    const messages: ExpoPushMessage[] = tokens.map((token: string) => ({
-      to: token,
-      ...pickDefinedNotificationFields({
-        _contentAvailable: sendPushNotificationDto.contentAvailable,
-        data: sendPushNotificationDto.data,
-        title: sendPushNotificationDto.title,
-        body: sendPushNotificationDto.body,
-        ttl: sendPushNotificationDto.ttl,
-        expiration: sendPushNotificationDto.expiration,
-        priority: sendPushNotificationDto.priority,
-        subtitle: sendPushNotificationDto.subtitle,
-        sound: sendPushNotificationDto.sound,
-        badge: sendPushNotificationDto.badge,
-        interruptionLevel: sendPushNotificationDto.interruptionLevel,
-        channelId: sendPushNotificationDto.channelId,
-        icon: sendPushNotificationDto.icon,
-        richContent: sendPushNotificationDto.richContent,
-        categoryId: sendPushNotificationDto.categoryId,
-        mutableContent: sendPushNotificationDto.mutableContent,
-        accessToken: sendPushNotificationDto.accessToken,
-      }),
-    }));
-
-    const chunks = this.expo.chunkPushNotifications(messages);
-    await Promise.all(chunks.map((chunk) => this.expo.sendPushNotificationsAsync(chunk)));
+  async sendPushNotification(
+    sendPushNotificationDto: SendPushNotificationDto,
+    triggeredBy: string = SYSTEM_USER,
+  ): Promise<void> {
+    await this.pushNotificationQueue.enqueue({
+      username: triggeredBy,
+      ...sendPushNotificationDto,
+    });
   }
 
-  async notifyUsernames(usernames: string[], partialNotification: Omit<SendPushNotificationDto, 'to'>): Promise<void> {
+  async notifyUsernames(
+    usernames: string[],
+    partialNotification: Omit<SendPushNotificationDto, 'to'>,
+    triggeredBy: string = SYSTEM_USER,
+  ): Promise<void> {
     const uniqueTokens = await this.userService.getPushTokensByUsersnames(usernames);
-    await this.sendPushNotification({
-      to: uniqueTokens,
-      ...partialNotification,
-    });
+    await this.sendPushNotification(
+      {
+        to: uniqueTokens,
+        ...partialNotification,
+      },
+      triggeredBy,
+    );
   }
 }
 

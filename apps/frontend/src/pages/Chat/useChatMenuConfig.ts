@@ -88,11 +88,10 @@ const useChatMenuConfig = () => {
 
     if (classChildren.length > 0) {
       items.push({
-        id: 'classes',
+        id: 'schoolClasses',
         label: t('chat.schoolClasses'),
         icon: faUsers,
         action: () => {},
-        disableTranslation: true,
         children: classChildren,
       });
     }
@@ -103,7 +102,6 @@ const useChatMenuConfig = () => {
         label: t('chat.projects'),
         icon: faUserGear,
         action: () => {},
-        disableTranslation: true,
         children: projectChildren,
       });
     }

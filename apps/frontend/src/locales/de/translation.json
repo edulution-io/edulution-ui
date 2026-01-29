@@ -193,6 +193,7 @@
       "GetUserSchoolClassFailed": "Abrufen der Schulklasse des Benutzers fehlgeschlagen",
       "GetUserProjectsFailed": "Abrufen der Projekte des Benutzers fehlgeschlagen",
       "GetUserFailed": "Abrufen fehlgeschlagen",
+      "GetUsersFailed": "Abrufen der Benutzer fehlgeschlagen",
       "UpdateUserFailed": "Aktualisierung fehlgeschlagen",
       "GetCurrentUserRoomFailed": "Abrufen des aktuellen Benutzerraums fehlgeschlagen",
       "CreateProjectFailed": "Projekterstellung fehlgeschlagen",
