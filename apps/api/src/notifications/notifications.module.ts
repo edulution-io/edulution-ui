@@ -19,10 +19,11 @@
 
 import { Global, Module } from '@nestjs/common';
 import NotificationsService from './notifications.service';
+import PushNotificationQueue from './queue/push-notification.queue';
 
 @Global()
 @Module({
-  providers: [NotificationsService],
-  exports: [NotificationsService],
+  providers: [NotificationsService, PushNotificationQueue],
+  exports: [NotificationsService, PushNotificationQueue],
 })
 export default class NotificationsModule {}

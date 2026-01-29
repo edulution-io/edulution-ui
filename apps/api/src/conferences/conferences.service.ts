@@ -192,11 +192,11 @@ class ConferencesService implements OnModuleInit {
     if (isRunning) {
       await this.stopConference(conference, isConferenceRunningInBBB);
     } else {
-      await this.startConference(conference, isConferenceRunningInBBB);
+      await this.startConference(conference, isConferenceRunningInBBB, username);
     }
   }
 
-  async startConference(conference: Conference, shouldUpdateInBBB: boolean) {
+  async startConference(conference: Conference, shouldUpdateInBBB: boolean, triggeredBy: string) {
     try {
       if (!shouldUpdateInBBB) {
         const query = `name=${encodeURIComponent(conference.name)}&meetingID=${conference.meetingID}`;
@@ -223,14 +223,18 @@ class ConferencesService implements OnModuleInit {
 
       // TODO: #1152
 
-      await this.notificationService.notifyUsernames(invitedMembersList, {
-        title: `Konferenz gestartet: ${conference.name}`,
-        body: `Die Konferenz "${conference.name}" wurde gestartet.`,
-        data: {
-          meetingID: conference.meetingID,
-          type: 'conference_started',
+      await this.notificationService.notifyUsernames(
+        invitedMembersList,
+        {
+          title: `Konferenz gestartet: ${conference.name}`,
+          body: `Die Konferenz "${conference.name}" wurde gestartet.`,
+          data: {
+            meetingID: conference.meetingID,
+            type: 'conference_started',
+          },
         },
-      });
+        triggeredBy,
+      );
 
       const publicConferencesSubscriber = conference.meetingID;
       this.sseService.sendEventToUsers(
