@@ -66,7 +66,6 @@ const NotificationList = ({ notifications, className }: NotificationListProps) =
         <Button
           onClick={handleLoadMore}
           disabled={isLoadingMore}
-          variant="outline"
           className="mt-2 w-full"
         >
           {isLoadingMore ? (
