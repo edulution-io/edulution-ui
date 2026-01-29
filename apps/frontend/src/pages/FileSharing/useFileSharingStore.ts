@@ -66,6 +66,7 @@ type UseFileSharingStore = {
   shareFirstLevelFolders: Record<string, DirectoryFileDTO[]>;
   shareFolderLoadingState: Record<string, ShareFolderLoadingStateType>;
   fetchShareFirstLevelFolders: (shareName: string, sharePath: string) => Promise<DirectoryFileDTO[]>;
+  setShareFirstLevelFolders: (shareName: string, folders: DirectoryFileDTO[]) => void;
   clearShareFirstLevelFolders: (shareName: string) => void;
 };
 
@@ -203,11 +204,10 @@ const useFileSharingStore = create<UseFileSharingStore>(
       },
 
       fetchShareFirstLevelFolders: async (shareName: string, sharePath: string) => {
-        const existing = get().shareFirstLevelFolders[shareName];
-        if (existing) return existing;
-
         const loadingState = get().shareFolderLoadingState[shareName];
-        if (loadingState === ShareFolderLoadingState.LOADING) return [];
+        if (loadingState === ShareFolderLoadingState.LOADING) {
+          return get().shareFirstLevelFolders[shareName] || [];
+        }
 
         try {
           set({
@@ -236,6 +236,12 @@ const useFileSharingStore = create<UseFileSharingStore>(
         }
       },
 
+      setShareFirstLevelFolders: (shareName: string, folders: DirectoryFileDTO[]) => {
+        set({
+          shareFirstLevelFolders: { ...get().shareFirstLevelFolders, [shareName]: folders },
+        });
+      },
+
       clearShareFirstLevelFolders: (shareName: string) => {
         const current = get().shareFirstLevelFolders;
         const updated = Object.fromEntries(Object.entries(current).filter(([key]) => key !== shareName));
@@ -249,7 +255,6 @@ const useFileSharingStore = create<UseFileSharingStore>(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         mountPoints: state.mountPoints,
-        shareFirstLevelFolders: state.shareFirstLevelFolders,
       }),
     },
   ),

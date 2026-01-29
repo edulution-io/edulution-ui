@@ -30,7 +30,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useOnClickOutside } from 'usehooks-ts';
 import useMedia from '@/hooks/useMedia';
-import { getFromPathName } from '@libs/common/utils';
 import APPS from '@libs/appconfig/constants/apps';
 import PageTitle from '@/components/PageTitle';
 import { useTranslation } from 'react-i18next';
@@ -58,12 +57,16 @@ const MenuBar: React.FC = () => {
   const { createVariableSharePathname } = useVariableSharePathname();
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
 
-  const [isSelected, setIsSelected] = useState(getFromPathName(pathname, 2));
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const { isMobileView, isTabletView } = useMedia();
   const isDesktopView = !isMobileView && !isTabletView && !isEdulutionApp;
   const shouldCollapse = isDesktopView && isCollapsed;
   const navigate = useNavigate();
+
+  const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
+  const [, secondPathPartEncoded] = pathParts;
+  const isSelected = secondPathPartEncoded ? decodeURIComponent(secondPathPartEncoded) : '';
+  const previousPathPart = useRef<string | null>(null);
 
   useOnClickOutside(menubarRef, () => {
     if (isMobileView || isTabletView) toggleMobileMenuBar();
@@ -122,24 +125,20 @@ const MenuBar: React.FC = () => {
     return null;
   }
 
-  const firstMenuBarItem = menuBarEntries?.menuItems[0]?.id || '';
-
-  const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
-  const [, secondPathPart] = pathParts;
-  const previousPathPart = useRef<string | null>(null);
+  useEffect(() => {
+    if (isSelected && isSelected !== previousPathPart.current) {
+      previousPathPart.current = isSelected;
+      setExpandedItems(new Set([isSelected]));
+    }
+  }, [isSelected]);
 
   useEffect(() => {
-    if (secondPathPart && secondPathPart !== previousPathPart.current) {
-      previousPathPart.current = secondPathPart;
-      setIsSelected(secondPathPart);
-      setExpandedItems(new Set([secondPathPart]));
-
-      const activeItem = menuBarEntries.menuItems.find((item) => item.id === secondPathPart);
-      if (activeItem?.onExpand && (!activeItem.children || activeItem.children.length === 0)) {
-        activeItem.onExpand();
-      }
+    if (!isSelected) return;
+    const activeItem = menuBarEntries.menuItems.find((item) => item.id === isSelected);
+    if (activeItem?.onExpand && (!activeItem.children || activeItem.children.length === 0)) {
+      activeItem.onExpand();
     }
-  }, [secondPathPart, menuBarEntries.menuItems]);
+  }, [isSelected, menuBarEntries.menuItems]);
 
   const handleHeaderIconClick = () => {
     switch (pathParts[0]) {
@@ -167,12 +166,10 @@ const MenuBar: React.FC = () => {
       }
       case APPS.SETTINGS: {
         navigate(pathParts[0]);
-        setIsSelected('');
         break;
       }
       default:
         navigate(pathParts[0]);
-        setIsSelected(firstMenuBarItem);
     }
   };
 
@@ -207,22 +204,8 @@ const MenuBar: React.FC = () => {
           const isActive = isSelected === item.id;
 
           const handleItemClick = () => {
-            setIsSelected(item.id);
             if (isMobileView || isTabletView) toggleMobileMenuBar();
             item.action();
-
-            if (canExpand) {
-              if (!isExpanded) {
-                setExpandedItems(new Set([item.id]));
-                if (item.onExpand) {
-                  item.onExpand();
-                }
-              } else if (!hasLoadedChildren && item.onExpand) {
-                item.onExpand();
-              }
-            } else {
-              setExpandedItems(new Set());
-            }
           };
 
           const handleExpandClick = (e: React.MouseEvent) => {
@@ -276,19 +259,19 @@ const MenuBar: React.FC = () => {
             </div>
           );
 
-          const childrenContent = hasLoadedChildren && !shouldCollapse && (
+          const childrenContent = canExpand && !shouldCollapse && (
             <div
               id={childrenId}
               role="region"
               aria-label={`${item.label} sections`}
               className={cn(
                 'grid transition-all duration-200 ease-in-out',
-                isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
+                isExpanded && hasLoadedChildren ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
               )}
             >
               <div className="overflow-hidden">
                 <div className="ml-2">
-                  {item.children!.map((child) => {
+                  {item.children?.map((child) => {
                     const isChildActive = child.isActive
                       ? child.isActive(pathname, searchParams)
                       : activeSection === child.id;
