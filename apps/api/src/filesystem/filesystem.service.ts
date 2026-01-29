@@ -42,7 +42,7 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { lookup } from 'mime-types';
-import { type Response } from 'express';
+import { type Request, type Response } from 'express';
 import { HTTP_HEADERS, RequestResponseContentType, ResponseType } from '@libs/common/types/http-methods';
 import HashAlgorithm from '@libs/common/constants/hashAlgorithm';
 import CustomFile from '@libs/filesharing/types/customFile';
@@ -387,30 +387,35 @@ class FilesystemService {
     }
   }
 
-  async servePublicAssetWithFallback(res: Response, filePath: string, fallBackPath?: string): Promise<Response> {
+  async servePublicAssetWithFallback(
+    req: Request,
+    res: Response,
+    filePath: string,
+    fallBackPath?: string,
+  ): Promise<Response> {
     const fileExists = await FilesystemService.checkIfFileExist(filePath);
     if (fileExists) {
       res.setHeader(HTTP_HEADERS.AssetSource, 'custom');
-      return this.serve(filePath, res);
+      return this.serve(filePath, req, res);
     }
     if (fallBackPath) {
       res.setHeader(HTTP_HEADERS.AssetSource, 'fallback');
-      return this.serve(fallBackPath, res);
+      return this.serve(fallBackPath, req, res);
     }
     return Promise.resolve(res.status(HttpStatus.NOT_FOUND).send());
   }
 
-  async serveTempFile(name: string, filename: string, res: Response) {
+  async serveTempFile(name: string, filename: string, req: Request, res: Response) {
     const filePath = join(TEMP_FILES_PATH, name, filename);
-    return this.serve(filePath, res);
+    return this.serve(filePath, req, res);
   }
 
-  async serveFile(name: string, filename: string, res: Response) {
+  async serveFile(name: string, filename: string, req: Request, res: Response) {
     const filePath = join(APPS_FILES_PATH, name, filename);
-    return this.serve(filePath, res);
+    return this.serve(filePath, req, res);
   }
 
-  async serve(filePath: string, res: Response): Promise<Response> {
+  async serve(filePath: string, req: Request, res: Response): Promise<Response> {
     await FilesystemService.throwErrorIfFileNotExists(filePath);
 
     const stat = await fsStat(filePath);
@@ -419,7 +424,7 @@ class FilesystemService {
     res.setHeader(HTTP_HEADERS.CacheControl, 'public, max-age=0, must-revalidate');
     res.setHeader(HTTP_HEADERS.ETag, etag);
 
-    const clientEtag = res.req?.headers['if-none-match'];
+    const clientEtag = req.headers['if-none-match'];
     if (clientEtag === etag) {
       return res.status(HttpStatus.NOT_MODIFIED).end();
     }
