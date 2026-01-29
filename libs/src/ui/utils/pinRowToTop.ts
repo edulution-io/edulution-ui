@@ -17,12 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface FilterOption {
-  key: string;
-  translationKey: string;
-  checked: boolean;
-  onChange: (enabled: boolean) => void;
-  isSeparator?: boolean;
-}
+import { Row } from '@tanstack/react-table';
 
-export default FilterOption;
+const pinRowToTop = <TData>(rows: Row<TData>[], pinnedRowId: string | undefined): Row<TData>[] => {
+  if (!pinnedRowId) return rows;
+
+  const pinnedIndex = rows.findIndex((row) => row.id === pinnedRowId);
+  if (pinnedIndex <= 0) return rows;
+
+  const pinnedRow = rows[pinnedIndex];
+  return [pinnedRow, ...rows.slice(0, pinnedIndex), ...rows.slice(pinnedIndex + 1)];
+};
+
+export default pinRowToTop;

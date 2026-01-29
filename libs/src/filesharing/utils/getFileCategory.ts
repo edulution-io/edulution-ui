@@ -17,21 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useTranslation } from 'react-i18next';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import useFileOperationProgressToast from '../../../hooks/useFileOperationProgressToast';
+import { IconType } from 'react-file-icon';
+import CONTENT_FILE_TYPES from '@libs/filesharing/constants/contentFileTypes';
+import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 
-const useFileOperationToast = () => {
-  const { t } = useTranslation();
-  const { fileOperationProgress } = useFileSharingStore();
-
-  useFileOperationProgressToast(
-    fileOperationProgress && {
-      ...fileOperationProgress,
-      title: t(fileOperationProgress.title ?? ''),
-      description: t(fileOperationProgress.description ?? ''),
-    },
-  );
+const getFileCategory = (filename: string): IconType => {
+  const extension = getFileExtension(filename);
+  const key = `.${extension}`;
+  if (key in CONTENT_FILE_TYPES) {
+    return CONTENT_FILE_TYPES[key as keyof typeof CONTENT_FILE_TYPES];
+  }
+  return 'document';
 };
 
-export default useFileOperationToast;
+export default getFileCategory;
