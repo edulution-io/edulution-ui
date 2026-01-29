@@ -510,7 +510,8 @@
     "webdavInfo": {
       "title": "WebDAV Access",
       "description": "Use this URL to connect to your files via WebDAV clients",
-      "url": "WebDAV URL",
+      "urlWindowsMac": "WebDAV URL (Windows / macOS)",
+      "urlLinux": "WebDAV URL (Linux)",
       "username": "Username",
       "passwordHint": "Use your login password to authenticate",
       "tutorialsTitle": "Setup Tutorials",
@@ -1485,6 +1486,8 @@
     "filter": "Filter",
     "showHiddenFiles": "Show hidden files",
     "showSystemFiles": "Show system files",
+    "expand": "Expand",
+    "collapse": "Collapse",
     "errors": {
       "dbAccessFailed": "Database access failed",
       "directoryNotCreated": "Failed to create directory",
