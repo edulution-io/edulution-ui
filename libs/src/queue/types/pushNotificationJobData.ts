@@ -17,12 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface FilterOption {
-  key: string;
-  translationKey: string;
-  checked: boolean;
-  onChange: (enabled: boolean) => void;
-  isSeparator?: boolean;
+import SendPushNotificationDto from '@libs/notification/types/send-pushNotification.dto';
+
+interface PushNotificationJobData extends SendPushNotificationDto {
+  username: string;
 }
 
-export default FilterOption;
+export default PushNotificationJobData;

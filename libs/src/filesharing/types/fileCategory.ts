@@ -17,12 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface FilterOption {
-  key: string;
-  translationKey: string;
-  checked: boolean;
-  onChange: (enabled: boolean) => void;
-  isSeparator?: boolean;
-}
+import FILE_CATEGORIES from '@libs/filesharing/constants/fileCategories';
 
-export default FilterOption;
+type FileCategory = (typeof FILE_CATEGORIES)[keyof typeof FILE_CATEGORIES];
+
+type FileCategoryFilters = Record<FileCategory, boolean>;
+
+export type { FileCategory, FileCategoryFilters };
