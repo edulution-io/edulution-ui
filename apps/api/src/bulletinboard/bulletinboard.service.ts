@@ -384,6 +384,7 @@ class BulletinBoardService implements OnModuleInit {
             type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
           },
         },
+        currentUser?.preferred_username,
         {
           type: NOTIFICATION_TYPE.SYSTEM,
           sourceType: NOTIFICATION_SOURCE_TYPE.BULLETIN,
