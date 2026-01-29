@@ -47,7 +47,8 @@ import IconWrapper from './IconWrapper';
 
 const MenuBar: React.FC = () => {
   const { t } = useTranslation();
-  const { isMobileMenuBarOpen, toggleMobileMenuBar, isCollapsed, toggleCollapsed } = useMenuBarStore();
+  const { isMobileMenuBarOpen, toggleMobileMenuBar, isCollapsed, toggleCollapsed, closeMobileMenuBar } =
+    useMenuBarStore();
   const { activeSection } = useSubMenuStore();
   const menubarRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
@@ -65,7 +66,7 @@ const MenuBar: React.FC = () => {
   const navigate = useNavigate();
 
   useOnClickOutside(menubarRef, () => {
-    if (isMobileView || isTabletView) toggleMobileMenuBar();
+    if (isMobileView || isTabletView) closeMobileMenuBar();
   });
 
   const renderIcon = useCallback(
