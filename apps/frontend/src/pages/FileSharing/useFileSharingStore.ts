@@ -30,6 +30,8 @@ import DownloadFileDto from '@libs/filesharing/types/downloadFileDto';
 import FilesharingProgressDto from '@libs/filesharing/types/filesharingProgressDto';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
 import processWebdavResponse from '@libs/filesharing/utils/processWebdavResponse';
+import ShareFolderLoadingState from '@libs/filesharing/types/shareFolderLoadingState';
+import ShareFolderLoadingStateType from '@libs/filesharing/types/shareFolderLoadingStateType';
 
 type UseFileSharingStore = {
   files: DirectoryFileDTO[];
@@ -61,6 +63,10 @@ type UseFileSharingStore = {
   fetchWebdavShares: () => Promise<WebdavShareDto[]>;
   selectedWebdavShare: string;
   setSelectedWebdavShare: (webdavShare: string) => void;
+  shareFirstLevelFolders: Record<string, DirectoryFileDTO[]>;
+  shareFolderLoadingState: Record<string, ShareFolderLoadingStateType>;
+  fetchShareFirstLevelFolders: (shareName: string, sharePath: string) => Promise<DirectoryFileDTO[]>;
+  clearShareFirstLevelFolders: (shareName: string) => void;
 };
 
 const initialState = {
@@ -79,6 +85,8 @@ const initialState = {
   fileOperationProgress: null,
   webdavShares: [],
   selectedWebdavShare: '',
+  shareFirstLevelFolders: {},
+  shareFolderLoadingState: {},
 };
 
 type PersistedFileManagerStore = (
@@ -194,6 +202,46 @@ const useFileSharingStore = create<UseFileSharingStore>(
         set({ selectedWebdavShare: webdavShare });
       },
 
+      fetchShareFirstLevelFolders: async (shareName: string, sharePath: string) => {
+        const existing = get().shareFirstLevelFolders[shareName];
+        if (existing) return existing;
+
+        const loadingState = get().shareFolderLoadingState[shareName];
+        if (loadingState === ShareFolderLoadingState.LOADING) return [];
+
+        try {
+          set({
+            shareFolderLoadingState: { ...get().shareFolderLoadingState, [shareName]: ShareFolderLoadingState.LOADING },
+          });
+
+          const { data } = await eduApi.get<DirectoryFileDTO[]>(FileSharingApiEndpoints.BASE, {
+            params: { type: ContentType.DIRECTORY, path: sharePath, share: shareName },
+          });
+
+          const webdavShareType = get().webdavShares.find((s) => s.displayName === shareName)?.type;
+          const folders = webdavShareType ? processWebdavResponse(data, webdavShareType) : data;
+
+          set({
+            shareFirstLevelFolders: { ...get().shareFirstLevelFolders, [shareName]: folders },
+            shareFolderLoadingState: { ...get().shareFolderLoadingState, [shareName]: ShareFolderLoadingState.IDLE },
+          });
+
+          return folders;
+        } catch (error) {
+          set({
+            shareFolderLoadingState: { ...get().shareFolderLoadingState, [shareName]: ShareFolderLoadingState.ERROR },
+          });
+          handleApiError(error, set);
+          return [];
+        }
+      },
+
+      clearShareFirstLevelFolders: (shareName: string) => {
+        const current = get().shareFirstLevelFolders;
+        const updated = Object.fromEntries(Object.entries(current).filter(([key]) => key !== shareName));
+        set({ shareFirstLevelFolders: updated });
+      },
+
       reset: () => set(initialState),
     }),
     {
@@ -201,6 +249,7 @@ const useFileSharingStore = create<UseFileSharingStore>(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         mountPoints: state.mountPoints,
+        shareFirstLevelFolders: state.shareFirstLevelFolders,
       }),
     },
   ),

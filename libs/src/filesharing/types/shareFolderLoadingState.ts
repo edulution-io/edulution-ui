@@ -17,17 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
+const ShareFolderLoadingState = {
+  IDLE: 'idle',
+  LOADING: 'loading',
+  ERROR: 'error',
+} as const;
 
-interface MenuItem {
-  id: string;
-  label: string;
-  icon: string | IconDefinition;
-  action: () => void;
-  path?: string;
-  disableTranslation?: boolean;
-  children?: MenuItem[];
-  onExpand?: () => void;
-}
-
-export default MenuItem;
+export default ShareFolderLoadingState;

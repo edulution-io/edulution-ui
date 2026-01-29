@@ -27,6 +27,7 @@ interface Options {
   webdavShare?: string;
   fetchFiles: (share: string | undefined, path: string) => Promise<void>;
   fetchShares: () => Promise<void>;
+  clearShareFirstLevelFolders?: (shareName: string) => void;
 }
 
 const useRefreshOnFileOperationComplete = ({
@@ -35,17 +36,22 @@ const useRefreshOnFileOperationComplete = ({
   webdavShare,
   fetchFiles,
   fetchShares,
+  clearShareFirstLevelFolders,
 }: Options) => {
   useEffect(() => {
     if (!fileOperationProgress) return;
     const percent = fileOperationProgress.percent ?? 0;
     if (percent < 100) return;
 
+    if (webdavShare && clearShareFirstLevelFolders) {
+      clearShareFirstLevelFolders(webdavShare);
+    }
+
     void (async () => {
       await fetchFiles(webdavShare, currentPath);
       await fetchShares();
     })();
-  }, [fileOperationProgress, currentPath, webdavShare, fetchFiles, fetchShares]);
+  }, [fileOperationProgress, currentPath, webdavShare, fetchFiles, fetchShares, clearShareFirstLevelFolders]);
 };
 
 export default useRefreshOnFileOperationComplete;

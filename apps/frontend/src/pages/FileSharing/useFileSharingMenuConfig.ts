@@ -34,7 +34,8 @@ import useVariableSharePathname from './hooks/useVariableSharePathname';
 
 const useFileSharingMenuConfig = () => {
   const { pathname } = useLocation();
-  const { webdavShares, fetchWebdavShares } = useFileSharingStore();
+  const { webdavShares, fetchWebdavShares, shareFirstLevelFolders, fetchShareFirstLevelFolders } =
+    useFileSharingStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const navigate = useNavigate();
   const { user } = userStore();
@@ -67,26 +68,51 @@ const useFileSharingMenuConfig = () => {
     }
   }, [firstPathPart]);
 
-  useEffect(() => {
-    const menuBarItems: MenuItem[] = webdavShares
-      .filter((share) => !share.isRootServer)
-      .map((share) => ({
-        id: share.displayName,
-        label: share.displayName,
+  const createFolderChildren = useCallback(
+    (shareName: string, sharePath: string): MenuItem[] => {
+      const folders = shareFirstLevelFolders[shareName] || [];
+      return folders.map((folder) => ({
+        id: `${shareName}-${folder.filename}`,
+        label: folder.filename,
         icon: FileSharingIcon,
-        color: 'hover:bg-ciGreenToBlue',
         action: () => {
-          if (share.status === WEBDAV_SHARE_STATUS.UP) {
-            handlePathChange(share.displayName, createVariableSharePathname(share.pathname, share.pathVariables));
-          } else {
-            toast.info(t('webdavShare.offline'), {
-              position: 'top-right',
-              duration: 1000,
-            });
-          }
+          const folderPath = `${sharePath}${folder.filename}/`;
+          handlePathChange(shareName, folderPath);
         },
         disableTranslation: true,
       }));
+    },
+    [shareFirstLevelFolders, handlePathChange],
+  );
+
+  useEffect(() => {
+    const menuBarItems: MenuItem[] = webdavShares
+      .filter((share) => !share.isRootServer)
+      .map((share) => {
+        const sharePath = createVariableSharePathname(share.pathname, share.pathVariables);
+        const isOnline = share.status === WEBDAV_SHARE_STATUS.UP;
+        const children = createFolderChildren(share.displayName, sharePath);
+
+        return {
+          id: share.displayName,
+          label: share.displayName,
+          icon: FileSharingIcon,
+          color: 'hover:bg-ciGreenToBlue',
+          action: () => {
+            if (isOnline) {
+              handlePathChange(share.displayName, sharePath);
+            } else {
+              toast.info(t('webdavShare.offline'), {
+                position: 'top-right',
+                duration: 1000,
+              });
+            }
+          },
+          disableTranslation: true,
+          children: children.length > 0 ? children : undefined,
+          onExpand: isOnline ? () => fetchShareFirstLevelFolders(share.displayName, sharePath) : undefined,
+        };
+      });
 
     const sharedItem: MenuItem = {
       id: SHARED,
@@ -96,7 +122,16 @@ const useFileSharingMenuConfig = () => {
     };
 
     setMenuItems([...menuBarItems, sharedItem]);
-  }, [user?.ldapGroups?.roles, user?.ldapGroups?.schools, webdavShares, navigate, handlePathChange]);
+  }, [
+    user?.ldapGroups?.roles,
+    user?.ldapGroups?.schools,
+    webdavShares,
+    navigate,
+    handlePathChange,
+    createFolderChildren,
+    fetchShareFirstLevelFolders,
+    createVariableSharePathname,
+  ]);
 
   return {
     title: 'filesharing.title',

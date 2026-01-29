@@ -129,8 +129,13 @@ const MenuBar: React.FC = () => {
     if (pathParts[1]) {
       setIsSelected(pathParts[1]);
       setExpandedItems((prev) => new Set(prev).add(pathParts[1]));
+
+      const activeItem = menuBarEntries.menuItems.find((item) => item.id === pathParts[1]);
+      if (activeItem?.onExpand && (!activeItem.children || activeItem.children.length === 0)) {
+        activeItem.onExpand();
+      }
     }
-  }, [pathParts]);
+  }, [pathParts, menuBarEntries.menuItems]);
 
   const handleHeaderIconClick = () => {
     switch (pathParts[0]) {
@@ -192,7 +197,8 @@ const MenuBar: React.FC = () => {
 
       <div className="flex-1 overflow-y-auto pb-10">
         {menuBarEntries.menuItems.map((item) => {
-          const hasChildren = item.children && item.children.length > 0;
+          const hasLoadedChildren = item.children && item.children.length > 0;
+          const canExpand = hasLoadedChildren || !!item.onExpand;
           const isExpanded = expandedItems.has(item.id);
           const isActive = isSelected === item.id;
 
@@ -201,14 +207,22 @@ const MenuBar: React.FC = () => {
             if (isMobileView || isTabletView) toggleMobileMenuBar();
             item.action();
 
-            if (hasChildren && !isExpanded) {
+            if (canExpand && !isExpanded) {
               setExpandedItems((prev) => new Set(prev).add(item.id));
+              if (item.onExpand) {
+                item.onExpand();
+              }
+            } else if (isExpanded && !hasLoadedChildren && item.onExpand) {
+              item.onExpand();
             }
           };
 
           const handleExpandClick = (e: React.MouseEvent) => {
             e.stopPropagation();
             toggleExpanded(item.id);
+            if (!isExpanded && item.onExpand) {
+              item.onExpand();
+            }
           };
 
           const childrenId = `${item.id}-children`;
@@ -219,8 +233,8 @@ const MenuBar: React.FC = () => {
               tabIndex={0}
               onClick={handleItemClick}
               onKeyDown={(e) => e.key === 'Enter' && handleItemClick()}
-              aria-expanded={hasChildren ? isExpanded : undefined}
-              aria-controls={hasChildren ? childrenId : undefined}
+              aria-expanded={canExpand ? isExpanded : undefined}
+              aria-controls={canExpand ? childrenId : undefined}
               aria-label={item.label}
               className={cn(
                 'flex w-full cursor-pointer items-center gap-3 py-1 pl-3 pr-3 transition-colors hover:bg-muted-background',
@@ -232,7 +246,7 @@ const MenuBar: React.FC = () => {
               {!shouldCollapse && (
                 <>
                   <span className={cn('flex-1 text-left', isActive ? 'text-white' : '')}>{item.label}</span>
-                  {hasChildren && (
+                  {canExpand && (
                     <Button
                       type="button"
                       variant="btn-ghost"
@@ -254,7 +268,7 @@ const MenuBar: React.FC = () => {
             </div>
           );
 
-          const childrenContent = hasChildren && !shouldCollapse && (
+          const childrenContent = hasLoadedChildren && !shouldCollapse && (
             <div
               id={childrenId}
               role="region"

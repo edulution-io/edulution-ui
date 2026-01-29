@@ -33,6 +33,7 @@ const useFileSharingPage = () => {
     setPathToRestoreSession,
     pathToRestoreSession,
     isLoading: isFileProcessing,
+    clearShareFirstLevelFolders,
   } = useFileSharingStore();
   const { isLoading, fileOperationResult } = useFileSharingDialogStore();
   const { fetchShares } = usePublicShareStore();
@@ -63,6 +64,9 @@ const useFileSharingPage = () => {
     const updateFilesAfterSuccess = async () => {
       if (fileOperationResult && !isLoading) {
         if (fileOperationResult.success) {
+          if (webdavShare) {
+            clearShareFirstLevelFolders(webdavShare);
+          }
           await fetchFiles(webdavShare, currentPath);
           await fetchShares();
           toast.success(fileOperationResult.message);
@@ -73,7 +77,7 @@ const useFileSharingPage = () => {
     };
 
     void updateFilesAfterSuccess();
-  }, [fileOperationResult, isLoading, fetchFiles, currentPath]);
+  }, [fileOperationResult, isLoading, fetchFiles, currentPath, webdavShare, clearShareFirstLevelFolders]);
 
   return { isFileProcessing, isLoading, currentPath, searchParams, setSearchParams };
 };
