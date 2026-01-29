@@ -202,6 +202,7 @@
       "GetUserSchoolClassFailed": "Failed to get user school class",
       "GetUserProjectsFailed": "Failed to get user projects",
       "GetUserFailed": "Fetching failed",
+      "GetUsersFailed": "Failed to get users",
       "UpdateUserFailed": "Update failed",
       "GetCurrentUserRoomFailed": "Failed to get current user room",
       "CreateProjectFailed": "Create project failed",
