@@ -69,7 +69,7 @@ const useChatMenuConfig = () => {
     const userProjectsList = getGroupsWhereUserIsMember(userProjects);
 
     const classChildren: MenuItem[] = userClasses.map((cls) => ({
-      id: `class-${cls.cn}`,
+      id: cls.cn,
       label: cls.displayName || cls.cn,
       icon: faUsers,
       action: () => navigate(`/${CHAT_CLASSES_PATH}/${cls.cn}`),
@@ -77,7 +77,7 @@ const useChatMenuConfig = () => {
     }));
 
     const projectChildren: MenuItem[] = userProjectsList.map((proj) => ({
-      id: `project-${proj.cn}`,
+      id: proj.cn,
       label: proj.displayName || proj.cn,
       icon: faUserGear,
       action: () => navigate(`/${CHAT_PROJECTS_PATH}/${proj.cn}`),
@@ -112,7 +112,7 @@ const useChatMenuConfig = () => {
   return {
     title: 'chat.title',
     icon: ContactIcon,
-    color: 'hover:bg-primary',
+    color: 'hover:bg-ciGreenToBlue',
     appName: APPS.CHAT,
     menuItems,
   };

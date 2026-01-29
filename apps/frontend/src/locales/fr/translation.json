@@ -20,7 +20,13 @@
     "schoolClasses": "Classes",
     "project": "Projet",
     "projects": "Projets",
-    "selectFromSidebar": "Sélectionnez une classe ou un projet dans la barre latérale"
+    "selectFromSidebar": "Sélectionnez une classe ou un projet dans la barre latérale",
+    "schoolClasses": "Classes",
+    "projects": "Projets",
+    "noMessages": "Aucun message pour le moment",
+    "startConversation": "Écrivez le premier message",
+    "inputPlaceholder": "Tapez un message...",
+    "error": "Erreur"
   },
   "bulletinboard": {
     "settings": "Paramètres",
@@ -237,10 +243,6 @@
       "confirmDeleteProviderConfig": "Êtes-vous sûr de vouloir supprimer cette configuration de fournisseur de messagerie ? Cette action ne peut pas être annulée.",
       "deleteProviderConfig": "Supprimer la configuration du fournisseur de messagerie"
     }
-  },
-  "chat": {
-    "title": "Chat",
-    "sidebar": "Chat"
   },
   "errors": {
     "unexpectedError": "Une erreur inattendue s'est produite",
