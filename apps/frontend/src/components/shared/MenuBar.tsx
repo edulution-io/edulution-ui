@@ -263,7 +263,7 @@ const MenuBar: React.FC = () => {
               )}
             >
               <div className="overflow-hidden">
-                <div className="border-muted-foreground/30 ml-4 border-l-2 py-1">
+                <div className="ml-2">
                   {item.children!.map((child) => {
                     const isChildActive = pathname.includes(child.id);
                     return (
