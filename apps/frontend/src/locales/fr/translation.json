@@ -424,7 +424,8 @@
     "webdavInfo": {
       "title": "Accès WebDAV",
       "description": "Utilisez cette URL pour vous connecter à vos fichiers via des clients WebDAV",
-      "url": "URL WebDAV",
+      "urlWindowsMac": "URL WebDAV (Windows / macOS)",
+      "urlLinux": "URL WebDAV (Linux)",
       "username": "Nom d'utilisateur",
       "passwordHint": "Utilisez votre mot de passe de connexion pour vous authentifier",
       "tutorialsTitle": "Tutoriels de configuration",
@@ -1332,6 +1333,8 @@
     "filter": "Filtrer",
     "showHiddenFiles": "Afficher les fichiers cachés",
     "showSystemFiles": "Afficher les fichiers système",
+    "expand": "Développer",
+    "collapse": "Réduire",
     "errors": {
       "attachmentUploadFailed": "La pièce jointe n'a pas pu être téléversée",
       "dbAccessFailed": "L'accès à la base de données a échoué",

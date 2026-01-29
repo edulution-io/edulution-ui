@@ -17,33 +17,27 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { type ComponentType } from 'react';
-import APPS from '@libs/appconfig/constants/apps';
-import FileSharingMenuBarFooter from '@/pages/FileSharing/FileSharingMenuBarFooter';
+import { create } from 'zustand';
+import Section from '@libs/menubar/section';
 
-interface MenuBarFooterProps {
-  isCollapsed: boolean;
+interface SubMenuStore {
+  sections: Section[];
+  activeSection: string | null;
+  sectionToOpen: string | null;
+  setSections: (sections: Section[]) => void;
+  setActiveSection: (id: string | null) => void;
+  requestOpenSection: (id: string) => void;
+  clearOpenRequest: () => void;
 }
 
-type FooterComponent = ComponentType<MenuBarFooterProps>;
+const useSubMenuStore = create<SubMenuStore>((set) => ({
+  sections: [],
+  activeSection: null,
+  sectionToOpen: null,
+  setSections: (sections) => set({ sections }),
+  setActiveSection: (id) => set({ activeSection: id }),
+  requestOpenSection: (id) => set({ sectionToOpen: id, activeSection: id }),
+  clearOpenRequest: () => set({ sectionToOpen: null }),
+}));
 
-const MENU_BAR_FOOTER_REGISTRY: Partial<Record<string, FooterComponent>> = {
-  [APPS.FILE_SHARING]: FileSharingMenuBarFooter,
-};
-
-interface Props {
-  appName: string;
-  isCollapsed: boolean;
-}
-
-const MenuBarFooter: React.FC<Props> = ({ appName, isCollapsed }) => {
-  const FooterComponent = MENU_BAR_FOOTER_REGISTRY[appName];
-
-  if (!FooterComponent) {
-    return null;
-  }
-
-  return <FooterComponent isCollapsed={isCollapsed} />;
-};
-
-export default MenuBarFooter;
+export default useSubMenuStore;

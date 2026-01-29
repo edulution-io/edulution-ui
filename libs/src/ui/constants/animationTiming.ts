@@ -17,33 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { type ComponentType } from 'react';
-import APPS from '@libs/appconfig/constants/apps';
-import FileSharingMenuBarFooter from '@/pages/FileSharing/FileSharingMenuBarFooter';
+const HIGHLIGHT_DURATION_MS = 3000;
+const SCROLL_DELAY_MS = 50;
+const HASH_SCROLL_DELAY_MS = 100;
 
-interface MenuBarFooterProps {
-  isCollapsed: boolean;
-}
-
-type FooterComponent = ComponentType<MenuBarFooterProps>;
-
-const MENU_BAR_FOOTER_REGISTRY: Partial<Record<string, FooterComponent>> = {
-  [APPS.FILE_SHARING]: FileSharingMenuBarFooter,
-};
-
-interface Props {
-  appName: string;
-  isCollapsed: boolean;
-}
-
-const MenuBarFooter: React.FC<Props> = ({ appName, isCollapsed }) => {
-  const FooterComponent = MENU_BAR_FOOTER_REGISTRY[appName];
-
-  if (!FooterComponent) {
-    return null;
-  }
-
-  return <FooterComponent isCollapsed={isCollapsed} />;
-};
-
-export default MenuBarFooter;
+export { HIGHLIGHT_DURATION_MS, SCROLL_DELAY_MS, HASH_SCROLL_DELAY_MS };
