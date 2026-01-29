@@ -20,6 +20,8 @@
 import APPS from '@libs/appconfig/constants/apps';
 import VIEW_MODE from '@libs/common/constants/viewMode';
 import ViewModeType from '@libs/common/types/viewModeType';
+import FILE_CATEGORIES from '@libs/filesharing/constants/fileCategories';
+import type { FileCategory, FileCategoryFilters } from '@libs/filesharing/types/fileCategory';
 import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 
@@ -27,9 +29,12 @@ interface TableViewSettingsStore {
   viewModes: Record<string, ViewModeType>;
   showSystemFiles: Record<string, boolean>;
   showHiddenFiles: Record<string, boolean>;
+  fileCategoryFilters: Record<string, FileCategoryFilters>;
   setViewMode: (key: string, mode: ViewModeType) => void;
   setShowSystemFiles: (key: string, enabled: boolean) => void;
   setShowHiddenFiles: (key: string, enabled: boolean) => void;
+  setFileCategoryFilter: (appKey: string, category: FileCategory, enabled: boolean) => void;
+  getFileCategoryFilters: (appKey: string) => FileCategoryFilters;
   getViewMode: (key: string) => ViewModeType;
 }
 
@@ -38,10 +43,25 @@ type PersistedTableViewSettingsStore = (
   options: PersistOptions<Partial<TableViewSettingsStore>>,
 ) => StateCreator<TableViewSettingsStore>;
 
+const defaultFileCategoryFilters: FileCategoryFilters = {
+  [FILE_CATEGORIES.FOLDER]: true,
+  [FILE_CATEGORIES.DOCUMENT]: true,
+  [FILE_CATEGORIES.SPREADSHEET]: true,
+  [FILE_CATEGORIES.PRESENTATION]: true,
+  [FILE_CATEGORIES.IMAGE]: true,
+  [FILE_CATEGORIES.VIDEO]: true,
+  [FILE_CATEGORIES.AUDIO]: true,
+  [FILE_CATEGORIES.ACROBAT]: true,
+  [FILE_CATEGORIES.COMPRESSED]: true,
+  [FILE_CATEGORIES.CODE]: true,
+  [FILE_CATEGORIES.VECTOR]: true,
+};
+
 const initialValues = {
   viewModes: {},
   showSystemFiles: { [APPS.FILE_SHARING]: false },
   showHiddenFiles: { [APPS.FILE_SHARING]: false },
+  fileCategoryFilters: { [APPS.FILE_SHARING]: defaultFileCategoryFilters },
 };
 
 const useTableViewSettingsStore = create<TableViewSettingsStore>(
@@ -60,7 +80,7 @@ const useTableViewSettingsStore = create<TableViewSettingsStore>(
 
       getViewMode: (key) => {
         const { viewModes } = get();
-        return viewModes[key] || VIEW_MODE.table;
+        return viewModes[key] ?? VIEW_MODE.table;
       },
 
       setShowSystemFiles: (key, enabled) => {
@@ -80,6 +100,23 @@ const useTableViewSettingsStore = create<TableViewSettingsStore>(
           },
         }));
       },
+
+      setFileCategoryFilter: (appKey, category, enabled) => {
+        set((state) => ({
+          fileCategoryFilters: {
+            ...state.fileCategoryFilters,
+            [appKey]: {
+              ...(state.fileCategoryFilters[appKey] ?? defaultFileCategoryFilters),
+              [category]: enabled,
+            },
+          },
+        }));
+      },
+
+      getFileCategoryFilters: (appKey) => {
+        const { fileCategoryFilters } = get();
+        return fileCategoryFilters[appKey] ?? defaultFileCategoryFilters;
+      },
     }),
     {
       name: 'view-mode',
@@ -88,6 +125,7 @@ const useTableViewSettingsStore = create<TableViewSettingsStore>(
         viewModes: state.viewModes,
         showSystemFiles: state.showSystemFiles,
         showHiddenFiles: state.showHiddenFiles,
+        fileCategoryFilters: state.fileCategoryFilters,
       }),
     },
   ),
