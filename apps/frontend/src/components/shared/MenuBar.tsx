@@ -281,7 +281,7 @@ const MenuBar: React.FC = () => {
                           'flex w-full items-center justify-start py-2 pl-4 pr-3 font-normal',
                           'transition-all duration-150',
                           'hover:pl-5',
-                          isChildActive && 'bg-accent/50 font-bold',
+                          isChildActive && 'bg-accent font-bold',
                         )}
                       >
                         <span className="truncate">{child.label}</span>
