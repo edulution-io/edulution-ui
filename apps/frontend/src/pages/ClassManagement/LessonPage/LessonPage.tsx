@@ -58,6 +58,7 @@ const LessonPage = () => {
     removeSession,
     fetchSchoolClass,
     fetchUserSessions,
+    fetchRoom,
   } = useClassManagementStore();
   const { isSuperAdmin } = useLdapGroups();
 
@@ -65,7 +66,7 @@ const LessonPage = () => {
 
   const navigate = useNavigate();
 
-  const { lmnApiToken, getOwnUser } = useLmnApiStore();
+  const { lmnApiToken, getOwnUser, fetchUsers } = useLmnApiStore();
   const { groupType: groupTypeParams, groupName: groupNameParams } = useParams();
   const {
     isLoading,
@@ -126,6 +127,15 @@ const LessonPage = () => {
         const schoolClass = await fetchSchoolClass(groupNameParams!, true);
         if (schoolClass?.members) {
           setMember(getUniqueValues([...schoolClass.members]));
+        }
+        break;
+      }
+      case UserGroups.Room: {
+        await fetchRoom();
+        const { userRoom: room } = useClassManagementStore.getState();
+        if (room?.usersList && room.usersList.length > 0) {
+          const users = await fetchUsers(room.usersList);
+          setMember(users);
         }
         break;
       }
