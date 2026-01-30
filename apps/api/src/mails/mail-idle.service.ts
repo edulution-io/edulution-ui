@@ -59,11 +59,17 @@ interface PendingReconnect {
   timer: NodeJS.Timeout;
 }
 
+interface PendingDisconnect {
+  timer: NodeJS.Timeout;
+}
+
 @Injectable()
 class MailIdleService implements OnModuleInit, OnModuleDestroy {
   private idleConnections = new Map<string, IdleConnection>();
 
   private pendingReconnects = new Map<string, PendingReconnect>();
+
+  private pendingDisconnects = new Map<string, PendingDisconnect>();
 
   private imapConfig: ImapConfig = {
     host: '',
@@ -346,16 +352,50 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
   }
 
   @OnEvent(EVENT_EMITTER_EVENTS.SSE_USER_DISCONNECTED)
-  async handleUserDisconnected(username: string): Promise<void> {
-    this.cancelPendingReconnect(username);
+  handleUserDisconnected(username: string): void {
+    if (!this.idleConnections.has(username)) {
+      return;
+    }
 
-    if (this.idleConnections.has(username)) {
-      Logger.debug(`User ${username} disconnected from SSE, stopping IDLE`, MailIdleService.name);
-      await this.stopIdle(username);
+    if (this.pendingDisconnects.has(username)) {
+      return;
+    }
+
+    Logger.debug(
+      `User ${username} disconnected from SSE, starting grace period (${MAIL_IDLE_CONFIG.SSE_DISCONNECT_GRACE_PERIOD_MS}ms)`,
+      MailIdleService.name,
+    );
+
+    const timer = setTimeout(() => {
+      this.pendingDisconnects.delete(username);
+      this.cancelPendingReconnect(username);
+
+      if (this.idleConnections.has(username)) {
+        Logger.debug(`Grace period expired for ${username}, stopping IDLE`, MailIdleService.name);
+        void this.stopIdle(username);
+      }
+    }, MAIL_IDLE_CONFIG.SSE_DISCONNECT_GRACE_PERIOD_MS);
+
+    this.pendingDisconnects.set(username, { timer });
+  }
+
+  @OnEvent(EVENT_EMITTER_EVENTS.SSE_USER_CONNECTED)
+  handleUserConnected(username: string): void {
+    const pending = this.pendingDisconnects.get(username);
+    if (pending) {
+      clearTimeout(pending.timer);
+      this.pendingDisconnects.delete(username);
+      Logger.debug(`User ${username} reconnected, cancelled pending IDLE disconnect`, MailIdleService.name);
     }
   }
 
   private async stopAllConnections(): Promise<void> {
+    this.pendingDisconnects.forEach((pending) => clearTimeout(pending.timer));
+    this.pendingDisconnects.clear();
+
+    this.pendingReconnects.forEach((pending) => clearTimeout(pending.timer));
+    this.pendingReconnects.clear();
+
     const usernames = Array.from(this.idleConnections.keys());
     await Promise.all(usernames.map((username) => this.stopIdle(username)));
     Logger.log(`All IDLE connections stopped (${usernames.length} connections)`, MailIdleService.name);
