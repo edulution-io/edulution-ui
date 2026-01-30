@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
@@ -33,6 +33,7 @@ const useFileSharingPage = () => {
     setPathToRestoreSession,
     pathToRestoreSession,
     isLoading: isFileProcessing,
+    clearFilesOnShareChange,
   } = useFileSharingStore();
   const { isLoading, fileOperationResult } = useFileSharingDialogStore();
   const { fetchShares } = usePublicShareStore();
@@ -40,6 +41,15 @@ const useFileSharingPage = () => {
   const { webdavShare } = useParams();
   const { homePath } = useUserPath();
   const path = searchParams.get(URL_SEARCH_PARAMS.PATH) || homePath;
+
+  const previousWebdavShare = useRef<string | undefined>(webdavShare);
+
+  useEffect(() => {
+    if (previousWebdavShare.current !== webdavShare && previousWebdavShare.current !== undefined) {
+      clearFilesOnShareChange();
+    }
+    previousWebdavShare.current = webdavShare;
+  }, [webdavShare, clearFilesOnShareChange]);
 
   useEffect(() => {
     if (!isFileProcessing) {
