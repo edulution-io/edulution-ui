@@ -26,6 +26,7 @@ import {
   OnChangeFn,
   Row,
   RowSelectionState,
+  SortingState,
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table';
@@ -67,10 +68,12 @@ const useScrollableTable = <TData, TValue>({
     () => (columns.some((c) => c.id === DEFAULT_TABLE_SORT_PROPERTY_KEY) ? [{ id: 'position', desc: false }] : []),
     [columns],
   );
-  const [sorting, setSorting] = useState(() => (initialSorting?.length ? initialSorting : defaultSorting));
+  const [sorting, setSorting] = useState<SortingState>(() =>
+    initialSorting?.length ? initialSorting : defaultSorting,
+  );
 
   const fallbackGetRowId = useCallback((originalRow: TData) => (originalRow as { id: string }).id, []);
-  const rowIdGetter = getRowId || fallbackGetRowId;
+  const rowIdGetter = getRowId ?? fallbackGetRowId;
 
   const table = useReactTable({
     data,

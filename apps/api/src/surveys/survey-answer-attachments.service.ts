@@ -18,7 +18,7 @@
  */
 
 import { join } from 'path';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
 import SURVEYS_ANSWER_FOLDER from '@libs/survey/constants/surveyAnswersFolder';
@@ -48,6 +48,7 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     surveyId: string,
     questionId: string,
     fileName: string,
+    req: Request,
     res: Response,
   ): Promise<Response> {
     const tempFilePath = join(SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH, userName, surveyId, questionId, fileName);
@@ -55,12 +56,12 @@ class SurveyAnswerAttachmentsService implements OnModuleInit {
     const tempFileExists = await FilesystemService.checkIfFileExist(tempFilePath);
     if (tempFileExists) {
       const path = join(SURVEYS_ANSWER_FOLDER, userName, surveyId, questionId);
-      return this.fileSystemService.serveTempFile(path, fileName, res);
+      return this.fileSystemService.serveTempFile(path, fileName, req, res);
     }
     const permanentFileExists = await FilesystemService.checkIfFileExist(permanentFilePath);
     if (permanentFileExists) {
       const path = join(SURVEYS_ANSWER_FOLDER, ATTACHMENT_FOLDER, surveyId, questionId, userName);
-      return this.fileSystemService.serveFile(path, fileName, res);
+      return this.fileSystemService.serveFile(path, fileName, req, res);
     }
     throw new CustomHttpException(CommonErrorMessages.FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
   }
