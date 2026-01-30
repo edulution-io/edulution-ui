@@ -29,12 +29,11 @@ import { useTranslation } from 'react-i18next';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/useConferenceDetailsDialogStore';
 import i18n from '@/i18n';
 import useUserStore from '@/store/UserStore/useUserStore';
-import { toast } from 'sonner';
-import delay from '@libs/common/utils/delay';
 import OpenShareQRDialogTextCell from '@/components/ui/Table/OpenShareQRDialogTextCell';
 import useSharePublicConferenceStore from '@/pages/ConferencePage/useSharePublicConferenceStore';
 import CONFERENCES_TABLE_COLUMNS from '@libs/conferences/constants/conferencesTableColumns';
 import hideOnMobileClassName from '@libs/ui/constants/hideOnMobileClassName';
+import useConferenceToggle from '@/pages/ConferencePage/useConferenceToggle';
 
 function getRowAction(isRunning: boolean, isLoading: boolean, isUserTheCreator: boolean) {
   if (isLoading) {
@@ -65,7 +64,7 @@ function getRowAction(isRunning: boolean, isLoading: boolean, isUserTheCreator: 
       text: i18n.t('conferences.start'),
     };
   }
-  if (!isRunning) {
+  if (isRunning) {
     return {
       icon: <FontAwesomeIcon icon={faArrowRightToBracket} />,
       text: i18n.t('conferences.join'),
@@ -259,10 +258,10 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
     accessorFn: (row) => row.isRunning,
     cell: ({ row }) => {
       const { creator, isRunning, meetingID } = row.original;
-      const { t } = useTranslation();
       const { user } = useUserStore();
-      const { joinConference, joinConferenceUrl, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
-      const { toggleConferenceRunningState, getConferences, loadingMeetingId } = useConferenceStore();
+      const { joinConference } = useConferenceDetailsDialogStore();
+      const { loadingMeetingId } = useConferenceStore();
+      const { toggleAndHandleJoinConference } = useConferenceToggle();
       const isUserTheCreator = user?.username === creator?.username;
       const isRowLoading = row.original.meetingID === loadingMeetingId;
 
@@ -271,26 +270,11 @@ const ConferencesTableColumns: ColumnDef<ConferenceDto>[] = [
       const onClick = isRowLoading
         ? undefined
         : async () => {
-            let wasConferenceStateToggled;
             if (isUserTheCreator) {
-              wasConferenceStateToggled = await toggleConferenceRunningState(meetingID, isRunning);
-              if (!isRunning) {
-                await joinConference(meetingID);
-              } else if (joinConferenceUrl.includes(meetingID)) {
-                setJoinConferenceUrl('');
-              }
-
-              if (wasConferenceStateToggled) {
-                await delay(5000);
-                toast.info(t(`conferences.${isRunning ? 'stopped' : 'started'}`));
-              } else {
-                setJoinConferenceUrl('');
-              }
+              await toggleAndHandleJoinConference(meetingID, isRunning);
             } else if (isRunning) {
               await joinConference(meetingID);
             }
-
-            await getConferences();
           };
       return (
         <SelectableCell
