@@ -32,7 +32,8 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import UseBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import useFileOperationProgress from '@/pages/FileSharing/hooks/useFileOperationProgress';
-import useFileOperationToast from '@/pages/FileSharing/hooks/useFileOperationToast';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useFileOperationProgressToast from '@/hooks/useFileOperationProgressToast';
 import useTLDRawHistoryStore from '@/pages/Whiteboard/TLDrawWithSync/useTLDRawHistoryStore';
 import HistoryEntryDto from '@libs/whiteboard/types/historyEntryDto';
 import useFileDownloadProgressToast from '@/hooks/useDownloadProgressToast';
@@ -54,6 +55,7 @@ const useNotifications = () => {
   const { addBulletinBoardNotification } = UseBulletinBoardStore();
   const isWhiteboardActive = useIsAppActive(APPS.WHITEBOARD);
   const { addRoomHistoryEntry } = useTLDRawHistoryStore();
+  const { fileOperationProgress } = useFileSharingStore();
 
   useFileOperationProgress();
 
@@ -61,7 +63,7 @@ const useNotifications = () => {
 
   useFileDownloadProgressToast();
 
-  useFileOperationToast();
+  useFileOperationProgressToast(fileOperationProgress);
 
   useSseHeartbeatMonitor();
 
