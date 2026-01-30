@@ -106,6 +106,12 @@ class MailsController {
   async updateSogoThemeManually(): Promise<void> {
     await this.mailsService.updateSogoTheme();
   }
+
+  @UseGuards(AdminGuard)
+  @Get('connection-stats')
+  getConnectionStats(): { current: number; max: number } {
+    return this.mailIdleService.getConnectionStats();
+  }
 }
 
 export default MailsController;

@@ -24,6 +24,7 @@ import APPS from '@libs/appconfig/constants/apps';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import getErrorMessage from '@libs/common/utils/getErrorMessage';
 import MAIL_IDLE_CONFIG from '@libs/mail/constants/mailIdleConfig';
 import type MailNewMailNotificationDto from '@libs/mail/types/mailNewMailNotification.dto';
 import type MailFlagsChangedNotificationDto from '@libs/mail/types/mailFlagsChangedNotification.dto';
@@ -142,7 +143,7 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
     try {
       await this.createIdleConnection(username, email, password);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage = getErrorMessage(error);
       Logger.error(`Failed to start IDLE for user ${username}: ${errorMessage}`, MailIdleService.name);
     }
   }
@@ -219,7 +220,7 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
         MailIdleService.name,
       );
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage = getErrorMessage(error);
       Logger.error(`Failed to connect IDLE for ${username}: ${errorMessage}`, MailIdleService.name);
       await MailIdleService.cleanupClient(client);
       throw error;
@@ -288,7 +289,7 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
     try {
       await this.createIdleConnection(username, email, password);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage = getErrorMessage(error);
       Logger.error(`Failed to restart IDLE for ${username}: ${errorMessage}`, MailIdleService.name);
     }
   }
@@ -318,7 +319,7 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
 
     const reconnectTimer = setTimeout(() => {
       void this.createIdleConnection(username, email, password).catch((error) => {
-        const errorMessage = error instanceof Error ? error.message : String(error);
+        const errorMessage = getErrorMessage(error);
         Logger.error(`Reconnect failed for ${username}: ${errorMessage}`, MailIdleService.name);
       });
     }, delay);
@@ -421,14 +422,6 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
         );
       }
     }
-  }
-
-  hasActiveConnection(username: string): boolean {
-    return this.idleConnections.has(username);
-  }
-
-  getConnectionCount(): number {
-    return this.idleConnections.size;
   }
 
   getConnectionStats(): { current: number; max: number } {

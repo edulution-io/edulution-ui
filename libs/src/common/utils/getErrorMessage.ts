@@ -17,14 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export { default as getFromPathName } from './getFromPathName';
-export { default as getRootPathName } from './getRootPathName';
-export { default as getDecryptedPassword } from './getDecryptedPassword';
-export { default as getExternalUrlForDeepLink } from './getExternalUrlForDeepLink';
-export { default as getProxyPrefixFromUrl } from './getProxyPrefixFromUrl';
-export { default as getSubPathFromBrowserUrl } from './getSubPathFromBrowserUrl';
-export type { UrlParts } from './getSubPathFromBrowserUrl';
-export { default as getSubPathFromIframe } from './getSubPathFromIframe';
-export { default as isSameOrigin } from './isSameOrigin';
-export { default as combineUrlParts } from './combineUrlParts';
-export { default as getErrorMessage } from './getErrorMessage';
+const getErrorMessage = (error: unknown): string => (error instanceof Error ? error.message : String(error));
+
+export default getErrorMessage;

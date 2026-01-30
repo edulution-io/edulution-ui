@@ -43,6 +43,7 @@ import MailTheme from '@libs/mail/constants/mailTheme';
 import SOGO_THEME from '@libs/mail/constants/sogoTheme';
 import { extractTheme, extractVersion } from '@libs/mail/utils/sogoThemeMetadata';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import getErrorMessage from '@libs/common/utils/getErrorMessage';
 import GroupRoles from '@libs/groups/types/group-roles.enum';
 import SseMessageType from '@libs/common/types/sseMessageType';
 import DOCKER_STATES from '@libs/docker/constants/dockerStates';
@@ -191,7 +192,7 @@ class MailsService implements OnModuleInit {
       await this.notifyMailThemeChange(accessGroups, SSE_MESSAGE_TYPE.MAIL_THEME_UPDATED, theme);
       Logger.log(`Restarted Mailcow containers to apply SOGo theme.`, MailsService.name);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage = getErrorMessage(error);
       await this.notifyMailThemeChange(
         [{ path: GroupRoles.SUPER_ADMIN }],
         SSE_MESSAGE_TYPE.MAIL_THEME_UPDATE_FAILED,
@@ -241,7 +242,7 @@ class MailsService implements OnModuleInit {
 
       return result;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage = getErrorMessage(error);
       Logger.error(`Failed to check SOGo theme version: ${errorMessage}`, MailsService.name);
       return result;
     }
@@ -360,20 +361,20 @@ class MailsService implements OnModuleInit {
     try {
       mailboxLock = await imapClient.getMailboxLock('INBOX');
 
-      const unseenUids = await imapClient.search({ seen: false }, { uid: true });
+      const unseenMailUids = await imapClient.search({ seen: false }, { uid: true });
 
-      if (!unseenUids || unseenUids.length === 0) {
+      if (!unseenMailUids || unseenMailUids.length === 0) {
         return [];
       }
 
-      const newestUids = [...unseenUids]
+      const newestMailUids = [...unseenMailUids]
         .sort((a: number, b: number) => b - a)
         .slice(0, MAIL_IDLE_CONFIG.MAX_FEED_MAILS);
 
-      const fetchMail = imapClient.fetch(newestUids, { envelope: true, flags: true, uid: true });
+      const fetchedMail = imapClient.fetch(newestMailUids, { envelope: true, flags: true, uid: true });
 
       // eslint-disable-next-line no-restricted-syntax
-      for await (const mail of fetchMail) {
+      for await (const mail of fetchedMail) {
         const mailDto: MailDto = {
           id: mail.uid,
           subject: mail.envelope?.subject,
