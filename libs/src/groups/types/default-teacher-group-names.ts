@@ -17,6 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const DefaultTeacherGroupNames: Array<string> = ['all-teachers', 'teachers', 'alle-lehrer', 'lehrer'];
+const defaultTeacherGroupNames: Array<string> = ['all-teachers', 'global-teachers', 'role-teacher', 'teachers'];
 
-export default DefaultTeacherGroupNames;
+export default defaultTeacherGroupNames;

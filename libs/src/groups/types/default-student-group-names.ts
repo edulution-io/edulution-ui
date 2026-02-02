@@ -17,6 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const DefaultStudentGroupNames: Array<string> = ['all-students', 'students', 'alle-schueler', 'schueler'];
+const defaultStudentGroupNames: Array<string> = ['all-students', 'global-students', 'role-student', 'students'];
 
-export default DefaultStudentGroupNames;
+export default defaultStudentGroupNames;

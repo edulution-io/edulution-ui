@@ -869,6 +869,7 @@
     },
     "saveDialog": {
       "title": "Save and assign to participants",
+      "surveySettings": "Survey settings",
       "settingsFlags": "Options",
       "isAnonymous": "Should the survey be anonymous?",
       "isPublic": "Should the survey be public?",

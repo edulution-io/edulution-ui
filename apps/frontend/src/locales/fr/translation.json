@@ -752,6 +752,7 @@
     },
     "saveDialog": {
       "title": "Enregistrer et affecter les utilisateurs",
+      "surveySettings": "Paramètres du sondage",
       "settingsFlags": "Paramètres",
       "isAnonymous": "Le sondage doit-elle être anonyme?",
       "isPublic": "Le sondage doit-elle être publique?",

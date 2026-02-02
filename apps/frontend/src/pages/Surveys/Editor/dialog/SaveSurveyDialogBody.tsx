@@ -29,7 +29,7 @@ import useLdapGroups from '@/hooks/useLdapGroups';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import Checkbox from '@/components/ui/Checkbox';
 import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
-import SaveAsTemplate from '@/pages/Surveys/Editor/dialog/SaveAsTemplate';
+import TemplateOptions from '@/pages/Surveys/Editor/dialog/TemplateOptions';
 
 interface SaveSurveyDialogBodyProps {
   form: UseFormReturn<SurveyDto>;
@@ -86,16 +86,19 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
           aria-label={t('survey.editor.template.label')}
         />
       )}
-      {saveAsTemplate && <SaveAsTemplate />}
-      <SearchUsersOrGroups
-        users={watch('invitedAttendees')}
-        onSearch={onAttendeesSearch}
-        onUserChange={handleAttendeesChange}
-        groups={watch('invitedGroups')}
-        onGroupSearch={searchGroups}
-        onGroupsChange={handleGroupsChange}
-        variant="dialog"
-      />
+      {saveAsTemplate && <TemplateOptions />}
+      <span>
+        <p className="text-l font-bold text-background">{t('surveys.saveDialog.surveySettings')}</p>
+        <SearchUsersOrGroups
+          users={watch('invitedAttendees')}
+          onSearch={onAttendeesSearch}
+          onUserChange={handleAttendeesChange}
+          groups={watch('invitedGroups')}
+          onGroupSearch={searchGroups}
+          onGroupsChange={handleGroupsChange}
+          variant="dialog"
+        />
+      </span>
       <DateTimePickerField
         form={form}
         path="expires"

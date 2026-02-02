@@ -26,7 +26,7 @@ import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import Input from '@/components/shared/Input';
 import Label from '@/components/ui/Label';
 
-const SaveAsTemplate = () => {
+const TemplateOptions = () => {
   const { templateName, setTemplateName, accessGroups, setAccessGroups } = useSurveyTemplateStore();
 
   const { searchGroups } = useGroupStore();
@@ -34,7 +34,7 @@ const SaveAsTemplate = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="flex w-full flex-col">
+    <>
       <span>
         <Label>{t('survey.editor.template.save.accessGroups.label')}</Label>
         <p className="text-sm text-muted-foreground">{t('survey.editor.template.save.accessGroups.description')}</p>
@@ -56,8 +56,8 @@ const SaveAsTemplate = () => {
           onChange={(e) => setTemplateName(e.target.value)}
         />
       </span>
-    </div>
+    </>
   );
 };
 
-export default SaveAsTemplate;
+export default TemplateOptions;

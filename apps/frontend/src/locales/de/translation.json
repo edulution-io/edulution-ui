@@ -871,6 +871,7 @@
     },
     "saveDialog": {
       "title": "Speichern und Benutzern zuweisen",
+      "surveySettings": "Umfrage Einstellungen",
       "settingsFlags": "Einstellungen",
       "isAnonymous": "Soll die Umfrage anonym sein?",
       "isPublic": "Soll die Umfrage öffentlich sein?",

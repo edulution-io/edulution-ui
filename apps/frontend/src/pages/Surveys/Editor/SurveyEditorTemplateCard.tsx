@@ -34,6 +34,8 @@ import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTempl
 import getSurveysDefaultValues from '@/pages/Surveys/utils/getSurveysDefaultValues';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
+import ActionTooltip from '@/components/shared/ActionTooltip';
+import { TooltipProvider } from '@/components/ui/Tooltip';
 
 interface SurveyEditorTemplateCardProps {
   creator: AttendeeDto;
@@ -101,14 +103,7 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
 
   return (
     <Card
-      className={cn(
-        GRID_CARD,
-        'relative flex h-36 cursor-pointer p-4',
-        { 'opacity-50': !active },
-        {
-          'w-[calc(100%-2rem)] min-w-[calc(100%-2rem)] max-w-[24rem] sm:min-w-[14rem] md:min-w-[18rem]': isSuperAdmin,
-        },
-      )}
+      className={cn(GRID_CARD, 'relative flex h-36 min-w-[16rem] cursor-pointer p-4', { 'opacity-50': !active })}
       variant="text"
       onClick={handleCardClick}
     >
@@ -120,10 +115,30 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
       )}
 
       {title && (
-        <h3 className={cn('line-clamp-2 w-full truncate', { 'flex justify-center': !surveyTemplate })}>{title}</h3>
+        <TooltipProvider>
+          <ActionTooltip
+            tooltipText={title}
+            openOnSide="bottom"
+            className="bg-muted"
+            trigger={
+              <h3 className={cn('line-clamp-2 max-w-[14rem] truncate', { 'flex justify-center': !surveyTemplate })}>
+                {title}
+              </h3>
+            }
+          />
+        </TooltipProvider>
       )}
 
-      {description && <p className="line-clamp-2 w-full text-sm">{description}</p>}
+      {description && (
+        <TooltipProvider>
+          <ActionTooltip
+            tooltipText={description}
+            openOnSide="bottom"
+            className="bg-muted"
+            trigger={<p className="line-clamp-2 max-w-[14rem] text-sm">{description}</p>}
+          />
+        </TooltipProvider>
+      )}
 
       {surveyTemplate && (
         <div className="w-inherit absolute bottom-0 right-0 m-4 flex flex-row justify-end gap-2 text-sm italic">

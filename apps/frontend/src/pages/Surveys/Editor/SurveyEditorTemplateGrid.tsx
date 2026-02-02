@@ -83,7 +83,7 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
         variant="default"
         width="auto"
       />
-      <div className={cn('space-2 flex w-full flex-wrap gap-2 overflow-y-auto scrollbar-thin')}>
+      <div className={cn('space-2 flex h-full w-full flex-wrap gap-2 overflow-y-auto scrollbar-thin')}>
         <SurveyEditorTemplateCard
           key="create-new-card"
           creator={surveyCreator}

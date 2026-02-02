@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import DefaultTeacherGroupNames from '@libs/groups/types/default-teacher-group-names';
+import defaultTeacherGroupNames from '@libs/groups/types/default-teacher-group-names';
 import TEMPLATE_IDS from './templateIds';
 
 const paperSubject = {
@@ -68,7 +68,7 @@ const paperSubject = {
     isPublic: false,
     canUpdateFormerAnswer: true,
   },
-  accessGroups: [...DefaultTeacherGroupNames],
+  accessGroups: [...defaultTeacherGroupNames],
   deploymentTargets: ['linuxmuster'],
 };
 
