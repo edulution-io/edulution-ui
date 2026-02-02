@@ -53,6 +53,14 @@
   }
 }
 
+.svc-preview__test-again.svc-btn {
+  display: flex;
+  justify-content: center;
+  height: 3rem;
+  width: 12rem !important;
+  border-radius: var(--border-radius, 12px);
+}
+
 .sd-dropdown__value {
   color: var(--background);
   font-weight: 600;
