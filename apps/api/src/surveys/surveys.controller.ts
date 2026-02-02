@@ -322,13 +322,17 @@ class SurveysController {
   }
 
   @Get(`${CHOICES}/:surveyId/:questionId`)
-  async getChoices(@Param() params: { surveyId: string; questionId: string }, @GetCurrentUser() currentUser: JWTUser) {
+  async getChoices(
+    @Param() params: { surveyId: string; questionId: string },
+    @GetCurrentUser() currentUser: JWTUser,
+    @Query('original') original?: string,
+  ) {
     const { surveyId, questionId } = params;
     if (surveyId === TEMPORAL_SURVEY_ID_STRING) {
       return [];
     }
     await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
-    const choices = await this.surveyAnswerService.getSelectableChoices(surveyId, questionId);
+    const choices = await this.surveyAnswerService.getSelectableChoices(surveyId, questionId, original === 'true');
     return choices.filter((choice) => choice.name !== SHOW_OTHER_ITEM);
   }
 

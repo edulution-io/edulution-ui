@@ -740,14 +740,17 @@
       "fileDeletionSuccess": "Die Datei wurde erfolgreich gelöscht.",
       "fileDeletionError": "Die Datei konnte nicht gelöscht werden",
       "saveSurveySuccess": "Die Umfrage wurde gespeichert.",
-      "surveyPlaceHolder": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
-      "surveyPlaceholderDescription": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
-      "surveyPlaceholderDescriptionMobile": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
-      "pagePlaceHolder": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um der Seite ein neues Element hinzuzufügen.",
-      "panelPlaceHolder": "Klicke unten auf \"Frage hinzufügen\", um dem Bedienfeld ein neues Element hinzuzufügen.",
       "reset": "Verwerfen",
       "addDescription": "Beschreibung hinzufügen",
       "expectingUserInput": "Hier wird die Antwort des Teilnehmers erwartet, ... ",
+      "customTranslations": {
+        "surveyPlaceHolder": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
+        "surveyPlaceholderDescription": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
+        "surveyPlaceholderDescriptionMobile": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um mit der Erstellung deines Formulars zu beginnen.",
+        "pagePlaceHolder": "Klicke unten auf die Schaltfläche \"Frage hinzufügen\", um der Seite ein neues Element hinzuzufügen.",
+        "panelPlaceHolder": "Klicke unten auf \"Frage hinzufügen\", um dem Bedienfeld ein neues Element hinzuzufügen.",
+        "previewTabTitle": "Vorschau"
+      },
       "templates": "Vorlagen",
       "templateMenu": {
         "submit": "Die Umfrage als Vorlage speichern.",
@@ -794,6 +797,20 @@
         "filterPlaceHolderText": "Option suchen",
         "imageWidth": "Breite eines Bildes in Pixel [px]",
         "imageWidthPlaceholder": "0 bedeutet, dass die Breite nur von dem vorhandenen Platz beschränkt wird."
+      },
+      "surveyLogo": {
+        "title": "Logo der Umfrage",
+        "width": {
+          "label": "Breite des Logos in Pixel (mind. 150 px)",
+          "placeholder": "Gib die Breite des Logos in Pixel an"
+        },
+        "position": {
+          "label": "Position des Logos",
+          "placeholder": "Wähle die Position des Logos",
+          "left": "Links vom Titel",
+          "right": "Rechts vom Titel",
+          "description": "Die Position des Logos relativ zum Titel der Umfrage ist im Tab 'Vorschau' einzusehen."
+        }
       }
     },
     "participate": {
@@ -832,7 +849,8 @@
       "notAbleToUpdateSurveyAnswerError": "Antwort konnte nicht aktualisiert werden.",
       "notAbleToCreateSurveyAnswerError": "Antwort konnte nicht erstellt werden.",
       "notAbleToDeleteSurveyAnswerError": "Antwort konnte nicht gelöscht werden.",
-      "notAbleToCountChoices": "Die Anzahl der Auswahlmöglichkeiten konnte nicht ermittelt werden."
+      "notAbleToCountChoices": "Die Anzahl der Auswahlmöglichkeiten konnte nicht ermittelt werden.",
+      "alreadyParticipated": "Du hast bereits teilgenommen."
     }
   },
   "surveys": {

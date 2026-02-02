@@ -17,14 +17,22 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ResultDialogStore from './resultDialogStore';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
+import resetToOriginalChoicesByUrl from '@libs/survey/utils/resetToOriginalChoicesByUrl';
 
-const ResultDialogStoreInitialState: Partial<ResultDialogStore> = {
-  selectedSurvey: undefined,
-  isOpenPublicResultsTableDialog: false,
-  isOpenPublicResultsVisualisationDialog: false,
-  result: undefined,
-  isLoading: false,
+const resetToOriginalChoicesByUrlForSurveyFormula = (formula: SurveyFormula) => {
+  if (formula.pages && formula.pages.length > 0) {
+    const pages = formula.pages.map((page) => ({
+      ...page,
+      elements: resetToOriginalChoicesByUrl(page.elements),
+    }));
+    return { ...formula, pages };
+  }
+  if (formula.elements && formula.elements.length > 0) {
+    const elements = resetToOriginalChoicesByUrl(formula.elements);
+    return { ...formula, elements };
+  }
+  return formula;
 };
 
-export default ResultDialogStoreInitialState;
+export default resetToOriginalChoicesByUrlForSurveyFormula;
