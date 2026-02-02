@@ -43,7 +43,6 @@ import {
   KEYCLOAK_STARTUP_TIMEOUT_MS,
   KEYCLOAK_USERS_SYNC_INTERVAL_MS,
 } from '@libs/ldapKeycloakSync/constants/keycloakSyncValues';
-import LDAP_SYNC_ACTIVE_EVENT from '@libs/ldapKeycloakSync/constants/ldapSyncActiveEvent';
 import CustomHttpException from '../common/CustomHttpException';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
@@ -64,8 +63,6 @@ class UsersService {
 
   private usersCacheInitialized = false;
 
-  private ldapSyncActive = false;
-
   @Timeout(KEYCLOAK_STARTUP_TIMEOUT_MS)
   async initializeService() {
     await this.updateUsersInCache();
@@ -74,12 +71,6 @@ class UsersService {
   @OnEvent(QUEUE_CONSTANTS.USERS_CACHE_REFRESH, { async: true })
   async handleUsersCacheRefresh() {
     await this.updateUsersInCache();
-  }
-
-  @OnEvent(LDAP_SYNC_ACTIVE_EVENT)
-  handleLdapSyncActive(active: boolean) {
-    this.ldapSyncActive = active;
-    Logger.log(`LDAP sync active state changed to: ${active}`, UsersService.name);
   }
 
   async createOrUpdate(userDto: UserDto): Promise<User | null> {
@@ -179,11 +170,6 @@ class UsersService {
 
   @Interval(KEYCLOAK_USERS_SYNC_INTERVAL_MS)
   async updateUsersInCache(): Promise<void> {
-    if (this.ldapSyncActive && this.usersCacheInitialized) {
-      Logger.debug('LDAP sync active, skipping Keycloak polling for users', UsersService.name);
-      return;
-    }
-
     if (this.isUpdatingUsersInCache) {
       Logger.debug('User cache update already in progress, skipping...', UsersService.name);
       return;
