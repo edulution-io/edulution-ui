@@ -53,6 +53,9 @@ import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuest
 import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
 import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/ExportSurveyToPdfDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import registerSurveyComponents from '@/pages/Surveys/components/registerSurveyComponents';
+
+registerSurveyComponents();
 
 interface SurveyEditorPageProps {
   initialFormValues: SurveyDto;
@@ -169,9 +172,9 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     form.reset(initialFormValues);
     if (creator) {
       creator.saveNo = 0;
-      creator.JSON = getSurveysDefaultValues(theme).formula;
+      creator.JSON = getSurveysDefaultValues(getResolvedTheme()).formula;
     }
-  }, [form, initialFormValues, creator]);
+  }, [form, initialFormValues, creator, theme, getResolvedTheme]);
 
   const handleSaveTemplate = useCallback(async () => {
     if (!isSuperAdmin) {

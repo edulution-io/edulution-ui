@@ -35,10 +35,13 @@ import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf
 import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/ExportSurveyToPdfDialog';
 import surveyTheme from '@/pages/Surveys/theme/surveyTheme';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import registerSurveyComponents from '@/pages/Surveys/components/registerSurveyComponents';
 import 'survey-core/i18n/french';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
 import '@/pages/Surveys/theme/participation.css';
+
+registerSurveyComponents();
 
 interface SurveyFileValue {
   name: string;

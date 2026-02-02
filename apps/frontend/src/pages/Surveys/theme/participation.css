@@ -29,11 +29,28 @@
   }
 }
 
-.sd-btn,
-.svc-btn {
+.survey-participation .sd-body__navigation {
   display: flex;
-  justify-content: center;
-  border-radius: 8px !important;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  padding: 1rem 0;
+}
+
+.survey-nav-button {
+  min-width: 6rem;
+  padding: 1rem 0;
+}
+
+.sv-action__content {
+  display: flex;
+  justify-self: center;
+
+  .svc-element__add-new-question.svc-btn {
+    min-width: 12rem;
+    height: 3rem;
+    width: 14rem;
+    border-radius: var(--border-radius, 12px);
+  }
 }
 
 .sd-dropdown__value {
