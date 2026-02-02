@@ -217,13 +217,13 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
   const config: FloatingButtonsBarConfig = {
     buttons: [
       {
-        icon: faRotateLeft,
+        icon: faBackward,
         text: t('common.back'),
         onClick: () => resetSurveyEditorPage(),
       },
       SaveButton(() => setIsOpenSaveSurveyDialog(true)),
       {
-        icon: faBackward,
+        icon: faRotateLeft,
         text: t('survey.editor.reset'),
         onClick: () => {
           form.reset(initialFormValues);
