@@ -25,6 +25,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { faRotateLeft, faFilePdf, faFileLines, faFileCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { SurveyCreator, SurveyCreatorComponent } from 'survey-creator-react';
+import { ReactElementFactory } from 'survey-react-ui';
+import { SurveyCreatorModel } from 'survey-creator-core';
 import TSurveyQuestion from '@libs/survey/types/TSurveyQuestion';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
@@ -41,6 +43,7 @@ import useLanguage from '@/hooks/useLanguage';
 import useBeforeUnload from '@/hooks/useBeforeUnload';
 import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import SaveSurveyDialog from '@/pages/Surveys/Editor/dialog/SaveSurveyDialog';
+import SurveysLogoSettingsDialog from '@/pages/Surveys/Editor/dialog/SurveysLogoSettingsDialog';
 import createSurveyCreatorObject from '@/pages/Surveys/Editor/createSurveyCreatorObject';
 import TemplateDialog from '@/pages/Surveys/Editor/dialog/TemplateDialog';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
@@ -52,6 +55,11 @@ import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuest
 import useExportSurveyToPdfStore from '@/pages/Surveys/Participation/exportToPdf/useExportSurveyToPdfStore';
 import ExportSurveyToPdfDialog from '@/pages/Surveys/Participation/exportToPdf/ExportSurveyToPdfDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import CustomLogoImageComponent from '@/pages/Surveys/Editor/components/CustomLogoImageComponent';
+
+ReactElementFactory.Instance.registerElement('svc-logo-image', (props: { data: SurveyCreatorModel }) => (
+  <CustomLogoImageComponent data={props.data} />
+));
 
 const SurveyEditorPage = () => {
   const { fetchSelectedSurvey, isFetching, selectedSurvey, selectSurvey, updateUsersSurveys } =
@@ -59,6 +67,8 @@ const SurveyEditorPage = () => {
   const {
     isOpenSaveSurveyDialog,
     setIsOpenSaveSurveyDialog,
+    isOpenSurveysLogoDialog,
+    setIsOpenSurveysLogoDialog,
     updateOrCreateSurvey,
     isLoading,
     reset: resetEditorPage,
@@ -264,6 +274,11 @@ const SurveyEditorPage = () => {
         setIsOpenSaveSurveyDialog={setIsOpenSaveSurveyDialog}
         submitSurvey={handleSaveSurvey}
         isSubmitting={isLoading}
+      />
+      <SurveysLogoSettingsDialog
+        surveyCreator={creator}
+        isOpenSurveysLogoDialog={isOpenSurveysLogoDialog}
+        setIsOpenSurveysLogoDialog={setIsOpenSurveysLogoDialog}
       />
       <QuestionsContextMenu
         form={form}

@@ -17,17 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface TEditorLocale {
-  ed: {
-    surveyPlaceHolder: string;
-    surveyPlaceholderDescription: string;
-    surveyPlaceholderDescriptionMobile: string;
-    pagePlaceHolder: string;
-    panelPlaceHolder: string;
-  };
-  tabs: {
-    preview: string;
-  };
-}
+const SVG_UPLOAD_ALLOWED_MIME_TYPES = ['image/svg+xml'];
 
-export default TEditorLocale;
+export default SVG_UPLOAD_ALLOWED_MIME_TYPES;
