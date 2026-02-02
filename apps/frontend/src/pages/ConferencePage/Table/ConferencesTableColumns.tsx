@@ -20,7 +20,7 @@
 import React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRightToBracket, faLock, faPlay, faStop, faHourglassHalf } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRightToBracket, faHourglassHalf, faLock, faPlay, faStop } from '@fortawesome/free-solid-svg-icons';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableCell from '@/components/ui/Table/SelectableCell';
 import ConferenceDto from '@libs/conferences/types/conference.dto';
@@ -35,7 +35,7 @@ import CONFERENCES_TABLE_COLUMNS from '@libs/conferences/constants/conferencesTa
 import hideOnMobileClassName from '@libs/ui/constants/hideOnMobileClassName';
 import useConferenceToggle from '@/pages/ConferencePage/useConferenceToggle';
 
-function getRowAction(isRunning: boolean, isLoading: boolean, isUserTheCreator: boolean) {
+const getRowAction = (isRunning: boolean, isLoading: boolean, isUserTheCreator: boolean) => {
   if (isLoading) {
     return {
       icon: <FontAwesomeIcon icon={faHourglassHalf} />,
@@ -71,7 +71,7 @@ function getRowAction(isRunning: boolean, isLoading: boolean, isUserTheCreator: 
     };
   }
   return { icon: undefined, text: '' };
-}
+};
 
 const hideOnMobileClassNameMinWidth = `${hideOnMobileClassName} min-w-24`;
 
