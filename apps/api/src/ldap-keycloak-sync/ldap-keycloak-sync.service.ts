@@ -126,8 +126,11 @@ class LdapKeycloakSyncService implements OnModuleInit {
 
   @Interval(LDAP_SYNC_INTERVAL_MS)
   async sync() {
+    await this.loadLdapConfig();
+
     if (!this.ldapConfig) {
-      Logger.error('No LDAP config, sync canceled', LdapKeycloakSyncService.name);
+      Logger.debug('No LDAP config, sync canceled - using Keycloak polling fallback', LdapKeycloakSyncService.name);
+      this.eventEmitter.emit(LDAP_SYNC_ACTIVE_EVENT, false);
       return;
     }
 
@@ -315,6 +318,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
       Logger.debug('Sync complete', LdapKeycloakSyncService.name);
     } catch (e) {
       Logger.error(`Sync failed: ${(e as Error).message}`, LdapKeycloakSyncService.name);
+      this.eventEmitter.emit(LDAP_SYNC_ACTIVE_EVENT, false);
     } finally {
       this.isSyncRunning = false;
     }
