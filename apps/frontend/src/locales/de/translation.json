@@ -177,6 +177,7 @@
       "GetUserSchoolClassFailed": "Abrufen der Schulklasse des Benutzers fehlgeschlagen",
       "GetUserProjectsFailed": "Abrufen der Projekte des Benutzers fehlgeschlagen",
       "GetUserFailed": "Abrufen fehlgeschlagen",
+      "GetUsersFailed": "Abrufen der Benutzer fehlgeschlagen",
       "UpdateUserFailed": "Aktualisierung fehlgeschlagen",
       "GetCurrentUserRoomFailed": "Abrufen des aktuellen Benutzerraums fehlgeschlagen",
       "CreateProjectFailed": "Projekterstellung fehlgeschlagen",
@@ -509,7 +510,8 @@
     "webdavInfo": {
       "title": "WebDAV-Zugang",
       "description": "Verwende diese URL, um dich mit deinen Dateien über WebDAV-Clients zu verbinden",
-      "url": "WebDAV-URL",
+      "urlWindowsMac": "WebDAV-URL (Windows / macOS)",
+      "urlLinux": "WebDAV-URL (Linux)",
       "username": "Benutzername",
       "passwordHint": "Verwende dein Anmeldepasswort zur Authentifizierung",
       "tutorialsTitle": "Anleitungen",
@@ -1425,7 +1427,8 @@
       "qrCodeDescription": "Scanne diesen QR-Code mit der WireGuard App auf deinem Mobilgerät, um die VPN-Verbindung einzurichten.",
       "configDownload": "Konfigurationsdatei",
       "configDownloadDescription": "Lade die WireGuard-Konfigurationsdatei herunter, um sie in der WireGuard App auf deinem Computer zu importieren.",
-      "downloadButton": "Konfiguration herunterladen"
+      "downloadButton": "Konfiguration herunterladen",
+      "error": "Der VPN-Dienst ist derzeit nicht erreichbar. Bitte versuche es später erneut oder wende dich an einen Administrator."
     },
     "addTotp": {
       "title": "Zwei-Faktor-Authentisierung einrichten",
@@ -1504,6 +1507,8 @@
     "filter": "Filter",
     "showHiddenFiles": "Versteckte Dateien anzeigen",
     "showSystemFiles": "Systemdateien anzeigen",
+    "expand": "Aufklappen",
+    "collapse": "Zuklappen",
     "errors": {
       "dbAccessFailed": "Datenbankzugriff fehlgeschlagen",
       "directoryNotCreated": "Erstellen des Verzeichnisses fehlgeschlagen",

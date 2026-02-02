@@ -18,7 +18,7 @@
  */
 
 import { join } from 'path';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import {
   Body,
   Controller,
@@ -26,6 +26,7 @@ import {
   Post,
   Delete,
   Param,
+  Req,
   Res,
   UploadedFile,
   UseInterceptors,
@@ -100,11 +101,15 @@ class PublicSurveysController {
 
   @Get(`${FILES}/:surveyId/:questionId/:filename`)
   @Public()
-  async serveFile(@Param() params: { surveyId: string; questionId: string; filename: string }, @Res() res: Response) {
+  async serveFile(
+    @Param() params: { surveyId: string; questionId: string; filename: string },
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
     const { surveyId, questionId, filename } = params;
     await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
     const filePath = join(SURVEYS, ATTACHMENT_FOLDER, surveyId, questionId);
-    return this.filesystemService.serveFile(filePath, filename, res);
+    return this.filesystemService.serveFile(filePath, filename, req, res);
   }
 
   @Post(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId`)
@@ -180,12 +185,13 @@ class PublicSurveysController {
   @Public()
   async serveFileFromAnswer(
     @Param() params: { userName: string; surveyId: string; questionId: string; fileName: string },
+    @Req() req: Request,
     @Res() res: Response,
   ) {
     const { userName, surveyId, questionId, fileName } = params;
     PublicSurveysController.validateParams({ ...params }, ['userName', 'surveyId', 'questionId', 'fileName']);
     await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
-    return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, questionId, fileName, res);
+    return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, questionId, fileName, req, res);
   }
 
   @Get(`${CHOICES}/:surveyId/:questionId`)

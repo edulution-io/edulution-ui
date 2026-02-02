@@ -22,12 +22,13 @@ import { ColumnDef, OnChangeFn, Row, RowSelectionState, VisibilityState } from '
 import { useTranslation } from 'react-i18next';
 import TableAction from '@libs/common/types/tableAction';
 import VIEW_MODE from '@libs/common/constants/viewMode';
+import pinRowToTop from '@libs/ui/utils/pinRowToTop';
+import type FilterOption from '@libs/ui/types/filterOption';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import Input from '@/components/shared/Input';
 import TableActionFooter from '@/components/ui/Table/TableActionFooter';
 import useTableViewSettingsStore from '@/store/useTableViewSettingsStore';
 import Checkbox from '@/components/ui/Checkbox';
-import type FilterOption from '@libs/ui/types/filterOption';
 import ScrollableTable from './ScrollableTable';
 import ViewModeToggle from './ViewModeToggle';
 import SortDropdown from './SortDropdown';
@@ -64,6 +65,7 @@ interface TableGridViewProps<TData, TValue> {
   focusedRowId?: string | null;
   onGridItemClick?: (item: TData) => void;
   onSortedRowsChange?: (sortedData: TData[]) => void;
+  pinnedToTopRowId?: string;
 }
 
 const TableGridView = <TData, TValue>({
@@ -94,6 +96,7 @@ const TableGridView = <TData, TValue>({
   focusedRowId,
   onGridItemClick,
   onSortedRowsChange,
+  pinnedToTopRowId,
 }: TableGridViewProps<TData, TValue>) => {
   const { t } = useTranslation();
   const { getViewMode, setViewMode } = useTableViewSettingsStore();
@@ -118,8 +121,8 @@ const TableGridView = <TData, TValue>({
     [viewMode, handleViewModeChange, isDialog],
   );
 
-  const fileFilterDropdown = useMemo(() => {
-    if (!filterOptions || filterOptions.length === 0) return null;
+  const filterDropdown = useMemo(() => {
+    if (!filterOptions?.length) return null;
 
     return (
       <TableFilterDropdown
@@ -140,6 +143,9 @@ const TableGridView = <TData, TValue>({
     initialColumnVisibility,
   });
 
+  const { rows } = table.getRowModel();
+  const sortedRows = useMemo(() => pinRowToTop(rows, pinnedToTopRowId), [rows, pinnedToTopRowId]);
+
   if (isTableView) {
     return (
       <ScrollableTable
@@ -153,11 +159,9 @@ const TableGridView = <TData, TValue>({
         getRowId={getRowId}
         applicationName={applicationName}
         enableRowSelection={enableRowSelection}
-        initialSorting={initialSorting}
         showHeader={showHeader}
         showSelectedCount={showSelectedCount}
         isDialog={isDialog}
-        initialColumnVisibility={initialColumnVisibility}
         actions={actions}
         showSearchBarAndColumnSelect={showSearchBar}
         getRowDisabled={getRowDisabled}
@@ -166,13 +170,15 @@ const TableGridView = <TData, TValue>({
         canDropOnRow={canDropOnRow}
         searchBarAdditionalComponent={
           <>
-            {fileFilterDropdown}
+            {filterDropdown}
             {viewModeToggle}
           </>
         }
         focusedRowId={focusedRowId}
         onRowClick={onGridItemClick}
         onSortedRowsChange={onSortedRowsChange}
+        externalTable={table}
+        externalSortedRows={sortedRows}
       />
     );
   }
@@ -187,7 +193,7 @@ const TableGridView = <TData, TValue>({
 
   return (
     <>
-      {isLoading && data?.length === 0 ? <LoadingIndicatorDialog isOpen={isLoading} /> : null}
+      {isLoading && data?.length === 0 && <LoadingIndicatorDialog isOpen={isLoading} />}
 
       {showSelectedCount && (
         <SelectedRowsCount
@@ -214,7 +220,7 @@ const TableGridView = <TData, TValue>({
               isDialog={isDialog}
             />
 
-            {fileFilterDropdown}
+            {filterDropdown}
 
             {viewModeToggle}
           </div>
@@ -231,7 +237,7 @@ const TableGridView = <TData, TValue>({
         )}
 
         <GridView
-          rows={table.getRowModel().rows}
+          rows={sortedRows}
           gridItemConfig={gridItemConfig}
           enableRowSelection={enableRowSelection}
           getRowDisabled={getRowDisabled}
