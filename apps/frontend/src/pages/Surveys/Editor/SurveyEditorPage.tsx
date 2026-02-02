@@ -90,7 +90,7 @@ const SurveyEditorPage = () => {
   const { user } = useUserStore();
   const { surveyId } = useParams();
   const { language } = useLanguage();
-  const { theme } = useThemeStore();
+  const { theme, getResolvedTheme } = useThemeStore();
 
   const handleReset = () => {
     resetStoredSurvey();
@@ -114,7 +114,7 @@ const SurveyEditorPage = () => {
       value: user.username,
       label: `${user.firstName} ${user.lastName}`,
     };
-    return getInitialSurveyFormValues(surveyCreator, selectedSurvey, storedSurvey, theme);
+    return getInitialSurveyFormValues(surveyCreator, selectedSurvey, storedSurvey, getResolvedTheme());
   }, [storedSurvey, selectedSurvey, theme]);
 
   const form = useForm<SurveyDto>({
@@ -223,7 +223,7 @@ const SurveyEditorPage = () => {
           form.reset(initialFormValues);
           if (creator) {
             creator.saveNo = 0;
-            creator.JSON = getSurveysDefaultValues(theme).formula;
+            creator.JSON = getSurveysDefaultValues(getResolvedTheme()).formula;
           }
         },
       },
