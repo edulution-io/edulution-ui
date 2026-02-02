@@ -371,7 +371,8 @@ class MailsService implements OnModuleInit {
         .sort((a: number, b: number) => b - a)
         .slice(0, MAIL_IDLE_CONFIG.MAX_FEED_MAILS);
 
-      const fetchedMail = imapClient.fetch(newestMailUids, { envelope: true, flags: true, uid: true });
+      const uidRange = newestMailUids.join(',');
+      const fetchedMail = imapClient.fetch({ uid: uidRange }, { envelope: true, flags: true, uid: true });
 
       // eslint-disable-next-line no-restricted-syntax
       for await (const mail of fetchedMail) {
@@ -385,7 +386,7 @@ class MailsService implements OnModuleInit {
 
       mails.sort((a, b) => b.id - a.id);
     } catch (e) {
-      Logger.error(`Get mails error: ${e instanceof Error && e.message}`, MailsService.name);
+      Logger.error(`Get mails error: ${getErrorMessage(e)}`, MailsService.name);
       return [];
     } finally {
       if (mailboxLock) {
