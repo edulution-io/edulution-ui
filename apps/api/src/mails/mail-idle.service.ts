@@ -18,6 +18,7 @@
  */
 
 import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
 import { ImapFlow } from 'imapflow';
 import APPS from '@libs/appconfig/constants/apps';
@@ -50,12 +51,6 @@ interface ImapConfig {
   rejectUnauthorized: boolean;
 }
 
-const { EDUI_MAIL_IMAP_TIMEOUT, EDUI_MAIL_IDLE_MAX_CONNECTIONS } = process.env;
-const connectionTimeout = EDUI_MAIL_IMAP_TIMEOUT ? parseInt(EDUI_MAIL_IMAP_TIMEOUT, 10) : 5000;
-const maxConnections = EDUI_MAIL_IDLE_MAX_CONNECTIONS
-  ? parseInt(EDUI_MAIL_IDLE_MAX_CONNECTIONS, 10)
-  : MAIL_IDLE_CONFIG.DEFAULT_MAX_CONCURRENT_CONNECTIONS;
-
 interface PendingReconnect {
   timer: NodeJS.Timeout;
 }
@@ -82,7 +77,22 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
   constructor(
     private readonly sseService: SseService,
     private readonly appConfigService: AppConfigService,
+    private readonly configService: ConfigService,
   ) {}
+
+  private get connectionTimeout(): number {
+    const value = this.configService.get<string>('EDUI_MAIL_IMAP_TIMEOUT');
+    if (!value) return MAIL_IDLE_CONFIG.DEFAULT_CONNECTION_TIMEOUT;
+    const parsed = parseInt(value, 10);
+    return Number.isNaN(parsed) ? MAIL_IDLE_CONFIG.DEFAULT_CONNECTION_TIMEOUT : parsed;
+  }
+
+  private get maxConnections(): number {
+    const value = this.configService.get<string>('EDUI_MAIL_IDLE_MAX_CONNECTIONS');
+    if (!value) return MAIL_IDLE_CONFIG.DEFAULT_MAX_CONCURRENT_CONNECTIONS;
+    const parsed = parseInt(value, 10);
+    return Number.isNaN(parsed) ? MAIL_IDLE_CONFIG.DEFAULT_MAX_CONCURRENT_CONNECTIONS : parsed;
+  }
 
   async onModuleInit() {
     await this.updateImapConfig();
@@ -122,9 +132,9 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
       return;
     }
 
-    if (this.idleConnections.size >= maxConnections) {
+    if (this.idleConnections.size >= this.maxConnections) {
       Logger.warn(
-        `Max concurrent IDLE connections reached (${maxConnections}), skipping for: ${username}`,
+        `Max concurrent IDLE connections reached (${this.maxConnections}), skipping for: ${username}`,
         MailIdleService.name,
       );
       return;
@@ -163,7 +173,7 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
         pass: password,
       },
       logger: false,
-      connectionTimeout,
+      connectionTimeout: this.connectionTimeout,
     });
 
     const connection: IdleConnection = {
@@ -216,7 +226,7 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
       this.scheduleIdleRestart(username);
 
       Logger.log(
-        `IDLE started for user: ${username} (${connection.previousMailCount} mails, ${this.idleConnections.size}/${maxConnections} connections)`,
+        `IDLE started for user: ${username} (${connection.previousMailCount} mails, ${this.idleConnections.size}/${this.maxConnections} connections)`,
         MailIdleService.name,
       );
     } catch (error) {
@@ -427,7 +437,7 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
   getConnectionStats(): { current: number; max: number } {
     return {
       current: this.idleConnections.size,
-      max: maxConnections,
+      max: this.maxConnections,
     };
   }
 }
