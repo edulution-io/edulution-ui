@@ -29,9 +29,11 @@
   }
 }
 
+.sd-btn,
 .svc-btn {
   display: flex;
   justify-content: center;
+  border-radius: 8px !important;
 }
 
 .sd-dropdown__value {
