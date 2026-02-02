@@ -43,6 +43,7 @@ import {
   KEYCLOAK_STARTUP_TIMEOUT_MS,
   KEYCLOAK_USERS_SYNC_INTERVAL_MS,
 } from '@libs/ldapKeycloakSync/constants/keycloakSyncValues';
+import LDAP_SYNC_ACTIVE_EVENT from '@libs/ldapKeycloakSync/constants/ldapSyncActiveEvent';
 import CustomHttpException from '../common/CustomHttpException';
 import UpdateUserDto from './dto/update-user.dto';
 import { User, UserDocument } from './user.schema';
@@ -63,6 +64,8 @@ class UsersService {
 
   private usersCacheInitialized = false;
 
+  private ldapSyncActive = false;
+
   @Timeout(KEYCLOAK_STARTUP_TIMEOUT_MS)
   async initializeService() {
     await this.updateUsersInCache();
@@ -71,6 +74,12 @@ class UsersService {
   @OnEvent(QUEUE_CONSTANTS.USERS_CACHE_REFRESH, { async: true })
   async handleUsersCacheRefresh() {
     await this.updateUsersInCache();
+  }
+
+  @OnEvent(LDAP_SYNC_ACTIVE_EVENT)
+  handleLdapSyncActive(active: boolean) {
+    this.ldapSyncActive = active;
+    Logger.log(`LDAP sync active state changed to: ${active}`, UsersService.name);
   }
 
   async createOrUpdate(userDto: UserDto): Promise<User | null> {
@@ -170,6 +179,11 @@ class UsersService {
 
   @Interval(KEYCLOAK_USERS_SYNC_INTERVAL_MS)
   async updateUsersInCache(): Promise<void> {
+    if (this.ldapSyncActive && this.usersCacheInitialized) {
+      Logger.debug('LDAP sync active, skipping Keycloak polling for users', UsersService.name);
+      return;
+    }
+
     if (this.isUpdatingUsersInCache) {
       Logger.debug('User cache update already in progress, skipping...', UsersService.name);
       return;
@@ -391,6 +405,38 @@ class UsersService {
     await this.userModel
       .findOneAndUpdate({ username }, { $pull: { registeredPushTokens: expoPushToken } }, { new: true })
       .exec();
+  }
+
+  async addUserToCache(user: CachedUser): Promise<void> {
+    try {
+      const school = user.school || SPECIAL_SCHOOLS.GLOBAL;
+      const globalCacheKey = ALL_USERS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL;
+
+      const globalUsers = (await this.cacheManager.get<CachedUser[]>(globalCacheKey)) || [];
+      const existsInGlobal = globalUsers.some((u) => u.id === user.id);
+
+      if (existsInGlobal) {
+        return;
+      }
+
+      globalUsers.push(user);
+      await this.cacheManager.set(globalCacheKey, globalUsers, USERS_CACHE_TTL_MS);
+
+      if (school !== SPECIAL_SCHOOLS.GLOBAL) {
+        const schoolCacheKey = ALL_USERS_CACHE_KEY + school;
+        const schoolUsers = (await this.cacheManager.get<CachedUser[]>(schoolCacheKey)) || [];
+        const existsInSchool = schoolUsers.some((u) => u.id === user.id);
+
+        if (!existsInSchool) {
+          schoolUsers.push(user);
+          await this.cacheManager.set(schoolCacheKey, schoolUsers, USERS_CACHE_TTL_MS);
+        }
+      }
+
+      Logger.verbose(`Added user ${user.username} to cache`, UsersService.name);
+    } catch (error) {
+      Logger.error(`Failed to add user ${user.username} to cache: ${(error as Error).message}`, UsersService.name);
+    }
   }
 }
 

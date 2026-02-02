@@ -52,6 +52,7 @@ import {
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import GROUPS_CACHE_REFRESH_EVENT from '@libs/groups/constants/groupsCacheRefreshEvent';
 import { GROUPS_CACHE_INITIALIZED_EVENT } from '@libs/groups/constants/cacheInitializedEvents';
+import LDAP_SYNC_ACTIVE_EVENT from '@libs/ldapKeycloakSync/constants/ldapSyncActiveEvent';
 import CustomHttpException from '../common/CustomHttpException';
 import Attendee from '../conferences/attendee.schema';
 import KeycloakRequestQueue from './queue/keycloak-request.queue';
@@ -72,6 +73,8 @@ class GroupsService {
 
   private groupsCacheInitialized = false;
 
+  private ldapSyncActive = false;
+
   @Timeout(KEYCLOAK_STARTUP_TIMEOUT_MS)
   async initializeService() {
     await this.updateGroupsAndMembersInCache();
@@ -80,6 +83,12 @@ class GroupsService {
   @OnEvent(GROUPS_CACHE_REFRESH_EVENT, { async: true })
   async handleGroupsCacheRefresh() {
     await this.updateGroupsAndMembersInCache();
+  }
+
+  @OnEvent(LDAP_SYNC_ACTIVE_EVENT)
+  handleLdapSyncActive(active: boolean) {
+    this.ldapSyncActive = active;
+    Logger.log(`LDAP sync active state changed to: ${active}`, GroupsService.name);
   }
 
   async fetchAllUsers(): Promise<LDAPUser[]> {
@@ -259,6 +268,11 @@ class GroupsService {
 
   @Interval(KEYCLOAK_GROUPS_SYNC_INTERVAL_MS)
   async updateGroupsAndMembersInCache(): Promise<void> {
+    if (this.ldapSyncActive && this.groupsCacheInitialized) {
+      Logger.debug('LDAP sync active, skipping Keycloak polling for groups', GroupsService.name);
+      return;
+    }
+
     if (this.isUpdatingGroupsAndMembersInCache) return;
     this.isUpdatingGroupsAndMembersInCache = true;
 
@@ -441,6 +455,95 @@ class GroupsService {
         GroupsErrorMessage.CouldNotGetUsers,
         HttpStatus.BAD_GATEWAY,
         undefined,
+        GroupsService.name,
+      );
+    }
+  }
+
+  async addGroupToCache(group: Group): Promise<void> {
+    try {
+      const allGroups = (await this.cacheManager.get<Group[]>(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL)) || [];
+
+      const existingIndex = allGroups.findIndex((g) => g.id === group.id);
+      if (existingIndex >= 0) {
+        allGroups[existingIndex] = group;
+      } else {
+        allGroups.push(group);
+      }
+
+      const groupWithMembers: GroupWithMembers = { ...group, members: [] };
+
+      await Promise.all([
+        this.cacheManager.set(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, allGroups, GROUPS_CACHE_TTL_MS),
+        this.cacheManager.set(`${GROUP_WITH_MEMBERS_CACHE_KEY}-${group.path}`, groupWithMembers, GROUPS_CACHE_TTL_MS),
+      ]);
+
+      Logger.debug(`Added group ${group.name} to cache`, GroupsService.name);
+    } catch (error) {
+      Logger.error(`Failed to add group ${group.name} to cache: ${(error as Error).message}`, GroupsService.name);
+    }
+  }
+
+  async deleteGroupFromCache(groupId: string, groupPath: string): Promise<void> {
+    try {
+      const allGroups = (await this.cacheManager.get<Group[]>(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL)) || [];
+      const filteredGroups = allGroups.filter((g) => g.id !== groupId);
+
+      await Promise.all([
+        this.cacheManager.set(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, filteredGroups, GROUPS_CACHE_TTL_MS),
+        this.cacheManager.del(`${GROUP_WITH_MEMBERS_CACHE_KEY}-${groupPath}`),
+      ]);
+
+      Logger.debug(`Deleted group ${groupPath} from cache`, GroupsService.name);
+    } catch (error) {
+      Logger.error(`Failed to delete group ${groupPath} from cache: ${(error as Error).message}`, GroupsService.name);
+    }
+  }
+
+  async addMemberToGroupCache(groupPath: string, member: GroupMemberDto): Promise<void> {
+    try {
+      const cacheKey = `${GROUP_WITH_MEMBERS_CACHE_KEY}-${groupPath}`;
+      const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(cacheKey);
+
+      if (!groupWithMembers) {
+        Logger.warn(`Group ${groupPath} not found in cache, cannot add member`, GroupsService.name);
+        return;
+      }
+
+      const existingIndex = groupWithMembers.members.findIndex((m) => m.id === member.id);
+      if (existingIndex >= 0) {
+        return;
+      }
+
+      groupWithMembers.members.push(member);
+      await this.cacheManager.set(cacheKey, groupWithMembers, GROUPS_CACHE_TTL_MS);
+
+      Logger.verbose(`Added member ${member.username} to group ${groupPath} in cache`, GroupsService.name);
+    } catch (error) {
+      Logger.error(
+        `Failed to add member ${member.username} to group ${groupPath}: ${(error as Error).message}`,
+        GroupsService.name,
+      );
+    }
+  }
+
+  async removeMemberFromGroupCache(groupPath: string, memberId: string): Promise<void> {
+    try {
+      const cacheKey = `${GROUP_WITH_MEMBERS_CACHE_KEY}-${groupPath}`;
+      const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(cacheKey);
+
+      if (!groupWithMembers) {
+        Logger.warn(`Group ${groupPath} not found in cache, cannot remove member`, GroupsService.name);
+        return;
+      }
+
+      groupWithMembers.members = groupWithMembers.members.filter((m) => m.id !== memberId);
+      await this.cacheManager.set(cacheKey, groupWithMembers, GROUPS_CACHE_TTL_MS);
+
+      Logger.verbose(`Removed member ${memberId} from group ${groupPath} in cache`, GroupsService.name);
+    } catch (error) {
+      Logger.error(
+        `Failed to remove member ${memberId} from group ${groupPath}: ${(error as Error).message}`,
         GroupsService.name,
       );
     }
