@@ -4,10 +4,13 @@
 
 .survey-editor {
   .svc-creator__content-wrapper.svc-flex-row,
-  .svc-creator__content-holder.svc-flex-column {
-    width: calc(100vw - var(--sidebar-width) - var(--menubar-max-width));
-    max-width: calc(100vw - var(--sidebar-width) - var(--menubar-max-width));
-    min-width: calc(100vw - var(--sidebar-width) - var(--menubar-max-width));
+  .svc-creator__content-holder.svc-flex-column,
+  .svc-tab-designer,
+  .svc-tab-designer--standard-mode,
+  .svc-scroll__wrapper,
+  .svc-scroll__scroller,
+  .svc-scroll__container {
+    width: 100%;
   }
 
   .svc-string-editor .sv-string-editor[aria-placeholder]:empty:before {
@@ -510,8 +513,10 @@
   .sd-container-modern--static,
   .svc-tab-designer,
   .svc-designer__placeholder-container {
-    max-width: calc(100vw - var(--sidebar-width) - var(--menubar-max-width)) !important;
-    width: calc(100vw - var(--sidebar-width) - var(--menubar-max-width)) !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100%;
     padding: 0 1rem 1rem 1rem;
     height: 100%;
     justify-content: center;
