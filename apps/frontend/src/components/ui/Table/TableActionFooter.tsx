@@ -43,10 +43,11 @@ const TableActionFooter = <TData,>(props: TableActionFooterProps<TData>) => {
       return (
         <Button
           key={translationId}
-          className="flex h-2 w-full items-center justify-center"
+          className="flex w-full items-center justify-center"
           onClick={() => onClick()}
           type="button"
           variant="btn-outline"
+          size="lg"
           disabled={disabled}
         >
           <FontAwesomeIcon
