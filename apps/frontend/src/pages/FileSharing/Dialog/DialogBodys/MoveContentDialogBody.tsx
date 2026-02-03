@@ -47,6 +47,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   enableRowSelection,
   getRowDisabled,
   showRootOnly = false,
+  filterBySameRootServer = false,
 }) => {
   const { webdavShare } = useParams();
   const { t } = useTranslation();
@@ -159,6 +160,7 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
       <WebdavShareSelectDropdown
         webdavShare={webdavShare}
         showRootOnly={showRootOnly}
+        filterBySameRootServer={filterBySameRootServer}
       />
 
       <DirectoryBreadcrumb
