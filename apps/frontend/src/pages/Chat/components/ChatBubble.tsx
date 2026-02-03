@@ -33,22 +33,26 @@ const formatTime = (date: Date) => {
 };
 
 const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isOwnMessage }) => (
-  <div className={cn('flex w-full', isOwnMessage ? 'justify-end' : 'justify-start')}>
-    <div
-      className={cn(
-        'max-w-[75%] rounded-2xl px-4 py-2',
-        isOwnMessage ? 'rounded-br-md bg-primary text-white' : 'rounded-bl-md bg-accent text-foreground',
-      )}
-    >
-      {!isOwnMessage && message.createdByName && (
-        <p className="mb-1 text-xs font-semibold opacity-70">{message.createdByName}</p>
-      )}
-      <p className="whitespace-pre-wrap break-words text-sm">{message.content}</p>
-      <p className={cn('mt-1 text-right text-xs', isOwnMessage ? 'text-white/70' : 'text-muted-foreground')}>
-        {formatTime(message.createdAt)}
-      </p>
+    <div className={cn('flex w-full', isOwnMessage ? 'justify-end' : 'justify-start')}>
+      <div
+        className={cn(
+          'max-w-[75%] rounded-2xl px-4 py-2',
+          isOwnMessage ? 'rounded-br-md bg-primary text-white' : 'rounded-bl-md bg-accent text-background',
+        )}
+      >
+        <p className="whitespace-pre-wrap break-words text-sm">{message.content}</p>
+        <div className={cn('mt-1 flex items-center gap-2 text-xs', isOwnMessage ? 'justify-end' : 'justify-between')}>
+          {!isOwnMessage && (
+            <span className="font-medium opacity-70">
+              {message.createdByUserFirstName} {message.createdByUserLastName}
+            </span>
+          )}
+          <span className={isOwnMessage ? 'text-white/70' : 'text-muted-foreground'}>
+            {formatTime(message.createdAt)}
+          </span>
+        </div>
+      </div>
     </div>
-  </div>
-);
+  );
 
 export default ChatBubble;

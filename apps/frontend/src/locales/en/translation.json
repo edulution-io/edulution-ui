@@ -21,12 +21,15 @@
     "project": "Project",
     "projects": "Projects",
     "selectFromSidebar": "Select a class or project from the sidebar",
-    "schoolClasses": "School Classes",
-    "projects": "Projects",
     "noMessages": "No messages yet",
     "startConversation": "Write the first message",
     "inputPlaceholder": "Type a message...",
-    "error": "Error"
+    "error": "Error",
+    "errors": {
+      "conversationNotFound": "Conversation not found",
+      "unauthorizedAccess": "Unauthorized access",
+      "messageSendFailed": "Failed to send message"
+    }
   },
   "bulletinboard": {
     "settings": "Settings",

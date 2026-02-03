@@ -24,7 +24,12 @@
     "noMessages": "Noch keine Nachrichten",
     "startConversation": "Schreibe die erste Nachricht",
     "inputPlaceholder": "Nachricht schreiben...",
-    "error": "Fehler"
+    "error": "Fehler",
+    "errors": {
+      "conversationNotFound": "Unterhaltung nicht gefunden",
+      "unauthorizedAccess": "Nicht autorisiert",
+      "messageSendFailed": "Nachricht konnte nicht gesendet werden"
+    }
   },
   "bulletinboard": {
     "settings": "Einstellungen",

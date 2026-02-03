@@ -17,17 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ChatRole from '@libs/chat/constants/chatRole';
-
-interface ChatMessage {
-  id: string;
-  role: ChatRole;
-  content: string;
-  createdAt: Date;
-  createdBy?: string;
-  createdByUserFirstName?: string;
-  createdByUserLastName?: string;
-  metadata?: Record<string, unknown>;
+enum ChatErrorMessages {
+  CONVERSATION_NOT_FOUND = 'chat.errors.conversationNotFound',
+  UNAUTHORIZED_ACCESS = 'chat.errors.unauthorizedAccess',
+  MESSAGE_SEND_FAILED = 'chat.errors.messageSendFailed',
 }
 
-export default ChatMessage;
+export default ChatErrorMessages;

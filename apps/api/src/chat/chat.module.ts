@@ -17,17 +17,20 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ChatRole from '@libs/chat/constants/chatRole';
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import ChatController from './chat.controller';
+import ChatService from './chat.service';
+import { Conversation, ConversationSchema } from './schemas/conversation.schema';
+import { ChatMessage, ChatMessageSchema } from './schemas/chatMessage.schema';
 
-interface ChatMessage {
-  id: string;
-  role: ChatRole;
-  content: string;
-  createdAt: Date;
-  createdBy?: string;
-  createdByUserFirstName?: string;
-  createdByUserLastName?: string;
-  metadata?: Record<string, unknown>;
-}
-
-export default ChatMessage;
+@Module({
+  imports: [
+    MongooseModule.forFeature([{ name: Conversation.name, schema: ConversationSchema }]),
+    MongooseModule.forFeature([{ name: ChatMessage.name, schema: ChatMessageSchema }]),
+  ],
+  controllers: [ChatController],
+  providers: [ChatService],
+  exports: [ChatService],
+})
+export default class ChatModule {}

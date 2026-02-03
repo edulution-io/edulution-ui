@@ -17,76 +17,36 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { faUsers, faUserGear } from '@fortawesome/free-solid-svg-icons';
-import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import { ContactIcon } from '@/assets/icons';
 import MenuItem from '@libs/menubar/menuItem';
 import APPS from '@libs/appconfig/constants/apps';
 import { CHAT_CLASSES_PATH, CHAT_PROJECTS_PATH } from '@libs/chat/constants/chatPaths';
-import getUserRegex from '@libs/lmnApi/constants/userRegex';
-import type LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
-import type LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 
 const useChatMenuConfig = () => {
   const { t } = useTranslation();
-  const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { user, lmnApiToken } = useLmnApiStore();
-  const { userSchoolClasses, userProjects, fetchUserSchoolClasses, fetchUserProjects } = useClassManagementStore();
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const { user } = useLmnApiStore();
 
-  const pathParts = useMemo(() => pathname.split('/').filter(Boolean), [pathname]);
-  const firstPathPart = pathParts[0] || '';
-  const previousFirstPathPart = useRef<string | null>(null);
+  const menuItems = useMemo<MenuItem[]>(() => {
+    if (!user) return [];
 
-  useEffect(() => {
-    if (firstPathPart !== previousFirstPathPart.current) {
-      previousFirstPathPart.current = firstPathPart;
-
-      if (firstPathPart === APPS.CHAT && lmnApiToken) {
-        void fetchUserSchoolClasses();
-        void fetchUserProjects();
-      }
-    }
-  }, [firstPathPart, lmnApiToken]);
-
-  useEffect(() => {
-    if (!user) return;
-
-    const userRegex = getUserRegex(user.cn);
-
-    const getGroupsWhereUserIsMember = <T extends LmnApiProject | LmnApiSchoolClass>(groups: T[]) => {
-      const isMemberGroups = groups.filter((g) => g.member.some((member) => userRegex.test(member)));
-      const isAdminGroups = groups.filter((g) => g.sophomorixAdmins.includes(user.cn));
-      return Array.from(new Set([...isAdminGroups, ...isMemberGroups]));
-    };
-
-    const userClasses = getGroupsWhereUserIsMember(userSchoolClasses);
-    const userProjectsList = getGroupsWhereUserIsMember(userProjects);
-
-    const classChildren: MenuItem[] = userClasses.map((cls) => ({
-      id: cls.cn,
-      label: cls.displayName || cls.cn,
-      icon: faUsers,
-      action: () => navigate(`/${CHAT_CLASSES_PATH}/${cls.cn}`),
-      disableTranslation: true,
-    }));
-
-    const projectChildren: MenuItem[] = userProjectsList.map((proj) => ({
-      id: proj.cn,
-      label: proj.displayName || proj.cn,
-      icon: faUserGear,
-      action: () => navigate(`/${CHAT_PROJECTS_PATH}/${proj.cn}`),
-      disableTranslation: true,
-    }));
-
+    const { schoolclasses, projects } = user;
     const items: MenuItem[] = [];
 
-    if (classChildren.length > 0) {
+    if (schoolclasses.length > 0) {
+      const classChildren: MenuItem[] = schoolclasses.map((className) => ({
+        id: className,
+        label: className,
+        icon: faUsers,
+        action: () => navigate(`/${CHAT_CLASSES_PATH}/${className}`),
+        disableTranslation: true,
+      }));
+
       items.push({
         id: 'schoolClasses',
         label: t('chat.schoolClasses'),
@@ -96,7 +56,15 @@ const useChatMenuConfig = () => {
       });
     }
 
-    if (projectChildren.length > 0) {
+    if (projects.length > 0) {
+      const projectChildren: MenuItem[] = projects.map((projectName) => ({
+        id: projectName,
+        label: projectName,
+        icon: faUserGear,
+        action: () => navigate(`/${CHAT_PROJECTS_PATH}/${projectName}`),
+        disableTranslation: true,
+      }));
+
       items.push({
         id: 'projects',
         label: t('chat.projects'),
@@ -106,8 +74,8 @@ const useChatMenuConfig = () => {
       });
     }
 
-    setMenuItems(items);
-  }, [user, userSchoolClasses, userProjects, navigate, t]);
+    return items;
+  }, [user, navigate, t]);
 
   return {
     title: 'chat.title',
