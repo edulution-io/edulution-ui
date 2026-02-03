@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 type FileOperationProgress = { percent?: number };
 
@@ -36,8 +36,15 @@ const useRefreshOnFileOperationComplete = ({
   fetchFiles,
   fetchShares,
 }: Options) => {
+  const previousWebdavShare = useRef<string | undefined>(webdavShare);
+
   useEffect(() => {
+    const shareChanged = previousWebdavShare.current !== webdavShare;
+    previousWebdavShare.current = webdavShare;
+
+    if (shareChanged) return;
     if (!fileOperationProgress) return;
+
     const percent = fileOperationProgress.percent ?? 0;
     if (percent < 100) return;
 

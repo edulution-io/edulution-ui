@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useEffect } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
@@ -25,6 +25,7 @@ import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharing
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import useUserPath from './useUserPath';
+import useVariableSharePathname from './useVariableSharePathname';
 
 const useFileSharingPage = () => {
   const {
@@ -33,23 +34,61 @@ const useFileSharingPage = () => {
     setPathToRestoreSession,
     pathToRestoreSession,
     isLoading: isFileProcessing,
+    clearFilesOnShareChange,
+    webdavShares,
   } = useFileSharingStore();
   const { isLoading, fileOperationResult } = useFileSharingDialogStore();
   const { fetchShares } = usePublicShareStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const { webdavShare } = useParams();
   const { homePath } = useUserPath();
-  const path = searchParams.get(URL_SEARCH_PARAMS.PATH) || homePath;
+  const { createVariableSharePathname } = useVariableSharePathname();
+
+  const currentShare = useMemo(
+    () => webdavShares.find((s) => s.displayName === webdavShare),
+    [webdavShares, webdavShare],
+  );
+
+  const shareRootPath = useMemo(() => {
+    if (currentShare) {
+      return createVariableSharePathname(currentShare.pathname, currentShare.pathVariables);
+    }
+    return homePath;
+  }, [currentShare, createVariableSharePathname, homePath]);
+
+  const shareHasPathVariables = currentShare?.pathVariables && currentShare.pathVariables.length > 0;
+  const isWaitingForUserData = shareHasPathVariables && shareRootPath === currentShare?.pathname;
+
+  const path = searchParams.get(URL_SEARCH_PARAMS.PATH) || shareRootPath;
+
+  const previousWebdavShare = useRef<string | undefined>(webdavShare);
 
   useEffect(() => {
-    if (!isFileProcessing) {
+    if (previousWebdavShare.current !== webdavShare && previousWebdavShare.current !== undefined) {
+      clearFilesOnShareChange();
+    }
+    previousWebdavShare.current = webdavShare;
+  }, [webdavShare, clearFilesOnShareChange]);
+
+  useEffect(() => {
+    if (!isFileProcessing && webdavShares.length > 0 && !isWaitingForUserData) {
+      const hasPathParam = searchParams.has(URL_SEARCH_PARAMS.PATH);
+      const isPathWithinShareRoot = shareRootPath === '/' || path.startsWith(shareRootPath);
+
+      if (shareRootPath && shareRootPath !== '/' && (!hasPathParam || !isPathWithinShareRoot)) {
+        const newSearchParams = new URLSearchParams(searchParams);
+        newSearchParams.set(URL_SEARCH_PARAMS.PATH, shareRootPath);
+        setSearchParams(newSearchParams, { replace: true });
+        return;
+      }
+
       if (path === '/') {
         if (pathToRestoreSession !== '/') {
           const newSearchParams = new URLSearchParams(searchParams);
           newSearchParams.set(URL_SEARCH_PARAMS.PATH, pathToRestoreSession);
           setSearchParams(newSearchParams);
         } else {
-          void fetchFiles(webdavShare, homePath);
+          void fetchFiles(webdavShare, shareRootPath);
         }
       } else {
         void fetchFiles(webdavShare, path);
@@ -57,9 +96,22 @@ const useFileSharingPage = () => {
         setPathToRestoreSession(path);
       }
     }
-  }, [path, pathToRestoreSession, homePath, setPathToRestoreSession, fetchFiles, webdavShare]);
+  }, [
+    path,
+    pathToRestoreSession,
+    shareRootPath,
+    setPathToRestoreSession,
+    fetchFiles,
+    webdavShare,
+    webdavShares.length,
+    isWaitingForUserData,
+  ]);
 
   useEffect(() => {
+    if (previousWebdavShare.current !== webdavShare) {
+      return;
+    }
+
     const updateFilesAfterSuccess = async () => {
       if (fileOperationResult && !isLoading) {
         if (fileOperationResult.success) {
@@ -73,7 +125,7 @@ const useFileSharingPage = () => {
     };
 
     void updateFilesAfterSuccess();
-  }, [fileOperationResult, isLoading, fetchFiles, currentPath]);
+  }, [fileOperationResult, isLoading, fetchFiles, currentPath, webdavShare]);
 
   return { isFileProcessing, isLoading, currentPath, searchParams, setSearchParams };
 };
