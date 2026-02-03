@@ -59,33 +59,36 @@ class NotificationsService {
     triggeredBy: string = NOTIFICATION_TYPE.USER,
     createNotificationDto?: CreateNotificationDto,
   ): Promise<void> {
-    let notificationId: string | null = null;
+    let notification: NotificationDocument | null = null;
 
-    if (createNotificationDto) {
-      const notification = await this.notificationModel.create(createNotificationDto);
-      notificationId = String(notification.id);
-      const result = await this.createUserNotifications(notificationId, usernames);
+    try {
+      if (createNotificationDto) {
+        notification = await this.notificationModel.create(createNotificationDto);
+        const notificationId = String(notification.id);
+        const result = await this.createUserNotifications(notificationId, usernames);
 
-      if (result.failed > 0) {
-        Logger.error(
-          `Failed to create ${result.failed}/${usernames.length} user notifications for notification ${notificationId}`,
-          NotificationsService.name,
-        );
+        if (result.failed > 0) {
+          Logger.error(
+            `Failed to create ${result.failed}/${usernames.length} user notifications for notification ${notificationId}`,
+            NotificationsService.name,
+          );
+        }
       }
-    }
 
-    const uniqueTokens = await this.userService.getPushTokensByUsernames(usernames);
+      const uniqueTokens = await this.userService.getPushTokensByUsernames(usernames);
+      await this.sendPushNotification({ to: uniqueTokens, ...partialNotification }, triggeredBy);
 
-    await this.sendPushNotification(
-      {
-        to: uniqueTokens,
-        ...partialNotification,
-      },
-      triggeredBy,
-    );
-
-    if (notificationId) {
-      await this.updateUserNotificationStatus(notificationId, usernames, USER_NOTIFICATION_STATUS.SENT);
+      if (notification) {
+        await this.updateUserNotificationStatus(String(notification.id), usernames, USER_NOTIFICATION_STATUS.SENT);
+      }
+    } catch (error) {
+      if (notification) {
+        const notificationObjectId = new Types.ObjectId(String(notification.id));
+        await this.notificationModel.deleteOne({ _id: notificationObjectId });
+        await this.userNotificationModel.deleteMany({ notificationId: notificationObjectId });
+        Logger.warn(`Rolled back notification ${notification.id} due to error`, NotificationsService.name);
+      }
+      throw error;
     }
   }
 
