@@ -72,7 +72,6 @@ import { LdapKeycloakSync, LdapKeycloakSyncDocument } from './ldap-keycloak-sync
 import GlobalSettingsService from '../global-settings/global-settings.service';
 import KeycloakRequestQueue from '../groups/queue/keycloak-request.queue';
 import GroupsService from '../groups/groups.service';
-import UsersService from '../users/users.service';
 
 @Injectable()
 class LdapKeycloakSyncService implements OnModuleInit {
@@ -99,7 +98,6 @@ class LdapKeycloakSyncService implements OnModuleInit {
     private readonly keycloakQueue: KeycloakRequestQueue,
     private readonly eventEmitter: EventEmitter2,
     private readonly groupsService: GroupsService,
-    private readonly usersService: UsersService,
   ) {}
 
   // eslint-disable-next-line @typescript-eslint/class-methods-use-this
@@ -706,7 +704,6 @@ class LdapKeycloakSyncService implements OnModuleInit {
         const u = LdapKeycloakSyncService.convertToGroupMemberDto(ldapUser);
         this.userCache.set(name, u);
         this.userCache.set(u.username, u);
-        await this.addUserToCacheIfNew(ldapUser);
         return u;
       }
       this.notFoundUserKeys.add(key);
@@ -748,7 +745,6 @@ class LdapKeycloakSyncService implements OnModuleInit {
         if (candidates.length) {
           const [first1] = candidates;
           user = LdapKeycloakSyncService.convertToGroupMemberDto(first1);
-          await this.addUserToCacheIfNew(first1);
           if (candidates.length > 1) {
             Logger.warn(
               `Multiple Keycloak users match "${plain}" (first+last). Using id=${user.id}.`,
@@ -828,7 +824,6 @@ class LdapKeycloakSyncService implements OnModuleInit {
       const user = LdapKeycloakSyncService.convertToGroupMemberDto(ldapUser);
       this.userCache.set(nameFromLdap, user);
       this.userCache.set(user.username, user);
-      await this.addUserToCacheIfNew(ldapUser);
       return user.username;
     }
 
@@ -856,7 +851,6 @@ class LdapKeycloakSyncService implements OnModuleInit {
 
     const exact = await this.groupsService.searchUsersByUsername(base, true);
     if (exact?.length) {
-      await this.addUserToCacheIfNew(exact[0]);
       return LdapKeycloakSyncService.convertToGroupMemberDto(exact[0]);
     }
 
@@ -867,7 +861,6 @@ class LdapKeycloakSyncService implements OnModuleInit {
       this.notFoundUserKeys.add(baseKey);
       return undefined;
     }
-    await this.addUserToCacheIfNew(match);
     return LdapKeycloakSyncService.convertToGroupMemberDto(match);
   }
 
@@ -877,14 +870,6 @@ class LdapKeycloakSyncService implements OnModuleInit {
         (await this.cache.get<DeploymentTarget>(DEPLOYMENT_TARGET_CACHE_KEY)) ?? DEPLOYMENT_TARGET.LINUXMUSTER;
     }
     return this.deploymentTarget;
-  }
-
-  private async addUserToCacheIfNew(ldapUser: LDAPUser): Promise<void> {
-    const cachedUser: CachedUser = {
-      ...ldapUser,
-      school: ldapUser.attributes?.school?.[0] || SPECIAL_SCHOOLS.GLOBAL,
-    };
-    await this.usersService.addUserToCache(cachedUser);
   }
 
   private static convertToGroupMemberDto(user: LDAPUser): GroupMemberDto {

@@ -392,38 +392,6 @@ class UsersService {
       .findOneAndUpdate({ username }, { $pull: { registeredPushTokens: expoPushToken } }, { new: true })
       .exec();
   }
-
-  async addUserToCache(user: CachedUser): Promise<void> {
-    try {
-      const school = user.school || SPECIAL_SCHOOLS.GLOBAL;
-      const globalCacheKey = ALL_USERS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL;
-
-      const globalUsers = (await this.cacheManager.get<CachedUser[]>(globalCacheKey)) || [];
-      const existsInGlobal = globalUsers.some((u) => u.id === user.id);
-
-      if (existsInGlobal) {
-        return;
-      }
-
-      globalUsers.push(user);
-      await this.cacheManager.set(globalCacheKey, globalUsers, USERS_CACHE_TTL_MS);
-
-      if (school !== SPECIAL_SCHOOLS.GLOBAL) {
-        const schoolCacheKey = ALL_USERS_CACHE_KEY + school;
-        const schoolUsers = (await this.cacheManager.get<CachedUser[]>(schoolCacheKey)) || [];
-        const existsInSchool = schoolUsers.some((u) => u.id === user.id);
-
-        if (!existsInSchool) {
-          schoolUsers.push(user);
-          await this.cacheManager.set(schoolCacheKey, schoolUsers, USERS_CACHE_TTL_MS);
-        }
-      }
-
-      Logger.verbose(`Added user ${user.username} to cache`, UsersService.name);
-    } catch (error) {
-      Logger.error(`Failed to add user ${user.username} to cache: ${(error as Error).message}`, UsersService.name);
-    }
-  }
 }
 
 export default UsersService;
