@@ -196,7 +196,7 @@ const ScrollableTable = <TData, TValue>({
               ))}
             </TableHeader>
           )}
-          <TableBody className="container">
+          <TableBody>
             {sortedRows.length ? (
               sortedRows.map((row) => {
                 const isRowDisabled = getRowDisabled?.(row);

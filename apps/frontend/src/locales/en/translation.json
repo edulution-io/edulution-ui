@@ -752,14 +752,17 @@
       "fileDeletionSuccess": "Deleted the file successfully.",
       "fileDeletionError": "The file could not be deleted.",
       "saveSurveySuccess": "Saved the survey.",
-      "surveyPlaceHolder": "Click the \"Add Question\" button below to start creating your form.",
-      "surveyPlaceholderDescription": "Click the \"Add Question\" button below to start creating your form.",
-      "surveyPlaceholderDescriptionMobile": "Click the \"Add Question\" button below to start creating your form.",
-      "pagePlaceHolder": "Click the \"Add Question\" button below to add a new element to the page.",
-      "panelPlaceHolder": "Click on the \"Add Question\" below to add a new element to the panel.",
       "reset": "Reset",
       "addDescription": "Add a description",
       "expectingUserInput": "Expecting the user to answer here, ... ",
+      "customTranslations": {
+        "surveyPlaceHolder": "Click the \"Add Question\" button below to start creating your form.",
+        "surveyPlaceholderDescription": "Click the \"Add Question\" button below to start creating your form.",
+        "surveyPlaceholderDescriptionMobile": "Click the \"Add Question\" button below to start creating your form.",
+        "pagePlaceHolder": "Click the \"Add Question\" button below to add a new element to the page.",
+        "panelPlaceHolder": "Click on the \"Add Question\" below to add a new element to the panel.",
+        "previewTabTitle": "Preview"
+      },
       "templates": "Templates",
       "templateMenu": {
         "submit": "Save Survey as template.",
@@ -806,6 +809,20 @@
         "filterPlaceHolderText": "Search for option",
         "imageWidth": "Width of one image in pixel [px]",
         "imageWidthPlaceholder": "0 means that the width is only limited by the available space."
+      },
+      "surveyLogo": {
+        "title": "Survey Logo",
+        "width": {
+          "label": "Width of the logo in pixels (min. 150 px)",
+          "placeholder": "Enter the width of the logo in pixels"
+        },
+        "position": {
+          "label": "Position of the logo",
+          "placeholder": "Choose the position of the logo",
+          "left": "Left of the title",
+          "right": "Right of the title",
+          "description": "The Position for the logo relative to the title of the survey is visible in the 'Preview' tab."
+        }
       }
     },
     "participate": {
@@ -844,7 +861,8 @@
       "notAbleToUpdateSurveyAnswerError": "Unable to update the submitted survey answer.",
       "notAbleToCreateSurveyAnswerError": "Unable to create the user's survey answer.",
       "notAbleToDeleteSurveyAnswerError": "Unable to delete the user's survey answer.",
-      "notAbleToCountChoices": "Unable to count the choices."
+      "notAbleToCountChoices": "Unable to count the choices.",
+      "alreadyParticipated": "You have already participated."
     }
   },
   "surveys": {
@@ -1421,7 +1439,8 @@
       "qrCodeDescription": "Scan this QR code with the WireGuard app on your mobile device to set up the VPN connection.",
       "configDownload": "Configuration File",
       "configDownloadDescription": "Download the WireGuard configuration file to import it into the WireGuard app on your computer.",
-      "downloadButton": "Download Configuration"
+      "downloadButton": "Download Configuration",
+      "error": "The VPN service is currently unavailable. Please try again later or contact an administrator."
     },
     "addTotp": {
       "title": "Set up Two-Factor Authentication",

@@ -20,7 +20,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, HttpStatus } from '@nestjs/common';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { join } from 'path';
 import APPS from '@libs/appconfig/constants/apps';
 import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
@@ -85,9 +85,13 @@ describe(FileSystemController.name, () => {
   });
 
   describe('servePublicAssetWithFallback', () => {
+    let mockRequest: Partial<Request>;
     let mockResponse: Partial<Response>;
 
     beforeEach(() => {
+      mockRequest = {
+        headers: {},
+      };
       mockResponse = {
         setHeader: jest.fn(),
         status: jest.fn().mockReturnThis(),
@@ -104,9 +108,16 @@ describe(FileSystemController.name, () => {
         const appName = Object.values(APPS)[0];
         const filename = 'logo.png';
 
-        await controller.servePublicAssetWithFallback(mockResponse as Response, appName, filename, undefined);
+        await controller.servePublicAssetWithFallback(
+          mockRequest as Request,
+          mockResponse as Response,
+          appName,
+          filename,
+          undefined,
+        );
 
         expect(service.servePublicAssetWithFallback).toHaveBeenCalledWith(
+          mockRequest,
           mockResponse,
           join(PUBLIC_ASSET_PATH, appName, filename),
           undefined,
@@ -118,9 +129,16 @@ describe(FileSystemController.name, () => {
         const filename = 'missing-logo.png';
         const fallbackFilename = 'default-logo.png';
 
-        await controller.servePublicAssetWithFallback(mockResponse as Response, appName, filename, fallbackFilename);
+        await controller.servePublicAssetWithFallback(
+          mockRequest as Request,
+          mockResponse as Response,
+          appName,
+          filename,
+          fallbackFilename,
+        );
 
         expect(service.servePublicAssetWithFallback).toHaveBeenCalledWith(
+          mockRequest,
           mockResponse,
           join(PUBLIC_ASSET_PATH, appName, filename),
           join(PUBLIC_ASSET_PATH, appName, fallbackFilename),
@@ -134,7 +152,13 @@ describe(FileSystemController.name, () => {
         const filename = 'logo.png';
 
         expect(() =>
-          controller.servePublicAssetWithFallback(mockResponse as Response, invalidAppName, filename, undefined),
+          controller.servePublicAssetWithFallback(
+            mockRequest as Request,
+            mockResponse as Response,
+            invalidAppName,
+            filename,
+            undefined,
+          ),
         ).toThrow(CustomHttpException);
       });
     });
