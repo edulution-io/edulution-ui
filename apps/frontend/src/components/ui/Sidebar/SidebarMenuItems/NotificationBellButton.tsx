@@ -26,8 +26,6 @@ import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/Notifi
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
 import cn from '@libs/common/utils/className';
-import NotificationPanel from '@/pages/NotificationsCenter/components/NotificationPanel';
-import { Button } from '@/components/shared/Button';
 
 const NotificationBellButton = () => {
   const { t } = useTranslation();
@@ -37,7 +35,7 @@ const NotificationBellButton = () => {
 
   const wasSheetOpenOnPointerDown = useRef(false);
 
-  const buttonClassName = isEdulutionApp ? '' : 'lg:block lg:px-3';
+  const wrapperClassName = isEdulutionApp ? '' : 'lg:block lg:px-3';
   const titleClassName = isEdulutionApp ? '' : 'lg:hidden';
 
   const handlePointerDown = () => {
@@ -52,27 +50,33 @@ const NotificationBellButton = () => {
   };
 
   return (
-    <>
-      <Button
-        onPointerDown={handlePointerDown}
-        onClick={handleClick}
-        className={cn(
-          'group relative flex max-h-14 w-full items-center justify-end gap-4 px-4 py-2 hover:bg-muted-background',
-          buttonClassName,
-        )}
-      >
-        <p className={cn('text-md font-bold', titleClassName)}>{t('notificationscenter.sidebar')}</p>
+    <div
+      role="button"
+      tabIndex={0}
+      aria-label={t('notificationscenter.sidebar')}
+      onPointerDown={handlePointerDown}
+      onClick={handleClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
+      className={cn(
+        'group flex max-h-14 cursor-pointer items-center justify-end gap-4 px-4 py-2 hover:bg-muted-background',
+        wrapperClassName,
+      )}
+    >
+      <p className={cn('text-md font-bold', titleClassName)}>{t('notificationscenter.sidebar')}</p>
 
-        <div className="relative flex h-10 w-10 items-center justify-center">
-          <FontAwesomeIcon
-            icon={faBell}
-            className="transform text-xl transition-transform duration-200 group-hover:scale-110"
-          />
-          <NotificationCounter count={unreadCount} />
-        </div>
-      </Button>
-      <NotificationPanel />
-    </>
+      <div className="relative flex h-10 w-10 items-center justify-center">
+        <FontAwesomeIcon
+          icon={faBell}
+          className="transform text-xl transition-transform duration-200 group-hover:scale-110"
+        />
+        <NotificationCounter count={unreadCount} />
+      </div>
+    </div>
   );
 };
 

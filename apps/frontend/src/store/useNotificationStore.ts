@@ -25,6 +25,7 @@ import { NOTIFICATIONS_EDU_API_ENDPOINT } from '@libs/notification/constants/api
 import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto';
 import InboxResponseDto from '@libs/notification/types/inboxResponse.dto';
 import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
+import notificationPaginationConfig from '@libs/notification/constants/notificationPaginationConfig';
 import { NOTIFICATION_FILTER_TYPE, NotificationFilterType } from '@libs/notification/types/notificationFilterType';
 import handleApiError from '@/utils/handleApiError';
 
@@ -32,16 +33,18 @@ interface NotificationStore {
   notifications: InboxNotificationDto[];
   total: number;
   unreadCount: number;
+  hasMore: boolean;
   isLoading: boolean;
+  isLoadingMore: boolean;
   isUnreadCountLoading: boolean;
   isDeleting: boolean;
   isDeleteDialogOpen: boolean;
   isSheetOpen: boolean;
   error: string | null;
 
-  fetchNotifications: (limit?: number, offset?: number) => Promise<void>;
+  fetchNotifications: (loadMore?: boolean) => Promise<void>;
   fetchUnreadCount: () => Promise<void>;
-  markAsRead: (notificationId: string) => Promise<void>;
+  markAsRead: (notificationIds?: string[]) => Promise<void>;
   markAllAsRead: () => Promise<void>;
   deleteNotification: (notificationId: string) => Promise<void>;
   deleteAllByType: (type: NotificationFilterType) => Promise<void>;
@@ -54,7 +57,9 @@ const initialState = {
   notifications: [] as InboxNotificationDto[],
   total: 0,
   unreadCount: 0,
+  hasMore: false,
   isLoading: false,
+  isLoadingMore: false,
   isUnreadCountLoading: false,
   isDeleting: false,
   isDeleteDialogOpen: false,
@@ -65,17 +70,27 @@ const initialState = {
 const useNotificationStore = create<NotificationStore>((set, get) => ({
   ...initialState,
 
-  fetchNotifications: async (limit = 20, offset = 0) => {
-    set({ isLoading: true, error: null });
+  fetchNotifications: async (loadMore = false) => {
+    const { notifications: existing } = get();
+    const offset = loadMore ? existing.length : 0;
+
+    set({ isLoading: !loadMore, isLoadingMore: loadMore, error: null });
     try {
       const { data } = await eduApi.get<InboxResponseDto>(NOTIFICATIONS_EDU_API_ENDPOINT, {
-        params: { limit, offset },
+        params: { limit: notificationPaginationConfig.PAGE_SIZE, offset },
       });
-      set({ notifications: data.notifications, total: data.total });
+
+      const newNotifications = loadMore ? [...existing, ...data.notifications] : data.notifications;
+
+      set({
+        notifications: newNotifications,
+        total: data.total,
+        hasMore: newNotifications.length < data.total,
+      });
     } catch (error) {
       handleApiError(error, set);
     } finally {
-      set({ isLoading: false });
+      set({ isLoading: false, isLoadingMore: false });
     }
   },
 
@@ -91,46 +106,53 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
     }
   },
 
-  markAsRead: async (notificationId: string) => {
+  markAsRead: async (notificationIds?: string[]) => {
     try {
-      await eduApi.patch(`${NOTIFICATIONS_EDU_API_ENDPOINT}/${notificationId}/read`);
-      const { notifications, unreadCount } = get();
-      set({
-        notifications: notifications.map((notification) =>
-          notification.notificationId === notificationId ? { ...notification, readAt: new Date() } : notification,
-        ),
-        unreadCount: Math.max(0, unreadCount - 1),
+      await eduApi.patch(`${NOTIFICATIONS_EDU_API_ENDPOINT}/read`, {
+        ids: notificationIds,
       });
+
+      const { notifications, unreadCount } = get();
+
+      if (notificationIds?.length) {
+        const idsSet = new Set(notificationIds);
+        const markedCount = notifications.filter(
+          (notification) => idsSet.has(notification.id) && !notification.readAt,
+        ).length;
+
+        set({
+          notifications: notifications.map((notification) =>
+            idsSet.has(notification.id) ? { ...notification, readAt: new Date() } : notification,
+          ),
+          unreadCount: Math.max(0, unreadCount - markedCount),
+        });
+      } else {
+        set({
+          notifications: notifications.map((notification) => ({
+            ...notification,
+            readAt: notification.readAt ?? new Date(),
+          })),
+          unreadCount: 0,
+        });
+      }
     } catch (error) {
       handleApiError(error, set);
     }
   },
 
   markAllAsRead: async () => {
-    try {
-      await eduApi.patch(`${NOTIFICATIONS_EDU_API_ENDPOINT}/read-all`);
-      const { notifications } = get();
-      set({
-        notifications: notifications.map((notification) => ({
-          ...notification,
-          readAt: notification.readAt ?? new Date(),
-        })),
-        unreadCount: 0,
-      });
-    } catch (error) {
-      handleApiError(error, set);
-    }
+    await get().markAsRead();
   },
 
   deleteNotification: async (notificationId: string) => {
     try {
       await eduApi.delete(`${NOTIFICATIONS_EDU_API_ENDPOINT}/${notificationId}`);
-      const { notifications, total } = get();
-      const notificationToDelete = notifications.find((n) => n.notificationId === notificationId);
+      const { notifications, total, unreadCount } = get();
+      const notificationToDelete = notifications.find((notification) => notification.id === notificationId);
       set({
-        notifications: notifications.filter((notification) => notification.notificationId !== notificationId),
-        total: total - 1,
-        unreadCount: notificationToDelete && !notificationToDelete.readAt ? get().unreadCount - 1 : get().unreadCount,
+        notifications: notifications.filter((notification) => notification.id !== notificationId),
+        total: Math.max(0, total - 1),
+        unreadCount: notificationToDelete && !notificationToDelete.readAt ? Math.max(0, unreadCount - 1) : unreadCount,
       });
     } catch (error) {
       handleApiError(error, set);
@@ -144,7 +166,7 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
         params: { type },
       });
 
-      const { notifications, unreadCount } = get();
+      const { notifications, unreadCount, total } = get();
       let newNotifications: InboxNotificationDto[];
       let newUnreadCount = unreadCount;
 
@@ -153,18 +175,18 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
         newUnreadCount = 0;
       } else {
         const typeToFilter = type === NOTIFICATION_FILTER_TYPE.USER ? NOTIFICATION_TYPE.USER : NOTIFICATION_TYPE.SYSTEM;
-        const deletedNotifications = notifications.filter((n) => n.type === typeToFilter);
-        newNotifications = notifications.filter((n) => n.type !== typeToFilter);
+        const deletedNotifications = notifications.filter((notification) => notification.type === typeToFilter);
+        newNotifications = notifications.filter((notification) => notification.type !== typeToFilter);
 
         if (type === NOTIFICATION_FILTER_TYPE.USER) {
-          const deletedUnread = deletedNotifications.filter((n) => !n.readAt).length;
+          const deletedUnread = deletedNotifications.filter((notification) => !notification.readAt).length;
           newUnreadCount = Math.max(0, unreadCount - deletedUnread);
         }
       }
 
       set({
         notifications: newNotifications,
-        total: newNotifications.length,
+        total: Math.max(0, total - data.deletedCount),
         unreadCount: newUnreadCount,
         isDeleteDialogOpen: false,
       });

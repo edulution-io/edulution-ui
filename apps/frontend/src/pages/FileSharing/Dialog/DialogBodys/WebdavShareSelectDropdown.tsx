@@ -23,13 +23,39 @@ import { DropdownSelect } from '@/components';
 import { type DropdownOptions } from '@/components/ui/DropdownSelect/DropdownSelect';
 import useFileSharingStore from '../../useFileSharingStore';
 
-type WebdavShareSelectDropdownProps = { webdavShare?: string; showRootOnly?: boolean };
+type WebdavShareSelectDropdownProps = {
+  webdavShare?: string;
+  showRootOnly?: boolean;
+  filterBySameRootServer?: boolean;
+};
 
-const WebdavShareSelectDropdown: React.FC<WebdavShareSelectDropdownProps> = ({ webdavShare, showRootOnly = false }) => {
+const WebdavShareSelectDropdown: React.FC<WebdavShareSelectDropdownProps> = ({
+  webdavShare,
+  showRootOnly = false,
+  filterBySameRootServer = false,
+}) => {
   const { t } = useTranslation();
   const { webdavShares, selectedWebdavShare, setSelectedWebdavShare } = useFileSharingStore();
 
-  const filteredShares = showRootOnly ? webdavShares.filter((share) => share.isRootServer) : webdavShares;
+  const getFilteredShares = () => {
+    if (showRootOnly) {
+      return webdavShares.filter((share) => share.isRootServer);
+    }
+
+    if (filterBySameRootServer && webdavShare) {
+      const currentShare = webdavShares.find((share) => share.displayName === webdavShare);
+      if (currentShare) {
+        const rootServerName = currentShare.isRootServer ? currentShare.displayName : currentShare.rootServer;
+        return webdavShares.filter(
+          (share) => share.displayName === rootServerName || share.rootServer === rootServerName,
+        );
+      }
+    }
+
+    return webdavShares;
+  };
+
+  const filteredShares = getFilteredShares();
 
   const webdavShareOptions: DropdownOptions[] = filteredShares.map((item) => ({
     id: item.displayName,
@@ -44,7 +70,7 @@ const WebdavShareSelectDropdown: React.FC<WebdavShareSelectDropdownProps> = ({ w
 
       setSelectedWebdavShare(currentWebdavShare);
     }
-  }, [webdavShare, webdavShares, showRootOnly]);
+  }, [webdavShare, webdavShares, showRootOnly, filterBySameRootServer]);
 
   return (
     <DropdownSelect

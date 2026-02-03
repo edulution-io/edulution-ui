@@ -19,58 +19,70 @@
 
 import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { NotificationType } from '@libs/notification/constants/notificationType';
-import { NotificationSourceType } from '@libs/notification/constants/notificationSourceType';
-import { PushNotificationPriority } from '@libs/notification/constants/pushNotificationPriority';
-import { PushNotificationInterruptionLevel } from '@libs/notification/constants/pushNotificationInterruptionLevel';
+import NOTIFICATION_TYPE, { NotificationType } from '@libs/notification/constants/notificationType';
+import NOTIFICATION_SOURCE_TYPE, { NotificationSourceType } from '@libs/notification/constants/notificationSourceType';
+import PUSH_NOTIFICATION_PRIORITY, {
+  PushNotificationPriority,
+} from '@libs/notification/constants/pushNotificationPriority';
+import {
+  PUSH_NOTIFICATION_INTERRUPTION_LEVEL,
+  PushNotificationInterruptionLevel,
+} from '@libs/notification/constants/pushNotificationInterruptionLevel';
+import THIRTY_DAYS from '@libs/common/constants/thirtyDays';
 
 export type NotificationDocument = Notification & Document;
 
 @Schema({ timestamps: true, strict: true, collection: 'notifications' })
 export class Notification {
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, required: true, enum: Object.values(NOTIFICATION_TYPE), index: true })
   type: NotificationType;
 
-  @Prop({ type: String, required: false })
+  @Prop({ type: String, required: false, enum: Object.values(NOTIFICATION_SOURCE_TYPE), index: true })
   sourceType?: NotificationSourceType;
 
-  @Prop({ type: String, required: false })
+  @Prop({ type: String, required: false, index: true })
   sourceId?: string;
 
-  @Prop({ required: true, maxlength: 50 })
+  @Prop({ type: String, required: true })
   title: string;
 
-  @Prop({ required: true, maxlength: 150 })
+  @Prop({ type: String, required: true })
   pushNotification: string;
 
-  @Prop({ required: false })
+  @Prop({ type: String, required: false })
   content?: string;
 
-  @Prop({ type: String, required: false })
+  @Prop({ type: String, required: false, enum: Object.values(PUSH_NOTIFICATION_PRIORITY) })
   priority?: PushNotificationPriority;
 
-  @Prop({ type: String, required: false })
+  @Prop({ type: String, required: false, enum: Object.values(PUSH_NOTIFICATION_INTERRUPTION_LEVEL) })
   interruptionLevel?: PushNotificationInterruptionLevel;
 
-  @Prop({ required: false })
+  @Prop({ type: String, required: false })
   channelId?: string;
 
   @Prop({ type: Object, required: false })
   data?: Record<string, unknown>;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   createdBy: string;
 
+  @Prop()
   createdAt: Date;
+
+  @Prop({
+    type: Date,
+    required: true,
+    index: { expireAfterSeconds: 0 },
+    default: () => new Date(Date.now() + THIRTY_DAYS),
+  })
+  expiresAt: Date;
 
   @Prop({ default: 1 })
   schemaVersion: number;
 }
 
 export const NotificationSchema = SchemaFactory.createForClass(Notification);
-
-NotificationSchema.index({ type: 1 });
-NotificationSchema.index({ sourceType: 1, sourceId: 1 });
 
 NotificationSchema.set('toJSON', {
   virtuals: true,

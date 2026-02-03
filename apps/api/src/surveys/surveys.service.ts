@@ -31,6 +31,7 @@ import NOTIFICATION_CREATOR_SYSTEM from '@libs/notification/constants/notificati
 import prepareCreator from '@libs/survey/utils/prepareCreator';
 import SseMessageType from '@libs/common/types/sseMessageType';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import NOTIFICATION_TEMPLATES from '@libs/notification/constants/notificationTemplates';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
@@ -225,6 +226,7 @@ class SurveysService implements OnModuleInit {
     await this.notifySurveyChange(
       savedSurvey,
       isCreating ? SSE_MESSAGE_TYPE.SURVEY_CREATED : SSE_MESSAGE_TYPE.SURVEY_UPDATED,
+      user.preferred_username,
     );
 
     this.surveysAttachmentService.cleanupTemporaryFiles(user.preferred_username);
@@ -232,7 +234,11 @@ class SurveysService implements OnModuleInit {
     return savedSurvey as SurveyDocument;
   }
 
-  notifySurveyChange = async (survey: SurveyDocument, eventType: SseMessageType): Promise<void> => {
+  notifySurveyChange = async (
+    survey: SurveyDocument,
+    eventType: SseMessageType,
+    triggeredBy: string,
+  ): Promise<void> => {
     if (survey.isPublic) {
       this.sseService.informAllUsers(survey, eventType);
     } else {
@@ -247,10 +253,13 @@ class SurveysService implements OnModuleInit {
           ? SSE_MESSAGE_TYPE.SURVEY_CREATED
           : SSE_MESSAGE_TYPE.SURVEY_UPDATED;
 
-      const actionName = action === SSE_MESSAGE_TYPE.SURVEY_CREATED ? 'erstellt' : 'aktualisiert';
+      const template =
+        action === SSE_MESSAGE_TYPE.SURVEY_CREATED
+          ? NOTIFICATION_TEMPLATES.SURVEY.CREATED
+          : NOTIFICATION_TEMPLATES.SURVEY.UPDATED;
 
-      const title = `Umfrage ${survey.formula.title}: ${actionName}`;
-      const pushNotification = `Die Umfrage "${survey.formula.title}" wurde soeben ${actionName}.`;
+      const title = template.title(survey.formula.title);
+      const pushNotification = template.body(survey.formula.title);
       const surveyId = String(survey.id);
 
       await this.notificationService.notifyUsernames(
@@ -263,6 +272,7 @@ class SurveysService implements OnModuleInit {
             type: eventType,
           },
         },
+        triggeredBy,
         {
           type: NOTIFICATION_TYPE.SYSTEM,
           sourceType: NOTIFICATION_SOURCE_TYPE.SURVEY,

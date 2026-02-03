@@ -83,7 +83,7 @@ const surveyTemplatesMigration001LoadDefaultTemplates: Migration<SurveysTemplate
             isDefaultTemplate: true,
             isActive: existingTemplateById?.isActive ?? existingTemplateByName?.isActive ?? true,
           },
-          { new: true, upsert: true },
+          { upsert: true },
         );
         Logger.log(`Migration "${name}": Created default template "${surveyTemplate.name}"`);
       }),

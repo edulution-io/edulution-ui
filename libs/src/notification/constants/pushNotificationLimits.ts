@@ -17,14 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ResultDialogStore from './resultDialogStore';
+const PUSH_NOTIFICATION_LIMITS = {
+  TITLE_MAX_LENGTH: 50,
+  BODY_MAX_LENGTH: 150,
+} as const;
 
-const ResultDialogStoreInitialState: Partial<ResultDialogStore> = {
-  selectedSurvey: undefined,
-  isOpenPublicResultsTableDialog: false,
-  isOpenPublicResultsVisualisationDialog: false,
-  result: undefined,
-  isLoading: false,
-};
-
-export default ResultDialogStoreInitialState;
+export default PUSH_NOTIFICATION_LIMITS;

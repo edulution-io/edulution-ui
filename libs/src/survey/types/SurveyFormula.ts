@@ -32,6 +32,10 @@ class SurveyFormula {
 
   // only defined in page-less mode
   elements?: TSurveyElement[];
+
+  logoWidth?: string;
+
+  logoPosition?: 'left' | 'right';
 }
 
 export default SurveyFormula;

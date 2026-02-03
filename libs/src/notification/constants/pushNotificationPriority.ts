@@ -24,3 +24,5 @@ const PUSH_NOTIFICATION_PRIORITY = {
 } as const;
 
 export type PushNotificationPriority = (typeof PUSH_NOTIFICATION_PRIORITY)[keyof typeof PUSH_NOTIFICATION_PRIORITY];
+
+export default PUSH_NOTIFICATION_PRIORITY;

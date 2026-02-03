@@ -41,6 +41,7 @@ import JoinPublicConferenceDetails from '@libs/conferences/types/joinPublicConfe
 import { OnEvent } from '@nestjs/event-emitter';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import appendSlashToUrl from '@libs/common/utils/URL/appendSlashToUrl';
+import NOTIFICATION_TEMPLATES from '@libs/notification/constants/notificationTemplates';
 import CustomHttpException from '../common/CustomHttpException';
 import { Conference, ConferenceDocument } from './conference.schema';
 import AppConfigService from '../appconfig/appconfig.service';
@@ -195,11 +196,11 @@ class ConferencesService implements OnModuleInit {
     if (isRunning) {
       await this.stopConference(conference, isConferenceRunningInBBB);
     } else {
-      await this.startConference(conference, isConferenceRunningInBBB);
+      await this.startConference(conference, isConferenceRunningInBBB, username);
     }
   }
 
-  async startConference(conference: Conference, shouldUpdateInBBB: boolean) {
+  async startConference(conference: Conference, shouldUpdateInBBB: boolean, triggeredBy: string) {
     try {
       if (!shouldUpdateInBBB) {
         const query = `name=${encodeURIComponent(conference.name)}&meetingID=${conference.meetingID}`;
@@ -224,8 +225,8 @@ class ConferencesService implements OnModuleInit {
         conference.invitedAttendees,
       );
 
-      const title = `Konferenz gestartet: ${conference.name}`;
-      const pushNotification = `Die Konferenz "${conference.name}" wurde gestartet.`;
+      const title = NOTIFICATION_TEMPLATES.CONFERENCE.STARTED.title(conference.name);
+      const pushNotification = NOTIFICATION_TEMPLATES.CONFERENCE.STARTED.body(conference.name);
 
       await this.notificationService.notifyUsernames(
         invitedMembersList,
@@ -237,6 +238,7 @@ class ConferencesService implements OnModuleInit {
             type: 'conference_started',
           },
         },
+        triggeredBy,
         {
           type: NOTIFICATION_TYPE.SYSTEM,
           sourceType: NOTIFICATION_SOURCE_TYPE.CONFERENCE,

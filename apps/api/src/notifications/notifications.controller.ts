@@ -17,8 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Controller, Delete, Get, Param, Patch, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, ParseEnumPipe, Patch, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { NOTIFICATIONS_EDU_API_ENDPOINT } from '@libs/notification/constants/apiEndpoints';
 import { NOTIFICATION_FILTER_TYPE, NotificationFilterType } from '@libs/notification/types/notificationFilterType';
 import GetCurrentUsername from '../common/decorators/getCurrentUsername.decorator';
@@ -38,8 +38,10 @@ class NotificationsController {
     @Query('limit') limitParam = '20',
     @Query('offset') offsetParam = '0',
   ) {
-    const limit = Math.min(50, Math.max(1, parseInt(limitParam, 10)));
-    const offset = Math.max(0, parseInt(offsetParam, 10));
+    const parsedLimit = parseInt(limitParam, 10);
+    const limit = Math.min(50, Math.max(1, Number.isNaN(parsedLimit) ? 20 : parsedLimit));
+    const parsedOffset = parseInt(offsetParam, 10);
+    const offset = Math.max(0, Number.isNaN(parsedOffset) ? 0 : parsedOffset);
     return this.notificationsService.getInboxNotifications(username, limit, offset);
   }
 
@@ -49,31 +51,22 @@ class NotificationsController {
     return { count };
   }
 
-  @Patch(':id/read')
-  async markAsRead(@Param('id') notificationId: string, @GetCurrentUsername() username: string) {
-    await this.notificationsService.markAsRead(notificationId, username);
-  }
-
-  @Patch('read-all')
-  async markAllAsRead(@GetCurrentUsername() username: string) {
-    await this.notificationsService.markAllAsRead(username);
+  @Patch('read')
+  @ApiBody({ schema: { properties: { ids: { type: 'array', items: { type: 'string' } } } }, required: false })
+  async markAsRead(@GetCurrentUsername() username: string, @Body() body?: { notificationIds?: string[] }) {
+    return this.notificationsService.markAsRead(username, body?.notificationIds);
   }
 
   @Delete(':id')
-  async deleteNotification(@Param('id') notificationId: string, @GetCurrentUsername() username: string) {
-    await this.notificationsService.deleteUserNotification(notificationId, username);
+  async deleteNotification(@Param('id') userNotificationId: string, @GetCurrentUsername() username: string) {
+    await this.notificationsService.deleteUserNotification(userNotificationId, username);
   }
 
   @Delete()
-  @ApiQuery({
-    name: 'type',
-    required: false,
-    enum: Object.values(NOTIFICATION_FILTER_TYPE),
-    example: NOTIFICATION_FILTER_TYPE.ALL,
-  })
   async deleteAllNotifications(
     @GetCurrentUsername() username: string,
-    @Query('type') type: NotificationFilterType = NOTIFICATION_FILTER_TYPE.ALL,
+    @Query('type', new ParseEnumPipe(NOTIFICATION_FILTER_TYPE))
+    type: NotificationFilterType,
   ) {
     const deletedCount = await this.notificationsService.deleteAllUserNotifications(username, type);
     return { deletedCount };

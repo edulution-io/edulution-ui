@@ -33,7 +33,6 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import UseBulletinBoardStore from '@/pages/BulletinBoard/useBulletinBoardStore';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import useFileOperationProgress from '@/pages/FileSharing/hooks/useFileOperationProgress';
-import useFileOperationToast from '@/pages/FileSharing/hooks/useFileOperationToast';
 import useTLDRawHistoryStore from '@/pages/Whiteboard/TLDrawWithSync/useTLDRawHistoryStore';
 import HistoryEntryDto from '@libs/whiteboard/types/historyEntryDto';
 import useFileDownloadProgressToast from '@/hooks/useDownloadProgressToast';
@@ -41,6 +40,8 @@ import { toast } from 'sonner';
 import useSseEventListener from '@/hooks/useSseEventListener';
 import useSseHeartbeatMonitor from '@/hooks/useSseHeartbeatMonitor';
 import useNotificationStore from '@/store/useNotificationStore';
+import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
+import useFileOperationProgressToast from '@/hooks/useFileOperationProgressToast';
 
 const useNotifications = () => {
   const { t } = useTranslation();
@@ -56,8 +57,8 @@ const useNotifications = () => {
   const { addBulletinBoardNotification } = UseBulletinBoardStore();
   const isWhiteboardActive = useIsAppActive(APPS.WHITEBOARD);
   const { addRoomHistoryEntry } = useTLDRawHistoryStore();
-  const isNotificationscenterActive = useIsAppActive(APPS.NOTIFICATIONSCENTER);
   const { fetchUnreadCount } = useNotificationStore();
+  const { fileOperationProgress } = useFileSharingStore();
 
   useFileOperationProgress();
 
@@ -65,7 +66,7 @@ const useNotifications = () => {
 
   useFileDownloadProgressToast();
 
-  useFileOperationToast();
+  useFileOperationProgressToast(fileOperationProgress);
 
   useSseHeartbeatMonitor();
 
@@ -86,10 +87,6 @@ const useNotifications = () => {
       if (isConferenceAppActivated) {
         void getConferences();
       }
-
-      if (isNotificationscenterActive) {
-        void fetchUnreadCount();
-      }
     }
   }, [
     isAuthReady,
@@ -97,7 +94,10 @@ const useNotifications = () => {
     isSuperAdmin,
     isSurveysAppActivated,
     isConferenceAppActivated,
-    isNotificationscenterActive,
+    getMails,
+    updateOpenSurveys,
+    getConferences,
+    fetchUnreadCount,
   ]);
 
   useInterval(() => {

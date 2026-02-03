@@ -17,21 +17,22 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import SurveyDto from '@libs/survey/types/api/survey.dto';
+import SurveyFormula from '@libs/survey/types/SurveyFormula';
+import resetToOriginalChoicesByUrl from '@libs/survey/utils/resetToOriginalChoicesByUrl';
 
-interface ResultDialogStore {
-  selectedSurvey: SurveyDto | undefined;
-  selectSurvey: (survey: SurveyDto | undefined) => void;
+const resetToOriginalChoicesByUrlForSurveyFormula = (formula: SurveyFormula) => {
+  if (formula.pages && formula.pages.length > 0) {
+    const pages = formula.pages.map((page) => ({
+      ...page,
+      elements: resetToOriginalChoicesByUrl(page.elements),
+    }));
+    return { ...formula, pages };
+  }
+  if (formula.elements && formula.elements.length > 0) {
+    const elements = resetToOriginalChoicesByUrl(formula.elements);
+    return { ...formula, elements };
+  }
+  return formula;
+};
 
-  isOpenPublicResultsTableDialog: boolean;
-  setIsOpenPublicResultsTableDialog: (state: boolean) => void;
-  isOpenPublicResultsVisualisationDialog: boolean;
-  setIsOpenPublicResultsVisualisationDialog: (state: boolean) => void;
-  getSurveyResult: (surveyId: string) => Promise<void>;
-  result: JSON[] | undefined;
-  isLoading: boolean;
-
-  reset: () => void;
-}
-
-export default ResultDialogStore;
+export default resetToOriginalChoicesByUrlForSurveyFormula;

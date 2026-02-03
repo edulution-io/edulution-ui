@@ -17,21 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useTranslation } from 'react-i18next';
-import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
-import useFileOperationProgressToast from '../../../hooks/useFileOperationProgressToast';
+import { Row } from '@tanstack/react-table';
 
-const useFileOperationToast = () => {
-  const { t } = useTranslation();
-  const { fileOperationProgress } = useFileSharingStore();
+const pinRowToTop = <TData>(rows: Row<TData>[], pinnedRowId: string | undefined): Row<TData>[] => {
+  if (!pinnedRowId) return rows;
 
-  useFileOperationProgressToast(
-    fileOperationProgress && {
-      ...fileOperationProgress,
-      title: t(fileOperationProgress.title ?? ''),
-      description: t(fileOperationProgress.description ?? ''),
-    },
-  );
+  const pinnedIndex = rows.findIndex((row) => row.id === pinnedRowId);
+  if (pinnedIndex <= 0) return rows;
+
+  const pinnedRow = rows[pinnedIndex];
+  return [pinnedRow, ...rows.slice(0, pinnedIndex), ...rows.slice(pinnedIndex + 1)];
 };
 
-export default useFileOperationToast;
+export default pinRowToTop;

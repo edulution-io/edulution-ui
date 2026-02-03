@@ -39,7 +39,6 @@ import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPage
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import useDeleteSurveyStore from '@/pages/Surveys/Tables/dialogs/useDeleteSurveyStore';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
-import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import usePublicConferenceStore from '@/pages/ConferencePage/PublicConference/usePublicConferenceStore';
 import useBulletinCategoryTableStore from '@/pages/Settings/AppConfig/bulletinboard/useBulletinCategoryTableStore';
@@ -111,7 +110,6 @@ const cleanAllStores = async () => {
   useSelectCreateDockerContainerDialogStore.getState().reset();
   useSidebarStore.getState().reset();
   useSseStore.getState().reset();
-  useSubmittedAnswersDialogStore.getState().reset();
   useSurveyEditorPageStore.getState().reset();
   useSurveyTablesPageStore.getState().reset();
   useTLDRawHistoryStore.getState().reset();

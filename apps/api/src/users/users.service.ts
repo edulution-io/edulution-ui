@@ -358,7 +358,7 @@ class UsersService {
     }
   }
 
-  async getPushTokensByUsersnames(usernames: string[]): Promise<string[]> {
+  async getPushTokensByUsernames(usernames: string[]): Promise<string[]> {
     const users = await this.userModel
       .find({ username: { $in: usernames } })
       .select('registeredPushTokens')

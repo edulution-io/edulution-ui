@@ -50,6 +50,7 @@ const NotificationPanel = () => {
 
   const { isMobileView, isTabletView } = useMedia();
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
+  const isMobileOrTablet = isMobileView || isTabletView || isEdulutionApp;
   const hasDesktopSidebar = !isMobileView && !isTabletView && !isEdulutionApp;
 
   const [activeFilter, setActiveFilter] = useState<NotificationFilterType>(NOTIFICATION_FILTER_TYPE.ALL);
@@ -87,10 +88,11 @@ const NotificationPanel = () => {
       onOpenChange={setIsSheetOpen}
     >
       <SheetContent
-        side="right"
+        side={isMobileOrTablet ? 'bottom' : 'right'}
         overlayClassName="bg-transparent"
         className={cn(
-          'bg-glass flex max-h-full flex-col border-l border-muted text-background shadow-xl shadow-slate-400 backdrop-blur-md sm:max-w-md',
+          'bg-glass flex flex-col border-muted text-background shadow-xl shadow-slate-400 backdrop-blur-md',
+          isMobileOrTablet ? 'max-h-[85vh] rounded-t-2xl border-t' : 'max-h-full border-l sm:max-w-md',
           hasDesktopSidebar && 'right-[var(--sidebar-width)]',
         )}
       >
@@ -104,7 +106,7 @@ const NotificationPanel = () => {
         <div className="flex items-center gap-2">
           <Button
             onClick={handleRefresh}
-            className="hover:bg-muted-foreground/10 rounded-full p-2 text-background transition-colors hover:text-background"
+            className="rounded-full p-2 text-background transition-colors hover:hover:bg-muted-background hover:text-background"
             title={t('common.reload')}
           >
             <FontAwesomeIcon
@@ -115,7 +117,7 @@ const NotificationPanel = () => {
           {unreadCount > 0 && (
             <Button
               onClick={handleMarkAllAsRead}
-              className="hover:bg-muted-foreground/10 rounded-full p-2 text-background transition-colors hover:text-background"
+              className="rounded-full p-2 text-background transition-colors hover:hover:bg-muted-background hover:text-background"
               title={t('notificationscenter.markAllAsRead')}
             >
               <FontAwesomeIcon
@@ -127,7 +129,7 @@ const NotificationPanel = () => {
           {filteredNotifications.length > 0 && (
             <Button
               onClick={() => setIsDeleteDialogOpen(true)}
-              className="hover:bg-destructive/10 rounded-full p-2 text-background transition-colors hover:text-destructive"
+              className="rounded-full p-2 text-background transition-colors hover:hover:bg-muted-background hover:text-destructive"
               title={t('notificationscenter.deleteAll')}
             >
               <FontAwesomeIcon

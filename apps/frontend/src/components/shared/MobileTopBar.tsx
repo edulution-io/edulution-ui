@@ -19,10 +19,12 @@
 
 import React, { useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faClose, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faBell, faClose, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
 import useMenuBarStore from '@/components/shared/useMenuBarStore';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
+import useNotificationStore from '@/store/useNotificationStore';
+import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import { MOBILE_TOP_BAR_HEIGHT_PX, SIDEBAR_ICON_WIDTH } from '@libs/ui/constants/sidebar';
 import { MobileLogoIcon } from '@/assets/icons';
 
@@ -36,7 +38,12 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
   const { toggleMobileSidebar: onRightButtonClick, isMobileSidebarOpen: isRightMenuOpen } = useSidebarStore();
   const { toggleMobileMenuBar: onLeftButtonClick, isMobileMenuBarOpen: isLeftMenuOpen } = useMenuBarStore();
   const { isEdulutionApp } = usePlatformStore();
+  const { unreadCount, setIsSheetOpen } = useNotificationStore();
   const iconClassName = useMemo(() => 'h-6 w-6', []);
+
+  const handleNotificationClick = () => {
+    setIsSheetOpen(true);
+  };
 
   if (!showLeftButton && !showRightButton) {
     return null;
@@ -78,17 +85,32 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
           </button>
         )}
 
-        {!isAnyMenuOpen && showRightButton ? (
-          <button
-            type="button"
-            onClick={onRightButtonClick}
-          >
-            <MobileLogoIcon
-              className="h-8 w-8"
-              width={SIDEBAR_ICON_WIDTH}
-              aria-label="edulution-mobile-logo"
-            />
-          </button>
+        {!isAnyMenuOpen ? (
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={handleNotificationClick}
+              className="relative flex items-center justify-center"
+            >
+              <FontAwesomeIcon
+                icon={faBell}
+                className="h-5 w-5 text-muted hover:text-muted-foreground"
+              />
+              <NotificationCounter count={unreadCount} />
+            </button>
+            {showRightButton && (
+              <button
+                type="button"
+                onClick={onRightButtonClick}
+              >
+                <MobileLogoIcon
+                  className="h-8 w-8"
+                  width={SIDEBAR_ICON_WIDTH}
+                  aria-label="edulution-mobile-logo"
+                />
+              </button>
+            )}
+          </div>
         ) : (
           <div />
         )}

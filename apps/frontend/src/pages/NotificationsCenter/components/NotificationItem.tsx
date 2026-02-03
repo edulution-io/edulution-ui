@@ -33,6 +33,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { Button } from '@/components/shared/Button';
+import { Card } from '@/components/shared/Card/Card';
 import cn from '@libs/common/utils/className';
 import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto';
 import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
@@ -78,28 +79,30 @@ const NotificationItem = ({ notification }: NotificationItemProps) => {
 
   const handleMarkAsRead = (event: React.MouseEvent) => {
     event.stopPropagation();
-    void markAsRead(notification.notificationId);
+    void markAsRead([notification.id]);
   };
 
   const handleDelete = (event: React.MouseEvent) => {
     event.stopPropagation();
-    void deleteNotification(notification.notificationId);
+    void deleteNotification(notification.id);
   };
 
   return (
-    <div
+    <Card
       role="button"
       tabIndex={0}
-      className={cn(
-        'relative flex cursor-pointer flex-col rounded-xl border border-transparent p-4 shadow-sm transition-all',
-        'bg-glass dark:hover:border-muted-foreground/20 hover:shadow-md dark:bg-muted-background dark:shadow-none',
-        {
-          'border-primary/50 ring-primary/30 ring-1': isUnread,
-        },
-      )}
+      variant={isUnread ? 'gridSelected' : 'grid'}
+      className={cn('relative flex flex-col p-4', {
+        'border-primary/50 ring-primary/30 ring-1': isUnread,
+      })}
       onClick={handleExpand}
       onKeyDown={(event) => {
-        if (event.key === 'Enter' || event.key === ' ') handleExpand();
+        if (event.key === 'Enter') {
+          handleExpand();
+        } else if (event.key === ' ') {
+          event.preventDefault();
+          handleExpand();
+        }
       }}
     >
       <div className="flex items-start gap-3">
@@ -171,7 +174,7 @@ const NotificationItem = ({ notification }: NotificationItemProps) => {
           <p className="text-background/90 whitespace-pre-wrap text-sm">{notification.content}</p>
         </div>
       )}
-    </div>
+    </Card>
   );
 };
 

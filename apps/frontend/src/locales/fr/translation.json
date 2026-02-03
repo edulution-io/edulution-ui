@@ -114,6 +114,7 @@
     "actionCannotBeUndone": "Cette action ne peut pas être annulée.",
     "deletedNotifications": "{{count}} notification supprimée",
     "deletedNotifications_other": "{{count}} notifications supprimées",
+    "loadMore": "Charger plus",
     "menu": {
       "all": "Tout",
       "messages": "Messages",
@@ -200,6 +201,7 @@
       "GetUserSchoolClassFailed": "Echecc d'appel de la classe de l'utilisateur",
       "GetUserProjectsFailed": "L'appel des projets de l'utilisateur a échoué",
       "GetUserFailed": "Échec de l'appel",
+      "GetUsersFailed": "L'appel des utilisateurs a échoué",
       "UpdateUserFailed": "La mise à jour a échoué",
       "GetCurrentUserRoomFailed": "Echec d'appel de la salle actuelle",
       "CreateProjectFailed": "La création du projet a échoué",
@@ -451,7 +453,8 @@
     "webdavInfo": {
       "title": "Accès WebDAV",
       "description": "Utilisez cette URL pour vous connecter à vos fichiers via des clients WebDAV",
-      "url": "URL WebDAV",
+      "urlWindowsMac": "URL WebDAV (Windows / macOS)",
+      "urlLinux": "URL WebDAV (Linux)",
       "username": "Nom d'utilisateur",
       "passwordHint": "Utilisez votre mot de passe de connexion pour vous authentifier",
       "tutorialsTitle": "Tutoriels de configuration",
@@ -671,14 +674,17 @@
       "fileDeletionSuccess": "Le fichier a été supprimé avec succès.",
       "fileDeletionError": "Le fichier n'a pas pu être supprimé.",
       "saveSurveySuccess": "Le sondage a été enregistrée.",
-      "surveyPlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
-      "surveyPlaceholderDescription": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
-      "surveyPlaceholderDescriptionMobile": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
-      "pagePlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour ajouter un nouvel élément à la page.",
-      "panelPlaceHolder": "Cliquez sur « Ajouter une question » ci-dessous pour ajouter un nouvel élément au panneau.",
       "reset": "Rejeter",
       "addDescription": "Ajouter une description",
       "expectingUserInput": "Ici, la réponse du participant est attendue ... ",
+      "customTranslations": {
+        "surveyPlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
+        "surveyPlaceholderDescription": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
+        "surveyPlaceholderDescriptionMobile": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
+        "pagePlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour ajouter un nouvel élément à la page.",
+        "panelPlaceHolder": "Cliquez sur « Ajouter une question » ci-dessous pour ajouter un nouvel élément au panneau.",
+        "previewTabTitle": "Aperçu"
+      },
       "templates": "Modèles",
       "templateMenu": {
         "fetch": "Choisissez l'un des modèles disponibles.",
@@ -712,6 +718,20 @@
         "upperLimit": "limite",
         "upperBackendLimiters": "Options de sélection avec limite supérieure",
         "addChoice": "Ajouter"
+      },
+      "surveyLogo": {
+        "title": "Logo de l'enquête",
+        "width": {
+          "label": "Largeur du logo en pixels (min. 150 px)",
+          "placeholder": "Entrez la largeur du logo en pixels"
+        },
+        "position": {
+          "label": "Position du logo",
+          "placeholder": "Choisissez la position du logo",
+          "left": "À gauche du titre",
+          "right": "À droite du titre",
+          "description": "La position du logo par rapport au titre de l'enquête est visible dans l'onglet 'Tester le sondage'."
+        }
       }
     },
     "participate": {
@@ -740,7 +760,8 @@
       "notAbleToFindSurveyAnswerError": "Aucune réponse disponible.",
       "notAbleToUpdateSurveyAnswerError": "La réponse n'a pas pu être mise à jour.",
       "notAbleToCreateSurveyAnswerError": "La réponse n'a pas pu être créée.",
-      "notAbleToDeleteSurveyAnswerError": "La réponse n'a pas pu être supprimée."
+      "notAbleToDeleteSurveyAnswerError": "La réponse n'a pas pu être supprimée.",
+      "alreadyParticipated": "Vous avez déjà participé."
     }
   },
   "surveys": {
@@ -1289,7 +1310,8 @@
       "qrCodeDescription": "Scannez ce code QR avec l'application WireGuard sur votre appareil mobile pour configurer la connexion VPN.",
       "configDownload": "Fichier de configuration",
       "configDownloadDescription": "Téléchargez le fichier de configuration WireGuard pour l'importer dans l'application WireGuard sur votre ordinateur.",
-      "downloadButton": "Télécharger la configuration"
+      "downloadButton": "Télécharger la configuration",
+      "error": "Le service VPN est actuellement indisponible. Veuillez réessayer plus tard ou contacter un administrateur."
     },
     "addTotp": {
       "title": "Configurer l'authentification à deux facteurs",
@@ -1359,6 +1381,8 @@
     "filter": "Filtrer",
     "showHiddenFiles": "Afficher les fichiers cachés",
     "showSystemFiles": "Afficher les fichiers système",
+    "expand": "Développer",
+    "collapse": "Réduire",
     "errors": {
       "attachmentUploadFailed": "La pièce jointe n'a pas pu être téléversée",
       "dbAccessFailed": "L'accès à la base de données a échoué",

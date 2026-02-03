@@ -20,21 +20,27 @@
 import { Document, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import USER_NOTIFICATION_STATUS, { UserNotificationStatus } from '@libs/notification/constants/userNotificationStatus';
+import { Notification } from './notification.schema';
 
 export type UserNotificationDocument = UserNotification & Document;
 
 @Schema({ timestamps: true, strict: true, collection: 'usernotifications' })
 export class UserNotification {
-  @Prop({ type: Types.ObjectId, ref: 'Notification', required: true })
+  @Prop({ type: Types.ObjectId, ref: Notification.name, required: true, index: true })
   notificationId: Types.ObjectId;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
   username: string;
 
   @Prop({ type: Date, default: null })
   readAt: Date | null;
 
-  @Prop({ type: String, required: true, default: USER_NOTIFICATION_STATUS.PENDING })
+  @Prop({
+    type: String,
+    required: true,
+    enum: Object.values(USER_NOTIFICATION_STATUS),
+    default: USER_NOTIFICATION_STATUS.PENDING,
+  })
   status: UserNotificationStatus;
 
   @Prop({ default: 1 })
@@ -45,7 +51,6 @@ export const UserNotificationSchema = SchemaFactory.createForClass(UserNotificat
 
 UserNotificationSchema.index({ username: 1, createdAt: -1 });
 UserNotificationSchema.index({ username: 1, readAt: 1 });
-UserNotificationSchema.index({ notificationId: 1 });
 
 UserNotificationSchema.set('toJSON', {
   virtuals: true,

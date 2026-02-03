@@ -35,8 +35,9 @@ import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
 import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
 import NOTIFICATION_CREATOR_SYSTEM from '@libs/notification/constants/notificationCreatorSystem';
-import BULLETIN_SAVE_MODE from '@libs/bulletinBoard/constants/bulletinSaveMode';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import BULLETIN_SAVE_MODE from '@libs/bulletinBoard/constants/bulletinSaveMode';
+import NOTIFICATION_TEMPLATES from '@libs/notification/constants/notificationTemplates';
 import CustomHttpException from '../common/CustomHttpException';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 import { BulletinCategory, BulletinCategoryDocument } from '../bulletin-category/bulletin-category.schema';
@@ -406,8 +407,8 @@ class BulletinBoardService implements OnModuleInit {
       const saveMode = dto.saveMode || BULLETIN_SAVE_MODE.PUSH_AND_BULLETIN;
 
       if (saveMode !== BULLETIN_SAVE_MODE.BULLETIN_ONLY) {
-        const title = dto.customPushTitle || `Aushang bereit: ${dto.title}`;
-        const pushNotification = dto.customPushBody || `Neuer Aushang in ${dto.category.name}`;
+        const title = dto.customPushTitle || NOTIFICATION_TEMPLATES.BULLETIN.CREATED.title(dto.title || '');
+        const pushNotification = dto.customPushBody || NOTIFICATION_TEMPLATES.BULLETIN.CREATED.body(dto.category.name);
         const bulletinId = String(resultingBulletin.id);
 
         const isCustomPush = Boolean(dto.customPushTitle || dto.customPushBody);
@@ -434,6 +435,7 @@ class BulletinBoardService implements OnModuleInit {
               type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
             },
           },
+          currentUser?.preferred_username,
           persistOptions,
         );
       }
