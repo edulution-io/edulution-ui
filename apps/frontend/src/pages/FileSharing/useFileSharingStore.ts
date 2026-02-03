@@ -53,6 +53,7 @@ type UseFileSharingStore = {
   currentlyDisabledFiles: Record<string, boolean>;
   setFileIsCurrentlyDisabled: (filename: string, isLocked: boolean, durationMs?: number) => Promise<void>;
   setIsLoading: (isLoading: boolean) => void;
+  clearFilesOnShareChange: () => void;
   setFileOperationProgress: (progress: FilesharingProgressDto | null) => void;
   setDownloadProgressList: (progressList: DownloadFileDto[]) => void;
   updateDownloadProgress: (progress: DownloadFileDto) => void;
@@ -127,6 +128,18 @@ const useFileSharingStore = create<UseFileSharingStore>(
 
       setIsLoading: (isLoading: boolean) => {
         set({ isLoading });
+      },
+
+      clearFilesOnShareChange: () => {
+        set({
+          files: [],
+          selectedItems: [],
+          selectedRows: {},
+          isLoading: true,
+          pathToRestoreSession: '/',
+          fileOperationProgress: null,
+          currentPath: '/',
+        });
       },
 
       fetchFiles: async (shareName, path: string = '/') => {
