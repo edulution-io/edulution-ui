@@ -114,6 +114,12 @@ class UsersService {
     return cachedUsers ?? [];
   }
 
+  async findCachedUserByUsername(username: string): Promise<CachedUser | null> {
+    const allUsers = await this.cacheManager.get<CachedUser[]>(ALL_USERS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL);
+    if (!allUsers) return null;
+    return allUsers.find((user) => user.username === username) ?? null;
+  }
+
   async refreshUsersCache(): Promise<number> {
     const mapToCachedUser = (user: LDAPUser): CachedUser => ({
       ...user,
@@ -261,9 +267,7 @@ class UsersService {
         );
       }
 
-      const userAccounts = await this.getUserAccounts(username);
-
-      return userAccounts;
+      return await this.getUserAccounts(username);
     } catch (error) {
       throw new CustomHttpException(
         UserErrorMessages.UpdateError,
@@ -291,14 +295,12 @@ class UsersService {
         .find({ userId: user._id }, 'appName accountUser accountPassword')
         .exec();
 
-      const userAccountsDto = userAccounts.map((account) => ({
+      return userAccounts.map((account) => ({
         accountId: (account._id as Types.ObjectId).toHexString(),
         appName: account.appName,
         accountUser: account.accountUser,
         accountPassword: account.accountPassword,
       }));
-
-      return userAccountsDto;
     } catch (error) {
       throw new CustomHttpException(
         UserErrorMessages.NotFoundError,
@@ -328,9 +330,7 @@ class UsersService {
         )
         .exec();
 
-      const userAccounts = await this.getUserAccounts(username);
-
-      return userAccounts;
+      return await this.getUserAccounts(username);
     } catch (error) {
       throw new CustomHttpException(
         UserErrorMessages.UpdateError,
@@ -354,9 +354,7 @@ class UsersService {
         );
       }
 
-      const userAccounts = await this.getUserAccounts(username);
-
-      return userAccounts;
+      return await this.getUserAccounts(username);
     } catch (error) {
       throw new CustomHttpException(
         UserErrorMessages.UpdateError,

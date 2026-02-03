@@ -17,17 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ChatRole from '@libs/chat/constants/chatRole';
-
-interface ChatMessage {
-  id: string;
-  role: ChatRole;
+interface CreateMessageDto {
   content: string;
-  createdAt: Date;
-  createdBy?: string;
-  createdByUserFirstName?: string;
-  createdByUserLastName?: string;
-  metadata?: Record<string, unknown>;
 }
 
-export default ChatMessage;
+export default CreateMessageDto;

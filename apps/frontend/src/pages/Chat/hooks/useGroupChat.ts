@@ -17,47 +17,81 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useState, useCallback, FormEvent } from 'react';
-import type ChatAdapter from '@libs/chat/types/chatAdapter';
-import type ChatMessage from '@libs/chat/types/chatMessage';
+import { useState, useCallback, useEffect, useRef, FormEvent } from 'react';
+import ChatAdapter from '@libs/chat/types/chatAdapter';
+import GROUP_TYPES from '@libs/chat/constants/groupTypes';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import useChatStore from '@/store/useChatStore';
+import useSseEventListener from '@/hooks/useSseEventListener';
 import useUserStore from '@/store/UserStore/useUserStore';
-import getRandomUUID from '@/utils/getRandomUUID';
-import CHAT_ROLES from '@libs/chat/constants/chatRoles';
 
-const useGroupChat = (_groupId: string, _groupType: 'classes' | 'projects'): ChatAdapter => {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+interface ChatNewMessageEvent {
+  conversationId: string;
+  groupName: string;
+  groupType: string;
+  messageId: string;
+  createdBy: string;
+}
+
+type GroupTypeLocation = 'classes' | 'projects';
+
+const locationToGroupType: Record<GroupTypeLocation, string> = {
+  classes: GROUP_TYPES.CLASS,
+  projects: GROUP_TYPES.PROJECT,
+};
+
+const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): ChatAdapter => {
   const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-  const { user } = useUserStore();
+  const { messages, isLoading, isSending, error, fetchMessages, sendMessage, setCurrentConversation } = useChatStore();
+  const user = useUserStore((state) => state.user);
+  const currentUsername = user?.username;
+
+  const groupType = locationToGroupType[groupTypeLocation];
+
+  const groupNameRef = useRef(groupName);
+  const groupTypeRef = useRef(groupType);
+
+  useEffect(() => {
+    groupNameRef.current = groupName;
+    groupTypeRef.current = groupType;
+  }, [groupName, groupType]);
+
+  useEffect(() => {
+    setCurrentConversation(groupType, groupName);
+    void fetchMessages(groupType, groupName);
+  }, [groupType, groupName, setCurrentConversation, fetchMessages]);
+
+  const handleNewMessage = useCallback(
+    (e: MessageEvent<string>) => {
+      const data = JSON.parse(e.data) as ChatNewMessageEvent;
+
+      if (data.groupName !== groupNameRef.current || data.groupType !== groupTypeRef.current) {
+        return;
+      }
+
+      if (data.createdBy === currentUsername) {
+        return;
+      }
+
+      void fetchMessages(groupTypeRef.current, groupNameRef.current);
+    },
+    [currentUsername, fetchMessages],
+  );
+
+  useSseEventListener(SSE_MESSAGE_TYPE.CHAT_NEW_MESSAGE, handleNewMessage, { enabled: true });
 
   const handleSubmit = useCallback(
     async (e?: FormEvent): Promise<void> => {
       e?.preventDefault();
 
-      if (!input.trim() || isLoading) return;
+      if (!input.trim() || isSending) return;
 
       const messageContent = input.trim();
       setInput('');
-      setIsLoading(true);
-      setError(null);
 
-      const newMessage: ChatMessage = {
-        id: getRandomUUID(),
-        role: CHAT_ROLES.USER,
-        content: messageContent,
-        createdAt: new Date(),
-        createdBy: user?.username,
-        createdByName: user ? `${user.firstName} ${user.lastName}` : undefined,
-      };
-
-      setMessages((prev) => [...prev, newMessage]);
-
-      await Promise.resolve();
-
-      setIsLoading(false);
+      await sendMessage(groupType, groupName, messageContent);
     },
-    [input, isLoading, user],
+    [input, isSending, groupType, groupName, sendMessage],
   );
 
   return {
@@ -65,8 +99,8 @@ const useGroupChat = (_groupId: string, _groupType: 'classes' | 'projects'): Cha
     input,
     setInput,
     handleSubmit,
-    isLoading,
-    error,
+    isLoading: isLoading || isSending,
+    error: error ? new Error(error) : null,
   };
 };
 
