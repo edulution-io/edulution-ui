@@ -30,6 +30,7 @@ import {
   faChartBar,
   faVideo,
   faComment,
+  faCircleInfo,
 } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { Button } from '@/components/shared/Button';
@@ -40,6 +41,7 @@ import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
 import NOTIFICATION_SOURCE_TYPE, { NotificationSourceType } from '@libs/notification/constants/notificationSourceType';
 import { getElapsedTime } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import useNotificationStore from '@/store/useNotificationStore';
+import NotificationRecipientsDialog from '@/pages/NotificationsCenter/components/NotificationRecipientsDialog';
 
 interface NotificationItemProps {
   notification: InboxNotificationDto;
@@ -65,6 +67,7 @@ const NotificationItem = ({ notification, isSentView = false }: NotificationItem
   const { t } = useTranslation();
   const { markAsRead, deleteNotification, deleteSentNotification } = useNotificationStore();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isRecipientsDialogOpen, setIsRecipientsDialogOpen] = useState(false);
 
   const isUserNotification = notification.type === NOTIFICATION_TYPE.USER;
   const isUnread = isUserNotification && !notification.readAt;
@@ -80,7 +83,7 @@ const NotificationItem = ({ notification, isSentView = false }: NotificationItem
 
   const handleMarkAsRead = (event: React.MouseEvent) => {
     event.stopPropagation();
-    void markAsRead([notification.id]);
+    void markAsRead([notification.notificationId]);
   };
 
   const handleDelete = (event: React.MouseEvent) => {
@@ -90,6 +93,11 @@ const NotificationItem = ({ notification, isSentView = false }: NotificationItem
     } else {
       void deleteNotification(notification.id);
     }
+  };
+
+  const handleOpenRecipientsDialog = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    setIsRecipientsDialogOpen(true);
   };
 
   return (
@@ -141,6 +149,19 @@ const NotificationItem = ({ notification, isSentView = false }: NotificationItem
         </div>
 
         <div className="flex flex-shrink-0 items-center gap-1">
+          {isSentView && (
+            <Button
+              type="button"
+              className="hover:bg-primary/10 rounded-full p-2 text-muted-foreground hover:text-primary"
+              onClick={handleOpenRecipientsDialog}
+              title={t('notificationscenter.showRecipients')}
+            >
+              <FontAwesomeIcon
+                icon={faCircleInfo}
+                className="h-4 w-4"
+              />
+            </Button>
+          )}
           {isUserNotification && isUnread && !isSentView && (
             <Button
               type="button"
@@ -178,6 +199,15 @@ const NotificationItem = ({ notification, isSentView = false }: NotificationItem
         <div className="border-muted-foreground/20 mt-3 border-t pt-3">
           <p className="text-background/90 whitespace-pre-wrap text-sm">{notification.content}</p>
         </div>
+      )}
+
+      {isSentView && (
+        <NotificationRecipientsDialog
+          isOpen={isRecipientsDialogOpen}
+          onClose={() => setIsRecipientsDialogOpen(false)}
+          notificationId={notification.notificationId}
+          notificationTitle={notification.title}
+        />
       )}
     </Card>
   );

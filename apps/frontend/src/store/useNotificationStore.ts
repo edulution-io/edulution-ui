@@ -23,6 +23,7 @@ import i18n from '@/i18n';
 import eduApi from '@/api/eduApi';
 import { NOTIFICATIONS_EDU_API_ENDPOINT } from '@libs/notification/constants/apiEndpoints';
 import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto';
+import NotificationRecipientDto from '@libs/notification/types/notificationRecipient.dto';
 import InboxResponseDto from '@libs/notification/types/inboxResponse.dto';
 import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
 import notificationPaginationConfig from '@libs/notification/constants/notificationPaginationConfig';
@@ -37,8 +38,10 @@ interface NotificationStore {
   sentNotifications: InboxNotificationDto[];
   sentTotal: number;
   sentHasMore: boolean;
+  recipients: NotificationRecipientDto[];
   isLoading: boolean;
   isLoadingMore: boolean;
+  isLoadingRecipients: boolean;
   isUnreadCountLoading: boolean;
   isDeleting: boolean;
   isDeleteDialogOpen: boolean;
@@ -47,6 +50,7 @@ interface NotificationStore {
 
   fetchNotifications: (loadMore?: boolean) => Promise<void>;
   fetchSentNotifications: (loadMore?: boolean) => Promise<void>;
+  fetchRecipients: (notificationId: string) => Promise<void>;
   fetchUnreadCount: () => Promise<void>;
   markAsRead: (notificationIds?: string[]) => Promise<void>;
   markAllAsRead: () => Promise<void>;
@@ -66,7 +70,9 @@ const initialState = {
   sentNotifications: [] as InboxNotificationDto[],
   sentTotal: 0,
   sentHasMore: false,
+  recipients: [] as NotificationRecipientDto[],
   isLoading: false,
+  isLoadingRecipients: false,
   isLoadingMore: false,
   isUnreadCountLoading: false,
   isDeleting: false,
@@ -126,6 +132,20 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
     }
   },
 
+  fetchRecipients: async (notificationId: string) => {
+    set({ isLoadingRecipients: true, recipients: [] });
+    try {
+      const { data } = await eduApi.get<NotificationRecipientDto[]>(
+        `${NOTIFICATIONS_EDU_API_ENDPOINT}/sent/${notificationId}/recipients`,
+      );
+      set({ recipients: data });
+    } catch (error) {
+      handleApiError(error, set);
+    } finally {
+      set({ isLoadingRecipients: false });
+    }
+  },
+
   fetchUnreadCount: async () => {
     set({ isUnreadCountLoading: true });
     try {
@@ -141,7 +161,7 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
   markAsRead: async (notificationIds?: string[]) => {
     try {
       await eduApi.patch(`${NOTIFICATIONS_EDU_API_ENDPOINT}/read`, {
-        ids: notificationIds,
+        notificationIds,
       });
 
       const { notifications, unreadCount } = get();
@@ -149,12 +169,12 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
       if (notificationIds?.length) {
         const idsSet = new Set(notificationIds);
         const markedCount = notifications.filter(
-          (notification) => idsSet.has(notification.id) && !notification.readAt,
+          (notification) => idsSet.has(notification.notificationId) && !notification.readAt,
         ).length;
 
         set({
           notifications: notifications.map((notification) =>
-            idsSet.has(notification.id) ? { ...notification, readAt: new Date() } : notification,
+            idsSet.has(notification.notificationId) ? { ...notification, readAt: new Date() } : notification,
           ),
           unreadCount: Math.max(0, unreadCount - markedCount),
         });

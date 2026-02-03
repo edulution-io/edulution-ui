@@ -124,7 +124,11 @@
     "sentSection": "Messages envoyés",
     "noSentNotifications": "Tu n'as envoyé aucun message",
     "deleteAllSent": "Supprimer tous les envoyés",
-    "confirmDeleteSent": "Es-tu sûr de vouloir supprimer les {{count}} messages envoyés ? Ils seront également supprimés chez tous les destinataires."
+    "confirmDeleteSent": "Es-tu sûr de vouloir supprimer les {{count}} messages envoyés ? Ils seront également supprimés chez tous les destinataires.",
+    "showRecipients": "Afficher les destinataires",
+    "noRecipients": "Aucun destinataire",
+    "recipientsStats": "{{read}} sur {{total}} ont lu",
+    "read": "Lu"
   },
   "appstore": {
     "title": "App Store",

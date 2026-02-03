@@ -66,6 +66,11 @@ class NotificationsController {
     return this.notificationsService.getSentNotifications(username, limit, offset);
   }
 
+  @Get('sent/:id/recipients')
+  async getSentNotificationRecipients(@Param('id') notificationId: string, @GetCurrentUsername() username: string) {
+    return this.notificationsService.getSentNotificationRecipients(notificationId, username);
+  }
+
   @Patch('read')
   @ApiBody({ schema: { properties: { ids: { type: 'array', items: { type: 'string' } } } }, required: false })
   async markAsRead(@GetCurrentUsername() username: string, @Body() body?: { notificationIds?: string[] }) {

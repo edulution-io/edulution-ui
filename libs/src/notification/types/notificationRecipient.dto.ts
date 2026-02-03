@@ -17,24 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { NotificationType } from '@libs/notification/constants/notificationType';
-import { NotificationSourceType } from '@libs/notification/constants/notificationSourceType';
-import SentNotificationStats from '@libs/notification/types/sentNotificationStats';
-
-interface InboxNotificationDto {
-  id: string;
-  notificationId: string;
-  type: NotificationType;
-  sourceType?: NotificationSourceType;
-  sourceId?: string;
-  title: string;
-  pushNotification: string;
-  content?: string;
-  data?: Record<string, unknown>;
-  createdAt: Date;
-  createdBy: string;
+interface NotificationRecipientDto {
+  username: string;
   readAt: Date | null;
-  sentStats?: SentNotificationStats;
 }
 
-export default InboxNotificationDto;
+export default NotificationRecipientDto;

@@ -148,7 +148,11 @@
     "sentSection": "Gesendete Nachrichten",
     "noSentNotifications": "Du hast keine Nachrichten gesendet",
     "deleteAllSent": "Alle gesendeten löschen",
-    "confirmDeleteSent": "Möchtest du wirklich alle {{count}} gesendeten Nachrichten löschen? Diese werden auch bei den Empfängern gelöscht."
+    "confirmDeleteSent": "Möchtest du wirklich alle {{count}} gesendeten Nachrichten löschen? Diese werden auch bei den Empfängern gelöscht.",
+    "showRecipients": "Empfänger anzeigen",
+    "noRecipients": "Keine Empfänger",
+    "recipientsStats": "{{read}} von {{total}} haben gelesen",
+    "read": "Gelesen"
   },
   "appstore": {
     "title": "App-Store",

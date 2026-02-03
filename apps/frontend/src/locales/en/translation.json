@@ -148,7 +148,11 @@
     "sentSection": "Sent messages",
     "noSentNotifications": "You haven't sent any messages",
     "deleteAllSent": "Delete all sent",
-    "confirmDeleteSent": "Are you sure you want to delete all {{count}} sent messages? They will also be deleted for all recipients."
+    "confirmDeleteSent": "Are you sure you want to delete all {{count}} sent messages? They will also be deleted for all recipients.",
+    "showRecipients": "Show recipients",
+    "noRecipients": "No recipients",
+    "recipientsStats": "{{read}} of {{total}} have read",
+    "read": "Read"
   },
   "mountpoints": {
     "home": "Home",

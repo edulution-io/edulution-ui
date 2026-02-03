@@ -24,6 +24,7 @@ import { Model, mongo, Types } from 'mongoose';
 import SendPushNotificationDto from '@libs/notification/types/send-pushNotification.dto';
 import CreateNotificationDto from '@libs/notification/types/createNotification.dto';
 import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto';
+import NotificationRecipientDto from '@libs/notification/types/notificationRecipient.dto';
 import USER_NOTIFICATION_STATUS from '@libs/notification/constants/userNotificationStatus';
 import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
 import { NOTIFICATION_FILTER_TYPE, NotificationFilterType } from '@libs/notification/types/notificationFilterType';
@@ -231,12 +232,38 @@ class NotificationsService {
         data?: Record<string, unknown>;
         createdAt: Date;
         createdBy: string;
+        sentStats: { recipientCount: number; readCount: number };
       }>;
       total: Array<{ count: number }>;
     }>([
       { $match: { createdBy: username } },
       { $sort: { createdAt: -1 } },
       { $addFields: { id: { $toString: '$_id' } } },
+      {
+        $lookup: {
+          from: this.userNotificationModel.collection.name,
+          localField: '_id',
+          foreignField: 'notificationId',
+          as: 'recipients',
+        },
+      },
+      {
+        $addFields: {
+          sentStats: {
+            recipientCount: { $size: '$recipients' },
+            readCount: {
+              $size: {
+                $filter: {
+                  input: '$recipients',
+                  as: 'recipient',
+                  cond: { $ne: ['$$recipient.readAt', null] },
+                },
+              },
+            },
+          },
+        },
+      },
+      { $project: { recipients: 0 } },
       {
         $facet: {
           data: [{ $skip: offset }, { $limit: limit }],
@@ -261,9 +288,33 @@ class NotificationsService {
       createdAt: item.createdAt,
       createdBy: item.createdBy,
       readAt: null,
+      sentStats: item.sentStats,
     }));
 
     return { notifications, total };
+  }
+
+  async getSentNotificationRecipients(notificationId: string, username: string): Promise<NotificationRecipientDto[]> {
+    const objectId = new Types.ObjectId(notificationId);
+
+    const notification = await this.notificationModel.findOne({
+      _id: objectId,
+      createdBy: username,
+    });
+
+    if (!notification) {
+      return [];
+    }
+
+    const recipients = await this.userNotificationModel
+      .find({ notificationId: objectId }, { username: 1, readAt: 1 })
+      .sort({ username: 1 })
+      .exec();
+
+    return recipients.map((r) => ({
+      username: r.username,
+      readAt: r.readAt,
+    }));
   }
 
   async getUnreadCount(username: string): Promise<number> {
@@ -305,9 +356,9 @@ class NotificationsService {
         return { modifiedCount: 0 };
       }
 
-      const validIds = validNotifications.map((notification) => notification.id as string);
+      const validObjectIds = validNotifications.map((notification) => new Types.ObjectId(String(notification.id)));
       const result = await this.userNotificationModel.updateMany(
-        { notificationId: { $in: validIds }, username, readAt: null },
+        { notificationId: { $in: validObjectIds }, username, readAt: null },
         { $set: { readAt: new Date() } },
       );
 

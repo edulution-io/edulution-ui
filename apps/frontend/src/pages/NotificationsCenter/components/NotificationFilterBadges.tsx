@@ -36,8 +36,9 @@ const FILTERS = [
   { key: NOTIFICATION_FILTER_TYPE.ALL, labelKey: 'notificationscenter.menu.all' },
   { key: NOTIFICATION_FILTER_TYPE.USER, labelKey: 'notificationscenter.menu.messages' },
   { key: NOTIFICATION_FILTER_TYPE.SYSTEM, labelKey: 'notificationscenter.menu.system' },
-  { key: NOTIFICATION_FILTER_TYPE.SENT, labelKey: 'notificationscenter.menu.sent' },
 ] as const;
+
+const SENT_FILTER = { key: NOTIFICATION_FILTER_TYPE.SENT, labelKey: 'notificationscenter.menu.sent' } as const;
 
 const getFilterCount = (
   filter: NotificationFilterType,
@@ -64,9 +65,11 @@ const NotificationFilterBadges = ({
 }: NotificationFilterBadgesProps) => {
   const { t } = useTranslation();
 
+  const filtersToShow = sentCount > 0 ? [...FILTERS, SENT_FILTER] : FILTERS;
+
   return (
     <div className="flex gap-2">
-      {FILTERS.map(({ key, labelKey }) => {
+      {filtersToShow.map(({ key, labelKey }) => {
         const isActive = activeFilter === key;
         const count = getFilterCount(key, notifications, sentCount);
 
