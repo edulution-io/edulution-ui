@@ -55,7 +55,7 @@ const NotificationList = ({ notifications, className }: NotificationListProps) =
   }
 
   return (
-    <div className={cn('flex h-full flex-col gap-3 overflow-y-auto pb-20 scrollbar-thin', className)}>
+    <div className={cn('flex h-full flex-col gap-3 overflow-y-auto px-2 pb-20 pt-4 scrollbar-thin', className)}>
       {notifications.map((notification) => (
         <NotificationItem
           key={notification.id}

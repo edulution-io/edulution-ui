@@ -23,7 +23,7 @@ import { SidebarProps } from '@libs/ui/types/sidebar';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import cn from '@libs/common/utils/className';
 import APPLICATION_NAME from '@libs/common/constants/applicationName';
-import { HomeButton, MobileSidebarItem, NotificationBellButton, UserMenuButton } from './SidebarMenuItems';
+import { HomeButton, MobileSidebarItem, UserMenuButton } from './SidebarMenuItems';
 import useSidebarStore from './useSidebarStore';
 
 const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
@@ -45,7 +45,7 @@ const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
 
   useOnClickOutside(sidebarRef, handleClickOutside);
 
-  const sidebarHeightWithoutSpecialButtons = 'h-[calc(100%-172px)]';
+  const sidebarHeightWithoutSpecialButtons = 'h-[calc(100%-116px)]';
 
   return (
     <>
@@ -83,7 +83,6 @@ const MobileSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
             ))}
           </div>
 
-          <NotificationBellButton />
           <UserMenuButton />
         </div>
       </div>

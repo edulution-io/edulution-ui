@@ -44,8 +44,7 @@ interface NotificationStore {
 
   fetchNotifications: (loadMore?: boolean) => Promise<void>;
   fetchUnreadCount: () => Promise<void>;
-  markAsRead: (notificationId: string) => Promise<void>;
-  markAllAsRead: () => Promise<void>;
+  markAsRead: (notificationIds?: string[]) => Promise<void>;
   deleteNotification: (notificationId: string) => Promise<void>;
   deleteAllByType: (type: NotificationFilterType) => Promise<void>;
   setIsDeleteDialogOpen: (isOpen: boolean) => void;
@@ -106,32 +105,33 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
     }
   },
 
-  markAsRead: async (notificationId: string) => {
+  markAsRead: async (notificationIds?: string[]) => {
     try {
-      await eduApi.patch(`${NOTIFICATIONS_EDU_API_ENDPOINT}/${notificationId}/read`);
-      const { notifications, unreadCount } = get();
-      set({
-        notifications: notifications.map((notification) =>
-          notification.notificationId === notificationId ? { ...notification, readAt: new Date() } : notification,
-        ),
-        unreadCount: Math.max(0, unreadCount - 1),
+      await eduApi.patch(`${NOTIFICATIONS_EDU_API_ENDPOINT}/read`, {
+        ids: notificationIds,
       });
-    } catch (error) {
-      handleApiError(error, set);
-    }
-  },
 
-  markAllAsRead: async () => {
-    try {
-      await eduApi.patch(`${NOTIFICATIONS_EDU_API_ENDPOINT}/read-all`);
-      const { notifications } = get();
-      set({
-        notifications: notifications.map((notification) => ({
-          ...notification,
-          readAt: notification.readAt ?? new Date(),
-        })),
-        unreadCount: 0,
-      });
+      const { notifications, unreadCount } = get();
+
+      if (notificationIds?.length) {
+        const idsSet = new Set(notificationIds);
+        const markedCount = notifications.filter((n) => idsSet.has(n.id) && !n.readAt).length;
+
+        set({
+          notifications: notifications.map((notification) =>
+            idsSet.has(notification.id) ? { ...notification, readAt: new Date() } : notification,
+          ),
+          unreadCount: Math.max(0, unreadCount - markedCount),
+        });
+      } else {
+        set({
+          notifications: notifications.map((notification) => ({
+            ...notification,
+            readAt: notification.readAt ?? new Date(),
+          })),
+          unreadCount: 0,
+        });
+      }
     } catch (error) {
       handleApiError(error, set);
     }
@@ -141,9 +141,9 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
     try {
       await eduApi.delete(`${NOTIFICATIONS_EDU_API_ENDPOINT}/${notificationId}`);
       const { notifications, total, unreadCount } = get();
-      const notificationToDelete = notifications.find((n) => n.notificationId === notificationId);
+      const notificationToDelete = notifications.find((n) => n.id === notificationId);
       set({
-        notifications: notifications.filter((notification) => notification.notificationId !== notificationId),
+        notifications: notifications.filter((notification) => notification.id !== notificationId),
         total: Math.max(0, total - 1),
         unreadCount: notificationToDelete && !notificationToDelete.readAt ? Math.max(0, unreadCount - 1) : unreadCount,
       });

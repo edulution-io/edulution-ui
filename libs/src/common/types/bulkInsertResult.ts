@@ -17,12 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PUSH_NOTIFICATION_PRIORITY = {
-  DEFAULT: 'default',
-  NORMAL: 'normal',
-  HIGH: 'high',
-} as const;
+interface BulkInsertResult {
+  inserted: number;
+  failed: number;
+  errors: string[];
+}
 
-export type PushNotificationPriority = (typeof PUSH_NOTIFICATION_PRIORITY)[keyof typeof PUSH_NOTIFICATION_PRIORITY];
-
-export default PUSH_NOTIFICATION_PRIORITY;
+export default BulkInsertResult;

@@ -36,6 +36,7 @@ import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationS
 import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
 import NOTIFICATION_CREATOR_SYSTEM from '@libs/notification/constants/notificationCreatorSystem';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import NOTIFICATION_TEMPLATES from '@libs/notification/constants/notificationTemplates';
 import CustomHttpException from '../common/CustomHttpException';
 import { Bulletin, BulletinDocument } from './bulletin.schema';
 import { BulletinCategory, BulletinCategoryDocument } from '../bulletin-category/bulletin-category.schema';
@@ -369,9 +370,9 @@ class BulletinBoardService implements OnModuleInit {
     if (isWithinVisibilityPeriod) {
       this.sseService.sendEventToUsers(invitedMembersList, resultingBulletin, SSE_MESSAGE_TYPE.BULLETIN_UPDATED);
 
-      const title = `Aushang bereit: ${dto.title}`;
-      const pushNotification = `Neuer Aushang in ${dto.category.name}`;
-
+      // TODO: #1152
+      const title = NOTIFICATION_TEMPLATES.BULLETIN.CREATED.title(dto.title);
+      const pushNotification = NOTIFICATION_TEMPLATES.BULLETIN.CREATED.body(dto.category.name);
       const bulletinId = String(resultingBulletin.id);
 
       await this.notificationService.notifyUsernames(

@@ -79,12 +79,12 @@ const NotificationItem = ({ notification }: NotificationItemProps) => {
 
   const handleMarkAsRead = (event: React.MouseEvent) => {
     event.stopPropagation();
-    void markAsRead(notification.notificationId);
+    void markAsRead([notification.id]);
   };
 
   const handleDelete = (event: React.MouseEvent) => {
     event.stopPropagation();
-    void deleteNotification(notification.notificationId);
+    void deleteNotification(notification.id);
   };
 
   return (
