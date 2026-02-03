@@ -17,21 +17,23 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
+import { PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import SurveyTable from '@/pages/Surveys/Tables/components/SurveyTable';
 import SurveyTableColumns from '@/pages/Surveys/Tables/components/SurveyTableColumns';
 import SurveysTablesFloatingButtons from '@/pages/Surveys/Tables/components/SurveysTablesFloatingButtons';
-import ResultTableDialog from '@/pages/Surveys/Tables/dialogs/ResultTableDialog';
-import ResultVisualizationDialog from '@/pages/Surveys/Tables/dialogs/ResultVisualizationDialog';
-import SubmittedAnswersDialog from '@/pages/Surveys/Tables/dialogs/SubmittedAnswersDialog';
 import { TooltipProvider } from '@/components/ui/Tooltip';
 import DeleteSurveysDialog from '@/pages/Surveys/Tables/dialogs/DeleteSurveysDialog';
 import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
-import { PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import PageLayout from '@/components/structure/layout/PageLayout';
-import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
+
+const ResultTableDialog = lazy(() => import('./dialogs/ResultTableDialog'));
+const ResultVisualizationDialog = lazy(() => import('./dialogs/ResultVisualizationDialog'));
+const SubmittedAnswersDialog = lazy(() => import('./dialogs/SubmittedAnswersDialog'));
 
 interface SurveysTablePageProps {
   title: string;
@@ -92,9 +94,15 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
       <TooltipProvider>
         <div className="absolute bottom-8 flex flex-row items-center space-x-8 bg-opacity-90">
           <DeleteSurveysDialog surveys={surveys || []} />
-          <ResultTableDialog />
-          <ResultVisualizationDialog />
-          <SubmittedAnswersDialog />
+          <Suspense fallback={<CircleLoader />}>
+            <ResultTableDialog />
+          </Suspense>
+          <Suspense fallback={<CircleLoader />}>
+            <ResultVisualizationDialog />
+          </Suspense>
+          <Suspense fallback={<CircleLoader />}>
+            <SubmittedAnswersDialog />
+          </Suspense>
           <SharePublicQRDialog
             url={sharePublicSurveyUrl}
             isOpen={isOpenSharePublicSurveyDialog && !!sharePublicSurveyUrl}
