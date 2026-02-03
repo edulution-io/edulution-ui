@@ -45,6 +45,7 @@ interface NotificationStore {
   fetchNotifications: (loadMore?: boolean) => Promise<void>;
   fetchUnreadCount: () => Promise<void>;
   markAsRead: (notificationIds?: string[]) => Promise<void>;
+  markAllAsRead: () => Promise<void>;
   deleteNotification: (notificationId: string) => Promise<void>;
   deleteAllByType: (type: NotificationFilterType) => Promise<void>;
   setIsDeleteDialogOpen: (isOpen: boolean) => void;
@@ -115,7 +116,9 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
 
       if (notificationIds?.length) {
         const idsSet = new Set(notificationIds);
-        const markedCount = notifications.filter((n) => idsSet.has(n.id) && !n.readAt).length;
+        const markedCount = notifications.filter(
+          (notification) => idsSet.has(notification.id) && !notification.readAt,
+        ).length;
 
         set({
           notifications: notifications.map((notification) =>
@@ -137,11 +140,15 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
     }
   },
 
+  markAllAsRead: async () => {
+    await get().markAsRead();
+  },
+
   deleteNotification: async (notificationId: string) => {
     try {
       await eduApi.delete(`${NOTIFICATIONS_EDU_API_ENDPOINT}/${notificationId}`);
       const { notifications, total, unreadCount } = get();
-      const notificationToDelete = notifications.find((n) => n.id === notificationId);
+      const notificationToDelete = notifications.find((notification) => notification.id === notificationId);
       set({
         notifications: notifications.filter((notification) => notification.id !== notificationId),
         total: Math.max(0, total - 1),
@@ -168,11 +175,11 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
         newUnreadCount = 0;
       } else {
         const typeToFilter = type === NOTIFICATION_FILTER_TYPE.USER ? NOTIFICATION_TYPE.USER : NOTIFICATION_TYPE.SYSTEM;
-        const deletedNotifications = notifications.filter((n) => n.type === typeToFilter);
-        newNotifications = notifications.filter((n) => n.type !== typeToFilter);
+        const deletedNotifications = notifications.filter((notification) => notification.type === typeToFilter);
+        newNotifications = notifications.filter((notification) => notification.type !== typeToFilter);
 
         if (type === NOTIFICATION_FILTER_TYPE.USER) {
-          const deletedUnread = deletedNotifications.filter((n) => !n.readAt).length;
+          const deletedUnread = deletedNotifications.filter((notification) => !notification.readAt).length;
           newUnreadCount = Math.max(0, unreadCount - deletedUnread);
         }
       }

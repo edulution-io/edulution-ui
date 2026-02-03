@@ -95,10 +95,10 @@ class NotificationsService {
   async createUserNotifications(notificationId: string, usernames: string[]): Promise<BulkInsertResult> {
     const objectId = new Types.ObjectId(notificationId);
 
-    const batches: string[][] = [];
-    for (let i = 0; i < usernames.length; i += BULK_INSERT_BATCH_SIZE) {
-      batches.push(usernames.slice(i, i + BULK_INSERT_BATCH_SIZE));
-    }
+    const batchCount = Math.ceil(usernames.length / BULK_INSERT_BATCH_SIZE);
+    const batches = Array.from({ length: batchCount }, (_, i) =>
+      usernames.slice(i * BULK_INSERT_BATCH_SIZE, (i + 1) * BULK_INSERT_BATCH_SIZE),
+    );
 
     const result = await batches.reduce(
       async (accPromise, batch, index) => {
