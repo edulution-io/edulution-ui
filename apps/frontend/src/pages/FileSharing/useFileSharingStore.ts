@@ -136,6 +136,9 @@ const useFileSharingStore = create<UseFileSharingStore>(
           selectedItems: [],
           selectedRows: {},
           isLoading: true,
+          pathToRestoreSession: '/',
+          fileOperationProgress: null,
+          currentPath: '/',
         });
       },
 

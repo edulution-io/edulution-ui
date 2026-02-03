@@ -70,6 +70,10 @@ const useFileSharingPage = () => {
   }, [path, pathToRestoreSession, homePath, setPathToRestoreSession, fetchFiles, webdavShare]);
 
   useEffect(() => {
+    if (previousWebdavShare.current !== webdavShare) {
+      return;
+    }
+
     const updateFilesAfterSuccess = async () => {
       if (fileOperationResult && !isLoading) {
         if (fileOperationResult.success) {
@@ -83,7 +87,7 @@ const useFileSharingPage = () => {
     };
 
     void updateFilesAfterSuccess();
-  }, [fileOperationResult, isLoading, fetchFiles, currentPath]);
+  }, [fileOperationResult, isLoading, fetchFiles, currentPath, webdavShare]);
 
   return { isFileProcessing, isLoading, currentPath, searchParams, setSearchParams };
 };
