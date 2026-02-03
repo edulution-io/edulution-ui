@@ -34,6 +34,8 @@ import { mockAppConfig, mockAppConfigModel, mockLdapGroup } from './appconfig.mo
 import FilesystemService from '../filesystem/filesystem.service';
 import mockFilesystemService from '../filesystem/filesystem.service.mock';
 import GlobalSettingsService from '../global-settings/global-settings.service';
+import SseService from '../sse/sse.service';
+import GroupsService from '../groups/groups.service';
 
 jest.mock('fs');
 
@@ -57,6 +59,14 @@ const globalSettingsServiceMock = {
   getAdminGroupsFromCache: jest.fn(),
 };
 
+const sseServiceMock = {
+  sendEventToUsers: jest.fn(),
+};
+
+const groupsServiceMock = {
+  getInvitedMembers: jest.fn().mockResolvedValue([]),
+};
+
 describe('AppConfigService', () => {
   let service: AppConfigService;
 
@@ -75,6 +85,8 @@ describe('AppConfigService', () => {
         { provide: EventEmitter2, useValue: { emit: jest.fn() } },
         { provide: FilesystemService, useValue: mockFilesystemService },
         { provide: GlobalSettingsService, useValue: globalSettingsServiceMock },
+        { provide: SseService, useValue: sseServiceMock },
+        { provide: GroupsService, useValue: groupsServiceMock },
       ],
     }).compile();
 
