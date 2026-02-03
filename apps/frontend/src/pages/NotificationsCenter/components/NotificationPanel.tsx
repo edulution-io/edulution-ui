@@ -46,6 +46,9 @@ const NotificationPanel = () => {
     isSheetOpen,
     setIsSheetOpen,
     setIsDeleteDialogOpen,
+    sentNotifications,
+    sentTotal,
+    fetchSentNotifications,
   } = useNotificationStore();
 
   const { isMobileView, isTabletView } = useMedia();
@@ -59,8 +62,9 @@ const NotificationPanel = () => {
     if (isSheetOpen) {
       void fetchNotifications();
       void fetchUnreadCount();
+      void fetchSentNotifications();
     }
-  }, [isSheetOpen, fetchNotifications, fetchUnreadCount]);
+  }, [isSheetOpen, fetchNotifications, fetchUnreadCount, fetchSentNotifications]);
 
   const filteredNotifications = useMemo(() => {
     switch (activeFilter) {
@@ -68,14 +72,19 @@ const NotificationPanel = () => {
         return notifications.filter((n) => n.type === NOTIFICATION_TYPE.USER);
       case NOTIFICATION_FILTER_TYPE.SYSTEM:
         return notifications.filter((n) => n.type === NOTIFICATION_TYPE.SYSTEM);
+      case NOTIFICATION_FILTER_TYPE.SENT:
+        return sentNotifications;
       default:
         return notifications;
     }
-  }, [notifications, activeFilter]);
+  }, [notifications, sentNotifications, activeFilter]);
+
+  const isSentView = activeFilter === NOTIFICATION_FILTER_TYPE.SENT;
 
   const handleRefresh = () => {
     void fetchNotifications();
     void fetchUnreadCount();
+    void fetchSentNotifications();
   };
 
   const handleMarkAllAsRead = () => {
@@ -114,7 +123,7 @@ const NotificationPanel = () => {
               className="h-4 w-4"
             />
           </Button>
-          {unreadCount > 0 && (
+          {unreadCount > 0 && !isSentView && (
             <Button
               onClick={handleMarkAllAsRead}
               className="rounded-full p-2 text-background transition-colors hover:hover:bg-muted-background hover:text-background"
@@ -144,6 +153,7 @@ const NotificationPanel = () => {
           activeFilter={activeFilter}
           onFilterChange={setActiveFilter}
           notifications={notifications}
+          sentCount={sentTotal}
         />
 
         <div className="min-h-0 flex-1">
@@ -152,6 +162,8 @@ const NotificationPanel = () => {
             <NotificationList
               notifications={filteredNotifications}
               className="pb-4"
+              isSentView={isSentView}
+              emptyMessage={isSentView ? t('notificationscenter.noSentNotifications') : undefined}
             />
           )}
         </div>

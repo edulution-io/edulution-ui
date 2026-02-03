@@ -34,6 +34,9 @@ interface NotificationStore {
   total: number;
   unreadCount: number;
   hasMore: boolean;
+  sentNotifications: InboxNotificationDto[];
+  sentTotal: number;
+  sentHasMore: boolean;
   isLoading: boolean;
   isLoadingMore: boolean;
   isUnreadCountLoading: boolean;
@@ -43,10 +46,12 @@ interface NotificationStore {
   error: string | null;
 
   fetchNotifications: (loadMore?: boolean) => Promise<void>;
+  fetchSentNotifications: (loadMore?: boolean) => Promise<void>;
   fetchUnreadCount: () => Promise<void>;
   markAsRead: (notificationIds?: string[]) => Promise<void>;
   markAllAsRead: () => Promise<void>;
   deleteNotification: (notificationId: string) => Promise<void>;
+  deleteSentNotification: (notificationId: string) => Promise<void>;
   deleteAllByType: (type: NotificationFilterType) => Promise<void>;
   setIsDeleteDialogOpen: (isOpen: boolean) => void;
   setIsSheetOpen: (isOpen: boolean) => void;
@@ -58,6 +63,9 @@ const initialState = {
   total: 0,
   unreadCount: 0,
   hasMore: false,
+  sentNotifications: [] as InboxNotificationDto[],
+  sentTotal: 0,
+  sentHasMore: false,
   isLoading: false,
   isLoadingMore: false,
   isUnreadCountLoading: false,
@@ -86,6 +94,30 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
         notifications: newNotifications,
         total: data.total,
         hasMore: newNotifications.length < data.total,
+      });
+    } catch (error) {
+      handleApiError(error, set);
+    } finally {
+      set({ isLoading: false, isLoadingMore: false });
+    }
+  },
+
+  fetchSentNotifications: async (loadMore = false) => {
+    const { sentNotifications: existing } = get();
+    const offset = loadMore ? existing.length : 0;
+
+    set({ isLoading: !loadMore, isLoadingMore: loadMore, error: null });
+    try {
+      const { data } = await eduApi.get<InboxResponseDto>(`${NOTIFICATIONS_EDU_API_ENDPOINT}/sent`, {
+        params: { limit: notificationPaginationConfig.PAGE_SIZE, offset },
+      });
+
+      const newNotifications = loadMore ? [...existing, ...data.notifications] : data.notifications;
+
+      set({
+        sentNotifications: newNotifications,
+        sentTotal: data.total,
+        sentHasMore: newNotifications.length < data.total,
       });
     } catch (error) {
       handleApiError(error, set);
@@ -159,6 +191,19 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
     }
   },
 
+  deleteSentNotification: async (notificationId: string) => {
+    try {
+      await eduApi.delete(`${NOTIFICATIONS_EDU_API_ENDPOINT}/sent/${notificationId}`);
+      const { sentNotifications, sentTotal } = get();
+      set({
+        sentNotifications: sentNotifications.filter((notification) => notification.id !== notificationId),
+        sentTotal: Math.max(0, sentTotal - 1),
+      });
+    } catch (error) {
+      handleApiError(error, set);
+    }
+  },
+
   deleteAllByType: async (type: NotificationFilterType) => {
     set({ isDeleting: true, error: null });
     try {
@@ -173,6 +218,14 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
       if (type === NOTIFICATION_FILTER_TYPE.ALL) {
         newNotifications = [];
         newUnreadCount = 0;
+      } else if (type === NOTIFICATION_FILTER_TYPE.SENT) {
+        set({
+          sentNotifications: [],
+          sentTotal: 0,
+          isDeleteDialogOpen: false,
+        });
+        toast.success(i18n.t('notificationscenter.deletedNotifications', { count: data.deletedCount }));
+        return;
       } else {
         const typeToFilter = type === NOTIFICATION_FILTER_TYPE.USER ? NOTIFICATION_TYPE.USER : NOTIFICATION_TYPE.SYSTEM;
         const deletedNotifications = notifications.filter((notification) => notification.type === typeToFilter);

@@ -118,8 +118,13 @@
     "menu": {
       "all": "Tout",
       "messages": "Messages",
-      "system": "Système"
-    }
+      "system": "Système",
+      "sent": "Envoyés"
+    },
+    "sentSection": "Messages envoyés",
+    "noSentNotifications": "Tu n'as envoyé aucun message",
+    "deleteAllSent": "Supprimer tous les envoyés",
+    "confirmDeleteSent": "Es-tu sûr de vouloir supprimer les {{count}} messages envoyés ? Ils seront également supprimés chez tous les destinataires."
   },
   "appstore": {
     "title": "App Store",

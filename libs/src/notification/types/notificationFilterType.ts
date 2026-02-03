@@ -21,6 +21,7 @@ const NOTIFICATION_FILTER_TYPE = {
   ALL: 'all',
   USER: 'user',
   SYSTEM: 'system',
+  SENT: 'sent',
 } as const;
 
 type NotificationFilterType = (typeof NOTIFICATION_FILTER_TYPE)[keyof typeof NOTIFICATION_FILTER_TYPE];

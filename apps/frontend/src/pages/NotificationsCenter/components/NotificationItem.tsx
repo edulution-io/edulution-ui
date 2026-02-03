@@ -43,6 +43,7 @@ import useNotificationStore from '@/store/useNotificationStore';
 
 interface NotificationItemProps {
   notification: InboxNotificationDto;
+  isSentView?: boolean;
 }
 
 const getSourceTypeIcon = (sourceType?: NotificationSourceType): IconDefinition => {
@@ -60,9 +61,9 @@ const getSourceTypeIcon = (sourceType?: NotificationSourceType): IconDefinition 
   }
 };
 
-const NotificationItem = ({ notification }: NotificationItemProps) => {
+const NotificationItem = ({ notification, isSentView = false }: NotificationItemProps) => {
   const { t } = useTranslation();
-  const { markAsRead, deleteNotification } = useNotificationStore();
+  const { markAsRead, deleteNotification, deleteSentNotification } = useNotificationStore();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const isUserNotification = notification.type === NOTIFICATION_TYPE.USER;
@@ -84,7 +85,11 @@ const NotificationItem = ({ notification }: NotificationItemProps) => {
 
   const handleDelete = (event: React.MouseEvent) => {
     event.stopPropagation();
-    void deleteNotification(notification.id);
+    if (isSentView) {
+      void deleteSentNotification(notification.id);
+    } else {
+      void deleteNotification(notification.id);
+    }
   };
 
   return (
@@ -136,7 +141,7 @@ const NotificationItem = ({ notification }: NotificationItemProps) => {
         </div>
 
         <div className="flex flex-shrink-0 items-center gap-1">
-          {isUserNotification && isUnread && (
+          {isUserNotification && isUnread && !isSentView && (
             <Button
               type="button"
               className="hover:bg-primary/10 rounded-full p-2 text-muted-foreground hover:text-primary"

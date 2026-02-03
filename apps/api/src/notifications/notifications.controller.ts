@@ -51,10 +51,30 @@ class NotificationsController {
     return { count };
   }
 
+  @Get('sent')
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 20 })
+  @ApiQuery({ name: 'offset', required: false, type: Number, example: 0 })
+  async getSent(
+    @GetCurrentUsername() username: string,
+    @Query('limit') limitParam = '20',
+    @Query('offset') offsetParam = '0',
+  ) {
+    const parsedLimit = parseInt(limitParam, 10);
+    const limit = Math.min(50, Math.max(1, Number.isNaN(parsedLimit) ? 20 : parsedLimit));
+    const parsedOffset = parseInt(offsetParam, 10);
+    const offset = Math.max(0, Number.isNaN(parsedOffset) ? 0 : parsedOffset);
+    return this.notificationsService.getSentNotifications(username, limit, offset);
+  }
+
   @Patch('read')
   @ApiBody({ schema: { properties: { ids: { type: 'array', items: { type: 'string' } } } }, required: false })
   async markAsRead(@GetCurrentUsername() username: string, @Body() body?: { notificationIds?: string[] }) {
     return this.notificationsService.markAsRead(username, body?.notificationIds);
+  }
+
+  @Delete('sent/:id')
+  async deleteSentNotification(@Param('id') notificationId: string, @GetCurrentUsername() username: string) {
+    await this.notificationsService.deleteSentNotification(notificationId, username);
   }
 
   @Delete(':id')

@@ -377,13 +377,27 @@ class BulletinBoardService implements OnModuleInit {
 
     invitedMembersList = invitedMembersList.filter((username) => username !== currentUser.preferred_username);
 
-    await this.notificationService.notifyUsernames(invitedMembersList, {
-      title: dto.customPushTitle || '',
-      body: dto.customPushBody || '',
-      data: {
-        type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
+    const title = dto.customPushTitle || '';
+    const pushNotification = dto.customPushBody || '';
+
+    await this.notificationService.notifyUsernames(
+      invitedMembersList,
+      {
+        title,
+        body: pushNotification,
+        data: {
+          type: SSE_MESSAGE_TYPE.BULLETIN_UPDATED,
+        },
       },
-    });
+      currentUser.preferred_username,
+      {
+        type: NOTIFICATION_TYPE.USER,
+        sourceType: NOTIFICATION_SOURCE_TYPE.BULLETIN,
+        title,
+        pushNotification,
+        createdBy: currentUser.preferred_username,
+      },
+    );
   }
 
   async notifyUsers(dto: CreateBulletinDto, resultingBulletin: BulletinDocument, currentUser?: JwtUser) {

@@ -142,8 +142,13 @@
     "menu": {
       "all": "Alle",
       "messages": "Nachrichten",
-      "system": "System"
-    }
+      "system": "System",
+      "sent": "Gesendet"
+    },
+    "sentSection": "Gesendete Nachrichten",
+    "noSentNotifications": "Du hast keine Nachrichten gesendet",
+    "deleteAllSent": "Alle gesendeten löschen",
+    "confirmDeleteSent": "Möchtest du wirklich alle {{count}} gesendeten Nachrichten löschen? Diese werden auch bei den Empfängern gelöscht."
   },
   "appstore": {
     "title": "App-Store",

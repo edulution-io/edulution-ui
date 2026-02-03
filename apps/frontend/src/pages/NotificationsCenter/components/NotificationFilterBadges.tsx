@@ -29,33 +29,46 @@ interface NotificationFilterBadgesProps {
   activeFilter: NotificationFilterType;
   onFilterChange: (filter: NotificationFilterType) => void;
   notifications: InboxNotificationDto[];
+  sentCount: number;
 }
 
 const FILTERS = [
   { key: NOTIFICATION_FILTER_TYPE.ALL, labelKey: 'notificationscenter.menu.all' },
   { key: NOTIFICATION_FILTER_TYPE.USER, labelKey: 'notificationscenter.menu.messages' },
   { key: NOTIFICATION_FILTER_TYPE.SYSTEM, labelKey: 'notificationscenter.menu.system' },
+  { key: NOTIFICATION_FILTER_TYPE.SENT, labelKey: 'notificationscenter.menu.sent' },
 ] as const;
 
-const getFilterCount = (filter: NotificationFilterType, notifications: InboxNotificationDto[]): number => {
+const getFilterCount = (
+  filter: NotificationFilterType,
+  notifications: InboxNotificationDto[],
+  sentCount: number,
+): number => {
   switch (filter) {
     case NOTIFICATION_FILTER_TYPE.USER:
       return notifications.filter((n) => n.type === NOTIFICATION_TYPE.USER).length;
     case NOTIFICATION_FILTER_TYPE.SYSTEM:
       return notifications.filter((n) => n.type === NOTIFICATION_TYPE.SYSTEM).length;
+    case NOTIFICATION_FILTER_TYPE.SENT:
+      return sentCount;
     default:
       return notifications.length;
   }
 };
 
-const NotificationFilterBadges = ({ activeFilter, onFilterChange, notifications }: NotificationFilterBadgesProps) => {
+const NotificationFilterBadges = ({
+  activeFilter,
+  onFilterChange,
+  notifications,
+  sentCount,
+}: NotificationFilterBadgesProps) => {
   const { t } = useTranslation();
 
   return (
     <div className="flex gap-2">
       {FILTERS.map(({ key, labelKey }) => {
         const isActive = activeFilter === key;
-        const count = getFilterCount(key, notifications);
+        const count = getFilterCount(key, notifications, sentCount);
 
         return (
           <Button
