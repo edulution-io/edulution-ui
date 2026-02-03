@@ -17,17 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ChatRole from '@libs/chat/constants/chatRole';
+import APPS from '@libs/appconfig/constants/apps';
 
-interface ChatMessage {
-  id: string;
-  role: ChatRole;
-  content: string;
-  createdAt: Date;
-  createdBy?: string;
-  createdByUserFirstName?: string;
-  createdByUserLastName?: string;
-  metadata?: Record<string, unknown>;
-}
+const CHAT_API_BASE = APPS.CHAT;
 
-export default ChatMessage;
+const getChatMessagesEndpoint = (groupType: string, groupName: string): string =>
+  `${CHAT_API_BASE}/group/${groupType}/${groupName}/messages`;
+
+export { CHAT_API_BASE, getChatMessagesEndpoint };
