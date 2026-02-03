@@ -32,18 +32,19 @@ const ShareFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, on
   const { webdavShares } = useFileSharingStore();
   const { createVariableSharePathname } = useVariableSharePathname();
 
-  const rootShares = webdavShares.filter((share) => share.isRootServer);
+  const nonRootShares = webdavShares.filter((share) => !share.isRootServer);
   const pathToFetch =
-    rootShares.length > 0 ? createVariableSharePathname(rootShares[0].pathname, rootShares[0].pathVariables) : '/';
+    nonRootShares.length > 0
+      ? createVariableSharePathname(nonRootShares[0].pathname, nonRootShares[0].pathVariables)
+      : '/';
 
   const getDialogBody = () =>
-    rootShares.length === 0 ? (
-      <p>{t('webdavShare.isRootServer.notConfigured')}</p>
+    nonRootShares.length === 0 ? (
+      <p>{t('webdavShare.noSharesConfigured')}</p>
     ) : (
       <MoveContentDialogBody
         showAllFiles
         pathToFetch={pathToFetch}
-        showRootOnly
       />
     );
 

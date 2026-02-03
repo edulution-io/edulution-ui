@@ -30,8 +30,6 @@ interface MoveContentDialogBodyProps {
   isCurrentPathDefaultDestination?: boolean;
   enableRowSelection?: (row: Row<DirectoryFileDTO>) => boolean;
   getRowDisabled?: (row: Row<DirectoryFileDTO>) => boolean;
-  showRootOnly?: boolean;
-  filterBySameRootServer?: boolean;
 }
 
 export default MoveContentDialogBodyProps;
