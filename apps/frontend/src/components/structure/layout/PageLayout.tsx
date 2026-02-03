@@ -28,6 +28,7 @@ import { getFromPathName } from '@libs/common/utils';
 import useFloatingBarHeight from '@/hooks/useFloatingBarHeight';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import cn from '@libs/common/utils/className';
+import FooterColors from '@libs/ui/types/footerColors';
 
 interface PageLayoutProps {
   nativeAppHeader?: NativeAppHeaderProps;
@@ -35,6 +36,7 @@ interface PageLayoutProps {
   isFullScreenAppWithoutFloatingButtons?: boolean;
   hasFullWidthMain?: boolean;
   isAppIconEditable?: boolean;
+  footerColors?: FooterColors;
 }
 
 const PageLayout = ({
@@ -43,6 +45,7 @@ const PageLayout = ({
   isFullScreenAppWithoutFloatingButtons,
   hasFullWidthMain,
   isAppIconEditable,
+  footerColors,
 }: PageLayoutProps) => {
   const { pathname } = useLocation();
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
@@ -86,7 +89,7 @@ const PageLayout = ({
         )}
       />
 
-      {!isEdulutionApp && <Footer />}
+      {!isEdulutionApp && <Footer colors={footerColors} />}
     </div>
   );
 };

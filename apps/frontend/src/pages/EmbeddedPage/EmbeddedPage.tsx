@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getFromPathName } from '@libs/common/utils';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
@@ -30,6 +30,8 @@ import EDU_API_CONFIG_ENDPOINTS from '@libs/appconfig/constants/appconfig-endpoi
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import useUserAccounts from '@/hooks/useUserAccounts';
+import detectIframeColor from '@libs/ui/utils/detectIframeColor';
+import FooterColors from '@libs/ui/types/footerColors';
 import useFileTableStore from '../Settings/AppConfig/components/useFileTableStore';
 import EmbeddedPageContent from './EmbeddedPageContent';
 
@@ -37,8 +39,8 @@ const EmbeddedPage: React.FC = () => {
   const { pathname } = useLocation();
   const { language } = useLanguage();
   const { tableContentData, fetchTableContent } = useFileTableStore();
-
   const { appConfigs } = useAppConfigsStore();
+  const [footerColors, setFooterColors] = useState<FooterColors>(null);
 
   const rootPathName = getFromPathName(pathname, 1);
 
@@ -47,6 +49,13 @@ const EmbeddedPage: React.FC = () => {
   useEffect(() => {
     void fetchTableContent(rootPathName as TApps);
   }, [rootPathName]);
+
+  const handleIframeLoad = (iframe: HTMLIFrameElement) => {
+    setTimeout(() => {
+      const colors = detectIframeColor(iframe);
+      setFooterColors(colors);
+    }, 500);
+  };
 
   const currentAppConfig = findAppConfigByName(appConfigs, rootPathName);
 
@@ -60,7 +69,10 @@ const EmbeddedPage: React.FC = () => {
     currentAppConfig.extendedOptions?.[ExtendedOptionKeys.FRAME_URL_SYNC_PRELOAD_BASE_PAGE] === true;
 
   return (
-    <PageLayout hasFullWidthMain>
+    <PageLayout
+      hasFullWidthMain
+      footerColors={footerColors}
+    >
       <EmbeddedPageContent
         appName={rootPathName}
         pageTitle={pageTitle}
@@ -69,6 +81,7 @@ const EmbeddedPage: React.FC = () => {
         htmlContent={htmlContent}
         urlSyncEnabled={urlSyncEnabled}
         preloadBasePage={preloadBasePage}
+        onIframeLoad={handleIframeLoad}
       />
     </PageLayout>
   );

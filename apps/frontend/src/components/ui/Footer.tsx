@@ -25,8 +25,15 @@ import getDisplayName from '@/utils/getDisplayName';
 import useLanguage from '@/hooks/useLanguage';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useMedia from '@/hooks/useMedia';
+import cn from '@libs/common/utils/className';
+import FooterColors from '@libs/ui/types/footerColors';
+import TEXT_COLOR_VARIANT from '@libs/ui/constants/textColorVariant';
 
-const Footer = () => {
+type FooterProps = {
+  colors?: FooterColors;
+};
+
+const Footer: React.FC<FooterProps> = ({ colors }) => {
   const { language } = useLanguage();
   const isAuthenticated = useUserStore((s) => s.isAuthenticated);
   const { isMobileView, isTabletView } = useMedia();
@@ -35,8 +42,14 @@ const Footer = () => {
 
   const isVersionInfoVisible = (!isMobileView && !isTabletView && isAuthenticated) || !isAuthenticated;
 
+  const textColorClass = colors?.textColor === TEXT_COLOR_VARIANT.LIGHT ? 'text-white' : 'text-ciDarkGrey';
+  const defaultClasses = 'bg-background-centered-shadow text-muted';
+
   return (
-    <footer className="bg-background-centered-shadow min-h-5 w-full px-2 pb-1 text-sm text-muted">
+    <footer
+      className={cn(colors ? textColorClass : defaultClasses, 'min-h-5 w-full px-2 pb-1 text-sm')}
+      style={colors ? { backgroundColor: colors.backgroundColor } : undefined}
+    >
       <div className="flex flex-col md:flex-row md:items-center md:justify-center md:gap-4">
         {isVersionInfoVisible && (
           <span className="text-center md:text-left">

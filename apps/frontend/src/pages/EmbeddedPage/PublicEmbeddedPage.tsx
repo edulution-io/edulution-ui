@@ -33,6 +33,8 @@ import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingBut
 import BackButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/backButton';
 import useUserStore from '@/store/UserStore/useUserStore';
 import PageTitle from '@/components/PageTitle';
+import detectIframeColor from '@libs/ui/utils/detectIframeColor';
+import FooterColors from '@libs/ui/types/footerColors';
 import useFileTableStore from '../Settings/AppConfig/components/useFileTableStore';
 import EmbeddedPageContent from './EmbeddedPageContent';
 
@@ -45,6 +47,14 @@ const PublicEmbeddedPage: React.FC = () => {
   const publicFilesInfo = useFileTableStore((s) => s.publicFilesInfo);
   const isAuthenticated = useUserStore((s) => s.isAuthenticated);
   const [currentAppConfig, setCurrentAppConfig] = useState<AppConfigDto>({} as AppConfigDto);
+  const [footerColors, setFooterColors] = useState<FooterColors>(null);
+
+  const handleIframeLoad = (iframe: HTMLIFrameElement) => {
+    setTimeout(() => {
+      const colors = detectIframeColor(iframe);
+      setFooterColors(colors);
+    }, 500);
+  };
 
   const rootPathName = getFromPathName(pathname, 1);
 
@@ -77,7 +87,10 @@ const PublicEmbeddedPage: React.FC = () => {
   };
 
   return (
-    <PageLayout hasFullWidthMain>
+    <PageLayout
+      hasFullWidthMain
+      footerColors={footerColors}
+    >
       <PageTitle
         title={pageTitle}
         translationId="public"
@@ -90,6 +103,7 @@ const PublicEmbeddedPage: React.FC = () => {
         htmlContent={htmlContent}
         urlSyncEnabled={urlSyncEnabled}
         preloadBasePage={preloadBasePage}
+        onIframeLoad={handleIframeLoad}
       />
       {!isAuthenticated && <FloatingButtonsBar config={config} />}
     </PageLayout>
