@@ -22,10 +22,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import AppConfigController from './appconfig.controller';
 import AppConfigService from './appconfig.service';
 import { AppConfig, AppConfigSchema } from './appconfig.schema';
+import GroupsModule from '../groups/groups.module';
 
 @Global()
 @Module({
-  imports: [MongooseModule.forFeature([{ name: AppConfig.name, schema: AppConfigSchema }])],
+  imports: [MongooseModule.forFeature([{ name: AppConfig.name, schema: AppConfigSchema }]), GroupsModule],
   controllers: [AppConfigController],
   providers: [AppConfigService],
   exports: [AppConfigService],
