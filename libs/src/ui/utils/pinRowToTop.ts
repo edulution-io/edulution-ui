@@ -17,14 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import ResultDialogStore from './resultDialogStore';
+import { Row } from '@tanstack/react-table';
 
-const ResultDialogStoreInitialState: Partial<ResultDialogStore> = {
-  selectedSurvey: undefined,
-  isOpenPublicResultsTableDialog: false,
-  isOpenPublicResultsVisualisationDialog: false,
-  result: undefined,
-  isLoading: false,
+const pinRowToTop = <TData>(rows: Row<TData>[], pinnedRowId: string | undefined): Row<TData>[] => {
+  if (!pinnedRowId) return rows;
+
+  const pinnedIndex = rows.findIndex((row) => row.id === pinnedRowId);
+  if (pinnedIndex <= 0) return rows;
+
+  const pinnedRow = rows[pinnedIndex];
+  return [pinnedRow, ...rows.slice(0, pinnedIndex), ...rows.slice(pinnedIndex + 1)];
 };
 
-export default ResultDialogStoreInitialState;
+export default pinRowToTop;

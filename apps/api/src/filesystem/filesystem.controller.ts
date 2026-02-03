@@ -27,13 +27,14 @@ import {
   Param,
   Post,
   Query,
+  Req,
   Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { type Response } from 'express';
+import { type Request, type Response } from 'express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import APPS from '@libs/appconfig/constants/apps';
@@ -85,8 +86,13 @@ class FileSystemController {
 
   @Get(`${FILE_ENDPOINTS.FILE}/:appName/*filename`)
   @UseGuards(DynamicAppAccessGuard)
-  serveFile(@Param('appName') appName: string, @Param('filename') filename: string | string[], @Res() res: Response) {
-    return this.filesystemService.serveFile(appName, FilesystemService.buildPathString(filename), res);
+  serveFile(
+    @Param('appName') appName: string,
+    @Param('filename') filename: string | string[],
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    return this.filesystemService.serveFile(appName, FilesystemService.buildPathString(filename), req, res);
   }
 
   @Public()
@@ -100,14 +106,16 @@ class FileSystemController {
   servePublicFile(
     @Param('appName') appName: string,
     @Param('filename') filename: string | string[],
+    @Req() req: Request,
     @Res() res: Response,
   ) {
-    return this.filesystemService.serveFile(appName, FilesystemService.buildPathString(filename), res);
+    return this.filesystemService.serveFile(appName, FilesystemService.buildPathString(filename), req, res);
   }
 
   @Public()
   @Get(`public/assets/:appName/*filename`)
   servePublicAssetWithFallback(
+    @Req() req: Request,
     @Res() res: Response,
     @Param('appName') appName: string,
     @Param('filename', new ValidatePathPipe(PUBLIC_ASSET_PATH)) filename: string,
@@ -123,7 +131,7 @@ class FileSystemController {
     }
     const filePath = join(PUBLIC_ASSET_PATH, appName, filename);
     const fallBackPath = fallbackFilename ? join(PUBLIC_ASSET_PATH, appName, fallbackFilename) : undefined;
-    return this.filesystemService.servePublicAssetWithFallback(res, filePath, fallBackPath);
+    return this.filesystemService.servePublicAssetWithFallback(req, res, filePath, fallBackPath);
   }
 
   @UseGuards(AdminGuard)

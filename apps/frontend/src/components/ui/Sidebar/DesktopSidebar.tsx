@@ -24,6 +24,7 @@ import { useWindowSize } from 'usehooks-ts';
 import { useLocation } from 'react-router-dom';
 import SidebarArrowButton from '@/components/ui/Sidebar/SidebarMenuItems/SidebarArrowButton';
 import { SIDEBAR_ARROW_BUTTON_HEIGHT } from '@libs/ui/constants/sidebar';
+import NotificationPanel from '@/pages/NotificationsCenter/components/NotificationPanel';
 import { HomeButton, NotificationBellButton, SidebarItem, UserMenuButton } from './SidebarMenuItems';
 
 const DesktopSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
@@ -224,6 +225,7 @@ const DesktopSidebar: React.FC<SidebarProps> = ({ sidebarItems }) => {
 
         <NotificationBellButton />
         <UserMenuButton />
+        <NotificationPanel />
       </div>
     </div>
   );

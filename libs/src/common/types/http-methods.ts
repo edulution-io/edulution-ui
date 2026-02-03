@@ -67,6 +67,7 @@ export const HTTP_HEADERS = {
   UserAgent: 'User-Agent',
   Depth: 'Depth',
   CacheControl: 'Cache-Control',
+  ETag: 'ETag',
   AssetSource: 'X-Asset-Source',
 } as const;
 

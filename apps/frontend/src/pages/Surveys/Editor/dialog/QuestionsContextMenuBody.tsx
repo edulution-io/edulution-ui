@@ -19,7 +19,6 @@
 
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { SurveyCreatorModel } from 'survey-creator-core';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import isQuestionTypeChoiceType from '@libs/survey/utils/isQuestionTypeChoiceType';
 import isQuestionTypeImageType from '@libs/survey/utils/isQuestionTypeImageType';
@@ -32,11 +31,10 @@ import isQuestionTypeMatrixType from '@libs/survey/utils/isQuestionTypeMatrixTyp
 
 interface QuestionsContextMenuBodyProps {
   form: UseFormReturn<SurveyDto>;
-  creator: SurveyCreatorModel;
 }
 
 const QuestionsContextMenuBody = (props: QuestionsContextMenuBodyProps) => {
-  const { form, creator } = props;
+  const { form } = props;
 
   const { selectedQuestion } = useQuestionsContextMenuStore();
 
@@ -57,7 +55,6 @@ const QuestionsContextMenuBody = (props: QuestionsContextMenuBodyProps) => {
       <ChoicesByUrl
         key="choices-by-url"
         form={form}
-        creator={creator}
       />,
     );
   }

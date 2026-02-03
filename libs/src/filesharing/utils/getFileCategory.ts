@@ -17,34 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { NotificationSourceType } from '@libs/notification/constants/notificationSourceType';
-import { PushNotificationPriority } from '@libs/notification/constants/pushNotificationPriority';
-import { PushNotificationInterruptionLevel } from '@libs/notification/constants/pushNotificationInterruptionLevel';
+import { IconType } from 'react-file-icon';
+import CONTENT_FILE_TYPES from '@libs/filesharing/constants/contentFileTypes';
+import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 
-class NotificationDto {
-  id: string;
+const getFileCategory = (filename: string): IconType => {
+  const extension = getFileExtension(filename);
+  const key = `.${extension}`;
+  if (key in CONTENT_FILE_TYPES) {
+    return CONTENT_FILE_TYPES[key as keyof typeof CONTENT_FILE_TYPES];
+  }
+  return 'document';
+};
 
-  sourceType: NotificationSourceType;
-
-  sourceId: string;
-
-  title: string;
-
-  pushNotification: string;
-
-  content?: string;
-
-  priority?: PushNotificationPriority;
-
-  interruptionLevel?: PushNotificationInterruptionLevel;
-
-  channelId?: string;
-
-  data?: Record<string, unknown>;
-
-  createdAt: Date;
-
-  createdBy: string;
-}
-
-export default NotificationDto;
+export default getFileCategory;

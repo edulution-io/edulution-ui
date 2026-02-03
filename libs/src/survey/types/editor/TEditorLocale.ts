@@ -25,6 +25,9 @@ interface TEditorLocale {
     pagePlaceHolder: string;
     panelPlaceHolder: string;
   };
+  tabs: {
+    preview: string;
+  };
 }
 
 export default TEditorLocale;

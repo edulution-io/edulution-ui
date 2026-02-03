@@ -17,21 +17,36 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import SurveyDto from '@libs/survey/types/api/survey.dto';
+const CONTENT_FILE_TYPES = {
+  '.aac': 'audio',
+  '.mp3': 'audio',
+  '.abw': 'document',
+  '.arc': 'compressed',
+  '.zip': 'compressed',
+  '.3gp': 'video',
+  '.mp4': 'video',
+  '.mov': 'video',
+  '.3g2': 'video',
+  '.webm': 'video',
+  '.7z': 'compressed',
+  '.pdf': 'acrobat',
+  '.doc': 'document',
+  '.docx': 'document',
+  '.ppt': 'presentation',
+  '.pptx': 'presentation',
+  '.xls': 'spreadsheet',
+  '.xlsx': 'spreadsheet',
+  '.png': 'image',
+  '.jpg': 'image',
+  '.jpeg': 'image',
+  '.gif': 'image',
+  '.webp': 'image',
+  '.svg': 'vector',
+  '.js': 'code',
+  '.java': 'code',
+  '.py': 'code',
+  '.cpp': 'code',
+  '.drawio': 'vector',
+} as const;
 
-interface ResultDialogStore {
-  selectedSurvey: SurveyDto | undefined;
-  selectSurvey: (survey: SurveyDto | undefined) => void;
-
-  isOpenPublicResultsTableDialog: boolean;
-  setIsOpenPublicResultsTableDialog: (state: boolean) => void;
-  isOpenPublicResultsVisualisationDialog: boolean;
-  setIsOpenPublicResultsVisualisationDialog: (state: boolean) => void;
-  getSurveyResult: (surveyId: string) => Promise<void>;
-  result: JSON[] | undefined;
-  isLoading: boolean;
-
-  reset: () => void;
-}
-
-export default ResultDialogStore;
+export default CONTENT_FILE_TYPES;

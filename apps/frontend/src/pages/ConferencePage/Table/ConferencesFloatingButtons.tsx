@@ -30,18 +30,13 @@ import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceD
 import JoinButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/joinButton';
 import StartButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/startButton';
 import StopButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/stopButton';
-import { toast } from 'sonner';
-import delay from '@libs/common/utils/delay';
-
-import { useTranslation } from 'react-i18next';
+import useConferenceToggle from '@/pages/ConferencePage/useConferenceToggle';
 
 const ConferencesFloatingButtons: React.FC = () => {
-  const { t } = useTranslation();
   const { openCreateConferenceDialog } = useCreateConferenceDialogStore();
-  const { joinConference, joinConferenceUrl, setSelectedConference, setJoinConferenceUrl } =
-    useConferenceDetailsDialogStore();
-  const { selectedRows, toggleConferenceRunningState, getConferences, setIsDeleteConferencesDialogOpen, conferences } =
-    useConferenceStore();
+  const { joinConference, setSelectedConference, setJoinConferenceUrl } = useConferenceDetailsDialogStore();
+  const { selectedRows, getConferences, setIsDeleteConferencesDialogOpen, conferences } = useConferenceStore();
+  const { toggleAndHandleJoinConference } = useConferenceToggle();
   const selectedConferenceIds = Object.keys(selectedRows);
 
   const firstSelectedConference = conferences.find((c) => c.meetingID === selectedConferenceIds[0]) || null;
@@ -49,25 +44,8 @@ const ConferencesFloatingButtons: React.FC = () => {
 
   const startOrStopConference = async () => {
     if (!firstSelectedConference) return;
-
     const { meetingID, isRunning } = firstSelectedConference;
-
-    const wasConferenceStateToggled = await toggleConferenceRunningState(meetingID, isRunning);
-
-    if (!isRunning) {
-      await joinConference(meetingID);
-    } else if (joinConferenceUrl.includes(meetingID)) {
-      setJoinConferenceUrl('');
-    }
-
-    if (wasConferenceStateToggled) {
-      await delay(5000);
-      toast.info(t(`conferences.${isRunning ? 'stopped' : 'started'}`));
-    } else {
-      setJoinConferenceUrl('');
-    }
-
-    await getConferences();
+    await toggleAndHandleJoinConference(meetingID, isRunning);
   };
 
   const config: FloatingButtonsBarConfig = {

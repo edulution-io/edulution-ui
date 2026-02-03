@@ -37,8 +37,9 @@ const TableFilterDropdown = ({ filterOptions, isDialog }: TableFilterDropdownPro
   const [isOpen, setIsOpen] = useState(false);
 
   const dropdownItems = filterOptions.map((option) => ({
-    label: t(option.translationKey),
-    isCheckbox: true,
+    label: option.isSeparator ? option.key : t(option.translationKey),
+    isCheckbox: !option.isSeparator,
+    isSeparator: option.isSeparator,
     checked: option.checked,
     onCheckedChange: (checked: boolean) => option.onChange(checked),
   }));

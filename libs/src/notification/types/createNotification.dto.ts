@@ -22,28 +22,18 @@ import { NotificationSourceType } from '@libs/notification/constants/notificatio
 import { PushNotificationPriority } from '@libs/notification/constants/pushNotificationPriority';
 import { PushNotificationInterruptionLevel } from '@libs/notification/constants/pushNotificationInterruptionLevel';
 
-class CreateNotificationDto {
+type CreateNotificationDto = {
   type: NotificationType;
-
   sourceType?: NotificationSourceType;
-
   sourceId?: string;
-
   title: string;
-
   pushNotification: string;
-
   content?: string;
-
   priority?: PushNotificationPriority;
-
   interruptionLevel?: PushNotificationInterruptionLevel;
-
   channelId?: string;
-
   data?: Record<string, unknown>;
-
   createdBy: string;
-}
+};
 
 export default CreateNotificationDto;

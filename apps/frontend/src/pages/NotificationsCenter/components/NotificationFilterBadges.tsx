@@ -23,6 +23,7 @@ import cn from '@libs/common/utils/className';
 import { NOTIFICATION_FILTER_TYPE, NotificationFilterType } from '@libs/notification/types/notificationFilterType';
 import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
 import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto';
+import { Button } from '@/components/shared/Button';
 
 interface NotificationFilterBadgesProps {
   activeFilter: NotificationFilterType;
@@ -57,19 +58,20 @@ const NotificationFilterBadges = ({ activeFilter, onFilterChange, notifications 
         const count = getFilterCount(key, notifications);
 
         return (
-          <button
+          <Button
             key={key}
             type="button"
-            onClick={() => onFilterChange(key)}
+            variant="btn-ghost"
             className={cn(
-              'rounded-full px-3 py-1 text-sm font-medium transition-colors',
+              'rounded-lg px-3 py-1 text-sm font-medium',
               isActive
-                ? 'bg-primary text-white'
-                : 'bg-muted-foreground/10 hover:bg-muted-foreground/20 text-background',
+                ? 'hover:bg-primary/90 bg-primary text-white'
+                : 'bg-muted-foreground/10 text-background hover:bg-muted-background',
             )}
+            onClick={() => onFilterChange(key)}
           >
             {t(labelKey)} ({count})
-          </button>
+          </Button>
         );
       })}
     </div>
