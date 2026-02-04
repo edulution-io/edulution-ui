@@ -236,6 +236,7 @@
       "generic": "Le thème du courrier électronique a été mis à jour. Veuillez actualiser la page pour que les modifications soient prises en compte.",
       "failed": "Le thème du courrier électronique n'a pas pu être mis à jour."
     },
+    "newMail": "{{count}} nouveau(x) e-mail(s) reçu(s)",
     "importer": {
       "filterPlaceHolderText": "Rechercher le nom d'utilisateur",
       "title": "Importateur de courrier électronique",

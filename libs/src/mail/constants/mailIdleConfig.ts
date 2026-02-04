@@ -17,6 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const FEED_PULL_TIME_INTERVAL_SLOW = 60000;
+const MAIL_IDLE_CONFIG = {
+  IDLE_TIMEOUT_MS: 25 * 60 * 1000,
+  RECONNECT_DELAY_MS: 5000,
+  MAX_RECONNECT_ATTEMPTS: 3,
+  DEFAULT_MAX_CONCURRENT_CONNECTIONS: 100,
+  DEFAULT_CONNECTION_TIMEOUT: 5000,
+  MAX_FEED_MAILS: 10,
+  SSE_DISCONNECT_GRACE_PERIOD_MS: 30 * 1000,
+} as const;
 
-export default FEED_PULL_TIME_INTERVAL_SLOW;
+export default MAIL_IDLE_CONFIG;

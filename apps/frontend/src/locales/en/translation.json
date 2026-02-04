@@ -250,6 +250,7 @@
       "generic": "The mail theme has been updated. Please reload the page to apply the changes.",
       "failed": "The mail theme could not be updated."
     },
+    "newMail": "{{count}} new email(s) received",
     "importer": {
       "filterPlaceHolderText": "Search for username",
       "title": "E-Mail Sync",
