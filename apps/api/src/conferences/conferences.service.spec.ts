@@ -20,6 +20,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { getModelToken } from '@nestjs/mongoose';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Model } from 'mongoose';
 import axios from 'axios';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
@@ -142,6 +143,10 @@ describe(ConferencesService.name, () => {
         },
         { provide: FilesystemService, useValue: mockFilesystemService },
         { provide: NotificationsService, useValue: notificationMock },
+        {
+          provide: EventEmitter2,
+          useValue: { emit: jest.fn() },
+        },
       ],
     }).compile();
 

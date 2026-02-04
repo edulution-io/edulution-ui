@@ -17,23 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import MailsController from './mails.controller';
-import MailsService from './mails.service';
-import MailIdleService from './mail-idle.service';
-import { MailProvider, MailProviderSchema } from './mail-provider.schema';
-import DockerModule from '../docker/docker.module';
-import GroupsModule from '../groups/groups.module';
+type MailNewMailNotificationDto = {
+  count: number;
+  previousCount: number;
+  newMailCount: number;
+};
 
-@Module({
-  imports: [
-    MongooseModule.forFeature([{ name: MailProvider.name, schema: MailProviderSchema }]),
-    DockerModule,
-    GroupsModule,
-  ],
-  controllers: [MailsController],
-  providers: [MailsService, MailIdleService],
-  exports: [MailIdleService],
-})
-export default class MailsModule {}
+export default MailNewMailNotificationDto;
