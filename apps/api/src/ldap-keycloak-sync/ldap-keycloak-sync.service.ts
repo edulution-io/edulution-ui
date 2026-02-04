@@ -299,7 +299,10 @@ class LdapKeycloakSyncService implements OnModuleInit {
         names.map(async (name) => {
           const type = await this.resolveLdapMember(name);
           if (type === LDAP_MEMBER_TYPES.USER) {
-            users.push(this.userCache.get(name)!);
+            const user = this.userCache.get(name);
+            if (user) {
+              users.push(user);
+            }
             return;
           }
           const expanded = await this.expandGroupNameToUsers(name);
@@ -792,8 +795,9 @@ class LdapKeycloakSyncService implements OnModuleInit {
 
     await Promise.all(
       memberCns.map(async (cn) => {
-        if (this.userCache.has(cn)) {
-          members.push(this.userCache.get(cn)!);
+        const cached = this.userCache.get(cn);
+        if (cached) {
+          members.push(cached);
           return;
         }
 
