@@ -213,7 +213,7 @@ const FileSharingTable = () => {
         const category = file.type === ContentType.DIRECTORY ? FILE_CATEGORIES.FOLDER : getFileCategory(file.filename);
         return fileCategoryFilters[category as FileCategory];
       }),
-    [files, showSystemFiles, showHiddenFiles, fileCategoryFilters],
+    [files, showSystemFiles, showHiddenFiles, fileCategoryFilters, currentPath],
   );
 
   const filesWithParentNav = useMemo(() => {
