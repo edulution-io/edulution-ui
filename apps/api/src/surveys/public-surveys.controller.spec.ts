@@ -193,7 +193,7 @@ describe(PublicSurveysController.name, () => {
     it('should call the getSelectableChoices() function of the surveyAnswerService', async () => {
       jest.spyOn(surveyAnswerService, 'getSelectableChoices');
 
-      surveyAnswerService.countChoiceSelections = jest
+      surveyAnswerService.countTotalChoiceSelectionsInSurveyAnswers = jest
         .fn()
         .mockReturnValueOnce(0)
         .mockReturnValueOnce(0)
@@ -214,13 +214,13 @@ describe(PublicSurveysController.name, () => {
         idOfPublicSurvey02.toString(),
         publicSurvey02QuestionNameWithLimiters,
       );
-      expect(surveyAnswerService.countChoiceSelections).toHaveBeenCalledTimes(4);
+      expect(surveyAnswerService.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(4);
     });
 
     it('Update Choices that getSelectableChoices() returns after adding a new answer', async () => {
       jest.spyOn(surveyAnswerService, 'getSelectableChoices');
 
-      surveyAnswerService.countChoiceSelections = jest
+      surveyAnswerService.countTotalChoiceSelectionsInSurveyAnswers = jest
         .fn()
         .mockReturnValueOnce(0)
         .mockReturnValueOnce(1)
@@ -241,7 +241,7 @@ describe(PublicSurveysController.name, () => {
         idOfPublicSurvey02.toString(),
         publicSurvey02QuestionNameWithLimiters,
       );
-      expect(surveyAnswerService.countChoiceSelections).toHaveBeenCalledTimes(4);
+      expect(surveyAnswerService.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(4);
     });
   });
 });

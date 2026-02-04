@@ -26,6 +26,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
+import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 import { Survey, SurveyDocument } from './survey.schema';
@@ -140,7 +141,7 @@ describe('SurveyAnswersService', () => {
     it('Should return those choices that are still selectable (backend limit was not reached)', async () => {
       jest.spyOn(service, 'getSelectableChoices');
 
-      service.countChoiceSelections = jest
+      service.countTotalChoiceSelectionsInSurveyAnswers = jest
         .fn()
         .mockReturnValueOnce(0)
         .mockReturnValueOnce(0)
@@ -159,13 +160,13 @@ describe('SurveyAnswersService', () => {
         idOfPublicSurvey02.toString(),
         publicSurvey02QuestionNameWithLimiters,
       );
-      expect(service.countChoiceSelections).toHaveBeenCalledTimes(4);
+      expect(service.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(4);
     });
 
     it('Should return those choices that are still selectable even after adding a new answer (backend limit was not reached)', async () => {
       jest.spyOn(service, 'getSelectableChoices');
 
-      service.countChoiceSelections = jest
+      service.countTotalChoiceSelectionsInSurveyAnswers = jest
         .fn()
         .mockReturnValueOnce(0)
         .mockReturnValueOnce(1)
@@ -184,12 +185,12 @@ describe('SurveyAnswersService', () => {
         idOfPublicSurvey02.toString(),
         publicSurvey02QuestionNameWithLimiters,
       );
-      expect(service.countChoiceSelections).toHaveBeenCalledTimes(4);
+      expect(service.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(4);
     });
 
     it('Throw error when the backendLimit is not set', async () => {
       jest.spyOn(service, 'getSelectableChoices');
-      jest.spyOn(service, 'countChoiceSelections');
+      jest.spyOn(service, 'countTotalChoiceSelectionsInSurveyAnswers');
 
       surveyModel.findById = jest.fn().mockReturnValue(publicSurvey01);
 
@@ -359,13 +360,13 @@ describe('SurveyAnswersService', () => {
       const id = new Types.ObjectId().toString();
 
       try {
-        await service.addAnswer(id, {} as JSON, firstParticipant);
+        await service.addAnswer(id, {} as TSurveyAnswer, firstParticipant);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e instanceof Error && e.message).toBe(SurveyErrorMessages.NotFoundError);
       }
 
-      expect(service.addAnswer).toHaveBeenCalledWith(id, {} as JSON, firstParticipant);
+      expect(service.addAnswer).toHaveBeenCalledWith(id, {} as TSurveyAnswer, firstParticipant);
     });
 
     it('should return an error if the survey has already expired', async () => {
@@ -444,7 +445,7 @@ describe('SurveyAnswersService', () => {
           await service.addAnswer(idOfAnsweredSurvey02.toString(), mockedAnswerForAnsweredSurveys02, secondParticipant);
         } catch (e) {
           expect(e).toBeInstanceOf(Error);
-          expect(e instanceof Error && e.message).toBe(SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError);
+          expect(e instanceof Error && e.message).toBe(SurveyAnswerErrorMessages.AlreadyParticipated);
         }
 
         expect(service.addAnswer).toHaveBeenCalledWith(

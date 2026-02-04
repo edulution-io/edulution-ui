@@ -18,51 +18,58 @@
  */
 
 import React, { useEffect } from 'react';
-import { toast } from 'sonner';
-import { useTranslation } from 'react-i18next';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
-import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import getSurveyFormulaWithIdentificationPlaceholderQuestion from '@libs/survey/utils/getSurveyFormulaWithIdentificationPlaceholderQuestion';
 import ResultVisualization from '@/pages/Surveys/Tables/components/ResultVisualization';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
 const ResultVisualizationDialogBody = () => {
-  const { selectedSurvey } = useSurveyTablesPageStore();
-  const { setIsOpenPublicResultsVisualisationDialog, getSurveyResult, result } = useResultDialogStore();
+  const { selectedSurvey: selectedSurveyFromPage } = useSurveyTablesPageStore();
+  const {
+    isLoading,
+    selectedSurvey,
+    selectSurvey,
+    getSurveyResult,
+    surveyResult,
+    isOpenPublicResultsVisualisationDialog,
+  } = useResultDialogStore();
 
-  const { t } = useTranslation();
+  const [formula, setFormula] = React.useState<SurveyFormula | undefined>(undefined);
 
   useEffect((): void => {
-    if (selectedSurvey?.id) {
+    selectSurvey(selectedSurveyFromPage);
+  }, [selectedSurveyFromPage]);
+
+  useEffect((): void => {
+    if (isOpenPublicResultsVisualisationDialog && selectedSurvey?.id) {
       void getSurveyResult(selectedSurvey.id);
     }
-  }, [selectedSurvey]);
+  }, [isOpenPublicResultsVisualisationDialog, selectedSurvey]);
 
   useEffect(() => {
-    if (!selectedSurvey?.formula) {
-      toast.error(t(SurveyErrorMessages.NoFormula));
-      setIsOpenPublicResultsVisualisationDialog(false);
-    } else if (result && result.length === 0) {
-      setIsOpenPublicResultsVisualisationDialog(false);
+    if (!selectedSurvey) {
+      return;
     }
-  }, [selectedSurvey, result]);
+    if (!selectedSurvey?.isAnonymous) {
+      const formulaWithPlaceholder = getSurveyFormulaWithIdentificationPlaceholderQuestion(selectedSurvey?.formula);
+      setFormula(formulaWithPlaceholder);
+      return;
+    }
+    setFormula(selectedSurvey.formula);
+  }, [selectedSurvey]);
 
-  if (!selectedSurvey?.formula || !result || result.length === 0) {
+  if (isLoading) {
+    return <CircleLoader />;
+  }
+  if (!formula) {
     return null;
   }
-
-  let formula: SurveyFormula;
-  if (!selectedSurvey?.isAnonymous) {
-    formula = getSurveyFormulaWithIdentificationPlaceholderQuestion(selectedSurvey.formula);
-  } else {
-    formula = selectedSurvey.formula;
-  }
-
   return (
     <ResultVisualization
       formula={formula}
-      result={result}
+      result={surveyResult}
     />
   );
 };

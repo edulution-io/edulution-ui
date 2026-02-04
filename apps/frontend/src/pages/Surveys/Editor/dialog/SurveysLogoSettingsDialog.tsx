@@ -18,47 +18,46 @@
  */
 
 import React from 'react';
-import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import SurveyDto from '@libs/survey/types/api/survey.dto';
-import QuestionsContextMenuBody from '@/pages/Surveys/Editor/dialog/QuestionsContextMenuBody';
-import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import { SurveyCreatorModel } from 'survey-creator-core';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
+import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import SurveysLogoSettings from '@/pages/Surveys/Editor/dialog/SurveysLogoSettings';
 
-interface QuestionsContextMenuProps {
-  form: UseFormReturn<SurveyDto>;
-  isOpenQuestionContextMenu: boolean;
-  setIsOpenQuestionContextMenu: (state: boolean) => void;
+interface SurveysLogoSettingsDialogProps {
+  surveyCreator: SurveyCreatorModel;
+  isOpenSurveysLogoDialog: boolean;
+  setIsOpenSurveysLogoDialog: (state: boolean) => void;
   trigger?: React.ReactNode;
 }
 
-const QuestionsContextMenu = (props: QuestionsContextMenuProps) => {
-  const { form, trigger, isOpenQuestionContextMenu, setIsOpenQuestionContextMenu } = props;
+const SurveysLogoSettingsDialog = (props: SurveysLogoSettingsDialogProps) => {
+  const { trigger, surveyCreator, isOpenSurveysLogoDialog, setIsOpenSurveysLogoDialog } = props;
 
   const { t } = useTranslation();
 
-  const getDialogBody = () => <QuestionsContextMenuBody form={form} />;
+  const handleClose = () => setIsOpenSurveysLogoDialog(false);
 
-  const handleClose = () => setIsOpenQuestionContextMenu(!isOpenQuestionContextMenu);
+  const body = <SurveysLogoSettings surveyCreator={surveyCreator} />;
 
-  const getFooter = () => (
+  const footer = (
     <DialogFooterButtons
       handleClose={handleClose}
-      cancelButtonText="common.close"
+      cancelButtonText={t('common.close')}
     />
   );
 
   return (
     <AdaptiveDialog
-      isOpen={isOpenQuestionContextMenu}
+      isOpen={isOpenSurveysLogoDialog}
       trigger={trigger}
-      handleOpenChange={() => setIsOpenQuestionContextMenu(!isOpenQuestionContextMenu)}
-      title={t('survey.editor.questionSettings.title')}
-      body={getDialogBody()}
-      footer={getFooter()}
-      desktopContentClassName="w-[50%] max-w-[600px] min-w-[350px] max-h-[90%] overflow-auto"
+      handleOpenChange={handleClose}
+      title={t('survey.editor.surveyLogo.title')}
+      body={body}
+      footer={footer}
+      desktopContentClassName="max-w-[50%] min-h-[200px] max-h-[90%] overflow-auto"
     />
   );
 };
 
-export default QuestionsContextMenu;
+export default SurveysLogoSettingsDialog;

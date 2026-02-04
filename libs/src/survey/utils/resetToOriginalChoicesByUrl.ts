@@ -17,25 +17,36 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import TSurveyPage from '@libs/survey/types/TSurveyPage';
 import TSurveyElement from '@libs/survey/types/TSurveyElement';
 
-class SurveyFormula {
-  title: string;
+const resetToOriginalChoicesByUrl = (elements: TSurveyElement[] | undefined): TSurveyElement[] | undefined =>
+  (elements || []).map((el) => {
+    if (el.choicesByUrl) {
+      return {
+        ...el,
+        choicesByUrl: {
+          ...el.choicesByUrl,
+          url: el.choicesByUrl.url?.includes('?')
+            ? `${el.choicesByUrl.url}&original=true`
+            : `${el.choicesByUrl.url}?original=true`,
+          valueName: 'title',
+          titleName: 'title',
+        },
+      };
+    }
+    if (el.templateElements) {
+      return {
+        ...el,
+        templateElements: resetToOriginalChoicesByUrl(el.templateElements),
+      };
+    }
+    if (el.elements) {
+      return {
+        ...el,
+        elements: resetToOriginalChoicesByUrl(el.elements),
+      };
+    }
+    return el;
+  });
 
-  logo?: string;
-
-  description?: string;
-
-  // only defined in page mode
-  pages?: TSurveyPage[];
-
-  // only defined in page-less mode
-  elements?: TSurveyElement[];
-
-  logoWidth?: string;
-
-  logoPosition?: 'left' | 'right';
-}
-
-export default SurveyFormula;
+export default resetToOriginalChoicesByUrl;

@@ -646,14 +646,17 @@
       "fileDeletionSuccess": "Le fichier a été supprimé avec succès.",
       "fileDeletionError": "Le fichier n'a pas pu être supprimé.",
       "saveSurveySuccess": "Le sondage a été enregistrée.",
-      "surveyPlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
-      "surveyPlaceholderDescription": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
-      "surveyPlaceholderDescriptionMobile": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
-      "pagePlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour ajouter un nouvel élément à la page.",
-      "panelPlaceHolder": "Cliquez sur « Ajouter une question » ci-dessous pour ajouter un nouvel élément au panneau.",
       "reset": "Rejeter",
       "addDescription": "Ajouter une description",
       "expectingUserInput": "Ici, la réponse du participant est attendue ... ",
+      "customTranslations": {
+        "surveyPlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
+        "surveyPlaceholderDescription": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
+        "surveyPlaceholderDescriptionMobile": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour commencer à créer votre formulaire.",
+        "pagePlaceHolder": "Cliquez sur le bouton « Ajouter une question » ci-dessous pour ajouter un nouvel élément à la page.",
+        "panelPlaceHolder": "Cliquez sur « Ajouter une question » ci-dessous pour ajouter un nouvel élément au panneau.",
+        "previewTabTitle": "Aperçu"
+      },
       "templates": "Modèles",
       "templateMenu": {
         "fetch": "Choisissez l'un des modèles disponibles.",
@@ -687,6 +690,20 @@
         "upperLimit": "limite",
         "upperBackendLimiters": "Options de sélection avec limite supérieure",
         "addChoice": "Ajouter"
+      },
+      "surveyLogo": {
+        "title": "Logo de l'enquête",
+        "width": {
+          "label": "Largeur du logo en pixels (min. 150 px)",
+          "placeholder": "Entrez la largeur du logo en pixels"
+        },
+        "position": {
+          "label": "Position du logo",
+          "placeholder": "Choisissez la position du logo",
+          "left": "À gauche du titre",
+          "right": "À droite du titre",
+          "description": "La position du logo par rapport au titre de l'enquête est visible dans l'onglet 'Tester le sondage'."
+        }
       }
     },
     "participate": {
@@ -715,7 +732,8 @@
       "notAbleToFindSurveyAnswerError": "Aucune réponse disponible.",
       "notAbleToUpdateSurveyAnswerError": "La réponse n'a pas pu être mise à jour.",
       "notAbleToCreateSurveyAnswerError": "La réponse n'a pas pu être créée.",
-      "notAbleToDeleteSurveyAnswerError": "La réponse n'a pas pu être supprimée."
+      "notAbleToDeleteSurveyAnswerError": "La réponse n'a pas pu être supprimée.",
+      "alreadyParticipated": "Vous avez déjà participé."
     }
   },
   "surveys": {
