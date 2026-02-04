@@ -43,6 +43,7 @@ interface UseFileSharingMoveDialogStore {
   setIsLoading: (isLoading: boolean) => void;
   setSelectedItems: (items: DirectoryFileDTO[]) => void;
   setActiveCollectionOperation: (collectionType: LmnApiCollectOperationsType) => void;
+  clearDialogFilesOnShareChange: () => void;
   reset: () => void;
 }
 
@@ -110,6 +111,15 @@ const useFileSharingMoveDialogStore = create<UseFileSharingMoveDialogStore>((set
   setIsLoading: (isLoading: boolean) => set({ isLoading }),
   setDialogShownFiles: (files: DirectoryFileDTO[]) => set({ dialogShownFiles: files }),
   setSelectedRows: (selectedRows: RowSelectionState) => set({ selectedRows }),
+  clearDialogFilesOnShareChange: () => {
+    set({
+      dialogShownFiles: [],
+      dialogShownDirs: [],
+      selectedItems: [],
+      selectedRows: {},
+      isLoading: true,
+    });
+  },
   reset: () => set(initialState),
 }));
 
