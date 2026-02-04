@@ -46,7 +46,7 @@ const CollectFilesDialog: React.FC<ShareCollectDialogProps> = ({ title, isOpen, 
 
   const getDialogBody = () => (
     <>
-      <WebdavShareSelectDropdown />
+      <WebdavShareSelectDropdown showRootOnly />
       <div className="w-full items-center pb-6 ">{t('classmanagement.copyOrCut')}</div>
       <div className="flex flex-col items-center justify-start pb-8">
         <RadioGroupSH
