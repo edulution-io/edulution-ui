@@ -207,6 +207,7 @@ const FileSharingTable = () => {
   const filteredFiles = useMemo(
     () =>
       files.filter((file) => {
+        if (file.filePath === currentPath) return false;
         if (isSystemFile(file.filename) && !showSystemFiles) return false;
         if (isHiddenFile(file.filename) && !showHiddenFiles) return false;
 
