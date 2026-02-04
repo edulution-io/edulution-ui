@@ -87,6 +87,9 @@ class GroupsService {
 
   @OnEvent(LDAP_SYNC_ACTIVE_EVENT)
   handleLdapSyncActive(active: boolean) {
+    if (this.ldapSyncActive === active) {
+      return;
+    }
     this.ldapSyncActive = active;
     Logger.log(`LDAP sync active state changed to: ${active}`, GroupsService.name);
   }
