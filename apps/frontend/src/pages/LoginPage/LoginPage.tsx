@@ -373,7 +373,7 @@ const LoginPage: React.FC = () => {
         />
         {isWaitingForRedirect ? (
           <div className="flex flex-col items-center justify-center py-8">
-            <CircleLoader />
+            <CircleLoader forceLightMode />
           </div>
         ) : (
           <Form
