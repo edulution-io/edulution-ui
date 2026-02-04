@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getFromPathName } from '@libs/common/utils';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
@@ -31,7 +31,7 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import useUserAccounts from '@/hooks/useUserAccounts';
 import detectIframeColor from '@libs/ui/utils/detectIframeColor';
-import FooterColors from '@libs/ui/types/footerColors';
+import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useFileTableStore from '../Settings/AppConfig/components/useFileTableStore';
 import EmbeddedPageContent from './EmbeddedPageContent';
 
@@ -40,7 +40,7 @@ const EmbeddedPage: React.FC = () => {
   const { language } = useLanguage();
   const { tableContentData, fetchTableContent } = useFileTableStore();
   const { appConfigs } = useAppConfigsStore();
-  const [footerColors, setFooterColors] = useState<FooterColors>(null);
+  const setFooterColors = useFrameStore((s) => s.setFooterColors);
 
   const rootPathName = getFromPathName(pathname, 1);
 
@@ -51,10 +51,8 @@ const EmbeddedPage: React.FC = () => {
   }, [rootPathName]);
 
   const handleIframeLoad = (iframe: HTMLIFrameElement) => {
-    setTimeout(() => {
-      const colors = detectIframeColor(iframe);
-      setFooterColors(colors);
-    }, 500);
+    const colors = detectIframeColor(iframe);
+    setFooterColors(rootPathName, colors);
   };
 
   const currentAppConfig = findAppConfigByName(appConfigs, rootPathName);
@@ -69,10 +67,7 @@ const EmbeddedPage: React.FC = () => {
     currentAppConfig.extendedOptions?.[ExtendedOptionKeys.FRAME_URL_SYNC_PRELOAD_BASE_PAGE] === true;
 
   return (
-    <PageLayout
-      hasFullWidthMain
-      footerColors={footerColors}
-    >
+    <PageLayout hasFullWidthMain>
       <EmbeddedPageContent
         appName={rootPathName}
         pageTitle={pageTitle}

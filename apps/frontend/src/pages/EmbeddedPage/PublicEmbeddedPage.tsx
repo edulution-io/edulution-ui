@@ -34,7 +34,7 @@ import BackButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConf
 import useUserStore from '@/store/UserStore/useUserStore';
 import PageTitle from '@/components/PageTitle';
 import detectIframeColor from '@libs/ui/utils/detectIframeColor';
-import FooterColors from '@libs/ui/types/footerColors';
+import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useFileTableStore from '../Settings/AppConfig/components/useFileTableStore';
 import EmbeddedPageContent from './EmbeddedPageContent';
 
@@ -47,16 +47,14 @@ const PublicEmbeddedPage: React.FC = () => {
   const publicFilesInfo = useFileTableStore((s) => s.publicFilesInfo);
   const isAuthenticated = useUserStore((s) => s.isAuthenticated);
   const [currentAppConfig, setCurrentAppConfig] = useState<AppConfigDto>({} as AppConfigDto);
-  const [footerColors, setFooterColors] = useState<FooterColors>(null);
-
-  const handleIframeLoad = (iframe: HTMLIFrameElement) => {
-    setTimeout(() => {
-      const colors = detectIframeColor(iframe);
-      setFooterColors(colors);
-    }, 500);
-  };
+  const setFooterColors = useFrameStore((s) => s.setFooterColors);
 
   const rootPathName = getFromPathName(pathname, 1);
+
+  const handleIframeLoad = (iframe: HTMLIFrameElement) => {
+    const colors = detectIframeColor(iframe);
+    setFooterColors(rootPathName, colors);
+  };
 
   useEffect(() => {
     const fetchCurrentAppConfig = async () => {
@@ -87,10 +85,7 @@ const PublicEmbeddedPage: React.FC = () => {
   };
 
   return (
-    <PageLayout
-      hasFullWidthMain
-      footerColors={footerColors}
-    >
+    <PageLayout hasFullWidthMain>
       <PageTitle
         title={pageTitle}
         translationId="public"

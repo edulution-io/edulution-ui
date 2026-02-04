@@ -28,8 +28,8 @@ import { getFromPathName } from '@libs/common/utils';
 import useFloatingBarHeight from '@/hooks/useFloatingBarHeight';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import cn from '@libs/common/utils/className';
-import FooterColors from '@libs/ui/types/footerColors';
 import TEXT_COLOR_VARIANT from '@libs/ui/constants/textColorVariant';
+import useFrameStore from '@/components/structure/framing/useFrameStore';
 
 interface PageLayoutProps {
   nativeAppHeader?: NativeAppHeaderProps;
@@ -37,7 +37,6 @@ interface PageLayoutProps {
   isFullScreenAppWithoutFloatingButtons?: boolean;
   hasFullWidthMain?: boolean;
   isAppIconEditable?: boolean;
-  footerColors?: FooterColors;
 }
 
 const PageLayout = ({
@@ -46,12 +45,12 @@ const PageLayout = ({
   isFullScreenAppWithoutFloatingButtons,
   hasFullWidthMain,
   isAppIconEditable,
-  footerColors,
 }: PageLayoutProps) => {
   const { pathname } = useLocation();
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
   const rootPathName = getFromPathName(pathname, 1);
   const barRef = useRef<HTMLDivElement | null>(null);
+  const footerColors = useFrameStore((s) => s.footerColorsByAppName[rootPathName] ?? null);
 
   useFloatingBarHeight(barRef);
   useUserAccounts(rootPathName);
