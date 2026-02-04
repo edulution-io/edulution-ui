@@ -23,13 +23,20 @@ import { DropdownSelect } from '@/components';
 import { type DropdownOptions } from '@/components/ui/DropdownSelect/DropdownSelect';
 import useFileSharingStore from '../../useFileSharingStore';
 
-type WebdavShareSelectDropdownProps = { webdavShare?: string };
+type WebdavShareSelectDropdownProps = {
+  webdavShare?: string;
+  showRootOnly?: boolean;
+};
 
-const WebdavShareSelectDropdown: React.FC<WebdavShareSelectDropdownProps> = ({ webdavShare }) => {
+const WebdavShareSelectDropdown: React.FC<WebdavShareSelectDropdownProps> = ({ webdavShare, showRootOnly = false }) => {
   const { t } = useTranslation();
   const { webdavShares, selectedWebdavShare, setSelectedWebdavShare } = useFileSharingStore();
 
   const filteredShares = useMemo(() => {
+    if (showRootOnly) {
+      return webdavShares.filter((share) => share.isRootServer);
+    }
+
     if (!webdavShare) {
       return webdavShares.filter((share) => !share.isRootServer);
     }
@@ -41,7 +48,7 @@ const WebdavShareSelectDropdown: React.FC<WebdavShareSelectDropdownProps> = ({ w
 
     const rootServerName = currentShare.isRootServer ? currentShare.displayName : currentShare.rootServer;
     return webdavShares.filter((share) => !share.isRootServer && share.rootServer === rootServerName);
-  }, [webdavShares, webdavShare]);
+  }, [webdavShares, webdavShare, showRootOnly]);
 
   const webdavShareOptions: DropdownOptions[] = filteredShares.map((item) => ({
     id: item.displayName,
