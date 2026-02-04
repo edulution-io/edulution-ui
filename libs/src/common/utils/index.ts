@@ -27,3 +27,4 @@ export type { UrlParts } from './getSubPathFromBrowserUrl';
 export { default as getSubPathFromIframe } from './getSubPathFromIframe';
 export { default as isSameOrigin } from './isSameOrigin';
 export { default as combineUrlParts } from './combineUrlParts';
+export { default as getErrorMessage } from './getErrorMessage';
