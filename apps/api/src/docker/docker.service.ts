@@ -24,6 +24,7 @@ import { filter, map } from 'rxjs/operators';
 import { ensureDirSync, writeFileSync } from 'fs-extra';
 import { join } from 'path';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import getErrorMessage from '@libs/common/utils/getErrorMessage';
 import type DockerEvent from '@libs/docker/types/dockerEvents';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
 import DockerErrorMessages from '@libs/docker/constants/dockerErrorMessages';
@@ -263,10 +264,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
       Logger.log(`Docker compose file saved: ${filePath}`, DockerService.name);
     } catch (error) {
-      Logger.error(
-        `Failed to save docker-compose.yml: ${error instanceof Error ? error.message : String(error)}`,
-        DockerService.name,
-      );
+      Logger.error(`Failed to save docker-compose.yml: ${getErrorMessage(error)}`, DockerService.name);
     }
   }
 
@@ -487,10 +485,7 @@ class DockerService implements OnModuleInit, OnModuleDestroy {
 
       return inspections.find((name) => name !== null) || null;
     } catch (error) {
-      Logger.error(
-        `Failed to lookup container by IP: ${error instanceof Error ? error.message : String(error)}`,
-        DockerService.name,
-      );
+      Logger.error(`Failed to lookup container by IP: ${getErrorMessage(error)}`, DockerService.name);
       return null;
     }
   }

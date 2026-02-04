@@ -19,6 +19,7 @@
 
 import { Inject, Injectable, MessageEvent, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Response } from 'express';
@@ -33,6 +34,7 @@ import {
   SSE_USER_CONNECTIONS_CACHE_KEY,
   SSE_PERSIST_DEBOUNCE_MS,
 } from '@libs/sse/constants/sseConfig';
+import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
 import type UserConnections from '../types/userConnections';
 import type SseEvent from '../types/sseEvent';
 import type SseEventData from '../types/sseEventData';
@@ -46,6 +48,7 @@ class SseService implements OnModuleInit {
   constructor(
     private configService: ConfigService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async onModuleInit() {
@@ -95,16 +98,22 @@ class SseService implements OnModuleInit {
 
   public subscribe(username: string, res: Response): Observable<MessageEvent> {
     let subject = this.userConnections.get(username);
+    const isNewConnection = !subject;
     if (!subject) {
       subject = new Subject<SseEvent>();
       this.userConnections.set(username, subject);
       this.debouncedPersistUserConnectionsToCache();
     }
 
+    if (isNewConnection) {
+      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.SSE_USER_CONNECTED, username);
+    }
+
     res.on('close', () => {
       this.userConnections.delete(username);
       subject.complete();
       this.debouncedPersistUserConnectionsToCache();
+      this.eventEmitter.emit(EVENT_EMITTER_EVENTS.SSE_USER_DISCONNECTED, username);
     });
 
     return subject.pipe(
