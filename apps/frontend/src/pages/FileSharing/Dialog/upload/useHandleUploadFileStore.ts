@@ -45,7 +45,7 @@ interface HandleUploadFileStore {
   uploadingById: Map<string, boolean>;
   setIsUploadDialogOpen: (isOpen: boolean) => void;
   closeUploadDialog: () => void;
-  setFilesToUpload: (files: UploadItem[]) => void;
+  addFilesToUpload: (files: UploadItem[]) => void;
   updateFilesToUpload: (updater: (files: UploadItem[]) => UploadItem[]) => void;
   markUploading: (fileId: string, uploading: boolean) => void;
   setDirectoryCreationProgress: (current: number, total: number, share: string | undefined) => void;
@@ -216,7 +216,7 @@ const useHandleUploadFileStore = create<HandleUploadFileStore>((set, get) => ({
 
   closeUploadDialog: () => set({ isUploadDialogOpen: false }),
 
-  setFilesToUpload: (files) => {
+  addFilesToUpload: (files) => {
     const filesWithIds = files.map((file) => ({
       ...file,
       id: file.id ?? getRandomUUID(),
