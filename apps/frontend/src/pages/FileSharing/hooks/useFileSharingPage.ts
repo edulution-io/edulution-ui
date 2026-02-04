@@ -24,9 +24,7 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
-import ContentType from '@libs/filesharing/types/contentType';
 import useUserPath from './useUserPath';
-import useVariableSharePathname from './useVariableSharePathname';
 
 const useFileSharingPage = () => {
   const {
@@ -35,17 +33,12 @@ const useFileSharingPage = () => {
     setPathToRestoreSession,
     pathToRestoreSession,
     isLoading: isFileProcessing,
-    clearShareFirstLevelFolders,
-    files,
-    webdavShares,
-    setShareFirstLevelFolders,
   } = useFileSharingStore();
   const { isLoading, fileOperationResult } = useFileSharingDialogStore();
   const { fetchShares } = usePublicShareStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const { webdavShare } = useParams();
   const { homePath } = useUserPath();
-  const { createVariableSharePathname } = useVariableSharePathname();
   const path = searchParams.get(URL_SEARCH_PARAMS.PATH) || homePath;
 
   useEffect(() => {
@@ -70,9 +63,6 @@ const useFileSharingPage = () => {
     const updateFilesAfterSuccess = async () => {
       if (fileOperationResult && !isLoading) {
         if (fileOperationResult.success) {
-          if (webdavShare) {
-            clearShareFirstLevelFolders(webdavShare);
-          }
           await fetchFiles(webdavShare, currentPath);
           await fetchShares();
           toast.success(fileOperationResult.message);
@@ -83,20 +73,7 @@ const useFileSharingPage = () => {
     };
 
     void updateFilesAfterSuccess();
-  }, [fileOperationResult, isLoading, fetchFiles, currentPath, webdavShare, clearShareFirstLevelFolders]);
-
-  useEffect(() => {
-    if (!webdavShare || !files.length) return;
-
-    const share = webdavShares.find((s) => s.displayName === webdavShare);
-    if (!share) return;
-
-    const rootPath = createVariableSharePathname(share.pathname, share.pathVariables);
-    if (currentPath === rootPath) {
-      const directories = files.filter((f) => f.type === ContentType.DIRECTORY);
-      setShareFirstLevelFolders(webdavShare, directories);
-    }
-  }, [files, currentPath, webdavShare, webdavShares, createVariableSharePathname, setShareFirstLevelFolders]);
+  }, [fileOperationResult, isLoading, fetchFiles, currentPath, webdavShare]);
 
   return { isFileProcessing, isLoading, currentPath, searchParams, setSearchParams };
 };

@@ -28,14 +28,12 @@ import APPS from '@libs/appconfig/constants/apps';
 import { t } from 'i18next';
 import SHARED from '@libs/filesharing/constants/shared';
 import WEBDAV_SHARE_STATUS from '@libs/webdav/constants/webdavShareStatus';
-import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import { toast } from 'sonner';
 import useVariableSharePathname from './hooks/useVariableSharePathname';
 
 const useFileSharingMenuConfig = () => {
   const { pathname } = useLocation();
-  const { webdavShares, fetchWebdavShares, shareFirstLevelFolders, fetchShareFirstLevelFolders } =
-    useFileSharingStore();
+  const { webdavShares, fetchWebdavShares } = useFileSharingStore();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const navigate = useNavigate();
   const { user } = userStore();
@@ -43,13 +41,9 @@ const useFileSharingMenuConfig = () => {
 
   const handlePathChange = useCallback(
     (shareDisplayName: string, sharePathname: string) => {
-      navigate(
-        {
-          pathname: `/${APPS.FILE_SHARING}/${shareDisplayName}`,
-          search: `?${URL_SEARCH_PARAMS.PATH}=${encodeURIComponent(sharePathname)}`,
-        },
-        { replace: true },
-      );
+      navigate(`/${APPS.FILE_SHARING}/${shareDisplayName}?path=${encodeURIComponent(sharePathname)}`, {
+        replace: true,
+      });
     },
     [navigate],
   );
@@ -68,36 +62,12 @@ const useFileSharingMenuConfig = () => {
     }
   }, [firstPathPart]);
 
-  const createFolderChildren = useCallback(
-    (shareName: string, sharePath: string): MenuItem[] => {
-      const folders = shareFirstLevelFolders[shareName] || [];
-      return folders.map((folder) => {
-        const folderPath = `${sharePath}${folder.filename}/`;
-        return {
-          id: `${shareName}-${folder.filename}`,
-          label: folder.filename,
-          icon: FileSharingIcon,
-          action: () => {
-            handlePathChange(shareName, folderPath);
-          },
-          disableTranslation: true,
-          isActive: (_pathname: string, searchParams: URLSearchParams) => {
-            const currentPath = searchParams.get(URL_SEARCH_PARAMS.PATH) || '';
-            return currentPath.startsWith(folderPath);
-          },
-        };
-      });
-    },
-    [shareFirstLevelFolders, handlePathChange],
-  );
-
   useEffect(() => {
     const menuBarItems: MenuItem[] = webdavShares
       .filter((share) => !share.isRootServer)
       .map((share) => {
         const sharePath = createVariableSharePathname(share.pathname, share.pathVariables);
         const isOnline = share.status === WEBDAV_SHARE_STATUS.UP;
-        const children = createFolderChildren(share.displayName, sharePath);
 
         return {
           id: share.displayName,
@@ -115,8 +85,6 @@ const useFileSharingMenuConfig = () => {
             }
           },
           disableTranslation: true,
-          children: children.length > 0 ? children : undefined,
-          onExpand: isOnline ? () => fetchShareFirstLevelFolders(share.displayName, sharePath) : undefined,
         };
       });
 
@@ -134,8 +102,6 @@ const useFileSharingMenuConfig = () => {
     webdavShares,
     navigate,
     handlePathChange,
-    createFolderChildren,
-    fetchShareFirstLevelFolders,
     createVariableSharePathname,
   ]);
 

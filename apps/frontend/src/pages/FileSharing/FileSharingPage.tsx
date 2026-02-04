@@ -51,7 +51,7 @@ const FileSharingPage = () => {
   const { isMobileView } = useMedia();
   const { isFileProcessing, currentPath, searchParams, setSearchParams, isLoading } = useFileSharingPage();
   const { isFilePreviewVisible, isFilePreviewDocked } = useFileEditorStore();
-  const { fileOperationProgress, fetchFiles, webdavShares, clearShareFirstLevelFolders } = useFileSharingStore();
+  const { fileOperationProgress, fetchFiles, webdavShares } = useFileSharingStore();
   const { fetchShares } = usePublicShareStore();
 
   useRefreshOnFileOperationComplete({
@@ -60,7 +60,6 @@ const FileSharingPage = () => {
     webdavShare,
     fetchFiles,
     fetchShares,
-    clearShareFirstLevelFolders,
   });
 
   const { percentageUsed } = useQuotaInfo();

@@ -20,7 +20,7 @@
 import React, { isValidElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
 import cn from '@libs/common/utils/className';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowRightToBracket,
@@ -50,7 +50,6 @@ const MenuBar: React.FC = () => {
   const { activeSection } = useSubMenuStore();
   const menubarRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
-  const [searchParams] = useSearchParams();
   const menuBarEntries = useMenuBarConfig();
   const { setCurrentPath, setPathToRestoreSession } = useFileSharingStore();
   const webdavShares = useFileSharingStore((state) => state.webdavShares);
@@ -135,14 +134,6 @@ const MenuBar: React.FC = () => {
     }
   }, [isSelected]);
 
-  useEffect(() => {
-    if (!isSelected) return;
-    const activeItem = menuBarEntries.menuItems.find((item) => item.id === isSelected);
-    if (activeItem?.onExpand && (!activeItem.children || activeItem.children.length === 0)) {
-      activeItem.onExpand();
-    }
-  }, [isSelected, menuBarEntries.menuItems]);
-
   const handleHeaderIconClick = () => {
     switch (pathParts[0]) {
       case APPS.FILE_SHARING: {
@@ -202,7 +193,7 @@ const MenuBar: React.FC = () => {
       <div className="flex-1 overflow-y-auto pb-10">
         {menuBarEntries.menuItems.map((item) => {
           const hasLoadedChildren = item.children && item.children.length > 0;
-          const canExpand = hasLoadedChildren || !!item.onExpand;
+          const canExpand = hasLoadedChildren;
           const isExpanded = expandedItems.has(item.id);
           const isActive = isSelected === item.id;
 
@@ -214,9 +205,6 @@ const MenuBar: React.FC = () => {
           const handleExpandClick = (e: React.MouseEvent) => {
             e.stopPropagation();
             toggleExpanded(item.id);
-            if (!isExpanded && item.onExpand) {
-              item.onExpand();
-            }
           };
 
           const childrenId = `${item.id}-children`;
@@ -274,30 +262,25 @@ const MenuBar: React.FC = () => {
             >
               <div className="overflow-hidden">
                 <div className="ml-2">
-                  {item.children?.map((child) => {
-                    const isChildActive = child.isActive
-                      ? child.isActive(pathname, searchParams)
-                      : activeSection === child.id;
-                    return (
-                      <Button
-                        key={child.id}
-                        type="button"
-                        variant="btn-ghost"
-                        onClick={() => {
-                          if (isMobileView || isTabletView) toggleMobileMenuBar();
-                          child.action();
-                        }}
-                        className={cn(
-                          'flex w-full items-center justify-start py-2 pl-4 pr-3 font-normal',
-                          'transition-all duration-150',
-                          'hover:pl-5',
-                          isChildActive && 'bg-accent font-bold',
-                        )}
-                      >
-                        <span className="truncate">{child.label}</span>
-                      </Button>
-                    );
-                  })}
+                  {item.children?.map((child) => (
+                    <Button
+                      key={child.id}
+                      type="button"
+                      variant="btn-ghost"
+                      onClick={() => {
+                        if (isMobileView || isTabletView) toggleMobileMenuBar();
+                        child.action();
+                      }}
+                      className={cn(
+                        'flex w-full items-center justify-start py-2 pl-4 pr-3 font-normal',
+                        'transition-all duration-150',
+                        'hover:pl-5',
+                        activeSection === child.id && 'bg-accent font-bold',
+                      )}
+                    >
+                      <span className="truncate">{child.label}</span>
+                    </Button>
+                  ))}
                 </div>
               </div>
             </div>

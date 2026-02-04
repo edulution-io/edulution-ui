@@ -105,8 +105,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
         action: () => item.action(),
         icon: item.icon,
         disableTranslation: item.disableTranslation,
-        children: item.children ?? (item.id === activeMenuItemId ? sectionChildren : undefined),
-        onExpand: item.onExpand,
+        children: item.id === activeMenuItemId ? sectionChildren : undefined,
       })),
     [configValues.menuItems, t, activeMenuItemId, sectionChildren],
   );
