@@ -207,14 +207,13 @@ const FileSharingTable = () => {
   const filteredFiles = useMemo(
     () =>
       files.filter((file) => {
-        if (file.filePath === currentPath) return false;
         if (isSystemFile(file.filename) && !showSystemFiles) return false;
         if (isHiddenFile(file.filename) && !showHiddenFiles) return false;
 
         const category = file.type === ContentType.DIRECTORY ? FILE_CATEGORIES.FOLDER : getFileCategory(file.filename);
         return fileCategoryFilters[category as FileCategory];
       }),
-    [files, showSystemFiles, showHiddenFiles, fileCategoryFilters, currentPath],
+    [files, showSystemFiles, showHiddenFiles, fileCategoryFilters],
   );
 
   const filesWithParentNav = useMemo(() => {
