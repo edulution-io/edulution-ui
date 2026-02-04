@@ -42,6 +42,8 @@ const SSE_MESSAGE_TYPE = {
   TLDRAW_SYNC_ROOM_LOG_MESSAGE: 'tldraw_sync_room_log_message',
   MAIL_THEME_UPDATED: 'mail_theme_updated',
   MAIL_THEME_UPDATE_FAILED: 'mail_theme_update_failed',
+  MAIL_NEW_MAIL: 'mail_new_mail',
+  MAIL_FLAGS_CHANGED: 'mail_flags_changed',
 } as const;
 
 export default SSE_MESSAGE_TYPE;
