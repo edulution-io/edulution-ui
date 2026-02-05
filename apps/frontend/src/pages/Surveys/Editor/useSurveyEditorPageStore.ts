@@ -36,7 +36,7 @@ import getInitialSurveyFormByTemplate from '@/pages/Surveys/utils/getInitialSurv
 interface SurveyEditorPageStore {
   loadNewSurvey: (creator: AttendeeDto) => void;
   loadSurveyTemplate: (creator: AttendeeDto, template: SurveyTemplateDto) => void;
-  fetchSelectedSurvey: (creator: AttendeeDto, surveyId: string, isPublic?: boolean) => Promise<void>;
+  fetchSelectedSurvey: (creator: AttendeeDto, surveyId?: string, isPublic?: boolean) => Promise<void>;
   initialSurvey: SurveyDto | undefined;
   isFetching: boolean;
 

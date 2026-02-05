@@ -43,35 +43,33 @@ const SurveyEditorEntryPage = () => {
     lastEditedSurveyId,
     setLastEditedSurveyId,
   } = useSurveyEditorPageStore();
-  
+
   const { surveyId } = useParams();
 
   const { t } = useTranslation();
 
-  const creator: AttendeeDto | undefined = useMemo(() => {
-    if (!user || !user.username) return undefined;
-    return {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      username: user.username,
-      value: user.username,
-      label: `${user.firstName} ${user.lastName}`,
-    };
-  }, [user]);
-
   useEffect(() => {
-    const isSwitchingToNewSurvey = lastEditedSurveyId !== surveyId;
-    if (isSwitchingToNewSurvey) {
+    const isAnotherSurvey = lastEditedSurveyId !== surveyId;
+    if (isAnotherSurvey) {
       resetEditorPage();
       resetStoredSurvey();
       setLastEditedSurveyId(surveyId);
     }
-
-    const shouldFetch = isSwitchingToNewSurvey || !initialSurvey;
-    if (shouldFetch && surveyId && creator) {
-      void fetchSelectedSurvey(creator, surveyId, false);
+    const hasToFetchAnotherSurvey = isAnotherSurvey || !initialSurvey;
+    if (hasToFetchAnotherSurvey && surveyCreator) {
+      void fetchSelectedSurvey(surveyCreator, surveyId, false);
     }
-  }, [creator, initialSurvey, surveyId, lastEditedSurveyId, resetEditorPage, resetStoredSurvey, setLastEditedSurveyId, fetchSelectedSurvey]);
+  }, [
+    surveyCreator,
+    initialSurvey,
+    surveyId,
+    lastEditedSurveyId,
+    resetEditorPage,
+    resetStoredSurvey,
+    setLastEditedSurveyId,
+    fetchSelectedSurvey,
+    loadNewSurvey,
+  ]);
 
   if (isFetching) {
     return (

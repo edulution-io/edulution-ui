@@ -79,10 +79,6 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
     void hasAnswersSelectedSurvey(survey?.id);
   }, [selectedRows]);
 
-  if (!selectedSurveysCount) {
-    return null;
-  }
-
   const handleDeleteSurvey = () => {
     if (Object.keys(selectedRows).length > 0) {
       void setIsDeleteSurveysDialogOpen(true);
@@ -91,7 +87,6 @@ const SurveysTablesFloatingButtons = (props: SurveysTablesFloatingButtonsProps) 
   };
 
   const isOnlyOneSurveySelected = selectedSurveysCount === 1;
-
   const shouldShowResults = isOnlyOneSurveySelected && canShowResults && hasAnswers;
   const hasCurrentUserAnsweredSurvey = selectedSurvey?.participatedAttendees.some((a) => a.username === user?.username);
 
