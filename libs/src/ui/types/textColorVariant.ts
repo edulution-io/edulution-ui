@@ -17,26 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import useUserPath from '@/pages/FileSharing/hooks/useUserPath';
-import MoveContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveContentDialogBody';
-import ContentType from '@libs/filesharing/types/contentType';
-import type MoveContentDialogProps from '@libs/filesharing/types/moveContentDialogBodyProps';
-import { useSearchParams } from 'react-router-dom';
+import TEXT_COLOR_VARIANT from '@libs/ui/constants/textColorVariant';
 
-const CopyContentDialogBody: React.FC<Omit<MoveContentDialogProps, 'pathToFetch'>> = (props) => {
-  const { homePath } = useUserPath();
-  const [searchParams] = useSearchParams();
-  const pathToFetch = searchParams.get('path');
+type TextColorVariant = (typeof TEXT_COLOR_VARIANT)[keyof typeof TEXT_COLOR_VARIANT];
 
-  return (
-    <MoveContentDialogBody
-      {...props}
-      pathToFetch={pathToFetch || homePath}
-      fileType={ContentType.DIRECTORY}
-      isCurrentPathDefaultDestination
-    />
-  );
-};
-
-export default CopyContentDialogBody;
+export default TextColorVariant;

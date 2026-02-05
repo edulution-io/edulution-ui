@@ -17,11 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { DirectoryFileDTO } from '../types/directoryFileDTO';
+const LDAP_SYNC_ACTIVE_EVENT = 'ldap.sync.active';
 
-const processWebdavResponse = (response: DirectoryFileDTO[], currentPath: string) => {
-  const data = response.filter((file) => file.filePath !== currentPath);
-  return data.sort((a, b) => a.filename.localeCompare(b.filename));
-};
-
-export default processWebdavResponse;
+export default LDAP_SYNC_ACTIVE_EVENT;

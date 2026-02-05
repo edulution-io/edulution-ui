@@ -31,6 +31,8 @@ import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import useUserAccounts from '@/hooks/useUserAccounts';
 import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
+import detectIframeColor from '@libs/ui/utils/detectIframeColor';
+import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useFileTableStore from '../Settings/AppConfig/components/useFileTableStore';
 import EmbeddedPageContent from './EmbeddedPageContent';
 
@@ -38,8 +40,8 @@ const EmbeddedPage: React.FC = () => {
   const { pathname } = useLocation();
   const { language } = useLanguage();
   const { tableContentData, fetchTableContent } = useFileTableStore();
-
   const { appConfigs } = useAppConfigsStore();
+  const setFooterColors = useFrameStore((s) => s.setFooterColors);
 
   const rootPathName = getFromPathName(pathname, 1);
 
@@ -48,6 +50,11 @@ const EmbeddedPage: React.FC = () => {
   useEffect(() => {
     void fetchTableContent(rootPathName as TApps);
   }, [rootPathName]);
+
+  const handleIframeLoad = (iframe: HTMLIFrameElement) => {
+    const colors = detectIframeColor(iframe);
+    setFooterColors(rootPathName, colors);
+  };
 
   const currentAppConfig = findAppConfigByName(appConfigs, rootPathName);
 
@@ -76,6 +83,7 @@ const EmbeddedPage: React.FC = () => {
         htmlContent={htmlContent}
         urlSyncEnabled={urlSyncEnabled}
         preloadBasePage={preloadBasePage}
+        onIframeLoad={handleIframeLoad}
       />
     </PageLayout>
   );

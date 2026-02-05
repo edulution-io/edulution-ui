@@ -102,6 +102,8 @@ class FileSystemController {
     return this.filesystemService.getFilesInfo(FilesystemService.buildPathString(appName));
   }
 
+  @Public()
+  @UseGuards(IsPublicAppGuard)
   @Get(`public/${FILE_ENDPOINTS.FILE}/:appName/*filename`)
   servePublicFile(
     @Param('appName') appName: string,
