@@ -17,12 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { lazy, Suspense, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import getCreatorFromUserDto from '@libs/survey/utils/getCreatorFromUserDto';
 import useUserStore from '@/store/UserStore/useUserStore';
+import SurveyEditorPage from '@/pages/Surveys/Editor/SurveyEditorPage';
 import SurveyEditorTemplateGrid from '@/pages/Surveys/Editor/SurveyEditorTemplateGrid';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
@@ -30,8 +31,6 @@ import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuest
 import DeleteTemplateDialog from '@/pages/Surveys/Editor/dialog/DeleteTemplateDialog';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
-
-const SurveyEditorPage = lazy(() => import('./SurveyEditorPage'));
 
 const SurveyEditorEntryPage = () => {
   const { user } = useUserStore();
@@ -76,9 +75,7 @@ const SurveyEditorEntryPage = () => {
   return (
     <PageLayout>
       {initialSurvey ? (
-        <Suspense fallback={<CircleLoader />}>
-          <SurveyEditorPage initialFormValues={initialSurvey} />
-        </Suspense>
+        <SurveyEditorPage initialFormValues={initialSurvey} />
       ) : (
         <SurveyEditorTemplateGrid surveyCreator={surveyCreator} />
       )}

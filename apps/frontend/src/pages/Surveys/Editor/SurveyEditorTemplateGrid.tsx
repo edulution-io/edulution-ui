@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import cn from '@libs/common/utils/className';
 import AttendeeDto from '@libs/user/types/attendee.dto';
@@ -25,10 +25,8 @@ import isSubsequence from '@libs/common/utils/string/isSubsequence';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
 import SurveyEditorTemplateCard from '@/pages/Surveys/Editor/SurveyEditorTemplateCard';
+import SurveyEditorTemplatePreview from '@/pages/Surveys/Editor/SurveyEditorTemplatePreview';
 import Input from '@/components/shared/Input';
-import CircleLoader from '@/components/ui/Loading/CircleLoader';
-
-const SurveyEditorTemplatePreview = lazy(() => import('@/pages/Surveys/Editor/SurveyEditorTemplatePreview'));
 
 interface SurveyEditorTemplateGridProps {
   surveyCreator: AttendeeDto;
@@ -107,11 +105,7 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
           </p>
         )}
       </div>
-      {isOpenTemplatePreview && (
-        <Suspense fallback={<CircleLoader />}>
-          <SurveyEditorTemplatePreview />
-        </Suspense>
-      )}
+      {isOpenTemplatePreview && <SurveyEditorTemplatePreview />}
     </>
   );
 };

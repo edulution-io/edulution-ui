@@ -24,16 +24,16 @@ import { PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import SurveyTable from '@/pages/Surveys/Tables/components/SurveyTable';
 import SurveyTableColumns from '@/pages/Surveys/Tables/components/SurveyTableColumns';
 import SurveysTablesFloatingButtons from '@/pages/Surveys/Tables/components/SurveysTablesFloatingButtons';
-import { TooltipProvider } from '@/components/ui/Tooltip';
 import DeleteSurveysDialog from '@/pages/Surveys/Tables/dialogs/DeleteSurveysDialog';
-import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import SubmittedAnswersDialog from '@/pages/Surveys/Tables/dialogs/SubmittedAnswersDialog';
+import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
+import { TooltipProvider } from '@/components/ui/Tooltip';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
 const ResultTableDialog = lazy(() => import('./dialogs/ResultTableDialog'));
 const ResultVisualizationDialog = lazy(() => import('./dialogs/ResultVisualizationDialog'));
-const SubmittedAnswersDialog = lazy(() => import('./dialogs/SubmittedAnswersDialog'));
 
 interface SurveysTablePageProps {
   title: string;
@@ -100,9 +100,7 @@ const SurveyTablePage = (props: SurveysTablePageProps) => {
           <Suspense fallback={<CircleLoader />}>
             <ResultVisualizationDialog />
           </Suspense>
-          <Suspense fallback={<CircleLoader />}>
-            <SubmittedAnswersDialog />
-          </Suspense>
+          <SubmittedAnswersDialog />
           <SharePublicQRDialog
             url={sharePublicSurveyUrl}
             isOpen={isOpenSharePublicSurveyDialog && !!sharePublicSurveyUrl}

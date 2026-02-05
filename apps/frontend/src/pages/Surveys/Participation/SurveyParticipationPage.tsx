@@ -17,15 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { lazy, Suspense, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import AccessAndParticipateSurvey from '@/pages/Surveys/Participation/AccessAndParticipateSurvey';
 import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useParticipateSurveyStore from '@/pages/Surveys/Participation/useParticipateSurveyStore';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
-
-const AccessAndParticipateSurvey = lazy(() => import('./AccessAndParticipateSurvey'));
 
 interface SurveyParticipationPageProps {
   isPublic: boolean;
@@ -63,11 +62,7 @@ const SurveyParticipationPage = (props: SurveyParticipationPageProps): React.Rea
         </div>
       );
     }
-    return (
-      <Suspense fallback={<CircleLoader className="mx-auto" />}>
-        <AccessAndParticipateSurvey isPublic={isPublic} />
-      </Suspense>
-    );
+    return <AccessAndParticipateSurvey isPublic={isPublic} />;
   };
 
   return <PageLayout>{getBody()}</PageLayout>;
