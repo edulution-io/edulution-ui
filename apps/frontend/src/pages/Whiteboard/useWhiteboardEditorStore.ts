@@ -22,6 +22,7 @@ import type { Editor, StoreSnapshot, TLRecord } from 'tldraw';
 import loadTldrFileIntoEditor from '@libs/tldraw-sync/utils/loadTldrFileIntoEditor';
 import { toast } from 'sonner';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
+import getErrorMessage from '@libs/common/utils/getErrorMessage';
 import { t } from 'i18next';
 
 interface WhiteboardEditorState {
@@ -77,7 +78,7 @@ const useWhiteboardEditorStore = create<WhiteboardEditorState>((set, get) => ({
       await loadTldrFileIntoEditor(editor, file);
       toast.success(t('whiteboard.openTLFileSuccess'));
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : String(error);
+      const message = getErrorMessage(error);
       toast.error(t(message));
     } finally {
       URL.revokeObjectURL(blobUrl);

@@ -361,13 +361,15 @@ const MenuBar: React.FC = () => {
         </aside>
       ) : (
         <div
-          ref={menubarRef}
-          className={cn(
-            'bg-glass fixed left-0 top-0 z-50 h-full overflow-x-hidden backdrop-blur-md duration-300 ease-in-out',
-            isMobileMenuBarOpen ? 'w-64 border-r-[1px] border-muted' : 'w-0',
-          )}
+          className="fixed left-0 top-0 z-50 h-full w-full transform transition-transform duration-300 ease-in-out"
+          style={{ transform: `translateX(${isMobileMenuBarOpen ? '0%' : '-100%'})` }}
         >
-          {isMobileMenuBarOpen && renderMenuBarContent()}
+          <div
+            ref={menubarRef}
+            className="bg-glass fixed left-0 h-full w-64 overflow-x-hidden border-r-[1px] border-muted backdrop-blur-md"
+          >
+            {renderMenuBarContent()}
+          </div>
         </div>
       )}
     </>
