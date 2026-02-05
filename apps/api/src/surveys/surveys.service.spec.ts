@@ -42,6 +42,8 @@ describe('SurveyService', () => {
   let surveyModel: Model<SurveyDocument>;
   const notificationMock = {
     notifyUsernames: jest.fn().mockResolvedValue(undefined),
+    upsertNotificationForSource: jest.fn().mockResolvedValue(undefined),
+    cascadeDeleteBySourceId: jest.fn().mockResolvedValue(undefined),
   };
   beforeEach(async () => {
     Logger.error = jest.fn();
