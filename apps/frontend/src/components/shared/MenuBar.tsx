@@ -40,8 +40,8 @@ import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableShare
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
 import useSubMenuStore from '@/store/useSubMenuStore';
+import { Button } from '@edulution-io/ui-kit';
 import useMenuBarStore from './useMenuBarStore';
-import { Button } from './Button';
 import MenuBarFooter from './MenuBarFooter';
 import IconWrapper from './IconWrapper';
 

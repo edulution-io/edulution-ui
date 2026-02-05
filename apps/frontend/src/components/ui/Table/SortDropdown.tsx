@@ -24,7 +24,7 @@ import { faArrowDownAZ, faArrowUpAZ, faChevronDown } from '@fortawesome/free-sol
 import { useTranslation } from 'react-i18next';
 import cn from '@libs/common/utils/className';
 import { inputVariants } from '@libs/ui/constants/commonClassNames';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 
 interface SortDropdownProps<TData> {

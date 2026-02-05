@@ -19,7 +19,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import useUserStore from '@/store/UserStore/useUserStore';
 import Switch from '@/components/ui/Switch';
 

@@ -23,7 +23,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import NativeAppHeaderProps from '@libs/ui/types/NativeAppHeaderProps';
 import getAppIconClassName from '@/utils/getAppIconClassName';
 import cn from '@libs/common/utils/className';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import { EditIcon } from '@libs/common/constants/standardActionIcons';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import IconWrapper from '@/components/shared/IconWrapper';

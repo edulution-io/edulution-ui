@@ -21,7 +21,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { html as beautifyHtml } from 'js-beautify';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import { Textarea } from '@/components/ui/Textarea';
 import { FormControl, FormFieldSH, FormItem } from '@/components/ui/Form';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';

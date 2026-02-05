@@ -25,7 +25,7 @@ import { js as beautifyJs } from 'js-beautify';
 import { parse } from 'acorn';
 import { FormControl, FormFieldSH, FormItem } from '@/components/ui/Form';
 import { Textarea } from '@/components/ui/Textarea';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import cn from '@libs/common/utils/className';
 
 interface ScriptEditorFieldProps<T extends FieldValues> {

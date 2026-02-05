@@ -26,7 +26,7 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import useLdapGroups from '@/hooks/useLdapGroups';
 import useTemplateMenuStore from '@/pages/Surveys/Editor/dialog/useTemplateMenuStore';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import { Textarea } from '@/components/ui/Textarea';
 import { AccordionTrigger, AccordionItem, AccordionContent } from '@/components/ui/AccordionSH';
 

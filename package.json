@@ -208,6 +208,7 @@
     "@typescript-eslint/eslint-plugin": "^7.14.1",
     "@typescript-eslint/parser": "^7.14.1",
     "@vitejs/plugin-react-swc": "^3.5.0",
+    "vite-plugin-dts": "^4.5.0",
     "autoprefixer": "^10.4.17",
     "chalk": "^5.4.1",
     "eslint": "^8.57.0",

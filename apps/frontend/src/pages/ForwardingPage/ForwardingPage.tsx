@@ -21,7 +21,7 @@ import React, { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import PageTitle from '@/components/PageTitle';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useLanguage from '@/hooks/useLanguage';

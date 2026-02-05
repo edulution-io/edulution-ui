@@ -22,7 +22,7 @@ import ConferenceDto from '@libs/conferences/types/conference.dto';
 import cn from '@libs/common/utils/className';
 import { BadgeSH } from '@/components/ui/BadgeSH';
 import { ScrollArea } from '@/components/ui/ScrollArea';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import useConferenceDetailsDialogStore from '@/pages/ConferencePage/ConfereneceDetailsDialog/useConferenceDetailsDialogStore';
 
 interface ConferencesListProps {

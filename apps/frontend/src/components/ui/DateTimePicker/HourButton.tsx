@@ -20,7 +20,7 @@
 import React, { useCallback } from 'react';
 import cn from '@libs/common/utils/className';
 import DropdownVariant from '@libs/ui/types/DropdownVariant';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 
 interface HourButtonProps {
   hour: number;

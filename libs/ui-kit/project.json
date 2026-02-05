@@ -1,0 +1,40 @@
+{
+  "name": "ui-kit",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/ui-kit/src",
+  "projectType": "library",
+  "tags": ["type:ui", "scope:shared"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "cwd": "libs/ui-kit",
+        "commands": [
+          "vite build",
+          "cp package.json dist/package.json",
+          "cp README.md dist/README.md 2>/dev/null || true",
+          "cp tailwind.config.js dist/tailwind.config.js 2>/dev/null || true",
+          "cp tailwind.config.cjs dist/tailwind.config.cjs 2>/dev/null || true"
+        ],
+        "parallel": false
+      },
+      "dependsOn": ["^build"]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": ["libs/ui-kit/**/*.{ts,tsx}"],
+        "tsConfig": ["libs/ui-kit/tsconfig.json"]
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "cwd": "libs/ui-kit/dist",
+        "command": "npm publish"
+      }
+    }
+  }
+}

@@ -37,7 +37,7 @@ import calculateButtonLayout from '@libs/ui/utils/calculateButtonLayout';
 import cn from '@libs/common/utils/className';
 import usePortalRoot from '@/hooks/usePortalRoot';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 
 const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
   const { t } = useTranslation();

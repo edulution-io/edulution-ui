@@ -33,7 +33,7 @@ import safeGetHours from '@libs/common/utils/Date/safeGetHours';
 import safeGetMinutes from '@libs/common/utils/Date/safeGetMinutes';
 import safeGetDate from '@libs/common/utils/Date/safeGetDate';
 import useLanguage from '@/hooks/useLanguage';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import { Calendar } from '@/components/ui/Calendar';
 import { Form, FormControl, FormFieldSH, FormItem, FormMessage } from '@/components/ui/Form';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
