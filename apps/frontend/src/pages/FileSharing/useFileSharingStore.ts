@@ -149,9 +149,7 @@ const useFileSharingStore = create<UseFileSharingStore>(
             params: { type: ContentType.FILE, path, share: shareName },
           });
 
-          const webdavShareType = get().webdavShares.find((s) => s.displayName === shareName)?.type;
-          if (!webdavShareType) return;
-          const files = processWebdavResponse(data, webdavShareType);
+          const files = processWebdavResponse(data, path);
 
           set({
             currentPath: path,
