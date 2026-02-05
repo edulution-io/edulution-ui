@@ -35,7 +35,7 @@
   ],
   "publishConfig": {
     "registry": "https://npm.pkg.github.com",
-    "access": "restricted"
+    "access": "public"
   },
   "peerDependencies": {
     "react": ">=18.0.0",
