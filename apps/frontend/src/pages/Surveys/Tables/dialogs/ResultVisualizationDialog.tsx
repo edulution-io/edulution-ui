@@ -17,13 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
-import ResultVisualizationDialogBody from '@/pages/Surveys/Tables/dialogs/ResultVisualizationDialogBody';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
+
+const ResultVisualizationDialogBody = lazy(() => import('./ResultVisualizationDialogBody'));
 
 const ResultVisualizationDialog = () => {
   const { isOpenPublicResultsVisualisationDialog, setIsOpenPublicResultsVisualisationDialog, isLoading } =
@@ -32,6 +34,12 @@ const ResultVisualizationDialog = () => {
   const { t } = useTranslation();
 
   const handleClose = () => setIsOpenPublicResultsVisualisationDialog(!isOpenPublicResultsVisualisationDialog);
+
+  const body = (
+    <Suspense fallback={<CircleLoader />}>
+      <ResultVisualizationDialogBody />
+    </Suspense>
+  );
 
   const getFooter = () => (
     <DialogFooterButtons
@@ -47,7 +55,7 @@ const ResultVisualizationDialog = () => {
         isOpen={isOpenPublicResultsVisualisationDialog}
         handleOpenChange={() => setIsOpenPublicResultsVisualisationDialog(!isOpenPublicResultsVisualisationDialog)}
         title={t('surveys.resultChartDialog.title')}
-        body={<ResultVisualizationDialogBody />}
+        body={body}
         desktopContentClassName="max-h-[75vh] max-w-[85%]"
         footer={getFooter()}
       />

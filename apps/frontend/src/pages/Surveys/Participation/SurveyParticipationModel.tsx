@@ -39,6 +39,7 @@ import registerSurveyComponents from '@/pages/Surveys/components/registerSurveyC
 import 'survey-core/i18n/french';
 import 'survey-core/i18n/german';
 import 'survey-core/i18n/italian';
+import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/participation.css';
 
 registerSurveyComponents();

@@ -20,7 +20,6 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 import { PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
-import SurveysPageView from '@libs/survey/types/api/surveysPageView';
 import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import SurveyApp from '@/pages/Surveys/SurveyApp';
@@ -47,10 +46,7 @@ const getPublicRoutes = () => [
     element={
       <>
         <PageTitle translationId="survey.publicSurvey" />
-        <SurveyApp
-          surveysPageView={SurveysPageView.PARTICIPATION}
-          isPublic
-        />
+        <SurveyApp isPublicParticipation />
       </>
     }
   />,

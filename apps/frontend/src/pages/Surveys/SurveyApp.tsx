@@ -17,29 +17,34 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
+import { useParams } from 'react-router-dom';
 import SurveysPageView from '@libs/survey/types/api/surveysPageView';
-import OpenSurveysPage from '@/pages/Surveys/Tables/OpenSurveysPage';
-import AnsweredSurveysPage from '@/pages/Surveys/Tables/AnsweredSurveysPage';
-import CreatedSurveysPage from '@/pages/Surveys/Tables/CreatedSurveysPage';
-import SurveyEditorEntryPage from '@/pages/Surveys/Editor/SurveyEditorEntryPage';
-import SurveyParticipationPage from '@/pages/Surveys/Participation/SurveyParticipationPage';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
-import '@/pages/Surveys/theme/creator.min.css';
-import '@/pages/Surveys/theme/default2.min.css';
+const OpenSurveysPage = lazy(() => import('./Tables/OpenSurveysPage'));
+const AnsweredSurveysPage = lazy(() => import('./Tables/AnsweredSurveysPage'));
+const CreatedSurveysPage = lazy(() => import('./Tables/CreatedSurveysPage'));
+const SurveyEditorEntryPage = lazy(() => import('./Editor/SurveyEditorEntryPage'));
+const SurveyParticipationPage = lazy(() => import('./Participation/SurveyParticipationPage'));
 
 interface SurveyAppProps {
-  surveysPageView: SurveysPageView;
-  isPublic?: boolean;
+  isPublicParticipation?: boolean;
 }
 
 const SurveyApp = (props: SurveyAppProps) => {
-  const { surveysPageView, isPublic = false } = props;
+  const { isPublicParticipation = false } = props;
+
+  const { surveysPageView } = useParams();
 
   const getContent = () => {
+    if (isPublicParticipation) {
+      return <SurveyParticipationPage isPublic />;
+    }
+
     switch (surveysPageView) {
-      case SurveysPageView.OPEN:
-        return <OpenSurveysPage />;
+      case SurveysPageView.PARTICIPATION:
+        return <SurveyParticipationPage isPublic={false} />;
       case SurveysPageView.ANSWERED:
         return <AnsweredSurveysPage />;
       case SurveysPageView.CREATED:
@@ -48,18 +53,13 @@ const SurveyApp = (props: SurveyAppProps) => {
         return <SurveyEditorEntryPage />;
       case SurveysPageView.EDITOR:
         return <SurveyEditorEntryPage />;
-      case SurveysPageView.PARTICIPATION:
-        return <SurveyParticipationPage isPublic={isPublic} />;
+      case SurveysPageView.OPEN:
       default:
-        return null;
+        return <OpenSurveysPage />;
     }
   };
 
-  return (
-    // <Suspense fallback={<CircleLoader />}>
-    getContent()
-    // </Suspense>
-  );
+  return <Suspense fallback={<CircleLoader />}>{getContent()}</Suspense>;
 };
 
 export default SurveyApp;

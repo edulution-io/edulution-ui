@@ -18,9 +18,8 @@
  */
 
 import React from 'react';
-import { Navigate, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { SURVEYS } from '@libs/survey/constants/surveys-endpoint';
-import SurveysPageView from '@libs/survey/types/api/surveysPageView';
 import SurveyApp from '@/pages/Surveys/SurveyApp';
 
 const getSurveyRoutes = () => [
@@ -30,36 +29,15 @@ const getSurveyRoutes = () => [
   >
     <Route
       path=""
-      element={
-        <Navigate
-          to={SurveysPageView.OPEN}
-          replace
-        />
-      }
+      element={<SurveyApp />}
     />
     <Route
-      path={SurveysPageView.OPEN}
-      element={<SurveyApp surveysPageView={SurveysPageView.OPEN} />}
+      path=":surveysPageView"
+      element={<SurveyApp />}
     />
     <Route
-      path={SurveysPageView.ANSWERED}
-      element={<SurveyApp surveysPageView={SurveysPageView.ANSWERED} />}
-    />
-    <Route
-      path={SurveysPageView.CREATED}
-      element={<SurveyApp surveysPageView={SurveysPageView.CREATED} />}
-    />
-    <Route
-      path={SurveysPageView.CREATOR}
-      element={<SurveyApp surveysPageView={SurveysPageView.CREATOR} />}
-    />
-    <Route
-      path={`${SurveysPageView.EDITOR}/:surveyId`}
-      element={<SurveyApp surveysPageView={SurveysPageView.EDITOR} />}
-    />
-    <Route
-      path={`${SurveysPageView.PARTICIPATION}/:surveyId`}
-      element={<SurveyApp surveysPageView={SurveysPageView.PARTICIPATION} />}
+      path=":surveysPageView/:surveyId"
+      element={<SurveyApp />}
     />
   </Route>,
 ];

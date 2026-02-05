@@ -27,6 +27,8 @@ import 'survey-creator-core/i18n/english';
 import 'survey-creator-core/i18n/german';
 import 'survey-creator-core/i18n/french';
 import TEditorLocale from '@libs/survey/types/editor/TEditorLocale';
+import '@/pages/Surveys/theme/creator.min.css';
+import '@/pages/Surveys/theme/default2.min.css';
 import '@/pages/Surveys/theme/creator.css';
 import '@/pages/Surveys/theme/participation.css';
 
