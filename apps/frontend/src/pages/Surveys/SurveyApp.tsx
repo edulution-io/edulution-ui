@@ -20,11 +20,11 @@
 import React, { lazy, Suspense } from 'react';
 import { useParams } from 'react-router-dom';
 import SurveysPageView from '@libs/survey/types/api/surveysPageView';
+import OpenSurveysPage from '@/pages/Surveys/Tables/OpenSurveysPage';
+import AnsweredSurveysPage from '@/pages/Surveys/Tables/AnsweredSurveysPage';
+import CreatedSurveysPage from '@/pages/Surveys/Tables/CreatedSurveysPage';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
-const OpenSurveysPage = lazy(() => import('./Tables/OpenSurveysPage'));
-const AnsweredSurveysPage = lazy(() => import('./Tables/AnsweredSurveysPage'));
-const CreatedSurveysPage = lazy(() => import('./Tables/CreatedSurveysPage'));
 const SurveyEditorEntryPage = lazy(() => import('./Editor/SurveyEditorEntryPage'));
 const SurveyParticipationPage = lazy(() => import('./Participation/SurveyParticipationPage'));
 
@@ -37,29 +37,36 @@ const SurveyApp = (props: SurveyAppProps) => {
 
   const { surveysPageView } = useParams();
 
-  const getContent = () => {
-    if (isPublicParticipation) {
-      return <SurveyParticipationPage isPublic />;
-    }
+  if (isPublicParticipation) {
+    return (
+      <Suspense fallback={<CircleLoader />}>
+        <SurveyParticipationPage isPublic />
+      </Suspense>
+    );
+  }
 
-    switch (surveysPageView) {
-      case SurveysPageView.PARTICIPATION:
-        return <SurveyParticipationPage isPublic={false} />;
-      case SurveysPageView.ANSWERED:
-        return <AnsweredSurveysPage />;
-      case SurveysPageView.CREATED:
-        return <CreatedSurveysPage />;
-      case SurveysPageView.CREATOR:
-        return <SurveyEditorEntryPage />;
-      case SurveysPageView.EDITOR:
-        return <SurveyEditorEntryPage />;
-      case SurveysPageView.OPEN:
-      default:
-        return <OpenSurveysPage />;
-    }
-  };
-
-  return <Suspense fallback={<CircleLoader />}>{getContent()}</Suspense>;
+  switch (surveysPageView) {
+    case SurveysPageView.PARTICIPATION:
+      return (
+        <Suspense fallback={<CircleLoader />}>
+          <SurveyParticipationPage isPublic={false} />
+        </Suspense>
+      );
+    case SurveysPageView.ANSWERED:
+      return <AnsweredSurveysPage />;
+    case SurveysPageView.CREATED:
+      return <CreatedSurveysPage />;
+    case SurveysPageView.CREATOR:
+    case SurveysPageView.EDITOR:
+      return (
+        <Suspense fallback={<CircleLoader />}>
+          <SurveyEditorEntryPage />
+        </Suspense>
+      );
+    case SurveysPageView.OPEN:
+    default:
+      return <OpenSurveysPage />;
+  }
 };
 
 export default SurveyApp;

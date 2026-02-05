@@ -24,13 +24,13 @@ import { PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import SurveyTable from '@/pages/Surveys/Tables/components/SurveyTable';
 import SurveyTableColumns from '@/pages/Surveys/Tables/components/SurveyTableColumns';
 import SurveysTablesFloatingButtons from '@/pages/Surveys/Tables/components/SurveysTablesFloatingButtons';
-import DeleteSurveysDialog from '@/pages/Surveys/Tables/dialogs/DeleteSurveysDialog';
 import ResultTableDialog from '@/pages/Surveys/Tables/dialogs/ResultTableDialog';
 import ResultVisualizationDialog from '@/pages/Surveys/Tables/dialogs/ResultVisualizationDialog';
-import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import SubmittedAnswersDialog from '@/pages/Surveys/Tables/dialogs/SubmittedAnswersDialog';
-import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
 import { TooltipProvider } from '@/components/ui/Tooltip';
+import DeleteSurveysDialog from '@/pages/Surveys/Tables/dialogs/DeleteSurveysDialog';
+import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
+import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import PageLayout from '@/components/structure/layout/PageLayout';
 
 interface SurveysTablePageProps {

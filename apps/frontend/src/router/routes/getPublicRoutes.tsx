@@ -21,11 +21,11 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 import { PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants/apiEndpoints';
-import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
-import SurveyApp from '@/pages/Surveys/SurveyApp';
 import PublicConferencePage from '@/pages/ConferencePage/PublicConference/PublicConferencePage';
-import PublicShareDownloadPage from '@/pages/FileSharing/publicShare/publicPage/PublicShareDownloadPage';
 import PageTitle from '@/components/PageTitle';
+import PublicShareDownloadPage from '@/pages/FileSharing/publicShare/publicPage/PublicShareDownloadPage';
+import SurveyApp from '@/pages/Surveys/SurveyApp';
+import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import getPublicEmbeddedRoutes from './getPublicEmbeddedRoutes';
 
 const getPublicRoutes = () => [

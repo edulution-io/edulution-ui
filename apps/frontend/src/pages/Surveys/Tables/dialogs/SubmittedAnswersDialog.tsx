@@ -17,15 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect } from 'react';
+import React, { lazy, Suspense, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import SubmittedAnswersDialogBody from '@/pages/Surveys/Tables/dialogs/SubmittedAnswersDialogBody';
 import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+
+const SubmittedAnswersDialogBody = lazy(() => import('./SubmittedAnswersDialogBody'));
 
 const SubmittedAnswersDialog = () => {
   const { selectedSurvey: survey } = useSurveysTablesPageStore();
@@ -55,12 +56,14 @@ const SubmittedAnswersDialog = () => {
       return <h3 className="transform(-50%,-50%) absolute right-1/2 top-1/2">{t('survey.notFound')}</h3>;
     }
     return (
-      <ScrollArea>
-        <SubmittedAnswersDialogBody
-          formula={surveyJSON}
-          answer={answer}
-        />
-      </ScrollArea>
+      <Suspense fallback={<LoadingIndicatorDialog isOpen />}>
+        <ScrollArea>
+          <SubmittedAnswersDialogBody
+            formula={surveyJSON}
+            answer={answer}
+          />
+        </ScrollArea>
+      </Suspense>
     );
   };
 
