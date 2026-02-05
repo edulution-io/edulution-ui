@@ -434,6 +434,17 @@ class ConferencesService implements OnModuleInit {
       throw new CustomHttpException(ConferencesErrorMessage.MeetingNotFound, HttpStatus.NOT_FOUND, { meetingIDs });
     }
 
+    await Promise.all(
+      meetingIDs.map((meetingId) =>
+        this.notificationService.cascadeDeleteBySourceId(meetingId).catch((error) => {
+          Logger.error(
+            `Failed to cascade delete notifications for conference ${meetingId}: ${error}`,
+            ConferencesService.name,
+          );
+        }),
+      ),
+    );
+
     const invitedMembersList = (
       await Promise.all(
         conferences.map((conference) =>

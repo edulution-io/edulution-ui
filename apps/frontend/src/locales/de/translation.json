@@ -269,6 +269,7 @@
       "generic": "Das Mail-Theme wurde aktualisiert. Bitte lade die Seite neu, um die Änderungen zu übernehmen.",
       "failed": "Das Mail-Theme konnte nicht aktualisiert werden."
     },
+    "newMail": "{{count}} neue E-Mail(s) erhalten",
     "importer": {
       "filterPlaceHolderText": "Suche nach Benutzernamen",
       "title": "E-Mail-Sync",
@@ -2084,7 +2085,8 @@
   "users": {
     "errors": {
       "notFoundError": "Benutzer existiert nicht",
-      "updateError": "Benutzer konnte nicht aktualisiert werden"
+      "updateError": "Benutzer konnte nicht aktualisiert werden",
+      "passwordNotSetError": "Passwort ist für diesen Benutzer nicht gesetzt"
     }
   },
   "permission": {

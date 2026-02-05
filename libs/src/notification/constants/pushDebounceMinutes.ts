@@ -17,6 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const FEED_PULL_TIME_INTERVAL_SLOW = 60000;
+const PUSH_DEBOUNCE_MINUTES = 30;
 
-export default FEED_PULL_TIME_INTERVAL_SLOW;
+export default PUSH_DEBOUNCE_MINUTES;

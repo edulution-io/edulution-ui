@@ -19,10 +19,10 @@
 
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useInterval } from 'usehooks-ts';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import FEED_PULL_TIME_INTERVAL_SLOW from '@libs/dashboard/constants/pull-time-interval';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
+import type MailNewMailNotificationDto from '@libs/mail/types/mailNewMailNotification.dto';
 import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import APPS from '@libs/appconfig/constants/apps';
@@ -46,6 +46,7 @@ import useFileOperationProgressToast from '@/hooks/useFileOperationProgressToast
 const useNotifications = () => {
   const { t } = useTranslation();
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
+  const { getAppConfigs } = useAppConfigsStore();
   const isMailsAppActivated = useIsAppActive(APPS.MAIL);
   const { getMails } = useMailsStore();
   const isConferenceAppActivated = useIsAppActive(APPS.CONFERENCES);
@@ -100,11 +101,23 @@ const useNotifications = () => {
     fetchUnreadCount,
   ]);
 
-  useInterval(() => {
-    if (isAuthReady && isMailsAppActivated && !isSuperAdmin) {
-      void getMails();
-    }
-  }, FEED_PULL_TIME_INTERVAL_SLOW);
+  const handleNewMail = (e: MessageEvent<string>) => {
+    const notification = JSON.parse(e.data) as MailNewMailNotificationDto;
+    void getMails();
+    toast.info(t('mail.newMail', { count: notification.newMailCount }));
+  };
+
+  useSseEventListener(SSE_MESSAGE_TYPE.MAIL_NEW_MAIL, handleNewMail, {
+    enabled: isMailsAppActivated && !isSuperAdmin,
+  });
+
+  const handleMailFlagsChanged = () => {
+    void getMails();
+  };
+
+  useSseEventListener(SSE_MESSAGE_TYPE.MAIL_FLAGS_CHANGED, handleMailFlagsChanged, {
+    enabled: isMailsAppActivated && !isSuperAdmin,
+  });
 
   const handleMailThemeUpdated = () => {
     toast.info(t('mail.themeUpdated.generic'), {
@@ -194,6 +207,14 @@ const useNotifications = () => {
 
   useSseEventListener(SSE_MESSAGE_TYPE.TLDRAW_SYNC_ROOM_LOG_MESSAGE, handleNewHistoryLog, {
     enabled: isWhiteboardActive,
+  });
+
+  const handleAppConfigUpdated = () => {
+    void getAppConfigs();
+  };
+
+  useSseEventListener(SSE_MESSAGE_TYPE.APPCONFIG_UPDATED, handleAppConfigUpdated, {
+    enabled: isAuthReady,
   });
 };
 
