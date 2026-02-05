@@ -30,6 +30,8 @@ import PageLayout from '@/components/structure/layout/PageLayout';
 import CreateOrUpdateBulletinDialog from '@/pages/BulletinBoard/BulletinBoardEditorial/CreateOrUpdateBulletinDialog';
 import useUserPreferencesStore from '@/store/useUserPreferencesStore';
 import USER_PREFERENCES_FIELDS from '@libs/user-preferences/constants/user-preferences-fields';
+import BULLETIN_BOARD_GRID_ROWS from '@libs/bulletinBoard/constants/bulletin-board-grid-rows';
+import cn from '@libs/common/utils/className';
 
 const BulletinBoardPage = () => {
   const { t } = useTranslation();
@@ -40,6 +42,8 @@ const BulletinBoardPage = () => {
     isLoading,
     isEditorialModeEnabled,
     hydrateCollapsed,
+    hydrateGridRows,
+    gridRows,
   } = useBulletinBoardStore();
 
   const { getUserPreferences } = useUserPreferencesStore();
@@ -48,12 +52,19 @@ const BulletinBoardPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const userPreferences = await getUserPreferences([USER_PREFERENCES_FIELDS.collapsedBulletins]);
+      const userPreferences = await getUserPreferences([
+        USER_PREFERENCES_FIELDS.collapsedBulletins,
+        USER_PREFERENCES_FIELDS.bulletinBoardGridRows,
+      ] as string[]);
 
       if (userPreferences?.collapsedBulletins) {
         hydrateCollapsed(userPreferences.collapsedBulletins);
       } else {
         hydrateCollapsed({});
+      }
+
+      if (userPreferences?.bulletinBoardGridRows) {
+        hydrateGridRows(userPreferences.bulletinBoardGridRows);
       }
 
       void getCategoriesWithEditPermission();
@@ -67,9 +78,28 @@ const BulletinBoardPage = () => {
     bulletinBoardNotifications,
     getUserPreferences,
     hydrateCollapsed,
+    hydrateGridRows,
     getBulletinsByCategories,
     getCategoriesWithEditPermission,
   ]);
+
+  const isMultiRow = gridRows !== BULLETIN_BOARD_GRID_ROWS.ONE;
+  const isAutoLayout = gridRows === BULLETIN_BOARD_GRID_ROWS.AUTO;
+
+  const getContainerClassName = () => {
+    if (isAutoLayout) {
+      return 'grid h-full max-h-full auto-rows-min grid-cols-[repeat(auto-fill,minmax(400px,1fr))] gap-3 overflow-y-auto overflow-x-hidden p-3 scrollbar-thin';
+    }
+    if (isMultiRow) {
+      const cols = gridRows === BULLETIN_BOARD_GRID_ROWS.TWO ? 2 : 3;
+      return cn(
+        'grid h-full max-h-full gap-3 overflow-y-auto overflow-x-hidden p-3 scrollbar-thin',
+        cols === 2 && 'grid-cols-2',
+        cols === 3 && 'grid-cols-3',
+      );
+    }
+    return 'flex h-full max-h-full overflow-x-auto overflow-y-hidden scrollbar-thin';
+  };
 
   const getPageContent = () => {
     if (isEditorialModeEnabled) {
@@ -77,7 +107,7 @@ const BulletinBoardPage = () => {
     }
 
     return (
-      <div className="flex h-full max-h-full overflow-x-auto overflow-y-hidden scrollbar-thin">
+      <div className={getContainerClassName()}>
         {(isLoading || isInitialLoading) && <LoadingIndicatorDialog isOpen />}
 
         {bulletinsByCategories &&
@@ -90,6 +120,7 @@ const BulletinBoardPage = () => {
                 canEditCategory={canEditCategory}
                 category={category}
                 bulletins={bulletins}
+                gridRows={gridRows}
               />
             ))}
 

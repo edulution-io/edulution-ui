@@ -24,7 +24,9 @@ import handleApiError from '@/utils/handleApiError';
 import BulletinsByCategories from '@libs/bulletinBoard/types/bulletinsByCategories';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
 import UpdateBulletinCollapsedDto from '@libs/user-preferences/types/update-bulletin-collapsed.dto';
+import UpdateBulletinBoardGridRowsDto from '@libs/user-preferences/types/update-bulletin-board-grid-rows.dto';
 import USER_PREFERENCES_ENDPOINT from '@libs/user-preferences/constants/user-preferences-endpoint';
+import BULLETIN_BOARD_GRID_ROWS from '@libs/bulletinBoard/constants/bulletin-board-grid-rows';
 
 export interface BulletinBoardTableStore {
   reset: () => void;
@@ -41,6 +43,9 @@ export interface BulletinBoardTableStore {
   bulletinBoardNotifications: BulletinResponseDto[];
   addBulletinBoardNotification: (bulletin: BulletinResponseDto) => void;
   markBulletinAsRead: (bulletinId: string) => void;
+  gridRows: string;
+  setGridRows: (gridRows: string) => Promise<void>;
+  hydrateGridRows: (gridRows: string) => void;
 }
 
 const initialValues = {
@@ -50,6 +55,7 @@ const initialValues = {
   isEditorialModeEnabled: false,
   bulletinBoardNotifications: [],
   collapsedMap: {},
+  gridRows: BULLETIN_BOARD_GRID_ROWS.ONE,
 };
 
 const useBulletinBoardStore = create<BulletinBoardTableStore>((set, get) => ({
@@ -77,6 +83,20 @@ const useBulletinBoardStore = create<BulletinBoardTableStore>((set, get) => ({
   },
 
   hydrateCollapsed: (map) => set({ collapsedMap: map ?? {} }),
+
+  hydrateGridRows: (gridRows) => set({ gridRows: gridRows ?? BULLETIN_BOARD_GRID_ROWS.ONE }),
+
+  setGridRows: async (gridRows) => {
+    const previousGridRows = get().gridRows;
+    set({ gridRows });
+
+    try {
+      const dto: UpdateBulletinBoardGridRowsDto = { gridRows };
+      await eduApi.patch(`${USER_PREFERENCES_ENDPOINT}/bulletin-board-grid-rows`, dto);
+    } catch (error) {
+      set({ gridRows: previousGridRows });
+    }
+  },
 
   setIsEditorialModeEnabled: (isEditorialModeEnabled) => set({ isEditorialModeEnabled }),
 

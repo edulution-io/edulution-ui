@@ -27,17 +27,21 @@ import BulletinBoardColumnItem from '@/pages/BulletinBoard/components/BulletinBo
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
 import FullScreenImage from '@/components/ui/FullScreenImage';
 import { useTranslation } from 'react-i18next';
+import BULLETIN_BOARD_GRID_ROWS from '@libs/bulletinBoard/constants/bulletin-board-grid-rows';
+import cn from '@libs/common/utils/className';
 
 const BulletinBoardPageColumn = ({
   bulletins,
   categoryCount,
   category,
   canEditCategory,
+  gridRows,
 }: {
   categoryCount: number;
   category: BulletinCategoryResponseDto;
   bulletins: BulletinResponseDto[];
   canEditCategory: boolean;
+  gridRows: string;
 }) => {
   const { t } = useTranslation();
   const { getBulletinsByCategories } = useBulletinBoardStore();
@@ -54,18 +58,41 @@ const BulletinBoardPageColumn = ({
     setIsImagePreviewModalOpen(false);
   };
 
-  const width = `${100 / categoryCount}%`;
+  const isSingleRow = gridRows === BULLETIN_BOARD_GRID_ROWS.ONE;
+  const isMultiRow = !isSingleRow;
+  const width = isSingleRow ? `${100 / categoryCount}%` : undefined;
+
+  const getRowCount = () => {
+    if (gridRows === BULLETIN_BOARD_GRID_ROWS.TWO) return 2;
+    if (gridRows === BULLETIN_BOARD_GRID_ROWS.THREE) return 3;
+    return 2;
+  };
+
+  const getMaxHeight = () => {
+    if (!isMultiRow) return undefined;
+    return `calc((100vh - 180px) / ${getRowCount()})`;
+  };
 
   return (
     <div
-      style={{ width }}
-      className="flex max-h-full w-full min-w-[85vw] flex-shrink-0 flex-col rounded-lg pr-2 md:ml-0 md:min-w-[400px] md:pr-3 md:pt-3"
+      style={{ width, maxHeight: getMaxHeight() }}
+      className={cn(
+        'flex w-full flex-col rounded-lg',
+        isSingleRow && 'max-h-full min-w-[85vw] flex-shrink-0 pr-2 md:ml-0 md:min-w-[400px] md:pr-3 md:pt-3',
+        isMultiRow && 'overflow-hidden',
+      )}
     >
       <BulletinBoardColumnHeader
         category={category}
         canEditCategory={canEditCategory}
       />
-      <div className="mb-2 flex flex-col gap-4 overflow-y-auto pb-20 pt-1 text-background scrollbar-thin">
+      <div
+        className={cn(
+          'flex flex-col gap-4 overflow-y-auto pt-1 text-background scrollbar-thin',
+          isSingleRow && 'mb-2 pb-20',
+          isMultiRow && 'mb-1 flex-1 pb-4',
+        )}
+      >
         {bulletins.map((bulletin) => (
           <BulletinBoardColumnItem
             key={`${bulletin.id}:${category.bulletinVisibility}`}
