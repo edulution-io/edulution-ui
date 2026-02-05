@@ -33,6 +33,8 @@ import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingBut
 import BackButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/backButton';
 import useUserStore from '@/store/UserStore/useUserStore';
 import PageTitle from '@/components/PageTitle';
+import detectIframeColor from '@libs/ui/utils/detectIframeColor';
+import useFrameStore from '@/components/structure/framing/useFrameStore';
 import useFileTableStore from '../Settings/AppConfig/components/useFileTableStore';
 import EmbeddedPageContent from './EmbeddedPageContent';
 
@@ -45,8 +47,14 @@ const PublicEmbeddedPage: React.FC = () => {
   const publicFilesInfo = useFileTableStore((s) => s.publicFilesInfo);
   const isAuthenticated = useUserStore((s) => s.isAuthenticated);
   const [currentAppConfig, setCurrentAppConfig] = useState<AppConfigDto>({} as AppConfigDto);
+  const setFooterColors = useFrameStore((s) => s.setFooterColors);
 
   const rootPathName = getFromPathName(pathname, 1);
+
+  const handleIframeLoad = (iframe: HTMLIFrameElement) => {
+    const colors = detectIframeColor(iframe);
+    setFooterColors(rootPathName, colors);
+  };
 
   useEffect(() => {
     const fetchCurrentAppConfig = async () => {
@@ -90,6 +98,7 @@ const PublicEmbeddedPage: React.FC = () => {
         htmlContent={htmlContent}
         urlSyncEnabled={urlSyncEnabled}
         preloadBasePage={preloadBasePage}
+        onIframeLoad={handleIframeLoad}
       />
       {!isAuthenticated && <FloatingButtonsBar config={config} />}
     </PageLayout>

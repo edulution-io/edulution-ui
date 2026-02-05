@@ -55,8 +55,14 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
   const { createVariableSharePathname } = useVariableSharePathname();
   const { setMoveOrCopyItemToPath, moveOrCopyItemToPath } = useFileSharingDialogStore();
 
-  const { fetchDialogFiles, fetchDialogDirs, dialogShownDirs, dialogShownFiles, isLoading } =
-    useFileSharingMoveDialogStore();
+  const {
+    fetchDialogFiles,
+    fetchDialogDirs,
+    dialogShownDirs,
+    dialogShownFiles,
+    isLoading,
+    clearDialogFilesOnShareChange,
+  } = useFileSharingMoveDialogStore();
 
   const firstRender = useRef(true);
 
@@ -72,10 +78,11 @@ const MoveContentDialogBody: React.FC<MoveContentDialogBodyProps> = ({
       firstRender.current = false;
       return;
     }
+    clearDialogFilesOnShareChange();
     const share = webdavShares.find((s) => s.displayName === selectedWebdavShare) || webdavShares[0];
     const newCurrentPath = createVariableSharePathname(share.pathname, share.pathVariables);
     setCurrentPath(newCurrentPath);
-  }, [selectedWebdavShare]);
+  }, [selectedWebdavShare, clearDialogFilesOnShareChange]);
 
   useEffect(() => {
     if (!selectedWebdavShare && !webdavShare) return;
