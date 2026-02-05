@@ -151,6 +151,7 @@ class LdapKeycloakSyncService implements OnModuleInit {
     }
 
     this.isSyncRunning = true;
+    this.eventEmitter.emit(LDAP_SYNC_ACTIVE_EVENT, true);
     try {
       Logger.debug('Full group sync started', LdapKeycloakSyncService.name);
 
@@ -306,8 +307,6 @@ class LdapKeycloakSyncService implements OnModuleInit {
           }),
         );
       }
-
-      this.eventEmitter.emit(LDAP_SYNC_ACTIVE_EVENT, true);
 
       await this.persistLastSync();
 
