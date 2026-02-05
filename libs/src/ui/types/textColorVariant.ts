@@ -17,23 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Global, Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import UsersService from './users.service';
-import { UsersController } from './users.controller';
-import { User, UserSchema } from './user.schema';
-import { UserAccounts, UserAccountsSchema } from './account.schema';
+import TEXT_COLOR_VARIANT from '@libs/ui/constants/textColorVariant';
 
-@Global()
-@Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: User.name, schema: UserSchema },
-      { name: UserAccounts.name, schema: UserAccountsSchema },
-    ]),
-  ],
-  controllers: [UsersController],
-  providers: [UsersService],
-  exports: [UsersService],
-})
-export default class UsersModule {}
+type TextColorVariant = (typeof TEXT_COLOR_VARIANT)[keyof typeof TEXT_COLOR_VARIANT];
+
+export default TextColorVariant;

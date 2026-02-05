@@ -20,12 +20,17 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import RectangleSize from '@libs/ui/types/rectangleSize';
+import FooterColors from '@libs/ui/types/footerColors';
 
 interface FrameStore {
   loadedEmbeddedFrames: string[];
   setEmbeddedFrameLoaded: (appName: string) => void;
   activeEmbeddedFrame: string | null;
   setActiveEmbeddedFrame: (frameName: string | null) => void;
+
+  footerColorsByAppName: { [appName: string]: NonNullable<FooterColors> };
+  setFooterColors: (appName: string, colors: NonNullable<FooterColors>) => void;
+  getFooterColors: (appName: string) => FooterColors;
 
   openWindowedFrames: string[];
   setWindowedFrameOpen: (appName: string, isOpen: boolean) => void;
@@ -42,6 +47,7 @@ interface FrameStore {
 const initialStore = {
   loadedEmbeddedFrames: [],
   activeEmbeddedFrame: null,
+  footerColorsByAppName: {},
 
   openWindowedFrames: [],
   minimizedWindowedFrames: [],
@@ -61,6 +67,10 @@ const useFrameStore = create<FrameStore>()(
         }
       },
       setActiveEmbeddedFrame: (activeEmbeddedFrame) => set({ activeEmbeddedFrame }),
+
+      setFooterColors: (appName, colors) =>
+        set({ footerColorsByAppName: { ...get().footerColorsByAppName, [appName]: colors } }),
+      getFooterColors: (appName) => get().footerColorsByAppName[appName] ?? null,
 
       setWindowedFrameOpen: (appName, isOpen) => {
         set((state) => ({
@@ -104,6 +114,7 @@ const useFrameStore = create<FrameStore>()(
       partialize: (state) => ({
         loadedEmbeddedFrames: state.loadedEmbeddedFrames,
         activeEmbeddedFrame: state.activeEmbeddedFrame,
+        footerColorsByAppName: state.footerColorsByAppName,
       }),
     },
   ),

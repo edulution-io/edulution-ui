@@ -26,6 +26,7 @@ interface CircleLoaderProps {
   transitionDurationMS?: number;
   height?: string;
   width?: string;
+  forceLightMode?: boolean;
 }
 
 const CircleLoader = ({
@@ -33,11 +34,13 @@ const CircleLoader = ({
   transitionDurationMS = 1000,
   height = 'h-12',
   width = 'w-12',
+  forceLightMode = false,
 }: CircleLoaderProps) => (
   <div className={cn('relative box-border', height, width, className)}>
     <motion.span
       className={cn(
-        'absolute left-0 top-0 z-30 box-border block rounded-full border-4 border-t-4 border-accent border-t-primary',
+        'absolute left-0 top-0 z-30 box-border block rounded-full border-4 border-t-4',
+        forceLightMode ? 'border-ciLightGrey border-t-ciLightBlue' : 'border-accent border-t-primary',
         height,
         width,
       )}

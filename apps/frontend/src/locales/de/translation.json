@@ -2028,7 +2028,8 @@
   "users": {
     "errors": {
       "notFoundError": "Benutzer existiert nicht",
-      "updateError": "Benutzer konnte nicht aktualisiert werden"
+      "updateError": "Benutzer konnte nicht aktualisiert werden",
+      "passwordNotSetError": "Passwort ist für diesen Benutzer nicht gesetzt"
     }
   },
   "permission": {
