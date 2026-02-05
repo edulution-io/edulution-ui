@@ -20,6 +20,7 @@
 enum UserErrorMessages {
   NotFoundError = 'users.errors.notFoundError',
   UpdateError = 'users.errors.updateError',
+  PasswordNotSetError = 'users.errors.passwordNotSetError',
 }
 
 export default UserErrorMessages;

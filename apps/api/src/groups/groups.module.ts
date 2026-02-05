@@ -17,11 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import GroupsService from './groups.service';
 import { GroupsController } from './groups.controller';
 import KeycloakRequestQueue from './queue/keycloak-request.queue';
 
+@Global()
 @Module({
   providers: [GroupsService, KeycloakRequestQueue],
   controllers: [GroupsController],

@@ -20,6 +20,7 @@
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import useLdapGroups from '@/hooks/useLdapGroups';
+import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useMailsStore from '@/pages/Mail/useMailsStore';
 import type MailNewMailNotificationDto from '@libs/mail/types/mailNewMailNotification.dto';
 import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
@@ -45,6 +46,7 @@ import useFileOperationProgressToast from '@/hooks/useFileOperationProgressToast
 const useNotifications = () => {
   const { t } = useTranslation();
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
+  const { getAppConfigs } = useAppConfigsStore();
   const isMailsAppActivated = useIsAppActive(APPS.MAIL);
   const { getMails } = useMailsStore();
   const isConferenceAppActivated = useIsAppActive(APPS.CONFERENCES);
@@ -205,6 +207,14 @@ const useNotifications = () => {
 
   useSseEventListener(SSE_MESSAGE_TYPE.TLDRAW_SYNC_ROOM_LOG_MESSAGE, handleNewHistoryLog, {
     enabled: isWhiteboardActive,
+  });
+
+  const handleAppConfigUpdated = () => {
+    void getAppConfigs();
+  };
+
+  useSseEventListener(SSE_MESSAGE_TYPE.APPCONFIG_UPDATED, handleAppConfigUpdated, {
+    enabled: isAuthReady,
   });
 };
 

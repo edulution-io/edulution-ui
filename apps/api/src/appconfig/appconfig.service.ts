@@ -26,6 +26,7 @@ import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import AppConfigErrorMessages from '@libs/appconfig/types/appConfigErrorMessages';
 import TRAEFIK_CONFIG_FILES_PATH from '@libs/common/constants/traefikConfigPath';
 import EVENT_EMITTER_EVENTS from '@libs/appconfig/constants/eventEmitterEvents';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type PatchConfigDto from '@libs/common/types/patchConfigDto';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
@@ -39,6 +40,8 @@ import MigrationService from '../migration/migration.service';
 import appConfigMigrationsList from './migrations/appConfigMigrationsList';
 import FilesystemService from '../filesystem/filesystem.service';
 import GlobalSettingsService from '../global-settings/global-settings.service';
+import SseService from '../sse/sse.service';
+import GroupsService from '../groups/groups.service';
 
 @Injectable()
 class AppConfigService implements OnModuleInit {
@@ -49,7 +52,26 @@ class AppConfigService implements OnModuleInit {
     @InjectModel(AppConfig.name) private readonly appConfigModel: Model<AppConfig>,
     private eventEmitter: EventEmitter2,
     private readonly globalSettingsService: GlobalSettingsService,
+    private readonly sseService: SseService,
+    private readonly groupsService: GroupsService,
   ) {}
+
+  private async notifyAppConfigChange(
+    oldAccessGroups: MultipleSelectorGroup[],
+    newAccessGroups: MultipleSelectorGroup[] = [],
+  ): Promise<void> {
+    const allGroups = [...oldAccessGroups, ...newAccessGroups];
+    const uniqueGroups = allGroups.filter((g, i, arr) => arr.findIndex((x) => x.path === g.path) === i);
+    const usernames = await this.groupsService.getInvitedMembers(uniqueGroups, []);
+    if (usernames.length > 0) {
+      this.sseService.sendEventToUsers(
+        usernames,
+        JSON.stringify({ timestamp: new Date().toISOString() }),
+        SSE_MESSAGE_TYPE.APPCONFIG_UPDATED,
+      );
+      Logger.verbose(`Notified ${usernames.length} users about appConfig change`, AppConfigService.name);
+    }
+  }
 
   async updateAppAccessMap() {
     try {
@@ -98,12 +120,16 @@ class AppConfigService implements OnModuleInit {
       await this.updateAppAccessMap();
 
       this.eventEmitter.emit(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${appConfigDto.name}`);
+
+      await this.notifyAppConfigChange([], appConfigDto.accessGroups ?? []);
     }
   }
 
   async updateConfig(name: string, appConfigDto: AppConfigDto, ldapGroups: string[]): Promise<AppConfigDto[]> {
+    let oldAccessGroups: MultipleSelectorGroup[] = [];
     try {
       const existingAppConfig = await this.appConfigModel.findOne({ name }).lean();
+      oldAccessGroups = existingAppConfig?.accessGroups ?? [];
       const oldPosition = existingAppConfig?.position;
       const newPosition = appConfigDto.position;
 
@@ -161,11 +187,16 @@ class AppConfigService implements OnModuleInit {
       await this.updateAppAccessMap();
 
       this.eventEmitter.emit(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${appConfigDto.name}`);
+
+      await this.notifyAppConfigChange(oldAccessGroups, appConfigDto.accessGroups ?? []);
     }
   }
 
   async patchSingleFieldInConfig(name: string, patchConfigDto: PatchConfigDto, ldapGroups: string[]) {
+    let oldAccessGroups: MultipleSelectorGroup[] = [];
     try {
+      const existingConfig = await this.appConfigModel.findOne({ name }).lean();
+      oldAccessGroups = existingConfig?.accessGroups ?? [];
       await this.appConfigModel.updateOne({ name }, { $set: { [patchConfigDto.field]: patchConfigDto.value } });
       return await this.getAppConfigs(ldapGroups);
     } catch (error) {
@@ -177,6 +208,10 @@ class AppConfigService implements OnModuleInit {
       );
     } finally {
       this.eventEmitter.emit(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${name}`);
+
+      const newAccessGroups =
+        patchConfigDto.field === 'accessGroups' ? ((patchConfigDto.value as MultipleSelectorGroup[]) ?? []) : [];
+      await this.notifyAppConfigChange(oldAccessGroups, newAccessGroups);
     }
   }
 
@@ -275,8 +310,10 @@ class AppConfigService implements OnModuleInit {
   }
 
   async deleteConfig(configName: string, ldapGroups: string[]): Promise<AppConfigDto[]> {
+    let deletedAccessGroups: MultipleSelectorGroup[] = [];
     try {
       const appConfigToDelete = await this.appConfigModel.findOne({ name: configName }).lean();
+      deletedAccessGroups = appConfigToDelete?.accessGroups ?? [];
       const deletedPosition = appConfigToDelete?.position;
 
       const bulkOperations: AnyBulkWriteOperation<AppConfig>[] = [];
@@ -337,6 +374,8 @@ class AppConfigService implements OnModuleInit {
       await this.updateAppAccessMap();
 
       this.eventEmitter.emit(`${EVENT_EMITTER_EVENTS.APPCONFIG_UPDATED}-${configName}`);
+
+      await this.notifyAppConfigChange(deletedAccessGroups);
     }
   }
 
