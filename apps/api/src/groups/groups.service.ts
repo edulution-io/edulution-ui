@@ -87,6 +87,9 @@ class GroupsService {
 
   @OnEvent(LDAP_SYNC_ACTIVE_EVENT)
   handleLdapSyncActive(active: boolean) {
+    if (this.ldapSyncActive === active) {
+      return;
+    }
     this.ldapSyncActive = active;
     Logger.log(`LDAP sync active state changed to: ${active}`, GroupsService.name);
   }
@@ -249,11 +252,14 @@ class GroupsService {
     updatedMembers?: GroupMemberDto[],
   ): Promise<void> {
     let newMembers = updatedMembers;
-    if (!newMembers?.length) {
+    if (updatedMembers === undefined) {
       newMembers = await this.fetchGroupMembers(group.id);
     }
 
-    Logger.verbose(`Updating group ${group.name} (${group.id}) with ${newMembers?.length} members`, GroupsService.name);
+    Logger.verbose(
+      `Updating group ${group.name} (${group.id}) with ${newMembers?.length ?? 0} members`,
+      GroupsService.name,
+    );
     const sanitizedMembers = newMembers?.length ? GroupsService.sanitizeGroupMembers(newMembers) : [];
 
     await this.cacheManager.set(
@@ -497,55 +503,6 @@ class GroupsService {
       Logger.debug(`Deleted group ${groupPath} from cache`, GroupsService.name);
     } catch (error) {
       Logger.error(`Failed to delete group ${groupPath} from cache: ${(error as Error).message}`, GroupsService.name);
-    }
-  }
-
-  async addMemberToGroupCache(groupPath: string, member: GroupMemberDto): Promise<void> {
-    try {
-      const cacheKey = `${GROUP_WITH_MEMBERS_CACHE_KEY}-${groupPath}`;
-      const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(cacheKey);
-
-      if (!groupWithMembers) {
-        Logger.warn(`Group ${groupPath} not found in cache, cannot add member`, GroupsService.name);
-        return;
-      }
-
-      const existingIndex = groupWithMembers.members.findIndex((m) => m.id === member.id);
-      if (existingIndex >= 0) {
-        return;
-      }
-
-      groupWithMembers.members.push(member);
-      await this.cacheManager.set(cacheKey, groupWithMembers, GROUPS_CACHE_TTL_MS);
-
-      Logger.verbose(`Added member ${member.username} to group ${groupPath} in cache`, GroupsService.name);
-    } catch (error) {
-      Logger.error(
-        `Failed to add member ${member.username} to group ${groupPath}: ${(error as Error).message}`,
-        GroupsService.name,
-      );
-    }
-  }
-
-  async removeMemberFromGroupCache(groupPath: string, memberId: string): Promise<void> {
-    try {
-      const cacheKey = `${GROUP_WITH_MEMBERS_CACHE_KEY}-${groupPath}`;
-      const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(cacheKey);
-
-      if (!groupWithMembers) {
-        Logger.warn(`Group ${groupPath} not found in cache, cannot remove member`, GroupsService.name);
-        return;
-      }
-
-      groupWithMembers.members = groupWithMembers.members.filter((m) => m.id !== memberId);
-      await this.cacheManager.set(cacheKey, groupWithMembers, GROUPS_CACHE_TTL_MS);
-
-      Logger.verbose(`Removed member ${memberId} from group ${groupPath} in cache`, GroupsService.name);
-    } catch (error) {
-      Logger.error(
-        `Failed to remove member ${memberId} from group ${groupPath}: ${(error as Error).message}`,
-        GroupsService.name,
-      );
     }
   }
 }
