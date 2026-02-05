@@ -242,6 +242,7 @@
       "generic": "The mail theme has been updated. Please reload the page to apply the changes.",
       "failed": "The mail theme could not be updated."
     },
+    "newMail": "{{count}} new email(s) received",
     "importer": {
       "filterPlaceHolderText": "Search for username",
       "title": "E-Mail Sync",
@@ -2042,7 +2043,8 @@
   "users": {
     "errors": {
       "notFoundError": "User does not exist",
-      "updateError": "Not able to update the user"
+      "updateError": "Not able to update the user",
+      "passwordNotSetError": "Password is not set for this user"
     }
   },
   "permission": {

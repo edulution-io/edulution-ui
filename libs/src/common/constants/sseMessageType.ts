@@ -32,6 +32,7 @@ const SSE_MESSAGE_TYPE = {
   SURVEY_UPDATED: 'survey_updated',
   SURVEY_DELETED: 'survey_deleted',
   BULLETIN_UPDATED: 'bulletin_update',
+  APPCONFIG_UPDATED: 'appconfig_updated',
   FILESHARING_SHARE_FILES: 'filesharing_share_files',
   FILESHARING_COLLECT_FILES: 'filesharing_collect_files',
   FILESHARING_DELETE_FILES: 'filesharing_delete_files',
@@ -42,6 +43,8 @@ const SSE_MESSAGE_TYPE = {
   TLDRAW_SYNC_ROOM_LOG_MESSAGE: 'tldraw_sync_room_log_message',
   MAIL_THEME_UPDATED: 'mail_theme_updated',
   MAIL_THEME_UPDATE_FAILED: 'mail_theme_update_failed',
+  MAIL_NEW_MAIL: 'mail_new_mail',
+  MAIL_FLAGS_CHANGED: 'mail_flags_changed',
   CHAT_NEW_MESSAGE: 'chat_new_message',
 } as const;
 

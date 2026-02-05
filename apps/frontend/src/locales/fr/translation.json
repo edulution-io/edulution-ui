@@ -228,6 +228,7 @@
       "generic": "Le thème du courrier électronique a été mis à jour. Veuillez actualiser la page pour que les modifications soient prises en compte.",
       "failed": "Le thème du courrier électronique n'a pas pu être mis à jour."
     },
+    "newMail": "{{count}} nouveau(x) e-mail(s) reçu(s)",
     "importer": {
       "filterPlaceHolderText": "Rechercher le nom d'utilisateur",
       "title": "Importateur de courrier électronique",
@@ -1849,7 +1850,8 @@
   "users": {
     "errors": {
       "notFoundError": "L'utilisateur n'existe pas",
-      "updateError": "Les utilisateurs n'ont pas pu être mis à jour"
+      "updateError": "Les utilisateurs n'ont pas pu être mis à jour",
+      "passwordNotSetError": "Le mot de passe n'est pas défini pour cet utilisateur"
     }
   },
   "permission": {

@@ -35,6 +35,7 @@ const CopyContentDialogBody: React.FC<Omit<MoveContentDialogProps, 'pathToFetch'
       pathToFetch={pathToFetch || homePath}
       fileType={ContentType.DIRECTORY}
       isCurrentPathDefaultDestination
+      filterBySameRootServer
     />
   );
 };
