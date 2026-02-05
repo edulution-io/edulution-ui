@@ -48,8 +48,7 @@
     "scripts/**",
     "lint-staged.config.js",
     "data/**",
-    "libs/ui-kit/*.config.*",
-    "libs/ui-kit/tailwind.config.*"
+    "libs/ui-kit/*.config.*"
   ],
   "rules": {
     // Allowed console logs for debug purpose

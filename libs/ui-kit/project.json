@@ -14,8 +14,7 @@
           "vite build",
           "cp package.json dist/package.json",
           "cp README.md dist/README.md 2>/dev/null || true",
-          "cp tailwind.config.js dist/tailwind.config.js 2>/dev/null || true",
-          "cp tailwind.config.cjs dist/tailwind.config.cjs 2>/dev/null || true"
+          "npx esbuild tailwind.config.ts --outfile=dist/tailwind.config.js --format=esm --platform=node"
         ],
         "parallel": false
       },

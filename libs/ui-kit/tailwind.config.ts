@@ -1,4 +1,6 @@
-const tailwindConfig = {
+import type { Config } from 'tailwindcss';
+
+const tailwindConfig: Partial<Config> = {
   darkMode: ['class'],
   content: [],
   prefix: '',
@@ -70,4 +72,4 @@ const tailwindConfig = {
   plugins: [],
 };
 
-module.exports = tailwindConfig;
+export default tailwindConfig;

@@ -9,38 +9,25 @@
     "directory": "libs/ui-kit"
   },
   "type": "module",
-  "main": "./index.cjs",
-  "module": "./index.js",
+  "main": "./index.js",
   "types": "./index.d.ts",
   "exports": {
     ".": {
-      "import": {
-        "types": "./index.d.ts",
-        "default": "./index.js"
-      },
-      "require": {
-        "types": "./index.d.cts",
-        "default": "./index.cjs"
-      }
+      "types": "./index.d.ts",
+      "default": "./index.js"
     },
     "./styles.css": "./styles.css",
-    "./tailwind.config": {
-      "import": "./tailwind.config.js",
-      "require": "./tailwind.config.cjs"
-    },
+    "./tailwind.config": "./tailwind.config.js",
     "./package.json": "./package.json"
   },
   "files": [
     "*.js",
-    "*.cjs",
     "*.d.ts",
-    "*.d.cts",
     "*.map",
     "*.css",
     "components",
     "utils",
     "tailwind.config.js",
-    "tailwind.config.cjs",
     "README.md"
   ],
   "sideEffects": [
