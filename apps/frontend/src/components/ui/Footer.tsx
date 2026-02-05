@@ -26,7 +26,7 @@ import useLanguage from '@/hooks/useLanguage';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useMedia from '@/hooks/useMedia';
 
-const Footer = () => {
+const Footer: React.FC = () => {
   const { language } = useLanguage();
   const isAuthenticated = useUserStore((s) => s.isAuthenticated);
   const { isMobileView, isTabletView } = useMedia();
@@ -36,7 +36,7 @@ const Footer = () => {
   const isVersionInfoVisible = (!isMobileView && !isTabletView && isAuthenticated) || !isAuthenticated;
 
   return (
-    <footer className="bg-background-centered-shadow min-h-5 w-full px-2 pb-1 text-sm text-muted">
+    <footer className="min-h-5 w-full px-2 pb-1 text-sm">
       <div className="flex flex-col md:flex-row md:items-center md:justify-center md:gap-4">
         {isVersionInfoVisible && (
           <span className="text-center md:text-left">
