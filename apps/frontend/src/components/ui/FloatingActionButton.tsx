@@ -24,8 +24,7 @@ import { useTranslation } from 'react-i18next';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import type FloatingButtonConfig from '@libs/ui/types/FloatingButtons/floatingButtonConfig';
 import { FLOATING_BUTTON_CLASS_NAME } from '@libs/ui/constants/floatingButtonsConfig';
-
-const HOVER_ANIM_MS = 700;
+import { FONTAWSOME_HOVER_ANIM_MS } from '@libs/ui/constants/animationTiming';
 
 const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
   icon,
@@ -46,7 +45,7 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
     setAnimate(false);
     requestAnimationFrame(() => {
       setAnimate(true);
-      timer.current = window.setTimeout(() => setAnimate(false), HOVER_ANIM_MS);
+      timer.current = window.setTimeout(() => setAnimate(false), FONTAWSOME_HOVER_ANIM_MS);
     });
   };
 
