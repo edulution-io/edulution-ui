@@ -34,10 +34,9 @@ import {
   WIDTH_TOLERANCE_PX,
 } from '@libs/ui/constants/floatingButtonsConfig';
 import calculateButtonLayout from '@libs/ui/utils/calculateButtonLayout';
-import cn from '@libs/common/utils/className';
+import { cn , Button } from '@edulution-io/ui-kit';
 import usePortalRoot from '@/hooks/usePortalRoot';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
-import { Button } from '@edulution-io/ui-kit';
 
 const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
   const { t } = useTranslation();

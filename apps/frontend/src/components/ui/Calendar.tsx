@@ -20,12 +20,11 @@
 'use client';
 
 import * as React from 'react';
-import cn from '@libs/common/utils/className';
+import { cn , buttonVariants } from '@edulution-io/ui-kit';
 import { DayPicker } from 'react-day-picker';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { buttonVariants } from '@edulution-io/ui-kit';
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 

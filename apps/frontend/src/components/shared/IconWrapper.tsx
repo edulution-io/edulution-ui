@@ -18,7 +18,7 @@
  */
 
 import React, { CSSProperties, useMemo } from 'react';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import getAppIconClassName from '@/utils/getAppIconClassName';
 import {
   CUSTOM_UPLOAD_IDENTIFIER,

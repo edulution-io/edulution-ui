@@ -21,7 +21,7 @@ import React, { useEffect, useRef } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { Button } from '@edulution-io/ui-kit';
+import { Button , cn } from '@edulution-io/ui-kit';
 import PageTitle from '@/components/PageTitle';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import useLanguage from '@/hooks/useLanguage';
@@ -31,7 +31,6 @@ import findAppConfigByName from '@libs/common/utils/findAppConfigByName';
 import getDisplayName from '@/utils/getDisplayName';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import getAppIconClassName from '@/utils/getAppIconClassName';
-import cn from '@libs/common/utils/className';
 import LANDING_PAGE_ROUTE from '@libs/dashboard/constants/landingPageRoute';
 import RoundArrowIcon from '@/assets/layout/Pfeil.svg?react';
 

@@ -27,7 +27,7 @@ import useUserAccounts from '@/hooks/useUserAccounts';
 import { getFromPathName } from '@libs/common/utils';
 import useFloatingBarHeight from '@/hooks/useFloatingBarHeight';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 interface PageLayoutProps {
   nativeAppHeader?: NativeAppHeaderProps;

@@ -23,7 +23,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartPie, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import WebdavInfoDialog from '@/pages/FileSharing/Dialog/WebdavInfoDialog';
 
 interface FileSharingMenuBarFooterProps {

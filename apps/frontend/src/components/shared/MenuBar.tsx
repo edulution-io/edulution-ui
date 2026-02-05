@@ -19,7 +19,7 @@
 
 import React, { isValidElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
-import cn from '@libs/common/utils/className';
+import { cn , Button } from '@edulution-io/ui-kit';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -40,7 +40,6 @@ import useVariableSharePathname from '@/pages/FileSharing/hooks/useVariableShare
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
 import useSubMenuStore from '@/store/useSubMenuStore';
-import { Button } from '@edulution-io/ui-kit';
 import useMenuBarStore from './useMenuBarStore';
 import MenuBarFooter from './MenuBarFooter';
 import IconWrapper from './IconWrapper';

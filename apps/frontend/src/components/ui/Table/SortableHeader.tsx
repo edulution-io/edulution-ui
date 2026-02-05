@@ -22,7 +22,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpDown } from '@fortawesome/free-solid-svg-icons';
 import { Column, Table } from '@tanstack/react-table';
 import Checkbox from '@/components/ui/Checkbox';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import { useTranslation } from 'react-i18next';
 
 interface SortableHeaderProps<TData, TValue> {

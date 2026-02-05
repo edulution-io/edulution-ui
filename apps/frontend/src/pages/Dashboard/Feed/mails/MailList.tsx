@@ -19,7 +19,7 @@
 
 import React, { ComponentProps } from 'react';
 import { NavLink } from 'react-router-dom';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import APPS from '@libs/appconfig/constants/apps';
 import MailDto from '@libs/mail/types/mail.dto';
 import { ScrollArea } from '@/components/ui/ScrollArea';
