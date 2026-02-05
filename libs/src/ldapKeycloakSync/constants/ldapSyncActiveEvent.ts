@@ -17,6 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const FEED_PULL_TIME_INTERVAL_SLOW = 60000;
+const LDAP_SYNC_ACTIVE_EVENT = 'ldap.sync.active';
 
-export default FEED_PULL_TIME_INTERVAL_SLOW;
+export default LDAP_SYNC_ACTIVE_EVENT;
