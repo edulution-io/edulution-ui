@@ -117,6 +117,7 @@ describe(ConferencesService.name, () => {
   beforeEach(async () => {
     const notificationMock = {
       notifyUsernames: jest.fn().mockResolvedValue(undefined),
+      cascadeDeleteBySourceId: jest.fn().mockResolvedValue(undefined),
     };
 
     const module: TestingModule = await Test.createTestingModule({
