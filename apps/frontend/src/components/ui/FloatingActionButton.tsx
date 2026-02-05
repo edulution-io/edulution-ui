@@ -17,14 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import { Button } from '@/components/shared/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import type FloatingButtonConfig from '@libs/ui/types/FloatingButtons/floatingButtonConfig';
 import { FLOATING_BUTTON_CLASS_NAME } from '@libs/ui/constants/floatingButtonsConfig';
-import { FONTAWSOME_HOVER_ANIM_MS } from '@libs/ui/constants/animationTiming';
+import useFontAwesomeHoverAnimation from '@/hooks/useFontAwesomeHoverAnimation';
 
 const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
   icon,
@@ -35,19 +35,7 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
   dropdownItems = [],
 }) => {
   const { t } = useTranslation();
-
-  const [animate, setAnimate] = useState(false);
-  const timer = useRef<number | null>(null);
-
-  const triggerHoverAnimation = () => {
-    if (timer.current) window.clearTimeout(timer.current);
-
-    setAnimate(false);
-    requestAnimationFrame(() => {
-      setAnimate(true);
-      timer.current = window.setTimeout(() => setAnimate(false), FONTAWSOME_HOVER_ANIM_MS);
-    });
-  };
+  const { animate, triggerAnimation } = useFontAwesomeHoverAnimation();
 
   const renderIcon = () => (
     <FontAwesomeIcon
@@ -66,7 +54,7 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
               type="button"
               variant="btn-hexagon"
               hexagonIconAltText={t('common.showOptions')}
-              onMouseEnter={triggerHoverAnimation}
+              onMouseEnter={triggerAnimation}
             >
               {renderIcon()}
             </Button>
@@ -82,7 +70,7 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
         variant="btn-hexagon"
         onClick={onClick}
         hexagonIconAltText={text}
-        onMouseEnter={triggerHoverAnimation}
+        onMouseEnter={triggerAnimation}
       >
         {renderIcon()}
       </Button>
