@@ -66,9 +66,33 @@
   font-weight: 600;
 }
 
+/* Fix rating component */
+.sd-rating__item,
+.sd-rating__item-star,
+.sd-rating__item-smiley,
+.sd-rating__item--fixed-size {
+  margin-left: 1rem !important;
+}
+.sd-rating__item {
+  background-color: var(--muted-background) !important;
+}
+.sd-rating__item:hover {
+  background-color: var(--muted) !important;
+}
 .sd-rating__item--selected {
   background-color: var(--primary) !important;
-  .sv-string-viewer {
-    color: var(--foreground);
+}
+.sd-rating__item-star {
+  svg {
+    max-width: 3rem !important;
+    max-height: 3rem !important;
+    use {
+      stroke: var(--muted-background) !important;
+      fill: var(--muted-background) !important;
+    }
   }
+}
+.sd-rating__item-star--selected svg use {
+  stroke: var(--primary) !important;
+  fill: var(--primary) !important;
 }

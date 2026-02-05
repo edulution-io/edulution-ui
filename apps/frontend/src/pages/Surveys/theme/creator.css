@@ -249,26 +249,11 @@
   }
 
   /* Fix ranking component */
-  .sd-rating__item,
-  .sd-rating__item-star,
-  .sd-rating__item-smiley,
-  .sd-rating__item--fixed-size {
-    margin-left: 1rem !important;
-  }
-  .sd-rating__item-star svg {
-    fill: var(--primary) !important;
-    max-width: 3rem;
-    max-height: 3rem;
-  }
-  .sd-rating__item,
-  .sd-rating__item--fixed-size,
-  .sv-ranking-item__index,
   .sd-ranking-item__index,
+  .sv-ranking-item__index,
   .sv-ranking-item__index--empty,
   .sd-ranking-item__index--empty {
-    /* ranking-item background-color = default background-color => not-visible */
-    background-color: var(--accent);
-    border: 0.15rem solid var(--muted-foreground);
+    background-color: var(--muted-background) !important;
   }
 
   /* Fix matrix component (scrolling x-axis) */

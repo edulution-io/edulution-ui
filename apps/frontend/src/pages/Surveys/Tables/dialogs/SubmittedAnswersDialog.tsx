@@ -81,7 +81,7 @@ const SubmittedAnswersDialog = () => {
         handleOpenChange={handleClose}
         title={t('surveys.submittedAnswersDialog.title')}
         body={getDialogBody()}
-        desktopContentClassName="max-w-[75%]"
+        desktopContentClassName="min-w-[50%]"
         footer={getFooter()}
       />
     </>
