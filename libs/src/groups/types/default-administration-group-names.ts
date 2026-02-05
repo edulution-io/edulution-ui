@@ -23,7 +23,6 @@ const defaultAdministrationGroupNames: Array<string> = [
   'global-admins',
   'role-globaladministrator',
   'role-schooladministrator',
-  'server',
 ];
 
 export default defaultAdministrationGroupNames;

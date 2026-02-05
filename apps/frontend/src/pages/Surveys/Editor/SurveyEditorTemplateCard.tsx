@@ -18,7 +18,7 @@
  */
 
 import { toast } from 'sonner';
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { faFileCirclePlus, faEye } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -28,10 +28,8 @@ import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import useThemeStore from '@/store/useThemeStore';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
 import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTemplateStore';
-import getSurveysDefaultValues from '@/pages/Surveys/utils/getSurveysDefaultValues';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';
 import ActionTooltip from '@/components/shared/ActionTooltip';
@@ -55,11 +53,7 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
 
   const { isSuperAdmin } = useLdapGroups();
 
-  const { theme } = useThemeStore();
-
   const { t } = useTranslation();
-
-  const [active, setActive] = useState<boolean>(surveyTemplate?.isActive ?? true);
 
   const handleCardClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -81,8 +75,7 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
     e.stopPropagation();
     if (!surveyTemplate?.id) return;
     try {
-      await setIsTemplateActive(surveyTemplate.id, !active);
-      setActive(!active);
+      await setIsTemplateActive(surveyTemplate.id, !surveyTemplate.isActive);
     } catch (error) {
       toast.error(t('survey.errors.updateOrCreateError'));
       await fetchTemplates();
@@ -95,15 +88,15 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
     setIsOpenTemplateConfirmDeletion(true);
   };
 
-  const defaultValues = getSurveysDefaultValues(theme);
-
-  const title = surveyTemplate?.name ?? surveyTemplate?.template.formula.title ?? defaultValues.formula.title;
+  const title = surveyTemplate?.name ?? surveyTemplate?.template.formula.title ?? t('survey.newTitle');
 
   const description = surveyTemplate?.template.formula.description;
 
   return (
     <Card
-      className={cn(GRID_CARD, 'relative flex h-36 min-w-[16rem] cursor-pointer p-4', { 'opacity-50': !active })}
+      className={cn(GRID_CARD, 'relative flex h-36 min-w-[16rem] cursor-pointer p-4', {
+        'opacity-50': surveyTemplate && !surveyTemplate.isActive,
+      })}
       variant="text"
       onClick={handleCardClick}
     >
@@ -121,9 +114,7 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
             openOnSide="bottom"
             className="bg-muted"
             trigger={
-              <h3 className={cn('line-clamp-2 max-w-[14rem] truncate', { 'flex justify-center': !surveyTemplate })}>
-                {title}
-              </h3>
+              <h3 className={cn('max-w-[14rem] truncate', { 'flex justify-center': !surveyTemplate })}>{title}</h3>
             }
           />
         </TooltipProvider>
@@ -148,7 +139,7 @@ const SurveyEditorTemplateCard = ({ creator, surveyTemplate }: SurveyEditorTempl
               variant="btn-outline"
               size="sm"
             >
-              {active ? t('classmanagement.deactivate') : t('classmanagement.activate')}
+              {surveyTemplate.isActive ? t('classmanagement.deactivate') : t('classmanagement.activate')}
             </Button>
           )}
           <Button

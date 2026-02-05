@@ -172,7 +172,7 @@ const SurveyEditorPage = ({ initialFormValues }: SurveyEditorPageProps) => {
     }
     const survey = form.getValues();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id, formula, createdAt, saveNo, expires, answers, saveAsTemplate, ...remainingSurvey } = survey;
+    const { id, formula, createdAt, saveNo, expires, answers, shouldSaveAsTemplate, ...remainingSurvey } = survey;
     const creationDate = selectedTemplate?.createdAt ?? new Date();
     const rawFormula = creator.JSON as SurveyFormula;
     const processedFormula: SurveyFormula = resetSurveyIdFromFormulasBackendLimiters(rawFormula, id);

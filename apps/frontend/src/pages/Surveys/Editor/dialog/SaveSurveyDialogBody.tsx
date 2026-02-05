@@ -29,7 +29,7 @@ import useLdapGroups from '@/hooks/useLdapGroups';
 import SearchUsersOrGroups from '@/pages/ConferencePage/CreateConference/SearchUsersOrGroups';
 import Checkbox from '@/components/ui/Checkbox';
 import DateTimePickerField from '@/components/ui/DateTimePicker/DateTimePickerField';
-import TemplateOptions from '@/pages/Surveys/Editor/dialog/TemplateOptions';
+import TemplateSaveDialogFields from '@/pages/Surveys/Editor/dialog/TemplateSaveDialogFields';
 
 interface SaveSurveyDialogBodyProps {
   form: UseFormReturn<SurveyDto>;
@@ -73,7 +73,7 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
     },
   ];
 
-  const saveAsTemplate = watch('saveAsTemplate');
+  const shouldSaveAsTemplate = watch('shouldSaveAsTemplate');
 
   return (
     <>
@@ -81,24 +81,22 @@ const SaveSurveyDialogBody = ({ form }: SaveSurveyDialogBodyProps) => {
         <Checkbox
           key="should-save-as-template"
           label={t('survey.editor.template.label')}
-          checked={saveAsTemplate || false}
-          onCheckedChange={(value: boolean) => setValue('saveAsTemplate', value, { shouldValidate: true })}
+          checked={shouldSaveAsTemplate || false}
+          onCheckedChange={(value: boolean) => setValue('shouldSaveAsTemplate', value, { shouldValidate: true })}
           aria-label={t('survey.editor.template.label')}
         />
       )}
-      {saveAsTemplate && <TemplateOptions />}
-      <span>
-        <p className="text-l font-bold text-background">{t('surveys.saveDialog.surveySettings')}</p>
-        <SearchUsersOrGroups
-          users={watch('invitedAttendees')}
-          onSearch={onAttendeesSearch}
-          onUserChange={handleAttendeesChange}
-          groups={watch('invitedGroups')}
-          onGroupSearch={searchGroups}
-          onGroupsChange={handleGroupsChange}
-          variant="dialog"
-        />
-      </span>
+      {shouldSaveAsTemplate && <TemplateSaveDialogFields />}
+      <p className="text-l font-bold text-background">{t('surveys.saveDialog.surveySettings')}</p>
+      <SearchUsersOrGroups
+        users={watch('invitedAttendees')}
+        onSearch={onAttendeesSearch}
+        onUserChange={handleAttendeesChange}
+        groups={watch('invitedGroups')}
+        onGroupSearch={searchGroups}
+        onGroupsChange={handleGroupsChange}
+        variant="dialog"
+      />
       <DateTimePickerField
         form={form}
         path="expires"

@@ -26,7 +26,7 @@ import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import Input from '@/components/shared/Input';
 import Label from '@/components/ui/Label';
 
-const TemplateOptions = () => {
+const TemplateSaveDialogFields = () => {
   const { templateName, setTemplateName, accessGroups, setAccessGroups } = useSurveyTemplateStore();
 
   const { searchGroups } = useGroupStore();
@@ -60,4 +60,4 @@ const TemplateOptions = () => {
   );
 };
 
-export default TemplateOptions;
+export default TemplateSaveDialogFields;

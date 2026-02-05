@@ -115,6 +115,9 @@ const useSurveyTemplateStore = create<SurveyTemplateStore>((set) => ({
     set({ isLoading: true });
     try {
       await eduApi.patch<SurveyTemplateDto>(`${SURVEY_TEMPLATES_ENDPOINT}/${templateId}/${state}`);
+      set((prev) => ({
+        templates: prev.templates.map((tmpl) => (tmpl.id === templateId ? { ...tmpl, isActive: state } : tmpl)),
+      }));
       toast.success(t('survey.editor.template.upload.success'));
     } catch (error) {
       handleApiError(error, set);
