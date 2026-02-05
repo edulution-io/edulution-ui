@@ -68,7 +68,6 @@ const SurveyEditorEntryPage = () => {
     resetStoredSurvey,
     setLastEditedSurveyId,
     fetchSelectedSurvey,
-    loadNewSurvey,
   ]);
 
   if (isFetching) {
