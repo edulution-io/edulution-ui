@@ -18,6 +18,6 @@
  */
 
 export { Button, buttonVariants } from './components/Button';
-export type { ButtonProps } from './components/Button';
+export type { ButtonProps, ButtonVariant } from './components/Button';
 
 export { default as cn } from './utils/cn';

@@ -1,7 +1,7 @@
 {
   "name": "@edulution-io/ui-kit",
   "version": "0.0.0",
-  "description": "Edulution UI component library built with React, TypeScript, Tailwind CSS, and shadcn/ui",
+  "description": "Edulution UI component library built with React, TypeScript, Tailwind CSS",
   "license": "AGPL-3.0-or-later",
   "repository": {
     "type": "git",

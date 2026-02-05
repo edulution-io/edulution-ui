@@ -63,6 +63,8 @@ const buttonVariants = cva(
   },
 );
 
+export type ButtonVariant = NonNullable<VariantProps<typeof buttonVariants>['variant']>;
+
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;

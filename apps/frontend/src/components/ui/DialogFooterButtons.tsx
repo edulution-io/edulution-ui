@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, type ButtonProps } from '@edulution-io/ui-kit';
+import { Button, type ButtonVariant } from '@edulution-io/ui-kit';
 
 interface DialogFooterProps {
   disableSubmit?: boolean;
@@ -29,8 +29,8 @@ interface DialogFooterProps {
   submitButtonText?: string;
   deleteButtonText?: string;
   submitButtonType?: 'submit' | 'button';
-  cancelButtonVariant?: ButtonProps['variant'];
-  submitButtonVariant?: ButtonProps['variant'];
+  cancelButtonVariant?: ButtonVariant;
+  submitButtonVariant?: ButtonVariant;
   handleSubmit?: () => void;
   handleClose?: () => void;
   handleDelete?: () => void;
@@ -67,7 +67,6 @@ const DialogFooterButtons: React.FC<DialogFooterProps> = ({
       )}
       {handleClose && (
         <Button
-          /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */
           variant={cancelButtonVariant}
           disabled={disableCancel}
           size="lg"
@@ -79,7 +78,6 @@ const DialogFooterButtons: React.FC<DialogFooterProps> = ({
       )}
       {handleSubmit && (
         <Button
-          /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */
           variant={submitButtonVariant}
           disabled={disableSubmit}
           size="lg"
