@@ -20,7 +20,7 @@
 'use client';
 
 import * as React from 'react';
-import { cn , buttonVariants } from '@edulution-io/ui-kit';
+import { cn, buttonVariants } from '@edulution-io/ui-kit';
 import { DayPicker } from 'react-day-picker';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -28,11 +28,24 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
+const IconLeft = () => (
+  <FontAwesomeIcon
+    icon={faChevronLeft}
+    className="h-4 w-4"
+  />
+);
+
+const IconRight = () => (
+  <FontAwesomeIcon
+    icon={faChevronRight}
+    className="h-4 w-4"
+  />
+);
+
 const Calendar = ({ className, classNames, showOutsideDays = true, ...props }: CalendarProps) => (
   <DayPicker
     showOutsideDays={showOutsideDays}
     className={cn('p-3', className)}
-    /* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument */
     classNames={{
       months: 'flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0',
       month: 'space-y-4',
@@ -63,20 +76,8 @@ const Calendar = ({ className, classNames, showOutsideDays = true, ...props }: C
       ...classNames,
     }}
     components={{
-      // eslint-disable-next-line
-      IconLeft: () => (
-        <FontAwesomeIcon
-          icon={faChevronLeft}
-          className="h-4 w-4"
-        />
-      ),
-      // eslint-disable-next-line
-      IconRight: () => (
-        <FontAwesomeIcon
-          icon={faChevronRight}
-          className="h-4 w-4"
-        />
-      ),
+      IconLeft,
+      IconRight,
     }}
     {...props}
   />
