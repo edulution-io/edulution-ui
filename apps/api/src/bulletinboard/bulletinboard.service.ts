@@ -370,12 +370,11 @@ class BulletinBoardService implements OnModuleInit {
     if (isWithinVisibilityPeriod) {
       this.sseService.sendEventToUsers(invitedMembersList, resultingBulletin, SSE_MESSAGE_TYPE.BULLETIN_UPDATED);
 
-      // TODO: #1152
       const title = NOTIFICATION_TEMPLATES.BULLETIN.CREATED.title(dto.title);
       const pushNotification = NOTIFICATION_TEMPLATES.BULLETIN.CREATED.body(dto.category.name);
       const bulletinId = String(resultingBulletin.id);
 
-      await this.notificationService.notifyUsernames(
+      await this.notificationService.upsertNotificationForSource(
         invitedMembersList,
         {
           title,
@@ -443,6 +442,17 @@ class BulletinBoardService implements OnModuleInit {
       );
 
       await this.bulletinModel.deleteMany({ _id: { $in: ids } }).exec();
+
+      await Promise.all(
+        ids.map((bulletinId) =>
+          this.notificationService.cascadeDeleteBySourceId(bulletinId).catch((error) => {
+            Logger.error(
+              `Failed to cascade delete notifications for bulletin ${bulletinId}: ${error}`,
+              BulletinBoardService.name,
+            );
+          }),
+        ),
+      );
 
       try {
         await this.userPreferencesService.unsetCollapsedForBulletins(ids);

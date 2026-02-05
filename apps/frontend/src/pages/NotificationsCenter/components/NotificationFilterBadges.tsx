@@ -21,7 +21,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import cn from '@libs/common/utils/className';
 import { NOTIFICATION_FILTER_TYPE, NotificationFilterType } from '@libs/notification/types/notificationFilterType';
-import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
+import canFilterByNotificationType from '@libs/notification/utils/canFilterByNotificationType';
 import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto';
 import { Button } from '@/components/shared/Button';
 
@@ -38,14 +38,10 @@ const FILTERS = [
 ] as const;
 
 const getFilterCount = (filter: NotificationFilterType, notifications: InboxNotificationDto[]): number => {
-  switch (filter) {
-    case NOTIFICATION_FILTER_TYPE.USER:
-      return notifications.filter((n) => n.type === NOTIFICATION_TYPE.USER).length;
-    case NOTIFICATION_FILTER_TYPE.SYSTEM:
-      return notifications.filter((n) => n.type === NOTIFICATION_TYPE.SYSTEM).length;
-    default:
-      return notifications.length;
+  if (canFilterByNotificationType(filter)) {
+    return notifications.filter((notification) => notification.type === filter).length;
   }
+  return notifications.length;
 };
 
 const NotificationFilterBadges = ({ activeFilter, onFilterChange, notifications }: NotificationFilterBadgesProps) => {
@@ -62,12 +58,8 @@ const NotificationFilterBadges = ({ activeFilter, onFilterChange, notifications 
             key={key}
             type="button"
             variant="btn-ghost"
-            className={cn(
-              'rounded-lg px-3 py-1 text-sm font-medium',
-              isActive
-                ? 'hover:bg-primary/90 bg-primary text-white'
-                : 'bg-muted-foreground/10 text-background hover:bg-muted-background',
-            )}
+            size="md"
+            className={cn(isActive ? 'hover:bg-primary/90 bg-primary text-white' : '')}
             onClick={() => onFilterChange(key)}
           >
             {t(labelKey)} ({count})

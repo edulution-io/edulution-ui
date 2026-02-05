@@ -24,9 +24,9 @@ import eduApi from '@/api/eduApi';
 import { NOTIFICATIONS_EDU_API_ENDPOINT } from '@libs/notification/constants/apiEndpoints';
 import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto';
 import InboxResponseDto from '@libs/notification/types/inboxResponse.dto';
-import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
 import notificationPaginationConfig from '@libs/notification/constants/notificationPaginationConfig';
 import { NOTIFICATION_FILTER_TYPE, NotificationFilterType } from '@libs/notification/types/notificationFilterType';
+import canFilterByNotificationType from '@libs/notification/utils/canFilterByNotificationType';
 import handleApiError from '@/utils/handleApiError';
 
 interface NotificationStore {
@@ -44,7 +44,7 @@ interface NotificationStore {
 
   fetchNotifications: (loadMore?: boolean) => Promise<void>;
   fetchUnreadCount: () => Promise<void>;
-  markAsRead: (notificationIds?: string[]) => Promise<void>;
+  markAsRead: (userNotificationId: string) => Promise<void>;
   markAllAsRead: () => Promise<void>;
   deleteNotification: (notificationId: string) => Promise<void>;
   deleteAllByType: (type: NotificationFilterType) => Promise<void>;
@@ -106,42 +106,49 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
     }
   },
 
-  markAsRead: async (notificationIds?: string[]) => {
+  markAsRead: async (userNotificationId: string) => {
+    const { notifications, unreadCount } = get();
+    const targetNotification = notifications.find((notification) => notification.id === userNotificationId);
+    const wasUnread = targetNotification && !targetNotification.readAt;
+
+    set({
+      notifications: notifications.map((notification) =>
+        notification.id === userNotificationId ? { ...notification, readAt: new Date() } : notification,
+      ),
+      unreadCount: wasUnread ? Math.max(0, unreadCount - 1) : unreadCount,
+    });
+
     try {
-      await eduApi.patch(`${NOTIFICATIONS_EDU_API_ENDPOINT}/read`, {
-        ids: notificationIds,
-      });
-
-      const { notifications, unreadCount } = get();
-
-      if (notificationIds?.length) {
-        const idsSet = new Set(notificationIds);
-        const markedCount = notifications.filter(
-          (notification) => idsSet.has(notification.id) && !notification.readAt,
-        ).length;
-
-        set({
-          notifications: notifications.map((notification) =>
-            idsSet.has(notification.id) ? { ...notification, readAt: new Date() } : notification,
-          ),
-          unreadCount: Math.max(0, unreadCount - markedCount),
-        });
-      } else {
-        set({
-          notifications: notifications.map((notification) => ({
-            ...notification,
-            readAt: notification.readAt ?? new Date(),
-          })),
-          unreadCount: 0,
-        });
-      }
+      await eduApi.patch(`${NOTIFICATIONS_EDU_API_ENDPOINT}/${userNotificationId}`);
     } catch (error) {
+      set({
+        notifications,
+        unreadCount,
+      });
       handleApiError(error, set);
     }
   },
 
   markAllAsRead: async () => {
-    await get().markAsRead();
+    const { notifications, unreadCount } = get();
+
+    set({
+      notifications: notifications.map((notification) => ({
+        ...notification,
+        readAt: notification.readAt ?? new Date(),
+      })),
+      unreadCount: 0,
+    });
+
+    try {
+      await eduApi.patch(NOTIFICATIONS_EDU_API_ENDPOINT);
+    } catch (error) {
+      set({
+        notifications,
+        unreadCount,
+      });
+      handleApiError(error, set);
+    }
   },
 
   deleteNotification: async (notificationId: string) => {
@@ -167,16 +174,15 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
       });
 
       const { notifications, unreadCount, total } = get();
-      let newNotifications: InboxNotificationDto[];
+      let newNotifications = notifications;
       let newUnreadCount = unreadCount;
 
       if (type === NOTIFICATION_FILTER_TYPE.ALL) {
         newNotifications = [];
         newUnreadCount = 0;
-      } else {
-        const typeToFilter = type === NOTIFICATION_FILTER_TYPE.USER ? NOTIFICATION_TYPE.USER : NOTIFICATION_TYPE.SYSTEM;
-        const deletedNotifications = notifications.filter((notification) => notification.type === typeToFilter);
-        newNotifications = notifications.filter((notification) => notification.type !== typeToFilter);
+      } else if (canFilterByNotificationType(type)) {
+        const deletedNotifications = notifications.filter((notification) => notification.type === type);
+        newNotifications = notifications.filter((notification) => notification.type !== type);
 
         if (type === NOTIFICATION_FILTER_TYPE.USER) {
           const deletedUnread = deletedNotifications.filter((notification) => !notification.readAt).length;

@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -71,21 +71,27 @@ const NotificationItem = ({ notification }: NotificationItemProps) => {
   const sourceIcon = getSourceTypeIcon(notification.sourceType);
   const elapsedTime = getElapsedTime(notification.createdAt);
 
-  const handleExpand = () => {
+  const handleExpand = useCallback(() => {
     if (hasContent) {
-      setIsExpanded(!isExpanded);
+      setIsExpanded((prev) => !prev);
     }
-  };
+  }, [hasContent]);
 
-  const handleMarkAsRead = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    void markAsRead([notification.id]);
-  };
+  const handleMarkAsRead = useCallback(
+    (event: React.MouseEvent) => {
+      event.stopPropagation();
+      void markAsRead(notification.id);
+    },
+    [markAsRead, notification.id],
+  );
 
-  const handleDelete = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    void deleteNotification(notification.id);
-  };
+  const handleDelete = useCallback(
+    (event: React.MouseEvent) => {
+      event.stopPropagation();
+      void deleteNotification(notification.id);
+    },
+    [deleteNotification, notification.id],
+  );
 
   return (
     <Card

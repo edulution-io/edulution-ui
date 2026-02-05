@@ -17,13 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
+import NOTIFICATION_TYPE, { NotificationType } from '@libs/notification/constants/notificationType';
+import { NotificationFilterType } from '@libs/notification/types/notificationFilterType';
 
-const NOTIFICATION_FILTER_TYPE = {
-  ALL: 'all',
-  ...NOTIFICATION_TYPE,
-} as const;
+const canFilterByNotificationType = (filter: NotificationFilterType): filter is NotificationType =>
+  filter === NOTIFICATION_TYPE.USER || filter === NOTIFICATION_TYPE.SYSTEM;
 
-type NotificationFilterType = (typeof NOTIFICATION_FILTER_TYPE)[keyof typeof NOTIFICATION_FILTER_TYPE];
-
-export { NOTIFICATION_FILTER_TYPE, NotificationFilterType };
+export default canFilterByNotificationType;

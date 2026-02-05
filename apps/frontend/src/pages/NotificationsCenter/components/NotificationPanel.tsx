@@ -26,7 +26,7 @@ import useNotificationStore from '@/store/useNotificationStore';
 import useMedia from '@/hooks/useMedia';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import { NOTIFICATION_FILTER_TYPE, NotificationFilterType } from '@libs/notification/types/notificationFilterType';
-import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
+import canFilterByNotificationType from '@libs/notification/utils/canFilterByNotificationType';
 import cn from '@libs/common/utils/className';
 import NotificationList from '@/pages/NotificationsCenter/components/NotificationList';
 import NotificationFilterBadges from '@/pages/NotificationsCenter/components/NotificationFilterBadges';
@@ -51,7 +51,6 @@ const NotificationPanel = () => {
   const { isMobileView, isTabletView } = useMedia();
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
   const isMobileOrTablet = isMobileView || isTabletView || isEdulutionApp;
-  const hasDesktopSidebar = !isMobileView && !isTabletView && !isEdulutionApp;
 
   const [activeFilter, setActiveFilter] = useState<NotificationFilterType>(NOTIFICATION_FILTER_TYPE.ALL);
 
@@ -63,14 +62,10 @@ const NotificationPanel = () => {
   }, [isSheetOpen, fetchNotifications, fetchUnreadCount]);
 
   const filteredNotifications = useMemo(() => {
-    switch (activeFilter) {
-      case NOTIFICATION_FILTER_TYPE.USER:
-        return notifications.filter((n) => n.type === NOTIFICATION_TYPE.USER);
-      case NOTIFICATION_FILTER_TYPE.SYSTEM:
-        return notifications.filter((n) => n.type === NOTIFICATION_TYPE.SYSTEM);
-      default:
-        return notifications;
+    if (canFilterByNotificationType(activeFilter)) {
+      return notifications.filter((notification) => notification.type === activeFilter);
     }
+    return notifications;
   }, [notifications, activeFilter]);
 
   const handleRefresh = () => {
@@ -93,7 +88,7 @@ const NotificationPanel = () => {
         className={cn(
           'bg-glass flex flex-col border-muted text-background shadow-xl shadow-slate-400 backdrop-blur-md',
           isMobileOrTablet ? 'max-h-[85vh] rounded-t-2xl border-t' : 'max-h-full border-l sm:max-w-md',
-          hasDesktopSidebar && 'right-[var(--sidebar-width)]',
+          !isMobileOrTablet && 'right-[var(--sidebar-width)]',
         )}
       >
         <SheetHeader>

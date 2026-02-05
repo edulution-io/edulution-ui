@@ -17,13 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
+const PUSH_DEBOUNCE_MINUTES = 30;
 
-const NOTIFICATION_FILTER_TYPE = {
-  ALL: 'all',
-  ...NOTIFICATION_TYPE,
-} as const;
-
-type NotificationFilterType = (typeof NOTIFICATION_FILTER_TYPE)[keyof typeof NOTIFICATION_FILTER_TYPE];
-
-export { NOTIFICATION_FILTER_TYPE, NotificationFilterType };
+export default PUSH_DEBOUNCE_MINUTES;

@@ -158,8 +158,20 @@ class SurveysService implements OnModuleInit {
 
   async deleteSurveys(surveyIds: string[]): Promise<void> {
     try {
-      const surveyObjectIds = surveyIds.map((s) => new Types.ObjectId(s));
+      const surveyObjectIds = surveyIds.map((surveyId) => new Types.ObjectId(surveyId));
       await this.surveyModel.deleteMany({ _id: { $in: surveyObjectIds } });
+
+      await Promise.all(
+        surveyIds.map((surveyId) =>
+          this.notificationService.cascadeDeleteBySourceId(surveyId).catch((error) => {
+            Logger.error(
+              `Failed to cascade delete notifications for survey ${surveyId}: ${error}`,
+              SurveysService.name,
+            );
+          }),
+        ),
+      );
+
       Logger.log(`Deleted the surveys ${JSON.stringify(surveyIds)}`, SurveysService.name);
     } catch (error) {
       throw new CustomHttpException(
@@ -262,7 +274,7 @@ class SurveysService implements OnModuleInit {
       const pushNotification = template.body(survey.formula.title);
       const surveyId = String(survey.id);
 
-      await this.notificationService.notifyUsernames(
+      await this.notificationService.upsertNotificationForSource(
         invitedMembersList,
         {
           title,

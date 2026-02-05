@@ -67,6 +67,9 @@ export class Notification {
   @Prop({ type: String, required: true })
   createdBy: string;
 
+  @Prop({ type: Date, default: null })
+  lastPushSentAt: Date | null;
+
   @Prop()
   createdAt: Date;
 
@@ -83,6 +86,11 @@ export class Notification {
 }
 
 export const NotificationSchema = SchemaFactory.createForClass(Notification);
+
+NotificationSchema.index(
+  { sourceType: 1, sourceId: 1 },
+  { unique: true, partialFilterExpression: { sourceId: { $type: 'string' } } },
+);
 
 NotificationSchema.set('toJSON', {
   virtuals: true,
