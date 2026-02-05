@@ -27,7 +27,14 @@ const AppRouter: React.FC = () => {
   const { appConfigs } = useAppConfigsStore();
   const { isAuthenticated } = useUserStore();
 
-  return <RouterProvider router={createRouter(isAuthenticated, appConfigs)} />;
+  const routerKey = appConfigs.map((c) => c.name).join(',');
+
+  return (
+    <RouterProvider
+      key={routerKey}
+      router={createRouter(isAuthenticated, appConfigs)}
+    />
+  );
 };
 
 export default AppRouter;
