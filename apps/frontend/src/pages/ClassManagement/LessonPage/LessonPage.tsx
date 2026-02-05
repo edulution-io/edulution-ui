@@ -236,6 +236,7 @@ const LessonPage = () => {
             <Button
               onClick={onSaveSessionsButtonClick}
               variant="btn-table"
+              size="lg"
             >
               <span className="text-nowrap px-4">
                 {t(`classmanagement.${currentSelectedSession ? 'editSession' : 'saveSession'}`)}
@@ -248,6 +249,7 @@ const LessonPage = () => {
             <Button
               onClick={closeSession}
               variant="btn-table"
+              size="lg"
             >
               <span className="text-nowrap pl-4">{t('classmanagement.closeSession')}</span>
               <FontAwesomeIcon
