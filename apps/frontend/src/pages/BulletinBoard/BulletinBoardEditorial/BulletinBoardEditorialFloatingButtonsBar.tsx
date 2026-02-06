@@ -54,29 +54,29 @@ const BulletinBoardEditorialFloatingButtonsBar: React.FC = () => {
 
   const gridRowsButton: FloatingButtonConfig = {
     icon: faGrip,
-    text: t('bulletinboard.gridRows'),
+    text: t('bulletinboard.view'),
     variant: 'dropdown',
     dropdownItems: [
       {
-        label: t('bulletinboard.gridRowsAuto'),
+        label: t('bulletinboard.viewAuto'),
         isCheckbox: true,
         checked: gridRows === BULLETIN_BOARD_GRID_ROWS.AUTO,
         onCheckedChange: () => setGridRows(BULLETIN_BOARD_GRID_ROWS.AUTO).catch(() => {}),
       },
       {
-        label: t('bulletinboard.gridRowsOne'),
+        label: t('bulletinboard.viewOneRow'),
         isCheckbox: true,
         checked: gridRows === BULLETIN_BOARD_GRID_ROWS.ONE,
         onCheckedChange: () => setGridRows(BULLETIN_BOARD_GRID_ROWS.ONE).catch(() => {}),
       },
       {
-        label: t('bulletinboard.gridRowsTwo'),
+        label: t('bulletinboard.viewTwoRows'),
         isCheckbox: true,
         checked: gridRows === BULLETIN_BOARD_GRID_ROWS.TWO,
         onCheckedChange: () => setGridRows(BULLETIN_BOARD_GRID_ROWS.TWO).catch(() => {}),
       },
       {
-        label: t('bulletinboard.gridRowsThree'),
+        label: t('bulletinboard.viewThreeRows'),
         isCheckbox: true,
         checked: gridRows === BULLETIN_BOARD_GRID_ROWS.THREE,
         onCheckedChange: () => setGridRows(BULLETIN_BOARD_GRID_ROWS.THREE).catch(() => {}),
