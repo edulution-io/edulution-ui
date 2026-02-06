@@ -160,7 +160,7 @@ const BulletinBoardPage = () => {
         iconSrc: InfoBoardIcon,
       }}
     >
-      <div className={cn('h-full pl-4', isEditorialModeEnabled && 'pr-4')}>{getPageContent()}</div>
+      <div className={cn('h-full pl-4', isEditorialModeEnabled && isMobileView && 'pr-6')}>{getPageContent()}</div>
 
       <BulletinBoardEditorialFloatingButtonsBar />
     </PageLayout>
