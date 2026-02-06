@@ -24,6 +24,4 @@ const NOTIFICATION_SOURCE_TYPE = {
   CHAT: 'chat',
 } as const;
 
-export type NotificationSourceType = (typeof NOTIFICATION_SOURCE_TYPE)[keyof typeof NOTIFICATION_SOURCE_TYPE];
-
 export default NOTIFICATION_SOURCE_TYPE;

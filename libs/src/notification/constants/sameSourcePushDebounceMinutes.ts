@@ -17,10 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PUSH_NOTIFICATION_PRIORITY = {
-  DEFAULT: 'default',
-  NORMAL: 'normal',
-  HIGH: 'high',
-} as const;
+const SAME_SOURCE_PUSH_DEBOUNCE_MINUTES = 30;
 
-export default PUSH_NOTIFICATION_PRIORITY;
+export default SAME_SOURCE_PUSH_DEBOUNCE_MINUTES;

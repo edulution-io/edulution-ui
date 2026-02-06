@@ -17,7 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import NOTIFICATION_TYPE, { NotificationType } from '@libs/notification/constants/notificationType';
+import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
+import NotificationType from '@libs/notification/types/notificationType';
 import { NotificationFilterType } from '@libs/notification/types/notificationFilterType';
 
 const canFilterByNotificationType = (filter: NotificationFilterType): filter is NotificationType =>

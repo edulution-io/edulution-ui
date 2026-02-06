@@ -19,15 +19,14 @@
 
 import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import NOTIFICATION_TYPE, { NotificationType } from '@libs/notification/constants/notificationType';
-import NOTIFICATION_SOURCE_TYPE, { NotificationSourceType } from '@libs/notification/constants/notificationSourceType';
-import PUSH_NOTIFICATION_PRIORITY, {
-  PushNotificationPriority,
-} from '@libs/notification/constants/pushNotificationPriority';
-import {
-  PUSH_NOTIFICATION_INTERRUPTION_LEVEL,
-  PushNotificationInterruptionLevel,
-} from '@libs/notification/constants/pushNotificationInterruptionLevel';
+import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
+import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
+import NotificationType from '@libs/notification/types/notificationType';
+import NotificationSourceType from '@libs/notification/types/notificationSourceType';
+import PUSH_NOTIFICATION_PRIORITY from '@libs/notification/constants/pushNotificationPriority';
+import PushNotificationPriority from '@libs/notification/types/pushNotificationPriority';
+import PUSH_NOTIFICATION_INTERRUPTION_LEVEL from '@libs/notification/constants/pushNotificationInterruptionLevel';
+import PushNotificationInterruptionLevel from '@libs/notification/types/pushNotificationInterruptionLevel';
 import THIRTY_DAYS from '@libs/common/constants/thirtyDays';
 
 export type NotificationDocument = Notification & Document;

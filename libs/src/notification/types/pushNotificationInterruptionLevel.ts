@@ -17,6 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PUSH_DEBOUNCE_MINUTES = 30;
+import PUSH_NOTIFICATION_INTERRUPTION_LEVEL from '@libs/notification/constants/pushNotificationInterruptionLevel';
 
-export default PUSH_DEBOUNCE_MINUTES;
+type PushNotificationInterruptionLevel =
+  (typeof PUSH_NOTIFICATION_INTERRUPTION_LEVEL)[keyof typeof PUSH_NOTIFICATION_INTERRUPTION_LEVEL];
+
+export default PushNotificationInterruptionLevel;

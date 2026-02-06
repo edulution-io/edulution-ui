@@ -37,7 +37,8 @@ import { Card } from '@/components/shared/Card/Card';
 import cn from '@libs/common/utils/className';
 import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto';
 import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
-import NOTIFICATION_SOURCE_TYPE, { NotificationSourceType } from '@libs/notification/constants/notificationSourceType';
+import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
+import NotificationSourceType from '@libs/notification/types/notificationSourceType';
 import { getElapsedTime } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import useNotificationStore from '@/store/useNotificationStore';
 

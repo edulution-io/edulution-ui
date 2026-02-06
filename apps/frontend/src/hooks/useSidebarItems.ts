@@ -51,7 +51,7 @@ const useSidebarItems = (): SidebarMenuItem[] => {
         return runningConferences.length;
       case APPS.BULLETIN_BOARD:
         return bulletinBoardNotifications.length;
-      case APPS.NOTIFICATIONSCENTER:
+      case APPS.NOTIFICATIONS_CENTER:
         return unreadCount > 0 ? unreadCount : undefined;
       default:
         return undefined;

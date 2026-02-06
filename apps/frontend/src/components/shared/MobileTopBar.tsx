@@ -90,11 +90,11 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
             <button
               type="button"
               onClick={handleNotificationClick}
-              className="relative flex items-center justify-center"
+              className="relative flex items-center justify-center text-background"
             >
               <FontAwesomeIcon
                 icon={faBell}
-                className="h-5 w-5 text-muted hover:text-muted-foreground"
+                className="h-5 w-5 hover:text-muted-foreground"
               />
               <NotificationCounter count={unreadCount} />
             </button>

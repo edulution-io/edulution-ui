@@ -23,14 +23,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, mongo, PipelineStage, Types } from 'mongoose';
 import SendPushNotificationDto from '@libs/notification/types/send-pushNotification.dto';
 import CreateNotificationDto from '@libs/notification/types/createNotification.dto';
-import { NotificationSourceType } from '@libs/notification/constants/notificationSourceType';
+import NotificationSourceType from '@libs/notification/types/notificationSourceType';
 import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto';
 import USER_NOTIFICATION_STATUS from '@libs/notification/constants/userNotificationStatus';
 import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
 import { NOTIFICATION_FILTER_TYPE, NotificationFilterType } from '@libs/notification/types/notificationFilterType';
 import BULK_INSERT_BATCH_SIZE from '@libs/common/constants/bulkInsertBatchSize';
 import BulkInsertResult from '@libs/common/types/bulkInsertResult';
-import PUSH_DEBOUNCE_MINUTES from '@libs/notification/constants/pushDebounceMinutes';
+import SAME_SOURCE_PUSH_DEBOUNCE_MINUTES from '@libs/notification/constants/sameSourcePushDebounceMinutes';
 import UsersService from '../users/users.service';
 import PushNotificationQueue from './queue/push-notification.queue';
 import { Notification, NotificationDocument } from './notification.schema';
@@ -50,7 +50,7 @@ class NotificationsService {
       return true;
     }
 
-    const debounceMs = PUSH_DEBOUNCE_MINUTES * 60 * 1000;
+    const debounceMs = SAME_SOURCE_PUSH_DEBOUNCE_MINUTES * 60 * 1000;
     const timeSinceLastPush = Date.now() - notification.lastPushSentAt.getTime();
 
     return timeSinceLastPush >= debounceMs;
