@@ -28,8 +28,7 @@ import { getFromPathName } from '@libs/common/utils';
 import useFloatingBarHeight from '@/hooks/useFloatingBarHeight';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import cn from '@libs/common/utils/className';
-import TEXT_COLOR_VARIANT from '@libs/ui/constants/textColorVariant';
-import useFrameStore from '@/components/structure/framing/useFrameStore';
+import useFooterColors from '@/hooks/useFooterColors';
 
 interface PageLayoutProps {
   nativeAppHeader?: NativeAppHeaderProps;
@@ -50,19 +49,17 @@ const PageLayout = ({
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
   const rootPathName = getFromPathName(pathname, 1);
   const barRef = useRef<HTMLDivElement | null>(null);
-  const footerColors = useFrameStore((s) => s.footerColorsByAppName[rootPathName] ?? null);
+  const footerColors = useFooterColors();
 
   useFloatingBarHeight(barRef);
   useUserAccounts(rootPathName);
 
   if (isFullScreenAppWithoutFloatingButtons) return <main className="flex-1">{children}</main>;
 
-  const textColorClass = footerColors?.textColor === TEXT_COLOR_VARIANT.LIGHT ? 'text-white' : 'text-ciDarkGrey';
-
   return (
     <div
       id="page"
-      className={cn('relative flex h-full w-full flex-col', footerColors && textColorClass)}
+      className="relative flex h-full w-full flex-col"
       style={footerColors ? { backgroundColor: footerColors.backgroundColor } : undefined}
     >
       {nativeAppHeader && (
