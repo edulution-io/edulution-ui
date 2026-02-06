@@ -21,6 +21,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import ChatController from './chat.controller';
 import ChatService from './chat.service';
+import GroupsModule from '../groups/groups.module';
 import { Conversation, ConversationSchema } from './schemas/conversation.schema';
 import { ChatMessage, ChatMessageSchema } from './schemas/chatMessage.schema';
 
@@ -28,6 +29,7 @@ import { ChatMessage, ChatMessageSchema } from './schemas/chatMessage.schema';
   imports: [
     MongooseModule.forFeature([{ name: Conversation.name, schema: ConversationSchema }]),
     MongooseModule.forFeature([{ name: ChatMessage.name, schema: ChatMessageSchema }]),
+    GroupsModule,
   ],
   controllers: [ChatController],
   providers: [ChatService],
