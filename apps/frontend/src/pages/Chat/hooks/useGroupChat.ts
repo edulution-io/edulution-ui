@@ -19,19 +19,12 @@
 
 import { useState, useCallback, useEffect, useRef, FormEvent } from 'react';
 import ChatAdapter from '@libs/chat/types/chatAdapter';
+import ChatMessageSsePayload from '@libs/chat/types/chatMessageSsePayload';
 import GROUP_TYPES from '@libs/chat/constants/groupTypes';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import useChatStore from '@/store/useChatStore';
 import useSseEventListener from '@/hooks/useSseEventListener';
 import useUserStore from '@/store/UserStore/useUserStore';
-
-interface ChatNewMessageEvent {
-  conversationId: string;
-  groupName: string;
-  groupType: string;
-  messageId: string;
-  createdBy: string;
-}
 
 type GroupTypeLocation = 'classes' | 'projects';
 
@@ -42,7 +35,8 @@ const locationToGroupType: Record<GroupTypeLocation, string> = {
 
 const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): ChatAdapter => {
   const [input, setInput] = useState('');
-  const { messages, isLoading, isSending, error, fetchMessages, sendMessage, setCurrentConversation } = useChatStore();
+  const { messages, isLoading, isSending, error, fetchMessages, sendMessage, setCurrentConversation, addMessage } =
+    useChatStore();
   const user = useUserStore((state) => state.user);
   const currentUsername = user?.username;
 
@@ -63,19 +57,19 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
 
   const handleNewMessage = useCallback(
     (e: MessageEvent<string>) => {
-      const data = JSON.parse(e.data) as ChatNewMessageEvent;
+      const payload = JSON.parse(e.data) as ChatMessageSsePayload;
 
-      if (data.groupName !== groupNameRef.current || data.groupType !== groupTypeRef.current) {
+      if (payload.groupName !== groupNameRef.current || payload.groupType !== groupTypeRef.current) {
         return;
       }
 
-      if (data.createdBy === currentUsername) {
+      if (payload.createdBy === currentUsername) {
         return;
       }
 
-      void fetchMessages(groupTypeRef.current, groupNameRef.current);
+      addMessage(payload);
     },
-    [currentUsername, fetchMessages],
+    [currentUsername, addMessage],
   );
 
   useSseEventListener(SSE_MESSAGE_TYPE.CHAT_NEW_MESSAGE, handleNewMessage, { enabled: true });

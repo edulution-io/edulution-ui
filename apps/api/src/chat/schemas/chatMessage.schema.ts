@@ -18,19 +18,15 @@
  */
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-import { randomUUID } from 'crypto';
+import { Document, Types } from 'mongoose';
 import ChatRole from '@libs/chat/constants/chatRole';
 
 export type ChatMessageDocument = ChatMessage & Document;
 
 @Schema({ timestamps: true, strict: true })
 export class ChatMessage {
-  @Prop({ type: String, default: randomUUID(), unique: true, index: true })
-  messageId: string;
-
-  @Prop({ type: String, required: true, index: true })
-  conversationId: string;
+  @Prop({ type: Types.ObjectId, ref: 'Conversation', required: true, index: true })
+  conversationId: Types.ObjectId;
 
   @Prop({ type: String, required: true })
   content: string;

@@ -17,61 +17,60 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Body, Controller, Get, HttpStatus, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Get, HttpStatus, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import APPS from '@libs/appconfig/constants/apps';
 import CreateMessageDto from '@libs/chat/types/createMessageDto';
 import ChatErrorMessages from '@libs/chat/types/chatErrorMessages';
 import GroupType from '@libs/chat/types/groupType';
+import UserChatGroups from '@libs/chat/types/userChatGroups';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import CustomHttpException from '../common/CustomHttpException';
+import GroupsService from '../groups/groups.service';
 import ChatService from './chat.service';
 import { ChatMessageDocument } from './schemas/chatMessage.schema';
 import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
-
-// TODO Build endpoint to get user groups without token
 
 @ApiTags(APPS.CHAT)
 @ApiBearerAuth()
 @Controller(APPS.CHAT)
 class ChatController {
-  constructor(private readonly chatService: ChatService) {}
+  constructor(
+    private readonly chatService: ChatService,
+    private readonly groupsService: GroupsService,
+  ) {}
 
-  @Get('group/:groupType/:groupName/messages')
+  @Get('groups')
+  async getUserGroups(@GetCurrentUser() currentUser: JwtUser): Promise<UserChatGroups> {
+    return this.groupsService.getUserGroupsAndProjects(currentUser.preferred_username);
+  }
+
+  @Get('conversations/:groupType/:groupName/messages')
   async getMessages(
     @Param('groupType') groupType: GroupType,
     @Param('groupName') groupName: string,
     @GetCurrentUser() currentUser: JwtUser,
-    @Query('limit') limit?: string,
-    @Query('offset') offset?: string,
+    @Query('limit', new DefaultValuePipe(50), ParseIntPipe) limit: number,
+    @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
   ): Promise<ChatMessageDocument[]> {
-    const hasAccess = await this.chatService.checkGroupAccess(groupName, groupType, currentUser.preferred_username);
+    const conversation = await this.getAuthorizedConversation(groupName, groupType, currentUser);
 
-    if (!hasAccess) {
-      throw new CustomHttpException(
-        ChatErrorMessages.UNAUTHORIZED_ACCESS,
-        HttpStatus.FORBIDDEN,
-        { groupName, groupType },
-        ChatController.name,
-      );
-    }
-
-    const conversation = await this.chatService.getOrCreateGroupConversation(groupName, groupType);
-
-    // TODO FontAwsome Icon Mobile vll noch 10 Nachrichten desktop vll 20
-    const parsedLimit = limit ? parseInt(limit, 10) : 50;
-    const parsedOffset = offset ? parseInt(offset, 10) : 0;
-
-    return this.chatService.getMessages(conversation.conversationId, parsedLimit, parsedOffset);
+    return this.chatService.getMessages(conversation.id as string, limit, offset);
   }
 
-  @Post('group/:groupType/:groupName/messages')
+  @Post('conversations/:groupType/:groupName/messages')
   async sendMessage(
     @Param('groupType') groupType: GroupType,
     @Param('groupName') groupName: string,
     @Body() dto: CreateMessageDto,
     @GetCurrentUser() currentUser: JwtUser,
   ): Promise<ChatMessageDocument> {
+    const conversation = await this.getAuthorizedConversation(groupName, groupType, currentUser);
+
+    return this.chatService.sendMessage(conversation.id as string, dto.content, currentUser);
+  }
+
+  private async getAuthorizedConversation(groupName: string, groupType: GroupType, currentUser: JwtUser) {
     const hasAccess = await this.chatService.checkGroupAccess(groupName, groupType, currentUser.preferred_username);
 
     if (!hasAccess) {
@@ -83,9 +82,7 @@ class ChatController {
       );
     }
 
-    const conversation = await this.chatService.getOrCreateGroupConversation(groupName, groupType);
-
-    return this.chatService.sendMessage(conversation.conversationId, dto.content, currentUser);
+    return this.chatService.getOrCreateGroupConversation(groupName, groupType);
   }
 }
 

@@ -38,6 +38,7 @@ import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import AttendeeDto from '@libs/user/types/attendee.dto';
+import UserChatGroups from '@libs/chat/types/userChatGroups';
 import SPECIAL_SCHOOLS from '@libs/common/constants/specialSchools';
 import PROJECTS_PREFIX from '@libs/lmnApi/constants/prefixes/projectsPrefix';
 import SCHOOLS_PREFIX from '@libs/lmnApi/constants/prefixes/schoolsPrefix';
@@ -444,6 +445,47 @@ class GroupsService {
         GroupsService.name,
       );
     }
+  }
+
+  async getUserGroupsAndProjects(username: string): Promise<UserChatGroups> {
+    const allGroups = (await this.cacheManager.get<Group[]>(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL)) || [];
+
+    const classes: { name: string; path: string }[] = [];
+    const projects: { name: string; path: string }[] = [];
+
+    await Promise.all(
+      allGroups.map(async (group) => {
+        const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(
+          `${GROUP_WITH_MEMBERS_CACHE_KEY}-${group.path}`,
+        );
+
+        const isMember = groupWithMembers?.members?.some((m) => m.username === username);
+        if (!isMember) return;
+
+        if (group.path.startsWith(PROJECTS_PREFIX)) {
+          const projectName = group.path.replace(PROJECTS_PREFIX, '');
+          projects.push({ name: projectName, path: group.path });
+          return;
+        }
+
+        if (GroupsService.isSchoolClass(group.name)) {
+          const className = group.path.startsWith('/') ? group.path.substring(1) : group.name;
+          classes.push({ name: className, path: group.path });
+        }
+      }),
+    );
+
+    return { classes, projects };
+  }
+
+  private static isSchoolClass(groupName: string): boolean {
+    const systemPrefixes = ['all-', 'role-', 's_'];
+    const systemSuffixes = ['-teachers', '-students', '-internet', '-intranet', '-printing', '-webfilter', '-wifi'];
+    const exactExcludes = ['SCHOOLS'];
+
+    if (exactExcludes.includes(groupName)) return false;
+    if (systemPrefixes.some((prefix) => groupName.startsWith(prefix))) return false;
+    return !systemSuffixes.some((suffix) => groupName.endsWith(suffix));
   }
 }
 

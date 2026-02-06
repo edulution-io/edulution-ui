@@ -17,11 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { faUsers, faUserGear } from '@fortawesome/free-solid-svg-icons';
-import useLmnApiStore from '@/store/useLmnApiStore';
+import useChatStore from '@/store/useChatStore';
 import { ContactIcon } from '@/assets/icons';
 import MenuItem from '@libs/menubar/menuItem';
 import APPS from '@libs/appconfig/constants/apps';
@@ -30,20 +30,26 @@ import { CHAT_CLASSES_PATH, CHAT_PROJECTS_PATH } from '@libs/chat/constants/chat
 const useChatMenuConfig = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user } = useLmnApiStore();
+  const { userGroups, fetchUserGroups } = useChatStore();
+
+  useEffect(() => {
+    if (!userGroups) {
+      void fetchUserGroups();
+    }
+  }, [userGroups, fetchUserGroups]);
 
   const menuItems = useMemo<MenuItem[]>(() => {
-    if (!user) return [];
+    if (!userGroups) return [];
 
-    const { schoolclasses, projects } = user;
+    const { classes, projects } = userGroups;
     const items: MenuItem[] = [];
 
-    if (schoolclasses.length > 0) {
-      const classChildren: MenuItem[] = schoolclasses.map((className) => ({
-        id: className,
-        label: className,
+    if (classes.length > 0) {
+      const classChildren: MenuItem[] = classes.map((group) => ({
+        id: group.name,
+        label: group.name,
         icon: faUsers,
-        action: () => navigate(`/${CHAT_CLASSES_PATH}/${className}`),
+        action: () => navigate(`/${CHAT_CLASSES_PATH}/${group.name}`),
         disableTranslation: true,
       }));
 
@@ -57,11 +63,11 @@ const useChatMenuConfig = () => {
     }
 
     if (projects.length > 0) {
-      const projectChildren: MenuItem[] = projects.map((projectName) => ({
-        id: projectName,
-        label: projectName,
+      const projectChildren: MenuItem[] = projects.map((group) => ({
+        id: group.name,
+        label: group.name,
         icon: faUserGear,
-        action: () => navigate(`/${CHAT_PROJECTS_PATH}/${projectName}`),
+        action: () => navigate(`/${CHAT_PROJECTS_PATH}/${group.name}`),
         disableTranslation: true,
       }));
 
@@ -75,7 +81,7 @@ const useChatMenuConfig = () => {
     }
 
     return items;
-  }, [user, navigate, t]);
+  }, [userGroups, navigate, t]);
 
   return {
     title: 'chat.title',
