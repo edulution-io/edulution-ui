@@ -17,13 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import APPS from '@libs/appconfig/constants/apps';
+import ChatGroup from './chatGroup';
 
-const CHAT_API_BASE = APPS.CHAT;
+interface UserChatGroups {
+  classes: ChatGroup[];
+  projects: ChatGroup[];
+}
 
-const CHAT_USER_GROUPS_ENDPOINT = `${CHAT_API_BASE}/groups`;
-
-const getChatMessagesEndpoint = (groupType: string, groupName: string): string =>
-  `${CHAT_API_BASE}/conversations/${groupType}/${groupName}/messages`;
-
-export { CHAT_API_BASE, CHAT_USER_GROUPS_ENDPOINT, getChatMessagesEndpoint };
+export default UserChatGroups;

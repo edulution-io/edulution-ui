@@ -23,6 +23,8 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComments } from '@fortawesome/free-solid-svg-icons';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import useChatStore from '@/store/useChatStore';
 import ChatView from './components/ChatView';
 import useGroupChat from './hooks/useGroupChat';
 
@@ -49,11 +51,13 @@ const ChatContent: React.FC<ChatContentProps> = ({ groupName, groupType }) => {
 const ChatPage = () => {
   const { t } = useTranslation();
   const { groupType, groupName } = useParams<{ groupType: string; groupName: string }>();
+  const { isLoadingGroups } = useChatStore();
 
   const isValidGroupType = groupType === 'classes' || groupType === 'projects';
 
   return (
     <PageLayout>
+      <LoadingIndicatorDialog isOpen={isLoadingGroups} />
       <div className="flex h-full flex-col">
         {groupName && isValidGroupType ? (
           <ChatContent

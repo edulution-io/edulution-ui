@@ -20,7 +20,6 @@
 import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { randomUUID } from 'crypto';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import CHAT_TYPES from '@libs/chat/constants/chatTypes';
@@ -51,7 +50,6 @@ class ChatService {
       { type: CHAT_TYPES.GROUP, groupName },
       {
         $setOnInsert: {
-          conversationId: randomUUID(),
           type: CHAT_TYPES.GROUP,
           groupName,
           groupType,
@@ -66,7 +64,7 @@ class ChatService {
   }
 
   async sendMessage(conversationId: string, content: string, currentUser: JwtUser): Promise<ChatMessageDocument> {
-    const conversation = await this.conversationModel.findOne({ conversationId });
+    const conversation = await this.conversationModel.findById(conversationId);
 
     if (!conversation) {
       throw new CustomHttpException(
@@ -78,7 +76,6 @@ class ChatService {
     }
 
     const message = await this.chatMessageModel.create({
-      messageId: randomUUID(),
       conversationId,
       content,
       role: CHAT_ROLES.USER,
@@ -87,27 +84,21 @@ class ChatService {
       createdByUserLastName: currentUser.family_name,
     });
 
-    await this.conversationModel.updateOne({ conversationId }, { lastMessageAt: new Date() });
+    await this.conversationModel.findByIdAndUpdate(conversationId, { lastMessageAt: new Date() });
 
     if (conversation.groupName && conversation.groupType) {
-      void this.notifyGroupMembers(conversation.groupName, conversation.groupType, {
-        conversationId,
-        groupName: conversation.groupName,
-        groupType: conversation.groupType,
-        messageId: message.messageId,
-        createdBy: currentUser.preferred_username,
-      });
+      void this.notifyGroupMembers(conversation.groupName, conversation.groupType, message);
     }
 
     return message;
   }
 
-  private async notifyGroupMembers(groupName: string, groupType: string, data: object): Promise<void> {
+  private async notifyGroupMembers(groupName: string, groupType: string, message: ChatMessageDocument): Promise<void> {
     const members = await this.getGroupMembers(groupName, groupType);
 
     if (members.length > 0) {
-      this.sseService.sendEventToUsers(members, JSON.stringify(data), SSE_MESSAGE_TYPE.CHAT_NEW_MESSAGE);
-      Logger.debug(`Notified ${members.length} members of ${groupName} about new message`, ChatService.name);
+      const payload = { ...message.toJSON(), groupName, groupType };
+      this.sseService.sendEventToUsers(members, JSON.stringify(payload), SSE_MESSAGE_TYPE.CHAT_NEW_MESSAGE);
     }
   }
 
@@ -126,7 +117,6 @@ class ChatService {
     return Array.from(allMembers);
   }
 
-  // TODO add / if groupname doesnt contain it for classes
   async checkGroupAccess(groupName: string, groupType: string, username: string): Promise<boolean> {
     try {
       const pathsToCheck = ChatService.getGroupPaths(groupName, groupType);
@@ -135,15 +125,7 @@ class ChatService {
         pathsToCheck.map((path) => this.cacheManager.get<GroupWithMembers>(`${GROUP_WITH_MEMBERS_CACHE_KEY}-${path}`)),
       );
 
-      const hasAccess = groups.some((group) => group?.members?.some((m) => m.username === username));
-
-      if (hasAccess) {
-        Logger.debug(`User ${username} has access to ${groupName}`, ChatService.name);
-      } else {
-        Logger.debug(`User ${username} has no access to ${groupName} (${groupType})`, ChatService.name);
-      }
-
-      return hasAccess;
+      return groups.some((group) => group?.members?.some((members) => members.username === username));
     } catch (error) {
       Logger.error(`Failed to check group access for user ${username}: ${error}`, ChatService.name);
       return false;
@@ -151,12 +133,14 @@ class ChatService {
   }
 
   private static getGroupPaths(groupName: string, groupType: string): string[] {
+    const name = groupName.startsWith('/') ? groupName.substring(1) : groupName;
+
     if (groupType === GROUP_TYPES.PROJECT) {
-      return [`${PROJECTS_PREFIX}${groupName}`];
+      return [`${PROJECTS_PREFIX}${name}`];
     }
 
     if (groupType === GROUP_TYPES.CLASS) {
-      return [`/${groupName}`];
+      return [`/${name}`];
     }
 
     return [];
