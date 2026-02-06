@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 interface CircleLoaderProps {
   className?: string;

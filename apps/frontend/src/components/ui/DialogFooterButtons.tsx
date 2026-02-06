@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, type ButtonProps } from '../shared/Button';
+import { Button, type ButtonVariant } from '@edulution-io/ui-kit';
 
 interface DialogFooterProps {
   disableSubmit?: boolean;
@@ -29,8 +29,8 @@ interface DialogFooterProps {
   submitButtonText?: string;
   deleteButtonText?: string;
   submitButtonType?: 'submit' | 'button';
-  cancelButtonVariant?: ButtonProps['variant'];
-  submitButtonVariant?: ButtonProps['variant'];
+  cancelButtonVariant?: ButtonVariant;
+  submitButtonVariant?: ButtonVariant;
   handleSubmit?: () => void;
   handleClose?: () => void;
   handleDelete?: () => void;

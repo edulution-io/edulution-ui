@@ -19,7 +19,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import { useTranslation } from 'react-i18next';
 import { bytesToMegabytes } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';

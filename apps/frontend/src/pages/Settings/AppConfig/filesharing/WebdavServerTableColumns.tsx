@@ -28,7 +28,7 @@ import TableActionCell from '@/components/ui/Table/TableActionCell';
 import { DeleteIcon, EditIcon } from '@libs/common/constants/standardActionIcons';
 import ID_ACTION_TABLE_COLUMN from '@libs/common/constants/idActionTableColumn';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import WEBDAV_SHARE_STATUS from '@libs/webdav/constants/webdavShareStatus';
 import useAppConfigTableDialogStore from '../components/table/useAppConfigTableDialogStore';
 import useWebdavServerConfigTableStore from './useWebdavServerConfigTableStore';

@@ -25,7 +25,7 @@ import getDisplayName from '@/utils/getDisplayName';
 import useLanguage from '@/hooks/useLanguage';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useMedia from '@/hooks/useMedia';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import TEXT_COLOR_VARIANT from '@libs/ui/constants/textColorVariant';
 import useFooterColors from '@/hooks/useFooterColors';
 

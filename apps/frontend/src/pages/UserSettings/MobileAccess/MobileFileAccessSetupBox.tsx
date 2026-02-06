@@ -26,7 +26,7 @@ import PageLayout from '@/components/structure/layout/PageLayout';
 import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
 import APPLICATION_NAME from '@libs/common/constants/applicationName';
 import { EDU_DOCS_URL } from '@libs/common/constants';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
 
 const EDU_APP_SETUP_URL = `${EDU_DOCS_URL}/docs/edulution-app/setup`;

@@ -19,7 +19,7 @@
 
 import * as React from 'react';
 
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (

@@ -23,7 +23,7 @@ import { type VariantProps } from 'class-variance-authority';
 import { inputVariants } from '@libs/ui/constants/commonClassNames';
 import Input from '@/components/shared/Input';
 import Label from '@/components/ui/Label';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 type FormFieldProps = {
   value?: string | number;

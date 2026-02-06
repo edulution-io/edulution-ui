@@ -1,0 +1,76 @@
+{
+  "name": "@edulution-io/ui-kit",
+  "version": "0.0.0",
+  "description": "Edulution UI component library built with React, TypeScript, Tailwind CSS",
+  "license": "AGPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/edulution-io/edulution-ui.git",
+    "directory": "libs/ui-kit"
+  },
+  "type": "module",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    },
+    "./styles.css": "./styles.css",
+    "./tailwind.config": "./tailwind.config.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "*.js",
+    "*.d.ts",
+    "*.map",
+    "*.css",
+    "components",
+    "utils",
+    "tailwind.config.js",
+    "README.md"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": false
+    },
+    "react-dom": {
+      "optional": false
+    }
+  },
+  "dependencies": {
+    "@radix-ui/react-slot": "^1.0.2",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
+    "tailwind-merge": "^2.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.3.0",
+    "vite": "^5.0.0",
+    "vite-plugin-dts": "^4.0.0"
+  },
+  "keywords": [
+    "react",
+    "components",
+    "ui",
+    "tailwindcss",
+    "shadcn",
+    "edulution"
+  ]
+}

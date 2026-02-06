@@ -23,7 +23,7 @@ import { SIDEBAR_ICON_WIDTH } from '@libs/ui/constants';
 import { useTranslation } from 'react-i18next';
 import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 const LauncherButton: React.FC = () => {
   const { t } = useTranslation();

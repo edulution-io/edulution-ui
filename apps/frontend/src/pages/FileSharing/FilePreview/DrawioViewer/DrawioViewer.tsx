@@ -19,7 +19,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import DEFAULT_DRAWIO_URL from '@libs/filesharing/constants/defaultDrawioUrl';
 import DrawioMessage from '@libs/filesharing/types/drawioMessage';
 import DRAWIO_MESSAGE_EVENT from '@libs/filesharing/constants/drawioMessageEvent';

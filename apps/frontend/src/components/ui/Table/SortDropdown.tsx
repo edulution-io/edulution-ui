@@ -22,9 +22,8 @@ import { Table } from '@tanstack/react-table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDownAZ, faArrowUpAZ, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
-import cn from '@libs/common/utils/className';
+import { cn , Button } from '@edulution-io/ui-kit';
 import { inputVariants } from '@libs/ui/constants/commonClassNames';
-import { Button } from '@/components/shared/Button';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 
 interface SortDropdownProps<TData> {

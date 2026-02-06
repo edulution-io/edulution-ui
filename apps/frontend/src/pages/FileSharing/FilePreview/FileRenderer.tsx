@@ -43,7 +43,7 @@ import useFileEditorContentStore from '@/pages/FileSharing/FilePreview/useFileEd
 import { FILE_PREVIEW_TYPE, FilePreviewType } from '@libs/filesharing/types/filePreviewType';
 import isPdfExtension from '@libs/filesharing/utils/isPdfExtension';
 import isVideoExtension from '@libs/filesharing/utils/isVideoExtension';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import TEXT_PREVIEW_ELEMENT_ID from '@libs/filesharing/constants/textPreviewElementId';
 
 interface FileRendererProps {
