@@ -28,6 +28,7 @@ import { getFromPathName } from '@libs/common/utils';
 import useFloatingBarHeight from '@/hooks/useFloatingBarHeight';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import { cn } from '@edulution-io/ui-kit';
+import useFooterColors from '@/hooks/useFooterColors';
 
 interface PageLayoutProps {
   nativeAppHeader?: NativeAppHeaderProps;
@@ -48,6 +49,7 @@ const PageLayout = ({
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
   const rootPathName = getFromPathName(pathname, 1);
   const barRef = useRef<HTMLDivElement | null>(null);
+  const footerColors = useFooterColors();
 
   useFloatingBarHeight(barRef);
   useUserAccounts(rootPathName);
@@ -58,6 +60,7 @@ const PageLayout = ({
     <div
       id="page"
       className="relative flex h-full w-full flex-col"
+      style={footerColors ? { backgroundColor: footerColors.backgroundColor } : undefined}
     >
       {nativeAppHeader && (
         <NativeAppHeader

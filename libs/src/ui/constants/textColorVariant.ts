@@ -17,9 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const HIGHLIGHT_DURATION_MS = 3000;
-const SCROLL_DELAY_MS = 50;
-const HASH_SCROLL_DELAY_MS = 100;
-const FONTAWSOME_HOVER_ANIM_MS = 700;
+const TEXT_COLOR_VARIANT = {
+  LIGHT: 'light',
+  DARK: 'dark',
+} as const;
 
-export { HIGHLIGHT_DURATION_MS, SCROLL_DELAY_MS, HASH_SCROLL_DELAY_MS, FONTAWSOME_HOVER_ANIM_MS };
+export default TEXT_COLOR_VARIANT;

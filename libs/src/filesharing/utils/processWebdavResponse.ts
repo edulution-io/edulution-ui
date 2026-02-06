@@ -17,17 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import WEBDAV_SHARE_TYPE from '../constants/webdavShareType';
 import { DirectoryFileDTO } from '../types/directoryFileDTO';
-import WebdavShareType from '../types/webdavShareType';
 
-const processWebdavResponse = (response: DirectoryFileDTO[], webdavShareType: WebdavShareType) => {
-  let data = response;
-  if (webdavShareType === WEBDAV_SHARE_TYPE.EDU_FILE_PROXY) {
-    data = data.slice(1);
-  }
-  data = data.sort((a, b) => a.filename.localeCompare(b.filename));
-  return data;
+const processWebdavResponse = (response: DirectoryFileDTO[], currentPath: string) => {
+  const data = response.filter((file) => file.filePath !== currentPath);
+  return data.sort((a, b) => a.filename.localeCompare(b.filename));
 };
 
 export default processWebdavResponse;

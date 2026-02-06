@@ -17,26 +17,24 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { useSearchParams } from 'react-router-dom';
-import useUserPath from '@/pages/FileSharing/hooks/useUserPath';
-import MoveContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveContentDialogBody';
-import type MoveContentDialogProps from '@libs/filesharing/types/moveContentDialogBodyProps';
-import ContentType from '@libs/filesharing/types/contentType';
+import { useRef, useState, useCallback } from 'react';
+import { FONTAWSOME_HOVER_ANIM_MS } from '@libs/ui/constants/animationTiming';
 
-const MoveDirectoryDialogBody: React.FC<Omit<MoveContentDialogProps, 'pathToFetch'>> = (props) => {
-  const { homePath } = useUserPath();
-  const [searchParams] = useSearchParams();
-  const pathToFetch = searchParams.get('path');
+const useFontAwesomeHoverAnimation = () => {
+  const [animate, setAnimate] = useState(false);
+  const timer = useRef<number | null>(null);
 
-  return (
-    <MoveContentDialogBody
-      {...props}
-      pathToFetch={pathToFetch || homePath}
-      fileType={ContentType.DIRECTORY}
-      isCurrentPathDefaultDestination
-    />
-  );
+  const triggerAnimation = useCallback(() => {
+    if (timer.current) window.clearTimeout(timer.current);
+
+    setAnimate(false);
+    requestAnimationFrame(() => {
+      setAnimate(true);
+      timer.current = window.setTimeout(() => setAnimate(false), FONTAWSOME_HOVER_ANIM_MS);
+    });
+  }, []);
+
+  return { animate, triggerAnimation };
 };
 
-export default MoveDirectoryDialogBody;
+export default useFontAwesomeHoverAnimation;

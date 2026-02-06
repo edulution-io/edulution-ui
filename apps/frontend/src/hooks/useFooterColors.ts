@@ -17,26 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { useSearchParams } from 'react-router-dom';
-import useUserPath from '@/pages/FileSharing/hooks/useUserPath';
-import MoveContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveContentDialogBody';
-import type MoveContentDialogProps from '@libs/filesharing/types/moveContentDialogBodyProps';
-import ContentType from '@libs/filesharing/types/contentType';
+import { useLocation } from 'react-router-dom';
+import { getFromPathName } from '@libs/common/utils';
+import useFrameStore from '@/components/structure/framing/useFrameStore';
 
-const MoveDirectoryDialogBody: React.FC<Omit<MoveContentDialogProps, 'pathToFetch'>> = (props) => {
-  const { homePath } = useUserPath();
-  const [searchParams] = useSearchParams();
-  const pathToFetch = searchParams.get('path');
-
-  return (
-    <MoveContentDialogBody
-      {...props}
-      pathToFetch={pathToFetch || homePath}
-      fileType={ContentType.DIRECTORY}
-      isCurrentPathDefaultDestination
-    />
-  );
+const useFooterColors = () => {
+  const { pathname } = useLocation();
+  const rootPathName = getFromPathName(pathname, 1);
+  return useFrameStore((s) => s.footerColorsByAppName[rootPathName] ?? null);
 };
 
-export default MoveDirectoryDialogBody;
+export default useFooterColors;

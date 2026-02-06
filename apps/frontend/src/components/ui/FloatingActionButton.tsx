@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import type FloatingButtonConfig from '@libs/ui/types/FloatingButtons/floatingButtonConfig';
 import { FLOATING_BUTTON_CLASS_NAME } from '@libs/ui/constants/floatingButtonsConfig';
+import useFontAwesomeHoverAnimation from '@/hooks/useFontAwesomeHoverAnimation';
 
 const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
   icon,
@@ -34,6 +35,15 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
   dropdownItems = [],
 }) => {
   const { t } = useTranslation();
+  const { animate, triggerAnimation } = useFontAwesomeHoverAnimation();
+
+  const renderIcon = () => (
+    <FontAwesomeIcon
+      icon={icon}
+      className="m-5 h-5 w-5"
+      bounce={animate}
+    />
+  );
 
   const renderContent = () => {
     if (variant === 'dropdown' && dropdownItems.length > 0) {
@@ -44,11 +54,9 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
               type="button"
               variant="btn-hexagon"
               hexagonIconAltText={t('common.showOptions')}
+              onMouseEnter={triggerAnimation}
             >
-              <FontAwesomeIcon
-                icon={icon}
-                className="m-5 h-5 w-5"
-              />
+              {renderIcon()}
             </Button>
           }
           items={dropdownItems}
@@ -62,11 +70,9 @@ const FloatingActionButton: React.FC<FloatingButtonConfig> = ({
         variant="btn-hexagon"
         onClick={onClick}
         hexagonIconAltText={text}
+        onMouseEnter={triggerAnimation}
       >
-        <FontAwesomeIcon
-          icon={icon}
-          className="m-5 h-5 w-5"
-        />
+        {renderIcon()}
       </Button>
     );
   };

@@ -34,8 +34,10 @@ import {
   WIDTH_TOLERANCE_PX,
 } from '@libs/ui/constants/floatingButtonsConfig';
 import calculateButtonLayout from '@libs/ui/utils/calculateButtonLayout';
-import { cn , Button } from '@edulution-io/ui-kit';
+import { cn, Button } from '@edulution-io/ui-kit';
+import TEXT_COLOR_VARIANT from '@libs/ui/constants/textColorVariant';
 import usePortalRoot from '@/hooks/usePortalRoot';
+import useFooterColors from '@/hooks/useFooterColors';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 
 const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
@@ -44,6 +46,7 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const moreButtonRef = useRef<HTMLDivElement>(null);
   const dropupRef = useRef<HTMLDivElement>(null);
+  const footerColors = useFooterColors();
   const [containerWidth, setContainerWidth] = useState(0);
   const [buttonWidth, setButtonWidth] = useState(DEFAULT_BUTTON_WIDTH);
   const [isDropupOpen, setIsDropupOpen] = useState(false);
@@ -153,11 +156,15 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
   const toggleDropup = () => setIsDropupOpen((prev) => !prev);
 
   if (!portalRoot) return null;
+  const textColorClass = footerColors?.textColor === TEXT_COLOR_VARIANT.LIGHT ? 'text-white' : 'text-black';
 
   const content = (
     <div
       ref={containerRef}
-      className="pointer-events-auto flex min-w-0 flex-grow-0 justify-start transition-all duration-200 ease-in-out"
+      className={cn(
+        'pointer-events-auto flex min-w-0 flex-grow-0 justify-start transition-all duration-200 ease-in-out',
+        footerColors ? textColorClass : 'text-background',
+      )}
     >
       {displayedButtons.map((buttonConfig) => renderButton(buttonConfig, `${keyPrefix}${buttonConfig.text}`))}
 
