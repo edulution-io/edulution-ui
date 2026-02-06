@@ -31,6 +31,7 @@ import CreateOrUpdateBulletinDialog from '@/pages/BulletinBoard/BulletinBoardEdi
 import useUserPreferencesStore from '@/store/useUserPreferencesStore';
 import USER_PREFERENCES_FIELDS from '@libs/user-preferences/constants/user-preferences-fields';
 import BULLETIN_BOARD_GRID_ROWS from '@libs/bulletinBoard/constants/bulletin-board-grid-rows';
+import useMedia from '@/hooks/useMedia';
 import cn from '@libs/common/utils/className';
 
 const BulletinBoardPage = () => {
@@ -45,6 +46,7 @@ const BulletinBoardPage = () => {
     hydrateGridRows,
     gridRows,
   } = useBulletinBoardStore();
+  const { isMobileView } = useMedia();
 
   const { getUserPreferences } = useUserPreferencesStore();
   const { getCategoriesWithEditPermission } = useBulletinBoardEditorialStore();
@@ -86,19 +88,30 @@ const BulletinBoardPage = () => {
   const isMultiRow = gridRows !== BULLETIN_BOARD_GRID_ROWS.ONE;
   const isAutoLayout = gridRows === BULLETIN_BOARD_GRID_ROWS.AUTO;
 
+  const getColumnCount = () => {
+    if (!isMultiRow || isAutoLayout) return undefined;
+    const rowCount = gridRows === BULLETIN_BOARD_GRID_ROWS.TWO ? 2 : 3;
+    const categoryCount = bulletinsByCategories?.length ?? 1;
+    return Math.max(1, Math.ceil(categoryCount / rowCount));
+  };
+
   const getContainerClassName = () => {
     if (isAutoLayout) {
-      return 'grid h-full max-h-full auto-rows-min grid-cols-[repeat(auto-fill,minmax(400px,1fr))] gap-3 overflow-y-auto overflow-x-hidden p-3 scrollbar-thin';
+      return 'grid h-full max-h-full auto-rows-min grid-cols-1 gap-3 overflow-y-auto overflow-x-hidden p-3 scrollbar-thin md:grid-cols-[repeat(auto-fill,minmax(400px,1fr))]';
     }
     if (isMultiRow) {
-      const cols = gridRows === BULLETIN_BOARD_GRID_ROWS.TWO ? 2 : 3;
-      return cn(
-        'grid h-full max-h-full gap-3 overflow-y-auto overflow-x-hidden p-3 scrollbar-thin',
-        cols === 2 && 'grid-cols-2',
-        cols === 3 && 'grid-cols-3',
-      );
+      return 'grid h-full max-h-full gap-3 overflow-x-auto overflow-y-auto p-3 scrollbar-thin md:overflow-x-hidden';
     }
     return 'flex h-full max-h-full overflow-x-auto overflow-y-hidden scrollbar-thin';
+  };
+
+  const getContainerStyle = (): React.CSSProperties | undefined => {
+    const cols = getColumnCount();
+    if (!cols) return undefined;
+    if (isMobileView) {
+      return { gridTemplateColumns: `repeat(${cols}, minmax(85vw, 1fr))` };
+    }
+    return { gridTemplateColumns: `repeat(${cols}, 1fr)` };
   };
 
   const getPageContent = () => {
@@ -107,7 +120,10 @@ const BulletinBoardPage = () => {
     }
 
     return (
-      <div className={getContainerClassName()}>
+      <div
+        className={getContainerClassName()}
+        style={getContainerStyle()}
+      >
         {(isLoading || isInitialLoading) && <LoadingIndicatorDialog isOpen />}
 
         {bulletinsByCategories &&
@@ -137,13 +153,14 @@ const BulletinBoardPage = () => {
 
   return (
     <PageLayout
+      hasFullWidthMain={isMobileView}
       nativeAppHeader={{
         title: t('bulletinboard.appTitle'),
         description: t('bulletinboard.description'),
         iconSrc: InfoBoardIcon,
       }}
     >
-      {getPageContent()}
+      <div className={cn('h-full pl-4', isEditorialModeEnabled && 'pr-4')}>{getPageContent()}</div>
 
       <BulletinBoardEditorialFloatingButtonsBar />
     </PageLayout>
