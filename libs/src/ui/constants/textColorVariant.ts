@@ -17,11 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { DirectoryFileDTO } from '../types/directoryFileDTO';
+const TEXT_COLOR_VARIANT = {
+  LIGHT: 'light',
+  DARK: 'dark',
+} as const;
 
-const processWebdavResponse = (response: DirectoryFileDTO[], currentPath: string) => {
-  const data = response.filter((file) => file.filePath !== currentPath);
-  return data.sort((a, b) => a.filename.localeCompare(b.filename));
-};
-
-export default processWebdavResponse;
+export default TEXT_COLOR_VARIANT;
