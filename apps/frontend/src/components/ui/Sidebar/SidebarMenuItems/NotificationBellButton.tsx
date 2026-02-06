@@ -22,16 +22,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import useNotificationStore from '@/store/useNotificationStore';
-import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
+import useSidebarItems from '@/hooks/useSidebarItems';
 import cn from '@libs/common/utils/className';
+import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
+import NOTIFICATION_COUNTER_VARIANT from '@libs/notification/constants/notificationCounterVariant';
 
 const NotificationBellButton = () => {
   const { t } = useTranslation();
-  const { unreadCount, isSheetOpen, setIsSheetOpen } = useNotificationStore();
+  const { isSheetOpen, setIsSheetOpen } = useNotificationStore();
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
   const { isMobileSidebarOpen, toggleMobileSidebar } = useSidebarStore();
+  const sidebarItems = useSidebarItems();
+  const totalCount = sidebarItems.reduce((sum, item) => sum + (item.notificationCounter ?? 0), 0);
 
   const wasSheetOpenOnPointerDown = useRef(false);
 
@@ -51,32 +55,36 @@ const NotificationBellButton = () => {
 
   return (
     <div
-        role="button"
-        tabIndex={0}
-        aria-label={t('notificationscenter.sidebar')}
-        onPointerDown={handlePointerDown}
-        onClick={handleClick}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            handleClick();
-          }
-        }}
-        className={cn(
-          'group flex max-h-14 cursor-pointer items-center justify-end gap-4 px-4 py-2 hover:bg-muted-background',
-          wrapperClassName,
-        )}
-      >
-        <p className={cn('text-md font-bold', titleClassName)}>{t('notificationscenter.sidebar')}</p>
+      role="button"
+      tabIndex={0}
+      aria-label={t('notificationscenter.sidebar')}
+      onPointerDown={handlePointerDown}
+      onClick={handleClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
+      className={cn(
+        'group flex max-h-14 cursor-pointer items-center justify-end gap-4 px-4 py-2 hover:bg-muted-background',
+        wrapperClassName,
+      )}
+    >
+      <p className={cn('text-md font-bold', titleClassName)}>{t('notificationscenter.sidebar')}</p>
 
-        <div className="relative flex h-10 w-10 items-center justify-center">
-          <FontAwesomeIcon
-            icon={faBell}
-            className="transform text-xl transition-transform duration-200 group-hover:scale-110"
-          />
-          <NotificationCounter count={unreadCount} />
-        </div>
+      <div className="relative flex h-10 w-10 items-center justify-center">
+        <FontAwesomeIcon
+          icon={faBell}
+          className="transform text-xl transition-transform duration-200 group-hover:scale-110"
+        />
+        <NotificationCounter
+          count={totalCount}
+          variant={NOTIFICATION_COUNTER_VARIANT.NOTIFICATION_PANEL}
+          className="-right-1 -top-1"
+        />
       </div>
+    </div>
   );
 };
 

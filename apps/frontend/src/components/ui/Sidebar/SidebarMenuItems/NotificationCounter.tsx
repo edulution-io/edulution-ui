@@ -18,15 +18,19 @@
  */
 
 import React from 'react';
+import cn from '@libs/common/utils/className';
+import NOTIFICATION_COUNTER_VARIANT from '@libs/notification/constants/notificationCounterVariant';
+import NotificationCounterVariant from '@libs/notification/types/notificationCounterVariant';
 
 interface SidebarItemNotificationProps {
   count: number;
   maxCount?: number;
+  variant?: NotificationCounterVariant;
   className?: string;
 }
 
 const NotificationCounter = (props: SidebarItemNotificationProps) => {
-  const { count, maxCount = 9, className } = props;
+  const { count, maxCount = 9, variant = NOTIFICATION_COUNTER_VARIANT.APP_NOTIFICATION, className } = props;
 
   if (!count || count === 0) {
     return null;
@@ -36,11 +40,11 @@ const NotificationCounter = (props: SidebarItemNotificationProps) => {
 
   return (
     <span
-      className={
-        `absolute right-[10px] top-[2px] inline-flex items-center justify-center ` +
-        `rounded-full bg-ciRed text-xs font-bold text-white ` +
-        `h-5 min-w-[1.25rem] transform px-0 ${className}`
-      }
+      className={cn(
+        'absolute inline-flex h-5 min-w-[1.25rem] transform items-center justify-center rounded-full px-0 text-xs font-bold text-white',
+        variant,
+        className ?? 'right-[10px] top-[2px]',
+      )}
       aria-label={`${displayCount} new notifications`}
     >
       {displayCount}
