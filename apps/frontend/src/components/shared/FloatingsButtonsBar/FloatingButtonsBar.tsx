@@ -35,13 +35,11 @@ import {
 } from '@libs/ui/constants/floatingButtonsConfig';
 import calculateButtonLayout from '@libs/ui/utils/calculateButtonLayout';
 import cn from '@libs/common/utils/className';
+import TEXT_COLOR_VARIANT from '@libs/ui/constants/textColorVariant';
 import usePortalRoot from '@/hooks/usePortalRoot';
+import useFooterColors from '@/hooks/useFooterColors';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { Button } from '@/components/shared/Button';
-import useFrameStore from '@/components/structure/framing/useFrameStore';
-import { useLocation } from 'react-router-dom';
-import { getFromPathName } from '@libs/common/utils';
-import TEXT_COLOR_VARIANT from '@libs/ui/constants/textColorVariant';
 
 const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
   const { t } = useTranslation();
@@ -49,9 +47,7 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const moreButtonRef = useRef<HTMLDivElement>(null);
   const dropupRef = useRef<HTMLDivElement>(null);
-  const { pathname } = useLocation();
-  const rootPathName = getFromPathName(pathname, 1);
-  const footerColors = useFrameStore((s) => s.footerColorsByAppName[rootPathName] ?? null);
+  const footerColors = useFooterColors();
   const [containerWidth, setContainerWidth] = useState(0);
   const [buttonWidth, setButtonWidth] = useState(DEFAULT_BUTTON_WIDTH);
   const [isDropupOpen, setIsDropupOpen] = useState(false);
@@ -168,7 +164,6 @@ const FloatingButtonsBar: React.FC<FloatingButtonsBarProps> = ({ config }) => {
       ref={containerRef}
       className={cn(
         'pointer-events-auto flex min-w-0 flex-grow-0 justify-start transition-all duration-200 ease-in-out',
-
         footerColors ? textColorClass : 'text-background',
       )}
     >

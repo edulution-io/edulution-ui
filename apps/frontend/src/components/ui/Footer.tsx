@@ -19,24 +19,21 @@
 
 import React from 'react';
 import APPLICATION_NAME from '@libs/common/constants/applicationName';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import getDisplayName from '@/utils/getDisplayName';
 import useLanguage from '@/hooks/useLanguage';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useMedia from '@/hooks/useMedia';
 import cn from '@libs/common/utils/className';
-import { getFromPathName } from '@libs/common/utils';
 import TEXT_COLOR_VARIANT from '@libs/ui/constants/textColorVariant';
-import useFrameStore from '../structure/framing/useFrameStore';
+import useFooterColors from '@/hooks/useFooterColors';
 
 const Footer: React.FC = () => {
   const { language } = useLanguage();
   const isAuthenticated = useUserStore((s) => s.isAuthenticated);
   const { isMobileView, isTabletView } = useMedia();
-  const { pathname } = useLocation();
-  const rootPathName = getFromPathName(pathname, 1);
-  const footerColors = useFrameStore((s) => s.footerColorsByAppName[rootPathName] ?? null);
+  const footerColors = useFooterColors();
 
   const publicAppConfigs = useAppConfigsStore((s) => s.publicAppConfigs);
 

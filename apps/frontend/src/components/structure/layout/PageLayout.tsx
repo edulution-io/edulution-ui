@@ -28,7 +28,7 @@ import { getFromPathName } from '@libs/common/utils';
 import useFloatingBarHeight from '@/hooks/useFloatingBarHeight';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import cn from '@libs/common/utils/className';
-import useFrameStore from '@/components/structure/framing/useFrameStore';
+import useFooterColors from '@/hooks/useFooterColors';
 
 interface PageLayoutProps {
   nativeAppHeader?: NativeAppHeaderProps;
@@ -49,7 +49,7 @@ const PageLayout = ({
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
   const rootPathName = getFromPathName(pathname, 1);
   const barRef = useRef<HTMLDivElement | null>(null);
-  const footerColors = useFrameStore((s) => s.footerColorsByAppName[rootPathName] ?? null);
+  const footerColors = useFooterColors();
 
   useFloatingBarHeight(barRef);
   useUserAccounts(rootPathName);
