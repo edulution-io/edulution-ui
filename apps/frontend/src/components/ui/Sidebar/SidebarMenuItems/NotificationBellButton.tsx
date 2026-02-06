@@ -25,7 +25,7 @@ import useNotificationStore from '@/store/useNotificationStore';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
 import useSidebarItems from '@/hooks/useSidebarItems';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import NOTIFICATION_COUNTER_VARIANT from '@libs/notification/constants/notificationCounterVariant';
 

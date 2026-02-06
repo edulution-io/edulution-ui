@@ -19,11 +19,10 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import cn from '@libs/common/utils/className';
+import { Button, cn } from '@edulution-io/ui-kit';
 import { NOTIFICATION_FILTER_TYPE, NotificationFilterType } from '@libs/notification/types/notificationFilterType';
 import canFilterByNotificationType from '@libs/notification/utils/canFilterByNotificationType';
 import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto';
-import { Button } from '@/components/shared/Button';
 
 interface NotificationFilterBadgesProps {
   activeFilter: NotificationFilterType;

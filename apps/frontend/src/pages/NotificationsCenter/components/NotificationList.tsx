@@ -22,10 +22,9 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInbox, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto';
-import cn from '@libs/common/utils/className';
+import { Button, cn } from '@edulution-io/ui-kit';
 import NotificationItem from '@/pages/NotificationsCenter/components/NotificationItem';
 import useNotificationStore from '@/store/useNotificationStore';
-import { Button } from '@/components/shared/Button';
 
 interface NotificationListProps {
   notifications: InboxNotificationDto[];

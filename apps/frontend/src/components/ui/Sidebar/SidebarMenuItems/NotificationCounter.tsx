@@ -18,7 +18,7 @@
  */
 
 import React from 'react';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import NOTIFICATION_COUNTER_VARIANT from '@libs/notification/constants/notificationCounterVariant';
 import NotificationCounterVariant from '@libs/notification/types/notificationCounterVariant';
 

@@ -32,9 +32,8 @@ import {
   faComment,
 } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { Button } from '@/components/shared/Button';
+import { Button, cn } from '@edulution-io/ui-kit';
 import { Card } from '@/components/shared/Card/Card';
-import cn from '@libs/common/utils/className';
 import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto';
 import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
 import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';

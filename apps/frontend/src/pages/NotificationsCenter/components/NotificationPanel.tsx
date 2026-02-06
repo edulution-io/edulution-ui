@@ -27,12 +27,11 @@ import useMedia from '@/hooks/useMedia';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import { NOTIFICATION_FILTER_TYPE, NotificationFilterType } from '@libs/notification/types/notificationFilterType';
 import canFilterByNotificationType from '@libs/notification/utils/canFilterByNotificationType';
-import cn from '@libs/common/utils/className';
+import { Button, cn } from '@edulution-io/ui-kit';
 import NotificationList from '@/pages/NotificationsCenter/components/NotificationList';
 import NotificationFilterBadges from '@/pages/NotificationsCenter/components/NotificationFilterBadges';
 import DeleteAllNotificationsDialog from '@/pages/NotificationsCenter/components/DeleteAllNotificationsDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import { Button } from '@/components/shared/Button';
 
 const NotificationPanel = () => {
   const { t } = useTranslation();
