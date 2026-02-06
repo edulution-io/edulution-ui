@@ -19,7 +19,6 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { randomUUID } from 'crypto';
 import ChatType from '@libs/chat/types/chatType';
 import GroupType from '@libs/chat/types/groupType';
 
@@ -27,9 +26,6 @@ export type ConversationDocument = Conversation & Document;
 
 @Schema({ timestamps: true, strict: true })
 export class Conversation {
-  @Prop({ type: String, default: randomUUID(), unique: true, index: true })
-  conversationId: string;
-
   @Prop({ type: String, required: true, index: true })
   type: ChatType;
 

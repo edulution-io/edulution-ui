@@ -25,6 +25,8 @@ import { faComments } from '@fortawesome/free-solid-svg-icons';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useChatStore from '@/store/useChatStore';
+import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
+import useChatStore from '@/store/useChatStore';
 import { CHAT_GROUP_TYPE_LOCATIONS } from '@libs/chat/constants/chatPaths';
 import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
 import ChatContent from './components/ChatContent';
@@ -35,6 +37,8 @@ const isValidGroupType = (value: string | undefined): value is GroupTypeLocation
 const ChatPage = () => {
   const { t } = useTranslation();
   const { groupType, groupName } = useParams<{ groupType: string; groupName: string }>();
+  const { isLoadingGroups } = useChatStore();
+
   const { isLoadingGroups } = useChatStore();
 
   return (
