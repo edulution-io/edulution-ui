@@ -28,7 +28,6 @@ import { getFromPathName } from '@libs/common/utils';
 import useFloatingBarHeight from '@/hooks/useFloatingBarHeight';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import cn from '@libs/common/utils/className';
-import TEXT_COLOR_VARIANT from '@libs/ui/constants/textColorVariant';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 
 interface PageLayoutProps {
@@ -57,12 +56,10 @@ const PageLayout = ({
 
   if (isFullScreenAppWithoutFloatingButtons) return <main className="flex-1">{children}</main>;
 
-  const textColorClass = footerColors?.textColor === TEXT_COLOR_VARIANT.LIGHT ? 'text-white' : 'text-ciDarkGrey';
-
   return (
     <div
       id="page"
-      className={cn('relative flex h-full w-full flex-col', footerColors && textColorClass)}
+      className="relative flex h-full w-full flex-col"
       style={footerColors ? { backgroundColor: footerColors.backgroundColor } : undefined}
     >
       {nativeAppHeader && (

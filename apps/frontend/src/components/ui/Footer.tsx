@@ -19,24 +19,37 @@
 
 import React from 'react';
 import APPLICATION_NAME from '@libs/common/constants/applicationName';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import getDisplayName from '@/utils/getDisplayName';
 import useLanguage from '@/hooks/useLanguage';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useMedia from '@/hooks/useMedia';
+import cn from '@libs/common/utils/className';
+import { getFromPathName } from '@libs/common/utils';
+import TEXT_COLOR_VARIANT from '@libs/ui/constants/textColorVariant';
+import useFrameStore from '../structure/framing/useFrameStore';
 
 const Footer: React.FC = () => {
   const { language } = useLanguage();
   const isAuthenticated = useUserStore((s) => s.isAuthenticated);
   const { isMobileView, isTabletView } = useMedia();
+  const { pathname } = useLocation();
+  const rootPathName = getFromPathName(pathname, 1);
+  const footerColors = useFrameStore((s) => s.footerColorsByAppName[rootPathName] ?? null);
 
   const publicAppConfigs = useAppConfigsStore((s) => s.publicAppConfigs);
 
   const isVersionInfoVisible = (!isMobileView && !isTabletView && isAuthenticated) || !isAuthenticated;
+  const textColorClass = footerColors?.textColor === TEXT_COLOR_VARIANT.LIGHT ? 'text-white' : 'text-ciDarkGrey';
 
   return (
-    <footer className="min-h-5 w-full px-2 pb-1 text-sm">
+    <footer
+      className={cn(
+        'min-h-5 w-full px-2 pb-1',
+        footerColors ? textColorClass : 'text-muted-foreground dark:text-muted-light',
+      )}
+    >
       <div className="flex flex-col md:flex-row md:items-center md:justify-center md:gap-4">
         {isVersionInfoVisible && (
           <span className="text-center md:text-left">
@@ -51,7 +64,7 @@ const Footer: React.FC = () => {
               key={config.name}
               to={`/${config.name}`}
             >
-              {getDisplayName(config, language)}
+              <span className="font-bold">{getDisplayName(config, language)}</span>
             </Link>
           ))}
         </div>
