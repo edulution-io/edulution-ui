@@ -39,7 +39,6 @@ import useFileDownloadProgressToast from '@/hooks/useDownloadProgressToast';
 import { toast } from 'sonner';
 import useSseEventListener from '@/hooks/useSseEventListener';
 import useSseHeartbeatMonitor from '@/hooks/useSseHeartbeatMonitor';
-import useNotificationStore from '@/store/useNotificationStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileOperationProgressToast from '@/hooks/useFileOperationProgressToast';
 
@@ -58,7 +57,6 @@ const useNotifications = () => {
   const { addBulletinBoardNotification } = UseBulletinBoardStore();
   const isWhiteboardActive = useIsAppActive(APPS.WHITEBOARD);
   const { addRoomHistoryEntry } = useTLDRawHistoryStore();
-  const { fetchUnreadCount } = useNotificationStore();
   const { fileOperationProgress } = useFileSharingStore();
 
   useFileOperationProgress();
@@ -98,7 +96,6 @@ const useNotifications = () => {
     getMails,
     updateOpenSurveys,
     getConferences,
-    fetchUnreadCount,
   ]);
 
   const handleNewMail = (e: MessageEvent<string>) => {
