@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next';
 import { Control, FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import AppConfigFormField from '@/pages/Settings/AppConfig/components/textField/AppConfigFormField';
 import AppConfigTable from '@/pages/Settings/AppConfig/components/table/AppConfigTable';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import ExtendedOptionField from '@libs/appconfig/constants/extendedOptionField';
 import { type AppConfigExtendedOption } from '@libs/appconfig/types/appConfigExtendedOption';
 import EmbeddedPageEditorForm from '@libs/appconfig/types/embeddedPageEditorForm';

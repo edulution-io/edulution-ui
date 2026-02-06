@@ -20,7 +20,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import { UseFormReturn } from 'react-hook-form';
 import UserPasswordDialogForm from '@libs/classManagement/types/userPasswordDialogForm';
 import UseLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';

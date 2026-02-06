@@ -22,7 +22,7 @@ import { FormControl, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/co
 import React from 'react';
 import { Control, FieldValues, Path } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import type RadioGroupItem from '@libs/ui/types/radioGroupItem';
 import defaultIconList from '@/pages/Settings/AppConfig/components/defaultIconList';
 import getAppIconClassName from '@/utils/getAppIconClassName';

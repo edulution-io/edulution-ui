@@ -10,7 +10,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./apps/frontend/src/*"],
-      "@libs/*": ["./libs/src/*"]
+      "@libs/*": ["./libs/src/*"],
+      "@edulution-io/ui-kit": ["./libs/ui-kit/src/index.ts"]
     },
     "module": "ESNext",
     "resolveJsonModule": true,
@@ -39,6 +40,9 @@
     },
     {
       "path": "./libs/tsconfig.json"
+    },
+    {
+      "path": "./libs/ui-kit/tsconfig.json"
     }
   ]
 }

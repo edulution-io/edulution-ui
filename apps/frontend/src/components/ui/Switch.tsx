@@ -20,7 +20,7 @@
 import React, { ComponentPropsWithoutRef, ElementRef } from 'react';
 import { Root, Thumb } from '@radix-ui/react-switch';
 
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 const Switch = React.forwardRef<ElementRef<typeof Root>, ComponentPropsWithoutRef<typeof Root>>(
   ({ className, ...props }, ref) => (

@@ -23,7 +23,7 @@ import * as React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 const RadioGroupSH = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Root>,

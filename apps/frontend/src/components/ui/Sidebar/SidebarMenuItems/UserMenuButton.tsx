@@ -28,7 +28,7 @@ import DropdownMenu from '@/components/shared/DropdownMenu';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 const UserMenuButton: React.FC = () => {
   const { t } = useTranslation();

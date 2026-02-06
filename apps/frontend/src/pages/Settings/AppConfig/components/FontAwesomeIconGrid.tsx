@@ -19,7 +19,7 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import { FontAwesomeIcon, getFontAwesomeIconList, loadFontAwesomeIcon } from '@/utils/fontAwesomeIcons';
 import Input from '@/components/shared/Input';
 import { Card } from '@/components/shared/Card';

@@ -22,7 +22,7 @@ import { ColumnDef, Row } from '@tanstack/react-table';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { faCloud } from '@fortawesome/free-solid-svg-icons';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import URL_SEARCH_PARAMS from '@libs/common/constants/url-search-params';
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import { TABLE_ICON_SIZE } from '@libs/ui/constants';

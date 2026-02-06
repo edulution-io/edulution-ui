@@ -25,7 +25,7 @@ import useLauncherStore from '@/components/ui/Launcher/useLauncherStore';
 import useSidebarItems from '@/hooks/useSidebarItems';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 const LauncherButton: React.FC = () => {
   const { t } = useTranslation();
