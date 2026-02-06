@@ -17,7 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { create } from 'zustand';
+import { create, StateCreator } from 'zustand';
+import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import eduApi from '@/api/eduApi';
 import { BULLETIN_BOARD_EDU_API_ENDPOINT } from '@libs/bulletinBoard/constants/apiEndpoints';
 import handleApiError from '@/utils/handleApiError';
@@ -48,6 +49,11 @@ export interface BulletinBoardTableStore {
   hydrateGridRows: (gridRows: string) => void;
 }
 
+type PersistedBulletinBoardStore = (
+  config: StateCreator<BulletinBoardTableStore>,
+  options: PersistOptions<Partial<BulletinBoardTableStore>>,
+) => StateCreator<BulletinBoardTableStore>;
+
 const initialValues = {
   isLoading: false,
   error: null,
@@ -58,70 +64,85 @@ const initialValues = {
   gridRows: BULLETIN_BOARD_GRID_ROWS.ONE,
 };
 
-const useBulletinBoardStore = create<BulletinBoardTableStore>((set, get) => ({
-  ...initialValues,
-  reset: () => set(initialValues),
+const useBulletinBoardStore = create<BulletinBoardTableStore>(
+  (persist as PersistedBulletinBoardStore)(
+    (set, get) => ({
+      ...initialValues,
+      reset: () => set(initialValues),
 
-  setCollapsed: async (bulletinId, collapsed) => {
-    set((state) => ({
-      collapsedMap: { ...state.collapsedMap, [bulletinId]: collapsed },
-    }));
+      setCollapsed: async (bulletinId, collapsed) => {
+        set((state) => ({
+          collapsedMap: { ...state.collapsedMap, [bulletinId]: collapsed },
+        }));
 
-    try {
-      const dto: UpdateBulletinCollapsedDto = { bulletinId, collapsed };
-      await eduApi.patch(`${USER_PREFERENCES_ENDPOINT}/bulletin-collapsed`, dto);
-    } catch (error) {
-      set((state) => ({
-        collapsedMap: { ...state.collapsedMap, [bulletinId]: !collapsed },
-      }));
-    }
-  },
+        try {
+          const dto: UpdateBulletinCollapsedDto = { bulletinId, collapsed };
+          await eduApi.patch(`${USER_PREFERENCES_ENDPOINT}/bulletin-collapsed`, dto);
+        } catch (error) {
+          set((state) => ({
+            collapsedMap: { ...state.collapsedMap, [bulletinId]: !collapsed },
+          }));
+        }
+      },
 
-  toggleCollapsed: (bulletinId) => {
-    const current = get().collapsedMap[bulletinId];
-    void get().setCollapsed(bulletinId, !current);
-  },
+      toggleCollapsed: (bulletinId) => {
+        const current = get().collapsedMap[bulletinId];
+        void get().setCollapsed(bulletinId, !current);
+      },
 
-  hydrateCollapsed: (map) => set({ collapsedMap: map ?? {} }),
+      hydrateCollapsed: (map) => set({ collapsedMap: map ?? {} }),
 
-  hydrateGridRows: (gridRows) => set({ gridRows: gridRows ?? BULLETIN_BOARD_GRID_ROWS.ONE }),
+      hydrateGridRows: (gridRows) => set({ gridRows: gridRows ?? BULLETIN_BOARD_GRID_ROWS.ONE }),
 
-  setGridRows: async (gridRows) => {
-    const previousGridRows = get().gridRows;
-    set({ gridRows });
+      setGridRows: async (gridRows) => {
+        const previousGridRows = get().gridRows;
+        set({ gridRows });
 
-    try {
-      const dto: UpdateBulletinBoardGridRowsDto = { gridRows };
-      await eduApi.patch(`${USER_PREFERENCES_ENDPOINT}/bulletin-board-grid-rows`, dto);
-    } catch (error) {
-      set({ gridRows: previousGridRows });
-    }
-  },
+        try {
+          const dto: UpdateBulletinBoardGridRowsDto = { gridRows };
+          await eduApi.patch(`${USER_PREFERENCES_ENDPOINT}/bulletin-board-grid-rows`, dto);
+        } catch (error) {
+          set({ gridRows: previousGridRows });
+        }
+      },
 
-  setIsEditorialModeEnabled: (isEditorialModeEnabled) => set({ isEditorialModeEnabled }),
+      setIsEditorialModeEnabled: (isEditorialModeEnabled) => set({ isEditorialModeEnabled }),
 
-  addBulletinBoardNotification: (bulletin) =>
-    set({
-      bulletinBoardNotifications: [...get().bulletinBoardNotifications.filter((b) => b.id !== bulletin.id), bulletin],
+      addBulletinBoardNotification: (bulletin) =>
+        set({
+          bulletinBoardNotifications: [
+            ...get().bulletinBoardNotifications.filter((b) => b.id !== bulletin.id),
+            bulletin,
+          ],
+        }),
+
+      markBulletinAsRead: (bulletinId) =>
+        set({
+          bulletinBoardNotifications: get().bulletinBoardNotifications.filter((b) => b.id !== bulletinId),
+        }),
+
+      getBulletinsByCategories: async (isLoading = true) => {
+        if (get().isLoading) return;
+        set({ isLoading, error: null });
+        try {
+          const { data } = await eduApi.get<BulletinsByCategories>(BULLETIN_BOARD_EDU_API_ENDPOINT);
+          set({ bulletinsByCategories: data });
+        } catch (error) {
+          handleApiError(error, set);
+        } finally {
+          set({ isLoading: false });
+        }
+      },
     }),
-
-  markBulletinAsRead: (bulletinId) =>
-    set({
-      bulletinBoardNotifications: get().bulletinBoardNotifications.filter((b) => b.id !== bulletinId),
-    }),
-
-  getBulletinsByCategories: async (isLoading = true) => {
-    if (get().isLoading) return;
-    set({ isLoading, error: null });
-    try {
-      const { data } = await eduApi.get<BulletinsByCategories>(BULLETIN_BOARD_EDU_API_ENDPOINT);
-      set({ bulletinsByCategories: data });
-    } catch (error) {
-      handleApiError(error, set);
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-}));
+    {
+      name: 'bulletin-board',
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        gridRows: state.gridRows,
+        collapsedMap: state.collapsedMap,
+      }),
+    },
+  ),
+);
 
 export default useBulletinBoardStore;
