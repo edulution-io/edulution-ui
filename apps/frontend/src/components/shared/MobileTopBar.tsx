@@ -26,7 +26,6 @@ import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import useNotificationStore from '@/store/useNotificationStore';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import NOTIFICATION_COUNTER_VARIANT from '@libs/notification/constants/notificationCounterVariant';
-import useSidebarItems from '@/hooks/useSidebarItems';
 import { MOBILE_TOP_BAR_HEIGHT_PX, SIDEBAR_ICON_WIDTH } from '@libs/ui/constants/sidebar';
 import { MobileLogoIcon } from '@/assets/icons';
 
@@ -40,9 +39,7 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
   const { toggleMobileSidebar: onRightButtonClick, isMobileSidebarOpen: isRightMenuOpen } = useSidebarStore();
   const { toggleMobileMenuBar: onLeftButtonClick, isMobileMenuBarOpen: isLeftMenuOpen } = useMenuBarStore();
   const { isEdulutionApp } = usePlatformStore();
-  const { setIsSheetOpen } = useNotificationStore();
-  const sidebarItems = useSidebarItems();
-  const totalCount = sidebarItems.reduce((sum, item) => sum + (item.notificationCounter ?? 0), 0);
+  const { unreadCount, setIsSheetOpen } = useNotificationStore();
   const iconClassName = useMemo(() => 'h-6 w-6', []);
 
   const handleNotificationClick = () => {
@@ -101,7 +98,7 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
                 className="h-5 w-5 hover:text-muted-foreground"
               />
               <NotificationCounter
-                count={totalCount}
+                count={unreadCount}
                 variant={NOTIFICATION_COUNTER_VARIANT.NOTIFICATION_PANEL}
                 className="-right-1 -top-1"
               />

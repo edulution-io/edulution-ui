@@ -41,6 +41,7 @@ import useSseEventListener from '@/hooks/useSseEventListener';
 import useSseHeartbeatMonitor from '@/hooks/useSseHeartbeatMonitor';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileOperationProgressToast from '@/hooks/useFileOperationProgressToast';
+import useNotificationStore from '@/store/useNotificationStore';
 
 const useNotifications = () => {
   const { t } = useTranslation();
@@ -58,6 +59,7 @@ const useNotifications = () => {
   const isWhiteboardActive = useIsAppActive(APPS.WHITEBOARD);
   const { addRoomHistoryEntry } = useTLDRawHistoryStore();
   const { fileOperationProgress } = useFileSharingStore();
+  const { fetchUnreadCount, fetchNotifications } = useNotificationStore();
 
   useFileOperationProgress();
 
@@ -86,6 +88,8 @@ const useNotifications = () => {
       if (isConferenceAppActivated) {
         void getConferences();
       }
+
+      void fetchUnreadCount();
     }
   }, [
     isAuthReady,
@@ -96,6 +100,7 @@ const useNotifications = () => {
     getMails,
     updateOpenSurveys,
     getConferences,
+    fetchUnreadCount,
   ]);
 
   const handleNewMail = (e: MessageEvent<string>) => {
@@ -212,6 +217,17 @@ const useNotifications = () => {
   };
 
   useSseEventListener(SSE_MESSAGE_TYPE.APPCONFIG_UPDATED, handleAppConfigUpdated, {
+    enabled: isAuthReady,
+  });
+
+  const handleNotificationInboxUpdated = () => {
+    void fetchUnreadCount();
+    if (useNotificationStore.getState().isSheetOpen) {
+      void fetchNotifications();
+    }
+  };
+
+  useSseEventListener(SSE_MESSAGE_TYPE.NOTIFICATION_INBOX_UPDATED, handleNotificationInboxUpdated, {
     enabled: isAuthReady,
   });
 };

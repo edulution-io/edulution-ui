@@ -21,7 +21,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, cn } from '@edulution-io/ui-kit';
 import { NOTIFICATION_FILTER_TYPE, NotificationFilterType } from '@libs/notification/types/notificationFilterType';
-import canFilterByNotificationType from '@libs/notification/utils/canFilterByNotificationType';
+import isNotificationType from '@libs/notification/utils/isNotificationType';
 import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto';
 
 interface NotificationFilterBadgesProps {
@@ -37,7 +37,7 @@ const FILTERS = [
 ] as const;
 
 const getFilterCount = (filter: NotificationFilterType, notifications: InboxNotificationDto[]): number => {
-  if (canFilterByNotificationType(filter)) {
+  if (isNotificationType(filter)) {
     return notifications.filter((notification) => notification.type === filter).length;
   }
   return notifications.length;

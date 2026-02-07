@@ -19,6 +19,7 @@
 
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircle,
@@ -38,6 +39,7 @@ import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto
 import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
 import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
 import NotificationSourceType from '@libs/notification/types/notificationSourceType';
+import getNotificationSourceRoute from '@libs/notification/utils/getNotificationSourceRoute';
 import { getElapsedTime } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import useNotificationStore from '@/store/useNotificationStore';
 
@@ -62,20 +64,28 @@ const getSourceTypeIcon = (sourceType?: NotificationSourceType): IconDefinition 
 
 const NotificationItem = ({ notification }: NotificationItemProps) => {
   const { t } = useTranslation();
-  const { markAsRead, deleteNotification } = useNotificationStore();
+  const navigate = useNavigate();
+  const { markAsRead, deleteNotification, setIsSheetOpen } = useNotificationStore();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const isUserNotification = notification.type === NOTIFICATION_TYPE.USER;
-  const isUnread = isUserNotification && !notification.readAt;
+  const isUnread = !notification.readAt;
   const hasContent = Boolean(notification.content);
   const sourceIcon = getSourceTypeIcon(notification.sourceType);
   const elapsedTime = getElapsedTime(notification.createdAt);
+  const sourceRoute = getNotificationSourceRoute(notification.sourceType, notification.sourceId);
 
-  const handleExpand = useCallback(() => {
-    if (hasContent) {
+  const handleClick = useCallback(() => {
+    if (isUnread) {
+      void markAsRead(notification.id);
+    }
+    if (sourceRoute) {
+      setIsSheetOpen(false);
+      navigate(sourceRoute);
+    } else if (hasContent) {
       setIsExpanded((prev) => !prev);
     }
-  }, [hasContent]);
+  }, [hasContent, isUnread, markAsRead, notification.id, sourceRoute, setIsSheetOpen, navigate]);
 
   const handleMarkAsRead = useCallback(
     (event: React.MouseEvent) => {
@@ -101,13 +111,13 @@ const NotificationItem = ({ notification }: NotificationItemProps) => {
       className={cn('relative flex flex-col p-4', {
         'border-primary/50 ring-primary/30 ring-1': isUnread,
       })}
-      onClick={handleExpand}
+      onClick={handleClick}
       onKeyDown={(event) => {
         if (event.key === 'Enter') {
-          handleExpand();
+          handleClick();
         } else if (event.key === ' ') {
           event.preventDefault();
-          handleExpand();
+          handleClick();
         }
       }}
     >
@@ -142,7 +152,7 @@ const NotificationItem = ({ notification }: NotificationItemProps) => {
         </div>
 
         <div className="flex flex-shrink-0 items-center gap-1">
-          {isUserNotification && isUnread && (
+          {isUnread && (
             <Button
               type="button"
               className="hover:bg-primary/10 rounded-full p-2 text-muted-foreground hover:text-primary"
