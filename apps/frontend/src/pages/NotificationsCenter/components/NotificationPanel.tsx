@@ -83,9 +83,9 @@ const NotificationPanel = () => {
     >
       <SheetContent
         side={isMobileOrTablet ? 'bottom' : 'right'}
-        overlayClassName="bg-transparent z-[998]"
+        overlayClassName="bg-transparent z-[550]"
         className={cn(
-          'bg-glass z-[999] flex flex-col border-muted text-background shadow-xl shadow-slate-400 backdrop-blur-md',
+          'bg-glass z-[560] flex flex-col border-muted text-background shadow-xl shadow-slate-400 backdrop-blur-md',
           isMobileOrTablet ? 'max-h-[85vh] rounded-t-2xl border-t' : 'max-h-full border-l sm:max-w-md',
           !isMobileOrTablet && 'right-[var(--sidebar-width)]',
         )}
