@@ -19,15 +19,18 @@
 
 import React from 'react';
 import { cn } from '@edulution-io/ui-kit';
+import NOTIFICATION_COUNTER_VARIANTS from '@libs/ui/constants/notificationCounterVariants';
+import type NotificationCounterVariant from '@libs/ui/types/notificationCounterVariant';
 
 interface SidebarItemNotificationProps {
   count: number;
   maxCount?: number;
+  variant?: NotificationCounterVariant;
   className?: string;
 }
 
 const NotificationCounter = (props: SidebarItemNotificationProps) => {
-  const { count, maxCount = 9, className } = props;
+  const { count, maxCount = 9, variant = NOTIFICATION_COUNTER_VARIANTS.RED, className } = props;
 
   if (!count || count === 0) {
     return null;
@@ -39,8 +42,9 @@ const NotificationCounter = (props: SidebarItemNotificationProps) => {
     <span
       className={cn(
         'absolute right-[10px] top-[2px] inline-flex items-center justify-center',
-        'rounded-full bg-ciRed text-xs font-bold text-white',
+        'rounded-full text-xs font-bold',
         'h-5 min-w-[1.25rem] transform px-0',
+        variant,
         className,
       )}
       aria-label={`${displayCount} new notifications`}

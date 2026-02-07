@@ -25,6 +25,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { inputVariants } from '@libs/ui/constants/commonClassNames';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
+import NOTIFICATION_COUNTER_VARIANTS from '@libs/ui/constants/notificationCounterVariants';
 import type FilterOption from '@libs/ui/types/filterOption';
 
 interface TableFilterDropdownProps {
@@ -78,6 +79,7 @@ const TableFilterDropdown = ({
           <NotificationCounter
             count={activeFilterCount}
             className="-right-2 -top-2"
+            variant={NOTIFICATION_COUNTER_VARIANTS.PRIMARY}
           />
         </div>
       }
