@@ -62,6 +62,8 @@ interface TableGridViewProps<TData, TValue> {
   gridItemConfig: GridItemConfig<TData>;
   viewModeStorageKey: string;
   filterOptions?: FilterOption[];
+  activeFilterCount?: number;
+  onResetFilters?: () => void;
   focusedRowId?: string | null;
   onGridItemClick?: (item: TData) => void;
   onSortedRowsChange?: (sortedData: TData[]) => void;
@@ -93,6 +95,8 @@ const TableGridView = <TData, TValue>({
   gridItemConfig,
   viewModeStorageKey,
   filterOptions,
+  activeFilterCount,
+  onResetFilters,
   focusedRowId,
   onGridItemClick,
   onSortedRowsChange,
@@ -128,9 +132,11 @@ const TableGridView = <TData, TValue>({
       <TableFilterDropdown
         filterOptions={filterOptions}
         isDialog={isDialog}
+        activeFilterCount={activeFilterCount}
+        onResetFilters={onResetFilters}
       />
     );
-  }, [filterOptions, isDialog]);
+  }, [filterOptions, isDialog, activeFilterCount, onResetFilters]);
 
   const { table } = useScrollableTable({
     columns,

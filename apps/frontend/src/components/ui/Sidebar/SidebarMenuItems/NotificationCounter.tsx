@@ -18,6 +18,7 @@
  */
 
 import React from 'react';
+import { cn } from '@edulution-io/ui-kit';
 
 interface SidebarItemNotificationProps {
   count: number;
@@ -36,11 +37,12 @@ const NotificationCounter = (props: SidebarItemNotificationProps) => {
 
   return (
     <span
-      className={
-        `absolute right-[10px] top-[2px] inline-flex items-center justify-center ` +
-        `rounded-full bg-ciRed text-xs font-bold text-white ` +
-        `h-5 min-w-[1.25rem] transform px-0 ${className}`
-      }
+      className={cn(
+        'absolute right-[10px] top-[2px] inline-flex items-center justify-center',
+        'rounded-full bg-ciRed text-xs font-bold text-white',
+        'h-5 min-w-[1.25rem] transform px-0',
+        className,
+      )}
       aria-label={`${displayCount} new notifications`}
     >
       {displayCount}
