@@ -25,6 +25,7 @@ import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDial
 import useSurveysTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
 import useSubmittedAnswersDialogStore from '@/pages/Surveys/Tables/dialogs/useSubmittedAnswersDialogStore';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
 const SubmittedAnswersDialogBody = lazy(() => import('./SubmittedAnswersDialogBody'));
 
@@ -56,7 +57,7 @@ const SubmittedAnswersDialog = () => {
       return <h3 className="transform(-50%,-50%) absolute right-1/2 top-1/2">{t('survey.notFound')}</h3>;
     }
     return (
-      <Suspense fallback={<LoadingIndicatorDialog isOpen />}>
+      <Suspense fallback={<CircleLoader />}>
         <ScrollArea>
           <SubmittedAnswersDialogBody
             formula={surveyJSON}

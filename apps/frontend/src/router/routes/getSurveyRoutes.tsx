@@ -21,6 +21,7 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 import { SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import SurveyApp from '@/pages/Surveys/SurveyApp';
+import SurveysPageView from '@libs/survey/types/api/surveysPageView';
 
 const getSurveyRoutes = () => [
   <Route
@@ -29,15 +30,27 @@ const getSurveyRoutes = () => [
   >
     <Route
       path=""
-      element={<SurveyApp />}
+      element={<SurveyApp surveysPageView={SurveysPageView.OPEN} />}
     />
     <Route
-      path=":surveysPageView"
-      element={<SurveyApp />}
+      path={SurveysPageView.ANSWERED}
+      element={<SurveyApp surveysPageView={SurveysPageView.ANSWERED} />}
     />
     <Route
-      path=":surveysPageView/:surveyId"
-      element={<SurveyApp />}
+      path={SurveysPageView.CREATED}
+      element={<SurveyApp surveysPageView={SurveysPageView.CREATED} />}
+    />
+    <Route
+      path={SurveysPageView.CREATOR}
+      element={<SurveyApp surveysPageView={SurveysPageView.CREATOR} />}
+    />
+    <Route
+      path={`${SurveysPageView.EDITOR}/:surveyId`}
+      element={<SurveyApp surveysPageView={SurveysPageView.EDITOR} />}
+    />
+    <Route
+      path={`${SurveysPageView.PARTICIPATION}/:surveyId`}
+      element={<SurveyApp surveysPageView={SurveysPageView.PARTICIPATION} />}
     />
   </Route>,
 ];

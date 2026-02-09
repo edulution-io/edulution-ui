@@ -18,7 +18,6 @@
  */
 
 import React, { lazy, Suspense } from 'react';
-import { useParams } from 'react-router-dom';
 import SurveysPageView from '@libs/survey/types/api/surveysPageView';
 import OpenSurveysPage from '@/pages/Surveys/Tables/OpenSurveysPage';
 import AnsweredSurveysPage from '@/pages/Surveys/Tables/AnsweredSurveysPage';
@@ -29,13 +28,12 @@ const SurveyEditorEntryPage = lazy(() => import('./Editor/SurveyEditorEntryPage'
 const SurveyParticipationPage = lazy(() => import('./Participation/SurveyParticipationPage'));
 
 interface SurveyAppProps {
+  surveysPageView?: SurveysPageView;
   isPublicParticipation?: boolean;
 }
 
 const SurveyApp = (props: SurveyAppProps) => {
-  const { isPublicParticipation = false } = props;
-
-  const { surveysPageView } = useParams();
+  const { surveysPageView, isPublicParticipation = false } = props;
 
   if (isPublicParticipation) {
     return (
@@ -46,6 +44,8 @@ const SurveyApp = (props: SurveyAppProps) => {
   }
 
   switch (surveysPageView) {
+    case SurveysPageView.OPEN:
+      return <OpenSurveysPage />;
     case SurveysPageView.PARTICIPATION:
       return (
         <Suspense fallback={<CircleLoader />}>
@@ -63,7 +63,6 @@ const SurveyApp = (props: SurveyAppProps) => {
           <SurveyEditorEntryPage />
         </Suspense>
       );
-    case SurveysPageView.OPEN:
     default:
       return <OpenSurveysPage />;
   }
