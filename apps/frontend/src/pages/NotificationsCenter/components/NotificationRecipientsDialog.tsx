@@ -100,6 +100,8 @@ const NotificationRecipientsDialog = ({
       handleOpenChange={onClose}
       title={notificationTitle}
       body={getDialogBody()}
+      mobileContentClassName="z-[600]"
+      desktopContentClassName="z-[600]"
     />
   );
 };
