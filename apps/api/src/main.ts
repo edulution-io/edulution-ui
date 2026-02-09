@@ -48,6 +48,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: { origin: process.env.EDUI_CORS_URL },
     logger,
+    rawBody: true,
   });
 
   const configService = app.get(ConfigService);

@@ -17,14 +17,26 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import 'express';
+const FIVE_MINUTES_MS = 5 * 60 * 1000;
+const TWENTY_FOUR_HOURS_SECONDS = 86400;
 
-import JWTUser from '@libs/user/types/jwt/jwtUser';
+const WEBHOOK_CONSTANTS = {
+  HEADERS: {
+    WEBHOOK_KEY: 'x-webhook-key',
+    WEBHOOK_TIMESTAMP: 'x-webhook-timestamp',
+    WEBHOOK_SIGNATURE: 'x-webhook-signature',
+    WEBHOOK_EVENT_ID: 'x-webhook-event-id',
+  },
+  USER_AGENTS: {
+    EVENTHANDLER: 'edulution-eventhandler',
+  },
+  REDIS_KEYS: {
+    EVENTHANDLER_PREFIX: 'webhook:eventhandler',
+  },
+  TIMESTAMP_MAX_AGE_MS: FIVE_MINUTES_MS,
+  MAX_PROCESSED_EVENTS: 100,
+  EVENT_TTL_SECONDS: TWENTY_FOUR_HOURS_SECONDS,
+  SIGNATURE_PREFIX: 'sha256=',
+} as const;
 
-declare module 'express' {
-  interface Request {
-    user?: JWTUser;
-    token?: string;
-    rawBody?: Buffer;
-  }
-}
+export default WEBHOOK_CONSTANTS;

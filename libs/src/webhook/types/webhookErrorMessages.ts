@@ -17,14 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import 'express';
+import WEBHOOK_ERROR_MESSAGES from '../constants/webhookErrorMessages';
 
-import JWTUser from '@libs/user/types/jwt/jwtUser';
+type WebhookErrorMessages = (typeof WEBHOOK_ERROR_MESSAGES)[keyof typeof WEBHOOK_ERROR_MESSAGES];
 
-declare module 'express' {
-  interface Request {
-    user?: JWTUser;
-    token?: string;
-    rawBody?: Buffer;
-  }
-}
+export default WebhookErrorMessages;

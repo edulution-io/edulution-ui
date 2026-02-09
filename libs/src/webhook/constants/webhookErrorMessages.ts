@@ -17,14 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import 'express';
+const WEBHOOK_ERROR_MESSAGES = {
+  MISSING_HEADERS: 'webhook.errors.missingHeaders',
+  INVALID_KEY: 'webhook.errors.invalidKey',
+  TIMESTAMP_EXPIRED: 'webhook.errors.timestampExpired',
+  INVALID_SIGNATURE: 'webhook.errors.invalidSignature',
+  INVALID_USER_AGENT: 'webhook.errors.invalidUserAgent',
+  DUPLICATE_EVENT: 'webhook.errors.duplicateEvent',
+  PROCESSING_FAILED: 'webhook.errors.processingFailed',
+} as const;
 
-import JWTUser from '@libs/user/types/jwt/jwtUser';
-
-declare module 'express' {
-  interface Request {
-    user?: JWTUser;
-    token?: string;
-    rawBody?: Buffer;
-  }
-}
+export default WEBHOOK_ERROR_MESSAGES;

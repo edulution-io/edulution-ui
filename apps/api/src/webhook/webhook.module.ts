@@ -17,14 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import 'express';
+import { Module } from '@nestjs/common';
+import WebhookController from './webhook.controller';
+import WebhookService from './webhook.service';
 
-import JWTUser from '@libs/user/types/jwt/jwtUser';
-
-declare module 'express' {
-  interface Request {
-    user?: JWTUser;
-    token?: string;
-    rawBody?: Buffer;
-  }
-}
+@Module({
+  controllers: [WebhookController],
+  providers: [WebhookService],
+  exports: [WebhookService],
+})
+export default class WebhookModule {}

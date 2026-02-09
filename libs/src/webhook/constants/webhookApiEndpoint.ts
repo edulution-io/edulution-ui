@@ -17,14 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import 'express';
+const WEBHOOK_API_ENDPOINT = 'webhook';
 
-import JWTUser from '@libs/user/types/jwt/jwtUser';
-
-declare module 'express' {
-  interface Request {
-    user?: JWTUser;
-    token?: string;
-    rawBody?: Buffer;
-  }
-}
+export default WEBHOOK_API_ENDPOINT;
