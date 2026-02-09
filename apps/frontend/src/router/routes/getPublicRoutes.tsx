@@ -24,8 +24,8 @@ import { CONFERENCES_PUBLIC_EDU_API_ENDPOINT } from '@libs/conferences/constants
 import PublicConferencePage from '@/pages/ConferencePage/PublicConference/PublicConferencePage';
 import PageTitle from '@/components/PageTitle';
 import PublicShareDownloadPage from '@/pages/FileSharing/publicShare/publicPage/PublicShareDownloadPage';
-import SurveyApp from '@/pages/Surveys/SurveyApp';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
+import SurveyApp from '@/pages/Surveys/SurveyApp';
 import getPublicEmbeddedRoutes from './getPublicEmbeddedRoutes';
 
 const getPublicRoutes = () => [

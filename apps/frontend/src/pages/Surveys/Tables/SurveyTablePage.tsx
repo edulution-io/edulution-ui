@@ -19,8 +19,6 @@
 
 import React from 'react';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
-import { PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import SurveyTable from '@/pages/Surveys/Tables/components/SurveyTable';
 import SurveyTableColumns from '@/pages/Surveys/Tables/components/SurveyTableColumns';
 import SurveysTablesFloatingButtons from '@/pages/Surveys/Tables/components/SurveysTablesFloatingButtons';
@@ -31,7 +29,9 @@ import { TooltipProvider } from '@/components/ui/Tooltip';
 import DeleteSurveysDialog from '@/pages/Surveys/Tables/dialogs/DeleteSurveysDialog';
 import SharePublicQRDialog from '@/components/shared/SharePublicQRDialog';
 import useSurveyEditorPageStore from '@/pages/Surveys/Editor/useSurveyEditorPageStore';
+import { PUBLIC_SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import PageLayout from '@/components/structure/layout/PageLayout';
+import EDU_BASE_URL from '@libs/common/constants/eduApiBaseUrl';
 
 interface SurveysTablePageProps {
   title: string;
