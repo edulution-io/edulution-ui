@@ -93,6 +93,7 @@ const DeleteAllNotificationsDialog = ({ deleteType, notificationCount }: DeleteA
       title={getTitle()}
       body={getDialogBody()}
       footer={getFooter()}
+      mobileContentClassName="z-[600]"
       desktopContentClassName="z-[600]"
     />
   );
