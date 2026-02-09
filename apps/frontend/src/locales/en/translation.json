@@ -2245,6 +2245,7 @@
       "short": "Root",
       "notConfigured": "No root path configured. Please contact the system administrator."
     },
+    "noSharesConfigured": "No shares configured. Please contact the system administrator.",
     "selectPlaceholder": "Select...",
     "authentication": {
       "title": "Authentication",

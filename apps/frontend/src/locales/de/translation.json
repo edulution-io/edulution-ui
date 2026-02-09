@@ -2247,6 +2247,7 @@
       "short": "Root",
       "notConfigured": "Kein Root-Pfad konfiguriert. Bitte kontaktiere den Systemadministrator."
     },
+    "noSharesConfigured": "Keine Freigaben konfiguriert. Bitte kontaktiere den Systemadministrator.",
     "selectPlaceholder": "Wähle...",
     "authentication": {
       "title": "Authentifizierung",

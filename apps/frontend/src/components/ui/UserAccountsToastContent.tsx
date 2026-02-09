@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import copyToClipboard from '@/utils/copyToClipboard';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import PasswordCell from '@/pages/UserSettings/Security/components/PasswordCell';
 import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 

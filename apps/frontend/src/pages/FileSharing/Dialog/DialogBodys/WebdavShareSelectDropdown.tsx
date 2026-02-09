@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DropdownSelect } from '@/components';
 import { type DropdownOptions } from '@/components/ui/DropdownSelect/DropdownSelect';
@@ -26,36 +26,29 @@ import useFileSharingStore from '../../useFileSharingStore';
 type WebdavShareSelectDropdownProps = {
   webdavShare?: string;
   showRootOnly?: boolean;
-  filterBySameRootServer?: boolean;
 };
 
-const WebdavShareSelectDropdown: React.FC<WebdavShareSelectDropdownProps> = ({
-  webdavShare,
-  showRootOnly = false,
-  filterBySameRootServer = false,
-}) => {
+const WebdavShareSelectDropdown: React.FC<WebdavShareSelectDropdownProps> = ({ webdavShare, showRootOnly = false }) => {
   const { t } = useTranslation();
   const { webdavShares, selectedWebdavShare, setSelectedWebdavShare } = useFileSharingStore();
 
-  const getFilteredShares = () => {
+  const filteredShares = useMemo(() => {
     if (showRootOnly) {
       return webdavShares.filter((share) => share.isRootServer);
     }
 
-    if (filterBySameRootServer && webdavShare) {
-      const currentShare = webdavShares.find((share) => share.displayName === webdavShare);
-      if (currentShare) {
-        const rootServerName = currentShare.isRootServer ? currentShare.displayName : currentShare.rootServer;
-        return webdavShares.filter(
-          (share) => share.displayName === rootServerName || share.rootServer === rootServerName,
-        );
-      }
+    if (!webdavShare) {
+      return webdavShares.filter((share) => !share.isRootServer);
     }
 
-    return webdavShares;
-  };
+    const currentShare = webdavShares.find((share) => share.displayName === webdavShare);
+    if (!currentShare) {
+      return webdavShares.filter((share) => !share.isRootServer);
+    }
 
-  const filteredShares = getFilteredShares();
+    const rootServerName = currentShare.isRootServer ? currentShare.displayName : currentShare.rootServer;
+    return webdavShares.filter((share) => !share.isRootServer && share.rootServer === rootServerName);
+  }, [webdavShares, webdavShare, showRootOnly]);
 
   const webdavShareOptions: DropdownOptions[] = filteredShares.map((item) => ({
     id: item.displayName,
@@ -70,7 +63,7 @@ const WebdavShareSelectDropdown: React.FC<WebdavShareSelectDropdownProps> = ({
 
       setSelectedWebdavShare(currentWebdavShare);
     }
-  }, [webdavShare, webdavShares, showRootOnly, filterBySameRootServer]);
+  }, [webdavShare, webdavShares, filteredShares]);
 
   return (
     <DropdownSelect

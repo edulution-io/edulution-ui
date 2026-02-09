@@ -45,7 +45,7 @@ import useSseHeartbeatMonitor from '@/hooks/useSseHeartbeatMonitor';
 const useNotifications = () => {
   const { t } = useTranslation();
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
-  const { getAppConfigs } = useAppConfigsStore();
+  const { getAppConfigs, getPublicAppConfigs } = useAppConfigsStore();
   const isMailsAppActivated = useIsAppActive(APPS.MAIL);
   const { getMails } = useMailsStore();
   const isConferenceAppActivated = useIsAppActive(APPS.CONFERENCES);
@@ -199,6 +199,7 @@ const useNotifications = () => {
 
   const handleAppConfigUpdated = () => {
     void getAppConfigs();
+    void getPublicAppConfigs();
   };
 
   useSseEventListener(SSE_MESSAGE_TYPE.APPCONFIG_UPDATED, handleAppConfigUpdated, {

@@ -46,7 +46,7 @@ import QuotaLimitInfo from '@/pages/FileSharing/utilities/QuotaLimitInfo';
 import useQuotaInfo from '@/hooks/useQuotaInfo';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useLdapGroups from '@/hooks/useLdapGroups';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import SchoolSelectorDropdown from '../components/SchoolSelectorDropdown';
 
 const LessonPage = () => {
@@ -236,6 +236,7 @@ const LessonPage = () => {
             <Button
               onClick={onSaveSessionsButtonClick}
               variant="btn-table"
+              size="lg"
             >
               <span className="text-nowrap px-4">
                 {t(`classmanagement.${currentSelectedSession ? 'editSession' : 'saveSession'}`)}
@@ -248,6 +249,7 @@ const LessonPage = () => {
             <Button
               onClick={closeSession}
               variant="btn-table"
+              size="lg"
             >
               <span className="text-nowrap pl-4">{t('classmanagement.closeSession')}</span>
               <FontAwesomeIcon

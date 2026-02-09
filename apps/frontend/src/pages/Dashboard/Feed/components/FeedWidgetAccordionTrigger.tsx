@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import { AccordionTrigger } from '@/components/ui/AccordionSH';
 import getAppIconClassName from '@/utils/getAppIconClassName';
 

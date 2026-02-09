@@ -20,7 +20,7 @@
 import React, { ReactElement, ReactNode, useEffect, useState } from 'react';
 import { Position, Rnd } from 'react-rnd';
 import useMedia from '@/hooks/useMedia';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import useFrameStore from '@/components/structure/framing/useFrameStore';
 import { useTranslation } from 'react-i18next';
 import { createPortal } from 'react-dom';

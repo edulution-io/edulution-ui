@@ -19,7 +19,7 @@
 import React, { ReactNode, useCallback } from 'react';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { Row } from '@tanstack/react-table';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import { TableRow } from '@/components/ui/Table';
 
 type TableRowVariant = 'default' | 'dialog';

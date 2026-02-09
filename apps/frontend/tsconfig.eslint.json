@@ -1,6 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
-  "include": ["./**/*"],
+  "include": ["./**/*", "../../libs/ui-kit/src/**/*"],
   "compilerOptions": {
     "moduleResolution": "Bundler"
   }
