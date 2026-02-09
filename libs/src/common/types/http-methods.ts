@@ -64,7 +64,7 @@ export const HTTP_HEADERS = {
   XApiKey: 'x-api-key',
   CONNECTION_UID: 'Connection-Uid',
   XForwaredFor: 'x-forwarded-for',
-  UserAgent: 'User-Agent',
+  UserAgent: 'user-agent',
   Depth: 'Depth',
   CacheControl: 'Cache-Control',
   ETag: 'ETag',
