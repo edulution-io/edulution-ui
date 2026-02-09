@@ -23,6 +23,7 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
 const ResultTableDialogBody = lazy(() => import('./ResultTableDialogBody'));
 
@@ -34,7 +35,7 @@ const ResultTableDialog = () => {
   const handleClose = () => setIsOpenPublicResultsTableDialog(!isOpenPublicResultsTableDialog);
   const getBody = () => (
     <div className="h-full w-full overflow-x-auto overflow-y-auto scrollbar-thin">
-      <Suspense fallback={<LoadingIndicatorDialog isOpen />}>
+      <Suspense fallback={<CircleLoader />}>
         <ResultTableDialogBody />
       </Suspense>
     </div>

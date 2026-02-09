@@ -23,6 +23,7 @@ import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useResultDialogStore from '@/pages/Surveys/Tables/dialogs/useResultDialogStore';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
+import CircleLoader from '@/components/ui/Loading/CircleLoader';
 
 const ResultVisualizationDialogBody = lazy(() => import('./ResultVisualizationDialogBody'));
 
@@ -35,7 +36,7 @@ const ResultVisualizationDialog = () => {
   const handleClose = () => setIsOpenPublicResultsVisualisationDialog(!isOpenPublicResultsVisualisationDialog);
 
   const body = (
-    <Suspense fallback={<LoadingIndicatorDialog isOpen />}>
+    <Suspense fallback={<CircleLoader />}>
       <ResultVisualizationDialogBody />
     </Suspense>
   );
