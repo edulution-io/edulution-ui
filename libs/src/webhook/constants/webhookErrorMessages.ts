@@ -24,7 +24,6 @@ const WEBHOOK_ERROR_MESSAGES = {
   INVALID_SIGNATURE: 'webhook.errors.invalidSignature',
   INVALID_USER_AGENT: 'webhook.errors.invalidUserAgent',
   DUPLICATE_EVENT: 'webhook.errors.duplicateEvent',
-  PROCESSING_FAILED: 'webhook.errors.processingFailed',
 } as const;
 
 export default WEBHOOK_ERROR_MESSAGES;
