@@ -165,8 +165,8 @@ class SurveysBackendLimiterService {
 
   throwErrorIfTheUserHasNoPermissionToCreateOrUpdateTheBackendLimiters = async (
     isCreating: boolean,
-    surveyId: string,
     user: JwtUser,
+    surveyId: string,
     questionName: string,
   ): Promise<void> => {
     if (isCreating) {
@@ -206,8 +206,8 @@ class SurveysBackendLimiterService {
 
     await this.throwErrorIfTheUserHasNoPermissionToCreateOrUpdateTheBackendLimiters(
       isCreating,
-      surveysBackendLimiterDocument.surveyId,
       user,
+      surveysBackendLimiterDocument.surveyId,
       surveysBackendLimiterDocument.questionName,
     );
 
@@ -231,6 +231,13 @@ class SurveysBackendLimiterService {
           SurveysBackendLimiterService.name,
         );
       }
+    }
+
+    const backendLimiter = await this.surveysBackendLimiterModel
+      .findByIdAndUpdate(limiterId, surveysBackendLimiterDocument, { new: true, upsert: true })
+      .exec();
+    if (!backendLimiter) {
+      throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }
