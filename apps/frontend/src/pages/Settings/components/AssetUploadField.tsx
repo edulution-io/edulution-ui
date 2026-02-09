@@ -18,7 +18,7 @@
  */
 
 import React from 'react';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import THEME from '@libs/common/constants/theme';
 import ThemeType from '@libs/common/types/themeType';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';

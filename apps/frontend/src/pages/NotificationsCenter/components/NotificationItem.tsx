@@ -19,6 +19,7 @@
 
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircle,
@@ -33,12 +34,13 @@ import {
   faCircleInfo,
 } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { Button } from '@/components/shared/Button';
+import { Button, cn } from '@edulution-io/ui-kit';
 import { Card } from '@/components/shared/Card/Card';
-import cn from '@libs/common/utils/className';
 import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto';
 import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
-import NOTIFICATION_SOURCE_TYPE, { NotificationSourceType } from '@libs/notification/constants/notificationSourceType';
+import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
+import NotificationSourceType from '@libs/notification/types/notificationSourceType';
+import getNotificationSourceRoute from '@libs/notification/utils/getNotificationSourceRoute';
 import { getElapsedTime } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import useNotificationStore from '@/store/useNotificationStore';
 import NotificationRecipientsDialog from '@/pages/NotificationsCenter/components/NotificationRecipientsDialog';
@@ -65,7 +67,8 @@ const getSourceTypeIcon = (sourceType?: NotificationSourceType): IconDefinition 
 
 const NotificationItem = ({ notification, isSentView = false }: NotificationItemProps) => {
   const { t } = useTranslation();
-  const { markAsRead, deleteNotification, deleteSentNotification } = useNotificationStore();
+  const navigate = useNavigate();
+  const { markAsRead, deleteNotification, deleteSentNotification, setIsSheetOpen } = useNotificationStore();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isRecipientsDialogOpen, setIsRecipientsDialogOpen] = useState(false);
 
@@ -74,12 +77,25 @@ const NotificationItem = ({ notification, isSentView = false }: NotificationItem
   const hasContent = Boolean(notification.content);
   const sourceIcon = getSourceTypeIcon(notification.sourceType);
   const elapsedTime = getElapsedTime(notification.createdAt);
+  const sourceRoute = getNotificationSourceRoute(notification.sourceType, notification.sourceId);
 
-  const handleExpand = useCallback(() => {
-    if (hasContent) {
+  const handleClick = useCallback(() => {
+    if (isSentView) {
+      if (hasContent) {
+        setIsExpanded((prev) => !prev);
+      }
+      return;
+    }
+    if (isUnread) {
+      void markAsRead(notification.id);
+    }
+    if (sourceRoute) {
+      setIsSheetOpen(false);
+      navigate(sourceRoute);
+    } else if (hasContent) {
       setIsExpanded((prev) => !prev);
     }
-  }, [hasContent]);
+  }, [hasContent, isSentView, isUnread, markAsRead, notification.id, sourceRoute, setIsSheetOpen, navigate]);
 
   const handleMarkAsRead = useCallback(
     (event: React.MouseEvent) => {
@@ -114,13 +130,13 @@ const NotificationItem = ({ notification, isSentView = false }: NotificationItem
       className={cn('relative flex flex-col p-4', {
         'border-primary/50 ring-primary/30 ring-1': isUnread,
       })}
-      onClick={handleExpand}
+      onClick={handleClick}
       onKeyDown={(event) => {
         if (event.key === 'Enter') {
-          handleExpand();
+          handleClick();
         } else if (event.key === ' ') {
           event.preventDefault();
-          handleExpand();
+          handleClick();
         }
       }}
     >
@@ -168,7 +184,7 @@ const NotificationItem = ({ notification, isSentView = false }: NotificationItem
               />
             </Button>
           )}
-          {isUserNotification && isUnread && !isSentView && (
+          {isUnread && !isSentView && (
             <Button
               type="button"
               className="hover:bg-primary/10 rounded-full p-2 text-muted-foreground hover:text-primary"

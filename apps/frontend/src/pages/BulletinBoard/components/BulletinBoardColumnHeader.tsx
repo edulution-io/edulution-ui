@@ -18,7 +18,7 @@
  */
 
 import React, { useMemo } from 'react';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import DropdownMenu from '@/components/shared/DropdownMenu';

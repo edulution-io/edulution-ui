@@ -21,9 +21,8 @@ import React, { FC, Dispatch, SetStateAction } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTableCells } from '@fortawesome/free-solid-svg-icons';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
-import cn from '@libs/common/utils/className';
+import { cn, Button } from '@edulution-io/ui-kit';
 import { InputOTPSH, InputOTPGroupSH, InputOTPSlotSH } from '../ui/InputOtpSH';
-import { Button } from './Button';
 
 type OtpInputProps = {
   totp: string;

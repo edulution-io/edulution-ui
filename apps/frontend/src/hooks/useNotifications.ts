@@ -39,14 +39,14 @@ import useFileDownloadProgressToast from '@/hooks/useDownloadProgressToast';
 import { toast } from 'sonner';
 import useSseEventListener from '@/hooks/useSseEventListener';
 import useSseHeartbeatMonitor from '@/hooks/useSseHeartbeatMonitor';
-import useNotificationStore from '@/store/useNotificationStore';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import useFileOperationProgressToast from '@/hooks/useFileOperationProgressToast';
+import useNotificationStore from '@/store/useNotificationStore';
 
 const useNotifications = () => {
   const { t } = useTranslation();
   const { isSuperAdmin, isAuthReady } = useLdapGroups();
-  const { getAppConfigs } = useAppConfigsStore();
+  const { getAppConfigs, getPublicAppConfigs } = useAppConfigsStore();
   const isMailsAppActivated = useIsAppActive(APPS.MAIL);
   const { getMails } = useMailsStore();
   const isConferenceAppActivated = useIsAppActive(APPS.CONFERENCES);
@@ -58,8 +58,8 @@ const useNotifications = () => {
   const { addBulletinBoardNotification } = UseBulletinBoardStore();
   const isWhiteboardActive = useIsAppActive(APPS.WHITEBOARD);
   const { addRoomHistoryEntry } = useTLDRawHistoryStore();
-  const { fetchUnreadCount } = useNotificationStore();
   const { fileOperationProgress } = useFileSharingStore();
+  const { fetchUnreadCount, fetchNotifications } = useNotificationStore();
 
   useFileOperationProgress();
 
@@ -88,6 +88,8 @@ const useNotifications = () => {
       if (isConferenceAppActivated) {
         void getConferences();
       }
+
+      void fetchUnreadCount();
     }
   }, [
     isAuthReady,
@@ -211,9 +213,21 @@ const useNotifications = () => {
 
   const handleAppConfigUpdated = () => {
     void getAppConfigs();
+    void getPublicAppConfigs();
   };
 
   useSseEventListener(SSE_MESSAGE_TYPE.APPCONFIG_UPDATED, handleAppConfigUpdated, {
+    enabled: isAuthReady,
+  });
+
+  const handleNotificationInboxUpdated = () => {
+    void fetchUnreadCount();
+    if (useNotificationStore.getState().isSheetOpen) {
+      void fetchNotifications();
+    }
+  };
+
+  useSseEventListener(SSE_MESSAGE_TYPE.NOTIFICATION_INBOX_UPDATED, handleNotificationInboxUpdated, {
     enabled: isAuthReady,
   });
 };

@@ -17,10 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { NotificationType } from '@libs/notification/constants/notificationType';
-import { NotificationSourceType } from '@libs/notification/constants/notificationSourceType';
-import { PushNotificationPriority } from '@libs/notification/constants/pushNotificationPriority';
-import { PushNotificationInterruptionLevel } from '@libs/notification/constants/pushNotificationInterruptionLevel';
+import NotificationType from '@libs/notification/types/notificationType';
+import NotificationSourceType from '@libs/notification/types/notificationSourceType';
+import PushNotificationPriority from '@libs/notification/types/pushNotificationPriority';
+import PushNotificationInterruptionLevel from '@libs/notification/types/pushNotificationInterruptionLevel';
 
 type CreateNotificationDto = {
   type: NotificationType;

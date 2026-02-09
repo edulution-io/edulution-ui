@@ -34,7 +34,7 @@ const MoveDirectoryDialogBody: React.FC<Omit<MoveContentDialogProps, 'pathToFetc
       {...props}
       pathToFetch={pathToFetch || homePath}
       fileType={ContentType.DIRECTORY}
-      filterBySameRootServer
+      isCurrentPathDefaultDestination
     />
   );
 };

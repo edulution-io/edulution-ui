@@ -20,7 +20,7 @@
 import React, { KeyboardEvent, ReactNode, useCallback } from 'react';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { Row } from '@tanstack/react-table';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import Checkbox from '@/components/ui/Checkbox';
 import { Card, CardContent } from '@/components/shared/Card/Card';
 import { GRID_ITEM_WIDTH } from '@libs/ui/constants/tableGridSizes';

@@ -24,7 +24,7 @@ import * as SheetPrimitive from '@radix-ui/react-dialog';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
 import { cva, type VariantProps } from 'class-variance-authority';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import i18n from '@/i18n';
 
 const Sheet = SheetPrimitive.Root;

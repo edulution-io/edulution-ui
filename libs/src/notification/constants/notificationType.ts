@@ -22,6 +22,4 @@ const NOTIFICATION_TYPE = {
   USER: 'user',
 } as const;
 
-export type NotificationType = (typeof NOTIFICATION_TYPE)[keyof typeof NOTIFICATION_TYPE];
-
 export default NOTIFICATION_TYPE;

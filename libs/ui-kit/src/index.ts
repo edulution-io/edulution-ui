@@ -17,6 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PUSH_DEBOUNCE_MINUTES = 30;
+export { Button, buttonVariants } from './components/Button';
+export type { ButtonProps, ButtonVariant } from './components/Button';
 
-export default PUSH_DEBOUNCE_MINUTES;
+export { default as cn } from './utils/cn';

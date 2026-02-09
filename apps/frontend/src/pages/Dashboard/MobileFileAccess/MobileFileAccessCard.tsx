@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import { Card, CardContent } from '@/components/shared/Card';
 import { useNavigate } from 'react-router-dom';
 import { USER_SETTINGS_MOBILE_ACCESS_PATH } from '@libs/userSettings/constants/user-settings-endpoints';

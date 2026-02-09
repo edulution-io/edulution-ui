@@ -17,10 +17,6 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import NOTIFICATION_TYPE, { NotificationType } from '@libs/notification/constants/notificationType';
-import { NotificationFilterType } from '@libs/notification/types/notificationFilterType';
+const LDAP_SYNC_ACTIVE_EVENT = 'ldap.sync.active';
 
-const canFilterByNotificationType = (filter: NotificationFilterType): filter is NotificationType =>
-  filter === NOTIFICATION_TYPE.USER || filter === NOTIFICATION_TYPE.SYSTEM;
-
-export default canFilterByNotificationType;
+export default LDAP_SYNC_ACTIVE_EVENT;

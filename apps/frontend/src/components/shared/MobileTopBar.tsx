@@ -25,6 +25,7 @@ import useMenuBarStore from '@/components/shared/useMenuBarStore';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import useNotificationStore from '@/store/useNotificationStore';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
+import NOTIFICATION_COUNTER_VARIANT from '@libs/notification/constants/notificationCounterVariant';
 import { MOBILE_TOP_BAR_HEIGHT_PX, SIDEBAR_ICON_WIDTH } from '@libs/ui/constants/sidebar';
 import { MobileLogoIcon } from '@/assets/icons';
 
@@ -90,13 +91,17 @@ const MobileTopBar: React.FC<MobileTopBarProps> = ({ showLeftButton = false, sho
             <button
               type="button"
               onClick={handleNotificationClick}
-              className="relative flex items-center justify-center"
+              className="relative flex items-center justify-center text-background"
             >
               <FontAwesomeIcon
                 icon={faBell}
-                className="h-5 w-5 text-muted hover:text-muted-foreground"
+                className="h-5 w-5 hover:text-muted-foreground"
               />
-              <NotificationCounter count={unreadCount} />
+              <NotificationCounter
+                count={unreadCount}
+                variant={NOTIFICATION_COUNTER_VARIANT.NOTIFICATION_PANEL}
+                className="-right-1 -top-1"
+              />
             </button>
             {showRightButton && (
               <button

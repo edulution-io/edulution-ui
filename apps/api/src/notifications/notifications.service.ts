@@ -23,7 +23,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, mongo, PipelineStage, Types } from 'mongoose';
 import SendPushNotificationDto from '@libs/notification/types/send-pushNotification.dto';
 import CreateNotificationDto from '@libs/notification/types/createNotification.dto';
-import { NotificationSourceType } from '@libs/notification/constants/notificationSourceType';
+import NotificationSourceType from '@libs/notification/types/notificationSourceType';
 import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto';
 import NotificationRecipientDto from '@libs/notification/types/notificationRecipient.dto';
 import USER_NOTIFICATION_STATUS from '@libs/notification/constants/userNotificationStatus';
@@ -31,8 +31,10 @@ import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
 import { NOTIFICATION_FILTER_TYPE, NotificationFilterType } from '@libs/notification/types/notificationFilterType';
 import BULK_INSERT_BATCH_SIZE from '@libs/common/constants/bulkInsertBatchSize';
 import BulkInsertResult from '@libs/common/types/bulkInsertResult';
-import PUSH_DEBOUNCE_MINUTES from '@libs/notification/constants/pushDebounceMinutes';
+import SAME_SOURCE_PUSH_DEBOUNCE_MINUTES from '@libs/notification/constants/sameSourcePushDebounceMinutes';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import UsersService from '../users/users.service';
+import SseService from '../sse/sse.service';
 import PushNotificationQueue from './queue/push-notification.queue';
 import { Notification, NotificationDocument } from './notification.schema';
 import { UserNotification, UserNotificationDocument } from './userNotification.schema';
@@ -41,6 +43,7 @@ import { UserNotification, UserNotificationDocument } from './userNotification.s
 class NotificationsService {
   constructor(
     private userService: UsersService,
+    private sseService: SseService,
     private pushNotificationQueue: PushNotificationQueue,
     @InjectModel(Notification.name) private notificationModel: Model<NotificationDocument>,
     @InjectModel(UserNotification.name) private userNotificationModel: Model<UserNotificationDocument>,
@@ -51,7 +54,7 @@ class NotificationsService {
       return true;
     }
 
-    const debounceMs = PUSH_DEBOUNCE_MINUTES * 60 * 1000;
+    const debounceMs = SAME_SOURCE_PUSH_DEBOUNCE_MINUTES * 60 * 1000;
     const timeSinceLastPush = Date.now() - notification.lastPushSentAt.getTime();
 
     return timeSinceLastPush >= debounceMs;
@@ -92,6 +95,8 @@ class NotificationsService {
             NotificationsService.name,
           );
         }
+
+        this.sseService.sendEventToUsers(usernames, 'updated', SSE_MESSAGE_TYPE.NOTIFICATION_INBOX_UPDATED);
       }
 
       const uniqueTokens = await this.userService.getPushTokensByUsernames(usernames);
@@ -254,6 +259,8 @@ class NotificationsService {
     );
 
     await this.syncUserNotifications(notificationId, usernames);
+
+    this.sseService.sendEventToUsers(usernames, 'updated', SSE_MESSAGE_TYPE.NOTIFICATION_INBOX_UPDATED);
 
     if (NotificationsService.shouldSendPush(existingNotification)) {
       const uniqueTokens = await this.userService.getPushTokensByUsernames(usernames);
@@ -496,11 +503,7 @@ class NotificationsService {
 
   async getUnreadCount(username: string): Promise<number> {
     const result = await this.userNotificationModel.aggregate<{ total: number }>([
-      ...this.buildUserNotificationPipeline(
-        username,
-        { readAt: null },
-        { 'notification.type': NOTIFICATION_TYPE.USER },
-      ),
+      ...this.buildUserNotificationPipeline(username, { readAt: null }),
       { $count: 'total' },
     ]);
 
@@ -530,27 +533,10 @@ class NotificationsService {
   }
 
   async markAllAsRead(username: string): Promise<{ modifiedCount: number }> {
-    const userNotificationIds = await this.userNotificationModel.aggregate<{ id: Types.ObjectId }>([
-      { $match: { username, readAt: null } },
-      {
-        $lookup: {
-          from: this.notificationModel.collection.name,
-          localField: 'notificationId',
-          foreignField: '_id',
-          as: 'notification',
-        },
-      },
-      { $unwind: '$notification' },
-      { $match: { 'notification.type': NOTIFICATION_TYPE.USER } },
-      { $project: { _id: 1 } },
-    ]);
-
-    const ids = userNotificationIds.map((document) => document.id);
-    if (ids.length === 0) {
-      return { modifiedCount: 0 };
-    }
-
-    const result = await this.userNotificationModel.updateMany({ _id: { $in: ids } }, { $set: { readAt: new Date() } });
+    const result = await this.userNotificationModel.updateMany(
+      { username, readAt: null },
+      { $set: { readAt: new Date() } },
+    );
 
     return { modifiedCount: result.modifiedCount };
   }

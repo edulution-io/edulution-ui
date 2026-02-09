@@ -22,10 +22,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import useNotificationStore from '@/store/useNotificationStore';
-import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
+import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
+import NOTIFICATION_COUNTER_VARIANT from '@libs/notification/constants/notificationCounterVariant';
 
 const NotificationBellButton = () => {
   const { t } = useTranslation();
@@ -74,7 +75,11 @@ const NotificationBellButton = () => {
           icon={faBell}
           className="transform text-xl transition-transform duration-200 group-hover:scale-110"
         />
-        <NotificationCounter count={unreadCount} />
+        <NotificationCounter
+          count={unreadCount}
+          variant={NOTIFICATION_COUNTER_VARIANT.NOTIFICATION_PANEL}
+          className="-right-1 -top-1"
+        />
       </div>
     </div>
   );

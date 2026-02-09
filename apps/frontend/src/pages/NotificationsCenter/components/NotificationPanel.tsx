@@ -26,13 +26,12 @@ import useNotificationStore from '@/store/useNotificationStore';
 import useMedia from '@/hooks/useMedia';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import { NOTIFICATION_FILTER_TYPE, NotificationFilterType } from '@libs/notification/types/notificationFilterType';
-import canFilterByNotificationType from '@libs/notification/utils/canFilterByNotificationType';
-import cn from '@libs/common/utils/className';
+import isNotificationType from '@libs/notification/utils/isNotificationType';
+import { Button, cn } from '@edulution-io/ui-kit';
 import NotificationList from '@/pages/NotificationsCenter/components/NotificationList';
 import NotificationFilterBadges from '@/pages/NotificationsCenter/components/NotificationFilterBadges';
 import DeleteAllNotificationsDialog from '@/pages/NotificationsCenter/components/DeleteAllNotificationsDialog';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
-import { Button } from '@/components/shared/Button';
 
 const NotificationPanel = () => {
   const { t } = useTranslation();
@@ -69,7 +68,7 @@ const NotificationPanel = () => {
     if (activeFilter === NOTIFICATION_FILTER_TYPE.SENT) {
       return sentNotifications;
     }
-    if (canFilterByNotificationType(activeFilter)) {
+    if (isNotificationType(activeFilter)) {
       return notifications.filter((notification) => notification.type === activeFilter);
     }
     return notifications;
@@ -94,9 +93,9 @@ const NotificationPanel = () => {
     >
       <SheetContent
         side={isMobileOrTablet ? 'bottom' : 'right'}
-        overlayClassName="bg-transparent"
+        overlayClassName="bg-transparent z-[550]"
         className={cn(
-          'bg-glass flex flex-col border-muted text-background shadow-xl shadow-slate-400 backdrop-blur-md',
+          'bg-glass z-[560] flex flex-col border-muted text-background shadow-xl shadow-slate-400 backdrop-blur-md',
           isMobileOrTablet ? 'max-h-[85vh] rounded-t-2xl border-t' : 'max-h-full border-l sm:max-w-md',
           !isMobileOrTablet && 'right-[var(--sidebar-width)]',
         )}

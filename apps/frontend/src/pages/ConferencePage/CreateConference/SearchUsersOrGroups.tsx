@@ -21,7 +21,7 @@ import React from 'react';
 import AsyncMultiSelect from '@/components/shared/AsyncMultiSelect';
 import { useTranslation } from 'react-i18next';
 import AttendeeDto from '@libs/user/types/attendee.dto';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
 interface SearchUsersOrGroupsProps {

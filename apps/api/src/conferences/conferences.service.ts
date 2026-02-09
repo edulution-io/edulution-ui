@@ -228,7 +228,7 @@ class ConferencesService implements OnModuleInit {
       const title = NOTIFICATION_TEMPLATES.CONFERENCE.STARTED.title(conference.name);
       const pushNotification = NOTIFICATION_TEMPLATES.CONFERENCE.STARTED.body(conference.name);
 
-      await this.notificationService.notifyUsernames(
+      await this.notificationService.upsertNotificationForSource(
         invitedMembersList,
         {
           title,

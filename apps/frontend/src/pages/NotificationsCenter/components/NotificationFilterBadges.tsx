@@ -19,11 +19,10 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import cn from '@libs/common/utils/className';
+import { Button, cn } from '@edulution-io/ui-kit';
 import { NOTIFICATION_FILTER_TYPE, NotificationFilterType } from '@libs/notification/types/notificationFilterType';
-import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
+import isNotificationType from '@libs/notification/utils/isNotificationType';
 import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto';
-import { Button } from '@/components/shared/Button';
 
 interface NotificationFilterBadgesProps {
   activeFilter: NotificationFilterType;
@@ -45,16 +44,13 @@ const getFilterCount = (
   notifications: InboxNotificationDto[],
   sentCount: number,
 ): number => {
-  switch (filter) {
-    case NOTIFICATION_FILTER_TYPE.USER:
-      return notifications.filter((n) => n.type === NOTIFICATION_TYPE.USER).length;
-    case NOTIFICATION_FILTER_TYPE.SYSTEM:
-      return notifications.filter((n) => n.type === NOTIFICATION_TYPE.SYSTEM).length;
-    case NOTIFICATION_FILTER_TYPE.SENT:
-      return sentCount;
-    default:
-      return notifications.length;
+  if (filter === NOTIFICATION_FILTER_TYPE.SENT) {
+    return sentCount;
   }
+  if (isNotificationType(filter)) {
+    return notifications.filter((notification) => notification.type === filter).length;
+  }
+  return notifications.length;
 };
 
 const NotificationFilterBadges = ({
