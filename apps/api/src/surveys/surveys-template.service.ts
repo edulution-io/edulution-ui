@@ -46,8 +46,9 @@ class SurveysTemplateService implements OnModuleInit {
   }
 
   async updateOrCreateTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
-    const { id, template, name: templateName, isActive = true, ...remainingTemplate } = surveyTemplate;
-    const name = templateName || template.formula.title.trim();
+    const { id, template, name: templateName, isActive = true } = surveyTemplate;
+    const trimmedTemplateName = templateName?.trim();
+    const name = trimmedTemplateName || template.formula.title.trim();
     if (!name) {
       throw new CustomHttpException(
         SurveyErrorMessages.UpdateOrCreateError,
@@ -59,17 +60,13 @@ class SurveysTemplateService implements OnModuleInit {
     try {
       if (!id) {
         return await this.surveyTemplateModel.create({
-          ...remainingTemplate,
           template,
           name,
           isActive,
+          isDefaultTemplate: false,
         });
       }
-      return await this.surveyTemplateModel.findByIdAndUpdate(
-        id,
-        { ...remainingTemplate, template, name, isActive },
-        { new: true },
-      );
+      return await this.surveyTemplateModel.findByIdAndUpdate(id, { template, name, isActive }, { new: true });
     } catch (error) {
       throw new CustomHttpException(
         CommonErrorMessages.DB_ACCESS_FAILED,
