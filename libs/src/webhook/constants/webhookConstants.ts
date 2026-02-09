@@ -31,7 +31,7 @@ const WEBHOOK_CONSTANTS = {
     EVENTHANDLER: 'edulution-eventhandler',
   },
   REDIS_KEYS: {
-    EVENTHANDLER_PREFIX: 'eventhandler',
+    EVENTHANDLER_PREFIX: 'webhook:eventhandler',
   },
   TIMESTAMP_MAX_AGE_MS: FIVE_MINUTES_MS,
   MAX_PROCESSED_EVENTS: 100,

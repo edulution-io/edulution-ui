@@ -20,6 +20,7 @@
 import { Body, Controller, Headers, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import WEBHOOK_API_ENDPOINT from '@libs/webhook/constants/webhookApiEndpoint';
 import WEBHOOK_CONSTANTS from '@libs/webhook/constants/webhookConstants';
+import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import Public from '../common/decorators/public.decorator';
 import WebhookGuard from './webhook.guard';
 import WebhookService from './webhook.service';
@@ -34,7 +35,7 @@ class WebhookController {
   @HttpCode(HttpStatus.OK)
   async handleWebhook(
     @Headers(WEBHOOK_CONSTANTS.HEADERS.WEBHOOK_EVENT_ID) eventId: string,
-    @Headers('user-agent') userAgent: string,
+    @Headers(HTTP_HEADERS.UserAgent) userAgent: string,
     @Body() body: Record<string, unknown>,
   ): Promise<{ status: string }> {
     const serviceKey = WebhookController.extractServiceKey(userAgent);

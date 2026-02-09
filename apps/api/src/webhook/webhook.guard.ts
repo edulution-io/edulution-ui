@@ -21,6 +21,7 @@ import { CanActivate, ExecutionContext, HttpStatus, Injectable } from '@nestjs/c
 import { createHmac, timingSafeEqual } from 'crypto';
 import { Request } from 'express';
 import WEBHOOK_CONSTANTS from '@libs/webhook/constants/webhookConstants';
+import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import WEBHOOK_ERROR_MESSAGES from '@libs/webhook/constants/webhookErrorMessages';
 import CustomHttpException from '../common/CustomHttpException';
 
@@ -35,7 +36,7 @@ class WebhookGuard implements CanActivate {
     const timestamp = headers[WEBHOOK_CONSTANTS.HEADERS.WEBHOOK_TIMESTAMP] as string;
     const signature = headers[WEBHOOK_CONSTANTS.HEADERS.WEBHOOK_SIGNATURE] as string;
     const eventId = headers[WEBHOOK_CONSTANTS.HEADERS.WEBHOOK_EVENT_ID] as string;
-    const userAgent = headers['user-agent'] ?? '';
+    const userAgent = (headers[HTTP_HEADERS.UserAgent] as string) ?? '';
 
     if (!key || !timestamp || !signature || !eventId) {
       throw new CustomHttpException(
