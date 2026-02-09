@@ -22,8 +22,8 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import AdaptiveDialog from '@/components/ui/AdaptiveDialog';
-import cn from '@libs/common/utils/className';
 import useNotificationStore from '@/store/useNotificationStore';
+import { cn } from '@edulution-io/ui-kit';
 
 interface NotificationRecipientsDialogProps {
   isOpen: boolean;
