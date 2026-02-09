@@ -17,11 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface ChoiceDto {
-  name: string;
-  title: string;
-  limit: number;
-  addedByParticipant?: string;
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
+
+interface SurveyBackendLimiterDto {
+  id?: string;
+  surveyId: string;
+  questionName: string;
+  choices: ChoiceDto[];
+  schemaVersion?: number;
 }
 
-export default ChoiceDto;
+export default SurveyBackendLimiterDto;

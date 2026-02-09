@@ -21,10 +21,10 @@ import { Document, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 
-export type BackendLimiterDocument = BackendLimiter & Document;
+export type SurveysBackendLimiterDocument = SurveysBackendLimiter & Document;
 
 @Schema({ timestamps: true, strict: true })
-export class BackendLimiter {
+export class SurveysBackendLimiter {
   @Prop({ required: true })
   surveyId: Types.ObjectId;
 
@@ -38,10 +38,10 @@ export class BackendLimiter {
   schemaVersion: number;
 }
 
-const BackendLimiterSchema = SchemaFactory.createForClass(BackendLimiter);
+const SurveysBackendLimiterSchema = SchemaFactory.createForClass(SurveysBackendLimiter);
 
-BackendLimiterSchema.set('toJSON', {
+SurveysBackendLimiterSchema.set('toJSON', {
   virtuals: true,
 });
 
-export default BackendLimiterSchema;
+export default SurveysBackendLimiterSchema;
