@@ -24,10 +24,12 @@ import WEBHOOK_CONSTANTS from '@libs/webhook/constants/webhookConstants';
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import WEBHOOK_ERROR_MESSAGES from '@libs/webhook/constants/webhookErrorMessages';
 import CustomHttpException from '../common/CustomHttpException';
+import WebhookClientsService from '../webhook-clients/webhook-clients.service';
 
 @Injectable()
 class WebhookGuard implements CanActivate {
-  // eslint-disable-next-line @typescript-eslint/class-methods-use-this
+  constructor(private readonly webhookClientsService: WebhookClientsService) {}
+
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<Request>();
     const { headers } = request;
@@ -47,7 +49,7 @@ class WebhookGuard implements CanActivate {
       );
     }
 
-    if (key !== process.env.WEBHOOK_SECRET_KEY) {
+    if (!this.webhookClientsService.isValidClient(key, userAgent)) {
       throw new CustomHttpException(
         WEBHOOK_ERROR_MESSAGES.INVALID_KEY,
         HttpStatus.UNAUTHORIZED,
@@ -68,7 +70,7 @@ class WebhookGuard implements CanActivate {
     }
 
     const rawBody = request.rawBody ?? Buffer.alloc(0);
-    const expectedSignature = createHmac('sha256', process.env.WEBHOOK_SECRET_KEY ?? '')
+    const expectedSignature = createHmac('sha256', key)
       .update(`${timestamp}.${rawBody.toString('utf8')}`)
       .digest('hex');
 
@@ -83,16 +85,6 @@ class WebhookGuard implements CanActivate {
       throw new CustomHttpException(
         WEBHOOK_ERROR_MESSAGES.INVALID_SIGNATURE,
         HttpStatus.UNAUTHORIZED,
-        undefined,
-        WebhookGuard.name,
-      );
-    }
-
-    const isKnownAgent = Object.values(WEBHOOK_CONSTANTS.USER_AGENTS).some((agent) => userAgent.startsWith(agent));
-    if (!isKnownAgent) {
-      throw new CustomHttpException(
-        WEBHOOK_ERROR_MESSAGES.INVALID_USER_AGENT,
-        HttpStatus.BAD_REQUEST,
         undefined,
         WebhookGuard.name,
       );

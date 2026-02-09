@@ -18,12 +18,15 @@
  */
 
 import { Module } from '@nestjs/common';
+import WebhookClientsModule from '../webhook-clients/webhook-clients.module';
 import WebhookController from './webhook.controller';
 import WebhookService from './webhook.service';
+import WebhookGuard from './webhook.guard';
 
 @Module({
+  imports: [WebhookClientsModule],
   controllers: [WebhookController],
-  providers: [WebhookService],
+  providers: [WebhookService, WebhookGuard],
   exports: [WebhookService],
 })
 export default class WebhookModule {}

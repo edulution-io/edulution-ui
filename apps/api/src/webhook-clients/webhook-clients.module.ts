@@ -17,29 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const FIVE_MINUTES_MS = 5 * 60 * 1000;
-const TWENTY_FOUR_HOURS_SECONDS = 86400;
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { WebhookClient, WebhookClientSchema } from './webhook-client.schema';
+import WebhookClientsService from './webhook-clients.service';
+import WebhookClientsController from './webhook-clients.controller';
 
-const WEBHOOK_CONSTANTS = {
-  HEADERS: {
-    WEBHOOK_KEY: 'x-webhook-key',
-    WEBHOOK_TIMESTAMP: 'x-webhook-timestamp',
-    WEBHOOK_SIGNATURE: 'x-webhook-signature',
-    WEBHOOK_EVENT_ID: 'x-webhook-event-id',
-  },
-  USER_AGENTS: {
-    EVENTHANDLER: 'edulution-eventhandler',
-    LINUXMUSTER_API: 'linuxmuster-api',
-  },
-  USER_AGENT_OPTIONS: ['edulution-eventhandler', 'linuxmuster-api'],
-  API_KEY_LENGTH: 16,
-  REDIS_KEYS: {
-    EVENTHANDLER_PREFIX: 'webhook:eventhandler',
-  },
-  TIMESTAMP_MAX_AGE_MS: FIVE_MINUTES_MS,
-  MAX_PROCESSED_EVENTS: 100,
-  EVENT_TTL_SECONDS: TWENTY_FOUR_HOURS_SECONDS,
-  SIGNATURE_PREFIX: 'sha256=',
-} as const;
-
-export default WEBHOOK_CONSTANTS;
+@Module({
+  imports: [MongooseModule.forFeature([{ name: WebhookClient.name, schema: WebhookClientSchema }])],
+  controllers: [WebhookClientsController],
+  providers: [WebhookClientsService],
+  exports: [WebhookClientsService],
+})
+export default class WebhookClientsModule {}
