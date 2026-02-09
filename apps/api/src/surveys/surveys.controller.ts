@@ -55,8 +55,9 @@ import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
-import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
+import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
+import SurveyBackendLimiterDto from '@libs/survey/types/api/survey-backend-limiter.dto';
 import { addUuidToFileName } from '@libs/common/utils/uuidAndFileNames';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
@@ -76,6 +77,7 @@ import GetCurrentUser from '../common/decorators/getCurrentUser.decorator';
 import GetCurrentUserGroups from '../common/decorators/getCurrentUserGroups.decorator';
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import AdminGuard from '../common/guards/admin.guard';
+import SurveysBackendLimiterService from './surveys-backend-limiter.service';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 import RequireAppAccess from '../common/decorators/requireAppAccess.decorator';
 
@@ -88,6 +90,7 @@ class SurveysController {
     private readonly surveyService: SurveysService,
     private readonly surveysTemplateService: SurveysTemplateService,
     private readonly surveyAnswerService: SurveyAnswerService,
+    private readonly surveysBackendLimiterService: SurveysBackendLimiterService,
     private readonly filesystemService: FilesystemService,
     private readonly surveyAnswerAttachmentsService: SurveyAnswerAttachmentsService,
   ) {}
@@ -211,6 +214,7 @@ class SurveysController {
     await this.surveyService.deleteSurveys(surveyIds);
     await this.surveyAnswerService.onSurveyRemoval(surveyIds);
     await SurveysAttachmentService.onSurveyRemoval(surveyIds);
+    await this.surveysBackendLimiterService.onSurveyRemoval(surveyIds);
   }
 
   @Post(ANSWER)
@@ -321,6 +325,11 @@ class SurveysController {
     }
   }
 
+  @Post(CHOICES)
+  async updateChoices(@GetCurrentUser() currentUser: JWTUser, @Body() body: SurveyBackendLimiterDto) {
+    await this.surveysBackendLimiterService.updateOrCreateSurveysBackendLimiters(body, currentUser);
+  }
+
   @Get(`${CHOICES}/:surveyId/:questionId`)
   async getChoices(
     @Param() params: { surveyId: string; questionId: string },
@@ -332,7 +341,11 @@ class SurveysController {
       return [];
     }
     await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
-    const choices = await this.surveyAnswerService.getSelectableChoices(surveyId, questionId, original === 'true');
+    const choices = await this.surveysBackendLimiterService.getSelectableChoices(
+      surveyId,
+      questionId,
+      original === 'true',
+    );
     return choices.filter((choice) => choice.name !== SHOW_OTHER_ITEM);
   }
 

@@ -38,8 +38,6 @@ import {
   answeredSurvey04,
   answeredSurvey05,
   createdSurvey01,
-  filteredChoices,
-  filteredChoicesAfterAddingValidAnswer,
   firstMockJWTUser,
   firstMockUser,
   firstParticipant,
@@ -51,8 +49,6 @@ import {
   idOfAnsweredSurvey03,
   idOfAnsweredSurvey04,
   idOfAnsweredSurvey05,
-  idOfPublicSurvey01,
-  idOfPublicSurvey02,
   idOfTheSurveyAnswerForTheAnsweredSurvey04,
   idOfTheSurveyAnswerForTheAnsweredSurvey05,
   mockedAnswerForAnsweredSurveys02,
@@ -61,10 +57,6 @@ import {
   newSurveyAnswerAnsweredSurvey05,
   openSurvey01,
   openSurvey02,
-  publicSurvey01,
-  publicSurvey02,
-  publicSurvey02AfterAddingValidAnswer,
-  publicSurvey02QuestionNameWithLimiters,
   secondMockUser,
   secondParticipant,
   surveyAnswerAnsweredSurvey02,
@@ -133,77 +125,6 @@ describe('SurveyAnswersService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
-  });
-
-  describe('getSelectableChoices', () => {
-    it('Should return those choices that are still selectable (backend limit was not reached)', async () => {
-      jest.spyOn(service, 'getSelectableChoices');
-
-      service.countTotalChoiceSelectionsInSurveyAnswers = jest
-        .fn()
-        .mockReturnValueOnce(0)
-        .mockReturnValueOnce(0)
-        .mockReturnValueOnce(1)
-        .mockReturnValueOnce(2);
-
-      surveyModel.findById = jest.fn().mockReturnValue(publicSurvey02);
-
-      const result = await service.getSelectableChoices(
-        idOfPublicSurvey02.toString(),
-        publicSurvey02QuestionNameWithLimiters,
-      );
-      expect(result).toEqual(filteredChoices);
-
-      expect(service.getSelectableChoices).toHaveBeenCalledWith(
-        idOfPublicSurvey02.toString(),
-        publicSurvey02QuestionNameWithLimiters,
-      );
-      expect(service.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(4);
-    });
-
-    it('Should return those choices that are still selectable even after adding a new answer (backend limit was not reached)', async () => {
-      jest.spyOn(service, 'getSelectableChoices');
-
-      service.countTotalChoiceSelectionsInSurveyAnswers = jest
-        .fn()
-        .mockReturnValueOnce(0)
-        .mockReturnValueOnce(1)
-        .mockReturnValueOnce(1)
-        .mockReturnValueOnce(2);
-
-      surveyModel.findById = jest.fn().mockReturnValue(publicSurvey02AfterAddingValidAnswer);
-
-      const result = await service.getSelectableChoices(
-        idOfPublicSurvey02.toString(),
-        publicSurvey02QuestionNameWithLimiters,
-      );
-      expect(result).toEqual(filteredChoicesAfterAddingValidAnswer);
-
-      expect(service.getSelectableChoices).toHaveBeenCalledWith(
-        idOfPublicSurvey02.toString(),
-        publicSurvey02QuestionNameWithLimiters,
-      );
-      expect(service.countTotalChoiceSelectionsInSurveyAnswers).toHaveBeenCalledTimes(4);
-    });
-
-    it('Throw error when the backendLimit is not set', async () => {
-      jest.spyOn(service, 'getSelectableChoices');
-      jest.spyOn(service, 'countTotalChoiceSelectionsInSurveyAnswers');
-
-      surveyModel.findById = jest.fn().mockReturnValue(publicSurvey01);
-
-      try {
-        await service.getSelectableChoices(idOfPublicSurvey01.toString(), publicSurvey02QuestionNameWithLimiters);
-      } catch (e) {
-        expect(e).toBeInstanceOf(Error);
-        expect(e instanceof Error && e.message).toBe(SurveyErrorMessages.NoBackendLimiters);
-      }
-
-      expect(service.getSelectableChoices).toHaveBeenCalledWith(
-        idOfPublicSurvey01.toString(),
-        publicSurvey02QuestionNameWithLimiters,
-      );
-    });
   });
 
   describe('getCreatedSurveys', () => {

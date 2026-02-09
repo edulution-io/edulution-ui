@@ -44,6 +44,7 @@ import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import { addUuidToFileName } from '@libs/common/utils/uuidAndFileNames';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import SurveyBackendLimiterDto from '@libs/survey/types/api/survey-backend-limiter.dto';
 import FilesystemService from 'apps/api/src/filesystem/filesystem.service';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import SurveysService from './surveys.service';
@@ -51,6 +52,7 @@ import SurveyAnswerService from './survey-answers.service';
 import Public from '../common/decorators/public.decorator';
 import { createAttachmentUploadOptions } from '../filesystem/multer.utilities';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
+import SurveysBackendLimiterService from './surveys-backend-limiter.service';
 
 @ApiTags(PUBLIC_SURVEYS)
 @Controller(PUBLIC_SURVEYS)
@@ -58,6 +60,7 @@ class PublicSurveysController {
   constructor(
     private readonly surveyService: SurveysService,
     private readonly surveyAnswerService: SurveyAnswerService,
+    private readonly surveysBackendLimiterService: SurveysBackendLimiterService,
     private readonly filesystemService: FilesystemService,
     private readonly surveyAnswerAttachmentsService: SurveyAnswerAttachmentsService,
   ) {}
@@ -194,6 +197,12 @@ class PublicSurveysController {
     return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, questionId, fileName, req, res);
   }
 
+  @Post(CHOICES)
+  @Public()
+  async updateChoices(@Body() body: SurveyBackendLimiterDto) {
+    await this.surveysBackendLimiterService.updateOrCreateSurveysBackendLimiters(body);
+  }
+
   @Get(`${CHOICES}/:surveyId/:questionId`)
   @Public()
   async getChoices(@Param() params: { surveyId: string; questionId: string }) {
@@ -202,7 +211,7 @@ class PublicSurveysController {
       return [];
     }
     await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
-    const choices = await this.surveyAnswerService.getSelectableChoices(surveyId, questionId);
+    const choices = await this.surveysBackendLimiterService.getSelectableChoices(surveyId, questionId);
     return choices.filter((choice) => choice.name !== SHOW_OTHER_ITEM);
   }
 }

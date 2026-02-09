@@ -21,6 +21,9 @@ import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
+import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
+import TSurveyQuestionAnswerTypes from '@libs/survey/types/TSurveyQuestionAnswerTypes';
 import SurveyBackendLimiterDto from '@libs/survey/types/api/survey-backend-limiter.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
@@ -30,34 +33,138 @@ import SurveyQuestionPanelTypes from '@libs/survey/constants/surveyQuestionPanel
 import CustomHttpException from '../common/CustomHttpException';
 import SurveysService from './surveys.service';
 import { Survey } from './survey.schema';
+import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
 import { SurveysBackendLimiter, SurveysBackendLimiterDocument } from './surveys-backend-limiter.schema';
 
 @Injectable()
 class SurveysBackendLimiterService {
   constructor(
+    @InjectModel(SurveyAnswer.name) private surveyAnswerModel: Model<SurveyAnswerDocument>,
     @InjectModel(SurveysBackendLimiter.name) private surveysBackendLimiterModel: Model<SurveysBackendLimiterDocument>,
     private readonly surveyService: SurveysService,
   ) {}
 
-  async getBackendLimiter(surveyId: string, questionName: string): Promise<SurveysBackendLimiter | null> {
-    try {
-      const surveysBackendLimiter = await this.surveysBackendLimiterModel
-        .findOne({ surveyId: new Types.ObjectId(surveyId), questionName })
-        .exec();
-      return surveysBackendLimiter;
-    } catch (error) {
+  public getSelectableChoices = async (
+    surveyId: string,
+    questionName: string,
+    returnOriginal: boolean = false,
+  ): Promise<ChoiceDto[]> => {
+    const surveysBackendLimiter = await this.surveysBackendLimiterModel
+      .findOne({ surveyId: new Types.ObjectId(surveyId), questionName })
+      .exec();
+
+    if (!surveysBackendLimiter) {
       throw new CustomHttpException(
-        CommonErrorMessages.DB_ACCESS_FAILED,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        error instanceof Error ? error.message : undefined,
+        SurveyErrorMessages.NotFoundError,
+        HttpStatus.NOT_FOUND,
+        undefined,
         SurveysBackendLimiterService.name,
       );
     }
+
+    if (!surveysBackendLimiter?.choices?.length) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.NoBackendLimiters,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        SurveysBackendLimiterService.name,
+      );
+    }
+
+    const possibleChoices = surveysBackendLimiter.choices;
+    if (returnOriginal) {
+      possibleChoices.sort((a, b) => a.title.localeCompare(b.title));
+      return possibleChoices;
+    }
+
+    const filteredChoices: ChoiceDto[] = [];
+    await Promise.all(
+      possibleChoices.map(async (choice) => {
+        const counter = await this.countTotalChoiceSelectionsInSurveyAnswers(surveyId, questionName, choice.title);
+        if (choice.limit === 0 || !counter || counter < choice.limit) {
+          filteredChoices.push(choice);
+        }
+      }),
+    );
+
+    filteredChoices.sort((a, b) => a.title.localeCompare(b.title));
+
+    return filteredChoices;
+  };
+
+  static countChoiceMatchesInValue = (questionAnswer: TSurveyQuestionAnswerTypes, choiceTitle: string): number => {
+    if (Array.isArray(questionAnswer)) {
+      let count = 0;
+      questionAnswer.forEach((answerValue) => {
+        if (typeof answerValue === 'string' && answerValue === choiceTitle) {
+          count += 1;
+        } else if (typeof answerValue === 'object' && answerValue !== null && answerValue.name === choiceTitle) {
+          count += 1;
+        }
+      });
+      return count;
+    }
+    if (typeof questionAnswer === 'string' && questionAnswer === choiceTitle) {
+      return 1;
+    }
+    if (typeof questionAnswer === 'object' && questionAnswer !== null && questionAnswer.name === choiceTitle) {
+      return 1;
+    }
+    return 0;
+  };
+
+  static countChoiceMatchesInAnswer = (answer: TSurveyAnswer, questionName: string, choiceTitle: string): number => {
+    let count = 0;
+    Object.keys(answer).forEach((key) => {
+      if (key === questionName) {
+        const nestedCount = SurveysBackendLimiterService.countChoiceMatchesInValue(answer[key], choiceTitle);
+        count += nestedCount;
+      } else if (Array.isArray(answer[key])) {
+        answer[key].forEach((entry) => {
+          if (typeof entry === 'object' && entry !== null) {
+            const nestedCount = SurveysBackendLimiterService.countChoiceMatchesInAnswer(
+              entry as TSurveyAnswer,
+              questionName,
+              choiceTitle,
+            );
+            count += nestedCount;
+          }
+        });
+      } else if (typeof answer[key] === 'object' && answer[key] !== null) {
+        const nestedCount = SurveysBackendLimiterService.countChoiceMatchesInAnswer(
+          answer[key] as TSurveyAnswer,
+          questionName,
+          choiceTitle,
+        );
+        count += nestedCount;
+      }
+    });
+    return count;
+  };
+
+  async countTotalChoiceSelectionsInSurveyAnswers(
+    surveyId: string,
+    questionName: string,
+    choiceTitle: string,
+  ): Promise<number> {
+    const documents = await this.surveyAnswerModel
+      .find<SurveyAnswerDocument>({ surveyId: new Types.ObjectId(surveyId) })
+      .exec();
+    let count = 0;
+    documents.forEach((document) => {
+      const answerCount = SurveysBackendLimiterService.countChoiceMatchesInAnswer(
+        document.answer as unknown as TSurveyAnswer,
+        questionName,
+        choiceTitle,
+      );
+      count += answerCount;
+    });
+    return count;
   }
 
   async deleteBackendLimiter(surveyId: string, questionName: string): Promise<void> {
     try {
-      await this.surveysBackendLimiterModel.deleteOne({ _id: new Types.ObjectId(surveyId), questionName });
+      await this.surveysBackendLimiterModel.deleteOne({ surveyId: new Types.ObjectId(surveyId), questionName });
       Logger.log(
         `Deleted the backend limiter for survey ${surveyId} and question ${questionName}`,
         SurveysBackendLimiterService.name,
@@ -72,10 +179,14 @@ class SurveysBackendLimiterService {
     }
   }
 
-  async removeBackendLimiterOnSurveyDeletion(surveyId: string): Promise<void> {
+  async onSurveyRemoval(surveyIds: string[]): Promise<void> {
+    const objectIds = surveyIds.map((id) => new Types.ObjectId(id));
     try {
-      await this.surveysBackendLimiterModel.deleteMany({ surveyId: new Types.ObjectId(surveyId) });
-      Logger.log(`Deleted the backend limiters for survey ${surveyId}`, SurveysBackendLimiterService.name);
+      await this.surveysBackendLimiterModel.deleteMany({ surveyId: { $in: objectIds } });
+      Logger.log(
+        `Deleted the backend limiters for survey ${JSON.stringify(surveyIds)}`,
+        SurveysBackendLimiterService.name,
+      );
     } catch (error) {
       throw new CustomHttpException(
         SurveyErrorMessages.DeleteError,
@@ -165,15 +276,20 @@ class SurveysBackendLimiterService {
 
   throwErrorIfTheUserHasNoPermissionToCreateOrUpdateTheBackendLimiters = async (
     isCreating: boolean,
-    user: JwtUser,
     surveyId: string,
     questionName: string,
+    user?: JwtUser,
   ): Promise<void> => {
-    if (isCreating) {
+    if (isCreating && user) {
       // eslint-disable-next-line no-underscore-dangle
       await this.surveyService.throwErrorIfUserIsNotCreator(surveyId, user);
     } else {
-      const survey = await this.surveyService.findSurvey(surveyId, user);
+      let survey: Survey | null = null;
+      if (!user) {
+        survey = await this.surveyService.findPublicSurvey(surveyId);
+      } else {
+        survey = await this.surveyService.findSurvey(surveyId, user);
+      }
       if (!survey) {
         throw new CustomHttpException(
           SurveyErrorMessages.NotFoundError,
@@ -183,7 +299,7 @@ class SurveysBackendLimiterService {
         );
       }
 
-      let isAllowedToUpdate = survey?.creator.username === user.preferred_username;
+      let isAllowedToUpdate = survey?.creator.username === user?.preferred_username;
       if (!isAllowedToUpdate) {
         isAllowedToUpdate = this.canAddOwnChoicesToTheQuestion(survey, questionName);
       }
@@ -200,18 +316,19 @@ class SurveysBackendLimiterService {
 
   async updateOrCreateSurveysBackendLimiters(
     surveysBackendLimiterDocument: SurveyBackendLimiterDto,
-    user: JwtUser,
+    user?: JwtUser,
   ): Promise<void> {
-    const isCreating = !surveysBackendLimiterDocument.id;
+    const { id, surveyId, questionName } = surveysBackendLimiterDocument;
+    const isCreating = !id;
 
     await this.throwErrorIfTheUserHasNoPermissionToCreateOrUpdateTheBackendLimiters(
       isCreating,
+      surveyId,
+      questionName,
       user,
-      surveysBackendLimiterDocument.surveyId,
-      surveysBackendLimiterDocument.questionName,
     );
 
-    const limiterId = isCreating ? new Types.ObjectId().toString() : surveysBackendLimiterDocument.id;
+    const limiterId = isCreating ? new Types.ObjectId().toString() : id;
     if (!limiterId) {
       throw new CustomHttpException(
         SurveyErrorMessages.MISSING_ID_ERROR,
