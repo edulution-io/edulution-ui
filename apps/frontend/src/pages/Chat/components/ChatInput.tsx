@@ -21,9 +21,8 @@ import React, { useRef, useEffect, KeyboardEvent, FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import { Button } from '@/components/shared/Button';
 import { Textarea } from '@/components/ui/Textarea';
-import cn from '@libs/common/utils/className';
+import { Button, cn } from '@edulution-io/ui-kit';
 
 interface ChatInputProps {
   value: string;

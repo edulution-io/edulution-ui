@@ -23,7 +23,7 @@ interface ChatMessage {
   id: string;
   role: ChatRole;
   content: string;
-  createdAt: string;
+  createdAt: Date;
   createdBy?: string;
   createdByUserFirstName?: string;
   createdByUserLastName?: string;
