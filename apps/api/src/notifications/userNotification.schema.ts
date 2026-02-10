@@ -43,6 +43,9 @@ export class UserNotification {
   })
   status: UserNotificationStatus;
 
+  @Prop({ type: Date, default: null })
+  pushDeliverAfter: Date | null;
+
   @Prop({ default: 1 })
   schemaVersion: number;
 }
