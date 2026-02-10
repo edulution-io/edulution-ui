@@ -22,6 +22,7 @@ const NOTIFICATION_SOURCE_TYPE = {
   SURVEY: 'survey',
   CONFERENCE: 'conference',
   CHAT: 'chat',
+  MAIL: 'mail',
 } as const;
 
 export default NOTIFICATION_SOURCE_TYPE;
