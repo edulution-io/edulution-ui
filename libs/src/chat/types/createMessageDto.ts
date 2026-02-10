@@ -17,7 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-interface CreateMessageDto {
+import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import chatMessageMaxLength from '@libs/chat/constants/chatMessageMaxLength';
+
+class CreateMessageDto {
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(chatMessageMaxLength)
   content: string;
 }
 

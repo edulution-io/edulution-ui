@@ -203,7 +203,7 @@ const MenuBar: React.FC = () => {
           const handleItemClick = () => {
             setIsSelected(item.id);
             if (isMobileView || isTabletView) toggleMobileMenuBar();
-            item.action();
+            item.action?.();
 
             if (hasChildren && !isExpanded) {
               setExpandedItems((prev) => new Set(prev).add(item.id));
@@ -279,7 +279,7 @@ const MenuBar: React.FC = () => {
                         variant="btn-ghost"
                         onClick={() => {
                           if (isMobileView || isTabletView) toggleMobileMenuBar();
-                          child.action();
+                          child.action?.();
                         }}
                         className={cn(
                           'flex w-full items-center justify-start py-2 pl-4 pr-3 font-normal',

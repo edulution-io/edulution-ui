@@ -17,13 +17,5 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const CHAT_ERROR_MESSAGES = {
-  CONVERSATION_NOT_FOUND: 'chat.errors.conversationNotFound',
-  UNAUTHORIZED_ACCESS: 'chat.errors.unauthorizedAccess',
-  MESSAGE_SEND_FAILED: 'chat.errors.messageSendFailed',
-} as const;
-
-type ChatErrorMessages = (typeof CHAT_ERROR_MESSAGES)[keyof typeof CHAT_ERROR_MESSAGES];
-
-export { CHAT_ERROR_MESSAGES };
-export default ChatErrorMessages;
+const chatMessageMaxLength = 2000;
+export default chatMessageMaxLength;

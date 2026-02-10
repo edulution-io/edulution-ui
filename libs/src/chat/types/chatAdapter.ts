@@ -18,7 +18,7 @@
  */
 
 import { FormEvent } from 'react';
-import ChatMessage from './chatMessage';
+import ChatMessage from '@libs/chat/types/chatMessage';
 
 interface ChatAdapter {
   messages: ChatMessage[];

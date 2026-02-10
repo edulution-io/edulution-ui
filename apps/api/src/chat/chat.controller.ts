@@ -21,7 +21,7 @@ import { Body, Controller, DefaultValuePipe, Get, HttpStatus, Param, ParseIntPip
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import APPS from '@libs/appconfig/constants/apps';
 import CreateMessageDto from '@libs/chat/types/createMessageDto';
-import ChatErrorMessages from '@libs/chat/types/chatErrorMessages';
+import { CHAT_ERROR_MESSAGES } from '@libs/chat/types/chatErrorMessages';
 import GroupType from '@libs/chat/types/groupType';
 import UserChatGroups from '@libs/chat/types/userChatGroups';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
@@ -55,7 +55,7 @@ class ChatController {
   ): Promise<ChatMessageDocument[]> {
     const conversation = await this.getAuthorizedConversation(groupName, groupType, currentUser);
 
-    return this.chatService.getMessages(conversation.id as string, limit, offset);
+    return this.chatService.getMessages(String(conversation.id), limit, offset);
   }
 
   @Post('conversations/:groupType/:groupName/messages')
@@ -67,7 +67,7 @@ class ChatController {
   ): Promise<ChatMessageDocument> {
     const conversation = await this.getAuthorizedConversation(groupName, groupType, currentUser);
 
-    return this.chatService.sendMessage(conversation.id as string, dto.content, currentUser);
+    return this.chatService.sendMessage(String(conversation.id), dto.content, currentUser);
   }
 
   private async getAuthorizedConversation(groupName: string, groupType: GroupType, currentUser: JwtUser) {
@@ -75,7 +75,7 @@ class ChatController {
 
     if (!hasAccess) {
       throw new CustomHttpException(
-        ChatErrorMessages.UNAUTHORIZED_ACCESS,
+        CHAT_ERROR_MESSAGES.UNAUTHORIZED_ACCESS,
         HttpStatus.FORBIDDEN,
         { groupName, groupType },
         ChatController.name,

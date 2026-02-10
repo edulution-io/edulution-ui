@@ -17,13 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const CHAT_ERROR_MESSAGES = {
-  CONVERSATION_NOT_FOUND: 'chat.errors.conversationNotFound',
-  UNAUTHORIZED_ACCESS: 'chat.errors.unauthorizedAccess',
-  MESSAGE_SEND_FAILED: 'chat.errors.messageSendFailed',
-} as const;
+import { CHAT_GROUP_TYPE_LOCATIONS } from '@libs/chat/constants/chatPaths';
 
-type ChatErrorMessages = (typeof CHAT_ERROR_MESSAGES)[keyof typeof CHAT_ERROR_MESSAGES];
+type GroupTypeLocation = (typeof CHAT_GROUP_TYPE_LOCATIONS)[keyof typeof CHAT_GROUP_TYPE_LOCATIONS];
 
-export { CHAT_ERROR_MESSAGES };
-export default ChatErrorMessages;
+export default GroupTypeLocation;
