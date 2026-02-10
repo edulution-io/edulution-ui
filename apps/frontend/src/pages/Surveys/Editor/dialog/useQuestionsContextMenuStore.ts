@@ -50,13 +50,13 @@ interface QuestionsContextMenuStore {
   useBackendLimits: boolean;
   toggleUseBackendLimits: (isPublic: boolean) => void;
 
-  showOtherItem: boolean;
-  toggleShowOtherItem: () => void;
-
   storedLimiters: Record<string, ChoiceDto[]> | undefined;
   fetchInitialStoredLimiters: (surveyId: string) => Promise<void>;
   updateStoredLimiters: (choices: ChoiceDto[]) => void;
   uploadStoredLimiters: (surveyId: string) => Promise<void>;
+
+  showOtherItem: boolean;
+  toggleShowOtherItem: () => void;
 
   currentChoices: ChoiceDto[];
   addChoice: (name: string, title?: string, limit?: number) => void;
@@ -154,19 +154,6 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     set({ storedLimiters, currentChoices: choices });
   },
 
-  uploadStoredLimiters: async (surveyId: string) => {
-    const { storedLimiters } = get();
-    if (!storedLimiters) return;
-
-    const promises = Object.keys(storedLimiters).map((questionName) =>
-      storedLimiters[questionName].length > 0
-        ? eduApi.post<ChoiceDto[]>(`${SURVEYS}/${surveyId}/${questionName}`, { ...storedLimiters[questionName] })
-        : Promise.resolve(),
-    );
-
-    await Promise.all(promises);
-  },
-
   onRemoveQuestionName: async (surveyId: string, questionName: string) => {
     if (!surveyId || surveyId === TEMPORAL_SURVEY_ID_STRING) {
       const { storedLimiters = {} } = get();
@@ -198,6 +185,19 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
       const currentChoices: ChoiceDto[] = [];
       set({ currentChoices });
     }
+  },
+
+  uploadStoredLimiters: async (surveyId: string) => {
+    const { storedLimiters } = get();
+    if (!storedLimiters) return;
+
+    const promises = Object.keys(storedLimiters).map((questionName) =>
+      storedLimiters[questionName].length > 0
+        ? eduApi.post<ChoiceDto[]>(`${SURVEYS}/${surveyId}/${questionName}`, { ...storedLimiters[questionName] })
+        : Promise.resolve(),
+    );
+
+    await Promise.all(promises);
   },
 
   addChoice: (name: string, title: string = '', limit: number = 0) => {
