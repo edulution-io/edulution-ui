@@ -26,11 +26,12 @@ import useChatStore from '@/store/useChatStore';
 import useSseEventListener from '@/hooks/useSseEventListener';
 import useUserStore from '@/store/UserStore/useUserStore';
 
-type GroupTypeLocation = 'classes' | 'projects';
+import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
+import { CHAT_GROUP_TYPE_LOCATIONS } from '@libs/chat/constants/chatPaths';
 
 const locationToGroupType: Record<GroupTypeLocation, string> = {
-  classes: GROUP_TYPES.CLASS,
-  projects: GROUP_TYPES.PROJECT,
+  [CHAT_GROUP_TYPE_LOCATIONS.CLASSES]: GROUP_TYPES.CLASS,
+  [CHAT_GROUP_TYPE_LOCATIONS.PROJECTS]: GROUP_TYPES.PROJECT,
 };
 
 const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): ChatAdapter => {
@@ -57,17 +58,21 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
 
   const handleNewMessage = useCallback(
     (e: MessageEvent<string>) => {
-      const payload = JSON.parse(e.data) as ChatMessageSsePayload;
+      try {
+        const payload = JSON.parse(e.data) as ChatMessageSsePayload;
 
-      if (payload.groupName !== groupNameRef.current || payload.groupType !== groupTypeRef.current) {
-        return;
+        if (payload.groupName !== groupNameRef.current || payload.groupType !== groupTypeRef.current) {
+          return;
+        }
+
+        if (payload.createdBy === currentUsername) {
+          return;
+        }
+
+        addMessage(payload);
+      } catch {
+        console.error('Failed to parse SSE chat message');
       }
-
-      if (payload.createdBy === currentUsername) {
-        return;
-      }
-
-      addMessage(payload);
     },
     [currentUsername, addMessage],
   );

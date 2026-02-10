@@ -17,13 +17,29 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const CHAT_ERROR_MESSAGES = {
-  CONVERSATION_NOT_FOUND: 'chat.errors.conversationNotFound',
-  UNAUTHORIZED_ACCESS: 'chat.errors.unauthorizedAccess',
-  MESSAGE_SEND_FAILED: 'chat.errors.messageSendFailed',
-} as const;
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import ChatView from '@/pages/Chat/components/ChatView';
+import useGroupChat from '@/pages/Chat/hooks/useGroupChat';
+import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
+import { CHAT_GROUP_TYPE_LOCATIONS } from '@libs/chat/constants/chatPaths';
 
-type ChatErrorMessages = (typeof CHAT_ERROR_MESSAGES)[keyof typeof CHAT_ERROR_MESSAGES];
+interface ChatContentProps {
+  groupName: string;
+  groupType: GroupTypeLocation;
+}
 
-export { CHAT_ERROR_MESSAGES };
-export default ChatErrorMessages;
+const ChatContent: React.FC<ChatContentProps> = ({ groupName, groupType }) => {
+  const { t } = useTranslation();
+  const adapter = useGroupChat(groupName, groupType);
+  const title = `${groupType === CHAT_GROUP_TYPE_LOCATIONS.CLASSES ? t('chat.schoolClass') : t('chat.project')}: ${groupName}`;
+
+  return (
+    <ChatView
+      adapter={adapter}
+      title={title}
+    />
+  );
+};
+
+export default ChatContent;

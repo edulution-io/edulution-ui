@@ -109,7 +109,7 @@ const useMenuBarConfig = (): MenuBarEntry => {
         return {
           id: item.id,
           label: item.disableTranslation ? item.label : t(item.label),
-          action: () => item.action(),
+          action: () => item.action?.(),
           icon: item.icon,
           disableTranslation: item.disableTranslation,
           children: itemChildren,

@@ -19,7 +19,7 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import ChatRole from '@libs/chat/constants/chatRole';
+import ChatRole from '@libs/chat/types/chatRole';
 
 export type ChatMessageDocument = ChatMessage & Document;
 

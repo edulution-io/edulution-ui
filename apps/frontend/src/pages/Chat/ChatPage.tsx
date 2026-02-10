@@ -25,41 +25,23 @@ import { faComments } from '@fortawesome/free-solid-svg-icons';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import useChatStore from '@/store/useChatStore';
-import ChatView from './components/ChatView';
-import useGroupChat from './hooks/useGroupChat';
+import { CHAT_GROUP_TYPE_LOCATIONS } from '@libs/chat/constants/chatPaths';
+import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
+import ChatContent from './components/ChatContent';
 
-type GroupType = 'classes' | 'projects';
-
-interface ChatContentProps {
-  groupName: string;
-  groupType: GroupType;
-}
-
-const ChatContent: React.FC<ChatContentProps> = ({ groupName, groupType }) => {
-  const { t } = useTranslation();
-  const adapter = useGroupChat(groupName, groupType);
-  const title = `${groupType === 'classes' ? t('chat.schoolClass') : t('chat.project')}: ${groupName}`;
-
-  return (
-    <ChatView
-      adapter={adapter}
-      title={title}
-    />
-  );
-};
+const isValidGroupType = (value: string | undefined): value is GroupTypeLocation =>
+  Object.values(CHAT_GROUP_TYPE_LOCATIONS).includes(value as GroupTypeLocation);
 
 const ChatPage = () => {
   const { t } = useTranslation();
   const { groupType, groupName } = useParams<{ groupType: string; groupName: string }>();
   const { isLoadingGroups } = useChatStore();
 
-  const isValidGroupType = groupType === 'classes' || groupType === 'projects';
-
   return (
     <PageLayout>
       <LoadingIndicatorDialog isOpen={isLoadingGroups} />
       <div className="flex h-full flex-col">
-        {groupName && isValidGroupType ? (
+        {groupName && isValidGroupType(groupType) ? (
           <ChatContent
             groupName={groupName}
             groupType={groupType}
