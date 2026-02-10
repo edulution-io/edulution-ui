@@ -17,15 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { Body, Controller, DefaultValuePipe, Get, HttpStatus, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import APPS from '@libs/appconfig/constants/apps';
 import CreateMessageDto from '@libs/chat/types/createMessageDto';
-import { CHAT_ERROR_MESSAGES } from '@libs/chat/types/chatErrorMessages';
 import GroupType from '@libs/chat/types/groupType';
 import UserChatGroups from '@libs/chat/types/userChatGroups';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
-import CustomHttpException from '../common/CustomHttpException';
 import GroupsService from '../groups/groups.service';
 import ChatService from './chat.service';
 import { ChatMessageDocument } from './schemas/chatMessage.schema';
@@ -53,9 +51,13 @@ class ChatController {
     @Query('limit', new DefaultValuePipe(50), ParseIntPipe) limit: number,
     @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
   ): Promise<ChatMessageDocument[]> {
-    const conversation = await this.getAuthorizedConversation(groupName, groupType, currentUser);
+    const conversation = await this.chatService.getAuthorizedConversation(
+      groupName,
+      groupType,
+      currentUser.preferred_username,
+    );
 
-    return this.chatService.getMessages(String(conversation.id), limit, offset);
+    return this.chatService.getMessages(conversation.id as string, limit, offset);
   }
 
   @Post('conversations/:groupType/:groupName/messages')
@@ -65,24 +67,20 @@ class ChatController {
     @Body() dto: CreateMessageDto,
     @GetCurrentUser() currentUser: JwtUser,
   ): Promise<ChatMessageDocument> {
-    const conversation = await this.getAuthorizedConversation(groupName, groupType, currentUser);
+    const { conversation, members } = await this.chatService.getOrCreateAuthorizedConversation(
+      groupName,
+      groupType,
+      currentUser.preferred_username,
+    );
 
-    return this.chatService.sendMessage(String(conversation.id), dto.content, currentUser);
-  }
-
-  private async getAuthorizedConversation(groupName: string, groupType: GroupType, currentUser: JwtUser) {
-    const hasAccess = await this.chatService.checkGroupAccess(groupName, groupType, currentUser.preferred_username);
-
-    if (!hasAccess) {
-      throw new CustomHttpException(
-        CHAT_ERROR_MESSAGES.UNAUTHORIZED_ACCESS,
-        HttpStatus.FORBIDDEN,
-        { groupName, groupType },
-        ChatController.name,
-      );
-    }
-
-    return this.chatService.getOrCreateGroupConversation(groupName, groupType);
+    return this.chatService.sendMessage(
+      conversation.id as string,
+      groupName,
+      groupType,
+      dto.content,
+      currentUser,
+      members,
+    );
   }
 }
 
