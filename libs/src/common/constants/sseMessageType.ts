@@ -47,6 +47,7 @@ const SSE_MESSAGE_TYPE = {
   MAIL_NEW_MAIL: 'mail_new_mail',
   MAIL_FLAGS_CHANGED: 'mail_flags_changed',
   NOTIFICATION_INBOX_UPDATED: 'notification_inbox_updated',
+  CHAT_NEW_MESSAGE: 'chat_new_message',
 } as const;
 
 export default SSE_MESSAGE_TYPE;
