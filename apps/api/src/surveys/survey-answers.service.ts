@@ -33,7 +33,9 @@ import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 import TSurveyQuestionAnswerTypes from '@libs/survey/types/TSurveyQuestionAnswerTypes';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import CustomHttpException from '../common/CustomHttpException';
+import SseService from '../sse/sse.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
 import { SurveysBackendLimiter, SurveysBackendLimiterDocument } from './surveys-backend-limiter.schema';
@@ -52,6 +54,7 @@ class SurveyAnswersService implements OnModuleInit {
     @InjectModel(SurveysBackendLimiter.name) private surveysBackendLimiterModel: Model<SurveysBackendLimiterDocument>,
     private readonly groupsService: GroupsService,
     private readonly surveyAnswerAttachmentsService: SurveyAnswerAttachmentsService,
+    private readonly sseService: SseService,
   ) {}
 
   async onModuleInit() {
@@ -200,6 +203,99 @@ class SurveyAnswersService implements OnModuleInit {
     });
     return count;
   }
+
+  public getUserCreatedChoices = async (
+    surveyId: string,
+    questionName: string,
+    surveyAnswer: TSurveyAnswer,
+    userName?: string,
+  ): Promise<void> => {
+    const surveysBackendLimiter = await this.surveysBackendLimiterModel
+      .findOne({ surveyId: new Types.ObjectId(surveyId), questionName })
+      .exec();
+    if (!surveysBackendLimiter) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.NotFoundError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveyAnswersService.name,
+      );
+    }
+    if (!surveysBackendLimiter?.choices?.length) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.NoBackendLimiters,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        SurveyAnswersService.name,
+      );
+    }
+
+    const possibleChoices = surveysBackendLimiter.choices;
+    SurveyAnswersService.checkSurveyAnswersForCustomChoices(surveyAnswer, questionName, possibleChoices, userName);
+    surveysBackendLimiter.choices = possibleChoices;
+    await surveysBackendLimiter.save();
+    this.sseService.informAllUsers(surveyId, SSE_MESSAGE_TYPE.SURVEY_BACKEND_LIMITER_UPDATED);
+  };
+
+  static checkSurveyQuestionAnswersForCustomChoices = (
+    questionAnswer: TSurveyQuestionAnswerTypes,
+    possibleChoices: ChoiceDto[],
+    userName?: string,
+  ): void => {
+    if (Array.isArray(questionAnswer)) {
+      questionAnswer.forEach((answerValue) => {
+        if (typeof answerValue === 'string' && !possibleChoices.find((choice) => choice.title === answerValue)) {
+          possibleChoices.push({ title: answerValue, name: answerValue, limit: 1, addedBy: userName });
+        } else if (
+          typeof answerValue === 'object' &&
+          answerValue.title &&
+          !possibleChoices.find((choice) => choice.title === answerValue.title)
+        ) {
+          possibleChoices.push({ title: answerValue.title, name: answerValue.title, limit: 1, addedBy: userName });
+        }
+      });
+    }
+    if (typeof questionAnswer === 'string' && !possibleChoices.find((choice) => choice.title === questionAnswer)) {
+      possibleChoices.push({ title: questionAnswer, name: questionAnswer, limit: 1, addedBy: userName });
+    }
+    if (typeof questionAnswer === 'object' && !Array.isArray(questionAnswer)) {
+      const title = typeof questionAnswer.title === 'string' ? questionAnswer.title : undefined;
+      if (title && !possibleChoices.find((choice) => choice.title === title)) {
+        possibleChoices.push({ title, name: title, limit: 1, addedBy: userName });
+      }
+    }
+  };
+
+  static checkSurveyAnswersForCustomChoices = (
+    answer: TSurveyAnswer,
+    questionName: string,
+    possibleChoices: ChoiceDto[],
+    userName?: string,
+  ): void => {
+    Object.keys(answer).forEach((key) => {
+      if (key === questionName) {
+        SurveyAnswersService.checkSurveyQuestionAnswersForCustomChoices(answer[key], possibleChoices, userName);
+      } else if (Array.isArray(answer[key])) {
+        answer[key].forEach((entry) => {
+          if (typeof entry === 'object' && entry !== null) {
+            SurveyAnswersService.checkSurveyAnswersForCustomChoices(
+              entry as TSurveyAnswer,
+              questionName,
+              possibleChoices,
+              userName,
+            );
+          }
+        });
+      } else if (typeof answer[key] === 'object' && answer[key] !== null) {
+        SurveyAnswersService.checkSurveyAnswersForCustomChoices(
+          answer[key] as TSurveyAnswer,
+          questionName,
+          possibleChoices,
+          userName,
+        );
+      }
+    });
+  };
 
   async getCreatedSurveys(username: string): Promise<Survey[]> {
     const createdSurveys = await this.surveyModel.find<Survey>({ 'creator.username': username });

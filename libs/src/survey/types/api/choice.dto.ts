@@ -21,7 +21,7 @@ interface ChoiceDto {
   name: string;
   title: string;
   limit: number;
-  addedByParticipant?: string;
+  addedBy?: string;
 }
 
 export default ChoiceDto;
