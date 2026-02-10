@@ -201,7 +201,10 @@ class PublicSurveysController {
   @Public()
   async updateChoices(@Param() params: { surveyId: string; questionId: string }, @Body() choices: ChoiceDto[]) {
     const { surveyId, questionId } = params;
-    await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
+    await this.surveysBackendLimiterService.throwErrorIfTheUserHasNoPermissionToCreateOrUpdateTheBackendLimiters(
+      surveyId,
+      questionId,
+    );
     await this.surveysBackendLimiterService.updateOrCreateSurveysBackendLimiters(surveyId, questionId, choices);
   }
 

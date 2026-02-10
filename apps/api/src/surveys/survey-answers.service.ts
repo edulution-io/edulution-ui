@@ -32,6 +32,7 @@ import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-erro
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
 import TSurveyQuestionAnswerTypes from '@libs/survey/types/TSurveyQuestionAnswerTypes';
+import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import CustomHttpException from '../common/CustomHttpException';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
@@ -361,10 +362,19 @@ class SurveyAnswersService implements OnModuleInit {
     if (!attendee.username && attendee.firstName) return this.publicFirstStrategy(survey, answer, attendee);
     if (!existingUsersAnswerId || existingUsersAnswerId === undefined || survey.canSubmitMultipleAnswers)
       return this.loggedOrPublicStrategy(survey, answer, attendee);
-    if (existingUsersAnswerId && survey.canUpdateFormerAnswer)
-      return this.updatingStrategy(survey, answer, attendee, existingUsersAnswerId);
+    if (existingUsersAnswerId) {
+      if (survey.canUpdateFormerAnswer) {
+        return this.updatingStrategy(survey, answer, attendee, existingUsersAnswerId);
+      }
+      throw new CustomHttpException(
+        SurveyAnswerErrorMessages.AlreadyParticipated,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        SurveyAnswersService.name,
+      );
+    }
     throw new CustomHttpException(
-      SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
+      SurveyAnswerErrorMessages.NotAbleToFindOrCreateSurveyAnswerError,
       HttpStatus.INTERNAL_SERVER_ERROR,
       undefined,
       SurveyAnswersService.name,
@@ -403,7 +413,7 @@ class SurveyAnswersService implements OnModuleInit {
     const { firstName } = attendee;
     if (!firstName) {
       throw new CustomHttpException(
-        SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
+        CommonErrorMessages.INVALID_REQUEST_DATA,
         HttpStatus.INTERNAL_SERVER_ERROR,
         undefined,
         SurveyAnswersService.name,
@@ -441,7 +451,7 @@ class SurveyAnswersService implements OnModuleInit {
   ): Promise<SurveyAnswerDocument | null> {
     if (!attendee.username) {
       throw new CustomHttpException(
-        SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
+        CommonErrorMessages.INVALID_REQUEST_DATA,
         HttpStatus.INTERNAL_SERVER_ERROR,
         undefined,
         SurveyAnswersService.name,
