@@ -28,8 +28,10 @@
     "errors": {
       "conversationNotFound": "Unterhaltung nicht gefunden",
       "unauthorizedAccess": "Nicht autorisiert",
-      "messageSendFailed": "Nachricht konnte nicht gesendet werden"
-    }
+      "messageSendFailed": "Nachricht konnte nicht gesendet werden",
+      "invalidGroupType": "Ungültiger Gruppentyp"
+    },
+    "refreshGroups": "Gruppen aktualisieren"
   },
   "bulletinboard": {
     "settings": "Einstellungen",
