@@ -32,6 +32,7 @@ import SurveysService from './surveys.service';
 import SurveyAnswersService from './survey-answers.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
+import { SurveysBackendLimiter } from './surveys-backend-limiter.schema';
 import {
   answeredSurvey01,
   answeredSurvey02,
@@ -66,6 +67,7 @@ import SurveysTemplateService from './surveys-template.service';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 import NotificationsService from '../notifications/notifications.service';
 import GlobalSettingsService from '../global-settings/global-settings.service';
+import SurveysBackendLimiterService from './surveys-backend-limiter.service';
 import { SurveysTemplate } from './surveys-template.schema';
 
 describe(SurveysController.name, () => {
@@ -74,6 +76,7 @@ describe(SurveysController.name, () => {
   let surveyAnswersService: SurveyAnswersService;
   let surveyModel: Model<SurveyDocument>;
   let surveyAnswerModel: Model<SurveyAnswerDocument>;
+
   const pushMock = { notify: jest.fn() };
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -102,6 +105,11 @@ describe(SurveysController.name, () => {
             sort: jest.fn().mockReturnThis(),
             limit: jest.fn().mockResolvedValueOnce([firstUsersSurveyAnswerAnsweredSurvey01]),
           },
+        },
+        { provide: SurveysBackendLimiterService, useValue: { onSurveyRemoval: jest.fn() } },
+        {
+          provide: getModelToken(SurveysBackendLimiter.name),
+          useValue: jest.fn(),
         },
         {
           provide: getModelToken(SurveysTemplate.name),

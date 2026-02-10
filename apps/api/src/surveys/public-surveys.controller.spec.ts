@@ -28,6 +28,7 @@ import SurveysService from './surveys.service';
 import SurveyAnswersService from './survey-answers.service';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
+import { SurveysBackendLimiter, SurveysBackendLimiterDocument } from './surveys-backend-limiter.schema';
 import PublicSurveysController from './public-surveys.controller';
 import {
   filteredChoices,
@@ -39,6 +40,7 @@ import {
   publicSurvey01,
   publicSurvey02,
   publicSurvey02AfterAddingValidAnswer,
+  publicSurvey02BackendLimiter,
   publicSurvey02QuestionNameWithLimiters,
   surveyValidAnswerPublicSurvey02,
 } from './mocks';
@@ -51,6 +53,7 @@ import mockCacheManager from '../common/cache-manager.mock';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 import NotificationsService from '../notifications/notifications.service';
 import GlobalSettingsService from '../global-settings/global-settings.service';
+import SurveyBackendLimiterService from './surveys-backend-limiter.service';
 
 describe(PublicSurveysController.name, () => {
   let controller: PublicSurveysController;
@@ -58,6 +61,7 @@ describe(PublicSurveysController.name, () => {
   let surveyAnswerService: SurveyAnswersService;
   let surveyModel: Model<SurveyDocument>;
   let surveyAnswerModel: Model<SurveyAnswerDocument>;
+  let surveysBackendLimiterModel: Model<SurveysBackendLimiterDocument>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -82,6 +86,13 @@ describe(PublicSurveysController.name, () => {
         { provide: FilesystemService, useValue: mockFilesystemService },
         { provide: NotificationsService, useValue: jest.fn() },
         { provide: GlobalSettingsService, useValue: { getAdminGroupsFromCache: jest.fn() } },
+        { provide: SurveyBackendLimiterService, useValue: jest.fn() },
+        {
+          provide: getModelToken(SurveysBackendLimiter.name),
+          useValue: {
+            findOne: jest.fn(),
+          },
+        },
         { provide: CACHE_MANAGER, useValue: mockCacheManager },
       ],
     }).compile();
@@ -91,6 +102,9 @@ describe(PublicSurveysController.name, () => {
     surveyAnswerService = module.get<SurveyAnswersService>(SurveyAnswersService);
     surveyModel = module.get<Model<SurveyDocument>>(getModelToken(Survey.name));
     surveyAnswerModel = module.get<Model<SurveyAnswerDocument>>(getModelToken(SurveyAnswer.name));
+    surveysBackendLimiterModel = module.get<Model<SurveysBackendLimiterDocument>>(
+      getModelToken(SurveysBackendLimiter.name),
+    );
   });
 
   afterEach(() => {
@@ -195,7 +209,9 @@ describe(PublicSurveysController.name, () => {
         .mockReturnValueOnce(1)
         .mockReturnValueOnce(2);
 
-      surveyModel.findById = jest.fn().mockResolvedValueOnce(publicSurvey02);
+      surveysBackendLimiterModel.findOne = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(publicSurvey02BackendLimiter[0]),
+      });
 
       surveysService.throwErrorIfSurveyIsNotPublic = jest.fn().mockResolvedValueOnce(true);
 
@@ -222,7 +238,9 @@ describe(PublicSurveysController.name, () => {
         .mockReturnValueOnce(1)
         .mockReturnValueOnce(2);
 
-      surveyModel.findById = jest.fn().mockResolvedValueOnce(publicSurvey02AfterAddingValidAnswer);
+      surveysBackendLimiterModel.findOne = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(publicSurvey02BackendLimiter[0]),
+      });
 
       surveysService.throwErrorIfSurveyIsNotPublic = jest.fn().mockResolvedValueOnce(true);
 

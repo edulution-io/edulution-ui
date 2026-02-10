@@ -46,18 +46,24 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
 
   const { selectedQuestion } = useQuestionsContextMenuStore();
 
-  const { questionType, useBackendLimits, toggleUseBackendLimits, currentChoices, addNewChoice, getBackendLimiters } =
-    useQuestionsContextMenuStore();
+  const {
+    questionType,
+    useBackendLimits,
+    toggleUseBackendLimits,
+    currentChoices,
+    addNewChoice,
+    fetchInitialStoredLimiters,
+  } = useQuestionsContextMenuStore();
 
   useEffect(() => {
-    void getBackendLimiters(form.watch('id') || '', selectedQuestion?.name || '');
+    void fetchInitialStoredLimiters(form.watch('id') || '');
   }, [selectedQuestion]);
 
   const actionsConfig = useMemo<TableActionsConfig<ChoiceDto>>(
     () => [
       {
         type: STANDARD_ACTION_TYPES.ADD,
-        onClick: () => addNewChoice(form.watch('id') || '', selectedQuestion?.name || ''),
+        onClick: () => addNewChoice(),
       },
     ],
     [addNewChoice, selectedQuestion],
