@@ -28,8 +28,10 @@
     "errors": {
       "conversationNotFound": "Conversation introuvable",
       "unauthorizedAccess": "Accès non autorisé",
-      "messageSendFailed": "Échec de l'envoi du message"
-    }
+      "messageSendFailed": "Échec de l'envoi du message",
+      "invalidGroupType": "Type de groupe invalide"
+    },
+    "refreshGroups": "Actualiser les groupes"
   },
   "bulletinboard": {
     "settings": "Paramètres",

@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
@@ -26,6 +26,7 @@ import CHAT_TYPES from '@libs/chat/constants/chatTypes';
 import { CHAT_ERROR_MESSAGES } from '@libs/chat/types/chatErrorMessages';
 import CHAT_ROLES from '@libs/chat/constants/chatRoles';
 import GROUP_TYPES from '@libs/chat/constants/groupTypes';
+import GroupType from '@libs/chat/types/groupType';
 import { GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import PROJECTS_PREFIX from '@libs/lmnApi/constants/prefixes/projectsPrefix';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
@@ -45,8 +46,35 @@ class ChatService {
     private readonly sseService: SseService,
   ) {}
 
-  async getOrCreateGroupConversation(groupName: string, groupType: string): Promise<ConversationDocument> {
-    return this.conversationModel.findOneAndUpdate(
+  async getAuthorizedConversation(
+    groupName: string,
+    groupType: GroupType,
+    username: string,
+  ): Promise<ConversationDocument> {
+    await this.verifyGroupAccess(groupName, groupType, username);
+
+    const conversation = await this.conversationModel.findOne({ type: CHAT_TYPES.GROUP, groupName });
+
+    if (!conversation) {
+      throw new CustomHttpException(
+        CHAT_ERROR_MESSAGES.CONVERSATION_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+        { groupName, groupType },
+        ChatService.name,
+      );
+    }
+
+    return conversation;
+  }
+
+  async getOrCreateAuthorizedConversation(
+    groupName: string,
+    groupType: GroupType,
+    username: string,
+  ): Promise<{ conversation: ConversationDocument; members: string[] }> {
+    const members = await this.verifyGroupAccess(groupName, groupType, username);
+
+    const conversation = await this.conversationModel.findOneAndUpdate(
       { type: CHAT_TYPES.GROUP, groupName },
       {
         $setOnInsert: {
@@ -57,24 +85,22 @@ class ChatService {
       },
       { upsert: true, new: true },
     );
+
+    return { conversation, members };
   }
 
   async getMessages(conversationId: string, limit: number = 50, offset: number = 0): Promise<ChatMessageDocument[]> {
     return this.chatMessageModel.find({ conversationId }).sort({ createdAt: -1 }).skip(offset).limit(limit).exec();
   }
 
-  async sendMessage(conversationId: string, content: string, currentUser: JwtUser): Promise<ChatMessageDocument> {
-    const conversation = await this.conversationModel.findById(conversationId);
-
-    if (!conversation) {
-      throw new CustomHttpException(
-        CHAT_ERROR_MESSAGES.CONVERSATION_NOT_FOUND,
-        HttpStatus.NOT_FOUND,
-        conversationId,
-        ChatService.name,
-      );
-    }
-
+  async sendMessage(
+    conversationId: string,
+    groupName: string,
+    groupType: GroupType,
+    content: string,
+    currentUser: JwtUser,
+    members: string[],
+  ): Promise<ChatMessageDocument> {
     const message = await this.chatMessageModel.create({
       conversationId,
       content,
@@ -86,64 +112,74 @@ class ChatService {
 
     await this.conversationModel.findByIdAndUpdate(conversationId, { lastMessageAt: new Date() });
 
-    if (conversation.groupName && conversation.groupType) {
-      void this.notifyGroupMembers(conversation.groupName, conversation.groupType, message);
-    }
+    this.notifyGroupMembers(members, groupName, groupType, message);
 
     return message;
   }
 
-  private async notifyGroupMembers(groupName: string, groupType: string, message: ChatMessageDocument): Promise<void> {
-    const members = await this.getGroupMembers(groupName, groupType);
-
+  private notifyGroupMembers(
+    members: string[],
+    groupName: string,
+    groupType: GroupType,
+    message: ChatMessageDocument,
+  ): void {
     if (members.length > 0) {
       const payload = { ...message.toJSON(), groupName, groupType };
       this.sseService.sendEventToUsers(members, JSON.stringify(payload), SSE_MESSAGE_TYPE.CHAT_NEW_MESSAGE);
     }
   }
 
-  private async getGroupMembers(groupName: string, groupType: string): Promise<string[]> {
-    const pathsToCheck = ChatService.getGroupPaths(groupName, groupType);
-    const allMembers = new Set<string>();
+  private async verifyGroupAccess(groupName: string, groupType: GroupType, username: string): Promise<string[]> {
+    const groups = await this.fetchGroupsFromCache(groupName, groupType);
 
-    const groups = await Promise.all(
+    const hasAccess = groups.some((group) => group?.members?.some((member) => member.username === username));
+
+    if (!hasAccess) {
+      throw new CustomHttpException(
+        CHAT_ERROR_MESSAGES.UNAUTHORIZED_ACCESS,
+        HttpStatus.FORBIDDEN,
+        { groupName, groupType },
+        ChatService.name,
+      );
+    }
+
+    return ChatService.resolveMembers(groups);
+  }
+
+  private async fetchGroupsFromCache(groupName: string, groupType: GroupType): Promise<(GroupWithMembers | null)[]> {
+    const pathsToCheck = ChatService.getGroupPaths(groupName, groupType);
+
+    return Promise.all(
       pathsToCheck.map((path) => this.cacheManager.get<GroupWithMembers>(`${GROUP_WITH_MEMBERS_CACHE_KEY}-${path}`)),
     );
+  }
+
+  private static resolveMembers(groups: (GroupWithMembers | null)[]): string[] {
+    const allMembers = new Set<string>();
 
     groups.forEach((group) => {
-      group?.members?.forEach((m) => allMembers.add(m.username));
+      group?.members?.forEach((member) => allMembers.add(member.username));
     });
 
     return Array.from(allMembers);
   }
 
-  async checkGroupAccess(groupName: string, groupType: string, username: string): Promise<boolean> {
-    try {
-      const pathsToCheck = ChatService.getGroupPaths(groupName, groupType);
-
-      const groups = await Promise.all(
-        pathsToCheck.map((path) => this.cacheManager.get<GroupWithMembers>(`${GROUP_WITH_MEMBERS_CACHE_KEY}-${path}`)),
-      );
-
-      return groups.some((group) => group?.members?.some((members) => members.username === username));
-    } catch (error) {
-      Logger.error(`Failed to check group access for user ${username}: ${error}`, ChatService.name);
-      return false;
-    }
-  }
-
-  private static getGroupPaths(groupName: string, groupType: string): string[] {
+  private static getGroupPaths(groupName: string, groupType: GroupType): string[] {
     const name = groupName.startsWith('/') ? groupName.substring(1) : groupName;
 
-    if (groupType === GROUP_TYPES.PROJECT) {
-      return [`${PROJECTS_PREFIX}${name}`];
+    switch (groupType) {
+      case GROUP_TYPES.PROJECT:
+        return [`${PROJECTS_PREFIX}${name}`];
+      case GROUP_TYPES.CLASS:
+        return [`/${name}`];
+      default:
+        throw new CustomHttpException(
+          CHAT_ERROR_MESSAGES.INVALID_GROUP_TYPE,
+          HttpStatus.BAD_REQUEST,
+          { groupType },
+          ChatService.name,
+        );
     }
-
-    if (groupType === GROUP_TYPES.CLASS) {
-      return [`/${name}`];
-    }
-
-    return [];
   }
 }
 
