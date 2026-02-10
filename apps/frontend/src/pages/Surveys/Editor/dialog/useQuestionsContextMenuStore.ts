@@ -22,9 +22,11 @@ import { Question, ChoicesRestful } from 'survey-core';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
-import { PUBLIC_SURVEY_CHOICES, SURVEY_CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import { PUBLIC_SURVEY_CHOICES, SURVEY_CHOICES, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import getRandomUUID from '@/utils/getRandomUUID';
+import eduApi from '@/api/eduApi';
+import handleApiError from '@/utils/handleApiError';
 
 interface QuestionsContextMenuStore {
   reset: () => void;
@@ -35,7 +37,7 @@ interface QuestionsContextMenuStore {
   selectedQuestion: Question | undefined;
   setSelectedQuestion: (question: Question | undefined) => void;
 
-  onRemoveQuestionName: (questionName: string) => void;
+  onRemoveQuestionName: (surveyId: string, questionName: string) => Promise<void>;
 
   questionType: string;
 
@@ -48,9 +50,9 @@ interface QuestionsContextMenuStore {
   useBackendLimits: boolean;
   toggleUseBackendLimits: (isPublic: boolean) => void;
 
-  currentBackendLimiters: { questionName: string; choices: ChoiceDto[] }[];
-  setBackendLimiters: (backendLimiters: { questionName: string; choices: ChoiceDto[] }[]) => void;
-  updateLimitersChoices: (choices: ChoiceDto[]) => { questionName: string; choices: ChoiceDto[] }[] | undefined;
+  currentBackendLimiters: ChoiceDto[];
+  setBackendLimiters: (surveyId: string, questionName: string, choices: ChoiceDto[]) => Promise<void>;
+  getBackendLimiters: (surveyId: string, questionName: string) => Promise<ChoiceDto[]>;
 
   showOtherItem: boolean;
   toggleShowOtherItem: () => void;
@@ -144,44 +146,38 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     }
   },
 
-  setBackendLimiters: (backendLimiters: { questionName: string; choices: ChoiceDto[] }[] = []) => {
-    const { selectedQuestion } = get();
-    if (!selectedQuestion) {
-      return;
+  setBackendLimiters: async (surveyId: string, questionName: string, choices: ChoiceDto[] = []) => {
+    try {
+      const result = await eduApi.post<ChoiceDto[]>(`${SURVEYS}/${surveyId}/${questionName}`, { ...choices });
+      const currentChoices = result.data;
+      set({ currentChoices });
+    } catch (error) {
+      handleApiError(error, set);
+      const currentChoices: ChoiceDto[] = [];
+      set({ currentChoices });
     }
-    const choices = backendLimiters.find((limiter) => limiter.questionName === selectedQuestion.name)?.choices || [];
-    set({ currentBackendLimiters: backendLimiters, currentChoices: choices });
   },
 
-  onRemoveQuestionName: (questionName: string) => {
-    const { currentBackendLimiters } = get();
-    const updatedBackendLimiters = currentBackendLimiters.filter((limiter) => limiter.questionName !== questionName);
-    set({ currentBackendLimiters: updatedBackendLimiters, currentChoices: [] });
+  onRemoveQuestionName: async (surveyId: string, questionName: string) => {
+    try {
+      await eduApi.delete(`${SURVEYS}/${surveyId}/${questionName}`);
+    } catch (error) {
+      handleApiError(error, set);
+    }
   },
 
-  updateLimitersChoices: (
-    limitedChoices: ChoiceDto[],
-  ): { questionName: string; choices: ChoiceDto[] }[] | undefined => {
-    const { currentBackendLimiters, selectedQuestion } = get();
-
-    if (!selectedQuestion) {
-      return undefined;
+  getBackendLimiters: async (surveyId: string, questionName: string) => {
+    try {
+      const result = await eduApi.get<ChoiceDto[]>(`${SURVEYS}/${surveyId}/${questionName}`);
+      const currentChoices = result.data;
+      set({ currentChoices });
+      return currentChoices;
+    } catch (error) {
+      handleApiError(error, set);
+      const currentChoices: ChoiceDto[] = [];
+      set({ currentChoices });
+      return currentChoices;
     }
-
-    let addedLimiter = false;
-    const updatedBackendLimiters = currentBackendLimiters.map((limiter) => {
-      if (limiter.questionName === selectedQuestion?.name) {
-        addedLimiter = true;
-        return { questionName: limiter.questionName, choices: limitedChoices };
-      }
-      return limiter;
-    });
-    if (!addedLimiter) {
-      updatedBackendLimiters.push({ questionName: selectedQuestion?.name || '', choices: limitedChoices });
-    }
-
-    set({ currentBackendLimiters: updatedBackendLimiters });
-    return updatedBackendLimiters;
   },
 
   addChoice: (name: string, title: string = '', limit: number = 0) => {

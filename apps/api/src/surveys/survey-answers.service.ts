@@ -24,16 +24,18 @@ import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import JWTUser from '@libs/user/types/jwt/jwtUser';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import { createNewPublicUserLogin, publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
 import SURVEY_ANSWERS_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersAttachmentPath';
 import SurveyAnswerErrorMessages from '@libs/survey/constants/survey-answer-error-messages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import TSurveyAnswer from '@libs/survey/types/TSurveyAnswer';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
+import TSurveyQuestionAnswerTypes from '@libs/survey/types/TSurveyQuestionAnswerTypes';
 import CustomHttpException from '../common/CustomHttpException';
 import { Survey, SurveyDocument } from './survey.schema';
 import { SurveyAnswer, SurveyAnswerDocument } from './survey-answers.schema';
+import { SurveysBackendLimiter, SurveysBackendLimiterDocument } from './surveys-backend-limiter.schema';
 import Attendee from '../conferences/attendee.schema';
 import MigrationService from '../migration/migration.service';
 import surveyAnswersMigrationsList from './migrations/surveyAnswersMigrationsList';
@@ -46,6 +48,7 @@ class SurveyAnswersService implements OnModuleInit {
   constructor(
     @InjectModel(SurveyAnswer.name) private surveyAnswerModel: Model<SurveyAnswerDocument>,
     @InjectModel(Survey.name) private surveyModel: Model<SurveyDocument>,
+    @InjectModel(SurveysBackendLimiter.name) private surveysBackendLimiterModel: Model<SurveysBackendLimiterDocument>,
     private readonly groupsService: GroupsService,
     private readonly surveyAnswerAttachmentsService: SurveyAnswerAttachmentsService,
   ) {}
@@ -77,6 +80,125 @@ class SurveyAnswersService implements OnModuleInit {
     const answers = await this.surveyAnswerModel.find<SurveyAnswer>({ surveyId: new Types.ObjectId(surveyId) });
     return answers.length !== 0;
   };
+
+  // THIS WILL MOVE INTO THE SURVEY BACKEND LIMITER SERVICE ONCE THE FEATURE IN THE NEXT SUB BRANCH
+  public getSelectableChoices = async (
+    surveyId: string,
+    questionName: string,
+    returnOriginal: boolean = false,
+  ): Promise<ChoiceDto[]> => {
+    const surveysBackendLimiter = await this.surveysBackendLimiterModel
+      .findOne({ surveyId: new Types.ObjectId(surveyId), questionName })
+      .exec();
+
+    if (!surveysBackendLimiter) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.NotFoundError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveyAnswersService.name,
+      );
+    }
+
+    if (!surveysBackendLimiter?.choices?.length) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.NoBackendLimiters,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        undefined,
+        SurveyAnswersService.name,
+      );
+    }
+
+    const possibleChoices = surveysBackendLimiter.choices;
+    if (returnOriginal) {
+      possibleChoices.sort((a, b) => a.title.localeCompare(b.title));
+      return possibleChoices;
+    }
+
+    const filteredChoices: ChoiceDto[] = [];
+    await Promise.all(
+      possibleChoices.map(async (choice) => {
+        const counter = await this.countTotalChoiceSelectionsInSurveyAnswers(surveyId, questionName, choice.title);
+        if (choice.limit === 0 || !counter || counter < choice.limit) {
+          filteredChoices.push(choice);
+        }
+      }),
+    );
+
+    filteredChoices.sort((a, b) => a.title.localeCompare(b.title));
+
+    return filteredChoices;
+  };
+
+  static countChoiceMatchesInValue = (questionAnswer: TSurveyQuestionAnswerTypes, choiceTitle: string): number => {
+    if (Array.isArray(questionAnswer)) {
+      let count = 0;
+      questionAnswer.forEach((answerValue) => {
+        if (typeof answerValue === 'string' && answerValue === choiceTitle) {
+          count += 1;
+        } else if (typeof answerValue === 'object' && answerValue !== null && answerValue.name === choiceTitle) {
+          count += 1;
+        }
+      });
+      return count;
+    }
+    if (typeof questionAnswer === 'string' && questionAnswer === choiceTitle) {
+      return 1;
+    }
+    if (typeof questionAnswer === 'object' && questionAnswer !== null && questionAnswer.name === choiceTitle) {
+      return 1;
+    }
+    return 0;
+  };
+
+  static countChoiceMatchesInAnswer = (answer: TSurveyAnswer, questionName: string, choiceTitle: string): number => {
+    let count = 0;
+    Object.keys(answer).forEach((key) => {
+      if (key === questionName) {
+        const nestedCount = SurveyAnswersService.countChoiceMatchesInValue(answer[key], choiceTitle);
+        count += nestedCount;
+      } else if (Array.isArray(answer[key])) {
+        answer[key].forEach((entry) => {
+          if (typeof entry === 'object' && entry !== null) {
+            const nestedCount = SurveyAnswersService.countChoiceMatchesInAnswer(
+              entry as TSurveyAnswer,
+              questionName,
+              choiceTitle,
+            );
+            count += nestedCount;
+          }
+        });
+      } else if (typeof answer[key] === 'object' && answer[key] !== null) {
+        const nestedCount = SurveyAnswersService.countChoiceMatchesInAnswer(
+          answer[key] as TSurveyAnswer,
+          questionName,
+          choiceTitle,
+        );
+        count += nestedCount;
+      }
+    });
+    return count;
+  };
+
+  async countTotalChoiceSelectionsInSurveyAnswers(
+    surveyId: string,
+    questionName: string,
+    choiceTitle: string,
+  ): Promise<number> {
+    const documents = await this.surveyAnswerModel
+      .find<SurveyAnswerDocument>({ surveyId: new Types.ObjectId(surveyId) })
+      .exec();
+    let count = 0;
+    documents.forEach((document) => {
+      const answerCount = SurveyAnswersService.countChoiceMatchesInAnswer(
+        document.answer as unknown as TSurveyAnswer,
+        questionName,
+        choiceTitle,
+      );
+      count += answerCount;
+    });
+    return count;
+  }
 
   async getCreatedSurveys(username: string): Promise<Survey[]> {
     const createdSurveys = await this.surveyModel.find<Survey>({ 'creator.username': username });
@@ -239,19 +361,10 @@ class SurveyAnswersService implements OnModuleInit {
     if (!attendee.username && attendee.firstName) return this.publicFirstStrategy(survey, answer, attendee);
     if (!existingUsersAnswerId || existingUsersAnswerId === undefined || survey.canSubmitMultipleAnswers)
       return this.loggedOrPublicStrategy(survey, answer, attendee);
-    if (existingUsersAnswerId) {
-      if (survey.canUpdateFormerAnswer) {
-        return this.updatingStrategy(survey, answer, attendee, existingUsersAnswerId);
-      }
-      throw new CustomHttpException(
-        SurveyAnswerErrorMessages.AlreadyParticipated,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        undefined,
-        SurveyAnswersService.name,
-      );
-    }
+    if (existingUsersAnswerId && survey.canUpdateFormerAnswer)
+      return this.updatingStrategy(survey, answer, attendee, existingUsersAnswerId);
     throw new CustomHttpException(
-      SurveyAnswerErrorMessages.NotAbleToFindOrCreateSurveyAnswerError,
+      SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
       HttpStatus.INTERNAL_SERVER_ERROR,
       undefined,
       SurveyAnswersService.name,
@@ -290,7 +403,7 @@ class SurveyAnswersService implements OnModuleInit {
     const { firstName } = attendee;
     if (!firstName) {
       throw new CustomHttpException(
-        CommonErrorMessages.INVALID_REQUEST_DATA,
+        SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
         HttpStatus.INTERNAL_SERVER_ERROR,
         undefined,
         SurveyAnswersService.name,
@@ -328,7 +441,7 @@ class SurveyAnswersService implements OnModuleInit {
   ): Promise<SurveyAnswerDocument | null> {
     if (!attendee.username) {
       throw new CustomHttpException(
-        CommonErrorMessages.INVALID_REQUEST_DATA,
+        SurveyAnswerErrorMessages.NotAbleToCreateSurveyAnswerError,
         HttpStatus.INTERNAL_SERVER_ERROR,
         undefined,
         SurveyAnswersService.name,

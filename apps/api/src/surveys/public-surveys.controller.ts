@@ -36,6 +36,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { randomUUID } from 'crypto';
 import { SURVEYS, ANSWER, PUBLIC_USER, FILES, PUBLIC_SURVEYS, CHOICES } from '@libs/survey/constants/surveys-endpoint';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
@@ -44,7 +45,6 @@ import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import { addUuidToFileName } from '@libs/common/utils/uuidAndFileNames';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
-import SurveyBackendLimiterDto from '@libs/survey/types/api/survey-backend-limiter.dto';
 import FilesystemService from 'apps/api/src/filesystem/filesystem.service';
 import CustomHttpException from 'apps/api/src/common/CustomHttpException';
 import SurveysService from './surveys.service';
@@ -197,10 +197,12 @@ class PublicSurveysController {
     return this.surveyAnswerAttachmentsService.serveFileFromAnswer(userName, surveyId, questionId, fileName, req, res);
   }
 
-  @Post(CHOICES)
+  @Post(`${CHOICES}/:surveyId/:questionId`)
   @Public()
-  async updateChoices(@Body() body: SurveyBackendLimiterDto) {
-    await this.surveysBackendLimiterService.updateOrCreateSurveysBackendLimiters(body);
+  async updateChoices(@Param() params: { surveyId: string; questionId: string }, @Body() choices: ChoiceDto[]) {
+    const { surveyId, questionId } = params;
+    await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
+    await this.surveysBackendLimiterService.updateOrCreateSurveysBackendLimiters(surveyId, questionId, choices);
   }
 
   @Get(`${CHOICES}/:surveyId/:questionId`)
@@ -211,7 +213,7 @@ class PublicSurveysController {
       return [];
     }
     await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
-    const choices = await this.surveysBackendLimiterService.getSelectableChoices(surveyId, questionId);
+    const choices = await this.surveyAnswerService.getSelectableChoices(surveyId, questionId);
     return choices.filter((choice) => choice.name !== SHOW_OTHER_ITEM);
   }
 }

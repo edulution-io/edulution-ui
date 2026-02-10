@@ -54,10 +54,10 @@ import ATTACHMENT_FOLDER from '@libs/common/constants/attachmentFolder';
 import SURVEYS_TEMP_FILES_PATH from '@libs/survey/constants/surveysTempFilesPath';
 import SurveyStatus from '@libs/survey/survey-status-enum';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import DeleteSurveyDto from '@libs/survey/types/api/delete-survey.dto';
 import PostSurveyAnswerDto from '@libs/survey/types/api/post-survey-answer.dto';
-import SurveyBackendLimiterDto from '@libs/survey/types/api/survey-backend-limiter.dto';
 import { addUuidToFileName } from '@libs/common/utils/uuidAndFileNames';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH from '@libs/survey/constants/surveyAnswersTemporaryAttachmentPath';
@@ -325,9 +325,20 @@ class SurveysController {
     }
   }
 
-  @Post(CHOICES)
-  async updateChoices(@GetCurrentUser() currentUser: JWTUser, @Body() body: SurveyBackendLimiterDto) {
-    await this.surveysBackendLimiterService.updateOrCreateSurveysBackendLimiters(body, currentUser);
+  @Post(`${CHOICES}/:surveyId/:questionId`)
+  async updateChoices(
+    @Param() params: { surveyId: string; questionId: string },
+    @GetCurrentUser() currentUser: JWTUser,
+    @Body() choices: ChoiceDto[],
+  ) {
+    const { surveyId, questionId } = params;
+    SurveysController.validateParams(params, ['surveyId', 'questionId']);
+    await this.surveysBackendLimiterService.throwErrorIfTheUserHasNoPermissionToCreateOrUpdateTheBackendLimiters(
+      surveyId,
+      questionId,
+      currentUser,
+    );
+    await this.surveysBackendLimiterService.updateOrCreateSurveysBackendLimiters(surveyId, questionId, choices);
   }
 
   @Get(`${CHOICES}/:surveyId/:questionId`)
@@ -340,13 +351,21 @@ class SurveysController {
     if (surveyId === TEMPORAL_SURVEY_ID_STRING) {
       return [];
     }
+    SurveysController.validateParams(params, ['surveyId', 'questionId']);
     await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
-    const choices = await this.surveysBackendLimiterService.getSelectableChoices(
-      surveyId,
-      questionId,
-      original === 'true',
-    );
+    const choices = await this.surveyAnswerService.getSelectableChoices(surveyId, questionId, original === 'true');
     return choices.filter((choice) => choice.name !== SHOW_OTHER_ITEM);
+  }
+
+  @Delete(`${CHOICES}/:surveyId/:questionId`)
+  async deleteBackendLimiter(
+    @Param() params: { surveyId: string; questionId: string },
+    @GetCurrentUser() currentUser: JWTUser,
+  ) {
+    const { surveyId, questionId } = params;
+    SurveysController.validateParams(params, ['surveyId', 'questionId']);
+    await this.surveyService.throwErrorIfUserIsNotCreator(surveyId, currentUser);
+    await this.surveysBackendLimiterService.deleteBackendLimiter(surveyId, questionId);
   }
 
   @UseGuards(AdminGuard)
