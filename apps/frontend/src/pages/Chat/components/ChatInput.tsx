@@ -23,6 +23,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { Textarea } from '@/components/ui/Textarea';
 import { Button, cn } from '@edulution-io/ui-kit';
+import chatMessageMaxLength from '@libs/chat/constants/chatMessageMaxLength';
+
+const TEXTAREA_MAX_HEIGHT_PX = 120;
 
 interface ChatInputProps {
   value: string;
@@ -39,7 +42,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ value, onChange, onSubmit, isLoad
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, TEXTAREA_MAX_HEIGHT_PX)}px`;
     }
   }, [value]);
 
@@ -74,6 +77,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ value, onChange, onSubmit, isLoad
         placeholder={placeholder || t('chat.inputPlaceholder')}
         className="max-h-30 min-h-10 flex-1 resize-none rounded-xl py-2"
         rows={1}
+        maxLength={chatMessageMaxLength}
         disabled={isLoading}
       />
       <Button

@@ -23,7 +23,7 @@ import { Model } from 'mongoose';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import CHAT_TYPES from '@libs/chat/constants/chatTypes';
-import ChatErrorMessages from '@libs/chat/types/chatErrorMessages';
+import { CHAT_ERROR_MESSAGES } from '@libs/chat/types/chatErrorMessages';
 import CHAT_ROLES from '@libs/chat/constants/chatRoles';
 import GROUP_TYPES from '@libs/chat/constants/groupTypes';
 import { GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
@@ -68,7 +68,7 @@ class ChatService {
 
     if (!conversation) {
       throw new CustomHttpException(
-        ChatErrorMessages.CONVERSATION_NOT_FOUND,
+        CHAT_ERROR_MESSAGES.CONVERSATION_NOT_FOUND,
         HttpStatus.NOT_FOUND,
         conversationId,
         ChatService.name,
