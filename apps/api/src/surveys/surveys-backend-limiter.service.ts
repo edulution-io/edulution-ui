@@ -39,66 +39,6 @@ class SurveysBackendLimiterService {
     private readonly surveyService: SurveysService,
   ) {}
 
-  async deleteBackendLimiter(surveyId: string, questionName: string): Promise<void> {
-    try {
-      await this.surveysBackendLimiterModel.deleteOne({ surveyId: new Types.ObjectId(surveyId), questionName });
-      Logger.log(
-        `Deleted the backend limiter for survey ${surveyId} and question ${questionName}`,
-        SurveysBackendLimiterService.name,
-      );
-    } catch (error) {
-      throw new CustomHttpException(
-        SurveyErrorMessages.DeleteError,
-        HttpStatus.NOT_MODIFIED,
-        error,
-        SurveysBackendLimiterService.name,
-      );
-    }
-  }
-
-  async onSurveyRemoval(surveyIds: string[]): Promise<void> {
-    const objectIds = surveyIds.map((id) => new Types.ObjectId(id));
-    try {
-      await this.surveysBackendLimiterModel.deleteMany({ surveyId: { $in: objectIds } });
-      Logger.log(
-        `Deleted the backend limiters for survey ${JSON.stringify(surveyIds)}`,
-        SurveysBackendLimiterService.name,
-      );
-    } catch (error) {
-      throw new CustomHttpException(
-        SurveyErrorMessages.DeleteError,
-        HttpStatus.NOT_MODIFIED,
-        error,
-        SurveysBackendLimiterService.name,
-      );
-    }
-  }
-
-  async copyBackendLimitersToNewSurvey(newSurveyId: string, templateSurveyId: string): Promise<void> {
-    try {
-      const templateLimiters = await this.surveysBackendLimiterModel
-        .find({ surveyId: new Types.ObjectId(templateSurveyId) })
-        .lean();
-      const newLimiters = templateLimiters.map((limiter) => ({
-        ...limiter,
-        _id: new Types.ObjectId(),
-        surveyId: new Types.ObjectId(newSurveyId),
-      }));
-      await this.surveysBackendLimiterModel.insertMany(newLimiters);
-      Logger.log(
-        `Copied ${newLimiters.length} backend limiters from survey ${templateSurveyId} to new survey ${newSurveyId}`,
-        SurveysBackendLimiterService.name,
-      );
-    } catch (error) {
-      throw new CustomHttpException(
-        SurveyErrorMessages.UpdateOrCreateError,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        error instanceof Error ? error.message : undefined,
-        SurveysBackendLimiterService.name,
-      );
-    }
-  }
-
   getQuestionFromElementList(elements: TSurveyElement[], questionName: string): TSurveyElement | undefined {
     let question = elements.find((element) => element.name === questionName);
     if (question) {
@@ -198,6 +138,41 @@ class SurveysBackendLimiterService {
 
     if (!backendLimiter) {
       throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async deleteBackendLimiter(surveyId: string, questionName: string): Promise<void> {
+    try {
+      await this.surveysBackendLimiterModel.deleteOne({ surveyId: new Types.ObjectId(surveyId), questionName });
+      Logger.log(
+        `Deleted the backend limiter for survey ${surveyId} and question ${questionName}`,
+        SurveysBackendLimiterService.name,
+      );
+    } catch (error) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.DeleteError,
+        HttpStatus.NOT_MODIFIED,
+        error,
+        SurveysBackendLimiterService.name,
+      );
+    }
+  }
+
+  async onSurveyRemoval(surveyIds: string[]): Promise<void> {
+    const objectIds = surveyIds.map((id) => new Types.ObjectId(id));
+    try {
+      await this.surveysBackendLimiterModel.deleteMany({ surveyId: { $in: objectIds } });
+      Logger.log(
+        `Deleted the backend limiters for survey ${JSON.stringify(surveyIds)}`,
+        SurveysBackendLimiterService.name,
+      );
+    } catch (error) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.DeleteError,
+        HttpStatus.NOT_MODIFIED,
+        error,
+        SurveysBackendLimiterService.name,
+      );
     }
   }
 }
