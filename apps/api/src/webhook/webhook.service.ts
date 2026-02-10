@@ -54,6 +54,9 @@ class WebhookService implements OnModuleInit, OnModuleDestroy {
       case WEBHOOK_CONSTANTS.USER_AGENTS.EVENTHANDLER:
         await this.handleEventhandlerEvent(body);
         break;
+      case WEBHOOK_CONSTANTS.USER_AGENTS.LINUXMUSTER_API:
+        WebhookService.handleLinuxmusterEvent(body);
+        break;
       default:
         Logger.warn(`Unknown service key: ${serviceKey}`, WebhookService.name);
     }
@@ -76,6 +79,11 @@ class WebhookService implements OnModuleInit, OnModuleDestroy {
     const key = `${WEBHOOK_CONSTANTS.REDIS_KEYS.EVENTHANDLER_PREFIX}:${username}`;
     await this.redis.set(key, JSON.stringify(body), 'EX', WEBHOOK_CONSTANTS.EVENT_TTL_SECONDS);
     Logger.log(`Stored event for user ${username}`, WebhookService.name);
+  }
+
+  private static handleLinuxmusterEvent(body: Record<string, unknown>): void {
+    // Placeholder for future Linuxmuster event handling logic
+    Logger.log(`Triggered Linuxmuster event with body: ${JSON.stringify(body)}`, WebhookService.name);
   }
 }
 
