@@ -50,20 +50,22 @@ interface QuestionsContextMenuStore {
   useBackendLimits: boolean;
   toggleUseBackendLimits: (isPublic: boolean) => void;
 
-  currentBackendLimiters: ChoiceDto[];
   setBackendLimiters: (surveyId: string, questionName: string, choices: ChoiceDto[]) => Promise<void>;
   getBackendLimiters: (surveyId: string, questionName: string) => Promise<ChoiceDto[]>;
 
   showOtherItem: boolean;
-  toggleShowOtherItem: () => void;
+  toggleShowOtherItem: (surveyId: string, questionName: string) => Promise<void>;
+
+  storedLimiters: Record<string, ChoiceDto[]> | undefined;
+  uploadStoredLimiters: (surveyId: string) => Promise<void>;
 
   currentChoices: ChoiceDto[];
-  addChoice: (name: string, title?: string, limit?: number) => void;
-  addNewChoice: () => void;
-  removeChoice: (choicesName: string) => void;
-  setChoiceName: (choiceName: string, newName: string) => void;
-  setChoiceTitle: (choiceName: string, newTitle: string) => void;
-  setChoiceLimit: (choiceName: string, newLimit: number) => void;
+  addChoice: (surveyId: string, questionName: string, name: string, title?: string, limit?: number) => Promise<void>;
+  addNewChoice: (surveyId: string, questionName: string) => Promise<void>;
+  removeChoice: (surveyId: string, questionName: string, choicesName: string) => Promise<void>;
+  setChoiceName: (surveyId: string, questionName: string, choiceName: string, newName: string) => Promise<void>;
+  setChoiceTitle: (surveyId: string, questionName: string, choiceName: string, newTitle: string) => Promise<void>;
+  setChoiceLimit: (surveyId: string, questionName: string, choiceName: string, newLimit: number) => Promise<void>;
 
   setImageWidth: (newWidth: number | undefined) => void;
   imageWidth: number | undefined;
@@ -78,7 +80,7 @@ const QuestionsContextMenuStoreInitialState = {
   useBackendLimits: false,
   isUpdatingBackendLimiters: false,
   showOtherItem: false,
-  currentBackendLimiters: [],
+  storedLimiters: {},
   formerChoices: [],
   currentChoices: [],
   imageWidth: 0,
@@ -147,6 +149,12 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
   },
 
   setBackendLimiters: async (surveyId: string, questionName: string, choices: ChoiceDto[] = []) => {
+    if (!surveyId || surveyId === TEMPORAL_SURVEY_ID_STRING) {
+      const { storedLimiters = {} } = get();
+      storedLimiters[questionName] = choices;
+      set({ storedLimiters, currentChoices: choices });
+      return;
+    }
     try {
       const result = await eduApi.post<ChoiceDto[]>(`${SURVEYS}/${surveyId}/${questionName}`, { ...choices });
       const currentChoices = result.data;
@@ -159,6 +167,12 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
   },
 
   onRemoveQuestionName: async (surveyId: string, questionName: string) => {
+    if (!surveyId || surveyId === TEMPORAL_SURVEY_ID_STRING) {
+      const { storedLimiters = {} } = get();
+      delete storedLimiters[questionName];
+      set({ storedLimiters, currentChoices: [] });
+      return;
+    }
     try {
       await eduApi.delete(`${SURVEYS}/${surveyId}/${questionName}`);
     } catch (error) {
@@ -167,6 +181,12 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
   },
 
   getBackendLimiters: async (surveyId: string, questionName: string) => {
+    if (!surveyId || surveyId === TEMPORAL_SURVEY_ID_STRING) {
+      const { storedLimiters = {} } = get();
+      const currentChoices = storedLimiters[questionName] || [];
+      set({ currentChoices });
+      return currentChoices;
+    }
     try {
       const result = await eduApi.get<ChoiceDto[]>(`${SURVEYS}/${surveyId}/${questionName}`);
       const currentChoices = result.data;
@@ -180,28 +200,28 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     }
   },
 
-  addChoice: (name: string, title: string = '', limit: number = 0) => {
+  addChoice: async (surveyId: string, questionName: string, name: string, title: string = '', limit: number = 0) => {
+    const { currentChoices, setBackendLimiters } = get();
     const newChoice = { name, title, limit };
-    const { currentChoices = [] } = get();
     const updatedChoices: ChoiceDto[] = [...currentChoices, newChoice];
-    set({ currentChoices: updatedChoices });
+    await setBackendLimiters(surveyId, questionName, updatedChoices);
   },
 
-  addNewChoice: () => {
+  addNewChoice: async (surveyId: string, questionName: string) => {
     const { currentChoices, addChoice } = get();
     const newChoiceTitle = `choice-${currentChoices.length}`;
     const newChoiceName = `${newChoiceTitle}-${getRandomUUID()}`;
-    addChoice(newChoiceName, `${newChoiceTitle}`, 1);
+    await addChoice(surveyId, questionName, newChoiceName, `${newChoiceTitle}`, 1);
   },
 
-  removeChoice: (name: string) => {
-    const { currentChoices } = get();
+  removeChoice: async (surveyId: string, questionName: string, name: string) => {
+    const { currentChoices, setBackendLimiters } = get();
     const updatedChoices = currentChoices.filter((choice: ChoiceDto) => choice.name !== name);
-    set({ currentChoices: updatedChoices });
+    await setBackendLimiters(surveyId, questionName, updatedChoices);
   },
 
-  setChoiceName: (choiceName: string, newName: string) => {
-    const { currentChoices } = get();
+  setChoiceName: async (surveyId: string, questionName: string, choiceName: string, newName: string) => {
+    const { currentChoices, setBackendLimiters } = get();
     const updatedChoices = currentChoices.map((c: ChoiceDto) => {
       if (c.name === choiceName) {
         const updatedChoice = c;
@@ -210,11 +230,11 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
       }
       return c;
     });
-    set({ currentChoices: updatedChoices });
+    await setBackendLimiters(surveyId, questionName, updatedChoices);
   },
 
-  setChoiceTitle: (choiceName: string, newTitle: string) => {
-    const { currentChoices } = get();
+  setChoiceTitle: async (surveyId: string, questionName: string, choiceName: string, newTitle: string) => {
+    const { currentChoices, setBackendLimiters } = get();
     const updatedChoices = currentChoices.map((c: ChoiceDto) => {
       if (c.name === choiceName) {
         const updatedChoice = c;
@@ -223,11 +243,11 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
       }
       return c;
     });
-    set({ currentChoices: updatedChoices });
+    await setBackendLimiters(surveyId, questionName, updatedChoices);
   },
 
-  setChoiceLimit: (choiceName: string, newLimit: number) => {
-    const { currentChoices } = get();
+  setChoiceLimit: async (surveyId: string, questionName: string, choiceName: string, newLimit: number) => {
+    const { currentChoices, setBackendLimiters } = get();
     const updatedChoices = currentChoices.map((c: ChoiceDto) => {
       if (c.name === choiceName) {
         const updatedChoice = c;
@@ -236,10 +256,10 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
       }
       return c;
     });
-    set({ currentChoices: updatedChoices });
+    await setBackendLimiters(surveyId, questionName, updatedChoices);
   },
 
-  toggleShowOtherItem: () => {
+  toggleShowOtherItem: async (surveyId: string, questionName: string) => {
     const { selectedQuestion, showOtherItem, addChoice, removeChoice } = get();
     if (!selectedQuestion) {
       return;
@@ -247,12 +267,25 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     if (!showOtherItem) {
       selectedQuestion.showOtherItem = true;
       set({ showOtherItem: true });
-      addChoice(SHOW_OTHER_ITEM, SHOW_OTHER_ITEM);
+      await addChoice(surveyId, questionName, SHOW_OTHER_ITEM, SHOW_OTHER_ITEM);
     } else {
       selectedQuestion.showOtherItem = false;
       set({ showOtherItem: false });
-      removeChoice(SHOW_OTHER_ITEM);
+      await removeChoice(surveyId, questionName, SHOW_OTHER_ITEM);
     }
+  },
+
+  uploadStoredLimiters: async (surveyId: string) => {
+    const { storedLimiters } = get();
+    if (!storedLimiters) return;
+
+    const promises = Object.keys(storedLimiters).map((questionName) =>
+      storedLimiters[questionName].length > 0
+        ? eduApi.post<ChoiceDto[]>(`${SURVEYS}/${surveyId}/${questionName}`, { ...storedLimiters[questionName] })
+        : Promise.resolve(),
+    );
+
+    await Promise.all(promises);
   },
 
   setImageWidth: (newWidth: number | undefined) => {

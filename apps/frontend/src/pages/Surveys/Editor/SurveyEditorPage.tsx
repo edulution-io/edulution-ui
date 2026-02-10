@@ -83,6 +83,7 @@ const SurveyEditorPage = () => {
     setIsOpenQuestionContextMenu,
     isOpenQuestionContextMenu,
     setSelectedQuestion,
+    uploadStoredLimiters,
   } = useQuestionsContextMenuStore();
   const { setIsOpen: setOpenExportPDFDialog } = useExportSurveyToPdfStore();
 
@@ -191,12 +192,14 @@ const SurveyEditorPage = () => {
 
     const formula = creator.JSON as SurveyFormula;
     const saveNo = creator.saveNo || 0;
-    const success = await updateOrCreateSurvey({
+    const resultingSurveyId = await updateOrCreateSurvey({
       ...form.getValues(),
       formula,
       saveNo,
     });
-    if (success) {
+    if (resultingSurveyId) {
+      await uploadStoredLimiters(resultingSurveyId);
+
       void updateUsersSurveys();
       setIsOpenSaveSurveyDialog(false);
 

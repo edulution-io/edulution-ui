@@ -22,6 +22,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import SurveysTemplateSchema, { SurveysTemplate } from 'apps/api/src/surveys/surveys-template.schema';
 import SurveySchema, { Survey } from './survey.schema';
 import SurveyAnswersSchema, { SurveyAnswer } from './survey-answers.schema';
+import SurveysBackendLimiterSchema, { SurveysBackendLimiter } from './surveys-backend-limiter.schema';
 import SurveysService from './surveys.service';
 import SurveysController from './surveys.controller';
 import SurveyAnswersService from './survey-answers.service';
@@ -30,12 +31,14 @@ import GroupsModule from '../groups/groups.module';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 import SurveysTemplateService from './surveys-template.service';
+import SurveysBackendLimiterService from './surveys-backend-limiter.service';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Survey.name, schema: SurveySchema }]),
     MongooseModule.forFeature([{ name: SurveyAnswer.name, schema: SurveyAnswersSchema }]),
     MongooseModule.forFeature([{ name: SurveysTemplate.name, schema: SurveysTemplateSchema }]),
+    MongooseModule.forFeature([{ name: SurveysBackendLimiter.name, schema: SurveysBackendLimiterSchema }]),
     GroupsModule,
   ],
   controllers: [SurveysController, PublicSurveysController],
@@ -45,6 +48,7 @@ import SurveysTemplateService from './surveys-template.service';
     SurveysTemplateService,
     SurveysAttachmentService,
     SurveyAnswerAttachmentsService,
+    SurveysBackendLimiterService,
   ],
 })
 export default class SurveysModule {}

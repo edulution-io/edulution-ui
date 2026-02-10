@@ -51,17 +51,23 @@ const surveysMigration002MoveBackendLimitersToOwnTable: Migration<SurveyDocument
 
       // eslint-disable-next-line no-restricted-syntax
       for (const limiter of backendLimiters) {
-        createBackendLimiterOperations.push({
-          insertOne: {
-            document: {
-              // eslint-disable-next-line no-underscore-dangle
-              surveyId: doc._id,
-              questionName: limiter.questionName,
-              choices: limiter.choices,
-              schemaVersion: 1,
-            },
-          },
-        });
+        // createBackendLimiterOperations.push({
+        //   insertOne: {
+        //     document: {
+        //       // eslint-disable-next-line no-underscore-dangle
+        //       surveyId: doc._id,
+        //       questionName: limiter.questionName,
+        //       choices: limiter.choices,
+        //       schemaVersion: 1,
+        //     },
+        //   },
+        // });
+
+        Logger.log(
+          // eslint-disable-next-line no-underscore-dangle
+          `Would insert backend limiter for survey ${String(doc._id)} and question ${limiter.questionName}: ${JSON.stringify(limiter.choices)}`,
+          name,
+        );
       }
 
       try {
@@ -74,6 +80,9 @@ const surveysMigration002MoveBackendLimitersToOwnTable: Migration<SurveyDocument
         //     update: { $unset: { backendLimiters: "" }, $set: { schemaVersion: newSchemaVersion } },
         //   },
         // });
+
+        // eslint-disable-next-line no-underscore-dangle
+        Logger.log(`Would remove limiters from survey document ${String(doc._id)}`, name);
       } catch (error) {
         Logger.error(`Failed to migrate document ${doc.id}:`, error);
         // eslint-disable-next-line no-continue

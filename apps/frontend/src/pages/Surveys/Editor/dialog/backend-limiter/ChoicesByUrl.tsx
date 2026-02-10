@@ -44,38 +44,23 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
 
   const { t } = useTranslation();
 
-  const {
-    questionType,
-    useBackendLimits,
-    toggleUseBackendLimits,
-    setBackendLimiters,
-    currentChoices,
-    addNewChoice,
-    updateLimitersChoices,
-  } = useQuestionsContextMenuStore();
+  const { selectedQuestion } = useQuestionsContextMenuStore();
+
+  const { questionType, useBackendLimits, toggleUseBackendLimits, currentChoices, addNewChoice, getBackendLimiters } =
+    useQuestionsContextMenuStore();
 
   useEffect(() => {
-    if (!form) return;
-    const initialLimiters = form.getValues('backendLimiters');
-    if (initialLimiters) {
-      setBackendLimiters(initialLimiters);
-    }
-  }, []);
-
-  useEffect(() => {
-    const updatedBackendLimits = updateLimitersChoices(currentChoices);
-    if (!form) return;
-    form.setValue('backendLimiters', updatedBackendLimits);
-  }, [currentChoices]);
+    void getBackendLimiters(form.watch('id') || '', selectedQuestion?.name || '');
+  }, [selectedQuestion]);
 
   const actionsConfig = useMemo<TableActionsConfig<ChoiceDto>>(
     () => [
       {
         type: STANDARD_ACTION_TYPES.ADD,
-        onClick: () => addNewChoice(),
+        onClick: () => addNewChoice(form.watch('id') || '', selectedQuestion?.name || ''),
       },
     ],
-    [addNewChoice],
+    [addNewChoice, selectedQuestion],
   );
 
   const actions = useTableActions(actionsConfig, []);
