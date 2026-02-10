@@ -30,9 +30,11 @@ import GroupType from '@libs/chat/types/groupType';
 import { GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import PROJECTS_PREFIX from '@libs/lmnApi/constants/prefixes/projectsPrefix';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import PUSH_NOTIFICATION_CHANNEL_ID from '@libs/notification/constants/pushNotificationChannelId';
 import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import CustomHttpException from '../common/CustomHttpException';
+import NotificationsService from '../notifications/notifications.service';
 import SseService from '../sse/sse.service';
 import { Conversation, ConversationDocument } from './schemas/conversation.schema';
 import { ChatMessage, ChatMessageDocument } from './schemas/chatMessage.schema';
@@ -44,6 +46,7 @@ class ChatService {
     @InjectModel(ChatMessage.name) private chatMessageModel: Model<ChatMessageDocument>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly sseService: SseService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async getAuthorizedConversation(
@@ -112,20 +115,33 @@ class ChatService {
 
     await this.conversationModel.findByIdAndUpdate(conversationId, { lastMessageAt: new Date() });
 
-    this.notifyGroupMembers(members, groupName, groupType, message);
+    await this.notifyGroupMembers(members, groupName, groupType, message);
 
     return message;
   }
 
-  private notifyGroupMembers(
+  private async notifyGroupMembers(
     members: string[],
     groupName: string,
     groupType: GroupType,
     message: ChatMessageDocument,
-  ): void {
-    if (members.length > 0) {
-      const payload = { ...message.toJSON(), groupName, groupType };
-      this.sseService.sendEventToUsers(members, JSON.stringify(payload), SSE_MESSAGE_TYPE.CHAT_NEW_MESSAGE);
+  ): Promise<void> {
+    if (members.length === 0) {
+      return;
+    }
+
+    const payload = { ...message.toJSON(), groupName, groupType };
+    this.sseService.sendEventToUsers(members, JSON.stringify(payload), SSE_MESSAGE_TYPE.CHAT_NEW_MESSAGE);
+
+    const recipients = members.filter((member) => member !== message.createdBy);
+    if (recipients.length > 0) {
+      await this.notificationsService.notifyUsernames(recipients, {
+        title: groupName,
+        subtitle: `${message.createdByUserFirstName} ${message.createdByUserLastName}`,
+        body: message.content,
+        channelId: PUSH_NOTIFICATION_CHANNEL_ID.CHAT,
+        data: { groupName, groupType, conversationId: message.conversationId },
+      });
     }
   }
 
