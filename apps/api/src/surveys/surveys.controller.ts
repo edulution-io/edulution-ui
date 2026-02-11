@@ -343,7 +343,7 @@ class SurveysController {
       return res.status(HttpStatus.OK).json({ message: 'success' });
     }
 
-    this.surveysBackendLimiterService.throwErrorIfTheUserHasNoPermissionToCreateOrUpdateTheBackendLimiters(
+    this.surveysBackendLimiterService.throwErrorIfUserIsNotAllowedToAppendBackendLimiters(
       survey,
       questionId,
       currentUser,

@@ -56,7 +56,9 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
   } = useQuestionsContextMenuStore();
 
   useEffect(() => {
-    void fetchInitialStoredLimiters(form.watch('id') || '');
+    if (useBackendLimits) {
+      void fetchInitialStoredLimiters(form.watch('id') || '');
+    }
   }, [selectedQuestion]);
 
   const actionsConfig = useMemo<TableActionsConfig<ChoiceDto>>(

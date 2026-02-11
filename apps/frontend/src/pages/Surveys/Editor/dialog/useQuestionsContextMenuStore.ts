@@ -22,7 +22,7 @@ import { Question, ChoicesRestful } from 'survey-core';
 import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
-import { PUBLIC_SURVEY_CHOICES, SURVEY_CHOICES, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
+import { PUBLIC_SURVEY_CHOICES, SURVEY_CHOICES } from '@libs/survey/constants/surveys-endpoint';
 import TEMPORAL_SURVEY_ID_STRING from '@libs/survey/constants/temporal-survey-id-string';
 import getRandomUUID from '@/utils/getRandomUUID';
 import eduApi from '@/api/eduApi';
@@ -150,19 +150,23 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
   updateStoredLimiters: (choices: ChoiceDto[] = []) => {
     const { selectedQuestion, storedLimiters = {} } = get();
     if (!selectedQuestion) return;
-    storedLimiters[selectedQuestion?.name] = choices;
-    set({ storedLimiters, currentChoices: choices });
+    const updatedStoredLimiters = {
+      ...storedLimiters,
+      [selectedQuestion.name]: choices,
+    };
+    set({ storedLimiters: updatedStoredLimiters, currentChoices: choices });
   },
 
   onRemoveQuestionName: async (surveyId: string, questionName: string) => {
     if (!surveyId || surveyId === TEMPORAL_SURVEY_ID_STRING) {
       const { storedLimiters = {} } = get();
-      delete storedLimiters[questionName];
-      set({ storedLimiters, currentChoices: [] });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [questionName]: removed, ...remainingLimiters } = storedLimiters;
+      set({ storedLimiters: remainingLimiters, currentChoices: [] });
       return;
     }
     try {
-      await eduApi.delete(`${SURVEYS}/${surveyId}/${questionName}`);
+      await eduApi.delete(`${SURVEY_CHOICES}/${surveyId}/${questionName}`);
     } catch (error) {
       handleApiError(error, set);
     }
@@ -174,9 +178,10 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     if (!surveyId || surveyId === TEMPORAL_SURVEY_ID_STRING) {
       const currentChoices = storedLimiters[selectedQuestion.name] || [];
       set({ currentChoices });
+      return;
     }
     try {
-      const result = await eduApi.get<ChoiceDto[]>(`${SURVEYS}/${surveyId}/${selectedQuestion.name}`);
+      const result = await eduApi.get<ChoiceDto[]>(`${SURVEY_CHOICES}/${surveyId}/${selectedQuestion.name}`);
       const currentChoices = result.data;
       storedLimiters[selectedQuestion.name] = currentChoices;
       set({ storedLimiters, currentChoices });
@@ -193,7 +198,7 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
 
     const promises = Object.keys(storedLimiters).map((questionName) =>
       storedLimiters[questionName].length > 0
-        ? eduApi.post<ChoiceDto[]>(`${SURVEYS}/${surveyId}/${questionName}`, storedLimiters[questionName])
+        ? eduApi.post<ChoiceDto[]>(`${SURVEY_CHOICES}/${surveyId}/${questionName}`, storedLimiters[questionName])
         : Promise.resolve(),
     );
 

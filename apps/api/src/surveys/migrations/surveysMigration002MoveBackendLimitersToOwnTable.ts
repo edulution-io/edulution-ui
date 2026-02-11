@@ -45,7 +45,7 @@ const surveysMigration002MoveBackendLimitersToOwnTable: Migration<SurveyDocument
       // eslint-disable-next-line no-continue
       if (!backendLimiters || backendLimiters.length === 0) continue;
 
-      const BackendLimiterModel = model.db.model<SurveysBackendLimiterDocument>('BackendLimiter');
+      const BackendLimiterModel = model.db.model<SurveysBackendLimiterDocument>('SurveysBackendLimiter');
 
       const createBackendLimiterOperations: AnyBulkWriteOperation[] = [];
 

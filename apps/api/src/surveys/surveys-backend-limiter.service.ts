@@ -30,7 +30,6 @@ import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
-import SurveysService from './surveys.service';
 import { Survey } from './survey.schema';
 import { SurveysBackendLimiter, SurveysBackendLimiterDocument } from './surveys-backend-limiter.schema';
 
@@ -38,7 +37,6 @@ import { SurveysBackendLimiter, SurveysBackendLimiterDocument } from './surveys-
 class SurveysBackendLimiterService {
   constructor(
     @InjectModel(SurveysBackendLimiter.name) private surveysBackendLimiterModel: Model<SurveysBackendLimiterDocument>,
-    private readonly surveyService: SurveysService,
     private readonly sseService: SseService,
   ) {}
 
@@ -94,7 +92,7 @@ class SurveysBackendLimiterService {
     return question.showOtherItem ?? false;
   };
 
-  throwErrorIfTheUserHasNoPermissionToCreateOrUpdateTheBackendLimiters = (
+  throwErrorIfUserIsNotAllowedToAppendBackendLimiters = (
     survey: Survey,
     questionName: string,
     _user?: JwtUser,
