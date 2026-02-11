@@ -407,6 +407,51 @@ class GroupsService {
     }
   }
 
+  async updateGroupAttributes(groupId: string, name: string, attributes: Record<string, string[]>): Promise<void> {
+    try {
+      await this.keycloakQueue.enqueue(HttpMethods.PUT, `/groups/${groupId}`, { name, attributes });
+    } catch (error) {
+      Logger.error(`Failed to update attributes for group ${groupId}: ${(error as Error).message}`, GroupsService.name);
+    }
+  }
+
+  async updateGroupAttributesInCache(groupPath: string, attributes: Record<string, string[]>): Promise<void> {
+    try {
+      const groupWithMembers = await this.cacheManager.get<GroupWithMembers>(
+        `${GROUP_WITH_MEMBERS_CACHE_KEY}-${groupPath}`,
+      );
+
+      if (!groupWithMembers) {
+        return;
+      }
+
+      const updatedGroup = { ...groupWithMembers, attributes: { ...groupWithMembers.attributes, ...attributes } };
+      await this.cacheManager.set(`${GROUP_WITH_MEMBERS_CACHE_KEY}-${groupPath}`, updatedGroup, GROUPS_CACHE_TTL_MS);
+    } catch (error) {
+      Logger.error(
+        `Failed to update attributes in cache for ${groupPath}: ${(error as Error).message}`,
+        GroupsService.name,
+      );
+    }
+  }
+
+  async updateAllGroupsAttributesInCache(attributesByPath: Map<string, Record<string, string[]>>): Promise<void> {
+    try {
+      const allGroups = (await this.cacheManager.get<Group[]>(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL)) || [];
+
+      attributesByPath.forEach((attributes, groupPath) => {
+        const index = allGroups.findIndex((g) => g.path === groupPath);
+        if (index >= 0) {
+          allGroups[index] = { ...allGroups[index], attributes: { ...allGroups[index].attributes, ...attributes } };
+        }
+      });
+
+      await this.cacheManager.set(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL, allGroups, GROUPS_CACHE_TTL_MS);
+    } catch (error) {
+      Logger.error(`Failed to batch-update group attributes in cache: ${(error as Error).message}`, GroupsService.name);
+    }
+  }
+
   async searchGroupsByName(search: string): Promise<Group[]> {
     try {
       return await this.keycloakQueue.enqueue<Group[]>(HttpMethods.GET, `/groups?search=${encodeURIComponent(search)}`);

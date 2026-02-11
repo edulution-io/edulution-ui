@@ -20,10 +20,11 @@
 const REQUIRED_GROUP_ATTRIBUTES = [
   'mail',
   'displayName',
-  'sophomorixMaillist',
+  'sophomorixMailList',
   'description',
   'proxyAddresses',
   'sophomorixMailAlias',
+  'sophomorixJoinable',
 ];
 
 export default REQUIRED_GROUP_ATTRIBUTES;
