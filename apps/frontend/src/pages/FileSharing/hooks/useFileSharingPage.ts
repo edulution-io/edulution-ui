@@ -62,6 +62,7 @@ const useFileSharingPage = () => {
   const path = searchParams.get(URL_SEARCH_PARAMS.PATH) || shareRootPath;
 
   const previousWebdavShare = useRef<string | undefined>(webdavShare);
+  const hasRestoredSession = useRef(false);
 
   useEffect(() => {
     if (previousWebdavShare.current !== webdavShare && previousWebdavShare.current !== undefined) {
@@ -71,31 +72,42 @@ const useFileSharingPage = () => {
   }, [webdavShare, clearFilesOnShareChange]);
 
   useEffect(() => {
-    if (!isFileProcessing && webdavShares.length > 0 && !isWaitingForUserData) {
-      const hasPathParam = searchParams.has(URL_SEARCH_PARAMS.PATH);
-      const isPathWithinShareRoot = shareRootPath === '/' || path.startsWith(shareRootPath);
+    if (isFileProcessing || webdavShares.length === 0 || isWaitingForUserData) return;
 
-      if (shareRootPath && shareRootPath !== '/' && (!hasPathParam || !isPathWithinShareRoot)) {
-        const newSearchParams = new URLSearchParams(searchParams);
-        newSearchParams.set(URL_SEARCH_PARAMS.PATH, shareRootPath);
-        setSearchParams(newSearchParams, { replace: true });
-        return;
-      }
+    const hasPathParam = searchParams.has(URL_SEARCH_PARAMS.PATH);
+    const isPathWithinShareRoot = shareRootPath === '/' || path.startsWith(shareRootPath);
 
-      if (path === '/') {
-        if (pathToRestoreSession !== '/') {
-          const newSearchParams = new URLSearchParams(searchParams);
-          newSearchParams.set(URL_SEARCH_PARAMS.PATH, pathToRestoreSession);
-          setSearchParams(newSearchParams);
-        } else {
-          void fetchFiles(webdavShare, shareRootPath);
-        }
-      } else {
-        void fetchFiles(webdavShare, path);
-        void fetchShares();
-        setPathToRestoreSession(path);
-      }
+    if (shareRootPath !== '/' && hasPathParam && !isPathWithinShareRoot) {
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set(URL_SEARCH_PARAMS.PATH, shareRootPath);
+      setSearchParams(newSearchParams, { replace: true });
+      return;
     }
+
+    if (
+      !hasRestoredSession.current &&
+      pathToRestoreSession !== path &&
+      pathToRestoreSession.startsWith(shareRootPath)
+    ) {
+      hasRestoredSession.current = true;
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set(URL_SEARCH_PARAMS.PATH, pathToRestoreSession);
+      setSearchParams(newSearchParams, { replace: true });
+      return;
+    }
+
+    hasRestoredSession.current = true;
+
+    if (!hasPathParam && shareRootPath !== '/') {
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set(URL_SEARCH_PARAMS.PATH, shareRootPath);
+      setSearchParams(newSearchParams, { replace: true });
+      return;
+    }
+
+    void fetchFiles(webdavShare, path === '/' ? shareRootPath : path);
+    void fetchShares();
+    if (path !== '/') setPathToRestoreSession(path);
   }, [
     path,
     pathToRestoreSession,
