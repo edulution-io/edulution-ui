@@ -59,7 +59,7 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     if (useBackendLimits) {
       void fetchInitialStoredLimiters(form.watch('id') || '');
     }
-  }, [selectedQuestion]);
+  }, [selectedQuestion, useBackendLimits]);
 
   const actionsConfig = useMemo<TableActionsConfig<ChoiceDto>>(
     () => [

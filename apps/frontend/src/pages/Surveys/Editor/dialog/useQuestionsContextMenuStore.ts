@@ -182,7 +182,7 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
     }
     try {
       const result = await eduApi.get<ChoiceDto[]>(`${SURVEY_CHOICES}/${surveyId}/${selectedQuestion.name}`);
-      const currentChoices = result.data;
+      const currentChoices = result.data || [];
       storedLimiters[selectedQuestion.name] = currentChoices;
       set({ storedLimiters, currentChoices });
     } catch (error) {

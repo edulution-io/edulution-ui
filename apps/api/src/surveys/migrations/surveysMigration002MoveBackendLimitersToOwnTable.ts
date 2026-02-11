@@ -70,23 +70,25 @@ const surveysMigration002MoveBackendLimitersToOwnTable: Migration<SurveyDocument
         );
       }
 
-      try {
-        await BackendLimiterModel.bulkWrite(createBackendLimiterOperations, { ordered: false });
+      if (createBackendLimiterOperations.length > 0) {
+        try {
+          await BackendLimiterModel.bulkWrite(createBackendLimiterOperations, { ordered: false });
 
-        // updateSurveyOperations.push({
-        //   updateOne: {
-        //     // eslint-disable-next-line no-underscore-dangle
-        //     filter: { _id: doc._id },
-        //     update: { $unset: { backendLimiters: "" }, $set: { schemaVersion: newSchemaVersion } },
-        //   },
-        // });
+          // updateSurveyOperations.push({
+          //   updateOne: {
+          //     // eslint-disable-next-line no-underscore-dangle
+          //     filter: { _id: doc._id },
+          //     update: { $unset: { backendLimiters: "" }, $set: { schemaVersion: newSchemaVersion } },
+          //   },
+          // });
 
-        // eslint-disable-next-line no-underscore-dangle
-        Logger.log(`Would remove limiters from survey document ${String(doc._id)}`, name);
-      } catch (error) {
-        Logger.error(`Failed to migrate document ${doc.id}:`, error);
-        // eslint-disable-next-line no-continue
-        continue;
+          // eslint-disable-next-line no-underscore-dangle
+          Logger.log(`Would remove limiters from survey document ${String(doc._id)}`, name);
+        } catch (error) {
+          Logger.error(`Failed to migrate document ${doc.id}:`, error);
+          // eslint-disable-next-line no-continue
+          continue;
+        }
       }
     }
 
