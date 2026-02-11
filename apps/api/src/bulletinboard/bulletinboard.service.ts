@@ -425,19 +425,16 @@ class BulletinBoardService implements OnModuleInit {
         const pushNotification = dto.customPushBody || NOTIFICATION_TEMPLATES.BULLETIN.CREATED.body(dto.category.name);
         const bulletinId = String(resultingBulletin.id);
 
-        const isCustomPush = Boolean(dto.customPushTitle || dto.customPushBody);
+        const isPushOnly = saveMode === BULLETIN_SAVE_MODE.PUSH_ONLY;
 
-        const persistOptions =
-          saveMode === BULLETIN_SAVE_MODE.PUSH_ONLY
-            ? undefined
-            : {
-                type: isCustomPush ? NOTIFICATION_TYPE.USER : NOTIFICATION_TYPE.SYSTEM,
-                sourceType: NOTIFICATION_SOURCE_TYPE.BULLETIN,
-                sourceId: bulletinId,
-                title,
-                pushNotification,
-                createdBy: isCustomPush && currentUser ? currentUser.preferred_username : NOTIFICATION_CREATOR_SYSTEM,
-              };
+        const persistOptions = {
+          type: isPushOnly ? NOTIFICATION_TYPE.USER : NOTIFICATION_TYPE.SYSTEM,
+          sourceType: NOTIFICATION_SOURCE_TYPE.BULLETIN,
+          sourceId: bulletinId,
+          title,
+          pushNotification,
+          createdBy: isPushOnly && currentUser ? currentUser.preferred_username : NOTIFICATION_CREATOR_SYSTEM,
+        };
 
         await this.notificationService.notifyUsernames(
           invitedMembersList,
