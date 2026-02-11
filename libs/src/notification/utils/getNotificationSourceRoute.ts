@@ -29,7 +29,7 @@ const getNotificationSourceRoute = (sourceType?: NotificationSourceType, sourceI
   if (!app) {
     return undefined;
   }
-  if (sourceId && DEEP_LINK_SOURCE_TYPES.has(sourceType)) {
+  if (sourceId && DEEP_LINK_SOURCE_TYPES.includes(sourceType)) {
     return `/${app}/${sourceId}`;
   }
   return `/${app}`;

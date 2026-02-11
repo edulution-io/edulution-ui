@@ -30,6 +30,8 @@ class UserNotificationDto {
 
   status: UserNotificationStatus;
 
+  pushDeliverAfter: Date | null;
+
   createdAt: Date;
 }
 

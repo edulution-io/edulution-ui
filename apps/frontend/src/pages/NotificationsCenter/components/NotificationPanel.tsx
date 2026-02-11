@@ -101,23 +101,25 @@ const NotificationPanel = () => {
         )}
       >
         <SheetHeader>
-          <SheetTitle className="text-left text-xl font-bold text-background">
-            {t('notificationscenter.appTitle')}
-          </SheetTitle>
+          <div className="flex items-center justify-between">
+            <SheetTitle className="text-left text-xl font-bold text-background">
+              {t('notificationscenter.appTitle')}
+            </SheetTitle>
+            <Button
+              onClick={handleRefresh}
+              className="rounded-full p-2 text-background transition-colors hover:hover:bg-muted-background hover:text-background"
+              title={t('common.reload')}
+            >
+              <FontAwesomeIcon
+                icon={faRotate}
+                className="h-4 w-4"
+              />
+            </Button>
+          </div>
           <SheetDescription>{t('notificationscenter.description')}</SheetDescription>
         </SheetHeader>
 
-        <div className="flex items-center gap-2">
-          <Button
-            onClick={handleRefresh}
-            className="rounded-full p-2 text-background transition-colors hover:hover:bg-muted-background hover:text-background"
-            title={t('common.reload')}
-          >
-            <FontAwesomeIcon
-              icon={faRotate}
-              className="h-4 w-4"
-            />
-          </Button>
+        <div className="flex items-center justify-end gap-2">
           {unreadCount > 0 && !isSentView && (
             <Button
               onClick={handleMarkAllAsRead}
