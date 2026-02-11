@@ -23,7 +23,7 @@ import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import i18n from '@/i18n';
 
 const Dialog = DialogPrimitive.Root;

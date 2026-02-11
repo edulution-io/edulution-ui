@@ -19,7 +19,7 @@
 
 import React, { isValidElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import useMenuBarConfig from '@/hooks/useMenuBarConfig';
-import cn from '@libs/common/utils/className';
+import { cn, Button } from '@edulution-io/ui-kit';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -41,7 +41,6 @@ import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
 import useSubMenuStore from '@/store/useSubMenuStore';
 import useMenuBarStore from './useMenuBarStore';
-import { Button } from './Button';
 import MenuBarFooter from './MenuBarFooter';
 import IconWrapper from './IconWrapper';
 
@@ -361,13 +360,15 @@ const MenuBar: React.FC = () => {
         </aside>
       ) : (
         <div
-          ref={menubarRef}
-          className={cn(
-            'bg-glass fixed left-0 top-0 z-50 h-full overflow-x-hidden backdrop-blur-md duration-300 ease-in-out',
-            isMobileMenuBarOpen ? 'w-64 border-r-[1px] border-muted' : 'w-0',
-          )}
+          className="fixed left-0 top-0 z-50 h-full w-full transform transition-transform duration-300 ease-in-out"
+          style={{ transform: `translateX(${isMobileMenuBarOpen ? '0%' : '-100%'})` }}
         >
-          {isMobileMenuBarOpen && renderMenuBarContent()}
+          <div
+            ref={menubarRef}
+            className="bg-glass fixed left-0 h-full w-64 overflow-x-hidden border-r-[1px] border-muted backdrop-blur-md"
+          >
+            {renderMenuBarContent()}
+          </div>
         </div>
       )}
     </>

@@ -22,6 +22,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Logger } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import SurveysService from './surveys.service';
 import { Survey, SurveyDocument } from './survey.schema';
@@ -59,6 +60,7 @@ describe('SurveyService', () => {
         { provide: NotificationsService, useValue: notificationMock },
         { provide: GlobalSettingsService, useValue: { getAdminGroupsFromCache: jest.fn() } },
         { provide: CACHE_MANAGER, useValue: mockCacheManager },
+        { provide: EventEmitter2, useValue: { emit: jest.fn() } },
       ],
     }).compile();
 

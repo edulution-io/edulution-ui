@@ -29,7 +29,7 @@ import {
 } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 import TableAction from '@libs/common/types/tableAction';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import TABLE_DEFAULT_COLUMN_WIDTH from '@libs/ui/constants/tableDefaultColumnWidth';
 import pinRowToTop from '@libs/ui/utils/pinRowToTop';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';

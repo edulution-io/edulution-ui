@@ -22,7 +22,7 @@
 import * as React from 'react';
 import * as AvatarPrimitive from '@radix-ui/react-avatar';
 
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 const AvatarSH = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Root>,

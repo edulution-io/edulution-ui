@@ -17,6 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const FEED_PULL_TIME_INTERVAL_SLOW = 60000;
+export { Button, buttonVariants } from './components/Button';
+export type { ButtonProps, ButtonVariant } from './components/Button';
 
-export default FEED_PULL_TIME_INTERVAL_SLOW;
+export { default as cn } from './utils/cn';

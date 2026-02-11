@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { SIDEBAR_ICON_HEIGHT, SIDEBAR_ICON_WIDTH } from '@libs/ui/constants/sidebar';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import IconWrapper from '@/components/shared/IconWrapper';
 
 const SidebarItemIcon = ({

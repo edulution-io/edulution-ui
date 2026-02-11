@@ -1,7 +1,7 @@
 {
   "name": "edulution-ui",
   "private": true,
-  "version": "1.6.237",
+  "version": "1.6.251",
   "scripts": {
     "test": "nx run-many --target=test --projects=api",
     "test:api": "nx run api:test --detectOpenHandles",
@@ -14,7 +14,8 @@
     "serveFrontendAndApi": "nx run-many --target=serve --projects=frontend,api",
     "build": "nx build frontend --emptyOutDir",
     "build:api": "nx build api",
-    "build:all": "nx run-many --target=build --projects=frontend,api",
+    "build:ui-kit": "nx build ui-kit",
+    "build:all": "nx run-many --target=build --projects=frontend,api,ui-kit",
     "build:docker:ui": "npm run build && docker build -t ghcr.io/edulution-io/edulution-ui:preview -f apps/frontend/Dockerfile .",
     "build:docker:api": "npm run build:api && docker build -t ghcr.io/edulution-io/edulution-api:preview -f apps/api/Dockerfile .",
     "push:docker:ui": "docker push ghcr.io/edulution-io/edulution-ui:preview",
@@ -208,6 +209,7 @@
     "@typescript-eslint/eslint-plugin": "^7.14.1",
     "@typescript-eslint/parser": "^7.14.1",
     "@vitejs/plugin-react-swc": "^3.5.0",
+    "vite-plugin-dts": "^4.5.0",
     "autoprefixer": "^10.4.17",
     "chalk": "^5.4.1",
     "eslint": "^8.57.0",

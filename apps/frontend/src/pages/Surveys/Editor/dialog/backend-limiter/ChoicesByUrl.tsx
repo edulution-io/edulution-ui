@@ -20,7 +20,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import STANDARD_ACTION_TYPES from '@libs/common/constants/standardActionTypes';
 import { TableActionsConfig } from '@libs/common/types/tableActionsConfig';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';

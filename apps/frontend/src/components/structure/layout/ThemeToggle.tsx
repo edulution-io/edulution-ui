@@ -20,7 +20,7 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import useThemeStore from '@/store/useThemeStore';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import isDev from '@libs/common/constants/isDev';
 import THEME from '@libs/common/constants/theme';
 import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';

@@ -18,7 +18,7 @@
  */
 
 import React, { FC, ReactNode } from 'react';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 interface AnchorSectionProps {
   id: string;

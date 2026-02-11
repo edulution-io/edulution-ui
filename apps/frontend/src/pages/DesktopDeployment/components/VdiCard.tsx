@@ -18,7 +18,7 @@
  */
 
 import React, { FC } from 'react';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import { useTranslation } from 'react-i18next';
 import { faWindows, faUbuntu } from '@fortawesome/free-brands-svg-icons';
 import { Card } from '@/components/shared/Card';

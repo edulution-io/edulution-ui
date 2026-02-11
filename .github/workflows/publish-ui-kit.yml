@@ -1,0 +1,65 @@
+name: Publish UI-Kit
+
+on:
+  push:
+    tags:
+      - 'ui-kit-v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g., 1.0.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@edulution-io'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ inputs.version }}"
+          else
+            VERSION="${GITHUB_REF#refs/tags/ui-kit-v}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Publishing version: $VERSION"
+
+      - name: Update package version
+        run: |
+          cd libs/ui-kit
+          npm version ${{ steps.version.outputs.version }} --no-git-tag-version
+
+      - name: Build ui-kit
+        run: npx nx build ui-kit
+
+      - name: Verify build output
+        run: |
+          ls -la libs/ui-kit/dist/
+          cat libs/ui-kit/dist/package.json
+
+      - name: Publish to GitHub Packages
+        run: |
+          cd libs/ui-kit/dist
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

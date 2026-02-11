@@ -21,6 +21,7 @@ import { Model, Types } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyStatus from '@libs/survey/survey-status-enum';
@@ -123,6 +124,7 @@ describe('SurveyAnswersService', () => {
         { provide: NotificationsService, useValue: notificationMock },
         { provide: GlobalSettingsService, useValue: { getAdminGroupsFromCache: jest.fn() } },
         { provide: CACHE_MANAGER, useValue: mockCacheManager },
+        { provide: EventEmitter2, useValue: { emit: jest.fn() } },
         SseService,
         SurveysService,
       ],

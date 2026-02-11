@@ -20,7 +20,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useLmnApiStore from '@/store/useLmnApiStore';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import getCompressedImage from '@/utils/getCompressedImage';
 import Avatar from '@/components/shared/Avatar';
 import { toast } from 'sonner';

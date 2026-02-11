@@ -27,7 +27,6 @@ import SurveysService from './surveys.service';
 import SurveysController from './surveys.controller';
 import SurveyAnswersService from './survey-answers.service';
 import PublicSurveysController from './public-surveys.controller';
-import GroupsModule from '../groups/groups.module';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveyAnswerAttachmentsService from './survey-answer-attachments.service';
 import SurveysTemplateService from './surveys-template.service';
@@ -39,7 +38,6 @@ import SurveysBackendLimiterService from './surveys-backend-limiter.service';
     MongooseModule.forFeature([{ name: SurveyAnswer.name, schema: SurveyAnswersSchema }]),
     MongooseModule.forFeature([{ name: SurveysTemplate.name, schema: SurveysTemplateSchema }]),
     MongooseModule.forFeature([{ name: SurveysBackendLimiter.name, schema: SurveysBackendLimiterSchema }]),
-    GroupsModule,
   ],
   controllers: [SurveysController, PublicSurveysController],
   providers: [

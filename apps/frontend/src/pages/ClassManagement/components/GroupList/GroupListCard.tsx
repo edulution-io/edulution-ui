@@ -20,7 +20,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Card, CardContent } from '@/components/shared/Card';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import Checkbox from '@/components/ui/Checkbox';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock, faGear } from '@fortawesome/free-solid-svg-icons';

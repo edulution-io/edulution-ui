@@ -20,7 +20,7 @@
 import React, { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { t } from 'i18next';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import useUserSettingsPageStore from '@/pages/UserSettings/Security/useUserSettingsPageStore';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import FormField from '@/components/shared/FormField';

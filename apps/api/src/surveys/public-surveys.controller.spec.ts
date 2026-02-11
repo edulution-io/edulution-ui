@@ -22,6 +22,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveysAttachmentService from './surveys-attachment.service';
 import SurveysService from './surveys.service';
@@ -94,6 +95,10 @@ describe(PublicSurveysController.name, () => {
           },
         },
         { provide: CACHE_MANAGER, useValue: mockCacheManager },
+        {
+          provide: EventEmitter2,
+          useValue: { emit: jest.fn() },
+        },
       ],
     }).compile();
 
