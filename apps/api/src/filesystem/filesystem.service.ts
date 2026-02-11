@@ -54,10 +54,12 @@ import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResul
 import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
+import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
 import THIRTY_DAYS from '@libs/common/constants/thirtyDays';
 import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 import UsersService from '../users/users.service';
 import CustomHttpException from '../common/CustomHttpException';
+import validatePath from '../common/pipes/validatePath';
 
 @Injectable()
 class FilesystemService {
@@ -358,6 +360,8 @@ class FilesystemService {
   async getFilesInfo(path: string): Promise<FileInfoDto[]> {
     try {
       const folderPath = `${APPS_FILES_PATH}/${path}`;
+      validatePath(APPS_FILES_PATH, folderPath);
+
       const files = await readdir(folderPath);
 
       const fileDataPromises = files.map(async (fileName) => {
@@ -393,12 +397,14 @@ class FilesystemService {
     filePath: string,
     fallBackPath?: string,
   ): Promise<Response> {
+    validatePath(PUBLIC_ASSET_PATH, filePath);
     const fileExists = await FilesystemService.checkIfFileExist(filePath);
     if (fileExists) {
       res.setHeader(HTTP_HEADERS.AssetSource, 'custom');
       return this.serve(filePath, req, res);
     }
     if (fallBackPath) {
+      validatePath(PUBLIC_ASSET_PATH, fallBackPath);
       res.setHeader(HTTP_HEADERS.AssetSource, 'fallback');
       return this.serve(fallBackPath, req, res);
     }
@@ -407,11 +413,13 @@ class FilesystemService {
 
   async serveTempFile(name: string, filename: string, req: Request, res: Response) {
     const filePath = join(TEMP_FILES_PATH, name, filename);
+    validatePath(TEMP_FILES_PATH, filePath);
     return this.serve(filePath, req, res);
   }
 
   async serveFile(name: string, filename: string, req: Request, res: Response) {
     const filePath = join(APPS_FILES_PATH, name, filename);
+    validatePath(APPS_FILES_PATH, filePath);
     return this.serve(filePath, req, res);
   }
 

@@ -20,6 +20,7 @@
 /* eslint-disable @typescript-eslint/class-methods-use-this */
 import { join } from 'path';
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -52,6 +53,7 @@ import FilesystemService from './filesystem.service';
 import Public from '../common/decorators/public.decorator';
 import IsPublicAppGuard from '../common/guards/isPublicApp.guard';
 import ValidatePathPipe from '../common/pipes/validatePath.pipe';
+import validatePath from '../common/pipes/validatePath';
 
 @ApiTags(EDU_API_CONFIG_ENDPOINTS.FILES)
 @ApiBearerAuth()
@@ -72,10 +74,11 @@ class FileSystemController {
       ),
     ),
   )
-  uploadFileToApp(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
+  uploadFileToApp(@UploadedFile() file: Express.Multer.File, @Req() req: Request, @Res() res: Response) {
     if (!file) {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
     }
+    validatePath(APPS_FILES_PATH, `${APPS_FILES_PATH}/${req.params.name}/${file.originalname}`);
     return res.status(200).json(file.filename);
   }
 
@@ -111,7 +114,8 @@ class FileSystemController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    return this.filesystemService.serveFile(appName, FilesystemService.buildPathString(filename), req, res);
+    const fileName = FilesystemService.buildPathString(filename);
+    return this.filesystemService.serveFile(appName, fileName, req, res);
   }
 
   @Public()
@@ -141,6 +145,7 @@ class FileSystemController {
   async deletePublicFile(@Param('appName') appName: string, @Param('filename') filename: string | string[]) {
     const fileName = FilesystemService.buildPathString(filename);
     const filePath = join(PUBLIC_ASSET_PATH, appName);
+    validatePath(PUBLIC_ASSET_PATH, `${filePath}/${fileName}`);
     return FilesystemService.deleteFile(filePath, fileName);
   }
 
@@ -148,6 +153,7 @@ class FileSystemController {
   @UseGuards(AdminGuard)
   deleteFile(@Param('appName') appName: string, @Param('filename') filename: string) {
     const appsPath = join(APPS_FILES_PATH, appName);
+    validatePath(APPS_FILES_PATH, `${APPS_FILES_PATH}/${appName}/${filename}`);
     return FilesystemService.deleteFile(appsPath, FilesystemService.buildPathString(filename));
   }
 
@@ -173,10 +179,11 @@ class FileSystemController {
       ),
     }),
   )
-  upload(@UploadedFile() file: Express.Multer.File) {
+  upload(@UploadedFile() file: Express.Multer.File, @Body() body: UploadGlobalAssetDto) {
     if (!file) {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
     }
+    validatePath(PUBLIC_ASSET_PATH, `${PUBLIC_ASSET_PATH}/${body.destination}/${body.filename}`);
     return { path: `${file.destination.replace('.', '')}/${file.filename}` };
   }
 }
