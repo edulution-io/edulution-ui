@@ -41,24 +41,18 @@
   padding: 1rem 0;
 }
 
-.sv-action__content {
-  display: flex;
-  justify-self: center;
-
-  .svc-element__add-new-question.svc-btn {
-    min-width: 12rem;
-    height: 3rem;
-    width: 14rem;
-    border-radius: var(--border-radius, 10px);
-  }
-}
-
 .svc-preview__test-again.svc-btn {
   display: flex;
   justify-content: center;
   height: 3rem;
   width: 12rem !important;
   border-radius: var(--border-radius, 12px);
+}
+
+.svc-surface-placeholder {
+  margin-top: 10rem;
+  justify-self: center;
+  align-self: center;
 }
 
 .sd-dropdown__value {
