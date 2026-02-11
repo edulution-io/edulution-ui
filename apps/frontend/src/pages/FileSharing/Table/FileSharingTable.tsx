@@ -265,15 +265,20 @@ const FileSharingTable = () => {
   );
 
   const activeFilterCount = useMemo(
-    () => categoryFilterOptions.filter((option) => !option.checked).length,
-    [categoryFilterOptions],
+    () =>
+      categoryFilterOptions.filter((option) => !option.checked).length +
+      (showSystemFiles ? 1 : 0) +
+      (showHiddenFiles ? 1 : 0),
+    [categoryFilterOptions, showSystemFiles, showHiddenFiles],
   );
 
   const handleResetFilters = useCallback(() => {
     Object.values(FILE_CATEGORIES).forEach((category) => {
       setFileCategoryFilter(APPS.FILE_SHARING, category, true);
     });
-  }, [setFileCategoryFilter]);
+    setShowSystemFiles(APPS.FILE_SHARING, false);
+    setShowHiddenFiles(APPS.FILE_SHARING, false);
+  }, [setFileCategoryFilter, setShowSystemFiles, setShowHiddenFiles]);
 
   const filterOptions: FilterOption[] = useMemo(
     () => [
