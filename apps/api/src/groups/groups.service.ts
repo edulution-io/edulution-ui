@@ -439,10 +439,10 @@ class GroupsService {
     try {
       const allGroups = (await this.cacheManager.get<Group[]>(ALL_GROUPS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL)) || [];
 
-      attributesByPath.forEach((attributes, groupPath) => {
-        const index = allGroups.findIndex((g) => g.path === groupPath);
-        if (index >= 0) {
-          allGroups[index] = { ...allGroups[index], attributes: { ...allGroups[index].attributes, ...attributes } };
+      allGroups.forEach((group, index) => {
+        const attributes = attributesByPath.get(group.path);
+        if (attributes) {
+          allGroups[index] = { ...group, attributes: { ...group.attributes, ...attributes } };
         }
       });
 
