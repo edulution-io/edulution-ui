@@ -17,6 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const REQUIRED_GROUP_ATTRIBUTES = ['mail', 'displayName', 'sophomorixMaillist', 'description', 'proxyAddresses'];
+const REQUIRED_GROUP_ATTRIBUTES = [
+  'mail',
+  'displayName',
+  'sophomorixMaillist',
+  'description',
+  'proxyAddresses',
+  'sophomorixMailAlias',
+];
 
 export default REQUIRED_GROUP_ATTRIBUTES;
