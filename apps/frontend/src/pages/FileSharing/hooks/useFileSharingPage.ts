@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
@@ -64,6 +64,14 @@ const useFileSharingPage = () => {
   const previousWebdavShare = useRef<string | undefined>(webdavShare);
   const hasRestoredSession = useRef(false);
 
+  const isChildOfShareRoot = useCallback(
+    (filePath: string) => {
+      const normalizedRoot = shareRootPath.replace(/\/+$/, '');
+      return normalizedRoot === '' || filePath === shareRootPath || filePath.startsWith(`${normalizedRoot}/`);
+    },
+    [shareRootPath],
+  );
+
   useEffect(() => {
     if (previousWebdavShare.current !== webdavShare && previousWebdavShare.current !== undefined) {
       clearFilesOnShareChange();
@@ -72,33 +80,31 @@ const useFileSharingPage = () => {
   }, [webdavShare, clearFilesOnShareChange]);
 
   useEffect(() => {
-    if (isFileProcessing || webdavShares.length === 0 || isWaitingForUserData || !shareRootPath) return;
+    if (isFileProcessing || webdavShares.length === 0 || isWaitingForUserData) return;
 
     const hasPathParam = searchParams.has(URL_SEARCH_PARAMS.PATH);
-    const isChildOfShareRoot = (filePath: string) =>
-      shareRootPath === '/' || filePath === shareRootPath || filePath.startsWith(`${shareRootPath}/`);
+
+    const redirectTo = (targetPath: string) => {
+      const next = new URLSearchParams(searchParams);
+      next.set(URL_SEARCH_PARAMS.PATH, targetPath);
+      setSearchParams(next, { replace: true });
+    };
 
     if (shareRootPath !== '/' && hasPathParam && !isChildOfShareRoot(path)) {
-      const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.set(URL_SEARCH_PARAMS.PATH, shareRootPath);
-      setSearchParams(newSearchParams, { replace: true });
+      redirectTo(shareRootPath);
       return;
     }
 
     if (!hasRestoredSession.current && pathToRestoreSession !== path && isChildOfShareRoot(pathToRestoreSession)) {
       hasRestoredSession.current = true;
-      const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.set(URL_SEARCH_PARAMS.PATH, pathToRestoreSession);
-      setSearchParams(newSearchParams, { replace: true });
+      redirectTo(pathToRestoreSession);
       return;
     }
 
     hasRestoredSession.current = true;
 
     if (!hasPathParam && shareRootPath !== '/') {
-      const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.set(URL_SEARCH_PARAMS.PATH, shareRootPath);
-      setSearchParams(newSearchParams, { replace: true });
+      redirectTo(shareRootPath);
       return;
     }
 
