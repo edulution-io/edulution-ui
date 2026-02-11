@@ -17,12 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
-import NotificationSourceType from '@libs/notification/types/notificationSourceType';
+import GROUP_TYPE_TO_LOCATION from '@libs/chat/constants/groupTypeToLocation';
 
-const DEEP_LINK_SOURCE_TYPES: NotificationSourceType[] = [
-  NOTIFICATION_SOURCE_TYPE.BULLETIN,
-  NOTIFICATION_SOURCE_TYPE.CHAT,
-];
+const toChatRoute = (sourceId: string): string => {
+  const separatorIndex = sourceId.indexOf('/');
+  if (separatorIndex === -1) {
+    return sourceId;
+  }
+  const groupType = sourceId.substring(0, separatorIndex);
+  const groupName = sourceId.substring(separatorIndex + 1);
+  const location = GROUP_TYPE_TO_LOCATION[groupType];
+  return location ? `${location}/${groupName}` : sourceId;
+};
 
-export default DEEP_LINK_SOURCE_TYPES;
+export default toChatRoute;
