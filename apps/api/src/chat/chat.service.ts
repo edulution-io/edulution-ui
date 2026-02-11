@@ -31,6 +31,8 @@ import { GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
 import PROJECTS_PREFIX from '@libs/lmnApi/constants/prefixes/projectsPrefix';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import PUSH_NOTIFICATION_CHANNEL_ID from '@libs/notification/constants/pushNotificationChannelId';
+import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
+import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
 import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import CustomHttpException from '../common/CustomHttpException';
@@ -135,13 +137,27 @@ class ChatService {
 
     const recipients = members.filter((member) => member !== message.createdBy);
     if (recipients.length > 0) {
-      await this.notificationsService.notifyUsernames(recipients, {
-        title: groupName,
-        subtitle: `${message.createdByUserFirstName} ${message.createdByUserLastName}`,
-        body: message.content,
-        channelId: PUSH_NOTIFICATION_CHANNEL_ID.CHAT,
-        data: { groupName, groupType, conversationId: message.conversationId },
-      });
+      const sourceId = `${groupType}/${groupName}`;
+
+      await this.notificationsService.upsertNotificationForSource(
+        recipients,
+        {
+          title: groupName,
+          subtitle: `${message.createdByUserFirstName} ${message.createdByUserLastName}`,
+          body: message.content,
+          channelId: PUSH_NOTIFICATION_CHANNEL_ID.CHAT,
+          data: { groupName, groupType, conversationId: message.conversationId },
+        },
+        message.createdBy,
+        {
+          type: NOTIFICATION_TYPE.USER,
+          sourceType: NOTIFICATION_SOURCE_TYPE.CHAT,
+          sourceId,
+          title: groupName,
+          pushNotification: `${message.createdByUserFirstName} ${message.createdByUserLastName}: ${message.content}`,
+          createdBy: message.createdBy,
+        },
+      );
     }
   }
 

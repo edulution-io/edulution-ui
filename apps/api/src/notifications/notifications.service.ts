@@ -253,8 +253,10 @@ class NotificationsService {
           pushNotification: updateData.pushNotification,
           content: updateData.content,
           data: updateData.data,
+          createdAt: new Date(),
         },
       },
+      { timestamps: false },
     );
 
     await this.syncUserNotifications(notificationId, usernames);
@@ -317,7 +319,8 @@ class NotificationsService {
     if (usernamesToResetRead.length > 0) {
       await this.userNotificationModel.updateMany(
         { notificationId: objectId, username: { $in: usernamesToResetRead } },
-        { $set: { readAt: null, status: USER_NOTIFICATION_STATUS.PENDING } },
+        { $set: { readAt: null, status: USER_NOTIFICATION_STATUS.PENDING, createdAt: new Date() } },
+        { timestamps: false },
       );
     }
 
@@ -412,6 +415,27 @@ class NotificationsService {
 
     const result = await this.userNotificationModel.updateOne(
       { _id: objectId, username, readAt: null },
+      { $set: { readAt: new Date() } },
+    );
+
+    return { modifiedCount: result.modifiedCount };
+  }
+
+  async markAsReadBySource(
+    sourceType: NotificationSourceType,
+    sourceId: string,
+    username: string,
+  ): Promise<{ modifiedCount: number }> {
+    const notification = await this.notificationModel.findOne({ sourceType, sourceId }).exec();
+
+    if (!notification) {
+      return { modifiedCount: 0 };
+    }
+
+    const notificationObjectId = new Types.ObjectId(String(notification.id));
+
+    const result = await this.userNotificationModel.updateOne(
+      { notificationId: notificationObjectId, username, readAt: null },
       { $set: { readAt: new Date() } },
     );
 
