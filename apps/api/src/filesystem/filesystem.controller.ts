@@ -20,7 +20,6 @@
 /* eslint-disable @typescript-eslint/class-methods-use-this */
 import { join } from 'path';
 import {
-  Body,
   Controller,
   Delete,
   Get,
@@ -74,11 +73,10 @@ class FileSystemController {
       ),
     ),
   )
-  uploadFileToApp(@UploadedFile() file: Express.Multer.File, @Req() req: Request, @Res() res: Response) {
+  uploadFileToApp(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
     if (!file) {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
     }
-    validatePath(APPS_FILES_PATH, `${APPS_FILES_PATH}/${req.params.name}/${file.originalname}`);
     return res.status(200).json(file.filename);
   }
 
@@ -179,11 +177,10 @@ class FileSystemController {
       ),
     }),
   )
-  upload(@UploadedFile() file: Express.Multer.File, @Body() body: UploadGlobalAssetDto) {
+  upload(@UploadedFile() file: Express.Multer.File) {
     if (!file) {
       throw new CustomHttpException(CommonErrorMessages.FILE_NOT_PROVIDED, HttpStatus.BAD_REQUEST);
     }
-    validatePath(PUBLIC_ASSET_PATH, `${PUBLIC_ASSET_PATH}/${body.destination}/${body.filename}`);
     return { path: `${file.destination.replace('.', '')}/${file.filename}` };
   }
 }

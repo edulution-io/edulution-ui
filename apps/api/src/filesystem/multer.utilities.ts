@@ -24,6 +24,8 @@ import { existsSync, mkdirSync } from 'fs';
 import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import SVG_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/svgUploadAllowedMimeTypes';
 import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
+import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
+import validatePath from '../common/pipes/validatePath';
 
 /**
  * Generates a disk storage configuration that can dynamically
@@ -49,6 +51,7 @@ export const createDiskStorage = (
       if (fileNameGenerator) {
         fileName = fileNameGenerator(req, file);
       }
+      validatePath(APPS_FILES_PATH, `${APPS_FILES_PATH}/${req.params.name}/${fileName}`);
       callback(null, fileName);
     },
   });
