@@ -72,23 +72,20 @@ const useFileSharingPage = () => {
   }, [webdavShare, clearFilesOnShareChange]);
 
   useEffect(() => {
-    if (isFileProcessing || webdavShares.length === 0 || isWaitingForUserData) return;
+    if (isFileProcessing || webdavShares.length === 0 || isWaitingForUserData || !shareRootPath) return;
 
     const hasPathParam = searchParams.has(URL_SEARCH_PARAMS.PATH);
-    const isPathWithinShareRoot = shareRootPath === '/' || path.startsWith(shareRootPath);
+    const isChildOfShareRoot = (filePath: string) =>
+      shareRootPath === '/' || filePath === shareRootPath || filePath.startsWith(`${shareRootPath}/`);
 
-    if (shareRootPath !== '/' && hasPathParam && !isPathWithinShareRoot) {
+    if (shareRootPath !== '/' && hasPathParam && !isChildOfShareRoot(path)) {
       const newSearchParams = new URLSearchParams(searchParams);
       newSearchParams.set(URL_SEARCH_PARAMS.PATH, shareRootPath);
       setSearchParams(newSearchParams, { replace: true });
       return;
     }
 
-    if (
-      !hasRestoredSession.current &&
-      pathToRestoreSession !== path &&
-      pathToRestoreSession.startsWith(shareRootPath)
-    ) {
+    if (!hasRestoredSession.current && pathToRestoreSession !== path && isChildOfShareRoot(pathToRestoreSession)) {
       hasRestoredSession.current = true;
       const newSearchParams = new URLSearchParams(searchParams);
       newSearchParams.set(URL_SEARCH_PARAMS.PATH, pathToRestoreSession);
