@@ -32,7 +32,10 @@ import {
   PUBLIC_SURVEY_ANSWER_ENDPOINT,
   SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT,
   PUBLIC_SURVEYS_ANSWER_FILE_ATTACHMENT_ENDPOINT,
+  SURVEY_CHOICES,
+  PUBLIC_SURVEY_CHOICES,
 } from '@libs/survey/constants/surveys-endpoint';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import { publicUserLoginRegex } from '@libs/survey/utils/publicUserLoginRegex';
 import AttendeeDto from '@libs/user/types/attendee.dto';
 import eduApi from '@/api/eduApi';
@@ -81,6 +84,8 @@ interface ParticipateSurveyStore {
     isPublic?: boolean,
   ) => Promise<string>;
   isDeletingFile?: boolean;
+
+  submitOtherChoice: (surveyId: string, questionName: string, otherValue: string, isPublic: boolean) => Promise<void>;
 
   reset: () => void;
 }
@@ -253,6 +258,24 @@ const useParticipateSurveyStore = create<ParticipateSurveyStore>((set, get) => (
       return 'error';
     } finally {
       set({ isDeletingFile: false });
+    }
+  },
+
+  submitOtherChoice: async (
+    surveyId: string,
+    questionName: string,
+    otherValue: string,
+    isPublic: boolean,
+  ): Promise<void> => {
+    if (!otherValue.trim()) {
+      return;
+    }
+    const choice: ChoiceDto = { name: otherValue, title: otherValue, limit: 0 };
+    const endpoint = isPublic ? PUBLIC_SURVEY_CHOICES : SURVEY_CHOICES;
+    try {
+      await eduApi.post(`${endpoint}/${surveyId}/${questionName}?append=true`, [choice]);
+    } catch (error) {
+      handleApiError(error, set);
     }
   },
 

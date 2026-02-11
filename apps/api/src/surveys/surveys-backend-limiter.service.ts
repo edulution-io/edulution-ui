@@ -22,12 +22,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import JwtUser from '@libs/user/types/jwt/jwtUser';
 import ChoiceDto from '@libs/survey/types/api/choice.dto';
-import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import TSurveyElement from '@libs/survey/types/TSurveyElement';
 import SurveyQuestionPanelTypes from '@libs/survey/constants/surveyQuestionPanelTypes';
+import SHOW_OTHER_ITEM from '@libs/survey/constants/show-other-item';
+import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import CustomHttpException from '../common/CustomHttpException';
+import SseService from '../sse/sse.service';
 import SurveysService from './surveys.service';
 import { Survey } from './survey.schema';
 import { SurveysBackendLimiter, SurveysBackendLimiterDocument } from './surveys-backend-limiter.schema';
@@ -37,6 +39,7 @@ class SurveysBackendLimiterService {
   constructor(
     @InjectModel(SurveysBackendLimiter.name) private surveysBackendLimiterModel: Model<SurveysBackendLimiterDocument>,
     private readonly surveyService: SurveysService,
+    private readonly sseService: SseService,
   ) {}
 
   getQuestionFromElementList(elements: TSurveyElement[], questionName: string): TSurveyElement | undefined {
@@ -91,36 +94,16 @@ class SurveysBackendLimiterService {
     return question.showOtherItem ?? false;
   };
 
-  throwErrorIfTheUserHasNoPermissionToCreateOrUpdateTheBackendLimiters = async (
-    surveyId: string,
+  throwErrorIfTheUserHasNoPermissionToCreateOrUpdateTheBackendLimiters = (
+    survey: Survey,
     questionName: string,
-    user?: JwtUser,
-  ): Promise<void> => {
-    let survey: Survey | null = null;
-    if (!user) {
-      survey = await this.surveyService.findPublicSurvey(surveyId);
-    } else {
-      survey = await this.surveyService.findSurvey(surveyId, user);
-    }
-    if (!survey) {
+    _user?: JwtUser,
+  ): void => {
+    const isAllowed = this.canAddOwnChoicesToTheQuestion(survey, questionName);
+    if (!isAllowed) {
       throw new CustomHttpException(
-        SurveyErrorMessages.NotFoundError,
-        HttpStatus.NOT_FOUND,
-        undefined,
-        SurveysBackendLimiterService.name,
-      );
-    }
-
-    const isCreator = survey.creator.username === user?.preferred_username;
-    if (isCreator) {
-      return;
-    }
-
-    const isParticipantAllowedToUpdate = this.canAddOwnChoicesToTheQuestion(survey, questionName);
-    if (!isParticipantAllowedToUpdate) {
-      throw new CustomHttpException(
-        CommonErrorMessages.DB_ACCESS_FAILED,
-        HttpStatus.NOT_MODIFIED,
+        SurveyErrorMessages.UpdateOrCreateError,
+        HttpStatus.FORBIDDEN,
         undefined,
         SurveysBackendLimiterService.name,
       );
@@ -138,6 +121,38 @@ class SurveysBackendLimiterService {
 
     if (!backendLimiter) {
       throw new CustomHttpException(SurveyErrorMessages.UpdateOrCreateError, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async appendChoicesToBackendLimiter(surveyId: string, questionName: string, choices: ChoiceDto[]): Promise<void> {
+    const backendLimiter = await this.surveysBackendLimiterModel.findOne({ surveyId, questionName }).exec();
+
+    if (!backendLimiter) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.NotFoundError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveysBackendLimiterService.name,
+      );
+    }
+
+    const existingChoices = backendLimiter.choices;
+    const showOtherItemChoice = existingChoices.find((choice) => choice.name === SHOW_OTHER_ITEM);
+    const otherItemLimit = showOtherItemChoice?.limit ?? 0;
+
+    let hasNewChoices = false;
+    choices.forEach((newChoice) => {
+      const alreadyExists = existingChoices.some((existing) => existing.title === newChoice.title);
+      if (!alreadyExists) {
+        existingChoices.push({ ...newChoice, limit: otherItemLimit });
+        hasNewChoices = true;
+      }
+    });
+
+    if (hasNewChoices) {
+      backendLimiter.choices = existingChoices;
+      await backendLimiter.save();
+      this.sseService.informAllUsers(surveyId, SSE_MESSAGE_TYPE.SURVEY_BACKEND_LIMITER_UPDATED);
     }
   }
 

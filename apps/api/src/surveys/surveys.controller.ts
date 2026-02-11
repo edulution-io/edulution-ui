@@ -330,15 +330,26 @@ class SurveysController {
     @Param() params: { surveyId: string; questionId: string },
     @GetCurrentUser() currentUser: JWTUser,
     @Body() choices: ChoiceDto[],
+    @Res() res: Response,
+    @Query('append') append?: string,
   ) {
     const { surveyId, questionId } = params;
     SurveysController.validateParams(params, ['surveyId', 'questionId']);
-    await this.surveysBackendLimiterService.throwErrorIfTheUserHasNoPermissionToCreateOrUpdateTheBackendLimiters(
-      surveyId,
+    const survey = await this.surveyService.getSurvey(surveyId, currentUser);
+
+    const isCreator = survey.creator.username === currentUser?.preferred_username;
+    if (isCreator && append !== 'true') {
+      await this.surveysBackendLimiterService.updateOrCreateSurveysBackendLimiters(surveyId, questionId, choices);
+      return res.status(HttpStatus.OK).json({ message: 'success' });
+    }
+
+    this.surveysBackendLimiterService.throwErrorIfTheUserHasNoPermissionToCreateOrUpdateTheBackendLimiters(
+      survey,
       questionId,
       currentUser,
     );
-    await this.surveysBackendLimiterService.updateOrCreateSurveysBackendLimiters(surveyId, questionId, choices);
+    await this.surveysBackendLimiterService.appendChoicesToBackendLimiter(surveyId, questionId, choices);
+    return res.status(HttpStatus.OK).json({ message: 'success' });
   }
 
   @Get(`${CHOICES}/:surveyId/:questionId`)

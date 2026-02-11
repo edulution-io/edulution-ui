@@ -21,8 +21,18 @@ import React, { useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
 import { Survey } from 'survey-react-ui';
 import { useTranslation } from 'react-i18next';
-import { ClearFilesEvent, DownloadFileEvent, Model, Serializer, SurveyModel, UploadFilesEvent } from 'survey-core';
+import { useDebounceCallback } from 'usehooks-ts';
+import {
+  ClearFilesEvent,
+  DownloadFileEvent,
+  Model,
+  Serializer,
+  SurveyModel,
+  UploadFilesEvent,
+  ValueChangedEvent,
+} from 'survey-core';
 import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
+import SURVEYJS_COMMENT_SUFFIX from '@libs/survey/constants/surveyjs-comment-suffix';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import useLanguage from '@/hooks/useLanguage';
 import useSurveyTablesPageStore from '@/pages/Surveys/Tables/useSurveysTablesPageStore';
@@ -67,13 +77,21 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
 
   const { selectedSurvey, updateOpenSurveys, updateAnsweredSurveys } = useSurveyTablesPageStore();
 
-  const { fetchAnswer, isFetching, answerSurvey, previousAnswer, uploadTempFile, deleteTempFile } =
+  const { fetchAnswer, isFetching, answerSurvey, previousAnswer, uploadTempFile, deleteTempFile, submitOtherChoice } =
     useParticipateSurveyStore();
 
   const { setIsOpen: setOpenExportPDFDialog } = useExportSurveyToPdfStore();
 
   const { t } = useTranslation();
   const { language } = useLanguage();
+
+  const DEBOUNCE_DELAY_MS = 500;
+  const debouncedSubmitOtherChoice = useDebounceCallback(
+    (surveyId: string, questionName: string, otherValue: string, isSurveyPublic: boolean) => {
+      void submitOtherChoice(surveyId, questionName, otherValue, isSurveyPublic);
+    },
+    DEBOUNCE_DELAY_MS,
+  );
 
   const surveyParticipationModel = useMemo(() => {
     if (!selectedSurvey || !selectedSurvey.formula) {
@@ -224,8 +242,26 @@ const SurveyParticipationModel = (props: SurveyParticipationModelProps): React.R
       }
     });
 
+    newModel.onValueChanged.add((sender: SurveyModel, options: ValueChangedEvent) => {
+      const { name } = options;
+      if (!name.endsWith(SURVEYJS_COMMENT_SUFFIX)) {
+        return;
+      }
+      const otherValue = options.value as unknown;
+      if (typeof otherValue !== 'string' || !otherValue.trim()) {
+        return;
+      }
+      const questionName = name.slice(0, -SURVEYJS_COMMENT_SUFFIX.length);
+      const question = sender.getQuestionByName(questionName);
+      if (!question || !question.showOtherItem) {
+        return;
+      }
+      const isSurveyPublic = selectedSurvey.isPublic || isPublic || false;
+      debouncedSubmitOtherChoice(selectedSurvey.id!, questionName, otherValue, isSurveyPublic);
+    });
+
     return newModel;
-  }, [selectedSurvey, language]);
+  }, [selectedSurvey, language, debouncedSubmitOtherChoice]);
 
   useEffect(() => {
     if (!selectedSurvey?.id) {

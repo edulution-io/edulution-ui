@@ -53,6 +53,24 @@ class SurveysService implements OnModuleInit {
     await MigrationService.runMigrations<SurveyDocument>(this.surveyModel, surveysMigrationsList);
   }
 
+  getSurvey = async (surveyId: string, user?: JwtUser): Promise<Survey> => {
+    let survey: Survey | null = null;
+    if (!user) {
+      survey = await this.findPublicSurvey(surveyId);
+    } else {
+      survey = await this.findSurvey(surveyId, user);
+    }
+    if (!survey) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.NotFoundError,
+        HttpStatus.NOT_FOUND,
+        undefined,
+        SurveysService.name,
+      );
+    }
+    return survey;
+  };
+
   async findSurveyWithCreatorDependency(surveyId: string, creator: JwtUser): Promise<Survey | null> {
     try {
       const survey = await this.surveyModel

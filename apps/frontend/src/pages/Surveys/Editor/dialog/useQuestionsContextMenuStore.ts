@@ -193,7 +193,7 @@ const useQuestionsContextMenuStore = create<QuestionsContextMenuStore>((set, get
 
     const promises = Object.keys(storedLimiters).map((questionName) =>
       storedLimiters[questionName].length > 0
-        ? eduApi.post<ChoiceDto[]>(`${SURVEYS}/${surveyId}/${questionName}`, { ...storedLimiters[questionName] })
+        ? eduApi.post<ChoiceDto[]>(`${SURVEYS}/${surveyId}/${questionName}`, storedLimiters[questionName])
         : Promise.resolve(),
     );
 
