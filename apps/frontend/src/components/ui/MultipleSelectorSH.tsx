@@ -33,7 +33,7 @@ import { BadgeSH } from '@/components/ui/BadgeSH';
 import { CommandGroup, CommandItem, CommandList, CommandSH } from '@/components/ui/CommandSH';
 import MultipleSelectorOptionSH from '@libs/ui/types/multipleSelectorOptionSH';
 import { useDebounceValue } from 'usehooks-ts';
-import { VARIANT_COLORS } from '@libs/ui/constants/commonClassNames';
+import { VARIANT_COLORS } from '@libs/frontend/ui/constants/commonClassNames';
 
 const MULTIPLE_SELECTOR_BASE_CLASSES =
   'w-full rounded-lg px-3 text-p transition-colors focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 flex flex-wrap items-center gap-1';

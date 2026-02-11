@@ -19,9 +19,9 @@
 
 import { DirectoryFileDTO } from '@libs/filesharing/types/directoryFileDTO';
 import FileActionType from '@libs/filesharing/types/fileActionType';
-import TableAction from '@libs/common/types/tableAction';
+import TableAction from '@libs/frontend/common/types/tableAction';
 import { faCopy, faDownload, faFileExport, faPenToSquare, faShareNodes } from '@fortawesome/free-solid-svg-icons';
-import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
+import { DeleteIcon } from '@libs/frontend/common/constants/standardActionIcons';
 
 interface FileSharingActionCallbacks {
   openDialog: (action: FileActionType) => void;

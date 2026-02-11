@@ -18,7 +18,7 @@
  */
 
 import TApps from '@libs/appconfig/types/appsType';
-import MenuItem from '@libs/menubar/menuItem';
+import MenuItem from '@libs/frontend/menubar/menuItem';
 
 interface MenuBarEntry {
   menuItems: MenuItem[];

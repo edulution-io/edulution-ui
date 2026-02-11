@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
+import { DeleteIcon } from '@libs/frontend/common/constants/standardActionIcons';
 import { Button } from '@edulution-io/ui-kit';
 
 const DeleteButton: React.FC<{ onDelete: () => void }> = ({ onDelete }) => (

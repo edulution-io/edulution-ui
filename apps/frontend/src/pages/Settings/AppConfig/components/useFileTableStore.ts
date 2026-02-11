@@ -18,7 +18,7 @@
  */
 
 import { create } from 'zustand';
-import { type FileTableStore } from '@libs/appconfig/types/fileTableStore';
+import { type FileTableStore } from '@libs/frontend/appconfig/types/fileTableStore';
 import eduApi from '@/api/eduApi';
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import handleApiError from '@/utils/handleApiError';

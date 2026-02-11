@@ -18,7 +18,7 @@
  */
 
 import React from 'react';
-import TableAction from '@libs/common/types/tableAction';
+import TableAction from '@libs/frontend/common/types/tableAction';
 import { Button } from '@edulution-io/ui-kit';
 import { TableCell, TableFooter, TableRow } from '@/components/ui/Table';
 import TableActionMenu from '@/components/ui/Table/TableActionMenu';

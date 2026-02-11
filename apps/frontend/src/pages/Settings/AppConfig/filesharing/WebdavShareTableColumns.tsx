@@ -24,7 +24,7 @@ import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableCell from '@/components/ui/Table/SelectableCell';
 import WEBDAV_SHARE_TABLE_COLUMNS from '@libs/filesharing/constants/webdavShareTableColumns';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
-import { DeleteIcon, EditIcon } from '@libs/common/constants/standardActionIcons';
+import { DeleteIcon, EditIcon } from '@libs/frontend/common/constants/standardActionIcons';
 import ID_ACTION_TABLE_COLUMN from '@libs/common/constants/idActionTableColumn';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import useDeploymentTarget from '@/hooks/useDeploymentTarget';

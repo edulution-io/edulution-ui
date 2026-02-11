@@ -1,0 +1,19 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "libs-frontend",
+  "root": "libs/frontend",
+  "sourceRoot": "libs/frontend",
+  "projectType": "library",
+  "tags": [],
+  "implicitDependencies": [],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "cache": true,
+      "options": {
+        "lintFilePatterns": ["libs/frontend/**/*.{ts,tsx}"],
+        "tsConfig": ["libs/frontend/tsconfig.json"]
+      }
+    }
+  }
+}

@@ -26,13 +26,13 @@ import generateFile from '@/pages/FileSharing/utilities/generateFile';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';
 import { HttpMethods } from '@libs/common/types/http-methods';
 
-import { FilesharingDialogProps, FileSharingFormValues } from '@libs/filesharing/types/filesharingDialogProps';
+import { FilesharingDialogProps, FileSharingFormValues } from '@libs/frontend/filesharing/types/filesharingDialogProps';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import ContentType from '@libs/filesharing/types/contentType';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
 import FileUploadProps from '@libs/filesharing/types/fileUploadProps';
 import DeleteFileProps from '@libs/filesharing/types/deleteFileProps';
-import MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogBodyProps';
+import MoveContentDialogBodyProps from '@libs/frontend/filesharing/types/moveContentDialogBodyProps';
 import MoveDirectoryDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/MoveDirectoryDialogBody';
 import CopyContentDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/CopyContentDialogBody';
 import PublicShareContentsDialogBody from '@/pages/FileSharing/Dialog/DialogBodys/PublicShareContentsDialogBody';

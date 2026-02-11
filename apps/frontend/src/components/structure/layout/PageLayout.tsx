@@ -20,7 +20,7 @@
 import React, { useRef } from 'react';
 import NativeAppHeader from '@/components/structure/layout/NativeAppHeader';
 import Footer from '@/components/ui/Footer';
-import NativeAppHeaderProps from '@libs/ui/types/NativeAppHeaderProps';
+import NativeAppHeaderProps from '@libs/frontend/ui/types/NativeAppHeaderProps';
 import { useLocation } from 'react-router-dom';
 import FLOATING_BUTTONS_BAR_ID from '@libs/ui/constants/floatingButtonsBarId';
 import useUserAccounts from '@/hooks/useUserAccounts';

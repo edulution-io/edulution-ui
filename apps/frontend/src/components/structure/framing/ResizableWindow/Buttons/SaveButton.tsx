@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { SaveIcon } from '@libs/common/constants/standardActionIcons';
+import { SaveIcon } from '@libs/frontend/common/constants/standardActionIcons';
 import WindowControlBaseButton from './WindowControlBaseButton';
 
 interface SaveButtonProps {

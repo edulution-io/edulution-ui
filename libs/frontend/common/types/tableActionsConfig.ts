@@ -19,7 +19,7 @@
 
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { Row } from '@tanstack/react-table';
-import StandardActionType from './standardActionType';
+import StandardActionType from '@libs/common/types/standardActionType';
 
 interface TableActionContext<TData> {
   selectedRows: Row<TData>[];

@@ -34,7 +34,7 @@ import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import i18n from '@/i18n';
 import { formatBytes, getElapsedTime, parseDate } from '@/pages/FileSharing/utilities/filesharingUtilities';
-import getFileCategory from '@libs/filesharing/utils/getFileCategory';
+import getFileCategory from '@libs/frontend/filesharing/utils/getFileCategory';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import SelectableCell from '@/components/ui/Table/SelectableCell';
 import FileEntryIcon from '@/pages/FileSharing/utilities/FileEntryIcon';

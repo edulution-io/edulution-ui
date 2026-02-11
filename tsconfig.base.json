@@ -10,6 +10,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./apps/frontend/src/*"],
+      "@libs/frontend/*": ["./libs/frontend/*"],
       "@libs/*": ["./libs/src/*"],
       "@edulution-io/ui-kit": ["./libs/ui-kit/src/index.ts"]
     },

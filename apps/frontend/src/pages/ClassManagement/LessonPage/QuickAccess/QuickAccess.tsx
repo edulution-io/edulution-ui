@@ -21,7 +21,7 @@ import React, { useEffect } from 'react';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import GroupsColumn from '@/pages/ClassManagement/LessonPage/QuickAccess/GroupsColumn';
 import UserGroups from '@libs/groups/types/userGroups.enum';
-import GroupColumn from '@libs/groups/types/groupColumn';
+import GroupColumn from '@libs/frontend/groups/types/groupColumn';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDesktop, faUserGear, faUsers } from '@fortawesome/free-solid-svg-icons';
 import useLmnApiStore from '@/store/useLmnApiStore';

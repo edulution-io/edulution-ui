@@ -22,7 +22,7 @@ import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
 import eduApi from '@/api/eduApi';
-import type ClassManagementStore from '@libs/classManagement/types/store/classManagementStore';
+import type ClassManagementStore from '@libs/frontend/classManagement/types/store/classManagementStore';
 import handleApiError from '@/utils/handleApiError';
 import type MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 import useLmnApiStore from '@/store/useLmnApiStore';

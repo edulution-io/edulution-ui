@@ -34,6 +34,7 @@
           "apps/frontend/tsconfig.json",
           "apps/api/tsconfig.json",
           "libs/tsconfig.json",
+          "libs/frontend/tsconfig.json",
           "libs/ui-kit/tsconfig.json"
         ]
       }
@@ -89,6 +90,12 @@
       "files": ["libs/src/**/*.ts", "libs/src/**/*.tsx"],
       "parserOptions": {
         "project": ["libs/tsconfig.json"]
+      }
+    },
+    {
+      "files": ["libs/frontend/**/*.ts", "libs/frontend/**/*.tsx"],
+      "parserOptions": {
+        "project": ["libs/frontend/tsconfig.json"]
       }
     },
     {

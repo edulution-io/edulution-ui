@@ -24,8 +24,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { useDebounceCallback, useEventListener, useOnClickOutside } from 'usehooks-ts';
 
-import FloatingButtonsBarProps from '@libs/ui/types/FloatingButtons/floatingButtonsBarProps';
-import FloatingButtonConfig from '@libs/ui/types/FloatingButtons/floatingButtonConfig';
+import FloatingButtonsBarProps from '@libs/frontend/ui/types/FloatingButtons/floatingButtonsBarProps';
+import FloatingButtonConfig from '@libs/frontend/ui/types/FloatingButtons/floatingButtonConfig';
 import FLOATING_BUTTONS_BAR_ID from '@libs/ui/constants/floatingButtonsBarId';
 import {
   DEBOUNCE_MS,
@@ -33,7 +33,7 @@ import {
   FLOATING_BUTTON_CLASS_NAME,
   WIDTH_TOLERANCE_PX,
 } from '@libs/ui/constants/floatingButtonsConfig';
-import calculateButtonLayout from '@libs/ui/utils/calculateButtonLayout';
+import calculateButtonLayout from '@libs/frontend/ui/utils/calculateButtonLayout';
 import { cn, Button } from '@edulution-io/ui-kit';
 import TEXT_COLOR_VARIANT from '@libs/ui/constants/textColorVariant';
 import usePortalRoot from '@/hooks/usePortalRoot';

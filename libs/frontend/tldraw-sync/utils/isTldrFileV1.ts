@@ -17,13 +17,18 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { TLSocketRoom } from '@tldraw/sync-core';
-import { UnknownRecord } from 'tldraw';
+import { TldrFileV1 } from '@libs/frontend/tldraw-sync/types/tldrFileV1';
 
-interface RoomState {
-  roomId: string;
-  room: TLSocketRoom<UnknownRecord, void>;
-  needsPersist: boolean;
-}
+const isTldrFileV1 = (value: unknown): value is TldrFileV1 => {
+  if (typeof value !== 'object' || value === null) return false;
+  const v = value as Record<string, unknown>;
+  const schema = v['schema'] as TldrFileV1['schema'] | undefined;
+  return (
+    v['tldrawFileFormatVersion'] === 1 &&
+    typeof schema === 'object' &&
+    schema?.schemaVersion === 2 &&
+    Array.isArray(v?.['records'])
+  );
+};
 
-export default RoomState;
+export default isTldrFileV1;

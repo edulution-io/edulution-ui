@@ -20,8 +20,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Row } from '@tanstack/react-table';
-import TableAction from '@libs/common/types/tableAction';
-import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
+import TableAction from '@libs/frontend/common/types/tableAction';
+import DropdownMenuItemType from '@libs/frontend/ui/types/dropdownMenuItemType';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 
 interface TableActionMenuProps<TData> {

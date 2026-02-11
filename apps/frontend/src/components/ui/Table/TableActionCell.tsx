@@ -21,7 +21,7 @@ import React, { KeyboardEvent, MouseEvent } from 'react';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Row } from '@tanstack/react-table';
-import TableAction from '@libs/common/types/tableAction';
+import TableAction from '@libs/frontend/common/types/tableAction';
 import TableActionMenu from './TableActionMenu';
 
 interface TableActionCellProps<TData> {

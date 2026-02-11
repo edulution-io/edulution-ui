@@ -31,7 +31,7 @@ import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import UserErrorMessages from '@libs/user/constants/user-error-messages';
 import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 import AUTH_TOTP_CONFIG from '@libs/auth/constants/totp-config';
-import type AuthRequestArgs from '@libs/auth/types/auth-request';
+import type AuthRequestArgs from '@libs/auth/types/authRequestArgs';
 import EDU_API_ROOT from '@libs/common/constants/eduApiRoot';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
 import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';

@@ -23,16 +23,16 @@ import { faFile, faFileCirclePlus, faChevronDown, faChevronUp, faFolderPlus } fr
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import UploadButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/uploadButton';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import type FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
+import type FloatingButtonsBarConfig from '@libs/frontend/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import type FileActionButtonProps from '@libs/filesharing/types/fileActionButtonProps';
 import FileActionType from '@libs/filesharing/types/fileActionType';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/constants/availableFileTypes';
 import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
 import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
 import { PredefinedExtensionKey } from '@libs/filesharing/constants/predefinedExtensions';
-import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
-import EXTENSION_ICON_MAP from '@libs/filesharing/constants/extensionIconMap';
-import DOCUMENT_FILE_TYPE_CONFIG from '@libs/filesharing/constants/documentFileTypeConfig';
+import DropdownMenuItemType from '@libs/frontend/ui/types/dropdownMenuItemType';
+import EXTENSION_ICON_MAP from '@libs/frontend/filesharing/constants/extensionIconMap';
+import DOCUMENT_FILE_TYPE_CONFIG from '@libs/frontend/filesharing/constants/documentFileTypeConfig';
 import SORTED_PREDEFINED_EXTENSIONS from '@libs/filesharing/constants/sortedPredefinedExtensions';
 
 const FileActionNonSelect: FC<FileActionButtonProps> = ({ openDialog }) => {

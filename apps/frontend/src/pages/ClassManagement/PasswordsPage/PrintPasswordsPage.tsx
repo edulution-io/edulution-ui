@@ -21,7 +21,7 @@ import React, { useEffect, useState } from 'react';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import { useTranslation } from 'react-i18next';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
-import GroupColumn from '@libs/groups/types/groupColumn';
+import GroupColumn from '@libs/frontend/groups/types/groupColumn';
 import UserGroups from '@libs/groups/types/userGroups.enum';
 import ClassList from '@/pages/ClassManagement/PasswordsPage/ClassList/ClassList';
 import getUserRegex from '@libs/lmnApi/constants/userRegex';

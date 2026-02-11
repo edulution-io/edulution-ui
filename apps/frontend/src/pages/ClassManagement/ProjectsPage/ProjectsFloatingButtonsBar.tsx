@@ -21,8 +21,8 @@ import React from 'react';
 import { t } from 'i18next';
 import UserGroups from '@libs/groups/types/userGroups.enum';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
-import { AddIcon } from '@libs/common/constants/standardActionIcons';
-import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
+import { AddIcon } from '@libs/frontend/common/constants/standardActionIcons';
+import FloatingButtonsBarConfig from '@libs/frontend/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 
 const ProjectsFloatingButtonsBar = () => {

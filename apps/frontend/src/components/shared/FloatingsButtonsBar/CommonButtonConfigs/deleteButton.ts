@@ -18,7 +18,7 @@
  */
 
 import { t } from 'i18next';
-import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
+import { DeleteIcon } from '@libs/frontend/common/constants/standardActionIcons';
 
 const DeleteButton = (onClick: () => void, isVisible?: boolean) => ({
   icon: DeleteIcon,

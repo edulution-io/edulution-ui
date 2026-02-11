@@ -46,7 +46,7 @@ import getDisplayName from '@/utils/getDisplayName';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import AppConfigPositionSelect from '@/pages/Settings/AppConfig/components/dropdown/AppConfigPositionSelect';
 import ExtendedOptionsForm from '@/pages/Settings/AppConfig/components/ExtendedOptionsForm';
-import AppConfigFloatingButtons from './AppConfigFloatingButtonsBar';
+import AppConfigFloatingButtonsBar from './AppConfigFloatingButtonsBar';
 import DeleteAppConfigDialog from './DeleteAppConfigDialog';
 import EditAppConfigIconDialog from './EditAppConfigIconDialog';
 import MailImporterConfig from './mails/MailImporterConfig';
@@ -329,7 +329,7 @@ const AppConfigPage: React.FC<AppConfigPageProps> = ({ settingLocation }) => {
     >
       {getSettingsForm()}
 
-      <AppConfigFloatingButtons
+      <AppConfigFloatingButtonsBar
         handleDeleteSettingsItem={() => setIsDeleteAppConfigDialogOpen(true)}
         handleSaveSettingsItem={handleSubmit(onSubmit)}
       />

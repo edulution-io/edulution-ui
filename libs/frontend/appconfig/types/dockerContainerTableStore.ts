@@ -20,11 +20,11 @@
 import { type RowSelectionState } from '@tanstack/react-table';
 import { type ContainerInfo } from 'dockerode';
 import { type YAMLMap } from 'yaml';
-import type AppConfigTable from '@libs/appconfig/types/appConfigTable';
+import type AppConfigTable from '@libs/frontend/appconfig/types/appConfigTable';
 import type TDockerCommands from '@libs/docker/types/TDockerCommands';
 import type DockerCompose from '@libs/docker/types/dockerCompose';
 import type CreateContainerDto from '@libs/docker/types/create-container.dto';
-import type TApps from './appsType';
+import type TApps from '@libs/appconfig/types/appsType';
 
 export interface DockerContainerTableStore extends AppConfigTable<ContainerInfo> {
   containers: ContainerInfo[];

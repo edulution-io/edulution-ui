@@ -29,7 +29,7 @@ import { useTranslation } from 'react-i18next';
 import InputWithActionIcons from '@/components/shared/InputWithActionIcons';
 import copyToClipboard from '@/utils/copyToClipboard';
 import { faCopy, faLock, faQrcode } from '@fortawesome/free-solid-svg-icons';
-import { DeleteIcon, EditIcon } from '@libs/common/constants/standardActionIcons';
+import { DeleteIcon, EditIcon } from '@libs/frontend/common/constants/standardActionIcons';
 import usePublicShareStore from '@/pages/FileSharing/publicShare/usePublicShareStore';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
 import FileSharingApiEndpoints from '@libs/filesharing/types/fileSharingApiEndpoints';

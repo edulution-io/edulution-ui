@@ -19,9 +19,9 @@
 
 import { RowSelectionState } from '@tanstack/react-table';
 import MailDto from '@libs/mail/types/mail.dto';
-import MailProviderConfigDto from './mailProviderConfig.dto';
-import CreateSyncJobDto from './mailcow-create-sync-job.dto';
-import SyncJobDto from './mailcow-sync-job.dto';
+import MailProviderConfigDto from '@libs/mail/types/mailProviderConfig.dto';
+import CreateSyncJobDto from '@libs/mail/types/mailcow-create-sync-job.dto';
+import SyncJobDto from '@libs/mail/types/mailcow-sync-job.dto';
 
 interface MailsStore {
   mails: MailDto[];

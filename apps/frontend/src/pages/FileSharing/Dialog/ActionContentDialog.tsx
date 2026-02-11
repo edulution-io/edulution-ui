@@ -38,7 +38,7 @@ import splitArrayIntoChunks from '@libs/common/utils/splitArrayIntoChunks';
 import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 import UploadFileDto from '@libs/filesharing/types/uploadFileDto';
 import PathChangeOrCreateProps from '@libs/filesharing/types/pathChangeOrCreateProps';
-import { FileSharingFormValues } from '@libs/filesharing/types/filesharingDialogProps';
+import { FileSharingFormValues } from '@libs/frontend/filesharing/types/filesharingDialogProps';
 
 interface CreateContentDialogProps {
   trigger?: React.ReactNode;

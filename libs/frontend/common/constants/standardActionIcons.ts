@@ -17,16 +17,20 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { SerializedSchema, StoreSnapshot, TLRecord } from 'tldraw';
-import { TldrFileV1 } from '@libs/tldraw-sync/types/tldrFileV1';
+import { faPlus, faPencil, faTrash, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
+import STANDARD_ACTION_TYPES from '@libs/common/constants/standardActionTypes';
 
-const toStoreSnapshot = (file: TldrFileV1): StoreSnapshot<TLRecord> => {
-  const store = file.records.reduce<Record<string, TLRecord>>((acc, record) => {
-    acc[record.id] = record;
-    return acc;
-  }, {});
-  const schema: SerializedSchema = { schemaVersion: 2, sequences: file.schema.sequences };
-  return { schema, store };
-};
+export const AddIcon = faPlus;
+export const EditIcon = faPencil;
+export const DeleteIcon = faTrash;
+export const SaveIcon = faFloppyDisk;
 
-export default toStoreSnapshot;
+const STANDARD_ACTION_ICONS = {
+  [STANDARD_ACTION_TYPES.ADD]: AddIcon,
+  [STANDARD_ACTION_TYPES.EDIT]: EditIcon,
+  [STANDARD_ACTION_TYPES.ADD_OR_EDIT]: AddIcon,
+  [STANDARD_ACTION_TYPES.DELETE]: DeleteIcon,
+  [STANDARD_ACTION_TYPES.SAVE]: SaveIcon,
+} as const;
+
+export default STANDARD_ACTION_ICONS;

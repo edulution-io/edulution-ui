@@ -25,7 +25,7 @@ import {
   OPEN_SURVEYS_PAGE,
 } from '@libs/survey/constants/surveys-endpoint';
 import { SurveysMenuIcon, SurveysViewAnsweredIcon, SurveysViewOpenIcon, SurveysViewOwnIcon } from '@/assets/icons';
-import MenuBarEntry from '@libs/menubar/menuBarEntry';
+import MenuBarEntry from '@libs/frontend/menubar/menuBarEntry';
 import APPS from '@libs/appconfig/constants/apps';
 import SurveysPageView from '@libs/survey/types/api/page-view';
 import { faAdd } from '@fortawesome/free-solid-svg-icons';

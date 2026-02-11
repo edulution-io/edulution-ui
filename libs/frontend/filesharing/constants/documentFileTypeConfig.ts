@@ -20,7 +20,7 @@
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { TAvailableFileTypes } from '@libs/filesharing/types/availableFileTypesType';
 import AVAILABLE_FILE_TYPES from '@libs/filesharing/constants/availableFileTypes';
-import EXTENSION_ICON_MAP from '@libs/filesharing/constants/extensionIconMap';
+import EXTENSION_ICON_MAP from '@libs/frontend/filesharing/constants/extensionIconMap';
 
 const DOCUMENT_FILE_TYPE_CONFIG: { fileType: TAvailableFileTypes; icon: IconDefinition; iconColor: string }[] = [
   { fileType: AVAILABLE_FILE_TYPES.drawIoFile, ...EXTENSION_ICON_MAP['drawio'] },

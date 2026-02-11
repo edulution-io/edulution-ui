@@ -29,7 +29,7 @@ import handleApiError from '@/utils/handleApiError';
 import DOCKER_APPLICATION_LIST from '@libs/docker/constants/dockerApplicationList';
 import { EDU_API_DOCKER_CONTAINER_ENDPOINT, EDU_API_DOCKER_ENDPOINT } from '@libs/docker/constants/dockerEndpoints';
 import { EDU_PLUGINS_GITHUB_URL } from '@libs/common/constants';
-import { type DockerContainerTableStore } from '@libs/appconfig/types/dockerContainerTableStore';
+import { type DockerContainerTableStore } from '@libs/frontend/appconfig/types/dockerContainerTableStore';
 import type TApps from '@libs/appconfig/types/appsType';
 import type DockerCompose from '@libs/docker/types/dockerCompose';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';

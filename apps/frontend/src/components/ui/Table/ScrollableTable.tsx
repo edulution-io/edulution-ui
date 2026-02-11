@@ -28,10 +28,10 @@ import {
   VisibilityState,
 } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
-import TableAction from '@libs/common/types/tableAction';
+import TableAction from '@libs/frontend/common/types/tableAction';
 import { cn } from '@edulution-io/ui-kit';
 import TABLE_DEFAULT_COLUMN_WIDTH from '@libs/ui/constants/tableDefaultColumnWidth';
-import pinRowToTop from '@libs/ui/utils/pinRowToTop';
+import pinRowToTop from '@libs/frontend/ui/utils/pinRowToTop';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import Input from '@/components/shared/Input';

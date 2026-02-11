@@ -26,7 +26,7 @@ import useQuestionsContextMenuStore from '@/pages/Surveys/Editor/dialog/useQuest
 import Input from '@/components/shared/Input';
 import SortableHeader from '@/components/ui/Table/SortableHeader';
 import TableActionCell from '@/components/ui/Table/TableActionCell';
-import { DeleteIcon } from '@libs/common/constants/standardActionIcons';
+import { DeleteIcon } from '@libs/frontend/common/constants/standardActionIcons';
 
 const ChoicesWithBackendLimitTableColumns: ColumnDef<ChoiceDto>[] = [
   {

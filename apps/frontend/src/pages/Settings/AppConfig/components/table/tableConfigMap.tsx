@@ -25,20 +25,23 @@ import CreateAndUpdateBulletinCategoryDialog from '@/pages/Settings/AppConfig/bu
 import type AppConfigTableConfigsByAppName from '@/pages/Settings/AppConfig/components/table/types/appConfigTableConfigsByAppName';
 import APPS from '@libs/appconfig/constants/apps';
 import type BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
-import { type BulletinCategoryTableStore } from '@libs/appconfig/types/bulletinCategoryTableStore';
+import { type BulletinCategoryTableStore } from '@libs/frontend/appconfig/types/bulletinCategoryTableStore';
 import createAppConfigTableEntry from '@/pages/Settings/AppConfig/components/table/createAppConfigTableEntry';
-import { type DockerContainerTableStore } from '@libs/appconfig/types/dockerContainerTableStore';
+import { type DockerContainerTableStore } from '@libs/frontend/appconfig/types/dockerContainerTableStore';
 import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
-import { VeyonConfigTableStore } from '@libs/appconfig/types/veyonConfigTableStore';
+import { VeyonConfigTableStore } from '@libs/frontend/appconfig/types/veyonConfigTableStore';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import BULLETIN_BOARD_CATEGORY_TABLE_COLUMNS from '@libs/appconfig/constants/bulletinBoardCategoryTableColumns';
 import DOCKER_CONTAINER_TABLE_COLUMNS from '@libs/docker/constants/dockerContainerTableColumns';
 import VEYON_PROXY_TABLE_COLUMNS from '@libs/classManagement/constants/veyonProxyTableColumns';
 import type WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
-import { WebdavServerTableStore, type WebdavShareTableStore } from '@libs/appconfig/types/webdavShareTableStore';
+import {
+  WebdavServerTableStore,
+  type WebdavShareTableStore,
+} from '@libs/frontend/appconfig/types/webdavShareTableStore';
 import WEBDAV_SHARE_TABLE_COLUMNS from '@libs/filesharing/constants/webdavShareTableColumns';
 import { type WireguardPeer } from '@libs/wireguard/types/wireguard';
-import { WireguardTableStore } from '@libs/appconfig/types/wireguardTableStore';
+import { WireguardTableStore } from '@libs/frontend/appconfig/types/wireguardTableStore';
 import WIREGUARD_TABLE_COLUMNS from '@libs/wireguard/constants/wireguardTableColumns';
 import DockerContainerTableColumns from '../../DockerIntegration/DockerContainerTableColumns';
 import CreateDockerContainerDialog from '../../DockerIntegration/CreateDockerContainerDialog';

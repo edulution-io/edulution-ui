@@ -20,7 +20,7 @@
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { StateCreator } from 'zustand';
-import UserStore from '@libs/user/types/store/userStore';
+import UserStore from '@libs/frontend/user/types/store/userStore';
 import TotpSlice from '@libs/user/types/store/totpSlice';
 import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 import UserDto from '@libs/user/types/user.dto';

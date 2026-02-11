@@ -19,9 +19,9 @@
 
 import { useMemo } from 'react';
 import { Row } from '@tanstack/react-table';
-import TableAction from '@libs/common/types/tableAction';
-import { TableActionContext, TableActionsConfig } from '@libs/common/types/tableActionsConfig';
-import createTableActions from '@libs/common/utils/createTableActions';
+import TableAction from '@libs/frontend/common/types/tableAction';
+import { TableActionContext, TableActionsConfig } from '@libs/frontend/common/types/tableActionsConfig';
+import createTableActions from '@libs/frontend/common/utils/createTableActions';
 
 const useTableActions = <TData>(config: TableActionsConfig<TData>, selectedRows: Row<TData>[]): TableAction<TData>[] =>
   useMemo(() => {

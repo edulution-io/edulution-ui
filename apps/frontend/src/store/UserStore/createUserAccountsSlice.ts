@@ -20,10 +20,10 @@
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { StateCreator } from 'zustand';
-import UserStore from '@libs/user/types/store/userStore';
+import UserStore from '@libs/frontend/user/types/store/userStore';
 import UserAccountDto from '@libs/user/types/userAccount.dto';
 import { EDU_API_USERS_ENDPOINT, EDU_API_USER_ACCOUNTS_ENDPOINT } from '@libs/user/constants/usersApiEndpoints';
-import type UserAccountsSlice from '@libs/user/types/store/userAccountsSlice';
+import type UserAccountsSlice from '@libs/frontend/user/types/store/userAccountsSlice';
 
 const initialState = {
   userAccounts: [],

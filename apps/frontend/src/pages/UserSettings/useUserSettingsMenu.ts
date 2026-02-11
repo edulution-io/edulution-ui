@@ -42,7 +42,7 @@ import {
   WIREGUARD_ACCESS_PATH,
   USER_SETTINGS_WIREGUARD_ACCESS_PATH,
 } from '@libs/userSettings/constants/user-settings-endpoints';
-import MenuBarEntry from '@libs/menubar/menuBarEntry';
+import MenuBarEntry from '@libs/frontend/menubar/menuBarEntry';
 import APPS from '@libs/appconfig/constants/apps';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import findAppConfigByName from '@libs/common/utils/findAppConfigByName';

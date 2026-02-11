@@ -23,7 +23,7 @@ import { OnChangeFn, Row, RowSelectionState } from '@tanstack/react-table';
 import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import APPS from '@libs/appconfig/constants/apps';
 import STANDARD_ACTION_TYPES from '@libs/common/constants/standardActionTypes';
-import { TableActionsConfig } from '@libs/common/types/tableActionsConfig';
+import { TableActionsConfig } from '@libs/frontend/common/types/tableActionsConfig';
 import UserAccountDto from '@libs/user/types/userAccount.dto';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useTableActions from '@/hooks/useTableActions';

@@ -34,7 +34,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import { Request } from 'express';
 import AUTH_PATHS from '@libs/auth/constants/auth-paths';
-import AuthRequestArgs from '@libs/auth/types/auth-request';
+import AuthRequestArgs from '@libs/auth/types/authRequestArgs';
 import { AUTH_CACHE_TTL_MS } from '@libs/common/constants/cacheTtl';
 import AuthErrorMessages from '@libs/auth/constants/authErrorMessages';
 import type LoginQrSseDto from '@libs/auth/types/loginQrSse.dto';

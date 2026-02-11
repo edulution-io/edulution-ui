@@ -22,7 +22,7 @@ import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import { useNavigate } from 'react-router-dom';
 import useLanguage from '@/hooks/useLanguage';
 import APPS from '@libs/appconfig/constants/apps';
-import MenuBarEntry from '@libs/menubar/menuBarEntry';
+import MenuBarEntry from '@libs/frontend/menubar/menuBarEntry';
 import { APPSTORE_PATH, SETTINGS_PATH } from '@libs/appconfig/constants/appConfigPaths';
 import getDisplayName from '@/utils/getDisplayName';
 import CONTAINER from '@libs/docker/constants/container';

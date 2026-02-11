@@ -17,10 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { type ProcessResourceOwnerPasswordCredentialsArgs } from 'oidc-client-ts';
+import { TLSocketRoom } from '@tldraw/sync-core';
 
-type AuthRequestArgs = ProcessResourceOwnerPasswordCredentialsArgs & {
-  grant_type: string;
-};
+interface RoomState {
+  roomId: string;
+  room: TLSocketRoom;
+  needsPersist: boolean;
+}
 
-export default AuthRequestArgs;
+export default RoomState;

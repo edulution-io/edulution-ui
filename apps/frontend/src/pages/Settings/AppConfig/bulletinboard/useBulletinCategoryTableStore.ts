@@ -29,7 +29,7 @@ import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCateg
 import handleApiError from '@/utils/handleApiError';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
-import { BulletinCategoryTableStore } from '@libs/appconfig/types/bulletinCategoryTableStore';
+import { BulletinCategoryTableStore } from '@libs/frontend/appconfig/types/bulletinCategoryTableStore';
 import BulletinCategoryPermission from '@libs/appconfig/constants/bulletinCategoryPermission';
 
 const initialValues = {

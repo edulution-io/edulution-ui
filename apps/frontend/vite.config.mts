@@ -69,6 +69,7 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         '@': resolve(__dirname, './src'),
+        '@libs/frontend': resolve(__dirname, '../../libs/frontend'),
         '@libs': resolve(__dirname, '../../libs/src'),
         '@edulution-io/ui-kit': resolve(__dirname, '../../libs/ui-kit/src/index.ts'),
       },

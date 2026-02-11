@@ -18,7 +18,7 @@
  */
 
 import { t } from 'i18next';
-import { AddIcon } from '@libs/common/constants/standardActionIcons';
+import { AddIcon } from '@libs/frontend/common/constants/standardActionIcons';
 
 const CreateButton = (onClick: () => void, isVisible?: boolean) => ({
   icon: AddIcon,

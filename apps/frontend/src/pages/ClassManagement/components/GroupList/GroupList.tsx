@@ -21,7 +21,7 @@ import React from 'react';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import GroupDialog from '@/pages/ClassManagement/components/GroupDialog/GroupDialog';
-import GroupColumn from '@libs/groups/types/groupColumn';
+import GroupColumn from '@libs/frontend/groups/types/groupColumn';
 import GroupListCard from '@/pages/ClassManagement/components/GroupList/GroupListCard';
 import { useTranslation } from 'react-i18next';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
