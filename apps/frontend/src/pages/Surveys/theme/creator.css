@@ -298,11 +298,11 @@
 
   /* Fix popup component */
   .sv-popup--modal.sv-popup__container {
-    box-shadow: none;
+    box-shadow: 0 0 5px 0 var(--ring-transparent);
   }
   .sv-popup--dropdown {
     .sv-popup__container {
-      box-shadow: none;
+      box-shadow: 0 0 5px 0 var(--ring-transparent);
     }
 
     .sv-popup__body-header {

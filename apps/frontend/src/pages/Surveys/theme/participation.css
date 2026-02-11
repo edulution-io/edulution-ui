@@ -49,7 +49,7 @@
     min-width: 12rem;
     height: 3rem;
     width: 14rem;
-    border-radius: var(--border-radius, 12px);
+    border-radius: var(--border-radius, 10px);
   }
 }
 
