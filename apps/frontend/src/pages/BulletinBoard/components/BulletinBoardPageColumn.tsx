@@ -59,7 +59,8 @@ const BulletinBoardPageColumn = ({
   };
 
   const isSingleRow = gridRows === BULLETIN_BOARD_GRID_ROWS.ONE;
-  const isMultiRow = !isSingleRow;
+  const isAutoLayout = gridRows === BULLETIN_BOARD_GRID_ROWS.AUTO;
+  const isMultiRow = !isSingleRow && !isAutoLayout;
   const width = isSingleRow ? `${100 / categoryCount}%` : undefined;
 
   const getRowCount = () => {
@@ -79,7 +80,7 @@ const BulletinBoardPageColumn = ({
       className={cn(
         'flex w-full flex-col rounded-lg',
         isSingleRow && 'max-h-full min-w-[85vw] flex-shrink-0 pr-2 md:ml-0 md:min-w-[400px] md:pr-3 md:pt-3',
-        isMultiRow && 'overflow-hidden',
+        (isAutoLayout || isMultiRow) && 'overflow-hidden',
       )}
     >
       <BulletinBoardColumnHeader
@@ -90,7 +91,7 @@ const BulletinBoardPageColumn = ({
         className={cn(
           'flex flex-col gap-4 overflow-y-auto pt-1 text-background scrollbar-thin',
           isSingleRow && 'mb-2 pb-20',
-          isMultiRow && 'mb-1 flex-1 pb-4',
+          (isAutoLayout || isMultiRow) && 'mb-1 flex-1 pb-4',
         )}
       >
         {bulletins.map((bulletin) => (

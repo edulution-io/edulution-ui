@@ -97,7 +97,7 @@ const BulletinBoardPage = () => {
 
   const getContainerClassName = () => {
     if (isAutoLayout) {
-      return 'grid h-full max-h-full auto-rows-min grid-cols-1 gap-3 overflow-y-auto overflow-x-hidden p-3 scrollbar-thin md:grid-cols-[repeat(auto-fill,minmax(400px,1fr))]';
+      return 'grid grid-cols-1 gap-3 overflow-y-auto overflow-x-hidden p-3 scrollbar-thin md:h-full md:max-h-full md:auto-rows-[1fr] md:grid-cols-[repeat(auto-fit,minmax(400px,1fr))]';
     }
     if (isMultiRow) {
       return 'grid h-full max-h-full gap-3 overflow-x-auto overflow-y-auto p-3 scrollbar-thin md:overflow-x-hidden';
