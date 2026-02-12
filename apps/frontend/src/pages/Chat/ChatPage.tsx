@@ -38,7 +38,7 @@ const ChatPage = () => {
   const { isLoadingGroups } = useChatStore();
 
   return (
-    <PageLayout>
+    <PageLayout hasFullWidthMain>
       <LoadingIndicatorDialog isOpen={isLoadingGroups} />
       <div className="flex h-full flex-col">
         {groupName && isValidGroupType(groupType) ? (
@@ -47,7 +47,7 @@ const ChatPage = () => {
             groupType={groupType}
           />
         ) : (
-          <div className="bg-glass flex flex-1 flex-col items-center justify-center rounded-xl p-6 backdrop-blur-lg">
+          <div className="bg-glass flex flex-1 flex-col items-center justify-center ">
             <FontAwesomeIcon
               icon={faComments}
               className="mb-4 h-16 w-16 text-muted-foreground opacity-30"

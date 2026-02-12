@@ -67,7 +67,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ value, onChange, onSubmit, isLoad
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-background/80 flex items-end gap-2 border-t border-muted p-4 backdrop-blur-sm"
+      className="bg-background/80 flex items-end gap-2 border-t p-4 backdrop-blur-sm"
     >
       <Textarea
         ref={textareaRef}
