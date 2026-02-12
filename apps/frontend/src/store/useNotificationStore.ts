@@ -26,7 +26,7 @@ import InboxNotificationDto from '@libs/notification/types/inboxNotification.dto
 import InboxResponseDto from '@libs/notification/types/inboxResponse.dto';
 import notificationPaginationConfig from '@libs/notification/constants/notificationPaginationConfig';
 import { NOTIFICATION_FILTER_TYPE, NotificationFilterType } from '@libs/notification/types/notificationFilterType';
-import canFilterByNotificationType from '@libs/notification/utils/canFilterByNotificationType';
+import isNotificationType from '@libs/notification/utils/isNotificationType';
 import handleApiError from '@/utils/handleApiError';
 
 interface NotificationStore {
@@ -180,14 +180,11 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
       if (type === NOTIFICATION_FILTER_TYPE.ALL) {
         newNotifications = [];
         newUnreadCount = 0;
-      } else if (canFilterByNotificationType(type)) {
+      } else if (isNotificationType(type)) {
         const deletedNotifications = notifications.filter((notification) => notification.type === type);
         newNotifications = notifications.filter((notification) => notification.type !== type);
-
-        if (type === NOTIFICATION_FILTER_TYPE.USER) {
-          const deletedUnread = deletedNotifications.filter((notification) => !notification.readAt).length;
-          newUnreadCount = Math.max(0, unreadCount - deletedUnread);
-        }
+        const deletedUnread = deletedNotifications.filter((notification) => !notification.readAt).length;
+        newUnreadCount = Math.max(0, unreadCount - deletedUnread);
       }
 
       set({

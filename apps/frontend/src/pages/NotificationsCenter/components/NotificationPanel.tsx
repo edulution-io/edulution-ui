@@ -26,7 +26,7 @@ import useNotificationStore from '@/store/useNotificationStore';
 import useMedia from '@/hooks/useMedia';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import { NOTIFICATION_FILTER_TYPE, NotificationFilterType } from '@libs/notification/types/notificationFilterType';
-import canFilterByNotificationType from '@libs/notification/utils/canFilterByNotificationType';
+import isNotificationType from '@libs/notification/utils/isNotificationType';
 import { Button, cn } from '@edulution-io/ui-kit';
 import NotificationList from '@/pages/NotificationsCenter/components/NotificationList';
 import NotificationFilterBadges from '@/pages/NotificationsCenter/components/NotificationFilterBadges';
@@ -61,7 +61,7 @@ const NotificationPanel = () => {
   }, [isSheetOpen, fetchNotifications, fetchUnreadCount]);
 
   const filteredNotifications = useMemo(() => {
-    if (canFilterByNotificationType(activeFilter)) {
+    if (isNotificationType(activeFilter)) {
       return notifications.filter((notification) => notification.type === activeFilter);
     }
     return notifications;

@@ -17,12 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const NOTIFICATION_SOURCE_TYPE = {
-  BULLETIN: 'bulletin',
-  SURVEY: 'survey',
-  CONFERENCE: 'conference',
-  CHAT: 'chat',
-  MAIL: 'mail',
-} as const;
+import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
+import NotificationType from '@libs/notification/types/notificationType';
+import { NotificationFilterType } from '@libs/notification/types/notificationFilterType';
 
-export default NOTIFICATION_SOURCE_TYPE;
+const isNotificationType = (filter: NotificationFilterType): filter is NotificationType =>
+  filter === NOTIFICATION_TYPE.USER || filter === NOTIFICATION_TYPE.SYSTEM;
+
+export default isNotificationType;

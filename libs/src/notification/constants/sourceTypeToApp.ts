@@ -17,12 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const NOTIFICATION_SOURCE_TYPE = {
-  BULLETIN: 'bulletin',
-  SURVEY: 'survey',
-  CONFERENCE: 'conference',
-  CHAT: 'chat',
-  MAIL: 'mail',
-} as const;
+import APPS from '@libs/appconfig/constants/apps';
+import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
+import NotificationSourceType from '@libs/notification/types/notificationSourceType';
 
-export default NOTIFICATION_SOURCE_TYPE;
+const SOURCE_TYPE_TO_APP: Record<NotificationSourceType, string> = {
+  [NOTIFICATION_SOURCE_TYPE.BULLETIN]: APPS.BULLETIN_BOARD,
+  [NOTIFICATION_SOURCE_TYPE.SURVEY]: APPS.SURVEYS,
+  [NOTIFICATION_SOURCE_TYPE.CONFERENCE]: APPS.CONFERENCES,
+  [NOTIFICATION_SOURCE_TYPE.CHAT]: APPS.CHAT,
+  [NOTIFICATION_SOURCE_TYPE.MAIL]: APPS.MAIL,
+};
+
+export default SOURCE_TYPE_TO_APP;

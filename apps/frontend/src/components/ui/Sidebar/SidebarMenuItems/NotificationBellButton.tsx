@@ -24,18 +24,15 @@ import { useTranslation } from 'react-i18next';
 import useNotificationStore from '@/store/useNotificationStore';
 import usePlatformStore from '@/store/EduApiStore/usePlatformStore';
 import useSidebarStore from '@/components/ui/Sidebar/useSidebarStore';
-import useSidebarItems from '@/hooks/useSidebarItems';
 import { cn } from '@edulution-io/ui-kit';
 import NotificationCounter from '@/components/ui/Sidebar/SidebarMenuItems/NotificationCounter';
 import NOTIFICATION_COUNTER_VARIANT from '@libs/notification/constants/notificationCounterVariant';
 
 const NotificationBellButton = () => {
   const { t } = useTranslation();
-  const { isSheetOpen, setIsSheetOpen } = useNotificationStore();
+  const { unreadCount, isSheetOpen, setIsSheetOpen } = useNotificationStore();
   const isEdulutionApp = usePlatformStore((state) => state.isEdulutionApp);
   const { isMobileSidebarOpen, toggleMobileSidebar } = useSidebarStore();
-  const sidebarItems = useSidebarItems();
-  const totalCount = sidebarItems.reduce((sum, item) => sum + (item.notificationCounter ?? 0), 0);
 
   const wasSheetOpenOnPointerDown = useRef(false);
 
@@ -79,7 +76,7 @@ const NotificationBellButton = () => {
           className="transform text-xl transition-transform duration-200 group-hover:scale-110"
         />
         <NotificationCounter
-          count={totalCount}
+          count={unreadCount}
           variant={NOTIFICATION_COUNTER_VARIANT.NOTIFICATION_PANEL}
           className="-right-1 -top-1"
         />

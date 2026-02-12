@@ -17,11 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
-import NotificationType from '@libs/notification/types/notificationType';
-import { NotificationFilterType } from '@libs/notification/types/notificationFilterType';
+import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
+import NotificationSourceType from '@libs/notification/types/notificationSourceType';
 
-const canFilterByNotificationType = (filter: NotificationFilterType): filter is NotificationType =>
-  filter === NOTIFICATION_TYPE.USER || filter === NOTIFICATION_TYPE.SYSTEM;
+const DEEP_LINK_SOURCE_TYPES: NotificationSourceType[] = [NOTIFICATION_SOURCE_TYPE.BULLETIN];
 
-export default canFilterByNotificationType;
+export default DEEP_LINK_SOURCE_TYPES;
