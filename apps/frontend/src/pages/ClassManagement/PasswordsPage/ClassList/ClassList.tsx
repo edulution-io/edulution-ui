@@ -19,7 +19,7 @@
 
 import React from 'react';
 import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
-import GroupColumn from '@libs/groups/types/groupColumn';
+import GroupColumn from '@libs/frontend/groups/types/groupColumn';
 import PasswordsFloatingButtonsBar from '@/pages/ClassManagement/PasswordsPage/PasswordsFloatingButtonsBar';
 import ClassListCard from '@/pages/ClassManagement/PasswordsPage/ClassList/ClassListCard';
 import { useTranslation } from 'react-i18next';

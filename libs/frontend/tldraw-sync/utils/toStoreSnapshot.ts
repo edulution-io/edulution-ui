@@ -17,21 +17,16 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { RowSelectionState } from '@tanstack/react-table';
-import UserAccountDto from '../userAccount.dto';
+import { SerializedSchema, StoreSnapshot, TLRecord } from 'tldraw';
+import { TldrFileV1 } from '@libs/frontend/tldraw-sync/types/tldrFileV1';
 
-type CreateUserAccountDto = Omit<UserAccountDto, 'accountId'>;
-
-type UserAccountsSlice = {
-  userAccounts: UserAccountDto[];
-  userAccountsIsLoading: boolean;
-  selectedRows: RowSelectionState;
-  setSelectedRows: (selectedRows: RowSelectionState) => void;
-  getUserAccounts: () => Promise<void>;
-  addUserAccount: (userAccountDto: CreateUserAccountDto) => Promise<void>;
-  updateUserAccount: (accountId: string, userAccountDto: CreateUserAccountDto) => Promise<void>;
-  deleteUserAccount: (accountId: string) => Promise<void>;
-  resetUserAccountsSlice: () => void;
+const toStoreSnapshot = (file: TldrFileV1): StoreSnapshot<TLRecord> => {
+  const store = file.records.reduce<Record<string, TLRecord>>((acc, record) => {
+    acc[record.id] = record;
+    return acc;
+  }, {});
+  const schema: SerializedSchema = { schemaVersion: 2, sequences: file.schema.sequences };
+  return { schema, store };
 };
 
-export default UserAccountsSlice;
+export default toStoreSnapshot;

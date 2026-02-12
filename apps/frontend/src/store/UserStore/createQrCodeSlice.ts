@@ -21,7 +21,7 @@ import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import { StateCreator } from 'zustand';
 import QrCodeSlice from '@libs/user/types/store/qrCodeSlice';
-import UserStore from '@libs/user/types/store/userStore';
+import UserStore from '@libs/frontend/user/types/store/userStore';
 import AUTH_PATHS from '@libs/auth/constants/auth-paths';
 import { decodeBase64 } from '@libs/common/utils/getBase64String';
 

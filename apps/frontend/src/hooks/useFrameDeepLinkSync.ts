@@ -19,7 +19,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { combineUrlParts, getSubPathFromBrowserUrl } from '@libs/common/utils';
-import type UseFrameDeepLinkSyncOptions from '@libs/common/types/useFrameDeepLinkSyncOptions';
+import type UseFrameDeepLinkSyncOptions from '@libs/frontend/common/types/useFrameDeepLinkSyncOptions';
 import useFrameUrlSync from '@/hooks/useFrameUrlSync';
 
 const useFrameDeepLinkSync = ({

@@ -20,7 +20,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form } from '@/components/ui/Form';
 import FormField from '@/components/shared/FormField';
-import { FilesharingDialogProps } from '@libs/filesharing/types/filesharingDialogProps';
+import { FilesharingDialogProps } from '@libs/frontend/filesharing/types/filesharingDialogProps';
 import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import ContentType from '@libs/filesharing/types/contentType';
 import { useTranslation } from 'react-i18next';

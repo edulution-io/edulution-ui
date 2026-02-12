@@ -29,7 +29,7 @@ import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
+import FloatingButtonsBarConfig from '@libs/frontend/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import BackButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/backButton';
 import useUserStore from '@/store/UserStore/useUserStore';
 import PageTitle from '@/components/PageTitle';

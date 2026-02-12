@@ -18,7 +18,7 @@
  */
 
 import { create } from 'zustand';
-import Section from '@libs/menubar/section';
+import Section from '@libs/frontend/menubar/section';
 
 interface SubMenuStore {
   sections: Section[];

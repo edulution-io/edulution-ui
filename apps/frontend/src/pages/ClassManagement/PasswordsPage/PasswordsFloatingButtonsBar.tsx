@@ -22,7 +22,7 @@ import LmnApiSchoolClass from '@libs/lmnApi/types/lmnApiSchoolClass';
 import { faFileCsv, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import PrintPasswordsFormat from '@libs/classManagement/types/printPasswordsFormat';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
+import FloatingButtonsBarConfig from '@libs/frontend/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import { useTranslation } from 'react-i18next';
 import PrintPasswordsDialog from './PrintPasswordsDialog';
 

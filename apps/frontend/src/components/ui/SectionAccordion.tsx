@@ -24,7 +24,7 @@ import AnchorSection from '@/components/shared/AnchorSection';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import useSubMenuStore from '@/store/useSubMenuStore';
-import Section from '@libs/menubar/section';
+import Section from '@libs/frontend/menubar/section';
 import { HASH_SCROLL_DELAY_MS } from '@libs/ui/constants/animationTiming';
 
 interface SectionAccordionProps {

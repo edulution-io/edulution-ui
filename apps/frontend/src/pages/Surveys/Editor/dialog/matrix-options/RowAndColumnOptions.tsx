@@ -19,7 +19,7 @@
 
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AddIcon, DeleteIcon } from '@libs/common/constants/standardActionIcons';
+import { AddIcon, DeleteIcon } from '@libs/frontend/common/constants/standardActionIcons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Base, ItemValue, QuestionMatrixBaseModel } from 'survey-core';
 import isQuestionTypeMatrixType from '@libs/survey/utils/isQuestionTypeMatrixType';

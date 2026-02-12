@@ -20,7 +20,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import GroupCard from '@/pages/ClassManagement/LessonPage/QuickAccess/GroupCard';
-import GroupColumn from '@libs/groups/types/groupColumn';
+import GroupColumn from '@libs/frontend/groups/types/groupColumn';
 import useUserStore from '@/store/UserStore/useUserStore';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';

@@ -18,11 +18,11 @@
  */
 
 import { Editor, StoreSnapshot, TLRecord } from 'tldraw';
-import isTldrFileV1 from '@libs/tldraw-sync/utils/isTldrFileV1';
-import toStoreSnapshot from '@libs/tldraw-sync/utils/toStoreSnapshot';
-import firstPageIdFrom from '@libs/tldraw-sync/utils/firstPageIdFrom';
-import { hasSetCurrentPage, hasSetCurrentPageId } from '@libs/tldraw-sync/utils/editorGuards';
-import nextAnimationFrame from '@libs/tldraw-sync/utils/nextAnimationFrame';
+import isTldrFileV1 from '@libs/frontend/tldraw-sync/utils/isTldrFileV1';
+import toStoreSnapshot from '@libs/frontend/tldraw-sync/utils/toStoreSnapshot';
+import firstPageIdFrom from '@libs/frontend/tldraw-sync/utils/firstPageIdFrom';
+import { hasSetCurrentPage, hasSetCurrentPageId } from '@libs/frontend/tldraw-sync/utils/editorGuards';
+import nextAnimationFrame from '@libs/frontend/tldraw-sync/utils/nextAnimationFrame';
 
 const loadTldrFileIntoEditor = async (editor: Editor, file: File): Promise<void> => {
   const text = (await file.text()).trimStart();

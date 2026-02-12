@@ -21,9 +21,9 @@ import React from 'react';
 import { DefaultExtensionType, defaultStyles, FileIcon } from 'react-file-icon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getFileNameFromPath } from '@/pages/FileSharing/utilities/filesharingUtilities';
-import getFileCategory from '@libs/filesharing/utils/getFileCategory';
+import getFileCategory from '@libs/frontend/filesharing/utils/getFileCategory';
 import fileIconColors from '@/theme/fileIconColor';
-import EXTENSION_ICON_MAP from '@libs/filesharing/constants/extensionIconMap';
+import EXTENSION_ICON_MAP from '@libs/frontend/filesharing/constants/extensionIconMap';
 
 interface FileTypeIconProps {
   filename: string;

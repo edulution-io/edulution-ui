@@ -23,7 +23,7 @@ import GroupList from '@/pages/ClassManagement/components/GroupList/GroupList';
 import { useTranslation } from 'react-i18next';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
-import GroupColumn from '@libs/groups/types/groupColumn';
+import GroupColumn from '@libs/frontend/groups/types/groupColumn';
 import UserGroups from '@libs/groups/types/userGroups.enum';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUsersGear } from '@fortawesome/free-solid-svg-icons';

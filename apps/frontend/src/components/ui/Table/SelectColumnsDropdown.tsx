@@ -19,12 +19,12 @@
 
 import React, { useState } from 'react';
 import { Table } from '@tanstack/react-table';
-import { Button , cn } from '@edulution-io/ui-kit';
+import { Button, cn } from '@edulution-io/ui-kit';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
-import { inputVariants } from '@libs/ui/constants/commonClassNames';
+import { inputVariants } from '@libs/frontend/ui/constants/commonClassNames';
 
 interface SelectColumnsDropdownProps<TData> {
   table: Table<TData>;

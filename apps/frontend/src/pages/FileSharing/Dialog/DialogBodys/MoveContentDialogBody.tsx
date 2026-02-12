@@ -27,7 +27,7 @@ import ScrollableTable from '@/components/ui/Table/ScrollableTable';
 import APPS from '@libs/appconfig/constants/apps';
 import { ColumnDef, OnChangeFn, Row, RowSelectionState } from '@tanstack/react-table';
 import FILESHARING_TABLE_COLUM_NAMES from '@libs/filesharing/constants/filesharingTableColumNames';
-import type MoveContentDialogBodyProps from '@libs/filesharing/types/moveContentDialogBodyProps';
+import type MoveContentDialogBodyProps from '@libs/frontend/filesharing/types/moveContentDialogBodyProps';
 import ContentType from '@libs/filesharing/types/contentType';
 import useFileSharingMoveDialogStore from '@/pages/FileSharing/useFileSharingMoveDialogStore';
 import getFileSharingTableColumns from '@/pages/FileSharing/Table/getFileSharingTableColumns';

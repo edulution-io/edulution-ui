@@ -26,7 +26,7 @@ import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';
 import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
-import buildTldrFileFromEditor from '@libs/tldraw-sync/utils/buildTldrFileFromEditor';
+import buildTldrFileFromEditor from '@libs/frontend/tldraw-sync/utils/buildTldrFileFromEditor';
 import useUserStore from '@/store/UserStore/useUserStore';
 import { UploadItem } from '@libs/filesharing/types/uploadItem';
 import getRandomUUID from '@/utils/getRandomUUID';

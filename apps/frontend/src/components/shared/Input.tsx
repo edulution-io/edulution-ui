@@ -20,7 +20,7 @@
 import React, { useState } from 'react';
 import { type VariantProps } from 'class-variance-authority';
 import { cn } from '@edulution-io/ui-kit';
-import { inputVariants } from '@libs/ui/constants/commonClassNames';
+import { inputVariants } from '@libs/frontend/ui/constants/commonClassNames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 

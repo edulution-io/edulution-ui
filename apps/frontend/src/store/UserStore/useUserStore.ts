@@ -19,7 +19,7 @@
 
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import UserStore from '@libs/user/types/store/userStore';
+import UserStore from '@libs/frontend/user/types/store/userStore';
 import createUserSlice from './createUserSlice';
 import createTotpSlice from './createTotpSlice';
 import createQrCodeSlice from './createQrCodeSlice';

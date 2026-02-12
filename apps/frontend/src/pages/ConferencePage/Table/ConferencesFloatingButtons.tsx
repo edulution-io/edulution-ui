@@ -18,7 +18,7 @@
  */
 
 import React from 'react';
-import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
+import FloatingButtonsBarConfig from '@libs/frontend/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import useCreateConferenceDialogStore from '@/pages/ConferencePage/CreateConference/useCreateConferenceDialogStore';
 import useConferenceStore from '@/pages/ConferencePage/useConferenceStore';
 import CreateButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/createButton';

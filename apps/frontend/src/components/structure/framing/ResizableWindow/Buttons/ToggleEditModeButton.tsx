@@ -18,7 +18,7 @@
  */
 
 import React from 'react';
-import { EditIcon } from '@libs/common/constants/standardActionIcons';
+import { EditIcon } from '@libs/frontend/common/constants/standardActionIcons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import WindowControlBaseButton from './WindowControlBaseButton';

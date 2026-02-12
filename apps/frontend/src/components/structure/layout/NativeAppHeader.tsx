@@ -20,10 +20,10 @@
 import React, { isValidElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import NativeAppHeaderProps from '@libs/ui/types/NativeAppHeaderProps';
+import NativeAppHeaderProps from '@libs/frontend/ui/types/NativeAppHeaderProps';
 import getAppIconClassName from '@/utils/getAppIconClassName';
-import { cn , Button } from '@edulution-io/ui-kit';
-import { EditIcon } from '@libs/common/constants/standardActionIcons';
+import { cn, Button } from '@edulution-io/ui-kit';
+import { EditIcon } from '@libs/frontend/common/constants/standardActionIcons';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import IconWrapper from '@/components/shared/IconWrapper';
 

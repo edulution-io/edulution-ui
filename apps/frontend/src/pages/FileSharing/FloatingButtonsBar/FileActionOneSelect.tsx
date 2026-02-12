@@ -22,7 +22,7 @@ import { t } from 'i18next';
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import FileActionButtonProps from '@libs/filesharing/types/fileActionButtonProps';
 import FileActionType from '@libs/filesharing/types/fileActionType';
-import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
+import FloatingButtonsBarConfig from '@libs/frontend/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import MoveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/moveButton';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';

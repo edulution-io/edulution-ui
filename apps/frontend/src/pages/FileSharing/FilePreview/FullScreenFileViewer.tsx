@@ -36,7 +36,7 @@ import getFileExtension from '@libs/filesharing/utils/getFileExtension';
 import useFileEditorContentStore from '@/pages/FileSharing/FilePreview/useFileEditorContentStore';
 import isDrawioExtension from '@libs/filesharing/utils/isDrawioExtension';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { SaveIcon } from '@libs/common/constants/standardActionIcons';
+import { SaveIcon } from '@libs/frontend/common/constants/standardActionIcons';
 import { Button } from '@edulution-io/ui-kit';
 
 const FullScreenFileViewer = () => {

@@ -20,7 +20,7 @@
 import React, { HTMLInputTypeAttribute } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type VariantProps } from 'class-variance-authority';
-import { inputVariants } from '@libs/ui/constants/commonClassNames';
+import { inputVariants } from '@libs/frontend/ui/constants/commonClassNames';
 import Input from '@/components/shared/Input';
 import Label from '@/components/ui/Label';
 import { cn } from '@edulution-io/ui-kit';

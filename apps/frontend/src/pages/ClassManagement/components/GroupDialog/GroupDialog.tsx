@@ -26,7 +26,7 @@ import GroupForm from '@libs/groups/types/groupForm';
 import getGroupFormSchema from '@libs/groups/constants/groupFormSchema';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import GroupDialogBody from '@/pages/ClassManagement/components/GroupDialog/GroupDialogBody';
-import GroupColumn from '@libs/groups/types/groupColumn';
+import GroupColumn from '@libs/frontend/groups/types/groupColumn';
 import UserGroups from '@libs/groups/types/userGroups.enum';
 import LmnApiSession from '@libs/lmnApi/types/lmnApiSession';
 import LmnApiProject from '@libs/lmnApi/types/lmnApiProject';

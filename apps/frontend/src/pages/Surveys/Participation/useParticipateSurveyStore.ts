@@ -23,7 +23,7 @@ import { create } from 'zustand';
 import { HttpStatusCode } from 'axios';
 import { Model, CompletingEvent } from 'survey-core';
 import SurveyAnswerResponseDto from '@libs/survey/types/api/survey-answer-response.dto';
-import AnswerSurvey from '@libs/survey/types/api/answer-survey';
+import AnswerSurvey from '@libs/frontend/survey/types/api/answer-survey';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import {
   PUBLIC_USER,

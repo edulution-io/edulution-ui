@@ -19,7 +19,7 @@
 
 import React from 'react';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
-import { FileTableStore } from '@libs/appconfig/types/fileTableStore';
+import { FileTableStore } from '@libs/frontend/appconfig/types/fileTableStore';
 import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import TABLE_CONFIG_MAP from '@/pages/Settings/AppConfig/components/table/tableConfigMap';
 import { ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptionKeysType';

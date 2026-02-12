@@ -29,7 +29,7 @@ import useMedia from '@/hooks/useMedia';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
 import STANDARD_ACTION_TYPES from '@libs/common/constants/standardActionTypes';
-import { TableActionsConfig } from '@libs/common/types/tableActionsConfig';
+import { TableActionsConfig } from '@libs/frontend/common/types/tableActionsConfig';
 import PublicShareDto from '@libs/filesharing/types/publicShareDto';
 import useTableActions from '@/hooks/useTableActions';
 

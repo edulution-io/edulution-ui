@@ -17,11 +17,21 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import AppConfigTable from '@libs/appconfig/types/appConfigTable';
-import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
+import { RowSelectionState } from '@tanstack/react-table';
+import UserAccountDto from '@libs/user/types/userAccount.dto';
 
-export interface VeyonConfigTableStore extends AppConfigTable<VeyonProxyItem> {
-  selectedConfig: VeyonProxyItem | null;
-  setSelectedConfig: (config: VeyonProxyItem | null) => void;
-  reset: () => void;
-}
+type CreateUserAccountDto = Omit<UserAccountDto, 'accountId'>;
+
+type UserAccountsSlice = {
+  userAccounts: UserAccountDto[];
+  userAccountsIsLoading: boolean;
+  selectedRows: RowSelectionState;
+  setSelectedRows: (selectedRows: RowSelectionState) => void;
+  getUserAccounts: () => Promise<void>;
+  addUserAccount: (userAccountDto: CreateUserAccountDto) => Promise<void>;
+  updateUserAccount: (accountId: string, userAccountDto: CreateUserAccountDto) => Promise<void>;
+  deleteUserAccount: (accountId: string) => Promise<void>;
+  resetUserAccountsSlice: () => void;
+};
+
+export default UserAccountsSlice;

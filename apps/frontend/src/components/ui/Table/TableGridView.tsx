@@ -20,9 +20,9 @@
 import React, { useCallback, useMemo } from 'react';
 import { ColumnDef, OnChangeFn, Row, RowSelectionState, VisibilityState } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
-import TableAction from '@libs/common/types/tableAction';
+import TableAction from '@libs/frontend/common/types/tableAction';
 import VIEW_MODE from '@libs/common/constants/viewMode';
-import pinRowToTop from '@libs/ui/utils/pinRowToTop';
+import pinRowToTop from '@libs/frontend/ui/utils/pinRowToTop';
 import type FilterOption from '@libs/ui/types/filterOption';
 import LoadingIndicatorDialog from '@/components/ui/Loading/LoadingIndicatorDialog';
 import Input from '@/components/shared/Input';

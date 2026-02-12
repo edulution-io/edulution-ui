@@ -23,8 +23,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { RoomSnapshot, TLSocketRoom } from '@tldraw/sync-core';
 import TLDRAW_PERSISTENCE_INTERVAL from '@libs/tldraw-sync/constants/persistenceInterval';
-import RoomState from '@libs/tldraw-sync/types/tdlraw-sync-rooms';
-import { UnknownRecord } from 'tldraw';
+import RoomState from '@libs/tldraw-sync/types/roomState';
 import TLDRAW_MULTI_USER_ROOM_PREFIX from '@libs/whiteboard/constants/tldrawMultiUserRoomPrefix';
 import type GroupWithMembers from '@libs/groups/types/groupWithMembers';
 import { GROUP_WITH_MEMBERS_CACHE_KEY } from '@libs/groups/constants/cacheKeys';
@@ -87,7 +86,7 @@ export default class TLDrawSyncService {
     }
   }
 
-  async makeOrLoadRoom(roomId: string): Promise<TLSocketRoom<UnknownRecord, void>> {
+  async makeOrLoadRoom(roomId: string): Promise<TLSocketRoom> {
     const existing = this.roomsMap.get(roomId);
 
     if (existing && !existing.room.isClosed()) {
@@ -113,8 +112,8 @@ export default class TLDrawSyncService {
     });
   }
 
-  private createRoom(roomId: string, snapshot: RoomSnapshot | null): TLSocketRoom<UnknownRecord, void> {
-    return new TLSocketRoom<UnknownRecord, void>({
+  private createRoom(roomId: string, snapshot: RoomSnapshot | null): TLSocketRoom {
+    return new TLSocketRoom({
       initialSnapshot: snapshot || undefined,
       onSessionRemoved: (room, { numSessionsRemaining }) => {
         if (numSessionsRemaining === 0) {

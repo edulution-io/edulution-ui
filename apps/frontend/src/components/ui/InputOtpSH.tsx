@@ -26,7 +26,7 @@ import { OTPInput, OTPInputContext } from 'input-otp';
 import { type VariantProps } from 'class-variance-authority';
 
 import { cn } from '@edulution-io/ui-kit';
-import { inputOTPSlotVariants, inputOTPCaretVariants } from '@libs/ui/constants/commonClassNames';
+import { inputOTPSlotVariants, inputOTPCaretVariants } from '@libs/frontend/ui/constants/commonClassNames';
 
 const InputOTPSH = React.forwardRef<React.ElementRef<typeof OTPInput>, React.ComponentPropsWithoutRef<typeof OTPInput>>(
   ({ className, containerClassName, ...props }, ref) => (

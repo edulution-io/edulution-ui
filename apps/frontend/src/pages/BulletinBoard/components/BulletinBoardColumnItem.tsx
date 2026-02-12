@@ -19,12 +19,12 @@
 
 /* eslint-disable react/no-danger */
 import React, { useEffect } from 'react';
-import { Button , cn } from '@edulution-io/ui-kit';
+import { Button, cn } from '@edulution-io/ui-kit';
 import DropdownMenu from '@/components/shared/DropdownMenu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import BulletinResponseDto from '@libs/bulletinBoard/types/bulletinResponseDto';
-import DropdownMenuItemType from '@libs/ui/types/dropdownMenuItemType';
+import DropdownMenuItemType from '@libs/frontend/ui/types/dropdownMenuItemType';
 import { useTranslation } from 'react-i18next';
 import useUserStore from '@/store/UserStore/useUserStore';
 import useLdapGroups from '@/hooks/useLdapGroups';

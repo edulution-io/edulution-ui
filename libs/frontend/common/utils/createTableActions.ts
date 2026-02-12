@@ -17,11 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import STANDARD_ACTION_TYPES from '@libs/common/constants/standardActionTypes';
+import StandardActionType from '@libs/common/types/standardActionType';
+import STANDARD_ACTION_ICONS from '../constants/standardActionIcons';
 import TableAction from '../types/tableAction';
 import { TableActionConfig, TableActionContext, TableActionsConfig } from '../types/tableActionsConfig';
-import STANDARD_ACTION_TYPES from '../constants/standardActionTypes';
-import STANDARD_ACTION_ICONS from '../constants/standardActionIcons';
-import StandardActionType from '../types/standardActionType';
 
 const STANDARD_TRANSLATION_IDS: Record<StandardActionType, string> = {
   [STANDARD_ACTION_TYPES.ADD]: 'common.add',

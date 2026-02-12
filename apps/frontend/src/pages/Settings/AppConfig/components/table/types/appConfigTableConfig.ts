@@ -19,17 +19,20 @@
 
 import { ContainerInfo } from 'dockerode';
 import BulletinCategoryResponseDto from '@libs/bulletinBoard/types/bulletinCategoryResponseDto';
-import { BulletinCategoryTableStore } from '@libs/appconfig/types/bulletinCategoryTableStore';
+import { BulletinCategoryTableStore } from '@libs/frontend/appconfig/types/bulletinCategoryTableStore';
 import VeyonProxyItem from '@libs/veyon/types/veyonProxyItem';
-import { VeyonConfigTableStore } from '@libs/appconfig/types/veyonConfigTableStore';
-import { DockerContainerTableStore } from '@libs/appconfig/types/dockerContainerTableStore';
+import { VeyonConfigTableStore } from '@libs/frontend/appconfig/types/veyonConfigTableStore';
+import { DockerContainerTableStore } from '@libs/frontend/appconfig/types/dockerContainerTableStore';
 import ExtendedOptionKeys from '@libs/appconfig/constants/extendedOptionKeys';
 import FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
-import { FileTableStore } from '@libs/appconfig/types/fileTableStore';
+import { FileTableStore } from '@libs/frontend/appconfig/types/fileTableStore';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';
-import type { WebdavServerTableStore, WebdavShareTableStore } from '@libs/appconfig/types/webdavShareTableStore';
+import type {
+  WebdavServerTableStore,
+  WebdavShareTableStore,
+} from '@libs/frontend/appconfig/types/webdavShareTableStore';
 import { type WireguardPeer } from '@libs/wireguard/types/wireguard';
-import { type WireguardTableStore } from '@libs/appconfig/types/wireguardTableStore';
+import { type WireguardTableStore } from '@libs/frontend/appconfig/types/wireguardTableStore';
 import AppConfigTableEntry from './appConfigTableEntry';
 
 export type AppConfigTableConfig =

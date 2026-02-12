@@ -18,7 +18,7 @@
  */
 
 import { t } from 'i18next';
-import { SaveIcon } from '@libs/common/constants/standardActionIcons';
+import { SaveIcon } from '@libs/frontend/common/constants/standardActionIcons';
 
 const SaveButton = (onClick: () => void, isVisible?: boolean) => ({
   icon: SaveIcon,

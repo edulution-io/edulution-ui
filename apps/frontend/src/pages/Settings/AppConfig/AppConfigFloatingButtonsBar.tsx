@@ -18,7 +18,7 @@
  */
 
 import React from 'react';
-import FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
+import FloatingButtonsBarConfig from '@libs/frontend/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import SaveButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/saveButton';
@@ -27,7 +27,7 @@ type AppConfigButtonsProps = {
   handleDeleteSettingsItem: () => void;
   handleSaveSettingsItem: () => void;
 };
-const AppConfigFloatingButtons: React.FC<AppConfigButtonsProps> = ({
+const AppConfigFloatingButtonsBar: React.FC<AppConfigButtonsProps> = ({
   handleDeleteSettingsItem,
   handleSaveSettingsItem,
 }) => {
@@ -39,4 +39,4 @@ const AppConfigFloatingButtons: React.FC<AppConfigButtonsProps> = ({
   return <FloatingButtonsBar config={config} />;
 };
 
-export default AppConfigFloatingButtons;
+export default AppConfigFloatingButtonsBar;

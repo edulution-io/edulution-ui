@@ -17,18 +17,14 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import { TldrFileV1 } from '@libs/tldraw-sync/types/tldrFileV1';
+import type AppConfigTable from '@libs/frontend/appconfig/types/appConfigTable';
+import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 
-const isTldrFileV1 = (value: unknown): value is TldrFileV1 => {
-  if (typeof value !== 'object' || value === null) return false;
-  const v = value as Record<string, unknown>;
-  const schema = v['schema'] as TldrFileV1['schema'] | undefined;
-  return (
-    v['tldrawFileFormatVersion'] === 1 &&
-    typeof schema === 'object' &&
-    schema?.schemaVersion === 2 &&
-    Array.isArray(v?.['records'])
-  );
-};
-
-export default isTldrFileV1;
+export interface FileTableStore extends AppConfigTable<FileInfoDto> {
+  files: Record<string, string>;
+  isLoading: boolean;
+  error: string | null;
+  publicFilesInfo: FileInfoDto[];
+  getPublicFilesInfo: (applicationName: string) => Promise<void>;
+  reset: () => void;
+}

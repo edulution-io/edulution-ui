@@ -18,7 +18,7 @@
  */
 
 import { create, StoreApi, UseBoundStore } from 'zustand';
-import { WebdavServerTableStore } from '@libs/appconfig/types/webdavShareTableStore';
+import { WebdavServerTableStore } from '@libs/frontend/appconfig/types/webdavShareTableStore';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import WebdavShareDto from '@libs/filesharing/types/webdavShareDto';

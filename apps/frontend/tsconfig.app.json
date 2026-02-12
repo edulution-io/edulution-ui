@@ -6,7 +6,13 @@
     "jsx": "preserve",
     "types": ["vite/client"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "../../libs/src/**/*", "../../libs/ui-kit/src/**/*"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "../../libs/src/**/*",
+    "../../libs/frontend/**/*",
+    "../../libs/ui-kit/src/**/*"
+  ],
   "exclude": [
     "vite.config.mts",
     "vitest.config.ts",

@@ -23,7 +23,7 @@ import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/Floating
 
 import DeleteButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/deleteButton';
 import EditButton from '@/components/shared/FloatingsButtonsBar/CommonButtonConfigs/editButton';
-import type FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
+import type FloatingButtonsBarConfig from '@libs/frontend/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import PUBLIC_SHARE_DIALOG_NAMES from '@libs/filesharing/constants/publicShareDialogNames';
 
 const PublicShareFilesFloatingButtonsBar: React.FC = () => {

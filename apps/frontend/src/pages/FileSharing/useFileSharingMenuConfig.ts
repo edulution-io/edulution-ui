@@ -23,7 +23,7 @@ import useFileSharingStore from '@/pages/FileSharing/useFileSharingStore';
 import { FileSharingIcon } from '@/assets/icons';
 import { faCloud } from '@fortawesome/free-solid-svg-icons';
 import userStore from '@/store/UserStore/useUserStore';
-import MenuItem from '@libs/menubar/menuItem';
+import MenuItem from '@libs/frontend/menubar/menuItem';
 import APPS from '@libs/appconfig/constants/apps';
 import { t } from 'i18next';
 import SHARED from '@libs/filesharing/constants/shared';

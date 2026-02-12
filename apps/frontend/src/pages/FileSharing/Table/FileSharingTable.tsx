@@ -42,7 +42,7 @@ import VIEW_MODE from '@libs/common/constants/viewMode';
 import useFileSharingDragAndDrop from '@/pages/FileSharing/hooks/useFileSharingDragAndDrop';
 import PARENT_FOLDER_PATH from '@libs/filesharing/constants/parentFolderPath';
 import { getElapsedTime } from '@/pages/FileSharing/utilities/filesharingUtilities';
-import getFileCategory from '@libs/filesharing/utils/getFileCategory';
+import getFileCategory from '@libs/frontend/filesharing/utils/getFileCategory';
 import FileEntryIcon from '@/pages/FileSharing/utilities/FileEntryIcon';
 import TableActionMenu from '@/components/ui/Table/TableActionMenu';
 import useFileSharingDialogStore from '@/pages/FileSharing/Dialog/useFileSharingDialogStore';

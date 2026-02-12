@@ -21,7 +21,7 @@ import React from 'react';
 import { TldrawUiMenuItem } from 'tldraw';
 import { useTranslation } from 'react-i18next';
 import useWhiteboardEditorStore from '@/pages/Whiteboard/useWhiteboardEditorStore';
-import buildTldrFileFromEditor from '@libs/tldraw-sync/utils/buildTldrFileFromEditor';
+import buildTldrFileFromEditor from '@libs/frontend/tldraw-sync/utils/buildTldrFileFromEditor';
 import APPS from '@libs/appconfig/constants/apps';
 
 const SaveLocalTldrItem: React.FC = () => {

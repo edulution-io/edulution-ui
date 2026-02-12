@@ -18,7 +18,7 @@
  */
 
 import { t } from 'i18next';
-import { EditIcon } from '@libs/common/constants/standardActionIcons';
+import { EditIcon } from '@libs/frontend/common/constants/standardActionIcons';
 
 const EditButton = (onClick: () => void, isVisible?: boolean) => ({
   icon: EditIcon,

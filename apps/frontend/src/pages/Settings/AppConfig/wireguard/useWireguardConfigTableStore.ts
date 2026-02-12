@@ -20,7 +20,7 @@
 import { create, StoreApi, UseBoundStore } from 'zustand';
 import { toast } from 'sonner';
 import i18n from '@/i18n';
-import { WireguardTableStore } from '@libs/appconfig/types/wireguardTableStore';
+import { WireguardTableStore } from '@libs/frontend/appconfig/types/wireguardTableStore';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 import WIREGUARD_API_ENDPOINT from '@libs/wireguard/constants/wireguardApiEndpoint';

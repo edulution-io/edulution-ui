@@ -19,7 +19,7 @@
 
 import { create } from 'zustand';
 import type { Editor, StoreSnapshot, TLRecord } from 'tldraw';
-import loadTldrFileIntoEditor from '@libs/tldraw-sync/utils/loadTldrFileIntoEditor';
+import loadTldrFileIntoEditor from '@libs/frontend/tldraw-sync/utils/loadTldrFileIntoEditor';
 import { toast } from 'sonner';
 import { RequestResponseContentType } from '@libs/common/types/http-methods';
 import getErrorMessage from '@libs/common/utils/getErrorMessage';

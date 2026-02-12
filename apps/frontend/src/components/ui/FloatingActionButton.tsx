@@ -22,7 +22,7 @@ import { Button } from '@edulution-io/ui-kit';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import DropdownMenu from '@/components/shared/DropdownMenu';
-import type FloatingButtonConfig from '@libs/ui/types/FloatingButtons/floatingButtonConfig';
+import type FloatingButtonConfig from '@libs/frontend/ui/types/FloatingButtons/floatingButtonConfig';
 import { FLOATING_BUTTON_CLASS_NAME } from '@libs/ui/constants/floatingButtonsConfig';
 import useFontAwesomeHoverAnimation from '@/hooks/useFontAwesomeHoverAnimation';
 

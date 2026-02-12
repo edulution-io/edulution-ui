@@ -19,9 +19,9 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { AddIcon } from '@libs/common/constants/standardActionIcons';
+import { AddIcon } from '@libs/frontend/common/constants/standardActionIcons';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
-import type FloatingButtonsBarProps from '@libs/ui/types/FloatingButtons/floatingButtonsBarProps';
+import type FloatingButtonsBarProps from '@libs/frontend/ui/types/FloatingButtons/floatingButtonsBarProps';
 import type AppConfigOption from '@libs/appconfig/types/appConfigOption';
 import APPS from '@libs/appconfig/constants/apps';
 
