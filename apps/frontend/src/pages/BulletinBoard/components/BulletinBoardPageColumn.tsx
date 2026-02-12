@@ -28,7 +28,7 @@ import ResizableWindow from '@/components/structure/framing/ResizableWindow/Resi
 import FullScreenImage from '@/components/ui/FullScreenImage';
 import { useTranslation } from 'react-i18next';
 import BULLETIN_BOARD_GRID_ROWS from '@libs/bulletinBoard/constants/bulletin-board-grid-rows';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 const BulletinBoardPageColumn = ({
   bulletins,

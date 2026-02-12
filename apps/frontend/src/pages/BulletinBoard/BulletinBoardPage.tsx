@@ -32,7 +32,7 @@ import useUserPreferencesStore from '@/store/useUserPreferencesStore';
 import USER_PREFERENCES_FIELDS from '@libs/user-preferences/constants/user-preferences-fields';
 import BULLETIN_BOARD_GRID_ROWS from '@libs/bulletinBoard/constants/bulletin-board-grid-rows';
 import useMedia from '@/hooks/useMedia';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 const BulletinBoardPage = () => {
   const { t } = useTranslation();
