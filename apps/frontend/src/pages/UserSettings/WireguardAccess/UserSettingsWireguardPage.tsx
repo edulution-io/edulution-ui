@@ -24,7 +24,7 @@ import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import { VPNIcon } from '@/assets/icons';
 import PageLayout from '@/components/structure/layout/PageLayout';
 import { SectionAccordion, SectionAccordionItem } from '@/components/ui/SectionAccordion';
-import { Button , cn } from '@edulution-io/ui-kit';
+import { Button, cn } from '@edulution-io/ui-kit';
 import CircleLoader from '@/components/ui/Loading/CircleLoader';
 import useAppConfigsStore from '@/pages/Settings/AppConfig/useAppConfigsStore';
 import APPS from '@libs/appconfig/constants/apps';
