@@ -17,34 +17,10 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { Route } from 'react-router-dom';
-import ChatPage from '@/pages/Chat/ChatPage';
-import APPS from '@libs/appconfig/constants/apps';
-import { CHAT_PATH } from '@libs/chat/constants/chatPaths';
+interface AiConversation {
+  id: string;
+  title: string;
+  createdAt: Date;
+}
 
-const getChatRoutes = () => [
-  <Route
-    key={CHAT_PATH}
-    path={CHAT_PATH}
-  >
-    <Route
-      index
-      element={<ChatPage />}
-    />
-    <Route
-      path={APPS.AICHAT}
-      element={<ChatPage />}
-    />
-    <Route
-      path={`${APPS.AICHAT}/:chatId`}
-      element={<ChatPage />}
-    />
-    <Route
-      path=":groupType/:groupName"
-      element={<ChatPage />}
-    />
-  </Route>,
-];
-
-export default getChatRoutes;
+export default AiConversation;

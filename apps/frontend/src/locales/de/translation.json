@@ -31,7 +31,10 @@
       "messageSendFailed": "Nachricht konnte nicht gesendet werden",
       "invalidGroupType": "Ungültiger Gruppentyp"
     },
-    "refreshGroups": "Gruppen aktualisieren"
+    "refreshGroups": "Gruppen aktualisieren",
+    "newChat": "Neuer Chat",
+    "startNewAiChat": "Starte eine neue KI-Unterhaltung",
+    "deleteChat": "Chat löschen"
   },
   "bulletinboard": {
     "settings": "Einstellungen",

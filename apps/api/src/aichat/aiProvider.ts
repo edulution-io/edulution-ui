@@ -17,34 +17,30 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { Route } from 'react-router-dom';
-import ChatPage from '@/pages/Chat/ChatPage';
-import APPS from '@libs/appconfig/constants/apps';
-import { CHAT_PATH } from '@libs/chat/constants/chatPaths';
+import { createOpenAI } from '@ai-sdk/openai';
+import { customProvider } from 'ai';
 
-const getChatRoutes = () => [
-  <Route
-    key={CHAT_PATH}
-    path={CHAT_PATH}
-  >
-    <Route
-      index
-      element={<ChatPage />}
-    />
-    <Route
-      path={APPS.AICHAT}
-      element={<ChatPage />}
-    />
-    <Route
-      path={`${APPS.AICHAT}/:chatId`}
-      element={<ChatPage />}
-    />
-    <Route
-      path=":groupType/:groupName"
-      element={<ChatPage />}
-    />
-  </Route>,
-];
+const OLLAMA_DEFAULT_BASE_URL = 'http://localhost:11434/v1';
+const OLLAMA_DEFAULT_MODEL = 'llama3.2:latest';
 
-export default getChatRoutes;
+const getOllamaBaseUrl = () => process.env.OLLAMA_BASE_URL || OLLAMA_DEFAULT_BASE_URL;
+const getOllamaModel = () => process.env.OLLAMA_MODEL || OLLAMA_DEFAULT_MODEL;
+
+const createAiProvider = () => {
+  const ollama = createOpenAI({
+    baseURL: getOllamaBaseUrl(),
+    apiKey: 'ollama',
+  });
+
+  const modelId = getOllamaModel();
+
+  return customProvider({
+    languageModels: {
+      chat: ollama(modelId),
+    },
+  });
+};
+
+const AI_PROVIDER_MODEL_ID = 'chat';
+
+export { createAiProvider, AI_PROVIDER_MODEL_ID };

@@ -19,6 +19,7 @@
 
 const CHAT_TYPES = {
   GROUP: 'group',
+  AI: 'ai',
 } as const;
 
 export default CHAT_TYPES;
