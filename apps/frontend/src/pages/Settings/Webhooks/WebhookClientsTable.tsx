@@ -56,12 +56,12 @@ const WebhookClientsTable: React.FC = () => {
         disabled: !hasSelectedRows,
       },
     ],
-    [hasSelectedRows],
+    [hasSelectedRows, setIsAddDialogOpen, setIsDeleteDialogOpen],
   );
 
   useEffect(() => {
     void fetchClients();
-  }, []);
+  }, [fetchClients]);
 
   return (
     <>
