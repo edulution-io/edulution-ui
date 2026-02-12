@@ -334,7 +334,7 @@ class NotificationsService {
   ): PipelineStage[] {
     return [
       { $match: { username, ...additionalUserNotificationMatch } },
-      { $sort: { createdAt: -1 as const } },
+      { $sort: { updatedAt: -1 as const } },
       {
         $lookup: {
           from: this.notificationModel.collection.name,
@@ -391,6 +391,7 @@ class NotificationsService {
       content: userNotificationData.notification.content,
       data: userNotificationData.notification.data,
       createdAt: userNotificationData.notification.createdAt,
+      updatedAt: userNotificationData.notification.updatedAt,
       createdBy: userNotificationData.notification.createdBy,
       readAt: userNotificationData.readAt,
     }));
