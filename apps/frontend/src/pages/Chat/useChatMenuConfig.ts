@@ -57,7 +57,6 @@ const useChatMenuConfig = () => {
         id: 'classes',
         label: t('chat.schoolClasses'),
         icon: faUsers,
-        action: () => {},
         disableTranslation: true,
         children: classChildren,
       });
@@ -76,7 +75,6 @@ const useChatMenuConfig = () => {
         id: 'projects',
         label: t('chat.projects'),
         icon: faUserGear,
-        action: () => {},
         disableTranslation: true,
         children: projectChildren,
       });

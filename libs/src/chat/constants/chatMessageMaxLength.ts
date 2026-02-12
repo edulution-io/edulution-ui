@@ -17,5 +17,5 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const chatMessageMaxLength = 2000;
-export default chatMessageMaxLength;
+const CHAT_MESSAGE_MAX_LENGTH = 2000;
+export default CHAT_MESSAGE_MAX_LENGTH;

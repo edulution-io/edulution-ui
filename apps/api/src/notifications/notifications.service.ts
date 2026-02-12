@@ -421,27 +421,6 @@ class NotificationsService {
     return { modifiedCount: result.modifiedCount };
   }
 
-  async markAsReadBySource(
-    sourceType: NotificationSourceType,
-    sourceId: string,
-    username: string,
-  ): Promise<{ modifiedCount: number }> {
-    const notification = await this.notificationModel.findOne({ sourceType, sourceId }).exec();
-
-    if (!notification) {
-      return { modifiedCount: 0 };
-    }
-
-    const notificationObjectId = new Types.ObjectId(String(notification.id));
-
-    const result = await this.userNotificationModel.updateOne(
-      { notificationId: notificationObjectId, username, readAt: null },
-      { $set: { readAt: new Date() } },
-    );
-
-    return { modifiedCount: result.modifiedCount };
-  }
-
   async markAllAsRead(username: string): Promise<{ modifiedCount: number }> {
     const result = await this.userNotificationModel.updateMany(
       { username, readAt: null },

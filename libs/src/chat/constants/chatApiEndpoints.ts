@@ -19,11 +19,8 @@
 
 import APPS from '@libs/appconfig/constants/apps';
 
-const CHAT_API_BASE = APPS.CHAT;
+export const CHAT_EDU_API_ENDPOINT = APPS.CHAT;
 
-const CHAT_USER_GROUPS_ENDPOINT = `${CHAT_API_BASE}/groups`;
+export const CHAT_USER_GROUPS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/groups`;
 
-const getChatMessagesEndpoint = (groupType: string, groupName: string): string =>
-  `${CHAT_API_BASE}/conversations/${groupType}/${groupName}/messages`;
-
-export { CHAT_API_BASE, CHAT_USER_GROUPS_ENDPOINT, getChatMessagesEndpoint };
+export const CHAT_CONVERSATIONS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/conversations`;

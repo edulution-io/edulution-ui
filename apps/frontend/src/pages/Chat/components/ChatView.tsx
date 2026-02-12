@@ -19,7 +19,7 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import type ChatAdapter from '@libs/chat/types/chatAdapter';
+import type ChatAdapter from '@/pages/Chat/types/chatAdapter';
 import ChatMessages from './ChatMessages';
 import ChatInput from './ChatInput';
 

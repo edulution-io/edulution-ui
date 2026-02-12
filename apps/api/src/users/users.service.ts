@@ -114,12 +114,6 @@ class UsersService {
     return cachedUsers ?? [];
   }
 
-  async findCachedUserByUsername(username: string): Promise<CachedUser | null> {
-    const allUsers = await this.cacheManager.get<CachedUser[]>(ALL_USERS_CACHE_KEY + SPECIAL_SCHOOLS.GLOBAL);
-    if (!allUsers) return null;
-    return allUsers.find((user) => user.username === username) ?? null;
-  }
-
   async refreshUsersCache(): Promise<number> {
     const mapToCachedUser = (user: LDAPUser): CachedUser => ({
       ...user,

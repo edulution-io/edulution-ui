@@ -20,7 +20,7 @@
 import { create } from 'zustand';
 import ChatMessage from '@libs/chat/types/chatMessage';
 import UserChatGroups from '@libs/chat/types/userChatGroups';
-import { CHAT_USER_GROUPS_ENDPOINT, getChatMessagesEndpoint } from '@libs/chat/constants/chatApiEndpoints';
+import { CHAT_USER_GROUPS_ENDPOINT, CHAT_CONVERSATIONS_ENDPOINT } from '@libs/chat/constants/chatApiEndpoints';
 import eduApi from '@/api/eduApi';
 import handleApiError from '@/utils/handleApiError';
 
@@ -31,7 +31,6 @@ interface ChatStore {
   error: string | null;
   currentGroupType: string | null;
   currentGroupName: string | null;
-  hasMore: boolean;
   userGroups: UserChatGroups | null;
   isLoadingGroups: boolean;
 
@@ -40,9 +39,6 @@ interface ChatStore {
   sendMessage: (groupType: string, groupName: string, content: string) => Promise<ChatMessage | null>;
   setCurrentConversation: (groupType: string, groupName: string) => void;
   addMessage: (message: ChatMessage) => void;
-  clearMessages: () => void;
-  loadMore: () => Promise<void>;
-  reset: () => void;
 }
 
 const DEFAULT_LIMIT = 50;
@@ -54,7 +50,6 @@ const initialState = {
   error: null,
   currentGroupType: null,
   currentGroupName: null,
-  hasMore: true,
   userGroups: null,
   isLoadingGroups: false,
 };
@@ -81,7 +76,7 @@ const useChatStore = create<ChatStore>((set, get) => ({
     set({ isLoading: true, error: null });
 
     try {
-      const endpoint = getChatMessagesEndpoint(groupType, groupName);
+      const endpoint = `${CHAT_CONVERSATIONS_ENDPOINT}/${groupType}/${groupName}/messages`;
       const response = await eduApi.get<ChatMessage[]>(endpoint, {
         params: { limit, offset },
       });
@@ -92,7 +87,6 @@ const useChatStore = create<ChatStore>((set, get) => ({
         messages,
         currentGroupType: groupType,
         currentGroupName: groupName,
-        hasMore: response.data.length === limit,
       });
     } catch (error) {
       handleApiError(error, set);
@@ -105,7 +99,7 @@ const useChatStore = create<ChatStore>((set, get) => ({
     set({ isSending: true, error: null });
 
     try {
-      const endpoint = getChatMessagesEndpoint(groupType, groupName);
+      const endpoint = `${CHAT_CONVERSATIONS_ENDPOINT}/${groupType}/${groupName}/messages`;
       const response = await eduApi.post<ChatMessage>(endpoint, { content });
 
       const newMessage = response.data;
@@ -131,7 +125,6 @@ const useChatStore = create<ChatStore>((set, get) => ({
         currentGroupType: groupType,
         currentGroupName: groupName,
         messages: [],
-        hasMore: true,
       });
     }
   },
@@ -142,42 +135,6 @@ const useChatStore = create<ChatStore>((set, get) => ({
       if (exists) return state;
       return { messages: [...state.messages, message] };
     });
-  },
-
-  clearMessages: () => {
-    set({ messages: [], hasMore: true });
-  },
-
-  loadMore: async () => {
-    const { currentGroupType, currentGroupName, messages, hasMore, isLoading } = get();
-
-    if (!currentGroupType || !currentGroupName || !hasMore || isLoading) {
-      return;
-    }
-
-    set({ isLoading: true, error: null });
-
-    try {
-      const endpoint = getChatMessagesEndpoint(currentGroupType, currentGroupName);
-      const response = await eduApi.get<ChatMessage[]>(endpoint, {
-        params: { limit: DEFAULT_LIMIT, offset: messages.length },
-      });
-
-      const olderMessages = [...response.data].reverse();
-
-      set((state) => ({
-        messages: [...olderMessages, ...state.messages],
-        hasMore: response.data.length === DEFAULT_LIMIT,
-      }));
-    } catch (error) {
-      handleApiError(error, set);
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-
-  reset: () => {
-    set(initialState);
   },
 }));
 

@@ -18,7 +18,7 @@
  */
 
 import { useState, useCallback, useEffect, useRef, FormEvent } from 'react';
-import ChatAdapter from '@libs/chat/types/chatAdapter';
+import ChatAdapter from '@/pages/Chat/types/chatAdapter';
 import ChatMessageSsePayload from '@libs/chat/types/chatMessageSsePayload';
 import GROUP_TYPES from '@libs/chat/constants/groupTypes';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
@@ -70,8 +70,8 @@ const useGroupChat = (groupName: string, groupTypeLocation: GroupTypeLocation): 
         }
 
         addMessage(payload);
-      } catch {
-        console.error('Failed to parse SSE chat message');
+      } catch (err) {
+        console.error('Failed to parse SSE chat message', err);
       }
     },
     [currentUsername, addMessage],

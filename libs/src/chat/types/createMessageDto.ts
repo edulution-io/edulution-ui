@@ -18,12 +18,12 @@
  */
 
 import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
-import chatMessageMaxLength from '@libs/chat/constants/chatMessageMaxLength';
+import CHAT_MESSAGE_MAX_LENGTH from '@libs/chat/constants/chatMessageMaxLength';
 
 class CreateMessageDto {
   @IsString()
   @IsNotEmpty()
-  @MaxLength(chatMessageMaxLength)
+  @MaxLength(CHAT_MESSAGE_MAX_LENGTH)
   content: string;
 }
 

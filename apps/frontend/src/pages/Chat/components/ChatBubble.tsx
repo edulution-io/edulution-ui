@@ -43,7 +43,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isOwnMessage }) => (
           </span>
         )}
         <span className={isOwnMessage ? 'text-white/70' : 'text-muted-foreground'}>
-          {formatIsoDateToLocaleString(message.createdAt.toLocaleString())}
+          {formatIsoDateToLocaleString(message.createdAt)}
         </span>
       </div>
     </div>
