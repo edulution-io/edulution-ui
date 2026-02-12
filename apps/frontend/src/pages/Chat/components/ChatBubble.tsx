@@ -21,6 +21,7 @@ import React from 'react';
 import type ChatMessage from '@libs/chat/types/chatMessage';
 import { cn } from '@edulution-io/ui-kit';
 import formatIsoDateToLocaleString from '@libs/common/utils/Date/formatIsoDateToLocaleString';
+import MarkdownRenderer from '@/components/ui/Renderer/MarkdownRenderer';
 
 interface ChatBubbleProps {
   message: ChatMessage;
@@ -35,7 +36,14 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isOwnMessage }) => (
         isOwnMessage ? 'rounded-br-md bg-primary text-white' : 'rounded-bl-md bg-accent text-background',
       )}
     >
-      <p className="whitespace-pre-wrap break-words text-sm">{message.content}</p>
+      {isOwnMessage ? (
+        <p className="whitespace-pre-wrap break-words text-sm">{message.content}</p>
+      ) : (
+        <MarkdownRenderer
+          content={message.content}
+          className="text-sm [&_.wmde-markdown]:!bg-transparent"
+        />
+      )}
       <div className={cn('mt-1 flex items-center gap-2 text-xs', isOwnMessage ? 'justify-end' : 'justify-between')}>
         {!isOwnMessage && (
           <span className="font-medium opacity-70">

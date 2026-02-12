@@ -25,6 +25,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowRightToBracket,
   faArrowRightFromBracket,
+  faTrash,
   IconDefinition,
   faChevronDown,
 } from '@fortawesome/free-solid-svg-icons';
@@ -232,7 +233,7 @@ const MenuBar: React.FC = () => {
                 shouldCollapse && 'justify-center',
               )}
             >
-              {renderIcon(item.icon, item.label, 'h-12 w-12 object-contain', !isActive)}
+              {item.icon && renderIcon(item.icon, item.label, 'h-12 w-12 object-contain', !isActive)}
               {!shouldCollapse && (
                 <>
                   <span className={cn('flex-1 text-left', isActive ? 'text-white' : '')}>{item.label}</span>
@@ -247,7 +248,7 @@ const MenuBar: React.FC = () => {
                       <FontAwesomeIcon
                         icon={faChevronDown}
                         className={cn(
-                          'h-4 w-4 shrink-0 text-white transition-transform duration-200',
+                          'h-4 w-4 shrink-0 text-foreground transition-transform duration-200',
                           isExpanded && 'rotate-180',
                         )}
                       />
@@ -288,7 +289,23 @@ const MenuBar: React.FC = () => {
                           isChildActive && 'bg-accent font-bold',
                         )}
                       >
-                        <span className="truncate">{child.label}</span>
+                        {child.icon && (
+                          <FontAwesomeIcon
+                            icon={child.icon as IconDefinition}
+                            className={cn('h-4 w-4', child.iconClassName ?? 'text-white')}
+                          />
+                        )}
+                        <span className="flex-1 truncate text-left">{child.label}</span>
+                        {child.onDelete && (
+                          <FontAwesomeIcon
+                            icon={faTrash}
+                            className="h-3 w-3 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:text-destructive"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              child.onDelete?.();
+                            }}
+                          />
+                        )}
                       </Button>
                     );
                   })}

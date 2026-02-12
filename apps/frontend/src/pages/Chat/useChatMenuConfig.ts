@@ -20,17 +20,19 @@
 import { useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { faUsers, faUserGear } from '@fortawesome/free-solid-svg-icons';
+import { faUsers, faUserGear, faRobot, faPlus } from '@fortawesome/free-solid-svg-icons';
 import useChatStore from '@/store/useChatStore';
+import useAiChatStore from '@/store/useAiChatStore';
 import { ContactIcon } from '@/assets/icons';
 import MenuItem from '@libs/menubar/menuItem';
 import APPS from '@libs/appconfig/constants/apps';
-import { CHAT_CLASSES_PATH, CHAT_PROJECTS_PATH } from '@libs/chat/constants/chatPaths';
+import { CHAT_CLASSES_PATH, CHAT_PROJECTS_PATH, CHAT_AICHAT_PATH } from '@libs/chat/constants/chatPaths';
 
 const useChatMenuConfig = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { userGroups, fetchUserGroups } = useChatStore();
+  const { conversations, createConversation, deleteConversation } = useAiChatStore();
 
   useEffect(() => {
     if (!userGroups) {
@@ -48,7 +50,6 @@ const useChatMenuConfig = () => {
       const classChildren: MenuItem[] = classes.map((group) => ({
         id: group.name,
         label: group.name,
-        icon: faUsers,
         action: () => navigate(`/${CHAT_CLASSES_PATH}/${group.name}`),
         disableTranslation: true,
       }));
@@ -67,7 +68,6 @@ const useChatMenuConfig = () => {
       const projectChildren: MenuItem[] = projects.map((group) => ({
         id: group.name,
         label: group.name,
-        icon: faUserGear,
         action: () => navigate(`/${CHAT_PROJECTS_PATH}/${group.name}`),
         disableTranslation: true,
       }));
@@ -82,8 +82,45 @@ const useChatMenuConfig = () => {
       });
     }
 
+    const aiChatChildren: MenuItem[] = [
+      {
+        id: 'new-ai-chat',
+        label: t('chat.newChat'),
+        icon: faPlus,
+        iconClassName: 'text-background',
+        action: () => {
+          void createConversation().then((id) => {
+            if (id) {
+              navigate(`/${CHAT_AICHAT_PATH}/${id}`);
+            }
+          });
+        },
+        disableTranslation: true,
+      },
+      ...conversations.map((conv) => ({
+        id: conv.id,
+        label: conv.title,
+        action: () => navigate(`/${CHAT_AICHAT_PATH}/${conv.id}`),
+        onDelete: () => {
+          void deleteConversation(conv.id).then(() => {
+            navigate(`/${CHAT_AICHAT_PATH}`);
+          });
+        },
+        disableTranslation: true,
+      })),
+    ];
+
+    items.push({
+      id: APPS.AICHAT,
+      label: 'AI Chat',
+      icon: faRobot,
+      action: () => navigate(`/${CHAT_AICHAT_PATH}`),
+      disableTranslation: true,
+      children: aiChatChildren,
+    });
+
     return items;
-  }, [userGroups, navigate, t]);
+  }, [userGroups, navigate, t, conversations, createConversation, deleteConversation]);
 
   return {
     title: 'chat.title',

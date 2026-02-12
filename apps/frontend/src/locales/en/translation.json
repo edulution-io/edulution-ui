@@ -31,7 +31,10 @@
       "messageSendFailed": "Failed to send message",
       "invalidGroupType": "Invalid group type"
     },
-    "refreshGroups": "Refresh groups"
+    "refreshGroups": "Refresh groups",
+    "newChat": "New Chat",
+    "startNewAiChat": "Start a new AI conversation",
+    "deleteChat": "Delete chat"
   },
   "bulletinboard": {
     "settings": "Settings",

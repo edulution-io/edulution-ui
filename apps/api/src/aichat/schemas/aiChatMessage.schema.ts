@@ -17,33 +17,34 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
-import GroupChatContent from './GroupChatContent';
-import AiChatContent from './AiChatContent';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Types } from 'mongoose';
+import ChatRole from '@libs/chat/types/chatRole';
 
-interface ChatContentProps {
-  chatId?: string;
-  groupName?: string;
-  groupType?: GroupTypeLocation;
+export type AiChatMessageDocument = AiChatMessage & Document;
+
+@Schema({ timestamps: true, strict: true })
+export class AiChatMessage {
+  @Prop({ type: Types.ObjectId, ref: 'AiConversation', required: true, index: true })
+  conversationId: Types.ObjectId;
+
+  @Prop({ type: String, required: true })
+  role: ChatRole;
+
+  @Prop({ type: String, required: true })
+  content: string;
+
+  @Prop({ type: String, required: true })
+  createdBy: string;
+
+  @Prop({ default: 1 })
+  schemaVersion: number;
 }
 
-const ChatContent: React.FC<ChatContentProps> = ({ chatId, groupName, groupType }) => {
-  if (chatId) {
-    return (
-      <AiChatContent
-        key={chatId}
-        chatId={chatId}
-      />
-    );
-  }
+export const AiChatMessageSchema = SchemaFactory.createForClass(AiChatMessage);
 
-  return (
-    <GroupChatContent
-      groupName={groupName!}
-      groupType={groupType!}
-    />
-  );
-};
+AiChatMessageSchema.index({ conversationId: 1, createdAt: -1 });
 
-export default ChatContent;
+AiChatMessageSchema.set('toJSON', {
+  virtuals: true,
+});

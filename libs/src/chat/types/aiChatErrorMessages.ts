@@ -17,34 +17,13 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
-import { Route } from 'react-router-dom';
-import ChatPage from '@/pages/Chat/ChatPage';
-import APPS from '@libs/appconfig/constants/apps';
-import { CHAT_PATH } from '@libs/chat/constants/chatPaths';
+const AICHAT_ERROR_MESSAGES = {
+  CONVERSATION_NOT_FOUND: 'aichat.errors.conversationNotFound',
+  UNAUTHORIZED_ACCESS: 'aichat.errors.unauthorizedAccess',
+  STREAM_FAILED: 'aichat.errors.streamFailed',
+} as const;
 
-const getChatRoutes = () => [
-  <Route
-    key={CHAT_PATH}
-    path={CHAT_PATH}
-  >
-    <Route
-      index
-      element={<ChatPage />}
-    />
-    <Route
-      path={APPS.AICHAT}
-      element={<ChatPage />}
-    />
-    <Route
-      path={`${APPS.AICHAT}/:chatId`}
-      element={<ChatPage />}
-    />
-    <Route
-      path=":groupType/:groupName"
-      element={<ChatPage />}
-    />
-  </Route>,
-];
+type AiChatErrorMessages = (typeof AICHAT_ERROR_MESSAGES)[keyof typeof AICHAT_ERROR_MESSAGES];
 
-export default getChatRoutes;
+export { AICHAT_ERROR_MESSAGES };
+export default AiChatErrorMessages;

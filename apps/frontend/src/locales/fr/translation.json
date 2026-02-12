@@ -31,7 +31,10 @@
       "messageSendFailed": "Échec de l'envoi du message",
       "invalidGroupType": "Type de groupe invalide"
     },
-    "refreshGroups": "Actualiser les groupes"
+    "refreshGroups": "Actualiser les groupes",
+    "newChat": "Nouveau Chat",
+    "startNewAiChat": "Démarrer une nouvelle conversation IA",
+    "deleteChat": "Supprimer le chat"
   },
   "bulletinboard": {
     "settings": "Paramètres",

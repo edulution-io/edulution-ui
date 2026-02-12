@@ -18,33 +18,28 @@
  */
 
 import React from 'react';
-import { Route } from 'react-router-dom';
-import ChatPage from '@/pages/Chat/ChatPage';
-import APPS from '@libs/appconfig/constants/apps';
-import { CHAT_PATH } from '@libs/chat/constants/chatPaths';
+import { useTranslation } from 'react-i18next';
+import ChatView from '@/pages/Chat/components/ChatView';
+import useGroupChat from '@/pages/Chat/hooks/useGroupChat';
+import GroupTypeLocation from '@libs/chat/types/groupTypeLocation';
+import { CHAT_GROUP_TYPE_LOCATIONS } from '@libs/chat/constants/chatPaths';
 
-const getChatRoutes = () => [
-  <Route
-    key={CHAT_PATH}
-    path={CHAT_PATH}
-  >
-    <Route
-      index
-      element={<ChatPage />}
-    />
-    <Route
-      path={APPS.AICHAT}
-      element={<ChatPage />}
-    />
-    <Route
-      path={`${APPS.AICHAT}/:chatId`}
-      element={<ChatPage />}
-    />
-    <Route
-      path=":groupType/:groupName"
-      element={<ChatPage />}
-    />
-  </Route>,
-];
+interface GroupChatContentProps {
+  groupName: string;
+  groupType: GroupTypeLocation;
+}
 
-export default getChatRoutes;
+const GroupChatContent: React.FC<GroupChatContentProps> = ({ groupName, groupType }) => {
+  const { t } = useTranslation();
+  const adapter = useGroupChat(groupName, groupType);
+  const title = `${groupType === CHAT_GROUP_TYPE_LOCATIONS.CLASSES ? t('chat.schoolClass') : t('chat.project')}: ${groupName}`;
+
+  return (
+    <ChatView
+      adapter={adapter}
+      title={title}
+    />
+  );
+};
+
+export default GroupChatContent;

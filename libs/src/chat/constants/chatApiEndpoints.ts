@@ -26,4 +26,21 @@ const CHAT_USER_GROUPS_ENDPOINT = `${CHAT_API_BASE}/groups`;
 const getChatMessagesEndpoint = (groupType: string, groupName: string): string =>
   `${CHAT_API_BASE}/conversations/${groupType}/${groupName}/messages`;
 
-export { CHAT_API_BASE, CHAT_USER_GROUPS_ENDPOINT, getChatMessagesEndpoint };
+const AI_CHAT_API_ENDPOINT = `${APPS.AICHAT}/chat`;
+
+const AI_CHAT_CONVERSATIONS_ENDPOINT = `${APPS.AICHAT}/conversations`;
+
+const getAiChatMessagesEndpoint = (conversationId: string): string =>
+  `${APPS.AICHAT}/conversations/${conversationId}/messages`;
+
+const AI_CHAT_CONFIG_ENDPOINT = `${APPS.AICHAT}/config`;
+
+export {
+  CHAT_API_BASE,
+  CHAT_USER_GROUPS_ENDPOINT,
+  getChatMessagesEndpoint,
+  AI_CHAT_API_ENDPOINT,
+  AI_CHAT_CONVERSATIONS_ENDPOINT,
+  getAiChatMessagesEndpoint,
+  AI_CHAT_CONFIG_ENDPOINT,
+};
