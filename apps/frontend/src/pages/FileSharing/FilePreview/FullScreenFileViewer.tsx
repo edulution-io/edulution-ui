@@ -37,7 +37,7 @@ import useFileEditorContentStore from '@/pages/FileSharing/FilePreview/useFileEd
 import isDrawioExtension from '@libs/filesharing/utils/isDrawioExtension';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { SaveIcon } from '@libs/common/constants/standardActionIcons';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 
 const FullScreenFileViewer = () => {
   const { t } = useTranslation();

@@ -34,7 +34,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import useLessonStore from '@/pages/ClassManagement/LessonPage/useLessonStore';
 import DropdownMenu from '@/components/shared/DropdownMenu';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import { useParams } from 'react-router-dom';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import useLmnApiPasswordStore from '@/pages/ClassManagement/LessonPage/UserArea/UserPasswordDialog/useLmnApiPasswordStore';

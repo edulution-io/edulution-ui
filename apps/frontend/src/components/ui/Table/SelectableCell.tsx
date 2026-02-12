@@ -20,7 +20,7 @@
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import Checkbox from '@/components/ui/Checkbox';
 import { Row } from '@tanstack/react-table';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 
 interface SelectableCellProps<TData> {
   row?: Row<TData>;

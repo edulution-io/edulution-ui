@@ -24,6 +24,7 @@ import { HttpStatus, Injectable, OnModuleInit } from '@nestjs/common';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import GlobalSettingsService from 'apps/api/src/global-settings/global-settings.service';
 import MigrationService from 'apps/api/src/migration/migration.service';
 import { SurveysTemplate, SurveysTemplateDocument } from 'apps/api/src/surveys/surveys-template.schema';
@@ -45,14 +46,27 @@ class SurveysTemplateService implements OnModuleInit {
   }
 
   async updateOrCreateTemplateDocument(surveyTemplate: SurveyTemplateDto): Promise<SurveysTemplateDocument | null> {
-    const { id, template, name, isActive = true } = surveyTemplate;
-    try {
-      const templateName = name || template.formula.title;
-      return await this.surveyTemplateModel.findByIdAndUpdate(
-        id,
-        { template, isActive, name: templateName },
-        { new: true, upsert: !id },
+    const { id, template, name: templateName, isActive = true } = surveyTemplate;
+    const trimmedTemplateName = templateName?.trim();
+    const name = trimmedTemplateName || template.formula.title.trim();
+    if (!name) {
+      throw new CustomHttpException(
+        SurveyErrorMessages.UpdateOrCreateError,
+        HttpStatus.BAD_REQUEST,
+        undefined,
+        SurveysTemplateService.name,
       );
+    }
+    try {
+      if (!id) {
+        return await this.surveyTemplateModel.create({
+          template,
+          name,
+          isActive,
+          isDefaultTemplate: false,
+        });
+      }
+      return await this.surveyTemplateModel.findByIdAndUpdate(id, { template, name, isActive }, { new: true });
     } catch (error) {
       throw new CustomHttpException(
         CommonErrorMessages.DB_ACCESS_FAILED,

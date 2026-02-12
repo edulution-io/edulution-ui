@@ -23,7 +23,7 @@ import { type ExtendedOptionKeysType } from '@libs/appconfig/types/extendedOptio
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import UploadContentBody from '@/pages/FileSharing/utilities/UploadContentBody';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import HorizontalLoader from '@/components/ui/Loading/HorizontalLoader';
 import useHandleUploadFileStore from '@/pages/FileSharing/Dialog/upload/useHandleUploadFileStore';
 import useAppConfigTableDialogStore from './table/useAppConfigTableDialogStore';

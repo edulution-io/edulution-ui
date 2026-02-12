@@ -19,7 +19,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { Content, Header, Item, Root, Trigger } from '@radix-ui/react-accordion';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import AnchorSection from '@/components/shared/AnchorSection';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';

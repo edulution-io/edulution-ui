@@ -18,7 +18,7 @@
  */
 
 import React, { FC, ReactNode, useMemo } from 'react';
-import cn from '@libs/common/utils/className';
+import { cn } from '@edulution-io/ui-kit';
 import ActionTooltip from '@/components/shared/ActionTooltip';
 import { useTranslation } from 'react-i18next';
 

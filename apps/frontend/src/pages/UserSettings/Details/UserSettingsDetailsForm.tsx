@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next';
 import useLmnApiStore from '@/store/useLmnApiStore';
 import BadgeFormField from '@/components/shared/BadgeFormField';
 import FormField from '@/components/shared/FormField';
-import { Button } from '@/components/shared/Button';
+import { Button } from '@edulution-io/ui-kit';
 import { Form } from '@/components/ui/Form';
 import InputProp from '@/types/input-prop';
 import SOPHOMORIX_GROUP_TYPES from '@libs/lmnApi/constants/sophomorixGroupTypes';
