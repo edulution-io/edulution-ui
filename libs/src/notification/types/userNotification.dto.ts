@@ -17,10 +17,22 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PUSH_NOTIFICATION_PRIORITY = {
-  DEFAULT: 'default',
-  NORMAL: 'normal',
-  HIGH: 'high',
-} as const;
+import { UserNotificationStatus } from '@libs/notification/constants/userNotificationStatus';
 
-export default PUSH_NOTIFICATION_PRIORITY;
+class UserNotificationDto {
+  id: string;
+
+  notificationId: string;
+
+  username: string;
+
+  readAt: Date | null;
+
+  status: UserNotificationStatus;
+
+  pushDeliverAfter: Date | null;
+
+  createdAt: Date;
+}
+
+export default UserNotificationDto;

@@ -17,10 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PUSH_NOTIFICATION_PRIORITY = {
-  DEFAULT: 'default',
-  NORMAL: 'normal',
-  HIGH: 'high',
-} as const;
+import NOTIFICATION_COUNTER_VARIANT from '@libs/notification/constants/notificationCounterVariant';
 
-export default PUSH_NOTIFICATION_PRIORITY;
+type NotificationCounterVariant = (typeof NOTIFICATION_COUNTER_VARIANT)[keyof typeof NOTIFICATION_COUNTER_VARIANT];
+
+export default NotificationCounterVariant;

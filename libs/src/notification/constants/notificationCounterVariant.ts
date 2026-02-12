@@ -17,10 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PUSH_NOTIFICATION_PRIORITY = {
-  DEFAULT: 'default',
-  NORMAL: 'normal',
-  HIGH: 'high',
+const NOTIFICATION_COUNTER_VARIANT = {
+  APP_NOTIFICATION: 'bg-accent',
+  NOTIFICATION_PANEL: 'bg-primary',
 } as const;
 
-export default PUSH_NOTIFICATION_PRIORITY;
+export default NOTIFICATION_COUNTER_VARIANT;

@@ -17,10 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PUSH_NOTIFICATION_PRIORITY = {
-  DEFAULT: 'default',
-  NORMAL: 'normal',
-  HIGH: 'high',
-} as const;
+import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
+import NotificationType from '@libs/notification/types/notificationType';
+import { NotificationFilterType } from '@libs/notification/types/notificationFilterType';
 
-export default PUSH_NOTIFICATION_PRIORITY;
+const isNotificationType = (filter: NotificationFilterType): filter is NotificationType =>
+  filter === NOTIFICATION_TYPE.USER || filter === NOTIFICATION_TYPE.SYSTEM;
+
+export default isNotificationType;

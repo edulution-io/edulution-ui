@@ -17,10 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PUSH_NOTIFICATION_PRIORITY = {
-  DEFAULT: 'default',
-  NORMAL: 'normal',
-  HIGH: 'high',
+const PUSH_NOTIFICATION_LIMITS = {
+  TITLE_MAX_LENGTH: 50,
+  BODY_MAX_LENGTH: 150,
 } as const;
 
-export default PUSH_NOTIFICATION_PRIORITY;
+export default PUSH_NOTIFICATION_LIMITS;

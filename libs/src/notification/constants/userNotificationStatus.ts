@@ -17,10 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PUSH_NOTIFICATION_PRIORITY = {
-  DEFAULT: 'default',
-  NORMAL: 'normal',
-  HIGH: 'high',
+const USER_NOTIFICATION_STATUS = {
+  PENDING: 'pending',
+  SENT: 'sent',
+  FAILED: 'failed',
 } as const;
 
-export default PUSH_NOTIFICATION_PRIORITY;
+export type UserNotificationStatus = (typeof USER_NOTIFICATION_STATUS)[keyof typeof USER_NOTIFICATION_STATUS];
+
+export default USER_NOTIFICATION_STATUS;

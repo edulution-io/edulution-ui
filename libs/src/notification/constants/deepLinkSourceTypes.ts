@@ -17,10 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PUSH_NOTIFICATION_PRIORITY = {
-  DEFAULT: 'default',
-  NORMAL: 'normal',
-  HIGH: 'high',
-} as const;
+import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
+import NotificationSourceType from '@libs/notification/types/notificationSourceType';
 
-export default PUSH_NOTIFICATION_PRIORITY;
+const DEEP_LINK_SOURCE_TYPES: NotificationSourceType[] = [NOTIFICATION_SOURCE_TYPE.BULLETIN];
+
+export default DEEP_LINK_SOURCE_TYPES;

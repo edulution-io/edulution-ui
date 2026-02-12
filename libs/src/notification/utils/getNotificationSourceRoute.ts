@@ -17,10 +17,22 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const PUSH_NOTIFICATION_PRIORITY = {
-  DEFAULT: 'default',
-  NORMAL: 'normal',
-  HIGH: 'high',
-} as const;
+import NotificationSourceType from '@libs/notification/types/notificationSourceType';
+import SOURCE_TYPE_TO_APP from '@libs/notification/constants/sourceTypeToApp';
+import DEEP_LINK_SOURCE_TYPES from '@libs/notification/constants/deepLinkSourceTypes';
 
-export default PUSH_NOTIFICATION_PRIORITY;
+const getNotificationSourceRoute = (sourceType?: NotificationSourceType, sourceId?: string): string | undefined => {
+  if (!sourceType) {
+    return undefined;
+  }
+  const app = SOURCE_TYPE_TO_APP[sourceType];
+  if (!app) {
+    return undefined;
+  }
+  if (sourceId && DEEP_LINK_SOURCE_TYPES.includes(sourceType)) {
+    return `/${app}/${sourceId}`;
+  }
+  return `/${app}`;
+};
+
+export default getNotificationSourceRoute;
