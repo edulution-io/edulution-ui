@@ -417,6 +417,7 @@ class NotificationsService {
         content?: string;
         data?: Record<string, unknown>;
         createdAt: Date;
+        updatedAt: Date;
         createdBy: string;
         sentStats: { recipientCount: number; readCount: number };
       }>;
@@ -472,6 +473,7 @@ class NotificationsService {
       content: item.content,
       data: item.data,
       createdAt: item.createdAt,
+      updatedAt: item.updatedAt,
       createdBy: item.createdBy,
       readAt: null,
       sentStats: item.sentStats,
@@ -481,6 +483,9 @@ class NotificationsService {
   }
 
   async getSentNotificationRecipients(notificationId: string, username: string): Promise<NotificationRecipientDto[]> {
+    if (!Types.ObjectId.isValid(notificationId)) {
+      return [];
+    }
     const objectId = new Types.ObjectId(notificationId);
 
     const notification = await this.notificationModel.findOne({
@@ -547,6 +552,9 @@ class NotificationsService {
   }
 
   async deleteSentNotification(notificationId: string, username: string): Promise<void> {
+    if (!Types.ObjectId.isValid(notificationId)) {
+      return;
+    }
     const objectId = new Types.ObjectId(notificationId);
 
     const notification = await this.notificationModel.findOne({ _id: objectId, createdBy: username }).exec();

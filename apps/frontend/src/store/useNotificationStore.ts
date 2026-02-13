@@ -41,6 +41,8 @@ interface NotificationStore {
   recipients: NotificationRecipientDto[];
   isLoading: boolean;
   isLoadingMore: boolean;
+  isSentLoading: boolean;
+  isSentLoadingMore: boolean;
   isLoadingRecipients: boolean;
   isUnreadCountLoading: boolean;
   isDeleting: boolean;
@@ -72,6 +74,8 @@ const initialState = {
   sentHasMore: false,
   recipients: [] as NotificationRecipientDto[],
   isLoading: false,
+  isSentLoading: false,
+  isSentLoadingMore: false,
   isLoadingRecipients: false,
   isLoadingMore: false,
   isUnreadCountLoading: false,
@@ -112,7 +116,7 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
     const { sentNotifications: existing } = get();
     const offset = loadMore ? existing.length : 0;
 
-    set({ isLoading: !loadMore, isLoadingMore: loadMore, error: null });
+    set({ isSentLoading: !loadMore, isSentLoadingMore: loadMore, error: null });
     try {
       const { data } = await eduApi.get<InboxResponseDto>(`${NOTIFICATIONS_EDU_API_ENDPOINT}/sent`, {
         params: { limit: notificationPaginationConfig.PAGE_SIZE, offset },
@@ -128,7 +132,7 @@ const useNotificationStore = create<NotificationStore>((set, get) => ({
     } catch (error) {
       handleApiError(error, set);
     } finally {
-      set({ isLoading: false, isLoadingMore: false });
+      set({ isSentLoading: false, isSentLoadingMore: false });
     }
   },
 

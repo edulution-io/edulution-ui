@@ -50,6 +50,7 @@
     "categoryName": "Category name",
     "bulletinUpdatedSuccessfully": "Bulletin updated successfully",
     "bulletinCreatedSuccessfully": "Bulletin created successfully",
+    "pushNotificationSentSuccessfully": "Push notification sent successfully",
     "bulletinsDeletedSuccessfully": "Bulletins deleted successfully",
     "categoryCreatedSuccessfully": "Category created successfully",
     "categoryUpdatedSuccessfully": "Category updated successfully",

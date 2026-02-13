@@ -31,13 +31,22 @@ interface NotificationListProps {
   className?: string;
   isSentView?: boolean;
   emptyMessage?: string;
+  onShowRecipients?: (notificationId: string, title: string) => void;
 }
 
-const NotificationList = ({ notifications, className, isSentView = false, emptyMessage }: NotificationListProps) => {
+const NotificationList = ({
+  notifications,
+  className,
+  isSentView = false,
+  emptyMessage,
+  onShowRecipients,
+}: NotificationListProps) => {
   const { t } = useTranslation();
-  const { hasMore, sentHasMore, isLoadingMore, fetchNotifications, fetchSentNotifications } = useNotificationStore();
+  const { hasMore, sentHasMore, isLoadingMore, isSentLoadingMore, fetchNotifications, fetchSentNotifications } =
+    useNotificationStore();
 
   const currentHasMore = isSentView ? sentHasMore : hasMore;
+  const currentIsLoadingMore = isSentView ? isSentLoadingMore : isLoadingMore;
 
   const handleLoadMore = () => {
     if (isSentView) {
@@ -68,15 +77,16 @@ const NotificationList = ({ notifications, className, isSentView = false, emptyM
           key={notification.id}
           notification={notification}
           isSentView={isSentView}
+          onShowRecipients={onShowRecipients}
         />
       ))}
       {currentHasMore && (
         <Button
           onClick={handleLoadMore}
-          disabled={isLoadingMore}
+          disabled={currentIsLoadingMore}
           className="mt-2 w-full"
         >
-          {isLoadingMore ? (
+          {currentIsLoadingMore ? (
             <>
               <FontAwesomeIcon
                 icon={faSpinner}

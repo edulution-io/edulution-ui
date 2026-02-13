@@ -17,7 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, FormControl, FormFieldSH, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 import { UseFormReturn } from 'react-hook-form';
@@ -62,11 +62,14 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
   const watchedTitle = watch('title');
   const watchedCategory = watch('category');
 
-  const saveModeOptions = [
-    { id: BULLETIN_SAVE_MODE.PUSH_AND_BULLETIN, name: t('bulletinboard.saveModes.pushAndBulletin') },
-    { id: BULLETIN_SAVE_MODE.BULLETIN_ONLY, name: t('bulletinboard.saveModes.bulletinOnly') },
-    { id: BULLETIN_SAVE_MODE.PUSH_ONLY, name: t('bulletinboard.saveModes.pushOnly') },
-  ];
+  const saveModeOptions = useMemo(
+    () => [
+      { id: BULLETIN_SAVE_MODE.PUSH_AND_BULLETIN, name: t('bulletinboard.saveModes.pushAndBulletin') },
+      { id: BULLETIN_SAVE_MODE.BULLETIN_ONLY, name: t('bulletinboard.saveModes.bulletinOnly') },
+      { id: BULLETIN_SAVE_MODE.PUSH_ONLY, name: t('bulletinboard.saveModes.pushOnly') },
+    ],
+    [t],
+  );
 
   return (
     <Form {...form}>
@@ -135,7 +138,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
             <div className="mb-1">{t('bulletinboard.saveMode')}</div>
             <DropdownSelect
               options={saveModeOptions}
-              selectedVal={saveMode || BULLETIN_SAVE_MODE.PUSH_AND_BULLETIN}
+              selectedVal={saveMode ?? BULLETIN_SAVE_MODE.PUSH_AND_BULLETIN}
               handleChange={(value) => setValue('saveMode', value as BulletinSaveModeType)}
               variant="dialog"
             />
@@ -158,7 +161,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
                     <FormControl>
                       <Textarea
                         {...field}
-                        value={(field.value as string) || ''}
+                        value={String(field.value ?? '')}
                         maxLength={CUSTOM_PUSH_BODY_MAX_LENGTH}
                         className="min-h-20 bg-white text-background dark:border-none dark:bg-accent"
                         placeholder={t('bulletinboard.customPushBodyPlaceholder', {
@@ -169,7 +172,7 @@ const CreateOrUpdateBulletinDialogBody = ({ form }: CreateOrUpdateBulletinDialog
                     <div className="flex justify-between">
                       <FormMessage className="text-[0.8rem] font-medium text-background" />
                       <span className="text-xs text-muted-foreground">
-                        {((field.value as string) || '').length}/{CUSTOM_PUSH_BODY_MAX_LENGTH}
+                        {String(field.value ?? '').length}/{CUSTOM_PUSH_BODY_MAX_LENGTH}
                       </span>
                     </div>
                   </FormItem>

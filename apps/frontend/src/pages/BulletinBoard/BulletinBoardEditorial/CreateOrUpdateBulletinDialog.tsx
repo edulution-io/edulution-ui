@@ -85,9 +85,9 @@ const CreateOrUpdateBulletinDialog = ({ trigger, onSubmit }: BulletinCreateDialo
     isVisibleStartDate: selectedBulletinToEdit?.isVisibleStartDate
       ? new Date(selectedBulletinToEdit.isVisibleStartDate)
       : null,
-    customPushTitle: selectedBulletinToEdit?.customPushTitle || '',
-    customPushBody: selectedBulletinToEdit?.customPushBody || '',
-    saveMode: selectedBulletinToEdit?.saveMode || BULLETIN_SAVE_MODE.PUSH_AND_BULLETIN,
+    customPushTitle: selectedBulletinToEdit?.customPushTitle ?? '',
+    customPushBody: selectedBulletinToEdit?.customPushBody ?? '',
+    saveMode: selectedBulletinToEdit?.saveMode ?? BULLETIN_SAVE_MODE.PUSH_AND_BULLETIN,
   };
 
   const form = useForm<CreateBulletinDto>({

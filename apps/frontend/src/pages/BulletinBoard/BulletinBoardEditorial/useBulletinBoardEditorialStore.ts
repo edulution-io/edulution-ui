@@ -124,7 +124,9 @@ const useBulletinBoardEditorialStore = create<BulletinBoardEditorialStore>((set,
       if (data) {
         set({ bulletins: [...get().bulletins, data], selectedRows: {} });
       }
-      toast.success(i18n.t('bulletinboard.bulletinCreatedSuccessfully'));
+      toast.success(
+        i18n.t(data ? 'bulletinboard.bulletinCreatedSuccessfully' : 'bulletinboard.pushNotificationSentSuccessfully'),
+      );
       return true;
     } catch (error) {
       handleApiError(error, set);

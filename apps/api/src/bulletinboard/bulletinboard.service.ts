@@ -270,7 +270,7 @@ class BulletinBoardService implements OnModuleInit {
       lastName: currentUser.family_name,
       username: currentUser.preferred_username,
     };
-    const content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content || '');
+    const content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content ?? '');
     const attachmentFileNames = await this.updateBulletinAttachments(content, dto.attachmentFileNames, []);
 
     const createdBulletin = await this.bulletinModel.create({
@@ -346,14 +346,14 @@ class BulletinBoardService implements OnModuleInit {
       username: currentUser.preferred_username,
     };
 
-    const content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content || '');
+    const content = BulletinBoardService.replaceContentTokenWithPlaceholder(dto.content ?? '');
     const attachmentFileNames = await this.updateBulletinAttachments(
       content,
       dto.attachmentFileNames,
       bulletin.attachmentFileNames,
     );
 
-    bulletin.title = dto.title || '';
+    bulletin.title = dto.title ?? '';
     bulletin.isActive = dto.isActive;
     bulletin.content = content;
     bulletin.category = new Types.ObjectId(dto.category.id);

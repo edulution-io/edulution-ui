@@ -44,11 +44,11 @@ import NotificationSourceType from '@libs/notification/types/notificationSourceT
 import getNotificationSourceRoute from '@libs/notification/utils/getNotificationSourceRoute';
 import { getElapsedTime } from '@/pages/FileSharing/utilities/filesharingUtilities';
 import useNotificationStore from '@/store/useNotificationStore';
-import NotificationRecipientsDialog from '@/pages/NotificationsCenter/components/NotificationRecipientsDialog';
 
 interface NotificationItemProps {
   notification: InboxNotificationDto;
   isSentView?: boolean;
+  onShowRecipients?: (notificationId: string, title: string) => void;
 }
 
 const getSourceTypeIcon = (sourceType?: NotificationSourceType): IconDefinition => {
@@ -68,15 +68,14 @@ const getSourceTypeIcon = (sourceType?: NotificationSourceType): IconDefinition 
   }
 };
 
-const NotificationItem = ({ notification, isSentView = false }: NotificationItemProps) => {
+const NotificationItem = ({ notification, isSentView = false, onShowRecipients }: NotificationItemProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { markAsRead, deleteNotification, deleteSentNotification, setIsSheetOpen } = useNotificationStore();
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isRecipientsDialogOpen, setIsRecipientsDialogOpen] = useState(false);
 
   const isUserNotification = notification.type === NOTIFICATION_TYPE.USER;
-  const isUnread = isUserNotification && !notification.readAt;
+  const isUnread = !isSentView && !notification.readAt;
   const hasContent = Boolean(notification.content);
   const sourceIcon = getSourceTypeIcon(notification.sourceType);
   const elapsedTime = getElapsedTime(notification.updatedAt);
@@ -120,10 +119,13 @@ const NotificationItem = ({ notification, isSentView = false }: NotificationItem
     [deleteNotification, deleteSentNotification, isSentView, notification.id],
   );
 
-  const handleOpenRecipientsDialog = useCallback((event: React.MouseEvent) => {
-    event.stopPropagation();
-    setIsRecipientsDialogOpen(true);
-  }, []);
+  const handleOpenRecipientsDialog = useCallback(
+    (event: React.MouseEvent) => {
+      event.stopPropagation();
+      onShowRecipients?.(notification.notificationId, notification.title);
+    },
+    [onShowRecipients, notification.notificationId, notification.title],
+  );
 
   return (
     <Card
@@ -224,15 +226,6 @@ const NotificationItem = ({ notification, isSentView = false }: NotificationItem
         <div className="border-muted-foreground/20 mt-3 border-t pt-3">
           <p className="text-background/90 whitespace-pre-wrap text-sm">{notification.content}</p>
         </div>
-      )}
-
-      {isSentView && (
-        <NotificationRecipientsDialog
-          isOpen={isRecipientsDialogOpen}
-          onClose={() => setIsRecipientsDialogOpen(false)}
-          notificationId={notification.notificationId}
-          notificationTitle={notification.title}
-        />
       )}
     </Card>
   );

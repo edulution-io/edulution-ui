@@ -64,14 +64,12 @@ class NotificationsController {
   @ApiQuery({ name: 'offset', required: false, type: Number, example: 0 })
   async getSent(
     @GetCurrentUsername() username: string,
-    @Query('limit') limitParam = '20',
-    @Query('offset') offsetParam = '0',
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
+    @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
   ) {
-    const parsedLimit = parseInt(limitParam, 10);
-    const limit = Math.min(50, Math.max(1, Number.isNaN(parsedLimit) ? 20 : parsedLimit));
-    const parsedOffset = parseInt(offsetParam, 10);
-    const offset = Math.max(0, Number.isNaN(parsedOffset) ? 0 : parsedOffset);
-    return this.notificationsService.getSentNotifications(username, limit, offset);
+    const sanitizedLimit = Math.min(50, Math.max(1, limit));
+    const sanitizedOffset = Math.max(0, offset);
+    return this.notificationsService.getSentNotifications(username, sanitizedLimit, sanitizedOffset);
   }
 
   @Get('sent/:id/recipients')
