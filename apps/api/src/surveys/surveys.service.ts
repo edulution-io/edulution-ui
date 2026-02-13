@@ -25,9 +25,13 @@ import SurveyDto from '@libs/survey/types/api/survey.dto';
 import CommonErrorMessages from '@libs/common/constants/common-error-messages';
 import SurveyErrorMessages from '@libs/survey/constants/survey-error-messages';
 import SSE_MESSAGE_TYPE from '@libs/common/constants/sseMessageType';
+import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
+import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
+import NOTIFICATION_CREATOR_SYSTEM from '@libs/notification/constants/notificationCreatorSystem';
 import prepareCreator from '@libs/survey/utils/prepareCreator';
 import SseMessageType from '@libs/common/types/sseMessageType';
 import getIsAdmin from '@libs/user/utils/getIsAdmin';
+import NOTIFICATION_TEMPLATES from '@libs/notification/constants/notificationTemplates';
 import CustomHttpException from '../common/CustomHttpException';
 import SseService from '../sse/sse.service';
 import GroupsService from '../groups/groups.service';
@@ -172,8 +176,20 @@ class SurveysService implements OnModuleInit {
 
   async deleteSurveys(surveyIds: string[]): Promise<void> {
     try {
-      const surveyObjectIds = surveyIds.map((s) => new Types.ObjectId(s));
+      const surveyObjectIds = surveyIds.map((surveyId) => new Types.ObjectId(surveyId));
       await this.surveyModel.deleteMany({ _id: { $in: surveyObjectIds } });
+
+      await Promise.all(
+        surveyIds.map((surveyId) =>
+          this.notificationService.cascadeDeleteBySourceId(surveyId).catch((error) => {
+            Logger.error(
+              `Failed to cascade delete notifications for survey ${surveyId}: ${error}`,
+              SurveysService.name,
+            );
+          }),
+        ),
+      );
+
       Logger.log(`Deleted the surveys ${JSON.stringify(surveyIds)}`, SurveysService.name);
     } catch (error) {
       throw new CustomHttpException(
@@ -267,23 +283,34 @@ class SurveysService implements OnModuleInit {
           ? SSE_MESSAGE_TYPE.SURVEY_CREATED
           : SSE_MESSAGE_TYPE.SURVEY_UPDATED;
 
-      // TODO: #1152
-      const actionName = action === SSE_MESSAGE_TYPE.SURVEY_CREATED ? 'erstellt' : 'aktualisiert';
+      const template =
+        action === SSE_MESSAGE_TYPE.SURVEY_CREATED
+          ? NOTIFICATION_TEMPLATES.SURVEY.CREATED
+          : NOTIFICATION_TEMPLATES.SURVEY.UPDATED;
 
-      const title = `Umfrage ${survey.formula.title}: ${actionName}`;
-      const body = `Die Umfrage "${survey.formula.title}" wurde soeben ${actionName}.`;
+      const title = template.title(survey.formula.title);
+      const pushNotification = template.body(survey.formula.title);
+      const surveyId = String(survey.id);
 
-      await this.notificationService.notifyUsernames(
+      await this.notificationService.upsertNotificationForSource(
         invitedMembersList,
         {
           title,
-          body,
+          body: pushNotification,
           data: {
-            surveyId: survey.id,
+            surveyId,
             type: eventType,
           },
         },
         triggeredBy,
+        {
+          type: NOTIFICATION_TYPE.SYSTEM,
+          sourceType: NOTIFICATION_SOURCE_TYPE.SURVEY,
+          sourceId: surveyId,
+          title,
+          pushNotification,
+          createdBy: NOTIFICATION_CREATOR_SYSTEM,
+        },
       );
     }
   };
