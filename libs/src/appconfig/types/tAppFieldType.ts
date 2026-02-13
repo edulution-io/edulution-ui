@@ -18,7 +18,8 @@
  */
 
 import ThemedFile from '@libs/common/types/themedFile';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
 
-type TAppFieldType = string | number | boolean | ThemedFile;
+type TAppFieldType = string | number | boolean | ThemedFile | MultipleSelectorGroup[];
 
 export default TAppFieldType;

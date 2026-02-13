@@ -19,28 +19,17 @@
 
 import APPS from '@libs/appconfig/constants/apps';
 
-const CHAT_API_BASE = APPS.CHAT;
+export const CHAT_EDU_API_ENDPOINT = APPS.CHAT;
 
-const CHAT_USER_GROUPS_ENDPOINT = `${CHAT_API_BASE}/groups`;
+export const CHAT_USER_GROUPS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/groups`;
 
-const getChatMessagesEndpoint = (groupType: string, groupName: string): string =>
-  `${CHAT_API_BASE}/conversations/${groupType}/${groupName}/messages`;
+export const CHAT_CONVERSATIONS_ENDPOINT = `${CHAT_EDU_API_ENDPOINT}/conversations`;
 
-const AI_CHAT_API_ENDPOINT = `${APPS.AICHAT}/chat`;
+export const AI_CHAT_API_ENDPOINT = `${APPS.AICHAT}/chat`;
 
-const AI_CHAT_CONVERSATIONS_ENDPOINT = `${APPS.AICHAT}/conversations`;
+export const AI_CHAT_CONVERSATIONS_ENDPOINT = `${APPS.AICHAT}/conversations`;
 
-const getAiChatMessagesEndpoint = (conversationId: string): string =>
+export const getAiChatMessagesEndpoint = (conversationId: string): string =>
   `${APPS.AICHAT}/conversations/${conversationId}/messages`;
 
-const AI_CHAT_CONFIG_ENDPOINT = `${APPS.AICHAT}/config`;
-
-export {
-  CHAT_API_BASE,
-  CHAT_USER_GROUPS_ENDPOINT,
-  getChatMessagesEndpoint,
-  AI_CHAT_API_ENDPOINT,
-  AI_CHAT_CONVERSATIONS_ENDPOINT,
-  getAiChatMessagesEndpoint,
-  AI_CHAT_CONFIG_ENDPOINT,
-};
+export const AI_CHAT_CONFIG_ENDPOINT = `${APPS.AICHAT}/config`;

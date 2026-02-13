@@ -1260,6 +1260,10 @@
           "title": "WireGuard Peers",
           "description": "Manage WireGuard VPN peers and site-to-site connections here."
         },
+        "chat": {
+          "title": "Chat Features",
+          "description": "Configure which chat features are available to users."
+        },
         "files": {
           "title": "Files",
           "description": "The files that are displayed in the app can be managed here.",
@@ -2126,7 +2130,15 @@
       "light": "light",
       "dark": "dark",
       "title": "Logo for the {{variant}} color scheme"
-    }
+    },
+    "chatGroupChatEnabledTitle": "Group Chat",
+    "chatGroupChatEnabledDescription": "Enable or disable the group chat feature.",
+    "chatGroupChatGroupsTitle": "Authorized Groups (Group Chat)",
+    "chatGroupChatGroupsDescription": "Select the groups that have access to the group chat.",
+    "chatAiChatEnabledTitle": "AI Chat",
+    "chatAiChatEnabledDescription": "Enable or disable the AI chat feature.",
+    "chatAiChatGroupsTitle": "Authorized Groups (AI Chat)",
+    "chatAiChatGroupsDescription": "Select the groups that have access to the AI chat."
   },
   "mails": {
     "errors": {

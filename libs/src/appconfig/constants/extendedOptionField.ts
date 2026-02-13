@@ -28,6 +28,7 @@ const ExtendedOptionField = {
   updateChecker: 'updateChecker',
   scriptEditor: 'scriptEditor',
   appLogo: 'appLogo',
+  groupSelect: 'groupSelect',
 } as const;
 
 export default ExtendedOptionField;
