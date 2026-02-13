@@ -236,28 +236,26 @@ class SurveysController {
   }
 
   @Get(`${FILES}/:surveyId/:questionId/:filename`)
-  async serveFile(
+  async serveFiles(
     @Param('surveyId', new ValidatePathPipe(SURVEYS_ATTACHMENT_PATH)) surveyId: string,
     @Param('questionId', new ValidatePathPipe(SURVEYS_ATTACHMENT_PATH)) questionId: string,
     @Param('filename', new ValidatePathPipe(SURVEYS_ATTACHMENT_PATH)) filename: string,
     @GetCurrentUser() currentUser: JWTUser,
-    @Req() req: Request,
     @Res() res: Response,
   ) {
     await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
     const path = join(SURVEYS, ATTACHMENT_FOLDER, surveyId, questionId);
-    return this.filesystemService.serveFile(path, filename, req, res);
+    return this.filesystemService.serveFile(path, filename, res);
   }
 
   @Get(`${FILES}/:filename`)
-  async serveTempFile(
+  async serveTempFiles(
     @Param('filename', new ValidatePathPipe(SURVEYS_TEMP_FILES_PATH)) filename: string,
-    @Req() req: Request,
     @Res() res: Response,
     @GetCurrentUsername() username: string,
   ) {
     const path = join(SURVEYS, username);
-    return this.filesystemService.serveTempFile(path, filename, req, res);
+    return this.filesystemService.serveTempFile(path, filename, res);
   }
 
   @Post(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId`)
