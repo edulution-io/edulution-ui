@@ -32,6 +32,7 @@ interface InboxNotificationDto {
   content?: string;
   data?: Record<string, unknown>;
   createdAt: Date;
+  updatedAt: Date;
   createdBy: string;
   readAt: Date | null;
   sentStats?: SentNotificationStats;

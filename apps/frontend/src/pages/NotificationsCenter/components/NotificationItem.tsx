@@ -32,6 +32,7 @@ import {
   faVideo,
   faComment,
   faCircleInfo,
+  faEnvelope,
 } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { Button, cn } from '@edulution-io/ui-kit';
@@ -60,6 +61,8 @@ const getSourceTypeIcon = (sourceType?: NotificationSourceType): IconDefinition 
       return faVideo;
     case NOTIFICATION_SOURCE_TYPE.CHAT:
       return faComment;
+    case NOTIFICATION_SOURCE_TYPE.MAIL:
+      return faEnvelope;
     default:
       return faBullhorn;
   }
@@ -76,7 +79,7 @@ const NotificationItem = ({ notification, isSentView = false }: NotificationItem
   const isUnread = isUserNotification && !notification.readAt;
   const hasContent = Boolean(notification.content);
   const sourceIcon = getSourceTypeIcon(notification.sourceType);
-  const elapsedTime = getElapsedTime(notification.createdAt);
+  const elapsedTime = getElapsedTime(notification.updatedAt);
   const sourceRoute = getNotificationSourceRoute(notification.sourceType, notification.sourceId);
 
   const handleClick = useCallback(() => {

@@ -29,8 +29,13 @@ import getErrorMessage from '@libs/common/utils/getErrorMessage';
 import MAIL_IDLE_CONFIG from '@libs/mail/constants/mailIdleConfig';
 import type MailNewMailNotificationDto from '@libs/mail/types/mailNewMailNotification.dto';
 import type MailFlagsChangedNotificationDto from '@libs/mail/types/mailFlagsChangedNotification.dto';
+import NOTIFICATION_SOURCE_TYPE from '@libs/notification/constants/notificationSourceType';
+import NOTIFICATION_TYPE from '@libs/notification/constants/notificationType';
+import NOTIFICATION_CREATOR_SYSTEM from '@libs/notification/constants/notificationCreatorSystem';
+import NOTIFICATION_TEMPLATES from '@libs/notification/constants/notificationTemplates';
 import AppConfigService from '../appconfig/appconfig.service';
 import SseService from '../sse/sse.service';
+import NotificationsService from '../notifications/notifications.service';
 
 interface IdleConnection {
   client: ImapFlow;
@@ -78,6 +83,7 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
     private readonly sseService: SseService,
     private readonly appConfigService: AppConfigService,
     private readonly configService: ConfigService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   private get connectionTimeout(): number {
@@ -254,9 +260,63 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
       };
 
       this.sseService.sendEventToUser(username, notification, SSE_MESSAGE_TYPE.MAIL_NEW_MAIL);
+      void this.fetchNewMailsAndNotify(username, prevCount, count);
     }
 
     connection.previousMailCount = count;
+  }
+
+  private async fetchNewMailsAndNotify(username: string, prevCount: number, count: number): Promise<void> {
+    const connection = this.idleConnections.get(username);
+    if (!connection?.client?.usable) {
+      return;
+    }
+
+    try {
+      const newMailRange = `${prevCount + 1}:${count}`;
+      const messages = await connection.client.fetchAll(newMailRange, { envelope: true, uid: true });
+
+      await Promise.all(
+        messages
+          .filter((message) => message.envelope)
+          .slice(0, MAIL_IDLE_CONFIG.MAX_FEED_MAILS)
+          .map(async (message) => {
+            const fromAddress = message.envelope?.from?.[0];
+            const from = fromAddress?.name || fromAddress?.address || '';
+            const subject = message.envelope?.subject || '';
+            const sourceId = `${username}:${message.uid}`;
+
+            const title = NOTIFICATION_TEMPLATES.MAIL.NEW.title(subject);
+            const pushNotification = NOTIFICATION_TEMPLATES.MAIL.NEW.body(from);
+
+            await this.notificationsService.upsertNotificationForSource(
+              [username],
+              {
+                title,
+                body: pushNotification,
+                data: {
+                  mailUid: message.uid,
+                  type: SSE_MESSAGE_TYPE.MAIL_NEW_MAIL,
+                },
+              },
+              NOTIFICATION_CREATOR_SYSTEM,
+              {
+                type: NOTIFICATION_TYPE.SYSTEM,
+                sourceType: NOTIFICATION_SOURCE_TYPE.MAIL,
+                sourceId,
+                title,
+                pushNotification,
+                createdBy: NOTIFICATION_CREATOR_SYSTEM,
+              },
+            );
+          }),
+      );
+    } catch (error) {
+      Logger.error(
+        `Failed to fetch new mail envelopes for notification: ${getErrorMessage(error)}`,
+        MailIdleService.name,
+      );
+    }
   }
 
   private handleFlagsEvent(username: string, uid: number, flags: Set<string>): void {
