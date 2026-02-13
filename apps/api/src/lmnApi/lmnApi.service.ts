@@ -21,6 +21,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import {
   EXAM_MODE_LMN_API_ENDPOINT,
+  LIST_MANAGEMENT_LMN_API_ENDPOINT,
   MANAGEMENT_GROUPS_LMN_API_ENDPOINT,
   PRINT_PASSWORDS_LMN_API_ENDPOINT,
   PRINTERS_LMN_API_ENDPOINT,
@@ -52,6 +53,9 @@ import GroupJoinState from '@libs/classManagement/constants/joinState.enum';
 import GroupFormDto from '@libs/groups/types/groupForm.dto';
 import LmnApiJobResult from '@libs/lmnApi/types/lmn-api-job.result';
 import LmnApiRoom from '@libs/lmnApi/types/lmnApiRoom';
+import getAdminFileSuffix from '@libs/userManagement/utils/getAdminFileSuffix';
+import type { ManagementListType } from '@libs/userManagement/constants/managementListTypes';
+import SOPHOMORIX_QUERY_PARAMS from '@libs/userManagement/constants/sophomorixQueryParams';
 import CustomHttpException from '../common/CustomHttpException';
 import UsersService from '../users/users.service';
 import LdapKeycloakSyncService from '../ldap-keycloak-sync/ldap-keycloak-sync.service';
@@ -849,6 +853,83 @@ class LmnApiService {
     } catch (error) {
       throw new CustomHttpException(
         LmnApiErrorMessage.GetLmnVersionFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async getUsersByRole(
+    lmnApiToken: string,
+    role: string,
+    school: string,
+    managementList?: string,
+  ): Promise<LmnUserInfo[]> {
+    try {
+      const schoolParam = `?${SOPHOMORIX_QUERY_PARAMS.SCHOOL}=${school}`;
+      const response = await this.request<LmnUserInfo[]>(HttpMethods.GET, `roles/${role}${schoolParam}`, undefined, {
+        headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+      });
+
+      if (managementList) {
+        const suffix = getAdminFileSuffix(managementList as ManagementListType);
+        return response.data.filter((user) => user.sophomorixAdminFile?.endsWith(suffix));
+      }
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.GetUsersByRoleFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async getManagementList(lmnApiToken: string, school: string, managementList: string): Promise<unknown[]> {
+    try {
+      const response = await this.request<unknown[]>(
+        HttpMethods.GET,
+        `${LIST_MANAGEMENT_LMN_API_ENDPOINT}/${school}/${managementList}`,
+        undefined,
+        {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.GetManagementListFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async saveManagementList(
+    lmnApiToken: string,
+    school: string,
+    managementList: string,
+    data: unknown[],
+  ): Promise<unknown> {
+    try {
+      const response = await this.request<unknown>(
+        HttpMethods.POST,
+        `${LIST_MANAGEMENT_LMN_API_ENDPOINT}/${school}/${managementList}`,
+        { data },
+        {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.SaveManagementListFailed,
         HttpStatus.BAD_GATEWAY,
         undefined,
         LmnApiService.name,

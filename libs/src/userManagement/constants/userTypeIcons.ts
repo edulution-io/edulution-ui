@@ -17,15 +17,29 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-export const EXAM_MODE_LMN_API_ENDPOINT = 'exammode';
-export const MANAGEMENT_GROUPS_LMN_API_ENDPOINT = 'managementgroups';
-export const SCHOOL_CLASSES_LMN_API_ENDPOINT = 'schoolclasses';
-export const SESSIONS_LMN_API_ENDPOINT = 'sessions';
-export const USERS_LMN_API_ENDPOINT = 'users';
-export const USER_ROOM_LMN_API_ENDPOINT = 'samba/userInRoom';
-export const PROJECTS_LMN_API_ENDPOINT = 'projects';
-export const QUERY_LMN_API_ENDPOINT = 'query';
-export const PRINT_PASSWORDS_LMN_API_ENDPOINT = 'print-passwords/schoolclasses';
-export const PRINTERS_LMN_API_ENDPOINT = 'printers';
-export const QUOTAS_LMN_API_ENDPOINT = 'quotas';
-export const LIST_MANAGEMENT_LMN_API_ENDPOINT = 'listmanagement';
+import type { IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import {
+  faChalkboardTeacher,
+  faGlobe,
+  faLink,
+  faUserGraduate,
+  faUserPlus,
+  faUsers,
+  faUserShield,
+  faUserTie,
+} from '@fortawesome/free-solid-svg-icons';
+import type UserType from '@libs/userManagement/types/userType';
+
+const USER_TYPE_ICONS: Record<UserType, IconDefinition> = {
+  students: faUserGraduate,
+  teachers: faChalkboardTeacher,
+  extrastudents: faUserPlus,
+  parents: faUsers,
+  staff: faUserTie,
+  schooladmins: faUserShield,
+  schoolbindusers: faLink,
+  globaladmins: faGlobe,
+  globalbindusers: faLink,
+};
+
+export default USER_TYPE_ICONS;
