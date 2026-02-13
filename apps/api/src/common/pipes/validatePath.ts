@@ -39,14 +39,14 @@ const validatePath = (base: string, value: string | string[]): string => {
     throw new BadRequestException(PathValidationErrorMessages.PathTooLong);
   }
 
+  const sanitized = sanitizeFileName(trimmed);
+  const fullPath = path.resolve(base, sanitized);
   const baseResolved = path.resolve(base);
-  const fullPath = path.resolve(baseResolved, trimmed);
 
   if (!fullPath.startsWith(baseResolved + path.sep) && fullPath !== baseResolved) {
     throw new BadRequestException(PathValidationErrorMessages.OutsidePublicDirectory);
   }
 
-  const sanitized = sanitizeFileName(trimmed);
   return sanitized;
 };
 
