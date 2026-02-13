@@ -88,7 +88,7 @@ const useSurveyTemplateStore = create<SurveyTemplateStore>((set) => ({
     set({
       selectedTemplate: template,
       accessGroups: template?.accessGroups || [],
-      templateName: template?.name || undefined,
+      templateName: template?.name,
     }),
 
   setIsOpenTemplateConfirmDeletion: (state: boolean) => set({ isOpenTemplateConfirmDeletion: state }),
@@ -133,13 +133,10 @@ const useSurveyTemplateStore = create<SurveyTemplateStore>((set) => ({
   uploadTemplate: async (template: SurveyTemplateDto): Promise<SurveyTemplateDto | null> => {
     set({ isLoading: true });
     try {
-      const result = await eduApi.post<SurveyTemplateDto>(SURVEY_TEMPLATES_ENDPOINT, template);
-      const { data } = result || {};
-      if (data) {
-        toast.success(t('survey.editor.template.upload.success'));
-        return data;
-      }
-      return null;
+      const { data } = await eduApi.post<SurveyTemplateDto>(SURVEY_TEMPLATES_ENDPOINT, template);
+
+      toast.success(t('survey.editor.template.upload.success'));
+      return data;
     } catch (error) {
       handleApiError(error, set);
       return null;

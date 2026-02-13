@@ -35,7 +35,18 @@ const TemplateSaveDialogFields = () => {
 
   return (
     <>
-      <span>
+      <div>
+        <Label>{t('survey.editor.template.save.name.label')}</Label>
+        <p className="text-sm text-muted-foreground">{t('survey.editor.template.save.name.description')}</p>
+        <Input
+          placeholder={t('survey.editor.template.save.name.placeholder')}
+          type="text"
+          variant="dialog"
+          value={templateName || ''}
+          onChange={(e) => setTemplateName(e.target.value)}
+        />
+      </div>
+      <div>
         <Label>{t('survey.editor.template.save.accessGroups.label')}</Label>
         <p className="text-sm text-muted-foreground">{t('survey.editor.template.save.accessGroups.description')}</p>
         <AsyncMultiSelect<MultipleSelectorGroup>
@@ -45,17 +56,7 @@ const TemplateSaveDialogFields = () => {
           placeholder={t('search.type-to-search')}
           variant="dialog"
         />
-      </span>
-      <span>
-        <Label>{t('survey.editor.template.save.name.label')}</Label>
-        <Input
-          placeholder={t('survey.editor.template.save.name.placeholder')}
-          type="text"
-          variant="dialog"
-          value={templateName || ''}
-          onChange={(e) => setTemplateName(e.target.value)}
-        />
-      </span>
+      </div>
     </>
   );
 };

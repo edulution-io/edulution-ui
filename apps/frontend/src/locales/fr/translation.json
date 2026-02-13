@@ -643,11 +643,12 @@
           "submit": "Enregistrer le modèle de sondage",
           "name": {
             "label": "Nom du modèle",
-            "placeholder": "Le titre du sondage sera utilisé comme nom de modèle si ce champ est laissé vide."
+            "description": "Si ce champ est laissé vide, le titre du sondage sera utilisé."
           },
           "accessGroups": {
             "label": "Groupes d'accès",
-            "description": "Sélectionnez les groupes qui peuvent accéder à ce modèle. Si aucun groupe n'est sélectionné, le modèle est accessible à tous les utilisateurs."
+            "description": "Sélectionnez les groupes qui peuvent accéder à ce modèle. Si aucun groupe n'est sélectionné, le modèle est accessible à tous les utilisateurs.",
+            "placeholder": "Titre du sondage"
           }
         },
         "upload": {
