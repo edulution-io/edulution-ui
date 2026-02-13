@@ -348,9 +348,9 @@ const MenuBar: React.FC = () => {
 
   return (
     <>
-      {activeItem && (
+      {activeItem && currentAppConfig && (
         <PageTitle
-          title={getDisplayName(currentAppConfig!, language, isLmn)}
+          title={getDisplayName(currentAppConfig, language, isLmn)}
           translationId={activeItem.label}
           disableTranslation={activeItem.disableTranslation}
         />
