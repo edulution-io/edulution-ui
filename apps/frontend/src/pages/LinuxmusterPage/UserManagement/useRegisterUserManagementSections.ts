@@ -41,7 +41,7 @@ import useDeploymentTarget from '@/hooks/useDeploymentTarget';
 import useSubMenuStore from '@/store/useSubMenuStore';
 import { useTranslation } from 'react-i18next';
 
-const LMN_SPECIFIC_LOCATIONS = [
+const LMN_SPECIFIC_LOCATIONS: string[] = [
   USER_MANAGEMENT_STUDENTS_LOCATION,
   USER_MANAGEMENT_TEACHERS_LOCATION,
   USER_MANAGEMENT_EXTRASTUDENTS_LOCATION,
