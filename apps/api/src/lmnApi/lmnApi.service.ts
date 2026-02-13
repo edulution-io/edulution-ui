@@ -936,6 +936,83 @@ class LmnApiService {
       );
     }
   }
+
+  public async runSophomorixCheck(lmnApiToken: string): Promise<unknown> {
+    try {
+      const response = await this.request<unknown>(
+        HttpMethods.GET,
+        `${LIST_MANAGEMENT_LMN_API_ENDPOINT}/sophomorix-check`,
+        undefined,
+        {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.SophomorixCheckFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async runSophomorixApply(
+    lmnApiToken: string,
+    school: string,
+    add: boolean,
+    update: boolean,
+    kill: boolean,
+  ): Promise<unknown> {
+    try {
+      const params = new URLSearchParams({ [SOPHOMORIX_QUERY_PARAMS.SCHOOL]: school });
+      if (add) params.append(SOPHOMORIX_QUERY_PARAMS.ADD, 'true');
+      if (update) params.append(SOPHOMORIX_QUERY_PARAMS.UPDATE, 'true');
+      if (kill) params.append(SOPHOMORIX_QUERY_PARAMS.KILL, 'true');
+
+      const response = await this.request<unknown>(
+        HttpMethods.GET,
+        `${LIST_MANAGEMENT_LMN_API_ENDPOINT}/sophomorix-apply?${params.toString()}`,
+        undefined,
+        {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.SophomorixApplyFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
+
+  public async getSophomorixApplyStatus(lmnApiToken: string, logname: string): Promise<unknown> {
+    try {
+      const response = await this.request<unknown>(
+        HttpMethods.GET,
+        `${LIST_MANAGEMENT_LMN_API_ENDPOINT}/sophomorix-apply/status/${logname}`,
+        undefined,
+        {
+          headers: { [HTTP_HEADERS.XApiKey]: lmnApiToken },
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      throw new CustomHttpException(
+        LmnApiErrorMessage.GetSophomorixStatusFailed,
+        HttpStatus.BAD_GATEWAY,
+        undefined,
+        LmnApiService.name,
+      );
+    }
+  }
 }
 
 export default LmnApiService;

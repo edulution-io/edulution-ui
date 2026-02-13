@@ -17,16 +17,21 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { faSave, faUserPlus, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'sonner';
+import { faSave, faCheck, faFileCsv, faUserPlus, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import FloatingButtonsBar from '@/components/shared/FloatingsButtonsBar/FloatingButtonsBar';
 import type FloatingButtonsBarConfig from '@libs/ui/types/FloatingButtons/floatingButtonsBarConfig';
 import useClassManagementStore from '@/pages/ClassManagement/useClassManagementStore';
 import type UserType from '@libs/userManagement/types/userType';
 import USER_TYPE_TO_MANAGEMENT_LIST from '@libs/userManagement/constants/userTypeToManagementList';
-import { createEmptyEntry } from '@libs/userManagement/utils/csvUtils';
+import { createEmptyEntry, entriesToRows } from '@libs/userManagement/utils/csvUtils';
+import type { SophomorixCheckResponse } from '@libs/userManagement/types/sophomorixCheckResponse';
+import validateListRows from '@libs/userManagement/utils/validateListRows';
 import useUserManagementStore from '../../useUserManagementStore';
+import CsvDialog from './CsvDialog';
+import CheckResultDialog from './CheckResultDialog/CheckResultDialog';
 
 interface UserManagementFloatingButtonsProps {
   userType: UserType;
@@ -35,7 +40,13 @@ interface UserManagementFloatingButtonsProps {
 const UserManagementFloatingButtons: React.FC<UserManagementFloatingButtonsProps> = ({ userType }) => {
   const { t } = useTranslation();
   const { selectedSchool } = useClassManagementStore();
-  const { isSaving, saveManagementList, fetchManagementList } = useUserManagementStore();
+  const { isSaving, saveManagementList, fetchManagementList, runSophomorixCheck, runSophomorixApply } =
+    useUserManagementStore();
+  const [isCsvDialogOpen, setIsCsvDialogOpen] = useState(false);
+  const [isCheckDialogOpen, setIsCheckDialogOpen] = useState(false);
+  const [checkResult, setCheckResult] = useState<SophomorixCheckResponse | null>(null);
+  const [isCheckLoading, setIsCheckLoading] = useState(false);
+  const [isApplying, setIsApplying] = useState(false);
 
   const managementList = USER_TYPE_TO_MANAGEMENT_LIST[userType];
 
@@ -48,15 +59,59 @@ const UserManagementFloatingButtons: React.FC<UserManagementFloatingButtonsProps
     return managementListEntries.filter((_, i) => !deletedSet.has(i));
   };
 
+  const validateEntries = (): boolean => {
+    if (!managementList) return true;
+    const rows = entriesToRows(getFilteredEntries(), managementList);
+    if (!validateListRows(rows, managementList)) {
+      toast.error(t('usermanagement.validationFailed'));
+      return false;
+    }
+    return true;
+  };
+
   const handleSave = async () => {
-    if (selectedSchool && managementList) {
+    if (selectedSchool && managementList && validateEntries()) {
       await saveManagementList(selectedSchool, managementList, getFilteredEntries());
+    }
+  };
+
+  const handleCheck = async () => {
+    if (!validateEntries()) return;
+    setCheckResult(null);
+    setIsCheckDialogOpen(true);
+    setIsCheckLoading(true);
+    if (selectedSchool && managementList) {
+      await saveManagementList(selectedSchool, managementList, getFilteredEntries(), true);
+      if (useUserManagementStore.getState().error) {
+        setIsCheckDialogOpen(false);
+        setIsCheckLoading(false);
+        return;
+      }
+    }
+    const result = await runSophomorixCheck();
+    setIsCheckLoading(false);
+    if (result) {
+      setCheckResult(result);
+    } else {
+      setIsCheckDialogOpen(false);
     }
   };
 
   const handleRevert = async () => {
     if (selectedSchool && managementList) {
       await fetchManagementList(selectedSchool, managementList, true);
+    }
+  };
+
+  const handleApplyFromDialog = async (add: boolean, update: boolean, kill: boolean) => {
+    if (selectedSchool) {
+      setIsApplying(true);
+      await runSophomorixApply(selectedSchool, add, update, kill);
+      setIsApplying(false);
+      setIsCheckDialogOpen(false);
+      if (managementList) {
+        await fetchManagementList(selectedSchool, managementList, true);
+      }
     }
   };
 
@@ -89,11 +144,47 @@ const UserManagementFloatingButtons: React.FC<UserManagementFloatingButtonsProps
         },
         isVisible: !!managementList && !isSaving,
       },
+      {
+        icon: faCheck,
+        text: t('usermanagement.check'),
+        onClick: () => {
+          void handleCheck();
+        },
+        isVisible: !isSaving,
+      },
+      {
+        icon: faFileCsv,
+        text: t('usermanagement.csv.title'),
+        onClick: () => setIsCsvDialogOpen(true),
+        isVisible: !!managementList,
+      },
     ],
     keyPrefix: 'user-management-floating-button_',
   };
 
-  return <FloatingButtonsBar config={config} />;
+  return (
+    <>
+      <FloatingButtonsBar config={config} />
+      {managementList && selectedSchool ? (
+        <CsvDialog
+          isOpen={isCsvDialogOpen}
+          onClose={() => setIsCsvDialogOpen(false)}
+          managementList={managementList}
+          school={selectedSchool}
+        />
+      ) : null}
+      <CheckResultDialog
+        isOpen={isCheckDialogOpen}
+        onClose={() => setIsCheckDialogOpen(false)}
+        checkResult={checkResult}
+        onApply={(add, update, kill) => {
+          void handleApplyFromDialog(add, update, kill);
+        }}
+        isApplying={isApplying}
+        isLoading={isCheckLoading}
+      />
+    </>
+  );
 };
 
 export default UserManagementFloatingButtons;

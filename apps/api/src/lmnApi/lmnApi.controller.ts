@@ -325,6 +325,36 @@ export class LmnApiController {
     return this.lmnApiService.getUsersByRole(lmnApiToken, role, school ?? user.school, managementList);
   }
 
+  @Get('listmanagement/sophomorix-check')
+  async runSophomorixCheck(@Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string) {
+    return this.lmnApiService.runSophomorixCheck(lmnApiToken);
+  }
+
+  @Get('listmanagement/sophomorix-apply')
+  async runSophomorixApply(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Query(SOPHOMORIX_QUERY_PARAMS.SCHOOL) school: string,
+    @Query(SOPHOMORIX_QUERY_PARAMS.ADD) add?: string,
+    @Query(SOPHOMORIX_QUERY_PARAMS.UPDATE) update?: string,
+    @Query(SOPHOMORIX_QUERY_PARAMS.KILL) kill?: string,
+  ) {
+    return this.lmnApiService.runSophomorixApply(
+      lmnApiToken,
+      school,
+      add === 'true',
+      update === 'true',
+      kill === 'true',
+    );
+  }
+
+  @Get('listmanagement/status/:logname')
+  async getSophomorixApplyStatus(
+    @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
+    @Param() params: { logname: string },
+  ) {
+    return this.lmnApiService.getSophomorixApplyStatus(lmnApiToken, params.logname);
+  }
+
   @Get('listmanagement/:school/:managementList')
   async getManagementList(
     @Headers(HTTP_HEADERS.XApiKey) lmnApiToken: string,
