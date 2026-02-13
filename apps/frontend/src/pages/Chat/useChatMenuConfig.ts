@@ -49,7 +49,7 @@ const useChatMenuConfig = () => {
         id: group.name,
         label: group.name,
         icon: faUsers,
-        action: () => navigate(`/${CHAT_CLASSES_PATH}/${group.name}`),
+        action: () => navigate(`/${CHAT_CLASSES_PATH}/${encodeURIComponent(group.name)}`),
         disableTranslation: true,
       }));
 
@@ -67,7 +67,7 @@ const useChatMenuConfig = () => {
         id: group.name,
         label: group.name,
         icon: faUserGear,
-        action: () => navigate(`/${CHAT_PROJECTS_PATH}/${group.name}`),
+        action: () => navigate(`/${CHAT_PROJECTS_PATH}/${encodeURIComponent(group.name)}`),
         disableTranslation: true,
       }));
 

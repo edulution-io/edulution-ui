@@ -76,18 +76,17 @@ const useChatStore = create<ChatStore>((set, get) => ({
     set({ isLoading: true, error: null });
 
     try {
-      const endpoint = `${CHAT_CONVERSATIONS_ENDPOINT}/${groupType}/${groupName}/messages`;
+      const endpoint = `${CHAT_CONVERSATIONS_ENDPOINT}/${groupType}/${encodeURIComponent(groupName)}/messages`;
       const response = await eduApi.get<ChatMessage[]>(endpoint, {
         params: { limit, offset },
       });
 
+      const { currentGroupType, currentGroupName } = get();
+      if (currentGroupType !== groupType || currentGroupName !== groupName) return;
+
       const messages = [...response.data].reverse();
 
-      set({
-        messages,
-        currentGroupType: groupType,
-        currentGroupName: groupName,
-      });
+      set({ messages });
     } catch (error) {
       handleApiError(error, set);
     } finally {
@@ -99,7 +98,7 @@ const useChatStore = create<ChatStore>((set, get) => ({
     set({ isSending: true, error: null });
 
     try {
-      const endpoint = `${CHAT_CONVERSATIONS_ENDPOINT}/${groupType}/${groupName}/messages`;
+      const endpoint = `${CHAT_CONVERSATIONS_ENDPOINT}/${groupType}/${encodeURIComponent(groupName)}/messages`;
       const response = await eduApi.post<ChatMessage>(endpoint, { content });
 
       const newMessage = response.data;

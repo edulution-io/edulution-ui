@@ -146,7 +146,7 @@ class ChatService {
           subtitle: `${message.createdByUserFirstName} ${message.createdByUserLastName}`,
           body: message.content,
           channelId: PUSH_NOTIFICATION_CHANNEL_ID.CHAT,
-          data: { groupName, groupType, conversationId: message.conversationId },
+          data: { groupName, groupType, conversationId: message.conversationId.toString() },
         },
         message.createdBy,
         {

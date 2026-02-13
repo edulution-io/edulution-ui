@@ -254,10 +254,8 @@ class NotificationsService {
           pushNotification: updateData.pushNotification,
           content: updateData.content,
           data: updateData.data,
-          createdAt: new Date(),
         },
       },
-      { timestamps: false },
     );
 
     await this.syncUserNotifications(notificationId, usernames);
@@ -320,8 +318,7 @@ class NotificationsService {
     if (usernamesToResetRead.length > 0) {
       await this.userNotificationModel.updateMany(
         { notificationId: objectId, username: { $in: usernamesToResetRead } },
-        { $set: { readAt: null, status: USER_NOTIFICATION_STATUS.PENDING, createdAt: new Date() } },
-        { timestamps: false },
+        { $set: { readAt: null, status: USER_NOTIFICATION_STATUS.PENDING } },
       );
     }
 
