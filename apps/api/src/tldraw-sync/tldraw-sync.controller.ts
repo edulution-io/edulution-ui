@@ -80,7 +80,11 @@ class TLDrawSyncController {
   }
 
   @Get(`${TLDRAW_SYNC_ENDPOINTS.ASSETS}/*filename`)
-  serveFiles(@Param('filename') filename: string | string[], @Req() req: Request, @Res() res: Response) {
+  serveFiles(
+    @Param('filename', new ValidatePathPipe(`${APPS_FILES_PATH}/${APPS.WHITEBOARD}`)) filename: string | string[],
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
     return this.filesystemService.serveFile(APPS.WHITEBOARD, FilesystemService.buildPathString(filename), req, res);
   }
 

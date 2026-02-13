@@ -45,7 +45,6 @@ import UserPreferencesService from '../user-preferences/user-preferences.service
 import MigrationService from '../migration/migration.service';
 import bulletinsMigrationList from './migrations/bulletinsMigrationList';
 import GlobalSettingsService from '../global-settings/global-settings.service';
-import validatePath from '../common/pipes/validatePath';
 
 @Injectable()
 class BulletinBoardService implements OnModuleInit {
@@ -76,15 +75,13 @@ class BulletinBoardService implements OnModuleInit {
   }
 
   async serveBulletinAttachmentIfExists(filename: string, res: Response) {
-    const sanitizedPermanentFileName = validatePath(BULLETIN_ATTACHMENTS_PATH, filename);
-    const permanentFilePath = join(BULLETIN_ATTACHMENTS_PATH, sanitizedPermanentFileName);
+    const permanentFilePath = join(BULLETIN_ATTACHMENTS_PATH, filename);
     const existPermanentFile = await FilesystemService.checkIfFileExist(permanentFilePath);
     if (existPermanentFile) {
       await this.serveBulletinAttachment(permanentFilePath, res);
       return res;
     }
-    const sanitizedTemporaryFileName = validatePath(BULLETIN_TEMP_ATTACHMENTS_PATH, filename);
-    const temporaryFilePath = join(BULLETIN_TEMP_ATTACHMENTS_PATH, sanitizedTemporaryFileName);
+    const temporaryFilePath = join(BULLETIN_TEMP_ATTACHMENTS_PATH, filename);
     const existTemporaryFile = await FilesystemService.checkIfFileExist(temporaryFilePath);
     if (existTemporaryFile) {
       await this.serveBulletinAttachment(temporaryFilePath, res);

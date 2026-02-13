@@ -80,15 +80,15 @@ class FileSystemController {
   }
 
   @Get('info/*path')
-  getFiles(@Param('path') path: string | string[]) {
+  getFiles(@Param('path', new ValidatePathPipe(APPS_FILES_PATH)) path: string | string[]) {
     return this.filesystemService.getFilesInfo(FilesystemService.buildPathString(path));
   }
 
   @Get(`${FILE_ENDPOINTS.FILE}/:appName/*filename`)
   @UseGuards(DynamicAppAccessGuard)
   serveFile(
-    @Param('appName') appName: string,
-    @Param('filename') filename: string | string[],
+    @Param('appName', new ValidatePathPipe(APPS_FILES_PATH)) appName: string,
+    @Param('filename', new ValidatePathPipe(APPS_FILES_PATH)) filename: string | string[],
     @Req() req: Request,
     @Res() res: Response,
   ) {
@@ -106,8 +106,8 @@ class FileSystemController {
   @UseGuards(IsPublicAppGuard)
   @Get(`public/${FILE_ENDPOINTS.FILE}/:appName/*filename`)
   servePublicFile(
-    @Param('appName') appName: string,
-    @Param('filename') filename: string | string[],
+    @Param('appName', new ValidatePathPipe(PUBLIC_ASSET_PATH)) appName: string,
+    @Param('filename', new ValidatePathPipe(PUBLIC_ASSET_PATH)) filename: string | string[],
     @Req() req: Request,
     @Res() res: Response,
   ) {
@@ -120,7 +120,7 @@ class FileSystemController {
   servePublicAssetWithFallback(
     @Req() req: Request,
     @Res() res: Response,
-    @Param('appName') appName: string,
+    @Param('appName', new ValidatePathPipe(PUBLIC_ASSET_PATH)) appName: string,
     @Param('filename', new ValidatePathPipe(PUBLIC_ASSET_PATH)) filename: string,
     @Query('fallback', new ValidatePathPipe(PUBLIC_ASSET_PATH)) fallbackFilename: string | undefined,
   ) {

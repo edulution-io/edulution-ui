@@ -359,8 +359,7 @@ class FilesystemService {
 
   async getFilesInfo(path: string): Promise<FileInfoDto[]> {
     try {
-      const sanitizedRelativePath = validatePath(APPS_FILES_PATH, path);
-      const folderPath = join(APPS_FILES_PATH, sanitizedRelativePath);
+      const folderPath = join(APPS_FILES_PATH, path);
 
       const files = await readdir(folderPath);
 
@@ -412,15 +411,13 @@ class FilesystemService {
   }
 
   async serveTempFile(name: string, filename: string, req: Request, res: Response) {
-    const unsafeRelativePath = join(name, filename);
-    const safeRelativePath = validatePath(TEMP_FILES_PATH, unsafeRelativePath);
-    return this.serve(safeRelativePath, req, res);
+    const path = join(TEMP_FILES_PATH, name, filename);
+    return this.serve(path, req, res);
   }
 
   async serveFile(name: string, filename: string, req: Request, res: Response) {
-    const unsafeRelativePath = join(name, filename);
-    const safeRelativePath = validatePath(APPS_FILES_PATH, unsafeRelativePath);
-    return this.serve(safeRelativePath, req, res);
+    const path = join(APPS_FILES_PATH, name, filename);
+    return this.serve(path, req, res);
   }
 
   async serve(filePath: string, req: Request, res: Response): Promise<Response> {
