@@ -20,7 +20,6 @@
 import { Document, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Group } from '@libs/groups/types/group';
-import ChoiceDto from '@libs/survey/types/api/choice.dto';
 import SurveyFormula from '@libs/survey/types/SurveyFormula';
 import Attendee from '../conferences/attendee.schema';
 
@@ -30,12 +29,6 @@ export type SurveyDocument = Survey & Document;
 export class Survey {
   @Prop({ required: true })
   formula: SurveyFormula;
-
-  @Prop({ required: false })
-  backendLimiters?: {
-    questionName: string;
-    choices: ChoiceDto[];
-  }[];
 
   @Prop({ required: true })
   saveNo: number;

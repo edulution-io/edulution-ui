@@ -76,6 +76,7 @@ const SurveyEditorPage = () => {
     updateStoredSurvey,
     resetStoredSurvey,
     uploadFile,
+    uploadBackendLimiters,
   } = useSurveyEditorPageStore();
   const { reset: resetTemplateStore, isOpenTemplateMenu, setIsOpenTemplateMenu } = useTemplateMenuStore();
   const {
@@ -83,7 +84,6 @@ const SurveyEditorPage = () => {
     setIsOpenQuestionContextMenu,
     isOpenQuestionContextMenu,
     setSelectedQuestion,
-    uploadStoredLimiters,
   } = useQuestionsContextMenuStore();
   const { setIsOpen: setOpenExportPDFDialog } = useExportSurveyToPdfStore();
 
@@ -198,7 +198,7 @@ const SurveyEditorPage = () => {
       saveNo,
     });
     if (resultingSurveyId) {
-      await uploadStoredLimiters(resultingSurveyId);
+      await uploadBackendLimiters(resultingSurveyId, form.watch('backendLimiters') || {});
 
       void updateUsersSurveys();
       setIsOpenSaveSurveyDialog(false);

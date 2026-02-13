@@ -21,19 +21,21 @@
 import { AnyBulkWriteOperation } from 'mongoose';
 import { Logger } from '@nestjs/common';
 import { Migration } from '../../migration/migration.type';
-import { SurveyDocument } from '../survey.schema';
+import { SurveyDocument as NewSurveyDocument } from '../survey.schema';
 import { SurveysBackendLimiterDocument } from '../surveys-backend-limiter.schema';
+
+type OldSurveyDocument = NewSurveyDocument & { backendLimiters?: { questionName: string; choices: unknown[] }[] };
 
 const name = '002-move-backend-limiters-to-own-table';
 
-const surveysMigration002MoveBackendLimitersToOwnTable: Migration<SurveyDocument> = {
+const surveysMigration002MoveBackendLimitersToOwnTable: Migration<NewSurveyDocument> = {
   name,
   version: 2,
   execute: async (model) => {
     const previousSchemaVersion = 2;
     // const newSchemaVersion = 3;
 
-    const cursor = model.find<SurveyDocument>({ schemaVersion: previousSchemaVersion }).cursor();
+    const cursor = model.find<OldSurveyDocument>({ schemaVersion: previousSchemaVersion }).cursor();
 
     // let counter = 0;
     // let updateSurveyOperations: AnyBulkWriteOperation[] = [];

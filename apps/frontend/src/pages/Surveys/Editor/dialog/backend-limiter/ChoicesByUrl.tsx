@@ -52,14 +52,32 @@ const ChoicesByUrl = (props: ChoicesByUrlProps) => {
     toggleUseBackendLimits,
     currentChoices,
     addNewChoice,
-    fetchInitialStoredLimiters,
+    setOrGetInitialChoices,
+    deleteBackendLimiters,
   } = useQuestionsContextMenuStore();
 
   useEffect(() => {
+    if (!selectedQuestion) return;
+    const surveyId = form.watch('id');
+    const limiters = form.watch('backendLimiters');
     if (useBackendLimits) {
-      void fetchInitialStoredLimiters(form.watch('id') || '');
+      if (limiters && limiters[selectedQuestion.name]?.length > 0) {
+        void setOrGetInitialChoices(surveyId, limiters[selectedQuestion.name]);
+      }
     }
   }, [selectedQuestion, useBackendLimits]);
+
+  useEffect(() => {
+    if (!selectedQuestion) return;
+    const limiters = form.watch('backendLimiters') || {};
+    if (!useBackendLimits || !currentChoices || currentChoices.length === 0) {
+      delete limiters[selectedQuestion.name];
+      void deleteBackendLimiters(form.watch('id'));
+    } else {
+      limiters[selectedQuestion.name] = currentChoices;
+    }
+    form.setValue('backendLimiters', limiters);
+  }, [currentChoices]);
 
   const actionsConfig = useMemo<TableActionsConfig<ChoiceDto>>(
     () => [

@@ -37,13 +37,14 @@ const applyChoiceTitle = (value: unknown, nameToTitle: Map<string, string>): unk
 
 const updateSurveyQuestionAnswer = (
   surveyAnswer: AnswerRecord,
-  backendLimiters: { questionName: string; choices: ChoiceDto[] }[],
+  backendLimiters: Record<string, ChoiceDto[]>,
 ): AnswerRecord => {
   const limiterMap = new Map<string, Map<string, string>>();
 
-  backendLimiters.forEach((limiter) => {
-    const nameToTitle = new Map(limiter.choices.map((c) => [c.name, c.title]));
-    limiterMap.set(limiter.questionName, nameToTitle);
+  Object.keys(backendLimiters).forEach((questionId) => {
+    const choices = backendLimiters[questionId];
+    const nameToTitle = new Map(choices.map((c) => [c.name, c.title]));
+    limiterMap.set(questionId, nameToTitle);
   });
 
   const result: AnswerRecord = { ...surveyAnswer };
@@ -86,7 +87,7 @@ const surveyAnswerMigration002UseChoiceTitleInsideOfAnswers: Migration<SurveyAns
 
       const { backendLimiters } = doc.surveyId as unknown as SurveyDto;
       // eslint-disable-next-line no-continue
-      if (!backendLimiters || backendLimiters.length === 0) continue;
+      if (!backendLimiters) continue;
 
       const answer = doc.answer as AnswerRecord;
       // eslint-disable-next-line no-continue

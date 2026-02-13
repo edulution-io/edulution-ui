@@ -114,7 +114,11 @@ class SurveysBackendLimiterService {
     choices: ChoiceDto[],
   ): Promise<void> {
     const backendLimiter = await this.surveysBackendLimiterModel
-      .findOneAndUpdate({ surveyId, questionName }, { choices }, { new: true, upsert: true })
+      .findOneAndUpdate(
+        { surveyId: new Types.ObjectId(surveyId), questionName },
+        { choices },
+        { new: true, upsert: true },
+      )
       .exec();
 
     if (!backendLimiter) {
@@ -123,7 +127,9 @@ class SurveysBackendLimiterService {
   }
 
   async appendChoicesToBackendLimiter(surveyId: string, questionName: string, choices: ChoiceDto[]): Promise<void> {
-    const backendLimiter = await this.surveysBackendLimiterModel.findOne({ surveyId, questionName }).exec();
+    const backendLimiter = await this.surveysBackendLimiterModel
+      .findOne({ surveyId: new Types.ObjectId(surveyId), questionName })
+      .exec();
 
     if (!backendLimiter) {
       throw new CustomHttpException(

@@ -23,10 +23,11 @@ import { create, StateCreator } from 'zustand';
 import { createJSONStorage, persist, PersistOptions } from 'zustand/middleware';
 import { HTTP_HEADERS, RequestResponseContentType } from '@libs/common/types/http-methods';
 import SurveyDto from '@libs/survey/types/api/survey.dto';
-import { SURVEY_FILE_ATTACHMENT_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
+import { SURVEY_CHOICES, SURVEY_FILE_ATTACHMENT_ENDPOINT, SURVEYS } from '@libs/survey/constants/surveys-endpoint';
 import eduApi from '@/api/eduApi';
 import EDU_API_URL from '@libs/common/constants/eduApiUrl';
 import handleApiError from '@/utils/handleApiError';
+import ChoiceDto from '@libs/survey/types/api/choice.dto';
 
 interface SurveyEditorPageStore {
   storedSurvey: SurveyDto | undefined;
@@ -35,6 +36,8 @@ interface SurveyEditorPageStore {
 
   uploadFile: (file: File, callback: CallableFunction) => Promise<void>;
   isUploadingFile: boolean;
+
+  uploadBackendLimiters: (surveyId: string, backendLimiters: Record<string, ChoiceDto[]>) => Promise<void>;
 
   isOpenSurveysLogoDialog: boolean;
   setIsOpenSurveysLogoDialog: (state: boolean) => void;
@@ -125,6 +128,15 @@ const useSurveyEditorPageStore = create<SurveyEditorPageStore>(
         } finally {
           set({ isUploadingFile: false });
         }
+      },
+
+      uploadBackendLimiters: async (surveyId: string, backendLimiters: Record<string, ChoiceDto[]>) => {
+        const promises = Object.keys(backendLimiters).map((questionName) =>
+          backendLimiters[questionName].length > 0
+            ? eduApi.post<ChoiceDto[]>(`${SURVEY_CHOICES}/${surveyId}/${questionName}`, backendLimiters[questionName])
+            : Promise.resolve(),
+        );
+        await Promise.all(promises);
       },
 
       closeSharePublicSurveyDialog: () =>
