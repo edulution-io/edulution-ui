@@ -25,6 +25,7 @@ const REQUIRED_GROUP_ATTRIBUTES = [
   'proxyAddresses',
   'sophomorixMailAlias',
   'sophomorixJoinable',
+  'sophomorixType',
 ];
 
 export default REQUIRED_GROUP_ATTRIBUTES;
