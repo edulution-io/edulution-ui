@@ -279,6 +279,7 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
       await Promise.all(
         messages
           .filter((message) => message.envelope)
+          .slice(0, MAIL_IDLE_CONFIG.MAX_FEED_MAILS)
           .map(async (message) => {
             const fromAddress = message.envelope?.from?.[0];
             const from = fromAddress?.name || fromAddress?.address || '';
@@ -298,7 +299,7 @@ class MailIdleService implements OnModuleInit, OnModuleDestroy {
                   type: SSE_MESSAGE_TYPE.MAIL_NEW_MAIL,
                 },
               },
-              undefined,
+              NOTIFICATION_CREATOR_SYSTEM,
               {
                 type: NOTIFICATION_TYPE.SYSTEM,
                 sourceType: NOTIFICATION_SOURCE_TYPE.MAIL,
