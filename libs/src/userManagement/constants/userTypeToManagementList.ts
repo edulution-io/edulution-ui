@@ -17,8 +17,20 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import MenuItem from './menuItem';
+import MANAGEMENT_LIST_TYPES from '@libs/userManagement/constants/managementListTypes';
+import type { ManagementListType } from '@libs/userManagement/constants/managementListTypes';
+import USER_TYPES from './userTypes';
 
-type Section = Pick<MenuItem, 'id' | 'label'> & Pick<Partial<MenuItem>, 'action'>;
+const USER_TYPE_TO_MANAGEMENT_LIST: Record<string, ManagementListType | null> = {
+  [USER_TYPES.STUDENTS]: MANAGEMENT_LIST_TYPES.STUDENTS,
+  [USER_TYPES.TEACHERS]: MANAGEMENT_LIST_TYPES.TEACHERS,
+  [USER_TYPES.EXTRASTUDENTS]: MANAGEMENT_LIST_TYPES.EXTRASTUDENTS,
+  [USER_TYPES.PARENTS]: MANAGEMENT_LIST_TYPES.PARENTS,
+  [USER_TYPES.STAFF]: MANAGEMENT_LIST_TYPES.STAFF,
+  [USER_TYPES.SCHOOLADMINS]: null,
+  [USER_TYPES.SCHOOLBINDUSERS]: null,
+  [USER_TYPES.GLOBALADMINS]: null,
+  [USER_TYPES.GLOBALBINDUSERS]: null,
+};
 
-export default Section;
+export default USER_TYPE_TO_MANAGEMENT_LIST;

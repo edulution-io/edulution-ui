@@ -17,8 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import MenuItem from './menuItem';
+import USER_TYPES from '@libs/userManagement/constants/userTypes';
 
-type Section = Pick<MenuItem, 'id' | 'label'> & Pick<Partial<MenuItem>, 'action'>;
+type UserType = (typeof USER_TYPES)[keyof typeof USER_TYPES];
 
-export default Section;
+export default UserType;

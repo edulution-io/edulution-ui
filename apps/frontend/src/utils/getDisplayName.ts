@@ -18,13 +18,16 @@
  */
 
 import APP_INTEGRATION_VARIANT from '@libs/appconfig/constants/appIntegrationVariant';
+import APPS from '@libs/appconfig/constants/apps';
 import type AppConfigDto from '@libs/appconfig/types/appConfigDto';
 import i18n from '@/i18n';
 
-const getDisplayName = (item: AppConfigDto, language: string) => {
+const getDisplayName = (item: AppConfigDto, language: string, isLmn?: boolean) => {
   let displayName;
 
-  if (item.appType === APP_INTEGRATION_VARIANT.NATIVE || !item.translations) {
+  if (item.name === APPS.LINUXMUSTER && isLmn !== undefined) {
+    displayName = isLmn ? 'linuxmuster.sidebarLmn' : 'linuxmuster.sidebarGeneric';
+  } else if (item.appType === APP_INTEGRATION_VARIANT.NATIVE || !item.translations) {
     displayName = `${item.name}.sidebar`;
   } else {
     displayName = item.translations[language];

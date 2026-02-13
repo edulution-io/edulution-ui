@@ -17,8 +17,15 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-import MenuItem from './menuItem';
+import USER_TYPES from './userTypes';
 
-type Section = Pick<MenuItem, 'id' | 'label'> & Pick<Partial<MenuItem>, 'action'>;
+const USER_MANAGEMENT_TABS = {
+  TABLE: 'table',
+  LIST: 'list',
+  SCHOOLADMINS: USER_TYPES.SCHOOLADMINS,
+  SCHOOLBINDUSERS: USER_TYPES.SCHOOLBINDUSERS,
+  GLOBALADMINS: USER_TYPES.GLOBALADMINS,
+  GLOBALBINDUSERS: USER_TYPES.GLOBALBINDUSERS,
+} as const;
 
-export default Section;
+export default USER_MANAGEMENT_TABS;
