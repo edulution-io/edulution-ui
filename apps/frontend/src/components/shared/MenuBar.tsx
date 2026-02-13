@@ -346,11 +346,15 @@ const MenuBar: React.FC = () => {
     </div>
   );
 
+  const pageTitle = currentAppConfig
+    ? getDisplayName(currentAppConfig, language, isLmn)
+    : t(`${menuBarEntries.appName}.sidebar`);
+
   return (
     <>
-      {activeItem && currentAppConfig && (
+      {activeItem && (
         <PageTitle
-          title={getDisplayName(currentAppConfig, language, isLmn)}
+          title={pageTitle}
           translationId={activeItem.label}
           disableTranslation={activeItem.disableTranslation}
         />
