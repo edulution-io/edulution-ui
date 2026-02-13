@@ -17,14 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-// This type is based on a third-party object definition from the Linuxmuster API.
-// Any modifications should be carefully reviewed to ensure compatibility with the source.
+const SOPHOMORIX_DATE_FORMAT = 'YYYYMMDDHHmmss.S[Z]';
 
-type LmnApiSchools = {
-  objectClass?: string[];
-  ou: string;
-  displayName?: string;
-  distinguishedName?: string;
-};
+const EPOCH_DATE = '19700101000000.0Z';
 
-export default LmnApiSchools;
+export { SOPHOMORIX_DATE_FORMAT, EPOCH_DATE };

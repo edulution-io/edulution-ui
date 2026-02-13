@@ -17,14 +17,18 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-// This type is based on a third-party object definition from the Linuxmuster API.
-// Any modifications should be carefully reviewed to ensure compatibility with the source.
-
-type LmnApiSchools = {
-  objectClass?: string[];
-  ou: string;
-  displayName?: string;
-  distinguishedName?: string;
+const SOPHOMORIX_STATUS_CLASS_MAP: Record<string, string> = {
+  U: 'bg-green-500',
+  S: 'bg-green-500',
+  E: 'bg-green-500',
+  P: 'bg-green-600',
+  A: 'bg-yellow-500',
+  T: 'bg-yellow-500',
+  D: 'bg-orange-500',
+  F: 'bg-blue-500',
+  L: 'bg-red-500',
+  K: 'bg-red-500',
+  R: 'bg-red-600',
 };
 
-export default LmnApiSchools;
+export default SOPHOMORIX_STATUS_CLASS_MAP;

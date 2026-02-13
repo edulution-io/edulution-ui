@@ -22,7 +22,9 @@ import useLmnApiStore from '@/store/useLmnApiStore';
 import useUserStore from '@/store/UserStore/useUserStore';
 import formatQuotaInGb from '@libs/common/utils/formatQuotaInGb';
 import getProgressBarColor from '@libs/common/utils/getProgressBarColor';
+import type QuotaResponse from '@libs/lmnApi/types/lmnApiQuotas';
 import type { QuotaInfo } from '@libs/lmnApi/types/lmnApiQuotas';
+import type LmnUserInfo from '@libs/lmnApi/types/lmnUserInfo';
 
 interface UseQuotaInfoResult {
   quotaUsed: number | string;
@@ -35,22 +37,25 @@ interface UseQuotaInfoResult {
   isLoading: boolean;
 }
 
-const useQuotaInfo = (): UseQuotaInfoResult => {
+const useQuotaInfo = (externalUser?: LmnUserInfo, externalQuota?: QuotaResponse): UseQuotaInfoResult => {
   const { user: lmnUser, lmnApiToken, usersQuota, fetchUsersQuota } = useLmnApiStore();
   const { user } = useUserStore();
-  const school = lmnUser?.school ?? 'default-school';
+
+  const effectiveUser = externalUser ?? lmnUser;
+  const effectiveQuota = externalQuota ?? usersQuota;
+  const school = effectiveUser?.school ?? 'default-school';
 
   useEffect(() => {
-    if (lmnApiToken && user?.username) {
+    if (!externalUser && !externalQuota && lmnApiToken && user?.username) {
       void fetchUsersQuota(user.username);
     }
-  }, [lmnApiToken, user?.username]);
+  }, [lmnApiToken, user?.username, externalUser, externalQuota]);
 
   return useMemo(() => {
-    const quota = usersQuota?.[lmnUser?.school || 'default-school'] as QuotaInfo | undefined;
+    const quota = effectiveQuota?.[effectiveUser?.school || 'default-school'] as QuotaInfo | undefined;
     const quotaUsed = quota?.used ?? '--';
     const quotaHardLimit = quota?.hard_limit ?? '--';
-    const mailQuota = lmnUser?.sophomorixMailQuotaCalculated?.[0] ?? '--';
+    const mailQuota = effectiveUser?.sophomorixMailQuotaCalculated?.[0] ?? '--';
 
     const percentageUsed =
       typeof quotaUsed === 'number' && typeof quotaHardLimit === 'number' ? (quotaUsed / quotaHardLimit) * 100 : 0;
@@ -65,7 +70,7 @@ const useQuotaInfo = (): UseQuotaInfoResult => {
       progressBarColor: getProgressBarColor(percentageUsed),
       isLoading: !quota,
     };
-  }, [usersQuota, school, lmnUser, lmnApiToken]);
+  }, [effectiveQuota, school, effectiveUser, lmnApiToken]);
 };
 
 export default useQuotaInfo;

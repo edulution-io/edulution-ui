@@ -34,6 +34,7 @@ const nativeAppPages: Partial<Record<TApps, JSX.Element>> = {
   [APPS.DESKTOP_DEPLOYMENT]: <DesktopDeploymentPage />,
   [APPS.CLASS_MANAGEMENT]: <Outlet />,
   [APPS.BULLETIN_BOARD]: <BulletinBoardPage />,
+  [APPS.LINUXMUSTER]: <Outlet />,
 };
 
 type NativeAppPageManagerProps = {

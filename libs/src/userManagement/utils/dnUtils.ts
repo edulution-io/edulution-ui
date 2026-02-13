@@ -17,14 +17,11 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-// This type is based on a third-party object definition from the Linuxmuster API.
-// Any modifications should be carefully reviewed to ensure compatibility with the source.
-
-type LmnApiSchools = {
-  objectClass?: string[];
-  ou: string;
-  displayName?: string;
-  distinguishedName?: string;
+const extractCnFromDn = (dn: string): string => {
+  const match = dn.match(/^CN=([^,]+)/);
+  return match ? match[1] : dn;
 };
 
-export default LmnApiSchools;
+const isManagementGroup = (dn: string): boolean => dn.includes('OU=Management');
+
+export { extractCnFromDn, isManagementGroup };

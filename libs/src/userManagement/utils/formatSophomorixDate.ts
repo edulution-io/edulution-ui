@@ -17,14 +17,17 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-// This type is based on a third-party object definition from the Linuxmuster API.
-// Any modifications should be carefully reviewed to ensure compatibility with the source.
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { SOPHOMORIX_DATE_FORMAT, EPOCH_DATE } from '@libs/userManagement/constants/sophomorixDateFormat';
 
-type LmnApiSchools = {
-  objectClass?: string[];
-  ou: string;
-  displayName?: string;
-  distinguishedName?: string;
+dayjs.extend(customParseFormat);
+
+const formatSophomorixDate = (dateString: string | undefined, neverLabel: string): string => {
+  if (!dateString || dateString === 'never' || dateString === EPOCH_DATE) return neverLabel;
+  const parsed = dayjs(dateString, SOPHOMORIX_DATE_FORMAT);
+  if (parsed.isValid()) return parsed.toDate().toLocaleString();
+  return dateString;
 };
 
-export default LmnApiSchools;
+export default formatSophomorixDate;

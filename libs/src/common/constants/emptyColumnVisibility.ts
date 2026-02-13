@@ -17,14 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-// This type is based on a third-party object definition from the Linuxmuster API.
-// Any modifications should be carefully reviewed to ensure compatibility with the source.
+import type { VisibilityState } from '@tanstack/react-table';
 
-type LmnApiSchools = {
-  objectClass?: string[];
-  ou: string;
-  displayName?: string;
-  distinguishedName?: string;
-};
+const EMPTY_COLUMN_VISIBILITY: VisibilityState = {};
 
-export default LmnApiSchools;
+export default EMPTY_COLUMN_VISIBILITY;

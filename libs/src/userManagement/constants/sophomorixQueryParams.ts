@@ -17,14 +17,12 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-// This type is based on a third-party object definition from the Linuxmuster API.
-// Any modifications should be carefully reviewed to ensure compatibility with the source.
+const SOPHOMORIX_QUERY_PARAMS = {
+  SCHOOL: 'school',
+  ADD: 'add',
+  UPDATE: 'update',
+  KILL: 'kill',
+  MANAGEMENT_LIST: 'managementList',
+} as const;
 
-type LmnApiSchools = {
-  objectClass?: string[];
-  ou: string;
-  displayName?: string;
-  distinguishedName?: string;
-};
-
-export default LmnApiSchools;
+export default SOPHOMORIX_QUERY_PARAMS;
