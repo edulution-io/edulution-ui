@@ -67,7 +67,7 @@ class BulletinBoardService implements OnModuleInit {
   private readonly attachmentsPath = BULLETIN_ATTACHMENTS_PATH;
 
   async onModuleInit() {
-    void this.fileSystemService.ensureDirectoryExists(this.attachmentsPath);
+    void FilesystemService.ensureDirectoryExists(this.attachmentsPath);
 
     await MigrationService.runMigrations<BulletinDocument>(this.bulletinModel, bulletinsMigrationList);
   }
