@@ -17,15 +17,9 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
-const REQUIRED_GROUP_ATTRIBUTES = [
-  'mail',
-  'displayName',
-  'sophomorixMailList',
-  'description',
-  'proxyAddresses',
-  'sophomorixMailAlias',
-  'sophomorixJoinable',
-  'sophomorixType',
-];
+const NOTIFICATION_COUNTER_VARIANTS = {
+  RED: 'bg-ciRed',
+  PRIMARY: 'bg-primary',
+} as const;
 
-export default REQUIRED_GROUP_ATTRIBUTES;
+export default NOTIFICATION_COUNTER_VARIANTS;
