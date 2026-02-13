@@ -17,6 +17,7 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import defaultTeacherGroupNames from '@libs/groups/types/default-teacher-group-names';
 import TEMPLATE_IDS from './templateIds';
 
 const traineeShip = {
@@ -68,7 +69,7 @@ const traineeShip = {
     isPublic: false,
     canUpdateFormerAnswer: true,
   },
-  accessibleByRoles: [],
+  accessGroups: [...defaultTeacherGroupNames],
   deploymentTargets: ['linuxmuster'],
 };
 

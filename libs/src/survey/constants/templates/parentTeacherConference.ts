@@ -17,6 +17,8 @@
  * If you are uncertain which license applies to your use case, please contact us at info@netzint.de for clarification.
  */
 
+import defaultTeacherGroupNames from '@libs/groups/types/default-teacher-group-names';
+import defaultAdministrationGroupNames from '@libs/groups/types/default-administration-group-names';
 import TEMPLATE_IDS from './templateIds';
 
 const parentTeacherConference = {
@@ -273,7 +275,7 @@ const parentTeacherConference = {
     isPublic: false,
     canUpdateFormerAnswer: true,
   },
-  accessibleByRoles: [],
+  accessGroups: [...defaultAdministrationGroupNames, ...defaultTeacherGroupNames],
   deploymentTargets: ['linuxmuster'],
 };
 

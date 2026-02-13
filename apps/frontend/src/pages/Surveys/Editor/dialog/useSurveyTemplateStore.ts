@@ -22,8 +22,9 @@ import { toast } from 'sonner';
 import { t } from 'i18next';
 import eduApi from '@/api/eduApi';
 import { SURVEY_TEMPLATES_ENDPOINT } from '@libs/survey/constants/surveys-endpoint';
-import handleApiError from '@/utils/handleApiError';
 import { SurveyTemplateDto } from '@libs/survey/types/api/surveyTemplate.dto';
+import MultipleSelectorGroup from '@libs/groups/types/multipleSelectorGroup';
+import handleApiError from '@/utils/handleApiError';
 
 interface SurveyTemplateStore {
   reset: () => void;
@@ -31,28 +32,35 @@ interface SurveyTemplateStore {
   isOpenTemplatePreview: boolean;
   setIsOpenTemplatePreview: (state: boolean) => void;
 
-  uploadTemplate: (template: SurveyTemplateDto) => Promise<void>;
-  isSubmitting: boolean;
-
   isOpenTemplateConfirmDeletion: boolean;
   setIsOpenTemplateConfirmDeletion: (state: boolean) => void;
   deleteTemplate: (templateId: string) => Promise<void>;
   setIsTemplateActive: (templateId: string, state: boolean) => Promise<void>;
   error?: Error;
 
-  template?: SurveyTemplateDto;
-  setTemplate: (template?: SurveyTemplateDto) => void;
   templates: SurveyTemplateDto[];
   fetchTemplates: () => Promise<void>;
+
+  selectedTemplate?: SurveyTemplateDto;
+  setSelectedTemplate: (template?: SurveyTemplateDto) => void;
+
+  templateName?: string;
+  setTemplateName: (name?: string) => void;
+  accessGroups: MultipleSelectorGroup[];
+  setAccessGroups: (groups: MultipleSelectorGroup[]) => void;
+
+  uploadTemplate: (template: SurveyTemplateDto) => Promise<SurveyTemplateDto | null>;
+
   isLoading: boolean;
 }
 
 const SurveyTemplateStoreInitialState = {
   isOpenTemplatePreview: false,
   isOpenTemplateConfirmDeletion: false,
-  template: undefined,
+  selectedTemplate: undefined,
   templates: [],
-  isSubmitting: false,
+  templateName: undefined,
+  accessGroups: [],
   isLoading: false,
   error: undefined,
 };
@@ -76,21 +84,12 @@ const useSurveyTemplateStore = create<SurveyTemplateStore>((set) => ({
     }
   },
 
-  setTemplate: (template?: SurveyTemplateDto) => set({ template }),
-
-  uploadTemplate: async (surveyTemplateDto: SurveyTemplateDto): Promise<void> => {
-    set({ isSubmitting: true });
-    try {
-      const result = await eduApi.post<SurveyTemplateDto>(SURVEY_TEMPLATES_ENDPOINT, surveyTemplateDto);
-      set({ template: result.data });
-      toast.success(t('survey.editor.template.upload.success'));
-    } catch (error) {
-      handleApiError(error, set);
-      set({ template: undefined });
-    } finally {
-      set({ isSubmitting: false });
-    }
-  },
+  setSelectedTemplate: (template?: SurveyTemplateDto) =>
+    set({
+      selectedTemplate: template,
+      accessGroups: template?.accessGroups || [],
+      templateName: template?.name,
+    }),
 
   setIsOpenTemplateConfirmDeletion: (state: boolean) => set({ isOpenTemplateConfirmDeletion: state }),
 
@@ -98,14 +97,14 @@ const useSurveyTemplateStore = create<SurveyTemplateStore>((set) => ({
     if (!templateId) {
       return;
     }
-    set({ isSubmitting: true });
+    set({ isLoading: true });
     try {
       await eduApi.delete(`${SURVEY_TEMPLATES_ENDPOINT}/${templateId}`);
       toast.success(t('survey.editor.template.deletion.success'));
     } catch (error) {
       handleApiError(error, set);
     } finally {
-      set({ isSubmitting: false });
+      set({ isLoading: false });
     }
   },
 
@@ -113,14 +112,36 @@ const useSurveyTemplateStore = create<SurveyTemplateStore>((set) => ({
     if (!templateId) {
       return;
     }
-    set({ isSubmitting: true });
+    set({ isLoading: true });
     try {
       await eduApi.patch<SurveyTemplateDto>(`${SURVEY_TEMPLATES_ENDPOINT}/${templateId}/${state}`);
+      set((prev) => ({
+        templates: prev.templates.map((tmpl) => (tmpl.id === templateId ? { ...tmpl, isActive: state } : tmpl)),
+      }));
       toast.success(t('survey.editor.template.upload.success'));
     } catch (error) {
       handleApiError(error, set);
     } finally {
-      set({ isSubmitting: false });
+      set({ isLoading: false });
+    }
+  },
+
+  setTemplateName: (name?: string) => set({ templateName: name }),
+
+  setAccessGroups: (accessGroups: MultipleSelectorGroup[]) => set({ accessGroups }),
+
+  uploadTemplate: async (template: SurveyTemplateDto): Promise<SurveyTemplateDto | null> => {
+    set({ isLoading: true });
+    try {
+      const { data } = await eduApi.post<SurveyTemplateDto>(SURVEY_TEMPLATES_ENDPOINT, template);
+
+      toast.success(t('survey.editor.template.upload.success'));
+      return data;
+    } catch (error) {
+      handleApiError(error, set);
+      return null;
+    } finally {
+      set({ isLoading: false });
     }
   },
 }));

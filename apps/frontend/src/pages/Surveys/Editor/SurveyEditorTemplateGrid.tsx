@@ -41,7 +41,7 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
 
   useEffect(() => {
     void fetchTemplates();
-  }, [fetchTemplates]);
+  }, []);
 
   const filteredTemplates = useMemo(() => {
     if (!templates || templates.length === 0) {
@@ -83,7 +83,7 @@ const SurveyEditorTemplateGrid = ({ surveyCreator }: SurveyEditorTemplateGridPro
         variant="default"
         width="auto"
       />
-      <div className={cn('space-2 flex w-full flex-wrap gap-2 overflow-y-auto scrollbar-thin')}>
+      <div className={cn('space-2 flex max-h-full w-full flex-wrap gap-2 overflow-y-auto p-2 scrollbar-thin')}>
         <SurveyEditorTemplateCard
           key="create-new-card"
           creator={surveyCreator}

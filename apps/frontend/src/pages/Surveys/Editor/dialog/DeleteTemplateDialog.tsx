@@ -26,8 +26,8 @@ import DialogFooterButtons from '@/components/ui/DialogFooterButtons';
 
 const DeleteTemplateDialog = () => {
   const {
-    template,
-    isSubmitting,
+    selectedTemplate,
+    isLoading,
     deleteTemplate,
     fetchTemplates,
     isOpenTemplateConfirmDeletion,
@@ -37,15 +37,15 @@ const DeleteTemplateDialog = () => {
   const { t } = useTranslation();
 
   const handleRemoveTemplate = async () => {
-    if (template?.id) {
-      await deleteTemplate(template?.id);
+    if (selectedTemplate?.id) {
+      await deleteTemplate(selectedTemplate?.id);
       void fetchTemplates();
       setIsOpenTemplateConfirmDeletion(false);
     }
   };
 
   const getDialogBody = () => {
-    if (isSubmitting) return <CircleLoader className="mx-auto mt-5" />;
+    if (isLoading) return <CircleLoader className="mx-auto mt-5" />;
     return <p>{t('survey.editor.template.deletion.message')}</p>;
   };
 

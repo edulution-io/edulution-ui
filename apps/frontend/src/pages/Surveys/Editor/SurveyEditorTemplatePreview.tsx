@@ -28,7 +28,7 @@ import useSurveyTemplateStore from '@/pages/Surveys/Editor/dialog/useSurveyTempl
 import ResizableWindow from '@/components/structure/framing/ResizableWindow/ResizableWindow';
 
 const SurveyEditorTemplatePreview = (): JSX.Element | null => {
-  const { template: surveyTemplateDto, setIsOpenTemplatePreview } = useSurveyTemplateStore();
+  const { selectedTemplate, setIsOpenTemplatePreview } = useSurveyTemplateStore();
 
   const { language } = useLanguage();
 
@@ -37,8 +37,8 @@ const SurveyEditorTemplatePreview = (): JSX.Element | null => {
   const currentTheme = getResolvedTheme();
 
   const modelRef = useRef<Model | null>(null);
-  if (!modelRef.current && surveyTemplateDto?.template.formula) {
-    modelRef.current = new Model(surveyTemplateDto.template.formula);
+  if (!modelRef.current && selectedTemplate?.template.formula) {
+    modelRef.current = new Model(selectedTemplate.template.formula);
   }
   const model = modelRef.current;
 
@@ -61,7 +61,7 @@ const SurveyEditorTemplatePreview = (): JSX.Element | null => {
       currentTheme === THEME.dark ? 'rgba(255, 255, 255, 1)' : 'rgba(17, 24, 39, 1)';
   }, [model, currentTheme]);
 
-  if (!surveyTemplateDto || !surveyTemplateDto.template.formula || !model) {
+  if (!selectedTemplate || !selectedTemplate.template.formula || !model) {
     return null;
   }
 

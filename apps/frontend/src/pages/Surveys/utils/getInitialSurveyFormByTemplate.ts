@@ -47,7 +47,7 @@ const getInitialSurveyFormByTemplate = (
       template?.template.canSubmitMultipleAnswers ?? surveysDefaultValues.canSubmitMultipleAnswers,
     isPublic: template?.template.isPublic ?? surveysDefaultValues.isPublic,
     canUpdateFormerAnswer: template?.template.canUpdateFormerAnswer ?? surveysDefaultValues.canUpdateFormerAnswer,
-    saveAsTemplate: false,
+    shouldSaveAsTemplate: false,
   };
 };
 
