@@ -42,7 +42,6 @@ import type LmnApiPrinterWithMembers from '@libs/lmnApi/types/lmnApiPrinterWithM
 import { HTTP_HEADERS } from '@libs/common/types/http-methods';
 import type LmnApiSchools from '@libs/lmnApi/types/lmnApiSchools';
 import LMN_API_SEARCH_PARAMS from '@libs/lmnApi/constants/lmnApiSearchParams';
-import DEFAULT_SCHOOL from '@libs/lmnApi/constants/defaultSchool';
 
 const { PROJECT, SCHOOL_CLASSES, PRINTERS, ROOM, SEARCH_USERS_OR_GROUPS, USER_SESSIONS } = LMN_API_EDU_API_ENDPOINTS;
 
@@ -413,9 +412,8 @@ const useClassManagementStore = create<ClassManagementStore>(
           });
 
           set({ schools: data });
-        } catch {
-          const { user } = useLmnApiStore.getState();
-          set({ schools: [{ ou: user?.school || DEFAULT_SCHOOL }] });
+        } catch (error) {
+          handleApiError(error, set);
         }
       },
 

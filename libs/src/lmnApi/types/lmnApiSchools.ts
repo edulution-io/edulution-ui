@@ -21,10 +21,10 @@
 // Any modifications should be carefully reviewed to ensure compatibility with the source.
 
 type LmnApiSchools = {
-  objectClass?: string[];
+  objectClass: string[];
   ou: string;
-  displayName?: string;
-  distinguishedName?: string;
+  displayName: string;
+  distinguishedName: string;
 };
 
 export default LmnApiSchools;
