@@ -66,6 +66,7 @@ class FileSystemController {
     FileInterceptor(
       'file',
       createAttachmentUploadOptions(
+        APPS_FILES_PATH,
         (req) => `${APPS_FILES_PATH}/${req.params.name}`,
         false,
         (_req, file) => file.originalname,
@@ -162,6 +163,7 @@ class FileSystemController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: createDiskStorage(
+        PUBLIC_ASSET_PATH,
         (request) => {
           const { body } = request as { body?: UploadGlobalAssetDto };
           if (!body?.destination) {

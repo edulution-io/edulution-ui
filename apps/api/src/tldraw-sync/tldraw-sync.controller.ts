@@ -66,6 +66,7 @@ class TLDrawSyncController {
     FileInterceptor(
       'file',
       createAttachmentUploadOptions(
+        APPS_FILES_PATH,
         () => `${APPS_FILES_PATH}/${APPS.WHITEBOARD}`,
         false,
         (_req, file) => file.originalname,
@@ -85,7 +86,7 @@ class TLDrawSyncController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    return this.filesystemService.serveFile(APPS.WHITEBOARD, FilesystemService.buildPathString(filename), res);
+    return this.filesystemService.serveFile(APPS.WHITEBOARD, FilesystemService.buildPathString(filename), req, res);
   }
 
   @Delete(`${TLDRAW_SYNC_ENDPOINTS.ASSETS}/*filename`)

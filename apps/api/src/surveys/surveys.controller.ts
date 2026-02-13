@@ -140,7 +140,7 @@ class SurveysController {
   @UseInterceptors(
     FileInterceptor(
       'file',
-      createAttachmentUploadOptions((req) => {
+      createAttachmentUploadOptions(SURVEYS_TEMP_FILES_PATH, (req) => {
         const username = getUsernameFromRequest(req);
         return join(SURVEYS_TEMP_FILES_PATH, username);
       }),
@@ -241,21 +241,23 @@ class SurveysController {
     @Param('questionId', new ValidatePathPipe(SURVEYS_ATTACHMENT_PATH)) questionId: string,
     @Param('filename', new ValidatePathPipe(SURVEYS_ATTACHMENT_PATH)) filename: string,
     @GetCurrentUser() currentUser: JWTUser,
+    @Req() req: Request,
     @Res() res: Response,
   ) {
     await this.surveyService.throwErrorIfSurveyIsNotAccessible(surveyId, currentUser);
     const path = join(SURVEYS, ATTACHMENT_FOLDER, surveyId, questionId);
-    return this.filesystemService.serveFile(path, filename, res);
+    return this.filesystemService.serveFile(path, filename, req, res);
   }
 
   @Get(`${FILES}/:filename`)
   async serveTempFiles(
     @Param('filename', new ValidatePathPipe(SURVEYS_TEMP_FILES_PATH)) filename: string,
+    @Req() req: Request,
     @Res() res: Response,
     @GetCurrentUsername() username: string,
   ) {
     const path = join(SURVEYS, username);
-    return this.filesystemService.serveTempFile(path, filename, res);
+    return this.filesystemService.serveTempFile(path, filename, req, res);
   }
 
   @Post(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId`)
@@ -264,6 +266,7 @@ class SurveysController {
     FileInterceptor(
       'file',
       createAttachmentUploadOptions(
+        SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH,
         (req) => {
           const { userName, surveyId, questionId } = req.params || {};
           SurveysController.validateParams(req.params, ['userName', 'surveyId', 'questionId']);

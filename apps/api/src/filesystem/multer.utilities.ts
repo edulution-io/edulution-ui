@@ -24,7 +24,6 @@ import { existsSync, mkdirSync } from 'fs';
 import IMAGE_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/imageUploadAllowedMimeTypes';
 import SVG_UPLOAD_ALLOWED_MIME_TYPES from '@libs/common/constants/svgUploadAllowedMimeTypes';
 import MAXIMUM_UPLOAD_FILE_SIZE from '@libs/common/constants/maximumUploadFileSize';
-import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import validatePath from '../common/pipes/validatePath';
 
 /**
@@ -35,13 +34,14 @@ import validatePath from '../common/pipes/validatePath';
  * @param fileNameGenerator - optional function to generate the file name
  */
 export const createDiskStorage = (
+  basePath: string,
   getDestinationPath: (req: Request) => string,
   fileNameGenerator?: (req: Request, file: Express.Multer.File) => string,
 ) =>
   diskStorage({
     destination: (req, _file, callback) => {
       const folderPath = getDestinationPath(req);
-      const sanitizedFolderPath = validatePath(APPS_FILES_PATH, folderPath);
+      const sanitizedFolderPath = validatePath(basePath, folderPath);
       if (!existsSync(sanitizedFolderPath)) {
         mkdirSync(sanitizedFolderPath, { recursive: true });
       }
@@ -52,7 +52,7 @@ export const createDiskStorage = (
       if (fileNameGenerator) {
         fileName = fileNameGenerator(req, file);
       }
-      const sanitizedFileName = validatePath(`${APPS_FILES_PATH}/${req.params.name}`, fileName);
+      const sanitizedFileName = validatePath(basePath, fileName);
       callback(null, sanitizedFileName);
     },
   });
@@ -72,12 +72,13 @@ export const attachmentFileFilter = (
 };
 
 export const createAttachmentUploadOptions = (
+  basePath: string,
   getDestinationPath: (req: Request) => string,
   filter: boolean = true,
   fileNameGenerator?: (req: Request, file: Express.Multer.File) => string,
   maxFileSize?: number,
 ) => ({
-  storage: createDiskStorage(getDestinationPath, fileNameGenerator),
+  storage: createDiskStorage(basePath, getDestinationPath, fileNameGenerator),
   fileFilter: filter ? attachmentFileFilter : undefined,
   limits: maxFileSize ? { fileSize: maxFileSize } : { fileSize: MAXIMUM_UPLOAD_FILE_SIZE },
 });

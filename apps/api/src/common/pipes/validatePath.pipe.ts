@@ -25,7 +25,7 @@ class ValidatePathPipe implements PipeTransform<string | string[] | undefined, s
   constructor(private readonly basePath: string) {}
 
   transform(value: string | string[] | undefined): string | undefined {
-    if (!value) {
+    if (value === undefined || value === null) {
       return undefined;
     }
     return validatePath(this.basePath, value);

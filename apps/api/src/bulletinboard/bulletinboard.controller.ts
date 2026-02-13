@@ -86,6 +86,7 @@ class BulletinBoardController {
     FileInterceptor(
       'file',
       createAttachmentUploadOptions(
+        BULLETIN_TEMP_ATTACHMENTS_PATH,
         () => BULLETIN_TEMP_ATTACHMENTS_PATH,
         true,
         (_req, file) => addUuidToFileName(file.originalname, randomUUID()),

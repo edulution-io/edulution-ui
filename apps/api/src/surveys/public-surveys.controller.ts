@@ -107,11 +107,12 @@ class PublicSurveysController {
     @Param('surveyId', new ValidatePathPipe(SURVEYS_ATTACHMENT_PATH)) surveyId: string,
     @Param('questionId', new ValidatePathPipe(SURVEYS_ATTACHMENT_PATH)) questionId: string,
     @Param('filename', new ValidatePathPipe(SURVEYS_ATTACHMENT_PATH)) filename: string,
+    @Req() req: Request,
     @Res() res: Response,
   ) {
     await this.surveyService.throwErrorIfSurveyIsNotPublic(surveyId);
     const filePath = join(SURVEYS, ATTACHMENT_FOLDER, surveyId, questionId);
-    return this.filesystemService.serveFile(filePath, filename, res);
+    return this.filesystemService.serveFile(filePath, filename, req, res);
   }
 
   @Post(`${ANSWER}/${FILES}/:userName/:surveyId/:questionId`)
@@ -121,6 +122,7 @@ class PublicSurveysController {
     FileInterceptor(
       'file',
       createAttachmentUploadOptions(
+        SURVEY_ANSWERS_TEMPORARY_ATTACHMENT_PATH,
         (req) => {
           const { userName, surveyId, questionId } = req.params || {};
           PublicSurveysController.validateParams(req.params, ['userName', 'surveyId', 'questionId']);
