@@ -54,12 +54,10 @@ import { WebdavStatusResponse } from '@libs/filesharing/types/fileOperationResul
 import type FileInfoDto from '@libs/appconfig/types/fileInfo.dto';
 import APPS_FILES_PATH from '@libs/common/constants/appsFilesPath';
 import TEMP_FILES_PATH from '@libs/filesystem/constants/tempFilesPath';
-import PUBLIC_ASSET_PATH from '@libs/common/constants/publicAssetPath';
 import THIRTY_DAYS from '@libs/common/constants/thirtyDays';
 import WebdavSharesService from '../webdav/shares/webdav-shares.service';
 import UsersService from '../users/users.service';
 import CustomHttpException from '../common/CustomHttpException';
-import validatePath from '../common/pipes/validatePath';
 
 @Injectable()
 class FilesystemService {
@@ -396,28 +394,26 @@ class FilesystemService {
     filePath: string,
     fallBackPath?: string,
   ): Promise<Response> {
-    const sanitizedFilePath = validatePath(PUBLIC_ASSET_PATH, filePath);
-    const fileExists = await FilesystemService.checkIfFileExist(sanitizedFilePath);
+    const fileExists = await FilesystemService.checkIfFileExist(filePath);
     if (fileExists) {
       res.setHeader(HTTP_HEADERS.AssetSource, 'custom');
-      return this.serve(sanitizedFilePath, req, res);
+      return this.serve(filePath, req, res);
     }
     if (fallBackPath) {
-      const sanitizedFallbackPath = validatePath(PUBLIC_ASSET_PATH, fallBackPath);
       res.setHeader(HTTP_HEADERS.AssetSource, 'fallback');
-      return this.serve(sanitizedFallbackPath, req, res);
+      return this.serve(fallBackPath, req, res);
     }
     return Promise.resolve(res.status(HttpStatus.NOT_FOUND).send());
   }
 
   async serveTempFile(name: string, filename: string, req: Request, res: Response) {
-    const path = join(TEMP_FILES_PATH, name, filename);
-    return this.serve(path, req, res);
+    const filePath = join(TEMP_FILES_PATH, name, filename);
+    return this.serve(filePath, req, res);
   }
 
   async serveFile(name: string, filename: string, req: Request, res: Response) {
-    const path = join(APPS_FILES_PATH, name, filename);
-    return this.serve(path, req, res);
+    const filePath = join(APPS_FILES_PATH, name, filename);
+    return this.serve(filePath, req, res);
   }
 
   async serve(filePath: string, req: Request, res: Response): Promise<Response> {

@@ -111,8 +111,7 @@ class FileSystemController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const fileName = FilesystemService.buildPathString(filename);
-    return this.filesystemService.serveFile(appName, fileName, req, res);
+    return this.filesystemService.serveFile(appName, FilesystemService.buildPathString(filename), req, res);
   }
 
   @Public()
@@ -143,8 +142,9 @@ class FileSystemController {
     @Param('appName', new ValidatePathPipe(PUBLIC_ASSET_PATH)) appName: string,
     @Param('filename', new ValidatePathPipe(PUBLIC_ASSET_PATH)) filename: string | string[],
   ) {
+    const fileName = FilesystemService.buildPathString(filename);
     const filePath = join(PUBLIC_ASSET_PATH, appName);
-    return FilesystemService.deleteFile(filePath, FilesystemService.buildPathString(filename));
+    return FilesystemService.deleteFile(filePath, fileName);
   }
 
   @Delete(':appName/*filename')
